@@ -2,92 +2,148 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9288A148FE
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  6 May 2019 13:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41E3B150C5
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  6 May 2019 17:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726201AbfEFLd5 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 6 May 2019 07:33:57 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:49314 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725883AbfEFLd5 (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 6 May 2019 07:33:57 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x46BWiBV025895
-        for <linux-fscrypt@vger.kernel.org>; Mon, 6 May 2019 07:33:56 -0400
-Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2sah6tqgy1-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-fscrypt@vger.kernel.org>; Mon, 06 May 2019 07:33:56 -0400
-Received: from localhost
-        by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-fscrypt@vger.kernel.org> from <chandan@linux.ibm.com>;
-        Mon, 6 May 2019 12:33:53 +0100
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (9.149.109.195)
-        by e06smtp01.uk.ibm.com (192.168.101.131) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Mon, 6 May 2019 12:33:49 +0100
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x46BXmdi54722814
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 6 May 2019 11:33:48 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 22630AE058;
-        Mon,  6 May 2019 11:33:48 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C3A36AE045;
-        Mon,  6 May 2019 11:33:46 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.85.70.42])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon,  6 May 2019 11:33:46 +0000 (GMT)
-From:   Chandan Rajendra <chandan@linux.ibm.com>
-To:     Eric Biggers <ebiggers@kernel.org>
+        id S1726578AbfEFP50 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 6 May 2019 11:57:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60594 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726413AbfEFP5Z (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 6 May 2019 11:57:25 -0400
+Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6FB372053B;
+        Mon,  6 May 2019 15:57:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1557158244;
+        bh=lVBIGGL4FcTF9gRk8kii98O/1j/6eFRht51qZGJQPiI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=X4izU2yLRSKQo+XXm5GgSmV3Sxw6X0O7RW45DL1xGolPl2d0EnxEhL0C3tPetPmzu
+         QcxNnAXuadWxtWMzUFq6Ifi+XwhGcw6wJ4cXvTf5qF379GfDARVyDSQbCuX6Xh0eVF
+         HJKZpYL6XO9QgZk/YOhkWWE9D4FObava7LW5l5ns=
+Date:   Mon, 6 May 2019 08:57:22 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     fstests@vger.kernel.org
 Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 13/13] ext4: encrypt only up to last block in ext4_bio_write_page()
-Date:   Mon, 06 May 2019 14:42:14 +0530
-Organization: IBM
-In-Reply-To: <20190501224515.43059-14-ebiggers@kernel.org>
-References: <20190501224515.43059-1-ebiggers@kernel.org> <20190501224515.43059-14-ebiggers@kernel.org>
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [RFC PATCH 0/7] xfstests: verify fscrypt-encrypted contents and
+ filenames
+Message-ID: <20190506155721.GB661@sol.localdomain>
+References: <20190426204153.101861-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-TM-AS-GCONF: 00
-x-cbid: 19050611-4275-0000-0000-00000331DF5D
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19050611-4276-0000-0000-00003841461E
-Message-Id: <5247310.83GBoLVoWW@dhcp-9-109-212-164>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-06_07:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=1 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=780 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1905060102
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190426204153.101861-1-ebiggers@kernel.org>
+User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thursday, May 2, 2019 4:15:15 AM IST Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
+On Fri, Apr 26, 2019 at 01:41:46PM -0700, Eric Biggers wrote:
+> Hello,
 > 
-> As an optimization, don't encrypt blocks fully beyond i_size, since
-> those definitely won't need to be written out.  Also add a comment.
+> This series adds xfstests which verify that encrypted contents and
+> filenames on ext4 and f2fs are actually correct, i.e. that the
+> encryption uses the correct algorithms, keys, IVs, and padding amounts.
+> The new tests work by creating encrypted files, unmounting the
+> filesystem, reading the ciphertext from disk using dd and debugfs or
+> dump.f2fs, and then comparing it against ciphertext computed
+> independently by a new test program that implements the same algorithms.
 > 
-> This is in preparation for allowing encryption on ext4 filesystems with
-> blocksize != PAGE_SIZE.
+> These tests are important because:
 > 
-> This is based on work by Chandan Rajendra.
->
+> - The whole point of file encryption is that the files are actually
+>   encrypted correctly on-disk.  Except for generic/399, current xfstests
+>   only tests the filesystem semantics, not the actual encryption.
+>   generic/399 only tests for incompressibility of encrypted file
+>   contents using one particular encryption setting, which isn't much.
+> 
+> - fscrypt now supports 4 main combinations of encryption settings,
+>   rather than 1 as it did originally.  This may be doubled to 8 soon
+>   (https://patchwork.kernel.org/patch/10908153/).  We should test all
+>   settings.  And without tests, even if the initial implementation is
+>   correct, breakage in one specific setting could go undetected.
+> 
+> - Though Linux's crypto API has self-tests, these only test the
+>   algorithms themselves, not how they are used, e.g. by fscrypt.
+> 
+> Patch 1 is a cleanup patch.  Patches 2-4 add the common helpers for
+> ciphertext verification tests.  Patches 5-7 add the actual tests.
+> 
+> These tests require e2fsprogs and f2fs-tools patches I recently sent out
+> to fix printing encrypted filenames.  So, this series might not be
+> suitable for merging into mainline xfstests until those patches are
+> applied.  Regardless, comments are appreciated.  The needed patches are:
+> 
+> 	debugfs: avoid ambiguity when printing filenames (https://marc.info/?l=linux-ext4&m=155596495624232&w=2)
+> 	f2fs-tools: improve filename printing (https://sourceforge.net/p/linux-f2fs/mailman/message/36648641/)
+> 
+> This series can also be retrieved from git at
+> https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/xfstests-dev.git
+> branch "ciphertext-verification".
+> 
+> I also have patches on top of this series which verify the ciphertext
+> produced from v2 encryption policies, which are proposed by my kernel
+> patch series "fscrypt: key management improvements"
+> (https://patchwork.kernel.org/cover/10908107/).  v2 encryption policies
+> will use a different key derivation function, and thus their ciphertext
+> will be different.  These additional patches can be found at branch
+> "fscrypt-key-mgmt-improvements" of my git repo above.  But I've arranged
+> things such that this shorter series can potentially be applied earlier,
+> to test what's in the kernel now.
+> 
+> Eric Biggers (7):
+>   common/encrypt: introduce helpers for set_encpolicy and get_encpolicy
+>   fscrypt-crypt-util: add utility for reproducing fscrypt encrypted data
+>   common/encrypt: support requiring other encryption settings
+>   common/encrypt: add helper for ciphertext verification tests
+>   generic: verify ciphertext of v1 encryption policies with AES-256
+>   generic: verify ciphertext of v1 encryption policies with AES-128
+>   generic: verify ciphertext of v1 encryption policies with Adiantum
+> 
+>  .gitignore               |    1 +
+>  common/encrypt           |  482 ++++++++++-
+>  src/Makefile             |    3 +-
+>  src/fscrypt-crypt-util.c | 1645 ++++++++++++++++++++++++++++++++++++++
+>  tests/ext4/024           |    3 +-
+>  tests/generic/395        |   28 +-
+>  tests/generic/395.out    |    2 +-
+>  tests/generic/396        |   15 +-
+>  tests/generic/397        |    3 +-
+>  tests/generic/398        |    5 +-
+>  tests/generic/399        |    3 +-
+>  tests/generic/419        |    3 +-
+>  tests/generic/421        |    3 +-
+>  tests/generic/429        |    3 +-
+>  tests/generic/435        |    3 +-
+>  tests/generic/440        |    5 +-
+>  tests/generic/700        |   41 +
+>  tests/generic/700.out    |    5 +
+>  tests/generic/701        |   41 +
+>  tests/generic/701.out    |    5 +
+>  tests/generic/702        |   43 +
+>  tests/generic/702.out    |   10 +
+>  tests/generic/group      |    3 +
+>  23 files changed, 2308 insertions(+), 47 deletions(-)
+>  create mode 100644 src/fscrypt-crypt-util.c
+>  create mode 100755 tests/generic/700
+>  create mode 100644 tests/generic/700.out
+>  create mode 100755 tests/generic/701
+>  create mode 100644 tests/generic/701.out
+>  create mode 100755 tests/generic/702
+>  create mode 100644 tests/generic/702.out
+> 
+> -- 
+> 2.21.0.593.g511ec345e18-goog
+> 
 
-Looks good to me,
+Any comments on this?
 
-Reviewed-by: Chandan Rajendra <chandan@linux.ibm.com>
+FYI, the e2fsprogs patch that these tests need was applied.
 
--- 
-chandan
+I'm still waiting for the f2fs-tools patch.
 
-
-
+- Eric
