@@ -2,94 +2,87 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 097621673A
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  7 May 2019 17:55:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D944D16DD3
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  8 May 2019 01:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726495AbfEGPzf (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 7 May 2019 11:55:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36492 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726438AbfEGPzf (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 7 May 2019 11:55:35 -0400
-Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 436B9205ED;
-        Tue,  7 May 2019 15:55:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1557244534;
-        bh=WJ1XgsghJbD3Fhdw4UDd+2nBcmAdqqr60sROSlAncS4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Gs3dmKlMGScno5ihJe1LTwTYv5j5b/+XdwTj4pHfVB7zAay3psIgmMScCfyqra+TA
-         OYT75nzVeh9Hb2su/r9n1VbH+Ky9C1UPi7aHv3XggJPDVL3uWOVc3mp0bwmrMvh7Z1
-         RmzbMloHy6Fj0OJiNpCtjP7hfhs6R3tPdKHnD4N4=
-Date:   Tue, 7 May 2019 08:55:32 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     hongjiefang <hongjiefang@asrmicro.com>
-Cc:     tytso@mit.edu, jaegeuk@kernel.org, linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH] fscrypt: don't set policy for a dead directory
-Message-ID: <20190507155531.GA1399@sol.localdomain>
-References: <1557204108-29048-1-git-send-email-hongjiefang@asrmicro.com>
+        id S1726276AbfEGXar (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 7 May 2019 19:30:47 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:41862 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726091AbfEGXar (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 7 May 2019 19:30:47 -0400
+Received: from callcc.thunk.org (guestnat-104-133-0-109.corp.google.com [104.133.0.109] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x47NUgJk013851
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 7 May 2019 19:30:43 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 55148420024; Tue,  7 May 2019 19:30:42 -0400 (EDT)
+Date:   Tue, 7 May 2019 19:30:42 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org
+Subject: [GIT PULL] fscrypt updates for 5.2
+Message-ID: <20190507233042.GA28476@mit.edu>
+Mail-Followup-To: Theodore Ts'o <tytso@mit.edu>,
+        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1557204108-29048-1-git-send-email-hongjiefang@asrmicro.com>
-User-Agent: Mutt/1.11.4 (2019-03-13)
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hi,
+The following changes since commit dc4060a5dc2557e6b5aa813bf5b73677299d62d2:
 
-On Tue, May 07, 2019 at 12:41:48PM +0800, hongjiefang wrote:
-> if the directory had been removed, should not set policy for it.
-> 
-> Signed-off-by: hongjiefang <hongjiefang@asrmicro.com>
+  Linux 5.1-rc5 (2019-04-14 15:17:41 -0700)
 
-Can you explain the motivation for this change?  It makes some sense, but I
-don't see why it's really needed.  If you look at all the other IS_DEADDIR()
-checks in the kernel, they're not for operations on the directory inode itself,
-but rather for creating/finding/listing entries in the directory.  I think
-FS_IOC_SET_ENCRYPTION_POLICY is more like the former (though it does have to
-check whether the directory is empty).
+are available in the Git repository at:
 
-> ---
->  fs/crypto/policy.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
-> index bd7eaf9..82900a4 100644
-> --- a/fs/crypto/policy.c
-> +++ b/fs/crypto/policy.c
-> @@ -77,6 +77,12 @@ int fscrypt_ioctl_set_policy(struct file *filp, const void __user *arg)
->  
->  	inode_lock(inode);
->  
-> +	/* don't set policy for a dead directory */
-> +	if (IS_DEADDIR(inode)) {
-> +		ret = -ENOENT;
-> +		goto deaddir_out;
-> +	}
-> +
->  	ret = inode->i_sb->s_cop->get_context(inode, &ctx, sizeof(ctx));
->  	if (ret == -ENODATA) {
->  		if (!S_ISDIR(inode->i_mode))
-> @@ -96,6 +102,7 @@ int fscrypt_ioctl_set_policy(struct file *filp, const void __user *arg)
->  		ret = -EEXIST;
->  	}
->  
-> +deaddir_out:
->  	inode_unlock(inode);
+  git://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt_for_linus
 
-Call this label 'out_unlock' instead?
+for you to fetch changes up to 2c58d548f5706d085c4b009f6abb945220460632:
 
->  
->  	mnt_drop_write_file(filp);
-> -- 
-> 1.9.1
-> 
+  fscrypt: cache decrypted symlink target in ->i_link (2019-04-17 12:43:29 -0400)
 
-Thanks,
+----------------------------------------------------------------
+Clean up fscrypt's dcache revalidation support, and other
+miscellaneous cleanups.
 
-- Eric
+----------------------------------------------------------------
+Eric Biggers (10):
+      fscrypt: drop inode argument from fscrypt_get_ctx()
+      fscrypt: remove WARN_ON_ONCE() when decryption fails
+      fscrypt: use READ_ONCE() to access ->i_crypt_info
+      fscrypt: clean up and improve dentry revalidation
+      fscrypt: fix race allowing rename() and link() of ciphertext dentries
+      fs, fscrypt: clear DCACHE_ENCRYPTED_NAME when unaliasing directory
+      fscrypt: only set dentry_operations on ciphertext dentries
+      fscrypt: fix race where ->lookup() marks plaintext dentry as ciphertext
+      vfs: use READ_ONCE() to access ->i_link
+      fscrypt: cache decrypted symlink target in ->i_link
+
+ fs/crypto/bio.c         |  8 +++-----
+ fs/crypto/crypto.c      | 74 ++++++++++++++++++++++++++++++++++-------------------------------------
+ fs/crypto/fname.c       |  5 +++--
+ fs/crypto/hooks.c       | 68 +++++++++++++++++++++++++++++++++++++++++++++++++----------------
+ fs/crypto/keyinfo.c     | 25 ++++++++++++++++++++++--
+ fs/crypto/policy.c      |  6 +++---
+ fs/dcache.c             |  2 ++
+ fs/ext4/ext4.h          | 62 ++++++++++++++++++++++++++++++++++++++++++++---------------
+ fs/ext4/namei.c         | 76 ++++++++++++++++++++++++++++++++++++++++++++++++++-----------------------
+ fs/ext4/readpage.c      |  2 +-
+ fs/ext4/super.c         |  3 +++
+ fs/f2fs/namei.c         | 17 ++++++++++-------
+ fs/f2fs/super.c         |  3 +++
+ fs/namei.c              |  4 ++--
+ fs/ubifs/dir.c          |  8 +++-----
+ fs/ubifs/super.c        |  3 +++
+ include/linux/dcache.h  |  2 +-
+ include/linux/fscrypt.h | 74 ++++++++++++++++++++++++++++++++++++++++++++++++++---------------------
+ 18 files changed, 298 insertions(+), 144 deletions(-)
