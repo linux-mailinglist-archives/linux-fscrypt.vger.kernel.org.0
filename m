@@ -2,40 +2,40 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 52F7715702
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  7 May 2019 02:39:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F28221573B
+	for <lists+linux-fscrypt@lfdr.de>; Tue,  7 May 2019 03:23:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726509AbfEGAji (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 6 May 2019 20:39:38 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:37368 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726073AbfEGAji (ORCPT
+        id S1726403AbfEGBXk (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 6 May 2019 21:23:40 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:40690 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726381AbfEGBXk (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 6 May 2019 20:39:38 -0400
-Received: by mail-pf1-f195.google.com with SMTP id g3so7655461pfi.4;
-        Mon, 06 May 2019 17:39:38 -0700 (PDT)
+        Mon, 6 May 2019 21:23:40 -0400
+Received: by mail-pf1-f193.google.com with SMTP id u17so7705516pfn.7;
+        Mon, 06 May 2019 18:23:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:openpgp:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=jcaJYu9k2K/e9UA37e4lNVwPX2D+yjNGXI9JGGSJkRE=;
-        b=c2RSDkFsRz7AyAkJOqzDXMceVQjsCcehWKOGsAP1q9/zYfniKWAJlW8pzjjfftJiDb
-         DIi6fyLXHkSfjqhQjeveUbK33DMmF+H/+m8sZbnm0D7aUdZoXja467JrEoQRtlssHNYP
-         afe4mvHiYSnePXwfbek8yXEudXg5xjq+Tmi3mBhnG0YrRh+blnFuI+1uUnu+nqEZvHYn
-         WSSeVreIwAVaC/G10KrUdz6UylEMUvLx3pSpdsTB4rfjmIfhhcg1xmamAdI105vSlPx0
-         bT0SkI3o6XoU4b3pjgAmKAOfRZ/RGWBtCEa0kcNTEBtLVNJmAkFlX20T12KOIzP8GxWP
-         mF1A==
-X-Gm-Message-State: APjAAAWfSKc4QITmSgx11+0zfEwSW8OLXcbY+pNMwwx3CiWsd9aq9UB2
-        kaGREIlxSSomW3/98HGD5Pw=
-X-Google-Smtp-Source: APXvYqz305JvA8tBvlLgeIzbmIlJTERQw5eS72zuyvsg8q1RnQmjKumWSkxTRs4/cXesLG82pyGOeg==
-X-Received: by 2002:a65:5086:: with SMTP id r6mr36798945pgp.301.1557189577924;
-        Mon, 06 May 2019 17:39:37 -0700 (PDT)
+        bh=S2cRcGKJfAAsHZOe9gweZp9eHEagiwXIabFs3M+jIXs=;
+        b=ruDazUs6KICBAsFaSMF2UArudnFzhpTkyPfOhrkkZSrU27ChGOn+19M8AB1hIladCj
+         ljBu6QX//oEyyvBo5pkB9hN0Q702j7kXoUfbHjdYDmmiIDH2SqxzEUkqYHjlWhVr30vX
+         D6YUYY0LNlll0Mnsn1CrUdvkL6agTs/UuSZwvggRJgENRrTJfznUXIDdwoXz/SvLti4C
+         2EJGxAf8It786MeNjqdvSi16aa8PPDmSKZKbKa/v73RfmOA09p9Zmc4NZrrYDb/navht
+         cfAfwmMTemMrM/NKYKdZVpiqkLe6EJtjf6g36obL8dMuR6zwsg7o8/Nj7LHPBNeMdSgO
+         vDnQ==
+X-Gm-Message-State: APjAAAXYeACXqh/4tAfu2KtTZBTlB1PzlicMer3OM+HN9SlHaVL7pa5i
+        Licd8QOkSsANmD/YB7plWp3blugP
+X-Google-Smtp-Source: APXvYqxrlpxOexLO2gc+nDwdaf/2Dt6Zm8NCC6uTNDoz8opdiglNffBOSAQvLp8lWgWnbVnHWBb3nw==
+X-Received: by 2002:a65:6554:: with SMTP id a20mr36982558pgw.284.1557192219168;
+        Mon, 06 May 2019 18:23:39 -0700 (PDT)
 Received: from asus.site ([2601:647:4000:5dd1:a41e:80b4:deb3:fb66])
-        by smtp.gmail.com with ESMTPSA id m8sm18990887pgn.59.2019.05.06.17.39.36
+        by smtp.gmail.com with ESMTPSA id o2sm26530518pgq.1.2019.05.06.18.23.36
         (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
-        Mon, 06 May 2019 17:39:36 -0700 (PDT)
-Subject: Re: [RFC PATCH 2/4] scsi: ufs: UFS driver v2.1 crypto support
+        Mon, 06 May 2019 18:23:37 -0700 (PDT)
+Subject: Re: [RFC PATCH 3/4] fscrypt: wire up fscrypt to use blk-crypto
 To:     Satya Tangirala <satyat@google.com>, linux-block@vger.kernel.org,
         linux-scsi@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         linux-fsdevel@vger.kernel.org
@@ -44,7 +44,7 @@ Cc:     Parshuram Raju Thombare <pthombar@cadence.com>,
         Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
         Kuohong Wang <kuohong.wang@mediatek.com>
 References: <20190506223544.195371-1-satyat@google.com>
- <20190506223544.195371-3-satyat@google.com>
+ <20190506223544.195371-4-satyat@google.com>
 From:   Bart Van Assche <bvanassche@acm.org>
 Openpgp: preference=signencrypt
 Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
@@ -70,12 +70,12 @@ Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
  mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
  goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <f689f1a4-c507-30fd-0c3e-e6fe6d63b30d@acm.org>
-Date:   Mon, 6 May 2019 17:39:35 -0700
+Message-ID: <daa7c452-0f73-67e7-7a9a-55499372cc0d@acm.org>
+Date:   Mon, 6 May 2019 18:23:35 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <20190506223544.195371-3-satyat@google.com>
+In-Reply-To: <20190506223544.195371-4-satyat@google.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -85,12 +85,38 @@ List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 On 5/6/19 3:35 PM, Satya Tangirala wrote:
-> +/*TODO: worry about endianness and cpu_to_le32 */
+[ ... ]
+> diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+> index 7da276159593..d6d65c88a629 100644
+> --- a/fs/crypto/fscrypt_private.h
+> +++ b/fs/crypto/fscrypt_private.h
+> @@ -49,6 +49,16 @@ struct fscrypt_symlink_data {
+>  	char encrypted_path[1];
+>  } __packed;
+>  
+> +/* Master key referenced by FS_POLICY_FLAG_DIRECT_KEY policy */
+> +struct fscrypt_master_key {
+> +	struct hlist_node mk_node;
+> +	refcount_t mk_refcount;
+> +	const struct fscrypt_mode *mk_mode;
+> +	struct crypto_skcipher *mk_ctfm;
+> +	u8 mk_descriptor[FS_KEY_DESCRIPTOR_SIZE];
+> +	u8 mk_raw[FS_MAX_KEY_SIZE];
+> +};
+> [ ... ]
+> -/* Master key referenced by FS_POLICY_FLAG_DIRECT_KEY policy */
+> -struct fscrypt_master_key {
+> -	struct hlist_node mk_node;
+> -	refcount_t mk_refcount;
+> -	const struct fscrypt_mode *mk_mode;
+> -	struct crypto_skcipher *mk_ctfm;
+> -	u8 mk_descriptor[FS_KEY_DESCRIPTOR_SIZE];
+> -	u8 mk_raw[FS_MAX_KEY_SIZE];
+> -};
 
-Please fix endianness issues before reposting this patch series and
-please also make sure that this patch series is sparse-clean.
-Instructions for how to use sparse are available at
-https://kernelnewbies.org/Sparse.
+How about introducing the file fs/crypto/fscrypt_private.h in patch 2/4
+such that the fscrypt_master_key definition does not have to be moved
+around?
 
 Thanks,
 
