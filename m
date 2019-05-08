@@ -2,91 +2,111 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 264CE16E99
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  8 May 2019 03:19:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2167E16ED2
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  8 May 2019 04:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726476AbfEHBT3 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 7 May 2019 21:19:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57764 "EHLO mail.kernel.org"
+        id S1726404AbfEHCLq (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 7 May 2019 22:11:46 -0400
+Received: from asrmicro.com ([210.13.118.86]:25464 "EHLO mail2012.asrmicro.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726276AbfEHBT3 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 7 May 2019 21:19:29 -0400
-Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3175E20656;
-        Wed,  8 May 2019 01:19:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1557278368;
-        bh=5i7eIdNJojfxilMNzT3UE9tdBE1lo9TP3u6VAZ/7kpA=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=JYdGFClK/wS4M5ijJBMSwaK8Mu6pTg5H++MARjasZEHgAR8S6nHJ5DMWCqwc2jZCw
-         2+o1lo+jFhIy0HTpGNchX60m5H2jikXm0Z8yeGq/1G/h0DMFO8xiU/ahQrCt0gqUIA
-         YISABQF5qhc0tKuIUHpLxG9yPjt0jUOTTjL6bCg0=
-Date:   Tue, 7 May 2019 18:19:26 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Theodore Ts'o <tytso@mit.edu>, torvalds@linux-foundation.org,
-        linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org
-Subject: Re: [GIT PULL] fscrypt updates for 5.2
-Message-ID: <20190508011925.GB7528@sol.localdomain>
-References: <20190507233042.GA28476@mit.edu>
+        id S1726371AbfEHCLq (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 7 May 2019 22:11:46 -0400
+Received: from mail2012.asrmicro.com (10.1.24.123) by mail2012.asrmicro.com
+ (10.1.24.123) with Microsoft SMTP Server (TLS) id 15.0.847.32; Wed, 8 May
+ 2019 10:11:11 +0800
+Received: from mail2012.asrmicro.com ([fe80::7c1a:96dd:1a6b:c97b]) by
+ mail2012.asrmicro.com ([fe80::7c1a:96dd:1a6b:c97b%16]) with mapi id
+ 15.00.0847.030; Wed, 8 May 2019 10:11:11 +0800
+From:   =?utf-8?B?RmFuZyBIb25namllKOaWuea0quadsCk=?= 
+        <hongjiefang@asrmicro.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+CC:     "tytso@mit.edu" <tytso@mit.edu>,
+        "jaegeuk@kernel.org" <jaegeuk@kernel.org>,
+        "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>
+Subject: RE: [PATCH] fscrypt: don't set policy for a dead directory
+Thread-Topic: [PATCH] fscrypt: don't set policy for a dead directory
+Thread-Index: AQHVBI82K6WCQI9ogEC4ZPkjP1ijfaZfS14AgAEqHEA=
+Date:   Wed, 8 May 2019 02:11:10 +0000
+Message-ID: <8294e7217a014c5ca64f29fdf69bdeec@mail2012.asrmicro.com>
+References: <1557204108-29048-1-git-send-email-hongjiefang@asrmicro.com>
+ <20190507155531.GA1399@sol.localdomain>
+In-Reply-To: <20190507155531.GA1399@sol.localdomain>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-cr-hashedpuzzle: DNeh E52p Hdo+ HptL KlbU LKk7 MBg+ S78y cD4h dKp2 g8Qa
+ hPz5 oD45 oUgI rMkc
+ tbda;4;ZQBiAGkAZwBnAGUAcgBzAEAAawBlAHIAbgBlAGwALgBvAHIAZwA7AGoAYQBlAGcAZQB1AGsAQABrAGUAcgBuAGUAbAAuAG8AcgBnADsAbABpAG4AdQB4AC0AZgBzAGMAcgB5AHAAdABAAHYAZwBlAHIALgBrAGUAcgBuAGUAbAAuAG8AcgBnADsAdAB5AHQAcwBvAEAAbQBpAHQALgBlAGQAdQA=;Sosha1_v1;7;{5C927C9E-4123-421F-A069-9AE9932A05AF};aABvAG4AZwBqAGkAZQBmAGEAbgBnAEAAYQBzAHIAbQBpAGMAcgBvAC4AYwBvAG0A;Wed,
+ 08 May 2019 02:11:03
+ GMT;UgBFADoAIABbAFAAQQBUAEMASABdACAAZgBzAGMAcgB5AHAAdAA6ACAAZABvAG4AJwB0ACAAcwBlAHQAIABwAG8AbABpAGMAeQAgAGYAbwByACAAYQAgAGQAZQBhAGQAIABkAGkAcgBlAGMAdABvAHIAeQA=
+x-cr-puzzleid: {5C927C9E-4123-421F-A069-9AE9932A05AF}
+x-originating-ip: [10.1.170.195]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190507233042.GA28476@mit.edu>
-User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, May 07, 2019 at 07:30:42PM -0400, Theodore Ts'o wrote:
-> The following changes since commit dc4060a5dc2557e6b5aa813bf5b73677299d62d2:
-> 
->   Linux 5.1-rc5 (2019-04-14 15:17:41 -0700)
-> 
-> are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt_for_linus
-> 
-> for you to fetch changes up to 2c58d548f5706d085c4b009f6abb945220460632:
-> 
->   fscrypt: cache decrypted symlink target in ->i_link (2019-04-17 12:43:29 -0400)
-> 
-> ----------------------------------------------------------------
-> Clean up fscrypt's dcache revalidation support, and other
-> miscellaneous cleanups.
-> 
-> ----------------------------------------------------------------
-> Eric Biggers (10):
->       fscrypt: drop inode argument from fscrypt_get_ctx()
->       fscrypt: remove WARN_ON_ONCE() when decryption fails
->       fscrypt: use READ_ONCE() to access ->i_crypt_info
->       fscrypt: clean up and improve dentry revalidation
->       fscrypt: fix race allowing rename() and link() of ciphertext dentries
->       fs, fscrypt: clear DCACHE_ENCRYPTED_NAME when unaliasing directory
->       fscrypt: only set dentry_operations on ciphertext dentries
->       fscrypt: fix race where ->lookup() marks plaintext dentry as ciphertext
->       vfs: use READ_ONCE() to access ->i_link
->       fscrypt: cache decrypted symlink target in ->i_link
-> 
-
-There will be a merge conflict between "fscrypt: cache decrypted symlink target
-in ->i_link", and "ext4: make use of ->free_inode()" and "f2fs: switch to
-->free_inode()".  The correct resolutions should be fairly straightforward:
-
-	static void ext4_free_in_core_inode(struct inode *inode)
-	{
-		fscrypt_free_inode(inode);
-		kmem_cache_free(ext4_inode_cachep, EXT4_I(inode));
-	}
-
-and
-
-	static void f2fs_free_inode(struct inode *inode)
-	{
-		fscrypt_free_inode(inode);
-		kmem_cache_free(f2fs_inode_cachep, F2FS_I(inode));
-	}
-
-- Eric
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEVyaWMgQmlnZ2VycyBbbWFp
+bHRvOmViaWdnZXJzQGtlcm5lbC5vcmddDQo+IFNlbnQ6IFR1ZXNkYXksIE1heSAwNywgMjAxOSAx
+MTo1NiBQTQ0KPiBUbzogRmFuZyBIb25namllKOaWuea0quadsCkNCj4gQ2M6IHR5dHNvQG1pdC5l
+ZHU7IGphZWdldWtAa2VybmVsLm9yZzsgbGludXgtZnNjcnlwdEB2Z2VyLmtlcm5lbC5vcmcNCj4g
+U3ViamVjdDogUmU6IFtQQVRDSF0gZnNjcnlwdDogZG9uJ3Qgc2V0IHBvbGljeSBmb3IgYSBkZWFk
+IGRpcmVjdG9yeQ0KPiANCj4gSGksDQo+IA0KPiBPbiBUdWUsIE1heSAwNywgMjAxOSBhdCAxMjo0
+MTo0OFBNICswODAwLCBob25namllZmFuZyB3cm90ZToNCj4gPiBpZiB0aGUgZGlyZWN0b3J5IGhh
+ZCBiZWVuIHJlbW92ZWQsIHNob3VsZCBub3Qgc2V0IHBvbGljeSBmb3IgaXQuDQo+ID4NCj4gPiBT
+aWduZWQtb2ZmLWJ5OiBob25namllZmFuZyA8aG9uZ2ppZWZhbmdAYXNybWljcm8uY29tPg0KPiAN
+Cj4gQ2FuIHlvdSBleHBsYWluIHRoZSBtb3RpdmF0aW9uIGZvciB0aGlzIGNoYW5nZT8gIEl0IG1h
+a2VzIHNvbWUgc2Vuc2UsIGJ1dCBJDQo+IGRvbid0IHNlZSB3aHkgaXQncyByZWFsbHkgbmVlZGVk
+LiAgSWYgeW91IGxvb2sgYXQgYWxsIHRoZSBvdGhlciBJU19ERUFERElSKCkNCj4gY2hlY2tzIGlu
+IHRoZSBrZXJuZWwsIHRoZXkncmUgbm90IGZvciBvcGVyYXRpb25zIG9uIHRoZSBkaXJlY3Rvcnkg
+aW5vZGUgaXRzZWxmLA0KPiBidXQgcmF0aGVyIGZvciBjcmVhdGluZy9maW5kaW5nL2xpc3Rpbmcg
+ZW50cmllcyBpbiB0aGUgZGlyZWN0b3J5LiAgSSB0aGluaw0KPiBGU19JT0NfU0VUX0VOQ1JZUFRJ
+T05fUE9MSUNZIGlzIG1vcmUgbGlrZSB0aGUgZm9ybWVyICh0aG91Z2ggaXQgZG9lcyBoYXZlIHRv
+DQo+IGNoZWNrIHdoZXRoZXIgdGhlIGRpcmVjdG9yeSBpcyBlbXB0eSkuDQoNCkkgbWV0IGEgcGFu
+aWMgaXNzdWUgd2hlbiBydW4gdGhlIHN5emthbGxlciBvbiBrZXJuZWwgNC4xNC44MShFWFQ0IEZC
+RSBlbmFibGVkKS4NCnRoZSBmbG93IG9mIGNhc2UgYXMgZm9sbG93Og0KcjAgPSBvcGVuYXQkZGly
+KDB4ZmZmZmZmZmZmZmZmZmY5YywgJigweDdmMDAwMDAwMDAwMCk9Jy5ceDAwJywgMHgwLCAweDAp
+DQpta2RpcmF0KHIwLCAmKDB4N2YwMDAwMDAwMDQwKT0nLi9maWxlMFx4MDAnLCAweDApDQpyMSA9
+IG9wZW5hdCRkaXIoMHhmZmZmZmZmZmZmZmZmZjljLCAmKDB4N2YwMDAwMDAwMTQwKT0nLi9maWxl
+MFx4MDAnLCAweDAsIDB4MCkNCnVubGlua2F0KHIwLCAmKDB4N2YwMDAwMDAwMjQwKT0nLi9maWxl
+MFx4MDAnLCAweDIwMCkNCmlvY3RsJEZTX0lPQ19TRVRfRU5DUllQVElPTl9QT0xJQ1kocjEsIDB4
+ODAwYzY2MTMsICYoMHg3ZjAwMDAwMDAwYzApDQo9ezB4MCwgQGFlczEyOCwgMHgwLCAiOGFjYzcz
+ZGE5N2Q2YWNjYyJ9KQ0KDQpUaGUgZmlsZTAgZGlyZWN0b3J5IG1heWJlIHJlbW92ZWQgYmVmb3Jl
+IGRvaW5nIEZTX0lPQ19TRVRfRU5DUllQVElPTl9QT0xJQ1kuDQpJbiB0aGlzIGNhc2UsIGZzY3J5
+cHRfaW9jdGxfc2V0X3BvbGljeSgpLT4gZXh0NF9lbXB0eV9kaXIoKSB3aWxsIHJldHVybiB0aGUN
+CiIgaW52YWxpZCBzaXplICIgYW5kIHRyaWdnZXIgYSBwYW5pYyB3aGVuIGNoZWNrIHRoZSBpX3Np
+emUgb2YgaW5vZGUuDQp0aGUgcGFuaWMgc3RhY2sgYXMgZm9sbG93Og0KUElEOiAyNjgyICAgVEFT
+SzogZmZmZmZmYzA4N2QxODA4MCAgQ1BVOiAzICAgQ09NTUFORDogInN5ei1leGVjdXRvciINCiAj
+MCBbZmZmZmZmYzA4N2QyNmZjMF0gcGFuaWMgYXQgZmZmZmZmOTAwODBkYzA0Yw0KICMxIFtmZmZm
+ZmZjMDg3ZDI3MjYwXSBleHQ0X2hhbmRsZV9lcnJvciBhdCBmZmZmZmY5MDA4Njg5YjA4DQogIzIg
+W2ZmZmZmZmMwODdkMjcyOTBdIF9fZXh0NF9lcnJvcl9pbm9kZSBhdCBmZmZmZmY5MDA4Njg5ZTkw
+DQogIzMgW2ZmZmZmZmMwODdkMjczZjBdIGV4dDRfZW1wdHlfZGlyIGF0IGZmZmZmZjkwMDg2NWIw
+NjQNCiAjNCBbZmZmZmZmYzA4N2QyNzRkMF0gZnNjcnlwdF9pb2N0bF9zZXRfcG9saWN5IGF0IGZm
+ZmZmZjkwMDg1NjVkNzANCiAjNSBbZmZmZmZmYzA4N2QyNzYzMF0gZXh0NF9pb2N0bCBhdCBmZmZm
+ZmY5MDA4NjMxMDVjDQogIzYgW2ZmZmZmZmMwODdkMjdiMDBdIGRvX3Zmc19pb2N0bCBhdCBmZmZm
+ZmY5MDA4NGNjNDQwDQogIzcgW2ZmZmZmZmMwODdkMjdlODBdIHN5c19pb2N0bCBhdCBmZmZmZmY5
+MDA4NGNkYWYwDQogIzggW2ZmZmZmZmMwODdkMjdmZjBdIGVsMF9zdmNfbmFrZWQgYXQgZmZmZmZm
+OTAwODA4NGZmYw0KDQpTbywgaXQgbmVlZCB0byBjaGVjayB0aGUgZGlyZWN0b3J5IHN0YXR1cyBp
+biB0aGUgZnNjcnlwdF9pb2N0bF9zZXRfcG9saWN5KCkuDQoNCg0KPiANCj4gPiAtLS0NCj4gPiAg
+ZnMvY3J5cHRvL3BvbGljeS5jIHwgNyArKysrKysrDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCA3IGlu
+c2VydGlvbnMoKykNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9mcy9jcnlwdG8vcG9saWN5LmMgYi9m
+cy9jcnlwdG8vcG9saWN5LmMNCj4gPiBpbmRleCBiZDdlYWY5Li44MjkwMGE0IDEwMDY0NA0KPiA+
+IC0tLSBhL2ZzL2NyeXB0by9wb2xpY3kuYw0KPiA+ICsrKyBiL2ZzL2NyeXB0by9wb2xpY3kuYw0K
+PiA+IEBAIC03Nyw2ICs3NywxMiBAQCBpbnQgZnNjcnlwdF9pb2N0bF9zZXRfcG9saWN5KHN0cnVj
+dCBmaWxlICpmaWxwLCBjb25zdCB2b2lkIF9fdXNlcg0KPiAqYXJnKQ0KPiA+DQo+ID4gIAlpbm9k
+ZV9sb2NrKGlub2RlKTsNCj4gPg0KPiA+ICsJLyogZG9uJ3Qgc2V0IHBvbGljeSBmb3IgYSBkZWFk
+IGRpcmVjdG9yeSAqLw0KPiA+ICsJaWYgKElTX0RFQURESVIoaW5vZGUpKSB7DQo+ID4gKwkJcmV0
+ID0gLUVOT0VOVDsNCj4gPiArCQlnb3RvIGRlYWRkaXJfb3V0Ow0KPiA+ICsJfQ0KPiA+ICsNCj4g
+PiAgCXJldCA9IGlub2RlLT5pX3NiLT5zX2NvcC0+Z2V0X2NvbnRleHQoaW5vZGUsICZjdHgsIHNp
+emVvZihjdHgpKTsNCj4gPiAgCWlmIChyZXQgPT0gLUVOT0RBVEEpIHsNCj4gPiAgCQlpZiAoIVNf
+SVNESVIoaW5vZGUtPmlfbW9kZSkpDQo+ID4gQEAgLTk2LDYgKzEwMiw3IEBAIGludCBmc2NyeXB0
+X2lvY3RsX3NldF9wb2xpY3koc3RydWN0IGZpbGUgKmZpbHAsIGNvbnN0IHZvaWQgX191c2VyDQo+
+ICphcmcpDQo+ID4gIAkJcmV0ID0gLUVFWElTVDsNCj4gPiAgCX0NCj4gPg0KPiA+ICtkZWFkZGly
+X291dDoNCj4gPiAgCWlub2RlX3VubG9jayhpbm9kZSk7DQo+IA0KPiBDYWxsIHRoaXMgbGFiZWwg
+J291dF91bmxvY2snIGluc3RlYWQ/DQo+IA0KPiA+DQo+ID4gIAltbnRfZHJvcF93cml0ZV9maWxl
+KGZpbHApOw0KPiA+IC0tDQo+ID4gMS45LjENCj4gPg0KPiANCj4gVGhhbmtzLA0KPiANCj4gLSBF
+cmljDQoNCkImUg0KSG9uZ2ppZQ0K
