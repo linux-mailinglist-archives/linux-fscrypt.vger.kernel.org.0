@@ -2,111 +2,266 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2167E16ED2
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  8 May 2019 04:11:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 195C116ED3
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  8 May 2019 04:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726404AbfEHCLq (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 7 May 2019 22:11:46 -0400
-Received: from asrmicro.com ([210.13.118.86]:25464 "EHLO mail2012.asrmicro.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726371AbfEHCLq (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 7 May 2019 22:11:46 -0400
-Received: from mail2012.asrmicro.com (10.1.24.123) by mail2012.asrmicro.com
- (10.1.24.123) with Microsoft SMTP Server (TLS) id 15.0.847.32; Wed, 8 May
- 2019 10:11:11 +0800
-Received: from mail2012.asrmicro.com ([fe80::7c1a:96dd:1a6b:c97b]) by
- mail2012.asrmicro.com ([fe80::7c1a:96dd:1a6b:c97b%16]) with mapi id
- 15.00.0847.030; Wed, 8 May 2019 10:11:11 +0800
-From:   =?utf-8?B?RmFuZyBIb25namllKOaWuea0quadsCk=?= 
-        <hongjiefang@asrmicro.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-CC:     "tytso@mit.edu" <tytso@mit.edu>,
-        "jaegeuk@kernel.org" <jaegeuk@kernel.org>,
-        "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>
-Subject: RE: [PATCH] fscrypt: don't set policy for a dead directory
-Thread-Topic: [PATCH] fscrypt: don't set policy for a dead directory
-Thread-Index: AQHVBI82K6WCQI9ogEC4ZPkjP1ijfaZfS14AgAEqHEA=
-Date:   Wed, 8 May 2019 02:11:10 +0000
-Message-ID: <8294e7217a014c5ca64f29fdf69bdeec@mail2012.asrmicro.com>
-References: <1557204108-29048-1-git-send-email-hongjiefang@asrmicro.com>
- <20190507155531.GA1399@sol.localdomain>
-In-Reply-To: <20190507155531.GA1399@sol.localdomain>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-cr-hashedpuzzle: DNeh E52p Hdo+ HptL KlbU LKk7 MBg+ S78y cD4h dKp2 g8Qa
- hPz5 oD45 oUgI rMkc
- tbda;4;ZQBiAGkAZwBnAGUAcgBzAEAAawBlAHIAbgBlAGwALgBvAHIAZwA7AGoAYQBlAGcAZQB1AGsAQABrAGUAcgBuAGUAbAAuAG8AcgBnADsAbABpAG4AdQB4AC0AZgBzAGMAcgB5AHAAdABAAHYAZwBlAHIALgBrAGUAcgBuAGUAbAAuAG8AcgBnADsAdAB5AHQAcwBvAEAAbQBpAHQALgBlAGQAdQA=;Sosha1_v1;7;{5C927C9E-4123-421F-A069-9AE9932A05AF};aABvAG4AZwBqAGkAZQBmAGEAbgBnAEAAYQBzAHIAbQBpAGMAcgBvAC4AYwBvAG0A;Wed,
- 08 May 2019 02:11:03
- GMT;UgBFADoAIABbAFAAQQBUAEMASABdACAAZgBzAGMAcgB5AHAAdAA6ACAAZABvAG4AJwB0ACAAcwBlAHQAIABwAG8AbABpAGMAeQAgAGYAbwByACAAYQAgAGQAZQBhAGQAIABkAGkAcgBlAGMAdABvAHIAeQA=
-x-cr-puzzleid: {5C927C9E-4123-421F-A069-9AE9932A05AF}
-x-originating-ip: [10.1.170.195]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726404AbfEHCNE (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 7 May 2019 22:13:04 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:43750 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726371AbfEHCNE (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 7 May 2019 22:13:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=KLUJds55VK5wfuQIecfJeAznkW/rjS8krJ4iieQMrlM=; b=tssjbXhtg14AjIn8ih+V1mun7c
+        KuZfpq0AzpZeVpXGTJldMwIPiHg3wF1ZKju0TTzme4FU1wiYttpO7ECWDDTCz+XGh1chMohxVAjOY
+        s8m2oERwJPQw3Pac2MrN5a8EX0e3iyAti6mAxtH2aACg182I6+L0CIBJOd7nim9p5keeOgT5H2jF8
+        29pCRV9/FN6eEDLi/b3u+hGfohtOJbTRlMEuAziF6bVloBoZJUATWTg/RleOGwU9+h9ZSQmn+KQEn
+        13dizgMXllhEVD5myM8ErBFxdaqz47OvrctYksjrYS8AyAY0pm3dVUj9eg3sOFtZ7bwnMvcGnmprD
+        xrnzJfKQ==;
+Received: from static-50-53-52-16.bvtn.or.frontiernet.net ([50.53.52.16] helo=dragon.dunlab)
+        by merlin.infradead.org with esmtpsa (Exim 4.90_1 #2 (Red Hat Linux))
+        id 1hOC4i-0008WM-LS; Wed, 08 May 2019 02:12:53 +0000
+Subject: Re: [RFC PATCH 1/4] block: Block Layer changes for Inline Encryption
+ Support
+To:     Satya Tangirala <satyat@google.com>, linux-block@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Cc:     Parshuram Raju Thombare <pthombar@cadence.com>,
+        Ladvine D Almeida <ladvine.dalmeida@synopsys.com>,
+        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
+        Kuohong Wang <kuohong.wang@mediatek.com>
+References: <20190506223544.195371-1-satyat@google.com>
+ <20190506223544.195371-2-satyat@google.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <5a1632db-c59a-6ac1-87d7-9307e4744aa7@infradead.org>
+Date:   Tue, 7 May 2019 19:12:49 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
+In-Reply-To: <20190506223544.195371-2-satyat@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEVyaWMgQmlnZ2VycyBbbWFp
-bHRvOmViaWdnZXJzQGtlcm5lbC5vcmddDQo+IFNlbnQ6IFR1ZXNkYXksIE1heSAwNywgMjAxOSAx
-MTo1NiBQTQ0KPiBUbzogRmFuZyBIb25namllKOaWuea0quadsCkNCj4gQ2M6IHR5dHNvQG1pdC5l
-ZHU7IGphZWdldWtAa2VybmVsLm9yZzsgbGludXgtZnNjcnlwdEB2Z2VyLmtlcm5lbC5vcmcNCj4g
-U3ViamVjdDogUmU6IFtQQVRDSF0gZnNjcnlwdDogZG9uJ3Qgc2V0IHBvbGljeSBmb3IgYSBkZWFk
-IGRpcmVjdG9yeQ0KPiANCj4gSGksDQo+IA0KPiBPbiBUdWUsIE1heSAwNywgMjAxOSBhdCAxMjo0
-MTo0OFBNICswODAwLCBob25namllZmFuZyB3cm90ZToNCj4gPiBpZiB0aGUgZGlyZWN0b3J5IGhh
-ZCBiZWVuIHJlbW92ZWQsIHNob3VsZCBub3Qgc2V0IHBvbGljeSBmb3IgaXQuDQo+ID4NCj4gPiBT
-aWduZWQtb2ZmLWJ5OiBob25namllZmFuZyA8aG9uZ2ppZWZhbmdAYXNybWljcm8uY29tPg0KPiAN
-Cj4gQ2FuIHlvdSBleHBsYWluIHRoZSBtb3RpdmF0aW9uIGZvciB0aGlzIGNoYW5nZT8gIEl0IG1h
-a2VzIHNvbWUgc2Vuc2UsIGJ1dCBJDQo+IGRvbid0IHNlZSB3aHkgaXQncyByZWFsbHkgbmVlZGVk
-LiAgSWYgeW91IGxvb2sgYXQgYWxsIHRoZSBvdGhlciBJU19ERUFERElSKCkNCj4gY2hlY2tzIGlu
-IHRoZSBrZXJuZWwsIHRoZXkncmUgbm90IGZvciBvcGVyYXRpb25zIG9uIHRoZSBkaXJlY3Rvcnkg
-aW5vZGUgaXRzZWxmLA0KPiBidXQgcmF0aGVyIGZvciBjcmVhdGluZy9maW5kaW5nL2xpc3Rpbmcg
-ZW50cmllcyBpbiB0aGUgZGlyZWN0b3J5LiAgSSB0aGluaw0KPiBGU19JT0NfU0VUX0VOQ1JZUFRJ
-T05fUE9MSUNZIGlzIG1vcmUgbGlrZSB0aGUgZm9ybWVyICh0aG91Z2ggaXQgZG9lcyBoYXZlIHRv
-DQo+IGNoZWNrIHdoZXRoZXIgdGhlIGRpcmVjdG9yeSBpcyBlbXB0eSkuDQoNCkkgbWV0IGEgcGFu
-aWMgaXNzdWUgd2hlbiBydW4gdGhlIHN5emthbGxlciBvbiBrZXJuZWwgNC4xNC44MShFWFQ0IEZC
-RSBlbmFibGVkKS4NCnRoZSBmbG93IG9mIGNhc2UgYXMgZm9sbG93Og0KcjAgPSBvcGVuYXQkZGly
-KDB4ZmZmZmZmZmZmZmZmZmY5YywgJigweDdmMDAwMDAwMDAwMCk9Jy5ceDAwJywgMHgwLCAweDAp
-DQpta2RpcmF0KHIwLCAmKDB4N2YwMDAwMDAwMDQwKT0nLi9maWxlMFx4MDAnLCAweDApDQpyMSA9
-IG9wZW5hdCRkaXIoMHhmZmZmZmZmZmZmZmZmZjljLCAmKDB4N2YwMDAwMDAwMTQwKT0nLi9maWxl
-MFx4MDAnLCAweDAsIDB4MCkNCnVubGlua2F0KHIwLCAmKDB4N2YwMDAwMDAwMjQwKT0nLi9maWxl
-MFx4MDAnLCAweDIwMCkNCmlvY3RsJEZTX0lPQ19TRVRfRU5DUllQVElPTl9QT0xJQ1kocjEsIDB4
-ODAwYzY2MTMsICYoMHg3ZjAwMDAwMDAwYzApDQo9ezB4MCwgQGFlczEyOCwgMHgwLCAiOGFjYzcz
-ZGE5N2Q2YWNjYyJ9KQ0KDQpUaGUgZmlsZTAgZGlyZWN0b3J5IG1heWJlIHJlbW92ZWQgYmVmb3Jl
-IGRvaW5nIEZTX0lPQ19TRVRfRU5DUllQVElPTl9QT0xJQ1kuDQpJbiB0aGlzIGNhc2UsIGZzY3J5
-cHRfaW9jdGxfc2V0X3BvbGljeSgpLT4gZXh0NF9lbXB0eV9kaXIoKSB3aWxsIHJldHVybiB0aGUN
-CiIgaW52YWxpZCBzaXplICIgYW5kIHRyaWdnZXIgYSBwYW5pYyB3aGVuIGNoZWNrIHRoZSBpX3Np
-emUgb2YgaW5vZGUuDQp0aGUgcGFuaWMgc3RhY2sgYXMgZm9sbG93Og0KUElEOiAyNjgyICAgVEFT
-SzogZmZmZmZmYzA4N2QxODA4MCAgQ1BVOiAzICAgQ09NTUFORDogInN5ei1leGVjdXRvciINCiAj
-MCBbZmZmZmZmYzA4N2QyNmZjMF0gcGFuaWMgYXQgZmZmZmZmOTAwODBkYzA0Yw0KICMxIFtmZmZm
-ZmZjMDg3ZDI3MjYwXSBleHQ0X2hhbmRsZV9lcnJvciBhdCBmZmZmZmY5MDA4Njg5YjA4DQogIzIg
-W2ZmZmZmZmMwODdkMjcyOTBdIF9fZXh0NF9lcnJvcl9pbm9kZSBhdCBmZmZmZmY5MDA4Njg5ZTkw
-DQogIzMgW2ZmZmZmZmMwODdkMjczZjBdIGV4dDRfZW1wdHlfZGlyIGF0IGZmZmZmZjkwMDg2NWIw
-NjQNCiAjNCBbZmZmZmZmYzA4N2QyNzRkMF0gZnNjcnlwdF9pb2N0bF9zZXRfcG9saWN5IGF0IGZm
-ZmZmZjkwMDg1NjVkNzANCiAjNSBbZmZmZmZmYzA4N2QyNzYzMF0gZXh0NF9pb2N0bCBhdCBmZmZm
-ZmY5MDA4NjMxMDVjDQogIzYgW2ZmZmZmZmMwODdkMjdiMDBdIGRvX3Zmc19pb2N0bCBhdCBmZmZm
-ZmY5MDA4NGNjNDQwDQogIzcgW2ZmZmZmZmMwODdkMjdlODBdIHN5c19pb2N0bCBhdCBmZmZmZmY5
-MDA4NGNkYWYwDQogIzggW2ZmZmZmZmMwODdkMjdmZjBdIGVsMF9zdmNfbmFrZWQgYXQgZmZmZmZm
-OTAwODA4NGZmYw0KDQpTbywgaXQgbmVlZCB0byBjaGVjayB0aGUgZGlyZWN0b3J5IHN0YXR1cyBp
-biB0aGUgZnNjcnlwdF9pb2N0bF9zZXRfcG9saWN5KCkuDQoNCg0KPiANCj4gPiAtLS0NCj4gPiAg
-ZnMvY3J5cHRvL3BvbGljeS5jIHwgNyArKysrKysrDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCA3IGlu
-c2VydGlvbnMoKykNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9mcy9jcnlwdG8vcG9saWN5LmMgYi9m
-cy9jcnlwdG8vcG9saWN5LmMNCj4gPiBpbmRleCBiZDdlYWY5Li44MjkwMGE0IDEwMDY0NA0KPiA+
-IC0tLSBhL2ZzL2NyeXB0by9wb2xpY3kuYw0KPiA+ICsrKyBiL2ZzL2NyeXB0by9wb2xpY3kuYw0K
-PiA+IEBAIC03Nyw2ICs3NywxMiBAQCBpbnQgZnNjcnlwdF9pb2N0bF9zZXRfcG9saWN5KHN0cnVj
-dCBmaWxlICpmaWxwLCBjb25zdCB2b2lkIF9fdXNlcg0KPiAqYXJnKQ0KPiA+DQo+ID4gIAlpbm9k
-ZV9sb2NrKGlub2RlKTsNCj4gPg0KPiA+ICsJLyogZG9uJ3Qgc2V0IHBvbGljeSBmb3IgYSBkZWFk
-IGRpcmVjdG9yeSAqLw0KPiA+ICsJaWYgKElTX0RFQURESVIoaW5vZGUpKSB7DQo+ID4gKwkJcmV0
-ID0gLUVOT0VOVDsNCj4gPiArCQlnb3RvIGRlYWRkaXJfb3V0Ow0KPiA+ICsJfQ0KPiA+ICsNCj4g
-PiAgCXJldCA9IGlub2RlLT5pX3NiLT5zX2NvcC0+Z2V0X2NvbnRleHQoaW5vZGUsICZjdHgsIHNp
-emVvZihjdHgpKTsNCj4gPiAgCWlmIChyZXQgPT0gLUVOT0RBVEEpIHsNCj4gPiAgCQlpZiAoIVNf
-SVNESVIoaW5vZGUtPmlfbW9kZSkpDQo+ID4gQEAgLTk2LDYgKzEwMiw3IEBAIGludCBmc2NyeXB0
-X2lvY3RsX3NldF9wb2xpY3koc3RydWN0IGZpbGUgKmZpbHAsIGNvbnN0IHZvaWQgX191c2VyDQo+
-ICphcmcpDQo+ID4gIAkJcmV0ID0gLUVFWElTVDsNCj4gPiAgCX0NCj4gPg0KPiA+ICtkZWFkZGly
-X291dDoNCj4gPiAgCWlub2RlX3VubG9jayhpbm9kZSk7DQo+IA0KPiBDYWxsIHRoaXMgbGFiZWwg
-J291dF91bmxvY2snIGluc3RlYWQ/DQo+IA0KPiA+DQo+ID4gIAltbnRfZHJvcF93cml0ZV9maWxl
-KGZpbHApOw0KPiA+IC0tDQo+ID4gMS45LjENCj4gPg0KPiANCj4gVGhhbmtzLA0KPiANCj4gLSBF
-cmljDQoNCkImUg0KSG9uZ2ppZQ0K
+Hi,
+This is documentation comments...
+
+On 5/6/19 3:35 PM, Satya Tangirala wrote:
+> diff --git a/Documentation/block/blk-crypto.txt b/Documentation/block/blk-crypto.txt
+> new file mode 100644
+> index 000000000000..a1b82361cb16
+> --- /dev/null
+> +++ b/Documentation/block/blk-crypto.txt
+> @@ -0,0 +1,185 @@
+> +BLK-CRYPTO and KEYSLOT MANAGER
+> +===========================
+> +
+> +CONTENTS
+> +1. Objective
+> +2. Constraints and notes
+> +3. Design
+> +4. Blk-crypto
+> + 4-1 What does blk-crypto do on bio submission
+> +5. Layered Devices
+> +6. Future optimizations for layered devices
+> +
+> +1. Objective
+> +============
+> +
+> +We want to support inline encryption (IE) in the kernel.
+> +To allow for testing, we also want a software fallback when actual
+> +IE hardware is absent. We also want IE to work with layered devices
+> +like dm and loopback (i.e. we want to be able to use the IE hardware
+> +of the underlying devices if present, or else fall back to software
+> +en/decryption).
+> +
+> +
+> +2. Constraints and notes
+> +========================
+> +
+> +1) IE hardware have a limited number of “keyslots” that can be programmed
+> +with an encryption context (key, algorithm, data unit size, etc.) at any time.
+> +One can specify a keyslot in a data requests made to the device, and when the
+
+                             in data requests
+or
+                             in a data request
+
+> +device will en/decrypt the data using the encryption context programmed into
+> +that specified keyslot. Of course, when possible, we want to make multiple
+> +requests with the the same encryption context share the same keyslot.
+> +
+> +2) We need a way for filesystems to specify an encryption context to use for
+> +en/decrypting a struct bio, and a device driver (like UFS) needs to be able
+> +to use that encryption context when it processes the bio.
+> +
+> +3) We need a way for device drivers to expose their capabilities in a unified
+> +way to the upper layers.
+> +
+> +
+> +3. Design
+> +=========
+> +
+> +We add a struct bio_crypt_context to struct bio that can represent an
+> +encryption context, because we need to able to pass this encryption context
+> +from the FS layer to the device driver to act upon.
+> +
+> +While IE hardware works on the notion of keyslots, the FS layer has no
+> +knowledge of keyslots - it simply wants to specify an encryption context to
+> +use while en/decrypting a bio.
+> +
+> +We introduce a keyslot manager (KSM) that handles the translation from
+> +encryption contexts specified by the FS to keyslots on the IE hardware.
+> +This KSM also serves as the way IE hardware can expose their capabilities to
+> +upper layers. The generic mode of operation is: each device driver that wants
+> +to support IE will construct a KSM and set it up in its struct request_queue.
+> +Upper layers that want to use IE on this device can then use this KSM in
+> +the device’s struct request_queue to translate an encryption context into
+> +a keyslot. The presence of the KSM in the request queue shall be used to mean
+> +that the device supports IE.
+> +
+> +On the device driver end of the interface, the device driver needs to tell the
+> +KSM how to actually manipulate the IE hardware in the device to do things like
+> +programming the crypto key into the IE hardware into a particular keyslot. All
+> +this is achieved through the struct keyslot_mgmt_ll_ops that the device driver
+> +passes to the KSM when creating it.
+> +
+> +It uses refcounts to track which keyslots are idle (either they have no
+> +encryption context programmed, or there are no in flight struct bios
+> +referencing that keyslot). When a new encryption context needs a keyslot, it
+> +tries to find a keyslot that has already been programmed with the same
+> +encryption context, and if there is no such keyslot, it evicts the least
+> +recently used idle keyslot and programs the new encryption context into that
+> +one. If no idle keyslots are available, then the caller will sleep until there
+> +is at least one.
+> +
+> +
+> +4. Blk-crypto
+> +=============
+> +
+> +The above is sufficient for simple cases, but does not work if there is a
+> +need for a software fallback, or if we are want to use IE with layered devices.
+> +To these ends, we introduce blk-crypto. Blk-crypto allows us to present a
+> +unified view of encryption to the FS (so FS only needs to specify an
+> +encryption context and not worry about keyslots at all), and block crypto can
+> +decide whether to delegate the en/decryption to IE hardware or to software
+> +(i.e. to the kernel crypto API). Block crypto maintains an internal KSM that
+> +serves as the software fallback to the kernel crypto API.
+> +
+> +Blk-crypto needs to ensure that the encryption context is programmed into the
+> +"correct" keyslot manager for IE. If a bio is submitted to a layered device
+> +that eventually passes the bio down to a device that really does support IE, we
+> +want the encryption context to be programmed into a keyslot for the KSM of the
+> +device with IE support. However, blk-crypto does not know a-priori whether a
+
+                                                             a priori
+
+> +particular device is the final device in the layering structure for a bio or
+> +not. So in the case that a particular device does not support IE, since it is
+> +possibly the final destination device for the bio, if the bio requires
+> +encryption (i.e. the bio is doing a write operation), blk-crypto must fallback
+> +to software *before* sending the bio to the device.
+> +
+> +Blk-crypto ensures that
+> +1) The bio’s encryption context is programmed into a keyslot in the KSM of the
+> +request queue that the bio is being submitted to (or the software fallback KSM
+> +if the request queue doesn’t have a KSM), and that the processing_ksm in the
+> +bi_crypt_context is set to this KSM
+> +
+> +2) That the bio has its own individual reference to the keyslot in this KSM.
+> +Once the bio passes through block crypto, its encryption context is programmed
+
+                          is   block crypto
+                 the same as   blk-crypto?
+If so, consistency would be Good.
+
+> +in some KSM. The “its own individual reference to the keyslot” ensures that
+> +keyslots can be released by each bio independently of other bios while ensuring
+> +that the bio has a valid reference to the keyslot when, for e.g., the software
+> +fallback KSM in blk-crypto performs crypto for on the device’s behalf. The
+> +individual references are ensured by increasing the refcount for the keyslot in
+> +the processing_ksm when a bio with a programmed encryption context is cloned.
+> +
+> +
+> +4-1. What blk-crypto does on bio submission
+> +-------------------------------------------
+> +
+> +Case 1: blk-crypto is given a bio with only an encryption context that hasn’t
+> +been programmed into any keyslot in any KSM (for e.g. a bio from the FS). In
+> +this case, blk-crypto will program the encryption context into the KSM of the
+> +request queue the bio is being submitted to (and if this KSM does not exist,
+> +then it will program it into blk-crypto’s internal KSM for software fallback).
+> +The KSM that this encryption context was programmed into is stored as the
+> +processing_ksm in the bio’s bi_crypt_context.
+> +
+> +Case 2: blk-crypto is given a bio whose encryption context has already been
+> +programmed into a keyslot in the *software fallback KSM*. In this case,
+> +blk-crypto does nothing; it treats the bio as not having specified an
+> +encryption context. Note that we cannot do what we will do in Case 3 here
+> +because we would have already encrypted the bio in software by this point.
+> +
+> +Case 3: blk-crypto is given a bio whose encryption context has already been
+> +programmed into a keyslot in some KSM (that is *not* the software fallback
+> +KSM). In this case, blk-crypto first releases that keyslot from that KSM and
+> +then treats the bio as in Case 1.
+> +
+> +This way, when a device driver is processing a bio, it can be sure that
+> +the bio’s encryption context has been programmed into some KSM (either the
+> +device driver’s request queue’s KSM, or blk-crypto’s software fallback KSM).
+> +It then simply needs to check if the bio’s processing_ksm is the device’s
+> +request queue’s KSM. If so, then it should proceed with IE. If not, it should
+> +simply do nothing with respect to crypto, because some other KSM (perhaps the
+> +blk-crypto software fallback KSM) is handling the en/decryption.
+> +
+> +Blk-crypto will release the keyslot that is being held by the bio (and also
+> +decrypt it if the bio is using the software fallback KSM) once
+> +bio_remaining_done returns true for the bio.
+> +
+> +
+> +5. Layered Devices
+> +==================
+> +
+> +Layered devices that wish to support IE need to create their own keyslot
+> +manager for their request queue, and expose whatever functionality they choose.
+> +When a layered device wants to pass a bio to another layer (either by
+> +resubmitting the same bio, or by submitting a clone), it doesn’t need to do
+> +anything special because the bio (or the clone) will once again pass through
+> +blk-crypto, which will work as described in Case 3. If a layered device wants
+> +for some reason to do the IO by itself instead of passing it on to a child
+> +device, but it also chose to expose IE capabilities by setting up a KSM in its
+> +request queue, it is then responsible for en/decrypting the data itself. In
+> +such cases, the device can choose to call the blk-crypto function
+> +blk_crypto_fallback_to_software (TODO: Not yet implemented), which will
+> +cause the en/decryption to be done via software fallback.
+> +
+> +
+> +6. Future Optimizations for layered devices
+> +===========================================
+> +
+> +Creating a keyslot manager for the layered device uses up memory for each
+> +keyslot, and in general, a layered device (like dm-linear) merely passes the
+> +request on to a “child” device, so the keyslots in the layered device itself
+> +might be completely unused. We can instead define a new type of KSM; the
+> +“passthrough KSM”, that layered devices can use to let blk-crypto know that
+> +this layered device *will* pass the bio to some child device (and hence
+> +through blk-crypto again, at which point blk-crypto can program the encryption
+> +context, instead of programming it into the layered device’s KSM). Again, if
+> +the device “lies” and decides to do the IO itself instead of passing it on to
+> +a child device, it is responsible for doing the en/decryption (and can choose
+> +to call blk_crypto_fallback_to_software). Another use case for the
+> +"passthrough KSM" is for IE devices that want to manage their own keyslots/do
+> +not have a limited number of keyslots.
+
+
+-- 
+~Randy
