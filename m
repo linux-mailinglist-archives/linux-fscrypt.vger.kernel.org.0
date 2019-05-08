@@ -2,134 +2,65 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 58899171EC
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  8 May 2019 08:49:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A7BA1751E
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  8 May 2019 11:28:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726435AbfEHGtW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-fscrypt@lfdr.de>); Wed, 8 May 2019 02:49:22 -0400
-Received: from lithops.sigma-star.at ([195.201.40.130]:34712 "EHLO
-        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725884AbfEHGtW (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 8 May 2019 02:49:22 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id DBB1C6083252;
-        Wed,  8 May 2019 08:49:18 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id Q22Vkv5wiLM7; Wed,  8 May 2019 08:49:18 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 72C4B6083269;
-        Wed,  8 May 2019 08:49:18 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id Yig6-Nlv4VD1; Wed,  8 May 2019 08:49:18 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 4BBA46083252;
-        Wed,  8 May 2019 08:49:18 +0200 (CEST)
-Date:   Wed, 8 May 2019 08:49:18 +0200 (CEST)
-From:   Richard Weinberger <richard@nod.at>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        linux-fscrypt@vger.kernel.org, tytso <tytso@mit.edu>,
-        kernel <kernel@pengutronix.de>
-Message-ID: <1170873772.48849.1557298158182.JavaMail.zimbra@nod.at>
-In-Reply-To: <20190508031954.GA26575@sol.localdomain>
-References: <20190326075232.11717-1-s.hauer@pengutronix.de> <20190326075232.11717-2-s.hauer@pengutronix.de> <20190508031954.GA26575@sol.localdomain>
-Subject: Re: [PATCH 1/2] ubifs: Remove #ifdef around CONFIG_FS_ENCRYPTION
+        id S1726981AbfEHJ2C (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 8 May 2019 05:28:02 -0400
+Received: from asrmicro.com ([210.13.118.86]:14012 "EHLO mail2012.asrmicro.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726670AbfEHJ2C (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 8 May 2019 05:28:02 -0400
+Received: from localhost (10.1.170.159) by mail2012.asrmicro.com (10.1.24.123)
+ with Microsoft SMTP Server (TLS) id 15.0.847.32; Wed, 8 May 2019 17:27:42
+ +0800
+From:   hongjiefang <hongjiefang@asrmicro.com>
+To:     <tytso@mit.edu>, <jaegeuk@kernel.org>, <ebiggers@kernel.org>
+CC:     <linux-fscrypt@vger.kernel.org>,
+        hongjiefang <hongjiefang@asrmicro.com>, <stable@vger.kernel.org>
+Subject: [PATCH V2] fscrypt: don't set policy for a dead directory
+Date:   Wed, 8 May 2019 17:27:34 +0800
+Message-ID: <1557307654-673-1-git-send-email-hongjiefang@asrmicro.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.8_GA_3025 (ZimbraWebClient - FF60 (Linux)/8.8.8_GA_1703)
-Thread-Topic: ubifs: Remove #ifdef around CONFIG_FS_ENCRYPTION
-Thread-Index: nv8odDrziMGsORrNKuAatbhNUuTenA==
+Content-Type: text/plain
+X-Originating-IP: [10.1.170.159]
+X-ClientProxiedBy: mail2012.asrmicro.com (10.1.24.123) To
+ mail2012.asrmicro.com (10.1.24.123)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Eric,
+the directory maybe has been removed when enter fscrypt_ioctl_set_policy().
+it this case, the empty_dir() check will return error for ext4 file system.
 
------ Ursprüngliche Mail -----
-> Von: "Eric Biggers" <ebiggers@kernel.org>
-> An: "Sascha Hauer" <s.hauer@pengutronix.de>, "richard" <richard@nod.at>
-> CC: "linux-mtd" <linux-mtd@lists.infradead.org>, linux-fscrypt@vger.kernel.org, "tytso" <tytso@mit.edu>, "kernel"
-> <kernel@pengutronix.de>
-> Gesendet: Mittwoch, 8. Mai 2019 05:19:55
-> Betreff: Re: [PATCH 1/2] ubifs: Remove #ifdef around CONFIG_FS_ENCRYPTION
+ext4_rmdir() sets i_size = 0, then ext4_empty_dir() reports an error
+because 'inode->i_size < EXT4_DIR_REC_LEN(1) + EXT4_DIR_REC_LEN(2)'.
+if the fs is mounted with errors=panic, it will trigger a panic issue.
 
-> On Tue, Mar 26, 2019 at 08:52:31AM +0100, Sascha Hauer wrote:
->> ifdefs reduce readablity and compile coverage. This removes the ifdefs
->> around CONFIG_FS_ENCRYPTION by using IS_ENABLED and relying on static
->> inline wrappers. A new static inline wrapper for setting sb->s_cop is
->> introduced to allow filesystems to unconditionally compile in their
->> s_cop operations.
->> 
->> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
->> ---
->>  fs/ubifs/ioctl.c        | 11 +----------
->>  fs/ubifs/sb.c           |  7 ++++---
->>  fs/ubifs/super.c        |  4 +---
->>  include/linux/fscrypt.h | 11 +++++++++++
->>  4 files changed, 17 insertions(+), 16 deletions(-)
->> 
->> diff --git a/fs/ubifs/ioctl.c b/fs/ubifs/ioctl.c
->> index 82e4e6a30b04..6b05b3ec500e 100644
->> --- a/fs/ubifs/ioctl.c
->> +++ b/fs/ubifs/ioctl.c
->> @@ -193,7 +193,6 @@ long ubifs_ioctl(struct file *file, unsigned int cmd,
->> unsigned long arg)
->>  		return err;
->>  	}
->>  	case FS_IOC_SET_ENCRYPTION_POLICY: {
->> -#ifdef CONFIG_FS_ENCRYPTION
->>  		struct ubifs_info *c = inode->i_sb->s_fs_info;
->>  
->>  		err = ubifs_enable_encryption(c);
->> @@ -201,17 +200,9 @@ long ubifs_ioctl(struct file *file, unsigned int cmd,
->> unsigned long arg)
->>  			return err;
->>  
->>  		return fscrypt_ioctl_set_policy(file, (const void __user *)arg);
->> -#else
->> -		return -EOPNOTSUPP;
->> -#endif
->>  	}
->> -	case FS_IOC_GET_ENCRYPTION_POLICY: {
->> -#ifdef CONFIG_FS_ENCRYPTION
->> +	case FS_IOC_GET_ENCRYPTION_POLICY:
->>  		return fscrypt_ioctl_get_policy(file, (void __user *)arg);
->> -#else
->> -		return -EOPNOTSUPP;
->> -#endif
->> -	}
->>  
->>  	default:
->>  		return -ENOTTY;
->> diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
->> index 67fac1e8adfb..2afc8b1d4c3b 100644
->> --- a/fs/ubifs/sb.c
->> +++ b/fs/ubifs/sb.c
->> @@ -748,14 +748,12 @@ int ubifs_read_superblock(struct ubifs_info *c)
->>  		goto out;
->>  	}
->>  
->> -#ifndef CONFIG_FS_ENCRYPTION
->> -	if (c->encrypted) {
->> +	if (!IS_ENABLED(CONFIG_UBIFS_FS_ENCRYPTION) && c->encrypted) {
->>  		ubifs_err(c, "file system contains encrypted files but UBIFS"
->>  			     " was built without crypto support.");
->>  		err = -EINVAL;
->>  		goto out;
->>  	}
-> 
-> A bit late, but I noticed this in ubifs/linux-next.  This needs to use
-> CONFIG_FS_ENCRYPTION here, not CONFIG_UBIFS_FS_ENCRYPTION, as the latter no
-> longer exists.
+add the check IS_DEADDIR() to fix this problem.
 
-Thanks for spotting. I'll fit it myself in -next.
+Fixes: 9bd8212f981e ("ext4 crypto: add encryption policy and password salt support")
+Cc: <stable@vger.kernel.org> # v4.1+
+Signed-off-by: hongjiefang <hongjiefang@asrmicro.com>
+---
+ fs/crypto/policy.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Thanks,
-//richard
+diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
+index bd7eaf9..a4eca6e 100644
+--- a/fs/crypto/policy.c
++++ b/fs/crypto/policy.c
+@@ -81,6 +81,8 @@ int fscrypt_ioctl_set_policy(struct file *filp, const void __user *arg)
+ 	if (ret == -ENODATA) {
+ 		if (!S_ISDIR(inode->i_mode))
+ 			ret = -ENOTDIR;
++		else if (IS_DEADDIR(inode))
++			ret = -ENOENT;
+ 		else if (!inode->i_sb->s_cop->empty_dir(inode))
+ 			ret = -ENOTEMPTY;
+ 		else
+-- 
+1.9.1
+
