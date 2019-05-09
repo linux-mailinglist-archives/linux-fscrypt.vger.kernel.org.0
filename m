@@ -2,94 +2,115 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 43325188A2
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  9 May 2019 13:05:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0D59192DA
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  9 May 2019 21:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726406AbfEILFO (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 9 May 2019 07:05:14 -0400
-Received: from asrmicro.com ([210.13.118.86]:16763 "EHLO mail2012.asrmicro.com"
+        id S1726721AbfEITW5 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 9 May 2019 15:22:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725869AbfEILFO (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 9 May 2019 07:05:14 -0400
-Received: from mail2012.asrmicro.com (10.1.24.123) by mail2012.asrmicro.com
- (10.1.24.123) with Microsoft SMTP Server (TLS) id 15.0.847.32; Thu, 9 May
- 2019 19:04:50 +0800
-Received: from mail2012.asrmicro.com ([fe80::7c1a:96dd:1a6b:c97b]) by
- mail2012.asrmicro.com ([fe80::7c1a:96dd:1a6b:c97b%16]) with mapi id
- 15.00.0847.030; Thu, 9 May 2019 19:04:50 +0800
-From:   =?utf-8?B?RmFuZyBIb25namllKOaWuea0quadsCk=?= 
+        id S1726704AbfEITW5 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 9 May 2019 15:22:57 -0400
+Received: from gmail.com (unknown [104.132.1.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6EA3D2085A;
+        Thu,  9 May 2019 19:22:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1557429775;
+        bh=w4SRzGYQsBWgUHXqNv+wa752qvlww+0U/SNfkV/CKhI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yGbX4XtGMdC//IvntlHxFaLvcBK1BXISAnSzAK/++CzH3mkpKDGuD/ar+kqNc8MEp
+         gjn96A8UYBWNCY3VUiJGSP1bNq7WLU7BASi7xw2KJE/dFL83Ry8dT4p3YTHbOCfhU3
+         SgRf90CNWImfJdFgLYEh38NQyLoJ/vbFD2hovLKs=
+Date:   Thu, 9 May 2019 12:22:54 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Fang =?utf-8?B?SG9uZ2ppZSjmlrnmtKrmnbAp?= 
         <hongjiefang@asrmicro.com>
-To:     Sasha Levin <sashal@kernel.org>, "tytso@mit.edu" <tytso@mit.edu>,
+Cc:     Sasha Levin <sashal@kernel.org>, "tytso@mit.edu" <tytso@mit.edu>,
         "jaegeuk@kernel.org" <jaegeuk@kernel.org>,
-        "ebiggers@kernel.org" <ebiggers@kernel.org>
-CC:     "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
+        "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
         "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [PATCH V2] fscrypt: don't set policy for a dead directory
-Thread-Topic: [PATCH V2] fscrypt: don't set policy for a dead directory
-Thread-Index: AQHVBYBJy3fqnmNKcU2QpNU9A2v1K6Zg2/aAgAHDQmA=
-Date:   Thu, 9 May 2019 11:04:50 +0000
-Message-ID: <a38236b96095470aa1da3960b113a5e2@mail2012.asrmicro.com>
+Subject: Re: [PATCH V2] fscrypt: don't set policy for a dead directory
+Message-ID: <20190509192252.GA42815@gmail.com>
 References: <1557307654-673-1-git-send-email-hongjiefang@asrmicro.com>
  <20190508155604.1B59820989@mail.kernel.org>
-In-Reply-To: <20190508155604.1B59820989@mail.kernel.org>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.1.170.195]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ <a38236b96095470aa1da3960b113a5e2@mail2012.asrmicro.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a38236b96095470aa1da3960b113a5e2@mail2012.asrmicro.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-DQo+IEZyb206IFNhc2hhIExldmluIFttYWlsdG86c2FzaGFsQGtlcm5lbC5vcmddDQo+IFNlbnQ6
-IFdlZG5lc2RheSwgTWF5IDA4LCAyMDE5IDExOjU2IFBNDQo+IFRvOiBTYXNoYSBMZXZpbjsgRmFu
-ZyBIb25namllKOaWuea0quadsCk7IHR5dHNvQG1pdC5lZHU7IGphZWdldWtAa2VybmVsLm9yZzsN
-Cj4gZWJpZ2dlcnNAa2VybmVsLm9yZw0KPiBDYzogbGludXgtZnNjcnlwdEB2Z2VyLmtlcm5lbC5v
-cmc7IHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVjdDogUmU6IFtQQVRDSCBWMl0gZnNj
-cnlwdDogZG9uJ3Qgc2V0IHBvbGljeSBmb3IgYSBkZWFkIGRpcmVjdG9yeQ0KPiANCj4gSGksDQo+
-IA0KPiBbVGhpcyBpcyBhbiBhdXRvbWF0ZWQgZW1haWxdDQo+IA0KPiBUaGlzIGNvbW1pdCBoYXMg
-YmVlbiBwcm9jZXNzZWQgYmVjYXVzZSBpdCBjb250YWlucyBhICJGaXhlczoiIHRhZywNCj4gZml4
-aW5nIGNvbW1pdDogOWJkODIxMmY5ODFlIGV4dDQgY3J5cHRvOiBhZGQgZW5jcnlwdGlvbiBwb2xp
-Y3kgYW5kIHBhc3N3b3JkIHNhbHQNCj4gc3VwcG9ydC4NCj4gDQo+IFRoZSBib3QgaGFzIHRlc3Rl
-ZCB0aGUgZm9sbG93aW5nIHRyZWVzOiB2NS4wLjEzLCB2NC4xOS40MCwgdjQuMTQuMTE2LCB2NC45
-LjE3MywgdjQuNC4xNzkuDQo+IA0KPiB2NS4wLjEzOiBCdWlsZCBPSyENCj4gdjQuMTkuNDA6IEJ1
-aWxkIE9LIQ0KPiB2NC4xNC4xMTY6IEJ1aWxkIE9LIQ0KPiB2NC45LjE3MzogRmFpbGVkIHRvIGFw
-cGx5ISBQb3NzaWJsZSBkZXBlbmRlbmNpZXM6DQo+ICAgICBVbmFibGUgdG8gY2FsY3VsYXRlDQo+
-IA0KPiB2NC40LjE3OTogRmFpbGVkIHRvIGFwcGx5ISBQb3NzaWJsZSBkZXBlbmRlbmNpZXM6DQo+
-ICAgICAwMDJjZWQ0YmU2NDIgKCJmc2NyeXB0bzogb25seSBhbGxvdyBzZXR0aW5nIGVuY3J5cHRp
-b24gcG9saWN5IG9uIGRpcmVjdG9yaWVzIikNCj4gICAgIDBiODFkMDc3OTA3MiAoImZzIGNyeXB0
-bzogbW92ZSBwZXItZmlsZSBlbmNyeXB0aW9uIGZyb20gZjJmcyB0cmVlIHRvIGZzL2NyeXB0byIp
-DQo+ICAgICAwY2FiODBlZTBjOWUgKCJmMmZzOiBmaXggdG8gY29udmVydCBpbmxpbmUgaW5vZGUg
-aW4gLT5zZXRhdHRyIikNCj4gICAgIDBmYWMyZDUwMWIwZCAoImYyZnMgY3J5cHRvOiBmaXggc3Bl
-bGxpbmcgdHlwbyBpbiBjb21tZW50IikNCj4gICAgIDBmZDc4NWViOTMxZCAoImYyZnM6IHJlbG9j
-YXRlIGlzX21lcmdlZF9wYWdlIikNCj4gICAgIDFkYWZhNTFkNDVjNiAoImYyZnMgY3J5cHRvOiBj
-aGVjayBmb3IgdG9vLXNob3J0IGVuY3J5cHRlZCBmaWxlIG5hbWVzIikNCj4gICAgIDM2YjM1YTBk
-YmU5MCAoImYyZnM6IHN1cHBvcnQgZGF0YSBmbHVzaCBpbiBiYWNrZ3JvdW5kIikNCj4gICAgIDU1
-ZDFjZGIyNWE4MSAoImYyZnM6IHJlbG9jYXRlIHRyYWNlcG9pbnQgb2Ygd3JpdGVfY2hlY2twb2lu
-dCIpDQo+ICAgICA2YjI1NTM5MThkOGIgKCJyZXBsYWNlIC0+Zm9sbG93X2xpbmsoKSB3aXRoIG5l
-dyBtZXRob2QgdGhhdCBjb3VsZCBzdGF5IGluDQo+IFJDVSBtb2RlIikNCj4gICAgIDZiZWNlYjU0
-MjdhYSAoImYyZnM6IGludHJvZHVjZSB0aW1lIGFuZCBpbnRlcnZhbCBmYWNpbGl0eSIpDQo+ICAg
-ICA4ZGMwZDZhMTFlN2QgKCJmMmZzOiBlYXJseSBjaGVjayBicm9rZW4gc3ltbGluayBsZW5ndGgg
-aW4gdGhlIGVuY3J5cHRlZCBjYXNlIikNCj4gICAgIDkyMmVjMzU1Zjg2MyAoImYyZnMgY3J5cHRv
-OiBhdm9pZCB1bm5lZWRlZCBtZW1vcnkgYWxsb2NhdGlvbiB3aGVuDQo+IHtlbi9kZX1jcnlwdGlu
-ZyBzeW1saW5rIikNCj4gICAgIDllODkyNWI2N2E4MCAoImxvY2tzOiBBbGxvdyBkaXNhYmxpbmcg
-bWFuZGF0b3J5IGxvY2tpbmcgYXQgY29tcGlsZSB0aW1lIikNCj4gICAgIGEyNjM2NjlmYTE4ZiAo
-ImYyZnMgY3J5cHRvOiBzeW5jIHdpdGggZXh0NCdzIGZuYW1lIHBhZGRpbmciKQ0KPiAgICAgYWUx
-MDg2Njg2NDg3ICgiZjJmcyBjcnlwdG86IGhhbmRsZSB1bmV4cGVjdGVkIGxhY2sgb2YgZW5jcnlw
-dGlvbiBrZXlzIikNCj4gICAgIGI5ZDc3N2I4NWZmMSAoImYyZnM6IGNoZWNrIGlubGluZV9kYXRh
-IGZsYWcgYXQgY29udmVydGluZyB0aW1lIikNCj4gICAgIGNlODU1YTNiZDA5MiAoImYyZnMgY3J5
-cHRvOiBmMmZzX3BhZ2VfY3J5cHRvKCkgZG9lc24ndCBuZWVkIGEgZW5jcnlwdGlvbg0KPiBjb250
-ZXh0IikNCj4gICAgIGQwMjM5ZTFiZjUyMCAoImYyZnM6IGRldGVjdCBpZGxlIHRpbWUgZGVwZW5k
-aW5nIG9uIHVzZXIgYmVoYXZpb3IiKQ0KPiAgICAgZDMyM2QwMDVhYzRhICgiZjJmczogc3VwcG9y
-dCBmaWxlIGRlZnJhZ21lbnQiKQ0KPiAgICAgZGZmZDBjZmEwNmQ0ICgiZnNjcnlwdDogdXNlIEVO
-T1RESVIgd2hlbiBzZXR0aW5nIGVuY3J5cHRpb24gcG9saWN5IG9uDQo+IG5vbmRpcmVjdG9yeSIp
-DQo+ICAgICBlZDMzNjBhYmJjMDQgKCJmMmZzIGNyeXB0bzogbWFrZSBzdXJlIHRoZSBlbmNyeXB0
-aW9uIGluZm8gaXMgaW5pdGlhbGl6ZWQgb24NCj4gb3BlbmRpcigyKSIpDQo+IA0KPiANCj4gSG93
-IHNob3VsZCB3ZSBwcm9jZWVkIHdpdGggdGhpcyBwYXRjaD8NCg0KVGhlcmUgaXMgbm90IGEgImZz
-L2NyeXB0byIgZGlyZWN0b3J5IGZvciBrZXJuZWwgdjQuNC4xNzkuDQpQZXJoYXBzIGl0IGlzIG5v
-dCBzdGlsbCBuZWNlc3NhcnkgdG8gdGVzdCBpdCBvbiB0aGlzIHRyZWUuDQoNCj4gDQo+IC0tDQo+
-IFRoYW5rcywNCj4gU2FzaGENCg0KDQpCJlINCkhvbmdqaWUNCg==
+On Thu, May 09, 2019 at 11:04:50AM +0000, Fang Hongjie(方洪杰) wrote:
+> 
+> > From: Sasha Levin [mailto:sashal@kernel.org]
+> > Sent: Wednesday, May 08, 2019 11:56 PM
+> > To: Sasha Levin; Fang Hongjie(方洪杰); tytso@mit.edu; jaegeuk@kernel.org;
+> > ebiggers@kernel.org
+> > Cc: linux-fscrypt@vger.kernel.org; stable@vger.kernel.org
+> > Subject: Re: [PATCH V2] fscrypt: don't set policy for a dead directory
+> > 
+> > Hi,
+> > 
+> > [This is an automated email]
+> > 
+> > This commit has been processed because it contains a "Fixes:" tag,
+> > fixing commit: 9bd8212f981e ext4 crypto: add encryption policy and password salt
+> > support.
+> > 
+> > The bot has tested the following trees: v5.0.13, v4.19.40, v4.14.116, v4.9.173, v4.4.179.
+> > 
+> > v5.0.13: Build OK!
+> > v4.19.40: Build OK!
+> > v4.14.116: Build OK!
+> > v4.9.173: Failed to apply! Possible dependencies:
+> >     Unable to calculate
+> > 
+> > v4.4.179: Failed to apply! Possible dependencies:
+> >     002ced4be642 ("fscrypto: only allow setting encryption policy on directories")
+> >     0b81d0779072 ("fs crypto: move per-file encryption from f2fs tree to fs/crypto")
+> >     0cab80ee0c9e ("f2fs: fix to convert inline inode in ->setattr")
+> >     0fac2d501b0d ("f2fs crypto: fix spelling typo in comment")
+> >     0fd785eb931d ("f2fs: relocate is_merged_page")
+> >     1dafa51d45c6 ("f2fs crypto: check for too-short encrypted file names")
+> >     36b35a0dbe90 ("f2fs: support data flush in background")
+> >     55d1cdb25a81 ("f2fs: relocate tracepoint of write_checkpoint")
+> >     6b2553918d8b ("replace ->follow_link() with new method that could stay in
+> > RCU mode")
+> >     6beceb5427aa ("f2fs: introduce time and interval facility")
+> >     8dc0d6a11e7d ("f2fs: early check broken symlink length in the encrypted case")
+> >     922ec355f863 ("f2fs crypto: avoid unneeded memory allocation when
+> > {en/de}crypting symlink")
+> >     9e8925b67a80 ("locks: Allow disabling mandatory locking at compile time")
+> >     a263669fa18f ("f2fs crypto: sync with ext4's fname padding")
+> >     ae1086686487 ("f2fs crypto: handle unexpected lack of encryption keys")
+> >     b9d777b85ff1 ("f2fs: check inline_data flag at converting time")
+> >     ce855a3bd092 ("f2fs crypto: f2fs_page_crypto() doesn't need a encryption
+> > context")
+> >     d0239e1bf520 ("f2fs: detect idle time depending on user behavior")
+> >     d323d005ac4a ("f2fs: support file defragment")
+> >     dffd0cfa06d4 ("fscrypt: use ENOTDIR when setting encryption policy on
+> > nondirectory")
+> >     ed3360abbc04 ("f2fs crypto: make sure the encryption info is initialized on
+> > opendir(2)")
+> > 
+> > 
+> > How should we proceed with this patch?
+> 
+> There is not a "fs/crypto" directory for kernel v4.4.179.
+> Perhaps it is not still necessary to test it on this tree.
+> 
+
+In 4.4 the code was in fs/ext4/ rather than fs/crypto/, so it will need to be
+backported to there.
+
+That's for *after* this patch is applied and reaches mainline, of course.
+There's nothing to backport before then.
+
+- Eric
