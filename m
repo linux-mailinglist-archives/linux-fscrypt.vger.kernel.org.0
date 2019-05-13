@@ -2,183 +2,205 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E766D1AC42
-	for <lists+linux-fscrypt@lfdr.de>; Sun, 12 May 2019 14:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07F111BD9A
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 13 May 2019 21:12:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726536AbfELM60 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sun, 12 May 2019 08:58:26 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:37776 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726529AbfELM6Z (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sun, 12 May 2019 08:58:25 -0400
-Received: by mail-pf1-f195.google.com with SMTP id g3so5684037pfi.4;
-        Sun, 12 May 2019 05:58:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=oNs3GlTxBq+wEh4KcvAaZtsqfVlm+piHZsRKYTXDtaM=;
-        b=MQcIPN1rGMerMldIo0WT/AcPN3hfMWURZMjRQWQqnpFdvODW1yv08IanQ2MSNPk+++
-         JygyUp2EUts/X/M7kCLGDIHYP0pRkMsXs96f94Fdtxd842fuEhpObW/KwUZRWcImfL0t
-         QfKxJfGMUZEXu48aSUm/ihfSbAnWlfG62dQ0yg+4WlKZeFO8ubs0qacul5WEm445NHBI
-         rJmBPLJPh3G7Mqd2G0Q0lH/7rAyy2sxqJocoMvoV1b3JWozkseh8Sb66NkSG4cCKGi0R
-         tKZKHAebnXNF2RFMrAL232qH3XrcNdpFe0qx8fZSU8hGaKTYUMH21y84w5O5T/fu84Yn
-         l1lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=oNs3GlTxBq+wEh4KcvAaZtsqfVlm+piHZsRKYTXDtaM=;
-        b=dWtxL5KnlgQOshSBda+M8cE/My9EAilgKbK40vnGlFxEu2BuT+yoUPRRLJRLs5L6wD
-         7ZVuU/i7Pl4M2UIkbHwhWqw8N/Mn2IO/AMClDvgXyoes1My5/CyNIFweVKpoItTvwoUe
-         7CqlJmxLVk9LgZlP5jn/nS4RHvaCykFpLz6TZ1yXZwEo8dUaYE5nRgvZ55dIDFIYFOv3
-         ECLTx5t5LuZER/Aql1iK7Cdu92a7S8s2nuVesObnjKdiyS8Cn9RYs14O6ao4GaHf9nS8
-         qdRHiptAxj+8GId9NOz+Am7w9PWev/2iWBOt2NZUxoa/5S/zFDn+41di7zKCNMNfauhd
-         QLpA==
-X-Gm-Message-State: APjAAAW+J6lGcu90If0XGMUGZEDPQPRlpZ0DhAJk36IB7U3Lrry7WdbG
-        3ad2K3PaX0ZCW9BEkonLs7Q=
-X-Google-Smtp-Source: APXvYqz7tlS8/nL+68GCANaJ6ctVd2C3FQKn+3gO+yNnsEpZmKiQjmp+IQ2aDpjzBlMYvxLF39TbJA==
-X-Received: by 2002:a63:c046:: with SMTP id z6mr25864274pgi.387.1557665904870;
-        Sun, 12 May 2019 05:58:24 -0700 (PDT)
-Received: from localhost ([128.199.137.77])
-        by smtp.gmail.com with ESMTPSA id m8sm13152085pgn.59.2019.05.12.05.58.22
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 12 May 2019 05:58:23 -0700 (PDT)
-Date:   Sun, 12 May 2019 20:58:16 +0800
-From:   Eryu Guan <guaneryu@gmail.com>
-To:     Eric Biggers <ebiggers@kernel.org>
+        id S1728598AbfEMTMJ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 13 May 2019 15:12:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48564 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728745AbfEMTMJ (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 13 May 2019 15:12:09 -0400
+Received: from gmail.com (unknown [104.132.1.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6CA61208C3;
+        Mon, 13 May 2019 19:12:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1557774727;
+        bh=ELixTRGlJ2G2OWOG+eGZO1I+rdx28ZmdP7l5SUAl7Is=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tF8yQ63gnC5B0Mrjfy24phxpWv5rf1PxRDSZyBnUrBYjs6NLlU9MsNFqmVbFLQm6X
+         kCAT1BaFYCQY/WqmUOUnDEqkuKby3Acc3E8Or26IX7r1tYUNCHS64mPoaTj8a8OkUR
+         f3mMwO0wElYXIsoxY326syepp1yzZIIo+LFG6hf8=
+Date:   Mon, 13 May 2019 12:12:05 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Eryu Guan <guaneryu@gmail.com>
 Cc:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [RFC PATCH 0/7] xfstests: verify fscrypt-encrypted contents and
- filenames
-Message-ID: <20190512125816.GK15846@desktop>
+Subject: Re: [RFC PATCH 4/7] common/encrypt: add helper for ciphertext
+ verification tests
+Message-ID: <20190513191204.GA142816@gmail.com>
 References: <20190426204153.101861-1-ebiggers@kernel.org>
- <20190506155721.GB661@sol.localdomain>
+ <20190426204153.101861-5-ebiggers@kernel.org>
+ <20190512122703.GJ15846@desktop>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190506155721.GB661@sol.localdomain>
-User-Agent: Mutt/1.11.3 (2019-02-01)
+In-Reply-To: <20190512122703.GJ15846@desktop>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, May 06, 2019 at 08:57:22AM -0700, Eric Biggers wrote:
-> On Fri, Apr 26, 2019 at 01:41:46PM -0700, Eric Biggers wrote:
-> > Hello,
-> > 
-> > This series adds xfstests which verify that encrypted contents and
-> > filenames on ext4 and f2fs are actually correct, i.e. that the
-> > encryption uses the correct algorithms, keys, IVs, and padding amounts.
-> > The new tests work by creating encrypted files, unmounting the
-> > filesystem, reading the ciphertext from disk using dd and debugfs or
-> > dump.f2fs, and then comparing it against ciphertext computed
-> > independently by a new test program that implements the same algorithms.
-> > 
-> > These tests are important because:
-> > 
-> > - The whole point of file encryption is that the files are actually
-> >   encrypted correctly on-disk.  Except for generic/399, current xfstests
-> >   only tests the filesystem semantics, not the actual encryption.
-> >   generic/399 only tests for incompressibility of encrypted file
-> >   contents using one particular encryption setting, which isn't much.
-> > 
-> > - fscrypt now supports 4 main combinations of encryption settings,
-> >   rather than 1 as it did originally.  This may be doubled to 8 soon
-> >   (https://patchwork.kernel.org/patch/10908153/).  We should test all
-> >   settings.  And without tests, even if the initial implementation is
-> >   correct, breakage in one specific setting could go undetected.
-> > 
-> > - Though Linux's crypto API has self-tests, these only test the
-> >   algorithms themselves, not how they are used, e.g. by fscrypt.
-> > 
-> > Patch 1 is a cleanup patch.  Patches 2-4 add the common helpers for
-> > ciphertext verification tests.  Patches 5-7 add the actual tests.
-> > 
-> > These tests require e2fsprogs and f2fs-tools patches I recently sent out
-> > to fix printing encrypted filenames.  So, this series might not be
-> > suitable for merging into mainline xfstests until those patches are
-> > applied.  Regardless, comments are appreciated.  The needed patches are:
-> > 
-> > 	debugfs: avoid ambiguity when printing filenames (https://marc.info/?l=linux-ext4&m=155596495624232&w=2)
-> > 	f2fs-tools: improve filename printing (https://sourceforge.net/p/linux-f2fs/mailman/message/36648641/)
-> > 
-> > This series can also be retrieved from git at
-> > https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/xfstests-dev.git
-> > branch "ciphertext-verification".
-> > 
-> > I also have patches on top of this series which verify the ciphertext
-> > produced from v2 encryption policies, which are proposed by my kernel
-> > patch series "fscrypt: key management improvements"
-> > (https://patchwork.kernel.org/cover/10908107/).  v2 encryption policies
-> > will use a different key derivation function, and thus their ciphertext
-> > will be different.  These additional patches can be found at branch
-> > "fscrypt-key-mgmt-improvements" of my git repo above.  But I've arranged
-> > things such that this shorter series can potentially be applied earlier,
-> > to test what's in the kernel now.
-> > 
-> > Eric Biggers (7):
-> >   common/encrypt: introduce helpers for set_encpolicy and get_encpolicy
-> >   fscrypt-crypt-util: add utility for reproducing fscrypt encrypted data
-> >   common/encrypt: support requiring other encryption settings
-> >   common/encrypt: add helper for ciphertext verification tests
-> >   generic: verify ciphertext of v1 encryption policies with AES-256
-> >   generic: verify ciphertext of v1 encryption policies with AES-128
-> >   generic: verify ciphertext of v1 encryption policies with Adiantum
-> > 
-> >  .gitignore               |    1 +
-> >  common/encrypt           |  482 ++++++++++-
-> >  src/Makefile             |    3 +-
-> >  src/fscrypt-crypt-util.c | 1645 ++++++++++++++++++++++++++++++++++++++
-> >  tests/ext4/024           |    3 +-
-> >  tests/generic/395        |   28 +-
-> >  tests/generic/395.out    |    2 +-
-> >  tests/generic/396        |   15 +-
-> >  tests/generic/397        |    3 +-
-> >  tests/generic/398        |    5 +-
-> >  tests/generic/399        |    3 +-
-> >  tests/generic/419        |    3 +-
-> >  tests/generic/421        |    3 +-
-> >  tests/generic/429        |    3 +-
-> >  tests/generic/435        |    3 +-
-> >  tests/generic/440        |    5 +-
-> >  tests/generic/700        |   41 +
-> >  tests/generic/700.out    |    5 +
-> >  tests/generic/701        |   41 +
-> >  tests/generic/701.out    |    5 +
-> >  tests/generic/702        |   43 +
-> >  tests/generic/702.out    |   10 +
-> >  tests/generic/group      |    3 +
-> >  23 files changed, 2308 insertions(+), 47 deletions(-)
-> >  create mode 100644 src/fscrypt-crypt-util.c
-> >  create mode 100755 tests/generic/700
-> >  create mode 100644 tests/generic/700.out
-> >  create mode 100755 tests/generic/701
-> >  create mode 100644 tests/generic/701.out
-> >  create mode 100755 tests/generic/702
-> >  create mode 100644 tests/generic/702.out
-> > 
-> > -- 
-> > 2.21.0.593.g511ec345e18-goog
-> > 
+Hi Eryu,
+
+On Sun, May 12, 2019 at 08:27:03PM +0800, Eryu Guan wrote:
+> > +# Retrieve the filename stored on-disk for the given file.
+> > +# The name is printed to stdout in binary.
+> > +_get_on_disk_filename()
+> > +{
+> > +	local device=$1
+> > +	local inode=$2
+> > +	local dir_inode=$3
+> > +
+> > +	case $FSTYP in
+> > +	ext4)
+> > +		# Extract the filename from the debugfs output line like:
+> > +		#
+> > +		#  131075  100644 (1)      0      0       0 22-Apr-2019 16:54 \xa2\x85\xb0z\x13\xe9\x09\x86R\xed\xdc\xce\xad\x14d\x19
+> > +		#
+> > +		$DEBUGFS_PROG $device -R "ls -l -r <$dir_inode>" \
+> > +					2>>$seqres.full | perl -ne '
+> > +			next if not /^\s*'$inode'\s+/;
+> > +			s/.*?\d\d:\d\d //;
+> > +			chomp;
+> > +			s/\\x([[:xdigit:]]{2})/chr hex $1/eg;
+> > +			print;'
+> > +		;;
+> > +	f2fs)
+> > +		# Extract the filename from the dump.f2fs output line like:
+> > +		#
+> > +		#  i_name                        		[UpkzIPuts9by1oDmE+Ivfw]
+> > +		#
+> > +		# The name is base64-encoded, so we have to decode it here.
+> > +		#
+> > +		$DUMP_F2FS_PROG $device -i $inode | perl -ne '
+> > +			next if not /^i_name\s+\[([A-Za-z0-9+,]+)\]/;
+> > +			chomp $1;
+> > +			my @chars = split //, $1;
+> > +			my $ac = 0;
+> > +			my $bits = 0;
+> > +			my $table = join "", (A..Z, a..z, 0..9, "+", ",");
+> > +			foreach (@chars) {
+> > +				$ac += index($table, $_) << $bits;
+> > +				$bits += 6;
+> > +				if ($bits >= 8) {
+> > +					print chr($ac & 0xff);
+> > +					$ac >>= 8;
+> > +					$bits -= 8;
+> > +				}
+> > +			}
+> > +			if ($ac != 0) {
+> > +				print STDERR "Invalid base64-encoded string!\n";
+> > +			}'
+> > +		;;
+> > +	*)
+> > +		_notrun "_get_on_disk_filename() isn't implemented on $FSTYP"
 > 
-> Any comments on this?
+> And looks like this function has nothing to do with fs encryption, move it to
+> common/rc?
 
-Sorry for the late review, I went through the patches and they look fine
-to me over all from fstests perspective, I replied a few minor issues to
-individual patches.
-
-It'd be great if ext4 and/or f2fs folks could help review the tests as
-well.
-
-Thanks,
-Eryu
+For ext4 that's true, but for f2fs the name is assumed to be base64-encoded,
+which f2fs-tools only does for encrypted filenames.  I'll update the comment to
+clarify that the function assumes the directory is encrypted.
 
 > 
-> FYI, the e2fsprogs patch that these tests need was applied.
+> > +		;;
+> > +	esac
+> > +}
+> > +
+> > +# Require support for _get_on_disk_filename()
+> > +_require_get_on_disk_filename_support()
+> > +{
+> > +	echo "Checking for _get_on_disk_filename() support for $FSTYP" >> $seqres.full
+> > +	case $FSTYP in
+> > +	ext4)
+> > +		# Verify that the "ls -l -r" debugfs command is supported and
+> > +		# hex-encodes non-ASCII characters, rather than using an
+> > +		# ambiguous escaping method.  This requires the e2fsprogs patch
+> > +		# "debugfs: avoid ambiguity when printing filenames"
+> > +		# (https://marc.info/?l=linux-ext4&m=155596495624232&w=2).
+> > +		# TODO: once merged, list the minimum e2fsprogs version here.
+> > +		_require_command "$DEBUGFS_PROG" debugfs
+> > +		_scratch_mount
+> > +		touch $SCRATCH_MNT/$'\xc1'
+> > +		_scratch_unmount
+> > +		if ! $DEBUGFS_PROG $SCRATCH_DEV -R "ls -l -r /" 2>&1 \
+> > +			| tee -a $seqres.full | grep -E -q '\s+\\xc1\s*$'; then
+> > +			_notrun "debugfs (e2fsprogs) is too old; doesn't support showing unambiguous on-disk filenames"
+> > +		fi
+> > +		;;
+> > +	f2fs)
+> > +		# Verify that dump.f2fs shows encrypted filenames in full.  This
+> > +		# requires the patch "f2fs-tools: improve filename printing"
+> > +		# (https://sourceforge.net/p/linux-f2fs/mailman/message/36648641/).
+> > +		# TODO: once merged, list the minimum f2fs-tools version here.
+> > +
+> > +		_require_command "$DUMP_F2FS_PROG" dump.f2fs
+> > +		_require_command "$KEYCTL_PROG" keyctl
+> > +		_scratch_mount
+> > +		_new_session_keyring
+> > +
+> > +		local keydesc=$(_generate_encryption_key)
+> > +		local dir=$SCRATCH_MNT/test.${FUNCNAME[0]}
+> > +		local file=$dir/$(perl -e 'print "A" x 255')
+> > +		mkdir $dir
+> > +		_set_encpolicy $dir $keydesc
+> > +		touch $file
+> > +		local inode=$(stat -c %i $file)
+> > +
+> > +		_scratch_unmount
+> > +		$KEYCTL_PROG clear @s
+> > +
+> > +		# 255-character filename should result in 340 base64 characters.
+> > +		if ! $DUMP_F2FS_PROG -i $inode $SCRATCH_DEV \
+> > +			| grep -E -q '^i_name[[:space:]]+\[[A-Za-z0-9+,]{340}\]'; then
+> > +			_notrun "dump.f2fs (f2fs-tools) is too old; doesn't support showing unambiguous on-disk filenames"
+> > +		fi
+> > +		;;
+> > +	*)
+> > +		_notrun "_get_on_disk_filename() isn't implemented on $FSTYP"
+> > +		;;
+> > +	esac
+> > +}
+> > +
+> > +# Get the file's list of on-disk blocks as a comma-separated list of block
+> > +# offsets from the start of the device.  "Blocks" are 512 bytes each here.
+> > +_get_file_block_list()
+> > +{
+> > +	local file=$1
+> > +
+> > +	sync
+> > +	$XFS_IO_PROG -c fiemap $file | perl -ne '
+> > +		next if not /^\s*\d+: \[\d+\.\.\d+\]: (\d+)\.\.(\d+)/;
+> > +		print $_ . "," foreach $1..$2;' | sed 's/,$//'
+> > +}
+> > +
+> > +# Dump a block list that was previously saved by _get_file_block_list().
+> > +_dump_file_blocks()
+> > +{
+> > +	local device=$1
+> > +	local blocklist=$2
+> > +	local block
+> > +
+> > +	for block in $(tr ',' ' ' <<< $blocklist); do
+> > +		dd if=$device bs=512 count=1 skip=$block status=none
+> > +	done
+> > +}
 > 
-> I'm still waiting for the f2fs-tools patch.
-> 
-> - Eric
+> Above two functions seem generic enough to be moved to common/rc
+
+I feel that would be premature because common/rc is kind of bloated, and there's
+a good chance these functions will only ever be used for encryption tests.
+Normally, xfstests only test for user-visible behavior, so tests just 'cat' the
+file contents, or 'ls' the filenames.  The encryption tests are somewhat special
+in that they really care about what's *actually* stored on-disk.
+
+So I think that common/encrypt is the most logical location for now.  But I
+don't feel too strongly, and I can move it if you prefer.
+
+Thanks for the review!
+
+- Eric
