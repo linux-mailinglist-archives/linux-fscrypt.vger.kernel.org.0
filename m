@@ -2,52 +2,66 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BAA72464F
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 21 May 2019 05:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F1A825BD9
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 22 May 2019 04:03:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727045AbfEUD34 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 20 May 2019 23:29:56 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:60343 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726511AbfEUD34 (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 20 May 2019 23:29:56 -0400
-Received: from callcc.thunk.org ([66.31.38.53])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x4L3TZTB032052
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 May 2019 23:29:35 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id C8793420481; Mon, 20 May 2019 23:29:34 -0400 (EDT)
-Date:   Mon, 20 May 2019 23:29:34 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org, Satya Tangirala <satyat@google.com>,
-        linux-api@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-crypto@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, Paul Crowley <paulcrowley@google.com>
-Subject: Re: [PATCH v6 00/16] fscrypt: key management improvements
-Message-ID: <20190521032934.GA14876@mit.edu>
-References: <20190520172552.217253-1-ebiggers@kernel.org>
- <20190521001636.GA2369@mit.edu>
- <20190521004119.GA647@sol.localdomain>
+        id S1727208AbfEVCDP (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 21 May 2019 22:03:15 -0400
+Received: from asrmicro.com ([210.13.118.86]:7402 "EHLO mail2012.asrmicro.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726466AbfEVCDP (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 21 May 2019 22:03:15 -0400
+Received: from localhost (10.1.170.159) by mail2012.asrmicro.com (10.1.24.123)
+ with Microsoft SMTP Server (TLS) id 15.0.847.32; Wed, 22 May 2019 10:02:55
+ +0800
+From:   Hongjie Fang <hongjiefang@asrmicro.com>
+To:     <tytso@mit.edu>, <jaegeuk@kernel.org>, <ebiggers@kernel.org>
+CC:     <linux-fscrypt@vger.kernel.org>,
+        Hongjie Fang <hongjiefang@asrmicro.com>,
+        <stable@vger.kernel.org>
+Subject: [PATCH V3] fscrypt: don't set policy for a dead directory
+Date:   Wed, 22 May 2019 10:02:53 +0800
+Message-ID: <1558490573-21562-1-git-send-email-hongjiefang@asrmicro.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190521004119.GA647@sol.localdomain>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [10.1.170.159]
+X-ClientProxiedBy: mail2012.asrmicro.com (10.1.24.123) To
+ mail2012.asrmicro.com (10.1.24.123)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, May 20, 2019 at 05:41:20PM -0700, Eric Biggers wrote:
-> 
-> This was answered in the cover letter, quoted below:
+the directory maybe has been removed when enter fscrypt_ioctl_set_policy().
+if so, the empty_dir() check will return error for ext4 file system.
 
-Oops, thanks.  My bad, I stopped reading when I saw the changelog, and
-missed that part of the description.
+ext4_rmdir() sets i_size = 0, then ext4_empty_dir() reports an error
+because 'inode->i_size < EXT4_DIR_REC_LEN(1) + EXT4_DIR_REC_LEN(2)'.
+if the fs is mounted with errors=panic, it will trigger a panic issue.
 
-					- Ted
+add the check IS_DEADDIR() to fix this problem.
+
+Fixes: 9bd8212f981e ("ext4 crypto: add encryption policy and password salt support")
+Cc: <stable@vger.kernel.org> # v4.1+
+Signed-off-by: Hongjie Fang <hongjiefang@asrmicro.com>
+---
+ fs/crypto/policy.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
+index d536889..4941fe8 100644
+--- a/fs/crypto/policy.c
++++ b/fs/crypto/policy.c
+@@ -81,6 +81,8 @@ int fscrypt_ioctl_set_policy(struct file *filp, const void __user *arg)
+ 	if (ret == -ENODATA) {
+ 		if (!S_ISDIR(inode->i_mode))
+ 			ret = -ENOTDIR;
++		else if (IS_DEADDIR(inode))
++			ret = -ENOENT;
+ 		else if (!inode->i_sb->s_cop->empty_dir(inode))
+ 			ret = -ENOTEMPTY;
+ 		else
+-- 
+1.9.1
+
