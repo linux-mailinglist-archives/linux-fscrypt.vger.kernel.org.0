@@ -2,56 +2,96 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 402B13025C
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 30 May 2019 20:54:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6613314A3
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 31 May 2019 20:29:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726566AbfE3SyS (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 30 May 2019 14:54:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39536 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725961AbfE3SyS (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 30 May 2019 14:54:18 -0400
-Received: from gmail.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1C5F224B6B;
-        Thu, 30 May 2019 18:54:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1559242457;
-        bh=q7K4pmGHUUBq3OOvKhZCDju5Yhxagmu1zFTfewcL3go=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dgpHrPpDfHfIKA83rjSp+ZqoKqKF9T0ncaTjYqKDrq0fEQLiRsrs1HHaz7osaMdge
-         pqY3/OtH1zbLDA7nucMMijqsUXCYYBiapFM3Au60t/A0QrKOMGwxRssgOp+RDpcHFu
-         wgDTyqudW+CCkNhybf2IbvoW0NMaCJVehv/Ek+Es=
-Date:   Thu, 30 May 2019 11:54:15 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>, linux-api@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-integrity@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Victor Hsieh <victorhsieh@google.com>
-Subject: Re: [PATCH v3 00/15] fs-verity: read-only file-based authenticity
- protection
-Message-ID: <20190530185414.GD70051@gmail.com>
-References: <20190523161811.6259-1-ebiggers@kernel.org>
+        id S1726967AbfEaS3J (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 31 May 2019 14:29:09 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:41702 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726640AbfEaS3I (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Fri, 31 May 2019 14:29:08 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 7056B261164
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org
+Subject: Re: [PATCH] ext4: Optimize case-insensitive lookups
+Organization: Collabora
+References: <20190529185446.22757-1-krisman@collabora.com>
+        <20190530210156.GI2998@mit.edu>
+Date:   Fri, 31 May 2019 14:29:04 -0400
+In-Reply-To: <20190530210156.GI2998@mit.edu> (Theodore Ts'o's message of "Thu,
+        30 May 2019 17:01:56 -0400")
+Message-ID: <851s0eiikv.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/25.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190523161811.6259-1-ebiggers@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, May 23, 2019 at 09:17:56AM -0700, Eric Biggers wrote:
-> Hello,
-> 
-> This is a redesigned version of the fs-verity patchset, implementing
-> Ted's suggestion to build the Merkle tree in the kernel
-> (https://lore.kernel.org/linux-fsdevel/20190207031101.GA7387@mit.edu/).
+"Theodore Ts'o" <tytso@mit.edu> writes:
 
-Does anyone have any comments on this patchset?
+> On Wed, May 29, 2019 at 02:54:46PM -0400, Gabriel Krisman Bertazi wrote:
+>> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+>> index c18ab748d20d..e3809cfda9f4 100644
+>> --- a/fs/ext4/ext4.h
+>> +++ b/fs/ext4/ext4.h
+>> @@ -2078,6 +2078,10 @@ struct ext4_filename {
+>>  #ifdef CONFIG_FS_ENCRYPTION
+>>  	struct fscrypt_str crypto_buf;
+>>  #endif
+>> +#ifdef CONFIG_UNICODE
+>> +	int cf_len;
+>> +	unsigned char cf_name[EXT4_NAME_LEN];
+>> +#endif
+>>  };
+>>  
+>>  #define fname_name(p) ((p)->disk_name.name)
+>
+> EXT4_NAME_LEN is 256, and struct ext4_filename is allocated on the
+> stack.  So this is going to increase the stack usage by 258 bytes.
+> Perhaps should we just kmalloc the temporary buffer when it's needed?
 
-- Eric
+I wanted to avoid adding an allocation to this path, but maybe that was
+misguided, since this is out of the dcache critical path.  I also wanted
+to remove the allocation from d_hash, but we'd require a similar size
+allocation in the stack. Is that a good idea?
+
+> The other thing that this patch reminds me is that there is great
+> interest in supporting case folded directories and fscrypt at the same
+> time.  Today fscrypt works by encrypting the filename, and stashes it
+> in fname->crypto_buf, and this allows for a byte-for-byte comparison
+> of the encrypted name.  To support fscrypt && casefold, what we would
+> need to do is to change the htree hash so that the hash is caluclated
+> on the normalized form, and then we'll have to decrypt each filename
+> in the directory block and then compare it against the normalized form
+> that stashed in cf_name.  So that means we'll never need to allocate
+> memory for cf_name and crypto_buf at the same time.
+
+fscrypt and case-insensitive is getting to the top of my to-do list,
+i'll something there early next week.  Thanks for the explanation on
+it.
+
+>
+> We can also use struct fscrypt_str for cf_name; it's defined as a
+> combined unsighed char *name and u32 len.  We already use fscrypt_str
+> even the !CONFIG_FS_ENCRYPTION case, since it's a convenient way of
+> handling a non-NULL terminated filename blob.  And this will hopefully
+> make it simpler to deal with integrating casefolding and fscrypt in
+> the future.
+
+I will send a v2 with this change already, to simplify
+fscrypt+casefolding support.
+>
+> Cheers,
+>
+> 					- Ted
+
+-- 
+Gabriel Krisman Bertazi
