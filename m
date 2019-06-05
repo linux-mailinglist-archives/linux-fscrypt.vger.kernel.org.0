@@ -2,96 +2,190 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A6613314A3
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 31 May 2019 20:29:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0282B367F7
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  6 Jun 2019 01:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726967AbfEaS3J (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 31 May 2019 14:29:09 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:41702 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726640AbfEaS3I (ORCPT
+        id S1726589AbfFEX2l (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 5 Jun 2019 19:28:41 -0400
+Received: from mail-pf1-f202.google.com ([209.85.210.202]:45173 "EHLO
+        mail-pf1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726537AbfFEX2l (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 31 May 2019 14:29:08 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id 7056B261164
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH] ext4: Optimize case-insensitive lookups
-Organization: Collabora
-References: <20190529185446.22757-1-krisman@collabora.com>
-        <20190530210156.GI2998@mit.edu>
-Date:   Fri, 31 May 2019 14:29:04 -0400
-In-Reply-To: <20190530210156.GI2998@mit.edu> (Theodore Ts'o's message of "Thu,
-        30 May 2019 17:01:56 -0400")
-Message-ID: <851s0eiikv.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/25.1 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
+        Wed, 5 Jun 2019 19:28:41 -0400
+Received: by mail-pf1-f202.google.com with SMTP id z2so409112pfb.12
+        for <linux-fscrypt@vger.kernel.org>; Wed, 05 Jun 2019 16:28:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=gRO0aIkjYMBsNBc7+DIoU7JX9NOgY+kGQd5/xewYXlk=;
+        b=UjUsYqhMfjCSgtwICU9RcqL+xxeWNLvzgYi4TAJ5I4+IMVG8sbSlWkpZQSp+j4nuQq
+         97fA9gvCpbvVs5BjpH/06h+5CHQfsMA0GeR3A9KlwdxUpYZFJVu6I3oKcNzlXEuRPpwh
+         HQYx91WCnQG84EuhE0DYB9w5B3XQlJ1mN4lKjtPqmOF1IXGgoq06Z6vYhwctzUT6GNcz
+         NL71raZfKYlyZ/oTRi6rtLIOLmWxdVntpcjynPpC8JZRh0QJ+MQpzecIaSF8TamuwwJX
+         Ss8ZvCG8BLDIfrxxjZ8LYkSt5b90qIAHMKhVUYm5Nlyo1YBeMiXm1L3zPtKfBJMUwuk6
+         sNNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=gRO0aIkjYMBsNBc7+DIoU7JX9NOgY+kGQd5/xewYXlk=;
+        b=k83sJqhqd+HumTMKoREVyzJDdS6rpuAyOPwhT5PITjszd3eOqG9MYPBZJicNOkJLH1
+         p7dZ/xYoFq8JHQmlTCPsUjkQ9C3/+MTYy0ikFi+2ZaafK07IzTVJx6MQnFZEEuzb62OU
+         SRYSehzOPU1OuYy/S3uMbmxFMJB6r2WJxSS5vyWSzhSXOKlkJnqDsI0W9Cmt2hSYn0pi
+         jKi56fBMVWgYgESlVJG2BCP+An+E0STZnij9g2O8Su6ND2JLfu596cNYP88KyBqBcVA3
+         Ou8Zszfi4Le2JD29FhhiBkZOU76D7libyo3NARtxcwY6lO8xm6arw6ovuLvNp01j9KOa
+         K2KA==
+X-Gm-Message-State: APjAAAWhTe6bFESYf3lacWxvbBjwugi4+GpmLnfzXywZ7hA870imi9nj
+        BJ4r/zd1U0gz3JzeAnU6bH6okYx+JFg=
+X-Google-Smtp-Source: APXvYqzXuluP1xJXv83KQJmBTl6O5tQhTtSaDuikoPQNfY1VHAjaLmhSxTETZknHp6ujJjRDlasl8HLD5Ew=
+X-Received: by 2002:a63:1663:: with SMTP id 35mr363300pgw.253.1559777320468;
+ Wed, 05 Jun 2019 16:28:40 -0700 (PDT)
+Date:   Wed,  5 Jun 2019 16:28:29 -0700
+Message-Id: <20190605232837.31545-1-satyat@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.22.0.rc1.311.g5d7573a151-goog
+Subject: [RFC PATCH v2 0/8] Inline Encryption Support
+From:   Satya Tangirala <satyat@google.com>
+To:     linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Cc:     Parshuram Raju Thombare <pthombar@cadence.com>,
+        Ladvine D Almeida <ladvine.dalmeida@synopsys.com>,
+        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
+        Kuohong Wang <kuohong.wang@mediatek.com>,
+        Satya Tangirala <satyat@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-"Theodore Ts'o" <tytso@mit.edu> writes:
+This patch series adds support for Inline Encryption to the block layer,
+UFS, fscrypt and f2fs.
 
-> On Wed, May 29, 2019 at 02:54:46PM -0400, Gabriel Krisman Bertazi wrote:
->> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
->> index c18ab748d20d..e3809cfda9f4 100644
->> --- a/fs/ext4/ext4.h
->> +++ b/fs/ext4/ext4.h
->> @@ -2078,6 +2078,10 @@ struct ext4_filename {
->>  #ifdef CONFIG_FS_ENCRYPTION
->>  	struct fscrypt_str crypto_buf;
->>  #endif
->> +#ifdef CONFIG_UNICODE
->> +	int cf_len;
->> +	unsigned char cf_name[EXT4_NAME_LEN];
->> +#endif
->>  };
->>  
->>  #define fname_name(p) ((p)->disk_name.name)
->
-> EXT4_NAME_LEN is 256, and struct ext4_filename is allocated on the
-> stack.  So this is going to increase the stack usage by 258 bytes.
-> Perhaps should we just kmalloc the temporary buffer when it's needed?
+Inline Encryption hardware allows software to specify an encryption context
+(an encryption key, crypto algorithm, data unit num, data unit size, etc.)
+along with a data transfer request to a storage device, and the inline
+encryption hardware will use that context to en/decrypt the data. The
+inline encryption hardware is part of the storage device, and it
+conceptually sits on the data path between system memory and the storage
+device. Inline Encryption hardware has become increasingly common, and we
+want to support it in the kernel.
 
-I wanted to avoid adding an allocation to this path, but maybe that was
-misguided, since this is out of the dcache critical path.  I also wanted
-to remove the allocation from d_hash, but we'd require a similar size
-allocation in the stack. Is that a good idea?
+Inline Encryption hardware implementations often function around the
+concept of a limited number of "keyslots", which can hold an encryption
+context each. The storage device can be directed to en/decrypt any
+particular request with the encryption context stored in any particular
+keyslot.
 
-> The other thing that this patch reminds me is that there is great
-> interest in supporting case folded directories and fscrypt at the same
-> time.  Today fscrypt works by encrypting the filename, and stashes it
-> in fname->crypto_buf, and this allows for a byte-for-byte comparison
-> of the encrypted name.  To support fscrypt && casefold, what we would
-> need to do is to change the htree hash so that the hash is caluclated
-> on the normalized form, and then we'll have to decrypt each filename
-> in the directory block and then compare it against the normalized form
-> that stashed in cf_name.  So that means we'll never need to allocate
-> memory for cf_name and crypto_buf at the same time.
+Patch 1 introduces a Keyslot Manager to efficiently manage keyslots.
+The keyslot manager also functions as the interface that blk-crypto
+(introduced in Path 3), will use to program keys into inline encryption
+hardware. For more information on the Keyslot Manager, refer to
+documentation found in block/keyslot-manager.c and linux/keyslot-manager.h.
 
-fscrypt and case-insensitive is getting to the top of my to-do list,
-i'll something there early next week.  Thanks for the explanation on
-it.
+Patch 2 introduces struct bio_crypt_ctx, and a ptr to one in struct bio,
+which allows struct bio to represent an encryption context that can be
+passed down the storage stack from the filesystem layer to the storage
+driver.
 
->
-> We can also use struct fscrypt_str for cf_name; it's defined as a
-> combined unsighed char *name and u32 len.  We already use fscrypt_str
-> even the !CONFIG_FS_ENCRYPTION case, since it's a convenient way of
-> handling a non-NULL terminated filename blob.  And this will hopefully
-> make it simpler to deal with integrating casefolding and fscrypt in
-> the future.
+Patch 3 introduces blk-crypto. Blk-crypto delegates crypto operations to
+inline encryption hardware when available, and also contains a software
+fallback to the kernel crypto API. Blk-crypto also makes it possible for
+layered devices like device mapper to make use of inline encryption
+hardware. Given that blk-crypto works as a software fallback, we are
+considering removing file content en/decryption from fscrypt and simply
+using blk-crypto in a future patch. For more details on blk-crypto, refer
+to Documentation/block/blk-crypto.txt.
 
-I will send a v2 with this change already, to simplify
-fscrypt+casefolding support.
->
-> Cheers,
->
-> 					- Ted
+Patches 4-6 add support for inline encryption into the UFS driver according
+to the JEDEC UFS HCI v2.1 specification. Inline encryption support for
+other drivers (like eMMC) may be added in the same way - the device driver
+should set up a Keyslot Manager in the device's request_queue (refer to
+the UFS crypto additions in ufshcd-crypto.c and ufshcd.c for an example).
+
+Patches 7 and 8 add support to fscrypt and f2fs, so that we have
+a complete stack that can make use of inline encryption.
+
+There have been a few patch sets addressing Inline Encryption Support in
+the past. Briefly, this patch set differs from those as follows:
+
+1) "crypto: qce: ice: Add support for Inline Crypto Engine"
+is specific to certain hardware, while our patch set's Inline
+Encryption support for UFS is implemented according to the JEDEC UFS
+specification.
+
+2) "scsi: ufs: UFS Host Controller crypto changes" registers inline
+encryption support as a kernel crypto algorithm. Our patch views inline
+encryption as being fundamentally different from a generic crypto
+provider (in that inline encryption is tied to a device), and so does
+not use the kernel crypto API to represent inline encryption hardware.
+
+3) "scsi: ufs: add real time/inline crypto support to UFS HCD" requires
+the device mapper to work - our patch does not.
+
+Changes v1 => v2:
+ - Block layer and UFS changes are split into 3 patches each.
+ - We now only have a ptr to a struct bio_crypt_ctx in struct bio, instead
+   of the struct itself.
+ - struct bio_crypt_ctx no longer has flags.
+ - blk-crypto now correctly handles the case when it fails to init
+   (because of insufficient memory), but kernel continues to boot.
+ - ufshcd-crypto now works on big endian cpus.
+ - Many cleanups.
+
+Satya Tangirala (8):
+  block: Keyslot Manager for Inline Encryption
+  block: Add encryption context to struct bio
+  block: blk-crypto for Inline Encryption
+  scsi: ufs: UFS driver v2.1 spec crypto additions
+  scsi: ufs: UFS crypto API
+  scsi: ufs: Add inline encryption support to UFS
+  fscrypt: wire up fscrypt to use blk-crypto
+  f2fs: Wire up f2fs to use inline encryption via fscrypt
+
+ Documentation/block/blk-crypto.txt | 185 ++++++++++
+ block/Kconfig                      |   8 +
+ block/Makefile                     |   2 +
+ block/bio.c                        |  17 +-
+ block/blk-core.c                   |  11 +-
+ block/blk-crypt-ctx.c              |  90 +++++
+ block/blk-crypto.c                 | 557 +++++++++++++++++++++++++++++
+ block/blk-merge.c                  |  34 +-
+ block/bounce.c                     |   9 +-
+ block/keyslot-manager.c            | 315 ++++++++++++++++
+ drivers/md/dm.c                    |  15 +-
+ drivers/scsi/ufs/Kconfig           |  10 +
+ drivers/scsi/ufs/Makefile          |   1 +
+ drivers/scsi/ufs/ufshcd-crypto.c   | 438 +++++++++++++++++++++++
+ drivers/scsi/ufs/ufshcd-crypto.h   |  69 ++++
+ drivers/scsi/ufs/ufshcd.c          |  84 ++++-
+ drivers/scsi/ufs/ufshcd.h          |  23 ++
+ drivers/scsi/ufs/ufshci.h          |  67 +++-
+ fs/crypto/Kconfig                  |   7 +
+ fs/crypto/bio.c                    | 159 ++++++--
+ fs/crypto/crypto.c                 |   9 +
+ fs/crypto/fscrypt_private.h        |  10 +
+ fs/crypto/keyinfo.c                |  69 ++--
+ fs/crypto/policy.c                 |  10 +
+ fs/f2fs/data.c                     |  77 +++-
+ fs/f2fs/super.c                    |   1 +
+ include/linux/bio.h                | 180 ++++++++++
+ include/linux/blk-crypto.h         |  40 +++
+ include/linux/blk_types.h          |  39 ++
+ include/linux/blkdev.h             |   9 +
+ include/linux/fscrypt.h            |  64 ++++
+ include/linux/keyslot-manager.h    | 116 ++++++
+ include/uapi/linux/fs.h            |  12 +-
+ 33 files changed, 2668 insertions(+), 69 deletions(-)
+ create mode 100644 Documentation/block/blk-crypto.txt
+ create mode 100644 block/blk-crypt-ctx.c
+ create mode 100644 block/blk-crypto.c
+ create mode 100644 block/keyslot-manager.c
+ create mode 100644 drivers/scsi/ufs/ufshcd-crypto.c
+ create mode 100644 drivers/scsi/ufs/ufshcd-crypto.h
+ create mode 100644 include/linux/blk-crypto.h
+ create mode 100644 include/linux/keyslot-manager.h
 
 -- 
-Gabriel Krisman Bertazi
+2.22.0.rc1.311.g5d7573a151-goog
+
