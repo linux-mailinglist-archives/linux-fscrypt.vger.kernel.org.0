@@ -2,276 +2,290 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FA0136816
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  6 Jun 2019 01:29:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BA0F37891
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  6 Jun 2019 17:54:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726743AbfFEX3M (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 5 Jun 2019 19:29:12 -0400
-Received: from mail-ot1-f73.google.com ([209.85.210.73]:53502 "EHLO
-        mail-ot1-f73.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726742AbfFEX3L (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 5 Jun 2019 19:29:11 -0400
-Received: by mail-ot1-f73.google.com with SMTP id d13so226814oth.20
-        for <linux-fscrypt@vger.kernel.org>; Wed, 05 Jun 2019 16:29:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=IFpE5yY4uVy5eFXAmN1frsf7z5fTOKO1cmVK9sZaWVc=;
-        b=FU8rnwe1RegyvrOecsJEpG1pFQI4RUd1Vo1UIoIR/SrsVO41rWV6cbVPHlVWDb0v7B
-         z0kmjgINHwJPLmeAyFbuf8K1xWTRBYbt/mv7lg4uuGqr0OxoCg+7nkCKGgkLLjAZNo6w
-         0yIEwWTHEQRcrBpFxvJpsJkFnIdnbKmITJaZHaSuIGjY0akBDFK7E7gjWWqfQZGlTziO
-         q1bjOfoBiNfAIIyYGTYb2wh1SASy6ipB+5MebW9rxKc1346omXSSLOjJFXvfyjXZK6fu
-         BZ4DotlesX6doWgd5LqUXcXJ6AxeiEN6sq+RzhXUmiPrMWABtugBhDRlja86zAVld5oJ
-         NPgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=IFpE5yY4uVy5eFXAmN1frsf7z5fTOKO1cmVK9sZaWVc=;
-        b=YteeQon46oQ0n5fwVxKomKhVrmyuS8Er8tWHIHWclFL9Np/MrD9tSRSufhrRCke1kY
-         VZu2ZUwsfbrli++DJRuw7HNlg6ZB19+cE4f6zsHMMUGa7HTt+y4koRh3up4QYpkR3AlT
-         ubn8jCdnM6XNLXISlwdS1hwzYuFzfTZ0SII08OS/G75i/TjnqhBxJH2Df3qMbTjtycdp
-         65UxtwCqW4sgBmp3QAUUDb5J0/LlSn98u8vpM1CK2kEeowQ7HOAHNJBEpRm+OimQSePF
-         jGbZ0DlLo7/sAvN8vVCgwwg1EmgrRqYyPRsgFjnN0Y69ar7PqHDa6Kk2hrgDIPYuU3qh
-         bGnA==
-X-Gm-Message-State: APjAAAUsizsdN1hAyLLUd4rYBz1uUqjCDgzbRGwozf4P6qXKQUoDDtMz
-        Vz+SQFMQhCtPDe59yoSPKkjkZM1HRds=
-X-Google-Smtp-Source: APXvYqwCyWWOaof96qMS2G9ax3JA8Spbk2YLf/KWQHCJlpezMKSHXZq/bfr1w/bkaJPp4DPNAoIaOhJw/dY=
-X-Received: by 2002:aca:f582:: with SMTP id t124mr2372182oih.71.1559777350673;
- Wed, 05 Jun 2019 16:29:10 -0700 (PDT)
-Date:   Wed,  5 Jun 2019 16:28:37 -0700
-In-Reply-To: <20190605232837.31545-1-satyat@google.com>
-Message-Id: <20190605232837.31545-9-satyat@google.com>
-Mime-Version: 1.0
-References: <20190605232837.31545-1-satyat@google.com>
-X-Mailer: git-send-email 2.22.0.rc1.311.g5d7573a151-goog
-Subject: [RFC PATCH v2 8/8] f2fs: Wire up f2fs to use inline encryption via fscrypt
-From:   Satya Tangirala <satyat@google.com>
-To:     linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Cc:     Parshuram Raju Thombare <pthombar@cadence.com>,
-        Ladvine D Almeida <ladvine.dalmeida@synopsys.com>,
-        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
-        Kuohong Wang <kuohong.wang@mediatek.com>,
-        Satya Tangirala <satyat@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1729230AbfFFPyE (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 6 Jun 2019 11:54:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59336 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729156AbfFFPyE (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 6 Jun 2019 11:54:04 -0400
+Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 95A2A207E0;
+        Thu,  6 Jun 2019 15:54:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1559836443;
+        bh=VQdFGYAgQuZ2zWXtE+roaSEIuVzDDG6jVyogBGvP/FY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=LClKo9izMeNcvDP1skIPWnfCWtGFTrmutWV2DsfI54Q5L0ZmJ5FcDzJ7K7wgxX3Ze
+         +W9PBYgo+F3GeBBVEZb/Q+xLGK/WOEQN5hvmat/LL0zCWJ24vZUlXm/dTMa4F1asuf
+         pVwXVGkvZFZDDhRYeu9AsqLxHfo3FZKHnXCtznww=
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-integrity@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Victor Hsieh <victorhsieh@google.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH v4 00/16] fs-verity: read-only file-based authenticity protection
+Date:   Thu,  6 Jun 2019 08:51:49 -0700
+Message-Id: <20190606155205.2872-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.21.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Signed-off-by: Satya Tangirala <satyat@google.com>
----
- fs/f2fs/data.c  | 77 ++++++++++++++++++++++++++++++++++++++++++++++---
- fs/f2fs/super.c |  1 +
- 2 files changed, 74 insertions(+), 4 deletions(-)
+Hello,
 
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index eda4181d2092..25e691947fb4 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -142,6 +142,8 @@ static bool f2fs_bio_post_read_required(struct bio *bio)
- 
- static void f2fs_read_end_io(struct bio *bio)
- {
-+	fscrypt_unset_bio_crypt_ctx(bio);
-+
- 	if (time_to_inject(F2FS_P_SB(bio_first_page_all(bio)),
- 						FAULT_READ_IO)) {
- 		f2fs_show_injection_info(FAULT_READ_IO);
-@@ -165,6 +167,8 @@ static void f2fs_write_end_io(struct bio *bio)
- 	struct bio_vec *bvec;
- 	struct bvec_iter_all iter_all;
- 
-+	fscrypt_unset_bio_crypt_ctx(bio);
-+
- 	if (time_to_inject(sbi, FAULT_WRITE_IO)) {
- 		f2fs_show_injection_info(FAULT_WRITE_IO);
- 		bio->bi_status = BLK_STS_IOERR;
-@@ -282,9 +286,18 @@ static struct bio *__bio_alloc(struct f2fs_sb_info *sbi, block_t blk_addr,
- 	return bio;
- }
- 
-+static inline u64 hw_crypt_dun(struct inode *inode, pgoff_t offset)
-+{
-+	return (((u64)inode->i_ino) << 32) | lower_32_bits(offset);
-+}
-+
- static inline void __submit_bio(struct f2fs_sb_info *sbi,
- 				struct bio *bio, enum page_type type)
- {
-+	struct page *page;
-+	struct inode *inode;
-+	int err = 0;
-+
- 	if (!is_read_io(bio_op(bio))) {
- 		unsigned int start;
- 
-@@ -326,7 +339,22 @@ static inline void __submit_bio(struct f2fs_sb_info *sbi,
- 		trace_f2fs_submit_read_bio(sbi->sb, type, bio);
- 	else
- 		trace_f2fs_submit_write_bio(sbi->sb, type, bio);
--	submit_bio(bio);
-+
-+	if (bio_has_data(bio)) {
-+		page = bio_page(bio);
-+		if (page && page->mapping && page->mapping->host) {
-+			inode = page->mapping->host;
-+			err = fscrypt_set_bio_crypt_ctx(inode, bio,
-+						hw_crypt_dun(inode,
-+							     page->index));
-+		}
-+	}
-+	if (err) {
-+		bio->bi_status = BLK_STS_IOERR;
-+		bio_endio(bio);
-+	} else {
-+		submit_bio(bio);
-+	}
- }
- 
- static void __submit_merged_bio(struct f2fs_bio_info *io)
-@@ -487,6 +515,9 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
- 	enum page_type btype = PAGE_TYPE_OF_BIO(fio->type);
- 	struct f2fs_bio_info *io = sbi->write_io[btype] + fio->temp;
- 	struct page *bio_page;
-+	struct inode *fio_inode, *bio_inode;
-+	struct page *first_page;
-+	u64 next_dun = 0;
- 
- 	f2fs_bug_on(sbi, is_read_io(fio->op));
- 
-@@ -513,10 +544,27 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
- 
- 	inc_page_count(sbi, WB_DATA_TYPE(bio_page));
- 
-+	fio_inode = fio->page->mapping->host;
-+	bio_inode = NULL;
-+	first_page = NULL;
-+	next_dun = 0;
-+	if (io->bio && bio_page(io->bio)->mapping) {
-+		first_page = bio_page(io->bio);
-+		bio_inode = first_page->mapping->host;
-+		if (fscrypt_inode_is_hw_encrypted(bio_inode)) {
-+			next_dun = hw_crypt_dun(bio_inode, first_page->index) +
-+				   (io->bio->bi_iter.bi_size >> PAGE_SHIFT);
-+		}
-+	}
- 	if (io->bio && (io->last_block_in_bio != fio->new_blkaddr - 1 ||
- 	    (io->fio.op != fio->op || io->fio.op_flags != fio->op_flags) ||
--			!__same_bdev(sbi, fio->new_blkaddr, io->bio)))
-+			!__same_bdev(sbi, fio->new_blkaddr, io->bio) ||
-+			!fscrypt_inode_crypt_mergeable(bio_inode, fio_inode) ||
-+			(fscrypt_inode_is_hw_encrypted(bio_inode) &&
-+			 next_dun != hw_crypt_dun(fio_inode,
-+						  fio->page->index))))
- 		__submit_merged_bio(io);
-+
- alloc_new:
- 	if (io->bio == NULL) {
- 		if ((fio->type == DATA || fio->type == NODE) &&
-@@ -568,7 +616,7 @@ static struct bio *f2fs_grab_read_bio(struct inode *inode, block_t blkaddr,
- 	bio->bi_end_io = f2fs_read_end_io;
- 	bio_set_op_attrs(bio, REQ_OP_READ, op_flag);
- 
--	if (f2fs_encrypted_file(inode))
-+	if (f2fs_encrypted_file(inode) && !fscrypt_inode_is_hw_encrypted(inode))
- 		post_read_steps |= 1 << STEP_DECRYPT;
- 	if (post_read_steps) {
- 		ctx = mempool_alloc(bio_post_read_ctx_pool, GFP_NOFS);
-@@ -1519,6 +1567,7 @@ static int f2fs_read_single_page(struct inode *inode, struct page *page,
- 					struct f2fs_map_blocks *map,
- 					struct bio **bio_ret,
- 					sector_t *last_block_in_bio,
-+					u64 *next_dun,
- 					bool is_readahead)
- {
- 	struct bio *bio = *bio_ret;
-@@ -1592,6 +1641,13 @@ static int f2fs_read_single_page(struct inode *inode, struct page *page,
- 		__submit_bio(F2FS_I_SB(inode), bio, DATA);
- 		bio = NULL;
- 	}
-+
-+	if (bio && fscrypt_inode_is_hw_encrypted(inode) &&
-+	    *next_dun != hw_crypt_dun(inode, page->index)) {
-+		__submit_bio(F2FS_I_SB(inode), bio, DATA);
-+		bio = NULL;
-+	}
-+
- 	if (bio == NULL) {
- 		bio = f2fs_grab_read_bio(inode, block_nr, nr_pages,
- 				is_readahead ? REQ_RAHEAD : 0);
-@@ -1611,6 +1667,9 @@ static int f2fs_read_single_page(struct inode *inode, struct page *page,
- 	if (bio_add_page(bio, page, blocksize, 0) < blocksize)
- 		goto submit_and_realloc;
- 
-+	if (fscrypt_inode_is_hw_encrypted(inode))
-+		*next_dun = hw_crypt_dun(inode, page->index) + 1;
-+
- 	inc_page_count(F2FS_I_SB(inode), F2FS_RD_DATA);
- 	ClearPageError(page);
- 	*last_block_in_bio = block_nr;
-@@ -1644,6 +1703,7 @@ static int f2fs_mpage_readpages(struct address_space *mapping,
- 	struct inode *inode = mapping->host;
- 	struct f2fs_map_blocks map;
- 	int ret = 0;
-+	u64 next_dun = 0;
- 
- 	map.m_pblk = 0;
- 	map.m_lblk = 0;
-@@ -1667,7 +1727,8 @@ static int f2fs_mpage_readpages(struct address_space *mapping,
- 		}
- 
- 		ret = f2fs_read_single_page(inode, page, nr_pages, &map, &bio,
--					&last_block_in_bio, is_readahead);
-+					&last_block_in_bio, &next_dun,
-+					is_readahead);
- 		if (ret) {
- 			SetPageError(page);
- 			zero_user_segment(page, 0, PAGE_SIZE);
-@@ -2617,6 +2678,8 @@ static void f2fs_dio_end_io(struct bio *bio)
- {
- 	struct f2fs_private_dio *dio = bio->bi_private;
- 
-+	fscrypt_unset_bio_crypt_ctx(bio);
-+
- 	dec_page_count(F2FS_I_SB(dio->inode),
- 			dio->write ? F2FS_DIO_WRITE : F2FS_DIO_READ);
- 
-@@ -2633,12 +2696,18 @@ static void f2fs_dio_submit_bio(struct bio *bio, struct inode *inode,
- {
- 	struct f2fs_private_dio *dio;
- 	bool write = (bio_op(bio) == REQ_OP_WRITE);
-+	u64 data_unit_num = hw_crypt_dun(inode, file_offset >> PAGE_SHIFT);
- 
- 	dio = f2fs_kzalloc(F2FS_I_SB(inode),
- 			sizeof(struct f2fs_private_dio), GFP_NOFS);
- 	if (!dio)
- 		goto out;
- 
-+	if (fscrypt_set_bio_crypt_ctx(inode, bio, data_unit_num) != 0) {
-+		kvfree(dio);
-+		goto out;
-+	}
-+
- 	dio->inode = inode;
- 	dio->orig_end_io = bio->bi_end_io;
- 	dio->orig_private = bio->bi_private;
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 6b959bbb336a..6399373777ce 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -2229,6 +2229,7 @@ static const struct fscrypt_operations f2fs_cryptops = {
- 	.dummy_context	= f2fs_dummy_context,
- 	.empty_dir	= f2fs_empty_dir,
- 	.max_namelen	= F2FS_NAME_LEN,
-+	.hw_crypt_supp	= true,
- };
- #endif
- 
+This is a redesigned version of the fs-verity patchset, implementing
+Ted's suggestion to build the Merkle tree in the kernel
+(https://lore.kernel.org/linux-fsdevel/20190207031101.GA7387@mit.edu/).
+This greatly simplifies the UAPI, since the verity metadata no longer
+needs to be transferred to the kernel.  Now to enable fs-verity on a
+file, one simply calls FS_IOC_ENABLE_VERITY, passing it this structure:
+
+	struct fsverity_enable_arg {
+		__u32 version;
+		__u32 hash_algorithm;
+		__u32 block_size;
+		__u32 salt_size;
+		__u64 salt_ptr;
+		__u32 sig_size;
+		__u32 __reserved1;
+		__u64 sig_ptr;
+		__u64 __reserved2[11];
+	};
+
+The filesystem then builds the file's Merkle tree and stores it in a
+filesystem-specific location associated with the file.  Afterwards,
+FS_IOC_MEASURE_VERITY can be used to retrieve the file measurement
+("root hash").  The way the file measurement is computed is also
+effectively part of the API (it has to be), but it's logically
+independent of where/how the filesystem stores the Merkle tree.
+
+The API is fully documented in Documentation/filesystems/fsverity.rst,
+along with other aspects of fs-verity.  I also added an FAQ section that
+answers frequently asked questions about fs-verity, e.g. why isn't it
+all at the VFS level, why isn't it part of IMA, why does the Merkle tree
+need to be stored on-disk, etc.
+
+Overview
+--------
+
+This patchset implements fs-verity for ext4 and f2fs.  fs-verity is
+similar to dm-verity, but implemented on a per-file basis: a Merkle tree
+is used to measure (hash) a read-only file's data as it is paged in.
+ext4 and f2fs hide this Merkle tree beyond the end of the file, but
+other filesystems can implement it differently if desired.
+
+In general, fs-verity is intended for use on writable filesystems;
+dm-verity is still recommended on read-only ones.
+
+Similar to fscrypt, most of the code is in fs/verity/, and not too many
+filesystem-specific changes are needed.  The Merkle tree is built by the
+filesystem when the FS_IOC_ENABLE_VERITY ioctl is executed.
+
+fs-verity provides a file measurement (hash) in constant time and
+verifies data on-demand.  Thus, it is useful for efficiently verifying
+the authenticity of large files of which only a small portion may be
+accessed, such as Android application package (APK) files.  It may also
+be useful in "audit" use cases where file hashes are logged.
+
+fs-verity can also provide better protection against malicious disks
+than an ahead-of-time hash, since fs-verity re-verifies data each time
+it's paged in.  Note, however, that any authenticity guarantee is still
+dependent on verification of the file measurement and other relevant
+metadata in a way that makes sense for the overall system; fs-verity is
+only a tool to help with this.
+
+This patchset doesn't include IMA support for fs-verity file
+measurements.  This is planned and we'd like to collaborate with the IMA
+maintainers.  Although fs-verity can be used on its own without IMA,
+fs-verity is primarily a lower level feature (think of it as a way of
+hashing a file), so some users may still need IMA's policy mechanism.
+However, an optional in-kernel signature verification mechanism within
+fs-verity itself is also included.
+
+This patchset is based on v5.2-rc3.  It can also be found in git at tag
+fsverity_2019-06-06 of:
+
+	https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git
+
+fs-verity has a userspace utility:
+
+	https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/fsverity-utils.git
+
+xfstests for fs-verity can be found at branch "fsverity" of:
+
+	https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/xfstests-dev.git
+
+fs-verity is supported by f2fs-tools v1.11.0+ and e2fsprogs v1.45.2+.
+
+Examples of setting up fs-verity protected files can be found in the
+README.md file of fsverity-utils.
+
+Other useful references include:
+
+  - Documentation/filesystems/fsverity.rst, added by the first patch.
+
+  - LWN coverage of v3 patchset: https://lwn.net/Articles/790185/
+
+  - LWN coverage of v2 patchset: https://lwn.net/Articles/775872/
+
+  - LWN coverage of v1 patchset: https://lwn.net/Articles/763729/
+
+  - Presentation at Linux Security Summit North America 2018:
+      - Slides: https://schd.ws/hosted_files/lssna18/af/fs-verity%20slide%20deck.pdf
+      - Video: https://www.youtube.com/watch?v=Aw5h6aBhu6M
+      (This corresponded to the v1 patchset; changes have been made since then.)
+
+  - LWN coverage of LSFMM 2018 discussion: https://lwn.net/Articles/752614/
+
+Changed since v3:
+
+  - The FS_IOC_GETFLAGS ioctl now returns the verity flag.
+
+  - Fixed setting i_verity_info too early.
+
+  - Restored pagecache invalidation in FS_IOC_ENABLE_VERITY.
+
+  - Fixed truncation of fsverity_enable_arg::hash_algorithm.
+
+  - Reject empty files for both open and enable, not just enable.
+
+  - Added a couple more FAQ entries to the documentation.
+
+  - A few minor cleanups.
+
+  - Rebased onto v5.2-rc3.
+
+Changed since v2:
+
+  - Large redesign: the Merkle tree is now built by
+    FS_IOC_ENABLE_VERITY, rather than being provided by userspace.  The
+    fsverity_operations provide an interface for filesystems to read and
+    write the Merkle tree from/to a filesystem-specific location.
+
+  - Lot of refactoring, cleanups, and documentation improvements.
+
+  - Many simplifications, such as simplifying the fsverity_descriptor
+    format, dropping CRC-32 support, and limiting the salt size.
+
+  - ext4 and f2fs now store an xattr that gives the location of the
+    fsverity_descriptor, so loading it is more straightforward.
+
+  - f2fs no longer counts the verity metadata in the on-disk i_size,
+    making it consistent with ext4.
+
+  - Replaced the filesystem-specific fs-verity kconfig options with
+    CONFIG_FS_VERITY.
+
+  - Replaced the filesystem-specific verity bit checks with IS_VERITY().
+
+Changed since v1:
+
+  - Added documentation file.
+
+  - Require write permission for FS_IOC_ENABLE_VERITY, rather than
+    CAP_SYS_ADMIN.
+
+  - Eliminated dependency on CONFIG_BLOCK and clarified that filesystems
+    can verify a page at a time rather than a bio at a time.
+
+  - Fixed conditions for verifying holes.
+
+  - ext4 now only allows fs-verity on extent-based files.
+
+  - Eliminated most of the assumptions that the verity metadata is
+    stored beyond EOF, in case filesystems want to do things
+    differently.
+
+  - Other cleanups.
+
+Eric Biggers (16):
+  fs-verity: add a documentation file
+  fs-verity: add MAINTAINERS file entry
+  fs-verity: add UAPI header
+  fs: uapi: define verity bit for FS_IOC_GETFLAGS
+  fs-verity: add Kconfig and the helper functions for hashing
+  fs-verity: add inode and superblock fields
+  fs-verity: add the hook for file ->open()
+  fs-verity: add the hook for file ->setattr()
+  fs-verity: add data verification hooks for ->readpages()
+  fs-verity: implement FS_IOC_ENABLE_VERITY ioctl
+  fs-verity: implement FS_IOC_MEASURE_VERITY ioctl
+  fs-verity: add SHA-512 support
+  fs-verity: support builtin file signatures
+  ext4: add basic fs-verity support
+  ext4: add fs-verity read support
+  f2fs: add fs-verity support
+
+ Documentation/filesystems/fsverity.rst | 708 +++++++++++++++++++++++++
+ Documentation/filesystems/index.rst    |   1 +
+ Documentation/ioctl/ioctl-number.txt   |   1 +
+ MAINTAINERS                            |  12 +
+ fs/Kconfig                             |   2 +
+ fs/Makefile                            |   1 +
+ fs/ext4/Makefile                       |   1 +
+ fs/ext4/ext4.h                         |  23 +-
+ fs/ext4/file.c                         |   4 +
+ fs/ext4/inode.c                        |  48 +-
+ fs/ext4/ioctl.c                        |  12 +
+ fs/ext4/readpage.c                     | 207 +++++++-
+ fs/ext4/super.c                        |  18 +-
+ fs/ext4/sysfs.c                        |   6 +
+ fs/ext4/verity.c                       | 272 ++++++++++
+ fs/ext4/xattr.h                        |   2 +
+ fs/f2fs/Makefile                       |   1 +
+ fs/f2fs/data.c                         |  72 ++-
+ fs/f2fs/f2fs.h                         |  23 +-
+ fs/f2fs/file.c                         |  40 ++
+ fs/f2fs/inode.c                        |   5 +-
+ fs/f2fs/super.c                        |   3 +
+ fs/f2fs/sysfs.c                        |  11 +
+ fs/f2fs/verity.c                       | 224 ++++++++
+ fs/f2fs/xattr.h                        |   2 +
+ fs/verity/Kconfig                      |  55 ++
+ fs/verity/Makefile                     |  10 +
+ fs/verity/enable.c                     | 353 ++++++++++++
+ fs/verity/fsverity_private.h           | 188 +++++++
+ fs/verity/hash_algs.c                  | 279 ++++++++++
+ fs/verity/init.c                       |  61 +++
+ fs/verity/measure.c                    |  57 ++
+ fs/verity/open.c                       | 363 +++++++++++++
+ fs/verity/signature.c                  | 207 ++++++++
+ fs/verity/verify.c                     | 281 ++++++++++
+ include/linux/fs.h                     |  11 +
+ include/linux/fsverity.h               | 209 ++++++++
+ include/uapi/linux/fs.h                |   1 +
+ include/uapi/linux/fsverity.h          |  40 ++
+ 39 files changed, 3755 insertions(+), 59 deletions(-)
+ create mode 100644 Documentation/filesystems/fsverity.rst
+ create mode 100644 fs/ext4/verity.c
+ create mode 100644 fs/f2fs/verity.c
+ create mode 100644 fs/verity/Kconfig
+ create mode 100644 fs/verity/Makefile
+ create mode 100644 fs/verity/enable.c
+ create mode 100644 fs/verity/fsverity_private.h
+ create mode 100644 fs/verity/hash_algs.c
+ create mode 100644 fs/verity/init.c
+ create mode 100644 fs/verity/measure.c
+ create mode 100644 fs/verity/open.c
+ create mode 100644 fs/verity/signature.c
+ create mode 100644 fs/verity/verify.c
+ create mode 100644 include/linux/fsverity.h
+ create mode 100644 include/uapi/linux/fsverity.h
+
 -- 
 2.22.0.rc1.311.g5d7573a151-goog
 
