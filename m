@@ -2,100 +2,104 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 03E5B4A8C7
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 18 Jun 2019 19:51:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C99094AD4C
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 18 Jun 2019 23:28:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730073AbfFRRvV (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 18 Jun 2019 13:51:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41106 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729285AbfFRRvV (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 18 Jun 2019 13:51:21 -0400
-Received: from gmail.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E84DC205F4;
-        Tue, 18 Jun 2019 17:51:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1560880280;
-        bh=+JwMW+EfA+1KPkG7+F9JNJm/PdgIsMm+vsIk5VyMsXU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jN+UHuS7ftaLSzRz/uIHx1sk5q1R1x1AoYmkjyFeRGM23VC4+ycH6vhtDO6U3CLbJ
-         QF9MEni6U1cDt7guNvx25VfpXPIjhqjCq5psE955shlVQKm+NnVxKNBEUDRsVxFZbD
-         NijVFVXBjZzTi6Rjldw9aQ2M2ZOZ8+cRambf8Z+A=
-Date:   Tue, 18 Jun 2019 10:51:18 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-integrity@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
-        Victor Hsieh <victorhsieh@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v4 14/16] ext4: add basic fs-verity support
-Message-ID: <20190618175117.GF184520@gmail.com>
-References: <20190606155205.2872-1-ebiggers@kernel.org>
- <20190606155205.2872-15-ebiggers@kernel.org>
- <20190615153112.GO6142@mit.edu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190615153112.GO6142@mit.edu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1730267AbfFRV2H (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 18 Jun 2019 17:28:07 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:39088 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729196AbfFRV2G (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 18 Jun 2019 17:28:06 -0400
+Received: by mail-wr1-f66.google.com with SMTP id x4so1042120wrt.6
+        for <linux-fscrypt@vger.kernel.org>; Tue, 18 Jun 2019 14:28:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=NgQVif3SJzNXiAZCno1M2C2zTfT84Y/U1CUnXY4DVsM=;
+        b=zoKcuhnPc6YVnlS3X3fUJX74xIyUsF/Wc3w19VeACAsSP3fFi6sXxOrYahrn4KHoWb
+         M4wXn/yuqgZOr4/oxr98AUkEp3V/OlQnzQxj/5NCSiPikL2n62i6k0JH1clAtRtEdhWh
+         D2B3Yb/hvBB3wnXKMPBfraXnKPX1XSOdGLz/Vyl3ApnwHXU4nzTqNnzL98gOCJPuuASf
+         brEC8unTqTLjtqnIxDWeuOXc+NZRrrKybJRa7I9oTfyQyJ5JhGzpgl3LDyB8d+L8GKo7
+         TScSIfSdX1U/dOcgU6Rsny5veX3bsVYUtWP73SPGPTXURai1Pi0D3mhbBlCl7xib8QDd
+         j/aA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=NgQVif3SJzNXiAZCno1M2C2zTfT84Y/U1CUnXY4DVsM=;
+        b=b7sP+aJkjh9OuVEuUqF4GVBg51iXTT5kmHIwFk2LsMuIX/chTYRErsjPPYn2iOZUlg
+         IyUQOskZzOyRuizdGXDgYVZvLq9f8LJ8iJ8c+MN2QXx/dKONipy+/DEXC25xzagndqo2
+         xH3t2MDevUw7DCJn3+hBTGiYqZU5hBjQHwrQq68+GdGRD9enCPkLMsYb2JqLN/4Umil0
+         w7CakbZtMXKoNRPrjXHeAgIvjgVXmExSyLW1GT+42odbaukFvw3AElkJGRuB0iCl/n7V
+         zQCpIZ7tEEwoYTFxJqQnRjM+MPOdYRDwMKl5g8b6HML6AZJ8w4IYYxHQWilj1msc/qW5
+         /TLQ==
+X-Gm-Message-State: APjAAAUeWFj4q8sDbF9alVFVzaWoHgZQKprjybhmYOXGx5cq2HmAmqcL
+        GFvisd5H71MIprngLG4OajISBA==
+X-Google-Smtp-Source: APXvYqxCmwvTG3xENPWFv7zECq2kphLnb2KN6MXafy6Nrte3k30uDJ2JFjEDHUMHHdlkW7sQi76feA==
+X-Received: by 2002:adf:f442:: with SMTP id f2mr16345724wrp.275.1560893284262;
+        Tue, 18 Jun 2019 14:28:04 -0700 (PDT)
+Received: from e111045-lin.arm.com (lfbn-nic-1-216-10.w2-15.abo.wanadoo.fr. [2.15.62.10])
+        by smtp.gmail.com with ESMTPSA id h21sm2273831wmb.47.2019.06.18.14.28.03
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Tue, 18 Jun 2019 14:28:03 -0700 (PDT)
+From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
+To:     linux-crypto@vger.kernel.org
+Cc:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Eric Biggers <ebiggers@google.com>, dm-devel@redhat.com,
+        linux-fscrypt@vger.kernel.org,
+        Gilad Ben-Yossef <gilad@benyossef.com>,
+        Milan Broz <gmazyland@gmail.com>
+Subject: [PATCH v2 0/4]  crypto: switch to crypto API for ESSIV generation
+Date:   Tue, 18 Jun 2019 23:27:45 +0200
+Message-Id: <20190618212749.8995-1-ard.biesheuvel@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Sat, Jun 15, 2019 at 11:31:12AM -0400, Theodore Ts'o wrote:
-> On Thu, Jun 06, 2019 at 08:52:03AM -0700, Eric Biggers wrote:
-> > +/*
-> > + * Format of ext4 verity xattr.  This points to the location of the verity
-> > + * descriptor within the file data rather than containing it directly because
-> > + * the verity descriptor *must* be encrypted when ext4 encryption is used.  But,
-> > + * ext4 encryption does not encrypt xattrs.
-> > + */
-> > +struct fsverity_descriptor_location {
-> > +	__le32 version;
-> > +	__le32 size;
-> > +	__le64 pos;
-> > +};
-> 
-> What's the benefit of storing the location in an xattr as opposed to
-> just keying it off the end of i_size, rounded up to next page size (or
-> 64k) as I had suggested earlier?
-> 
-> Using an xattr burns xattr space, which is a limited resource, and it
-> adds some additional code complexity.  Does the benefits outweigh the
-> added complexity?
-> 
-> 						- Ted
+This series creates an ESSIV template that produces a skcipher or AEAD
+transform based on a tuple of the form '<skcipher>,<cipher>,<shash>'
+(or '<aead>,<cipher>,<shash>' for the AEAD case). It exposes the
+encapsulated sync or async skcipher/aead by passing through all operations,
+while using the cipher/shash pair to transform the input IV into an ESSIV
+output IV.
 
-It means that only the fs/verity/ support layer has to be aware of the format of
-the fsverity_descriptor, and the filesystem can just treat it an as opaque blob.
+This matches what both users of ESSIV in the kernel do, and so it is proposed
+as a replacement for those, in patches #2 and #4.
 
-Otherwise the filesystem would need to read the first 'sizeof(struct
-fsverity_descriptor)' bytes and use those to calculate the size as
-'sizeof(struct fsverity_descriptor) + le32_to_cpu(desc.sig_size)', then read the
-rest.  Is this what you have in mind?
+This code has been tested using the fscrypt test suggested by Eric
+(generic/549), as well as the mode-test script suggested by Milan for
+the dm-crypt case. I also tested the aead case in a virtual machine,
+but it definitely needs some wider testing from the dm-crypt experts.
 
-Alternatively the filesystem could prepend the fsverity_descriptor with its
-size, similar to how in the v1 and v2 patchsets there was an fsverity_footer
-appended to the fsverity_descriptor.  But an xattr seems a cleaner approach to
-store a few bytes that don't need to be encrypted.
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Eric Biggers <ebiggers@google.com>
+Cc: dm-devel@redhat.com
+Cc: linux-fscrypt@vger.kernel.org
+Cc: Gilad Ben-Yossef <gilad@benyossef.com>
+Cc: Milan Broz <gmazyland@gmail.com>
 
-Putting the verity descriptor before the Merkle tree also means that we'd have
-to pass the desc_size to ->begin_enable_verity(), ->read_merkle_tree_page(), and
-->write_merkle_tree_block(), versus just passing the merkle_tree_size to
-->end_enable_verity().  This would be easy, but it would still add a bit of
-complexity in the fsverity_operations rather than reduce it.
+Ard Biesheuvel (4):
+  crypto: essiv - create wrapper template for ESSIV generation
+  fs: crypto: invoke crypto API for ESSIV handling
+  md: dm-crypt: infer ESSIV block cipher from cipher string directly
+  md: dm-crypt: switch to ESSIV crypto API template
 
-It's also somewhat nice to have the version number in the xattr, in case we ever
-introduce a new fs-verity format for ext4 or f2fs.
+ crypto/Kconfig              |   4 +
+ crypto/Makefile             |   1 +
+ crypto/essiv.c              | 624 ++++++++++++++++++++
+ drivers/md/Kconfig          |   1 +
+ drivers/md/dm-crypt.c       | 237 ++------
+ fs/crypto/Kconfig           |   1 +
+ fs/crypto/crypto.c          |   5 -
+ fs/crypto/fscrypt_private.h |   9 -
+ fs/crypto/keyinfo.c         |  88 +--
+ 9 files changed, 675 insertions(+), 295 deletions(-)
+ create mode 100644 crypto/essiv.c
 
-So to me, it doesn't seem like the other possible solutions are better.
+-- 
+2.17.1
 
-- Eric
