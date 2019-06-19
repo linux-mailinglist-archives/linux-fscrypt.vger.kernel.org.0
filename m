@@ -2,115 +2,133 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AED054B052
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 19 Jun 2019 05:06:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B03C84B27B
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 19 Jun 2019 08:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729356AbfFSDGA (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 18 Jun 2019 23:06:00 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:47305 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726037AbfFSDGA (ORCPT
+        id S1726142AbfFSG4i (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 19 Jun 2019 02:56:38 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:36390 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725980AbfFSG4i (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 18 Jun 2019 23:06:00 -0400
-Received: from callcc.thunk.org ([66.31.38.53])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x5J35NPK021631
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 Jun 2019 23:05:24 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id C0BD1420484; Tue, 18 Jun 2019 23:05:22 -0400 (EDT)
-Date:   Tue, 18 Jun 2019 23:05:22 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-integrity@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
-        Victor Hsieh <victorhsieh@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v4 14/16] ext4: add basic fs-verity support
-Message-ID: <20190619030522.GA28351@mit.edu>
-References: <20190606155205.2872-1-ebiggers@kernel.org>
- <20190606155205.2872-15-ebiggers@kernel.org>
- <20190615153112.GO6142@mit.edu>
- <20190618175117.GF184520@gmail.com>
- <20190618224615.GB4576@mit.edu>
- <20190618234133.GL184520@gmail.com>
+        Wed, 19 Jun 2019 02:56:38 -0400
+Received: by mail-wm1-f65.google.com with SMTP id u8so480708wmm.1;
+        Tue, 18 Jun 2019 23:56:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:openpgp:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=z5Lq2K5kUPobNobq2iR7E+LqKNxsXkXSwtrm7ZATaEM=;
+        b=o0jxOh/kY0d4eqeiQKNpijXiGIDk2kg+2hmcewaLRor4DykVFIrarwPOgKP12N+Oma
+         B56aX4r36wMZhGWg77z5MQQi8h/hmxYIl1PJ7tcKNbkw0hDghbFLopyAHlGY1sZylF7Z
+         XMbH9qSc6pFGlF7N39AKBE9UVRZLaxJT06HOPNUhR/oAPcU8gzURr48QQQqdO78oKnVR
+         M4neTbwb4MDj1T6Amjiki4sG/eBSoHAr9AB8bj/sH7pydwotptmfe+mcicuaZ57QnFcw
+         eizPeHHGhRdp4yJdqwl2aRhHaK95m4B4Cu4r66Y5Pgpj0LDqjeQE8gsGZygA4bmyiNBq
+         QW6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:openpgp:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=z5Lq2K5kUPobNobq2iR7E+LqKNxsXkXSwtrm7ZATaEM=;
+        b=W2C2tyCn+F56r9qiqd6YBRWBN77g2p+fNoIexWEqmCEDcy997O+SgTkZUreRZeBPN6
+         +QDInyPIxPF3tdGBdWYQ1wIImGYRGllCusCnufSDkitAezLUwes0aI9CuIGv32XEsg4J
+         aJIcYipN59RY6PdOtVtvEwc4KLT/oeRFEcDUqII+GAo/5VmlcZDjoKPMZ/W2Efyxd+r5
+         JBFHoSEcvIGe8gpv4qCNfoT+HJAv68QA8+WSgsfTS96xmhQAqa45HnUd1/Ym6rZi+6aY
+         DhJ0RvD4B9NzU3f3W4145SmMut3mNQOtMKWwP6Zl3sgiqlXn8nFupXs2aJgXSAntu69l
+         WQbA==
+X-Gm-Message-State: APjAAAWn5HcRpAsOEzMftqHEXuZyZqKwCEoL/iVkyQditoOwCNc///oM
+        N3XoAKfFtBH02CT2ftSReZf73rl7Nc49dQ==
+X-Google-Smtp-Source: APXvYqwG07vLMQDZN3G5vu06Z8GCIDSxUmuZsFWTbKDRWd1Dw0ykn7p6vWNnoI81MtOovKpcrhufeQ==
+X-Received: by 2002:a1c:44d4:: with SMTP id r203mr6577226wma.158.1560927395287;
+        Tue, 18 Jun 2019 23:56:35 -0700 (PDT)
+Received: from [10.43.17.224] (nat-pool-brq-t.redhat.com. [213.175.37.10])
+        by smtp.gmail.com with ESMTPSA id l1sm26603752wrf.46.2019.06.18.23.56.34
+        (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
+        Tue, 18 Jun 2019 23:56:34 -0700 (PDT)
+Subject: Re: [PATCH v2 0/4] crypto: switch to crypto API for ESSIV generation
+To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        linux-crypto@vger.kernel.org
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Eric Biggers <ebiggers@google.com>, dm-devel@redhat.com,
+        linux-fscrypt@vger.kernel.org,
+        Gilad Ben-Yossef <gilad@benyossef.com>
+References: <20190618212749.8995-1-ard.biesheuvel@linaro.org>
+From:   Milan Broz <gmazyland@gmail.com>
+Openpgp: preference=signencrypt
+Message-ID: <099346ee-af6e-a560-079d-3fb68fb4eeba@gmail.com>
+Date:   Wed, 19 Jun 2019 08:56:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190618234133.GL184520@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190618212749.8995-1-ard.biesheuvel@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, Jun 18, 2019 at 04:41:34PM -0700, Eric Biggers wrote:
+On 18/06/2019 23:27, Ard Biesheuvel wrote:
+> This series creates an ESSIV template that produces a skcipher or AEAD
+> transform based on a tuple of the form '<skcipher>,<cipher>,<shash>'
+> (or '<aead>,<cipher>,<shash>' for the AEAD case). It exposes the
+> encapsulated sync or async skcipher/aead by passing through all operations,
+> while using the cipher/shash pair to transform the input IV into an ESSIV
+> output IV.
 > 
-> I don't think your proposed solution is so simple.  By definition the last
-> extent ends on a filesystem block boundary, while the Merkle tree ends on a
-> Merkle tree block boundary.  In the future we might support the case where these
-> differ, so we don't want to preclude that in the on-disk format we choose now.
-> Therefore, just storing the desc_size isn't enough; we'd actually have to store
-> (desc_pos, desc_size), like I'm doing in the xattr.
+> This matches what both users of ESSIV in the kernel do, and so it is proposed
+> as a replacement for those, in patches #2 and #4.
+> 
+> This code has been tested using the fscrypt test suggested by Eric
+> (generic/549), as well as the mode-test script suggested by Milan for
+> the dm-crypt case. I also tested the aead case in a virtual machine,
+> but it definitely needs some wider testing from the dm-crypt experts.
 
-I don't think any of this matters much, since what you're describing
-above is all about the Merkle tree, and that doesn't affect how we
-find the fsverity descriptor information.  We can just say that
-fsverity descriptor block begins on the next file system block
-boundary after the Merkle tree.  And in the case where say, the Merkle
-tree is 4k and the file system block size is 64k, that's fine --- the
-fs descriptor would just begin at the next 64k (fs blocksize)
-boundary.
+Well, I just run "make check" on cyptsetup upstream (32bit VM, Linus' tree
+with this patcheset applied), and get this on the first api test...
 
-> Also, using ext4_find_extent() to find the last mapped block (as the v1 and v2
-> patchsets did) assumes the file actually uses extents.  So we'd have to forbid
-> non-extents based files as a special case, as the v2 patchset did.  We'd also
-> have to find a way to implement the same functionality on f2fs (which should be
-> possible, but it seems it would require some new code; there's nothing like
-> f2fs_get_extent()) unless we did something different for f2fs.
+Just try
+cryptsetup open --type plain -c aes-cbc-essiv:sha256 /dev/sdd test
 
-So first, if f2fs wants to continue using the xattr, that's fine.  The
-code to write and fetch the fsverity descriptor is in file system
-specific code, and so this is something I'm happy to support just for
-ext4, and it shouldn't require any special changes in the common
-fsverity code at all.  Secondly, I suspect it's not *that* hard to
-find the last logical block mapping in f2fs, but I'll let Jaeguk
-comment on that.
+kernel: alg: No test for essiv(cbc(aes),aes,sha256) (essiv(cbc-aes-aesni,aes-aesni,sha256-generic))
+kernel: BUG: unable to handle page fault for address: 00c14578
+kernel: #PF: supervisor read access in kernel mode
+kernel: #PF: error_code(0x0000) - not-present page
+kernel: *pde = 00000000 
+kernel: Oops: 0000 [#1] PREEMPT SMP
+kernel: CPU: 2 PID: 15611 Comm: kworker/u17:2 Not tainted 5.2.0-rc5+ #519
+kernel: Hardware name: VMware, Inc. VMware Virtual Platform/440BX Desktop Reference Platform, BIOS 6.00 04/13/2018
+kernel: Workqueue: kcryptd/253:2 kcryptd_crypt [dm_crypt]
+kernel: EIP: essiv_skcipher_decrypt+0x3/0x20
+kernel: Code: 5f 5d c3 90 90 90 90 55 8b 48 0c 89 e5 8d 41 10 ff 51 18 5d c3 66 90 55 8b 40 0c 89 e5 ff 50 08 5d c3 8d 74 26 00 90 8b 50 58 <f6> 02 01 75 10 55 83 c0 38 89 e5 ff 52 f0 5d c3 8d 74 26 00 90 b8
+kernel: EAX: ee87fc08 EBX: ee87fd40 ECX: ee87fdc4 EDX: 00c14578
+kernel: ESI: ee87fb78 EDI: f0a70800 EBP: ef7a9ed8 ESP: ef7a9e3c
+kernel: DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068 EFLAGS: 00010246
+kernel: CR0: 80050033 CR2: 00c14578 CR3: 01b87000 CR4: 00140690
+kernel: Call Trace:
+kernel:  ? crypt_convert+0x864/0xe50 [dm_crypt]
+kernel:  ? static_obj+0x32/0x50
+kernel:  ? lockdep_init_map+0x34/0x1b0
+kernel:  ? __init_waitqueue_head+0x29/0x40
+kernel:  kcryptd_crypt+0xca/0x3b0 [dm_crypt]
+kernel:  ? process_one_work+0x1a6/0x5a0
+kernel:  process_one_work+0x214/0x5a0
+kernel:  worker_thread+0x134/0x3e0
+kernel:  ? process_one_work+0x5a0/0x5a0
+kernel:  kthread+0xd4/0x100
+kernel:  ? process_one_work+0x5a0/0x5a0
+kernel:  ? kthread_park+0x90/0x90
+kernel:  ret_from_fork+0x19/0x24
+kernel: Modules linked in: dm_zero dm_integrity async_xor xor async_tx dm_verity reed_solomon dm_bufio dm_crypt loop dm_mod pktcdvd crc32_pclmul crc32c_intel aesni_intel aes_i586 crypto_simd cryptd ata_piix
+kernel: CR2: 0000000000c14578
+kernel: ---[ end trace 8a651b067b7b6a10 ]---
+kernel: EIP: essiv_skcipher_decrypt+0x3/0x20
+kernel: Code: 5f 5d c3 90 90 90 90 55 8b 48 0c 89 e5 8d 41 10 ff 51 18 5d c3 66 90 55 8b 40 0c 89 e5 ff 50 08 5d c3 8d 74 26 00 90 8b 50 58 <f6> 02 01 75 10 55 83 c0 38 89 e5 ff 52 f0 5d c3 8d 74 26 00 90 b8
+kernel: EAX: ee87fc08 EBX: ee87fd40 ECX: ee87fdc4 EDX: 00c14578
+kernel: ESI: ee87fb78 EDI: f0a70800 EBP: ef7a9ed8 ESP: c1b8b45c
+kernel: DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068 EFLAGS: 00010246
+kernel: CR0: 80050033 CR2: 00c14578 CR3: 01b87000 CR4: 00140690
 
-Finally, it's not that hard to find the last mapped block for indirect
-blocks, if we really care about supporting that combination.  (There
-are enough other things --- like fallocate --- which don't work with
-indirect mapped files, so I don't feel especially bad forbidding that
-combination.  A quick check in enable_verity() to return EOPNOTSUPP if
-the EXTENTS_FL flag is not present is not all that different from what
-we do with fallocate today.)
-
-But if we *did* want to support it, it's actually quite easy to find
-the last mapped block for an indirect mapped inode.  I just didn't
-bother to write the code, but it requires at most 3 block reads if
-there is a triple indirection block.  Otherwise, if there is a double
-indirection block in the inode, it requires at most 2 block reads, and
-otherwise, at most a single block read.
-
-> Note that on Android devices (the motivating use case for fs-verity), the xattrs
-> of user data files on ext4 already spill into an external xattr block, due to
-> the fscrypt and SELinux xattrs.  If/when people actually start caring about
-> this, they'll need to increase the inode size to 512 bytes anyway, in which case
-> there will be plenty of space for a few more in-line xattrs.  So I don't think
-> we should jump through too many hoops to avoid using an xattr.
-
-I'm thinking about other cases where we might not be using fscrypt,
-but where we might still be using fsverity and SELinux --- or maybe
-cases where the file systems are using 128 byte inodes, and where only
-fsverity is required.  (There are a *vast* number of production file
-systems using 128 byte inodes.)
-
-Cheers,
-
-						- Ted
+Milan
