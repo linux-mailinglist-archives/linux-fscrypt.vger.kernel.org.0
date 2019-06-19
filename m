@@ -2,90 +2,80 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 432904C3D1
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 20 Jun 2019 00:44:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 852C84C3D5
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 20 Jun 2019 00:45:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726479AbfFSWoD (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 19 Jun 2019 18:44:03 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:42878 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726322AbfFSWoD (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 19 Jun 2019 18:44:03 -0400
-Received: by mail-io1-f66.google.com with SMTP id u19so137519ior.9
-        for <linux-fscrypt@vger.kernel.org>; Wed, 19 Jun 2019 15:44:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cqxlS8TUrayOrx9RbCCJk5wRQ9lf+ZHmU1Gk3w573sA=;
-        b=Zo1OClAyhkahly1M3GDgTSgP8bluNQ3KeJKArO+j5QmLCtuO3iq7To5FgWOUm2TQ7H
-         vnxsuXXb9FhJZEtz7mnlEpM7m6n1QPIJ428Tktag2AvEf3iFS9wxAIQwevEtXysPQXxr
-         F17f2AZUvSmIuo5i/y/ioaQFG2wivHpLH4+EtPD22dBE/YkIIjVt+yMpQen2bEnocUab
-         FlWffctvJ22Z82i77vdnmcRkbW14uOwLDAl5ZTFsiJ8BEqN+yEbdvCxmOTWd3BZzqbEx
-         Gzixhlz8c1YWVEXGT1+zas646xkbxUlm93S+2MSNB91B0zxwF05m7IK3rQGMrVuJFdFS
-         U0HQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cqxlS8TUrayOrx9RbCCJk5wRQ9lf+ZHmU1Gk3w573sA=;
-        b=Fkud4muScmWJlleQ6oA5NGOrQer3FSB7ayawcqmImmdfJRMhWBa6IYf6mkM1UEj32g
-         s3e1nBrE0CFWajfVe+SQKUncbwYAGLGWxusik2pBhunPn3yAoXDz9imsiJuHOcDmofGh
-         iLVre3Ly9n2Qfg9C3u2yIdFmLZg9A8CvEVdtIvDA3fAntlqCzJ/IGHyLUAAfjNjMvxpT
-         i8+LdNhYZDANnRfyXLlag8zRoPoRDTv71qua6bCbqOR+dsjU83QB1KpvWva5YFduSzOG
-         zllMNgtLtRnB3/kEsfgF2U7b2QvH1HCj/3uH6JuVy6+2HBwESd3fwHfDY6Df0Yqmrubz
-         kShA==
-X-Gm-Message-State: APjAAAUVGsOMjtBvRNcF9q8yB/qQY/FIuGg/r29zfVcLMeTr2YhhNgd9
-        DQq47/JIuSMpqelxCnckvSiyfN4yk8XBGs7cWD/CWw==
-X-Google-Smtp-Source: APXvYqw/sCUfskyBvggMUZjvIJpXali3ibXg+KltmWlgJQ0z55nAS0Yzei1eJqAONy0eZ2XuO0dBunkxkRJM9M2L9to=
-X-Received: by 2002:a5e:820a:: with SMTP id l10mr13301247iom.283.1560984242534;
- Wed, 19 Jun 2019 15:44:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190619162921.12509-1-ard.biesheuvel@linaro.org>
- <20190619162921.12509-7-ard.biesheuvel@linaro.org> <20190619223710.GC33328@gmail.com>
-In-Reply-To: <20190619223710.GC33328@gmail.com>
-From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Date:   Thu, 20 Jun 2019 00:43:50 +0200
-Message-ID: <CAKv+Gu8_iPOA58xP+y-UvF7SPt86uYZZRb0Z9jEHo3d3Q6PhCg@mail.gmail.com>
-Subject: Re: [PATCH v3 6/6] crypto: arm64/aes - implement accelerated
- ESSIV/CBC mode
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        device-mapper development <dm-devel@redhat.com>,
+        id S1726479AbfFSWpx (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 19 Jun 2019 18:45:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49844 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726251AbfFSWpx (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 19 Jun 2019 18:45:53 -0400
+Received: from gmail.com (unknown [104.132.1.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6012A2085A;
+        Wed, 19 Jun 2019 22:45:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1560984352;
+        bh=3qUrUVlZN3408V1zM+36w2+cVHhWM0gqh7CfNIECHj0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Tjy3ZTw2p83PAsbpLWyyaSKRrO7J8UvuBAO+MPoMfhGqDUVMroleoXoMb9gpwrwza
+         8T/fWiWXDKLTObrrazTge+m2tBb8WfQikRSAK72mCzw42oWz1HhgXJRwFGHvk4M0H8
+         ibiN/arbEjCVQQqwYGQSxc6jGgAlP20gaFASLXHg=
+Date:   Wed, 19 Jun 2019 15:45:51 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Cc:     linux-crypto@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>, dm-devel@redhat.com,
         linux-fscrypt@vger.kernel.org,
         Gilad Ben-Yossef <gilad@benyossef.com>,
         Milan Broz <gmazyland@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH v3 2/6] fs: crypto: invoke crypto API for ESSIV handling
+Message-ID: <20190619224550.GD33328@gmail.com>
+References: <20190619162921.12509-1-ard.biesheuvel@linaro.org>
+ <20190619162921.12509-3-ard.biesheuvel@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190619162921.12509-3-ard.biesheuvel@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, 20 Jun 2019 at 00:37, Eric Biggers <ebiggers@kernel.org> wrote:
->
-> On Wed, Jun 19, 2019 at 06:29:21PM +0200, Ard Biesheuvel wrote:
-> > Add an accelerated version of the 'essiv(cbc(aes),aes,sha256)'
-> > skcipher, which is used by fscrypt, and in some cases, by dm-crypt.
-> > This avoids a separate call into the AES cipher for every invocation.
-> >
-> > Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
->
-> I'm not sure we should bother with this, since fscrypt normally uses AES-256-XTS
-> for contents encryption.  AES-128-CBC-ESSIV support was only added because
-> people wanted something that is fast on low-powered embedded devices with crypto
-> accelerators such as CAAM or CESA that don't support XTS.
->
-> In the case of Android, the CDD doesn't even allow AES-128-CBC-ESSIV with
-> file-based encryption (fscrypt).  It's still the default for "full disk
-> encryption" (which uses dm-crypt), but that's being deprecated.
->
-> So maybe dm-crypt users will want this, but I don't think it's very useful for
-> fscrypt.
->
+On Wed, Jun 19, 2019 at 06:29:17PM +0200, Ard Biesheuvel wrote:
+> Instead of open coding the calculations for ESSIV handling, use a
+> ESSIV skcipher which does all of this under the hood.
+> 
+> Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+> ---
+>  fs/crypto/Kconfig           |  1 +
+>  fs/crypto/crypto.c          |  5 --
+>  fs/crypto/fscrypt_private.h |  9 --
+>  fs/crypto/keyinfo.c         | 88 +-------------------
+>  4 files changed, 3 insertions(+), 100 deletions(-)
+> 
+> diff --git a/fs/crypto/Kconfig b/fs/crypto/Kconfig
+> index 24ed99e2eca0..b0292da8613c 100644
+> --- a/fs/crypto/Kconfig
+> +++ b/fs/crypto/Kconfig
+> @@ -5,6 +5,7 @@ config FS_ENCRYPTION
+>  	select CRYPTO_AES
+>  	select CRYPTO_CBC
+>  	select CRYPTO_ECB
+> +	select CRYPTO_ESSIV
+>  	select CRYPTO_XTS
+>  	select CRYPTO_CTS
+>  	select CRYPTO_SHA256
 
-If nobody cares, we can drop it. I don't feel too strongly about this,
-and since it is on the mailinglist now, people will be able to find it
-and ask for it to be merged if they have a convincing use case.
+Selecting CRYPTO_ESSIV is fine for now, but I'd really like to de-bloat the
+dependencies of FS_ENCRYPTION (probably in a separate patch) by removing
+CRYPTO_ESSIV and CRYPTO_SHA256 and documenting in the encryption modes section
+of Documentation/filesystems/fscrypt.rst that people need to select them
+themselves if they want to use AES-128-CBC.  I already took that approach when I
+added Adiantum support, so we don't force all fscrypt users to build Adiantum,
+ChaCha, Poly1305, etc. into their kernels.
+
+- Eric
