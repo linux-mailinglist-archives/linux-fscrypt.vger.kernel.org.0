@@ -2,146 +2,95 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 73DAF4CE65
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 20 Jun 2019 15:14:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D5614CEED
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 20 Jun 2019 15:35:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731971AbfFTNO4 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 20 Jun 2019 09:14:56 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:45518 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726952AbfFTNO4 (ORCPT
+        id S1731954AbfFTNfl (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 20 Jun 2019 09:35:41 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:33416 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726562AbfFTNfl (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 20 Jun 2019 09:14:56 -0400
-Received: by mail-wr1-f67.google.com with SMTP id f9so2951273wre.12;
-        Thu, 20 Jun 2019 06:14:54 -0700 (PDT)
+        Thu, 20 Jun 2019 09:35:41 -0400
+Received: by mail-io1-f67.google.com with SMTP id u13so557224iop.0
+        for <linux-fscrypt@vger.kernel.org>; Thu, 20 Jun 2019 06:35:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:openpgp:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=yUEjeqQ0jNyrj9kyIDpLfI3dn5L2tIgCnprfg5xm1/c=;
-        b=ShTJHW6Udd+/LO/fIOr8xO03mRnKoXy3kpjQxkHSCJDlcadPO4WrmNfFwjNYFk75M8
-         yr3leADjmiHH1pynhsZgiQYqXu/4DRdLzPapwV+Eb05vLXR4PRThYyxdABLREf+v8FRO
-         qesMcdbvenbMowdKbRAsMsNks9rSDvFkGD4txyMngAj54Tp24bFCoO5htf2MHTPSywo8
-         ocS1Zu8VrYi5XtcjH9YUsO9sGQ5BEMY/fDAKtjI1LBX/iSyonmS6q2TYI3dq32MWDZG6
-         uWY/I+NdkWjKkW5B3BtjZXs5Yw8NMmMjx7KN17n6/u8Q8dO1miDpfCIqYe96O29d2KLo
-         kgXg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BIDlsIvtATsL3hA5QAEsaHCyI03s2C5u03IcGdawceo=;
+        b=o9alXZRUfb+rgrya2OuK7msSKBSLIOUcWsFtVHJICr1ID4KycIx7HeXphqKApgwkI9
+         iw0YS5AdA0fd8S83GuH7isN4P46piJaZucQrcO8ruXW+kJlrMAlX7V3RGwNhUMBHwusy
+         CKEO6hOXtvhXh8p3lY2HbCSH+vJY+2boyK2mzZ+5o73aqFC2CzeGmVxRVgquHcMCRso4
+         CC/ckDTCWo5P1Lhs3Hz5hBXUExB8hoc+AiNI21xrnOnoXE8FK+7zsnyuEz5t7kEGTuGf
+         wCKoKqoq4Tskwk2qh+Y240HsyZpWKtvGadkxkAFffQ3V/GkdyDzDIDUFJ1NZsm/n7kRv
+         xq/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:openpgp:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yUEjeqQ0jNyrj9kyIDpLfI3dn5L2tIgCnprfg5xm1/c=;
-        b=A+LXSAp6Gt/GV7oWqTzbu720+Z7Q/jf7hSZsnBZ5wRkdaGwh3DAPR32eT6KR9SVULi
-         atABMXP7CXRRLT8F0KVJ+Mz3Sz55JhidPVEQ7mdI0HF5VT5eVuuYTWJDn0nQvWPmL3sr
-         t6nECYgA0JvenLJLBS6WZEHVi06/gXjlgTMkrzQ5KFNagVQzHXIEWjg+6gyTPxZBHb+t
-         20PjYnzHGcD1H+j3pr9bE6tD9oXR1w/oSBVKOT5BmarsHiRn1f7CjT086//61SUXvQNJ
-         iU5I5vPPK0HHLvNE+HIlx9GmsCwIXz0gf3LZxfoz4z6m/xRFLY6dsqPl1sk8hOdxqlv2
-         Pu9Q==
-X-Gm-Message-State: APjAAAWwKEAJ/uv/X0CsUyBahTHBBCAtc+HJ75hwnoJywCt5bzfRmN4I
-        MkuaRY8DQaRBEB/PkvODCzU=
-X-Google-Smtp-Source: APXvYqzkYTONjcOvje7w7mlhrENaLDkyERI+zs7xtF5UEmgBcddzsKV9+lyHCOnmYpjzRy3uQ+K+Qw==
-X-Received: by 2002:a5d:4ac9:: with SMTP id y9mr3756893wrs.178.1561036494161;
-        Thu, 20 Jun 2019 06:14:54 -0700 (PDT)
-Received: from [172.22.36.64] (redhat-nat.vtp.fi.muni.cz. [78.128.215.6])
-        by smtp.gmail.com with ESMTPSA id k82sm5780984wma.15.2019.06.20.06.14.53
-        (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
-        Thu, 20 Jun 2019 06:14:53 -0700 (PDT)
-Subject: Re: [PATCH v3 0/6] crypto: switch to crypto API for ESSIV generation
-To:     Milan Broz <gmazyland@gmail.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Cc:     linux-crypto@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Eric Biggers <ebiggers@google.com>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BIDlsIvtATsL3hA5QAEsaHCyI03s2C5u03IcGdawceo=;
+        b=J0j9pJz4SdcW+tqCWcil1wOz4wvTqaL5kmlcb8lA58wpyZKcCuzn9/JtfIj3IUND23
+         t5qmmhVwFIq6N8cwnE4SbIX9bgQlNOsRZY9zgeqqQ3WKICzuAYZ+zZkhpfc3LoCdw1l9
+         4KOTb0bUQ1u+fLiGlxCgbqPbtEHralbWh6b2mrR9dM2yGtKsfwlmrMTcWjEo5s7hNuHM
+         sW+cZ2mY8PHpaNJirq51d/lJKPU7Ggec+VLixeIDtYITud0nbR7WL5Qb8QMdI8mGlrJC
+         eyMf6LH7yamEKWDotxVvBaZQNTAk94kkewbq2JyMfExsO1wmTQxlzHYxJpUSkV8xSpa5
+         ZfkA==
+X-Gm-Message-State: APjAAAWUCyZ/+Di9FZSRRI2NssgEYywM6Yk9ChVuP/v/a2YzqMc7ky0H
+        YfgCNu5+I1HR/lD+XLtW8pyx8LjYFyIYWDvw7n+9jkqAB5M=
+X-Google-Smtp-Source: APXvYqxDNCT96WaC9Fy8q5f65kLAobnwxGYT6HTiFYdT15g7/FQXFMdaTJClLAv6we1Ldq6NmxiyxWHSpR02EcCMayA=
+X-Received: by 2002:a02:9143:: with SMTP id b3mr48893jag.12.1561037740085;
+ Thu, 20 Jun 2019 06:35:40 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190619162921.12509-1-ard.biesheuvel@linaro.org>
+ <20190619162921.12509-2-ard.biesheuvel@linaro.org> <20190620010417.GA722@sol.localdomain>
+ <20190620011325.phmxmeqnv2o3wqtr@gondor.apana.org.au> <CAKv+Gu-OwzmoYR5uymSNghEVc9xbkkt5C8MxAYA48UE=yBgb5g@mail.gmail.com>
+ <20190620125339.gqup5623sw4xrsmi@gondor.apana.org.au> <CAKv+Gu_z3oMB-XBHRrNWpXNbSmb4CFC8VNn8s+8bOd-JjiakqQ@mail.gmail.com>
+In-Reply-To: <CAKv+Gu_z3oMB-XBHRrNWpXNbSmb4CFC8VNn8s+8bOd-JjiakqQ@mail.gmail.com>
+From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Date:   Thu, 20 Jun 2019 15:35:28 +0200
+Message-ID: <CAKv+Gu_7dQsJdb1Wmn2mzG7HFcfjF7ggGzUyPB5b_JR0ujHCrQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/6] crypto: essiv - create wrapper template for ESSIV generation
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
         device-mapper development <dm-devel@redhat.com>,
         linux-fscrypt@vger.kernel.org,
-        Gilad Ben-Yossef <gilad@benyossef.com>
-References: <20190619162921.12509-1-ard.biesheuvel@linaro.org>
- <459f5760-3a1c-719d-2b44-824ba6283dd7@gmail.com>
- <CAKv+Gu9jk8KxWykTcKeh6k0HUb47wgx7iZYuwwN8AUyErFLXxA@mail.gmail.com>
- <075cddec-1603-4a23-17c4-c766b4bd9086@gmail.com>
-From:   Milan Broz <gmazyland@gmail.com>
-Openpgp: preference=signencrypt
-Message-ID: <6a45dfa5-e383-d8a3-ebf1-abdc43c95ebd@gmail.com>
-Date:   Thu, 20 Jun 2019 15:14:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.1
-MIME-Version: 1.0
-In-Reply-To: <075cddec-1603-4a23-17c4-c766b4bd9086@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Gilad Ben-Yossef <gilad@benyossef.com>,
+        Milan Broz <gmazyland@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On 20/06/2019 14:09, Milan Broz wrote:
-> On 20/06/2019 13:54, Ard Biesheuvel wrote:
->> On Thu, 20 Jun 2019 at 13:22, Milan Broz <gmazyland@gmail.com> wrote:
->>>
->>> On 19/06/2019 18:29, Ard Biesheuvel wrote:
->>>> This series creates an ESSIV template that produces a skcipher or AEAD
->>>> transform based on a tuple of the form '<skcipher>,<cipher>,<shash>'
->>>> (or '<aead>,<cipher>,<shash>' for the AEAD case). It exposes the
->>>> encapsulated sync or async skcipher/aead by passing through all operations,
->>>> while using the cipher/shash pair to transform the input IV into an ESSIV
->>>> output IV.
->>>>
->>>> This matches what both users of ESSIV in the kernel do, and so it is proposed
->>>> as a replacement for those, in patches #2 and #4.
->>>>
->>>> This code has been tested using the fscrypt test suggested by Eric
->>>> (generic/549), as well as the mode-test script suggested by Milan for
->>>> the dm-crypt case. I also tested the aead case in a virtual machine,
->>>> but it definitely needs some wider testing from the dm-crypt experts.
->>>>
->>>> Changes since v2:
->>>> - fixed a couple of bugs that snuck in after I'd done the bulk of my
->>>>   testing
->>>> - some cosmetic tweaks to the ESSIV template skcipher setkey function
->>>>   to align it with the aead one
->>>> - add a test case for essiv(cbc(aes),aes,sha256)
->>>> - add an accelerated implementation for arm64 that combines the IV
->>>>   derivation and the actual en/decryption in a single asm routine
->>>
->>> I run tests for the whole patchset, including some older scripts and seems
->>> it works for dm-crypt now.
->>>
->>
->> Thanks Milan, that is really helpful.
->>
->> Does this include configurations that combine authenc with essiv?
-> 
-> Hm, seems that we are missing these in luks2-integrity-test. I'll add them there.
-> 
-> I also used this older test
-> https://gitlab.com/omos/dm-crypt-test-scripts/blob/master/root/test_dmintegrity.sh
-> 
-> (just aes-gcm-random need to be commented out, we never supported this format, it was
-> written for some devel version)
-> 
-> But seems ESSIV is there tested only without AEAD composition...
-> 
-> So yes, this AEAD part need more testing.
+On Thu, 20 Jun 2019 at 15:02, Ard Biesheuvel <ard.biesheuvel@linaro.org> wrote:
+>
+> On Thu, 20 Jun 2019 at 14:53, Herbert Xu <herbert@gondor.apana.org.au> wrote:
+> >
+> > On Thu, Jun 20, 2019 at 09:30:41AM +0200, Ard Biesheuvel wrote:
+> > >
+> > > Is this the right approach? Or are there better ways to convey this
+> > > information when instantiating the template?
+> > > Also, it seems to me that the dm-crypt and fscrypt layers would
+> > > require major surgery in order to take advantage of this.
+> >
+> > Oh and you don't have to make dm-crypt use it from the start.  That
+> > is, you can just make things simple by doing it one sector at a
+> > time in the dm-crypt code even though the underlying essiv code
+> > supports multiple sectors.
+> >
+> > Someone who cares about this is sure to come along and fix it later.
+> >
+>
+> It also depend on how realistic it is that we will need to support
+> arbitrary sector sizes in the future. I mean, if we decide today that
+> essiv() uses an implicit sector size of 4k, we can always add
+> essiv64k() later, rather than adding lots of complexity now that we
+> are never going to use. Note that ESSIV is already more or less
+> deprecated, so there is really no point in inventing these weird and
+> wonderful things if we want people to move to XTS and plain IV
+> generation instead.
 
-And unfortunately it does not work - it returns EIO on sectors where it should not be data corruption.
-
-I added few lines with length-preserving mode with ESSIV + AEAD, please could you run luks2-integrity-test
-in cryptsetup upstream?
-
-This patch adds the tests:
-https://gitlab.com/cryptsetup/cryptsetup/commit/4c74ff5e5ae328cb61b44bf99f98d08ffee3366a
-
-It is ok on mainline kernel, fails with the patchset:
-
-# ./luks2-integrity-test 
-[aes-cbc-essiv:sha256:hmac-sha256:128:512][FORMAT][ACTIVATE]sha256sum: /dev/mapper/dmi_test: Input/output error
-[FAIL]
- Expecting ee501705a084cd0ab6f4a28014bcf62b8bfa3434de00b82743c50b3abf06232c got .
-
-FAILED backtrace:
-77 ./luks2-integrity-test
-112 intformat ./luks2-integrity-test
-127 main ./luks2-integrity-test
-
-Milan
+Never mind, the sector size is already variable ...
