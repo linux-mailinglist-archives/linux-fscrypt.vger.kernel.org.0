@@ -2,35 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E80E04D734
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 20 Jun 2019 20:18:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5837A4D755
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 20 Jun 2019 20:18:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729548AbfFTSQb (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 20 Jun 2019 14:16:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45684 "EHLO mail.kernel.org"
+        id S1729663AbfFTSRw (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 20 Jun 2019 14:17:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47218 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728814AbfFTSQ3 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 20 Jun 2019 14:16:29 -0400
+        id S1729563AbfFTSRv (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 20 Jun 2019 14:17:51 -0400
 Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.77])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5183321530;
-        Thu, 20 Jun 2019 18:16:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C16CF205F4;
+        Thu, 20 Jun 2019 18:17:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1561054588;
-        bh=ZgL7RNKXSblp2oixF+/qvJrVmS/y9fhBZL7l1Ufqj/M=;
+        s=default; t=1561054670;
+        bh=His2GEyLOsppSYqxvpWMEdSHNZvzQPrCQt8k7Cb6maI=;
         h=From:To:Cc:Subject:Date:From;
-        b=JjgOG+VU35d+Z/vZCBkqaqH2XCB/GjV/aXYz3yVpFFNPxGzXUJkH47O+wvsXlnoiS
-         garaUEkSexVwPOq0/9BoaYve1/jzNY7xETbwstc+JnZfpxKl9QF1Ta7DoTfwhyB1kD
-         DMoUzPr8+U9ALNwX0hQ7KPzvJKoEa5o2gNPh7mk8=
+        b=HiBAfuiEylS4DprCpXv/qQKOsRqSExKdaTSiyDJvh6VU6Vhrk2j77ZxbJprE0EX9F
+         pDnfi1YcLwud+uCnpTCtoOt7Hja4uWLL1giXaDh4B9RoudtXOASaRhFFqjngOlPQNW
+         NCd5B6U+nk8KyEiV/bECXzq/v9iLJHspNjf+NNac=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-crypto@vger.kernel.org,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Richard Weinberger <richard@nod.at>
-Subject: [PATCH] fscrypt: remove selection of CONFIG_CRYPTO_SHA256
-Date:   Thu, 20 Jun 2019 11:15:05 -0700
-Message-Id: <20190620181505.225232-1-ebiggers@kernel.org>
+Cc:     fstests@vger.kernel.org
+Subject: [PATCH] fscrypt: document testing with xfstests
+Date:   Thu, 20 Jun 2019 11:16:58 -0700
+Message-Id: <20190620181658.225792-1-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.22.0.410.gd8fdbe21b5-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -41,54 +39,60 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-fscrypt only uses SHA-256 for AES-128-CBC-ESSIV, which isn't the default
-and is only recommended on platforms that have hardware accelerated
-AES-CBC but not AES-XTS.  There's no link-time dependency, since SHA-256
-is requested via the crypto API on first use.
-
-To reduce bloat, we should limit FS_ENCRYPTION to selecting the default
-algorithms only.  SHA-256 by itself isn't that much bloat, but it's
-being discussed to move ESSIV into a crypto API template, which would
-incidentally bring in other things like "authenc" support, which would
-all end up being built-in since FS_ENCRYPTION is now a bool.
-
-For Adiantum encryption we already just document that users who want to
-use it have to enable CONFIG_CRYPTO_ADIANTUM themselves.  So, let's do
-the same for AES-128-CBC-ESSIV and CONFIG_CRYPTO_SHA256.
+Document how to test ext4, f2fs, and ubifs encryption with xfstests.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- Documentation/filesystems/fscrypt.rst | 4 +++-
- fs/crypto/Kconfig                     | 1 -
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ Documentation/filesystems/fscrypt.rst | 39 +++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
 diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
-index 08c23b60e01647..87d4e266ffc86d 100644
+index 87d4e266ffc86d..82efa41b0e6c02 100644
 --- a/Documentation/filesystems/fscrypt.rst
 +++ b/Documentation/filesystems/fscrypt.rst
-@@ -191,7 +191,9 @@ Currently, the following pairs of encryption modes are supported:
- If unsure, you should use the (AES-256-XTS, AES-256-CTS-CBC) pair.
- 
- AES-128-CBC was added only for low-powered embedded devices with
--crypto accelerators such as CAAM or CESA that do not support XTS.
-+crypto accelerators such as CAAM or CESA that do not support XTS.  To
-+use AES-128-CBC, CONFIG_CRYPTO_SHA256 (or another SHA-256
-+implementation) must be enabled so that ESSIV can be used.
- 
- Adiantum is a (primarily) stream cipher-based mode that is fast even
- on CPUs without dedicated crypto instructions.  It's also a true
-diff --git a/fs/crypto/Kconfig b/fs/crypto/Kconfig
-index 24ed99e2eca0b2..5fdf24877c1785 100644
---- a/fs/crypto/Kconfig
-+++ b/fs/crypto/Kconfig
-@@ -7,7 +7,6 @@ config FS_ENCRYPTION
- 	select CRYPTO_ECB
- 	select CRYPTO_XTS
- 	select CRYPTO_CTS
--	select CRYPTO_SHA256
- 	select KEYS
- 	help
- 	  Enable encryption of files and directories.  This
+@@ -649,3 +649,42 @@ Note that the precise way that filenames are presented to userspace
+ without the key is subject to change in the future.  It is only meant
+ as a way to temporarily present valid filenames so that commands like
+ ``rm -r`` work as expected on encrypted directories.
++
++Tests
++=====
++
++To test fscrypt, use xfstests, which is Linux's de facto standard
++filesystem test suite.  First, run all the tests in the "encrypt"
++group on the relevant filesystem(s).  For example, to test ext4 and
++f2fs encryption using `kvm-xfstests
++<https://github.com/tytso/xfstests-bld/blob/master/Documentation/kvm-quickstart.md>`_::
++
++    kvm-xfstests -c ext4,f2fs -g encrypt
++
++UBIFS encryption can also be tested this way, but it should be done in
++a separate command, and it takes some time for kvm-xfstests to set up
++emulated UBI volumes::
++
++    kvm-xfstests -c ubifs -g encrypt
++
++No tests should fail.  However, tests that use non-default encryption
++modes (e.g. generic/549 and generic/550) will be skipped if the needed
++algorithms were not built into the kernel's crypto API.  Also, tests
++that access the raw block device (e.g. generic/399, generic/548,
++generic/549, generic/550) will be skipped on UBIFS.
++
++Besides running the "encrypt" group tests, for ext4 and f2fs it's also
++possible to run most xfstests with the "test_dummy_encryption" mount
++option.  This option causes all new files to be automatically
++encrypted with a dummy key, without having to make any API calls.
++This tests the encrypted I/O paths more thoroughly.  To do this with
++kvm-xfstests, use the "encrypt" filesystem configuration::
++
++    kvm-xfstests -c ext4/encrypt,f2fs/encrypt -g auto
++
++Because this runs many more tests than "-g encrypt" does, it takes
++much longer to run; so also consider using `gce-xfstests
++<https://github.com/tytso/xfstests-bld/blob/master/Documentation/gce-xfstests.md>`_
++instead of kvm-xfstests::
++
++    gce-xfstests -c ext4/encrypt,f2fs/encrypt -g auto
 -- 
 2.22.0.410.gd8fdbe21b5-goog
 
