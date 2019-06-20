@@ -2,97 +2,92 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5837A4D755
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 20 Jun 2019 20:18:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3A614D880
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 20 Jun 2019 20:27:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729663AbfFTSRw (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 20 Jun 2019 14:17:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47218 "EHLO mail.kernel.org"
+        id S1726940AbfFTS1L (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 20 Jun 2019 14:27:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58018 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729563AbfFTSRv (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 20 Jun 2019 14:17:51 -0400
-Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1727880AbfFTS1K (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 20 Jun 2019 14:27:10 -0400
+Received: from gmail.com (unknown [104.132.1.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C16CF205F4;
-        Thu, 20 Jun 2019 18:17:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 765BF20665;
+        Thu, 20 Jun 2019 18:27:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1561054670;
-        bh=His2GEyLOsppSYqxvpWMEdSHNZvzQPrCQt8k7Cb6maI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=HiBAfuiEylS4DprCpXv/qQKOsRqSExKdaTSiyDJvh6VU6Vhrk2j77ZxbJprE0EX9F
-         pDnfi1YcLwud+uCnpTCtoOt7Hja4uWLL1giXaDh4B9RoudtXOASaRhFFqjngOlPQNW
-         NCd5B6U+nk8KyEiV/bECXzq/v9iLJHspNjf+NNac=
+        s=default; t=1561055229;
+        bh=eMOLl0DcLSBYMu58BKMqYpLM96sUSYjdEOqgHR8GkUs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ze7xvxmKDeulGb8SrJFzP470JWAhV0FOt7sxyxvg91DvU/QIBJvW918i/i2jUyL2T
+         tuw0fZSduK7oCDpGwRfuWw9/XRy6vKr5ErO5v8nHFRTWMW5rpsrqVr2JA2yVN2Wmox
+         75oBRUUHeuGl822CW8ASR1JPL2qSADcVBQBgI0n8=
+Date:   Thu, 20 Jun 2019 11:27:07 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     fstests@vger.kernel.org
-Subject: [PATCH] fscrypt: document testing with xfstests
-Date:   Thu, 20 Jun 2019 11:16:58 -0700
-Message-Id: <20190620181658.225792-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.22.0.410.gd8fdbe21b5-goog
+To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        device-mapper development <dm-devel@redhat.com>,
+        linux-fscrypt@vger.kernel.org,
+        Gilad Ben-Yossef <gilad@benyossef.com>,
+        Milan Broz <gmazyland@gmail.com>
+Subject: Re: [PATCH v3 1/6] crypto: essiv - create wrapper template for ESSIV
+ generation
+Message-ID: <20190620182706.GA246122@gmail.com>
+References: <20190619162921.12509-1-ard.biesheuvel@linaro.org>
+ <20190619162921.12509-2-ard.biesheuvel@linaro.org>
+ <20190620010417.GA722@sol.localdomain>
+ <20190620011325.phmxmeqnv2o3wqtr@gondor.apana.org.au>
+ <CAKv+Gu-OwzmoYR5uymSNghEVc9xbkkt5C8MxAYA48UE=yBgb5g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKv+Gu-OwzmoYR5uymSNghEVc9xbkkt5C8MxAYA48UE=yBgb5g@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On Thu, Jun 20, 2019 at 09:30:41AM +0200, Ard Biesheuvel wrote:
+> On Thu, 20 Jun 2019 at 03:14, Herbert Xu <herbert@gondor.apana.org.au> wrote:
+> >
+> > On Wed, Jun 19, 2019 at 06:04:17PM -0700, Eric Biggers wrote:
+> > >
+> > > > +#define ESSIV_IV_SIZE              sizeof(u64)     // IV size of the outer algo
+> > > > +#define MAX_INNER_IV_SIZE  16              // max IV size of inner algo
+> > >
+> > > Why does the outer algorithm declare a smaller IV size?  Shouldn't it just be
+> > > the same as the inner algorithm's?
+> >
+> > In general we allow outer algorithms to have distinct IV sizes
+> > compared to the inner algorithm.  For example, rfc4106 has a
+> > different IV size compared to gcm.
+> >
+> > In this case, the outer IV size is the block number so that's
+> > presumably why 64 bits is sufficient.  Do you forsee a case where
+> > we need 128-bit block numbers?
+> >
+> 
+> Indeed, the whole point of this template is that it turns a 64-bit
+> sector number into a n-bit IV, where n equals the block size of the
+> essiv cipher, and its min/max keysize covers the digest size of the
+> shash.
+> 
+> I don't think it makes sense to generalize this further, and if I
+> understand the feedback from Herbert and Gilad correctly, it would
+> even be better to define the input IV as a LE 64-bit counter
+> explicitly, so we can auto increment it between sectors.
+> 
 
-Document how to test ext4, f2fs, and ubifs encryption with xfstests.
+I was understanding ESSIV at a more abstract level, where you pass in some IV
+(which may or may not contain a sector number of some particular length and
+endianness) and it encrypts it.
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- Documentation/filesystems/fscrypt.rst | 39 +++++++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+I see that both fscrypt and dm-crypt use the convention of a __le64 sector
+number though, so it's probably reasonable to define the IV to be that.  A brief
+comment explaining this might be helpful, though.
 
-diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
-index 87d4e266ffc86d..82efa41b0e6c02 100644
---- a/Documentation/filesystems/fscrypt.rst
-+++ b/Documentation/filesystems/fscrypt.rst
-@@ -649,3 +649,42 @@ Note that the precise way that filenames are presented to userspace
- without the key is subject to change in the future.  It is only meant
- as a way to temporarily present valid filenames so that commands like
- ``rm -r`` work as expected on encrypted directories.
-+
-+Tests
-+=====
-+
-+To test fscrypt, use xfstests, which is Linux's de facto standard
-+filesystem test suite.  First, run all the tests in the "encrypt"
-+group on the relevant filesystem(s).  For example, to test ext4 and
-+f2fs encryption using `kvm-xfstests
-+<https://github.com/tytso/xfstests-bld/blob/master/Documentation/kvm-quickstart.md>`_::
-+
-+    kvm-xfstests -c ext4,f2fs -g encrypt
-+
-+UBIFS encryption can also be tested this way, but it should be done in
-+a separate command, and it takes some time for kvm-xfstests to set up
-+emulated UBI volumes::
-+
-+    kvm-xfstests -c ubifs -g encrypt
-+
-+No tests should fail.  However, tests that use non-default encryption
-+modes (e.g. generic/549 and generic/550) will be skipped if the needed
-+algorithms were not built into the kernel's crypto API.  Also, tests
-+that access the raw block device (e.g. generic/399, generic/548,
-+generic/549, generic/550) will be skipped on UBIFS.
-+
-+Besides running the "encrypt" group tests, for ext4 and f2fs it's also
-+possible to run most xfstests with the "test_dummy_encryption" mount
-+option.  This option causes all new files to be automatically
-+encrypted with a dummy key, without having to make any API calls.
-+This tests the encrypted I/O paths more thoroughly.  To do this with
-+kvm-xfstests, use the "encrypt" filesystem configuration::
-+
-+    kvm-xfstests -c ext4/encrypt,f2fs/encrypt -g auto
-+
-+Because this runs many more tests than "-g encrypt" does, it takes
-+much longer to run; so also consider using `gce-xfstests
-+<https://github.com/tytso/xfstests-bld/blob/master/Documentation/gce-xfstests.md>`_
-+instead of kvm-xfstests::
-+
-+    gce-xfstests -c ext4/encrypt,f2fs/encrypt -g auto
--- 
-2.22.0.410.gd8fdbe21b5-goog
-
+- Eric
