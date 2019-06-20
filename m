@@ -2,109 +2,105 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BE9BA4C869
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 20 Jun 2019 09:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B35D84CCC6
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 20 Jun 2019 13:23:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725977AbfFTHaz (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 20 Jun 2019 03:30:55 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:38159 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725912AbfFTHaz (ORCPT
+        id S1726394AbfFTLXC (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 20 Jun 2019 07:23:02 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:38055 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726391AbfFTLXB (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 20 Jun 2019 03:30:55 -0400
-Received: by mail-io1-f68.google.com with SMTP id j6so650126ioa.5
-        for <linux-fscrypt@vger.kernel.org>; Thu, 20 Jun 2019 00:30:54 -0700 (PDT)
+        Thu, 20 Jun 2019 07:23:01 -0400
+Received: by mail-wm1-f65.google.com with SMTP id s15so2765687wmj.3;
+        Thu, 20 Jun 2019 04:23:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OleUuoLJ/awB8gj1L9pb8+s5gnreN1ERy+tmQ30S79M=;
-        b=lWtjdJMbHtOsAdidtW99iwblOZlLS7lxCFi7XVqidfsGH7qb6gFm1x0hpVEwGvkQTE
-         5tDjTsctDn3ekC/PM5dU94f+GluSKlyWpw+2tFfWXPsqt7+tjWXTcX1dJw0lEVWkof4v
-         q/DjDDZyP4UAIn9orVK4ykzsWhVqbI00cgiyENYTxVjzaJeh/SjuDVp+NSVMXVfZABb/
-         J5AyKD6eEt8PVPDQvaaSAHU0DW2LxSyrANM513LYDUJb0UPwgnHhlps9GzQLPUxnrq8J
-         pPFs15Q1UoAZ5/P0dWhYH4k8qRlnHusQLDrWanqHEeOdgW8c+Zmut7QSuLy7QFAn1rVE
-         MwLg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:openpgp:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KqQ/0lNgatbAFjvI+UVLmFxYwFfw0GJxlYHEsE9riuI=;
+        b=EqwlB9wrZg7QLGcc8q6YnqqCrDzdvMYEbGXNYG+FRDI5VxzNfajkiCb20/BAbsgSDN
+         Vef7665o/zWK17Zp1xRcjyn6ZuIkR5fWhViv4hP5sWLzwEVuW+t/ohGYx6/2/3EKgZmC
+         SIBY5QU9w0krvt+zTIkUukCY3KDAjmZz6aEDUyaN+Gd7k+hmRVIBeXbl5svknvqxgENX
+         j9dLelMWUZj97HgfgBxHcrWJ5oG1X7OC07ctG8ubYz+EMOASHlvKYnxzRCPPu/FH3FWN
+         zqujdMNR2NoKYC0LE12m3vOlgJYa2lBzQJP7PtpPgDvUwlw07PPEVe9x+tITHlhIAMoI
+         ZO9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OleUuoLJ/awB8gj1L9pb8+s5gnreN1ERy+tmQ30S79M=;
-        b=SHK5cd6id0w4xfKyvyXkU48o7+jyEndM/rclakQ+vPn9ogdvwu67rE7UU0CAdtQB2L
-         8rltNnL3XK0DePOEdQF4TjJP+ngBkXTEnXXxA5J6R7iyHhUd6a6Nhc3eXgNKNik7J9fw
-         yAO0reY6bt0G6xF5oDJ4XkXa0GQ1382V0bN/aBZbOFDuYUv7tYoFRBXjtT67IVkNFXZV
-         KJeLkUtIyKG2gwCCgxBbMFUMzxEk//B/7cASA34MzwgFg8J4ERssUAFnWi47i7u8H2dQ
-         m79HZisWk36wYJJ1L/1JpNcJqIzEd3rLk9I1cXmS1KwSO8jcMnaNgY/knU00Gfw0pwdN
-         2+sA==
-X-Gm-Message-State: APjAAAXGLGecQOxAtNrZR25Bf1BBLNyk76MgN4dyPTeD7t/Xc8IT0koT
-        tqG1m1e0lcEwS8mBCkVDF8Pg6xHLxLCAB7hhvRa2gw==
-X-Google-Smtp-Source: APXvYqwSgQ+YlxCnDlNipKA4pfu+5Hf7BLz6A0G9Uf+9NCduJO3GV2r4HpYMlxNkkXOApFqe/S3lx05NWq74F7JQWKE=
-X-Received: by 2002:a05:6602:98:: with SMTP id h24mr28401891iob.49.1561015854360;
- Thu, 20 Jun 2019 00:30:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190619162921.12509-1-ard.biesheuvel@linaro.org>
- <20190619162921.12509-2-ard.biesheuvel@linaro.org> <20190620010417.GA722@sol.localdomain>
- <20190620011325.phmxmeqnv2o3wqtr@gondor.apana.org.au>
-In-Reply-To: <20190620011325.phmxmeqnv2o3wqtr@gondor.apana.org.au>
-From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Date:   Thu, 20 Jun 2019 09:30:41 +0200
-Message-ID: <CAKv+Gu-OwzmoYR5uymSNghEVc9xbkkt5C8MxAYA48UE=yBgb5g@mail.gmail.com>
-Subject: Re: [PATCH v3 1/6] crypto: essiv - create wrapper template for ESSIV generation
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        device-mapper development <dm-devel@redhat.com>,
+        h=x-gm-message-state:subject:to:cc:references:from:openpgp:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KqQ/0lNgatbAFjvI+UVLmFxYwFfw0GJxlYHEsE9riuI=;
+        b=aZLJbbCzep8ZRP+73wiamc3g5rV9e4Vl0qnxVcxaJRbSc3LeyPu5BsWOMYbQ4KT0Bp
+         WDy53DFjnfvEGhbi4QDEKgBbeIN0DYXXkU+YfIRiPU0MQci2IEIQ7BKrBWVWXW1/3qUO
+         X1ZCSgeLxswgdK2emQqpJtGEloDd88HXQyTtVrzFVX0w1iuMkNfBPPq/V8K37N5xz6Ls
+         OD2rzUXE0Kq2U6dwhRcrURIvV3vk1IH6WRylW9bnBhtFD4VlaAUJz6gzKaCG8TPvV14t
+         MmLhMPuZs4qfiPUY/MSirwzmNn9CbFkGRI5XECO4dA3ErcVPs10ytIgLIF11c+d9WysL
+         f86g==
+X-Gm-Message-State: APjAAAV9MOQ2CuHdOyGMRLWGlG+gzqFlFuwpxoLAEIFgiOxwYLS7qd/Q
+        xOE6HxfMo0RzYt64FdATe9y7Xx9D6KebeA==
+X-Google-Smtp-Source: APXvYqw6DquVhD4CuXe0+0nmPPcROjtQRWpC/Htr2sGU0pUZBI7eYfu7fFX+7QUJi13w7zzOaFK3sQ==
+X-Received: by 2002:a1c:f61a:: with SMTP id w26mr2678480wmc.75.1561029779427;
+        Thu, 20 Jun 2019 04:22:59 -0700 (PDT)
+Received: from [172.22.36.64] (redhat-nat.vtp.fi.muni.cz. [78.128.215.6])
+        by smtp.gmail.com with ESMTPSA id n1sm16511014wrx.39.2019.06.20.04.22.58
+        (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
+        Thu, 20 Jun 2019 04:22:58 -0700 (PDT)
+Subject: Re: [PATCH v3 0/6] crypto: switch to crypto API for ESSIV generation
+To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        linux-crypto@vger.kernel.org
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Eric Biggers <ebiggers@google.com>, dm-devel@redhat.com,
         linux-fscrypt@vger.kernel.org,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        Milan Broz <gmazyland@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        Gilad Ben-Yossef <gilad@benyossef.com>
+References: <20190619162921.12509-1-ard.biesheuvel@linaro.org>
+From:   Milan Broz <gmazyland@gmail.com>
+Openpgp: preference=signencrypt
+Message-ID: <459f5760-3a1c-719d-2b44-824ba6283dd7@gmail.com>
+Date:   Thu, 20 Jun 2019 13:22:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.1
+MIME-Version: 1.0
+In-Reply-To: <20190619162921.12509-1-ard.biesheuvel@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, 20 Jun 2019 at 03:14, Herbert Xu <herbert@gondor.apana.org.au> wrote:
->
-> On Wed, Jun 19, 2019 at 06:04:17PM -0700, Eric Biggers wrote:
-> >
-> > > +#define ESSIV_IV_SIZE              sizeof(u64)     // IV size of the outer algo
-> > > +#define MAX_INNER_IV_SIZE  16              // max IV size of inner algo
-> >
-> > Why does the outer algorithm declare a smaller IV size?  Shouldn't it just be
-> > the same as the inner algorithm's?
->
-> In general we allow outer algorithms to have distinct IV sizes
-> compared to the inner algorithm.  For example, rfc4106 has a
-> different IV size compared to gcm.
->
-> In this case, the outer IV size is the block number so that's
-> presumably why 64 bits is sufficient.  Do you forsee a case where
-> we need 128-bit block numbers?
->
+On 19/06/2019 18:29, Ard Biesheuvel wrote:
+> This series creates an ESSIV template that produces a skcipher or AEAD
+> transform based on a tuple of the form '<skcipher>,<cipher>,<shash>'
+> (or '<aead>,<cipher>,<shash>' for the AEAD case). It exposes the
+> encapsulated sync or async skcipher/aead by passing through all operations,
+> while using the cipher/shash pair to transform the input IV into an ESSIV
+> output IV.
+> 
+> This matches what both users of ESSIV in the kernel do, and so it is proposed
+> as a replacement for those, in patches #2 and #4.
+> 
+> This code has been tested using the fscrypt test suggested by Eric
+> (generic/549), as well as the mode-test script suggested by Milan for
+> the dm-crypt case. I also tested the aead case in a virtual machine,
+> but it definitely needs some wider testing from the dm-crypt experts.
+> 
+> Changes since v2:
+> - fixed a couple of bugs that snuck in after I'd done the bulk of my
+>   testing
+> - some cosmetic tweaks to the ESSIV template skcipher setkey function
+>   to align it with the aead one
+> - add a test case for essiv(cbc(aes),aes,sha256)
+> - add an accelerated implementation for arm64 that combines the IV
+>   derivation and the actual en/decryption in a single asm routine
 
-Indeed, the whole point of this template is that it turns a 64-bit
-sector number into a n-bit IV, where n equals the block size of the
-essiv cipher, and its min/max keysize covers the digest size of the
-shash.
+I run tests for the whole patchset, including some older scripts and seems
+it works for dm-crypt now.
 
-I don't think it makes sense to generalize this further, and if I
-understand the feedback from Herbert and Gilad correctly, it would
-even be better to define the input IV as a LE 64-bit counter
-explicitly, so we can auto increment it between sectors.
+For the new CRYPTO_ESSIV option - dm-crypt must unconditionally
+select it (we rely on all IV generators availability in userspace),
+but that's already done in patch 4.
 
-But that leaves the question how to convey the sector size to the
-template. Gilad suggests
-
-essiv(cbc(aes),aes,sha256,xxx)
-
-where xxx is the sector size, and incoming requests whose cryptlen is
-an exact multiple of the sector size will have their LE counter auto
-incremented between sectors. Note that we could make it optional for
-now, and default to 4k, but I will at least have to parse the argument
-if it is present and reject values != 4096
-
-Is this the right approach? Or are there better ways to convey this
-information when instantiating the template?
-Also, it seems to me that the dm-crypt and fscrypt layers would
-require major surgery in order to take advantage of this.
+Thanks,
+Milan
