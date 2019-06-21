@@ -2,352 +2,504 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E1CCF4E1B0
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 21 Jun 2019 10:09:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDD3E4EFBE
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 21 Jun 2019 22:04:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726353AbfFUIJp (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 21 Jun 2019 04:09:45 -0400
-Received: from foss.arm.com ([217.140.110.172]:49804 "EHLO foss.arm.com"
+        id S1726010AbfFUUEB (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 21 Jun 2019 16:04:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726030AbfFUIJp (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 21 Jun 2019 04:09:45 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 27CBC1424;
-        Fri, 21 Jun 2019 01:09:44 -0700 (PDT)
-Received: from e111045-lin.arm.com (unknown [10.37.10.16])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7CEE83F246;
-        Fri, 21 Jun 2019 01:09:42 -0700 (PDT)
-From:   Ard Biesheuvel <ard.biesheuvel@arm.com>
-To:     linux-crypto@vger.kernel.org
-Cc:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Eric Biggers <ebiggers@google.com>, dm-devel@redhat.com,
-        linux-fscrypt@vger.kernel.org,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        Milan Broz <gmazyland@gmail.com>
-Subject: [PATCH v4 6/6] crypto: arm64/aes - implement accelerated ESSIV/CBC mode
-Date:   Fri, 21 Jun 2019 10:09:18 +0200
-Message-Id: <20190621080918.22809-7-ard.biesheuvel@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190621080918.22809-1-ard.biesheuvel@arm.com>
-References: <20190621080918.22809-1-ard.biesheuvel@arm.com>
-Reply-To: ard.biesheuvel@linaro.org
+        id S1725985AbfFUUEB (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Fri, 21 Jun 2019 16:04:01 -0400
+Received: from gmail.com (unknown [104.132.1.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 17D1F20673;
+        Fri, 21 Jun 2019 20:03:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1561147439;
+        bh=6HPWA4E4j7j7vVmSUAjLeHae47XURy+h8nApRJpT6wg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bIuwhpXv7TKfr7NwvXJjARQbGJxcqsfOI5EQS4m/rV3Is/jyjm1byMny3lmAA00ZX
+         PVFzcQjVjOd7N5HotzZF2WPk57LQd+xyE5NfPZh+fzioHC6jAUgntVQpbogXvpPKrC
+         RnKEkWsn0gS8tXj+zNu2t0Yhz4eAjwc02nA/i7iA=
+Date:   Fri, 21 Jun 2019 13:03:57 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Chandan Rajendra <chandan@linux.ibm.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fscrypt@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jaegeuk@kernel.org, yuchao0@huawei.com,
+        hch@infradead.org
+Subject: Re: [PATCH V3 1/7] FS: Introduce read callbacks
+Message-ID: <20190621200355.GA167064@gmail.com>
+References: <20190616160813.24464-1-chandan@linux.ibm.com>
+ <20190616160813.24464-2-chandan@linux.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190616160813.24464-2-chandan@linux.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Hi Chandan,
 
-Add an accelerated version of the 'essiv(cbc(aes),aes,sha256'
-skcipher, which is used by fscrypt, and in some cases, by dm-crypt.
-This avoids a separate call into the AES cipher for every invocation.
+On Sun, Jun 16, 2019 at 09:38:07PM +0530, Chandan Rajendra wrote:
+> Read callbacks implements a state machine to be executed after a
+> buffered read I/O is completed. They help in further processing the file
+> data read from the backing store. Currently, decryption is the only post
+> processing step to be supported.
+> 
+> The execution of the state machine is to be initiated by the endio
+> function associated with the read operation.
+> 
+> Signed-off-by: Chandan Rajendra <chandan@linux.ibm.com>
+> ---
+>  fs/Kconfig                     |   3 +
+>  fs/Makefile                    |   2 +
+>  fs/crypto/Kconfig              |   1 +
+>  fs/crypto/bio.c                |  11 +++
+>  fs/read_callbacks.c            | 174 +++++++++++++++++++++++++++++++++
+>  include/linux/fscrypt.h        |   5 +
+>  include/linux/read_callbacks.h |  38 +++++++
+>  7 files changed, 234 insertions(+)
+>  create mode 100644 fs/read_callbacks.c
+>  create mode 100644 include/linux/read_callbacks.h
+> 
+> diff --git a/fs/Kconfig b/fs/Kconfig
+> index f1046cf6ad85..d869859c88da 100644
+> --- a/fs/Kconfig
+> +++ b/fs/Kconfig
+> @@ -21,6 +21,9 @@ if BLOCK
+>  config FS_IOMAP
+>  	bool
+>  
+> +config FS_READ_CALLBACKS
+> +       bool
 
-Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
----
- arch/arm64/crypto/aes-glue.c  | 129 ++++++++++++++++++++
- arch/arm64/crypto/aes-modes.S |  99 +++++++++++++++
- 2 files changed, 228 insertions(+)
+This should be intended with a tab, not spaces.
 
-diff --git a/arch/arm64/crypto/aes-glue.c b/arch/arm64/crypto/aes-glue.c
-index f0ceb545bd1e..6dab2f062cea 100644
---- a/arch/arm64/crypto/aes-glue.c
-+++ b/arch/arm64/crypto/aes-glue.c
-@@ -12,6 +12,7 @@
- #include <asm/hwcap.h>
- #include <asm/simd.h>
- #include <crypto/aes.h>
-+#include <crypto/sha.h>
- #include <crypto/internal/hash.h>
- #include <crypto/internal/simd.h>
- #include <crypto/internal/skcipher.h>
-@@ -34,6 +35,8 @@
- #define aes_cbc_decrypt		ce_aes_cbc_decrypt
- #define aes_cbc_cts_encrypt	ce_aes_cbc_cts_encrypt
- #define aes_cbc_cts_decrypt	ce_aes_cbc_cts_decrypt
-+#define aes_essiv_cbc_encrypt	ce_aes_essiv_cbc_encrypt
-+#define aes_essiv_cbc_decrypt	ce_aes_essiv_cbc_decrypt
- #define aes_ctr_encrypt		ce_aes_ctr_encrypt
- #define aes_xts_encrypt		ce_aes_xts_encrypt
- #define aes_xts_decrypt		ce_aes_xts_decrypt
-@@ -50,6 +53,8 @@ MODULE_DESCRIPTION("AES-ECB/CBC/CTR/XTS using ARMv8 Crypto Extensions");
- #define aes_cbc_decrypt		neon_aes_cbc_decrypt
- #define aes_cbc_cts_encrypt	neon_aes_cbc_cts_encrypt
- #define aes_cbc_cts_decrypt	neon_aes_cbc_cts_decrypt
-+#define aes_essiv_cbc_encrypt	neon_aes_essiv_cbc_encrypt
-+#define aes_essiv_cbc_decrypt	neon_aes_essiv_cbc_decrypt
- #define aes_ctr_encrypt		neon_aes_ctr_encrypt
- #define aes_xts_encrypt		neon_aes_xts_encrypt
- #define aes_xts_decrypt		neon_aes_xts_decrypt
-@@ -93,6 +98,13 @@ asmlinkage void aes_xts_decrypt(u8 out[], u8 const in[], u32 const rk1[],
- 				int rounds, int blocks, u32 const rk2[], u8 iv[],
- 				int first);
- 
-+asmlinkage void aes_essiv_cbc_encrypt(u8 out[], u8 const in[], u32 const rk1[],
-+				      int rounds, int blocks, u32 const rk2[],
-+				      u8 iv[], int first);
-+asmlinkage void aes_essiv_cbc_decrypt(u8 out[], u8 const in[], u32 const rk1[],
-+				      int rounds, int blocks, u32 const rk2[],
-+				      u8 iv[], int first);
-+
- asmlinkage void aes_mac_update(u8 const in[], u32 const rk[], int rounds,
- 			       int blocks, u8 dg[], int enc_before,
- 			       int enc_after);
-@@ -108,6 +120,12 @@ struct crypto_aes_xts_ctx {
- 	struct crypto_aes_ctx __aligned(8) key2;
- };
- 
-+struct crypto_aes_essiv_cbc_ctx {
-+	struct crypto_aes_ctx key1;
-+	struct crypto_aes_ctx __aligned(8) key2;
-+	struct crypto_shash *hash;
-+};
-+
- struct mac_tfm_ctx {
- 	struct crypto_aes_ctx key;
- 	u8 __aligned(8) consts[];
-@@ -145,6 +163,31 @@ static int xts_set_key(struct crypto_skcipher *tfm, const u8 *in_key,
- 	return -EINVAL;
- }
- 
-+static int essiv_cbc_set_key(struct crypto_skcipher *tfm, const u8 *in_key,
-+			     unsigned int key_len)
-+{
-+	struct crypto_aes_essiv_cbc_ctx *ctx = crypto_skcipher_ctx(tfm);
-+	SHASH_DESC_ON_STACK(desc, ctx->hash);
-+	u8 digest[SHA256_DIGEST_SIZE];
-+	int ret;
-+
-+	ret = aes_expandkey(&ctx->key1, in_key, key_len);
-+	if (ret)
-+		goto out;
-+
-+	desc->tfm = ctx->hash;
-+	crypto_shash_digest(desc, in_key, key_len, digest);
-+
-+	ret = aes_expandkey(&ctx->key2, digest, sizeof(digest));
-+	if (ret)
-+		goto out;
-+
-+	return 0;
-+out:
-+	crypto_skcipher_set_flags(tfm, CRYPTO_TFM_RES_BAD_KEY_LEN);
-+	return -EINVAL;
-+}
-+
- static int ecb_encrypt(struct skcipher_request *req)
- {
- 	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
-@@ -361,6 +404,74 @@ static int cts_cbc_decrypt(struct skcipher_request *req)
- 	return skcipher_walk_done(&walk, 0);
- }
- 
-+static int essiv_cbc_init_tfm(struct crypto_skcipher *tfm)
-+{
-+	struct crypto_aes_essiv_cbc_ctx *ctx = crypto_skcipher_ctx(tfm);
-+
-+	ctx->hash = crypto_alloc_shash("sha256", 0, 0);
-+	if (IS_ERR(ctx->hash))
-+		return PTR_ERR(ctx->hash);
-+
-+	return 0;
-+}
-+
-+static void essiv_cbc_exit_tfm(struct crypto_skcipher *tfm)
-+{
-+	struct crypto_aes_essiv_cbc_ctx *ctx = crypto_skcipher_ctx(tfm);
-+
-+	crypto_free_shash(ctx->hash);
-+}
-+
-+static int essiv_cbc_encrypt(struct skcipher_request *req)
-+{
-+	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
-+	struct crypto_aes_essiv_cbc_ctx *ctx = crypto_skcipher_ctx(tfm);
-+	int err, first, rounds = 6 + ctx->key1.key_length / 4;
-+	struct skcipher_walk walk;
-+	u8 iv[AES_BLOCK_SIZE];
-+	unsigned int blocks;
-+
-+	memcpy(iv, req->iv, crypto_skcipher_ivsize(tfm));
-+
-+	err = skcipher_walk_virt(&walk, req, false);
-+
-+	for (first = 1; (blocks = (walk.nbytes / AES_BLOCK_SIZE)); first = 0) {
-+		kernel_neon_begin();
-+		aes_essiv_cbc_encrypt(walk.dst.virt.addr, walk.src.virt.addr,
-+				      ctx->key1.key_enc, rounds, blocks,
-+				      ctx->key2.key_enc, iv, first);
-+		kernel_neon_end();
-+		err = skcipher_walk_done(&walk, walk.nbytes % AES_BLOCK_SIZE);
-+	}
-+
-+	return err;
-+}
-+
-+static int essiv_cbc_decrypt(struct skcipher_request *req)
-+{
-+	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
-+	struct crypto_aes_essiv_cbc_ctx *ctx = crypto_skcipher_ctx(tfm);
-+	int err, first, rounds = 6 + ctx->key1.key_length / 4;
-+	struct skcipher_walk walk;
-+	u8 iv[AES_BLOCK_SIZE];
-+	unsigned int blocks;
-+
-+	memcpy(iv, req->iv, crypto_skcipher_ivsize(tfm));
-+
-+	err = skcipher_walk_virt(&walk, req, false);
-+
-+	for (first = 1; (blocks = (walk.nbytes / AES_BLOCK_SIZE)); first = 0) {
-+		kernel_neon_begin();
-+		aes_essiv_cbc_decrypt(walk.dst.virt.addr, walk.src.virt.addr,
-+				      ctx->key1.key_dec, rounds, blocks,
-+				      ctx->key2.key_enc, iv, first);
-+		kernel_neon_end();
-+		err = skcipher_walk_done(&walk, walk.nbytes % AES_BLOCK_SIZE);
-+	}
-+
-+	return err;
-+}
-+
- static int ctr_encrypt(struct skcipher_request *req)
- {
- 	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
-@@ -504,6 +615,24 @@ static struct skcipher_alg aes_algs[] = { {
- 	.encrypt	= cts_cbc_encrypt,
- 	.decrypt	= cts_cbc_decrypt,
- 	.init		= cts_cbc_init_tfm,
-+}, {
-+	.base = {
-+		.cra_name		= "__essiv(cbc(aes),aes,sha256)",
-+		.cra_driver_name	= "__essiv-cbc-aes-sha256-" MODE,
-+		.cra_priority		= PRIO + 1,
-+		.cra_flags		= CRYPTO_ALG_INTERNAL,
-+		.cra_blocksize		= AES_BLOCK_SIZE,
-+		.cra_ctxsize		= sizeof(struct crypto_aes_essiv_cbc_ctx),
-+		.cra_module		= THIS_MODULE,
-+	},
-+	.min_keysize	= AES_MIN_KEY_SIZE,
-+	.max_keysize	= AES_MAX_KEY_SIZE,
-+	.ivsize		= sizeof(u64),
-+	.setkey		= essiv_cbc_set_key,
-+	.encrypt	= essiv_cbc_encrypt,
-+	.decrypt	= essiv_cbc_decrypt,
-+	.init		= essiv_cbc_init_tfm,
-+	.exit		= essiv_cbc_exit_tfm,
- }, {
- 	.base = {
- 		.cra_name		= "__ctr(aes)",
-diff --git a/arch/arm64/crypto/aes-modes.S b/arch/arm64/crypto/aes-modes.S
-index 4c7ce231963c..4ebc61375aa6 100644
---- a/arch/arm64/crypto/aes-modes.S
-+++ b/arch/arm64/crypto/aes-modes.S
-@@ -247,6 +247,105 @@ AES_ENDPROC(aes_cbc_cts_decrypt)
- 	.byte		0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
- 	.previous
- 
-+	/*
-+	 * aes_essiv_cbc_encrypt(u8 out[], u8 const in[], u32 const rk1[],
-+	 *			 int rounds, int blocks, u32 const rk2[],
-+	 *			 u8 iv[], int first);
-+	 * aes_essiv_cbc_decrypt(u8 out[], u8 const in[], u32 const rk1[],
-+	 *			 int rounds, int blocks, u32 const rk2[],
-+	 *			 u8 iv[], int first);
-+	 */
-+
-+AES_ENTRY(aes_essiv_cbc_encrypt)
-+	ld1		{v4.16b}, [x6]			/* get iv */
-+	cbz		x7, .Lessivcbcencnotfirst
-+
-+	mov		w8, #14				/* AES-256: 14 rounds */
-+	enc_prepare	w8, x5, x7
-+	mov		v4.8b, v4.8b
-+	encrypt_block	v4, w8, x5, x7, w9
-+
-+.Lessivcbcencnotfirst:
-+	enc_prepare	w3, x2, x7
-+.Lessivcbcencloop4x:
-+	subs		w4, w4, #4
-+	bmi		.Lessivcbcenc1x
-+	ld1		{v0.16b-v3.16b}, [x1], #64	/* get 4 pt blocks */
-+	eor		v0.16b, v0.16b, v4.16b		/* ..and xor with iv */
-+	encrypt_block	v0, w3, x2, x7, w8
-+	eor		v1.16b, v1.16b, v0.16b
-+	encrypt_block	v1, w3, x2, x7, w8
-+	eor		v2.16b, v2.16b, v1.16b
-+	encrypt_block	v2, w3, x2, x7, w8
-+	eor		v3.16b, v3.16b, v2.16b
-+	encrypt_block	v3, w3, x2, x7, w8
-+	st1		{v0.16b-v3.16b}, [x0], #64
-+	mov		v4.16b, v3.16b
-+	b		.Lessivcbcencloop4x
-+.Lessivcbcenc1x:
-+	adds		w4, w4, #4
-+	beq		.Lessivcbcencout
-+.Lessivcbcencloop:
-+	ld1		{v0.16b}, [x1], #16		/* get next pt block */
-+	eor		v4.16b, v4.16b, v0.16b		/* ..and xor with iv */
-+	encrypt_block	v4, w3, x2, x6, w7
-+	st1		{v4.16b}, [x0], #16
-+	subs		w4, w4, #1
-+	bne		.Lessivcbcencloop
-+.Lessivcbcencout:
-+	st1		{v4.16b}, [x6]			/* return iv */
-+	ret
-+AES_ENDPROC(aes_essiv_cbc_encrypt)
-+
-+
-+AES_ENTRY(aes_essiv_cbc_decrypt)
-+	stp		x29, x30, [sp, #-16]!
-+	mov		x29, sp
-+
-+	ld1		{v7.16b}, [x6]			/* get iv */
-+	cbz		x7, .Lessivcbcdecnotfirst
-+
-+	mov		w8, #14				/* AES-256: 14 rounds */
-+	enc_prepare	w8, x5, x7
-+	mov		v7.8b, v7.8b
-+	encrypt_block	v7, w8, x5, x7, w9
-+
-+.Lessivcbcdecnotfirst:
-+	dec_prepare	w3, x2, x7
-+.LessivcbcdecloopNx:
-+	subs		w4, w4, #4
-+	bmi		.Lessivcbcdec1x
-+	ld1		{v0.16b-v3.16b}, [x1], #64	/* get 4 ct blocks */
-+	mov		v4.16b, v0.16b
-+	mov		v5.16b, v1.16b
-+	mov		v6.16b, v2.16b
-+	bl		aes_decrypt_block4x
-+	sub		x1, x1, #16
-+	eor		v0.16b, v0.16b, v7.16b
-+	eor		v1.16b, v1.16b, v4.16b
-+	ld1		{v7.16b}, [x1], #16		/* reload 1 ct block */
-+	eor		v2.16b, v2.16b, v5.16b
-+	eor		v3.16b, v3.16b, v6.16b
-+	st1		{v0.16b-v3.16b}, [x0], #64
-+	b		.LessivcbcdecloopNx
-+.Lessivcbcdec1x:
-+	adds		w4, w4, #4
-+	beq		.Lessivcbcdecout
-+.Lessivcbcdecloop:
-+	ld1		{v1.16b}, [x1], #16		/* get next ct block */
-+	mov		v0.16b, v1.16b			/* ...and copy to v0 */
-+	decrypt_block	v0, w3, x2, x7, w8
-+	eor		v0.16b, v0.16b, v7.16b		/* xor with iv => pt */
-+	mov		v7.16b, v1.16b			/* ct is next iv */
-+	st1		{v0.16b}, [x0], #16
-+	subs		w4, w4, #1
-+	bne		.Lessivcbcdecloop
-+.Lessivcbcdecout:
-+	st1		{v7.16b}, [x6]			/* return iv */
-+	ldp		x29, x30, [sp], #16
-+	ret
-+AES_ENDPROC(aes_essiv_cbc_decrypt)
-+
- 
- 	/*
- 	 * aes_ctr_encrypt(u8 out[], u8 const in[], u8 const rk[], int rounds,
--- 
-2.17.1
+> +
+>  source "fs/ext2/Kconfig"
+>  source "fs/ext4/Kconfig"
+>  source "fs/jbd2/Kconfig"
+> diff --git a/fs/Makefile b/fs/Makefile
+> index c9aea23aba56..a1a06f0db5c1 100644
+> --- a/fs/Makefile
+> +++ b/fs/Makefile
+> @@ -21,6 +21,8 @@ else
+>  obj-y +=	no-block.o
+>  endif
+>  
+> +obj-$(CONFIG_FS_READ_CALLBACKS) += read_callbacks.o
+> +
+>  obj-$(CONFIG_PROC_FS) += proc_namespace.o
 
+Nit: maybe move this to just below the line for iomap.o, to be consistent with
+where FS_READ_CALLBACKS is in the Kconfig file.
+
+>  
+>  obj-y				+= notify/
+> diff --git a/fs/crypto/Kconfig b/fs/crypto/Kconfig
+> index 24ed99e2eca0..7752f9964280 100644
+> --- a/fs/crypto/Kconfig
+> +++ b/fs/crypto/Kconfig
+> @@ -9,6 +9,7 @@ config FS_ENCRYPTION
+>  	select CRYPTO_CTS
+>  	select CRYPTO_SHA256
+>  	select KEYS
+> +	select FS_READ_CALLBACKS if BLOCK
+>  	help
+>  	  Enable encryption of files and directories.  This
+>  	  feature is similar to ecryptfs, but it is more memory
+> diff --git a/fs/crypto/bio.c b/fs/crypto/bio.c
+> index 82da2510721f..f677ff93d464 100644
+> --- a/fs/crypto/bio.c
+> +++ b/fs/crypto/bio.c
+> @@ -24,6 +24,7 @@
+>  #include <linux/module.h>
+>  #include <linux/bio.h>
+>  #include <linux/namei.h>
+> +#include <linux/read_callbacks.h>
+>  #include "fscrypt_private.h"
+>  
+>  static void __fscrypt_decrypt_bio(struct bio *bio, bool done)
+> @@ -68,6 +69,16 @@ void fscrypt_enqueue_decrypt_bio(struct fscrypt_ctx *ctx, struct bio *bio)
+>  }
+>  EXPORT_SYMBOL(fscrypt_enqueue_decrypt_bio);
+>  
+> +void fscrypt_decrypt_work(struct work_struct *work)
+> +{
+> +	struct read_callbacks_ctx *ctx =
+> +		container_of(work, struct read_callbacks_ctx, work);
+> +
+> +	fscrypt_decrypt_bio(ctx->bio);
+> +
+> +	read_callbacks(ctx);
+> +}
+> +
+
+This seems like a layering violation, since it means that read_callbacks.c calls
+fs/crypto/ *and* fs/crypto/ calls read_callbacks.c.  I don't think fs/crypto/
+should be aware of read_callbacks at all.  Instead we should have a clear
+ordering between the components: the filesystem uses read_callbacks.c and
+fs/crypto/, and read_callbacks.c uses fs/crypto/.  So how about:
+
+- Move fscrypt_decrypt_work(), fscrypt_decrypt_bh(), and fscrypt_decrypt_bio()
+  into fs/read_callbacks.c and remove the "fscrypt_" prefix from them.
+
+- Instead of selecting FS_READ_CALLBACKS from FS_ENCRYPTION, select it from
+  EXT4_FS and F2FS_FS (if FS_ENCRYPTION).  I.e., it's really the *filesystems*
+  themselves that use read_callbacks, not fs/crypto/.
+
+- Move the definition of read_callbacks_ctx into fs/read_callbacks.c, and make
+  read_callbacks() static, so these are private to the read_callbacks component.
+
+>  int fscrypt_zeroout_range(const struct inode *inode, pgoff_t lblk,
+>  				sector_t pblk, unsigned int len)
+>  {
+> diff --git a/fs/read_callbacks.c b/fs/read_callbacks.c
+> new file mode 100644
+> index 000000000000..a4196e3de05f
+> --- /dev/null
+> +++ b/fs/read_callbacks.c
+> @@ -0,0 +1,174 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * This file tracks the state machine that needs to be executed after reading
+> + * data from files that are encrypted and/or have verity metadata associated
+> + * with them.
+> + */
+> +#include <linux/module.h>
+> +#include <linux/mm.h>
+> +#include <linux/pagemap.h>
+> +#include <linux/bio.h>
+> +#include <linux/fscrypt.h>
+> +#include <linux/read_callbacks.h>
+> +
+> +#define NUM_PREALLOC_READ_CALLBACK_CTXS	128
+> +
+> +static struct kmem_cache *read_callbacks_ctx_cache;
+> +static mempool_t *read_callbacks_ctx_pool;
+> +
+> +/* Read callback state machine steps */
+> +enum read_callbacks_step {
+> +	STEP_INITIAL = 0,
+> +	STEP_DECRYPT,
+> +};
+> +
+> +static void put_read_callbacks_ctx(struct read_callbacks_ctx *ctx)
+> +{
+> +	mempool_free(ctx, read_callbacks_ctx_pool);
+> +}
+
+Maybe call this free_read_callbacks_ctx(), so that it doesn't sound like it's
+doing reference counting.
+
+> +
+> +static void end_read_callbacks_bio(struct bio *bio)
+> +{
+> +	struct read_callbacks_ctx *ctx;
+> +	struct page *page;
+> +	struct bio_vec *bv;
+> +	struct bvec_iter_all iter_all;
+> +
+> +	ctx = bio->bi_private;
+> +
+> +	bio_for_each_segment_all(bv, bio, iter_all) {
+> +		page = bv->bv_page;
+> +
+> +		if (bio->bi_status || PageError(page)) {
+> +			ClearPageUptodate(page);
+> +			SetPageError(page);
+> +		} else {
+> +			SetPageUptodate(page);
+> +		}
+> +
+> +		if (ctx->page_op)
+> +			ctx->page_op(bio, page);
+> +
+> +		unlock_page(page);
+> +	}
+> +
+> +	put_read_callbacks_ctx(ctx);
+> +
+> +	bio_put(bio);
+> +}
+
+The filesystem itself (or fs/mpage.c) actually has to implement almost all this
+logic as well anyway, because CONFIG_FS_READ_CALLBACKS may be unset.  And the
+->page_op() callback, which exists only because f2fs needs to update some
+counter, is very ugly.
+
+IMO, it would be simpler to just make this whole function filesystem-specific,
+as a 'typedef void (*end_bio_func_t)(struct bio *bio);' which gets passed to the
+read_callbacks endio hook.
+
+Of course, each end_bio_func_t would have to check PageError() to check whether
+any read_callbacks step failed.  But to make that a bit easier and to make it
+get compiled out when CONFIG_FS_READ_CALLBACKS is unset, there could be a helper
+function in read_callbacks.h:
+
+	#ifdef CONFIG_FS_READ_CALLBACKS
+	static inline bool read_callbacks_failed(struct page *page)
+	{
+		return PageError(page);
+	}
+	#else
+	static inline bool read_callbacks_failed(struct page *page)
+	{
+		return false;
+	}
+	#endif
+
+> +
+> +/**
+> + * read_callbacks() - Execute the read callbacks state machine.
+> + * @ctx: The context structure tracking the current state.
+> + *
+> + * For each state, this function enqueues a work into appropriate subsystem's
+> + * work queue. After performing further processing of the data in the bio's
+> + * pages, the subsystem should invoke read_calbacks() to continue with the next
+> + * state in the state machine.
+> + */
+> +void read_callbacks(struct read_callbacks_ctx *ctx)
+> +{
+> +	/*
+> +	 * We use different work queues for decryption and for verity because
+> +	 * verity may require reading metadata pages that need decryption, and
+> +	 * we shouldn't recurse to the same workqueue.
+> +	 */
+> +	switch (++ctx->cur_step) {
+> +	case STEP_DECRYPT:
+> +		if (ctx->enabled_steps & (1 << STEP_DECRYPT)) {
+> +			INIT_WORK(&ctx->work, fscrypt_decrypt_work);
+> +			fscrypt_enqueue_decrypt_work(&ctx->work);
+> +			return;
+> +		}
+> +		ctx->cur_step++;
+> +		/* fall-through */
+> +	default:
+> +		end_read_callbacks_bio(ctx->bio);
+> +	}
+> +}
+> +EXPORT_SYMBOL(read_callbacks);
+
+As I mentioned, I think the work functions should be defined in this file rather
+than in fs/crypto/ or fs/verity/, since they're specific to the read_callbacks.
+fs/crypto/ and fs/verity/ should not be aware of read_callbacks at all.
+Moreover, the 'read_callbacks()' function should be static.
+
+> +
+> +/**
+> + * read_callbacks_end_bio() - Initiate the read callbacks state machine.
+> + * @bio: bio on which read I/O operation has just been completed.
+> + *
+> + * Initiates the execution of the read callbacks state machine when the read
+> + * operation has been completed successfully. If there was an error associated
+> + * with the bio, this function frees the read callbacks context structure stored
+> + * in bio->bi_private (if any).
+> + *
+> + * Return: 1 to indicate that the bio has been handled (including unlocking the
+> + * pages); 0 otherwise.
+> + */
+> +int read_callbacks_end_bio(struct bio *bio)
+> +{
+> +	if (!bio->bi_status && bio->bi_private) {
+> +		read_callbacks((struct read_callbacks_ctx *)(bio->bi_private));
+> +		return 1;
+> +	}
+> +
+> +	if (bio->bi_private)
+> +		put_read_callbacks_ctx((struct read_callbacks_ctx *)(bio->bi_private));
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(read_callbacks_end_bio);
+
+Okay, several issues here...
+
+First, the naming of this is really confusing, since it's actually *beginning*
+the read callbacks, not ending them; and it's basically the same name as
+end_read_callbacks_bio(), which actually *is* for ending the read callbacks.
+Since this is the endio hook, how about calling it read_callbacks_endio_bio(),
+and likewise read_callbacks_endio_bh()?
+
+But more importantly, this doesn't need to have a return value, since the
+read_callbacks layer has to know how to end the bio (meaning unlock the pages
+and mark them uptodate or not) *anyway*, or at least know how to ask the
+filesystem to do it.  So it should just do it if needed, rather than returning 0
+and making the caller do it.
+
+Also just assign 'ctx = bio->bi_private' at the start of the function; no need
+to access the field 4 times and have unnecessary casts.
+
+So IMO, the below would be much better:
+
+void read_callbacks_endio_bio(struct bio *bio, end_bio_func_t end_bio)
+{
+	struct read_callbacks_ctx *ctx = bio->bi_private;
+
+	if (ctx) {
+		if (!bio->bi_status) {
+			ctx->end_bio = end_bio;
+			read_callbacks(ctx);
+			return;
+		}
+		free_read_callbacks_ctx(ctx);
+	}
+	end_bio(bio);
+}
+EXPORT_SYMBOL(read_callbacks_endio_bio);
+
+And then the !CONFIG_FS_READ_CALLBACKS stub:
+
+static inline void read_callbacks_endio_bio(struct bio *bio,
+					    end_bio_func_t end_bio)
+{
+	end_bio(bio);
+}
+
+Similarly for the buffer_head versions.
+
+> +
+> +/**
+> + * read_callbacks_setup() - Initialize the read callbacks state machine
+> + * @inode: The file on which read I/O is performed.
+> + * @bio: bio holding page cache pages on which read I/O is performed.
+> + * @page_op: Function to perform filesystem specific operations on a page.
+> + *
+> + * Based on the nature of the file's data (e.g. encrypted), this function
+> + * computes the steps that need to be performed after data is read of the
+> + * backing disk. This information is saved in a context structure. A pointer
+> + * to the context structure is then stored in bio->bi_private for later
+> + * usage.
+> + *
+> + * Return: 0 on success; An error code on failure.
+> + */
+> +int read_callbacks_setup(struct inode *inode, struct bio *bio,
+> +			end_page_op_t page_op)
+> +{
+> +	struct read_callbacks_ctx *ctx = NULL;
+> +	unsigned int enabled_steps = 0;
+> +
+> +	if (IS_ENCRYPTED(inode) && S_ISREG(inode->i_mode))
+> +		enabled_steps |= 1 << STEP_DECRYPT;
+> +
+> +	if (enabled_steps) {
+> +		ctx = mempool_alloc(read_callbacks_ctx_pool, GFP_NOFS);
+> +		if (!ctx)
+> +			return -ENOMEM;
+> +		ctx->bio = bio;
+> +		ctx->inode = inode;
+> +		ctx->enabled_steps = enabled_steps;
+> +		ctx->cur_step = STEP_INITIAL;
+> +		ctx->page_op = page_op;
+> +		bio->bi_private = ctx;
+> +	}
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(read_callbacks_setup);
+
+Please call it:
+
+	read_callbacks_setup_bio()
+
+Then when you add buffer_head support later in the patchset, rather than adding
+a buffer_head argument to this function, add a new function:
+
+	read_callbacks_setup_bh()
+
+So that all the users don't have to pass both the buffer_head and bio arguments.
+
+These can use a common function get_read_callbacks_ctx() that creates a
+read_callbacks_ctx for the inode.  E.g., the bio version could look like:
+
+int read_callbacks_setup_bio(struct inode *inode, struct bio *bio)
+{
+	struct read_callbacks_ctx *ctx = get_read_callbacks_ctx(inode);
+
+	if (ctx) {
+		if (IS_ERR(ctx))
+			return PTR_ERR(ctx);
+		ctx->bio = bio;
+		ctx->bh = NULL;
+		bio->bi_private = ctx;
+	}
+	return 0;
+}
+EXPORT_SYMBOL(read_callbacks_setup_bio);
+
+
+Also, a nit: can you move the read_callbacks_setup_*() functions to near the top
+of the file, since they're called first (before the endio functions)?  Likewise
+in read_callbacks.h.  It would nice to keep the functions in a logical order.
+
+> diff --git a/include/linux/read_callbacks.h b/include/linux/read_callbacks.h
+> new file mode 100644
+> index 000000000000..aa1ec8ed7a6a
+> --- /dev/null
+> +++ b/include/linux/read_callbacks.h
+> @@ -0,0 +1,38 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _READ_CALLBACKS_H
+> +#define _READ_CALLBACKS_H
+
+Headers should be self-contained, but this is missing some prerequisite headers
+and forward declarations.  Try compiling a .c file with this header included
+first.
+
+> +
+> +typedef void (*end_page_op_t)(struct bio *bio, struct page *page);
+> +
+> +struct read_callbacks_ctx {
+> +	struct bio *bio;
+> +	struct inode *inode;
+> +	struct work_struct work;
+> +	unsigned int cur_step;
+> +	unsigned int enabled_steps;
+> +	end_page_op_t page_op;
+> +};
+
+As I mentioned, I don't think read_callbacks_ctx should be exposed to
+filesystems like this.  Instead just forward declare it here, and put the actual
+definition in fs/read_callbacks.c.
+
+> +
+> +#ifdef CONFIG_FS_READ_CALLBACKS
+> +void read_callbacks(struct read_callbacks_ctx *ctx);
+> +int read_callbacks_end_bio(struct bio *bio);
+> +int read_callbacks_setup(struct inode *inode, struct bio *bio,
+> +			end_page_op_t page_op);
+> +#else
+> +static inline void read_callbacks(struct read_callbacks_ctx *ctx)
+> +{
+> +}
+> +
+> +static inline int read_callbacks_end_bio(struct bio *bio)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+
+This stub needs to return 0, otherwise it breaks fs/mpage.c and f2fs for
+everyone when CONFIG_FS_READ_CALLBACKS is unset.
+
+But as I mentioned elsewhere, I think this should actually call an end_bio()
+callback itself and return void, which would also avoid this issue.
+
+> +
+> +static inline int read_callbacks_setup(struct inode *inode,
+> +				struct bio *bio, end_page_op_t page_op)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+
+Similarly here, this stub needs to return 0.
+
+Thanks!
+
+- Eric
