@@ -2,114 +2,82 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D39A15236F
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 25 Jun 2019 08:23:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F15152589
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 25 Jun 2019 09:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729257AbfFYGXU (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 25 Jun 2019 02:23:20 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:27122 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729253AbfFYGXT (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 25 Jun 2019 02:23:19 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5P6HBkf105150
-        for <linux-fscrypt@vger.kernel.org>; Tue, 25 Jun 2019 02:23:18 -0400
-Received: from e06smtp07.uk.ibm.com (e06smtp07.uk.ibm.com [195.75.94.103])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2tbe290eg7-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-fscrypt@vger.kernel.org>; Tue, 25 Jun 2019 02:23:18 -0400
-Received: from localhost
-        by e06smtp07.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-fscrypt@vger.kernel.org> from <chandan@linux.ibm.com>;
-        Tue, 25 Jun 2019 07:23:16 +0100
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (9.149.109.198)
-        by e06smtp07.uk.ibm.com (192.168.101.137) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Tue, 25 Jun 2019 07:23:11 +0100
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x5P6NA8M37421188
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 25 Jun 2019 06:23:11 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B4137AE057;
-        Tue, 25 Jun 2019 06:23:10 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 22F32AE053;
-        Tue, 25 Jun 2019 06:23:09 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.124.35.58])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 25 Jun 2019 06:23:08 +0000 (GMT)
-From:   Chandan Rajendra <chandan@linux.ibm.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fscrypt@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, jaegeuk@kernel.org, yuchao0@huawei.com,
-        hch@infradead.org
-Subject: Re: [PATCH V3 0/7] Consolidate FS read I/O callbacks code
-Date:   Tue, 25 Jun 2019 11:54:18 +0530
-Organization: IBM
-In-Reply-To: <20190621221550.GF167064@gmail.com>
-References: <20190616160813.24464-1-chandan@linux.ibm.com> <20190621221550.GF167064@gmail.com>
+        id S1728804AbfFYH4H (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 25 Jun 2019 03:56:07 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:33800 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726543AbfFYH4G (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 25 Jun 2019 03:56:06 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 3AEB77001CAEBEF3AD3F;
+        Tue, 25 Jun 2019 15:56:03 +0800 (CST)
+Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server (TLS) id 14.3.439.0; Tue, 25 Jun
+ 2019 15:55:58 +0800
+Subject: Re: [PATCH v5 16/16] f2fs: add fs-verity support
+To:     Eric Biggers <ebiggers@kernel.org>, <linux-fscrypt@vger.kernel.org>
+CC:     <linux-ext4@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-fsdevel@vger.kernel.org>, <linux-api@vger.kernel.org>,
+        <linux-integrity@vger.kernel.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Victor Hsieh <victorhsieh@google.com>,
+        Chandan Rajendra <chandan@linux.vnet.ibm.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20190620205043.64350-1-ebiggers@kernel.org>
+ <20190620205043.64350-17-ebiggers@kernel.org>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <90495fb1-72eb-ca42-8457-ef8e969eda51@huawei.com>
+Date:   Tue, 25 Jun 2019 15:55:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-TM-AS-GCONF: 00
-x-cbid: 19062506-0028-0000-0000-0000037D4CB7
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19062506-0029-0000-0000-0000243D6CB7
-Message-Id: <1680442.JJIz71cjaA@localhost.localdomain>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-25_05:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1906250050
+In-Reply-To: <20190620205043.64350-17-ebiggers@kernel.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.134.22.195]
+X-CFilter-Loop: Reflected
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Saturday, June 22, 2019 3:45:51 AM IST Eric Biggers wrote:
-> On Sun, Jun 16, 2019 at 09:38:06PM +0530, Chandan Rajendra wrote:
-> > This patchset moves the "FS read I/O callbacks" code into a file of its
-> > own (i.e. fs/read_callbacks.c) and modifies the generic
-> > do_mpage_readpge() to make use of the functionality provided.
-> > 
-> > "FS read I/O callbacks" code implements the state machine that needs
-> > to be executed after reading data from files that are encrypted and/or
-> > have verity metadata associated with them.
-> > 
-> > With these changes in place, the patchset changes Ext4 to use
-> > mpage_readpage[s] instead of its own custom ext4_readpage[s]()
-> > functions. This is done to reduce duplication of code across
-> > filesystems. Also, "FS read I/O callbacks" source files will be built
-> > only if CONFIG_FS_ENCRYPTION is enabled.
-> > 
-> > The patchset also modifies fs/buffer.c to get file
-> > encryption/decryption to work with subpage-sized blocks.
-> > 
-> > The patches can also be obtained from
-> > https://github.com/chandanr/linux.git at branch subpage-encryption-v3.
-> > 
-> 
-> FWIW: while doing my review I put together an (untested) incremental patch that
-> addresses my comments on the code, so I've provided it below in case you want to
-> start with it when addressing my comments.
-> 
-> This is just a single diff against your subpage-encryption-v3 branch, so of
-> course it would still need to be folded into the appropriate patches.  Also see
-> my suggestions in reply to patch 2 about how to better organize the series.  I
-> also left TODOs in kerneldoc comments that still need to be updated.
-> 
+Hi Eric,
 
-Thanks for all your help. I will post the next version of the patchset
-addressing all your review comments.
+On 2019/6/21 4:50, Eric Biggers wrote:
+> +static int f2fs_begin_enable_verity(struct file *filp)
+> +{
+> +	struct inode *inode = file_inode(filp);
+> +	int err;
+> +
 
--- 
-chandan
+I think we'd better add condition here (under inode lock) to disallow enabling
+verity on atomic/volatile inode, as we may fail to write merkle tree data due to
+atomic/volatile inode's special writeback method.
 
+> +	err = f2fs_convert_inline_inode(inode);
+> +	if (err)
+> +		return err;
+> +
+> +	err = dquot_initialize(inode);
+> +	if (err)
+> +		return err;
 
+We can get rid of dquot_initialize() here, since f2fs_file_open() ->
+dquot_file_open() should has initialized quota entry previously, right?
 
+Thanks,
+
+> +
+> +	set_inode_flag(inode, FI_VERITY_IN_PROGRESS);
+> +	return 0;
+> +}
+> +
