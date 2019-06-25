@@ -2,28 +2,34 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F15152589
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 25 Jun 2019 09:56:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1688C55658
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 25 Jun 2019 19:52:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728804AbfFYH4H (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 25 Jun 2019 03:56:07 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:33800 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726543AbfFYH4G (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 25 Jun 2019 03:56:06 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 3AEB77001CAEBEF3AD3F;
-        Tue, 25 Jun 2019 15:56:03 +0800 (CST)
-Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
- (10.3.19.214) with Microsoft SMTP Server (TLS) id 14.3.439.0; Tue, 25 Jun
- 2019 15:55:58 +0800
-Subject: Re: [PATCH v5 16/16] f2fs: add fs-verity support
-To:     Eric Biggers <ebiggers@kernel.org>, <linux-fscrypt@vger.kernel.org>
-CC:     <linux-ext4@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-fsdevel@vger.kernel.org>, <linux-api@vger.kernel.org>,
-        <linux-integrity@vger.kernel.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
+        id S1731373AbfFYRw3 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 25 Jun 2019 13:52:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45102 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726562AbfFYRw3 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 25 Jun 2019 13:52:29 -0400
+Received: from gmail.com (unknown [104.132.1.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2756320663;
+        Tue, 25 Jun 2019 17:52:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1561485148;
+        bh=wyycSt+pI2DJX5K8aByDIu1qndou0ZcC3vKhYC0f3bM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DjAOE5lDyE7nFLOiJ/TjmGzmXakZCqaiO7KZ4EjtP6/qEVCgSX/Fym0WfDE8dHEU7
+         TVqGc4cKyWEW9szMmQezxKmszLdo28xETW3HIk2BO5u49SUH1z9G3kxm/PyvTbUZla
+         rhLWkPZS8pNpuwPX5N2EHJ5EymKNGv0664ZbxDz8=
+Date:   Tue, 25 Jun 2019 10:52:26 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-integrity@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
         "Theodore Y . Ts'o" <tytso@mit.edu>,
         Victor Hsieh <victorhsieh@google.com>,
         Chandan Rajendra <chandan@linux.vnet.ibm.com>,
@@ -31,53 +37,56 @@ CC:     <linux-ext4@vger.kernel.org>,
         Christoph Hellwig <hch@lst.de>,
         "Darrick J . Wong" <darrick.wong@oracle.com>,
         Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v5 16/16] f2fs: add fs-verity support
+Message-ID: <20190625175225.GC81914@gmail.com>
 References: <20190620205043.64350-1-ebiggers@kernel.org>
  <20190620205043.64350-17-ebiggers@kernel.org>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <90495fb1-72eb-ca42-8457-ef8e969eda51@huawei.com>
-Date:   Tue, 25 Jun 2019 15:55:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+ <90495fb1-72eb-ca42-8457-ef8e969eda51@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20190620205043.64350-17-ebiggers@kernel.org>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.134.22.195]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <90495fb1-72eb-ca42-8457-ef8e969eda51@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hi Eric,
+Hi Chao, thanks for the review.
 
-On 2019/6/21 4:50, Eric Biggers wrote:
-> +static int f2fs_begin_enable_verity(struct file *filp)
-> +{
-> +	struct inode *inode = file_inode(filp);
-> +	int err;
-> +
+On Tue, Jun 25, 2019 at 03:55:57PM +0800, Chao Yu wrote:
+> Hi Eric,
+> 
+> On 2019/6/21 4:50, Eric Biggers wrote:
+> > +static int f2fs_begin_enable_verity(struct file *filp)
+> > +{
+> > +	struct inode *inode = file_inode(filp);
+> > +	int err;
+> > +
+> 
+> I think we'd better add condition here (under inode lock) to disallow enabling
+> verity on atomic/volatile inode, as we may fail to write merkle tree data due to
+> atomic/volatile inode's special writeback method.
+> 
 
-I think we'd better add condition here (under inode lock) to disallow enabling
-verity on atomic/volatile inode, as we may fail to write merkle tree data due to
-atomic/volatile inode's special writeback method.
+Yes, I'll add the following:
 
-> +	err = f2fs_convert_inline_inode(inode);
-> +	if (err)
-> +		return err;
-> +
-> +	err = dquot_initialize(inode);
-> +	if (err)
-> +		return err;
+	if (f2fs_is_atomic_file(inode) || f2fs_is_volatile_file(inode))
+		return -EOPNOTSUPP;
 
-We can get rid of dquot_initialize() here, since f2fs_file_open() ->
-dquot_file_open() should has initialized quota entry previously, right?
+> > +	err = f2fs_convert_inline_inode(inode);
+> > +	if (err)
+> > +		return err;
+> > +
+> > +	err = dquot_initialize(inode);
+> > +	if (err)
+> > +		return err;
+> 
+> We can get rid of dquot_initialize() here, since f2fs_file_open() ->
+> dquot_file_open() should has initialized quota entry previously, right?
 
-Thanks,
+We still need it because dquot_file_open() only calls dquot_initialize() if the
+file is being opened for writing.  But here the file descriptor is readonly.
+I'll add a comment explaining this here and in the ext4 equivalent.
 
-> +
-> +	set_inode_flag(inode, FI_VERITY_IN_PROGRESS);
-> +	return 0;
-> +}
-> +
+- Eric
