@@ -2,91 +2,59 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1688C55658
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 25 Jun 2019 19:52:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A73C256174
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 26 Jun 2019 06:33:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731373AbfFYRw3 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 25 Jun 2019 13:52:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45102 "EHLO mail.kernel.org"
+        id S1725379AbfFZEdB (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 26 Jun 2019 00:33:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54512 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726562AbfFYRw3 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 25 Jun 2019 13:52:29 -0400
-Received: from gmail.com (unknown [104.132.1.77])
+        id S1725308AbfFZEdA (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 26 Jun 2019 00:33:00 -0400
+Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2756320663;
-        Tue, 25 Jun 2019 17:52:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 253BB208CB;
+        Wed, 26 Jun 2019 04:33:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1561485148;
-        bh=wyycSt+pI2DJX5K8aByDIu1qndou0ZcC3vKhYC0f3bM=;
+        s=default; t=1561523580;
+        bh=3PdvR/W1Y+BNMIHVbN36FKlI1rUa2DPI/1eDMQbjv8Y=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DjAOE5lDyE7nFLOiJ/TjmGzmXakZCqaiO7KZ4EjtP6/qEVCgSX/Fym0WfDE8dHEU7
-         TVqGc4cKyWEW9szMmQezxKmszLdo28xETW3HIk2BO5u49SUH1z9G3kxm/PyvTbUZla
-         rhLWkPZS8pNpuwPX5N2EHJ5EymKNGv0664ZbxDz8=
-Date:   Tue, 25 Jun 2019 10:52:26 -0700
+        b=1HpUyhZF/g2+1AwBJ/Q3r2KL5OP074wNQaFJ7YN6Pjsl7HeJO+WKm1Jbl5Qq6LImh
+         ir0f/NK6X658XY6eQNLHIrQKm0WJiqiZB61JPRkntGT/wdTQRQo1LC5G8l9U01WKCl
+         o6ZmvGs7Pzqi+XCPp/uj/ERWO9xD+Y4hjb/LUM5U=
+Date:   Tue, 25 Jun 2019 21:32:58 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-integrity@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Victor Hsieh <victorhsieh@google.com>,
-        Chandan Rajendra <chandan@linux.vnet.ibm.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v5 16/16] f2fs: add fs-verity support
-Message-ID: <20190625175225.GC81914@gmail.com>
-References: <20190620205043.64350-1-ebiggers@kernel.org>
- <20190620205043.64350-17-ebiggers@kernel.org>
- <90495fb1-72eb-ca42-8457-ef8e969eda51@huawei.com>
+To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Cc:     linux-crypto@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>, dm-devel@redhat.com,
+        linux-fscrypt@vger.kernel.org,
+        Gilad Ben-Yossef <gilad@benyossef.com>,
+        Milan Broz <gmazyland@gmail.com>
+Subject: Re: [PATCH v3 6/6] crypto: arm64/aes - implement accelerated
+ ESSIV/CBC mode
+Message-ID: <20190626043258.GA23471@sol.localdomain>
+References: <20190619162921.12509-1-ard.biesheuvel@linaro.org>
+ <20190619162921.12509-7-ard.biesheuvel@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <90495fb1-72eb-ca42-8457-ef8e969eda51@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190619162921.12509-7-ard.biesheuvel@linaro.org>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hi Chao, thanks for the review.
-
-On Tue, Jun 25, 2019 at 03:55:57PM +0800, Chao Yu wrote:
-> Hi Eric,
+On Wed, Jun 19, 2019 at 06:29:21PM +0200, Ard Biesheuvel wrote:
+> Add an accelerated version of the 'essiv(cbc(aes),aes,sha256)'
+> skcipher, which is used by fscrypt, and in some cases, by dm-crypt.
+> This avoids a separate call into the AES cipher for every invocation.
 > 
-> On 2019/6/21 4:50, Eric Biggers wrote:
-> > +static int f2fs_begin_enable_verity(struct file *filp)
-> > +{
-> > +	struct inode *inode = file_inode(filp);
-> > +	int err;
-> > +
-> 
-> I think we'd better add condition here (under inode lock) to disallow enabling
-> verity on atomic/volatile inode, as we may fail to write merkle tree data due to
-> atomic/volatile inode's special writeback method.
-> 
+> Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 
-Yes, I'll add the following:
+This patch causes a self-tests failure:
 
-	if (f2fs_is_atomic_file(inode) || f2fs_is_volatile_file(inode))
-		return -EOPNOTSUPP;
-
-> > +	err = f2fs_convert_inline_inode(inode);
-> > +	if (err)
-> > +		return err;
-> > +
-> > +	err = dquot_initialize(inode);
-> > +	if (err)
-> > +		return err;
-> 
-> We can get rid of dquot_initialize() here, since f2fs_file_open() ->
-> dquot_file_open() should has initialized quota entry previously, right?
-
-We still need it because dquot_file_open() only calls dquot_initialize() if the
-file is being opened for writing.  But here the file descriptor is readonly.
-I'll add a comment explaining this here and in the ext4 equivalent.
+[   26.787681] alg: skcipher: essiv-cbc-aes-sha256-neon encryption test failed (wrong result) on test vector 1, cfg="two even aligned splits"
 
 - Eric
