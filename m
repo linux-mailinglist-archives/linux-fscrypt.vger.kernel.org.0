@@ -2,56 +2,50 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D626C5874F
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 27 Jun 2019 18:40:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 713995882A
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 27 Jun 2019 19:17:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726405AbfF0Qks (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 27 Jun 2019 12:40:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36722 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725770AbfF0Qks (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 27 Jun 2019 12:40:48 -0400
-Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EBA42208E3;
-        Thu, 27 Jun 2019 16:40:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1561653647;
-        bh=nNVG+IDzbIeEVq65elRdqny10jN+YiugKfrEYScPmbQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QkP9iRzla7wMEKlyWi2QYrAjIKvPg/6kpeDLXNvdvMxFCo8b272C5ZX5KlfYar2Av
-         vllgmGG/Bh1qu/jloayliKN8fU2IgkKVj6sIow+Fh/cnwZkbkX/GvwFwDjl7+a3nBt
-         UF+kV2Wlo6WEhFL6O8oZF3F6/M7wJlOBv3jcT7aw=
-Date:   Thu, 27 Jun 2019 09:40:45 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Herbert Xu <herbert@gondor.apana.org.au>, dm-devel@redhat.com,
-        linux-fscrypt@vger.kernel.org,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        Milan Broz <gmazyland@gmail.com>
-Subject: Re: [PATCH v5 7/7] crypto: arm64/aes - implement accelerated
- ESSIV/CBC mode
-Message-ID: <20190627164045.GE686@sol.localdomain>
-References: <20190626204047.32131-1-ard.biesheuvel@linaro.org>
- <20190626204047.32131-8-ard.biesheuvel@linaro.org>
+        id S1726482AbfF0RRe (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 27 Jun 2019 13:17:34 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:38178 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726315AbfF0RRe (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 27 Jun 2019 13:17:34 -0400
+Received: from callcc.thunk.org (guestnat-104-133-0-109.corp.google.com [104.133.0.109] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x5RHHSOu021109
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Jun 2019 13:17:29 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 6C3EB42002E; Thu, 27 Jun 2019 13:17:28 -0400 (EDT)
+Date:   Thu, 27 Jun 2019 13:17:28 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-fscrypt@vger.kernel.org, fstests@vger.kernel.org
+Subject: Re: [PATCH] fscrypt: document testing with xfstests
+Message-ID: <20190627171728.GA31445@mit.edu>
+References: <20190620181658.225792-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190626204047.32131-8-ard.biesheuvel@linaro.org>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <20190620181658.225792-1-ebiggers@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, Jun 26, 2019 at 10:40:47PM +0200, Ard Biesheuvel wrote:
-> Add an accelerated version of the 'essiv(cbc(aes),aes,sha256'
-> skcipher, which is used by fscrypt, and in some cases, by dm-crypt.
-> This avoids a separate call into the AES cipher for every invocation.
+On Thu, Jun 20, 2019 at 11:16:58AM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> Document how to test ext4, f2fs, and ubifs encryption with xfstests.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-This technically should say "in some cases by fscrypt and dm-crypt", since as
-we've discussed previously, most of the time this is not what fscrypt uses.
+Looks good, you can add:
 
-- Eric
+Reviewed-by: Theodore Ts'o <tytso@mit.edu>
+
+					- Ted
