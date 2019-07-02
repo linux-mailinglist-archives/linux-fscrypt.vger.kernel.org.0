@@ -2,52 +2,52 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A7B15CB70
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  2 Jul 2019 10:13:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE95A5D442
+	for <lists+linux-fscrypt@lfdr.de>; Tue,  2 Jul 2019 18:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728188AbfGBINS (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 2 Jul 2019 04:13:18 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:44203 "EHLO
+        id S1726628AbfGBQat (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 2 Jul 2019 12:30:49 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:35173 "EHLO
         mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728316AbfGBIHp (ORCPT
+        with ESMTP id S1726605AbfGBQar (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 2 Jul 2019 04:07:45 -0400
-Received: by mail-wr1-f68.google.com with SMTP id e3so7090292wrs.11
-        for <linux-fscrypt@vger.kernel.org>; Tue, 02 Jul 2019 01:07:44 -0700 (PDT)
+        Tue, 2 Jul 2019 12:30:47 -0400
+Received: by mail-wr1-f68.google.com with SMTP id c27so10887168wrb.2
+        for <linux-fscrypt@vger.kernel.org>; Tue, 02 Jul 2019 09:30:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=fVYsMgjvlhzbh/TqKhi7d4SFK7B/Ukhib20YGwD2OlM=;
-        b=q9ZilC05a2m+mrPUNO5+3iadDkIlMvNCFVYKl5FwLDPma2TRWE2R0chNTM9iMMEJrH
-         ln26Gtv3kLxEQ7ulT1DkTflxRzOwddrLnWXMwiWJwKlsKAnIi7J33WBU5V1Quqvbc72s
-         dd52JvuRxilYVEeEFwthTvCbMFJTWKlEdApwk2O4qdpjwKuR8kZiIU2pFTfsAa23aVMb
-         8FwY1p93XrB1ewOEpLAGY23N5AibhbXyLd4QbBrI/O8VD+2yiqIzRtZrmonKEEpGn9wS
-         WRwgd95Nut+jEnE6ytQXprbCcr0g9xR14lMdywhfUMDKpnS6rB3KHbxwPdR0YL1tJpfH
-         RWlA==
+        bh=9PsQvCCZoQ6Pr9ZY9NX1OgTQ4z7Cl/JEAfSQ/wKA4qg=;
+        b=ol2y26JO3VcPZrpUUa0uP/W9Nq1zsvNy/OKaa7rB4temFaZpUB5wZToZEorWvTVgjg
+         Td8pabZLF60puoXYeKnOOJHoir+mU6ikYpjNsjDB8FwoY1kLqiE1TZlEKK0gDCxLZv3Z
+         WBumeokOAMug/Yj2CCf7e5z0YNPlU75LtyZR6y/Qe+hSP5WLE0+Hi5cTRDIabw9ijcfX
+         IfdbxnArq98ylsHn+Xvw1e4RAaxQm/0EgHsr3GGx8pL6nYS5lO9iuPEW6BfxnrW3c2CH
+         XV6LxrkwYNu2jEGaDCWJibs4ZvaXBQip3yqjlGRzV7bCD4vX8Q/TI69Xi1rD7lrBI8GA
+         981g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=fVYsMgjvlhzbh/TqKhi7d4SFK7B/Ukhib20YGwD2OlM=;
-        b=XTM0Z2CLvWe8g19loMZfbECdnRcF8lUhu77W632mjyxkKS8mfMp1C+e1CFowhxwGrG
-         JizGkLVSgjOoNwZQvk5kLfv2CU8g+jIhGhw9TU3ohBpmid2JAEb7G4TrQ/sRTzEOQ6cC
-         qPF0kMrFHcUyVzIcjY/Mv9Xw1r18JhTCr0adFtHehhSV3FUqAtaDG9k0eke+8u/PXIkY
-         LLm1+E0UNb0txcWr9GU1rjK4PSdYnWtqL5Zc9EMzNwUAyKBiUXuhqoVcBDcHokJDCJIs
-         MEtm+h006neb0svLQVibAEd3lu1xwuwR+1FubhigVggJpnJkOK4K0IPB3PUWhE3MWSjf
-         dlMA==
-X-Gm-Message-State: APjAAAUer2U0qQNI6XdyfJkaQmjmpNwQEOIq79pRBbBf4mHP2E0Cbm2Y
-        Z6syIsFpXAhtSKChstdDI+XudIdXp5wMevbdeRzMHg==
-X-Google-Smtp-Source: APXvYqxFTr09aEUjlKJBTyUb2A6Ysfnih9bFlGYN09LsP6ZlqtItJRPDuv1wBv6XO4bEEeoL2GdtXHtohvv80mpjsQ8=
-X-Received: by 2002:a5d:6b07:: with SMTP id v7mr7958887wrw.169.1562054863371;
- Tue, 02 Jul 2019 01:07:43 -0700 (PDT)
+        bh=9PsQvCCZoQ6Pr9ZY9NX1OgTQ4z7Cl/JEAfSQ/wKA4qg=;
+        b=NnBIldPzn7lfTJw8aR61jEsTBzaJxTEPtirzSbm+Ahy8OQUEh8g+TA4K6yshdogJBi
+         BUafzJ2l90sdM+Br93qnQdmsKmsL3heH7N6/1k2+G1NOIOtvfUi703cGfLRkrCAhGYd5
+         JD9bxOigbODBuB2ExerjsDfFmcoX7d5LauKYjSUe6qSpD6wgZddBZsdmTKjbiIII7qf7
+         nZ+q1yZBfOaPsXcjbn5sezdD9t0LWEf824xBPt7igw7bSWPPZUL6uqReZTohSbgok1j7
+         8XUjUiyWvqZ/t5x5an9D2xG8wWmZnqqe8sWSEIGXHJsStkkTACYnv+oU5JNPdWenpXTR
+         HHjQ==
+X-Gm-Message-State: APjAAAVeprn6jJ3OPj4Ez79qZ+XbUgE0vyM8g7ZgSTi5xOfmptY/Fy+H
+        7GMyT2OjumPKFugZcmgW89eBAv3G1Ly71teTEQYVtw==
+X-Google-Smtp-Source: APXvYqww7rnr2/OCeFvLIZKy6IV1f5KVjAf+1C7xAyWaibN9SGqeuSRRc5TkIlQIvUv0CkprWr3EM/GO4j5BMsePehE=
+X-Received: by 2002:a5d:6b07:: with SMTP id v7mr9884997wrw.169.1562085045816;
+ Tue, 02 Jul 2019 09:30:45 -0700 (PDT)
 MIME-Version: 1.0
 References: <20190628152112.914-1-ard.biesheuvel@linaro.org>
  <20190628152112.914-5-ard.biesheuvel@linaro.org> <f068888f-1a13-babf-0144-07939a79d9d9@gmail.com>
 In-Reply-To: <f068888f-1a13-babf-0144-07939a79d9d9@gmail.com>
 From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Date:   Tue, 2 Jul 2019 10:07:32 +0200
-Message-ID: <CAKv+Gu-gnKk2EQ4Asq2evghhyTFYVq9SRQ8tu_p4VCA1dSJfHQ@mail.gmail.com>
+Date:   Tue, 2 Jul 2019 18:30:30 +0200
+Message-ID: <CAKv+Gu-hATMtNVUJ-WOr0yia0-X=M_ME6CutREy9q_ZyorpCzw@mail.gmail.com>
 Subject: Re: [PATCH v6 4/7] md: dm-crypt: switch to ESSIV crypto API template
 To:     Milan Broz <gmazyland@gmail.com>
 Cc:     "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
@@ -85,10 +85,6 @@ On Mon, 1 Jul 2019 at 10:59, Milan Broz <gmazyland@gmail.com> wrote:
 > (Wipe message is meant to suspend the device and wipe all key material
 > from memory without actually destroying the device.)
 >
-
-Yes, setting the random key in wipe() triggers the SHA256 operation as
-normal, which is slightly wasteful but not a big deal imo.
-
 > > -{
 > > -     struct iv_essiv_private *essiv = &cc->iv_gen_private.essiv;
 > > -     unsigned salt_size = crypto_shash_digestsize(essiv->hash_tfm);
@@ -132,7 +128,8 @@ normal, which is slightly wasteful but not a big deal imo.
 > Just place this here without goto?
 >
 
-OK
+Actually, the bad_mem label is used 10 lines up as well.
+So I'll keep this goto in the next revision.
 
 > > +     ti->error = "Cannot allocate cipher string";
 > > +     return -ENOMEM;
