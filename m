@@ -2,287 +2,185 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 12E3D5ED45
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  3 Jul 2019 22:14:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3765B5FCE5
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  4 Jul 2019 20:30:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726918AbfGCUOq (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 3 Jul 2019 16:14:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45440 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726490AbfGCUOp (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 3 Jul 2019 16:14:45 -0400
-Received: from gmail.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 223A0218A3;
-        Wed,  3 Jul 2019 20:14:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1562184883;
-        bh=uDlAVAXYjXmm4B5M2nwWI+0/AJcHJT1oBoLLjIsPYBo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=edV+btjMBD2SL+cX2HjG9NAUVpkTZdnc27S8YV74/CAEz+PujugvTi9OrWKc3Umfk
-         MDyG1ewzFQ008WFqmwbBgaZTVY0eyh1FrySTkTItwY1ICodG7TyTgKZ1fX6bgfVaH7
-         S7Hcqp/OrvqWKg/p/i1Hjs1aFK9YeVHV9a3gxZXg=
-Date:   Wed, 3 Jul 2019 13:14:41 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-integrity@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Victor Hsieh <victorhsieh@google.com>,
-        Chandan Rajendra <chandan@linux.vnet.ibm.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v6 10/17] fs-verity: implement FS_IOC_ENABLE_VERITY ioctl
-Message-ID: <20190703201440.GB10080@gmail.com>
-References: <20190701153237.1777-1-ebiggers@kernel.org>
- <20190701153237.1777-11-ebiggers@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190701153237.1777-11-ebiggers@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1727010AbfGDSan (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 4 Jul 2019 14:30:43 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:54946 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725865AbfGDSan (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 4 Jul 2019 14:30:43 -0400
+Received: by mail-wm1-f67.google.com with SMTP id p74so3535746wme.4
+        for <linux-fscrypt@vger.kernel.org>; Thu, 04 Jul 2019 11:30:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=yk+JztDjUT/qSbh+IewDnfzPsmvS7/u063GlyhA1d8U=;
+        b=BmBZ+MX9BXAQxEj2buKZqZihI4km2NUvVBKuQKUJyDY7DFynpvmFuxmqewZQ9KT2TY
+         C9kY9BEs+DlKRO5OwmOMSKC6KAdb++a7y2kCihIXImX28PopDdfaLSVF2qad4/In5f+l
+         cOKwRPxInEEPb75rxIQJrrh6U5EFPDNGqM+Qb0UFM9absAdtVngZ+isF3qWwTQMCHFPD
+         F0+q90C3oPUtqvBKwjyg5s3NOUr/ooEAtEsa5StHGZCXoD2kTrfaGrtD+n9B4zjv7cj/
+         SLq19dUKWf9emsxZClNP6AutpVFhv/lJXIKFtJtZp72NivqUuskMrg6t398VLIWWRFP3
+         uhBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=yk+JztDjUT/qSbh+IewDnfzPsmvS7/u063GlyhA1d8U=;
+        b=FznnYPnt/WU05sIk5EKr8/xLjZ181nfqqHq+i2nI9eeVwkRlfoHtWs2fE9vCksQ8s1
+         5ohZimyyL9p9p3UE2VoA+o8V5T9xBTpAeDEH50XOkSCpdUbbgmHxOAN8dfmDJQsbVy8+
+         0EYWXfUzVIOyMJR4QFW0N3poj0i+qX//J//DWH41e7rlVRw3SkCxTFeiL9sRiwyeaWSl
+         5ZfBoHt630+l3M3/uMylYv0mU+SLwwQXzWSNf/7vcSyd867gjY7c2rb1cfYarMC1XPDQ
+         pfJpf4QaMqdXGJ6DIAXEve/pUx5xQXO2H1FG+svH+1G/+TKiNcZUfM7sltwUfwKaB6fp
+         7zwQ==
+X-Gm-Message-State: APjAAAW1dTxdjVX5TYxXeocJJuuiSLAEfAKr51JNWoks+3dZJ2QQslT0
+        RUguhzt7pcWOhCgIz5k99CzmVkCj4xKN8Q==
+X-Google-Smtp-Source: APXvYqyipzTA43sgCecfs/nwEE8twcuGUax7qR2FvBJdFF1ZBok/6pdHPrp60LV3tGcl7fOEHuUIrQ==
+X-Received: by 2002:a05:600c:291:: with SMTP id 17mr555909wmk.32.1562265040371;
+        Thu, 04 Jul 2019 11:30:40 -0700 (PDT)
+Received: from e111045-lin.arm.com (93-143-123-179.adsl.net.t-com.hr. [93.143.123.179])
+        by smtp.gmail.com with ESMTPSA id o6sm11114695wra.27.2019.07.04.11.30.38
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Thu, 04 Jul 2019 11:30:39 -0700 (PDT)
+From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
+To:     linux-crypto@vger.kernel.org
+Cc:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Eric Biggers <ebiggers@google.com>, dm-devel@redhat.com,
+        linux-fscrypt@vger.kernel.org,
+        Gilad Ben-Yossef <gilad@benyossef.com>,
+        Milan Broz <gmazyland@gmail.com>
+Subject: [PATCH v8 0/7]  crypto: switch to crypto API for ESSIV generation
+Date:   Thu,  4 Jul 2019 20:30:10 +0200
+Message-Id: <20190704183017.31570-1-ard.biesheuvel@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Jul 01, 2019 at 08:32:30AM -0700, Eric Biggers wrote:
-> +	err = mnt_want_write_file(filp);
-> +	if (err) /* -EROFS */
-> +		return err;
-> +
-> +	err = deny_write_access(filp);
-> +	if (err) /* -ETXTBSY */
-> +		goto out_drop_write;
-> +
-> +	inode_lock(inode);
-> +
-> +	if (IS_VERITY(inode)) {
-> +		err = -EEXIST;
-> +		goto out_unlock;
-> +	}
-> +
-> +	err = enable_verity(filp, &arg);
-> +	if (err)
-> +		goto out_unlock;
-> +
-> +	/*
-> +	 * Some pages of the file may have been evicted from pagecache after
-> +	 * being used in the Merkle tree construction, then read into pagecache
-> +	 * again by another process reading from the file concurrently.  Since
-> +	 * these pages didn't undergo verification against the file measurement
-> +	 * which fs-verity now claims to be enforcing, we have to wipe the
-> +	 * pagecache to ensure that all future reads are verified.
-> +	 */
-> +	filemap_write_and_wait(inode->i_mapping);
-> +	invalidate_inode_pages2(inode->i_mapping);
-> +
-> +	/*
-> +	 * allow_write_access() is needed to pair with deny_write_access().
-> +	 * Regardless, the filesystem won't allow writing to verity files.
-> +	 */
-> +out_unlock:
-> +	inode_unlock(inode);
-> +	allow_write_access(filp);
-> +out_drop_write:
-> +	mnt_drop_write_file(filp);
-> +	return err;
-> +}
-> +EXPORT_SYMBOL_GPL(fsverity_ioctl_enable);
+This series creates an ESSIV template that produces a skcipher or AEAD
+transform based on a tuple of the form '<skcipher>,<cipher>,<shash>'
+(or '<aead>,<cipher>,<shash>' for the AEAD case). It exposes the
+encapsulated sync or async skcipher/aead by passing through all operations,
+while using the cipher/shash pair to transform the input IV into an ESSIV
+output IV.
 
-FYI, I've been thinking about the use of inode_lock() here.  I don't think it's
-good to hold it during the whole Merkle tree construction, since it means that
-all syscalls that take the inode lock (e.g. chown(), chmod(), utimes()) will
-block uninterruptibly.  E.g. 'touch file' hangs in the following:
+This matches what both users of ESSIV in the kernel do, and so it is proposed
+as a replacement for those, in patches #2 and #4.
 
-	dd bs=1 count=0 seek=$((1<<40)) of=file
-	fsverity enable file &
-	touch file
+Note to the maintainer: patches #2 .. #4 are against other subsystems, and
+so it might make sense to take only the crypto patches (#1, #5, and optionally
+#6 and #7) now, and allow the other subsystem maintainers to take the other
+patches at their leisure during the next cycle.
 
-It will proceed if you kill 'fsverity enable', but it's not ideal.
+This code has been tested using the fscrypt test suggested by Eric
+(generic/549 *), as well as the mode-test scripts suggested by Milan for
+the dm-crypt case. I also tested the aead case in a virtual machine,
+but it definitely needs some wider testing from the dm-crypt experts.
 
-But AFAICS, it's safe to not hold the inode lock as long as we (a) keep using
-deny_write_access() so that writes and truncates are not allowed (this is also
-how the kernel handles files being executed), and (b) still take the inode lock
-temporarily when beginning and ending enabling verity and enforce that only one
-thread can build the Merkle tree at a time, and any other threads get EBUSY.
+* due to sloppiness on my part, the fscrypt change was actually broken
+  since I switched back to using full size IVs in the ESSIV template.
+  This time, I fixed this, and reran the test in question and it passed.
 
-Does anyone have any objection to doing it that way instead?  I.e. basically the
-following incremental patch:
+The consensus appears to be that it would be useful if the crypto API
+encapsulates the handling of multiple subsequent blocks that are
+encrypted using a 64-bit LE counter as IV, and makes it the duty of
+the algo to increment the counter between blocks. However, this is
+equally suitable for non-ESSIV transforms (or even more so), and so
+this is left as a future enhancement to  be applied on top.
 
-diff --git a/Documentation/filesystems/fsverity.rst b/Documentation/filesystems/fsverity.rst
-index 3a7a44ba7bb771..395f299ce25ea5 100644
---- a/Documentation/filesystems/fsverity.rst
-+++ b/Documentation/filesystems/fsverity.rst
-@@ -147,6 +147,7 @@ FS_IOC_ENABLE_VERITY can fail with the following errors:
- 
- - ``EACCES``: the process does not have write access to the file
- - ``EBADMSG``: the signature is malformed
-+- ``EBUSY``: this ioctl is already running on the file
- - ``EEXIST``: the file already has verity enabled
- - ``EFAULT``: the caller provided inaccessible memory
- - ``EINTR``: the operation was interrupted by a fatal signal
-diff --git a/fs/ext4/verity.c b/fs/ext4/verity.c
-index dd0d1093e362cb..bb0a3b8e6ea71e 100644
---- a/fs/ext4/verity.c
-+++ b/fs/ext4/verity.c
-@@ -113,6 +113,9 @@ static int ext4_begin_enable_verity(struct file *filp)
- 	handle_t *handle;
- 	int err;
- 
-+	if (ext4_verity_in_progress(inode))
-+		return -EBUSY;
-+
- 	/*
- 	 * Since the file was opened readonly, we have to initialize the jbd
- 	 * inode and quotas here and not rely on ->open() doing it.  This must
-diff --git a/fs/f2fs/verity.c b/fs/f2fs/verity.c
-index 91184cecbade1c..2a33c765a56860 100644
---- a/fs/f2fs/verity.c
-+++ b/fs/f2fs/verity.c
-@@ -123,6 +123,9 @@ static int f2fs_begin_enable_verity(struct file *filp)
- 	struct inode *inode = file_inode(filp);
- 	int err;
- 
-+	if (f2fs_verity_in_progress(inode))
-+		return -EBUSY;
-+
- 	if (f2fs_is_atomic_file(inode) || f2fs_is_volatile_file(inode))
- 		return -EOPNOTSUPP;
- 
-diff --git a/fs/verity/enable.c b/fs/verity/enable.c
-index e9dca76fe5104f..a8430283a52a44 100644
---- a/fs/verity/enable.c
-+++ b/fs/verity/enable.c
-@@ -187,8 +187,6 @@ static int enable_verity(struct file *filp,
- 
- 	desc->data_size = cpu_to_le64(inode->i_size);
- 
--	pr_debug("Building Merkle tree...\n");
--
- 	/* Prepare the Merkle tree parameters */
- 	err = fsverity_init_merkle_tree_params(&params, inode,
- 					       arg->hash_algorithm,
-@@ -197,12 +195,29 @@ static int enable_verity(struct file *filp,
- 	if (err)
- 		goto out;
- 
--	/* Tell the filesystem that verity is being enabled on the file */
--	err = vops->begin_enable_verity(filp);
-+	/*
-+	 * Start enabling verity on this file, serialized by the inode lock.
-+	 * Fail if verity is already enabled or is already being enabled.
-+	 */
-+	inode_lock(inode);
-+	if (IS_VERITY(inode))
-+		err = -EEXIST;
-+	else
-+		err = vops->begin_enable_verity(filp);
-+	inode_unlock(inode);
- 	if (err)
- 		goto out;
- 
--	/* Build the Merkle tree */
-+	/*
-+	 * Build the Merkle tree.  Don't hold the inode lock during this, since
-+	 * on huge files it may take a very long time and we don't want to force
-+	 * unrelated syscalls like chown() to block forever.  We don't need the
-+	 * inode lock because deny_write_access() already prevents the file from
-+	 * being written to or truncated, and we still serialize
-+	 * ->begin_enable_verity() and ->end_enable_verity() with the inode lock
-+	 * and only allow one process to be here at a time.
-+	 */
-+	pr_debug("Building Merkle tree...\n");
- 	BUILD_BUG_ON(sizeof(desc->root_hash) < FS_VERITY_MAX_DIGEST_SIZE);
- 	err = build_merkle_tree(inode, &params, desc->root_hash);
- 	if (err) {
-@@ -229,8 +244,13 @@ static int enable_verity(struct file *filp,
- 		pr_debug("Storing a %u-byte PKCS#7 signature alongside the file\n",
- 			 arg->sig_size);
- 
--	/* Tell the filesystem to finish enabling verity on the file */
-+	/*
-+	 * Tell the filesystem to finish enabling verity on the file.  The
-+	 * inode_lock() serializes this with ->begin_enable_verity().
-+	 */
-+	inode_lock(inode);
- 	err = vops->end_enable_verity(filp, desc, desc_size, params.tree_size);
-+	inode_unlock(inode);
- 	if (err) {
- 		fsverity_err(inode, "%ps() failed with err %d",
- 			     vops->end_enable_verity, err);
-@@ -254,7 +274,9 @@ static int enable_verity(struct file *filp,
- 	return err;
- 
- rollback:
-+	inode_lock(inode);
- 	(void)vops->end_enable_verity(filp, NULL, 0, params.tree_size);
-+	inode_unlock(inode);
- 	goto out;
- }
- 
-@@ -319,16 +341,9 @@ int fsverity_ioctl_enable(struct file *filp, const void __user *uarg)
- 	if (err) /* -ETXTBSY */
- 		goto out_drop_write;
- 
--	inode_lock(inode);
--
--	if (IS_VERITY(inode)) {
--		err = -EEXIST;
--		goto out_unlock;
--	}
--
- 	err = enable_verity(filp, &arg);
- 	if (err)
--		goto out_unlock;
-+		goto out_allow_write_access;
- 
- 	/*
- 	 * Some pages of the file may have been evicted from pagecache after
-@@ -345,8 +360,7 @@ int fsverity_ioctl_enable(struct file *filp, const void __user *uarg)
- 	 * allow_write_access() is needed to pair with deny_write_access().
- 	 * Regardless, the filesystem won't allow writing to verity files.
- 	 */
--out_unlock:
--	inode_unlock(inode);
-+out_allow_write_access:
- 	allow_write_access(filp);
- out_drop_write:
- 	mnt_drop_write_file(filp);
-diff --git a/include/linux/fsverity.h b/include/linux/fsverity.h
-index 9ebb97c174c7c4..e31a6b974ab0ef 100644
---- a/include/linux/fsverity.h
-+++ b/include/linux/fsverity.h
-@@ -23,7 +23,8 @@ struct fsverity_operations {
- 	 * @filp: a readonly file descriptor for the file
- 	 *
- 	 * The filesystem must do any needed filesystem-specific preparations
--	 * for enabling verity, e.g. evicting inline data.
-+	 * for enabling verity, e.g. evicting inline data.  It also must return
-+	 * -EBUSY if verity is already being enabled on the given file.
- 	 *
- 	 * i_rwsem is held for write.
- 	 *
-@@ -46,7 +47,8 @@ struct fsverity_operations {
- 	 * inode, e.g. setting a bit in the on-disk inode.  The filesystem is
- 	 * also responsible for setting the S_VERITY flag in the VFS inode.
- 	 *
--	 * i_rwsem is held for write.
-+	 * i_rwsem is held for write, but it may have been dropped between the
-+	 * calls to ->begin_enable_verity() and ->end_enable_verity().
- 	 *
- 	 * Return: 0 on success, -errno on failure
- 	 */
-@@ -96,7 +98,7 @@ struct fsverity_operations {
- 	 * @log_blocksize: log base 2 of the Merkle tree block size
- 	 *
- 	 * This is only called between ->begin_enable_verity() and
--	 * ->end_enable_verity().  i_rwsem is held for write.
-+	 * ->end_enable_verity().
- 	 *
- 	 * Return: 0 on success, -errno on failure
- 	 */
+Changes since v7:
+- rebase onto cryptodev/master
+- drop change to ivsize in #2
+- add Milan's R-b's
+
+Changes since v6:
+- make CRYPTO_ESSIV user selectable so we can opt out of selecting it even
+  if FS_ENCRYPTION (which cannot be built as a module) is enabled
+- move a comment along with the code it referred to (#3), not that this change
+  and removing some redundant braces makes the diff look totally different
+- add Milan's R-b to #3 and #4
+
+Changes since v5:
+- drop redundant #includes and drop some unneeded braces (#2)
+- add test case for essiv(authenc(hmac(sha256),cbc(aes)),aes,sha256)
+- make ESSIV driver deal with assoc data that is described by more than two
+  scatterlist entries - this only happens when the extended tests are being
+  performed, so don't optimize for it
+- clarify that both fscrypt and dm-crypt only use ESSIV in special cases (#7)
+
+Changes since v4:
+- make the ESSIV template IV size equal the IV size of the encapsulated
+  cipher - defining it as 8 bytes was needlessly restrictive, and also
+  complicated the code for no reason
+- add a missing kfree() spotted by Smatch
+- add additional algo length name checks when constructing the essiv()
+  cipher name
+- reinstate the 'essiv' IV generation implementation in dm-crypt, but
+  make its generation function identical to plain64le (and drop the other
+  methods)
+- fix a bug in the arm64 CE/NEON code
+- simplify the arm64 code by reusing more of the existing CBC implementation
+  (patch #6 is new to this series and was added for this reason)
+
+Changes since v3:
+- address various review comments from Eric on patch #1
+- use Kconfig's 'imply' instead of 'select' to permit CRYPTO_ESSIV to be
+  enabled as a module or disabled entirely even if fscrypt is compiled in (#2)
+- fix an issue in the AEAD encrypt path caused by the IV being clobbered by
+  the inner skcipher before the hmac was being calculated
+
+Changes since v2:
+- fixed a couple of bugs that snuck in after I'd done the bulk of my
+  testing
+- some cosmetic tweaks to the ESSIV template skcipher setkey function
+  to align it with the aead one
+- add a test case for essiv(cbc(aes),aes,sha256)
+- add an accelerated implementation for arm64 that combines the IV
+  derivation and the actual en/decryption in a single asm routine
+
+Scroll down for tcrypt speed test result comparing the essiv template
+with the asm implementation. Bare cbc(aes) tests included for reference
+as well. Taken on a 2GHz Cortex-A57 (AMD Seattle)
+
+Code can be found here
+https://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git/log/?h=essiv-v8
+
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Eric Biggers <ebiggers@google.com>
+Cc: dm-devel@redhat.com
+Cc: linux-fscrypt@vger.kernel.org
+Cc: Gilad Ben-Yossef <gilad@benyossef.com>
+Cc: Milan Broz <gmazyland@gmail.com>
+
+Ard Biesheuvel (7):
+  crypto: essiv - create wrapper template for ESSIV generation
+  fs: crypto: invoke crypto API for ESSIV handling
+  md: dm-crypt: infer ESSIV block cipher from cipher string directly
+  md: dm-crypt: switch to ESSIV crypto API template
+  crypto: essiv - add test vector for essiv(cbc(aes),aes,sha256)
+  crypto: arm64/aes-cts-cbc - factor out CBC en/decryption of a walk
+  crypto: arm64/aes - implement accelerated ESSIV/CBC mode
+
+ arch/arm64/crypto/aes-glue.c  | 205 +++++--
+ arch/arm64/crypto/aes-modes.S |  29 +-
+ crypto/Kconfig                |  28 +
+ crypto/Makefile               |   1 +
+ crypto/essiv.c                | 640 ++++++++++++++++++++
+ crypto/tcrypt.c               |   9 +
+ crypto/testmgr.c              |  14 +
+ crypto/testmgr.h              | 497 +++++++++++++++
+ drivers/md/Kconfig            |   1 +
+ drivers/md/dm-crypt.c         | 235 ++-----
+ fs/crypto/Kconfig             |   1 +
+ fs/crypto/crypto.c            |   5 -
+ fs/crypto/fscrypt_private.h   |   9 -
+ fs/crypto/keyinfo.c           |  93 +--
+ 14 files changed, 1435 insertions(+), 332 deletions(-)
+ create mode 100644 crypto/essiv.c
+
+-- 
+2.17.1
+
