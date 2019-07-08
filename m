@@ -2,64 +2,107 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EB1E61636
-	for <lists+linux-fscrypt@lfdr.de>; Sun,  7 Jul 2019 20:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 348AA62562
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  8 Jul 2019 17:53:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727397AbfGGSzT (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sun, 7 Jul 2019 14:55:19 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:47135 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727373AbfGGSzT (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sun, 7 Jul 2019 14:55:19 -0400
-Received: from callcc.thunk.org (75-104-86-74.mobility.exede.net [75.104.86.74] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x67Isor0016470
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 7 Jul 2019 14:54:57 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 6983542002E; Sun,  7 Jul 2019 14:54:50 -0400 (EDT)
-Date:   Sun, 7 Jul 2019 14:54:50 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-integrity@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
-        Victor Hsieh <victorhsieh@google.com>,
-        Chandan Rajendra <chandan@linux.vnet.ibm.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v6 16/17] ext4: update on-disk format documentation for
- fs-verity
-Message-ID: <20190707185450.GE19775@mit.edu>
-References: <20190701153237.1777-1-ebiggers@kernel.org>
- <20190701153237.1777-17-ebiggers@kernel.org>
+        id S1733135AbfGHPxi (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 8 Jul 2019 11:53:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50818 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731329AbfGHPxi (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 8 Jul 2019 11:53:38 -0400
+Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DE924216F4;
+        Mon,  8 Jul 2019 15:53:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1562601217;
+        bh=VvyiDwXEdgFH6Y2FBTkFjaSans0W0KzuUuKrug84y58=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Mlh6mIb2akdrOv0AfqfJolS9MsYUylanOcc85zuIB0hq7IzRqzaoQ/rQudsHKDlss
+         uCZD00SWjL5j+qehnDClmPsgaH1qpjI4CbciBoIAg3zUNmfIW+N0GGvPfJuj1wn+Bm
+         58bQ+y0xzZ4cN7OldQhFwkkjNUbRcadS41x+TBbY=
+Date:   Mon, 8 Jul 2019 08:53:33 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [GIT PULL] fscrypt updates for v5.3
+Message-ID: <20190708155333.GA722@sol.localdomain>
+Mail-Followup-To: Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190701153237.1777-17-ebiggers@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Jul 01, 2019 at 08:32:36AM -0700, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> Document the format of verity files on ext4, and the corresponding inode
-> and superblock flags.
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
+The following changes since commit cd6c84d8f0cdc911df435bb075ba22ce3c605b07:
 
-Looks good, you can add:
+  Linux 5.2-rc2 (2019-05-26 16:49:19 -0700)
 
-Reviewed-by: Theodore Ts'o <tytso@mit.edu>
+are available in the Git repository at:
 
-Thanks!
+  git://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
 
-					- Ted
+for you to fetch changes up to 0564336329f0b03a78221ddf51e52af3665e5720:
+
+  fscrypt: document testing with xfstests (2019-06-27 10:29:46 -0700)
+
+----------------------------------------------------------------
+fscrypt updates for v5.3
+
+- Preparations for supporting encryption on ext4 filesystems where the
+  filesystem block size is smaller than PAGE_SIZE.
+
+- Don't allow setting encryption policies on dead directories.
+
+- Various cleanups.
+
+----------------------------------------------------------------
+Chandan Rajendra (3):
+      ext4: clear BH_Uptodate flag on decryption error
+      ext4: decrypt only the needed blocks in ext4_block_write_begin()
+      ext4: decrypt only the needed block in __ext4_block_zero_page_range()
+
+Eric Biggers (14):
+      fscrypt: simplify bounce page handling
+      fscrypt: remove the "write" part of struct fscrypt_ctx
+      fscrypt: rename fscrypt_do_page_crypto() to fscrypt_crypt_block()
+      fscrypt: clean up some BUG_ON()s in block encryption/decryption
+      fscrypt: introduce fscrypt_encrypt_block_inplace()
+      fscrypt: support encrypting multiple filesystem blocks per page
+      fscrypt: handle blocksize < PAGE_SIZE in fscrypt_zeroout_range()
+      fscrypt: introduce fscrypt_decrypt_block_inplace()
+      fscrypt: support decrypting multiple filesystem blocks per page
+      fscrypt: decrypt only the needed blocks in __fscrypt_decrypt_bio()
+      ext4: encrypt only up to last block in ext4_bio_write_page()
+      fscrypt: remove unnecessary includes of ratelimit.h
+      fscrypt: remove selection of CONFIG_CRYPTO_SHA256
+      fscrypt: document testing with xfstests
+
+Hongjie Fang (1):
+      fscrypt: don't set policy for a dead directory
+
+ Documentation/filesystems/fscrypt.rst |  43 ++++-
+ fs/crypto/Kconfig                     |   1 -
+ fs/crypto/bio.c                       |  73 +++------
+ fs/crypto/crypto.c                    | 299 +++++++++++++++++++---------------
+ fs/crypto/fname.c                     |   1 -
+ fs/crypto/fscrypt_private.h           |  15 +-
+ fs/crypto/hooks.c                     |   1 -
+ fs/crypto/keyinfo.c                   |   1 -
+ fs/crypto/policy.c                    |   2 +
+ fs/ext4/inode.c                       |  37 +++--
+ fs/ext4/page-io.c                     |  44 +++--
+ fs/f2fs/data.c                        |  17 +-
+ fs/ubifs/crypto.c                     |  19 ++-
+ include/linux/fscrypt.h               |  96 +++++++----
+ 14 files changed, 363 insertions(+), 286 deletions(-)
