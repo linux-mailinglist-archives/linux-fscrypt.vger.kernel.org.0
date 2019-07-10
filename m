@@ -2,129 +2,201 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A18F62A63
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  8 Jul 2019 22:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EA3764ED6
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 11 Jul 2019 00:56:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405032AbfGHUdZ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 8 Jul 2019 16:33:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38540 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729370AbfGHUdZ (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 8 Jul 2019 16:33:25 -0400
-Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 69F38205ED;
-        Mon,  8 Jul 2019 20:33:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1562618003;
-        bh=AyI1LJSWEGua8v/8eClfc39Rc/AarGIsKe0oKSNf5oc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ppnWqNQ+11Wl3sI1hitl2GTuQUV5wzhfQMFBM+0JNxjRqtBT8o1yk7leizHEzQ0he
-         y211wp65SoBgTlLN42fEUyvxK0PyGdVZ8beA4QvDEg9lC3sSlZ5zQ44GjHa79ew6IK
-         DUvo7FnjoG/T4l30zqis5HH5/ViK3lt83KeAMNxc=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     fstests@vger.kernel.org
-Cc:     linux-fscrypt@vger.kernel.org
-Subject: [PATCH] generic/399: don't rely on xfs_io exit status
-Date:   Mon,  8 Jul 2019 13:32:39 -0700
-Message-Id: <20190708203239.219792-1-ebiggers@kernel.org>
+        id S1726708AbfGJW4P (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 10 Jul 2019 18:56:15 -0400
+Received: from mail-pl1-f201.google.com ([209.85.214.201]:49505 "EHLO
+        mail-pl1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727546AbfGJW4O (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 10 Jul 2019 18:56:14 -0400
+Received: by mail-pl1-f201.google.com with SMTP id 65so2054634plf.16
+        for <linux-fscrypt@vger.kernel.org>; Wed, 10 Jul 2019 15:56:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=32EvgBFnAv8ONpLqCSd3ioyTEVOAmc+wOjmDzUT8IVQ=;
+        b=U98632Z82hYy5Krk4Woknk4M3J9Oxbj8OLfRcRkOhGhPsLAgvlQ8rL9cjAJhLQGT0e
+         nCfY2aMLctKH69TtquMoZpasiCSaNu9WP3yBAzUUbRQV4pKQdoUmylbSx427Z6QJe+Zc
+         XUyFaop39sDlqJv7rWzmRkcjpxyL+cehPcD3+KZr4BOSB2t4QIKV2J9aUANKGFF0b4RV
+         SEPT/+e+lPQTrLb0lC8jN6riSephuN1tXaX5Jqeb9/n+hVCc1tFDWqp8O6PDklw8PheP
+         TahcnXsLHuoRbvMEJGYz1WRDNelCbzAdlcE/6FLE+qvY21MZ2HRfX3yQtfzql02E8Qjb
+         zszA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=32EvgBFnAv8ONpLqCSd3ioyTEVOAmc+wOjmDzUT8IVQ=;
+        b=WZ+EM3kCR30hSE4Mld9xtm3DuFFFePeXixFDX6rRM7k6MBOfPHegElNbWD7UK9TjUS
+         x4CkqpjKLaiQL4+V0a8uSI//kZXVlbhvC2qMshcwjv28Llo3vghlufviroW3JkRRH8DI
+         8Ok/MvUSNyySkAmd15YW/FhxikfEZtr2VIRpDv+o4w282QFEaS8UBOx6zZkZ0tEW0E+u
+         Yv41F4zw/L0TgcBmXccFgrJMTTGQ3B+z7Qy71GYlE9DZxaHRF1G/7P4lnnaQNgmTXBWO
+         xaXZVf/tGSmWdWxKxCyWsg3t77zcE3uUrsz3Ff+tFQhiejeAIHjvphtXGDATTVBdxhA5
+         CgOg==
+X-Gm-Message-State: APjAAAUz0/rwd7RflX2AS1qkEGX9+UBR+nqnaOsFmgPBB6V12V4bdPMp
+        5Png8RIOzN20LXmqFoSMTFKaCmTFYDc=
+X-Google-Smtp-Source: APXvYqzdWJGCD39Cu1PKryLNuGp95rnlt/uZL9RjQk8mERUDsK4hp6quJ1mm2cPMcmKqqfHIDneVHcjisAg=
+X-Received: by 2002:a63:b904:: with SMTP id z4mr749685pge.388.1562799373417;
+ Wed, 10 Jul 2019 15:56:13 -0700 (PDT)
+Date:   Wed, 10 Jul 2019 15:56:01 -0700
+Message-Id: <20190710225609.192252-1-satyat@google.com>
+Mime-Version: 1.0
 X-Mailer: git-send-email 2.22.0.410.gd8fdbe21b5-goog
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: [PATCH v3 0/8] Inline Encryption Support
+From:   Satya Tangirala <satyat@google.com>
+To:     linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Cc:     Parshuram Raju Thombare <pthombar@cadence.com>,
+        Ladvine D Almeida <ladvine.dalmeida@synopsys.com>,
+        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
+        Kuohong Wang <kuohong.wang@mediatek.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Satya Tangirala <satyat@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+This patch series adds support for Inline Encryption to the block layer,
+UFS, fscrypt and f2fs.
 
-Unexpectedly, 'xfs_io -f $file -c "pwrite 0 1M"' exits with failure
-status if the file can't be created, but exits with success status if an
-error occurs actually writing data.  As discussed previously, xfs_io's
-exit status has always been broken, and it will be difficult to fix:
-https://marc.info/?l=linux-xfs&m=151269053129101&w=2
+Inline Encryption hardware allows software to specify an encryption context
+(an encryption key, crypto algorithm, data unit num, data unit size, etc.)
+along with a data transfer request to a storage device, and the inline
+encryption hardware will use that context to en/decrypt the data. The
+inline encryption hardware is part of the storage device, and it
+conceptually sits on the data path between system memory and the storage
+device. Inline Encryption hardware has become increasingly common, and we
+want to support it in the kernel.
 
-Because of this, generic/399 fails on ext4 if "-I 256" (256-byte inodes)
-is specified in the mkfs options, e.g. with 'kvm-xfstests -c ext4/adv
-generic/399'.  This is because the test tries to fill a filesystem
-entirely with 1 MiB encrypted files, and it expects the xfs_io commands
-to start failing when no more files should be able to fit.  But when the
-filesystem supports in-inode xattrs, no blocks need to be allocated for
-the encryption xattrs, so empty encrypted files can continue to be
-created even after all the filesystem's blocks are in-use.
+Inline Encryption hardware implementations often function around the
+concept of a limited number of "keyslots", which can hold an encryption
+context each. The storage device can be directed to en/decrypt any
+particular request with the encryption context stored in any particular
+keyslot.
 
-For better or worse, the convention for xfstests is to ignore the exit
-status of xfs_io and instead rely on the printed error messages.  Thus,
-other tests don't run into this problem.  So for now, let's fix the test
-failure by making generic/399 do the same.
+Patch 1 introduces a Keyslot Manager to efficiently manage keyslots.
+The keyslot manager also functions as the interface that blk-crypto
+(introduced in Path 3), will use to program keys into inline encryption
+hardware. For more information on the Keyslot Manager, refer to
+documentation found in block/keyslot-manager.c and linux/keyslot-manager.h.
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- tests/generic/399 | 46 ++++++++++++++++++++++++++++------------------
- 1 file changed, 28 insertions(+), 18 deletions(-)
+Patch 2 introduces struct bio_crypt_ctx, and a ptr to one in struct bio,
+which allows struct bio to represent an encryption context that can be
+passed down the storage stack from the filesystem layer to the storage
+driver.
 
-diff --git a/tests/generic/399 b/tests/generic/399
-index 5625503b..dfd8d3c2 100755
---- a/tests/generic/399
-+++ b/tests/generic/399
-@@ -82,28 +82,38 @@ total_file_size=0
- i=1
- while true; do
- 	file=$SCRATCH_MNT/encrypted_dir/file$i
--	if ! $XFS_IO_PROG -f $file -c 'pwrite 0 1M' &> $tmp.out; then
--		if ! grep -q 'No space left on device' $tmp.out; then
--			echo "FAIL: unexpected pwrite failure"
--			cat $tmp.out
--		elif [ -e $file ]; then
--			total_file_size=$((total_file_size + $(stat -c %s $file)))
--		fi
--		break
-+
-+	$XFS_IO_PROG -f $file -c 'pwrite 0 1M' &> $tmp.out
-+	echo "Writing $file..." >> $seqres.full
-+	cat $tmp.out >> $seqres.full
-+
-+	file_size=0
-+	if [ -e $file ]; then
-+		file_size=$(stat -c %s $file)
- 	fi
--	total_file_size=$((total_file_size + $(stat -c %s $file)))
--	i=$((i + 1))
--	if [ $i -gt $fs_size_in_mb ]; then
--		echo "FAIL: filesystem never filled up!"
-+
-+	# We shouldn't have been able to write more data than we had space for.
-+	(( total_file_size += file_size ))
-+	if (( total_file_size > fs_size )); then
-+		_fail "Wrote $total_file_size bytes but should have only" \
-+		      "had space for $fs_size bytes at most!"
-+	fi
-+
-+	# Stop if we hit ENOSPC.
-+	if grep -q 'No space left on device' $tmp.out; then
- 		break
- 	fi
--done
- 
--# We shouldn't have been able to write more data than we had space for.
--if (( $total_file_size > $fs_size )); then
--	echo "FAIL: wrote $total_file_size bytes but should have only" \
--		"had space for $fs_size bytes at most"
--fi
-+	# Otherwise the file should have been successfully created.
-+	if [ ! -e $file ]; then
-+		_fail "$file failed to be created, but the fs isn't out of space yet!"
-+	fi
-+	if (( file_size != 1024 * 1024 )); then
-+		_fail "Size of $file is wrong (possible write error?)." \
-+		      "Got $file_size, expected 1 MiB"
-+	fi
-+	(( i++ ))
-+done
- 
- #
- # Unmount the filesystem and compute its compressed size.  It must be no smaller
+Patch 3 introduces blk-crypto. Blk-crypto delegates crypto operations to
+inline encryption hardware when available, and also contains a software
+fallback to the kernel crypto API. Blk-crypto also makes it possible for
+layered devices like device mapper to make use of inline encryption
+hardware. Given that blk-crypto works as a software fallback, we are
+considering removing file content en/decryption from fscrypt and simply
+using blk-crypto in a future patch. For more details on blk-crypto, refer
+to Documentation/block/blk-crypto.txt.
+
+Patches 4-6 add support for inline encryption into the UFS driver according
+to the JEDEC UFS HCI v2.1 specification. Inline encryption support for
+other drivers (like eMMC) may be added in the same way - the device driver
+should set up a Keyslot Manager in the device's request_queue (refer to
+the UFS crypto additions in ufshcd-crypto.c and ufshcd.c for an example).
+
+Patches 7 and 8 add support to fscrypt and f2fs, so that we have
+a complete stack that can make use of inline encryption.
+
+There have been a few patch sets addressing Inline Encryption Support in
+the past. Briefly, this patch set differs from those as follows:
+
+1) "crypto: qce: ice: Add support for Inline Crypto Engine"
+is specific to certain hardware, while our patch set's Inline
+Encryption support for UFS is implemented according to the JEDEC UFS
+specification.
+
+2) "scsi: ufs: UFS Host Controller crypto changes" registers inline
+encryption support as a kernel crypto algorithm. Our patch views inline
+encryption as being fundamentally different from a generic crypto
+provider (in that inline encryption is tied to a device), and so does
+not use the kernel crypto API to represent inline encryption hardware.
+
+3) "scsi: ufs: add real time/inline crypto support to UFS HCD" requires
+the device mapper to work - our patch does not.
+
+Changes v2 => v3:
+ - Overhauled keyslot manager's get keyslot logic and optimized LRU.
+ - Block crypto en/decryption fallback now supports data unit sizes
+   that divide each of the bio's segment's lengths (instead of requiring
+   each segment's length to be the same as the data unit size).
+ - fscrypt master key is now keyed additionally by super_block and
+   ci_ctfm != NULL.
+ - all references of "hw encryption" are replaced by inline encryption.
+ - address various other review comments from Eric.
+
+Changes v1 => v2:
+ - Block layer and UFS changes are split into 3 patches each.
+ - We now only have a ptr to a struct bio_crypt_ctx in struct bio, instead
+   of the struct itself.
+ - struct bio_crypt_ctx no longer has flags.
+ - blk-crypto now correctly handles the case when it fails to init
+   (because of insufficient memory), but kernel continues to boot.
+ - ufshcd-crypto now works on big endian cpus.
+ - Many cleanups.
+
+Satya Tangirala (8):
+  block: Keyslot Manager for Inline Encryption
+  block: Add encryption context to struct bio
+  block: blk-crypto for Inline Encryption
+  scsi: ufs: UFS driver v2.1 spec crypto additions
+  scsi: ufs: UFS crypto API
+  scsi: ufs: Add inline encryption support to UFS
+  fscrypt: wire up fscrypt to use blk-crypto
+  f2fs: Wire up f2fs to use inline encryption via fscrypt
+
+ Documentation/block/inline-encryption.txt | 185 +++++++
+ block/Kconfig                             |   8 +
+ block/Makefile                            |   2 +
+ block/bio-crypt-ctx.c                     | 122 +++++
+ block/bio.c                               |  16 +-
+ block/blk-core.c                          |  11 +-
+ block/blk-crypto.c                        | 585 ++++++++++++++++++++++
+ block/blk-merge.c                         |  34 +-
+ block/bounce.c                            |   9 +-
+ block/keyslot-manager.c                   | 314 ++++++++++++
+ drivers/md/dm.c                           |  15 +-
+ drivers/scsi/ufs/Kconfig                  |  10 +
+ drivers/scsi/ufs/Makefile                 |   1 +
+ drivers/scsi/ufs/ufshcd-crypto.c          | 435 ++++++++++++++++
+ drivers/scsi/ufs/ufshcd-crypto.h          |  86 ++++
+ drivers/scsi/ufs/ufshcd.c                 |  84 +++-
+ drivers/scsi/ufs/ufshcd.h                 |  29 ++
+ drivers/scsi/ufs/ufshci.h                 |  67 ++-
+ fs/crypto/Kconfig                         |   6 +
+ fs/crypto/bio.c                           | 138 ++++-
+ fs/crypto/crypto.c                        |   4 +
+ fs/crypto/fscrypt_private.h               |  11 +
+ fs/crypto/keyinfo.c                       |  94 +++-
+ fs/crypto/policy.c                        |  10 +
+ fs/f2fs/data.c                            |  83 ++-
+ fs/f2fs/super.c                           |  13 +-
+ include/linux/bio.h                       | 208 ++++++++
+ include/linux/blk-crypto.h                |  40 ++
+ include/linux/blk_types.h                 |   7 +
+ include/linux/blkdev.h                    |   6 +
+ include/linux/fscrypt.h                   |  62 +++
+ include/linux/keyslot-manager.h           |  75 +++
+ include/uapi/linux/fs.h                   |   3 +-
+ 33 files changed, 2697 insertions(+), 76 deletions(-)
+ create mode 100644 Documentation/block/inline-encryption.txt
+ create mode 100644 block/bio-crypt-ctx.c
+ create mode 100644 block/blk-crypto.c
+ create mode 100644 block/keyslot-manager.c
+ create mode 100644 drivers/scsi/ufs/ufshcd-crypto.c
+ create mode 100644 drivers/scsi/ufs/ufshcd-crypto.h
+ create mode 100644 include/linux/blk-crypto.h
+ create mode 100644 include/linux/keyslot-manager.h
+
 -- 
 2.22.0.410.gd8fdbe21b5-goog
 
