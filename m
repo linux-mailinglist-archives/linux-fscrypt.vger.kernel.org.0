@@ -2,38 +2,38 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C8DC169596
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 15 Jul 2019 16:59:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DDE369692
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 15 Jul 2019 17:05:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388395AbfGOO7K (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 15 Jul 2019 10:59:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40756 "EHLO mail.kernel.org"
+        id S1733140AbfGOPFU (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 15 Jul 2019 11:05:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390075AbfGOOTU (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 15 Jul 2019 10:19:20 -0400
+        id S2387920AbfGOOFs (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 15 Jul 2019 10:05:48 -0400
 Received: from sasha-vm.mshome.net (unknown [73.61.17.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E85E320651;
-        Mon, 15 Jul 2019 14:19:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D33C9206B8;
+        Mon, 15 Jul 2019 14:05:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1563200360;
-        bh=2NdhQFS1az4dd2S3kTrgJNxWZQrj5AM2wmdh1NW6SPA=;
+        s=default; t=1563199548;
+        bh=zFInjbow4awvTzD4uAikcRsrf4nCIxFXk5C0Gq0NVHc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jRYZVgiq3U8CK3TNWZhiM7EDw4vy8Tmw/J1jIod6Vbi9if8TcLvrWyGMw857kuV5p
-         tpxyW0LGsrbHCsKhKUuiOtRSd2OAGsAByIVtIjU79ithfw2Kb7i4Y2WTxap2TCxVvo
-         X38eI4jcjxpPu+JK0KlLwmjOVw5MtgypBvhaLkr8=
+        b=mg9Fau34i3Qdxoh4vGvA0lLePVXwFOTQAKMA9UEgdwnP+LtHKTsagay5XrF30yAyZ
+         cczR2OqfJQgDMCT/yONDV5/8irs5SoUV/3QvSrB/cCbtMlRaNiQ9WSPHZOVkgx/YHu
+         aA+jmKefMkFOctJ69/KVwCMQaBQGNnMTLxCtaKlw=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Eric Biggers <ebiggers@google.com>,
         Chandan Rajendra <chandan@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>, linux-fscrypt@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 025/158] fscrypt: clean up some BUG_ON()s in block encryption/decryption
-Date:   Mon, 15 Jul 2019 10:15:56 -0400
-Message-Id: <20190715141809.8445-25-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.1 039/219] fscrypt: clean up some BUG_ON()s in block encryption/decryption
+Date:   Mon, 15 Jul 2019 10:00:40 -0400
+Message-Id: <20190715140341.6443-39-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190715141809.8445-1-sashal@kernel.org>
-References: <20190715141809.8445-1-sashal@kernel.org>
+In-Reply-To: <20190715140341.6443-1-sashal@kernel.org>
+References: <20190715140341.6443-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -60,10 +60,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 9 insertions(+), 6 deletions(-)
 
 diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
-index 0f46cf550907..c83ddff3ff4a 100644
+index fe38b5306045..5b3d525aa213 100644
 --- a/fs/crypto/crypto.c
 +++ b/fs/crypto/crypto.c
-@@ -149,7 +149,10 @@ int fscrypt_do_page_crypto(const struct inode *inode, fscrypt_direction_t rw,
+@@ -159,7 +159,10 @@ int fscrypt_do_page_crypto(const struct inode *inode, fscrypt_direction_t rw,
  	struct crypto_skcipher *tfm = ci->ci_ctfm;
  	int res = 0;
  
@@ -73,9 +73,9 @@ index 0f46cf550907..c83ddff3ff4a 100644
 +	if (WARN_ON_ONCE(len % FS_CRYPTO_BLOCK_SIZE != 0))
 +		return -EINVAL;
  
- 	BUILD_BUG_ON(sizeof(iv) != FS_IV_SIZE);
- 	BUILD_BUG_ON(AES_BLOCK_SIZE != FS_IV_SIZE);
-@@ -241,8 +244,6 @@ struct page *fscrypt_encrypt_page(const struct inode *inode,
+ 	fscrypt_generate_iv(&iv, lblk_num, ci);
+ 
+@@ -243,8 +246,6 @@ struct page *fscrypt_encrypt_page(const struct inode *inode,
  	struct page *ciphertext_page = page;
  	int err;
  
@@ -84,7 +84,7 @@ index 0f46cf550907..c83ddff3ff4a 100644
  	if (inode->i_sb->s_cop->flags & FS_CFLG_OWN_PAGES) {
  		/* with inplace-encryption we just encrypt the page */
  		err = fscrypt_do_page_crypto(inode, FS_ENCRYPT, lblk_num, page,
-@@ -254,7 +255,8 @@ struct page *fscrypt_encrypt_page(const struct inode *inode,
+@@ -256,7 +257,8 @@ struct page *fscrypt_encrypt_page(const struct inode *inode,
  		return ciphertext_page;
  	}
  
@@ -94,7 +94,7 @@ index 0f46cf550907..c83ddff3ff4a 100644
  
  	ctx = fscrypt_get_ctx(inode, gfp_flags);
  	if (IS_ERR(ctx))
-@@ -302,8 +304,9 @@ EXPORT_SYMBOL(fscrypt_encrypt_page);
+@@ -304,8 +306,9 @@ EXPORT_SYMBOL(fscrypt_encrypt_page);
  int fscrypt_decrypt_page(const struct inode *inode, struct page *page,
  			unsigned int len, unsigned int offs, u64 lblk_num)
  {
