@@ -2,32 +2,32 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CCA673D1D
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 24 Jul 2019 22:15:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E1D973D21
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 24 Jul 2019 22:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404349AbfGXTya (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 24 Jul 2019 15:54:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37462 "EHLO mail.kernel.org"
+        id S2388815AbfGXUO7 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 24 Jul 2019 16:14:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37466 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404351AbfGXTy3 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        id S2404352AbfGXTy3 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
         Wed, 24 Jul 2019 15:54:29 -0400
 Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.77])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9A83F217D4
+        by mail.kernel.org (Postfix) with ESMTPSA id C773A22AEC
         for <linux-fscrypt@vger.kernel.org>; Wed, 24 Jul 2019 19:54:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1563998068;
-        bh=I7APpuVMA0gf6f1HZOU3ahDDWNpTj566Hv7PaJYTG8M=;
+        bh=TiYUqjUJSJgwlEWlQC8z6oQ+OvqC8JbiRJLDatoLx6Q=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=I0IQOazeMVwFyEnXSzDtTFNGk2x5frLEneq1WdYGXOiT7aG7R1JSUnO5k4f+fiAav
-         uTwUpV/KxXC656Ym2SUAM0RRdK8vA5W4nH5667uryvinp3YjbktODGtJKFZpuxMAY4
-         WVzAIjPT3OKumb6peiSEruYCVFu1lrJevoYz19aM=
+        b=AsfR09JuyN3bXJkXM9lZ5Fv8cK8g/PTej9aSVWt8ZbCEW/A5w4+8CSxwhPijC5b7a
+         H78A+etWr3zRPWFXPWbxAcvGg8sqePdeToYJ/VJW6+O9drNXDsTfq46PumbVeUO6fQ
+         GRODv+uFbdU5rolzNsCpqvJmebGgm699nx8vXXVo=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-fscrypt@vger.kernel.org
-Subject: [PATCH 2/4] fscrypt: improve warning messages for unsupported encryption contexts
-Date:   Wed, 24 Jul 2019 12:54:20 -0700
-Message-Id: <20190724195422.42495-3-ebiggers@kernel.org>
+Subject: [PATCH 3/4] fscrypt: improve warnings for missing crypto API support
+Date:   Wed, 24 Jul 2019 12:54:21 -0700
+Message-Id: <20190724195422.42495-4-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.22.0.657.g960e92d24f-goog
 In-Reply-To: <20190724195422.42495-1-ebiggers@kernel.org>
 References: <20190724195422.42495-1-ebiggers@kernel.org>
@@ -40,60 +40,61 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-When fs/crypto/ encounters an inode with an invalid encryption context,
-currently it prints a warning if the pair of encryption modes are
-unrecognized, but it's silent if there are other problems such as
-unsupported context size, format, or flags.  To help people debug such
-situations, add more warning messages.
+Users of fscrypt with non-default algorithms will encounter an error
+like the following if they fail to include the needed algorithms into
+the crypto API when configuring the kernel (as per the documentation):
+
+    Error allocating 'adiantum(xchacha12,aes)' transform: -2
+
+This requires that the user figure out what the "-2" error means.
+Make it more friendly by printing a warning like the following instead:
+
+    Missing crypto API support for Adiantum (API name: "adiantum(xchacha12,aes)")
+
+Also upgrade the log level for *other* errors to KERN_ERR.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/crypto/keyinfo.c | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
+ fs/crypto/keyinfo.c | 19 ++++++++++++++-----
+ 1 file changed, 14 insertions(+), 5 deletions(-)
 
 diff --git a/fs/crypto/keyinfo.c b/fs/crypto/keyinfo.c
-index d0eb901a6d1a9f..e5ab18d98f32a3 100644
+index e5ab18d98f32a3..b75678587c3a85 100644
 --- a/fs/crypto/keyinfo.c
 +++ b/fs/crypto/keyinfo.c
-@@ -510,8 +510,12 @@ int fscrypt_get_encryption_info(struct inode *inode)
- 	res = inode->i_sb->s_cop->get_context(inode, &ctx, sizeof(ctx));
- 	if (res < 0) {
- 		if (!fscrypt_dummy_context_enabled(inode) ||
--		    IS_ENCRYPTED(inode))
-+		    IS_ENCRYPTED(inode)) {
+@@ -237,8 +237,13 @@ allocate_skcipher_for_mode(struct fscrypt_mode *mode, const u8 *raw_key,
+ 
+ 	tfm = crypto_alloc_skcipher(mode->cipher_str, 0, 0);
+ 	if (IS_ERR(tfm)) {
+-		fscrypt_warn(inode, "Error allocating '%s' transform: %ld",
+-			     mode->cipher_str, PTR_ERR(tfm));
++		if (PTR_ERR(tfm) == -ENOENT)
 +			fscrypt_warn(inode,
-+				     "Error %d getting encryption context",
-+				     res);
- 			return res;
-+		}
- 		/* Fake up a context for an unencrypted directory */
- 		memset(&ctx, 0, sizeof(ctx));
- 		ctx.format = FS_ENCRYPTION_CONTEXT_FORMAT_V1;
-@@ -519,14 +523,22 @@ int fscrypt_get_encryption_info(struct inode *inode)
- 		ctx.filenames_encryption_mode = FS_ENCRYPTION_MODE_AES_256_CTS;
- 		memset(ctx.master_key_descriptor, 0x42, FS_KEY_DESCRIPTOR_SIZE);
- 	} else if (res != sizeof(ctx)) {
-+		fscrypt_warn(inode,
-+			     "Unknown encryption context size (%d bytes)", res);
- 		return -EINVAL;
++				     "Missing crypto API support for %s (API name: \"%s\")",
++				     mode->friendly_name, mode->cipher_str);
++		else
++			fscrypt_err(inode, "Error allocating '%s' transform: %ld",
++				    mode->cipher_str, PTR_ERR(tfm));
+ 		return tfm;
  	}
+ 	if (unlikely(!mode->logged_impl_name)) {
+@@ -384,9 +389,13 @@ static int derive_essiv_salt(const u8 *key, int keysize, u8 *salt)
  
--	if (ctx.format != FS_ENCRYPTION_CONTEXT_FORMAT_V1)
-+	if (ctx.format != FS_ENCRYPTION_CONTEXT_FORMAT_V1) {
-+		fscrypt_warn(inode, "Unknown encryption context version (%d)",
-+			     ctx.format);
- 		return -EINVAL;
-+	}
- 
--	if (ctx.flags & ~FS_POLICY_FLAGS_VALID)
-+	if (ctx.flags & ~FS_POLICY_FLAGS_VALID) {
-+		fscrypt_warn(inode, "Unknown encryption context flags (0x%02x)",
-+			     ctx.flags);
- 		return -EINVAL;
-+	}
- 
- 	crypt_info = kmem_cache_zalloc(fscrypt_info_cachep, GFP_NOFS);
- 	if (!crypt_info)
+ 		tfm = crypto_alloc_shash("sha256", 0, 0);
+ 		if (IS_ERR(tfm)) {
+-			fscrypt_warn(NULL,
+-				     "error allocating SHA-256 transform: %ld",
+-				     PTR_ERR(tfm));
++			if (PTR_ERR(tfm) == -ENOENT)
++				fscrypt_warn(NULL,
++					     "Missing crypto API support for SHA-256");
++			else
++				fscrypt_err(NULL,
++					    "Error allocating SHA-256 transform: %ld",
++					    PTR_ERR(tfm));
+ 			return PTR_ERR(tfm);
+ 		}
+ 		prev_tfm = cmpxchg(&essiv_hash_tfm, NULL, tfm);
 -- 
 2.22.0.657.g960e92d24f-goog
 
