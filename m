@@ -2,65 +2,61 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A94877BDB
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 27 Jul 2019 22:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1464477FFE
+	for <lists+linux-fscrypt@lfdr.de>; Sun, 28 Jul 2019 17:08:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388253AbfG0UkY (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sat, 27 Jul 2019 16:40:24 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:36903 "EHLO
+        id S1726089AbfG1PIY (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sun, 28 Jul 2019 11:08:24 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:55587 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2387893AbfG0UkY (ORCPT
+        with ESMTP id S1726032AbfG1PIY (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sat, 27 Jul 2019 16:40:24 -0400
-Received: from callcc.thunk.org (96-72-84-49-static.hfc.comcastbusiness.net [96.72.84.49] (may be forged))
+        Sun, 28 Jul 2019 11:08:24 -0400
+Received: from callcc.thunk.org (96-72-102-169-static.hfc.comcastbusiness.net [96.72.102.169] (may be forged))
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x6RKdtcc013261
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x6SF835t026387
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 27 Jul 2019 16:39:57 -0400
+        Sun, 28 Jul 2019 11:08:04 -0400
 Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id B45954202F5; Sat, 27 Jul 2019 16:39:54 -0400 (EDT)
-Date:   Sat, 27 Jul 2019 16:39:54 -0400
+        id 34FB54202F5; Sun, 28 Jul 2019 11:08:02 -0400 (EDT)
+Date:   Sun, 28 Jul 2019 11:08:02 -0400
 From:   "Theodore Y. Ts'o" <tytso@mit.edu>
 To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-integrity@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
-        Victor Hsieh <victorhsieh@google.com>,
-        Chandan Rajendra <chandan@linux.vnet.ibm.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v7 10/17] fs-verity: implement FS_IOC_ENABLE_VERITY ioctl
-Message-ID: <20190727203954.GB1499@mit.edu>
-References: <20190722165101.12840-1-ebiggers@kernel.org>
- <20190722165101.12840-11-ebiggers@kernel.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-api@vger.kernel.org,
+        linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
+        Paul Crowley <paulcrowley@google.com>,
+        Satya Tangirala <satyat@google.com>
+Subject: Re: [PATCH v7 01/16] fs, fscrypt: move uapi definitions to new
+ header <linux/fscrypt.h>
+Message-ID: <20190728150802.GA6088@mit.edu>
+References: <20190726224141.14044-1-ebiggers@kernel.org>
+ <20190726224141.14044-2-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190722165101.12840-11-ebiggers@kernel.org>
+In-Reply-To: <20190726224141.14044-2-ebiggers@kernel.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Jul 22, 2019 at 09:50:54AM -0700, Eric Biggers wrote:
+On Fri, Jul 26, 2019 at 03:41:26PM -0700, Eric Biggers wrote:
 > From: Eric Biggers <ebiggers@google.com>
 > 
-> Add a function for filesystems to call to implement the
-> FS_IOC_ENABLE_VERITY ioctl.  This ioctl enables fs-verity on a file.
+> More fscrypt definitions are being added, and we shouldn't use a
+> disproportionate amount of space in <linux/fs.h> for fscrypt stuff.
+> So move the fscrypt definitions to a new header <linux/fscrypt.h>.
 > 
-> See the "FS_IOC_ENABLE_VERITY" section of
-> Documentation/filesystems/fsverity.rst for the documentation.
+> For source compatibility with existing userspace programs, <linux/fs.h>
+> still includes the new header.
 > 
-> Reviewed-by: Jaegeuk Kim <jaegeuk@kernel.org>
 > Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-Looks good.  You can add:
+Looks good, feel free to add:
 
 Reviewed-by: Theodore Ts'o <tytso@mit.edu>
 
-						- Ted
