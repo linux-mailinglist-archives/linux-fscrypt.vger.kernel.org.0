@@ -2,104 +2,61 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AA3A78337
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 29 Jul 2019 04:00:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28C9A78395
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 29 Jul 2019 05:12:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726461AbfG2CAp (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sun, 28 Jul 2019 22:00:45 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:58615 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726216AbfG2CAp (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sun, 28 Jul 2019 22:00:45 -0400
-Received: from callcc.thunk.org (96-72-102-169-static.hfc.comcastbusiness.net [96.72.102.169] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x6T20BFl005802
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 28 Jul 2019 22:00:12 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 0C9074202F5; Sun, 28 Jul 2019 22:00:10 -0400 (EDT)
-Date:   Sun, 28 Jul 2019 22:00:09 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, linux-api@vger.kernel.org,
-        linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
-        Paul Crowley <paulcrowley@google.com>,
-        Satya Tangirala <satyat@google.com>
-Subject: Re: [PATCH v7 16/16] fscrypt: document the new ioctls and policy
- version
-Message-ID: <20190729020009.GA3863@mit.edu>
-References: <20190726224141.14044-1-ebiggers@kernel.org>
- <20190726224141.14044-17-ebiggers@kernel.org>
+        id S1726270AbfG2DM2 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sun, 28 Jul 2019 23:12:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41070 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725681AbfG2DM2 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Sun, 28 Jul 2019 23:12:28 -0400
+Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 971712075B;
+        Mon, 29 Jul 2019 03:12:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1564369947;
+        bh=BKKX38xiDXht50rJXIv/FdzcKNnwvbBHros6Vxt/Dr4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Uv3bgux8g0V+8dnXCvzMxhyzS1p+M6PvMZdIWx1U1w9zrjIsFYx7orxJKwDnK9EJJ
+         Ii3MOwPd5uYhowVROKEvWWWGm5k2c9PwZaCtsx0fJt0lICeUvecfyDrtinKF4nozAL
+         YJht4eyjZJc1Ub1fcfu8QGZSapdLkfH6jqhL8vKI=
+Date:   Sun, 28 Jul 2019 20:12:26 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     linux-next@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
+Subject: Add fsverity tree to linux-next
+Message-ID: <20190729031226.GA2252@sol.localdomain>
+Mail-Followup-To: Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-next@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190726224141.14044-17-ebiggers@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Jul 26, 2019 at 03:41:41PM -0700, Eric Biggers wrote:
-> +- The kernel cannot magically wipe copies of the master key(s) that
-> +  userspace might have as well.  Therefore, userspace must wipe all
-> +  copies of the master key(s) it makes as well.  Naturally, the same
-> +  also applies to all higher levels in the key hierarchy.  Userspace
-> +  should also follow other security precautions such as mlock()ing
-> +  memory containing keys to prevent it from being swapped out.
+Hi Stephen,
 
-Normally, shouldn't userspace have wiped all copies of the master key
-after they have called ADD_KEY?  Why should they be left hanging
-around?  Waiting until REMOVE_KEY to remove other copies of the master
-key seems.... late.
+Can you please add the fsverity tree to linux-next?
 
-> +- In general, decrypted contents and filenames in the kernel VFS
-> +  caches are freed but not wiped.  Therefore, portions thereof may be
-> +  recoverable from freed memory, even after the corresponding key(s)
-> +  were wiped.  To partially solve this, you can set
-> +  CONFIG_PAGE_POISONING=y in your kernel config and add page_poison=1
-> +  to your kernel command line.  However, this has a performance cost.
+        https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git#fsverity
 
-... and even this won't help if you have swap configured....
+This branch contains the latest fs-verity patches
+(https://lore.kernel.org/linux-fsdevel/20190722165101.12840-1-ebiggers@kernel.org/T/#u).
+We are planning a pull request for 5.4.
 
-> +v1 encryption policies have some weaknesses with respect to online
-> +attacks:
-> +
-> +- There is no verification that the provided master key is correct.
-> +  Consequently, malicious users can associate the wrong key with
-> +  encrypted files, even files to which they have only read-only
-> +  access.
+Please use as contacts:
 
-Yes, but they won't be able to trick other users into using that
-incorrect key.  With the old interface, it gets written into the
-user's session keyring, which won't get used by another user.  And
-with the newer interface, only root is allowed to set v1 key.
+        Eric Biggers <ebiggers@kernel.org>
+        Theodore Y. Ts'o <tytso@mit.edu>
 
-> +Master keys should be pseudorandom, i.e. indistinguishable from random
-> +bytestrings of the same length.  This implies that users **must not**
-> +directly use a password as a master key, zero-pad a shorter key, or
-> +repeat a shorter key.
+Thanks!
 
-These paragraphs starts a bit funny, since we first say "should" in
-the first sentence, and then it's followed up by "**must not**" in the
-second sentence.  Basically, they *could* do this, but it would just
-weaken the security of the system significantly.
-
-At the very least, we should explain the basis of the recommendation.
-
-> +The KDF used for a particular master key differs depending on whether
-> +the key is used for v1 encryption policies or for v2 encryption
-> +policies.  Users **must not** use the same key for both v1 and v2
-> +encryption policies.
-
-"Must not" seems a bit strong.  If they do, and a v1 per-file key and
-nonce leaks out, then the encryption key will be compromised.  So the
-strength of the key will be limited by the weaknesses of the v1
-scheme.  But it's not like using a that was originally meant for v1,
-and then using it for v2, causes any additional weakness.  Right?
-
-    	       	      	  	 - Ted
+- Eric
