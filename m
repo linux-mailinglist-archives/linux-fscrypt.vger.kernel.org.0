@@ -2,28 +2,28 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A6DA7973C
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 29 Jul 2019 21:59:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C20B47988C
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 29 Jul 2019 22:09:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404188AbfG2T6c (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 29 Jul 2019 15:58:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50628 "EHLO mail.kernel.org"
+        id S2388760AbfG2Thp (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 29 Jul 2019 15:37:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403841AbfG2T6b (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 29 Jul 2019 15:58:31 -0400
+        id S2388750AbfG2Tho (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 29 Jul 2019 15:37:44 -0400
 Received: from gmail.com (unknown [104.132.1.77])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B93BB204EC;
-        Mon, 29 Jul 2019 19:58:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6E126206DD;
+        Mon, 29 Jul 2019 19:37:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1564430310;
-        bh=MUgzS0F8d9HlQcIKk/AeINedk5YvM3Io6WjGyuY8L/w=;
+        s=default; t=1564429063;
+        bh=35ZwmfXjVkjcTD49ueQekrtcYmxgdRwDGATcxQouXLg=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iS8QBHsmz86M34KZIw9nisCR2fm0L+w7kPLmRgKBgKMY9InqdG7s5arcER6e70Hiv
-         1m2j+mTH3W8YpqEW3EcAFnbX72omhY6EUmca5vAe644L7pPOodpSDNlZw9817U4/I8
-         NeTf0yKRDUJxPPPBQRoViELwNkQzTSRuae1WjtFI=
-Date:   Mon, 29 Jul 2019 12:58:28 -0700
+        b=QgTCz2CWqZ9GLFMzgaQtbnyPki0Oxg8qrvTR97l00Gc8CQzx+zc2oXmp7EWb24DL7
+         lqI1c/qw8hCySTW9XZjhkJGofi5da7NFa4tbNNzKq3SlAVuvZteu0lZkG1ZnucaL4j
+         QUyqoTdTCGY36VS+Fv9/JDNLvuGsN+DnFosM0q6c=
+Date:   Mon, 29 Jul 2019 12:37:42 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     "Theodore Y. Ts'o" <tytso@mit.edu>
 Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
@@ -32,8 +32,9 @@ Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
         Paul Crowley <paulcrowley@google.com>,
         Satya Tangirala <satyat@google.com>
-Subject: Re: [PATCH v7 07/16] fscrypt: add FS_IOC_REMOVE_ENCRYPTION_KEY ioctl
-Message-ID: <20190729195827.GF169027@gmail.com>
+Subject: Re: [PATCH v7 05/16] fscrypt: refactor v1 policy key setup into
+ keysetup_legacy.c
+Message-ID: <20190729193740.GD169027@gmail.com>
 Mail-Followup-To: "Theodore Y. Ts'o" <tytso@mit.edu>,
         linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
@@ -42,48 +43,48 @@ Mail-Followup-To: "Theodore Y. Ts'o" <tytso@mit.edu>,
         Paul Crowley <paulcrowley@google.com>,
         Satya Tangirala <satyat@google.com>
 References: <20190726224141.14044-1-ebiggers@kernel.org>
- <20190726224141.14044-8-ebiggers@kernel.org>
- <20190728192417.GG6088@mit.edu>
+ <20190726224141.14044-6-ebiggers@kernel.org>
+ <20190728154032.GE6088@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190728192417.GG6088@mit.edu>
+In-Reply-To: <20190728154032.GE6088@mit.edu>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Sun, Jul 28, 2019 at 03:24:17PM -0400, Theodore Y. Ts'o wrote:
-> > +
-> > +/*
-> > + * Try to remove an fscrypt master encryption key.  If other users have also
-> > + * added the key, we'll remove the current user's usage of the key, then return
-> > + * -EUSERS.  Otherwise we'll continue on and try to actually remove the key.
+Hi Ted, thanks for the review!
+
+On Sun, Jul 28, 2019 at 11:40:32AM -0400, Theodore Y. Ts'o wrote:
+> On Fri, Jul 26, 2019 at 03:41:30PM -0700, Eric Biggers wrote:
+> > From: Eric Biggers <ebiggers@google.com>
+> > 
+> > In preparation for introducing v2 encryption policies which will find
+> > and derive encryption keys differently from the current v1 encryption
+> > policies, refactor the v1 policy-specific key setup code from keyinfo.c
+> > into keysetup_legacy.c.  Then rename keyinfo.c to keysetup.c.
 > 
-> Nit: this should be moved to patch #11
+> I'd use keysetup_v1.c, myself.  We can hope that we've gotten it right
+> with v2 and we'll never need to do another version, but *something* is
+> going to come up eventually which will require a v3 keysetup , whether
+> it's post-quantuum cryptography or something else we can't anticipate
+> right now.
 > 
-> Also, perror(EUSERS) will display "Too many users" which is going to
-> be confusing.  I understand why you chose this; we would like to
-> distinguish between there are still inodes using this key, and there
-> are other users using this key.
+> For an example of the confusion that can result, one good example is
+> in the fs/quota subsystem, where QFMT_VFS_OLD, QFMT_VFS_V0, and
+> QFMT_VFS_V1 maps to quota_v1 and quota_v2 in an amusing and
+> non-obvious way.  (Go ahead, try to guess before you go look at the
+> code.  :-)
 > 
-> Do we really need to return EUSERS in this case?  It's actually not an
-> *error* that other users are using the key.  After all, the unlink(2)
-> system call doesn't return an advisory error when you delete a file
-> which has other hard links.  And an application which does care about
-> this detail can always call FS_IOC_ENCRYPTION_KEY_STATUS() and check
-> user_count.
+> Other than that, looks good.  We can always move code around or rename
+> files in the future, so I'm not going to insist on doing it now (but
+> it would be my preference).
+> 
+> Reviewed-by: Theodore Ts'o <tytso@mit.edu>
 > 
 
-Returning 0 when the key wasn't fully removed might also be confusing.  But I
-guess you're right that returning an error doesn't match how syscalls usually
-work.  It did remove the current user's usage of the key, after all, rather than
-completely fail.  And as you point out, if someone cares about other users
-having added the key, they can use FS_IOC_GET_ENCRYPTION_KEY_STATUS.
-
-So I guess I'll change it to 0.
-
-Thanks!
+Agreed, I'll call it keysetup_v1.c instead.
 
 - Eric
