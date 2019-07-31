@@ -2,133 +2,121 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 28B257B826
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 31 Jul 2019 05:05:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B39007CC1C
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 31 Jul 2019 20:38:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726999AbfGaDFb (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 30 Jul 2019 23:05:31 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:42721 "EHLO ozlabs.org"
+        id S1726944AbfGaSiG (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 31 Jul 2019 14:38:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725851AbfGaDFb (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 30 Jul 2019 23:05:31 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1730372AbfGaSiF (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 31 Jul 2019 14:38:05 -0400
+Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 45yywR2MSbz9s00;
-        Wed, 31 Jul 2019 13:05:27 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1564542327;
-        bh=yzpwz0hsgkC5drBtW2RNTVx643PRuHkVkQ9BYH+3fy8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=dhOPVJkK3W8DZYaiq7Goh9fnCC5uMbSXi7B3/14HEbvpHnZzNPBQ7vkf723jAy66L
-         1WBnWu13WH1D/PLTDdE7WpIVPlpt7y9dwxOMRWkIuRGEHR7sKtCtse6J5ipitHHBs5
-         Xm7xN5wTC0+MXvR2A4ZMhWRzyPvfcdzaQMgM6O1ZuY0zlg+dQotDlWHdktE3snwxix
-         Vmm8rtJFT0n8TgDnfLwP9CuC9bOh5Hd2p8yJ/6f2wmDaVyOQV37c4bYgp5X1HPNwHq
-         1SvgXVtJHn6KVCYMbxnEyDV8s7JSDbODHSSmKOq4oBSGBz109OYojixl4xc1MQIpIt
-         G+yM143yiD6bA==
-Date:   Wed, 31 Jul 2019 13:05:26 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     David Howells <dhowells@redhat.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fscrypt@vger.kernel.org
-Subject: Re: linux-next: build warnings after merge of the keys tree
-Message-ID: <20190731130526.53684e6b@canb.auug.org.au>
-In-Reply-To: <20190731014034.GB687@sol.localdomain>
-References: <20190730123042.1f17cdd4@canb.auug.org.au>
-        <20190730034704.GA1966@sol.localdomain>
-        <20190730135216.377a16d5@canb.auug.org.au>
-        <20190731014034.GB687@sol.localdomain>
+        by mail.kernel.org (Postfix) with ESMTPSA id 196BF206A3;
+        Wed, 31 Jul 2019 18:38:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1564598284;
+        bh=mwf/L4kawPnA1+kq4IqMkos0fqY4xHcvedV1SVvmgr4=;
+        h=Date:From:To:Subject:References:In-Reply-To:From;
+        b=0SBhBqvGEFIUO9Q+X1GiRxRfAhxkriFVan66HT0bGDPhuMdNTX8kCHLadzRChzP4O
+         OKShL0aapWqVZ6CtauvlQDheMoSsBzO54aB87yx0xEz7IKpbCUA8GYPua8suG6ultw
+         koL6k+O0wO1Ftp9+M/dFACaiJQwyP8yBpRpTOjac=
+Date:   Wed, 31 Jul 2019 11:38:02 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>, linux-fscrypt@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-api@vger.kernel.org,
+        linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
+        Paul Crowley <paulcrowley@google.com>,
+        Satya Tangirala <satyat@google.com>
+Subject: Re: [PATCH v7 07/16] fscrypt: add FS_IOC_REMOVE_ENCRYPTION_KEY ioctl
+Message-ID: <20190731183802.GA687@sol.localdomain>
+Mail-Followup-To: "Theodore Y. Ts'o" <tytso@mit.edu>,
+        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-api@vger.kernel.org,
+        linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
+        Paul Crowley <paulcrowley@google.com>,
+        Satya Tangirala <satyat@google.com>
+References: <20190726224141.14044-1-ebiggers@kernel.org>
+ <20190726224141.14044-8-ebiggers@kernel.org>
+ <20190728192417.GG6088@mit.edu>
+ <20190729195827.GF169027@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Z+JbBgYKmEVCFloWuRyZJGv";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190729195827.GF169027@gmail.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
---Sig_/Z+JbBgYKmEVCFloWuRyZJGv
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Jul 29, 2019 at 12:58:28PM -0700, Eric Biggers wrote:
+> On Sun, Jul 28, 2019 at 03:24:17PM -0400, Theodore Y. Ts'o wrote:
+> > > +
+> > > +/*
+> > > + * Try to remove an fscrypt master encryption key.  If other users have also
+> > > + * added the key, we'll remove the current user's usage of the key, then return
+> > > + * -EUSERS.  Otherwise we'll continue on and try to actually remove the key.
+> > 
+> > Nit: this should be moved to patch #11
+> > 
+> > Also, perror(EUSERS) will display "Too many users" which is going to
+> > be confusing.  I understand why you chose this; we would like to
+> > distinguish between there are still inodes using this key, and there
+> > are other users using this key.
+> > 
+> > Do we really need to return EUSERS in this case?  It's actually not an
+> > *error* that other users are using the key.  After all, the unlink(2)
+> > system call doesn't return an advisory error when you delete a file
+> > which has other hard links.  And an application which does care about
+> > this detail can always call FS_IOC_ENCRYPTION_KEY_STATUS() and check
+> > user_count.
+> > 
+> 
+> Returning 0 when the key wasn't fully removed might also be confusing.  But I
+> guess you're right that returning an error doesn't match how syscalls usually
+> work.  It did remove the current user's usage of the key, after all, rather than
+> completely fail.  And as you point out, if someone cares about other users
+> having added the key, they can use FS_IOC_GET_ENCRYPTION_KEY_STATUS.
+> 
+> So I guess I'll change it to 0.
+> 
 
-Hi Eric,
+So after making this change and thinking about it some more, I'm not sure it's
+actually an improvement.
 
-On Tue, 30 Jul 2019 18:40:34 -0700 Eric Biggers <ebiggers@kernel.org> wrote:
->
-> On Tue, Jul 30, 2019 at 01:52:16PM +1000, Stephen Rothwell wrote:
-> > Hi Eric,
-> >=20
-> > On Mon, 29 Jul 2019 20:47:04 -0700 Eric Biggers <ebiggers@kernel.org> w=
-rote: =20
-> > >
-> > > On Tue, Jul 30, 2019 at 12:30:42PM +1000, Stephen Rothwell wrote: =20
-> > > > +static struct key_acl fsverity_acl =3D {
-> > > > +	.usage	=3D REFCOUNT_INIT(1),
-> > > > +	.possessor_viewable =3D true,   =20
-> > >=20
-> > > I don't think .possessor_viewable should be set here, since there's no
-> > > KEY_POSSESSOR_ACE(KEY_ACE_VIEW) in the ACL.  David, this bool is supp=
-osed to
-> > > mean such an entry is present, right?  Is it really necessary, since =
-it's
-> > > redundant with the ACL itself? =20
-> >=20
-> > OK, I can take that out of the patch for tomorrow.
-> >  =20
-> > > Otherwise this looks good, thanks Stephen.  I'll want to remove a few=
- of these
-> > > permissions in a separate patch later, but for now we can just keep it
-> > > equivalent to the original code as you've done. =20
-> >=20
-> > Thanks for the review.
->=20
-> Hmm, apparently it's not *exactly* equivalent, since the ACL is missing I=
-NVAL
-> and JOIN permission for the owner, while those were originally granted by=
- SEARCH
-> permission.  We don't need those, but just to keep the merge resolution i=
-tself
-> as boring as possible, can you please use the following to make it equiva=
-lent:
->=20
-> static struct key_acl fsverity_acl =3D {
-> 	.usage	=3D REFCOUNT_INIT(1),
-> 	.nr_ace	=3D 2,
-> 	.aces =3D {
-> 		KEY_POSSESSOR_ACE(KEY_ACE_SEARCH | KEY_ACE_JOIN |
-> 				  KEY_ACE_INVAL),
-> 		KEY_OWNER_ACE(KEY_ACE_VIEW | KEY_ACE_READ | KEY_ACE_WRITE |
-> 			      KEY_ACE_SEARCH | KEY_ACE_SET_SECURITY |
-> 			      KEY_ACE_INVAL | KEY_ACE_REVOKE | KEY_ACE_JOIN |
-> 			      KEY_ACE_CLEAR),
-> 	}
-> };
+The normal use case for this ioctl is to "lock" some encrypted directory(s).  If
+it returns 0 and doesn't lock the directory(s), that's unexpected.
 
-OK, I have fixed up the patch for today (not quite as above, but
-equivalently since I am editting a patch and I usually get that
-wrong :-))
+This is perhaps different from what users expect from unlink().  It's well known
+that unlink() just deletes the filename, not the file itself if it's still open
+or has other links.  And unlink() by itself isn't meant for use cases where the
+file absolutely must be securely erased.  But FS_IOC_REMOVE_ENCRYPTION_KEY
+really is meant primarily for that sort of thing.
 
---=20
-Cheers,
-Stephen Rothwell
+To give a concrete example: my patch for the userspace tool
+https://github.com/google/fscrypt adds a command 'fscrypt lock' which locks an
+encrypted directory.  If, say, someone runs 'fscrypt unlock' as uid 0 and then
+'fscrypt lock' as uid 1000, then FS_IOC_REMOVE_ENCRYPTION_KEY can't actually
+remove the key.  I need to make the tool show a proper error message in this
+case.  To do so, it would help to get a unique error code (e.g. EUSERS) from
+FS_IOC_REMOVE_ENCRYPTION_KEY, rather than get the ambiguous error code ENOKEY
+and have to call FS_IOC_GET_ENCRYPTION_KEY_STATUS to get the real status.
 
---Sig_/Z+JbBgYKmEVCFloWuRyZJGv
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Also, we already have the EBUSY case.  This means that the ioctl removed the
+master key secret itself; however, some files were still in-use, so the key
+remains in the "incompletely removed" state.  If we were actually going for
+unlink() semantics, then for consistency this case really ought to return 0 and
+unlink the key object, and people who care about in-use files would need to use
+FS_IOC_GET_ENCRYPTION_KEY_STATUS.  But most people *will* care about this, and
+may even want to retry the ioctl later, which isn't something you can do with
+pure unlink() semantics.
 
------BEGIN PGP SIGNATURE-----
+So I'm leaning towards keeping the EUSERS and EBUSY errors.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl1BBXYACgkQAVBC80lX
-0GzYpgf/X5Vixn+4ADwkJhXZROfU827npywKt9xRqlT3VLTRl5tkZlG86U1jR5jt
-Wz0MlRcm3iSDlADw/vLsDeR2TLsIQDyGKGtXeY5t/Cu0dqFcMH3nf1U5ZqZApQ2U
-CXgkFa9wbTgqTTObl5MBEA44m5Jg6//grYmEeKWpfwqIe9O8ZF5M9CncpEHGQSy8
-PUE76V3mMynth4/0QwAmqYSnc3y52jEKpK3uOH6m4DmWdDR0A64UwBHbezzGLYVl
-m2dU9YwKzv72sTuxHMzQvOt4XuByYdkvXhGXoFehqeQcUuDFsyWSctBbRCMuQKqB
-i/7MeQiTlGzkam5WoJNIZTces1KEVw==
-=xb3H
------END PGP SIGNATURE-----
-
---Sig_/Z+JbBgYKmEVCFloWuRyZJGv--
+- Eric
