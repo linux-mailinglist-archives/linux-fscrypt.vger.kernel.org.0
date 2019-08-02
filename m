@@ -2,86 +2,254 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 92EE37FFA4
-	for <lists+linux-fscrypt@lfdr.de>; Fri,  2 Aug 2019 19:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 581EF801EB
+	for <lists+linux-fscrypt@lfdr.de>; Fri,  2 Aug 2019 22:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405298AbfHBRbw (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 2 Aug 2019 13:31:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46482 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405145AbfHBRbw (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 2 Aug 2019 13:31:52 -0400
-Received: from gmail.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 31C1B2173E;
-        Fri,  2 Aug 2019 17:31:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1564767111;
-        bh=p28pesjeaFELdMWXTRb2eE2TRQRtp76oeifvbyCl/RI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZcqdJ1sHgA4eHoVKYSn8SpVn+pAUEpj9uFNNG8Yop5svyGIeSKgDaCG0hU7/1xGe+
-         YH6wiSFmAifvQSIcT5ECPJSv2MxBpI4U1tOb0SI7k4tFkU4lU056T/wtL7OaDANFff
-         AXFhYpVcepiXq7WKPEIqg6WGV1t6hc/k/rdkPvQU=
-Date:   Fri, 2 Aug 2019 10:31:49 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, linux-api@vger.kernel.org,
-        linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
-        Paul Crowley <paulcrowley@google.com>,
-        Satya Tangirala <satyat@google.com>
-Subject: Re: [PATCH v7 14/16] f2fs: wire up new fscrypt ioctls
-Message-ID: <20190802173148.GA51937@gmail.com>
-Mail-Followup-To: Chao Yu <yuchao0@huawei.com>,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, linux-api@vger.kernel.org,
-        linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
-        Paul Crowley <paulcrowley@google.com>,
-        Satya Tangirala <satyat@google.com>
-References: <20190726224141.14044-1-ebiggers@kernel.org>
- <20190726224141.14044-15-ebiggers@kernel.org>
- <e3cf53a7-faf2-0321-22de-07d2e2783752@huawei.com>
+        id S2437039AbfHBUqu (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 2 Aug 2019 16:46:50 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:37013 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437038AbfHBUqu (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Fri, 2 Aug 2019 16:46:50 -0400
+Received: by mail-pg1-f195.google.com with SMTP id d1so3810828pgp.4
+        for <linux-fscrypt@vger.kernel.org>; Fri, 02 Aug 2019 13:46:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=HNA1wKY9/Mn82gmfsmignc4EYFSIX+y0WoYEzAS9vsk=;
+        b=z1BbUSPqQeIP4j1ylb5FNEza/u/Elr5TYipD48b7gPyIoORGN5kGOTZvhyYLvqKxQ4
+         1gnEEdBugmSIFlPDokypXhdpkA+EBsKJ9sPQTwDopNhqfVPsHuFmMIuOKVITheV+LCnV
+         kRomyZIEfHFzphRddlDuKyDMI8FcGp6UZjVMsWe2b+rYPQZD0zP1qX/JS219S0wH83mV
+         eJrf4MKhca133h3bX3GqsHjM7pthBIfBof4vB0C5EIgRoyBHzMwprqNRi1AsLAO+3jeP
+         vUXTDt0hbiwTqaoLe7SpAqGyIVW92yPL/cJy8ia6TsCstlJcwZohalTIBoQBMcofNMXs
+         xMVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HNA1wKY9/Mn82gmfsmignc4EYFSIX+y0WoYEzAS9vsk=;
+        b=IZ6qO+PCJuI1pHylrlywwhloIEqF+slbYIZ393nbJtOEjSMdapCvOBNh7pMy8OtsHV
+         gz7ip2V1zOBm9q/YqdJFJ/IKZg+SLfd2kjaphWwiODsNUe/uxG+w0I5dVFoL7ZmKZS3M
+         CRT5drJcKp09+J+WEqHuqZHG+4ZB6h3iq1JCOTucxDE+FYsu7F2MyyjRlq/seTtwKBmx
+         0WnvwE0xjGQcQnjoHC37u7fB9zyja/NLp343iZySO5KJNHfgp19i16uBnx38agyFB+7d
+         WAKnRet8KZe2i5pwRf8DfXr1las0P7wXiHGOLEciM3r9a3amfcBz08bV5RTZS1e2t/g2
+         A15A==
+X-Gm-Message-State: APjAAAVlkIut1V0w+JHeuVO1DRgbY2k/QS7CUabAmC9xurKmcGt2XKZo
+        eMLl8RMNijhq+2rgonMj+2k=
+X-Google-Smtp-Source: APXvYqw0hd50NR9rV9r2f7ehdAQEXn2B7VK6zKAzwRLvRV/J1isfXtovJDQ1vxQjSN/6/UatSd2lfg==
+X-Received: by 2002:a65:458d:: with SMTP id o13mr124087133pgq.34.1564778809374;
+        Fri, 02 Aug 2019 13:46:49 -0700 (PDT)
+Received: from [172.31.98.58] (rrcs-76-79-101-187.west.biz.rr.com. [76.79.101.187])
+        by smtp.gmail.com with ESMTPSA id 4sm88034288pfc.92.2019.08.02.13.46.47
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 02 Aug 2019 13:46:48 -0700 (PDT)
+Subject: Re: [PATCH 2/8] block: Add encryption context to struct bio
+To:     Satya Tangirala <satyat@google.com>, linux-block@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Cc:     Parshuram Raju Thombare <pthombar@cadence.com>,
+        Ladvine D Almeida <ladvine.dalmeida@synopsys.com>,
+        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
+        Kuohong Wang <kuohong.wang@mediatek.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20190710225609.192252-1-satyat@google.com>
+ <20190710225609.192252-3-satyat@google.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <7856ad79-6224-532d-ff9f-50ffc00f7203@kernel.dk>
+Date:   Fri, 2 Aug 2019 13:46:45 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e3cf53a7-faf2-0321-22de-07d2e2783752@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190710225609.192252-3-satyat@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Aug 02, 2019 at 04:10:15PM +0800, Chao Yu wrote:
-> Hi Eric,
+On 7/10/19 4:56 PM, Satya Tangirala wrote:
+> We must have some way of letting a storage device driver know what
+> encryption context it should use for en/decrypting a request. However,
+> it's the filesystem/fscrypt that knows about and manages encryption
+> contexts. As such, when the filesystem layer submits a bio to the block
+> layer, and this bio eventually reaches a device driver with support for
+> inline encryption, the device driver will need to have been told the
+> encryption context for that bio.
 > 
-> On 2019/7/27 6:41, Eric Biggers wrote:
-> > From: Eric Biggers <ebiggers@google.com>
-> > 
-> > Wire up the new ioctls for adding and removing fscrypt keys to/from the
-> > filesystem, and the new ioctl for retrieving v2 encryption policies.
-> > 
-> > FS_IOC_REMOVE_ENCRYPTION_KEY also required making f2fs_drop_inode() call
-> > fscrypt_drop_inode().
-> > 
-> > For more details see Documentation/filesystems/fscrypt.rst and the
-> > fscrypt patches that added the implementation of these ioctls.
-> > 
-> > Signed-off-by: Eric Biggers <ebiggers@google.com>
-> 
-> Reviewed-by: Chao Yu <yuchao0@huawei.com>
-> 
-> BTW, do you think it needs to make xxfs_has_support_encrypt() function be a
-> common interface defined in struct fscrypt_operations, as I see all
-> fscrypt_ioctl_*() needs to check with it, tho such cleanup is minor...
-> 
+> We want to communicate the encryption context from the filesystem layer
+> to the storage device along with the bio, when the bio is submitted to the
+> block layer. To do this, we add a struct bio_crypt_ctx to struct bio, which
+> can represent an encryption context (note that we can't use the bi_private
+> field in struct bio to do this because that field does not function to pass
+> information across layers in the storage stack). We also introduce various
+> functions to manipulate the bio_crypt_ctx and make the bio/request merging
+> logic aware of the bio_crypt_ctx.
 
-Maybe.  It would work nicely for ext4 and f2fs, but ubifs does things
-differently since it automatically enables the encryption feature if needed.
-So we'd have to make the callback optional.
+A few minor comments below. Don't see something totally horrible with
+your approach.
 
-In any case, I think this should be separate from this patchset.
 
-- Eric
+> diff --git a/block/bio-crypt-ctx.c b/block/bio-crypt-ctx.c
+> new file mode 100644
+> index 000000000000..8b884ef32007
+> --- /dev/null
+> +++ b/block/bio-crypt-ctx.c
+> @@ -0,0 +1,117 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright 2019 Google LLC
+> + */
+> +
+> +#include <linux/bio.h>
+> +#include <linux/blkdev.h>
+> +#include <linux/slab.h>
+> +#include <linux/keyslot-manager.h>
+> +
+> +struct bio_crypt_ctx *bio_crypt_alloc_ctx(gfp_t gfp_mask)
+> +{
+> +	return kzalloc(sizeof(struct bio_crypt_ctx), gfp_mask);
+> +}
+
+I think you'll want this to be mempool backed.
+
+> +EXPORT_SYMBOL(bio_crypt_alloc_ctx);
+> +
+> +void bio_crypt_free_ctx(struct bio *bio)
+> +{
+> +	kzfree(bio->bi_crypt_context);
+> +	bio->bi_crypt_context = NULL;
+> +}
+> +EXPORT_SYMBOL(bio_crypt_free_ctx);
+> +
+> +int bio_crypt_clone(struct bio *dst, struct bio *src, gfp_t gfp_mask)
+> +{
+> +	if (!bio_is_encrypted(src))
+> +		return 0;
+
+Was going to suggest dumping this helper, but that won't work for the
+case where inline encryption isn't enabled. How about renaming it so it
+is easier to grok what it tests, bio_has_crypt_ctx() or something like
+that.
+
+> +	dst->bi_crypt_context = bio_crypt_alloc_ctx(gfp_mask);
+> +	if (!dst->bi_crypt_context)
+> +		return -ENOMEM;
+
+That's why you need the mempool...
+
+> diff --git a/block/blk-merge.c b/block/blk-merge.c
+> index 17713d7d98d5..f416e7f38270 100644
+> --- a/block/blk-merge.c
+> +++ b/block/blk-merge.c
+> @@ -531,6 +531,9 @@ static inline int ll_new_hw_segment(struct request_queue *q,
+>   	if (blk_integrity_merge_bio(q, req, bio) == false)
+>   		goto no_merge;
+>   
+> +	if (WARN_ON(!bio_crypt_ctx_compatible(bio, req->bio)))
+> +		goto no_merge;
+
+This is really a debug check, as that shouldn't happen unless you have a
+bug in your merge helpers. I think we can do one of two things here:
+
+1) Rely on this check only for merging, similarly to what the integrity
+   code does. This means the WARN() goes away and (most of) the  other
+   merge checks can go away.
+
+2) Keep it, but change it to a WARN_ON_ONCE().
+
+> @@ -696,8 +699,13 @@ static enum elv_merge blk_try_req_merge(struct request *req,
+>   {
+>   	if (blk_discard_mergable(req))
+>   		return ELEVATOR_DISCARD_MERGE;
+> -	else if (blk_rq_pos(req) + blk_rq_sectors(req) == blk_rq_pos(next))
+> +	else if (blk_rq_pos(req) + blk_rq_sectors(req) == blk_rq_pos(next)) {
+> +		if (!bio_crypt_ctx_back_mergeable(
+> +			req->bio, blk_rq_sectors(req), next->bio)) {
+> +			return ELEVATOR_NO_MERGE;
+> +		}
+>   		return ELEVATOR_BACK_MERGE;
+> +	}
+
+Weird line breaks aside, see above comment. More in this file.
+
+> diff --git a/include/linux/bio.h b/include/linux/bio.h
+> index ef9c6e2e92bc..4e664d6441d5 100644
+> --- a/include/linux/bio.h
+> +++ b/include/linux/bio.h
+> @@ -572,6 +572,196 @@ enum blk_crypt_mode_num {
+>   	 */
+>   };
+>   
+> +#ifdef CONFIG_BLK_INLINE_ENCRYPTION
+> +struct bio_crypt_ctx {
+> +	int keyslot;
+> +	u8 *raw_key;
+> +	enum blk_crypt_mode_num crypt_mode;
+> +	u64 data_unit_num;
+> +	unsigned int data_unit_size_bits;
+> +
+> +	/*
+> +	 * The keyslot manager where the key has been programmed
+> +	 * with keyslot.
+> +	 */
+> +	struct keyslot_manager *processing_ksm;
+> +
+> +	/*
+> +	 * Copy of the bvec_iter when this bio was submitted.
+> +	 * We only want to en/decrypt the part of the bio
+> +	 * as described by the bvec_iter upon submission because
+> +	 * bio might be split before being resubmitted
+> +	 */
+> +	struct bvec_iter crypt_iter;
+> +	u64 sw_data_unit_num;
+> +};
+
+[snip]
+
+Let's move that to a separate file, with the other crypt specific bits.
+Just include it from bio.h.
+
+
+> +static inline u64 bio_crypt_data_unit_num(struct bio *bio)
+> +{
+> +	WARN_ON(!bio_is_encrypted(bio));
+> +	return bio->bi_crypt_context->data_unit_num;
+> +}
+> +
+> +static inline u64 bio_crypt_sw_data_unit_num(struct bio *bio)
+> +{
+> +	WARN_ON(!bio_is_encrypted(bio));
+> +	return bio->bi_crypt_context->sw_data_unit_num;
+> +}
+
+These WARN()'s are a bit weird.
+
+> +static inline u64 bio_crypt_data_unit_num(struct bio *bio)
+> +{
+> +	WARN_ON(1);
+> +	return 0;
+> +}
+
+And this one definitely needs to go.
+
+> diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
+> index 95202f80676c..0b794fe3530a 100644
+> --- a/include/linux/blk_types.h
+> +++ b/include/linux/blk_types.h
+> @@ -137,6 +137,8 @@ static inline void bio_issue_init(struct bio_issue *issue,
+>   			((u64)size << BIO_ISSUE_SIZE_SHIFT));
+>   }
+>   
+> +struct bio_crypt_ctx;
+
+Place this with the other forward declarations.
+
+-- 
+Jens Axboe
+
