@@ -2,129 +2,179 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 24DEA83A8F
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  6 Aug 2019 22:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6238F88A4D
+	for <lists+linux-fscrypt@lfdr.de>; Sat, 10 Aug 2019 11:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726761AbfHFUpK (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 6 Aug 2019 16:45:10 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:45833 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726731AbfHFUpK (ORCPT
+        id S1726066AbfHJJlQ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sat, 10 Aug 2019 05:41:16 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:37061 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725468AbfHJJlP (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 6 Aug 2019 16:45:10 -0400
-Received: by mail-lf1-f66.google.com with SMTP id u10so23520338lfm.12
-        for <linux-fscrypt@vger.kernel.org>; Tue, 06 Aug 2019 13:45:09 -0700 (PDT)
+        Sat, 10 Aug 2019 05:41:15 -0400
+Received: by mail-wr1-f68.google.com with SMTP id b3so7964129wro.4
+        for <linux-fscrypt@vger.kernel.org>; Sat, 10 Aug 2019 02:41:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qNvWstZCi3NXF5KJDOazsGSKWj42nw3rueoSXYGmGRc=;
-        b=dHVvyaXFUfwdTrXm8Qxe3g47TjDPWLCdOevoaBSnsuB2cWvNXEXQshBBZ2xZ66S7gF
-         dDcbZzQwewKYPA4UdVMJKe+OULJcTBNQRzBEpqMJtuldr2635kPtBlgaOJqp7jvup6Ax
-         2vW3nYb6r+xDz87ptI4JAiQyQuYpbmMXpvlUN04K30/rtTwPeJM0ZXVBbg5JrFVgVC6X
-         TBupMMeehgE7wdlI130er0HeQc0ZJzdmc/c0HBvb/zb3EkUecBEQJthkHIywW1i3UI3k
-         hoUKHmZFqSoR2uZzN5Z42y/WAneWxoHJkgWOGaDPO+v7fcApJ9Sd6+EPurKzfbO0Qzx7
-         FJvg==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=1Ez7lK+LuPpIg+HhJBVdgpuAY4Gjp54dlakRShLhnPw=;
+        b=ER2b6rIew5uz7jC/ClKE1xocsfE2aUdN7tL8007Dn1Bs971gq1nsI9abRiQN05KmUG
+         ZjZjI8szPbgeZaB8ObI1N/P8+Bl72w4VPbYFC2AkwrmhV5Hvuwe43wCFxjORbvJt64zb
+         SJYfYKclveqNlLPPOq19gtDMkbLyfMuhyOClf+DosGRc0NeqvLX8NhI2/apcXkxqMdV2
+         eamNFpvHVulfmUQj192+1YJMi7E0mmSwCtJXWnSsyAzo+7Q834mAsYe7IdTShvydN3oh
+         04YeFYbgH/1NQ72ZFRK1xIQnWSovqKKgk5SGxT/Y1S+Z7ETh+j6NxblAOK3XYilZxs+a
+         PUtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qNvWstZCi3NXF5KJDOazsGSKWj42nw3rueoSXYGmGRc=;
-        b=Zk1EOFs5nyvJRa3aopSXeK4l/7FyHPj7JNJ54+60dzXp+fkP5MthT9fhp3KSfLJsWV
-         1+Px/q0OEXcVbDng/fMbhJ6wjIC4RptOOchOXp2hJDV6ILs8E+sdd1gOusmYOD5g9MK1
-         2eTyDYjc0Z5qQcsBQZygSei73vYEkjrYBwG/gnjYefSBNtzNvvVJCJzK6cyj+U/mjqed
-         fTHswPmCxRmF1ktAvyP7S5xu5FuycLIbOKmCGqPNlWFu4UThovxrAN5GwgwjdGpPzlS0
-         i0NHc6kuVgu8r42PRsKDGkZULCscgdl+/hmHYxjhrWZZAIBYdBkYQDnU1DHupt/UtttW
-         tsrg==
-X-Gm-Message-State: APjAAAUuUwC/CpxwDt7So03/BnrFhsGQmfgvVGJRoLsQHasCQ9TLLLGk
-        7CNcA2k2Zbbj1Bs2c0alZ5Z5Urw0XlINX95nIT3z2A==
-X-Google-Smtp-Source: APXvYqytA61jT3xOdp0Ac43cHqnLjnFVkdCXmd0Vh+wU5xDCKIN1tOrExheH0FZXClBUGoxDy7me4b7UmNyIp24tkW4=
-X-Received: by 2002:ac2:54bc:: with SMTP id w28mr3504887lfk.17.1565124308213;
- Tue, 06 Aug 2019 13:45:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190805162521.90882-1-ebiggers@kernel.org> <20190805162521.90882-14-ebiggers@kernel.org>
-In-Reply-To: <20190805162521.90882-14-ebiggers@kernel.org>
-From:   Paul Crowley <paulcrowley@google.com>
-Date:   Tue, 6 Aug 2019 13:44:56 -0700
-Message-ID: <CA+_SqcAWniLLTk4eqWX81ypgMqnh2_9N=0JDKs3JopeV6XX_HA@mail.gmail.com>
-Subject: Re: [PATCH v8 13/20] fscrypt: v2 encryption policy support
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-api@vger.kernel.org, Satya Tangirala <satyat@google.com>,
-        "Theodore Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=1Ez7lK+LuPpIg+HhJBVdgpuAY4Gjp54dlakRShLhnPw=;
+        b=JC2o5QrJ7dezto7soZ0OLmklyMHuMZ6HvCQQ5+OYEZJ27BaNFwXd6oGPv3wIUroMKi
+         127PLNQ23dEkooFCU2TXfIsZgXEkrjcaDhBPfsGMaaRbPs3vzEobenFBm+HVUUl2DQEO
+         eKc8oGCss4SSAk8A0IUqhI2jbnuZR6PPw/q6nWPvpHSWcAIQigsnh0ff0x8gR83m90Db
+         4U8swmOykY7o0ditl+qEWeVODqec+EqmrbLmrY2d4RR1x8Q1y1mD+Yo4BXfG+qsPCgd0
+         pM7icIsIiLjSaEwWQ4fyKDY0NdMUa9VDKbRLf9I9OA3sD5KgeMGzzBe6gdRRX9XywoLx
+         xhtA==
+X-Gm-Message-State: APjAAAVjBWOG08PH6/eeP7OUyeEohHz5Mgn2MNmzqJ9q6FoBGdadQfPP
+        rfw+LsiAxtv3QwHs9jkrChOWxA==
+X-Google-Smtp-Source: APXvYqzlXF6v5LTSHcdDNI2vB4TBkMmjDouWYJcWE3fRg88Tr1Rr98Jf3k3oHGjDbzuzaI1vAyx14w==
+X-Received: by 2002:a5d:570e:: with SMTP id a14mr14507871wrv.258.1565430073246;
+        Sat, 10 Aug 2019 02:41:13 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:587:a407:da00:582f:8334:9cd9:7241])
+        by smtp.gmail.com with ESMTPSA id n16sm519883wmk.12.2019.08.10.02.41.10
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 10 Aug 2019 02:41:11 -0700 (PDT)
+From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
+To:     linux-crypto@vger.kernel.org
+Cc:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Eric Biggers <ebiggers@google.com>, dm-devel@redhat.com,
+        linux-fscrypt@vger.kernel.org,
+        Gilad Ben-Yossef <gilad@benyossef.com>,
+        Milan Broz <gmazyland@gmail.com>
+Subject: [PATCH v9 0/7] crypto: switch to crypto API for ESSIV generation
+Date:   Sat, 10 Aug 2019 12:40:46 +0300
+Message-Id: <20190810094053.7423-1-ard.biesheuvel@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, 5 Aug 2019 at 09:28, Eric Biggers <ebiggers@kernel.org> wrote:
->
-> From: Eric Biggers <ebiggers@google.com>
->
-> Add a new fscrypt policy version, "v2".  It has the following changes
-> from the original policy version, which we call "v1" (*):
->
-> - Master keys (the user-provided encryption keys) are only ever used as
->   input to HKDF-SHA512.  This is more flexible and less error-prone, and
->   it avoids the quirks and limitations of the AES-128-ECB based KDF.
->   Three classes of cryptographically isolated subkeys are defined:
->
->     - Per-file keys, like used in v1 policies except for the new KDF.
->
->     - Per-mode keys.  These implement the semantics of the DIRECT_KEY
->       flag, which for v1 policies made the master key be used directly.
->       These are also planned to be used for inline encryption when
->       support for it is added.
->
->     - Key identifiers (see below).
->
-> - Each master key is identified by a 16-byte master_key_identifier,
->   which is derived from the key itself using HKDF-SHA512.  This prevents
->   users from associating the wrong key with an encrypted file or
->   directory.  This was easily possible with v1 policies, which
->   identified the key by an arbitrary 8-byte master_key_descriptor.
->
-> - The key must be provided in the filesystem-level keyring, not in a
->   process-subscribed keyring.
->
-> The following UAPI additions are made:
->
-> - The existing ioctl FS_IOC_SET_ENCRYPTION_POLICY can now be passed a
->   fscrypt_policy_v2 to set a v2 encryption policy.  It's disambiguated
->   from fscrypt_policy/fscrypt_policy_v1 by the version code prefix.
->
-> - A new ioctl FS_IOC_GET_ENCRYPTION_POLICY_EX is added.  It allows
->   getting the v1 or v2 encryption policy of an encrypted file or
->   directory.  The existing FS_IOC_GET_ENCRYPTION_POLICY ioctl could not
->   be used because it did not have a way for userspace to indicate which
->   policy structure is expected.  The new ioctl includes a size field, so
->   it is extensible to future fscrypt policy versions.
->
-> - The ioctls FS_IOC_ADD_ENCRYPTION_KEY, FS_IOC_REMOVE_ENCRYPTION_KEY,
->   and FS_IOC_GET_ENCRYPTION_KEY_STATUS now support managing keys for v2
->   encryption policies.  Such keys are kept logically separate from keys
->   for v1 encryption policies, and are identified by 'identifier' rather
->   than by 'descriptor'.  The 'identifier' need not be provided when
->   adding a key, since the kernel will calculate it anyway.
->
-> This patch temporarily keeps adding/removing v2 policy keys behind the
-> same permission check done for adding/removing v1 policy keys:
-> capable(CAP_SYS_ADMIN).  However, the next patch will carefully take
-> advantage of the cryptographically secure master_key_identifier to allow
-> non-root users to add/remove v2 policy keys, thus providing a full
-> replacement for v1 policies.
->
-> (*) Actually, in the API fscrypt_policy::version is 0 while on-disk
->     fscrypt_context::format is 1.  But I believe it makes the most sense
->     to advance both to '2' to have them be in sync, and to consider the
->     numbering to start at 1 except for the API quirk.
->
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
+This series creates an ESSIV template that produces a skcipher or AEAD
+transform based on a tuple of the form '<skcipher>,<shash>' (or '<aead>,<shash>'
+for the AEAD case). It exposes the encapsulated sync or async skcipher/aead by
+passing through all operations, while using the cipher/shash pair to transform
+the input IV into an ESSIV output IV.
 
-Looks good, feel free to add:
+This matches what both users of ESSIV in the kernel do, and so it is proposed
+as a replacement for those, in patches #2 and #3.
 
-Reviewed-by: Paul Crowley <paulcrowley@google.com>
+Changes since v8:
+- Remove 'cipher' argument from essiv() template, and instead, parse the
+  cra_name of the skcipher to obtain the cipher. This is slightly cleaner
+  than what dm-crypt currently does, since we can get the cra_name from the
+  spawn, and we don't have to actually allocate the TFM. Since this implies
+  that dm-crypt does not need to provide the cipher, we can drop the parsing
+  code from it entirely (assuming the eboiv patch I sent out recently is
+  applied first) (patch #7)
+- Restrict the essiv() AEAD instantiation to AEADs whose cra_name starts with
+  'authenc('
+- Rebase onto cryptodev/master
+- Drop dm-crypt to reorder/refactor cipher name parsing, since it was wrong
+  and it is no longer needed.
+- Drop Milan's R-b since the code has changed
+- Fix bug in accelerated arm64 implementation.
+
+Changes since v7:
+- rebase onto cryptodev/master
+- drop change to ivsize in #2
+- add Milan's R-b's
+
+Changes since v6:
+- make CRYPTO_ESSIV user selectable so we can opt out of selecting it even
+  if FS_ENCRYPTION (which cannot be built as a module) is enabled
+- move a comment along with the code it referred to (#3), not that this change
+  and removing some redundant braces makes the diff look totally different
+- add Milan's R-b to #3 and #4
+
+Changes since v5:
+- drop redundant #includes and drop some unneeded braces (#2)
+- add test case for essiv(authenc(hmac(sha256),cbc(aes)),aes,sha256)
+- make ESSIV driver deal with assoc data that is described by more than two
+  scatterlist entries - this only happens when the extended tests are being
+  performed, so don't optimize for it
+- clarify that both fscrypt and dm-crypt only use ESSIV in special cases (#7)
+
+Changes since v4:
+- make the ESSIV template IV size equal the IV size of the encapsulated
+  cipher - defining it as 8 bytes was needlessly restrictive, and also
+  complicated the code for no reason
+- add a missing kfree() spotted by Smatch
+- add additional algo length name checks when constructing the essiv()
+  cipher name
+- reinstate the 'essiv' IV generation implementation in dm-crypt, but
+  make its generation function identical to plain64le (and drop the other
+  methods)
+- fix a bug in the arm64 CE/NEON code
+- simplify the arm64 code by reusing more of the existing CBC implementation
+  (patch #6 is new to this series and was added for this reason)
+
+Changes since v3:
+- address various review comments from Eric on patch #1
+- use Kconfig's 'imply' instead of 'select' to permit CRYPTO_ESSIV to be
+  enabled as a module or disabled entirely even if fscrypt is compiled in (#2)
+- fix an issue in the AEAD encrypt path caused by the IV being clobbered by
+  the inner skcipher before the hmac was being calculated
+
+Changes since v2:
+- fixed a couple of bugs that snuck in after I'd done the bulk of my
+  testing
+- some cosmetic tweaks to the ESSIV template skcipher setkey function
+  to align it with the aead one
+- add a test case for essiv(cbc(aes),aes,sha256)
+- add an accelerated implementation for arm64 that combines the IV
+  derivation and the actual en/decryption in a single asm routine
+
+Scroll down for tcrypt speed test result comparing the essiv template
+with the asm implementation. Bare cbc(aes) tests included for reference
+as well. Taken on a 2GHz Cortex-A57 (AMD Seattle)
+
+Code can be found here
+https://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git/log/?h=essiv-v8
+
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Eric Biggers <ebiggers@google.com>
+Cc: dm-devel@redhat.com
+Cc: linux-fscrypt@vger.kernel.org
+Cc: Gilad Ben-Yossef <gilad@benyossef.com>
+Cc: Milan Broz <gmazyland@gmail.com>
+
+Ard Biesheuvel (7):
+  crypto: essiv - create wrapper template for ESSIV generation
+  fs: crypto: invoke crypto API for ESSIV handling
+  md: dm-crypt: switch to ESSIV crypto API template
+  crypto: essiv - add tests for essiv in cbc(aes)+sha256 mode
+  crypto: arm64/aes-cts-cbc - factor out CBC en/decryption of a walk
+  crypto: arm64/aes - implement accelerated ESSIV/CBC mode
+  md: dm-crypt: omit parsing of the encapsulated cipher
+
+ arch/arm64/crypto/aes-glue.c  | 205 ++++--
+ arch/arm64/crypto/aes-modes.S |  28 +
+ crypto/Kconfig                |  28 +
+ crypto/Makefile               |   1 +
+ crypto/essiv.c                | 665 ++++++++++++++++++++
+ crypto/tcrypt.c               |   9 +
+ crypto/testmgr.c              |  14 +
+ crypto/testmgr.h              | 497 +++++++++++++++
+ drivers/md/Kconfig            |   1 +
+ drivers/md/dm-crypt.c         | 252 +-------
+ fs/crypto/Kconfig             |   1 +
+ fs/crypto/crypto.c            |   5 -
+ fs/crypto/fscrypt_private.h   |   9 -
+ fs/crypto/keyinfo.c           |  92 +--
+ 14 files changed, 1442 insertions(+), 365 deletions(-)
+ create mode 100644 crypto/essiv.c
+
+-- 
+2.17.1
+
