@@ -2,174 +2,80 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EC9248A1A4
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 12 Aug 2019 16:53:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B64F58A503
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 12 Aug 2019 19:57:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727068AbfHLOx4 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 12 Aug 2019 10:53:56 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:53576 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727037AbfHLOx4 (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 12 Aug 2019 10:53:56 -0400
-Received: by mail-wm1-f68.google.com with SMTP id 10so12458509wmp.3
-        for <linux-fscrypt@vger.kernel.org>; Mon, 12 Aug 2019 07:53:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=RPAXMF1cZCQBFyoO5A8Rg5Pyb4a0kwaVK9Utdlrc6bw=;
-        b=HPd1I4UgBWiDtrDqP8Ibwq0bukCpSgD2COS1aF+OJautrHGb22YSz6iSzyREDD7/iU
-         +8RHZSigttoAcV4j0A4x0NPM2Gc1eVLwnNdLZGqNXz7k55tir9Vfeebrn6byVb8fssmB
-         aJt8sE3BGLbxRpw8XzNRSg9dwjt/faluQIM2oRa2YTLYpQS6yUF7c6TWGeMvQIOG6WV5
-         EhxcX7W8sbfoE5+fOdz9xTut4arwIvhboa21yo1QN94hYf2Js7Mp8avqzVpvvz6GdP+H
-         HmLGftm+HF6lDkAyS2bLhdetY9nz6kMccX0ZGOmYvwj1JHnX8dRCGCrcYIqn3rfqdROg
-         RbGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=RPAXMF1cZCQBFyoO5A8Rg5Pyb4a0kwaVK9Utdlrc6bw=;
-        b=LbAtiEEUg9HND0z0rMQcxEX2li+PlNznpBfiZs6QN7UVbcTUdzPRGPJgBUrK7YZO0u
-         560zmWiiYnITL7GK4ltFgxFVwnvKvWVqyY9WfzbWqowc9OZUrL90z48wHZKqyPs+116G
-         4TllgwG0Wjfl+eZKEJl2MAPBlZMshVD0mwlNwwiGJDuMULstegYItvDhvLGl1FyNBANM
-         5AJsj4uTwCNu8zbfztTw3MvPLnts1S/+WmEtLoHtwNNBRNrFaJ31xU1WQ2fbhvfFHz0S
-         Sj8H4btKh88FZbIwRXmLWiYPIEkJ/pEs+ZMThoh36nfXyVGwl13nmbP/pLvqmQKzn/TZ
-         lsxA==
-X-Gm-Message-State: APjAAAUmW9bGGN26+MrDYWDF3/7F38eumJW2XGPkmfVL+AlJotQ8GTrD
-        rJgLe+NdTAbaqs23WRfd9UiVRg==
-X-Google-Smtp-Source: APXvYqzsX9jGCzgbY3nph2SZ/NkCZDR8QVdOrP8Q0upsnGNRaqynD6WofTQaCwEM5IwdsBMfLcLCcQ==
-X-Received: by 2002:a1c:760b:: with SMTP id r11mr28955527wmc.41.1565621634015;
-        Mon, 12 Aug 2019 07:53:54 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:587:a407:da00:1c0e:f938:89a1:8e17])
-        by smtp.gmail.com with ESMTPSA id k13sm23369190wro.97.2019.08.12.07.53.52
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 12 Aug 2019 07:53:53 -0700 (PDT)
-From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
-To:     linux-crypto@vger.kernel.org
-Cc:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Eric Biggers <ebiggers@google.com>, dm-devel@redhat.com,
-        linux-fscrypt@vger.kernel.org,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        Milan Broz <gmazyland@gmail.com>
-Subject: [PATCH v10 7/7] md: dm-crypt: omit parsing of the encapsulated cipher
-Date:   Mon, 12 Aug 2019 17:53:24 +0300
-Message-Id: <20190812145324.27090-8-ard.biesheuvel@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190812145324.27090-1-ard.biesheuvel@linaro.org>
-References: <20190812145324.27090-1-ard.biesheuvel@linaro.org>
+        id S1726823AbfHLR5P (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 12 Aug 2019 13:57:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53484 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726219AbfHLR5O (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 12 Aug 2019 13:57:14 -0400
+Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 90E5320663;
+        Mon, 12 Aug 2019 17:57:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1565632633;
+        bh=GiVAVhH+nPdk1UWotaUHBWK0S43N/8KUvkvXHy1BLYo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=QSb8/eaChRb8WrbrxfPEIM9JPkLZHHaJH+FToyjTGG2VV2Sfj1FcgDlXL/v+VRrcX
+         69S0YkawGMSzkx+X8TedLqLx5nbIbk5uUj99QTZidI0n5WfisqA4Rf5ZHALWb1cwA9
+         Hv4G4p0dN2E+J2Ure2EPqrnQTxGU5Q1z54uolNpg=
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-xfs@vger.kernel.org
+Cc:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org
+Subject: [RFC PATCH 0/8] xfsprogs: support fscrypt API additions in xfs_io
+Date:   Mon, 12 Aug 2019 10:56:26 -0700
+Message-Id: <20190812175635.34186-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.23.0.rc1.153.gdeed80330f-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Only the ESSIV IV generation mode used to use cc->cipher so it could
-instantiate the bare cipher used to encrypt the IV. However, this is
-now taken care of by the ESSIV template, and so no users of cc->cipher
-remain. So remove it altogether.
+Hello,
 
-Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
----
- drivers/md/dm-crypt.c | 58 --------------------
- 1 file changed, 58 deletions(-)
+This patchset updates xfs_io to support the API additions from the
+kernel patchset "[PATCH v8 00/20] fscrypt: key management improvements"
+https://lkml.kernel.org/linux-fsdevel/20190805162521.90882-1-ebiggers@kernel.org/T/#u
 
-diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
-index d44d24853aee..f87f6495652f 100644
---- a/drivers/md/dm-crypt.c
-+++ b/drivers/md/dm-crypt.c
-@@ -143,7 +143,6 @@ struct crypt_config {
- 	struct task_struct *write_thread;
- 	struct rb_root write_tree;
- 
--	char *cipher;
- 	char *cipher_string;
- 	char *cipher_auth;
- 	char *key_string;
-@@ -2140,7 +2139,6 @@ static void crypt_dtr(struct dm_target *ti)
- 	if (cc->dev)
- 		dm_put_device(ti, cc->dev);
- 
--	kzfree(cc->cipher);
- 	kzfree(cc->cipher_string);
- 	kzfree(cc->key_string);
- 	kzfree(cc->cipher_auth);
-@@ -2221,52 +2219,6 @@ static int crypt_ctr_ivmode(struct dm_target *ti, const char *ivmode)
- 	return 0;
- }
- 
--/*
-- * Workaround to parse cipher algorithm from crypto API spec.
-- * The cc->cipher is currently used only in ESSIV.
-- * This should be probably done by crypto-api calls (once available...)
-- */
--static int crypt_ctr_blkdev_cipher(struct crypt_config *cc)
--{
--	const char *alg_name = NULL;
--	char *start, *end;
--
--	if (crypt_integrity_aead(cc)) {
--		alg_name = crypto_tfm_alg_name(crypto_aead_tfm(any_tfm_aead(cc)));
--		if (!alg_name)
--			return -EINVAL;
--		if (crypt_integrity_hmac(cc)) {
--			alg_name = strchr(alg_name, ',');
--			if (!alg_name)
--				return -EINVAL;
--		}
--		alg_name++;
--	} else {
--		alg_name = crypto_tfm_alg_name(crypto_skcipher_tfm(any_tfm(cc)));
--		if (!alg_name)
--			return -EINVAL;
--	}
--
--	start = strchr(alg_name, '(');
--	end = strchr(alg_name, ')');
--
--	if (!start && !end) {
--		cc->cipher = kstrdup(alg_name, GFP_KERNEL);
--		return cc->cipher ? 0 : -ENOMEM;
--	}
--
--	if (!start || !end || ++start >= end)
--		return -EINVAL;
--
--	cc->cipher = kzalloc(end - start + 1, GFP_KERNEL);
--	if (!cc->cipher)
--		return -ENOMEM;
--
--	strncpy(cc->cipher, start, end - start);
--
--	return 0;
--}
--
- /*
-  * Workaround to parse HMAC algorithm from AEAD crypto API spec.
-  * The HMAC is needed to calculate tag size (HMAC digest size).
-@@ -2376,12 +2328,6 @@ static int crypt_ctr_cipher_new(struct dm_target *ti, char *cipher_in, char *key
- 	else
- 		cc->iv_size = crypto_skcipher_ivsize(any_tfm(cc));
- 
--	ret = crypt_ctr_blkdev_cipher(cc);
--	if (ret < 0) {
--		ti->error = "Cannot allocate cipher string";
--		return -ENOMEM;
--	}
--
- 	return 0;
- }
- 
-@@ -2416,10 +2362,6 @@ static int crypt_ctr_cipher_old(struct dm_target *ti, char *cipher_in, char *key
- 	}
- 	cc->key_parts = cc->tfms_count;
- 
--	cc->cipher = kstrdup(cipher, GFP_KERNEL);
--	if (!cc->cipher)
--		goto bad_mem;
--
- 	chainmode = strsep(&tmp, "-");
- 	*ivmode = strsep(&tmp, ":");
- 	*ivopts = tmp;
+Commands are added to wrap the new ioctls for managing filesystem
+encryption keys.  Also, the existing 'get_encpolicy' and 'set_encpolicy'
+commands are updated to support v2 encryption policies.
+
+The purpose of all this is to allow xfstests to test the new APIs.
+
+Note: currently only ext4, f2fs, and ubifs support encryption.  But I
+was told previously that since the fscrypt API is generic and may be
+supported by XFS in the future, the command-line wrappers for the
+fscrypt ioctls should be in xfs_io rather than in fstests directly
+(https://marc.info/?l=fstests&m=147976255831951&w=2).
+
+We'll want to wait for the kernel patches to be mainlined before merging
+this, but I'm making it available now for any early feedback.
+
+This patchset applies to xfsprogs v5.2.0.  It can also be retrieved from tag
+"fscrypt-key-mgmt-improvements_2019-08-12" of
+https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/xfsprogs-dev.git
+
+Eric Biggers (8):
+  xfs_io/encrypt: remove unimplemented encryption modes
+  xfs_io/encrypt: update to UAPI definitions from Linux v5.4
+  xfs_io/encrypt: add new encryption modes
+  xfs_io/encrypt: extend 'get_encpolicy' to support v2 policies
+  xfs_io/encrypt: extend 'set_encpolicy' to support v2 policies
+  xfs_io/encrypt: add 'add_enckey' command
+  xfs_io/encrypt: add 'rm_enckey' command
+  xfs_io/encrypt: add 'enckey_status' command
+
+ io/encrypt.c      | 786 ++++++++++++++++++++++++++++++++++++++++------
+ man/man8/xfs_io.8 |  70 ++++-
+ 2 files changed, 750 insertions(+), 106 deletions(-)
+
 -- 
-2.17.1
+2.23.0.rc1.153.gdeed80330f-goog
 
