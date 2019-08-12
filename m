@@ -2,102 +2,66 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D03D8A77D
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 12 Aug 2019 21:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF8958AA4E
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 13 Aug 2019 00:20:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726880AbfHLTru (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 12 Aug 2019 15:47:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56592 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726829AbfHLTru (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 12 Aug 2019 15:47:50 -0400
-Received: from gmail.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B68CF20673;
-        Mon, 12 Aug 2019 19:47:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1565639270;
-        bh=Zgcv9Y+g56/ZxetdBFWjYeuHHvXTFUfMebwhbWEKpuk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R36a4/a+uKT4oeMzzX/A5Vq6DXEIF9CDlf5YcRM8XN4mVGC/QNVGiqkrRgihb00Eh
-         tWE8R2cuph5e80yr6EMTd1Ft23diFJeocaahe/2GObNzU7CLWE19dAdFdtWbV931dY
-         WQUdf7XQ63EnnR1wT53YJvnYGAn15fBThZnphx/8=
-Date:   Mon, 12 Aug 2019 12:47:48 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Cc:     linux-crypto@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>, dm-devel@redhat.com,
-        linux-fscrypt@vger.kernel.org,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        Milan Broz <gmazyland@gmail.com>
-Subject: Re: [PATCH v10 2/7] fs: crypto: invoke crypto API for ESSIV handling
-Message-ID: <20190812194747.GB131059@gmail.com>
-Mail-Followup-To: Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        linux-crypto@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>, dm-devel@redhat.com,
-        linux-fscrypt@vger.kernel.org,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        Milan Broz <gmazyland@gmail.com>
-References: <20190812145324.27090-1-ard.biesheuvel@linaro.org>
- <20190812145324.27090-3-ard.biesheuvel@linaro.org>
+        id S1726602AbfHLWUa (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 12 Aug 2019 18:20:30 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:37518 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726488AbfHLWU3 (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 12 Aug 2019 18:20:29 -0400
+Received: from callcc.thunk.org (guestnat-104-133-9-109.corp.google.com [104.133.9.109] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x7CMK4AQ010100
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 12 Aug 2019 18:20:06 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id F054A4218EF; Mon, 12 Aug 2019 18:20:03 -0400 (EDT)
+Date:   Mon, 12 Aug 2019 18:20:03 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-api@vger.kernel.org, Satya Tangirala <satyat@google.com>,
+        Paul Crowley <paulcrowley@google.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: Re: [PATCH v8 05/20] fscrypt: rename fscrypt_master_key to
+ fscrypt_direct_key
+Message-ID: <20190812222003.GD28705@mit.edu>
+References: <20190805162521.90882-1-ebiggers@kernel.org>
+ <20190805162521.90882-6-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190812145324.27090-3-ard.biesheuvel@linaro.org>
+In-Reply-To: <20190805162521.90882-6-ebiggers@kernel.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Aug 12, 2019 at 05:53:19PM +0300, Ard Biesheuvel wrote:
-> Instead of open coding the calculations for ESSIV handling, use a
-> ESSIV skcipher which does all of this under the hood.
+On Mon, Aug 05, 2019 at 09:25:06AM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-
-This looks fine (except for one comment below), but this heavily conflicts with
-the fscrypt patches planned for v5.4.  So I suggest moving this to the end of
-the series and having Herbert take only 1-6, and I'll apply this one to the
-fscrypt tree later.
-
-Thanks!
-
-> ---
->  fs/crypto/Kconfig           |  1 +
->  fs/crypto/crypto.c          |  5 --
->  fs/crypto/fscrypt_private.h |  9 --
->  fs/crypto/keyinfo.c         | 92 +-------------------
->  4 files changed, 4 insertions(+), 103 deletions(-)
+> In preparation for introducing a filesystem-level keyring which will
+> contain fscrypt master keys, rename the existing 'struct
+> fscrypt_master_key' to 'struct fscrypt_direct_key'.  This is the
+> structure in the existing table of master keys that's maintained to
+> deduplicate the crypto transforms for v1 DIRECT_KEY policies.
 > 
-> diff --git a/fs/crypto/Kconfig b/fs/crypto/Kconfig
-> index 5fdf24877c17..6f3d59b880b7 100644
-> --- a/fs/crypto/Kconfig
-> +++ b/fs/crypto/Kconfig
-> @@ -5,6 +5,7 @@ config FS_ENCRYPTION
->  	select CRYPTO_AES
->  	select CRYPTO_CBC
->  	select CRYPTO_ECB
-> +	select CRYPTO_ESSIV
->  	select CRYPTO_XTS
->  	select CRYPTO_CTS
->  	select KEYS
+> I've chosen to keep this table as-is rather than make it automagically
+> add/remove the keys to/from the filesystem-level keyring, since that
+> would add a lot of extra complexity to the filesystem-level keyring.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-In v5.3 I removed the 'select CRYPTO_SHA256', so now ESSIV shouldn't be selected
-here either.  Instead we should just update the documentation:
+Looks good.  You can add:
 
-diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
-index 82efa41b0e6c02..a1e2ab12a99943 100644
---- a/Documentation/filesystems/fscrypt.rst
-+++ b/Documentation/filesystems/fscrypt.rst
-@@ -193,7 +193,8 @@ If unsure, you should use the (AES-256-XTS, AES-256-CTS-CBC) pair.
- AES-128-CBC was added only for low-powered embedded devices with
- crypto accelerators such as CAAM or CESA that do not support XTS.  To
- use AES-128-CBC, CONFIG_CRYPTO_SHA256 (or another SHA-256
--implementation) must be enabled so that ESSIV can be used.
-+implementation) and CONFIG_CRYPTO_ESSIV must be enabled so that ESSIV
-+can be used.
- 
- Adiantum is a (primarily) stream cipher-based mode that is fast even
- on CPUs without dedicated crypto instructions.  It's also a true
+Reviewed-by: Theodore Ts'o <tytso@mit.edu>
+
+						- Ted
