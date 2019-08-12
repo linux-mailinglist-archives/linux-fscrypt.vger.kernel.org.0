@@ -2,139 +2,171 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 010BF8A014
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 12 Aug 2019 15:51:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 570EB8A089
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 12 Aug 2019 16:17:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727175AbfHLNvN (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 12 Aug 2019 09:51:13 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:38270 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727103AbfHLNvM (ORCPT
+        id S1726605AbfHLORT (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 12 Aug 2019 10:17:19 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:33943 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726354AbfHLORS (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 12 Aug 2019 09:51:12 -0400
-Received: by mail-wm1-f66.google.com with SMTP id m125so7787679wmm.3;
-        Mon, 12 Aug 2019 06:51:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:openpgp:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rBbM+UdJ5ZjF04CiXCd6y2tkG1h3M6zsC0WpzRFsUIQ=;
-        b=DIKKpbK7MTnkOm83W/loz9snj3ua+vVVx7sWii6rL6U7FiE6ngBOI8ozRpV3njikkE
-         2eeQiuTX3UiBBh8WL0OwXy4/EW0AW8Qi95jB0GK2XuQ0q5rq4q/Z7315cE5LKZetPgy+
-         0QIuQGM4EMMvHuYvLpRW8q8kJp2xGf3i/bfRjdTLIN5ZyEw0LK7aOXhSxz/n1E1pSknF
-         pPISm8xkLwRI/XBPxQNMEo/TGyBLJA1x56OAxr8gyfY4LUFjPUSmw21ScbQiprleWxEr
-         SzgVgsTNx0JzUKHxXUN85Sk+tUNaRZ1nBEPjHn9u8TMcSzpJKuTf6xnlX97REZXhvqFT
-         Cdjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:openpgp:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rBbM+UdJ5ZjF04CiXCd6y2tkG1h3M6zsC0WpzRFsUIQ=;
-        b=GagR6Xs85GFSQPF3+XIgwuI1LhYSo/ykuwZG1VGm0j6HGNvZDaqyd2VWYXcKjdNbqW
-         6YJr3Eq8v5SXR8etOFLH9gDaotlpR9UKA0e13UV2t0VoOi6uANI+VWqUwauxH5Sg4lIq
-         6o7dnOpxNJjk6mvEwfCQd5AZbO0PIN1jBc3KbkFAb71Ueo2/WziKgvI7TPOsQDKQLF63
-         nhQyMXgaBigmdiEbgnpdtH3DpbVbfBT7awspPm01R/Q1hsrU74Bh0yJx5Et6hgdZdCYg
-         V4pKpNcrB1i/FEwfWvTLct5gkuCVBDhhBDa330gaAYxbZ355gU8YKQODwENfqDvGjAz0
-         ja/g==
-X-Gm-Message-State: APjAAAXqa3Nhw8oQqrjMUCRTwL7rE6eloutCoVixxWmROKm5Wlv72DS/
-        x5nGMnySLxJm7QguIriCDis=
-X-Google-Smtp-Source: APXvYqydyG0HxLjtoA5pPzW3JZSa52vifGyk5rD7QL125itbnnPxp17aqg2nTfJDRX/Epo3eoRVuEA==
-X-Received: by 2002:a1c:6087:: with SMTP id u129mr27021088wmb.108.1565617870305;
-        Mon, 12 Aug 2019 06:51:10 -0700 (PDT)
-Received: from [172.22.36.64] (redhat-nat.vtp.fi.muni.cz. [78.128.215.6])
-        by smtp.gmail.com with ESMTPSA id e11sm13985393wrc.4.2019.08.12.06.51.08
-        (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
-        Mon, 12 Aug 2019 06:51:09 -0700 (PDT)
-Subject: Re: [PATCH v9 3/7] md: dm-crypt: switch to ESSIV crypto API template
-To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Cc:     "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Eric Biggers <ebiggers@google.com>,
-        device-mapper development <dm-devel@redhat.com>,
-        linux-fscrypt@vger.kernel.org,
-        Gilad Ben-Yossef <gilad@benyossef.com>
-References: <20190810094053.7423-1-ard.biesheuvel@linaro.org>
- <20190810094053.7423-4-ard.biesheuvel@linaro.org>
- <8679d2f5-b005-cd89-957e-d79440b78086@gmail.com>
- <CAKv+Gu-ZPPR5xQSR6T4o+8yJvsHY2a3xXZ5zsM_aGS3frVChgQ@mail.gmail.com>
- <82a87cae-8eb7-828c-35c3-fb39a9abe692@gmail.com>
- <CAKv+Gu_d+3NsTKFZbS+xeuxf5uCz=ENmPX-a=s-2kgLrW4d7cQ@mail.gmail.com>
-From:   Milan Broz <gmazyland@gmail.com>
-Openpgp: preference=signencrypt
-Message-ID: <7b3365a9-42ca-5426-660f-e87898bb9f7a@gmail.com>
-Date:   Mon, 12 Aug 2019 15:51:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Mon, 12 Aug 2019 10:17:18 -0400
+Received: from callcc.thunk.org (guestnat-104-133-9-109.corp.google.com [104.133.9.109] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x7CEGtiI013115
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 12 Aug 2019 10:16:57 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 7E7C44218EF; Mon, 12 Aug 2019 10:16:55 -0400 (EDT)
+Date:   Mon, 12 Aug 2019 10:16:55 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-api@vger.kernel.org,
+        linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
+        Paul Crowley <paulcrowley@google.com>,
+        Satya Tangirala <satyat@google.com>
+Subject: Re: [PATCH v7 07/16] fscrypt: add FS_IOC_REMOVE_ENCRYPTION_KEY ioctl
+Message-ID: <20190812141655.GA11831@mit.edu>
+References: <20190726224141.14044-1-ebiggers@kernel.org>
+ <20190726224141.14044-8-ebiggers@kernel.org>
+ <20190728192417.GG6088@mit.edu>
+ <20190729195827.GF169027@gmail.com>
+ <20190731183802.GA687@sol.localdomain>
+ <20190731233843.GA2769@mit.edu>
+ <20190801011140.GB687@sol.localdomain>
+ <20190801053108.GD2769@mit.edu>
+ <20190801220432.GC223822@gmail.com>
+ <20190802043827.GA19201@sol.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <CAKv+Gu_d+3NsTKFZbS+xeuxf5uCz=ENmPX-a=s-2kgLrW4d7cQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190802043827.GA19201@sol.localdomain>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On 12/08/2019 09:50, Ard Biesheuvel wrote:
-> On Mon, 12 Aug 2019 at 10:44, Milan Broz <gmazyland@gmail.com> wrote:
->>
->> On 12/08/2019 08:54, Ard Biesheuvel wrote:
->>> On Mon, 12 Aug 2019 at 09:33, Milan Broz <gmazyland@gmail.com> wrote:
->>>> Try for example
->>>> # cryptsetup luksFormat /dev/sdc -c aes-cbc-essiv:sha256 --integrity hmac-sha256 -q -i1
->>>>
->>>> It should produce Crypto API string
->>>>   authenc(hmac(sha256),essiv(cbc(aes),sha256))
->>>> while it produces
->>>>   essiv(authenc(hmac(sha256),cbc(aes)),sha256)
->>>> (and fails).
->>>>
->>>
->>> No. I don't know why it fails, but the latter is actually the correct
->>> string. The essiv template is instantiated either as a skcipher or as
->>> an aead, and it encapsulates the entire transformation. (This is
->>> necessary considering that the IV is passed via the AAD and so the
->>> ESSIV handling needs to touch that as well)
->>
->> Hm. Constructing these strings seems to be more confusing than dmcrypt mode combinations :-)
->>
->> But you are right, I actually tried the former string (authenc(hmac(sha256),essiv(cbc(aes),sha256)))
->> and it worked, but I guess the authenticated IV (AAD) was actually the input to IV (plain sector number)
->> not the output of ESSIV? Do I understand it correctly now?
->>
+On Thu, Aug 01, 2019 at 09:38:27PM -0700, Eric Biggers wrote:
 > 
-> Indeed. The former string instantiates the skcipher version of the
-> ESSIV template, and so the AAD handling is omitted, and we end up
-> using the plain IV in the authentication rather than the encrypted IV.
+> Here's a slightly updated version (I missed removing some stale text):
+
+Apologies for the delaying in getting back.  Thanks, this looks great.
+
+	      	  	      	      	     - Ted
+
 > 
-> So when using the latter string, does it produce any error messages
-> when it fails?
-
-The error is
-table: 253:1: crypt: Error decoding and setting key
-
-and it is failing in crypt_setkey() int this  crypto_aead_setkey();
-
-And it is because it now wrongly calculates MAC key length.
-(We have two keys here - one for length-preserving CBC-ESSIV encryption
-and one for HMAC.)
-
-This super-ugly hotfix helps here... I guess it can be done better :-)
-
-diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
-index e9a0093c88ee..7b06d975a2e1 100644
---- a/drivers/md/dm-crypt.c
-+++ b/drivers/md/dm-crypt.c
-@@ -2342,6 +2342,9 @@ static int crypt_ctr_auth_cipher(struct crypt_config *cc, char *cipher_api)
-        char *start, *end, *mac_alg = NULL;
-        struct crypto_ahash *mac;
- 
-+       if (strstarts(cipher_api, "essiv(authenc("))
-+               cipher_api += strlen("essiv(");
-+
-        if (!strstarts(cipher_api, "authenc("))
-                return 0;
- 
-Milan
+> Removing keys
+> -------------
+> 
+> Two ioctls are available for removing a key that was added by
+> `FS_IOC_ADD_ENCRYPTION_KEY`_:
+> 
+> - `FS_IOC_REMOVE_ENCRYPTION_KEY`_
+> - `FS_IOC_REMOVE_ENCRYPTION_KEY_ALL_USERS`_
+> 
+> These two ioctls differ only in cases where v2 policy keys are added
+> or removed by non-root users.
+> 
+> These ioctls don't work on keys that were added via the legacy
+> process-subscribed keyrings mechanism.
+> 
+> Before using these ioctls, read the `Kernel memory compromise`_
+> section for a discussion of the security goals and limitations of
+> these ioctls.
+> 
+> FS_IOC_REMOVE_ENCRYPTION_KEY
+> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> The FS_IOC_REMOVE_ENCRYPTION_KEY ioctl removes a claim to a master
+> encryption key from the filesystem, and possibly removes the key
+> itself.  It can be executed on any file or directory on the target
+> filesystem, but using the filesystem's root directory is recommended.
+> It takes in a pointer to a :c:type:`struct fscrypt_remove_key_arg`,
+> defined as follows::
+> 
+>     struct fscrypt_remove_key_arg {
+>             struct fscrypt_key_specifier key_spec;
+>     #define FSCRYPT_KEY_REMOVAL_STATUS_FLAG_FILES_BUSY      0x00000001
+>     #define FSCRYPT_KEY_REMOVAL_STATUS_FLAG_OTHER_USERS     0x00000002
+>             __u32 removal_status_flags;     /* output */
+>             __u32 __reserved[5];
+>     };
+> 
+> This structure must be zeroed, then initialized as follows:
+> 
+> - The key to remove is specified by ``key_spec``:
+> 
+>     - To remove a key used by v1 encryption policies, set
+>       ``key_spec.type`` to FSCRYPT_KEY_SPEC_TYPE_DESCRIPTOR and fill
+>       in ``key_spec.u.descriptor``.  To remove this type of key, the
+>       calling process must have the CAP_SYS_ADMIN capability in the
+>       initial user namespace.
+> 
+>     - To remove a key used by v2 encryption policies, set
+>       ``key_spec.type`` to FSCRYPT_KEY_SPEC_TYPE_IDENTIFIER and fill
+>       in ``key_spec.u.identifier``.
+> 
+> For v2 policy keys, this ioctl is usable by non-root users.  However,
+> to make this possible, it actually just removes the current user's
+> claim to the key, undoing a single call to FS_IOC_ADD_ENCRYPTION_KEY.
+> Only after all claims are removed is the key really removed.
+> 
+> For example, if FS_IOC_ADD_ENCRYPTION_KEY was called with uid 1000,
+> then the key will be "claimed" by uid 1000, and
+> FS_IOC_REMOVE_ENCRYPTION_KEY will only succeed as uid 1000.  Or, if
+> both uids 1000 and 2000 added the key, then for each uid
+> FS_IOC_REMOVE_ENCRYPTION_KEY will only remove their own claim.  Only
+> once *both* are removed is the key really removed.  (Think of it like
+> unlinking a file that may have hard links.)
+> 
+> If FS_IOC_REMOVE_ENCRYPTION_KEY really removes the key, it will also
+> try to "lock" all files that had been unlocked with the key.  It won't
+> lock files that are still in-use, so this ioctl is expected to be used
+> in cooperation with userspace ensuring that none of the files are
+> still open.  However, if necessary, the ioctl can be executed again
+> later to retry locking any remaining files.
+> 
+> FS_IOC_REMOVE_ENCRYPTION_KEY returns 0 if either the key was removed
+> (but may still have files remaining to be locked), the user's claim to
+> the key was removed, or the key was already removed but had files
+> remaining to be the locked so the ioctl retried locking them.  In any
+> of these cases, ``removal_status_flags`` is filled in with the
+> following informational status flags:
+> 
+> - ``FSCRYPT_KEY_REMOVAL_STATUS_FLAG_FILES_BUSY``: set if some file(s)
+>   are still in-use.  Not guaranteed to be set in the case where only
+>   the user's claim to the key was removed.
+> - ``FSCRYPT_KEY_REMOVAL_STATUS_FLAG_OTHER_USERS``: set if only the
+>   user's claim to the key was removed, not the key itself
+> 
+> FS_IOC_REMOVE_ENCRYPTION_KEY can fail with the following errors:
+> 
+> - ``EACCES``: The FSCRYPT_KEY_SPEC_TYPE_DESCRIPTOR key specifier type
+>   was specified, but the caller does not have the CAP_SYS_ADMIN
+>   capability in the initial user namespace
+> - ``EINVAL``: invalid key specifier type, or reserved bits were set
+> - ``ENOKEY``: the key object was not found at all, i.e. it was never
+>   added in the first place or was already fully removed including all
+>   files locked; or, the user does not have a claim to the key.
+> - ``ENOTTY``: this type of filesystem does not implement encryption
+> - ``EOPNOTSUPP``: the kernel was not configured with encryption
+>   support for this filesystem, or the filesystem superblock has not
+>   had encryption enabled on it
+> 
+> FS_IOC_REMOVE_ENCRYPTION_KEY_ALL_USERS
+> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> FS_IOC_REMOVE_ENCRYPTION_KEY_ALL_USERS is exactly the same as
+> `FS_IOC_REMOVE_ENCRYPTION_KEY`_, except that for v2 policy keys, the
+> ALL_USERS version of the ioctl will remove all users' claims to the
+> key, not just the current user's.  I.e., the key itself will always be
+> removed, no matter how many users have added it.  This difference is
+> only meaningful if non-root users are adding and removing keys.
+> 
+> Because of this, FS_IOC_REMOVE_ENCRYPTION_KEY_ALL_USERS also requires
+> "root", namely the CAP_SYS_ADMIN capability in the initial user
+> namespace.  Otherwise it will fail with ``EACCES``.
