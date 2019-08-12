@@ -2,48 +2,48 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DA7548A199
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 12 Aug 2019 16:53:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 368F48A19B
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 12 Aug 2019 16:53:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727005AbfHLOxq (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 12 Aug 2019 10:53:46 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:33065 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726716AbfHLOxq (ORCPT
+        id S1727027AbfHLOxs (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 12 Aug 2019 10:53:48 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:45632 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727007AbfHLOxr (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 12 Aug 2019 10:53:46 -0400
-Received: by mail-wm1-f65.google.com with SMTP id p77so191239wme.0
-        for <linux-fscrypt@vger.kernel.org>; Mon, 12 Aug 2019 07:53:42 -0700 (PDT)
+        Mon, 12 Aug 2019 10:53:47 -0400
+Received: by mail-wr1-f65.google.com with SMTP id q12so14561025wrj.12
+        for <linux-fscrypt@vger.kernel.org>; Mon, 12 Aug 2019 07:53:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=7XY4g0MsGKSNTMvMI9x8n2YRhc4rhVau+VDlb+KQrp4=;
-        b=qwbElIG2T3oMTzCv1NiPjt/HvCjLay6VDVWaYDNs2E48AaoSxjV4NoseM/HOyrrxem
-         lLwHTC3nSCBVIpS+p6kmD6n/U4OUZHup2y/wzNvX9WE+mdhj+5/DhTXqxXjXK+G7bZNL
-         irQgEHC5wzjdxTZujbZ1i1H3M+kdDDE7eM2YKpWVokFXLbFlhgDLa4M05QWMlq2eXkrm
-         pE2gBC/va2WgVM+JyqOoTjQ/JoBblq6ZICG9bjaewVJvG3CKzzCYOrn/7+ktVmoxdEAD
-         bcWTP2+5nYrbRWZfg+Xu+H/xniCrsb6t88jN0Ry3zMgBRK90S41xUcz3yMtywUCzH7aC
-         dTiw==
+        bh=WCWl+tpGIKbnP/rNTSW1y6zpS02IMHAFrYZrL23PudA=;
+        b=pBTeSwUQ4ADEFXXmvLQNABDjG/7nqgd5txR7j7kViU8qlh/JQoKkWXICX7+vHIQ6ZY
+         iYiOiyh6sJyWcl+1KrjuCtFSPa2Ud43OXms13QA09AXoeWZvI+ZeASW8UX16b8lea6RE
+         zfJnNEH870H2KuDt00JNLAhdfXfmzeZxaNEOyquHzUcVZaecC9aDquL5OvEO+8IQxyZy
+         RKex/84QViyY4hapy41W3aB/5XhxjhF8uo6F9+ISJLp2bDH410M6csbIUzJLphKFuymX
+         t4+UcV4gUUpQs8ShrT/8f7256ZirhR5VljlUMrmaEx3FkroMPRD/2Bh9fSHCvZtqC6ku
+         VnPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=7XY4g0MsGKSNTMvMI9x8n2YRhc4rhVau+VDlb+KQrp4=;
-        b=br8KF/a9/bDUwLRcKS9dr5bCySh5CrLqLf1f1Q1m1demx4qaegHqI4V/jmZkPqibiS
-         p+Bqe1XZny0SJbb3UdltBe3w3DGC3uFQ3XcMK2USOlfyc/i5LhbECVaZwhrs/8fYGloM
-         8bNDqeCW1p/zkNjFFUiiWHLnob8JGPrCqwudyqbZitU8joV62pp3HKVbzUEJhzs8Lh1/
-         PTRkmPHMYBDwt89a3DK3j4vAW0no0+XdkC5GEpWZTMAD40Xuj4Vc6WS/LcQj4LVUz6ax
-         dw4TQjFrUqwIfAsJlVo6liruWS48a1bPAMgZoM8huIBE6dc2yBwQ7Mv2ua8vek3pOZwT
-         QvOQ==
-X-Gm-Message-State: APjAAAVkLjEUl/qbDKqYpbxO5NpHXtJXCCczFmcNJdkjt+s2993fkux3
-        kh4CZwggCQ4dZhSQYKyYAqWVmQ==
-X-Google-Smtp-Source: APXvYqwvoPkNOGlkkhcjP1KJa2ypEUg1Hds7YdeWNUWbfmIoL4yibEM5eyrabaUO7cw73RclPMbJoQ==
-X-Received: by 2002:a7b:c5c2:: with SMTP id n2mr27659427wmk.92.1565621621448;
-        Mon, 12 Aug 2019 07:53:41 -0700 (PDT)
+        bh=WCWl+tpGIKbnP/rNTSW1y6zpS02IMHAFrYZrL23PudA=;
+        b=jUghyuGlQ+B5MdCfZ2pt2uUbltm0apjdHKYJ8ihkJVtJiZKhfdUJVwzyigfLmwrDwG
+         0ADIEHWxV8MUM94hMpdztUFSv76o5AWUT5HnJXjCbgdGvHeyQ+j38nioJo4lPVhAuIau
+         jTfN/Dv0Wulsoutmf435jPNzPwRXesoy8Is/WRF1pRO2vWBIe51kE5lqYghoxw5v2AdX
+         MvuM/R2Rm9ZJdpAX32g+ZCIFnR0z7RwVrzK580OCia+N0/Rz1R7gZPjuMLn1ryyE3ZMN
+         /jFYPRkCJw2B+bdhIbdyrwXDl9jC5eT3kRVElRMCXioj7iDKfVeav4wzYK3vowrXn1JO
+         OXXw==
+X-Gm-Message-State: APjAAAVUNPMYtNF6Hx3HWajU+Y8tjA2nHUXAbArz0WUGv1tA36XLsCIf
+        cL7xnVcHzmPjlHcZQQj59LvT1A==
+X-Google-Smtp-Source: APXvYqydkDOLItkOITLFNJUiMdtbCTo8fuEnNNdx6R+nmYU5Jy0szpZcwPcDcKjaP1vg/w3AxlFv8g==
+X-Received: by 2002:a05:6000:148:: with SMTP id r8mr13567093wrx.312.1565621624276;
+        Mon, 12 Aug 2019 07:53:44 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:587:a407:da00:1c0e:f938:89a1:8e17])
-        by smtp.gmail.com with ESMTPSA id k13sm23369190wro.97.2019.08.12.07.53.39
+        by smtp.gmail.com with ESMTPSA id k13sm23369190wro.97.2019.08.12.07.53.41
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 12 Aug 2019 07:53:40 -0700 (PDT)
+        Mon, 12 Aug 2019 07:53:43 -0700 (PDT)
 From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
@@ -52,9 +52,9 @@ Cc:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
         linux-fscrypt@vger.kernel.org,
         Gilad Ben-Yossef <gilad@benyossef.com>,
         Milan Broz <gmazyland@gmail.com>
-Subject: [PATCH v10 1/7] crypto: essiv - create wrapper template for ESSIV generation
-Date:   Mon, 12 Aug 2019 17:53:18 +0300
-Message-Id: <20190812145324.27090-2-ard.biesheuvel@linaro.org>
+Subject: [PATCH v10 2/7] fs: crypto: invoke crypto API for ESSIV handling
+Date:   Mon, 12 Aug 2019 17:53:19 +0300
+Message-Id: <20190812145324.27090-3-ard.biesheuvel@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190812145324.27090-1-ard.biesheuvel@linaro.org>
 References: <20190812145324.27090-1-ard.biesheuvel@linaro.org>
@@ -63,741 +63,224 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Implement a template that wraps a (skcipher,shash) or (aead,shash) tuple
-so that we can consolidate the ESSIV handling in fscrypt and dm-crypt and
-move it into the crypto API. This will result in better test coverage, and
-will allow future changes to make the bare cipher interface internal to the
-crypto subsystem, in order to increase robustness of the API against misuse.
+Instead of open coding the calculations for ESSIV handling, use a
+ESSIV skcipher which does all of this under the hood.
 
 Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 ---
- crypto/Kconfig  |  28 +
- crypto/Makefile |   1 +
- crypto/essiv.c  | 665 ++++++++++++++++++++
- 3 files changed, 694 insertions(+)
+ fs/crypto/Kconfig           |  1 +
+ fs/crypto/crypto.c          |  5 --
+ fs/crypto/fscrypt_private.h |  9 --
+ fs/crypto/keyinfo.c         | 92 +-------------------
+ 4 files changed, 4 insertions(+), 103 deletions(-)
 
-diff --git a/crypto/Kconfig b/crypto/Kconfig
-index 8880c1fc51d8..dbceaed65e52 100644
---- a/crypto/Kconfig
-+++ b/crypto/Kconfig
-@@ -482,6 +482,34 @@ config CRYPTO_ADIANTUM
+diff --git a/fs/crypto/Kconfig b/fs/crypto/Kconfig
+index 5fdf24877c17..6f3d59b880b7 100644
+--- a/fs/crypto/Kconfig
++++ b/fs/crypto/Kconfig
+@@ -5,6 +5,7 @@ config FS_ENCRYPTION
+ 	select CRYPTO_AES
+ 	select CRYPTO_CBC
+ 	select CRYPTO_ECB
++	select CRYPTO_ESSIV
+ 	select CRYPTO_XTS
+ 	select CRYPTO_CTS
+ 	select KEYS
+diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
+index 45c3d0427fb2..fd13231c5ff6 100644
+--- a/fs/crypto/crypto.c
++++ b/fs/crypto/crypto.c
+@@ -143,9 +143,6 @@ void fscrypt_generate_iv(union fscrypt_iv *iv, u64 lblk_num,
  
- 	  If unsure, say N.
+ 	if (ci->ci_flags & FS_POLICY_FLAG_DIRECT_KEY)
+ 		memcpy(iv->nonce, ci->ci_nonce, FS_KEY_DERIVATION_NONCE_SIZE);
+-
+-	if (ci->ci_essiv_tfm != NULL)
+-		crypto_cipher_encrypt_one(ci->ci_essiv_tfm, iv->raw, iv->raw);
+ }
  
-+config CRYPTO_ESSIV
-+	tristate "ESSIV support for block encryption"
-+	select CRYPTO_AUTHENC
-+	help
-+	  Encrypted salt-sector initialization vector (ESSIV) is an IV
-+	  generation method that is used in some cases by fscrypt and/or
-+	  dm-crypt. It uses the hash of the block encryption key as the
-+	  symmetric key for a block encryption pass applied to the input
-+	  IV, making low entropy IV sources more suitable for block
-+	  encryption.
-+
-+	  This driver implements a crypto API template that can be
-+	  instantiated either as a skcipher or as a aead (depending on the
-+	  type of the first template argument), and which defers encryption
-+	  and decryption requests to the encapsulated cipher after applying
-+	  ESSIV to the input IV. Note that in the aead case, it is assumed
-+	  that the keys are presented in the same format used by the authenc
-+	  template, and that the IV appears at the end of the authenticated
-+	  associated data (AAD) region (which is how dm-crypt uses it.)
-+
-+	  Note that the use of ESSIV is not recommended for new deployments,
-+	  and so this only needs to be enabled when interoperability with
-+	  existing encrypted volumes of filesystems is required, or when
-+	  building for a particular system that requires it (e.g., when
-+	  the SoC in question has accelerated CBC but not XTS, making CBC
-+	  combined with ESSIV the only feasible mode for h/w accelerated
-+	  block encryption)
-+
- comment "Hash modes"
+ /* Encrypt or decrypt a single filesystem block of file contents */
+@@ -523,8 +520,6 @@ static void __exit fscrypt_exit(void)
+ 		destroy_workqueue(fscrypt_read_workqueue);
+ 	kmem_cache_destroy(fscrypt_ctx_cachep);
+ 	kmem_cache_destroy(fscrypt_info_cachep);
+-
+-	fscrypt_essiv_cleanup();
+ }
+ module_exit(fscrypt_exit);
  
- config CRYPTO_CMAC
-diff --git a/crypto/Makefile b/crypto/Makefile
-index cfcc954e59f9..c204029f21ab 100644
---- a/crypto/Makefile
-+++ b/crypto/Makefile
-@@ -145,6 +145,7 @@ obj-$(CONFIG_CRYPTO_USER_API_AEAD) += algif_aead.o
- obj-$(CONFIG_CRYPTO_ZSTD) += zstd.o
- obj-$(CONFIG_CRYPTO_OFB) += ofb.o
- obj-$(CONFIG_CRYPTO_ECC) += ecc.o
-+obj-$(CONFIG_CRYPTO_ESSIV) += essiv.o
+diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+index 8978eec9d766..2fc6f0bd2d13 100644
+--- a/fs/crypto/fscrypt_private.h
++++ b/fs/crypto/fscrypt_private.h
+@@ -61,12 +61,6 @@ struct fscrypt_info {
+ 	/* The actual crypto transform used for encryption and decryption */
+ 	struct crypto_skcipher *ci_ctfm;
  
- ecdh_generic-y += ecdh.o
- ecdh_generic-y += ecdh_helper.o
-diff --git a/crypto/essiv.c b/crypto/essiv.c
-new file mode 100644
-index 000000000000..82a6736b36e5
---- /dev/null
-+++ b/crypto/essiv.c
-@@ -0,0 +1,665 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * ESSIV skcipher and aead template for block encryption
-+ *
-+ * This template encapsulates the ESSIV IV generation algorithm used by
-+ * dm-crypt and fscrypt, which converts the initial vector for the skcipher
-+ * used for block encryption, by encrypting it using the hash of the
-+ * skcipher key as encryption key. Usually, the input IV is a 64-bit sector
-+ * number in LE representation zero-padded to the size of the IV, but this
-+ * is not assumed by this driver.
-+ *
-+ * The typical use of this template is to instantiate the skcipher
-+ * 'essiv(cbc(aes),sha256)', which is the only instantiation used by
-+ * fscrypt, and the most relevant one for dm-crypt. However, dm-crypt
-+ * also permits ESSIV to be used in combination with the authenc template,
-+ * e.g., 'essiv(authenc(hmac(sha256),cbc(aes)),sha256)', in which case
-+ * we need to instantiate an aead that accepts the same special key format
-+ * as the authenc template, and deals with the way the encrypted IV is
-+ * embedded into the AAD area of the aead request. This means the AEAD
-+ * flavor produced by this template is tightly coupled to the way dm-crypt
-+ * happens to use it.
-+ *
-+ * Copyright (c) 2019 Linaro, Ltd. <ard.biesheuvel@linaro.org>
-+ *
-+ * Heavily based on:
-+ * adiantum length-preserving encryption mode
-+ *
-+ * Copyright 2018 Google LLC
-+ */
-+
-+#include <crypto/authenc.h>
-+#include <crypto/internal/aead.h>
-+#include <crypto/internal/hash.h>
-+#include <crypto/internal/skcipher.h>
-+#include <crypto/scatterwalk.h>
-+#include <linux/module.h>
-+
-+#include "internal.h"
-+
-+struct essiv_instance_ctx {
-+	union {
-+		struct crypto_skcipher_spawn	skcipher_spawn;
-+		struct crypto_aead_spawn	aead_spawn;
-+	} u;
-+	struct crypto_spawn			essiv_cipher_spawn;
-+	struct crypto_shash_spawn		hash_spawn;
-+};
-+
-+struct essiv_tfm_ctx {
-+	union {
-+		struct crypto_skcipher	*skcipher;
-+		struct crypto_aead	*aead;
-+	} u;
-+	struct crypto_cipher		*essiv_cipher;
-+	struct crypto_shash		*hash;
-+	int				ivoffset;
-+};
-+
-+struct essiv_aead_request_ctx {
-+	struct scatterlist		sg[4];
-+	u8				*assoc;
-+	struct aead_request		aead_req;
-+};
-+
-+static int essiv_skcipher_setkey(struct crypto_skcipher *tfm,
-+				 const u8 *key, unsigned int keylen)
-+{
-+	struct essiv_tfm_ctx *tctx = crypto_skcipher_ctx(tfm);
-+	SHASH_DESC_ON_STACK(desc, tctx->hash);
-+	u8 salt[HASH_MAX_DIGESTSIZE];
-+	int err;
-+
-+	crypto_skcipher_clear_flags(tctx->u.skcipher, CRYPTO_TFM_REQ_MASK);
-+	crypto_skcipher_set_flags(tctx->u.skcipher,
-+				  crypto_skcipher_get_flags(tfm) &
-+				  CRYPTO_TFM_REQ_MASK);
-+	err = crypto_skcipher_setkey(tctx->u.skcipher, key, keylen);
-+	crypto_skcipher_set_flags(tfm,
-+				  crypto_skcipher_get_flags(tctx->u.skcipher) &
-+				  CRYPTO_TFM_RES_MASK);
-+	if (err)
-+		return err;
-+
-+	desc->tfm = tctx->hash;
-+	err = crypto_shash_digest(desc, key, keylen, salt);
-+	if (err)
-+		return err;
-+
-+	crypto_cipher_clear_flags(tctx->essiv_cipher, CRYPTO_TFM_REQ_MASK);
-+	crypto_cipher_set_flags(tctx->essiv_cipher,
-+				crypto_skcipher_get_flags(tfm) &
-+				CRYPTO_TFM_REQ_MASK);
-+	err = crypto_cipher_setkey(tctx->essiv_cipher, salt,
-+				   crypto_shash_digestsize(tctx->hash));
-+	crypto_skcipher_set_flags(tfm,
-+				  crypto_cipher_get_flags(tctx->essiv_cipher) &
-+				  CRYPTO_TFM_RES_MASK);
-+
-+	return err;
-+}
-+
-+static int essiv_aead_setkey(struct crypto_aead *tfm, const u8 *key,
-+			     unsigned int keylen)
-+{
-+	struct essiv_tfm_ctx *tctx = crypto_aead_ctx(tfm);
-+	SHASH_DESC_ON_STACK(desc, tctx->hash);
-+	struct crypto_authenc_keys keys;
-+	u8 salt[HASH_MAX_DIGESTSIZE];
-+	int err;
-+
-+	crypto_aead_clear_flags(tctx->u.aead, CRYPTO_TFM_REQ_MASK);
-+	crypto_aead_set_flags(tctx->u.aead, crypto_aead_get_flags(tfm) &
-+					    CRYPTO_TFM_REQ_MASK);
-+	err = crypto_aead_setkey(tctx->u.aead, key, keylen);
-+	crypto_aead_set_flags(tfm, crypto_aead_get_flags(tctx->u.aead) &
-+				   CRYPTO_TFM_RES_MASK);
-+	if (err)
-+		return err;
-+
-+	if (crypto_authenc_extractkeys(&keys, key, keylen) != 0) {
-+		crypto_aead_set_flags(tfm, CRYPTO_TFM_RES_BAD_KEY_LEN);
-+		return -EINVAL;
-+	}
-+
-+	desc->tfm = tctx->hash;
-+	err = crypto_shash_init(desc) ?:
-+	      crypto_shash_update(desc, keys.enckey, keys.enckeylen) ?:
-+	      crypto_shash_finup(desc, keys.authkey, keys.authkeylen, salt);
-+	if (err)
-+		return err;
-+
-+	crypto_cipher_clear_flags(tctx->essiv_cipher, CRYPTO_TFM_REQ_MASK);
-+	crypto_cipher_set_flags(tctx->essiv_cipher, crypto_aead_get_flags(tfm) &
-+						    CRYPTO_TFM_REQ_MASK);
-+	err = crypto_cipher_setkey(tctx->essiv_cipher, salt,
-+				   crypto_shash_digestsize(tctx->hash));
-+	crypto_aead_set_flags(tfm, crypto_cipher_get_flags(tctx->essiv_cipher) &
-+				   CRYPTO_TFM_RES_MASK);
-+
-+	return err;
-+}
-+
-+static int essiv_aead_setauthsize(struct crypto_aead *tfm,
-+				  unsigned int authsize)
-+{
-+	struct essiv_tfm_ctx *tctx = crypto_aead_ctx(tfm);
-+
-+	return crypto_aead_setauthsize(tctx->u.aead, authsize);
-+}
-+
-+static void essiv_skcipher_done(struct crypto_async_request *areq, int err)
-+{
-+	struct skcipher_request *req = areq->data;
-+
-+	skcipher_request_complete(req, err);
-+}
-+
-+static int essiv_skcipher_crypt(struct skcipher_request *req, bool enc)
-+{
-+	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
-+	const struct essiv_tfm_ctx *tctx = crypto_skcipher_ctx(tfm);
-+	struct skcipher_request *subreq = skcipher_request_ctx(req);
-+
-+	crypto_cipher_encrypt_one(tctx->essiv_cipher, req->iv, req->iv);
-+
-+	skcipher_request_set_tfm(subreq, tctx->u.skcipher);
-+	skcipher_request_set_crypt(subreq, req->src, req->dst, req->cryptlen,
-+				   req->iv);
-+	skcipher_request_set_callback(subreq, skcipher_request_flags(req),
-+				      essiv_skcipher_done, req);
-+
-+	return enc ? crypto_skcipher_encrypt(subreq) :
-+		     crypto_skcipher_decrypt(subreq);
-+}
-+
-+static int essiv_skcipher_encrypt(struct skcipher_request *req)
-+{
-+	return essiv_skcipher_crypt(req, true);
-+}
-+
-+static int essiv_skcipher_decrypt(struct skcipher_request *req)
-+{
-+	return essiv_skcipher_crypt(req, false);
-+}
-+
-+static void essiv_aead_done(struct crypto_async_request *areq, int err)
-+{
-+	struct aead_request *req = areq->data;
-+	struct essiv_aead_request_ctx *rctx = aead_request_ctx(req);
-+
-+	if (rctx->assoc)
-+		kfree(rctx->assoc);
-+	aead_request_complete(req, err);
-+}
-+
-+static int essiv_aead_crypt(struct aead_request *req, bool enc)
-+{
-+	struct crypto_aead *tfm = crypto_aead_reqtfm(req);
-+	const struct essiv_tfm_ctx *tctx = crypto_aead_ctx(tfm);
-+	struct essiv_aead_request_ctx *rctx = aead_request_ctx(req);
-+	struct aead_request *subreq = &rctx->aead_req;
-+	struct scatterlist *src = req->src;
-+	int err;
-+
-+	crypto_cipher_encrypt_one(tctx->essiv_cipher, req->iv, req->iv);
-+
-+	/*
-+	 * dm-crypt embeds the sector number and the IV in the AAD region, so
-+	 * we have to copy the converted IV into the right scatterlist before
-+	 * we pass it on.
-+	 */
-+	rctx->assoc = NULL;
-+	if (req->src == req->dst || !enc) {
-+		scatterwalk_map_and_copy(req->iv, req->dst,
-+					 req->assoclen - crypto_aead_ivsize(tfm),
-+					 crypto_aead_ivsize(tfm), 1);
-+	} else {
-+		u8 *iv = (u8 *)aead_request_ctx(req) + tctx->ivoffset;
-+		int ivsize = crypto_aead_ivsize(tfm);
-+		int ssize = req->assoclen - ivsize;
-+		struct scatterlist *sg;
-+		int nents;
-+
-+		if (ssize < 0)
-+			return -EINVAL;
-+
-+		nents = sg_nents_for_len(req->src, ssize);
-+		if (nents < 0)
-+			return -EINVAL;
-+
-+		memcpy(iv, req->iv, ivsize);
-+		sg_init_table(rctx->sg, 4);
-+
-+		if (unlikely(nents > 1)) {
-+			/*
-+			 * This is a case that rarely occurs in practice, but
-+			 * for correctness, we have to deal with it nonetheless.
-+			 */
-+			rctx->assoc = kmalloc(ssize, GFP_ATOMIC);
-+			if (!rctx->assoc)
-+				return -ENOMEM;
-+
-+			scatterwalk_map_and_copy(rctx->assoc, req->src, 0,
-+						 ssize, 0);
-+			sg_set_buf(rctx->sg, rctx->assoc, ssize);
-+		} else {
-+			sg_set_page(rctx->sg, sg_page(req->src), ssize,
-+				    req->src->offset);
-+		}
-+
-+		sg_set_buf(rctx->sg + 1, iv, ivsize);
-+		sg = scatterwalk_ffwd(rctx->sg + 2, req->src, req->assoclen);
-+		if (sg != rctx->sg + 2)
-+			sg_chain(rctx->sg, 3, sg);
-+
-+		src = rctx->sg;
-+	}
-+
-+	aead_request_set_tfm(subreq, tctx->u.aead);
-+	aead_request_set_ad(subreq, req->assoclen);
-+	aead_request_set_callback(subreq, aead_request_flags(req),
-+				  essiv_aead_done, req);
-+	aead_request_set_crypt(subreq, src, req->dst, req->cryptlen, req->iv);
-+
-+	err = enc ? crypto_aead_encrypt(subreq) :
-+		    crypto_aead_decrypt(subreq);
-+
-+	if (rctx->assoc && err != -EINPROGRESS)
-+		kfree(rctx->assoc);
-+	return err;
-+}
-+
-+static int essiv_aead_encrypt(struct aead_request *req)
-+{
-+	return essiv_aead_crypt(req, true);
-+}
-+
-+static int essiv_aead_decrypt(struct aead_request *req)
-+{
-+	return essiv_aead_crypt(req, false);
-+}
-+
-+static int essiv_init_tfm(struct essiv_instance_ctx *ictx,
-+			  struct essiv_tfm_ctx *tctx)
-+{
-+	struct crypto_cipher *essiv_cipher;
-+	struct crypto_shash *hash;
-+	int err;
-+
-+	essiv_cipher = crypto_spawn_cipher(&ictx->essiv_cipher_spawn);
-+	if (IS_ERR(essiv_cipher))
-+		return PTR_ERR(essiv_cipher);
-+
-+	hash = crypto_spawn_shash(&ictx->hash_spawn);
-+	if (IS_ERR(hash)) {
-+		err = PTR_ERR(hash);
-+		goto err_free_essiv_cipher;
-+	}
-+
-+	tctx->essiv_cipher = essiv_cipher;
-+	tctx->hash = hash;
-+
-+	return 0;
-+
-+err_free_essiv_cipher:
-+	crypto_free_cipher(essiv_cipher);
-+	return err;
-+}
-+
-+static int essiv_skcipher_init_tfm(struct crypto_skcipher *tfm)
-+{
-+	struct skcipher_instance *inst = skcipher_alg_instance(tfm);
-+	struct essiv_instance_ctx *ictx = skcipher_instance_ctx(inst);
-+	struct essiv_tfm_ctx *tctx = crypto_skcipher_ctx(tfm);
-+	struct crypto_skcipher *skcipher;
-+	int err;
-+
-+	skcipher = crypto_spawn_skcipher(&ictx->u.skcipher_spawn);
-+	if (IS_ERR(skcipher))
-+		return PTR_ERR(skcipher);
-+
-+	crypto_skcipher_set_reqsize(tfm, sizeof(struct skcipher_request) +
-+				         crypto_skcipher_reqsize(skcipher));
-+
-+	err = essiv_init_tfm(ictx, tctx);
-+	if (err) {
-+		crypto_free_skcipher(skcipher);
-+		return err;
-+	}
-+
-+	tctx->u.skcipher = skcipher;
-+	return 0;
-+}
-+
-+static int essiv_aead_init_tfm(struct crypto_aead *tfm)
-+{
-+	struct aead_instance *inst = aead_alg_instance(tfm);
-+	struct essiv_instance_ctx *ictx = aead_instance_ctx(inst);
-+	struct essiv_tfm_ctx *tctx = crypto_aead_ctx(tfm);
-+	struct crypto_aead *aead;
-+	unsigned int subreq_size;
-+	int err;
-+
-+	BUILD_BUG_ON(offsetofend(struct essiv_aead_request_ctx, aead_req) !=
-+		     sizeof(struct essiv_aead_request_ctx));
-+
-+	aead = crypto_spawn_aead(&ictx->u.aead_spawn);
-+	if (IS_ERR(aead))
-+		return PTR_ERR(aead);
-+
-+	subreq_size = FIELD_SIZEOF(struct essiv_aead_request_ctx, aead_req) +
-+		      crypto_aead_reqsize(aead);
-+
-+	tctx->ivoffset = offsetof(struct essiv_aead_request_ctx, aead_req) +
-+			 subreq_size;
-+	crypto_aead_set_reqsize(tfm, tctx->ivoffset + crypto_aead_ivsize(aead));
-+
-+	err = essiv_init_tfm(ictx, tctx);
-+	if (err) {
-+		crypto_free_aead(aead);
-+		return err;
-+	}
-+
-+	tctx->u.aead = aead;
-+	return 0;
-+}
-+
-+static void essiv_skcipher_exit_tfm(struct crypto_skcipher *tfm)
-+{
-+	struct essiv_tfm_ctx *tctx = crypto_skcipher_ctx(tfm);
-+
-+	crypto_free_skcipher(tctx->u.skcipher);
-+	crypto_free_cipher(tctx->essiv_cipher);
-+	crypto_free_shash(tctx->hash);
-+}
-+
-+static void essiv_aead_exit_tfm(struct crypto_aead *tfm)
-+{
-+	struct essiv_tfm_ctx *tctx = crypto_aead_ctx(tfm);
-+
-+	crypto_free_aead(tctx->u.aead);
-+	crypto_free_cipher(tctx->essiv_cipher);
-+	crypto_free_shash(tctx->hash);
-+}
-+
-+static void essiv_skcipher_free_instance(struct skcipher_instance *inst)
-+{
-+	struct essiv_instance_ctx *ictx = skcipher_instance_ctx(inst);
-+
-+	crypto_drop_skcipher(&ictx->u.skcipher_spawn);
-+	crypto_drop_spawn(&ictx->essiv_cipher_spawn);
-+	crypto_drop_shash(&ictx->hash_spawn);
-+	kfree(inst);
-+}
-+
-+static void essiv_aead_free_instance(struct aead_instance *inst)
-+{
-+	struct essiv_instance_ctx *ictx = aead_instance_ctx(inst);
-+
-+	crypto_drop_aead(&ictx->u.aead_spawn);
-+	crypto_drop_spawn(&ictx->essiv_cipher_spawn);
-+	crypto_drop_shash(&ictx->hash_spawn);
-+	kfree(inst);
-+}
-+
-+static bool parse_cipher_name(char *essiv_cipher_name, const char *cra_name)
-+{
-+	const char *p, *q;
-+	int len;
-+
-+	/* find the last opening parens */
-+	p = strrchr(cra_name, '(');
-+	if (!p++)
-+		return false;
-+
-+	/* find the first closing parens in the tail of the string */
-+	q = strchr(p, ')');
-+	if (!q)
-+		return false;
-+
-+	len = q - p;
-+	if (len >= CRYPTO_MAX_ALG_NAME)
-+		return false;
-+
-+	memcpy(essiv_cipher_name, p, len);
-+	essiv_cipher_name[len] = '\0';
-+	return true;
-+}
-+
-+static bool essiv_supported_algorithms(struct crypto_alg *essiv_cipher_alg,
-+				       struct shash_alg *hash_alg,
-+				       int ivsize)
-+{
-+	if (hash_alg->digestsize < essiv_cipher_alg->cra_cipher.cia_min_keysize ||
-+	    hash_alg->digestsize > essiv_cipher_alg->cra_cipher.cia_max_keysize)
-+		return false;
-+
-+	if (ivsize != essiv_cipher_alg->cra_blocksize)
-+		return false;
-+
-+	if (crypto_shash_alg_has_setkey(hash_alg))
-+		return false;
-+
-+	return true;
-+}
-+
-+static int essiv_create(struct crypto_template *tmpl, struct rtattr **tb)
-+{
-+	struct crypto_attr_type *algt;
-+	const char *inner_cipher_name;
-+	const char *shash_name;
-+	char essiv_cipher_name[CRYPTO_MAX_ALG_NAME];
-+	struct skcipher_instance *skcipher_inst = NULL;
-+	struct aead_instance *aead_inst = NULL;
-+	struct crypto_instance *inst;
-+	struct crypto_alg *base, *block_base;
-+	struct essiv_instance_ctx *ictx;
-+	struct skcipher_alg *skcipher_alg = NULL;
-+	struct aead_alg *aead_alg = NULL;
-+	struct crypto_alg *essiv_cipher_alg;
-+	struct crypto_alg *_hash_alg;
-+	struct shash_alg *hash_alg;
-+	int ivsize;
-+	u32 type;
-+	int err;
-+
-+	algt = crypto_get_attr_type(tb);
-+	if (IS_ERR(algt))
-+		return PTR_ERR(algt);
-+
-+	inner_cipher_name = crypto_attr_alg_name(tb[1]);
-+	if (IS_ERR(inner_cipher_name))
-+		return PTR_ERR(inner_cipher_name);
-+
-+	shash_name = crypto_attr_alg_name(tb[2]);
-+	if (IS_ERR(shash_name))
-+		return PTR_ERR(shash_name);
-+
-+	type = algt->type & algt->mask;
-+
-+	switch (type) {
-+	case CRYPTO_ALG_TYPE_BLKCIPHER:
-+		skcipher_inst = kzalloc(sizeof(*skcipher_inst) +
-+					sizeof(*ictx), GFP_KERNEL);
-+		if (!skcipher_inst)
-+			return -ENOMEM;
-+		inst = skcipher_crypto_instance(skcipher_inst);
-+		base = &skcipher_inst->alg.base;
-+		ictx = crypto_instance_ctx(inst);
-+
-+		/* Block cipher, e.g. "cbc(aes)" */
-+		crypto_set_skcipher_spawn(&ictx->u.skcipher_spawn, inst);
-+		err = crypto_grab_skcipher(&ictx->u.skcipher_spawn,
-+					   inner_cipher_name, 0,
-+					   crypto_requires_sync(algt->type,
-+								algt->mask));
-+		if (err)
-+			goto out_free_inst;
-+		skcipher_alg = crypto_spawn_skcipher_alg(&ictx->u.skcipher_spawn);
-+		block_base = &skcipher_alg->base;
-+		ivsize = crypto_skcipher_alg_ivsize(skcipher_alg);
-+		break;
-+
-+	case CRYPTO_ALG_TYPE_AEAD:
-+		aead_inst = kzalloc(sizeof(*aead_inst) +
-+				    sizeof(*ictx), GFP_KERNEL);
-+		if (!aead_inst)
-+			return -ENOMEM;
-+		inst = aead_crypto_instance(aead_inst);
-+		base = &aead_inst->alg.base;
-+		ictx = crypto_instance_ctx(inst);
-+
-+		/* AEAD cipher, e.g. "authenc(hmac(sha256),cbc(aes))" */
-+		crypto_set_aead_spawn(&ictx->u.aead_spawn, inst);
-+		err = crypto_grab_aead(&ictx->u.aead_spawn,
-+				       inner_cipher_name, 0,
-+				       crypto_requires_sync(algt->type,
-+							    algt->mask));
-+		if (err)
-+			goto out_free_inst;
-+		aead_alg = crypto_spawn_aead_alg(&ictx->u.aead_spawn);
-+		block_base = &aead_alg->base;
-+		if (!strstarts(block_base->cra_name, "authenc(")) {
-+			pr_warn("Only authenc() type AEADs are supported by ESSIV\n");
-+			goto out_drop_skcipher;
-+		}
-+		ivsize = aead_alg->ivsize;
-+		break;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	if (!parse_cipher_name(essiv_cipher_name, block_base->cra_name)) {
-+		pr_warn("Failed to parse ESSIV cipher name from skcipher cra_name\n");
-+		goto out_drop_skcipher;
-+	}
-+
-+	/* Block cipher, e.g. "aes" */
-+	crypto_set_spawn(&ictx->essiv_cipher_spawn, inst);
-+	err = crypto_grab_spawn(&ictx->essiv_cipher_spawn, essiv_cipher_name,
-+				CRYPTO_ALG_TYPE_CIPHER, CRYPTO_ALG_TYPE_MASK);
-+	if (err)
-+		goto out_drop_skcipher;
-+	essiv_cipher_alg = ictx->essiv_cipher_spawn.alg;
-+
-+	/* Synchronous hash, e.g., "sha256" */
-+	_hash_alg = crypto_alg_mod_lookup(shash_name,
-+					  CRYPTO_ALG_TYPE_SHASH,
-+					  CRYPTO_ALG_TYPE_MASK);
-+	if (IS_ERR(_hash_alg)) {
-+		err = PTR_ERR(_hash_alg);
-+		goto out_drop_essiv_cipher;
-+	}
-+	hash_alg = __crypto_shash_alg(_hash_alg);
-+	err = crypto_init_shash_spawn(&ictx->hash_spawn, hash_alg, inst);
-+	if (err)
-+		goto out_put_hash;
-+
-+	/* Check the set of algorithms */
-+	if (!essiv_supported_algorithms(essiv_cipher_alg, hash_alg, ivsize)) {
-+		pr_warn("Unsupported essiv instantiation: essiv(%s,%s)\n",
-+			block_base->cra_name,
-+			hash_alg->base.cra_name);
-+		err = -EINVAL;
-+		goto out_drop_hash;
-+	}
-+
-+	/* Instance fields */
-+
-+	err = -ENAMETOOLONG;
-+	if (snprintf(base->cra_name, CRYPTO_MAX_ALG_NAME,
-+		     "essiv(%s,%s)", block_base->cra_name,
-+		     hash_alg->base.cra_name) >= CRYPTO_MAX_ALG_NAME)
-+		goto out_drop_hash;
-+	if (snprintf(base->cra_driver_name, CRYPTO_MAX_ALG_NAME,
-+		     "essiv(%s,%s)", block_base->cra_driver_name,
-+		     hash_alg->base.cra_driver_name) >= CRYPTO_MAX_ALG_NAME)
-+		goto out_drop_hash;
-+
-+	base->cra_flags		= block_base->cra_flags & CRYPTO_ALG_ASYNC;
-+	base->cra_blocksize	= block_base->cra_blocksize;
-+	base->cra_ctxsize	= sizeof(struct essiv_tfm_ctx);
-+	base->cra_alignmask	= block_base->cra_alignmask;
-+	base->cra_priority	= block_base->cra_priority;
-+
-+	if (type == CRYPTO_ALG_TYPE_BLKCIPHER) {
-+		skcipher_inst->alg.setkey	= essiv_skcipher_setkey;
-+		skcipher_inst->alg.encrypt	= essiv_skcipher_encrypt;
-+		skcipher_inst->alg.decrypt	= essiv_skcipher_decrypt;
-+		skcipher_inst->alg.init		= essiv_skcipher_init_tfm;
-+		skcipher_inst->alg.exit		= essiv_skcipher_exit_tfm;
-+
-+		skcipher_inst->alg.min_keysize	= crypto_skcipher_alg_min_keysize(skcipher_alg);
-+		skcipher_inst->alg.max_keysize	= crypto_skcipher_alg_max_keysize(skcipher_alg);
-+		skcipher_inst->alg.ivsize	= crypto_skcipher_alg_ivsize(skcipher_alg);
-+		skcipher_inst->alg.chunksize	= crypto_skcipher_alg_chunksize(skcipher_alg);
-+		skcipher_inst->alg.walksize	= crypto_skcipher_alg_walksize(skcipher_alg);
-+
-+		skcipher_inst->free		= essiv_skcipher_free_instance;
-+
-+		err = skcipher_register_instance(tmpl, skcipher_inst);
-+	} else {
-+		aead_inst->alg.setkey		= essiv_aead_setkey;
-+		aead_inst->alg.setauthsize	= essiv_aead_setauthsize;
-+		aead_inst->alg.encrypt		= essiv_aead_encrypt;
-+		aead_inst->alg.decrypt		= essiv_aead_decrypt;
-+		aead_inst->alg.init		= essiv_aead_init_tfm;
-+		aead_inst->alg.exit		= essiv_aead_exit_tfm;
-+
-+		aead_inst->alg.ivsize		= crypto_aead_alg_ivsize(aead_alg);
-+		aead_inst->alg.maxauthsize	= crypto_aead_alg_maxauthsize(aead_alg);
-+		aead_inst->alg.chunksize	= crypto_aead_alg_chunksize(aead_alg);
-+
-+		aead_inst->free			= essiv_aead_free_instance;
-+
-+		err = aead_register_instance(tmpl, aead_inst);
-+	}
-+
-+	if (err)
-+		goto out_drop_hash;
-+
-+	crypto_mod_put(_hash_alg);
-+	return 0;
-+
-+out_drop_hash:
-+	crypto_drop_shash(&ictx->hash_spawn);
-+out_put_hash:
-+	crypto_mod_put(_hash_alg);
-+out_drop_essiv_cipher:
-+	crypto_drop_spawn(&ictx->essiv_cipher_spawn);
-+out_drop_skcipher:
-+	if (type == CRYPTO_ALG_TYPE_BLKCIPHER)
-+		crypto_drop_skcipher(&ictx->u.skcipher_spawn);
+-	/*
+-	 * Cipher for ESSIV IV generation.  Only set for CBC contents
+-	 * encryption, otherwise is NULL.
+-	 */
+-	struct crypto_cipher *ci_essiv_tfm;
+-
+ 	/*
+ 	 * Encryption mode used for this inode.  It corresponds to either
+ 	 * ci_data_mode or ci_filename_mode, depending on the inode type.
+@@ -163,9 +157,6 @@ struct fscrypt_mode {
+ 	int keysize;
+ 	int ivsize;
+ 	bool logged_impl_name;
+-	bool needs_essiv;
+ };
+ 
+-extern void __exit fscrypt_essiv_cleanup(void);
+-
+ #endif /* _FSCRYPT_PRIVATE_H */
+diff --git a/fs/crypto/keyinfo.c b/fs/crypto/keyinfo.c
+index 207ebed918c1..80924a0f72ca 100644
+--- a/fs/crypto/keyinfo.c
++++ b/fs/crypto/keyinfo.c
+@@ -14,12 +14,9 @@
+ #include <linux/scatterlist.h>
+ #include <crypto/aes.h>
+ #include <crypto/algapi.h>
+-#include <crypto/sha.h>
+ #include <crypto/skcipher.h>
+ #include "fscrypt_private.h"
+ 
+-static struct crypto_shash *essiv_hash_tfm;
+-
+ /* Table of keys referenced by FS_POLICY_FLAG_DIRECT_KEY policies */
+ static DEFINE_HASHTABLE(fscrypt_master_keys, 6); /* 6 bits = 64 buckets */
+ static DEFINE_SPINLOCK(fscrypt_master_keys_lock);
+@@ -143,10 +140,9 @@ static struct fscrypt_mode available_modes[] = {
+ 	},
+ 	[FS_ENCRYPTION_MODE_AES_128_CBC] = {
+ 		.friendly_name = "AES-128-CBC",
+-		.cipher_str = "cbc(aes)",
++		.cipher_str = "essiv(cbc(aes),sha256)",
+ 		.keysize = 16,
+ 		.ivsize = 16,
+-		.needs_essiv = true,
+ 	},
+ 	[FS_ENCRYPTION_MODE_AES_128_CTS] = {
+ 		.friendly_name = "AES-128-CTS-CBC",
+@@ -376,72 +372,6 @@ fscrypt_get_master_key(const struct fscrypt_info *ci, struct fscrypt_mode *mode,
+ 	return ERR_PTR(err);
+ }
+ 
+-static int derive_essiv_salt(const u8 *key, int keysize, u8 *salt)
+-{
+-	struct crypto_shash *tfm = READ_ONCE(essiv_hash_tfm);
+-
+-	/* init hash transform on demand */
+-	if (unlikely(!tfm)) {
+-		struct crypto_shash *prev_tfm;
+-
+-		tfm = crypto_alloc_shash("sha256", 0, 0);
+-		if (IS_ERR(tfm)) {
+-			fscrypt_warn(NULL,
+-				     "error allocating SHA-256 transform: %ld",
+-				     PTR_ERR(tfm));
+-			return PTR_ERR(tfm);
+-		}
+-		prev_tfm = cmpxchg(&essiv_hash_tfm, NULL, tfm);
+-		if (prev_tfm) {
+-			crypto_free_shash(tfm);
+-			tfm = prev_tfm;
+-		}
+-	}
+-
+-	{
+-		SHASH_DESC_ON_STACK(desc, tfm);
+-		desc->tfm = tfm;
+-
+-		return crypto_shash_digest(desc, key, keysize, salt);
+-	}
+-}
+-
+-static int init_essiv_generator(struct fscrypt_info *ci, const u8 *raw_key,
+-				int keysize)
+-{
+-	int err;
+-	struct crypto_cipher *essiv_tfm;
+-	u8 salt[SHA256_DIGEST_SIZE];
+-
+-	essiv_tfm = crypto_alloc_cipher("aes", 0, 0);
+-	if (IS_ERR(essiv_tfm))
+-		return PTR_ERR(essiv_tfm);
+-
+-	ci->ci_essiv_tfm = essiv_tfm;
+-
+-	err = derive_essiv_salt(raw_key, keysize, salt);
+-	if (err)
+-		goto out;
+-
+-	/*
+-	 * Using SHA256 to derive the salt/key will result in AES-256 being
+-	 * used for IV generation. File contents encryption will still use the
+-	 * configured keysize (AES-128) nevertheless.
+-	 */
+-	err = crypto_cipher_setkey(essiv_tfm, salt, sizeof(salt));
+-	if (err)
+-		goto out;
+-
+-out:
+-	memzero_explicit(salt, sizeof(salt));
+-	return err;
+-}
+-
+-void __exit fscrypt_essiv_cleanup(void)
+-{
+-	crypto_free_shash(essiv_hash_tfm);
+-}
+-
+ /*
+  * Given the encryption mode and key (normally the derived key, but for
+  * FS_POLICY_FLAG_DIRECT_KEY mode it's the master key), set up the inode's
+@@ -453,7 +383,6 @@ static int setup_crypto_transform(struct fscrypt_info *ci,
+ {
+ 	struct fscrypt_master_key *mk;
+ 	struct crypto_skcipher *ctfm;
+-	int err;
+ 
+ 	if (ci->ci_flags & FS_POLICY_FLAG_DIRECT_KEY) {
+ 		mk = fscrypt_get_master_key(ci, mode, raw_key, inode);
+@@ -469,19 +398,6 @@ static int setup_crypto_transform(struct fscrypt_info *ci,
+ 	ci->ci_master_key = mk;
+ 	ci->ci_ctfm = ctfm;
+ 
+-	if (mode->needs_essiv) {
+-		/* ESSIV implies 16-byte IVs which implies !DIRECT_KEY */
+-		WARN_ON(mode->ivsize != AES_BLOCK_SIZE);
+-		WARN_ON(ci->ci_flags & FS_POLICY_FLAG_DIRECT_KEY);
+-
+-		err = init_essiv_generator(ci, raw_key, mode->keysize);
+-		if (err) {
+-			fscrypt_warn(inode->i_sb,
+-				     "error initializing ESSIV generator for inode %lu: %d",
+-				     inode->i_ino, err);
+-			return err;
+-		}
+-	}
+ 	return 0;
+ }
+ 
+@@ -490,12 +406,10 @@ static void put_crypt_info(struct fscrypt_info *ci)
+ 	if (!ci)
+ 		return;
+ 
+-	if (ci->ci_master_key) {
++	if (ci->ci_master_key)
+ 		put_master_key(ci->ci_master_key);
+-	} else {
 +	else
-+		crypto_drop_aead(&ictx->u.aead_spawn);
-+out_free_inst:
-+	kfree(skcipher_inst);
-+	kfree(aead_inst);
-+	return err;
-+}
-+
-+/* essiv(cipher_name, shash_name) */
-+static struct crypto_template essiv_tmpl = {
-+	.name	= "essiv",
-+	.create	= essiv_create,
-+	.module	= THIS_MODULE,
-+};
-+
-+static int __init essiv_module_init(void)
-+{
-+	return crypto_register_template(&essiv_tmpl);
-+}
-+
-+static void __exit essiv_module_exit(void)
-+{
-+	crypto_unregister_template(&essiv_tmpl);
-+}
-+
-+subsys_initcall(essiv_module_init);
-+module_exit(essiv_module_exit);
-+
-+MODULE_DESCRIPTION("ESSIV skcipher/aead wrapper for block encryption");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS_CRYPTO("essiv");
+ 		crypto_free_skcipher(ci->ci_ctfm);
+-		crypto_free_cipher(ci->ci_essiv_tfm);
+-	}
+ 	kmem_cache_free(fscrypt_info_cachep, ci);
+ }
+ 
 -- 
 2.17.1
 
