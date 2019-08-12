@@ -2,98 +2,78 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B7D689845
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 12 Aug 2019 09:50:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9C4989E3A
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 12 Aug 2019 14:26:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726920AbfHLHuc (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 12 Aug 2019 03:50:32 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:38360 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726590AbfHLHuc (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 12 Aug 2019 03:50:32 -0400
-Received: by mail-wm1-f68.google.com with SMTP id m125so6829211wmm.3
-        for <linux-fscrypt@vger.kernel.org>; Mon, 12 Aug 2019 00:50:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=P3fUIo7bf1pVPngPlyIX37AdYP0H8U4V2yGXzc3Q8PU=;
-        b=oTfqh5iRHusnTRpAqy4qvCs8UwHzoKalNbqMK/GjgIboOgPnfdXRyXnph+Q37L7hc6
-         5L8nRT1ZtexlBg+WQw5KrY1H+fYbgWjHqv9QL8Vg2kzsKzb2kYJPeOT2RZz4GFhzthnj
-         2hKX6j7vrWopkZGcewExFiAeKafnl/M8gLPo2ku/KWuX0IG7cSgEIYJa41kqEKSwa/R7
-         UDQ/J9fuH6hoNIYy7Gls/PJ2v3y7+aDjRhmBQwjqLNz29KSh+BgPUiiNdg1RIDJxB5E7
-         NiNuN5ngcwxOe+en/TyM5rgehfOAJa54oo+rSMScntSkZDQfPLq1mJt0haiJX1v4UCm0
-         obCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=P3fUIo7bf1pVPngPlyIX37AdYP0H8U4V2yGXzc3Q8PU=;
-        b=d5ne9c/BEsQTFfMb2qfJCwR+Ec9ID062bqf8kyvq3J5S636Cuuubr93tmMlcWj5UdJ
-         U4lXbFamNeylXORmxvNxdgIO4Rf8r4NDMIfEpctk6Xe/GLcHIgICdfEDcUqdnoRulH1W
-         XWkoe3crc0oi8k21GH3997cePhKt0tBQxRDD8pBX76z5KWpoGDNbESIhcv+Ak/yFaw8a
-         3lH3uHA8qwtYEqMv2/D3EWFk/zPtB3wnb/tommSnr36TGAsLmxc35WV0l2Cal004PVyS
-         kNUC9mzuGDnt742p4fWvk4RoRFo/LDe4qNcW+394a8KBZ0CwlLElhlOadr+t5kchVKam
-         c14g==
-X-Gm-Message-State: APjAAAWyCyEQh2KrCNIEe0GRMYTA2pGph9i92XNJKUtwUSerfRMhalga
-        a4r1PjW9+Xm12ioEMXT+gf9sajlUp5iuItERYMMfuQ==
-X-Google-Smtp-Source: APXvYqwgX4GSGhKVfxz1Y7uXiz3RKDX4LiVGl3zj4caTjar5UkkOQnpMqABzSOE6jltHT5IOZsjPe+lkzp++qlubqQ4=
-X-Received: by 2002:a7b:cb8e:: with SMTP id m14mr5924657wmi.10.1565596229982;
- Mon, 12 Aug 2019 00:50:29 -0700 (PDT)
+        id S1728417AbfHLMZj (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 12 Aug 2019 08:25:39 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:4661 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728389AbfHLMZi (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 12 Aug 2019 08:25:38 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 270DCE2238499EAB75AB;
+        Mon, 12 Aug 2019 20:25:37 +0800 (CST)
+Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server (TLS) id 14.3.439.0; Mon, 12 Aug
+ 2019 20:25:32 +0800
+Subject: Re: [PATCH 3/6] f2fs: skip truncate when verity in progress in
+ ->write_begin()
+To:     Eric Biggers <ebiggers@kernel.org>, <linux-fscrypt@vger.kernel.org>
+CC:     <linux-ext4@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+References: <20190811213557.1970-1-ebiggers@kernel.org>
+ <20190811213557.1970-4-ebiggers@kernel.org>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <e5d57ee4-f022-12ca-7f09-e4b8ef86c6b6@huawei.com>
+Date:   Mon, 12 Aug 2019 20:25:33 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-References: <20190810094053.7423-1-ard.biesheuvel@linaro.org>
- <20190810094053.7423-4-ard.biesheuvel@linaro.org> <8679d2f5-b005-cd89-957e-d79440b78086@gmail.com>
- <CAKv+Gu-ZPPR5xQSR6T4o+8yJvsHY2a3xXZ5zsM_aGS3frVChgQ@mail.gmail.com> <82a87cae-8eb7-828c-35c3-fb39a9abe692@gmail.com>
-In-Reply-To: <82a87cae-8eb7-828c-35c3-fb39a9abe692@gmail.com>
-From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Date:   Mon, 12 Aug 2019 10:50:18 +0300
-Message-ID: <CAKv+Gu_d+3NsTKFZbS+xeuxf5uCz=ENmPX-a=s-2kgLrW4d7cQ@mail.gmail.com>
-Subject: Re: [PATCH v9 3/7] md: dm-crypt: switch to ESSIV crypto API template
-To:     Milan Broz <gmazyland@gmail.com>
-Cc:     "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Eric Biggers <ebiggers@google.com>,
-        device-mapper development <dm-devel@redhat.com>,
-        linux-fscrypt@vger.kernel.org,
-        Gilad Ben-Yossef <gilad@benyossef.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20190811213557.1970-4-ebiggers@kernel.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.134.22.195]
+X-CFilter-Loop: Reflected
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, 12 Aug 2019 at 10:44, Milan Broz <gmazyland@gmail.com> wrote:
->
-> On 12/08/2019 08:54, Ard Biesheuvel wrote:
-> > On Mon, 12 Aug 2019 at 09:33, Milan Broz <gmazyland@gmail.com> wrote:
-> >> Try for example
-> >> # cryptsetup luksFormat /dev/sdc -c aes-cbc-essiv:sha256 --integrity hmac-sha256 -q -i1
-> >>
-> >> It should produce Crypto API string
-> >>   authenc(hmac(sha256),essiv(cbc(aes),sha256))
-> >> while it produces
-> >>   essiv(authenc(hmac(sha256),cbc(aes)),sha256)
-> >> (and fails).
-> >>
-> >
-> > No. I don't know why it fails, but the latter is actually the correct
-> > string. The essiv template is instantiated either as a skcipher or as
-> > an aead, and it encapsulates the entire transformation. (This is
-> > necessary considering that the IV is passed via the AAD and so the
-> > ESSIV handling needs to touch that as well)
->
-> Hm. Constructing these strings seems to be more confusing than dmcrypt mode combinations :-)
->
-> But you are right, I actually tried the former string (authenc(hmac(sha256),essiv(cbc(aes),sha256)))
-> and it worked, but I guess the authenticated IV (AAD) was actually the input to IV (plain sector number)
-> not the output of ESSIV? Do I understand it correctly now?
->
+Hi Eric,
 
-Indeed. The former string instantiates the skcipher version of the
-ESSIV template, and so the AAD handling is omitted, and we end up
-using the plain IV in the authentication rather than the encrypted IV.
+On 2019/8/12 5:35, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> When an error (e.g. ENOSPC) occurs during f2fs_write_begin() when called
+> from f2fs_write_merkle_tree_block(), skip truncating the file.  i_size
+> is not meaningful in this case, and the truncation is handled by
+> f2fs_end_enable_verity() instead.
+> 
+> Fixes: 60d7bf0f790f ("f2fs: add fs-verity support")
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+>  fs/f2fs/data.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> index 3f525f8a3a5fa..00b03fb87bd9b 100644
+> --- a/fs/f2fs/data.c
+> +++ b/fs/f2fs/data.c
+> @@ -2476,7 +2476,7 @@ static void f2fs_write_failed(struct address_space *mapping, loff_t to)
+>  	struct inode *inode = mapping->host;
+>  	loff_t i_size = i_size_read(inode);
+>  
+> -	if (to > i_size) {
 
-So when using the latter string, does it produce any error messages
-when it fails?
+Maybe adding one single line comment to mention that it's redundant/unnecessary
+truncation here is better, if I didn't misunderstand this.
+
+Thanks,
+
+> +	if (to > i_size && !f2fs_verity_in_progress(inode)) {
+>  		down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+>  		down_write(&F2FS_I(inode)->i_mmap_sem);
+>  
+> 
