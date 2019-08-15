@@ -2,185 +2,114 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6266A8F064
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 15 Aug 2019 18:25:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C60B38F28C
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 15 Aug 2019 19:46:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730946AbfHOQZA (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 15 Aug 2019 12:25:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57506 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729274AbfHOQZA (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 15 Aug 2019 12:25:00 -0400
-Received: from gmail.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C05592054F;
-        Thu, 15 Aug 2019 16:24:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1565886299;
-        bh=I188dpbNjLGmndlSD4bRDfP376qevXDAa/AtoYvaUBI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fDXrqwN1OExqg6onXLE93rGVXEo0iXvtZb9GPjYzrbemKjODbuCKJCgFmCbjRkA2x
-         i6CNb5OsThuiWBuHXwfvbGiey9I/47CkLj9ou4Or5Oi6bkG/ThIUuzHeNmGV6w9Ye4
-         wwqwrG/WyrbuRys4Y6GpYFspGmb/JBluf+OGc89Y=
-Date:   Thu, 15 Aug 2019 09:24:58 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-fscrypt@vger.kernel.org, linux-next@vger.kernel.org,
-        keyrings@vger.kernel.org
-Subject: Re: Merge resolution for fscrypt and keyrings trees
-Message-ID: <20190815162456.GA121345@gmail.com>
-Mail-Followup-To: David Howells <dhowells@redhat.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-fscrypt@vger.kernel.org, linux-next@vger.kernel.org,
-        keyrings@vger.kernel.org
-References: <20190814222822.GA101319@gmail.com>
- <12089.1565876240@warthog.procyon.org.uk>
+        id S1729901AbfHORqf (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 15 Aug 2019 13:46:35 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:35343 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730248AbfHORqe (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 15 Aug 2019 13:46:34 -0400
+Received: by mail-wr1-f67.google.com with SMTP id k2so2957720wrq.2
+        for <linux-fscrypt@vger.kernel.org>; Thu, 15 Aug 2019 10:46:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hYNKyNDEVZaSn3KKU5nVN59Ch0APFsTcvR6fvX99Bx4=;
+        b=zSc8i1ypbaWLdawvBpPJamGyioGgXkw4qE2S4xlu//+y7XHfmkYpBAWMiqgxswdXnT
+         2Kbfqp7macugCIm2p0D3m8IR1/f/Xo7txfxoxUzpPVH9s2sUfzUibBFsgUZa/cq+b++j
+         IkGa7fJqNQFnokMj/UTRlUTDsC5o8OCJij7bpBFg1XajnkkC8Noym1U5oVmhRX+Fmz95
+         kgYaqoi0zEc0LZFqbK6Xk8XLgBOD6IpQgBTNGllnJ1SW++MYBRikQDBjavNXifJJkFSh
+         I7h/rPVxmsHPi992yiHoHK9t7r5H1urmjbDXNz1JRsxI77xKSGeO2h32kgPSvYx1XNzn
+         vwDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hYNKyNDEVZaSn3KKU5nVN59Ch0APFsTcvR6fvX99Bx4=;
+        b=IYvUZLH0LPYFGQccxwl0+d2d1z5tyXDfsFg3s1QmZTFIB2fK8tCehGph9fdRxrinfY
+         Mcnpjp7NQGQ55hvpqOJQi/51tLnCNoWXkw1Cs4JpSo5fPWOAAum2sJjmxXTpZUlE8VPz
+         xopf0FdavQz7CS8W1HfuuTe/hdCklFgoZTgRKXdz7xxt/AfJJdfAzr3hyW1OOgvUXwbH
+         lFeRlQpADhg5wiUXkXd7rmpNHL70KeslFt9NjF8pdje8Sp6UI6M0VK+gsR2gAky1GuPM
+         0K7zHZnNUT/JsOd3FshSIprU1AF7DH/awojEPcpdSZqlf535WHfHOhSr3d9F2mgJEQ1I
+         ALag==
+X-Gm-Message-State: APjAAAXB/KnUrb+wKtMwU8xW519x8KrAKhlPzX5jiT8Km+DC3o+d3ob/
+        ph++CA+Sedrwi5oxOsLMl7iSR1BrQ1PGit+uzqHtYw==
+X-Google-Smtp-Source: APXvYqyQgpk/VC0fEjSazze6ItoFVCjI/DkEOxBShq9LIPJT1ACJ9jFU5KOvmph9m5hLW3UbL54QtU/RwDF2CkyQcVA=
+X-Received: by 2002:adf:9e09:: with SMTP id u9mr6695965wre.169.1565891192633;
+ Thu, 15 Aug 2019 10:46:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <12089.1565876240@warthog.procyon.org.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20190814163746.3525-1-ard.biesheuvel@linaro.org>
+ <20190814163746.3525-2-ard.biesheuvel@linaro.org> <20190815023734.GB23782@gondor.apana.org.au>
+ <CAKv+Gu_maif=kZk-HRMx7pP=ths1vuTgcu4kFpzz0tCkO2+DFA@mail.gmail.com>
+ <20190815051320.GA24982@gondor.apana.org.au> <CAKv+Gu_OVUfXW6t+j1RHA4_Uc43o50Sspke2KkVw9djbFDd04g@mail.gmail.com>
+ <20190815113548.GA27723@gondor.apana.org.au>
+In-Reply-To: <20190815113548.GA27723@gondor.apana.org.au>
+From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Date:   Thu, 15 Aug 2019 20:46:21 +0300
+Message-ID: <CAKv+Gu9Yx3Jk_ikZC1GrR8rR1zV_5CzkXv5NntXnLYim2n+R9g@mail.gmail.com>
+Subject: Re: [PATCH v11 1/4] crypto: essiv - create wrapper template for ESSIV generation
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>, Eric Biggers <ebiggers@google.com>,
+        device-mapper development <dm-devel@redhat.com>,
+        linux-fscrypt@vger.kernel.org,
+        Gilad Ben-Yossef <gilad@benyossef.com>,
+        Milan Broz <gmazyland@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hi David,
+On Thu, 15 Aug 2019 at 14:35, Herbert Xu <herbert@gondor.apana.org.au> wrote:
+>
+> On Thu, Aug 15, 2019 at 08:15:29AM +0300, Ard Biesheuvel wrote:
+> >
+> > So what about checking that the cipher key size matches the shash
+> > digest size, or that the cipher block size matches the skcipher IV
+> > size? This all moves to the TFM init function?
+>
+> I don't think you need to check those things.  If the shash produces
+> an incorrect key size the setkey will just fail naturally.  As to
+> the block size matching the IV size, in the kernel it's not actually
+> possible to get an underlying cipher with different block size
+> than the cbc mode that you used to derive it.
+>
 
-On Thu, Aug 15, 2019 at 02:37:20PM +0100, David Howells wrote:
-> Eric Biggers <ebiggers@kernel.org> wrote:
-> 
-> > +static struct key_acl fscrypt_keyring_acl = {
-> > +	.usage = REFCOUNT_INIT(1),
-> > +	.nr_ace	= 2,
-> > +	.aces = {
-> > +		KEY_POSSESSOR_ACE(KEY_ACE_SEARCH | KEY_ACE_INVAL |
-> > +				  KEY_ACE_JOIN),
-> > +		KEY_OWNER_ACE(KEY_ACE_SEARCH | KEY_ACE_INVAL | KEY_ACE_JOIN |
-> > +			      KEY_ACE_READ | KEY_ACE_VIEW),
-> > +	}
-> > +};
-> 
-> Does you really want JOIN permission for these keyrings?  Are you permitting
-> them to be used with KEYCTL_JOIN_SESSION_KEYRING?  Do you also want INVAL for
-> the keyring rather than just the keys it contains?  Would CLEAR be more
-> appropriate?
+dm-crypt permits any skcipher to be used with ESSIV, so the template
+does not enforce CBC to be used.
 
-I don't actually want any of JOIN, INVAL, or CLEAR on any of these keys or
-keyrings.  But it's not really appropriate to make semantic changes in a merge
-resolution; remember that pre-merge, SEARCH implied INVAL and JOIN.  Instead
-I'll remove the unneeded permissions in a separate patch later.
+> The size checks that we have in general are to stop people from
+> making crazy combinations such as lrw(des3_ede), it's not there
+> to test the correctness of a given implementation.  That is,
+> we assume that whoever provides "aes" will give it the correct
+> geometry for it.
+>
+> Sure we haven't made it explicit (which we should at some point)
+> but as it stands, it can only occur if we have a bug or someone
+> loads a malicious kernel module in which case none of this matters.
+>
 
-> 
-> > +static struct key_acl fscrypt_key_acl = {
-> > +	.usage = REFCOUNT_INIT(1),
-> > +	.nr_ace	= 2,
-> > +	.aces = {
-> > +		KEY_POSSESSOR_ACE(KEY_ACE_SEARCH | KEY_ACE_INVAL |
-> > +				  KEY_ACE_JOIN),
-> > +		KEY_OWNER_ACE(KEY_ACE_SEARCH | KEY_ACE_INVAL | KEY_ACE_JOIN |
-> > +			      KEY_ACE_VIEW),
-> > +	}
-> > +};
-> 
-> JOIN permission is useless here.  This is only used for keys of type
-> key_type_fscrypt that I can see - and those aren't keyrings and so aren't
-> joinable.
-> 
+OK.
 
-Okay, let's remove JOIN from the non-keyrings now then.  So now it's:
+> > Are there any existing templates that use this approach?
+>
+> I'm not sure of templates doing this but this is similar to fallbacks.
+> In fact we don't check any gemoetry on the fallbacks at all.
+>
 
-diff --git a/fs/crypto/keyring.c b/fs/crypto/keyring.c
-index c34fa7c61b43b0..fb4f6a44ffcd09 100644
---- a/fs/crypto/keyring.c
-+++ b/fs/crypto/keyring.c
-@@ -127,6 +127,35 @@ static struct key_type key_type_fscrypt_user = {
- 	.describe		= fscrypt_user_key_describe,
- };
- 
-+static struct key_acl fscrypt_keyring_acl = {
-+	.usage = REFCOUNT_INIT(1),
-+	.nr_ace	= 2,
-+	.aces = {
-+		KEY_POSSESSOR_ACE(KEY_ACE_SEARCH | KEY_ACE_INVAL |
-+				  KEY_ACE_JOIN),
-+		KEY_OWNER_ACE(KEY_ACE_SEARCH | KEY_ACE_INVAL | KEY_ACE_JOIN |
-+			      KEY_ACE_READ | KEY_ACE_VIEW),
-+	}
-+};
-+
-+static struct key_acl fscrypt_key_acl = {
-+	.usage = REFCOUNT_INIT(1),
-+	.nr_ace	= 2,
-+	.aces = {
-+		KEY_POSSESSOR_ACE(KEY_ACE_SEARCH | KEY_ACE_INVAL),
-+		KEY_OWNER_ACE(KEY_ACE_SEARCH | KEY_ACE_INVAL | KEY_ACE_VIEW),
-+	}
-+};
-+
-+static struct key_acl fscrypt_user_key_acl = {
-+	.usage = REFCOUNT_INIT(1),
-+	.nr_ace	= 2,
-+	.aces = {
-+		KEY_POSSESSOR_ACE(KEY_ACE_SEARCH | KEY_ACE_INVAL),
-+		KEY_OWNER_ACE(KEY_ACE_VIEW),
-+	}
-+};
-+
- /* Search ->s_master_keys or ->mk_users */
- static struct key *search_fscrypt_keyring(struct key *keyring,
- 					  struct key_type *type,
-@@ -203,8 +232,7 @@ static int allocate_filesystem_keyring(struct super_block *sb)
- 
- 	format_fs_keyring_description(description, sb);
- 	keyring = keyring_alloc(description, GLOBAL_ROOT_UID, GLOBAL_ROOT_GID,
--				current_cred(), KEY_POS_SEARCH |
--				  KEY_USR_SEARCH | KEY_USR_READ | KEY_USR_VIEW,
-+				current_cred(), &fscrypt_keyring_acl,
- 				KEY_ALLOC_NOT_IN_QUOTA, NULL, NULL);
- 	if (IS_ERR(keyring))
- 		return PTR_ERR(keyring);
-@@ -247,8 +275,7 @@ static int allocate_master_key_users_keyring(struct fscrypt_master_key *mk)
- 	format_mk_users_keyring_description(description,
- 					    mk->mk_spec.u.identifier);
- 	keyring = keyring_alloc(description, GLOBAL_ROOT_UID, GLOBAL_ROOT_GID,
--				current_cred(), KEY_POS_SEARCH |
--				  KEY_USR_SEARCH | KEY_USR_READ | KEY_USR_VIEW,
-+				current_cred(), &fscrypt_keyring_acl,
- 				KEY_ALLOC_NOT_IN_QUOTA, NULL, NULL);
- 	if (IS_ERR(keyring))
- 		return PTR_ERR(keyring);
-@@ -285,7 +312,7 @@ static int add_master_key_user(struct fscrypt_master_key *mk)
- 	format_mk_user_description(description, mk->mk_spec.u.identifier);
- 	mk_user = key_alloc(&key_type_fscrypt_user, description,
- 			    current_fsuid(), current_gid(), current_cred(),
--			    KEY_POS_SEARCH | KEY_USR_VIEW, 0, NULL);
-+			    &fscrypt_user_key_acl, 0, NULL);
- 	if (IS_ERR(mk_user))
- 		return PTR_ERR(mk_user);
- 
-@@ -357,8 +384,7 @@ static int add_new_master_key(struct fscrypt_master_key_secret *secret,
- 	format_mk_description(description, mk_spec);
- 	key = key_alloc(&key_type_fscrypt, description,
- 			GLOBAL_ROOT_UID, GLOBAL_ROOT_GID, current_cred(),
--			KEY_POS_SEARCH | KEY_USR_SEARCH | KEY_USR_VIEW,
--			KEY_ALLOC_NOT_IN_QUOTA, NULL);
-+			&fscrypt_key_acl, KEY_ALLOC_NOT_IN_QUOTA, NULL);
- 	if (IS_ERR(key)) {
- 		err = PTR_ERR(key);
- 		goto out_free_mk;
-diff --git a/fs/crypto/keysetup_v1.c b/fs/crypto/keysetup_v1.c
-index ad1a36c370c3fb..0727251be865b7 100644
---- a/fs/crypto/keysetup_v1.c
-+++ b/fs/crypto/keysetup_v1.c
-@@ -104,7 +104,7 @@ find_and_lock_process_key(const char *prefix,
- 	if (!description)
- 		return ERR_PTR(-ENOMEM);
- 
--	key = request_key(&key_type_logon, description, NULL);
-+	key = request_key(&key_type_logon, description, NULL, NULL);
- 	kfree(description);
- 	if (IS_ERR(key))
- 		return key;
+OK, so one other thing: how should I populate the cra_name template
+field if someone instantiates essiv(cbc(aes),sha256-ce)? We won't know
+until TFM init time what cra_name allocating the sha256-ce shash
+actually produces, so the only way to populate those names is to use
+the bare string supplied by the caller, which could be bogus.
+
+To me, it seems like retaining the spawn for the shash is more
+idiomatic, and avoids strange issues like the one above. Dropping the
+spawn for the encapsulated cipher (which is tightly coupled to the
+skcipher/aead being encapsulated) does seem feasible, so I'll go with
+that.
