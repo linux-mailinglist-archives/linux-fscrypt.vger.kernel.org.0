@@ -2,103 +2,60 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 538FC8E447
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 15 Aug 2019 06:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D1108E465
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 15 Aug 2019 07:13:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726437AbfHOE7r (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 15 Aug 2019 00:59:47 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:51986 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726098AbfHOE7r (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 15 Aug 2019 00:59:47 -0400
-Received: by mail-wm1-f66.google.com with SMTP id 207so259930wma.1
-        for <linux-fscrypt@vger.kernel.org>; Wed, 14 Aug 2019 21:59:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Y7r3GrsKm+2UK/xPfP/njs6YmgftMt6txBYE2dN+ouo=;
-        b=biAYEOQhtytUlyJpOiXnvcSnR1/7WJ1nuhw+ACmwN7VWYcOabJ+0N6FwIk+o7Z3R3v
-         /TEYgrwFC18O2PnT7sb7CH0ANCHfPu3fyUT4Xc/N7V4dugNfHi64+T6++WE5I/kizwdG
-         hcbcqWE06u9C2S34QcPjTlULJhF8uf1GDy5a6x3OhpYWTAofcZDvl+6Y827E3vgb6gJL
-         kchw4gC/kygPZNUJCJyTrwH+VJn0bVBQfnpgWxaDGoEThwbVXHyqyRNZbtc7sO2g3ToK
-         QZzuyIjJJO4VgggVBgCnSTJEqhFD2LF5lE37dhFxSioDmydW/euBlOLxgFQrzdmsyLy9
-         QfXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Y7r3GrsKm+2UK/xPfP/njs6YmgftMt6txBYE2dN+ouo=;
-        b=ZKDMO+U7QqrmLxozWALFzyXPU0Zd7PugPJcaJoYvofJBD0jezuS++n1T5YO3D4HAv5
-         QOY+Wb3gInfXiyMwvEQ6vTmWe1Q38nE5TPFjJlAgJa9fhB0gGUCvsesUC6rtnppmAtwe
-         G3ztZM0JzQY2Qhgr3oMfCLSD2QkTHxH6LsOsvYirInr0Wifd5hRaQi1mVhuHXoNU6E3Q
-         BBy+5l9hyzwa2P4cliKj/jbRWe8tApIRPt86xQnHei6oVVeBhfE59/xSDIRoht1vY3w4
-         GtHdQhKNLX1A8c9EyzGH/rkeQTGwOJ6/5TrdO6+/mvSXmbZkVnGEa1PCQO0dEQBQyuLA
-         kSqw==
-X-Gm-Message-State: APjAAAWM04knydsKvGqDK5I1M+nX2JdMUDtjVZ6zPBS9Yqps7eHdCMj+
-        Xco78GMTOHIiiks7E59b22llJB/ohRNaz5su+0rqbg==
-X-Google-Smtp-Source: APXvYqxGcPdaMer0ONFG2I2gsJ4PSUhsr7GYEUw376kmI/NVQmX1WUdUJmFOqfEcyjlzXmrI51RmTQ21n7xDGi0W5Z4=
-X-Received: by 2002:a7b:c21a:: with SMTP id x26mr635593wmi.61.1565845185178;
- Wed, 14 Aug 2019 21:59:45 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190814163746.3525-1-ard.biesheuvel@linaro.org>
- <20190814163746.3525-2-ard.biesheuvel@linaro.org> <20190815023734.GB23782@gondor.apana.org.au>
-In-Reply-To: <20190815023734.GB23782@gondor.apana.org.au>
-From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Date:   Thu, 15 Aug 2019 07:59:34 +0300
-Message-ID: <CAKv+Gu_maif=kZk-HRMx7pP=ths1vuTgcu4kFpzz0tCkO2+DFA@mail.gmail.com>
-Subject: Re: [PATCH v11 1/4] crypto: essiv - create wrapper template for ESSIV generation
-To:     Herbert Xu <herbert@gondor.apana.org.au>
+        id S1726089AbfHOFNc (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 15 Aug 2019 01:13:32 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:57046 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726865AbfHOFNc (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 15 Aug 2019 01:13:32 -0400
+Received: from gondolin.me.apana.org.au ([192.168.0.6] helo=gondolin.hengli.com.au)
+        by fornost.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
+        id 1hy84g-0005AY-8o; Thu, 15 Aug 2019 15:13:22 +1000
+Received: from herbert by gondolin.hengli.com.au with local (Exim 4.80)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1hy84e-0006VK-MY; Thu, 15 Aug 2019 15:13:20 +1000
+Date:   Thu, 15 Aug 2019 15:13:20 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>
 Cc:     "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
         <linux-crypto@vger.kernel.org>, Eric Biggers <ebiggers@google.com>,
         device-mapper development <dm-devel@redhat.com>,
         linux-fscrypt@vger.kernel.org,
         Gilad Ben-Yossef <gilad@benyossef.com>,
         Milan Broz <gmazyland@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH v11 1/4] crypto: essiv - create wrapper template for
+ ESSIV generation
+Message-ID: <20190815051320.GA24982@gondor.apana.org.au>
+References: <20190814163746.3525-1-ard.biesheuvel@linaro.org>
+ <20190814163746.3525-2-ard.biesheuvel@linaro.org>
+ <20190815023734.GB23782@gondor.apana.org.au>
+ <CAKv+Gu_maif=kZk-HRMx7pP=ths1vuTgcu4kFpzz0tCkO2+DFA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKv+Gu_maif=kZk-HRMx7pP=ths1vuTgcu4kFpzz0tCkO2+DFA@mail.gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, 15 Aug 2019 at 05:37, Herbert Xu <herbert@gondor.apana.org.au> wrote:
+On Thu, Aug 15, 2019 at 07:59:34AM +0300, Ard Biesheuvel wrote:
 >
-> On Wed, Aug 14, 2019 at 07:37:43PM +0300, Ard Biesheuvel wrote:
-> >
-> > +     /* Block cipher, e.g., "aes" */
-> > +     crypto_set_spawn(&ictx->essiv_cipher_spawn, inst);
-> > +     err = crypto_grab_spawn(&ictx->essiv_cipher_spawn, essiv_cipher_name,
-> > +                             CRYPTO_ALG_TYPE_CIPHER, CRYPTO_ALG_TYPE_MASK);
-> > +     if (err)
-> > +             goto out_drop_skcipher;
-> > +     essiv_cipher_alg = ictx->essiv_cipher_spawn.alg;
-> > +
-> > +     /* Synchronous hash, e.g., "sha256" */
-> > +     _hash_alg = crypto_alg_mod_lookup(shash_name,
-> > +                                       CRYPTO_ALG_TYPE_SHASH,
-> > +                                       CRYPTO_ALG_TYPE_MASK);
-> > +     if (IS_ERR(_hash_alg)) {
-> > +             err = PTR_ERR(_hash_alg);
-> > +             goto out_drop_essiv_cipher;
-> > +     }
-> > +     hash_alg = __crypto_shash_alg(_hash_alg);
-> > +     err = crypto_init_shash_spawn(&ictx->hash_spawn, hash_alg, inst);
-> > +     if (err)
-> > +             goto out_put_hash;
->
-> I wouldn't use spawns for these two algorithms.  The point of
-> spawns is mainly to serve as a notification channel so we can
-> tear down the top-level instance when a better underlying spawn
-> implementation is added to the system.
->
-> For these two algorithms, we don't really care about their performance
-> to do such a tear-down since they only operate on small pieces of
-> data.
->
-> Therefore just keep things simple and allocate them in the tfm
-> init function.
->
+> So how do I ensure that the cipher and shash are actually loaded at
+> create() time, and that they are still loaded at TFM init time?
 
-So how do I ensure that the cipher and shash are actually loaded at
-create() time, and that they are still loaded at TFM init time?
+If they're not available at TFM init then you just fail the init
+and therefore the TFM allocation.  What is the problem?
+
+IOW the presence of the block cipher and unkeyed hash does not
+affect the creation of the instance object.
+
+Cheers,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
