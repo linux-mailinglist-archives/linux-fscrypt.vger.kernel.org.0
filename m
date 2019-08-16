@@ -2,182 +2,88 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E40348FAD5
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 16 Aug 2019 08:22:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E829A8FC49
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 16 Aug 2019 09:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726652AbfHPGWD (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 16 Aug 2019 02:22:03 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:42624 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725897AbfHPGWD (ORCPT
+        id S1726649AbfHPH3o (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 16 Aug 2019 03:29:44 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:40102 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726622AbfHPH3o (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 16 Aug 2019 02:22:03 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7G646qs108124;
-        Fri, 16 Aug 2019 02:16:41 -0400
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2udny625tw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Aug 2019 02:16:40 -0400
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x7G65Ecr027354;
-        Fri, 16 Aug 2019 06:16:39 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
-        by ppma02wdc.us.ibm.com with ESMTP id 2u9nj662gx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Aug 2019 06:16:39 +0000
-Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7G6Gd3r11665928
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 16 Aug 2019 06:16:39 GMT
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1E790112062;
-        Fri, 16 Aug 2019 06:16:39 +0000 (GMT)
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 61398112061;
-        Fri, 16 Aug 2019 06:16:36 +0000 (GMT)
-Received: from localhost.in.ibm.com (unknown [9.124.35.23])
-        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
-        Fri, 16 Aug 2019 06:16:36 +0000 (GMT)
-From:   Chandan Rajendra <chandan@linux.ibm.com>
-To:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fscrypt@vger.kernel.org
-Cc:     Chandan Rajendra <chandan@linux.ibm.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, ebiggers@kernel.org, jaegeuk@kernel.org,
-        yuchao0@huawei.com, hch@infradead.org
-Subject: [PATCH V4 0/8] Consolidate FS read I/O callbacks code
-Date:   Fri, 16 Aug 2019 11:47:56 +0530
-Message-Id: <20190816061804.14840-1-chandan@linux.ibm.com>
-X-Mailer: git-send-email 2.19.1
+        Fri, 16 Aug 2019 03:29:44 -0400
+Received: by mail-wm1-f67.google.com with SMTP id v19so3265429wmj.5;
+        Fri, 16 Aug 2019 00:29:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:openpgp:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6T0bWUoTVdcz2Y9O6ErDfWcGr4YZCTpQWIAXvrd/4WI=;
+        b=RjWBTg/MXGdeu2r68x7GP0ppDHCxGdyk5T7+NGyr9Lk1QRpaY6xtEdYpdARwa3b6mf
+         CcE3rMWREZKcB8MJoZTimYSG4g+u7kSFdG8KZWpxcYfU79ipV6IpGxIRc2m8lY78bPUR
+         BJ57EQ4YoaJDJr6xXYNcuVguojvoqh4ixCIJYl+3tBw02N/71HLyOnMwuNoR8+G8dD+4
+         VblSwAIkzf318BOJZJFTMMZnwf6aUXPxi01VQV2+KH7NuFXP2r0boG+sn/VuZpFNlAGG
+         CPaWGosn+NxCrUYZQ4O8PUd9Pug1Lru/QPjNI+oUeO49dCwtyUhnQA9JyWReIo5U3rlL
+         2AWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:openpgp:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6T0bWUoTVdcz2Y9O6ErDfWcGr4YZCTpQWIAXvrd/4WI=;
+        b=XtaZjAoprxxqzD4mIir9oF7coZIfiVCfHhNbTa/HFIW1x/jRlaXnStnxH68WzCWHRR
+         yj22IEqXIS4joF5MzI+wHHoDwRcD/VT/JP4MiD1eiet2Hg1lOIdAy1ola8WE1SjNtxT/
+         oApswKkgJpA8RkD/VNWdUQES3cGaT4ArRTWDVYD7/BSnFZxXxzRr6HP7J7wGA5C4H9jA
+         R0Au0Rw5HEfKkAMXGCKlGr41+C/GPHbVsrCo6uWVVh77klQuq1zD8tIMlZDFkgRAy+h9
+         GFI1ISGWqi/gZrSISuoRqOah6Jyy+qrVTTo/gEjHtf57XCig7aEgwqE08RBu66tTLrW4
+         Vsww==
+X-Gm-Message-State: APjAAAVemIxbP8nA1JnxXRd7T8PhQ2QcdtJgLqYVlcugjn5MqQMTrTtm
+        L+w4IOT+zk0u8xtvzQsXf6Q=
+X-Google-Smtp-Source: APXvYqwqyHlF+r6k9fpQM9dw1ygdJigLxpg8QcYq+qo6jtZ/6245MFxa7bsGW/51Ktd+URByGAuK+g==
+X-Received: by 2002:a7b:c08f:: with SMTP id r15mr6030116wmh.90.1565940581702;
+        Fri, 16 Aug 2019 00:29:41 -0700 (PDT)
+Received: from [192.168.2.27] (39.35.broadband4.iol.cz. [85.71.35.39])
+        by smtp.gmail.com with ESMTPSA id f134sm4345319wmg.20.2019.08.16.00.29.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Aug 2019 00:29:41 -0700 (PDT)
+Subject: Re: [PATCH v12 0/4] crypto: switch to crypto API for ESSIV generation
+To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        linux-crypto@vger.kernel.org
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Eric Biggers <ebiggers@google.com>, dm-devel@redhat.com,
+        linux-fscrypt@vger.kernel.org,
+        Gilad Ben-Yossef <gilad@benyossef.com>
+References: <20190815192858.28125-1-ard.biesheuvel@linaro.org>
+From:   Milan Broz <gmazyland@gmail.com>
+Openpgp: preference=signencrypt
+Message-ID: <1463bca3-77dc-42be-7624-e8eaf5cfbf32@gmail.com>
+Date:   Fri, 16 Aug 2019 09:29:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-16_03:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908160066
+In-Reply-To: <20190815192858.28125-1-ard.biesheuvel@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-This patchset moves the "FS read I/O callbacks" code into a file of its
-own (i.e. fs/read_callbacks.c) and modifies the generic
-do_mpage_readpge() to make use of the functionality provided.
+Hi Ard,
 
-"FS read I/O callbacks" code implements the state machine that needs
-to be executed after reading data from files that are encrypted and/or
-have verity metadata associated with them.
+On 15/08/2019 21:28, Ard Biesheuvel wrote:
+> Changes since v10:
+> - Drop patches against fscrypt and dm-crypt - these will be routed via the
+>   respective maintainer trees during the next cycle
 
-With these changes in place, the patchset changes Ext4 to use
-mpage_readpage[s] instead of its own custom ext4_readpage[s]()
-functions. This is done to reduce duplication of code across
-filesystems. Also, "FS read I/O callbacks" source files will be built
-only if CONFIG_FS_ENCRYPTION is enabled.
+I tested the previous dm-crypt patches (I also try to keep them in my kernel.org tree),
+it works and looks fine to me (and I like the final cleanup :)
 
-The patchset also modifies fs/buffer.c to get file
-encryption/decryption to work with subpage-sized blocks.
+Once all maintainers are happy with the current state, I think it should go to
+the next release (5.4; IMO both ESSIV API and dm-crypt changes).
+Maybe you could keep sending dm-crypt patches in the end of the series (to help testing it)?
 
-The patches can also be obtained from
-https://github.com/chandanr/linux.git at branch subpage-encryption-v4.
+(Just for for now I am completely distracted by other urgent unrelated issues.)
 
-Changelog:
-V3 -> V4:
-   1. A new buffer_head flag (i.e. BH_Read_Cb) is introduced to reliably
-      check if a buffer head's content has to be decrypted.
-   2. Fix layering violation. Now the code flow for decryption happens as shown below,
-      FS => read callbacks => fscrypt
-   3. Select FS_READ_CALLBACKS from FS specific kconfig file if FS_ENCRYPTION
-      is enabled.
-   4. Make 'struct read_callbacks_ctx' an opaque structure.
-   5. Make use of FS' endio function rather than implementing one in read
-      callbacks.
-   6. Make read_callbacks.h self-contained.
-   7. Split patchset to separate out ext4 and f2fs changes.
-   
-V2 -> V3:
-1. Split the V2 patch "Consolidate 'read callbacks' into a new file" into
-   three patches,
-   - Introduce the read_callbacks functionality.
-   - Convert encryption to use read_callbacks.
-   - Remove union from struct fscrypt_context.
-2. fs/Kconfig
-   Do not explicitly set the default value of 'n' for FS_READ_CALLBACKS.
-3. fs/crypto/Kconfig
-   Select CONFIG_FS_READ_CALLBACKS only if CONFIG_BLOCK is selected.
-4. Remove verity associated code in read_callbacks code.
-5. Introduce a callback argument to read_callbacks_setup() function
-   which gets invoked for each page for bio. F2FS uses this to perform
-   custom operations like decrementing the value of f2fs_sb_info->nr_pages[].
-6. Encapsulate the details of "read callbacks" (e.g. Usage of "struct
-   read_callbacks *ctx") within its own functions. When CONFIG_FS_READ_CALLBACKS
-   is set to 'n', the corresponding stub functions return approriate error
-   values.
-7. Split fscrypt_decrypt() function into fscrypt_decrypt_bio() and
-   fscrypt_decrypt_bh().
-8. Split end_read_callbacks() function into end_read_callbacks_bio() and
-   end_read_callbacks_bh().
-
-V1 -> V2:
-1. Removed the phrase "post_read_process" from file names and
-   functions. Instead we now use the phrase "read_callbacks" in its
-   place.
-2. When performing changes associated with (1), the changes made by
-   the patch "Remove the term 'bio' from post read processing" are
-   made in the earlier patch "Consolidate 'read callbacks' into a new
-   file". Hence the patch "Remove the term 'bio' from post read
-   processing" is removed from the patchset.
-
-RFC V2 -> V1:
-1. Test and verify FS_CFLG_OWN_PAGES subset of fscrypt_encrypt_page()
-   code by executing fstests on UBIFS.
-2. Implement F2fs function call back to check if the contents of a
-   page holding a verity file's data needs to be verified.
-
-RFC V1 -> RFC V2:
-1. Describe the purpose of "Post processing code" in the cover letter.
-2. Fix build errors when CONFIG_FS_VERITY is enabled.
-
-Chandan Rajendra (8):
-  buffer_head: Introduce BH_Read_Cb flag
-  FS: Introduce read callbacks
-  fs/mpage.c: Integrate read callbacks
-  fs/buffer.c: add decryption support via read_callbacks
-  f2fs: Use read_callbacks for decrypting file data
-  ext4: Wire up ext4_readpage[s] to use mpage_readpage[s]
-  ext4: Enable encryption for subpage-sized blocks
-  fscrypt: remove struct fscrypt_ctx
-
- Documentation/filesystems/fscrypt.rst |   4 +-
- fs/Kconfig                            |   3 +
- fs/Makefile                           |   1 +
- fs/buffer.c                           |  33 ++-
- fs/crypto/bio.c                       |  43 ----
- fs/crypto/crypto.c                    |  89 +-------
- fs/crypto/fscrypt_private.h           |   3 -
- fs/ext4/Kconfig                       |   1 +
- fs/ext4/Makefile                      |   2 +-
- fs/ext4/inode.c                       |   5 +-
- fs/ext4/readpage.c                    | 295 --------------------------
- fs/ext4/super.c                       |   7 -
- fs/f2fs/Kconfig                       |   1 +
- fs/f2fs/data.c                        | 109 +---------
- fs/f2fs/f2fs.h                        |   2 -
- fs/f2fs/super.c                       |   9 +-
- fs/mpage.c                            |  24 ++-
- fs/read_callbacks.c                   | 285 +++++++++++++++++++++++++
- include/linux/buffer_head.h           |   2 +
- include/linux/fscrypt.h               |  38 ----
- include/linux/read_callbacks.h        |  48 +++++
- 21 files changed, 402 insertions(+), 602 deletions(-)
- delete mode 100644 fs/ext4/readpage.c
- create mode 100644 fs/read_callbacks.c
- create mode 100644 include/linux/read_callbacks.h
-
--- 
-2.19.1
-
+Milan
