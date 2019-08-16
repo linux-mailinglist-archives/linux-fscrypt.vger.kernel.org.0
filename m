@@ -2,332 +2,137 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 36F378F492
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 15 Aug 2019 21:29:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B860A8FAAB
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 16 Aug 2019 08:16:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730938AbfHOT30 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 15 Aug 2019 15:29:26 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:52363 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731749AbfHOT30 (ORCPT
+        id S1726591AbfHPGQv (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 16 Aug 2019 02:16:51 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:22922 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726519AbfHPGQu (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 15 Aug 2019 15:29:26 -0400
-Received: by mail-wm1-f67.google.com with SMTP id o4so2172604wmh.2
-        for <linux-fscrypt@vger.kernel.org>; Thu, 15 Aug 2019 12:29:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=hXvMZ2KwYb5qrlz7PRq35hMlmHi2bXsSYLcsF+NixYQ=;
-        b=K3ZI1EgE4A7tBoz/y2G9crA0/fJUdNnMYRmZ5tPPCHaeVVcbAD5S3lWHLCFmGiXPvw
-         wy6UdEfHCee5GCiU30MS7XAqSxvJBaq51yCYnARV8Dsbiy9IS/khBswLnBRPWZR1zzEN
-         O8yA+yA11jFHKW9iF/nwWHOEqGOqNhXMrgB1NFDTTZmJ2xvG6GuM5x6bnEcz03DBgWRT
-         4/rfYrLED2hwnCvK+dq8sqUtEmpeCBWyy5MLBTVscZIE64lrczzu9izreSElqqknjL5d
-         +lFPqjRzLhp9l8BWXUMh4Xsc16snZ/Cmm8OuNKeHVXmkaXhcvRsIuIX+Erk9C9vM5btO
-         TmAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=hXvMZ2KwYb5qrlz7PRq35hMlmHi2bXsSYLcsF+NixYQ=;
-        b=EwbpJpw7MFiv/8OwEcCjGbdGM1Xdl9aTzGbzxyzUq56MttKrX1STc/OiKbk3yDHAAI
-         8m0EWRFQ/4ynxci9XmdIbA04HbxsPyZXNTbXvE4pRztyQAZWO0GOaVDvJX5vswSmJQ90
-         zkQCSRPtk8YxG6K3Ve+U5s4viJwsxJHrD+ruc6SPbvCqUZ8++9khU7mpqngKWjKz049J
-         iboKxbwsGVC5DJIf9PmRtqMonXLu5mkIOVen8uq2nCPepHMy9Q/kueeUIZrYAIMLCy8j
-         nQjEnAsg2UR1/HySLFrxc342W4sF48iv4EkXxPbYYDz7HMdfg19TQraGzmYoJuMMxKv4
-         MS9g==
-X-Gm-Message-State: APjAAAUrI/OmyfTQfzuJ0sq2gvTkLjOJxqC7YYc+CVxDvfvU/hYNotHk
-        DThYdCDDeWES+lJH5vu+90PyFw==
-X-Google-Smtp-Source: APXvYqzbCc9tKTO8I8gBXzQGv1YcC6JDslxJ2vCu7Tthksb2fdyElVuGe+AmEornp5Ka+BtbiQsamA==
-X-Received: by 2002:a05:600c:2385:: with SMTP id m5mr3844314wma.4.1565897362784;
-        Thu, 15 Aug 2019 12:29:22 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:587:a407:da00:f1b5:e68c:5f7f:79e7])
-        by smtp.gmail.com with ESMTPSA id h9sm2949063wrt.53.2019.08.15.12.29.19
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 15 Aug 2019 12:29:21 -0700 (PDT)
-From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
-To:     linux-crypto@vger.kernel.org
-Cc:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Eric Biggers <ebiggers@google.com>, dm-devel@redhat.com,
-        linux-fscrypt@vger.kernel.org,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        Milan Broz <gmazyland@gmail.com>
-Subject: [PATCH v12 4/4] crypto: arm64/aes - implement accelerated ESSIV/CBC mode
-Date:   Thu, 15 Aug 2019 22:28:58 +0300
-Message-Id: <20190815192858.28125-5-ard.biesheuvel@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190815192858.28125-1-ard.biesheuvel@linaro.org>
-References: <20190815192858.28125-1-ard.biesheuvel@linaro.org>
+        Fri, 16 Aug 2019 02:16:50 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7G63eTG124677
+        for <linux-fscrypt@vger.kernel.org>; Fri, 16 Aug 2019 02:16:49 -0400
+Received: from e13.ny.us.ibm.com (e13.ny.us.ibm.com [129.33.205.203])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2udmghcu94-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-fscrypt@vger.kernel.org>; Fri, 16 Aug 2019 02:16:49 -0400
+Received: from localhost
+        by e13.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-fscrypt@vger.kernel.org> from <chandan@linux.ibm.com>;
+        Fri, 16 Aug 2019 07:16:48 +0100
+Received: from b01cxnp23034.gho.pok.ibm.com (9.57.198.29)
+        by e13.ny.us.ibm.com (146.89.104.200) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Fri, 16 Aug 2019 07:16:43 +0100
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7G6GgBn48431462
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 16 Aug 2019 06:16:42 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 74AB311206E;
+        Fri, 16 Aug 2019 06:16:42 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 86AF6112061;
+        Fri, 16 Aug 2019 06:16:39 +0000 (GMT)
+Received: from localhost.in.ibm.com (unknown [9.124.35.23])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
+        Fri, 16 Aug 2019 06:16:39 +0000 (GMT)
+From:   Chandan Rajendra <chandan@linux.ibm.com>
+To:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fscrypt@vger.kernel.org
+Cc:     Chandan Rajendra <chandan@linux.ibm.com>, chandanrmail@gmail.com,
+        tytso@mit.edu, adilger.kernel@dilger.ca, ebiggers@kernel.org,
+        jaegeuk@kernel.org, yuchao0@huawei.com, hch@infradead.org
+Subject: [PATCH V4 1/8] buffer_head: Introduce BH_Read_Cb flag
+Date:   Fri, 16 Aug 2019 11:47:57 +0530
+X-Mailer: git-send-email 2.19.1
+In-Reply-To: <20190816061804.14840-1-chandan@linux.ibm.com>
+References: <20190816061804.14840-1-chandan@linux.ibm.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+x-cbid: 19081606-0064-0000-0000-000004091737
+X-IBM-SpamModules-Scores: 
+X-IBM-SpamModules-Versions: BY=3.00011597; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000287; SDB=6.01247516; UDB=6.00658410; IPR=6.01029025;
+ MB=3.00028195; MTD=3.00000008; XFM=3.00000015; UTC=2019-08-16 06:16:46
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19081606-0065-0000-0000-00003EAFDA61
+Message-Id: <20190816061804.14840-2-chandan@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-16_03:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908160066
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Add an accelerated version of the 'essiv(cbc(aes),sha256)' skcipher,
-which is used by fscrypt or dm-crypt on systems where CBC mode is
-signficantly more performant than XTS mode (e.g., when using a h/w
-accelerator which supports the former but not the latter) This avoids
-a separate call into the AES cipher for every invocation.
+Decryption of file content encrypted using fscrypt relies on
+bio->bi_private holding a pointer to an encryption context
+i.e. Decryption operation is not performed for bios having a NULL value
+at bio->bi_private.
 
-Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+The same logic cannot be used on buffer heads because,
+1. In Btrfs, write_dev_supers() sets bh->b_private to 'struct
+   btrfs_device' pointer and submits the buffer head for a write
+   operation.
+   1. In btrfs/146 test, the write operation fails and hence the
+      endio function clears the BH_Uptodate flag.
+   2. A read operation initiated later will submit the buffer head to
+      the block layer. During endio processing, bh_>b_private would have a
+      non-NULL value.
+
+2. Another instance is when an Ext4 metadata block with BH_Uptodate set and
+   also part of the in-memory JBD list undergoes the following,
+   1. A sync() syscall is invoked by the userspace and the write
+      operation on the metadata block is initiated.
+   2. Due to an I/O failure, the BH_Uptodate flag is cleared by
+      end_buffer_async_write(). The bh->b_private member would be
+      pointing to a journal head structure.
+   3. In such a case, a read operation invoked on the block mapped by the
+      buffer head will initiate a read from the disk since the buffer head is
+      missing the BH_Uptodate flag.
+   4. After the read I/O request is submitted, end_buffer_async_read()
+      will find a non-NULL value at bh->b_private.
+   This scenario was observed when executing generic/475 test case.
+
+Hence this commit introduces a new buffer head flag to reliably check for
+decryption of a buffer head's contents after the block has been read
+from the disk.
+
+Signed-off-by: Chandan Rajendra <chandan@linux.ibm.com>
 ---
- arch/arm64/crypto/aes-glue.c  | 124 ++++++++++++++++++++
- arch/arm64/crypto/aes-modes.S |  28 +++++
- 2 files changed, 152 insertions(+)
+ include/linux/buffer_head.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm64/crypto/aes-glue.c b/arch/arm64/crypto/aes-glue.c
-index 23abf335f1ee..ca0c84d56cba 100644
---- a/arch/arm64/crypto/aes-glue.c
-+++ b/arch/arm64/crypto/aes-glue.c
-@@ -10,6 +10,7 @@
- #include <asm/simd.h>
- #include <crypto/aes.h>
- #include <crypto/ctr.h>
-+#include <crypto/sha.h>
- #include <crypto/internal/hash.h>
- #include <crypto/internal/simd.h>
- #include <crypto/internal/skcipher.h>
-@@ -30,6 +31,8 @@
- #define aes_cbc_decrypt		ce_aes_cbc_decrypt
- #define aes_cbc_cts_encrypt	ce_aes_cbc_cts_encrypt
- #define aes_cbc_cts_decrypt	ce_aes_cbc_cts_decrypt
-+#define aes_essiv_cbc_encrypt	ce_aes_essiv_cbc_encrypt
-+#define aes_essiv_cbc_decrypt	ce_aes_essiv_cbc_decrypt
- #define aes_ctr_encrypt		ce_aes_ctr_encrypt
- #define aes_xts_encrypt		ce_aes_xts_encrypt
- #define aes_xts_decrypt		ce_aes_xts_decrypt
-@@ -44,6 +47,8 @@ MODULE_DESCRIPTION("AES-ECB/CBC/CTR/XTS using ARMv8 Crypto Extensions");
- #define aes_cbc_decrypt		neon_aes_cbc_decrypt
- #define aes_cbc_cts_encrypt	neon_aes_cbc_cts_encrypt
- #define aes_cbc_cts_decrypt	neon_aes_cbc_cts_decrypt
-+#define aes_essiv_cbc_encrypt	neon_aes_essiv_cbc_encrypt
-+#define aes_essiv_cbc_decrypt	neon_aes_essiv_cbc_decrypt
- #define aes_ctr_encrypt		neon_aes_ctr_encrypt
- #define aes_xts_encrypt		neon_aes_xts_encrypt
- #define aes_xts_decrypt		neon_aes_xts_decrypt
-@@ -51,6 +56,7 @@ MODULE_DESCRIPTION("AES-ECB/CBC/CTR/XTS using ARMv8 Crypto Extensions");
- MODULE_DESCRIPTION("AES-ECB/CBC/CTR/XTS using ARMv8 NEON");
- MODULE_ALIAS_CRYPTO("ecb(aes)");
- MODULE_ALIAS_CRYPTO("cbc(aes)");
-+MODULE_ALIAS_CRYPTO("essiv(cbc(aes),sha256)");
- MODULE_ALIAS_CRYPTO("ctr(aes)");
- MODULE_ALIAS_CRYPTO("xts(aes)");
- MODULE_ALIAS_CRYPTO("cmac(aes)");
-@@ -87,6 +93,13 @@ asmlinkage void aes_xts_decrypt(u8 out[], u8 const in[], u32 const rk1[],
- 				int rounds, int blocks, u32 const rk2[], u8 iv[],
- 				int first);
+diff --git a/include/linux/buffer_head.h b/include/linux/buffer_head.h
+index 7b73ef7f902d..08f217ba8114 100644
+--- a/include/linux/buffer_head.h
++++ b/include/linux/buffer_head.h
+@@ -38,6 +38,7 @@ enum bh_state_bits {
+ 	BH_Meta,	/* Buffer contains metadata */
+ 	BH_Prio,	/* Buffer should be submitted with REQ_PRIO */
+ 	BH_Defer_Completion, /* Defer AIO completion to workqueue */
++	BH_Read_Cb,	     /* Block's contents needs to be decrypted */
  
-+asmlinkage void aes_essiv_cbc_encrypt(u8 out[], u8 const in[], u32 const rk1[],
-+				      int rounds, int blocks, u8 iv[],
-+				      u32 const rk2[]);
-+asmlinkage void aes_essiv_cbc_decrypt(u8 out[], u8 const in[], u32 const rk1[],
-+				      int rounds, int blocks, u8 iv[],
-+				      u32 const rk2[]);
-+
- asmlinkage void aes_mac_update(u8 const in[], u32 const rk[], int rounds,
- 			       int blocks, u8 dg[], int enc_before,
- 			       int enc_after);
-@@ -102,6 +115,12 @@ struct crypto_aes_xts_ctx {
- 	struct crypto_aes_ctx __aligned(8) key2;
- };
+ 	BH_PrivateStart,/* not a state bit, but the first bit available
+ 			 * for private allocation by other entities
+@@ -134,6 +135,7 @@ BUFFER_FNS(Unwritten, unwritten)
+ BUFFER_FNS(Meta, meta)
+ BUFFER_FNS(Prio, prio)
+ BUFFER_FNS(Defer_Completion, defer_completion)
++BUFFER_FNS(Read_Cb, read_cb)
  
-+struct crypto_aes_essiv_cbc_ctx {
-+	struct crypto_aes_ctx key1;
-+	struct crypto_aes_ctx __aligned(8) key2;
-+	struct crypto_shash *hash;
-+};
-+
- struct mac_tfm_ctx {
- 	struct crypto_aes_ctx key;
- 	u8 __aligned(8) consts[];
-@@ -146,6 +165,31 @@ static int xts_set_key(struct crypto_skcipher *tfm, const u8 *in_key,
- 	return -EINVAL;
- }
+ #define bh_offset(bh)		((unsigned long)(bh)->b_data & ~PAGE_MASK)
  
-+static int essiv_cbc_set_key(struct crypto_skcipher *tfm, const u8 *in_key,
-+			     unsigned int key_len)
-+{
-+	struct crypto_aes_essiv_cbc_ctx *ctx = crypto_skcipher_ctx(tfm);
-+	SHASH_DESC_ON_STACK(desc, ctx->hash);
-+	u8 digest[SHA256_DIGEST_SIZE];
-+	int ret;
-+
-+	ret = aes_expandkey(&ctx->key1, in_key, key_len);
-+	if (ret)
-+		goto out;
-+
-+	desc->tfm = ctx->hash;
-+	crypto_shash_digest(desc, in_key, key_len, digest);
-+
-+	ret = aes_expandkey(&ctx->key2, digest, sizeof(digest));
-+	if (ret)
-+		goto out;
-+
-+	return 0;
-+out:
-+	crypto_skcipher_set_flags(tfm, CRYPTO_TFM_RES_BAD_KEY_LEN);
-+	return -EINVAL;
-+}
-+
- static int ecb_encrypt(struct skcipher_request *req)
- {
- 	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
-@@ -360,6 +404,68 @@ static int cts_cbc_decrypt(struct skcipher_request *req)
- 	return skcipher_walk_done(&walk, 0);
- }
- 
-+static int essiv_cbc_init_tfm(struct crypto_skcipher *tfm)
-+{
-+	struct crypto_aes_essiv_cbc_ctx *ctx = crypto_skcipher_ctx(tfm);
-+
-+	ctx->hash = crypto_alloc_shash("sha256", 0, 0);
-+	if (IS_ERR(ctx->hash))
-+		return PTR_ERR(ctx->hash);
-+
-+	return 0;
-+}
-+
-+static void essiv_cbc_exit_tfm(struct crypto_skcipher *tfm)
-+{
-+	struct crypto_aes_essiv_cbc_ctx *ctx = crypto_skcipher_ctx(tfm);
-+
-+	crypto_free_shash(ctx->hash);
-+}
-+
-+static int essiv_cbc_encrypt(struct skcipher_request *req)
-+{
-+	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
-+	struct crypto_aes_essiv_cbc_ctx *ctx = crypto_skcipher_ctx(tfm);
-+	int err, rounds = 6 + ctx->key1.key_length / 4;
-+	struct skcipher_walk walk;
-+	unsigned int blocks;
-+
-+	err = skcipher_walk_virt(&walk, req, false);
-+
-+	blocks = walk.nbytes / AES_BLOCK_SIZE;
-+	if (blocks) {
-+		kernel_neon_begin();
-+		aes_essiv_cbc_encrypt(walk.dst.virt.addr, walk.src.virt.addr,
-+				      ctx->key1.key_enc, rounds, blocks,
-+				      req->iv, ctx->key2.key_enc);
-+		kernel_neon_end();
-+		err = skcipher_walk_done(&walk, walk.nbytes % AES_BLOCK_SIZE);
-+	}
-+	return err ?: cbc_encrypt_walk(req, &walk);
-+}
-+
-+static int essiv_cbc_decrypt(struct skcipher_request *req)
-+{
-+	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
-+	struct crypto_aes_essiv_cbc_ctx *ctx = crypto_skcipher_ctx(tfm);
-+	int err, rounds = 6 + ctx->key1.key_length / 4;
-+	struct skcipher_walk walk;
-+	unsigned int blocks;
-+
-+	err = skcipher_walk_virt(&walk, req, false);
-+
-+	blocks = walk.nbytes / AES_BLOCK_SIZE;
-+	if (blocks) {
-+		kernel_neon_begin();
-+		aes_essiv_cbc_decrypt(walk.dst.virt.addr, walk.src.virt.addr,
-+				      ctx->key1.key_dec, rounds, blocks,
-+				      req->iv, ctx->key2.key_enc);
-+		kernel_neon_end();
-+		err = skcipher_walk_done(&walk, walk.nbytes % AES_BLOCK_SIZE);
-+	}
-+	return err ?: cbc_decrypt_walk(req, &walk);
-+}
-+
- static int ctr_encrypt(struct skcipher_request *req)
- {
- 	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
-@@ -515,6 +621,24 @@ static struct skcipher_alg aes_algs[] = { {
- 	.encrypt	= cts_cbc_encrypt,
- 	.decrypt	= cts_cbc_decrypt,
- 	.init		= cts_cbc_init_tfm,
-+}, {
-+	.base = {
-+		.cra_name		= "__essiv(cbc(aes),sha256)",
-+		.cra_driver_name	= "__essiv-cbc-aes-sha256-" MODE,
-+		.cra_priority		= PRIO + 1,
-+		.cra_flags		= CRYPTO_ALG_INTERNAL,
-+		.cra_blocksize		= AES_BLOCK_SIZE,
-+		.cra_ctxsize		= sizeof(struct crypto_aes_essiv_cbc_ctx),
-+		.cra_module		= THIS_MODULE,
-+	},
-+	.min_keysize	= AES_MIN_KEY_SIZE,
-+	.max_keysize	= AES_MAX_KEY_SIZE,
-+	.ivsize		= AES_BLOCK_SIZE,
-+	.setkey		= essiv_cbc_set_key,
-+	.encrypt	= essiv_cbc_encrypt,
-+	.decrypt	= essiv_cbc_decrypt,
-+	.init		= essiv_cbc_init_tfm,
-+	.exit		= essiv_cbc_exit_tfm,
- }, {
- 	.base = {
- 		.cra_name		= "__ctr(aes)",
-diff --git a/arch/arm64/crypto/aes-modes.S b/arch/arm64/crypto/aes-modes.S
-index 324039b72094..2879f030a749 100644
---- a/arch/arm64/crypto/aes-modes.S
-+++ b/arch/arm64/crypto/aes-modes.S
-@@ -118,8 +118,23 @@ AES_ENDPROC(aes_ecb_decrypt)
- 	 *		   int blocks, u8 iv[])
- 	 * aes_cbc_decrypt(u8 out[], u8 const in[], u8 const rk[], int rounds,
- 	 *		   int blocks, u8 iv[])
-+	 * aes_essiv_cbc_encrypt(u8 out[], u8 const in[], u32 const rk1[],
-+	 *			 int rounds, int blocks, u8 iv[],
-+	 *			 u32 const rk2[]);
-+	 * aes_essiv_cbc_decrypt(u8 out[], u8 const in[], u32 const rk1[],
-+	 *			 int rounds, int blocks, u8 iv[],
-+	 *			 u32 const rk2[]);
- 	 */
- 
-+AES_ENTRY(aes_essiv_cbc_encrypt)
-+	ld1		{v4.16b}, [x5]			/* get iv */
-+
-+	mov		w8, #14				/* AES-256: 14 rounds */
-+	enc_prepare	w8, x6, x7
-+	encrypt_block	v4, w8, x6, x7, w9
-+	enc_switch_key	w3, x2, x6
-+	b		.Lcbcencloop4x
-+
- AES_ENTRY(aes_cbc_encrypt)
- 	ld1		{v4.16b}, [x5]			/* get iv */
- 	enc_prepare	w3, x2, x6
-@@ -153,13 +168,25 @@ AES_ENTRY(aes_cbc_encrypt)
- 	st1		{v4.16b}, [x5]			/* return iv */
- 	ret
- AES_ENDPROC(aes_cbc_encrypt)
-+AES_ENDPROC(aes_essiv_cbc_encrypt)
-+
-+AES_ENTRY(aes_essiv_cbc_decrypt)
-+	stp		x29, x30, [sp, #-16]!
-+	mov		x29, sp
-+
-+	ld1		{cbciv.16b}, [x5]		/* get iv */
- 
-+	mov		w8, #14				/* AES-256: 14 rounds */
-+	enc_prepare	w8, x6, x7
-+	encrypt_block	cbciv, w8, x6, x7, w9
-+	b		.Lessivcbcdecstart
- 
- AES_ENTRY(aes_cbc_decrypt)
- 	stp		x29, x30, [sp, #-16]!
- 	mov		x29, sp
- 
- 	ld1		{cbciv.16b}, [x5]		/* get iv */
-+.Lessivcbcdecstart:
- 	dec_prepare	w3, x2, x6
- 
- .LcbcdecloopNx:
-@@ -212,6 +239,7 @@ ST5(	st1		{v4.16b}, [x0], #16		)
- 	ldp		x29, x30, [sp], #16
- 	ret
- AES_ENDPROC(aes_cbc_decrypt)
-+AES_ENDPROC(aes_essiv_cbc_decrypt)
- 
- 
- 	/*
 -- 
-2.17.1
+2.19.1
 
