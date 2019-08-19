@@ -2,59 +2,130 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E01C91D22
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 19 Aug 2019 08:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07FE092508
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 19 Aug 2019 15:31:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725872AbfHSGcc (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 19 Aug 2019 02:32:32 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:57698 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725308AbfHSGcb (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 19 Aug 2019 02:32:31 -0400
-Received: from gondolin.me.apana.org.au ([192.168.0.6] helo=gondolin.hengli.com.au)
-        by fornost.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
-        id 1hzbDI-0007E9-Fk; Mon, 19 Aug 2019 16:32:20 +1000
-Received: from herbert by gondolin.hengli.com.au with local (Exim 4.80)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1hzbDG-0008Jt-7T; Mon, 19 Aug 2019 16:32:18 +1000
-Date:   Mon, 19 Aug 2019 16:32:18 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Cc:     linux-crypto@vger.kernel.org, Eric Biggers <ebiggers@google.com>,
-        dm-devel@redhat.com, linux-fscrypt@vger.kernel.org,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        Milan Broz <gmazyland@gmail.com>
-Subject: Re: [PATCH v12 1/4] crypto: essiv - create wrapper template for
- ESSIV generation
-Message-ID: <20190819063218.GA31821@gondor.apana.org.au>
-References: <20190815192858.28125-1-ard.biesheuvel@linaro.org>
- <20190815192858.28125-2-ard.biesheuvel@linaro.org>
+        id S1726987AbfHSNby (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 19 Aug 2019 09:31:54 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:20136 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727308AbfHSNby (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 19 Aug 2019 09:31:54 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7JDTnF8137974
+        for <linux-fscrypt@vger.kernel.org>; Mon, 19 Aug 2019 09:31:53 -0400
+Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2ufu10chcq-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-fscrypt@vger.kernel.org>; Mon, 19 Aug 2019 09:31:52 -0400
+Received: from localhost
+        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-fscrypt@vger.kernel.org> from <chandan@linux.ibm.com>;
+        Mon, 19 Aug 2019 14:31:50 +0100
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (9.149.109.197)
+        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Mon, 19 Aug 2019 14:31:46 +0100
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7JDVjd655574772
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 19 Aug 2019 13:31:45 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 00B214C040;
+        Mon, 19 Aug 2019 13:31:45 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 804964C044;
+        Mon, 19 Aug 2019 13:31:42 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.85.69.146])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 19 Aug 2019 13:31:42 +0000 (GMT)
+From:   Chandan Rajendra <chandan@linux.ibm.com>
+To:     Chao Yu <chao@kernel.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fscrypt@vger.kernel.org, hch@infradead.org, tytso@mit.edu,
+        ebiggers@kernel.org, adilger.kernel@dilger.ca,
+        chandanrmail@gmail.com, jaegeuk@kernel.org
+Subject: Re: [f2fs-dev] [PATCH V4 5/8] f2fs: Use read_callbacks for decrypting file data
+Date:   Mon, 19 Aug 2019 19:03:23 +0530
+Organization: IBM
+In-Reply-To: <bb3dc624-1249-2418-f9da-93da8c11e7f5@kernel.org>
+References: <20190816061804.14840-1-chandan@linux.ibm.com> <20190816061804.14840-6-chandan@linux.ibm.com> <bb3dc624-1249-2418-f9da-93da8c11e7f5@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190815192858.28125-2-ard.biesheuvel@linaro.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-TM-AS-GCONF: 00
+x-cbid: 19081913-0020-0000-0000-000003615D4C
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19081913-0021-0000-0000-000021B6895A
+Message-Id: <20104514.oSSJcvNEEM@localhost.localdomain>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-19_03:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908190153
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, Aug 15, 2019 at 10:28:55PM +0300, Ard Biesheuvel wrote:
+On Sunday, August 18, 2019 7:15:42 PM IST Chao Yu wrote:
+> Hi Chandan,
+> 
+> On 2019-8-16 14:18, Chandan Rajendra wrote:
+> > F2FS has a copy of "post read processing" code using which encrypted
+> > file data is decrypted. This commit replaces it to make use of the
+> > generic read_callbacks facility.
+> 
+> I remember that previously Jaegeuk had mentioned f2fs will support compression
+> later, and it needs to reuse 'post read processing' fwk.
+> 
+> There is very initial version of compression feature in below link:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/chao/linux.git/log/?h=compression
+> 
+> So my concern is how can we uplift the most common parts of this fwk into vfs,
+> and meanwhile keeping the ability and flexibility when introducing private
+> feature/step in specified filesytem(now f2fs)?
+> 
+> According to current f2fs compression's requirement, maybe we can expand to
+> 
+> - support callback to let filesystem set the function for the flow in
+> decompression/verity/decryption step.
+> - support to use individual/common workqueue according the parameter.
+> 
+> Any thoughts?
 >
-> +	/* Synchronous hash, e.g., "sha256" */
-> +	ictx->hash = crypto_alloc_shash(shash_name, 0, 0);
-> +	if (IS_ERR(ictx->hash)) {
-> +		err = PTR_ERR(ictx->hash);
-> +		goto out_drop_skcipher;
-> +	}
 
-Holding a reference to this algorithm for the life-time of the
-instance is not nice.  How about just doing a lookup as you were
-doing before with crypto_alg_mod_lookup and getting the cra_name
-from that?
+Hi,
 
-Thanks,
+F2FS can be made to use fscrypt's queue for decryption and hence can reuse
+"read callbacks" code for decrypting data.
+
+For decompression, we could have a STEP_MISC where we invoke a FS provided
+callback function for FS specific post read processing? 
+
+Something like the following can be implemented in read_callbacks(),
+	  case STEP_MISC:
+		  if (ctx->enabled_steps & (1 << STEP_MISC)) {
+			  /*
+			    ctx->fs_misc() must process bio in a workqueue
+			    and later invoke read_callbacks() with
+			    bio->bi_private's value as an argument.
+			  */
+			  ctx->fs_misc(ctx->bio);
+			  return;
+		  }
+		  ctx->cur_step++;
+
+The fs_misc() callback can be passed in by the filesystem when invoking
+read_callbacks_setup_bio().
+
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+chandan
+
+
+
