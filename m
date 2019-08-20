@@ -2,126 +2,85 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A4BA1958B2
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 20 Aug 2019 09:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 697E395CCD
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 20 Aug 2019 13:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729312AbfHTHnZ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 20 Aug 2019 03:43:25 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:5161 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726049AbfHTHnZ (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 20 Aug 2019 03:43:25 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id B4DADC8A5D2DB9292ABB;
-        Tue, 20 Aug 2019 15:43:19 +0800 (CST)
-Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
- (10.3.19.213) with Microsoft SMTP Server (TLS) id 14.3.439.0; Tue, 20 Aug
- 2019 15:43:15 +0800
-Subject: Re: [f2fs-dev] [PATCH V4 5/8] f2fs: Use read_callbacks for decrypting
- file data
-To:     Chandan Rajendra <chandan@linux.ibm.com>, Chao Yu <chao@kernel.org>
-CC:     <linux-fsdevel@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-fscrypt@vger.kernel.org>, <hch@infradead.org>,
-        <tytso@mit.edu>, <ebiggers@kernel.org>, <adilger.kernel@dilger.ca>,
-        <chandanrmail@gmail.com>, <jaegeuk@kernel.org>
-References: <20190816061804.14840-1-chandan@linux.ibm.com>
- <20190816061804.14840-6-chandan@linux.ibm.com>
- <bb3dc624-1249-2418-f9da-93da8c11e7f5@kernel.org>
- <20104514.oSSJcvNEEM@localhost.localdomain>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <c4a16ead-bb85-b7db-948e-5ebe7bc4431d@huawei.com>
-Date:   Tue, 20 Aug 2019 15:43:14 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1729409AbfHTLDS (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 20 Aug 2019 07:03:18 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:34799 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728409AbfHTLDR (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 20 Aug 2019 07:03:17 -0400
+Received: by mail-wr1-f67.google.com with SMTP id s18so11947050wrn.1
+        for <linux-fscrypt@vger.kernel.org>; Tue, 20 Aug 2019 04:03:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PYetcWjVc7vdSwtXssMSvg418r+8X4MgNhcaW/l2Leo=;
+        b=DOrFw9r0hM88VSDUNv4XPUF8FQuOn1Tbru5+f8U0usSQcwdLnstfltZSH0d8/CLFmW
+         zsjrLaCUTr36kZ3ZqK7iCs5NCovMAMExkBSaVCCcnDZ3QhRD5ppm5x3py7r20aRfPYLQ
+         zD8RCtM0hDkqSHJwbEFRadyQ4WaTLz80AjVBwFExy++q8x8CjfMjOsQ+aPd/at7qoUWL
+         kfBIYyKoI+ZPDQySwrjXDAyNvt92RQqpin7+1JSxin+dPz0+H+aKxjit0PbmA5L05deo
+         0XNn66WVCUU3GuTb203wcmJD2NwPmIZ/KCc5MVZZq/nOpQGwZ9m8GsFJtvEGpGD6/tth
+         E7Ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PYetcWjVc7vdSwtXssMSvg418r+8X4MgNhcaW/l2Leo=;
+        b=fL1sNwYtaM036RVHY8oRYlxzck8JG+6E8YyIRDTGY++IPTre+qJrmfv/KLlMfejgyL
+         9B7+m40RCGM5AQ+RJVT2WsrThgy+1I/wErK/kqwFj7I2O4k1gZI6nmJKhPaFneqavV2T
+         kdCIKh8OFDdBDtQjdJsAkfDo6RLSm3o9rrt5r1HsYn33OjuTEZxx7XEFGnzoL0i9CeSA
+         g0vHu/Nv5tO97XzKFbRiKF/q1jZzn4f8dDvz/nv26EzJsBTfkHE0Clu+RTkZLHMNo/en
+         s3ySVrmOSlgp6CunEHXt6ZCKNsYSCXrvCJPuLHH+YTAL2zYrl4Dt+f1OGMePvi+2oucS
+         FNFw==
+X-Gm-Message-State: APjAAAUbktTTLq3OlI4kSCzV98+dHXYes07BlLQ7pcvi3BuyEjvnmQuG
+        1LmH1hYvGrbuWLvcuBtWACvG4EGuSOO/GxpnPfoDfg==
+X-Google-Smtp-Source: APXvYqzvZ8hgDgAwzcvz4UxyqiwEffyiB3lMMfCJYWOzWCNzFhIU5+8kaDYYixTIzGlFuczUg/+fNNI/HFx5ihOZ5AI=
+X-Received: by 2002:a05:6000:128d:: with SMTP id f13mr959362wrx.241.1566298993670;
+ Tue, 20 Aug 2019 04:03:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20104514.oSSJcvNEEM@localhost.localdomain>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.134.22.195]
-X-CFilter-Loop: Reflected
+References: <20190819141738.1231-1-ard.biesheuvel@linaro.org>
+In-Reply-To: <20190819141738.1231-1-ard.biesheuvel@linaro.org>
+From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Date:   Tue, 20 Aug 2019 14:03:02 +0300
+Message-ID: <CAKv+Gu_ZoQ+mfchJMigoy32DtAMbzRU3fOZS4YjBMS-2ZMvebg@mail.gmail.com>
+Subject: Re: [PATCH v13 0/6] crypto: switch to crypto API for ESSIV generation
+To:     "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Eric Biggers <ebiggers@google.com>,
+        device-mapper development <dm-devel@redhat.com>,
+        linux-fscrypt@vger.kernel.org,
+        Gilad Ben-Yossef <gilad@benyossef.com>,
+        Milan Broz <gmazyland@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On 2019/8/19 21:33, Chandan Rajendra wrote:
-> On Sunday, August 18, 2019 7:15:42 PM IST Chao Yu wrote:
->> Hi Chandan,
->>
->> On 2019-8-16 14:18, Chandan Rajendra wrote:
->>> F2FS has a copy of "post read processing" code using which encrypted
->>> file data is decrypted. This commit replaces it to make use of the
->>> generic read_callbacks facility.
->>
->> I remember that previously Jaegeuk had mentioned f2fs will support compression
->> later, and it needs to reuse 'post read processing' fwk.
->>
->> There is very initial version of compression feature in below link:
->>
->> https://git.kernel.org/pub/scm/linux/kernel/git/chao/linux.git/log/?h=compression
->>
->> So my concern is how can we uplift the most common parts of this fwk into vfs,
->> and meanwhile keeping the ability and flexibility when introducing private
->> feature/step in specified filesytem(now f2fs)?
->>
->> According to current f2fs compression's requirement, maybe we can expand to
->>
->> - support callback to let filesystem set the function for the flow in
->> decompression/verity/decryption step.
->> - support to use individual/common workqueue according the parameter.
->>
->> Any thoughts?
->>
-> 
-> Hi,
-> 
-> F2FS can be made to use fscrypt's queue for decryption and hence can reuse
-> "read callbacks" code for decrypting data.
-> 
-> For decompression, we could have a STEP_MISC where we invoke a FS provided
-> callback function for FS specific post read processing? 
-> 
-> Something like the following can be implemented in read_callbacks(),
-> 	  case STEP_MISC:
-> 		  if (ctx->enabled_steps & (1 << STEP_MISC)) {
-> 			  /*
-> 			    ctx->fs_misc() must process bio in a workqueue
-> 			    and later invoke read_callbacks() with
-> 			    bio->bi_private's value as an argument.
-> 			  */
-> 			  ctx->fs_misc(ctx->bio);
-> 			  return;
-> 		  }
-> 		  ctx->cur_step++;
-> 
-> The fs_misc() callback can be passed in by the filesystem when invoking
-> read_callbacks_setup_bio().
+On Mon, 19 Aug 2019 at 17:17, Ard Biesheuvel <ard.biesheuvel@linaro.org> wrote:
+>
+> This series creates an ESSIV template that produces a skcipher or AEAD
+> transform based on a tuple of the form '<skcipher>,<shash>' (or '<aead>,<shash>'
+> for the AEAD case). It exposes the encapsulated sync or async skcipher/aead by
+> passing through all operations, while using the cipher/shash pair to transform
+> the input IV into an ESSIV output IV.
+>
+> Changes since v12:
+> - don't use a per-instance shash but only record the cra_driver_name of the
+>   shash when instantiating the template, and allocate the shash for each
+>   allocated transform instead
+> - add back the dm-crypt patch -> as Milan has indicated, his preference would
+>   be to queue these changes for v5.4 (with the first patch shared between the
+>   cryptodev and md trees on a stable branch based on v5.3-rc1 - if needed,
+>   I can provide a signed tag)
+>
 
-Hi,
-
-Yes, something like this, can we just use STEP_DECOMPRESS and fs_decompress(),
-not sure, I doubt this interface may has potential user which has compression
-feature.
-
-One more concern is that to avoid more context switch, maybe we can merge all
-background works into one workqueue if there is no conflict when call wants to.
-
-static void bio_post_read_processing(struct bio_post_read_ctx *ctx)
- {
-	switch (++ctx->cur_step) {
-	case STEP_DECRYPT:
-		if (ctx->enabled_steps & (1 << STEP_DECRYPT)) {
-...
-			if (ctx->separated_wq)
-				return;
-		}
-		ctx->cur_step++;
-		/* fall-through */
-	case STEP_DECOMPRESS:
-...
-	default:
-		__read_end_io(ctx->bio);
-
-> 
+Actually, since Eric has indicated that he does not want to take the
+associated fscrypt change for v5.4 anyway, patch #1 could simply be
+routed through the md tree instead, while the others are taken through
+cryptodev.
