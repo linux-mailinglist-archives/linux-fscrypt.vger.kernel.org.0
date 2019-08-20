@@ -2,99 +2,91 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DAE9D95661
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 20 Aug 2019 07:04:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B0A9568C
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 20 Aug 2019 07:13:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727006AbfHTFEB (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 20 Aug 2019 01:04:01 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:15688 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728206AbfHTFEA (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 20 Aug 2019 01:04:00 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7K52LLw139627
-        for <linux-fscrypt@vger.kernel.org>; Tue, 20 Aug 2019 01:03:59 -0400
-Received: from e06smtp03.uk.ibm.com (e06smtp03.uk.ibm.com [195.75.94.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2ug7cd5ruc-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-fscrypt@vger.kernel.org>; Tue, 20 Aug 2019 01:03:59 -0400
-Received: from localhost
-        by e06smtp03.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-fscrypt@vger.kernel.org> from <chandan@linux.ibm.com>;
-        Tue, 20 Aug 2019 06:03:56 +0100
-Received: from b06avi18626390.portsmouth.uk.ibm.com (9.149.26.192)
-        by e06smtp03.uk.ibm.com (192.168.101.133) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Tue, 20 Aug 2019 06:03:51 +0100
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7K53U6o39322076
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 20 Aug 2019 05:03:30 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CE4E4A4040;
-        Tue, 20 Aug 2019 05:03:50 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6610FA4055;
-        Tue, 20 Aug 2019 05:03:48 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.199.62.92])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 20 Aug 2019 05:03:48 +0000 (GMT)
-From:   Chandan Rajendra <chandan@linux.ibm.com>
-To:     tytso@mit.edu, ebiggers@kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fscrypt@vger.kernel.org, chandanrmail@gmail.com,
-        adilger.kernel@dilger.ca, jaegeuk@kernel.org, yuchao0@huawei.com,
-        hch@infradead.org
+        id S1729091AbfHTFNT (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 20 Aug 2019 01:13:19 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:3095 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728960AbfHTFNT (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 20 Aug 2019 01:13:19 -0400
+Received: from DGGEMM402-HUB.china.huawei.com (unknown [172.30.72.54])
+        by Forcepoint Email with ESMTP id 30C0D55AD62F7D7E5F5A;
+        Tue, 20 Aug 2019 13:13:16 +0800 (CST)
+Received: from dggeme762-chm.china.huawei.com (10.3.19.108) by
+ DGGEMM402-HUB.china.huawei.com (10.3.20.210) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Tue, 20 Aug 2019 13:13:15 +0800
+Received: from architecture4 (10.140.130.215) by
+ dggeme762-chm.china.huawei.com (10.3.19.108) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10; Tue, 20 Aug 2019 13:13:15 +0800
+Date:   Tue, 20 Aug 2019 13:12:36 +0800
+From:   Gao Xiang <gaoxiang25@huawei.com>
+To:     Chandan Rajendra <chandan@linux.ibm.com>
+CC:     <tytso@mit.edu>, <ebiggers@kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-fscrypt@vger.kernel.org>, <chandanrmail@gmail.com>,
+        <adilger.kernel@dilger.ca>, <jaegeuk@kernel.org>,
+        <yuchao0@huawei.com>, <hch@infradead.org>
 Subject: Re: [PATCH V4 5/8] f2fs: Use read_callbacks for decrypting file data
-Date:   Tue, 20 Aug 2019 10:35:29 +0530
-Organization: IBM
-In-Reply-To: <20190816061804.14840-6-chandan@linux.ibm.com>
-References: <20190816061804.14840-1-chandan@linux.ibm.com> <20190816061804.14840-6-chandan@linux.ibm.com>
+Message-ID: <20190820051236.GE159846@architecture4>
+References: <20190816061804.14840-1-chandan@linux.ibm.com>
+ <20190816061804.14840-6-chandan@linux.ibm.com>
+ <1652707.8YmLLlegLt@localhost.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
-X-TM-AS-GCONF: 00
-x-cbid: 19082005-0012-0000-0000-000003409143
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19082005-0013-0000-0000-0000217AB39E
-Message-Id: <1652707.8YmLLlegLt@localhost.localdomain>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-20_01:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=1 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=927 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908200052
+Content-Disposition: inline
+In-Reply-To: <1652707.8YmLLlegLt@localhost.localdomain>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [10.140.130.215]
+X-ClientProxiedBy: dggeme715-chm.china.huawei.com (10.1.199.111) To
+ dggeme762-chm.china.huawei.com (10.3.19.108)
+X-CFilter-Loop: Reflected
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Friday, August 16, 2019 11:48 AM Chandan Rajendra wrote:
-> F2FS has a copy of "post read processing" code using which encrypted
-> file data is decrypted. This commit replaces it to make use of the
-> generic read_callbacks facility.
+Hi Chandan,
+
+On Tue, Aug 20, 2019 at 10:35:29AM +0530, Chandan Rajendra wrote:
+> On Friday, August 16, 2019 11:48 AM Chandan Rajendra wrote:
+> > F2FS has a copy of "post read processing" code using which encrypted
+> > file data is decrypted. This commit replaces it to make use of the
+> > generic read_callbacks facility.
+> > 
+> > Signed-off-by: Chandan Rajendra <chandan@linux.ibm.com>
 > 
-> Signed-off-by: Chandan Rajendra <chandan@linux.ibm.com>
+> Hi Eric and Ted,
+> 
+> Looks like F2FS requires a lot more flexiblity than what can be offered by
+> read callbacks i.e.
+> 
+> 1. F2FS wants to make use of its own workqueue for decryption, verity and
+>    decompression.
+> 2. F2FS' decompression code is not an FS independent entity like fscrypt and
+>    fsverity. Hence they would need Filesystem specific callback functions to
+>    be invoked from "read callbacks". 
+> 
+> Hence I would suggest that we should drop F2FS changes made in this
+> patchset. Please let me know your thoughts on this.
 
-Hi Eric and Ted,
+Add a word, I have some little concern about post read procession order
+a bit as I mentioned before, because I'd like to move common EROFS
+decompression code out in the future as well for other fses to use
+after we think it's mature enough.
 
-Looks like F2FS requires a lot more flexiblity than what can be offered by
-read callbacks i.e.
+It seems the current code mainly addresses eliminating duplicated code,
+therefore I have no idea about that...
 
-1. F2FS wants to make use of its own workqueue for decryption, verity and
-   decompression.
-2. F2FS' decompression code is not an FS independent entity like fscrypt and
-   fsverity. Hence they would need Filesystem specific callback functions to
-   be invoked from "read callbacks". 
+Thanks,
+Gao Xiang
 
-Hence I would suggest that we should drop F2FS changes made in this
-patchset. Please let me know your thoughts on this.
-
--- 
-chandan
-
-
-
+> 
+> -- 
+> chandan
+> 
+> 
+> 
