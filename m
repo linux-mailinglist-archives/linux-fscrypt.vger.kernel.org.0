@@ -2,100 +2,126 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D76995699
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 20 Aug 2019 07:17:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4BA1958B2
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 20 Aug 2019 09:43:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729108AbfHTFRR (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 20 Aug 2019 01:17:17 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3943 "EHLO huawei.com"
+        id S1729312AbfHTHnZ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 20 Aug 2019 03:43:25 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:5161 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728206AbfHTFRR (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 20 Aug 2019 01:17:17 -0400
-Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.54])
-        by Forcepoint Email with ESMTP id 28422F56875F54F8473E;
-        Tue, 20 Aug 2019 13:17:14 +0800 (CST)
-Received: from dggeme762-chm.china.huawei.com (10.3.19.108) by
- DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Tue, 20 Aug 2019 13:17:13 +0800
-Received: from architecture4 (10.140.130.215) by
- dggeme762-chm.china.huawei.com (10.3.19.108) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1591.10; Tue, 20 Aug 2019 13:17:13 +0800
-Date:   Tue, 20 Aug 2019 13:16:36 +0800
-From:   Gao Xiang <gaoxiang25@huawei.com>
-To:     Chandan Rajendra <chandan@linux.ibm.com>
-CC:     <tytso@mit.edu>, <ebiggers@kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
+        id S1726049AbfHTHnZ (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 20 Aug 2019 03:43:25 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id B4DADC8A5D2DB9292ABB;
+        Tue, 20 Aug 2019 15:43:19 +0800 (CST)
+Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server (TLS) id 14.3.439.0; Tue, 20 Aug
+ 2019 15:43:15 +0800
+Subject: Re: [f2fs-dev] [PATCH V4 5/8] f2fs: Use read_callbacks for decrypting
+ file data
+To:     Chandan Rajendra <chandan@linux.ibm.com>, Chao Yu <chao@kernel.org>
+CC:     <linux-fsdevel@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
         <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-fscrypt@vger.kernel.org>, <chandanrmail@gmail.com>,
-        <adilger.kernel@dilger.ca>, <jaegeuk@kernel.org>,
-        <yuchao0@huawei.com>, <hch@infradead.org>
-Subject: Re: [PATCH V4 5/8] f2fs: Use read_callbacks for decrypting file data
-Message-ID: <20190820051635.GF159846@architecture4>
+        <linux-fscrypt@vger.kernel.org>, <hch@infradead.org>,
+        <tytso@mit.edu>, <ebiggers@kernel.org>, <adilger.kernel@dilger.ca>,
+        <chandanrmail@gmail.com>, <jaegeuk@kernel.org>
 References: <20190816061804.14840-1-chandan@linux.ibm.com>
  <20190816061804.14840-6-chandan@linux.ibm.com>
- <1652707.8YmLLlegLt@localhost.localdomain>
- <20190820051236.GE159846@architecture4>
+ <bb3dc624-1249-2418-f9da-93da8c11e7f5@kernel.org>
+ <20104514.oSSJcvNEEM@localhost.localdomain>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <c4a16ead-bb85-b7db-948e-5ebe7bc4431d@huawei.com>
+Date:   Tue, 20 Aug 2019 15:43:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20190820051236.GE159846@architecture4>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [10.140.130.215]
-X-ClientProxiedBy: dggeme707-chm.china.huawei.com (10.1.199.103) To
- dggeme762-chm.china.huawei.com (10.3.19.108)
+In-Reply-To: <20104514.oSSJcvNEEM@localhost.localdomain>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.134.22.195]
 X-CFilter-Loop: Reflected
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, Aug 20, 2019 at 01:12:36PM +0800, Gao Xiang wrote:
-> Hi Chandan,
+On 2019/8/19 21:33, Chandan Rajendra wrote:
+> On Sunday, August 18, 2019 7:15:42 PM IST Chao Yu wrote:
+>> Hi Chandan,
+>>
+>> On 2019-8-16 14:18, Chandan Rajendra wrote:
+>>> F2FS has a copy of "post read processing" code using which encrypted
+>>> file data is decrypted. This commit replaces it to make use of the
+>>> generic read_callbacks facility.
+>>
+>> I remember that previously Jaegeuk had mentioned f2fs will support compression
+>> later, and it needs to reuse 'post read processing' fwk.
+>>
+>> There is very initial version of compression feature in below link:
+>>
+>> https://git.kernel.org/pub/scm/linux/kernel/git/chao/linux.git/log/?h=compression
+>>
+>> So my concern is how can we uplift the most common parts of this fwk into vfs,
+>> and meanwhile keeping the ability and flexibility when introducing private
+>> feature/step in specified filesytem(now f2fs)?
+>>
+>> According to current f2fs compression's requirement, maybe we can expand to
+>>
+>> - support callback to let filesystem set the function for the flow in
+>> decompression/verity/decryption step.
+>> - support to use individual/common workqueue according the parameter.
+>>
+>> Any thoughts?
+>>
 > 
-> On Tue, Aug 20, 2019 at 10:35:29AM +0530, Chandan Rajendra wrote:
-> > On Friday, August 16, 2019 11:48 AM Chandan Rajendra wrote:
-> > > F2FS has a copy of "post read processing" code using which encrypted
-> > > file data is decrypted. This commit replaces it to make use of the
-> > > generic read_callbacks facility.
-> > > 
-> > > Signed-off-by: Chandan Rajendra <chandan@linux.ibm.com>
-> > 
-> > Hi Eric and Ted,
-> > 
-> > Looks like F2FS requires a lot more flexiblity than what can be offered by
-> > read callbacks i.e.
-> > 
-> > 1. F2FS wants to make use of its own workqueue for decryption, verity and
-> >    decompression.
-> > 2. F2FS' decompression code is not an FS independent entity like fscrypt and
-> >    fsverity. Hence they would need Filesystem specific callback functions to
-> >    be invoked from "read callbacks". 
-> > 
-> > Hence I would suggest that we should drop F2FS changes made in this
-> > patchset. Please let me know your thoughts on this.
+> Hi,
 > 
-> Add a word, I have some little concern about post read procession order
+> F2FS can be made to use fscrypt's queue for decryption and hence can reuse
+> "read callbacks" code for decrypting data.
+> 
+> For decompression, we could have a STEP_MISC where we invoke a FS provided
+> callback function for FS specific post read processing? 
+> 
+> Something like the following can be implemented in read_callbacks(),
+> 	  case STEP_MISC:
+> 		  if (ctx->enabled_steps & (1 << STEP_MISC)) {
+> 			  /*
+> 			    ctx->fs_misc() must process bio in a workqueue
+> 			    and later invoke read_callbacks() with
+> 			    bio->bi_private's value as an argument.
+> 			  */
+> 			  ctx->fs_misc(ctx->bio);
+> 			  return;
+> 		  }
+> 		  ctx->cur_step++;
+> 
+> The fs_misc() callback can be passed in by the filesystem when invoking
+> read_callbacks_setup_bio().
 
-FYI. Just a minor concern about its flexibility, not big though.
-https://lore.kernel.org/r/20190808042640.GA28630@138/
+Hi,
 
-Thanks,
-Gao Xiang
+Yes, something like this, can we just use STEP_DECOMPRESS and fs_decompress(),
+not sure, I doubt this interface may has potential user which has compression
+feature.
 
-> a bit as I mentioned before, because I'd like to move common EROFS
-> decompression code out in the future as well for other fses to use
-> after we think it's mature enough.
+One more concern is that to avoid more context switch, maybe we can merge all
+background works into one workqueue if there is no conflict when call wants to.
+
+static void bio_post_read_processing(struct bio_post_read_ctx *ctx)
+ {
+	switch (++ctx->cur_step) {
+	case STEP_DECRYPT:
+		if (ctx->enabled_steps & (1 << STEP_DECRYPT)) {
+...
+			if (ctx->separated_wq)
+				return;
+		}
+		ctx->cur_step++;
+		/* fall-through */
+	case STEP_DECOMPRESS:
+...
+	default:
+		__read_end_io(ctx->bio);
+
 > 
-> It seems the current code mainly addresses eliminating duplicated code,
-> therefore I have no idea about that...
-> 
-> Thanks,
-> Gao Xiang
-> 
-> > 
-> > -- 
-> > chandan
-> > 
-> > 
-> > 
