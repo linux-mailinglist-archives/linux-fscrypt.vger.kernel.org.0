@@ -2,168 +2,247 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B20F896F2D
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 21 Aug 2019 04:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65AE3972C5
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 21 Aug 2019 08:43:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726372AbfHUCCl (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 20 Aug 2019 22:02:41 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:52344 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726391AbfHUCCk (ORCPT
+        id S1725268AbfHUGmQ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 21 Aug 2019 02:42:16 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:33805 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726388AbfHUGmQ (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 20 Aug 2019 22:02:40 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7L2284Z046801
-        for <linux-fscrypt@vger.kernel.org>; Tue, 20 Aug 2019 22:02:39 -0400
-Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2ugsw9x6ha-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-fscrypt@vger.kernel.org>; Tue, 20 Aug 2019 22:02:38 -0400
-Received: from localhost
-        by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-fscrypt@vger.kernel.org> from <chandan@linux.ibm.com>;
-        Wed, 21 Aug 2019 03:02:36 +0100
-Received: from b06avi18878370.portsmouth.uk.ibm.com (9.149.26.194)
-        by e06smtp02.uk.ibm.com (192.168.101.132) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Wed, 21 Aug 2019 03:02:32 +0100
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7L22Vbw44958168
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Aug 2019 02:02:31 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2C13611C052;
-        Wed, 21 Aug 2019 02:02:31 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CBC9511C050;
-        Wed, 21 Aug 2019 02:02:28 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.102.1.207])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 21 Aug 2019 02:02:28 +0000 (GMT)
-From:   Chandan Rajendra <chandan@linux.ibm.com>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>, ebiggers@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fscrypt@vger.kernel.org, chandanrmail@gmail.com,
-        adilger.kernel@dilger.ca, yuchao0@huawei.com, hch@infradead.org
-Subject: Re: [PATCH V4 5/8] f2fs: Use read_callbacks for decrypting file data
-Date:   Wed, 21 Aug 2019 07:34:10 +0530
-Organization: IBM
-In-Reply-To: <20190820173116.GA58214@jaegeuk-macbookpro.roam.corp.google.com>
-References: <20190816061804.14840-1-chandan@linux.ibm.com> <20190820163837.GD10232@mit.edu> <20190820173116.GA58214@jaegeuk-macbookpro.roam.corp.google.com>
+        Wed, 21 Aug 2019 02:42:16 -0400
+Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20190821064211epoutp03e20908cee1d0aa32e43cc98c4556a5e2~83Pi7_KR71325913259epoutp03i
+        for <linux-fscrypt@vger.kernel.org>; Wed, 21 Aug 2019 06:42:11 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20190821064211epoutp03e20908cee1d0aa32e43cc98c4556a5e2~83Pi7_KR71325913259epoutp03i
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1566369731;
+        bh=6nvViRArjV4omK6peQr/VJEo362MQawOvuOjWNtcvUc=;
+        h=From:To:Subject:Date:References:From;
+        b=KgvXEC03C4r1U97r7bQ5DRRMTIXhvVfcvuv//kqB9AfekkM1a6r6AlK/dwkzmj1/j
+         6Da8kMqM2aSH3vsPYueOGpcP367QkCqp/Un1AsgIkKYcR0YdMlJuZ47ea/iHjqaU9V
+         dzZJioeQWALlclkJ5xlW0pzJ4Wntvqon2nNSykqw=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
+        20190821064210epcas2p2b0753f2c58b6ebb1f39566c7be44018c~83PiaFvVa1369213692epcas2p22;
+        Wed, 21 Aug 2019 06:42:10 +0000 (GMT)
+Received: from epsmges2p1.samsung.com (unknown [182.195.40.184]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 46Cykl2yFmzMqYkV; Wed, 21 Aug
+        2019 06:42:07 +0000 (GMT)
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        3F.AD.04156.FB7EC5D5; Wed, 21 Aug 2019 15:42:07 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
+        20190821064206epcas2p1d1bcaae142416506bcedb3201d9a6658~83PeydRUI2328923289epcas2p1F;
+        Wed, 21 Aug 2019 06:42:06 +0000 (GMT)
+Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20190821064206epsmtrp2200b095c38c04c7c0825b9bbdffaf76e~83PesuNc52242122421epsmtrp2E;
+        Wed, 21 Aug 2019 06:42:06 +0000 (GMT)
+X-AuditID: b6c32a45-df7ff7000000103c-24-5d5ce7bf38af
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        EF.C2.03638.EB7EC5D5; Wed, 21 Aug 2019 15:42:06 +0900 (KST)
+Received: from KORDO035251 (unknown [12.36.165.204]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20190821064206epsmtip198eaffa6242c7b1b17cfbe143230c99b~83PeSZEq23087530875epsmtip17;
+        Wed, 21 Aug 2019 06:42:06 +0000 (GMT)
+From:   "boojin.kim" <boojin.kim@samsung.com>
+To:     "'Herbert Xu'" <herbert@gondor.apana.org.au>,
+        "'David S. Miller'" <davem@davemloft.net>,
+        "'Eric Biggers'" <ebiggers@kernel.org>,
+        "'Theodore Y. Ts'o'" <tytso@mit.edu>,
+        "'Chao Yu'" <chao@kernel.org>,
+        "'Jaegeuk Kim'" <jaegeuk@kernel.org>,
+        "'Andreas Dilger'" <adilger.kernel@dilger.ca>,
+        "'Theodore Ts'o'" <tytso@mit.edu>, <dm-devel@redhat.com>,
+        "'Mike Snitzer'" <snitzer@redhat.com>,
+        "'Alasdair Kergon'" <agk@redhat.com>,
+        "'Jens Axboe'" <axboe@kernel.dk>,
+        "'Krzysztof Kozlowski'" <krzk@kernel.org>,
+        "'Kukjin Kim'" <kgene@kernel.org>,
+        "'Jaehoon Chung'" <jh80.chung@samsung.com>,
+        "'Ulf Hansson'" <ulf.hansson@linaro.org>,
+        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-fscrypt@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
+        <linux-samsung-soc@vger.kernel.org>, <linux-block@vger.kernel.org>,
+        <linux-ext4@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-samsung-soc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-fsdevel@vger.kernel.org>
+Subject: [PATCH 0/9] Flash Memory Protector Support
+Date:   Wed, 21 Aug 2019 15:42:06 +0900
+Message-ID: <003c01d557eb$8ca76790$a5f636b0$@samsung.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-TM-AS-GCONF: 00
-x-cbid: 19082102-0008-0000-0000-0000030B4377
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19082102-0009-0000-0000-00004A296C7E
-Message-Id: <2592782.4KYYplS4oi@localhost.localdomain>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-21_01:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=1 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908210018
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 14.0
+Thread-Index: AdVX55ZGLpDJ2oWzRvaIZpriXB0iug==
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Tf2wTZRjOd9e765DK2VX9qEbq4Yh0rrRlnd+EGhIRzsgfM8Qgc828rJdu
+        sb/Sa2HTRFC37ofT6YgySjcGEpCNMrbVucA6cPwozNVFl+JAnIThkE4n7gdJB4i93Yz773nf
+        93nyPc/35pXjygZKLS9xenmPk7Mz5CJZ15mVKOvUzQKL/tjRdDQzXSVDbf3ncdT6Sx2Jvvs8
+        hqHgYLkMRSb2EijUcw9HHyWeRDfaAjganvUTqG50HEeDg8cp1DF6iUCRK5no15EkhvY0XSXR
+        jwc2okTTHRnqiVyUoaETQRKdfVAHUMNgL4b87TMAVdQmKRQNbVm3lA0fuYyx5Z3b2a7TGexQ
+        zMd2tFST7NVLPSTbeXAHe7J5CmM/GDiHs3/1xkn2k3ALYKc6nspbnG9fW8xzVt6j4Z1FLmuJ
+        02ZmXt1c+FKhKUdvyDLkoucZjZNz8GZm/aa8rA0l9lR2RrONs/tSrTxOEJhVL671uHxeXlPs
+        Erxmhndb7W6Dwa0TOIfgc9p0RS7HCwa93mhKMd+yFw8nGgj3cW3p7n0fEztBYlkNSJNDOhv2
+        V8aJGrBIrqS7ATwai+NSMQlgW3zffHEHwK7yC2QNkM9JIjGdqFbSEQCH2ldInFsAhn+YBuKA
+        pDNhZ7QFiAMV/Q8Fd19rwsVBOr0aVtTeJkQsozPgofq/MREr6Fx4IRgjJfwIvLjnhkzEOL0M
+        fvNnEJe8amB3bHzuARWtg/XfjhASRwX3VvvnOUkKvh+0SHg93NU3jkk4HSaiYUrCajg1ESEl
+        vAPGD31JiUYhXQvgwKx/nrQaBsYqgZgYp1fCthOrpPDL4dkr89YehlVn7lNSWwGr/EpJ+Axs
+        nBzCpLYa3q59T2qzsL4xiknfZoHRUzeJT4EmsCBvYEHewIJcgf8tNANZC3iMdwsOGy8Y3YaF
+        q+4Ac1ehfbkbNHy/qQ/QcsAsViQLCixKgtsmlDn6AJTjjEpRGsy3KBVWruwd3uMq9PjsvNAH
+        TKl1fIarHy1ypW7M6S00mIw5OfpcEzLlGBHzuKLzocsFStrGefm3ed7Ne/7TYfI09U5QTa3J
+        sD7R/AcfMs90TWjH/EvXNfKv478fO7B9VJs2AkvDoa8P02P5jtYt1w1jd835/Tbd/jW7nE3d
+        2ZWZ0x9u5OKHt664db56Sbbm2k+/Ddz7ufnkF61bqbLJ5P2vjhhVT9v50Onrr8lf2XxOeKB8
+        82DF9HPe4SW976bdfbbyjfYN0VlGJhRzBi3uEbh/ASwhXbYrBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrHIsWRmVeSWpSXmKPExsWy7bCSnO6+5zGxBrfnaFh8/dLBYrH+1DFm
+        i9V3+9ksTk89y2Qx53wLi8Xed7NZLdbu+cNs0f1KxuLJ+lnMFjd+tbFa9D9+zWxx/vwGdotN
+        j6+xWuy9pW1x/95PJouZ8+6wWVxa5G7xat43Fos9e0+yWFzeNYfN4sj/fkaLGef3MVm0bfzK
+        aNHa85Pd4vjacAdJjy0rbzJ5tGwu99h2QNXj8tlSj02rOtk87lzbw+axeUm9x+4Fn5k8ms4c
+        ZfZ4v+8qm0ffllWMHp83yQXwRHHZpKTmZJalFunbJXBl3Hg1g7Vgg1bF9Pm9rA2Mr+S7GDk4
+        JARMJPae1eti5OQQEtjNKHHriTyILSEgJbG1fQ8zhC0scb/lCGsXIxdQzXNGiW9LXrKAJNgE
+        tCU2H1/FCJIQEZjGIfGjdTZYQljAWKK15wMriM0ioCqxbNJHJhCbV8BS4sScs2wQtqDEyZlP
+        WECOYBbQk2jbyAgSZhaQl9j+dg7UYgWJHWdfg8VFgEomHbzHClEjIjG7s415AqPALCSTZiFM
+        moVk0iwkHQsYWVYxSqYWFOem5xYbFhjlpZbrFSfmFpfmpesl5+duYgTHupbWDsYTJ+IPMQpw
+        MCrx8O64GR0rxJpYVlyZe4hRgoNZSYS3Yk5UrBBvSmJlVWpRfnxRaU5q8SFGaQ4WJXFe+fxj
+        kUIC6YklqdmpqQWpRTBZJg5OqQZG1zfv+6S1qyQq73im+HoYzs6IOW60odkhWaVaybJ9is3n
+        1qNBR77Omempbhj+TMxljtS71x7zdyhdcPiw4NoxrVZvt9xrd+8e2yKtFd7Q2u3XKdN8tv29
+        0TmNfee6c5/bHPG8IVXi3jMjbM7z+FgDx1ddvDXbLl87fbDoqW2QFK/Vt1+L9SOUWIozEg21
+        mIuKEwHPOnoc8QIAAA==
+X-CMS-MailID: 20190821064206epcas2p1d1bcaae142416506bcedb3201d9a6658
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20190821064206epcas2p1d1bcaae142416506bcedb3201d9a6658
+References: <CGME20190821064206epcas2p1d1bcaae142416506bcedb3201d9a6658@epcas2p1.samsung.com>
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tuesday, August 20, 2019 11:01 PM Jaegeuk Kim wrote:
-> Hi Chandan,
-> 
-> On 08/20, Theodore Y. Ts'o wrote:
-> > On Tue, Aug 20, 2019 at 10:35:29AM +0530, Chandan Rajendra wrote:
-> > > Looks like F2FS requires a lot more flexiblity than what can be offered by
-> > > read callbacks i.e.
-> > > 
-> > > 1. F2FS wants to make use of its own workqueue for decryption, verity and
-> > >    decompression.
-> > > 2. F2FS' decompression code is not an FS independent entity like fscrypt and
-> > >    fsverity. Hence they would need Filesystem specific callback functions to
-> > >    be invoked from "read callbacks". 
-> > > 
-> > > Hence I would suggest that we should drop F2FS changes made in this
-> > > patchset. Please let me know your thoughts on this.
-> > 
-> > That's probably the best way to go for now.  My one concern is that it
-> > means that only ext4 will be using your framework.  I could imagine
-> > that some people might argue that should just move the callback scheme
-> > into ext4 code as opposed to leaving it in fscrypt --- at least until
-> > we can find other file systems where we can show that it will be
-> > useful for those other file systems.
-> 
-> I also have to raise a flag on this. Doesn't this patch series try to get rid
-> of redundant work? What'd be the rationale, if it only supports ext4?
+Exynos has a H/W block called FMP (Flash Memory Protector) to protect data
+stored on storage device.
+FMP interworks with the storage controller to encrypt a data before writing
+to the storage device and decrypt the data after reading from storage
+device.
+FMP is a kind of ICE (inline crypto engines), which is generally known
+as being used for the above role.
 
-This patchset gets encryption working with subpage blocksize by making
-relevant changes in the generic code (i.e. do_mpage_readpage() and
-block_read_full_page()) and removing duplicate code from ext4
-(i.e. ext4_readpage() and friends). Without these changes the only way to get
-subpage blocksize support was to add more duplicate code into Ext4 i.e. import
-a copy of block_read_full_page() into Ext4 and make necessary edits to support
-encryption.
+To use FMP, the modification of various layers such as Fscrypt, ext4, f2fs,
+DM-crypt, storage controller driver and block is required.
+FMP solution introduces a new diskcipher similar to the existing skcipher
+in crypo API in order to minimize the modification of these layers and
+to improve the code readability.
 
-So this patchset actually does help in removing exiting duplicate code in Ext4
-and also prevents addition of more such code.
+This patchset includes the following for using FMP:
+- Diskcipher and FMP are added to crypto API.
+- The crypto users such as dm-crypt and fscrypt are modified to support
+  diskcipher.
+- The bio submitters such as f2fs, ext4, dm-crypt are modified to support
+  diskcipher.
+- Block layer is modified to pass diskcipher to storage controller driver.
+- Storage controller driver is modified to support crypto operation.
 
-> 
-> How about generalizing the framework to support generic_post_read and per-fs
-> post_read for fscrypt/fsverity/... selectively?
+Exynos FMP solution consists of Diskcipher and FMP driver.
+Diskcipher is a symmetric key cipher of crypto API that supports inline
+crypto engine like FMP.
+FMP driver is a cipher algorithm running on diskcipher.
+FMP driver registers 'cbc(aes)-disk' and 'xts(aes)-disk' algorithms to
+crypto API.
+FMP can be tested with various test vectors in testmgr of crypto API.
 
-Quoting what I had said earlier,
-> > > 1. F2FS wants to make use of its own workqueue for decryption, verity and
-> > >    decompression.
-> > > 2. F2FS' decompression code is not an FS independent entity like fscrypt and
-> > >    fsverity. Hence they would need Filesystem specific callback functions to
-> > >    be invoked from "read callbacks". 
+When encrypting using FMP, additional control is required to deliver and
+manage encryption information between encryption users (fscrypt, DM-crypt)
+and FMP drivers. Diskcipher provides this control.
 
-I am not sure if read callbacks can be made flexible enough to support the
-above use cases. fscrypt and fsverity already provide workqueues and any new
-post processing code added should follow the same convention. I see
-that F2FS use case is special since,
-1. It uses its own workqueues.
-2. Decompression code inside F2FS isn't written as an FS independent subsystem
-   like how fscrypt and fsverity are implemented.
+The encryption using FMP is made up of 4 steps.
+The first step is to assign a password and set a key.
+Encryption users such as Fscrypt or DM-crypt assign diskcipher, and set key
+to the diskcipher.
+The second step is to deliver diskcipher that has crypto information to
+storage drivers such as UFS and MMC. BIO is used to this delivery.
+The BIO submitters, such as ext4, f2fs and DM-crypt, checks if there is
+diskcipher in crypto configuration before issuing BIO. If there are
+diskcipher, the submitter sets it to BIO.
+In addition, the BIO submitter skips the task of encrypting data before BIO
+and decrypting data after BIO is completed.
+In the third step, the storage driver gets the diskcipher from the BIO and
+requests the FMP to encrypt.
+In the final step, the FMP extracts crypto information from the diskcipher
+and writes it in the descriptor area allocated for FMP H/W.
+The FMP H/W uses the descriptor of the storage controller to contain crypto
+information. So the descriptor of storage controller should be expanded
+for FMP.
 
-To summarize, I believe the users of read callbacks should follow the
-conventions set by fscrypt/fsverity and new post processing code that needs to
-be plugged into read callbacks should provide APIs similar to
-fscrypt/fsverity. Otherwise the state machine logic implemented by read
-callbacks will get complex/convoluted.
+Boojin Kim (9):
+  crypt: Add diskcipher
+  crypto: fmp: add Flash Memory Protector driver
+  mmc: dw_mmc: support crypto operation
+  mmc: dw_mmc-exynos: support FMP
+  block: support diskcipher
+  dm crypt: support diskcipher
+  fscrypt: support diskcipher
+  fs: ext4: support diskcipher
+  fs: f2fs: support diskcipher
 
-> 
-> Thanks,
-> 
-> > 
-> > (Perhaps a useful experiment would be to have someone implement patches
-> > to support fscrypt and fsverity in ext2 --- the patch might or might
-> > not be accepted for upstream inclusion, but it would be useful to
-> > demonstrate how easy it is to add fscrypt and fsverity.)
-> > 
-> > The other thing to consider is that there has been some discussion
-> > about adding generalized support for I/O submission to the iomap
-> > library.  It might be that if that work is accepted, support for
-> > fscrypt and fsverity would be a requirement for ext4 to use that
-> > portion of iomap's functionality.  So in that eventuality, it might be
-> > that we'll want to move your read callbacks code into iomap, or we'll
-> > need to rework the read callbacks code so it can work with iomap.
-> > 
-> > But this is all work for the future.  I'm a firm believe that the
-> > perfect should not be the enemy of the good, and that none of this
-> > should be a fundamental obstacle in having your code upstream.
-> > 
-> > Cheers,
-> > 
-> > 					- Ted
-> > 
-> 
+ block/bio.c                      |   1 +
+ block/blk-merge.c                |  19 +-
+ block/bounce.c                   |   5 +-
+ crypto/Kconfig                   |   9 +
+ crypto/Makefile                  |   1 +
+ crypto/diskcipher.c              | 349 +++++++++++++++++++++++
+ crypto/testmgr.c                 | 157 +++++++++++
+ drivers/crypto/Kconfig           |   2 +
+ drivers/crypto/Makefile          |   1 +
+ drivers/crypto/fmp/Kconfig       |  13 +
+ drivers/crypto/fmp/Makefile      |   1 +
+ drivers/crypto/fmp/fmp.c         | 595
++++++++++++++++++++++++++++++++++++++++
+ drivers/crypto/fmp/fmp_crypt.c   | 243 ++++++++++++++++
+ drivers/crypto/fmp/fmp_test.c    | 310 ++++++++++++++++++++
+ drivers/crypto/fmp/fmp_test.h    |  30 ++
+ drivers/md/dm-crypt.c            | 112 +++++++-
+ drivers/mmc/host/Kconfig         |   8 +
+ drivers/mmc/host/dw_mmc-exynos.c |  62 ++++
+ drivers/mmc/host/dw_mmc.c        |  48 +++-
+ drivers/mmc/host/dw_mmc.h        |   6 +
+ fs/buffer.c                      |   2 +
+ fs/crypto/bio.c                  |  43 ++-
+ fs/crypto/fscrypt_private.h      |  28 +-
+ fs/crypto/keysetup.c             |  60 +++-
+ fs/crypto/keysetup_v1.c          |   2 +-
+ fs/ext4/inode.c                  |  39 ++-
+ fs/ext4/page-io.c                |   8 +-
+ fs/ext4/readpage.c               |   7 +
+ fs/f2fs/data.c                   |  98 ++++++-
+ fs/f2fs/f2fs.h                   |   2 +-
+ include/crypto/diskcipher.h      | 245 ++++++++++++++++
+ include/crypto/fmp.h             | 324 +++++++++++++++++++++
+ include/linux/bio.h              |  10 +
+ include/linux/blk_types.h        |   4 +
+ include/linux/bvec.h             |   3 +
+ include/linux/crypto.h           |   1 +
+ include/linux/fscrypt.h          |  19 ++
+ include/uapi/linux/fscrypt.h     |   2 +
+ tools/include/uapi/linux/fs.h    |   1 +
+ 39 files changed, 2837 insertions(+), 33 deletions(-)
+ create mode 100644 crypto/diskcipher.c
+ create mode 100644 drivers/crypto/fmp/Kconfig
+ create mode 100644 drivers/crypto/fmp/Makefile
+ create mode 100644 drivers/crypto/fmp/fmp.c
+ create mode 100644 drivers/crypto/fmp/fmp_crypt.c
+ create mode 100644 drivers/crypto/fmp/fmp_test.c
+ create mode 100644 drivers/crypto/fmp/fmp_test.h
+ create mode 100644 include/crypto/diskcipher.h
+ create mode 100644 include/crypto/fmp.h
 
 -- 
-chandan
-
-
+2.7.4
 
