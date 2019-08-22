@@ -2,151 +2,207 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 436BB988BC
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 22 Aug 2019 02:54:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 784D698DEC
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 22 Aug 2019 10:37:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730420AbfHVAyr (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 21 Aug 2019 20:54:47 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:62780 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727553AbfHVAyr (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 21 Aug 2019 20:54:47 -0400
-Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20190822005444epoutp03667283445bb7d0acbb58e1dd64e0fe0f~9GJd43Vpk0998909989epoutp03G
-        for <linux-fscrypt@vger.kernel.org>; Thu, 22 Aug 2019 00:54:44 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20190822005444epoutp03667283445bb7d0acbb58e1dd64e0fe0f~9GJd43Vpk0998909989epoutp03G
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1566435284;
-        bh=zkZXU4UgR2xVWaur+CPkoWa/h3dr00YRZlhWS9MWMAc=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=LgsqbT+hYIIBvCF5mcNpSLjX71VwNOW3ECNKiy2AW9M3uUPWM77Adx70KiCIl9S6g
-         8BCo8Y4qWPQ92CXApOiUFoMXdJsXwcahI1N312DIPZXn1iuJDjZsyN95Wn0XJ9GJwM
-         pcZJtA6x5sXzKBtI4w7edPjs3L/3X5MzcmqT9uaY=
-Received: from epsnrtp5.localdomain (unknown [182.195.42.166]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
-        20190822005443epcas2p12f0b23d4dfaf0bb9b991b29ddfea4ff8~9GJdH1To80306303063epcas2p1A;
-        Thu, 22 Aug 2019 00:54:43 +0000 (GMT)
-Received: from epsmges2p1.samsung.com (unknown [182.195.40.186]) by
-        epsnrtp5.localdomain (Postfix) with ESMTP id 46DQzP0PDKzMqYkc; Thu, 22 Aug
-        2019 00:54:41 +0000 (GMT)
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        20.1F.04156.FC7ED5D5; Thu, 22 Aug 2019 09:54:39 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
-        20190822005438epcas2p337aba06b328cdcdd1549395f0bbcfdbc~9GJY5qmwx3233232332epcas2p3f;
-        Thu, 22 Aug 2019 00:54:38 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20190822005438epsmtrp223bcbfc1f01624cd3dc41a63517cface~9GJY4itJ50123901239epsmtrp2Q;
-        Thu, 22 Aug 2019 00:54:38 +0000 (GMT)
-X-AuditID: b6c32a45-df7ff7000000103c-ab-5d5de7cf581d
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        69.D2.03706.EC7ED5D5; Thu, 22 Aug 2019 09:54:38 +0900 (KST)
-Received: from KORDO035251 (unknown [12.36.165.204]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20190822005438epsmtip27b8ec42598e05dbe2605a805a7b78b25~9GJYp2w_l0938509385epsmtip2B;
-        Thu, 22 Aug 2019 00:54:38 +0000 (GMT)
-From:   "boojin.kim" <boojin.kim@samsung.com>
-To:     <axboe@kernel.dk>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Cc:     "'Herbert Xu'" <herbert@gondor.apana.org.au>,
-        "'David S. Miller'" <davem@davemloft.net>,
-        "'Eric Biggers'" <ebiggers@kernel.org>,
-        "'Theodore Y. Ts'o'" <tytso@mit.edu>,
-        "'Chao Yu'" <chao@kernel.org>,
-        "'Jaegeuk Kim'" <jaegeuk@kernel.org>,
-        "'Andreas Dilger'" <adilger.kernel@dilger.ca>,
-        "'Theodore Ts'o'" <tytso@mit.edu>, <dm-devel@redhat.com>,
-        "'Mike Snitzer'" <snitzer@redhat.com>,
-        "'Alasdair Kergon'" <agk@redhat.com>,
-        "'Jens Axboe'" <axboe@kernel.dk>,
-        "'Krzysztof Kozlowski'" <krzk@kernel.org>,
-        "'Kukjin Kim'" <kgene@kernel.org>,
-        "'Jaehoon Chung'" <jh80.chung@samsung.com>,
-        "'Ulf Hansson'" <ulf.hansson@linaro.org>,
-        <linux-crypto@vger.kernel.org>, <linux-fscrypt@vger.kernel.org>,
-        <linux-mmc@vger.kernel.org>, <linux-samsung-soc@vger.kernel.org>,
-        <linux-ext4@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-samsung-soc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH 5/9] block: support diskcipher
-Date:   Thu, 22 Aug 2019 09:54:38 +0900
-Message-ID: <017901d55884$2cbc8f60$8635ae20$@samsung.com>
+        id S1730919AbfHVIhl (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 22 Aug 2019 04:37:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41742 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731984AbfHVIhl (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 22 Aug 2019 04:37:41 -0400
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 339BF23427;
+        Thu, 22 Aug 2019 08:37:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1566463059;
+        bh=XE3xK9iG8Wy7wo/kPx8rxFjUegSzi/UaDRIOdgmeG7Q=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=jhs218aNaLA4Bq8OPujJ/oKGM90+zjHunggojHGSt42VmXqMKgeNTPazw8Mmev1Je
+         JwhDX50NdqNblLusEM/+477jQps0EsJvAhuJqHOEuGRyDPBMUO588mLhb49EyqUQu8
+         uON7wCWTLLCkC28QdqMP+2McwTT40RKkfLdU2OOE=
+Received: by mail-lj1-f179.google.com with SMTP id h15so4731563ljg.10;
+        Thu, 22 Aug 2019 01:37:39 -0700 (PDT)
+X-Gm-Message-State: APjAAAUcc0ABIBYnRNScEKkjjmWx5PaRSzszsLzE/+EP/xYyiZg5h/FE
+        Sa9AOW+KamagdVqYkkTgrrcY3FsZEDr0mzYDlhc=
+X-Google-Smtp-Source: APXvYqxXD3xVQJzrJLwcWiHpcv+TEgK10V+ZrGUMTV7We6eP5yS2aPqV9SO+VlhvYHW+opZdR7L81464kePe1T4gEFc=
+X-Received: by 2002:a2e:b4d4:: with SMTP id r20mr21412900ljm.5.1566463057314;
+ Thu, 22 Aug 2019 01:37:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 14.0
-Content-Language: ko
-Thread-Index: AdVYhCtkBjnnAwgAQWGl61cO3+ZKhw==
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Tf0wTdxTf9+56V5TOszL9rllcvQ0TNdS2W9kXIsuS6bxE/sCZjcRZ8QKX
-        QmyvTa9F3JIpTiogEd3iIi06f7KVTrtRqIiUOUA7N1nNWHEyx2KAbZappJ0E2BxrOcz47/M+
-        733e5728PDmu9FAqeZng4O0CZ2bIBUSwZxXKivxuNGp9NTR69Fc1gfzfXsOR75d6En13tA9D
-        jZH9BAo98MjQ+c5/cHQw9hwa8btx9NO0S4bqh8dwFIl8QaGW4QEZCg2uQb8OTWGo4cQdEv1w
-        eiOKnZggUGfoOoH6OxpJ1DtTD9CxSBeGXF8+AqiqbopC4fOFrz3LtnpvY+z+wC42eCWT7e9z
-        si3NNSR7Z6CTZANn97CXTyYwdt+Nqzj7sCtKsodamwGbaFlekL7VvK6U50p4u5oXiq0lZYIp
-        j9m0pej1IkO2Vpely0GvMGqBs/B5zPr8gqw3yszJ3Rl1OWd2JqkCThSZta+us1udDl5dahUd
-        eQxvKzHbdDqbRuQsolMwaYqtllydVqs3JCt3mEsHPmigbKNkxf3pSXIvuCSrBWlySL8M6891
-        4LVggVxJtwPYuS9OSkEcwMdBPyUFEwCOzNzFn0guBD1ziRCAp9p6ZVJwD8Daq0dmG5P0GhgI
-        N4MUzqDfhp/cmiFSRTgdouChtsrZxBJaD6tqD2IpTNCZ8MdgYtZCQedAX6xKJuHF8HrDCJHC
-        OP08vHi/cW4MNWzvGwMSnwE9NS5cMtPA/s+HQMoM0pVy6ImOAkmwHp76rAmT8BIYC7dSElbB
-        xIMQKeE9MNp0hpLEdQDemHbNFb0E3b8dSDaSJ91WQX/H2hSE9Auwd3Butqdhdc9jSqIVsNql
-        lIQvwuPxfkyiVXC87n2JZuHPg23gMFjhnreke96S7nmLuf+3PQmIZrCUt4kWEy/qbbr5124B
-        s4+xekM7OPZ9fjeg5YBJVxzOMhqVMq5c3G3pBlCOMxmKisatRqWihNv9Lm+3FtmdZl7sBobk
-        DY7gqmeKrck3ExxFOoM+O1ubY0CGbD1ilikCC29vU9ImzsHv5Hkbb3+iw+Rpqr3AEz/rzf3j
-        4/GxycJtkYEP0y487Ap/0+QNe24lKkSDb/zmgZ18+cjCtMylny7fBePvLK56j5q4sjL3zS1O
-        IXN0yiv4e/5Fmrei3uHqXj93eVNg0VddlT4m8Hd+eqyQuftUlNbcO527aMi+wnTGcnTDyo1f
-        T577c3Ng+7Kyyc03M659xBBiKadbjdtF7j9ZtnA9LgQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrDIsWRmVeSWpSXmKPExsWy7bCSvO6557GxBj+36Ft8/dLBYrH+1DFm
-        i9V3+9ksTk89y2Qx53wLi8Xed7NZLdbu+cNs0f1KxuLJ+lnMFjd+tbFa9D9+zWxx/vwGdotN
-        j6+xWuy9pW1x/95PJouZ8+6wWVxa5G7xat43Fos9e0+yWFzeNYfN4sj/fkaLGef3MVm0bfzK
-        aNHa85Pd4vjacAdJjy0rbzJ5tGwu99h2QNXj8tlSj02rOtk87lzbw+axeUm9x+4Fn5k8ms4c
-        ZfZ4v+8qm0ffllWMHp83yQXwRHHZpKTmZJalFunbJXBlXGueyV7wlK3i7a8fbA2MO1m7GDk5
-        JARMJNZtm83excjFISSwm1HicesPqISUxNb2PcwQtrDE/ZYjrBBFzxklWi89YgdJsAloS2w+
-        vooRxBYRiJD4vKmZDaSIWeAyu8Svvg9sIAlhASOJ1q5uJhCbRUBV4sq2z2BTeQUsJVa/amWF
-        sAUlTs58wtLFyAHUrCfRthFsJrOAvMT2t3OgjlCQ2HH2NVRcRGJ2ZxszxF49ictr7jFOYBSc
-        hWTSLIRJs5BMmoWkewEjyypGydSC4tz03GLDAsO81HK94sTc4tK8dL3k/NxNjOA0oKW5g/Hy
-        kvhDjAIcjEo8vBN0Y2OFWBPLiitzDzFKcDArifBWzImKFeJNSaysSi3Kjy8qzUktPsQozcGi
-        JM77NO9YpJBAemJJanZqakFqEUyWiYNTqoHR/3xjomm+UuNza36XT/syBRcuDdj2pvvHHj7v
-        Co5+z/JqscvTsoNWmN98Ul6ye8f1Q09rHkpuep167iuXgXjuERnen0//OhpvrD5pwGOoorWs
-        Qv6H8ONV3yZvv3Rx9qGtTFMtWAWc9u6duYqxsO17cllw0/bX93kWxe++rFG1xkdnd3HZOi0X
-        JZbijERDLeai4kQAbRpSev8CAAA=
-X-CMS-MailID: 20190822005438epcas2p337aba06b328cdcdd1549395f0bbcfdbc
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20190822005438epcas2p337aba06b328cdcdd1549395f0bbcfdbc
-References: <CGME20190822005438epcas2p337aba06b328cdcdd1549395f0bbcfdbc@epcas2p3.samsung.com>
+References: <CGME20190821064211epcas2p43ed73f4fd126bcc5b470c9136db6aabc@epcas2p4.samsung.com>
+ <003d01d557eb$8f6ca210$ae45e630$@samsung.com>
+In-Reply-To: <003d01d557eb$8f6ca210$ae45e630$@samsung.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Thu, 22 Aug 2019 10:37:26 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPdK3ZzQXjzPZLzu5q0HZsL1vohQ4UxYTONcWdtDbEe2ng@mail.gmail.com>
+Message-ID: <CAJKOXPdK3ZzQXjzPZLzu5q0HZsL1vohQ4UxYTONcWdtDbEe2ng@mail.gmail.com>
+Subject: Re: [PATCH 1/9] crypt: Add diskcipher
+To:     "boojin.kim" <boojin.kim@samsung.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>, dm-devel@redhat.com,
+        Mike Snitzer <snitzer@redhat.com>,
+        Alasdair Kergon <agk@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        Kukjin Kim <kgene@kernel.org>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-fscrypt@vger.kernel.org, linux-mmc@vger.kernel.org,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>, linux-block@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On 8/21/19 21:09 AM, Jens Axboe wrote:
-> This isn't going to happen. With this, and the inline encryption
-> proposed by Google, we'll bloat the bio even more. At least the Google
-> approach didn't include bio iter changes as well.
+On Wed, 21 Aug 2019 at 08:42, boojin.kim <boojin.kim@samsung.com> wrote:
+>
+> Diskcipher supports cryptographic operations of inline crypto engines like
+> FMP. Inline crypto engine refers to hardware and solutions implemented
+> to encrypt data stored in storage device.
+>
+> When encrypting using the FMP, Additional control is required
+> to carry and maintain the crypto information between
+> the encryption user(fscrypt, DM-crypt) and FMP driver.
+> Diskcipher provides this control.
+>
+> Diskcipher is a symmetric key cipher in linux crypto API to support FMP.
+> FMP are registered with the cihper algorithm that uses diskcipher.
+>
+> Diskcipher has three major steps.
+> The first step is to assign a cipher and set the key.
+> The second step is to pass the cipher through the BIO to the storage
+> driver.
+> The third step is to get the cipher from BIO and request a crypt
+> to FMP algorithm.
+>
+> In the first step, encryption users such as fscrypt or dm-crypt
+> allocate/release a diskcipher and set key into the diskcipher.
+> Diskcipher provides allocate(), free(), and setkey() that are similar
+> to existing ciphers.
+>
+> In the second step, BIO is used to pass the diskcipher to the storage
+> driver.
+> The BIO submitters such as ext4, f2fs and DM-crypt set diskcipher to BIO.
+> Diskcipher provides the set () API for this.
+>
+> In the third step, the storage driver extracts the diskcipher from the BIO
+> and requests the actual encryption behavior to inline crypto engine driver.
+> Diskcipher provides get() and crypt() APIs for this.
+>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: David S. Miller <davem@davemloft.net>
+> Signed-off-by: Boojin Kim <boojin.kim@samsung.com>
+> ---
+>  crypto/Kconfig              |   9 ++
+>  crypto/Makefile             |   1 +
+>  crypto/diskcipher.c         | 349
+> ++++++++++++++++++++++++++++++++++++++++++++
+>  crypto/testmgr.c            | 157 ++++++++++++++++++++
+>  include/crypto/diskcipher.h | 245 +++++++++++++++++++++++++++++++
+>  include/linux/crypto.h      |   1 +
+>  6 files changed, 762 insertions(+)
+>  create mode 100644 crypto/diskcipher.c
+>  create mode 100644 include/crypto/diskcipher.h
+>
+> diff --git a/crypto/Kconfig b/crypto/Kconfig
+> index 455a335..382d43a 100644
+> --- a/crypto/Kconfig
+> +++ b/crypto/Kconfig
+> @@ -1636,6 +1636,15 @@ config CRYPTO_TWOFISH_AVX_X86_64
+>           See also:
+>           <http://www.schneier.com/twofish.html>
+>
+> +config CRYPTO_DISKCIPHER
+> +       bool "Diskcipher support"
+> +       default n
+> +       help
+> +         Disk cipher algorithm
+> +
+> +         This cipher supports the crypt operation of the block host device
+> +         that has inline crypto engine.
+> +
+>  comment "Compression"
+>
+>  config CRYPTO_DEFLATE
+> diff --git a/crypto/Makefile b/crypto/Makefile
+> index 0d2cdd5..71df76a 100644
+> --- a/crypto/Makefile
+> +++ b/crypto/Makefile
+> @@ -165,6 +165,7 @@ obj-$(CONFIG_CRYPTO_USER_API_AEAD) += algif_aead.o
+>  obj-$(CONFIG_CRYPTO_ZSTD) += zstd.o
+>  obj-$(CONFIG_CRYPTO_OFB) += ofb.o
+>  obj-$(CONFIG_CRYPTO_ECC) += ecc.o
+> +obj-$(CONFIG_CRYPTO_DISKCIPHER) += diskcipher.o
+>
+>  ecdh_generic-y += ecdh.o
+>  ecdh_generic-y += ecdh_helper.o
+> diff --git a/crypto/diskcipher.c b/crypto/diskcipher.c
+> new file mode 100644
+> index 0000000..ffe95a5
+> --- /dev/null
+> +++ b/crypto/diskcipher.c
+> @@ -0,0 +1,349 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (C) 2017 Samsung Electronics Co., Ltd.
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation; either version 2 of the License, or
+> + * (at your option) any later version.
+> + */
+> +
+> +#include <linux/kernel.h>
+> +#include <linux/blkdev.h>
+> +#include <linux/errno.h>
+> +#include <linux/module.h>
+> +#include <linux/seq_file.h>
+> +#include <linux/string.h>
+> +#include <linux/crypto.h>
+> +#include <crypto/algapi.h>
+> +#include <crypto/diskcipher.h>
+> +#include <linux/delay.h>
+> +#include <linux/mm_types.h>
+> +#include <linux/fs.h>
+> +#include <linux/fscrypt.h>
+> +
+> +#include "internal.h"
+> +
+> +static int crypto_diskcipher_check(struct bio *bio)
+> +{
+> +       struct crypto_diskcipher *ci = NULL;
+> +       struct inode *inode = NULL;
+> +       struct page *page = NULL;
+> +
+> +       if (!bio) {
+> +               pr_err("%s: doesn't exist bio\n", __func__);
+> +               return 0;
+> +       }
+> +
+> +       /* enc without fscrypt */
+> +       ci = bio->bi_aux_private;
+> +       if (!ci->inode)
+> +               return 0;
+> +       if (ci->algo == 0)
+> +               return 0;
+> +
+> +       page = bio->bi_io_vec[0].bv_page;
+> +       if (!page || PageAnon(page) || !page->mapping ||
+> !page->mapping->host)
 
-> Please work it out between yourselves so we can have a single, clean
-> abstraction that works for both.
+Your patch looks corrupted - wrapped by mailer. The easiest way
+usually is to use git format-patch and git send-email - then you do
+not have to worry about formatting etc.
 
-I'm looking at inline encryption by Google. 
-I will find compatibility with inline encryption to avoid conflicts
-in BIO/F2FS.
-And changing bio iter has a benefit for diskcipher.
-Without changing bio iter, diskcipher should control(alloc/free) a buffer
-to hold a 'bi_dun' variable for every bio.
-But changing bio iter is difficult to accept for block layer,
-I will modify the diskcipher.
-And, as you mentioned, inline encryption by Google has this control.
-So I might be able to use it.
-
-Thanks.
-Boojin Kim.
-
+Best regards,
+Krzysztof
