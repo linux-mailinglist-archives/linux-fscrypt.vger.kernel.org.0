@@ -2,132 +2,155 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 635A09A598
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 23 Aug 2019 04:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B728B9A686
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 23 Aug 2019 06:20:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391148AbfHWCf3 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 22 Aug 2019 22:35:29 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:38813 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390910AbfHWCf2 (ORCPT
+        id S2391384AbfHWEUq (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 23 Aug 2019 00:20:46 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:21407 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728483AbfHWEUp (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 22 Aug 2019 22:35:28 -0400
-Received: by mail-io1-f66.google.com with SMTP id p12so16641190iog.5
-        for <linux-fscrypt@vger.kernel.org>; Thu, 22 Aug 2019 19:35:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2Ob+A4xxX2bRSxLGz92/UzTEvC1yWM8JcjhiXKDPfB8=;
-        b=flcLM5FZxA1UdTl+5MfostzBYwQfyv1yb87DaSzrnDrUwd/ZNj4K4T/rHszC/sFQMH
-         ADUFV/N/N6vulg+PsFB9LiJOba7WYzMsXqe7TkwmxiwQw++HUI5Q9lwxgsadqj5kp36o
-         7ir9Ftxz3Frpzbh7dbD9IWl/fAPy+uyEwFD9Qu0xwImVT/66UuNo3m+3vDu9rqcZdHGP
-         dJuOAFAhp3e0iD0AWnqz3VAQtqcjnUDCLFkZZiPVDrJq83kU9d3bg+KlteAnZK+XFKE6
-         M2BK3WAwQy2tydaBr0xJ2dcLV8QJVxM3CxkgnlBsNXoibdFYaWIIutqUzeXdd2gExoTy
-         FEcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2Ob+A4xxX2bRSxLGz92/UzTEvC1yWM8JcjhiXKDPfB8=;
-        b=STQPr7kms6QFNqL2OZxFh4qnVmCrzCOxW/peaEfiMcTnNpYNf686GU6celM4Ya9NiJ
-         q/zcJLTjiXSQa6UFvc6GOn5jPV2bU8x3+pj/tYKj4hXI12rYaeVS1zO+BqkPHWXexMCG
-         obWZe27cZAehg4mXNbaUtNW99+o7N+heZj6QGk7dT2GtU5wutmHCFh5i6IqlQh6EHYxp
-         3OGb9UiDVPY6gSeS0LHys4CvomG3CjUF04OIjUUaf3YFsj5KY0IDbvlH+taNHFo25pvG
-         Yzugs2/ng5dwe+uDgHFfdeoDJMcHwJM3PcJLPJDPvaW5dxA3QdG5CIb2XkLf0PdGbIg0
-         Ma6Q==
-X-Gm-Message-State: APjAAAUCi0fFiKVrrT9TnWZAX7dQw/Q9GgcqFiH1/2JQ5K325v2jTr1p
-        +sDbgrfW81tA2loCEa1UusKF9CRPjHQotvy+6gQWKg==
-X-Google-Smtp-Source: APXvYqxk0KBtXTDXCH7sq1BDWGn2tzcj3BOrK9VJXXJYjin28Niwi8IhH6bIWJT+jY7Hn20R6XsnRrLk/vFE/AUzyqo=
-X-Received: by 2002:a6b:c581:: with SMTP id v123mr3719443iof.158.1566527727590;
- Thu, 22 Aug 2019 19:35:27 -0700 (PDT)
+        Fri, 23 Aug 2019 00:20:45 -0400
+Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20190823042041epoutp047ae4ad2710495ac4f8205f49f8e4a225~9cmksvdLg2532025320epoutp04J
+        for <linux-fscrypt@vger.kernel.org>; Fri, 23 Aug 2019 04:20:41 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20190823042041epoutp047ae4ad2710495ac4f8205f49f8e4a225~9cmksvdLg2532025320epoutp04J
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1566534041;
+        bh=U9CQGfPf7Zxphg8CE4vj2CGEfHozLAw9BdLrulJXIpQ=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=QhzQ99Q+s7OJyjefXhpYoDvAsW3DK7/LFIU21EA7b4+6nh13DmSti3lqMKcmGAKWO
+         lzD+8En9ocjh3hZIFpZ81fbsnqaYkA5jsajtaBr/CI/RjF1UQLRbTd9OwkMga6N/8V
+         xC6VaLUUqY9vM+HB9jVKYNeeRf7T5kz4Cxj0x1l8=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20190823042040epcas2p17215f2c69bfbe74bf1dd25f056d546a5~9cmkK5AaC1326813268epcas2p1e;
+        Fri, 23 Aug 2019 04:20:40 +0000 (GMT)
+Received: from epsmges2p3.samsung.com (unknown [182.195.40.186]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 46F7VZ6Kj9zMqYkl; Fri, 23 Aug
+        2019 04:20:38 +0000 (GMT)
+Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
+        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        49.3F.04068.6996F5D5; Fri, 23 Aug 2019 13:20:38 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
+        20190823042038epcas2p2000738f3ca7f5f3d92ea1c32de2bcf99~9cmh6hZPJ2766127661epcas2p2u;
+        Fri, 23 Aug 2019 04:20:38 +0000 (GMT)
+Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20190823042038epsmtrp1c49a7bd6aa12bbb926aaf66ce98445cf~9cmh5Y2xO1457414574epsmtrp1Y;
+        Fri, 23 Aug 2019 04:20:38 +0000 (GMT)
+X-AuditID: b6c32a47-5a1ff70000000fe4-76-5d5f6996ca5e
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        41.DA.03638.6996F5D5; Fri, 23 Aug 2019 13:20:38 +0900 (KST)
+Received: from KORDO035251 (unknown [12.36.165.204]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20190823042038epsmtip202663c369e2490843c132f4082264787~9cmhs-2qz3185331853epsmtip2_;
+        Fri, 23 Aug 2019 04:20:38 +0000 (GMT)
+From:   "boojin.kim" <boojin.kim@samsung.com>
+To:     "'Herbert Xu'" <herbert@gondor.apana.org.au>
+Cc:     "'Herbert Xu'" <herbert@gondor.apana.org.au>,
+        "'David S. Miller'" <davem@davemloft.net>,
+        "'Eric Biggers'" <ebiggers@kernel.org>,
+        "'Theodore Y. Ts'o'" <tytso@mit.edu>,
+        "'Chao Yu'" <chao@kernel.org>,
+        "'Jaegeuk Kim'" <jaegeuk@kernel.org>,
+        "'Andreas Dilger'" <adilger.kernel@dilger.ca>,
+        "'Theodore Ts'o'" <tytso@mit.edu>, <dm-devel@redhat.com>,
+        "'Mike Snitzer'" <snitzer@redhat.com>,
+        "'Alasdair Kergon'" <agk@redhat.com>,
+        "'Jens Axboe'" <axboe@kernel.dk>,
+        "'Krzysztof Kozlowski'" <krzk@kernel.org>,
+        "'Kukjin Kim'" <kgene@kernel.org>,
+        "'Jaehoon Chung'" <jh80.chung@samsung.com>,
+        "'Ulf Hansson'" <ulf.hansson@linaro.org>,
+        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-fscrypt@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
+        <linux-samsung-soc@vger.kernel.org>, <linux-block@vger.kernel.org>,
+        <linux-ext4@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-samsung-soc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH 6/9] dm crypt: support diskcipher
+Date:   Fri, 23 Aug 2019 13:20:37 +0900
+Message-ID: <017901d5596a$1df3a590$59daf0b0$@samsung.com>
 MIME-Version: 1.0
-References: <CGME20190821064226epcas2p2835b8a9084988b79107e54abfc5e7dab@epcas2p2.samsung.com>
- <004101d557eb$98b00060$ca100120$@samsung.com> <6ea5e5db-4dd4-719f-3b3e-b89099636ea6@kernel.dk>
-In-Reply-To: <6ea5e5db-4dd4-719f-3b3e-b89099636ea6@kernel.dk>
-From:   Satya Tangirala <satyat@google.com>
-Date:   Thu, 22 Aug 2019 19:35:16 -0700
-Message-ID: <CAA+FYZc6G0xk7Dhx0b9xNRoK+b+DpfuS+OK4wn4bpKpFPiiGUQ@mail.gmail.com>
-Subject: Re: [PATCH 5/9] block: support diskcipher
-To:     Jens Axboe <axboe@kernel.dk>, boojin.kim@samsung.com
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>, dm-devel@redhat.com,
-        Mike Snitzer <snitzer@redhat.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Kukjin Kim <kgene@kernel.org>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-crypto@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 14.0
+Thread-Index: AdVZag9UHlxLlVT+SOip4zSP4KGOkw==
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Tf0wTZxjOd3e9qz+6nRX1s1m27oZ/qAFa8LoPAwtjTC/OP0imWdx09VIu
+        Be2v9FoGJhMnrivIKPwxlcoMKjFaZbBCEB1ls7IhE4SIuEGcU2mWFaIYWEmqxa3tYcZ/z/u8
+        z5Pvfb43rxxXNlAqeYnFIdgtvIkhlxKd19fr0o6V6Pdoqh5pUOQfN4Faf/0FRxf/8JDo5jeD
+        GGocOkKgwJOTMtTSHcPR0cnXUKjVi6Pfn7lkyDMxhaOhoTYK+SfuylBgfCP6834UQw2n7pHo
+        9pmtaPLUHIG6A/0EGrnaSKLefz0AnRjqwZDr+whAX9ZEKdTX8lHeWq7jwhjGHWn/jOv8aR03
+        Mujk/L4qkrt3t5vk2psruB+aZjHu8MDPODfdM0pytR0+wM36Xy9c/rEpp1jgiwS7WrAYrEUl
+        FmMu88GH+vf0rE6jTdNmo7cZtYU3C7lMwfbCtC0lpnh2Rl3Km5xxqpAXRSbjnRy71ekQ1MVW
+        0ZHLCLYik02rtaWLvFl0WozpBqt5s1ajyWTjyr2m4vovLlE2F1UWGBmQHQLDsmqwRA7pTfBY
+        7QO8GiyVK+kuAKPtNwipmAHw5umzWEKlpOcAnLtRUQ3kScfxW0pJEwAwGI0AqQgDOFxZSSYM
+        JL0Rtvf5QAKn0Bp42f88KcLpFxQMzQSJRGMlzcL7vUeTBoJeByN143gCK+hsGIr1AgmvgP0N
+        oaQep9+Alx834tLcatg1OLXwQDpscdXhkiYFnqxyJfNAep6C1+YfAclQAJ9MP10IvRJO9nVQ
+        ElbBsMe1gCvg6LmzlGSuAXDg2ctGFvT+9RVI5Mfp9bD1aob0FW/B3vGF2V6B7uvzlEQroNul
+        lIyp8NuZEUyiVfBpzUGJ5mCsthGrA296F4X0LgrpXRTG+/+zTYDwgdWCTTQbBTHTlrV4136Q
+        PIsNW7tA563tQUDLAbNcYXN/ukcp40vFcnMQQDnOpChK6+OUoogvPyDYrXq70ySIQcDGd1CP
+        q1YZrPEjszj0WjZTp9Nks4jVZSJmjcK/bGy3kjbyDmG/INgE+0sfJl+iOgTa0qbqm/V9jtVf
+        Z53v3rUv9mOVO/zQb9j/fojKM/szUtnjO9JbI7R9H/XJeHN5bvnE7RVOLv9M0528fo/Rmk37
+        rtxZdW1L5eiuVw/4luGzhbETBZvCZWNthwV273QPp3qQvzOwO+U7w+f5D09Hr2zjU3c6h8uY
+        /hfhd9fk/P3b8yBDiMW8dgNuF/n/AHcjOXksBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrFIsWRmVeSWpSXmKPExsWy7bCSvO60zPhYg5vd4hZfv3SwWKw/dYzZ
+        YvXdfjaL01PPMlnMOd/CYrH33WxWi7V7/jBbdL+SsXiyfhazxY1fbawW/Y9fM1ucP7+B3WLT
+        42usFntvaVvcv/eTyWLmvDtsFpcWuVu8mveNxWLP3pMsFpd3zWGzOPK/n9Fixvl9TBZtG78y
+        WrT2/GS3OL423EHSY8vKm0weLZvLPbYdUPW4fLbUY9OqTjaPO9f2sHlsXlLvsXvBZyaPpjNH
+        mT3e77vK5tG3ZRWjx+dNcgE8UVw2Kak5mWWpRfp2CVwZExvXsBe0sVfsvXyGtYHxAmsXIweH
+        hICJxPRzQl2MXBxCArsZJfZt2goU5wSKS0lsbd/DDGELS9xvOcIKUfScUaJ5wlYmkASbgLbE
+        5uOrGEFsEQEDie2bfoPZzALTOCR2fRAHsYUFTCXuHelmA7FZBFQlvk64BTaUV8BS4smfI4wQ
+        tqDEyZlPWEAOYhbQk2jbCDVGXmL72zlQNyhI7Dj7GmqVnsTatgnMEDUiErM725gnMArOQjJp
+        FsKkWUgmzULSsYCRZRWjZGpBcW56brFhgVFearlecWJucWleul5yfu4mRnAK0NLawXjiRPwh
+        RgEORiUe3oKOuFgh1sSy4srcQ4wSHMxKIrxlE4FCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeeXz
+        j0UKCaQnlqRmp6YWpBbBZJk4OKUaGJleBy6rntzmuGvaFQ/TC0tPxR1V2Lv0/O0JJTxHt4iq
+        PW/OX3fnooDzAs+gmqwVK5juHXgRWVM+MbmyWHaWdmiF5pRFR3sX/+qpvK/L7ugiasB35P8l
+        BRYdxbOKQgI+W66KntnNPbVk0132vqUn7/1Z+4+jPnjLzQahq/ZME2X+cSm0zQy9bKDEUpyR
+        aKjFXFScCADJMiVD/QIAAA==
+X-CMS-MailID: 20190823042038epcas2p2000738f3ca7f5f3d92ea1c32de2bcf99
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20190823042038epcas2p2000738f3ca7f5f3d92ea1c32de2bcf99
+References: <CGME20190823042038epcas2p2000738f3ca7f5f3d92ea1c32de2bcf99@epcas2p2.samsung.com>
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, Aug 21, 2019 at 5:10 AM Jens Axboe <axboe@kernel.dk> wrote:
->
-> On 8/21/19 12:42 AM, boojin.kim wrote:
-> > This patch supports crypto information to be maintained via BIO
-> > and passed to the storage driver.
+On Wed, Aug 21, 2019 at 17:19:41PM +0900, Herbert Xu wrote:
+
+> On Wed, Aug 21, 2019 at 04:57:41PM +0900, boojin.kim wrote:
 > >
-> > To do this, 'bi_aux_private', 'REQ_CYPTE' and 'bi_dun' are added
-> > to the block layer.
+> > Can you tell me which patch you mentioned? Is this?
+> > https://patches.linaro.org/project/linux-crypto/list/?series=22762
 > >
-> > 'bi_aux_private' is added for loading additional private information into
-> > BIO.
-> > 'REQ_CRYPT' is added to distinguish that bi_aux_private is being used
-> > for diskcipher.
-> > F2FS among encryption users uses DUN(device unit number) as
-> > the IV(initial vector) for cryptographic operations.
-> > DUN is stored in 'bi_dun' of bi_iter as a specific value for each BIO.
-> >
-> > Before attempting to merge the two BIOs, the operation is also added to
-> > verify that the crypto information contained in two BIOs is consistent.
 >
-> This isn't going to happen. With this, and the inline encryption
-> proposed by Google, we'll bloat the bio even more. At least the Google
-> approach didn't include bio iter changes as well.
+> Yes this is the one.
 >
-> Please work it out between yourselves so we can have a single, clean
-> abstraction that works for both.
->
-> --
-> Jens Axboe
->
+> Cheers,
 
-Hi Boojin,
+I looked at ESSIV patch-set.
+Can you please confirm that you mean:
+'Register FMP as the template of skcipher instead of diskcipher,
+and simplify the interface for FMP user'
 
-We're very keen to make sure that our approach to inline encryption can
-work with diverse hardware, including Samsung's FMP hardware; if you
-can see any issues with using our approach with your hardware please
-let us know.
+If yes, I think the following API needs to be added to skcipher:  
+- _set(): BIO submitter (dm-crypt, f2fs, ext4) sets cipher to BIO.
+- _mergeable(): Block layer checks if two BIOs have the same cipher.
+- _get(): Storage driver gets cipher from BIO.
+- _set_crypt(): Storage driver gets crypto information from cipher and 
+writes it on the descriptor of Storage controller.
+Is it acceptable to skcipher ?
 
-We understand that a possible concern for getting FMP working with our
-patch series for Inline Encryption Support at
 
-https://lore.kernel.org/linux-block/20190821075714.65140-1-satyat@google.com/
-
-is that unlike some inline encryption hardware (and also unlike the JEDEC
-UFS v2.1 spec), FMP doesn't have the concept of a limited number of
-keyslots - to address that difference we have a "passthrough keyslot
-manager", which we put up on top of our patch series for inline encryption
-support at
-
-https://android-review.googlesource.com/c/kernel/common/+/980137/2
-
-Setting up a passthrough keyslot manager in the request queue of a
-device allows the device to receive a bio's encryption context as-is with
-the bio, which is what FMP would prefer. Are there any issues with
-using the passthrough keyslot manager for FMP?
-
-Thanks!
-Satya
