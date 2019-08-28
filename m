@@ -2,303 +2,165 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C3D269F722
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 28 Aug 2019 02:07:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98ACD9F83A
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 28 Aug 2019 04:21:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726077AbfH1AHI (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 27 Aug 2019 20:07:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55240 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725992AbfH1AHH (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 27 Aug 2019 20:07:07 -0400
-Received: from gmail.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A694F20854;
-        Wed, 28 Aug 2019 00:07:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1566950825;
-        bh=FmClub3HwpuCluB7fJjDTEQxR8M/jDVYDBvVokxsfdQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OJLrT8i3kkAyEtMrn2V5UExYI0JrO+3VSC+3F/8lBRFGG89aBao4a0nf2HqlJgAXF
-         Me4kROVinB1HFwZLpF/+7ze3b+Z+PhMEIRdGTVzJcbh/28oer0LxMG9NUHOHrZ+bIx
-         3CrB8IF0bJ+GX3V2kckOARPhHcjHpTamh5OWUwwE=
-Date:   Tue, 27 Aug 2019 17:07:04 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
-        Kuohong Wang <kuohong.wang@mediatek.com>,
-        Kim Boojin <boojin.kim@samsung.com>
-Subject: Re: [PATCH v4 7/8] fscrypt: wire up fscrypt to use blk-crypto
-Message-ID: <20190828000700.GB92220@gmail.com>
-Mail-Followup-To: Satya Tangirala <satyat@google.com>,
-        linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
-        Kuohong Wang <kuohong.wang@mediatek.com>,
-        Kim Boojin <boojin.kim@samsung.com>
-References: <20190821075714.65140-1-satyat@google.com>
- <20190821075714.65140-8-satyat@google.com>
+        id S1726264AbfH1CVA (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 27 Aug 2019 22:21:00 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:44742 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726232AbfH1CU7 (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 27 Aug 2019 22:20:59 -0400
+Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20190828022057epoutp01753c8e6d0a619afeb2ad80b6e873cd63~_9MdUxe6n3029430294epoutp01O
+        for <linux-fscrypt@vger.kernel.org>; Wed, 28 Aug 2019 02:20:57 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20190828022057epoutp01753c8e6d0a619afeb2ad80b6e873cd63~_9MdUxe6n3029430294epoutp01O
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1566958857;
+        bh=2Id8G/Xn6V06sAdZYXMptUi6MUxaX2z3h414AQSi5/I=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=k98yVcHoY5eRWy55whZ8rcavcrMGw1LpHMDptIqy9vdMw+WVazwzt15mo01XkRRd9
+         7l4/CVj1LA+KD2X9zJQ7pDyqu9or8QDc9Y8Ar0ut0xku1LRrop+z5Ki0aMLe43HoyD
+         3N5pbfTIZQ6BYehWU3Hx+E4IXA0zFrHfzsrXO79E=
+Received: from epsnrtp5.localdomain (unknown [182.195.42.166]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
+        20190828022056epcas2p488315cc4e34969caaecc606d9bbd2c6e~_9Mc2Raic1168911689epcas2p4l;
+        Wed, 28 Aug 2019 02:20:56 +0000 (GMT)
+Received: from epsmges2p1.samsung.com (unknown [182.195.40.181]) by
+        epsnrtp5.localdomain (Postfix) with ESMTP id 46J8c74t4rzMqYkf; Wed, 28 Aug
+        2019 02:20:55 +0000 (GMT)
+Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
+        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        36.C7.04156.705E56D5; Wed, 28 Aug 2019 11:20:55 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
+        20190828022055epcas2p25525077d0a5a3fa5a2027bac06a10bc1~_9MbUtf8v2048620486epcas2p2Q;
+        Wed, 28 Aug 2019 02:20:55 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20190828022055epsmtrp247236feb1b81a6eaa608658d164e62a4~_9MbTgesT1110211102epsmtrp2U;
+        Wed, 28 Aug 2019 02:20:55 +0000 (GMT)
+X-AuditID: b6c32a45-ddfff7000000103c-c4-5d65e5073e36
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        F0.33.03706.605E56D5; Wed, 28 Aug 2019 11:20:55 +0900 (KST)
+Received: from KORDO035251 (unknown [12.36.165.204]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20190828022054epsmtip1cb959d74740696d9b606a29b76e0110e~_9MbAmhuG2545625456epsmtip1A;
+        Wed, 28 Aug 2019 02:20:54 +0000 (GMT)
+From:   "boojin.kim" <boojin.kim@samsung.com>
+To:     "'Theodore Y. Ts'o'" <tytso@mit.edu>
+Cc:     "'Herbert Xu'" <herbert@gondor.apana.org.au>,
+        "'David S. Miller'" <davem@davemloft.net>,
+        "'Eric Biggers'" <ebiggers@kernel.org>,
+        "'Theodore Y. Ts'o'" <tytso@mit.edu>,
+        "'Chao Yu'" <chao@kernel.org>,
+        "'Jaegeuk Kim'" <jaegeuk@kernel.org>,
+        "'Andreas Dilger'" <adilger.kernel@dilger.ca>,
+        "'Theodore Ts'o'" <tytso@mit.edu>, <dm-devel@redhat.com>,
+        "'Mike Snitzer'" <snitzer@redhat.com>,
+        "'Alasdair Kergon'" <agk@redhat.com>,
+        "'Jens Axboe'" <axboe@kernel.dk>,
+        "'Krzysztof Kozlowski'" <krzk@kernel.org>,
+        "'Kukjin Kim'" <kgene@kernel.org>,
+        "'Jaehoon Chung'" <jh80.chung@samsung.com>,
+        "'Ulf Hansson'" <ulf.hansson@linaro.org>,
+        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-fscrypt@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
+        <linux-samsung-soc@vger.kernel.org>, <linux-block@vger.kernel.org>,
+        <linux-ext4@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-samsung-soc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH 5/9] block: support diskcipher
+Date:   Wed, 28 Aug 2019 11:20:53 +0900
+Message-ID: <009301d55d47$38606400$a9212c00$@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190821075714.65140-8-satyat@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 14.0
+Thread-Index: AdVdRkQ7u+BKrKHPSQuBNN28o4N3VA==
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Tf0wbZRjOd3e9OybFs6vus6LrThYdE9arFj50qNG5XbL9gb+iMc56KZcW
+        7a/0WjbUbATXUhiRQXRuhbG5GeNgla3UjQzKXGGSOqBOZGEEt8QxDKBsApuBiNr2WOS/53m+
+        5/ne9/3efDSu+pzS0CV2t+iyC1aWXEGc7l6Xn0PdELfrWnqy0O05P4Faf/geRy2/1JLo4mf9
+        GGqM7yFQZLpBgYKdf+No72QmGmsN4Gh4wadAtdencBSPn6RQ6PplBYqMrEfXrs5j6GDTKIl+
+        OroFTTbdIVBnJEagwbONJOr5txagA/EuDPlO3QbIWzNPod7gG88/yIePX8H4PW07+NPfreUH
+        +z18qLmK5Ecvd5J825e7+Y4jsxhf0XcB5292DZH8J+FmwM+GHilKf8u60SIKxaJLK9pNjuIS
+        u7mQ3fqq8UWjIU/H5XAFKJ/V2gWbWMhu2laUs7nEmpid1ZYKVk9CKhIkid3w7EaXw+MWtRaH
+        5C5kRWex1clxzlxJsEkeuznX5LA9zel0ekPC+a7VUn/1EOWsTN/Zd7hWUQ4uplUDmobMUzBY
+        KVaDFbSKaQfw5/EmhUxmALw5vI+UyZ0E8VaAuwlveIusRwD8bfhPXCYTAJ7/ay4RT6NJZj1s
+        620GSaxmHodDi/Opa3HmHwqOzUSJ5MFKRg+91XuxJCaYtXCi6hKWrKBkCuCl/auTspK5D8YO
+        jqXsOLManvmjEU9iyGhhe/9UqiE1kwuPjr8iW9SwocqX6gcyixQcb/ATsn8T/NgbWcquhJO9
+        YUrGGjg7HSFlvBsOfXWMksM1APYt+JZMT8LAeGWqGM6sg61nN8gP8SjsGVlqLQP6uxcpWVZC
+        v08lB7PgoZlBTJY18FbNLlnmYThcD/aBNYFlMwaWzRhYNkzg/7JHANEMHhCdks0sSnont3zT
+        IZD6FNkvtYMDA9uigKEBm6703ytuVymEUqnMFgWQxlm18teshKQsFso+EF0Oo8tjFaUoMCQ2
+        UIdr7jc5El/M7jZyBn1enq7AgAx5esSuUrbdc+VtFWMW3OL7ougUXXdzGJ2mKQdm9e/PFMRj
+        773zBV9v6lKSE4+Fdg3MVVyYek5SKp6IvRms40syMn5sObHq/EM7TOdOZkd21tVrz2WWWSYa
+        Tk1jU4dBJy2xr58IfXvmNZtpf0UpZ87vuHGreyBmffiFeJeR+Kaj91prJhoJlleXfXpsob0n
+        mv91KTg++mHN1o/EzJdZQrIIXDbukoT/AJPWV5kqBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrGIsWRmVeSWpSXmKPExsWy7bCSnC7709RYg94Ki69fOlgs1p86xmyx
+        +m4/m8XpqWeZLOacb2Gx2PtuNqvF2j1/mC26X8lYPFk/i9nixq82Vov+x6+ZLc6f38Busenx
+        NVaLvbe0Le7f+8lkMXPeHTaLS4vcLV7N+8ZisWfvSRaLy7vmsFkc+d/PaDHj/D4mi7aNXxkt
+        Wnt+slscXxvuIOmxZeVNJo+WzeUe2w6oelw+W+qxaVUnm8eda3vYPDYvqffYveAzk0fTmaPM
+        Hu/3XWXz6NuyitHj8ya5AJ4oLpuU1JzMstQifbsEroxJ9+ayF7TzVJyZ38/awHias4uRg0NC
+        wESidYt7FyMXh5DAbkaJkzPfsHYxcgLFpSS2tu9hhrCFJe63HAGLCwk8Z5T43FQAYrMJaEts
+        Pr6KEcQWEdCQuPr3J1gNs8A0DoldH8RBbGEBI4nWrm4mEJtFQFXiZedFJpC9vAKWEhenyYOE
+        eQUEgdY+YQEJMwvoSbRtZISYIi+x/e0cqAsUJHacfc0IUiICVLLoWRBEiYjE7M425gmMgrOQ
+        DJqFMGgWkkGzkHQsYGRZxSiZWlCcm55bbFhgmJdarlecmFtcmpeul5yfu4kRHPtamjsYLy+J
+        P8QowMGoxMPbwZ8aK8SaWFZcmXuIUYKDWUmE95EKUIg3JbGyKrUoP76oNCe1+BCjNAeLkjjv
+        07xjkUIC6YklqdmpqQWpRTBZJg5OqQbGCe6KPu0piqufKnP1tu34wfCOpXqGoZpO67oI2VcH
+        eqz4CosPzjLUeH51hWb/iW3c2p8WGrj7dMxw+SJmk/ti5rSjDMePZCbVPPVd3qPhWBbPHjtv
+        ZbFB6qVNv9OePpv046uo851LB0VeyiS+PenWVX+k+d80Jp7Pto/8NjFKWcr4L715Z/M0JZbi
+        jERDLeai4kQAn059LPkCAAA=
+X-CMS-MailID: 20190828022055epcas2p25525077d0a5a3fa5a2027bac06a10bc1
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20190828022055epcas2p25525077d0a5a3fa5a2027bac06a10bc1
+References: <CGME20190828022055epcas2p25525077d0a5a3fa5a2027bac06a10bc1@epcas2p2.samsung.com>
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, Aug 21, 2019 at 12:57:13AM -0700, Satya Tangirala wrote:
-> Introduce fscrypt_set_bio_crypt_ctx for filesystems to call to set up
-> encryption contexts in bios, and fscrypt_evict_crypt_key to evict
-> the encryption context associated with an inode.
-> 
-> Inline encryption is controlled by a policy flag in the fscrypt_info
-> in the inode, and filesystems may check if an inode should use inline
-> encryption by calling fscrypt_inode_is_inline_crypted. Files can be marked
-> as inline encrypted from userspace by appropriately modifying the flags
-> (OR-ing FS_POLICY_FLAGS_INLINE_ENCRYPTION to it) in the fscrypt_policy
-> passed to fscrypt_ioctl_set_policy.
-> 
-> To test inline encryption with the fscrypt dummy context, add
-> ctx.flags |= FS_POLICY_FLAGS_INLINE_ENCRYPTION
-> when setting up the dummy context in fs/crypto/keyinfo.c.
+On Tue, Aug 27, 2019 at 05:33:33PM +0900, boojin.kim wrote:
+>
+> Hi Boojin,
+>
+> I think the important thing to realize here is that there are a large
+> number of hardware devices for which the keyslot manager *is* needed.
+> And from the upstream kernel's perspective, supporting two different
+> schemes for supporting the inline encryption feature is more
+> complexity than just supporting one which is general enough to support
+> a wider variety of hardware devices.
+>
+> If you want somethig which is only good for the hardware platform you
+> are charged to support, that's fine if it's only going to be in a
+> Samsung-specific kernel.  But if your goal is to get something that
+> works upstream, especially if it requires changes in core layers of
+> the kernel, it's important that it's general enough to support most,
+> if not all, if the hardware devices in the industry.
+>
+> Regards,
 
-INLINE_ENCRYPTION => INLINE_CRYPT_OPTIMIZED.
-(Code was updated, but the commit message was not.)
+I understood your reply.
+But, Please consider the diskcipher isn't just for FMP. 
+The UFS in Samsung SoC also has UFS ICE. This UFS ICE can be registered 
+as an algorithm of diskcipher like FMP.
 
-> diff --git a/fs/crypto/bio.c b/fs/crypto/bio.c
-> index 82da2510721f..d3c3f63ec109 100644
-> --- a/fs/crypto/bio.c
-> +++ b/fs/crypto/bio.c
-[...]
-> +#ifdef CONFIG_FS_ENCRYPTION_INLINE_CRYPT
-> +enum blk_crypto_mode_num
-> +get_blk_crypto_mode_for_fscryptalg(u8 fscrypt_alg)
-> +{
-> +	switch (fscrypt_alg) {
-> +	case FS_ENCRYPTION_MODE_AES_256_XTS:
-> +		return BLK_ENCRYPTION_MODE_AES_256_XTS;
-> +	default: return BLK_ENCRYPTION_MODE_INVALID;
-> +	}
-> +}
+Following is my opinion to introduce diskcipher.
+I think the common feature of ICE like FMP and UFS ICE, 
+is 'exposing cipher text to storage".
+And, Crypto test is also important for ICE.  Diskcipher supports
+the common feature of ICE. 
+I think specific functions for each ICE such as the key control of UFS ICE
+and the writing crypto table of FMP can be processed at algorithm level.
 
-This function isn't static, so it needs the "fscrypt_" prefix.
-How about: fscrypt_mode_to_block_mode(u8 fscrypt_mode);
+Thanks for your reply.
+Boojin Kim.
 
-> +int fscrypt_set_bio_crypt_ctx(struct bio *bio,
-> +			      const struct inode *inode,
-> +			      u64 data_unit_num,
-> +			      gfp_t gfp_mask)
-> +{
-> +	struct fscrypt_info *ci = inode->i_crypt_info;
-> +	int err;
-> +	enum blk_crypto_mode_num blk_crypto_mode;
-> +
-> +
-> +	/* If inode is not inline encrypted, nothing to do. */
-> +	if (!fscrypt_inode_is_inline_crypted(inode))
-> +		return 0;
-> +
-> +	blk_crypto_mode = get_blk_crypto_mode_for_fscryptalg(ci->ci_data_mode);
-> +	if (blk_crypto_mode == BLK_ENCRYPTION_MODE_INVALID)
-> +		return -EINVAL;
-> +
-> +	err = bio_crypt_set_ctx(bio, ci->ci_master_key->mk_raw,
-> +				blk_crypto_mode,
-> +				data_unit_num,
-> +				inode->i_blkbits,
-> +				gfp_mask);
-> +	if (err)
-> +		return err;
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL(fscrypt_set_bio_crypt_ctx);
-
-The end can shortened to:  return bio_crypt_set_ctx(...)
-
-> +int fscrypt_evict_crypt_key(struct inode *inode)
-> +{
-> +	struct request_queue *q;
-> +	struct fscrypt_info *ci;
-> +
-> +	if (!inode)
-> +		return 0;
-> +
-> +	q = inode->i_sb->s_bdev->bd_queue;
-> +	ci = inode->i_crypt_info;
-> +
-> +	if (!q || !q->ksm || !ci ||
-> +	    !fscrypt_inode_is_inline_crypted(inode)) {
-> +		return 0;
-> +	}
-> +
-> +	return keyslot_manager_evict_key(q->ksm,
-> +					 ci->ci_master_key->mk_raw,
-> +					 get_blk_crypto_mode_for_fscryptalg(
-> +						ci->ci_data_mode),
-> +					 1 << inode->i_blkbits);
-> +}
-> +EXPORT_SYMBOL(fscrypt_evict_crypt_key);
-
-This is really evicting a master key that may be shared by many inodes...  So it
-doesn't make sense to pass a specific inode here.  Shouldn't it pass the struct
-fscrypt_master_key itself?
-
-Also, this function needs kerneldoc.
-
-> +
-> +bool fscrypt_inode_crypt_mergeable(const struct inode *inode_1,
-> +				   const struct inode *inode_2)
-> +{
-> +	struct fscrypt_info *ci_1, *ci_2;
-> +	bool enc_1 = !inode_1 || fscrypt_inode_is_inline_crypted(inode_1);
-> +	bool enc_2 = !inode_2 || fscrypt_inode_is_inline_crypted(inode_2);
-> +
-> +	if (enc_1 != enc_2)
-> +		return false;
-> +
-> +	if (!enc_1)
-> +		return true;
-> +
-> +	if (inode_1 == inode_2)
-> +		return true;
-> +
-> +	ci_1 = inode_1->i_crypt_info;
-> +	ci_2 = inode_2->i_crypt_info;
-> +
-> +	return ci_1->ci_data_mode == ci_2->ci_data_mode &&
-> +	       crypto_memneq(ci_1->ci_master_key->mk_raw,
-> +			     ci_2->ci_master_key->mk_raw,
-> +			     ci_1->ci_master_key->mk_mode->keysize) == 0;
-> +}
-> +EXPORT_SYMBOL(fscrypt_inode_crypt_mergeable);
-
-Needs kerneldoc.
-
-> diff --git a/fs/crypto/keyinfo.c b/fs/crypto/keyinfo.c
-> index 207ebed918c1..989cf12217df 100644
-> --- a/fs/crypto/keyinfo.c
-> +++ b/fs/crypto/keyinfo.c
-[...]
-> -	if (cmpxchg_release(&inode->i_crypt_info, NULL, crypt_info) == NULL)
-> +	if (cmpxchg_release(&inode->i_crypt_info, NULL, crypt_info) == NULL) {
->  		crypt_info = NULL;
-> +		if (!flags_inline_crypted(ctx.flags, inode))
-> +			goto out;
-> +		blk_crypto_mode = get_blk_crypto_mode_for_fscryptalg(
-> +			inode->i_crypt_info->ci_mode - available_modes);
-> +
-> +		if (keyslot_manager_rq_crypto_mode_supported(
-> +						inode->i_sb->s_bdev->bd_queue,
-> +						blk_crypto_mode,
-> +						(1 << inode->i_blkbits))) {
-> +			goto out;
-> +		}
-> +
-> +		blk_crypto_mode_alloc_ciphers(blk_crypto_mode);
-> +	}
-
-As soon as ->i_crypt_info is set by the cmpxchg_release(), another thread can
-start I/O to the file.  So it's too late to call blk_crypto_mode_alloc_ciphers()
-here; it needs to happen before the cmpxchg_release().
-
-Also, shouldn't keyslot_manager_rq_crypto_mode_supported() and
-blk_crypto_mode_alloc_ciphers() be combined into a single function like
-blk_crypto_start_using_mode()?  The fact that it may have to pre-allocate the
-crypto transforms is an implementation detail, not something that users of the
-block layer should care about, it seems...
-
-> diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-> index bd8f207a2fb6..6db1c7c5009d 100644
-> --- a/include/linux/fscrypt.h
-> +++ b/include/linux/fscrypt.h
-> @@ -61,6 +61,7 @@ struct fscrypt_operations {
->  	bool (*dummy_context)(struct inode *);
->  	bool (*empty_dir)(struct inode *);
->  	unsigned int max_namelen;
-> +	bool inline_crypt_supp;
->  };
->  
->  /* Decryption work */
-> @@ -141,6 +142,23 @@ extern int fscrypt_inherit_context(struct inode *, struct inode *,
->  extern int fscrypt_get_encryption_info(struct inode *);
->  extern void fscrypt_put_encryption_info(struct inode *);
->  extern void fscrypt_free_inode(struct inode *);
-> +extern bool fscrypt_needs_fs_layer_crypto(const struct inode *inode);
-> +
-> +#ifdef CONFIG_FS_ENCRYPTION_INLINE_CRYPT
-> +extern bool fscrypt_inode_is_inline_crypted(const struct inode *inode);
-> +extern bool fscrypt_inode_crypt_mergeable(const struct inode *inode_1,
-> +					  const struct inode *inode_2);
-> +#else
-> +static inline bool fscrypt_inode_is_inline_crypted(const struct inode *inode)
-> +{
-> +	return false;
-> +}
-> +static inline bool fscrypt_inode_crypt_mergeable(const struct inode *inode_1,
-> +						 const struct inode *inode_2)
-> +{
-> +	return true;
-> +}
-> +#endif /* CONFIG_FS_ENCRYPTION_INLINE_CRYPT */
-
-Please try to put all the declarations in the right place.  E.g.
-fscrypt_inode_crypt_mergeable() is in the /* keyinfo.c */ part of
-this header, but it's actually defined in fs/crypto/bio.c.
-
->  
->  /* fname.c */
->  extern int fscrypt_setup_filename(struct inode *, const struct qstr *,
-> @@ -237,6 +255,29 @@ extern void fscrypt_enqueue_decrypt_bio(struct fscrypt_ctx *ctx,
->  					struct bio *bio);
->  extern int fscrypt_zeroout_range(const struct inode *, pgoff_t, sector_t,
->  				 unsigned int);
-> +#ifdef CONFIG_FS_ENCRYPTION_INLINE_CRYPT
-> +extern int fscrypt_set_bio_crypt_ctx(struct bio *bio,
-> +				     const struct inode *inode,
-> +				     u64 data_unit_num,
-> +				     gfp_t gfp_mask);
-> +extern void fscrypt_unset_bio_crypt_ctx(struct bio *bio);
-> +extern int fscrypt_evict_crypt_key(struct inode *inode);
-> +#else
-> +static inline int fscrypt_set_bio_crypt_ctx(struct bio *bio,
-> +					    const struct inode *inode,
-> +					    u64 data_unit_num,
-> +					    gfp_t gfp_mask)
-> +{
-> +	return 0;
-> +}
-> +
-> +static inline void fscrypt_unset_bio_crypt_ctx(struct bio *bio) { }
-> +
-> +static inline int fscrypt_evict_crypt_key(struct inode *inode)
-> +{
-> +	return 0;
-> +}
-> +#endif
-
-fscrypt_evict_crypt_key() is only called by fs/crypto/ itself, so why is it
-being exported to filesystems?
-
-> diff --git a/include/uapi/linux/fs.h b/include/uapi/linux/fs.h
-> index 59c71fa8c553..dea16d0f9d2e 100644
-> --- a/include/uapi/linux/fs.h
-> +++ b/include/uapi/linux/fs.h
-> @@ -224,7 +224,8 @@ struct fsxattr {
->  #define FS_POLICY_FLAGS_PAD_32		0x03
->  #define FS_POLICY_FLAGS_PAD_MASK	0x03
->  #define FS_POLICY_FLAG_DIRECT_KEY	0x04	/* use master key directly */
-> -#define FS_POLICY_FLAGS_VALID		0x07
-> +#define FS_POLICY_FLAGS_INLINE_CRYPT_OPTIMIZED	0x08
-
-Should be "FLAG" instead of "FLAGS" since it's a single flag, not a mask or
-multi-bit field.  See FS_POLICY_FLAG_DIRECT_KEY.
-
-- Eric
