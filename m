@@ -2,149 +2,204 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A5BFEA4D03
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  2 Sep 2019 03:07:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2B92A4EAD
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  2 Sep 2019 06:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729169AbfIBBHY (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sun, 1 Sep 2019 21:07:24 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:45408 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729147AbfIBBHX (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sun, 1 Sep 2019 21:07:23 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id DFEAACCBADF9A72EFC1A;
-        Mon,  2 Sep 2019 09:07:21 +0800 (CST)
-Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
- (10.3.19.204) with Microsoft SMTP Server (TLS) id 14.3.439.0; Mon, 2 Sep 2019
- 09:07:17 +0800
-Subject: Re: [PATCH] ext4 crypto: fix to check feature status before get
- policy
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        Chao Yu <chao@kernel.org>, <linux-ext4@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-fscrypt@vger.kernel.org>
-References: <20190804095643.7393-1-chao@kernel.org>
- <f5186fae-ac58-a5f5-f9dc-b749ade7285d@huawei.com>
- <20190831150251.GA528@zzz.localdomain>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <a6a452d6-aee3-76e1-4a6c-e31247a5a72e@huawei.com>
-Date:   Mon, 2 Sep 2019 09:07:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1729266AbfIBEgj (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 2 Sep 2019 00:36:39 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:49636 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726385AbfIBEgj (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 2 Sep 2019 00:36:39 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x824RvAn134976
+        for <linux-fscrypt@vger.kernel.org>; Mon, 2 Sep 2019 00:36:38 -0400
+Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2urqa364xc-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-fscrypt@vger.kernel.org>; Mon, 02 Sep 2019 00:36:38 -0400
+Received: from localhost
+        by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-fscrypt@vger.kernel.org> from <chandan@linux.ibm.com>;
+        Mon, 2 Sep 2019 05:36:36 +0100
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (9.149.109.196)
+        by e06smtp02.uk.ibm.com (192.168.101.132) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Mon, 2 Sep 2019 05:36:31 +0100
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x824aVF342991768
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 2 Sep 2019 04:36:31 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E9D66AE045;
+        Mon,  2 Sep 2019 04:36:30 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E83A8AE04D;
+        Mon,  2 Sep 2019 04:36:27 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.63.70])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  2 Sep 2019 04:36:27 +0000 (GMT)
+From:   Chandan Rajendra <chandan@linux.ibm.com>
+To:     tytso@mit.edu, viro@zeniv.linux.org.uk
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, adilger.kernel@dilger.ca,
+        ebiggers@kernel.org, hch@infradead.org, chandanrlinux@gmail.com
+Subject: Re: [PATCH V5 0/7] Consolidate FS read I/O callbacks code
+Date:   Mon, 02 Sep 2019 10:08:13 +0530
+Organization: IBM
+In-Reply-To: <20190823132542.13434-1-chandan@linux.ibm.com>
+References: <20190823132542.13434-1-chandan@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <20190831150251.GA528@zzz.localdomain>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.134.22.195]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-TM-AS-GCONF: 00
+x-cbid: 19090204-0008-0000-0000-0000030FE9A3
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19090204-0009-0000-0000-00004A2E3545
+Message-Id: <10742618.thX4IPaW4o@localhost.localdomain>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-09-02_02:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1909020051
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On 2019/8/31 23:02, Eric Biggers wrote:
-> On Sat, Aug 31, 2019 at 06:32:28PM +0800, Chao Yu wrote:
->> Hi,
->>
->> Is this change not necessary? A month has passed...
->>
->> Thanks,
->>
->> On 2019/8/4 17:56, Chao Yu wrote:
->>> From: Chao Yu <yuchao0@huawei.com>
->>>
->>> When getting fscrypto policy via EXT4_IOC_GET_ENCRYPTION_POLICY, if
->>> encryption feature is off, it's better to return EOPNOTSUPP instead
->>> of ENODATA, so let's add ext4_has_feature_encrypt() to do the check
->>> for that.
->>>
->>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
->>> ---
->>>  fs/ext4/ioctl.c | 6 ++++--
->>>  1 file changed, 4 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
->>> index 442f7ef873fc..bf87835c1237 100644
->>> --- a/fs/ext4/ioctl.c
->>> +++ b/fs/ext4/ioctl.c
->>> @@ -1112,9 +1112,11 @@ long ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
->>>  		return -EOPNOTSUPP;
->>>  #endif
->>>  	}
->>> -	case EXT4_IOC_GET_ENCRYPTION_POLICY:
->>> +	case EXT4_IOC_GET_ENCRYPTION_POLICY: {
->>> +		if (!ext4_has_feature_encrypt(sb))
->>> +			return -EOPNOTSUPP;
->>>  		return fscrypt_ioctl_get_policy(filp, (void __user *)arg);
->>> -
->>> +	}
->>>  	case EXT4_IOC_FSGETXATTR:
->>>  	{
->>>  		struct fsxattr fa;
->>>
+On Friday, August 23, 2019 6:55 PM Chandan Rajendra wrote: 
+> This patchset moves the "FS read I/O callbacks" code into a file of its
+> own (i.e. fs/read_callbacks.c) and modifies the generic
+> do_mpage_readpge() to make use of the functionality provided.
 > 
-> Sorry, I was preoccupied with all the other fscrypt changes, and was thinking of
-> waiting until 5.5 for this to avoid a potential extra merge conflict or a
-> potentially breaking change.  Looking at this again though, the new ioctl
-> FS_IOC_GET_ENCRYPTION_POLICY_EX *does* do the feature check, which doesn't match
-> the documentation, which implies the check isn't done.  Also, f2fs does the
-> check in FS_IOC_GET_ENCRYPTION_POLICY, so the filesystems are inconsistent.
+> "FS read I/O callbacks" code implements the state machine that needs
+> to be executed after reading data from files that are encrypted and/or
+> have verity metadata associated with them.
 > 
-> So, it makes some sense to apply this now.  So I've gone ahead and applied the
-> following to fscrypt.git#master, edited a bit from your original patch:
+> With these changes in place, the patchset changes Ext4 to use
+> mpage_readpage[s] instead of its own custom ext4_readpage[s]()
+> functions. This is done to reduce duplication of code across
+> filesystems. Also, "FS read I/O callbacks" source files will be built
+> only if CONFIG_FS_ENCRYPTION is enabled.
 > 
->>From 0642ea2409f3bfa105570e12854b8e2628db6835 Mon Sep 17 00:00:00 2001
-> From: Chao Yu <yuchao0@huawei.com>
-> Date: Sun, 4 Aug 2019 17:56:43 +0800
-> Subject: [PATCH] ext4 crypto: fix to check feature status before get policy
+> The patchset also modifies fs/buffer.c to get file
+> encryption/decryption to work with subpage-sized blocks.
 > 
-> When getting fscrypt policy via EXT4_IOC_GET_ENCRYPTION_POLICY, if
-> encryption feature is off, it's better to return EOPNOTSUPP instead of
-> ENODATA, so let's add ext4_has_feature_encrypt() to do the check for
-> that.
-> 
-> This makes it so that all fscrypt ioctls consistently check for the
-> encryption feature, and makes ext4 consistent with f2fs in this regard.
-> 
-> Signed-off-by: Chao Yu <yuchao0@huawei.com>
-> [EB - removed unneeded braces, updated the documentation, and
->       added more explanation to commit message]
+> The patches can also be obtained from
+> https://github.com/chandanr/linux.git at branch subpage-encryption-v5.
 
-The patch looks better now, thanks for the help.
+Ted and Al,
 
-Thanks,
+Do you have any comments on the patchset?
 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
->  Documentation/filesystems/fscrypt.rst | 3 ++-
->  fs/ext4/ioctl.c                       | 2 ++
->  2 files changed, 4 insertions(+), 1 deletion(-)
 > 
-> diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
-> index 4289c29d7c5a..8a0700af9596 100644
-> --- a/Documentation/filesystems/fscrypt.rst
-> +++ b/Documentation/filesystems/fscrypt.rst
-> @@ -562,7 +562,8 @@ FS_IOC_GET_ENCRYPTION_POLICY_EX can fail with the following errors:
->    or this kernel is too old to support FS_IOC_GET_ENCRYPTION_POLICY_EX
->    (try FS_IOC_GET_ENCRYPTION_POLICY instead)
->  - ``EOPNOTSUPP``: the kernel was not configured with encryption
-> -  support for this filesystem
-> +  support for this filesystem, or the filesystem superblock has not
-> +  had encryption enabled on it
->  - ``EOVERFLOW``: the file is encrypted and uses a recognized
->    encryption policy version, but the policy struct does not fit into
->    the provided buffer
-> diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-> index fe5a4b13f939..5703d607f5af 100644
-> --- a/fs/ext4/ioctl.c
-> +++ b/fs/ext4/ioctl.c
-> @@ -1113,6 +1113,8 @@ long ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
->  #endif
->  	}
->  	case EXT4_IOC_GET_ENCRYPTION_POLICY:
-> +		if (!ext4_has_feature_encrypt(sb))
-> +			return -EOPNOTSUPP;
->  		return fscrypt_ioctl_get_policy(filp, (void __user *)arg);
->  
->  	case FS_IOC_GET_ENCRYPTION_POLICY_EX:
+> Changelog:
+> V4 -> V5:
+>    1. Since F2FS uses its own workqueue and also since its
+>       decompression logic isn't an fs independent entity like fscrypt or
+>       fsverity, this patchset drops support for F2FS.
+>       The patchset still helps in removing a copy of
+>       do_mpage_readpage() from Ext4 (i.e. ext4_readpage()) and also
+>       prevents a copy of block_read_full_page() from being added into
+>       Ext4 by adding support to "read callbacks" API invocations into
+>       block_read_full_page().
 > 
+> V3 -> V4:
+>    1. A new buffer_head flag (i.e. BH_Read_Cb) is introduced to reliably
+>       check if a buffer head's content has to be decrypted.
+>    2. Fix layering violation. Now the code flow for decryption happens as shown below,
+>       FS => read callbacks => fscrypt
+>    3. Select FS_READ_CALLBACKS from FS specific kconfig file if FS_ENCRYPTION
+>       is enabled.
+>    4. Make 'struct read_callbacks_ctx' an opaque structure.
+>    5. Make use of FS' endio function rather than implementing one in read
+>       callbacks.
+>    6. Make read_callbacks.h self-contained.
+>    7. Split patchset to separate out ext4 and f2fs changes.
+>    
+> V2 -> V3:
+> 1. Split the V2 patch "Consolidate 'read callbacks' into a new file" into
+>    three patches,
+>    - Introduce the read_callbacks functionality.
+>    - Convert encryption to use read_callbacks.
+>    - Remove union from struct fscrypt_context.
+> 2. fs/Kconfig
+>    Do not explicitly set the default value of 'n' for FS_READ_CALLBACKS.
+> 3. fs/crypto/Kconfig
+>    Select CONFIG_FS_READ_CALLBACKS only if CONFIG_BLOCK is selected.
+> 4. Remove verity associated code in read_callbacks code.
+> 5. Introduce a callback argument to read_callbacks_setup() function
+>    which gets invoked for each page for bio. F2FS uses this to perform
+>    custom operations like decrementing the value of f2fs_sb_info->nr_pages[].
+> 6. Encapsulate the details of "read callbacks" (e.g. Usage of "struct
+>    read_callbacks *ctx") within its own functions. When CONFIG_FS_READ_CALLBACKS
+>    is set to 'n', the corresponding stub functions return approriate error
+>    values.
+> 7. Split fscrypt_decrypt() function into fscrypt_decrypt_bio() and
+>    fscrypt_decrypt_bh().
+> 8. Split end_read_callbacks() function into end_read_callbacks_bio() and
+>    end_read_callbacks_bh().
+> 
+> V1 -> V2:
+> 1. Removed the phrase "post_read_process" from file names and
+>    functions. Instead we now use the phrase "read_callbacks" in its
+>    place.
+> 2. When performing changes associated with (1), the changes made by
+>    the patch "Remove the term 'bio' from post read processing" are
+>    made in the earlier patch "Consolidate 'read callbacks' into a new
+>    file". Hence the patch "Remove the term 'bio' from post read
+>    processing" is removed from the patchset.
+> 
+> RFC V2 -> V1:
+> 1. Test and verify FS_CFLG_OWN_PAGES subset of fscrypt_encrypt_page()
+>    code by executing fstests on UBIFS.
+> 2. Implement F2fs function call back to check if the contents of a
+>    page holding a verity file's data needs to be verified.
+> 
+> RFC V1 -> RFC V2:
+> 1. Describe the purpose of "Post processing code" in the cover letter.
+> 2. Fix build errors when CONFIG_FS_VERITY is enabled.
+> 
+> Chandan Rajendra (7):
+>   buffer_head: Introduce BH_Read_Cb flag
+>   FS: Introduce read callbacks
+>   fs/mpage.c: Integrate read callbacks
+>   fs/buffer.c: add decryption support via read_callbacks
+>   ext4: Wire up ext4_readpage[s] to use mpage_readpage[s]
+>   ext4: Enable encryption for subpage-sized blocks
+>   fscrypt: remove struct fscrypt_ctx
+> 
+>  Documentation/filesystems/fscrypt.rst |   4 +-
+>  fs/Kconfig                            |   3 +
+>  fs/Makefile                           |   1 +
+>  fs/buffer.c                           |  33 ++-
+>  fs/crypto/bio.c                       |  18 --
+>  fs/crypto/crypto.c                    |  89 +-------
+>  fs/crypto/fscrypt_private.h           |   3 -
+>  fs/ext4/Kconfig                       |   1 +
+>  fs/ext4/Makefile                      |   2 +-
+>  fs/ext4/inode.c                       |   5 +-
+>  fs/ext4/readpage.c                    | 295 --------------------------
+>  fs/ext4/super.c                       |   7 -
+>  fs/f2fs/Kconfig                       |   1 +
+>  fs/mpage.c                            |  24 ++-
+>  fs/read_callbacks.c                   | 285 +++++++++++++++++++++++++
+>  include/linux/buffer_head.h           |   2 +
+>  include/linux/fscrypt.h               |  32 ---
+>  include/linux/read_callbacks.h        |  48 +++++
+>  18 files changed, 391 insertions(+), 462 deletions(-)
+>  delete mode 100644 fs/ext4/readpage.c
+>  create mode 100644 fs/read_callbacks.c
+>  create mode 100644 include/linux/read_callbacks.h
+> 
+> 
+
+
+-- 
+chandan
+
+
+
