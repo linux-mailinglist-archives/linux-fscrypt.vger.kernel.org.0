@@ -2,79 +2,79 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AB75A84A2
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  4 Sep 2019 15:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81E68A89C6
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  4 Sep 2019 21:24:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730348AbfIDNin (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 4 Sep 2019 09:38:43 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:41984 "EHLO mx1.redhat.com"
+        id S1729773AbfIDPz2 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 4 Sep 2019 11:55:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58138 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730145AbfIDNim (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 4 Sep 2019 09:38:42 -0400
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1727967AbfIDPz2 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 4 Sep 2019 11:55:28 -0400
+Received: from gmail.com (unknown [104.132.1.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 4F31E109EFC7;
-        Wed,  4 Sep 2019 13:38:42 +0000 (UTC)
-Received: from localhost (unknown [10.18.25.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4753860166;
-        Wed,  4 Sep 2019 13:38:37 +0000 (UTC)
-Date:   Wed, 4 Sep 2019 09:38:36 -0400
-From:   Mike Snitzer <snitzer@redhat.com>
-To:     Milan Broz <gmazyland@gmail.com>
-Cc:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        linux-crypto@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Eric Biggers <ebiggers@google.com>,
-        linux-fscrypt@vger.kernel.org,
-        Gilad Ben-Yossef <gilad@benyossef.com>, dm-devel@redhat.com
-Subject: Re: [PATCH v13 6/6] md: dm-crypt: omit parsing of the encapsulated
- cipher
-Message-ID: <20190904133836.GA17836@redhat.com>
-References: <20190819141738.1231-1-ard.biesheuvel@linaro.org>
- <20190819141738.1231-7-ard.biesheuvel@linaro.org>
- <20190903185827.GD13472@redhat.com>
- <403192f0-d1c4-0c60-5af1-7dee8516d629@gmail.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 185FC22CED;
+        Wed,  4 Sep 2019 15:55:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1567612527;
+        bh=n7U+Trz0c3CupaEt0Y95vGbsTdrAvDWdLtPfgxXfzpI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ooPaKpG4EfQxlnhrb+oug/4Gkvg130Oah08QtJ8g1Z+CaKl/o2H2wQyFBRzO4INqX
+         f3A57a/AC0iSLOS4xAfnuTAzLsjuXsck0+6X7k78yyECvEYsUih7UlMKiMvQFTXa/n
+         9+fg8ZRS+8m2Wp3Qsablkd27v6yfKJR6EvDIoRSQ=
+Date:   Wed, 4 Sep 2019 08:55:25 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-ext4@vger.kernel.org
+Cc:     linux-fscrypt@vger.kernel.org
+Subject: Re: [PATCH v3] e2fsck: check for consistent encryption policies
+Message-ID: <20190904155524.GA41757@gmail.com>
+Mail-Followup-To: linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org
+References: <20190823162339.186643-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <403192f0-d1c4-0c60-5af1-7dee8516d629@gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.6.2 (mx1.redhat.com [10.5.110.65]); Wed, 04 Sep 2019 13:38:42 +0000 (UTC)
+In-Reply-To: <20190823162339.186643-1-ebiggers@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, Sep 04 2019 at  7:01am -0400,
-Milan Broz <gmazyland@gmail.com> wrote:
-
-> On 03/09/2019 20:58, Mike Snitzer wrote:
-> > On Mon, Aug 19 2019 at 10:17am -0400,
-> > Ard Biesheuvel <ard.biesheuvel@linaro.org> wrote:
-> > 
-> >> Only the ESSIV IV generation mode used to use cc->cipher so it could
-> >> instantiate the bare cipher used to encrypt the IV. However, this is
-> >> now taken care of by the ESSIV template, and so no users of cc->cipher
-> >> remain. So remove it altogether.
-> >>
-> >> Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-> > 
-> > Acked-by: Mike Snitzer <snitzer@redhat.com>
-> > 
-> > Might be wise to bump the dm-crypt target's version number (from
-> > {1, 19, 0} to {1, 20, 0}) at the end of this patch too though...
+On Fri, Aug 23, 2019 at 09:23:39AM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> The function should be exactly the same, dependencies on needed modules are set.
+> By design, the kernel enforces that all files in an encrypted directory
+> use the same encryption policy as the directory.  It's not possible to
+> violate this constraint using syscalls.  Lookups of files that violate
+> this constraint also fail, in case the disk was manipulated.
 > 
-> In cryptsetup we always report dm target + kernel version,
-> so we know that since version 5.4 it uses crypto API for ESSIV.
-> I think version bump here is really not so important.
+> But this constraint can also be violated by accidental filesystem
+> corruption.  E.g., a power cut when using ext4 without a journal might
+> leave new files without the encryption bit and/or xattr.  Thus, it's
+> important that e2fsck correct this condition.
 > 
-> Just my two cents :)
+> Therefore, this patch makes the following changes to e2fsck:
+> 
+> - During pass 1 (inode table scan), create a map from inode number to
+>   encryption policy for all encrypted inodes.  But it's optimized so
+>   that the full xattrs aren't saved but rather only 32-bit "policy IDs",
+>   since usually many inodes share the same encryption policy.  Also, if
+>   an encryption xattr is missing, offer to clear the encrypt flag.  If
+>   an encryption xattr is clearly corrupt, offer to clear the inode.
+> 
+> - During pass 2 (directory structure check), use the map to verify that
+>   all regular files, directories, and symlinks in encrypted directories
+>   use the directory's encryption policy.  Offer to clear any directory
+>   entries for which this isn't the case.
+> 
+> Add a new test "f_bad_encryption" to test the new behavior.
+> 
+> Due to the new checks, it was also necessary to update the existing test
+> "f_short_encrypted_dirent" to add an encryption xattr to the test file,
+> since it was missing one before, which is now considered invalid.
+> 
 
-Yes, that's fine.. I staged it for 5.4 yesterday without the version bump.
+Any comments on this patch?
 
-Thanks,
-Mike
+- Eric
