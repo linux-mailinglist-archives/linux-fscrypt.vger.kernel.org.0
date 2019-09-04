@@ -2,94 +2,102 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 58F4BA75A2
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  3 Sep 2019 22:51:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1846A80CA
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  4 Sep 2019 13:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726937AbfICUvb (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 3 Sep 2019 16:51:31 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:48988 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726440AbfICUva (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 3 Sep 2019 16:51:30 -0400
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 699CF8980EF;
-        Tue,  3 Sep 2019 20:51:30 +0000 (UTC)
-Received: from localhost (unknown [10.18.25.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id AB0D960126;
-        Tue,  3 Sep 2019 20:51:27 +0000 (UTC)
-Date:   Tue, 3 Sep 2019 16:51:26 -0400
-From:   Mike Snitzer <snitzer@redhat.com>
-To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Cc:     "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
+        id S1729656AbfIDLBd (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 4 Sep 2019 07:01:33 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:40598 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727387AbfIDLBd (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 4 Sep 2019 07:01:33 -0400
+Received: by mail-wm1-f65.google.com with SMTP id t9so3142832wmi.5;
+        Wed, 04 Sep 2019 04:01:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:openpgp:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=aiCDqJNilYcMlqpj9RhS+m7CTUNRMuH0wMXQB4/ydNs=;
+        b=AJvJyEe3o4RSGAQNm7ptP1O9prm45dP1+pi00k0IfH3U/XrhBxx7zwLVXtSjob/dui
+         MggxUaQ0PbxWippH3czqsid6AltkQG8NJyvvbV42/4ysz0VuxLKjr75ukbx02Lc73cz+
+         19ccaj3MQB44iWLwj9BYme9iPt46NnpjzEGZC+Er4ZBg/gefJXGZXUCODbPaQ52a5Ke2
+         ISRc4EgSYUdogV4/Gk/5kbiy91X82gAHRJHBizyKWsAxncG1dFGlTzdulwfmIZcMHSen
+         9Rd2U2BJGaiEgoV3hSvF1XfAZkkX+Fm6KVlzejqaQKW1eR50Qo9rHplFkqZANA9WI8oB
+         Z/uQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:openpgp:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aiCDqJNilYcMlqpj9RhS+m7CTUNRMuH0wMXQB4/ydNs=;
+        b=jlaOnl/HR+5wGxeWe2PcQSS4iyXFj6rF+FLhNrPdfAOdWW8qEguJu/YapFnon4NBVn
+         Wa3Z3J88YgahBQ3hchogHJQRb2Pmm6yAjpeWQUK5ffvqsKZaV9o6yklc5Qf/X8Z2QcYk
+         TtuY0a9NjE/SSTRYDB58M9ZqCJNGyGUqI3H/3jHUiwJlIXd/wKR2XivsM9yxVjnWJ4lC
+         Jtq8FkGTrf+CQzSr4pIKw0mLwEoGRiF9pcJff1G/Z1lZINDZqU1HLI2YzzSudMXnUwkZ
+         xSBMleC05eGEI9n1SlqeG41Z4WEo2CPIDwnp45eG6T/+YH5336leFp6PNI1ME+T2m0iK
+         YepA==
+X-Gm-Message-State: APjAAAUZlL/jogC5epItm4QXNRO25c1Fx+6+R0yrB7OhqLwHRa+le/Hm
+        v4I9HgRj5did9v2aPSexWrI=
+X-Google-Smtp-Source: APXvYqyxoU5bw4NMVPG7sTFGi+Sd6Ec/4zLMmAvb9SW6PPWUSkkQ4NnaA3Eu+Q68qKNxGMbGI6HLTg==
+X-Received: by 2002:a05:600c:2105:: with SMTP id u5mr4155388wml.150.1567594891095;
+        Wed, 04 Sep 2019 04:01:31 -0700 (PDT)
+Received: from [172.22.36.64] (redhat-nat.vtp.fi.muni.cz. [78.128.215.6])
+        by smtp.gmail.com with ESMTPSA id e30sm32581785wra.48.2019.09.04.04.01.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Sep 2019 04:01:30 -0700 (PDT)
+Subject: Re: [PATCH v13 6/6] md: dm-crypt: omit parsing of the encapsulated
+ cipher
+To:     Mike Snitzer <snitzer@redhat.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Cc:     linux-crypto@vger.kernel.org,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Eric Biggers <ebiggers@google.com>,
         linux-fscrypt@vger.kernel.org,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        device-mapper development <dm-devel@redhat.com>,
-        Milan Broz <gmazyland@gmail.com>
-Subject: Re: [PATCH v13 5/6] md: dm-crypt: switch to ESSIV crypto API template
-Message-ID: <20190903205126.GA13753@redhat.com>
+        Gilad Ben-Yossef <gilad@benyossef.com>, dm-devel@redhat.com
 References: <20190819141738.1231-1-ard.biesheuvel@linaro.org>
- <20190819141738.1231-6-ard.biesheuvel@linaro.org>
- <20190903185537.GC13472@redhat.com>
- <CAKv+Gu8wr3HnP7uVDAOY=o54dWVkPoWm5V43LU_QNVMK_Cc2GA@mail.gmail.com>
+ <20190819141738.1231-7-ard.biesheuvel@linaro.org>
+ <20190903185827.GD13472@redhat.com>
+From:   Milan Broz <gmazyland@gmail.com>
+Openpgp: preference=signencrypt
+Message-ID: <403192f0-d1c4-0c60-5af1-7dee8516d629@gmail.com>
+Date:   Wed, 4 Sep 2019 13:01:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKv+Gu8wr3HnP7uVDAOY=o54dWVkPoWm5V43LU_QNVMK_Cc2GA@mail.gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.6.2 (mx1.redhat.com [10.5.110.67]); Tue, 03 Sep 2019 20:51:30 +0000 (UTC)
+In-Reply-To: <20190903185827.GD13472@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, Sep 03 2019 at  3:16pm -0400,
-Ard Biesheuvel <ard.biesheuvel@linaro.org> wrote:
-
-> On Tue, 3 Sep 2019 at 11:55, Mike Snitzer <snitzer@redhat.com> wrote:
-> >
-> > On Mon, Aug 19 2019 at 10:17am -0400,
-> > Ard Biesheuvel <ard.biesheuvel@linaro.org> wrote:
-> >
-> > > Replace the explicit ESSIV handling in the dm-crypt driver with calls
-> > > into the crypto API, which now possesses the capability to perform
-> > > this processing within the crypto subsystem.
-> > >
-> > > Note that we reorder the AEAD cipher_api string parsing with the TFM
-> > > instantiation: this is needed because cipher_api is mangled by the
-> > > ESSIV handling, and throws off the parsing of "authenc(" otherwise.
-> > >
-> > > Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-> >
-> > I really like to see this type of factoring out to the crypto API;
-> > nicely done.
-> >
-> > Acked-by: Mike Snitzer <snitzer@redhat.com>
-> >
-> > Herbert, please feel free to pull this, and the next 6/6 patch, into
-> > your crypto tree for 5.4.  I see no need to complicate matters by me
-> > having to rebase my dm-5.4 branch ontop of the crypto tree, etc.
-> >
+On 03/09/2019 20:58, Mike Snitzer wrote:
+> On Mon, Aug 19 2019 at 10:17am -0400,
+> Ard Biesheuvel <ard.biesheuvel@linaro.org> wrote:
 > 
-> Thanks Mike.
+>> Only the ESSIV IV generation mode used to use cc->cipher so it could
+>> instantiate the bare cipher used to encrypt the IV. However, this is
+>> now taken care of by the ESSIV template, and so no users of cc->cipher
+>> remain. So remove it altogether.
+>>
+>> Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 > 
-> There is no need to rebase your branch - there is only a single
-> dependency, which is the essiv template itself, and the patch that
-> adds that (#1 in this series) was acked by Herbert, specifically so
-> that it can be taken via another tree. The crypto tree has no
-> interdependencies with this template, and the other patches in this
-> series are not required for essiv in dm-crypt.
+> Acked-by: Mike Snitzer <snitzer@redhat.com>
+> 
+> Might be wise to bump the dm-crypt target's version number (from
+> {1, 19, 0} to {1, 20, 0}) at the end of this patch too though...
 
-Ah ok, thanks for clarifying.
+The function should be exactly the same, dependencies on needed modules are set.
 
-I just picked up patches 1, 5, and 6 and staged them in linux-next via
-dm-5.4, please see:
-https://git.kernel.org/pub/scm/linux/kernel/git/device-mapper/linux-dm.git/log/?h=dm-5.4
+In cryptsetup we always report dm target + kernel version,
+so we know that since version 5.4 it uses crypto API for ESSIV.
+I think version bump here is really not so important.
 
-Thanks,
-Mike
+Just my two cents :)
+
+Anyway, thanks everyone.
+
+Milan
