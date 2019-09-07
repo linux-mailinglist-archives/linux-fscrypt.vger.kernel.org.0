@@ -2,79 +2,99 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 81E68A89C6
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  4 Sep 2019 21:24:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0BFEAC3E5
+	for <lists+linux-fscrypt@lfdr.de>; Sat,  7 Sep 2019 03:34:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729773AbfIDPz2 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 4 Sep 2019 11:55:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58138 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727967AbfIDPz2 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 4 Sep 2019 11:55:28 -0400
-Received: from gmail.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 185FC22CED;
-        Wed,  4 Sep 2019 15:55:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1567612527;
-        bh=n7U+Trz0c3CupaEt0Y95vGbsTdrAvDWdLtPfgxXfzpI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ooPaKpG4EfQxlnhrb+oug/4Gkvg130Oah08QtJ8g1Z+CaKl/o2H2wQyFBRzO4INqX
-         f3A57a/AC0iSLOS4xAfnuTAzLsjuXsck0+6X7k78yyECvEYsUih7UlMKiMvQFTXa/n
-         9+fg8ZRS+8m2Wp3Qsablkd27v6yfKJR6EvDIoRSQ=
-Date:   Wed, 4 Sep 2019 08:55:25 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-ext4@vger.kernel.org
-Cc:     linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH v3] e2fsck: check for consistent encryption policies
-Message-ID: <20190904155524.GA41757@gmail.com>
-Mail-Followup-To: linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org
-References: <20190823162339.186643-1-ebiggers@kernel.org>
+        id S2405697AbfIGBeE (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 6 Sep 2019 21:34:04 -0400
+Received: from mail-vs1-f65.google.com ([209.85.217.65]:40540 "EHLO
+        mail-vs1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405673AbfIGBeE (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Fri, 6 Sep 2019 21:34:04 -0400
+Received: by mail-vs1-f65.google.com with SMTP id v10so2048289vsc.7
+        for <linux-fscrypt@vger.kernel.org>; Fri, 06 Sep 2019 18:34:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=uc1hOrF9ibmJNqiYIobP0plOzk8mhKfiXUc7Z1z1lko=;
+        b=n6Ithw0jNyS2fiM9jzhRn8PdvbLxs57sVT7jxWXJlv8K+qrEpitv849lMBpgflDuSF
+         Q3J0lMTl2talLlNckWz0Ev8RDGsJqJ2DgFr0WjxXc88WmUtsXuEX3zExoL8X46zrUvaz
+         jxpHeKU0Zx/teSqkpW0u/N4cq3wacvLmpKneNEOw01qNPmDR3PsnateXSvwWPOLgeCPg
+         LrrZgIdSNCAX24s/Ky3G7W1UkjG6/33Og1F83e2oOMhStojIHgCtm8X61sjIpITWPwKF
+         BupAJ4I/pVEAJ9FXeWY9K4U77k9cnuRM63Jor8EcQmySgxGKMcfePyVV7mtk1c9mTcNl
+         l3GQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=uc1hOrF9ibmJNqiYIobP0plOzk8mhKfiXUc7Z1z1lko=;
+        b=V2V/N2cxOxau65/ny35YAnBVi2CWX/KEPHxF4aJyg+sEWwP/RnjHG/ajcfac7HKNYN
+         k49waEEtmUS56gSrO1ksy1ggeJzwSR26zL8ghxAMGJz9oHjFuSTbCi+87KVyhdHkEF9B
+         mlnJTo/4xtycbE2Zl6TeRuX7u7NFDdC3Nn8kAqfgnBnoBHfBL2ewB4phniWo9wlzKjXY
+         OrtCqFkfb+3y/E6vqfS4w2tVmSOB+u99sHyTe7mLhIRXwMbz7rQw+GFmn8cP39qpfQqs
+         ISG0alrlMGsnmlCNyZ5XUFdWIfnd6KYLF01rymGDwGByUWy9qNM5XLO6DhrDcnXRAUGQ
+         krHQ==
+X-Gm-Message-State: APjAAAX/wxEAWaVS8nz4NHylVIRphelEESMjbOa/+Q2aIoKMdDvKjOdx
+        RWd76vVWlbHI94d1wm5zhh8UyA+RYVD3l35txfA=
+X-Google-Smtp-Source: APXvYqwppDTyTsRtDCok5ZWaLpcUCsb5zmuSF5QAQV9oRs2Oep8MEvcF+/EelXqCioRufi5T8RJBBbHcDma12+xdMcM=
+X-Received: by 2002:a67:fbc8:: with SMTP id o8mr3817349vsr.173.1567820043354;
+ Fri, 06 Sep 2019 18:34:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190823162339.186643-1-ebiggers@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Received: by 2002:a1f:c545:0:0:0:0:0 with HTTP; Fri, 6 Sep 2019 18:34:02 -0700 (PDT)
+Reply-To: waltonalice41@gmail.com
+From:   Alice Walton <saraharmony501@gmail.com>
+Date:   Sat, 7 Sep 2019 02:34:02 +0100
+Message-ID: <CAHoQAbVdw6EB8B7rjg4UG=gmhj6E4z8sX3RAD7V5D1V4Dt3jFg@mail.gmail.com>
+Subject: Please forgive me
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Aug 23, 2019 at 09:23:39AM -0700, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> By design, the kernel enforces that all files in an encrypted directory
-> use the same encryption policy as the directory.  It's not possible to
-> violate this constraint using syscalls.  Lookups of files that violate
-> this constraint also fail, in case the disk was manipulated.
-> 
-> But this constraint can also be violated by accidental filesystem
-> corruption.  E.g., a power cut when using ext4 without a journal might
-> leave new files without the encryption bit and/or xattr.  Thus, it's
-> important that e2fsck correct this condition.
-> 
-> Therefore, this patch makes the following changes to e2fsck:
-> 
-> - During pass 1 (inode table scan), create a map from inode number to
->   encryption policy for all encrypted inodes.  But it's optimized so
->   that the full xattrs aren't saved but rather only 32-bit "policy IDs",
->   since usually many inodes share the same encryption policy.  Also, if
->   an encryption xattr is missing, offer to clear the encrypt flag.  If
->   an encryption xattr is clearly corrupt, offer to clear the inode.
-> 
-> - During pass 2 (directory structure check), use the map to verify that
->   all regular files, directories, and symlinks in encrypted directories
->   use the directory's encryption policy.  Offer to clear any directory
->   entries for which this isn't the case.
-> 
-> Add a new test "f_bad_encryption" to test the new behavior.
-> 
-> Due to the new checks, it was also necessary to update the existing test
-> "f_short_encrypted_dirent" to add an encryption xattr to the test file,
-> since it was missing one before, which is now considered invalid.
-> 
-
-Any comments on this patch?
-
-- Eric
+TXnCoERlYXJlc3QsDQoNClBsZWFzZcKgZm9yZ2l2ZcKgbWXCoGZvcsKgc3RyZXNzaW5nwqB5b3XC
+oHdpdGjCoG15wqBwcmVkaWNhbWVudHPCoGFzwqBJwqBrbm93DQp0aGF0wqB0aGlzwqBsZXR0ZXLC
+oG1hecKgY29tZcKgdG/CoHlvdcKgYXPCoGHCoGJpZ8Kgc3VycHJpc2UuDQoNCkFjdHVhbGx5LMKg
+ScKgY2FtZcKgYWNyb3NzwqB5b3VywqBFLW1haWzCoGZyb23CoG15wqBwZXJzb25hbMKgc2VhcmNo
+wqBhZnRlcndhcmQNCknCoGRlY2lkZWTCoHRvwqBlbWFpbMKgeW91wqBkaXJlY3RsecKgYmVsaWV2
+aW5nwqB0aGF0wqB5b3XCoHdpbGzCoGJlwqBob25lc3TCoHRvDQpmdWxmaWzCoG15wqBmaW5hbMKg
+d2lzaMKgYmVmb3JlwqBhbnl0aGluZ8KgaGFwcGVuc8KgdG/CoG1lLsKgTWVhbndoaWxlLMKgScKg
+YW0NCk1hZGFtwqBBbGljZcKgV2FsdG9uLMKgNzHCoHllYXJzwqBvbGTCoGNoaWxkbGVzc8Kgd2lk
+b3fCoGZyb23CoEZyYW5jZcKgYnV0wqBpDQpyZXNpZGXCoGFuZMKgZG9pbmfCoEdvbGTCoG1pbmlu
+Z8KgYnVzaW5lc3PCoGluwqBBZnJpY2HCoGJlZm9yZcKgacKgZmFsbMKgc2ljay4NCg0KScKgYW3C
+oHN1ZmZlcmluZ8KgZnJvbcKgQWRlbm9jYXJjaW5vbWHCoENhbmNlcsKgb2bCoHRoZcKgbHVuZ3PC
+oGZvcsKgdGhlwqBwYXN0wqA4DQp5ZWFyc8KgYW5kwqBmcm9twqBhbGzCoGluZGljYXRpb27CoG15
+wqBjb25kaXRpb27CoGlzwqByZWFsbHnCoGRldGVyaW9yYXRpbmfCoGFzDQptecKgZG9jdG9yc8Kg
+aGF2ZcKgY29uZmlybWVkwqBhbmTCoGNvdXJhZ2VvdXNsecKgYWR2aXNlZMKgbWXCoHRoYXTCoEnC
+oG1hecKgbm90DQpsaXZlwqBiZXlvbmTCoDPCoHdlZWtzwqBmcm9twqBub3fCoGZvcsKgdGhlwqBy
+ZWFzb27CoHRoYXTCoG15wqB0dW1vcsKgaGFzwqByZWFjaGVkDQphwqBjcml0aWNhbMKgc3RhZ2XC
+oHdoaWNowqBoYXPCoGRlZmlsZWTCoGFsbMKgZm9ybXPCoG9mwqBtZWRpY2FswqB0cmVhdG1lbnQu
+DQoNClNpbmNlwqBtecKgZGF5c8KgYXJlwqBudW1iZXJlZCzCoEnigJl2ZcKgZGVjaWRlZMKgd2ls
+bGluZ2x5wqB0b8KgZnVsZmlswqBteQ0KbG9uZy10aW1lwqB2b3fCoHRvwqBkb25hdGXCoHRvwqB0
+aGXCoGxlc3PCoHByaXZpbGVnZXPCoHRoZcKgc3VtwqBvZigkMTguNQ0KbWlsbGlvbsKgZG9sbGFy
+cynCoEnCoGRlcG9zaXRlZMKgaW7CoG15wqBvZmZzaG9yZcKgYWNjb3VudMKgb3ZlcsKgN8KgeWVh
+cnPCoG5vdw0KYmVjYXVzZcKgScKgaGF2ZcKgdHJpZWTCoHRvwqBoYW5kbGXCoHRoaXPCoHByb2pl
+Y3TCoGJ5wqBteXNlbGbCoGJ1dMKgScKgaGF2ZcKgc2Vlbg0KdGhhdMKgbXnCoGhlYWx0aMKgY291
+bGTCoG5vdMKgYWxsb3fCoG1lwqB0b8KgZG/CoHNvwqBhbnltb3JlLg0KDQpNecKgcHJvbWlzZcKg
+dG/CoEdvZMKgaW5jbHVkZXPCoGJ1aWxkaW5nwqBvZsKgd2VsbC1lcXVpcHBlZMKgY2hhcml0eQ0K
+Zm91bmRhdGlvbi9ob3NwaXRhbMKgYW5kwqBhwqB0ZWNobmljYWzCoHNjaG9vbMKgZm9ywqB0aGXC
+oG9ycGhhbnPCoGFuZMKgbGVzcw0KcHJpdmlsZWdlcy4NCg0KU2luY2XCoGnCoGFtwqBub3TCoGNh
+cGFibGXCoHRvwqBoYW5kbGXCoHRoaXPCoGFnYWluwqBteXNlbGbCoGR1ZcKgdG/CoG15wqBjcml0
+aWNhbA0KaGVhbHRowqBjb25kaXRpb24scGxlYXNlwqBpwqBuZWVkwqB5b3VywqBjb25zZW50wqB0
+b8KgaGVscMKgbWXCoHJlY2VpdmXCoG15DQptb25lecKgZnJvbcKgdGhlwqBiYW5rwqBhbmTCoHVz
+ZcKgaXTCoHRvwqBkb8KgdGhpc8KgZGl2aW5lwqB3b3Jrc8Kgb2bCoEdvZMKgaW7CoHlvdXINCmNv
+dW50cnnCoGluwqBtecKgbmFtZcKgc2/CoHRoYXTCoG15wqBzb3VswqBjYW7CoGJlwqBhdMKgcmVz
+dMKgaWbCoGFueXRoaW5nwqBoYXBwZW5zDQp0b8KgbWUuDQoNCklmwqB5b3XCoHdpbGzCoGJlwqBo
+b25lc3QswqBraW5kwqBhbmTCoHdpbGxpbmfCoHRvwqBhc3Npc3TCoG1lwqBoYW5kbGXCoHRoaXMN
+CmNoYXJpdHnCoHByb2plY3TCoGFzwqBJ4oCZdmXCoG1lbnRpb25lZMKgaGVyZSzCoEnCoHdpbGzC
+oGxpa2XCoHlvdcKgdG/CoHByb3ZpZGXCoG1lDQp5b3VywqBwZXJzb25hbMKgZGF0YcKgbGlrZSwN
+Cg0KKDEpwqBZb3VywqBmdWxswqBuYW1lOg0KKDIpwqBjb3VudHJ5Og0KKDMpwqBPY2N1cGF0aW9u
+Og0KKDQpwqBwaG9uZcKgbnVtYmVyOg0KKDUpwqBBZ2U6DQoNCkxldMKgbWXCoGhhdmXCoHRoaXPC
+oGRhdGHCoHNvwqB0aGF0wqBpwqBjYW7CoGxpbmvCoHlvdcKgdXDCoHdpdGjCoG15wqBiYW5rwqBh
+c8KgbXkNCnJlcHJlc2VudGF0aXZlwqBhbmTCoHJlY2VpdmVywqBvZsKgdGhlwqBmdW5kc8Kgbm93
+wqB0aGF0wqBpwqBhbcKgc3RpbGzCoGFsaXZlLg0KDQpXYXJtZXN0wqBSZWdhcmRzIQ0KTXJzLsKg
+QWxpY2XCoFdhbHRvbg0K
