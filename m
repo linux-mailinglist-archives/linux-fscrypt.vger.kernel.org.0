@@ -2,369 +2,299 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D9D8AAEEF8
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 10 Sep 2019 17:50:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81E14AF36E
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 11 Sep 2019 01:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728878AbfIJPuO (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 10 Sep 2019 11:50:14 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:60212 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732013AbfIJPuO (ORCPT
+        id S1726341AbfIJXk7 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 10 Sep 2019 19:40:59 -0400
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:35476 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725942AbfIJXk7 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 10 Sep 2019 11:50:14 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x8AFlhBU082353;
-        Tue, 10 Sep 2019 11:50:06 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2uxd9wuwu1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 10 Sep 2019 11:50:06 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x8AFlnP2082752;
-        Tue, 10 Sep 2019 11:50:06 -0400
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2uxd9wuwt5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 10 Sep 2019 11:50:05 -0400
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x8AFnwRS011950;
-        Tue, 10 Sep 2019 15:50:04 GMT
-Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
-        by ppma04wdc.us.ibm.com with ESMTP id 2uv4673xfs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 10 Sep 2019 15:50:04 +0000
-Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
-        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x8AFo41R47382914
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 10 Sep 2019 15:50:04 GMT
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 114F411206D;
-        Tue, 10 Sep 2019 15:50:04 +0000 (GMT)
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 09741112065;
-        Tue, 10 Sep 2019 15:50:01 +0000 (GMT)
-Received: from localhost.localdomain.com (unknown [9.102.1.89])
-        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
-        Tue, 10 Sep 2019 15:50:00 +0000 (GMT)
-From:   Chandan Rajendra <chandan@linux.ibm.com>
-To:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org
-Cc:     Chandan Rajendra <chandan@linux.ibm.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, ebiggers@kernel.org, hch@infradead.org,
-        chandanrlinux@gmail.com
-Subject: [PATCH RESEND V5 7/7] fscrypt: remove struct fscrypt_ctx
-Date:   Tue, 10 Sep 2019 21:21:15 +0530
-Message-Id: <20190910155115.28550-8-chandan@linux.ibm.com>
-X-Mailer: git-send-email 2.19.1
-In-Reply-To: <20190910155115.28550-1-chandan@linux.ibm.com>
-References: <20190910155115.28550-1-chandan@linux.ibm.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-09-10_11:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=2 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1909100149
+        Tue, 10 Sep 2019 19:40:59 -0400
+Received: by mail-pl1-f195.google.com with SMTP id s17so4398168plp.2
+        for <linux-fscrypt@vger.kernel.org>; Tue, 10 Sep 2019 16:40:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=ffmjQlXS4yVy/vVVGz5kvYYh6Pjm4uvvcWpv2HOWjbY=;
+        b=FU257zApd8KJO9oXKlxY+AVMU9jTscaSYcJLwwD6JRh7wY+4H2zbQAv08xt9TjExAu
+         ML07G3mJFUt9yZzlJt0bzIxH7G2rOQOAVpQstwWv74VSI7ashZYLK15/OJahETqOHm6n
+         wmNCEIxTUlve0xQu7LhVd1gHsYsxpczwX6MU+DWZbsJHMayuIXh2euIVrGEEtkG3+niJ
+         Vr+Q7nlGFxekg2Bqw8kX3qF+7td3KC4RTiBKNHVSSGpI9ASml7WhYyfF5S2g/PRl0880
+         uTXNiVIAqq6MIuBgxBJwQBY97wFq9WFK6q6KXFMgT0V9QU9uQjGQ6Ngyh3DYlrDDElOd
+         aWkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=ffmjQlXS4yVy/vVVGz5kvYYh6Pjm4uvvcWpv2HOWjbY=;
+        b=VVIE1C5FGl9opLKf3oT2b9VbWRCa6Z6Zxix+VrySbpI2lqvZzRgTiylL6WzRPYuMFY
+         e4jbP/TEyyJ6cUerpzo6CBhDoRlTyvZ7Dk4s3EWIykLbSTwL/kQRyZ8/HvE5kyWEe+v3
+         P2E6hXcAxnpxPRIhCdI1ADQfSJWyo12FNBFSw1rN06/36vX4jPhGo4b4HedIEzCNdzYb
+         CjGr2hQcKT60Lo7tIzRdGJTRzfmQHtnFoE/VDxs2xtB2GB6+hgdI1XV+hJYGX2w/58GY
+         aMDK/XU1be02NPAWFUnp/ZUYH2lwh/4VeTskEuUiD+lpGy9wwuYKHOucz/OqXP2QyB9p
+         ruyw==
+X-Gm-Message-State: APjAAAVwCLgMGLWadYcVup75YllnIcJhJV8SqIWMrIaIXqSlFipflsZJ
+        hfRah2nLiZiDpBOQKngAeJQPnVDXZDI=
+X-Google-Smtp-Source: APXvYqymbIzBZLAk+98sEy7gd2SGa/llxmqDxirL0hGs2XRRKV1mJMwmTtK7J52LHgX5gFm+RP5YwQ==
+X-Received: by 2002:a17:902:96a:: with SMTP id 97mr33861619plm.264.1568158856699;
+        Tue, 10 Sep 2019 16:40:56 -0700 (PDT)
+Received: from cabot-wlan.adilger.int (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
+        by smtp.gmail.com with ESMTPSA id x22sm21507889pfi.139.2019.09.10.16.40.55
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 10 Sep 2019 16:40:55 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <2757ADAC-336F-4EC8-8DBF-2B9C61C196C4@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_114FD3C9-E1AA-4A7A-B7A7-5FFDEC1AA31A";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH v4] e2fsck: check for consistent encryption policies
+Date:   Tue, 10 Sep 2019 17:40:51 -0600
+In-Reply-To: <20190909174310.182019-1-ebiggers@kernel.org>
+Cc:     linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>
+To:     Eric Biggers <ebiggers@kernel.org>
+References: <20190909174310.182019-1-ebiggers@kernel.org>
+X-Mailer: Apple Mail (2.3273)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Commit "fscrypt: remove the 'write' part of struct fscrypt_ctx" reduced
-"struct fscrypt_ctx" to be used only for decryption. With "read
-callbacks" being integrated into Ext4, we don't use "struct fscrypt_ctx"
-anymore. Hence this commit removes the structure and the associated
-code.
 
-Signed-off-by: Chandan Rajendra <chandan@linux.ibm.com>
----
- fs/crypto/bio.c             | 18 --------
- fs/crypto/crypto.c          | 89 +------------------------------------
- fs/crypto/fscrypt_private.h |  3 --
- include/linux/fscrypt.h     | 32 -------------
- 4 files changed, 2 insertions(+), 140 deletions(-)
+--Apple-Mail=_114FD3C9-E1AA-4A7A-B7A7-5FFDEC1AA31A
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-diff --git a/fs/crypto/bio.c b/fs/crypto/bio.c
-index b4f47b98ee6d..c01f068bf19b 100644
---- a/fs/crypto/bio.c
-+++ b/fs/crypto/bio.c
-@@ -51,24 +51,6 @@ void fscrypt_decrypt_bio(struct bio *bio)
- }
- EXPORT_SYMBOL(fscrypt_decrypt_bio);
- 
--static void completion_pages(struct work_struct *work)
--{
--	struct fscrypt_ctx *ctx = container_of(work, struct fscrypt_ctx, work);
--	struct bio *bio = ctx->bio;
--
--	__fscrypt_decrypt_bio(bio, true);
--	fscrypt_release_ctx(ctx);
--	bio_put(bio);
--}
--
--void fscrypt_enqueue_decrypt_bio(struct fscrypt_ctx *ctx, struct bio *bio)
--{
--	INIT_WORK(&ctx->work, completion_pages);
--	ctx->bio = bio;
--	fscrypt_enqueue_decrypt_work(&ctx->work);
--}
--EXPORT_SYMBOL(fscrypt_enqueue_decrypt_bio);
--
- int fscrypt_zeroout_range(const struct inode *inode, pgoff_t lblk,
- 				sector_t pblk, unsigned int len)
- {
-diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
-index dcf630d7e446..2e5245f5639f 100644
---- a/fs/crypto/crypto.c
-+++ b/fs/crypto/crypto.c
-@@ -31,24 +31,16 @@
- #include "fscrypt_private.h"
- 
- static unsigned int num_prealloc_crypto_pages = 32;
--static unsigned int num_prealloc_crypto_ctxs = 128;
- 
- module_param(num_prealloc_crypto_pages, uint, 0444);
- MODULE_PARM_DESC(num_prealloc_crypto_pages,
- 		"Number of crypto pages to preallocate");
--module_param(num_prealloc_crypto_ctxs, uint, 0444);
--MODULE_PARM_DESC(num_prealloc_crypto_ctxs,
--		"Number of crypto contexts to preallocate");
- 
- static mempool_t *fscrypt_bounce_page_pool = NULL;
- 
--static LIST_HEAD(fscrypt_free_ctxs);
--static DEFINE_SPINLOCK(fscrypt_ctx_lock);
--
- static struct workqueue_struct *fscrypt_read_workqueue;
- static DEFINE_MUTEX(fscrypt_init_mutex);
- 
--static struct kmem_cache *fscrypt_ctx_cachep;
- struct kmem_cache *fscrypt_info_cachep;
- 
- void fscrypt_enqueue_decrypt_work(struct work_struct *work)
-@@ -57,62 +49,6 @@ void fscrypt_enqueue_decrypt_work(struct work_struct *work)
- }
- EXPORT_SYMBOL(fscrypt_enqueue_decrypt_work);
- 
--/**
-- * fscrypt_release_ctx() - Release a decryption context
-- * @ctx: The decryption context to release.
-- *
-- * If the decryption context was allocated from the pre-allocated pool, return
-- * it to that pool.  Else, free it.
-- */
--void fscrypt_release_ctx(struct fscrypt_ctx *ctx)
--{
--	unsigned long flags;
--
--	if (ctx->flags & FS_CTX_REQUIRES_FREE_ENCRYPT_FL) {
--		kmem_cache_free(fscrypt_ctx_cachep, ctx);
--	} else {
--		spin_lock_irqsave(&fscrypt_ctx_lock, flags);
--		list_add(&ctx->free_list, &fscrypt_free_ctxs);
--		spin_unlock_irqrestore(&fscrypt_ctx_lock, flags);
--	}
--}
--EXPORT_SYMBOL(fscrypt_release_ctx);
--
--/**
-- * fscrypt_get_ctx() - Get a decryption context
-- * @gfp_flags:   The gfp flag for memory allocation
-- *
-- * Allocate and initialize a decryption context.
-- *
-- * Return: A new decryption context on success; an ERR_PTR() otherwise.
-- */
--struct fscrypt_ctx *fscrypt_get_ctx(gfp_t gfp_flags)
--{
--	struct fscrypt_ctx *ctx;
--	unsigned long flags;
--
--	/*
--	 * First try getting a ctx from the free list so that we don't have to
--	 * call into the slab allocator.
--	 */
--	spin_lock_irqsave(&fscrypt_ctx_lock, flags);
--	ctx = list_first_entry_or_null(&fscrypt_free_ctxs,
--					struct fscrypt_ctx, free_list);
--	if (ctx)
--		list_del(&ctx->free_list);
--	spin_unlock_irqrestore(&fscrypt_ctx_lock, flags);
--	if (!ctx) {
--		ctx = kmem_cache_zalloc(fscrypt_ctx_cachep, gfp_flags);
--		if (!ctx)
--			return ERR_PTR(-ENOMEM);
--		ctx->flags |= FS_CTX_REQUIRES_FREE_ENCRYPT_FL;
--	} else {
--		ctx->flags &= ~FS_CTX_REQUIRES_FREE_ENCRYPT_FL;
--	}
--	return ctx;
--}
--EXPORT_SYMBOL(fscrypt_get_ctx);
--
- struct page *fscrypt_alloc_bounce_page(gfp_t gfp_flags)
- {
- 	return mempool_alloc(fscrypt_bounce_page_pool, gfp_flags);
-@@ -399,11 +335,6 @@ const struct dentry_operations fscrypt_d_ops = {
- 
- static void fscrypt_destroy(void)
- {
--	struct fscrypt_ctx *pos, *n;
--
--	list_for_each_entry_safe(pos, n, &fscrypt_free_ctxs, free_list)
--		kmem_cache_free(fscrypt_ctx_cachep, pos);
--	INIT_LIST_HEAD(&fscrypt_free_ctxs);
- 	mempool_destroy(fscrypt_bounce_page_pool);
- 	fscrypt_bounce_page_pool = NULL;
- }
-@@ -419,7 +350,7 @@ static void fscrypt_destroy(void)
-  */
- int fscrypt_initialize(unsigned int cop_flags)
- {
--	int i, res = -ENOMEM;
-+	int res = -ENOMEM;
- 
- 	/* No need to allocate a bounce page pool if this FS won't use it. */
- 	if (cop_flags & FS_CFLG_OWN_PAGES)
-@@ -429,15 +360,6 @@ int fscrypt_initialize(unsigned int cop_flags)
- 	if (fscrypt_bounce_page_pool)
- 		goto already_initialized;
- 
--	for (i = 0; i < num_prealloc_crypto_ctxs; i++) {
--		struct fscrypt_ctx *ctx;
--
--		ctx = kmem_cache_zalloc(fscrypt_ctx_cachep, GFP_NOFS);
--		if (!ctx)
--			goto fail;
--		list_add(&ctx->free_list, &fscrypt_free_ctxs);
--	}
--
- 	fscrypt_bounce_page_pool =
- 		mempool_create_page_pool(num_prealloc_crypto_pages, 0);
- 	if (!fscrypt_bounce_page_pool)
-@@ -492,18 +414,12 @@ static int __init fscrypt_init(void)
- 	if (!fscrypt_read_workqueue)
- 		goto fail;
- 
--	fscrypt_ctx_cachep = KMEM_CACHE(fscrypt_ctx, SLAB_RECLAIM_ACCOUNT);
--	if (!fscrypt_ctx_cachep)
--		goto fail_free_queue;
--
- 	fscrypt_info_cachep = KMEM_CACHE(fscrypt_info, SLAB_RECLAIM_ACCOUNT);
- 	if (!fscrypt_info_cachep)
--		goto fail_free_ctx;
-+		goto fail_free_queue;
- 
- 	return 0;
- 
--fail_free_ctx:
--	kmem_cache_destroy(fscrypt_ctx_cachep);
- fail_free_queue:
- 	destroy_workqueue(fscrypt_read_workqueue);
- fail:
-@@ -520,7 +436,6 @@ static void __exit fscrypt_exit(void)
- 
- 	if (fscrypt_read_workqueue)
- 		destroy_workqueue(fscrypt_read_workqueue);
--	kmem_cache_destroy(fscrypt_ctx_cachep);
- 	kmem_cache_destroy(fscrypt_info_cachep);
- 
- 	fscrypt_essiv_cleanup();
-diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-index 8565536feb2b..702403dc7614 100644
---- a/fs/crypto/fscrypt_private.h
-+++ b/fs/crypto/fscrypt_private.h
-@@ -93,9 +93,6 @@ typedef enum {
- 	FS_ENCRYPT,
- } fscrypt_direction_t;
- 
--#define FS_CTX_REQUIRES_FREE_ENCRYPT_FL		0x00000001
--#define FS_CTX_HAS_BOUNCE_BUFFER_FL		0x00000002
--
- static inline bool fscrypt_valid_enc_modes(u32 contents_mode,
- 					   u32 filenames_mode)
- {
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index 4d6528351f25..2e61f75feab8 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -19,7 +19,6 @@
- 
- #define FS_CRYPTO_BLOCK_SIZE		16
- 
--struct fscrypt_ctx;
- struct fscrypt_info;
- 
- struct fscrypt_str {
-@@ -63,18 +62,6 @@ struct fscrypt_operations {
- 	unsigned int max_namelen;
- };
- 
--/* Decryption work */
--struct fscrypt_ctx {
--	union {
--		struct {
--			struct bio *bio;
--			struct work_struct work;
--		};
--		struct list_head free_list;	/* Free list */
--	};
--	u8 flags;				/* Flags */
--};
--
- static inline bool fscrypt_has_encryption_key(const struct inode *inode)
- {
- 	/* pairs with cmpxchg_release() in fscrypt_get_encryption_info() */
-@@ -101,8 +88,6 @@ static inline void fscrypt_handle_d_move(struct dentry *dentry)
- 
- /* crypto.c */
- extern void fscrypt_enqueue_decrypt_work(struct work_struct *);
--extern struct fscrypt_ctx *fscrypt_get_ctx(gfp_t);
--extern void fscrypt_release_ctx(struct fscrypt_ctx *);
- 
- extern struct page *fscrypt_encrypt_pagecache_blocks(struct page *page,
- 						     unsigned int len,
-@@ -233,8 +218,6 @@ static inline bool fscrypt_match_name(const struct fscrypt_name *fname,
- 
- /* bio.c */
- extern void fscrypt_decrypt_bio(struct bio *);
--extern void fscrypt_enqueue_decrypt_bio(struct fscrypt_ctx *ctx,
--					struct bio *bio);
- extern int fscrypt_zeroout_range(const struct inode *, pgoff_t, sector_t,
- 				 unsigned int);
- 
-@@ -279,16 +262,6 @@ static inline void fscrypt_enqueue_decrypt_work(struct work_struct *work)
- {
- }
- 
--static inline struct fscrypt_ctx *fscrypt_get_ctx(gfp_t gfp_flags)
--{
--	return ERR_PTR(-EOPNOTSUPP);
--}
--
--static inline void fscrypt_release_ctx(struct fscrypt_ctx *ctx)
--{
--	return;
--}
--
- static inline struct page *fscrypt_encrypt_pagecache_blocks(struct page *page,
- 							    unsigned int len,
- 							    unsigned int offs,
-@@ -430,11 +403,6 @@ static inline void fscrypt_decrypt_bio(struct bio *bio)
- {
- }
- 
--static inline void fscrypt_enqueue_decrypt_bio(struct fscrypt_ctx *ctx,
--					       struct bio *bio)
--{
--}
--
- static inline int fscrypt_zeroout_range(const struct inode *inode, pgoff_t lblk,
- 					sector_t pblk, unsigned int len)
- {
--- 
-2.19.1
+On Sep 9, 2019, at 11:43 AM, Eric Biggers <ebiggers@kernel.org> wrote:
+>=20
+> From: Eric Biggers <ebiggers@google.com>
+>=20
+> By design, the kernel enforces that all files in an encrypted =
+directory
+> use the same encryption policy as the directory.  It's not possible to
+> violate this constraint using syscalls.  Lookups of files that violate
+> this constraint also fail, in case the disk was manipulated.
+>=20
+> But this constraint can also be violated by accidental filesystem
+> corruption.  E.g., a power cut when using ext4 without a journal might
+> leave new files without the encryption bit and/or xattr.  Thus, it's
+> important that e2fsck correct this condition.
+>=20
+> Therefore, this patch makes the following changes to e2fsck:
+>=20
+> - During pass 1 (inode table scan), create a map from inode number to
+>  encryption policy for all encrypted inodes.  But it's optimized so
+>  that the full xattrs aren't saved but rather only 32-bit "policy =
+IDs",
+>  since usually many inodes share the same encryption policy.  Also, if
+>  an encryption xattr is missing, offer to clear the encrypt flag.  If
+>  an encryption xattr is clearly corrupt, offer to clear the inode.
+>=20
+> - During pass 2 (directory structure check), use the map to verify =
+that
+>  all regular files, directories, and symlinks in encrypted directories
+>  use the directory's encryption policy.  Offer to clear any directory
+>  entries for which this isn't the case.
+>=20
+> Add a new test "f_bad_encryption" to test the new behavior.
+>=20
+> Due to the new checks, it was also necessary to update the existing =
+test
+> "f_short_encrypted_dirent" to add an encryption xattr to the test =
+file,
+> since it was missing one before, which is now considered invalid.
+>=20
+> Google-Bug-Id: 135138675
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
+Looks much better.  One minor nit below, but at this point you could =
+add:
+
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+
+> ---
+>=20
+> Changes v3 =3D> v4:
+>=20
+> - Save memory in common cases by storing ranges of inodes that share =
+the
+>  same encryption policy.
+>=20
+> - Rebased onto latest master branch.
+>=20
+>=20
+> diff --git a/e2fsck/encrypted_files.c b/e2fsck/encrypted_files.c
+> new file mode 100644
+> index 00000000..3dc706a7
+> --- /dev/null
+> +++ b/e2fsck/encrypted_files.c
+> @@ -0,0 +1,368 @@
+>=20
+> +/* A range of inodes which share the same encryption policy */
+> +struct encrypted_file_range {
+> +	ext2_ino_t		first_ino;
+> +	ext2_ino_t		last_ino;
+> +	__u32			policy_id;
+> +};
+
+This seems like a clear win...  As long as we have at least two inodes
+in a row with the same policy ID it will take less space than the =
+previous
+version of the patch.
+
+> +static int handle_nomem(e2fsck_t ctx, struct problem_context *pctx)
+> +{
+> +	fix_problem(ctx, PR_1_ALLOCATE_ENCRYPTED_DIRLIST, pctx);
+> +	/* Should never get here */
+> +	ctx->flags |=3D E2F_FLAG_ABORT;
+> +	return 0;
+> +}
+
+It would be useful if the error message for =
+PR_1_ALLOCATE_ENCRYPTED_DIRLIST
+printed the actual allocation size that failed, so that the user has =
+some
+idea of how much memory would be needed.  The underlying =
+ext2fs_resize_mem()
+code doesn't print anything, just returns EXT2_ET_NO_MEMORY.
+
+> +static int append_ino_and_policy_id(e2fsck_t ctx, struct =
+problem_context *pctx,
+> +				    ext2_ino_t ino, __u32 policy_id)
+> +{
+> +	struct encrypted_file_info *info =3D ctx->encrypted_files;
+> +	struct encrypted_file_range *range;
+> +
+> +	/* See if we can just extend the last range. */
+> +	if (info->file_ranges_count > 0) {
+> +		range =3D &info->file_ranges[info->file_ranges_count - =
+1];
+> +
+> +		if (ino <=3D range->last_ino) {
+> +			/* Should never get here */
+> +			fatal_error(ctx,
+> +				    "Encrypted inodes processed out of =
+order");
+> +		}
+> +
+> +		if (ino =3D=3D range->last_ino + 1 &&
+> +		    policy_id =3D=3D range->policy_id) {
+> +			range->last_ino++;
+> +			return 0;
+> +		}
+> +	}
+> +	/* Nope, a new range is needed. */
+> +
+> +	if (info->file_ranges_count =3D=3D info->file_ranges_capacity) {
+> +		/* Double the capacity by default. */
+> +		size_t new_capacity =3D info->file_ranges_capacity * 2;
+> +
+> +		/* ... but go from 0 to 128 right away. */
+> +		if (new_capacity < 128)
+> +			new_capacity =3D 128;
+> +
+> +		/* We won't need more than the filesystem's inode count. =
+*/
+> +		if (new_capacity > ctx->fs->super->s_inodes_count)
+> +			new_capacity =3D ctx->fs->super->s_inodes_count;
+> +
+> +		/* To be safe, ensure the capacity really increases. */
+> +		if (new_capacity < info->file_ranges_capacity + 1)
+> +			new_capacity =3D info->file_ranges_capacity + 1;
+
+Not sure how this could happen (more inodes than s_inodes_count?), but
+better safe than sorry I guess?
+
+> +		if (ext2fs_resize_mem(info->file_ranges_capacity *
+> +					sizeof(*range),
+> +				      new_capacity * sizeof(*range),
+> +				      &info->file_ranges) !=3D 0)
+> +			return handle_nomem(ctx, pctx);
+
+This is the only thing that gives me pause, potentially having a huge
+allocation, but I think the RLE encoding of entries and the fact we
+have overwhelmingly 64-bit CPUs means we could still run with swap
+(on an internal NVMe M.2 device) if really needed.  A problem to fix
+if it ever actually rears its head, so long as there is a decent error
+message printed.
+
+> +/*
+> + * Find the ID of an inode's encryption policy, using the information =
+saved
+> + * earlier.
+> + *
+> + * If the inode is encrypted, returns the policy ID or
+> + * UNRECOGNIZED_ENCRYPTION_POLICY.  Else, returns =
+NO_ENCRYPTION_POLICY.
+> + */
+> +__u32 find_encryption_policy(e2fsck_t ctx, ext2_ino_t ino)
+> +{
+> +	const struct encrypted_file_info *info =3D ctx->encrypted_files;
+> +	size_t l, r;
+> +
+> +	if (info =3D=3D NULL)
+> +		return NO_ENCRYPTION_POLICY;
+> +	l =3D 0;
+> +	r =3D info->file_ranges_count;
+> +	while (l < r) {
+> +		size_t m =3D l + (r - l) / 2;
+
+Using the RLE encoding for the entries should also speed up searching
+here considerably.  In theory, for a single-user Android filesystem
+there might only be one or two entries here.  It would be interesting
+to run this on some of your filesystems to see what the average count
+of inodes per entry is.
+
+> +		const struct encrypted_file_range *range =3D
+> +			&info->file_ranges[m];
+> +
+> +		if (ino < range->first_ino)
+> +			r =3D m;
+> +		else if (ino > range->last_ino)
+> +			l =3D m + 1;
+> +		else
+> +			return range->policy_id;
+> +	}
+> +	return NO_ENCRYPTION_POLICY;
+> +}
+
+
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_114FD3C9-E1AA-4A7A-B7A7-5FFDEC1AA31A
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl14NIQACgkQcqXauRfM
+H+CD1Q/+JXAI3V33yt2K5CDDJgcKT6hDDNazWlEeLRtJ7JDRx9tBMnvOFoVvSarX
+uqk4/orBdxxSz+OJkcAnDzo6cmPBDnW70MVjOT6JA6CCdC97dH4GcBHJpVOR8v2E
+etEM+g8+kJD7h8WU7veNjn4koyE4nlLgK8uRSUrRFEVzJth34+0S2UZ7G7wzpi5i
+m00pNjyk9NT2oGzzxEH4BUbd/UALnkQ7SjybQbkS0J2vKtAqDPiyUWib2CvjVdL8
+vCMyxUEfh4tj+6nBXlZiMUPq6taHAUdPHlV5Y7S4+Uraozrg8w24izlqMErSml/N
+Bp027ROH4DsabGFsIOGguq1BUAAASFe+BXjGrSnWDdEg05gm8fbQZVkFszkROd91
+cK9aXVS2d/7s1qRL0ro8UzNVYabDDW9umqKiA0yDH6+ZS1fEVVdnTxXj1urFH8AH
+2EPwHYlAHCFv/SOHZKg2AK9ZmGQWttYTiOfGWA/te9zmWEtpFF5O/1FzLIvlMMZw
+z4W/+c+BOplGoCzaPnTOBNcm0Iq2m5HzdKxTdujCDxYbrDA2tCG5GuJH/RXOdwhG
+AcRnVZJtVCJaoXTjajQ/rWTCazqGaT8MD77W2tOtO4uxoi/2SfqdQ/BPsSggPXV3
+DC02NJoCIKtwZRikeNF2ng3XegGaVnK4UAABX5X7jd/azFG7ETk=
+=WrIv
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_114FD3C9-E1AA-4A7A-B7A7-5FFDEC1AA31A--
