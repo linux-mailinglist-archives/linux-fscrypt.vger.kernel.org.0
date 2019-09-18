@@ -2,181 +2,151 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AA1BB3457
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 16 Sep 2019 07:21:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A32AB5927
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 18 Sep 2019 03:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728729AbfIPFU4 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 16 Sep 2019 01:20:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49864 "EHLO mail.kernel.org"
+        id S1726109AbfIRBBE (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 17 Sep 2019 21:01:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41620 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726128AbfIPFU4 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 16 Sep 2019 01:20:56 -0400
-Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
+        id S1725834AbfIRBBE (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 17 Sep 2019 21:01:04 -0400
+Received: from gmail.com (unknown [104.132.1.77])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B7A222067B;
-        Mon, 16 Sep 2019 05:20:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1C83120640;
+        Wed, 18 Sep 2019 01:01:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1568611255;
-        bh=0Zp0/Naz0WUbXJutjSKemevgHRocsO7EMFcWzb2dl1Y=;
-        h=Date:From:To:Cc:Subject:From;
-        b=awni9dksgHmJx9gTvqey0ukMhUw0fPydoBJv1SubKwoyxuqe/OomgiDpv4zwSvTWq
-         6IrShbxft+Mr7JZGQUrgh1plwzdI2vlB6mlsPM2p3hP/7vnJMyzgYN+WqvIrmSoljM
-         YtEjpk63iNa20lYgzpkEpwq/Bpbx8ft2uu4xPGEg=
-Date:   Sun, 15 Sep 2019 22:20:53 -0700
+        s=default; t=1568768463;
+        bh=9fuLOK0CqBsG9RDwdyXhx3bH7OmlmAi5CxgMMLeTIJ4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OTSe8L31zjXFxnU6WUZ32x93j7cJmJVw2LZNw8rBjAfYtQ9fJs3bP+zU4kQotqvoq
+         EqaxjSIrA3o+DXrmW7W1uxAAGvBxq3u7E4Isxxx1bB4Dm2Rk1kfeSXoJg7Oa1HbhJa
+         qTTSU5r7VihGnL+vYJrnK7gTn1Kvr3SrJAVpGJCI=
+Date:   Tue, 17 Sep 2019 18:01:01 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [GIT PULL] fs-verity for 5.4
-Message-ID: <20190916052053.GB8269@sol.localdomain>
-Mail-Followup-To: Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Andreas Dilger <adilger@dilger.ca>
+Cc:     linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>
+Subject: Re: [PATCH v4] e2fsck: check for consistent encryption policies
+Message-ID: <20190918010100.GA45382@gmail.com>
+Mail-Followup-To: Andreas Dilger <adilger@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>
+References: <20190909174310.182019-1-ebiggers@kernel.org>
+ <2757ADAC-336F-4EC8-8DBF-2B9C61C196C4@dilger.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <2757ADAC-336F-4EC8-8DBF-2B9C61C196C4@dilger.ca>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-The following changes since commit 609488bc979f99f805f34e9a32c1e3b71179d10b:
+On Tue, Sep 10, 2019 at 05:40:51PM -0600, Andreas Dilger wrote:
+> > diff --git a/e2fsck/encrypted_files.c b/e2fsck/encrypted_files.c
+> > new file mode 100644
+> > index 00000000..3dc706a7
+> > --- /dev/null
+> > +++ b/e2fsck/encrypted_files.c
+> > @@ -0,0 +1,368 @@
+> > 
+> > +/* A range of inodes which share the same encryption policy */
+> > +struct encrypted_file_range {
+> > +	ext2_ino_t		first_ino;
+> > +	ext2_ino_t		last_ino;
+> > +	__u32			policy_id;
+> > +};
+> 
+> This seems like a clear win...  As long as we have at least two inodes
+> in a row with the same policy ID it will take less space than the previous
+> version of the patch.
+> 
+> > +static int handle_nomem(e2fsck_t ctx, struct problem_context *pctx)
+> > +{
+> > +	fix_problem(ctx, PR_1_ALLOCATE_ENCRYPTED_DIRLIST, pctx);
+> > +	/* Should never get here */
+> > +	ctx->flags |= E2F_FLAG_ABORT;
+> > +	return 0;
+> > +}
+> 
+> It would be useful if the error message for PR_1_ALLOCATE_ENCRYPTED_DIRLIST
+> printed the actual allocation size that failed, so that the user has some
+> idea of how much memory would be needed.  The underlying ext2fs_resize_mem()
+> code doesn't print anything, just returns EXT2_ET_NO_MEMORY.
+> 
 
-  Linux 5.3-rc2 (2019-07-28 12:47:02 -0700)
+Yes, I can make it print the number of bytes using %N.
 
-are available in the Git repository at:
+> > +	if (info->file_ranges_count == info->file_ranges_capacity) {
+> > +		/* Double the capacity by default. */
+> > +		size_t new_capacity = info->file_ranges_capacity * 2;
+> > +
+> > +		/* ... but go from 0 to 128 right away. */
+> > +		if (new_capacity < 128)
+> > +			new_capacity = 128;
+> > +
+> > +		/* We won't need more than the filesystem's inode count. */
+> > +		if (new_capacity > ctx->fs->super->s_inodes_count)
+> > +			new_capacity = ctx->fs->super->s_inodes_count;
+> > +
+> > +		/* To be safe, ensure the capacity really increases. */
+> > +		if (new_capacity < info->file_ranges_capacity + 1)
+> > +			new_capacity = info->file_ranges_capacity + 1;
+> 
+> Not sure how this could happen (more inodes than s_inodes_count?), but
+> better safe than sorry I guess?
+> 
 
-  git://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fsverity-for-linus
+Either that, or an integer overflow.  It shouldn't really happen, but I think we
+should have this check to be safe.
 
-for you to fetch changes up to 95ae251fe82838b85c6d37e5a1775006e2a42ae0:
+> > +		if (ext2fs_resize_mem(info->file_ranges_capacity *
+> > +					sizeof(*range),
+> > +				      new_capacity * sizeof(*range),
+> > +				      &info->file_ranges) != 0)
+> > +			return handle_nomem(ctx, pctx);
+> 
+> This is the only thing that gives me pause, potentially having a huge
+> allocation, but I think the RLE encoding of entries and the fact we
+> have overwhelmingly 64-bit CPUs means we could still run with swap
+> (on an internal NVMe M.2 device) if really needed.  A problem to fix
+> if it ever actually rears its head, so long as there is a decent error
+> message printed.
+> 
+> > +/*
+> > + * Find the ID of an inode's encryption policy, using the information saved
+> > + * earlier.
+> > + *
+> > + * If the inode is encrypted, returns the policy ID or
+> > + * UNRECOGNIZED_ENCRYPTION_POLICY.  Else, returns NO_ENCRYPTION_POLICY.
+> > + */
+> > +__u32 find_encryption_policy(e2fsck_t ctx, ext2_ino_t ino)
+> > +{
+> > +	const struct encrypted_file_info *info = ctx->encrypted_files;
+> > +	size_t l, r;
+> > +
+> > +	if (info == NULL)
+> > +		return NO_ENCRYPTION_POLICY;
+> > +	l = 0;
+> > +	r = info->file_ranges_count;
+> > +	while (l < r) {
+> > +		size_t m = l + (r - l) / 2;
+> 
+> Using the RLE encoding for the entries should also speed up searching
+> here considerably.  In theory, for a single-user Android filesystem
+> there might only be one or two entries here.  It would be interesting
+> to run this on some of your filesystems to see what the average count
+> of inodes per entry is.
+> 
 
-  f2fs: add fs-verity support (2019-08-12 19:33:51 -0700)
+On a freshly reset Android device I'm seeing 58 ranges for 4705 encrypted
+inodes, so it's not quite *that* good, but it still helps a lot.
 
-----------------------------------------------------------------
-Hi Linus,
+Note that there are actually 4 encryption policies on a single-user Android
+device: system device-encrypted, user device-encrypted, user
+credential-encrypted, and (recently added) per-boot encrypted.
 
-Please consider pulling fs-verity for 5.4.
-
-fs-verity is a filesystem feature that provides Merkle tree based
-hashing (similar to dm-verity) for individual readonly files, mainly for
-the purpose of efficient authenticity verification.
-
-This pull request includes:
-
-(a) The fs/verity/ support layer and documentation.
-
-(b) fs-verity support for ext4 and f2fs.
-
-Compared to the original fs-verity patchset from last year, the UAPI to
-enable fs-verity on a file has been greatly simplified.  Lots of other
-things were cleaned up too.
-
-fs-verity is planned to be used by two different projects on Android;
-most of the userspace code is in place already.  Another userspace tool
-("fsverity-utils"), and xfstests, are also available.  e2fsprogs and
-f2fs-tools already have fs-verity support.  Other people have shown
-interest in using fs-verity too.
-
-I've tested this on ext4 and f2fs with xfstests, both the existing tests
-and the new fs-verity tests.  This has also been in linux-next since
-July 30 with no reported issues except a couple minor ones I found
-myself and folded in fixes for.
-
-Ted and I will be co-maintaining fs-verity.
-
-
-There will be some fairly straightforward merge conflicts with the ext4
-and f2fs trees.  I've tested the resolution of these in linux-next.
-
-This will also "silently" conflict (compiler warning only) with the key
-ACLs patchset, if you merge it again this cycle.  The resolution is to
-translate the key permissions to an ACL in fs/verity/signature.c.  I
-suggest using the resolution in linux-next, which I've tested.  This
-resolution avoids making any behavior changes; note that some of the old
-permissions map to multiple new permissions.
-
-----------------------------------------------------------------
-Eric Biggers (17):
-      fs-verity: add a documentation file
-      fs-verity: add MAINTAINERS file entry
-      fs-verity: add UAPI header
-      fs: uapi: define verity bit for FS_IOC_GETFLAGS
-      fs-verity: add Kconfig and the helper functions for hashing
-      fs-verity: add inode and superblock fields
-      fs-verity: add the hook for file ->open()
-      fs-verity: add the hook for file ->setattr()
-      fs-verity: add data verification hooks for ->readpages()
-      fs-verity: implement FS_IOC_ENABLE_VERITY ioctl
-      fs-verity: implement FS_IOC_MEASURE_VERITY ioctl
-      fs-verity: add SHA-512 support
-      fs-verity: support builtin file signatures
-      ext4: add basic fs-verity support
-      ext4: add fs-verity read support
-      ext4: update on-disk format documentation for fs-verity
-      f2fs: add fs-verity support
-
- Documentation/filesystems/ext4/inodes.rst   |   6 +-
- Documentation/filesystems/ext4/overview.rst |   1 +
- Documentation/filesystems/ext4/super.rst    |   2 +
- Documentation/filesystems/ext4/verity.rst   |  41 ++
- Documentation/filesystems/fsverity.rst      | 726 ++++++++++++++++++++++++++++
- Documentation/filesystems/index.rst         |   1 +
- Documentation/ioctl/ioctl-number.rst        |   1 +
- MAINTAINERS                                 |  12 +
- fs/Kconfig                                  |   2 +
- fs/Makefile                                 |   1 +
- fs/ext4/Makefile                            |   1 +
- fs/ext4/ext4.h                              |  23 +-
- fs/ext4/file.c                              |   4 +
- fs/ext4/inode.c                             |  55 ++-
- fs/ext4/ioctl.c                             |  13 +
- fs/ext4/readpage.c                          | 211 ++++++--
- fs/ext4/super.c                             |  18 +-
- fs/ext4/sysfs.c                             |   6 +
- fs/ext4/verity.c                            | 367 ++++++++++++++
- fs/f2fs/Makefile                            |   1 +
- fs/f2fs/data.c                              |  75 ++-
- fs/f2fs/f2fs.h                              |  20 +-
- fs/f2fs/file.c                              |  43 +-
- fs/f2fs/inode.c                             |   5 +-
- fs/f2fs/super.c                             |   3 +
- fs/f2fs/sysfs.c                             |  11 +
- fs/f2fs/verity.c                            | 247 ++++++++++
- fs/f2fs/xattr.h                             |   2 +
- fs/verity/Kconfig                           |  55 +++
- fs/verity/Makefile                          |  10 +
- fs/verity/enable.c                          | 377 +++++++++++++++
- fs/verity/fsverity_private.h                | 185 +++++++
- fs/verity/hash_algs.c                       | 280 +++++++++++
- fs/verity/init.c                            |  61 +++
- fs/verity/measure.c                         |  57 +++
- fs/verity/open.c                            | 356 ++++++++++++++
- fs/verity/signature.c                       | 157 ++++++
- fs/verity/verify.c                          | 281 +++++++++++
- include/linux/fs.h                          |  11 +
- include/linux/fsverity.h                    | 211 ++++++++
- include/uapi/linux/fs.h                     |   1 +
- include/uapi/linux/fsverity.h               |  40 ++
- 42 files changed, 3910 insertions(+), 70 deletions(-)
- create mode 100644 Documentation/filesystems/ext4/verity.rst
- create mode 100644 Documentation/filesystems/fsverity.rst
- create mode 100644 fs/ext4/verity.c
- create mode 100644 fs/f2fs/verity.c
- create mode 100644 fs/verity/Kconfig
- create mode 100644 fs/verity/Makefile
- create mode 100644 fs/verity/enable.c
- create mode 100644 fs/verity/fsverity_private.h
- create mode 100644 fs/verity/hash_algs.c
- create mode 100644 fs/verity/init.c
- create mode 100644 fs/verity/measure.c
- create mode 100644 fs/verity/open.c
- create mode 100644 fs/verity/signature.c
- create mode 100644 fs/verity/verify.c
- create mode 100644 include/linux/fsverity.h
- create mode 100644 include/uapi/linux/fsverity.h
+- Eric
