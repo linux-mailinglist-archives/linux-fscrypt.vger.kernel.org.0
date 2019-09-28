@@ -2,88 +2,86 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 641DDBE8E9
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 26 Sep 2019 01:28:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44846C0ED5
+	for <lists+linux-fscrypt@lfdr.de>; Sat, 28 Sep 2019 02:03:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731431AbfIYX2M (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 25 Sep 2019 19:28:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36212 "EHLO mail.kernel.org"
+        id S1728265AbfI1ADp (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 27 Sep 2019 20:03:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731427AbfIYX2M (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 25 Sep 2019 19:28:12 -0400
-Received: from gmail.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726033AbfI1ADo (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Fri, 27 Sep 2019 20:03:44 -0400
+Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 63EE3208C3;
-        Wed, 25 Sep 2019 23:28:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DCE2820863;
+        Sat, 28 Sep 2019 00:03:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1569454091;
-        bh=HgpJVoo1oDBsU4R190zGFEOuZgZWgudt8hbOnoLsuzE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0aMlxMnv4a/6hk8Mu5f5wNKf7jcJhhzTdIPgahGUi+TfQp5wJLPfmTGd/ATkO1dhf
-         gGZcPmpo1us6dFX1uckmc++w99/DdJEbO/Tq8XuI/huJyS6Q8ifMR/7P9f+gpCBKE7
-         KP4aYaTxOx5rxpsLMvNH1j2WvnEkcdiNkmrwABmI=
-Date:   Wed, 25 Sep 2019 16:28:09 -0700
+        s=default; t=1569629024;
+        bh=ouFyCW1cXTmjYXrd9V3FJQVsuAeg1eDZQLymht2ZyRo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=FzmiubM/NEyE9SDJaDVG6hBXVI7n3ZODX7OikGxP3a9Qx13RveV8mcEbQWu6pJ2/G
+         sY8Fqf3K8s/ZRfABDBcZj8YhF+y8wlPC9Awy8X5jmCKG410qZZZKaC2ChH8QqvcP+2
+         GFJGYfTcKXSDHuGLxLmd248x5YPnlHkWMEn16Zy0=
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Eric Sandeen <sandeen@sandeen.net>
-Cc:     linux-xfs@vger.kernel.org, fstests@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org
-Subject: Re: [RFC PATCH 4/8] xfs_io/encrypt: extend 'get_encpolicy' to
- support v2 policies
-Message-ID: <20190925232809.GC3163@gmail.com>
-Mail-Followup-To: Eric Sandeen <sandeen@sandeen.net>,
-        linux-xfs@vger.kernel.org, fstests@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org
-References: <20190812175635.34186-1-ebiggers@kernel.org>
- <20190812175635.34186-5-ebiggers@kernel.org>
- <93a8536c-191d-340e-2d18-2ef87d0dcd5d@sandeen.net>
+To:     linux-xfs@vger.kernel.org
+Cc:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org
+Subject: [PATCH v3 0/9] xfsprogs: support fscrypt API additions in xfs_io
+Date:   Fri, 27 Sep 2019 17:02:34 -0700
+Message-Id: <20190928000243.77634-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.23.0.444.g18eeb5a265-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <93a8536c-191d-340e-2d18-2ef87d0dcd5d@sandeen.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, Sep 25, 2019 at 12:23:25PM -0500, Eric Sandeen wrote:
-> On 8/12/19 12:56 PM, Eric Biggers wrote:
-> > From: Eric Biggers <ebiggers@google.com>
-> > 
-> > get_encpolicy uses the FS_IOC_GET_ENCRYPTION_POLICY ioctl to retrieve
-> > the file's encryption policy, then displays it.  But that only works for
-> > v1 encryption policies.  A new ioctl, FS_IOC_GET_ENCRYPTION_POLICY_EX,
-> > has been introduced which is more flexible and can retrieve both v1 and
-> > v2 encryption policies.
-> 
-> ...
-> 
-> > +static void
-> > +test_for_v2_policy_support(void)
-> > +{
-> > +	struct fscrypt_get_policy_ex_arg arg;
-> > +
-> > +	arg.policy_size = sizeof(arg.policy);
-> > +
-> > +	if (ioctl(file->fd, FS_IOC_GET_ENCRYPTION_POLICY_EX, &arg) == 0 ||
-> > +	    errno == ENODATA /* file unencrypted */) {
-> > +		printf("supported\n");
-> > +		return;
-> > +	}
-> > +	if (errno == ENOTTY) {
-> > +		printf("unsupported\n");
-> > +		return;
-> > +	}
-> > +	fprintf(stderr,
-> > +		"%s: unexpected error checking for FS_IOC_GET_ENCRYPTION_POLICY_EX support: %s\n",
-> 
-> Darrick also mentioned to me off-list that the io/encrypt.c code is chock full of
-> strings that really need to be _("translatable")
-> 
+Hello,
 
-Sure, I can do that, though is this really something that people want?  These
-commands are only intended for testing, and the xfsprogs translations don't seem
-actively maintained (only 1 language was updated in the last 10 years?).
+This patchset updates xfs_io to support the new fscrypt ioctls that were
+merged for 5.4 (https://git.kernel.org/torvalds/c/734d1ed83e1f9b7b).
 
-- Eric
+New commands are added to wrap the new ioctls to manage filesystem
+encryption keys: 'add_enckey', 'rm_enckey', and 'enckey_status'.  Also,
+the existing 'get_encpolicy' and 'set_encpolicy' commands are updated to
+support getting/setting v2 encryption policies.
+
+The purpose of all this is to allow xfstests to test these new APIs.
+
+Note: currently only ext4, f2fs, and ubifs support encryption.  But I
+was told previously that since the fscrypt API is generic and may be
+supported by XFS in the future, the command-line wrappers for the
+fscrypt ioctls should be in xfs_io rather than in xfstests directly
+(https://marc.info/?l=fstests&m=147976255831951&w=2).
+
+This patchset applies to the latest "for-next" branch of xfsprogs
+(commit ac8b6c380865).  It can also be retrieved from tag
+"fscrypt-key-mgmt-improvements_2019-09-27" of
+https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/xfsprogs-dev.git
+
+Changes v2 => v3:
+- Generate the encryption modes for 'help set_encpolicy'.
+- Mention '-a' in all relevant places in the help for rm_enckey.
+- Mark strings for translation.
+
+No changes v1 => v2.
+
+Eric Biggers (9):
+  xfs_io/encrypt: remove unimplemented encryption modes
+  xfs_io/encrypt: update to UAPI definitions from Linux v5.4
+  xfs_io/encrypt: generate encryption modes for 'help set_encpolicy'
+  xfs_io/encrypt: add new encryption modes
+  xfs_io/encrypt: extend 'get_encpolicy' to support v2 policies
+  xfs_io/encrypt: extend 'set_encpolicy' to support v2 policies
+  xfs_io/encrypt: add 'add_enckey' command
+  xfs_io/encrypt: add 'rm_enckey' command
+  xfs_io/encrypt: add 'enckey_status' command
+
+ io/encrypt.c      | 816 ++++++++++++++++++++++++++++++++++++++++------
+ man/man8/xfs_io.8 |  70 +++-
+ 2 files changed, 771 insertions(+), 115 deletions(-)
+
+-- 
+2.23.0.444.g18eeb5a265-goog
+
