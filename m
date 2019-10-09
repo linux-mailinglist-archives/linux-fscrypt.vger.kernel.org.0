@@ -2,36 +2,36 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A40BDD1CE7
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 10 Oct 2019 01:39:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A117D1CEC
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 10 Oct 2019 01:42:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731155AbfJIXjr (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 9 Oct 2019 19:39:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41888 "EHLO mail.kernel.org"
+        id S1731145AbfJIXmU (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 9 Oct 2019 19:42:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730815AbfJIXjr (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 9 Oct 2019 19:39:47 -0400
+        id S1730955AbfJIXmU (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 9 Oct 2019 19:42:20 -0400
 Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.77])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 51A6020659;
-        Wed,  9 Oct 2019 23:39:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AB71420659;
+        Wed,  9 Oct 2019 23:42:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570664385;
-        bh=Q/T8xsVWRWorwlYxy1MSpPnVmBkkjbYTlNrEpb7g494=;
+        s=default; t=1570664538;
+        bh=flJUjeWsBitYEJJv/geZb6UQNxzbDxZ6BcCxvKBO15M=;
         h=From:To:Cc:Subject:Date:From;
-        b=T1gSSBjSeM9NWhzoHO3ynhx1SXPsIMCtWImEJzl4cRvoqD4jzTzdiTVezndaBR2TB
-         rH+sJCb9SVS0HqE2qNpVzIqkhAbmKVYH7v6zXTArHTIXLMTxegFYIj64h/6n4TyKJ7
-         XvF+buyIztSCSR9/wqXn+SA6N1NR7mG75k5M/uWg=
+        b=TYJsb0NiidEvrAgMLvnesz/lyUWJZ9+LFGeHu3uSDEawPCWHL2ybwf1QR5P/CAviS
+         J8mk/Jhz5/1Um6POHJQha57USijRrKmz/MKaYgvEEpiwoBeJa8jXioxyKMjXL3/O7u
+         Thw3TtVD1sQgwT8nKKgUTFLBFMpEytiA8FOICJIY=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-fscrypt@vger.kernel.org
 Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, linux-crypto@vger.kernel.org,
-        linux-mtd@lists.infradead.org,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Subject: [PATCH] fscrypt: invoke crypto API for ESSIV handling
-Date:   Wed,  9 Oct 2019 16:38:40 -0700
-Message-Id: <20191009233840.224128-1-ebiggers@kernel.org>
+        Jaegeuk Kim <jaegeuk@kernel.org>, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Chandan Rajendra <chandan@linux.ibm.com>
+Subject: [PATCH] fscrypt: remove struct fscrypt_ctx
+Date:   Wed,  9 Oct 2019 16:40:38 -0700
+Message-Id: <20191009234038.224587-1-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.23.0.581.g78d2f28ef7-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -42,259 +42,350 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Instead of open-coding the calculations for ESSIV handling, use an ESSIV
-skcipher which does all of this under the hood.  ESSIV was added to the
-crypto API in v5.4.
+Now that ext4 and f2fs implement their own post-read workflow that
+supports both fscrypt and fsverity, the fscrypt-only workflow based
+around struct fscrypt_ctx is no longer used.  So remove the unused code.
 
-This is based on a patch from Ard Biesheuvel, but reworked to apply
-after all the fscrypt changes that went into v5.4.
+This is based on a patch from Chandan Rajendra's "Consolidate FS read
+I/O callbacks code" patchset, but rebased onto the latest kernel, folded
+__fscrypt_decrypt_bio() into fscrypt_decrypt_bio(), cleaned up
+fscrypt_initialize(), and updated the commit message.
 
-Tested with 'kvm-xfstests -c ext4,f2fs -g encrypt', including the
-ciphertext verification tests for v1 and v2 encryption policies.
-
-Originally-from: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Originally-from: Chandan Rajendra <chandan@linux.ibm.com>
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- Documentation/filesystems/fscrypt.rst |   5 +-
- fs/crypto/crypto.c                    |   4 -
- fs/crypto/fscrypt_private.h           |   7 --
- fs/crypto/keysetup.c                  | 110 +++-----------------------
- fs/crypto/keysetup_v1.c               |   4 -
- 5 files changed, 14 insertions(+), 116 deletions(-)
+ fs/crypto/bio.c             |  29 +---------
+ fs/crypto/crypto.c          | 110 +++---------------------------------
+ fs/crypto/fscrypt_private.h |   2 -
+ include/linux/fscrypt.h     |  32 -----------
+ 4 files changed, 10 insertions(+), 163 deletions(-)
 
-diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
-index 8a0700af95967..6ec459be3de16 100644
---- a/Documentation/filesystems/fscrypt.rst
-+++ b/Documentation/filesystems/fscrypt.rst
-@@ -308,8 +308,9 @@ If unsure, you should use the (AES-256-XTS, AES-256-CTS-CBC) pair.
+diff --git a/fs/crypto/bio.c b/fs/crypto/bio.c
+index 82da2510721f6..1f4b8a2770606 100644
+--- a/fs/crypto/bio.c
++++ b/fs/crypto/bio.c
+@@ -26,7 +26,7 @@
+ #include <linux/namei.h>
+ #include "fscrypt_private.h"
  
- AES-128-CBC was added only for low-powered embedded devices with
- crypto accelerators such as CAAM or CESA that do not support XTS.  To
--use AES-128-CBC, CONFIG_CRYPTO_SHA256 (or another SHA-256
--implementation) must be enabled so that ESSIV can be used.
-+use AES-128-CBC, CONFIG_CRYPTO_ESSIV and CONFIG_CRYPTO_SHA256 (or
-+another SHA-256 implementation) must be enabled so that ESSIV can be
-+used.
+-static void __fscrypt_decrypt_bio(struct bio *bio, bool done)
++void fscrypt_decrypt_bio(struct bio *bio)
+ {
+ 	struct bio_vec *bv;
+ 	struct bvec_iter_all iter_all;
+@@ -37,37 +37,10 @@ static void __fscrypt_decrypt_bio(struct bio *bio, bool done)
+ 							   bv->bv_offset);
+ 		if (ret)
+ 			SetPageError(page);
+-		else if (done)
+-			SetPageUptodate(page);
+-		if (done)
+-			unlock_page(page);
+ 	}
+ }
+-
+-void fscrypt_decrypt_bio(struct bio *bio)
+-{
+-	__fscrypt_decrypt_bio(bio, false);
+-}
+ EXPORT_SYMBOL(fscrypt_decrypt_bio);
  
- Adiantum is a (primarily) stream cipher-based mode that is fast even
- on CPUs without dedicated crypto instructions.  It's also a true
+-static void completion_pages(struct work_struct *work)
+-{
+-	struct fscrypt_ctx *ctx = container_of(work, struct fscrypt_ctx, work);
+-	struct bio *bio = ctx->bio;
+-
+-	__fscrypt_decrypt_bio(bio, true);
+-	fscrypt_release_ctx(ctx);
+-	bio_put(bio);
+-}
+-
+-void fscrypt_enqueue_decrypt_bio(struct fscrypt_ctx *ctx, struct bio *bio)
+-{
+-	INIT_WORK(&ctx->work, completion_pages);
+-	ctx->bio = bio;
+-	fscrypt_enqueue_decrypt_work(&ctx->work);
+-}
+-EXPORT_SYMBOL(fscrypt_enqueue_decrypt_bio);
+-
+ int fscrypt_zeroout_range(const struct inode *inode, pgoff_t lblk,
+ 				sector_t pblk, unsigned int len)
+ {
 diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
-index 32a7ad0098cc2..6bc3e4f1e657e 100644
+index 6bc3e4f1e657e..ced8ad9f2d019 100644
 --- a/fs/crypto/crypto.c
 +++ b/fs/crypto/crypto.c
-@@ -27,7 +27,6 @@
- #include <linux/ratelimit.h>
- #include <linux/dcache.h>
- #include <linux/namei.h>
--#include <crypto/aes.h>
- #include <crypto/skcipher.h>
+@@ -31,24 +31,16 @@
  #include "fscrypt_private.h"
  
-@@ -143,9 +142,6 @@ void fscrypt_generate_iv(union fscrypt_iv *iv, u64 lblk_num,
+ static unsigned int num_prealloc_crypto_pages = 32;
+-static unsigned int num_prealloc_crypto_ctxs = 128;
  
- 	if (fscrypt_is_direct_key_policy(&ci->ci_policy))
- 		memcpy(iv->nonce, ci->ci_nonce, FS_KEY_DERIVATION_NONCE_SIZE);
+ module_param(num_prealloc_crypto_pages, uint, 0444);
+ MODULE_PARM_DESC(num_prealloc_crypto_pages,
+ 		"Number of crypto pages to preallocate");
+-module_param(num_prealloc_crypto_ctxs, uint, 0444);
+-MODULE_PARM_DESC(num_prealloc_crypto_ctxs,
+-		"Number of crypto contexts to preallocate");
+ 
+ static mempool_t *fscrypt_bounce_page_pool = NULL;
+ 
+-static LIST_HEAD(fscrypt_free_ctxs);
+-static DEFINE_SPINLOCK(fscrypt_ctx_lock);
 -
--	if (ci->ci_essiv_tfm != NULL)
--		crypto_cipher_encrypt_one(ci->ci_essiv_tfm, iv->raw, iv->raw);
+ static struct workqueue_struct *fscrypt_read_workqueue;
+ static DEFINE_MUTEX(fscrypt_init_mutex);
+ 
+-static struct kmem_cache *fscrypt_ctx_cachep;
+ struct kmem_cache *fscrypt_info_cachep;
+ 
+ void fscrypt_enqueue_decrypt_work(struct work_struct *work)
+@@ -57,62 +49,6 @@ void fscrypt_enqueue_decrypt_work(struct work_struct *work)
  }
+ EXPORT_SYMBOL(fscrypt_enqueue_decrypt_work);
  
- /* Encrypt or decrypt a single filesystem block of file contents */
-diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-index e84efc01512e4..76c64297ce187 100644
---- a/fs/crypto/fscrypt_private.h
-+++ b/fs/crypto/fscrypt_private.h
-@@ -163,12 +163,6 @@ struct fscrypt_info {
- 	/* The actual crypto transform used for encryption and decryption */
- 	struct crypto_skcipher *ci_ctfm;
- 
--	/*
--	 * Cipher for ESSIV IV generation.  Only set for CBC contents
--	 * encryption, otherwise is NULL.
--	 */
--	struct crypto_cipher *ci_essiv_tfm;
+-/**
+- * fscrypt_release_ctx() - Release a decryption context
+- * @ctx: The decryption context to release.
+- *
+- * If the decryption context was allocated from the pre-allocated pool, return
+- * it to that pool.  Else, free it.
+- */
+-void fscrypt_release_ctx(struct fscrypt_ctx *ctx)
+-{
+-	unsigned long flags;
 -
- 	/*
- 	 * Encryption mode used for this inode.  It corresponds to either the
- 	 * contents or filenames encryption mode, depending on the inode type.
-@@ -444,7 +438,6 @@ struct fscrypt_mode {
- 	int keysize;
- 	int ivsize;
- 	bool logged_impl_name;
--	bool needs_essiv;
+-	if (ctx->flags & FS_CTX_REQUIRES_FREE_ENCRYPT_FL) {
+-		kmem_cache_free(fscrypt_ctx_cachep, ctx);
+-	} else {
+-		spin_lock_irqsave(&fscrypt_ctx_lock, flags);
+-		list_add(&ctx->free_list, &fscrypt_free_ctxs);
+-		spin_unlock_irqrestore(&fscrypt_ctx_lock, flags);
+-	}
+-}
+-EXPORT_SYMBOL(fscrypt_release_ctx);
+-
+-/**
+- * fscrypt_get_ctx() - Get a decryption context
+- * @gfp_flags:   The gfp flag for memory allocation
+- *
+- * Allocate and initialize a decryption context.
+- *
+- * Return: A new decryption context on success; an ERR_PTR() otherwise.
+- */
+-struct fscrypt_ctx *fscrypt_get_ctx(gfp_t gfp_flags)
+-{
+-	struct fscrypt_ctx *ctx;
+-	unsigned long flags;
+-
+-	/*
+-	 * First try getting a ctx from the free list so that we don't have to
+-	 * call into the slab allocator.
+-	 */
+-	spin_lock_irqsave(&fscrypt_ctx_lock, flags);
+-	ctx = list_first_entry_or_null(&fscrypt_free_ctxs,
+-					struct fscrypt_ctx, free_list);
+-	if (ctx)
+-		list_del(&ctx->free_list);
+-	spin_unlock_irqrestore(&fscrypt_ctx_lock, flags);
+-	if (!ctx) {
+-		ctx = kmem_cache_zalloc(fscrypt_ctx_cachep, gfp_flags);
+-		if (!ctx)
+-			return ERR_PTR(-ENOMEM);
+-		ctx->flags |= FS_CTX_REQUIRES_FREE_ENCRYPT_FL;
+-	} else {
+-		ctx->flags &= ~FS_CTX_REQUIRES_FREE_ENCRYPT_FL;
+-	}
+-	return ctx;
+-}
+-EXPORT_SYMBOL(fscrypt_get_ctx);
+-
+ struct page *fscrypt_alloc_bounce_page(gfp_t gfp_flags)
+ {
+ 	return mempool_alloc(fscrypt_bounce_page_pool, gfp_flags);
+@@ -392,17 +328,6 @@ const struct dentry_operations fscrypt_d_ops = {
+ 	.d_revalidate = fscrypt_d_revalidate,
  };
  
- static inline bool
-diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index d71c2d6dd162a..8eb5a0e762ec6 100644
---- a/fs/crypto/keysetup.c
-+++ b/fs/crypto/keysetup.c
-@@ -8,15 +8,11 @@
-  * Heavily modified since then.
+-static void fscrypt_destroy(void)
+-{
+-	struct fscrypt_ctx *pos, *n;
+-
+-	list_for_each_entry_safe(pos, n, &fscrypt_free_ctxs, free_list)
+-		kmem_cache_free(fscrypt_ctx_cachep, pos);
+-	INIT_LIST_HEAD(&fscrypt_free_ctxs);
+-	mempool_destroy(fscrypt_bounce_page_pool);
+-	fscrypt_bounce_page_pool = NULL;
+-}
+-
+ /**
+  * fscrypt_initialize() - allocate major buffers for fs encryption.
+  * @cop_flags:  fscrypt operations flags
+@@ -410,11 +335,11 @@ static void fscrypt_destroy(void)
+  * We only call this when we start accessing encrypted files, since it
+  * results in memory getting allocated that wouldn't otherwise be used.
+  *
+- * Return: Zero on success, non-zero otherwise.
++ * Return: 0 on success; -errno on failure
   */
- 
--#include <crypto/aes.h>
--#include <crypto/sha.h>
- #include <crypto/skcipher.h>
- #include <linux/key.h>
- 
- #include "fscrypt_private.h"
- 
--static struct crypto_shash *essiv_hash_tfm;
--
- static struct fscrypt_mode available_modes[] = {
- 	[FSCRYPT_MODE_AES_256_XTS] = {
- 		.friendly_name = "AES-256-XTS",
-@@ -31,11 +27,10 @@ static struct fscrypt_mode available_modes[] = {
- 		.ivsize = 16,
- 	},
- 	[FSCRYPT_MODE_AES_128_CBC] = {
--		.friendly_name = "AES-128-CBC",
--		.cipher_str = "cbc(aes)",
-+		.friendly_name = "AES-128-CBC-ESSIV",
-+		.cipher_str = "essiv(cbc(aes),sha256)",
- 		.keysize = 16,
- 		.ivsize = 16,
--		.needs_essiv = true,
- 	},
- 	[FSCRYPT_MODE_AES_128_CTS] = {
- 		.friendly_name = "AES-128-CTS-CBC",
-@@ -111,97 +106,16 @@ struct crypto_skcipher *fscrypt_allocate_skcipher(struct fscrypt_mode *mode,
- 	return ERR_PTR(err);
- }
- 
--static int derive_essiv_salt(const u8 *key, int keysize, u8 *salt)
--{
--	struct crypto_shash *tfm = READ_ONCE(essiv_hash_tfm);
--
--	/* init hash transform on demand */
--	if (unlikely(!tfm)) {
--		struct crypto_shash *prev_tfm;
--
--		tfm = crypto_alloc_shash("sha256", 0, 0);
--		if (IS_ERR(tfm)) {
--			if (PTR_ERR(tfm) == -ENOENT) {
--				fscrypt_warn(NULL,
--					     "Missing crypto API support for SHA-256");
--				return -ENOPKG;
--			}
--			fscrypt_err(NULL,
--				    "Error allocating SHA-256 transform: %ld",
--				    PTR_ERR(tfm));
--			return PTR_ERR(tfm);
--		}
--		prev_tfm = cmpxchg(&essiv_hash_tfm, NULL, tfm);
--		if (prev_tfm) {
--			crypto_free_shash(tfm);
--			tfm = prev_tfm;
--		}
--	}
--
--	{
--		SHASH_DESC_ON_STACK(desc, tfm);
--		desc->tfm = tfm;
--
--		return crypto_shash_digest(desc, key, keysize, salt);
--	}
--}
--
--static int init_essiv_generator(struct fscrypt_info *ci, const u8 *raw_key,
--				int keysize)
--{
--	int err;
--	struct crypto_cipher *essiv_tfm;
--	u8 salt[SHA256_DIGEST_SIZE];
--
--	if (WARN_ON(ci->ci_mode->ivsize != AES_BLOCK_SIZE))
--		return -EINVAL;
--
--	essiv_tfm = crypto_alloc_cipher("aes", 0, 0);
--	if (IS_ERR(essiv_tfm))
--		return PTR_ERR(essiv_tfm);
--
--	ci->ci_essiv_tfm = essiv_tfm;
--
--	err = derive_essiv_salt(raw_key, keysize, salt);
--	if (err)
--		goto out;
--
--	/*
--	 * Using SHA256 to derive the salt/key will result in AES-256 being
--	 * used for IV generation. File contents encryption will still use the
--	 * configured keysize (AES-128) nevertheless.
--	 */
--	err = crypto_cipher_setkey(essiv_tfm, salt, sizeof(salt));
--	if (err)
--		goto out;
--
--out:
--	memzero_explicit(salt, sizeof(salt));
--	return err;
--}
--
--/* Given the per-file key, set up the file's crypto transform object(s) */
-+/* Given the per-file key, set up the file's crypto transform object */
- int fscrypt_set_derived_key(struct fscrypt_info *ci, const u8 *derived_key)
+ int fscrypt_initialize(unsigned int cop_flags)
  {
--	struct fscrypt_mode *mode = ci->ci_mode;
--	struct crypto_skcipher *ctfm;
--	int err;
+-	int i, res = -ENOMEM;
++	int err = 0;
+ 
+ 	/* No need to allocate a bounce page pool if this FS won't use it. */
+ 	if (cop_flags & FS_CFLG_OWN_PAGES)
+@@ -422,29 +347,18 @@ int fscrypt_initialize(unsigned int cop_flags)
+ 
+ 	mutex_lock(&fscrypt_init_mutex);
+ 	if (fscrypt_bounce_page_pool)
+-		goto already_initialized;
 -
--	ctfm = fscrypt_allocate_skcipher(mode, derived_key, ci->ci_inode);
--	if (IS_ERR(ctfm))
--		return PTR_ERR(ctfm);
-+	struct crypto_skcipher *tfm;
- 
--	ci->ci_ctfm = ctfm;
-+	tfm = fscrypt_allocate_skcipher(ci->ci_mode, derived_key, ci->ci_inode);
-+	if (IS_ERR(tfm))
-+		return PTR_ERR(tfm);
- 
--	if (mode->needs_essiv) {
--		err = init_essiv_generator(ci, derived_key, mode->keysize);
--		if (err) {
--			fscrypt_warn(ci->ci_inode,
--				     "Error initializing ESSIV generator: %d",
--				     err);
--			return err;
--		}
+-	for (i = 0; i < num_prealloc_crypto_ctxs; i++) {
+-		struct fscrypt_ctx *ctx;
+-
+-		ctx = kmem_cache_zalloc(fscrypt_ctx_cachep, GFP_NOFS);
+-		if (!ctx)
+-			goto fail;
+-		list_add(&ctx->free_list, &fscrypt_free_ctxs);
 -	}
-+	ci->ci_ctfm = tfm;
- 	return 0;
++		goto out_unlock;
+ 
++	err = -ENOMEM;
+ 	fscrypt_bounce_page_pool =
+ 		mempool_create_page_pool(num_prealloc_crypto_pages, 0);
+ 	if (!fscrypt_bounce_page_pool)
+-		goto fail;
++		goto out_unlock;
+ 
+-already_initialized:
+-	mutex_unlock(&fscrypt_init_mutex);
+-	return 0;
+-fail:
+-	fscrypt_destroy();
++	err = 0;
++out_unlock:
+ 	mutex_unlock(&fscrypt_init_mutex);
+-	return res;
++	return err;
  }
  
-@@ -388,13 +302,11 @@ static void put_crypt_info(struct fscrypt_info *ci)
- 	if (!ci)
- 		return;
+ void fscrypt_msg(const struct inode *inode, const char *level,
+@@ -490,13 +404,9 @@ static int __init fscrypt_init(void)
+ 	if (!fscrypt_read_workqueue)
+ 		goto fail;
  
--	if (ci->ci_direct_key) {
-+	if (ci->ci_direct_key)
- 		fscrypt_put_direct_key(ci->ci_direct_key);
--	} else if ((ci->ci_ctfm != NULL || ci->ci_essiv_tfm != NULL) &&
--		   !fscrypt_is_direct_key_policy(&ci->ci_policy)) {
-+	else if (ci->ci_ctfm != NULL &&
-+		 !fscrypt_is_direct_key_policy(&ci->ci_policy))
- 		crypto_free_skcipher(ci->ci_ctfm);
--		crypto_free_cipher(ci->ci_essiv_tfm);
--	}
- 
- 	key = ci->ci_master_key;
- 	if (key) {
-diff --git a/fs/crypto/keysetup_v1.c b/fs/crypto/keysetup_v1.c
-index ad1a36c370c3f..5298ef22aa859 100644
---- a/fs/crypto/keysetup_v1.c
-+++ b/fs/crypto/keysetup_v1.c
-@@ -270,10 +270,6 @@ static int setup_v1_file_key_direct(struct fscrypt_info *ci,
- 		return -EINVAL;
- 	}
- 
--	/* ESSIV implies 16-byte IVs which implies !DIRECT_KEY */
--	if (WARN_ON(mode->needs_essiv))
--		return -EINVAL;
+-	fscrypt_ctx_cachep = KMEM_CACHE(fscrypt_ctx, SLAB_RECLAIM_ACCOUNT);
+-	if (!fscrypt_ctx_cachep)
+-		goto fail_free_queue;
 -
- 	dk = fscrypt_get_direct_key(ci, raw_master_key);
- 	if (IS_ERR(dk))
- 		return PTR_ERR(dk);
+ 	fscrypt_info_cachep = KMEM_CACHE(fscrypt_info, SLAB_RECLAIM_ACCOUNT);
+ 	if (!fscrypt_info_cachep)
+-		goto fail_free_ctx;
++		goto fail_free_queue;
+ 
+ 	err = fscrypt_init_keyring();
+ 	if (err)
+@@ -506,8 +416,6 @@ static int __init fscrypt_init(void)
+ 
+ fail_free_info:
+ 	kmem_cache_destroy(fscrypt_info_cachep);
+-fail_free_ctx:
+-	kmem_cache_destroy(fscrypt_ctx_cachep);
+ fail_free_queue:
+ 	destroy_workqueue(fscrypt_read_workqueue);
+ fail:
+diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+index 76c64297ce187..dacf8fcbac3be 100644
+--- a/fs/crypto/fscrypt_private.h
++++ b/fs/crypto/fscrypt_private.h
+@@ -203,8 +203,6 @@ typedef enum {
+ 	FS_ENCRYPT,
+ } fscrypt_direction_t;
+ 
+-#define FS_CTX_REQUIRES_FREE_ENCRYPT_FL		0x00000001
+-
+ static inline bool fscrypt_valid_enc_modes(u32 contents_mode,
+ 					   u32 filenames_mode)
+ {
+diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
+index f622f7460ed8c..04f5ed6284454 100644
+--- a/include/linux/fscrypt.h
++++ b/include/linux/fscrypt.h
+@@ -20,7 +20,6 @@
+ 
+ #define FS_CRYPTO_BLOCK_SIZE		16
+ 
+-struct fscrypt_ctx;
+ struct fscrypt_info;
+ 
+ struct fscrypt_str {
+@@ -64,18 +63,6 @@ struct fscrypt_operations {
+ 	unsigned int max_namelen;
+ };
+ 
+-/* Decryption work */
+-struct fscrypt_ctx {
+-	union {
+-		struct {
+-			struct bio *bio;
+-			struct work_struct work;
+-		};
+-		struct list_head free_list;	/* Free list */
+-	};
+-	u8 flags;				/* Flags */
+-};
+-
+ static inline bool fscrypt_has_encryption_key(const struct inode *inode)
+ {
+ 	/* pairs with cmpxchg_release() in fscrypt_get_encryption_info() */
+@@ -102,8 +89,6 @@ static inline void fscrypt_handle_d_move(struct dentry *dentry)
+ 
+ /* crypto.c */
+ extern void fscrypt_enqueue_decrypt_work(struct work_struct *);
+-extern struct fscrypt_ctx *fscrypt_get_ctx(gfp_t);
+-extern void fscrypt_release_ctx(struct fscrypt_ctx *);
+ 
+ extern struct page *fscrypt_encrypt_pagecache_blocks(struct page *page,
+ 						     unsigned int len,
+@@ -244,8 +229,6 @@ static inline bool fscrypt_match_name(const struct fscrypt_name *fname,
+ 
+ /* bio.c */
+ extern void fscrypt_decrypt_bio(struct bio *);
+-extern void fscrypt_enqueue_decrypt_bio(struct fscrypt_ctx *ctx,
+-					struct bio *bio);
+ extern int fscrypt_zeroout_range(const struct inode *, pgoff_t, sector_t,
+ 				 unsigned int);
+ 
+@@ -295,16 +278,6 @@ static inline void fscrypt_enqueue_decrypt_work(struct work_struct *work)
+ {
+ }
+ 
+-static inline struct fscrypt_ctx *fscrypt_get_ctx(gfp_t gfp_flags)
+-{
+-	return ERR_PTR(-EOPNOTSUPP);
+-}
+-
+-static inline void fscrypt_release_ctx(struct fscrypt_ctx *ctx)
+-{
+-	return;
+-}
+-
+ static inline struct page *fscrypt_encrypt_pagecache_blocks(struct page *page,
+ 							    unsigned int len,
+ 							    unsigned int offs,
+@@ -484,11 +457,6 @@ static inline void fscrypt_decrypt_bio(struct bio *bio)
+ {
+ }
+ 
+-static inline void fscrypt_enqueue_decrypt_bio(struct fscrypt_ctx *ctx,
+-					       struct bio *bio)
+-{
+-}
+-
+ static inline int fscrypt_zeroout_range(const struct inode *inode, pgoff_t lblk,
+ 					sector_t pblk, unsigned int len)
+ {
 -- 
 2.23.0.581.g78d2f28ef7-goog
 
