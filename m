@@ -2,39 +2,37 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 71CE7C28A3
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 30 Sep 2019 23:19:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A40BDD1CE7
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 10 Oct 2019 01:39:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732430AbfI3VT3 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 30 Sep 2019 17:19:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47244 "EHLO mail.kernel.org"
+        id S1731155AbfJIXjr (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 9 Oct 2019 19:39:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732362AbfI3VT3 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 30 Sep 2019 17:19:29 -0400
+        id S1730815AbfJIXjr (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 9 Oct 2019 19:39:47 -0400
 Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.77])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0775821A4C;
-        Mon, 30 Sep 2019 21:19:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 51A6020659;
+        Wed,  9 Oct 2019 23:39:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1569878368;
-        bh=9UhgddTaavLuhdplB1poq3TFBlFYIObQrc+iqLwnCDk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OEUf6GR7sHRbWgy7UrYMF81xx6PGyl3AADS8DiDNKM7SCJzB3mrliZ7I8E8LzwkYX
-         fVGWbRMqQO6PjCK+J/myYivWJlxC0KqCYEHGICCmA7eWeZhaHpl3Mqy4FAg/jXOQgc
-         LdRCF/rSi9wKNczospIq7W0ROJibS15KC8/WSkT8=
+        s=default; t=1570664385;
+        bh=Q/T8xsVWRWorwlYxy1MSpPnVmBkkjbYTlNrEpb7g494=;
+        h=From:To:Cc:Subject:Date:From;
+        b=T1gSSBjSeM9NWhzoHO3ynhx1SXPsIMCtWImEJzl4cRvoqD4jzTzdiTVezndaBR2TB
+         rH+sJCb9SVS0HqE2qNpVzIqkhAbmKVYH7v6zXTArHTIXLMTxegFYIj64h/6n4TyKJ7
+         XvF+buyIztSCSR9/wqXn+SA6N1NR7mG75k5M/uWg=
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     fstests@vger.kernel.org
-Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>
-Subject: [PATCH v4 8/8] generic: test the fs-verity built-in signature verification support
-Date:   Mon, 30 Sep 2019 14:15:53 -0700
-Message-Id: <20190930211553.64208-9-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.23.0.444.g18eeb5a265-goog
-In-Reply-To: <20190930211553.64208-1-ebiggers@kernel.org>
-References: <20190930211553.64208-1-ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, linux-crypto@vger.kernel.org,
+        linux-mtd@lists.infradead.org,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Subject: [PATCH] fscrypt: invoke crypto API for ESSIV handling
+Date:   Wed,  9 Oct 2019 16:38:40 -0700
+Message-Id: <20191009233840.224128-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.23.0.581.g78d2f28ef7-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-fscrypt-owner@vger.kernel.org
@@ -44,281 +42,259 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Add a basic test for the fs-verity built-in signature verification
-support, which is an optional feature where the kernel can be configured
-to enforce that all verity files are accompanied with a valid signature
-by a key that has been loaded into the fs-verity keyring.
+Instead of open-coding the calculations for ESSIV handling, use an ESSIV
+skcipher which does all of this under the hood.  ESSIV was added to the
+crypto API in v5.4.
 
+This is based on a patch from Ard Biesheuvel, but reworked to apply
+after all the fscrypt changes that went into v5.4.
+
+Tested with 'kvm-xfstests -c ext4,f2fs -g encrypt', including the
+ciphertext verification tests for v1 and v2 encryption policies.
+
+Originally-from: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- common/config         |   1 +
- common/verity         |  16 +++++
- tests/generic/905     | 150 ++++++++++++++++++++++++++++++++++++++++++
- tests/generic/905.out |  42 ++++++++++++
- tests/generic/group   |   1 +
- 5 files changed, 210 insertions(+)
- create mode 100755 tests/generic/905
- create mode 100644 tests/generic/905.out
+ Documentation/filesystems/fscrypt.rst |   5 +-
+ fs/crypto/crypto.c                    |   4 -
+ fs/crypto/fscrypt_private.h           |   7 --
+ fs/crypto/keysetup.c                  | 110 +++-----------------------
+ fs/crypto/keysetup_v1.c               |   4 -
+ 5 files changed, 14 insertions(+), 116 deletions(-)
 
-diff --git a/common/config b/common/config
-index fb4097b8..c7a1c61c 100644
---- a/common/config
-+++ b/common/config
-@@ -214,6 +214,7 @@ export XFS_INFO_PROG="$(type -P xfs_info)"
- export DUPEREMOVE_PROG="$(type -P duperemove)"
- export CC_PROG="$(type -P cc)"
- export FSVERITY_PROG="$(type -P fsverity)"
-+export OPENSSL_PROG="$(type -P openssl)"
+diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
+index 8a0700af95967..6ec459be3de16 100644
+--- a/Documentation/filesystems/fscrypt.rst
++++ b/Documentation/filesystems/fscrypt.rst
+@@ -308,8 +308,9 @@ If unsure, you should use the (AES-256-XTS, AES-256-CTS-CBC) pair.
  
- # use 'udevadm settle' or 'udevsettle' to wait for lv to be settled.
- # newer systems have udevadm command but older systems like RHEL5 don't.
-diff --git a/common/verity b/common/verity
-index a8aae51e..bcb5670d 100644
---- a/common/verity
-+++ b/common/verity
-@@ -45,6 +45,17 @@ _require_scratch_verity()
- 	FSV_BLOCK_SIZE=$(get_page_size)
+ AES-128-CBC was added only for low-powered embedded devices with
+ crypto accelerators such as CAAM or CESA that do not support XTS.  To
+-use AES-128-CBC, CONFIG_CRYPTO_SHA256 (or another SHA-256
+-implementation) must be enabled so that ESSIV can be used.
++use AES-128-CBC, CONFIG_CRYPTO_ESSIV and CONFIG_CRYPTO_SHA256 (or
++another SHA-256 implementation) must be enabled so that ESSIV can be
++used.
+ 
+ Adiantum is a (primarily) stream cipher-based mode that is fast even
+ on CPUs without dedicated crypto instructions.  It's also a true
+diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
+index 32a7ad0098cc2..6bc3e4f1e657e 100644
+--- a/fs/crypto/crypto.c
++++ b/fs/crypto/crypto.c
+@@ -27,7 +27,6 @@
+ #include <linux/ratelimit.h>
+ #include <linux/dcache.h>
+ #include <linux/namei.h>
+-#include <crypto/aes.h>
+ #include <crypto/skcipher.h>
+ #include "fscrypt_private.h"
+ 
+@@ -143,9 +142,6 @@ void fscrypt_generate_iv(union fscrypt_iv *iv, u64 lblk_num,
+ 
+ 	if (fscrypt_is_direct_key_policy(&ci->ci_policy))
+ 		memcpy(iv->nonce, ci->ci_nonce, FS_KEY_DERIVATION_NONCE_SIZE);
+-
+-	if (ci->ci_essiv_tfm != NULL)
+-		crypto_cipher_encrypt_one(ci->ci_essiv_tfm, iv->raw, iv->raw);
  }
  
-+# Check for CONFIG_FS_VERITY_BUILTIN_SIGNATURES=y.
-+_require_fsverity_builtin_signatures()
-+{
-+	if [ ! -e /proc/keys ]; then
-+		_notrun "kernel doesn't support keyrings"
-+	fi
-+	if ! awk '{print $9}' /proc/keys | grep -q '^\.fs-verity:$'; then
-+		_notrun "kernel doesn't support fs-verity builtin signatures"
-+	fi
-+}
-+
- _scratch_mkfs_verity()
- {
- 	case $FSTYP in
-@@ -92,6 +103,11 @@ _fsv_measure()
-         $FSVERITY_PROG measure "$@" | awk '{print $1}'
+ /* Encrypt or decrypt a single filesystem block of file contents */
+diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+index e84efc01512e4..76c64297ce187 100644
+--- a/fs/crypto/fscrypt_private.h
++++ b/fs/crypto/fscrypt_private.h
+@@ -163,12 +163,6 @@ struct fscrypt_info {
+ 	/* The actual crypto transform used for encryption and decryption */
+ 	struct crypto_skcipher *ci_ctfm;
+ 
+-	/*
+-	 * Cipher for ESSIV IV generation.  Only set for CBC contents
+-	 * encryption, otherwise is NULL.
+-	 */
+-	struct crypto_cipher *ci_essiv_tfm;
+-
+ 	/*
+ 	 * Encryption mode used for this inode.  It corresponds to either the
+ 	 * contents or filenames encryption mode, depending on the inode type.
+@@ -444,7 +438,6 @@ struct fscrypt_mode {
+ 	int keysize;
+ 	int ivsize;
+ 	bool logged_impl_name;
+-	bool needs_essiv;
+ };
+ 
+ static inline bool
+diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
+index d71c2d6dd162a..8eb5a0e762ec6 100644
+--- a/fs/crypto/keysetup.c
++++ b/fs/crypto/keysetup.c
+@@ -8,15 +8,11 @@
+  * Heavily modified since then.
+  */
+ 
+-#include <crypto/aes.h>
+-#include <crypto/sha.h>
+ #include <crypto/skcipher.h>
+ #include <linux/key.h>
+ 
+ #include "fscrypt_private.h"
+ 
+-static struct crypto_shash *essiv_hash_tfm;
+-
+ static struct fscrypt_mode available_modes[] = {
+ 	[FSCRYPT_MODE_AES_256_XTS] = {
+ 		.friendly_name = "AES-256-XTS",
+@@ -31,11 +27,10 @@ static struct fscrypt_mode available_modes[] = {
+ 		.ivsize = 16,
+ 	},
+ 	[FSCRYPT_MODE_AES_128_CBC] = {
+-		.friendly_name = "AES-128-CBC",
+-		.cipher_str = "cbc(aes)",
++		.friendly_name = "AES-128-CBC-ESSIV",
++		.cipher_str = "essiv(cbc(aes),sha256)",
+ 		.keysize = 16,
+ 		.ivsize = 16,
+-		.needs_essiv = true,
+ 	},
+ 	[FSCRYPT_MODE_AES_128_CTS] = {
+ 		.friendly_name = "AES-128-CTS-CBC",
+@@ -111,97 +106,16 @@ struct crypto_skcipher *fscrypt_allocate_skcipher(struct fscrypt_mode *mode,
+ 	return ERR_PTR(err);
  }
  
-+_fsv_sign()
-+{
-+	$FSVERITY_PROG sign "$@"
-+}
-+
- # Generate a file, then enable verity on it.
- _fsv_create_enable_file()
+-static int derive_essiv_salt(const u8 *key, int keysize, u8 *salt)
+-{
+-	struct crypto_shash *tfm = READ_ONCE(essiv_hash_tfm);
+-
+-	/* init hash transform on demand */
+-	if (unlikely(!tfm)) {
+-		struct crypto_shash *prev_tfm;
+-
+-		tfm = crypto_alloc_shash("sha256", 0, 0);
+-		if (IS_ERR(tfm)) {
+-			if (PTR_ERR(tfm) == -ENOENT) {
+-				fscrypt_warn(NULL,
+-					     "Missing crypto API support for SHA-256");
+-				return -ENOPKG;
+-			}
+-			fscrypt_err(NULL,
+-				    "Error allocating SHA-256 transform: %ld",
+-				    PTR_ERR(tfm));
+-			return PTR_ERR(tfm);
+-		}
+-		prev_tfm = cmpxchg(&essiv_hash_tfm, NULL, tfm);
+-		if (prev_tfm) {
+-			crypto_free_shash(tfm);
+-			tfm = prev_tfm;
+-		}
+-	}
+-
+-	{
+-		SHASH_DESC_ON_STACK(desc, tfm);
+-		desc->tfm = tfm;
+-
+-		return crypto_shash_digest(desc, key, keysize, salt);
+-	}
+-}
+-
+-static int init_essiv_generator(struct fscrypt_info *ci, const u8 *raw_key,
+-				int keysize)
+-{
+-	int err;
+-	struct crypto_cipher *essiv_tfm;
+-	u8 salt[SHA256_DIGEST_SIZE];
+-
+-	if (WARN_ON(ci->ci_mode->ivsize != AES_BLOCK_SIZE))
+-		return -EINVAL;
+-
+-	essiv_tfm = crypto_alloc_cipher("aes", 0, 0);
+-	if (IS_ERR(essiv_tfm))
+-		return PTR_ERR(essiv_tfm);
+-
+-	ci->ci_essiv_tfm = essiv_tfm;
+-
+-	err = derive_essiv_salt(raw_key, keysize, salt);
+-	if (err)
+-		goto out;
+-
+-	/*
+-	 * Using SHA256 to derive the salt/key will result in AES-256 being
+-	 * used for IV generation. File contents encryption will still use the
+-	 * configured keysize (AES-128) nevertheless.
+-	 */
+-	err = crypto_cipher_setkey(essiv_tfm, salt, sizeof(salt));
+-	if (err)
+-		goto out;
+-
+-out:
+-	memzero_explicit(salt, sizeof(salt));
+-	return err;
+-}
+-
+-/* Given the per-file key, set up the file's crypto transform object(s) */
++/* Given the per-file key, set up the file's crypto transform object */
+ int fscrypt_set_derived_key(struct fscrypt_info *ci, const u8 *derived_key)
  {
-diff --git a/tests/generic/905 b/tests/generic/905
-new file mode 100755
-index 00000000..e42b012d
---- /dev/null
-+++ b/tests/generic/905
-@@ -0,0 +1,150 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright 2019 Google LLC
-+#
-+# FS QA Test generic/905
-+#
-+# Test the fs-verity built-in signature verification support.
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+here=`pwd`
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+	sysctl -w fs.verity.require_signatures=0 &>/dev/null
-+	cd /
-+	rm -f $tmp.*
-+}
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+. ./common/verity
-+
-+# remove previous $seqres.full before test
-+rm -f $seqres.full
-+
-+# real QA test starts here
-+_supported_fs generic
-+_supported_os Linux
-+_require_scratch_verity
-+_require_fsverity_builtin_signatures
-+_require_command "$OPENSSL_PROG" openssl
-+_require_command "$KEYCTL_PROG" keyctl
-+
-+_scratch_mkfs_verity &>> $seqres.full
-+_scratch_mount
-+
-+fsv_file=$SCRATCH_MNT/file.fsv
-+fsv_orig_file=$SCRATCH_MNT/file
-+keyfile=$tmp.key.pem
-+certfile=$tmp.cert.pem
-+certfileder=$tmp.cert.der
-+sigfile=$tmp.sig
-+otherfile=$SCRATCH_MNT/otherfile
-+othersigfile=$tmp.othersig
-+
-+# Setup
-+
-+echo -e "\n# Generating certificates and private keys"
-+for suffix in '' '.2'; do
-+	if ! $OPENSSL_PROG req -newkey rsa:4096 -nodes -batch -x509 \
-+			-keyout $keyfile$suffix -out $certfile$suffix \
-+			&>> $seqres.full; then
-+		_fail "Failed to generate certificate and private key (see $seqres.full)"
-+	fi
-+	$OPENSSL_PROG x509 -in $certfile$suffix -out $certfileder$suffix \
-+		-outform der
-+done
-+
-+echo -e "\n# Clearing fs-verity keyring"
-+$KEYCTL_PROG clear %keyring:.fs-verity
-+
-+echo -e "\n# Loading first certificate into fs-verity keyring"
-+$KEYCTL_PROG padd asymmetric '' %keyring:.fs-verity \
-+	< $certfileder >> $seqres.full
-+
-+echo -e "\n# Enabling fs.verity.require_signatures"
-+sysctl -w fs.verity.require_signatures=1
-+
-+echo -e "\n# Generating file and signing it for fs-verity"
-+head -c 100000 /dev/zero > $fsv_orig_file
-+for suffix in '' '.2'; do
-+	_fsv_sign $fsv_orig_file $sigfile$suffix --key=$keyfile$suffix \
-+		--cert=$certfile$suffix | _filter_scratch
-+done
-+
-+echo -e "\n# Signing a different file for fs-verity"
-+head -c 100000 /dev/zero | tr '\0' 'X' > $otherfile
-+_fsv_sign $otherfile $othersigfile --key=$keyfile --cert=$certfile \
-+	| _filter_scratch
-+
-+# Actual tests
-+
-+reset_fsv_file()
-+{
-+	rm -f $fsv_file
-+	cp $fsv_orig_file $fsv_file
-+}
-+
-+echo -e "\n# Enabling verity with valid signature (should succeed)"
-+reset_fsv_file
-+_fsv_enable $fsv_file --signature=$sigfile
-+cmp $fsv_file $fsv_orig_file
-+
-+echo -e "\n# Enabling verity without signature (should fail)"
-+reset_fsv_file
-+_fsv_enable $fsv_file |& _filter_scratch
-+
-+echo -e "\n# Opening verity file without signature (should fail)"
-+reset_fsv_file
-+sysctl -w fs.verity.require_signatures=0 &>> $seqres.full
-+_fsv_enable $fsv_file
-+sysctl -w fs.verity.require_signatures=1 &>> $seqres.full
-+_scratch_cycle_mount
-+md5sum $fsv_file |& _filter_scratch
-+
-+echo -e "\n# Enabling verity with untrusted signature (should fail)"
-+reset_fsv_file
-+_fsv_enable $fsv_file --signature=$sigfile.2 |& _filter_scratch
-+
-+echo -e "\n# Enabling verity with wrong file's signature (should fail)"
-+reset_fsv_file
-+_fsv_enable $fsv_file --signature=$othersigfile |& _filter_scratch
-+
-+echo -e "\n# Enabling verity with malformed signature (should fail)"
-+echo foobarbaz > $tmp.malformed_sig
-+reset_fsv_file
-+_fsv_enable $fsv_file --signature=$tmp.malformed_sig |& _filter_scratch
-+
-+echo -e "\n# Testing salt"
-+reset_fsv_file
-+_fsv_sign $fsv_orig_file $sigfile.salted --key=$keyfile --cert=$certfile \
-+	--salt=abcd | _filter_scratch
-+_fsv_enable $fsv_file --signature=$sigfile.salted --salt=abcd
-+cmp $fsv_file $fsv_orig_file
-+
-+echo -e "\n# Testing non-default hash algorithm"
-+if _fsv_have_hash_algorithm sha512 $fsv_file; then
-+	reset_fsv_file
-+	_fsv_sign $fsv_orig_file $sigfile.sha512 --key=$keyfile \
-+		--cert=$certfile --hash-alg=sha512 > /dev/null
-+	_fsv_enable $fsv_file --signature=$sigfile.sha512 --hash-alg=sha512
-+	cmp $fsv_file $fsv_orig_file
-+fi
-+
-+echo -e "\n# Testing empty file"
-+echo -n > $fsv_file
-+_fsv_sign $fsv_file $sigfile.emptyfile --key=$keyfile --cert=$certfile | \
-+		_filter_scratch
-+_fsv_enable $fsv_file --signature=$sigfile.emptyfile
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/generic/905.out b/tests/generic/905.out
-new file mode 100644
-index 00000000..4b28757a
---- /dev/null
-+++ b/tests/generic/905.out
-@@ -0,0 +1,42 @@
-+QA output created by 905
-+
-+# Generating certificates and private keys
-+
-+# Clearing fs-verity keyring
-+
-+# Loading first certificate into fs-verity keyring
-+
-+# Enabling fs.verity.require_signatures
-+fs.verity.require_signatures = 1
-+
-+# Generating file and signing it for fs-verity
-+Signed file 'SCRATCH_MNT/file' (sha256:ecabbfca4efd69a721be824965da10d27900b109549f96687b35a4d91d810dac)
-+Signed file 'SCRATCH_MNT/file' (sha256:ecabbfca4efd69a721be824965da10d27900b109549f96687b35a4d91d810dac)
-+
-+# Signing a different file for fs-verity
-+Signed file 'SCRATCH_MNT/otherfile' (sha256:b2a419c5a8c767a78c6275d6729794bf51e52ddf8713e31d12a93d61d961f49f)
-+
-+# Enabling verity with valid signature (should succeed)
-+
-+# Enabling verity without signature (should fail)
-+ERROR: FS_IOC_ENABLE_VERITY failed on 'SCRATCH_MNT/file.fsv': Operation not permitted
-+
-+# Opening verity file without signature (should fail)
-+md5sum: SCRATCH_MNT/file.fsv: Operation not permitted
-+
-+# Enabling verity with untrusted signature (should fail)
-+ERROR: FS_IOC_ENABLE_VERITY failed on 'SCRATCH_MNT/file.fsv': Required key not available
-+
-+# Enabling verity with wrong file's signature (should fail)
-+ERROR: FS_IOC_ENABLE_VERITY failed on 'SCRATCH_MNT/file.fsv': Key was rejected by service
-+
-+# Enabling verity with malformed signature (should fail)
-+ERROR: FS_IOC_ENABLE_VERITY failed on 'SCRATCH_MNT/file.fsv': Bad message
-+
-+# Testing salt
-+Signed file 'SCRATCH_MNT/file' (sha256:1cb173bcd199133eb80e9ea4f0f741001b9e73227aa8812685156f2bc8ff45f5)
-+
-+# Testing non-default hash algorithm
-+
-+# Testing empty file
-+Signed file 'SCRATCH_MNT/file.fsv' (sha256:3d248ca542a24fc62d1c43b916eae5016878e2533c88238480b26128a1f1af95)
-diff --git a/tests/generic/group b/tests/generic/group
-index c996542a..78aba1e7 100644
---- a/tests/generic/group
-+++ b/tests/generic/group
-@@ -575,3 +575,4 @@
- 902 auto quick verity
- 903 auto quick verity
- 904 auto quick verity encrypt
-+905 auto quick verity
+-	struct fscrypt_mode *mode = ci->ci_mode;
+-	struct crypto_skcipher *ctfm;
+-	int err;
+-
+-	ctfm = fscrypt_allocate_skcipher(mode, derived_key, ci->ci_inode);
+-	if (IS_ERR(ctfm))
+-		return PTR_ERR(ctfm);
++	struct crypto_skcipher *tfm;
+ 
+-	ci->ci_ctfm = ctfm;
++	tfm = fscrypt_allocate_skcipher(ci->ci_mode, derived_key, ci->ci_inode);
++	if (IS_ERR(tfm))
++		return PTR_ERR(tfm);
+ 
+-	if (mode->needs_essiv) {
+-		err = init_essiv_generator(ci, derived_key, mode->keysize);
+-		if (err) {
+-			fscrypt_warn(ci->ci_inode,
+-				     "Error initializing ESSIV generator: %d",
+-				     err);
+-			return err;
+-		}
+-	}
++	ci->ci_ctfm = tfm;
+ 	return 0;
+ }
+ 
+@@ -388,13 +302,11 @@ static void put_crypt_info(struct fscrypt_info *ci)
+ 	if (!ci)
+ 		return;
+ 
+-	if (ci->ci_direct_key) {
++	if (ci->ci_direct_key)
+ 		fscrypt_put_direct_key(ci->ci_direct_key);
+-	} else if ((ci->ci_ctfm != NULL || ci->ci_essiv_tfm != NULL) &&
+-		   !fscrypt_is_direct_key_policy(&ci->ci_policy)) {
++	else if (ci->ci_ctfm != NULL &&
++		 !fscrypt_is_direct_key_policy(&ci->ci_policy))
+ 		crypto_free_skcipher(ci->ci_ctfm);
+-		crypto_free_cipher(ci->ci_essiv_tfm);
+-	}
+ 
+ 	key = ci->ci_master_key;
+ 	if (key) {
+diff --git a/fs/crypto/keysetup_v1.c b/fs/crypto/keysetup_v1.c
+index ad1a36c370c3f..5298ef22aa859 100644
+--- a/fs/crypto/keysetup_v1.c
++++ b/fs/crypto/keysetup_v1.c
+@@ -270,10 +270,6 @@ static int setup_v1_file_key_direct(struct fscrypt_info *ci,
+ 		return -EINVAL;
+ 	}
+ 
+-	/* ESSIV implies 16-byte IVs which implies !DIRECT_KEY */
+-	if (WARN_ON(mode->needs_essiv))
+-		return -EINVAL;
+-
+ 	dk = fscrypt_get_direct_key(ci, raw_master_key);
+ 	if (IS_ERR(dk))
+ 		return PTR_ERR(dk);
 -- 
-2.23.0.444.g18eeb5a265-goog
+2.23.0.581.g78d2f28ef7-goog
 
