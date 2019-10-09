@@ -2,34 +2,36 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ABC92D1CFC
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 10 Oct 2019 01:45:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50270D1D06
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 10 Oct 2019 01:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731145AbfJIXpY (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 9 Oct 2019 19:45:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42462 "EHLO mail.kernel.org"
+        id S1731155AbfJIXrZ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 9 Oct 2019 19:47:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42694 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730955AbfJIXpX (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 9 Oct 2019 19:45:23 -0400
+        id S1731103AbfJIXrZ (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 9 Oct 2019 19:47:25 -0400
 Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.77])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4928320659;
-        Wed,  9 Oct 2019 23:45:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DEF4E206BB;
+        Wed,  9 Oct 2019 23:47:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570664723;
-        bh=y2e5vxGj/vLVzj42btAsyM2YyXmENlcvk2QxCq65hCA=;
+        s=default; t=1570664845;
+        bh=wV/V6DhT0TzJjctQ/covpkwmj5QjFM961Z0/BTrFR5E=;
         h=From:To:Cc:Subject:Date:From;
-        b=mdNxCHaUoa1oA6a+UhrBQOtavoEEx245ZWKiEeOnpvaT31sPSTwaD8p6MgaBx9oSK
-         WI3xvwnaOBwlS8gW6PcguMDEOr5FfZvLSaaCdE38GLIS9mIsdh/0QjnrrOoZYi+CDE
-         /Ei9FT+O+sbdkAK++iCoQQ4eHzkb0c97EKJ5sSMA=
+        b=WhSjfjHstDaamJAnmujsDC4/nz0uLTeh8/TLveamefQGBgi/lSL8EuYxN/EIzVVr9
+         tsZ8/Z3e6oCl6a3TRyLojo9Y0MDsX806iF2xqa92qd2JGISQny2e10513j4+2Yf5vx
+         +VWo/A62AuNyuQnTzVxy5zEwYqggPzuCnZJ6HmXo=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-fscrypt@vger.kernel.org
 Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [PATCH] fscrypt: zeroize fscrypt_info before freeing
-Date:   Wed,  9 Oct 2019 16:44:42 -0700
-Message-Id: <20191009234442.225847-1-ebiggers@kernel.org>
+        Jaegeuk Kim <jaegeuk@kernel.org>, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH] docs: ioctl-number: document fscrypt ioctl numbers
+Date:   Wed,  9 Oct 2019 16:45:55 -0700
+Message-Id: <20191009234555.226282-1-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.23.0.581.g78d2f28ef7-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -40,29 +42,30 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-memset the struct fscrypt_info to zero before freeing.  This isn't
-really needed currently, since there's no secret key directly in the
-fscrypt_info.  But there's a decent chance that someone will add such a
-field in the future, e.g. in order to use an API that takes a raw key
-such as siphash().  So it's good to do this as a hardening measure.
+The 'f' ioctls with numbers 19-26 decimal are currently used for fscrypt
+(a.k.a. ext4/f2fs/ubifs encryption), and up to 39 decimal is reserved
+for future fscrypt use, as per the comment in fs/ext4/ext4.h.  So the
+reserved range is 13-27 hex.
+
+Document this in ioctl-number.rst.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/crypto/keysetup.c | 1 +
+ Documentation/ioctl/ioctl-number.rst | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index df3e1c8653884..0ba33e010312f 100644
---- a/fs/crypto/keysetup.c
-+++ b/fs/crypto/keysetup.c
-@@ -325,6 +325,7 @@ static void put_crypt_info(struct fscrypt_info *ci)
- 			key_invalidate(key);
- 		key_put(key);
- 	}
-+	memzero_explicit(ci, sizeof(*ci));
- 	kmem_cache_free(fscrypt_info_cachep, ci);
- }
- 
+diff --git a/Documentation/ioctl/ioctl-number.rst b/Documentation/ioctl/ioctl-number.rst
+index bef79cd4c6b4d..4ef86433bd677 100644
+--- a/Documentation/ioctl/ioctl-number.rst
++++ b/Documentation/ioctl/ioctl-number.rst
+@@ -233,6 +233,7 @@ Code  Seq#    Include File                                           Comments
+ 'f'   00-0F  fs/ext4/ext4.h                                          conflict!
+ 'f'   00-0F  linux/fs.h                                              conflict!
+ 'f'   00-0F  fs/ocfs2/ocfs2_fs.h                                     conflict!
++'f'   13-27  linux/fscrypt.h
+ 'f'   81-8F  linux/fsverity.h
+ 'g'   00-0F  linux/usb/gadgetfs.h
+ 'g'   20-2F  linux/usb/g_printer.h
 -- 
 2.23.0.581.g78d2f28ef7-goog
 
