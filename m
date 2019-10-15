@@ -2,35 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5713FD6B7E
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 15 Oct 2019 00:06:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5E9ED7EE0
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 15 Oct 2019 20:25:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731038AbfJNWGm (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 14 Oct 2019 18:06:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38458 "EHLO mail.kernel.org"
+        id S1730002AbfJOSZ5 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 15 Oct 2019 14:25:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44088 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730859AbfJNWGl (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 14 Oct 2019 18:06:41 -0400
+        id S2388927AbfJOSZ4 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 15 Oct 2019 14:25:56 -0400
 Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.77])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8289D21721;
-        Mon, 14 Oct 2019 22:06:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 74910222C1;
+        Tue, 15 Oct 2019 18:17:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1571090800;
-        bh=6ZSRWDRTAQJMgAGTx2YsjUObOmwBsJD3GxlEsVboQGk=;
+        s=default; t=1571163442;
+        bh=0ofnn+JU5UmF0YQJUDl3yh4M2Iz1R8530jrqI7i7ytk=;
         h=From:To:Cc:Subject:Date:From;
-        b=cM22FCSLONOFGHpWRDyFP/nsKcFW1Qv4UwBbCYqINEVl4r/QI3MQsvfUOj9y8CUdB
-         zZKKSra2v+HbYyUWJEx7QZcBXvdveCmt4jMALlrEFjXygjzofwszbCS7i6WFU24jwq
-         n9pCV9c9GIoAn1nihQLGH6ChzmYTyt1kLOhD9/w4=
+        b=rLiHAZLv2OuU0X2lezfIvEZ3fzytMMMVzKFD9VgjMNqu5jeOIq/bWI+vPG4sRgOPC
+         4pmu47CnwOQjwm7YqNlKq4mvV+h9TIX7VPt8oeZvqEUDNF2eapd4NebTGDBIdQzGIm
+         cP9HhmvR2ieO2bxBQtdLZCnBqshn4+IwXmvrtzQ4=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     fstests@vger.kernel.org
-Cc:     linux-fscrypt@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Victor Hsieh <victorhsieh@google.com>
-Subject: [PATCH] generic: add an fs-verity stress test
-Date:   Mon, 14 Oct 2019 15:05:21 -0700
-Message-Id: <20191014220521.15458-1-ebiggers@kernel.org>
+Cc:     linux-fscrypt@vger.kernel.org
+Subject: [PATCH v3 0/9] xfstests: add tests for fscrypt key management improvements
+Date:   Tue, 15 Oct 2019 11:16:34 -0700
+Message-Id: <20191015181643.6519-1-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.23.0.700.g56cf767bdb-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -39,162 +37,89 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+Hello,
 
-Add a stress test for fs-verity.  This tests enabling fs-verity on
-multiple files concurrently with concurrent readers on those files (with
-reads occurring before, during, and after the fs-verity enablement),
-while fsstress is also running on the same filesystem.
+This patchset adds xfstests for the new fscrypt functionality that was
+merged for 5.4 (https://git.kernel.org/torvalds/c/734d1ed83e1f9b7b),
+namely the new ioctls for managing filesystem encryption keys and the
+new/updated ioctls for v2 encryption policy support.  It also includes
+ciphertext verification tests for v2 encryption policies.
 
-I haven't seen any failures from running this on ext4 and f2fs.
+These tests require new xfs_io commands, which are present in the
+for-next branch of xfsprogs.  They also need a kernel v5.4-rc1 or later.
+As is usual for xfstests, the tests will skip themselves if their
+prerequisites aren't met.
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- tests/generic/906     | 115 ++++++++++++++++++++++++++++++++++++++++++
- tests/generic/906.out |   2 +
- tests/generic/group   |   1 +
- 3 files changed, 118 insertions(+)
- create mode 100755 tests/generic/906
- create mode 100644 tests/generic/906.out
+Note: currently only ext4, f2fs, and ubifs support encryption.  But I
+was told previously that since the fscrypt API is generic and may be
+supported by XFS in the future, the command-line wrappers for the
+fscrypt ioctls should be in xfs_io rather than in xfstests directly
+(https://marc.info/?l=fstests&m=147976255831951&w=2).
 
-diff --git a/tests/generic/906 b/tests/generic/906
-new file mode 100755
-index 00000000..78796487
---- /dev/null
-+++ b/tests/generic/906
-@@ -0,0 +1,115 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright 2019 Google LLC
-+#
-+# FS QA Test generic/906
-+#
-+# Stress test for fs-verity.  This tests enabling fs-verity on multiple files
-+# concurrently with concurrent readers on those files (with reads occurring
-+# before, during, and after the fs-verity enablement), while fsstress is also
-+# running on the same filesystem.
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+here=`pwd`
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+	# Stop all subprocesses.
-+	$KILLALL_PROG -q $FSSTRESS_PROG
-+	touch $tmp.done
-+	wait
-+
-+	rm -f $tmp.*
-+}
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+. ./common/verity
-+
-+# remove previous $seqres.full before test
-+rm -f $seqres.full
-+
-+# real QA test starts here
-+_supported_fs generic
-+_supported_os Linux
-+_require_scratch_verity
-+_require_command "$KILLALL_PROG" killall
-+
-+_scratch_mkfs_verity &>> $seqres.full
-+_scratch_mount
-+
-+fsv_file_size=10000000
-+nproc_enabler=$((4 * LOAD_FACTOR))
-+nproc_reader=$((6 * LOAD_FACTOR))
-+nproc_stress=$((3 * LOAD_FACTOR))
-+runtime=$((20 * TIME_FACTOR))
-+
-+# Create the test files and start the fs-verity enabler processes.
-+for ((proc = 0; proc < nproc_enabler; proc++)); do
-+	orig_file=$SCRATCH_MNT/orig$proc
-+	fsv_file=$SCRATCH_MNT/fsv$proc
-+	head -c $fsv_file_size /dev/urandom > $orig_file
-+	(
-+		while [ ! -e $tmp.done ]; do
-+			rm -f $fsv_file
-+			cp $orig_file $fsv_file
-+			_fsv_enable $fsv_file
-+			# Give the readers some time to read from the file.
-+			sleep 0.$((RANDOM % 100))
-+		done
-+	) &
-+done
-+
-+# Start the reader processes.
-+for ((proc = 0; proc < nproc_reader; proc++)); do
-+	(
-+		while [ ! -e $tmp.done ]; do
-+			# Choose a random file for each iteration, so that
-+			# sometimes multiple processes read from the same file.
-+			i=$((RANDOM % nproc_enabler))
-+			orig_file=$SCRATCH_MNT/orig$i
-+			fsv_file=$SCRATCH_MNT/fsv$i
-+
-+			# After the copy from $orig_file to $fsv_file has
-+			# completed, the contents of these two files should
-+			# match, regardless of whether verity has been enabled
-+			# or not yet (or is currently being enabled).
-+			cmp $orig_file $fsv_file |& _filter_scratch | \
-+				grep -v "SCRATCH_MNT/fsv$i: No such file or directory" | \
-+				grep -v "EOF on SCRATCH_MNT/fsv$i"
-+
-+			_fsv_measure $fsv_file 2>&1 >/dev/null | \
-+				grep -v "No such file or directory" | \
-+				grep -v "No data available"
-+		done
-+	) &
-+done
-+
-+# Start a process that occasionally runs 'sync && drop_caches'.  This makes more
-+# reads go through fs-verity for real, rather than just returning pagecache.
-+(
-+	while [ ! -e $tmp.done ]; do
-+		sleep 2.$((RANDOM % 100))
-+		sync && echo 3 > /proc/sys/vm/drop_caches
-+	done
-+) &
-+
-+# Start the fsstress processes.
-+$FSSTRESS_PROG $FSSTRESS_AVOID -p $nproc_stress -l 0 -d $SCRATCH_MNT/stressdir \
-+	>> $seqres.full 2>&1 &
-+
-+# Run for a while.
-+sleep $runtime
-+
-+echo "Silence is golden"
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/generic/906.out b/tests/generic/906.out
-new file mode 100644
-index 00000000..94ee4185
---- /dev/null
-+++ b/tests/generic/906.out
-@@ -0,0 +1,2 @@
-+QA output created by 906
-+Silence is golden
-diff --git a/tests/generic/group b/tests/generic/group
-index 6f9c4e12..d55d0eea 100644
---- a/tests/generic/group
-+++ b/tests/generic/group
-@@ -581,3 +581,4 @@
- 576 auto quick verity encrypt
- 577 auto quick verity
- 578 auto quick rw clone
-+906 auto stress verity
+This patchset can also be retrieved from tag
+"fscrypt-key-mgmt-improvements_2019-10-15" of
+https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/xfstests-dev.git
+
+Changes since v2:
+
+- Updated "common/encrypt: disambiguate session encryption keys" to
+  rename the new instance of _generate_encryption_key() in generic/576.
+
+Changes since v1:
+
+- Addressed comments from Eryu Guan regarding
+  _require_encryption_policy_support().
+
+- In generic/801, handle the fsgqa user having part of their key quota
+  already consumed before beginning the test, in order to avoid a false
+  test failure on some systems.
+
+Eric Biggers (9):
+  common/encrypt: disambiguate session encryption keys
+  common/encrypt: add helper functions that wrap new xfs_io commands
+  common/encrypt: support checking for v2 encryption policy support
+  common/encrypt: support verifying ciphertext of v2 encryption policies
+  generic: add basic test for fscrypt API additions
+  generic: add test for non-root use of fscrypt API additions
+  generic: verify ciphertext of v2 encryption policies with AES-256
+  generic: verify ciphertext of v2 encryption policies with AES-128
+  generic: verify ciphertext of v2 encryption policies with Adiantum
+
+ common/encrypt           | 181 +++++++++++++++++++----
+ src/fscrypt-crypt-util.c | 304 ++++++++++++++++++++++++++++++++++-----
+ tests/ext4/024           |   2 +-
+ tests/generic/397        |   4 +-
+ tests/generic/398        |   8 +-
+ tests/generic/399        |   4 +-
+ tests/generic/419        |   4 +-
+ tests/generic/421        |   4 +-
+ tests/generic/429        |   8 +-
+ tests/generic/435        |   4 +-
+ tests/generic/440        |   8 +-
+ tests/generic/576        |   2 +-
+ tests/generic/800        | 127 ++++++++++++++++
+ tests/generic/800.out    |  91 ++++++++++++
+ tests/generic/801        | 144 +++++++++++++++++++
+ tests/generic/801.out    |  62 ++++++++
+ tests/generic/802        |  43 ++++++
+ tests/generic/802.out    |   6 +
+ tests/generic/803        |  43 ++++++
+ tests/generic/803.out    |   6 +
+ tests/generic/804        |  45 ++++++
+ tests/generic/804.out    |  11 ++
+ tests/generic/group      |   5 +
+ 23 files changed, 1029 insertions(+), 87 deletions(-)
+ create mode 100755 tests/generic/800
+ create mode 100644 tests/generic/800.out
+ create mode 100755 tests/generic/801
+ create mode 100644 tests/generic/801.out
+ create mode 100755 tests/generic/802
+ create mode 100644 tests/generic/802.out
+ create mode 100755 tests/generic/803
+ create mode 100644 tests/generic/803.out
+ create mode 100755 tests/generic/804
+ create mode 100644 tests/generic/804.out
+
 -- 
 2.23.0.700.g56cf767bdb-goog
 
