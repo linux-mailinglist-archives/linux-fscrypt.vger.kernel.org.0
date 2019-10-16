@@ -2,37 +2,35 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F50ADA0BC
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 17 Oct 2019 00:25:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A217EDA0DD
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 17 Oct 2019 00:26:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393062AbfJPWOt (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 16 Oct 2019 18:14:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38056 "EHLO mail.kernel.org"
+        id S1727020AbfJPWQf (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 16 Oct 2019 18:16:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393379AbfJPWOq (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 16 Oct 2019 18:14:46 -0400
+        id S1725991AbfJPWQe (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 16 Oct 2019 18:16:34 -0400
 Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 61A4621A49;
-        Wed, 16 Oct 2019 22:14:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 64F002168B;
+        Wed, 16 Oct 2019 22:16:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1571264085;
-        bh=YAF7UWWvcUDpvW5NZx+f1x+H79EjBWHrBCJ+KdfKhiI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TfkBwowy1MwHQ9thoyK0yXfDbsuzwnCfOtWTBb1tn2s89VlOfIheKAtvpSgu/TM0B
-         G1+56SNHo+hPiExGZnYkxl7WGAAsMATX3XSD3DiPBmcF4S8b6aqPFEyXqwcDPBOxP8
-         VqfpCeNljIV+SOcMhQvoPUNd40RmUezxl1ikZMhk=
+        s=default; t=1571264193;
+        bh=TqEWrui8v2IJqhlGNgLhnJHRs0UJfYjhgPHFu58TtsI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=1XslRl97eJiwhnrSDNVbKvxfeYUuEZDmCBoYYvYGMkJqHJKvIrJF1r2iUV+olvt3e
+         ilQo/kUOsWdw8DSlqxJMRKdVze0wZm7oVBTPBkw/a7rjzyHEZIN6NZjYMziD75PC4g
+         aShbKvLeIu0xR95MuejHeUqKf4uXPqydExchfmtg=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-ext4@vger.kernel.org
-Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+Cc:     linux-fscrypt@vger.kernel.org,
         Chandan Rajendra <chandan@linux.ibm.com>
-Subject: [PATCH 2/2] ext4: Enable encryption for subpage-sized blocks
-Date:   Wed, 16 Oct 2019 15:11:42 -0700
-Message-Id: <20191016221142.298754-3-ebiggers@kernel.org>
+Subject: [xfstests-bld PATCH] test-appliance: add ext4/encrypt_1k test config
+Date:   Wed, 16 Oct 2019 15:15:52 -0700
+Message-Id: <20191016221552.299566-1-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20191016221142.298754-1-ebiggers@kernel.org>
-References: <20191016221142.298754-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-fscrypt-owner@vger.kernel.org
@@ -40,64 +38,63 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Chandan Rajendra <chandan@linux.ibm.com>
+From: Eric Biggers <ebiggers@google.com>
 
-Now that we have the code to support encryption for subpage-sized
-blocks, this commit removes the conditional check in filesystem mount
-code.
+Add a test configuration to allow testing ext4 encryption with 1k
+blocks, which kernel patches have been proposed to support.
 
-The commit also changes the support statement in
-Documentation/filesystems/fscrypt.rst to reflect the fact that
-encryption on filesystems with blocksize less than page size now works.
-
-[EB: Tested with 'gce-xfstests -c ext4/encrypt_1k -g auto', using the
-new "encrypt_1k" config I created.  All tests pass except for those that
-already fail or are excluded with the encrypt or 1k configs, and 2 tests
-that try to create 1023-byte symlinks which fails since encrypted
-symlinks are limited to blocksize-3 bytes.  Also ran the dedicated
-encryption tests using 'kvm-xfstests -c ext4/1k -g encrypt'; all pass,
-including the on-disk ciphertext verification tests.]
-
-Signed-off-by: Chandan Rajendra <chandan@linux.ibm.com>
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- Documentation/filesystems/fscrypt.rst | 4 ++--
- fs/ext4/super.c                       | 7 -------
- 2 files changed, 2 insertions(+), 9 deletions(-)
+ .../files/root/fs/ext4/cfg/encrypt_1k         |  5 ++++
+ .../files/root/fs/ext4/cfg/encrypt_1k.exclude | 27 +++++++++++++++++++
+ 2 files changed, 32 insertions(+)
+ create mode 100644 kvm-xfstests/test-appliance/files/root/fs/ext4/cfg/encrypt_1k
+ create mode 100644 kvm-xfstests/test-appliance/files/root/fs/ext4/cfg/encrypt_1k.exclude
 
-diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
-index 8a0700af9596..b0d015a8cdc3 100644
---- a/Documentation/filesystems/fscrypt.rst
-+++ b/Documentation/filesystems/fscrypt.rst
-@@ -331,8 +331,8 @@ Contents encryption
- -------------------
- 
- For file contents, each filesystem block is encrypted independently.
--Currently, only the case where the filesystem block size is equal to
--the system's page size (usually 4096 bytes) is supported.
-+Starting from Linux kernel 5.5, encryption of filesystems with block
-+size less than system's page size is supported.
- 
- Each block's IV is set to the logical block number within the file as
- a little endian number, except that:
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index dd654e53ba3d..369f852bef20 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -4439,13 +4439,6 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 		}
- 	}
- 
--	if ((DUMMY_ENCRYPTION_ENABLED(sbi) || ext4_has_feature_encrypt(sb)) &&
--	    (blocksize != PAGE_SIZE)) {
--		ext4_msg(sb, KERN_ERR,
--			 "Unsupported blocksize for fs encryption");
--		goto failed_mount_wq;
--	}
--
- 	if (ext4_has_feature_verity(sb) && blocksize != PAGE_SIZE) {
- 		ext4_msg(sb, KERN_ERR, "Unsupported blocksize for fs-verity");
- 		goto failed_mount_wq;
+diff --git a/kvm-xfstests/test-appliance/files/root/fs/ext4/cfg/encrypt_1k b/kvm-xfstests/test-appliance/files/root/fs/ext4/cfg/encrypt_1k
+new file mode 100644
+index 0000000..5e97cc0
+--- /dev/null
++++ b/kvm-xfstests/test-appliance/files/root/fs/ext4/cfg/encrypt_1k
+@@ -0,0 +1,5 @@
++SIZE=small
++export EXT_MKFS_OPTIONS="-O encrypt -b 1024"
++export EXT_MOUNT_OPTIONS="test_dummy_encryption"
++REQUIRE_FEATURE=encryption
++TESTNAME="Ext4 encryption 1k block"
+diff --git a/kvm-xfstests/test-appliance/files/root/fs/ext4/cfg/encrypt_1k.exclude b/kvm-xfstests/test-appliance/files/root/fs/ext4/cfg/encrypt_1k.exclude
+new file mode 100644
+index 0000000..e31c371
+--- /dev/null
++++ b/kvm-xfstests/test-appliance/files/root/fs/ext4/cfg/encrypt_1k.exclude
+@@ -0,0 +1,27 @@
++# These tests are also excluded in encrypt.exclude.
++# See there for the reasons.
++ext4/004
++ext4/022
++ext4/026
++generic/082
++generic/219
++generic/230
++generic/231
++generic/232
++generic/233
++generic/235
++generic/270
++generic/382
++generic/204
++
++# These tests are also excluded in 1k.exclude.
++# See there for the reasons.
++ext4/034
++generic/273
++generic/454
++
++# These tests use _scratch_populate_cached() which tries to create a 1023-byte
++# symlink, which fails with encrypt_1k because encrypted symlinks are limited to
++# blocksize-3 bytes, not blocksize-1 as is the case for no encryption.
++ext4/023
++ext4/028
 -- 
 2.23.0
 
