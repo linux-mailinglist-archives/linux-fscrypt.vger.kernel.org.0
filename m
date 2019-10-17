@@ -2,99 +2,115 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A217EDA0DD
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 17 Oct 2019 00:26:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E181DA55B
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 17 Oct 2019 08:13:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727020AbfJPWQf (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 16 Oct 2019 18:16:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39390 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725991AbfJPWQe (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 16 Oct 2019 18:16:34 -0400
-Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 64F002168B;
-        Wed, 16 Oct 2019 22:16:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1571264193;
-        bh=TqEWrui8v2IJqhlGNgLhnJHRs0UJfYjhgPHFu58TtsI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=1XslRl97eJiwhnrSDNVbKvxfeYUuEZDmCBoYYvYGMkJqHJKvIrJF1r2iUV+olvt3e
-         ilQo/kUOsWdw8DSlqxJMRKdVze0wZm7oVBTPBkw/a7rjzyHEZIN6NZjYMziD75PC4g
-         aShbKvLeIu0xR95MuejHeUqKf4uXPqydExchfmtg=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-ext4@vger.kernel.org
-Cc:     linux-fscrypt@vger.kernel.org,
-        Chandan Rajendra <chandan@linux.ibm.com>
-Subject: [xfstests-bld PATCH] test-appliance: add ext4/encrypt_1k test config
-Date:   Wed, 16 Oct 2019 15:15:52 -0700
-Message-Id: <20191016221552.299566-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.23.0
+        id S2407732AbfJQGN2 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 17 Oct 2019 02:13:28 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:50014 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2404664AbfJQGN2 (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 17 Oct 2019 02:13:28 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x9H6DNGa033796
+        for <linux-fscrypt@vger.kernel.org>; Thu, 17 Oct 2019 02:13:27 -0400
+Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2vpjavrxmp-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-fscrypt@vger.kernel.org>; Thu, 17 Oct 2019 02:13:26 -0400
+Received: from localhost
+        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-fscrypt@vger.kernel.org> from <chandan@linux.ibm.com>;
+        Thu, 17 Oct 2019 07:13:04 +0100
+Received: from b06avi18626390.portsmouth.uk.ibm.com (9.149.26.192)
+        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Thu, 17 Oct 2019 07:13:02 +0100
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x9H6CUCb19333460
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 17 Oct 2019 06:12:30 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D1FBDA4054;
+        Thu, 17 Oct 2019 06:13:01 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B08D1A405F;
+        Thu, 17 Oct 2019 06:13:00 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.50.5])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 17 Oct 2019 06:13:00 +0000 (GMT)
+From:   Chandan Rajendra <chandan@linux.ibm.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 0/2] ext4: support encryption with blocksize != PAGE_SIZE
+Date:   Thu, 17 Oct 2019 11:44:58 +0530
+Organization: IBM
+In-Reply-To: <20191016221142.298754-1-ebiggers@kernel.org>
+References: <20191016221142.298754-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-TM-AS-GCONF: 00
+x-cbid: 19101706-0020-0000-0000-00000379CCE3
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19101706-0021-0000-0000-000021CFF40F
+Message-Id: <2830996.s4omRzobaj@localhost.localdomain>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-10-17_02:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1908290000 definitions=main-1910170051
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On Thursday, October 17, 2019 3:41 AM Eric Biggers wrote: 
+> Hello,
+> 
+> This patchset makes ext4 support encryption on filesystems where the
+> filesystem block size is not equal to PAGE_SIZE.  This allows e.g.
+> PowerPC systems to use ext4 encryption.
+> 
+> Most of the work for this was already done in prior kernel releases; now
+> the only part missing is decryption support in block_read_full_page().
+> Chandan Rajendra has proposed a patchset "Consolidate FS read I/O
+> callbacks code" [1] to address this and do various other things like
+> make ext4 use mpage_readpages() again, and make ext4 and f2fs share more
+> code.  But it doesn't seem to be going anywhere.
+> 
+> Therefore, I propose we simply add decryption support to
+> block_read_full_page() for now.  This is a fairly small change, and it
+> gets ext4 encryption with subpage-sized blocks working.
+> 
+> Note: to keep things simple I'm just allocating the work object from the
+> bi_end_io function with GFP_ATOMIC.  But if people think it's necessary,
+> it could be changed to use preallocation like the page-based read path.
+> 
+> Tested with 'gce-xfstests -c ext4/encrypt_1k -g auto', using the new
+> "encrypt_1k" config I created.  All tests pass except for those that
+> already fail or are excluded with the encrypt or 1k configs, and 2 tests
+> that try to create 1023-byte symlinks which fails since encrypted
+> symlinks are limited to blocksize-3 bytes.  Also ran the dedicated
+> encryption tests using 'kvm-xfstests -c ext4/1k -g encrypt'; all pass,
+> including the on-disk ciphertext verification tests.
+> 
+> [1] https://lkml.kernel.org/linux-fsdevel/20190910155115.28550-1-chandan@linux.ibm.com/T/#u
+>
 
-Add a test configuration to allow testing ext4 encryption with 1k
-blocks, which kernel patches have been proposed to support.
+Hi Eric,
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- .../files/root/fs/ext4/cfg/encrypt_1k         |  5 ++++
- .../files/root/fs/ext4/cfg/encrypt_1k.exclude | 27 +++++++++++++++++++
- 2 files changed, 32 insertions(+)
- create mode 100644 kvm-xfstests/test-appliance/files/root/fs/ext4/cfg/encrypt_1k
- create mode 100644 kvm-xfstests/test-appliance/files/root/fs/ext4/cfg/encrypt_1k.exclude
+Thanks a lot for doing this.
 
-diff --git a/kvm-xfstests/test-appliance/files/root/fs/ext4/cfg/encrypt_1k b/kvm-xfstests/test-appliance/files/root/fs/ext4/cfg/encrypt_1k
-new file mode 100644
-index 0000000..5e97cc0
---- /dev/null
-+++ b/kvm-xfstests/test-appliance/files/root/fs/ext4/cfg/encrypt_1k
-@@ -0,0 +1,5 @@
-+SIZE=small
-+export EXT_MKFS_OPTIONS="-O encrypt -b 1024"
-+export EXT_MOUNT_OPTIONS="test_dummy_encryption"
-+REQUIRE_FEATURE=encryption
-+TESTNAME="Ext4 encryption 1k block"
-diff --git a/kvm-xfstests/test-appliance/files/root/fs/ext4/cfg/encrypt_1k.exclude b/kvm-xfstests/test-appliance/files/root/fs/ext4/cfg/encrypt_1k.exclude
-new file mode 100644
-index 0000000..e31c371
---- /dev/null
-+++ b/kvm-xfstests/test-appliance/files/root/fs/ext4/cfg/encrypt_1k.exclude
-@@ -0,0 +1,27 @@
-+# These tests are also excluded in encrypt.exclude.
-+# See there for the reasons.
-+ext4/004
-+ext4/022
-+ext4/026
-+generic/082
-+generic/219
-+generic/230
-+generic/231
-+generic/232
-+generic/233
-+generic/235
-+generic/270
-+generic/382
-+generic/204
-+
-+# These tests are also excluded in 1k.exclude.
-+# See there for the reasons.
-+ext4/034
-+generic/273
-+generic/454
-+
-+# These tests use _scratch_populate_cached() which tries to create a 1023-byte
-+# symlink, which fails with encrypt_1k because encrypted symlinks are limited to
-+# blocksize-3 bytes, not blocksize-1 as is the case for no encryption.
-+ext4/023
-+ext4/028
+The changes seem to be good. I have started test runs on my ppc64le guest and
+I will reply with the test results once they complete.
+
 -- 
-2.23.0
+chandan
+
+
 
