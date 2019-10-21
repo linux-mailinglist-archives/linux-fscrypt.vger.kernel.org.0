@@ -2,66 +2,51 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B569BDE3B0
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 21 Oct 2019 07:21:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7BCFDF60A
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 21 Oct 2019 21:32:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726190AbfJUFVY (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 21 Oct 2019 01:21:24 -0400
-Received: from smtp1.linuxfoundation.org ([140.211.169.13]:40266 "EHLO
-        smtp1.linuxfoundation.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725765AbfJUFVX (ORCPT
+        id S1728819AbfJUTa2 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 21 Oct 2019 15:30:28 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:32815 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726672AbfJUTa1 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 21 Oct 2019 01:21:23 -0400
-X-Greylist: delayed 382 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Oct 2019 01:21:23 EDT
-Received: from rt.cvo.linuxfoundation.org (rt.cvo.linuxfoundation.org [172.17.192.131])
-        by smtp1.linuxfoundation.org (Postfix) with ESMTPS id 8720089C;
-        Mon, 21 Oct 2019 05:15:01 +0000 (UTC)
-Received: by rt.cvo.linuxfoundation.org (Postfix, from userid 48)
-        id 78750E6F; Mon, 21 Oct 2019 05:15:01 +0000 (UTC)
-Subject: [Kernel.org Helpdesk #80522] Please add linux-fscrypt@vger.kernel.org to lore.kernel.org
-From:   "Chris Hoy Poy via RT" <kernel-helpdesk@rt.linuxfoundation.org>
-Reply-To: kernel-helpdesk@rt.linuxfoundation.org
-In-Reply-To: <20191016010815.GB726@sol.localdomain>
-References: <RT-Ticket-80522@linuxfoundation>
- <20191016010815.GB726@sol.localdomain>
-Message-ID: <rt-4.4.0-17357-1571634901-827.80522-6-0@linuxfoundation>
-X-RT-Loop-Prevention: linuxfoundation.org
-X-RT-Ticket: linuxfoundation.org #80522
-X-Managed-BY: RT 4.4.0 (http://www.bestpractical.com/rt/)
-X-RT-Originator: choypoy@linuxfoundation.org
-To:     ebiggers@kernel.org
-CC:     linux-fscrypt@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-X-RT-Original-Encoding: utf-8
-Date:   Mon, 21 Oct 2019 01:15:01 -0400
+        Mon, 21 Oct 2019 15:30:27 -0400
+Received: from callcc.thunk.org (guestnat-104-133-0-98.corp.google.com [104.133.0.98] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x9LJUKLB017773
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Oct 2019 15:30:21 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id D6972420458; Mon, 21 Oct 2019 15:30:19 -0400 (EDT)
+Date:   Mon, 21 Oct 2019 15:30:19 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        Chandan Rajendra <chandan@linux.ibm.com>
+Subject: Re: [xfstests-bld PATCH] test-appliance: add ext4/encrypt_1k test
+ config
+Message-ID: <20191021193019.GI27850@mit.edu>
+References: <20191016221552.299566-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191016221552.299566-1-ebiggers@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hi Eric, 
-
-I've subscribed lore for new emails to linux-fscrypt - if you can provide an archive (there are no obvious ones I can find), I can import that for history. 
-
-cheers
-/Chris
-
-On Wed Oct 16 09:08:18 2019, ebiggers@kernel.org wrote:
-> Hi, could you please start archiving the linux-fscrypt mailing list at
-> lore.kernel.org?
+On Wed, Oct 16, 2019 at 03:15:52PM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> I can provide an archive which should be complete --- I've been
-> subscribed to
-> the list from the beginning.
+> Add a test configuration to allow testing ext4 encryption with 1k
+> blocks, which kernel patches have been proposed to support.
 > 
-> Thanks!
-> 
-> - Eric
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
+Thanks, applied.
 
--- 
-Chris Hoy Poy
-Collaborative Projects IT
-The Linux Foundation
+					- Ted
