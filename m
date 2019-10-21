@@ -2,62 +2,66 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 40BEADD646
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 19 Oct 2019 05:16:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B569BDE3B0
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 21 Oct 2019 07:21:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727194AbfJSDQg (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 18 Oct 2019 23:16:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60366 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727152AbfJSDQg (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 18 Oct 2019 23:16:36 -0400
-Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9ADA9222C2;
-        Sat, 19 Oct 2019 03:16:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1571454995;
-        bh=zYnXUkPGRdV0F5xVTBfK5dqMZk6w0uvJov5eBWJea+s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=G1cAwSSENm0BzvrTIy9555f/1ct1aBbCWZsgM6p1t+dnyArgrvs6BFKu5ULbjXhq9
-         lNUK6AaG3nkwdtuFcuKcbdfhfJxFKC6izOFtfspFbJEgSc4MG3URmtzWcc3ZN0sgN+
-         2lPPk34ZzBmtCZuAxziKRNIWt2VRFI3TZHIShEL8=
-Date:   Fri, 18 Oct 2019 20:16:34 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-ext4@vger.kernel.org
-Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Chandan Rajendra <chandan@linux.ibm.com>
-Subject: Re: [PATCH 1/2] fs/buffer.c: support fscrypt in
- block_read_full_page()
-Message-ID: <20191019031634.GA76786@sol.localdomain>
-Mail-Followup-To: linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Chandan Rajendra <chandan@linux.ibm.com>
-References: <20191016221142.298754-1-ebiggers@kernel.org>
- <20191016221142.298754-2-ebiggers@kernel.org>
+        id S1726190AbfJUFVY (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 21 Oct 2019 01:21:24 -0400
+Received: from smtp1.linuxfoundation.org ([140.211.169.13]:40266 "EHLO
+        smtp1.linuxfoundation.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725765AbfJUFVX (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 21 Oct 2019 01:21:23 -0400
+X-Greylist: delayed 382 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Oct 2019 01:21:23 EDT
+Received: from rt.cvo.linuxfoundation.org (rt.cvo.linuxfoundation.org [172.17.192.131])
+        by smtp1.linuxfoundation.org (Postfix) with ESMTPS id 8720089C;
+        Mon, 21 Oct 2019 05:15:01 +0000 (UTC)
+Received: by rt.cvo.linuxfoundation.org (Postfix, from userid 48)
+        id 78750E6F; Mon, 21 Oct 2019 05:15:01 +0000 (UTC)
+Subject: [Kernel.org Helpdesk #80522] Please add linux-fscrypt@vger.kernel.org to lore.kernel.org
+From:   "Chris Hoy Poy via RT" <kernel-helpdesk@rt.linuxfoundation.org>
+Reply-To: kernel-helpdesk@rt.linuxfoundation.org
+In-Reply-To: <20191016010815.GB726@sol.localdomain>
+References: <RT-Ticket-80522@linuxfoundation>
+ <20191016010815.GB726@sol.localdomain>
+Message-ID: <rt-4.4.0-17357-1571634901-827.80522-6-0@linuxfoundation>
+X-RT-Loop-Prevention: linuxfoundation.org
+X-RT-Ticket: linuxfoundation.org #80522
+X-Managed-BY: RT 4.4.0 (http://www.bestpractical.com/rt/)
+X-RT-Originator: choypoy@linuxfoundation.org
+To:     ebiggers@kernel.org
+CC:     linux-fscrypt@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+X-RT-Original-Encoding: utf-8
+Date:   Mon, 21 Oct 2019 01:15:01 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191016221142.298754-2-ebiggers@kernel.org>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+Content-Transfer-Encoding: 8bit
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, Oct 16, 2019 at 03:11:41PM -0700, Eric Biggers wrote:
-> +static void end_buffer_async_read_io(struct buffer_head *bh, int uptodate)
-> +{
-> +	/* Decrypt if needed */
-> +	if (uptodate && IS_ENABLED(CONFIG_FS_ENCRYPTION) &&
-> +	    IS_ENCRYPTED(bh->b_page->mapping->host)) {
-> +		struct decrypt_bh_ctx *ctx = kmalloc(sizeof(*ctx), GFP_ATOMIC);
+Hi Eric, 
 
-Technically this should check S_ISREG() too (though it happens not to make a
-difference currently).   I'll fix it in the next version of this patchset.
+I've subscribed lore for new emails to linux-fscrypt - if you can provide an archive (there are no obvious ones I can find), I can import that for history. 
 
-We probably should add a helper function fscrypt_needs_contents_encryption()
-that returns IS_ENABLED(CONFIG_FS_ENCRYPTION) && IS_ENCRYPTED() && S_ISREG().
+cheers
+/Chris
 
-- Eric
+On Wed Oct 16 09:08:18 2019, ebiggers@kernel.org wrote:
+> Hi, could you please start archiving the linux-fscrypt mailing list at
+> lore.kernel.org?
+> 
+> I can provide an archive which should be complete --- I've been
+> subscribed to
+> the list from the beginning.
+> 
+> Thanks!
+> 
+> - Eric
+
+
+-- 
+Chris Hoy Poy
+Collaborative Projects IT
+The Linux Foundation
