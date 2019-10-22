@@ -2,170 +2,126 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4339EDF8AA
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 22 Oct 2019 01:32:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9970DDFA17
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 22 Oct 2019 03:23:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728353AbfJUXcs (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 21 Oct 2019 19:32:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42132 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727264AbfJUXcs (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 21 Oct 2019 19:32:48 -0400
-Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B07222084C;
-        Mon, 21 Oct 2019 23:32:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1571700766;
-        bh=qFfFOp8WE39rqMHg4xUorKpoZ/hhSBUr/8GfumvBQXU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=C0BHzMWoz+iTv52gUSacFl6J8kVGIZHae0UH/hfpdNHJAPttXTYcym9rQaNmgdssy
-         W2DI/CvL95PujxdZi/9qBzLyWOFE0y9PiFAYDRAPQAdqyaId7rj8TQoVkwmFHc+Mvv
-         e4auyISeX6KpwCFNowKxQ0PQNyb1YYrrx7Jf1uZw=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-ext4@vger.kernel.org
-Cc:     linux-fscrypt@vger.kernel.org, Satya Tangirala <satyat@google.com>,
-        Paul Crowley <paulcrowley@google.com>,
-        Paul Lawrence <paullawrence@google.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [e2fsprogs PATCH] Support the stable_inodes feature
-Date:   Mon, 21 Oct 2019 16:30:43 -0700
-Message-Id: <20191021233043.36225-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.23.0.866.gb869b98d4c-goog
+        id S1727953AbfJVBXQ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 21 Oct 2019 21:23:16 -0400
+Received: from mail-il1-f195.google.com ([209.85.166.195]:33876 "EHLO
+        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727264AbfJVBXO (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 21 Oct 2019 21:23:14 -0400
+Received: by mail-il1-f195.google.com with SMTP id c12so13897705ilm.1
+        for <linux-fscrypt@vger.kernel.org>; Mon, 21 Oct 2019 18:23:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=HxSTurX1jmsAhOfpsGghsXLIvTQPCzV7aaceHn58k98=;
+        b=EJecjF3+nEd1bVBO0x2r9May2yxPiA5i56nJtsaPHWNOunlSAVJaQ72R714XCXmt5g
+         qE7uHOx26GVMiQ3tcxzHITeZ4z8sVJgAbNiZ98i/6py1pkF7Ngndur9vlJSB0Eefa83m
+         jsoHwwRG7dWcdt6lwh8uauXOTh6Eh1P7i+tN9NmM3rzKNaj8Hwv6aDf8v/87QCWwpVVh
+         3h5viIHtwHM9X4krDKGy56i+0gPNpeM8HLwmYJcZgbhiHdoklanfbeSAVJ2pg7vfXZp9
+         bV6tuKUFo5++0D/tFiZoTbVksgQTOnOdi4ScAp2G4HxODcbbVAq3wVbTINg0UbSmzB8l
+         L10g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=HxSTurX1jmsAhOfpsGghsXLIvTQPCzV7aaceHn58k98=;
+        b=OS3qy0TEjWqZWwy19n1INrrykPMxUkZ91P+8h9Trpw6NN2uTVqQdW8Mnwik0S/ROzK
+         6GuCSBqmLn/zj4aowIJPj90NKz+Qxa3DieD6Omgr5i99baH3wCOgWen7HFeG13PH99n6
+         whA3W80PPsaygOuxht/8knGmmCVwmF07duZvrBz4TW38jzhvNjMR2EV3CxHOFr2MuXqx
+         ibZBzxv5ZXJNIVbsYBHkapKsNfWzMdDlfAQ2geF5Cq7f/TTs+IvAwvA1beU1HafAe4Cu
+         CTVt4qyBw23Y7fcPELu8iPpEMYMAbF03cOOU+yToC7Ln1ZWUjjHslPzggpO2phV4SWB5
+         wggg==
+X-Gm-Message-State: APjAAAUSERAJIevRkv83tS76rv5vZ8+dhqZTD/COPCCaxL61NaPp3BLA
+        f4H1cAsnBEo9QbltMgcMIvtt5A==
+X-Google-Smtp-Source: APXvYqwDxSFEQy2XdZlfsF/YxbIAJJAlAeHn1v5sEQT7bVF2SswsEb++F6PWyZ24fGTNgL+h7v0irA==
+X-Received: by 2002:a92:d784:: with SMTP id d4mr30026867iln.1.1571707393182;
+        Mon, 21 Oct 2019 18:23:13 -0700 (PDT)
+Received: from localhost (67-0-11-246.albq.qwest.net. [67.0.11.246])
+        by smtp.gmail.com with ESMTPSA id v17sm5902825ilg.1.2019.10.21.18.23.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Oct 2019 18:23:12 -0700 (PDT)
+Date:   Mon, 21 Oct 2019 18:23:11 -0700 (PDT)
+From:   Paul Walmsley <paul.walmsley@sifive.com>
+X-X-Sender: paulw@viisi.sifive.com
+To:     Eric Biggers <ebiggers@kernel.org>
+cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org
+Subject: Re: arch/riscv doesn't support xchg() on bool
+In-Reply-To: <20191021204026.GE122863@gmail.com>
+Message-ID: <alpine.DEB.2.21.9999.1910211744450.28831@viisi.sifive.com>
+References: <20191021204026.GE122863@gmail.com>
+User-Agent: Alpine 2.21.9999 (DEB 301 2018-08-15)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+Hi Eric,
 
-Reserve the codepoint for EXT4_FEATURE_COMPAT_STABLE_INODES, allow it to
-be set and cleared, and teach resize2fs to forbid shrinking the
-filesystem if it is set.
+On Mon, 21 Oct 2019, Eric Biggers wrote:
 
-This feature will allow the use of encryption policies where the inode
-number is included in the IVs (initialization vectors) for encryption,
-so data would be corrupted if the inodes were to be renumbered.
+> The kbuild test robot reported a build error on RISC-V in this patch:
+> 
+> 	https://patchwork.kernel.org/patch/11182389/
+> 
+> ... because of the line:
+> 
+> 	if (!xchg(&mode->logged_impl_name, true)) {
+> 
+> where logged_impl_name is a 'bool'.  The problem is that unlike most (or 
+> all?) other kernel architectures, arch/riscv/ doesn't support xchg() on 
+> bytes.
 
-For more details, see the kernel patchset:
-https://lkml.kernel.org/linux-fsdevel/20191021230355.23136-1-ebiggers@kernel.org/T/#u
+When I looked at this in August, it looked like several Linux other 
+architectures - SPARC, Microblaze, C-SKY, and Hexagon - also didn't 
+support xchg() on anything other than 32-bit types:
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- lib/e2p/feature.c    | 2 ++
- lib/ext2fs/ext2_fs.h | 2 ++
- lib/ext2fs/ext2fs.h  | 3 ++-
- misc/mke2fs.c        | 3 ++-
- misc/tune2fs.c       | 6 ++++--
- resize/main.c        | 6 ++++++
- 6 files changed, 18 insertions(+), 4 deletions(-)
+https://lore.kernel.org/lkml/alpine.DEB.2.21.9999.1908161931110.32497@viisi.sifive.com/
 
-diff --git a/lib/e2p/feature.c b/lib/e2p/feature.c
-index ae7f7f0a..ad0d7f82 100644
---- a/lib/e2p/feature.c
-+++ b/lib/e2p/feature.c
-@@ -47,6 +47,8 @@ static struct feature feature_list[] = {
- 			"sparse_super2" },
- 	{	E2P_FEATURE_COMPAT, EXT4_FEATURE_COMPAT_FAST_COMMIT,
- 			"fast_commit" },
-+	{	E2P_FEATURE_COMPAT, EXT4_FEATURE_COMPAT_STABLE_INODES,
-+			"stable_inodes" },
- 
- 	{	E2P_FEATURE_RO_INCOMPAT, EXT2_FEATURE_RO_COMPAT_SPARSE_SUPER,
- 			"sparse_super" },
-diff --git a/lib/ext2fs/ext2_fs.h b/lib/ext2fs/ext2_fs.h
-index febcb476..3165b389 100644
---- a/lib/ext2fs/ext2_fs.h
-+++ b/lib/ext2fs/ext2_fs.h
-@@ -811,6 +811,7 @@ struct ext2_super_block {
- #define EXT2_FEATURE_COMPAT_EXCLUDE_BITMAP	0x0100
- #define EXT4_FEATURE_COMPAT_SPARSE_SUPER2	0x0200
- #define EXT4_FEATURE_COMPAT_FAST_COMMIT		0x0400
-+#define EXT4_FEATURE_COMPAT_STABLE_INODES	0x0800
- 
- 
- #define EXT2_FEATURE_RO_COMPAT_SPARSE_SUPER	0x0001
-@@ -913,6 +914,7 @@ EXT4_FEATURE_COMPAT_FUNCS(lazy_bg,		2, LAZY_BG)
- EXT4_FEATURE_COMPAT_FUNCS(exclude_bitmap,	2, EXCLUDE_BITMAP)
- EXT4_FEATURE_COMPAT_FUNCS(sparse_super2,	4, SPARSE_SUPER2)
- EXT4_FEATURE_COMPAT_FUNCS(fast_commit,		4, FAST_COMMIT)
-+EXT4_FEATURE_COMPAT_FUNCS(stable_inodes,	4, STABLE_INODES)
- 
- EXT4_FEATURE_RO_COMPAT_FUNCS(sparse_super,	2, SPARSE_SUPER)
- EXT4_FEATURE_RO_COMPAT_FUNCS(large_file,	2, LARGE_FILE)
-diff --git a/lib/ext2fs/ext2fs.h b/lib/ext2fs/ext2fs.h
-index 334944d9..a5ed10fc 100644
---- a/lib/ext2fs/ext2fs.h
-+++ b/lib/ext2fs/ext2fs.h
-@@ -612,7 +612,8 @@ typedef struct ext2_icount *ext2_icount_t;
- 					 EXT2_FEATURE_COMPAT_DIR_INDEX|\
- 					 EXT2_FEATURE_COMPAT_EXT_ATTR|\
- 					 EXT4_FEATURE_COMPAT_SPARSE_SUPER2|\
--					 EXT4_FEATURE_COMPAT_FAST_COMMIT)
-+					 EXT4_FEATURE_COMPAT_FAST_COMMIT|\
-+					 EXT4_FEATURE_COMPAT_STABLE_INODES)
- 
- #ifdef CONFIG_MMP
- #define EXT4_LIB_INCOMPAT_MMP		EXT4_FEATURE_INCOMPAT_MMP
-diff --git a/misc/mke2fs.c b/misc/mke2fs.c
-index fe495844..ffea8233 100644
---- a/misc/mke2fs.c
-+++ b/misc/mke2fs.c
-@@ -1144,7 +1144,8 @@ static __u32 ok_features[3] = {
- 		EXT2_FEATURE_COMPAT_DIR_INDEX |
- 		EXT2_FEATURE_COMPAT_EXT_ATTR |
- 		EXT4_FEATURE_COMPAT_SPARSE_SUPER2 |
--		EXT4_FEATURE_COMPAT_FAST_COMMIT,
-+		EXT4_FEATURE_COMPAT_FAST_COMMIT |
-+		EXT4_FEATURE_COMPAT_STABLE_INODES,
- 	/* Incompat */
- 	EXT2_FEATURE_INCOMPAT_FILETYPE|
- 		EXT3_FEATURE_INCOMPAT_EXTENTS|
-diff --git a/misc/tune2fs.c b/misc/tune2fs.c
-index 39fce4a9..c11e7452 100644
---- a/misc/tune2fs.c
-+++ b/misc/tune2fs.c
-@@ -150,7 +150,8 @@ static __u32 ok_features[3] = {
- 	/* Compat */
- 	EXT3_FEATURE_COMPAT_HAS_JOURNAL |
- 		EXT2_FEATURE_COMPAT_DIR_INDEX |
--		EXT4_FEATURE_COMPAT_FAST_COMMIT,
-+		EXT4_FEATURE_COMPAT_FAST_COMMIT |
-+		EXT4_FEATURE_COMPAT_STABLE_INODES,
- 	/* Incompat */
- 	EXT2_FEATURE_INCOMPAT_FILETYPE |
- 		EXT3_FEATURE_INCOMPAT_EXTENTS |
-@@ -180,7 +181,8 @@ static __u32 clear_ok_features[3] = {
- 	EXT3_FEATURE_COMPAT_HAS_JOURNAL |
- 		EXT2_FEATURE_COMPAT_RESIZE_INODE |
- 		EXT2_FEATURE_COMPAT_DIR_INDEX |
--		EXT4_FEATURE_COMPAT_FAST_COMMIT,
-+		EXT4_FEATURE_COMPAT_FAST_COMMIT |
-+		EXT4_FEATURE_COMPAT_STABLE_INODES,
- 	/* Incompat */
- 	EXT2_FEATURE_INCOMPAT_FILETYPE |
- 		EXT4_FEATURE_INCOMPAT_FLEX_BG |
-diff --git a/resize/main.c b/resize/main.c
-index a0c31c06..cb0bf6a0 100644
---- a/resize/main.c
-+++ b/resize/main.c
-@@ -605,6 +605,12 @@ int main (int argc, char ** argv)
- 		fprintf(stderr, _("The filesystem is already 32-bit.\n"));
- 		exit(0);
- 	}
-+	if (new_size < ext2fs_blocks_count(fs->super) &&
-+	    ext2fs_has_feature_stable_inodes(fs->super)) {
-+		fprintf(stderr, _("Cannot shrink this filesystem "
-+			"because it has the stable_inodes feature flag.\n"));
-+		exit(1);
-+	}
- 	if (mount_flags & EXT2_MF_MOUNTED) {
- 		retval = online_resize_fs(fs, mtpt, &new_size, flags);
- 	} else {
--- 
-2.23.0.866.gb869b98d4c-goog
+Examples:
 
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/sparc/include/asm/cmpxchg_32.h#n18
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/sparc/include/asm/cmpxchg_32.h#n41
+
+> Is there any chance this could be implemented, to avoid this
+> architecture-specific quirk?
+
+It is certainly possible.  I wonder whether it is wise.  Several of the 
+other architectures implement a software workaround for this operation, 
+and I guess you're advocating that we do the same.  We could copy one 
+these implementations.  However, the workarounds balloon into quite a lot 
+of code.  Here is an example from MIPS:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/mips/kernel/cmpxchg.c#n10
+
+I could be wrong, but I think this expansion would be pretty surprising 
+for most users of xchg().  I suspect most xchg() users are looking for 
+something performant, and would be better served by simply using a 
+variable with a 32-bit type.
+
+In the case of your patch, it appears that struct 
+fscrypt_mode.logged_impl_name is only used in the patched function.  It 
+looks like it could be promoted into a u32 without much difficulty.  
+Would you be willing to consider that approach of solving the problem?  
+Then the code would be able to take advantage of the fast hardware 
+implementation that's available on many architectures (including RISC-V).
+
+> Note, there's at least one other place in the kernel that also uses 
+> xchg() on a bool.
+
+Given the nasty compatibility code, I wonder if we'd be better served by 
+removing most of this compatibility code across the kernel, and just 
+requiring callers to use a 32-bit type?  For most callers that I've seen, 
+this doesn't seem to be much of an issue; and it would avoid the nasty 
+code involved in software emulations of xchg().
+
+
+- Paul
