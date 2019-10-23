@@ -2,90 +2,63 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DAEDE133C
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 23 Oct 2019 09:37:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87D2AE15B7
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 23 Oct 2019 11:27:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389484AbfJWHhm (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 23 Oct 2019 03:37:42 -0400
-Received: from smtp1.linuxfoundation.org ([140.211.169.13]:35326 "EHLO
-        smtp1.linuxfoundation.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389351AbfJWHhm (ORCPT
+        id S2390864AbfJWJ1U (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 23 Oct 2019 05:27:20 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:43136 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390400AbfJWJ1U (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 23 Oct 2019 03:37:42 -0400
-Received: from rt.cvo.linuxfoundation.org (rt.cvo.linuxfoundation.org [172.17.192.131])
-        by smtp1.linuxfoundation.org (Postfix) with ESMTPS id C99E7896;
-        Wed, 23 Oct 2019 07:37:41 +0000 (UTC)
-Received: by rt.cvo.linuxfoundation.org (Postfix, from userid 48)
-        id B98301075; Wed, 23 Oct 2019 07:37:41 +0000 (UTC)
-Subject: [Kernel.org Helpdesk #80522] Please add linux-fscrypt@vger.kernel.org to lore.kernel.org
-From:   "Chris Hoy Poy via RT" <kernel-helpdesk@rt.linuxfoundation.org>
-Reply-To: kernel-helpdesk@rt.linuxfoundation.org
-In-Reply-To: <rt-4.4.0-17361-1571711745-65.80522-6-0@linuxfoundation>
-References: <RT-Ticket-80522@linuxfoundation>
- <20191016010815.GB726@sol.localdomain>
- <rt-4.4.0-17357-1571634901-827.80522-6-0@linuxfoundation>
- <20191022023537.GB938@sol.localdomain>
- <rt-4.4.0-17361-1571711745-65.80522-6-0@linuxfoundation>
-Message-ID: <rt-4.4.0-17358-1571816261-967.80522-6-0@linuxfoundation>
-X-RT-Loop-Prevention: linuxfoundation.org
-X-RT-Ticket: linuxfoundation.org #80522
-X-Managed-BY: RT 4.4.0 (http://www.bestpractical.com/rt/)
-X-RT-Originator: choypoy@linuxfoundation.org
-To:     ebiggers@kernel.org
-CC:     linux-fscrypt@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-X-RT-Original-Encoding: utf-8
-Date:   Wed, 23 Oct 2019 03:37:41 -0400
+        Wed, 23 Oct 2019 05:27:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=CS6l8CT81d+rQTdwvtyepLT7A36udW9pzFL6uXC4imE=; b=BLqXj+n0cwZj+xiVhD0XhdVei
+        navF1Vt+rLXP1v7NYN0DwsLlyVpVgZh+yFR10a5/X2B7j/Lh0O6eW4BPu/ng3uRA/b7oM5S6SGWai
+        T2du0PWd3hVEF1n4vFNAZCk3h1rFrgbgjnuIjEdY5nDO90O6MwpyCPhVjiKmUkObL0obrudYfo6hI
+        jPO7TRXi/sVj1GzA5tyQ2h0gKfgewSqnR2TfQH03LAru5wMdXnjuKtCQGvIjvyNYy35Lg+/WawQvz
+        wsunSBUm4u2U9h5hHI+mT+7qLtlQ2j5WzJcHjJlfMHS6gFPZmOTeVzZtqnTJLBm73f4ilwewrH/Oc
+        l+a00VBKw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1iNCvH-0006p0-0m; Wed, 23 Oct 2019 09:27:19 +0000
+Date:   Wed, 23 Oct 2019 02:27:18 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     Dave Chinner <david@fromorbit.com>, linux-fscrypt@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, Satya Tangirala <satyat@google.com>,
+        Paul Crowley <paulcrowley@google.com>,
+        Paul Lawrence <paullawrence@google.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: Re: [PATCH 1/3] fscrypt: add support for inline-encryption-optimized
+ policies
+Message-ID: <20191023092718.GA23274@infradead.org>
+References: <20191021230355.23136-1-ebiggers@kernel.org>
+ <20191021230355.23136-2-ebiggers@kernel.org>
+ <20191022052712.GA2083@dread.disaster.area>
+ <20191022060004.GA333751@sol.localdomain>
+ <20191022133001.GA23268@mit.edu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191022133001.GA23268@mit.edu>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hi Eric, 
+On Tue, Oct 22, 2019 at 09:30:01AM -0400, Theodore Y. Ts'o wrote:
+> If and when we actually get inline crypto support for server-class
+> systems, hopefully they will support 128-bit DUN's, and/or they will
+> have sufficiently fast key load times such that we can use per-file
+> keying.
 
-cheers - this is complete and accessible at
-
-https://lore.kernel.org/linux-fscrypt/
-
-Let me know if you have any issues
-
-cheers
-/Chris
-
-On Tue Oct 22 10:35:45 2019, ebiggers@kernel.org wrote:
-> On Mon, Oct 21, 2019 at 01:15:01AM -0400, Chris Hoy Poy via RT wrote:
-> > Hi Eric,
-> >
-> > I've subscribed lore for new emails to linux-fscrypt - if you can
-> > provide an archive (there are no obvious ones I can find), I can
-> > import that for history.
-> >
-> > cheers
-> > /Chris
-> >
-> > On Wed Oct 16 09:08:18 2019, ebiggers@kernel.org wrote:
-> > > Hi, could you please start archiving the linux-fscrypt mailing list
-> > > at
-> > > lore.kernel.org?
-> > >
-> > > I can provide an archive which should be complete --- I've been
-> > > subscribed to
-> > > the list from the beginning.
-> > >
-> > > Thanks!
-> > >
-> > > - Eric
-> >
-> >
-> 
-> I've attached my archive.
-> 
-> - Eric
-
-
--- 
-Chris Hoy Poy
-Collaborative Projects IT
-The Linux Foundation
+NVMe is working on a key per I/O feature.  So at very least the naming
+of this option should be "crappy_underwhelming_embedded_inline_crypto"
