@@ -2,85 +2,96 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F7EAE1B7C
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 23 Oct 2019 14:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57753E223B
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 23 Oct 2019 20:00:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390181AbfJWM5d (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 23 Oct 2019 08:57:33 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:54963 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2390108AbfJWM5d (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 23 Oct 2019 08:57:33 -0400
-Received: from callcc.thunk.org (guestnat-104-133-0-98.corp.google.com [104.133.0.98] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x9NCv1VA016128
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 23 Oct 2019 08:57:02 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 3FF4B420456; Wed, 23 Oct 2019 08:57:01 -0400 (EDT)
-Date:   Wed, 23 Oct 2019 08:57:01 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Dave Chinner <david@fromorbit.com>, linux-fscrypt@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, Satya Tangirala <satyat@google.com>,
-        Paul Crowley <paulcrowley@google.com>,
-        Paul Lawrence <paullawrence@google.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: Re: [PATCH 1/3] fscrypt: add support for inline-encryption-optimized
- policies
-Message-ID: <20191023125701.GA2460@mit.edu>
-References: <20191021230355.23136-1-ebiggers@kernel.org>
- <20191021230355.23136-2-ebiggers@kernel.org>
- <20191022052712.GA2083@dread.disaster.area>
- <20191022060004.GA333751@sol.localdomain>
- <20191022133001.GA23268@mit.edu>
- <20191023092718.GA23274@infradead.org>
+        id S1733023AbfJWSAj (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 23 Oct 2019 14:00:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49164 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732839AbfJWSAj (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 23 Oct 2019 14:00:39 -0400
+Received: from gmail.com (unknown [104.132.1.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 943DA2086D;
+        Wed, 23 Oct 2019 18:00:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1571853638;
+        bh=ZFgiT3OjAKq+CRzK7V4UjYE5iaOaPGhTFyBjKIw1MvI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Y/w3tJFxi5WrI31jxu610TsjOEaJYZ2EmI9YVzq8sqEWHJIy1yfY1SvuNWh+fePqG
+         JNpO1QMDSKhLVmvtzWnsNhaE38rthyCdYWG3dcFoaX+mKEYoR8YQuXnHmCjNhf4vyE
+         YM7//DFZz6f2MLuW5Ng7yRfTLIFZPURHb0unC7GM=
+Date:   Wed, 23 Oct 2019 11:00:37 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     fstests@vger.kernel.org
+Cc:     linux-fscrypt@vger.kernel.org
+Subject: Re: [PATCH v3 0/9] xfstests: add tests for fscrypt key management
+ improvements
+Message-ID: <20191023180035.GA208503@gmail.com>
+Mail-Followup-To: fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org
+References: <20191015181643.6519-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191023092718.GA23274@infradead.org>
+In-Reply-To: <20191015181643.6519-1-ebiggers@kernel.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, Oct 23, 2019 at 02:27:18AM -0700, Christoph Hellwig wrote:
-> On Tue, Oct 22, 2019 at 09:30:01AM -0400, Theodore Y. Ts'o wrote:
-> > If and when we actually get inline crypto support for server-class
-> > systems, hopefully they will support 128-bit DUN's, and/or they will
-> > have sufficiently fast key load times such that we can use per-file
-> > keying.
+On Tue, Oct 15, 2019 at 11:16:34AM -0700, Eric Biggers wrote:
+> Hello,
 > 
-> NVMe is working on a key per I/O feature.  So at very least the naming
-> of this option should be "crappy_underwhelming_embedded_inline_crypto"
+> This patchset adds xfstests for the new fscrypt functionality that was
+> merged for 5.4 (https://git.kernel.org/torvalds/c/734d1ed83e1f9b7b),
+> namely the new ioctls for managing filesystem encryption keys and the
+> new/updated ioctls for v2 encryption policy support.  It also includes
+> ciphertext verification tests for v2 encryption policies.
+> 
+> These tests require new xfs_io commands, which are present in the
+> for-next branch of xfsprogs.  They also need a kernel v5.4-rc1 or later.
+> As is usual for xfstests, the tests will skip themselves if their
+> prerequisites aren't met.
+> 
+> Note: currently only ext4, f2fs, and ubifs support encryption.  But I
+> was told previously that since the fscrypt API is generic and may be
+> supported by XFS in the future, the command-line wrappers for the
+> fscrypt ioctls should be in xfs_io rather than in xfstests directly
+> (https://marc.info/?l=fstests&m=147976255831951&w=2).
+> 
+> This patchset can also be retrieved from tag
+> "fscrypt-key-mgmt-improvements_2019-10-15" of
+> https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/xfstests-dev.git
+> 
+> Changes since v2:
+> 
+> - Updated "common/encrypt: disambiguate session encryption keys" to
+>   rename the new instance of _generate_encryption_key() in generic/576.
+> 
+> Changes since v1:
+> 
+> - Addressed comments from Eryu Guan regarding
+>   _require_encryption_policy_support().
+> 
+> - In generic/801, handle the fsgqa user having part of their key quota
+>   already consumed before beginning the test, in order to avoid a false
+>   test failure on some systems.
+> 
+> Eric Biggers (9):
+>   common/encrypt: disambiguate session encryption keys
+>   common/encrypt: add helper functions that wrap new xfs_io commands
+>   common/encrypt: support checking for v2 encryption policy support
+>   common/encrypt: support verifying ciphertext of v2 encryption policies
+>   generic: add basic test for fscrypt API additions
+>   generic: add test for non-root use of fscrypt API additions
+>   generic: verify ciphertext of v2 encryption policies with AES-256
+>   generic: verify ciphertext of v2 encryption policies with AES-128
+>   generic: verify ciphertext of v2 encryption policies with Adiantum
+> 
 
-If and when the vaporware shows up in real hardware, and assuming that
-fscrypt is useful for this hardware, we can name it
-"super_duper_fancy_inline_crypto".  :-)
+Does anyone have any more comments on these tests?
 
-Remember that fscrypt only encrypts the data and the file name.  It
-doesn't encrypt the metadata.  It has very specific use cases for
-Android and ChromeOS where you have multiple users that need to use
-different keys, and in the case of ChromeOS, we want to be able to
-efficiently use the space so that while user A is logged in, we can
-delete files in user B's cache directory without user B's keys being
-present.  (This is why we can't use fixed per-user partitions with
-dm-crypt; that solution was considered and rejected before we started
-work on fscrypt.)
-
-If you aren't working under tight space and cost constraints, it's
-actually better to encrypt the whole partition, so that all of the
-metadata can be protected.  fscrypt is deployed in millions and
-millions of devices, and is solving real world problems.  However, it
-never claimed to be the only way to address encryption in the storage
-stack --- and it's not at all clear fscrypt is the way that makes the
-most amount of sense for NVMe devices.  So let's cross that bridge
-when we get to it.
-
-Cheers,
-
-	       	   	      	       	      - Ted
+- Eric
