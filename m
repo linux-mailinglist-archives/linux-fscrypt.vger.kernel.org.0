@@ -2,72 +2,105 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 19FEAE2DFB
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 24 Oct 2019 11:55:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEEECE3E91
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 24 Oct 2019 23:57:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393133AbfJXJzM (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 24 Oct 2019 05:55:12 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:34155 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393132AbfJXJzL (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 24 Oct 2019 05:55:11 -0400
-Received: by mail-lj1-f193.google.com with SMTP id j19so24321585lja.1
-        for <linux-fscrypt@vger.kernel.org>; Thu, 24 Oct 2019 02:55:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9wILYHfyzdPkt0/hYfDZOYs+W1i9jhuC4WjjgM1Si8Y=;
-        b=IpXb8wbqDIysQMcczI3Yhg6ndMfUC/qO1n2oh1pfqBfcaSOjBY2M4hKGJOc1beCq5D
-         1fEZ2xbxlTsQeDEZr1G04sZ4kUKj+ISehO2bczEcDmBRsRgQmnK6F7kioRcZC37cgrup
-         vmRxaH1xcHO4QsObdDcLDt+tYY/X4NO0WmHkicCBgQTFWjaznJKfCbsJFLVWjKIGe9cK
-         vkl0O8N5++mRgHGnPL9/E2qK+jjWF3KJaYmuOe4Au2F+sLZCEmRmqhc2IKIXfHDhS9Ha
-         FitG0+ImgGaFwDTXsKfr5aGSPJetj+5gOSL7Iz1cYHO2WfngX3+RO1VjDcTzc1qP8bvl
-         89uQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9wILYHfyzdPkt0/hYfDZOYs+W1i9jhuC4WjjgM1Si8Y=;
-        b=Hb3QhRdryzVNtTcjQfVSZ/3N03HRvyeTQBz1wjhChAkBcIYcE+G0KuxzUEA+xR3Zg6
-         9Sm6+jEsZY4u9cMxhvdDQIKW0Eo6Uopqm+ZUZcVj+rrrK3Pc47ZAM+eHZIuoIw6QCdmv
-         evEYS2O2X1H1A8hZ1YC8ndPJJEpp4cRHZ0ercZoJYtu5wRuNgPxpAiFtbOflTS3kP3vY
-         9jDFCF64Nn06fJqe6QyKhz1tN3xaZZJ9rCiZJahxwPzO1rQyl9bHHy5ZzXNIsBd2GzOh
-         FpCcpna3ExZLW/Rd0bt4TRdG1/pX09xFB0SLuW4OqYJcGkfr9rhlPv/S/FiaKoodyLaY
-         0IZA==
-X-Gm-Message-State: APjAAAWUvxkmyfxFdpFedp2MnEBxT8CqLMbQBOYHy3vB01MHC18Xyirv
-        cMNYvaBNaxxx22+Oy0Tr/rOiEKttNoZmhICEBzDaTA==
-X-Google-Smtp-Source: APXvYqxBv5EsXSTuCFpOoZBFR/UcS+e+e+GLT4cUj9tmnnXozis1KsX31ONH2VX0dK4f4qIMdJE6LN+XlFXFhBblhXs=
-X-Received: by 2002:a05:651c:1b9:: with SMTP id c25mr24647960ljn.163.1571910908888;
- Thu, 24 Oct 2019 02:55:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <20191021230355.23136-1-ebiggers@kernel.org> <20191021230355.23136-2-ebiggers@kernel.org>
- <20191022052712.GA2083@dread.disaster.area> <20191022060004.GA333751@sol.localdomain>
- <20191022133001.GA23268@mit.edu> <20191023092718.GA23274@infradead.org>
- <20191023125701.GA2460@mit.edu> <20191024012759.GA32358@infradead.org>
- <20191024024459.GA743@sol.localdomain> <20191024070433.GB16652@infradead.org>
-In-Reply-To: <20191024070433.GB16652@infradead.org>
-From:   Paul Crowley <paulcrowley@google.com>
-Date:   Thu, 24 Oct 2019 02:54:57 -0700
-Message-ID: <CA+_SqcAZPETtuEcSkcwiZcRV7QHr0jq0+oGgF=k+M5bEuxKhVQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] fscrypt: add support for inline-encryption-optimized policies
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Satya Tangirala <satyat@google.com>,
+        id S1729765AbfJXV5J (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 24 Oct 2019 17:57:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57122 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726279AbfJXV5J (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 24 Oct 2019 17:57:09 -0400
+Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4995620578;
+        Thu, 24 Oct 2019 21:57:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1571954227;
+        bh=HDbyy92ncxjP1dI6FxrpY5/nE4vCNb78sIDmKUaw/oA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=tYsduxACwWAZcKMN50EsIXij5SWgunEH/IZT5C2so19z1/o5XTkDSDkgsUcfYdjGT
+         cYMAHDf8Q8CG1ftEildMrnVdoOBdnctFicyjkPr72LbPTbeOJgZh0wEtry6JZY/j+I
+         kCMv9S3xpWh1jvarxrgWjGDKupV8ex7ClSaq4Hg0=
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, Satya Tangirala <satyat@google.com>,
+        Paul Crowley <paulcrowley@google.com>,
         Paul Lawrence <paullawrence@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Jaegeuk Kim <jaegeuk@kernel.org>, linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [PATCH v2 0/3] fscrypt: support for IV_INO_LBLK_64 policies
+Date:   Thu, 24 Oct 2019 14:54:35 -0700
+Message-Id: <20191024215438.138489-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.24.0.rc0.303.g954a862665-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, 24 Oct 2019 at 00:04, Christoph Hellwig <hch@infradead.org> wrote:
-> I think not making it crazy verbose is a helpful, but at the same time
-> it should be somewhat descriptive.
+Hello,
 
-What would your suggested name be?
+In preparation for adding inline encryption support to fscrypt, this
+patchset adds a new fscrypt policy flag which modifies the encryption to
+be optimized for inline encryption hardware compliant with the UFS v2.1
+standard or the upcoming version of the eMMC standard.
+
+This means using per-mode keys instead of per-file keys, and in
+compensation including the inode number in the IVs.  For ext4, this
+precludes filesystem shrinking, so I've also added a compat feature
+which will prevent the filesystem from being shrunk.
+
+I've separated this from the full "Inline Encryption Support" patchset
+(https://lkml.kernel.org/linux-fsdevel/20190821075714.65140-1-satyat@google.com/)
+to avoid conflating an implementation (inline encryption) with a new
+on-disk format (IV_INO_LBLK_64).  This patchset purely adds support for
+IV_INO_LBLK_64 policies to fscrypt, but implements them using the
+existing filesystem layer crypto.
+
+We're planning to make the *implementation* (filesystem layer or inline
+crypto) be controlled by a mount option '-o inlinecrypt'.
+
+This patchset applies to fscrypt.git#master and can also be retrieved from
+https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git/log/?h=inline-crypt-optimized-v2
+
+I've written a ciphertext verification test for this new type of policy:
+https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/xfstests-dev.git/log/?h=inline-encryption
+
+Work-in-progress patches for the inline encryption implementation of
+both IV_INO_LBLK_64 and regular policies can be found at
+https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git/log/?h=inline-encryption-wip
+
+Changes v1 => v2:
+
+- Rename the flag from INLINE_CRYPT_OPTIMIZED to IV_INO_LBLK_64.
+
+- Use the same key derivation and IV generation scheme for filenames
+  encryption too.
+
+- Improve the documentation and commit messages.
+
+Eric Biggers (3):
+  fscrypt: add support for IV_INO_LBLK_64 policies
+  ext4: add support for IV_INO_LBLK_64 encryption policies
+  f2fs: add support for IV_INO_LBLK_64 encryption policies
+
+ Documentation/filesystems/fscrypt.rst | 63 +++++++++++++++++----------
+ fs/crypto/crypto.c                    | 10 ++++-
+ fs/crypto/fscrypt_private.h           | 16 +++++--
+ fs/crypto/keyring.c                   |  6 ++-
+ fs/crypto/keysetup.c                  | 45 ++++++++++++++-----
+ fs/crypto/policy.c                    | 41 ++++++++++++++++-
+ fs/ext4/ext4.h                        |  2 +
+ fs/ext4/super.c                       | 14 ++++++
+ fs/f2fs/super.c                       | 26 ++++++++---
+ include/linux/fscrypt.h               |  3 ++
+ include/uapi/linux/fscrypt.h          |  3 +-
+ 11 files changed, 182 insertions(+), 47 deletions(-)
+
+-- 
+2.24.0.rc0.303.g954a862665-goog
+
