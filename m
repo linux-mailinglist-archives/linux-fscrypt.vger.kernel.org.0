@@ -2,83 +2,72 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 026EBE2AB9
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 24 Oct 2019 09:04:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19FEAE2DFB
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 24 Oct 2019 11:55:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437865AbfJXHEh (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 24 Oct 2019 03:04:37 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:60208 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727635AbfJXHEh (ORCPT
+        id S2393133AbfJXJzM (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 24 Oct 2019 05:55:12 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:34155 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393132AbfJXJzL (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 24 Oct 2019 03:04:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:To:From:Date:Sender:Reply-To:Cc:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=UuKLDbpQvbMotGXcc+uLQ0Vocvzd2LHIJ9vtxHOU5vU=; b=i6E3AhTxU7PiiGoZzHX1bpT6K
-        7IRuf91wXcARc4dhTksYxqxPdfUSlbB4q7yGugACfQTvkbN8suN7Yd9H8ZiWfzixEAaJEUoGg497V
-        8lWSw8TWXat6lhpSQCxuXB0JIQp15oSX7lw7dgZ6tsSiYPOWh+odehSxcdiZJEy7yrEN1UoQISKC+
-        KihqDHF2wWd5cKKq/bFaRJ4aOtR9PXq7IR4CzsUOxkrN9XW5Z5UkWpZkzqAoSh6m6C8RzC/j/5MRy
-        CLVwiG+QvZ8C4mNC7/+ocWKE0wCHvQZXxoKj2reDkv5OQNW6+OzL+JyxSmVy2pIlCdVqbRt89NrZ1
-        P+5IiNmTw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1iNXAf-0004zo-44; Thu, 24 Oct 2019 07:04:33 +0000
-Date:   Thu, 24 Oct 2019 00:04:33 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Christoph Hellwig <hch@infradead.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Thu, 24 Oct 2019 05:55:11 -0400
+Received: by mail-lj1-f193.google.com with SMTP id j19so24321585lja.1
+        for <linux-fscrypt@vger.kernel.org>; Thu, 24 Oct 2019 02:55:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9wILYHfyzdPkt0/hYfDZOYs+W1i9jhuC4WjjgM1Si8Y=;
+        b=IpXb8wbqDIysQMcczI3Yhg6ndMfUC/qO1n2oh1pfqBfcaSOjBY2M4hKGJOc1beCq5D
+         1fEZ2xbxlTsQeDEZr1G04sZ4kUKj+ISehO2bczEcDmBRsRgQmnK6F7kioRcZC37cgrup
+         vmRxaH1xcHO4QsObdDcLDt+tYY/X4NO0WmHkicCBgQTFWjaznJKfCbsJFLVWjKIGe9cK
+         vkl0O8N5++mRgHGnPL9/E2qK+jjWF3KJaYmuOe4Au2F+sLZCEmRmqhc2IKIXfHDhS9Ha
+         FitG0+ImgGaFwDTXsKfr5aGSPJetj+5gOSL7Iz1cYHO2WfngX3+RO1VjDcTzc1qP8bvl
+         89uQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9wILYHfyzdPkt0/hYfDZOYs+W1i9jhuC4WjjgM1Si8Y=;
+        b=Hb3QhRdryzVNtTcjQfVSZ/3N03HRvyeTQBz1wjhChAkBcIYcE+G0KuxzUEA+xR3Zg6
+         9Sm6+jEsZY4u9cMxhvdDQIKW0Eo6Uopqm+ZUZcVj+rrrK3Pc47ZAM+eHZIuoIw6QCdmv
+         evEYS2O2X1H1A8hZ1YC8ndPJJEpp4cRHZ0ercZoJYtu5wRuNgPxpAiFtbOflTS3kP3vY
+         9jDFCF64Nn06fJqe6QyKhz1tN3xaZZJ9rCiZJahxwPzO1rQyl9bHHy5ZzXNIsBd2GzOh
+         FpCcpna3ExZLW/Rd0bt4TRdG1/pX09xFB0SLuW4OqYJcGkfr9rhlPv/S/FiaKoodyLaY
+         0IZA==
+X-Gm-Message-State: APjAAAWUvxkmyfxFdpFedp2MnEBxT8CqLMbQBOYHy3vB01MHC18Xyirv
+        cMNYvaBNaxxx22+Oy0Tr/rOiEKttNoZmhICEBzDaTA==
+X-Google-Smtp-Source: APXvYqxBv5EsXSTuCFpOoZBFR/UcS+e+e+GLT4cUj9tmnnXozis1KsX31ONH2VX0dK4f4qIMdJE6LN+XlFXFhBblhXs=
+X-Received: by 2002:a05:651c:1b9:: with SMTP id c25mr24647960ljn.163.1571910908888;
+ Thu, 24 Oct 2019 02:55:08 -0700 (PDT)
+MIME-Version: 1.0
+References: <20191021230355.23136-1-ebiggers@kernel.org> <20191021230355.23136-2-ebiggers@kernel.org>
+ <20191022052712.GA2083@dread.disaster.area> <20191022060004.GA333751@sol.localdomain>
+ <20191022133001.GA23268@mit.edu> <20191023092718.GA23274@infradead.org>
+ <20191023125701.GA2460@mit.edu> <20191024012759.GA32358@infradead.org>
+ <20191024024459.GA743@sol.localdomain> <20191024070433.GB16652@infradead.org>
+In-Reply-To: <20191024070433.GB16652@infradead.org>
+From:   Paul Crowley <paulcrowley@google.com>
+Date:   Thu, 24 Oct 2019 02:54:57 -0700
+Message-ID: <CA+_SqcAZPETtuEcSkcwiZcRV7QHr0jq0+oGgF=k+M5bEuxKhVQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] fscrypt: add support for inline-encryption-optimized policies
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
         Satya Tangirala <satyat@google.com>,
         Paul Lawrence <paullawrence@google.com>,
         Dave Chinner <david@fromorbit.com>,
         linux-f2fs-devel@lists.sourceforge.net,
         linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Jaegeuk Kim <jaegeuk@kernel.org>, linux-ext4@vger.kernel.org,
-        Paul Crowley <paulcrowley@google.com>
-Subject: Re: [PATCH 1/3] fscrypt: add support for inline-encryption-optimized
- policies
-Message-ID: <20191024070433.GB16652@infradead.org>
-References: <20191021230355.23136-1-ebiggers@kernel.org>
- <20191021230355.23136-2-ebiggers@kernel.org>
- <20191022052712.GA2083@dread.disaster.area>
- <20191022060004.GA333751@sol.localdomain>
- <20191022133001.GA23268@mit.edu>
- <20191023092718.GA23274@infradead.org>
- <20191023125701.GA2460@mit.edu>
- <20191024012759.GA32358@infradead.org>
- <20191024024459.GA743@sol.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191024024459.GA743@sol.localdomain>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+        Jaegeuk Kim <jaegeuk@kernel.org>, linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, Oct 23, 2019 at 07:44:59PM -0700, Eric Biggers wrote:
-> Would you be happy with something that more directly describes the change the
-> flag makes
+On Thu, 24 Oct 2019 at 00:04, Christoph Hellwig <hch@infradead.org> wrote:
+> I think not making it crazy verbose is a helpful, but at the same time
+> it should be somewhat descriptive.
 
-Yes.
-
-> , like FSCRYPT_POLICY_FLAG_CONTENTS_IV_INO_LBLK_64?  I.e., the IVs for
-> contents encryption are 64-bit and contain the inode and logical block numbers.
-> 
-> Actually, we could use the same key derivation and IV generation for directories
-> and symlinks too, which would result in just FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64.
-> (lblk is 0 when encrypting a filename.)
-
-I think not making it crazy verbose is a helpful, but at the same time
-it should be somewhat descriptive.
-
-> Although, in general it would be nice to name the settings in ways that are
-> easier for people not intimately familiar with the crypto to understand...
-
-For the andoid case the actual users won't ever really see it, and if
-you set up the thing yourself it probably helps a lot to try to
-understand what your are doing.
+What would your suggested name be?
