@@ -2,110 +2,249 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BFB2E4C20
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 25 Oct 2019 15:28:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C26E6CEA
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 28 Oct 2019 08:20:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394645AbfJYN2h (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 25 Oct 2019 09:28:37 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:48352 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726393AbfJYN2h (ORCPT
+        id S1730963AbfJ1HUk (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 28 Oct 2019 03:20:40 -0400
+Received: from mail-pl1-f201.google.com ([209.85.214.201]:42801 "EHLO
+        mail-pl1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729399AbfJ1HUk (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 25 Oct 2019 09:28:37 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x9PDQpY2174256
-        for <linux-fscrypt@vger.kernel.org>; Fri, 25 Oct 2019 09:28:36 -0400
-Received: from e06smtp07.uk.ibm.com (e06smtp07.uk.ibm.com [195.75.94.103])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2vv1mc93kx-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-fscrypt@vger.kernel.org>; Fri, 25 Oct 2019 09:28:35 -0400
-Received: from localhost
-        by e06smtp07.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-fscrypt@vger.kernel.org> from <chandan@linux.ibm.com>;
-        Fri, 25 Oct 2019 14:28:34 +0100
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (9.149.109.195)
-        by e06smtp07.uk.ibm.com (192.168.101.137) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Fri, 25 Oct 2019 14:28:31 +0100
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x9PDSUR749152076
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 25 Oct 2019 13:28:30 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 75C05AE057;
-        Fri, 25 Oct 2019 13:28:30 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 53399AE045;
-        Fri, 25 Oct 2019 13:28:29 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.102.19.25])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 25 Oct 2019 13:28:29 +0000 (GMT)
-From:   Chandan Rajendra <chandan@linux.ibm.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] ext4: support encryption with blocksize != PAGE_SIZE
-Date:   Fri, 25 Oct 2019 19:00:29 +0530
-Organization: IBM
-In-Reply-To: <20191023033312.361355-1-ebiggers@kernel.org>
-References: <20191023033312.361355-1-ebiggers@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-TM-AS-GCONF: 00
-x-cbid: 19102513-0028-0000-0000-000003AF7A56
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19102513-0029-0000-0000-00002471B0B4
-Message-Id: <17874972.D0pmjP8EC8@localhost.localdomain>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-10-25_08:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=1 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1908290000 definitions=main-1910250127
+        Mon, 28 Oct 2019 03:20:40 -0400
+Received: by mail-pl1-f201.google.com with SMTP id c21so5471349plz.9
+        for <linux-fscrypt@vger.kernel.org>; Mon, 28 Oct 2019 00:20:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=8kmYTlsw2t8uqVQHy3hjWqwncfgaTXrr/brl20vQcnE=;
+        b=d6uRgzSIVYSUN6Q4PBQzkUYWOciotNoa1eOq+lYLJ+qHtWSTwr4jPK0mljK7qbxjKh
+         EK+0/sjiHTlf8d7MVyRQb0quHURUFqLTp40E9DmNua4A7GZo8ZrJBOa57YIZ0GNO8P6T
+         n3qCfiEmL92uqb1qx+XM/vMPIu5gYrwNQ5lGabPLTJWLonjCsQPWpDc3T+YMugoZwttk
+         LTMelmHqSxIb63rEH5t4rGjLb033enMkz9X/szYiBOpGE4UVdR0UL5j2AUQhPnh9wTs5
+         zdcEi5Yk+Ky+7r7hdcPRWFCzhTBxqm0UzkmxI2ANC4s0PaQr3clDm+E2W25WZXDnKwr9
+         /VgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=8kmYTlsw2t8uqVQHy3hjWqwncfgaTXrr/brl20vQcnE=;
+        b=dnI8kFET+gMGjHbe4W5z8v5+JKqgLRic6gZYVmUcrS8sM9Gy6oTmWFo+7URXR0lWWv
+         6YJoWAan3/BiGNIZxpgxWsI6aqPXgYa6N5f7VQGkp3zfD+LIPtNPbMtK1Xampg0u9ELk
+         X/6KnVN4brN033gnikKrrUkeOty7BzyQbdr5praNX1fyC8gv8Msbx4xL6kfoPiqiWqE9
+         2S9PQVO0TA3cQvuwxTvt5ZSIoF/8WwnpGgvtuVzb/7LOxNEebKKlemHe/8HZC0TQ2ISr
+         C4oii6WcI+FCS4tARqpMX5rXSJ0KulyNCYlRV7qyWWt1GixZNQjyZJruGMLQu45c+V8g
+         0TIA==
+X-Gm-Message-State: APjAAAX58Xr7TJjbWDwzxBpX+qlL0Yzdu0VrI1t+8rR6FRYa30hirKJ3
+        N09g6o8PkFurx73J/EzuBDNiWc/sIpA=
+X-Google-Smtp-Source: APXvYqzGoWEuWUo5LuR0LP+ddntICuUCcDvRp2KMGQ5a+PqGu4jL2F1naa/4tbHematPk1HSVrYtg6dlN5U=
+X-Received: by 2002:a63:cf0b:: with SMTP id j11mr19081716pgg.240.1572247237715;
+ Mon, 28 Oct 2019 00:20:37 -0700 (PDT)
+Date:   Mon, 28 Oct 2019 00:20:23 -0700
+Message-Id: <20191028072032.6911-1-satyat@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.24.0.rc0.303.g954a862665-goog
+Subject: [PATCH v5 0/9] Inline Encryption Support
+From:   Satya Tangirala <satyat@google.com>
+To:     linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Cc:     Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
+        Kuohong Wang <kuohong.wang@mediatek.com>,
+        Kim Boojin <boojin.kim@samsung.com>,
+        Satya Tangirala <satyat@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wednesday, October 23, 2019 9:03 AM Eric Biggers wrote: 
-> Hello,
-> 
-> This patchset makes ext4 support encryption on filesystems where the
-> filesystem block size is not equal to PAGE_SIZE.  This allows e.g.
-> PowerPC systems to use ext4 encryption.
-> 
-> Most of the work for this was already done in prior kernel releases; now
-> the only part missing is decryption support in block_read_full_page().
-> Chandan Rajendra has proposed a patchset "Consolidate FS read I/O
-> callbacks code" [1] to address this and do various other things like
-> make ext4 use mpage_readpages() again, and make ext4 and f2fs share more
-> code.  But it doesn't seem to be going anywhere.
-> 
-> Therefore, I propose we simply add decryption support to
-> block_read_full_page() for now.  This is a fairly small change, and it
-> gets ext4 encryption with subpage-sized blocks working.
-> 
-> Note: to keep things simple I'm just allocating the work object from the
-> bi_end_io function with GFP_ATOMIC.  But if people think it's necessary,
-> it could be changed to use preallocation like the page-based read path.
-> 
-> Tested with 'gce-xfstests -c ext4/encrypt_1k -g auto', using the new
-> "encrypt_1k" config I created.  All tests pass except for those that
-> already fail or are excluded with the encrypt or 1k configs, and 2 tests
-> that try to create 1023-byte symlinks which fails since encrypted
-> symlinks are limited to blocksize-3 bytes.  Also ran the dedicated
-> encryption tests using 'kvm-xfstests -c ext4/1k -g encrypt'; all pass,
-> including the on-disk ciphertext verification tests.
+This patch series adds support for Inline Encryption to the block layer,
+UFS, fscrypt, f2fs and ext4.
 
-I have tested this patchset on ppc64le with both 4k and 64k block size. There
-were no regressions. Hence,
+This patchset applies to fscrypt.git#master with the additional patchset
+"[PATCH 0/3] fscrypt: support for inline-encryption-optimized policies"
+applied.  It can be retrieved from git at
+https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git/log/?h=inline-encryption-v5
+Note however, that the patches for the block layer (i.e. patches 1, 2 and 3)
+can be applied independently.
 
-Tested-by: Chandan Rajendra <chandan@linux.ibm.com>
+Inline Encryption hardware allows software to specify an encryption context
+(an encryption key, crypto algorithm, data unit num, data unit size, etc.)
+along with a data transfer request to a storage device, and the inline
+encryption hardware will use that context to en/decrypt the data. The
+inline encryption hardware is part of the storage device, and it
+conceptually sits on the data path between system memory and the storage
+device. Inline Encryption hardware has become increasingly common, and we
+want to support it in the kernel.
+
+Inline Encryption hardware implementations often function around the
+concept of a limited number of "keyslots", which can hold an encryption
+context each. The storage device can be directed to en/decrypt any
+particular request with the encryption context stored in any particular
+keyslot.
+
+Patch 1 introduces a Keyslot Manager to efficiently manage keyslots.
+The keyslot manager also functions as the interface that blk-crypto
+(introduced in Patch 3), will use to program keys into inline encryption
+hardware. For more information on the Keyslot Manager, refer to
+documentation found in block/keyslot-manager.c and linux/keyslot-manager.h.
+
+Patch 2 introduces struct bio_crypt_ctx, and a ptr to one in struct bio,
+which allows struct bio to represent an encryption context that can be
+passed down the storage stack from the filesystem layer to the storage
+driver.
+
+Patch 3 introduces blk-crypto. Blk-crypto delegates crypto operations to
+inline encryption hardware when available, and also contains a software
+fallback to the kernel crypto API. Blk-crypto also makes it possible for
+layered devices like device mapper to make use of inline encryption
+hardware. Given that blk-crypto works as a software fallback, we are
+considering removing file content en/decryption from fscrypt and simply
+using blk-crypto in a future patch. For more details on blk-crypto, refer
+to Documentation/block/inline-encryption.rst.
+
+Patches 4-6 add support for inline encryption into the UFS driver according
+to the JEDEC UFS HCI v2.1 specification. Inline encryption support for
+other drivers (like eMMC) may be added in the same way - the device driver
+should set up a Keyslot Manager in the device's request_queue (refer to
+the UFS crypto additions in ufshcd-crypto.c and ufshcd.c for an example).
+
+Patch 7 adds support to fscrypt - to use inline encryption with fscrypt,
+the filesystem must be mounted with '-o inlinecrypt' - when this option is
+specified, the contents of any AES-256-XTS encrypted file will be
+encrypted using blk-crypto.
+
+Patches 8 and 9 add support to f2fs and ext4 respectively, so that we have
+a complete stack that can make use of inline encryption.
+
+The patches were tested running kvm-xfstests, by specifying the introduced
+"inlinecrypt" mount option, so that encryption happens in blk-crypto.
+
+There have been a few patch sets addressing Inline Encryption Support in
+the past. Briefly, this patch set differs from those as follows:
+
+1) "crypto: qce: ice: Add support for Inline Crypto Engine"
+is specific to certain hardware, while our patch set's Inline
+Encryption support for UFS is implemented according to the JEDEC UFS
+specification.
+
+2) "scsi: ufs: UFS Host Controller crypto changes" registers inline
+encryption support as a kernel crypto algorithm. Our patch views inline
+encryption as being fundamentally different from a generic crypto
+provider (in that inline encryption is tied to a device), and so does
+not use the kernel crypto API to represent inline encryption hardware.
+
+3) "scsi: ufs: add real time/inline crypto support to UFS HCD" requires
+the device mapper to work - our patch does not.
+
+Changes v4 => v5:
+ - The fscrypt patch has been separated into 2. The first adds support
+   for the IV_INO_LBLK_64 policy (which was called INLINE_CRYPT_OPTIMIZED
+   in past versions of this series). This policy is now purely an on disk
+   format, and doesn't dictate whether blk-crypto is used for file content
+   encryption or not. Instead, this is now decided based on the
+   "inlinecrypt" mount option.
+ - Inline crypto key eviction is now handled by blk-crypto instead of
+   fscrypt.
+ - More refactoring.
+
+Changes v3 => v4:
+ - Fixed the issue with allocating crypto_skcipher in
+   blk_crypto_keyslot_program.
+ - bio_crypto_alloc_ctx is now mempool backed.
+ - In f2fs, a bio's bi_crypt_context is now set up when the
+   bio is allocated, rather than just before the bio is
+   submitted - this fixes bugs in certain cases, like when an
+   encrypted block is being moved without decryption.
+ - Lots of refactoring and cleanup of blk-crypto - thanks Eric!
+
+Changes v2 => v3:
+ - Overhauled keyslot manager's get keyslot logic and optimized LRU.
+ - Block crypto en/decryption fallback now supports data unit sizes
+   that divide the bvec length (instead of requiring each bvec's length
+   to be the same as the data unit size).
+ - fscrypt master key is now keyed additionally by super_block and
+   ci_ctfm != NULL.
+ - all references of "hw encryption" are replaced by inline encryption.
+ - address various other review comments from Eric.
+
+Changes v1 => v2:
+ - Block layer and UFS changes are split into 3 patches each.
+ - We now only have a ptr to a struct bio_crypt_ctx in struct bio, instead
+   of the struct itself.
+ - struct bio_crypt_ctx no longer has flags.
+ - blk-crypto now correctly handles the case when it fails to init
+   (because of insufficient memory), but kernel continues to boot.
+ - ufshcd-crypto now works on big endian cpus.
+ - Many cleanups.
+
+Eric Biggers (1):
+  ext4: add inline encryption support
+
+Satya Tangirala (8):
+  block: Keyslot Manager for Inline Encryption
+  block: Add encryption context to struct bio
+  block: blk-crypto for Inline Encryption
+  scsi: ufs: UFS driver v2.1 spec crypto additions
+  scsi: ufs: UFS crypto API
+  scsi: ufs: Add inline encryption support to UFS
+  fscrypt: add inline encryption support
+  f2fs: add inline encryption support
+
+ Documentation/block/index.rst             |   1 +
+ Documentation/block/inline-encryption.rst | 183 +++++
+ block/Kconfig                             |  10 +
+ block/Makefile                            |   2 +
+ block/bio-crypt-ctx.c                     | 142 ++++
+ block/bio.c                               |  23 +-
+ block/blk-core.c                          |  14 +-
+ block/blk-crypto.c                        | 798 ++++++++++++++++++++++
+ block/blk-merge.c                         |  35 +-
+ block/bounce.c                            |  15 +-
+ block/keyslot-manager.c                   | 352 ++++++++++
+ drivers/md/dm.c                           |  15 +-
+ drivers/scsi/ufs/Kconfig                  |   9 +
+ drivers/scsi/ufs/Makefile                 |   1 +
+ drivers/scsi/ufs/ufshcd-crypto.c          | 391 +++++++++++
+ drivers/scsi/ufs/ufshcd-crypto.h          |  86 +++
+ drivers/scsi/ufs/ufshcd.c                 |  85 ++-
+ drivers/scsi/ufs/ufshcd.h                 |  25 +
+ drivers/scsi/ufs/ufshci.h                 |  67 +-
+ fs/buffer.c                               |   3 +
+ fs/crypto/Kconfig                         |   6 +
+ fs/crypto/Makefile                        |   1 +
+ fs/crypto/bio.c                           |  31 +-
+ fs/crypto/fscrypt_private.h               |  72 ++
+ fs/crypto/inline_crypt.c                  | 390 +++++++++++
+ fs/crypto/keyring.c                       |   2 +
+ fs/crypto/keysetup.c                      |  18 +-
+ fs/ext4/ext4.h                            |   1 +
+ fs/ext4/inode.c                           |   4 +-
+ fs/ext4/page-io.c                         |  11 +-
+ fs/ext4/readpage.c                        |  15 +-
+ fs/ext4/super.c                           |  13 +
+ fs/f2fs/data.c                            |  76 ++-
+ fs/f2fs/f2fs.h                            |   3 +
+ fs/f2fs/super.c                           |  20 +
+ include/linux/bio-crypt-ctx.h             | 226 ++++++
+ include/linux/bio.h                       |   1 +
+ include/linux/blk-crypto.h                |  62 ++
+ include/linux/blk_types.h                 |   6 +
+ include/linux/blkdev.h                    |   6 +
+ include/linux/fscrypt.h                   |  60 ++
+ include/linux/keyslot-manager.h           |  98 +++
+ 42 files changed, 3318 insertions(+), 61 deletions(-)
+ create mode 100644 Documentation/block/inline-encryption.rst
+ create mode 100644 block/bio-crypt-ctx.c
+ create mode 100644 block/blk-crypto.c
+ create mode 100644 block/keyslot-manager.c
+ create mode 100644 drivers/scsi/ufs/ufshcd-crypto.c
+ create mode 100644 drivers/scsi/ufs/ufshcd-crypto.h
+ create mode 100644 fs/crypto/inline_crypt.c
+ create mode 100644 include/linux/bio-crypt-ctx.h
+ create mode 100644 include/linux/blk-crypto.h
+ create mode 100644 include/linux/keyslot-manager.h
 
 -- 
-chandan
-
-
+2.24.0.rc0.303.g954a862665-goog
 
