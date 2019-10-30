@@ -2,190 +2,176 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EE818EA2CA
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 30 Oct 2019 18:51:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91058EA348
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 30 Oct 2019 19:26:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727497AbfJ3Rvh (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 30 Oct 2019 13:51:37 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:41093 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727539AbfJ3Rvg (ORCPT
+        id S1727285AbfJ3S0T (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 30 Oct 2019 14:26:19 -0400
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:33643 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726259AbfJ3S0S (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 30 Oct 2019 13:51:36 -0400
-Received: by mail-ot1-f67.google.com with SMTP id 94so2894315oty.8
-        for <linux-fscrypt@vger.kernel.org>; Wed, 30 Oct 2019 10:51:36 -0700 (PDT)
+        Wed, 30 Oct 2019 14:26:18 -0400
+Received: by mail-pl1-f196.google.com with SMTP id y8so1371016plk.0
+        for <linux-fscrypt@vger.kernel.org>; Wed, 30 Oct 2019 11:26:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZAJAbO6qwXhLEfUbw+AhujMFfUXjrUZjKzqtdegXcpE=;
-        b=BPlFogKNwpXdEhzfBA3vrd5InmBVlOAbu5jJZ69b6mMYO56ZV/S6tJfSnU5azKMjfk
-         nTrUrFAtkDIw7vI63ZDJuuN6W1CvRnbjCYF8r3+YhE5mv0JoypVBxb2+StYO2fqB7x5Q
-         j4JbvB5ILE2TW4sNBxA+9XI+Id64EYF4rjq+g=
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=Ley5zvOlqaz2Wb2k694thCubOF2e57hu9OBi77fDxEQ=;
+        b=j/Xlnnb4bRZ9+4KD1WhoNvk/kS85zjuQnr4LIEdZrDVgY/LEuUTrBSqNeX1ziYwI2I
+         DUo5r32HNy1rmo4RKYYx+NO2f3XC/ZJgPWC9K2zzGVDmtF/2HTrTxI1mBdHol0jfK0Ln
+         sQCSBb2dejgO92c5ovM+98RbD4p4CQUAkqGYmeroASqzXhVBDJb5BOuuIuTYNDu72AwL
+         vHCS1HOnobtqiIBZFDJB66iSwOslFuySvU9Q7Yeb4qLgmuldq2ov30mxnrzLX5PGHdZo
+         hbNdReob4s+22r/9tmGT95z41DoSYc4cU/86Ip12mpySxbKCTx3g+01nT4m3uBFdGyho
+         ou3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZAJAbO6qwXhLEfUbw+AhujMFfUXjrUZjKzqtdegXcpE=;
-        b=lQA4aMBWX/exLxMGo/CJ/dSRJGDrODtjBdvlx0J7NyRie67hCK65w0pQWUMikribB1
-         3SM4wg63iRAJ8GjtJSIlpWZWJirUhsqebvHjSAqJ05KUWkVZB7NpB3df+xGQlhJ6o5uy
-         +Z+G5MhBdTPtHx15vQG1B+eyF6d/jI0im2kjnYsmi9AVrrf8a4Xr559hn+MwzuaQ45Gf
-         7Xy7anl1/KURCZUNXk9WARycM0k3VSkzf3nge9N11SkJGybUOHMXcJn25lqtfhFxp3uU
-         E7p02qm5hWemVG8+h3Fw+bE2VtW/pnrKAzHoiMzTu+gkO2EyEMQ2FDd42fzUn1LA3Qc/
-         zh+g==
-X-Gm-Message-State: APjAAAWmj7TKds3/dHGpbgUTE+Dx8Viq+4JhV6h0jwAi7kAJLItDQQLc
-        9buqJb795KhcLONOt35ozMWHTSWoofc=
-X-Google-Smtp-Source: APXvYqwgEnoVxK2t3UCeG3zivRpIk5qFbhPWVclvM2Z2xkWpREgRtxYUI2vsdJAgGn+ExjR8fXeswg==
-X-Received: by 2002:a9d:53c4:: with SMTP id i4mr965235oth.151.1572457895472;
-        Wed, 30 Oct 2019 10:51:35 -0700 (PDT)
-Received: from mail-io1-f54.google.com (mail-io1-f54.google.com. [209.85.166.54])
-        by smtp.gmail.com with ESMTPSA id o2sm249583ota.3.2019.10.30.10.51.32
-        for <linux-fscrypt@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Oct 2019 10:51:33 -0700 (PDT)
-Received: by mail-io1-f54.google.com with SMTP id 1so3574699iou.4
-        for <linux-fscrypt@vger.kernel.org>; Wed, 30 Oct 2019 10:51:32 -0700 (PDT)
-X-Received: by 2002:a5d:9059:: with SMTP id v25mr996377ioq.58.1572457892344;
- Wed, 30 Oct 2019 10:51:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <20191030100618.1.Ibf7a996e4a58e84f11eec910938cfc3f9159c5de@changeid>
- <20191030173758.GC693@sol.localdomain>
-In-Reply-To: <20191030173758.GC693@sol.localdomain>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 30 Oct 2019 10:51:20 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=Uzma+eSGG1S1Aq6s3QdMNh4J-c=g-5uhB=0XBtkAawcA@mail.gmail.com>
-Message-ID: <CAD=FV=Uzma+eSGG1S1Aq6s3QdMNh4J-c=g-5uhB=0XBtkAawcA@mail.gmail.com>
-Subject: Re: [PATCH] Revert "ext4 crypto: fix to check feature status before
- get policy"
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Gwendal Grignou <gwendal@chromium.org>, Chao Yu <chao@kernel.org>,
-        Ryo Hashimoto <hashimoto@chromium.org>,
-        Vadim Sukhomlinov <sukhomlinov@google.com>,
-        Guenter Roeck <groeck@chromium.org>, apronin@chromium.org,
-        linux-doc@vger.kernel.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jonathan Corbet <corbet@lwn.net>,
-        LKML <linux-kernel@vger.kernel.org>,
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=Ley5zvOlqaz2Wb2k694thCubOF2e57hu9OBi77fDxEQ=;
+        b=YdQ3gd0gRsbZekzlv0f5KsfOvJSHlDydltwNAtMgY83W4Ioab4Qv6g87IEdRHo5iaL
+         rJHQQOJd0yBP1qAbuNiPLWHOiJsK++4edQK60gGyVZlAzAjvoi8Bm3+pXMP6XdZnVXZL
+         ejjLI1uSMP38n0kRrso3CiCKFjXSIXe8YI0VoqSuNzrARd36Oa0In3aC22T0eC7rMrxT
+         f4vDs0T3AHjw/tslOg8z2n/KKLNbgTFvvhB9DvEsdOqVDajg1ReTjr2VZUEeGVj3Vh9N
+         S4/kjGaRm2bzJJUTQhhFyibQRA0dx6IL7qE8cZQaxD+pHsHGp6wEHnrqlEsgGhjH/Xyb
+         Pl9A==
+X-Gm-Message-State: APjAAAWphY3Bv7t1ctI4J7uj7tQ0cTUE8a9Sdr4kvLt14Oi/kOs4LA1f
+        uFXppXmcDLGPMOTzl81a+lA8Lw==
+X-Google-Smtp-Source: APXvYqyev8sjZ1KZb/AgoF729qKcxrPe4HXmhqnJexPBMNfdbYQ15vLaVNRr2Bm6WAicApGTTJeWxQ==
+X-Received: by 2002:a17:902:aa41:: with SMTP id c1mr1439479plr.153.1572459977459;
+        Wed, 30 Oct 2019 11:26:17 -0700 (PDT)
+Received: from cabot-wlan.adilger.int (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
+        by smtp.gmail.com with ESMTPSA id 39sm4053067pjo.7.2019.10.30.11.26.13
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 30 Oct 2019 11:26:16 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <7C96E996-D52F-4901-9F64-B2C40A889829@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_540B1263-203B-43E9-BA92-ABF36413FD90";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH 1/4] statx: define STATX_ATTR_VERITY
+Date:   Wed, 30 Oct 2019 12:26:10 -0600
+In-Reply-To: <20191029204141.145309-2-ebiggers@kernel.org>
+Cc:     linux-fscrypt@vger.kernel.org,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net, linux-api@vger.kernel.org,
+        David Howells <dhowells@redhat.com>,
+        Theodore Ts'o <tytso@mit.edu>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Victor Hsieh <victorhsieh@google.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+References: <20191029204141.145309-1-ebiggers@kernel.org>
+ <20191029204141.145309-2-ebiggers@kernel.org>
+X-Mailer: Apple Mail (2.3273)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hi,
 
-On Wed, Oct 30, 2019 at 10:38 AM Eric Biggers <ebiggers@kernel.org> wrote:
->
-> Hi Douglas,
->
-> On Wed, Oct 30, 2019 at 10:06:25AM -0700, Douglas Anderson wrote:
-> > This reverts commit 0642ea2409f3 ("ext4 crypto: fix to check feature
-> > status before get policy").
-> >
-> > The commit made a clear and documented ABI change that is not backward
-> > compatible.  There exists userspace code [1] that relied on the old
-> > behavior and is now broken.
-> >
-> > While we could entertain the idea of updating the userspace code to
-> > handle the ABI change, it's my understanding that in general ABI
-> > changes that break userspace are frowned upon (to put it nicely).
-> >
-> > NOTE: if we for some reason do decide to entertain the idea of
-> > allowing the ABI change and updating userspace, I'd appreciate any
-> > help on how we should make the change.  Specifically the old code
-> > relied on the different return values to differentiate between
-> > "KeyState::NO_KEY" and "KeyState::NOT_SUPPORTED".  I'm no expert on
-> > the ext4 encryption APIs (I just ended up here tracking down the
-> > regression [2]) so I'd need a bit of handholding from someone.
-> >
-> > [1] https://chromium.googlesource.com/chromiumos/platform2/+/refs/heads/master/cryptohome/dircrypto_util.cc#73
-> > [2] https://crbug.com/1018265
-> >
-> > Fixes: 0642ea2409f3 ("ext4 crypto: fix to check feature status before get policy")
-> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> > ---
-> >
-> >  Documentation/filesystems/fscrypt.rst | 3 +--
-> >  fs/ext4/ioctl.c                       | 2 --
-> >  2 files changed, 1 insertion(+), 4 deletions(-)
-> >
-> > diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
-> > index 8a0700af9596..4289c29d7c5a 100644
-> > --- a/Documentation/filesystems/fscrypt.rst
-> > +++ b/Documentation/filesystems/fscrypt.rst
-> > @@ -562,8 +562,7 @@ FS_IOC_GET_ENCRYPTION_POLICY_EX can fail with the following errors:
-> >    or this kernel is too old to support FS_IOC_GET_ENCRYPTION_POLICY_EX
-> >    (try FS_IOC_GET_ENCRYPTION_POLICY instead)
-> >  - ``EOPNOTSUPP``: the kernel was not configured with encryption
-> > -  support for this filesystem, or the filesystem superblock has not
-> > -  had encryption enabled on it
-> > +  support for this filesystem
-> >  - ``EOVERFLOW``: the file is encrypted and uses a recognized
-> >    encryption policy version, but the policy struct does not fit into
-> >    the provided buffer
-> > diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-> > index 0b7f316fd30f..13d97fb797b4 100644
-> > --- a/fs/ext4/ioctl.c
-> > +++ b/fs/ext4/ioctl.c
-> > @@ -1181,8 +1181,6 @@ long ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
-> >  #endif
-> >       }
-> >       case EXT4_IOC_GET_ENCRYPTION_POLICY:
-> > -             if (!ext4_has_feature_encrypt(sb))
-> > -                     return -EOPNOTSUPP;
-> >               return fscrypt_ioctl_get_policy(filp, (void __user *)arg);
-> >
->
-> Thanks for reporting this.  Can you elaborate on exactly why returning
-> EOPNOTSUPP breaks things in the Chrome OS code?  Since encryption is indeed not
-> supported, why isn't "KeyState::NOT_SUPPORTED" correct?
+--Apple-Mail=_540B1263-203B-43E9-BA92-ABF36413FD90
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-I guess all I know is from the cryptohome source code I sent a link
-to, which I'm not a super expert in.  Did you get a chance to take a
-look at that?  As far as I can tell the code is doing something like
-this:
+On Oct 29, 2019, at 2:41 PM, Eric Biggers <ebiggers@kernel.org> wrote:
+>=20
+> From: Eric Biggers <ebiggers@google.com>
+>=20
+> Add a statx attribute bit STATX_ATTR_VERITY which will be set if the
+> file has fs-verity enabled.  This is the statx() equivalent of
+> FS_VERITY_FL which is returned by FS_IOC_GETFLAGS.
+>=20
+> This is useful because it allows applications to check whether a file =
+is
+> a verity file without opening it.  Opening a verity file can be
+> expensive because the fsverity_info is set up on open, which involves
+> parsing metadata and optionally verifying a cryptographic signature.
+>=20
+> This is analogous to how various other bits are exposed through both
+> FS_IOC_GETFLAGS and statx(), e.g. the encrypt bit.
+>=20
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-1. If I see EOPNOTSUPP then this must be a kernel without ext4 crypto.
-Fallback to using the old-style ecryptfs.
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 
-2. If I see ENODATA then this is a kernel with ext4 crypto but there's
-no key yet.  We should set a key and (if necessarily) enable crypto on
-the filesystem.
-
-3. If I see no error then we're already good.
+> ---
+> include/linux/stat.h      | 3 ++-
+> include/uapi/linux/stat.h | 2 +-
+> 2 files changed, 3 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/include/linux/stat.h b/include/linux/stat.h
+> index 765573dc17d659..528c4baad09146 100644
+> --- a/include/linux/stat.h
+> +++ b/include/linux/stat.h
+> @@ -33,7 +33,8 @@ struct kstat {
+> 	 STATX_ATTR_IMMUTABLE |				\
+> 	 STATX_ATTR_APPEND |				\
+> 	 STATX_ATTR_NODUMP |				\
+> -	 STATX_ATTR_ENCRYPTED				\
+> +	 STATX_ATTR_ENCRYPTED |				\
+> +	 STATX_ATTR_VERITY				\
+> 	 )/* Attrs corresponding to FS_*_FL flags */
+> 	u64		ino;
+> 	dev_t		dev;
+> diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
+> index 7b35e98d3c58b1..ad80a5c885d598 100644
+> --- a/include/uapi/linux/stat.h
+> +++ b/include/uapi/linux/stat.h
+> @@ -167,8 +167,8 @@ struct statx {
+> #define STATX_ATTR_APPEND		0x00000020 /* [I] File is =
+append-only */
+> #define STATX_ATTR_NODUMP		0x00000040 /* [I] File is not to =
+be dumped */
+> #define STATX_ATTR_ENCRYPTED		0x00000800 /* [I] File requires =
+key to decrypt in fs */
+> -
+> #define STATX_ATTR_AUTOMOUNT		0x00001000 /* Dir: Automount =
+trigger */
+> +#define STATX_ATTR_VERITY		0x00100000 /* [I] Verity =
+protected file */
+>=20
+>=20
+> #endif /* _UAPI_LINUX_STAT_H */
+> --
+> 2.24.0.rc1.363.gb1bccd3e3d-goog
+>=20
 
 
-> Note that the state after this revert will be:
->
-> - FS_IOC_GET_ENCRYPTION_POLICY on ext4 => ENODATA
-> - FS_IOC_GET_ENCRYPTION_POLICY on f2fs => EOPNOTSUPP
-> - FS_IOC_GET_ENCRYPTION_POLICY_EX on ext4 => EOPNOTSUPP
-> - FS_IOC_GET_ENCRYPTION_POLICY_EX on f2fs => EOPNOTSUPP
->
-> So if this code change is made, the documentation would need to be updated to
-> explain that the error code from FS_IOC_GET_ENCRYPTION_POLICY is
-> filesystem-specific (which we'd really like to avoid...), and that
-> FS_IOC_GET_ENCRYPTION_POLICY_EX handles this case differently.  Or else the
-> other three would need to be changed to ENODATA -- which for
-> FS_IOC_GET_ENCRYPTION_POLICY on f2fs would be an ABI break in its own right,
-> though it's possible that no one would notice.
->
-> Is your proposal to keep the error filesystem-specific for now?
-
-I guess I'd have to leave it up to the people who know this better.
-Mostly I just saw this as an ABI change breaking userspace which to me
-means revert.  I have very little background here to make good
-decisions about the right way to move forward.
+Cheers, Andreas
 
 
-> BTW, the crbug.com link is not publicly viewable, so should not be included in
-> the commit message.
 
-My apologies.  It's public now.  Annoyingly they've been experimenting
-with making bugs on crbug.com private by default (argh) and I didn't
-notice.
 
--Doug
+
+
+--Apple-Mail=_540B1263-203B-43E9-BA92-ABF36413FD90
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl251cMACgkQcqXauRfM
+H+DZ+xAAhLyZsNstVnuqyPFkwbCFPUlVQ0TjfHLGBCf1GxKf+I8XJCgAQdG4VJeb
+H5U3+9NMn5JZP/e0hGGGCnZtE7LpLRkQ7ja4hRS3cDS1eieU5JL7j2DYhCvAplsr
++WieKbYKUXLPByc5+fRW+VIRUkNPLl03IflKpo+746OnT0KMu/NfpViWbiVyuFyd
+bRoKMEwAhyRCgAgYXHQ6Rjyl/rUAA7jnI1Coau5KB9u4NdKsDheF3l7FMiENEpKc
+Za3SXo6Cq7N7KDu9E2YwD6jGPZx7uD3b0tpVIkc8D2zYgxFwwzFZmmh0P8/3hVd2
+UJY8adBQ4RKGtbYfjtznKPRb9kiEWeevRCwEfwtU7W5LQ0jOi37WdfSlHeIVbvqQ
+FrhGKiV9jQYG4HHu42CB0mcacmOZb0xNRjivgSJQYvNCwK1VCwWn+ATLAuONN458
+9ScrS0DkbBYN1k+mcz9erwA+MjWUzR+5LHgwbZ/CUNP8rlwSLzlXGxKnD0xrUHUg
+i7ttSxL9LGodPt4r+pc32rCTfVFwvm6q0yS6a8WuB8uWGltW0/ofxkBHYsAwARZx
+LkZIi3v8PM5G4ZuStQB0otNLudLmJXIkfmRp7vVgr8iOUNzMTT2Y/Li9zW2n9xcR
+YnghFoyhVUvxNSwhudMMN1IL47pyaCEVB9aVppsYtbheS//T5/I=
+=tGAO
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_540B1263-203B-43E9-BA92-ABF36413FD90--
