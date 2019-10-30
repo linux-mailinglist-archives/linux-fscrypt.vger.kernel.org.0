@@ -2,97 +2,73 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E8073EA5D8
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 30 Oct 2019 22:59:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB9E2EA614
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 30 Oct 2019 23:20:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727207AbfJ3V7R (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 30 Oct 2019 17:59:17 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:44683 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727127AbfJ3V7R (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 30 Oct 2019 17:59:17 -0400
-Received: by mail-io1-f66.google.com with SMTP id w12so4321889iol.11
-        for <linux-fscrypt@vger.kernel.org>; Wed, 30 Oct 2019 14:59:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=S7mK3Uoiwaws9OYl+5bVE084OvHB6LGX6Sfc0eSAjwc=;
-        b=aKsZ4bdZUSBifwnA9EI/sfdmKnP62vGSwIqzhbMUiTCUkHM2p7iqF53Jzgdv5kXvv6
-         GBFkJoqdRYLQIybUp5uZd8C9F7L2xM/7BvH0VitcMonLl80SQX9+/8cxz1Pb55faR4eW
-         W84909D8+2Y2GxJriYNmqjYg9MaPiledZHFQg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=S7mK3Uoiwaws9OYl+5bVE084OvHB6LGX6Sfc0eSAjwc=;
-        b=pT5P3BBib6bfnjSB0kn2kuqIsZywAbAqrC7yxG0WxCZXkXjARwgUQKmUdvrJ6sTPgU
-         Gl5ra8W01zaPNTf2redhgg7jYwptjFCNWzomoxFjUkiz77KIAd5+p89ueqYvyHDctU+k
-         uuFT/ytbciaJtpsDlPt+gomMKL0YpzVovHE3vk9i+NM/mAqvkjWQctMLqHSbyaNIjv12
-         kj8wl+ctbIUWR920E3GII035jlrkyolBlOzJi7z54h9gBBlSNpx2KcsE4BE/ELjX1tjz
-         G4MBZmjHcmuSbyLc4ISLUe324oE4W/BBig2kM9mXK5tMGaYTW26MSs34UlVQ7c1Enzxq
-         tueg==
-X-Gm-Message-State: APjAAAU4GBO/RQjDlQANC+WQfEDE54JWuryX1M94oQLGNkvYJ3ypXGJ+
-        RPhBgrQTKiJWu0f4Fsnl5vSCKxSo7+k=
-X-Google-Smtp-Source: APXvYqwN6TK2nHJ4Y3rH6L6cRqM4V1rcZpuKLXdHJT2QReJyd8+DtfXKocrXrbN3q30qs+klJ5125A==
-X-Received: by 2002:a6b:7006:: with SMTP id l6mr1817863ioc.298.1572472756393;
-        Wed, 30 Oct 2019 14:59:16 -0700 (PDT)
-Received: from mail-il1-f170.google.com (mail-il1-f170.google.com. [209.85.166.170])
-        by smtp.gmail.com with ESMTPSA id r1sm109179iod.69.2019.10.30.14.59.15
-        for <linux-fscrypt@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Oct 2019 14:59:15 -0700 (PDT)
-Received: by mail-il1-f170.google.com with SMTP id y5so3557517ilb.5
-        for <linux-fscrypt@vger.kernel.org>; Wed, 30 Oct 2019 14:59:15 -0700 (PDT)
-X-Received: by 2002:a92:ba1b:: with SMTP id o27mr2484026ili.269.1572472754921;
- Wed, 30 Oct 2019 14:59:14 -0700 (PDT)
+        id S1726596AbfJ3WUO (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 30 Oct 2019 18:20:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47242 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726538AbfJ3WUO (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 30 Oct 2019 18:20:14 -0400
+Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CDC0420873;
+        Wed, 30 Oct 2019 22:20:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1572474013;
+        bh=39tlinMi/mwa6K8bh+AvUrEqnvDUmchorz6iz1Vb2MI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=dsqYm+NoUlZpxlsre8/ninHtAsLPpuA5GeG76ceKYSruhHR62LS0vHKwBN0Fvt84W
+         qrMaQU64T9FsPIpaBXxnIAX/h1IFURq5gGBcOcZ6HOKl5zTKAebB/mlyH2hRJQ2vYP
+         2zR6VBycETR8KzV2WlJR6qHxF7CCiOXHDBdNFllo=
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
+Subject: [PATCH] docs: fs-verity: document first supported kernel version
+Date:   Wed, 30 Oct 2019 15:19:15 -0700
+Message-Id: <20191030221915.229858-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-References: <20191030100618.1.Ibf7a996e4a58e84f11eec910938cfc3f9159c5de@changeid>
- <20191030173758.GC693@sol.localdomain> <CAD=FV=Uzma+eSGG1S1Aq6s3QdMNh4J-c=g-5uhB=0XBtkAawcA@mail.gmail.com>
- <20191030190226.GD693@sol.localdomain> <20191030205745.GA216218@sol.localdomain>
-In-Reply-To: <20191030205745.GA216218@sol.localdomain>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 30 Oct 2019 14:59:03 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=X6Q3QZaND-tfYr9mf-KYMeKFmJDca3ee-i9roWj+GHsQ@mail.gmail.com>
-Message-ID: <CAD=FV=X6Q3QZaND-tfYr9mf-KYMeKFmJDca3ee-i9roWj+GHsQ@mail.gmail.com>
-Subject: Re: [PATCH] Revert "ext4 crypto: fix to check feature status before
- get policy"
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Gwendal Grignou <gwendal@chromium.org>, Chao Yu <chao@kernel.org>,
-        Ryo Hashimoto <hashimoto@chromium.org>,
-        Vadim Sukhomlinov <sukhomlinov@google.com>,
-        Guenter Roeck <groeck@chromium.org>, apronin@chromium.org,
-        linux-doc@vger.kernel.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jonathan Corbet <corbet@lwn.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hi,
+From: Eric Biggers <ebiggers@google.com>
 
-On Wed, Oct 30, 2019 at 1:57 PM Eric Biggers <ebiggers@kernel.org> wrote:
->
-> FWIW, from reading the Chrome OS code, I think the code you linked to isn't
-> where the breakage actually is.  I think it's actually at
-> https://chromium.googlesource.com/chromiumos/platform2/+/refs/heads/master/chromeos-common-script/share/chromeos-common.sh#375
-> ... where an init script is using the error message printed by 'e4crypt
-> get_policy' to decide whether to add -O encrypt to the filesystem or not.
->
-> It really should check instead:
->
->         [ -e /sys/fs/ext4/features/encryption ]
+I had meant to replace these TODOs with the actual version when applying
+the patches, but forgot to do so.  Do it now.
 
-OK, I filed <https://crbug.com/1019939> and CCed all the people listed
-in the cryptohome "OWNERS" file.  Hopefully one of them can pick this
-up as a general cleanup.  Thanks!
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ Documentation/filesystems/fsverity.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
--Doug
+diff --git a/Documentation/filesystems/fsverity.rst b/Documentation/filesystems/fsverity.rst
+index 3355377a2439..a95536b6443c 100644
+--- a/Documentation/filesystems/fsverity.rst
++++ b/Documentation/filesystems/fsverity.rst
+@@ -406,7 +406,7 @@ pages have been read into the pagecache.  (See `Verifying data`_.)
+ ext4
+ ----
+ 
+-ext4 supports fs-verity since Linux TODO and e2fsprogs v1.45.2.
++ext4 supports fs-verity since Linux v5.4 and e2fsprogs v1.45.2.
+ 
+ To create verity files on an ext4 filesystem, the filesystem must have
+ been formatted with ``-O verity`` or had ``tune2fs -O verity`` run on
+@@ -442,7 +442,7 @@ also only supports extent-based files.
+ f2fs
+ ----
+ 
+-f2fs supports fs-verity since Linux TODO and f2fs-tools v1.11.0.
++f2fs supports fs-verity since Linux v5.4 and f2fs-tools v1.11.0.
+ 
+ To create verity files on an f2fs filesystem, the filesystem must have
+ been formatted with ``-O verity``.
+-- 
+2.23.0
+
