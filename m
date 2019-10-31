@@ -2,128 +2,67 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 74328EB663
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 31 Oct 2019 18:52:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89933EB679
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 31 Oct 2019 18:57:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729027AbfJaRwg (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 31 Oct 2019 13:52:36 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:37699 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729143AbfJaRwf (ORCPT
+        id S1729114AbfJaR5N (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 31 Oct 2019 13:57:13 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:46678 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726602AbfJaR5N (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 31 Oct 2019 13:52:35 -0400
-Received: by mail-io1-f65.google.com with SMTP id 1so7735249iou.4
-        for <linux-fscrypt@vger.kernel.org>; Thu, 31 Oct 2019 10:52:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mxV+2q76TOXqdkYGmWgrFX3noerT+2XT5stD2pDGxy4=;
-        b=D6C1yVuRrDhf4QkrhECxb4poSSgofQd6d8y3lwuDnDDo8D10nO6Ax5FRjL4ps/cBH2
-         kibSwzCfBDl1f7CMhlXY1kciz6oFkW7LsIrytUSfdoT6ANPyz6PU14U40ImfzEl2fu5d
-         06UoCcfFhGpPMpgbOenFHbl2nIwNSPRnbySfc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mxV+2q76TOXqdkYGmWgrFX3noerT+2XT5stD2pDGxy4=;
-        b=HUScpWNVEAtkv6xt+KwAcbGfprtZaABNHQLjxHWgjuxyDhc0OCl2Uu3LdlGOQU6pst
-         t3aR6sE3wImxxrh2pby4BXk4wWXIOq2Em1j21Sd+UGQvvbY9nxdYUBlt537ckY9gHNNa
-         KjSk6xu8JekBX/MZ39+dxIYxKnWgFvlDtzr1+wr6zfSHmX0Vh+dSZahT9tu3SquxSTVC
-         vq0BMo9mUrv1aU/q6SgBT/Sx3hLd7bWsFg9Tinf2aruP8wcTR33J1MNp9YzuJXTChACw
-         FT2Ghwem1mi0m+q/pFhZ9hYBrCx73CNKU5nkA/70rSe0s3kiHLo7rCVtwgIbKzXlsfoc
-         Jn+w==
-X-Gm-Message-State: APjAAAVH7G9ADghX/veWTzXWtCEvQq/qPDAwaejjFyHW9/L/ulZvzdnv
-        6ppaaQLOF/EzXw5KkWmKvInVWEtxXB8=
-X-Google-Smtp-Source: APXvYqwKvwxCXBuJWasQxbIhZ7d7Nv9Pkr+YLNxEE/xLR2NBG6tFtMjGafltqlk10ICkYNDkQhuoUQ==
-X-Received: by 2002:a6b:8bcc:: with SMTP id n195mr6006620iod.135.1572544354588;
-        Thu, 31 Oct 2019 10:52:34 -0700 (PDT)
-Received: from mail-il1-f181.google.com (mail-il1-f181.google.com. [209.85.166.181])
-        by smtp.gmail.com with ESMTPSA id v28sm662002ill.74.2019.10.31.10.52.32
-        for <linux-fscrypt@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 31 Oct 2019 10:52:33 -0700 (PDT)
-Received: by mail-il1-f181.google.com with SMTP id s75so6177472ilc.3
-        for <linux-fscrypt@vger.kernel.org>; Thu, 31 Oct 2019 10:52:32 -0700 (PDT)
-X-Received: by 2002:a92:ba1b:: with SMTP id o27mr7815343ili.269.1572544351933;
- Thu, 31 Oct 2019 10:52:31 -0700 (PDT)
+        Thu, 31 Oct 2019 13:57:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=NThx6lFDqYVUr8TtZn2As6WtB1ixtvpCPRZvtqpGcXA=; b=ADMS9XgHFzJN0W1JfbZOHcYuL
+        WiwTGHuVjC1n+3eMJNmhdIbz8gFKURJs9caDViGVRC0/LRLSAewysAzmbCbE857kBBaMHhzx169aJ
+        qLVbcdRAhHa1rcpAp2ewHvzqCXabKXLwgyfrepFLq8VTTAOhE3m0T46SK5oR8Y2o0CAsSqIO/2BKU
+        wiY6jiotsGlPpJggeBS9wju445XW8VNja6QIoyRCk6tTnhevhPK2D8XaO8haqs3725gL36ew0vYi2
+        E3bM9R3Kj6G1dgV7xgy5Q7/X8GJyzzRhn6qgsq0jtC7RZv9o44Wvk4792saRO1BMlwMJzslEYo12K
+        o7wccmCzg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1iQEh7-0007t1-1b; Thu, 31 Oct 2019 17:57:13 +0000
+Date:   Thu, 31 Oct 2019 10:57:13 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Satya Tangirala <satyat@google.com>
+Cc:     linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
+        Kuohong Wang <kuohong.wang@mediatek.com>,
+        Kim Boojin <boojin.kim@samsung.com>
+Subject: Re: [PATCH v5 3/9] block: blk-crypto for Inline Encryption
+Message-ID: <20191031175713.GA23601@infradead.org>
+References: <20191028072032.6911-1-satyat@google.com>
+ <20191028072032.6911-4-satyat@google.com>
 MIME-Version: 1.0
-References: <20191030100618.1.Ibf7a996e4a58e84f11eec910938cfc3f9159c5de@changeid>
- <20191030173758.GC693@sol.localdomain> <CAD=FV=Uzma+eSGG1S1Aq6s3QdMNh4J-c=g-5uhB=0XBtkAawcA@mail.gmail.com>
- <20191030190226.GD693@sol.localdomain> <20191030205745.GA216218@sol.localdomain>
- <CAD=FV=X6Q3QZaND-tfYr9mf-KYMeKFmJDca3ee-i9roWj+GHsQ@mail.gmail.com>
-In-Reply-To: <CAD=FV=X6Q3QZaND-tfYr9mf-KYMeKFmJDca3ee-i9roWj+GHsQ@mail.gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 31 Oct 2019 10:52:19 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=URZX4t-TB2Ne8y5ZfeBGoyhsPZhcncQ0yPe3cRXi=1gw@mail.gmail.com>
-Message-ID: <CAD=FV=URZX4t-TB2Ne8y5ZfeBGoyhsPZhcncQ0yPe3cRXi=1gw@mail.gmail.com>
-Subject: Re: [PATCH] Revert "ext4 crypto: fix to check feature status before
- get policy"
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Gwendal Grignou <gwendal@chromium.org>, Chao Yu <chao@kernel.org>,
-        Ryo Hashimoto <hashimoto@chromium.org>,
-        Vadim Sukhomlinov <sukhomlinov@google.com>,
-        Guenter Roeck <groeck@chromium.org>, apronin@chromium.org,
-        linux-doc@vger.kernel.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jonathan Corbet <corbet@lwn.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191028072032.6911-4-satyat@google.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hi,
+On Mon, Oct 28, 2019 at 12:20:26AM -0700, Satya Tangirala wrote:
+> We introduce blk-crypto, which manages programming keyslots for struct
+> bios. With blk-crypto, filesystems only need to call bio_crypt_set_ctx with
+> the encryption key, algorithm and data_unit_num; they don't have to worry
+> about getting a keyslot for each encryption context, as blk-crypto handles
+> that. Blk-crypto also makes it possible for layered devices like device
+> mapper to make use of inline encryption hardware.
+> 
+> Blk-crypto delegates crypto operations to inline encryption hardware when
+> available, and also contains a software fallback to the kernel crypto API.
+> For more details, refer to Documentation/block/inline-encryption.rst.
 
-On Wed, Oct 30, 2019 at 2:59 PM Doug Anderson <dianders@chromium.org> wrote:
->
-> Hi,
->
-> On Wed, Oct 30, 2019 at 1:57 PM Eric Biggers <ebiggers@kernel.org> wrote:
-> >
-> > FWIW, from reading the Chrome OS code, I think the code you linked to isn't
-> > where the breakage actually is.  I think it's actually at
-> > https://chromium.googlesource.com/chromiumos/platform2/+/refs/heads/master/chromeos-common-script/share/chromeos-common.sh#375
-> > ... where an init script is using the error message printed by 'e4crypt
-> > get_policy' to decide whether to add -O encrypt to the filesystem or not.
-> >
-> > It really should check instead:
-> >
-> >         [ -e /sys/fs/ext4/features/encryption ]
->
-> OK, I filed <https://crbug.com/1019939> and CCed all the people listed
-> in the cryptohome "OWNERS" file.  Hopefully one of them can pick this
-> up as a general cleanup.  Thanks!
-
-Just to follow-up: I did a quick test here to see if I could fix
-"chromeos-common.sh" as you suggested.  Then I got rid of the Revert
-and tried to login.  No joy.
-
-Digging a little deeper, the ext4_dir_encryption_supported() function
-is called in two places:
-* chromeos-install
-* chromeos_startup
-
-In my test case I had a machine that I'd already logged into (on a
-previous kernel version) and I was trying to log into it a second
-time.  Thus there's no way that chromeos-install could be involved.
-Looking at chromeos_startup:
-
-https://chromium.googlesource.com/chromiumos/platform2/+/refs/heads/master/init/chromeos_startup
-
-...the function is only used for setting up the "encrypted stateful"
-partition.  That wasn't where my failure was.  My failure was with
-logging in AKA with cryptohome.  Thus I think it's plausible that my
-original commit message pointing at cryptohome may have been correct.
-It's possible that there were _also_ problems with encrypted stateful
-that I wasn't noticing, but if so they were not the only problems.
-
-It still may be wise to make Chrome OS use different tests, but it
-might not be quite as simple as hoped...
-
--Doug
+Can you explain why we need this software fallback that basically just
+duplicates logic already in fscrypt?  As far as I can tell this fallback
+logic actually is more code than the actual inline encryption, and nasty
+code at that, e.g. the whole crypt_iter thing.
