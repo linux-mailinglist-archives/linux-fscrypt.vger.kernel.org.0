@@ -2,151 +2,104 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E1ADEEC3B1
-	for <lists+linux-fscrypt@lfdr.de>; Fri,  1 Nov 2019 14:32:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2646FEC831
+	for <lists+linux-fscrypt@lfdr.de>; Fri,  1 Nov 2019 19:02:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727221AbfKANcT (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 1 Nov 2019 09:32:19 -0400
-Received: from mail-yw1-f67.google.com ([209.85.161.67]:43160 "EHLO
-        mail-yw1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726860AbfKANcT (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 1 Nov 2019 09:32:19 -0400
-Received: by mail-yw1-f67.google.com with SMTP id g77so3462489ywb.10
-        for <linux-fscrypt@vger.kernel.org>; Fri, 01 Nov 2019 06:32:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sIZwoSrU60azkju4XlI+xHq6n0ne1xWv7n1NGMPGr4Q=;
-        b=NM8Ga8Hqnp8YUqkz1Huiro6k8teFHd041XtBeYc+Ya1GKfoTW8wtTa5320HyfTx7rs
-         ev7ncEyqpJyIouMHVJA0ek6rI/99vnGXVojZD3zJgPS+/RINUhJa8x/Wjse7coSJGDFL
-         Kd+MzCVqIarPT98omr9ob+2N52k+0IPD89iU1D4D3xcizwoU2TzITjgNAiaPY9bx2qhk
-         1ytTybKexviQ3hI4p0Fp0dPqiL2jyyBG2+nxm+kXaZbqg5dfI/4MvoXZ6/hS8M9HQ5Vk
-         EQcDv8rHP1RuZDL+kPZa18q6AYTCP4MiZCU6A1fBNdzAVaNwUVRsnDgBih47qRT2G45u
-         m0qA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sIZwoSrU60azkju4XlI+xHq6n0ne1xWv7n1NGMPGr4Q=;
-        b=XtSrFFMyj63VbJ/3jvbebyF5b26+tdnkEohzxXdF/apB8sZk/xXa5PGkT3aaeZ0xh4
-         P9Qj/hS2keuk8msglLlfeKW/GxB+uxXM8VwfCMQRWFc4s/MlZ2r3cl/VJnFWrIM1ODtm
-         3attZCAm7AbfcWMw4RGlr4hON56K1bHHJdV5My33ICU2XcF/Y3W6cFrxN3UBh3hGwpup
-         Ck9GYKiu5+j1VNAVmpCM0oHFBk6RQoP1hbDBeub1e0Y/sZ1J3pxKUGxLBCPt5ty6nE3D
-         hA9B+ZIG58HG1xkavwupk906U4HSD+z+7y8NahI/rAoMjNqVRDcpOM+KApQAm4fNOYAc
-         tbCA==
-X-Gm-Message-State: APjAAAWuLc3Q22jPSsrk0XJmIBhUUc4r+GKT8wRtKgluOpRmshsrRtop
-        VU6rVKKq7gdqWUxxCFPNI0VNf/0j3l6zzvizSPC/sg==
-X-Google-Smtp-Source: APXvYqzyWIQ58WDy4QVlh+4flLK1JIVIkiZK2lzx8SHEsEX/KtyBRcjNp3P7bwbxQfGmLusYD0py4wwrMtjR50NGH9k=
-X-Received: by 2002:a81:8486:: with SMTP id u128mr8278300ywf.337.1572615136623;
- Fri, 01 Nov 2019 06:32:16 -0700 (PDT)
+        id S1726982AbfKASCZ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 1 Nov 2019 14:02:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51506 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726229AbfKASCZ (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Fri, 1 Nov 2019 14:02:25 -0400
+Received: from gmail.com (unknown [104.132.1.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8948B2085B;
+        Fri,  1 Nov 2019 18:02:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1572631343;
+        bh=+EVYdRQnzMSni7rbkWUkr/VyBRQqZzi7HYgJl2PSv7U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=H/js7aTdFNTtnWaMZwMd7OYbWGfMscIslU2oJfmvt7TBifOeGwuqtE2QElTyxYpr7
+         R4OLm2XIf0CaESSYuC8mO//4FbtGDyJ6M7c6oYdStKnDVn1r5SNLMT4lKj41qv8ydw
+         TWE5Xs721QeeFRJ6TErBluIl9FU8Ta+x9ZhSmrbk=
+Date:   Fri, 1 Nov 2019 11:02:21 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Satya Tangirala <satyat@google.com>,
+        Paul Lawrence <paullawrence@google.com>,
+        linux-fsdevel@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-ext4@vger.kernel.org, Paul Crowley <paulcrowley@google.com>
+Subject: Re: [PATCH v2 0/3] fscrypt: support for IV_INO_LBLK_64 policies
+Message-ID: <20191101180220.GA86412@gmail.com>
+Mail-Followup-To: linux-fscrypt@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Satya Tangirala <satyat@google.com>,
+        Paul Lawrence <paullawrence@google.com>,
+        linux-fsdevel@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-ext4@vger.kernel.org, Paul Crowley <paulcrowley@google.com>
+References: <20191024215438.138489-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-References: <20191030100618.1.Ibf7a996e4a58e84f11eec910938cfc3f9159c5de@changeid>
- <20191030173758.GC693@sol.localdomain> <CAD=FV=Uzma+eSGG1S1Aq6s3QdMNh4J-c=g-5uhB=0XBtkAawcA@mail.gmail.com>
- <20191030190226.GD693@sol.localdomain> <20191030205745.GA216218@sol.localdomain>
- <CAD=FV=X6Q3QZaND-tfYr9mf-KYMeKFmJDca3ee-i9roWj+GHsQ@mail.gmail.com>
- <CAD=FV=URZX4t-TB2Ne8y5ZfeBGoyhsPZhcncQ0yPe3cRXi=1gw@mail.gmail.com> <20191101043620.GA703@sol.localdomain>
-In-Reply-To: <20191101043620.GA703@sol.localdomain>
-From:   Guenter Roeck <groeck@google.com>
-Date:   Fri, 1 Nov 2019 06:32:05 -0700
-Message-ID: <CABXOdTf=x_LGExsBUnqEvT4t=OAp3e3YjpEDCGdeQnKR=5=D5A@mail.gmail.com>
-Subject: Re: [PATCH] Revert "ext4 crypto: fix to check feature status before
- get policy"
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Doug Anderson <dianders@chromium.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Chao Yu <chao@kernel.org>,
-        Ryo Hashimoto <hashimoto@chromium.org>,
-        Vadim Sukhomlinov <sukhomlinov@google.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Andrey Pronin <apronin@chromium.org>,
-        linux-doc@vger.kernel.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jonathan Corbet <corbet@lwn.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-fscrypt@vger.kernel.org,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191024215438.138489-1-ebiggers@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, Oct 31, 2019 at 9:36 PM Eric Biggers <ebiggers@kernel.org> wrote:
->
-> On Thu, Oct 31, 2019 at 10:52:19AM -0700, Doug Anderson wrote:
-> > Hi,
-> >
-> > On Wed, Oct 30, 2019 at 2:59 PM Doug Anderson <dianders@chromium.org> wrote:
-> > >
-> > > Hi,
-> > >
-> > > On Wed, Oct 30, 2019 at 1:57 PM Eric Biggers <ebiggers@kernel.org> wrote:
-> > > >
-> > > > FWIW, from reading the Chrome OS code, I think the code you linked to isn't
-> > > > where the breakage actually is.  I think it's actually at
-> > > > https://chromium.googlesource.com/chromiumos/platform2/+/refs/heads/master/chromeos-common-script/share/chromeos-common.sh#375
-> > > > ... where an init script is using the error message printed by 'e4crypt
-> > > > get_policy' to decide whether to add -O encrypt to the filesystem or not.
-> > > >
-> > > > It really should check instead:
-> > > >
-> > > >         [ -e /sys/fs/ext4/features/encryption ]
-> > >
-> > > OK, I filed <https://crbug.com/1019939> and CCed all the people listed
-> > > in the cryptohome "OWNERS" file.  Hopefully one of them can pick this
-> > > up as a general cleanup.  Thanks!
-> >
-> > Just to follow-up: I did a quick test here to see if I could fix
-> > "chromeos-common.sh" as you suggested.  Then I got rid of the Revert
-> > and tried to login.  No joy.
-> >
-> > Digging a little deeper, the ext4_dir_encryption_supported() function
-> > is called in two places:
-> > * chromeos-install
-> > * chromeos_startup
-> >
-> > In my test case I had a machine that I'd already logged into (on a
-> > previous kernel version) and I was trying to log into it a second
-> > time.  Thus there's no way that chromeos-install could be involved.
-> > Looking at chromeos_startup:
-> >
-> > https://chromium.googlesource.com/chromiumos/platform2/+/refs/heads/master/init/chromeos_startup
-> >
-> > ...the function is only used for setting up the "encrypted stateful"
-> > partition.  That wasn't where my failure was.  My failure was with
-> > logging in AKA with cryptohome.  Thus I think it's plausible that my
-> > original commit message pointing at cryptohome may have been correct.
-> > It's possible that there were _also_ problems with encrypted stateful
-> > that I wasn't noticing, but if so they were not the only problems.
-> >
-> > It still may be wise to make Chrome OS use different tests, but it
-> > might not be quite as simple as hoped...
-> >
->
-> Ah, I think I found it:
->
-> https://chromium.googlesource.com/chromiumos/overlays/chromiumos-overlay/+/2cbdedd5eca0a57d9596671a99da5fab8e60722b/sys-apps/upstart/files/upstart-1.2-dircrypto.patch
->
-> The init process does EXT4_IOC_GET_ENCRYPTION_POLICY on /, and if the error is
-> EOPNOTSUPP, it skips creating the "dircrypto" keyring.  So then cryptohome can't
-> add keys later.  (Note the error message you got, "Error adding dircrypto key".)
->
+On Thu, Oct 24, 2019 at 02:54:35PM -0700, Eric Biggers wrote:
+> Hello,
+> 
+> In preparation for adding inline encryption support to fscrypt, this
+> patchset adds a new fscrypt policy flag which modifies the encryption to
+> be optimized for inline encryption hardware compliant with the UFS v2.1
+> standard or the upcoming version of the eMMC standard.
+> 
+> This means using per-mode keys instead of per-file keys, and in
+> compensation including the inode number in the IVs.  For ext4, this
+> precludes filesystem shrinking, so I've also added a compat feature
+> which will prevent the filesystem from being shrunk.
+> 
+> I've separated this from the full "Inline Encryption Support" patchset
+> (https://lkml.kernel.org/linux-fsdevel/20190821075714.65140-1-satyat@google.com/)
+> to avoid conflating an implementation (inline encryption) with a new
+> on-disk format (IV_INO_LBLK_64).  This patchset purely adds support for
+> IV_INO_LBLK_64 policies to fscrypt, but implements them using the
+> existing filesystem layer crypto.
+> 
+> We're planning to make the *implementation* (filesystem layer or inline
+> crypto) be controlled by a mount option '-o inlinecrypt'.
+> 
+> This patchset applies to fscrypt.git#master and can also be retrieved from
+> https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git/log/?h=inline-crypt-optimized-v2
+> 
+> I've written a ciphertext verification test for this new type of policy:
+> https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/xfstests-dev.git/log/?h=inline-encryption
+> 
+> Work-in-progress patches for the inline encryption implementation of
+> both IV_INO_LBLK_64 and regular policies can be found at
+> https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git/log/?h=inline-encryption-wip
+> 
+> Changes v1 => v2:
+> 
+> - Rename the flag from INLINE_CRYPT_OPTIMIZED to IV_INO_LBLK_64.
+> 
+> - Use the same key derivation and IV generation scheme for filenames
+>   encryption too.
+> 
+> - Improve the documentation and commit messages.
+> 
+> Eric Biggers (3):
+>   fscrypt: add support for IV_INO_LBLK_64 policies
+>   ext4: add support for IV_INO_LBLK_64 encryption policies
+>   f2fs: add support for IV_INO_LBLK_64 encryption policies
+> 
 
-Good catch. I'll try replacing that with a check for the sysfs flag
-and see if that does the trick.
+Does anyone have any more comments on these patches?
 
-Guenter
-
-> So it looks like the kernel patch broke both that and
-> ext4_dir_encryption_supported().
->
-> I don't see how it could have broken cryptohome by itself, since AFAICS
-> cryptohome only uses EXT4_IOC_GET_ENCRYPTION_POLICY on the partition which is
-> supposed to have the 'encrypt' feature set.
->
-> - Eric
+- Eric
