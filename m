@@ -2,85 +2,74 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 608E6F01A5
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  5 Nov 2019 16:39:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC990F0CFE
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  6 Nov 2019 04:26:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389506AbfKEPj7 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 5 Nov 2019 10:39:59 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:48538 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727889AbfKEPj6 (ORCPT
+        id S1731045AbfKFD0l (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 5 Nov 2019 22:26:41 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:57284 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730655AbfKFD0l (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 5 Nov 2019 10:39:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:To:From:Date:Sender:Reply-To:Cc:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=XQdcZ/rCMxPfhUJE8nbWkRrJsdxA+Vm56qg50/+E1Cw=; b=Ocp9xiaKzYOCoNB+oT3sxZPTQ
-        GZZmpeZz1Pkbx3hL5igN2A9nnxgJeh5ZX0h0RFq6u88ua22HGxw6tlKR923/wrmQM4d9cJFXkqmXz
-        7p6KUsYbiy3UTrhyHmOUjEl4g1vqoBwf3i4ju5z28ZkYAEfqGXc4DjckNzm91NOiLwHOAtuFuuhfP
-        /u+IK73URb7cxkeIV7/gM5hFZ3aGu6h+2cn2G7ik8OqisFdebxIl9EiPUqch0yc5uCTcNG4K9OCbX
-        VW4f/V+e6xpqbfC64GJBGkXaIedjYx1UzWAGjYoerE2gtLIaBhKqYngoD0iVUT+cjBXJ4SKNeqg0x
-        wuaWM8E5g==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1iS0w1-0000HC-RP; Tue, 05 Nov 2019 15:39:57 +0000
-Date:   Tue, 5 Nov 2019 07:39:57 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Christoph Hellwig <hch@infradead.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, linux-block@vger.kernel.org,
-        linux-scsi@vger.kernel.org, Kim Boojin <boojin.kim@samsung.com>,
-        Kuohong Wang <kuohong.wang@mediatek.com>,
-        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
-        Satya Tangirala <satyat@google.com>,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH v5 3/9] block: blk-crypto for Inline Encryption
-Message-ID: <20191105153957.GA29320@infradead.org>
-References: <20191028072032.6911-1-satyat@google.com>
- <20191028072032.6911-4-satyat@google.com>
- <20191031175713.GA23601@infradead.org>
- <20191031205045.GG16197@mit.edu>
- <20191031212234.GA32262@infradead.org>
- <20191105015411.GB692@sol.localdomain>
+        Tue, 5 Nov 2019 22:26:41 -0500
+Received: from callcc.thunk.org (ip-12-2-52-196.nyc.us.northamericancoax.com [196.52.2.12])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id xA63QMGp027897
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 5 Nov 2019 22:26:23 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 4AC21420311; Tue,  5 Nov 2019 22:26:20 -0500 (EST)
+Date:   Tue, 5 Nov 2019 22:26:20 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, Satya Tangirala <satyat@google.com>,
+        Paul Crowley <paulcrowley@google.com>,
+        Paul Lawrence <paullawrence@google.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: Re: [PATCH v2 2/3] ext4: add support for IV_INO_LBLK_64 encryption
+ policies
+Message-ID: <20191106032620.GF26959@mit.edu>
+References: <20191024215438.138489-1-ebiggers@kernel.org>
+ <20191024215438.138489-3-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191105015411.GB692@sol.localdomain>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20191024215438.138489-3-ebiggers@kernel.org>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Nov 04, 2019 at 06:01:17PM -0800, Eric Biggers wrote:
-> I think that "Severely bloating the per-I/O data structure" is an exaggeration,
-> since that it's only 32 bytes, and it isn't in struct bio directly but rather in
-> struct bio_crypt_ctx...
+On Thu, Oct 24, 2019 at 02:54:37PM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> IV_INO_LBLK_64 encryption policies have special requirements from the
+> filesystem beyond those of the existing encryption policies:
+> 
+> - Inode numbers must never change, even if the filesystem is resized.
+> - Inode numbers must be <= 32 bits.
+> - File logical block numbers must be <= 32 bits.
+> 
+> ext4 has 32-bit inode and file logical block numbers.  However,
+> resize2fs can re-number inodes when shrinking an ext4 filesystem.
+> 
+> However, typically the people who would want to use this format don't
+> care about filesystem shrinking.  They'd be fine with a solution that
+> just prevents the filesystem from being shrunk.
+> 
+> Therefore, add a new feature flag EXT4_FEATURE_COMPAT_STABLE_INODES that
+> will do exactly that.  Then wire up the fscrypt_operations to expose
+> this flag to fs/crypto/, so that it allows IV_INO_LBLK_64 policies when
+> this flag is set.
+>
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-Yes, and none of that is needed for the real inline crypto.  And I think
-we can further reduce the overhead of bio_crypt_ctx once we have the
-basiscs sorted out.  If we want to gain more traction we need to reduce
-the I/O to a minimum.
+LGTM
 
-> In any case, Satya, it might be a good idea to reorganize this patchset so that
-> it first adds all logic that's needed for "real" inline encryption support
-> (including the needed parts of blk-crypto.c), then adds the crypto API fallback
-> as a separate patch.  That would separate the concerns more cleanly and make the
-> patchset easier to review, and make it easier to make the fallback
-> de-configurable or even remove it entirely if that turns out to be needed.
+Acked-by: Theodore Ts'o <tytso@mit.edu>
 
-Yes, that is a good idea.  Not just in terms of patch, but also in terms
-of code organization.  The current structure is pretty weird with 3
-files that are mostly tighly integrated, except that one also has the
-software implementations.  So what I think we need at a minimum is:
-
- - reoranizize that we have say block/blk-crypt.c for all the inline
-   crypto infrastructure, and block/blk-crypy-sw.c for the actual
-   software crypto implementation.
- - remove all the fields only needed for software crypto from
-   bio_crypt_ctx, and instead clone the bio into a bioset with the
-   additional fields only when we use the software implementation, so
-   that there is no overhead for the hardware path.
+						- Ted
