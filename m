@@ -2,135 +2,178 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C093DF2471
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  7 Nov 2019 02:44:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD83AF250E
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  7 Nov 2019 03:12:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732075AbfKGBop (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 6 Nov 2019 20:44:45 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:38518 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732064AbfKGBop (ORCPT
+        id S1727328AbfKGCMd (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 6 Nov 2019 21:12:33 -0500
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:40080 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727390AbfKGCMd (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 6 Nov 2019 20:44:45 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xA71iQwD165492;
-        Thu, 7 Nov 2019 01:44:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2019-08-05;
- bh=cn3zXXUmFy7Cq1yV6SlWOhU6ypKw5aRvkQdQRCJrNA8=;
- b=cVgenG4vrO3Qek66gbPNIxj/jnAJPSV4YSh0gepnHx9pBtFJQhfleqMjXysxLngDxX8u
- bRCOmYIJ9GS02/Gp2U8wlZHcHlBFAwKNjvyVLV7IjgkWJYAH0OlivRcWaGaNGufxMd9k
- Dxz+v1RI/JfK7/c0hWZ8faDvGMizLdR0LPcJwVzml+fO95MlpKkawi+7V+IwiqrFvTMQ
- bUKRaSzOJJn65qyxQEoZvwj7CAJyfaLkZ6pxO+VG/g2DNP6r6EKMDNVPADqQDu3oJdPJ
- Z2SRSCg2/4a8+3KGqOJLUdRgSsCPgoSVe6ftbbkzaxhQP/vLVxGjQwEKYhtLgbMRSzUP kA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 2w41w0trny-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 07 Nov 2019 01:44:26 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xA71ctDO146722;
-        Thu, 7 Nov 2019 01:44:26 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 2w41wfw4hn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 07 Nov 2019 01:44:26 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id xA71iMee018191;
-        Thu, 7 Nov 2019 01:44:23 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 06 Nov 2019 17:44:22 -0800
-Date:   Wed, 6 Nov 2019 17:44:20 -0800
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-api@vger.kernel.org, David Howells <dhowells@redhat.com>,
-        "Theodore Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>,
-        Victor Hsieh <victorhsieh@google.com>
+        Wed, 6 Nov 2019 21:12:33 -0500
+Received: by mail-pg1-f195.google.com with SMTP id 15so748175pgt.7
+        for <linux-fscrypt@vger.kernel.org>; Wed, 06 Nov 2019 18:12:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=lND0a/QZ/kzzfBaRTM52v39GPUt9IGJLbKna6xlvGWc=;
+        b=E9nt9Zda9ZmaAVCTZ9u2gQsOmAcHCJbaGHoI/YO8Z+uWxTELDG31E7B9bYYyb2BTJE
+         GRGcc7Lz88e0LbwWrbZUeFy7fK+F3BpkTrUNmYYlrIqcpbZdUegFx6C1CX/RGMNaqdj1
+         Ad5s8Sq+3vdbq9WkylDf8kJzRRH92VQfBC+6+o2JBUQGsU5xMILNc2JSj4GhK4jFhixT
+         lLJHfy/WaYHNC574eTjSK2xQCycNBAigQvl734xD0tPESuCi62o7i4FYWcHi9GwNglc2
+         SWt6UNQiOyr08TwKfcOTh8HIgyu4pqFrRVMgBS6fQx/yivjUlDfKL2GdSrHA5YsmeMpQ
+         UHQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=lND0a/QZ/kzzfBaRTM52v39GPUt9IGJLbKna6xlvGWc=;
+        b=C3rKa+uklvixAuU5vDfs2ieYgY14j3JOONW/ikbY93r5D2zBvLquCr1MAwbJKYJmiM
+         z8nt3pNfqOis/T0cwHAY/KfPDwoEFhomZBb5fQ+nzKbCJsuxQawq1gU7eWLwl/damLCH
+         W4gnJV334LPGOKO7abVk/q4cx6q17UVw8akvpt7+XFc6ZsnQWw3/yS6ou9E2Fkd4ycYE
+         bdsFLJtAyCUzikGO1umE9APSRSKLQExSmxy2fNZQNrIQBAEEwyMHlFWCH/BU+/5dz5dm
+         JHAe1ECxFGH7jhl/UtjvJNrDiAttkcEBz4ArB2ns0IZnCk1+qO0PzmxAp20qQ8auqkT9
+         gxcg==
+X-Gm-Message-State: APjAAAWrZnTa7h3IQt+7V1kDEN7F/KyFxbInGyy035hJGAbdBt0XRobc
+        HJIP1xKc1+vDSghYMoJK4f+jBZc9aRg=
+X-Google-Smtp-Source: APXvYqz63fAIViICS1tEROcaB2czzrHA8q7TJwg8iXkKJ6Mbv4ipKW4aRC0BZiQxQ6iT896wyzjbvA==
+X-Received: by 2002:aa7:971d:: with SMTP id a29mr693865pfg.205.1573092751343;
+        Wed, 06 Nov 2019 18:12:31 -0800 (PST)
+Received: from cabot-wlan.adilger.int (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
+        by smtp.gmail.com with ESMTPSA id f59sm5268936pje.0.2019.11.06.18.12.20
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 06 Nov 2019 18:12:30 -0800 (PST)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <EFEE536E-B2E7-4AFF-ADCD-8C39F26E9C70@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_F6EB440A-C078-4861-A5DE-5E6513FE9F53";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
 Subject: Re: [PATCH 1/4] statx: define STATX_ATTR_VERITY
-Message-ID: <20191107014420.GD15212@magnolia>
+Date:   Wed, 6 Nov 2019 19:05:38 -0700
+In-Reply-To: <20191107014420.GD15212@magnolia>
+Cc:     Eric Biggers <ebiggers@kernel.org>, linux-fscrypt@vger.kernel.org,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Linux API <linux-api@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Victor Hsieh <victorhsieh@google.com>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
 References: <20191029204141.145309-1-ebiggers@kernel.org>
  <20191029204141.145309-2-ebiggers@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191029204141.145309-2-ebiggers@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9433 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1910280000 definitions=main-1911070016
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9433 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1910280000
- definitions=main-1911070017
+ <20191107014420.GD15212@magnolia>
+X-Mailer: Apple Mail (2.3273)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, Oct 29, 2019 at 01:41:38PM -0700, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> Add a statx attribute bit STATX_ATTR_VERITY which will be set if the
-> file has fs-verity enabled.  This is the statx() equivalent of
-> FS_VERITY_FL which is returned by FS_IOC_GETFLAGS.
-> 
-> This is useful because it allows applications to check whether a file is
-> a verity file without opening it.  Opening a verity file can be
-> expensive because the fsverity_info is set up on open, which involves
-> parsing metadata and optionally verifying a cryptographic signature.
-> 
-> This is analogous to how various other bits are exposed through both
-> FS_IOC_GETFLAGS and statx(), e.g. the encrypt bit.
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
->  include/linux/stat.h      | 3 ++-
->  include/uapi/linux/stat.h | 2 +-
->  2 files changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/stat.h b/include/linux/stat.h
-> index 765573dc17d659..528c4baad09146 100644
-> --- a/include/linux/stat.h
-> +++ b/include/linux/stat.h
-> @@ -33,7 +33,8 @@ struct kstat {
->  	 STATX_ATTR_IMMUTABLE |				\
->  	 STATX_ATTR_APPEND |				\
->  	 STATX_ATTR_NODUMP |				\
-> -	 STATX_ATTR_ENCRYPTED				\
-> +	 STATX_ATTR_ENCRYPTED |				\
-> +	 STATX_ATTR_VERITY				\
->  	 )/* Attrs corresponding to FS_*_FL flags */
->  	u64		ino;
->  	dev_t		dev;
-> diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
-> index 7b35e98d3c58b1..ad80a5c885d598 100644
-> --- a/include/uapi/linux/stat.h
-> +++ b/include/uapi/linux/stat.h
-> @@ -167,8 +167,8 @@ struct statx {
->  #define STATX_ATTR_APPEND		0x00000020 /* [I] File is append-only */
->  #define STATX_ATTR_NODUMP		0x00000040 /* [I] File is not to be dumped */
->  #define STATX_ATTR_ENCRYPTED		0x00000800 /* [I] File requires key to decrypt in fs */
-> -
->  #define STATX_ATTR_AUTOMOUNT		0x00001000 /* Dir: Automount trigger */
-> +#define STATX_ATTR_VERITY		0x00100000 /* [I] Verity protected file */
 
-Any reason why this wasn't 0x2000?
+--Apple-Mail=_F6EB440A-C078-4861-A5DE-5E6513FE9F53
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-If there's a manpage update that goes with this, then...
-Acked-by: Darrick J. Wong <darrick.wong@oracle.com>
+On Nov 6, 2019, at 6:44 PM, Darrick J. Wong <darrick.wong@oracle.com> =
+wrote:
+>=20
+> On Tue, Oct 29, 2019 at 01:41:38PM -0700, Eric Biggers wrote:
+>> From: Eric Biggers <ebiggers@google.com>
+>>=20
+>> Add a statx attribute bit STATX_ATTR_VERITY which will be set if the
+>> file has fs-verity enabled.  This is the statx() equivalent of
+>> FS_VERITY_FL which is returned by FS_IOC_GETFLAGS.
+>>=20
+>> This is useful because it allows applications to check whether a file =
+is
+>> a verity file without opening it.  Opening a verity file can be
+>> expensive because the fsverity_info is set up on open, which involves
+>> parsing metadata and optionally verifying a cryptographic signature.
+>>=20
+>> This is analogous to how various other bits are exposed through both
+>> FS_IOC_GETFLAGS and statx(), e.g. the encrypt bit.
+>>=20
+>> Signed-off-by: Eric Biggers <ebiggers@google.com>
+>> ---
+>> include/linux/stat.h      | 3 ++-
+>> include/uapi/linux/stat.h | 2 +-
+>> 2 files changed, 3 insertions(+), 2 deletions(-)
+>>=20
+>> diff --git a/include/linux/stat.h b/include/linux/stat.h
+>> index 765573dc17d659..528c4baad09146 100644
+>> --- a/include/linux/stat.h
+>> +++ b/include/linux/stat.h
+>> @@ -33,7 +33,8 @@ struct kstat {
+>> 	 STATX_ATTR_IMMUTABLE |				\
+>> 	 STATX_ATTR_APPEND |				\
+>> 	 STATX_ATTR_NODUMP |				\
+>> -	 STATX_ATTR_ENCRYPTED				\
+>> +	 STATX_ATTR_ENCRYPTED |				\
+>> +	 STATX_ATTR_VERITY				\
+>> 	 )/* Attrs corresponding to FS_*_FL flags */
+>> 	u64		ino;
+>> 	dev_t		dev;
+>> diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
+>> index 7b35e98d3c58b1..ad80a5c885d598 100644
+>> --- a/include/uapi/linux/stat.h
+>> +++ b/include/uapi/linux/stat.h
+>> @@ -167,8 +167,8 @@ struct statx {
+>> #define STATX_ATTR_APPEND		0x00000020 /* [I] File is =
+append-only */
+>> #define STATX_ATTR_NODUMP		0x00000040 /* [I] File is not to =
+be dumped */
+>> #define STATX_ATTR_ENCRYPTED		0x00000800 /* [I] File requires =
+key to decrypt in fs */
+>> -
+>> #define STATX_ATTR_AUTOMOUNT		0x00001000 /* Dir: Automount =
+trigger */
+>> +#define STATX_ATTR_VERITY		0x00100000 /* [I] Verity =
+protected file */
+>=20
+> Any reason why this wasn't 0x2000?
 
---D
+A few lines earlier in this file it states:
 
->  
->  
->  #endif /* _UAPI_LINUX_STAT_H */
-> -- 
-> 2.24.0.rc1.363.gb1bccd3e3d-goog
-> 
+ * Note that the flags marked [I] correspond to generic FS_IOC_FLAGS
+ * semantically.  Where possible, the numerical value is picked to
+ * correspond also.
+
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_F6EB440A-C078-4861-A5DE-5E6513FE9F53
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl3DfJ0ACgkQcqXauRfM
+H+C67w/+PzbCLZMTkU9avwCySPMGr9WuwCpEcfNUagrH5o9t3EThVRYKlznqnD0M
+SWRQeFvDugcj1Ojr35RmukzOmPdgcw5G5AQp2wSrC6LJrfr/ltMXL39zD29lMHEB
+gCiYe6iGKq9UafGTAByH0ArPegVIZsEbsrPIiCzCkLGmRTRyAh3/bVyucsnX1lli
+RwTBDfU8ABJ1hY7weKi/NhXYRo18xre0U3gLHVQZRGlgESUpPHDGCGlQyfaXBzl0
+aodswi6xnEA+WbRH7QjSLQ+k+UEvWaH2G5H6dUFVaG0eUWPTryPwJnL3Ljk4PgXx
+5YYGmJ72DkxVNnzB65CLl8li1W7fsJdSQwOGsQ1/MZTw0H3mZpy6L2CwJxhhtluI
+4u0ZF4ZOiUgXpPqdv/DAUjeIMtE4DFHaQe/UHns04oIasp/0K1prqiXi+/zgkoCu
+0raYL1GseaT2ATMKB3qAFrQ0tC1qEbAKC3pdm1lpTh9n6oTQufaWRgrP8B1S1TAk
+cKr+4VXtxJ/lwFCfqUXKRKCO/OWIKRsP1P13VhEr7ClDBE1mkyowwBvt7Misylpl
+8oLHkdYu+qF+/5uQE9bADaIRHG+kuqDMga9905IgcNg/TRYOVQeMCcBPTQsVH1JP
+7VZ+j1tEe4TcWctvhT+usADtkrjjF5sAJXq8nkyCriS6RbFBmfw=
+=71BE
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_F6EB440A-C078-4861-A5DE-5E6513FE9F53--
