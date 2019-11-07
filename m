@@ -2,59 +2,75 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CEAF2F2586
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  7 Nov 2019 03:49:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22114F3AE3
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  7 Nov 2019 23:05:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727751AbfKGCtj (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 6 Nov 2019 21:49:39 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:56989 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727443AbfKGCtj (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 6 Nov 2019 21:49:39 -0500
-Received: from callcc.thunk.org (ip-12-2-52-196.nyc.us.northamericancoax.com [196.52.2.12])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id xA72nLni011638
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 6 Nov 2019 21:49:22 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 799C4420311; Wed,  6 Nov 2019 21:49:19 -0500 (EST)
-Date:   Wed, 6 Nov 2019 21:49:19 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        id S1725906AbfKGWFj (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 7 Nov 2019 17:05:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36220 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725882AbfKGWFj (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 7 Nov 2019 17:05:39 -0500
+Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 75F1820679;
+        Thu,  7 Nov 2019 22:05:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1573164338;
+        bh=cygUg6uzZhrE0QtmMOaogM8YgrVMvUUpNVFQTtn+FhQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=U2ahxXJfpD62ZZyL2kWYVQCil+YiEuYvGM8qrEkDSjEVJjfGgM3GEvh0BPqaKZlR2
+         3AK1LyQIj/blgbUFME6KpJ1OgdutTDdk902RgybzDOjQPJjSSRYVTaCtNIbbKUWQO7
+         BxkzKA5F71d6dLX4jWeEJPrEmQnD9ad5nJk92Dt0=
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-man@vger.kernel.org
+Cc:     darrick.wong@oracle.com, dhowells@redhat.com, jaegeuk@kernel.org,
+        linux-api@vger.kernel.org, linux-ext4@vger.kernel.org,
         linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, Satya Tangirala <satyat@google.com>,
-        Paul Crowley <paulcrowley@google.com>,
-        Paul Lawrence <paullawrence@google.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: Re: [PATCH v2 1/3] fscrypt: add support for IV_INO_LBLK_64 policies
-Message-ID: <20191107024919.GH26959@mit.edu>
-References: <20191024215438.138489-1-ebiggers@kernel.org>
- <20191024215438.138489-2-ebiggers@kernel.org>
- <20191106033544.GG26959@mit.edu>
- <20191106040519.GA705@sol.localdomain>
+        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        tytso@mit.edu, victorhsieh@google.com
+Subject: [man-pages RFC PATCH] statx.2: document STATX_ATTR_VERITY
+Date:   Thu,  7 Nov 2019 14:02:48 -0800
+Message-Id: <20191107220248.32025-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.24.0.rc1.363.gb1bccd3e3d-goog
+In-Reply-To: <20191107014420.GD15212@magnolia>
+References: <20191107014420.GD15212@magnolia>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191106040519.GA705@sol.localdomain>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+Content-Transfer-Encoding: 8bit
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, Nov 05, 2019 at 08:05:19PM -0800, Eric Biggers wrote:
-> If we really wanted to optimize fscrypt_get_encryption_info(), I think we
-> probably shouldn't try to microoptimize fscrypt_supported_policy(), but rather
-> take advantage of the fact that fscrypt_has_permitted_context() already ran.
-> E.g., we could cache the xattr, or skip both the keyring lookup and
-> fscrypt_supported_policy() by grabbing them from the parent directory.
+From: Eric Biggers <ebiggers@google.com>
 
-Yes, good point.  Certainly, if the parent is encrypted, given that we
-force files to have the same policy as the containing directory,
-there's no point calling fscrypt_supported_policy.  And if we're using
-a policy which isn't using per-inode keys, then we can certainly just
-grab the key from the parent directory.
+Document the verity attribute for statx().
 
-				- Ted
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ man2/statx.2 | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+RFC since the kernel patches are currently under review.
+The kernel patches can be found here:
+https://lkml.kernel.org/linux-fscrypt/20191029204141.145309-1-ebiggers@kernel.org/T/#u
+
+diff --git a/man2/statx.2 b/man2/statx.2
+index d2f1b07b8..713bd1260 100644
+--- a/man2/statx.2
++++ b/man2/statx.2
+@@ -461,6 +461,10 @@ See
+ .TP
+ .B STATX_ATTR_ENCRYPTED
+ A key is required for the file to be encrypted by the filesystem.
++.TP
++.B STATX_ATTR_VERITY
++The file has fs-verity enabled.  It cannot be written to, and all reads from it
++will be verified against a Merkle tree.
+ .SH RETURN VALUE
+ On success, zero is returned.
+ On error, \-1 is returned, and
+-- 
+2.24.0.rc1.363.gb1bccd3e3d-goog
+
