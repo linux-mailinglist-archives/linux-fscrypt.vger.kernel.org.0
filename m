@@ -2,110 +2,76 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E6893F4204
-	for <lists+linux-fscrypt@lfdr.de>; Fri,  8 Nov 2019 09:23:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 399F1F572B
+	for <lists+linux-fscrypt@lfdr.de>; Fri,  8 Nov 2019 21:05:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727421AbfKHIXN (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 8 Nov 2019 03:23:13 -0500
-Received: from mx01-fr.bfs.de ([193.174.231.67]:34635 "EHLO mx01-fr.bfs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726180AbfKHIXM (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 8 Nov 2019 03:23:12 -0500
-Received: from mail-fr.bfs.de (mail-fr.bfs.de [10.177.18.200])
-        by mx01-fr.bfs.de (Postfix) with ESMTPS id EEE4C2034D;
-        Fri,  8 Nov 2019 09:23:05 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bfs.de; s=dkim201901;
-        t=1573201385; h=from:from:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7ovMpTZlO+mqX1NztFF4Z8RNfQdHNbliQo84EBCeKmM=;
-        b=knPojPheDaPBcYO0QNEKA99SLOrrQ33XMHG3MG3K0LZOwxHE4616BDh2Y7CMpi5TGf/aKT
-        ZZK+HPeJZmjLdyhNaKHlvbUovd4cCrlP6h/VsOx+sp5mVwxPBDYQ5lUiLKN4B95XMlPyZZ
-        FFXGmOmmP2VITXOXVD/TSHndOHwV9lKrvg1X/X0mkRjOYKCpum4vFlr7QueAnpx47CWRGU
-        tfsUWVeTSm3JyzAfXwj+0WXx+HX03nuSeY9XbjykjbSRtDigR/BV7TaDdOuT2HzQQ3J05U
-        RF6vzt535kfv/BlYy/tMieg+LO3CQrgMNgiSq6jOyBR+bM1QpviXF8g6XMguzg==
-Received: from [134.92.181.33] (unknown [134.92.181.33])
-        by mail-fr.bfs.de (Postfix) with ESMTPS id 8E220BEEBD;
-        Fri,  8 Nov 2019 09:23:05 +0100 (CET)
-Message-ID: <5DC525E8.4060705@bfs.de>
-Date:   Fri, 08 Nov 2019 09:23:04 +0100
-From:   walter harms <wharms@bfs.de>
-Reply-To: wharms@bfs.de
-User-Agent: Mozilla/5.0 (X11; U; Linux x86_64; de; rv:1.9.1.16) Gecko/20101125 SUSE/3.0.11 Thunderbird/3.0.11
-MIME-Version: 1.0
-To:     Eric Biggers <ebiggers@kernel.org>
-CC:     linux-man@vger.kernel.org, darrick.wong@oracle.com,
-        dhowells@redhat.com, jaegeuk@kernel.org, linux-api@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        tytso@mit.edu, victorhsieh@google.com
-Subject: Re: [man-pages RFC PATCH] statx.2: document STATX_ATTR_VERITY
-References: <20191107014420.GD15212@magnolia> <20191107220248.32025-1-ebiggers@kernel.org>
-In-Reply-To: <20191107220248.32025-1-ebiggers@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.60
-Authentication-Results: mx01-fr.bfs.de
-X-Spamd-Result: default: False [-1.60 / 7.00];
-         ARC_NA(0.00)[];
-         HAS_REPLYTO(0.00)[wharms@bfs.de];
-         BAYES_HAM(-3.00)[100.00%];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         REPLYTO_ADDR_EQ_FROM(0.00)[];
-         DKIM_SIGNED(0.00)[];
-         RCPT_COUNT_TWELVE(0.00)[12];
-         NEURAL_HAM(-0.00)[-0.998,0];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         MID_RHS_MATCH_FROM(0.00)[];
-         RCVD_TLS_ALL(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
+        id S2389507AbfKHTS5 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 8 Nov 2019 14:18:57 -0500
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:51519 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387560AbfKHTSy (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Fri, 8 Nov 2019 14:18:54 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 997BB187
+        for <linux-fscrypt@vger.kernel.org>; Fri,  8 Nov 2019 14:18:53 -0500 (EST)
+Received: from imap37 ([10.202.2.87])
+  by compute3.internal (MEProxy); Fri, 08 Nov 2019 14:18:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-type:date:from:message-id
+        :mime-version:subject:to:x-me-proxy:x-me-proxy:x-me-sender
+        :x-me-sender:x-sasl-enc; s=fm1; bh=mx2RdF/2L93Izis0x1VdtxMgJourF
+        7t7Gts98N1YvKE=; b=Mx+u0nsl07bbVZb0ZhX3mdxdlMhJFpEm2WpXPXQSbL8qK
+        K/DCfjXIjNHCfq7WceD7RYyrNRWkItsCVGT93J/EZ9CZZRhZ1QKdqzYi1tieBR2H
+        BRIWF0g5JRssumjqx/0I8VIaH3/diNAPlpYGuf3TNqcBVoFG/h+AfmhCXu3Oii5p
+        YENFDgjtz+clQK5aQIfTgcJElaWCVccJ+9Oty2BNoHisrCxHTpyuvE4AJOJ86a/+
+        PgdM7fs0DQblxhEf+a8KGPxA3xbEughiIcJDBbh+RBhnMbrTOzXvR0Cl23RPo0WQ
+        Hu5B+sgVt96+3jZII0hY93ratLU5mlHPezueWNqgg==
+X-ME-Sender: <xms:nb_FXR38IvfmquXinfDMAyJ5T41-1EVSsf4e9C9SnLiq3cN7FDi3EQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedufedruddvuddguddvhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecunecujfgurhepofgfggfkfffhvffutgesthdtre
+    dtreertdenucfhrhhomhepfdevohhlihhnucghrghlthgvrhhsfdcuoeifrghlthgvrhhs
+    sehvvghrsghumhdrohhrgheqnecuffhomhgrihhnpehlfihnrdhnvghtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpeifrghlthgvrhhssehvvghrsghumhdrohhrghenucevlhhushht
+    vghrufhiiigvpedt
+X-ME-Proxy: <xmx:nb_FXfXM8z2Lw1qHBPJtXL5Ggb3zqGJyCAL6bMJhkOeow2e2vEoImQ>
+    <xmx:nb_FXafEWcE3fJxOl4ecxQ6yGRS24HxXwLyWlPJ_fsg7BRNxezZ_1Q>
+    <xmx:nb_FXcNkTveNC71VHlr3iz8MXb1RnnkcBGdCfG-k2km7Lh_vJ6sbNQ>
+    <xmx:nb_FXaeg35MrNvcqQSx1cqSbRCdfxIdOiPYbuizZVmqkJAz0UOqULQ>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id E66AE684005F; Fri,  8 Nov 2019 14:18:52 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.1.7-509-ge3ec61c-fmstable-20191030v1
+Mime-Version: 1.0
+Message-Id: <696354c2-5d7a-4f37-93d2-9a58845ad22d@www.fastmail.com>
+Date:   Fri, 08 Nov 2019 14:18:32 -0500
+From:   "Colin Walters" <walters@verbum.org>
+To:     linux-fscrypt@vger.kernel.org
+Subject: Some questions/thoughts on fs-verity
+Content-Type: text/plain
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
+It's clear that the Linux kernel is widely deployed with things like dm-verity devices where the user of the device isn't root.  There are great security properties from this in ensuring malicious code (compromised apps/OS) can't persist, and what Google is doing with ChromeOS/Android is a good example.
 
+However, for cases where the user *is* root (or, like me as an OS vendor trying to support an OS where the user can be root), dm-verity comes with a whole host of restrictions and issues.  This was noted in the earlier fs-verity discussions.  Among other ones, simply trying to commit to a partition size beyond which the trusted OS cannot grow is seriously ugly.  Another example here is with ostree (or other filesystem-level tools) it's easy to have *three* images (or really N) so that while you're downloading updates you don't lose your rollback, etc.
 
-Am 07.11.2019 23:02, schrieb Eric Biggers:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> Document the verity attribute for statx().
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
->  man2/statx.2 | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> RFC since the kernel patches are currently under review.
-> The kernel patches can be found here:
-> https://lkml.kernel.org/linux-fscrypt/20191029204141.145309-1-ebiggers@kernel.org/T/#u
-> 
-> diff --git a/man2/statx.2 b/man2/statx.2
-> index d2f1b07b8..713bd1260 100644
-> --- a/man2/statx.2
-> +++ b/man2/statx.2
-> @@ -461,6 +461,10 @@ See
->  .TP
->  .B STATX_ATTR_ENCRYPTED
->  A key is required for the file to be encrypted by the filesystem.
-> +.TP
-> +.B STATX_ATTR_VERITY
-> +The file has fs-verity enabled.  It cannot be written to, and all reads from it
-> +will be verified against a Merkle tree.
+I'm excited about the potential of fs-verity because it's so much more *flexible* - leaving aside the base OS case for a second - for example fs-verity is even available to unprivileged users by default, so if the admin has at least enabled the `verity` flag, if a user wanted to they could enable fs-verity for e.g. their `~/.bashrc`.  That's neat!
 
-Using "Merkle tree" opens a can of worm and what will happen when the methode will change ?
-Does it matter at all ? i would suggest "filesystem" here.
+However, this gets into some questions I have around the security properties of fs-verity because - it only covers file contents.  There are many problems from this:
 
-re,
- wh
+ - Verifying directories and symlinks is really desirable too; take e.g. /etc/systemd/system - I want to verify not just that the unit files there are valid, but also that there's no malicious ones.  
+ - Being able to e.g. `chown root:root` `chmod u+s` a fs-verity protected binary is...not desired.
+ - Finally, taking the scenario of a malicious code that has gained CAP_SYS_ADMIN and the ability to write to raw block devices, it seems to me that the discussions around "untrusted filesystems" (https://lwn.net/Articles/755593/) come to the fore.
 
->  .SH RETURN VALUE
->  On success, zero is returned.
->  On error, \-1 is returned, and
+In contrast because dm-verity is sealing up *everything* at the fs level, all of the above are avoided.  But it's obviously far less flexible...
+
+(This discussion of course mirrors fs-crypt versus dm-crypt too)
+
+I guess my concrete question here is: Are there any plans around extending fs-verity to address any of this?  Which I know given the current developers probably mostly boils down to a future Android/ChromeOS architecture question, but I think fs-verity has the potential to be used beyond just that if it isn't already.
+
+Would love to discuss with any other distributions/update system developers etc. that are also looking at fs-verity!
+
