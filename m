@@ -2,76 +2,102 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9170CF7882
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 11 Nov 2019 17:13:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29B10F8136
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 11 Nov 2019 21:28:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726887AbfKKQNv (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 11 Nov 2019 11:13:51 -0500
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:43623 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726845AbfKKQNv (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 11 Nov 2019 11:13:51 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 7D24521A7B
-        for <linux-fscrypt@vger.kernel.org>; Mon, 11 Nov 2019 11:13:50 -0500 (EST)
-Received: from imap37 ([10.202.2.87])
-  by compute3.internal (MEProxy); Mon, 11 Nov 2019 11:13:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=pIGhfC
-        TwADpXXJ1b70Rm+bVl4tKRfUyGg8vyfjI8Ffw=; b=LPHfI77i1eHpD+oPKkmLCR
-        atP2Ln5EiftKq+EWXUNMzRr8gB972fjIomkjZB/hjECW8aJFn5+2RlVohomorTop
-        6Lfed5braDIEFoSAI7i9ztDlnOhvXZFuTttrWBZygrBW7oGTK55K+QccFRC98pRt
-        KXS5gWs44SAcFYj2ixL47KEGiqffeJOdUjD6otx6YKvA89v+A8OWw7CX1I4czgEz
-        03glU37RfiRDaIRTGBNraIMgUJ5uw1QdMDvoP9DWd+JTmQjAIBZOBVszY6ycWaqU
-        Zzr3JFo7h7GXvhhXt11KojJ2/z+NJiA/4/v34lMGYf2zAE9VbDfdYjeE7NbkzQ4A
-        ==
-X-ME-Sender: <xms:vYjJXT33JExTpa-6ERegBUp23O3eJSG7r4vP99KdssemlNI_D_lZRg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedufedruddvjedgkeekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefofgggkfgjfhffhffvufgtsehttd
-    ertderredtnecuhfhrohhmpedfveholhhinhcuhggrlhhtvghrshdfuceofigrlhhtvghr
-    shesvhgvrhgsuhhmrdhorhhgqeenucfrrghrrghmpehmrghilhhfrhhomhepfigrlhhtvg
-    hrshesvhgvrhgsuhhmrdhorhhgnecuvehluhhsthgvrhfuihiivgeptd
-X-ME-Proxy: <xmx:vojJXQWGhSm0llNUrNyvh0jrkjjgN8wqzp5fHWSxqwK6KsAg3oALrA>
-    <xmx:vojJXeARy41XCVyfpHyEnqdrjudWVuPA2meR-9qnT67lwwRVzW4hpA>
-    <xmx:vojJXVM36FuFAc_DEVjV6X-ak00Rb-NsJbJGW7SokpnKVE0_WGzL8A>
-    <xmx:vojJXYHt4PzfF5EIhJSj8q20hW8XdzMFHUTX4vvLnfZuk2e30n7lTw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id CE531684005F; Mon, 11 Nov 2019 11:13:49 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.1.7-509-ge3ec61c-fmstable-20191030v1
-Mime-Version: 1.0
-Message-Id: <c45a6392-e4ae-4a78-b90e-46036fad0683@www.fastmail.com>
-In-Reply-To: <ec3d8041-e791-4016-943c-f1dade1be5eb@www.fastmail.com>
-References: <696354c2-5d7a-4f37-93d2-9a58845ad22d@www.fastmail.com>
- <20191109034150.GC9739@sol.localdomain>
- <ec3d8041-e791-4016-943c-f1dade1be5eb@www.fastmail.com>
-Date:   Mon, 11 Nov 2019 11:13:29 -0500
-From:   "Colin Walters" <walters@verbum.org>
-To:     linux-fscrypt@vger.kernel.org
-Subject: Re: Some questions/thoughts on fs-verity
-Content-Type: text/plain
+        id S1727695AbfKKU2O (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 11 Nov 2019 15:28:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37024 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727010AbfKKU2O (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 11 Nov 2019 15:28:14 -0500
+Received: from gmail.com (unknown [104.132.1.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D2B84206A3;
+        Mon, 11 Nov 2019 20:28:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1573504094;
+        bh=Lu1K4hEFffFmujStmzKqcSWqDK91+nLfOMJq7cD0eW0=;
+        h=Date:From:To:Subject:References:In-Reply-To:From;
+        b=sW4RP7ZNpXAzaHbxsy+dMlmibHKiUFAofLNR/2Q9956XNaxJ9iJ9xDjPj6mZC0Cqq
+         BEeVWWq+luN4KafsrJGbOqM/VCDkinX1MRkz98KeNsM2YZiGq+Lazn8TVL1wJL1hyY
+         erA11VS49GBS0Mzv0TfuvvvaQ+mBZaRu18i87VZA=
+Date:   Mon, 11 Nov 2019 12:28:12 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Chandan Rajendra <chandan@linux.ibm.com>
+Subject: Re: [PATCH v2 0/2] ext4: support encryption with blocksize !=
+ PAGE_SIZE
+Message-ID: <20191111202811.GE56300@gmail.com>
+Mail-Followup-To: linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Chandan Rajendra <chandan@linux.ibm.com>
+References: <20191023033312.361355-1-ebiggers@kernel.org>
+ <20191106215439.GC139580@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191106215439.GC139580@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Sat, Nov 9, 2019, at 1:46 PM, Colin Walters wrote:
->
-> Or really a bottom line here is - I could imagine reworking our 
-> userspace to do this FUSE mount of fs-verity tarball model, but if e.g. 
-> the kernel filesystems aren't really feasably made safe against 
-> malicious code, then...it may not be worth doing.
+On Wed, Nov 06, 2019 at 01:54:40PM -0800, Eric Biggers wrote:
+> On Tue, Oct 22, 2019 at 08:33:10PM -0700, Eric Biggers wrote:
+> > Hello,
+> > 
+> > This patchset makes ext4 support encryption on filesystems where the
+> > filesystem block size is not equal to PAGE_SIZE.  This allows e.g.
+> > PowerPC systems to use ext4 encryption.
+> > 
+> > Most of the work for this was already done in prior kernel releases; now
+> > the only part missing is decryption support in block_read_full_page().
+> > Chandan Rajendra has proposed a patchset "Consolidate FS read I/O
+> > callbacks code" [1] to address this and do various other things like
+> > make ext4 use mpage_readpages() again, and make ext4 and f2fs share more
+> > code.  But it doesn't seem to be going anywhere.
+> > 
+> > Therefore, I propose we simply add decryption support to
+> > block_read_full_page() for now.  This is a fairly small change, and it
+> > gets ext4 encryption with subpage-sized blocks working.
+> > 
+> > Note: to keep things simple I'm just allocating the work object from the
+> > bi_end_io function with GFP_ATOMIC.  But if people think it's necessary,
+> > it could be changed to use preallocation like the page-based read path.
+> > 
+> > Tested with 'gce-xfstests -c ext4/encrypt_1k -g auto', using the new
+> > "encrypt_1k" config I created.  All tests pass except for those that
+> > already fail or are excluded with the encrypt or 1k configs, and 2 tests
+> > that try to create 1023-byte symlinks which fails since encrypted
+> > symlinks are limited to blocksize-3 bytes.  Also ran the dedicated
+> > encryption tests using 'kvm-xfstests -c ext4/1k -g encrypt'; all pass,
+> > including the on-disk ciphertext verification tests.
+> > 
+> > [1] https://lkml.kernel.org/linux-fsdevel/20190910155115.28550-1-chandan@linux.ibm.com/T/#u
+> > 
+> > Changed v1 => v2:
+> >   - Added check for S_ISREG() which technically should be there, though
+> >     it happens not to matter currently.
+> > 
+> > Chandan Rajendra (1):
+> >   ext4: Enable encryption for subpage-sized blocks
+> > 
+> > Eric Biggers (1):
+> >   fs/buffer.c: support fscrypt in block_read_full_page()
+> > 
+> >  Documentation/filesystems/fscrypt.rst |  4 +--
+> >  fs/buffer.c                           | 48 ++++++++++++++++++++++++---
+> >  fs/ext4/super.c                       |  7 ----
+> >  3 files changed, 45 insertions(+), 14 deletions(-)
+> > 
+> 
+> Any more comments on this?
+> 
+> Ted, are you interested in taking this through the ext4 tree for 5.5?
+> 
 
-On thinking about this sub-thread more, if one is shipping an OS with a persistent storage volume (whether the same as the fs-verity'd OS or separate) that's mounted as a regular Linux filesystem, all the concerns about corrupted FS images apply, regardless of whether one is using dm-verity or fs-verity for the OS.
-
-Although perhaps in theory in the dm-verity case, if the persistent volume is separate one could e.g. do some userspace sanity checking (fsck) of the persistent volume before mounting it, or e.g. apply OS updates before mounting it and reboot (to address the scenario where an older kernel has an arbitrary code execution flaw that's fixed in a new update).
-
-Hmm.  Maybe it's just not feasible to avoid effectively verifying a full filesystem image for the early boot OS anytime soon (whether that's an initramfs image baked into a signed kernel or actually dm-verity).  But probably for us going down the path of including the OS update system in the initramfs, and signing initramfs images will make more sense than dm-verity.
-
-Either way, this gets us to the point of "can apply security updates and/or inspect filesystems on disk before mounting them" executing signed/trusted code; but leaves open the rest of the discussion around applications (Linux containers, Android/flatpak style apps) etc. that doesn't scale to bake into the initramfs (or generate dm-verity partitions), and like Android is doing we want to support potentially privileged applications that are distinct from the OS.  And basically whether fs-verity can be extended to support regular filesystem trees for those.
-
-
+Ping.
