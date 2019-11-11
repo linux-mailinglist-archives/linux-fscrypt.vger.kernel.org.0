@@ -2,102 +2,75 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 29B10F8136
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 11 Nov 2019 21:28:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D25A3F81D9
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 11 Nov 2019 22:05:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727695AbfKKU2O (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 11 Nov 2019 15:28:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37024 "EHLO mail.kernel.org"
+        id S1726952AbfKKVFm (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 11 Nov 2019 16:05:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727010AbfKKU2O (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 11 Nov 2019 15:28:14 -0500
-Received: from gmail.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726916AbfKKVFm (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 11 Nov 2019 16:05:42 -0500
+Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D2B84206A3;
-        Mon, 11 Nov 2019 20:28:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 512B0206BB;
+        Mon, 11 Nov 2019 21:05:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1573504094;
-        bh=Lu1K4hEFffFmujStmzKqcSWqDK91+nLfOMJq7cD0eW0=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=sW4RP7ZNpXAzaHbxsy+dMlmibHKiUFAofLNR/2Q9956XNaxJ9iJ9xDjPj6mZC0Cqq
-         BEeVWWq+luN4KafsrJGbOqM/VCDkinX1MRkz98KeNsM2YZiGq+Lazn8TVL1wJL1hyY
-         erA11VS49GBS0Mzv0TfuvvvaQ+mBZaRu18i87VZA=
-Date:   Mon, 11 Nov 2019 12:28:12 -0800
+        s=default; t=1573506341;
+        bh=8LGZlQ9PjzhCJsXqUDgAmcCdBPdgGqN761KBPA+4UOs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=bivwWQiB7QbNInWItFThfZloqxdcKLLAINjOVaFwh5ed+L5RJKzfVRT9pywiw1ebR
+         Mawl4c5WbTQEMYCA6ZBv2rACB+jZQlBglczMjlHpz++AiQMU0e0rbrvMdJoeh/NeQQ
+         k2Rc6PSdMnSYmdKD2L/UYPGhAprKqbojjB8M/Dbk=
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Chandan Rajendra <chandan@linux.ibm.com>
-Subject: Re: [PATCH v2 0/2] ext4: support encryption with blocksize !=
- PAGE_SIZE
-Message-ID: <20191111202811.GE56300@gmail.com>
-Mail-Followup-To: linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Chandan Rajendra <chandan@linux.ibm.com>
-References: <20191023033312.361355-1-ebiggers@kernel.org>
- <20191106215439.GC139580@gmail.com>
+To:     fstests@vger.kernel.org
+Cc:     linux-fscrypt@vger.kernel.org, Satya Tangirala <satyat@google.com>
+Subject: [RFC PATCH 0/5] xfstests: verify ciphertext of IV_INO_LBLK_64 encryption policies
+Date:   Mon, 11 Nov 2019 13:04:22 -0800
+Message-Id: <20191111210427.137256-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.24.0.rc1.363.gb1bccd3e3d-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191106215439.GC139580@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, Nov 06, 2019 at 01:54:40PM -0800, Eric Biggers wrote:
-> On Tue, Oct 22, 2019 at 08:33:10PM -0700, Eric Biggers wrote:
-> > Hello,
-> > 
-> > This patchset makes ext4 support encryption on filesystems where the
-> > filesystem block size is not equal to PAGE_SIZE.  This allows e.g.
-> > PowerPC systems to use ext4 encryption.
-> > 
-> > Most of the work for this was already done in prior kernel releases; now
-> > the only part missing is decryption support in block_read_full_page().
-> > Chandan Rajendra has proposed a patchset "Consolidate FS read I/O
-> > callbacks code" [1] to address this and do various other things like
-> > make ext4 use mpage_readpages() again, and make ext4 and f2fs share more
-> > code.  But it doesn't seem to be going anywhere.
-> > 
-> > Therefore, I propose we simply add decryption support to
-> > block_read_full_page() for now.  This is a fairly small change, and it
-> > gets ext4 encryption with subpage-sized blocks working.
-> > 
-> > Note: to keep things simple I'm just allocating the work object from the
-> > bi_end_io function with GFP_ATOMIC.  But if people think it's necessary,
-> > it could be changed to use preallocation like the page-based read path.
-> > 
-> > Tested with 'gce-xfstests -c ext4/encrypt_1k -g auto', using the new
-> > "encrypt_1k" config I created.  All tests pass except for those that
-> > already fail or are excluded with the encrypt or 1k configs, and 2 tests
-> > that try to create 1023-byte symlinks which fails since encrypted
-> > symlinks are limited to blocksize-3 bytes.  Also ran the dedicated
-> > encryption tests using 'kvm-xfstests -c ext4/1k -g encrypt'; all pass,
-> > including the on-disk ciphertext verification tests.
-> > 
-> > [1] https://lkml.kernel.org/linux-fsdevel/20190910155115.28550-1-chandan@linux.ibm.com/T/#u
-> > 
-> > Changed v1 => v2:
-> >   - Added check for S_ISREG() which technically should be there, though
-> >     it happens not to matter currently.
-> > 
-> > Chandan Rajendra (1):
-> >   ext4: Enable encryption for subpage-sized blocks
-> > 
-> > Eric Biggers (1):
-> >   fs/buffer.c: support fscrypt in block_read_full_page()
-> > 
-> >  Documentation/filesystems/fscrypt.rst |  4 +--
-> >  fs/buffer.c                           | 48 ++++++++++++++++++++++++---
-> >  fs/ext4/super.c                       |  7 ----
-> >  3 files changed, 45 insertions(+), 14 deletions(-)
-> > 
-> 
-> Any more comments on this?
-> 
-> Ted, are you interested in taking this through the ext4 tree for 5.5?
-> 
+Hello,
 
-Ping.
+This series adds an xfstest which tests that the encryption for
+IV_INO_LBLK_64 encryption policies is being done correctly.
+
+IV_INO_LBLK_64 is a new fscrypt policy flag which modifies the
+encryption to be optimized for inline encryption hardware compliant with
+the UFS v2.1 standard or the upcoming version of the eMMC standard.  For
+more information, see the kernel patchset:
+https://lore.kernel.org/linux-fscrypt/20191024215438.138489-1-ebiggers@kernel.org/T/#u
+
+This is RFC for now since the kernel patches aren't in mainline yet
+(they're queued for 5.5).
+
+To run on ext4 this test also needs a version of e2fsprogs built from
+the master branch, for support for the stable_inodes filesystem feature.
+
+Eric Biggers (5):
+  fscrypt-crypt-util: create key_and_iv_params structure
+  fscrypt-crypt-util: add HKDF context constants
+  common/encrypt: create named variables for UAPI constants
+  common/encrypt: support verifying ciphertext of IV_INO_LBLK_64
+    policies
+  generic: verify ciphertext of IV_INO_LBLK_64 encryption policies
+
+ common/encrypt           | 126 +++++++++++++++++++++++++-------
+ src/fscrypt-crypt-util.c | 151 ++++++++++++++++++++++++++++-----------
+ tests/generic/805        |  43 +++++++++++
+ tests/generic/805.out    |   6 ++
+ tests/generic/group      |   1 +
+ 5 files changed, 259 insertions(+), 68 deletions(-)
+ create mode 100644 tests/generic/805
+ create mode 100644 tests/generic/805.out
+
+-- 
+2.24.0.rc1.363.gb1bccd3e3d-goog
+
