@@ -2,72 +2,56 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A79211087FE
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 25 Nov 2019 05:45:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6E681095B5
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 25 Nov 2019 23:45:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727031AbfKYEpG (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sun, 24 Nov 2019 23:45:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43524 "EHLO mail.kernel.org"
+        id S1727031AbfKYWpD (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 25 Nov 2019 17:45:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39634 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726998AbfKYEpF (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sun, 24 Nov 2019 23:45:05 -0500
-Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0E2C42071A;
-        Mon, 25 Nov 2019 04:45:05 +0000 (UTC)
+        id S1725945AbfKYWpC (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 25 Nov 2019 17:45:02 -0500
+Subject: Re: [GIT PULL] fscrypt updates for 5.5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1574657105;
-        bh=aSroA1tJkkhrawkEnz+x1J5uQ7dP73E3kkFNwgxCrjc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=xd6oamJw8cdBpyxa6Dqk9inUzve8hNxbG1AIZD2wMpTNYQ1rW/HtPYBrWv94WluWI
-         phH34pvHnUTvLA9VsvUg3VpCVG/FBlpadA5cPHbsWRlRkw1/f/CZzBrvMjxlsTJzBm
-         nJhcjw7jyYFZqyAiwy5RVmbNPr8nELP2Cg2b24iY=
-Date:   Sun, 24 Nov 2019 20:45:03 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        s=default; t=1574721902;
+        bh=AXP7zQMapTN1rWqrZDwdb3wcRiMjJxVjBSUx1h+liqY=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=f9AlqeliSTi2q+Z5YE7YxcEWbjXZMvGJhzMVylW3dD8QZvEoai2ZvVOk0flLPy82f
+         0zjKG7wasISlpZIYVBFxEOuITOEy0AgNQJhLZ7OWFVFGm2b7n2jffMHyrpafDCMm75
+         VOMjbO6obTXmLy/oBkvIobk6BkMlRnz+IZ4v+obM=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20191125044122.GA9817@sol.localdomain>
+References: <20191125044122.GA9817@sol.localdomain>
+X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20191125044122.GA9817@sol.localdomain>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git
+ tags/fscrypt-for-linus
+X-PR-Tracked-Commit-Id: 0eee17e3322625b87ce5fa631bda16562a8dc494
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: ea4b71bc0bb646f811e4728389485f1d0522f7ea
+Message-Id: <157472190221.22729.18046740901098864621.pr-tracker-bot@kernel.org>
+Date:   Mon, 25 Nov 2019 22:45:02 +0000
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
         linux-f2fs-devel@lists.sourceforge.net,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Theodore Ts'o <tytso@mit.edu>
-Subject: [GIT PULL] fsverity updates for 5.5
-Message-ID: <20191125044503.GB9817@sol.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.12.2 (2019-09-21)
+        Theodore Ts'o <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-The following changes since commit 31f4f5b495a62c9a8b15b1c3581acd5efeb9af8c:
+The pull request you sent on Sun, 24 Nov 2019 20:41:22 -0800:
 
-  Linux 5.4-rc7 (2019-11-10 16:17:15 -0800)
+> https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
 
-are available in the Git repository at:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/ea4b71bc0bb646f811e4728389485f1d0522f7ea
 
-  https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fsverity-for-linus
+Thank you!
 
-for you to fetch changes up to 73f0ec02d670a61afcef49bc0a74d42e324276ea:
-
-  docs: fs-verity: mention statx() support (2019-11-13 12:15:34 -0800)
-
-----------------------------------------------------------------
-
-Expose the fs-verity bit through statx().
-
-----------------------------------------------------------------
-Eric Biggers (5):
-      docs: fs-verity: document first supported kernel version
-      statx: define STATX_ATTR_VERITY
-      ext4: support STATX_ATTR_VERITY
-      f2fs: support STATX_ATTR_VERITY
-      docs: fs-verity: mention statx() support
-
- Documentation/filesystems/fsverity.rst | 12 ++++++++++--
- fs/ext4/inode.c                        |  5 ++++-
- fs/f2fs/file.c                         |  5 ++++-
- include/linux/stat.h                   |  3 ++-
- include/uapi/linux/stat.h              |  2 +-
- 5 files changed, 21 insertions(+), 6 deletions(-)
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
