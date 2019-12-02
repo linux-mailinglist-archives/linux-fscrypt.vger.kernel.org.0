@@ -2,216 +2,213 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0387510E840
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  2 Dec 2019 11:10:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA6D810F148
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  2 Dec 2019 21:03:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727356AbfLBKKk (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 2 Dec 2019 05:10:40 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:58674 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726276AbfLBKKk (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 2 Dec 2019 05:10:40 -0500
-Received: from linux.localdomain (unknown [123.138.236.242])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxbxUP4+RdcvAFAA--.28S2;
-        Mon, 02 Dec 2019 18:10:25 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        id S1728123AbfLBUDI (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 2 Dec 2019 15:03:08 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:32976 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728001AbfLBUDI (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 2 Dec 2019 15:03:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=s39+6aj8P13+1hILCFwbf0pDx7vtLDZ1oXhIVJwKtm8=; b=odPCbBby0tzEgZlmvNJCtW9zV
+        WBcXa2z0LlIntP6dgh+SC9uNd27V9cNIvtih2LdaP8v6Z/tBJfR0Aprqe4BP9wBsN/PmTbjKj76RX
+        X9lob7oO73T/8NrBbZ/FQlWD34WQ6y7kDIDPBD6IeV0QORTQVHXBWo3Kbl/mcH6xrK72ZxKcjMHCq
+        yndqc4yDkGmIK8eAvlJj5TZm+EE23TD32RrDfZr3a4zoBFSmuRwQNJWRDZMqT5jo1J+coB7470rVV
+        9646YKwQeM8Wm8sMO7NxuxWrjF++JrkgSwlP+p51OWWFgFUobZabQ/6+paFrIlRR7mzNr/1XDez6s
+        Dd1Zj5L0g==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1ibruQ-00043D-2s; Mon, 02 Dec 2019 20:03:02 +0000
+Date:   Mon, 2 Dec 2019 12:03:02 -0800
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
         "Theodore Y. Ts'o" <tytso@mit.edu>,
         Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <yuchao0@huawei.com>,
         Eric Biggers <ebiggers@kernel.org>,
-        Tyler Hicks <tyhicks@canonical.com>
-Cc:     linux-fsdevel@vger.kernel.org, ecryptfs@vger.kernel.org,
+        Tyler Hicks <tyhicks@canonical.com>,
+        linux-fsdevel@vger.kernel.org, ecryptfs@vger.kernel.org,
         linux-fscrypt@vger.kernel.org,
         linux-f2fs-devel@lists.sourceforge.net,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] fs: introduce is_dot_dotdot helper for cleanup
-Date:   Mon,  2 Dec 2019 18:10:13 +0800
-Message-Id: <1575281413-6753-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9DxbxUP4+RdcvAFAA--.28S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3GF1xZFWrCrykGryfWFyUJrb_yoW7GFWDpF
-        43JF97Jrn7JFyY9rn5tF1rZ34av34xGr17GrZ7Ga4Iyr12qr1Fqr4IyFy093Z3JFZ8Wan0
-        gFs5G34rCa43taDanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkKb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
-        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY
-        04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
-        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y
-        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
-        W8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_
-        Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU56c_D
-        UUUUU==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+Subject: Re: [PATCH] fs: introduce is_dot_dotdot helper for cleanup
+Message-ID: <20191202200302.GN20752@bombadil.infradead.org>
+References: <1575281413-6753-1-git-send-email-yangtiezhu@loongson.cn>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="u3/rZRmxL6MmkK24"
+Content-Disposition: inline
+In-Reply-To: <1575281413-6753-1-git-send-email-yangtiezhu@loongson.cn>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-There exists many similar and duplicate codes to check "." and "..",
-so introduce is_dot_dotdot helper to make the code more clean.
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- fs/crypto/fname.c    | 15 ++-------------
- fs/ecryptfs/crypto.c | 13 ++-----------
- fs/f2fs/f2fs.h       | 11 -----------
- fs/libfs.c           | 12 ++++++++++++
- fs/namei.c           |  6 ++----
- include/linux/fs.h   |  2 ++
- 6 files changed, 20 insertions(+), 39 deletions(-)
+--u3/rZRmxL6MmkK24
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
-index 3da3707..36be864 100644
---- a/fs/crypto/fname.c
-+++ b/fs/crypto/fname.c
-@@ -15,17 +15,6 @@
- #include <crypto/skcipher.h>
- #include "fscrypt_private.h"
- 
--static inline bool fscrypt_is_dot_dotdot(const struct qstr *str)
--{
--	if (str->len == 1 && str->name[0] == '.')
--		return true;
--
--	if (str->len == 2 && str->name[0] == '.' && str->name[1] == '.')
--		return true;
--
--	return false;
--}
--
- /**
-  * fname_encrypt() - encrypt a filename
-  *
-@@ -255,7 +244,7 @@ int fscrypt_fname_disk_to_usr(struct inode *inode,
- 	const struct qstr qname = FSTR_TO_QSTR(iname);
- 	struct fscrypt_digested_name digested_name;
- 
--	if (fscrypt_is_dot_dotdot(&qname)) {
-+	if (is_dot_dotdot(&qname)) {
- 		oname->name[0] = '.';
- 		oname->name[iname->len - 1] = '.';
- 		oname->len = iname->len;
-@@ -323,7 +312,7 @@ int fscrypt_setup_filename(struct inode *dir, const struct qstr *iname,
- 	memset(fname, 0, sizeof(struct fscrypt_name));
- 	fname->usr_fname = iname;
- 
--	if (!IS_ENCRYPTED(dir) || fscrypt_is_dot_dotdot(iname)) {
-+	if (!IS_ENCRYPTED(dir) || is_dot_dotdot(iname)) {
- 		fname->disk_name.name = (unsigned char *)iname->name;
- 		fname->disk_name.len = iname->len;
- 		return 0;
-diff --git a/fs/ecryptfs/crypto.c b/fs/ecryptfs/crypto.c
-index f91db24..6f4db74 100644
---- a/fs/ecryptfs/crypto.c
-+++ b/fs/ecryptfs/crypto.c
-@@ -1991,16 +1991,6 @@ int ecryptfs_encrypt_and_encode_filename(
- 	return rc;
- }
- 
--static bool is_dot_dotdot(const char *name, size_t name_size)
--{
--	if (name_size == 1 && name[0] == '.')
--		return true;
--	else if (name_size == 2 && name[0] == '.' && name[1] == '.')
--		return true;
--
--	return false;
--}
--
- /**
-  * ecryptfs_decode_and_decrypt_filename - converts the encoded cipher text name to decoded plaintext
-  * @plaintext_name: The plaintext name
-@@ -2020,6 +2010,7 @@ int ecryptfs_decode_and_decrypt_filename(char **plaintext_name,
- {
- 	struct ecryptfs_mount_crypt_stat *mount_crypt_stat =
- 		&ecryptfs_superblock_to_private(sb)->mount_crypt_stat;
-+	const struct qstr file_name = {.name = name, .len = name_size};
- 	char *decoded_name;
- 	size_t decoded_name_size;
- 	size_t packet_size;
-@@ -2027,7 +2018,7 @@ int ecryptfs_decode_and_decrypt_filename(char **plaintext_name,
- 
- 	if ((mount_crypt_stat->flags & ECRYPTFS_GLOBAL_ENCRYPT_FILENAMES) &&
- 	    !(mount_crypt_stat->flags & ECRYPTFS_ENCRYPTED_VIEW_ENABLED)) {
--		if (is_dot_dotdot(name, name_size)) {
-+		if (is_dot_dotdot(&file_name)) {
- 			rc = ecryptfs_copy_filename(plaintext_name,
- 						    plaintext_name_size,
- 						    name, name_size);
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 5a888a0..3d5e684 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -2767,17 +2767,6 @@ static inline bool f2fs_cp_error(struct f2fs_sb_info *sbi)
- 	return is_set_ckpt_flags(sbi, CP_ERROR_FLAG);
- }
- 
--static inline bool is_dot_dotdot(const struct qstr *str)
--{
--	if (str->len == 1 && str->name[0] == '.')
--		return true;
--
--	if (str->len == 2 && str->name[0] == '.' && str->name[1] == '.')
--		return true;
--
--	return false;
--}
--
- static inline bool f2fs_may_extent_tree(struct inode *inode)
- {
- 	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
-diff --git a/fs/libfs.c b/fs/libfs.c
-index 1463b03..876b1b6 100644
---- a/fs/libfs.c
-+++ b/fs/libfs.c
-@@ -1291,3 +1291,15 @@ bool is_empty_dir_inode(struct inode *inode)
- 	return (inode->i_fop == &empty_dir_operations) &&
- 		(inode->i_op == &empty_dir_inode_operations);
- }
-+
-+bool is_dot_dotdot(const struct qstr *str)
-+{
-+	if (str->len == 1 && str->name[0] == '.')
-+		return true;
-+
-+	if (str->len == 2 && str->name[0] == '.' && str->name[1] == '.')
-+		return true;
-+
-+	return false;
-+}
-+EXPORT_SYMBOL(is_dot_dotdot);
-diff --git a/fs/namei.c b/fs/namei.c
-index 2dda552..7730a3b 100644
---- a/fs/namei.c
-+++ b/fs/namei.c
-@@ -2458,10 +2458,8 @@ static int lookup_one_len_common(const char *name, struct dentry *base,
- 	if (!len)
- 		return -EACCES;
- 
--	if (unlikely(name[0] == '.')) {
--		if (len < 2 || (len == 2 && name[1] == '.'))
--			return -EACCES;
--	}
-+	if (unlikely(is_dot_dotdot(this)))
-+		return -EACCES;
- 
- 	while (len--) {
- 		unsigned int c = *(const unsigned char *)name++;
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index c159a8b..e999826 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -3627,4 +3627,6 @@ static inline int inode_drain_writes(struct inode *inode)
- 	return filemap_write_and_wait(inode->i_mapping);
- }
- 
-+extern bool is_dot_dotdot(const struct qstr *str);
-+
- #endif /* _LINUX_FS_H */
--- 
-2.1.0
+On Mon, Dec 02, 2019 at 06:10:13PM +0800, Tiezhu Yang wrote:
+> There exists many similar and duplicate codes to check "." and "..",
+> so introduce is_dot_dotdot helper to make the code more clean.
 
+The idea is good.  The implementation is, I'm afraid, badly chosen.
+Did you benchmark this change at all?  In general, you should prefer the
+core kernel implementation to that of some less-interesting filesystems.
+I measured the performance with the attached test program on my laptop
+(Core-i7 Kaby Lake):
+
+qstr . time_1 0.020531 time_2 0.005786
+qstr .. time_1 0.017892 time_2 0.008798
+qstr a time_1 0.017633 time_2 0.003634
+qstr matthew time_1 0.011820 time_2 0.003605
+qstr .a time_1 0.017909 time_2 0.008710
+qstr , time_1 0.017631 time_2 0.003619
+
+The results are quite stable:
+
+qstr . time_1 0.021137 time_2 0.005780
+qstr .. time_1 0.017964 time_2 0.008675
+qstr a time_1 0.017899 time_2 0.003654
+qstr matthew time_1 0.011821 time_2 0.003620
+qstr .a time_1 0.017889 time_2 0.008662
+qstr , time_1 0.017764 time_2 0.003613
+
+Feel free to suggest some different strings we could use for testing.
+These seemed like interesting strings to test with.  It's always possible
+I've messed up something with this benchmark that causes it to not
+accurately represent the performance of each algorithm, so please check
+that too.
+
+> +bool is_dot_dotdot(const struct qstr *str)
+> +{
+> +	if (str->len == 1 && str->name[0] == '.')
+> +		return true;
+> +
+> +	if (str->len == 2 && str->name[0] == '.' && str->name[1] == '.')
+> +		return true;
+> +
+> +	return false;
+> +}
+> +EXPORT_SYMBOL(is_dot_dotdot);
+> diff --git a/fs/namei.c b/fs/namei.c
+> index 2dda552..7730a3b 100644
+> --- a/fs/namei.c
+> +++ b/fs/namei.c
+> @@ -2458,10 +2458,8 @@ static int lookup_one_len_common(const char *name, struct dentry *base,
+>  	if (!len)
+>  		return -EACCES;
+>  
+> -	if (unlikely(name[0] == '.')) {
+> -		if (len < 2 || (len == 2 && name[1] == '.'))
+> -			return -EACCES;
+> -	}
+> +	if (unlikely(is_dot_dotdot(this)))
+> +		return -EACCES;
+>  
+>  	while (len--) {
+>  		unsigned int c = *(const unsigned char *)name++;
+
+--u3/rZRmxL6MmkK24
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="dotdotdot.c"
+
+#include <stdio.h>
+#include <time.h>
+
+typedef _Bool bool;
+#define true 1
+#define false 0
+#define unlikely(x)	(x)
+typedef unsigned int u32;
+typedef unsigned long long u64;
+#define HASH_LEN_DECLARE u32 hash; u32 len
+
+struct qstr {
+        union {
+                struct {
+                        HASH_LEN_DECLARE;
+                };
+                u64 hash_len;
+        };
+        const char *name;
+};
+
+bool is_dot_dotdot_1(const struct qstr *str)
+{
+	if (str->len == 1 && str->name[0] == '.')
+		return true;
+	if (str->len == 2 && str->name[0] == '.' && str->name[1] == '.')
+		return true;
+	return false;
+}
+
+bool is_dot_dotdot_2(const struct qstr *str)
+{
+	if (unlikely(str->name[0] == '.')) {
+		if (str->len < 2 || (str->len == 2 && str->name[1] == '.'))
+			return false;
+	}
+
+	return true;
+}
+
+double time_sub(struct timespec *before, struct timespec *after)
+{
+	struct timespec diff = { .tv_sec  = after->tv_sec  - before->tv_sec,
+				 .tv_nsec = after->tv_nsec - before->tv_nsec };
+	if (diff.tv_nsec < 0) {
+		diff.tv_nsec += 1000 * 1000 * 1000;
+		diff.tv_sec -= 1;
+	}
+
+	return diff.tv_sec + diff.tv_nsec * 0.0000000001d;
+}
+
+bool res;
+
+void mytime(const struct qstr *qstr)
+{
+	unsigned int i;
+	struct timespec start, middle, end;
+
+	clock_gettime(CLOCK_THREAD_CPUTIME_ID, &start);
+	for (i = 0; i < 100000000; i++)
+		res = is_dot_dotdot_1(qstr);
+	clock_gettime(CLOCK_THREAD_CPUTIME_ID, &middle);
+	for (i = 0; i < 100000000; i++)
+		res = is_dot_dotdot_2(qstr);
+	clock_gettime(CLOCK_THREAD_CPUTIME_ID, &end);
+
+	printf("qstr %s time_1 %f time_2 %f\n", qstr->name,
+			time_sub(&start, &middle), time_sub(&middle, &end));
+}
+
+int main(int argc, char **argv)
+{
+	struct qstr dot = { .len = 1, .name = "." };
+	struct qstr dotdot = { .len = 2, .name = ".." };
+	struct qstr a = { .len = 1, .name = "a" };
+	struct qstr matthew = { .len = 7, .name = "matthew" };
+	struct qstr dota = { .len = 2, .name = ".a" };
+	struct qstr comma = { .len = 1, .name = "," };
+
+	mytime(&dot);
+	mytime(&dotdot);
+	mytime(&a);
+	mytime(&matthew);
+	mytime(&dota);
+	mytime(&comma);
+
+	return 0;
+}
+
+--u3/rZRmxL6MmkK24--
