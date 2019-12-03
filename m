@@ -2,84 +2,130 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 53B8B10F524
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  3 Dec 2019 03:47:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D05A10F6A7
+	for <lists+linux-fscrypt@lfdr.de>; Tue,  3 Dec 2019 06:11:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726144AbfLCCrM (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 2 Dec 2019 21:47:12 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:41538 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726024AbfLCCrK (ORCPT
+        id S1725845AbfLCFLS (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 3 Dec 2019 00:11:18 -0500
+Received: from mail-pj1-f74.google.com ([209.85.216.74]:52341 "EHLO
+        mail-pj1-f74.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726055AbfLCFLS (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 2 Dec 2019 21:47:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=ZcADr+fqCjkrKggMHp7c9VH2W4nKJ3vIQ/9FqtJ6+po=; b=ZKQ9aFJ8e7Bhuk3ldud6Rv7p/
-        Je8/Oq4ghvtMDdZ8xuWLgrVCOvrGyDituzDk4crgA+cEk4nin2pU4fg8ut/8BbnezXZ6fW1zs4puf
-        /NEQvnTLJjDVL6Ne/aiKA2DvBXW7SGEVg45+6RXCl/tkSRT2ggQfv9XtCwMTjM4HgP0RHeMLXzfaZ
-        ILM/mwJWbX0+PMA+ItQzDIs6Fqmba7YXOgvaGwWfO7qJ1qR0yYQSrlf1tldOt/v/ylTnZztvmEbhf
-        IuVdNzza1Der/TDr1frVSMfl/TZhKmijCNYX8JpZOXLykJreuOp23+d5Rg82kK6DIuCCRwCEEXOry
-        J95N0jq/A==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1ibyDB-0006M1-QQ; Tue, 03 Dec 2019 02:46:49 +0000
-Date:   Mon, 2 Dec 2019 18:46:49 -0800
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <yuchao0@huawei.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Tyler Hicks <tyhicks@canonical.com>,
-        linux-fsdevel@vger.kernel.org, ecryptfs@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org,
+        Tue, 3 Dec 2019 00:11:18 -0500
+Received: by mail-pj1-f74.google.com with SMTP id z24so1250539pjt.19
+        for <linux-fscrypt@vger.kernel.org>; Mon, 02 Dec 2019 21:11:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=JS26lqPOsyf+GCzfh2q7I14K35HWfvfL+jqbIeTiEhs=;
+        b=K1e8TPhpNMFVfy3zpUvxGh3rgUGzKKm5sRwldvLEOIz/KQFH4IXBVzoD7xIeXW+sI+
+         OHuBZYRP4c76okFVaCmF7t+ZhiyQ47NNKd8za4hEYxZ/9eN2nJNM68LEf9dSAhEHOwN4
+         a9+fCrUqBS2/vijwnB/zHYZ3QZP70NycgF/0gJuHNVgL4OVsK9mXOkllWTRUysHBF+wa
+         Gak/gb8gp9GJqewrQ7lybxNuknjIdN/43X38dwmp6wpmPxfFAzDAyu5634JeWK/S45eI
+         j3VRm8PmCQYeh3ZNcfCFmHhOhd5swp1KGjEMgNcsj8Lz9Zt42UsPXNuvXXoYDhc3LwDH
+         UWxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=JS26lqPOsyf+GCzfh2q7I14K35HWfvfL+jqbIeTiEhs=;
+        b=RO0faJt5EQLT6hnGwhC2ejzMz9gQLwuFx/wvU0DM7wavtkuVQUFQVPEXS5UL5AIW5C
+         DbYfwtXx79MZ5PDyt5RSpcVlMl8XkaeRY9BrFthmmrR1QA0MBfTqcFp9Qqq7SISN/r8X
+         6/TSczv3jIblfffjyP93jaF401K2usd9csYtVaMUog0NF3/2sbrQqBZKz6e/s9sfq30Z
+         q4STlcLEE5Z+vpVSft0hofnwqldY+/IV4lPnlFGsqsbCI1VT4VvoeWsG4UEdQHdfaM2L
+         JvoW108SDyftIqSKAQmiyQLBIHDZlrKM4bkInngFvo6/bsk9gE4GBB7cirZ01JJcbySn
+         vhMQ==
+X-Gm-Message-State: APjAAAV1AIJRIOa/MmvmvgCuKPM4VF6hPmeXAzmcXFUcsKLs0CK4qhYL
+        o2bwR+W5HJyqeEXGBfv8uTL3ycB1uVk=
+X-Google-Smtp-Source: APXvYqwAUHq1SM7kgd3huIBZdhakSOyUU8oN/jfGh2+n4qRA8Pa17aUBVqzak3AMNCxa4UE+GvJKUKnGXqc=
+X-Received: by 2002:a63:4104:: with SMTP id o4mr3339080pga.169.1575349877576;
+ Mon, 02 Dec 2019 21:11:17 -0800 (PST)
+Date:   Mon,  2 Dec 2019 21:10:41 -0800
+Message-Id: <20191203051049.44573-1-drosen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.24.0.393.g34dc348eaf-goog
+Subject: [PATCH 0/8] Support for Casefolding and Encryption
+From:   Daniel Rosenberg <drosen@google.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
         linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs: introduce is_dot_dotdot helper for cleanup
-Message-ID: <20191203024649.GQ20752@bombadil.infradead.org>
-References: <1575281413-6753-1-git-send-email-yangtiezhu@loongson.cn>
- <20191202200302.GN20752@bombadil.infradead.org>
- <357ad021-a58c-ad46-42bd-d5012126276f@loongson.cn>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <357ad021-a58c-ad46-42bd-d5012126276f@loongson.cn>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+        Eric Biggers <ebiggers@kernel.org>,
+        linux-fscrypt@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com, Daniel Rosenberg <drosen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, Dec 03, 2019 at 10:07:41AM +0800, Tiezhu Yang wrote:
-> On 12/03/2019 04:03 AM, Matthew Wilcox wrote:
-> > On Mon, Dec 02, 2019 at 06:10:13PM +0800, Tiezhu Yang wrote:
-> > > There exists many similar and duplicate codes to check "." and "..",
-> > > so introduce is_dot_dotdot helper to make the code more clean.
-> > The idea is good.  The implementation is, I'm afraid, badly chosen.
-> > Did you benchmark this change at all?  In general, you should prefer the
-> 
-> Thanks for your reply and suggestion. I measured the
-> performance with the test program, the following
-> implementation is better for various of test cases:
-> 
-> bool is_dot_dotdot(const struct qstr *str)
-> {
->         if (unlikely(str->name[0] == '.')) {
->                 if (str->len < 2 || (str->len == 2 && str->name[1] == '.'))
->                         return true;
->         }
-> 
->         return false;
-> }
-> 
-> I will send a v2 patch used with this implementation.
+Ext4 and F2FS currently both support casefolding and encryption, but not at the
+same time. These patches aim to rectify that.
 
-Well, hang on.  If you haven't done any benchmarking, please do so
-before sending a v2.  In particular, you've now moved this to being a
-function call.  That might slow things down, or it might speed things up.
-I also don't know if passing a qstr is going to be the right API --
-let's hear from the filesystems affected by the API change that they're
-OK with this change.
+Since directory names are stored case preserved, we cannot just take the hash
+of the ciphertext. Instead we use the siphash of the casefolded name. With this
+we no longer have a direct path from an encrypted name to the hash without the
+key. To deal with this, fscrypt now always includes the hash in the name it
+presents when the key is not present. There is a pre-existing bug where you can
+change parts of the hash and still match the name so long as the disruption to
+the hash does not happen to affect lookup on that filesystem. I'm not sure how
+to fix that without making ext4 lookups slower in the more common case.
+
+I moved the identical dcache operations for ext4 and f2fs into the VFS, as any
+filesystem that uses casefolding will need the same code. This will also allow
+further optimizations to that path, although my current changes don't take
+advantage of that yet.
+
+For Ext4, this also means that we need to store the hash on disk. We only do so
+for encrypted and casefolded directories to avoid on disk format changes.
+Previously encryption and casefolding could not live on the same filesystem,
+and we're relaxing that requirement. F2fs is a bit more straightforward since
+it already stores hashes on disk.
+
+I've updated the related tools with just enough to enable the feature. I still
+need to adjust their respective fsck's, although without access to the keys,
+they won't be able to verify the hashes of casefolded and encrypted names.
+
+
+Daniel Rosenberg (8):
+  fscrypt: Add siphash and hash key for policy v2
+  fscrypt: Don't allow v1 policies with casefolding
+  fscrypt: Change format of no-key token
+  vfs: Fold casefolding into vfs
+  f2fs: Handle casefolding with Encryption
+  ext4: Use struct super_blocks' casefold data
+  ext4: Hande casefolding with encryption
+  ext4: Optimize match for casefolded encrypted dirs
+
+ Documentation/filesystems/ext4/directory.rst |  27 ++
+ fs/crypto/Kconfig                            |   1 +
+ fs/crypto/fname.c                            | 204 +++++++++---
+ fs/crypto/fscrypt_private.h                  |   9 +
+ fs/crypto/keysetup.c                         |  29 +-
+ fs/crypto/policy.c                           |  26 +-
+ fs/dcache.c                                  |  35 ++
+ fs/ext4/dir.c                                |  72 +----
+ fs/ext4/ext4.h                               |  87 +++--
+ fs/ext4/hash.c                               |  26 +-
+ fs/ext4/ialloc.c                             |   5 +-
+ fs/ext4/inline.c                             |  41 +--
+ fs/ext4/namei.c                              | 318 ++++++++++++-------
+ fs/ext4/super.c                              |  21 +-
+ fs/f2fs/dir.c                                | 115 +++----
+ fs/f2fs/f2fs.h                               |  14 +-
+ fs/f2fs/hash.c                               |  25 +-
+ fs/f2fs/inline.c                             |   9 +-
+ fs/f2fs/super.c                              |  17 +-
+ fs/f2fs/sysfs.c                              |   8 +-
+ fs/inode.c                                   |   8 +
+ fs/namei.c                                   |  43 ++-
+ include/linux/fs.h                           |  12 +
+ include/linux/fscrypt.h                      | 107 +++----
+ 24 files changed, 797 insertions(+), 462 deletions(-)
+
+-- 
+2.24.0.393.g34dc348eaf-goog
+
