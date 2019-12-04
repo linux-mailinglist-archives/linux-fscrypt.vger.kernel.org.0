@@ -2,116 +2,157 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ABFAD1120A4
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  4 Dec 2019 01:32:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FB301123B9
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  4 Dec 2019 08:53:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726251AbfLDAcO (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 3 Dec 2019 19:32:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37848 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726008AbfLDAcO (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 3 Dec 2019 19:32:14 -0500
-Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9F59820674;
-        Wed,  4 Dec 2019 00:32:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575419533;
-        bh=8ZaeCwEq+6xIABYU+SGqp6hX6Y6XpUzqAIOiEL+4ptk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=H+JHr/MY13+OR7Xg3FnTUgq77Cu2JRb/F5u+aykghFc6qGYlML4b6ddbV54qHYV0C
-         HkJpYWB7n8o3CzDTRpPQ6YK/SIfmqLJ7ehkznxzeKGCk0Je1hCzegtpse65co4wjGM
-         dAdXmhvWd1VFRWMfustTw3Kz4aCxFW4LVjSG3khk=
-Date:   Tue, 3 Dec 2019 16:32:11 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     Gao Xiang <gaoxiang25@huawei.com>,
-        Daniel Rosenberg <drosen@google.com>,
-        Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fscrypt@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH 4/8] vfs: Fold casefolding into vfs
-Message-ID: <20191204003211.GE727@sol.localdomain>
-References: <20191203051049.44573-1-drosen@google.com>
- <20191203051049.44573-5-drosen@google.com>
- <20191203074154.GA216261@architecture4>
- <85wobdb3hp.fsf@collabora.com>
- <20191203203414.GA727@sol.localdomain>
- <85zhg96r7l.fsf@collabora.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <85zhg96r7l.fsf@collabora.com>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+        id S1726217AbfLDHxy (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 4 Dec 2019 02:53:54 -0500
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:37346 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726048AbfLDHxx (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 4 Dec 2019 02:53:53 -0500
+Received: by mail-lj1-f193.google.com with SMTP id u17so6949110lja.4
+        for <linux-fscrypt@vger.kernel.org>; Tue, 03 Dec 2019 23:53:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dubeyko-com.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=o7BdwW/nndIBcsxZWW8vbo3uXBPbU7tTjh33V04X4ek=;
+        b=R15GZEj9KTLTNO0VqqzBo4GIYJtcpTb2kJpdaZtblji+D+RrmcI9rTjDxe+QmhairT
+         Dbdver0Sq7o39O5yoG4UDoGmJmo9vH5HMuLXGO7h9I6dmFkSgcGzoSd18zm/LtsqK2mF
+         lUVjO8y7iCVF2gvIFJREkER6zjHAaENjaCcLtLpziuR4Pq2w3Z8Wlhe3XDpq/lUxhE9O
+         T4/3msAlwIt0YUvQb44lViYxzbj8rFEkqw+r1HWH3ILYKZPpWy2mnzcedUuXScZGEePd
+         QqT5lFUQEHQIvzSg5F3M5PVgRTSf84jSg366orX8ATHSyfkMZ7VBL4bHLLLgCBkyqZGQ
+         zDxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=o7BdwW/nndIBcsxZWW8vbo3uXBPbU7tTjh33V04X4ek=;
+        b=tVZOCKvUUpbPHuSz2o7ySdCN3th+GYKJhWUcF4DTS3C11khkpTEz/8rIPLPfVYZNvZ
+         77Zv7XOJkOAqOMZ/UOMogS5mQpWLlpysi/a96LUn8Ojh6FvHxDi6KVcE2TmlG36InfwF
+         VMNXHqSURbF7sSMo+HOIGf14Z6mNS/FQEZilKv39vpo1oBd2I9UMGWhVPAgnnIVu2sd4
+         eY9lCbq8p3SyHgcm5FFEcObA0OFSGnKuPfCG/OQcZfGydQXnELocqK+055aJwDQWEkyk
+         rXNciXjZBf4Y9X8opI5nTuuD8J3ETyKDg3L1P4ea+fFVpcvWu4NSgXrqKtz6a0QzHHbk
+         weEg==
+X-Gm-Message-State: APjAAAWeYvT2855+YmV2jttMxKiYkck8odmfB0ShKig/W/adjE9CZ9x7
+        64+wGVK9HsIoUw7QkYCT9KPcmA==
+X-Google-Smtp-Source: APXvYqw9cr0AJeOMuYf9c3iwqsmg8RWLKAie3QTXWVS6sDwM7krFflTW5KVptECDL2Qepv39q9RcUg==
+X-Received: by 2002:a2e:9e97:: with SMTP id f23mr1068434ljk.89.1575446031396;
+        Tue, 03 Dec 2019 23:53:51 -0800 (PST)
+Received: from msk1wst115n.omp.ru (mail.omprussia.ru. [5.134.221.218])
+        by smtp.gmail.com with ESMTPSA id x23sm2807809lff.24.2019.12.03.23.53.50
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 03 Dec 2019 23:53:50 -0800 (PST)
+Message-ID: <96a288281d9d84f11dcc06e62a1ff20e2bb2f776.camel@dubeyko.com>
+Subject: Re: [PATCH] fs-verity: implement readahead for FS_IOC_ENABLE_VERITY
+From:   Vyacheslav Dubeyko <slava@dubeyko.com>
+To:     Eric Biggers <ebiggers@kernel.org>, linux-fscrypt@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org,
+        Victor Hsieh <victorhsieh@google.com>
+Date:   Wed, 04 Dec 2019 10:53:50 +0300
+In-Reply-To: <20191203193001.66906-1-ebiggers@kernel.org>
+References: <20191203193001.66906-1-ebiggers@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, Dec 03, 2019 at 04:21:02PM -0500, Gabriel Krisman Bertazi wrote:
-> Eric Biggers <ebiggers@kernel.org> writes:
+On Tue, 2019-12-03 at 11:30 -0800, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> > On Tue, Dec 03, 2019 at 02:42:10PM -0500, Gabriel Krisman Bertazi wrote:
-> >> Gao Xiang <gaoxiang25@huawei.com> writes:
+> When it builds the first level of the Merkle tree,
+> FS_IOC_ENABLE_VERITY
+> sequentially reads each page of the file using read_mapping_page().
+> This works fine if the file's data is already in pagecache, which
+> should
+> normally be the case, since this ioctl is normally used immediately
+> after writing out the file.
 > 
-> >> I think Daniel's approach of moving this into VFS is the simplest way to
-> >> actually solve the issue, instead of extending and duplicating a lot of
-> >> functionality into filesystem hooks to support the possible mixes of
-> >> case-insensitive, overlayfs and fscrypt.
-> >> 
-> >
-> > I think we can actually get everything we want using dentry_operations only,
-> > since the filesystem can set ->d_op during ->lookup() (like what is done for
-> > encrypted filenames now) rather than at dentry allocation time.  And fs/crypto/
-> > can export fscrypt_d_revalidate() rather than setting ->d_op itself.
+> But in any other case this implementation performs very poorly, since
+> only one page is read at a time.
 > 
-> Problem is, differently from fscrypt, case-insensitive uses the d_hash()
-> hook and for a lookup, we actually use
-> dentry->d_parent->d_ops->d_hash().  Which works well, until you are flipping the
-> casefold flag.  Then the dentry already exists and you need to modify
-> the d_ops on the fly, which I couldn't find precedent anywhere.  I tried
-> invalidating the dentry whenever we flip the flag, but then if it has
-> negative dentries as children,I wasn't able to reliably invalidate it,
-> and that's when I reached the limit of my knowledge in VFS.  In
-> particular, in every attempt I made to implement it like this, I was
-> able to race and do a case-insensitive lookup on a directory that was
-> just made case sensitive.
+> Fix this by implementing readahead using the functions from
+> mm/readahead.c.
 > 
-> I'm not saying there isn't a way.  But it is a bit harder than this
-> proposal. I tried it already and still didn't manage to make it work.
-> Maybe someone who better understands vfs.
+> This improves performance in the uncached case by about 20x, as seen
+> in
+> the following benchmarks done on a 250MB file (on x86_64 with SHA-
+> NI):
+> 
+>     FS_IOC_ENABLE_VERITY uncached (before) 3.299s
+>     FS_IOC_ENABLE_VERITY uncached (after)  0.160s
+>     FS_IOC_ENABLE_VERITY cached            0.147s
+>     sha256sum uncached                     0.191s
+>     sha256sum cached                       0.145s
+> 
+> Note: we could instead switch to kernel_read().  But that would mean
+> we'd no longer be hashing the data directly from the pagecache, which
+> is
+> a nice optimization of its own.  And using kernel_read() would
+> require
+> allocating another temporary buffer, hashing the data and tree pages
+> separately, and explicitly zero-padding the last page -- so it
+> wouldn't
+> really be any simpler than direct pagecache access, at least for now.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+>  fs/verity/enable.c | 46 ++++++++++++++++++++++++++++++++++++++++--
+> ----
+>  1 file changed, 40 insertions(+), 6 deletions(-)
+> 
+> diff --git a/fs/verity/enable.c b/fs/verity/enable.c
+> index eabc6ac19906..f7eaffa60196 100644
+> --- a/fs/verity/enable.c
+> +++ b/fs/verity/enable.c
+> @@ -13,14 +13,44 @@
+>  #include <linux/sched/signal.h>
+>  #include <linux/uaccess.h>
+>  
+> -static int build_merkle_tree_level(struct inode *inode, unsigned int
+> level,
+> +/*
+> + * Read a file data page for Merkle tree construction.  Do
+> aggressive readahead,
+> + * since we're sequentially reading the entire file.
+> + */
+> +static struct page *read_file_data_page(struct inode *inode,
+> +					struct file_ra_state *ra,
+> +					struct file *filp,
+> +					pgoff_t index,
+> +					pgoff_t num_pages_in_file)
+> +{
+> +	struct page *page;
+> +
+> +	page = find_get_page(inode->i_mapping, index);
+> +	if (!page || !PageUptodate(page)) {
+> +		if (page)
+> +			put_page(page);
 
-Yes you're right, I forgot that for ->d_hash() and ->d_compare() it's actually
-the parent's directory dentry_operations that are used.
 
-> 
-> > It's definitely ugly to have to handle the 3 cases of encrypt, casefold, and
-> > encrypt+casefold separately -- and this will need to be duplicated for each
-> > filesystem.  But we do have to weigh that against adding additional complexity
-> > and overhead to the VFS for everyone.  If we do go with the VFS changes, please
-> > try to make them as simple and unobtrusive as possible.
-> 
-> Well, it is just not case-insensitive+fscrypt. Also overlayfs
-> there. Probably more.  So we have much more cases.  I understand the VFS
-> changes need to be very well thought, but when I worked on this it
-> started to look a more correct solution than using the hooks.
+It looks like that there is not necessary check here. If we have NULL
+pointer on page then we will not enter inside. But if we have valid
+pointer on page then we have double check inside. Am I correct? 
 
-Well the point of my proof-of-concept patch having separate ext4_ci_dentry_ops,
-ext4_encrypted_dentry_ops, and ext4_encrypted_ci_dentry_ops is supposed to be
-for overlayfs support -- since overlayfs requires that some operations are not
-present.  If we didn't need overlayfs support, we could just use a single
-ext4_dentry_ops for all dentries instead.
 
-I think we could still support fscrypt, casefold, fscrypt+casefold, and
-fscrypt+overlayfs with dentry_operations only.  It's casefold+overlayfs that's
-the biggest problem, due to the possibility of the casefold flag being set on a
-directory later as you pointed out.
+> +		page_cache_sync_readahead(inode->i_mapping, ra, filp,
+> +					  index, num_pages_in_file -
+> index);
+> +		page = read_mapping_page(inode->i_mapping, index,
+> NULL);
+> +		if (IS_ERR(page))
+> +			return page;
 
-- Eric
+Could we recieve the NULL pointer here? Is callee ready to process theNULL return value? 
+
+Thanks,
+Viacheslav Dubeyko.
+
+
