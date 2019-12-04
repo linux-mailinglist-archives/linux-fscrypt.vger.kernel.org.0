@@ -2,157 +2,202 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FB301123B9
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  4 Dec 2019 08:53:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12D72112C98
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  4 Dec 2019 14:30:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726217AbfLDHxy (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 4 Dec 2019 02:53:54 -0500
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:37346 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726048AbfLDHxx (ORCPT
+        id S1727887AbfLDNac (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 4 Dec 2019 08:30:32 -0500
+Received: from smtpoutz27.laposte.net ([194.117.213.102]:36492 "EHLO
+        smtp.laposte.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727635AbfLDNac (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 4 Dec 2019 02:53:53 -0500
-Received: by mail-lj1-f193.google.com with SMTP id u17so6949110lja.4
-        for <linux-fscrypt@vger.kernel.org>; Tue, 03 Dec 2019 23:53:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dubeyko-com.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=o7BdwW/nndIBcsxZWW8vbo3uXBPbU7tTjh33V04X4ek=;
-        b=R15GZEj9KTLTNO0VqqzBo4GIYJtcpTb2kJpdaZtblji+D+RrmcI9rTjDxe+QmhairT
-         Dbdver0Sq7o39O5yoG4UDoGmJmo9vH5HMuLXGO7h9I6dmFkSgcGzoSd18zm/LtsqK2mF
-         lUVjO8y7iCVF2gvIFJREkER6zjHAaENjaCcLtLpziuR4Pq2w3Z8Wlhe3XDpq/lUxhE9O
-         T4/3msAlwIt0YUvQb44lViYxzbj8rFEkqw+r1HWH3ILYKZPpWy2mnzcedUuXScZGEePd
-         QqT5lFUQEHQIvzSg5F3M5PVgRTSf84jSg366orX8ATHSyfkMZ7VBL4bHLLLgCBkyqZGQ
-         zDxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=o7BdwW/nndIBcsxZWW8vbo3uXBPbU7tTjh33V04X4ek=;
-        b=tVZOCKvUUpbPHuSz2o7ySdCN3th+GYKJhWUcF4DTS3C11khkpTEz/8rIPLPfVYZNvZ
-         77Zv7XOJkOAqOMZ/UOMogS5mQpWLlpysi/a96LUn8Ojh6FvHxDi6KVcE2TmlG36InfwF
-         VMNXHqSURbF7sSMo+HOIGf14Z6mNS/FQEZilKv39vpo1oBd2I9UMGWhVPAgnnIVu2sd4
-         eY9lCbq8p3SyHgcm5FFEcObA0OFSGnKuPfCG/OQcZfGydQXnELocqK+055aJwDQWEkyk
-         rXNciXjZBf4Y9X8opI5nTuuD8J3ETyKDg3L1P4ea+fFVpcvWu4NSgXrqKtz6a0QzHHbk
-         weEg==
-X-Gm-Message-State: APjAAAWeYvT2855+YmV2jttMxKiYkck8odmfB0ShKig/W/adjE9CZ9x7
-        64+wGVK9HsIoUw7QkYCT9KPcmA==
-X-Google-Smtp-Source: APXvYqw9cr0AJeOMuYf9c3iwqsmg8RWLKAie3QTXWVS6sDwM7krFflTW5KVptECDL2Qepv39q9RcUg==
-X-Received: by 2002:a2e:9e97:: with SMTP id f23mr1068434ljk.89.1575446031396;
-        Tue, 03 Dec 2019 23:53:51 -0800 (PST)
-Received: from msk1wst115n.omp.ru (mail.omprussia.ru. [5.134.221.218])
-        by smtp.gmail.com with ESMTPSA id x23sm2807809lff.24.2019.12.03.23.53.50
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 03 Dec 2019 23:53:50 -0800 (PST)
-Message-ID: <96a288281d9d84f11dcc06e62a1ff20e2bb2f776.camel@dubeyko.com>
-Subject: Re: [PATCH] fs-verity: implement readahead for FS_IOC_ENABLE_VERITY
-From:   Vyacheslav Dubeyko <slava@dubeyko.com>
-To:     Eric Biggers <ebiggers@kernel.org>, linux-fscrypt@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org,
-        Victor Hsieh <victorhsieh@google.com>
-Date:   Wed, 04 Dec 2019 10:53:50 +0300
-In-Reply-To: <20191203193001.66906-1-ebiggers@kernel.org>
-References: <20191203193001.66906-1-ebiggers@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Wed, 4 Dec 2019 08:30:32 -0500
+X-Greylist: delayed 1439 seconds by postgrey-1.27 at vger.kernel.org; Wed, 04 Dec 2019 08:30:31 EST
+Received: from smtp.laposte.net (localhost [127.0.0.1])
+        by lpn-prd-vrout015 (Postfix) with ESMTP id D899227D7D3
+        for <linux-fscrypt@vger.kernel.org>; Wed,  4 Dec 2019 14:06:30 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=laposte.net; s=mail0;
+        t=1575464790; bh=QoIoJNvQPoGhf1mEusSBQCFVb/hmuGDTkK983LBNhUA=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=IVjMPm635PtB2Yl7mYU30crQdS480bPi7jOE3zVI1J9Xa55WFhJQYQ87r5VIZ2qny
+         QYI8Fwe5PpySZWTBSyzmtuS4BYB2cGQCQaUGt9zABQuvyEM5d4CLHDoZ+PiI3cXFV1
+         fEbSqLB8Y1fGWVe6DonfAoI8eJ0laFwDU2H2sflNp405NQyyZ2Cy1UKXdi4e1vEJaW
+         n4m3bcglSXgT74zsTVnI6l3IYI7li5HROizHwu9s9iNjQG75TbZwD7qAyxPJyMOP8Q
+         UvlYgKDRtmZPguV2rA8+fYRbKXqawoyAgqTsISfYiYTdmYMQ2SreNRPiDShLS3xKXG
+         +JYSYp4V+F35Q==
+Received: from smtp.laposte.net (localhost [127.0.0.1])
+        by lpn-prd-vrout015 (Postfix) with ESMTP id CA8BF27DDCF
+        for <linux-fscrypt@vger.kernel.org>; Wed,  4 Dec 2019 14:06:30 +0100 (CET)
+Received: from lpn-prd-vrin003 (lpn-prd-vrin003.prosodie [10.128.63.4])
+        by lpn-prd-vrout015 (Postfix) with ESMTP id C3D1D27DC27
+        for <linux-fscrypt@vger.kernel.org>; Wed,  4 Dec 2019 14:06:30 +0100 (CET)
+Received: from lpn-prd-vrin003 (localhost [127.0.0.1])
+        by lpn-prd-vrin003 (Postfix) with ESMTP id AFFBF4A725A
+        for <linux-fscrypt@vger.kernel.org>; Wed,  4 Dec 2019 14:06:30 +0100 (CET)
+Received: from [192.168.1.18] (lfbn-mar-1-801-152.w92-150.abo.wanadoo.fr [92.150.127.152])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by lpn-prd-vrin003 (Postfix) with ESMTPSA id 4C5A04A7228;
+        Wed,  4 Dec 2019 14:06:29 +0100 (CET)
+Subject: Re: [PATCH] fs: introduce is_dot_dotdot helper for cleanup
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <yuchao0@huawei.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Tyler Hicks <tyhicks@canonical.com>,
+        linux-fsdevel@vger.kernel.org, ecryptfs@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+References: <1575281413-6753-1-git-send-email-yangtiezhu@loongson.cn>
+ <20191202200302.GN20752@bombadil.infradead.org>
+ <357ad021-a58c-ad46-42bd-d5012126276f@loongson.cn>
+From:   Jean-Louis Biasini <jl.biasini@laposte.net>
+X-Pep-Version: 2.0
+Message-ID: <12554a8e-2899-f03f-ec3d-d4cf35c4dd71@laposte.net>
+Date:   Wed, 4 Dec 2019 14:06:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
+MIME-Version: 1.0
+In-Reply-To: <357ad021-a58c-ad46-42bd-d5012126276f@loongson.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+X-VR-FullState: 0
+X-VR-Score: -100
+X-VR-Cause-1: gggruggvucftvghtrhhoucdtuddrgedufedrudejledggeejucetufdoteggodetrfdotffvucfrrhho
+X-VR-Cause-2: fhhilhgvmecunfetrffquffvgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhht
+X-VR-Cause-3: shculddquddttddmnecujfgurhepuffvfhfhkffffgggjggtgfesthhqredttdefjeenucfhrhhomhep
+X-VR-Cause-4: lfgvrghnqdfnohhuihhsuceuihgrshhinhhiuceojhhlrdgsihgrshhinhhisehlrghpohhsthgvrdhn
+X-VR-Cause-5: vghtqeenucfkphepledvrdduhedtrdduvdejrdduhedvnecurfgrrhgrmhepmhhouggvpehsmhhtphho
+X-VR-Cause-6: uhhtpdhinhgvthepledvrdduhedtrdduvdejrdduhedvpdhhvghloheplgduledvrdduieekrddurddu
+X-VR-Cause-7: kegnpdhmrghilhhfrhhomhepjhhlrdgsihgrshhinhhisehlrghpohhsthgvrdhnvghtpdhrtghpthht
+X-VR-Cause-8: oheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhi
+X-VR-Cause-9: nhhugidqfhdvfhhsqdguvghvvghlsehlihhsthhsrdhsohhurhgtvghfohhrghgvrdhnvghtpdhrtghp
+X-VR-Cause-10: thhtoheplhhinhhugidqfhhstghrhihpthesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthho
+X-VR-Cause-11: pegvtghrhihpthhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhf
+X-VR-Cause-12: shguvghvvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepthihhhhitghkshestggr
+X-VR-Cause-13: nhhonhhitggrlhdrtghomhdprhgtphhtthhopegvsghighhgvghrsheskhgvrhhnvghlrdhorhhgpdhr
+X-VR-Cause-14: tghpthhtohephihutghhrghotdeshhhurgifvghirdgtohhmpdhrtghpthhtohepjhgrvghgvghukhes
+X-VR-Cause-15: khgvrhhnvghlrdhorhhgpdhrtghpthhtohepthihthhsohesmhhithdrvgguuhdprhgtphhtthhopehv
+X-VR-Cause-16: ihhrohesiigvnhhivhdrlhhinhhugidrohhrghdruhhkpdhrtghpthhtohepfihilhhlhiesihhnfhhr
+X-VR-Cause-17: rgguvggrugdrohhrghdprhgtphhtthhopeihrghnghhtihgviihhuheslhhoohhnghhsohhnrdgtnhen
+X-VR-Cause-18: ucevlhhushhtvghrufhiiigvpedt
+X-VR-AvState: No
+X-VR-State: 0
+X-VR-State: 0
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, 2019-12-03 at 11:30 -0800, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> When it builds the first level of the Merkle tree,
-> FS_IOC_ENABLE_VERITY
-> sequentially reads each page of the file using read_mapping_page().
-> This works fine if the file's data is already in pagecache, which
-> should
-> normally be the case, since this ioctl is normally used immediately
-> after writing out the file.
-> 
-> But in any other case this implementation performs very poorly, since
-> only one page is read at a time.
-> 
-> Fix this by implementing readahead using the functions from
-> mm/readahead.c.
-> 
-> This improves performance in the uncached case by about 20x, as seen
-> in
-> the following benchmarks done on a 250MB file (on x86_64 with SHA-
-> NI):
-> 
->     FS_IOC_ENABLE_VERITY uncached (before) 3.299s
->     FS_IOC_ENABLE_VERITY uncached (after)  0.160s
->     FS_IOC_ENABLE_VERITY cached            0.147s
->     sha256sum uncached                     0.191s
->     sha256sum cached                       0.145s
-> 
-> Note: we could instead switch to kernel_read().  But that would mean
-> we'd no longer be hashing the data directly from the pagecache, which
-> is
-> a nice optimization of its own.  And using kernel_read() would
-> require
-> allocating another temporary buffer, hashing the data and tree pages
-> separately, and explicitly zero-padding the last page -- so it
-> wouldn't
-> really be any simpler than direct pagecache access, at least for now.
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
->  fs/verity/enable.c | 46 ++++++++++++++++++++++++++++++++++++++++--
-> ----
->  1 file changed, 40 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/verity/enable.c b/fs/verity/enable.c
-> index eabc6ac19906..f7eaffa60196 100644
-> --- a/fs/verity/enable.c
-> +++ b/fs/verity/enable.c
-> @@ -13,14 +13,44 @@
->  #include <linux/sched/signal.h>
->  #include <linux/uaccess.h>
->  
-> -static int build_merkle_tree_level(struct inode *inode, unsigned int
-> level,
-> +/*
-> + * Read a file data page for Merkle tree construction.  Do
-> aggressive readahead,
-> + * since we're sequentially reading the entire file.
-> + */
-> +static struct page *read_file_data_page(struct inode *inode,
-> +					struct file_ra_state *ra,
-> +					struct file *filp,
-> +					pgoff_t index,
-> +					pgoff_t num_pages_in_file)
-> +{
-> +	struct page *page;
-> +
-> +	page = find_get_page(inode->i_mapping, index);
-> +	if (!page || !PageUptodate(page)) {
-> +		if (page)
-> +			put_page(page);
+Please UNSUBSCRIBE ME from this list of tell how to!!!
 
+Le 03/12/2019 =C3=A0 03:07, Tiezhu Yang a =C3=A9crit=C2=A0:
+> On 12/03/2019 04:03 AM, Matthew Wilcox wrote:
+>> On Mon, Dec 02, 2019 at 06:10:13PM +0800, Tiezhu Yang wrote:
+>>> There exists many similar and duplicate codes to check "." and "..",
+>>> so introduce is_dot_dotdot helper to make the code more clean.
+>> The idea is good.=C2=A0 The implementation is, I'm afraid, badly chose=
+n.
+>> Did you benchmark this change at all?=C2=A0 In general, you should pre=
+fer the
+>> core kernel implementation to that of some less-interesting filesystem=
+s.
+>> I measured the performance with the attached test program on my laptop=
 
-It looks like that there is not necessary check here. If we have NULL
-pointer on page then we will not enter inside. But if we have valid
-pointer on page then we have double check inside. Am I correct? 
+>> (Core-i7 Kaby Lake):
+>>
+>> qstr . time_1 0.020531 time_2 0.005786
+>> qstr .. time_1 0.017892 time_2 0.008798
+>> qstr a time_1 0.017633 time_2 0.003634
+>> qstr matthew time_1 0.011820 time_2 0.003605
+>> qstr .a time_1 0.017909 time_2 0.008710
+>> qstr , time_1 0.017631 time_2 0.003619
+>>
+>> The results are quite stable:
+>>
+>> qstr . time_1 0.021137 time_2 0.005780
+>> qstr .. time_1 0.017964 time_2 0.008675
+>> qstr a time_1 0.017899 time_2 0.003654
+>> qstr matthew time_1 0.011821 time_2 0.003620
+>> qstr .a time_1 0.017889 time_2 0.008662
+>> qstr , time_1 0.017764 time_2 0.003613
+>>
+>> Feel free to suggest some different strings we could use for testing.
+>> These seemed like interesting strings to test with.=C2=A0 It's always
+>> possible
+>> I've messed up something with this benchmark that causes it to not
+>> accurately represent the performance of each algorithm, so please chec=
+k
+>> that too.
+>
+> [Sorry to resend this email because the mail list server
+> was denied due to it is not plain text.]
+>
+> Hi Matthew,
+>
+> Thanks for your reply and suggestion. I measured the
+> performance with the test program, the following
+> implementation is better for various of test cases:
+>
+> bool is_dot_dotdot(const struct qstr *str)
+> {
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (unlikely(str->name[0] =3D=
+=3D '.')) {
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 if (str->len < 2 || (str->len =3D=3D 2 && str->name[1]=
+ =3D=3D
+> '.'))
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return=
+ true;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return false;
+> }
+>
+> I will send a v2 patch used with this implementation.
+>
+> Thanks,
+>
+> Tiezhu Yang
+>
+>>
+>>> +bool is_dot_dotdot(const struct qstr *str)
+>>> +{
+>>> +=C2=A0=C2=A0=C2=A0 if (str->len =3D=3D 1 && str->name[0] =3D=3D '.')=
 
-
-> +		page_cache_sync_readahead(inode->i_mapping, ra, filp,
-> +					  index, num_pages_in_file -
-> index);
-> +		page = read_mapping_page(inode->i_mapping, index,
-> NULL);
-> +		if (IS_ERR(page))
-> +			return page;
-
-Could we recieve the NULL pointer here? Is callee ready to process theNULL return value? 
-
-Thanks,
-Viacheslav Dubeyko.
-
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return true;
+>>> +
+>>> +=C2=A0=C2=A0=C2=A0 if (str->len =3D=3D 2 && str->name[0] =3D=3D '.' =
+&& str->name[1] =3D=3D '.')
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return true;
+>>> +
+>>> +=C2=A0=C2=A0=C2=A0 return false;
+>>> +}
+>>> +EXPORT_SYMBOL(is_dot_dotdot);
+>>> diff --git a/fs/namei.c b/fs/namei.c
+>>> index 2dda552..7730a3b 100644
+>>> --- a/fs/namei.c
+>>> +++ b/fs/namei.c
+>>> @@ -2458,10 +2458,8 @@ static int lookup_one_len_common(const char
+>>> *name, struct dentry *base,
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!len)
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -EACCES=
+;
+>>> =C2=A0 -=C2=A0=C2=A0=C2=A0 if (unlikely(name[0] =3D=3D '.')) {
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (len < 2 || (len =3D=3D=
+ 2 && name[1] =3D=3D '.'))
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 r=
+eturn -EACCES;
+>>> -=C2=A0=C2=A0=C2=A0 }
+>>> +=C2=A0=C2=A0=C2=A0 if (unlikely(is_dot_dotdot(this)))
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -EACCES;
+>>> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 while (len--) {
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned int c=
+ =3D *(const unsigned char *)name++;
+>
 
