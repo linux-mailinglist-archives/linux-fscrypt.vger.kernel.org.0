@@ -2,80 +2,222 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B664113CA2
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  5 Dec 2019 08:56:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04D79115C06
+	for <lists+linux-fscrypt@lfdr.de>; Sat,  7 Dec 2019 12:36:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726059AbfLEH41 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 5 Dec 2019 02:56:27 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:49826 "EHLO loongson.cn"
+        id S1726106AbfLGLga (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sat, 7 Dec 2019 06:36:30 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:37774 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725963AbfLEH41 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 5 Dec 2019 02:56:27 -0500
-Received: from [10.130.0.36] (unknown [123.138.236.242])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxTxQGuOhdmTgHAA--.9S3;
-        Thu, 05 Dec 2019 15:55:59 +0800 (CST)
-Subject: Re: [PATCH v2] fs: introduce is_dot_dotdot helper for cleanup
-To:     Matthew Wilcox <willy@infradead.org>
-References: <1575377810-3574-1-git-send-email-yangtiezhu@loongson.cn>
- <20191203135651.GU20752@bombadil.infradead.org>
- <0003a252-b003-0a8c-b4ac-6280557ece06@loongson.cn>
- <20191205070646.GA29612@bombadil.infradead.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        id S1726025AbfLGLga (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Sat, 7 Dec 2019 06:36:30 -0500
+Received: from linux.localdomain (unknown [123.138.236.242])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx_xajjutdTiUIAA--.95S2;
+        Sat, 07 Dec 2019 19:36:04 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
         "Theodore Y. Ts'o" <tytso@mit.edu>,
         Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <yuchao0@huawei.com>,
         Eric Biggers <ebiggers@kernel.org>,
-        Tyler Hicks <tyhicks@canonical.com>,
-        linux-fsdevel@vger.kernel.org, ecryptfs@vger.kernel.org,
+        Tyler Hicks <tyhicks@canonical.com>
+Cc:     linux-fsdevel@vger.kernel.org, ecryptfs@vger.kernel.org,
         linux-fscrypt@vger.kernel.org,
         linux-f2fs-devel@lists.sourceforge.net,
         linux-kernel@vger.kernel.org
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <b3f23eef-3799-6ddd-43ba-11a90f49279d@loongson.cn>
-Date:   Thu, 5 Dec 2019 15:55:50 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
-MIME-Version: 1.0
-In-Reply-To: <20191205070646.GA29612@bombadil.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9DxTxQGuOhdmTgHAA--.9S3
-X-Coremail-Antispam: 1UD129KBjvdXoW7XFyfJr4fAFWDJry7Cr4fGrg_yoW3Wrc_uw
-        4kWrZ7Aws8tFZ09Fs8Ga1FqrZxKaya9rykJrn3t3Wjy345X39xCrWDCrn5Wwn3Ga1xJrsI
-        qrWavrn8JwnagjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbT8YjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7
-        Mxk0xIA0c2IEe2xFo4CEbIxvr21lc2xSY4AK67AK6r4xMxAIw28IcxkI7VAKI48JMxC20s
-        026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_
-        JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14
-        v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xva
-        j40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r
-        4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUc3xhDUUUU
+Subject: [PATCH v3] fs: introduce is_dot_dotdot helper for cleanup
+Date:   Sat,  7 Dec 2019 19:35:48 +0800
+Message-Id: <1575718548-19017-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dx_xajjutdTiUIAA--.95S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxur15ZF45Ww47Jry3KF47XFb_yoW7JrW7pF
+        sxAFyxtrs7Gry5ur95tr1ruw1Yv3s7Wr17JrZxKa40yryaqrn5XrWIyw109wn3JFWDuFn0
+        gFZ8G34rCry5JFJanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvCb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+        C2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
+        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJV
+        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka
+        0xkIwI1lc2xSY4AK67AK6r4kMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
+        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+        x0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAI
+        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
+        nxnUUI43ZEXa7IU5D3vUUUUUU==
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On 12/05/2019 03:06 PM, Matthew Wilcox wrote:
-> On Thu, Dec 05, 2019 at 08:56:07AM +0800, Tiezhu Yang wrote:
->>> And, as I asked twice in the last round of review, did you benchmark
->>> this change?
->> Before sending this v2 patch, I have done the test used with your test
->> program and already pointed out the following implementation is better:
-> I didn't mean "have you run the test program i wrote".  I meant "have you
-> booted a kernel with this change and done some performance measurements
-> to see if you've changed anything".
+There exists many similar and duplicate codes to check "." and "..",
+so introduce is_dot_dotdot helper to make the code more clean.
 
-Oh, no, it is hard to measure the performance influence with this patch.
-Based on the above analysis, I think the performance influence is very
-small due to is_dot_dotdot() is a such short static inline function.
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
 
-Thanks,
+v3:
+  - use "name" and "len" as arguments instead of qstr
+  - move is_dot_dotdot() to include/linux/namei.h
 
-Tiezhu Yang
+v2:
+  - use the better performance implementation of is_dot_dotdot
+  - make it static inline and move it to include/linux/fs.h
+
+ fs/crypto/fname.c     | 16 +++-------------
+ fs/ecryptfs/crypto.c  | 10 ----------
+ fs/f2fs/f2fs.h        | 11 -----------
+ fs/f2fs/hash.c        |  3 ++-
+ fs/namei.c            |  6 ++----
+ include/linux/namei.h | 10 ++++++++++
+ 6 files changed, 17 insertions(+), 39 deletions(-)
+
+diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
+index 3da3707..ed1d7c5 100644
+--- a/fs/crypto/fname.c
++++ b/fs/crypto/fname.c
+@@ -11,21 +11,11 @@
+  * This has not yet undergone a rigorous security audit.
+  */
+ 
++#include <linux/namei.h>
+ #include <linux/scatterlist.h>
+ #include <crypto/skcipher.h>
+ #include "fscrypt_private.h"
+ 
+-static inline bool fscrypt_is_dot_dotdot(const struct qstr *str)
+-{
+-	if (str->len == 1 && str->name[0] == '.')
+-		return true;
+-
+-	if (str->len == 2 && str->name[0] == '.' && str->name[1] == '.')
+-		return true;
+-
+-	return false;
+-}
+-
+ /**
+  * fname_encrypt() - encrypt a filename
+  *
+@@ -255,7 +245,7 @@ int fscrypt_fname_disk_to_usr(struct inode *inode,
+ 	const struct qstr qname = FSTR_TO_QSTR(iname);
+ 	struct fscrypt_digested_name digested_name;
+ 
+-	if (fscrypt_is_dot_dotdot(&qname)) {
++	if (is_dot_dotdot(qname.name, qname.len)) {
+ 		oname->name[0] = '.';
+ 		oname->name[iname->len - 1] = '.';
+ 		oname->len = iname->len;
+@@ -323,7 +313,7 @@ int fscrypt_setup_filename(struct inode *dir, const struct qstr *iname,
+ 	memset(fname, 0, sizeof(struct fscrypt_name));
+ 	fname->usr_fname = iname;
+ 
+-	if (!IS_ENCRYPTED(dir) || fscrypt_is_dot_dotdot(iname)) {
++	if (!IS_ENCRYPTED(dir) || is_dot_dotdot(iname->name, iname->len)) {
+ 		fname->disk_name.name = (unsigned char *)iname->name;
+ 		fname->disk_name.len = iname->len;
+ 		return 0;
+diff --git a/fs/ecryptfs/crypto.c b/fs/ecryptfs/crypto.c
+index f91db24..2014f8f 100644
+--- a/fs/ecryptfs/crypto.c
++++ b/fs/ecryptfs/crypto.c
+@@ -1991,16 +1991,6 @@ int ecryptfs_encrypt_and_encode_filename(
+ 	return rc;
+ }
+ 
+-static bool is_dot_dotdot(const char *name, size_t name_size)
+-{
+-	if (name_size == 1 && name[0] == '.')
+-		return true;
+-	else if (name_size == 2 && name[0] == '.' && name[1] == '.')
+-		return true;
+-
+-	return false;
+-}
+-
+ /**
+  * ecryptfs_decode_and_decrypt_filename - converts the encoded cipher text name to decoded plaintext
+  * @plaintext_name: The plaintext name
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 5a888a0..3d5e684 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -2767,17 +2767,6 @@ static inline bool f2fs_cp_error(struct f2fs_sb_info *sbi)
+ 	return is_set_ckpt_flags(sbi, CP_ERROR_FLAG);
+ }
+ 
+-static inline bool is_dot_dotdot(const struct qstr *str)
+-{
+-	if (str->len == 1 && str->name[0] == '.')
+-		return true;
+-
+-	if (str->len == 2 && str->name[0] == '.' && str->name[1] == '.')
+-		return true;
+-
+-	return false;
+-}
+-
+ static inline bool f2fs_may_extent_tree(struct inode *inode)
+ {
+ 	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+diff --git a/fs/f2fs/hash.c b/fs/f2fs/hash.c
+index 5bc4dcd..b8e123f 100644
+--- a/fs/f2fs/hash.c
++++ b/fs/f2fs/hash.c
+@@ -15,6 +15,7 @@
+ #include <linux/cryptohash.h>
+ #include <linux/pagemap.h>
+ #include <linux/unicode.h>
++#include <linux/namei.h>
+ 
+ #include "f2fs.h"
+ 
+@@ -82,7 +83,7 @@ static f2fs_hash_t __f2fs_dentry_hash(const struct qstr *name_info,
+ 	if (fname && !fname->disk_name.name)
+ 		return cpu_to_le32(fname->hash);
+ 
+-	if (is_dot_dotdot(name_info))
++	if (is_dot_dotdot(name, len))
+ 		return 0;
+ 
+ 	/* Initialize the default seed for the hash checksum functions */
+diff --git a/fs/namei.c b/fs/namei.c
+index d6c91d1..acbfbe4 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -2451,10 +2451,8 @@ static int lookup_one_len_common(const char *name, struct dentry *base,
+ 	if (!len)
+ 		return -EACCES;
+ 
+-	if (unlikely(name[0] == '.')) {
+-		if (len < 2 || (len == 2 && name[1] == '.'))
+-			return -EACCES;
+-	}
++	if (is_dot_dotdot(name, len))
++		return -EACCES;
+ 
+ 	while (len--) {
+ 		unsigned int c = *(const unsigned char *)name++;
+diff --git a/include/linux/namei.h b/include/linux/namei.h
+index 7fe7b87..8254486 100644
+--- a/include/linux/namei.h
++++ b/include/linux/namei.h
+@@ -92,4 +92,14 @@ retry_estale(const long error, const unsigned int flags)
+ 	return error == -ESTALE && !(flags & LOOKUP_REVAL);
+ }
+ 
++static inline bool is_dot_dotdot(const unsigned char *name, size_t len)
++{
++	if (unlikely(name[0] == '.')) {
++		if (len < 2 || (len == 2 && name[1] == '.'))
++			return true;
++	}
++
++	return false;
++}
++
+ #endif /* _LINUX_NAMEI_H */
+-- 
+2.1.0
 
