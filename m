@@ -2,32 +2,34 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 55AEC1177AE
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  9 Dec 2019 21:45:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60CBB1177C4
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  9 Dec 2019 21:51:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726595AbfLIUpy (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 9 Dec 2019 15:45:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44832 "EHLO mail.kernel.org"
+        id S1726522AbfLIUvB (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 9 Dec 2019 15:51:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726509AbfLIUpy (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 9 Dec 2019 15:45:54 -0500
+        id S1726483AbfLIUvB (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 9 Dec 2019 15:51:01 -0500
 Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.77])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 857AC20637
-        for <linux-fscrypt@vger.kernel.org>; Mon,  9 Dec 2019 20:45:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 20B4E2068E;
+        Mon,  9 Dec 2019 20:51:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575924353;
-        bh=opikFf8DAmL1In76qb//oBJ4CvS33zEPba5Tlm1ztck=;
-        h=From:To:Subject:Date:From;
-        b=QxB4vA69XzJCVySRmc34P6ksVXtSE8M/Qb0zy68Xkh/1Yjimsy+Mz+FDEZR71IFAE
-         agtu+akoGZ88BZtuiRTEBYqCw9TDfOXKJGxZRwQ9FJAn4HqhqwJXE90lD0/GgX2SA7
-         R2hTKzdZypVrAdqse8UmhXVFwrBC5HK1QRB7Wl2c=
+        s=default; t=1575924660;
+        bh=oCaaWnTFgChg9u4LKnle9ELlHgCeHYXQyxSgx1NPH1E=;
+        h=From:To:Cc:Subject:Date:From;
+        b=2c87cQA+9qJ3QJ73oMKaGjjmI69neV7VyZ/4P1heGa9J5RJTYUspnEA/Pby9verd2
+         8tsl6+f+6tLT2LyJYcBJjmJFo7F+EL+Neh3REDU6qcnK5Of2l6yNaiq+hEmiLUCb6B
+         FqSRQ0p4YDK6aYEbtYVxr+bQCFsuhHh6ApHcVL7A=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-fscrypt@vger.kernel.org
-Subject: [PATCH] fscrypt: remove redundant bi_status check
-Date:   Mon,  9 Dec 2019 12:45:09 -0800
-Message-Id: <20191209204509.228942-1-ebiggers@kernel.org>
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH] fscrypt: introduce fscrypt_needs_contents_encryption()
+Date:   Mon,  9 Dec 2019 12:50:21 -0800
+Message-Id: <20191209205021.231767-1-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.24.0.393.g34dc348eaf-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -38,27 +40,57 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-submit_bio_wait() already returns bi_status translated to an errno.
-So the additional check of bi_status is redundant and can be removed.
+Add a function fscrypt_needs_contents_encryption() which takes an inode
+and returns true if it's an encrypted regular file and the kernel was
+built with fscrypt support.
+
+This will allow replacing duplicated checks of IS_ENCRYPTED() &&
+S_ISREG() on the I/O paths in ext4 and f2fs, while also optimizing out
+unneeded code when !CONFIG_FS_ENCRYPTION.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/crypto/bio.c | 2 --
- 1 file changed, 2 deletions(-)
+ include/linux/fscrypt.h | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/fs/crypto/bio.c b/fs/crypto/bio.c
-index 1f4b8a2770606..b88d417e186e5 100644
---- a/fs/crypto/bio.c
-+++ b/fs/crypto/bio.c
-@@ -77,8 +77,6 @@ int fscrypt_zeroout_range(const struct inode *inode, pgoff_t lblk,
- 			goto errout;
- 		}
- 		err = submit_bio_wait(bio);
--		if (err == 0 && bio->bi_status)
--			err = -EIO;
- 		bio_put(bio);
- 		if (err)
- 			goto errout;
+diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
+index cb18b5fbcef92..2a29f56b1a1cb 100644
+--- a/include/linux/fscrypt.h
++++ b/include/linux/fscrypt.h
+@@ -72,6 +72,21 @@ static inline bool fscrypt_has_encryption_key(const struct inode *inode)
+ 	return READ_ONCE(inode->i_crypt_info) != NULL;
+ }
+ 
++/**
++ * fscrypt_needs_contents_encryption() - check whether an inode needs
++ *					 contents encryption
++ *
++ * Return: %true iff the inode is an encrypted regular file and the kernel was
++ * built with fscrypt support.
++ *
++ * If you need to know whether the encrypt bit is set even when the kernel was
++ * built without fscrypt support, you must use IS_ENCRYPTED() directly instead.
++ */
++static inline bool fscrypt_needs_contents_encryption(const struct inode *inode)
++{
++	return IS_ENCRYPTED(inode) && S_ISREG(inode->i_mode);
++}
++
+ static inline bool fscrypt_dummy_context_enabled(struct inode *inode)
+ {
+ 	return inode->i_sb->s_cop->dummy_context &&
+@@ -269,6 +284,11 @@ static inline bool fscrypt_has_encryption_key(const struct inode *inode)
+ 	return false;
+ }
+ 
++static inline bool fscrypt_needs_contents_encryption(const struct inode *inode)
++{
++	return false;
++}
++
+ static inline bool fscrypt_dummy_context_enabled(struct inode *inode)
+ {
+ 	return false;
 -- 
 2.24.0.393.g34dc348eaf-goog
 
