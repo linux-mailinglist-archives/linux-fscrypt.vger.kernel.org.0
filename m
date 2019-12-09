@@ -2,34 +2,29 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 30136116185
-	for <lists+linux-fscrypt@lfdr.de>; Sun,  8 Dec 2019 13:38:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62C521164F7
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  9 Dec 2019 03:09:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726229AbfLHMi2 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sun, 8 Dec 2019 07:38:28 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:43270 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726163AbfLHMi2 (ORCPT
+        id S1726769AbfLICJh (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sun, 8 Dec 2019 21:09:37 -0500
+Received: from li1843-175.members.linode.com ([172.104.24.175]:57366 "EHLO
+        mail.stoffel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726669AbfLICJh (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sun, 8 Dec 2019 07:38:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=2ELcNaQndnrwr3FiX1NwpMEheNcsO2lBa0QVqsnMeCA=; b=U1XvJNbZbJPCjOt3AAVxDS0oF
-        Mh4MI6C2RCv9V/mL1VeDkpDKRcIa5JCrtsA48oc1ZWffNGpUIw9aDPdgh/eY/Z/Q4WtyE7XL7R13H
-        aNZLECIv8MGDhMqhxhCqK1oiWpsqzhojIEowfJv2H/LvRalBHVMMUfsS4I77I7ns/h7iIXi4HWqwb
-        GyxnngdRgaYtkRI5xGHMfFDIC8rl7qT9qa1tjyHUshnhjuP/W8K7z2hDCCVU0qUcb7uczdDPfpylS
-        gPg1CQlcwkjyKfXr2gYv2md+i1a3Ba+MfYDEpJDNCATOzq/5SM/3hvEgbW0A9/aYLu+vajeb1GHPp
-        ylpQUn9Uw==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1idvp6-00061v-LN; Sun, 08 Dec 2019 12:38:04 +0000
-Date:   Sun, 8 Dec 2019 04:38:04 -0800
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Sun, 8 Dec 2019 21:09:37 -0500
+X-Greylist: delayed 533 seconds by postgrey-1.27 at vger.kernel.org; Sun, 08 Dec 2019 21:09:36 EST
+Received: from quad.stoffel.org (66-189-75-104.dhcp.oxfr.ma.charter.com [66.189.75.104])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.stoffel.org (Postfix) with ESMTPSA id 80E521EDDC;
+        Sun,  8 Dec 2019 21:00:42 -0500 (EST)
+Received: by quad.stoffel.org (Postfix, from userid 1000)
+        id E9A93A5DE1; Sun,  8 Dec 2019 21:00:41 -0500 (EST)
+Date:   Sun, 8 Dec 2019 21:00:41 -0500
+From:   John Stoffel <john@quad.stoffel.home>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
         "Theodore Y. Ts'o" <tytso@mit.edu>,
         Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <yuchao0@huawei.com>,
         Eric Biggers <ebiggers@kernel.org>,
@@ -39,27 +34,33 @@ Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
         linux-f2fs-devel@lists.sourceforge.net,
         linux-kernel@vger.kernel.org
 Subject: Re: [PATCH v3] fs: introduce is_dot_dotdot helper for cleanup
-Message-ID: <20191208123804.GB32169@bombadil.infradead.org>
+Message-ID: <20191209020041.et776tzhxqsqqfs5@quad.stoffel.home>
 References: <1575718548-19017-1-git-send-email-yangtiezhu@loongson.cn>
  <20191208034144.GP4203@ZenIV.linux.org.uk>
+ <20191208123804.GB32169@bombadil.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191208034144.GP4203@ZenIV.linux.org.uk>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <20191208123804.GB32169@bombadil.infradead.org>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Sun, Dec 08, 2019 at 03:41:44AM +0000, Al Viro wrote:
-> On Sat, Dec 07, 2019 at 07:35:48PM +0800, Tiezhu Yang wrote:
-> > There exists many similar and duplicate codes to check "." and "..",
-> > so introduce is_dot_dotdot helper to make the code more clean.
+On Sun, Dec 08, 2019 at 04:38:04AM -0800, Matthew Wilcox wrote:
+> On Sun, Dec 08, 2019 at 03:41:44AM +0000, Al Viro wrote:
+> > On Sat, Dec 07, 2019 at 07:35:48PM +0800, Tiezhu Yang wrote:
+> > > There exists many similar and duplicate codes to check "." and "..",
+> > > so introduce is_dot_dotdot helper to make the code more clean.
+> > 
+> > Umm...  No objections, in principle, but... you try to say that name
+> > (e.g. in a phone conversation) without stuttering ;-/
+> > 
+> > Any suggestions from native speakers?
 > 
-> Umm...  No objections, in principle, but... you try to say that name
-> (e.g. in a phone conversation) without stuttering ;-/
-> 
-> Any suggestions from native speakers?
+> I used "is_dot_or_dotdot" when discussing this patch with my wife verbally.
 
-I used "is_dot_or_dotdot" when discussing this patch with my wife verbally.
+*thumbs up*  Both for the wife, and the name.  :-)
+
+-- 
