@@ -2,34 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 60CBB1177C4
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  9 Dec 2019 21:51:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9B8A11784A
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  9 Dec 2019 22:19:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726522AbfLIUvB (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 9 Dec 2019 15:51:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45882 "EHLO mail.kernel.org"
+        id S1726647AbfLIVTX (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 9 Dec 2019 16:19:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726483AbfLIUvB (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 9 Dec 2019 15:51:01 -0500
+        id S1726522AbfLIVTX (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 9 Dec 2019 16:19:23 -0500
 Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.77])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 20B4E2068E;
-        Mon,  9 Dec 2019 20:51:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B55BA206D5;
+        Mon,  9 Dec 2019 21:19:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575924660;
-        bh=oCaaWnTFgChg9u4LKnle9ELlHgCeHYXQyxSgx1NPH1E=;
+        s=default; t=1575926362;
+        bh=LJsoVyW+LNDhyFsdqc2Dv90UEe68PUeoTl1LBUwnuiE=;
         h=From:To:Cc:Subject:Date:From;
-        b=2c87cQA+9qJ3QJ73oMKaGjjmI69neV7VyZ/4P1heGa9J5RJTYUspnEA/Pby9verd2
-         8tsl6+f+6tLT2LyJYcBJjmJFo7F+EL+Neh3REDU6qcnK5Of2l6yNaiq+hEmiLUCb6B
-         FqSRQ0p4YDK6aYEbtYVxr+bQCFsuhHh6ApHcVL7A=
+        b=HbHGcKXBuu0nFC2NqXwOgJiU/LSSxsevIrK/g4lyS/3sWpgFz/WijN2k1Lxj/W5Mo
+         B53gkEQbLYiA5092N8pz69543q83LPJx4+BWGwFUrGFz/1RrBpJqHIySm5EQCqXs0g
+         tab4HzAZFXLkuyqTXcv81foav4W9yN3dYGeUw8ok=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org
-Subject: [PATCH] fscrypt: introduce fscrypt_needs_contents_encryption()
-Date:   Mon,  9 Dec 2019 12:50:21 -0800
-Message-Id: <20191209205021.231767-1-ebiggers@kernel.org>
+Cc:     Daniel Rosenberg <drosen@google.com>
+Subject: [PATCH 0/4] fscrypt: fscrypt_supported_policy() fixes and cleanups
+Date:   Mon,  9 Dec 2019 13:18:25 -0800
+Message-Id: <20191209211829.239800-1-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.24.0.393.g34dc348eaf-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -38,59 +37,27 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+Make FS_IOC_SET_ENCRYPTION_POLICY start rejecting the DIRECT_KEY flag
+when it's incompatible with the selected encryption modes, instead of
+delaying this check until later when actually trying to set up the
+directory's key.
 
-Add a function fscrypt_needs_contents_encryption() which takes an inode
-and returns true if it's an encrypted regular file and the kernel was
-built with fscrypt support.
+Also make some related cleanups, such as splitting
+fscrypt_supported_policy() into a separate function for each encryption
+policy version.
 
-This will allow replacing duplicated checks of IS_ENCRYPTED() &&
-S_ISREG() on the I/O paths in ext4 and f2fs, while also optimizing out
-unneeded code when !CONFIG_FS_ENCRYPTION.
+Eric Biggers (4):
+  fscrypt: split up fscrypt_supported_policy() by policy version
+  fscrypt: check for appropriate use of DIRECT_KEY flag earlier
+  fscrypt: move fscrypt_valid_enc_modes() to policy.c
+  fscrypt: remove fscrypt_is_direct_key_policy()
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- include/linux/fscrypt.h | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ fs/crypto/fscrypt_private.h |  30 +------
+ fs/crypto/keysetup.c        |  14 +---
+ fs/crypto/keysetup_v1.c     |  15 ----
+ fs/crypto/policy.c          | 163 +++++++++++++++++++++++-------------
+ 4 files changed, 111 insertions(+), 111 deletions(-)
 
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index cb18b5fbcef92..2a29f56b1a1cb 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -72,6 +72,21 @@ static inline bool fscrypt_has_encryption_key(const struct inode *inode)
- 	return READ_ONCE(inode->i_crypt_info) != NULL;
- }
- 
-+/**
-+ * fscrypt_needs_contents_encryption() - check whether an inode needs
-+ *					 contents encryption
-+ *
-+ * Return: %true iff the inode is an encrypted regular file and the kernel was
-+ * built with fscrypt support.
-+ *
-+ * If you need to know whether the encrypt bit is set even when the kernel was
-+ * built without fscrypt support, you must use IS_ENCRYPTED() directly instead.
-+ */
-+static inline bool fscrypt_needs_contents_encryption(const struct inode *inode)
-+{
-+	return IS_ENCRYPTED(inode) && S_ISREG(inode->i_mode);
-+}
-+
- static inline bool fscrypt_dummy_context_enabled(struct inode *inode)
- {
- 	return inode->i_sb->s_cop->dummy_context &&
-@@ -269,6 +284,11 @@ static inline bool fscrypt_has_encryption_key(const struct inode *inode)
- 	return false;
- }
- 
-+static inline bool fscrypt_needs_contents_encryption(const struct inode *inode)
-+{
-+	return false;
-+}
-+
- static inline bool fscrypt_dummy_context_enabled(struct inode *inode)
- {
- 	return false;
 -- 
 2.24.0.393.g34dc348eaf-goog
 
