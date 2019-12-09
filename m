@@ -2,105 +2,79 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C350117941
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  9 Dec 2019 23:27:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E669F11794C
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  9 Dec 2019 23:28:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726913AbfLIWYV (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 9 Dec 2019 17:24:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40912 "EHLO mail.kernel.org"
+        id S1726169AbfLIW23 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 9 Dec 2019 17:28:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42110 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726522AbfLIWYV (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 9 Dec 2019 17:24:21 -0500
-Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726156AbfLIW23 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 9 Dec 2019 17:28:29 -0500
+Received: from localhost (unknown [104.132.0.81])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 232362073D;
-        Mon,  9 Dec 2019 22:24:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C887220637;
+        Mon,  9 Dec 2019 22:28:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575930260;
-        bh=Txysl0+3YMuRnATdL1j/J6K16t6mLbaFJChqfy90MwU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tYWBRWpv36hPtz6Evnmhu1djMMLvR26BcTJAwTXhIiyYmTwvY7PA9gSwJ6hHA3Yuk
-         AnWbw5RR2NCZSMNAvpCFfu546W9qlnKss1wScPWsDu0uJrTpWDF/2diIOVGbs04YRp
-         v9DjBbCglO5H6B1ugc/9D3QyPBKN/PXTQIeXLE/k=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>
-Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH 2/2] ubifs: add support for FS_ENCRYPT_FL
-Date:   Mon,  9 Dec 2019 14:23:25 -0800
-Message-Id: <20191209222325.95656-3-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.24.0.393.g34dc348eaf-goog
-In-Reply-To: <20191209222325.95656-1-ebiggers@kernel.org>
-References: <20191209222325.95656-1-ebiggers@kernel.org>
+        s=default; t=1575930508;
+        bh=P0iEsLxI1uweiGSusdApFJh0pwecHJrFeTNlNQl9mUk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VFfW2H5I8LgDzPwwvAI+t7g4kiU8Q7z47aLRBiKlqqwtyluFQJyMx+DobL4WxYQAz
+         GFxqp+VcU5MPg/ApgL9Uq+ZPnWymht9ZQLhvTHJ7XpGgw0XtFIgDbSll6zQcbWX9Jr
+         mTe5gEVXG5YzLSQarjOE7x4FDdE5CyvD2rqK39UM=
+Date:   Mon, 9 Dec 2019 14:28:28 -0800
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-fscrypt@vger.kernel.org
+Subject: Re: [PATCH] f2fs: don't keep META_MAPPING pages used for moving
+ verity file blocks
+Message-ID: <20191209222828.GA798@jaegeuk-macbookpro.roam.corp.google.com>
+References: <20191209200055.204040-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191209200055.204040-1-ebiggers@kernel.org>
+User-Agent: Mutt/1.8.2 (2017-04-18)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On 12/09, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> META_MAPPING is used to move blocks for both encrypted and verity files.
+> So the META_MAPPING invalidation condition in do_checkpoint() should
+> consider verity too, not just encrypt.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+>  fs/f2fs/checkpoint.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
+> index ffdaba0c55d29..44e84ac5c9411 100644
+> --- a/fs/f2fs/checkpoint.c
+> +++ b/fs/f2fs/checkpoint.c
+> @@ -1509,10 +1509,10 @@ static int do_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc)
+>  	f2fs_wait_on_all_pages_writeback(sbi);
+>  
+>  	/*
+> -	 * invalidate intermediate page cache borrowed from meta inode
+> -	 * which are used for migration of encrypted inode's blocks.
+> +	 * invalidate intermediate page cache borrowed from meta inode which are
+> +	 * used for migration of encrypted or verity inode's blocks.
+>  	 */
+> -	if (f2fs_sb_has_encrypt(sbi))
+> +	if (f2fs_sb_has_encrypt(sbi) || f2fs_sb_has_verity(sbi))
 
-Make the FS_IOC_GETFLAGS ioctl on ubifs return the FS_ENCRYPT_FL flag on
-encrypted files, like ext4 and f2fs do.
+Do we need f2fs_post_read_required() aligned to the condition of
+move_data_block()?
 
-Also make this flag be ignored by FS_IOC_SETFLAGS, like ext4 and f2fs
-do, since it's a recognized flag but is not directly settable.
-
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/ubifs/ioctl.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
-
-diff --git a/fs/ubifs/ioctl.c b/fs/ubifs/ioctl.c
-index eeb1be2598881..d49fc04f2d7d4 100644
---- a/fs/ubifs/ioctl.c
-+++ b/fs/ubifs/ioctl.c
-@@ -17,10 +17,14 @@
- #include "ubifs.h"
- 
- /* Need to be kept consistent with checked flags in ioctl2ubifs() */
--#define UBIFS_SUPPORTED_IOCTL_FLAGS \
-+#define UBIFS_SETTABLE_IOCTL_FLAGS \
- 	(FS_COMPR_FL | FS_SYNC_FL | FS_APPEND_FL | \
- 	 FS_IMMUTABLE_FL | FS_DIRSYNC_FL)
- 
-+/* Need to be kept consistent with checked flags in ubifs2ioctl() */
-+#define UBIFS_GETTABLE_IOCTL_FLAGS \
-+	(UBIFS_SETTABLE_IOCTL_FLAGS | FS_ENCRYPT_FL)
-+
- /**
-  * ubifs_set_inode_flags - set VFS inode flags.
-  * @inode: VFS inode to set flags for
-@@ -91,6 +95,8 @@ static int ubifs2ioctl(int ubifs_flags)
- 		ioctl_flags |= FS_IMMUTABLE_FL;
- 	if (ubifs_flags & UBIFS_DIRSYNC_FL)
- 		ioctl_flags |= FS_DIRSYNC_FL;
-+	if (ubifs_flags & UBIFS_CRYPT_FL)
-+		ioctl_flags |= FS_ENCRYPT_FL;
- 
- 	return ioctl_flags;
- }
-@@ -113,7 +119,7 @@ static int setflags(struct inode *inode, int flags)
- 	if (err)
- 		goto out_unlock;
- 
--	ui->flags &= ~ioctl2ubifs(UBIFS_SUPPORTED_IOCTL_FLAGS);
-+	ui->flags &= ~ioctl2ubifs(UBIFS_SETTABLE_IOCTL_FLAGS);
- 	ui->flags |= ioctl2ubifs(flags);
- 	ubifs_set_inode_flags(inode);
- 	inode->i_ctime = current_time(inode);
-@@ -156,8 +162,9 @@ long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 		if (get_user(flags, (int __user *) arg))
- 			return -EFAULT;
- 
--		if (flags & ~UBIFS_SUPPORTED_IOCTL_FLAGS)
-+		if (flags & ~UBIFS_GETTABLE_IOCTL_FLAGS)
- 			return -EOPNOTSUPP;
-+		flags &= UBIFS_SETTABLE_IOCTL_FLAGS;
- 
- 		if (!S_ISDIR(inode->i_mode))
- 			flags &= ~FS_DIRSYNC_FL;
--- 
-2.24.0.393.g34dc348eaf-goog
-
+>  		invalidate_mapping_pages(META_MAPPING(sbi),
+>  				MAIN_BLKADDR(sbi), MAX_BLKADDR(sbi) - 1);
+>  
+> -- 
+> 2.24.0.393.g34dc348eaf-goog
