@@ -2,59 +2,71 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B316E11A835
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 11 Dec 2019 10:50:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6795C11AC41
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 11 Dec 2019 14:40:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728559AbfLKJuW (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 11 Dec 2019 04:50:22 -0500
-Received: from mga12.intel.com ([192.55.52.136]:42696 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727493AbfLKJuW (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 11 Dec 2019 04:50:22 -0500
-X-Amp-Result: UNSCANNABLE
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 11 Dec 2019 01:50:21 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,301,1571727600"; 
-   d="scan'208";a="363545358"
-Received: from unknown (HELO localhost) ([10.237.50.137])
-  by orsmga004.jf.intel.com with ESMTP; 11 Dec 2019 01:50:19 -0800
-Date:   Wed, 11 Dec 2019 11:50:19 +0200
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Eric Biggers <ebiggers@kernel.org>, dhowells@redhat.com
-Cc:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        keyrings@vger.kernel.org
-Subject: Re: [RFC PATCH 0/3] xfstests: test adding filesystem-level fscrypt
- key via key_id
-Message-ID: <20191211095019.GA7077@linux.intel.com>
-References: <20191119223130.228341-1-ebiggers@kernel.org>
- <20191127204536.GA12520@linux.intel.com>
- <20191127225759.GA303989@sol.localdomain>
+        id S1729699AbfLKNka (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 11 Dec 2019 08:40:30 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:52272 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729694AbfLKNk3 (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 11 Dec 2019 08:40:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=TO/NQu43CwshSv+vhfJaELWZCqACamoqyzyHY52rGyI=; b=Hm5ukJbKRW/dIRfBb/2QNZWe2
+        Vae7uQ8jSnwfWdaHao9+Puztkj99WQrJ7zQDtxi3TKPOo51rd+fWVnahFZcDzJMLSfqaeCVOxY8r8
+        hSDFkS06G9RcE/1zSS+DssYsnx/A7E90d2pwJo7gUwe3HnBcGCaB6EInTzmXq7MjnqZrB6PQ9l80I
+        7ew0MBvO3B1tKmL5VXVbKgHK2ypAVx9SJpNzWZYDva4N0EkaT4mjOj0OdxLfNDh2Hm0LJ+ExnAOxv
+        /fglK8GQjc+Ilwz9wP2d/9ugBdBSYMjmgf/rR71BiJvLC/FiZ8ANkzJvpE2LyxvPeev4t3IujdjyX
+        vbRr8RJTA==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1if2Du-00050n-Qc; Wed, 11 Dec 2019 13:40:14 +0000
+Date:   Wed, 11 Dec 2019 05:40:14 -0800
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Gao Xiang <gaoxiang25@huawei.com>
+Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <yuchao0@huawei.com>,
+        Tyler Hicks <tyhicks@canonical.com>,
+        linux-fsdevel@vger.kernel.org, ecryptfs@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>
+Subject: Re: [PATCH v5] fs: introduce is_dot_or_dotdot helper for cleanup
+Message-ID: <20191211134014.GM32169@bombadil.infradead.org>
+References: <1576030801-8609-1-git-send-email-yangtiezhu@loongson.cn>
+ <20191211024858.GB732@sol.localdomain>
+ <febbd7eb-5e53-6e7c-582d-5b224e441e37@loongson.cn>
+ <20191211044723.GC4203@ZenIV.linux.org.uk>
+ <4a90aaa9-18c8-f0a7-19e4-1c5bd5915a28@loongson.cn>
+ <20191211071711.GA231266@architecture4>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191127225759.GA303989@sol.localdomain>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20191211071711.GA231266@architecture4>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, Nov 27, 2019 at 02:57:59PM -0800, Eric Biggers wrote:
-> You could manually do what the xfstest does, which is more or less the following
-> (requires xfs_io patched with https://patchwork.kernel.org/patch/11252795/):
+On Wed, Dec 11, 2019 at 03:17:11PM +0800, Gao Xiang wrote:
+> > static inline bool is_dot_or_dotdot(const unsigned char *name, size_t len)
+> > {
+> >         if (len >= 1 && unlikely(name[0] == '.')) {
+> 
+> 
+> And I suggest drop "unlikely" here since files start with prefix
+> '.' (plus specical ".", "..") are not as uncommon as you expected...
 
-I postpone testing/reviewing this patch up until its depedencies are in
-the mainline.
-
-I'll add these to my tree as soon as we have addressed a critical bug
-in tpm_tis:
-
-1. KEYS: remove CONFIG_KEYS_COMPAT
-2. KEYS: asymmetric: return ENOMEM if akcipher_request_alloc() fails
-
-Just mentioning that I haven't forgotten them.
-
-/Jarkko
+They absolutely are uncommon.  Even if you just consider
+/home/willy/kernel/linux/.git/config, only one of those six path elements
+starts with a '.'.
