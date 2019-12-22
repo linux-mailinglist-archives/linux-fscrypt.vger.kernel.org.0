@@ -2,81 +2,140 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C0EFB128C16
-	for <lists+linux-fscrypt@lfdr.de>; Sun, 22 Dec 2019 01:16:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DB8D128D3B
+	for <lists+linux-fscrypt@lfdr.de>; Sun, 22 Dec 2019 09:42:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726138AbfLVAQM (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sat, 21 Dec 2019 19:16:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52390 "EHLO mail.kernel.org"
+        id S1725899AbfLVImF (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sun, 22 Dec 2019 03:42:05 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:43684 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726024AbfLVAQM (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sat, 21 Dec 2019 19:16:12 -0500
-Received: from zzz.localdomain (h75-100-12-111.burkwi.broadband.dynamic.tds.net [75.100.12.111])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B0C0A206B7;
-        Sun, 22 Dec 2019 00:16:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576973771;
-        bh=zi2nezPZMF4U5iDzHEZMniOW0jiKQ3XbzvQhTGVXih0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PmEfdcFEm4iZEYixgfnC/uRgDEvX64zJcJZxYGNrmnC0RXjmgUCwRq2bvJHzcfEd7
-         cD8IWH5mszK2iHiQeuHCMd4zK8J0IDMhr8Utv4MZmvn41dMIQwyBIhGe4pZDLiqNMR
-         HajyfoOLGjhfi6UBWGo831W+/NFlYI1SyH8S+KUA=
-Date:   Sat, 21 Dec 2019 18:16:08 -0600
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
-        Kuohong Wang <kuohong.wang@mediatek.com>,
-        Kim Boojin <boojin.kim@samsung.com>
-Subject: Re: [PATCH v6 9/9] ext4: add inline encryption support
-Message-ID: <20191222001608.GB551@zzz.localdomain>
-References: <20191218145136.172774-1-satyat@google.com>
- <20191218145136.172774-10-satyat@google.com>
+        id S1725853AbfLVImF (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Sun, 22 Dec 2019 03:42:05 -0500
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
+        id 1iiwoJ-00026b-5h; Sun, 22 Dec 2019 16:41:59 +0800
+Received: from herbert by gondobar with local (Exim 4.89)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1iiwoF-0002uQ-JV; Sun, 22 Dec 2019 16:41:55 +0800
+Date:   Sun, 22 Dec 2019 16:41:55 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Chandan Rajendra <chandan@linux.vnet.ibm.com>,
+        linux-fscrypt@vger.kernel.org
+Subject: [v2 PATCH] fscrypt: Allow modular crypto algorithms
+Message-ID: <20191222084155.n4mbomsw6pl4c7kv@gondor.apana.org.au>
+References: <20191221143020.hbgeixvlmzt7nh54@gondor.apana.org.au>
+ <20191221234428.GA551@zzz.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191218145136.172774-10-satyat@google.com>
+In-Reply-To: <20191221234428.GA551@zzz.localdomain>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, Dec 18, 2019 at 06:51:36AM -0800, Satya Tangirala wrote:
-> @@ -1460,6 +1466,7 @@ enum {
->  	Opt_journal_path, Opt_journal_checksum, Opt_journal_async_commit,
->  	Opt_abort, Opt_data_journal, Opt_data_ordered, Opt_data_writeback,
->  	Opt_data_err_abort, Opt_data_err_ignore, Opt_test_dummy_encryption,
-> +	Opt_inlinecrypt,
->  	Opt_usrjquota, Opt_grpjquota, Opt_offusrjquota, Opt_offgrpjquota,
->  	Opt_jqfmt_vfsold, Opt_jqfmt_vfsv0, Opt_jqfmt_vfsv1, Opt_quota,
->  	Opt_noquota, Opt_barrier, Opt_nobarrier, Opt_err,
-> @@ -1556,6 +1563,7 @@ static const match_table_t tokens = {
->  	{Opt_noinit_itable, "noinit_itable"},
->  	{Opt_max_dir_size_kb, "max_dir_size_kb=%u"},
->  	{Opt_test_dummy_encryption, "test_dummy_encryption"},
-> +	{Opt_inlinecrypt, "inlinecrypt"},
->  	{Opt_nombcache, "nombcache"},
->  	{Opt_nombcache, "no_mbcache"},	/* for backward compatibility */
->  	{Opt_removed, "check=none"},	/* mount option from ext2/3 */
-> @@ -1767,6 +1775,11 @@ static const struct mount_opts {
->  	{Opt_jqfmt_vfsv1, QFMT_VFS_V1, MOPT_QFMT},
->  	{Opt_max_dir_size_kb, 0, MOPT_GTE0},
->  	{Opt_test_dummy_encryption, 0, MOPT_GTE0},
-> +#ifdef CONFIG_FS_ENCRYPTION_INLINE_CRYPT
-> +	{Opt_inlinecrypt, EXT4_MOUNT_INLINECRYPT, MOPT_SET},
-> +#else
-> +	{Opt_inlinecrypt, EXT4_MOUNT_INLINECRYPT, MOPT_NOSUPPORT},
-> +#endif
->  	{Opt_nombcache, EXT4_MOUNT_NO_MBCACHE, MOPT_SET},
->  	{Opt_err, 0, 0}
->  };
+On Sat, Dec 21, 2019 at 05:44:28PM -0600, Eric Biggers wrote:
+>
+> I'm not sure this is a good idea, since there will probably need to be more
+> places where built-in code calls into fs/crypto/ too.
 
-This mount option will need to be documented in
-Documentation/admin-guide/ext4.rst for ext4 and
-Documentation/filesystems/f2fs.txt for f2fs.
+Clearly it's going to be too much trouble for now.  I may revisit
+this once the fscrypt code has settled down a little.
 
-- Eric
+However, we can at least build the algorithms as modules, like this:
+
+---8<---
+The commit 643fa9612bf1 ("fscrypt: remove filesystem specific
+build config option") removed modular support for fs/crypto.  This
+causes the Crypto API to be built-in whenever fscrypt is enabled.
+This makes it very difficult for me to test modular builds of
+the Crypto API without disabling fscrypt which is a pain.
+
+As fscrypt is still evolving and it's developing new ties with the
+fs layer, it's hard to build it as a module for now.
+
+However, the actual algorithms are not required until a filesystem
+is mounted.  Therefore we can allow them to be built as modules.
+
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+
+diff --git a/fs/crypto/Kconfig b/fs/crypto/Kconfig
+index ff5a1746cbae..ae929fbc0f29 100644
+--- a/fs/crypto/Kconfig
++++ b/fs/crypto/Kconfig
+@@ -1,7 +1,19 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ config FS_ENCRYPTION
+ 	bool "FS Encryption (Per-file encryption)"
++	select KEYS
+ 	select CRYPTO
++	select CRYPTO_SKCIPHER
++	select CRYPTO_HASH
++	help
++	  Enable encryption of files and directories.  This
++	  feature is similar to ecryptfs, but it is more memory
++	  efficient since it avoids caching the encrypted and
++	  decrypted pages in the page cache.  Currently Ext4,
++	  F2FS and UBIFS make use of this feature.
++
++config FS_ENCRYPTION_TRI
++	tristate
+ 	select CRYPTO_AES
+ 	select CRYPTO_CBC
+ 	select CRYPTO_ECB
+@@ -9,10 +21,3 @@ config FS_ENCRYPTION
+ 	select CRYPTO_CTS
+ 	select CRYPTO_SHA512
+ 	select CRYPTO_HMAC
+-	select KEYS
+-	help
+-	  Enable encryption of files and directories.  This
+-	  feature is similar to ecryptfs, but it is more memory
+-	  efficient since it avoids caching the encrypted and
+-	  decrypted pages in the page cache.  Currently Ext4,
+-	  F2FS and UBIFS make use of this feature.
+diff --git a/fs/ext4/Kconfig b/fs/ext4/Kconfig
+index ef42ab040905..5de0bcc50d37 100644
+--- a/fs/ext4/Kconfig
++++ b/fs/ext4/Kconfig
+@@ -10,6 +10,7 @@ config EXT3_FS
+ 	select CRC16
+ 	select CRYPTO
+ 	select CRYPTO_CRC32C
++	select FS_ENCRYPTION_TRI if FS_ENCRYPTION
+ 	help
+ 	  This config option is here only for backward compatibility. ext3
+ 	  filesystem is now handled by the ext4 driver.
+diff --git a/fs/f2fs/Kconfig b/fs/f2fs/Kconfig
+index 652fd2e2b23d..9ccaec60af47 100644
+--- a/fs/f2fs/Kconfig
++++ b/fs/f2fs/Kconfig
+@@ -6,6 +6,7 @@ config F2FS_FS
+ 	select CRYPTO
+ 	select CRYPTO_CRC32
+ 	select F2FS_FS_XATTR if FS_ENCRYPTION
++	select FS_ENCRYPTION_TRI if FS_ENCRYPTION
+ 	help
+ 	  F2FS is based on Log-structured File System (LFS), which supports
+ 	  versatile "flash-friendly" features. The design has been focused on
+diff --git a/fs/ubifs/Kconfig b/fs/ubifs/Kconfig
+index 69932bcfa920..ea2d43829c18 100644
+--- a/fs/ubifs/Kconfig
++++ b/fs/ubifs/Kconfig
+@@ -12,6 +12,7 @@ config UBIFS_FS
+ 	select CRYPTO_ZSTD if UBIFS_FS_ZSTD
+ 	select CRYPTO_HASH_INFO
+ 	select UBIFS_FS_XATTR if FS_ENCRYPTION
++	select FS_ENCRYPTION_TRI if FS_ENCRYPTION
+ 	depends on MTD_UBI
+ 	help
+ 	  UBIFS is a file system for flash devices which works on top of UBI.
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
