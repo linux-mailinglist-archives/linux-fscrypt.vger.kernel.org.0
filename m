@@ -2,143 +2,59 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 05835129265
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 23 Dec 2019 08:46:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46E44129F17
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 24 Dec 2019 09:37:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725880AbfLWHqc (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 23 Dec 2019 02:46:32 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:56834 "EHLO deadmen.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725810AbfLWHqc (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 23 Dec 2019 02:46:32 -0500
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
-        id 1ijIQ5-0008A0-Sy; Mon, 23 Dec 2019 15:46:25 +0800
-Received: from herbert by gondobar with local (Exim 4.89)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1ijIQ3-0001tn-QZ; Mon, 23 Dec 2019 15:46:23 +0800
-Date:   Mon, 23 Dec 2019 15:46:23 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Chandan Rajendra <chandan@linux.vnet.ibm.com>,
-        linux-fscrypt@vger.kernel.org
-Subject: [v3 PATCH] fscrypt: Allow modular crypto algorithms
-Message-ID: <20191223074623.you4ivf2yuxk4ad2@gondor.apana.org.au>
-References: <20191221143020.hbgeixvlmzt7nh54@gondor.apana.org.au>
- <20191221234428.GA551@zzz.localdomain>
- <20191222084155.n4mbomsw6pl4c7kv@gondor.apana.org.au>
- <20191222164545.GA157733@zzz.localdomain>
+        id S1726216AbfLXIhV (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 24 Dec 2019 03:37:21 -0500
+Received: from mail-il1-f196.google.com ([209.85.166.196]:37901 "EHLO
+        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726256AbfLXIhT (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 24 Dec 2019 03:37:19 -0500
+Received: by mail-il1-f196.google.com with SMTP id f5so16082726ilq.5
+        for <linux-fscrypt@vger.kernel.org>; Tue, 24 Dec 2019 00:37:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=LcGU1mt+nAQIi3eKcWZpiy7DqrkNG23tK1MNYV9CB+M=;
+        b=VlyE5hkjIlVtebFVtbJSUDG1nq6yxqsP+CXAAvK16kEDCa9/FIjqePwKOUOUFxUPGI
+         IobnBKqUZtvWs9liflZ3kccv66QhBRcGlV0NLmY+Uo4N83fE4acq5fKevjm3GVqyORPq
+         V25kDNfLb/u3NDc8qTILa6U172uqigqrULaJBwbLq67hwZ4izN64H1YClKD775qzZNF9
+         0l4JMYDmF4urkgDiYDNvOqEpGdvq+E73I4yTDC9aWLwqkTeAHCJ4Ixn//xPq6JLVBBNn
+         aamV2t3zoMGAP8AF+RdWv4cRolj9/iVR4FvRYYpwL/EkEZCm6WUSjJi89kMXjGu5nUwC
+         ihKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=LcGU1mt+nAQIi3eKcWZpiy7DqrkNG23tK1MNYV9CB+M=;
+        b=PC6eZi31fQo9CU/6bVny2vBddtxbUqsl9LIRKXBtCUXEu8tNFG/0dyGoysUjpY62Lo
+         A23EmkYpwPeaFuQnO75wUQcC+p7dS3JtNOT1hfG2qRRV6/ziByOpSQFsEMcelU9nH3Y3
+         UpQ4Wv3ZMxfcQWW2+iFksxa7IITSh5SsY2Uqvfg7R3RsCvdqzh7p+Xlus6kNTHY9x+x2
+         g04+jGNLRnx+jgItjcT8Hy+tcnPAvIzXk0g6opO8JnxLYkLHR+8JO4liJBwIXwo5SThW
+         6e4j2+ZT189FRiIGecNhjaC1jHdnbo8TKdlZoFXg8go1GjQMB4I7Mewv7TM7s3QpIsKC
+         GvkA==
+X-Gm-Message-State: APjAAAV7kDtmydy7ONkRPDoJtoj0rsZbUqH9BYVFOUXIdU3jzIeDmjog
+        FfRRVNbqA007DdbvCk/92SIbJDLUgSmYQbC3Ixg=
+X-Google-Smtp-Source: APXvYqxLrvnOpR+O6ofXnSEOnwrvGziUPmMlJTtG0DR2NirldWli2cXJyiYqfAfUdIRDZDD83uetmfvXHC6vAEF7nxQ=
+X-Received: by 2002:a92:c50e:: with SMTP id r14mr29396039ilg.52.1577176639205;
+ Tue, 24 Dec 2019 00:37:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191222164545.GA157733@zzz.localdomain>
-User-Agent: NeoMutt/20170113 (1.7.2)
+Received: by 2002:a5e:c244:0:0:0:0:0 with HTTP; Tue, 24 Dec 2019 00:37:18
+ -0800 (PST)
+Reply-To: bethnatividad9@gmail.com
+From:   Beth Nat <am19040@gmail.com>
+Date:   Tue, 24 Dec 2019 08:37:18 +0000
+Message-ID: <CAEgaL+akE_7uuR+QBv+=W5npZ3Bg=jguaB4zU63CGVjztQeQyg@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Sun, Dec 22, 2019 at 10:45:45AM -0600, Eric Biggers wrote:
-> 
-> Okay, this approach looks fine.  But can you rename the option to something more
-> self-explanatory like FS_ENCRYPTION_ALGS, and add a comment?  Like:
-> 
-> # Filesystems supporting encryption must select this if FS_ENCRYPTION.  This
-> # allows the algorithms to be built as modules when all the filesystems are.
-
-Sure, here's a third revision.
-
----8<---
-The commit 643fa9612bf1 ("fscrypt: remove filesystem specific
-build config option") removed modular support for fs/crypto.  This
-causes the Crypto API to be built-in whenever fscrypt is enabled.
-This makes it very difficult for me to test modular builds of
-the Crypto API without disabling fscrypt which is a pain.
-
-As fscrypt is still evolving and it's developing new ties with the
-fs layer, it's hard to build it as a module for now.
-
-However, the actual algorithms are not required until a filesystem
-is mounted.  Therefore we can allow them to be built as modules.
-
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-
-diff --git a/fs/crypto/Kconfig b/fs/crypto/Kconfig
-index ff5a1746cbae..02df95b44331 100644
---- a/fs/crypto/Kconfig
-+++ b/fs/crypto/Kconfig
-@@ -2,13 +2,8 @@
- config FS_ENCRYPTION
- 	bool "FS Encryption (Per-file encryption)"
- 	select CRYPTO
--	select CRYPTO_AES
--	select CRYPTO_CBC
--	select CRYPTO_ECB
--	select CRYPTO_XTS
--	select CRYPTO_CTS
--	select CRYPTO_SHA512
--	select CRYPTO_HMAC
-+	select CRYPTO_HASH
-+	select CRYPTO_SKCIPHER
- 	select KEYS
- 	help
- 	  Enable encryption of files and directories.  This
-@@ -16,3 +11,15 @@ config FS_ENCRYPTION
- 	  efficient since it avoids caching the encrypted and
- 	  decrypted pages in the page cache.  Currently Ext4,
- 	  F2FS and UBIFS make use of this feature.
-+
-+# Filesystems supporting encryption must select this if FS_ENCRYPTION.  This
-+# allows the algorithms to be built as modules when all the filesystems are.
-+config FS_ENCRYPTION_ALGS
-+	tristate
-+	select CRYPTO_AES
-+	select CRYPTO_CBC
-+	select CRYPTO_CTS
-+	select CRYPTO_ECB
-+	select CRYPTO_HMAC
-+	select CRYPTO_SHA512
-+	select CRYPTO_XTS
-diff --git a/fs/ext4/Kconfig b/fs/ext4/Kconfig
-index ef42ab040905..930793456d3a 100644
---- a/fs/ext4/Kconfig
-+++ b/fs/ext4/Kconfig
-@@ -10,6 +10,7 @@ config EXT3_FS
- 	select CRC16
- 	select CRYPTO
- 	select CRYPTO_CRC32C
-+	select FS_ENCRYPTION_ALGS if FS_ENCRYPTION
- 	help
- 	  This config option is here only for backward compatibility. ext3
- 	  filesystem is now handled by the ext4 driver.
-diff --git a/fs/f2fs/Kconfig b/fs/f2fs/Kconfig
-index 652fd2e2b23d..599fb9194c6a 100644
---- a/fs/f2fs/Kconfig
-+++ b/fs/f2fs/Kconfig
-@@ -6,6 +6,7 @@ config F2FS_FS
- 	select CRYPTO
- 	select CRYPTO_CRC32
- 	select F2FS_FS_XATTR if FS_ENCRYPTION
-+	select FS_ENCRYPTION_ALGS if FS_ENCRYPTION
- 	help
- 	  F2FS is based on Log-structured File System (LFS), which supports
- 	  versatile "flash-friendly" features. The design has been focused on
-diff --git a/fs/ubifs/Kconfig b/fs/ubifs/Kconfig
-index 69932bcfa920..45d3d207fb99 100644
---- a/fs/ubifs/Kconfig
-+++ b/fs/ubifs/Kconfig
-@@ -12,6 +12,7 @@ config UBIFS_FS
- 	select CRYPTO_ZSTD if UBIFS_FS_ZSTD
- 	select CRYPTO_HASH_INFO
- 	select UBIFS_FS_XATTR if FS_ENCRYPTION
-+	select FS_ENCRYPTION_ALGS if FS_ENCRYPTION
- 	depends on MTD_UBI
- 	help
- 	  UBIFS is a file system for flash devices which works on top of UBI.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+How are you today my dear? i saw your profile and it interests me, i
+am a Military nurse from USA. Can we be friend? I want to know more
+about you.
