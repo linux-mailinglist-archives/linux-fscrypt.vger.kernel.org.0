@@ -2,69 +2,77 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D156C12A452
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 24 Dec 2019 23:38:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EEFC12AD43
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 26 Dec 2019 16:41:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726225AbfLXWi4 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 24 Dec 2019 17:38:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40852 "EHLO mail.kernel.org"
+        id S1726475AbfLZPlT (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 26 Dec 2019 10:41:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726224AbfLXWi4 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 24 Dec 2019 17:38:56 -0500
-Received: from zzz.localdomain (h75-100-12-111.burkwi.broadband.dynamic.tds.net [75.100.12.111])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726336AbfLZPlT (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 26 Dec 2019 10:41:19 -0500
+Received: from zzz.tds (h75-100-12-111.burkwi.broadband.dynamic.tds.net [75.100.12.111])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DBA28206CB;
-        Tue, 24 Dec 2019 22:38:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EA472206A4;
+        Thu, 26 Dec 2019 15:41:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1577227135;
-        bh=ceZe6wzbsWb7YfJCW2iWlROm560ptqJ0gDAZzE4x2lA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=U2ginxI6Gddm3gNHE0cVgJuDbWTAJNNVOwtSy65sIerTXwyxqXe6p7DbFRneug/fe
-         GQ2j4xtjMmh6Fdz4hUhO/QrqUBEzgHL/LKwddhUnF+7ExMxRBmQxNzGm6bTfcD+wdP
-         srIQ4YLgfoX7sKQFBEzbviKeoKjk/e6OihgphRSk=
-Date:   Tue, 24 Dec 2019 16:38:52 -0600
+        s=default; t=1577374879;
+        bh=k34ID4CM5KwTXBHzWGuBSNb3G/RtrYHSsw5Hl0omWtc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=hQSp1mAthg18MOIB9fsbveiTu7kFinMYQ/5WkO0Zv8v5n5unklmOruQFmbXyOTqUx
+         kyjxfGNT8lUHEk7F+FpfgUtiIFJMz6ahcq5HbC8PCmCjqBYI8wLLWgWbxhVGvCPnK4
+         NBbVPjO28prDfdaIdr9pe49NFRkFVNyWtq8+dkEc=
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Chandan Rajendra <chandan@linux.vnet.ibm.com>,
-        linux-fscrypt@vger.kernel.org
-Subject: Re: [v3 PATCH] fscrypt: Allow modular crypto algorithms
-Message-ID: <20191224223852.GA178036@zzz.localdomain>
-References: <20191221143020.hbgeixvlmzt7nh54@gondor.apana.org.au>
- <20191221234428.GA551@zzz.localdomain>
- <20191222084155.n4mbomsw6pl4c7kv@gondor.apana.org.au>
- <20191222164545.GA157733@zzz.localdomain>
- <20191223074623.you4ivf2yuxk4ad2@gondor.apana.org.au>
+To:     linux-ext4@vger.kernel.org
+Cc:     linux-fscrypt@vger.kernel.org
+Subject: [PATCH] ext4: handle decryption error in __ext4_block_zero_page_range()
+Date:   Thu, 26 Dec 2019 09:41:05 -0600
+Message-Id: <20191226154105.4704-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191223074623.you4ivf2yuxk4ad2@gondor.apana.org.au>
+Content-Transfer-Encoding: 8bit
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Dec 23, 2019 at 03:46:23PM +0800, Herbert Xu wrote:
-> diff --git a/fs/ext4/Kconfig b/fs/ext4/Kconfig
-> index ef42ab040905..930793456d3a 100644
-> --- a/fs/ext4/Kconfig
-> +++ b/fs/ext4/Kconfig
-> @@ -10,6 +10,7 @@ config EXT3_FS
->  	select CRC16
->  	select CRYPTO
->  	select CRYPTO_CRC32C
-> +	select FS_ENCRYPTION_ALGS if FS_ENCRYPTION
->  	help
->  	  This config option is here only for backward compatibility. ext3
->  	  filesystem is now handled by the ext4 driver.
+From: Eric Biggers <ebiggers@google.com>
 
-This needs to be under EXT4_FS, not EXT3_FS.  That should address the kbuild
-test robot error.
+fscrypt_decrypt_pagecache_blocks() can fail, because it uses
+skcipher_request_alloc(), which uses kmalloc(), which can fail; and also
+because it calls crypto_skcipher_decrypt(), which can fail depending on
+the driver that actually implements the crypto.
 
-(The fact that EXT3_FS selects options other than just EXT4_FS is unnecessary
-and misleading; I'll send a separate patch to clean that up.)
+Therefore it's not appropriate to WARN on decryption error in
+__ext4_block_zero_page_range().
 
-- Eric
+Remove the WARN and just handle the error instead.
+
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ fs/ext4/inode.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 629a25d999f0..b8f8afd2e8b2 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -3701,8 +3701,12 @@ static int __ext4_block_zero_page_range(handle_t *handle,
+ 		if (S_ISREG(inode->i_mode) && IS_ENCRYPTED(inode)) {
+ 			/* We expect the key to be set. */
+ 			BUG_ON(!fscrypt_has_encryption_key(inode));
+-			WARN_ON_ONCE(fscrypt_decrypt_pagecache_blocks(
+-					page, blocksize, bh_offset(bh)));
++			err = fscrypt_decrypt_pagecache_blocks(page, blocksize,
++							       bh_offset(bh));
++			if (err) {
++				clear_buffer_uptodate(bh);
++				goto unlock;
++			}
+ 		}
+ 	}
+ 	if (ext4_should_journal_data(inode)) {
+-- 
+2.24.1
+
