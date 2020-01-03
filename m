@@ -2,62 +2,90 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6333312FB20
-	for <lists+linux-fscrypt@lfdr.de>; Fri,  3 Jan 2020 18:09:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C456F12FB6A
+	for <lists+linux-fscrypt@lfdr.de>; Fri,  3 Jan 2020 18:13:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727988AbgACRJa (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 3 Jan 2020 12:09:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41776 "EHLO mail.kernel.org"
+        id S1728103AbgACRN6 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 3 Jan 2020 12:13:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727952AbgACRJa (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 3 Jan 2020 12:09:30 -0500
+        id S1727988AbgACRN5 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Fri, 3 Jan 2020 12:13:57 -0500
 Received: from gmail.com (unknown [104.132.1.77])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E446C20866;
-        Fri,  3 Jan 2020 17:09:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 41B6820866;
+        Fri,  3 Jan 2020 17:13:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1578071370;
-        bh=/w7qV6vGafRI8Bm52uoZr3tM+ATD+r4xbclSLdlWkgU=;
+        s=default; t=1578071637;
+        bh=AuRBl8v/uqnhyO59/fcEhO8X0GrJrjk9X+uGwmn6iPE=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wUIyx+9baPXtBb2sY3SwZEdn58USbFg1gyCThz9D5raQaIyY6CnecVjdvQJshNUV9
-         FqTp9DNdx1eAfzeICb1kWbPFCT6UE2rhQdpKe6AAnc0tUS+K3QsYKvEWCamI6hBLAD
-         EQyQEt/flNKl2Y1oaaPdQqHgPxiqumWtDqy6Q5GQ=
-Date:   Fri, 3 Jan 2020 09:09:28 -0800
+        b=WjHl5s11l6p/ZZ2cE+Gms9M+r5fbBdtpkBoPQvsf+w4vofN9SL7w3OrjCZjSExGbQ
+         66F8Xf/g5Rclf9S95up/kOzsPeZebE/TH76wPezXQIz8J1OpiuGQBsB3E18iDq4+DL
+         i8ZCOjYhQ9AANFSzuONApx4WfqiTKJlC+GGzTA2c=
+Date:   Fri, 3 Jan 2020 09:13:55 -0800
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Cc:     linux-fscrypt@vger.kernel.org,
-        Chandan Rajendra <chandan@linux.vnet.ibm.com>
-Subject: Re: [PATCH] ubifs: use IS_ENCRYPTED() instead of
- ubifs_crypt_is_encrypted()
-Message-ID: <20200103170927.GO19521@gmail.com>
-References: <20191209212721.244396-1-ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org,
+        Victor Hsieh <victorhsieh@google.com>
+Subject: Re: [PATCH v2] fs-verity: implement readahead for
+ FS_IOC_ENABLE_VERITY
+Message-ID: <20200103171355.GP19521@gmail.com>
+References: <20191210183531.179836-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191209212721.244396-1-ebiggers@kernel.org>
+In-Reply-To: <20191210183531.179836-1-ebiggers@kernel.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Dec 09, 2019 at 01:27:21PM -0800, Eric Biggers wrote:
+On Tue, Dec 10, 2019 at 10:35:31AM -0800, Eric Biggers wrote:
 > From: Eric Biggers <ebiggers@google.com>
 > 
-> There's no need for the ubifs_crypt_is_encrypted() function anymore.
-> Just use IS_ENCRYPTED() instead, like ext4 and f2fs do.  IS_ENCRYPTED()
-> checks the VFS-level flag instead of the UBIFS-specific flag, but it
-> shouldn't change any behavior since the flags are kept in sync.
+> When it builds the first level of the Merkle tree, FS_IOC_ENABLE_VERITY
+> sequentially reads each page of the file using read_mapping_page().
+> This works fine if the file's data is already in pagecache, which should
+> normally be the case, since this ioctl is normally used immediately
+> after writing out the file.
+> 
+> But in any other case this implementation performs very poorly, since
+> only one page is read at a time.
+> 
+> Fix this by implementing readahead using the functions from
+> mm/readahead.c.
+> 
+> This improves performance in the uncached case by about 20x, as seen in
+> the following benchmarks done on a 250MB file (on x86_64 with SHA-NI):
+> 
+>     FS_IOC_ENABLE_VERITY uncached (before) 3.299s
+>     FS_IOC_ENABLE_VERITY uncached (after)  0.160s
+>     FS_IOC_ENABLE_VERITY cached            0.147s
+>     sha256sum uncached                     0.191s
+>     sha256sum cached                       0.145s
+> 
+> Note: we could instead switch to kernel_read().  But that would mean
+> we'd no longer be hashing the data directly from the pagecache, which is
+> a nice optimization of its own.  And using kernel_read() would require
+> allocating another temporary buffer, hashing the data and tree pages
+> separately, and explicitly zero-padding the last page -- so it wouldn't
+> really be any simpler than direct pagecache access, at least for now.
 > 
 > Signed-off-by: Eric Biggers <ebiggers@google.com>
 > ---
->  fs/ubifs/dir.c     | 8 ++++----
->  fs/ubifs/file.c    | 4 ++--
->  fs/ubifs/journal.c | 6 +++---
->  fs/ubifs/ubifs.h   | 7 -------
->  4 files changed, 9 insertions(+), 16 deletions(-)
+> 
+> Changed v1 => v2:
+> - Only do sync readahead when the page wasn't found in the pagecache at all.
+> - Use ->f_mapping so that the inode doesn't have to be passed.
+> 
+> 
+>  fs/verity/enable.c | 45 +++++++++++++++++++++++++++++++++++++++------
+>  1 file changed, 39 insertions(+), 6 deletions(-)
+> 
 
-Richard, can you consider applying this to the UBIFS tree for 5.6?
+Applied to fscrypt.git#fsverity for 5.6.
 
 - Eric
