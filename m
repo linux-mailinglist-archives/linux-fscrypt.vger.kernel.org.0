@@ -2,76 +2,83 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 79A3612FAFC
-	for <lists+linux-fscrypt@lfdr.de>; Fri,  3 Jan 2020 17:58:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C65012FAFE
+	for <lists+linux-fscrypt@lfdr.de>; Fri,  3 Jan 2020 17:58:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727994AbgACQ6Q (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 3 Jan 2020 11:58:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51928 "EHLO mail.kernel.org"
+        id S1727994AbgACQ6k (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 3 Jan 2020 11:58:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727969AbgACQ6Q (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 3 Jan 2020 11:58:16 -0500
+        id S1727969AbgACQ6k (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Fri, 3 Jan 2020 11:58:40 -0500
 Received: from gmail.com (unknown [104.132.1.77])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 637B2206DB
-        for <linux-fscrypt@vger.kernel.org>; Fri,  3 Jan 2020 16:58:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9BED3206DB
+        for <linux-fscrypt@vger.kernel.org>; Fri,  3 Jan 2020 16:58:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1578070695;
-        bh=YOjAfPhT0RplAxeR04xru2egqefA61SRCIkmZZ6DL5A=;
+        s=default; t=1578070719;
+        bh=TjBSC13j3CaEUDMtec8dd0ObqtBYGMGckPPLjsIVpqA=;
         h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=PtFbi3CEJtQn4qSa7ma1La2Ut1rpDnlk3EElO9UlWoDhjF/y+hJfZ1azZ1goKir0Q
-         wRvyK1+rhG/6mtewT9aJoxk7JEPlW/HMU49GvH9rxewijjyM2BpAMonNUJCHMRlxvD
-         Z5D58uMwnSQh6L6P7zf2ENCcIpkcrrn3oiNMiu1g=
-Date:   Fri, 3 Jan 2020 08:58:14 -0800
+        b=pxWCH2rpJjFC2D7GXjBxxsFcmpEfkP3TJnr46LohQfCVe6LRF0zYuM2L1lV1512rF
+         jZrf6pYEW2GXls1DFMhTVmarES5MGtxaw7p+8y4J4GKGFOK1eEkroHxOSh9uxNoDye
+         XzpyNQijLK1wYgpmcGbFhEGYtt3NZW6qOtTor+wU=
+Date:   Fri, 3 Jan 2020 08:58:38 -0800
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH] fscrypt: verify that the crypto_skcipher has the correct
- ivsize
-Message-ID: <20200103165813.GD19521@gmail.com>
-References: <20191209203918.225691-1-ebiggers@kernel.org>
+Subject: Re: [PATCH] fscrypt: constify struct fscrypt_hkdf parameter to
+ fscrypt_hkdf_expand()
+Message-ID: <20200103165837.GE19521@gmail.com>
+References: <20191209204054.227736-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191209203918.225691-1-ebiggers@kernel.org>
+In-Reply-To: <20191209204054.227736-1-ebiggers@kernel.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Dec 09, 2019 at 12:39:18PM -0800, Eric Biggers wrote:
+On Mon, Dec 09, 2019 at 12:40:54PM -0800, Eric Biggers wrote:
 > From: Eric Biggers <ebiggers@google.com>
 > 
-> As a sanity check, verify that the allocated crypto_skcipher actually
-> has the ivsize that fscrypt is assuming it has.  This will always be the
-> case unless there's a bug.  But if there ever is such a bug (e.g. like
-> there was in earlier versions of the ESSIV conversion patch [1]) it's
-> preferable for it to be immediately obvious, and not rely on the
-> ciphertext verification tests failing due to uninitialized IV bytes.
-> 
-> [1] https://lkml.kernel.org/linux-crypto/20190702215517.GA69157@gmail.com/
+> Constify the struct fscrypt_hkdf parameter to fscrypt_hkdf_expand().
+> This makes it clearer that struct fscrypt_hkdf contains the key only,
+> not any per-request state.
 > 
 > Signed-off-by: Eric Biggers <ebiggers@google.com>
 > ---
->  fs/crypto/keysetup.c | 4 ++++
->  1 file changed, 4 insertions(+)
+>  fs/crypto/fscrypt_private.h | 2 +-
+>  fs/crypto/hkdf.c            | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-> index c9f4fe955971f..39fdea79e912f 100644
-> --- a/fs/crypto/keysetup.c
-> +++ b/fs/crypto/keysetup.c
-> @@ -91,6 +91,10 @@ struct crypto_skcipher *fscrypt_allocate_skcipher(struct fscrypt_mode *mode,
->  		pr_info("fscrypt: %s using implementation \"%s\"\n",
->  			mode->friendly_name, crypto_skcipher_driver_name(tfm));
->  	}
-> +	if (WARN_ON(crypto_skcipher_ivsize(tfm) != mode->ivsize)) {
-> +		err = -EINVAL;
-> +		goto err_free_tfm;
-> +	}
->  	crypto_skcipher_set_flags(tfm, CRYPTO_TFM_REQ_FORBID_WEAK_KEYS);
->  	err = crypto_skcipher_setkey(tfm, raw_key, mode->keysize);
->  	if (err)
+> diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+> index 130b50e5a0115..23cef4d3793a5 100644
+> --- a/fs/crypto/fscrypt_private.h
+> +++ b/fs/crypto/fscrypt_private.h
+> @@ -287,7 +287,7 @@ extern int fscrypt_init_hkdf(struct fscrypt_hkdf *hkdf, const u8 *master_key,
+>  #define HKDF_CONTEXT_DIRECT_KEY		3
+>  #define HKDF_CONTEXT_IV_INO_LBLK_64_KEY	4
+>  
+> -extern int fscrypt_hkdf_expand(struct fscrypt_hkdf *hkdf, u8 context,
+> +extern int fscrypt_hkdf_expand(const struct fscrypt_hkdf *hkdf, u8 context,
+>  			       const u8 *info, unsigned int infolen,
+>  			       u8 *okm, unsigned int okmlen);
+>  
+> diff --git a/fs/crypto/hkdf.c b/fs/crypto/hkdf.c
+> index f21873e1b4674..efb95bd19a894 100644
+> --- a/fs/crypto/hkdf.c
+> +++ b/fs/crypto/hkdf.c
+> @@ -112,7 +112,7 @@ int fscrypt_init_hkdf(struct fscrypt_hkdf *hkdf, const u8 *master_key,
+>   * adds to its application-specific info strings to guarantee that it doesn't
+>   * accidentally repeat an info string when using HKDF for different purposes.)
+>   */
+> -int fscrypt_hkdf_expand(struct fscrypt_hkdf *hkdf, u8 context,
+> +int fscrypt_hkdf_expand(const struct fscrypt_hkdf *hkdf, u8 context,
+>  			const u8 *info, unsigned int infolen,
+>  			u8 *okm, unsigned int okmlen)
+>  {
 > -- 
 > 2.24.0.393.g34dc348eaf-goog
 > 
