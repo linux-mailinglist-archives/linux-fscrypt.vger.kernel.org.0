@@ -2,90 +2,120 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C456F12FB6A
-	for <lists+linux-fscrypt@lfdr.de>; Fri,  3 Jan 2020 18:13:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2164112FDE9
+	for <lists+linux-fscrypt@lfdr.de>; Fri,  3 Jan 2020 21:26:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728103AbgACRN6 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 3 Jan 2020 12:13:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51278 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727988AbgACRN5 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 3 Jan 2020 12:13:57 -0500
-Received: from gmail.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 41B6820866;
-        Fri,  3 Jan 2020 17:13:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1578071637;
-        bh=AuRBl8v/uqnhyO59/fcEhO8X0GrJrjk9X+uGwmn6iPE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WjHl5s11l6p/ZZ2cE+Gms9M+r5fbBdtpkBoPQvsf+w4vofN9SL7w3OrjCZjSExGbQ
-         66F8Xf/g5Rclf9S95up/kOzsPeZebE/TH76wPezXQIz8J1OpiuGQBsB3E18iDq4+DL
-         i8ZCOjYhQ9AANFSzuONApx4WfqiTKJlC+GGzTA2c=
-Date:   Fri, 3 Jan 2020 09:13:55 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org,
-        Victor Hsieh <victorhsieh@google.com>
-Subject: Re: [PATCH v2] fs-verity: implement readahead for
- FS_IOC_ENABLE_VERITY
-Message-ID: <20200103171355.GP19521@gmail.com>
-References: <20191210183531.179836-1-ebiggers@kernel.org>
+        id S1728578AbgACU0q (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 3 Jan 2020 15:26:46 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:47201 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726050AbgACU0q (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Fri, 3 Jan 2020 15:26:46 -0500
+Received: from callcc.thunk.org (guestnat-104-133-0-111.corp.google.com [104.133.0.111] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 003KQ8JY013722
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 3 Jan 2020 15:26:09 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 522F24200AF; Fri,  3 Jan 2020 15:26:08 -0500 (EST)
+Date:   Fri, 3 Jan 2020 15:26:08 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Daniel Rosenberg <drosen@google.com>
+Cc:     linux-ext4@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
+        Chao Yu <chao@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Eric Biggers <ebiggers@kernel.org>,
+        linux-fscrypt@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH 4/8] vfs: Fold casefolding into vfs
+Message-ID: <20200103202608.GB4253@mit.edu>
+References: <20191203051049.44573-1-drosen@google.com>
+ <20191203051049.44573-5-drosen@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191210183531.179836-1-ebiggers@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20191203051049.44573-5-drosen@google.com>
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, Dec 10, 2019 at 10:35:31AM -0800, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> When it builds the first level of the Merkle tree, FS_IOC_ENABLE_VERITY
-> sequentially reads each page of the file using read_mapping_page().
-> This works fine if the file's data is already in pagecache, which should
-> normally be the case, since this ioctl is normally used immediately
-> after writing out the file.
-> 
-> But in any other case this implementation performs very poorly, since
-> only one page is read at a time.
-> 
-> Fix this by implementing readahead using the functions from
-> mm/readahead.c.
-> 
-> This improves performance in the uncached case by about 20x, as seen in
-> the following benchmarks done on a 250MB file (on x86_64 with SHA-NI):
-> 
->     FS_IOC_ENABLE_VERITY uncached (before) 3.299s
->     FS_IOC_ENABLE_VERITY uncached (after)  0.160s
->     FS_IOC_ENABLE_VERITY cached            0.147s
->     sha256sum uncached                     0.191s
->     sha256sum cached                       0.145s
-> 
-> Note: we could instead switch to kernel_read().  But that would mean
-> we'd no longer be hashing the data directly from the pagecache, which is
-> a nice optimization of its own.  And using kernel_read() would require
-> allocating another temporary buffer, hashing the data and tree pages
-> separately, and explicitly zero-padding the last page -- so it wouldn't
-> really be any simpler than direct pagecache access, at least for now.
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
-> 
-> Changed v1 => v2:
-> - Only do sync readahead when the page wasn't found in the pagecache at all.
-> - Use ->f_mapping so that the inode doesn't have to be passed.
-> 
-> 
->  fs/verity/enable.c | 45 +++++++++++++++++++++++++++++++++++++++------
->  1 file changed, 39 insertions(+), 6 deletions(-)
-> 
+On Mon, Dec 02, 2019 at 09:10:45PM -0800, Daniel Rosenberg wrote:
+> @@ -228,6 +229,13 @@ static inline int dentry_string_cmp(const unsigned char *cs, const unsigned char
+>  
+>  #endif
+>  
+> +bool needs_casefold(const struct inode *dir)
+> +{
+> +	return IS_CASEFOLDED(dir) &&
+> +			(!IS_ENCRYPTED(dir) || fscrypt_has_encryption_key(dir));
+> +}
+> +EXPORT_SYMBOL(needs_casefold);
+> +
 
-Applied to fscrypt.git#fsverity for 5.6.
+I'd suggest adding a check to make sure that dir->i_sb->s_encoding is
+non-NULL before needs_casefold() returns non-NULL.  Otherwise a bug
+(or a fuzzed file system) which manages to set the S_CASEFOLD flag without having s_encoding be initialized might cause a NULL dereference.
 
-- Eric
+Also, maybe make needs_casefold() an inline function which returns 0
+if CONFIG_UNICODE is not defined?  That way the need for #ifdef
+CONFIG_UNICODE could be reduced.
+
+> @@ -247,7 +255,19 @@ static inline int dentry_cmp(const struct dentry *dentry, const unsigned char *c
+>  	 * be no NUL in the ct/tcount data)
+>  	 */
+>  	const unsigned char *cs = READ_ONCE(dentry->d_name.name);
+> +#ifdef CONFIG_UNICODE
+> +	struct inode *parent = dentry->d_parent->d_inode;
+>  
+> +	if (unlikely(needs_casefold(parent))) {
+> +		const struct qstr n1 = QSTR_INIT(cs, tcount);
+> +		const struct qstr n2 = QSTR_INIT(ct, tcount);
+> +		int result = utf8_strncasecmp(dentry->d_sb->s_encoding,
+> +						&n1, &n2);
+> +
+> +		if (result >= 0 || sb_has_enc_strict_mode(dentry->d_sb))
+> +			return result;
+> +	}
+> +#endif
+
+This is an example of how we could drop the #ifdef CONFIG_UNICODE
+(moving the declaration of 'parent' into the #if statement) if
+needs_casefold() always returns 0 if !defined(CONFIG_UNICODE).
+
+> @@ -2404,7 +2424,22 @@ struct dentry *d_hash_and_lookup(struct dentry *dir, struct qstr *name)
+>  	 * calculate the standard hash first, as the d_op->d_hash()
+>  	 * routine may choose to leave the hash value unchanged.
+>  	 */
+> +#ifdef CONFIG_UNICODE
+> +	unsigned char *hname = NULL;
+> +	int hlen = name->len;
+> +
+> +	if (IS_CASEFOLDED(dir->d_inode)) {
+> +		hname = kmalloc(PATH_MAX, GFP_ATOMIC);
+> +		if (!hname)
+> +			return ERR_PTR(-ENOMEM);
+> +		hlen = utf8_casefold(dir->d_sb->s_encoding,
+> +					name, hname, PATH_MAX);
+> +	}
+> +	name->hash = full_name_hash(dir, hname ?: name->name, hlen);
+> +	kfree(hname);
+> +#else
+>  	name->hash = full_name_hash(dir, name->name, name->len);
+> +#endif
+
+Perhaps this could be refactored out?  It's also used in
+link_path_walk() and lookup_one_len_common().
+
+(Note, there was some strageness in lookup_one_len_common(), where
+hname is freed twice, the first time using kvfree() which I don't
+believe is needed.  But this can be fixed as part of the refactoring.)
+
+	   	    	     	    	  - Ted
