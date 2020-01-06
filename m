@@ -2,92 +2,131 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 631EC130C39
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  6 Jan 2020 03:55:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2349A1316E4
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  6 Jan 2020 18:39:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727334AbgAFCzM (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sun, 5 Jan 2020 21:55:12 -0500
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:59582 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727307AbgAFCzM (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sun, 5 Jan 2020 21:55:12 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R621e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=eguan@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Tmv.V2J_1578279309;
-Received: from localhost(mailfrom:eguan@linux.alibaba.com fp:SMTPD_---0Tmv.V2J_1578279309)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 06 Jan 2020 10:55:09 +0800
-Date:   Mon, 6 Jan 2020 10:55:09 +0800
-From:   Eryu Guan <eguan@linux.alibaba.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     fstests@vger.kernel.org, Eryu Guan <guaneryu@gmail.com>,
-        linux-fscrypt@vger.kernel.org, Satya Tangirala <satyat@google.com>
-Subject: Re: [PATCH v2 0/5] xfstests: verify ciphertext of IV_INO_LBLK_64
- encryption policies
-Message-ID: <20200106025509.GF41863@e18g06458.et15sqa>
-References: <20191202230155.99071-1-ebiggers@kernel.org>
- <20191209181826.GC149190@gmail.com>
- <20200103164626.GA19521@gmail.com>
+        id S1726569AbgAFRj2 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 6 Jan 2020 12:39:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57426 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726448AbgAFRj2 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 6 Jan 2020 12:39:28 -0500
+Received: from gmail.com (unknown [104.132.1.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6DB1D2072A;
+        Mon,  6 Jan 2020 17:39:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1578332366;
+        bh=OXZgf0k7xd7rBA1tZNKolmh6j+YPkTUZo0qqiYRHM58=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Z70GJeJgdAOBVUnpxon9w4jApnha9hivCtqOl7MSzyiFbCgJ2qqs3QPkNVG8Pcyg/
+         yjSCMDMA/F5kjpEjwAVYwRBCWcWxAN64Z7T9Yh7uatA3dGZcr1QAWg+BQQOoyV56SL
+         JUcfL5xp3ylE+jEzTEeRqfla+OZVvHgZs3Yl6DjM=
+Date:   Mon, 6 Jan 2020 09:39:25 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Victor Hsieh <victorhsieh@google.com>,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [PATCH] fs-verity: implement readahead of Merkle tree pages
+Message-ID: <20200106173924.GA168318@gmail.com>
+References: <20191216181112.89304-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200103164626.GA19521@gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20191216181112.89304-1-ebiggers@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Jan 03, 2020 at 08:46:26AM -0800, Eric Biggers wrote:
-> On Mon, Dec 09, 2019 at 10:18:27AM -0800, Eric Biggers wrote:
-> > On Mon, Dec 02, 2019 at 03:01:50PM -0800, Eric Biggers wrote:
-> > > Hello,
-> > > 
-> > > This series adds an xfstest which tests that the encryption for
-> > > IV_INO_LBLK_64 encryption policies is being done correctly.
-> > > 
-> > > IV_INO_LBLK_64 is a new fscrypt policy flag which modifies the
-> > > encryption to be optimized for inline encryption hardware compliant with
-> > > the UFS v2.1 standard or the upcoming version of the eMMC standard.  For
-> > > more information, see the kernel patchset:
-> > > https://lore.kernel.org/linux-fscrypt/20191024215438.138489-1-ebiggers@kernel.org/T/#u
-> > > 
-> > > The kernel patches have been merged into mainline and will be in v5.5.
-> > > 
-> > > In addition to the latest kernel, to run on ext4 this test also needs a
-> > > version of e2fsprogs built from the master branch, in order to get
-> > > support for formatting the filesystem with '-O stable_inodes'.
-> > > 
-> > > As usual, the test will skip itself if the prerequisites aren't met.
-> > > 
-> > > No real changes since v1; just rebased onto the latest xfstests master
-> > > branch and updated the cover letter.
-> > > 
-> > > Eric Biggers (5):
-> > >   fscrypt-crypt-util: create key_and_iv_params structure
-> > >   fscrypt-crypt-util: add HKDF context constants
-> > >   common/encrypt: create named variables for UAPI constants
-> > >   common/encrypt: support verifying ciphertext of IV_INO_LBLK_64
-> > >     policies
-> > >   generic: verify ciphertext of IV_INO_LBLK_64 encryption policies
-> > > 
-> > >  common/encrypt           | 126 +++++++++++++++++++++++++-------
-> > >  src/fscrypt-crypt-util.c | 151 ++++++++++++++++++++++++++++-----------
-> > >  tests/generic/805        |  43 +++++++++++
-> > >  tests/generic/805.out    |   6 ++
-> > >  tests/generic/group      |   1 +
-> > >  5 files changed, 259 insertions(+), 68 deletions(-)
-> > >  create mode 100644 tests/generic/805
-> > >  create mode 100644 tests/generic/805.out
-> > > 
-> > 
-> > Ping.  Does anyone want to take a look at this?  Satya?
-> > 
+On Mon, Dec 16, 2019 at 10:11:12AM -0800, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> Eryu, can you review and consider applying this series?  It doesn't look like
-> anyone else is going to formally review it.
+> When fs-verity verifies data pages, currently it reads each Merkle tree
+> page synchronously using read_mapping_page().
+> 
+> Therefore, when the Merkle tree pages aren't already cached, fs-verity
+> causes an extra 4 KiB I/O request for every 512 KiB of data (assuming
+> that the Merkle tree uses SHA-256 and 4 KiB blocks).  This results in
+> more I/O requests and performance loss than is strictly necessary.
+> 
+> Therefore, implement readahead of the Merkle tree pages.
+> 
+> For simplicity, we take advantage of the fact that the kernel already
+> does readahead of the file's *data*, just like it does for any other
+> file.  Due to this, we don't really need a separate readahead state
+> (struct file_ra_state) just for the Merkle tree, but rather we just need
+> to piggy-back on the existing data readahead requests.
+> 
+> We also only really need to bother with the first level of the Merkle
+> tree, since the usual fan-out factor is 128, so normally over 99% of
+> Merkle tree I/O requests are for the first level.
+> 
+> Therefore, make fsverity_verify_bio() enable readahead of the first
+> Merkle tree level, for up to 1/4 the number of pages in the bio, when it
+> sees that the REQ_RAHEAD flag is set on the bio.  The readahead size is
+> then passed down to ->read_merkle_tree_page() for the filesystem to
+> (optionally) implement if it sees that the requested page is uncached.
+> 
+> While we're at it, also make build_merkle_tree_level() set the Merkle
+> tree readahead size, since it's easy to do there.
+> 
+> However, for now don't set the readahead size in fsverity_verify_page(),
+> since currently it's only used to verify holes on ext4 and f2fs, and it
+> would need parameters added to know how much to read ahead.
+> 
+> This patch significantly improves fs-verity sequential read performance.
+> Some quick benchmarks with 'cat'-ing a 250MB file after dropping caches:
+> 
+>     On ARM64 phone (using sha256-ce):
+>         Before: 217 MB/s
+>         After: 263 MB/s
+>         (compare to sha256sum of non-verity file: 357 MB/s)
+> 
+>     In an x86_64 VM (using sha256-avx2):
+>         Before: 173 MB/s
+>         After: 215 MB/s
+>         (compare to sha256sum of non-verity file: 223 MB/s)
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+>  fs/ext4/verity.c             | 49 ++++++++++++++++++++++++++++++++++--
+>  fs/f2fs/data.c               |  6 ++---
+>  fs/f2fs/f2fs.h               |  3 +++
+>  fs/f2fs/verity.c             | 49 ++++++++++++++++++++++++++++++++++--
+>  fs/verity/enable.c           |  8 +++++-
+>  fs/verity/fsverity_private.h |  1 +
+>  fs/verity/open.c             |  1 +
+>  fs/verity/verify.c           | 34 ++++++++++++++++++++-----
+>  include/linux/fsverity.h     |  7 +++++-
+>  9 files changed, 143 insertions(+), 15 deletions(-)
 
-I've reviewed & applied this patchset in my local tree, will push them
-out soon. So sorry for the delay!
+Ted and Jaegeuk, have you had a chance to review this patch?  I could use your
+Acked-bys on it, since it touches fs/ext4/ and fs/f2fs/.
 
-Thanks,
-Eryu
+> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> index a034cd0ce0217..8a6b3266bd794 100644
+> --- a/fs/f2fs/data.c
+> +++ b/fs/f2fs/data.c
+> @@ -1881,9 +1881,9 @@ static int f2fs_read_single_page(struct inode *inode, struct page *page,
+>   * use ->readpage() or do the necessary surgery to decouple ->readpages()
+>   * from read-ahead.
+>   */
+> -static int f2fs_mpage_readpages(struct address_space *mapping,
+> -			struct list_head *pages, struct page *page,
+> -			unsigned nr_pages, bool is_readahead)
+> +int f2fs_mpage_readpages(struct address_space *mapping,
+> +			 struct list_head *pages, struct page *page,
+> +			 unsigned int nr_pages, bool is_readahead)
+>  {
+
+FYI, I'm aware that the f2fs compression patch (which is queued in f2fs/dev)
+also makes f2fs_mpage_readpages() non-static, but uses slightly different
+formatting.  If/when I apply this patch I'll adjust it to match f2fs/dev so that
+there's no merge conflict.
+
+- Eric
