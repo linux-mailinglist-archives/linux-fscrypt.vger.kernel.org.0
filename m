@@ -2,255 +2,64 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 01DFC131EF2
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  7 Jan 2020 06:17:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 530BD13448D
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  8 Jan 2020 15:06:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727167AbgAGFRF (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 7 Jan 2020 00:17:05 -0500
-Received: from mail-pl1-f202.google.com ([209.85.214.202]:49609 "EHLO
-        mail-pl1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727341AbgAGFRE (ORCPT
+        id S1728689AbgAHOF5 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 8 Jan 2020 09:05:57 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:56102 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727127AbgAHOF4 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 7 Jan 2020 00:17:04 -0500
-Received: by mail-pl1-f202.google.com with SMTP id y8so17528904plk.16
-        for <linux-fscrypt@vger.kernel.org>; Mon, 06 Jan 2020 21:17:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=4AXPdE8yqNr+UTP/rFDx92PCwirFX2ZEqY++oHBRWKw=;
-        b=qzzP4bBS8EuwmrADny3HdL+oILi5OWXafmr9+EgaY2XO4RFCDXp3Libc0vAx5RBSBI
-         V06tRfqOBRd6GQ0WrFMsWW39pHL/Qb3Iupm+snRP5wV+h3+6zlxVfqIjwE6O8/8Lia7s
-         FGD7j0ptw2XK5x1QcrH8OY9hspFgglumz3BRtmil+8X4JDjWb58BfPIoFc6fSx79Bkqu
-         npccLvUDBK6yE8m75nVdQAhh9760gF9LrHT4RpxuOfmJqZWcAGJgFnZ1H4nXdf9sFN64
-         W8wOJg0TPTXyQt0VO7glwmHkIWCCjVr65sZMEWJGRkSp6RoRy7dtdh8pYlNPtQgLx9Uy
-         zRqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=4AXPdE8yqNr+UTP/rFDx92PCwirFX2ZEqY++oHBRWKw=;
-        b=NoYX1tRi//ghhtyHX5V/pXU8/0+P5frZq38roVq9PKvAddV0iZNnHeMVWPypcIelr7
-         yrkzqiqitmO+Gp4QMCzw5/ZFtR0wxQzGBRo79DlvvFYm9bXRDv76X7yJUim2KLEoklJ1
-         fWT7MCvg9CC0Be9lgIJ/NL7sDT5+HW2YCuUG6EH4jnlI5XgrV+dEctOoDb0BICIBfU29
-         XYgv1ziX6kJFtB7E9V5C6O20ddgSTGZ7ptJ7WaPq7RVkJ7qqv4LrUrAYEe40OhvKILIV
-         rL2osVrAhlkGBfE2m+ZMjF4JcxuB6Aq42zSaOOP3utGpglrYoqxaq7j51eJBuH8j/sSe
-         qkxA==
-X-Gm-Message-State: APjAAAXLnrzV4hiSqKmG+JEoqIGmvnTwJKQHUSm0Ig1yE3TizC0aIRnp
-        a75zk3+/vvETM0/wkl2BQGGuDQvSP2g=
-X-Google-Smtp-Source: APXvYqxtgRC7ZYyzIQDkyWxrBFI07Wr/K1irtO1/YE8s4nlZku5QL85CamutHDyYgo2zl8vzSlHheFWVVis=
-X-Received: by 2002:a63:ea4c:: with SMTP id l12mr111550676pgk.174.1578374223839;
- Mon, 06 Jan 2020 21:17:03 -0800 (PST)
-Date:   Mon,  6 Jan 2020 21:16:38 -0800
-In-Reply-To: <20200107051638.40893-1-drosen@google.com>
-Message-Id: <20200107051638.40893-7-drosen@google.com>
-Mime-Version: 1.0
-References: <20200107051638.40893-1-drosen@google.com>
-X-Mailer: git-send-email 2.24.1.735.g03f4e72817-goog
-Subject: [PATCH v2 6/6] ext4: Optimize match for casefolded encrypted dirs
-From:   Daniel Rosenberg <drosen@google.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        Wed, 8 Jan 2020 09:05:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=Y5Zp5DraPm2b4G9FdcZzJFZL/5Lu3ash5oRZzFlJrrQ=; b=ZeMiKnCPJGvzDo+O/UfvlAu/N
+        sZUrBeXq9/DJgejEzJDxzf/u0MHMTCjzgqOmsbdOmsplpjSF+MkuW0DiAqEdNsTqfoUraHxNwAXbk
+        i+aGIqK/w63kPTUn31L2QobgAZ2sdtvimXrYJLJ3R3ImQW6+o9UhbZ9Nz8dc9tG5TrZO/DXYVaW8/
+        BDhX8Dsq/AtEbptlxAGgQ/JUdjA1Ym9PIeV+/4fkGukWoSaaYPAK+crtDFdUWjqOcbtQtFkZAQ4Ep
+        oC76mAnRDykgejw3xuIYmk2Ev4MAzNf5BYpNLIfQTElSy/Orqb2coN+t9D2vtyZkweJH/95p4VxeN
+        pMzqMtnIA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1ipBy8-0008I6-HI; Wed, 08 Jan 2020 14:05:56 +0000
+Date:   Wed, 8 Jan 2020 06:05:56 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Satya Tangirala <satyat@google.com>
+Cc:     linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-f2fs-devel@lists.sourceforge.net,
-        Eric Biggers <ebiggers@kernel.org>,
-        linux-fscrypt@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel-team@android.com, Daniel Rosenberg <drosen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
+        Kuohong Wang <kuohong.wang@mediatek.com>,
+        Kim Boojin <boojin.kim@samsung.com>
+Subject: Re: [PATCH v6 0/9] Inline Encryption Support
+Message-ID: <20200108140556.GB2896@infradead.org>
+References: <20191218145136.172774-1-satyat@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191218145136.172774-1-satyat@google.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Matching names with casefolded encrypting directories requires
-decrypting entries to confirm case since we are case preserving. We can
-avoid needing to decrypt if our hash values don't match.
+I haven't been able to deep dive into the details, but the structure
+of this still makes me very unhappy.
 
-Signed-off-by: Daniel Rosenberg <drosen@google.com>
----
- fs/ext4/ext4.h  | 17 ++++++++-------
- fs/ext4/namei.c | 55 ++++++++++++++++++++++++++-----------------------
- 2 files changed, 38 insertions(+), 34 deletions(-)
+Most of it is related to the software fallback again.  Please split the
+fallback into a separate file, and also into a separate data structure.
+There is abslutely no need to have the overhead of the software only
+fields for the hardware case.
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index f06bab489d372..f104c46a68950 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -2393,9 +2393,9 @@ extern unsigned ext4_free_clusters_after_init(struct super_block *sb,
- ext4_fsblk_t ext4_inode_to_goal_block(struct inode *);
- 
- #ifdef CONFIG_UNICODE
--extern void ext4_fname_setup_ci_filename(struct inode *dir,
-+extern int ext4_fname_setup_ci_filename(struct inode *dir,
- 					 const struct qstr *iname,
--					 struct fscrypt_str *fname);
-+					 struct ext4_filename *fname);
- #endif
- 
- #ifdef CONFIG_FS_ENCRYPTION
-@@ -2426,9 +2426,9 @@ static inline int ext4_fname_setup_filename(struct inode *dir,
- 	ext4_fname_from_fscrypt_name(fname, &name);
- 
- #ifdef CONFIG_UNICODE
--	ext4_fname_setup_ci_filename(dir, iname, &fname->cf_name);
-+	err = ext4_fname_setup_ci_filename(dir, iname, fname);
- #endif
--	return 0;
-+	return err;
- }
- 
- static inline int ext4_fname_prepare_lookup(struct inode *dir,
-@@ -2445,9 +2445,9 @@ static inline int ext4_fname_prepare_lookup(struct inode *dir,
- 	ext4_fname_from_fscrypt_name(fname, &name);
- 
- #ifdef CONFIG_UNICODE
--	ext4_fname_setup_ci_filename(dir, &dentry->d_name, &fname->cf_name);
-+	err = ext4_fname_setup_ci_filename(dir, &dentry->d_name, fname);
- #endif
--	return 0;
-+	return err;
- }
- 
- static inline void ext4_fname_free_filename(struct ext4_filename *fname)
-@@ -2472,15 +2472,16 @@ static inline int ext4_fname_setup_filename(struct inode *dir,
- 					    int lookup,
- 					    struct ext4_filename *fname)
- {
-+	int err = 0;
- 	fname->usr_fname = iname;
- 	fname->disk_name.name = (unsigned char *) iname->name;
- 	fname->disk_name.len = iname->len;
- 
- #ifdef CONFIG_UNICODE
--	ext4_fname_setup_ci_filename(dir, iname, &fname->cf_name);
-+	err = ext4_fname_setup_ci_filename(dir, iname, fname);
- #endif
- 
--	return 0;
-+	return err;
- }
- 
- static inline int ext4_fname_prepare_lookup(struct inode *dir,
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 42ed2e9d3a1f4..1357d82d27395 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -784,7 +784,9 @@ dx_probe(struct ext4_filename *fname, struct inode *dir,
- 	if (hinfo->hash_version <= DX_HASH_TEA)
- 		hinfo->hash_version += EXT4_SB(dir->i_sb)->s_hash_unsigned;
- 	hinfo->seed = EXT4_SB(dir->i_sb)->s_hash_seed;
--	if (fname && fname_name(fname))
-+	/* hash is already computed for encrypted casefolded directory */
-+	if (fname && fname_name(fname) &&
-+				!(IS_ENCRYPTED(dir) && IS_CASEFOLDED(dir)))
- 		ext4fs_dirhash(dir, fname_name(fname), fname_len(fname), hinfo);
- 	hash = hinfo->hash;
- 
-@@ -1352,19 +1354,21 @@ int ext4_ci_compare(struct inode *parent, const struct qstr *name,
- 	return ret;
- }
- 
--void ext4_fname_setup_ci_filename(struct inode *dir, const struct qstr *iname,
--				  struct fscrypt_str *cf_name)
-+int ext4_fname_setup_ci_filename(struct inode *dir, const struct qstr *iname,
-+				  struct ext4_filename *name)
- {
-+	struct fscrypt_str *cf_name = &name->cf_name;
-+	struct dx_hash_info *hinfo = &name->hinfo;
- 	int len;
- 
- 	if (!needs_casefold(dir)) {
- 		cf_name->name = NULL;
--		return;
-+		return 0;
- 	}
- 
- 	cf_name->name = kmalloc(EXT4_NAME_LEN, GFP_NOFS);
- 	if (!cf_name->name)
--		return;
-+		return -ENOMEM;
- 
- 	len = utf8_casefold(dir->i_sb->s_encoding,
- 			    iname, cf_name->name,
-@@ -1372,10 +1376,18 @@ void ext4_fname_setup_ci_filename(struct inode *dir, const struct qstr *iname,
- 	if (len <= 0) {
- 		kfree(cf_name->name);
- 		cf_name->name = NULL;
--		return;
- 	}
- 	cf_name->len = (unsigned) len;
-+	if (!IS_ENCRYPTED(dir))
-+		return 0;
- 
-+	hinfo->hash_version = DX_HASH_SIPHASH;
-+	hinfo->seed = NULL;
-+	if (cf_name->name)
-+		ext4fs_dirhash(dir, cf_name->name, cf_name->len, hinfo);
-+	else
-+		ext4fs_dirhash(dir, iname->name, iname->len, hinfo);
-+	return 0;
- }
- #endif
- 
-@@ -1405,16 +1417,12 @@ static bool ext4_match(struct inode *parent,
- 			struct qstr cf = {.name = fname->cf_name.name,
- 					  .len = fname->cf_name.len};
- 			if (IS_ENCRYPTED(parent)) {
--				struct dx_hash_info hinfo;
--
--				hinfo.hash_version = DX_HASH_SIPHASH;
--				hinfo.seed = NULL;
--				ext4fs_dirhash(parent, fname->cf_name.name,
--						fname_len(fname), &hinfo);
--				if (hinfo.hash != EXT4_DIRENT_HASH(de) ||
--						hinfo.minor_hash !=
--						    EXT4_DIRENT_MINOR_HASH(de))
-+				if (fname->hinfo.hash != EXT4_DIRENT_HASH(de) ||
-+					fname->hinfo.minor_hash !=
-+						EXT4_DIRENT_MINOR_HASH(de)) {
-+
- 					return 0;
-+				}
- 			}
- 			return !ext4_ci_compare(parent, &cf, de->name,
- 							de->name_len, true);
-@@ -2036,15 +2044,11 @@ void ext4_insert_dentry(struct inode *dir,
- 	de->name_len = fname_len(fname);
- 	memcpy(de->name, fname_name(fname), fname_len(fname));
- 	if (ext4_hash_in_dirent(dir)) {
--		struct dx_hash_info hinfo;
-+		struct dx_hash_info *hinfo = &fname->hinfo;
- 
--		hinfo.hash_version = DX_HASH_SIPHASH;
--		hinfo.seed = NULL;
--		ext4fs_dirhash(dir, fname_usr_name(fname),
--				fname_len(fname), &hinfo);
--		EXT4_EXTENDED_DIRENT(de)->hash = cpu_to_le32(hinfo.hash);
-+		EXT4_EXTENDED_DIRENT(de)->hash = cpu_to_le32(hinfo->hash);
- 		EXT4_EXTENDED_DIRENT(de)->minor_hash =
--				cpu_to_le32(hinfo.minor_hash);
-+						cpu_to_le32(hinfo->minor_hash);
- 	}
- }
- 
-@@ -2195,10 +2199,9 @@ static int make_indexed_dir(handle_t *handle, struct ext4_filename *fname,
- 	if (fname->hinfo.hash_version <= DX_HASH_TEA)
- 		fname->hinfo.hash_version += EXT4_SB(dir->i_sb)->s_hash_unsigned;
- 	fname->hinfo.seed = EXT4_SB(dir->i_sb)->s_hash_seed;
--	if (ext4_hash_in_dirent(dir))
--		ext4fs_dirhash(dir, fname_usr_name(fname),
--				fname_len(fname), &fname->hinfo);
--	else
-+
-+	/* casefolded encrypted hashes are computed on fname setup */
-+	if (!ext4_hash_in_dirent(dir))
- 		ext4fs_dirhash(dir, fname_name(fname),
- 				fname_len(fname), &fname->hinfo);
- 
--- 
-2.24.1.735.g03f4e72817-goog
+On the counter side I think all the core block layer code added should
+go into a single file instead of split into three with some odd
+layering.
 
+Also what I don't understand is why this managed key-slots on a per-bio
+basis.  Wou;dn't it make a whole lot more sense to manage them on a
+struct request basis once most of the merging has been performed?
