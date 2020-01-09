@@ -2,299 +2,103 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AF48B134F4A
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  8 Jan 2020 23:07:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDD0413520A
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  9 Jan 2020 04:41:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726390AbgAHWHZ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 8 Jan 2020 17:07:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55416 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726179AbgAHWHZ (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 8 Jan 2020 17:07:25 -0500
-Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B3A87206DA;
-        Wed,  8 Jan 2020 22:07:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1578521243;
-        bh=+UnJvUkys/YWUVHVjABMYQ24pt1fYpAkSC4c1D+rAv4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xq/aDkNkFZc4P3D2boMAu2AUJf2l/KLxBkxHHzhKfYNYB38tWxhNjzyEyWDfzcOjE
-         FqYbhY0CHy2zs/QSR0prrYwCC/D7bMIIVhusSDjOIhshpFEIMENhVe0XX1D38z53uL
-         kgMBSK29Zk3E05KIPSiNRIGXouzeiao23DrDCq7s=
-Date:   Wed, 8 Jan 2020 14:07:22 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Daniel Rosenberg <drosen@google.com>
-Cc:     linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v2 3/3] fscrypt: Change format of no-key token
-Message-ID: <20200108220722.GB232722@sol.localdomain>
-References: <20200107023323.38394-1-drosen@google.com>
- <20200107023323.38394-4-drosen@google.com>
+        id S1727701AbgAIDlQ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 8 Jan 2020 22:41:16 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:54784 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726913AbgAIDlQ (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 8 Jan 2020 22:41:16 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 0093Y91f165213;
+        Thu, 9 Jan 2020 03:40:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : references : date : in-reply-to : message-id : mime-version :
+ content-type; s=corp-2019-08-05;
+ bh=d286TUXfSVAxHnl9z2DyeRiz3PyfuYs/FVhffcmdrHI=;
+ b=qBjXF9EEZvVjREBQqOD3nS6joNQ8l/CSfkq4zKjHaqIx8/X7IZD04wuMDFHN2trWNTGd
+ QoTryWftjxWUVg8DU1R+kRczakqJBoKgetQ8TBOSPBefI3gmE5edCg04UvqdTz5MWYqd
+ R76CHK9kDCD4rhD2blijFxJmD3N3AQie1mM5vh/oangx5yw7VmOmJSBIAGOQAutcEjfm
+ WjwtitDt+Z8llvkwc6kkAxpxaQ/RmBjnVZHVKO2ax4FbSSUJ3W4cCyyD8Sg4DZxyU9PU
+ nQvYEMCtNFtntHLvu06/h/W3hUdX/G6ouabHTNuWZU0DB2P587n4ViSqtyuse2HuzZkZ aA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 2xajnq83nd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 09 Jan 2020 03:40:36 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 0093XAkf107048;
+        Thu, 9 Jan 2020 03:40:35 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 2xdmrx90ua-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 09 Jan 2020 03:40:35 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0093eXBk007672;
+        Thu, 9 Jan 2020 03:40:33 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 08 Jan 2020 19:40:33 -0800
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Satya Tangirala <satyat@google.com>,
+        linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
+        Kuohong Wang <kuohong.wang@mediatek.com>,
+        Kim Boojin <boojin.kim@samsung.com>
+Subject: Re: [PATCH v6 2/9] block: Add encryption context to struct bio
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+References: <20191218145136.172774-1-satyat@google.com>
+        <20191218145136.172774-3-satyat@google.com>
+        <20191218212116.GA7476@magnolia> <yq1y2v9e37b.fsf@oracle.com>
+        <20191218222726.GC47399@gmail.com> <yq1fthhdttv.fsf@oracle.com>
+        <20200108140730.GC2896@infradead.org>
+Date:   Wed, 08 Jan 2020 22:40:30 -0500
+In-Reply-To: <20200108140730.GC2896@infradead.org> (Christoph Hellwig's
+        message of "Wed, 8 Jan 2020 06:07:30 -0800")
+Message-ID: <yq1ftgpxpox.fsf@oracle.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1.92 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200107023323.38394-4-drosen@google.com>
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9494 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=598
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-2001090033
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9494 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=659 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-2001090033
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-A few more nits:
 
-On Mon, Jan 06, 2020 at 06:33:23PM -0800, Daniel Rosenberg wrote:
-> +static int fscrypt_do_sha256(unsigned char *result,
-> +	     const u8 *data, unsigned int data_len)
+Christoph,
 
-Use 'u8 *' instead of 'unsigned char *', and then this fits on one line.
+>> Absolutely. That's why it's a union. Putting your stuff there is a
+>> prerequisite as far as I'm concerned. No need to grow the bio when the
+>> two features are unlikely to coexist. We can revisit that later should
+>> the need arise.
+>
+> With NVMe key per I/O support some form of inline encryption and PI are
+> very likely to be used together in the not too far future.
 
-I'd probably also put 'result' last since it's an output parameter, and that
-also matches the crypto interfaces.
+I don't disagree that we'll have to manage coexistence eventually. Hence
+my comments about being able to chain multiple things to a bio.
 
-> @@ -307,8 +372,7 @@ EXPORT_SYMBOL(fscrypt_fname_disk_to_usr);
->   * get the disk_name.
->   *
->   * Else, for keyless @lookup operations, @iname is the presented ciphertext, so
-> - * we decode it to get either the ciphertext disk_name (for short names) or the
-> - * fscrypt_digested_name (for long names).  Non-@lookup operations will be
-> + * we decode it to get the fscrypt_nokey_name. Non-@lookup operations will be
->   * impossible in this case, so we fail them with ENOKEY.
->   *
->   * If successful, fscrypt_free_filename() must be called later to clean up.
-> @@ -318,8 +382,8 @@ EXPORT_SYMBOL(fscrypt_fname_disk_to_usr);
->  int fscrypt_setup_filename(struct inode *dir, const struct qstr *iname,
->  			      int lookup, struct fscrypt_name *fname)
->  {
-> +	struct fscrypt_nokey_name *nokey_name;
+In the immediate term, though, I think it makes sense to leverage the
+integrity pointer to avoid growing struct bio.
 
-This can be 'const'.
-
->  	int ret;
-> -	int digested;
->  
->  	memset(fname, 0, sizeof(struct fscrypt_name));
->  	fname->usr_fname = iname;
-> @@ -359,41 +423,29 @@ int fscrypt_setup_filename(struct inode *dir, const struct qstr *iname,
->  	 * We don't have the key and we are doing a lookup; decode the
->  	 * user-supplied name
->  	 */
-> -	if (iname->name[0] == '_') {
-> -		if (iname->len !=
-> -		    1 + BASE64_CHARS(sizeof(struct fscrypt_digested_name)))
-> -			return -ENOENT;
-> -		digested = 1;
-> -	} else {
-> -		if (iname->len >
-> -		    BASE64_CHARS(FSCRYPT_FNAME_MAX_UNDIGESTED_SIZE))
-> -			return -ENOENT;
-> -		digested = 0;
-> -	}
->  
->  	fname->crypto_buf.name =
-> -		kmalloc(max_t(size_t, FSCRYPT_FNAME_MAX_UNDIGESTED_SIZE,
-> -			      sizeof(struct fscrypt_digested_name)),
-> -			GFP_KERNEL);
-> +			kmalloc(sizeof(struct fscrypt_nokey_name), GFP_KERNEL);
->  	if (fname->crypto_buf.name == NULL)
->  		return -ENOMEM;
->  
-> -	ret = base64_decode(iname->name + digested, iname->len - digested,
-> -			    fname->crypto_buf.name);
-> -	if (ret < 0) {
-> +	if (iname->len > BASE64_CHARS(sizeof(struct fscrypt_nokey_name))) {
->  		ret = -ENOENT;
->  		goto errout;
->  	}
-> -	fname->crypto_buf.len = ret;
-> -	if (digested) {
-> -		const struct fscrypt_digested_name *n =
-> -			(const void *)fname->crypto_buf.name;
-> -		fname->hash = n->hash;
-> -		fname->minor_hash = n->minor_hash;
-> -	} else {
-> -		fname->disk_name.name = fname->crypto_buf.name;
-> -		fname->disk_name.len = fname->crypto_buf.len;
-> +	ret = base64_decode(iname->name, iname->len, fname->crypto_buf.name);
-> +	if ((int)ret < offsetof(struct fscrypt_nokey_name, bytes[1]) ||
-> +	    (ret > offsetof(struct fscrypt_nokey_name, sha256) &&
-> +	     ret != offsetofend(struct fscrypt_nokey_name, sha256))) {
-> +		ret = -ENOENT;
-> +		goto errout;
->  	}
-> +
-> +	nokey_name = (void *)fname->crypto_buf.name;
-> +	fname->crypto_buf.len = ret;
-> +
-> +	fname->hash = nokey_name->dirtree_hash[0];
-> +	fname->minor_hash = nokey_name->dirtree_hash[1];
->  	return 0;
->  
->  errout:
-> @@ -402,6 +454,62 @@ int fscrypt_setup_filename(struct inode *dir, const struct qstr *iname,
->  }
->  EXPORT_SYMBOL(fscrypt_setup_filename);
->  
-> +/**
-> + * fscrypt_match_name() - test whether the given name matches a directory entry
-> + * @fname: the name being searched for
-> + * @de_name: the name from the directory entry
-> + * @de_name_len: the length of @de_name in bytes
-> + *
-> + * Normally @fname->disk_name will be set, and in that case we simply compare
-> + * that to the name stored in the directory entry.  The only exception is that
-> + * if we don't have the key for an encrypted directory we'll instead need to
-> + * match against the fscrypt_nokey_name.
-> + *
-> + * Return: %true if the name matches, otherwise %false.
-> + */
-> +bool fscrypt_match_name(const struct fscrypt_name *fname,
-> +				      const u8 *de_name, u32 de_name_len)
-
-Align the continuation line:
-
-bool fscrypt_match_name(const struct fscrypt_name *fname,
-                        const u8 *de_name, u32 de_name_len)
-
-> +	if (unlikely(!fname->disk_name.name)) {
-> +		const struct fscrypt_nokey_name *n =
-> +			(const void *)fname->crypto_buf.name;
-> +
-> +		if (fname->crypto_buf.len ==
-> +			    offsetofend(struct fscrypt_nokey_name, sha256)) {
-> +			u8 sha256[SHA256_DIGEST_SIZE];
-> +
-> +			if (de_name_len <= FSCRYPT_FNAME_UNDIGESTED_SIZE)
-> +				return false;
-> +			if (memcmp(de_name, n->bytes,
-> +				   FSCRYPT_FNAME_UNDIGESTED_SIZE) != 0)
-> +				return false;
-> +			fscrypt_do_sha256(sha256,
-> +				&de_name[FSCRYPT_FNAME_UNDIGESTED_SIZE],
-> +				de_name_len - FSCRYPT_FNAME_UNDIGESTED_SIZE);
-> +			if (memcmp(sha256, n->sha256, sizeof(sha256)) != 0)
-> +				return false;
-
-Should check the return value of fscrypt_do_sha256().  I guess for now just
-return false if it fails.  It would be nice if the sha256 tfm were preallocated
-when the directory was opened, or alternatively the sha256 library interface
-were used, so that this couldn't fail.  But just returning false should be fine
-for now...
-
-> +			u32 len = fname->crypto_buf.len -
-> +				offsetof(struct fscrypt_nokey_name, bytes);
-> +
-> +			if (de_name_len != len)
-> +				return false;
-> +
-> +			if (memcmp(de_name, n->bytes, len) != 0)
-> +				return false;
-> +		}
-> +
-> +		return true;
-> +	}
-> +
-> +	if (de_name_len != fname->disk_name.len)
-> +		return false;
-> +	return !memcmp(de_name, fname->disk_name.name, fname->disk_name.len);
-> +}
-> +EXPORT_SYMBOL(fscrypt_match_name);
-> +
->  /**
->   * fscrypt_fname_siphash() - Calculate the siphash for a file name
->   * @dir: the parent directory
-> diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-> index 2c292f19c6b9..14a727759a81 100644
-> --- a/include/linux/fscrypt.h
-> +++ b/include/linux/fscrypt.h
-> @@ -179,79 +179,8 @@ extern int fscrypt_fname_disk_to_usr(const struct inode *inode,
->  extern u64 fscrypt_fname_siphash(const struct inode *dir,
->  				 const struct qstr *name);
->  
-> -#define FSCRYPT_FNAME_MAX_UNDIGESTED_SIZE	32
-> -
-> -/* Extracts the second-to-last ciphertext block; see explanation below */
-> -#define FSCRYPT_FNAME_DIGEST(name, len)	\
-> -	((name) + round_down((len) - FS_CRYPTO_BLOCK_SIZE - 1, \
-> -			     FS_CRYPTO_BLOCK_SIZE))
-> -
-> -#define FSCRYPT_FNAME_DIGEST_SIZE	FS_CRYPTO_BLOCK_SIZE
-> -
-> -/**
-> - * fscrypt_digested_name - alternate identifier for an on-disk filename
-> - *
-> - * When userspace lists an encrypted directory without access to the key,
-> - * filenames whose ciphertext is longer than FSCRYPT_FNAME_MAX_UNDIGESTED_SIZE
-> - * bytes are shown in this abbreviated form (base64-encoded) rather than as the
-> - * full ciphertext (base64-encoded).  This is necessary to allow supporting
-> - * filenames up to NAME_MAX bytes, since base64 encoding expands the length.
-> - *
-> - * To make it possible for filesystems to still find the correct directory entry
-> - * despite not knowing the full on-disk name, we encode any filesystem-specific
-> - * 'hash' and/or 'minor_hash' which the filesystem may need for its lookups,
-> - * followed by the second-to-last ciphertext block of the filename.  Due to the
-> - * use of the CBC-CTS encryption mode, the second-to-last ciphertext block
-> - * depends on the full plaintext.  (Note that ciphertext stealing causes the
-> - * last two blocks to appear "flipped".)  This makes accidental collisions very
-> - * unlikely: just a 1 in 2^128 chance for two filenames to collide even if they
-> - * share the same filesystem-specific hashes.
-> - *
-> - * However, this scheme isn't immune to intentional collisions, which can be
-> - * created by anyone able to create arbitrary plaintext filenames and view them
-> - * without the key.  Making the "digest" be a real cryptographic hash like
-> - * SHA-256 over the full ciphertext would prevent this, although it would be
-> - * less efficient and harder to implement, especially since the filesystem would
-> - * need to calculate it for each directory entry examined during a search.
-> - */
-> -struct fscrypt_digested_name {
-> -	u32 hash;
-> -	u32 minor_hash;
-> -	u8 digest[FSCRYPT_FNAME_DIGEST_SIZE];
-> -};
-> -
-> -/**
-> - * fscrypt_match_name() - test whether the given name matches a directory entry
-> - * @fname: the name being searched for
-> - * @de_name: the name from the directory entry
-> - * @de_name_len: the length of @de_name in bytes
-> - *
-> - * Normally @fname->disk_name will be set, and in that case we simply compare
-> - * that to the name stored in the directory entry.  The only exception is that
-> - * if we don't have the key for an encrypted directory and a filename in it is
-> - * very long, then we won't have the full disk_name and we'll instead need to
-> - * match against the fscrypt_digested_name.
-> - *
-> - * Return: %true if the name matches, otherwise %false.
-> - */
-> -static inline bool fscrypt_match_name(const struct fscrypt_name *fname,
-> -				      const u8 *de_name, u32 de_name_len)
-> -{
-> -	if (unlikely(!fname->disk_name.name)) {
-> -		const struct fscrypt_digested_name *n =
-> -			(const void *)fname->crypto_buf.name;
-> -		if (WARN_ON_ONCE(fname->usr_fname->name[0] != '_'))
-> -			return false;
-> -		if (de_name_len <= FSCRYPT_FNAME_MAX_UNDIGESTED_SIZE)
-> -			return false;
-> -		return !memcmp(FSCRYPT_FNAME_DIGEST(de_name, de_name_len),
-> -			       n->digest, FSCRYPT_FNAME_DIGEST_SIZE);
-> -	}
-> -
-> -	if (de_name_len != fname->disk_name.len)
-> -		return false;
-> -	return !memcmp(de_name, fname->disk_name.name, fname->disk_name.len);
-> -}
-> +extern bool fscrypt_match_name(const struct fscrypt_name *fname,
-> +				      const u8 *de_name, u32 de_name_len);
-
-Align the continuation line:
-
-extern bool fscrypt_match_name(const struct fscrypt_name *fname,
-                               const u8 *de_name, u32 de_name_len);
-
-Also, this should be moved above fscrypt_fname_siphash() in order to match their
-order in the .c file.
-
-- Eric
+-- 
+Martin K. Petersen	Oracle Linux Engineering
