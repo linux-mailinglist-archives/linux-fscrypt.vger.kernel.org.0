@@ -2,84 +2,109 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 49D6F1353FD
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  9 Jan 2020 09:01:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DE4D13673F
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 10 Jan 2020 07:18:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728273AbgAIIBV (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 9 Jan 2020 03:01:21 -0500
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:53574 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728267AbgAIIBV (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 9 Jan 2020 03:01:21 -0500
-Received: by mail-wm1-f67.google.com with SMTP id m24so1756775wmc.3
-        for <linux-fscrypt@vger.kernel.org>; Thu, 09 Jan 2020 00:01:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mM7vPg0AhQaknvqOPVsXZOVjGRK92DcXE5AgwuDYIHo=;
-        b=lwAnWsv3oq7ad8CFOberR0NQ6hDV2J1HMsYX+rMrcX5IbWj7GtEJEABU2+67ir5FeF
-         WC21IhRA5W+VDlCPqGR3l8NC2UMuKWlRQ9eiS3uewowKwpjmXQMzveEUG8UZXWzlclxq
-         oOlFf1xm+9I7J1hs2pybUuvUUXbih+XkGK/wxooVGxnyZ2WAu6i0tb/Z2FHUoweaTBeW
-         NddgWCkxkiIr+EGrNy4HzcWbbjoK5qoGvCmuTz7QS7Ye5lEROzzdbngUMBLwtKC9Vnty
-         +fckvR3KTbWezTwnNMbIX2coZYqn4jglLOKv/1F9TNpK653AzshpedKWwLfH+mX4C6hq
-         gJIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mM7vPg0AhQaknvqOPVsXZOVjGRK92DcXE5AgwuDYIHo=;
-        b=aso1K4OS7lVeeUhFcusssKm1h0+EIH8tVSQMuP1I0Y9bWkVMo4Mkm1JmFZjue7Um6d
-         bl6cvT3XYJUaTzKkMrRneY+ZELY2WWNRYtJoNvfi1oMxjI6TzjKvnHYNUZ0nxBA18ucG
-         daaWzhmGKEIAUK0GKZm31Ahj3WIlP6Sg8gj6V0Mb5a7GxYDbJyYY3Z3k8krg0iR0rL/f
-         J/FkjivAu96R4klsbHL3sMs5ytShTJwCZ3ySY/lZF2mhfrrFTPlEdSq/hKaBoNRpn20F
-         TV0MwiAi6Vxc73q/K9qr+uCjFCTLvEVjo2ftRhOSsGbpCWELdjes+3wVJboaTntBI5Q+
-         JeJA==
-X-Gm-Message-State: APjAAAUGGgcfhzvANQdd5ueiTk+DXT5eRQnm7gMZupOPf9k3qzjbWkze
-        KXfda2N39gQwV1xWqJrJ/UyND7ojocBJb6uxDhI=
-X-Google-Smtp-Source: APXvYqyK8tMCjb2q0F/zY/NxYO5hT8twzh58hRo/ALDAQCuK0Gvez9RnhPzksN01eRQqyasbLGmqZMOSNf7Y63vKQ3A=
-X-Received: by 2002:a1c:184:: with SMTP id 126mr3126631wmb.127.1578556880370;
- Thu, 09 Jan 2020 00:01:20 -0800 (PST)
+        id S1726949AbgAJGS0 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 10 Jan 2020 01:18:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52690 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725797AbgAJGS0 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Fri, 10 Jan 2020 01:18:26 -0500
+Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 67DDD20673;
+        Fri, 10 Jan 2020 06:18:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1578637104;
+        bh=E83v9s/velUj5ZMKMl2BVwEb+LgFHUZZtzb8Bqy9gU4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=xyN7PM3sGWyQc+Q3C57MHsA5e3wjktENkcTqPjjN48EhTVMfLAOcEH7WXcehyQGC6
+         CqtX3KktH3VHkouuRDRBfqb+OHlpZenFzzhBLqVYkQH/7WfrzKZ0q/vtCiat2KM09/
+         /73s9E3NXSaD1yHiJUh5GvaXRcpQoPXGGxrOfGV8=
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-scsi@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Cc:     linux-block@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Pedro Sousa <pedrom.sousa@synopsys.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
+        Can Guo <cang@codeaurora.org>,
+        Satya Tangirala <satyat@google.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>
+Subject: [RFC PATCH 0/5] Inline crypto support on DragonBoard 845c
+Date:   Thu,  9 Jan 2020 22:16:29 -0800
+Message-Id: <20200110061634.46742-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <20191209212721.244396-1-ebiggers@kernel.org> <20200103170927.GO19521@gmail.com>
-In-Reply-To: <20200103170927.GO19521@gmail.com>
-From:   Richard Weinberger <richard.weinberger@gmail.com>
-Date:   Thu, 9 Jan 2020 09:01:09 +0100
-Message-ID: <CAFLxGvwA6y2+Azm1Xc+-cz1N_jjJXY3uZBVDqGGLvc6GMcb5JA@mail.gmail.com>
-Subject: Re: [PATCH] ubifs: use IS_ENCRYPTED() instead of ubifs_crypt_is_encrypted()
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
-        linux-fscrypt@vger.kernel.org,
-        Chandan Rajendra <chandan@linux.vnet.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Jan 3, 2020 at 6:09 PM Eric Biggers <ebiggers@kernel.org> wrote:
->
-> On Mon, Dec 09, 2019 at 01:27:21PM -0800, Eric Biggers wrote:
-> > From: Eric Biggers <ebiggers@google.com>
-> >
-> > There's no need for the ubifs_crypt_is_encrypted() function anymore.
-> > Just use IS_ENCRYPTED() instead, like ext4 and f2fs do.  IS_ENCRYPTED()
-> > checks the VFS-level flag instead of the UBIFS-specific flag, but it
-> > shouldn't change any behavior since the flags are kept in sync.
-> >
-> > Signed-off-by: Eric Biggers <ebiggers@google.com>
-> > ---
-> >  fs/ubifs/dir.c     | 8 ++++----
-> >  fs/ubifs/file.c    | 4 ++--
-> >  fs/ubifs/journal.c | 6 +++---
-> >  fs/ubifs/ubifs.h   | 7 -------
-> >  4 files changed, 9 insertions(+), 16 deletions(-)
->
-> Richard, can you consider applying this to the UBIFS tree for 5.6?
+Hello,
 
-Sure. I'm back from the x-mas break and start collecting patches.
+This patchset implements UFS inline crypto support on the DragonBoard
+845c, using the Qualcomm Inline Crypto Engine (ICE) that's present on
+the Snapdragon 845 SoC.
+
+This is based on top of the patchset "[PATCH v6 0/9] Inline Encryption
+Support" by Satya Tangirala, which adds support for the UFS standard
+inline crypto, the block layer changes needed to use inline crypto, and
+support for inline crypto in fscrypt (ext4 and f2fs encryption).  Link:
+https://lkml.kernel.org/r/20191218145136.172774-1-satyat@google.com
+
+This new patchset is mostly a RFC showing hardware inline crypto working
+on a publicly available development board that runs the mainline Linux
+kernel.  While patches 1-2 could be applied now, patches 3-5 depend on
+the main "Inline Encryption Support" patchset being merged first.
+
+Most of the logic needed to use ICE is already handled by ufshcd-crypto
+and the blk-crypto framework, which are introduced by the "Inline
+Encryption Support" patchset.  Therefore, this new patchset just adds
+the vendor-specific parts.  I also only implemented support for version
+3 of the ICE hardware, which seems to be easier to use than older
+versions; and for now I only implemented UFS support, not eMMC.
+
+Due to these factors, I was able to greatly simplify the driver from the
+vendor's original.  It seems to work fine in some preliminary testing
+with fscrypt, and with a blk-crypto self-test I'm also working on.  But
+I'd appreciate feedback from anyone who may be more familiar with this
+hardware as to whether I might have missed anything important.
+
+This patchset is also available in git at
+https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git/tag/?h=db845c-crypto-v1
+
+Eric Biggers (5):
+  firmware: qcom_scm: Add support for programming inline crypto keys
+  arm64: dts: sdm845: add Inline Crypto Engine registers and clock
+  scsi: ufs: add quirk to disable inline crypto support
+  scsi: ufs: add program_key() variant op
+  scsi: ufs-qcom: add Inline Crypto Engine support
+
+ MAINTAINERS                          |   2 +-
+ arch/arm64/boot/dts/qcom/sdm845.dtsi |  13 +-
+ drivers/firmware/qcom_scm-32.c       |  14 ++
+ drivers/firmware/qcom_scm-64.c       |  31 ++++
+ drivers/firmware/qcom_scm.c          |  78 +++++++++
+ drivers/firmware/qcom_scm.h          |   9 +
+ drivers/scsi/ufs/Kconfig             |   1 +
+ drivers/scsi/ufs/Makefile            |   4 +-
+ drivers/scsi/ufs/ufs-qcom-ice.c      | 247 +++++++++++++++++++++++++++
+ drivers/scsi/ufs/ufs-qcom.c          |  14 +-
+ drivers/scsi/ufs/ufs-qcom.h          |  35 ++++
+ drivers/scsi/ufs/ufshcd-crypto.c     |  27 ++-
+ drivers/scsi/ufs/ufshcd.h            |  12 ++
+ include/linux/qcom_scm.h             |  17 ++
+ 14 files changed, 490 insertions(+), 14 deletions(-)
+ create mode 100644 drivers/scsi/ufs/ufs-qcom-ice.c
 
 -- 
-Thanks,
-//richard
+2.24.1
+
