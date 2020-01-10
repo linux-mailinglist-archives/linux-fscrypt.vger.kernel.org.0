@@ -2,27 +2,27 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AD5113674F
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 10 Jan 2020 07:18:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F9E7136748
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 10 Jan 2020 07:18:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731465AbgAJGSa (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 10 Jan 2020 01:18:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52792 "EHLO mail.kernel.org"
+        id S1731470AbgAJGS3 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 10 Jan 2020 01:18:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725797AbgAJGS1 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 10 Jan 2020 01:18:27 -0500
+        id S1731465AbgAJGS2 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Fri, 10 Jan 2020 01:18:28 -0500
 Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2B2802073A;
+        by mail.kernel.org (Postfix) with ESMTPSA id B88D920838;
         Fri, 10 Jan 2020 06:18:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1578637106;
-        bh=Ee2p9izgcxGtpWv84PgFIJfcISSTM0ZUb+bggD+7SqU=;
+        s=default; t=1578637107;
+        bh=CXnjOYm1iTDjojjdsIRWTNlwicfcXj4LVXbnFJeFR2o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0jb3rvM4QzmHKz8wEik8cbtCyaw0honO94cDYMxfjLOj93/mwClJt7nBAC8Bf7iZ4
-         P+HbfAP2Nah1u6A2PpbHYry0LdUX5b3VaBr036+FDpKfD+PF/oFm1VtIyl/IAMBv8q
-         QLcDULli5LMtgf9veFv3Lv3kC/PwCrgCdQfjMyzY=
+        b=kmb0Iyc9tu/rxA/ezfektn4+xbD8O/KI0wSPSI6WPESopr4jFdCCoLqlj1ssipQ5D
+         +iQVFzbMgld/0e+uZf4U7ONdoaINq/8u9n4qsttx1wep3Uh8KjmwhNTZjkGT7vDQnu
+         A0jG1DmClF5SdOEZwAkqU5xwfK8UYIRoFfhHwLmw=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-scsi@vger.kernel.org, linux-arm-msm@vger.kernel.org
 Cc:     linux-block@vger.kernel.org, linux-fscrypt@vger.kernel.org,
@@ -37,9 +37,9 @@ Cc:     linux-block@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         Satya Tangirala <satyat@google.com>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
         "Theodore Y . Ts'o" <tytso@mit.edu>
-Subject: [RFC PATCH 3/5] scsi: ufs: add quirk to disable inline crypto support
-Date:   Thu,  9 Jan 2020 22:16:32 -0800
-Message-Id: <20200110061634.46742-4-ebiggers@kernel.org>
+Subject: [RFC PATCH 4/5] scsi: ufs: add program_key() variant op
+Date:   Thu,  9 Jan 2020 22:16:33 -0800
+Message-Id: <20200110061634.46742-5-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200110061634.46742-1-ebiggers@kernel.org>
 References: <20200110061634.46742-1-ebiggers@kernel.org>
@@ -52,64 +52,115 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Add a quirk flag which allows UFS drivers to tell the UFS core that
-their crypto support is not working properly, so should not be used
-despite the host controller declaring the standard crypto support bit.
+On Snapdragon SoCs, the Linux kernel isn't permitted to directly access
+the standard UFS crypto configuration registers.  Instead, programming
+and evicting keys must be done through vendor-specific SMC calls.
 
-There are various situations in which this can be needed:
+To support this hardware, add a ->program_key() method to
+'struct ufs_hba_variant_ops'.  This allows overriding the UFS standard
+key programming procedure.
 
-- When the crypto support requires vendor-specific logic that hasn't
-  been implemented yet.  For example, the standard keyslot programming
-  procedure doesn't work with ufs-hisi and ufs-qcom.
-
-- When necessary vendor-specific crypto registers haven't been declared
-  in the device tree for the SoC yet.
-
-- When the crypto hardware declares an unsupported vendor-specific
-  version number, has vendor-specific fuses blown which make it unusable
-  in the normal way, or a vendor-specific self-test fails.
-
-- The crypto produces the wrong results.
-
-Originally-from: John Stultz <john.stultz@linaro.org>
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- drivers/scsi/ufs/ufshcd-crypto.c | 3 ++-
- drivers/scsi/ufs/ufshcd.h        | 7 +++++++
- 2 files changed, 9 insertions(+), 1 deletion(-)
+ drivers/scsi/ufs/ufshcd-crypto.c | 24 ++++++++++++++++++------
+ drivers/scsi/ufs/ufshcd.h        |  5 +++++
+ 2 files changed, 23 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/scsi/ufs/ufshcd-crypto.c b/drivers/scsi/ufs/ufshcd-crypto.c
-index 749c325686a7d..2c34beb47f8e0 100644
+index 2c34beb47f8e0..4b9e4d5770643 100644
 --- a/drivers/scsi/ufs/ufshcd-crypto.c
 +++ b/drivers/scsi/ufs/ufshcd-crypto.c
-@@ -278,7 +278,8 @@ int ufshcd_hba_init_crypto(struct ufs_hba *hba)
- 	hba->caps &= ~UFSHCD_CAP_CRYPTO;
+@@ -117,15 +117,21 @@ static int ufshcd_crypto_cfg_entry_write_key(union ufs_crypto_cfg_entry *cfg,
+ 	return -EINVAL;
+ }
  
- 	/* Return 0 if crypto support isn't present */
--	if (!(hba->capabilities & MASK_CRYPTO_SUPPORT))
-+	if (!(hba->capabilities & MASK_CRYPTO_SUPPORT) ||
-+	    (hba->quirks & UFSHCD_QUIRK_BROKEN_CRYPTO))
- 		goto out;
+-static void ufshcd_program_key(struct ufs_hba *hba,
+-			       const union ufs_crypto_cfg_entry *cfg,
+-			       int slot)
++static int ufshcd_program_key(struct ufs_hba *hba,
++			      const union ufs_crypto_cfg_entry *cfg, int slot)
+ {
+ 	int i;
+ 	u32 slot_offset = hba->crypto_cfg_register + slot * sizeof(*cfg);
++	int err;
  
- 	/*
+ 	pm_runtime_get_sync(hba->dev);
+ 	ufshcd_hold(hba, false);
++
++	if (hba->vops->program_key) {
++		err = hba->vops->program_key(hba, cfg, slot);
++		goto out;
++	}
++
+ 	/* Clear the dword 16 */
+ 	ufshcd_writel(hba, 0, slot_offset + 16 * sizeof(cfg->reg_val[0]));
+ 	/* Ensure that CFGE is cleared before programming the key */
+@@ -145,15 +151,20 @@ static void ufshcd_program_key(struct ufs_hba *hba,
+ 	ufshcd_writel(hba, le32_to_cpu(cfg->reg_val[16]),
+ 		      slot_offset + 16 * sizeof(cfg->reg_val[0]));
+ 	wmb();
++	err = 0;
++out:
+ 	ufshcd_release(hba);
+ 	pm_runtime_put_sync(hba->dev);
++	return err;
+ }
+ 
+ static void ufshcd_clear_keyslot(struct ufs_hba *hba, int slot)
+ {
+ 	union ufs_crypto_cfg_entry cfg = { 0 };
++	int err;
+ 
+-	ufshcd_program_key(hba, &cfg, slot);
++	err = ufshcd_program_key(hba, &cfg, slot);
++	WARN_ON_ONCE(err);
+ }
+ 
+ /* Clear all keyslots at driver init time */
+@@ -198,10 +209,11 @@ static int ufshcd_crypto_keyslot_program(struct keyslot_manager *ksm,
+ 	if (err)
+ 		return err;
+ 
+-	ufshcd_program_key(hba, &cfg, slot);
++	err = ufshcd_program_key(hba, &cfg, slot);
+ 
+ 	memzero_explicit(&cfg, sizeof(cfg));
+-	return 0;
++
++	return err;
+ }
+ 
+ static int ufshcd_crypto_keyslot_evict(struct keyslot_manager *ksm,
 diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-index 5f5440059dd8a..b6f0d08a98a8b 100644
+index b6f0d08a98a8b..cd0969b93d070 100644
 --- a/drivers/scsi/ufs/ufshcd.h
 +++ b/drivers/scsi/ufs/ufshcd.h
-@@ -650,6 +650,13 @@ struct ufs_hba {
- 	 * enabled via HCE register.
- 	 */
- 	#define UFSHCI_QUIRK_BROKEN_HCE				0x400
-+
-+	/*
-+	 * This quirk needs to be enabled if the host controller advertises
-+	 * inline encryption support but it doesn't work correctly.
-+	 */
-+	#define UFSHCD_QUIRK_BROKEN_CRYPTO			0x800
-+
- 	unsigned int quirks;	/* Deviations from standard UFSHCI spec. */
+@@ -280,6 +280,8 @@ struct ufs_pwr_mode_info {
+ 	struct ufs_pa_layer_attr info;
+ };
  
- 	/* Device deviations from standard UFS device spec. */
++union ufs_crypto_cfg_entry;
++
+ /**
+  * struct ufs_hba_variant_ops - variant specific callbacks
+  * @name: variant name
+@@ -307,6 +309,7 @@ struct ufs_pwr_mode_info {
+  * @dbg_register_dump: used to dump controller debug information
+  * @phy_initialization: used to initialize phys
+  * @device_reset: called to issue a reset pulse on the UFS device
++ * @program_key: program an inline encryption key into a keyslot
+  */
+ struct ufs_hba_variant_ops {
+ 	const char *name;
+@@ -336,6 +339,8 @@ struct ufs_hba_variant_ops {
+ 	void	(*dbg_register_dump)(struct ufs_hba *hba);
+ 	int	(*phy_initialization)(struct ufs_hba *);
+ 	void	(*device_reset)(struct ufs_hba *hba);
++	int	(*program_key)(struct ufs_hba *hba,
++			       const union ufs_crypto_cfg_entry *cfg, int slot);
+ };
+ 
+ /* clock gating state  */
 -- 
 2.24.1
 
