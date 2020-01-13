@@ -2,118 +2,78 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B7E139A21
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 13 Jan 2020 20:25:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91AE4139A2D
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 13 Jan 2020 20:29:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728641AbgAMTZ7 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 13 Jan 2020 14:25:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42736 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728516AbgAMTZ6 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 13 Jan 2020 14:25:58 -0500
-Received: from gmail.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 266C3207FD;
-        Mon, 13 Jan 2020 19:25:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1578943557;
-        bh=DD5S9iuxYpXunhrL2cvqmMc66yE8jaSRJQ6onOdBnn8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Kp5N2J4n+ei+Cys6P1YvX4y73k7lkbiY6fksm6fMit1C/yn0DZMwvpd2OZrHFxtYW
-         +6ShGO04bygqPbhtv/dpgDjl2Sm4pm04tY5vC6PgrLcbtYfhxMZ7zqp8Osd546cq8s
-         VhZ2r+lTuPvWUPUECeYmMenNQTNLm9dV0O93MN4A=
-Date:   Mon, 13 Jan 2020 11:25:55 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Victor Hsieh <victorhsieh@google.com>,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH v2] fs-verity: implement readahead of Merkle tree pages
-Message-ID: <20200113192555.GA188743@gmail.com>
-References: <20200106205533.137005-1-ebiggers@kernel.org>
+        id S1728516AbgAMT35 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 13 Jan 2020 14:29:57 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:55683 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726435AbgAMT35 (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 13 Jan 2020 14:29:57 -0500
+Received: from callcc.thunk.org (guestnat-104-133-0-111.corp.google.com [104.133.0.111] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 00DJTpTZ002464
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 13 Jan 2020 14:29:52 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 46B314207DF; Mon, 13 Jan 2020 14:29:51 -0500 (EST)
+Date:   Mon, 13 Jan 2020 14:29:51 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org
+Subject: Re: [PATCH] ext4: allow ZERO_RANGE on encrypted files
+Message-ID: <20200113192951.GA76141@mit.edu>
+References: <20191226154216.4808-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200106205533.137005-1-ebiggers@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20191226154216.4808-1-ebiggers@kernel.org>
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Jan 06, 2020 at 12:55:33PM -0800, Eric Biggers wrote:
+On Thu, Dec 26, 2019 at 09:42:16AM -0600, Eric Biggers wrote:
 > From: Eric Biggers <ebiggers@google.com>
 > 
-> When fs-verity verifies data pages, currently it reads each Merkle tree
-> page synchronously using read_mapping_page().
+> When ext4 encryption support was first added, ZERO_RANGE was disallowed,
+> supposedly because test failures (e.g. ext4/001) were seen when enabling
+> it, and at the time there wasn't enough time/interest to debug it.
 > 
-> Therefore, when the Merkle tree pages aren't already cached, fs-verity
-> causes an extra 4 KiB I/O request for every 512 KiB of data (assuming
-> that the Merkle tree uses SHA-256 and 4 KiB blocks).  This results in
-> more I/O requests and performance loss than is strictly necessary.
+> However, there's actually no reason why ZERO_RANGE can't work on
+> encrypted files.  And it fact it *does* work now.  Whole blocks in the
+> zeroed range are converted to unwritten extents, as usual; encryption
+> makes no difference for that part.  Partial blocks are zeroed in the
+> pagecache and then ->writepages() encrypts those blocks as usual.
+> ext4_block_zero_page_range() handles reading and decrypting the block if
+> needed before actually doing the pagecache write.
 > 
-> Therefore, implement readahead of the Merkle tree pages.
+> Also, f2fs has always supported ZERO_RANGE on encrypted files.
 > 
-> For simplicity, we take advantage of the fact that the kernel already
-> does readahead of the file's *data*, just like it does for any other
-> file.  Due to this, we don't really need a separate readahead state
-> (struct file_ra_state) just for the Merkle tree, but rather we just need
-> to piggy-back on the existing data readahead requests.
+> As far as I can tell, the reason that ext4/001 was failing in v4.1 was
+> actually because of one of the bugs fixed by commit 36086d43f657 ("ext4
+> crypto: fix bugs in ext4_encrypted_zeroout()").  The bug made
+> ext4_encrypted_zeroout() always return a positive value, which caused
+> unwritten extents in encrypted files to sometimes not be marked as
+> initialized after being written to.  This bug was not actually in
+> ZERO_RANGE; it just happened to trigger during the extents manipulation
+> done in ext4/001 (and probably other tests too).
 > 
-> We also only really need to bother with the first level of the Merkle
-> tree, since the usual fan-out factor is 128, so normally over 99% of
-> Merkle tree I/O requests are for the first level.
+> So, let's enable ZERO_RANGE on encrypted files on ext4.
 > 
-> Therefore, make fsverity_verify_bio() enable readahead of the first
-> Merkle tree level, for up to 1/4 the number of pages in the bio, when it
-> sees that the REQ_RAHEAD flag is set on the bio.  The readahead size is
-> then passed down to ->read_merkle_tree_page() for the filesystem to
-> (optionally) implement if it sees that the requested page is uncached.
+> Tested with:
+> 	gce-xfstests -c ext4/encrypt -g auto
+> 	gce-xfstests -c ext4/encrypt_1k -g auto
 > 
-> While we're at it, also make build_merkle_tree_level() set the Merkle
-> tree readahead size, since it's easy to do there.
-> 
-> However, for now don't set the readahead size in fsverity_verify_page(),
-> since currently it's only used to verify holes on ext4 and f2fs, and it
-> would need parameters added to know how much to read ahead.
-> 
-> This patch significantly improves fs-verity sequential read performance.
-> Some quick benchmarks with 'cat'-ing a 250MB file after dropping caches:
-> 
->     On an ARM64 phone (using sha256-ce):
->         Before: 217 MB/s
->         After: 263 MB/s
->         (compare to sha256sum of non-verity file: 357 MB/s)
-> 
->     In an x86_64 VM (using sha256-avx2):
->         Before: 173 MB/s
->         After: 215 MB/s
->         (compare to sha256sum of non-verity file: 223 MB/s)
+> Got the same set of test failures both with and without this patch.
+> But with this patch 6 fewer tests are skipped: ext4/001, generic/008,
+> generic/009, generic/033, generic/096, and generic/511.
 > 
 > Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
-> 
-> Changed v1 => v2:
->   - Ensure that the pages continue being marked accessed when they're
->     already cached and Uptodate.
->   - Removed unnecessary IS_ERR(page) checks.
->   - Adjusted formatting of the prototype of f2fs_mpage_readpages() to
->     avoid a merge conflict with the f2fs tree.
-> 
->  fs/ext4/verity.c             | 47 ++++++++++++++++++++++++++++++++++--
->  fs/f2fs/data.c               |  2 +-
->  fs/f2fs/f2fs.h               |  3 +++
->  fs/f2fs/verity.c             | 47 ++++++++++++++++++++++++++++++++++--
->  fs/verity/enable.c           |  8 +++++-
->  fs/verity/fsverity_private.h |  1 +
->  fs/verity/open.c             |  1 +
->  fs/verity/verify.c           | 34 +++++++++++++++++++++-----
->  include/linux/fsverity.h     |  7 +++++-
->  9 files changed, 137 insertions(+), 13 deletions(-)
-> 
 
-Ted and Jaegeuk, any more comments on this?  Can you provide Acked-bys?
+Thanks, applied.
 
-- Eric
+					- Ted
