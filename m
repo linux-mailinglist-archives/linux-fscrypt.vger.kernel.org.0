@@ -2,52 +2,58 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CA6C3139A7B
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 13 Jan 2020 21:03:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1249B139DD8
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 14 Jan 2020 01:14:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728780AbgAMUD1 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 13 Jan 2020 15:03:27 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:34287 "EHLO
+        id S1729263AbgANAOZ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 13 Jan 2020 19:14:25 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:45697 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728669AbgAMUD1 (ORCPT
+        with ESMTP id S1728641AbgANAOZ (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 13 Jan 2020 15:03:27 -0500
+        Mon, 13 Jan 2020 19:14:25 -0500
 Received: from callcc.thunk.org (guestnat-104-133-0-111.corp.google.com [104.133.0.111] (may be forged))
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 00DJvgdd014424
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 00E0E7YN032266
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 13 Jan 2020 14:57:43 -0500
+        Mon, 13 Jan 2020 19:14:08 -0500
 Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 58A334207DF; Mon, 13 Jan 2020 14:57:42 -0500 (EST)
-Date:   Mon, 13 Jan 2020 14:57:42 -0500
+        id AB74C4207DF; Mon, 13 Jan 2020 19:14:07 -0500 (EST)
+Date:   Mon, 13 Jan 2020 19:14:07 -0500
 From:   "Theodore Y. Ts'o" <tytso@mit.edu>
 To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH] ext4: remove unneeded check for error allocating
- bio_post_read_ctx
-Message-ID: <20200113195742.GH76141@mit.edu>
-References: <20191231181256.47770-1-ebiggers@kernel.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, Victor Hsieh <victorhsieh@google.com>,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [PATCH v2] fs-verity: implement readahead of Merkle tree pages
+Message-ID: <20200114001407.GO76141@mit.edu>
+References: <20200106205533.137005-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191231181256.47770-1-ebiggers@kernel.org>
+In-Reply-To: <20200106205533.137005-1-ebiggers@kernel.org>
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, Dec 31, 2019 at 12:12:56PM -0600, Eric Biggers wrote:
+On Mon, Jan 06, 2020 at 12:55:33PM -0800, Eric Biggers wrote:
 > From: Eric Biggers <ebiggers@google.com>
 > 
-> Since allocating an object from a mempool never fails when
-> __GFP_DIRECT_RECLAIM (which is included in GFP_NOFS) is set, the check
-> for failure to allocate a bio_post_read_ctx is unnecessary.  Remove it.
+> When fs-verity verifies data pages, currently it reads each Merkle tree
+> page synchronously using read_mapping_page().
 > 
-> Also remove the redundant assignment to ->bi_private.
+> Therefore, when the Merkle tree pages aren't already cached, fs-verity
+> causes an extra 4 KiB I/O request for every 512 KiB of data (assuming
+> that the Merkle tree uses SHA-256 and 4 KiB blocks).  This results in
+> more I/O requests and performance loss than is strictly necessary.
 > 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> Therefore, implement readahead of the Merkle tree pages.
 
-Thanks, applied.
+Looks good.   Feel free to add:
 
-					- Ted
+Reviewed-by: Theodore Ts'o <tytso@mit.edu>
+
+(for the ext4 and fs/verity bits)
+
