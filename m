@@ -2,85 +2,94 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ECE7813FA08
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 16 Jan 2020 20:53:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69BED13FE6F
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 17 Jan 2020 00:35:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729486AbgAPTxS (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 16 Jan 2020 14:53:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48480 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729397AbgAPTxR (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 16 Jan 2020 14:53:17 -0500
-Received: from gmail.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0831D2072B;
-        Thu, 16 Jan 2020 19:53:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579204397;
-        bh=wJo6G4Os3vUaz+L/FQRKvyrd+41zoPbKXPdrMqimves=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qp3Ii9MYGWpV8iR7Gv2oPdUFtO2EvG4oORVStFxGN9fhhrezobZGAPOGVV872L8CN
-         0Hjl1BRaP+aExZJca9NlSjPcgkUHYh6IPATbVfzrfd5V2wpjr8IH062RxoY6FF8qzn
-         mlciFnE58/cetsQdnD9VTRVwxLXCyrQwIQr218Dg=
-Date:   Thu, 16 Jan 2020 11:53:15 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Omar Sandoval <osandov@osandov.com>
-Cc:     linux-fscrypt@vger.kernel.org, Sergey Anpilov <anpilov@fb.com>,
-        Pavlo Kushnir <pavlo@fb.com>
-Subject: Re: Using TPM trusted keys (w/ v2 policies?)
-Message-ID: <20200116195314.GB235100@gmail.com>
-References: <20200116193228.GA266386@vader>
+        id S2404067AbgAPXc2 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 16 Jan 2020 18:32:28 -0500
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:41899 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391539AbgAPXcY (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 16 Jan 2020 18:32:24 -0500
+Received: by mail-wr1-f66.google.com with SMTP id c9so20926441wrw.8;
+        Thu, 16 Jan 2020 15:32:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=YDWLm6XpqMI02rMFx3Yb45aze/71UxlSxD1MYyNVKss=;
+        b=d95X4kB3aWSrf5EvGU4uzYYHZZbih5nZwN0V97zERE4yecu7yDy8A8+o7MOMZhrPgs
+         /rPBKOGLIFY7ls4zfxHALS7VNK9jM2Nwjtag9b0DpaDEprrzTJxh5NLei1GRuZYXR169
+         p/tmWDgXSPFu0bdauwtEXYSL2k+V1vn7tFidCiOEbR6/PAk+EKbVpZjvM1WAuskg1qQr
+         89TTB5sZH+lRkQHlkuLd3/l7XZfWvj2hFYhXdOw1Mor7z9TwHC9jUzvH8gZH0dAqnBae
+         UfabZpNgiT4LVL83N6F5MVDCZz9dU70ilxuerH+jnjuceu7G+/XzVqInobQz12XRk40t
+         mydg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=YDWLm6XpqMI02rMFx3Yb45aze/71UxlSxD1MYyNVKss=;
+        b=UM0xvtwvbtHBCsuKfTDh5iOf0EdsbblRrbrXErregSCXIrGQHTA4s0WFU2R6v0bGIl
+         sGdzm4mJcNjO6MRLgqecedOy47dmYC1xva63OZixRl0MZ52+4bZm6U5Vr1bjXNGDWANg
+         lC0XJLKvOFOyDMOH2ofHpOqzf0qT8xhmnoy0nlTNI8cUb9+2MoGF9XzviDtSnHD5X99l
+         WbTA3rH+y7nIY2CZtiQahlhzdj6jJJe2aqMptn9TMzTyAEfzTjJYaRYsn5OecUPOxQM/
+         gnNngFdBCIRpYSTKYASYYcDpLAwTTchPbwKFtZflTyUFYfv58sSEEomiu11rBTTRiQpL
+         Zmdw==
+X-Gm-Message-State: APjAAAXkrCG1lvjUFXj8xEHYnPEIxAI7I9y/+/iyuyqUJT1OPzpBXfpY
+        qnChXk66BYNdp7sEmnMJKv2aMN+qfeiLXg3t+uDuwA==
+X-Google-Smtp-Source: APXvYqwLX0lrkZdJFe5t0zpO2tuKs8Y79hcNs/Gk+HUAJGy8yctH8b/KG5My1MY/0dBlSpc+VFll6ki0vfP1JpdRDMs=
+X-Received: by 2002:adf:f606:: with SMTP id t6mr5590987wrp.85.1579217542497;
+ Thu, 16 Jan 2020 15:32:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200116193228.GA266386@vader>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20191209222325.95656-1-ebiggers@kernel.org> <20200114220016.GL41220@gmail.com>
+ <1925918130.21041.1579039436354.JavaMail.zimbra@nod.at>
+In-Reply-To: <1925918130.21041.1579039436354.JavaMail.zimbra@nod.at>
+From:   Richard Weinberger <richard.weinberger@gmail.com>
+Date:   Fri, 17 Jan 2020 00:32:11 +0100
+Message-ID: <CAFLxGvz8mjUdh67aw1vKoxJnQBHixrPUC8CTJYMbQG2CqZQrwQ@mail.gmail.com>
+Subject: Re: [PATCH 0/2] ubifs: fixes for FS_IOC_GETFLAGS and FS_IOC_SETFLAGS
+To:     Richard Weinberger <richard@nod.at>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-fscrypt <linux-fscrypt@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, Jan 16, 2020 at 11:32:28AM -0800, Omar Sandoval wrote:
-> Hi,
-> 
-> We're exploring fscrypt, and we were hoping to make use of a trusted key [1] so
-> that we could avoid exposing the master key to userspace. I found a patch [2]
-> from a couple of years ago adding this support. However, trusted keys in the
-> kernel seem to be tied to the keyring, which is not used for v2 encryption
-> policies. Seeing as v1 policies are considered deprecated, what would be the
-> way to move forward with this feature? Would it make sense to add minimal
-> keyring integration for v2 policies in order to support this use case?
-> 
-> Thanks!
-> 
-> 1: https://www.kernel.org/doc/html/latest/security/keys/trusted-encrypted.html
-> 2: https://lore.kernel.org/linux-fscrypt/20180118131359.8365-1-git@andred.net/
+On Tue, Jan 14, 2020 at 11:04 PM Richard Weinberger <richard@nod.at> wrote:
+>
+> ----- Urspr=C3=BCngliche Mail -----
+> > Von: "Eric Biggers" <ebiggers@kernel.org>
+> > An: "richard" <richard@nod.at>
+> > CC: "linux-mtd" <linux-mtd@lists.infradead.org>, "linux-fscrypt" <linux=
+-fscrypt@vger.kernel.org>, "linux-fsdevel"
+> > <linux-fsdevel@vger.kernel.org>
+> > Gesendet: Dienstag, 14. Januar 2020 23:00:17
+> > Betreff: Re: [PATCH 0/2] ubifs: fixes for FS_IOC_GETFLAGS and FS_IOC_SE=
+TFLAGS
+>
+> > On Mon, Dec 09, 2019 at 02:23:23PM -0800, Eric Biggers wrote:
+> >> On ubifs, fix FS_IOC_SETFLAGS to not clear the encrypt flag, and updat=
+e
+> >> FS_IOC_GETFLAGS to return the encrypt flag like ext4 and f2fs do.
+> >>
+> >> Eric Biggers (2):
+> >>   ubifs: fix FS_IOC_SETFLAGS unexpectedly clearing encrypt flag
+> >>   ubifs: add support for FS_ENCRYPT_FL
+> >>
+> >>  fs/ubifs/ioctl.c | 14 +++++++++++---
+> >>  1 file changed, 11 insertions(+), 3 deletions(-)
+> >
+> > Richard, have you had a chance to review these?  I'm intending that the=
+se be
+> > taken through the UBIFS tree too.
 
-There's already a patch that will be going into 5.6 that adds support for
-passing a keyring key to FS_IOC_ADD_ENCRYPTION_KEY
-(https://lkml.kernel.org/linux-fscrypt/20191119222447.226853-1-ebiggers@kernel.org/).
-
-But it only supports a new key type "fscrypt-provisioning" whose payload
-contains the raw key.  If you wanted "trusted" key support, you'd need to add
-it, probably as a new flag to FS_IOC_ADD_ENCRYPTION_KEY which indicates that the
-key specified by key_id is of type "trusted".
-
-Note that there are some major limitations to what you are trying to do.  First,
-the raw key of "trusted" keys is still present in the clear in kernel memory.
-Depending on your security architecture, this may not be any better than having
-it be present in a root-owned userspace process.  Second, since the "trusted"
-key type is not tied to a specific kernel subsystem or use, userspace could
-request that the same key be used for different purposes, which could leak
-information about the key to userspace.  (This is why we used a custom key type
-"fscrypt-provisioning" for the new API rather than reusing "logon".)
-
-There's also someone working on actual hardware-wrapped keys, where the key used
-to encrypt file contents is never exposed to software at all
-(https://android-review.googlesource.com/c/kernel/common/+/1200864/25).  In my
-opinion, doing TPM unsealing in the kernel is sort of a weird intermediate
-state, which isn't necessarily any better than just TPM unsealing in userspace.
-So if you need this feature it's going to be up to you to write the patch and
-argue that it's actually useful.
-
-- Eric
+Both applied. Thanks a lot for addressing this, Eric.
+--=20
+Thanks,
+//richard
