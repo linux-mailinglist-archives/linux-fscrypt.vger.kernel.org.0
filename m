@@ -2,94 +2,64 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 69BED13FE6F
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 17 Jan 2020 00:35:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD7E21404EB
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 17 Jan 2020 09:12:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404067AbgAPXc2 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 16 Jan 2020 18:32:28 -0500
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:41899 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391539AbgAPXcY (ORCPT
+        id S1729320AbgAQIMr (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 17 Jan 2020 03:12:47 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:43712 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729011AbgAQIMr (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 16 Jan 2020 18:32:24 -0500
-Received: by mail-wr1-f66.google.com with SMTP id c9so20926441wrw.8;
-        Thu, 16 Jan 2020 15:32:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=YDWLm6XpqMI02rMFx3Yb45aze/71UxlSxD1MYyNVKss=;
-        b=d95X4kB3aWSrf5EvGU4uzYYHZZbih5nZwN0V97zERE4yecu7yDy8A8+o7MOMZhrPgs
-         /rPBKOGLIFY7ls4zfxHALS7VNK9jM2Nwjtag9b0DpaDEprrzTJxh5NLei1GRuZYXR169
-         p/tmWDgXSPFu0bdauwtEXYSL2k+V1vn7tFidCiOEbR6/PAk+EKbVpZjvM1WAuskg1qQr
-         89TTB5sZH+lRkQHlkuLd3/l7XZfWvj2hFYhXdOw1Mor7z9TwHC9jUzvH8gZH0dAqnBae
-         UfabZpNgiT4LVL83N6F5MVDCZz9dU70ilxuerH+jnjuceu7G+/XzVqInobQz12XRk40t
-         mydg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=YDWLm6XpqMI02rMFx3Yb45aze/71UxlSxD1MYyNVKss=;
-        b=UM0xvtwvbtHBCsuKfTDh5iOf0EdsbblRrbrXErregSCXIrGQHTA4s0WFU2R6v0bGIl
-         sGdzm4mJcNjO6MRLgqecedOy47dmYC1xva63OZixRl0MZ52+4bZm6U5Vr1bjXNGDWANg
-         lC0XJLKvOFOyDMOH2ofHpOqzf0qT8xhmnoy0nlTNI8cUb9+2MoGF9XzviDtSnHD5X99l
-         WbTA3rH+y7nIY2CZtiQahlhzdj6jJJe2aqMptn9TMzTyAEfzTjJYaRYsn5OecUPOxQM/
-         gnNngFdBCIRpYSTKYASYYcDpLAwTTchPbwKFtZflTyUFYfv58sSEEomiu11rBTTRiQpL
-         Zmdw==
-X-Gm-Message-State: APjAAAXkrCG1lvjUFXj8xEHYnPEIxAI7I9y/+/iyuyqUJT1OPzpBXfpY
-        qnChXk66BYNdp7sEmnMJKv2aMN+qfeiLXg3t+uDuwA==
-X-Google-Smtp-Source: APXvYqwLX0lrkZdJFe5t0zpO2tuKs8Y79hcNs/Gk+HUAJGy8yctH8b/KG5My1MY/0dBlSpc+VFll6ki0vfP1JpdRDMs=
-X-Received: by 2002:adf:f606:: with SMTP id t6mr5590987wrp.85.1579217542497;
- Thu, 16 Jan 2020 15:32:22 -0800 (PST)
+        Fri, 17 Jan 2020 03:12:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=t/MEhEZGYZHmMiJmrgugavb+9sNbSeK5h6oldhHUYs8=; b=CBE9ZS2IjXbfrp+dvzcCM+LGx
+        VZTVAlzWhocgiFF1/YMmGjxIEZ/q2YrWWmmFIXWh/MtSDaEomRJZPzpowabxJw89/lYJvFOTzFTTb
+        15FsRdHD+UhNq+yMNIqE7bJ/9sUrZRPyiROdXSxQUV2MrRQCGaVv5X8CQmhAVgkzbVpSH4VD9xgEw
+        iF5qutl89oTzwNv6K7NqOg/xSVNQDjb6ZpF+V6bQvMfGdzQ1ssvAE0sran+0msDNQl8ksQNVInVZy
+        xApRZDzdrqjxxSAQGgoFXJPwSY6UAjMCuLJ/t31A4nvFhJqqaVXPV4DQIITCBoAPMsluWWM4958TK
+        MyV2DTmUQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1isMkI-0004ao-RH; Fri, 17 Jan 2020 08:12:46 +0000
+Date:   Fri, 17 Jan 2020 00:12:46 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org,
+        Barani Muthukumaran <bmuthuku@codeaurora.org>,
+        Gaurav Kashyap <gaurkash@codeaurora.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, linux-api@vger.kernel.org
+Subject: Re: [PATCH] fscrypt: reserve flags for hardware-wrapped keys feature
+Message-ID: <20200117081246.GA16846@infradead.org>
+References: <20200116192008.35766-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-References: <20191209222325.95656-1-ebiggers@kernel.org> <20200114220016.GL41220@gmail.com>
- <1925918130.21041.1579039436354.JavaMail.zimbra@nod.at>
-In-Reply-To: <1925918130.21041.1579039436354.JavaMail.zimbra@nod.at>
-From:   Richard Weinberger <richard.weinberger@gmail.com>
-Date:   Fri, 17 Jan 2020 00:32:11 +0100
-Message-ID: <CAFLxGvz8mjUdh67aw1vKoxJnQBHixrPUC8CTJYMbQG2CqZQrwQ@mail.gmail.com>
-Subject: Re: [PATCH 0/2] ubifs: fixes for FS_IOC_GETFLAGS and FS_IOC_SETFLAGS
-To:     Richard Weinberger <richard@nod.at>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-fscrypt <linux-fscrypt@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200116192008.35766-1-ebiggers@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, Jan 14, 2020 at 11:04 PM Richard Weinberger <richard@nod.at> wrote:
->
-> ----- Urspr=C3=BCngliche Mail -----
-> > Von: "Eric Biggers" <ebiggers@kernel.org>
-> > An: "richard" <richard@nod.at>
-> > CC: "linux-mtd" <linux-mtd@lists.infradead.org>, "linux-fscrypt" <linux=
--fscrypt@vger.kernel.org>, "linux-fsdevel"
-> > <linux-fsdevel@vger.kernel.org>
-> > Gesendet: Dienstag, 14. Januar 2020 23:00:17
-> > Betreff: Re: [PATCH 0/2] ubifs: fixes for FS_IOC_GETFLAGS and FS_IOC_SE=
-TFLAGS
->
-> > On Mon, Dec 09, 2019 at 02:23:23PM -0800, Eric Biggers wrote:
-> >> On ubifs, fix FS_IOC_SETFLAGS to not clear the encrypt flag, and updat=
-e
-> >> FS_IOC_GETFLAGS to return the encrypt flag like ext4 and f2fs do.
-> >>
-> >> Eric Biggers (2):
-> >>   ubifs: fix FS_IOC_SETFLAGS unexpectedly clearing encrypt flag
-> >>   ubifs: add support for FS_ENCRYPT_FL
-> >>
-> >>  fs/ubifs/ioctl.c | 14 +++++++++++---
-> >>  1 file changed, 11 insertions(+), 3 deletions(-)
-> >
-> > Richard, have you had a chance to review these?  I'm intending that the=
-se be
-> > taken through the UBIFS tree too.
+On Thu, Jan 16, 2020 at 11:20:08AM -0800, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> Reserve flags for the hardware-wrapped keys feature which is being
+> worked on [1].  FSCRYPT_POLICY_FLAG_HW_WRAPPED_KEY will denote that the
+> encryption policy needs a hardware-wrapped key to be unlocked.
+> FSCRYPT_ADD_KEY_FLAG_HW_WRAPPED will denote that the key being added is
+> a hardware-wrapped key.
+> 
+> This reservation is tentative, and these codepoints may be reused if the
+> feature is not upstreamed.
 
-Both applied. Thanks a lot for addressing this, Eric.
---=20
-Thanks,
-//richard
+NAK.  While the feature itself sounds really useful we don't just
+reserve format bits for code not upstream.
