@@ -2,82 +2,74 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 62E7A1448EC
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 22 Jan 2020 01:30:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EC6714493E
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 22 Jan 2020 02:16:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727969AbgAVAaR (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 21 Jan 2020 19:30:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41452 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726876AbgAVAaR (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 21 Jan 2020 19:30:17 -0500
-Received: from gmail.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7D435217F4;
-        Wed, 22 Jan 2020 00:30:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579653016;
-        bh=H/qN5wQT4EZ5hYKWGp7yIkcoOLzjrk0gNanXBpiBRnI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qUmyGZfkQoEjSKG30mFMzVYmysM/ifNtNxjkA1RSMGQ7a09pMTLRQ51CbJ/WSqYbJ
-         3X6LIerTmDJS8K4r629U6pRTw5tK+OB60JON9E76MkrGSspGCJVKneBB0fF2UOY/z7
-         5i6O013odo5e0N2RxkVk+0bwfG0RbjP7IfDQNb50=
-Date:   Tue, 21 Jan 2020 16:30:15 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Richard Weinberger <richard@nod.at>
-Cc:     Daniel Rosenberg <drosen@google.com>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        id S1728927AbgAVBQt (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 21 Jan 2020 20:16:49 -0500
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:35580 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728750AbgAVBQt (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 21 Jan 2020 20:16:49 -0500
+Received: by mail-lj1-f195.google.com with SMTP id j1so4916491lja.2
+        for <linux-fscrypt@vger.kernel.org>; Tue, 21 Jan 2020 17:16:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aTrmpDPbM7QagWgFbn/XvaDbssQKCtZ+aK7kQ78b1YQ=;
+        b=sbjgI932IVsBnwvZcFBnekfHjH6LPvKho84iI0IqHn/lre/vnHDKZVHxM1chNODhEO
+         oeBlWCXMu1xE41wCdmoAkJJWr3Xo/D+ju9vZ24VZpOnhSgfRdcQ5am2PHHrxTnbqi0XX
+         b6eAwer8WCvSMIGV6+9Wm90f1KZ3856dgqPB2hB+SbeEq0VAirrYLusuJK6x9OvIXK1e
+         QDAc9rab8nWgGfMDGKUKmikIqpQ1Tb6qVVp8u1rUGV3i6DXFmO0XieZmSerhbsGxj1Kd
+         Nom76vDbxrBnAL633zaFY9rrVrFB9Ton5m1jJHrUpOo8xzUYC7WMuWNZ+fTJ5iMxzctH
+         wfaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aTrmpDPbM7QagWgFbn/XvaDbssQKCtZ+aK7kQ78b1YQ=;
+        b=AghDARAvDw6aVzeuXXEVm3W131Dr08VqLUD0Mro6LrJs1Mly7vEw4xhFAaZlovQacJ
+         pYyZ4NltuwoqN4dTf5faU6hRzQC0IkvSRNqvSz9oK4jxfeLF+gp46Ij4ramnqXJKsJ7n
+         8a79TfkZch/fjDu6i2LsWaWP3+X5lfpcycwU51wB0yVF9uqAkgEqlk9D8sf0F+5uEK3P
+         5NwhxYZ6oJrCOBsHkOVWPIrfgx3pyo68gr2WRl8oY7Z7fYDH9FnI2MPnuzroeT2LkxEq
+         oHaOOSpLEqXsD0d+PSAP9/+Uqy5SyCWH7skDr+Nbz9an8E4zM4ODjvw4z+iyFge6pTo3
+         QW+Q==
+X-Gm-Message-State: APjAAAXjwWtVyWb3TM5jfJ/cOvd5MQUqTl1bb/ygwz/hD9zRsF5/lV1r
+        deUeuWoixEWv2vGcrGHGMFvI9T04bhCaNqpMVzfOQg==
+X-Google-Smtp-Source: APXvYqx9Wcig2VJsMhSPvoP5661qvRVt8CMWdEp0WvbCQ34genipkG1eA/ei4esFDAtnsgj2YEIbFdJHl+MGczi/Wzs=
+X-Received: by 2002:a2e:b52b:: with SMTP id z11mr18133901ljm.155.1579655807322;
+ Tue, 21 Jan 2020 17:16:47 -0800 (PST)
+MIME-Version: 1.0
+References: <20200120223201.241390-1-ebiggers@kernel.org> <20200120223201.241390-4-ebiggers@kernel.org>
+In-Reply-To: <20200120223201.241390-4-ebiggers@kernel.org>
+From:   Daniel Rosenberg <drosen@google.com>
+Date:   Tue, 21 Jan 2020 17:16:36 -0800
+Message-ID: <CA+PiJmT1GPgLBYak51V04jtyDjOFPzSeaTxKryCqy3Ak6yAo6A@mail.gmail.com>
+Subject: Re: [PATCH v5 3/6] fscrypt: clarify what is meant by a per-file key
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-fscrypt@vger.kernel.org, kernel-team@android.com,
         linux-kernel@vger.kernel.org,
         linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, linux-fscrypt@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH v5 4/6] ubifs: don't trigger assertion on invalid no-key
- filename
-Message-ID: <20200122003014.GA180824@gmail.com>
-References: <20200120223201.241390-1-ebiggers@kernel.org>
- <20200120223201.241390-5-ebiggers@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200120223201.241390-5-ebiggers@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Jan 20, 2020 at 02:31:59PM -0800, Eric Biggers wrote:
+On Mon, Jan 20, 2020 at 2:34 PM Eric Biggers <ebiggers@kernel.org> wrote:
+>
 > From: Eric Biggers <ebiggers@google.com>
-> 
-> If userspace provides an invalid fscrypt no-key filename which encodes a
-> hash value with any of the UBIFS node type bits set (i.e. the high 3
-> bits), gracefully report ENOENT rather than triggering ubifs_assert().
-> 
-> Test case with kvm-xfstests shell:
-> 
->     . fs/ubifs/config
->     . ~/xfstests/common/encrypt
->     dev=$(__blkdev_to_ubi_volume /dev/vdc)
->     ubiupdatevol $dev -t
->     mount $dev /mnt -t ubifs
->     mkdir /mnt/edir
->     xfs_io -c set_encpolicy /mnt/edir
->     rm /mnt/edir/_,,,,,DAAAAAAAAAAAAAAAAAAAAAAAAAA
-> 
-> With the bug, the following assertion fails on the 'rm' command:
-> 
->     [   19.066048] UBIFS error (ubi0:0 pid 379): ubifs_assert_failed: UBIFS assert failed: !(hash & ~UBIFS_S_KEY_HASH_MASK), in fs/ubifs/key.h:170
-> 
-> Fixes: f4f61d2cc6d8 ("ubifs: Implement encrypted filenames")
-> Cc: <stable@vger.kernel.org> # v4.10+
+>
+> Now that there's sometimes a second type of per-file key (the dirhash
+> key), clarify some function names, macros, and documentation that
+> specifically deal with per-file *encryption* keys.
+>
 > Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-Richard, can you review the two UBIFS patches in this series, and if you're okay
-with them, provide Acked-by's so that we can take them through the fscrypt tree?
-They don't conflict with anything currently in the UBIFS tree.
-
-Thanks!
-
-- Eric
+Looks good to me. Feel free to add
+Reviewed-by: Daniel Rosenberg <drosen@google>
