@@ -2,319 +2,130 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D53BA150F40
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  3 Feb 2020 19:20:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BE651514AD
+	for <lists+linux-fscrypt@lfdr.de>; Tue,  4 Feb 2020 04:39:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728607AbgBCSUd (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 3 Feb 2020 13:20:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33786 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727309AbgBCSUd (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 3 Feb 2020 13:20:33 -0500
-Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D4EEF20838;
-        Mon,  3 Feb 2020 18:20:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1580754032;
-        bh=8NerwRjN3S6Sxxz+XUxY9Y5QuccEf9rDfoNHoKxPLrY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=fNVKUJZQynSYfMzkB6ViMhy5hKpJixtuZMymZRmmWGsGVXa4Grw9lZUvhp/MUrgCd
-         Z4yL4UdDczrotn9ZAzeZ8FBCI2u8wXv2ZUe57e9y40gz3Tv28z3ohmOcHfr4NvCCeh
-         Fs3md7X1HlPKTiS/YpOlFBW9kC7yXSvZGwz8V4Zo=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-xfs@vger.kernel.org
-Cc:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        keyrings@vger.kernel.org
-Subject: [PATCH v2] xfs_io/encrypt: support passing a keyring key to add_enckey
-Date:   Mon,  3 Feb 2020 10:20:13 -0800
-Message-Id: <20200203182013.43474-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.25.0.341.g760bfbb309-goog
+        id S1727072AbgBDDjW (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 3 Feb 2020 22:39:22 -0500
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:44159 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726992AbgBDDjW (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 3 Feb 2020 22:39:22 -0500
+Received: by mail-pl1-f195.google.com with SMTP id d9so6676164plo.11
+        for <linux-fscrypt@vger.kernel.org>; Mon, 03 Feb 2020 19:39:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=mPedbGLBNu2L3k6HSm0HBzkbV9veK3pUwD/I6GC5AJI=;
+        b=V35oksgSkm4ljAJXfpnCVS3GtTn17dSUeg2MvjUD8k9o4vbf9KU6/80bq/BynnK1Qf
+         IsJGGcd5RzKRTU+nuDS2OYIOc9FrCpdpjRZyPBPFE4VGdh8TVYGf/KZWj18ekArH9rB1
+         w8p1F8d+QpPkaiSpRGyBDkj03c0jf2DQ57xf2Mxcugwiy69Pm15KEyOVkkUu7FV9znsq
+         UVvWnmAFcbKMwQUVUJe/J9SizvP5DudE2sXnJ5u1ewncR+bSgjEEpmtsP8PzxWChcBCK
+         6pM/4UvjdlaLkbLMTSJpg7PKD37OS6sT9PM/ja7gJe1oJXxJfSA2WaA9rGwsQ7HAVGGd
+         1tug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=mPedbGLBNu2L3k6HSm0HBzkbV9veK3pUwD/I6GC5AJI=;
+        b=kDpNM5WrZX4Xt578K+7gGS8pVBX/TbgrC9Lrq2as0e8dwBqqriPJKHSm83rnw/AuCC
+         s3NnE49U6mDZ/UeWtZbol7mzS1Vt3wUZ7sRqdmJNtdlni1LaDVlOmWHk1oEsaIje+gF8
+         E50vbo443f3uqtoknkjparh8epMHZxfvWvjuwqwIOz3K97uMx/gaedBu+3chzpp9o9hJ
+         dTAroEML8tMbguQYcX6rKN6MnbZd3dOrHJ6HU2LGRN6hmlzGYcti81d/q72hwcb2vKs0
+         bn8vdMvDqt5U+QlhYHqoU5FXPMNteqidd1I6sIrGQZwlQwDzs6JVHmEd9DjZzq4EJf24
+         UTiA==
+X-Gm-Message-State: APjAAAUJpfErJ3QQOeHt5P84LvJFrVLHogjlt8UsVsl3NobFTE2IctEH
+        yj4Ql7F4iURq5C6M/XuqT4zz9g==
+X-Google-Smtp-Source: APXvYqw1B1BjXGg0r30M6wu7yNLM6kBYQXBj/o7bHXB1/TSf0blx3HAUudnmN5lGww82QU4/vn4Bug==
+X-Received: by 2002:a17:902:8b85:: with SMTP id ay5mr25055691plb.253.1580787560953;
+        Mon, 03 Feb 2020 19:39:20 -0800 (PST)
+Received: from google.com ([2620:15c:201:0:7f8c:9d6e:20b8:e324])
+        by smtp.gmail.com with ESMTPSA id g10sm10397099pfo.166.2020.02.03.19.39.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Feb 2020 19:39:20 -0800 (PST)
+Date:   Mon, 3 Feb 2020 19:39:15 -0800
+From:   Satya Tangirala <satyat@google.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
+        Kuohong Wang <kuohong.wang@mediatek.com>,
+        Kim Boojin <boojin.kim@samsung.com>
+Subject: Re: [PATCH v6 0/9] Inline Encryption Support
+Message-ID: <20200204033915.GA122248@google.com>
+References: <20191218145136.172774-1-satyat@google.com>
+ <20200108140556.GB2896@infradead.org>
+ <20200108184305.GA173657@google.com>
+ <20200117085210.GA5473@infradead.org>
+ <20200201005341.GA134917@google.com>
+ <20200203091558.GA28527@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200203091558.GA28527@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On Mon, Feb 03, 2020 at 01:15:58AM -0800, Christoph Hellwig wrote:
+> On Fri, Jan 31, 2020 at 04:53:41PM -0800, Satya Tangirala wrote:
+> > So I tried reading through more of blk-mq and the IO schedulers to figure
+> > out how to do this. As far as I can tell, requests may be merged with
+> > each other until they're taken off the scheduler. So ideally, we'd
+> > program a keyslot for a request when it's taken off the scheduler, but
+> > this happens from within an atomic context. Otoh, programming a keyslot
+> > might cause the thread to sleep (in the event that all keyslots are in use
+> > by other in-flight requests). Unless I'm missing something, or you had some
+> > other different idea in mind, I think it's a lot easier to stick to letting
+> > blk-crypto program keyslots and manage them per-bio...
+> 
+> But as far as I understand from reading the code it only sleeps because
+> it waits for another key slot to be released.  Which is exactly like
+> any other resource constraint in the storage device.  In that case
+> ->queue_rq returns BLK_STS_RESOURCE (or you do the equivalent in the
+> blk-mq code) and the queue gets woken again once the resource is
+> available.
+Wouldn't that mean that all the other requests in the queue, even ones that
+don't even need any inline encryption, also don't get processed until the
+queue is woken up again? And if so, are we really ok with that?
 
-Add a '-k' option to the 'add_enckey' xfs_io command to allow exercising
-the key_id field that is being added to struct fscrypt_add_key_arg.
+As you said, we'd need the queue to wake up once a keyslot is available.
+It's possible that only some hardware queues and not others get blocked
+because of keyslot programming, so ideally, we could somehow make the
+correct hardware queue(s) wake up once a keyslot is freed. But the keyslot
+manager can't assume that it's actually blk-mq that's being used
+underneath, so if we want to get the keyslot manager to do something once
+a keyslot was freed, it would need some generic way to signal that to
+blk-mq. We can also just wait around for the queue to restart by itself
+after some time delay and try to program the keyslot again at that point,
+although I wouldn't want to do that because in the current design we know
+exactly when a keyslot is freed, and we don't need to rely on potentially
+inefficient guesswork about when we can successfully program a keyslot.
+Maybe we're alright with waking up all the queues rather than only the
+ones that really need it? But in any case, I don't know yet what the
+best way to solve this problem is.
 
-This is needed for the corresponding test in xfstests.
+We would also need to make changes to handle programming keyslots in
+some of the other make_request_fns besides blk_mq_make_request too
+(wherever relevant, at least) which adds more complexity. Overall, it seems
+to me like trying to manage programming of keyslots on a per-request basis
+is maybe more code than what we have now, and I'm not sure what we're
+really buying by doing it (other than perhaps the performance benefit of
+having to get fewer refcounts on a variable and fewer comparisions of
+cryptographic keys).
 
-For more details, see the corresponding xfstests patches as well as
-kernel commit 93edd392cad7 ("fscrypt: support passing a keyring key to
-FS_IOC_ADD_ENCRYPTION_KEY").
+Also I forgot to mention this in my previous mail, but there may be some
+drivers/devices whose keyslots cannot be programmed from an atomic context,
+so this approach which might make things difficult in those situations (the
+UFS v2.1 spec, which I followed while implementing support for inline
+crypto for UFS, does not care whether we're in an atomic context or not,
+but there might be specifications for other drivers, or even some
+particular UFS inline encryption hardware that do).
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
-
-No changes since v1.
-
-This applies to the for-next branch of xfsprogs.
-
- configure.ac          |  1 +
- include/builddefs.in  |  4 ++
- io/encrypt.c          | 90 +++++++++++++++++++++++++++++++------------
- m4/package_libcdev.m4 | 21 ++++++++++
- man/man8/xfs_io.8     | 10 +++--
- 5 files changed, 98 insertions(+), 28 deletions(-)
-
-diff --git a/configure.ac b/configure.ac
-index 5eb7c14b..f9348a0c 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -176,6 +176,7 @@ AC_HAVE_READDIR
- AC_HAVE_FSETXATTR
- AC_HAVE_MREMAP
- AC_NEED_INTERNAL_FSXATTR
-+AC_NEED_INTERNAL_FSCRYPT_ADD_KEY_ARG
- AC_HAVE_GETFSMAP
- AC_HAVE_STATFS_FLAGS
- AC_HAVE_MAP_SYNC
-diff --git a/include/builddefs.in b/include/builddefs.in
-index 4700b527..3b6b1c1b 100644
---- a/include/builddefs.in
-+++ b/include/builddefs.in
-@@ -102,6 +102,7 @@ HAVE_FLS = @have_fls@
- HAVE_FSETXATTR = @have_fsetxattr@
- HAVE_MREMAP = @have_mremap@
- NEED_INTERNAL_FSXATTR = @need_internal_fsxattr@
-+NEED_INTERNAL_FSCRYPT_ADD_KEY_ARG = @need_internal_fscrypt_add_key_arg@
- HAVE_GETFSMAP = @have_getfsmap@
- HAVE_STATFS_FLAGS = @have_statfs_flags@
- HAVE_MAP_SYNC = @have_map_sync@
-@@ -141,6 +142,9 @@ endif
- ifeq ($(NEED_INTERNAL_FSXATTR),yes)
- PCFLAGS+= -DOVERRIDE_SYSTEM_FSXATTR
- endif
-+ifeq ($(NEED_INTERNAL_FSCRYPT_ADD_KEY_ARG),yes)
-+PCFLAGS+= -DOVERRIDE_SYSTEM_FSCRYPT_ADD_KEY_ARG
-+endif
- ifeq ($(HAVE_GETFSMAP),yes)
- PCFLAGS+= -DHAVE_GETFSMAP
- endif
-diff --git a/io/encrypt.c b/io/encrypt.c
-index de48c50c..01b7e0df 100644
---- a/io/encrypt.c
-+++ b/io/encrypt.c
-@@ -4,6 +4,9 @@
-  * Author: Eric Biggers <ebiggers@google.com>
-  */
- 
-+#ifdef OVERRIDE_SYSTEM_FSCRYPT_ADD_KEY_ARG
-+#  define fscrypt_add_key_arg sys_fscrypt_add_key_arg
-+#endif
- #include "platform_defs.h"
- #include "command.h"
- #include "init.h"
-@@ -99,13 +102,7 @@ struct fscrypt_key_specifier {
- 	} u;
- };
- 
--#define FS_IOC_ADD_ENCRYPTION_KEY		_IOWR('f', 23, struct fscrypt_add_key_arg)
--struct fscrypt_add_key_arg {
--	struct fscrypt_key_specifier key_spec;
--	__u32 raw_size;
--	__u32 __reserved[9];
--	__u8 raw[];
--};
-+/* FS_IOC_ADD_ENCRYPTION_KEY is defined later */
- 
- #define FS_IOC_REMOVE_ENCRYPTION_KEY		_IOWR('f', 24, struct fscrypt_remove_key_arg)
- #define FS_IOC_REMOVE_ENCRYPTION_KEY_ALL_USERS	_IOWR('f', 25, struct fscrypt_remove_key_arg)
-@@ -136,6 +133,26 @@ struct fscrypt_get_key_status_arg {
- 
- #endif /* !FS_IOC_GET_ENCRYPTION_POLICY_EX */
- 
-+/*
-+ * Since the key_id field was added later than struct fscrypt_add_key_arg
-+ * itself, we may need to override the system definition to get that field.
-+ */
-+#if !defined(FS_IOC_ADD_ENCRYPTION_KEY) || \
-+	defined(OVERRIDE_SYSTEM_FSCRYPT_ADD_KEY_ARG)
-+#undef fscrypt_add_key_arg
-+struct fscrypt_add_key_arg {
-+	struct fscrypt_key_specifier key_spec;
-+	__u32 raw_size;
-+	__u32 key_id;
-+	__u32 __reserved[8];
-+	__u8 raw[];
-+};
-+#endif
-+
-+#ifndef FS_IOC_ADD_ENCRYPTION_KEY
-+#  define FS_IOC_ADD_ENCRYPTION_KEY		_IOWR('f', 23, struct fscrypt_add_key_arg)
-+#endif
-+
- static const struct {
- 	__u8 mode;
- 	const char *name;
-@@ -217,8 +234,9 @@ add_enckey_help(void)
- " 'add_enckey' - add key for v2 policies\n"
- " 'add_enckey -d 0000111122223333' - add key for v1 policies w/ given descriptor\n"
- "\n"
--"The key in binary is read from standard input.\n"
-+"Unless -k is given, the key in binary is read from standard input.\n"
- " -d DESCRIPTOR -- master_key_descriptor\n"
-+" -k KEY_ID -- ID of fscrypt-provisioning key containing the raw key\n"
- "\n"));
- }
- 
-@@ -431,6 +449,21 @@ str2keyspec(const char *str, int policy_version,
- 	return policy_version;
- }
- 
-+static int
-+parse_key_id(const char *arg)
-+{
-+	long value;
-+	char *tmp;
-+
-+	value = strtol(arg, &tmp, 0);
-+	if (value <= 0 || value > INT_MAX || tmp == arg || *tmp != '\0') {
-+		fprintf(stderr, _("invalid key ID: %s\n"), arg);
-+		/* 0 is never a valid Linux key ID. */
-+		return 0;
-+	}
-+	return value;
-+}
-+
- static void
- test_for_v2_policy_support(void)
- {
-@@ -689,13 +722,18 @@ add_enckey_f(int argc, char **argv)
- 
- 	arg->key_spec.type = FSCRYPT_KEY_SPEC_TYPE_IDENTIFIER;
- 
--	while ((c = getopt(argc, argv, "d:")) != EOF) {
-+	while ((c = getopt(argc, argv, "d:k:")) != EOF) {
- 		switch (c) {
- 		case 'd':
- 			arg->key_spec.type = FSCRYPT_KEY_SPEC_TYPE_DESCRIPTOR;
- 			if (!str2keydesc(optarg, arg->key_spec.u.descriptor))
- 				goto out;
- 			break;
-+		case 'k':
-+			arg->key_id = parse_key_id(optarg);
-+			if (arg->key_id == 0)
-+				goto out;
-+			break;
- 		default:
- 			retval = command_usage(&add_enckey_cmd);
- 			goto out;
-@@ -709,21 +747,23 @@ add_enckey_f(int argc, char **argv)
- 		goto out;
- 	}
- 
--	raw_size = read_until_limit_or_eof(STDIN_FILENO, arg->raw,
--					   FSCRYPT_MAX_KEY_SIZE + 1);
--	if (raw_size < 0) {
--		fprintf(stderr, _("Error reading key from stdin: %s\n"),
--			strerror(errno));
--		exitcode = 1;
--		goto out;
--	}
--	if (raw_size > FSCRYPT_MAX_KEY_SIZE) {
--		fprintf(stderr,
--			_("Invalid key; got > FSCRYPT_MAX_KEY_SIZE (%d) bytes on stdin!\n"),
--			FSCRYPT_MAX_KEY_SIZE);
--		goto out;
--	}
--	arg->raw_size = raw_size;
-+	if (arg->key_id == 0) {
-+		raw_size = read_until_limit_or_eof(STDIN_FILENO, arg->raw,
-+						   FSCRYPT_MAX_KEY_SIZE + 1);
-+		if (raw_size < 0) {
-+			fprintf(stderr, _("Error reading key from stdin: %s\n"),
-+				strerror(errno));
-+			exitcode = 1;
-+			goto out;
-+		}
-+		if (raw_size > FSCRYPT_MAX_KEY_SIZE) {
-+			fprintf(stderr,
-+				_("Invalid key; got > FSCRYPT_MAX_KEY_SIZE (%d) bytes on stdin!\n"),
-+				FSCRYPT_MAX_KEY_SIZE);
-+			goto out;
-+		}
-+		arg->raw_size = raw_size;
-+	} /* else, raw key is given via key with ID 'key_id' */
- 
- 	if (ioctl(file->fd, FS_IOC_ADD_ENCRYPTION_KEY, arg) != 0) {
- 		fprintf(stderr, _("Error adding encryption key: %s\n"),
-@@ -859,7 +899,7 @@ encrypt_init(void)
- 
- 	add_enckey_cmd.name = "add_enckey";
- 	add_enckey_cmd.cfunc = add_enckey_f;
--	add_enckey_cmd.args = _("[-d descriptor]");
-+	add_enckey_cmd.args = _("[-d descriptor] [-k key_id]");
- 	add_enckey_cmd.argmin = 0;
- 	add_enckey_cmd.argmax = -1;
- 	add_enckey_cmd.flags = CMD_NOMAP_OK | CMD_FOREIGN_OK;
-diff --git a/m4/package_libcdev.m4 b/m4/package_libcdev.m4
-index 2c0c72ce..adab9bb9 100644
---- a/m4/package_libcdev.m4
-+++ b/m4/package_libcdev.m4
-@@ -278,6 +278,27 @@ AC_DEFUN([AC_NEED_INTERNAL_FSXATTR],
-     AC_SUBST(need_internal_fsxattr)
-   ])
- 
-+#
-+# Check if we need to override the system struct fscrypt_add_key_arg
-+# with the internal definition.  This /only/ happens if the system
-+# actually defines struct fscrypt_add_key_arg /and/ the system
-+# definition is missing certain fields.
-+#
-+AC_DEFUN([AC_NEED_INTERNAL_FSCRYPT_ADD_KEY_ARG],
-+  [
-+    AC_CHECK_TYPE(struct fscrypt_add_key_arg,
-+      [
-+        AC_CHECK_MEMBER(struct fscrypt_add_key_arg.key_id,
-+          ,
-+          need_internal_fscrypt_add_key_arg=yes,
-+          [#include <linux/fs.h>]
-+        )
-+      ],,
-+      [#include <linux/fs.h>]
-+    )
-+    AC_SUBST(need_internal_fscrypt_add_key_arg)
-+  ])
-+
- #
- # Check if we have a FS_IOC_GETFSMAP ioctl (Linux)
- #
-diff --git a/man/man8/xfs_io.8 b/man/man8/xfs_io.8
-index f5431a8c..b9dcc312 100644
---- a/man/man8/xfs_io.8
-+++ b/man/man8/xfs_io.8
-@@ -749,10 +749,10 @@ Test whether v2 encryption policies are supported.  Prints "supported",
- .RE
- .PD
- .TP
--.BI "add_enckey [ \-d " descriptor " ]"
-+.BI "add_enckey [ \-d " descriptor " ] [ \-k " key_id " ]"
- On filesystems that support encryption, add an encryption key to the filesystem
--containing the currently open file.  The key in binary (typically 64 bytes long)
--is read from standard input.
-+containing the currently open file.  By default, the raw key in binary
-+(typically 64 bytes long) is read from standard input.
- .RS 1.0i
- .PD 0
- .TP 0.4i
-@@ -761,6 +761,10 @@ key descriptor, as a 16-character hex string (8 bytes).  If given, the key will
- be available for use by v1 encryption policies that use this descriptor.
- Otherwise, the key is added as a v2 policy key, and on success the resulting
- "key identifier" will be printed.
-+.TP
-+.BI \-k " key_id"
-+ID of kernel keyring key of type "fscrypt-provisioning".  If given, the raw key
-+will be taken from here rather than from standard input.
- .RE
- .PD
- .TP
--- 
-2.25.0.341.g760bfbb309-goog
-
+So unless you have strong objections, I'd want to continue programming
+keyslots per-bio for the above reasons.
