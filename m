@@ -2,112 +2,90 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B83F01521E4
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  4 Feb 2020 22:21:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92B3B152512
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  5 Feb 2020 04:05:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727581AbgBDVVO (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 4 Feb 2020 16:21:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37454 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727566AbgBDVVO (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 4 Feb 2020 16:21:14 -0500
-Received: from gmail.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB9E52082E;
-        Tue,  4 Feb 2020 21:21:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1580851273;
-        bh=KKB12bjPksD5iDE0UW+8PafWpWM7BZjKsP6ut1aSK0A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oxmTWCjiquUMY/wLyhosQzPiJUtMVJpf+m1lgxRnrRYaMOAsKMe+YztcbPWFAAUfW
-         iI4xdmUCwP/eczU9zRInuGln1AqHPidnOQJDDwEhMnsC7PSPpuh221PGtC+P6WWC9o
-         fNNO9pXc/hjVFXtQuzkp0Oh/c6mafWyPFwBNDC30=
-Date:   Tue, 4 Feb 2020 13:21:11 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Satya Tangirala <satyat@google.com>, linux-block@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
-        Kuohong Wang <kuohong.wang@mediatek.com>,
-        Kim Boojin <boojin.kim@samsung.com>
-Subject: Re: [PATCH v6 0/9] Inline Encryption Support
-Message-ID: <20200204212110.GA122850@gmail.com>
-References: <20191218145136.172774-1-satyat@google.com>
- <20200108140556.GB2896@infradead.org>
- <20200108184305.GA173657@google.com>
- <20200117085210.GA5473@infradead.org>
- <20200201005341.GA134917@google.com>
- <20200203091558.GA28527@infradead.org>
- <20200204033915.GA122248@google.com>
- <20200204145832.GA28393@infradead.org>
+        id S1727774AbgBEDFP (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 4 Feb 2020 22:05:15 -0500
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:37392 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727910AbgBEDFP (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 4 Feb 2020 22:05:15 -0500
+Received: by mail-lf1-f67.google.com with SMTP id b15so369233lfc.4
+        for <linux-fscrypt@vger.kernel.org>; Tue, 04 Feb 2020 19:05:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5WF1go+DuJvbwgdXeUhoD65NaX1JQ7zRHimo51GmC8M=;
+        b=a/rT7owEo3U/lPRFn35JOyHmNdZNKq3CUN5eC0vmSOAlGMUJJc7ELCvSX1Mh8APfaa
+         lAlLVERWXR5pYN81ddhMclRnb/OmN5Fx2KddB7KuZLDfFPyFM3c5qNNCCjwGgxr+r3s1
+         DNCcaZvM6VYKACKmTz/OjiTlKJVFN9VL8YzEYvQS2U83lFvZUm1XWKOklUIkQxQvXozG
+         vNU7Zo1syf0hTTILG3oFQfUcj+JQqVr59fj+c5MCVuSCuEvLrPxTFeYRhYsiMU1wniYS
+         k/ew5rFlhFL2LzMHulEuIV3u33upCBPfLhXENQXAIsbZYUZT2I99yQmfa/FkquxeDAIP
+         aNXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5WF1go+DuJvbwgdXeUhoD65NaX1JQ7zRHimo51GmC8M=;
+        b=PHwGNaT/6nTbGAuxxDX8u2YRF4FPq0m7qTDt9VHcMgS9zV+KbxR3PO6nWLwhwF8bil
+         hpw11cRrTI8R701r3QEZnaJY0qQJLRAnYphi5C+fesA4bTt4S1qowQgkj+nuHxDlcREq
+         kyn6Ov84dehZQJ8wrlbM9DxvXwgF2yNyVBwPBUzYk/5YhpK7I80rUkv5YLN+oGh/rW2N
+         56AA8GhssWQtJnAVV646sCy7Sjep61NXfdRj7sscXuBOSpc6n7GRUSdxpxBL6OptxvS8
+         hrRiKL845vL4xyFZbYYyuM4GIsAQ9F7C5YtIIilXBvv/IGx3A9ahb3+Jw6mR5EWi4Ik6
+         qSyQ==
+X-Gm-Message-State: APjAAAVPYM5BHUV+OW73bgK3V4qUA9P1uL7mNgIh1iz/ZZMO2MUr06i/
+        BpkfA3UNPDdBcTqtOvZ8CzPBfiFhyIpgUwHOPMNzqw==
+X-Google-Smtp-Source: APXvYqzeG4caRRvcRllow4EA73MGmU6WFhFNYJbaTAD8sJamhzsXSFSCQuZUYpZgWEJovRgzDpyi7R9sxFKJltzNJtg=
+X-Received: by 2002:a19:4a92:: with SMTP id x140mr17094713lfa.29.1580871913677;
+ Tue, 04 Feb 2020 19:05:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200204145832.GA28393@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200128230328.183524-1-drosen@google.com> <20200128230328.183524-2-drosen@google.com>
+ <85sgjsxx2g.fsf@collabora.com>
+In-Reply-To: <85sgjsxx2g.fsf@collabora.com>
+From:   Daniel Rosenberg <drosen@google.com>
+Date:   Tue, 4 Feb 2020 19:05:02 -0800
+Message-ID: <CA+PiJmS3kbK8220QaccP5jJ7dSf4xv3UrStQvLskAtCN+=vG_A@mail.gmail.com>
+Subject: Re: [PATCH v6 1/5] unicode: Add standard casefolded d_ops
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Eric Biggers <ebiggers@kernel.org>,
+        linux-fscrypt@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Richard Weinberger <richard@nod.at>,
+        linux-mtd@lists.infradead.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, Feb 04, 2020 at 06:58:32AM -0800, Christoph Hellwig wrote:
-> On Mon, Feb 03, 2020 at 07:39:15PM -0800, Satya Tangirala wrote:
-> > Wouldn't that mean that all the other requests in the queue, even ones that
-> > don't even need any inline encryption, also don't get processed until the
-> > queue is woken up again?
-> 
-> For the basic implementation yes.
-> 
-> > And if so, are we really ok with that?
-> 
-> That depends on the use cases.  With the fscrypt setup are we still
-> going to see unencrypted I/O to the device as well?  If so we'll need
-> to refine the setup and only queue up unencrypted requests.  But I'd
-> still try to dumb version first and then refine it.
+On Sun, Feb 2, 2020 at 5:46 PM Gabriel Krisman Bertazi
+<krisman@collabora.com> wrote:
+>
+>
+> I don't think fs/unicode is the right place for these very specific
+> filesystem functions, just because they happen to use unicode.  It is an
+> encoding library, it doesn't care about dentries, nor should know how to
+> handle them.  It exposes a simple api to manipulate and convert utf8 strings.
+>
+> I saw change was after the desire to not have these functions polluting
+> the VFS hot path, but that has nothing to do with placing them here.
+>
+> Would libfs be better?  or a casefolding library in fs/casefold.c?
+>
+>
+> --
+> Gabriel Krisman Bertazi
 
-Definitely, for several reasons:
-
-- Not all files on the filesystem are necessarily encrypted.
-- Filesystem metadata is not encrypted (except for filenames, but those don't
-  use inline encryption).
-- Encryption isn't necessarily being used on all partitions on the disk.
-
-It's also not just about unencrypted vs. encrypted, since just because someone
-is waiting for one keyslot doesn't mean we should pause all encrypted I/O to the
-device for all keyslots.
-
-> 
-> > As you said, we'd need the queue to wake up once a keyslot is available.
-> > It's possible that only some hardware queues and not others get blocked
-> > because of keyslot programming, so ideally, we could somehow make the
-> > correct hardware queue(s) wake up once a keyslot is freed. But the keyslot
-> > manager can't assume that it's actually blk-mq that's being used
-> > underneath,
-> 
-> Why?  The legacy requet code is long gone.
-> 
-> > Also I forgot to mention this in my previous mail, but there may be some
-> > drivers/devices whose keyslots cannot be programmed from an atomic context,
-> > so this approach which might make things difficult in those situations (the
-> > UFS v2.1 spec, which I followed while implementing support for inline
-> > crypto for UFS, does not care whether we're in an atomic context or not,
-> > but there might be specifications for other drivers, or even some
-> > particular UFS inline encryption hardware that do).
-> 
-> We have an option to never call ->queue_rq from atomic context
-> (BLK_MQ_F_BLOCKING).  But do you know of existing hardware that behaves
-> like this or is it just hypothetical?
-
-Maybe -- check the Qualcomm ICE (Inline Crypto Engine) driver I posted at
-https://lkml.kernel.org/linux-block/20200110061634.46742-1-ebiggers@kernel.org/.
-The hardware requires vendor-specific SMC calls to program keys, rather than the
-UFS standard way.  It's currently blocking, since the code to make the SMC calls
-in drivers/firmware/qcom_scm*.c uses GFP_KERNEL and mutex_lock().
-
-I'll test whether it can work in atomic context by using GFP_ATOMIC and
-qcom_scm_call_atomic() instead.  (Adding a spinlock might be needed too.)
-
-- Eric
+The hash function needs access to utf8ncursor, but apart from that,
+libfs would make sense. utf8ncursor is the only reason I have them
+here. How do you feel about exposing utf8cursor or something similar?
