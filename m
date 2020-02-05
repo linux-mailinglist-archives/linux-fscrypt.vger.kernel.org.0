@@ -2,63 +2,89 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C5441539BB
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  5 Feb 2020 21:47:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF273153C06
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  6 Feb 2020 00:40:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727305AbgBEUrO (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 5 Feb 2020 15:47:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57546 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726534AbgBEUrO (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 5 Feb 2020 15:47:14 -0500
-Received: from gmail.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 294D02072B;
-        Wed,  5 Feb 2020 20:47:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1580935633;
-        bh=+ZS+NN3+LYtwsrpUFYDvOFcmW2Zu5fsUZcqSPkhg4lU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gjvMPyIRhoMGBaCI7MUINX99uO8A+WSahEkQxe0NwqVase8Kt3OdsPyTgQdAddwpe
-         sPqnpxP6yhP0i05boyaZUGSbzavu3uTCqEKyTBI1gAUbygv8J4fhmq4I+NrO1bIdbO
-         3fvVcT2HL0T8TSI8+QzmXbu1arwf2m7l9btJBDKA=
-Date:   Wed, 5 Feb 2020 12:47:11 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
-        Kuohong Wang <kuohong.wang@mediatek.com>,
-        Kim Boojin <boojin.kim@samsung.com>
-Subject: Re: [PATCH v6 6/9] scsi: ufs: Add inline encryption support to UFS
-Message-ID: <20200205204711.GA112437@gmail.com>
-References: <20191218145136.172774-1-satyat@google.com>
- <20191218145136.172774-7-satyat@google.com>
+        id S1727492AbgBEXk1 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 5 Feb 2020 18:40:27 -0500
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:46253 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727474AbgBEXk0 (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 5 Feb 2020 18:40:26 -0500
+Received: by mail-lf1-f66.google.com with SMTP id z26so2734159lfg.13
+        for <linux-fscrypt@vger.kernel.org>; Wed, 05 Feb 2020 15:40:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eImnorc+E72Ebn4XEF1SUg6cxpdpF8frzXw7k6RoRcE=;
+        b=Eucncfy0bfw2XSNvy3spLaCcbAJQXGXLfKwBFip2IDIQLXmUo0Oshd2FbgLS3FZnZK
+         9niWI9xMAjS7AulP2kZjWHny2XgDM4S//hdCeWXKGIFCEUzBUo9M1OOddK2Eg26bMsyB
+         DveOA8IJDdhnBk9uzpiAv8bDzUzDwCELfF16cn3TKe90OqY8nddNTeRzv5gtlrc0uFPh
+         ptbM+AfLEnnLiVD9BHUxlxFOKknvZ/WKsce5pwcjNl6ABhJJ2svy6h+x4B1RvPJIsTC1
+         B661E2LWjz74WjBpodNkt6YPeBFT46XbVetSnJ+7xHdI0sIyKm27coJnchHIyhuRidtM
+         TUgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eImnorc+E72Ebn4XEF1SUg6cxpdpF8frzXw7k6RoRcE=;
+        b=udkm2Obhcj9yFpGaWeQQWxa1NHf6AlNa7jIXTPz/PNw3txIG2VUPUalWYSrZMap0xv
+         ovyaSQzlyVaHP4t0rnZL952Ra3vI0dtqfgZ17JqRalOiytSXSh4aRPQERmKrg60Qge0E
+         EEGHIBVWOj+hSakfeglbj+j21+Xfg1j3PtXBVb2LXfh+J2HoYiYzNl7dgQK2VCEZoCT2
+         j7/C120ld5xnNAcBBshlmJL3Y/RuB2j2XPJ8evm80ZTkPjBND1cXW/DOO4dgAIWXtWqx
+         3jONUoqo2zePsPEnpU5yM7iPg/f5jxmiTLmcVusNcuwQhBd/DRWK1f5vhGt8gznHY+ug
+         HYug==
+X-Gm-Message-State: APjAAAXZl05Cw9td8EdLn8yfNyriJYUeLncl6bo2T/CNnIO+LEDhnUCN
+        9tJ6ZX/hK4HnyqB5vypqMH20JmfBge4Prv1Voqb+rQ==
+X-Google-Smtp-Source: APXvYqzzEBWngyKstrRaijt7X7I5bXY9Val+Hxs5gu/BwpxZpiBbhMGiFic8G5pM6rS0i/mpmGgwfAohfvUcJsRyKVQ=
+X-Received: by 2002:ac2:5979:: with SMTP id h25mr122207lfp.203.1580946023798;
+ Wed, 05 Feb 2020 15:40:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191218145136.172774-7-satyat@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200128230328.183524-1-drosen@google.com> <20200128230328.183524-2-drosen@google.com>
+ <85sgjsxx2g.fsf@collabora.com> <CA+PiJmS3kbK8220QaccP5jJ7dSf4xv3UrStQvLskAtCN+=vG_A@mail.gmail.com>
+ <85h8051x6a.fsf@collabora.com>
+In-Reply-To: <85h8051x6a.fsf@collabora.com>
+From:   Daniel Rosenberg <drosen@google.com>
+Date:   Wed, 5 Feb 2020 15:40:11 -0800
+Message-ID: <CA+PiJmQgFNLYoRu7fSWgz_He8Z8ceq1G2yUDcy0OCn1iD2rkzA@mail.gmail.com>
+Subject: Re: [PATCH v6 1/5] unicode: Add standard casefolded d_ops
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Eric Biggers <ebiggers@kernel.org>,
+        linux-fscrypt@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Richard Weinberger <richard@nod.at>,
+        linux-mtd@lists.infradead.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, Dec 18, 2019 at 06:51:33AM -0800, Satya Tangirala wrote:
-> @@ -2472,6 +2492,13 @@ static int ufshcd_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
->  	lrbp->task_tag = tag;
->  	lrbp->lun = ufshcd_scsi_to_upiu_lun(cmd->device->lun);
->  	lrbp->intr_cmd = !ufshcd_is_intr_aggr_allowed(hba) ? true : false;
-> +
-> +	err = ufshcd_prepare_lrbp_crypto(hba, cmd, lrbp);
-> +	if (err) {
-> +		lrbp->cmd = NULL;
-> +		clear_bit_unlock(tag, &hba->lrb_in_use);
-> +		goto out;
-> +	}
+On Tue, Feb 4, 2020 at 8:21 PM Gabriel Krisman Bertazi
+<krisman@collabora.com> wrote:
+>
+> Daniel Rosenberg <drosen@google.com> writes:
+>
+> Hi,
+>
+> It was designed to be an internal thing, but I'm ok with exposing it.
+>
+> --
+> Gabriel Krisman Bertazi
 
-The error path here is missing a call to ufshcd_release().
+We could also avoid exposing it by creating an iterator function that
+accepts a context struct with some actor function pointer, similar to
+iterate_dir. I'm currently reworking around that and moving the fs
+specific functions to libfs. I can move the generic op_set code there
+as well.
 
-- Eric
+-Daniel Rosenberg
