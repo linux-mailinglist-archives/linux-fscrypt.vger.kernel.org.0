@@ -2,68 +2,114 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DADCF158641
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 11 Feb 2020 00:42:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C4E1158657
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 11 Feb 2020 01:00:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727522AbgBJXmM (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 10 Feb 2020 18:42:12 -0500
-Received: from zeniv.linux.org.uk ([195.92.253.2]:38614 "EHLO
-        ZenIV.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727192AbgBJXmM (ORCPT
+        id S1727496AbgBKAAm (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 10 Feb 2020 19:00:42 -0500
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:44225 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727490AbgBKAAm (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 10 Feb 2020 18:42:12 -0500
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1j1Igp-00AcMq-LS; Mon, 10 Feb 2020 23:42:07 +0000
-Date:   Mon, 10 Feb 2020 23:42:07 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Daniel Rosenberg <drosen@google.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Eric Biggers <ebiggers@kernel.org>,
-        linux-fscrypt@vger.kernel.org, Richard Weinberger <richard@nod.at>,
-        linux-mtd@lists.infradead.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v7 2/8] fs: Add standard casefolding support
-Message-ID: <20200210234207.GJ23230@ZenIV.linux.org.uk>
-References: <20200208013552.241832-1-drosen@google.com>
- <20200208013552.241832-3-drosen@google.com>
- <20200208021216.GE23230@ZenIV.linux.org.uk>
- <CA+PiJmTYbEA-hgrKwtp0jZXqsfYrzgogOZ0Pt=gTCtqhBfnqFA@mail.gmail.com>
+        Mon, 10 Feb 2020 19:00:42 -0500
+Received: by mail-pl1-f194.google.com with SMTP id d9so3467331plo.11
+        for <linux-fscrypt@vger.kernel.org>; Mon, 10 Feb 2020 16:00:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6aaH26v2TlMwCnznay0EXwxavt+XQg2sYxqzEBjwvqc=;
+        b=PlLIJH8neY8hgmZv1XLtVhIUrY+6vcAks42elQHDtSh7Fo0b0tQRQjAgQpGwelUTYA
+         0gr5qSaKnC0QT0+EU+hd7tJYu6vEseHAUfK4bS45C4M6l6lp6Rxyw/5kryHX8fHddQQv
+         W0FeRUjUksTD8mw5rp4n36RKZzJ+n0gELbMepxbSsr5Z2k910eWMZ9GBbaBaz/ZDxYJh
+         T7rnArkcEuo2EHRSFxSfLJI3y8egcN5PG0PdjRkZoSkSSlPlMqmVTQzcEmh4ZCGSmwOC
+         CNIi+XDR0U22izLJhOsjnGCRfS+e58lcQaZDnIlOx/6mZdPqUi+QFZSX646bH1zRd93M
+         AJww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6aaH26v2TlMwCnznay0EXwxavt+XQg2sYxqzEBjwvqc=;
+        b=NzK7mDJFmNB6/J0vKHqLwpc52yy9+10ODMfrJINnD7i0h+Pm47eXabivaAmYhEOP0D
+         PvF2rQ8uKmzNvtnVRe20YYtEBfxKHyKNo1Hs2oUikeVops1pjsQxX07FlkLXxCIkLCEt
+         1VrdiFilmYlEDLK3XZYuUjxpth2qHJk8mlIpc/xpXMnKAUAvv8Gz+QEFbMFAqMneWLpt
+         PigMW4eMGz7CP53ml35MGe7fImZEIrdM7MoPQTjpvVSsIwKNtIIS3COrsJYbP/s0pHIW
+         JArvRrT12X7HcMzidZ81FzDKRGsan4MHpLhykrznJY4aaTj2MfFEf0L/g3VnPQP+rtqm
+         RwRQ==
+X-Gm-Message-State: APjAAAVG7SmR4vMhFBSGCee20HhTSnPZ1/nMJoLZCNfGW/9ZopM4EMMc
+        8XefzWYq793JEjr9b4ugEy6TBMRC9gU=
+X-Google-Smtp-Source: APXvYqy4ldA8SvS0vVmn1uA3RiDfzTrXkBFTkmT0JEB1yG7Uba7hoKiprcObh5Dns4F7qNCCv9bqTw==
+X-Received: by 2002:a17:902:7006:: with SMTP id y6mr473470plk.84.1581379241358;
+        Mon, 10 Feb 2020 16:00:41 -0800 (PST)
+Received: from localhost ([2620:10d:c090:200::6168])
+        by smtp.gmail.com with ESMTPSA id f43sm508133pje.23.2020.02.10.16.00.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Feb 2020 16:00:40 -0800 (PST)
+From:   Jes Sorensen <jes.sorensen@gmail.com>
+X-Google-Original-From: Jes Sorensen <Jes.Sorensen@gmail.com>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     kernel-team@fb.com, Jes Sorensen <jsorensen@fb.com>
+Subject: [PATCH 0/7] Split fsverity-utils into a shared library
+Date:   Mon, 10 Feb 2020 19:00:30 -0500
+Message-Id: <20200211000037.189180-1-Jes.Sorensen@gmail.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+PiJmTYbEA-hgrKwtp0jZXqsfYrzgogOZ0Pt=gTCtqhBfnqFA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Feb 10, 2020 at 03:11:13PM -0800, Daniel Rosenberg wrote:
-> On Fri, Feb 7, 2020 at 6:12 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
-> >
-> > On Fri, Feb 07, 2020 at 05:35:46PM -0800, Daniel Rosenberg wrote:
-> >
-> >
-> > Again, is that safe in case when the contents of the string str points to
-> > keeps changing under you?
-> 
-> I'm not sure what you mean. I thought it was safe to use the str and
-> len passed into d_compare. Even if it gets changed under RCU
-> conditions I thought there was some code to ensure that the name/len
-> pair passed in is consistent, and any other inconsistencies would get
-> caught by d_seq later. Are there unsafe code paths that can follow?
+From: Jes Sorensen <jsorensen@fb.com>
 
-If you ever fetch the same byte twice, you might see different values.
-You need a fairly careful use of READ_ONCE() or equivalents to make
-sure that you don't get screwed over by that.
+Hi,
 
-Sure, ->d_seq mismatch will throw the result out, but you need to make
-sure you won't oops/step on uninitialized memory/etc. in process.
+I am looking at what it will take to add support for fsverity
+signatures to rpm, similar to how rpm supports IMA signatures.
 
-It's not impossible to get right, but it's not trivial and you need all
-code working with that much more careful than normal for string handling.
+In order to do so, it makes sense to split the fsverity util into a
+shared library and the command line tool, so the core functions can be
+used from other applciations. Alternatively I will have to copy over a
+good chunk of the code into rpm, which makes it nasty to support long
+term.
+
+This is a first stab at doing that, and I'd like to get some feedback
+on the approach.
+
+I basically split it into four functions:
+
+fsverity_cmd_gen_digest(): Build the digest, but do not sign it
+fsverity_cmd_sign():       Sign the digest structure
+fsverity_cmd_measure():    Measure a file, basically 'fsverity measure'
+fsverity_cmd_enable():     Enable verity on a file, basically 'fsverity enable'
+
+If we can agree on the approach, then I am happy to deal with the full
+libtoolification etc.
+
+Jes
+
+
+Jes Sorensen (7):
+  Build basic shared library
+  Restructure fsverity_cmd_sign for shared libraries
+  Make fsverity_cmd_measure() a library function
+  Make fsverity_cmd_enable a library call()
+  Rename commands.h to fsverity.h
+  Move cmdline helper functions to fsverity.c
+  cmd_sign: fsverity_cmd_sign() into two functions
+
+ Makefile      |  18 ++-
+ cmd_enable.c  | 133 +------------------
+ cmd_measure.c |  51 ++------
+ cmd_sign.c    | 168 ++++++------------------
+ commands.h    |  24 ----
+ fsverity.c    | 345 +++++++++++++++++++++++++++++++++++++++++++++++---
+ fsverity.h    |  38 ++++++
+ util.c        |  13 ++
+ 8 files changed, 446 insertions(+), 344 deletions(-)
+ delete mode 100644 commands.h
+ create mode 100644 fsverity.h
+
+-- 
+2.24.1
+
