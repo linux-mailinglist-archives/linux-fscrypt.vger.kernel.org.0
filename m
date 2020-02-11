@@ -2,56 +2,56 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D915915865C
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 11 Feb 2020 01:01:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9351D15865D
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 11 Feb 2020 01:01:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727496AbgBKABJ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 10 Feb 2020 19:01:09 -0500
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:33883 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727490AbgBKABJ (ORCPT
+        id S1727584AbgBKABP (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 10 Feb 2020 19:01:15 -0500
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:44255 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727549AbgBKABP (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 10 Feb 2020 19:01:09 -0500
-Received: by mail-pf1-f193.google.com with SMTP id i6so4521286pfc.1
-        for <linux-fscrypt@vger.kernel.org>; Mon, 10 Feb 2020 16:01:09 -0800 (PST)
+        Mon, 10 Feb 2020 19:01:15 -0500
+Received: by mail-pl1-f196.google.com with SMTP id d9so3467916plo.11
+        for <linux-fscrypt@vger.kernel.org>; Mon, 10 Feb 2020 16:01:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=54BSlm+xY77Fsoq/IY3AfoejUu+eGYmqNFBZz8JILFE=;
-        b=sgeuALDWDoE5eglUOlZqWoc6Jy3ZTz95pVumxMPXX5eZhBoEfRdZF27COvsu/o4rMA
-         kf5I4UKVPJPslW/WadsJMqFMzxbV2ZKSw/KbiSrN0sS96EEy6sLf0myzhPY4mOJUNz+f
-         tbpe1f/trTllY/sjaIe+9YklAQKK5JS4qGErLoKSMVqNT1zIg+HMn11GmGamMz761h8u
-         4XFPStLNHtTPdhL7ICUT7A3Bi97QNQpe/hQL2dWaiTR1ifiYCsW+gfVuhh8L/OYk68Gn
-         rjrd0sgpjH10HfWqky0HhIcHRCygcENIhd77A8FXraghqxXi3YLzFJw5d1kQTcmc/Dmm
-         i6ZQ==
+        bh=9u2/hYYLGoO8El+py7ZmKj3n0T2jkISIzfeNreQh7Jg=;
+        b=YNN8LD5bWbrsZh0CvgSzUsWM3sQsPSPpPW+jIxETDNcGAehbWznLtNP8LigrZiO0Cs
+         xqCCew+E051S7lua1AjMItMrYfr9EAdldB3RLdVE+9YIhPbqzkhzxCVAIuYNADggDOBH
+         h4O2vpM3oTp+f+VwZbqIghg1JvAG0ULybFtNIJWp7oVtZegki0fbOz2gN3YtYVO7kOLr
+         2i/G+N4AmF6OqUVoebyvVIQe2tg+bG0Us8eda8hNJjzzjXQ5UaTfo86pah2dTB1WAZlO
+         zvdecd8CSPNRK+hLKZIoWXw2tOzh0V7uyV1WFetOxMtxYjNdmbySPXK6/+Mss77cteuc
+         3mjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=54BSlm+xY77Fsoq/IY3AfoejUu+eGYmqNFBZz8JILFE=;
-        b=JkhjiK6uo7+S+PrqtpJpZUrcF1uSlvErMGrF8MHuhXNRI9AKKH48V1rt8umJ3BxSi2
-         KdLPVKA0vUt19dCwDW0EH5h3b2wcGsyR7pqD1BEegKsGjoFj5Lm3TdQJKJzU8YDPGyBk
-         Ew/xqCDI81aiMKp6+QSNVVXmQ9KB08KLdFzB7swn3f1rFQh4pHdNsGuFbP/ftrfst002
-         gZCLpJ6XRRXVVVyzhtK5zJCLrhbM1E8FWUFbS3lqaByRtE2s0KC/uqMufrWLBPQLCWRG
-         I7EWJw+psOS4ThMtuXkwOQk+Ak2XPgJVVRjLrbZOABvuZlpbA7NBJv8QpiADafqszvQT
-         JuIA==
-X-Gm-Message-State: APjAAAVgWEOyR5U9YK9TGw6MjFRwC8cNEQs8FXWX+JTm/Vw0cctOUBdC
-        aIISaCKtxhWELJtYtPizrSSp+mDx+Lw=
-X-Google-Smtp-Source: APXvYqwhucg7xQdxsKwl03ma/hgwdju6QB62sxWcB1ZxeAVnHwXZkNlTnvDg781sNVEP0Ex+dWvhWg==
-X-Received: by 2002:a65:5ccc:: with SMTP id b12mr4078625pgt.124.1581379268478;
-        Mon, 10 Feb 2020 16:01:08 -0800 (PST)
+        bh=9u2/hYYLGoO8El+py7ZmKj3n0T2jkISIzfeNreQh7Jg=;
+        b=aLliO2Lawwc4lOFg8s2v4uLZWoae+B0Qt+ZQyLpr9usQYrTTY+x3t04VHZlWLLn36R
+         Xr/9MAgqHx9QJwr1zfOlsRMN2WPgRJCSEWXphMEbuw22Xuyv5SossaTDzEA/uZty+l0P
+         CiTPMDmdl0yi02QfgjjaxXI0Y/bqf+sjLeVnBvJJxGi3J+G7bcihDMRz6AJww7FgAKIY
+         RTqsVsYpJbT5w9q56HzxLig62yMNfVIxsJYgbRRxw5U1FwWSfdkS7dQmWI5ItBLROvuF
+         mCzozwo65udOKkOGpK3eQJwt645fOkBffWakaCjN+GZEqjL2jLyEDdpEGgUJaomN7NE+
+         A6Ug==
+X-Gm-Message-State: APjAAAU2g/n7Nl0Ifo2EPmmyXQglO5Zuc5sdwZWlV0Ve0XyY4tbwk6Yx
+        U9epo/xGZBeaP1C7Kgor/uQv08ze5T0=
+X-Google-Smtp-Source: APXvYqzf8X2g4iAZ1GR6M/H5NMkqvmGuH11TF68qb1xF3LaXEsnJxFRREyRT3nD1VVfQtFZR9umhJA==
+X-Received: by 2002:a17:90a:8806:: with SMTP id s6mr359191pjn.141.1581379273949;
+        Mon, 10 Feb 2020 16:01:13 -0800 (PST)
 Received: from localhost ([2620:10d:c090:200::6168])
-        by smtp.gmail.com with ESMTPSA id a9sm1541482pfo.35.2020.02.10.16.01.07
+        by smtp.gmail.com with ESMTPSA id r11sm1280782pgi.9.2020.02.10.16.01.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Feb 2020 16:01:07 -0800 (PST)
+        Mon, 10 Feb 2020 16:01:13 -0800 (PST)
 From:   Jes Sorensen <jes.sorensen@gmail.com>
 X-Google-Original-From: Jes Sorensen <Jes.Sorensen@gmail.com>
 To:     linux-fscrypt@vger.kernel.org
 Cc:     kernel-team@fb.com, Jes Sorensen <jsorensen@fb.com>
-Subject: [PATCH 5/7] Rename commands.h to fsverity.h
-Date:   Mon, 10 Feb 2020 19:00:35 -0500
-Message-Id: <20200211000037.189180-6-Jes.Sorensen@gmail.com>
+Subject: [PATCH 6/7] Move cmdline helper functions to fsverity.c
+Date:   Mon, 10 Feb 2020 19:00:36 -0500
+Message-Id: <20200211000037.189180-7-Jes.Sorensen@gmail.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200211000037.189180-1-Jes.Sorensen@gmail.com>
 References: <20200211000037.189180-1-Jes.Sorensen@gmail.com>
@@ -64,74 +64,146 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Jes Sorensen <jsorensen@fb.com>
 
-This is a more appropriate name to provide the API for the shared library
+There is no need for these to live in the shared library. In addition
+move get_default_block_size() to the library and rename it appropriately.
 
 Signed-off-by: Jes Sorensen <jsorensen@fb.com>
 ---
- cmd_enable.c             | 2 +-
- cmd_measure.c            | 2 +-
- cmd_sign.c               | 2 +-
- fsverity.c               | 2 +-
- commands.h => fsverity.h | 0
- 5 files changed, 4 insertions(+), 4 deletions(-)
- rename commands.h => fsverity.h (100%)
+ cmd_sign.c |  2 +-
+ fsverity.c | 25 +++++++++----------------
+ fsverity.h |  8 +-------
+ util.c     | 13 +++++++++++++
+ 4 files changed, 24 insertions(+), 24 deletions(-)
 
-diff --git a/cmd_enable.c b/cmd_enable.c
-index 8c55722..732f3f6 100644
---- a/cmd_enable.c
-+++ b/cmd_enable.c
-@@ -14,7 +14,7 @@
- #include <string.h>
- #include <sys/ioctl.h>
- 
--#include "commands.h"
-+#include "fsverity.h"
- #include "fsverity_uapi.h"
- #include "hash_algs.h"
- 
-diff --git a/cmd_measure.c b/cmd_measure.c
-index fc3108d..3cd313e 100644
---- a/cmd_measure.c
-+++ b/cmd_measure.c
-@@ -11,7 +11,7 @@
- #include <stdlib.h>
- #include <sys/ioctl.h>
- 
--#include "commands.h"
-+#include "fsverity.h"
- #include "fsverity_uapi.h"
- 
- /* Display the measurement of the given verity file(s). */
 diff --git a/cmd_sign.c b/cmd_sign.c
-index 2d3fa54..42779f2 100644
+index 42779f2..a0bd168 100644
 --- a/cmd_sign.c
 +++ b/cmd_sign.c
-@@ -16,7 +16,7 @@
- #include <stdlib.h>
- #include <string.h>
+@@ -497,7 +497,7 @@ int fsverity_cmd_sign(char *filename, const struct fsverity_hash_alg *hash_alg,
+ 	}
  
--#include "commands.h"
-+#include "fsverity.h"
- #include "fsverity_uapi.h"
- #include "hash_algs.h"
+ 	if (block_size == 0)
+-		block_size = get_default_block_size();
++		block_size = fsverity_get_default_block_size();
  
+ 	if (keyfile == NULL) {
+ 		status = -EINVAL;
 diff --git a/fsverity.c b/fsverity.c
-index b4e67a2..f0e94bf 100644
+index f0e94bf..45bf0cc 100644
 --- a/fsverity.c
 +++ b/fsverity.c
-@@ -15,7 +15,7 @@
- #include <getopt.h>
- #include <errno.h>
- 
--#include "commands.h"
-+#include "fsverity.h"
+@@ -18,6 +18,12 @@
+ #include "fsverity.h"
  #include "hash_algs.h"
  
++struct fsverity_command;
++
++static bool parse_block_size_option(const char *arg, u32 *size_ptr);
++static bool parse_salt_option(const char *arg, u8 **salt_ptr, u32 *salt_size_ptr);
++static void usage(const struct fsverity_command *cmd, FILE *fp);
++
  enum {
-diff --git a/commands.h b/fsverity.h
-similarity index 100%
-rename from commands.h
-rename to fsverity.h
+ 	OPT_HASH_ALG,
+ 	OPT_BLOCK_SIZE,
+@@ -310,7 +316,7 @@ int wrap_cmd_enable(const struct fsverity_command *cmd,
+ 		arg.hash_algorithm = FS_VERITY_HASH_ALG_DEFAULT;
+ 
+ 	if (arg.block_size == 0)
+-		arg.block_size = get_default_block_size();
++		arg.block_size = fsverity_get_default_block_size();
+ 
+ 	status = fsverity_cmd_enable(argv[0], &arg);
+ 
+@@ -437,7 +443,7 @@ static const struct fsverity_command *find_command(const char *name)
+ 	return NULL;
+ }
+ 
+-bool parse_block_size_option(const char *arg, u32 *size_ptr)
++static bool parse_block_size_option(const char *arg, u32 *size_ptr)
+ {
+ 	char *end;
+ 	unsigned long n = strtoul(arg, &end, 10);
+@@ -455,7 +461,7 @@ bool parse_block_size_option(const char *arg, u32 *size_ptr)
+ 	return true;
+ }
+ 
+-bool parse_salt_option(const char *arg, u8 **salt_ptr, u32 *salt_size_ptr)
++static bool parse_salt_option(const char *arg, u8 **salt_ptr, u32 *salt_size_ptr)
+ {
+ 	if (*salt_ptr != NULL) {
+ 		error_msg("--salt can only be specified once");
+@@ -470,19 +476,6 @@ bool parse_salt_option(const char *arg, u8 **salt_ptr, u32 *salt_size_ptr)
+ 	return true;
+ }
+ 
+-u32 get_default_block_size(void)
+-{
+-	long n = sysconf(_SC_PAGESIZE);
+-
+-	if (n <= 0 || n >= INT_MAX || !is_power_of_2(n)) {
+-		fprintf(stderr,
+-			"Warning: invalid _SC_PAGESIZE (%ld).  Assuming 4K blocks.\n",
+-			n);
+-		return 4096;
+-	}
+-	return n;
+-}
+-
+ int main(int argc, char *argv[])
+ {
+ 	const struct fsverity_command *cmd;
+diff --git a/fsverity.h b/fsverity.h
+index e490c25..bb2f337 100644
+--- a/fsverity.h
++++ b/fsverity.h
+@@ -8,8 +8,6 @@
+ #include "hash_algs.h"
+ #include "fsverity_uapi.h"
+ 
+-struct fsverity_command;
+-
+ /*
+  * Format in which verity file measurements are signed.  This is the same as
+  * 'struct fsverity_digest', except here some magic bytes are prepended to
+@@ -24,7 +22,7 @@ struct fsverity_signed_digest {
+ };
+ 
+ 
+-void usage(const struct fsverity_command *cmd, FILE *fp);
++u32 fsverity_get_default_block_size(void);
+ 
+ int fsverity_cmd_enable(char *filename, struct fsverity_enable_arg *arg);
+ int fsverity_cmd_measure(char *filename, struct fsverity_digest *d);
+@@ -34,8 +32,4 @@ int fsverity_cmd_sign(char *filename, const struct fsverity_hash_alg *hash_alg,
+ 		      struct fsverity_signed_digest **retdigest,
+ 		      u8 **sig, u32 *sig_size);
+ 
+-bool parse_block_size_option(const char *arg, u32 *size_ptr);
+-u32 get_default_block_size(void);
+-bool parse_salt_option(const char *arg, u8 **salt_ptr, u32 *salt_size_ptr);
+-
+ #endif /* COMMANDS_H */
+diff --git a/util.c b/util.c
+index 2218f2e..e4ccd2a 100644
+--- a/util.c
++++ b/util.c
+@@ -213,3 +213,16 @@ void bin2hex(const u8 *bin, size_t bin_len, char *hex)
+ 	}
+ 	*hex = '\0';
+ }
++
++u32 fsverity_get_default_block_size(void)
++{
++	long n = sysconf(_SC_PAGESIZE);
++
++	if (n <= 0 || n >= INT_MAX || !is_power_of_2(n)) {
++		fprintf(stderr,
++			"Warning: invalid _SC_PAGESIZE (%ld).  Assuming 4K blocks.\n",
++			n);
++		return 4096;
++	}
++	return n;
++}
 -- 
 2.24.1
 
