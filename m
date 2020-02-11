@@ -2,57 +2,59 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4E1158657
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 11 Feb 2020 01:00:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EECCB158658
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 11 Feb 2020 01:00:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727496AbgBKAAm (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 10 Feb 2020 19:00:42 -0500
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:44225 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727490AbgBKAAm (ORCPT
+        id S1727530AbgBKAAu (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 10 Feb 2020 19:00:50 -0500
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:38794 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727490AbgBKAAu (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 10 Feb 2020 19:00:42 -0500
-Received: by mail-pl1-f194.google.com with SMTP id d9so3467331plo.11
-        for <linux-fscrypt@vger.kernel.org>; Mon, 10 Feb 2020 16:00:42 -0800 (PST)
+        Mon, 10 Feb 2020 19:00:50 -0500
+Received: by mail-pf1-f193.google.com with SMTP id x185so4509823pfc.5
+        for <linux-fscrypt@vger.kernel.org>; Mon, 10 Feb 2020 16:00:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6aaH26v2TlMwCnznay0EXwxavt+XQg2sYxqzEBjwvqc=;
-        b=PlLIJH8neY8hgmZv1XLtVhIUrY+6vcAks42elQHDtSh7Fo0b0tQRQjAgQpGwelUTYA
-         0gr5qSaKnC0QT0+EU+hd7tJYu6vEseHAUfK4bS45C4M6l6lp6Rxyw/5kryHX8fHddQQv
-         W0FeRUjUksTD8mw5rp4n36RKZzJ+n0gELbMepxbSsr5Z2k910eWMZ9GBbaBaz/ZDxYJh
-         T7rnArkcEuo2EHRSFxSfLJI3y8egcN5PG0PdjRkZoSkSSlPlMqmVTQzcEmh4ZCGSmwOC
-         CNIi+XDR0U22izLJhOsjnGCRfS+e58lcQaZDnIlOx/6mZdPqUi+QFZSX646bH1zRd93M
-         AJww==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=YUF2HLL14kZytMn37pkAatXRP35mL6xpENUEHb3f2cA=;
+        b=X90c4z98XfN2rd/D+R0+qcbXgVmtGSQBZbP80PEK4W3G7oOy/7UR83qKUvYgHGDZ92
+         OIlJ2zZ45EBBpC9FxOmA3v6vxpRFUgAqFrEgt0xfCPoNl2ZL9Rgw3FaSS0gk3pQoZ/VE
+         yy5mZn4wgbHJtZ9F6HK+x8mqcOZitQtiT97j8OjSakaYozqu7ysA5W28NbuTfDTTNTNr
+         OJ+Z/1tUbvbuciJlgPlOHiXQmyae8t9FJtAhEsxoX7diV+yo+Ne2Ob5ZVBg8F1yvNN9L
+         VcTdoRjisgdsvyK3CyaSiwDcUvu5ymrEHfa5tHvJ3lciUmpSzDpvjrtIxsJrRy4RGkk+
+         hD5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6aaH26v2TlMwCnznay0EXwxavt+XQg2sYxqzEBjwvqc=;
-        b=NzK7mDJFmNB6/J0vKHqLwpc52yy9+10ODMfrJINnD7i0h+Pm47eXabivaAmYhEOP0D
-         PvF2rQ8uKmzNvtnVRe20YYtEBfxKHyKNo1Hs2oUikeVops1pjsQxX07FlkLXxCIkLCEt
-         1VrdiFilmYlEDLK3XZYuUjxpth2qHJk8mlIpc/xpXMnKAUAvv8Gz+QEFbMFAqMneWLpt
-         PigMW4eMGz7CP53ml35MGe7fImZEIrdM7MoPQTjpvVSsIwKNtIIS3COrsJYbP/s0pHIW
-         JArvRrT12X7HcMzidZ81FzDKRGsan4MHpLhykrznJY4aaTj2MfFEf0L/g3VnPQP+rtqm
-         RwRQ==
-X-Gm-Message-State: APjAAAVG7SmR4vMhFBSGCee20HhTSnPZ1/nMJoLZCNfGW/9ZopM4EMMc
-        8XefzWYq793JEjr9b4ugEy6TBMRC9gU=
-X-Google-Smtp-Source: APXvYqy4ldA8SvS0vVmn1uA3RiDfzTrXkBFTkmT0JEB1yG7Uba7hoKiprcObh5Dns4F7qNCCv9bqTw==
-X-Received: by 2002:a17:902:7006:: with SMTP id y6mr473470plk.84.1581379241358;
-        Mon, 10 Feb 2020 16:00:41 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=YUF2HLL14kZytMn37pkAatXRP35mL6xpENUEHb3f2cA=;
+        b=i9a9nTJ70saq4/SGSEspYZgvR1uGjNxe+0wAgK3D09//VBfLK7uywc+cfXtx+FoDnO
+         HMBoNdlW1D5fvxXCUuRzESgXllZq13mRNGf0d5S1SqO3Gud29c2ZRGFibv9XRMKyJH/T
+         48h5tgN6qQn6/7A+eJjWHpSXWO/h+3XiHMDftD07slMqBy8X05k1DVympRe+8QT9bgEI
+         JoHSDeua/i2aCtWZYTwNDMM5pNZbrZBdjnGNdpK4Yn7iVDMNzbGS+K5vgQ7GrFSwlS9F
+         oEscZtxmzgUZ3eUA6YSOOOfu5t9ZuVDrKkFSryu9yVTLhr7ibMd2nvYL2DodAhNA323B
+         +sTA==
+X-Gm-Message-State: APjAAAVyDkCUzIF/o9I2tIDNfzNGKZrefW5dWUYflabHcyOPmQBKIWiJ
+        gXugM1gA/ixC8QMB4Y76N/TbseOxsmU=
+X-Google-Smtp-Source: APXvYqwOl0F6qrNk10qIU7kZCWqei9cwZibdv3/+5AaomSXBYp/0LsUUSFb8Mt4HprydmJmGgsliOg==
+X-Received: by 2002:a65:43cb:: with SMTP id n11mr4003621pgp.65.1581379249489;
+        Mon, 10 Feb 2020 16:00:49 -0800 (PST)
 Received: from localhost ([2620:10d:c090:200::6168])
-        by smtp.gmail.com with ESMTPSA id f43sm508133pje.23.2020.02.10.16.00.40
+        by smtp.gmail.com with ESMTPSA id q187sm1435510pfq.185.2020.02.10.16.00.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Feb 2020 16:00:40 -0800 (PST)
+        Mon, 10 Feb 2020 16:00:48 -0800 (PST)
 From:   Jes Sorensen <jes.sorensen@gmail.com>
 X-Google-Original-From: Jes Sorensen <Jes.Sorensen@gmail.com>
 To:     linux-fscrypt@vger.kernel.org
 Cc:     kernel-team@fb.com, Jes Sorensen <jsorensen@fb.com>
-Subject: [PATCH 0/7] Split fsverity-utils into a shared library
-Date:   Mon, 10 Feb 2020 19:00:30 -0500
-Message-Id: <20200211000037.189180-1-Jes.Sorensen@gmail.com>
+Subject: [PATCH 1/7] Build basic shared library
+Date:   Mon, 10 Feb 2020 19:00:31 -0500
+Message-Id: <20200211000037.189180-2-Jes.Sorensen@gmail.com>
 X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200211000037.189180-1-Jes.Sorensen@gmail.com>
+References: <20200211000037.189180-1-Jes.Sorensen@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-fscrypt-owner@vger.kernel.org
@@ -62,54 +64,51 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Jes Sorensen <jsorensen@fb.com>
 
-Hi,
+Signed-off-by: Jes Sorensen <jsorensen@fb.com>
+---
+ Makefile | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
 
-I am looking at what it will take to add support for fsverity
-signatures to rpm, similar to how rpm supports IMA signatures.
-
-In order to do so, it makes sense to split the fsverity util into a
-shared library and the command line tool, so the core functions can be
-used from other applciations. Alternatively I will have to copy over a
-good chunk of the code into rpm, which makes it nasty to support long
-term.
-
-This is a first stab at doing that, and I'd like to get some feedback
-on the approach.
-
-I basically split it into four functions:
-
-fsverity_cmd_gen_digest(): Build the digest, but do not sign it
-fsverity_cmd_sign():       Sign the digest structure
-fsverity_cmd_measure():    Measure a file, basically 'fsverity measure'
-fsverity_cmd_enable():     Enable verity on a file, basically 'fsverity enable'
-
-If we can agree on the approach, then I am happy to deal with the full
-libtoolification etc.
-
-Jes
-
-
-Jes Sorensen (7):
-  Build basic shared library
-  Restructure fsverity_cmd_sign for shared libraries
-  Make fsverity_cmd_measure() a library function
-  Make fsverity_cmd_enable a library call()
-  Rename commands.h to fsverity.h
-  Move cmdline helper functions to fsverity.c
-  cmd_sign: fsverity_cmd_sign() into two functions
-
- Makefile      |  18 ++-
- cmd_enable.c  | 133 +------------------
- cmd_measure.c |  51 ++------
- cmd_sign.c    | 168 ++++++------------------
- commands.h    |  24 ----
- fsverity.c    | 345 +++++++++++++++++++++++++++++++++++++++++++++++---
- fsverity.h    |  38 ++++++
- util.c        |  13 ++
- 8 files changed, 446 insertions(+), 344 deletions(-)
- delete mode 100644 commands.h
- create mode 100644 fsverity.h
-
+diff --git a/Makefile b/Makefile
+index b9c09b9..006fc60 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,20 +1,32 @@
+ EXE := fsverity
++LIB := libfsverity.so
+ CFLAGS := -O2 -Wall
+ CPPFLAGS := -D_FILE_OFFSET_BITS=64
+ LDLIBS := -lcrypto
+ DESTDIR := /usr/local
++LIBDIR := /usr/lib64
+ SRC := $(wildcard *.c)
+-OBJ := $(SRC:.c=.o)
++OBJ := fsverity.o
++SSRC := hash_algs.c cmd_sign.c cmd_enable.c cmd_measure.c util.c
++SOBJ := hash_algs.so cmd_sign.so cmd_enable.so cmd_measure.so util.so
+ HDRS := $(wildcard *.h)
+ 
+ all:$(EXE)
+ 
+-$(EXE):$(OBJ)
++$(EXE):$(OBJ) $(LIB)
++	$(CC) -o $@ $< -L . -l fsverity
+ 
+ $(OBJ): %.o: %.c $(HDRS)
++	$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@
++
++$(SOBJ): %.so: %.c $(HDRS)
++	$(CC) -c -fPIC $(CFLAGS) $(CPPFLAGS) $< -o $@
++
++libfsverity.so: $(SOBJ)
++	$(CC) $(LDLIBS) -shared -o libfsverity.so $(SOBJ)
+ 
+ clean:
+-	rm -f $(EXE) $(OBJ)
++	rm -f $(EXE) $(OBJ) $(SOBJ) $(LIB)
+ 
+ install:all
+ 	install -Dm755 -t $(DESTDIR)/bin $(EXE)
 -- 
 2.24.1
 
