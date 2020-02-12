@@ -2,119 +2,109 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F06D159D3B
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 12 Feb 2020 00:35:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97F08159F90
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 12 Feb 2020 04:38:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727888AbgBKXfs (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 11 Feb 2020 18:35:48 -0500
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:39801 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727880AbgBKXfs (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 11 Feb 2020 18:35:48 -0500
-Received: by mail-pf1-f193.google.com with SMTP id 84so232347pfy.6
-        for <linux-fscrypt@vger.kernel.org>; Tue, 11 Feb 2020 15:35:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:subject:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=IC9pg1iUP8Tt6ukz1cZv+3u7OguCrgsQEZeIjq9WJFY=;
-        b=CMs6wpQkR2jhpQiZQNFHDSHBomJJ5fi4DFmcLDQ89Oqk8jWfgezzS+pVpGvIZYj36r
-         htM7Cj4u78ORg55JaOL0sAoknJi3I8wLYgODCM70eGEecIIt6dOifmzt/5pJKwx4S5p4
-         eHyaRR2YIpZ7bL6JcUZFS6a/GrnCrc6GVoZQxIDBZSeRMHy2+fPF1MpBw41t0/V8gO7y
-         Ev9+5O1nT01PBTWy3PFXnRGaq4HovEfiR0z/kWQb1ZyD/ciY6KaUztQauS8YzT/AOOqt
-         Ko7bJ0Lw6DvkgOujITATY4cB6CTcVP/AjaZLYG82jHrrLJ/P9YmMlXPINv9VBMqKSxyi
-         telw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IC9pg1iUP8Tt6ukz1cZv+3u7OguCrgsQEZeIjq9WJFY=;
-        b=QrpmhU3fLaev2xWd3UIgXREyeXJRn4WiFJNT2418g9eLL3CUD60DuQz9w2xAOFhIpg
-         ikXA6LK10zw/6dtjGI6EpSQqQsgMVm9O7q6A5UusHP5WT7zSPZPTiV9mJzGS20ZA9/qX
-         AdpNNdsP1hSvh10MkH97HAEwuoRbvHHbhcyoWFRGC5N58ST+1tx983nhCHYCq5PRxK7a
-         hO5q5UeyEEf2EO5ZRDi85V3evCMyB6HNMAMJdReKhk2x5KoAL59XrJCcmHk7CaDE52S7
-         kDsash22AovRq0htmDTK+NpIQ6QT4iVUdyEP9jPhILW2njd+lbXT9mYLyBHvWZZFc500
-         zQiA==
-X-Gm-Message-State: APjAAAVELrzZkcp7oKaP+Z9xr2iv2Q876XvPuxlSO2SkZQw7enIWXs+y
-        mx07XLI8BWMYexE+tv4xNBE=
-X-Google-Smtp-Source: APXvYqzayYAlYJJVmqWTt+ferz/TpUwEwq7MgoA4crhtkJ2Z77YUf2ZEvH1qYui1JEhfECLPun4SqQ==
-X-Received: by 2002:a63:cd04:: with SMTP id i4mr5747458pgg.281.1581464147754;
-        Tue, 11 Feb 2020 15:35:47 -0800 (PST)
-Received: from ?IPv6:2620:10d:c082:1055::1a29? ([2620:10d:c090:200::e626])
-        by smtp.gmail.com with ESMTPSA id 28sm5245639pgl.42.2020.02.11.15.35.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 Feb 2020 15:35:47 -0800 (PST)
-From:   Jes Sorensen <jes.sorensen@gmail.com>
-X-Google-Original-From: Jes Sorensen <Jes.Sorensen@gmail.com>
-Subject: Re: [PATCH 0/7] Split fsverity-utils into a shared library
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org, kernel-team@fb.com,
-        Jes Sorensen <jsorensen@fb.com>
-References: <20200211000037.189180-1-Jes.Sorensen@gmail.com>
- <20200211192209.GA870@sol.localdomain>
- <b49b4367-51e7-f62a-6209-b46a6880824b@gmail.com>
- <20200211231454.GB870@sol.localdomain>
-Message-ID: <c39f57d5-c9a4-5fbb-3ce3-cd21e90ef921@gmail.com>
-Date:   Tue, 11 Feb 2020 18:35:45 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1727883AbgBLDiF (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 11 Feb 2020 22:38:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38648 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727695AbgBLDiF (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 11 Feb 2020 22:38:05 -0500
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D8E112073C;
+        Wed, 12 Feb 2020 03:38:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1581478684;
+        bh=QFEFG/81Rfdx+DhaJa330Iy0plXtvuXYAYlLrbnAw4s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kgLuYeSFpKxnDdxa83uM8r7H8S2iSSVhydJQbgl1WskDbn0S35JXuXY6oYMb6AFqU
+         HxO5QSmEbAmJQYLuF8FimrMwI0rN+5dYv0mjVwfxsOCEj+bKApbx/sRGflnZL6TTxF
+         hsjxh+dI86q2CbBRmKMiAXqhZqvYy14nr51t/CqE=
+Date:   Tue, 11 Feb 2020 19:38:00 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Daniel Rosenberg <drosen@google.com>
+Cc:     Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fscrypt@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Richard Weinberger <richard@nod.at>,
+        linux-mtd@lists.infradead.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH v7 1/8] unicode: Add utf8_casefold_iter
+Message-ID: <20200212033800.GC870@sol.localdomain>
+References: <20200208013552.241832-1-drosen@google.com>
+ <20200208013552.241832-2-drosen@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20200211231454.GB870@sol.localdomain>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200208013552.241832-2-drosen@google.com>
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On 2/11/20 6:14 PM, Eric Biggers wrote:
-> On Tue, Feb 11, 2020 at 05:09:22PM -0500, Jes Sorensen wrote:
->> On 2/11/20 2:22 PM, Eric Biggers wrote:
->>> Hi Jes,
->> So I basically want to be able to carry verity signatures in RPM as RPM
->> internal data, similar to how it supports IMA signatures. I want to be
->> able to install those without relying on post-install scripts and
->> signature files being distributed as actual files that gets installed,
->> just to have to remove them. This is how IMA support is integrated into
->> RPM as well.
->>
->> Right now the RPM approach for signatures involves two steps, a build
->> digest phase, and a sign the digest phase.
->>
->> The reason I included enable and measure was for completeness. I don't
->> care wildly about those.
+On Fri, Feb 07, 2020 at 05:35:45PM -0800, Daniel Rosenberg wrote:
+> This function will allow other uses of unicode to act upon a casefolded
+> string without needing to allocate their own copy of one.
 > 
-> So the signing happens when the RPM is built, not when it's installed?  Are you
-> sure you actually need a library and not just 'fsverity sign' called from a
-> build script?
-
-So the way RPM is handling these is to calculate the digest in one
-place, and sign it in another. Basically the signing is a second step,
-post build, using the rpmsign command. Shelling out is not a good fit
-for this model.
-
->>> Separately, before you start building something around fs-verity's builtin
->>> signature verification support, have you also considered adding support for
->>> fs-verity to IMA?  I.e., using the fs-verity hashing mechanism with the IMA
->>> signature mechanism.  The IMA maintainer has been expressed interested in that.
->>> If rpm already supports IMA signatures, maybe that way would be a better fit?
->>
->> I looked at IMA and it is overly complex. It is not obvious to me how
->> you would get around that without the full complexity of IMA? The beauty
->> of fsverity's approach is the simplicity of relying on just the kernel
->> keyring for validation of the signature. If you have explicit
->> suggestions, I am certainly happy to look at it.
+> The actor function can return an nonzero value to exit early.
 > 
-> fs-verity's builtin signature verification feature is simple, but does it
-> actually do what you need?  Note that unlike IMA, it doesn't provide an
-> in-kernel policy about which files have to have signatures and which don't.
-> I.e., to get any authenticity guarantee, before using any files that are
-> supposed to be protected by fs-verity, userspace has to manually check whether
-> the fs-verity bit is actually set.  Is that part of your design?
+> Signed-off-by: Daniel Rosenberg <drosen@google.com>
+> ---
+>  fs/unicode/utf8-core.c  | 25 ++++++++++++++++++++++++-
+>  include/linux/unicode.h | 10 ++++++++++
+>  2 files changed, 34 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/unicode/utf8-core.c b/fs/unicode/utf8-core.c
+> index 2a878b739115d..db050bf59a32b 100644
+> --- a/fs/unicode/utf8-core.c
+> +++ b/fs/unicode/utf8-core.c
+> @@ -122,9 +122,32 @@ int utf8_casefold(const struct unicode_map *um, const struct qstr *str,
+>  	}
+>  	return -EINVAL;
+>  }
+> -
+>  EXPORT_SYMBOL(utf8_casefold);
+>  
+> +int utf8_casefold_iter(const struct unicode_map *um, const struct qstr *str,
+> +		    struct utf8_itr_context *ctx)
+> +{
+> +	const struct utf8data *data = utf8nfdicf(um->version);
+> +	struct utf8cursor cur;
+> +	int c;
+> +	int res = 0;
+> +	int pos = 0;
+> +
+> +	if (utf8ncursor(&cur, data, str->name, str->len) < 0)
+> +		return -EINVAL;
+> +
+> +	while ((c = utf8byte(&cur))) {
+> +		if (c < 0)
+> +			return c;
+> +		res = ctx->actor(ctx, c, pos);
+> +		pos++;
+> +		if (res)
+> +			return res;
+> +	}
+> +	return res;
+> +}
+> +EXPORT_SYMBOL(utf8_casefold_iter);
 
-Totally aware of this, and it fits the model I am looking at.
+Indirect function calls are expensive these days for various reasons, including
+Spectre mitigations and CFI.  Are you sure it's okay from a performance
+perspective to make an indirect call for every byte of the pathname?
 
-Jes
+> +typedef int (*utf8_itr_actor_t)(struct utf8_itr_context *, int byte, int pos);
+
+The byte argument probably should be 'u8', to avoid confusion about whether it's
+a byte or a Unicode codepoint.
+
+- Eric
