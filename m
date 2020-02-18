@@ -2,80 +2,60 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D1EB161B26
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 17 Feb 2020 20:02:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BED18162389
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 18 Feb 2020 10:38:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728781AbgBQTCT (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 17 Feb 2020 14:02:19 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:43516 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728728AbgBQTCT (ORCPT
+        id S1726539AbgBRJig (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 18 Feb 2020 04:38:36 -0500
+Received: from mail.megasuccess.eu ([212.237.8.43]:49374 "EHLO
+        mail.megasuccess.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726225AbgBRJif (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 17 Feb 2020 14:02:19 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id A833F292457
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     Daniel Rosenberg <drosen@google.com>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fscrypt@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Richard Weinberger <richard@nod.at>,
-        linux-mtd@lists.infradead.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH v7 1/8] unicode: Add utf8_casefold_iter
-Organization: Collabora
-References: <20200208013552.241832-1-drosen@google.com>
-        <20200208013552.241832-2-drosen@google.com>
-        <20200212033800.GC870@sol.localdomain>
-        <CA+PiJmT_8EzyFO283_E62+UC6vtCGOJXKHAFqnH3QM9LA+PHAw@mail.gmail.com>
-Date:   Mon, 17 Feb 2020 14:02:10 -0500
-In-Reply-To: <CA+PiJmT_8EzyFO283_E62+UC6vtCGOJXKHAFqnH3QM9LA+PHAw@mail.gmail.com>
-        (Daniel Rosenberg's message of "Fri, 14 Feb 2020 13:47:37 -0800")
-Message-ID: <8536b95971.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        Tue, 18 Feb 2020 04:38:35 -0500
+X-Greylist: delayed 437 seconds by postgrey-1.27 at vger.kernel.org; Tue, 18 Feb 2020 04:38:34 EST
+Received: by mail.megasuccess.eu (Postfix, from userid 1001)
+        id 2206BA26E5; Tue, 18 Feb 2020 09:31:06 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megasuccess.eu;
+        s=mail; t=1582018276;
+        bh=vZCY/WMzWvcSzsvr/JOJ79lD1pX2vHR2JT0iP5CcxnY=;
+        h=Date:From:To:Subject:From;
+        b=izrRnUWHbtypwAlwrY7i+8XtkTdSXogv+N1RsysKZJLbR0pNYEFNBU2hnJPXe6T2i
+         y6rpQKaFecwBLbo23Z5gWg933h/PQPmXYFIdYTk8Ef2/ckFBzYKagqi6PKjz0P2GFU
+         wpeWl5V0mG0M2/by8OhkJcnFZ+Da8EoAX8dDPM7/SKCra3hvty1Xv8qCpyYMilayC1
+         zpjDSitK23yoCQRePrAIFfS8YZ4fQiNs0E11Sx1wVP4wPCNVKRmPbpIXfi/zZ4aZkI
+         nfwqFvq92dDfn6kEhkvxExQK0RznEsx0ycdx0IRG3nUnkYYWgDhddpcyxh8m8x2n4V
+         BBJBoeUywsfxw==
+Received: by mail.megasuccess.eu for <linux-fscrypt@vger.kernel.org>; Tue, 18 Feb 2020 09:31:00 GMT
+Message-ID: <20200218085539-0.1.15.13zt.0.z75btpluf3@megasuccess.eu>
+Date:   Tue, 18 Feb 2020 09:31:00 GMT
+From:   "Nathalie Benoit" <n.benoit@megasuccess.eu>
+To:     <linux-fscrypt@vger.kernel.org>
+Subject: =?UTF-8?Q?GPS_avanc=C3=A9?=
+X-Mailer: mail.megasuccess.eu
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Daniel Rosenberg <drosen@google.com> writes:
+Bonjour,
 
-> On Tue, Feb 11, 2020 at 7:38 PM Eric Biggers <ebiggers@kernel.org> wrote:
->>
->> Indirect function calls are expensive these days for various reasons, including
->> Spectre mitigations and CFI.  Are you sure it's okay from a performance
->> perspective to make an indirect call for every byte of the pathname?
->>
->> > +typedef int (*utf8_itr_actor_t)(struct utf8_itr_context *, int byte, int pos);
->>
->> The byte argument probably should be 'u8', to avoid confusion about whether it's
->> a byte or a Unicode codepoint.
->>
+Je me permets de vous contacter concernant la commercialisation de l=E2=80=
+=99un des meilleurs GPS sur le march=C3=A9.
 
-just for the record, we use int utf8byte because it can fail
-error codes, but that is not the case here.  It should be u8.
+Je vous propose de vous pr=C3=A9senter bri=C3=A8vement cet outil dot=C3=A9=
+ de nombreuses fonctionnalit=C3=A9s qui deviendront sans aucun doute indi=
+spensables =C3=A0 l=E2=80=99organisation de votre travail, en ce qu=E2=80=
+=99elles permettent d=E2=80=99optimiser les processus de transport et am=C3=
+=A9liorent votre productivit=C3=A9 sur le terrain.
 
->
-> Gabriel, what do you think here? I could change it to either exposing
-> the things necessary to do the hashing in libfs, or instead of the
-> general purpose iterator, just have a hash function inside of unicode
-> that will compute the hash given a seed value.
+Si vous souhaitez obtenir de plus amples informations, n=E2=80=99h=C3=A9s=
+itez pas =C3=A0 me contacter.
 
-Sorry for the delay, I'm away on a long vacation and intentionally
-staying away from my laptop :)
+Dans l'attente de votre r=C3=A9ponse, je vous prie d=E2=80=99agr=C3=A9er =
+mes salutations distingu=C3=A9es.=20
 
-Eric has a very good point, if not prohibitively, it is unnecessarily
-expensive for a hot path.  Why not expose utf8ncursor and utf8byte to
-libfs and implement the hash in libfs?
 
--- 
-Gabriel Krisman Bertazi
+Nathalie Benoit
