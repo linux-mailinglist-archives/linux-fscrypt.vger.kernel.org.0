@@ -2,60 +2,73 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BED18162389
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 18 Feb 2020 10:38:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DAFB163558
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 18 Feb 2020 22:49:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726539AbgBRJig (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 18 Feb 2020 04:38:36 -0500
-Received: from mail.megasuccess.eu ([212.237.8.43]:49374 "EHLO
-        mail.megasuccess.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726225AbgBRJif (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 18 Feb 2020 04:38:35 -0500
-X-Greylist: delayed 437 seconds by postgrey-1.27 at vger.kernel.org; Tue, 18 Feb 2020 04:38:34 EST
-Received: by mail.megasuccess.eu (Postfix, from userid 1001)
-        id 2206BA26E5; Tue, 18 Feb 2020 09:31:06 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megasuccess.eu;
-        s=mail; t=1582018276;
-        bh=vZCY/WMzWvcSzsvr/JOJ79lD1pX2vHR2JT0iP5CcxnY=;
-        h=Date:From:To:Subject:From;
-        b=izrRnUWHbtypwAlwrY7i+8XtkTdSXogv+N1RsysKZJLbR0pNYEFNBU2hnJPXe6T2i
-         y6rpQKaFecwBLbo23Z5gWg933h/PQPmXYFIdYTk8Ef2/ckFBzYKagqi6PKjz0P2GFU
-         wpeWl5V0mG0M2/by8OhkJcnFZ+Da8EoAX8dDPM7/SKCra3hvty1Xv8qCpyYMilayC1
-         zpjDSitK23yoCQRePrAIFfS8YZ4fQiNs0E11Sx1wVP4wPCNVKRmPbpIXfi/zZ4aZkI
-         nfwqFvq92dDfn6kEhkvxExQK0RznEsx0ycdx0IRG3nUnkYYWgDhddpcyxh8m8x2n4V
-         BBJBoeUywsfxw==
-Received: by mail.megasuccess.eu for <linux-fscrypt@vger.kernel.org>; Tue, 18 Feb 2020 09:31:00 GMT
-Message-ID: <20200218085539-0.1.15.13zt.0.z75btpluf3@megasuccess.eu>
-Date:   Tue, 18 Feb 2020 09:31:00 GMT
-From:   "Nathalie Benoit" <n.benoit@megasuccess.eu>
-To:     <linux-fscrypt@vger.kernel.org>
-Subject: =?UTF-8?Q?GPS_avanc=C3=A9?=
-X-Mailer: mail.megasuccess.eu
+        id S1727973AbgBRVs7 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 18 Feb 2020 16:48:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48840 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726481AbgBRVs7 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 18 Feb 2020 16:48:59 -0500
+Received: from gmail.com (unknown [104.132.1.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6AF4C206E2;
+        Tue, 18 Feb 2020 21:48:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1582062538;
+        bh=6Thj2Y1ouWsYzVdYK5ylYXtbW9w75KWMPCI3X9zmQ9o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XpKQQHh022aPNMkN2vu5p331h+imBvxChUft5Y8h0ICd1D6RPuRHdqEQb2XEpK3bF
+         sbz+q/8XTGFo+TjCxHLinQB5DbUTXZcBdDflR47eT6uH3YIqokQPzeWj+o0KLggAfY
+         AUpUBE8DZm4SEYtMTT2lRrQ8Ka6FY1l5yl2x53z8=
+Date:   Tue, 18 Feb 2020 13:48:57 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-xfs@vger.kernel.org
+Cc:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        keyrings@vger.kernel.org
+Subject: Re: [PATCH v2] xfs_io/encrypt: support passing a keyring key to
+ add_enckey
+Message-ID: <20200218214856.GA147283@gmail.com>
+References: <20200203182013.43474-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200203182013.43474-1-ebiggers@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Bonjour,
+On Mon, Feb 03, 2020 at 10:20:13AM -0800, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> Add a '-k' option to the 'add_enckey' xfs_io command to allow exercising
+> the key_id field that is being added to struct fscrypt_add_key_arg.
+> 
+> This is needed for the corresponding test in xfstests.
+> 
+> For more details, see the corresponding xfstests patches as well as
+> kernel commit 93edd392cad7 ("fscrypt: support passing a keyring key to
+> FS_IOC_ADD_ENCRYPTION_KEY").
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+> 
+> No changes since v1.
+> 
+> This applies to the for-next branch of xfsprogs.
+> 
+>  configure.ac          |  1 +
+>  include/builddefs.in  |  4 ++
+>  io/encrypt.c          | 90 +++++++++++++++++++++++++++++++------------
+>  m4/package_libcdev.m4 | 21 ++++++++++
+>  man/man8/xfs_io.8     | 10 +++--
+>  5 files changed, 98 insertions(+), 28 deletions(-)
+> 
 
-Je me permets de vous contacter concernant la commercialisation de l=E2=80=
-=99un des meilleurs GPS sur le march=C3=A9.
+Any comments on this patch?  The corresponding xfstests patches were merged.
 
-Je vous propose de vous pr=C3=A9senter bri=C3=A8vement cet outil dot=C3=A9=
- de nombreuses fonctionnalit=C3=A9s qui deviendront sans aucun doute indi=
-spensables =C3=A0 l=E2=80=99organisation de votre travail, en ce qu=E2=80=
-=99elles permettent d=E2=80=99optimiser les processus de transport et am=C3=
-=A9liorent votre productivit=C3=A9 sur le terrain.
-
-Si vous souhaitez obtenir de plus amples informations, n=E2=80=99h=C3=A9s=
-itez pas =C3=A0 me contacter.
-
-Dans l'attente de votre r=C3=A9ponse, je vous prie d=E2=80=99agr=C3=A9er =
-mes salutations distingu=C3=A9es.=20
-
-
-Nathalie Benoit
+- Eric
