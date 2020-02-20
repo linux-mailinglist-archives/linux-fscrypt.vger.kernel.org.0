@@ -2,164 +2,118 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A4E3516532F
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 20 Feb 2020 00:49:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D046165507
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 20 Feb 2020 03:27:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726731AbgBSXtK (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 19 Feb 2020 18:49:10 -0500
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:44850 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726613AbgBSXtK (ORCPT
+        id S1727402AbgBTC1b (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 19 Feb 2020 21:27:31 -0500
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:36018 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727211AbgBTC1a (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 19 Feb 2020 18:49:10 -0500
-Received: by mail-qk1-f194.google.com with SMTP id j8so1897594qka.11
-        for <linux-fscrypt@vger.kernel.org>; Wed, 19 Feb 2020 15:49:09 -0800 (PST)
+        Wed, 19 Feb 2020 21:27:30 -0500
+Received: by mail-lf1-f66.google.com with SMTP id f24so1793250lfh.3
+        for <linux-fscrypt@vger.kernel.org>; Wed, 19 Feb 2020 18:27:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:subject:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9dBEr17xKa8CN2aFxMMPprH1ybkSOkDAoAwl6F5enJ4=;
-        b=sY3cx9r87oI7B9Sdsu/TzFfDuFBr7L2bysfc4955RejTuORayTawRixlTXH3eXMv+5
-         RJKs06B/SFKzPjZzfPMZOuBXlW4QAoxRaytslc/PWg1VtzpCZKYJbltLAP1QTlSUFST9
-         o4rmszyLFHFwIfkd5x57FJ5JwNbsCNlkooRdwjvPbayC6J5WiJBjI9ZSLuh1UCX349X0
-         OdwPX6t7N319/c+gZiV0Wkzo1PZFDV/vv0cAD1wMpsy+H90G+lpdmU+IOMqJJeJQYfIe
-         ASevVVf0Msm08yhV8Ssy+hRjwSTV2FqIIFmeCZWJrOxUf+ikj+4fmXdiZnm0aokWKSmT
-         iKUQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6R9oDs43e49OHId2T3Say1GnAm1Sa9Cij9vjtGqns0w=;
+        b=HuesXzqrMwl5FNOeLlSDpflwNsgmCskzweQrWPKSAAxSCw7lHW66AFscJTMdsIwTfM
+         jGiq6RpnOPaB5Oyh2lOyEHyuTv6NINI8z9tC0O74kkXNN/1S0DYEYEQUa8h2V/dm0VDo
+         keHC2RRk+b6r2swD/RwtYXIMxjyjo6GlOu9gB+dUg2p6qefC+T1P4UZIm91Uo85LA+Rv
+         8G03jtGxUTJfvgq8RG9MYFoubld2O9BsSsn+sfVhyCNC5XE59suWdHa3oI9hlsR9Dp3B
+         GPuDBZymMhE77jVkDqjzwPoCAdP4mi7yBzI9bHOB2pq77Qnr4eN2rvsvew1j0jZvfkPA
+         bB7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9dBEr17xKa8CN2aFxMMPprH1ybkSOkDAoAwl6F5enJ4=;
-        b=TtqxpIN8tpH5OhdEB5lL951AYZ8EmeYk9Dhri/nuGgmKvgSUhoUxLpiOiRGxRm1gXy
-         UqBaZmpAdgU46mO9KaT5BCypj+QQFmJUlhwo5un041TGhqLi/ug6vHMjFq3kdS7DsjKr
-         1ISYHyA2qo7DYVoLVNgky+dzG4I5IEGJU4LXmX9jvM4PR/m88JOh66vRjbOttrNYLXyw
-         9QAianD9juAwFAmH+Ye7FuNLGBDURWI2ta7++qflvo1p2o5eCi+AetwH/QRaMvofWmM6
-         E5E5IKHP2+oPViZTxVFdgQjfe28QZskDdS392Js6U4/fn//eHBkE1Ng08O2OZrHMZGqW
-         n+8w==
-X-Gm-Message-State: APjAAAUaoiF0jvkLPzlNJU+aoEh2ibOvV0vh7OYqQqfnnZdW1VkETw0V
-        VKmfTir2BtzHK7pyaC4Ypr0=
-X-Google-Smtp-Source: APXvYqyOEXvV6VO3qaUe6w+APSJ2HBJgAmU1+ZRGtkcuF30Czfnw27A3wRwi1QyA7nH5UelhSlE8RA==
-X-Received: by 2002:a37:9fcf:: with SMTP id i198mr10911937qke.36.1582156148820;
-        Wed, 19 Feb 2020 15:49:08 -0800 (PST)
-Received: from ?IPv6:2620:10d:c0a3:10e0::379d? ([2620:10d:c091:500::c882])
-        by smtp.gmail.com with ESMTPSA id f2sm634132qkm.81.2020.02.19.15.49.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Feb 2020 15:49:08 -0800 (PST)
-From:   Jes Sorensen <jes.sorensen@gmail.com>
-X-Google-Original-From: Jes Sorensen <Jes.Sorensen@gmail.com>
-Subject: Re: [PATCH 0/7] Split fsverity-utils into a shared library
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org, kernel-team@fb.com,
-        Jes Sorensen <jsorensen@fb.com>
-References: <20200211000037.189180-1-Jes.Sorensen@gmail.com>
- <20200211192209.GA870@sol.localdomain>
- <b49b4367-51e7-f62a-6209-b46a6880824b@gmail.com>
- <20200211231454.GB870@sol.localdomain>
- <c39f57d5-c9a4-5fbb-3ce3-cd21e90ef921@gmail.com>
- <20200214203510.GA1985@gmail.com>
-Message-ID: <479b0fff-6af2-32e6-a645-03fcfc65ad59@gmail.com>
-Date:   Wed, 19 Feb 2020 18:49:07 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6R9oDs43e49OHId2T3Say1GnAm1Sa9Cij9vjtGqns0w=;
+        b=dGo304yI3IEKpTk/mtppY39UWHJJx55aHVEey3qE5AXh7eDQ2ExAwHajg6iMvvFszX
+         pu8GllW5M26HRufDsPgwazB/siXXjusKuj7BjiMtRajanMln7ShaUAW/92PrSUPYruhs
+         lHjcOGs1BZ/vLV8iLeTMlmyd3UtpxPnrEpcXVzYw8qBw/puHpdVizhbyHg7nLwIngDNN
+         fiMJytXAfsTxJQX6yJv7x2UQPMZH3uzrJ1YGeL5Mg9Zb0wn9MSSFWwO90JOCIWGGJXEp
+         z9IEDmi/ieseX1+RGgYxITjOHn7vwUng0AwV/Sf15ifwFrzjNW3f8af1Ev/BTq8bE4/0
+         VuBw==
+X-Gm-Message-State: APjAAAVgBdCZYBfaMrS6Pj5IYZwW1qd4js3j6EibL7wQyuQ3t/ld9fif
+        x5o6YCJpZ/vef6p9b1zrDONqS6EeIOng5JfmhHHgGw==
+X-Google-Smtp-Source: APXvYqxXpLX+dEvOT5j7tpgmTqUeHQ8fFVlo3960ntu34jaP3dDFM5jPLMUuGTmSmVlcfqf9AGyYlOtPMi7izdaPUmg=
+X-Received: by 2002:ac2:5979:: with SMTP id h25mr15671398lfp.203.1582165648799;
+ Wed, 19 Feb 2020 18:27:28 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20200214203510.GA1985@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200208013552.241832-1-drosen@google.com> <20200208013552.241832-3-drosen@google.com>
+ <20200208021216.GE23230@ZenIV.linux.org.uk> <CA+PiJmTYbEA-hgrKwtp0jZXqsfYrzgogOZ0Pt=gTCtqhBfnqFA@mail.gmail.com>
+ <20200210234207.GJ23230@ZenIV.linux.org.uk> <20200212063440.GL870@sol.localdomain>
+ <20200212065734.GA157327@sol.localdomain>
+In-Reply-To: <20200212065734.GA157327@sol.localdomain>
+From:   Daniel Rosenberg <drosen@google.com>
+Date:   Wed, 19 Feb 2020 18:27:17 -0800
+Message-ID: <CA+PiJmRX1tBVqdAgHwk62rGqEQg28B3j5mEsaDBm3UV9_fzDEQ@mail.gmail.com>
+Subject: Re: [PATCH v7 2/8] fs: Add standard casefolding support
+To:     Eric Biggers <ebiggers@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fscrypt@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+        linux-mtd@lists.infradead.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hi Eric,
+On Tue, Feb 11, 2020 at 10:57 PM Eric Biggers <ebiggers@kernel.org> wrote:
+>
+> Or (just throwing another idea out there) the dentry's name could be copied to a
+> temporary buffer in ->d_compare().  The simplest version would be:
+>
+>         u8 _name[NAME_MAX];
+>
+>         memcpy(_name, name, len);
+>         name = _name;
+>
+> Though, 255 bytes is a bit large for a stack buffer (so for long names it may
+> need kmalloc with GFP_ATOMIC), and technically it would need a special version
+> of memcpy() to be guaranteed safe from compiler optimizations (though I expect
+> this would work in practice).
+>
+> Alternatively, take_dentry_name_snapshot() kind of does this already, except
+> that it takes a dentry and not a (name, len) pair.
+>
+> - Eric
 
-On 2/14/20 3:35 PM, Eric Biggers wrote:
-> Well, this might be a legitimate use case then.  We need to define the library
-> interface as simply as possible, though, so that we can maintain this code in
-> the future without breaking users.  I suggest starting with something along the
-> lines of:
-> 
-> #ifndef _LIBFSVERITY_H
-> #define _LIBFSVERITY_H
-> 
-> #include <stddef.h>
-> #include <stdint.h>
-> 
-> #define FS_VERITY_HASH_ALG_SHA256       1
-> #define FS_VERITY_HASH_ALG_SHA512       2
-> 
-> struct libfsverity_merkle_tree_params {
-> 	uint32_t version;
-> 	uint32_t hash_algorithm;
-> 	uint32_t block_size;
-> 	uint32_t salt_size;
-> 	const uint8_t *salt;
-> 	size_t reserved[11];
-> };
-> 
-> struct libfsverity_digest {
-> 	uint16_t digest_algorithm;
-> 	uint16_t digest_size;
-> 	uint8_t digest[];
-> };
-> 
-> struct libfsverity_signature_params {
-> 	const char *keyfile;
-> 	const char *certfile;
-> 	size_t reserved[11];
-> };
+If we want to use take_dentry_name_snapshot, we'd need to do it before
+calling the dentry op, since we get the dentry as a const. It would do
+exactly what we want, in that it either takes a reference on the long
+name, or copies the short name, although it does so under a spinlock.
+I'm guessing we don't want to add that overhead for all
+d_compare/d_hash's. I suppose it could just take a snapshot if it
+falls under needs_casefold, but that feels a bit silly to me.
 
-This looks reasonable to me - I would do the reserved fields as void *
-or uint32_t, but that is a detail.
+i don't think utf8cursor/utf8byte could be modified to be RCU safe
+apart from a copy. As part of normalization there's some sorting that
+goes on to ensure that different encodings of the same characters can
+be matched, and I think those can technically be arbitrarily long, so
+we'd possibly end up needing the copy anyways.
 
-> int libfsverity_compute_digest(int fd,
-> 			       const struct libfsverity_merkle_tree_params *params,
-> 			       struct libfsverity_digest **digest_ret);
-> 
-> int libfsverity_sign_digest(const struct libfsverity_digest *digest,
-> 			    const struct libfsverity_signature_params *sig_params,
-> 			    void **sig_ret, size_t *sig_size_ret);
-> 
-> #endif /* _LIBFSVERITY_H */
+So, I see two possible fixes.
+1. Use take_dentry_name_snapshot along the RCU paths to calling d_hash
+and d_compare, at least when needs_casefold is true.
+2. Within d_hash/d_compare, create a copy of the name if it is a short name.
 
-Looks good too, I deliberately named the functions as fsverity, but
-happy to prepend them with 'lib'. Didn't want to have a clash with
-'sign_hash' as a function is actually named in a related library.
+For 1, it adds some overhead in general, which I'm sure we'd want to avoid.
+For 2, I don't think we know we're in RCU mode, so we'd need to always
+copy short filenames. I'm also unsure if it's valid to assume that
+name given is stable if it is not the same as dentry->d_iname. If it
+is, we only need to worry about copying DNAME_INLINE_LEN bytes at max
+there. For memcpy, is there a different version that we'd want to use
+for option 2?
 
-> I.e.:
-> 
-> - The stuff in util.h and hash_algs.h isn't exposed to library users.
-> - Then names of all library functions and structs are appropriately prefixed
->   and avoid collisions with the kernel header.
-> - Only signing functionality is included.
-> - There are reserved fields, so we can add more parameters later.
-
-I was debating whether to expect the library to do the open or have the
-caller be responsible for that. Given we have to play the song and dance
-with the signing key and certificate filenames, it's a little quirky,
-but we're passing those to libopenssl so no way to really get around it.
-
-> Before committing to any stable API, it would also be helpful to see the RPM
-> patches to see what it actually does.
-
-Absolutely, I wanted to have us agree on the strategy first before
-taking it to the next step.
-
-I'll take a stab at this.
-
-> We'd also need to follow shared library best practices like compiling with
-> -fvisibility=hidden and marking the API functions explicitly with
-> __attribute__((visibility("default"))), and setting the 'soname' like
-> -Wl,-soname=libfsverity.so.0.
-> 
-> Also, is the GPLv2+ license okay for the use case?
-
-Personally I only care about linking it into rpm, which is GPL v2, so
-from my perspective, that is sufficient. I am also fine making it LGPL,
-but given it's your code I am stealing, I cannot make that call.
-
-Cheers,
-Jes
-
-
+-Daniel
