@@ -2,53 +2,93 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CD2C3168515
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 21 Feb 2020 18:35:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 425FB16862C
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 21 Feb 2020 19:11:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726342AbgBURfk (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 21 Feb 2020 12:35:40 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:53690 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725947AbgBURfj (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 21 Feb 2020 12:35:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Wf0h9wuAEcKNRqQhK7eYyrG9qa7B8zzOGponbVZ3cRs=; b=qv4T8VovROjkqztEW3g3nhCy5f
-        gufHvXfCuF+Z6HXVdrnqn11v47JRrQd3KMc2Fb/NXQnDX0L8RgKN14XJA2vlmNyMfe8JNpLhmUVxc
-        z25YaTqKCBiGK2Hw+2/bd4pbgopKAf4/ve6jLC7QPgm5ZDn5+iUMGtD+1h9m9riV8t/UT8f4E2FIQ
-        ++ryHJSQL+q4p3uXFau3HwiSPe27IGSZ+hWHJ1wE/QCzd7pdwceRoXgVy0rGkR8NzQA6rJe3DsDAG
-        fBH7BRytlaQRbZINis5xOw58oyyhiPiKjWEb9vUxnB2uZFIru9OjRckeEqfDgK73xZAiXwS1jNsGy
-        osPBEkFQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1j5CDD-0003J6-9C; Fri, 21 Feb 2020 17:35:39 +0000
-Date:   Fri, 21 Feb 2020 09:35:39 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        id S1726494AbgBUSLM (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 21 Feb 2020 13:11:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58710 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725995AbgBUSLL (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Fri, 21 Feb 2020 13:11:11 -0500
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 67F44208E4;
+        Fri, 21 Feb 2020 18:11:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1582308670;
+        bh=+Cb4JLP4AzzeUHtnURjqmhLOWjfrHEnJh6ZcrHPfzIs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CjjOcC1DgFPJx0n0W5Nn6sNEYOnHeArMulQiOCQ4eexPuzr9eFQvsRUz0vIrVkkl1
+         YVEguzqY8Go0OdhJE+DDsByPVTEPPqTi3fX5JPN9j33JL7ACiwqD4Atau7D5PoSDQ6
+         Z/q7kG6l1EuZMlqYb0P1zmwE4APm4LXlkELsQOzE=
+Date:   Fri, 21 Feb 2020 10:11:09 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Satya Tangirala <satyat@google.com>, linux-block@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
         linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
         Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
         Kuohong Wang <kuohong.wang@mediatek.com>,
-        Kim Boojin <boojin.kim@samsung.com>
-Subject: Re: [PATCH v7 3/9] block: blk-crypto-fallback for Inline Encryption
-Message-ID: <20200221173539.GA6525@infradead.org>
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Kim Boojin <boojin.kim@samsung.com>,
+        Ladvine D Almeida <Ladvine.DAlmeida@synopsys.com>,
+        Parshuram Raju Thombare <pthombar@cadence.com>
+Subject: Re: [PATCH v7 6/9] scsi: ufs: Add inline encryption support to UFS
+Message-ID: <20200221181109.GB925@sol.localdomain>
 References: <20200221115050.238976-1-satyat@google.com>
- <20200221115050.238976-4-satyat@google.com>
+ <20200221115050.238976-7-satyat@google.com>
+ <20200221172244.GC438@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200221115050.238976-4-satyat@google.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20200221172244.GC438@infradead.org>
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-High-level question:  Does the whole keyslot manager concept even make
-sense for the fallback?  With the work-queue we have item that exectutes
-at a time per cpu.  So just allocatea per-cpu crypto_skcipher for
-each encryption mode and there should never be a slot limitation.  Or
-do I miss something?
+On Fri, Feb 21, 2020 at 09:22:44AM -0800, Christoph Hellwig wrote:
+> On Fri, Feb 21, 2020 at 03:50:47AM -0800, Satya Tangirala wrote:
+> > Wire up ufshcd.c with the UFS Crypto API, the block layer inline
+> > encryption additions and the keyslot manager.
+> > 
+> > Also, introduce UFSHCD_QUIRK_BROKEN_CRYPTO that certain UFS drivers
+> > that don't yet support inline encryption need to use - taken from
+> > patches by John Stultz <john.stultz@linaro.org>
+> > (https://android-review.googlesource.com/c/kernel/common/+/1162224/5)
+> > (https://android-review.googlesource.com/c/kernel/common/+/1162225/5)
+> > (https://android-review.googlesource.com/c/kernel/common/+/1164506/1)
+> 
+> Between all these quirks, with what upstream SOC does this feature
+> actually work?
+
+It will work on DragonBoard 845c, i.e. Qualcomm's Snapdragon 845 SoC, if we
+apply my patchset
+https://lkml.kernel.org/linux-block/20200110061634.46742-1-ebiggers@kernel.org/.
+It's currently based on Satya's v6 patchset, but I'll be rebasing it onto v7 and
+resending.  It uses all the UFS standard crypto code that Satya is adding except
+for ufshcd_program_key(), which has to be replaced with a vendor-specific
+operation.  It does also add vendor-specific code to ufs-qcom to initialize the
+crypto hardware, but that's in addition to the standard code, not replacing it.
+
+DragonBoard 845c is a commercially available development board that boots the
+mainline kernel (modulo two arm-smmu IOMMU patches that Linaro is working on),
+so I think it counts as an "upstream SoC".
+
+That's all that we currently have the hardware to verify ourselves, though
+Mediatek says that Satya's patches are working on their hardware too.  And the
+UFS controller on Mediatek SoCs is supported by the upstream kernel via
+ufs-mediatek.  But I don't know whether it just works exactly as-is or whether
+they needed to patch ufs-mediatek too.  Stanley or Kuohong, can you confirm?
+
+We're also hoping that the patches are usable with the UFS controllers from
+Cadence Design Systems and Synopsys, which have upstream kernel support in
+drivers/scsi/ufs/cdns-pltfrm.c and drivers/scsi/ufs/ufshcd-dwc.c.  But we don't
+currently have a way to verify this.  But in 2018, both companies had tried to
+get the UFS v2.1 standard crypto support upstream, so presumably they must have
+implemented it in their hardware.  +Cc the people who were working on that.
+
+- Eric
