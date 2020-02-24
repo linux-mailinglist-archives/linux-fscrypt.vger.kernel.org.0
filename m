@@ -2,80 +2,71 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 90CDA16B12A
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 24 Feb 2020 21:50:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5713816B5B0
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 25 Feb 2020 00:35:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727421AbgBXUuy (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 24 Feb 2020 15:50:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36942 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727249AbgBXUux (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 24 Feb 2020 15:50:53 -0500
-Received: from gmail.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1FAF220726;
-        Mon, 24 Feb 2020 20:50:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1582577453;
-        bh=3ws2XCyy6ILZso2oH4i/yzvd9uzvxwvQWJJv4TRuz70=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I9K9/4BBR6t94BgsvQWvL0MElmPNMiRWdsQHvAkOcAoRolDDWAYFaRQbGHAX/th9Y
-         RfGNU35wJz/tbi+gRRQcx+ddhCAfCvP4LZS2XAnCxT4tDvB3hZsUZzmiW3hP0rlS1M
-         0H4NWqJWja70WOgXrjABzy9YWTQImgBaVYFeNivo=
-Date:   Mon, 24 Feb 2020 12:50:51 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     mtk.manpages@gmail.com
-Cc:     linux-man@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [man-pages PATCH v2] statx.2: document STATX_ATTR_VERITY
-Message-ID: <20200224205051.GE109047@gmail.com>
-References: <20200128192449.260550-1-ebiggers@kernel.org>
+        id S1727081AbgBXXe7 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 24 Feb 2020 18:34:59 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:53530 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726651AbgBXXe7 (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 24 Feb 2020 18:34:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=PY3LO7INDVp+w+EyWwMiX5Boc/JVIKXMjl3FPvBvaMU=; b=V+DVcx87tJk52TKdGhJJCBe/uK
+        inoCeiP5XzzrwO1gSANtRw13Log7drQQvTc2ys8TpcC5zg7m5wXudpHFc8Xdwq2LrHh+5UvyJWN09
+        ZH51GF2VIzakAVkgfmaK81URA5C9MsOVW8QBhm0XybP/45eZ7IH8KwRWqcHWjww/5McIzpmIwqKb+
+        twJjGwM9LaCEhOBtH7ryUU8OvzbcQx2CVJRWVA07HWcoGBjZJVFGKq1AHDJ110DowIiCl8GmXEV8q
+        QicSV6dlsuvgePe6A5cVdTcwTit1pJP/gCadj4tyS84frv/bpUzN0EUL3u/g1orpMGqA1qqz4gauH
+        mcy5oHXg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1j6NFb-0000go-3n; Mon, 24 Feb 2020 23:34:59 +0000
+Date:   Mon, 24 Feb 2020 15:34:59 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Satya Tangirala <satyat@google.com>
+Cc:     Christoph Hellwig <hch@infradead.org>, linux-block@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
+        Kuohong Wang <kuohong.wang@mediatek.com>,
+        Kim Boojin <boojin.kim@samsung.com>
+Subject: Re: [PATCH v7 2/9] block: Inline encryption support for blk-mq
+Message-ID: <20200224233459.GA30288@infradead.org>
+References: <20200221115050.238976-1-satyat@google.com>
+ <20200221115050.238976-3-satyat@google.com>
+ <20200221172205.GB438@infradead.org>
+ <20200222005233.GA209268@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200128192449.260550-1-ebiggers@kernel.org>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+In-Reply-To: <20200222005233.GA209268@google.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, Jan 28, 2020 at 11:24:49AM -0800, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> Document the verity attribute for statx(), which was added in
-> Linux 5.5.
-> 
-> For more context, see the fs-verity documentation:
-> https://www.kernel.org/doc/html/latest/filesystems/fsverity.html
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
->  man2/statx.2 | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/man2/statx.2 b/man2/statx.2
-> index d2f1b07b8..d015ee73d 100644
-> --- a/man2/statx.2
-> +++ b/man2/statx.2
-> @@ -461,6 +461,11 @@ See
->  .TP
->  .B STATX_ATTR_ENCRYPTED
->  A key is required for the file to be encrypted by the filesystem.
-> +.TP
-> +.B STATX_ATTR_VERITY
-> +Since Linux 5.5: the file has fs-verity enabled.  It cannot be written to, and
-> +all reads from it will be verified against a cryptographic hash that covers the
-> +entire file, e.g. via a Merkle tree.
->  .SH RETURN VALUE
->  On success, zero is returned.
->  On error, \-1 is returned, and
-> -- 
-> 2.25.0.341.g760bfbb309-goog
-> 
+On Fri, Feb 21, 2020 at 04:52:33PM -0800, Satya Tangirala wrote:
+> > What is the rationale for this limitation?  Restricting unrelated
+> > features from being used together is a pretty bad design pattern and
+> > should be avoided where possible.  If it can't it needs to be documented
+> > very clearly.
+> > 
+> My understanding of blk-integrity is that for writes, blk-integrity
+> generates some integrity info for a bio and sends it along with the bio,
+> and the device on the other end verifies that the data it received to
+> write matches up with the integrity info provided with the bio, and
+> saves the integrity info along with the data. As for reads, the device
+> sends the data along with the saved integrity info and blk-integrity
+> verifies that the data received matches up with the integrity info.
 
-Ping?  Michael, can you apply this man-pages patch?
-
-- Eric
+Yes, a device supporting inline encryption and integrity will have to
+update the guard tag to match the encrypted data as well.  That alone
+is a good enough reason to reject the combination for now until it
+is fully supported.  It needs to be properly document, and I think
+we should also do it at probe time if possible, not when submitting
+I/O.
