@@ -2,57 +2,57 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C782D174175
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 28 Feb 2020 22:28:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76C6A174176
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 28 Feb 2020 22:28:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726838AbgB1V2h (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 28 Feb 2020 16:28:37 -0500
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:42735 "EHLO
+        id S1726843AbgB1V2n (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 28 Feb 2020 16:28:43 -0500
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:41053 "EHLO
         mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725805AbgB1V2h (ORCPT
+        with ESMTP id S1725805AbgB1V2n (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 28 Feb 2020 16:28:37 -0500
-Received: by mail-qt1-f195.google.com with SMTP id r5so3143334qtt.9
-        for <linux-fscrypt@vger.kernel.org>; Fri, 28 Feb 2020 13:28:36 -0800 (PST)
+        Fri, 28 Feb 2020 16:28:43 -0500
+Received: by mail-qt1-f195.google.com with SMTP id l21so3151183qtr.8
+        for <linux-fscrypt@vger.kernel.org>; Fri, 28 Feb 2020 13:28:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=TcNAc3CAcLhy8YnE1kUULbVeSNOTEzTZawohOh63MZo=;
-        b=cq9fyX/68VtbqtWpFvw+xPgpc3TCpt0+gcsT0y8N2MG5sbaFyeBLSrtvFUAGrktSC6
-         W3Cq+W2+Hh+WUL/mbMrzvlHKFHrRco3vjP6MDpsT3kZpYrFlUkrUejy6eUsUFaAhsvns
-         nEWy34rHEFlYIorE32SY3aeamfV2VbePYH9P1KkVOFmhirMc1iBXptdAopqhNUFEvYu5
-         +5+aheRf1cOAG3kbMJDeLoWNL51q0em3+3XdNAZXWFtVN3dBzNWxe+XYciaeIbBFExJF
-         EsQbGyKKRQ4I+NweaklKDTycdagFfdPrytfLjfB84fosXlyXsWVHwGWN1rUoGZO3eGnH
-         PWYw==
+        bh=OghQt65i9+PYAuXQHnddaF+pNnvUXk1biFeFIC0Xp5k=;
+        b=aaLh2+b+pcaQYdHGx+2Ffjv7rVkOOk13Kxr+PYVyIptjFpuanYXskEwIbJ51eQGUJS
+         KSzF4za0mVuzTohjVzGzYRXOI+2Z91KWcqpbHWhIGZ/bpZGXj9ncqLArUrX3YU2FMtG2
+         Lk4+FnTwrptR2FU7k2ytOayodzvDXOJP+8sP9+UYQe624wO13OTvNLQ0412lHjiuyfzx
+         NTx/tuRYTADI2ehLrUmtSUwU97Tuk45c5aaZ5t1Cr3DU4RKLEXLVEq08Bi/T1dyh7GEf
+         ns5ta0JIHh15t+2mFcy2sFI3yPLp+wo9VAK67L9koAoI/u5uFcyV2h+eTyii30BY49mv
+         1WbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=TcNAc3CAcLhy8YnE1kUULbVeSNOTEzTZawohOh63MZo=;
-        b=Hb3EXSd7CEZ9eRibX91JI6UfQFAKGgiMnONFxz4Kokt9gEqVPhaRcxdvmHsaVAtHBB
-         wqVgOTTT4wPRBZyO0N9/iGDNSO6OFla8xgoVy9A6piWW/m6XbZeZZLDEuMCviUuk5roD
-         QvN9E944H8pM4Y2pn3fe9QloX7krKCY+R25OfFy7+gOTmu3xisxi25bGqmnOBb4X/kS/
-         xhJ/i4cALZkG+YoZiDJQcagYWaHl24KfpBlCebPz0TIawEbHyN75rH7vkP/GbHPMJxm7
-         PxLIYvIg7VDgRumVA2VWmWxypKaPd9saVALRdcyRuNRX4orhTs9fSzy5VE4eDKXsGeCg
-         cScw==
-X-Gm-Message-State: APjAAAXfC2v1G7g4BVY9ijnRqUXQ+VcJUcIscsryqWyuEI599THjZixE
-        dGfNM6fgtuqXWSBSwz0ZnCBJVc8j
-X-Google-Smtp-Source: APXvYqyG/0oW0szBMv2sXbLaaVBeJTwk29RLtOjIuWpw1v9n/1iZcXm+OZXiJNIjrHSYuwlMzgpGRA==
-X-Received: by 2002:ac8:739a:: with SMTP id t26mr6201124qtp.53.1582925315485;
-        Fri, 28 Feb 2020 13:28:35 -0800 (PST)
+        bh=OghQt65i9+PYAuXQHnddaF+pNnvUXk1biFeFIC0Xp5k=;
+        b=GxGavrhIz74w75cBOBOofshrQ42ZbolCyAKoplScSV3NoMFyKpBZHXpvRZv0ZflBCs
+         iFVTH4lsT7HcR8ZBoqLKoEsvOu4jgqjE4B6Am4cyhaLsX0eGUsygK1vhg1rhygIKDbjS
+         jtRcoQP6ULUzfH33SsJguD0nK07RYe0YXuqG7/CVeXbbHSRfqvXxnHDPcbnHR9sHQIei
+         pc3fKmX1NKP6tElmK58ef2Yf059y2Co0sA3C3g1tOtmP3m6qopOLBxsogiVpHDFyWIrK
+         HXA0n2E2sP3GxzLfAAHZD6KtmB9Pr5SfLbdL0qdTT6yFGX/H6uRCDDW0TWXOKRaaIHxu
+         pW5Q==
+X-Gm-Message-State: APjAAAWmyUWpLiA9X6FJ2FWIfCTuwz/IzLSTQdYbnTy9RDApdc9tgiCY
+        EbfzaUGL4UmoGIs20LfrN+E85l3f
+X-Google-Smtp-Source: APXvYqz9saL7nA5sTLcA8nqhXE69zE8Gqp2pTb8A8s7/LTfbtoDeXQNEO790htc66v9jT4w98SUM9Q==
+X-Received: by 2002:ac8:7751:: with SMTP id g17mr5972802qtu.77.1582925319675;
+        Fri, 28 Feb 2020 13:28:39 -0800 (PST)
 Received: from localhost ([2620:10d:c091:500::1:bc9d])
-        by smtp.gmail.com with ESMTPSA id p19sm5838997qte.81.2020.02.28.13.28.34
+        by smtp.gmail.com with ESMTPSA id l4sm5767977qkl.22.2020.02.28.13.28.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Feb 2020 13:28:34 -0800 (PST)
+        Fri, 28 Feb 2020 13:28:39 -0800 (PST)
 From:   Jes Sorensen <jes.sorensen@gmail.com>
 X-Google-Original-From: Jes Sorensen <Jes.Sorensen@gmail.com>
 To:     linux-fscrypt@vger.kernel.org
 Cc:     kernel-team@fb.com, ebiggers@kernel.org,
         Jes Sorensen <jsorensen@fb.com>
-Subject: [PATCH 4/6] Move hash algorithm code to shared library
-Date:   Fri, 28 Feb 2020 16:28:12 -0500
-Message-Id: <20200228212814.105897-5-Jes.Sorensen@gmail.com>
+Subject: [PATCH 5/6] Create libfsverity_compute_digest() and adapt cmd_sign to use it
+Date:   Fri, 28 Feb 2020 16:28:13 -0500
+Message-Id: <20200228212814.105897-6-Jes.Sorensen@gmail.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200228212814.105897-1-Jes.Sorensen@gmail.com>
 References: <20200228212814.105897-1-Jes.Sorensen@gmail.com>
@@ -65,353 +65,461 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Jes Sorensen <jsorensen@fb.com>
 
-Reimplement show_all_hash_algs() to not rely on direct access to the list,
-and add the algorithm number to the struct, so the user can find it easily.
+This reorganizes the digest signing code and moves it to the shared library.
 
 Signed-off-by: Jes Sorensen <jsorensen@fb.com>
 ---
- Makefile      |  6 +++---
- cmd_enable.c  | 11 ++++++++---
- cmd_measure.c |  4 ++--
- cmd_sign.c    | 18 ++++++++++++------
- fsverity.c    | 14 ++++++++++++++
- hash_algs.c   | 26 +++++++-------------------
- hash_algs.h   | 27 ---------------------------
- libfsverity.h | 22 ++++++++++++++++++++++
- util.h        |  2 ++
- 9 files changed, 70 insertions(+), 60 deletions(-)
+ cmd_sign.c  | 194 +++---------------------------------------------
+ libverity.c | 207 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 217 insertions(+), 184 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index bb85896..966afa0 100644
---- a/Makefile
-+++ b/Makefile
-@@ -6,9 +6,9 @@ LDLIBS := -lcrypto
- DESTDIR := /usr/local
- LIBDIR := /usr/lib64
- SRC := $(wildcard *.c)
--OBJ := fsverity.o hash_algs.o cmd_enable.o cmd_measure.o cmd_sign.o util.o
--SSRC := libverity.c
--SOBJ := libverity.so
-+OBJ := fsverity.o cmd_enable.o cmd_measure.o cmd_sign.o util.o
-+SSRC := libverity.c hash_algs.c
-+SOBJ := libverity.so hash_algs.so
- HDRS := $(wildcard *.h)
- 
- all:$(EXE)
-diff --git a/cmd_enable.c b/cmd_enable.c
-index 1646299..1bed3ef 100644
---- a/cmd_enable.c
-+++ b/cmd_enable.c
-@@ -16,7 +16,7 @@
- 
- #include "commands.h"
- #include "fsverity_uapi.h"
--#include "hash_algs.h"
-+#include "libfsverity.h"
- 
- static bool parse_hash_alg_option(const char *arg, u32 *alg_ptr)
- {
-@@ -36,11 +36,16 @@ static bool parse_hash_alg_option(const char *arg, u32 *alg_ptr)
- 	}
- 
- 	/* Specified by name? */
--	alg = find_hash_alg_by_name(arg);
-+	alg = libfsverity_find_hash_alg_by_name(arg);
- 	if (alg != NULL) {
--		*alg_ptr = alg - fsverity_hash_algs;
-+		*alg_ptr = alg->hash_num;
- 		return true;
- 	}
-+	error_msg("unknown hash algorithm: '%s'", arg);
-+	fputs("Available hash algorithms: ", stderr);
-+	show_all_hash_algs(stderr);
-+	putc('\n', stderr);
-+
- 	return false;
- }
- 
-diff --git a/cmd_measure.c b/cmd_measure.c
-index 574e3ca..4c0777f 100644
---- a/cmd_measure.c
-+++ b/cmd_measure.c
-@@ -13,7 +13,7 @@
- 
- #include "commands.h"
- #include "fsverity_uapi.h"
--#include "hash_algs.h"
-+#include "libfsverity.h"
- 
- /* Display the measurement of the given verity file(s). */
- int fsverity_cmd_measure(const struct fsverity_command *cmd,
-@@ -48,7 +48,7 @@ int fsverity_cmd_measure(const struct fsverity_command *cmd,
- 
- 		ASSERT(d->digest_size <= FS_VERITY_MAX_DIGEST_SIZE);
- 		bin2hex(d->digest, d->digest_size, digest_hex);
--		hash_alg = find_hash_alg_by_num(d->digest_algorithm);
-+		hash_alg = libfsverity_find_hash_alg_by_num(d->digest_algorithm);
- 		if (hash_alg) {
- 			hash_alg_name = hash_alg->name;
- 		} else {
 diff --git a/cmd_sign.c b/cmd_sign.c
-index 1792084..5ad4eda 100644
+index 5ad4eda..6a5d185 100644
 --- a/cmd_sign.c
 +++ b/cmd_sign.c
-@@ -466,7 +466,7 @@ static bool compute_file_measurement(int fd,
- 				     u32 block_size, const u8 *salt,
- 				     u32 salt_size, u8 *measurement)
- {
--	struct hash_ctx *hash = hash_create(hash_alg);
-+	struct hash_ctx *hash = hash_alg->create_ctx(hash_alg);
- 	u64 file_size;
- 	struct fsverity_descriptor desc;
- 	struct stat stbuf;
-@@ -480,7 +480,7 @@ static bool compute_file_measurement(int fd,
- 
- 	memset(&desc, 0, sizeof(desc));
- 	desc.version = 1;
--	desc.hash_algorithm = hash_alg - fsverity_hash_algs;
-+	desc.hash_algorithm = hash_alg->hash_num;
- 
- 	ASSERT(is_power_of_2(block_size));
- 	desc.log_blocksize = ilog2(block_size);
-@@ -552,9 +552,15 @@ int fsverity_cmd_sign(const struct fsverity_command *cmd,
- 				error_msg("--hash-alg can only be specified once");
- 				goto out_usage;
- 			}
--			hash_alg = find_hash_alg_by_name(optarg);
--			if (hash_alg == NULL)
-+			hash_alg = libfsverity_find_hash_alg_by_name(optarg);
-+			if (hash_alg == NULL) {
-+				error_msg("unknown hash algorithm: '%s'",
-+					  optarg);
-+				fputs("Available hash algorithms: ", stderr);
-+				show_all_hash_algs(stderr);
-+				putc('\n', stderr);
- 				goto out_usage;
-+			}
- 			break;
- 		case OPT_BLOCK_SIZE:
- 			if (!parse_block_size_option(optarg, &block_size))
-@@ -590,7 +596,7 @@ int fsverity_cmd_sign(const struct fsverity_command *cmd,
- 		goto out_usage;
- 
- 	if (hash_alg == NULL)
--		hash_alg = &fsverity_hash_algs[FS_VERITY_HASH_ALG_DEFAULT];
-+		hash_alg = libfsverity_find_hash_alg_by_num(FS_VERITY_HASH_ALG_DEFAULT);
- 
- 	if (block_size == 0)
- 		block_size = get_default_block_size();
-@@ -604,7 +610,7 @@ int fsverity_cmd_sign(const struct fsverity_command *cmd,
- 
- 	digest = xzalloc(sizeof(*digest) + hash_alg->digest_size);
- 	memcpy(digest->magic, "FSVerity", 8);
--	digest->digest_algorithm = cpu_to_le16(hash_alg - fsverity_hash_algs);
-+	digest->digest_algorithm = cpu_to_le16(hash_alg->hash_num);
- 	digest->digest_size = cpu_to_le16(hash_alg->digest_size);
- 
- 	if (!open_file(&file, argv[0], O_RDONLY, 0))
-diff --git a/fsverity.c b/fsverity.c
-index c8fa1b5..bc71dd7 100644
---- a/fsverity.c
-+++ b/fsverity.c
-@@ -48,6 +48,20 @@ static const struct fsverity_command {
- 	}
- };
- 
-+void show_all_hash_algs(FILE *fp)
-+{
-+	int i = 1;
-+	const char *sep = "";
-+	const struct fsverity_hash_alg *alg;
-+
-+	while ((alg = libfsverity_find_hash_alg_by_num(i++))) {
-+		if (alg && alg->name) {
-+			fprintf(fp, "%s%s", sep, alg->name);
-+			sep = ", ";
-+		}
-+	}
-+}
-+
- static void usage_all(FILE *fp)
- {
- 	int i;
-diff --git a/hash_algs.c b/hash_algs.c
-index 7251bf2..d9f70b4 100644
---- a/hash_algs.c
-+++ b/hash_algs.c
-@@ -12,6 +12,7 @@
+@@ -16,12 +16,9 @@
+ #include <openssl/pkcs7.h>
+ #include <stdlib.h>
  #include <string.h>
+-#include <sys/stat.h>
+-#include <unistd.h>
  
- #include "fsverity_uapi.h"
-+#include "libfsverity.h"
- #include "hash_algs.h"
+ #include "commands.h"
+ #include "libfsverity.h"
+-#include "hash_algs.h"
  
- /* ========== libcrypto (OpenSSL) wrappers ========== */
-@@ -106,17 +107,20 @@ const struct fsverity_hash_alg fsverity_hash_algs[] = {
- 		.name = "sha256",
- 		.digest_size = 32,
- 		.block_size = 64,
-+		.hash_num = FS_VERITY_HASH_ALG_SHA256,
- 		.create_ctx = create_sha256_ctx,
- 	},
- 	[FS_VERITY_HASH_ALG_SHA512] = {
- 		.name = "sha512",
- 		.digest_size = 64,
- 		.block_size = 128,
-+		.hash_num = FS_VERITY_HASH_ALG_SHA512,
- 		.create_ctx = create_sha512_ctx,
- 	},
- };
- 
--const struct fsverity_hash_alg *find_hash_alg_by_name(const char *name)
-+const struct fsverity_hash_alg *
-+libfsverity_find_hash_alg_by_name(const char *name)
- {
- 	int i;
- 
-@@ -125,14 +129,11 @@ const struct fsverity_hash_alg *find_hash_alg_by_name(const char *name)
- 		    !strcmp(name, fsverity_hash_algs[i].name))
- 			return &fsverity_hash_algs[i];
- 	}
--	error_msg("unknown hash algorithm: '%s'", name);
--	fputs("Available hash algorithms: ", stderr);
--	show_all_hash_algs(stderr);
--	putc('\n', stderr);
- 	return NULL;
+ /*
+  * Format in which verity file measurements are signed.  This is the same as
+@@ -337,179 +334,6 @@ static bool write_signature(const char *filename, const u8 *sig, u32 sig_size)
+ 	return ok;
  }
  
--const struct fsverity_hash_alg *find_hash_alg_by_num(unsigned int num)
-+const struct fsverity_hash_alg *
-+libfsverity_find_hash_alg_by_num(unsigned int num)
- {
- 	if (num < ARRAY_SIZE(fsverity_hash_algs) &&
- 	    fsverity_hash_algs[num].name)
-@@ -141,19 +142,6 @@ const struct fsverity_hash_alg *find_hash_alg_by_num(unsigned int num)
- 	return NULL;
- }
- 
--void show_all_hash_algs(FILE *fp)
--{
--	int i;
--	const char *sep = "";
+-#define FS_VERITY_MAX_LEVELS	64
 -
--	for (i = 0; i < ARRAY_SIZE(fsverity_hash_algs); i++) {
--		if (fsverity_hash_algs[i].name) {
--			fprintf(fp, "%s%s", sep, fsverity_hash_algs[i].name);
--			sep = ", ";
--		}
--	}
--}
--
- /* ->init(), ->update(), and ->final() all in one step */
- void hash_full(struct hash_ctx *ctx, const void *data, size_t size, u8 *digest)
- {
-diff --git a/hash_algs.h b/hash_algs.h
-index 3e90f49..2c7269a 100644
---- a/hash_algs.h
-+++ b/hash_algs.h
-@@ -6,15 +6,6 @@
- 
- #include "util.h"
- 
--struct fsverity_hash_alg {
--	const char *name;
--	unsigned int digest_size;
--	unsigned int block_size;
--	struct hash_ctx *(*create_ctx)(const struct fsverity_hash_alg *alg);
+-struct block_buffer {
+-	u32 filled;
+-	u8 *data;
 -};
 -
--extern const struct fsverity_hash_alg fsverity_hash_algs[];
--
- struct hash_ctx {
- 	const struct fsverity_hash_alg *alg;
- 	void (*init)(struct hash_ctx *ctx);
-@@ -23,24 +14,6 @@ struct hash_ctx {
- 	void (*free)(struct hash_ctx *ctx);
- };
- 
--const struct fsverity_hash_alg *find_hash_alg_by_name(const char *name);
--const struct fsverity_hash_alg *find_hash_alg_by_num(unsigned int num);
--void show_all_hash_algs(FILE *fp);
--
--/* The hash algorithm that fsverity-utils assumes when none is specified */
--#define FS_VERITY_HASH_ALG_DEFAULT	FS_VERITY_HASH_ALG_SHA256
--
 -/*
-- * Largest digest size among all hash algorithms supported by fs-verity.
-- * This can be increased if needed.
+- * Hash a block, writing the result to the next level's pending block buffer.
+- * Returns true if the next level's block became full, else false.
 - */
--#define FS_VERITY_MAX_DIGEST_SIZE	64
--
--static inline struct hash_ctx *hash_create(const struct fsverity_hash_alg *alg)
+-static bool hash_one_block(struct hash_ctx *hash, struct block_buffer *cur,
+-			   u32 block_size, const u8 *salt, u32 salt_size)
 -{
--	return alg->create_ctx(alg);
+-	struct block_buffer *next = cur + 1;
+-
+-	/* Zero-pad the block if it's shorter than block_size. */
+-	memset(&cur->data[cur->filled], 0, block_size - cur->filled);
+-
+-	hash_init(hash);
+-	hash_update(hash, salt, salt_size);
+-	hash_update(hash, cur->data, block_size);
+-	hash_final(hash, &next->data[next->filled]);
+-
+-	next->filled += hash->alg->digest_size;
+-	cur->filled = 0;
+-
+-	return next->filled + hash->alg->digest_size > block_size;
 -}
 -
- static inline void hash_init(struct hash_ctx *ctx)
- {
- 	ctx->init(ctx);
-diff --git a/libfsverity.h b/libfsverity.h
-index 396a6ee..318dcd7 100644
---- a/libfsverity.h
-+++ b/libfsverity.h
-@@ -18,6 +18,9 @@
- #define FS_VERITY_HASH_ALG_SHA256       1
- #define FS_VERITY_HASH_ALG_SHA512       2
+-static int full_read_fd(int fd, void *buf, size_t count)
+-{
+-	while (count) {
+-		int n = read(fd, buf, min(count, INT_MAX));
+-
+-		if (n < 0) {
+-			error_msg_errno("reading from file");
+-			return n;
+-		}
+-		if (n == 0) {
+-			error_msg("unexpected end-of-file");
+-			return -ENODATA;
+-		}
+-		buf += n;
+-		count -= n;
+-	}
+-	return 0;
+-}
+-
+-/*
+- * Compute the file's Merkle tree root hash using the given hash algorithm,
+- * block size, and salt.
+- */
+-static bool compute_root_hash(int fd, u64 file_size,
+-			      struct hash_ctx *hash, u32 block_size,
+-			      const u8 *salt, u32 salt_size, u8 *root_hash)
+-{
+-	const u32 hashes_per_block = block_size / hash->alg->digest_size;
+-	const u32 padded_salt_size = roundup(salt_size, hash->alg->block_size);
+-	u8 *padded_salt = xzalloc(padded_salt_size);
+-	u64 blocks;
+-	int num_levels = 0;
+-	int level;
+-	struct block_buffer _buffers[1 + FS_VERITY_MAX_LEVELS + 1] = {};
+-	struct block_buffer *buffers = &_buffers[1];
+-	u64 offset;
+-	bool ok = false;
+-
+-	if (salt_size != 0)
+-		memcpy(padded_salt, salt, salt_size);
+-
+-	/* Compute number of levels */
+-	for (blocks = DIV_ROUND_UP(file_size, block_size); blocks > 1;
+-	     blocks = DIV_ROUND_UP(blocks, hashes_per_block)) {
+-		ASSERT(num_levels < FS_VERITY_MAX_LEVELS);
+-		num_levels++;
+-	}
+-
+-	/*
+-	 * Allocate the block buffers.  Buffer "-1" is for data blocks.
+-	 * Buffers 0 <= level < num_levels are for the actual tree levels.
+-	 * Buffer 'num_levels' is for the root hash.
+-	 */
+-	for (level = -1; level < num_levels; level++)
+-		buffers[level].data = xmalloc(block_size);
+-	buffers[num_levels].data = root_hash;
+-
+-	/* Hash each data block, also hashing the tree blocks as they fill up */
+-	for (offset = 0; offset < file_size; offset += block_size) {
+-		buffers[-1].filled = min(block_size, file_size - offset);
+-
+-		if (full_read_fd(fd, buffers[-1].data, buffers[-1].filled))
+-			goto out;
+-
+-		level = -1;
+-		while (hash_one_block(hash, &buffers[level], block_size,
+-				      padded_salt, padded_salt_size)) {
+-			level++;
+-			ASSERT(level < num_levels);
+-		}
+-	}
+-	/* Finish all nonempty pending tree blocks */
+-	for (level = 0; level < num_levels; level++) {
+-		if (buffers[level].filled != 0)
+-			hash_one_block(hash, &buffers[level], block_size,
+-				       padded_salt, padded_salt_size);
+-	}
+-
+-	/* Root hash was filled by the last call to hash_one_block() */
+-	ASSERT(buffers[num_levels].filled == hash->alg->digest_size);
+-	ok = true;
+-out:
+-	for (level = -1; level < num_levels; level++)
+-		free(buffers[level].data);
+-	free(padded_salt);
+-	return ok;
+-}
+-
+-/*
+- * Compute the fs-verity measurement of the given file.
+- *
+- * The fs-verity measurement is the hash of the fsverity_descriptor, which
+- * contains the Merkle tree properties including the root hash.
+- */
+-static bool compute_file_measurement(int fd,
+-				     const struct fsverity_hash_alg *hash_alg,
+-				     u32 block_size, const u8 *salt,
+-				     u32 salt_size, u8 *measurement)
+-{
+-	struct hash_ctx *hash = hash_alg->create_ctx(hash_alg);
+-	u64 file_size;
+-	struct fsverity_descriptor desc;
+-	struct stat stbuf;
+-	bool ok = false;
+-
+-	if (fstat(fd, &stbuf) != 0) {
+-		error_msg_errno("can't stat input file");
+-		goto out;
+-	}
+-	file_size = stbuf.st_size;
+-
+-	memset(&desc, 0, sizeof(desc));
+-	desc.version = 1;
+-	desc.hash_algorithm = hash_alg->hash_num;
+-
+-	ASSERT(is_power_of_2(block_size));
+-	desc.log_blocksize = ilog2(block_size);
+-
+-	if (salt_size != 0) {
+-		if (salt_size > sizeof(desc.salt)) {
+-			error_msg("Salt too long (got %u bytes; max is %zu bytes)",
+-				  salt_size, sizeof(desc.salt));
+-			goto out;
+-		}
+-		memcpy(desc.salt, salt, salt_size);
+-		desc.salt_size = salt_size;
+-	}
+-
+-	desc.data_size = cpu_to_le64(file_size);
+-
+-	/* Root hash of empty file is all 0's */
+-	if (file_size != 0 &&
+-	    !compute_root_hash(fd, file_size, hash, block_size, salt,
+-			       salt_size, desc.root_hash))
+-		goto out;
+-
+-	hash_full(hash, &desc, sizeof(desc), measurement);
+-	ok = true;
+-out:
+-	hash_free(hash);
+-	return ok;
+-}
+-
+ enum {
+ 	OPT_HASH_ALG,
+ 	OPT_BLOCK_SIZE,
+@@ -538,7 +362,8 @@ int fsverity_cmd_sign(const struct fsverity_command *cmd,
+ 	u32 salt_size = 0;
+ 	const char *keyfile = NULL;
+ 	const char *certfile = NULL;
+-	struct fsverity_signed_digest *digest = NULL;
++	struct libfsverity_digest *digest = NULL;
++	struct libfsverity_merkle_tree_params params;
+ 	char digest_hex[FS_VERITY_MAX_DIGEST_SIZE * 2 + 1];
+ 	u8 *sig = NULL;
+ 	u32 sig_size;
+@@ -608,16 +433,17 @@ int fsverity_cmd_sign(const struct fsverity_command *cmd,
+ 	if (certfile == NULL)
+ 		certfile = keyfile;
  
-+/* The hash algorithm that fsverity-utils assumes when none is specified */
-+#define FS_VERITY_HASH_ALG_DEFAULT	FS_VERITY_HASH_ALG_SHA256
+-	digest = xzalloc(sizeof(*digest) + hash_alg->digest_size);
+-	memcpy(digest->magic, "FSVerity", 8);
+-	digest->digest_algorithm = cpu_to_le16(hash_alg->hash_num);
+-	digest->digest_size = cpu_to_le16(hash_alg->digest_size);
+-
+ 	if (!open_file(&file, argv[0], O_RDONLY, 0))
+ 		goto out_err;
+ 
+-	if (!compute_file_measurement(file.fd, hash_alg, block_size,
+-				      salt, salt_size, digest->digest))
++	memset(&params, 0, sizeof(struct libfsverity_merkle_tree_params));
++	params.version = 1;
++	params.hash_algorithm = hash_alg->hash_num;
++	params.block_size = block_size;
++	params.salt_size = salt_size;
++	params.salt = salt;
 +
- struct libfsverity_merkle_tree_params {
- 	uint16_t version;
- 	uint16_t hash_algorithm;	/* Matches the digest_algorithm type */
-@@ -27,6 +30,12 @@ struct libfsverity_merkle_tree_params {
- 	uint64_t reserved[11];
- };
++	if (libfsverity_compute_digest(file.fd, &params, &digest))
+ 		goto out_err;
  
-+/*
-+ * Largest digest size among all hash algorithms supported by fs-verity.
-+ * This can be increased if needed.
-+ */
-+#define FS_VERITY_MAX_DIGEST_SIZE	64
+ 	filedes_close(&file);
+diff --git a/libverity.c b/libverity.c
+index 6821aa2..4f01992 100644
+--- a/libverity.c
++++ b/libverity.c
+@@ -8,3 +8,210 @@
+  * Written by Eric Biggers and Jes Sorensen.
+  */
+ 
++#include <openssl/bio.h>
++#include <openssl/err.h>
++#include <openssl/pem.h>
++#include <openssl/pkcs7.h>
++#include <string.h>
++#include <sys/stat.h>
++#include <unistd.h>
 +
- struct libfsverity_digest {
- 	char magic[8];			/* must be "FSVerity" */
- 	uint16_t digest_algorithm;
-@@ -57,9 +66,22 @@ struct fsverity_descriptor {
- 	uint8_t signature[];	/* optional PKCS#7 signature */
- };
- 
-+struct fsverity_hash_alg {
-+	const char *name;
-+	unsigned int digest_size;
-+	unsigned int block_size;
-+	uint16_t hash_num;
-+	struct hash_ctx *(*create_ctx)(const struct fsverity_hash_alg *alg);
++#include "commands.h"
++#include "libfsverity.h"
++#include "hash_algs.h"
++
++#define FS_VERITY_MAX_LEVELS	64
++
++struct block_buffer {
++	u32 filled;
++	u8 *data;
 +};
 +
- int
- libfsverity_compute_digest(int fd,
- 			   const struct libfsverity_merkle_tree_params *params,
- 			   struct libfsverity_digest **digest_ret);
- 
-+const struct fsverity_hash_alg *
-+libfsverity_find_hash_alg_by_name(const char *name);
-+const struct fsverity_hash_alg *
-+libfsverity_find_hash_alg_by_num(unsigned int num);
++/*
++ * Hash a block, writing the result to the next level's pending block buffer.
++ * Returns true if the next level's block became full, else false.
++ */
++static bool hash_one_block(struct hash_ctx *hash, struct block_buffer *cur,
++			   u32 block_size, const u8 *salt, u32 salt_size)
++{
++	struct block_buffer *next = cur + 1;
 +
- #endif
-diff --git a/util.h b/util.h
-index dfa10f2..dd9b803 100644
---- a/util.h
-+++ b/util.h
-@@ -122,4 +122,6 @@ bool filedes_close(struct filedes *file);
- bool hex2bin(const char *hex, u8 *bin, size_t bin_len);
- void bin2hex(const u8 *bin, size_t bin_len, char *hex);
- 
-+void show_all_hash_algs();
++	/* Zero-pad the block if it's shorter than block_size. */
++	memset(&cur->data[cur->filled], 0, block_size - cur->filled);
 +
- #endif /* UTIL_H */
++	hash_init(hash);
++	hash_update(hash, salt, salt_size);
++	hash_update(hash, cur->data, block_size);
++	hash_final(hash, &next->data[next->filled]);
++
++	next->filled += hash->alg->digest_size;
++	cur->filled = 0;
++
++	return next->filled + hash->alg->digest_size > block_size;
++}
++
++static int full_read_fd(int fd, void *buf, size_t count)
++{
++	while (count) {
++		int n = read(fd, buf, min(count, INT_MAX));
++
++		if (n < 0) {
++			error_msg_errno("reading from file");
++			return n;
++		}
++		if (n == 0) {
++			error_msg("unexpected end-of-file");
++			return -ENODATA;
++		}
++		buf += n;
++		count -= n;
++	}
++	return 0;
++}
++
++/*
++ * Compute the file's Merkle tree root hash using the given hash algorithm,
++ * block size, and salt.
++ */
++static bool compute_root_hash(int fd, u64 file_size,
++			      struct hash_ctx *hash, u32 block_size,
++			      const u8 *salt, u32 salt_size, u8 *root_hash)
++{
++	const u32 hashes_per_block = block_size / hash->alg->digest_size;
++	const u32 padded_salt_size = roundup(salt_size, hash->alg->block_size);
++	u8 *padded_salt = xzalloc(padded_salt_size);
++	u64 blocks;
++	int num_levels = 0;
++	int level;
++	struct block_buffer _buffers[1 + FS_VERITY_MAX_LEVELS + 1] = {};
++	struct block_buffer *buffers = &_buffers[1];
++	u64 offset;
++	bool ok = false;
++
++	if (salt_size != 0)
++		memcpy(padded_salt, salt, salt_size);
++
++	/* Compute number of levels */
++	for (blocks = DIV_ROUND_UP(file_size, block_size); blocks > 1;
++	     blocks = DIV_ROUND_UP(blocks, hashes_per_block)) {
++		ASSERT(num_levels < FS_VERITY_MAX_LEVELS);
++		num_levels++;
++	}
++
++	/*
++	 * Allocate the block buffers.  Buffer "-1" is for data blocks.
++	 * Buffers 0 <= level < num_levels are for the actual tree levels.
++	 * Buffer 'num_levels' is for the root hash.
++	 */
++	for (level = -1; level < num_levels; level++)
++		buffers[level].data = xmalloc(block_size);
++	buffers[num_levels].data = root_hash;
++
++	/* Hash each data block, also hashing the tree blocks as they fill up */
++	for (offset = 0; offset < file_size; offset += block_size) {
++		buffers[-1].filled = min(block_size, file_size - offset);
++
++		if (full_read_fd(fd, buffers[-1].data, buffers[-1].filled))
++			goto out;
++
++		level = -1;
++		while (hash_one_block(hash, &buffers[level], block_size,
++				      padded_salt, padded_salt_size)) {
++			level++;
++			ASSERT(level < num_levels);
++		}
++	}
++	/* Finish all nonempty pending tree blocks */
++	for (level = 0; level < num_levels; level++) {
++		if (buffers[level].filled != 0)
++			hash_one_block(hash, &buffers[level], block_size,
++				       padded_salt, padded_salt_size);
++	}
++
++	/* Root hash was filled by the last call to hash_one_block() */
++	ASSERT(buffers[num_levels].filled == hash->alg->digest_size);
++	ok = true;
++out:
++	for (level = -1; level < num_levels; level++)
++		free(buffers[level].data);
++	free(padded_salt);
++	return ok;
++}
++
++/*
++ * Compute the fs-verity measurement of the given file.
++ *
++ * The fs-verity measurement is the hash of the fsverity_descriptor, which
++ * contains the Merkle tree properties including the root hash.
++ */
++int
++libfsverity_compute_digest(int fd,
++			   const struct libfsverity_merkle_tree_params *params,
++			   struct libfsverity_digest **digest_ret)
++{
++	const struct fsverity_hash_alg *hash_alg;
++	struct libfsverity_digest *digest;
++	struct hash_ctx *hash;
++	struct fsverity_descriptor desc;
++	struct stat stbuf;
++	u64 file_size;
++	int retval = -EINVAL;
++
++	hash_alg = libfsverity_find_hash_alg_by_num(params->hash_algorithm);
++	hash = hash_alg->create_ctx(hash_alg);
++
++	digest = malloc(sizeof(struct libfsverity_digest) +
++			hash_alg->digest_size);
++	if (!digest_ret)
++		return -ENOMEM;
++	memcpy(digest->magic, "FSVerity", 8);
++	digest->digest_algorithm = cpu_to_le16(hash_alg->hash_num);
++	digest->digest_size = cpu_to_le16(hash_alg->digest_size);
++	memset(digest->digest, 0, hash_alg->digest_size);
++
++	if (fstat(fd, &stbuf) != 0) {
++		error_msg_errno("can't stat input file");
++		retval = -EBADF;
++		goto error_out;
++	}
++	file_size = stbuf.st_size;
++
++	memset(&desc, 0, sizeof(desc));
++	desc.version = 1;
++	desc.hash_algorithm = params->hash_algorithm;
++
++	ASSERT(is_power_of_2(params->block_size));
++	desc.log_blocksize = ilog2(params->block_size);
++
++	if (params->salt_size != 0) {
++		if (params->salt_size > sizeof(desc.salt)) {
++			error_msg("Salt too long (got %u bytes; max is %zu bytes)",
++				  params->salt_size, sizeof(desc.salt));
++			retval = EINVAL;
++			goto error_out;
++		}
++		memcpy(desc.salt, params->salt, params->salt_size);
++		desc.salt_size = params->salt_size;
++	}
++
++	desc.data_size = cpu_to_le64(file_size);
++
++	/* Root hash of empty file is all 0's */
++	if (file_size != 0 &&
++	    !compute_root_hash(fd, file_size, hash, params->block_size,
++			       params->salt, params->salt_size,
++			       desc.root_hash)) {
++		retval = -EAGAIN;
++		goto error_out;
++	}
++
++	hash_full(hash, &desc, sizeof(desc), digest->digest);
++	hash_free(hash);
++	*digest_ret = digest;
++
++	return 0;
++
++ error_out:
++	free(digest);
++	return retval;
++}
 -- 
 2.24.1
 
