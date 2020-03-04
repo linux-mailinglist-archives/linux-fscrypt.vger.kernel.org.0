@@ -2,156 +2,112 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 976181761C5
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  2 Mar 2020 19:02:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3375178827
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  4 Mar 2020 03:21:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727030AbgCBSCe (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 2 Mar 2020 13:02:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40718 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726451AbgCBSCe (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 2 Mar 2020 13:02:34 -0500
-Received: from gmail.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E05EF21D56;
-        Mon,  2 Mar 2020 18:02:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1583172153;
-        bh=FtRqmbetKtzAhjYcG5f4Oa0sNs/qid5+5M0b5btzGXw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aFeNoIFDszMPgvo966bttNOOPowGZjl/VVfDXEcrJi0so2an1200uOYyaWsv48ldC
-         dzPZ0wic/6rn1UtkodXalYFqQcXtOx/eM//smEXWhvfrZCvfBZqmJf7T17G3ncpaFi
-         2KQ09Y5RU+F9ezU8baBANM6Rgk203ig1r50yyNkc=
-Date:   Mon, 2 Mar 2020 10:02:31 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Stanley Chu <stanley.chu@mediatek.com>
-Cc:     linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
-        avri.altman@wdc.com, alim.akhtar@samsung.com, jejb@linux.ibm.com,
-        beanhuo@micron.com, cang@codeaurora.org, satyat@google.com,
-        matthias.bgg@gmail.com, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, kuohong.wang@mediatek.com,
-        peter.wang@mediatek.com, chun-hung.wu@mediatek.com,
-        andy.teng@mediatek.com, light.hsieh@mediatek.com
-Subject: Re: [RFC PATCH v1] scsi: ufs-mediatek: add inline encryption support
-Message-ID: <20200302180231.GB98133@gmail.com>
-References: <20200302091138.10341-1-stanley.chu@mediatek.com>
+        id S2387460AbgCDCVb (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 3 Mar 2020 21:21:31 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:51183 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2387400AbgCDCVa (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 3 Mar 2020 21:21:30 -0500
+X-UUID: dbc3c446a699493cab4b5666f1c37bf2-20200304
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=Dm2V6GDWvlxQSEubyRoFN1pLie+rFhFwHaZFOLLiCqw=;
+        b=iyv4DQGAgUhykmexFoEHsa+5g7ZRs/voyb4EhescE6Mha12o3MgyFqBvQbWDpv2bX9/hDyD2MqAfQRwzUO7iTdekXVy76Do0Hh6kp7gsh4D4AUuP7C5mKI0WkxitFUWpUufYBLcIMV1KZo/dgRTv/l+Ewpf1ZHmKTzLmUQjFdn8=;
+X-UUID: dbc3c446a699493cab4b5666f1c37bf2-20200304
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 947991880; Wed, 04 Mar 2020 10:21:17 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1395.4; Wed, 4 Mar 2020 10:18:34 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1395.4 via Frontend
+ Transport; Wed, 4 Mar 2020 10:18:44 +0800
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     <linux-scsi@vger.kernel.org>, <ebiggers@kernel.org>,
+        <martin.petersen@oracle.com>, <avri.altman@wdc.com>,
+        <alim.akhtar@samsung.com>, <jejb@linux.ibm.com>
+CC:     <beanhuo@micron.com>, <cang@codeaurora.org>, <satyat@google.com>,
+        <matthias.bgg@gmail.com>, <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-fscrypt@vger.kernel.org>,
+        <kuohong.wang@mediatek.com>, <peter.wang@mediatek.com>,
+        <chun-hung.wu@mediatek.com>, <andy.teng@mediatek.com>,
+        <light.hsieh@mediatek.com>, Stanley Chu <stanley.chu@mediatek.com>
+Subject: [RFC PATCH v2] scsi: ufs-mediatek: add inline encryption support
+Date:   Wed, 4 Mar 2020 10:21:02 +0800
+Message-ID: <20200304022101.14165-1-stanley.chu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200302091138.10341-1-stanley.chu@mediatek.com>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 6FCB616A2934E695AB18D81FA70BEAADA050A97D3BDBD961B702E6F8CF1085B92000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Mar 02, 2020 at 05:11:38PM +0800, Stanley Chu wrote:
-> Add inline encryption support to ufs-mediatek.
-> 
-> The standards-compliant parts, such as querying the crypto capabilities
-> and enabling crypto for individual UFS requests, are already handled by
-> ufshcd-crypto.c, which itself is wired into the blk-crypto framework.
-> 
-> However MediaTek UFS host requires a vendor-specific hce_enable operation
-> to allow crypto-related registers being accessed normally in kernel.
-> After this step, MediaTek UFS host can work as standard-compliant host
-> for inline-encryption related functions.
-> 
-> This patch is rebased to the latest wip-inline-encryption branch in
-> Eric Biggers's git:
-> https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git/
+QWRkIGlubGluZSBlbmNyeXB0aW9uIHN1cHBvcnQgdG8gdWZzLW1lZGlhdGVrLg0KDQpUaGUgc3Rh
+bmRhcmRzLWNvbXBsaWFudCBwYXJ0cywgc3VjaCBhcyBxdWVyeWluZyB0aGUgY3J5cHRvIGNhcGFi
+aWxpdGllcw0KYW5kIGVuYWJsaW5nIGNyeXB0byBmb3IgaW5kaXZpZHVhbCBVRlMgcmVxdWVzdHMs
+IGFyZSBhbHJlYWR5IGhhbmRsZWQgYnkNCnVmc2hjZC1jcnlwdG8uYywgd2hpY2ggaXRzZWxmIGlz
+IHdpcmVkIGludG8gdGhlIGJsay1jcnlwdG8gZnJhbWV3b3JrLg0KDQpIb3dldmVyIE1lZGlhVGVr
+IFVGUyBob3N0IHJlcXVpcmVzIGEgdmVuZG9yLXNwZWNpZmljIGhjZV9lbmFibGUgb3BlcmF0aW9u
+DQp0byBhbGxvdyBjcnlwdG8tcmVsYXRlZCByZWdpc3RlcnMgYmVpbmcgYWNjZXNzZWQgbm9ybWFs
+bHkgaW4ga2VybmVsLg0KQWZ0ZXIgdGhpcyBzdGVwLCBNZWRpYVRlayBVRlMgaG9zdCBjYW4gd29y
+ayBhcyBzdGFuZGFyZC1jb21wbGlhbnQgaG9zdA0KZm9yIGlubGluZS1lbmNyeXB0aW9uIHJlbGF0
+ZWQgZnVuY3Rpb25zLg0KDQpUaGlzIHBhdGNoIGlzIHJlYmFzZWQgdG8gYmVsb3cgcmVwbyBhbmQg
+dGFnOg0KCVJlcG86IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9mcy9mc2NyeXB0L2Zz
+Y3J5cHQuZ2l0DQoJVGFnOiBpbmxpbmUtZW5jcnlwdGlvbi12Nw0KDQpTaWduZWQtb2ZmLWJ5OiBT
+dGFubGV5IENodSA8c3RhbmxleS5jaHVAbWVkaWF0ZWsuY29tPg0KLS0tDQogZHJpdmVycy9zY3Np
+L3Vmcy91ZnMtbWVkaWF0ZWsuYyB8IDI3ICsrKysrKysrKysrKysrKysrKysrKysrKysrLQ0KIGRy
+aXZlcnMvc2NzaS91ZnMvdWZzLW1lZGlhdGVrLmggfCAgMSArDQogMiBmaWxlcyBjaGFuZ2VkLCAy
+NyBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQoNCmRpZmYgLS1naXQgYS9kcml2ZXJzL3Nj
+c2kvdWZzL3Vmcy1tZWRpYXRlay5jIGIvZHJpdmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0ZWsuYw0K
+aW5kZXggNTNlYWU1ZmUyYWRlLi4xMmQwMWZkM2Q1ZTEgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL3Nj
+c2kvdWZzL3Vmcy1tZWRpYXRlay5jDQorKysgYi9kcml2ZXJzL3Njc2kvdWZzL3Vmcy1tZWRpYXRl
+ay5jDQpAQCAtMTUsNiArMTUsNyBAQA0KICNpbmNsdWRlIDxsaW51eC9zb2MvbWVkaWF0ZWsvbXRr
+X3NpcF9zdmMuaD4NCiANCiAjaW5jbHVkZSAidWZzaGNkLmgiDQorI2luY2x1ZGUgInVmc2hjZC1j
+cnlwdG8uaCINCiAjaW5jbHVkZSAidWZzaGNkLXBsdGZybS5oIg0KICNpbmNsdWRlICJ1ZnNfcXVp
+cmtzLmgiDQogI2luY2x1ZGUgInVuaXByby5oIg0KQEAgLTI0LDYgKzI1LDkgQEANCiAJYXJtX3Nt
+Y2NjX3NtYyhNVEtfU0lQX1VGU19DT05UUk9MLCBcDQogCQkgICAgICBjbWQsIHZhbCwgMCwgMCwg
+MCwgMCwgMCwgJihyZXMpKQ0KIA0KKyNkZWZpbmUgdWZzX210a19jcnlwdG9fY3RybChyZXMsIGVu
+YWJsZSkgXA0KKwl1ZnNfbXRrX3NtYyhVRlNfTVRLX1NJUF9DUllQVE9fQ1RSTCwgZW5hYmxlLCBy
+ZXMpDQorDQogI2RlZmluZSB1ZnNfbXRrX3JlZl9jbGtfbm90aWZ5KG9uLCByZXMpIFwNCiAJdWZz
+X210a19zbWMoVUZTX01US19TSVBfUkVGX0NMS19OT1RJRklDQVRJT04sIG9uLCByZXMpDQogDQpA
+QCAtNjYsNyArNzAsMjcgQEAgc3RhdGljIHZvaWQgdWZzX210a19jZmdfdW5pcHJvX2NnKHN0cnVj
+dCB1ZnNfaGJhICpoYmEsIGJvb2wgZW5hYmxlKQ0KIAl9DQogfQ0KIA0KLXN0YXRpYyBpbnQgdWZz
+X210a19iaW5kX21waHkoc3RydWN0IHVmc19oYmEgKmhiYSkNCitzdGF0aWMgdm9pZCB1ZnNfbXRr
+X2NyeXB0b19lbmFibGUoc3RydWN0IHVmc19oYmEgKmhiYSkNCit7DQorCXN0cnVjdCBhcm1fc21j
+Y2NfcmVzIHJlczsNCisNCisJdWZzX210a19jcnlwdG9fY3RybChyZXMsIDEpOw0KKwlpZiAocmVz
+LmEwKSB7DQorCQlkZXZfaW5mbyhoYmEtPmRldiwgIiVzOiBjcnlwdG8gZW5hYmxlIGZhaWxlZCwg
+ZXJyOiAlbHVcbiIsDQorCQkJIF9fZnVuY19fLCByZXMuYTApOw0KKwl9DQorfQ0KKw0KK3N0YXRp
+YyBpbnQgdWZzX210a19oY2VfZW5hYmxlX25vdGlmeShzdHJ1Y3QgdWZzX2hiYSAqaGJhLA0KKwkJ
+CQkgICAgIGVudW0gdWZzX25vdGlmeV9jaGFuZ2Vfc3RhdHVzIHN0YXR1cykNCit7DQorCWlmIChz
+dGF0dXMgPT0gUFJFX0NIQU5HRSAmJiB1ZnNoY2RfaGJhX2lzX2NyeXB0b19zdXBwb3J0ZWQoaGJh
+KSkNCisJCXVmc19tdGtfY3J5cHRvX2VuYWJsZShoYmEpOw0KKw0KKwlyZXR1cm4gMDsNCit9DQor
+DQoraW50IHVmc19tdGtfYmluZF9tcGh5KHN0cnVjdCB1ZnNfaGJhICpoYmEpDQogew0KIAlzdHJ1
+Y3QgdWZzX210a19ob3N0ICpob3N0ID0gdWZzaGNkX2dldF92YXJpYW50KGhiYSk7DQogCXN0cnVj
+dCBkZXZpY2UgKmRldiA9IGhiYS0+ZGV2Ow0KQEAgLTQ5NCw2ICs1MTgsNyBAQCBzdGF0aWMgc3Ry
+dWN0IHVmc19oYmFfdmFyaWFudF9vcHMgdWZzX2hiYV9tdGtfdm9wcyA9IHsNCiAJLm5hbWUgICAg
+ICAgICAgICAgICAgPSAibWVkaWF0ZWsudWZzaGNpIiwNCiAJLmluaXQgICAgICAgICAgICAgICAg
+PSB1ZnNfbXRrX2luaXQsDQogCS5zZXR1cF9jbG9ja3MgICAgICAgID0gdWZzX210a19zZXR1cF9j
+bG9ja3MsDQorCS5oY2VfZW5hYmxlX25vdGlmeSAgID0gdWZzX210a19oY2VfZW5hYmxlX25vdGlm
+eSwNCiAJLmxpbmtfc3RhcnR1cF9ub3RpZnkgPSB1ZnNfbXRrX2xpbmtfc3RhcnR1cF9ub3RpZnks
+DQogCS5wd3JfY2hhbmdlX25vdGlmeSAgID0gdWZzX210a19wd3JfY2hhbmdlX25vdGlmeSwNCiAJ
+LmFwcGx5X2Rldl9xdWlya3MgICAgPSB1ZnNfbXRrX2FwcGx5X2Rldl9xdWlya3MsDQpkaWZmIC0t
+Z2l0IGEvZHJpdmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0ZWsuaCBiL2RyaXZlcnMvc2NzaS91ZnMv
+dWZzLW1lZGlhdGVrLmgNCmluZGV4IGZjY2RkOTc5ZDZmYi4uNWViYWE1OTg5OGJmIDEwMDY0NA0K
+LS0tIGEvZHJpdmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0ZWsuaA0KKysrIGIvZHJpdmVycy9zY3Np
+L3Vmcy91ZnMtbWVkaWF0ZWsuaA0KQEAgLTU4LDYgKzU4LDcgQEANCiAgKi8NCiAjZGVmaW5lIE1U
+S19TSVBfVUZTX0NPTlRST0wgICAgICAgICAgICAgICBNVEtfU0lQX1NNQ19DTUQoMHgyNzYpDQog
+I2RlZmluZSBVRlNfTVRLX1NJUF9ERVZJQ0VfUkVTRVQgICAgICAgICAgQklUKDEpDQorI2RlZmlu
+ZSBVRlNfTVRLX1NJUF9DUllQVE9fQ1RSTCAgICAgICAgICAgQklUKDIpDQogI2RlZmluZSBVRlNf
+TVRLX1NJUF9SRUZfQ0xLX05PVElGSUNBVElPTiAgQklUKDMpDQogDQogLyoNCi0tIA0KMi4xOC4w
+DQo=
 
-Please don't use a random work-in-progress branch from my git repository (which
-hasn't been updated to the v7 patchset yet and will be rebased); use instead:
-
-	Repo: https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git
-	Tag: inline-encryption-v7
-
-Also, this patch doesn't apply to either branch anyway:
-
-Applying: scsi: ufs-mediatek: add inline encryption support
-Using index info to reconstruct a base tree...
-error: patch failed: drivers/scsi/ufs/ufs-mediatek.c:15
-error: drivers/scsi/ufs/ufs-mediatek.c: patch does not apply
-error: patch failed: drivers/scsi/ufs/ufs-mediatek.h:58
-error: drivers/scsi/ufs/ufs-mediatek.h: patch does not apply
-error: Did you hand edit your patch?
-
-> diff --git a/drivers/scsi/ufs/ufs-mediatek.c b/drivers/scsi/ufs/ufs-mediatek.c
-> index 53eae5fe2ade..12d01fd3d5e1 100644
-> --- a/drivers/scsi/ufs/ufs-mediatek.c
-> +++ b/drivers/scsi/ufs/ufs-mediatek.c
-> @@ -15,6 +15,7 @@
->  #include <linux/soc/mediatek/mtk_sip_svc.h>
->  
->  #include "ufshcd.h"
-> +#include "ufshcd-crypto.h"
->  #include "ufshcd-pltfrm.h"
->  #include "ufs_quirks.h"
->  #include "unipro.h"
-> @@ -24,6 +25,9 @@
->  	arm_smccc_smc(MTK_SIP_UFS_CONTROL, \
->  		      cmd, val, 0, 0, 0, 0, 0, &(res))
->  
-> +#define ufs_mtk_crypto_ctrl(res, enable) \
-> +	ufs_mtk_smc(UFS_MTK_SIP_CRYPTO_CTRL, enable, res)
-> +
->  #define ufs_mtk_ref_clk_notify(on, res) \
->  	ufs_mtk_smc(UFS_MTK_SIP_REF_CLK_NOTIFICATION, on, res)
->  
-> @@ -66,7 +70,27 @@ static void ufs_mtk_cfg_unipro_cg(struct ufs_hba *hba, bool enable)
->  	}
->  }
->  
-> -static int ufs_mtk_bind_mphy(struct ufs_hba *hba)
-> +static void ufs_mtk_crypto_enable(struct ufs_hba *hba)
-> +{
-> +	struct arm_smccc_res res;
-> +
-> +	ufs_mtk_crypto_ctrl(res, 1);
-> +	if (res.a0) {
-> +		dev_info(hba->dev, "%s: crypto enable failed, err: %lu\n",
-> +			 __func__, res.a0);
-> +	}
-> +}
-> +
-> +static int ufs_mtk_hce_enable_notify(struct ufs_hba *hba,
-> +				     enum ufs_notify_change_status status)
-> +{
-> +	if (status == PRE_CHANGE && ufshcd_hba_is_crypto_supported(hba))
-> +		ufs_mtk_crypto_enable(hba);
-> +
-> +	return 0;
-> +}
-> +
-> +int ufs_mtk_bind_mphy(struct ufs_hba *hba)
->  {
->  	struct ufs_mtk_host *host = ufshcd_get_variant(hba);
->  	struct device *dev = hba->dev;
-> @@ -494,6 +518,7 @@ static struct ufs_hba_variant_ops ufs_hba_mtk_vops = {
->  	.name                = "mediatek.ufshci",
->  	.init                = ufs_mtk_init,
->  	.setup_clocks        = ufs_mtk_setup_clocks,
-> +	.hce_enable_notify   = ufs_mtk_hce_enable_notify,
->  	.link_startup_notify = ufs_mtk_link_startup_notify,
->  	.pwr_change_notify   = ufs_mtk_pwr_change_notify,
->  	.apply_dev_quirks    = ufs_mtk_apply_dev_quirks,
-> diff --git a/drivers/scsi/ufs/ufs-mediatek.h b/drivers/scsi/ufs/ufs-mediatek.h
-> index fccdd979d6fb..5ebaa59898bf 100644
-> --- a/drivers/scsi/ufs/ufs-mediatek.h
-> +++ b/drivers/scsi/ufs/ufs-mediatek.h
-> @@ -58,6 +58,7 @@
->   */
->  #define MTK_SIP_UFS_CONTROL               MTK_SIP_SMC_CMD(0x276)
->  #define UFS_MTK_SIP_DEVICE_RESET          BIT(1)
-> +#define UFS_MTK_SIP_CRYPTO_CTRL           BIT(2)
->  #define UFS_MTK_SIP_REF_CLK_NOTIFICATION  BIT(3)
-
-But if this is all that's needed to get inline crypto working with Mediatek UFS,
-that's great news.
-
-Thanks!
-
-- Eric
