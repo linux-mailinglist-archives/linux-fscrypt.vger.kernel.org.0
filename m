@@ -2,34 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 014DE17A190
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  5 Mar 2020 09:42:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3504217A1A7
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  5 Mar 2020 09:46:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726101AbgCEIma (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 5 Mar 2020 03:42:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39844 "EHLO mail.kernel.org"
+        id S1725924AbgCEIqr (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 5 Mar 2020 03:46:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725900AbgCEIm3 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 5 Mar 2020 03:42:29 -0500
+        id S1725866AbgCEIqr (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 5 Mar 2020 03:46:47 -0500
 Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1BF482146E;
-        Thu,  5 Mar 2020 08:42:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DD1DA2146E;
+        Thu,  5 Mar 2020 08:46:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1583397749;
-        bh=K/56YT+etKnoKYjtDmkQrf9U3Pw0mVZKDfdV/kmF4ks=;
+        s=default; t=1583398006;
+        bh=TDVkawuh32GQN4TFLHkkDeskDdM2MRcctGCjf9iIfv8=;
         h=From:To:Cc:Subject:Date:From;
-        b=R37w+oJeIdHqMiqGjA3IcdEQaYStFgKRJ90nIWmmQIJ+tqio/I6Sjxb5GOyK6x59/
-         bZgSoVH/ljq8omzN71BE5Q/8QiGQwxl2qkU0Tx6SPVUHGClNHtsepqWO9Q5SHBFqwQ
-         JlrZ/avFlhIJeUfAFnny/KFFFrNFQf04GaSRuMFY=
+        b=auApwJf2pBIHD13Xuj0tGO60HYJNT3zwlLDcswE8Ht0fuySMtZNAHqmV2JXs6Xlo+
+         lfY2eiyxlYx7yYNwq8nNdrhR5ozN88KOm765yyDhjlUoXrZy/u0pi2Z+/JBbTXwvTE
+         4TcJ6frndx/LvyCaidi5rwcTUGVpyRXZpGWl3H1k=
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH] fscrypt: don't evict dirty inodes after removing key
-Date:   Thu,  5 Mar 2020 00:41:38 -0800
-Message-Id: <20200305084138.653498-1-ebiggers@kernel.org>
+To:     fstests@vger.kernel.org
+Cc:     linux-fscrypt@vger.kernel.org
+Subject: [xfstests RFC PATCH] generic: test fscrypt key eviction racing with inode dirtying
+Date:   Thu,  5 Mar 2020 00:46:06 -0800
+Message-Id: <20200305084606.653902-1-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -40,52 +39,176 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-After FS_IOC_REMOVE_ENCRYPTION_KEY removes a key, it syncs the
-filesystem and tries to get and put all inodes that were unlocked by the
-key so that unused inodes get evicted via fscrypt_drop_inode().
-Normally, the inodes are all clean due to the sync.
+Add a regression test for a bug in the FS_IOC_REMOVE_ENCRYPTION_KEY
+ioctl fixed by commit XXXXXXXXXXXX ("fscrypt: don't evict dirty inodes
+after removing key").
 
-However, after the filesystem is sync'ed, userspace can modify and close
-one of the files.  (Userspace is *supposed* to close the files before
-removing the key.  But it doesn't always happen, and the kernel can't
-assume it.)  This causes the inode to be dirtied and have i_count == 0.
-Then, fscrypt_drop_inode() failed to consider this case and indicated
-that the inode can be dropped, causing the write to be lost.
+This ioctl is also tested by generic/580 and generic/581, but they
+didn't cover the case where this bug occurs.
 
-On f2fs, other problems such as a filesystem freeze could occur due to
-the inode being freed while still on f2fs's dirty inode list.
+This test detects the bug on ext4, f2fs, and ubifs.  The multi-threaded
+part of the test actually still fails on ubifs even with the fix, due to
+another kernel bug which I'm working on fixing.
 
-Fix this bug by making fscrypt_drop_inode() only drop clean inodes.
-
-I've written an xfstest which detects this bug on ext4, f2fs, and ubifs.
-
-Fixes: b1c0ec3599f4 ("fscrypt: add FS_IOC_REMOVE_ENCRYPTION_KEY ioctl")
-Cc: <stable@vger.kernel.org> # v5.4+
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/crypto/keysetup.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
 
-diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index 65cb09fa6ead..08c9f216a54d 100644
---- a/fs/crypto/keysetup.c
-+++ b/fs/crypto/keysetup.c
-@@ -538,6 +538,15 @@ int fscrypt_drop_inode(struct inode *inode)
- 		return 0;
- 	mk = ci->ci_master_key->payload.data[0];
- 
-+	/*
-+	 * With proper, non-racy use of FS_IOC_REMOVE_ENCRYPTION_KEY, all inodes
-+	 * protected by the key were cleaned by sync_filesystem().  But if
-+	 * userspace is still using the files, inodes can be dirtied between
-+	 * then and now.  We mustn't lose any writes, so skip dirty inodes here.
-+	 */
-+	if (inode->i_state & I_DIRTY_ALL)
-+		return 0;
+Not for merging yet.  Sending this out for comment alongside the kernel
+patch https://lkml.kernel.org/r/20200305084138.653498-1-ebiggers@kernel.org
+
+ tests/generic/900     | 115 ++++++++++++++++++++++++++++++++++++++++++
+ tests/generic/900.out |  10 ++++
+ tests/generic/group   |   1 +
+ 3 files changed, 126 insertions(+)
+ create mode 100755 tests/generic/900
+ create mode 100644 tests/generic/900.out
+
+diff --git a/tests/generic/900 b/tests/generic/900
+new file mode 100755
+index 000000000..737bb7ec1
+--- /dev/null
++++ b/tests/generic/900
+@@ -0,0 +1,115 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright 2020 Google LLC
++#
++# FS QA Test No. 900
++#
++# Regression test for a bug in the FS_IOC_REMOVE_ENCRYPTION_KEY ioctl fixed by
++# commit XXXXXXXXXXXX ("fscrypt: don't evict dirty inodes after removing key").
++# This bug could cause writes to encrypted files to be lost if they raced with
++# the corresponding fscrypt master key being removed.  With f2fs, this bug could
++# also crash the kernel.
++#
++seq=`basename $0`
++seqres=$RESULT_DIR/$seq
++echo "QA output created by $seq"
 +
- 	/*
- 	 * Note: since we aren't holding ->mk_secret_sem, the result here can
- 	 * immediately become outdated.  But there's no correctness problem with
++here=`pwd`
++tmp=/tmp/$$
++status=1	# failure is the default!
++trap "_cleanup; exit \$status" 0 1 2 3 15
++
++_cleanup()
++{
++	# Stop all subprocesses.
++	touch $tmp.done
++	wait
++
++	rm -f $tmp.*
++}
++
++# get standard environment, filters and checks
++. ./common/rc
++. ./common/filter
++. ./common/encrypt
++
++# remove previous $seqres.full before test
++rm -f $seqres.full
++
++# real QA test starts here
++_supported_fs generic
++_supported_os Linux
++_require_scratch_encryption -v 2
++_require_command "$KEYCTL_PROG" keyctl
++
++_scratch_mkfs_encrypted &>> $seqres.full
++_scratch_mount
++
++dir=$SCRATCH_MNT/dir
++runtime=$((4 * TIME_FACTOR))
++
++# Create an encrypted directory.
++mkdir $dir
++_set_encpolicy $dir $TEST_KEY_IDENTIFIER
++_add_enckey $SCRATCH_MNT "$TEST_RAW_KEY"
++
++# Start with a single-threaded reproducer:
++echo -e "\n# Single-threaded reproducer"
++# Keep a fd open to a file past its fscrypt master key being removed.
++exec 3>$dir/file
++_rm_enckey $SCRATCH_MNT $TEST_KEY_IDENTIFIER
++# Write to and close the open fd.
++echo contents >&3
++exec 3>&-
++# Drop any dentries which might be pinning the inode for "file".
++echo 2 > /proc/sys/vm/drop_caches
++# In buggy kernels, the inode for "file" was evicted despite the dirty data,
++# causing the dirty data to be lost.  Check whether the write made it through.
++_add_enckey $SCRATCH_MNT "$TEST_RAW_KEY"
++cat $dir/file
++rm -f $dir/file
++
++# Also run a multi-threaded reproducer.  This is included for good measure, as
++# this type of thing tends to be good for finding other bugs too.
++echo -e "\n# Multi-threaded reproducer"
++touch $dir/file
++
++# One process add/removes the encryption key repeatedly.
++(
++	while [ ! -e $tmp.done ]; do
++		_add_enckey $SCRATCH_MNT "$TEST_RAW_KEY" &> /dev/null
++		_rm_enckey $SCRATCH_MNT $TEST_KEY_IDENTIFIER &> /dev/null
++	done
++) &
++
++# Another process repeatedly tries to append to the encrypted file.  The file is
++# re-opened each time, so that there are chances for the inode to be evicted.
++# Failures to open the file due to the key being removed are ignored.
++(
++	touch $tmp.expected
++	while [ ! -e $tmp.done ]; do
++		if sh -c "echo -n X >> $dir/file" 2>/dev/null; then
++			# Keep track of the expected file contents.
++			echo -n X >> $tmp.expected
++		fi
++	done
++) &
++
++# Run for a while.
++sleep $runtime
++
++# Stop all subprocesses.
++touch $tmp.done
++wait
++
++# Make sure no writes were lost.
++_add_enckey $SCRATCH_MNT "$TEST_RAW_KEY" &> /dev/null
++stat $tmp.expected >> $seqres.full
++stat $dir/file >> $seqres.full
++cmp $tmp.expected $dir/file
++
++echo "Multi-threaded reproducer done"
++
++# success, all done
++status=0
++exit
+diff --git a/tests/generic/900.out b/tests/generic/900.out
+new file mode 100644
+index 000000000..14fde4c83
+--- /dev/null
++++ b/tests/generic/900.out
+@@ -0,0 +1,10 @@
++QA output created by 900
++Added encryption key with identifier 69b2f6edeee720cce0577937eb8a6751
++
++# Single-threaded reproducer
++Removed encryption key with identifier 69b2f6edeee720cce0577937eb8a6751, but files still busy
++Added encryption key with identifier 69b2f6edeee720cce0577937eb8a6751
++contents
++
++# Multi-threaded reproducer
++Multi-threaded reproducer done
+diff --git a/tests/generic/group b/tests/generic/group
+index ff79a5970..f94c15361 100644
+--- a/tests/generic/group
++++ b/tests/generic/group
+@@ -596,3 +596,4 @@
+ 591 auto quick rw pipe splice
+ 592 auto quick encrypt
+ 593 auto quick encrypt
++900 auto quick encrypt
 -- 
 2.25.1
 
