@@ -2,213 +2,68 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3504217A1A7
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  5 Mar 2020 09:46:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84E4117AA3A
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  5 Mar 2020 17:11:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725924AbgCEIqr (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 5 Mar 2020 03:46:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41946 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725866AbgCEIqr (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 5 Mar 2020 03:46:47 -0500
-Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DD1DA2146E;
-        Thu,  5 Mar 2020 08:46:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1583398006;
-        bh=TDVkawuh32GQN4TFLHkkDeskDdM2MRcctGCjf9iIfv8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=auApwJf2pBIHD13Xuj0tGO60HYJNT3zwlLDcswE8Ht0fuySMtZNAHqmV2JXs6Xlo+
-         lfY2eiyxlYx7yYNwq8nNdrhR5ozN88KOm765yyDhjlUoXrZy/u0pi2Z+/JBbTXwvTE
-         4TcJ6frndx/LvyCaidi5rwcTUGVpyRXZpGWl3H1k=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     fstests@vger.kernel.org
-Cc:     linux-fscrypt@vger.kernel.org
-Subject: [xfstests RFC PATCH] generic: test fscrypt key eviction racing with inode dirtying
-Date:   Thu,  5 Mar 2020 00:46:06 -0800
-Message-Id: <20200305084606.653902-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        id S1726184AbgCEQLl (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 5 Mar 2020 11:11:41 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:40164 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726111AbgCEQLk (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 5 Mar 2020 11:11:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Uen6VLar276Fa0qz/XOKv1RvuUuLbo9suzCz5NScJNI=; b=tow7fovI56zU/zHIFBvyQFjPvu
+        oxu7I0rkCiFvKuf0jEyycgSOkgif2ymuw5tLBs0Iv2NiEPVqH11+DMB5tD5Y1H5n5aG/6Y8W7Z8/g
+        I9rzwwornx2tBwTtWTg7Jy50rRRciiS730r/9jfMQuw/uB3cN+ipx7Q+YO+vTUh+5OgwpnmMwOvPd
+        xjsFxPMQlR8JlJEeUjcvs7Uk/1Dg1af47nYqVfza4SpnXum9WuKlu4VGLvQsHemNL/GQhsJkzwJID
+        JJsVbxURX6EkP2HNco5kV4mp9mkq4B9IciJaI9mhKj378teu4MbbrEbnSAeqCsMgEfix3nL3UWdSI
+        wvQ8JOIw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1j9t63-00054F-6B; Thu, 05 Mar 2020 16:11:39 +0000
+Date:   Thu, 5 Mar 2020 08:11:39 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Satya Tangirala <satyat@google.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
+        Kuohong Wang <kuohong.wang@mediatek.com>,
+        Kim Boojin <boojin.kim@samsung.com>
+Subject: Re: [PATCH v7 1/9] block: Keyslot Manager for Inline Encryption
+Message-ID: <20200305161139.GA19270@infradead.org>
+References: <20200221115050.238976-1-satyat@google.com>
+ <20200221115050.238976-2-satyat@google.com>
+ <20200221170434.GA438@infradead.org>
+ <20200221173118.GA30670@infradead.org>
+ <20200227181411.GB877@sol.localdomain>
+ <20200227212512.GA162309@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200227212512.GA162309@google.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On Thu, Feb 27, 2020 at 01:25:12PM -0800, Satya Tangirala wrote:
+> I think it does make some sense at least to make the keyslot type opaque
+> to most of the system other than the driver itself (the driver will now
+> have to call a function like blk_ksm_slot_idx_for_keyslot to actually get
+> a keyslot number at the end of the day). Also this way, the keyslot manager
+> can verify that the keyslot passed to blk_ksm_put_slot is actually part of
+> that keyslot manager (and that somebody isn't releasing a slot number that
+> was actually acquired from a different keyslot manager). I don't think
+> it's much benefit or loss either way, but I already switched to passing
+> pointers to struct keyslot around instead of ints, so I'll keep it that
+> way unless you strongly feel that using ints in this case is better
+> than struct keyslot *.
 
-Add a regression test for a bug in the FS_IOC_REMOVE_ENCRYPTION_KEY
-ioctl fixed by commit XXXXXXXXXXXX ("fscrypt: don't evict dirty inodes
-after removing key").
-
-This ioctl is also tested by generic/580 and generic/581, but they
-didn't cover the case where this bug occurs.
-
-This test detects the bug on ext4, f2fs, and ubifs.  The multi-threaded
-part of the test actually still fails on ubifs even with the fix, due to
-another kernel bug which I'm working on fixing.
-
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
-
-Not for merging yet.  Sending this out for comment alongside the kernel
-patch https://lkml.kernel.org/r/20200305084138.653498-1-ebiggers@kernel.org
-
- tests/generic/900     | 115 ++++++++++++++++++++++++++++++++++++++++++
- tests/generic/900.out |  10 ++++
- tests/generic/group   |   1 +
- 3 files changed, 126 insertions(+)
- create mode 100755 tests/generic/900
- create mode 100644 tests/generic/900.out
-
-diff --git a/tests/generic/900 b/tests/generic/900
-new file mode 100755
-index 000000000..737bb7ec1
---- /dev/null
-+++ b/tests/generic/900
-@@ -0,0 +1,115 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright 2020 Google LLC
-+#
-+# FS QA Test No. 900
-+#
-+# Regression test for a bug in the FS_IOC_REMOVE_ENCRYPTION_KEY ioctl fixed by
-+# commit XXXXXXXXXXXX ("fscrypt: don't evict dirty inodes after removing key").
-+# This bug could cause writes to encrypted files to be lost if they raced with
-+# the corresponding fscrypt master key being removed.  With f2fs, this bug could
-+# also crash the kernel.
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+here=`pwd`
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+	# Stop all subprocesses.
-+	touch $tmp.done
-+	wait
-+
-+	rm -f $tmp.*
-+}
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+. ./common/encrypt
-+
-+# remove previous $seqres.full before test
-+rm -f $seqres.full
-+
-+# real QA test starts here
-+_supported_fs generic
-+_supported_os Linux
-+_require_scratch_encryption -v 2
-+_require_command "$KEYCTL_PROG" keyctl
-+
-+_scratch_mkfs_encrypted &>> $seqres.full
-+_scratch_mount
-+
-+dir=$SCRATCH_MNT/dir
-+runtime=$((4 * TIME_FACTOR))
-+
-+# Create an encrypted directory.
-+mkdir $dir
-+_set_encpolicy $dir $TEST_KEY_IDENTIFIER
-+_add_enckey $SCRATCH_MNT "$TEST_RAW_KEY"
-+
-+# Start with a single-threaded reproducer:
-+echo -e "\n# Single-threaded reproducer"
-+# Keep a fd open to a file past its fscrypt master key being removed.
-+exec 3>$dir/file
-+_rm_enckey $SCRATCH_MNT $TEST_KEY_IDENTIFIER
-+# Write to and close the open fd.
-+echo contents >&3
-+exec 3>&-
-+# Drop any dentries which might be pinning the inode for "file".
-+echo 2 > /proc/sys/vm/drop_caches
-+# In buggy kernels, the inode for "file" was evicted despite the dirty data,
-+# causing the dirty data to be lost.  Check whether the write made it through.
-+_add_enckey $SCRATCH_MNT "$TEST_RAW_KEY"
-+cat $dir/file
-+rm -f $dir/file
-+
-+# Also run a multi-threaded reproducer.  This is included for good measure, as
-+# this type of thing tends to be good for finding other bugs too.
-+echo -e "\n# Multi-threaded reproducer"
-+touch $dir/file
-+
-+# One process add/removes the encryption key repeatedly.
-+(
-+	while [ ! -e $tmp.done ]; do
-+		_add_enckey $SCRATCH_MNT "$TEST_RAW_KEY" &> /dev/null
-+		_rm_enckey $SCRATCH_MNT $TEST_KEY_IDENTIFIER &> /dev/null
-+	done
-+) &
-+
-+# Another process repeatedly tries to append to the encrypted file.  The file is
-+# re-opened each time, so that there are chances for the inode to be evicted.
-+# Failures to open the file due to the key being removed are ignored.
-+(
-+	touch $tmp.expected
-+	while [ ! -e $tmp.done ]; do
-+		if sh -c "echo -n X >> $dir/file" 2>/dev/null; then
-+			# Keep track of the expected file contents.
-+			echo -n X >> $tmp.expected
-+		fi
-+	done
-+) &
-+
-+# Run for a while.
-+sleep $runtime
-+
-+# Stop all subprocesses.
-+touch $tmp.done
-+wait
-+
-+# Make sure no writes were lost.
-+_add_enckey $SCRATCH_MNT "$TEST_RAW_KEY" &> /dev/null
-+stat $tmp.expected >> $seqres.full
-+stat $dir/file >> $seqres.full
-+cmp $tmp.expected $dir/file
-+
-+echo "Multi-threaded reproducer done"
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/generic/900.out b/tests/generic/900.out
-new file mode 100644
-index 000000000..14fde4c83
---- /dev/null
-+++ b/tests/generic/900.out
-@@ -0,0 +1,10 @@
-+QA output created by 900
-+Added encryption key with identifier 69b2f6edeee720cce0577937eb8a6751
-+
-+# Single-threaded reproducer
-+Removed encryption key with identifier 69b2f6edeee720cce0577937eb8a6751, but files still busy
-+Added encryption key with identifier 69b2f6edeee720cce0577937eb8a6751
-+contents
-+
-+# Multi-threaded reproducer
-+Multi-threaded reproducer done
-diff --git a/tests/generic/group b/tests/generic/group
-index ff79a5970..f94c15361 100644
---- a/tests/generic/group
-+++ b/tests/generic/group
-@@ -596,3 +596,4 @@
- 591 auto quick rw pipe splice
- 592 auto quick encrypt
- 593 auto quick encrypt
-+900 auto quick encrypt
--- 
-2.25.1
-
+Exactly.  This provides a little type safety.
