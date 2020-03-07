@@ -2,68 +2,175 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 84E4117AA3A
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  5 Mar 2020 17:11:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6437817CB01
+	for <lists+linux-fscrypt@lfdr.de>; Sat,  7 Mar 2020 03:36:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726184AbgCEQLl (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 5 Mar 2020 11:11:41 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:40164 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726111AbgCEQLk (ORCPT
+        id S1726874AbgCGCgg (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 6 Mar 2020 21:36:36 -0500
+Received: from mail-pj1-f73.google.com ([209.85.216.73]:43366 "EHLO
+        mail-pj1-f73.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726490AbgCGCgg (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 5 Mar 2020 11:11:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Uen6VLar276Fa0qz/XOKv1RvuUuLbo9suzCz5NScJNI=; b=tow7fovI56zU/zHIFBvyQFjPvu
-        oxu7I0rkCiFvKuf0jEyycgSOkgif2ymuw5tLBs0Iv2NiEPVqH11+DMB5tD5Y1H5n5aG/6Y8W7Z8/g
-        I9rzwwornx2tBwTtWTg7Jy50rRRciiS730r/9jfMQuw/uB3cN+ipx7Q+YO+vTUh+5OgwpnmMwOvPd
-        xjsFxPMQlR8JlJEeUjcvs7Uk/1Dg1af47nYqVfza4SpnXum9WuKlu4VGLvQsHemNL/GQhsJkzwJID
-        JJsVbxURX6EkP2HNco5kV4mp9mkq4B9IciJaI9mhKj378teu4MbbrEbnSAeqCsMgEfix3nL3UWdSI
-        wvQ8JOIw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1j9t63-00054F-6B; Thu, 05 Mar 2020 16:11:39 +0000
-Date:   Thu, 5 Mar 2020 08:11:39 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
-        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
-        Kuohong Wang <kuohong.wang@mediatek.com>,
-        Kim Boojin <boojin.kim@samsung.com>
-Subject: Re: [PATCH v7 1/9] block: Keyslot Manager for Inline Encryption
-Message-ID: <20200305161139.GA19270@infradead.org>
-References: <20200221115050.238976-1-satyat@google.com>
- <20200221115050.238976-2-satyat@google.com>
- <20200221170434.GA438@infradead.org>
- <20200221173118.GA30670@infradead.org>
- <20200227181411.GB877@sol.localdomain>
- <20200227212512.GA162309@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200227212512.GA162309@google.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+        Fri, 6 Mar 2020 21:36:36 -0500
+Received: by mail-pj1-f73.google.com with SMTP id i3so2326897pjx.8
+        for <linux-fscrypt@vger.kernel.org>; Fri, 06 Mar 2020 18:36:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=hL4QYmipQbbtBF3hqX0FdDc0KzQVh/PklVg+OKiKB0c=;
+        b=fH4KDebpx8sfR/ExNItOLzsNNZbzuWPMaFA6X0gtKuiYWaa3VS/gCqm9U3BgcKI1kG
+         e7/FD5PABlXZvNRNPlaiyvNYxjH7MJXMmOpwXyefWgZjzeJtvh26HfJuAjFe7Yy9lOA1
+         t2TLyoLjiSbm5QKizkXqoTTxJuK4yPWtNqNJRJK26GNzaWFtpT4tlAJTLhqIhRhPxHpU
+         4WYWqBTcoH+Bl6qgJCQ7uHhzGnrfa3KaK30WACW8WGDTDkP8dSqvFw1QpLKEpoGjkE21
+         A1Z2i6nYM+2DB8zOPZiduwEW9dh0TwsUMvd2rF/qkovCw+rOowod48n/BhxsW34sUgWH
+         3qgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=hL4QYmipQbbtBF3hqX0FdDc0KzQVh/PklVg+OKiKB0c=;
+        b=O5egT6S2Gf7fy4Tm4OPJ+GvFwXTHqoFzksOYt9j9S/RcGTno3ZWxun4L8H3dOooCzl
+         aenycYX42pKn9+4LIudsfeHXbYw3H1Tp6OwI1QKxa18mOYb/VwahzLi60xhnOt5nT6Zl
+         9t3PT8Gr10kouuvcBrLX6SiEgBvW026S9glgPGb0IZ8HsFvBAOoB0PGGuJUwLGSGKMHq
+         u6RFTfIpHvGCi06VmWwhatxhTk4FSe4TvwVBkZPqe7EY8n759NuTqmnqkGs63g0yI2AM
+         IphnZoN202aOvo0Uq0XBVjEqCIDvxb5bSaWcjXC02b176eA3oM6T8G4N2EHESOYFgYyd
+         SyoA==
+X-Gm-Message-State: ANhLgQ3fXWyU8HKDE+2yexnmiQlpv9UKjkSI509/3dgq8LcOs40VKL5z
+        eD10sSPEte2KknwB47V8ri2hd1cP7cA=
+X-Google-Smtp-Source: ADFU+vvinrVh+l8QTv3HIUiABuCgsyoBanuoKAxU/xc+BcTv2eFzH5SpHBDbPai696SnQnmC+kbjhJ4IF6o=
+X-Received: by 2002:a17:90b:3717:: with SMTP id mg23mr6425637pjb.89.1583548593063;
+ Fri, 06 Mar 2020 18:36:33 -0800 (PST)
+Date:   Fri,  6 Mar 2020 18:36:03 -0800
+Message-Id: <20200307023611.204708-1-drosen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.25.1.481.gfbce0eb801-goog
+Subject: [PATCH v8 0/8] Support for Casefolding and Encryption
+From:   Daniel Rosenberg <drosen@google.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Eric Biggers <ebiggers@kernel.org>,
+        linux-fscrypt@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Richard Weinberger <richard@nod.at>
+Cc:     linux-mtd@lists.infradead.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com, Daniel Rosenberg <drosen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, Feb 27, 2020 at 01:25:12PM -0800, Satya Tangirala wrote:
-> I think it does make some sense at least to make the keyslot type opaque
-> to most of the system other than the driver itself (the driver will now
-> have to call a function like blk_ksm_slot_idx_for_keyslot to actually get
-> a keyslot number at the end of the day). Also this way, the keyslot manager
-> can verify that the keyslot passed to blk_ksm_put_slot is actually part of
-> that keyslot manager (and that somebody isn't releasing a slot number that
-> was actually acquired from a different keyslot manager). I don't think
-> it's much benefit or loss either way, but I already switched to passing
-> pointers to struct keyslot around instead of ints, so I'll keep it that
-> way unless you strongly feel that using ints in this case is better
-> than struct keyslot *.
+These patches are all on top of torvalds/master
 
-Exactly.  This provides a little type safety.
+Ext4 and F2FS currently both support casefolding and encryption, but not at
+the same time. These patches aim to rectify that.
+
+I've left off the Ext4 patches that enable casefolding and ecryption from
+this revision since they still need some fixups, and I haven't gotten around
+to the fsck changes yet.
+
+I moved the identical casefolding dcache operations for ext4 and f2fs into
+fs/libfs.c, as all filesystems using casefolded names will want them.
+
+I've also adjust fscrypt to not set it's d_revalidate operation during it's
+prepare lookup, instead having the calling filesystem set it up. This is
+done to that the filesystem may have it's own dentry_operations. Also added
+a helper function in libfs.c that will work for filesystems supporting both
+casefolding and fscrypt.
+
+For Ext4, since the hash for encrypted casefolded directory names cannot be
+computed without the key, we need to store the hash on disk. We only do so
+for encrypted and casefolded directories to avoid on disk format changes.
+Previously encryption and casefolding could not be on the same filesystem,
+and we're relaxing that requirement. F2fs is a bit more straightforward
+since it already stores hashes on disk.
+
+I've updated the related tools with just enough to enable the feature. I
+still need to adjust ext4's fsck's, although without access to the keys,
+neither fsck will be able to verify the hashes of casefolded and encrypted
+names.
+
+v8 changes:
+Fixed issue with non-strict_mode fallback for hashing dentry op
+Fixed potential RCU/unicode issue in casefolding dentry_ops.
+Split "fscrypt: Have filesystems handle their d_ops" into a few smaller patches
+Switched ubifs change to also use the dentry op function added in libfs.c
+Added hash function in fs/unicode
+changed super_block s_encoding_flags to u16. Didn't make unsigned int since
+both filesystems using them use them as 16 bits, and want to avoid possible
+confusion. Wouldn't really be opposed to that change though
+Added kernel doc comments
+misc other small adjustments
+TODO:
+ Investigate moving to a dentry flag to check for casefolding, or otherwise
+ conditionally setting the casefolding dentry ops as needed, like fscrypt.
+ Currently not done due to some issues with cached negative dentries and
+ toggling casefolding on an empty directory.
+
+ Ext4 fsck changes/debugging ext4 patches
+
+
+v7 changes:
+Moved dentry operations from unicode to libfs, added new iterator function
+to unicode to allow this.
+Added libfs function for setting dentries to remove code duplication between
+ext4 and f2fs.
+
+v6 changes:
+Went back to using dentry_operations for casefolding. Provided standard
+implementations in fs/unicode, avoiding extra allocation in d_hash op.
+Moved fscrypt d_ops setting to be filesystem's responsibility to maintain
+compatibility with casefolding and overlayfs if casefolding is not used
+fixes some f2fs error handling
+
+v4-5: patches submitted on fscrypt
+
+v3 changes:
+fscrypt patch only creates hash key if it will be needed.
+Rebased on top of fscrypt branch, reconstified match functions in ext4/f2fs
+
+v2 changes:
+fscrypt moved to separate thread to rebase on fscrypt dev branch
+addressed feedback, plus some minor fixes
+
+Daniel Rosenberg (8):
+  unicode: Add utf8_casefold_hash
+  fs: Add standard casefolding support
+  f2fs: Use generic casefolding support
+  ext4: Use generic casefolding support
+  fscrypt: Export fscrypt_d_revalidate
+  libfs: Add generic function for setting dentry_ops
+  fscrypt: Have filesystems handle their d_ops
+  f2fs: Handle casefolding with Encryption
+
+ fs/crypto/fname.c           |   7 +-
+ fs/crypto/fscrypt_private.h |   1 -
+ fs/crypto/hooks.c           |   1 -
+ fs/ext4/dir.c               |  51 -----------
+ fs/ext4/ext4.h              |  16 ----
+ fs/ext4/hash.c              |   2 +-
+ fs/ext4/namei.c             |  21 ++---
+ fs/ext4/super.c             |  15 ++--
+ fs/f2fs/dir.c               | 127 +++++++++++-----------------
+ fs/f2fs/f2fs.h              |  18 +---
+ fs/f2fs/hash.c              |  27 ++++--
+ fs/f2fs/inline.c            |   9 +-
+ fs/f2fs/namei.c             |   1 +
+ fs/f2fs/super.c             |  17 ++--
+ fs/f2fs/sysfs.c             |  10 ++-
+ fs/libfs.c                  | 164 ++++++++++++++++++++++++++++++++++++
+ fs/ubifs/dir.c              |   1 +
+ fs/unicode/utf8-core.c      |  23 ++++-
+ include/linux/f2fs_fs.h     |   3 -
+ include/linux/fs.h          |  24 ++++++
+ include/linux/fscrypt.h     |   6 +-
+ include/linux/unicode.h     |   3 +
+ 22 files changed, 321 insertions(+), 226 deletions(-)
+
+-- 
+2.25.1.481.gfbce0eb801-goog
+
