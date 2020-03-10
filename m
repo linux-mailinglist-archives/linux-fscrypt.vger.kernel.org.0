@@ -2,84 +2,89 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 49739180988
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 10 Mar 2020 21:47:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 681D8180A05
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 10 Mar 2020 22:10:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726273AbgCJUrY (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 10 Mar 2020 16:47:24 -0400
-Received: from sender11-of-f72.zoho.eu ([31.186.226.244]:17324 "EHLO
-        sender11-of-f72.zoho.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726268AbgCJUrY (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 10 Mar 2020 16:47:24 -0400
-X-Greylist: delayed 903 seconds by postgrey-1.27 at vger.kernel.org; Tue, 10 Mar 2020 16:47:24 EDT
-Received: from [100.109.64.191] (163.114.130.4 [163.114.130.4]) by mx.zoho.eu
-        with SMTPS id 1583872333505296.61674064941235; Tue, 10 Mar 2020 21:32:13 +0100 (CET)
-Subject: Re: [PATCH v2 0/6] Split fsverity-utils into a shared library
-To:     linux-fscrypt@vger.kernel.org
-Cc:     kernel-team@fb.com, ebiggers@kernel.org,
+        id S1727085AbgCJVKE (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 10 Mar 2020 17:10:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43572 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726271AbgCJVKE (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 10 Mar 2020 17:10:04 -0400
+Received: from gmail.com (unknown [104.132.1.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EA048222C3;
+        Tue, 10 Mar 2020 21:10:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1583874604;
+        bh=8/r2QkYGPl55U8WNvZ0hcMgaeY8rqmkP3u+3oWEveYM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zKoE5wSG0bH7No3rNDV8miaTbxRqlgs98aayI1OfOw1jNrzyQoWGcNxxVh2eYqljb
+         1qPkXZkWOB//tWmDzg09trK1/gCfSMXgIA7+sRB3Ooao0EaOb57Bn5haVE+Du5XkQK
+         2nccfQabdqofoLlaGl2Ve4nGPHZm09acpRlek2SA=
+Date:   Tue, 10 Mar 2020 14:10:02 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Jes Sorensen <jes@trained-monkey.org>
+Cc:     linux-fscrypt@vger.kernel.org, kernel-team@fb.com,
         Jes Sorensen <jsorensen@fb.com>
+Subject: Re: [PATCH v2 0/6] Split fsverity-utils into a shared library
+Message-ID: <20200310211002.GA46757@gmail.com>
 References: <20200228212814.105897-1-Jes.Sorensen@gmail.com>
-From:   Jes Sorensen <jes@trained-monkey.org>
-Message-ID: <6486476e-2109-cbd5-07d0-4c310d2c9f06@trained-monkey.org>
-Date:   Tue, 10 Mar 2020 16:32:12 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+ <6486476e-2109-cbd5-07d0-4c310d2c9f06@trained-monkey.org>
 MIME-Version: 1.0
-In-Reply-To: <20200228212814.105897-1-Jes.Sorensen@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ZohoMailClient: External
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6486476e-2109-cbd5-07d0-4c310d2c9f06@trained-monkey.org>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On 2/28/20 4:28 PM, Jes Sorensen wrote:
-> From: Jes Sorensen <jsorensen@fb.com>
+On Tue, Mar 10, 2020 at 04:32:12PM -0400, Jes Sorensen wrote:
+> On 2/28/20 4:28 PM, Jes Sorensen wrote:
+> > From: Jes Sorensen <jsorensen@fb.com>
+> > 
+> > Hi,
+> > 
+> > Here is a reworked version of the patches to split fsverity-utils into
+> > a shared library, based on the feedback for the original version. Note
+> > this doesn't yet address setting the soname, and doesn't have the
+> > client (rpm) changes yet, so there is more work to do.
+> > 
+> > Comments appreciated.
 > 
 > Hi,
 > 
-> Here is a reworked version of the patches to split fsverity-utils into
-> a shared library, based on the feedback for the original version. Note
-> this doesn't yet address setting the soname, and doesn't have the
-> client (rpm) changes yet, so there is more work to do.
+> Any thoughts on this patchset?
 > 
-> Comments appreciated.
-
-Hi,
-
-Any thoughts on this patchset?
-
-Thanks,
-Jes
-
-
-> Cheers,
+> Thanks,
 > Jes
 > 
-> Jes Sorensen (6):
->   Build basic shared library framework
->   Change compute_file_measurement() to take a file descriptor as
->     argument
->   Move fsverity_descriptor definition to libfsverity.h
->   Move hash algorithm code to shared library
->   Create libfsverity_compute_digest() and adapt cmd_sign to use it
->   Introduce libfsverity_sign_digest()
-> 
->  Makefile      |  18 +-
->  cmd_enable.c  |  11 +-
->  cmd_measure.c |   4 +-
->  cmd_sign.c    | 526 ++++----------------------------------------------
->  fsverity.c    |  15 ++
->  hash_algs.c   |  26 +--
->  hash_algs.h   |  27 ---
->  libfsverity.h |  99 ++++++++++
->  libverity.c   | 526 ++++++++++++++++++++++++++++++++++++++++++++++++++
->  util.h        |   2 +
->  10 files changed, 707 insertions(+), 547 deletions(-)
->  create mode 100644 libfsverity.h
->  create mode 100644 libverity.c
-> 
 
+It's been on my list of things to review but I've been pretty busy.  But a few
+quick comments now:
+
+The API needs documentation.  It doesn't have to be too formal; comments in
+libfsverity.h would be fine.
+
+Did you check that the fs-verity xfstests still pass?  They use fsverity-utils.
+See: https://www.kernel.org/doc/html/latest/filesystems/fsverity.html#tests
+
+struct fsverity_descriptor and struct fsverity_hash_alg are still part of the
+API.  But there doesn't seem to be any point in it.  Why aren't they internal to
+libfsverity?
+
+Can you make sure that the set of error codes for each API function is clearly
+defined?
+
+Can you make sure all API functions return an error if any reserved fields are
+set?
+
+Do you have a pointer to the corresponding RPM patches that will use this?
+
+Also, it would be nice if you could also add some tests of the API to
+fsverity-utils itself :-)
+
+- Eric
