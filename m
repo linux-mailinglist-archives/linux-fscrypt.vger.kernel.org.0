@@ -2,27 +2,27 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 02FE818370E
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 12 Mar 2020 18:13:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44209183713
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 12 Mar 2020 18:13:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726491AbgCLRNy (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 12 Mar 2020 13:13:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50892 "EHLO mail.kernel.org"
+        id S1726523AbgCLRNz (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 12 Mar 2020 13:13:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50942 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726299AbgCLRNx (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 12 Mar 2020 13:13:53 -0400
+        id S1726423AbgCLRNy (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 12 Mar 2020 13:13:54 -0400
 Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9097D2071C;
-        Thu, 12 Mar 2020 17:13:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1FE1B20724;
+        Thu, 12 Mar 2020 17:13:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1584033233;
-        bh=E4/rRRNMZhyvwK1fBhXf9QpgGMywRQnUXlraggEcBg0=;
+        bh=sSi2tz8NsLA1lQ2PHk+ibx3zUvHZntIcbxDXED3DErY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nTLXIRUH8ioxQfSNhrZg2Xkytswy/fxOXZFH5SQREb29kD47fBCJwo3K+u/bnaJr5
-         if7Ay9lqzH1Xv7JGt1Ob4cbqZSb5atrskWcL3yN2y0d7dm/+CNjT2Ed/qhGvZaMeyG
-         9dH3oUJ31w8uIX3/6loYkOJP9OskVgLJ2L9BveaI=
+        b=kRSLQ0oCW3OXxJFzArg1xmrDvyu7ecZ7XRCX7ngPY+uSeqzij/pX4h93eEhIHm1Uo
+         1HfzE9nNH3sQntLVeZUDIWlpXkeBmID6s6wGJJVPMdinZgc1fL4zxlK96zPuVh+SCn
+         GqKtgB2sxWxI6K2Xamgfx2K45BC+F5R91wN636Cs=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-scsi@vger.kernel.org, linux-arm-msm@vger.kernel.org
 Cc:     linux-block@vger.kernel.org, linux-fscrypt@vger.kernel.org,
@@ -36,9 +36,9 @@ Cc:     linux-block@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         Jaegeuk Kim <jaegeuk@kernel.org>,
         John Stultz <john.stultz@linaro.org>,
         Satya Tangirala <satyat@google.com>
-Subject: [RFC PATCH v3 2/4] arm64: dts: sdm845: add Inline Crypto Engine registers and clock
-Date:   Thu, 12 Mar 2020 10:12:57 -0700
-Message-Id: <20200312171259.151442-3-ebiggers@kernel.org>
+Subject: [RFC PATCH v3 3/4] scsi: ufs: add program_key() variant op
+Date:   Thu, 12 Mar 2020 10:12:58 -0700
+Message-Id: <20200312171259.151442-4-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200312171259.151442-1-ebiggers@kernel.org>
 References: <20200312171259.151442-1-ebiggers@kernel.org>
@@ -51,66 +51,126 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Add the vendor-specific registers and clock for Qualcomm ICE (Inline
-Crypto Engine) to the device tree node for the UFS host controller on
-sdm845, so that the ufs-qcom driver will be able to use inline crypto.
+On Snapdragon SoCs, the Linux kernel isn't permitted to directly access
+the standard UFS crypto configuration registers.  Instead, programming
+and evicting keys must be done through vendor-specific SMC calls.
 
-Use a separate register range rather than extending the main UFS range
-because there's a gap between the two, and the ICE registers are
-vendor-specific.  (Actually, the hardware claims that the ICE range also
-includes the array of standard crypto configuration registers; however,
-on this SoC the Linux kernel isn't permitted to access them directly.)
+To support this hardware, add a ->program_key() method to
+'struct ufs_hba_variant_ops'.  This allows overriding the UFS standard
+key programming / eviction procedure.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- arch/arm64/boot/dts/qcom/sdm845.dtsi | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ drivers/scsi/ufs/ufshcd-crypto.c | 33 ++++++++++++++++++++------------
+ drivers/scsi/ufs/ufshcd.h        |  3 +++
+ 2 files changed, 24 insertions(+), 12 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-index d42302b8889b6..dd6b4e596fcfe 100644
---- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-@@ -1367,7 +1367,9 @@ system-cache-controller@1100000 {
- 		ufs_mem_hc: ufshc@1d84000 {
- 			compatible = "qcom,sdm845-ufshc", "qcom,ufshc",
- 				     "jedec,ufs-2.0";
--			reg = <0 0x01d84000 0 0x2500>;
-+			reg = <0 0x01d84000 0 0x2500>,
-+			      <0 0 0 0>,
-+			      <0 0x01d90000 0 0x8000>;
- 			interrupts = <GIC_SPI 265 IRQ_TYPE_LEVEL_HIGH>;
- 			phys = <&ufs_mem_phy_lanes>;
- 			phy-names = "ufsphy";
-@@ -1387,7 +1389,8 @@ ufs_mem_hc: ufshc@1d84000 {
- 				"ref_clk",
- 				"tx_lane0_sync_clk",
- 				"rx_lane0_sync_clk",
--				"rx_lane1_sync_clk";
-+				"rx_lane1_sync_clk",
-+				"ice_core_clk";
- 			clocks =
- 				<&gcc GCC_UFS_PHY_AXI_CLK>,
- 				<&gcc GCC_AGGRE_UFS_PHY_AXI_CLK>,
-@@ -1396,7 +1399,8 @@ ufs_mem_hc: ufshc@1d84000 {
- 				<&rpmhcc RPMH_CXO_CLK>,
- 				<&gcc GCC_UFS_PHY_TX_SYMBOL_0_CLK>,
- 				<&gcc GCC_UFS_PHY_RX_SYMBOL_0_CLK>,
--				<&gcc GCC_UFS_PHY_RX_SYMBOL_1_CLK>;
-+				<&gcc GCC_UFS_PHY_RX_SYMBOL_1_CLK>,
-+				<&gcc GCC_UFS_PHY_ICE_CORE_CLK>;
- 			freq-table-hz =
- 				<50000000 200000000>,
- 				<0 0>,
-@@ -1405,7 +1409,8 @@ ufs_mem_hc: ufshc@1d84000 {
- 				<0 0>,
- 				<0 0>,
- 				<0 0>,
--				<0 0>;
-+				<0 0>,
-+				<0 300000000>;
+diff --git a/drivers/scsi/ufs/ufshcd-crypto.c b/drivers/scsi/ufs/ufshcd-crypto.c
+index 37254472326a8..6b029ff2d037b 100644
+--- a/drivers/scsi/ufs/ufshcd-crypto.c
++++ b/drivers/scsi/ufs/ufshcd-crypto.c
+@@ -144,14 +144,20 @@ static blk_status_t ufshcd_crypto_cfg_entry_write_key(
+ 	return BLK_STS_IOERR;
+ }
  
- 			status = "disabled";
- 		};
+-static void ufshcd_program_key(struct ufs_hba *hba,
+-			       const union ufs_crypto_cfg_entry *cfg,
+-			       int slot)
++static int ufshcd_program_key(struct ufs_hba *hba,
++			      const union ufs_crypto_cfg_entry *cfg, int slot)
+ {
+ 	int i;
+ 	u32 slot_offset = hba->crypto_cfg_register + slot * sizeof(*cfg);
++	int err = 0;
+ 
+ 	ufshcd_hold(hba, false);
++
++	if (hba->vops && hba->vops->program_key) {
++		err = hba->vops->program_key(hba, cfg, slot);
++		goto out;
++	}
++
+ 	/* Ensure that CFGE is cleared before programming the key */
+ 	ufshcd_writel(hba, 0, slot_offset + 16 * sizeof(cfg->reg_val[0]));
+ 	for (i = 0; i < 16; i++) {
+@@ -164,23 +170,28 @@ static void ufshcd_program_key(struct ufs_hba *hba,
+ 	/* Dword 16 must be written last */
+ 	ufshcd_writel(hba, le32_to_cpu(cfg->reg_val[16]),
+ 		      slot_offset + 16 * sizeof(cfg->reg_val[0]));
++out:
+ 	ufshcd_release(hba);
++	return err;
+ }
+ 
+-static void ufshcd_clear_keyslot(struct ufs_hba *hba, int slot)
++static int ufshcd_clear_keyslot(struct ufs_hba *hba, int slot)
+ {
+ 	union ufs_crypto_cfg_entry cfg = { 0 };
+ 
+-	ufshcd_program_key(hba, &cfg, slot);
++	return ufshcd_program_key(hba, &cfg, slot);
+ }
+ 
+ /* Clear all keyslots at driver init time */
+ static void ufshcd_clear_all_keyslots(struct ufs_hba *hba)
+ {
+ 	int slot;
++	int err;
+ 
+-	for (slot = 0; slot < ufshcd_num_keyslots(hba); slot++)
+-		ufshcd_clear_keyslot(hba, slot);
++	for (slot = 0; slot < ufshcd_num_keyslots(hba); slot++) {
++		err = ufshcd_clear_keyslot(hba, slot);
++		WARN_ON_ONCE(err);
++	}
+ }
+ 
+ static blk_status_t ufshcd_crypto_keyslot_program(struct keyslot_manager *ksm,
+@@ -216,10 +227,10 @@ static blk_status_t ufshcd_crypto_keyslot_program(struct keyslot_manager *ksm,
+ 	if (err)
+ 		return err;
+ 
+-	ufshcd_program_key(hba, &cfg, slot);
++	err = errno_to_blk_status(ufshcd_program_key(hba, &cfg, slot));
+ 
+ 	memzero_explicit(&cfg, sizeof(cfg));
+-	return BLK_STS_OK;
++	return err;
+ }
+ 
+ static int ufshcd_crypto_keyslot_evict(struct keyslot_manager *ksm,
+@@ -236,9 +247,7 @@ static int ufshcd_crypto_keyslot_evict(struct keyslot_manager *ksm,
+ 	 * Clear the crypto cfg on the device. Clearing CFGE
+ 	 * might not be sufficient, so just clear the entire cfg.
+ 	 */
+-	ufshcd_clear_keyslot(hba, slot);
+-
+-	return 0;
++	return ufshcd_clear_keyslot(hba, slot);
+ }
+ 
+ void ufshcd_crypto_enable(struct ufs_hba *hba)
+diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+index 78397864f9117..93ad978aa5dbd 100644
+--- a/drivers/scsi/ufs/ufshcd.h
++++ b/drivers/scsi/ufs/ufshcd.h
+@@ -306,6 +306,7 @@ struct ufs_pwr_mode_info {
+  * @dbg_register_dump: used to dump controller debug information
+  * @phy_initialization: used to initialize phys
+  * @device_reset: called to issue a reset pulse on the UFS device
++ * @program_key: program or evict an inline encryption key
+  */
+ struct ufs_hba_variant_ops {
+ 	const char *name;
+@@ -335,6 +336,8 @@ struct ufs_hba_variant_ops {
+ 	void	(*dbg_register_dump)(struct ufs_hba *hba);
+ 	int	(*phy_initialization)(struct ufs_hba *);
+ 	void	(*device_reset)(struct ufs_hba *hba);
++	int	(*program_key)(struct ufs_hba *hba,
++			       const union ufs_crypto_cfg_entry *cfg, int slot);
+ };
+ 
+ /* clock gating state  */
 -- 
 2.25.1
 
