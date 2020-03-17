@@ -2,120 +2,62 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F2F39185FBA
-	for <lists+linux-fscrypt@lfdr.de>; Sun, 15 Mar 2020 21:16:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 738BF1882EF
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 17 Mar 2020 13:08:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729052AbgCOUQV (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sun, 15 Mar 2020 16:16:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45004 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729047AbgCOUQV (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sun, 15 Mar 2020 16:16:21 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4834A205C9;
-        Sun, 15 Mar 2020 20:16:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1584303380;
-        bh=5VqbqRCMOuCKrwhIgRoKM6xoalmVSXXR/W2soqbZ1L0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EcUzhGIuXaHU9vfOPWYtMg5tNxsoTitGkBlfvXySVUWt6Iu1NQNDAB8LCd1+0Nvyt
-         4XcWpBlIK/3A1T+NUUSkZwIzsU4SL3OLRuehrOjZp/6w9mEHq4mVL63J3TZCxfZEB0
-         4hZ1adM0h2K2JuNo4FFTY29yf4DUchHuTWpNOS4I=
-Date:   Sun, 15 Mar 2020 13:16:18 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
-        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
-        Kuohong Wang <kuohong.wang@mediatek.com>,
-        Kim Boojin <boojin.kim@samsung.com>
-Subject: Re: [PATCH v8 03/11] block: Make blk-integrity preclude hardware
- inline encryption
-Message-ID: <20200315201618.GH1055@sol.localdomain>
-References: <20200312080253.3667-1-satyat@google.com>
- <20200312080253.3667-4-satyat@google.com>
+        id S1726410AbgCQMHm (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 17 Mar 2020 08:07:42 -0400
+Received: from sonic316-53.consmr.mail.ne1.yahoo.com ([66.163.187.179]:41913
+        "EHLO sonic316-53.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726699AbgCQMHm (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 17 Mar 2020 08:07:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1584446861; bh=kcevCRoll2+Bsa3FDERpIV72LVcB1A4YV1b5N2AWYBk=; h=Date:From:Reply-To:Subject:References:From:Subject; b=Pb8awjjoPLFbNPmlQcu+WfCpP1H8sAWwGgUp/Qx3Pcwhle2D+T+WaYyyUz3vhZc2sA8NWoswwQdZ/KESghs2zHwyJkIhXirXdAWNfFjUMk6Vp5O1n1ssbnqImAU4JjwDvjPE5MiKdDafzrksDX4SA4DXIy3uw5z0PxrkIBF4rhXMelpuym9jxC1A98OCGLpGKyrDFefSjQwR23hJ1LBEYAkVeqH1sTp6WjsgvuUGHHmG5uvgEDPMYyYwVJrLSDgjhr+D47MjFHu3UYl0qgRYHmrqCxT/2wEVkfOA8TgtmwXkxAQI+xiOEn1iZBc8Ai4JPRlE3U//zdU8HtFFhdooIw==
+X-YMail-OSG: Ue05kJkVM1kESe4wgeLl5H8zREvh9Jzy0vP8VCQLM8PJGTeuE2buNJODfhWweCz
+ 1vmvxN8bsrpdUqTgf2mSrVOEBI.Ykkt2.MdNW7QLP647uWFlWjQeYgGe7NeWJiw5boZWccc74Xve
+ Rn7DMObgN4KIVRULTFYteROsjYJkQpmeQWepDBY4fpCdiH30k9535EWUI0WxZlFJaoX3gbj_wO09
+ OMMzjJ29Cl_6GZ5hldNpoyk4odcOtKvAR1uXCf.wcnhzNPfN1IVlbYWvvgoCKcHelF9z3CwgAER_
+ 2IkRnL0Q5gd.ZkBJq1H.5S_qpnqzS7_zOwVWyEoycZV5qZmk5ySbQbPNkWTPC1_cang8S_pkNwLa
+ 6cD8jXdjHmy0iBJjqgcPoVk5U733gBVcbKpYBfkUCW9lSdxlL7oq4egYb1uf1UqUk49YAI_MWlCm
+ fdxr7PR_R0Y9vobxL361O.c18fFAcZrRHrbdIPQd1_aPKX9ZnQAfa0JqybNCXwPv5PbnH9N9S6o9
+ 9pAZ3LjofqtQ7oYl.cJW2feoDSc84dpceyLQcv.c9rtdNbLuG0thHf0c8bB_ll5yUuivz5YevWeg
+ p7uV7BK9m8XQaJs9ZQWfLbxkMY11wurI2_1AQZJx4mLZoneoUxFdSMIYCrW6XXyzxozAv_MQCjN2
+ .GxaWHIhPX9US1PCLq_Bo.o7drbVfXns0bg1nf18xZIwaaP7pTEwSERqmOGkhB8.k0tHolr_fBUO
+ _0XWkHmkW9BQGNzLLNUlzM_WlwXZVfRohS7Y.NSj6oXoVzS4K7k1RShrbQHzY.bz5rOUmvf0LPcU
+ PZRHdh1mKoTnp0no_jn1QLzvq_KdLL5yM0QzzD4zmzieLNpdoyi7.ivQHwqmyptSAx8AsISpMSq4
+ 2EljxAKn1U_HQ.3T7diRxivv0i7lXGdpoaf2SPZoqvOtiqAkNOOS.RUE9yQEMPypCVVZKocs1u2F
+ cn0NDKNeQEP3NiFbhUcnyGLkBPerjrE_wGJCFUx8jOPPo6KJmqVVs.s.KF0o7UybWp7oMFyE1ZjE
+ ioEq54V8SuHpDJg_VGg0RfHWCkNz4uBY1TVmk1OxfW0..lKWUr__xU.zLCsYiUtIrGSXXr9hwjPm
+ Jy0EhQezMrKtXCcjbuFZlo8wBhTRz5vd52jWiPNuM1hIQ3xBdKifILYQfx7XzclZ1amj.0cBBd0p
+ TeR.zjTgez6D1UpxAViLVXosPhE5.5yTsELYGSUfdQuDWIQqUqFi4IvtVtJvpXvE_JpsiCc68mfJ
+ B9zjNbXYJAVi1fD0XysOM46aYeTgFM9diGwAee9dlxG.EQVigxo7L5xIva2GR9zacfaQbh8YtHvA
+ VS76Cjecx2.KNJJSY3qTPpnKGKsc-
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic316.consmr.mail.ne1.yahoo.com with HTTP; Tue, 17 Mar 2020 12:07:41 +0000
+Date:   Tue, 17 Mar 2020 12:05:39 +0000 (UTC)
+From:   Stephen Li <stenn8@gabg.net>
+Reply-To: stephli947701@gmail.com
+Message-ID: <1756093619.1826605.1584446739147@mail.yahoo.com>
+Subject: REF
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200312080253.3667-4-satyat@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <1756093619.1826605.1584446739147.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.15342 YMailNodin Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, Mar 12, 2020 at 01:02:45AM -0700, Satya Tangirala wrote:
-> diff --git a/block/blk-integrity.c b/block/blk-integrity.c
-> index ff1070edbb40..793ba23e8688 100644
-> --- a/block/blk-integrity.c
-> +++ b/block/blk-integrity.c
-> @@ -409,6 +409,13 @@ void blk_integrity_register(struct gendisk *disk, struct blk_integrity *template
->  	bi->tag_size = template->tag_size;
->  
->  	disk->queue->backing_dev_info->capabilities |= BDI_CAP_STABLE_WRITES;
-> +
-> +#ifdef BLK_INLINE_ENCRYPTION
-> +	if (disk->queue->ksm) {
-> +		pr_warn("blk-integrity: Integrity and hardware inline encryption are not supported together. Unregistering keyslot manager from request queue, to disable hardware inline encryption.");
-> +		blk_ksm_unregister(disk->queue);
-> +	}
-> +#endif
->  }
->  EXPORT_SYMBOL(blk_integrity_register);
-
-This ifdef is wrong, it should be CONFIG_BLK_INLINE_ENCRYPTION.
-
-Also the log message is missing a trailing newline.
-
->  
-> diff --git a/block/keyslot-manager.c b/block/keyslot-manager.c
-> index 38df0652df80..a7970e18a122 100644
-> --- a/block/keyslot-manager.c
-> +++ b/block/keyslot-manager.c
-> @@ -25,6 +25,9 @@
->   * Upper layers will call blk_ksm_get_slot_for_key() to program a
->   * key into some slot in the inline encryption hardware.
->   */
-> +
-> +#define pr_fmt(fmt) "blk_ksm: " fmt
-
-People aren't going to know what "blk_ksm" means in the logs.
-I think just use "blk-crypto" instead.
-
-> +
->  #include <crypto/algapi.h>
->  #include <linux/keyslot-manager.h>
->  #include <linux/atomic.h>
-> @@ -375,3 +378,20 @@ void blk_ksm_destroy(struct keyslot_manager *ksm)
->  	memzero_explicit(ksm, sizeof(*ksm));
->  }
->  EXPORT_SYMBOL_GPL(blk_ksm_destroy);
-> +
-> +bool blk_ksm_register(struct keyslot_manager *ksm, struct request_queue *q)
-> +{
-> +	if (blk_integrity_queue_supports_integrity(q)) {
-> +		pr_warn("Integrity and hardware inline encryption are not supported together. Won't register keyslot manager with request queue.");
-> +		return false;
-> +	}
-> +	q->ksm = ksm;
-> +	return true;
-> +}
-> +EXPORT_SYMBOL_GPL(blk_ksm_register);
 
 
-People reading the logs won't know what a keyslot manager is and why they should
-care that one wasn't registered.  It would be better to say that hardware inline
-encryption is being disabled.
-
-Ideally the device name would be included in the message too.
-
-> +
-> +void blk_ksm_unregister(struct request_queue *q)
-> +{
-> +	q->ksm = NULL;
-> +}
-> +EXPORT_SYMBOL_GPL(blk_ksm_unregister);
-
-blk_ksm_unregister() doesn't need to be exported.
+Greetings,
+I was searching through a local business directory when I found your
+profile. I am Soliciting On-Behalf of my private client who is
+interested in having a serious business investment in your country. If
+you have a valid business, investment or project he can invest
+back to me for more details. Your swift response is highly needed.
+Sincerely
+Stephen Li
+Please response back to me with is my private email below for more details
+stephli947701@gmail.com
