@@ -2,74 +2,64 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A73318BEBD
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 19 Mar 2020 18:49:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AB8718C12A
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 19 Mar 2020 21:19:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727492AbgCSRt6 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 19 Mar 2020 13:49:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42692 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726934AbgCSRt6 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 19 Mar 2020 13:49:58 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EEAF320754;
-        Thu, 19 Mar 2020 17:49:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1584640198;
-        bh=q270uO9rTu9c4Si3zJtl3gemlVNKHIaUhROgwEp7OBg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RjAeE0xh2CCBZepqFsBambYtHD23HJxQcmO5QvWPIVvcL9Hj3zrL/gqQXSIPdsLQV
-         wf18INyaAJRrwz4uM3izP8cWDD0FPXAt7Ws1mnPcPaCgqIXnwR72MZo90M6T8GsYbY
-         gv602IpzAB8trxpqGo8X3iDp5eociKy8nLMp6X0s=
-Date:   Thu, 19 Mar 2020 10:49:56 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH 0/4] fscrypt: add ioctl to get file's encryption nonce
-Message-ID: <20200319174956.GA86395@gmail.com>
+        id S1726619AbgCSUTp (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 19 Mar 2020 16:19:45 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:54897 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725817AbgCSUTp (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 19 Mar 2020 16:19:45 -0400
+Received: from callcc.thunk.org (pool-72-93-95-157.bstnma.fios.verizon.net [72.93.95.157])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 02JKJEjG024401
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Mar 2020 16:19:14 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 38C4F420EBA; Thu, 19 Mar 2020 16:19:14 -0400 (EDT)
+Date:   Thu, 19 Mar 2020 16:19:14 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-api@vger.kernel.org
+Subject: Re: [PATCH 1/4] fscrypt: add FS_IOC_GET_ENCRYPTION_NONCE ioctl
+Message-ID: <20200319201914.GD1067245@mit.edu>
 References: <20200314205052.93294-1-ebiggers@kernel.org>
+ <20200314205052.93294-2-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200314205052.93294-1-ebiggers@kernel.org>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+In-Reply-To: <20200314205052.93294-2-ebiggers@kernel.org>
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Sat, Mar 14, 2020 at 01:50:48PM -0700, Eric Biggers wrote:
-> This patchset adds an ioctl FS_IOC_GET_ENCRYPTION_NONCE which retrieves
-> the nonce from an encrypted file or directory.
+On Sat, Mar 14, 2020 at 01:50:49PM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> This is useful for automated ciphertext verification testing.
+> Add an ioctl FS_IOC_GET_ENCRYPTION_NONCE which retrieves the nonce from
+> an encrypted file or directory.  The nonce is the 16-byte random value
+> stored in the inode's encryption xattr.  It is normally used together
+> with the master key to derive the inode's actual encryption key.
 > 
-> See patch #1 for more details.
+> The nonces are needed by automated tests that verify the correctness of
+> the ciphertext on-disk.  Except for the IV_INO_LBLK_64 case, there's no
+> way to replicate a file's ciphertext without knowing that file's nonce.
 > 
-> Eric Biggers (4):
->   fscrypt: add FS_IOC_GET_ENCRYPTION_NONCE ioctl
->   ext4: wire up FS_IOC_GET_ENCRYPTION_NONCE
->   f2fs: wire up FS_IOC_GET_ENCRYPTION_NONCE
->   ubifs: wire up FS_IOC_GET_ENCRYPTION_NONCE
+> The nonces aren't secret, and the existing ciphertext verification tests
+> in xfstests retrieve them from disk using debugfs or dump.f2fs.  But in
+> environments that lack these debugging tools, getting the nonces by
+> manually parsing the filesystem structure would be very hard.
 > 
->  Documentation/filesystems/fscrypt.rst | 11 +++++++++++
->  fs/crypto/fscrypt_private.h           | 20 ++++++++++++++++++++
->  fs/crypto/keysetup.c                  | 16 ++--------------
->  fs/crypto/policy.c                    | 21 ++++++++++++++++++++-
->  fs/ext4/ioctl.c                       |  6 ++++++
->  fs/f2fs/file.c                        | 11 +++++++++++
->  fs/ubifs/ioctl.c                      |  4 ++++
->  include/linux/fscrypt.h               |  6 ++++++
->  include/uapi/linux/fscrypt.h          |  1 +
->  9 files changed, 81 insertions(+), 15 deletions(-)
+> To make this important type of testing much easier, let's just add an
+> ioctl that retrieves the nonce.
 > 
-> 
-> base-commit: 98d54f81e36ba3bf92172791eba5ca5bd813989b
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-Any comments on this?
-
-- Eric
+Reviewed-by: Theodore Ts'o <tytso@mit.edu>
