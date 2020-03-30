@@ -2,133 +2,77 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E8EEC195BE8
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 27 Mar 2020 18:05:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 793851981B3
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 30 Mar 2020 18:54:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727393AbgC0RFg (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 27 Mar 2020 13:05:36 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:44206 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727254AbgC0RFf (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 27 Mar 2020 13:05:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=nQwtzNXpf86itTjaB1edkzN5h3XvovjaCziQk9DtCjM=; b=tJHUKbZBjsey04PmV3H0dCje7e
-        bYKkkq6017QpkZgT1ElJKViJOrTCd7UCVOEZRVRF6tPwwlnll/gKoVxqCy/1XMb/AHQaUrLBj/NC3
-        tBw4POPUFD3N/CFouNP73J5J5wYWrOGmz+YqLJ3hKO5+/AhYSOTmdJvvjogLQxzbSLqpgAoASBzgI
-        QqiQJeYh+w/7R4WbwSgVu5ZYKTZyajcVh058adQbz/pv1GRD16BS0VUde8wkrh3+gCs0MZljoIzIM
-        GJQRxIF3ZihKK2bgZ2ln/osQrAbO/suKfl6oWss51RtXITpHhUsGodIPRNRreKE0Y8uC8VX9l0j3a
-        LhqGwHBg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jHsQI-0002G0-5a; Fri, 27 Mar 2020 17:05:34 +0000
-Date:   Fri, 27 Mar 2020 10:05:34 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Satya Tangirala <satyat@google.com>, linux-block@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
-        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
-        Kuohong Wang <kuohong.wang@mediatek.com>,
-        Kim Boojin <boojin.kim@samsung.com>
-Subject: Re: [PATCH v9 02/11] block: Inline encryption support for blk-mq
-Message-ID: <20200327170534.GB24682@infradead.org>
-References: <20200326030702.223233-1-satyat@google.com>
- <20200326030702.223233-3-satyat@google.com>
- <20200326200511.GA186343@gmail.com>
+        id S1728075AbgC3QyB (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 30 Mar 2020 12:54:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37682 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727742AbgC3QyB (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 30 Mar 2020 12:54:01 -0400
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7BEF82072E;
+        Mon, 30 Mar 2020 16:54:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1585587240;
+        bh=j/ppsQG0leh5vH+RTE+F7A3zvmhx3HDCWWopSVH2uDQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=M/wdnXbyHUTJv5ngtkxL30OP3/Kuj4H/2XLXZMGrhRmQHk4kBf8kUv4xIehJ2WNAi
+         RYGO4xyaxQ0k6rkp1d/w6AkdnbU3iITZGeIBWDU4aBLtglq2LUaNtRCnK+4ktYJsaH
+         Et7KNGgLmKcCwRBMlzckx0KzqoHRi1/YU5977jgo=
+Date:   Mon, 30 Mar 2020 09:53:59 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [GIT PULL] fscrypt updates for 5.7
+Message-ID: <20200330165359.GA1895@sol.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200326200511.GA186343@gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, Mar 26, 2020 at 01:05:11PM -0700, Eric Biggers wrote:
-> > +{
-> > +	int i = 0;
-> > +	unsigned int inc = bytes >> bc->bc_key->data_unit_size_bits;
-> > +
-> > +	while (i < BLK_CRYPTO_DUN_ARRAY_SIZE) {
-> > +		if (bc->bc_dun[i] + inc != next_dun[i])
-> > +			return false;
-> > +		/*
-> > +		 * If addition of inc to the current entry caused an overflow,
-> > +		 * then we have to carry "1" for the next entry - so inc
-> > +		 * needs to be "1" for the next loop iteration). Otherwise,
-> > +		 * we need inc to be 0 for the next loop iteration. Since
-> > +		 * overflow can be determined by (bc->bc_dun[i] + inc)  < inc
-> > +		 * we can do the following.
-> > +		 */
-> > +		inc = ((bc->bc_dun[i] + inc)  < inc);
-> > +		i++;
-> > +	}
-> 
-> This comment is verbose but doesn't really explain what's going on.
-> I think it would be much more useful to add comments like:
+The following changes since commit 98d54f81e36ba3bf92172791eba5ca5bd813989b:
 
-Also the code is still weird.  Odd double whitespaces, expression that
-evaluate to bool.
+  Linux 5.6-rc4 (2020-03-01 16:38:46 -0600)
 
-> 
-> 		/*
-> 		 * If the addition in this limb overflowed, then the carry bit
-> 		 * into the next limb is 1.  Else the carry bit is 0.
-> 		 */
-> 		inc = ((bc->bc_dun[i] + inc)  < inc);
+are available in the Git repository at:
 
-		if (bc->bc_dun[i] + carry < carry)
-			carry = 1;
-		else
-			carry = 0;
+  https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
 
-> 
-> > +blk_status_t __blk_crypto_init_request(struct request *rq,
-> > +				       const struct blk_crypto_key *key)
-> > +{
-> > +	return blk_ksm_get_slot_for_key(rq->q->ksm, key, &rq->crypt_keyslot);
-> > +}
-> 
-> The comment of this function seems outdated.  All it does it get a keyslot, but
-> the comment talks about initializing "crypto fields" (plural).
+for you to fetch changes up to 861261f2a9cc488c845fc214d9035f7a11094591:
 
-This is a classic case where I think the top of the function comment
-is entirely useless. If there is a single caller in core code and the
-function is completely trivial, there really is no point in a multi-line
-comment.  Comment should explain something unexpected or non-trivial,
-while much of the comments in this series are just boilerplate making
-the code harder to read.
+  ubifs: wire up FS_IOC_GET_ENCRYPTION_NONCE (2020-03-19 21:57:06 -0700)
 
-> >  	blk_queue_bounce(q, &bio);
-> >  	__blk_queue_split(q, &bio, &nr_segs);
-> > @@ -2002,6 +2006,14 @@ static blk_qc_t blk_mq_make_request(struct request_queue *q, struct bio *bio)
-> >  
-> >  	cookie = request_to_qc_t(data.hctx, rq);
-> >  
-> > +	ret = blk_crypto_init_request(rq, bio_crypt_key(bio));
-> > +	if (ret != BLK_STS_OK) {
-> > +		bio->bi_status = ret;
-> > +		bio_endio(bio);
-> > +		blk_mq_free_request(rq);
-> > +		return BLK_QC_T_NONE;
-> > +	}
-> > +
-> >  	blk_mq_bio_to_request(rq, bio, nr_segs);
-> 
-> Wouldn't it make a lot more sense to do blk_crypto_init_request() after
-> blk_mq_bio_to_request() rather than before?
-> 
-> I.e., initialize request::crypt_ctx first, *then* get the keyslot.  Not the
-> other way around.
-> 
-> That would allow removing the second argument to blk_crypto_init_request() and
-> removing bio_crypt_key().  blk_crypto_init_request() would only need to take in
-> the struct request.
+----------------------------------------------------------------
 
-And we can fail just the request on an error, so yes this doesn't
-seem too bad.
+Add an ioctl FS_IOC_GET_ENCRYPTION_NONCE which retrieves a file's
+encryption nonce.  This makes it easier to write automated tests which
+verify that fscrypt is doing the encryption correctly.
+
+----------------------------------------------------------------
+Eric Biggers (4):
+      fscrypt: add FS_IOC_GET_ENCRYPTION_NONCE ioctl
+      ext4: wire up FS_IOC_GET_ENCRYPTION_NONCE
+      f2fs: wire up FS_IOC_GET_ENCRYPTION_NONCE
+      ubifs: wire up FS_IOC_GET_ENCRYPTION_NONCE
+
+ Documentation/filesystems/fscrypt.rst | 11 +++++++++++
+ fs/crypto/fscrypt_private.h           | 20 ++++++++++++++++++++
+ fs/crypto/keysetup.c                  | 16 ++--------------
+ fs/crypto/policy.c                    | 21 ++++++++++++++++++++-
+ fs/ext4/ioctl.c                       |  6 ++++++
+ fs/f2fs/file.c                        | 11 +++++++++++
+ fs/ubifs/ioctl.c                      |  4 ++++
+ include/linux/fscrypt.h               |  6 ++++++
+ include/uapi/linux/fscrypt.h          |  1 +
+ 9 files changed, 81 insertions(+), 15 deletions(-)
