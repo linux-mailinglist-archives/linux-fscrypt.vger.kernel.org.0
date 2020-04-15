@@ -2,42 +2,62 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 467CC1A8BAF
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 14 Apr 2020 21:58:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25D771A9238
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 15 Apr 2020 07:01:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505276AbgDNT5A (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 14 Apr 2020 15:57:00 -0400
-Received: from smtprelay0211.hostedemail.com ([216.40.44.211]:34122 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2505250AbgDNTz5 (ORCPT
+        id S2393221AbgDOFBj (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 15 Apr 2020 01:01:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393192AbgDOFBM (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 14 Apr 2020 15:55:57 -0400
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave04.hostedemail.com (Postfix) with ESMTP id D5D591802CCB4;
-        Tue, 14 Apr 2020 19:47:05 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 9E3611802B57F;
-        Tue, 14 Apr 2020 19:47:05 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:966:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1537:1561:1593:1594:1711:1714:1730:1747:1777:1792:2196:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3867:3872:3874:4321:4385:5007:6742:6743:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14659:14721:21080:21627:30045:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: coal59_5a1e7cc02a463
-X-Filterd-Recvd-Size: 2796
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf07.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 14 Apr 2020 19:46:59 +0000 (UTC)
-Message-ID: <2a58f592879cf67b4c6b8e859ce87e1f9652902a.camel@perches.com>
-Subject: Re: [PATCH v2 2/2] crypto: Remove unnecessary memzero_explicit()
-From:   Joe Perches <joe@perches.com>
-To:     Waiman Long <longman@redhat.com>,
-        Michal =?ISO-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-Cc:     Christophe Leroy <christophe.leroy@c-s.fr>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        Wed, 15 Apr 2020 01:01:12 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93B35C03C1A9
+        for <linux-fscrypt@vger.kernel.org>; Tue, 14 Apr 2020 22:01:09 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id s18so1119798qvn.1
+        for <linux-fscrypt@vger.kernel.org>; Tue, 14 Apr 2020 22:01:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ef3HLI/XX5ogd42JRuoGnEbb/Ln3ZxgvuLj5jaeUWkI=;
+        b=Tcxzc6xC3iVTZShTUf3CIv3N8B5ZyCbru12fLV5+tpVooL5/Bo3MM2R4w1+y/qKNnw
+         9lu0zJBRs+VK1Bc14YzwiZC+K/efs95VT8GzxaoJoz3t2WhfDZxWX+BgsMNU20r8wRPv
+         WS98QN/V8NZIzymtO0juNqdA9Tg6/2OTyjU7Zm1KL9ejebzf7wo1d0uOEsRrlg17M8fg
+         qYmffi6H6MwGLJe4epZjwPPvjWIdIXS0xtejpuhYYUqQSrz2GfoywvJh6tC6sCJVyKe7
+         xzOQhWdIv/o82YQJCk9DtMPUw2B8iLWuNwugd4l1OepDEbLixuOHRPHRALsrInJO+Rsn
+         o1og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ef3HLI/XX5ogd42JRuoGnEbb/Ln3ZxgvuLj5jaeUWkI=;
+        b=eVRCnUWQ0A6fS7Ygk3fuFonGvPHc4eALqJq4lmcoSNPzdJA6NCu1tb6AJw36Qr8tFf
+         y0qbqaPLAo0eAzY+/F2YtQ2AFFQV41rT2YWnGG/Map5I2V4aKbCm7LFnHuFWYe1zptPV
+         6CRYfhXgqMhFo6C9gZ6eMxQNekm+4+gjzMUnTHrSYUWDz6RhScpcyg9Fw2GS+hxVl7Us
+         C8yzmS4Em4jtglJfelUk2po7O6H+9wjVpyHNNUflGXg6FTar2YS00pLYPrgUwYpQKPmB
+         tnt0S5mSufq4+5WDQ2s/TZ1rbGzfcXkMSGjlIhaw3ZY0ayFEDEpt0Olkxq9jUUUTSV3L
+         gH+g==
+X-Gm-Message-State: AGi0PuaunKl318UMKKRtUOfslh+k6xK/mj4JDXAmv9rnPnkAE12hLGUk
+        UMcwgGr3xsO8KEUTbEN6iWZPrQ==
+X-Google-Smtp-Source: APiQypJRjg+PyUSZjrIkjpxdMfgyPb9bMEWnffTFRMxoE1aQMUITXzNurR0P/0BN6q0H0W5xTyhSBA==
+X-Received: by 2002:a0c:e88d:: with SMTP id b13mr3243342qvo.245.1586926868219;
+        Tue, 14 Apr 2020 22:01:08 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::e623])
+        by smtp.gmail.com with ESMTPSA id 10sm6168833qtp.4.2020.04.14.22.01.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Apr 2020 22:01:07 -0700 (PDT)
+Date:   Wed, 15 Apr 2020 01:01:06 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
         David Howells <dhowells@redhat.com>,
         Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
         James Morris <jmorris@namei.org>,
         "Serge E. Hallyn" <serge@hallyn.com>,
         Linus Torvalds <torvalds@linux-foundation.org>,
+        Joe Perches <joe@perches.com>,
         Matthew Wilcox <willy@infradead.org>,
         David Rientjes <rientjes@google.com>, linux-mm@kvack.org,
         keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -59,34 +79,55 @@ Cc:     Christophe Leroy <christophe.leroy@c-s.fr>,
         linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
         cocci@systeme.lip6.fr, linux-security-module@vger.kernel.org,
         linux-integrity@vger.kernel.org
-Date:   Tue, 14 Apr 2020 12:44:49 -0700
-In-Reply-To: <578fe9b6-1ccd-2698-60aa-96c3f2dd2c31@redhat.com>
+Subject: Re: [PATCH 1/2] mm, treewide: Rename kzfree() to kfree_sensitive()
+Message-ID: <20200415050106.GA154671@cmpxchg.org>
 References: <20200413211550.8307-1-longman@redhat.com>
-         <20200413222846.24240-1-longman@redhat.com>
-         <eca85e0b-0af3-c43a-31e4-bd5c3f519798@c-s.fr>
-         <e194a51f-a5e5-a557-c008-b08cac558572@redhat.com>
-         <20200414191601.GZ25468@kitsune.suse.cz>
-         <578fe9b6-1ccd-2698-60aa-96c3f2dd2c31@redhat.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.34.1-2 
+ <20200413211550.8307-2-longman@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200413211550.8307-2-longman@redhat.com>
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, 2020-04-14 at 15:37 -0400, Waiman Long wrote:
-> OK, I can change it to clear the key length when the allocation failed
-> which isn't likely.
+On Mon, Apr 13, 2020 at 05:15:49PM -0400, Waiman Long wrote:
+> As said by Linus:
+> 
+>   A symmetric naming is only helpful if it implies symmetries in use.
+>   Otherwise it's actively misleading.
 
+As the btrfs example proves - people can be tempted by this false
+symmetry to pair kzalloc with kzfree, which isn't what we wanted.
 
-Perhaps:
+>   In "kzalloc()", the z is meaningful and an important part of what the
+>   caller wants.
+> 
+>   In "kzfree()", the z is actively detrimental, because maybe in the
+>   future we really _might_ want to use that "memfill(0xdeadbeef)" or
+>   something. The "zero" part of the interface isn't even _relevant_.
+> 
+> The main reason that kzfree() exists is to clear sensitive information
+> that should not be leaked to other future users of the same memory
+> objects.
+> 
+> Rename kzfree() to kfree_sensitive() to follow the example of the
+> recently added kvfree_sensitive() and make the intention of the API
+> more explicit. In addition, memzero_explicit() is used to clear the
+> memory to make sure that it won't get optimized away by the compiler.
+> 
+> The renaming is done by using the command sequence:
+> 
+>   git grep -w --name-only kzfree |\
+>   xargs sed -i 's/\bkzfree\b/kfree_sensitive/'
+> 
+> followed by some editing of the kfree_sensitive() kerneldoc and the
+> use of memzero_explicit() instead of memset().
+> 
+> Suggested-by: Joe Perches <joe@perches.com>
+> Signed-off-by: Waiman Long <longman@redhat.com>
 
-	kfree_sensitive(op->key);
-	op->key = NULL;
-	op->keylen = 0;
+Looks good to me. Thanks for fixing this very old mistake.
 
-but I don't know that it impacts any possible state.
-
-
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
