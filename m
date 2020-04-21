@@ -2,151 +2,107 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 313AE1B2C48
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 21 Apr 2020 18:16:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23E0B1B2C80
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 21 Apr 2020 18:20:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729212AbgDUQQP (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 21 Apr 2020 12:16:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44356 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729203AbgDUQQN (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 21 Apr 2020 12:16:13 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 18FB4206E9;
-        Tue, 21 Apr 2020 16:16:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587485773;
-        bh=qiXf63zWTCGvTjnG70KB7NRulvFM0OVVL4QXB3MGXmc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nKDhbbd9U21xz25oia5puKhBJCJQbDmVNbR62oq2SH72dJBmUP6HzF2jOjOPGxcUf
-         QpdCdyfhPdcFJ6HVni4y/N5AXhcgDfGJd1F6GgWMVjj1ENDBgad80jv4C2kTBB23Me
-         cUNc0R4ZZRuwkEZ6jj83pGmM4+1Yn7Bk21FFW1Nk=
-Date:   Tue, 21 Apr 2020 09:16:11 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Jes Sorensen <jsorensen@fb.com>
-Cc:     Jes Sorensen <jes.sorensen@gmail.com>,
-        linux-fscrypt@vger.kernel.org, kernel-team@fb.com
+        id S1725987AbgDUQUl (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 21 Apr 2020 12:20:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725930AbgDUQUl (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 21 Apr 2020 12:20:41 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAEC1C061A10
+        for <linux-fscrypt@vger.kernel.org>; Tue, 21 Apr 2020 09:20:40 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id r19so2123967qtu.11
+        for <linux-fscrypt@vger.kernel.org>; Tue, 21 Apr 2020 09:20:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:subject:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rW38FexhMDjA843b2OeiU5SANY+HLspLMhvJUppQsrw=;
+        b=U3dRbqp4ri8DPKpFkFMtFd2Nhak8NUoeQO4Wnd5B4c2mTvuqnioKJfz7qxkq9okyjt
+         h1wCEBv7DTKV648w7Xb5VUJWeussBa6OYaOo6yHyerhYtGyekQz1/jtJkbioaAZNPu2H
+         BRLHEwj6+Eau3rWSr9lgNp9Bl6cdgIOV0qz8VTU8/qUaFTIiiRSgeNa3Aw9HtTJKQQL3
+         8RvvUEEYV/rEiVXhyc1ZFYRbnRUqfg8rsdPW+ANDRpZgkHV0XsricUyz/8x86y/1DgoA
+         mgi1yIqdYYD/WR5H7pMfquuQLhH2IIfiOn3IP5nc2Jx9AizLgBUimWRbXdZ96xf15Fbx
+         37PQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rW38FexhMDjA843b2OeiU5SANY+HLspLMhvJUppQsrw=;
+        b=lgothqJEKt127Qmdrv/XdUFqW5WlPQUVRVFqV4eIZ7couYWdfTpmoRHH+uc8+w7n0F
+         zIR5QtI39tbxvCa+aKZ2rpIhV+4hb9lS82jHJDcs99gkglXzYzbzkgH+h8Y4GEP7KKY/
+         WKy25kOz152KB1KU+nlQOvoRt9X6CphbZWxLwT6MdIjoXqWk0+s8wWJlCGcltlNa5B+Y
+         /cXiSB9VAAgOLl8kHSIrujza3kNXKt4eE0SU7ENo7ezmsAitroGMTrYxWrSp/XABzzsk
+         ZrbREotJgDxIsmCpRJ+OhucwoHonoQmCsAwSQAR1GKLYvROg3CfPUbnNfeOhWmK1Vj0L
+         E7vg==
+X-Gm-Message-State: AGi0PuaIQNgRVn+fI+eS+j88jM08D2Jypl3ksh2SDW2Yx9v+2Cf+vOrp
+        fLqWfvbObqg19TdK0DIbkyqGGr9KqeY=
+X-Google-Smtp-Source: APiQypLdI6fTzK22TThGj4wagV2ueRhzxi6yooU/FDOmHMdbTiNm2/QveR+dbKyr8szqGci5B+f6/g==
+X-Received: by 2002:ac8:554a:: with SMTP id o10mr23137077qtr.221.1587486039888;
+        Tue, 21 Apr 2020 09:20:39 -0700 (PDT)
+Received: from ?IPv6:2620:10d:c0a8:11d1::10c4? ([2620:10d:c091:480::1:bf76])
+        by smtp.gmail.com with ESMTPSA id n31sm2101382qtc.36.2020.04.21.09.20.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Apr 2020 09:20:39 -0700 (PDT)
+From:   Jes Sorensen <jes.sorensen@gmail.com>
+X-Google-Original-From: Jes Sorensen <Jes.Sorensen@gmail.com>
 Subject: Re: [PATCH 3/9] Move fsverity_descriptor definition to libfsverity.h
-Message-ID: <20200421161611.GA95716@gmail.com>
+To:     Eric Biggers <ebiggers@kernel.org>, Jes Sorensen <jsorensen@fb.com>
+Cc:     linux-fscrypt@vger.kernel.org, kernel-team@fb.com
 References: <20200312214758.343212-1-Jes.Sorensen@gmail.com>
  <20200312214758.343212-4-Jes.Sorensen@gmail.com>
  <20200322045722.GC111151@sol.localdomain>
  <ebca4865-60e7-c61e-b335-c2962482643b@fb.com>
+ <20200421161611.GA95716@gmail.com>
+Message-ID: <dbdd7247-f624-bbee-da12-0dd74bca73bd@gmail.com>
+Date:   Tue, 21 Apr 2020 12:20:38 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ebca4865-60e7-c61e-b335-c2962482643b@fb.com>
+In-Reply-To: <20200421161611.GA95716@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 12:07:07PM -0400, Jes Sorensen wrote:
-> On 3/22/20 12:57 AM, Eric Biggers wrote:
-> > On Thu, Mar 12, 2020 at 05:47:52PM -0400, Jes Sorensen wrote:
-> >> From: Jes Sorensen <jsorensen@fb.com>
-> >>
-> >> Signed-off-by: Jes Sorensen <jsorensen@fb.com>
-> >> ---
-> >>  cmd_sign.c    | 19 +------------------
-> >>  libfsverity.h | 26 +++++++++++++++++++++++++-
-> >>  2 files changed, 26 insertions(+), 19 deletions(-)
-> >>
-> >> diff --git a/cmd_sign.c b/cmd_sign.c
-> >> index dcc44f8..1792084 100644
-> >> --- a/cmd_sign.c
-> >> +++ b/cmd_sign.c
-> >> @@ -20,26 +20,9 @@
-> >>  #include <unistd.h>
-> >>  
-> >>  #include "commands.h"
-> >> -#include "fsverity_uapi.h"
-> >> +#include "libfsverity.h"
-> >>  #include "hash_algs.h"
-> >>  
-> >> -/*
-> >> - * Merkle tree properties.  The file measurement is the hash of this structure
-> >> - * excluding the signature and with the sig_size field set to 0.
-> >> - */
-> >> -struct fsverity_descriptor {
-> >> -	__u8 version;		/* must be 1 */
-> >> -	__u8 hash_algorithm;	/* Merkle tree hash algorithm */
-> >> -	__u8 log_blocksize;	/* log2 of size of data and tree blocks */
-> >> -	__u8 salt_size;		/* size of salt in bytes; 0 if none */
-> >> -	__le32 sig_size;	/* size of signature in bytes; 0 if none */
-> >> -	__le64 data_size;	/* size of file the Merkle tree is built over */
-> >> -	__u8 root_hash[64];	/* Merkle tree root hash */
-> >> -	__u8 salt[32];		/* salt prepended to each hashed block */
-> >> -	__u8 __reserved[144];	/* must be 0's */
-> >> -	__u8 signature[];	/* optional PKCS#7 signature */
-> >> -};
-> >> -
-> >>  /*
-> >>   * Format in which verity file measurements are signed.  This is the same as
-> >>   * 'struct fsverity_digest', except here some magic bytes are prepended to
-> >> diff --git a/libfsverity.h b/libfsverity.h
-> >> index ceebae1..396a6ee 100644
-> >> --- a/libfsverity.h
-> >> +++ b/libfsverity.h
-> >> @@ -13,13 +13,14 @@
-> >>  
-> >>  #include <stddef.h>
-> >>  #include <stdint.h>
-> >> +#include <linux/types.h>
-> >>  
-> >>  #define FS_VERITY_HASH_ALG_SHA256       1
-> >>  #define FS_VERITY_HASH_ALG_SHA512       2
-> >>  
-> >>  struct libfsverity_merkle_tree_params {
-> >>  	uint16_t version;
-> >> -	uint16_t hash_algorithm;
-> >> +	uint16_t hash_algorithm;	/* Matches the digest_algorithm type */
-> >>  	uint32_t block_size;
-> >>  	uint32_t salt_size;
-> >>  	const uint8_t *salt;
-> >> @@ -27,6 +28,7 @@ struct libfsverity_merkle_tree_params {
-> >>  };
-> >>  
-> >>  struct libfsverity_digest {
-> >> +	char magic[8];			/* must be "FSVerity" */
-> >>  	uint16_t digest_algorithm;
-> >>  	uint16_t digest_size;
-> >>  	uint8_t digest[];
-> >> @@ -38,4 +40,26 @@ struct libfsverity_signature_params {
-> >>  	uint64_t reserved[11];
-> >>  };
-> >>  
-> >> +/*
-> >> + * Merkle tree properties.  The file measurement is the hash of this structure
-> >> + * excluding the signature and with the sig_size field set to 0.
-> >> + */
-> >> +struct fsverity_descriptor {
-> >> +	uint8_t version;	/* must be 1 */
-> >> +	uint8_t hash_algorithm;	/* Merkle tree hash algorithm */
-> >> +	uint8_t log_blocksize;	/* log2 of size of data and tree blocks */
-> >> +	uint8_t salt_size;	/* size of salt in bytes; 0 if none */
-> >> +	__le32 sig_size;	/* size of signature in bytes; 0 if none */
-> >> +	__le64 data_size;	/* size of file the Merkle tree is built over */
-> >> +	uint8_t root_hash[64];	/* Merkle tree root hash */
-> >> +	uint8_t salt[32];	/* salt prepended to each hashed block */
-> >> +	uint8_t __reserved[144];/* must be 0's */
-> >> +	uint8_t signature[];	/* optional PKCS#7 signature */
-> >> +};
-> >> +
-> > 
-> > I thought there was no need for this to be part of the library API?
+On 4/21/20 12:16 PM, Eric Biggers wrote:
+> On Tue, Apr 21, 2020 at 12:07:07PM -0400, Jes Sorensen wrote:
+>> On 3/22/20 12:57 AM, Eric Biggers wrote:
+>>> I thought there was no need for this to be part of the library API?
+>>
+>> Hi Eric,
+>>
+>> Been busy working on RPM support, but looking at this again now. Given
+>> that the fsverity signature is a hash of the descriptor, I don't see how
+>> we can avoid this?
+>>
 > 
-> Hi Eric,
-> 
-> Been busy working on RPM support, but looking at this again now. Given
-> that the fsverity signature is a hash of the descriptor, I don't see how
-> we can avoid this?
-> 
+> struct fsverity_descriptor isn't signed directly; it's hashed as an intermediate
+> step in libfsverity_compute_digest().  So why would the library user need the
+> definition of 'struct fsverity_descriptor'?
 
-struct fsverity_descriptor isn't signed directly; it's hashed as an intermediate
-step in libfsverity_compute_digest().  So why would the library user need the
-definition of 'struct fsverity_descriptor'?
+Hi Eric,
 
-- Eric
+You're right, I actually moved it to libfsverity_private.h already, but
+it's in the new patches I am working on.
+
+I pushed it all to git.kernel.org, but I still need to address some of
+the issues you responded about. I'll post an update to this when I have
+worked through your list of comments. Most noticeable is that I had to
+rework the read API to make it work with RPM, but you can find my
+current tree here (libfsverity branch):
+https://git.kernel.org/pub/scm/linux/kernel/git/jes/fsverity-utils.git/
+
+Current RPM work is here:
+https://github.com/jessorensen/rpm/tree/rpm-fsverity
+
+Cheers,
+Jes
