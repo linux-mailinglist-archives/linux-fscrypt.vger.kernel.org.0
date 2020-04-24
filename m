@@ -2,59 +2,59 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3C4E1B813D
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 24 Apr 2020 22:55:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6367A1B813E
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 24 Apr 2020 22:55:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726062AbgDXUzc (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 24 Apr 2020 16:55:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47700 "EHLO
+        id S1726183AbgDXUze (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 24 Apr 2020 16:55:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726027AbgDXUzc (ORCPT
+        with ESMTP id S1726027AbgDXUzd (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 24 Apr 2020 16:55:32 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B94C09B048
-        for <linux-fscrypt@vger.kernel.org>; Fri, 24 Apr 2020 13:55:32 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id 71so9111675qtc.12
-        for <linux-fscrypt@vger.kernel.org>; Fri, 24 Apr 2020 13:55:32 -0700 (PDT)
+        Fri, 24 Apr 2020 16:55:33 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B442C09B048
+        for <linux-fscrypt@vger.kernel.org>; Fri, 24 Apr 2020 13:55:33 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id q2so5409200qvd.1
+        for <linux-fscrypt@vger.kernel.org>; Fri, 24 Apr 2020 13:55:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=DrbAVWu4qCkcBZ8zvuLQ6tYHAf4DmA7axJJr6fBOg9Q=;
-        b=G75R4FvwdRBLKdgFnZxKzd0d2fDkHQ0pKpiivNyuLUb0T+2YraSS/7Jv31q8rLQ4ca
-         qSyD4VYi7R7sIihLBkG2gt/7vY6bq/Ae8FhvfJ47+abAK7kDSoRIOi4/vtS75gH8KzYd
-         CmXDAaYK6FzOej1IpdaGim9d+FoiofSySA86tjSZ4oYOGOaqluhmX5T5w6TIJhOfSCil
-         KvtrhWnjwQzMiIQpDXI0Xgp4FStmfvgH2jlLNCZhKtAo9XB+0L9ZBYjYSUet/7QIvQfY
-         JIvCIz/sUkjFntG0TRixYEVN8GabJnCPlMwfTU2PFKP3XdXqrxR1rdhEOwwMX+w/R04t
-         AfpA==
+        bh=PF8Wn3/jzuwAy8wnSAMpG2Cm2x5tCqjN/JAQ+KXIqIU=;
+        b=qe/hfFB+AcNLN0+mZxtiC31fNwdNv8bicfPZq3A5v7dsqCDcwFMkEPczszt+pnJxoq
+         vuDHbaRPNcQgGKumuamPJYueaaFqwtFN7fcIFDz85Z3pOUJqkXUoyl3VCzRjt1T1xiyu
+         hwtCMNylfV9+B1R0nDxN61Z/Wxml3rxNAYYMWyzuem2YbNnfPu7whIp/2CXiNdwKbOJB
+         lVS2x+y9TGEJEz6kEtIF48kTFzY1FdwNHVHppH1vacGbvo11luBhmwOgGMF5OXl+QAyU
+         bH1Q8/r7coI8WAbTShu40GHZe5rA239A9OUZ6xODqSKo0shp9ph5ba0rRvvx0/qbD6vT
+         okdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=DrbAVWu4qCkcBZ8zvuLQ6tYHAf4DmA7axJJr6fBOg9Q=;
-        b=EFJ/wuCNdn3hP1nlINdyXPq2vS9NfyBBuME9eKTjOGhLdNzI+9HfjUsqiaaznu+ZNL
-         ZDKjY3yuUXVZwmBwPunbj0/Tks5dYEnlFkbUTcmBg/ahyX3/cL/Odp/JqUhu+PlKTQc5
-         leoFX1aVOgB+ksDWdDszvtzbpfC8vO/IjSRBTBQmjaDVB3wrDLEprelVw7AT9+najqqL
-         2DDY8ZybUDdOqpJfqJxuvzHbnUsBDQOsg1L25Kplcf3r7o5u0AEHmRomg0xaObT+0icC
-         9S32BmyOokOmGiOja5/IvLRUOyljr1EGsFZaGsvFYPZreDLVQteV8LFtxfAHR1ZskMA/
-         vTsA==
-X-Gm-Message-State: AGi0Pub5i+pdT4buVERdglImBxZZBVkuPPvQyDNZdyz64aIHUIZCZaYw
-        2aD8L7Ij+ca10rUdYGqHleXF735GNwA=
-X-Google-Smtp-Source: APiQypL5ATtEOApjVZDwyl0c7nTc+sCFNwJkL+qm3f08IBeHVy9Fo/7IhAxi4ojcwQdp1rxjw7WmYw==
-X-Received: by 2002:ac8:7683:: with SMTP id g3mr11771149qtr.166.1587761730754;
-        Fri, 24 Apr 2020 13:55:30 -0700 (PDT)
+        bh=PF8Wn3/jzuwAy8wnSAMpG2Cm2x5tCqjN/JAQ+KXIqIU=;
+        b=flHzlPmiAjCFEIQ1ocLuRfhE5z8Z82asrHFasmAOCQ2FpuRQ2m6S5yf2Qdap0Ax1FL
+         pAlXQvsxL0CX2roQVKpSfCoyC9w1DDhRCDLAYAZNLA1S4l+reGrxGzetABEDpVHxu+jX
+         IKoSalMoEP4ZGAom3F+X7uQbKG4ET86OFDMZYR7NO8nHmkWDSsD7aXIDgM++GLnRi1BQ
+         cB5e2IK1Lgc7jbKznbQ72zL1yA5UoB+ioM8z4YQcamYtWfXZwwZ7YZmVAW5vUglR7xGi
+         LQk9qMgF2T+cjD0Iztfg++rcX9tH8GXaIqYtSENgieQ6suKfW9qP+1zXJZQg3kixF6ON
+         IUhA==
+X-Gm-Message-State: AGi0PubCamf6pDzeHykbosaxcDDKR1m/vNt6tWvqwnRr7ph/Fz+DoyMy
+        lMZzmQFVuY+8EldVkmtc9bcKG8x+a0Y=
+X-Google-Smtp-Source: APiQypKKjMrLGvHABm4CrzAP1A6P6zWqOSCJkQbS3b+uoW/0hBsjybRXRwjqEfG/xSUzhEOiHmHBqA==
+X-Received: by 2002:ad4:42b1:: with SMTP id e17mr11312834qvr.149.1587761732420;
+        Fri, 24 Apr 2020 13:55:32 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:480::62b])
-        by smtp.gmail.com with ESMTPSA id u5sm4428174qkm.116.2020.04.24.13.55.29
+        by smtp.gmail.com with ESMTPSA id a27sm4919535qtb.26.2020.04.24.13.55.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Apr 2020 13:55:30 -0700 (PDT)
+        Fri, 24 Apr 2020 13:55:31 -0700 (PDT)
 From:   Jes Sorensen <jes.sorensen@gmail.com>
 X-Google-Original-From: Jes Sorensen <Jes.Sorensen@gmail.com>
 To:     linux-fscrypt@vger.kernel.org
 Cc:     ebiggers@google.com, kernel-team@fb.com, jsorensen@fb.com
-Subject: [PATCH 14/20] Change libfsverity_find_hash_alg_by_name() to return the alg number
-Date:   Fri, 24 Apr 2020 16:54:58 -0400
-Message-Id: <20200424205504.2586682-15-Jes.Sorensen@gmail.com>
+Subject: [PATCH 15/20] Make libfsverity_find_hash_alg_by_name() private to the shared library
+Date:   Fri, 24 Apr 2020 16:54:59 -0400
+Message-Id: <20200424205504.2586682-16-Jes.Sorensen@gmail.com>
 X-Mailer: git-send-email 2.25.3
 In-Reply-To: <20200424205504.2586682-1-Jes.Sorensen@gmail.com>
 References: <20200424205504.2586682-1-Jes.Sorensen@gmail.com>
@@ -67,236 +67,193 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Jes Sorensen <jsorensen@fb.com>
 
-This elimnates the need for struct fsverity_hash_alg in the use case
-of libfsverity_find_hash_alg_by_name(). In addition this introduces a
-libfsverity_digest_size() which returns the size of the digest for the
-given algorithm, and libfsverity_hash_name() which returns a string
-with the name of the algorithm. Note the returned string must be
-freed by the caller.
+This moves struct fsverity_hash_alg out of the public API. Instead
+implement show_all_hash_algs() by calling libfsverity_hash_name()
+until it returns null.
 
 Signed-off-by: Jes Sorensen <jsorensen@fb.com>
 ---
- cmd_enable.c  |  6 +++---
- cmd_sign.c    | 25 +++++++++++++++----------
- hash_algs.c   | 35 ++++++++++++++++++++++++++++++-----
- libfsverity.h | 28 +++++++++++++++++++++++-----
- 4 files changed, 71 insertions(+), 23 deletions(-)
+ cmd_enable.c          |  2 +-
+ cmd_measure.c         | 17 ++++++++---------
+ cmd_sign.c            |  2 +-
+ fsverity.c            | 16 +++++++---------
+ hash_algs.c           |  1 +
+ libfsverity.h         | 19 -------------------
+ libfsverity_private.h | 19 +++++++++++++++++++
+ 7 files changed, 37 insertions(+), 39 deletions(-)
 
 diff --git a/cmd_enable.c b/cmd_enable.c
-index 9612778..ac977e7 100644
+index ac977e7..632ac84 100644
 --- a/cmd_enable.c
 +++ b/cmd_enable.c
-@@ -22,7 +22,7 @@ static bool parse_hash_alg_option(const char *arg, u32 *alg_ptr)
- {
- 	char *end;
- 	unsigned long n = strtoul(arg, &end, 10);
--	const struct fsverity_hash_alg *alg;
-+	uint16_t alg;
- 
- 	if (*alg_ptr != 0) {
- 		error_msg("--hash-alg can only be specified once");
-@@ -37,8 +37,8 @@ static bool parse_hash_alg_option(const char *arg, u32 *alg_ptr)
- 
- 	/* Specified by name? */
- 	alg = libfsverity_find_hash_alg_by_name(arg);
--	if (alg != NULL) {
--		*alg_ptr = alg->hash_num;
-+	if (alg) {
-+		*alg_ptr = alg;
+@@ -42,7 +42,7 @@ static bool parse_hash_alg_option(const char *arg, u32 *alg_ptr)
  		return true;
  	}
  	error_msg("unknown hash algorithm: '%s'", arg);
-diff --git a/cmd_sign.c b/cmd_sign.c
-index 959e6d9..80e62d5 100644
---- a/cmd_sign.c
-+++ b/cmd_sign.c
-@@ -57,7 +57,6 @@ static int read_callback(void *opague, void *buf, size_t count)
- int fsverity_cmd_sign(const struct fsverity_command *cmd,
- 		      int argc, char *argv[])
- {
--	const struct fsverity_hash_alg *hash_alg = NULL;
- 	struct filedes file = { .fd = -1 };
- 	u32 block_size = 0;
- 	u8 *salt = NULL;
-@@ -69,7 +68,10 @@ int fsverity_cmd_sign(const struct fsverity_command *cmd,
- 	struct libfsverity_signature_params sig_params;
- 	u64 file_size;
+-	fputs("Available hash algorithms: ", stderr);
++	fputs("Available hash algorithms:", stderr);
+ 	show_all_hash_algs(stderr);
+ 	putc('\n', stderr);
+ 
+diff --git a/cmd_measure.c b/cmd_measure.c
+index 4c0777f..df39da0 100644
+--- a/cmd_measure.c
++++ b/cmd_measure.c
+@@ -22,9 +22,8 @@ int fsverity_cmd_measure(const struct fsverity_command *cmd,
+ 	struct fsverity_digest *d = NULL;
+ 	struct filedes file;
  	char digest_hex[FS_VERITY_MAX_DIGEST_SIZE * 2 + 1];
-+	char *hash_name = NULL;
- 	u8 *sig = NULL;
-+	u16 alg_nr = 0;
-+	int digest_size;
- 	size_t sig_size;
+-	const struct fsverity_hash_alg *hash_alg;
+ 	char _hash_alg_name[32];
+-	const char *hash_alg_name;
++	char *hash_alg_name;
  	int status;
- 	int c;
-@@ -77,12 +79,12 @@ int fsverity_cmd_sign(const struct fsverity_command *cmd,
- 	while ((c = getopt_long(argc, argv, "", longopts, NULL)) != -1) {
- 		switch (c) {
- 		case OPT_HASH_ALG:
--			if (hash_alg != NULL) {
-+			if (alg_nr) {
- 				error_msg("--hash-alg can only be specified once");
- 				goto out_usage;
- 			}
--			hash_alg = libfsverity_find_hash_alg_by_name(optarg);
--			if (hash_alg == NULL) {
-+			alg_nr = libfsverity_find_hash_alg_by_name(optarg);
-+			if (!alg_nr) {
- 				error_msg("unknown hash algorithm: '%s'",
- 					  optarg);
- 				fputs("Available hash algorithms: ", stderr);
-@@ -124,8 +126,8 @@ int fsverity_cmd_sign(const struct fsverity_command *cmd,
- 	if (argc != 2)
- 		goto out_usage;
- 
--	if (hash_alg == NULL)
--		hash_alg = libfsverity_find_hash_alg_by_num(FS_VERITY_HASH_ALG_DEFAULT);
-+	if (!alg_nr)
-+		alg_nr = FS_VERITY_HASH_ALG_DEFAULT;
- 
- 	if (block_size == 0)
- 		block_size = get_default_block_size();
-@@ -147,7 +149,7 @@ int fsverity_cmd_sign(const struct fsverity_command *cmd,
- 
- 	memset(&params, 0, sizeof(struct libfsverity_merkle_tree_params));
- 	params.version = 1;
--	params.hash_algorithm = hash_alg->hash_num;
-+	params.hash_algorithm = alg_nr;
- 	params.block_size = block_size;
- 	params.salt_size = salt_size;
- 	params.salt = salt;
-@@ -158,6 +160,8 @@ int fsverity_cmd_sign(const struct fsverity_command *cmd,
- 
- 	filedes_close(&file);
- 
-+	digest_size = libfsverity_digest_size(alg_nr);
-+
- 	memset(&sig_params, 0, sizeof(struct libfsverity_signature_params));
- 	sig_params.keyfile = keyfile;
- 	sig_params.certfile = certfile;
-@@ -169,9 +173,10 @@ int fsverity_cmd_sign(const struct fsverity_command *cmd,
- 	if (!write_signature(argv[1], sig, sig_size))
- 		goto out_err;
- 
--	bin2hex(digest->digest, hash_alg->digest_size, digest_hex);
--	printf("Signed file '%s' (%s:%s)\n", argv[0], hash_alg->name,
--	       digest_hex);
-+	hash_name = libfsverity_hash_name(alg_nr);
-+	bin2hex(digest->digest, digest_size, digest_hex);
-+	printf("Signed file '%s' (%s:%s)\n", argv[0], hash_name, digest_hex);
-+	free(hash_name);
- 	status = 0;
- out:
- 	free(salt);
-diff --git a/hash_algs.c b/hash_algs.c
-index 3066d87..120d1be 100644
---- a/hash_algs.c
-+++ b/hash_algs.c
-@@ -137,17 +137,17 @@ const struct fsverity_hash_alg fsverity_hash_algs[] = {
- 	},
- };
- 
--const struct fsverity_hash_alg *
--libfsverity_find_hash_alg_by_name(const char *name)
-+uint16_t libfsverity_find_hash_alg_by_name(const char *name)
- {
  	int i;
  
- 	for (i = 0; i < ARRAY_SIZE(fsverity_hash_algs); i++) {
- 		if (fsverity_hash_algs[i].name &&
--		    !strcmp(name, fsverity_hash_algs[i].name))
--			return &fsverity_hash_algs[i];
-+		    !strcmp(name, fsverity_hash_algs[i].name)) {
-+			return fsverity_hash_algs[i].hash_num;
-+		}
+@@ -48,14 +47,14 @@ int fsverity_cmd_measure(const struct fsverity_command *cmd,
+ 
+ 		ASSERT(d->digest_size <= FS_VERITY_MAX_DIGEST_SIZE);
+ 		bin2hex(d->digest, d->digest_size, digest_hex);
+-		hash_alg = libfsverity_find_hash_alg_by_num(d->digest_algorithm);
+-		if (hash_alg) {
+-			hash_alg_name = hash_alg->name;
+-		} else {
++		hash_alg_name = libfsverity_hash_name(d->digest_algorithm);
++		if (!hash_alg_name)
+ 			sprintf(_hash_alg_name, "ALG_%u", d->digest_algorithm);
+-			hash_alg_name = _hash_alg_name;
+-		}
+-		printf("%s:%s %s\n", hash_alg_name, digest_hex, argv[i]);
++
++		printf("%s:%s %s\n",
++		       hash_alg_name ? hash_alg_name :_hash_alg_name,
++		       digest_hex, argv[i]);
++		free(hash_alg_name);
  	}
--	return NULL;
-+	return 0;
+ 	status = 0;
+ out:
+diff --git a/cmd_sign.c b/cmd_sign.c
+index 80e62d5..57a9250 100644
+--- a/cmd_sign.c
++++ b/cmd_sign.c
+@@ -87,7 +87,7 @@ int fsverity_cmd_sign(const struct fsverity_command *cmd,
+ 			if (!alg_nr) {
+ 				error_msg("unknown hash algorithm: '%s'",
+ 					  optarg);
+-				fputs("Available hash algorithms: ", stderr);
++				fputs("Available hash algorithms:", stderr);
+ 				show_all_hash_algs(stderr);
+ 				putc('\n', stderr);
+ 				goto out_usage;
+diff --git a/fsverity.c b/fsverity.c
+index a176ead..2e2b553 100644
+--- a/fsverity.c
++++ b/fsverity.c
+@@ -51,14 +51,12 @@ static const struct fsverity_command {
+ void show_all_hash_algs(FILE *fp)
+ {
+ 	int i = 1;
+-	const char *sep = "";
+-	const struct fsverity_hash_alg *alg;
+-
+-	while ((alg = libfsverity_find_hash_alg_by_num(i++))) {
+-		if (alg && alg->name) {
+-			fprintf(fp, "%s%s", sep, alg->name);
+-			sep = ", ";
+-		}
++	const char *sep = " ";
++	char *alg;
++
++	while ((alg = libfsverity_hash_name(i++))) {
++		fprintf(fp, "%s%s", sep, alg);
++		free(alg);
+ 	}
  }
  
- const struct fsverity_hash_alg *
-@@ -160,6 +160,31 @@ libfsverity_find_hash_alg_by_num(unsigned int num)
- 	return NULL;
+@@ -75,7 +73,7 @@ static void usage_all(FILE *fp)
+ "    fsverity --help\n"
+ "    fsverity --version\n"
+ "\n"
+-"Available hash algorithms: ", fp);
++"Available hash algorithms:", fp);
+ 	show_all_hash_algs(fp);
+ 	putc('\n', fp);
  }
+diff --git a/hash_algs.c b/hash_algs.c
+index 120d1be..03b9de9 100644
+--- a/hash_algs.c
++++ b/hash_algs.c
+@@ -15,6 +15,7 @@
+ #include "helpers.h"
+ #include "fsverity_uapi.h"
+ #include "libfsverity.h"
++#include "libfsverity_private.h"
+ #include "hash_algs.h"
  
-+int libfsverity_digest_size(uint16_t alg_nr)
-+{
-+	if (alg_nr < ARRAY_SIZE(fsverity_hash_algs) &&
-+	    fsverity_hash_algs[alg_nr].name)
-+		return fsverity_hash_algs[alg_nr].digest_size;
-+
-+	return -1;
-+}
-+
-+char *libfsverity_hash_name(uint16_t alg_nr)
-+{
-+	int namelen;
-+	char *hash_name = NULL;
-+
-+	if (alg_nr < ARRAY_SIZE(fsverity_hash_algs) &&
-+	    fsverity_hash_algs[alg_nr].name) {
-+		namelen = strlen(fsverity_hash_algs[alg_nr].name);
-+		hash_name = malloc(namelen + 1);
-+		if (hash_name)
-+			strcpy(hash_name, fsverity_hash_algs[alg_nr].name);
-+	}
-+
-+	return hash_name;
-+}
-+
- /* ->init(), ->update(), and ->final() all in one step */
- void hash_full(struct hash_ctx *ctx, const void *data, size_t size,
- 	       uint8_t *digest)
+ /* ========== libcrypto (OpenSSL) wrappers ========== */
 diff --git a/libfsverity.h b/libfsverity.h
-index ea36b8e..a505cbe 100644
+index a505cbe..4f0f885 100644
 --- a/libfsverity.h
 +++ b/libfsverity.h
-@@ -58,7 +58,7 @@ struct libfsverity_signature_params {
+@@ -56,14 +56,6 @@ struct libfsverity_signature_params {
+ 	uint64_t reserved[11];
+ };
  
- struct fsverity_hash_alg {
- 	const char *name;
--	unsigned int digest_size;
-+	int digest_size;
- 	unsigned int block_size;
- 	uint16_t hash_num;
- 	struct hash_ctx *(*create_ctx)(const struct fsverity_hash_alg *alg);
-@@ -108,11 +108,9 @@ libfsverity_sign_digest(const struct libfsverity_digest *digest,
-  * @name: Pointer to name of hash algorithm
-  *
-  * Returns:
+-struct fsverity_hash_alg {
+-	const char *name;
+-	int digest_size;
+-	unsigned int block_size;
+-	uint16_t hash_num;
+-	struct hash_ctx *(*create_ctx)(const struct fsverity_hash_alg *alg);
+-};
+-
+ /*
+  * libfsverity_compute_digest - Compute digest of a file
+  * @fd: open file descriptor of file to compute digest for
+@@ -112,17 +104,6 @@ libfsverity_sign_digest(const struct libfsverity_digest *digest,
+  */
+ uint16_t libfsverity_find_hash_alg_by_name(const char *name);
+ 
+-/*
+- * libfsverity_find_hash_alg_by_num - Find hash algorithm by number
+- * @name: Number of hash algorithm
+- *
+- * Returns:
 - * struct fsverity_hash_alg success
 - * NULL on error
-+ * uint16_t containing hash algorithm number, zero on error.
-  */
+- */
 -const struct fsverity_hash_alg *
--libfsverity_find_hash_alg_by_name(const char *name);
-+uint16_t libfsverity_find_hash_alg_by_name(const char *name);
- 
+-libfsverity_find_hash_alg_by_num(unsigned int num);
+-
  /*
-  * libfsverity_find_hash_alg_by_num - Find hash algorithm by number
-@@ -125,4 +123,24 @@ libfsverity_find_hash_alg_by_name(const char *name);
- const struct fsverity_hash_alg *
- libfsverity_find_hash_alg_by_num(unsigned int num);
+  * libfsverity_digest_size - Return size of digest for a given algorithm
+  * @alg_nr: Valid hash algorithm number
+diff --git a/libfsverity_private.h b/libfsverity_private.h
+index 5f3e1b4..f8eebe2 100644
+--- a/libfsverity_private.h
++++ b/libfsverity_private.h
+@@ -30,4 +30,23 @@ struct fsverity_descriptor {
+ 	uint8_t signature[];	/* optional PKCS#7 signature */
+ };
  
-+/*
-+ * libfsverity_digest_size - Return size of digest for a given algorithm
-+ * @alg_nr: Valid hash algorithm number
-+ *
-+ * Returns:
-+ * int containing size of digest, -1 on error.
-+ */
-+int libfsverity_digest_size(uint16_t alg_nr);
++struct fsverity_hash_alg {
++	const char *name;
++	int digest_size;
++	unsigned int block_size;
++	uint16_t hash_num;
++	struct hash_ctx *(*create_ctx)(const struct fsverity_hash_alg *alg);
++};
 +
 +/*
-+ * libfsverity_find_hash_name - Find name of hash algorithm by number
++ * libfsverity_find_hash_alg_by_num - Find hash algorithm by number
 + * @name: Number of hash algorithm
 + *
 + * Returns:
-+ *  New allocated string containing name of algorithm.
-+ *  String must be freed by caller.
++ * struct fsverity_hash_alg success
 + * NULL on error
 + */
-+char *libfsverity_hash_name(uint16_t num);
++const struct fsverity_hash_alg *
++libfsverity_find_hash_alg_by_num(unsigned int num);
 +
  #endif
 -- 
