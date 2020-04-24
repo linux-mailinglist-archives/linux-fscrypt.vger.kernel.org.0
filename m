@@ -2,59 +2,59 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8770A1B8131
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 24 Apr 2020 22:55:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 009CB1B8132
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 24 Apr 2020 22:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726147AbgDXUzL (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 24 Apr 2020 16:55:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47620 "EHLO
+        id S1726151AbgDXUzN (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 24 Apr 2020 16:55:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726027AbgDXUzL (ORCPT
+        with ESMTP id S1726027AbgDXUzN (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 24 Apr 2020 16:55:11 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F26B2C09B048
-        for <linux-fscrypt@vger.kernel.org>; Fri, 24 Apr 2020 13:55:10 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id n143so11676467qkn.8
-        for <linux-fscrypt@vger.kernel.org>; Fri, 24 Apr 2020 13:55:10 -0700 (PDT)
+        Fri, 24 Apr 2020 16:55:13 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FE56C09B048
+        for <linux-fscrypt@vger.kernel.org>; Fri, 24 Apr 2020 13:55:13 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id g74so11621432qke.13
+        for <linux-fscrypt@vger.kernel.org>; Fri, 24 Apr 2020 13:55:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=nx5wM1jHCr59FxTt41/wGF/CFTAQaSY0+ZYkuyUBmj8=;
-        b=lzLAkZ+3kpztRSGpGgNP79WcR5o2ROZ4rEsiI4izuakm8X5zD+TLhh3c1kE4I8ybPV
-         st1ejLpLFgSaGVqKxa3mw6K/DxJzaSoOMBn7Br8ZGepwPWUiHtA/6rjBGK9r8uYHgdie
-         CJtLAsuRbCiCgPtkqZKdtVAURHUXEwedrEH9VAEca1BcbdDCBqm3PAT80gTsxp4vRToR
-         VMpJME2rlQdN0KDDeCZqkObKbN/gw77+peUhxG0B+1Uj+8XTuVdSen1TmXXnCgctcQCE
-         tHBUQRGMBaRP9D7Hmr5MDqpOejB8RFJJjpBFs05P8Nh0WqJqWsf4jLU7Y5YJBtF9kFvu
-         o7fw==
+        bh=jSBbEcOwFMhqBX1vDwrRIhewNSVL0qTYjHJFLo6awkE=;
+        b=UggLd/5olYLSzu52Nia68NcVS9BuXtjEJfACdibcxDMNlxv7OAMICDtZ8mH81Mxr1s
+         TDj/qcAcXPhgo8B1NHp/b45tYwNfxejHymndbXJVbmtGFGb0a5Pwr6wwy5S6rLUHs1xC
+         6OEL+RDoH3eI63UQsEmGuYKlOdsPy0JfObM3yDplJlU7qZjjJhkge5M0l37AkcVvfzdb
+         5xqtOOlGCeFBljKDGYjriAgynLOZJI2FRd417bgXbVOpVLyS9VYc0leuhNouyFBh/v84
+         +n/+cd9H0eOKbdl0OLj+thgGfk7gdUSCwe/Uy+XTXS3y0BfpxH0zL/VkWKf6nsixqpWw
+         MSVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=nx5wM1jHCr59FxTt41/wGF/CFTAQaSY0+ZYkuyUBmj8=;
-        b=H/Fa82iuf9fd8MW1144ovlEggtWEvd8lRXzNGoihvSLA0Oqe7xSGcwTsUMWYwKRMgq
-         3dGcFj/OKMoZkiY41eoSx2cK7FvUVLj3u/rwoAlLw0FjRcPk2iPjYM0S1wUc7BFle5SC
-         qWpFlIzUylh1WkoCscuBrhOnQ6A90q19nIryjyftZsEtXxaDHvyq9Ap60K0712PWINxn
-         pi2xrWFnHL8kLbghLCRNkpL2shLgfTilZaYotn+6AB6rlP6rSoi6qYYeNt/auvIrmSm0
-         vNEQ/RJm8Gor6RVwitUfWgy4lsG40qvT0HKW24IRTgUPndJs7NV+4qw350sdgXfrtR21
-         Y7SA==
-X-Gm-Message-State: AGi0PubJcPl0r1pz2rel5i9C/x/Ti1fzbBhP1J1nGxs655pyRXS2Bzi5
-        2A9ktK1jj14flArUG68pAImkJsoYut0=
-X-Google-Smtp-Source: APiQypJVyb71ScBR5GvRKGinz+LR2lH7X+R4u/IAmcPJacKMkOZYm5u+aDSrlW5ovBYoXvt9zGL/1A==
-X-Received: by 2002:a37:9ad0:: with SMTP id c199mr10310387qke.472.1587761709724;
-        Fri, 24 Apr 2020 13:55:09 -0700 (PDT)
+        bh=jSBbEcOwFMhqBX1vDwrRIhewNSVL0qTYjHJFLo6awkE=;
+        b=k21FszBJeqgY/twQ4KdS8wPwciDpYUk4EIfcQxexoB2d1b+eG5epldxQ5T6T5Xa3O1
+         9K72n3XUtMmYkDQ+IUiY6gRarlyzpWPugLq27hkgiAq23gyECmbyxd/cg+kmHG6XiRPr
+         zlWN+LGQSuXB2VHeYAl9EY+r3bAMk8Y+oV3NUXP9FDYBcJXijVuavQ1sqgQWhJ0/BBa9
+         hEaYRo/b7wCQSF4DIyaemeMUi0/xmGV+ydNl+alr7Zu+vacoG1nENuasIia7gwEiREh5
+         ovDuRKNsdUP527aFfrPFqGCpeoU3cAn9+0qr7zG7zeHS72iPVcLrHDj5uI1XLa1fY/S6
+         I6PQ==
+X-Gm-Message-State: AGi0PubdDYBpH8dWbLwAkPWwGgyqz9ujCYBkb4Ytc0v+CM4X91QzEyz7
+        02vco8fv5kvy7Bcq6lp6/4AX5IMIBW4=
+X-Google-Smtp-Source: APiQypLaaFKHkdz/GgFVNYLIlWwKInKNDvS0982EPZaJVK9GmZthP6IMedXVk8YlWNCNFeS3QPqLbg==
+X-Received: by 2002:a05:620a:b97:: with SMTP id k23mr10778689qkh.174.1587761711350;
+        Fri, 24 Apr 2020 13:55:11 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:480::62b])
-        by smtp.gmail.com with ESMTPSA id w42sm4786240qtj.63.2020.04.24.13.55.08
+        by smtp.gmail.com with ESMTPSA id h23sm4398873qkk.90.2020.04.24.13.55.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Apr 2020 13:55:09 -0700 (PDT)
+        Fri, 24 Apr 2020 13:55:10 -0700 (PDT)
 From:   Jes Sorensen <jes.sorensen@gmail.com>
 X-Google-Original-From: Jes Sorensen <Jes.Sorensen@gmail.com>
 To:     linux-fscrypt@vger.kernel.org
 Cc:     ebiggers@google.com, kernel-team@fb.com, jsorensen@fb.com
-Subject: [PATCH 02/20] Change compute_file_measurement() to take a file descriptor as argument
-Date:   Fri, 24 Apr 2020 16:54:46 -0400
-Message-Id: <20200424205504.2586682-3-Jes.Sorensen@gmail.com>
+Subject: [PATCH 03/20] Move fsverity_descriptor definition to libfsverity.h
+Date:   Fri, 24 Apr 2020 16:54:47 -0400
+Message-Id: <20200424205504.2586682-4-Jes.Sorensen@gmail.com>
 X-Mailer: git-send-email 2.25.3
 In-Reply-To: <20200424205504.2586682-1-Jes.Sorensen@gmail.com>
 References: <20200424205504.2586682-1-Jes.Sorensen@gmail.com>
@@ -67,199 +67,99 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Jes Sorensen <jsorensen@fb.com>
 
-This preps the code for splitting the signing into the shared library
-
 Signed-off-by: Jes Sorensen <jsorensen@fb.com>
 ---
- cmd_sign.c    | 48 +++++++++++++++++++++++++++++++++++++-----------
- fsverity.c    |  1 +
- libfsverity.h | 41 +++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 79 insertions(+), 11 deletions(-)
- create mode 100644 libfsverity.h
+ cmd_sign.c    | 19 +------------------
+ libfsverity.h | 26 +++++++++++++++++++++++++-
+ 2 files changed, 26 insertions(+), 19 deletions(-)
 
 diff --git a/cmd_sign.c b/cmd_sign.c
-index dcb37ce..dcc44f8 100644
+index dcc44f8..1792084 100644
 --- a/cmd_sign.c
 +++ b/cmd_sign.c
-@@ -16,6 +16,8 @@
- #include <openssl/pkcs7.h>
- #include <stdlib.h>
- #include <string.h>
-+#include <sys/stat.h>
-+#include <unistd.h>
+@@ -20,26 +20,9 @@
+ #include <unistd.h>
  
  #include "commands.h"
- #include "fsverity_uapi.h"
-@@ -382,11 +384,30 @@ static bool hash_one_block(struct hash_ctx *hash, struct block_buffer *cur,
- 	return next->filled + hash->alg->digest_size > block_size;
- }
- 
-+static int full_read_fd(int fd, void *buf, size_t count)
-+{
-+	while (count) {
-+		int n = read(fd, buf, min(count, INT_MAX));
-+
-+		if (n < 0) {
-+			error_msg_errno("reading from file");
-+			return n;
-+		}
-+		if (n == 0) {
-+			error_msg("unexpected end-of-file");
-+			return -ENODATA;
-+		}
-+		buf += n;
-+		count -= n;
-+	}
-+	return 0;
-+}
-+
- /*
-  * Compute the file's Merkle tree root hash using the given hash algorithm,
-  * block size, and salt.
-  */
--static bool compute_root_hash(struct filedes *file, u64 file_size,
-+static bool compute_root_hash(int fd, u64 file_size,
- 			      struct hash_ctx *hash, u32 block_size,
- 			      const u8 *salt, u32 salt_size, u8 *root_hash)
- {
-@@ -424,7 +445,7 @@ static bool compute_root_hash(struct filedes *file, u64 file_size,
- 	for (offset = 0; offset < file_size; offset += block_size) {
- 		buffers[-1].filled = min(block_size, file_size - offset);
- 
--		if (!full_read(file, buffers[-1].data, buffers[-1].filled))
-+		if (full_read_fd(fd, buffers[-1].data, buffers[-1].filled))
- 			goto out;
- 
- 		level = -1;
-@@ -457,22 +478,22 @@ out:
-  * The fs-verity measurement is the hash of the fsverity_descriptor, which
-  * contains the Merkle tree properties including the root hash.
-  */
--static bool compute_file_measurement(const char *filename,
-+static bool compute_file_measurement(int fd,
- 				     const struct fsverity_hash_alg *hash_alg,
- 				     u32 block_size, const u8 *salt,
- 				     u32 salt_size, u8 *measurement)
- {
--	struct filedes file = { .fd = -1 };
- 	struct hash_ctx *hash = hash_create(hash_alg);
- 	u64 file_size;
- 	struct fsverity_descriptor desc;
-+	struct stat stbuf;
- 	bool ok = false;
- 
--	if (!open_file(&file, filename, O_RDONLY, 0))
--		goto out;
--
--	if (!get_file_size(&file, &file_size))
-+	if (fstat(fd, &stbuf) != 0) {
-+		error_msg_errno("can't stat input file");
- 		goto out;
-+	}
-+	file_size = stbuf.st_size;
- 
- 	memset(&desc, 0, sizeof(desc));
- 	desc.version = 1;
-@@ -495,14 +516,13 @@ static bool compute_file_measurement(const char *filename,
- 
- 	/* Root hash of empty file is all 0's */
- 	if (file_size != 0 &&
--	    !compute_root_hash(&file, file_size, hash, block_size, salt,
-+	    !compute_root_hash(fd, file_size, hash, block_size, salt,
- 			       salt_size, desc.root_hash))
- 		goto out;
- 
- 	hash_full(hash, &desc, sizeof(desc), measurement);
- 	ok = true;
- out:
--	filedes_close(&file);
- 	hash_free(hash);
- 	return ok;
- }
-@@ -529,6 +549,7 @@ int fsverity_cmd_sign(const struct fsverity_command *cmd,
- 		      int argc, char *argv[])
- {
- 	const struct fsverity_hash_alg *hash_alg = NULL;
-+	struct filedes file = { .fd = -1 };
- 	u32 block_size = 0;
- 	u8 *salt = NULL;
- 	u32 salt_size = 0;
-@@ -603,10 +624,15 @@ int fsverity_cmd_sign(const struct fsverity_command *cmd,
- 	digest->digest_algorithm = cpu_to_le16(hash_alg - fsverity_hash_algs);
- 	digest->digest_size = cpu_to_le16(hash_alg->digest_size);
- 
--	if (!compute_file_measurement(argv[0], hash_alg, block_size,
-+	if (!open_file(&file, argv[0], O_RDONLY, 0))
-+		goto out_err;
-+
-+	if (!compute_file_measurement(file.fd, hash_alg, block_size,
- 				      salt, salt_size, digest->digest))
- 		goto out_err;
- 
-+	filedes_close(&file);
-+
- 	if (!sign_data(digest, sizeof(*digest) + hash_alg->digest_size,
- 		       keyfile, certfile, hash_alg, &sig, &sig_size))
- 		goto out_err;
-diff --git a/fsverity.c b/fsverity.c
-index 9a44df1..c8fa1b5 100644
---- a/fsverity.c
-+++ b/fsverity.c
-@@ -14,6 +14,7 @@
- 
- #include "commands.h"
- #include "hash_algs.h"
+-#include "fsverity_uapi.h"
 +#include "libfsverity.h"
+ #include "hash_algs.h"
  
- static const struct fsverity_command {
- 	const char *name;
+-/*
+- * Merkle tree properties.  The file measurement is the hash of this structure
+- * excluding the signature and with the sig_size field set to 0.
+- */
+-struct fsverity_descriptor {
+-	__u8 version;		/* must be 1 */
+-	__u8 hash_algorithm;	/* Merkle tree hash algorithm */
+-	__u8 log_blocksize;	/* log2 of size of data and tree blocks */
+-	__u8 salt_size;		/* size of salt in bytes; 0 if none */
+-	__le32 sig_size;	/* size of signature in bytes; 0 if none */
+-	__le64 data_size;	/* size of file the Merkle tree is built over */
+-	__u8 root_hash[64];	/* Merkle tree root hash */
+-	__u8 salt[32];		/* salt prepended to each hashed block */
+-	__u8 __reserved[144];	/* must be 0's */
+-	__u8 signature[];	/* optional PKCS#7 signature */
+-};
+-
+ /*
+  * Format in which verity file measurements are signed.  This is the same as
+  * 'struct fsverity_digest', except here some magic bytes are prepended to
 diff --git a/libfsverity.h b/libfsverity.h
-new file mode 100644
-index 0000000..ceebae1
---- /dev/null
+index ceebae1..396a6ee 100644
+--- a/libfsverity.h
 +++ b/libfsverity.h
-@@ -0,0 +1,41 @@
-+// SPDX-License-Identifier: GPL-2.0+
+@@ -13,13 +13,14 @@
+ 
+ #include <stddef.h>
+ #include <stdint.h>
++#include <linux/types.h>
+ 
+ #define FS_VERITY_HASH_ALG_SHA256       1
+ #define FS_VERITY_HASH_ALG_SHA512       2
+ 
+ struct libfsverity_merkle_tree_params {
+ 	uint16_t version;
+-	uint16_t hash_algorithm;
++	uint16_t hash_algorithm;	/* Matches the digest_algorithm type */
+ 	uint32_t block_size;
+ 	uint32_t salt_size;
+ 	const uint8_t *salt;
+@@ -27,6 +28,7 @@ struct libfsverity_merkle_tree_params {
+ };
+ 
+ struct libfsverity_digest {
++	char magic[8];			/* must be "FSVerity" */
+ 	uint16_t digest_algorithm;
+ 	uint16_t digest_size;
+ 	uint8_t digest[];
+@@ -38,4 +40,26 @@ struct libfsverity_signature_params {
+ 	uint64_t reserved[11];
+ };
+ 
 +/*
-+ * libfsverity API
-+ *
-+ * Copyright (C) 2018 Google LLC
-+ * Copyright (C) 2020 Facebook
-+ *
-+ * Written by Eric Biggers and modified by Jes Sorensen.
++ * Merkle tree properties.  The file measurement is the hash of this structure
++ * excluding the signature and with the sig_size field set to 0.
 + */
-+
-+#ifndef _LIBFSVERITY_H
-+#define _LIBFSVERITY_H
-+
-+#include <stddef.h>
-+#include <stdint.h>
-+
-+#define FS_VERITY_HASH_ALG_SHA256       1
-+#define FS_VERITY_HASH_ALG_SHA512       2
-+
-+struct libfsverity_merkle_tree_params {
-+	uint16_t version;
-+	uint16_t hash_algorithm;
-+	uint32_t block_size;
-+	uint32_t salt_size;
-+	const uint8_t *salt;
-+	uint64_t reserved[11];
++struct fsverity_descriptor {
++	uint8_t version;	/* must be 1 */
++	uint8_t hash_algorithm;	/* Merkle tree hash algorithm */
++	uint8_t log_blocksize;	/* log2 of size of data and tree blocks */
++	uint8_t salt_size;	/* size of salt in bytes; 0 if none */
++	__le32 sig_size;	/* size of signature in bytes; 0 if none */
++	__le64 data_size;	/* size of file the Merkle tree is built over */
++	uint8_t root_hash[64];	/* Merkle tree root hash */
++	uint8_t salt[32];	/* salt prepended to each hashed block */
++	uint8_t __reserved[144];/* must be 0's */
++	uint8_t signature[];	/* optional PKCS#7 signature */
 +};
 +
-+struct libfsverity_digest {
-+	uint16_t digest_algorithm;
-+	uint16_t digest_size;
-+	uint8_t digest[];
-+};
++int
++libfsverity_compute_digest(int fd,
++			   const struct libfsverity_merkle_tree_params *params,
++			   struct libfsverity_digest **digest_ret);
 +
-+struct libfsverity_signature_params {
-+	const char *keyfile;
-+	const char *certfile;
-+	uint64_t reserved[11];
-+};
-+
-+#endif
+ #endif
 -- 
 2.25.3
 
