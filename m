@@ -2,59 +2,59 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB1371B8135
+	by mail.lfdr.de (Postfix) with ESMTP id 9275B1B8134
 	for <lists+linux-fscrypt@lfdr.de>; Fri, 24 Apr 2020 22:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726164AbgDXUzS (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 24 Apr 2020 16:55:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47642 "EHLO
+        id S1726165AbgDXUzT (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 24 Apr 2020 16:55:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726027AbgDXUzR (ORCPT
+        with ESMTP id S1726027AbgDXUzS (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 24 Apr 2020 16:55:17 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27886C09B048
-        for <linux-fscrypt@vger.kernel.org>; Fri, 24 Apr 2020 13:55:17 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id t8so5403798qvw.5
-        for <linux-fscrypt@vger.kernel.org>; Fri, 24 Apr 2020 13:55:17 -0700 (PDT)
+        Fri, 24 Apr 2020 16:55:18 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCAD7C09B048
+        for <linux-fscrypt@vger.kernel.org>; Fri, 24 Apr 2020 13:55:18 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id s63so11682634qke.4
+        for <linux-fscrypt@vger.kernel.org>; Fri, 24 Apr 2020 13:55:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=UTWjhx0VyutKabSsAN98qiyFh4A5miPl9UXabrcCQIE=;
-        b=NIZIgXhrxxyrvsX8jWH8lxHYahwPTuCTJcQ3Vb5bOLx38CXS5LSqnubLT3jPE5gT7F
-         GuT0YUuy+pI8CyjQ3jOrvKyahfReD6pozzzZA7GKa4noeAbNsAG2aDKXpnIqRZZ5Vask
-         7SvlSti6yMJVQ7HKrbChbMRBa1aB0DX+0DWpWCEwK8LoPhBeEhBQuJ2Ca9TkChx1eN3k
-         WVRoBmjkCDp8bi6op8yaiOo3MA0r1zc1blS4QD6WNwHB0T/VAX+FED6qLh1Nsx0tVtFs
-         jGP1GH5+zhXqC0F4rqIQSucRY15YtftO8nMia6/9CvCa4AWcwasfO24WIqH6pm0Xq64u
-         9cHQ==
+        bh=WeLkrabzWHSqPghCIi699Gwk0hscnPM6eBvXN9r7Q0c=;
+        b=nvV3ASQy6fN1K3qYebi7v4lPGbZdpfgLoAbAFICSZlhGhk7K7SLDNezCMEvACCb7r9
+         YJXpWEeu+ZGOR0C0Sso4KmSAV7zUEPASEyCNauN16ovfcM1pbOvvU4xkSR7io8+3rn2j
+         9WUCBuSKShcNuJCyCyKZVuRMWXTSE73s3Xh15h/TiGYdmXeIfFM/JRxAdmCI6eKcOEl7
+         a0kv2YWQUUAKo8+atdt4Klf8pVgcemUfn3rTlbuPsYka1UZuv93HK4UrRCEeX1vUMOnI
+         NQEaTa+XockDEHNmQWSX/FmMljBdyehnS6Tkhz2AJZuG1pV/kYsSGNeiF2LqcPAZhyVH
+         IffA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=UTWjhx0VyutKabSsAN98qiyFh4A5miPl9UXabrcCQIE=;
-        b=lcpQqn/gHtqTy7e8koo0cgS+gQ1n6WmxbsOuEXG9af7Md/VeOdZ6YXm/4LreP8FR3N
-         GchtsERPKeGlj8gPe3eDJmEpbf54VgTN7wXfGjQEMinJV2vucSC68Pncs6G3UEJKbOmN
-         nGlWqUC23T7ytKScOwnr7SJEIKMtpMMjWUbdygLnsY1+h++EMxVKpdlCG39H7nyblT89
-         3dgdzepLpyF66pkEK9AEvxFselKXHyteVSo5HbcoiNysJ0qH9dubnQJqgMfvI5K8jAeJ
-         RJHhmzFMsA27WvqtkiyZ7a3LNVfdc0l2mCCI9BQ9EuMqrAswXBozqK1vRktJFVWDI2U9
-         QCLg==
-X-Gm-Message-State: AGi0PuYZI+eOTWWX9SscyD/H9HUab3r5St7g68IGVbElHOH9yuWjO3IK
-        y93Kvp/Nfnq1Iysywje6S19ZLlWm9Ew=
-X-Google-Smtp-Source: APiQypK/KpnaAYNTSZsWCt1iuTocGOIBZoE28SxiUPRz+aSK4ARNkZSiWz3TCi39GnmdU3qpbC4U5A==
-X-Received: by 2002:a0c:da0e:: with SMTP id x14mr11334309qvj.47.1587761715249;
-        Fri, 24 Apr 2020 13:55:15 -0700 (PDT)
+        bh=WeLkrabzWHSqPghCIi699Gwk0hscnPM6eBvXN9r7Q0c=;
+        b=qGjNMO3yGQ9MVs3uuNjWa6vBLyBSCeS62MxZhBGWDuYV0lxC3wlgLUNVZreKsabujF
+         vu9piRTOCMushTMEAisRoN/vJ2uNitzc9zI9L5w2sSHpJIuYhp9IV340Q0pIiOtRcAOX
+         YrSCoDIM+Sx0mR7mhvdTzvHrPqiQG6lP2FmlnWqMhHubEWIez3Ukq7Rkye/ZNGBqHoqs
+         29ZgmS7+iRts0winQ9PmR+Og3U8py+R25nRJJuRissyhLCoVC7E26vHn7MrrwLiXan0H
+         3hZ3CEaWaHCYzZzOrdMIkYNKiC/QJHHH5alhnTCMrGeKSpc5gX22OMLt3aDrtsGpKf9t
+         4itw==
+X-Gm-Message-State: AGi0PuZUAW8+GuDjgZkvq2xudqTaiRdhNY4M+R/32CLj+/inYtIlKtTP
+        oOwDcksCS3g93OWkV1/rrqwXFkLc9bU=
+X-Google-Smtp-Source: APiQypI+J5Fe9MoxG5XuGQCqrw/j6VW/thO1CtP5GbmwqOZ8NQu/pMV/s5B0urqp9fn3CCQEZX0gXg==
+X-Received: by 2002:a37:7e01:: with SMTP id z1mr10748594qkc.230.1587761717102;
+        Fri, 24 Apr 2020 13:55:17 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:480::62b])
-        by smtp.gmail.com with ESMTPSA id z18sm4856005qtz.77.2020.04.24.13.55.14
+        by smtp.gmail.com with ESMTPSA id h3sm4326693qkf.15.2020.04.24.13.55.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Apr 2020 13:55:14 -0700 (PDT)
+        Fri, 24 Apr 2020 13:55:16 -0700 (PDT)
 From:   Jes Sorensen <jes.sorensen@gmail.com>
 X-Google-Original-From: Jes Sorensen <Jes.Sorensen@gmail.com>
 To:     linux-fscrypt@vger.kernel.org
 Cc:     ebiggers@google.com, kernel-team@fb.com, jsorensen@fb.com
-Subject: [PATCH 05/20] Create libfsverity_compute_digest() and adapt cmd_sign to use it
-Date:   Fri, 24 Apr 2020 16:54:49 -0400
-Message-Id: <20200424205504.2586682-6-Jes.Sorensen@gmail.com>
+Subject: [PATCH 06/20] Introduce libfsverity_sign_digest()
+Date:   Fri, 24 Apr 2020 16:54:50 -0400
+Message-Id: <20200424205504.2586682-7-Jes.Sorensen@gmail.com>
 X-Mailer: git-send-email 2.25.3
 In-Reply-To: <20200424205504.2586682-1-Jes.Sorensen@gmail.com>
 References: <20200424205504.2586682-1-Jes.Sorensen@gmail.com>
@@ -67,531 +67,711 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Jes Sorensen <jsorensen@fb.com>
 
-This reorganizes the digest signing code and moves it to the shared library.
-In addition libfsverity_private.h is created for library internal data
-structures, in particular struct fsverity_decriptor.
+This moves the signing code into libfsverity and switches cmd_sign to use it.
 
 Signed-off-by: Jes Sorensen <jsorensen@fb.com>
 ---
- cmd_sign.c            | 194 ++-------------------------------------
- libfsverity.h         |  17 ----
- libfsverity_private.h |  33 +++++++
- libverity.c           | 207 ++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 250 insertions(+), 201 deletions(-)
- create mode 100644 libfsverity_private.h
+ cmd_sign.c    | 317 ++------------------------------------------------
+ libfsverity.h |  12 ++
+ libverity.c   | 309 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 329 insertions(+), 309 deletions(-)
 
 diff --git a/cmd_sign.c b/cmd_sign.c
-index 5ad4eda..6a5d185 100644
+index 6a5d185..e48e0aa 100644
 --- a/cmd_sign.c
 +++ b/cmd_sign.c
-@@ -16,12 +16,9 @@
- #include <openssl/pkcs7.h>
+@@ -10,318 +10,12 @@
+ #include <fcntl.h>
+ #include <getopt.h>
+ #include <limits.h>
+-#include <openssl/bio.h>
+-#include <openssl/err.h>
+-#include <openssl/pem.h>
+-#include <openssl/pkcs7.h>
  #include <stdlib.h>
  #include <string.h>
--#include <sys/stat.h>
--#include <unistd.h>
  
  #include "commands.h"
  #include "libfsverity.h"
--#include "hash_algs.h"
  
- /*
-  * Format in which verity file measurements are signed.  This is the same as
-@@ -337,179 +334,6 @@ static bool write_signature(const char *filename, const u8 *sig, u32 sig_size)
- 	return ok;
- }
- 
--#define FS_VERITY_MAX_LEVELS	64
--
--struct block_buffer {
--	u32 filled;
--	u8 *data;
+-/*
+- * Format in which verity file measurements are signed.  This is the same as
+- * 'struct fsverity_digest', except here some magic bytes are prepended to
+- * provide some context about what is being signed in case the same key is used
+- * for non-fsverity purposes, and here the fields have fixed endianness.
+- */
+-struct fsverity_signed_digest {
+-	char magic[8];			/* must be "FSVerity" */
+-	__le16 digest_algorithm;
+-	__le16 digest_size;
+-	__u8 digest[];
 -};
 -
--/*
-- * Hash a block, writing the result to the next level's pending block buffer.
-- * Returns true if the next level's block became full, else false.
-- */
--static bool hash_one_block(struct hash_ctx *hash, struct block_buffer *cur,
--			   u32 block_size, const u8 *salt, u32 salt_size)
+-static void __printf(1, 2) __cold
+-error_msg_openssl(const char *format, ...)
 -{
--	struct block_buffer *next = cur + 1;
+-	va_list va;
 -
--	/* Zero-pad the block if it's shorter than block_size. */
--	memset(&cur->data[cur->filled], 0, block_size - cur->filled);
+-	va_start(va, format);
+-	do_error_msg(format, va, 0);
+-	va_end(va);
 -
--	hash_init(hash);
--	hash_update(hash, salt, salt_size);
--	hash_update(hash, cur->data, block_size);
--	hash_final(hash, &next->data[next->filled]);
+-	if (ERR_peek_error() == 0)
+-		return;
 -
--	next->filled += hash->alg->digest_size;
--	cur->filled = 0;
--
--	return next->filled + hash->alg->digest_size > block_size;
+-	fprintf(stderr, "OpenSSL library errors:\n");
+-	ERR_print_errors_fp(stderr);
 -}
 -
--static int full_read_fd(int fd, void *buf, size_t count)
+-/* Read a PEM PKCS#8 formatted private key */
+-static EVP_PKEY *read_private_key(const char *keyfile)
 -{
--	while (count) {
--		int n = read(fd, buf, min(count, INT_MAX));
+-	BIO *bio;
+-	EVP_PKEY *pkey;
 -
--		if (n < 0) {
--			error_msg_errno("reading from file");
--			return n;
--		}
--		if (n == 0) {
--			error_msg("unexpected end-of-file");
--			return -ENODATA;
--		}
--		buf += n;
--		count -= n;
+-	bio = BIO_new_file(keyfile, "r");
+-	if (!bio) {
+-		error_msg_openssl("can't open '%s' for reading", keyfile);
+-		return NULL;
 -	}
--	return 0;
+-
+-	pkey = PEM_read_bio_PrivateKey(bio, NULL, NULL, NULL);
+-	if (!pkey) {
+-		error_msg_openssl("Failed to parse private key file '%s'.\n"
+-				  "       Note: it must be in PEM PKCS#8 format.",
+-				  keyfile);
+-	}
+-	BIO_free(bio);
+-	return pkey;
 -}
 -
--/*
-- * Compute the file's Merkle tree root hash using the given hash algorithm,
-- * block size, and salt.
-- */
--static bool compute_root_hash(int fd, u64 file_size,
--			      struct hash_ctx *hash, u32 block_size,
--			      const u8 *salt, u32 salt_size, u8 *root_hash)
+-/* Read a PEM X.509 formatted certificate */
+-static X509 *read_certificate(const char *certfile)
 -{
--	const u32 hashes_per_block = block_size / hash->alg->digest_size;
--	const u32 padded_salt_size = roundup(salt_size, hash->alg->block_size);
--	u8 *padded_salt = xzalloc(padded_salt_size);
--	u64 blocks;
--	int num_levels = 0;
--	int level;
--	struct block_buffer _buffers[1 + FS_VERITY_MAX_LEVELS + 1] = {};
--	struct block_buffer *buffers = &_buffers[1];
--	u64 offset;
+-	BIO *bio;
+-	X509 *cert;
+-
+-	bio = BIO_new_file(certfile, "r");
+-	if (!bio) {
+-		error_msg_openssl("can't open '%s' for reading", certfile);
+-		return NULL;
+-	}
+-	cert = PEM_read_bio_X509(bio, NULL, NULL, NULL);
+-	if (!cert) {
+-		error_msg_openssl("Failed to parse X.509 certificate file '%s'.\n"
+-				  "       Note: it must be in PEM format.",
+-				  certfile);
+-	}
+-	BIO_free(bio);
+-	return cert;
+-}
+-
+-#ifdef OPENSSL_IS_BORINGSSL
+-
+-static bool sign_pkcs7(const void *data_to_sign, size_t data_size,
+-		       EVP_PKEY *pkey, X509 *cert, const EVP_MD *md,
+-		       u8 **sig_ret, u32 *sig_size_ret)
+-{
+-	CBB out, outer_seq, wrapped_seq, seq, digest_algos_set, digest_algo,
+-		null, content_info, issuer_and_serial, signer_infos,
+-		signer_info, sign_algo, signature;
+-	EVP_MD_CTX md_ctx;
+-	u8 *name_der = NULL, *sig = NULL, *pkcs7_data = NULL;
+-	size_t pkcs7_data_len, sig_len;
+-	int name_der_len, sig_nid;
 -	bool ok = false;
 -
--	if (salt_size != 0)
--		memcpy(padded_salt, salt, salt_size);
+-	EVP_MD_CTX_init(&md_ctx);
+-	BIGNUM *serial = ASN1_INTEGER_to_BN(X509_get_serialNumber(cert), NULL);
 -
--	/* Compute number of levels */
--	for (blocks = DIV_ROUND_UP(file_size, block_size); blocks > 1;
--	     blocks = DIV_ROUND_UP(blocks, hashes_per_block)) {
--		ASSERT(num_levels < FS_VERITY_MAX_LEVELS);
--		num_levels++;
+-	if (!CBB_init(&out, 1024)) {
+-		error_msg("out of memory");
+-		goto out;
 -	}
 -
+-	name_der_len = i2d_X509_NAME(X509_get_subject_name(cert), &name_der);
+-	if (name_der_len < 0) {
+-		error_msg_openssl("i2d_X509_NAME failed");
+-		goto out;
+-	}
+-
+-	if (!EVP_DigestSignInit(&md_ctx, NULL, md, NULL, pkey)) {
+-		error_msg_openssl("EVP_DigestSignInit failed");
+-		goto out;
+-	}
+-
+-	sig_len = EVP_PKEY_size(pkey);
+-	sig = xmalloc(sig_len);
+-	if (!EVP_DigestSign(&md_ctx, sig, &sig_len, data_to_sign, data_size)) {
+-		error_msg_openssl("EVP_DigestSign failed");
+-		goto out;
+-	}
+-
+-	sig_nid = EVP_PKEY_id(pkey);
+-	/* To mirror OpenSSL behaviour, always use |NID_rsaEncryption| with RSA
+-	 * rather than the combined hash+pkey NID. */
+-	if (sig_nid != NID_rsaEncryption) {
+-		OBJ_find_sigid_by_algs(&sig_nid, EVP_MD_type(md),
+-				       EVP_PKEY_id(pkey));
+-	}
+-
+-	// See https://tools.ietf.org/html/rfc2315#section-7
+-	if (!CBB_add_asn1(&out, &outer_seq, CBS_ASN1_SEQUENCE) ||
+-	    !OBJ_nid2cbb(&outer_seq, NID_pkcs7_signed) ||
+-	    !CBB_add_asn1(&outer_seq, &wrapped_seq, CBS_ASN1_CONTEXT_SPECIFIC |
+-			  CBS_ASN1_CONSTRUCTED | 0) ||
+-	    // See https://tools.ietf.org/html/rfc2315#section-9.1
+-	    !CBB_add_asn1(&wrapped_seq, &seq, CBS_ASN1_SEQUENCE) ||
+-	    !CBB_add_asn1_uint64(&seq, 1 /* version */) ||
+-	    !CBB_add_asn1(&seq, &digest_algos_set, CBS_ASN1_SET) ||
+-	    !CBB_add_asn1(&digest_algos_set, &digest_algo, CBS_ASN1_SEQUENCE) ||
+-	    !OBJ_nid2cbb(&digest_algo, EVP_MD_type(md)) ||
+-	    !CBB_add_asn1(&digest_algo, &null, CBS_ASN1_NULL) ||
+-	    !CBB_add_asn1(&seq, &content_info, CBS_ASN1_SEQUENCE) ||
+-	    !OBJ_nid2cbb(&content_info, NID_pkcs7_data) ||
+-	    !CBB_add_asn1(&seq, &signer_infos, CBS_ASN1_SET) ||
+-	    !CBB_add_asn1(&signer_infos, &signer_info, CBS_ASN1_SEQUENCE) ||
+-	    !CBB_add_asn1_uint64(&signer_info, 1 /* version */) ||
+-	    !CBB_add_asn1(&signer_info, &issuer_and_serial,
+-			  CBS_ASN1_SEQUENCE) ||
+-	    !CBB_add_bytes(&issuer_and_serial, name_der, name_der_len) ||
+-	    !BN_marshal_asn1(&issuer_and_serial, serial) ||
+-	    !CBB_add_asn1(&signer_info, &digest_algo, CBS_ASN1_SEQUENCE) ||
+-	    !OBJ_nid2cbb(&digest_algo, EVP_MD_type(md)) ||
+-	    !CBB_add_asn1(&digest_algo, &null, CBS_ASN1_NULL) ||
+-	    !CBB_add_asn1(&signer_info, &sign_algo, CBS_ASN1_SEQUENCE) ||
+-	    !OBJ_nid2cbb(&sign_algo, sig_nid) ||
+-	    !CBB_add_asn1(&sign_algo, &null, CBS_ASN1_NULL) ||
+-	    !CBB_add_asn1(&signer_info, &signature, CBS_ASN1_OCTETSTRING) ||
+-	    !CBB_add_bytes(&signature, sig, sig_len) ||
+-	    !CBB_finish(&out, &pkcs7_data, &pkcs7_data_len)) {
+-		error_msg_openssl("failed to construct PKCS#7 data");
+-		goto out;
+-	}
+-
+-	*sig_ret = xmemdup(pkcs7_data, pkcs7_data_len);
+-	*sig_size_ret = pkcs7_data_len;
+-	ok = true;
+-out:
+-	BN_free(serial);
+-	EVP_MD_CTX_cleanup(&md_ctx);
+-	CBB_cleanup(&out);
+-	free(sig);
+-	OPENSSL_free(name_der);
+-	OPENSSL_free(pkcs7_data);
+-	return ok;
+-}
+-
+-#else /* OPENSSL_IS_BORINGSSL */
+-
+-static BIO *new_mem_buf(const void *buf, size_t size)
+-{
+-	BIO *bio;
+-
+-	ASSERT(size <= INT_MAX);
 -	/*
--	 * Allocate the block buffers.  Buffer "-1" is for data blocks.
--	 * Buffers 0 <= level < num_levels are for the actual tree levels.
--	 * Buffer 'num_levels' is for the root hash.
+-	 * Prior to OpenSSL 1.1.0, BIO_new_mem_buf() took a non-const pointer,
+-	 * despite still marking the resulting bio as read-only.  So cast away
+-	 * the const to avoid a compiler warning with older OpenSSL versions.
 -	 */
--	for (level = -1; level < num_levels; level++)
--		buffers[level].data = xmalloc(block_size);
--	buffers[num_levels].data = root_hash;
--
--	/* Hash each data block, also hashing the tree blocks as they fill up */
--	for (offset = 0; offset < file_size; offset += block_size) {
--		buffers[-1].filled = min(block_size, file_size - offset);
--
--		if (full_read_fd(fd, buffers[-1].data, buffers[-1].filled))
--			goto out;
--
--		level = -1;
--		while (hash_one_block(hash, &buffers[level], block_size,
--				      padded_salt, padded_salt_size)) {
--			level++;
--			ASSERT(level < num_levels);
--		}
--	}
--	/* Finish all nonempty pending tree blocks */
--	for (level = 0; level < num_levels; level++) {
--		if (buffers[level].filled != 0)
--			hash_one_block(hash, &buffers[level], block_size,
--				       padded_salt, padded_salt_size);
--	}
--
--	/* Root hash was filled by the last call to hash_one_block() */
--	ASSERT(buffers[num_levels].filled == hash->alg->digest_size);
--	ok = true;
--out:
--	for (level = -1; level < num_levels; level++)
--		free(buffers[level].data);
--	free(padded_salt);
--	return ok;
+-	bio = BIO_new_mem_buf((void *)buf, size);
+-	if (!bio)
+-		error_msg_openssl("out of memory");
+-	return bio;
 -}
 -
--/*
-- * Compute the fs-verity measurement of the given file.
-- *
-- * The fs-verity measurement is the hash of the fsverity_descriptor, which
-- * contains the Merkle tree properties including the root hash.
-- */
--static bool compute_file_measurement(int fd,
--				     const struct fsverity_hash_alg *hash_alg,
--				     u32 block_size, const u8 *salt,
--				     u32 salt_size, u8 *measurement)
+-static bool sign_pkcs7(const void *data_to_sign, size_t data_size,
+-		       EVP_PKEY *pkey, X509 *cert, const EVP_MD *md,
+-		       u8 **sig_ret, u32 *sig_size_ret)
 -{
--	struct hash_ctx *hash = hash_alg->create_ctx(hash_alg);
--	u64 file_size;
--	struct fsverity_descriptor desc;
--	struct stat stbuf;
+-	/*
+-	 * PKCS#7 signing flags:
+-	 *
+-	 * - PKCS7_BINARY	signing binary data, so skip MIME translation
+-	 *
+-	 * - PKCS7_DETACHED	omit the signed data (include signature only)
+-	 *
+-	 * - PKCS7_NOATTR	omit extra authenticated attributes, such as
+-	 *			SMIMECapabilities
+-	 *
+-	 * - PKCS7_NOCERTS	omit the signer's certificate
+-	 *
+-	 * - PKCS7_PARTIAL	PKCS7_sign() creates a handle only, then
+-	 *			PKCS7_sign_add_signer() can add a signer later.
+-	 *			This is necessary to change the message digest
+-	 *			algorithm from the default of SHA-1.  Requires
+-	 *			OpenSSL 1.0.0 or later.
+-	 */
+-	int pkcs7_flags = PKCS7_BINARY | PKCS7_DETACHED | PKCS7_NOATTR |
+-			  PKCS7_NOCERTS | PKCS7_PARTIAL;
+-	u8 *sig;
+-	u32 sig_size;
+-	BIO *bio = NULL;
+-	PKCS7 *p7 = NULL;
 -	bool ok = false;
 -
--	if (fstat(fd, &stbuf) != 0) {
--		error_msg_errno("can't stat input file");
--		goto out;
--	}
--	file_size = stbuf.st_size;
--
--	memset(&desc, 0, sizeof(desc));
--	desc.version = 1;
--	desc.hash_algorithm = hash_alg->hash_num;
--
--	ASSERT(is_power_of_2(block_size));
--	desc.log_blocksize = ilog2(block_size);
--
--	if (salt_size != 0) {
--		if (salt_size > sizeof(desc.salt)) {
--			error_msg("Salt too long (got %u bytes; max is %zu bytes)",
--				  salt_size, sizeof(desc.salt));
--			goto out;
--		}
--		memcpy(desc.salt, salt, salt_size);
--		desc.salt_size = salt_size;
--	}
--
--	desc.data_size = cpu_to_le64(file_size);
--
--	/* Root hash of empty file is all 0's */
--	if (file_size != 0 &&
--	    !compute_root_hash(fd, file_size, hash, block_size, salt,
--			       salt_size, desc.root_hash))
+-	bio = new_mem_buf(data_to_sign, data_size);
+-	if (!bio)
 -		goto out;
 -
--	hash_full(hash, &desc, sizeof(desc), measurement);
+-	p7 = PKCS7_sign(NULL, NULL, NULL, bio, pkcs7_flags);
+-	if (!p7) {
+-		error_msg_openssl("failed to initialize PKCS#7 signature object");
+-		goto out;
+-	}
+-
+-	if (!PKCS7_sign_add_signer(p7, cert, pkey, md, pkcs7_flags)) {
+-		error_msg_openssl("failed to add signer to PKCS#7 signature object");
+-		goto out;
+-	}
+-
+-	if (PKCS7_final(p7, bio, pkcs7_flags) != 1) {
+-		error_msg_openssl("failed to finalize PKCS#7 signature");
+-		goto out;
+-	}
+-
+-	BIO_free(bio);
+-	bio = BIO_new(BIO_s_mem());
+-	if (!bio) {
+-		error_msg_openssl("out of memory");
+-		goto out;
+-	}
+-
+-	if (i2d_PKCS7_bio(bio, p7) != 1) {
+-		error_msg_openssl("failed to DER-encode PKCS#7 signature object");
+-		goto out;
+-	}
+-
+-	sig_size = BIO_get_mem_data(bio, &sig);
+-	*sig_ret = xmemdup(sig, sig_size);
+-	*sig_size_ret = sig_size;
 -	ok = true;
 -out:
--	hash_free(hash);
+-	PKCS7_free(p7);
+-	BIO_free(bio);
 -	return ok;
 -}
 -
- enum {
- 	OPT_HASH_ALG,
- 	OPT_BLOCK_SIZE,
-@@ -538,7 +362,8 @@ int fsverity_cmd_sign(const struct fsverity_command *cmd,
- 	u32 salt_size = 0;
- 	const char *keyfile = NULL;
+-#endif /* !OPENSSL_IS_BORINGSSL */
+-
+-/*
+- * Sign the specified @data_to_sign of length @data_size bytes using the private
+- * key in @keyfile, the certificate in @certfile, and the hash algorithm
+- * @hash_alg.  Returns the DER-formatted PKCS#7 signature in @sig_ret and
+- * @sig_size_ret.
+- */
+-static bool sign_data(const void *data_to_sign, size_t data_size,
+-		      const char *keyfile, const char *certfile,
+-		      const struct fsverity_hash_alg *hash_alg,
+-		      u8 **sig_ret, u32 *sig_size_ret)
+-{
+-	EVP_PKEY *pkey = NULL;
+-	X509 *cert = NULL;
+-	const EVP_MD *md;
+-	bool ok = false;
+-
+-	pkey = read_private_key(keyfile);
+-	if (!pkey)
+-		goto out;
+-
+-	cert = read_certificate(certfile);
+-	if (!cert)
+-		goto out;
+-
+-	OpenSSL_add_all_digests();
+-	md = EVP_get_digestbyname(hash_alg->name);
+-	if (!md) {
+-		fprintf(stderr,
+-			"Warning: '%s' algorithm not found in OpenSSL library.\n"
+-			"         Falling back to SHA-256 signature.\n",
+-			hash_alg->name);
+-		md = EVP_sha256();
+-	}
+-
+-	ok = sign_pkcs7(data_to_sign, data_size, pkey, cert, md,
+-			sig_ret, sig_size_ret);
+-out:
+-	EVP_PKEY_free(pkey);
+-	X509_free(cert);
+-	return ok;
+-}
+-
+ static bool write_signature(const char *filename, const u8 *sig, u32 sig_size)
+ {
+ 	struct filedes file;
+@@ -364,9 +58,10 @@ int fsverity_cmd_sign(const struct fsverity_command *cmd,
  	const char *certfile = NULL;
--	struct fsverity_signed_digest *digest = NULL;
-+	struct libfsverity_digest *digest = NULL;
-+	struct libfsverity_merkle_tree_params params;
+ 	struct libfsverity_digest *digest = NULL;
+ 	struct libfsverity_merkle_tree_params params;
++	struct libfsverity_signature_params sig_params;
  	char digest_hex[FS_VERITY_MAX_DIGEST_SIZE * 2 + 1];
  	u8 *sig = NULL;
- 	u32 sig_size;
-@@ -608,16 +433,17 @@ int fsverity_cmd_sign(const struct fsverity_command *cmd,
- 	if (certfile == NULL)
- 		certfile = keyfile;
+-	u32 sig_size;
++	size_t sig_size;
+ 	int status;
+ 	int c;
  
--	digest = xzalloc(sizeof(*digest) + hash_alg->digest_size);
--	memcpy(digest->magic, "FSVerity", 8);
--	digest->digest_algorithm = cpu_to_le16(hash_alg->hash_num);
--	digest->digest_size = cpu_to_le16(hash_alg->digest_size);
--
- 	if (!open_file(&file, argv[0], O_RDONLY, 0))
- 		goto out_err;
- 
--	if (!compute_file_measurement(file.fd, hash_alg, block_size,
--				      salt, salt_size, digest->digest))
-+	memset(&params, 0, sizeof(struct libfsverity_merkle_tree_params));
-+	params.version = 1;
-+	params.hash_algorithm = hash_alg->hash_num;
-+	params.block_size = block_size;
-+	params.salt_size = salt_size;
-+	params.salt = salt;
-+
-+	if (libfsverity_compute_digest(file.fd, &params, &digest))
- 		goto out_err;
+@@ -448,9 +143,13 @@ int fsverity_cmd_sign(const struct fsverity_command *cmd,
  
  	filedes_close(&file);
+ 
+-	if (!sign_data(digest, sizeof(*digest) + hash_alg->digest_size,
+-		       keyfile, certfile, hash_alg, &sig, &sig_size))
++	memset(&sig_params, 0, sizeof(struct libfsverity_signature_params));
++	sig_params.keyfile = keyfile;
++	sig_params.certfile = certfile;
++	if (libfsverity_sign_digest(digest, &sig_params, &sig, &sig_size)) {
++		error_msg("Failed to sign digest");
+ 		goto out_err;
++	}
+ 
+ 	if (!write_signature(argv[1], sig, sig_size))
+ 		goto out_err;
 diff --git a/libfsverity.h b/libfsverity.h
-index 318dcd7..cb5f5b6 100644
+index cb5f5b6..a2abdb3 100644
 --- a/libfsverity.h
 +++ b/libfsverity.h
-@@ -49,23 +49,6 @@ struct libfsverity_signature_params {
- 	uint64_t reserved[11];
- };
+@@ -36,6 +36,13 @@ struct libfsverity_merkle_tree_params {
+  */
+ #define FS_VERITY_MAX_DIGEST_SIZE	64
  
--/*
-- * Merkle tree properties.  The file measurement is the hash of this structure
-- * excluding the signature and with the sig_size field set to 0.
-- */
--struct fsverity_descriptor {
--	uint8_t version;	/* must be 1 */
--	uint8_t hash_algorithm;	/* Merkle tree hash algorithm */
--	uint8_t log_blocksize;	/* log2 of size of data and tree blocks */
--	uint8_t salt_size;	/* size of salt in bytes; 0 if none */
--	__le32 sig_size;	/* size of signature in bytes; 0 if none */
--	__le64 data_size;	/* size of file the Merkle tree is built over */
--	uint8_t root_hash[64];	/* Merkle tree root hash */
--	uint8_t salt[32];	/* salt prepended to each hashed block */
--	uint8_t __reserved[144];/* must be 0's */
--	uint8_t signature[];	/* optional PKCS#7 signature */
--};
--
- struct fsverity_hash_alg {
- 	const char *name;
- 	unsigned int digest_size;
-diff --git a/libfsverity_private.h b/libfsverity_private.h
-new file mode 100644
-index 0000000..5f3e1b4
---- /dev/null
-+++ b/libfsverity_private.h
-@@ -0,0 +1,33 @@
-+// SPDX-License-Identifier: GPL-2.0+
 +/*
-+ * libfsverity private interfaces
-+ *
-+ * Copyright (C) 2018 Google LLC
-+ * Copyright (C) 2020 Facebook
-+ *
-+ * Written by Eric Biggers and modified by Jes Sorensen.
++ * Format in which verity file measurements are signed.  This is the same as
++ * 'struct fsverity_digest', except here some magic bytes are prepended to
++ * provide some context about what is being signed in case the same key is used
++ * for non-fsverity purposes, and here the fields have fixed endianness.
 + */
-+#ifndef _LIBFSVERITY_PRIVATE_H
-+#define _LIBFSVERITY_PRIVATE_H
 +
-+#include <stdint.h>
-+#include <linux/types.h>
+ struct libfsverity_digest {
+ 	char magic[8];			/* must be "FSVerity" */
+ 	uint16_t digest_algorithm;
+@@ -62,6 +69,11 @@ libfsverity_compute_digest(int fd,
+ 			   const struct libfsverity_merkle_tree_params *params,
+ 			   struct libfsverity_digest **digest_ret);
+ 
++int
++libfsverity_sign_digest(const struct libfsverity_digest *digest,
++			const struct libfsverity_signature_params *sig_params,
++			uint8_t **sig_ret, size_t *sig_size_ret);
 +
-+/*
-+ * Merkle tree properties.  The file measurement is the hash of this structure
-+ * excluding the signature and with the sig_size field set to 0.
-+ */
-+struct fsverity_descriptor {
-+	uint8_t version;	/* must be 1 */
-+	uint8_t hash_algorithm;	/* Merkle tree hash algorithm */
-+	uint8_t log_blocksize;	/* log2 of size of data and tree blocks */
-+	uint8_t salt_size;	/* size of salt in bytes; 0 if none */
-+	__le32 sig_size;	/* size of signature in bytes; 0 if none */
-+	__le64 data_size;	/* size of file the Merkle tree is built over */
-+	uint8_t root_hash[64];	/* Merkle tree root hash */
-+	uint8_t salt[32];	/* salt prepended to each hashed block */
-+	uint8_t __reserved[144];/* must be 0's */
-+	uint8_t signature[];	/* optional PKCS#7 signature */
-+};
-+
-+#endif
+ const struct fsverity_hash_alg *
+ libfsverity_find_hash_alg_by_name(const char *name);
+ const struct fsverity_hash_alg *
 diff --git a/libverity.c b/libverity.c
-index 6821aa2..19272f7 100644
+index 19272f7..183259e 100644
 --- a/libverity.c
 +++ b/libverity.c
-@@ -8,3 +8,210 @@
-  * Written by Eric Biggers and Jes Sorensen.
-  */
- 
-+#include <openssl/bio.h>
-+#include <openssl/err.h>
-+#include <openssl/pem.h>
-+#include <openssl/pkcs7.h>
-+#include <string.h>
-+#include <sys/stat.h>
-+#include <unistd.h>
+@@ -215,3 +215,312 @@ libfsverity_compute_digest(int fd,
+ 	free(digest);
+ 	return retval;
+ }
 +
-+#include "libfsverity.h"
-+#include "libfsverity_private.h"
-+#include "hash_algs.h"
-+
-+#define FS_VERITY_MAX_LEVELS	64
-+
-+struct block_buffer {
-+	u32 filled;
-+	u8 *data;
-+};
-+
-+/*
-+ * Hash a block, writing the result to the next level's pending block buffer.
-+ * Returns true if the next level's block became full, else false.
-+ */
-+static bool hash_one_block(struct hash_ctx *hash, struct block_buffer *cur,
-+			   u32 block_size, const u8 *salt, u32 salt_size)
++static void __printf(1, 2) __cold
++error_msg_openssl(const char *format, ...)
 +{
-+	struct block_buffer *next = cur + 1;
++	va_list va;
 +
-+	/* Zero-pad the block if it's shorter than block_size. */
-+	memset(&cur->data[cur->filled], 0, block_size - cur->filled);
++	va_start(va, format);
++	do_error_msg(format, va, 0);
++	va_end(va);
 +
-+	hash_init(hash);
-+	hash_update(hash, salt, salt_size);
-+	hash_update(hash, cur->data, block_size);
-+	hash_final(hash, &next->data[next->filled]);
++	if (ERR_peek_error() == 0)
++		return;
 +
-+	next->filled += hash->alg->digest_size;
-+	cur->filled = 0;
-+
-+	return next->filled + hash->alg->digest_size > block_size;
++	fprintf(stderr, "OpenSSL library errors:\n");
++	ERR_print_errors_fp(stderr);
 +}
 +
-+static int full_read_fd(int fd, void *buf, size_t count)
++/* Read a PEM PKCS#8 formatted private key */
++static EVP_PKEY *read_private_key(const char *keyfile)
 +{
-+	while (count) {
-+		int n = read(fd, buf, min(count, INT_MAX));
++	BIO *bio;
++	EVP_PKEY *pkey;
 +
-+		if (n < 0) {
-+			error_msg_errno("reading from file");
-+			return n;
-+		}
-+		if (n == 0) {
-+			error_msg("unexpected end-of-file");
-+			return -ENODATA;
-+		}
-+		buf += n;
-+		count -= n;
++	bio = BIO_new_file(keyfile, "r");
++	if (!bio) {
++		error_msg_openssl("can't open '%s' for reading", keyfile);
++		return NULL;
 +	}
-+	return 0;
++
++	pkey = PEM_read_bio_PrivateKey(bio, NULL, NULL, NULL);
++	if (!pkey) {
++		error_msg_openssl("Failed to parse private key file '%s'.\n"
++				  "       Note: it must be in PEM PKCS#8 format.",
++				  keyfile);
++	}
++	BIO_free(bio);
++	return pkey;
 +}
 +
-+/*
-+ * Compute the file's Merkle tree root hash using the given hash algorithm,
-+ * block size, and salt.
-+ */
-+static bool compute_root_hash(int fd, u64 file_size,
-+			      struct hash_ctx *hash, u32 block_size,
-+			      const u8 *salt, u32 salt_size, u8 *root_hash)
++/* Read a PEM X.509 formatted certificate */
++static X509 *read_certificate(const char *certfile)
 +{
-+	const u32 hashes_per_block = block_size / hash->alg->digest_size;
-+	const u32 padded_salt_size = roundup(salt_size, hash->alg->block_size);
-+	u8 *padded_salt = xzalloc(padded_salt_size);
-+	u64 blocks;
-+	int num_levels = 0;
-+	int level;
-+	struct block_buffer _buffers[1 + FS_VERITY_MAX_LEVELS + 1] = {};
-+	struct block_buffer *buffers = &_buffers[1];
-+	u64 offset;
++	BIO *bio;
++	X509 *cert;
++
++	bio = BIO_new_file(certfile, "r");
++	if (!bio) {
++		error_msg_openssl("can't open '%s' for reading", certfile);
++		return NULL;
++	}
++	cert = PEM_read_bio_X509(bio, NULL, NULL, NULL);
++	if (!cert) {
++		error_msg_openssl("Failed to parse X.509 certificate file '%s'.\n"
++				  "       Note: it must be in PEM format.",
++				  certfile);
++	}
++	BIO_free(bio);
++	return cert;
++}
++
++#ifdef OPENSSL_IS_BORINGSSL
++
++static bool sign_pkcs7(const void *data_to_sign, size_t data_size,
++		       EVP_PKEY *pkey, X509 *cert, const EVP_MD *md,
++		       u8 **sig_ret, size_t *sig_size_ret)
++{
++	CBB out, outer_seq, wrapped_seq, seq, digest_algos_set, digest_algo,
++		null, content_info, issuer_and_serial, signer_infos,
++		signer_info, sign_algo, signature;
++	EVP_MD_CTX md_ctx;
++	u8 *name_der = NULL, *sig = NULL, *pkcs7_data = NULL;
++	size_t pkcs7_data_len, sig_len;
++	int name_der_len, sig_nid;
 +	bool ok = false;
 +
-+	if (salt_size != 0)
-+		memcpy(padded_salt, salt, salt_size);
++	EVP_MD_CTX_init(&md_ctx);
++	BIGNUM *serial = ASN1_INTEGER_to_BN(X509_get_serialNumber(cert), NULL);
 +
-+	/* Compute number of levels */
-+	for (blocks = DIV_ROUND_UP(file_size, block_size); blocks > 1;
-+	     blocks = DIV_ROUND_UP(blocks, hashes_per_block)) {
-+		ASSERT(num_levels < FS_VERITY_MAX_LEVELS);
-+		num_levels++;
++	if (!CBB_init(&out, 1024)) {
++		error_msg("out of memory");
++		goto out;
 +	}
 +
-+	/*
-+	 * Allocate the block buffers.  Buffer "-1" is for data blocks.
-+	 * Buffers 0 <= level < num_levels are for the actual tree levels.
-+	 * Buffer 'num_levels' is for the root hash.
-+	 */
-+	for (level = -1; level < num_levels; level++)
-+		buffers[level].data = xmalloc(block_size);
-+	buffers[num_levels].data = root_hash;
-+
-+	/* Hash each data block, also hashing the tree blocks as they fill up */
-+	for (offset = 0; offset < file_size; offset += block_size) {
-+		buffers[-1].filled = min(block_size, file_size - offset);
-+
-+		if (full_read_fd(fd, buffers[-1].data, buffers[-1].filled))
-+			goto out;
-+
-+		level = -1;
-+		while (hash_one_block(hash, &buffers[level], block_size,
-+				      padded_salt, padded_salt_size)) {
-+			level++;
-+			ASSERT(level < num_levels);
-+		}
-+	}
-+	/* Finish all nonempty pending tree blocks */
-+	for (level = 0; level < num_levels; level++) {
-+		if (buffers[level].filled != 0)
-+			hash_one_block(hash, &buffers[level], block_size,
-+				       padded_salt, padded_salt_size);
++	name_der_len = i2d_X509_NAME(X509_get_subject_name(cert), &name_der);
++	if (name_der_len < 0) {
++		error_msg_openssl("i2d_X509_NAME failed");
++		goto out;
 +	}
 +
-+	/* Root hash was filled by the last call to hash_one_block() */
-+	ASSERT(buffers[num_levels].filled == hash->alg->digest_size);
++	if (!EVP_DigestSignInit(&md_ctx, NULL, md, NULL, pkey)) {
++		error_msg_openssl("EVP_DigestSignInit failed");
++		goto out;
++	}
++
++	sig_len = EVP_PKEY_size(pkey);
++	sig = xmalloc(sig_len);
++	if (!EVP_DigestSign(&md_ctx, sig, &sig_len, data_to_sign, data_size)) {
++		error_msg_openssl("EVP_DigestSign failed");
++		goto out;
++	}
++
++	sig_nid = EVP_PKEY_id(pkey);
++	/* To mirror OpenSSL behaviour, always use |NID_rsaEncryption| with RSA
++	 * rather than the combined hash+pkey NID. */
++	if (sig_nid != NID_rsaEncryption) {
++		OBJ_find_sigid_by_algs(&sig_nid, EVP_MD_type(md),
++				       EVP_PKEY_id(pkey));
++	}
++
++	// See https://tools.ietf.org/html/rfc2315#section-7
++	if (!CBB_add_asn1(&out, &outer_seq, CBS_ASN1_SEQUENCE) ||
++	    !OBJ_nid2cbb(&outer_seq, NID_pkcs7_signed) ||
++	    !CBB_add_asn1(&outer_seq, &wrapped_seq, CBS_ASN1_CONTEXT_SPECIFIC |
++			  CBS_ASN1_CONSTRUCTED | 0) ||
++	    // See https://tools.ietf.org/html/rfc2315#section-9.1
++	    !CBB_add_asn1(&wrapped_seq, &seq, CBS_ASN1_SEQUENCE) ||
++	    !CBB_add_asn1_uint64(&seq, 1 /* version */) ||
++	    !CBB_add_asn1(&seq, &digest_algos_set, CBS_ASN1_SET) ||
++	    !CBB_add_asn1(&digest_algos_set, &digest_algo, CBS_ASN1_SEQUENCE) ||
++	    !OBJ_nid2cbb(&digest_algo, EVP_MD_type(md)) ||
++	    !CBB_add_asn1(&digest_algo, &null, CBS_ASN1_NULL) ||
++	    !CBB_add_asn1(&seq, &content_info, CBS_ASN1_SEQUENCE) ||
++	    !OBJ_nid2cbb(&content_info, NID_pkcs7_data) ||
++	    !CBB_add_asn1(&seq, &signer_infos, CBS_ASN1_SET) ||
++	    !CBB_add_asn1(&signer_infos, &signer_info, CBS_ASN1_SEQUENCE) ||
++	    !CBB_add_asn1_uint64(&signer_info, 1 /* version */) ||
++	    !CBB_add_asn1(&signer_info, &issuer_and_serial,
++			  CBS_ASN1_SEQUENCE) ||
++	    !CBB_add_bytes(&issuer_and_serial, name_der, name_der_len) ||
++	    !BN_marshal_asn1(&issuer_and_serial, serial) ||
++	    !CBB_add_asn1(&signer_info, &digest_algo, CBS_ASN1_SEQUENCE) ||
++	    !OBJ_nid2cbb(&digest_algo, EVP_MD_type(md)) ||
++	    !CBB_add_asn1(&digest_algo, &null, CBS_ASN1_NULL) ||
++	    !CBB_add_asn1(&signer_info, &sign_algo, CBS_ASN1_SEQUENCE) ||
++	    !OBJ_nid2cbb(&sign_algo, sig_nid) ||
++	    !CBB_add_asn1(&sign_algo, &null, CBS_ASN1_NULL) ||
++	    !CBB_add_asn1(&signer_info, &signature, CBS_ASN1_OCTETSTRING) ||
++	    !CBB_add_bytes(&signature, sig, sig_len) ||
++	    !CBB_finish(&out, &pkcs7_data, &pkcs7_data_len)) {
++		error_msg_openssl("failed to construct PKCS#7 data");
++		goto out;
++	}
++
++	*sig_ret = xmemdup(pkcs7_data, pkcs7_data_len);
++	*sig_size_ret = pkcs7_data_len;
 +	ok = true;
 +out:
-+	for (level = -1; level < num_levels; level++)
-+		free(buffers[level].data);
-+	free(padded_salt);
++	BN_free(serial);
++	EVP_MD_CTX_cleanup(&md_ctx);
++	CBB_cleanup(&out);
++	free(sig);
++	OPENSSL_free(name_der);
++	OPENSSL_free(pkcs7_data);
 +	return ok;
 +}
 +
++#else /* OPENSSL_IS_BORINGSSL */
++
++static BIO *new_mem_buf(const void *buf, size_t size)
++{
++	BIO *bio;
++
++	ASSERT(size <= INT_MAX);
++	/*
++	 * Prior to OpenSSL 1.1.0, BIO_new_mem_buf() took a non-const pointer,
++	 * despite still marking the resulting bio as read-only.  So cast away
++	 * the const to avoid a compiler warning with older OpenSSL versions.
++	 */
++	bio = BIO_new_mem_buf((void *)buf, size);
++	if (!bio)
++		error_msg_openssl("out of memory");
++	return bio;
++}
++
++static bool sign_pkcs7(const void *data_to_sign, size_t data_size,
++		       EVP_PKEY *pkey, X509 *cert, const EVP_MD *md,
++		       u8 **sig_ret, size_t *sig_size_ret)
++{
++	/*
++	 * PKCS#7 signing flags:
++	 *
++	 * - PKCS7_BINARY	signing binary data, so skip MIME translation
++	 *
++	 * - PKCS7_DETACHED	omit the signed data (include signature only)
++	 *
++	 * - PKCS7_NOATTR	omit extra authenticated attributes, such as
++	 *			SMIMECapabilities
++	 *
++	 * - PKCS7_NOCERTS	omit the signer's certificate
++	 *
++	 * - PKCS7_PARTIAL	PKCS7_sign() creates a handle only, then
++	 *			PKCS7_sign_add_signer() can add a signer later.
++	 *			This is necessary to change the message digest
++	 *			algorithm from the default of SHA-1.  Requires
++	 *			OpenSSL 1.0.0 or later.
++	 */
++	int pkcs7_flags = PKCS7_BINARY | PKCS7_DETACHED | PKCS7_NOATTR |
++			  PKCS7_NOCERTS | PKCS7_PARTIAL;
++	u8 *sig;
++	u32 sig_size;
++	BIO *bio = NULL;
++	PKCS7 *p7 = NULL;
++	bool ok = false;
++
++	bio = new_mem_buf(data_to_sign, data_size);
++	if (!bio)
++		goto out;
++
++	p7 = PKCS7_sign(NULL, NULL, NULL, bio, pkcs7_flags);
++	if (!p7) {
++		error_msg_openssl("failed to initialize PKCS#7 signature object");
++		goto out;
++	}
++
++	if (!PKCS7_sign_add_signer(p7, cert, pkey, md, pkcs7_flags)) {
++		error_msg_openssl("failed to add signer to PKCS#7 signature object");
++		goto out;
++	}
++
++	if (PKCS7_final(p7, bio, pkcs7_flags) != 1) {
++		error_msg_openssl("failed to finalize PKCS#7 signature");
++		goto out;
++	}
++
++	BIO_free(bio);
++	bio = BIO_new(BIO_s_mem());
++	if (!bio) {
++		error_msg_openssl("out of memory");
++		goto out;
++	}
++
++	if (i2d_PKCS7_bio(bio, p7) != 1) {
++		error_msg_openssl("failed to DER-encode PKCS#7 signature object");
++		goto out;
++	}
++
++	sig_size = BIO_get_mem_data(bio, &sig);
++	*sig_ret = xmemdup(sig, sig_size);
++	*sig_size_ret = sig_size;
++	ok = true;
++out:
++	PKCS7_free(p7);
++	BIO_free(bio);
++	return ok;
++}
++
++#endif /* !OPENSSL_IS_BORINGSSL */
++
 +/*
-+ * Compute the fs-verity measurement of the given file.
-+ *
-+ * The fs-verity measurement is the hash of the fsverity_descriptor, which
-+ * contains the Merkle tree properties including the root hash.
++ * Sign the digest using the private key in @keyfile, the certificate in
++ * @certfile, and the hash algorithm specified in the digest.
++ * Return 0 on success, the DER-formatted PKCS#7 signature in @sig_ret and
++ * it's size in @sig_size_ret.
 + */
 +int
-+libfsverity_compute_digest(int fd,
-+			   const struct libfsverity_merkle_tree_params *params,
-+			   struct libfsverity_digest **digest_ret)
++libfsverity_sign_digest(const struct libfsverity_digest *digest,
++			const struct libfsverity_signature_params *sig_params,
++			uint8_t **sig_ret, size_t *sig_size_ret)
 +{
 +	const struct fsverity_hash_alg *hash_alg;
-+	struct libfsverity_digest *digest;
-+	struct hash_ctx *hash;
-+	struct fsverity_descriptor desc;
-+	struct stat stbuf;
-+	u64 file_size;
-+	int retval = -EINVAL;
++	EVP_PKEY *pkey = NULL;
++	X509 *cert = NULL;
++	const EVP_MD *md;
++	size_t data_size;
++	uint16_t alg_nr;
++	int retval = -EAGAIN;
 +
-+	hash_alg = libfsverity_find_hash_alg_by_num(params->hash_algorithm);
-+	hash = hash_alg->create_ctx(hash_alg);
++	data_size = sizeof(struct libfsverity_digest) +
++		le16_to_cpu(digest->digest_size);
++	alg_nr = le16_to_cpu(digest->digest_algorithm);
++	hash_alg = libfsverity_find_hash_alg_by_num(alg_nr);
 +
-+	digest = malloc(sizeof(struct libfsverity_digest) +
-+			hash_alg->digest_size);
-+	if (!digest_ret)
-+		return -ENOMEM;
-+	memcpy(digest->magic, "FSVerity", 8);
-+	digest->digest_algorithm = cpu_to_le16(hash_alg->hash_num);
-+	digest->digest_size = cpu_to_le16(hash_alg->digest_size);
-+	memset(digest->digest, 0, hash_alg->digest_size);
-+
-+	if (fstat(fd, &stbuf) != 0) {
-+		error_msg_errno("can't stat input file");
-+		retval = -EBADF;
-+		goto error_out;
-+	}
-+	file_size = stbuf.st_size;
-+
-+	memset(&desc, 0, sizeof(desc));
-+	desc.version = 1;
-+	desc.hash_algorithm = params->hash_algorithm;
-+
-+	ASSERT(is_power_of_2(params->block_size));
-+	desc.log_blocksize = ilog2(params->block_size);
-+
-+	if (params->salt_size != 0) {
-+		if (params->salt_size > sizeof(desc.salt)) {
-+			error_msg("Salt too long (got %u bytes; max is %zu bytes)",
-+				  params->salt_size, sizeof(desc.salt));
-+			retval = EINVAL;
-+			goto error_out;
-+		}
-+		memcpy(desc.salt, params->salt, params->salt_size);
-+		desc.salt_size = params->salt_size;
++	if (!hash_alg) {
++		retval = -EINVAL;
++		goto out;
 +	}
 +
-+	desc.data_size = cpu_to_le64(file_size);
-+
-+	/* Root hash of empty file is all 0's */
-+	if (file_size != 0 &&
-+	    !compute_root_hash(fd, file_size, hash, params->block_size,
-+			       params->salt, params->salt_size,
-+			       desc.root_hash)) {
++	pkey = read_private_key(sig_params->keyfile);
++	if (!pkey) {
 +		retval = -EAGAIN;
-+		goto error_out;
++		goto out;
 +	}
 +
-+	hash_full(hash, &desc, sizeof(desc), digest->digest);
-+	hash_free(hash);
-+	*digest_ret = digest;
++	cert = read_certificate(sig_params->certfile);
++	if (!cert) {
++		retval = -EAGAIN;
++		goto out;
++	}
 +
-+	return 0;
++	OpenSSL_add_all_digests();
 +
-+ error_out:
-+	free(digest);
++	md = EVP_get_digestbyname(hash_alg->name);
++	if (!md) {
++		fprintf(stderr,
++			"Warning: '%s' algorithm not found in OpenSSL library.\n"
++			"         Falling back to SHA-256 signature.\n",
++			hash_alg->name);
++		md = EVP_sha256();
++	}
++
++	if (sign_pkcs7(digest, data_size, pkey, cert, md,
++		       sig_ret, sig_size_ret))
++		retval = 0;
++
++ out:
++	EVP_PKEY_free(pkey);
++	X509_free(cert);
 +	return retval;
 +}
 -- 
