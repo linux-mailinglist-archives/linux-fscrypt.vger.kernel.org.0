@@ -2,59 +2,59 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5F7E1B8140
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 24 Apr 2020 22:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C977C1B8141
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 24 Apr 2020 22:55:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726189AbgDXUzh (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 24 Apr 2020 16:55:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47722 "EHLO
+        id S1726147AbgDXUzj (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 24 Apr 2020 16:55:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726027AbgDXUzh (ORCPT
+        with ESMTP id S1726027AbgDXUzj (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 24 Apr 2020 16:55:37 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 078B3C09B048
-        for <linux-fscrypt@vger.kernel.org>; Fri, 24 Apr 2020 13:55:37 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id z90so9112810qtd.10
-        for <linux-fscrypt@vger.kernel.org>; Fri, 24 Apr 2020 13:55:36 -0700 (PDT)
+        Fri, 24 Apr 2020 16:55:39 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 144D0C09B048
+        for <linux-fscrypt@vger.kernel.org>; Fri, 24 Apr 2020 13:55:39 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id z90so9112891qtd.10
+        for <linux-fscrypt@vger.kernel.org>; Fri, 24 Apr 2020 13:55:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=aDcraxQLqrhLOQ6KlnpE+7DSAzr3emVpGCJLXLOLvhA=;
-        b=jxUJz9C6upDJygYT7E7LZcjULxonEKEWTgMvxXEuxVgoVn5u5Jw+H53FilyVk+mRkG
-         kLfIh6MSOEMYGAAam0ML44QKTw9Fj31H6bKFvHAB9bYw4pk2r6evAib7xlIAS6/u0UaB
-         qbpiaz+LkHMJ6R72HRpM/AnN8SuBScqe8eAm0DeQkpLVdxzJPOkX0edPLmMLGzsINnBq
-         dnOWg6F1WRoP6uaSGmnEnFBnsIars8yaYTOfCtbqV/Nad4B6DAqWYKJ5TJfnHjpxWzdb
-         3N6U5u6Pa7DXkv7jw6zrf+jWghaK1F+mh0W9vhflpa5/gg7DqOv0zroV8s6v3vdYKimo
-         Zdrw==
+        bh=bSVBOY7Q4cYdjBI96u0u87ijjzYsOABUlnceIIy0zJk=;
+        b=Xk7jh/JesGH9WvhBAo4sLdNXLYcaNLYDF0u2Eg92QhFWZLW7rjlRYXHgziFcbSM5uQ
+         xPmRw1Rf7hpkTLwSzZ84LA/+5TsKO7wFsAHf32QV4KBbgg7kTk1vA713u6JCQBXzdorX
+         l2OLdnG1HWDMG5J5sLJ6pmAc5AQv71nIV164avb+MGR9CnXYb6LhlS3+9CbmGKepl4IY
+         gnrZzv6uWbtJ0bCINy3LWHHWMB3tXwg1ZOTwhmRbfiMWUyNkfMdaQ4TFW2YISVL7vh0D
+         F4dXmYr4uK6Il523zA/Qg9lYsXO5nRZ4NyvXwVXmLLx4uICM4VEjPc28kgqGz9SEknzn
+         sDCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=aDcraxQLqrhLOQ6KlnpE+7DSAzr3emVpGCJLXLOLvhA=;
-        b=HLVgeFiOrziQ8KrRERupw8b09CQPQlSHEo5KBC9vmjdXMLfav/VjrTsIraY66UmLeO
-         4mjiGPdXVtw11RterPn1mlx0g6ouqpxjokYjOIqBovOSI/gATzzFEG3qiCVAMnEpaCJ6
-         Xr2y/W9Hbb1KsLClkLTmqtxpEhA3XzRdGknHOgY/uMW8tGa6ba4hjC7LWWsZFHi1En/w
-         aPzNUoWSRPO8yfalAaFevi0K3rri8biuKCDMSeJiB+/cu1ZBIRD9VWnmvgTFTHddMkFu
-         7Cs4NUhDRA399SuR1ZJqeyc1EQHpwpadTk67mrixiM09NVw0uPIpQ1Q7MbEUtRqCTZJE
-         SvWg==
-X-Gm-Message-State: AGi0Pua1QmPlcXtcN/R7tqErzpkO8uh8X37/bm4MOWsqKtfiaCSNzqWC
-        bQOaFRf2e2WAUQ34vO2DONbnsKIbyCw=
-X-Google-Smtp-Source: APiQypLLfjipfeFbUbvkLSaZg/pquvrfztA55J7V/GQKcksX3z9Ttj4if+6FAwz0+WVyEkXC269zdw==
-X-Received: by 2002:ac8:764e:: with SMTP id i14mr11379768qtr.191.1587761735886;
-        Fri, 24 Apr 2020 13:55:35 -0700 (PDT)
+        bh=bSVBOY7Q4cYdjBI96u0u87ijjzYsOABUlnceIIy0zJk=;
+        b=eQwchwEn7nXmY94a+RNt80UWmhZFGxQJ9KpB0NC9FRAmvTwjuKaSwkPle54raASSQm
+         C58D7sPnNd30ZMNOwooytgBK21wggdoU/KNedbJGYQ7Rrx44AKqsw/vma3SND70N+R9u
+         ckhjT6+iBg+M4CzIFfhmqq9sV3QY2LkChRIGINFlj9mjiN0+tZ+2lSMqdYFPwqR37gam
+         vNPRQ4p4PO3sYB8w2KK8NceSGAMPuDU6y+Wnb2YSL9+/Eqcg/xZ6qTKoHc6mxCOB6w+x
+         7JwoRc+RRNMECOF3TGqz+AM0puM1N4AkJo4a10J1MADntWUYty+75JC2w+S/Ji+szaR4
+         Cz6Q==
+X-Gm-Message-State: AGi0PuaEAYJ23yIkBuV2QNUpD1WEMTvbVj9mdLi4aKhpeJsXEHwBJ4KT
+        TBgwsxp/DewHXen/V09ouAOdnwlLavE=
+X-Google-Smtp-Source: APiQypIO52GjprcMjC+/15PvbaBtGn+Nfa+8os0xKY6K7DOYmTWblbveN6ijPfeNHauiGC3VjXz6ig==
+X-Received: by 2002:ac8:73d3:: with SMTP id v19mr11632132qtp.263.1587761737982;
+        Fri, 24 Apr 2020 13:55:37 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:480::62b])
-        by smtp.gmail.com with ESMTPSA id o27sm4463944qko.71.2020.04.24.13.55.34
+        by smtp.gmail.com with ESMTPSA id g187sm4285858qkf.115.2020.04.24.13.55.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Apr 2020 13:55:35 -0700 (PDT)
+        Fri, 24 Apr 2020 13:55:37 -0700 (PDT)
 From:   Jes Sorensen <jes.sorensen@gmail.com>
 X-Google-Original-From: Jes Sorensen <Jes.Sorensen@gmail.com>
 To:     linux-fscrypt@vger.kernel.org
 Cc:     ebiggers@google.com, kernel-team@fb.com, jsorensen@fb.com
-Subject: [PATCH 17/20] fsverity_cmd_sign() use sizeof() input argument instead of struct
-Date:   Fri, 24 Apr 2020 16:55:01 -0400
-Message-Id: <20200424205504.2586682-18-Jes.Sorensen@gmail.com>
+Subject: [PATCH 18/20] fsverity_cmd_sign() don't exit on error without closing file descriptor
+Date:   Fri, 24 Apr 2020 16:55:02 -0400
+Message-Id: <20200424205504.2586682-19-Jes.Sorensen@gmail.com>
 X-Mailer: git-send-email 2.25.3
 In-Reply-To: <20200424205504.2586682-1-Jes.Sorensen@gmail.com>
 References: <20200424205504.2586682-1-Jes.Sorensen@gmail.com>
@@ -69,31 +69,40 @@ From: Jes Sorensen <jsorensen@fb.com>
 
 Signed-off-by: Jes Sorensen <jsorensen@fb.com>
 ---
- cmd_sign.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ cmd_sign.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
 diff --git a/cmd_sign.c b/cmd_sign.c
-index 57a9250..d699d85 100644
+index d699d85..7d8ec58 100644
 --- a/cmd_sign.c
 +++ b/cmd_sign.c
-@@ -147,7 +147,7 @@ int fsverity_cmd_sign(const struct fsverity_command *cmd,
- 		goto out_err;
- 	}
+@@ -73,7 +73,7 @@ int fsverity_cmd_sign(const struct fsverity_command *cmd,
+ 	u16 alg_nr = 0;
+ 	int digest_size;
+ 	size_t sig_size;
+-	int status;
++	int status, ret;
+ 	int c;
  
--	memset(&params, 0, sizeof(struct libfsverity_merkle_tree_params));
-+	memset(&params, 0, sizeof(params));
- 	params.version = 1;
- 	params.hash_algorithm = alg_nr;
- 	params.block_size = block_size;
-@@ -162,7 +162,7 @@ int fsverity_cmd_sign(const struct fsverity_command *cmd,
+ 	while ((c = getopt_long(argc, argv, "", longopts, NULL)) != -1) {
+@@ -154,12 +154,13 @@ int fsverity_cmd_sign(const struct fsverity_command *cmd,
+ 	params.salt_size = salt_size;
+ 	params.salt = salt;
  
+-	if (libfsverity_compute_digest(&file, file_size, read_callback,
+-				       &params, &digest))
+-		goto out_err;
+-
++	ret = libfsverity_compute_digest(&file, file_size, read_callback,
++					 &params, &digest);
+ 	filedes_close(&file);
+ 
++	if (ret)
++		goto out_err;
++
  	digest_size = libfsverity_digest_size(alg_nr);
  
--	memset(&sig_params, 0, sizeof(struct libfsverity_signature_params));
-+	memset(&sig_params, 0, sizeof(sig_params));
- 	sig_params.keyfile = keyfile;
- 	sig_params.certfile = certfile;
- 	if (libfsverity_sign_digest(digest, &sig_params, &sig, &sig_size)) {
+ 	memset(&sig_params, 0, sizeof(sig_params));
 -- 
 2.25.3
 
