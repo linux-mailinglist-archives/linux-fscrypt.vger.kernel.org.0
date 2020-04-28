@@ -2,79 +2,88 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BA721BB5C4
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 28 Apr 2020 07:19:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E07C31BB5D2
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 28 Apr 2020 07:21:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726042AbgD1FT7 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 28 Apr 2020 01:19:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32786 "EHLO
+        id S1726299AbgD1FVi (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 28 Apr 2020 01:21:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725917AbgD1FT6 (ORCPT
+        by vger.kernel.org with ESMTP id S1725917AbgD1FVh (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 28 Apr 2020 01:19:58 -0400
+        Tue, 28 Apr 2020 01:21:37 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6C01C03C1A9;
-        Mon, 27 Apr 2020 22:19:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3F83C03C1A9;
+        Mon, 27 Apr 2020 22:21:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
         :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=N449VoWVR375Ueo46T0G2hb5JRZUT8vtjXxmy+kIL1M=; b=ejvrm4cY1yi+VTSCq/t35ySQyX
-        UPercnk+hk9IJM/1hiaxfTZnhuAUZKJLcTDqAnOhGhTbH7t2HYgu560oHc3D2+l5Cn34+crYZhQFQ
-        Cwak6HIDVECaaNRVzEN1HBXHvRwz9zBGQVZpiJP5Ebvv/t5abbG/KGRs2Lh0InESVWPk9wGYg47Us
-        DdM/Ux4lqUNnrcuGuo/Tz7GgeYs80wNbXlUzywNEkdE6mkms9v39QHeKHoKVkqJJj6EMkP7EPJ0l+
-        vZ0W3pJd7gUXalqLQB4ULw2ydhQp2xEmvF6tlfO4qLLpKizPgdivo/DqLzb3yTj3zah1VUvkM3L/8
-        oni4IHig==;
+        bh=btOt+GJLXunt0yTMMtppqrdFkNuz4JVhPhDALsvkRkA=; b=kz5m517ctvWWh0t+4t+NNx9Rkl
+        oSOdlk3JhkkXMDaa1VXuyAuOlgzyjrq+DfEknFCzMsNsNY5Y11InfWh1vPzPfatUmjLvaIt+vuyJ7
+        UjVnIOCXBM+KbNMLyHebA828UmsFNiFJ4M+556kOcvZpoViWvsHil2m5CkXcO5J5Qpa+N4z5ORNKF
+        SJtdsfnm2D+NUex27zd3t0dsPhZMOzLWY4+NYcDsQTzWVp9eAQxz4w6HYzBAgdHV2epdrEUQgn20a
+        jtZtq0M/x7iQLMizoT6OXUEY/2Vt6UyCtDMCx1tEOo/VMDd7gBUh36aJT/v98gAZEmK75nZJQvdue
+        Ivt3QYjA==;
 Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jTIey-0004fp-Vi; Tue, 28 Apr 2020 05:19:56 +0000
-Date:   Mon, 27 Apr 2020 22:19:56 -0700
+        id 1jTIgb-0007Fy-Dl; Tue, 28 Apr 2020 05:21:37 +0000
+Date:   Mon, 27 Apr 2020 22:21:37 -0700
 From:   Christoph Hellwig <hch@infradead.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Satya Tangirala <satyat@google.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+To:     Satya Tangirala <satyat@google.com>
+Cc:     Christoph Hellwig <hch@infradead.org>, linux-block@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
         linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
         Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
         Kuohong Wang <kuohong.wang@mediatek.com>,
         Kim Boojin <boojin.kim@samsung.com>
-Subject: Re: [PATCH v10 02/12] block: Keyslot Manager for Inline Encryption
-Message-ID: <20200428051956.GB24105@infradead.org>
+Subject: Re: [PATCH v10 03/12] block: Inline encryption support for blk-mq
+Message-ID: <20200428052137.GA18572@infradead.org>
 References: <20200408035654.247908-1-satyat@google.com>
- <20200408035654.247908-3-satyat@google.com>
- <20200422092250.GA12290@infradead.org>
- <20200428021441.GA52406@google.com>
- <20200428024614.GA251491@gmail.com>
- <20200428025708.GB251491@gmail.com>
+ <20200408035654.247908-4-satyat@google.com>
+ <20200422093502.GB12290@infradead.org>
+ <20200428025400.GB52406@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200428025708.GB251491@gmail.com>
+In-Reply-To: <20200428025400.GB52406@google.com>
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 07:57:08PM -0700, Eric Biggers wrote:
-> Or maybe 'struct blk_ksm_keyslot' should contain a pointer to the
-> 'struct blk_crypto_key' rather than a copy of it?  If we did that, then:
-> 
-> - Each duplicate blk_crypto_key would use its own keyslot and not interfere with
->   any others.
-> 
-> - blk_crypto_evict_key() would be *required* to be called.
-> 
-> - It would be a kernel bug if blk_crypto_evict_key() were called with any
->   pending I/O, so WARN_ON_ONCE() would be the right thing to do.
-> 
-> - The hash function used to find a key's keyslot would be
->   hash_ptr(blk_crypto_key, ksm->log_slot_hashtable_size) instead of
->   SipHash(key=perboot_key, data=raw_key).
->   
-> I might be forgetting something; was there a reason we didn't do that?
-> It wouldn't be as robust against users forgetting to call
-> blk_crypto_evict_key(), but that would be a bug anyway.
+On Tue, Apr 28, 2020 at 02:54:00AM +0000, Satya Tangirala wrote:
+> It's modified by additions in the next patch in the series and I
+> thought I should introduce the function with the final type from the
+> get go - is that alright?
 
-The above sounds pretty sensible to me (but I'm everything but an expert
-in the area).
+It is probably ok, let me review the next patch in more detail.
+
+> > >  	__blk_queue_split(q, &bio, &nr_segs);
+> > > @@ -2011,6 +2015,15 @@ static blk_qc_t blk_mq_make_request(struct request_queue *q, struct bio *bio)
+> > >  
+> > >  	blk_mq_bio_to_request(rq, bio, nr_segs);
+> > >  
+> > > +	ret = blk_crypto_init_request(rq);
+> > > +	if (ret != BLK_STS_OK) {
+> > > +		bio->bi_status = ret;
+> > > +		bio_endio(bio);
+> > > +		blk_mq_free_request(rq);
+> > > +		return BLK_QC_T_NONE;
+> > > +	}
+> > 
+> > Didn't Eric have a comment last round that we shoul dtry this before
+> > attaching the bio to simplify error handling?
+> > 
+> In the previous round, I believe Eric commented that I should call
+> blk_crypto_init_request after bio_to_request so that we can do away
+> with some of the arguments to blk_crypto_init_request and also a
+> boilerplate function used only while calling blk_crypto_init_request.
+> I realize you wrote "And we can fail just the request on an error, so
+> yes this doesn't seem too bad." in response to this particular
+> comment of Eric's, and it seems I might not actually have understood
+> what that meant - did you have something in mind different from what I'm
+> doing here?
+
+No, this looks ok, sorry for the noise.
