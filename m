@@ -2,55 +2,55 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 812871BD5B5
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 29 Apr 2020 09:21:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8739A1BD5C9
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 29 Apr 2020 09:22:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726781AbgD2HVq (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 29 Apr 2020 03:21:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50818 "EHLO
+        id S1726765AbgD2HV5 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 29 Apr 2020 03:21:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726747AbgD2HVm (ORCPT
+        with ESMTP id S1726635AbgD2HVp (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 29 Apr 2020 03:21:42 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4AC1C03C1AE
-        for <linux-fscrypt@vger.kernel.org>; Wed, 29 Apr 2020 00:21:40 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id y73so2273466ybe.22
-        for <linux-fscrypt@vger.kernel.org>; Wed, 29 Apr 2020 00:21:40 -0700 (PDT)
+        Wed, 29 Apr 2020 03:21:45 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55B68C09B044
+        for <linux-fscrypt@vger.kernel.org>; Wed, 29 Apr 2020 00:21:42 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id h186so1613538qkc.22
+        for <linux-fscrypt@vger.kernel.org>; Wed, 29 Apr 2020 00:21:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=gR1IO3YbwQNLcwOSEXpn5CarIY21aQbiMsndVPuVBuI=;
-        b=sa/uVtP6N+f3jtazo0nv4GY6GzcT/XEOc/MtAiR8WdeFXQkV9vNFYWKCkeKp/VtD+r
-         yNpusBHv+q5NED+7F8JrXQ6YEEFlUm55sdFuMmdR4ooasDMnkN422eGErwZI8DPTPdeF
-         2iLx0XKxaCdUlAkkFla5Ea95QZh0+toi5M4UfyTyIX7O++P8Wsr2HU4Fnw6deO/lyyJg
-         ByHtgbmmLJcSf60AokTVgZtND02DAj/SHkRWnp3aE8fPqGKojQJPf7VV8vMyVVnRqQTE
-         e4ffJ7UglGDigLd+2eeQMpUU+9tVTXV0Z6qMmiijylZcvWx4ivpD/x0vTJgWCX6+Qd1e
-         rf7w==
+        bh=dcBMNhJyVF3JG7u2k+hpIfX5J5/+YNOMhft7o2B+Ju4=;
+        b=dfrGTfJjx+xsOcKHeejLK4oMt9g5AcqcRK5/UgBb14pn/JbWFb1vMwUyV+V1slwjtj
+         2nFObH6Yei1hbvG9BW2Ll9vbpOcTaaQWiATCvTV1B/VYCTXeUPCW+hLpf049cVmCdboI
+         rHS6z3TM/IJRit3QH4E1ap9PyEFxHqulYCq7YE0up+baJBD6tgxW4NrGKOf9TJ+F3+Km
+         QcXzGA2M5GB6W6B2ghC6wC+zS04Bwtty77EltXC43D73oIukh3a67IIcPcLbMepNDXfr
+         2Xrzb2Hp+Ov7eBjxW/m2vgPs2VZpLO9whdG848N9ksL78T4b8vthHOeR4v9S1c4cj0LF
+         qOJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=gR1IO3YbwQNLcwOSEXpn5CarIY21aQbiMsndVPuVBuI=;
-        b=FR7n/pPx1fCN9TU6QKaDkCwRwjo1nwbxD87AuADP6u48p+2anzxmlKtyIRgEMQEEcZ
-         9eIhYxyDRuo7OOXrK5w+LIMiD4wvQnrTkh0fyqpgOp5ecvJMRDzIhBxBeJRcY0/MWcv5
-         xgaAIg0+3v+nRkHzIqFsHUHIKN8OQKlev+RyP8Ov2l2r2d2UKcLmUDHg1T9yEL16Quh/
-         /VErw9YeBat3ihvhNH2B8MORXhOeA4XaLl1wl+yuqnKwXIUDcsRnCE0Tpprexe+l+UBH
-         SX/oNwXXnNRuaRz50kCsX1ZPR6iuWkVp/M3AG3zzSrsrQyqlag3swtG+wsh8/knEPefO
-         7EJA==
-X-Gm-Message-State: AGi0PuYNwIPhlH5uTZuYJ3hVl9pbIUGydRV2zDW5zIFh1HUWfyIxwbOn
-        fdXI6y4tihTAK9YcRH3B3ExdXLDiLfY=
-X-Google-Smtp-Source: APiQypLyIkVB8gxIb/Imtuq+2nRldlZjx7cBD5aCdAQoHD1CmhZyFlpk7+Lx2ABJWcNCaifuy+Gj20+un8A=
-X-Received: by 2002:a25:7a81:: with SMTP id v123mr5347207ybc.138.1588144899914;
- Wed, 29 Apr 2020 00:21:39 -0700 (PDT)
-Date:   Wed, 29 Apr 2020 07:21:17 +0000
+        bh=dcBMNhJyVF3JG7u2k+hpIfX5J5/+YNOMhft7o2B+Ju4=;
+        b=BcxTyMQ0364bfrWWQi9OZDILD/HV39EVzSrbM/OOO1L3Q5wMMirceguBGdQdI9byto
+         0SWgPsFyS9p0L2/vqAvP33s75bJT35Z2rQ4KHNY0IuwV57uVis12ZL36hJk5Vjeic6dw
+         sWbg3bEl8LszAwP0KyGXwiC+P3BppGYxyEWjtCDefz6hvtxXSis4cP2wdC1ZVoId6e24
+         yFVGj0vB8Ea2Zaw/zp8lCsfRkZ0J9wajpeeoyp4ljK9hyZB8ObNuX/0hKeWoGjzmPp1o
+         qNPFnqbVwAx6hvMFI9j//mxso/9nrTjJj9hWtwuBe//ym1MLpn38sgotgGWGlY6atmN5
+         65Kw==
+X-Gm-Message-State: AGi0PuZF8kkAlipZ86djd42HpSFFKA3NF/w0eMEib/1Zw7pSv3qO9HVS
+        zBzSoE5WN26Co7+D4ZfqjjBhzXxKuys=
+X-Google-Smtp-Source: APiQypJz89cxZWdYzpcW5zsQCLnnJh9hiKeWJOQg2VT8hOJvTQfkY3cXLSwBZXj2P4l7aalg3AeJ9YcyX18=
+X-Received: by 2002:ad4:55e7:: with SMTP id bu7mr32187009qvb.88.1588144901506;
+ Wed, 29 Apr 2020 00:21:41 -0700 (PDT)
+Date:   Wed, 29 Apr 2020 07:21:18 +0000
 In-Reply-To: <20200429072121.50094-1-satyat@google.com>
-Message-Id: <20200429072121.50094-9-satyat@google.com>
+Message-Id: <20200429072121.50094-10-satyat@google.com>
 Mime-Version: 1.0
 References: <20200429072121.50094-1-satyat@google.com>
 X-Mailer: git-send-email 2.26.2.303.gf8c07b1a785-goog
-Subject: [PATCH v11 08/12] scsi: ufs: Add inline encryption support to UFS
+Subject: [PATCH v11 09/12] fs: introduce SB_INLINECRYPT
 From:   Satya Tangirala <satyat@google.com>
 To:     linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
         linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
@@ -65,202 +65,42 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Wire up ufshcd.c with the UFS Crypto API, the block layer inline
-encryption additions and the keyslot manager.
+Introduce SB_INLINECRYPT, which is set by filesystems that wish to use
+blk-crypto for file content en/decryption. This flag maps to the
+'-o inlinecrypt' mount option which multiple filesystems will implement,
+and code in fs/crypto/ needs to be able to check for this mount option
+in a filesystem-independent way.
 
 Signed-off-by: Satya Tangirala <satyat@google.com>
 ---
- drivers/scsi/ufs/ufshcd-crypto.h | 18 +++++++++++++
- drivers/scsi/ufs/ufshcd.c        | 44 ++++++++++++++++++++++++++++----
- drivers/scsi/ufs/ufshcd.h        |  6 +++++
- 3 files changed, 63 insertions(+), 5 deletions(-)
+ fs/proc_namespace.c | 1 +
+ include/linux/fs.h  | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/drivers/scsi/ufs/ufshcd-crypto.h b/drivers/scsi/ufs/ufshcd-crypto.h
-index 22677619de595..9578edb63e7b4 100644
---- a/drivers/scsi/ufs/ufshcd-crypto.h
-+++ b/drivers/scsi/ufs/ufshcd-crypto.h
-@@ -10,6 +10,20 @@
- #include "ufshcd.h"
- #include "ufshci.h"
- 
-+static inline void ufshcd_prepare_lrbp_crypto(struct ufs_hba *hba,
-+					      struct scsi_cmnd *cmd,
-+					      struct ufshcd_lrb *lrbp)
-+{
-+	struct request *rq = cmd->request;
-+
-+	if (rq->crypt_keyslot) {
-+		lrbp->crypto_key_slot = blk_ksm_get_slot_idx(rq->crypt_keyslot);
-+		lrbp->data_unit_num = rq->crypt_ctx->bc_dun[0];
-+	} else {
-+		lrbp->crypto_key_slot = -1;
-+	}
-+}
-+
- bool ufshcd_crypto_enable(struct ufs_hba *hba);
- 
- int ufshcd_hba_init_crypto(struct ufs_hba *hba);
-@@ -21,6 +35,10 @@ void ufshcd_crypto_destroy_keyslot_manager(struct ufs_hba *hba);
- 
- #else /* CONFIG_SCSI_UFS_CRYPTO */
- 
-+static inline void ufshcd_prepare_lrbp_crypto(struct ufs_hba *hba,
-+					      struct scsi_cmnd *cmd,
-+					      struct ufshcd_lrb *lrbp) { }
-+
- static inline bool ufshcd_crypto_enable(struct ufs_hba *hba)
- {
- 	return false;
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 2435c600cb2d9..041c0dd09ba5d 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -48,6 +48,7 @@
- #include "unipro.h"
- #include "ufs-sysfs.h"
- #include "ufs_bsg.h"
-+#include "ufshcd-crypto.h"
- 
- #define CREATE_TRACE_POINTS
- #include <trace/events/ufs.h>
-@@ -812,7 +813,12 @@ static void ufshcd_enable_run_stop_reg(struct ufs_hba *hba)
-  */
- static inline void ufshcd_hba_start(struct ufs_hba *hba)
- {
--	ufshcd_writel(hba, CONTROLLER_ENABLE, REG_CONTROLLER_ENABLE);
-+	u32 val = CONTROLLER_ENABLE;
-+
-+	if (ufshcd_crypto_enable(hba))
-+		val |= CRYPTO_GENERAL_ENABLE;
-+
-+	ufshcd_writel(hba, val, REG_CONTROLLER_ENABLE);
- }
- 
- /**
-@@ -2220,6 +2226,8 @@ static void ufshcd_prepare_req_desc_hdr(struct ufshcd_lrb *lrbp,
- 	struct utp_transfer_req_desc *req_desc = lrbp->utr_descriptor_ptr;
- 	u32 data_direction;
- 	u32 dword_0;
-+	u32 dword_1 = 0;
-+	u32 dword_3 = 0;
- 
- 	if (cmd_dir == DMA_FROM_DEVICE) {
- 		data_direction = UTP_DEVICE_TO_HOST;
-@@ -2238,9 +2246,17 @@ static void ufshcd_prepare_req_desc_hdr(struct ufshcd_lrb *lrbp,
- 		dword_0 |= UTP_REQ_DESC_INT_CMD;
- 
- 	/* Transfer request descriptor header fields */
-+#ifdef CONFIG_SCSI_UFS_CRYPTO
-+	if (lrbp->crypto_key_slot >= 0) {
-+		dword_0 |= UTP_REQ_DESC_CRYPTO_ENABLE_CMD;
-+		dword_0 |= lrbp->crypto_key_slot;
-+		dword_1 = lower_32_bits(lrbp->data_unit_num);
-+		dword_3 = upper_32_bits(lrbp->data_unit_num);
-+	}
-+#endif /* CONFIG_SCSI_UFS_CRYPTO */
-+
- 	req_desc->header.dword_0 = cpu_to_le32(dword_0);
--	/* dword_1 is reserved, hence it is set to 0 */
--	req_desc->header.dword_1 = 0;
-+	req_desc->header.dword_1 = cpu_to_le32(dword_1);
- 	/*
- 	 * assigning invalid value for command status. Controller
- 	 * updates OCS on command completion, with the command
-@@ -2248,8 +2264,7 @@ static void ufshcd_prepare_req_desc_hdr(struct ufshcd_lrb *lrbp,
- 	 */
- 	req_desc->header.dword_2 =
- 		cpu_to_le32(OCS_INVALID_COMMAND_STATUS);
--	/* dword_3 is reserved, hence it is set to 0 */
--	req_desc->header.dword_3 = 0;
-+	req_desc->header.dword_3 = cpu_to_le32(dword_3);
- 
- 	req_desc->prd_table_length = 0;
- }
-@@ -2504,6 +2519,9 @@ static int ufshcd_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
- 	lrbp->task_tag = tag;
- 	lrbp->lun = ufshcd_scsi_to_upiu_lun(cmd->device->lun);
- 	lrbp->intr_cmd = !ufshcd_is_intr_aggr_allowed(hba) ? true : false;
-+
-+	ufshcd_prepare_lrbp_crypto(hba, cmd, lrbp);
-+
- 	lrbp->req_abort_skip = false;
- 
- 	ufshcd_comp_scsi_upiu(hba, lrbp);
-@@ -2537,6 +2555,9 @@ static int ufshcd_compose_dev_cmd(struct ufs_hba *hba,
- 	lrbp->task_tag = tag;
- 	lrbp->lun = 0; /* device management cmd is not specific to any LUN */
- 	lrbp->intr_cmd = true; /* No interrupt aggregation */
-+#ifdef CONFIG_SCSI_UFS_CRYPTO
-+	lrbp->crypto_key_slot = -1; /* No crypto operations */
-+#endif
- 	hba->dev_cmd.type = cmd_type;
- 
- 	return ufshcd_comp_devman_upiu(hba, lrbp);
-@@ -4625,6 +4646,8 @@ static int ufshcd_slave_configure(struct scsi_device *sdev)
- 	if (ufshcd_is_rpm_autosuspend_allowed(hba))
- 		sdev->rpm_autosuspend = 1;
- 
-+	ufshcd_crypto_setup_rq_keyslot_manager(hba, q);
-+
- 	return 0;
- }
- 
-@@ -5905,6 +5928,9 @@ static int ufshcd_issue_devman_upiu_cmd(struct ufs_hba *hba,
- 	lrbp->task_tag = tag;
- 	lrbp->lun = 0;
- 	lrbp->intr_cmd = true;
-+#ifdef CONFIG_SCSI_UFS_CRYPTO
-+	lrbp->crypto_key_slot = -1; /* No crypto operations */
-+#endif
- 	hba->dev_cmd.type = cmd_type;
- 
- 	switch (hba->ufs_version) {
-@@ -8331,6 +8357,7 @@ EXPORT_SYMBOL_GPL(ufshcd_remove);
-  */
- void ufshcd_dealloc_host(struct ufs_hba *hba)
- {
-+	ufshcd_crypto_destroy_keyslot_manager(hba);
- 	scsi_host_put(hba->host);
- }
- EXPORT_SYMBOL_GPL(ufshcd_dealloc_host);
-@@ -8541,6 +8568,13 @@ int ufshcd_init(struct ufs_hba *hba, void __iomem *mmio_base, unsigned int irq)
- 	/* Reset the attached device */
- 	ufshcd_vops_device_reset(hba);
- 
-+	/* Init crypto */
-+	err = ufshcd_hba_init_crypto(hba);
-+	if (err) {
-+		dev_err(hba->dev, "crypto setup failed\n");
-+		goto out_remove_scsi_host;
-+	}
-+
- 	/* Host controller enable */
- 	err = ufshcd_hba_enable(hba);
- 	if (err) {
-diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-index e8f3127276abc..8de208b74f95f 100644
---- a/drivers/scsi/ufs/ufshcd.h
-+++ b/drivers/scsi/ufs/ufshcd.h
-@@ -183,6 +183,8 @@ struct ufs_pm_lvl_states {
-  * @intr_cmd: Interrupt command (doesn't participate in interrupt aggregation)
-  * @issue_time_stamp: time stamp for debug purposes
-  * @compl_time_stamp: time stamp for statistics
-+ * @crypto_key_slot: the key slot to use for inline crypto (-1 if none)
-+ * @data_unit_num: the data unit number for the first block for inline crypto
-  * @req_abort_skip: skip request abort task flag
-  */
- struct ufshcd_lrb {
-@@ -207,6 +209,10 @@ struct ufshcd_lrb {
- 	bool intr_cmd;
- 	ktime_t issue_time_stamp;
- 	ktime_t compl_time_stamp;
-+#ifdef CONFIG_SCSI_UFS_CRYPTO
-+	int crypto_key_slot;
-+	u64 data_unit_num;
-+#endif
- 
- 	bool req_abort_skip;
- };
+diff --git a/fs/proc_namespace.c b/fs/proc_namespace.c
+index 273ee82d8aa97..8bf195d3bda69 100644
+--- a/fs/proc_namespace.c
++++ b/fs/proc_namespace.c
+@@ -49,6 +49,7 @@ static int show_sb_opts(struct seq_file *m, struct super_block *sb)
+ 		{ SB_DIRSYNC, ",dirsync" },
+ 		{ SB_MANDLOCK, ",mand" },
+ 		{ SB_LAZYTIME, ",lazytime" },
++		{ SB_INLINECRYPT, ",inlinecrypt" },
+ 		{ 0, NULL }
+ 	};
+ 	const struct proc_fs_info *fs_infop;
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 4f6f59b4f22a8..38fc6c8d4f45b 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -1376,6 +1376,7 @@ extern int send_sigurg(struct fown_struct *fown);
+ #define SB_NODIRATIME	2048	/* Do not update directory access times */
+ #define SB_SILENT	32768
+ #define SB_POSIXACL	(1<<16)	/* VFS does not apply the umask */
++#define SB_INLINECRYPT	(1<<17)	/* Use blk-crypto for encrypted files */
+ #define SB_KERNMOUNT	(1<<22) /* this is a kern_mount call */
+ #define SB_I_VERSION	(1<<23) /* Update inode I_version field */
+ #define SB_LAZYTIME	(1<<25) /* Update the on-disk [acm]times lazily */
 -- 
 2.26.2.303.gf8c07b1a785-goog
 
