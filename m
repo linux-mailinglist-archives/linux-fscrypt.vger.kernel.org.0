@@ -2,203 +2,355 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EFBC1BF145
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 30 Apr 2020 09:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 740791BF76E
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 30 Apr 2020 14:00:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726481AbgD3HYh (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 30 Apr 2020 03:24:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38542 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726411AbgD3HYh (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 30 Apr 2020 03:24:37 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DD94A20838;
-        Thu, 30 Apr 2020 07:24:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588231476;
-        bh=B1510mH7/QkNFP5gDC7/BK6EbcgbEzV8MhuqKtudeLQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0jSbTpTIKAp8HftBanaummT3PLxHjd7KNLv7h+rLMtW46sSj4rCYu67IuaiurcWub
-         ndocTRCyPFh7Efb03EY75Tg1wlk8hu+ayQEYKpXdfI7SxyfnlakHfBB7OpKfdPw94L
-         V7tN58WoWf9C3V0q2eTm9gEr1x9xbLPnT2nk/B90=
-Date:   Thu, 30 Apr 2020 00:24:34 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
+        id S1726792AbgD3MAD (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 30 Apr 2020 08:00:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726515AbgD3MAC (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 30 Apr 2020 08:00:02 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88372C08E934
+        for <linux-fscrypt@vger.kernel.org>; Thu, 30 Apr 2020 05:00:02 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id x8so6225375qkf.3
+        for <linux-fscrypt@vger.kernel.org>; Thu, 30 Apr 2020 05:00:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=SWcUaa8xaK4mskFjxRTlaKiFOilJIo/rM/IkKWmjv2w=;
+        b=AOUWSzVaS8g80RhJS6/Q389sOhh0gYXe6ybTMLizqYBZJsK04/xSpBVW5KCTq7C4x6
+         YxKhacUi1HmLtLoJmZXvkUtAHOvAd3wJ91aYiut/V9aDvEzPU1CJ31s7Y1yu7nk7Ay6c
+         HEGmE0bTjN09Jg/rrw2f3hbYl3qLQVR4aFLMakH8aN9j+VQXm6CTWWMmakHqznJlMjrG
+         bPH/qFhsE0VMlJuMwDF74bOeX51j2ZfOptE1mQySFTQGwlKtIAynXABM+Iby05G2dmnS
+         sTxrS0gcLSQPnrSqLiSxwi2p7quLGgHLSViZs6Y7CaQ5s05V6XU5AihPLSC6ysqJu77Q
+         WjIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=SWcUaa8xaK4mskFjxRTlaKiFOilJIo/rM/IkKWmjv2w=;
+        b=jUGEKcBOxhOIO73ncvZVOVSN4AqObjn1PkOmCv0kiUiew1qvV/45PBS06q966UXRVa
+         93c1vpogI5adg8+tEccEfvRIgN8V3JBgH/t1XZCyKdL6v4S4Nf0g3E6FoyVE/Gmc9/n1
+         rVFfpoAAB0UDP047JhSG8H5iD553YZdu8WlY4ARiRi3SYmrTIsw0v8V3Zh/3mLqw72WE
+         1PsBqURpoTRR+GlGJXuqwcd8/d0mhNdwaXeUArdh8OcEeeRVTEKkBYD0rrvLYAwgSnVz
+         UkEjdtccc4sXpTEauwdPnJw/nQ/L4FPasHErAWwTsd7tfT4IPkoHPkMr9pGk3mvFCHXd
+         MO7w==
+X-Gm-Message-State: AGi0PuZu7TJMqVrQW9QTgTpz/YS5Yym2jTqrqoLD9+w7qVCusRFkHQN9
+        PRNHVdJehsVPhJ8vpwhZtlFjv4V8elk=
+X-Google-Smtp-Source: APiQypLGctjWHPFAS9lHtq8k6inhVjTQqrAaEAMFeqJy158Dvb8Y/EQHB3CXNMxGQ7dNfwRMKraTflhJh2g=
+X-Received: by 2002:a0c:b6d3:: with SMTP id h19mr2569133qve.175.1588248001408;
+ Thu, 30 Apr 2020 05:00:01 -0700 (PDT)
+Date:   Thu, 30 Apr 2020 11:59:47 +0000
+Message-Id: <20200430115959.238073-1-satyat@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.26.2.303.gf8c07b1a785-goog
+Subject: [PATCH v12 00/12] Inline Encryption Support
+From:   Satya Tangirala <satyat@google.com>
+To:     linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
         linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
-        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
+        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org
+Cc:     Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
         Kuohong Wang <kuohong.wang@mediatek.com>,
-        Kim Boojin <boojin.kim@samsung.com>
-Subject: Re: [PATCH v11 10/12] fscrypt: add inline encryption support
-Message-ID: <20200430072434.GD16238@sol.localdomain>
-References: <20200429072121.50094-1-satyat@google.com>
- <20200429072121.50094-11-satyat@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200429072121.50094-11-satyat@google.com>
+        Kim Boojin <boojin.kim@samsung.com>,
+        Satya Tangirala <satyat@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 07:21:19AM +0000, Satya Tangirala wrote:
-> +/**
-> + * fscrypt_inode_uses_inline_crypto - test whether an inode uses inline
-> + *				      encryption
-> + * @inode: an inode
+This patch series adds support for Inline Encryption to the block layer,
+UFS, fscrypt, f2fs and ext4.
 
-I think this should also mention that the key must be setup, like
+Note that the patches in this series for the block layer (i.e. patches 1,
+2, 3, 4 and 5) can be applied independently of the subsequent patches in
+this series.
 
- * @inode: an inode.  If encrypted, its key must be set up.
+Inline Encryption hardware allows software to specify an encryption context
+(an encryption key, crypto algorithm, data unit num, data unit size, etc.)
+along with a data transfer request to a storage device, and the inline
+encryption hardware will use that context to en/decrypt the data. The
+inline encryption hardware is part of the storage device, and it
+conceptually sits on the data path between system memory and the storage
+device. Inline Encryption hardware has become increasingly common, and we
+want to support it in the kernel.
 
-Likewise in fscrypt_inode_uses_fs_layer_crypto().
+Inline Encryption hardware implementations often function around the
+concept of a limited number of "keyslots", which can hold an encryption
+context each. The storage device can be directed to en/decrypt any
+particular request with the encryption context stored in any particular
+keyslot.
 
-> + *
-> + * Return: true if the inode requires file contents encryption and if the
-> + *	   encryption should be done in the block layer via blk-crypto rather
-> + *	   than in the filesystem layer.
-> + */
-> +bool fscrypt_inode_uses_inline_crypto(const struct inode *inode)
-> +{
-> +	return fscrypt_needs_contents_encryption(inode) &&
-> +	       inode->i_crypt_info->ci_inlinecrypt;
-> +}
-> +EXPORT_SYMBOL_GPL(fscrypt_inode_uses_inline_crypto);
-> +
-> +/**
-> + * fscrypt_inode_uses_fs_layer_crypto - test whether an inode uses fs-layer
-> + *					encryption
-> + * @inode: an inode
-> + *
-> + * Return: true if the inode requires file contents encryption and if the
-> + *	   encryption should be done in the filesystem layer rather than in the
-> + *	   block layer via blk-crypto.
-> + */
-> +bool fscrypt_inode_uses_fs_layer_crypto(const struct inode *inode)
-> +{
-> +	return fscrypt_needs_contents_encryption(inode) &&
-> +	       !inode->i_crypt_info->ci_inlinecrypt;
-> +}
-> +EXPORT_SYMBOL_GPL(fscrypt_inode_uses_fs_layer_crypto);
+Patch 1 documents the whole series.
 
-It might also make sense to implement these as inline functions in fscrypt.h:
+Patch 2 introduces a Keyslot Manager to efficiently manage keyslots.
+The keyslot manager also functions as the interface that blk-crypto
+(introduced in Patch 3), will use to program keys into inline encryption
+hardware. For more information on the Keyslot Manager, refer to
+documentation found in block/keyslot-manager.c and linux/keyslot-manager.h.
 
-diff --git a/fs/crypto/inline_crypt.c b/fs/crypto/inline_crypt.c
-index 0676832817a74a..6d44d89087b4e5 100644
---- a/fs/crypto/inline_crypt.c
-+++ b/fs/crypto/inline_crypt.c
-@@ -178,37 +178,10 @@ void fscrypt_destroy_inline_crypt_key(struct fscrypt_prepared_key *prep_key)
- 	}
- }
- 
--/**
-- * fscrypt_inode_uses_inline_crypto - test whether an inode uses inline
-- *				      encryption
-- * @inode: an inode
-- *
-- * Return: true if the inode requires file contents encryption and if the
-- *	   encryption should be done in the block layer via blk-crypto rather
-- *	   than in the filesystem layer.
-- */
--bool fscrypt_inode_uses_inline_crypto(const struct inode *inode)
--{
--	return fscrypt_needs_contents_encryption(inode) &&
--	       inode->i_crypt_info->ci_inlinecrypt;
--}
--EXPORT_SYMBOL_GPL(fscrypt_inode_uses_inline_crypto);
--
--/**
-- * fscrypt_inode_uses_fs_layer_crypto - test whether an inode uses fs-layer
-- *					encryption
-- * @inode: an inode
-- *
-- * Return: true if the inode requires file contents encryption and if the
-- *	   encryption should be done in the filesystem layer rather than in the
-- *	   block layer via blk-crypto.
-- */
--bool fscrypt_inode_uses_fs_layer_crypto(const struct inode *inode)
-+bool __fscrypt_inode_uses_inline_crypto(const struct inode *inode)
- {
--	return fscrypt_needs_contents_encryption(inode) &&
--	       !inode->i_crypt_info->ci_inlinecrypt;
-+	return inode->i_crypt_info->ci_inlinecrypt;
- }
--EXPORT_SYMBOL_GPL(fscrypt_inode_uses_fs_layer_crypto);
- 
- static void fscrypt_generate_dun(const struct fscrypt_info *ci, u64 lblk_num,
- 				 u64 dun[BLK_CRYPTO_DUN_ARRAY_SIZE])
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index e02820b8e981e1..df30d3dde6ce02 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -508,9 +508,7 @@ static inline void fscrypt_set_ops(struct super_block *sb,
- 
- /* inline_crypt.c */
- #ifdef CONFIG_FS_ENCRYPTION_INLINE_CRYPT
--extern bool fscrypt_inode_uses_inline_crypto(const struct inode *inode);
--
--extern bool fscrypt_inode_uses_fs_layer_crypto(const struct inode *inode);
-+extern bool __fscrypt_inode_uses_inline_crypto(const struct inode *inode);
- 
- extern void fscrypt_set_bio_crypt_ctx(struct bio *bio,
- 				      const struct inode *inode,
-@@ -527,16 +525,11 @@ extern bool fscrypt_mergeable_bio_bh(struct bio *bio,
- 				     const struct buffer_head *next_bh);
- 
- #else /* CONFIG_FS_ENCRYPTION_INLINE_CRYPT */
--static inline bool fscrypt_inode_uses_inline_crypto(const struct inode *inode)
-+static inline bool __fscrypt_inode_uses_inline_crypto(const struct inode *inode)
- {
- 	return false;
- }
- 
--static inline bool fscrypt_inode_uses_fs_layer_crypto(const struct inode *inode)
--{
--	return fscrypt_needs_contents_encryption(inode);
--}
--
- static inline void fscrypt_set_bio_crypt_ctx(struct bio *bio,
- 					     const struct inode *inode,
- 					     u64 first_lblk, gfp_t gfp_mask) { }
-@@ -560,6 +553,36 @@ static inline bool fscrypt_mergeable_bio_bh(struct bio *bio,
- }
- #endif /* !CONFIG_FS_ENCRYPTION_INLINE_CRYPT */
- 
-+/**
-+ * fscrypt_inode_uses_inline_crypto - test whether an inode uses inline
-+ *				      encryption
-+ * @inode: an inode.  If encrypted, its key must be set up.
-+ *
-+ * Return: true if the inode requires file contents encryption and if the
-+ *	   encryption should be done in the block layer via blk-crypto rather
-+ *	   than in the filesystem layer.
-+ */
-+static inline bool fscrypt_inode_uses_inline_crypto(const struct inode *inode)
-+{
-+	return fscrypt_needs_contents_encryption(inode) &&
-+	       __fscrypt_inode_uses_inline_crypto(inode);
-+}
-+
-+/**
-+ * fscrypt_inode_uses_fs_layer_crypto - test whether an inode uses fs-layer
-+ *					encryption
-+ * @inode: an inode.  If encrypted, its key must be set up.
-+ *
-+ * Return: true if the inode requires file contents encryption and if the
-+ *	   encryption should be done in the filesystem layer rather than in the
-+ *	   block layer via blk-crypto.
-+ */
-+static inline bool fscrypt_inode_uses_fs_layer_crypto(const struct inode *inode)
-+{
-+	return fscrypt_needs_contents_encryption(inode) &&
-+	       !__fscrypt_inode_uses_inline_crypto(inode);
-+}
-+
- /**
-  * fscrypt_require_key - require an inode's encryption key
-  * @inode: the inode we need the key for
+Patch 3 adds the block layer changes for inline encryption support. It
+introduces struct bio_crypt_ctx, and a ptr to one in struct bio, which
+allows struct bio to represent an encryption context that can be passed
+down the storage stack from the filesystem layer to the storage driver.
+
+Patch 4 precludes inline encryption support in a device whenever it
+supports blk-integrity, because there is currently no known hardware that
+supports both features, and it is not completely straightfoward to support
+both of them properly, and doing it improperly might result in leaks of
+information about the plaintext.
+
+Patch 5 introduces blk-crypto-fallback - a kernel crypto API fallback for
+blk-crypto to use when inline encryption hardware isn't present. This
+allows filesystems to specify encryption contexts for bios without
+having to worry about whether the underlying hardware has inline
+encryption support, and allows for testing without real hardware inline
+encryption support. This fallback is separately configurable from
+blk-crypto, and can be disabled if desired while keeping inline
+encryption support. It may also be possible to remove file content
+en/decryption from fscrypt and simply use blk-crypto-fallback in a future
+patch. For more details on blk-crypto and the fallback, refer to
+Documentation/block/inline-encryption.rst.
+
+Patches 6-8 add support for inline encryption into the UFS driver according
+to the JEDEC UFS HCI v2.1 specification. Inline encryption support for
+other drivers (like eMMC) may be added in the same way - the device driver
+should set up a Keyslot Manager in the device's request_queue (refer to
+the UFS crypto additions in ufshcd-crypto.c and ufshcd.c for an example).
+
+Patch 9 adds the SB_INLINECRYPT mount flag to the fs layer, which
+filesystems must set to indicate that they want to use blk-crypto for
+en/decryption of file contents.
+
+Patch 10 adds support to fscrypt - to use inline encryption with fscrypt,
+the filesystem must be mounted with '-o inlinecrypt' - when this option is
+specified, the contents of any AES-256-XTS encrypted file will be
+encrypted using blk-crypto.
+
+Patches 11 and 12 add support to f2fs and ext4 respectively, so that we
+have a complete stack that can make use of inline encryption.
+
+The patches were tested running kvm-xfstests, by specifying the introduced
+"inlinecrypt" mount option, so that en/decryption happens with the
+blk-crypto fallback. The patches were also tested on a Pixel 4 with UFS
+hardware that has support for inline encryption.
+
+There have been a few patch sets addressing Inline Encryption Support in
+the past. Briefly, this patch set differs from those as follows:
+
+1) "crypto: qce: ice: Add support for Inline Crypto Engine"
+is specific to certain hardware, while our patch set's Inline
+Encryption support for UFS is implemented according to the JEDEC UFS
+specification.
+
+2) "scsi: ufs: UFS Host Controller crypto changes" registers inline
+encryption support as a kernel crypto algorithm. Our patch views inline
+encryption as being fundamentally different from a generic crypto
+provider (in that inline encryption is tied to a device), and so does
+not use the kernel crypto API to represent inline encryption hardware.
+
+3) "scsi: ufs: add real time/inline crypto support to UFS HCD" requires
+the device mapper to work - our patch does not.
+
+Changes v11 => v12:
+ - Inlined some fscrypt functions
+ - Minor cleanups and improved comments
+
+Changes v10 => v11:
+ - We now allocate a new bio_crypt_ctx for each request instead of
+   pulling and reusing the one in the bio inserted into the request. The
+   bio_crypt_ctx of a bio is freed after the bio is ended.
+ - Make each blk_ksm_keyslot store a pointer to the blk_crypto_key
+   instead of a copy of the blk_crypto_key, so that each blk_crypto_key
+   will have its own keyslot. We also won't need to compute the siphash
+   for a blk_crypto_key anymore.
+ - Minor cleanups
+
+Changes v9 => v10:
+ - Incorporate Eric's fix for allowing en/decryption to happen as usual via
+   fscrypt in the case that hardware doesn't support the desired crypto
+   configuration, but blk-crypto-fallback is disabled. (Introduce
+   struct blk_crypto_config and blk_crypto_config_supported for fscrypt
+   to call, to check that either blk-crypto-fallback is enabled or the
+   device supports the crypto configuration).
+ - Update docs
+ - Lots of cleanups
+
+Changes v8 => v9:
+ - Don't open code bio_has_crypt_ctx into callers of blk-crypto functions.
+ - Lots of cleanups
+
+Changes v7 => v8:
+ - Pass a struct blk_ksm_keyslot * around instead of slot numbers which
+   simplifies some functions and passes around arguments with better types
+ - Make bios with no encryption context avoid making calls into blk-crypto
+   by checking for the presence of bi_crypt_context before making the call
+ - Make blk-integrity preclude inline encryption support at probe time
+ - Many many cleanups
+
+Changes v6 => v7:
+ - Keyslot management is now done on a per-request basis rather than a
+   per-bio basis.
+ - Storage drivers can now specify the maximum number of bytes they
+   can accept for the data unit number (DUN) for each crypto algorithm,
+   and upper layers can specify the minimum number of bytes of DUN they
+   want with the blk_crypto_key they send with the bio - a driver is
+   only considered to support a blk_crypto_key if the driver supports at
+   least as many DUN bytes as the upper layer wants. This is necessary
+   because storage drivers may not support as many bytes as the
+   algorithm specification dictates (for e.g. UFS only supports 8 byte
+   DUNs for AES-256-XTS, even though the algorithm specification
+   says DUNs are 16 bytes long).
+ - Introduce SB_INLINECRYPT to keep track of whether inline encryption
+   is enabled for a filesystem (instead of using an fscrypt_operation).
+ - Expose keyslot manager declaration and embed it within ufs_hba to
+   clean up code.
+ - Make blk-crypto preclude blk-integrity.
+ - Some bug fixes
+ - Introduce UFSHCD_QUIRK_BROKEN_CRYPTO for UFS drivers that don't
+   support inline encryption (yet)
+
+Changes v5 => v6:
+ - Blk-crypto's kernel crypto API fallback is no longer restricted to
+   8-byte DUNs. It's also now separately configurable from blk-crypto, and
+   can be disabled entirely, while still allowing the kernel to use inline
+   encryption hardware. Further, struct bio_crypt_ctx takes up less space,
+   and no longer contains the information needed by the crypto API
+   fallback - the fallback allocates the required memory when necessary.
+ - Blk-crypto now supports all file content encryption modes supported by
+   fscrypt.
+ - Fixed bio merging logic in blk-merge.c
+ - Fscrypt now supports inline encryption with the direct key policy, since
+   blk-crypto now has support for larger DUNs.
+ - Keyslot manager now uses a hashtable to lookup which keyslot contains
+   any particular key (thanks Eric!)
+ - Fscrypt support for inline encryption now handles filesystems with
+   multiple underlying block devices (thanks Eric!)
+ - Numerous cleanups
+
+Changes v4 => v5:
+ - The fscrypt patch has been separated into 2. The first adds support
+   for the IV_INO_LBLK_64 policy (which was called INLINE_CRYPT_OPTIMIZED
+   in past versions of this series). This policy is now purely an on disk
+   format, and doesn't dictate whether blk-crypto is used for file content
+   encryption or not. Instead, this is now decided based on the
+   "inlinecrypt" mount option.
+ - Inline crypto key eviction is now handled by blk-crypto instead of
+   fscrypt.
+ - More refactoring.
+
+Changes v3 => v4:
+ - Fixed the issue with allocating crypto_skcipher in
+   blk_crypto_keyslot_program.
+ - bio_crypto_alloc_ctx is now mempool backed.
+ - In f2fs, a bio's bi_crypt_context is now set up when the
+   bio is allocated, rather than just before the bio is
+   submitted - this fixes bugs in certain cases, like when an
+   encrypted block is being moved without decryption.
+ - Lots of refactoring and cleanup of blk-crypto - thanks Eric!
+
+Changes v2 => v3:
+ - Overhauled keyslot manager's get keyslot logic and optimized LRU.
+ - Block crypto en/decryption fallback now supports data unit sizes
+   that divide the bvec length (instead of requiring each bvec's length
+   to be the same as the data unit size).
+ - fscrypt master key is now keyed additionally by super_block and
+   ci_ctfm != NULL.
+ - all references of "hw encryption" are replaced by inline encryption.
+ - address various other review comments from Eric.
+
+Changes v1 => v2:
+ - Block layer and UFS changes are split into 3 patches each.
+ - We now only have a ptr to a struct bio_crypt_ctx in struct bio, instead
+   of the struct itself.
+ - struct bio_crypt_ctx no longer has flags.
+ - blk-crypto now correctly handles the case when it fails to init
+   (because of insufficient memory), but kernel continues to boot.
+ - ufshcd-crypto now works on big endian cpus.
+ - Many cleanups.
+
+Eric Biggers (1):
+  ext4: add inline encryption support
+
+Satya Tangirala (11):
+  Documentation: Document the blk-crypto framework
+  block: Keyslot Manager for Inline Encryption
+  block: Inline encryption support for blk-mq
+  block: Make blk-integrity preclude hardware inline encryption
+  block: blk-crypto-fallback for Inline Encryption
+  scsi: ufs: UFS driver v2.1 spec crypto additions
+  scsi: ufs: UFS crypto API
+  scsi: ufs: Add inline encryption support to UFS
+  fs: introduce SB_INLINECRYPT
+  fscrypt: add inline encryption support
+  f2fs: add inline encryption support
+
+ Documentation/admin-guide/ext4.rst        |   6 +
+ Documentation/block/index.rst             |   1 +
+ Documentation/block/inline-encryption.rst | 260 +++++++++
+ Documentation/filesystems/f2fs.rst        |   7 +-
+ block/Kconfig                             |  17 +
+ block/Makefile                            |   2 +
+ block/bio-integrity.c                     |   3 +
+ block/bio.c                               |   6 +
+ block/blk-core.c                          |  21 +-
+ block/blk-crypto-fallback.c               | 655 ++++++++++++++++++++++
+ block/blk-crypto-internal.h               | 201 +++++++
+ block/blk-crypto.c                        | 401 +++++++++++++
+ block/blk-integrity.c                     |   7 +
+ block/blk-map.c                           |   1 +
+ block/blk-merge.c                         |  11 +
+ block/blk-mq.c                            |  14 +
+ block/blk.h                               |   2 +
+ block/bounce.c                            |   2 +
+ block/keyslot-manager.c                   | 397 +++++++++++++
+ drivers/md/dm.c                           |   3 +
+ drivers/scsi/ufs/Kconfig                  |   9 +
+ drivers/scsi/ufs/Makefile                 |   1 +
+ drivers/scsi/ufs/ufshcd-crypto.c          | 226 ++++++++
+ drivers/scsi/ufs/ufshcd-crypto.h          |  60 ++
+ drivers/scsi/ufs/ufshcd.c                 |  46 +-
+ drivers/scsi/ufs/ufshcd.h                 |  24 +
+ drivers/scsi/ufs/ufshci.h                 |  67 ++-
+ fs/buffer.c                               |   7 +-
+ fs/crypto/Kconfig                         |   6 +
+ fs/crypto/Makefile                        |   1 +
+ fs/crypto/bio.c                           |  50 ++
+ fs/crypto/crypto.c                        |   2 +-
+ fs/crypto/fname.c                         |   4 +-
+ fs/crypto/fscrypt_private.h               | 120 +++-
+ fs/crypto/inline_crypt.c                  | 339 +++++++++++
+ fs/crypto/keyring.c                       |   4 +-
+ fs/crypto/keysetup.c                      |  92 ++-
+ fs/crypto/keysetup_v1.c                   |  16 +-
+ fs/ext4/inode.c                           |   4 +-
+ fs/ext4/page-io.c                         |   6 +-
+ fs/ext4/readpage.c                        |  11 +-
+ fs/ext4/super.c                           |   9 +
+ fs/f2fs/compress.c                        |   2 +-
+ fs/f2fs/data.c                            |  68 ++-
+ fs/f2fs/super.c                           |  32 ++
+ fs/proc_namespace.c                       |   1 +
+ include/linux/blk-crypto.h                | 122 ++++
+ include/linux/blk_types.h                 |   6 +
+ include/linux/blkdev.h                    |  41 ++
+ include/linux/fs.h                        |   1 +
+ include/linux/fscrypt.h                   |  82 +++
+ include/linux/keyslot-manager.h           | 106 ++++
+ 52 files changed, 3492 insertions(+), 90 deletions(-)
+ create mode 100644 Documentation/block/inline-encryption.rst
+ create mode 100644 block/blk-crypto-fallback.c
+ create mode 100644 block/blk-crypto-internal.h
+ create mode 100644 block/blk-crypto.c
+ create mode 100644 block/keyslot-manager.c
+ create mode 100644 drivers/scsi/ufs/ufshcd-crypto.c
+ create mode 100644 drivers/scsi/ufs/ufshcd-crypto.h
+ create mode 100644 fs/crypto/inline_crypt.c
+ create mode 100644 include/linux/blk-crypto.h
+ create mode 100644 include/linux/keyslot-manager.h
+
+-- 
+2.26.2.303.gf8c07b1a785-goog
 
