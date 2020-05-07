@@ -2,36 +2,39 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE8361C8420
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  7 May 2020 10:02:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 364641C8421
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  7 May 2020 10:02:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725809AbgEGICG (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        id S1725834AbgEGICG (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
         Thu, 7 May 2020 04:02:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46796 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:46808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725783AbgEGICF (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 7 May 2020 04:02:05 -0400
+        id S1725802AbgEGICG (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 7 May 2020 04:02:06 -0400
 Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2E55D20753;
+        by mail.kernel.org (Postfix) with ESMTPSA id 789012083B;
         Thu,  7 May 2020 08:02:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1588838525;
-        bh=8lxPu1GJKKrJRy1UQ0dnX2QT0LRqToRw9cNPct9sjzk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=IU4KDFFnoexDsKP4WOWlZEb7iBX27h0ePrYPQ6zhAYK/UEQxP4R5NDjaEMXfrGnrQ
-         z13uPdrFA3/0DYgUkfGM6LW/AHQXyC3ooKXZf6WX4N3xNP4PyxjxBuLc99f8b4CGom
-         OHSum1KEDBr1tX4L9OJ5SIY65QHyJQM+jIejr3bs=
+        bh=5KW/p1GbhRBZezjeN6Jxtl3o/jDLJ8jnDdhbn7WS9zI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=SUI0uGI4UpXv2rTaeWxVIAmqMXoCfCwc+fCMmUclotlv9JZ167jjDT8HxOo4WNyGT
+         WaZijTF07p1quUYHyyg8X5af/6RawBkPjtrC5l97K0yz7hZW0CZMn6ChGBhKpHVyrR
+         r80zLDH/MSgNwOLAUJahxyoPU5u6SKiElgcwXrgo=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-f2fs-devel@lists.sourceforge.net
 Cc:     linux-fscrypt@vger.kernel.org,
         Daniel Rosenberg <drosen@google.com>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>
-Subject: [PATCH 0/4] f2fs: rework filename handling
-Date:   Thu,  7 May 2020 00:59:01 -0700
-Message-Id: <20200507075905.953777-1-ebiggers@kernel.org>
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        stable@vger.kernel.org
+Subject: [PATCH 1/4] f2fs: don't leak filename in f2fs_try_convert_inline_dir()
+Date:   Thu,  7 May 2020 00:59:02 -0700
+Message-Id: <20200507075905.953777-2-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200507075905.953777-1-ebiggers@kernel.org>
+References: <20200507075905.953777-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-fscrypt-owner@vger.kernel.org
@@ -39,35 +42,46 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-This patchset reworks f2fs's handling of filenames to make it much
-easier to correctly implement all combinations of normal, encrypted,
-casefolded, and encrypted+casefolded directories.  It also optimizes all
-filesystem operations to compute the dirhash and casefolded name only
-once, rather than once per directory level or directory block.
+From: Eric Biggers <ebiggers@google.com>
 
-Patch 4 is RFC and shows how we can add support for encrypted+casefolded
-directories fairly easily after this rework -- including support for
-roll-forward recovery.  (It's incomplete as it doesn't include the
-needed dentry_ops -- those can be found in Daniel's patchset
-https://lkml.kernel.org/r/20200307023611.204708-1-drosen@google.com)
+We need to call fscrypt_free_filename() to free the memory allocated by
+fscrypt_setup_filename().
 
-So far this is only lightly tested, e.g. with the xfstests in the
-'encrypt' and 'casefold' groups.  I haven't tested patch 4 yet.
+Fixes: b06af2aff28b ("f2fs: convert inline_dir early before starting rename")
+Cc: <stable@vger.kernel.org> # v5.6+
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ fs/f2fs/inline.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Eric Biggers (4):
-  f2fs: don't leak filename in f2fs_try_convert_inline_dir()
-  f2fs: split f2fs_d_compare() from f2fs_match_name()
-  f2fs: rework filename handling
-  f2fs: Handle casefolding with Encryption (INCOMPLETE)
-
- fs/f2fs/dir.c      | 415 +++++++++++++++++++++++++++------------------
- fs/f2fs/f2fs.h     |  85 +++++++---
- fs/f2fs/hash.c     |  87 +++++-----
- fs/f2fs/inline.c   |  49 +++---
- fs/f2fs/namei.c    |   6 +-
- fs/f2fs/recovery.c |  61 +++++--
- 6 files changed, 430 insertions(+), 273 deletions(-)
-
+diff --git a/fs/f2fs/inline.c b/fs/f2fs/inline.c
+index 4167e540815185..59a4b7ff11e17a 100644
+--- a/fs/f2fs/inline.c
++++ b/fs/f2fs/inline.c
+@@ -559,12 +559,12 @@ int f2fs_try_convert_inline_dir(struct inode *dir, struct dentry *dentry)
+ 	ipage = f2fs_get_node_page(sbi, dir->i_ino);
+ 	if (IS_ERR(ipage)) {
+ 		err = PTR_ERR(ipage);
+-		goto out;
++		goto out_fname;
+ 	}
+ 
+ 	if (f2fs_has_enough_room(dir, ipage, &fname)) {
+ 		f2fs_put_page(ipage, 1);
+-		goto out;
++		goto out_fname;
+ 	}
+ 
+ 	inline_dentry = inline_data_addr(dir, ipage);
+@@ -572,6 +572,8 @@ int f2fs_try_convert_inline_dir(struct inode *dir, struct dentry *dentry)
+ 	err = do_convert_inline_dir(dir, ipage, inline_dentry);
+ 	if (!err)
+ 		f2fs_put_page(ipage, 1);
++out_fname:
++	fscrypt_free_filename(&fname);
+ out:
+ 	f2fs_unlock_op(sbi);
+ 	return err;
 -- 
 2.26.2
 
