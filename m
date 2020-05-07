@@ -2,45 +2,36 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46BDA1C0D95
-	for <lists+linux-fscrypt@lfdr.de>; Fri,  1 May 2020 06:52:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE8361C8420
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  7 May 2020 10:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728238AbgEAEwP (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 1 May 2020 00:52:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57416 "EHLO mail.kernel.org"
+        id S1725809AbgEGICG (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 7 May 2020 04:02:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728191AbgEAEwN (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 1 May 2020 00:52:13 -0400
+        id S1725783AbgEGICF (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 7 May 2020 04:02:05 -0400
 Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 221772137B;
-        Fri,  1 May 2020 04:52:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E55D20753;
+        Thu,  7 May 2020 08:02:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588308731;
-        bh=ThubDx8lS+9qy6C5i66Hv0/3J2vgXwGbRFTr4ilYjZQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WIBWG6GRWYXeYnxJUaEOBdBt+3gPHKZW5Hy7J7pDG84r3PXZi1vIGvuvPpXRPQn2V
-         u2vkyLp1ZPB7I+ERGl5i3g8NY0NFdEJAfAt2gDQJq38NCIq/vZFylw2ouLiuQYtn2c
-         WURCqPWG10B6fNQmDkDbYw1Ao6nCtz1FFkV8Z9w0=
+        s=default; t=1588838525;
+        bh=8lxPu1GJKKrJRy1UQ0dnX2QT0LRqToRw9cNPct9sjzk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=IU4KDFFnoexDsKP4WOWlZEb7iBX27h0ePrYPQ6zhAYK/UEQxP4R5NDjaEMXfrGnrQ
+         z13uPdrFA3/0DYgUkfGM6LW/AHQXyC3ooKXZf6WX4N3xNP4PyxjxBuLc99f8b4CGom
+         OHSum1KEDBr1tX4L9OJ5SIY65QHyJQM+jIejr3bs=
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-scsi@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Cc:     linux-block@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Andy Gross <agross@kernel.org>,
-        Avri Altman <avri.altman@wdc.com>,
-        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Can Guo <cang@codeaurora.org>,
-        Elliot Berman <eberman@codeaurora.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Satya Tangirala <satyat@google.com>
-Subject: [RFC PATCH v4 4/4] scsi: ufs-qcom: add Inline Crypto Engine support
-Date:   Thu, 30 Apr 2020 21:51:11 -0700
-Message-Id: <20200501045111.665881-5-ebiggers@kernel.org>
+To:     linux-f2fs-devel@lists.sourceforge.net
+Cc:     linux-fscrypt@vger.kernel.org,
+        Daniel Rosenberg <drosen@google.com>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>
+Subject: [PATCH 0/4] f2fs: rework filename handling
+Date:   Thu,  7 May 2020 00:59:01 -0700
+Message-Id: <20200507075905.953777-1-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501045111.665881-1-ebiggers@kernel.org>
-References: <20200501045111.665881-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-fscrypt-owner@vger.kernel.org
@@ -48,439 +39,35 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+This patchset reworks f2fs's handling of filenames to make it much
+easier to correctly implement all combinations of normal, encrypted,
+casefolded, and encrypted+casefolded directories.  It also optimizes all
+filesystem operations to compute the dirhash and casefolded name only
+once, rather than once per directory level or directory block.
 
-Add support for Qualcomm Inline Crypto Engine (ICE) to ufs-qcom.
+Patch 4 is RFC and shows how we can add support for encrypted+casefolded
+directories fairly easily after this rework -- including support for
+roll-forward recovery.  (It's incomplete as it doesn't include the
+needed dentry_ops -- those can be found in Daniel's patchset
+https://lkml.kernel.org/r/20200307023611.204708-1-drosen@google.com)
 
-The standards-compliant parts, such as querying the crypto capabilities
-and enabling crypto for individual UFS requests, are already handled by
-ufshcd-crypto.c, which itself is wired into the blk-crypto framework.
-However, ICE requires vendor-specific init, enable, and resume logic,
-and it requires that keys be programmed and evicted by vendor-specific
-SMC calls.  Make the ufs-qcom driver handle these details.
+So far this is only lightly tested, e.g. with the xfstests in the
+'encrypt' and 'casefold' groups.  I haven't tested patch 4 yet.
 
-I tested this on Dragonboard 845c, which is a publicly available
-development board that uses the Snapdragon 845 SoC and runs the upstream
-Linux kernel.  This is the same SoC used in the Pixel 3 and Pixel 3 XL
-phones.  This testing included (among other things) verifying that the
-expected ciphertext was produced, both manually using ext4 encryption
-and automatically using a block layer self-test I've written.
+Eric Biggers (4):
+  f2fs: don't leak filename in f2fs_try_convert_inline_dir()
+  f2fs: split f2fs_d_compare() from f2fs_match_name()
+  f2fs: rework filename handling
+  f2fs: Handle casefolding with Encryption (INCOMPLETE)
 
-This driver also works nearly as-is on Snapdragon 765 and Snapdragon
-865, which are very recent SoCs, having just been announced in Dec 2019
-(though these newer SoCs currently lack upstream kernel support).
+ fs/f2fs/dir.c      | 415 +++++++++++++++++++++++++++------------------
+ fs/f2fs/f2fs.h     |  85 +++++++---
+ fs/f2fs/hash.c     |  87 +++++-----
+ fs/f2fs/inline.c   |  49 +++---
+ fs/f2fs/namei.c    |   6 +-
+ fs/f2fs/recovery.c |  61 +++++--
+ 6 files changed, 430 insertions(+), 273 deletions(-)
 
-This is based very loosely on the vendor-provided driver in the kernel
-source code for the Pixel 3, but I've greatly simplified it.  Also, for
-now I've only included support for major version 3 of ICE, since that's
-all I have the hardware to test with the mainline kernel.  Plus it
-appears that version 3 is easier to use than older versions of ICE.
-
-For now, only allow using AES-256-XTS.  The hardware also declares
-support for AES-128-XTS, AES-{128,256}-ECB, and AES-{128,256}-CBC
-(BitLocker variant).  But none of these others are really useful, and
-they'd need to be individually tested to be sure they worked properly.
-
-This commit also changes the name of the loadable module from "ufs-qcom"
-to "ufs_qcom", as this is necessary to compile it from multiple source
-files (unless we were to rename ufs-qcom.c).
-
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- MAINTAINERS                     |   2 +-
- drivers/scsi/ufs/Kconfig        |   1 +
- drivers/scsi/ufs/Makefile       |   4 +-
- drivers/scsi/ufs/ufs-qcom-ice.c | 245 ++++++++++++++++++++++++++++++++
- drivers/scsi/ufs/ufs-qcom.c     |  12 +-
- drivers/scsi/ufs/ufs-qcom.h     |  27 ++++
- 6 files changed, 288 insertions(+), 3 deletions(-)
- create mode 100644 drivers/scsi/ufs/ufs-qcom-ice.c
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 26f281d9f32a4a..cab5fe76784592 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2236,7 +2236,7 @@ F:	drivers/pci/controller/dwc/pcie-qcom.c
- F:	drivers/phy/qualcomm/
- F:	drivers/power/*/msm*
- F:	drivers/reset/reset-qcom-*
--F:	drivers/scsi/ufs/ufs-qcom.*
-+F:	drivers/scsi/ufs/ufs-qcom*
- F:	drivers/spi/spi-geni-qcom.c
- F:	drivers/spi/spi-qcom-qspi.c
- F:	drivers/spi/spi-qup.c
-diff --git a/drivers/scsi/ufs/Kconfig b/drivers/scsi/ufs/Kconfig
-index 5ed3f209f88100..c1a94d99e161ee 100644
---- a/drivers/scsi/ufs/Kconfig
-+++ b/drivers/scsi/ufs/Kconfig
-@@ -99,6 +99,7 @@ config SCSI_UFS_DWC_TC_PLATFORM
- config SCSI_UFS_QCOM
- 	tristate "QCOM specific hooks to UFS controller platform driver"
- 	depends on SCSI_UFSHCD_PLATFORM && ARCH_QCOM
-+	select QCOM_SCM
- 	select RESET_CONTROLLER
- 	help
- 	  This selects the QCOM specific additions to UFSHCD platform driver.
-diff --git a/drivers/scsi/ufs/Makefile b/drivers/scsi/ufs/Makefile
-index 197e178f44bce3..13fda1b697b2a2 100644
---- a/drivers/scsi/ufs/Makefile
-+++ b/drivers/scsi/ufs/Makefile
-@@ -3,7 +3,9 @@
- obj-$(CONFIG_SCSI_UFS_DWC_TC_PCI) += tc-dwc-g210-pci.o ufshcd-dwc.o tc-dwc-g210.o
- obj-$(CONFIG_SCSI_UFS_DWC_TC_PLATFORM) += tc-dwc-g210-pltfrm.o ufshcd-dwc.o tc-dwc-g210.o
- obj-$(CONFIG_SCSI_UFS_CDNS_PLATFORM) += cdns-pltfrm.o
--obj-$(CONFIG_SCSI_UFS_QCOM) += ufs-qcom.o
-+obj-$(CONFIG_SCSI_UFS_QCOM) += ufs_qcom.o
-+ufs_qcom-y += ufs-qcom.o
-+ufs_qcom-$(CONFIG_SCSI_UFS_CRYPTO) += ufs-qcom-ice.o
- obj-$(CONFIG_SCSI_UFSHCD) += ufshcd-core.o
- ufshcd-core-y				+= ufshcd.o ufs-sysfs.o
- ufshcd-core-$(CONFIG_SCSI_UFS_BSG)	+= ufs_bsg.o
-diff --git a/drivers/scsi/ufs/ufs-qcom-ice.c b/drivers/scsi/ufs/ufs-qcom-ice.c
-new file mode 100644
-index 00000000000000..9e837fdcb0ac2b
---- /dev/null
-+++ b/drivers/scsi/ufs/ufs-qcom-ice.c
-@@ -0,0 +1,245 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Qualcomm ICE (Inline Crypto Engine) support.
-+ *
-+ * Copyright (c) 2014-2019, The Linux Foundation. All rights reserved.
-+ * Copyright (c) 2019 Google LLC
-+ */
-+
-+#include <linux/platform_device.h>
-+#include <linux/qcom_scm.h>
-+
-+#include "ufshcd-crypto.h"
-+#include "ufs-qcom.h"
-+
-+#define AES_256_XTS_KEY_SIZE			64
-+
-+/* QCOM ICE registers */
-+
-+#define QCOM_ICE_REG_CONTROL			0x0000
-+#define QCOM_ICE_REG_RESET			0x0004
-+#define QCOM_ICE_REG_VERSION			0x0008
-+#define QCOM_ICE_REG_FUSE_SETTING		0x0010
-+#define QCOM_ICE_REG_PARAMETERS_1		0x0014
-+#define QCOM_ICE_REG_PARAMETERS_2		0x0018
-+#define QCOM_ICE_REG_PARAMETERS_3		0x001C
-+#define QCOM_ICE_REG_PARAMETERS_4		0x0020
-+#define QCOM_ICE_REG_PARAMETERS_5		0x0024
-+
-+/* QCOM ICE v3.X only */
-+#define QCOM_ICE_GENERAL_ERR_STTS		0x0040
-+#define QCOM_ICE_INVALID_CCFG_ERR_STTS		0x0030
-+#define QCOM_ICE_GENERAL_ERR_MASK		0x0044
-+
-+/* QCOM ICE v2.X only */
-+#define QCOM_ICE_REG_NON_SEC_IRQ_STTS		0x0040
-+#define QCOM_ICE_REG_NON_SEC_IRQ_MASK		0x0044
-+
-+#define QCOM_ICE_REG_NON_SEC_IRQ_CLR		0x0048
-+#define QCOM_ICE_REG_STREAM1_ERROR_SYNDROME1	0x0050
-+#define QCOM_ICE_REG_STREAM1_ERROR_SYNDROME2	0x0054
-+#define QCOM_ICE_REG_STREAM2_ERROR_SYNDROME1	0x0058
-+#define QCOM_ICE_REG_STREAM2_ERROR_SYNDROME2	0x005C
-+#define QCOM_ICE_REG_STREAM1_BIST_ERROR_VEC	0x0060
-+#define QCOM_ICE_REG_STREAM2_BIST_ERROR_VEC	0x0064
-+#define QCOM_ICE_REG_STREAM1_BIST_FINISH_VEC	0x0068
-+#define QCOM_ICE_REG_STREAM2_BIST_FINISH_VEC	0x006C
-+#define QCOM_ICE_REG_BIST_STATUS		0x0070
-+#define QCOM_ICE_REG_BYPASS_STATUS		0x0074
-+#define QCOM_ICE_REG_ADVANCED_CONTROL		0x1000
-+#define QCOM_ICE_REG_ENDIAN_SWAP		0x1004
-+#define QCOM_ICE_REG_TEST_BUS_CONTROL		0x1010
-+#define QCOM_ICE_REG_TEST_BUS_REG		0x1014
-+
-+/* BIST ("built-in self-test"?) status flags */
-+#define QCOM_ICE_BIST_STATUS_MASK		0xF0000000
-+
-+#define QCOM_ICE_FUSE_SETTING_MASK		0x1
-+#define QCOM_ICE_FORCE_HW_KEY0_SETTING_MASK	0x2
-+#define QCOM_ICE_FORCE_HW_KEY1_SETTING_MASK	0x4
-+
-+#define qcom_ice_writel(host, val, reg)	\
-+	writel((val), (host)->ice_mmio + (reg))
-+#define qcom_ice_readl(host, reg)	\
-+	readl((host)->ice_mmio + (reg))
-+
-+static bool qcom_ice_supported(struct ufs_qcom_host *host)
-+{
-+	struct device *dev = host->hba->dev;
-+	u32 regval = qcom_ice_readl(host, QCOM_ICE_REG_VERSION);
-+	int major = regval >> 24;
-+	int minor = (regval >> 16) & 0xFF;
-+	int step = regval & 0xFFFF;
-+
-+	/* For now this driver only supports ICE version 3. */
-+	if (major != 3) {
-+		dev_warn(dev, "Unsupported ICE version: v%d.%d.%d\n",
-+			 major, minor, step);
-+		return false;
-+	}
-+
-+	dev_info(dev, "Found QC Inline Crypto Engine (ICE) v%d.%d.%d\n",
-+		 major, minor, step);
-+
-+	/* If fuses are blown, ICE might not work in the standard way. */
-+	regval = qcom_ice_readl(host, QCOM_ICE_REG_FUSE_SETTING);
-+	if (regval & (QCOM_ICE_FUSE_SETTING_MASK |
-+		      QCOM_ICE_FORCE_HW_KEY0_SETTING_MASK |
-+		      QCOM_ICE_FORCE_HW_KEY1_SETTING_MASK)) {
-+		dev_warn(dev, "Fuses are blown; ICE is unusable!\n");
-+		return false;
-+	}
-+	return true;
-+}
-+
-+int ufs_qcom_ice_init(struct ufs_qcom_host *host)
-+{
-+	struct ufs_hba *hba = host->hba;
-+	struct device *dev = hba->dev;
-+	struct platform_device *pdev = to_platform_device(dev);
-+	struct resource *res;
-+	int err;
-+
-+	if (!(ufshcd_readl(hba, REG_CONTROLLER_CAPABILITIES) &
-+	      MASK_CRYPTO_SUPPORT))
-+		return 0;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 2);
-+	if (!res) {
-+		dev_warn(dev, "ICE registers not found\n");
-+		goto disable;
-+	}
-+
-+	if (!qcom_scm_ice_available()) {
-+		dev_warn(dev, "ICE SCM interface not found\n");
-+		goto disable;
-+	}
-+
-+	host->ice_mmio = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(host->ice_mmio)) {
-+		err = PTR_ERR(host->ice_mmio);
-+		dev_err(dev, "Failed to map ICE registers; err=%d\n", err);
-+		return err;
-+	}
-+
-+	if (!qcom_ice_supported(host))
-+		goto disable;
-+
-+	return 0;
-+
-+disable:
-+	dev_warn(dev, "Disabling inline encryption support\n");
-+	hba->caps &= ~UFSHCD_CAP_CRYPTO;
-+	return 0;
-+}
-+
-+static void qcom_ice_low_power_mode_enable(struct ufs_qcom_host *host)
-+{
-+	u32 regval;
-+
-+	regval = qcom_ice_readl(host, QCOM_ICE_REG_ADVANCED_CONTROL);
-+	/*
-+	 * Enable low power mode sequence
-+	 * [0]-0, [1]-0, [2]-0, [3]-E, [4]-0, [5]-0, [6]-0, [7]-0
-+	 */
-+	regval |= 0x7000;
-+	qcom_ice_writel(host, regval, QCOM_ICE_REG_ADVANCED_CONTROL);
-+}
-+
-+static void qcom_ice_optimization_enable(struct ufs_qcom_host *host)
-+{
-+	u32 regval;
-+
-+	/* ICE Optimizations Enable Sequence */
-+	regval = qcom_ice_readl(host, QCOM_ICE_REG_ADVANCED_CONTROL);
-+	regval |= 0xD807100;
-+	/* ICE HPG requires delay before writing */
-+	udelay(5);
-+	qcom_ice_writel(host, regval, QCOM_ICE_REG_ADVANCED_CONTROL);
-+	udelay(5);
-+}
-+
-+int ufs_qcom_ice_enable(struct ufs_qcom_host *host)
-+{
-+	if (!(host->hba->caps & UFSHCD_CAP_CRYPTO))
-+		return 0;
-+	qcom_ice_low_power_mode_enable(host);
-+	qcom_ice_optimization_enable(host);
-+	return ufs_qcom_ice_resume(host);
-+}
-+
-+/* Poll until all BIST bits are reset */
-+static int qcom_ice_wait_bist_status(struct ufs_qcom_host *host)
-+{
-+	int count;
-+	u32 reg;
-+
-+	for (count = 0; count < 100; count++) {
-+		reg = qcom_ice_readl(host, QCOM_ICE_REG_BIST_STATUS);
-+		if (!(reg & QCOM_ICE_BIST_STATUS_MASK))
-+			break;
-+		udelay(50);
-+	}
-+	if (reg)
-+		return -ETIMEDOUT;
-+	return 0;
-+}
-+
-+int ufs_qcom_ice_resume(struct ufs_qcom_host *host)
-+{
-+	int err;
-+
-+	if (!(host->hba->caps & UFSHCD_CAP_CRYPTO))
-+		return 0;
-+
-+	err = qcom_ice_wait_bist_status(host);
-+	if (err) {
-+		dev_err(host->hba->dev, "BIST status error (%d)\n", err);
-+		return err;
-+	}
-+	return 0;
-+}
-+
-+/*
-+ * Program a key into a QC ICE keyslot, or evict a keyslot.  QC ICE requires
-+ * vendor-specific SCM calls for this; it doesn't support the standard way.
-+ */
-+int ufs_qcom_ice_program_key(struct ufs_hba *hba,
-+			     const union ufs_crypto_cfg_entry *cfg, int slot)
-+{
-+	union ufs_crypto_cap_entry cap;
-+	union {
-+		u8 bytes[AES_256_XTS_KEY_SIZE];
-+		u32 words[AES_256_XTS_KEY_SIZE / sizeof(u32)];
-+	} key;
-+	int i;
-+	int err;
-+
-+	if (!(cfg->config_enable & UFS_CRYPTO_CONFIGURATION_ENABLE))
-+		return qcom_scm_ice_invalidate_key(slot);
-+
-+	/* Only AES-256-XTS has been tested so far. */
-+	cap = hba->crypto_cap_array[cfg->crypto_cap_idx];
-+	if (cap.algorithm_id != UFS_CRYPTO_ALG_AES_XTS ||
-+	    cap.key_size != UFS_CRYPTO_KEY_SIZE_256) {
-+		dev_err_ratelimited(hba->dev,
-+				    "Unhandled crypto capability; algorithm_id=%d, key_size=%d\n",
-+				    cap.algorithm_id, cap.key_size);
-+		return -EINVAL;
-+	}
-+
-+	memcpy(key.bytes, cfg->crypto_key, AES_256_XTS_KEY_SIZE);
-+
-+	/*
-+	 * The SCM call byte-swaps the 32-bit words of the key.  So we have to
-+	 * do the same, in order for the final key be correct.
-+	 */
-+	for (i = 0; i < ARRAY_SIZE(key.words); i++)
-+		__cpu_to_be32s(&key.words[i]);
-+
-+	err = qcom_scm_ice_set_key(slot, key.bytes, AES_256_XTS_KEY_SIZE,
-+				   QCOM_SCM_ICE_CIPHER_AES_256_XTS,
-+				   cfg->data_unit_size);
-+	memzero_explicit(&key, sizeof(key));
-+	return err;
-+}
-diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
-index 19aa5c44e0da6f..37c4070c9007ef 100644
---- a/drivers/scsi/ufs/ufs-qcom.c
-+++ b/drivers/scsi/ufs/ufs-qcom.c
-@@ -365,7 +365,7 @@ static int ufs_qcom_hce_enable_notify(struct ufs_hba *hba,
- 		/* check if UFS PHY moved from DISABLED to HIBERN8 */
- 		err = ufs_qcom_check_hibern8(hba);
- 		ufs_qcom_enable_hw_clk_gating(hba);
--
-+		ufs_qcom_ice_enable(host);
- 		break;
- 	default:
- 		dev_err(hba->dev, "%s: invalid status %d\n", __func__, status);
-@@ -614,6 +614,10 @@ static int ufs_qcom_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
- 			return err;
- 	}
- 
-+	err = ufs_qcom_ice_resume(host);
-+	if (err)
-+		return err;
-+
- 	hba->is_sys_suspended = false;
- 	return 0;
- }
-@@ -1071,6 +1075,7 @@ static void ufs_qcom_set_caps(struct ufs_hba *hba)
- 	hba->caps |= UFSHCD_CAP_CLK_GATING | UFSHCD_CAP_HIBERN8_WITH_CLK_GATING;
- 	hba->caps |= UFSHCD_CAP_CLK_SCALING;
- 	hba->caps |= UFSHCD_CAP_AUTO_BKOPS_SUSPEND;
-+	hba->caps |= UFSHCD_CAP_CRYPTO;
- 
- 	if (host->hw_ver.major >= 0x2) {
- 		host->caps = UFS_QCOM_CAP_QUNIPRO |
-@@ -1297,6 +1302,10 @@ static int ufs_qcom_init(struct ufs_hba *hba)
- 	ufs_qcom_set_caps(hba);
- 	ufs_qcom_advertise_quirks(hba);
- 
-+	err = ufs_qcom_ice_init(host);
-+	if (err)
-+		goto out_variant_clear;
-+
- 	ufs_qcom_set_bus_vote(hba, true);
- 	ufs_qcom_setup_clocks(hba, true, POST_CHANGE);
- 
-@@ -1735,6 +1744,7 @@ static const struct ufs_hba_variant_ops ufs_hba_qcom_vops = {
- 	.dbg_register_dump	= ufs_qcom_dump_dbg_regs,
- 	.device_reset		= ufs_qcom_device_reset,
- 	.config_scaling_param = ufs_qcom_config_scaling_param,
-+	.program_key		= ufs_qcom_ice_program_key,
- };
- 
- /**
-diff --git a/drivers/scsi/ufs/ufs-qcom.h b/drivers/scsi/ufs/ufs-qcom.h
-index 2d95e7cc71874e..97247d17e258ad 100644
---- a/drivers/scsi/ufs/ufs-qcom.h
-+++ b/drivers/scsi/ufs/ufs-qcom.h
-@@ -227,6 +227,9 @@ struct ufs_qcom_host {
- 	void __iomem *dev_ref_clk_ctrl_mmio;
- 	bool is_dev_ref_clk_enabled;
- 	struct ufs_hw_version hw_ver;
-+#ifdef CONFIG_SCSI_UFS_CRYPTO
-+	void __iomem *ice_mmio;
-+#endif
- 
- 	u32 dev_ref_clk_en_mask;
- 
-@@ -264,4 +267,28 @@ static inline bool ufs_qcom_cap_qunipro(struct ufs_qcom_host *host)
- 		return false;
- }
- 
-+/* ufs-qcom-ice.c */
-+
-+#ifdef CONFIG_SCSI_UFS_CRYPTO
-+int ufs_qcom_ice_init(struct ufs_qcom_host *host);
-+int ufs_qcom_ice_enable(struct ufs_qcom_host *host);
-+int ufs_qcom_ice_resume(struct ufs_qcom_host *host);
-+int ufs_qcom_ice_program_key(struct ufs_hba *hba,
-+			     const union ufs_crypto_cfg_entry *cfg, int slot);
-+#else
-+static inline int ufs_qcom_ice_init(struct ufs_qcom_host *host)
-+{
-+	return 0;
-+}
-+static inline int ufs_qcom_ice_enable(struct ufs_qcom_host *host)
-+{
-+	return 0;
-+}
-+static inline int ufs_qcom_ice_resume(struct ufs_qcom_host *host)
-+{
-+	return 0;
-+}
-+#define ufs_qcom_ice_program_key NULL
-+#endif /* !CONFIG_SCSI_UFS_CRYPTO */
-+
- #endif /* UFS_QCOM_H_ */
 -- 
 2.26.2
 
