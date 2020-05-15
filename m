@@ -2,80 +2,100 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D6091D5B28
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 15 May 2020 23:06:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE2B21D5B10
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 15 May 2020 22:56:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726247AbgEOVGG (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 15 May 2020 17:06:06 -0400
-Received: from sender11-op-o11.zoho.eu ([31.186.226.225]:17155 "EHLO
-        sender11-op-o11.zoho.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726179AbgEOVGF (ORCPT
+        id S1726980AbgEOU44 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 15 May 2020 16:56:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726693AbgEOU4y (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 15 May 2020 17:06:05 -0400
-X-Greylist: delayed 904 seconds by postgrey-1.27 at vger.kernel.org; Fri, 15 May 2020 17:06:04 EDT
-ARC-Seal: i=1; a=rsa-sha256; t=1589575853; cv=none; 
-        d=zohomail.eu; s=zohoarc; 
-        b=KbsTO1QnXyP8AirHuZ24LqciMXjBICV8K0UBqFmWMt89qqPRpw4IRFDbcaLaFQs/Gkcx7VemFKXIbDQxqpxztV4TiwAMunpis8GMjJ1D7YGQBX41lVfp8JuslQKxJcCtFMx7P8z6NdB/80vKlpE52sgcp7XJ0EeWmNBfD3yodlI=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
-        t=1589575853; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=62g6JwVWEMzRWu3ZYkO8dV9Ce5Ih7CsFyMdKYPybmdU=; 
-        b=iwA6hH5iqfReKpvEukZGydJX3Yqg/wLYvY3Rxv5wUX9JV8IaDfeb6AHIhjEaz2bPohUNz6fJte99XtSzsfE7ycBaPI+2i8qPgyt/I4j+e3FV/0mrxLT9Ywya0vL+JeIopw5DiS6xDPZxp6fl5YV6cC7UbtKN+RD6tHU2bh6gjnI=
-ARC-Authentication-Results: i=1; mx.zohomail.eu;
-        spf=pass  smtp.mailfrom=jes@trained-monkey.org;
-        dmarc=pass header.from=<jes@trained-monkey.org> header.from=<jes@trained-monkey.org>
-Received: from [100.109.129.242] (163.114.130.1 [163.114.130.1]) by mx.zoho.eu
-        with SMTPS id 1589575851412664.0614176836336; Fri, 15 May 2020 22:50:51 +0200 (CEST)
-Subject: Re: [PATCH 0/3] fsverity-utils: introduce libfsverity
-To:     Eric Biggers <ebiggers@kernel.org>, linux-fscrypt@vger.kernel.org,
-        Jes Sorensen <jes.sorensen@gmail.com>
-Cc:     jsorensen@fb.com, kernel-team@fb.com
-References: <20200515041042.267966-1-ebiggers@kernel.org>
-From:   Jes Sorensen <jes@trained-monkey.org>
-Message-ID: <6fd1ea1f-d6e6-c423-4a52-c987f172bb50@trained-monkey.org>
-Date:   Fri, 15 May 2020 16:50:49 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Fri, 15 May 2020 16:56:54 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7090C061A0C
+        for <linux-fscrypt@vger.kernel.org>; Fri, 15 May 2020 13:56:54 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id n14so4065665qke.8
+        for <linux-fscrypt@vger.kernel.org>; Fri, 15 May 2020 13:56:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QPSDtPaaKWXBHngF3kuAA5MKpeIFwaUHZiCgKfYSrQ0=;
+        b=Fy/vt1VoutFCSwej+8vfQ4+u0XzdVEOUkDPb7WA+uszULT61C0LmHSbKTpnvHn4rU6
+         bbKCacldcpLk2XL0PAQHlVt2aOk6Jy1gMs02kTcNHvZpB29Yh9Uad303blGvd/Jzdth4
+         0Q4G4JgSyxIAP2Lz3k2G8qIWiW03sJJBVgWEkwsTW3typi2cNd1gvczvOVx/amYmPxXd
+         U0eMIynot8udJetffDcUPXsJ/jyPEttXdd5xWNskMQx+5gmsKT0lS6QX4IE2KuFlM8IF
+         dEB5noi16OUT36ipy1hlKC2QSQftiN4ostO/sG8yxqjGj+vyiCTPlpusfT85qucaoS1h
+         cyow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QPSDtPaaKWXBHngF3kuAA5MKpeIFwaUHZiCgKfYSrQ0=;
+        b=ND9BoiCVU0z+k92twuNIM5pSfkagm8lZR4viHD42EHD3bQ7GYHF+Aq97i3b9pP9QJy
+         fZyffx7/ISz/8w5PVMDiWUuBwe29QkrENFzgtQ9rIly9mHQb7D68xnk0Hxr6rAEpLdIo
+         th1J6fuqQJU8/k2rz2bn2V82pXnCoY0PdPc5XDv98w1vxwIoFOUoH8IbCvQ0U9yjhM0U
+         HXV5SKST0QPR0LbYTr36MT3y8szUaH5+4L1wxH7lMAipcnXWuGQLvtZG1fJVnYszSb4f
+         Egnhv3pYSYRHEpJD41CrkMgPsLXFOikG+72kVaVNi0vKN2zQPmrg4cTmq0cz2ReY1b0i
+         o6WA==
+X-Gm-Message-State: AOAM530Cp3ugal1P84tzvv1TkkYNrCYSowvcFnGcpAp865WuoqSMX3yD
+        qFXzK3km5RW1w0VvXboAmaE=
+X-Google-Smtp-Source: ABdhPJxltOCs6gOrnWZIMp+xDNI1VbQKMssyFFf297sXjlWCE+OhDHk1shGvIp5YpTPLObexVZN+oA==
+X-Received: by 2002:a05:620a:1326:: with SMTP id p6mr5694616qkj.373.1589576213714;
+        Fri, 15 May 2020 13:56:53 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:1b31])
+        by smtp.gmail.com with ESMTPSA id h13sm2971483qti.32.2020.05.15.13.56.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 May 2020 13:56:52 -0700 (PDT)
+From:   Jes Sorensen <jes.sorensen@gmail.com>
+X-Google-Original-From: Jes Sorensen <Jes.Sorensen@gmail.com>
+To:     ebiggers@kernel.org
+Cc:     linux-fscrypt@vger.kernel.org, kernel-team@fb.com,
+        Jes Sorensen <jsorensen@fb.com>
+Subject: [PATCH 0/2] fsverity-utils Makefile fixes
+Date:   Fri, 15 May 2020 16:56:47 -0400
+Message-Id: <20200515205649.1670512-1-Jes.Sorensen@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20200515041042.267966-1-ebiggers@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ZohoMailClient: External
+Content-Transfer-Encoding: 8bit
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On 5/15/20 12:10 AM, Eric Biggers wrote:
-> From the 'fsverity' program, split out a library 'libfsverity'.
-> Currently it supports computing file measurements ("digests"), and
-> signing those file measurements for use with the fs-verity builtin
-> signature verification feature.
-> 
-> Rewritten from patches by Jes Sorensen <jsorensen@fb.com>.
-> I made a lot of improvements; see patch 2 for details.
-> 
-> Jes, can you let me know whether this works for you?  Especially take a
-> close look at the API in libfsverity.h.
+From: Jes Sorensen <jsorensen@fb.com>
 
-Hi Eric,
+Hi,
 
-Thanks for looking at this. I have gone through this and managed to get
-my RPM code to work with it. I will push the updated code to my rpm
-github repo shortly. I have two fixes for the Makefile I will send to
-you in a separate email.
+This set goes on top of the libfsverity changes from Eric.
 
-One comment I have is that you changed the size of version and
-hash_algorithm to 32 bit in struct libfsverity_merkle_tree_params, but
-the kernel API only takes 8 bit values anyway. I had them at 16 bit to
-handle the struct padding, but if anything it seems to make more sense
-to make them 8 bit and pad the struct?
+One deals with the Makefile not cleaning up the library when running
+'make clean'.
 
-struct libfsverity_merkle_tree_params {
-        uint32_t version;
-        uint32_t hash_algorithm;
+The second removes the forced override of CFLAGS and CPPFLAGS. This
+really shouldn't be forced like it was, since package managers and
+builders should be able to specify their preferred flags.
 
-That said, not a big deal.
+With these applied, I am able to build an rpm of fsverity-utils which
+provides fsverity-utils and fsverity-utils-devel.
+
+Should we bump the version to 1.1 or 1.0.1 or something too?
+
+Once this is pushed to the official branch, I'll do an updated package
+for Fedora Rawhide and do another pull-request for the RPM code.
 
 Cheers,
 Jes
+
+
+Jes Sorensen (2):
+  Fix Makefile to delete objects from the library on make clean
+  Let package manager override CFLAGS and CPPFLAGS
+
+ Makefile | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+-- 
+2.26.2
+
