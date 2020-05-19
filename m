@@ -2,83 +2,104 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDCFB1D7F28
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 18 May 2020 18:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1E701D8DD0
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 19 May 2020 04:54:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728043AbgERQuq (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 18 May 2020 12:50:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726958AbgERQup (ORCPT
+        id S1726359AbgESCyZ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 18 May 2020 22:54:25 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:55316 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726358AbgESCyZ (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 18 May 2020 12:50:45 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7874C061A0C;
-        Mon, 18 May 2020 09:50:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=kZ1kt/vvSWLV22qkWN7aKlxZz7wcX+WgFj2oUslFSoQ=; b=j3ozo5YHhZD8k6To6Kx6JYBtFf
-        3ro7WFhgIcFxk9sM8YyXJMP1ljUysW3CEYKqKWLP2qaP1VCDz6hG1+RO2o48RMHX57B2pgMWsTRHm
-        6qBznsPTqj9W41MCa36Vj34K2scnpByyAH9hk4n4QgEXgqPsfPMqKctkdvqZ7CGVT9Kiu7m2eG0Xg
-        Z2S552l1JSMN6/ihF5mjDfESDw9j42b5Dk/ljZbE4GQkDocvWkFANRe792+jf+a62b7+a2MOwkY6h
-        9rT/3ag8Svxuei5DS+/8LTm1jF4aabP4NRraZDwyB4/0lNAIu6kjG/Hr6ujWcERiWB5IZCd5yGJ4J
-        yiJHceqg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jaiyS-0000NI-EH; Mon, 18 May 2020 16:50:44 +0000
-Date:   Mon, 18 May 2020 09:50:44 -0700
-From:   Christoph Hellwig <hch@infradead.org>
+        Mon, 18 May 2020 22:54:25 -0400
+Received: from callcc.thunk.org (pool-100-0-195-244.bstnma.fios.verizon.net [100.0.195.244])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 04J2rtRb003270
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 May 2020 22:53:56 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 7EB3E420304; Mon, 18 May 2020 22:53:55 -0400 (EDT)
+Date:   Mon, 18 May 2020 22:53:55 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
 To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Satya Tangirala <satyat@google.com>,
-        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
-        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
-        Kuohong Wang <kuohong.wang@mediatek.com>,
-        Kim Boojin <boojin.kim@samsung.com>
-Subject: Re: [PATCH v13 00/12] Inline Encryption Support
-Message-ID: <20200518165044.GA23230@infradead.org>
-References: <20200514003727.69001-1-satyat@google.com>
- <20200514051053.GA14829@sol.localdomain>
- <8fa1aafe-1725-e586-ede3-a3273e674470@kernel.dk>
- <20200515074127.GA13926@infradead.org>
- <20200515122540.GA143740@google.com>
- <20200515144224.GA12040@infradead.org>
- <20200515170059.GA1009@sol.localdomain>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Daniel Rosenberg <drosen@google.com>
+Subject: Re: [PATCH 3/4] fscrypt: support test_dummy_encryption=v2
+Message-ID: <20200519025355.GC2396055@mit.edu>
+References: <20200512233251.118314-1-ebiggers@kernel.org>
+ <20200512233251.118314-4-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200515170059.GA1009@sol.localdomain>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20200512233251.118314-4-ebiggers@kernel.org>
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, May 15, 2020 at 10:00:59AM -0700, Eric Biggers wrote:
-> The fallback is actually really useful.  First, for testing: it allows all the
-> filesystem code that uses inline crypto to be tested using gce-xfstests and
-> kvm-xfstests, so that it's covered by the usual ext4 and f2fs regression testing
-> and it's much easier to develop patches for.  It also allowed us to enable the
-> inlinecrypt mount option in Cuttlefish, which is the virtual Android device used
-> to test the Android common kernels.  So, it gets the kernel test platform as
-> similar to a real Android device as possible.
+On Tue, May 12, 2020 at 04:32:50PM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> Ideally we'd implement virtualized inline encryption as you suggested.  But
-> these platforms use a mix of VMM's (QEMU, GCE, and crosvm) and storage types
-> (virtio-blk, virtio-scsi, and maybe others; none of these even have an inline
-> encryption standard defined yet).  So it's not currently feasible.
+> v1 encryption policies are deprecated in favor of v2, and some new
+> features (e.g. encryption+casefolding) are only being added for v2.
+> 
+> Therefore, the "test_dummy_encryption" mount option (which is used for
+> encryption I/O testing with xfstests) needs to support v2 policies.
+> 
+> To do this, extend its syntax to be "test_dummy_encryption=v1" or
+> "test_dummy_encryption=v2".  The existing "test_dummy_encryption" (no
+> argument) also continues to be accepted, to specify the default setting
+> -- currently v1, but the next patch changes it to v2.
+> 
+> To cleanly support both v1 and v2 while also making it easy to support
+> specifying other encryption settings in the future (say, accepting
+> "$contents_mode:$filenames_mode:v2"), make ext4 and f2fs maintain a
+> pointer to the dummy fscrypt_context rather than using mount flags.
+> 
+> To avoid concurrency issues, don't allow test_dummy_encryption to be set
+> or changed during a remount.  (The former restriction is new, but
+> xfstests doesn't run into it, so no one should notice.)
+> 
+> Tested with 'gce-xfstests -c {ext4,f2fs}/encrypt -g auto'.  On ext4,
+> there are two regressions, both of which are test bugs: ext4/023 and
+> ext4/028 fail because they set an xattr and expect it to be stored
+> inline, but the increase in size of the fscrypt_context from
+> 24 to 40 bytes causes this xattr to be spilled into an external block.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-Not that you don't need to implement it in the hypervisor.  You can
-also trivially wire up for things like null_blk.
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 
-> Second, it creates a clean design where users can just use blk-crypto, and not
-> have to implement a second encryption implementation.
+Looks good, but could you do me a favor and merge in this?
 
-And I very much disagree about that being a clean implementation.  It is
-fine if the user doesn't care, but you should catch this before hitting
-the block stack and do the encryption there without hardware blk-crypt
-support.
+diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
+index 04bfaf63752c..6c9fc9e21c13 100644
+--- a/fs/ext4/sysfs.c
++++ b/fs/ext4/sysfs.c
+@@ -293,6 +293,7 @@ EXT4_ATTR_FEATURE(batched_discard);
+ EXT4_ATTR_FEATURE(meta_bg_resize);
+ #ifdef CONFIG_FS_ENCRYPTION
+ EXT4_ATTR_FEATURE(encryption);
++EXT4_ATTR_FEATURE(test_dummy_encryption_v2);
+ #endif
+ #ifdef CONFIG_UNICODE
+ EXT4_ATTR_FEATURE(casefold);
+@@ -308,6 +309,7 @@ static struct attribute *ext4_feat_attrs[] = {
+ 	ATTR_LIST(meta_bg_resize),
+ #ifdef CONFIG_FS_ENCRYPTION
+ 	ATTR_LIST(encryption),
++	ATTR_LIST(test_dummy_encryption_v2),
+ #endif
+ #ifdef CONFIG_UNICODE
+ 	ATTR_LIST(casefold),
+
+This will make it easier to have the gce-xfstests test runner know
+whether or not test_dummy_encryption=v1 / test_dummy_encryption=v2
+will work, and whether test_dummy_encryption tests v1 or v2.
+
+Thanks!
+
+					- Ted
