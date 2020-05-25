@@ -2,90 +2,86 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 123E21E1151
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 25 May 2020 17:10:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 152861E11CD
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 25 May 2020 17:33:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390990AbgEYPK6 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 25 May 2020 11:10:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47126 "EHLO mail.kernel.org"
+        id S2404196AbgEYPdf (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 25 May 2020 11:33:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52490 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390947AbgEYPK6 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 25 May 2020 11:10:58 -0400
-Received: from localhost (unknown [104.132.1.66])
+        id S2404092AbgEYPdf (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 25 May 2020 11:33:35 -0400
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BBF552073B;
-        Mon, 25 May 2020 15:10:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0D41B2071A;
+        Mon, 25 May 2020 15:33:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590419457;
-        bh=kWDchJjRAEJVbNKSENl4Ienf/7DpzmUVEB1I8GSDrEo=;
+        s=default; t=1590420814;
+        bh=/lRcApMN9bchgxQmdRuHru0M8nV62fiOyAvgNyyKOqE=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fpCzqg8Tp9ZS4H8j9ZJ4ccZdUup73PHLuYGsjSAm4AUzRDJ5CyxKsrCnhsLNShcme
-         jqzUNZEUdhHw3s5Zl2/m1xK4+nyFHwrEDSsdJOC9bb1E2W55jF1nxTUhuj/rJXhZKF
-         iCSCqKIKFFwEcZbPkJAFH54VOxZUQAeYk8NY2vqE=
-Date:   Mon, 25 May 2020 08:10:57 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fscrypt@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Daniel Rosenberg <drosen@google.com>
-Subject: Re: [f2fs-dev] [PATCH 3/4] f2fs: rework filename handling
-Message-ID: <20200525151057.GB55033@google.com>
-References: <20200507075905.953777-1-ebiggers@kernel.org>
- <20200507075905.953777-4-ebiggers@kernel.org>
- <9c18ded1-06cb-1187-1eac-5ba354eebee1@huawei.com>
+        b=FkSvkKrkHrQNmOS5J/o9VjrQqOrK15S4n8hbD/X0fyIUhr7F42waBhGQOqj/6HAJx
+         tyzcpYbp9yyCxo7RvSbHabJpYOQEmcyfJ+E1oVol2cFd97D1c/VRNotZIGgME0uUKv
+         pVg9kv2JyeNisFfbKjtrNkuNbJM87euAu3sXNQ6I=
+Date:   Mon, 25 May 2020 08:33:20 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-mmc@vger.kernel.org, "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Satya Tangirala <satyat@google.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Paul Crowley <paulcrowley@google.com>
+Subject: Re: [PATCH] fscrypt: add support for IV_INO_LBLK_32 policies
+Message-ID: <20200525153320.GA2152@sol.localdomain>
+References: <20200515204141.251098-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9c18ded1-06cb-1187-1eac-5ba354eebee1@huawei.com>
+In-Reply-To: <20200515204141.251098-1-ebiggers@kernel.org>
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On 05/25, Chao Yu wrote:
-> On 2020/5/7 15:59, Eric Biggers wrote:
-> > From: Eric Biggers <ebiggers@google.com>
-> > 
-> > Rework f2fs's handling of filenames to use a new 'struct f2fs_filename'.
-> > Similar to 'struct ext4_filename', this stores the usr_fname, disk_name,
-> > dirhash, crypto_buf, and casefolded name.  Some of these names can be
-> > NULL in some cases.  'struct f2fs_filename' differs from
-> > 'struct fscrypt_name' mainly in that the casefolded name is included.
-> > 
-> > For user-initiated directory operations like lookup() and create(),
-> > initialize the f2fs_filename by translating the corresponding
-> > fscrypt_name, then computing the dirhash and casefolded name if needed.
-> > 
-> > This makes the dirhash and casefolded name be cached for each syscall,
-> > so we don't have to recompute them repeatedly.  (Previously, f2fs
-> > computed the dirhash once per directory level, and the casefolded name
-> > once per directory block.)  This improves performance.
-> > 
-> > This rework also makes it much easier to correctly handle all
-> > combinations of normal, encrypted, casefolded, and encrypted+casefolded
-> > directories.  (The fourth isn't supported yet but is being worked on.)
-> > 
-> > The only other cases where an f2fs_filename gets initialized are for two
-> > filesystem-internal operations: (1) when converting an inline directory
-> > to a regular one, we grab the needed disk_name and hash from an existing
-> > f2fs_dir_entry; and (2) when roll-forward recovering a new dentry, we
-> > grab the needed disk_name from f2fs_inode::i_name and compute the hash.
-> > 
-> > Signed-off-by: Eric Biggers <ebiggers@google.com>
+On Fri, May 15, 2020 at 01:41:41PM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> Reviewed-by: Chao Yu <yuchao0@huawei.com>
+> The eMMC inline crypto standard will only specify 32 DUN bits (a.k.a. IV
+> bits), unlike UFS's 64.  IV_INO_LBLK_64 is therefore not applicable, but
+> an encryption format which uses one key per policy and permits the
+> moving of encrypted file contents (as f2fs's garbage collector requires)
+> is still desirable.
+> 
+> To support such hardware, add a new encryption format IV_INO_LBLK_32
+> that makes the best use of the 32 bits: the IV is set to
+> 'SipHash-2-4(inode_number) + file_logical_block_number mod 2^32', where
+> the SipHash key is derived from the fscrypt master key.  We hash only
+> the inode number and not also the block number, because we need to
+> maintain contiguity of DUNs to merge bios.
+> 
+> Unlike with IV_INO_LBLK_64, with this format IV reuse is possible; this
+> is unavoidable given the size of the DUN.  This means this format should
+> only be used where the requirements of the first paragraph apply.
+> However, the hash spreads out the IVs in the whole usable range, and the
+> use of a keyed hash makes it difficult for an attacker to determine
+> which files use which IVs.
+> 
+> Besides the above differences, this flag works like IV_INO_LBLK_64 in
+> that on ext4 it is only allowed if the stable_inodes feature has been
+> enabled to prevent inode numbers and the filesystem UUID from changing.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+>  Documentation/filesystems/fscrypt.rst | 33 +++++++++--
+>  fs/crypto/crypto.c                    |  6 +-
+>  fs/crypto/fscrypt_private.h           | 20 +++++--
+>  fs/crypto/keyring.c                   |  5 +-
+>  fs/crypto/keysetup.c                  | 85 +++++++++++++++++++++------
+>  fs/crypto/policy.c                    | 51 +++++++++++-----
+>  include/uapi/linux/fscrypt.h          |  3 +-
+>  7 files changed, 157 insertions(+), 46 deletions(-)
 
-Thanks, but it's quite late to rebase stacked patches for this update when
-considering we have only 1 week for pull request. :)
+Applied to fscrypt.git#master for 5.8.
 
-> 
-> Thanks,
-> 
-> 
-> _______________________________________________
-> Linux-f2fs-devel mailing list
-> Linux-f2fs-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+- Eric
