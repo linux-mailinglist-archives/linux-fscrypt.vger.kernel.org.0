@@ -2,86 +2,121 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 152861E11CD
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 25 May 2020 17:33:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4B5E1E155E
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 25 May 2020 22:55:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404196AbgEYPdf (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 25 May 2020 11:33:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52490 "EHLO mail.kernel.org"
+        id S2390791AbgEYUzP (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 25 May 2020 16:55:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404092AbgEYPdf (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 25 May 2020 11:33:35 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2388714AbgEYUzP (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 25 May 2020 16:55:15 -0400
+Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0D41B2071A;
-        Mon, 25 May 2020 15:33:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 538302065F;
+        Mon, 25 May 2020 20:55:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590420814;
-        bh=/lRcApMN9bchgxQmdRuHru0M8nV62fiOyAvgNyyKOqE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FkSvkKrkHrQNmOS5J/o9VjrQqOrK15S4n8hbD/X0fyIUhr7F42waBhGQOqj/6HAJx
-         tyzcpYbp9yyCxo7RvSbHabJpYOQEmcyfJ+E1oVol2cFd97D1c/VRNotZIGgME0uUKv
-         pVg9kv2JyeNisFfbKjtrNkuNbJM87euAu3sXNQ6I=
-Date:   Mon, 25 May 2020 08:33:20 -0700
+        s=default; t=1590440114;
+        bh=7k9fwFL0w8qELktX/YxNqwSv16KvnXoJQ6ec8cUhR9w=;
+        h=From:To:Cc:Subject:Date:From;
+        b=T3uVWXPKMy96+eSvsRUtcKjf7B5icn1LydsE2gNE7Sy56PFJSDkiLhED9y+qlynWd
+         zhI1BmLEOS55bydYfM6DQGvnQlrklnFWlZVPXDQ3u/CHPFjiZ/zB111HVnEUTsaB7I
+         2jENolMngQN5Php+5qBVUavYFdVgZLkQVXc8Ncsc=
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-mmc@vger.kernel.org, "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Satya Tangirala <satyat@google.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Paul Crowley <paulcrowley@google.com>
-Subject: Re: [PATCH] fscrypt: add support for IV_INO_LBLK_32 policies
-Message-ID: <20200525153320.GA2152@sol.localdomain>
-References: <20200515204141.251098-1-ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org,
+        Jes Sorensen <jes.sorensen@gmail.com>
+Cc:     jsorensen@fb.com, kernel-team@fb.com
+Subject: [PATCH v2 0/3] fsverity-utils: introduce libfsverity
+Date:   Mon, 25 May 2020 13:54:29 -0700
+Message-Id: <20200525205432.310304-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200515204141.251098-1-ebiggers@kernel.org>
+Content-Transfer-Encoding: 8bit
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, May 15, 2020 at 01:41:41PM -0700, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> The eMMC inline crypto standard will only specify 32 DUN bits (a.k.a. IV
-> bits), unlike UFS's 64.  IV_INO_LBLK_64 is therefore not applicable, but
-> an encryption format which uses one key per policy and permits the
-> moving of encrypted file contents (as f2fs's garbage collector requires)
-> is still desirable.
-> 
-> To support such hardware, add a new encryption format IV_INO_LBLK_32
-> that makes the best use of the 32 bits: the IV is set to
-> 'SipHash-2-4(inode_number) + file_logical_block_number mod 2^32', where
-> the SipHash key is derived from the fscrypt master key.  We hash only
-> the inode number and not also the block number, because we need to
-> maintain contiguity of DUNs to merge bios.
-> 
-> Unlike with IV_INO_LBLK_64, with this format IV reuse is possible; this
-> is unavoidable given the size of the DUN.  This means this format should
-> only be used where the requirements of the first paragraph apply.
-> However, the hash spreads out the IVs in the whole usable range, and the
-> use of a keyed hash makes it difficult for an attacker to determine
-> which files use which IVs.
-> 
-> Besides the above differences, this flag works like IV_INO_LBLK_64 in
-> that on ext4 it is only allowed if the stable_inodes feature has been
-> enabled to prevent inode numbers and the filesystem UUID from changing.
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
->  Documentation/filesystems/fscrypt.rst | 33 +++++++++--
->  fs/crypto/crypto.c                    |  6 +-
->  fs/crypto/fscrypt_private.h           | 20 +++++--
->  fs/crypto/keyring.c                   |  5 +-
->  fs/crypto/keysetup.c                  | 85 +++++++++++++++++++++------
->  fs/crypto/policy.c                    | 51 +++++++++++-----
->  include/uapi/linux/fscrypt.h          |  3 +-
->  7 files changed, 157 insertions(+), 46 deletions(-)
+From the 'fsverity' program, split out a library 'libfsverity'.
+Currently it supports computing file measurements ("digests"), and
+signing those file measurements for use with the fs-verity builtin
+signature verification feature.
 
-Applied to fscrypt.git#master for 5.8.
+Rewritten from patches by Jes Sorensen <jsorensen@fb.com>.
+I made a lot of improvements; see patch 2 for details.
 
-- Eric
+This patchset can also be found at branch "libfsverity" of
+https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/fsverity-utils.git/
+
+Changes v1 => v2:
+  - Fold in the Makefile fixes from Jes
+  - Rename libfsverity_digest_size() and libfsverity_hash_name()
+  - Improve the documentation slightly
+  - If a memory allocation fails, print the allocation size
+  - Use EBADMSG for invalid cert or keyfile, not EINVAL
+  - Make libfsverity_find_hash_alg_by_name() handle NULL
+  - Avoid introducing compiler warnings with AOSP's default cflags
+  - Don't assume that BIO_new_file() sets errno
+  - Other small cleanups
+
+Eric Biggers (3):
+  Split up cmd_sign.c
+  Introduce libfsverity
+  Add some basic test programs for libfsverity
+
+ .gitignore                                |  10 +-
+ Makefile                                  | 191 ++++++-
+ cmd_sign.c                                | 633 ----------------------
+ commands.h                                |  24 -
+ util.h => common/common_defs.h            |  47 +-
+ fsverity_uapi.h => common/fsverity_uapi.h |   0
+ common/libfsverity.h                      | 132 +++++
+ hash_algs.h                               |  68 ---
+ lib/compute_digest.c                      | 240 ++++++++
+ hash_algs.c => lib/hash_algs.c            | 129 +++--
+ lib/lib_private.h                         |  83 +++
+ lib/sign_digest.c                         | 399 ++++++++++++++
+ lib/utils.c                               | 109 ++++
+ cmd_enable.c => programs/cmd_enable.c     |  32 +-
+ cmd_measure.c => programs/cmd_measure.c   |  12 +-
+ programs/cmd_sign.c                       | 163 ++++++
+ fsverity.c => programs/fsverity.c         |  52 +-
+ programs/fsverity.h                       |  43 ++
+ programs/test_compute_digest.c            |  61 +++
+ programs/test_hash_algs.c                 |  38 ++
+ programs/test_sign_digest.c               |  50 ++
+ util.c => programs/utils.c                |   7 +-
+ programs/utils.h                          |  44 ++
+ testdata/cert.pem                         |  31 ++
+ testdata/file.sig                         | Bin 0 -> 708 bytes
+ testdata/key.pem                          |  52 ++
+ 26 files changed, 1770 insertions(+), 880 deletions(-)
+ delete mode 100644 cmd_sign.c
+ delete mode 100644 commands.h
+ rename util.h => common/common_defs.h (56%)
+ rename fsverity_uapi.h => common/fsverity_uapi.h (100%)
+ create mode 100644 common/libfsverity.h
+ delete mode 100644 hash_algs.h
+ create mode 100644 lib/compute_digest.c
+ rename hash_algs.c => lib/hash_algs.c (53%)
+ create mode 100644 lib/lib_private.h
+ create mode 100644 lib/sign_digest.c
+ create mode 100644 lib/utils.c
+ rename cmd_enable.c => programs/cmd_enable.c (81%)
+ rename cmd_measure.c => programs/cmd_measure.c (83%)
+ create mode 100644 programs/cmd_sign.c
+ rename fsverity.c => programs/fsverity.c (82%)
+ create mode 100644 programs/fsverity.h
+ create mode 100644 programs/test_compute_digest.c
+ create mode 100644 programs/test_hash_algs.c
+ create mode 100644 programs/test_sign_digest.c
+ rename util.c => programs/utils.c (96%)
+ create mode 100644 programs/utils.h
+ create mode 100644 testdata/cert.pem
+ create mode 100644 testdata/file.sig
+ create mode 100644 testdata/key.pem
+
+-- 
+2.26.2
+
