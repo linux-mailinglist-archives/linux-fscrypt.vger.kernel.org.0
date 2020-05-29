@@ -2,125 +2,149 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDDD21E6E37
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 28 May 2020 23:56:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57FA51E8293
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 29 May 2020 17:54:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436774AbgE1V4Z (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 28 May 2020 17:56:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52240 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436745AbgE1V4X (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 28 May 2020 17:56:23 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4C1E0206F1;
-        Thu, 28 May 2020 21:56:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590702982;
-        bh=YrvA6l1wo4LASJiVpABx+mDsD3QcKwzk5VGr+qu3r4c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rEJMBMPXsLqP516mYlBkqFn4ZibP50uBkCESunKDePTB/L5cCrgLy2v/2tR1SN+aa
-         g3GjRaUu76j+HeqJkWL7d6rAhzwYeGle3Q+vgQj6s/0yhQ+hWVDunlbLRfOr835Mt5
-         mac8NUQU0tbuTlMA7ONnECD74zrStT9vhTojjbxQ=
-Date:   Thu, 28 May 2020 14:54:30 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+        id S1727013AbgE2PyX (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 29 May 2020 11:54:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726838AbgE2PyW (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Fri, 29 May 2020 11:54:22 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6A7CC08C5C6
+        for <linux-fscrypt@vger.kernel.org>; Fri, 29 May 2020 08:54:21 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id s1so2601719qkf.9
+        for <linux-fscrypt@vger.kernel.org>; Fri, 29 May 2020 08:54:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=jAZEmeSRW8ruDxsVIJHiZnQc1uKz6c8cJEE/DAMVmG8=;
+        b=Cvi1doDaVIU1tjJPBprDVj0FVwq7jiOaXC7E/40SnLlLuwTTJhJ1xxcZhLqLzEF+Te
+         jM7uzW0Za5lm5BgNlPCJ1cgguX9WJTwArV78Pk4g7h4cgWbz+vqtIN9sbjbm37yaXW8W
+         dAWgVwE0iTL8Lxn5VsHYbSQnCNvW3nhQ3a/U8Qk+An2Znot/bcO7ZFiygyY6PrjJoxD7
+         5V8gOwpS8aL741k7EbSpAoDy/zYoCKC38p/lwWZgckjm/FZe+nMC8clGusUh39CdaYUd
+         weJBouQ05n7COyckI4NFb5XKi0ozPiQnloFxpPa/8NmYNrPKKeuz3fPm/fwKA4HiDFTG
+         YfPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jAZEmeSRW8ruDxsVIJHiZnQc1uKz6c8cJEE/DAMVmG8=;
+        b=PgQBrbOHQnfOcQh9o9Kb1ZQImWs82VzXudDtscAMcXuWpMu6B+8B8pFsfz3W7bwjVD
+         Ll6TF6ki/rF8iJn3rm8fwTPT/nfjyBvvyW3HHDltHVmjOErdGsy+D2qzC8J5/1H8CweT
+         GkadLrI0LacPKSOSeIH7WN2qhTMJ4Nb013V0G6G1W9Lh2SB8FQEN13jtI2G13EIOMniu
+         l0mWXaua98u1FYuhhzuzzRmocPrpLR44cirJQ3K7IAg+bNxu8h6WpPBA6TCMCjF2S4Mc
+         lkRO+Xd7Wzpmk4DxJETXLynXPYBp0Ynq5wsfrYxsQx47fmTrBNTsyKpggzSa3sebRoJM
+         pF5g==
+X-Gm-Message-State: AOAM531h/zOUIjD3+ssuw9LHgaep5lK/hCUGbl4jhCLVhDTE9t3M91y3
+        iLGmZR95HkTFAX6jA7l2MmmCFA==
+X-Google-Smtp-Source: ABdhPJxMNDaOikkYGBrV6CrZ5Mck0KcFjiHViFDUm7sCtJU3LXHFFao7/bkIR5WhKNCY5/HAeuKUng==
+X-Received: by 2002:a37:b16:: with SMTP id 22mr7584237qkl.181.1590767660554;
+        Fri, 29 May 2020 08:54:20 -0700 (PDT)
+Received: from [192.168.1.92] (pool-71-255-246-27.washdc.fios.verizon.net. [71.255.246.27])
+        by smtp.gmail.com with ESMTPSA id x41sm8778389qtb.76.2020.05.29.08.54.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 May 2020 08:54:19 -0700 (PDT)
+Subject: Re: [RFC PATCH v4 4/4] scsi: ufs-qcom: add Inline Crypto Engine
+ support
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-scsi@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Andy Gross <agross@kernel.org>,
+        Avri Altman <avri.altman@wdc.com>,
         Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
-        Kuohong Wang <kuohong.wang@mediatek.com>,
-        Kim Boojin <boojin.kim@samsung.com>
-Subject: Re: [PATCH v13 10/12] fscrypt: add inline encryption support
-Message-ID: <20200528215430.GA143195@gmail.com>
-References: <20200514003727.69001-1-satyat@google.com>
- <20200514003727.69001-11-satyat@google.com>
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Can Guo <cang@codeaurora.org>,
+        Elliot Berman <eberman@codeaurora.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Satya Tangirala <satyat@google.com>
+References: <20200501045111.665881-1-ebiggers@kernel.org>
+ <20200501045111.665881-5-ebiggers@kernel.org>
+ <31fa95e5-7757-96ae-2e86-1f54959e3a6c@linaro.org>
+ <20200507180435.GB236103@gmail.com> <20200507180838.GC236103@gmail.com>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <40600d42-dfa9-b60c-6ce8-0eda6bdf7ddf@linaro.org>
+Date:   Fri, 29 May 2020 11:54:18 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200514003727.69001-11-satyat@google.com>
+In-Reply-To: <20200507180838.GC236103@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-A few minor things to clean up when you resend this after v5.8-rc1:
 
-(You'll have to resolve the conflicts with
- https://lore.kernel.org/r/20200515204141.251098-1-ebiggers@kernel.org
- too, but it shouldn't be too hard.  Note that I made setup_per_mode_enc_key()
- use a mutex, like this patch does.)
 
-On Thu, May 14, 2020 at 12:37:25AM +0000, Satya Tangirala wrote:
-> Add support for inline encryption to fs/crypto/.  With "inline
-> encryption", the block layer handles the decryption/encryption as part
-> of the bio, instead of the filesystem doing the crypto itself via
-> Linux's crypto API.  This model is needed in order to take advantage of
-> the inline encryption hardware present on most modern mobile SoCs.
+On 5/7/20 2:08 PM, Eric Biggers wrote:
+> On Thu, May 07, 2020 at 11:04:35AM -0700, Eric Biggers wrote:
+>> Hi Thara,
+>>
+>> On Thu, May 07, 2020 at 08:36:58AM -0400, Thara Gopinath wrote:
+>>>
+>>>
+>>> On 5/1/20 12:51 AM, Eric Biggers wrote:
+>>>> From: Eric Biggers <ebiggers@google.com>
+>>>>
+>>>> Add support for Qualcomm Inline Crypto Engine (ICE) to ufs-qcom.
+>>>>
+>>>> The standards-compliant parts, such as querying the crypto capabilities
+>>>> and enabling crypto for individual UFS requests, are already handled by
+>>>> ufshcd-crypto.c, which itself is wired into the blk-crypto framework.
+>>>> However, ICE requires vendor-specific init, enable, and resume logic,
+>>>> and it requires that keys be programmed and evicted by vendor-specific
+>>>> SMC calls.  Make the ufs-qcom driver handle these details.
+>>>>
+>>>> I tested this on Dragonboard 845c, which is a publicly available
+>>>> development board that uses the Snapdragon 845 SoC and runs the upstream
+>>>> Linux kernel.  This is the same SoC used in the Pixel 3 and Pixel 3 XL
+>>>> phones.  This testing included (among other things) verifying that the
+>>>> expected ciphertext was produced, both manually using ext4 encryption
+>>>> and automatically using a block layer self-test I've written.
+>>> Hello Eric,
+>>>
+>>> I am interested in testing out this series on 845, 855 and if possile on 865
+>>> platforms. Can you give me some more details about your testing please.
+>>>
+>>
+>> Great!  You can test this with fscrypt, a.k.a. ext4 or f2fs encryption.
+>>
+>> A basic manual test would be:
+>>
+>> 1. Build a kernel with:
+>>
+>> 	CONFIG_BLK_INLINE_ENCRYPTION=y
+>> 	CONFIG_FS_ENCRYPTION=y
+>> 	CONFIG_FS_ENCRYPTION_INLINE_CRYPT=y
 > 
-> To use inline encryption, the filesystem needs to be mounted with
-> '-o inlinecrypt'.  The contents of any encrypted files will then be
-> encrypted using blk-crypto, instead of using the traditional
-> filesystem-layer crypto. Fscrypt still provides the key and IV to use,
-> and the actual ciphertext on-disk is still the same; therefore it's
-> testable using the existing fscrypt ciphertext verification tests.
-> 
-> Note that since blk-crypto has a fallack to Linux's crypto API, and
+> Sorry, I forgot: 'CONFIG_SCSI_UFS_CRYPTO=y' is needed too.
 
-"fallack" => "fallback"
+Hi Eric,
 
->  struct fscrypt_info {
->  
-> -	/* The actual crypto transform used for encryption and decryption */
-> -	struct crypto_skcipher *ci_ctfm;
-> +	/* The key in a form prepared for actual encryption/decryption */
-> +	struct fscrypt_prepared_key	ci_key;
->  
+I tested this manually on db845c, sm8150-mtp and sm8250-mtp.(I added the 
+dts file entries for 8150 and 8250).
 
-It would be clearer to call this field 'ci_enc_key' instead of 'ci_key'.
-Since there are several types of fscrypt keys, including the recently added
-ci_dirhash_key, I've been trying to clarify what type of key is meant when it's
-ambiguous.  E.g. see https://git.kernel.org/torvalds/c/f592efe735a29c76
+I also ran OsBench test case createfiles[1] on the above platforms. 
+Following are the results on a non encrypted and encrypted directory on 
+the same file system(lower the number better)
 
->  	/* True if the key should be freed when this fscrypt_info is freed */
+			8250-MTP	8150-MTP	DB845
 
-If taking the above suggestion, this would need "the key" => "ci_enc_key"
+nonencrypt_dir(us) 	55.3108954	26.8323124    69.5709552
+encrypt_dir(us) 	70.0214426	37.5411254    92.3818296
 
->  	/*
->  	 * If non-NULL, then encryption is done using the master key directly
-> -	 * and ci_ctfm will equal ci_direct_key->dk_ctfm.
-> +	 * and ci_key will equal ci_direct_key->dk_key.
->  	 */
 
-If taking the above suggestion, this would need "ci_key" => "ci_enc_key"
 
-> +/* inline_crypt.c */
-> +#ifdef CONFIG_FS_ENCRYPTION_INLINE_CRYPT
-> +extern void fscrypt_select_encryption_impl(struct fscrypt_info *ci);
+1. https://github.com/mbitsnbites/osbench/blob/master/README.md
 
-I'm now trying to consistently not use 'extern' on function declarations.  So,
-can you remove it from the new declarations here and include/linux/fscrypt.h?
-
-> +/**
-> + * fscrypt_set_bio_crypt_ctx - prepare a file contents bio for inline encryption
-
-I'm also now trying to consistently include the parentheses in the function
-names in kerneldoc comments.  So:
-
- * fscrypt_set_bio_crypt_ctx() - prepare a file data bio for inline crypto
-
- * fscrypt_set_bio_crypt_ctx_bh() - prepare a file data bio for inline crypto
-
-(similarly for the other new kerneldoc comments)
-
-Make sure to also run
-
-	scripts/kernel-doc -v -none fs/crypto/*.{c,h} include/linux/fscrypt.h
-
-to check for new kerneldoc warnings.  In fscrypt.git#master I've gotten rid of
-all the existing ones.
-
-Thanks!
-
-- Eric
+-- 
+Warm Regards
+Thara
