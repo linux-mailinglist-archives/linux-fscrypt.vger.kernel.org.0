@@ -2,71 +2,57 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AD0B1E9E47
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  1 Jun 2020 08:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 138C91EAFA2
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  1 Jun 2020 21:36:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725972AbgFAGbw (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 1 Jun 2020 02:31:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36142 "EHLO mail.kernel.org"
+        id S1728460AbgFATfD (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 1 Jun 2020 15:35:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725946AbgFAGbw (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 1 Jun 2020 02:31:52 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7B1612074B;
-        Mon,  1 Jun 2020 06:31:51 +0000 (UTC)
+        id S1728133AbgFATfC (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 1 Jun 2020 15:35:02 -0400
+Subject: Re: [GIT PULL] fscrypt updates for 5.8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590993111;
-        bh=zAUnY41Sgc7xpNLHu9M0CHlSS/dkDaYIV+HRhlmWnpY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=CSFPCFQ3+RJAVJDO4ksMLGmjHP29cVIclWcjuK6+F4Ot2xJRz4+VzIz7cME+w5T/k
-         XKMGsKBtOlf3e9DVbH1EixVTg6hzJY4FtRDZP/N1ybdBVTd9ZqER4G6mJR6DHs9xlo
-         hFDZw+49i6TGMILwmJq3J6QlRd/w3rKhBecJHFjI=
-Date:   Sun, 31 May 2020 23:31:50 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        s=default; t=1591040102;
+        bh=tUb3ekvU9GlhHcK4V45Bi06IqlKQCN2nkMKHtfMvVso=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=yHvB5tN0rf5bOSh4MLRjHoZIDvOq9AuIa+SvvQM835LQ3dji88L4esQeK5PxwflsZ
+         Pn1NWQtfhceZty02BxQswjwaz1BD9yMQes3bkD+u6u3Y4N/8sorEca/tPkgqYMt18X
+         0yq63fhTUl5lLCN8EgZBcRiXy0ph3hrjk6GWXspY=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20200601062848.GA11054@sol.localdomain>
+References: <20200601062848.GA11054@sol.localdomain>
+X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200601062848.GA11054@sol.localdomain>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git
+ tags/fscrypt-for-linus
+X-PR-Tracked-Commit-Id: e3b1078bedd323df343894a27eb3b3c34944dfd1
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: afdb0f2ec57d4899eda2c5e09fc3a005f2119690
+Message-Id: <159104010228.18844.5659318322191292629.pr-tracker-bot@kernel.org>
+Date:   Mon, 01 Jun 2020 19:35:02 +0000
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
         linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Theodore Ts'o <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [GIT PULL] fsverity updates for 5.8
-Message-ID: <20200601063150.GB11054@sol.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-The following changes since commit 2ef96a5bb12be62ef75b5828c0aab838ebb29cb8:
+The pull request you sent on Sun, 31 May 2020 23:28:48 -0700:
 
-  Linux 5.7-rc5 (2020-05-10 15:16:58 -0700)
+> https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
 
-are available in the Git repository at:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/afdb0f2ec57d4899eda2c5e09fc3a005f2119690
 
-  https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fsverity-for-linus
+Thank you!
 
-for you to fetch changes up to 9cd6b593cfc9eaa476c9a3fa768b08bca73213d0:
-
-  fs-verity: remove unnecessary extern keywords (2020-05-12 16:44:00 -0700)
-
-----------------------------------------------------------------
-
-Fix kerneldoc warnings and some coding style inconsistencies.
-This mirrors the similar cleanups being done in fs/crypto/.
-
-----------------------------------------------------------------
-Eric Biggers (2):
-      fs-verity: fix all kerneldoc warnings
-      fs-verity: remove unnecessary extern keywords
-
- fs/verity/enable.c           |  2 ++
- fs/verity/fsverity_private.h |  4 ++--
- fs/verity/measure.c          |  2 ++
- fs/verity/open.c             |  1 +
- fs/verity/signature.c        |  3 +++
- fs/verity/verify.c           |  3 +++
- include/linux/fsverity.h     | 19 +++++++++++--------
- 7 files changed, 24 insertions(+), 10 deletions(-)
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
