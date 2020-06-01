@@ -2,119 +2,97 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A02161E8A29
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 29 May 2020 23:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0D061E9E32
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  1 Jun 2020 08:29:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728416AbgE2Viq (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 29 May 2020 17:38:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42456 "EHLO mail.kernel.org"
+        id S1726067AbgFAG3D (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 1 Jun 2020 02:29:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727879AbgE2Viq (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 29 May 2020 17:38:46 -0400
-Received: from gmail.com (unknown [104.132.1.76])
+        id S1725946AbgFAG3D (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 1 Jun 2020 02:29:03 -0400
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3C9BF2071A;
-        Fri, 29 May 2020 21:38:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 984C62074B;
+        Mon,  1 Jun 2020 06:29:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590788325;
-        bh=tE0uiE2+3bBMtWRXqfGfV9qTFRy4O0X4c3cZONdz6Us=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FR/X5uWt/SX5VwwetokdckrjO3xYCshTrKr7FGh3UbMFBpEQa4jLs3EafgCrS/Rhy
-         aLn78Ria2TAChv7kxOnS6r1map6x8egSewewnSWfcqQgePocwMktB6KGRHrmfWSTR2
-         ANlAFA60lT5tcnw/JRDDZuX2x4WChEzBW7OjrJAw=
-Date:   Fri, 29 May 2020 14:38:43 -0700
+        s=default; t=1590992942;
+        bh=1+HgUI0i7fD04WdwIoS+2wnOjK8xL00OVCgY/EpDx+k=;
+        h=Date:From:To:Cc:Subject:From;
+        b=MVHaz8NKfknh3A0lNcT3nJFyTOEe5L8m03Pcsrk9fJegee57FJh4GsxGwfBuXsCt7
+         EEKaPXfr+/SBUG57z7bDRJTyN066lYEVel0r9o+D6IPFtwiHAcxXa3ETpYnJ1/RY+O
+         EAFX2wU0xM9B3cxEdLcx07R/QyByhcXKANim49yM=
+Date:   Sun, 31 May 2020 23:28:48 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     linux-scsi@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Andy Gross <agross@kernel.org>,
-        Avri Altman <avri.altman@wdc.com>,
-        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Can Guo <cang@codeaurora.org>,
-        Elliot Berman <eberman@codeaurora.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Satya Tangirala <satyat@google.com>
-Subject: Re: [RFC PATCH v4 4/4] scsi: ufs-qcom: add Inline Crypto Engine
- support
-Message-ID: <20200529213843.GA220669@gmail.com>
-References: <20200501045111.665881-1-ebiggers@kernel.org>
- <20200501045111.665881-5-ebiggers@kernel.org>
- <31fa95e5-7757-96ae-2e86-1f54959e3a6c@linaro.org>
- <20200507180435.GB236103@gmail.com>
- <20200507180838.GC236103@gmail.com>
- <40600d42-dfa9-b60c-6ce8-0eda6bdf7ddf@linaro.org>
- <20200529171326.GA82398@gmail.com>
- <676394c6-4250-8998-d959-68cd218991e5@linaro.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [GIT PULL] fscrypt updates for 5.8
+Message-ID: <20200601062848.GA11054@sol.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <676394c6-4250-8998-d959-68cd218991e5@linaro.org>
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, May 29, 2020 at 05:25:47PM -0400, Thara Gopinath wrote:
-> > > Hi Eric,
-> > > 
-> > > I tested this manually on db845c, sm8150-mtp and sm8250-mtp.(I added the dts
-> > > file entries for 8150 and 8250).
-> > > 
-> > > I also ran OsBench test case createfiles[1] on the above platforms.
-> > > Following are the results on a non encrypted and encrypted directory on the
-> > > same file system(lower the number better)
-> > > 
-> > > 			8250-MTP	8150-MTP	DB845
-> > > 
-> > > nonencrypt_dir(us) 	55.3108954	26.8323124    69.5709552
-> > > encrypt_dir(us) 	70.0214426	37.5411254    92.3818296
-> > > 
-> > > 
-> > > 
-> > > 1. https://github.com/mbitsnbites/osbench/blob/master/README.md
-> > > 
-> > 
-> > Great, thanks for testing.
-> > 
-> > Note that the benchmark you ran (creating many small files, then deleting them)
-> > mostly tests the performance of filenames encryption and directory operations,
-> > not file contents encryption.  Inline encryption is only used for file contents.
-> > 
-> > In fact, since that benchmark doesn't sync the files before deleting them, there
-> > is no guarantee that any file contents are actually written to disk, and hence
-> > no guarantee that inline encryption got used at all.
-> 
-> Hi Eric,
-> 
-> The results are particularly interesting if you think a sync is not
-> happening. 
+The following changes since commit 2ef96a5bb12be62ef75b5828c0aab838ebb29cb8:
 
-You can check the source code
-(https://github.com/mbitsnbites/osbench/blob/master/src/create_files.c).
-There's no sync.
+  Linux 5.7-rc5 (2020-05-10 15:16:58 -0700)
 
-> There should not be any performance regression in this case
-> between the two directories. 
+are available in the Git repository at:
 
-That's not true; the filenames still need to be encrypted.  Filenames encryption
-happens right away, not later when the pages are written to disk.  Contents
-encryption works differently.
+  https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
 
-> I can try some reading/writing performance tests rather than creating files
-> testing.
-> > 
-> > It would be more relevant to test the performance of reading/writing file data.
-> > 
-> > Also, did you try doing any correctness tests?  (See what I suggested earlier.)
-> 
-> I did correctness test as part of manual tests by diffing the content of the
-> copied files and verifying them. I did not run any other tests you
-> mentioned. Feel free to add my Tested-by in the next version you send out.
-> 
+for you to fetch changes up to e3b1078bedd323df343894a27eb3b3c34944dfd1:
 
-Okay, thanks!
+  fscrypt: add support for IV_INO_LBLK_32 policies (2020-05-19 09:34:18 -0700)
 
-- Eric
+----------------------------------------------------------------
+
+- Add the IV_INO_LBLK_32 encryption policy flag which modifies the
+  encryption to be optimized for eMMC inline encryption hardware.
+
+- Make the test_dummy_encryption mount option for ext4 and f2fs support
+  v2 encryption policies.
+
+- Fix kerneldoc warnings and some coding style inconsistencies.
+
+There will be merge conflicts with the ext4 and f2fs trees due to the
+test_dummy_encryption change, but the resolutions are straightforward.
+
+----------------------------------------------------------------
+Eric Biggers (8):
+      fscrypt: fix all kerneldoc warnings
+      fscrypt: name all function parameters
+      fscrypt: remove unnecessary extern keywords
+      linux/parser.h: add include guards
+      fscrypt: add fscrypt_add_test_dummy_key()
+      fscrypt: support test_dummy_encryption=v2
+      fscrypt: make test_dummy_encryption use v2 by default
+      fscrypt: add support for IV_INO_LBLK_32 policies
+
+ Documentation/filesystems/f2fs.rst    |   6 +-
+ Documentation/filesystems/fscrypt.rst |  33 +++++-
+ fs/crypto/crypto.c                    |  15 ++-
+ fs/crypto/fname.c                     |  52 ++++++---
+ fs/crypto/fscrypt_private.h           | 111 +++++++++---------
+ fs/crypto/hooks.c                     |   4 +-
+ fs/crypto/keyring.c                   | 122 ++++++++++++-------
+ fs/crypto/keysetup.c                  | 109 ++++++++++++-----
+ fs/crypto/policy.c                    | 195 ++++++++++++++++++++++++++++---
+ fs/ext4/ext4.h                        |   7 +-
+ fs/ext4/super.c                       |  68 ++++++++---
+ fs/ext4/sysfs.c                       |   2 +
+ fs/f2fs/f2fs.h                        |   4 +-
+ fs/f2fs/super.c                       |  85 ++++++++++----
+ fs/f2fs/sysfs.c                       |   4 +
+ include/linux/fscrypt.h               | 214 ++++++++++++++++++++--------------
+ include/linux/parser.h                |   5 +-
+ include/uapi/linux/fscrypt.h          |   3 +-
+ 18 files changed, 737 insertions(+), 302 deletions(-)
