@@ -2,63 +2,87 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDAFD1EC497
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  2 Jun 2020 23:50:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BEFF1EC712
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  3 Jun 2020 04:07:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727032AbgFBVuX (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 2 Jun 2020 17:50:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60480 "EHLO mail.kernel.org"
+        id S1725906AbgFCCHp (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 2 Jun 2020 22:07:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726420AbgFBVuW (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 2 Jun 2020 17:50:22 -0400
-Received: from gmail.com (unknown [104.132.1.76])
+        id S1725789AbgFCCHp (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 2 Jun 2020 22:07:45 -0400
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 65D97206C3;
-        Tue,  2 Jun 2020 21:50:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 32A502072F;
+        Wed,  3 Jun 2020 02:07:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591134622;
-        bh=lurGolYU6q586PjUd4Y+yIHXlwXbt3uxWJVS5PF37Os=;
+        s=default; t=1591150064;
+        bh=qLcUIqg4MkGQXm/ALUeDTBM4qZrROCTmpgT+XERn3Wo=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WMdlxPNUy4EX0heeXmTdqiKSGZXgAdQflslf6eMYZt8lslBIxdZiRjLX3tkqFVqkg
-         522J7yGOboWyqrhDQCesR9Gg3m+tLWi4Rp060x8zIVK1C6aBvU67hkmctkCC0MG3+Q
-         rx9cwSq8PFlfph4KvmUJEArdyM9ZFawT7JHdn4Vg=
-Date:   Tue, 2 Jun 2020 14:50:21 -0700
+        b=aq1ZrZwQU3kRCrtJOZAwJUWVfYq2+bOd3t19aKhFjRpZJjQ7d+Ws0QDXHtHTp4POk
+         R8bz/dDLIX+5ng8Qi7HF7HQhyQniQJZPjcc7IzSHpZ0zGN5s5i/2EhPAsNVyErNBhD
+         imgt4H8pvVTVYE1AU9KFtJHzqyXDQxsAq7RLeOCY=
+Date:   Tue, 2 Jun 2020 19:07:42 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Chris Mason <clm@fb.com>
-Cc:     Jes Sorensen <jes@trained-monkey.org>,
-        linux-fscrypt@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>
-Subject: Re: fsverity PAGE_SIZE constraints
-Message-ID: <20200602215021.GB229073@gmail.com>
-References: <69713333-8072-adf0-a6bb-8f73b3c390d0@trained-monkey.org>
- <20200601203647.GB168749@gmail.com>
- <628EC883-AD9E-4E4D-A219-C94979C51B98@fb.com>
+To:     Satya Tangirala <satyat@google.com>
+Cc:     linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
+        Kuohong Wang <kuohong.wang@mediatek.com>,
+        Kim Boojin <boojin.kim@samsung.com>
+Subject: Re: [PATCH v13 10/12] fscrypt: add inline encryption support
+Message-ID: <20200603020742.GA50072@sol.localdomain>
+References: <20200514003727.69001-1-satyat@google.com>
+ <20200514003727.69001-11-satyat@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <628EC883-AD9E-4E4D-A219-C94979C51B98@fb.com>
+In-Reply-To: <20200514003727.69001-11-satyat@google.com>
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, Jun 02, 2020 at 11:49:36AM -0400, Chris Mason wrote:
-> On the btrfs side, I’m storing the fsverity data in the btree, so I’m merkle
-> block size agnostic.  Since our rollout is going to be x86, we’ll end up
-> using the 4k size internally for the current code base.
-> 
-> My recommendation to simplify the merkle tree code would be to just put it
-> in slab objects instead pages and leverage recent MM changes to make reclaim
-> work well.  There’s probably still more to do on that front, but it’s a long
-> standing todo item for Josef to shift the btrfs metadata out of the page
-> cache, where we have exactly the same problems for exactly the same reasons.
+One more thing:
 
-Do you have an idea for how to do that without introducing much extra overhead
-to ext4 and f2fs with Merkle tree block size == PAGE_SIZE?  Currently they just
-cache the Merkle tree pages in the inode's page cache.  We don't *have* to do it
-that way, but anything that adds additional overhead (e.g. reading data into
-pagecache, then copying it into slab allocations, then freeing the pagecache
-pages) would be undesirable.  We need to keep the overhead minimal.
+On Thu, May 14, 2020 at 12:37:25AM +0000, Satya Tangirala wrote:
+> +/* Enable inline encryption for this file if supported. */
+> +void fscrypt_select_encryption_impl(struct fscrypt_info *ci)
+> +{
+> +	const struct inode *inode = ci->ci_inode;
+> +	struct super_block *sb = inode->i_sb;
+> +	struct blk_crypto_config crypto_cfg;
+> +	int num_devs;
+> +	struct request_queue **devs;
+> +	int i;
+> +
+> +	/* The file must need contents encryption, not filenames encryption */
+> +	if (!fscrypt_needs_contents_encryption(inode))
+> +		return;
+> +
+> +	/* The crypto mode must be valid */
+> +	if (ci->ci_mode->blk_crypto_mode == BLK_ENCRYPTION_MODE_INVALID)
+> +		return;
+> +
+> +	/* The filesystem must be mounted with -o inlinecrypt */
+> +	if (!(sb->s_flags & SB_INLINECRYPT))
+> +		return;
+> +
+> +	/*
+> +	 * blk-crypto must support the crypto configuration we'll use for the
+> +	 * inode on all devices in the sb
+> +	 */
+> +	crypto_cfg.crypto_mode = ci->ci_mode->blk_crypto_mode;
+> +	crypto_cfg.data_unit_size = sb->s_blocksize;
+> +	crypto_cfg.dun_bytes = fscrypt_get_dun_bytes(ci);
+> +	num_devs = fscrypt_get_num_devices(sb);
+> +	devs = kmalloc_array(num_devs, sizeof(*devs), GFP_NOFS);
+> +	if (!devs)
+> +		return;
+
+This function needs to return an error code, so that if this memory allocation
+fails, the error is not ignored.
 
 - Eric
