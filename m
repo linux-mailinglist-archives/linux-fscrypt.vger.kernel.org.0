@@ -2,30 +2,56 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 888DB1F9FC2
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 15 Jun 2020 20:58:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78DA31F9FE8
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 15 Jun 2020 21:07:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731249AbgFOS6J (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 15 Jun 2020 14:58:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33596 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731179AbgFOS6J (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 15 Jun 2020 14:58:09 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E678D20656;
-        Mon, 15 Jun 2020 18:58:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592247488;
-        bh=Fl5W9I2OhhgjaA4OO9wCci0K4DTcx1xK2ig/rm+EdlA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DNefsVw/lFzCGd1Dnt0NvSfDbwWAKX4ug4TOHb1HG9MuOil4WektjXPZwiIU3zn8J
-         gs6qvLj7OalE9q+U+Tb7ahO1YlBL0ysLtw/myVr1ITi5TpE74ILFZhpNBLuj9NlHAY
-         weV9C0kLnnnnXV1POZo8IE2DvyO3HkItNZZ2zF1M=
-Date:   Mon, 15 Jun 2020 11:58:06 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Steev Klimaszewski <steev@kali.org>
+        id S1731432AbgFOTHa (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 15 Jun 2020 15:07:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729354AbgFOTH1 (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 15 Jun 2020 15:07:27 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCADDC061A0E
+        for <linux-fscrypt@vger.kernel.org>; Mon, 15 Jun 2020 12:07:27 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id e5so13947792ote.11
+        for <linux-fscrypt@vger.kernel.org>; Mon, 15 Jun 2020 12:07:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kali.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=gkisYoqPUHl9LL0bMseRIRvV+9UIa3Tr6nRZ75os/94=;
+        b=WNJIIb/LEdiABSPWau+fuOw7xHs2zDQrgqhRIJqIcPdHFpFDXr/7kVCm6XFrZYNotm
+         9x69N7NIXg6LueAOyHhTUs3Q8bI5Yfv4Cz6dJSP2upRHyQUgb3i3opKO/7ZRNTwlsjt9
+         AdF6N+T9WDDaBaVhGjx5C5GGkc/um765axhNEADTEDRPHwWiIIUY0VwyqyOc9Y0Ip+su
+         mq/XWN0vU+gX+2JLCiqqEroKy55EkDL2CeaaPpd+y+fMYSu2NzB2tpcTwJ3Hzx2o634c
+         jBCCtc6J3EgGtpmNxMpR9+LW6CZzbwiMSlJLx8RQ2+XI1KXKhpD29fZL3ibYbBZkSqxY
+         8KwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=gkisYoqPUHl9LL0bMseRIRvV+9UIa3Tr6nRZ75os/94=;
+        b=QexHjxUD7DlAb91TEj+FkLERQJkM4zjFFt2E74FkpU8cR2AYpQ2As2CWV7FJs1Dyhu
+         1moAe9sb+qAUBW0HCHwr2SsS9av4qRI4egfQmsJS/CKmP4pZZOp96AE+nn1jIXd6G+ZI
+         vl+nKzGMfYQ2tn9WiRR2HfhWbjVH6utG675tXCdYk9t0xAiQEILerF6V/BXBZbr4LkI1
+         rC1D+jDAs+oLr2P/CKZgF1YVPo7aAEGVIUj1aYCJ5qvnFLMXfEgzaEZ8EYtdLnEO/rT0
+         7IdaZPdthZzNMa33zHq1geMD4B4QgGQDARCi/AsDmF8ljrRyV/+kKkOT72vpyMjfiR7C
+         fqoA==
+X-Gm-Message-State: AOAM531hqZrAGZXbWwNf3aYCt/jzBSovLsJnlyctMbSByNARL1DWY351
+        CJYmz/oBSbY1Kbl4/Vj4+sE4Gg==
+X-Google-Smtp-Source: ABdhPJwfv5W3EVhFyjfklabyBQ0AqghguZeeODyksn4WYKzWBKXJnT04Z0JIf4XQp9S7QAPcJb+NnA==
+X-Received: by 2002:a9d:a14:: with SMTP id 20mr23869540otg.292.1592248047094;
+        Mon, 15 Jun 2020 12:07:27 -0700 (PDT)
+Received: from Steevs-MBP.hackershack.net (cpe-173-175-113-3.satx.res.rr.com. [173.175.113.3])
+        by smtp.gmail.com with ESMTPSA id z7sm3484098oto.2.2020.06.15.12.07.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Jun 2020 12:07:26 -0700 (PDT)
+Subject: Re: [RFC PATCH v4 4/4] scsi: ufs-qcom: add Inline Crypto Engine
+ support
+To:     Eric Biggers <ebiggers@kernel.org>
 Cc:     Thara Gopinath <thara.gopinath@linaro.org>,
         linux-scsi@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         linux-block@vger.kernel.org, linux-fscrypt@vger.kernel.org,
@@ -38,96 +64,51 @@ Cc:     Thara Gopinath <thara.gopinath@linaro.org>,
         Elliot Berman <eberman@codeaurora.org>,
         John Stultz <john.stultz@linaro.org>,
         Satya Tangirala <satyat@google.com>
-Subject: Re: [RFC PATCH v4 4/4] scsi: ufs-qcom: add Inline Crypto Engine
- support
-Message-ID: <20200615185806.GC85413@gmail.com>
 References: <20200501045111.665881-1-ebiggers@kernel.org>
  <20200501045111.665881-5-ebiggers@kernel.org>
  <31fa95e5-7757-96ae-2e86-1f54959e3a6c@linaro.org>
- <20200507180435.GB236103@gmail.com>
- <20200507180838.GC236103@gmail.com>
+ <20200507180435.GB236103@gmail.com> <20200507180838.GC236103@gmail.com>
  <150ddaaf-12ec-231e-271a-c65b1d88d30f@kali.org>
  <20200508202513.GA233206@gmail.com>
  <1aa17b19-0ca7-1ff1-b945-442e56ef942a@kali.org>
+ <20200615185806.GC85413@gmail.com>
+From:   Steev Klimaszewski <steev@kali.org>
+Message-ID: <dc735157-77a2-34a3-12c2-5fe060afa153@kali.org>
+Date:   Mon, 15 Jun 2020 14:07:25 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <20200615185806.GC85413@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1aa17b19-0ca7-1ff1-b945-442e56ef942a@kali.org>
+Content-Language: en-US
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Jun 12, 2020 at 01:04:33PM -0500, Steev Klimaszewski wrote:
-> 
-> On 5/8/20 3:25 PM, Eric Biggers wrote:
-> > On Fri, May 08, 2020 at 03:18:23PM -0500, Steev Klimaszewski wrote:
-> >> On 5/7/20 1:08 PM, Eric Biggers wrote:
-> >>> On Thu, May 07, 2020 at 11:04:35AM -0700, Eric Biggers wrote:
-> >>>> Hi Thara,
-> >>>>
-> >>>> On Thu, May 07, 2020 at 08:36:58AM -0400, Thara Gopinath wrote:
-> >>>>> On 5/1/20 12:51 AM, Eric Biggers wrote:
-> >>>>>> From: Eric Biggers <ebiggers@google.com>
-> >>>>>>
-> >>>>>> Add support for Qualcomm Inline Crypto Engine (ICE) to ufs-qcom.
-> >>>>>>
-> >>>>>> The standards-compliant parts, such as querying the crypto capabilities
-> >>>>>> and enabling crypto for individual UFS requests, are already handled by
-> >>>>>> ufshcd-crypto.c, which itself is wired into the blk-crypto framework.
-> >>>>>> However, ICE requires vendor-specific init, enable, and resume logic,
-> >>>>>> and it requires that keys be programmed and evicted by vendor-specific
-> >>>>>> SMC calls.  Make the ufs-qcom driver handle these details.
-> >>>>>>
-> >>>>>> I tested this on Dragonboard 845c, which is a publicly available
-> >>>>>> development board that uses the Snapdragon 845 SoC and runs the upstream
-> >>>>>> Linux kernel.  This is the same SoC used in the Pixel 3 and Pixel 3 XL
-> >>>>>> phones.  This testing included (among other things) verifying that the
-> >>>>>> expected ciphertext was produced, both manually using ext4 encryption
-> >>>>>> and automatically using a block layer self-test I've written.
-> >>>>> Hello Eric,
-> >>>>>
-> >>>>> I am interested in testing out this series on 845, 855 and if possile on 865
-> >>>>> platforms. Can you give me some more details about your testing please.
-> >>>>>
-> >>>> Great!  You can test this with fscrypt, a.k.a. ext4 or f2fs encryption.
-> >>>>
-> >>>> A basic manual test would be:
-> >>>>
-> >>>> 1. Build a kernel with:
-> >>>>
-> >>>> 	CONFIG_BLK_INLINE_ENCRYPTION=y
-> >>>> 	CONFIG_FS_ENCRYPTION=y
-> >>>> 	CONFIG_FS_ENCRYPTION_INLINE_CRYPT=y
-> >>> Sorry, I forgot: 'CONFIG_SCSI_UFS_CRYPTO=y' is needed too.
-> >>>
-> >>> - Eric
-> >>
-> > The original patchset is at
-> > https://lkml.kernel.org/r/20200430115959.238073-1-satyat@google.com/
-> >
-> > Yes, v12 is the latest version, and yes that's a bug.  The export needs double
-> > underscores.  Satya will fix it when he sends out v13.
-> >
-> > - Eric
-> 
-> Hi Eric,
-> 
-> 
-> I've been testing this on a Lenovo Yoga C630 installed to a partition on
-> the UFS drive, using a 5.7(ish) kernel with fscrypt/inline-encryption
-> and a few patches on top that are still in flux for c630 support.  The
-> sources I use can be found at
-> https://github.com/steev/linux/tree/linux-5.7.y-c630-fscrypt and the
-> config I'm using can be found at
-> https://dev.gentoo.org/~steev/files/lenovo-yoga-c630-5.7.0-rc7-fs-inline-encryption.config.
-> 
-> 
-> Everything seems to be working here.  I've run the tests you've
-> mentioned and haven't seen any issues.
-> 
 
-Great!  Can I add your Tested-by when I send out this patchset again?
+On 6/15/20 1:58 PM, Eric Biggers wrote:
+>
+>> Hi Eric,
+>>
+>>
+>> I've been testing this on a Lenovo Yoga C630 installed to a partition on
+>> the UFS drive, using a 5.7(ish) kernel with fscrypt/inline-encryption
+>> and a few patches on top that are still in flux for c630 support.Â  The
+>> sources I use can be found at
+>> https://github.com/steev/linux/tree/linux-5.7.y-c630-fscrypt and the
+>> config I'm using can be found at
+>> https://dev.gentoo.org/~steev/files/lenovo-yoga-c630-5.7.0-rc7-fs-inline-encryption.config.
+>>
+>>
+>> Everything seems to be working here.Â  I've run the tests you've
+>> mentioned and haven't seen any issues.
+>>
+> Great!  Can I add your Tested-by when I send out this patchset again?
+>
+> - Eric
 
-- Eric
+
+Absolutely.Â  Tested-By: Steev Klimaszewski <steev@kali.org> is preferred
+
