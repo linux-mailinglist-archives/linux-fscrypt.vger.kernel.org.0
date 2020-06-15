@@ -2,136 +2,132 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08EDD1F9F84
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 15 Jun 2020 20:40:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 888DB1F9FC2
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 15 Jun 2020 20:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731395AbgFOSkj (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 15 Jun 2020 14:40:39 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:56792 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1731388AbgFOSkj (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 15 Jun 2020 14:40:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592246437;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3LdVapGy9WTsAkwpfNEzCTfQe3Pij8/lM5ySXZsHExs=;
-        b=JZUrw80wsDeK0bo3tEKQK8XiW9ngmDKg5MFnAeOyBAYl0bASVB+QJjQFV1GJsM7juSSDEX
-        zWSaFZX2UdG6N7HwH1NEKT0XcQDnP7iZ8aY1Tv5Ylz+cF8epg7Ev8QJSHYanngZUDD+NKp
-        g2VWPw/vUn4XzPWpEZ+uPXRfRhU1J0Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-513-n3G_ZfGUONug8wkjJytxqA-1; Mon, 15 Jun 2020 14:40:12 -0400
-X-MC-Unique: n3G_ZfGUONug8wkjJytxqA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1731249AbgFOS6J (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 15 Jun 2020 14:58:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33596 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731179AbgFOS6J (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 15 Jun 2020 14:58:09 -0400
+Received: from gmail.com (unknown [104.132.1.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E5F43184D144;
-        Mon, 15 Jun 2020 18:40:06 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-117-41.rdu2.redhat.com [10.10.117.41])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3972B5D9CC;
-        Mon, 15 Jun 2020 18:40:00 +0000 (UTC)
-Subject: Re: [PATCH 1/2] mm, treewide: Rename kzfree() to kfree_sensitive()
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Joe Perches <joe@perches.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        samba-technical@lists.samba.org,
-        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
-        linux-sctp@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        devel@driverdev.osuosl.org, linux-s390@vger.kernel.org,
-        linux-scsi@vger.kernel.org, x86@kernel.org,
-        kasan-dev@googlegroups.com, cocci@systeme.lip6.fr,
-        linux-wpan@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        linux-crypto@vger.kernel.org, linux-pm@vger.kernel.org,
-        ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-cifs@vger.kernel.org,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net, wireguard@lists.zx2c4.com,
-        linux-ppp@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-btrfs@vger.kernel.org
-References: <20200413211550.8307-1-longman@redhat.com>
- <20200413211550.8307-2-longman@redhat.com> <20200615180753.GJ4151@kadam>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <9d084be2-29a3-7757-9386-20dbaeb5fc24@redhat.com>
-Date:   Mon, 15 Jun 2020 14:39:59 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        by mail.kernel.org (Postfix) with ESMTPSA id E678D20656;
+        Mon, 15 Jun 2020 18:58:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592247488;
+        bh=Fl5W9I2OhhgjaA4OO9wCci0K4DTcx1xK2ig/rm+EdlA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DNefsVw/lFzCGd1Dnt0NvSfDbwWAKX4ug4TOHb1HG9MuOil4WektjXPZwiIU3zn8J
+         gs6qvLj7OalE9q+U+Tb7ahO1YlBL0ysLtw/myVr1ITi5TpE74ILFZhpNBLuj9NlHAY
+         weV9C0kLnnnnXV1POZo8IE2DvyO3HkItNZZ2zF1M=
+Date:   Mon, 15 Jun 2020 11:58:06 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Steev Klimaszewski <steev@kali.org>
+Cc:     Thara Gopinath <thara.gopinath@linaro.org>,
+        linux-scsi@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Andy Gross <agross@kernel.org>,
+        Avri Altman <avri.altman@wdc.com>,
+        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Can Guo <cang@codeaurora.org>,
+        Elliot Berman <eberman@codeaurora.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Satya Tangirala <satyat@google.com>
+Subject: Re: [RFC PATCH v4 4/4] scsi: ufs-qcom: add Inline Crypto Engine
+ support
+Message-ID: <20200615185806.GC85413@gmail.com>
+References: <20200501045111.665881-1-ebiggers@kernel.org>
+ <20200501045111.665881-5-ebiggers@kernel.org>
+ <31fa95e5-7757-96ae-2e86-1f54959e3a6c@linaro.org>
+ <20200507180435.GB236103@gmail.com>
+ <20200507180838.GC236103@gmail.com>
+ <150ddaaf-12ec-231e-271a-c65b1d88d30f@kali.org>
+ <20200508202513.GA233206@gmail.com>
+ <1aa17b19-0ca7-1ff1-b945-442e56ef942a@kali.org>
 MIME-Version: 1.0
-In-Reply-To: <20200615180753.GJ4151@kadam>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1aa17b19-0ca7-1ff1-b945-442e56ef942a@kali.org>
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On 6/15/20 2:07 PM, Dan Carpenter wrote:
-> On Mon, Apr 13, 2020 at 05:15:49PM -0400, Waiman Long wrote:
->> diff --git a/mm/slab_common.c b/mm/slab_common.c
->> index 23c7500eea7d..c08bc7eb20bd 100644
->> --- a/mm/slab_common.c
->> +++ b/mm/slab_common.c
->> @@ -1707,17 +1707,17 @@ void *krealloc(const void *p, size_t new_size, gfp_t flags)
->>   EXPORT_SYMBOL(krealloc);
->>   
->>   /**
->> - * kzfree - like kfree but zero memory
->> + * kfree_sensitive - Clear sensitive information in memory before freeing
->>    * @p: object to free memory of
->>    *
->>    * The memory of the object @p points to is zeroed before freed.
->> - * If @p is %NULL, kzfree() does nothing.
->> + * If @p is %NULL, kfree_sensitive() does nothing.
->>    *
->>    * Note: this function zeroes the whole allocated buffer which can be a good
->>    * deal bigger than the requested buffer size passed to kmalloc(). So be
->>    * careful when using this function in performance sensitive code.
->>    */
->> -void kzfree(const void *p)
->> +void kfree_sensitive(const void *p)
->>   {
->>   	size_t ks;
->>   	void *mem = (void *)p;
->> @@ -1725,10 +1725,10 @@ void kzfree(const void *p)
->>   	if (unlikely(ZERO_OR_NULL_PTR(mem)))
->>   		return;
->>   	ks = ksize(mem);
->> -	memset(mem, 0, ks);
->> +	memzero_explicit(mem, ks);
->          ^^^^^^^^^^^^^^^^^^^^^^^^^
-> This is an unrelated bug fix.  It really needs to be pulled into a
-> separate patch by itself and back ported to stable kernels.
->
->>   	kfree(mem);
->>   }
->> -EXPORT_SYMBOL(kzfree);
->> +EXPORT_SYMBOL(kfree_sensitive);
->>   
->>   /**
->>    * ksize - get the actual amount of memory allocated for a given object
-> regards,
-> dan carpenter
->
-Thanks for the suggestion. I will break it out and post a version soon.
+On Fri, Jun 12, 2020 at 01:04:33PM -0500, Steev Klimaszewski wrote:
+> 
+> On 5/8/20 3:25 PM, Eric Biggers wrote:
+> > On Fri, May 08, 2020 at 03:18:23PM -0500, Steev Klimaszewski wrote:
+> >> On 5/7/20 1:08 PM, Eric Biggers wrote:
+> >>> On Thu, May 07, 2020 at 11:04:35AM -0700, Eric Biggers wrote:
+> >>>> Hi Thara,
+> >>>>
+> >>>> On Thu, May 07, 2020 at 08:36:58AM -0400, Thara Gopinath wrote:
+> >>>>> On 5/1/20 12:51 AM, Eric Biggers wrote:
+> >>>>>> From: Eric Biggers <ebiggers@google.com>
+> >>>>>>
+> >>>>>> Add support for Qualcomm Inline Crypto Engine (ICE) to ufs-qcom.
+> >>>>>>
+> >>>>>> The standards-compliant parts, such as querying the crypto capabilities
+> >>>>>> and enabling crypto for individual UFS requests, are already handled by
+> >>>>>> ufshcd-crypto.c, which itself is wired into the blk-crypto framework.
+> >>>>>> However, ICE requires vendor-specific init, enable, and resume logic,
+> >>>>>> and it requires that keys be programmed and evicted by vendor-specific
+> >>>>>> SMC calls.  Make the ufs-qcom driver handle these details.
+> >>>>>>
+> >>>>>> I tested this on Dragonboard 845c, which is a publicly available
+> >>>>>> development board that uses the Snapdragon 845 SoC and runs the upstream
+> >>>>>> Linux kernel.  This is the same SoC used in the Pixel 3 and Pixel 3 XL
+> >>>>>> phones.  This testing included (among other things) verifying that the
+> >>>>>> expected ciphertext was produced, both manually using ext4 encryption
+> >>>>>> and automatically using a block layer self-test I've written.
+> >>>>> Hello Eric,
+> >>>>>
+> >>>>> I am interested in testing out this series on 845, 855 and if possile on 865
+> >>>>> platforms. Can you give me some more details about your testing please.
+> >>>>>
+> >>>> Great!  You can test this with fscrypt, a.k.a. ext4 or f2fs encryption.
+> >>>>
+> >>>> A basic manual test would be:
+> >>>>
+> >>>> 1. Build a kernel with:
+> >>>>
+> >>>> 	CONFIG_BLK_INLINE_ENCRYPTION=y
+> >>>> 	CONFIG_FS_ENCRYPTION=y
+> >>>> 	CONFIG_FS_ENCRYPTION_INLINE_CRYPT=y
+> >>> Sorry, I forgot: 'CONFIG_SCSI_UFS_CRYPTO=y' is needed too.
+> >>>
+> >>> - Eric
+> >>
+> > The original patchset is at
+> > https://lkml.kernel.org/r/20200430115959.238073-1-satyat@google.com/
+> >
+> > Yes, v12 is the latest version, and yes that's a bug.  The export needs double
+> > underscores.  Satya will fix it when he sends out v13.
+> >
+> > - Eric
+> 
+> Hi Eric,
+> 
+> 
+> I've been testing this on a Lenovo Yoga C630 installed to a partition on
+> the UFS drive, using a 5.7(ish) kernel with fscrypt/inline-encryption
+> and a few patches on top that are still in flux for c630 support.  The
+> sources I use can be found at
+> https://github.com/steev/linux/tree/linux-5.7.y-c630-fscrypt and the
+> config I'm using can be found at
+> https://dev.gentoo.org/~steev/files/lenovo-yoga-c630-5.7.0-rc7-fs-inline-encryption.config.
+> 
+> 
+> Everything seems to be working here.  I've run the tests you've
+> mentioned and haven't seen any issues.
+> 
 
-Cheers,
-Longman
+Great!  Can I add your Tested-by when I send out this patchset again?
 
+- Eric
