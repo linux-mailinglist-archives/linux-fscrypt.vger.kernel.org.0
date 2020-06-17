@@ -2,276 +2,115 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5EA61FC657
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 17 Jun 2020 08:48:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0DD11FC6CE
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 17 Jun 2020 09:12:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726329AbgFQGsY (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 17 Jun 2020 02:48:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726308AbgFQGsX (ORCPT
+        id S1726303AbgFQHMU (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 17 Jun 2020 03:12:20 -0400
+Received: from mail-ej1-f65.google.com ([209.85.218.65]:34229 "EHLO
+        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725860AbgFQHMT (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 17 Jun 2020 02:48:23 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DDCFC061755
-        for <linux-fscrypt@vger.kernel.org>; Tue, 16 Jun 2020 23:48:23 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id v13so783964otp.4
-        for <linux-fscrypt@vger.kernel.org>; Tue, 16 Jun 2020 23:48:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eUDSD6z6rPH0CReES0Wf0V4zppIWRjMIWkdDaKPcoe4=;
-        b=oBAB7SlLC6G9XCadbh6agjeaubv5miRZ4A7qOr7fJzW+IGL0agM1hSLaEXMm0fwq+P
-         czHMu4iQNOIGOKb5Ng34Xn6o+qYHhGTs40WKCBORE+6bWQL5Mr9JT1CyFpt3fDj2wC/H
-         OM2U84GCRsQZz99YUyFO5O7Hy1Q2BGYfjW0/xZBqHxQ94rQKGILDgKaMhjUSgrUrNhFP
-         ClqY505KCO5/fOQwvPzQKyyWhWWjGFhp/nflqlU93p2GlZ96+vfhUy1+A5aLjAvB252t
-         +pX54qga2hHsGUc3HycYEej26ZjKS6w6Y8snR7f0llU4/ReY7VajuuIrfN37gffCx8lh
-         bWzg==
+        Wed, 17 Jun 2020 03:12:19 -0400
+Received: by mail-ej1-f65.google.com with SMTP id l27so1176601ejc.1;
+        Wed, 17 Jun 2020 00:12:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=eUDSD6z6rPH0CReES0Wf0V4zppIWRjMIWkdDaKPcoe4=;
-        b=CTgjgwEkXIchCiREPcJXeTPaARpdNjfg5nsRfMI43bYV3y29z7xbWUmXWaO59rYkLK
-         xOrJh6FzfjD6E3ytMzweuM3dwXgMvVBO8y1LSk9+k+GPVUI/RNiYws/hj1GMuOD8NEYY
-         YELtk1J+pDSfZt1n2LA7QghfLJm+o68BkbCQFSpUpJQ6FGd88awv5OVId5n1WGC+TsHY
-         rxJKUpE6RV0+ZUFf8hYtdu8tkrrzynvWP1u2vDI6SOCSCLMvuXklyAUj1BalHrNMp8xv
-         2g1/2MOZr5CdphewpR+HZ5cY678dccPWAs10LmBhnrQTUBeDJwUV3PUOgHGzLJL3/40v
-         rALg==
-X-Gm-Message-State: AOAM533rmGvj7s9A7DL1xW6rgiWqJovq5tBgzG7SODOPeH22XIWrWphx
-        H9DXuCRUMGkRiK5Yb+y6TzHuvA==
-X-Google-Smtp-Source: ABdhPJzhXNxnWAfZ5ITiZG0bsUWWR1kLvJdkRGUYGyKerqr8WAdOj3reUJLA8mUAtlbam1MOx/CdpA==
-X-Received: by 2002:a05:6830:1e61:: with SMTP id m1mr5299019otr.42.1592376502256;
-        Tue, 16 Jun 2020 23:48:22 -0700 (PDT)
-Received: from yoga (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id g2sm4722635otq.9.2020.06.16.23.48.20
+        bh=E5EcWVbc+7tsS+GAmjqiwsU8zuC9ZQ4KDsXaJSfWulo=;
+        b=hpp62K4a8CwZm2UreL6e+o7U64jJN0cGZO64x4/KaxFcj3JVTRwtGgvvphlWOGIwmB
+         mKDjFk36BUKL84X0A9sBPYLln2swyjTrxBpOKfntaidgraTsEqWSInVYjR+f229KLn86
+         JQgPgDrHQKjlcGt4G5FRUs/LnXp6LNLqNd3mRfMJQtEv721UDpyA2floMIWMSRRU63gC
+         qmC2URd5guep9hGNbmRJS4tl3WdSME9dwc9fVWomUGjNxDBIdLQAdimTtHyDG+qL4Z/x
+         N3yZtL4KoRdctI+kyJccwtPMuNdYqp+mPDxIX3roHMzcx6zoabwiEq+N3FeX8asH5wbJ
+         BPbw==
+X-Gm-Message-State: AOAM532QhxsCV6VV0nmw55nyn7fUqk+2MaOyho+lUa6ubnTkcAd2T2f0
+        jAq+dwgSw/eEUQy0iHHJ2nc=
+X-Google-Smtp-Source: ABdhPJzxXEZ/32Vk1uutSgWgDm/2Kml+FRFv6q/oUOzaHXvM3d9a7wcEm5DrSyb0iZ8v3ZPtZ+pKKg==
+X-Received: by 2002:a17:906:2581:: with SMTP id m1mr6681797ejb.89.1592377934427;
+        Wed, 17 Jun 2020 00:12:14 -0700 (PDT)
+Received: from localhost (ip-37-188-158-19.eurotel.cz. [37.188.158.19])
+        by smtp.gmail.com with ESMTPSA id g22sm12516138ejo.1.2020.06.17.00.12.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jun 2020 23:48:21 -0700 (PDT)
-Date:   Tue, 16 Jun 2020 23:48:19 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-scsi@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Andy Gross <agross@kernel.org>,
-        Avri Altman <avri.altman@wdc.com>,
-        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
-        Can Guo <cang@codeaurora.org>,
-        Elliot Berman <eberman@codeaurora.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Satya Tangirala <satyat@google.com>
-Subject: Re: [RFC PATCH v4 1/4] firmware: qcom_scm: Add support for
- programming inline crypto keys
-Message-ID: <20200617064819.GF11847@yoga>
-References: <20200501045111.665881-1-ebiggers@kernel.org>
- <20200501045111.665881-2-ebiggers@kernel.org>
+        Wed, 17 Jun 2020 00:12:13 -0700 (PDT)
+Date:   Wed, 17 Jun 2020 09:12:12 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     dsterba@suse.cz, Joe Perches <joe@perches.com>,
+        Waiman Long <longman@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        "Jason A . Donenfeld" <Jason@zx2c4.com>, linux-mm@kvack.org,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-amlogic@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-ppp@vger.kernel.org, wireguard@lists.zx2c4.com,
+        linux-wireless@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, ecryptfs@vger.kernel.org,
+        kasan-dev@googlegroups.com, linux-bluetooth@vger.kernel.org,
+        linux-wpan@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
+        linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org
+Subject: Re: [PATCH v4 0/3] mm, treewide: Rename kzfree() to kfree_sensitive()
+Message-ID: <20200617071212.GJ9499@dhcp22.suse.cz>
+References: <20200616015718.7812-1-longman@redhat.com>
+ <fe3b9a437be4aeab3bac68f04193cb6daaa5bee4.camel@perches.com>
+ <20200616230130.GJ27795@twin.jikos.cz>
+ <20200617003711.GD8681@bombadil.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200501045111.665881-2-ebiggers@kernel.org>
+In-Reply-To: <20200617003711.GD8681@bombadil.infradead.org>
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu 30 Apr 21:51 PDT 2020, Eric Biggers wrote:
+On Tue 16-06-20 17:37:11, Matthew Wilcox wrote:
+> On Wed, Jun 17, 2020 at 01:01:30AM +0200, David Sterba wrote:
+> > On Tue, Jun 16, 2020 at 11:53:50AM -0700, Joe Perches wrote:
+> > > On Mon, 2020-06-15 at 21:57 -0400, Waiman Long wrote:
+> > > >  v4:
+> > > >   - Break out the memzero_explicit() change as suggested by Dan Carpenter
+> > > >     so that it can be backported to stable.
+> > > >   - Drop the "crypto: Remove unnecessary memzero_explicit()" patch for
+> > > >     now as there can be a bit more discussion on what is best. It will be
+> > > >     introduced as a separate patch later on after this one is merged.
+> > > 
+> > > To this larger audience and last week without reply:
+> > > https://lore.kernel.org/lkml/573b3fbd5927c643920e1364230c296b23e7584d.camel@perches.com/
+> > > 
+> > > Are there _any_ fastpath uses of kfree or vfree?
+> > 
+> > I'd consider kfree performance critical for cases where it is called
+> > under locks. If possible the kfree is moved outside of the critical
+> > section, but we have rbtrees or lists that get deleted under locks and
+> > restructuring the code to do eg. splice and free it outside of the lock
+> > is not always possible.
+> 
+> Not just performance critical, but correctness critical.  Since kvfree()
+> may allocate from the vmalloc allocator, I really think that kvfree()
+> should assert that it's !in_atomic().  Otherwise we can get into trouble
+> if we end up calling vfree() and have to take the mutex.
 
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> Add support for the Inline Crypto Engine (ICE) key programming interface
-> that's needed for the ufs-qcom driver to use inline encryption on
-> Snapdragon SoCs.  This interface consists of two SCM calls: one to
-> program a key into a keyslot, and one to invalidate a keyslot.
-> 
-> Although the UFS specification defines a standard way to do this, on
-> these SoCs the Linux kernel isn't permitted to access the needed crypto
-> configuration registers directly; these SCM calls must be used instead.
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
+FWIW __vfree already checks for atomic context and put the work into a
+deferred context. So this should be safe. It should be used as a last
+resort, though.
 
-Acked-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-Regards,
-Bjorn
-
-> ---
->  drivers/firmware/qcom_scm.c | 101 ++++++++++++++++++++++++++++++++++++
->  drivers/firmware/qcom_scm.h |   4 ++
->  include/linux/qcom_scm.h    |  19 +++++++
->  3 files changed, 124 insertions(+)
-> 
-> diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
-> index 059bb0fbae9e5b..646f9613393612 100644
-> --- a/drivers/firmware/qcom_scm.c
-> +++ b/drivers/firmware/qcom_scm.c
-> @@ -926,6 +926,107 @@ int qcom_scm_ocmem_unlock(enum qcom_scm_ocmem_client id, u32 offset, u32 size)
->  }
->  EXPORT_SYMBOL(qcom_scm_ocmem_unlock);
->  
-> +/**
-> + * qcom_scm_ice_available() - Is the ICE key programming interface available?
-> + *
-> + * Return: true iff the SCM calls wrapped by qcom_scm_ice_invalidate_key() and
-> + *	   qcom_scm_ice_set_key() are available.
-> + */
-> +bool qcom_scm_ice_available(void)
-> +{
-> +	return __qcom_scm_is_call_available(__scm->dev, QCOM_SCM_SVC_ES,
-> +					    QCOM_SCM_ES_INVALIDATE_ICE_KEY) &&
-> +		__qcom_scm_is_call_available(__scm->dev, QCOM_SCM_SVC_ES,
-> +					     QCOM_SCM_ES_CONFIG_SET_ICE_KEY);
-> +}
-> +EXPORT_SYMBOL(qcom_scm_ice_available);
-> +
-> +/**
-> + * qcom_scm_ice_invalidate_key() - Invalidate an inline encryption key
-> + * @index: the keyslot to invalidate
-> + *
-> + * The UFSHCI standard defines a standard way to do this, but it doesn't work on
-> + * these SoCs; only this SCM call does.
-> + *
-> + * Return: 0 on success; -errno on failure.
-> + */
-> +int qcom_scm_ice_invalidate_key(u32 index)
-> +{
-> +	struct qcom_scm_desc desc = {
-> +		.svc = QCOM_SCM_SVC_ES,
-> +		.cmd = QCOM_SCM_ES_INVALIDATE_ICE_KEY,
-> +		.arginfo = QCOM_SCM_ARGS(1),
-> +		.args[0] = index,
-> +		.owner = ARM_SMCCC_OWNER_SIP,
-> +	};
-> +
-> +	return qcom_scm_call(__scm->dev, &desc, NULL);
-> +}
-> +EXPORT_SYMBOL(qcom_scm_ice_invalidate_key);
-> +
-> +/**
-> + * qcom_scm_ice_set_key() - Set an inline encryption key
-> + * @index: the keyslot into which to set the key
-> + * @key: the key to program
-> + * @key_size: the size of the key in bytes
-> + * @cipher: the encryption algorithm the key is for
-> + * @data_unit_size: the encryption data unit size, i.e. the size of each
-> + *		    individual plaintext and ciphertext.  Given in 512-byte
-> + *		    units, e.g. 1 = 512 bytes, 8 = 4096 bytes, etc.
-> + *
-> + * Program a key into a keyslot of Qualcomm ICE (Inline Crypto Engine), where it
-> + * can then be used to encrypt/decrypt UFS I/O requests inline.
-> + *
-> + * The UFSHCI standard defines a standard way to do this, but it doesn't work on
-> + * these SoCs; only this SCM call does.
-> + *
-> + * Return: 0 on success; -errno on failure.
-> + */
-> +int qcom_scm_ice_set_key(u32 index, const u8 *key, u32 key_size,
-> +			 enum qcom_scm_ice_cipher cipher, u32 data_unit_size)
-> +{
-> +	struct qcom_scm_desc desc = {
-> +		.svc = QCOM_SCM_SVC_ES,
-> +		.cmd = QCOM_SCM_ES_CONFIG_SET_ICE_KEY,
-> +		.arginfo = QCOM_SCM_ARGS(5, QCOM_SCM_VAL, QCOM_SCM_RW,
-> +					 QCOM_SCM_VAL, QCOM_SCM_VAL,
-> +					 QCOM_SCM_VAL),
-> +		.args[0] = index,
-> +		.args[2] = key_size,
-> +		.args[3] = cipher,
-> +		.args[4] = data_unit_size,
-> +		.owner = ARM_SMCCC_OWNER_SIP,
-> +	};
-> +	void *keybuf;
-> +	dma_addr_t key_phys;
-> +	int ret;
-> +
-> +	/*
-> +	 * 'key' may point to vmalloc()'ed memory, but we need to pass a
-> +	 * physical address that's been properly flushed.  The sanctioned way to
-> +	 * do this is by using the DMA API.  But as is best practice for crypto
-> +	 * keys, we also must wipe the key after use.  This makes kmemdup() +
-> +	 * dma_map_single() not clearly correct, since the DMA API can use
-> +	 * bounce buffers.  Instead, just use dma_alloc_coherent().  Programming
-> +	 * keys is normally rare and thus not performance-critical.
-> +	 */
-> +
-> +	keybuf = dma_alloc_coherent(__scm->dev, key_size, &key_phys,
-> +				    GFP_KERNEL);
-> +	if (!keybuf)
-> +		return -ENOMEM;
-> +	memcpy(keybuf, key, key_size);
-> +	desc.args[1] = key_phys;
-> +
-> +	ret = qcom_scm_call(__scm->dev, &desc, NULL);
-> +
-> +	memzero_explicit(keybuf, key_size);
-> +
-> +	dma_free_coherent(__scm->dev, key_size, keybuf, key_phys);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(qcom_scm_ice_set_key);
-> +
->  /**
->   * qcom_scm_hdcp_available() - Check if secure environment supports HDCP.
->   *
-> diff --git a/drivers/firmware/qcom_scm.h b/drivers/firmware/qcom_scm.h
-> index d9ed670da222c8..38ea614d29fea2 100644
-> --- a/drivers/firmware/qcom_scm.h
-> +++ b/drivers/firmware/qcom_scm.h
-> @@ -103,6 +103,10 @@ extern int scm_legacy_call(struct device *dev, const struct qcom_scm_desc *desc,
->  #define QCOM_SCM_OCMEM_LOCK_CMD		0x01
->  #define QCOM_SCM_OCMEM_UNLOCK_CMD	0x02
->  
-> +#define QCOM_SCM_SVC_ES			0x10	/* Enterprise Security */
-> +#define QCOM_SCM_ES_INVALIDATE_ICE_KEY	0x03
-> +#define QCOM_SCM_ES_CONFIG_SET_ICE_KEY	0x04
-> +
->  #define QCOM_SCM_SVC_HDCP		0x11
->  #define QCOM_SCM_HDCP_INVOKE		0x01
->  
-> diff --git a/include/linux/qcom_scm.h b/include/linux/qcom_scm.h
-> index 3d6a2469776153..2e1193a3fb5f06 100644
-> --- a/include/linux/qcom_scm.h
-> +++ b/include/linux/qcom_scm.h
-> @@ -44,6 +44,13 @@ enum qcom_scm_sec_dev_id {
->  	QCOM_SCM_ICE_DEV_ID     = 20,
->  };
->  
-> +enum qcom_scm_ice_cipher {
-> +	QCOM_SCM_ICE_CIPHER_AES_128_XTS = 0,
-> +	QCOM_SCM_ICE_CIPHER_AES_128_CBC = 1,
-> +	QCOM_SCM_ICE_CIPHER_AES_256_XTS = 3,
-> +	QCOM_SCM_ICE_CIPHER_AES_256_CBC = 4,
-> +};
-> +
->  #define QCOM_SCM_VMID_HLOS       0x3
->  #define QCOM_SCM_VMID_MSS_MSA    0xF
->  #define QCOM_SCM_VMID_WLAN       0x18
-> @@ -88,6 +95,12 @@ extern int qcom_scm_ocmem_lock(enum qcom_scm_ocmem_client id, u32 offset,
->  extern int qcom_scm_ocmem_unlock(enum qcom_scm_ocmem_client id, u32 offset,
->  				 u32 size);
->  
-> +extern bool qcom_scm_ice_available(void);
-> +extern int qcom_scm_ice_invalidate_key(u32 index);
-> +extern int qcom_scm_ice_set_key(u32 index, const u8 *key, u32 key_size,
-> +				enum qcom_scm_ice_cipher cipher,
-> +				u32 data_unit_size);
-> +
->  extern bool qcom_scm_hdcp_available(void);
->  extern int qcom_scm_hdcp_req(struct qcom_scm_hdcp_req *req, u32 req_cnt,
->  			     u32 *resp);
-> @@ -138,6 +151,12 @@ static inline int qcom_scm_ocmem_lock(enum qcom_scm_ocmem_client id, u32 offset,
->  static inline int qcom_scm_ocmem_unlock(enum qcom_scm_ocmem_client id,
->  		u32 offset, u32 size) { return -ENODEV; }
->  
-> +static inline bool qcom_scm_ice_available(void) { return false; }
-> +static inline int qcom_scm_ice_invalidate_key(u32 index) { return -ENODEV; }
-> +static inline int qcom_scm_ice_set_key(u32 index, const u8 *key, u32 key_size,
-> +				       enum qcom_scm_ice_cipher cipher,
-> +				       u32 data_unit_size) { return -ENODEV; }
-> +
->  static inline bool qcom_scm_hdcp_available(void) { return false; }
->  static inline int qcom_scm_hdcp_req(struct qcom_scm_hdcp_req *req, u32 req_cnt,
->  		u32 *resp) { return -ENODEV; }
-> -- 
-> 2.26.2
-> 
+-- 
+Michal Hocko
+SUSE Labs
