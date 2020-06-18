@@ -2,91 +2,108 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E9F11FDF20
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 18 Jun 2020 03:39:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 529CD1FE961
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 18 Jun 2020 05:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728815AbgFRBjE (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 17 Jun 2020 21:39:04 -0400
-Received: from [211.29.132.59] ([211.29.132.59]:40327 "EHLO
-        mail108.syd.optusnet.com.au" rhost-flags-FAIL-FAIL-OK-OK)
-        by vger.kernel.org with ESMTP id S1726920AbgFRBjD (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:39:03 -0400
-X-Greylist: delayed 1156 seconds by postgrey-1.27 at vger.kernel.org; Wed, 17 Jun 2020 21:39:02 EDT
-Received: from dread.disaster.area (unknown [49.180.124.177])
-        by mail108.syd.optusnet.com.au (Postfix) with ESMTPS id BB9BD1AEAF2;
-        Thu, 18 Jun 2020 11:19:20 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1jljCy-0001gV-Fl; Thu, 18 Jun 2020 11:19:12 +1000
-Date:   Thu, 18 Jun 2020 11:19:12 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org
+        id S1727790AbgFRDTi (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 17 Jun 2020 23:19:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36040 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726966AbgFRDTh (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 17 Jun 2020 23:19:37 -0400
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CA20121655;
+        Thu, 18 Jun 2020 03:19:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592450377;
+        bh=tb8eihrC/QSLy1DAOwhuACWDwQVJ7zu3gsQrF0KN6W8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=a5nCURSUqqX0UUIMT3I1h+OR1Z2Lak9E0lXPKq4jwQjzuth5mpakN9gMWOWgW28le
+         iBadBT/YYRVhbmROBTA8eyC4fXxTYGMBV6FXAkaHv0RPZTWMbFzIkffZxMoC7MZbDp
+         pHdoOal6ViKvmNvO1MAYr0rTmaoWUMSAjjssWUlE=
+Date:   Wed, 17 Jun 2020 20:19:35 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Satya Tangirala <satyat@google.com>, linux-fsdevel@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
 Subject: Re: [PATCH 1/4] fs: introduce SB_INLINECRYPT
-Message-ID: <20200618011912.GA2040@dread.disaster.area>
+Message-ID: <20200618031935.GE1138@sol.localdomain>
 References: <20200617075732.213198-1-satyat@google.com>
  <20200617075732.213198-2-satyat@google.com>
+ <20200618011912.GA2040@dread.disaster.area>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200617075732.213198-2-satyat@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=W5xGqiek c=1 sm=1 tr=0
-        a=k3aV/LVJup6ZGWgigO6cSA==:117 a=k3aV/LVJup6ZGWgigO6cSA==:17
-        a=kj9zAlcOel0A:10 a=nTHF0DUjJn0A:10 a=1XWaLZrsAAAA:8 a=7-415B0cAAAA:8
-        a=Yn2aIsqHhkDqJBDDX5kA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <20200618011912.GA2040@dread.disaster.area>
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 07:57:29AM +0000, Satya Tangirala wrote:
-> Introduce SB_INLINECRYPT, which is set by filesystems that wish to use
-> blk-crypto for file content en/decryption. This flag maps to the
-> '-o inlinecrypt' mount option which multiple filesystems will implement,
-> and code in fs/crypto/ needs to be able to check for this mount option
-> in a filesystem-independent way.
+On Thu, Jun 18, 2020 at 11:19:12AM +1000, Dave Chinner wrote:
+> On Wed, Jun 17, 2020 at 07:57:29AM +0000, Satya Tangirala wrote:
+> > Introduce SB_INLINECRYPT, which is set by filesystems that wish to use
+> > blk-crypto for file content en/decryption. This flag maps to the
+> > '-o inlinecrypt' mount option which multiple filesystems will implement,
+> > and code in fs/crypto/ needs to be able to check for this mount option
+> > in a filesystem-independent way.
+> > 
+> > Signed-off-by: Satya Tangirala <satyat@google.com>
+> > ---
+> >  fs/proc_namespace.c | 1 +
+> >  include/linux/fs.h  | 1 +
+> >  2 files changed, 2 insertions(+)
+> > 
+> > diff --git a/fs/proc_namespace.c b/fs/proc_namespace.c
+> > index 3059a9394c2d..e0ff1f6ac8f1 100644
+> > --- a/fs/proc_namespace.c
+> > +++ b/fs/proc_namespace.c
+> > @@ -49,6 +49,7 @@ static int show_sb_opts(struct seq_file *m, struct super_block *sb)
+> >  		{ SB_DIRSYNC, ",dirsync" },
+> >  		{ SB_MANDLOCK, ",mand" },
+> >  		{ SB_LAZYTIME, ",lazytime" },
+> > +		{ SB_INLINECRYPT, ",inlinecrypt" },
+> >  		{ 0, NULL }
+> >  	};
+> >  	const struct proc_fs_opts *fs_infop;
 > 
-> Signed-off-by: Satya Tangirala <satyat@google.com>
-> ---
->  fs/proc_namespace.c | 1 +
->  include/linux/fs.h  | 1 +
->  2 files changed, 2 insertions(+)
+> NACK.
 > 
-> diff --git a/fs/proc_namespace.c b/fs/proc_namespace.c
-> index 3059a9394c2d..e0ff1f6ac8f1 100644
-> --- a/fs/proc_namespace.c
-> +++ b/fs/proc_namespace.c
-> @@ -49,6 +49,7 @@ static int show_sb_opts(struct seq_file *m, struct super_block *sb)
->  		{ SB_DIRSYNC, ",dirsync" },
->  		{ SB_MANDLOCK, ",mand" },
->  		{ SB_LAZYTIME, ",lazytime" },
-> +		{ SB_INLINECRYPT, ",inlinecrypt" },
->  		{ 0, NULL }
->  	};
->  	const struct proc_fs_opts *fs_infop;
+> SB_* flgs are for functionality enabled on the superblock, not for
+> indicating mount options that have been set by the user.
 
-NACK.
+That's an interesting claim, given that most SB_* flags are for mount options.
+E.g.:
 
-SB_* flgs are for functionality enabled on the superblock, not for
-indicating mount options that have been set by the user.
+	ro => SB_RDONLY
+	nosuid => SB_NOSUID
+	nodev => SB_NODEV
+	noexec => SB_NOEXEC
+	sync => SB_SYNCHRONOUS
+	mand => SB_MANDLOCK
+	noatime => SB_NOATIME
+	nodiratime => SB_NODIRATIME
+	lazytime => SB_LAZYTIME
 
-If the mount options are directly parsed by the filesystem option
-parser (as is done later in this patchset), then the mount option
-setting should be emitted by the filesystem's ->show_options
-function, not a generic function.
+> 
+> If the mount options are directly parsed by the filesystem option
+> parser (as is done later in this patchset), then the mount option
+> setting should be emitted by the filesystem's ->show_options
+> function, not a generic function.
+> 
+> The option string must match what the filesystem defines, not
+> require separate per-filesystem and VFS definitions of the same
+> option that people could potentially get wrong (*cough* i_version vs
+> iversion *cough*)....
 
-The option string must match what the filesystem defines, not
-require separate per-filesystem and VFS definitions of the same
-option that people could potentially get wrong (*cough* i_version vs
-iversion *cough*)....
+Are you objecting to the use of a SB_* flag, or just to showing the flag in
+show_sb_opts() instead of in the individual filesystems?  Note that the SB_*
+flag was requested by Christoph
+(https://lkml.kernel.org/r/20191031183217.GF23601@infradead.org/,
+https://lkml.kernel.org/r/20191031212103.GA6244@infradead.org/).  We originally
+used a function fscrypt_operations::inline_crypt_enabled() instead.
 
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+- Eric
