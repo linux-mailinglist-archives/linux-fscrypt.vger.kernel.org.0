@@ -2,97 +2,144 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C1761FFE55
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 19 Jun 2020 00:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4495E200051
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 19 Jun 2020 04:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730861AbgFRWuM (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 18 Jun 2020 18:50:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57492 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728932AbgFRWuM (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 18 Jun 2020 18:50:12 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 56F5220720;
-        Thu, 18 Jun 2020 22:50:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592520611;
-        bh=HYGod6h7F0uGZKxft0EPpj5IScO/V7jm1M/teBNdy6s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=L+1dinT/55/j1xVvfBjHT5Et+P7+8KZg4YS557H8LYrg195s8hd/bYt7q+cQL6ZeO
-         zlEj41LEnzrCKAAZ0yeGfyZbsTZY5xWsQemwiJN0ywf0k+qS4Mj4zfUXpiFe+wuBrG
-         vLVCAVzIkptKANY2O81F1qNWTAD3JJQ4Bwcjs+OQ=
-Date:   Thu, 18 Jun 2020 15:50:09 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org
+        id S1728443AbgFSCjn (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 18 Jun 2020 22:39:43 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:35730 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726906AbgFSCjn (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 18 Jun 2020 22:39:43 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 615274DC5B259B57828C;
+        Fri, 19 Jun 2020 10:39:40 +0800 (CST)
+Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 19 Jun
+ 2020 10:39:35 +0800
 Subject: Re: [PATCH 3/4] f2fs: add inline encryption support
-Message-ID: <20200618225009.GA35732@gmail.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+CC:     Satya Tangirala <satyat@google.com>,
+        <linux-fscrypt@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-ext4@vger.kernel.org>
 References: <20200617075732.213198-1-satyat@google.com>
  <20200617075732.213198-4-satyat@google.com>
+ <5e78e1be-f948-d54c-d28e-50f1f0a92ab3@huawei.com>
+ <20200618181357.GC2957@sol.localdomain>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <c6f9d02d-623f-8b36-1f18-91c69bdd17c8@huawei.com>
+Date:   Fri, 19 Jun 2020 10:39:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200617075732.213198-4-satyat@google.com>
+In-Reply-To: <20200618181357.GC2957@sol.localdomain>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.134.22.195]
+X-CFilter-Loop: Reflected
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 07:57:31AM +0000, Satya Tangirala wrote:
-> Wire up f2fs to support inline encryption via the helper functions which
-> fs/crypto/ now provides.  This includes:
-> 
-> - Adding a mount option 'inlinecrypt' which enables inline encryption
->   on encrypted files where it can be used.
-> 
-> - Setting the bio_crypt_ctx on bios that will be submitted to an
->   inline-encrypted file.
-> 
-> - Not adding logically discontiguous data to bios that will be submitted
->   to an inline-encrypted file.
-> 
-> - Not doing filesystem-layer crypto on inline-encrypted files.
-> 
-> This patch includes a fix for a race during IPU by
-> Sahitya Tummala <stummala@codeaurora.org>
-> 
-> Co-developed-by: Eric Biggers <ebiggers@google.com>
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> Signed-off-by: Satya Tangirala <satyat@google.com>
-> ---
->  Documentation/filesystems/f2fs.rst |  7 ++-
->  fs/f2fs/compress.c                 |  2 +-
->  fs/f2fs/data.c                     | 81 ++++++++++++++++++++++++------
->  fs/f2fs/super.c                    | 32 ++++++++++++
->  4 files changed, 104 insertions(+), 18 deletions(-)
-> 
-> diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
-> index 099d45ac8d8f..4dc36143ff82 100644
-> --- a/Documentation/filesystems/f2fs.rst
-> +++ b/Documentation/filesystems/f2fs.rst
-> @@ -258,7 +258,12 @@ compress_extension=%s  Support adding specified extension, so that f2fs can enab
->                         on compression extension list and enable compression on
->                         these file by default rather than to enable it via ioctl.
->                         For other files, we can still enable compression via ioctl.
-> -====================== ============================================================
+Hi Eric,
 
-The above line being deleted marks the end of a table, so it shouldn't be
-deleted (it should go after the part below).
+On 2020/6/19 2:13, Eric Biggers wrote:
+> Hi Chao,
+> 
+> On Thu, Jun 18, 2020 at 06:06:02PM +0800, Chao Yu wrote:
+>>> @@ -936,8 +972,11 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
+>>>  
+>>>  	inc_page_count(sbi, WB_DATA_TYPE(bio_page));
+>>>  
+>>> -	if (io->bio && !io_is_mergeable(sbi, io->bio, io, fio,
+>>> -			io->last_block_in_bio, fio->new_blkaddr))
+>>> +	if (io->bio &&
+>>> +	    (!io_is_mergeable(sbi, io->bio, io, fio, io->last_block_in_bio,
+>>> +			      fio->new_blkaddr) ||
+>>> +	     !f2fs_crypt_mergeable_bio(io->bio, fio->page->mapping->host,
+>>> +				       fio->page->index, fio)))
+>>
+>> bio_page->index, fio)))
+>>
+>>>  		__submit_merged_bio(io);
+>>>  alloc_new:
+>>>  	if (io->bio == NULL) {
+>>> @@ -949,6 +988,8 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
+>>>  			goto skip;
+>>>  		}
+>>>  		io->bio = __bio_alloc(fio, BIO_MAX_PAGES);
+>>> +		f2fs_set_bio_crypt_ctx(io->bio, fio->page->mapping->host,
+>>> +				       fio->page->index, fio, GFP_NOIO);
+>>
+>> bio_page->index, fio, GFP_NOIO);
+>>
+> 
+> We're using ->mapping->host and ->index.  Ordinarily that would mean the page
+> needs to be a pagecache page.  But bio_page can also be a compressed page or a
+> bounce page containing fs-layer encrypted contents.
 
-> +inlinecrypt
-> +                       Encrypt/decrypt the contents of encrypted files using the
-> +                       blk-crypto framework rather than filesystem-layer encryption.
-> +                       This allows the use of inline encryption hardware. The on-disk
-> +                       format is unaffected. For more details, see
-> +                       Documentation/block/inline-encryption.rst.
+I'm concerning about compression + inlinecrypt case.
 
-Like I commented on one of the commit messages -- this doesn't make it clear
-what happens in cases where blk-crypto can't be used.  Maybe just replace:
-"Encrypt/decrypt" => "When possible, encrypt/decrypt".
+> 
+> Is your suggestion to keep using fio->page->mapping->host (since encrypted pages
 
-Likewise for the ext4 documentation for this same mount option.
+Yup,
 
-- Eric
+> don't have a mapping), but start using bio_page->index (since f2fs apparently
+
+I meant that we need to use bio_page->index as tweak value in write path to
+keep consistent as we did in read path, otherwise we may read the wrong
+decrypted data later to incorrect tweak value.
+
+- f2fs_read_multi_pages (only comes from compression inode)
+ - f2fs_alloc_dic
+  - f2fs_set_compressed_page(page, cc->inode,
+					start_idx + i + 1, dic);
+                                        ^^^^^^^^^^^^^^^^^
+  - dic->cpages[i] = page;
+ - for ()
+     struct page *page = dic->cpages[i];
+     if (!bio)
+       - f2fs_grab_read_bio(..., page->index,..)
+        - f2fs_set_bio_crypt_ctx(..., first_idx, ..)   /* first_idx == cpage->index */
+
+You can see that cpage->index was set to page->index + 1, that's why we need
+to use one of cpage->index/page->index as tweak value all the time rather than
+using both index mixed in read/write path.
+
+But note that for fs-layer encryption, we have used cpage->index as tweak value,
+so here I suggest we can keep consistent to use cpage->index in inlinecrypt case.
+
+> *does* set ->index for compressed pages, and if the file uses fs-layer
+> encryption then f2fs_set_bio_crypt_ctx() won't use the index anyway)?
+> 
+> Does this mean the code is currently broken for compression + inline encryption
+> because it's using the wrong ->index?  I think the answer is no, since
+
+I guess it's broken now for compression + inlinecrypt case.
+
+> f2fs_write_compressed_pages() will still pass the first 'nr_cpages' pagecache
+> pages along with the compressed pages.  In that case, your suggestion would be a
+> cleanup rather than a fix?
+
+That's a fix.
+
+> 
+> It would be helpful if there was an f2fs mount option to auto-enable compression
+> on all files (similar to how test_dummy_encryption auto-enables encryption on
+> all files) so that it could be tested more easily.
+
+Agreed.
+
+Previously I changed mkfs to allow to add compression flag to root inode for
+compression test. :P
+
+Thanks,
+
+> 
+> - Eric
+> .
+> 
