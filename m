@@ -2,200 +2,128 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B99C2001FA
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 19 Jun 2020 08:37:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6985D202BCA
+	for <lists+linux-fscrypt@lfdr.de>; Sun, 21 Jun 2020 19:41:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727916AbgFSGh7 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 19 Jun 2020 02:37:59 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:6287 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727808AbgFSGh6 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 19 Jun 2020 02:37:58 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id DBE6EBE6350EF092C04C;
-        Fri, 19 Jun 2020 14:37:54 +0800 (CST)
-Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
- (10.3.19.212) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 19 Jun
- 2020 14:37:52 +0800
-Subject: Re: [PATCH 3/4] f2fs: add inline encryption support
-To:     Eric Biggers <ebiggers@kernel.org>
-CC:     Satya Tangirala <satyat@google.com>,
-        <linux-fscrypt@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-ext4@vger.kernel.org>
-References: <20200617075732.213198-1-satyat@google.com>
- <20200617075732.213198-4-satyat@google.com>
- <5e78e1be-f948-d54c-d28e-50f1f0a92ab3@huawei.com>
- <20200618181357.GC2957@sol.localdomain>
- <c6f9d02d-623f-8b36-1f18-91c69bdd17c8@huawei.com>
- <20200619042048.GF2957@sol.localdomain>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <f1013767-9099-5b38-e3cd-b8caa639f66c@huawei.com>
-Date:   Fri, 19 Jun 2020 14:37:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1730477AbgFURk7 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sun, 21 Jun 2020 13:40:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52434 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730471AbgFURk7 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Sun, 21 Jun 2020 13:40:59 -0400
+Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F1E01221F7;
+        Sun, 21 Jun 2020 17:40:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592761258;
+        bh=2WuP/skh00do2CBELmgP2BjUhfAXpwflm1XOnaq3gAc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ubwGYsHIoVgXlaRyoXcBBBLDHoHhq+XMSw6IxSxBbVfdgjC6ylw1+ID9Kw+JLG57F
+         5TRg/HoZebRmd7n5WGtAcoV/oHPJmCLoW8HIEzVHVtraklWcV6Pd5n0NddcClJHPPq
+         JBY8KSOHN2nuQr46R9jKMYxSftcL3BzB1fp12HYU=
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-scsi@vger.kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Andy Gross <agross@kernel.org>,
+        Avri Altman <avri.altman@wdc.com>,
+        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Can Guo <cang@codeaurora.org>,
+        Elliot Berman <eberman@codeaurora.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Satya Tangirala <satyat@google.com>,
+        Steev Klimaszewski <steev@kali.org>,
+        Thara Gopinath <thara.gopinath@linaro.org>
+Subject: [PATCH v5 0/5] Inline crypto support on DragonBoard 845c
+Date:   Sun, 21 Jun 2020 10:37:08 -0700
+Message-Id: <20200621173713.132879-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20200619042048.GF2957@sol.localdomain>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.134.22.195]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On 2020/6/19 12:20, Eric Biggers wrote:
-> On Fri, Jun 19, 2020 at 10:39:34AM +0800, Chao Yu wrote:
->> Hi Eric,
->>
->> On 2020/6/19 2:13, Eric Biggers wrote:
->>> Hi Chao,
->>>
->>> On Thu, Jun 18, 2020 at 06:06:02PM +0800, Chao Yu wrote:
->>>>> @@ -936,8 +972,11 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
->>>>>  
->>>>>  	inc_page_count(sbi, WB_DATA_TYPE(bio_page));
->>>>>  
->>>>> -	if (io->bio && !io_is_mergeable(sbi, io->bio, io, fio,
->>>>> -			io->last_block_in_bio, fio->new_blkaddr))
->>>>> +	if (io->bio &&
->>>>> +	    (!io_is_mergeable(sbi, io->bio, io, fio, io->last_block_in_bio,
->>>>> +			      fio->new_blkaddr) ||
->>>>> +	     !f2fs_crypt_mergeable_bio(io->bio, fio->page->mapping->host,
->>>>> +				       fio->page->index, fio)))
->>>>
->>>> bio_page->index, fio)))
->>>>
->>>>>  		__submit_merged_bio(io);
->>>>>  alloc_new:
->>>>>  	if (io->bio == NULL) {
->>>>> @@ -949,6 +988,8 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
->>>>>  			goto skip;
->>>>>  		}
->>>>>  		io->bio = __bio_alloc(fio, BIO_MAX_PAGES);
->>>>> +		f2fs_set_bio_crypt_ctx(io->bio, fio->page->mapping->host,
->>>>> +				       fio->page->index, fio, GFP_NOIO);
->>>>
->>>> bio_page->index, fio, GFP_NOIO);
->>>>
->>>
->>> We're using ->mapping->host and ->index.  Ordinarily that would mean the page
->>> needs to be a pagecache page.  But bio_page can also be a compressed page or a
->>> bounce page containing fs-layer encrypted contents.
->>
->> I'm concerning about compression + inlinecrypt case.
->>
->>>
->>> Is your suggestion to keep using fio->page->mapping->host (since encrypted pages
->>
->> Yup,
->>
->>> don't have a mapping), but start using bio_page->index (since f2fs apparently
->>
->> I meant that we need to use bio_page->index as tweak value in write path to
->> keep consistent as we did in read path, otherwise we may read the wrong
->> decrypted data later to incorrect tweak value.
->>
->> - f2fs_read_multi_pages (only comes from compression inode)
->>  - f2fs_alloc_dic
->>   - f2fs_set_compressed_page(page, cc->inode,
->> 					start_idx + i + 1, dic);
->>                                         ^^^^^^^^^^^^^^^^^
->>   - dic->cpages[i] = page;
->>  - for ()
->>      struct page *page = dic->cpages[i];
->>      if (!bio)
->>        - f2fs_grab_read_bio(..., page->index,..)
->>         - f2fs_set_bio_crypt_ctx(..., first_idx, ..)   /* first_idx == cpage->index */
->>
->> You can see that cpage->index was set to page->index + 1, that's why we need
->> to use one of cpage->index/page->index as tweak value all the time rather than
->> using both index mixed in read/write path.
->>
->> But note that for fs-layer encryption, we have used cpage->index as tweak value,
->> so here I suggest we can keep consistent to use cpage->index in inlinecrypt case.
-> 
-> Yes, inlinecrypt mustn't change the ciphertext that gets written to disk.
-> 
->>
->>> *does* set ->index for compressed pages, and if the file uses fs-layer
->>> encryption then f2fs_set_bio_crypt_ctx() won't use the index anyway)?
->>>
->>> Does this mean the code is currently broken for compression + inline encryption
->>> because it's using the wrong ->index?  I think the answer is no, since
->>
->> I guess it's broken now for compression + inlinecrypt case.
->>
->>> f2fs_write_compressed_pages() will still pass the first 'nr_cpages' pagecache
->>> pages along with the compressed pages.  In that case, your suggestion would be a
->>> cleanup rather than a fix?
->>
->> That's a fix.
->>
-> 
-> FWIW, I tested this, and it actually works both before and after your suggested
-> change.  The reason is that f2fs_write_compressed_pages() actually passes the
-> pagecache pages sequentially starting at 'start_idx_of_cluster(cc) + 1' for the
-> length of the compressed cluster.  That matches the '+ 1' adjustment elsewhere,
-> so we have fio->page->index == bio_page->index.
+Hello,
 
-I've checked the code, yes, that's correct.
+This patchset implements UFS inline encryption support on the
+DragonBoard 845c, using the Qualcomm Inline Crypto Engine (ICE)
+that's present on the Snapdragon 845 SoC.
 
-> 
-> I personally think the way the f2fs compression code works is really confusing.
-> Compressed pages don't have a 1:1 correspondence to pagecache pages, so there
-> should *not* be a pagecache page passed around when writing a compressed page.
+This is based on top of the patchset
+"[PATCH v2 0/3] Inline Encryption support for UFS" by Satya Tangirala.
+Link: https://lkml.kernel.org/r/20200618024736.97207-1-satyat@google.com
 
-The only place we always use fio->page is:
-- f2fs_submit_page_write
- - trace_f2fs_submit_page_write(fio->page,..)
-  - f2fs__submit_page_bio
-   __entry->dev		= page_file_mapping(page)->host->i_sb->s_dev;
-   __entry->ino		= page_file_mapping(page)->host->i_ino;
+Most of the logic needed to use ICE is already handled by the blk-crypto
+framework (introduced in v5.8-rc1) and by ufshcd-crypto
+(the above patchset).  This new patchset just adds the vendor-specific
+parts.  I also only implemented support for version 3 of the ICE
+hardware, which seems to be easier to use than older versions.
 
-For compression case, we can get rid of using this parameter because bio_page
-(fio->compressed_page) has correct mapping info, however for fs-layer encryption
-case, bio_page (fio->encrypted_page, allocated by fscrypt_alloc_bounce_page())
-has not correct mapping info.
+Due to these factors and others, I was able to greatly simplify the
+driver from the vendor's original.  It works fine in testing with
+fscrypt and with a blk-crypto self-test I'm also working on.
 
-> 
-> Anyway, here's the test script I used in case anyone else wants to use it.  But
-> we really need to write a proper f2fs compression + encryption test for xfstests
-> which decrypts and decompresses a file in userspace and verifies we get back the
-> original data.  (There are already ciphertext verification tests, but they don't
-> cover compression.)  Note that this test is needed even for the filesystem-layer
-> encryption which is currently supported.
+This driver also works on several other Snapdragon SoCs.
+See the commit messages for details.
 
-Yes, let me check how to make this testcase a bit later.
+This patchset is also available in git at:
+    Repo: https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git
+    Tag: db845c-crypto-v5
 
-> 
-> #!/bin/bash
-> 
-> set -e
-> 
-> DEV=/dev/vdb
-> 
-> umount /mnt &> /dev/null || true
-> mkfs.f2fs -f -O encrypt,compression,extra_attr $DEV
-> head -c 1000000 /dev/zero > /tmp/testdata
-> 
-> for opt1 in '-o inlinecrypt' ''; do
->         mount $DEV /mnt $opt1
->         rm -rf /mnt/.fscrypt /mnt/dir
->         fscrypt setup /mnt
->         mkdir /mnt/dir
->         chattr +c /mnt/dir
->         echo hunter2 | fscrypt encrypt /mnt/dir --quiet --source=custom_passphrase --name=secret
->         cp /tmp/testdata /mnt/dir/file
->         umount /mnt
->         for opt2 in '-o inlinecrypt' ''; do
->                 mount $DEV /mnt $opt2
->                 echo hunter2 | fscrypt unlock /mnt/dir --quiet
->                 cmp /mnt/dir/file /tmp/testdata
->                 umount /mnt
->         done
-> done
-> .
-> 
+Changed v4 => v5:
+    - Rebased onto v5.8-rc1 + the latest ufshcd-crypto patchset.
+    - Refer to the ICE registers by name rather than by index.
+    - Added Tested-by and Acked-by tags.
+
+Changed v3 => v4:
+    - Rebased onto the v12 inline encryption patchset.
+    - A couple small cleanups.
+
+Changed v2 => v3:
+    - Rebased onto the v8 inline encryption patchset.  Now the driver
+      has to opt into inline crypto support rather than opting out.
+    - Switched qcom_scm_ice_set_key() to use dma_alloc_coherent()
+      so that we can reliably zeroing the key without assuming that
+      bounce buffers aren't used.  Also added a comment.
+    - Made the key_size and data_unit_size arguments to
+      qcom_scm_ice_set_key() be 'u32' instead of 'int'.
+
+Changed v1 => v2:
+    - Rebased onto the v7 inline encryption patchset.
+    - Account for all the recent qcom_scm changes.
+    - Don't ignore errors from ->program_key().
+    - Don't dereference NULL hba->vops.
+    - Dropped the patch that added UFSHCD_QUIRK_BROKEN_CRYPTO, as this
+      flag is now included in the main inline encryption patchset.
+    - Many other cleanups.
+
+Eric Biggers (5):
+  firmware: qcom_scm: Add support for programming inline crypto keys
+  scsi: ufs-qcom: name the dev_ref_clk_ctrl registers
+  arm64: dts: sdm845: add Inline Crypto Engine registers and clock
+  scsi: ufs: add program_key() variant op
+  scsi: ufs-qcom: add Inline Crypto Engine support
+
+ MAINTAINERS                          |   2 +-
+ arch/arm64/boot/dts/qcom/sdm845.dtsi |  13 +-
+ drivers/firmware/qcom_scm.c          | 101 +++++++++++
+ drivers/firmware/qcom_scm.h          |   4 +
+ drivers/scsi/ufs/Kconfig             |   1 +
+ drivers/scsi/ufs/Makefile            |   4 +-
+ drivers/scsi/ufs/ufs-qcom-ice.c      | 245 +++++++++++++++++++++++++++
+ drivers/scsi/ufs/ufs-qcom.c          |  15 +-
+ drivers/scsi/ufs/ufs-qcom.h          |  27 +++
+ drivers/scsi/ufs/ufshcd-crypto.c     |  27 +--
+ drivers/scsi/ufs/ufshcd.h            |   3 +
+ include/linux/qcom_scm.h             |  19 +++
+ 12 files changed, 443 insertions(+), 18 deletions(-)
+ create mode 100644 drivers/scsi/ufs/ufs-qcom-ice.c
+
+-- 
+2.27.0
+
