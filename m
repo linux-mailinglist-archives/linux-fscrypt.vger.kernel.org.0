@@ -2,489 +2,166 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBC14202BD8
-	for <lists+linux-fscrypt@lfdr.de>; Sun, 21 Jun 2020 19:41:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31F2820461A
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 23 Jun 2020 02:47:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730522AbgFURlD (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sun, 21 Jun 2020 13:41:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52610 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730475AbgFURlC (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sun, 21 Jun 2020 13:41:02 -0400
-Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C4F3E2310F;
-        Sun, 21 Jun 2020 17:41:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592761261;
-        bh=nCi8YGKGnKvUjOkxSjdKKtF5aIDrlrcbTYRZcwgVapk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0G/7h1Ab/oejaa6/t+MVNlnNIYsLt67RQThtQwMfZigd+nnJHKgt+LBMcqP3cAups
-         0l3mcjnblFkorU9tHwJsiPGhAK2NlTF/RZE2WGWyYhEk+xBWRbhTL2FoJW90FA6R6B
-         jwsYcPcRjtXLZhdFxqiq/+9KKwYBZOuDJeawvslo=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-scsi@vger.kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Andy Gross <agross@kernel.org>,
-        Avri Altman <avri.altman@wdc.com>,
-        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Can Guo <cang@codeaurora.org>,
-        Elliot Berman <eberman@codeaurora.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Satya Tangirala <satyat@google.com>,
-        Steev Klimaszewski <steev@kali.org>,
-        Thara Gopinath <thara.gopinath@linaro.org>
-Subject: [PATCH v5 5/5] scsi: ufs-qcom: add Inline Crypto Engine support
-Date:   Sun, 21 Jun 2020 10:37:13 -0700
-Message-Id: <20200621173713.132879-6-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200621173713.132879-1-ebiggers@kernel.org>
-References: <20200621173713.132879-1-ebiggers@kernel.org>
+        id S1732086AbgFWAqq (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 22 Jun 2020 20:46:46 -0400
+Received: from mail110.syd.optusnet.com.au ([211.29.132.97]:46388 "EHLO
+        mail110.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731920AbgFWAqq (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 22 Jun 2020 20:46:46 -0400
+Received: from dread.disaster.area (pa49-180-124-177.pa.nsw.optusnet.com.au [49.180.124.177])
+        by mail110.syd.optusnet.com.au (Postfix) with ESMTPS id 55F0410E30E;
+        Tue, 23 Jun 2020 10:46:43 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1jnX5A-0001Xm-Kw; Tue, 23 Jun 2020 10:46:36 +1000
+Date:   Tue, 23 Jun 2020 10:46:36 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Satya Tangirala <satyat@google.com>, linux-fsdevel@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [PATCH 1/4] fs: introduce SB_INLINECRYPT
+Message-ID: <20200623004636.GE2040@dread.disaster.area>
+References: <20200617075732.213198-1-satyat@google.com>
+ <20200617075732.213198-2-satyat@google.com>
+ <20200618011912.GA2040@dread.disaster.area>
+ <20200618031935.GE1138@sol.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200618031935.GE1138@sol.localdomain>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=QIgWuTDL c=1 sm=1 tr=0
+        a=k3aV/LVJup6ZGWgigO6cSA==:117 a=k3aV/LVJup6ZGWgigO6cSA==:17
+        a=kj9zAlcOel0A:10 a=nTHF0DUjJn0A:10 a=1XWaLZrsAAAA:8 a=VwQbUJbxAAAA:8
+        a=JfrnYn6hAAAA:8 a=7-415B0cAAAA:8 a=c4diDk9UUco1MpDPBz8A:9
+        a=CjuIK1q_8ugA:10 a=AjGcO6oz07-iQ99wixmX:22 a=1CNFftbPRP8L7MoqJWF3:22
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On Wed, Jun 17, 2020 at 08:19:35PM -0700, Eric Biggers wrote:
+> On Thu, Jun 18, 2020 at 11:19:12AM +1000, Dave Chinner wrote:
+> > On Wed, Jun 17, 2020 at 07:57:29AM +0000, Satya Tangirala wrote:
+> > > Introduce SB_INLINECRYPT, which is set by filesystems that wish to use
+> > > blk-crypto for file content en/decryption. This flag maps to the
+> > > '-o inlinecrypt' mount option which multiple filesystems will implement,
+> > > and code in fs/crypto/ needs to be able to check for this mount option
+> > > in a filesystem-independent way.
+> > > 
+> > > Signed-off-by: Satya Tangirala <satyat@google.com>
+> > > ---
+> > >  fs/proc_namespace.c | 1 +
+> > >  include/linux/fs.h  | 1 +
+> > >  2 files changed, 2 insertions(+)
+> > > 
+> > > diff --git a/fs/proc_namespace.c b/fs/proc_namespace.c
+> > > index 3059a9394c2d..e0ff1f6ac8f1 100644
+> > > --- a/fs/proc_namespace.c
+> > > +++ b/fs/proc_namespace.c
+> > > @@ -49,6 +49,7 @@ static int show_sb_opts(struct seq_file *m, struct super_block *sb)
+> > >  		{ SB_DIRSYNC, ",dirsync" },
+> > >  		{ SB_MANDLOCK, ",mand" },
+> > >  		{ SB_LAZYTIME, ",lazytime" },
+> > > +		{ SB_INLINECRYPT, ",inlinecrypt" },
+> > >  		{ 0, NULL }
+> > >  	};
+> > >  	const struct proc_fs_opts *fs_infop;
+> > 
+> > NACK.
+> > 
+> > SB_* flgs are for functionality enabled on the superblock, not for
+> > indicating mount options that have been set by the user.
+> 
+> That's an interesting claim, given that most SB_* flags are for mount options.
+> E.g.:
+> 
+> 	ro => SB_RDONLY
+> 	nosuid => SB_NOSUID
+> 	nodev => SB_NODEV
+> 	noexec => SB_NOEXEC
+> 	sync => SB_SYNCHRONOUS
+> 	mand => SB_MANDLOCK
+> 	noatime => SB_NOATIME
+> 	nodiratime => SB_NODIRATIME
+> 	lazytime => SB_LAZYTIME
 
-Add support for Qualcomm Inline Crypto Engine (ICE) to ufs-qcom.
+Yes, they *reflect* options set by mount options, but this is all so
+screwed up because the split of superblock functionality from the
+mount option API (i.e. the MS_* flag introduction to avoid having
+the superblock feature flags being directly defined by the userspace
+mount API) was never followed through to properly separate the
+implementation of *active superblock feature flags* from the *user
+specified mount API flags*.
 
-The standards-compliant parts, such as querying the crypto capabilities
-and enabling crypto for individual UFS requests, are already handled by
-ufshcd-crypto.c, which itself is wired into the blk-crypto framework.
-However, ICE requires vendor-specific init, enable, and resume logic,
-and it requires that keys be programmed and evicted by vendor-specific
-SMC calls.  Make the ufs-qcom driver handle these details.
+Yes, the UAPI definitions were separated, but the rest of the
+interface wasn't and only works because of the "MS* flag exactly
+equal to the SB* flag" hack that was used. So now people have no
+idea when to use one or the other and we're repeatedly ending up
+with broken mount option parsing because SB flags are used where MS
+flags should be used and vice versa.
 
-I tested this on Dragonboard 845c, which is a publicly available
-development board that uses the Snapdragon 845 SoC and runs the upstream
-Linux kernel.  This is the same SoC used in the Pixel 3 and Pixel 3 XL
-phones.  This testing included (among other things) verifying that the
-expected ciphertext was produced, both manually using ext4 encryption
-and automatically using a block layer self-test I've written.
+We've made a damn mess of mount options, and the fscontext stuff
+hasn't fixed any of this ... mess. It's just stirred it around and so
+nobody really knows what they are supposed to with mount options
+right now.
 
-I've also tested that this driver works nearly as-is on the Snapdragon
-765 and Snapdragon 865 SoCs.  And others have tested it on Snapdragon
-850, Snapdragon 855, and Snapdragon 865 (see the Tested-by tags).
+> > If the mount options are directly parsed by the filesystem option
+> > parser (as is done later in this patchset), then the mount option
+> > setting should be emitted by the filesystem's ->show_options
+> > function, not a generic function.
+> > 
+> > The option string must match what the filesystem defines, not
+> > require separate per-filesystem and VFS definitions of the same
+> > option that people could potentially get wrong (*cough* i_version vs
+> > iversion *cough*)....
+> 
+> Are you objecting to the use of a SB_* flag, or just to showing the flag in
+> show_sb_opts() instead of in the individual filesystems?  Note that the SB_*
+> flag was requested by Christoph
+> (https://lkml.kernel.org/r/20191031183217.GF23601@infradead.org/,
+> https://lkml.kernel.org/r/20191031212103.GA6244@infradead.org/).  We originally
+> used a function fscrypt_operations::inline_crypt_enabled() instead.
 
-This is based very loosely on the vendor-provided driver in the kernel
-source code for the Pixel 3, but I've greatly simplified it.  Also, for
-now I've only included support for major version 3 of ICE, since that's
-all I have the hardware to test with the mainline kernel.  Plus it
-appears that version 3 is easier to use than older versions of ICE.
+I'm objecting to the layering violations of having the filesystem
+control the mount option parsing and superblock feature flags, but
+then having no control over whether features that the filesystem has
+indicated to the VFS it is using get emitted as a mount option or
+not, and then having the VFS code unconditionally override the
+functionality that the filesystem uses because it thinks it's a
+mount option the filesystem supports....
 
-For now, only allow using AES-256-XTS.  The hardware also declares
-support for AES-128-XTS, AES-{128,256}-ECB, and AES-{128,256}-CBC
-(BitLocker variant).  But none of these others are really useful, and
-they'd need to be individually tested to be sure they worked properly.
+For example, the current mess that has just come to light:
+filesystems like btrfs and XFS v5 which set SB_IVERSION
+unconditionally (i.e. it's not a mount option!) end up having that
+functionality turned off on remount because the VFS conflates
+MS_IVERSION with SB_IVERSION and so unconditionally clears
+SB_IVERSION because MS_IVERSION is not set on remount by userspace.
+Which userspace will never set be because the filesystems don't put
+"iversion" in their mount option strings because -its not a mount
+option- for those filesystems.
 
-This commit also changes the name of the loadable module from "ufs-qcom"
-to "ufs_qcom", as this is necessary to compile it from multiple source
-files (unless we were to rename ufs-qcom.c).
+See the problem?  MS_IVERSION should be passed to the filesystem to
+deal with as a mount option, not treated as a flag to directly
+change SB_IVERSION in the superblock.
 
-Tested-by: Steev Klimaszewski <steev@kali.org> # Lenovo Yoga C630
-Tested-by: Thara Gopinath <thara.gopinath@linaro.org> # db845c, sm8150-mtp, sm8250-mtp
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- MAINTAINERS                     |   2 +-
- drivers/scsi/ufs/Kconfig        |   1 +
- drivers/scsi/ufs/Makefile       |   4 +-
- drivers/scsi/ufs/ufs-qcom-ice.c | 245 ++++++++++++++++++++++++++++++++
- drivers/scsi/ufs/ufs-qcom.c     |  12 +-
- drivers/scsi/ufs/ufs-qcom.h     |  27 ++++
- 6 files changed, 288 insertions(+), 3 deletions(-)
- create mode 100644 drivers/scsi/ufs/ufs-qcom-ice.c
+We really need to stop with the "global mount options for everyone
+at the VFS" and instead pass everything down to the filesystems to
+parse appropriately. Yes, provide generic helper functions to deal
+with the common flags that everything supports, but the filesystems
+should be masking off mount options they doesn't support changing
+before changing their superblock feature support mask....
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 68f21d46614c..aa9c924facc6 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2271,7 +2271,7 @@ F:	drivers/pci/controller/dwc/pcie-qcom.c
- F:	drivers/phy/qualcomm/
- F:	drivers/power/*/msm*
- F:	drivers/reset/reset-qcom-*
--F:	drivers/scsi/ufs/ufs-qcom.*
-+F:	drivers/scsi/ufs/ufs-qcom*
- F:	drivers/spi/spi-geni-qcom.c
- F:	drivers/spi/spi-qcom-qspi.c
- F:	drivers/spi/spi-qup.c
-diff --git a/drivers/scsi/ufs/Kconfig b/drivers/scsi/ufs/Kconfig
-index 4c0a9661049a..c67ee3cd6c92 100644
---- a/drivers/scsi/ufs/Kconfig
-+++ b/drivers/scsi/ufs/Kconfig
-@@ -99,6 +99,7 @@ config SCSI_UFS_DWC_TC_PLATFORM
- config SCSI_UFS_QCOM
- 	tristate "QCOM specific hooks to UFS controller platform driver"
- 	depends on SCSI_UFSHCD_PLATFORM && ARCH_QCOM
-+	select QCOM_SCM
- 	select RESET_CONTROLLER
- 	help
- 	  This selects the QCOM specific additions to UFSHCD platform driver.
-diff --git a/drivers/scsi/ufs/Makefile b/drivers/scsi/ufs/Makefile
-index 197e178f44bc..13fda1b697b2 100644
---- a/drivers/scsi/ufs/Makefile
-+++ b/drivers/scsi/ufs/Makefile
-@@ -3,7 +3,9 @@
- obj-$(CONFIG_SCSI_UFS_DWC_TC_PCI) += tc-dwc-g210-pci.o ufshcd-dwc.o tc-dwc-g210.o
- obj-$(CONFIG_SCSI_UFS_DWC_TC_PLATFORM) += tc-dwc-g210-pltfrm.o ufshcd-dwc.o tc-dwc-g210.o
- obj-$(CONFIG_SCSI_UFS_CDNS_PLATFORM) += cdns-pltfrm.o
--obj-$(CONFIG_SCSI_UFS_QCOM) += ufs-qcom.o
-+obj-$(CONFIG_SCSI_UFS_QCOM) += ufs_qcom.o
-+ufs_qcom-y += ufs-qcom.o
-+ufs_qcom-$(CONFIG_SCSI_UFS_CRYPTO) += ufs-qcom-ice.o
- obj-$(CONFIG_SCSI_UFSHCD) += ufshcd-core.o
- ufshcd-core-y				+= ufshcd.o ufs-sysfs.o
- ufshcd-core-$(CONFIG_SCSI_UFS_BSG)	+= ufs_bsg.o
-diff --git a/drivers/scsi/ufs/ufs-qcom-ice.c b/drivers/scsi/ufs/ufs-qcom-ice.c
-new file mode 100644
-index 000000000000..dcfaa0b5e5de
---- /dev/null
-+++ b/drivers/scsi/ufs/ufs-qcom-ice.c
-@@ -0,0 +1,245 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Qualcomm ICE (Inline Crypto Engine) support.
-+ *
-+ * Copyright (c) 2014-2019, The Linux Foundation. All rights reserved.
-+ * Copyright (c) 2019 Google LLC
-+ */
-+
-+#include <linux/platform_device.h>
-+#include <linux/qcom_scm.h>
-+
-+#include "ufshcd-crypto.h"
-+#include "ufs-qcom.h"
-+
-+#define AES_256_XTS_KEY_SIZE			64
-+
-+/* QCOM ICE registers */
-+
-+#define QCOM_ICE_REG_CONTROL			0x0000
-+#define QCOM_ICE_REG_RESET			0x0004
-+#define QCOM_ICE_REG_VERSION			0x0008
-+#define QCOM_ICE_REG_FUSE_SETTING		0x0010
-+#define QCOM_ICE_REG_PARAMETERS_1		0x0014
-+#define QCOM_ICE_REG_PARAMETERS_2		0x0018
-+#define QCOM_ICE_REG_PARAMETERS_3		0x001C
-+#define QCOM_ICE_REG_PARAMETERS_4		0x0020
-+#define QCOM_ICE_REG_PARAMETERS_5		0x0024
-+
-+/* QCOM ICE v3.X only */
-+#define QCOM_ICE_GENERAL_ERR_STTS		0x0040
-+#define QCOM_ICE_INVALID_CCFG_ERR_STTS		0x0030
-+#define QCOM_ICE_GENERAL_ERR_MASK		0x0044
-+
-+/* QCOM ICE v2.X only */
-+#define QCOM_ICE_REG_NON_SEC_IRQ_STTS		0x0040
-+#define QCOM_ICE_REG_NON_SEC_IRQ_MASK		0x0044
-+
-+#define QCOM_ICE_REG_NON_SEC_IRQ_CLR		0x0048
-+#define QCOM_ICE_REG_STREAM1_ERROR_SYNDROME1	0x0050
-+#define QCOM_ICE_REG_STREAM1_ERROR_SYNDROME2	0x0054
-+#define QCOM_ICE_REG_STREAM2_ERROR_SYNDROME1	0x0058
-+#define QCOM_ICE_REG_STREAM2_ERROR_SYNDROME2	0x005C
-+#define QCOM_ICE_REG_STREAM1_BIST_ERROR_VEC	0x0060
-+#define QCOM_ICE_REG_STREAM2_BIST_ERROR_VEC	0x0064
-+#define QCOM_ICE_REG_STREAM1_BIST_FINISH_VEC	0x0068
-+#define QCOM_ICE_REG_STREAM2_BIST_FINISH_VEC	0x006C
-+#define QCOM_ICE_REG_BIST_STATUS		0x0070
-+#define QCOM_ICE_REG_BYPASS_STATUS		0x0074
-+#define QCOM_ICE_REG_ADVANCED_CONTROL		0x1000
-+#define QCOM_ICE_REG_ENDIAN_SWAP		0x1004
-+#define QCOM_ICE_REG_TEST_BUS_CONTROL		0x1010
-+#define QCOM_ICE_REG_TEST_BUS_REG		0x1014
-+
-+/* BIST ("built-in self-test"?) status flags */
-+#define QCOM_ICE_BIST_STATUS_MASK		0xF0000000
-+
-+#define QCOM_ICE_FUSE_SETTING_MASK		0x1
-+#define QCOM_ICE_FORCE_HW_KEY0_SETTING_MASK	0x2
-+#define QCOM_ICE_FORCE_HW_KEY1_SETTING_MASK	0x4
-+
-+#define qcom_ice_writel(host, val, reg)	\
-+	writel((val), (host)->ice_mmio + (reg))
-+#define qcom_ice_readl(host, reg)	\
-+	readl((host)->ice_mmio + (reg))
-+
-+static bool qcom_ice_supported(struct ufs_qcom_host *host)
-+{
-+	struct device *dev = host->hba->dev;
-+	u32 regval = qcom_ice_readl(host, QCOM_ICE_REG_VERSION);
-+	int major = regval >> 24;
-+	int minor = (regval >> 16) & 0xFF;
-+	int step = regval & 0xFFFF;
-+
-+	/* For now this driver only supports ICE version 3. */
-+	if (major != 3) {
-+		dev_warn(dev, "Unsupported ICE version: v%d.%d.%d\n",
-+			 major, minor, step);
-+		return false;
-+	}
-+
-+	dev_info(dev, "Found QC Inline Crypto Engine (ICE) v%d.%d.%d\n",
-+		 major, minor, step);
-+
-+	/* If fuses are blown, ICE might not work in the standard way. */
-+	regval = qcom_ice_readl(host, QCOM_ICE_REG_FUSE_SETTING);
-+	if (regval & (QCOM_ICE_FUSE_SETTING_MASK |
-+		      QCOM_ICE_FORCE_HW_KEY0_SETTING_MASK |
-+		      QCOM_ICE_FORCE_HW_KEY1_SETTING_MASK)) {
-+		dev_warn(dev, "Fuses are blown; ICE is unusable!\n");
-+		return false;
-+	}
-+	return true;
-+}
-+
-+int ufs_qcom_ice_init(struct ufs_qcom_host *host)
-+{
-+	struct ufs_hba *hba = host->hba;
-+	struct device *dev = hba->dev;
-+	struct platform_device *pdev = to_platform_device(dev);
-+	struct resource *res;
-+	int err;
-+
-+	if (!(ufshcd_readl(hba, REG_CONTROLLER_CAPABILITIES) &
-+	      MASK_CRYPTO_SUPPORT))
-+		return 0;
-+
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "ice");
-+	if (!res) {
-+		dev_warn(dev, "ICE registers not found\n");
-+		goto disable;
-+	}
-+
-+	if (!qcom_scm_ice_available()) {
-+		dev_warn(dev, "ICE SCM interface not found\n");
-+		goto disable;
-+	}
-+
-+	host->ice_mmio = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(host->ice_mmio)) {
-+		err = PTR_ERR(host->ice_mmio);
-+		dev_err(dev, "Failed to map ICE registers; err=%d\n", err);
-+		return err;
-+	}
-+
-+	if (!qcom_ice_supported(host))
-+		goto disable;
-+
-+	return 0;
-+
-+disable:
-+	dev_warn(dev, "Disabling inline encryption support\n");
-+	hba->caps &= ~UFSHCD_CAP_CRYPTO;
-+	return 0;
-+}
-+
-+static void qcom_ice_low_power_mode_enable(struct ufs_qcom_host *host)
-+{
-+	u32 regval;
-+
-+	regval = qcom_ice_readl(host, QCOM_ICE_REG_ADVANCED_CONTROL);
-+	/*
-+	 * Enable low power mode sequence
-+	 * [0]-0, [1]-0, [2]-0, [3]-E, [4]-0, [5]-0, [6]-0, [7]-0
-+	 */
-+	regval |= 0x7000;
-+	qcom_ice_writel(host, regval, QCOM_ICE_REG_ADVANCED_CONTROL);
-+}
-+
-+static void qcom_ice_optimization_enable(struct ufs_qcom_host *host)
-+{
-+	u32 regval;
-+
-+	/* ICE Optimizations Enable Sequence */
-+	regval = qcom_ice_readl(host, QCOM_ICE_REG_ADVANCED_CONTROL);
-+	regval |= 0xD807100;
-+	/* ICE HPG requires delay before writing */
-+	udelay(5);
-+	qcom_ice_writel(host, regval, QCOM_ICE_REG_ADVANCED_CONTROL);
-+	udelay(5);
-+}
-+
-+int ufs_qcom_ice_enable(struct ufs_qcom_host *host)
-+{
-+	if (!(host->hba->caps & UFSHCD_CAP_CRYPTO))
-+		return 0;
-+	qcom_ice_low_power_mode_enable(host);
-+	qcom_ice_optimization_enable(host);
-+	return ufs_qcom_ice_resume(host);
-+}
-+
-+/* Poll until all BIST bits are reset */
-+static int qcom_ice_wait_bist_status(struct ufs_qcom_host *host)
-+{
-+	int count;
-+	u32 reg;
-+
-+	for (count = 0; count < 100; count++) {
-+		reg = qcom_ice_readl(host, QCOM_ICE_REG_BIST_STATUS);
-+		if (!(reg & QCOM_ICE_BIST_STATUS_MASK))
-+			break;
-+		udelay(50);
-+	}
-+	if (reg)
-+		return -ETIMEDOUT;
-+	return 0;
-+}
-+
-+int ufs_qcom_ice_resume(struct ufs_qcom_host *host)
-+{
-+	int err;
-+
-+	if (!(host->hba->caps & UFSHCD_CAP_CRYPTO))
-+		return 0;
-+
-+	err = qcom_ice_wait_bist_status(host);
-+	if (err) {
-+		dev_err(host->hba->dev, "BIST status error (%d)\n", err);
-+		return err;
-+	}
-+	return 0;
-+}
-+
-+/*
-+ * Program a key into a QC ICE keyslot, or evict a keyslot.  QC ICE requires
-+ * vendor-specific SCM calls for this; it doesn't support the standard way.
-+ */
-+int ufs_qcom_ice_program_key(struct ufs_hba *hba,
-+			     const union ufs_crypto_cfg_entry *cfg, int slot)
-+{
-+	union ufs_crypto_cap_entry cap;
-+	union {
-+		u8 bytes[AES_256_XTS_KEY_SIZE];
-+		u32 words[AES_256_XTS_KEY_SIZE / sizeof(u32)];
-+	} key;
-+	int i;
-+	int err;
-+
-+	if (!(cfg->config_enable & UFS_CRYPTO_CONFIGURATION_ENABLE))
-+		return qcom_scm_ice_invalidate_key(slot);
-+
-+	/* Only AES-256-XTS has been tested so far. */
-+	cap = hba->crypto_cap_array[cfg->crypto_cap_idx];
-+	if (cap.algorithm_id != UFS_CRYPTO_ALG_AES_XTS ||
-+	    cap.key_size != UFS_CRYPTO_KEY_SIZE_256) {
-+		dev_err_ratelimited(hba->dev,
-+				    "Unhandled crypto capability; algorithm_id=%d, key_size=%d\n",
-+				    cap.algorithm_id, cap.key_size);
-+		return -EINVAL;
-+	}
-+
-+	memcpy(key.bytes, cfg->crypto_key, AES_256_XTS_KEY_SIZE);
-+
-+	/*
-+	 * The SCM call byte-swaps the 32-bit words of the key.  So we have to
-+	 * do the same, in order for the final key be correct.
-+	 */
-+	for (i = 0; i < ARRAY_SIZE(key.words); i++)
-+		__cpu_to_be32s(&key.words[i]);
-+
-+	err = qcom_scm_ice_set_key(slot, key.bytes, AES_256_XTS_KEY_SIZE,
-+				   QCOM_SCM_ICE_CIPHER_AES_256_XTS,
-+				   cfg->data_unit_size);
-+	memzero_explicit(&key, sizeof(key));
-+	return err;
-+}
-diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
-index bd0b4ed7b37a..139c3ae05e95 100644
---- a/drivers/scsi/ufs/ufs-qcom.c
-+++ b/drivers/scsi/ufs/ufs-qcom.c
-@@ -365,7 +365,7 @@ static int ufs_qcom_hce_enable_notify(struct ufs_hba *hba,
- 		/* check if UFS PHY moved from DISABLED to HIBERN8 */
- 		err = ufs_qcom_check_hibern8(hba);
- 		ufs_qcom_enable_hw_clk_gating(hba);
--
-+		ufs_qcom_ice_enable(host);
- 		break;
- 	default:
- 		dev_err(hba->dev, "%s: invalid status %d\n", __func__, status);
-@@ -613,6 +613,10 @@ static int ufs_qcom_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
- 			return err;
- 	}
- 
-+	err = ufs_qcom_ice_resume(host);
-+	if (err)
-+		return err;
-+
- 	hba->is_sys_suspended = false;
- 	return 0;
- }
-@@ -1071,6 +1075,7 @@ static void ufs_qcom_set_caps(struct ufs_hba *hba)
- 	hba->caps |= UFSHCD_CAP_CLK_SCALING;
- 	hba->caps |= UFSHCD_CAP_AUTO_BKOPS_SUSPEND;
- 	hba->caps |= UFSHCD_CAP_WB_EN;
-+	hba->caps |= UFSHCD_CAP_CRYPTO;
- 
- 	if (host->hw_ver.major >= 0x2) {
- 		host->caps = UFS_QCOM_CAP_QUNIPRO |
-@@ -1298,6 +1303,10 @@ static int ufs_qcom_init(struct ufs_hba *hba)
- 	ufs_qcom_set_caps(hba);
- 	ufs_qcom_advertise_quirks(hba);
- 
-+	err = ufs_qcom_ice_init(host);
-+	if (err)
-+		goto out_variant_clear;
-+
- 	ufs_qcom_set_bus_vote(hba, true);
- 	ufs_qcom_setup_clocks(hba, true, POST_CHANGE);
- 
-@@ -1736,6 +1745,7 @@ static const struct ufs_hba_variant_ops ufs_hba_qcom_vops = {
- 	.dbg_register_dump	= ufs_qcom_dump_dbg_regs,
- 	.device_reset		= ufs_qcom_device_reset,
- 	.config_scaling_param = ufs_qcom_config_scaling_param,
-+	.program_key		= ufs_qcom_ice_program_key,
- };
- 
- /**
-diff --git a/drivers/scsi/ufs/ufs-qcom.h b/drivers/scsi/ufs/ufs-qcom.h
-index 2d95e7cc7187..97247d17e258 100644
---- a/drivers/scsi/ufs/ufs-qcom.h
-+++ b/drivers/scsi/ufs/ufs-qcom.h
-@@ -227,6 +227,9 @@ struct ufs_qcom_host {
- 	void __iomem *dev_ref_clk_ctrl_mmio;
- 	bool is_dev_ref_clk_enabled;
- 	struct ufs_hw_version hw_ver;
-+#ifdef CONFIG_SCSI_UFS_CRYPTO
-+	void __iomem *ice_mmio;
-+#endif
- 
- 	u32 dev_ref_clk_en_mask;
- 
-@@ -264,4 +267,28 @@ static inline bool ufs_qcom_cap_qunipro(struct ufs_qcom_host *host)
- 		return false;
- }
- 
-+/* ufs-qcom-ice.c */
-+
-+#ifdef CONFIG_SCSI_UFS_CRYPTO
-+int ufs_qcom_ice_init(struct ufs_qcom_host *host);
-+int ufs_qcom_ice_enable(struct ufs_qcom_host *host);
-+int ufs_qcom_ice_resume(struct ufs_qcom_host *host);
-+int ufs_qcom_ice_program_key(struct ufs_hba *hba,
-+			     const union ufs_crypto_cfg_entry *cfg, int slot);
-+#else
-+static inline int ufs_qcom_ice_init(struct ufs_qcom_host *host)
-+{
-+	return 0;
-+}
-+static inline int ufs_qcom_ice_enable(struct ufs_qcom_host *host)
-+{
-+	return 0;
-+}
-+static inline int ufs_qcom_ice_resume(struct ufs_qcom_host *host)
-+{
-+	return 0;
-+}
-+#define ufs_qcom_ice_program_key NULL
-+#endif /* !CONFIG_SCSI_UFS_CRYPTO */
-+
- #endif /* UFS_QCOM_H_ */
+Cheers,
+
+Dave.
 -- 
-2.27.0
-
+Dave Chinner
+david@fromorbit.com
