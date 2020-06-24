@@ -2,126 +2,98 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92EEB206931
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 24 Jun 2020 02:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CE22206B41
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 24 Jun 2020 06:34:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387784AbgFXAzO (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 23 Jun 2020 20:55:14 -0400
-Received: from mail109.syd.optusnet.com.au ([211.29.132.80]:43045 "EHLO
-        mail109.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387764AbgFXAzO (ORCPT
+        id S2388393AbgFXEd7 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 24 Jun 2020 00:33:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728793AbgFXEd6 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 23 Jun 2020 20:55:14 -0400
-Received: from dread.disaster.area (pa49-180-124-177.pa.nsw.optusnet.com.au [49.180.124.177])
-        by mail109.syd.optusnet.com.au (Postfix) with ESMTPS id 3A00CD7B989;
-        Wed, 24 Jun 2020 10:55:10 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1jntgz-0001dO-9M; Wed, 24 Jun 2020 10:55:09 +1000
-Date:   Wed, 24 Jun 2020 10:55:09 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        Satya Tangirala <satyat@google.com>
-Subject: Re: [f2fs-dev] [PATCH 1/4] fs: introduce SB_INLINECRYPT
-Message-ID: <20200624005509.GA5369@dread.disaster.area>
-References: <20200617075732.213198-1-satyat@google.com>
- <20200617075732.213198-2-satyat@google.com>
- <20200618011912.GA2040@dread.disaster.area>
- <20200618031935.GE1138@sol.localdomain>
- <20200623004636.GE2040@dread.disaster.area>
- <20200623015017.GA844@sol.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200623015017.GA844@sol.localdomain>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=QIgWuTDL c=1 sm=1 tr=0
-        a=k3aV/LVJup6ZGWgigO6cSA==:117 a=k3aV/LVJup6ZGWgigO6cSA==:17
-        a=kj9zAlcOel0A:10 a=nTHF0DUjJn0A:10 a=VwQbUJbxAAAA:8 a=JfrnYn6hAAAA:8
-        a=7-415B0cAAAA:8 a=_JHsV_7MbDpF1hl6ON4A:9 a=CjuIK1q_8ugA:10
-        a=AjGcO6oz07-iQ99wixmX:22 a=1CNFftbPRP8L7MoqJWF3:22
-        a=biEYGPWJfzWAr4FL6Ov7:22
+        Wed, 24 Jun 2020 00:33:58 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E388C061573
+        for <linux-fscrypt@vger.kernel.org>; Tue, 23 Jun 2020 21:33:56 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id n11so997720ybg.15
+        for <linux-fscrypt@vger.kernel.org>; Tue, 23 Jun 2020 21:33:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=VIhRPUc686EfpzyL1ZkpMu0h/tTzQnqLcgbnZ2tSukA=;
+        b=ATg4ot7iQfZhD7VJCToYCJEq0+HHgex7Fu5otS5NIVKN8IP1NunyBFhinY6vJQmpWp
+         4Ij36w/kSxOzIDs1lg4m4ranBcUkYgjgGqDBqZtXEgUF/A6viuow4yzNYWkxxGRvlpWC
+         mmIuA8xMCysfmJgO6z/8XuIDppG81o+uGO/b1g0+chDgAnIrr/7wD3ZVV8Vz040+E4+Z
+         OdVyjEqMLwNTcMPpg5aX3GyMmWgYDsyC79JWjtqgCg9JBAfM0b3dFkEJ4zIsj8DZBgV0
+         XSQbXGyBLB4NyxkGBW2KMLsu3Za4MN22eTnqS9Z/oFfinJGodSjpc65NAWPD+W0KoXtQ
+         L6Pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=VIhRPUc686EfpzyL1ZkpMu0h/tTzQnqLcgbnZ2tSukA=;
+        b=XQ+5/zitSw0x4HUB35LsroC2ziJxONHxDZx86gKFtxQlf2glT4eIyJF+zaa68cDNJl
+         CSWwBv8KNhEHCphQ1qDtdaylNnN6jUznMR6vo70Cxd3o7FDCjGPYX55WKDxXx4sY7Uga
+         XXekMYKoxEp1GNBl39w32eO6+vSljGzq2dVsrLVmp1UyMSadyXRjzqEaU56+ecnBM+Hn
+         pI6NDTklFkKtA05dOdfwNCxYFI4utvFTQTSiLyRv3ncifNzFd7dkGvu2XqOmOP/kiK12
+         UPcoyFr54mgPmm6EsXmH3x6uGbTsyvC1h7FKb53TzJNjxvbPTnAA3M+tx5wSbgqb5s7t
+         vnGQ==
+X-Gm-Message-State: AOAM531aYCw42rHCPgqRAbBBPZNKoAhg+Ml2euyeZg57WUMI+Ch69AKb
+        1iNKQQnHOky6UnqBDMwPCAxbxF50c9A=
+X-Google-Smtp-Source: ABdhPJzqZudoyjfwmOnuXUVebSWSY1PkS5+3B30QL46yfijJWtmCuoeOhxK7BwlRH7FbBAlVw+Pj75yPbZ4=
+X-Received: by 2002:a25:b8b:: with SMTP id 133mr42829755ybl.373.1592973235828;
+ Tue, 23 Jun 2020 21:33:55 -0700 (PDT)
+Date:   Tue, 23 Jun 2020 21:33:37 -0700
+Message-Id: <20200624043341.33364-1-drosen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.27.0.111.gc72c7da667-goog
+Subject: [PATCH v9 0/4] Prepare for upcoming Casefolding/Encryption patches
+From:   Daniel Rosenberg <drosen@google.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Eric Biggers <ebiggers@kernel.org>,
+        linux-fscrypt@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Richard Weinberger <richard@nod.at>
+Cc:     linux-mtd@lists.infradead.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com, Daniel Rosenberg <drosen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 06:50:17PM -0700, Eric Biggers wrote:
-> On Tue, Jun 23, 2020 at 10:46:36AM +1000, Dave Chinner wrote:
-> > On Wed, Jun 17, 2020 at 08:19:35PM -0700, Eric Biggers wrote:
-> > > Are you objecting to the use of a SB_* flag, or just to showing the flag in
-> > > show_sb_opts() instead of in the individual filesystems?  Note that the SB_*
-> > > flag was requested by Christoph
-> > > (https://lkml.kernel.org/r/20191031183217.GF23601@infradead.org/,
-> > > https://lkml.kernel.org/r/20191031212103.GA6244@infradead.org/).  We originally
-> > > used a function fscrypt_operations::inline_crypt_enabled() instead.
-> > 
-> > I'm objecting to the layering violations of having the filesystem
-> > control the mount option parsing and superblock feature flags, but
-> > then having no control over whether features that the filesystem has
-> > indicated to the VFS it is using get emitted as a mount option or
-> > not, and then having the VFS code unconditionally override the
-> > functionality that the filesystem uses because it thinks it's a
-> > mount option the filesystem supports....
-> > 
-> > For example, the current mess that has just come to light:
-> > filesystems like btrfs and XFS v5 which set SB_IVERSION
-> > unconditionally (i.e. it's not a mount option!) end up having that
-> > functionality turned off on remount because the VFS conflates
-> > MS_IVERSION with SB_IVERSION and so unconditionally clears
-> > SB_IVERSION because MS_IVERSION is not set on remount by userspace.
-> > Which userspace will never set be because the filesystems don't put
-> > "iversion" in their mount option strings because -its not a mount
-> > option- for those filesystems.
-> > 
-> > See the problem?  MS_IVERSION should be passed to the filesystem to
-> > deal with as a mount option, not treated as a flag to directly
-> > change SB_IVERSION in the superblock.
-> > 
-> > We really need to stop with the "global mount options for everyone
-> > at the VFS" and instead pass everything down to the filesystems to
-> > parse appropriately. Yes, provide generic helper functions to deal
-> > with the common flags that everything supports, but the filesystems
-> > should be masking off mount options they doesn't support changing
-> > before changing their superblock feature support mask....
-> 
-> I think the MS_* flags are best saved for mount options that are applicable to
-> many/most filesystems and are mostly/entirely implementable at the VFS level.
+This lays the ground work for enabling casefolding and encryption at the
+same time for ext4 and f2fs. A future set of patches will enable that
+functionality. These unify the highly similar dentry_operations that ext4
+and f2fs both use for casefolding.
 
-That's the theory, but so far it's caused nothing but pain.
+Daniel Rosenberg (4):
+  unicode: Add utf8_casefold_hash
+  fs: Add standard casefolding support
+  f2fs: Use generic casefolding support
+  ext4: Use generic casefolding support
 
-In reality, I think ithe only sane way forward if to stop mount
-option parsing in userspace (i.e. no new MS_* flags) for any new
-functionality as it only leads to future pain. i.e. all new mount
-options should be parsed entirely in the kernel by the filesystem
-parsing code....
+ fs/ext4/dir.c           |  64 +------------------------
+ fs/ext4/ext4.h          |  12 -----
+ fs/ext4/hash.c          |   2 +-
+ fs/ext4/namei.c         |  20 ++++----
+ fs/ext4/super.c         |  12 ++---
+ fs/f2fs/dir.c           |  84 ++++-----------------------------
+ fs/f2fs/f2fs.h          |   4 --
+ fs/f2fs/super.c         |  10 ++--
+ fs/f2fs/sysfs.c         |  10 ++--
+ fs/libfs.c              | 101 ++++++++++++++++++++++++++++++++++++++++
+ fs/unicode/utf8-core.c  |  23 ++++++++-
+ include/linux/f2fs_fs.h |   3 --
+ include/linux/fs.h      |  22 +++++++++
+ include/linux/unicode.h |   3 ++
+ 14 files changed, 186 insertions(+), 184 deletions(-)
 
-> I don't think "inlinecrypt" qualifies, since while it will be shared by the
-> block device-based filesystems that support fscrypt, that is only 2 filesystems
-> currently; and while some of the code needed to implement it is shared in
-> fs/crypto/, there are still substantial filesystem-specific hooks needed.
-
-Right. I wasn't suggesting this patchset should use an MS_ flag -
-it was pointing out the problem with the VFS code using SB_ flags to
-indicate enabled filesystem functionality unconditionally as a mount
-option that can be changed by userspace.
-
-> Hence this patchset intentionally does *not* allocate an MS_INLINECRYPT flag.
-> 
-> I believe that already addresses half of your concern, as it means
-> SB_INLINECRYPT can only be set/cleared by the filesystem itself, not by the VFS.
-> (But the commit message could use an explanation of this.)
-> 
-> The other half would be addressed by the following change, right?
-
-Yes, it does. Thanks, Eric!
-
-Cheers,
-
-Dave.
 -- 
-Dave Chinner
-david@fromorbit.com
+2.27.0.111.gc72c7da667-goog
+
