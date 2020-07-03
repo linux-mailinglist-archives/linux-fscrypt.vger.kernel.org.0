@@ -2,58 +2,31 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F5602130C6
-	for <lists+linux-fscrypt@lfdr.de>; Fri,  3 Jul 2020 03:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D07F213FD6
+	for <lists+linux-fscrypt@lfdr.de>; Fri,  3 Jul 2020 21:21:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726029AbgGCBBv (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 2 Jul 2020 21:01:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726015AbgGCBBu (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 2 Jul 2020 21:01:50 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0577CC08C5DD
-        for <linux-fscrypt@vger.kernel.org>; Thu,  2 Jul 2020 18:01:49 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id d4so25570622otk.2
-        for <linux-fscrypt@vger.kernel.org>; Thu, 02 Jul 2020 18:01:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+0u5TnXqElmJHIUbIwfyg0UnTaWODXR+GC+hM1QsUz4=;
-        b=oOqDzf9UhdHQiWfizW6yxKYuiXycU3fWLPwduq8AH7hV/7gSiEHYYCaf1R8F2ctgqG
-         Ctt5zAILp2PI93b4Q9sIqk+bct1cHbzT8Yw9+IcOxwWKgWbCaachSWq9et+Yf8XtLZAo
-         4PfjLQ2EBIkG8ZapbfVu6Be6/Vu8TcYpCdwMqVXiYNjxd4suP9wdDfoO3oqnw035dU8n
-         /R6DDvFq0BMQXLdQ3Ov60bKRizaMZFmcKMO6VN+JDo/z+/DFAUQ/rBIJ0OdRJmHbICOW
-         lVBzFxBYsXOkdcGMH5/fGPjcJF+UWV/JV1fhleZLJ4KwG6qXoSH5MyKRsJ+/bO2HGygC
-         mIWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+0u5TnXqElmJHIUbIwfyg0UnTaWODXR+GC+hM1QsUz4=;
-        b=hJGake/krBZSnIDYvhGxoLlsVewcMHgCB7W5kHwrko1YEEBSMx3oeQQ2QaUcvY0xut
-         AUVQI/uj3GxhQPzpw11Elos0PVrwrOmrJRmMdgnFKE10nPt/xsp/8CCZlFr+oKZOdhkr
-         uBYjZJYxeGqx+/fq7q7bIN5v8zANnDOc1Rumkoeje8br7l1hJ7JSpjemubwHS5AMVdJq
-         /gfgvb/hA+jZDS69JRF6npKELWQ1n1mEHf53EaMSwNG9RFPdZk/sTW1ItUKc+DqqYAg9
-         +tESGXDxZW92+pujtPvQSdQGQR/vwbjh7ILzpccnJX1nPM2D359gN2B9Ja0kgXFMiyTY
-         zTQw==
-X-Gm-Message-State: AOAM533oO3cVGkLBimyfSi935Yby1WLrHiC/0Jca4FsBdO5dvtNIoktM
-        6KTCbzZScBGK7jBTHm49MPNoG/aQRTowT2WOlV/9Sg==
-X-Google-Smtp-Source: ABdhPJxyzjPijsRL1V11XOG//slLi4ypOVvA8gCAeJn23Y/3chvpbEFZmi5lFQBGL/hRDveD1WrFac5iKC6RBaNTr+k=
-X-Received: by 2002:a9d:6d98:: with SMTP id x24mr18707612otp.93.1593738109138;
- Thu, 02 Jul 2020 18:01:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200624043341.33364-1-drosen@google.com> <20200624043341.33364-3-drosen@google.com>
- <20200624055707.GG844@sol.localdomain>
-In-Reply-To: <20200624055707.GG844@sol.localdomain>
-From:   Daniel Rosenberg <drosen@google.com>
-Date:   Thu, 2 Jul 2020 18:01:37 -0700
-Message-ID: <CA+PiJmTDXTKnccJdADX=ir+PtqsDD72xHGbzObpntkjkVmKHxQ@mail.gmail.com>
-Subject: Re: [PATCH v9 2/4] fs: Add standard casefolding support
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        id S1726707AbgGCTU6 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 3 Jul 2020 15:20:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49142 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726147AbgGCTU5 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Fri, 3 Jul 2020 15:20:57 -0400
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EB37F207FF;
+        Fri,  3 Jul 2020 19:20:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593804057;
+        bh=PEmsm7KiYhEynj7JM9OkcWwJJEMC5FTZ1MgB7GC3/kw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cZz3+cYtChLGxVGtGhI0iqF8NG4vRe7SyHyKP6rwlrniscYuLOgqOM9tC5bBvh6V9
+         rCNuVMRKKdD1/I05cjOph+0nERO2OeeH/Y1QSjn/3szq+YCjsBxWz49TxA/V8HiT6F
+         N6pBBTbIdf7MhFFMTY1BRtmYQCvTyvOSvJ4M/pzg=
+Date:   Fri, 3 Jul 2020 12:20:55 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Daniel Rosenberg <drosen@google.com>
+Cc:     Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
         Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
         linux-f2fs-devel@lists.sourceforge.net,
         linux-fscrypt@vger.kernel.org,
@@ -65,33 +38,55 @@ Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         Gabriel Krisman Bertazi <krisman@collabora.com>,
         kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH v9 2/4] fs: Add standard casefolding support
+Message-ID: <20200703192055.GA2825@sol.localdomain>
+References: <20200624043341.33364-1-drosen@google.com>
+ <20200624043341.33364-3-drosen@google.com>
+ <20200624055707.GG844@sol.localdomain>
+ <CA+PiJmTDXTKnccJdADX=ir+PtqsDD72xHGbzObpntkjkVmKHxQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+PiJmTDXTKnccJdADX=ir+PtqsDD72xHGbzObpntkjkVmKHxQ@mail.gmail.com>
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 10:57 PM Eric Biggers <ebiggers@kernel.org> wrote:
->
-> Note that the '!IS_ENCRYPTED(dir) || fscrypt_has_encryption_key(dir)' check can
-> be racy, because a process can be looking up a no-key token in a directory while
-> concurrently another process initializes the directory's ->i_crypt_info, causing
-> fscrypt_has_encryption_key(dir) to suddenly start returning true.
->
-> In my rework of filename handling in f2fs, I actually ended up removing all
-> calls to needs_casefold(), thus avoiding this race.  f2fs now decides whether
-> the name is going to need casefolding early on, in __f2fs_setup_filename(),
-> where it knows in a race-free way whether the filename is a no-key token or not.
->
-> Perhaps ext4 should work the same way?  It did look like there would be some
-> extra complexity due to how the ext4 directory hashing works in comparison to
-> f2fs's, but I haven't had a chance to properly investigate it.
->
-> - Eric
+On Thu, Jul 02, 2020 at 06:01:37PM -0700, Daniel Rosenberg wrote:
+> On Tue, Jun 23, 2020 at 10:57 PM Eric Biggers <ebiggers@kernel.org> wrote:
+> >
+> > Note that the '!IS_ENCRYPTED(dir) || fscrypt_has_encryption_key(dir)' check can
+> > be racy, because a process can be looking up a no-key token in a directory while
+> > concurrently another process initializes the directory's ->i_crypt_info, causing
+> > fscrypt_has_encryption_key(dir) to suddenly start returning true.
+> >
+> > In my rework of filename handling in f2fs, I actually ended up removing all
+> > calls to needs_casefold(), thus avoiding this race.  f2fs now decides whether
+> > the name is going to need casefolding early on, in __f2fs_setup_filename(),
+> > where it knows in a race-free way whether the filename is a no-key token or not.
+> >
+> > Perhaps ext4 should work the same way?  It did look like there would be some
+> > extra complexity due to how the ext4 directory hashing works in comparison to
+> > f2fs's, but I haven't had a chance to properly investigate it.
+> >
+> > - Eric
+> 
+> Hm. I think I should be able to just check for DCACHE_ENCRYPTED_NAME
+> in the dentry here, right? I'm just trying to avoid casefolding the
+> no-key token, and that flag should indicate that.
 
-Hm. I think I should be able to just check for DCACHE_ENCRYPTED_NAME
-in the dentry here, right? I'm just trying to avoid casefolding the
-no-key token, and that flag should indicate that.
-I'll see if I can rework the ext4 patches to not need needs_casefold
-as well, since then there'd be no need to export it.
--Daniel
+Ideally yes, but currently the 'struct dentry' isn't always available.  See how
+fscrypt_setup_filename(), f2fs_setup_filename(), f2fs_find_entry(),
+ext4_find_entry(), etc. take a 'struct qstr', not a 'struct dentry'.
+
+At some point we should fix that by passing down the dentry whenever it's
+available, so that we reliably know whether the name is a no-key name or not.
+
+So even my new f2fs code is still racy.  But it at least handles each filename
+in a consistent way within each directory operation.  In comparison, your
+proposed ext4 code can treat a filename as a no-key name while matching one
+dir_entry and then as a regular filename while matching the next.  I think the
+f2fs way is more on the right track, both correctness-wise and efficiency-wise.
+
+- Eric
