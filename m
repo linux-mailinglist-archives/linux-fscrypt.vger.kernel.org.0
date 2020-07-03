@@ -2,288 +2,96 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4918D2119E3
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  2 Jul 2020 03:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F5602130C6
+	for <lists+linux-fscrypt@lfdr.de>; Fri,  3 Jul 2020 03:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728149AbgGBB4W (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 1 Jul 2020 21:56:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44220 "EHLO
+        id S1726029AbgGCBBv (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 2 Jul 2020 21:01:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728141AbgGBB4S (ORCPT
+        with ESMTP id S1726015AbgGCBBu (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 1 Jul 2020 21:56:18 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E441C08C5DD
-        for <linux-fscrypt@vger.kernel.org>; Wed,  1 Jul 2020 18:56:18 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id y3so28434513ybf.4
-        for <linux-fscrypt@vger.kernel.org>; Wed, 01 Jul 2020 18:56:18 -0700 (PDT)
+        Thu, 2 Jul 2020 21:01:50 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0577CC08C5DD
+        for <linux-fscrypt@vger.kernel.org>; Thu,  2 Jul 2020 18:01:49 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id d4so25570622otk.2
+        for <linux-fscrypt@vger.kernel.org>; Thu, 02 Jul 2020 18:01:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=XiMkoZLpRAbnL7Do5oOmsmyQ0pkBy4LUO8LUjQLXzMU=;
-        b=ojvZRhVIk28d8M0KmF6mPcMHnaD89wi0ia5xuIRIeI8ve8hL+c6MPOkGP1c5zXbqf5
-         CS6ff8QJTQ/gto5SGh7k13mY/acGALFsLpUoUg9N254juYaUdka3yfHiM1TN0PJ+/pgZ
-         I5FHyIcSwktow0CTvw4ldrg3OeEjSyVX7kKEEKb77lLfz58lijtqCv592h+CDzg9Oh/D
-         Ps6Qq5jkOPtL7QwW75FuvACoB5shDHsTSb1Gp0OHl2WdVY2ZqARaGBYs9mbHWittrfG2
-         zcZX779aRt9qd//+gyRSfueycOWTmcFgnnF3vA8TjdbYSLAh8nmf1u1FYO/ecgKobH50
-         RGSA==
+        bh=+0u5TnXqElmJHIUbIwfyg0UnTaWODXR+GC+hM1QsUz4=;
+        b=oOqDzf9UhdHQiWfizW6yxKYuiXycU3fWLPwduq8AH7hV/7gSiEHYYCaf1R8F2ctgqG
+         Ctt5zAILp2PI93b4Q9sIqk+bct1cHbzT8Yw9+IcOxwWKgWbCaachSWq9et+Yf8XtLZAo
+         4PfjLQ2EBIkG8ZapbfVu6Be6/Vu8TcYpCdwMqVXiYNjxd4suP9wdDfoO3oqnw035dU8n
+         /R6DDvFq0BMQXLdQ3Ov60bKRizaMZFmcKMO6VN+JDo/z+/DFAUQ/rBIJ0OdRJmHbICOW
+         lVBzFxBYsXOkdcGMH5/fGPjcJF+UWV/JV1fhleZLJ4KwG6qXoSH5MyKRsJ+/bO2HGygC
+         mIWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=XiMkoZLpRAbnL7Do5oOmsmyQ0pkBy4LUO8LUjQLXzMU=;
-        b=mehkNG+pPqBhH9FLM7PeyNHGlW2YMo+ZVHM0vK0OLrkec0sV+t5VZ5o0Z47kZCLjsU
-         jhSG4u45izrGin+N/QIMJFnY5E4xbA+9apQsOGBdbLoZOLKLRt12uITqjs8dfCjsyTEV
-         1zYJDJH/K4/ZPQkH2+ZzCWRl7fJTj8wOW9FsrGW+rZtUWrxDQBFeJxu1jKcS0bsFU3bx
-         GyFkDdfvtzfhyay4fBlvWXX2RSRgrYeRkIPvro62bSLWmPB+eI+nj0skB3Fd+WY3dg5r
-         JCxHKUBDT0HNYndL5HN6+XEvxb4OeTseq4HA3xXOqIB4Cc1NHbuQ4wPPLmyOslsrMWV7
-         7Y0A==
-X-Gm-Message-State: AOAM532X+PrdTcY60RkI+afULdZtg3F5+O7Xeissuz/eInqpv6xh1RwZ
-        978yoEQnbu4QJS4A0W9ZO5jert+g92IhqgkqmwiFPna93cP8EofEt20W/rX9dry3MXJIhVwo/+q
-        gfOK6/8IAHV5wB+oSckHFDH7ynUJUi9EkWmozLJrt48FGIwFRYcsb1ZtzyNflKExN7Sryjc8=
-X-Google-Smtp-Source: ABdhPJyaj62Rkvk1d+6dug0ZOArMS9aiSQQj+fCND78YrfL0whRff1sv4ix9CaiNV6WnksnFj+G1dpbhhN4=
-X-Received: by 2002:a25:bc81:: with SMTP id e1mr44728675ybk.375.1593654977508;
- Wed, 01 Jul 2020 18:56:17 -0700 (PDT)
-Date:   Thu,  2 Jul 2020 01:56:07 +0000
-In-Reply-To: <20200702015607.1215430-1-satyat@google.com>
-Message-Id: <20200702015607.1215430-5-satyat@google.com>
-Mime-Version: 1.0
-References: <20200702015607.1215430-1-satyat@google.com>
-X-Mailer: git-send-email 2.27.0.212.ge8ba1cc988-goog
-Subject: [PATCH v4 4/4] ext4: add inline encryption support
-From:   Satya Tangirala <satyat@google.com>
-To:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org
-Cc:     Eric Biggers <ebiggers@google.com>,
-        Satya Tangirala <satyat@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+0u5TnXqElmJHIUbIwfyg0UnTaWODXR+GC+hM1QsUz4=;
+        b=hJGake/krBZSnIDYvhGxoLlsVewcMHgCB7W5kHwrko1YEEBSMx3oeQQ2QaUcvY0xut
+         AUVQI/uj3GxhQPzpw11Elos0PVrwrOmrJRmMdgnFKE10nPt/xsp/8CCZlFr+oKZOdhkr
+         uBYjZJYxeGqx+/fq7q7bIN5v8zANnDOc1Rumkoeje8br7l1hJ7JSpjemubwHS5AMVdJq
+         /gfgvb/hA+jZDS69JRF6npKELWQ1n1mEHf53EaMSwNG9RFPdZk/sTW1ItUKc+DqqYAg9
+         +tESGXDxZW92+pujtPvQSdQGQR/vwbjh7ILzpccnJX1nPM2D359gN2B9Ja0kgXFMiyTY
+         zTQw==
+X-Gm-Message-State: AOAM533oO3cVGkLBimyfSi935Yby1WLrHiC/0Jca4FsBdO5dvtNIoktM
+        6KTCbzZScBGK7jBTHm49MPNoG/aQRTowT2WOlV/9Sg==
+X-Google-Smtp-Source: ABdhPJxyzjPijsRL1V11XOG//slLi4ypOVvA8gCAeJn23Y/3chvpbEFZmi5lFQBGL/hRDveD1WrFac5iKC6RBaNTr+k=
+X-Received: by 2002:a9d:6d98:: with SMTP id x24mr18707612otp.93.1593738109138;
+ Thu, 02 Jul 2020 18:01:49 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200624043341.33364-1-drosen@google.com> <20200624043341.33364-3-drosen@google.com>
+ <20200624055707.GG844@sol.localdomain>
+In-Reply-To: <20200624055707.GG844@sol.localdomain>
+From:   Daniel Rosenberg <drosen@google.com>
+Date:   Thu, 2 Jul 2020 18:01:37 -0700
+Message-ID: <CA+PiJmTDXTKnccJdADX=ir+PtqsDD72xHGbzObpntkjkVmKHxQ@mail.gmail.com>
+Subject: Re: [PATCH v9 2/4] fs: Add standard casefolding support
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fscrypt@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Richard Weinberger <richard@nod.at>,
+        linux-mtd@lists.infradead.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On Tue, Jun 23, 2020 at 10:57 PM Eric Biggers <ebiggers@kernel.org> wrote:
+>
+> Note that the '!IS_ENCRYPTED(dir) || fscrypt_has_encryption_key(dir)' check can
+> be racy, because a process can be looking up a no-key token in a directory while
+> concurrently another process initializes the directory's ->i_crypt_info, causing
+> fscrypt_has_encryption_key(dir) to suddenly start returning true.
+>
+> In my rework of filename handling in f2fs, I actually ended up removing all
+> calls to needs_casefold(), thus avoiding this race.  f2fs now decides whether
+> the name is going to need casefolding early on, in __f2fs_setup_filename(),
+> where it knows in a race-free way whether the filename is a no-key token or not.
+>
+> Perhaps ext4 should work the same way?  It did look like there would be some
+> extra complexity due to how the ext4 directory hashing works in comparison to
+> f2fs's, but I haven't had a chance to properly investigate it.
+>
+> - Eric
 
-Wire up ext4 to support inline encryption via the helper functions which
-fs/crypto/ now provides.  This includes:
-
-- Adding a mount option 'inlinecrypt' which enables inline encryption
-  on encrypted files where it can be used.
-
-- Setting the bio_crypt_ctx on bios that will be submitted to an
-  inline-encrypted file.
-
-  Note: submit_bh_wbc() in fs/buffer.c also needed to be patched for
-  this part, since ext4 sometimes uses ll_rw_block() on file data.
-
-- Not adding logically discontiguous data to bios that will be submitted
-  to an inline-encrypted file.
-
-- Not doing filesystem-layer crypto on inline-encrypted files.
-
-Signed-off-by: Eric Biggers <ebiggers@google.com>
-Co-developed-by: Satya Tangirala <satyat@google.com>
-Signed-off-by: Satya Tangirala <satyat@google.com>
----
- Documentation/admin-guide/ext4.rst |  7 +++++++
- fs/buffer.c                        |  7 ++++---
- fs/ext4/inode.c                    |  4 ++--
- fs/ext4/page-io.c                  |  6 ++++--
- fs/ext4/readpage.c                 | 11 ++++++++---
- fs/ext4/super.c                    | 12 ++++++++++++
- 6 files changed, 37 insertions(+), 10 deletions(-)
-
-diff --git a/Documentation/admin-guide/ext4.rst b/Documentation/admin-guide/ext4.rst
-index 9443fcef1876..2162d7909970 100644
---- a/Documentation/admin-guide/ext4.rst
-+++ b/Documentation/admin-guide/ext4.rst
-@@ -395,6 +395,13 @@ When mounting an ext4 filesystem, the following option are accepted:
-         Documentation/filesystems/dax.txt.  Note that this option is
-         incompatible with data=journal.
- 
-+  inlinecrypt
-+        When possible, encrypt/decrypt the contents of encrypted files using the
-+        blk-crypto framework rather than filesystem-layer encryption. This
-+        allows the use of inline encryption hardware. The on-disk format is
-+        unaffected. For more details, see
-+        Documentation/block/inline-encryption.rst.
-+
- Data Mode
- =========
- There are 3 different data modes:
-diff --git a/fs/buffer.c b/fs/buffer.c
-index 64fe82ec65ff..dc5e05b47646 100644
---- a/fs/buffer.c
-+++ b/fs/buffer.c
-@@ -320,9 +320,8 @@ static void decrypt_bh(struct work_struct *work)
- static void end_buffer_async_read_io(struct buffer_head *bh, int uptodate)
- {
- 	/* Decrypt if needed */
--	if (uptodate && IS_ENABLED(CONFIG_FS_ENCRYPTION) &&
--	    IS_ENCRYPTED(bh->b_page->mapping->host) &&
--	    S_ISREG(bh->b_page->mapping->host->i_mode)) {
-+	if (uptodate &&
-+	    fscrypt_inode_uses_fs_layer_crypto(bh->b_page->mapping->host)) {
- 		struct decrypt_bh_ctx *ctx = kmalloc(sizeof(*ctx), GFP_ATOMIC);
- 
- 		if (ctx) {
-@@ -3046,6 +3045,8 @@ static int submit_bh_wbc(int op, int op_flags, struct buffer_head *bh,
- 	 */
- 	bio = bio_alloc(GFP_NOIO, 1);
- 
-+	fscrypt_set_bio_crypt_ctx_bh(bio, bh, GFP_NOIO);
-+
- 	bio->bi_iter.bi_sector = bh->b_blocknr * (bh->b_size >> 9);
- 	bio_set_dev(bio, bh->b_bdev);
- 	bio->bi_write_hint = write_hint;
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 10dd470876b3..44bad4bb8831 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -1096,7 +1096,7 @@ static int ext4_block_write_begin(struct page *page, loff_t pos, unsigned len,
- 	}
- 	if (unlikely(err)) {
- 		page_zero_new_buffers(page, from, to);
--	} else if (IS_ENCRYPTED(inode) && S_ISREG(inode->i_mode)) {
-+	} else if (fscrypt_inode_uses_fs_layer_crypto(inode)) {
- 		for (i = 0; i < nr_wait; i++) {
- 			int err2;
- 
-@@ -3737,7 +3737,7 @@ static int __ext4_block_zero_page_range(handle_t *handle,
- 		/* Uhhuh. Read error. Complain and punt. */
- 		if (!buffer_uptodate(bh))
- 			goto unlock;
--		if (S_ISREG(inode->i_mode) && IS_ENCRYPTED(inode)) {
-+		if (fscrypt_inode_uses_fs_layer_crypto(inode)) {
- 			/* We expect the key to be set. */
- 			BUG_ON(!fscrypt_has_encryption_key(inode));
- 			err = fscrypt_decrypt_pagecache_blocks(page, blocksize,
-diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c
-index de6fe969f773..defd2e10dfd1 100644
---- a/fs/ext4/page-io.c
-+++ b/fs/ext4/page-io.c
-@@ -402,6 +402,7 @@ static void io_submit_init_bio(struct ext4_io_submit *io,
- 	 * __GFP_DIRECT_RECLAIM is set, see comments for bio_alloc_bioset().
- 	 */
- 	bio = bio_alloc(GFP_NOIO, BIO_MAX_PAGES);
-+	fscrypt_set_bio_crypt_ctx_bh(bio, bh, GFP_NOIO);
- 	bio->bi_iter.bi_sector = bh->b_blocknr * (bh->b_size >> 9);
- 	bio_set_dev(bio, bh->b_bdev);
- 	bio->bi_end_io = ext4_end_bio;
-@@ -418,7 +419,8 @@ static void io_submit_add_bh(struct ext4_io_submit *io,
- {
- 	int ret;
- 
--	if (io->io_bio && bh->b_blocknr != io->io_next_block) {
-+	if (io->io_bio && (bh->b_blocknr != io->io_next_block ||
-+			   !fscrypt_mergeable_bio_bh(io->io_bio, bh))) {
- submit_and_retry:
- 		ext4_io_submit(io);
- 	}
-@@ -506,7 +508,7 @@ int ext4_bio_write_page(struct ext4_io_submit *io,
- 	 * (e.g. holes) to be unnecessarily encrypted, but this is rare and
- 	 * can't happen in the common case of blocksize == PAGE_SIZE.
- 	 */
--	if (IS_ENCRYPTED(inode) && S_ISREG(inode->i_mode) && nr_to_submit) {
-+	if (fscrypt_inode_uses_fs_layer_crypto(inode) && nr_to_submit) {
- 		gfp_t gfp_flags = GFP_NOFS;
- 		unsigned int enc_bytes = round_up(len, i_blocksize(inode));
- 
-diff --git a/fs/ext4/readpage.c b/fs/ext4/readpage.c
-index 5761e9961682..f2df2db0786c 100644
---- a/fs/ext4/readpage.c
-+++ b/fs/ext4/readpage.c
-@@ -195,7 +195,7 @@ static void ext4_set_bio_post_read_ctx(struct bio *bio,
- {
- 	unsigned int post_read_steps = 0;
- 
--	if (IS_ENCRYPTED(inode) && S_ISREG(inode->i_mode))
-+	if (fscrypt_inode_uses_fs_layer_crypto(inode))
- 		post_read_steps |= 1 << STEP_DECRYPT;
- 
- 	if (ext4_need_verity(inode, first_idx))
-@@ -230,6 +230,7 @@ int ext4_mpage_readpages(struct inode *inode,
- 	const unsigned blkbits = inode->i_blkbits;
- 	const unsigned blocks_per_page = PAGE_SIZE >> blkbits;
- 	const unsigned blocksize = 1 << blkbits;
-+	sector_t next_block;
- 	sector_t block_in_file;
- 	sector_t last_block;
- 	sector_t last_block_in_file;
-@@ -258,7 +259,8 @@ int ext4_mpage_readpages(struct inode *inode,
- 		if (page_has_buffers(page))
- 			goto confused;
- 
--		block_in_file = (sector_t)page->index << (PAGE_SHIFT - blkbits);
-+		block_in_file = next_block =
-+			(sector_t)page->index << (PAGE_SHIFT - blkbits);
- 		last_block = block_in_file + nr_pages * blocks_per_page;
- 		last_block_in_file = (ext4_readpage_limit(inode) +
- 				      blocksize - 1) >> blkbits;
-@@ -358,7 +360,8 @@ int ext4_mpage_readpages(struct inode *inode,
- 		 * This page will go to BIO.  Do we need to send this
- 		 * BIO off first?
- 		 */
--		if (bio && (last_block_in_bio != blocks[0] - 1)) {
-+		if (bio && (last_block_in_bio != blocks[0] - 1 ||
-+			    !fscrypt_mergeable_bio(bio, inode, next_block))) {
- 		submit_and_realloc:
- 			submit_bio(bio);
- 			bio = NULL;
-@@ -370,6 +373,8 @@ int ext4_mpage_readpages(struct inode *inode,
- 			 */
- 			bio = bio_alloc(GFP_KERNEL,
- 				min_t(int, nr_pages, BIO_MAX_PAGES));
-+			fscrypt_set_bio_crypt_ctx(bio, inode, next_block,
-+						  GFP_KERNEL);
- 			ext4_set_bio_post_read_ctx(bio, inode, page->index);
- 			bio_set_dev(bio, bdev);
- 			bio->bi_iter.bi_sector = blocks[0] << (blkbits - 9);
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 330957ed1f05..0907f907c47d 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1508,6 +1508,7 @@ enum {
- 	Opt_journal_path, Opt_journal_checksum, Opt_journal_async_commit,
- 	Opt_abort, Opt_data_journal, Opt_data_ordered, Opt_data_writeback,
- 	Opt_data_err_abort, Opt_data_err_ignore, Opt_test_dummy_encryption,
-+	Opt_inlinecrypt,
- 	Opt_usrjquota, Opt_grpjquota, Opt_offusrjquota, Opt_offgrpjquota,
- 	Opt_jqfmt_vfsold, Opt_jqfmt_vfsv0, Opt_jqfmt_vfsv1, Opt_quota,
- 	Opt_noquota, Opt_barrier, Opt_nobarrier, Opt_err,
-@@ -1610,6 +1611,7 @@ static const match_table_t tokens = {
- 	{Opt_max_dir_size_kb, "max_dir_size_kb=%u"},
- 	{Opt_test_dummy_encryption, "test_dummy_encryption=%s"},
- 	{Opt_test_dummy_encryption, "test_dummy_encryption"},
-+	{Opt_inlinecrypt, "inlinecrypt"},
- 	{Opt_nombcache, "nombcache"},
- 	{Opt_nombcache, "no_mbcache"},	/* for backward compatibility */
- 	{Opt_removed, "check=none"},	/* mount option from ext2/3 */
-@@ -1946,6 +1948,13 @@ static int handle_mount_opt(struct super_block *sb, char *opt, int token,
- 	case Opt_nolazytime:
- 		sb->s_flags &= ~SB_LAZYTIME;
- 		return 1;
-+	case Opt_inlinecrypt:
-+#ifdef CONFIG_FS_ENCRYPTION_INLINE_CRYPT
-+		sb->s_flags |= SB_INLINECRYPT;
-+#else
-+		ext4_msg(sb, KERN_ERR, "inline encryption not supported");
-+#endif
-+		return 1;
- 	}
- 
- 	for (m = ext4_mount_opts; m->token != Opt_err; m++)
-@@ -2404,6 +2413,9 @@ static int _ext4_show_options(struct seq_file *seq, struct super_block *sb,
- 
- 	fscrypt_show_test_dummy_encryption(seq, sep, sb);
- 
-+	if (sb->s_flags & SB_INLINECRYPT)
-+		SEQ_OPTS_PUTS("inlinecrypt");
-+
- 	if (test_opt(sb, DAX_ALWAYS)) {
- 		if (IS_EXT2_SB(sb))
- 			SEQ_OPTS_PUTS("dax");
--- 
-2.27.0.212.ge8ba1cc988-goog
-
+Hm. I think I should be able to just check for DCACHE_ENCRYPTED_NAME
+in the dentry here, right? I'm just trying to avoid casefolding the
+no-key token, and that flag should indicate that.
+I'll see if I can rework the ext4 patches to not need needs_casefold
+as well, since then there'd be no need to export it.
+-Daniel
