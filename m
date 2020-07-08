@@ -2,64 +2,51 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E78218C3C
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  8 Jul 2020 17:49:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25C9F218DE2
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  8 Jul 2020 19:07:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730229AbgGHPtf (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 8 Jul 2020 11:49:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55770 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730114AbgGHPtf (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 8 Jul 2020 11:49:35 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A8132206DF;
-        Wed,  8 Jul 2020 15:49:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594223375;
-        bh=bqLj7/olahh4JFtc4EpL9q3D/iTuGstNCn11lxS2sf4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=z8Azl4TKT9W4MeG9hf8xbb9+IT4Vkm5fDqyl/WJgXll0rwBoEZZB1dPFFsJgHRItn
-         xsngg1q+ZlC83YZZmLNlAPECU791bJi6VwWHLb8P6Hma4P91aEvw3Q9UZSycYmYVLW
-         G94SP2CKSCoNSdtCH+2ch4YdjpCLigRyNTWJ0A8g=
-Date:   Wed, 8 Jul 2020 08:49:33 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Daniel Rosenberg <drosen@google.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fscrypt@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v12 2/4] fs: Add standard casefolding support
-Message-ID: <20200708154933.GA915@sol.localdomain>
-References: <20200708091237.3922153-1-drosen@google.com>
- <20200708091237.3922153-3-drosen@google.com>
+        id S1730404AbgGHRHl (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 8 Jul 2020 13:07:41 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:40114 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730143AbgGHRHj (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 8 Jul 2020 13:07:39 -0400
+Received: from callcc.thunk.org (pool-96-230-252-158.bstnma.fios.verizon.net [96.230.252.158])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 068H7EsQ018592
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 8 Jul 2020 13:07:14 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 157FB420304; Wed,  8 Jul 2020 13:07:14 -0400 (EDT)
+Date:   Wed, 8 Jul 2020 13:07:14 -0400
+From:   tytso@mit.edu
+To:     Satya Tangirala <satyat@google.com>
+Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+        Eric Biggers <ebiggers@google.com>
+Subject: Re: [PATCH v4 1/4] fs: introduce SB_INLINECRYPT
+Message-ID: <20200708170714.GD1627842@mit.edu>
+References: <20200702015607.1215430-1-satyat@google.com>
+ <20200702015607.1215430-2-satyat@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200708091237.3922153-3-drosen@google.com>
+In-Reply-To: <20200702015607.1215430-2-satyat@google.com>
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, Jul 08, 2020 at 02:12:35AM -0700, Daniel Rosenberg wrote:
-> This adds general supporting functions for filesystems that use
-> utf8 casefolding. It provides standard dentry_operations and adds the
-> necessary structures in struct super_block to allow this standardization.
+On Thu, Jul 02, 2020 at 01:56:04AM +0000, Satya Tangirala wrote:
+> Introduce SB_INLINECRYPT, which is set by filesystems that wish to use
+> blk-crypto for file content en/decryption. This flag maps to the
+> '-o inlinecrypt' mount option which multiple filesystems will implement,
+> and code in fs/crypto/ needs to be able to check for this mount option
+> in a filesystem-independent way.
 > 
-> The new dentry operations are functionally equivalent to the existing
-> operations in ext4 and f2fs, apart from the use of utf8_casefold_hash to
-> avoid an allocation.
-> 
-> By providing a common implementation, all users can benefit from any
-> optimizations without needing to port over improvements.
-> 
-> Signed-off-by: Daniel Rosenberg <drosen@google.com>
+> Signed-off-by: Satya Tangirala <satyat@google.com>
+> Reviewed-by: Eric Biggers <ebiggers@google.com>
 
-Reviewed-by: Eric Biggers <ebiggers@google.com>
+Reviewed-by: Theodore Ts'o <tytso@mit.edu>
