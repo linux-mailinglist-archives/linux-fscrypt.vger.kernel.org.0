@@ -2,146 +2,98 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 049C421829D
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  8 Jul 2020 10:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6323A21834B
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  8 Jul 2020 11:13:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728119AbgGHIgq (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 8 Jul 2020 04:36:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51502 "EHLO
+        id S1726829AbgGHJMm (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 8 Jul 2020 05:12:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726144AbgGHIgq (ORCPT
+        with ESMTP id S1726356AbgGHJMl (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 8 Jul 2020 04:36:46 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF424C08E763
-        for <linux-fscrypt@vger.kernel.org>; Wed,  8 Jul 2020 01:36:45 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id 95so25747077otw.10
-        for <linux-fscrypt@vger.kernel.org>; Wed, 08 Jul 2020 01:36:45 -0700 (PDT)
+        Wed, 8 Jul 2020 05:12:41 -0400
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5602EC08E6DC
+        for <linux-fscrypt@vger.kernel.org>; Wed,  8 Jul 2020 02:12:41 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id i24so1296708pjx.9
+        for <linux-fscrypt@vger.kernel.org>; Wed, 08 Jul 2020 02:12:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=E9OfFYHbH3ZToik4MArfMg4xPvvnpVtVORAGHHfFrzw=;
-        b=a7N5EXkH5q7VpSLTWAozI5gExPwpPLyEBtcnr+2Joyigm0wqh9O962IoDSEkQkNe24
-         G0b7x3cdw0AGEOwCagxOmuU2zD2rueVP3jFwJ1lbf3nWWdqZWtyp4KjV6oVZfok6JToX
-         b5iZD6fEW2fOrcX3fUDiv4C44gQbHmEgFQDXN+gKgfNQoiyXhwA+X+OmAU2s1fIInzLD
-         8Fc1+guNZyjLcgN0szNlMFiaHA+C8wUa8soG5hVGc84IlOyq2splKLjARL+IhmghncC1
-         Bv3M94PQA+S5+1aPAntPl45rQ9Ut5fxU8s3HhGRLBtk06ZEBoz9M7eo06qvjRzHsHzTl
-         8GNw==
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=7bHMgVkDYjjDuKD/FxUCTfJj58TUqovKzQoEEeq5jVQ=;
+        b=L6GJq+QmffCuIO7dqu43ag2+8gyTCJKALyR927sB9QwrDr8ea9dQSlepyzo1/pbivU
+         81VhNFeTc5ba4uNGCOKWwR6NtWw3vTd+Qu+tpL+mhk3YiLgeQ2bQlJ6iQV3e/a7Fjc+a
+         Zima/ekvuWZZS6ASF9jCKBu37/A2Jin6Iy8Wn+pguLOztRhTnk0KTHaPooojcoZ/EuZI
+         sYuiK6cbscTme8vE2a3QaDKbA/ZbUTqQ1RaySTP/XI6ilapmzdSCczpfKItt9bDiD5B5
+         qGfYbnSRxkatzVYIsfGsnlJDgXk4iEpvIVtLpfH8c12B6aY5DEyiILWeDMM0HQEhPPox
+         cUYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=E9OfFYHbH3ZToik4MArfMg4xPvvnpVtVORAGHHfFrzw=;
-        b=lTMX2K9ZEyOkznxvREgcOYu+IpQWGtwK9DCIkfZDhq2C8cj9asf1B+7r/HE4JpAW8i
-         V7Xy8np6OVHo6y1TBtarIc9pfmAWqgxwBUFd1Gf/uBuhA6qZNzrg0ajX91ZzJgKoBk5f
-         ZGko15DifqHoBiNCCj6c2dFSd1LNY7VmRiENkanq9Sr8HLFk76pLUBS1ctw6BmC/qtPP
-         PLWoO6Pfq6RPVhorr7FovUEVhXAtu/uTeefGtEy73LN+o+H4NScrHBuTsmH6Xas26tk/
-         zwSAfWJXnvsz173uvh5mypjR9R7DjjrRA+xG2abIG/yNYE0Klh3r7bDOdkRy2ws4vcOs
-         GJ0Q==
-X-Gm-Message-State: AOAM533P4AXOcam7kZbJS72z0CAKbTf8/ytc1Vcev1KYAyjcJi8XMEJF
-        mlJg7BdmggjBLQUzfGWnfUnevt7DQ/yJkpVYfruC9w==
-X-Google-Smtp-Source: ABdhPJwKsuIiJfQBK+Z2FyMDKuMkojZ6lgZ1RE3obfX6zdiVrn4CkzrMBfnMstVN4ibNoDkOfiQQ4zMF5Hlxev2KtTc=
-X-Received: by 2002:a9d:6d98:: with SMTP id x24mr38406495otp.93.1594197404821;
- Wed, 08 Jul 2020 01:36:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200708030552.3829094-1-drosen@google.com> <20200708030552.3829094-3-drosen@google.com>
- <20200708041230.GL839@sol.localdomain>
-In-Reply-To: <20200708041230.GL839@sol.localdomain>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=7bHMgVkDYjjDuKD/FxUCTfJj58TUqovKzQoEEeq5jVQ=;
+        b=AO/nVgW5TeI7q76IfP4Zsit/hihO5ycN9KtizWcLLy7mRooiSdPe4wtHmX5PCL+E6D
+         iXHTSjJEM5nWOpw3FxFcTmR2NA7yDb3fCvqintE8ks0FxnwJWS5FXOL0bfK6zg0mK9la
+         QeMXuCgUvnzD+awfp8QCzmt2qw+t4CeJIs3kINRZMkpngiaAfACC0j1VJCoBtcQqio1X
+         Qnt2Q25V+wSLDgU/XCR6BxS/04EFD5QlIbiFcPmd1yoYdm1GCaz9GXR6hTdDzt8azzwX
+         pV76XkaCiEh7EYXfBNjzr+WLYf2HAKWo688EqJVfvcG0Tl7NcYTbP8ds3CkS+gc2ZBMn
+         t3ig==
+X-Gm-Message-State: AOAM5307POJD0vynVwiKPtvYIE3rYaOng9dgZ6A3MjyUJg+awjF7dLc4
+        eeUp2Db9Gjc0c5kkp4Tt5Fmr27ZNwY0=
+X-Google-Smtp-Source: ABdhPJzFvfpDeyxPhbKxpb3zpnUW+cZnsByq5J9vChYiBZ95cs4wd1HMbcH72CKn2IWI+wWEMSs035Y65Co=
+X-Received: by 2002:a17:90a:7103:: with SMTP id h3mr8662006pjk.34.1594199560750;
+ Wed, 08 Jul 2020 02:12:40 -0700 (PDT)
+Date:   Wed,  8 Jul 2020 02:12:33 -0700
+Message-Id: <20200708091237.3922153-1-drosen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.27.0.383.g050319c2ae-goog
+Subject: [PATCH v12 0/4] Prepare for upcoming Casefolding/Encryption patches
 From:   Daniel Rosenberg <drosen@google.com>
-Date:   Wed, 8 Jul 2020 01:36:33 -0700
-Message-ID: <CA+PiJmQP+kJQeCZ0LFqRcN6JYWF6pAUHaTnFOThmDLtLTveOXg@mail.gmail.com>
-Subject: Re: [PATCH v11 2/4] fs: Add standard casefolding support
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+To:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
         Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
         linux-f2fs-devel@lists.sourceforge.net,
+        Eric Biggers <ebiggers@kernel.org>,
         linux-fscrypt@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
         linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel-team@android.com
+        kernel-team@android.com, Daniel Rosenberg <drosen@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, Jul 7, 2020 at 9:12 PM Eric Biggers <ebiggers@kernel.org> wrote:
->
-> On Tue, Jul 07, 2020 at 08:05:50PM -0700, Daniel Rosenberg wrote:
-> > +/**
-> > + * generic_ci_d_compare - generic d_compare implementation for casefolding filesystems
-> > + * @dentry:  dentry whose name we are checking against
-> > + * @len:     len of name of dentry
-> > + * @str:     str pointer to name of dentry
-> > + * @name:    Name to compare against
-> > + *
-> > + * Return: 0 if names match, 1 if mismatch, or -ERRNO
-> > + */
-> > +int generic_ci_d_compare(const struct dentry *dentry, unsigned int len,
-> > +                       const char *str, const struct qstr *name)
-> > +{
-> > +     const struct dentry *parent = READ_ONCE(dentry->d_parent);
-> > +     const struct inode *inode = READ_ONCE(parent->d_inode);
->
-> How about calling the 'inode' variable 'dir' instead?
->
-> That would help avoid confusion about what is the directory and what is a file
-> in the directory.
->
-> Likewise in generic_ci_d_hash().
->
-> > +/**
-> > + * generic_ci_d_hash - generic d_hash implementation for casefolding filesystems
-> > + * @dentry:  dentry whose name we are hashing
->
-> This comment for @dentry needs to be updated.
->
-> It's the parent dentry, not the dentry whose name we are hashing.
->
-> > + * @str:     qstr of name whose hash we should fill in
-> > + *
-> > + * Return: 0 if hash was successful, or -ERRNO
->
-> As I mentioned on v9, this can also return 0 if the hashing was not done because
-> it wants to fallback to the standard hashing.  Can you please fix the comment?
->
-> > +int generic_ci_d_hash(const struct dentry *dentry, struct qstr *str)
-> > +{
-> > +     const struct inode *inode = READ_ONCE(dentry->d_inode);
-> > +     struct super_block *sb = dentry->d_sb;
-> > +     const struct unicode_map *um = sb->s_encoding;
-> > +     int ret = 0;
-> > +
-> > +     if (!inode || !needs_casefold(inode))
-> > +             return 0;
-> > +
-> > +     ret = utf8_casefold_hash(um, dentry, str);
-> > +     if (ret < 0)
-> > +             goto err;
-> > +
-> > +     return 0;
-> > +err:
-> > +     if (sb_has_strict_encoding(sb))
-> > +             ret = -EINVAL;
-> > +     else
-> > +             ret = 0;
-> > +     return ret;
-> > +}
->
-> On v9, Gabriel suggested simplifying this to:
->
->         ret = utf8_casefold_hash(um, dentry, str);
->         if (ret < 0 && sb_has_enc_strict_mode(sb))
->                 return -EINVAL;
->         return 0;
->
-> Any reason not to do that?
->
-> - Eric
+This lays the ground work for enabling casefolding and encryption at the
+same time for ext4 and f2fs. A future set of patches will enable that
+functionality.
 
-Guh, I remember making those changes, must've lost them in a rebase :(
-I'll resend shortly.
--Daniel
+These unify the highly similar dentry_operations that ext4 and f2fs both
+use for casefolding. In addition, they improve d_hash by not requiring a
+new string allocation.
+
+Daniel Rosenberg (4):
+  unicode: Add utf8_casefold_hash
+  fs: Add standard casefolding support
+  f2fs: Use generic casefolding support
+  ext4: Use generic casefolding support
+
+ fs/ext4/dir.c           | 64 +-----------------------------
+ fs/ext4/ext4.h          | 12 ------
+ fs/ext4/hash.c          |  2 +-
+ fs/ext4/namei.c         | 20 ++++------
+ fs/ext4/super.c         | 12 +++---
+ fs/f2fs/dir.c           | 84 +++++----------------------------------
+ fs/f2fs/f2fs.h          |  4 --
+ fs/f2fs/super.c         | 10 ++---
+ fs/f2fs/sysfs.c         | 10 +++--
+ fs/libfs.c              | 87 +++++++++++++++++++++++++++++++++++++++++
+ fs/unicode/utf8-core.c  | 23 ++++++++++-
+ include/linux/f2fs_fs.h |  3 --
+ include/linux/fs.h      | 16 ++++++++
+ include/linux/unicode.h |  3 ++
+ 14 files changed, 165 insertions(+), 185 deletions(-)
+
+-- 
+2.27.0.383.g050319c2ae-goog
+
