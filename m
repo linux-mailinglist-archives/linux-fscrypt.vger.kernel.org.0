@@ -2,64 +2,70 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 664BA21AA12
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  9 Jul 2020 23:59:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0450E21AA80
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 10 Jul 2020 00:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726629AbgGIV7Z (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 9 Jul 2020 17:59:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43538 "EHLO mail.kernel.org"
+        id S1726228AbgGIWag (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 9 Jul 2020 18:30:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53866 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726213AbgGIV7Z (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 9 Jul 2020 17:59:25 -0400
+        id S1726213AbgGIWag (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 9 Jul 2020 18:30:36 -0400
 Received: from gmail.com (unknown [104.132.1.76])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F1C8120672;
-        Thu,  9 Jul 2020 21:59:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8540B2070E;
+        Thu,  9 Jul 2020 22:30:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594331965;
-        bh=PcF5ZLXsR+T1pZugOPirxGijT4fToIElCeEXDGjGu5w=;
+        s=default; t=1594333835;
+        bh=Dpn69SR1yUFPn66W7Fbbk1lCZ1fQTf5VGLdHh2L6pHU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oby6MxtV20D13kOVSTaJgUYG5nAAo8sH23d7/SoK4aWHc7Ptd5247NMgYqJyG6nrH
-         XhStnvd4gWMxCHoszwNn+BzsvvVto+8XUWVlYPw9Oku9bfgcfXmdp9HnZIWwWHGC96
-         +u803Hssn6Q/Pn1ZsRhLkOHPWPzbQiigBf37ZXFg=
-Date:   Thu, 9 Jul 2020 14:59:23 -0700
+        b=m+WR+Y2LanZRhq8MC5xduHojOk8O3+XkAMqrAcK0GJHm1Uegqx4r0qOxZTCnB4eo+
+         8Pz68buk00ixvCYM+O7sDEZwr/AFjVyiAAk7rL6gakndlg3018/druWwbuN6YlXRPs
+         fEjJFYMNpIrs+615pkKDogPMr21H+id2N31Liccg=
+Date:   Thu, 9 Jul 2020 15:30:34 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     Satya Tangirala <satyat@google.com>
 Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 3/5] iomap: support direct I/O with fscrypt using
+Subject: Re: [PATCH 4/5] ext4: support direct I/O with fscrypt using
  blk-crypto
-Message-ID: <20200709215923.GD3855682@gmail.com>
+Message-ID: <20200709223034.GE3855682@gmail.com>
 References: <20200709194751.2579207-1-satyat@google.com>
- <20200709194751.2579207-4-satyat@google.com>
+ <20200709194751.2579207-5-satyat@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200709194751.2579207-4-satyat@google.com>
+In-Reply-To: <20200709194751.2579207-5-satyat@google.com>
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, Jul 09, 2020 at 07:47:49PM +0000, Satya Tangirala wrote:
+On Thu, Jul 09, 2020 at 07:47:50PM +0000, Satya Tangirala wrote:
 > From: Eric Biggers <ebiggers@google.com>
 > 
-> Wire up iomap direct I/O with the fscrypt additions for direct I/O,
-> and set bio crypt contexts on bios when appropriate.
-
-It might be useful to mention why the calls to fscrypt_limit_dio_pages() are
-needed.  (It's because the iomap code works directly with logical ranges, so it
-doesn't have a chance to do fscrypt_mergeable_bio() on every page.)
-
+> Wire up ext4 with fscrypt direct I/O support.
 > 
 > Signed-off-by: Eric Biggers <ebiggers@google.com>
 > Signed-off-by: Satya Tangirala <satyat@google.com>
-> ---
->  fs/iomap/direct-io.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
 
-You probably should add linux-xfs@vger.kernel.org to Cc, as per
-'./scripts/get_maintainer.pl fs/iomap/'.
+This commit message could use some more details.  I think it should clarify that
+the direct I/O support is limited to cases where the filesystem has been mounted
+with '-o inlinecrypt' and CONFIG_BLK_INLINE_ENCRYPTION has been enabled, along
+with CONFIG_BLK_INLINE_ENCRYPTION_FALLBACK if hardware support isn't present.
+
+As-is, it sounds a bit over-promising.
+
+Likewise for f2fs.
+
+We need to properly document this too.  At the very least, in the fscrypt patch,
+Documentation/filesystems/fscrypt.rst needs to be updated because it currently
+says "Direct I/O is not supported on encrypted files."
+
+fscrypt.rst could also use some information about inline encryption.  Currently
+inline encryption for fscrypt is only documented in the ext4 and f2fs
+documentation in the context of the inlinecrypt mount option.  (Though, this
+suggestion applies even without direct I/O support.)
 
 - Eric
