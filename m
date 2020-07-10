@@ -2,83 +2,80 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F126721AAB6
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 10 Jul 2020 00:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED35B21AC5A
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 10 Jul 2020 03:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726268AbgGIWqM (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 9 Jul 2020 18:46:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57522 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726213AbgGIWqL (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 9 Jul 2020 18:46:11 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 405FE206E2;
-        Thu,  9 Jul 2020 22:46:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594334771;
-        bh=dllc0mNQLui62MxdLGsYVQ0KPlrkGuocjRq3Z70d4xg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xvDIPC57zh3Q9WVIHSKHkAsCSM6aAI047xfy8fejKV0QhiMZ7VZ8/UwZmuDEAVmTi
-         VxJnjd+/iQeXu9RqWowkQxgCnxyVtCOnLm+E1OUsprA9HEDc5V8LrIfscbZjHANAS7
-         qITlXpZ46+T3AzBMvAcTLL3qacPrDc6ArNn+VhKw=
-Date:   Thu, 9 Jul 2020 15:46:09 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 0/5] add support for direct I/O with fscrypt using
+        id S1726323AbgGJBFb (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 9 Jul 2020 21:05:31 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7284 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726265AbgGJBFb (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 9 Jul 2020 21:05:31 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id CEECEF12BB245A9D0CA7;
+        Fri, 10 Jul 2020 09:05:28 +0800 (CST)
+Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 10 Jul
+ 2020 09:05:24 +0800
+Subject: Re: [PATCH 5/5] f2fs: support direct I/O with fscrypt using
  blk-crypto
-Message-ID: <20200709224609.GF3855682@gmail.com>
+To:     Satya Tangirala <satyat@google.com>,
+        <linux-fscrypt@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-ext4@vger.kernel.org>
+CC:     Eric Biggers <ebiggers@google.com>
 References: <20200709194751.2579207-1-satyat@google.com>
+ <20200709194751.2579207-6-satyat@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <560266ca-0164-c02e-18ea-55564683d13e@huawei.com>
+Date:   Fri, 10 Jul 2020 09:05:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200709194751.2579207-1-satyat@google.com>
+In-Reply-To: <20200709194751.2579207-6-satyat@google.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.134.22.195]
+X-CFilter-Loop: Reflected
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, Jul 09, 2020 at 07:47:46PM +0000, Satya Tangirala wrote:
-> This patch series adds support for direct I/O with fscrypt using
-> blk-crypto. It has been rebased on fscrypt/inline-encryption.
-
-Nit: use fscrypt/master instead.  (Eventually I'll delete the
-"inline-encryption" branch.)
-
-> Patch 1 adds two functions to fscrypt that need to be called to determine
-> if direct I/O is supported for a request.
+On 2020/7/10 3:47, Satya Tangirala wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> Patches 2 and 3 wire up direct-io and iomap respectively with the functions
-> introduced in Patch 1 and set bio crypt contexts on bios when appropriate
-> by calling into fscrypt.
+> Wire up f2fs with fscrypt direct I/O support.
 > 
-> Patches 4 and 5 allow ext4 and f2fs direct I/O to support fscrypt without
-> falling back to buffered I/O.
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> Signed-off-by: Satya Tangirala <satyat@google.com>
+> ---
+>  fs/f2fs/f2fs.h | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> This patch series was tested by running xfstests with test_dummy_encryption
-> with and without the 'inlinecrypt' mount option, and there were no
-> meaningful regressions. The only regression was for generic/587 on ext4,
-> but that test isn't compatible with test_dummy_encryption in the first
-> place, and the test "incorrectly" passes without the 'inlinecrypt' mount
-> option - a patch will be sent out to exclude that test when
-> test_dummy_encryption is turned on with ext4 (like the other quota related
-> tests that use user visible quota files).
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index b35a50f4953c..6d662a37b445 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -4082,7 +4082,9 @@ static inline bool f2fs_force_buffered_io(struct inode *inode,
+>  	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+>  	int rw = iov_iter_rw(iter);
+>  
+> -	if (f2fs_post_read_required(inode))
+> +	if (!fscrypt_dio_supported(iocb, iter))
+> +		return true;
+> +	if (fsverity_active(inode))
 
-Note that xfstests has a check that prevents most of the direct I/O tests from
-running when the 'test_dummy_encryption' mount option was specified:
-
-_require_odirect()
+static inline bool f2fs_post_read_required(struct inode *inode)
 {
-        if [ $FSTYP = "ext4" ] || [ $FSTYP = "f2fs" ] ; then
-                if echo "$MOUNT_OPTIONS" | grep -q "test_dummy_encryption"; then
-                        _notrun "$FSTYP encryption doesn't support O_DIRECT"
-                fi
-        fi
+	return f2fs_encrypted_file(inode) || fsverity_active(inode) ||
+		f2fs_compressed_file(inode);
+}
 
-We should try changing that check to not skip the test if the 'inlinecrypt'
-mount option was also specified.
+That's not correct, missed to check compression condition.
 
-- Eric
+>  		return true;
+>  	if (f2fs_is_multi_device(sbi))
+>  		return true;
+> 
