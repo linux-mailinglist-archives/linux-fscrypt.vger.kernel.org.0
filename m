@@ -2,107 +2,131 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CEC8226F86
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 20 Jul 2020 22:14:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54B17227306
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 21 Jul 2020 01:37:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729357AbgGTUOG (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 20 Jul 2020 16:14:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53894 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727123AbgGTUOG (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 20 Jul 2020 16:14:06 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 680AD2080D;
-        Mon, 20 Jul 2020 20:14:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595276045;
-        bh=wDxijBprww99JyKZ7zq1b0Bm+gBJfpxa+gZiTN2MMac=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PPMtmi5EfngGRLVXC4qUYRQ1gdrrDIyuG8biGtRFAryZ0R9CC8s/0ZXIdD+Ovfbla
-         JnQVA+559vhRMT7XehRKOYcnDREV63fo/E7ZW17Y80AOMn3OmELWauhiaC/+dIA1E8
-         5l8h0NDI2Cq1StzoLJGfBfBTNTRRaqlHa6Pc2oyE=
-Date:   Mon, 20 Jul 2020 13:14:04 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v3 1/7] fscrypt: Add functions for direct I/O support
-Message-ID: <20200720201404.GJ1292162@gmail.com>
-References: <20200717014540.71515-1-satyat@google.com>
- <20200717014540.71515-2-satyat@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200717014540.71515-2-satyat@google.com>
+        id S1727037AbgGTXho (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 20 Jul 2020 19:37:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726782AbgGTXhn (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 20 Jul 2020 19:37:43 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FAD6C0619D5
+        for <linux-fscrypt@vger.kernel.org>; Mon, 20 Jul 2020 16:37:43 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id s2so11209664qvn.19
+        for <linux-fscrypt@vger.kernel.org>; Mon, 20 Jul 2020 16:37:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=oKlpB9JflgOJW0lsaq+hMYnQNitRzPyz15HBElBY3z8=;
+        b=i17qPxIQ+FYgs3/oOkOTA5egde4Z8SYqICXc/pdjW+3WlCsYt5Ni8BXkdy6av3PK9M
+         q10Dc6or8ugIU4p7j4z+lX1BMSKSUBjbUKPTbnQ2pj4kjL4yUWDHbPar9ysEPBmCd00E
+         RtQLja8gf0x2Lyf2Urkel1+HH1DQoGfS8C86KzqnVbhAGPkdYqrCpEGINpz0h8/oI5SU
+         IR0EaVXQIAeQZ4yNPLmyksD9kfZmAsxiWyKNilqbtimuctJbIkWpZEkyK24hZ3d+tcAb
+         1bw3VNgz1m7X133cTcDXWo2m3DeD+0yX7sg26+tp3PzZZXsaJjovcak1mqDzUPd0b2pl
+         xGGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=oKlpB9JflgOJW0lsaq+hMYnQNitRzPyz15HBElBY3z8=;
+        b=KvQJM5REiVhe7Y3SZYSue/+wiaINcUV3EziLPY6+UO1/aRzyydtc/CIIa74bwKqmIK
+         grykE4LTefxXdCqDGG4hmXKjTS+zumNpIZLUM/y/aOJYrsZqOuNqbKMsipDS2wdDMoqb
+         E9jIXO0tSQ4YdxaihKZN2S4lsHWqdwznw4pLIOCmhN0i5hZ5uaYcYkz+fEGYhpmDQBy+
+         7f4A6WEPCYmp5px24N88X9hJDHnN3gDJamDpXnzgnz8IRZH7Tz1/ntBuTR+90ng1BoaK
+         7CUBCwcY7qwSaS4BEkTw1NLlcSK1rnd+bHKNUuJgLVw5hDhYUVIb7pKHTHGfOshpuIvy
+         ocwA==
+X-Gm-Message-State: AOAM531Vcvn3gGINRqZeUcFFrKHnPogMcqyWTFM9aMYrfwgE3IFeec6z
+        KqddUdiix0/zdpXeZ4AvsAm/D0MgSc3pyWMT8FVNDGeslGhkc1/E13PizQu3u4OG3n819PCgFy7
+        HarWZsQY+SMi+fUpOGiC1FCjPuRk39ZmeYpcbn9clSsvx7z03uSLIVygA9SaTcmz+qO++xCg=
+X-Google-Smtp-Source: ABdhPJyBkI/ohJhicP2uZzD/rrAaWCmvyhCaVPrvr7OjYU3dPRB2s26/Urv6XxL5AogW5RzjOXaC57U0VCg=
+X-Received: by 2002:a0c:e308:: with SMTP id s8mr24750179qvl.127.1595288262100;
+ Mon, 20 Jul 2020 16:37:42 -0700 (PDT)
+Date:   Mon, 20 Jul 2020 23:37:32 +0000
+Message-Id: <20200720233739.824943-1-satyat@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.rc0.105.gf9edc3c819-goog
+Subject: [PATCH v4 0/7] add support for direct I/O with fscrypt using blk-crypto
+From:   Satya Tangirala <satyat@google.com>
+To:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org
+Cc:     linux-xfs@vger.kernel.org, Satya Tangirala <satyat@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 01:45:34AM +0000, Satya Tangirala wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> Introduce fscrypt_dio_supported() to check whether a direct I/O request
-> is unsupported due to encryption constraints, and
-> fscrypt_limit_io_pages() to check how many pages may be added to a bio
-> being prepared for direct I/O.
-> 
-> The IV_INO_LBLK_32 fscrypt policy introduced the possibility that DUNs
-> in logically continuous file blocks might wrap from 0xffffffff to 0.
-> Since this was particularly difficult to handle when block_size !=
-> PAGE_SIZE, fscrypt only supports blk-crypto en/decryption with
-> the IV_INO_LBLK_32 policy when block_size == PAGE_SIZE, and ensures that
-> the DUN never wraps around within any submitted bio.
-> fscrypt_limit_io_pages() can be used to determine the number of logically
-> contiguous blocks/pages that may be added to the bio without causing the
-> DUN to wrap around within the bio. This is an alternative to calling
-> fscrypt_mergeable_bio() on each page in a range of logically contiguous
-> pages.
+This patch series adds support for direct I/O with fscrypt using
+blk-crypto. It has been rebased on fscrypt/master.
 
-This is a bit hard to read, especially the second paragraph.  How about:
+Patch 1 adds two functions to fscrypt that need to be called to determine
+if direct I/O is supported for a request.
 
+Patches 2 and 3 wire up direct-io and iomap respectively with the functions
+introduced in Patch 1 and set bio crypt contexts on bios when appropriate
+by calling into fscrypt.
 
-"Introduce fscrypt_dio_supported() to check whether a direct I/O request
-is unsupported due to encryption constraints.
+Patches 4 and 5 allow ext4 and f2fs direct I/O to support fscrypt without
+falling back to buffered I/O.
 
-Also introduce fscrypt_limit_io_pages() to limit how many pages can be
-added to a bio being prepared for direct I/O.  This is needed for the
-iomap direct I/O implementation to avoid DUN wraparound in the middle of
-a bio (which is possible with the IV_INO_LBLK_32 IV generation method).
-Elsewhere fscrypt_mergeable_bio() is used for this, but iomap operates
-on logical ranges directly and thus needs doesn't have a chance to call
-fscrypt_mergeable_bio() on every block or page.  So we need a function
-which limits a logical range in one go."
+Patches 6 and 7 update the fscrypt documentation for inline encryption
+support and direct I/O. The documentation now notes the required conditions
+for inline encryption and direct I/O on encrypted files.
 
+This patch series was tested by running xfstests with test_dummy_encryption
+with and without the 'inlinecrypt' mount option, and there were no
+meaningful regressions. One regression was for generic/587 on ext4,
+but that test isn't compatible with test_dummy_encryption in the first
+place, and the test "incorrectly" passes without the 'inlinecrypt' mount
+option - a patch will be sent out to exclude that test when
+test_dummy_encryption is turned on with ext4 (like the other quota related
+tests that use user visible quota files). The other regression was for
+generic/252 on ext4, which does direct I/O with a buffer aligned to the
+block device's blocksize, but not necessarily aligned to the filesystem's
+block size, which direct I/O with fscrypt requires.
 
-In particular, the detail about PAGE_SIZE better belongs in the code, I think.
+Changes v3 => v4:
+ - Fix bug in iomap_dio_bio_actor() where fscrypt_limit_io_pages() was
+   being called too early (thanks Eric!)
+ - Improve comments and fix formatting in documentation
+ - iomap_dio_zero() is only called to zero out partial blocks, but
+   direct I/O is only supported on encrypted files when I/O is
+   blocksize aligned, so it doesn't need to set encryption contexts on
+   bios. Replace setting the encryption context with a WARN_ON(). (Eric)
 
-> +/**
-> + * fscrypt_limit_io_pages() - limit I/O pages to avoid discontiguous DUNs
-> + * @inode: the file on which I/O is being done
-> + * @pos: the file position (in bytes) at which the I/O is being done
-> + * @nr_pages: the number of pages we want to submit starting at @pos
-> + *
-> + * Determine the limit to the number of pages that can be submitted in the bio
-> + * targeting @pos without causing a data unit number (DUN) discontinuity.
-> + *
-> + * For IV generation methods that can't cause DUN wraparounds
-> + * within logically continuous data blocks, the maximum number of pages is
-> + * simply @nr_pages. For those IV generation methods that *might* cause DUN
-> + * wraparounds, the returned number of pages is the largest possible number of
-> + * pages (less than @nr_pages) that can be added to the bio without causing a
-> + * DUN wraparound within the bio.
+Changes v2 => v3:
+ - add changelog to coverletter
 
-How about replacing the second paragraph here with:
- 
- * This is normally just @nr_pages, as normally the DUNs just increment along
- * with the logical blocks.  (Or the file is not encrypted.)
- *
- * In rare cases, fscrypt can be using an IV generation method that allows the
- * DUN to wrap around within logically continuous blocks, and that wraparound
- * will occur.  If this happens, a value less than @nr_pages will be returned so
- * that the wraparound doesn't occur in the middle of the bio.  Note that we
- * only support block_size == PAGE_SIZE (and page-aligned DIO) in such cases.
+Changes v1 => v2:
+ - Fix bug in f2fs caused by replacing f2fs_post_read_required() with
+   !fscrypt_dio_supported() since the latter doesn't check for
+   compressed inodes unlike the former.
+ - Add patches 6 and 7 for fscrypt documentation
+ - cleanups and comments
+
+Eric Biggers (5):
+  fscrypt: Add functions for direct I/O support
+  direct-io: add support for fscrypt using blk-crypto
+  iomap: support direct I/O with fscrypt using blk-crypto
+  ext4: support direct I/O with fscrypt using blk-crypto
+  f2fs: support direct I/O with fscrypt using blk-crypto
+
+Satya Tangirala (2):
+  fscrypt: document inline encryption support
+  fscrypt: update documentation for direct I/O support
+
+ Documentation/filesystems/fscrypt.rst | 36 +++++++++++-
+ fs/crypto/crypto.c                    |  8 +++
+ fs/crypto/inline_crypt.c              | 82 +++++++++++++++++++++++++++
+ fs/direct-io.c                        | 15 ++++-
+ fs/ext4/file.c                        | 10 ++--
+ fs/f2fs/f2fs.h                        |  6 +-
+ fs/iomap/direct-io.c                  | 12 +++-
+ include/linux/fscrypt.h               | 19 +++++++
+ 8 files changed, 178 insertions(+), 10 deletions(-)
+
+-- 
+2.28.0.rc0.105.gf9edc3c819-goog
+
