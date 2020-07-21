@@ -2,78 +2,90 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A187722742D
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 21 Jul 2020 02:56:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD23F228802
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 21 Jul 2020 20:11:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726878AbgGUA4E (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 20 Jul 2020 20:56:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52954 "EHLO mail.kernel.org"
+        id S1726602AbgGUSLg (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 21 Jul 2020 14:11:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46760 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726390AbgGUA4E (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 20 Jul 2020 20:56:04 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726029AbgGUSLg (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 21 Jul 2020 14:11:36 -0400
+Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BCA0C2080D;
-        Tue, 21 Jul 2020 00:56:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 91CAF20720;
+        Tue, 21 Jul 2020 18:11:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595292963;
-        bh=dljJpfGPFFNj0wv4WYv/v3SWoi1fAf+MTy7pRYnyY7Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ejU8ZkFJrLiVoGTmDI5vINlnpExbViy7d42Uic8QH7oIDcehBxc7Xjc7fPHoEdxnp
-         zFQ8luDXtsqZ6dhgmGuNI1zE295r46BjEni3RQj/MX42KOpQE0ENNWACO4S8D3mPN8
-         N093bypT+wf9P/NEFxk1k2jmPoWzo0dvJXrS3+7c=
-Date:   Mon, 20 Jul 2020 17:56:02 -0700
+        s=default; t=1595355095;
+        bh=8PmokV2OOLmhOJcGzxltydoC6SNc4ybchJ4kJJykcWM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=kO4W9ZhKEjO67C15PxdhGd0mkQ4ex6CD4DjfWXWPsgSgIbHe4fJG7yGUMOTdvC5lF
+         XsRirzo70YHXKkubXVARHQf+brNyq9xgFikJwXiEGCVZ4/C0mB1EIZl9kk4HqOYB9/
+         3SVtABIpfYg/BronmpYSvNUciJR0vU/pTxWHv9eM=
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v4 0/7] add support for direct I/O with fscrypt using
- blk-crypto
-Message-ID: <20200721005602.GE7464@sol.localdomain>
-References: <20200720233739.824943-1-satyat@google.com>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        Paul Crowley <paulcrowley@google.com>,
+        Satya Tangirala <satyat@google.com>
+Subject: [PATCH] fscrypt: restrict IV_INO_LBLK_* to AES-256-XTS
+Date:   Tue, 21 Jul 2020 11:10:12 -0700
+Message-Id: <20200721181012.39308-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200720233739.824943-1-satyat@google.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 11:37:32PM +0000, Satya Tangirala wrote:
-> This patch series adds support for direct I/O with fscrypt using
-> blk-crypto. It has been rebased on fscrypt/master.
-> 
-> Patch 1 adds two functions to fscrypt that need to be called to determine
-> if direct I/O is supported for a request.
-> 
-> Patches 2 and 3 wire up direct-io and iomap respectively with the functions
-> introduced in Patch 1 and set bio crypt contexts on bios when appropriate
-> by calling into fscrypt.
-> 
-> Patches 4 and 5 allow ext4 and f2fs direct I/O to support fscrypt without
-> falling back to buffered I/O.
-> 
-> Patches 6 and 7 update the fscrypt documentation for inline encryption
-> support and direct I/O. The documentation now notes the required conditions
-> for inline encryption and direct I/O on encrypted files.
-> 
-> This patch series was tested by running xfstests with test_dummy_encryption
-> with and without the 'inlinecrypt' mount option, and there were no
-> meaningful regressions. One regression was for generic/587 on ext4,
-> but that test isn't compatible with test_dummy_encryption in the first
-> place, and the test "incorrectly" passes without the 'inlinecrypt' mount
-> option - a patch will be sent out to exclude that test when
-> test_dummy_encryption is turned on with ext4 (like the other quota related
-> tests that use user visible quota files). The other regression was for
-> generic/252 on ext4, which does direct I/O with a buffer aligned to the
-> block device's blocksize, but not necessarily aligned to the filesystem's
-> block size, which direct I/O with fscrypt requires.
-> 
+From: Eric Biggers <ebiggers@google.com>
 
-This patch series looks good to me now.  Can the ext4, f2fs, and iomap
-maintainers take a look?
+IV_INO_LBLK_* exist only because of hardware limitations, and currently
+the only known use case for them involves AES-256-XTS.  Therefore, for
+now only allow them in combination with AES-256-XTS.  This way we don't
+have to worry about them being combined with other encryption modes.
 
-- Eric
+(To be clear, combining IV_INO_LBLK_* with other encryption modes
+*should* work just fine.  It's just not being tested, so we can't be
+100% sure it works.  So with no known use case, it's best to disallow it
+for now, just like we don't allow other weird combinations like
+AES-256-XTS contents encryption with Adiantum filenames encryption.)
+
+This can be relaxed later if a use case for other combinations arises.
+
+Fixes: b103fb7653ff ("fscrypt: add support for IV_INO_LBLK_64 policies")
+Fixes: e3b1078bedd3 ("fscrypt: add support for IV_INO_LBLK_32 policies")
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ fs/crypto/policy.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
+index 8a8ad0e44bb8..8e667aadf271 100644
+--- a/fs/crypto/policy.c
++++ b/fs/crypto/policy.c
+@@ -77,6 +77,20 @@ static bool supported_iv_ino_lblk_policy(const struct fscrypt_policy_v2 *policy,
+ 	struct super_block *sb = inode->i_sb;
+ 	int ino_bits = 64, lblk_bits = 64;
+ 
++	/*
++	 * IV_INO_LBLK_* exist only because of hardware limitations, and
++	 * currently the only known use case for them involves AES-256-XTS.
++	 * That's also all we test currently.  For these reasons, for now only
++	 * allow AES-256-XTS here.  This can be relaxed later if a use case for
++	 * IV_INO_LBLK_* with other encryption modes arises.
++	 */
++	if (policy->contents_encryption_mode != FSCRYPT_MODE_AES_256_XTS) {
++		fscrypt_warn(inode,
++			     "Can't use %s policy with contents mode other than AES-256-XTS",
++			     type);
++		return false;
++	}
++
+ 	/*
+ 	 * It's unsafe to include inode numbers in the IVs if the filesystem can
+ 	 * potentially renumber inodes, e.g. via filesystem shrinking.
+-- 
+2.27.0
+
