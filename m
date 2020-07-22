@@ -2,523 +2,249 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAD6D228F8F
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 22 Jul 2020 07:11:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFBE8228F93
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 22 Jul 2020 07:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726147AbgGVFLr (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 22 Jul 2020 01:11:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50108 "EHLO
+        id S1727042AbgGVFNj (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 22 Jul 2020 01:13:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726696AbgGVFLq (ORCPT
+        with ESMTP id S1726147AbgGVFNi (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 22 Jul 2020 01:11:46 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EF43C0619DB
-        for <linux-fscrypt@vger.kernel.org>; Tue, 21 Jul 2020 22:11:46 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id j19so560751pgm.11
-        for <linux-fscrypt@vger.kernel.org>; Tue, 21 Jul 2020 22:11:46 -0700 (PDT)
+        Wed, 22 Jul 2020 01:13:38 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 893EEC061794
+        for <linux-fscrypt@vger.kernel.org>; Tue, 21 Jul 2020 22:13:38 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id b9so373463plx.6
+        for <linux-fscrypt@vger.kernel.org>; Tue, 21 Jul 2020 22:13:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=/zaqS8vY2TPrcpHx0b1va9WleeHK1t3vTmAL9VXfVXc=;
-        b=qo2wOft3rO+8XdNL+cDv9TkJ9IbUEW3+/6UIo6UFo1XRD72gcVrojJBJQ578IyrFzV
-         bgVTHJvWShy5dXe4YtuhP4VAJXWJ07cqmb8kwbHxQwouHLdN9IQi69d+RH7o3a7FwQOt
-         ziaPw49QMeAn76XGhX42cn9rM7fkGH3/RZ6g7wOXGWegA1ecTvoSgn+WGG4m8LlU2BKA
-         GeRf58evp74RsF/wZFivjxbdBh9Ma1ntXEq7Coh+Hu+8XQq40GCMGDx9LdCact3w56Ek
-         /43lE+4oG8GVTBjGSeiW1hf6JUmK/JAjzp/3mLf4mRULEjrCfDIh8ShkgYj4Lgv4u3nR
-         ElwQ==
+        bh=kyW40mM/OT9V1AufihXDPSdCBk+PNGOJQ8TUvnygyu0=;
+        b=UHPnx0lu8znCbPQmSzkqUCxC/yd3EXWaoOYQolSdvOgXpNBJA9xe23Smg2DUnBdVgT
+         VTKDVJwC45NDMs5VvD36kvh4r1wYzREgmSRJXVsaqOsSRX9j9GBbtF3/Z9PJq/i0gGR0
+         MASYeR/IWw06VwykSfxzn0XrcfFZHb5GvkGWQ+vIW7gdU87SG0o27DIL6A0ehAkIHdwA
+         lePlJhGA7mIpQ5BKcBG8AZuYWM3H+gPypPKc3aTH1wR/S7WYHbR6SrOqrOJDsbhzEvOp
+         lW684CrCVB6y89gZpMOZ+eSK34erJdROkOEwXqMZm/QIGGCF1RfW8Ovp+R2Hg/Neekv7
+         UfWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=/zaqS8vY2TPrcpHx0b1va9WleeHK1t3vTmAL9VXfVXc=;
-        b=QQW4mTAm7JU2r7h1gdTObbndDemfYZhC16QxtJkBpTU1jh26AP1l2VwVwn3Z7bPZWB
-         tNiGC5IDTZwShKgFggR/+9RReD7Gx2viz8b81W4Gt9uFLKHclhkF6V7DXnbNQSqP5SXE
-         4EJy3ZO1EEBlSjyvzhBbQioFIxfuAGPeQ+cLmnaUlDnc48eQ71Db2nrb7iCsI99BWdE2
-         yfkED1x8B0sB1M383mh/WDm3Vu+VXxKzCCk0Rephh/+5QKcIdvRXQbM2BptI0kZuHigh
-         igG642cwJfBBiC1ppu/SYV0Aj686gep+hsdEqVdcDpeZNo3gaUyWuo96pNoYw3Sj1yib
-         DJIQ==
-X-Gm-Message-State: AOAM533nwfEuvJvlw08MCr0iODDwjTJBKZcQrxY3ljha/zuwF4spPcVS
-        EeFl2uYYvP6Szx1K3Tk9Gg91pw==
-X-Google-Smtp-Source: ABdhPJy9WFhKTkiVSJZstxIE6V9XtVGj88VK2iAvgFmdlM89++CnE00uDD1EazAvohl2J4Zsf+/9Og==
-X-Received: by 2002:a65:5c43:: with SMTP id v3mr24782848pgr.214.1595394705324;
-        Tue, 21 Jul 2020 22:11:45 -0700 (PDT)
+        bh=kyW40mM/OT9V1AufihXDPSdCBk+PNGOJQ8TUvnygyu0=;
+        b=g5hb4klJRvkedbBrE3t+GCwwalysefAseubpWVViszKn0wwFjZ7jr+2g14haXHuk5S
+         I8pTOC1DNMflyw9LAG9XWOurUPumKs4BA5Y0lc/alPWn2ALNmDQ1XE8kAE8XnBpS+SyE
+         b+RODO6y/YOKZ5L9xcXgKy1DRnRs3kWtCibTuJNO1MTicw19OZc1ScCMdXFJTBtksH6N
+         z9EG2/EdcvleIKkxcupYP7vNp+drtqBQgEvdzFb3t4+HycPNaP6MmpIXhTinc2RMLutr
+         341nr/dNW8zxGZNN0+kZdsowNs+VbeOS9LJkJMNXv03+sNllnJS2STx/33tpBJadSqjs
+         AOtg==
+X-Gm-Message-State: AOAM5322hG6LiE2g5bwE2NZWD/RUBRfVxL0igUQy/kp6ZxV5aEKBfGmX
+        iBut0zVgoF4vtOC5dp4jEFQoXA==
+X-Google-Smtp-Source: ABdhPJwbs0iPpsLwvI243YAKaid8UfyWbgCAV+j9ANH3B1qSZEmXjfSTQtiRG29H/I3S9JzLBUNOkA==
+X-Received: by 2002:a17:90a:89:: with SMTP id a9mr8566587pja.171.1595394817896;
+        Tue, 21 Jul 2020 22:13:37 -0700 (PDT)
 Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id v8sm4861263pjf.46.2020.07.21.22.11.43
+        by smtp.gmail.com with ESMTPSA id n2sm19627579pgv.37.2020.07.21.22.13.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 22:11:44 -0700 (PDT)
-Date:   Tue, 21 Jul 2020 22:09:51 -0700
+        Tue, 21 Jul 2020 22:13:37 -0700 (PDT)
+Date:   Tue, 21 Jul 2020 22:11:43 -0700
 From:   Bjorn Andersson <bjorn.andersson@linaro.org>
 To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-scsi@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+Cc:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
+        SCSI <linux-scsi@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
         linux-fscrypt@vger.kernel.org,
         Alim Akhtar <alim.akhtar@samsung.com>,
-        Andy Gross <agross@kernel.org>,
         Avri Altman <avri.altman@wdc.com>,
         Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
         Can Guo <cang@codeaurora.org>,
         Elliot Berman <eberman@codeaurora.org>,
         John Stultz <john.stultz@linaro.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Satya Tangirala <satyat@google.com>,
         Steev Klimaszewski <steev@kali.org>,
         Thara Gopinath <thara.gopinath@linaro.org>
-Subject: Re: [PATCH v6 5/5] scsi: ufs-qcom: add Inline Crypto Engine support
-Message-ID: <20200722050951.GT388985@builder.lan>
-References: <20200710072013.177481-1-ebiggers@kernel.org>
- <20200710072013.177481-6-ebiggers@kernel.org>
+Subject: Re: [PATCH v6 3/5] arm64: dts: sdm845: add Inline Crypto Engine
+ registers and clock
+Message-ID: <20200722051143.GU388985@builder.lan>
+References: <CAL_Jsq+t1h4w8C361vguw1co_vnbMKs3q4qWR4=jwAKr1Vm80g@mail.gmail.com>
+ <20200714164353.GB1064009@gmail.com>
+ <CAL_JsqK-wUuo6azYseC35R=Q509=h9-v4gFvcvy8wXrDgSw5ZQ@mail.gmail.com>
+ <20200714171203.GC1064009@gmail.com>
+ <20200714173111.GG388985@builder.lan>
+ <20200714174345.GE1218486@builder.lan>
+ <20200714175718.GD1064009@gmail.com>
+ <20200714200027.GH388985@builder.lan>
+ <20200715030004.GB38091@sol.localdomain>
+ <20200720170713.GD1292162@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200710072013.177481-6-ebiggers@kernel.org>
+In-Reply-To: <20200720170713.GD1292162@gmail.com>
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri 10 Jul 00:20 PDT 2020, Eric Biggers wrote:
+On Mon 20 Jul 10:07 PDT 2020, Eric Biggers wrote:
 
-> From: Eric Biggers <ebiggers@google.com>
+> On Tue, Jul 14, 2020 at 08:00:04PM -0700, Eric Biggers wrote:
+> > On Tue, Jul 14, 2020 at 01:00:27PM -0700, Bjorn Andersson wrote:
+> > > On Tue 14 Jul 10:57 PDT 2020, Eric Biggers wrote:
+> > > 
+> > > > On Tue, Jul 14, 2020 at 10:43:45AM -0700, Bjorn Andersson wrote:
+> > > > > On Tue 14 Jul 10:31 PDT 2020, Bjorn Andersson wrote:
+> > > > > 
+> > > > > > On Tue 14 Jul 10:12 PDT 2020, Eric Biggers wrote:
+> > > > > > 
+> > > > > > > On Tue, Jul 14, 2020 at 10:59:44AM -0600, Rob Herring wrote:
+> > > > > > > > On Tue, Jul 14, 2020 at 10:43 AM Eric Biggers <ebiggers@kernel.org> wrote:
+> > > > > > > > >
+> > > > > > > > > On Tue, Jul 14, 2020 at 10:35:12AM -0600, Rob Herring wrote:
+> > > > > > > > > > On Tue, Jul 14, 2020 at 10:15 AM Eric Biggers <ebiggers@kernel.org> wrote:
+> > > > > > > > > > >
+> > > > > > > > > > > On Tue, Jul 14, 2020 at 10:16:04AM -0400, Martin K. Petersen wrote:
+> > > > > > > > > > > >
+> > > > > > > > > > > > Eric,
+> > > > > > > > > > > >
+> > > > > > > > > > > > > Add the vendor-specific registers and clock for Qualcomm ICE (Inline
+> > > > > > > > > > > > > Crypto Engine) to the device tree node for the UFS host controller on
+> > > > > > > > > > > > > sdm845, so that the ufs-qcom driver will be able to use inline crypto.
+> > > > > > > > > > > >
+> > > > > > > > > > > > I would like to see an Acked-by for this patch before I merge it.
+> > > > > > > > > > > >
+> > > > > > > > > > >
+> > > > > > > > > > > Andy, Bjorn, or Rob: can you give Acked-by?
+> > > > > > > > > >
+> > > > > > > > > > DTS changes should go in via the QCom tree.
+> > > > > > > > > >
+> > > > > > > > >
+> > > > > > > > > So, the DTS patch can't be applied without the driver patches since then the
+> > > > > > > > > driver would misinterpret the ICE registers as the dev_ref_clk_ctrl registers.
+> > > > > > > > 
+> > > > > > > > That sounds broken, but there's no context here for me to comment
+> > > > > > > > further. DTS changes should work with old/stable kernels. I'd suggest
+> > > > > > > > you get a review from Bjorn on the driver first.
+> > > > > > > > 
+> > > > > > > 
+> > > > > > > The "breaking" change is that the dev_ref_clk_ctrl registers are now identified
+> > > > > > > by name instead of assumed to be index 1.
+> > > > > > > 
+> > > > > > > A reviewer had complained about the device-mapper bindings of this driver before
+> > > > > > > (https://lkml.kernel.org/r/158334171487.7173.5606223900174949177@swboyd.mtv.corp.google.com).
+> > > > > > > Changing to identifying the registers by name seemed like an improvement.
+> > > > > > > 
+> > > > > > > If needed I can add a hole at index 1 to make the DTS changes work with
+> > > > > > > old/stable kernels too, but I didn't know that is a requirement.  (Normally for
+> > > > > > > Linux kernel development, kernel-internal refactoring is always allowed
+> > > > > > > upstream.)  If I do this, would this hack have to be carried forever, or would
+> > > > > > > we be able to fix it up eventually?  Is there any deprecation period for DTS, or
+> > > > > > > do the latest DTS have to work with a 20 year old kernel?
+> > > > > > > 
+> > > > > > 
+> > > > > > The problem here is that DT binding refactoring is not kernel-internal.
+> > > > > > It's two different projects living in the same git.
+> > > > > > 
+> > > > > > There's a wish from various people that we make sure that new DTS
+> > > > > > continues to work with existing kernels. This is a nice in theory
+> > > > > > there's a lot of examples where we simply couldn't anticipate how future
+> > > > > > bindings would look. A particular example is that this prohibits most
+> > > > > > advancement in power management.
+> > > > > > 
+> > > > > > 
+> > > > > > But afaict what you describe above would make a new kernel failing to
+> > > > > > operate with the old DTS and that we have agreed to avoid.
+> > > > > > So I think the appropriate way to deal with this is to request the reg
+> > > > > > byname to detect the new binding and if that fails then assume that
+> > > > > > index 1 is dev_ref_clk_ctrl.
+> > > > > > 
+> > > > > 
+> > > > > I took another look at the git history and I can't find a single dts -
+> > > > > either upstream or in any downstream tree - that specifies that second
+> > > > > reg.
+> > > > > 
+> > > > > So per my argument below, if you could include a patch that just removes
+> > > > > the "dev_ref_clk_ctrl_mem" reference from the binding and driver I would
+> > > > > be happy to r-b that and ack this patch.
+> > > > > 
+> > > > > Regards,
+> > > > > Bjorn
+> > > > > 
+> > > > > > 
+> > > > > > There are cases where we just decide not to be backwards compatible, but
+> > > > > > it's pretty rare. As for deprecation, I think 1-2 LTS releases is
+> > > > > > sufficient, at that time scale it doesn't make sense to sit with an old
+> > > > > > DTB anyways (given the current pace of advancements in the kernel).
+> > > > > > 
+> > > > 
+> > > > Great, I'll remove the driver support for "dev_ref_clk_ctrl" then.  However,
+> > > > that doesn't solve the problem of the new DTS breaking old drivers, since old
+> > > > drivers assume that reg[1] is dev_ref_clk_ctrl.
+> > > > 
+> > > > This patch makes the DTS look like:
+> > > > 
+> > > > 	reg = <0 0x01d84000 0 0x2500>,
+> > > > 	      <0 0x01d90000 0 0x8000>;
+> > > > 	reg-names = "std", "ice";
+> > > > 
+> > > > The "ice" registers are new and are accessed by name instead of by index.
+> > > > 
+> > > > But these also happen to be in reg[1].  Old drivers will see that reg[1] is
+> > > > present and assume it is dev_ref_clk_ctrl.
+> > > > 
+> > > > To work around this, I could leave a blank reg[1] entry:
+> > > > 
+> > > > 	reg = <0 0x01d84000 0 0x2500>,
+> > > > 	      <0 0 0 0>,
+> > > > 	      <0 0x01d90000 0 0x8000>;
+> > > > 	reg-names = "std", "dev_ref_clk_ctrl", "ice";
+> > > > 
+> > > > Do I need to do that?
+> > > > 
+> > > 
+> > > No, let's not complicate it without good reason. SDM845 has hw_ver.major
+> > > == 3, so we're not taking the else-path in ufs_qcom_init(). So I should
+> > > be able to just merge this patch for 5.9 through the qcom tree after
+> > > all (your code handles that it's not there and the existing code doesn't
+> > > care).
+> > > 
+> > > 
+> > > The two platforms that I can find that has UFS controller of
+> > > hw_ver.major == 1 is APQ8084 and MSM8994, so I simply didn't look at an
+> > > old enough downstream tree (msm-3.10) to find anyone specifying reg[1].
+> > > The reg specified is however coming from the TLMM (pinctrl-msm) hardware
+> > > block, so it should not be directly remapped in the UFS driver...
+> > > 
+> > > But regardless, that has not been seen in an upstream dts and per your
+> > > patch 2 we would add that reg by name when that happens.
+> > > There's recent activity on upstreaming more of the MSM8994 support, so
+> > > perhaps then it's best to leave this snippet in the driver for now.
+> > > 
+> > > 
+> > > Summary: Martin merges (merged?) patch 1, 2, 4 and 5 in the scsi tree,
+> > > I'll merge this patch as is in the qcom tree and we'll just leave the
+> > > dev_ref_clk handling as is for now then.
+> > > 
+> > 
+> > Okay, great.  So an old DTS with the new driver isn't a problem because no DTS
+> > has ever declared dev_ref_clk_ctrl.  And a new DTS with an old driver is a less
+> > important case, and also not really a problem here since breakage would only
+> > occur if we added the ICE registers to an older SoC that has hw_ver.major == 1.
+> > 
+> > Maybe you'd like to provide your Acked-by on patches 2 and 5?
+> > 
+> > My instinct is always to remove code that has never been used.  But sure, if you
+> > think the dev_ref_clk_ctrl code might be used soon, we can keep it for now.
+> > 
 > 
-> Add support for Qualcomm Inline Crypto Engine (ICE) to ufs-qcom.
-> 
-> The standards-compliant parts, such as querying the crypto capabilities
-> and enabling crypto for individual UFS requests, are already handled by
-> ufshcd-crypto.c, which itself is wired into the blk-crypto framework.
-> However, ICE requires vendor-specific init, enable, and resume logic,
-> and it requires that keys be programmed and evicted by vendor-specific
-> SMC calls.  Make the ufs-qcom driver handle these details.
-> 
-> I tested this on Dragonboard 845c, which is a publicly available
-> development board that uses the Snapdragon 845 SoC and runs the upstream
-> Linux kernel.  This is the same SoC used in the Pixel 3 and Pixel 3 XL
-> phones.  This testing included (among other things) verifying that the
-> expected ciphertext was produced, both manually using ext4 encryption
-> and automatically using a block layer self-test I've written.
-> 
-> I've also tested that this driver works nearly as-is on the Snapdragon
-> 765 and Snapdragon 865 SoCs.  And others have tested it on Snapdragon
-> 850, Snapdragon 855, and Snapdragon 865 (see the Tested-by tags).
-> 
-> This is based very loosely on the vendor-provided driver in the kernel
-> source code for the Pixel 3, but I've greatly simplified it.  Also, for
-> now I've only included support for major version 3 of ICE, since that's
-> all I have the hardware to test with the mainline kernel.  Plus it
-> appears that version 3 is easier to use than older versions of ICE.
-> 
-> For now, only allow using AES-256-XTS.  The hardware also declares
-> support for AES-128-XTS, AES-{128,256}-ECB, and AES-{128,256}-CBC
-> (BitLocker variant).  But none of these others are really useful, and
-> they'd need to be individually tested to be sure they worked properly.
-> 
-> This commit also changes the name of the loadable module from "ufs-qcom"
-> to "ufs_qcom", as this is necessary to compile it from multiple source
-> files (unless we were to rename ufs-qcom.c).
-> 
+> Ping?
 
-Acked-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Sorry, I thought Martin already did pick up the SCSI patches. I've acked
+the two patches now.
+
+Let's see what happens on MSM8994 to see if we should alter or remove
+the external ref_clk handling.
 
 Regards,
 Bjorn
-
-> Tested-by: Steev Klimaszewski <steev@kali.org> # Lenovo Yoga C630
-> Tested-by: Thara Gopinath <thara.gopinath@linaro.org> # db845c, sm8150-mtp, sm8250-mtp
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
->  MAINTAINERS                     |   2 +-
->  drivers/scsi/ufs/Kconfig        |   1 +
->  drivers/scsi/ufs/Makefile       |   4 +-
->  drivers/scsi/ufs/ufs-qcom-ice.c | 245 ++++++++++++++++++++++++++++++++
->  drivers/scsi/ufs/ufs-qcom.c     |  12 +-
->  drivers/scsi/ufs/ufs-qcom.h     |  27 ++++
->  6 files changed, 288 insertions(+), 3 deletions(-)
->  create mode 100644 drivers/scsi/ufs/ufs-qcom-ice.c
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 68f21d46614c..aa9c924facc6 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -2271,7 +2271,7 @@ F:	drivers/pci/controller/dwc/pcie-qcom.c
->  F:	drivers/phy/qualcomm/
->  F:	drivers/power/*/msm*
->  F:	drivers/reset/reset-qcom-*
-> -F:	drivers/scsi/ufs/ufs-qcom.*
-> +F:	drivers/scsi/ufs/ufs-qcom*
->  F:	drivers/spi/spi-geni-qcom.c
->  F:	drivers/spi/spi-qcom-qspi.c
->  F:	drivers/spi/spi-qup.c
-> diff --git a/drivers/scsi/ufs/Kconfig b/drivers/scsi/ufs/Kconfig
-> index 46a4542f37eb..f6394999b98c 100644
-> --- a/drivers/scsi/ufs/Kconfig
-> +++ b/drivers/scsi/ufs/Kconfig
-> @@ -99,6 +99,7 @@ config SCSI_UFS_DWC_TC_PLATFORM
->  config SCSI_UFS_QCOM
->  	tristate "QCOM specific hooks to UFS controller platform driver"
->  	depends on SCSI_UFSHCD_PLATFORM && ARCH_QCOM
-> +	select QCOM_SCM
->  	select RESET_CONTROLLER
->  	help
->  	  This selects the QCOM specific additions to UFSHCD platform driver.
-> diff --git a/drivers/scsi/ufs/Makefile b/drivers/scsi/ufs/Makefile
-> index 9810963bc049..4679af1b564e 100644
-> --- a/drivers/scsi/ufs/Makefile
-> +++ b/drivers/scsi/ufs/Makefile
-> @@ -3,7 +3,9 @@
->  obj-$(CONFIG_SCSI_UFS_DWC_TC_PCI) += tc-dwc-g210-pci.o ufshcd-dwc.o tc-dwc-g210.o
->  obj-$(CONFIG_SCSI_UFS_DWC_TC_PLATFORM) += tc-dwc-g210-pltfrm.o ufshcd-dwc.o tc-dwc-g210.o
->  obj-$(CONFIG_SCSI_UFS_CDNS_PLATFORM) += cdns-pltfrm.o
-> -obj-$(CONFIG_SCSI_UFS_QCOM) += ufs-qcom.o
-> +obj-$(CONFIG_SCSI_UFS_QCOM) += ufs_qcom.o
-> +ufs_qcom-y += ufs-qcom.o
-> +ufs_qcom-$(CONFIG_SCSI_UFS_CRYPTO) += ufs-qcom-ice.o
->  obj-$(CONFIG_SCSI_UFS_EXYNOS) += ufs-exynos.o
->  obj-$(CONFIG_SCSI_UFSHCD) += ufshcd-core.o
->  ufshcd-core-y				+= ufshcd.o ufs-sysfs.o
-> diff --git a/drivers/scsi/ufs/ufs-qcom-ice.c b/drivers/scsi/ufs/ufs-qcom-ice.c
-> new file mode 100644
-> index 000000000000..bbb0ad7590ec
-> --- /dev/null
-> +++ b/drivers/scsi/ufs/ufs-qcom-ice.c
-> @@ -0,0 +1,245 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Qualcomm ICE (Inline Crypto Engine) support.
-> + *
-> + * Copyright (c) 2014-2019, The Linux Foundation. All rights reserved.
-> + * Copyright 2019 Google LLC
-> + */
-> +
-> +#include <linux/platform_device.h>
-> +#include <linux/qcom_scm.h>
-> +
-> +#include "ufshcd-crypto.h"
-> +#include "ufs-qcom.h"
-> +
-> +#define AES_256_XTS_KEY_SIZE			64
-> +
-> +/* QCOM ICE registers */
-> +
-> +#define QCOM_ICE_REG_CONTROL			0x0000
-> +#define QCOM_ICE_REG_RESET			0x0004
-> +#define QCOM_ICE_REG_VERSION			0x0008
-> +#define QCOM_ICE_REG_FUSE_SETTING		0x0010
-> +#define QCOM_ICE_REG_PARAMETERS_1		0x0014
-> +#define QCOM_ICE_REG_PARAMETERS_2		0x0018
-> +#define QCOM_ICE_REG_PARAMETERS_3		0x001C
-> +#define QCOM_ICE_REG_PARAMETERS_4		0x0020
-> +#define QCOM_ICE_REG_PARAMETERS_5		0x0024
-> +
-> +/* QCOM ICE v3.X only */
-> +#define QCOM_ICE_GENERAL_ERR_STTS		0x0040
-> +#define QCOM_ICE_INVALID_CCFG_ERR_STTS		0x0030
-> +#define QCOM_ICE_GENERAL_ERR_MASK		0x0044
-> +
-> +/* QCOM ICE v2.X only */
-> +#define QCOM_ICE_REG_NON_SEC_IRQ_STTS		0x0040
-> +#define QCOM_ICE_REG_NON_SEC_IRQ_MASK		0x0044
-> +
-> +#define QCOM_ICE_REG_NON_SEC_IRQ_CLR		0x0048
-> +#define QCOM_ICE_REG_STREAM1_ERROR_SYNDROME1	0x0050
-> +#define QCOM_ICE_REG_STREAM1_ERROR_SYNDROME2	0x0054
-> +#define QCOM_ICE_REG_STREAM2_ERROR_SYNDROME1	0x0058
-> +#define QCOM_ICE_REG_STREAM2_ERROR_SYNDROME2	0x005C
-> +#define QCOM_ICE_REG_STREAM1_BIST_ERROR_VEC	0x0060
-> +#define QCOM_ICE_REG_STREAM2_BIST_ERROR_VEC	0x0064
-> +#define QCOM_ICE_REG_STREAM1_BIST_FINISH_VEC	0x0068
-> +#define QCOM_ICE_REG_STREAM2_BIST_FINISH_VEC	0x006C
-> +#define QCOM_ICE_REG_BIST_STATUS		0x0070
-> +#define QCOM_ICE_REG_BYPASS_STATUS		0x0074
-> +#define QCOM_ICE_REG_ADVANCED_CONTROL		0x1000
-> +#define QCOM_ICE_REG_ENDIAN_SWAP		0x1004
-> +#define QCOM_ICE_REG_TEST_BUS_CONTROL		0x1010
-> +#define QCOM_ICE_REG_TEST_BUS_REG		0x1014
-> +
-> +/* BIST ("built-in self-test"?) status flags */
-> +#define QCOM_ICE_BIST_STATUS_MASK		0xF0000000
-> +
-> +#define QCOM_ICE_FUSE_SETTING_MASK		0x1
-> +#define QCOM_ICE_FORCE_HW_KEY0_SETTING_MASK	0x2
-> +#define QCOM_ICE_FORCE_HW_KEY1_SETTING_MASK	0x4
-> +
-> +#define qcom_ice_writel(host, val, reg)	\
-> +	writel((val), (host)->ice_mmio + (reg))
-> +#define qcom_ice_readl(host, reg)	\
-> +	readl((host)->ice_mmio + (reg))
-> +
-> +static bool qcom_ice_supported(struct ufs_qcom_host *host)
-> +{
-> +	struct device *dev = host->hba->dev;
-> +	u32 regval = qcom_ice_readl(host, QCOM_ICE_REG_VERSION);
-> +	int major = regval >> 24;
-> +	int minor = (regval >> 16) & 0xFF;
-> +	int step = regval & 0xFFFF;
-> +
-> +	/* For now this driver only supports ICE version 3. */
-> +	if (major != 3) {
-> +		dev_warn(dev, "Unsupported ICE version: v%d.%d.%d\n",
-> +			 major, minor, step);
-> +		return false;
-> +	}
-> +
-> +	dev_info(dev, "Found QC Inline Crypto Engine (ICE) v%d.%d.%d\n",
-> +		 major, minor, step);
-> +
-> +	/* If fuses are blown, ICE might not work in the standard way. */
-> +	regval = qcom_ice_readl(host, QCOM_ICE_REG_FUSE_SETTING);
-> +	if (regval & (QCOM_ICE_FUSE_SETTING_MASK |
-> +		      QCOM_ICE_FORCE_HW_KEY0_SETTING_MASK |
-> +		      QCOM_ICE_FORCE_HW_KEY1_SETTING_MASK)) {
-> +		dev_warn(dev, "Fuses are blown; ICE is unusable!\n");
-> +		return false;
-> +	}
-> +	return true;
-> +}
-> +
-> +int ufs_qcom_ice_init(struct ufs_qcom_host *host)
-> +{
-> +	struct ufs_hba *hba = host->hba;
-> +	struct device *dev = hba->dev;
-> +	struct platform_device *pdev = to_platform_device(dev);
-> +	struct resource *res;
-> +	int err;
-> +
-> +	if (!(ufshcd_readl(hba, REG_CONTROLLER_CAPABILITIES) &
-> +	      MASK_CRYPTO_SUPPORT))
-> +		return 0;
-> +
-> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "ice");
-> +	if (!res) {
-> +		dev_warn(dev, "ICE registers not found\n");
-> +		goto disable;
-> +	}
-> +
-> +	if (!qcom_scm_ice_available()) {
-> +		dev_warn(dev, "ICE SCM interface not found\n");
-> +		goto disable;
-> +	}
-> +
-> +	host->ice_mmio = devm_ioremap_resource(dev, res);
-> +	if (IS_ERR(host->ice_mmio)) {
-> +		err = PTR_ERR(host->ice_mmio);
-> +		dev_err(dev, "Failed to map ICE registers; err=%d\n", err);
-> +		return err;
-> +	}
-> +
-> +	if (!qcom_ice_supported(host))
-> +		goto disable;
-> +
-> +	return 0;
-> +
-> +disable:
-> +	dev_warn(dev, "Disabling inline encryption support\n");
-> +	hba->caps &= ~UFSHCD_CAP_CRYPTO;
-> +	return 0;
-> +}
-> +
-> +static void qcom_ice_low_power_mode_enable(struct ufs_qcom_host *host)
-> +{
-> +	u32 regval;
-> +
-> +	regval = qcom_ice_readl(host, QCOM_ICE_REG_ADVANCED_CONTROL);
-> +	/*
-> +	 * Enable low power mode sequence
-> +	 * [0]-0, [1]-0, [2]-0, [3]-E, [4]-0, [5]-0, [6]-0, [7]-0
-> +	 */
-> +	regval |= 0x7000;
-> +	qcom_ice_writel(host, regval, QCOM_ICE_REG_ADVANCED_CONTROL);
-> +}
-> +
-> +static void qcom_ice_optimization_enable(struct ufs_qcom_host *host)
-> +{
-> +	u32 regval;
-> +
-> +	/* ICE Optimizations Enable Sequence */
-> +	regval = qcom_ice_readl(host, QCOM_ICE_REG_ADVANCED_CONTROL);
-> +	regval |= 0xD807100;
-> +	/* ICE HPG requires delay before writing */
-> +	udelay(5);
-> +	qcom_ice_writel(host, regval, QCOM_ICE_REG_ADVANCED_CONTROL);
-> +	udelay(5);
-> +}
-> +
-> +int ufs_qcom_ice_enable(struct ufs_qcom_host *host)
-> +{
-> +	if (!(host->hba->caps & UFSHCD_CAP_CRYPTO))
-> +		return 0;
-> +	qcom_ice_low_power_mode_enable(host);
-> +	qcom_ice_optimization_enable(host);
-> +	return ufs_qcom_ice_resume(host);
-> +}
-> +
-> +/* Poll until all BIST bits are reset */
-> +static int qcom_ice_wait_bist_status(struct ufs_qcom_host *host)
-> +{
-> +	int count;
-> +	u32 reg;
-> +
-> +	for (count = 0; count < 100; count++) {
-> +		reg = qcom_ice_readl(host, QCOM_ICE_REG_BIST_STATUS);
-> +		if (!(reg & QCOM_ICE_BIST_STATUS_MASK))
-> +			break;
-> +		udelay(50);
-> +	}
-> +	if (reg)
-> +		return -ETIMEDOUT;
-> +	return 0;
-> +}
-> +
-> +int ufs_qcom_ice_resume(struct ufs_qcom_host *host)
-> +{
-> +	int err;
-> +
-> +	if (!(host->hba->caps & UFSHCD_CAP_CRYPTO))
-> +		return 0;
-> +
-> +	err = qcom_ice_wait_bist_status(host);
-> +	if (err) {
-> +		dev_err(host->hba->dev, "BIST status error (%d)\n", err);
-> +		return err;
-> +	}
-> +	return 0;
-> +}
-> +
-> +/*
-> + * Program a key into a QC ICE keyslot, or evict a keyslot.  QC ICE requires
-> + * vendor-specific SCM calls for this; it doesn't support the standard way.
-> + */
-> +int ufs_qcom_ice_program_key(struct ufs_hba *hba,
-> +			     const union ufs_crypto_cfg_entry *cfg, int slot)
-> +{
-> +	union ufs_crypto_cap_entry cap;
-> +	union {
-> +		u8 bytes[AES_256_XTS_KEY_SIZE];
-> +		u32 words[AES_256_XTS_KEY_SIZE / sizeof(u32)];
-> +	} key;
-> +	int i;
-> +	int err;
-> +
-> +	if (!(cfg->config_enable & UFS_CRYPTO_CONFIGURATION_ENABLE))
-> +		return qcom_scm_ice_invalidate_key(slot);
-> +
-> +	/* Only AES-256-XTS has been tested so far. */
-> +	cap = hba->crypto_cap_array[cfg->crypto_cap_idx];
-> +	if (cap.algorithm_id != UFS_CRYPTO_ALG_AES_XTS ||
-> +	    cap.key_size != UFS_CRYPTO_KEY_SIZE_256) {
-> +		dev_err_ratelimited(hba->dev,
-> +				    "Unhandled crypto capability; algorithm_id=%d, key_size=%d\n",
-> +				    cap.algorithm_id, cap.key_size);
-> +		return -EINVAL;
-> +	}
-> +
-> +	memcpy(key.bytes, cfg->crypto_key, AES_256_XTS_KEY_SIZE);
-> +
-> +	/*
-> +	 * The SCM call byte-swaps the 32-bit words of the key.  So we have to
-> +	 * do the same, in order for the final key be correct.
-> +	 */
-> +	for (i = 0; i < ARRAY_SIZE(key.words); i++)
-> +		__cpu_to_be32s(&key.words[i]);
-> +
-> +	err = qcom_scm_ice_set_key(slot, key.bytes, AES_256_XTS_KEY_SIZE,
-> +				   QCOM_SCM_ICE_CIPHER_AES_256_XTS,
-> +				   cfg->data_unit_size);
-> +	memzero_explicit(&key, sizeof(key));
-> +	return err;
-> +}
-> diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
-> index bd0b4ed7b37a..139c3ae05e95 100644
-> --- a/drivers/scsi/ufs/ufs-qcom.c
-> +++ b/drivers/scsi/ufs/ufs-qcom.c
-> @@ -365,7 +365,7 @@ static int ufs_qcom_hce_enable_notify(struct ufs_hba *hba,
->  		/* check if UFS PHY moved from DISABLED to HIBERN8 */
->  		err = ufs_qcom_check_hibern8(hba);
->  		ufs_qcom_enable_hw_clk_gating(hba);
-> -
-> +		ufs_qcom_ice_enable(host);
->  		break;
->  	default:
->  		dev_err(hba->dev, "%s: invalid status %d\n", __func__, status);
-> @@ -613,6 +613,10 @@ static int ufs_qcom_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->  			return err;
->  	}
->  
-> +	err = ufs_qcom_ice_resume(host);
-> +	if (err)
-> +		return err;
-> +
->  	hba->is_sys_suspended = false;
->  	return 0;
->  }
-> @@ -1071,6 +1075,7 @@ static void ufs_qcom_set_caps(struct ufs_hba *hba)
->  	hba->caps |= UFSHCD_CAP_CLK_SCALING;
->  	hba->caps |= UFSHCD_CAP_AUTO_BKOPS_SUSPEND;
->  	hba->caps |= UFSHCD_CAP_WB_EN;
-> +	hba->caps |= UFSHCD_CAP_CRYPTO;
->  
->  	if (host->hw_ver.major >= 0x2) {
->  		host->caps = UFS_QCOM_CAP_QUNIPRO |
-> @@ -1298,6 +1303,10 @@ static int ufs_qcom_init(struct ufs_hba *hba)
->  	ufs_qcom_set_caps(hba);
->  	ufs_qcom_advertise_quirks(hba);
->  
-> +	err = ufs_qcom_ice_init(host);
-> +	if (err)
-> +		goto out_variant_clear;
-> +
->  	ufs_qcom_set_bus_vote(hba, true);
->  	ufs_qcom_setup_clocks(hba, true, POST_CHANGE);
->  
-> @@ -1736,6 +1745,7 @@ static const struct ufs_hba_variant_ops ufs_hba_qcom_vops = {
->  	.dbg_register_dump	= ufs_qcom_dump_dbg_regs,
->  	.device_reset		= ufs_qcom_device_reset,
->  	.config_scaling_param = ufs_qcom_config_scaling_param,
-> +	.program_key		= ufs_qcom_ice_program_key,
->  };
->  
->  /**
-> diff --git a/drivers/scsi/ufs/ufs-qcom.h b/drivers/scsi/ufs/ufs-qcom.h
-> index 2d95e7cc7187..97247d17e258 100644
-> --- a/drivers/scsi/ufs/ufs-qcom.h
-> +++ b/drivers/scsi/ufs/ufs-qcom.h
-> @@ -227,6 +227,9 @@ struct ufs_qcom_host {
->  	void __iomem *dev_ref_clk_ctrl_mmio;
->  	bool is_dev_ref_clk_enabled;
->  	struct ufs_hw_version hw_ver;
-> +#ifdef CONFIG_SCSI_UFS_CRYPTO
-> +	void __iomem *ice_mmio;
-> +#endif
->  
->  	u32 dev_ref_clk_en_mask;
->  
-> @@ -264,4 +267,28 @@ static inline bool ufs_qcom_cap_qunipro(struct ufs_qcom_host *host)
->  		return false;
->  }
->  
-> +/* ufs-qcom-ice.c */
-> +
-> +#ifdef CONFIG_SCSI_UFS_CRYPTO
-> +int ufs_qcom_ice_init(struct ufs_qcom_host *host);
-> +int ufs_qcom_ice_enable(struct ufs_qcom_host *host);
-> +int ufs_qcom_ice_resume(struct ufs_qcom_host *host);
-> +int ufs_qcom_ice_program_key(struct ufs_hba *hba,
-> +			     const union ufs_crypto_cfg_entry *cfg, int slot);
-> +#else
-> +static inline int ufs_qcom_ice_init(struct ufs_qcom_host *host)
-> +{
-> +	return 0;
-> +}
-> +static inline int ufs_qcom_ice_enable(struct ufs_qcom_host *host)
-> +{
-> +	return 0;
-> +}
-> +static inline int ufs_qcom_ice_resume(struct ufs_qcom_host *host)
-> +{
-> +	return 0;
-> +}
-> +#define ufs_qcom_ice_program_key NULL
-> +#endif /* !CONFIG_SCSI_UFS_CRYPTO */
-> +
->  #endif /* UFS_QCOM_H_ */
-> -- 
-> 2.27.0
-> 
