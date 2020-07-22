@@ -2,31 +2,48 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E74E1228FA3
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 22 Jul 2020 07:25:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB88E229825
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 22 Jul 2020 14:21:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727096AbgGVFZo (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 22 Jul 2020 01:25:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57504 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726161AbgGVFZo (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 22 Jul 2020 01:25:44 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 525A420792;
-        Wed, 22 Jul 2020 05:25:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595395543;
-        bh=+8+3ynaf3hYB3oQcCs6OC0hpH4ApFIYLOFpwrQLUXEk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Sxk6whZ3gSGtpY8p/PyLIn8aDijtyPbE5UUZ84zymmMdAzvmD2fbbGOxC7SJ9DhY4
-         Qq2xgzYkHqt7qvrTGSxQ68vqYHLimHutrZey20kIobjxXRsMUkN9qBAamc8OLf8ux+
-         PMe9yykQ2EyZO5/703MmMlcmUNwivMCxCETVQtJY=
-Date:   Tue, 21 Jul 2020 22:25:41 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     linux-scsi@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        id S1726841AbgGVMV7 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 22 Jul 2020 08:21:59 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:44868 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726161AbgGVMV6 (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 22 Jul 2020 08:21:58 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06MCGUjq172539;
+        Wed, 22 Jul 2020 12:21:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=i0nYeTghHBapGoZ21md4P88Jr8qUqrATcpSnBShWXK4=;
+ b=LhBZHjbrlGfoEsvSqr2ZNB7VpOhRrMxaW5lKDs1hMTwiILxJzH2NCA3gTKFd+3sWTt0M
+ ASwoHu1ZT1ptK1/iQkSpN59fjcs3ac2vUlkvtCMDicKfpYD9wMyGx31a1Qh+9ezUuFM8
+ 78U3Y5dQ9j8D+NG5z+PHDdss1FNahVkIQUkOPNHQKFbBd2029Y102qXKqRr3e+PhssHb
+ BDjyLANgkLeOhXVu27bxD2ksh9UZKzms6C+WG/z2H2pOjFgMcP4AurrDFK4jarAOyotw
+ zp40t1yJNT7S4tOHXpZcPPYEBKYfCPn3962Y+WzN0afymKYiyhbaQ8WrbP0aDcs5ZAWK 9w== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 32brgrjxff-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 22 Jul 2020 12:21:48 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06MCEFJ3018310;
+        Wed, 22 Jul 2020 12:21:48 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 32ehx0c6nx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 22 Jul 2020 12:21:47 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06MCLgpl020123;
+        Wed, 22 Jul 2020 12:21:43 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 22 Jul 2020 12:21:42 +0000
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         Steev Klimaszewski <steev@kali.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
         Elliot Berman <eberman@codeaurora.org>,
@@ -39,44 +56,43 @@ Cc:     linux-scsi@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         Can Guo <cang@codeaurora.org>,
         Barani Muthukumaran <bmuthuku@qti.qualcomm.com>
 Subject: Re: [PATCH v6 0/5] Inline crypto support on DragonBoard 845c
-Message-ID: <20200722052541.GB39383@sol.localdomain>
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1mu3rg379.fsf@ca-mkp.ca.oracle.com>
 References: <20200710072013.177481-1-ebiggers@kernel.org>
- <159539205429.31352.16564389172198122676.b4-ty@oracle.com>
+        <159539205429.31352.16564389172198122676.b4-ty@oracle.com>
+        <20200722052541.GB39383@sol.localdomain>
+Date:   Wed, 22 Jul 2020 08:21:39 -0400
+In-Reply-To: <20200722052541.GB39383@sol.localdomain> (Eric Biggers's message
+        of "Tue, 21 Jul 2020 22:25:41 -0700")
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <159539205429.31352.16564389172198122676.b4-ty@oracle.com>
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9689 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999 adultscore=0
+ phishscore=0 bulkscore=0 spamscore=0 suspectscore=1 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007220093
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9689 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 spamscore=0
+ impostorscore=0 suspectscore=1 adultscore=0 clxscore=1015 mlxlogscore=999
+ priorityscore=1501 phishscore=0 lowpriorityscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007220093
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hi Martin,
 
-On Wed, Jul 22, 2020 at 12:28:29AM -0400, Martin K. Petersen wrote:
-> On Fri, 10 Jul 2020 00:20:07 -0700, Eric Biggers wrote:
-> 
-> > This patchset implements UFS inline encryption support on the
-> > DragonBoard 845c, using the Qualcomm Inline Crypto Engine (ICE)
-> > that's present on the Snapdragon 845 SoC.
-> > 
-> > This is based on top of scsi/5.9/scsi-queue, which contains the
-> > ufshcd-crypto patches by Satya Tangirala.
-> > 
-> > [...]
-> 
-> Applied to 5.9/scsi-queue, thanks!
-> 
-> [1/5] scsi: firmware: qcom_scm: Add support for programming inline crypto keys
->       https://git.kernel.org/mkp/scsi/c/e10d24786adb
-> [2/5] scsi: ufs-qcom: Name the dev_ref_clk_ctrl registers
->       https://git.kernel.org/mkp/scsi/c/12700db4f9f7
-> [4/5] scsi: ufs: Add program_key() variant op
->       https://git.kernel.org/mkp/scsi/c/a5fedfacb402
-> [5/5] scsi: ufs-qcom: Add Inline Crypto Engine support
->       https://git.kernel.org/mkp/scsi/c/de9063fbd769
+Eric,
 
-Seems that something went wrong when you applied patch 5.  It's supposed to add
-the file ufs-qcom-ice.c, but the committed version doesn't have that file.
+> Seems that something went wrong when you applied patch 5.  It's
+> supposed to add the file ufs-qcom-ice.c, but the committed version
+> doesn't have that file.
 
-- Eric
+Not sure what happened there, I recall it being a clean b4 am.
+
+I fixed it up. Sorry about that!
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
