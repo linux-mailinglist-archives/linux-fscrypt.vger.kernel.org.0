@@ -2,75 +2,88 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9984622F6E9
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 27 Jul 2020 19:42:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95A4E232F97
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 30 Jul 2020 11:35:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729973AbgG0Rmx (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 27 Jul 2020 13:42:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36790 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729097AbgG0Rmx (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 27 Jul 2020 13:42:53 -0400
-Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AA0AD20714;
-        Mon, 27 Jul 2020 17:42:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595871772;
-        bh=ozOE6UcON1RhZRLjtldC0B+EDLULU+0SvtdCa41mDdc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=LBdDwGb+BxMrhL4dI59/DVNUo1GjKSYw9URg4Hdmy6WB9h2T62oHc1A0I16S8ljl5
-         p+CHUA2oy0y3SbsAUmcAwQjQG5cYXYlPo0dIM/Y0h7r8X3w3buT6d7oKCvoh2+fpwP
-         M+QvmPMnjg/IvpmdNKk4ahflJ0mRWcmjC968YWAA=
-From:   Eric Biggers <ebiggers@kernel.org>
+        id S1727044AbgG3Jfb (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 30 Jul 2020 05:35:31 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:44506 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727015AbgG3Jfa (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 30 Jul 2020 05:35:30 -0400
+Received: from mail-pl1-f200.google.com ([209.85.214.200])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <po-hsu.lin@canonical.com>)
+        id 1k14yG-0000Us-Ds
+        for linux-fscrypt@vger.kernel.org; Thu, 30 Jul 2020 09:35:28 +0000
+Received: by mail-pl1-f200.google.com with SMTP id p6so16380262plo.8
+        for <linux-fscrypt@vger.kernel.org>; Thu, 30 Jul 2020 02:35:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QOmZGC0B89uWD3XE7Hdn5eguiDh0cZOESiTFyFkMc9U=;
+        b=EXMrT9Lkp3COuo9uJ+zcEuw9c0lAblAJAL/QxjEAclqnvreMo/ocvRRJc56YF51JhT
+         2BdnTFvLqZfc28DUAggeyFu5+f/s3BoGzR/+Mf+wFrDb34yi9/25+ZVK4Ab41OEWATWn
+         7SMJrDOjCLuxJaRFpNl1N73IwRGjsKtwPo0fIrU/x/KxzwFKJdY9hFWlNM9IPiiVoj2h
+         ocnuEn7obPL1L+BaY/rXSf4NzKACD7+pB6f5b/s74UiMFQEIJRor2m5NW28dmemOl/DA
+         IqB6Jq8hnBfWYvnduvu8Lb4PU9CYf0DpXa1KESLf3n2vguX8PtU+lmY7qEgYBq/pBby3
+         Rg4Q==
+X-Gm-Message-State: AOAM531uWHbLX9FhUHu5oo0BsH9tUTm28DhXeM+GDqG3FnazPJB8cFcS
+        dJwWhSE+p5jTx/HFdSTv0W06c/LiGmGQM2UlR2pM5CiISfv5KeZEzrVFSEN3LWNxp+DatWWkIo1
+        ovoZazlF0bTIAcnOb87Meue3Iozlr3Z3BwHkwma9IEQ==
+X-Received: by 2002:a62:a20d:: with SMTP id m13mr2486284pff.201.1596101726708;
+        Thu, 30 Jul 2020 02:35:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx3uGTf89kMFP/mqd5O5dDEHMAuSzbN0djF++lXK55YPCzH5arWpjcrC400wmemTZi+QdEGmA==
+X-Received: by 2002:a62:a20d:: with SMTP id m13mr2486262pff.201.1596101726368;
+        Thu, 30 Jul 2020 02:35:26 -0700 (PDT)
+Received: from localhost.localdomain (111-71-29-199.emome-ip.hinet.net. [111.71.29.199])
+        by smtp.gmail.com with ESMTPSA id k98sm4772724pjb.42.2020.07.30.02.35.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Jul 2020 02:35:25 -0700 (PDT)
+From:   Po-Hsu Lin <po-hsu.lin@canonical.com>
 To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, Satya Tangirala <satyat@google.com>,
-        Dave Chinner <david@fromorbit.com>
-Subject: [PATCH] fscrypt: don't load ->i_crypt_info before it's known to be valid
-Date:   Mon, 27 Jul 2020 10:41:58 -0700
-Message-Id: <20200727174158.121456-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.27.0
+Cc:     po-hsu.lin@canonical.com
+Subject: [PATCH] Makefile: improve the cc-option compatibility
+Date:   Thu, 30 Jul 2020 17:35:20 +0800
+Message-Id: <20200730093520.26905-1-po-hsu.lin@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+The build on Ubuntu Xenial with GCC 5.4.0 will fail with:
+    cc: error: unrecognized command line option ‘-Wimplicit-fallthrough’
 
-In fscrypt_set_bio_crypt_ctx(), ->i_crypt_info isn't known to be
-non-NULL until we check fscrypt_inode_uses_inline_crypto().  So, load
-->i_crypt_info after the check rather than before.  This makes no
-difference currently, but it prevents people from introducing bugs where
-the pointer is dereferenced when it may be NULL.
+This unsupported flag is not skipped as expected.
 
-Suggested-by: Dave Chinner <david@fromorbit.com>
-Cc: Satya Tangirala <satyat@google.com>
-Signed-off-by: Eric Biggers <ebiggers@google.com>
+It is because of the /bin/sh shell on Ubuntu, DASH, which does not
+support this &> redirection. Use 2>&1 to solve this problem.
+
+Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
 ---
- fs/crypto/inline_crypt.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/crypto/inline_crypt.c b/fs/crypto/inline_crypt.c
-index dfb06375099ae..b6b8574caa13c 100644
---- a/fs/crypto/inline_crypt.c
-+++ b/fs/crypto/inline_crypt.c
-@@ -244,11 +244,12 @@ static void fscrypt_generate_dun(const struct fscrypt_info *ci, u64 lblk_num,
- void fscrypt_set_bio_crypt_ctx(struct bio *bio, const struct inode *inode,
- 			       u64 first_lblk, gfp_t gfp_mask)
- {
--	const struct fscrypt_info *ci = inode->i_crypt_info;
-+	const struct fscrypt_info *ci;
- 	u64 dun[BLK_CRYPTO_DUN_ARRAY_SIZE];
+diff --git a/Makefile b/Makefile
+index 7d7247c..a4ce55a 100644
+--- a/Makefile
++++ b/Makefile
+@@ -27,7 +27,7 @@
+ #
+ ##############################################################################
  
- 	if (!fscrypt_inode_uses_inline_crypto(inode))
- 		return;
-+	ci = inode->i_crypt_info;
+-cc-option = $(shell if $(CC) $(1) -c -x c /dev/null -o /dev/null &>/dev/null; \
++cc-option = $(shell if $(CC) $(1) -c -x c /dev/null -o /dev/null > /dev/null 2>&1; \
+ 	      then echo $(1); fi)
  
- 	fscrypt_generate_dun(ci, first_lblk, dun);
- 	bio_crypt_set_ctx(bio, &ci->ci_enc_key.blk_key->base, dun, gfp_mask);
+ CFLAGS ?= -O2 -Wall -Wundef					\
 -- 
-2.27.0
+2.25.1
 
