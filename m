@@ -2,95 +2,74 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF41D2332E1
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 30 Jul 2020 15:21:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1450C2337F4
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 30 Jul 2020 19:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727072AbgG3NVx convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 30 Jul 2020 09:21:53 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:50961 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726581AbgG3NVx (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 30 Jul 2020 09:21:53 -0400
-Received: from mail-lj1-f200.google.com ([209.85.208.200])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <po-hsu.lin@canonical.com>)
-        id 1k18VL-00038f-2v
-        for linux-fscrypt@vger.kernel.org; Thu, 30 Jul 2020 13:21:51 +0000
-Received: by mail-lj1-f200.google.com with SMTP id t17so968297ljg.16
-        for <linux-fscrypt@vger.kernel.org>; Thu, 30 Jul 2020 06:21:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=ODSz9MB7YpkZeQa0ECYKsJ9CyYRThtTlzTFjZDaZ4Ec=;
-        b=LGE7UORF6+FP6zqY6Hu0ffNHFOMiyglAQlOE69eYhA/NRCbzFrDS43snh23PZ546DD
-         TqBnduJDxqN+K7quTES+5IRltp11fj3qBEGzqkBRuLoATjy46f2aDOu19EpejpxXpBP1
-         DN20R9/wG6nvEhlFEeMOIft+nqRyrJuiBoUwqFAsuQh+VU/y3urfc6K6kvq9qZCvJDsz
-         TTNc70ifchRngOhLFOEj4GQB7paTuy/jM6M73hJ6H5stMF2enCsp8JXHCdigRp8YqKM2
-         e4YlovJyzrYzvU5wpdJIUT2RQQCXCG4sMhpoFecwj5tXkV0iVwaB+EmclGmTMTVfB8tg
-         D3Qg==
-X-Gm-Message-State: AOAM53079ex2MSd33YnEmss5DAj/BGkDY58CK8xG6Qnl+w4AuE2cHtO6
-        CmlLskSXMkl4Zq/tt8pPhOg/mR1JJYyF+FsybNIfq900lbVOX+BD7rEEJSY1jTUt+82nsaZEN+T
-        gErCqR2TzmjdnuBTXANhHcTdqX6JwSd80OGGVbmc+KDrSEv8TnalRYmiI3w==
-X-Received: by 2002:a2e:581c:: with SMTP id m28mr439152ljb.5.1596115310397;
-        Thu, 30 Jul 2020 06:21:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy4ae4v3t2wzWbG8TI9suno0TRW0U8orEWWcjo8cc7jw3Vx0p5Cu62q+9z16sSnx9fqApyTEthq2BHzlUjhx/E=
-X-Received: by 2002:a2e:581c:: with SMTP id m28mr439144ljb.5.1596115310127;
- Thu, 30 Jul 2020 06:21:50 -0700 (PDT)
+        id S1730204AbgG3Rwy (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 30 Jul 2020 13:52:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46996 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728562AbgG3Rwy (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 30 Jul 2020 13:52:54 -0400
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E21E42083B;
+        Thu, 30 Jul 2020 17:52:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596131574;
+        bh=n/2hSNa3DcXsbO8mzTQ5vvMptmmdIo0Yk1BhCdmlwnU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Y7hg6N11L+xRx7A6X5Gx+efQoG2Loe0YcDjkjiV1g8an575VNSC6grdOAxSU3lsDX
+         5xepD/3QnTCWDhY9TwUvt+yJ/q/hQ61DwdU9O1+tvvOtMDQ2f5N9uNgF6KtUnCHfNE
+         /Rkfcid+nmS+vNFksoSRDaJiHvssKVwxRjuHZ4v0=
+Date:   Thu, 30 Jul 2020 10:52:52 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Jes Sorensen <jes.sorensen@gmail.com>
+Cc:     Jes Sorensen <jsorensen@fb.com>, linux-fscrypt@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH 0/7] Split fsverity-utils into a shared library
+Message-ID: <20200730175252.GA1074@sol.localdomain>
+References: <20200211000037.189180-1-Jes.Sorensen@gmail.com>
+ <20200211192209.GA870@sol.localdomain>
+ <b49b4367-51e7-f62a-6209-b46a6880824b@gmail.com>
+ <20200211231454.GB870@sol.localdomain>
+ <c39f57d5-c9a4-5fbb-3ce3-cd21e90ef921@gmail.com>
+ <20200214203510.GA1985@gmail.com>
+ <479b0fff-6af2-32e6-a645-03fcfc65ad59@gmail.com>
 MIME-Version: 1.0
-References: <20200730093520.26905-1-po-hsu.lin@canonical.com>
-In-Reply-To: <20200730093520.26905-1-po-hsu.lin@canonical.com>
-From:   Po-Hsu Lin <po-hsu.lin@canonical.com>
-Date:   Thu, 30 Jul 2020 21:21:38 +0800
-Message-ID: <CAMy_GT-JNP0aTM3wC2mniMrREGkHGHuc2G=4Wmj99AFXULa6hQ@mail.gmail.com>
-Subject: Re: [PATCH] Makefile: improve the cc-option compatibility
-To:     linux-fscrypt@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <479b0fff-6af2-32e6-a645-03fcfc65ad59@gmail.com>
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-BTW this is for fsverity-utils.
+On Wed, Feb 19, 2020 at 06:49:07PM -0500, Jes Sorensen wrote:
+> > We'd also need to follow shared library best practices like compiling with
+> > -fvisibility=hidden and marking the API functions explicitly with
+> > __attribute__((visibility("default"))), and setting the 'soname' like
+> > -Wl,-soname=libfsverity.so.0.
+> > 
+> > Also, is the GPLv2+ license okay for the use case?
+> 
+> Personally I only care about linking it into rpm, which is GPL v2, so
+> from my perspective, that is sufficient. I am also fine making it LGPL,
+> but given it's your code I am stealing, I cannot make that call.
+> 
 
-I should put a [fsverity-utils] in the title, sorry about this.
-I can resubmit one if you need.
+Hi Jes, I'd like to revisit this, as I'm concerned about future use cases where
+software under other licenses (e.g. LGPL, MIT, or Apache 2.0) might want to use
+libfsverity -- especially if libfsverity grows more functionality.
 
-Thank you
-PHLin
+Also, fsverity-utils links to OpenSSL, which some people (e.g. Debian) consider
+to be incompatible with GPLv2.
 
-On Thu, Jul 30, 2020 at 5:35 PM Po-Hsu Lin <po-hsu.lin@canonical.com> wrote:
->
-> The build on Ubuntu Xenial with GCC 5.4.0 will fail with:
->     cc: error: unrecognized command line option ‘-Wimplicit-fallthrough’
->
-> This unsupported flag is not skipped as expected.
->
-> It is because of the /bin/sh shell on Ubuntu, DASH, which does not
-> support this &> redirection. Use 2>&1 to solve this problem.
->
-> Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
-> ---
->  Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/Makefile b/Makefile
-> index 7d7247c..a4ce55a 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -27,7 +27,7 @@
->  #
->  ##############################################################################
->
-> -cc-option = $(shell if $(CC) $(1) -c -x c /dev/null -o /dev/null &>/dev/null; \
-> +cc-option = $(shell if $(CC) $(1) -c -x c /dev/null -o /dev/null > /dev/null 2>&1; \
->               then echo $(1); fi)
->
->  CFLAGS ?= -O2 -Wall -Wundef                                    \
-> --
-> 2.25.1
->
+We think the MIT license (https://opensource.org/licenses/MIT) would offer the
+most flexibility.  Are you okay with changing the license of fsverity-utils to
+MIT?  If so, I'll send a patch and you can give an Acked-by on it.
+
+Thanks!
+
+- Eric
