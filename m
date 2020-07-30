@@ -2,74 +2,80 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1450C2337F4
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 30 Jul 2020 19:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64DFB233ADB
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 30 Jul 2020 23:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730204AbgG3Rwy (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 30 Jul 2020 13:52:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46996 "EHLO mail.kernel.org"
+        id S1730636AbgG3V2Q (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 30 Jul 2020 17:28:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728562AbgG3Rwy (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 30 Jul 2020 13:52:54 -0400
+        id S1730627AbgG3V2Q (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 30 Jul 2020 17:28:16 -0400
 Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E21E42083B;
-        Thu, 30 Jul 2020 17:52:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D126420829;
+        Thu, 30 Jul 2020 21:28:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596131574;
-        bh=n/2hSNa3DcXsbO8mzTQ5vvMptmmdIo0Yk1BhCdmlwnU=;
+        s=default; t=1596144496;
+        bh=cyTiwVqbwajpjpYHHW0xWoy2TRDD13JcNWIqnoFlZFs=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Y7hg6N11L+xRx7A6X5Gx+efQoG2Loe0YcDjkjiV1g8an575VNSC6grdOAxSU3lsDX
-         5xepD/3QnTCWDhY9TwUvt+yJ/q/hQ61DwdU9O1+tvvOtMDQ2f5N9uNgF6KtUnCHfNE
-         /Rkfcid+nmS+vNFksoSRDaJiHvssKVwxRjuHZ4v0=
-Date:   Thu, 30 Jul 2020 10:52:52 -0700
+        b=khGmwQM9Sf3cEDShy6J3iyvng+LBRPA7dnnUedQRp9sxgNaQitUDwcn9qdpEv5kTh
+         EMe/EktKK0VHpnsnd2BvQx1p4FI3z/OLwo3HcJmkGKrmRJzIe16z/6xLxdu61AvrJK
+         qD5HLMOJdBxA2UbLslMmfdbriyToKRsypPOPXkqc=
+Date:   Thu, 30 Jul 2020 14:28:14 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Jes Sorensen <jes.sorensen@gmail.com>
-Cc:     Jes Sorensen <jsorensen@fb.com>, linux-fscrypt@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH 0/7] Split fsverity-utils into a shared library
-Message-ID: <20200730175252.GA1074@sol.localdomain>
-References: <20200211000037.189180-1-Jes.Sorensen@gmail.com>
- <20200211192209.GA870@sol.localdomain>
- <b49b4367-51e7-f62a-6209-b46a6880824b@gmail.com>
- <20200211231454.GB870@sol.localdomain>
- <c39f57d5-c9a4-5fbb-3ce3-cd21e90ef921@gmail.com>
- <20200214203510.GA1985@gmail.com>
- <479b0fff-6af2-32e6-a645-03fcfc65ad59@gmail.com>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, Satya Tangirala <satyat@google.com>,
+        Dave Chinner <david@fromorbit.com>
+Subject: Re: [PATCH] fscrypt: don't load ->i_crypt_info before it's known to
+ be valid
+Message-ID: <20200730212814.GB1074@sol.localdomain>
+References: <20200727174158.121456-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <479b0fff-6af2-32e6-a645-03fcfc65ad59@gmail.com>
+In-Reply-To: <20200727174158.121456-1-ebiggers@kernel.org>
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, Feb 19, 2020 at 06:49:07PM -0500, Jes Sorensen wrote:
-> > We'd also need to follow shared library best practices like compiling with
-> > -fvisibility=hidden and marking the API functions explicitly with
-> > __attribute__((visibility("default"))), and setting the 'soname' like
-> > -Wl,-soname=libfsverity.so.0.
-> > 
-> > Also, is the GPLv2+ license okay for the use case?
+On Mon, Jul 27, 2020 at 10:41:58AM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> Personally I only care about linking it into rpm, which is GPL v2, so
-> from my perspective, that is sufficient. I am also fine making it LGPL,
-> but given it's your code I am stealing, I cannot make that call.
+> In fscrypt_set_bio_crypt_ctx(), ->i_crypt_info isn't known to be
+> non-NULL until we check fscrypt_inode_uses_inline_crypto().  So, load
+> ->i_crypt_info after the check rather than before.  This makes no
+> difference currently, but it prevents people from introducing bugs where
+> the pointer is dereferenced when it may be NULL.
 > 
+> Suggested-by: Dave Chinner <david@fromorbit.com>
+> Cc: Satya Tangirala <satyat@google.com>
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+>  fs/crypto/inline_crypt.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/crypto/inline_crypt.c b/fs/crypto/inline_crypt.c
+> index dfb06375099ae..b6b8574caa13c 100644
+> --- a/fs/crypto/inline_crypt.c
+> +++ b/fs/crypto/inline_crypt.c
+> @@ -244,11 +244,12 @@ static void fscrypt_generate_dun(const struct fscrypt_info *ci, u64 lblk_num,
+>  void fscrypt_set_bio_crypt_ctx(struct bio *bio, const struct inode *inode,
+>  			       u64 first_lblk, gfp_t gfp_mask)
+>  {
+> -	const struct fscrypt_info *ci = inode->i_crypt_info;
+> +	const struct fscrypt_info *ci;
+>  	u64 dun[BLK_CRYPTO_DUN_ARRAY_SIZE];
+>  
+>  	if (!fscrypt_inode_uses_inline_crypto(inode))
+>  		return;
+> +	ci = inode->i_crypt_info;
+>  
+>  	fscrypt_generate_dun(ci, first_lblk, dun);
+>  	bio_crypt_set_ctx(bio, &ci->ci_enc_key.blk_key->base, dun, gfp_mask);
 
-Hi Jes, I'd like to revisit this, as I'm concerned about future use cases where
-software under other licenses (e.g. LGPL, MIT, or Apache 2.0) might want to use
-libfsverity -- especially if libfsverity grows more functionality.
-
-Also, fsverity-utils links to OpenSSL, which some people (e.g. Debian) consider
-to be incompatible with GPLv2.
-
-We think the MIT license (https://opensource.org/licenses/MIT) would offer the
-most flexibility.  Are you okay with changing the license of fsverity-utils to
-MIT?  If so, I'll send a patch and you can give an Acked-by on it.
-
-Thanks!
+Applied to fscrypt.git#master for 5.9.
 
 - Eric
