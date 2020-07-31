@@ -2,134 +2,130 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17A00234B7D
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 31 Jul 2020 21:14:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7685234C54
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 31 Jul 2020 22:33:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728086AbgGaTOy (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 31 Jul 2020 15:14:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35560 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726726AbgGaTOy (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 31 Jul 2020 15:14:54 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 17ECF21744;
-        Fri, 31 Jul 2020 19:14:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596222893;
-        bh=yDUMHAutsuG8eBiDswnmTI5W5AVOWyH5v67BHEc1KVY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kY/c//rqZ+Zozgx+rbkAdCkjTgbqhVi/lTw+tBEaHttPc0t2kBzik3Iv19GFA1nRX
-         JDoc+LWnl6q73LtEFVXbJ7EGRntYbI8Out7MbXkvvU5CY7xDEK1qE+0UyoxoG3PA37
-         Tp/PmHHFFWSpjfvD/VDc9zZbEU9ePA5Aanl+Qc7o=
-Date:   Fri, 31 Jul 2020 12:14:51 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Chris Mason <clm@fb.com>
-Cc:     Jes Sorensen <jes.sorensen@gmail.com>,
-        Jes Sorensen <jsorensen@fb.com>, linux-fscrypt@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH 0/7] Split fsverity-utils into a shared library
-Message-ID: <20200731191451.GA840@sol.localdomain>
-References: <20200211000037.189180-1-Jes.Sorensen@gmail.com>
- <20200211192209.GA870@sol.localdomain>
- <b49b4367-51e7-f62a-6209-b46a6880824b@gmail.com>
- <20200211231454.GB870@sol.localdomain>
- <c39f57d5-c9a4-5fbb-3ce3-cd21e90ef921@gmail.com>
- <20200214203510.GA1985@gmail.com>
- <479b0fff-6af2-32e6-a645-03fcfc65ad59@gmail.com>
- <20200730175252.GA1074@sol.localdomain>
- <0d5c5b1d-2170-025e-2cc1-75169bb33008@gmail.com>
- <6CCA1B7E-63A2-4E8C-BD9D-A7F34E6F488D@fb.com>
+        id S1728878AbgGaUbr (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 31 Jul 2020 16:31:47 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:47430 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726950AbgGaUbr (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Fri, 31 Jul 2020 16:31:47 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06VKUTDY004048;
+        Fri, 31 Jul 2020 13:31:41 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=2vuEcdTHglrVOdy4LcWsirYI+YJHF3wFYus3jTG0/PY=;
+ b=XQM+CRykzuCLXPmf4pWbSBNJxgje/gieszQ8t1suNStc5t04O6A3uqMVVaSbEe5Gt/3e
+ PTVLtyvdn9dMg97FQRYJS8qComJBKFe84S5VG2AnxWg05uDacGCBxqJN6O86eEgDxJ62
+ y8rUY3YMNlWVqCRflVgLAvipNquVQQmNLQI= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 32mn7g9n54-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 31 Jul 2020 13:31:40 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 31 Jul 2020 13:31:40 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HUa++9IFrQiTSONZmB6n/g2hJEKJrzLbz4q3pdh5zJMi6aYCBdeKQX0FgjpSsgzgfssuBstaDOgA90kAYWPvPri40Q0IA/q4HjTm1Rxv6yciA4Q+PcMmgEadHNKK6NJRTkFuJofGBT3+v58xj6q3r4Ou3X7Q68LniY4XV51xHKAEHmDk5/BunfcLm4Y/UKJX+BE9b/Q/n5PuJoI0sUu0Pj7MyZ4fEAw9LtjYFr2IuofFpqHjtqM2SVaBtUuOMkibusHOSqGOHxLLjAoKAcnXqkKUUE1XlRtPdgQhx39RwH8GhvbY9XexwxNqrJSmXbOo1QuUim/S4mNpb3Ckr794pg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2vuEcdTHglrVOdy4LcWsirYI+YJHF3wFYus3jTG0/PY=;
+ b=NqbvgTuifa0hKTEayqbdoUVIh8+IRmsDngLRkeraP33mr1VxWCsSatlDAvFAxtVowxTJRdXUc7viavPQCA6K06GUrL7mgfjpQoCcWR/vgL9uiTug1XE5+Rcbi6VJ4WkyDj2XV1Cpo4KSqWfnTb7avKsjP9ge1kGb5m8plMM/43VEHpPftY03uA5s6vLB8w4dvzh4DX8HlTYDLHc1RnDxAZ8HdJE8DBpwGq+XFzkAU4tLlvxsit2pP96Osv9XtWvKxKBWxSpMcD71J5X5/QsOxIjixnsi9gg4n+A8GmdTSAJj6hVwUdlV6a+rqcIJMDjBCbcg6lEYRE6E18a8QIIvRA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2vuEcdTHglrVOdy4LcWsirYI+YJHF3wFYus3jTG0/PY=;
+ b=UMhUaRsx+hQSiGvInjlPCT7Fj69PxPGqpGqRyYcqRKAFbSJafh011LaREdWP4wJePAP07dUorC1OthPLz7OkNRMtil3tsKoX40/q+6QnmEuzypgozQHhb4pWKWqsCmwzEXwcsWs5Eilwr35y+e0ujt9tFP8wN/vqfW75dhsPp5E=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from MN2PR15MB3582.namprd15.prod.outlook.com (2603:10b6:208:1b5::23)
+ by MN2PR15MB3677.namprd15.prod.outlook.com (2603:10b6:208:183::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.16; Fri, 31 Jul
+ 2020 20:31:36 +0000
+Received: from MN2PR15MB3582.namprd15.prod.outlook.com
+ ([fe80::e9ef:ba4c:dd70:b372]) by MN2PR15MB3582.namprd15.prod.outlook.com
+ ([fe80::e9ef:ba4c:dd70:b372%5]) with mapi id 15.20.3216.034; Fri, 31 Jul 2020
+ 20:31:36 +0000
+From:   "Chris Mason" <clm@fb.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+CC:     <linux-fscrypt@vger.kernel.org>, Jes Sorensen <jsorensen@fb.com>,
+        Jes Sorensen <jes.sorensen@gmail.com>, <kernel-team@fb.com>,
+        Victor Hsieh <victorhsieh@google.com>
+Subject: Re: [fsverity-utils PATCH] Switch to MIT license
+Date:   Fri, 31 Jul 2020 16:31:32 -0400
+X-Mailer: MailMate (1.13.1r5671)
+Message-ID: <97CF68DA-3272-41D8-ACB2-544704C343BF@fb.com>
+In-Reply-To: <20200731191156.22602-1-ebiggers@kernel.org>
+References: <20200731191156.22602-1-ebiggers@kernel.org>
+Content-Type: text/plain; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: MN2PR01CA0021.prod.exchangelabs.com (2603:10b6:208:10c::34)
+ To MN2PR15MB3582.namprd15.prod.outlook.com (2603:10b6:208:1b5::23)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6CCA1B7E-63A2-4E8C-BD9D-A7F34E6F488D@fb.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [100.109.94.142] (2620:10d:c091:480::1:8f57) by MN2PR01CA0021.prod.exchangelabs.com (2603:10b6:208:10c::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.18 via Frontend Transport; Fri, 31 Jul 2020 20:31:34 +0000
+X-Mailer: MailMate (1.13.1r5671)
+X-Originating-IP: [2620:10d:c091:480::1:8f57]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8f8b0944-aaf9-47c1-1f55-08d83590b7da
+X-MS-TrafficTypeDiagnostic: MN2PR15MB3677:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR15MB36773B39680EFD00BB660A29D34E0@MN2PR15MB3677.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:1051;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /Jy9s+TugkopMur1GBoJVA0szqX7wJFNz+Bnojd99CT8oWXTN5t7d3+CYiJt2b+Ln7/oX6nrCU7wIrmkzWtKhWZ6S62kDzIJRbwRZJA4w/8N2vV7aRprK0OEinreYcbYsEFLMu6fxcgy3Katfkmtzl4JxE+XSBi1Yx6IJiG535F02CVFFc9QWieaqGDT9BPCz1ISY3SNmoQLPcvolYUsfVYmtHMoN1OuFISuvLRKtrndVDo2Bi+5lrfKoIsJAS8Y85P7y9gAX2aJo44bZA8+unhGvFzGx0dkW9qqSUiT6gLco7FMdCPZsL7nDxFxlG2dtHunNwyY+YfkRKUgxxGNzHRFJE66nMCxOJzacMOoeifOagvJE1F0Le6bHZG7wnw6UKZdN5x+DyPjO19s5wGBAhFFsy2F6f4zBoGYSKaSrPXjc7Q3W/qCQpC4/irvxUdUmvXMGBiukzNxw6npxM7HCg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR15MB3582.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(136003)(346002)(376002)(396003)(39860400002)(366004)(956004)(6916009)(8936002)(33656002)(6486002)(4326008)(2906002)(8676002)(2616005)(316002)(966005)(53546011)(54906003)(5660300002)(16526019)(478600001)(186003)(52116002)(36756003)(66946007)(66476007)(66556008)(4744005)(86362001)(78286006);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: xChhZMSc559byOU15ldRiN1jp5QtulrvE0RlWM4fMlcEr8nEa4EQPnQGHXnPw/fsTjSk65BAVRMCXZx0PfAz/AeDCqzbE+F9WkwZAooOCXGSCepj+JjKQVnPjvBrf0zO+U0QVQutOhLDnAscf8fzOnHc6cssvzblg1WDBlF18hJ6KH2OHgMHWjeFyw+9JaXuMrT2eJqOSJh+zmxnCi0kzU4R9sgQG0XxUbmaC1gnEUQh5eIdbqYh2b17jlfHAVArznxCjiY4YfdsjrkaC/Ecnj+45omuJArtZcGFmH7LXXQcT5oubfG5iPINIU3ynStVnKijIyT7s6xZPHb5Hb97kh1W4/6UR33zqM2uSjoATXt3KjvtxE7Dhx7b7PHmCLvx9zSEeAT3ObAKG2oTGEr7E9rnF315xjpRm+Binf5KrkWgYmWQ955gIKNpknWjG9wt8jwK58+n+Hev+Lmou6nj1CoW78PmxVs4w6+AK9372r2v29zqaFwAWtmVOMgURTx5mXVSvv5JNjErU7icRliDL8WRvhsw5HXutJG641VGXD8h3sPlT6NxwMqaxDfVWmLn+NqETBE3izblm30RzeQHoIbtidduj+rzFIzh4zLREl/+EysJgB+5Gbs0Muuj0dJ1KQT20IHavVKRN4zCkh+H/wOly0PWZHrVcwYgAnY6197cb6O1mtJBFrPwpT8i15nb
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8f8b0944-aaf9-47c1-1f55-08d83590b7da
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR15MB3582.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jul 2020 20:31:36.0147
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: NinVrKNBmdJA+NhXXkb348c3iQEqRxdKt3FumWWF7MoWegHNGBvb06Gj4L/Hs6k/
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB3677
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-31_08:2020-07-31,2020-07-31 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 adultscore=0
+ impostorscore=0 mlxlogscore=978 mlxscore=0 priorityscore=1501
+ clxscore=1011 suspectscore=0 bulkscore=0 spamscore=0 lowpriorityscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007310146
+X-FB-Internal: deliver
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Jul 31, 2020 at 01:47:36PM -0400, Chris Mason wrote:
-> On 31 Jul 2020, at 13:40, Jes Sorensen wrote:
-> 
-> > On 7/30/20 1:52 PM, Eric Biggers wrote:
-> > > On Wed, Feb 19, 2020 at 06:49:07PM -0500, Jes Sorensen wrote:
-> > > > > We'd also need to follow shared library best practices like
-> > > > > compiling with
-> > > > > -fvisibility=hidden and marking the API functions explicitly with
-> > > > > __attribute__((visibility("default"))), and setting the
-> > > > > 'soname' like
-> > > > > -Wl,-soname=libfsverity.so.0.
-> > > > > 
-> > > > > Also, is the GPLv2+ license okay for the use case?
-> > > > 
-> > > > Personally I only care about linking it into rpm, which is GPL
-> > > > v2, so
-> > > > from my perspective, that is sufficient. I am also fine making
-> > > > it LGPL,
-> > > > but given it's your code I am stealing, I cannot make that call.
-> > > > 
-> > > 
-> > > Hi Jes, I'd like to revisit this, as I'm concerned about future use
-> > > cases where
-> > > software under other licenses (e.g. LGPL, MIT, or Apache 2.0) might
-> > > want to use
-> > > libfsverity -- especially if libfsverity grows more functionality.
-> > > 
-> > > Also, fsverity-utils links to OpenSSL, which some people (e.g.
-> > > Debian) consider
-> > > to be incompatible with GPLv2.
-> > > 
-> > > We think the MIT license would offer the
-> > > most flexibility.  Are you okay with changing the license of
-> > > fsverity-utils to
-> > > MIT?  If so, I'll send a patch and you can give an Acked-by on it.
-> > > 
-> > > Thanks!
-> > > 
-> > > - Eric
-> > 
-> > Hi Eric,
-> > 
-> > I went back through my patches to make sure I didn't reuse code from
-> > other GPL projects. I don't see anything that looks like it was reused
-> > except from fsverity-utils itself, so it should be fine.
-> > 
-> > I think it's fair to relax the license so other projects can link to it.
-> > I would prefer we use the LGPL rather than the MIT license though?
-> > 
-> > CC'ing Chris Mason as well, since he has the auth to ack it on behalf of
-> > the company.
-> 
-> MIT, BSD, LGPL are Signed-off-by: Chris Mason <clm@fb.com>
-> 
-> We’re flexible, the goal is just to fit into the rest of fsverity overall.
-> 
-> -chris
 
-Thanks Chris and Jes.
 
-At least on Google's side, a permissive license generally makes things easier
-for people -- even though in practice we'll be upstreaming all changes anyway.
-Since fsverity-utils is only a small project and is unlikely to be customized
-much by people (as it's closely tied to the upstream kernel support), for now
-I'd rather not create problems for users or cause duplication of effort.
+On 31 Jul 2020, at 15:11, Eric Biggers wrote:
 
-If it were a larger project, or something people would be more likely to
-customize, the case for LGPL would be stronger IMO.
+> From: Eric Biggers <ebiggers@google.com>
+>
+> This allows libfsverity to be used by software with other common
+> licenses, e.g. LGPL, MIT, BSD, and Apache 2.0.  It also avoids the
+> incompatibility that some people perceive between OpenSSL and the GPL.
+>
+> See discussion at
+> https://lkml.kernel.org/linux-fscrypt/20200211000037.189180-1-Jes.Soren=
+sen@gmail.com/T/#u
+>
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-There are also OpenSSL linking exceptions out there even for the LGPL (!), so
-I'm not sure everyone agrees that one isn't needed...  I'd like to avoid wasting
-time on any such issues and just write code :-)
-
-Note that we can always choose to move to LGPL later, but LGPL => MIT won't be
-possible (since in line with kernel community norms, for fsverity-utils we're
-only requiring the DCO, not a CLA).  I think we shouldn't go down a one-way
-street too early.
-
-I've send out a patch to change the license.  Can you two explicitly give
-Acked-by on the patch itself?  Thanks!
-
-- Eric
+Acked-by: Chris Mason <clm@fb.com> # FB copyrighted material
