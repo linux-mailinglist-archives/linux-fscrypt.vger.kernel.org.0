@@ -2,88 +2,124 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8F09239E04
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  3 Aug 2020 06:08:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4381D239FF8
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  3 Aug 2020 09:05:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725831AbgHCEIP (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 3 Aug 2020 00:08:15 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:46893 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725268AbgHCEIO (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 3 Aug 2020 00:08:14 -0400
-Received: from mail-pj1-f70.google.com ([209.85.216.70])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <po-hsu.lin@canonical.com>)
-        id 1k2Rlk-0001UH-Gz
-        for linux-fscrypt@vger.kernel.org; Mon, 03 Aug 2020 04:08:12 +0000
-Received: by mail-pj1-f70.google.com with SMTP id s4so15221829pjq.8
-        for <linux-fscrypt@vger.kernel.org>; Sun, 02 Aug 2020 21:08:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=uwZVDkxnuGuDIYCWAzrsTjqsEVBiE5Gpzjpa5MQp+Zc=;
-        b=TrULHomruagCvkQf4TKSwwHX5j0swtKWmFI7uWa73wIoxTpRxutxH8ssteJaFnmdwv
-         7/knGe461JjyYcwejwNLzsKXtG5MYvrDCEEErFgK6O+RGc0S21kKxQ7yQqHAGE5mEFtP
-         VMwWZqClbQrYaUd4h69eKmVgXrW1N/Y0Rmka1WLPTs5XkZWYOvBGwSEq36PO+oF23/02
-         HCzOnd97mdv/VUynW6c7qFMh8FcIFexdv7+7qo7RTJJ7zfV9LGsXpz2Sd+Ozq/MDYbJL
-         r+beOJqolvKgQgnG+DDfsYT9dN9NFChvC0BM790UW1nnuQqmun6X9v337XlZsEo8aYkr
-         AzlA==
-X-Gm-Message-State: AOAM532Y8q+zTQfy2bTDhUqSL+afNzqbteJBNWiOP3fLOMY2LFci2R1w
-        0k0C8tqPkAfqSylSezYeq0QqWW5zxaKXOWrv2InKjlS1fTXslcgRh75bbH4WtxjYuV4nL8UuBtw
-        zzyqpYGnhETuuyrIkiO4yT5WhnKzfg2vGTGaTAXrzYg==
-X-Received: by 2002:a17:90a:2208:: with SMTP id c8mr5814153pje.123.1596427690916;
-        Sun, 02 Aug 2020 21:08:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw8zBPVa+lbYaA6OfPvxLwil8UWaoJIvyXdFOIpITrHcVKGLUEDv/8X56UNkJC4Lz4EKBoWJQ==
-X-Received: by 2002:a17:90a:2208:: with SMTP id c8mr5814130pje.123.1596427690604;
-        Sun, 02 Aug 2020 21:08:10 -0700 (PDT)
-Received: from Leggiero.taipei.internal (61-220-137-37.HINET-IP.hinet.net. [61.220.137.37])
-        by smtp.gmail.com with ESMTPSA id o19sm11890636pjs.8.2020.08.02.21.08.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 02 Aug 2020 21:08:10 -0700 (PDT)
-From:   Po-Hsu Lin <po-hsu.lin@canonical.com>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     po-hsu.lin@canonical.com
-Subject: [fsverity-utils PATCH] README.md: add subject tag to Contributing section
-Date:   Mon,  3 Aug 2020 12:08:03 +0800
-Message-Id: <20200803040803.10529-1-po-hsu.lin@canonical.com>
-X-Mailer: git-send-email 2.17.1
+        id S1725835AbgHCHFu (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 3 Aug 2020 03:05:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34340 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725826AbgHCHFu (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 3 Aug 2020 03:05:50 -0400
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AB12A206D7;
+        Mon,  3 Aug 2020 07:05:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596438349;
+        bh=1/YYBhx6gDgPn0W0PUaqgcbPBPyOY+oUseS5B1Y5aXs=;
+        h=Date:From:To:Cc:Subject:From;
+        b=zJFv3N8oSMbXQHLMge43sKxec8eqkF9HVvyR6GngT5yMahB7DlBsWaPzNqQKzte4+
+         eCG0tD+mZ/WqVT7u/0+LsUeWT4cMeGecpf21MhCCWB13nNqebGh/SD7R5k87vU+IcZ
+         41DHrflgqWuzyzYSdovDJh7xRxY5DiXqAVMLyU6w=
+Date:   Mon, 3 Aug 2020 00:05:47 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Satya Tangirala <satyat@google.com>
+Subject: [GIT PULL] fscrypt updates for 5.9
+Message-ID: <20200803070547.GA24480@sol.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Add subject tag suggestion [fsverity-utils PATCH] to the Contributing
-section, so that developer can follow this.
+The following changes since commit dcb7fd82c75ee2d6e6f9d8cc71c52519ed52e258:
 
-Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
----
- README.md | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+  Linux 5.8-rc4 (2020-07-05 16:20:22 -0700)
 
-diff --git a/README.md b/README.md
-index b11f6d5..5a76247 100644
---- a/README.md
-+++ b/README.md
-@@ -136,11 +136,12 @@ Send questions and bug reports to linux-fscrypt@vger.kernel.org.
- 
- ## Contributing
- 
--Send patches to linux-fscrypt@vger.kernel.org.  Patches should follow
--the Linux kernel's coding style.  A `.clang-format` file is provided
--to approximate this coding style; consider using `git clang-format`.
--Additionally, like the Linux kernel itself, patches require the
--following "sign-off" procedure:
-+Send patches to linux-fscrypt@vger.kernel.org with the additional tag
-+'fsverity-utils' in the subject, i.e. [fsverity-utils PATCH].  Patches
-+should follow the Linux kernel's coding style.  A `.clang-format` file
-+is provided to approximate this coding style; consider using
-+ `git clang-format`.  Additionally, like the Linux kernel itself,
-+patches require the following "sign-off" procedure:
- 
- The sign-off is a simple line at the end of the explanation for the
- patch, which certifies that you wrote it or otherwise have the right
--- 
-2.17.1
+are available in the Git repository at:
 
+  https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
+
+for you to fetch changes up to 55e32c54bbd5741cad462c9ee00c453c72fa74b9:
+
+  fscrypt: don't load ->i_crypt_info before it's known to be valid (2020-07-30 14:21:50 -0700)
+
+----------------------------------------------------------------
+
+This release, we add support for inline encryption via the blk-crypto
+framework which was added in 5.8.  Now when an ext4 or f2fs filesystem
+is mounted with '-o inlinecrypt', the contents of encrypted files will
+be encrypted/decrypted via blk-crypto, instead of directly using the
+crypto API.  This model allows taking advantage of the inline encryption
+hardware that is integrated into the UFS or eMMC host controllers on
+most mobile SoCs.  Note that this is just an alternate implementation;
+the ciphertext written to disk stays the same.
+
+(This pull request does *not* include support for direct I/O on
+encrypted files, which blk-crypto makes possible, since that part is
+still being discussed.)
+
+Besides the above feature update, there are also a few fixes and
+cleanups, e.g. strengthening some memory barriers that may be too weak.
+
+All these patches have been in linux-next with no reported issues.  I've
+also tested them with the fscrypt xfstests, as usual.  It's also been
+tested that the inline encryption support works with the support for
+Qualcomm and Mediatek inline encryption hardware that will be in the
+scsi pull request for 5.9.  Also, several SoC vendors are already using
+a previous, functionally equivalent version of these patches.
+
+----------------------------------------------------------------
+Eric Biggers (9):
+      ext4: add inline encryption support
+      fscrypt: add comments that describe the HKDF info strings
+      fscrypt: rename FS_KEY_DERIVATION_NONCE_SIZE
+      fscrypt: restrict IV_INO_LBLK_* to AES-256-XTS
+      fscrypt: switch fscrypt_do_sha256() to use the SHA-256 library
+      fscrypt: use smp_load_acquire() for fscrypt_prepared_key
+      fscrypt: use smp_load_acquire() for ->s_master_keys
+      fscrypt: use smp_load_acquire() for ->i_crypt_info
+      fscrypt: don't load ->i_crypt_info before it's known to be valid
+
+Satya Tangirala (4):
+      fs: introduce SB_INLINECRYPT
+      fscrypt: add inline encryption support
+      f2fs: add inline encryption support
+      fscrypt: document inline encryption support
+
+ Documentation/admin-guide/ext4.rst    |   7 +
+ Documentation/filesystems/f2fs.rst    |   7 +
+ Documentation/filesystems/fscrypt.rst |  25 ++-
+ fs/buffer.c                           |   7 +-
+ fs/crypto/Kconfig                     |   8 +-
+ fs/crypto/Makefile                    |   1 +
+ fs/crypto/bio.c                       |  51 +++++
+ fs/crypto/crypto.c                    |   4 +-
+ fs/crypto/fname.c                     |  45 ++---
+ fs/crypto/fscrypt_private.h           | 144 ++++++++++---
+ fs/crypto/inline_crypt.c              | 367 ++++++++++++++++++++++++++++++++++
+ fs/crypto/keyring.c                   |  21 +-
+ fs/crypto/keysetup.c                  |  91 ++++++---
+ fs/crypto/keysetup_v1.c               |  20 +-
+ fs/crypto/policy.c                    |  20 +-
+ fs/ext4/inode.c                       |   4 +-
+ fs/ext4/page-io.c                     |   6 +-
+ fs/ext4/readpage.c                    |  11 +-
+ fs/ext4/super.c                       |  12 ++
+ fs/f2fs/compress.c                    |   2 +-
+ fs/f2fs/data.c                        |  79 ++++++--
+ fs/f2fs/super.c                       |  35 ++++
+ include/linux/fs.h                    |   1 +
+ include/linux/fscrypt.h               | 111 +++++++++-
+ 24 files changed, 940 insertions(+), 139 deletions(-)
+ create mode 100644 fs/crypto/inline_crypt.c
