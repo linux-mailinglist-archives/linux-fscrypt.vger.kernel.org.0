@@ -2,79 +2,58 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22CF423AA8E
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  3 Aug 2020 18:35:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 481C023ABDD
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  3 Aug 2020 19:55:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726748AbgHCQeu (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 3 Aug 2020 12:34:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54706 "EHLO mail.kernel.org"
+        id S1728557AbgHCRzD (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 3 Aug 2020 13:55:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51990 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726189AbgHCQeu (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 3 Aug 2020 12:34:50 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E74D020775;
-        Mon,  3 Aug 2020 16:34:48 +0000 (UTC)
+        id S1728551AbgHCRzC (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 3 Aug 2020 13:55:02 -0400
+Subject: Re: [GIT PULL] fscrypt updates for 5.9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596472489;
-        bh=uUxkIFZW7Gq4byjSYZlJicYwwogI/kDli6Qmvg/mfMc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=U1SM2IyVl4+qIpS17lh7keDFo+ycNRLgN7TQPbF1rjaxsvCFMH/BGa+cbSsbHres4
-         oBM4tdoZMhaQ6qR/JDBnwV2w8MymBUQUyvW8acRgOL+FcXhII6EZOsur3Tk7iBdkyq
-         UOXxR0erciMx7bvsEjSCrbBhWDN7/xg7YgyvMqxE=
-Date:   Mon, 3 Aug 2020 09:34:48 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Po-Hsu Lin <po-hsu.lin@canonical.com>
-Cc:     linux-fscrypt@vger.kernel.org
-Subject: Re: [fsverity-utils PATCH] README.md: add subject tag to
- Contributing section
-Message-ID: <20200803163448.GB1057@sol.localdomain>
-References: <20200803040803.10529-1-po-hsu.lin@canonical.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200803040803.10529-1-po-hsu.lin@canonical.com>
+        s=default; t=1596477301;
+        bh=zoMh0nl23+pSyDpQtAkLlOsvsO3R3HRl5QxOs9dNUU4=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=TLwaIfx0FGEcrWa8IyQvq9a7sCFcL5Hs9++NjdORSBd7cBQh+tigrF0hl0ngo8WQv
+         vViE81VquM5FAC4FsrHj6uUDYR347M8nqGW1qLlkaix7hcIlIieNBfM4t7Ert75B2h
+         X9nZpi7wEgte2Q41n4BAtsH35GnoWdJy86VK6eFI=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20200803070547.GA24480@sol.localdomain>
+References: <20200803070547.GA24480@sol.localdomain>
+X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200803070547.GA24480@sol.localdomain>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git
+ tags/fscrypt-for-linus
+X-PR-Tracked-Commit-Id: 55e32c54bbd5741cad462c9ee00c453c72fa74b9
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 690b25675f5c9c082cb1b902e6d21dd956754e7e
+Message-Id: <159647730140.19506.4501237993165044273.pr-tracker-bot@kernel.org>
+Date:   Mon, 03 Aug 2020 17:55:01 +0000
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Satya Tangirala <satyat@google.com>
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Aug 03, 2020 at 12:08:03PM +0800, Po-Hsu Lin wrote:
-> Add subject tag suggestion [fsverity-utils PATCH] to the Contributing
-> section, so that developer can follow this.
-> 
-> Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
-> ---
->  README.md | 11 ++++++-----
->  1 file changed, 6 insertions(+), 5 deletions(-)
-> 
-> diff --git a/README.md b/README.md
-> index b11f6d5..5a76247 100644
-> --- a/README.md
-> +++ b/README.md
-> @@ -136,11 +136,12 @@ Send questions and bug reports to linux-fscrypt@vger.kernel.org.
->  
->  ## Contributing
->  
-> -Send patches to linux-fscrypt@vger.kernel.org.  Patches should follow
-> -the Linux kernel's coding style.  A `.clang-format` file is provided
-> -to approximate this coding style; consider using `git clang-format`.
-> -Additionally, like the Linux kernel itself, patches require the
-> -following "sign-off" procedure:
-> +Send patches to linux-fscrypt@vger.kernel.org with the additional tag
-> +'fsverity-utils' in the subject, i.e. [fsverity-utils PATCH].  Patches
-> +should follow the Linux kernel's coding style.  A `.clang-format` file
-> +is provided to approximate this coding style; consider using
-> + `git clang-format`.  Additionally, like the Linux kernel itself,
-> +patches require the following "sign-off" procedure:
->  
->  The sign-off is a simple line at the end of the explanation for the
->  patch, which certifies that you wrote it or otherwise have the right
-> -- 
-> 2.17.1
-> 
+The pull request you sent on Mon, 3 Aug 2020 00:05:47 -0700:
 
-Thanks, applied.
+> https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
 
-- Eric
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/690b25675f5c9c082cb1b902e6d21dd956754e7e
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
