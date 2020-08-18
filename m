@@ -2,97 +2,49 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2958424581E
-	for <lists+linux-fscrypt@lfdr.de>; Sun, 16 Aug 2020 16:32:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D393247C58
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 18 Aug 2020 04:56:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729492AbgHPObz (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sun, 16 Aug 2020 10:31:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729488AbgHPO24 (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sun, 16 Aug 2020 10:28:56 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 806D1C06134F
-        for <linux-fscrypt@vger.kernel.org>; Sun, 16 Aug 2020 07:28:35 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id k8so11872500wma.2
-        for <linux-fscrypt@vger.kernel.org>; Sun, 16 Aug 2020 07:28:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=Duxa+mmNF3T3C2WDKsmzowR2OzvdY892XFjTPp0RWRI=;
-        b=NAKDDu3zYGlp6/1rTFA3zLXzfLNUWElMFpld1DGXTqZ3f2C1G5vMMGgQBtzYdv61gR
-         j0gW2VjYzcAEQEK9JcrA+yGSHFEXNhE9RNkaz3uxkanP37gacJrIVytgT7/c7zGkA2Dy
-         XJB3L8ToVDoWAD9Rvm7U849RIrxncLk9xI9S/Uu5ZGT/cXsim2IUQmYeZsKFSBsv6kJT
-         3kDR9KLYjND6JPpx0YTAndrQaTelzP3558OkivI4ykhj79/nak1F6z80uX1/EQIXmTKV
-         I+kUa6Zt2XAbNuMItIuLndMdaWWyo32PYvWKoOywYCMLUV2UDlYdbpJ66arhF+MiPCa0
-         yMKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=Duxa+mmNF3T3C2WDKsmzowR2OzvdY892XFjTPp0RWRI=;
-        b=p1X/jQ4lQ4QFFOP1OvNzcKk/wypC7hcuwka7EqRqEuIi78aOt8odU++KwER1GGS7+L
-         Z0ImcPkwO/esN0g34AQPLjfhX6J1DOlxPret5Y1lP1Rxuda7iYna+p/m4ybfYGuoF5oT
-         st3E4RbKg/+BComJM8xsBYUfo3unpf7o+VZrnxoek6Y0oWmA2DKdZutQRXUGoe6NjU5x
-         dZ/oxISu/cK3eFoT1t93cKcwrw5uO+Jj7bqv7aVsteA1jGvbNIo+hgDmVL6h3136HVMy
-         pa1fC85lbRPOVqMDruSYUiP4Lz9FAFLkkneQMMxykS4Ku6QGPwZ1+C2+xaGSmTx2o0at
-         7KcQ==
-X-Gm-Message-State: AOAM5315Z2YAY4JyWonWQUQ1yM3uHXmo/4un9B6Ngvjc/1D8+KEtV/P2
-        D3iwhRZqQ6RFq6h6sGbBZB/QzTRnKQPqDQKIT7w=
-X-Google-Smtp-Source: ABdhPJydZZ8FQlFGmrB/EDLy0Z8gH5X03F6EFXypW4K1vf8iv94WhLhI3iwPKgeJEaRZZocHWED4lUmYPOBkTFPeX+4=
-X-Received: by 2002:a1c:a1c7:: with SMTP id k190mr10461870wme.1.1597588111746;
- Sun, 16 Aug 2020 07:28:31 -0700 (PDT)
+        id S1726403AbgHRC4l (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 17 Aug 2020 22:56:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34972 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726365AbgHRC4l (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 17 Aug 2020 22:56:41 -0400
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F38132054F
+        for <linux-fscrypt@vger.kernel.org>; Tue, 18 Aug 2020 02:56:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597719401;
+        bh=8toQyHiJ3+QrJ66JO76cYSUVxRqL5N8Two2wxzvfBxM=;
+        h=Date:From:To:Subject:From;
+        b=pZxCZuoLiTDnF/fVTBqeqZVzRv83SFoSJiZ5J3n0px8sYnOuTcmTPcpA/TRCic7Vl
+         yyejvhLryCWXAhWTL+cTsrYpealxpJ9mJgesWzHs5ch8ahBjYDK3R4+4ZLwmIjnPF+
+         BBhsgOIAmPj66bOwoUf1uZ7/eDzJhAqdktLXroLA=
+Date:   Mon, 17 Aug 2020 19:56:39 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Subject: [ANNOUNCE] fsverity-utils v1.2
+Message-ID: <20200818025639.GA1156@sol.localdomain>
 MIME-Version: 1.0
-Received: by 2002:a5d:6cd3:0:0:0:0:0 with HTTP; Sun, 16 Aug 2020 07:28:30
- -0700 (PDT)
-Reply-To: sctnld11170@tlen.pl
-From:   "Mr. Scott Donald" <confianzayrentabilidad@gmail.com>
-Date:   Sun, 16 Aug 2020 07:28:30 -0700
-Message-ID: <CANrrfX7wwL97G=jb--8nb9jH8oRO8T90L6NGSfg1HfnzMyyHcw@mail.gmail.com>
-Subject: Hello, Please
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
---=20
-Dear Friend,
+I've released fsverity-utils v1.2:
 
-I'm Mr. Scott Donald a Successful businessMan dealing with
-Exportation, I got your mail contact through search to let you know my
-intension and my Ugly Situation Am a dying Man here in Los Angeles
-California Hospital Bed in (USA), I Lost my Wife and my only Daughter
-for Covid-19 and I also have a problem in my Health and I can die
-anytime I Know,
+Git: https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/fsverity-utils.git/tag/?h=v1.2
+Tarball: https://kernel.org/pub/linux/kernel/people/ebiggers/fsverity-utils/v1.2/
 
-I have a project that I am about to hand over to you. and I already
-instructed the Bankia S.A. Madrid, Spain(BSA) to transfer my fund sum
-of =C2=A33,7M GBP. Equivalent to =E2=82=AC4,077,033.91 EUR, to you as to en=
-able you
-to give 50% of this fund to Charitable Home in your State and take 50%
-don't think otherwise and why would anybody send someone you barely
-know to help you deliver a message, help me do this for the happiness
-of my soul and for God to mercy me and my Family and give Us a good
-place.
+Release notes:
 
-please, do as I said there was someone from your State that I deeply
-love so very very much and I miss her so badly I have no means to
-reach any Charitable Home there. that is why I go for a personal
-search of the Country and State and I got your mail contact through
-search to let you know my Bitterness and please, help me is getting
-Dark I ask my Doctor to help me keep you notice failure for me to
-reach you in person Your urgent Response, here is my Doctor Whats-app
-Number for urgent notice +13019692737
+  * Changed license from GPL to MIT.
 
-Hope To Hear From You. I'm sending this email to you for the second
-time yet no response from you.
+  * Fixed build error when /bin/sh is dash.
 
-My Regards.
-
-Mr. Scott Donald
-CEO
+- Eric
