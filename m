@@ -2,34 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30A3B247E79
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 18 Aug 2020 08:31:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41DFA24DF72
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 21 Aug 2020 20:28:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726676AbgHRGbg (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 18 Aug 2020 02:31:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50176 "EHLO mail.kernel.org"
+        id S1726431AbgHUS2S (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 21 Aug 2020 14:28:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59348 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726675AbgHRGbe (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 18 Aug 2020 02:31:34 -0400
-Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1725770AbgHUS2P (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Fri, 21 Aug 2020 14:28:15 -0400
+Received: from tleilax.com (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 010742075E;
-        Tue, 18 Aug 2020 06:31:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A63AF22EBF;
+        Fri, 21 Aug 2020 18:28:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597732294;
-        bh=YCIfkNQoZMTK45gIqN25QClyTsdrB5QyhGJVVQrLLA0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=hmwQMQVHI/u25dQ+mNOIO/4UK9GbcA0qvZLH0cmejGHzckP1vfPuApAAMKYB67LsY
-         q2vpWF153vERqu9QPGBM3utSQSaXxOQ2wS9/K66lGhQKb7Y4JyaM/gZ4GuSJe5e03w
-         OX/D84YqVd5C/f9+2f9WPqQ0/Utm590xLwPEGV9Y=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     fstests@vger.kernel.org
-Cc:     linux-fscrypt@vger.kernel.org
-Subject: [PATCH] generic/574: fix sporadic failure with test_dummy_encryption
-Date:   Mon, 17 Aug 2020 23:30:23 -0700
-Message-Id: <20200818063023.93833-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.28.0
+        s=default; t=1598034494;
+        bh=twZ0xibB1gzq93Rw7bdYpP5BmMSEwShppiwFS164MoI=;
+        h=From:To:Subject:Date:From;
+        b=P9iriKvFpIluBm+77xY0388RWR3Nf6QIBWk8pQIKhoClaRhtOD6+TqTGnOzu4Unzb
+         sn4ktgLbwE4no1NwHpz6FcHje30c9na9P6VO0MQY1kNy/T8/tZe5fh1OmrVAY9SAgG
+         wtkTUcWwff8r1HucNyk/9eXXVjDwS5EHdArIppEE=
+From:   Jeff Layton <jlayton@kernel.org>
+To:     ceph-devel@vger.kernel.org, linux-fscrypt@vger.kernel.org
+Subject: [RFC PATCH 00/14] ceph+fscrypt: together at last (contexts and filenames)
+Date:   Fri, 21 Aug 2020 14:27:59 -0400
+Message-Id: <20200821182813.52570-1-jlayton@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-fscrypt-owner@vger.kernel.org
@@ -37,78 +36,103 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+This is a (very rough and incomplete) draft patchset that I've been
+working on to add fscrypt support to cephfs. The main use case is being
+able to allow encryption at the edges, without having to trust your storage
+provider with keys.
 
-When the "test_dummy_encryption" mount option is specified, the
-fs-verity file corruption test generic/574 is flaky; it fails about 1%
-of the time.  This happens because in the three test cases where a
-single byte of the test file is corrupted, sometimes the new byte
-happens to be the same as the original.  This is specific to
-test_dummy_encryption because the encrypted data is nondeterministic
-(and appears random), unlike the unencrypted data.
+Implementing fscrypt on a network filesystem has some challenges that
+you don't have to deal with on a local fs:
 
-Fix this by corrupting 5 bytes instead of 1, so that the probability of
-failure becomes effectively zero.
+Ceph (and most other netfs') will need to pre-create a crypto context
+when creating a new inode as we'll need to encrypt some things before we
+have an inode. This patchset stores contexts in an xattr, but that's
+probably not ideal for the final implementation [1].
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- tests/generic/574     | 11 ++++++++---
- tests/generic/574.out |  6 +++---
- 2 files changed, 11 insertions(+), 6 deletions(-)
+Storing a binary crypttext filename on the MDS (or most network
+fileservers) may be problematic. We'll probably end up having to base64
+encode the names when storing them. I expect most network filesystems to
+have similar issues. That may limit the effective NAME_MAX for some
+filesystems [2].
 
-diff --git a/tests/generic/574 b/tests/generic/574
-index 246f0858..da776a24 100755
---- a/tests/generic/574
-+++ b/tests/generic/574
-@@ -135,10 +135,15 @@ corruption_test()
- 	fi
- }
- 
--corruption_test 131072 0 1
--corruption_test 131072 4095 1
-+# Note: these tests just overwrite some bytes without checking their original
-+# values.  Therefore, make sure to overwrite at least 5 or so bytes, to make it
-+# nearly guaranteed that there will be a change -- even when the test file is
-+# encrypted due to the test_dummy_encryption mount option being specified.
-+
-+corruption_test 131072 0 5
-+corruption_test 131072 4091 5
- corruption_test 131072 65536 65536
--corruption_test 131072 131071 1
-+corruption_test 131072 131067 5
- 
- # Non-zeroed bytes in the final partial block beyond EOF should cause reads to
- # fail too.  Such bytes would be visible via mmap().
-diff --git a/tests/generic/574.out b/tests/generic/574.out
-index 5b304c83..d43474c5 100644
---- a/tests/generic/574.out
-+++ b/tests/generic/574.out
-@@ -1,6 +1,6 @@
- QA output created by 574
- 
--# Corruption test: file_len=131072 zap_offset=0 zap_len=1
-+# Corruption test: file_len=131072 zap_offset=0 zap_len=5
- 0dfbe8aa4c20b52e1b8bf3cb6cbdf193  SCRATCH_MNT/file.fsv
- Corrupting bytes...
- Validating corruption (reading full file)...
-@@ -14,7 +14,7 @@ Bus error
- Validating corruption (reading just corrupted part via mmap)...
- Bus error
- 
--# Corruption test: file_len=131072 zap_offset=4095 zap_len=1
-+# Corruption test: file_len=131072 zap_offset=4091 zap_len=5
- 0dfbe8aa4c20b52e1b8bf3cb6cbdf193  SCRATCH_MNT/file.fsv
- Corrupting bytes...
- Validating corruption (reading full file)...
-@@ -42,7 +42,7 @@ Bus error
- Validating corruption (reading just corrupted part via mmap)...
- Bus error
- 
--# Corruption test: file_len=131072 zap_offset=131071 zap_len=1
-+# Corruption test: file_len=131072 zap_offset=131067 zap_len=5
- 0dfbe8aa4c20b52e1b8bf3cb6cbdf193  SCRATCH_MNT/file.fsv
- Corrupting bytes...
- Validating corruption (reading full file)...
+For content encryption, Ceph (and probably at least CIFS/SMB) will need
+to deal with writes not aligned on crypto blocks. These filesystems
+sometimes write synchronously to the server instead of going through the
+pagecache [3].
+
+Symlink handling in fscrypt will also need to be refactored a bit, as we
+won't have an inode before we'll need to encrypt its contents.
+
+This draft is _very_ rough and not ready for merge. This only covers the
+context handling and filename encryption. It's missing a lot of stuff
+still, but what's there basically works.
+
+I'm mostly posting this now to get some early feedback on the basic idea
+and approach. In particular, I'd appreciate some feedback from the
+fscrypt maintainers. Please let me know if any of the changes I'm
+proposing there look problematic.
+
+Thanks for looking!
+-- Jeff
+
+[1]: We'll likely add a dedicated field to the standard on-the-wire
+inode representation and in the MDS, but that's a separate sub-project.
+
+[2]: For ceph, it looks like it's not a huge problem as the MDS doesn't
+enforce filename lengths at all. Still, we may extend the protocol to
+handle that better.
+
+[3]: For Ceph, I think we'll be able to do a CMPEXT op to do a
+read/modify/write-if-nothing-changed cycle for this case.
+
+Jeff Layton (14):
+  fscrypt: drop unused inode argument from fscrypt_fname_alloc_buffer
+  fscrypt: add fscrypt_new_context_from_parent
+  fscrypt: don't balk when inode is already marked encrypted
+  fscrypt: export fscrypt_d_revalidate
+  lib: lift fscrypt base64 conversion into lib/
+  ceph: add fscrypt ioctls
+  ceph: crypto context handling for ceph
+  ceph: add routine to create context prior to RPC
+  ceph: set S_ENCRYPTED bit if new inode has encryption.ctx xattr
+  ceph: make ceph_msdc_build_path use ref-walk
+  ceph: add encrypted fname handling to ceph_mdsc_build_path
+  ceph: make d_revalidate call fscrypt revalidator for encrypted
+    dentries
+  ceph: add support to readdir for encrypted filenames
+  ceph: add fscrypt support to ceph_fill_trace
+
+ fs/ceph/Makefile        |   1 +
+ fs/ceph/crypto.c        | 171 ++++++++++++++++++++++++++++++++++++++++
+ fs/ceph/crypto.h        |  81 +++++++++++++++++++
+ fs/ceph/dir.c           |  97 ++++++++++++++++++++---
+ fs/ceph/file.c          |   4 +
+ fs/ceph/inode.c         |  62 +++++++++++++--
+ fs/ceph/ioctl.c         |  26 ++++++
+ fs/ceph/mds_client.c    |  74 ++++++++++++-----
+ fs/ceph/super.c         |  37 +++++++++
+ fs/ceph/super.h         |  11 ++-
+ fs/ceph/xattr.c         |  32 ++++++++
+ fs/crypto/Kconfig       |   1 +
+ fs/crypto/fname.c       |  67 +---------------
+ fs/crypto/hooks.c       |   2 +-
+ fs/crypto/keysetup.c    |   2 +-
+ fs/crypto/policy.c      |  42 +++++++---
+ fs/ext4/dir.c           |   2 +-
+ fs/ext4/namei.c         |   7 +-
+ fs/f2fs/dir.c           |   2 +-
+ fs/ubifs/dir.c          |   2 +-
+ include/linux/base64.h  |  11 +++
+ include/linux/fscrypt.h |  12 ++-
+ lib/Kconfig             |   3 +
+ lib/Makefile            |   1 +
+ lib/base64.c            |  71 +++++++++++++++++
+ 25 files changed, 696 insertions(+), 125 deletions(-)
+ create mode 100644 fs/ceph/crypto.c
+ create mode 100644 fs/ceph/crypto.h
+ create mode 100644 include/linux/base64.h
+ create mode 100644 lib/base64.c
+
 -- 
-2.28.0
+2.26.2
 
