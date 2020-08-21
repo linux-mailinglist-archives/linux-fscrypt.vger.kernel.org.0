@@ -2,32 +2,32 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F60824DF91
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 21 Aug 2020 20:29:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5314624DF73
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 21 Aug 2020 20:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726600AbgHUS2S (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        id S1726633AbgHUS2S (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
         Fri, 21 Aug 2020 14:28:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59354 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:59364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725867AbgHUS2Q (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        id S1725772AbgHUS2Q (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
         Fri, 21 Aug 2020 14:28:16 -0400
 Received: from tleilax.com (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 30A8C230FF;
+        by mail.kernel.org (Postfix) with ESMTPSA id AE5AC23100;
         Fri, 21 Aug 2020 18:28:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598034495;
-        bh=0WSGg0EIU7FP0CS/ruZRELlwNGgiar1sXoK/2aZAuow=;
+        s=default; t=1598034496;
+        bh=fpltE6CsINdq5JTodJ6i1B2vTSGZq6xV+oRtSc2jF0Q=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=pU8sMNT5RMfSa1UlHp1iWwLC0wCNdi4qx3Ttfv/r9K0imGE5NJesWl9dOhzTdz6u2
-         iNQ0QKKkgqeBKMz1GW0M6VMgjFgm6C0qPzqRLqQCtqu9tnr7b3ApM7bZTqCin6k6Qw
-         0W/G+5D1bj5vZzihTlWJYIzXlWYH3mypBzUVcnww=
+        b=2mmFNCUnCcFDCCVUQ3AK4EU06TnCDTzaMH5NGuTntrT8KOvD0Ww0cwKe1LvZCecM5
+         7ulbBmEg7dd+v8m9LbjHRrQOfdpQF5bgIbYasR+WAQUA9iCEY4nOqTCwEJaIQ9TAJ+
+         nsnxfWCw61Fcj+QkTYsPUF1hYlV7nxQYb5RV2/eg=
 From:   Jeff Layton <jlayton@kernel.org>
 To:     ceph-devel@vger.kernel.org, linux-fscrypt@vger.kernel.org
-Subject: [RFC PATCH 01/14] fscrypt: drop unused inode argument from fscrypt_fname_alloc_buffer
-Date:   Fri, 21 Aug 2020 14:28:00 -0400
-Message-Id: <20200821182813.52570-2-jlayton@kernel.org>
+Subject: [RFC PATCH 02/14] fscrypt: add fscrypt_new_context_from_parent
+Date:   Fri, 21 Aug 2020 14:28:01 -0400
+Message-Id: <20200821182813.52570-3-jlayton@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200821182813.52570-1-jlayton@kernel.org>
 References: <20200821182813.52570-1-jlayton@kernel.org>
@@ -38,140 +38,108 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
+Network filesystems usually don't know what inode number they'll have
+until after the reply to a create RPC comes in. But we do need a
+(blank) crypto context before that point. Break out the part of
+fscrypt_inherit_context that creates a new context without setting it
+into the new inode just yet.
+
 Signed-off-by: Jeff Layton <jlayton@kernel.org>
 ---
- fs/crypto/fname.c       | 5 +----
- fs/crypto/hooks.c       | 2 +-
- fs/ext4/dir.c           | 2 +-
- fs/ext4/namei.c         | 7 +++----
- fs/f2fs/dir.c           | 2 +-
- fs/ubifs/dir.c          | 2 +-
- include/linux/fscrypt.h | 5 ++---
- 7 files changed, 10 insertions(+), 15 deletions(-)
+ fs/crypto/policy.c      | 42 ++++++++++++++++++++++++++++++-----------
+ include/linux/fscrypt.h |  6 ++++++
+ 2 files changed, 37 insertions(+), 11 deletions(-)
 
-diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
-index 011830f84d8d..47bcfddb278b 100644
---- a/fs/crypto/fname.c
-+++ b/fs/crypto/fname.c
-@@ -260,8 +260,6 @@ bool fscrypt_fname_encrypted_size(const struct inode *inode, u32 orig_len,
+diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
+index 2d73fd39ad96..13e0a50157d5 100644
+--- a/fs/crypto/policy.c
++++ b/fs/crypto/policy.c
+@@ -621,19 +621,19 @@ int fscrypt_has_permitted_context(struct inode *parent, struct inode *child)
+ EXPORT_SYMBOL(fscrypt_has_permitted_context);
  
  /**
-  * fscrypt_fname_alloc_buffer() - allocate a buffer for presented filenames
-- * @inode: inode of the parent directory (for regular filenames)
-- *	   or of the symlink (for symlink targets)
-  * @max_encrypted_len: maximum length of encrypted filenames the buffer will be
-  *		       used to present
-  * @crypto_str: (output) buffer to allocate
-@@ -271,8 +269,7 @@ bool fscrypt_fname_encrypted_size(const struct inode *inode, u32 orig_len,
+- * fscrypt_inherit_context() - Sets a child context from its parent
++ * fscrypt_new_context_from_parent() - generate a new fscrypt context from its parent
+  * @parent: Parent inode from which the context is inherited.
+- * @child:  Child inode that inherits the context from @parent.
+- * @fs_data:  private data given by FS.
+- * @preload:  preload child i_crypt_info if true
++ * @ctx: destination for new encryption context
   *
-  * Return: 0 on success, -errno on failure
+- * Return: 0 on success, -errno on failure
++ * Generate a new encryption context for an inode from its parent, suitable
++ * for later installation into a child dentry's inode. Returns positive
++ * length of the new context on success, or -errno on failure.
++ *
++ * Note that the caller must ensure that it provides sufficient buffer space
++ * to write out the context (at least FSCRYPT_SET_CONTEXT_MAX_SIZE bytes).
   */
--int fscrypt_fname_alloc_buffer(const struct inode *inode,
--			       u32 max_encrypted_len,
-+int fscrypt_fname_alloc_buffer(u32 max_encrypted_len,
- 			       struct fscrypt_str *crypto_str)
+-int fscrypt_inherit_context(struct inode *parent, struct inode *child,
+-						void *fs_data, bool preload)
++int fscrypt_new_context_from_parent(struct inode *parent, void *ctx)
  {
- 	const u32 max_encoded_len = BASE64_CHARS(FSCRYPT_NOKEY_NAME_MAX);
-diff --git a/fs/crypto/hooks.c b/fs/crypto/hooks.c
-index 09fb8aa0f2e9..491b252843eb 100644
---- a/fs/crypto/hooks.c
-+++ b/fs/crypto/hooks.c
-@@ -319,7 +319,7 @@ const char *fscrypt_get_symlink(struct inode *inode, const void *caddr,
- 	if (cstr.len + sizeof(*sd) - 1 > max_size)
- 		return ERR_PTR(-EUCLEAN);
+-	union fscrypt_context ctx;
+-	int ctxsize;
+ 	struct fscrypt_info *ci;
+ 	int res;
  
--	err = fscrypt_fname_alloc_buffer(inode, cstr.len, &pstr);
-+	err = fscrypt_fname_alloc_buffer(cstr.len, &pstr);
- 	if (err)
- 		return ERR_PTR(err);
+@@ -645,10 +645,30 @@ int fscrypt_inherit_context(struct inode *parent, struct inode *child,
+ 	if (ci == NULL)
+ 		return -ENOKEY;
  
-diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
-index 1d82336b1cd4..efe77cffc322 100644
---- a/fs/ext4/dir.c
-+++ b/fs/ext4/dir.c
-@@ -148,7 +148,7 @@ static int ext4_readdir(struct file *file, struct dir_context *ctx)
- 	}
+-	ctxsize = fscrypt_new_context_from_policy(&ctx, &ci->ci_policy);
++	return fscrypt_new_context_from_policy(ctx, &ci->ci_policy);
++}
++EXPORT_SYMBOL(fscrypt_new_context_from_parent);
++
++/**
++ * fscrypt_inherit_context() - Sets a child context from its parent
++ * @parent: Parent inode from which the context is inherited.
++ * @child:  Child inode that inherits the context from @parent.
++ * @fs_data:  private data given by FS.
++ * @preload:  preload child i_crypt_info if true
++ *
++ * Return: 0 on success, -errno on failure
++ */
++int fscrypt_inherit_context(struct inode *parent, struct inode *child,
++						void *fs_data, bool preload)
++{
++	union fscrypt_context ctx;
++	int res;
  
- 	if (IS_ENCRYPTED(inode)) {
--		err = fscrypt_fname_alloc_buffer(inode, EXT4_NAME_LEN, &fstr);
-+		err = fscrypt_fname_alloc_buffer(EXT4_NAME_LEN, &fstr);
- 		if (err < 0)
- 			return err;
- 	}
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 56738b538ddf..f41c8bfe8b5a 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -663,8 +663,7 @@ static struct stats dx_show_leaf(struct inode *dir,
- 
- 					/* Directory is encrypted */
- 					res = fscrypt_fname_alloc_buffer(
--						dir, len,
--						&fname_crypto_str);
-+						len, &fname_crypto_str);
- 					if (res)
- 						printk(KERN_WARNING "Error "
- 							"allocating crypto "
-@@ -1016,8 +1015,8 @@ static int htree_dirblock_to_tree(struct file *dir_file,
- 			brelse(bh);
- 			return err;
- 		}
--		err = fscrypt_fname_alloc_buffer(dir, EXT4_NAME_LEN,
--						     &fname_crypto_str);
-+		err = fscrypt_fname_alloc_buffer(EXT4_NAME_LEN,
-+						 &fname_crypto_str);
- 		if (err < 0) {
- 			brelse(bh);
- 			return err;
-diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
-index 069f498af1e3..b2530b9507bd 100644
---- a/fs/f2fs/dir.c
-+++ b/fs/f2fs/dir.c
-@@ -1032,7 +1032,7 @@ static int f2fs_readdir(struct file *file, struct dir_context *ctx)
- 		if (err)
- 			goto out;
- 
--		err = fscrypt_fname_alloc_buffer(inode, F2FS_NAME_LEN, &fstr);
-+		err = fscrypt_fname_alloc_buffer(F2FS_NAME_LEN, &fstr);
- 		if (err < 0)
- 			goto out;
- 	}
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 9d042942d8b2..a9c1f5a9c9bd 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -515,7 +515,7 @@ static int ubifs_readdir(struct file *file, struct dir_context *ctx)
- 		if (err)
- 			return err;
- 
--		err = fscrypt_fname_alloc_buffer(dir, UBIFS_MAX_NLEN, &fstr);
-+		err = fscrypt_fname_alloc_buffer(UBIFS_MAX_NLEN, &fstr);
- 		if (err)
- 			return err;
- 
+ 	BUILD_BUG_ON(sizeof(ctx) != FSCRYPT_SET_CONTEXT_MAX_SIZE);
+-	res = parent->i_sb->s_cop->set_context(child, &ctx, ctxsize, fs_data);
++	res = fscrypt_new_context_from_parent(parent, &ctx);
++	if (res < 0)
++		return res;
++	res = parent->i_sb->s_cop->set_context(child, &ctx, res, fs_data);
+ 	if (res)
+ 		return res;
+ 	return preload ? fscrypt_get_encryption_info(child): 0;
 diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index 991ff8575d0e..eaf16eb55788 100644
+index eaf16eb55788..c5fe6f334a1d 100644
 --- a/include/linux/fscrypt.h
 +++ b/include/linux/fscrypt.h
-@@ -197,7 +197,7 @@ static inline void fscrypt_free_filename(struct fscrypt_name *fname)
- 	kfree(fname->crypto_buf.name);
+@@ -156,6 +156,7 @@ int fscrypt_ioctl_get_policy(struct file *filp, void __user *arg);
+ int fscrypt_ioctl_get_policy_ex(struct file *filp, void __user *arg);
+ int fscrypt_ioctl_get_nonce(struct file *filp, void __user *arg);
+ int fscrypt_has_permitted_context(struct inode *parent, struct inode *child);
++int fscrypt_new_context_from_parent(struct inode *parent, void *);
+ int fscrypt_inherit_context(struct inode *parent, struct inode *child,
+ 			    void *fs_data, bool preload);
+ 
+@@ -340,6 +341,11 @@ static inline int fscrypt_has_permitted_context(struct inode *parent,
+ 	return 0;
  }
  
--int fscrypt_fname_alloc_buffer(const struct inode *inode, u32 max_encrypted_len,
-+int fscrypt_fname_alloc_buffer(u32 max_encrypted_len,
- 			       struct fscrypt_str *crypto_str);
- void fscrypt_fname_free_buffer(struct fscrypt_str *crypto_str);
- int fscrypt_fname_disk_to_usr(const struct inode *inode,
-@@ -428,8 +428,7 @@ static inline void fscrypt_free_filename(struct fscrypt_name *fname)
- 	return;
- }
- 
--static inline int fscrypt_fname_alloc_buffer(const struct inode *inode,
--					     u32 max_encrypted_len,
-+static inline int fscrypt_fname_alloc_buffer(u32 max_encrypted_len,
- 					     struct fscrypt_str *crypto_str)
- {
- 	return -EOPNOTSUPP;
++static inline int fscrypt_new_context_from_parent(struct inode *parent, void *ctx);
++{
++	return -EOPNOTSUPP;
++}
++
+ static inline int fscrypt_inherit_context(struct inode *parent,
+ 					  struct inode *child,
+ 					  void *fs_data, bool preload)
 -- 
 2.26.2
 
