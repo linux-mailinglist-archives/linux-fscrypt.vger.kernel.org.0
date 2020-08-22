@@ -2,137 +2,89 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4E1024E41B
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 22 Aug 2020 02:23:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D8F224E42F
+	for <lists+linux-fscrypt@lfdr.de>; Sat, 22 Aug 2020 02:38:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726753AbgHVAXE (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 21 Aug 2020 20:23:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57660 "EHLO mail.kernel.org"
+        id S1726772AbgHVAiX (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 21 Aug 2020 20:38:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52064 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726688AbgHVAXD (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 21 Aug 2020 20:23:03 -0400
+        id S1726688AbgHVAiU (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Fri, 21 Aug 2020 20:38:20 -0400
 Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E3C01214F1;
-        Sat, 22 Aug 2020 00:23:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2971A2072D;
+        Sat, 22 Aug 2020 00:38:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598055783;
-        bh=BYNcF5+CZAB6RYfei1Ao7hHUCwtnOZqYU9vE2rpsMOE=;
+        s=default; t=1598056700;
+        bh=Py0h0yJmL7XNxB/8xKWl5V4WVSzec+lach9VW5QkJpc=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XArcEtjw0R/HKh8/EpUMpTpnQPMu4VQNNHnzJAOSkHsoghC7EGk566xTPFLE+Um+F
-         b6pMTCGSq88bFRe40StsLrUIPh6vt4wxN7UxuIXHrUCIvkPwW/VZuA1FDnfILUUzmG
-         tbcxQqKlKc3CfpXh7Mq3+IEDZzsmS8y2AABsYXJc=
-Date:   Fri, 21 Aug 2020 17:23:01 -0700
+        b=jB015uLzZXCX/NwFYL8PwRTc+CXo+1TfxtRspX9uUthp++SOPH0Pc1bqFLB4AV0Xn
+         Z+pWZxBmOYUo8fLi/5J6hKxgQZmcjpAFihalh+fExB4v5KII/hjxo/it+BWqtb37B0
+         J8YJfZTySN6/1bASMsU+u3S3BYR0Uv9BfkkGopc4=
+Date:   Fri, 21 Aug 2020 17:38:18 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     Jeff Layton <jlayton@kernel.org>
 Cc:     ceph-devel@vger.kernel.org, linux-fscrypt@vger.kernel.org
-Subject: Re: [RFC PATCH 00/14] ceph+fscrypt: together at last (contexts and
- filenames)
-Message-ID: <20200822002301.GA834@sol.localdomain>
+Subject: Re: [RFC PATCH 05/14] lib: lift fscrypt base64 conversion into lib/
+Message-ID: <20200822003818.GB834@sol.localdomain>
 References: <20200821182813.52570-1-jlayton@kernel.org>
+ <20200821182813.52570-6-jlayton@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200821182813.52570-1-jlayton@kernel.org>
+In-Reply-To: <20200821182813.52570-6-jlayton@kernel.org>
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hi Jeff,
-
-On Fri, Aug 21, 2020 at 02:27:59PM -0400, Jeff Layton wrote:
-> This is a (very rough and incomplete) draft patchset that I've been
-> working on to add fscrypt support to cephfs. The main use case is being
-> able to allow encryption at the edges, without having to trust your storage
-> provider with keys.
-
-This is very interesting work -- thanks for sending this out!
-
-> Implementing fscrypt on a network filesystem has some challenges that
-> you don't have to deal with on a local fs:
+On Fri, Aug 21, 2020 at 02:28:04PM -0400, Jeff Layton wrote:
+> Once we allow encrypted filenames we'll end up with names that may have
+> illegal characters in them (embedded '\0' or '/'), or characters that
+> aren't printable.
 > 
-> Ceph (and most other netfs') will need to pre-create a crypto context
-> when creating a new inode as we'll need to encrypt some things before we
-> have an inode. This patchset stores contexts in an xattr, but that's
-> probably not ideal for the final implementation [1].
-
-Coincidentally, I've currently working on solving a similar problem.  On ext4,
-the inode number can't be assigned, and the encryption xattr can't be set, until
-the jbd2 transaction which creates the inode.  Also, if the new inode is a
-symlink, then fscrypt_encrypt_symlink() has to be called during the transaction.
-Together, these imply that fscrypt_get_encryption_info() has to be called during
-the transaction.
-
-That's what we do, currently.  However, it's technically wrong and can deadlock,
-since fscrypt_get_encryption_info() isn't GFP_NOFS-safe (and it can't be).
-
-f2fs appears to have a similar problem, though I'm still investigating.
-
-To fix this, I'm planning to add new functions:
-
-   - fscrypt_prepare_new_inode() will set up the fscrypt_info for a new
-     'struct inode' which hasn't necessarily had an inode number assigned yet.
-     It won't set the encryption xattr yet.
-
-   - fscrypt_set_context() will set the encryption xattr, using the fscrypt_info
-     that fscrypt_prepare_new_inode() created earlier.  It will replace
-     fscrypt_inherit_context().
-
-I'm working on my patches at
-https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git/log/?h=wip-fscrypt.
-They're not ready to send out yet, but I'll Cc you when I do.
-
-It seems there's still something a bit different that you need: you want
-fs/crypto/ to provide a buffer containing the encryption xattr (presumably
-because ceph needs to package it up into a single network request that creates
-the file?), instead of calling a function which then uses
-fscrypt_operations::set_context().  I could pretty easily handle that by adding
-a function that returns the xattr directly and would be an alternative to
-fscrypt_set_context().
-
-> Storing a binary crypttext filename on the MDS (or most network
-> fileservers) may be problematic. We'll probably end up having to base64
-> encode the names when storing them. I expect most network filesystems to
-> have similar issues. That may limit the effective NAME_MAX for some
-> filesystems [2].
-
-I strongly recommend keeping support for the full NAME_MAX (255 bytes), if it's
-at all possible.  eCryptfs limited filenames to 143 bytes, which has
-historically caused lots of problems.  Try the following Google search to get a
-sense of the large number of users that have run into this limitation:
-https://www.google.com/search?q=ecryptfs+143+filename
-
+> It'll be safer to use strings that are printable. It turns out that the
+> MDS doesn't really care about the length of filenames, so we can just
+> base64 encode and decode filenames before writing and reading them.
 > 
-> For content encryption, Ceph (and probably at least CIFS/SMB) will need
-> to deal with writes not aligned on crypto blocks. These filesystems
-> sometimes write synchronously to the server instead of going through the
-> pagecache [3].
-
-I/O that isn't aligned to the "encryption data unit size" (which on the
-filesystems that currently support fscrypt, is the same thing as the
-"filesystem block size") isn't really possible unless it's buffered.  For
-AES-XTS specifically, *in principle* it's possible to encrypt/decrypt an
-individual 16-byte aligned region.  But Linux's crypto API doesn't currently
-support sub-message crypto, and also fscrypt supports the AES-CBC and Adiantum
-encryption modes which have stricter requirements.
-
-So, I think that reads/writes to encrypted files will always need to go through
-the page cache.
-
+> Lift the base64 implementation that's in fscrypt into lib/. Make fscrypt
+> select it when it's enabled.
 > 
-> Symlink handling in fscrypt will also need to be refactored a bit, as we
-> won't have an inode before we'll need to encrypt its contents.
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>  fs/crypto/Kconfig      |  1 +
+>  fs/crypto/fname.c      | 59 +----------------------------------
+>  include/linux/base64.h | 11 +++++++
+>  lib/Kconfig            |  3 ++
+>  lib/Makefile           |  1 +
+>  lib/base64.c           | 71 ++++++++++++++++++++++++++++++++++++++++++
+>  6 files changed, 88 insertions(+), 58 deletions(-)
+>  create mode 100644 include/linux/base64.h
+>  create mode 100644 lib/base64.c
 
-Will there be an in-memory inode allocated yet (a 'struct inode'), just with no
-inode number assigned yet?  If so, my work-in-progress patchset I mentioned
-earlier should be sufficient to address this.  The order would be:
+You need to be careful here because there are many subtly different variants of
+base64.  The Wikipedia article is a good reference for this:
+https://en.wikipedia.org/wiki/Base64
 
-	1. fscrypt_prepare_new_inode()
-	2. fscrypt_encrypt_symlink()
-	3. Assign inode number
+For example, most versions of base64 use [A-Za-z0-9+/].  However that's *not*
+what fs/crypto/fname.c uses, since it needs the encoded strings to be valid
+filenames, and '/' isn't a valid character in filenames.  Therefore,
+fs/crypto/fname.c uses ',' instead of '/'.
 
-Or does ceph not have a 'struct inode' at all until step (3)?
+It happens that's probably what ceph needs too.  However, other kernel
+developers who come across a very generic-sounding "lib/base64.c" might expect
+it to implement a more common version of base64.
+
+Also, some versions of base64 pad the encoded string with "=" whereas others
+don't.  The fs/crypto/fname.c implementation doesn't use padding.
+
+So if you're going to make a generic base64 library, you at least need to be
+very clear about exactly what version of base64 is meant.
+
+(FWIW, the existing use of base64 in fs/crypto/fname.c isn't part of a stable
+API.  So it can still be changed to something else, as long as the encoding
+doesn't use the '/' or '\0' characters.)
 
 - Eric
