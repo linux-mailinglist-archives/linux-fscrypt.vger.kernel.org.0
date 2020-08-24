@@ -2,35 +2,35 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DFB024F26C
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 24 Aug 2020 08:18:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BD8724F270
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 24 Aug 2020 08:18:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726086AbgHXGSf (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        id S1726026AbgHXGSf (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
         Mon, 24 Aug 2020 02:18:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49810 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:49984 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726056AbgHXGSU (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 24 Aug 2020 02:18:20 -0400
+        id S1726086AbgHXGS3 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 24 Aug 2020 02:18:29 -0400
 Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E52FA22B3F;
-        Mon, 24 Aug 2020 06:18:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 446D122B43;
+        Mon, 24 Aug 2020 06:18:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1598249900;
-        bh=pIJmvup/1NleSfxl2m1+2qODicItN3VVq+lhGxjetoU=;
+        bh=FMdqhGKiPJuHGox4c9HjS2vaN3+8vR0i3HMKgJxF+vQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s1qf4bw7OzIhw2/GHG8djl8PDMxSjLTOyniDndG+OavXM3SB413ffm3u+jx22B71h
-         cvDSDtULDtHOJuHzs25NU0a4oxzPGs1bm7o4WXxd46oeti/Bc2CJIcXuWk/FwxpDD+
-         se+eF27vWpLQ3Zxk5GkkVvP14wSVYw+0gacJdnnY=
+        b=SQyQZQJniVjChBFXxR3bF0x16R3eYZIA7rLFQeyDxK8kI1KwERQ2Wj5lm2hjVxMmg
+         3Nxe/eWfi8Gq+7jcCSMCpgVFWl4M/qnEc4H3H+EjikdTyTQ7njVV+jR+9X8cw/bdtG
+         QW0t7i1axoHJILN6yvBCn6ZUt3hNXnc1AUNSCwU0=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-fscrypt@vger.kernel.org
 Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
         linux-mtd@lists.infradead.org, ceph-devel@vger.kernel.org,
         Jeff Layton <jlayton@kernel.org>
-Subject: [RFC PATCH 6/8] ubifs: use fscrypt_prepare_new_inode() and fscrypt_set_context()
-Date:   Sun, 23 Aug 2020 23:17:10 -0700
-Message-Id: <20200824061712.195654-7-ebiggers@kernel.org>
+Subject: [RFC PATCH 7/8] fscrypt: remove fscrypt_inherit_context()
+Date:   Sun, 23 Aug 2020 23:17:11 -0700
+Message-Id: <20200824061712.195654-8-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200824061712.195654-1-ebiggers@kernel.org>
 References: <20200824061712.195654-1-ebiggers@kernel.org>
@@ -43,77 +43,117 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Convert ubifs to use the new functions fscrypt_prepare_new_inode() and
-fscrypt_set_context().
+Now that all filesystems have been converted to use
+fscrypt_prepare_new_inode() and fscrypt_set_context(),
+fscrypt_inherit_context() is no longer used.  So remove it.
 
-Unlike ext4 and f2fs, this doesn't appear to fix any deadlock bug.  But
-it does shorten the code slightly and get all filesystems using the same
-helper functions, so that fscrypt_inherit_context() can be removed.
+Also change __fscrypt_encrypt_symlink() to no longer set up the inode's
+key, since it's guaranteed to be set up already now that all filesystems
+have been converted to fscrypt_prepare_new_inode().
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/ubifs/dir.c | 26 ++++++++++----------------
- 1 file changed, 10 insertions(+), 16 deletions(-)
+ fs/crypto/hooks.c       | 10 +++++++---
+ fs/crypto/policy.c      | 37 -------------------------------------
+ include/linux/fscrypt.h |  9 ---------
+ 3 files changed, 7 insertions(+), 49 deletions(-)
 
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 9d042942d8b29..26739ae3ffee7 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -81,19 +81,6 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
- 	struct ubifs_inode *ui;
- 	bool encrypted = false;
+diff --git a/fs/crypto/hooks.c b/fs/crypto/hooks.c
+index 09fb8aa0f2e93..b69cd29a01a2f 100644
+--- a/fs/crypto/hooks.c
++++ b/fs/crypto/hooks.c
+@@ -217,9 +217,13 @@ int __fscrypt_encrypt_symlink(struct inode *inode, const char *target,
+ 	struct fscrypt_symlink_data *sd;
+ 	unsigned int ciphertext_len;
  
--	if (IS_ENCRYPTED(dir)) {
--		err = fscrypt_get_encryption_info(dir);
--		if (err) {
--			ubifs_err(c, "fscrypt_get_encryption_info failed: %i", err);
--			return ERR_PTR(err);
--		}
--
--		if (!fscrypt_has_encryption_key(dir))
--			return ERR_PTR(-EPERM);
--
--		encrypted = true;
--	}
--
- 	inode = new_inode(c->vfs_sb);
- 	ui = ubifs_inode(inode);
- 	if (!inode)
-@@ -112,6 +99,14 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
- 			 current_time(inode);
- 	inode->i_mapping->nrpages = 0;
+-	err = fscrypt_require_key(inode);
+-	if (err)
+-		return err;
++	/*
++	 * fscrypt_prepare_new_inode() should have already set up the inode's
++	 * encryption key.  We don't wait until now to do it, since we may be in
++	 * a filesystem transaction now.
++	 */
++	if (WARN_ON_ONCE(!fscrypt_has_encryption_key(inode)))
++		return -ENOKEY;
  
-+	err = fscrypt_prepare_new_inode(dir, inode, &encrypted);
-+	if (err) {
-+		ubifs_err(c, "fscrypt_prepare_new_inode failed: %i", err);
-+		make_bad_inode(inode);
-+		iput(inode);
-+		return ERR_PTR(err);
-+	}
-+
- 	switch (mode & S_IFMT) {
- 	case S_IFREG:
- 		inode->i_mapping->a_ops = &ubifs_file_address_operations;
-@@ -131,7 +126,6 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
- 	case S_IFBLK:
- 	case S_IFCHR:
- 		inode->i_op  = &ubifs_file_inode_operations;
--		encrypted = false;
- 		break;
- 	default:
- 		BUG();
-@@ -171,9 +165,9 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
- 	spin_unlock(&c->cnt_lock);
+ 	if (disk_link->name) {
+ 		/* filesystem-provided buffer */
+diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
+index fbe4933206469..2220ef48d5846 100644
+--- a/fs/crypto/policy.c
++++ b/fs/crypto/policy.c
+@@ -625,43 +625,6 @@ int fscrypt_has_permitted_context(struct inode *parent, struct inode *child)
+ }
+ EXPORT_SYMBOL(fscrypt_has_permitted_context);
  
- 	if (encrypted) {
--		err = fscrypt_inherit_context(dir, inode, &encrypted, true);
-+		err = fscrypt_set_context(inode, NULL);
- 		if (err) {
--			ubifs_err(c, "fscrypt_inherit_context failed: %i", err);
-+			ubifs_err(c, "fscrypt_set_context failed: %i", err);
- 			make_bad_inode(inode);
- 			iput(inode);
- 			return ERR_PTR(err);
+-/**
+- * fscrypt_inherit_context() - Sets a child context from its parent
+- * @parent: Parent inode from which the context is inherited.
+- * @child:  Child inode that inherits the context from @parent.
+- * @fs_data:  private data given by FS.
+- * @preload:  preload child i_crypt_info if true
+- *
+- * Return: 0 on success, -errno on failure
+- */
+-int fscrypt_inherit_context(struct inode *parent, struct inode *child,
+-						void *fs_data, bool preload)
+-{
+-	u8 nonce[FSCRYPT_FILE_NONCE_SIZE];
+-	union fscrypt_context ctx;
+-	int ctxsize;
+-	struct fscrypt_info *ci;
+-	int res;
+-
+-	res = fscrypt_get_encryption_info(parent);
+-	if (res < 0)
+-		return res;
+-
+-	ci = fscrypt_get_info(parent);
+-	if (ci == NULL)
+-		return -ENOKEY;
+-
+-	get_random_bytes(nonce, FSCRYPT_FILE_NONCE_SIZE);
+-	ctxsize = fscrypt_new_context_from_policy(&ctx, &ci->ci_policy, nonce);
+-
+-	BUILD_BUG_ON(sizeof(ctx) != FSCRYPT_SET_CONTEXT_MAX_SIZE);
+-	res = parent->i_sb->s_cop->set_context(child, &ctx, ctxsize, fs_data);
+-	if (res)
+-		return res;
+-	return preload ? fscrypt_get_encryption_info(child): 0;
+-}
+-EXPORT_SYMBOL(fscrypt_inherit_context);
+-
+ /**
+  * fscrypt_set_context() - Set the fscrypt context of a new inode
+  * @inode: A new inode
+diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
+index 726131dfa0a9b..4ee636e9e1fca 100644
+--- a/include/linux/fscrypt.h
++++ b/include/linux/fscrypt.h
+@@ -156,8 +156,6 @@ int fscrypt_ioctl_get_policy(struct file *filp, void __user *arg);
+ int fscrypt_ioctl_get_policy_ex(struct file *filp, void __user *arg);
+ int fscrypt_ioctl_get_nonce(struct file *filp, void __user *arg);
+ int fscrypt_has_permitted_context(struct inode *parent, struct inode *child);
+-int fscrypt_inherit_context(struct inode *parent, struct inode *child,
+-			    void *fs_data, bool preload);
+ int fscrypt_set_context(struct inode *inode, void *fs_data);
+ 
+ struct fscrypt_dummy_context {
+@@ -343,13 +341,6 @@ static inline int fscrypt_has_permitted_context(struct inode *parent,
+ 	return 0;
+ }
+ 
+-static inline int fscrypt_inherit_context(struct inode *parent,
+-					  struct inode *child,
+-					  void *fs_data, bool preload)
+-{
+-	return -EOPNOTSUPP;
+-}
+-
+ static inline int fscrypt_set_context(struct inode *inode, void *fs_data)
+ {
+ 	return -EOPNOTSUPP;
 -- 
 2.28.0
 
