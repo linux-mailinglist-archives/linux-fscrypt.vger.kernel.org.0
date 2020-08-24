@@ -2,135 +2,88 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A0024E4AB
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 22 Aug 2020 04:34:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8514024F253
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 24 Aug 2020 08:18:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726588AbgHVCen (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 21 Aug 2020 22:34:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54210 "EHLO mail.kernel.org"
+        id S1725999AbgHXGSS (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 24 Aug 2020 02:18:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49688 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725991AbgHVCen (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 21 Aug 2020 22:34:43 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1725770AbgHXGSS (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 24 Aug 2020 02:18:18 -0400
+Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 083FF20735;
-        Sat, 22 Aug 2020 02:34:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CD6CF206B5;
+        Mon, 24 Aug 2020 06:18:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598063682;
-        bh=VdTEnShx+GV6E9gjj9TupPVHBN8F/ejyaL4g7GX/E7k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PczGZOibddHQvDlsc7SPxjPTfBJtknhVnmJq7jnaIAl1IgU6l1FRU/jocXT8m3slc
-         Tu5VQ2ABESJHHd1yC9SzFjmEQXqc5tsQ0iAVdyc+c3b4xso4UMOdRPfnfcHYr7XxD9
-         L/auklVd9DIbixmV/3NTbaLEjDKYwPJoKr8I+Oa8=
-Date:   Fri, 21 Aug 2020 19:34:40 -0700
+        s=default; t=1598249898;
+        bh=5Cg/F/P1MsSIqNAEKm5EcA85tMzmQDFgxtq+BwsOiXY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=f893nZOHOk74YywNd+s2c7KM7U+ApkFK+G5wAxPqs247sQ2FcptH0qP9EtwzvEYBf
+         LROjPrF6b7H17wnj5KGsZaPkgvTF6yctFlLpC0zde7Uvt1Qfhq8ilvE8jBprCzObNr
+         jbaGalIhOAIFifcUwA2qyoWoyI0iCcGdq4CofU6w=
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     ceph-devel@vger.kernel.org, linux-fscrypt@vger.kernel.org
-Subject: Re: [RFC PATCH 00/14] ceph+fscrypt: together at last (contexts and
- filenames)
-Message-ID: <20200822023440.GD834@sol.localdomain>
-References: <20200821182813.52570-1-jlayton@kernel.org>
- <20200822002301.GA834@sol.localdomain>
- <2a6b92f25325fa95164f418c669883f73a291b77.camel@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, ceph-devel@vger.kernel.org,
+        Jeff Layton <jlayton@kernel.org>
+Subject: [RFC PATCH 0/8] fscrypt: avoid GFP_NOFS-unsafe key setup during transaction
+Date:   Sun, 23 Aug 2020 23:17:04 -0700
+Message-Id: <20200824061712.195654-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2a6b92f25325fa95164f418c669883f73a291b77.camel@kernel.org>
+Content-Transfer-Encoding: 8bit
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 08:58:35PM -0400, Jeff Layton wrote:
-> > > Ceph (and most other netfs') will need to pre-create a crypto context
-> > > when creating a new inode as we'll need to encrypt some things before we
-> > > have an inode. This patchset stores contexts in an xattr, but that's
-> > > probably not ideal for the final implementation [1].
-> > 
-> > Coincidentally, I've currently working on solving a similar problem.  On ext4,
-> > the inode number can't be assigned, and the encryption xattr can't be set, until
-> > the jbd2 transaction which creates the inode.  Also, if the new inode is a
-> > symlink, then fscrypt_encrypt_symlink() has to be called during the transaction.
-> > Together, these imply that fscrypt_get_encryption_info() has to be called during
-> > the transaction.
-> > 
-> 
-> Yes, similar problem. I started looking at symlinks today, and got a
-> little ways into a patchset to refactor some fscrypt code to handle
-> them, but I don't think it's quite right yet. A more general solution
-> would be nice.
-> 
-> > That's what we do, currently.  However, it's technically wrong and can deadlock,
-> > since fscrypt_get_encryption_info() isn't GFP_NOFS-safe (and it can't be).
-> > 
-> > f2fs appears to have a similar problem, though I'm still investigating.
-> > 
-> > To fix this, I'm planning to add new functions:
-> > 
-> >    - fscrypt_prepare_new_inode() will set up the fscrypt_info for a new
-> >      'struct inode' which hasn't necessarily had an inode number assigned yet.
-> >      It won't set the encryption xattr yet.
-> > 
-> 
-> I more or less have that in 02/14, I think, but if you have something
-> else in mind, I'm happy to follow suit.
-[...]
-> > > Symlink handling in fscrypt will also need to be refactored a bit, as we
-> > > won't have an inode before we'll need to encrypt its contents.
-> > 
-> > Will there be an in-memory inode allocated yet (a 'struct inode'), just with no
-> > inode number assigned yet?  If so, my work-in-progress patchset I mentioned
-> > earlier should be sufficient to address this.  The order would be:
-> > 
-> > 	1. fscrypt_prepare_new_inode()
-> > 	2. fscrypt_encrypt_symlink()
-> > 	3. Assign inode number
-> > 
-> > 
-> > Or does ceph not have a 'struct inode' at all until step (3)?
-> 
-> No, generally ceph doesn't create an inode until the reply comes in. I
-> think we'll need to be able to create a context and encrypt the symlink
-> before we issue the call to the server. I started hacking at the fscrypt
-> code for this today, but I didn't get very far.
-> 
-> FWIW, ceph is a bit of an odd netfs protocol in that there is a standard
-> "trace" that holds info about dentries and inodes that are created or
-> modified as a result of an operation. Most of the dentry/inode cache
-> manipulation is done at that point, which is done as part of the reply
-> processing.
+This series fixes some deadlocks which are theoretically possible due to
+fscrypt_get_encryption_info() being GFP_NOFS-unsafe, and thus not safe
+to be called from within an ext4 transaction or under f2fs_lock_op().
 
-Your patch "fscrypt: add fscrypt_new_context_from_parent" takes in a directory
-and generates an fscrypt_context (a.k.a. an encryption xattr) for a new file
-that will be created in that directory.
+The problem is solved by new helper functions which allow setting up the
+key for new inodes earlier.  Patch 1 adds these helper functions.  Also
+see that patch for a more detailed description of this problem.
 
-fscrypt_prepare_new_inode() from my work-in-progress patches would do a bit more
-than that.  It would actually set up a "struct fscrypt_info" for a new inode.
-That includes the encryption key and all information needed to build the
-fscrypt_context.  So, afterwards it will be possible to call
-fscrypt_encrypt_symlink() before the fscrypt_context is "saved to disk".
-IIUC, that's part of what ceph will need.
+Patches 2-6 then convert ext4, f2fs, and ubifs to use these new helpers.
 
-The catch is that there will still have to be a 'struct inode' to associate the
-'struct fscrypt_info' with.  It won't have to have ->i_ino set yet, but some
-other fields (at least ->i_mode and ->i_sb) will have to be set, since lots of
-code in fs/crypto/ uses those fields.
+Patch 7-8 then clean up a few things afterwards.
 
-I think it would be possible to refactor things to make 'struct fscrypt_info'
-more separate from 'struct inode', so that filesystems could create a
-'struct fscrypt_info' that isn't associated with an inode yet, then encrypt a
-symlink target using it (not caching it in ->i_link as we currently do).
+Coincidentally, this also solves some of the ordering problems that
+ceph fscrypt support will have.  For more details about this, see the
+discussion on Jeff Layton's RFC patchset for ceph fscrypt support
+(https://lkml.kernel.org/linux-fscrypt/20200821182813.52570-1-jlayton@kernel.org/T/#u)
+However, fscrypt_prepare_new_inode() still requires that the new
+'struct inode' exist already, so it might not be enough for ceph yet.
 
-However, it would require a lot of changes.
+This patchset applies to v5.9-rc2.
 
-So I'm wondering if it would be easier to instead change ceph to create and
-start initializing the 'struct inode' earlier.  It doesn't have to have an inode
-number assigned or be added to the inode cache yet; it just needs to be
-allocated in memory and some basic fields need to be initialized.  In theory
-it's possible, right?  I'd expect that local filesystems aren't even that much
-different, in principle; they start initializing a new 'struct inode' in memory
-first, and only later do they *really* create the inode by allocating an inode
-number and saving the changes to disk.
+Eric Biggers (8):
+  fscrypt: add fscrypt_prepare_new_inode() and fscrypt_set_context()
+  ext4: factor out ext4_xattr_credits_for_new_inode()
+  ext4: remove some #ifdefs in ext4_xattr_credits_for_new_inode()
+  ext4: use fscrypt_prepare_new_inode() and fscrypt_set_context()
+  f2fs: use fscrypt_prepare_new_inode() and fscrypt_set_context()
+  ubifs: use fscrypt_prepare_new_inode() and fscrypt_set_context()
+  fscrypt: remove fscrypt_inherit_context()
+  fscrypt: stop pretending that key setup is nofs-safe
 
-- Eric
+ fs/crypto/fscrypt_private.h |   3 +
+ fs/crypto/hooks.c           |  10 +-
+ fs/crypto/inline_crypt.c    |   7 +-
+ fs/crypto/keysetup.c        | 190 ++++++++++++++++++++++++++++--------
+ fs/crypto/keysetup_v1.c     |   8 +-
+ fs/crypto/policy.c          |  64 +++++++-----
+ fs/ext4/ialloc.c            | 118 +++++++++++-----------
+ fs/f2fs/dir.c               |   2 +-
+ fs/f2fs/f2fs.h              |  16 ---
+ fs/f2fs/namei.c             |   7 +-
+ fs/ubifs/dir.c              |  26 ++---
+ include/linux/fscrypt.h     |  18 +++-
+ 12 files changed, 293 insertions(+), 176 deletions(-)
+
+-- 
+2.28.0
+
