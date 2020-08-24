@@ -2,35 +2,35 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BD8724F270
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 24 Aug 2020 08:18:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F37ED24F26F
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 24 Aug 2020 08:18:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726026AbgHXGSf (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        id S1726347AbgHXGSf (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
         Mon, 24 Aug 2020 02:18:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49984 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:49986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726086AbgHXGS3 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 24 Aug 2020 02:18:29 -0400
+        id S1726075AbgHXGS2 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 24 Aug 2020 02:18:28 -0400
 Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 446D122B43;
+        by mail.kernel.org (Postfix) with ESMTPSA id 9733422BEA;
         Mon, 24 Aug 2020 06:18:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1598249900;
-        bh=FMdqhGKiPJuHGox4c9HjS2vaN3+8vR0i3HMKgJxF+vQ=;
+        bh=FIdPAQ4uVgqepfVvwpPtlAMJGJ/BCwZf2dDwk5M0shA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SQyQZQJniVjChBFXxR3bF0x16R3eYZIA7rLFQeyDxK8kI1KwERQ2Wj5lm2hjVxMmg
-         3Nxe/eWfi8Gq+7jcCSMCpgVFWl4M/qnEc4H3H+EjikdTyTQ7njVV+jR+9X8cw/bdtG
-         QW0t7i1axoHJILN6yvBCn6ZUt3hNXnc1AUNSCwU0=
+        b=aOFOzAVN6aex+LS5Y2deYUb9Qjxp+H46wBD4Q4HDvUhaKg92JKU/CLVURb4LyzBUw
+         2+WvbtU7sO6GQxDGsaEnuYSknW0lS3fpbkqF4Evz/SyGisvOuCd6oEkWg/7aYH/ioI
+         8+eqiG/nQFxpH2RSz/7EstoUxgliPnfNi17KeKtQ=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-fscrypt@vger.kernel.org
 Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
         linux-mtd@lists.infradead.org, ceph-devel@vger.kernel.org,
         Jeff Layton <jlayton@kernel.org>
-Subject: [RFC PATCH 7/8] fscrypt: remove fscrypt_inherit_context()
-Date:   Sun, 23 Aug 2020 23:17:11 -0700
-Message-Id: <20200824061712.195654-8-ebiggers@kernel.org>
+Subject: [RFC PATCH 8/8] fscrypt: stop pretending that key setup is nofs-safe
+Date:   Sun, 23 Aug 2020 23:17:12 -0700
+Message-Id: <20200824061712.195654-9-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200824061712.195654-1-ebiggers@kernel.org>
 References: <20200824061712.195654-1-ebiggers@kernel.org>
@@ -43,117 +43,117 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Now that all filesystems have been converted to use
-fscrypt_prepare_new_inode() and fscrypt_set_context(),
-fscrypt_inherit_context() is no longer used.  So remove it.
+fscrypt_get_encryption_info() has never actually been safe to call in a
+context that needs GFP_NOFS, since it calls crypto_alloc_skcipher().
 
-Also change __fscrypt_encrypt_symlink() to no longer set up the inode's
-key, since it's guaranteed to be set up already now that all filesystems
-have been converted to fscrypt_prepare_new_inode().
+crypto_alloc_skcipher() isn't GFP_NOFS-safe, even if called under
+memalloc_nofs_save().  This is because it may load kernel modules, and
+also because it internally takes crypto_alg_sem.  Other tasks can do
+GFP_KERNEL allocations while holding crypto_alg_sem for write.
+
+The use of fscrypt_init_mutex isn't GFP_NOFS-safe either.
+
+So, stop pretending that fscrypt_get_encryption_info() is nofs-safe.
+I.e., when it allocates memory, just use GFP_KERNEL instead of GFP_NOFS.
+
+Note, another reason to do this is that GFP_NOFS is deprecated in favor
+of using memalloc_nofs_save() in the proper places.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/crypto/hooks.c       | 10 +++++++---
- fs/crypto/policy.c      | 37 -------------------------------------
- include/linux/fscrypt.h |  9 ---------
- 3 files changed, 7 insertions(+), 49 deletions(-)
+ fs/crypto/inline_crypt.c | 7 ++-----
+ fs/crypto/keysetup.c     | 2 +-
+ fs/crypto/keysetup_v1.c  | 8 ++++----
+ 3 files changed, 7 insertions(+), 10 deletions(-)
 
-diff --git a/fs/crypto/hooks.c b/fs/crypto/hooks.c
-index 09fb8aa0f2e93..b69cd29a01a2f 100644
---- a/fs/crypto/hooks.c
-+++ b/fs/crypto/hooks.c
-@@ -217,9 +217,13 @@ int __fscrypt_encrypt_symlink(struct inode *inode, const char *target,
- 	struct fscrypt_symlink_data *sd;
- 	unsigned int ciphertext_len;
+diff --git a/fs/crypto/inline_crypt.c b/fs/crypto/inline_crypt.c
+index faa25541ccb68..89bffa82ed74a 100644
+--- a/fs/crypto/inline_crypt.c
++++ b/fs/crypto/inline_crypt.c
+@@ -106,7 +106,7 @@ int fscrypt_select_encryption_impl(struct fscrypt_info *ci)
+ 	crypto_cfg.data_unit_size = sb->s_blocksize;
+ 	crypto_cfg.dun_bytes = fscrypt_get_dun_bytes(ci);
+ 	num_devs = fscrypt_get_num_devices(sb);
+-	devs = kmalloc_array(num_devs, sizeof(*devs), GFP_NOFS);
++	devs = kmalloc_array(num_devs, sizeof(*devs), GFP_KERNEL);
+ 	if (!devs)
+ 		return -ENOMEM;
+ 	fscrypt_get_devices(sb, num_devs, devs);
+@@ -135,9 +135,8 @@ int fscrypt_prepare_inline_crypt_key(struct fscrypt_prepared_key *prep_key,
+ 	struct fscrypt_blk_crypto_key *blk_key;
+ 	int err;
+ 	int i;
+-	unsigned int flags;
  
--	err = fscrypt_require_key(inode);
--	if (err)
--		return err;
-+	/*
-+	 * fscrypt_prepare_new_inode() should have already set up the inode's
-+	 * encryption key.  We don't wait until now to do it, since we may be in
-+	 * a filesystem transaction now.
-+	 */
-+	if (WARN_ON_ONCE(!fscrypt_has_encryption_key(inode)))
-+		return -ENOKEY;
+-	blk_key = kzalloc(struct_size(blk_key, devs, num_devs), GFP_NOFS);
++	blk_key = kzalloc(struct_size(blk_key, devs, num_devs), GFP_KERNEL);
+ 	if (!blk_key)
+ 		return -ENOMEM;
  
- 	if (disk_link->name) {
- 		/* filesystem-provided buffer */
-diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
-index fbe4933206469..2220ef48d5846 100644
---- a/fs/crypto/policy.c
-+++ b/fs/crypto/policy.c
-@@ -625,43 +625,6 @@ int fscrypt_has_permitted_context(struct inode *parent, struct inode *child)
- }
- EXPORT_SYMBOL(fscrypt_has_permitted_context);
+@@ -166,10 +165,8 @@ int fscrypt_prepare_inline_crypt_key(struct fscrypt_prepared_key *prep_key,
+ 		}
+ 		queue_refs++;
  
--/**
-- * fscrypt_inherit_context() - Sets a child context from its parent
-- * @parent: Parent inode from which the context is inherited.
-- * @child:  Child inode that inherits the context from @parent.
-- * @fs_data:  private data given by FS.
-- * @preload:  preload child i_crypt_info if true
-- *
-- * Return: 0 on success, -errno on failure
-- */
--int fscrypt_inherit_context(struct inode *parent, struct inode *child,
--						void *fs_data, bool preload)
--{
--	u8 nonce[FSCRYPT_FILE_NONCE_SIZE];
--	union fscrypt_context ctx;
--	int ctxsize;
--	struct fscrypt_info *ci;
--	int res;
--
--	res = fscrypt_get_encryption_info(parent);
--	if (res < 0)
--		return res;
--
--	ci = fscrypt_get_info(parent);
--	if (ci == NULL)
--		return -ENOKEY;
--
--	get_random_bytes(nonce, FSCRYPT_FILE_NONCE_SIZE);
--	ctxsize = fscrypt_new_context_from_policy(&ctx, &ci->ci_policy, nonce);
--
--	BUILD_BUG_ON(sizeof(ctx) != FSCRYPT_SET_CONTEXT_MAX_SIZE);
--	res = parent->i_sb->s_cop->set_context(child, &ctx, ctxsize, fs_data);
--	if (res)
--		return res;
--	return preload ? fscrypt_get_encryption_info(child): 0;
--}
--EXPORT_SYMBOL(fscrypt_inherit_context);
--
- /**
-  * fscrypt_set_context() - Set the fscrypt context of a new inode
-  * @inode: A new inode
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index 726131dfa0a9b..4ee636e9e1fca 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -156,8 +156,6 @@ int fscrypt_ioctl_get_policy(struct file *filp, void __user *arg);
- int fscrypt_ioctl_get_policy_ex(struct file *filp, void __user *arg);
- int fscrypt_ioctl_get_nonce(struct file *filp, void __user *arg);
- int fscrypt_has_permitted_context(struct inode *parent, struct inode *child);
--int fscrypt_inherit_context(struct inode *parent, struct inode *child,
--			    void *fs_data, bool preload);
- int fscrypt_set_context(struct inode *inode, void *fs_data);
+-		flags = memalloc_nofs_save();
+ 		err = blk_crypto_start_using_key(&blk_key->base,
+ 						 blk_key->devs[i]);
+-		memalloc_nofs_restore(flags);
+ 		if (err) {
+ 			fscrypt_err(inode,
+ 				    "error %d starting to use blk-crypto", err);
+diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
+index 6ac816d3e8478..ad64525ec6800 100644
+--- a/fs/crypto/keysetup.c
++++ b/fs/crypto/keysetup.c
+@@ -477,7 +477,7 @@ fscrypt_setup_encryption_info(struct inode *inode,
+ 	struct key *master_key = NULL;
+ 	int res;
  
- struct fscrypt_dummy_context {
-@@ -343,13 +341,6 @@ static inline int fscrypt_has_permitted_context(struct inode *parent,
- 	return 0;
- }
+-	crypt_info = kmem_cache_zalloc(fscrypt_info_cachep, GFP_NOFS);
++	crypt_info = kmem_cache_zalloc(fscrypt_info_cachep, GFP_KERNEL);
+ 	if (!crypt_info)
+ 		return -ENOMEM;
  
--static inline int fscrypt_inherit_context(struct inode *parent,
--					  struct inode *child,
--					  void *fs_data, bool preload)
--{
--	return -EOPNOTSUPP;
--}
--
- static inline int fscrypt_set_context(struct inode *inode, void *fs_data)
- {
- 	return -EOPNOTSUPP;
+diff --git a/fs/crypto/keysetup_v1.c b/fs/crypto/keysetup_v1.c
+index a3cb52572b05c..2762c53504323 100644
+--- a/fs/crypto/keysetup_v1.c
++++ b/fs/crypto/keysetup_v1.c
+@@ -60,7 +60,7 @@ static int derive_key_aes(const u8 *master_key,
+ 		goto out;
+ 	}
+ 	crypto_skcipher_set_flags(tfm, CRYPTO_TFM_REQ_FORBID_WEAK_KEYS);
+-	req = skcipher_request_alloc(tfm, GFP_NOFS);
++	req = skcipher_request_alloc(tfm, GFP_KERNEL);
+ 	if (!req) {
+ 		res = -ENOMEM;
+ 		goto out;
+@@ -99,7 +99,7 @@ find_and_lock_process_key(const char *prefix,
+ 	const struct user_key_payload *ukp;
+ 	const struct fscrypt_key *payload;
+ 
+-	description = kasprintf(GFP_NOFS, "%s%*phN", prefix,
++	description = kasprintf(GFP_KERNEL, "%s%*phN", prefix,
+ 				FSCRYPT_KEY_DESCRIPTOR_SIZE, descriptor);
+ 	if (!description)
+ 		return ERR_PTR(-ENOMEM);
+@@ -228,7 +228,7 @@ fscrypt_get_direct_key(const struct fscrypt_info *ci, const u8 *raw_key)
+ 		return dk;
+ 
+ 	/* Nope, allocate one. */
+-	dk = kzalloc(sizeof(*dk), GFP_NOFS);
++	dk = kzalloc(sizeof(*dk), GFP_KERNEL);
+ 	if (!dk)
+ 		return ERR_PTR(-ENOMEM);
+ 	refcount_set(&dk->dk_refcount, 1);
+@@ -272,7 +272,7 @@ static int setup_v1_file_key_derived(struct fscrypt_info *ci,
+ 	 * This cannot be a stack buffer because it will be passed to the
+ 	 * scatterlist crypto API during derive_key_aes().
+ 	 */
+-	derived_key = kmalloc(ci->ci_mode->keysize, GFP_NOFS);
++	derived_key = kmalloc(ci->ci_mode->keysize, GFP_KERNEL);
+ 	if (!derived_key)
+ 		return -ENOMEM;
+ 
 -- 
 2.28.0
 
