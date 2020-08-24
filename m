@@ -2,149 +2,86 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 942B9250409
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 24 Aug 2020 18:56:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A1D125074E
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 24 Aug 2020 20:21:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726086AbgHXQ4N (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 24 Aug 2020 12:56:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45348 "EHLO mail.kernel.org"
+        id S1726853AbgHXSVR (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 24 Aug 2020 14:21:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725958AbgHXQz4 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 24 Aug 2020 12:55:56 -0400
+        id S1726222AbgHXSVQ (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 24 Aug 2020 14:21:16 -0400
 Received: from gmail.com (unknown [104.132.1.76])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 84681204EA;
-        Mon, 24 Aug 2020 16:55:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 96FA820738;
+        Mon, 24 Aug 2020 18:21:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598288155;
-        bh=aMbICDNHnwTX/uRaBB+BiMukFx/cEQBInZy53eJJDA8=;
+        s=default; t=1598293275;
+        bh=BPd9FqfRK57acJvZfHNixoCcKstFE02QTmcYRlfCq7s=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RYhLClYD2jP45sikEXOWtGu27icBwHXxALcrQmDrW6hrpKpWzS5V3TByov3GicMG4
-         G9TUDx5SrtM+U7IrCv9dt99AXiJn05eMvQiaEg9YdcJPp7EV05RvN73puUUaVxFvJd
-         p7kuQ+h8wH+MM/7QRyESwapW92ADTN6JjaUBpxiw=
-Date:   Mon, 24 Aug 2020 09:55:38 -0700
+        b=gSO2JDEBH2du9sVIqRO/ccvceJM7cC9d3CT0/1d7x0lyj5q9qdZRvB77EudGgmLBP
+         DDXy3fjKwWLf31wIq1ym4KVx7/HdPpObHPD4gbEQTGggArK1CPr0EOlxDk/XQs4GGp
+         MxEUAJwlx/5dWcs35/gGQek/09sGDl96J76TPivQ=
+Date:   Mon, 24 Aug 2020 11:21:14 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     Jeff Layton <jlayton@kernel.org>
-Cc:     ceph-devel@vger.kernel.org, linux-fscrypt@vger.kernel.org
-Subject: Re: [RFC PATCH 00/14] ceph+fscrypt: together at last (contexts and
- filenames)
-Message-ID: <20200824165538.GA1650861@gmail.com>
-References: <20200821182813.52570-1-jlayton@kernel.org>
- <20200822002301.GA834@sol.localdomain>
- <2a6b92f25325fa95164f418c669883f73a291b77.camel@kernel.org>
- <20200822023440.GD834@sol.localdomain>
- <a33884434b772ad6d4393a591ff80bf0beb863d8.camel@kernel.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, ceph-devel@vger.kernel.org
+Subject: Re: [RFC PATCH 1/8] fscrypt: add fscrypt_prepare_new_inode() and
+ fscrypt_set_context()
+Message-ID: <20200824182114.GB1650861@gmail.com>
+References: <20200824061712.195654-1-ebiggers@kernel.org>
+ <20200824061712.195654-2-ebiggers@kernel.org>
+ <0cf5638796e7cddacc38dcd1e967368b99f0069a.camel@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a33884434b772ad6d4393a591ff80bf0beb863d8.camel@kernel.org>
+In-Reply-To: <0cf5638796e7cddacc38dcd1e967368b99f0069a.camel@kernel.org>
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 08:03:35AM -0400, Jeff Layton wrote:
-> On Fri, 2020-08-21 at 19:34 -0700, Eric Biggers wrote:
-> > On Fri, Aug 21, 2020 at 08:58:35PM -0400, Jeff Layton wrote:
-> > > > > Ceph (and most other netfs') will need to pre-create a crypto context
-> > > > > when creating a new inode as we'll need to encrypt some things before we
-> > > > > have an inode. This patchset stores contexts in an xattr, but that's
-> > > > > probably not ideal for the final implementation [1].
-> > > > 
-> > > > Coincidentally, I've currently working on solving a similar problem.  On ext4,
-> > > > the inode number can't be assigned, and the encryption xattr can't be set, until
-> > > > the jbd2 transaction which creates the inode.  Also, if the new inode is a
-> > > > symlink, then fscrypt_encrypt_symlink() has to be called during the transaction.
-> > > > Together, these imply that fscrypt_get_encryption_info() has to be called during
-> > > > the transaction.
-> > > > 
-> > > 
-> > > Yes, similar problem. I started looking at symlinks today, and got a
-> > > little ways into a patchset to refactor some fscrypt code to handle
-> > > them, but I don't think it's quite right yet. A more general solution
-> > > would be nice.
-> > > 
-> > > > That's what we do, currently.  However, it's technically wrong and can deadlock,
-> > > > since fscrypt_get_encryption_info() isn't GFP_NOFS-safe (and it can't be).
-> > > > 
-> > > > f2fs appears to have a similar problem, though I'm still investigating.
-> > > > 
-> > > > To fix this, I'm planning to add new functions:
-> > > > 
-> > > >    - fscrypt_prepare_new_inode() will set up the fscrypt_info for a new
-> > > >      'struct inode' which hasn't necessarily had an inode number assigned yet.
-> > > >      It won't set the encryption xattr yet.
-> > > > 
-> > > 
-> > > I more or less have that in 02/14, I think, but if you have something
-> > > else in mind, I'm happy to follow suit.
-> > [...]
-> > > > > Symlink handling in fscrypt will also need to be refactored a bit, as we
-> > > > > won't have an inode before we'll need to encrypt its contents.
-> > > > 
-> > > > Will there be an in-memory inode allocated yet (a 'struct inode'), just with no
-> > > > inode number assigned yet?  If so, my work-in-progress patchset I mentioned
-> > > > earlier should be sufficient to address this.  The order would be:
-> > > > 
-> > > > 	1. fscrypt_prepare_new_inode()
-> > > > 	2. fscrypt_encrypt_symlink()
-> > > > 	3. Assign inode number
-> > > > 
-> > > > 
-> > > > Or does ceph not have a 'struct inode' at all until step (3)?
-> > > 
-> > > No, generally ceph doesn't create an inode until the reply comes in. I
-> > > think we'll need to be able to create a context and encrypt the symlink
-> > > before we issue the call to the server. I started hacking at the fscrypt
-> > > code for this today, but I didn't get very far.
-> > > 
-> > > FWIW, ceph is a bit of an odd netfs protocol in that there is a standard
-> > > "trace" that holds info about dentries and inodes that are created or
-> > > modified as a result of an operation. Most of the dentry/inode cache
-> > > manipulation is done at that point, which is done as part of the reply
-> > > processing.
-> > 
-> > Your patch "fscrypt: add fscrypt_new_context_from_parent" takes in a directory
-> > and generates an fscrypt_context (a.k.a. an encryption xattr) for a new file
-> > that will be created in that directory.
-> > 
-> > fscrypt_prepare_new_inode() from my work-in-progress patches would do a bit more
-> > than that.  It would actually set up a "struct fscrypt_info" for a new inode.
-> > That includes the encryption key and all information needed to build the
-> > fscrypt_context.  So, afterwards it will be possible to call
-> > fscrypt_encrypt_symlink() before the fscrypt_context is "saved to disk".
-> > IIUC, that's part of what ceph will need.
-> > 
-> > The catch is that there will still have to be a 'struct inode' to associate the
-> > 'struct fscrypt_info' with.  It won't have to have ->i_ino set yet, but some
-> > other fields (at least ->i_mode and ->i_sb) will have to be set, since lots of
-> > code in fs/crypto/ uses those fields.
-> > 
-> > I think it would be possible to refactor things to make 'struct fscrypt_info'
-> > more separate from 'struct inode', so that filesystems could create a
-> > 'struct fscrypt_info' that isn't associated with an inode yet, then encrypt a
-> > symlink target using it (not caching it in ->i_link as we currently do).
-> > 
-> > However, it would require a lot of changes.
-> > 
-> > So I'm wondering if it would be easier to instead change ceph to create and
-> > start initializing the 'struct inode' earlier.  It doesn't have to have an inode
-> > number assigned or be added to the inode cache yet; it just needs to be
-> > allocated in memory and some basic fields need to be initialized.  In theory
-> > it's possible, right?  I'd expect that local filesystems aren't even that much
-> > different, in principle; they start initializing a new 'struct inode' in memory
-> > first, and only later do they *really* create the inode by allocating an inode
-> > number and saving the changes to disk.
-> > 
+On Mon, Aug 24, 2020 at 12:48:48PM -0400, Jeff Layton wrote:
+> > +void fscrypt_hash_inode_number(struct fscrypt_info *ci,
+> > +			       const struct fscrypt_master_key *mk)
+> > +{
+> > +	WARN_ON(ci->ci_inode->i_ino == 0);
+> > +	WARN_ON(!mk->mk_ino_hash_key_initialized);
+> > +
+> > +	ci->ci_hashed_ino = (u32)siphash_1u64(ci->ci_inode->i_ino,
+> > +					      &mk->mk_ino_hash_key);
 > 
-> It's probably possible. I think we'd just need to attach the nascent
-> inode to the MDS request tracking structure, and convert that from using
-> iget5_locked to inode_insert5.
-> 
-> Would we need to do this for all inode types or just symlinks?
+> i_ino is an unsigned long. Will this produce a consistent results on
+> arches with 32 and 64 bit long values? I think it'd be nice to ensure
+> that we can access an encrypted directory created on a 32-bit host from
+> (e.g.) a 64-bit host.
 
-It would be all inodes, since fscrypt_prepare_new_inode() will handle all types
-of inodes.
+The result is the same regardless of word size and endianness.
+siphash_1u64(v, k) is equivalent to:
+
+	__le64 x = cpu_to_le64(v);
+	siphash(&x, 8, k);
+
+> It may be better to base this on something besides i_ino
+
+This code that hashes the inode number is only used when userspace used
+FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32 for the directory.  IV_INO_LBLK_32 modifies
+the encryption to be optimized for eMMC inline encryption hardware.  For more
+details, see commit e3b1078bedd3 which added this feature.
+
+We actually could have hashed the file nonce instead of the inode number.  But I
+wanted to make the eMMC-optimized format similar to IV_INO_LBLK_64, which is the
+format optimized for UFS inline encryption hardware.
+
+Both of these flags have very specific use cases; they make it feasible to use
+inline encryption hardware
+(https://www.kernel.org/doc/html/latest/block/inline-encryption.html)
+that only supports a small number of keyslots and that limits the IV length.
+
+You don't need to worry about these flags at all for ceph, since there won't be
+any use case to use them on ceph, and ceph won't be declaring support for them.
 
 - Eric
