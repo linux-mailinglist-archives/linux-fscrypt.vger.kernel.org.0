@@ -2,71 +2,110 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 400922597D5
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  1 Sep 2020 18:20:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF0A125DF5A
+	for <lists+linux-fscrypt@lfdr.de>; Fri,  4 Sep 2020 18:07:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728158AbgIAQTz (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 1 Sep 2020 12:19:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39810 "EHLO mail.kernel.org"
+        id S1726927AbgIDQFn (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 4 Sep 2020 12:05:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51262 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726933AbgIAQTp (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 1 Sep 2020 12:19:45 -0400
-Received: from gmail.com (unknown [104.132.1.76])
+        id S1726220AbgIDQFm (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Fri, 4 Sep 2020 12:05:42 -0400
+Received: from tleilax.com (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 720D32065F;
-        Tue,  1 Sep 2020 16:19:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 951282074D;
+        Fri,  4 Sep 2020 16:05:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598977185;
-        bh=5fmv3liAy2AA2zgQtwuQUk/DiRgWN0KqifzEK4zr+cY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kK8k1jG55cZ/1Vf0304O9BkuyvSq/ZrmpTTlJvvpNap7P0ezzzfKPJTEemKuoWOmm
-         BlqkokSMnN7bTbceqls+ugRY73EeInvcZE0cW6A54DKnFufrVSDatA2T2a5rjkPjLw
-         go2Rg5c2t5EMIBrvfrXuYY6YA8n64tUNgugXtQtA=
-Date:   Tue, 1 Sep 2020 09:19:44 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH 0/4] e2fsprogs: fix and document the stable_inodes feature
-Message-ID: <20200901161944.GC669796@gmail.com>
-References: <20200401203239.163679-1-ebiggers@kernel.org>
- <20200410152406.GO45598@mit.edu>
- <20200507181847.GD236103@gmail.com>
- <20200615222240.GD85413@gmail.com>
- <20200727164555.GF1138@sol.localdomain>
+        s=default; t=1599235541;
+        bh=6KszTCYTryzCZ4YNK73zckrQJTBvMnGBEebLXoJ1vZ0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=m81eW4FHYAREaHjv4JHfVRnaw6xmPPfIC03H2kUReq4sdKya8JRkg44Xgeii3kbKd
+         RU6COwZvdA+gTshOUcQjRLwjqBF62Huy459ojjHXnCb/ohSlDNk6AaLXuQmflCYLWy
+         ZLNQfkidNlHjPyTe55YMc/Aciz5ON6cvZBNS+WEs=
+From:   Jeff Layton <jlayton@kernel.org>
+To:     ceph-devel@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        ebiggers@kernel.org
+Subject: [RFC PATCH v2 00/18] ceph+fscrypt: context, filename and symlink support
+Date:   Fri,  4 Sep 2020 12:05:19 -0400
+Message-Id: <20200904160537.76663-1-jlayton@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200727164555.GF1138@sol.localdomain>
+Content-Transfer-Encoding: 8bit
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 09:45:55AM -0700, Eric Biggers wrote:
-> On Mon, Jun 15, 2020 at 03:22:40PM -0700, Eric Biggers wrote:
-> > On Thu, May 07, 2020 at 11:18:47AM -0700, Eric Biggers wrote:
-> > > On Fri, Apr 10, 2020 at 11:24:06AM -0400, Theodore Y. Ts'o wrote:
-> > > > On Wed, Apr 01, 2020 at 01:32:35PM -0700, Eric Biggers wrote:
-> > > > > Fix tune2fs to not allow cases where IV_INO_LBLK_64-encrypted files
-> > > > > (which can exist if the stable_inodes feature is set) could be broken:
-> > > > > 
-> > > > > - Changing the filesystem's UUID
-> > > > > - Clearing the stable_inodes feature
-> > > > > 
-> > > > > Also document the stable_inodes feature in the appropriate places.
-> > > > > 
-> > > > > Eric Biggers (4):
-> > > > >   tune2fs: prevent changing UUID of fs with stable_inodes feature
-> > > > >   tune2fs: prevent stable_inodes feature from being cleared
-> > > > >   ext4.5: document the stable_inodes feature
-> > > > >   tune2fs.8: document the stable_inodes feature
-> > > > 
-> > > > Thanks, I've applied this patch series.
-> > > > 
-> > > 
-> > > Ted, I still don't see this in git.  Are you planning to push it out?
-> 
-> Ping?
+This is a second posting of the ceph+fscrypt integration work that I've
+been experimenting with. The main change with this patch is that I've
+based this on top of Eric's fscrypt-pending set. That necessitated a
+change to allocate inodes much earlier than we have traditionally, prior
+to sending an RPC instead of waiting on the reply.
 
-Ping.
+Note that this just covers the crypto contexts and filenames. I've also
+added a patch to encrypt symlink contents as well, but it doesn't seem to
+be working correctly.
+
+The file contents work is next, but I'm sort of waiting until some work
+to the fscache infrastructure is settled. It would be nice if fscache
+also stored encrypted file contents when we plumb this in.
+
+Jeff Layton (18):
+  vfs: export new_inode_pseudo
+  fscrypt: drop unused inode argument from fscrypt_fname_alloc_buffer
+  fscrypt: export fscrypt_d_revalidate
+  fscrypt: add fscrypt_new_context_from_inode
+  fscrypt: don't balk when inode is already marked encrypted
+  fscrypt: move nokey_name conversion to separate function and export it
+  lib: lift fscrypt base64 conversion into lib/
+  ceph: add fscrypt ioctls
+  ceph: crypto context handling for ceph
+  ceph: preallocate inode for ops that may create one
+  ceph: add routine to create context prior to RPC
+  ceph: set S_ENCRYPTED bit if new inode has encryption.ctx xattr
+  ceph: make ceph_msdc_build_path use ref-walk
+  ceph: add encrypted fname handling to ceph_mdsc_build_path
+  ceph: make d_revalidate call fscrypt revalidator for encrypted
+    dentries
+  ceph: add support to readdir for encrypted filenames
+  ceph: add fscrypt support to ceph_fill_trace
+  ceph: create symlinks with encrypted and base64-encoded targets
+
+ fs/ceph/Makefile             |   1 +
+ fs/ceph/crypto.c             | 179 +++++++++++++++++++++++++++++
+ fs/ceph/crypto.h             |  83 ++++++++++++++
+ fs/ceph/dir.c                | 162 ++++++++++++++++++++------
+ fs/ceph/file.c               |  56 +++++----
+ fs/ceph/inode.c              | 213 ++++++++++++++++++++++++++++++-----
+ fs/ceph/ioctl.c              |  25 ++++
+ fs/ceph/mds_client.c         |  75 ++++++++----
+ fs/ceph/mds_client.h         |   1 +
+ fs/ceph/super.c              |  37 ++++++
+ fs/ceph/super.h              |  19 +++-
+ fs/ceph/xattr.c              |  32 ++++++
+ fs/crypto/Kconfig            |   1 +
+ fs/crypto/fname.c            | 139 ++++++++---------------
+ fs/crypto/hooks.c            |   2 +-
+ fs/crypto/keysetup.c         |   2 +-
+ fs/crypto/policy.c           |  20 ++++
+ fs/ext4/dir.c                |   2 +-
+ fs/ext4/namei.c              |   7 +-
+ fs/f2fs/dir.c                |   2 +-
+ fs/inode.c                   |   1 +
+ fs/ubifs/dir.c               |   2 +-
+ include/linux/base64_fname.h |  11 ++
+ include/linux/fscrypt.h      |  10 +-
+ lib/Kconfig                  |   3 +
+ lib/Makefile                 |   1 +
+ lib/base64_fname.c           |  71 ++++++++++++
+ 27 files changed, 943 insertions(+), 214 deletions(-)
+ create mode 100644 fs/ceph/crypto.c
+ create mode 100644 fs/ceph/crypto.h
+ create mode 100644 include/linux/base64_fname.h
+ create mode 100644 lib/base64_fname.c
+
+-- 
+2.26.2
+
