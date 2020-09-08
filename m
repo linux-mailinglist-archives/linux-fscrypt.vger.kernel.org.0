@@ -2,38 +2,39 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EAE226160C
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  8 Sep 2020 19:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98D802616C4
+	for <lists+linux-fscrypt@lfdr.de>; Tue,  8 Sep 2020 19:18:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731934AbgIHRAR (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 8 Sep 2020 13:00:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59098 "EHLO mail.kernel.org"
+        id S1731792AbgIHRSg (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 8 Sep 2020 13:18:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731846AbgIHQUH (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:20:07 -0400
+        id S1731746AbgIHQSD (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:18:03 -0400
 Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 698D221D47;
-        Tue,  8 Sep 2020 12:29:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3D6A322286;
+        Tue,  8 Sep 2020 12:54:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599568193;
-        bh=k2WCSGzu9o0YL2Fumrmv/f8wnwWybYCP9fQIMb0Uz6U=;
+        s=default; t=1599569676;
+        bh=qHsmub80VG9U4Q5DCqgTf92EnAVS6x/iPsVvMSuowDc=;
         h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=QtKYy7zaUFECccYNwXAXtOplQfSZjq8NB3pKfFKe47z/lTKzHxufee827EKNLCRz3
-         HWf9I5CStm0T3yCIFzStBaZn+5l1jCH5POAStn7QV681O8BYX8ZE43lgQByZ0FBMf6
-         jyflmYxfBEqi1ymlPqBOI+F1VvzkiyCZMbTkmKNs=
-Message-ID: <0e850768fe5e6cbf985dce5943dbccb1c8c777a8.camel@kernel.org>
-Subject: Re: [RFC PATCH v2 04/18] fscrypt: add fscrypt_new_context_from_inode
+        b=kLcTHSTJsgVnkEU6SCWDTpda+yCxf298ICsxvcnq5N1l2jBiJ8CwsQm3LPZ+jzTKk
+         2rS8i0qQ46sLpqNCdIGPYlZb7m0sHDnqhyI+kvRmxJ/f8GWkT6f6+qul5BSvjXiMg2
+         YUo8ZfQZBQ4y2G7NrMiuSXuBVwEsE1WPWkjY5vIU=
+Message-ID: <448f739e1a23a3a275f36b36043a79930727e3c0.camel@kernel.org>
+Subject: Re: [RFC PATCH v2 05/18] fscrypt: don't balk when inode is already
+ marked encrypted
 From:   Jeff Layton <jlayton@kernel.org>
 To:     Eric Biggers <ebiggers@kernel.org>
 Cc:     ceph-devel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-fscrypt@vger.kernel.org
-Date:   Tue, 08 Sep 2020 08:29:52 -0400
-In-Reply-To: <20200908034830.GE68127@sol.localdomain>
+Date:   Tue, 08 Sep 2020 08:54:35 -0400
+In-Reply-To: <20200908035233.GF68127@sol.localdomain>
 References: <20200904160537.76663-1-jlayton@kernel.org>
-         <20200904160537.76663-5-jlayton@kernel.org>
-         <20200908034830.GE68127@sol.localdomain>
+         <20200904160537.76663-6-jlayton@kernel.org>
+         <20200908035233.GF68127@sol.localdomain>
 Content-Type: text/plain; charset="UTF-8"
 User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
@@ -43,70 +44,43 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, 2020-09-07 at 20:48 -0700, Eric Biggers wrote:
-> On Fri, Sep 04, 2020 at 12:05:23PM -0400, Jeff Layton wrote:
-> > CephFS will need to be able to generate a context for a new "prepared"
-> > inode. Add a new routine for getting the context out of an in-core
-> > inode.
+On Mon, 2020-09-07 at 20:52 -0700, Eric Biggers wrote:
+> On Fri, Sep 04, 2020 at 12:05:24PM -0400, Jeff Layton wrote:
+> > Cephfs (currently) sets this flag early and only fetches the context
+> > later. Eventually we may not need this, but for now it prevents this
+> > warning from popping.
 > > 
 > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
 > > ---
-> >  fs/crypto/policy.c      | 20 ++++++++++++++++++++
-> >  include/linux/fscrypt.h |  1 +
-> >  2 files changed, 21 insertions(+)
+> >  fs/crypto/keysetup.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
 > > 
-> > diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
-> > index c56ad886f7d7..10eddd113a21 100644
-> > --- a/fs/crypto/policy.c
-> > +++ b/fs/crypto/policy.c
-> > @@ -670,6 +670,26 @@ int fscrypt_set_context(struct inode *inode, void *fs_data)
-> >  }
-> >  EXPORT_SYMBOL_GPL(fscrypt_set_context);
+> > diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
+> > index ad64525ec680..3b4ec16fc528 100644
+> > --- a/fs/crypto/keysetup.c
+> > +++ b/fs/crypto/keysetup.c
+> > @@ -567,7 +567,7 @@ int fscrypt_get_encryption_info(struct inode *inode)
+> >  		const union fscrypt_context *dummy_ctx =
+> >  			fscrypt_get_dummy_context(inode->i_sb);
 > >  
-> > +/**
-> > + * fscrypt_context_from_inode() - fetch the encryption context out of in-core inode
+> > -		if (IS_ENCRYPTED(inode) || !dummy_ctx) {
+> > +		if (!dummy_ctx) {
+> >  			fscrypt_warn(inode,
+> >  				     "Error %d getting encryption context",
+> >  				     res);
 > 
-> Comment doesn't match the function name.
+> This makes errors reading the encryption xattr of an encrypted inode be ignored
+> when the filesystem is mounted with test_dummy_encryption.  That's undesirable.
 > 
-> Also, the name isn't very clear.  How about calling this
-> fscrypt_context_for_new_inode()?
-> 
-> BTW, I might rename fscrypt_new_context_from_policy() to
-> fscrypt_context_from_policy() in my patchset.  Since it now makes the caller
-> provide the nonce, technically it's no longer limited to "new" contexts.
-> 
-> > + * @ctx: where context should be written
-> > + * @inode: inode from which to fetch context
-> > + *
-> > + * Given an in-core prepared, but not-necessarily fully-instantiated inode,
-> > + * generate an encryption context from its policy and write it to ctx.
-> 
-> Clarify what is meant by "prepared" (fscrypt_prepare_new_inode() was called)
-> vs. "instantiated".
-> 
-> > + *
-> > + * Returns size of the context.
-> > + */
-> > +int fscrypt_new_context_from_inode(union fscrypt_context *ctx, struct inode *inode)
-> > +{
-> > +	struct fscrypt_info *ci = inode->i_crypt_info;
-> > +
-> > +	BUILD_BUG_ON(sizeof(*ctx) != FSCRYPT_SET_CONTEXT_MAX_SIZE);
-> > +
-> > +	return fscrypt_new_context_from_policy(ctx, &ci->ci_policy, ci->ci_nonce);
-> > +}
-> > +EXPORT_SYMBOL_GPL(fscrypt_new_context_from_inode);
-> 
-> fscrypt_set_context() should be changed to call this, instead of duplicating the
-> same logic.  As part of that, the WARN_ON_ONCE(!ci) that's currently in
-> fscrypt_set_context() should go in here instead.
-> 
+> Isn't this change actually no longer needed, now that new inodes will use
+> fscrypt_prepare_new_inode() instead of fscrypt_get_encryption_info()?
 
-Note that we can't just move that WARN_ON_ONCE. If we do that, then
-fscrypt_set_context will dereference ci before that check can occur, so
-we'd be trading a warning and -ENOKEY for a NULL pointer dereference. I
-think we'll have to duplicate that in both functions.
+No. This is really for when we're reading in a new inode from the MDS.
+We can tell that there is a context present in some of those cases, but
+may not be able to read it yet. That said, it may be possible to pull in
+the context at the point where we set S_ENCRYPTED. I'll take a look.
 
+Thanks,
 -- 
 Jeff Layton <jlayton@kernel.org>
 
