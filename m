@@ -2,38 +2,39 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB1512614FF
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  8 Sep 2020 18:42:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93FF82615F4
+	for <lists+linux-fscrypt@lfdr.de>; Tue,  8 Sep 2020 18:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731983AbgIHQgp (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 8 Sep 2020 12:36:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33930 "EHLO mail.kernel.org"
+        id S1731840AbgIHQ6p (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 8 Sep 2020 12:58:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732020AbgIHQbi (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:31:38 -0400
+        id S1731848AbgIHQUH (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:20:07 -0400
 Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2522821532;
-        Tue,  8 Sep 2020 12:09:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D1FDB22224;
+        Tue,  8 Sep 2020 12:50:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599566955;
-        bh=zqEJfVUqeIO7gcyXpU/RQrWv768uPLWmdl436rYkjNc=;
+        s=default; t=1599569406;
+        bh=L/1KcuNfBToc/6pbLQgWvbQ3+WTJIAuKpXxm0KYE5ic=;
         h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=r9MkgzRhGCgNzfrsZE+kpQFUDyFuFOrz2OR0FWyHBwTO4LxMOkcSNzC3d7+5tPFiJ
-         1dy/zgm27I9gPVSxdDLb5x7mtq0x55XpOtkZQkWfXLkyILImR/J06QW8FDa4VegxBc
-         G9G5UKPR47OUmugugGbU3Y9WaSyowIwN9Wb6Dh+4=
-Message-ID: <b71271c9573032c74eca352fdf4a9db2d2fbec3e.camel@kernel.org>
-Subject: Re: [RFC PATCH v2 00/18] ceph+fscrypt: context, filename and
- symlink support
+        b=ZsHws3d2EiPSU5glotZhjtf3IoGWZ/7BRPyABfOV6JC2S3ocal4h/m/oX5PNNE6bp
+         h49jIh+rPmqDZC/vwUPNNZ6vIva/mBzwNnoFJIh1D7+RCRszRfxZ4KpAabIX/hyClY
+         VyT/Vc9H9ZLIl+MSZKp9/5OeBPT4WtFtmbr8MX0E=
+Message-ID: <a4b61098eaacca55e5f455b7c7df05dbc4839d3d.camel@kernel.org>
+Subject: Re: [RFC PATCH v2 06/18] fscrypt: move nokey_name conversion to
+ separate function and export it
 From:   Jeff Layton <jlayton@kernel.org>
 To:     Eric Biggers <ebiggers@kernel.org>
 Cc:     ceph-devel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-fscrypt@vger.kernel.org
-Date:   Tue, 08 Sep 2020 08:09:14 -0400
-In-Reply-To: <20200908055446.GP68127@sol.localdomain>
+Date:   Tue, 08 Sep 2020 08:50:04 -0400
+In-Reply-To: <20200908035522.GG68127@sol.localdomain>
 References: <20200904160537.76663-1-jlayton@kernel.org>
-         <20200908055446.GP68127@sol.localdomain>
+         <20200904160537.76663-7-jlayton@kernel.org>
+         <20200908035522.GG68127@sol.localdomain>
 Content-Type: text/plain; charset="UTF-8"
 User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
@@ -43,44 +44,86 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, 2020-09-07 at 22:54 -0700, Eric Biggers wrote:
-> On Fri, Sep 04, 2020 at 12:05:19PM -0400, Jeff Layton wrote:
-> > This is a second posting of the ceph+fscrypt integration work that I've
-> > been experimenting with. The main change with this patch is that I've
-> > based this on top of Eric's fscrypt-pending set. That necessitated a
-> > change to allocate inodes much earlier than we have traditionally, prior
-> > to sending an RPC instead of waiting on the reply.
+On Mon, 2020-09-07 at 20:55 -0700, Eric Biggers wrote:
+> On Fri, Sep 04, 2020 at 12:05:25PM -0400, Jeff Layton wrote:
+> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > ---
+> >  fs/crypto/fname.c       | 71 +++++++++++++++++++++++------------------
+> >  include/linux/fscrypt.h |  3 ++
+> >  2 files changed, 43 insertions(+), 31 deletions(-)
+> > 
+> > diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
+> > index 9440a44e24ac..09f09def87fc 100644
+> > --- a/fs/crypto/fname.c
+> > +++ b/fs/crypto/fname.c
+> > @@ -300,6 +300,45 @@ void fscrypt_fname_free_buffer(struct fscrypt_str *crypto_str)
+> >  }
+> >  EXPORT_SYMBOL(fscrypt_fname_free_buffer);
+> >  
+> > +void fscrypt_encode_nokey_name(u32 hash, u32 minor_hash,
+> > +			     const struct fscrypt_str *iname,
+> > +			     struct fscrypt_str *oname)
+> > +{
+> > +	struct fscrypt_nokey_name nokey_name;
+> > +	u32 size; /* size of the unencoded no-key name */
+> > +
+> > +	/*
+> > +	 * Sanity check that struct fscrypt_nokey_name doesn't have padding
+> > +	 * between fields and that its encoded size never exceeds NAME_MAX.
+> > +	 */
+> > +	BUILD_BUG_ON(offsetofend(struct fscrypt_nokey_name, dirhash) !=
+> > +		     offsetof(struct fscrypt_nokey_name, bytes));
+> > +	BUILD_BUG_ON(offsetofend(struct fscrypt_nokey_name, bytes) !=
+> > +		     offsetof(struct fscrypt_nokey_name, sha256));
+> > +	BUILD_BUG_ON(BASE64_CHARS(FSCRYPT_NOKEY_NAME_MAX) > NAME_MAX);
+> > +
+> > +	if (hash) {
+> > +		nokey_name.dirhash[0] = hash;
+> > +		nokey_name.dirhash[1] = minor_hash;
+> > +	} else {
+> > +		nokey_name.dirhash[0] = 0;
+> > +		nokey_name.dirhash[1] = 0;
+> > +	}
+> > +	if (iname->len <= sizeof(nokey_name.bytes)) {
+> > +		memcpy(nokey_name.bytes, iname->name, iname->len);
+> > +		size = offsetof(struct fscrypt_nokey_name, bytes[iname->len]);
+> > +	} else {
+> > +		memcpy(nokey_name.bytes, iname->name, sizeof(nokey_name.bytes));
+> > +		/* Compute strong hash of remaining part of name. */
+> > +		fscrypt_do_sha256(&iname->name[sizeof(nokey_name.bytes)],
+> > +				  iname->len - sizeof(nokey_name.bytes),
+> > +				  nokey_name.sha256);
+> > +		size = FSCRYPT_NOKEY_NAME_MAX;
+> > +	}
+> > +	oname->len = base64_encode((const u8 *)&nokey_name, size, oname->name);
+> > +}
+> > +EXPORT_SYMBOL(fscrypt_encode_nokey_name);
 > 
-> FWIW, if possible you should create a git tag or branch for your patchset.
-> While just the mailed patches work fine for *me* for this particular patchset,
-> other people may not be able to figure out what the patchset applies to.
-> (In particular, it depends on another patchset:
-> https://lkml.kernel.org/r/20200824061712.195654-1-ebiggers@kernel.org)
+> Why does this need to be exported?
 > 
-
-I've tagged this out as 'ceph-fscrypt-rfc.2' in my kernel.org tree (the
-first posting is ceph-fscrypt-rfc.1).
-
-Note that this also is layered on top of David Howell's fscache rework,
-and the work I've done to adapt cephfs to that.
-
-> > Note that this just covers the crypto contexts and filenames. I've also
-> > added a patch to encrypt symlink contents as well, but it doesn't seem to
-> > be working correctly.
+> There's no user of this function introduced in this patchset.
 > 
-> What about symlink encryption isn't working correctly?
+> - Eric
 
-What I was seeing is that after unmounting and mounting, the symlink
-contents would be gibberish when read by readlink(). I confirmed that
-the same crypttext that came out of fscrypt_encrypt_symlink() was being
-fed into fscrypt_get_symlink(), but the result from that came back as
-gibberish.
+Yeah, I probably should have dropped this from the series for now as
+nothing uses it yet, but eventually we may need this. I did a fairly
+detailed writeup of the problem here:
 
-I need to do a bit more troubleshooting, but I now wonder if it's due to
-the context handling being wrong when dummy encryption is enabled. I'll
-have a look at that soon.
+    https://tracker.ceph.com/issues/47162
 
-Thanks for the review so far!
+Basically, we still need to allow clients to look up dentries in the MDS
+even when they don't have the key.
+
+There are a couple of different approaches, but the simplest is to just
+have the client always store long dentry names using the nokey_name, and
+then keep the full name in a new field in the dentry representation that
+is sent across the wire.
+
+This requires some changes to the Ceph MDS (which is what that tracker
+bug is about), and will mean enshrining the nokey name in perpetuity.
+We're still looking at this for now though, and we're open to other
+approaches if you've got any to suggest.
+
 -- 
 Jeff Layton <jlayton@kernel.org>
 
