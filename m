@@ -2,62 +2,113 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4855260A65
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  8 Sep 2020 07:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57F762610AD
+	for <lists+linux-fscrypt@lfdr.de>; Tue,  8 Sep 2020 13:30:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728736AbgIHFyt (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 8 Sep 2020 01:54:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47306 "EHLO mail.kernel.org"
+        id S1729372AbgIHLan (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 8 Sep 2020 07:30:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728531AbgIHFys (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 8 Sep 2020 01:54:48 -0400
-Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        id S1729753AbgIHLa2 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 8 Sep 2020 07:30:28 -0400
+Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 40B482137B;
-        Tue,  8 Sep 2020 05:54:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B1CF42087D;
+        Tue,  8 Sep 2020 11:29:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599544488;
-        bh=VvQRUqCEumUrjB1eL6fGK/9AS3T4qWtdbK1Y+v5BDek=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Y48O9cyOyoz3Qp3v+QBDf8anbyuYYQUtBXPfl5qboMnFu/9pTDu0XOr1Pu6vr7JGT
-         G4vXb/UQVcCAN8JHgyNZU+Isxl6uLMPJIbYfNpnna/+cTk/jb/Bvj7dcMRvS0xfOpm
-         fFN8ex7NYa0CEeZTJgucmPv7RAnGxNgcDwbt/gZ0=
-Date:   Mon, 7 Sep 2020 22:54:46 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Jeff Layton <jlayton@kernel.org>
+        s=default; t=1599564600;
+        bh=BSmMzOYGbAvjcnEx6v7x/E3VmkpQh3OSrDsVXUqKSPE=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=joPcZ1YBLxL8Qn6Rj++9+fibGNeSJhpg816JMNiHnvtNazWU8qUL2lJJW72FRjNwK
+         nmJXJzjfkexgeDHL02JpH4SuIKk3MAukDuLdE38suPOtG6iNrU8fA9xDXDTa8vOp2p
+         MLiYJlXLiAxvJP1YDwcZ7XUBKvwGsFXeFQlJSiZE=
+Message-ID: <b6cc0c6d17ebbc7fed675030b4769319e3861aa0.camel@kernel.org>
+Subject: Re: [RFC PATCH v2 04/18] fscrypt: add fscrypt_new_context_from_inode
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>
 Cc:     ceph-devel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-fscrypt@vger.kernel.org
-Subject: Re: [RFC PATCH v2 00/18] ceph+fscrypt: context, filename and symlink
- support
-Message-ID: <20200908055446.GP68127@sol.localdomain>
+Date:   Tue, 08 Sep 2020 07:29:58 -0400
+In-Reply-To: <20200908034830.GE68127@sol.localdomain>
 References: <20200904160537.76663-1-jlayton@kernel.org>
+         <20200904160537.76663-5-jlayton@kernel.org>
+         <20200908034830.GE68127@sol.localdomain>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200904160537.76663-1-jlayton@kernel.org>
+Content-Transfer-Encoding: 7bit
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Sep 04, 2020 at 12:05:19PM -0400, Jeff Layton wrote:
-> This is a second posting of the ceph+fscrypt integration work that I've
-> been experimenting with. The main change with this patch is that I've
-> based this on top of Eric's fscrypt-pending set. That necessitated a
-> change to allocate inodes much earlier than we have traditionally, prior
-> to sending an RPC instead of waiting on the reply.
+On Mon, 2020-09-07 at 20:48 -0700, Eric Biggers wrote:
+> On Fri, Sep 04, 2020 at 12:05:23PM -0400, Jeff Layton wrote:
+> > CephFS will need to be able to generate a context for a new "prepared"
+> > inode. Add a new routine for getting the context out of an in-core
+> > inode.
+> > 
+> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > ---
+> >  fs/crypto/policy.c      | 20 ++++++++++++++++++++
+> >  include/linux/fscrypt.h |  1 +
+> >  2 files changed, 21 insertions(+)
+> > 
+> > diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
+> > index c56ad886f7d7..10eddd113a21 100644
+> > --- a/fs/crypto/policy.c
+> > +++ b/fs/crypto/policy.c
+> > @@ -670,6 +670,26 @@ int fscrypt_set_context(struct inode *inode, void *fs_data)
+> >  }
+> >  EXPORT_SYMBOL_GPL(fscrypt_set_context);
+> >  
+> > +/**
+> > + * fscrypt_context_from_inode() - fetch the encryption context out of in-core inode
+> 
+> Comment doesn't match the function name.
+> 
+> Also, the name isn't very clear.  How about calling this
+> fscrypt_context_for_new_inode()?
+> 
+> BTW, I might rename fscrypt_new_context_from_policy() to
+> fscrypt_context_from_policy() in my patchset.  Since it now makes the caller
+> provide the nonce, technically it's no longer limited to "new" contexts.
+> 
 
-FWIW, if possible you should create a git tag or branch for your patchset.
-While just the mailed patches work fine for *me* for this particular patchset,
-other people may not be able to figure out what the patchset applies to.
-(In particular, it depends on another patchset:
-https://lkml.kernel.org/r/20200824061712.195654-1-ebiggers@kernel.org)
+Ahh yes. I didn't properly update the commit message here. Your
+suggested names sound fine. I'll plan to fix that up.
 
-> Note that this just covers the crypto contexts and filenames. I've also
-> added a patch to encrypt symlink contents as well, but it doesn't seem to
-> be working correctly.
+> > + * @ctx: where context should be written
+> > + * @inode: inode from which to fetch context
+> > + *
+> > + * Given an in-core prepared, but not-necessarily fully-instantiated inode,
+> > + * generate an encryption context from its policy and write it to ctx.
+> 
+> Clarify what is meant by "prepared" (fscrypt_prepare_new_inode() was called)
+> vs. "instantiated".
+> 
 
-What about symlink encryption isn't working correctly?
+Ack.
 
-- Eric
+> > + *
+> > + * Returns size of the context.
+> > + */
+> > +int fscrypt_new_context_from_inode(union fscrypt_context *ctx, struct inode *inode)
+> > +{
+> > +	struct fscrypt_info *ci = inode->i_crypt_info;
+> > +
+> > +	BUILD_BUG_ON(sizeof(*ctx) != FSCRYPT_SET_CONTEXT_MAX_SIZE);
+> > +
+> > +	return fscrypt_new_context_from_policy(ctx, &ci->ci_policy, ci->ci_nonce);
+> > +}
+> > +EXPORT_SYMBOL_GPL(fscrypt_new_context_from_inode);
+> 
+> fscrypt_set_context() should be changed to call this, instead of duplicating the
+> same logic.  As part of that, the WARN_ON_ONCE(!ci) that's currently in
+> fscrypt_set_context() should go in here instead.
+
+Ok.
+-- 
+Jeff Layton <jlayton@kernel.org>
+
