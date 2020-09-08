@@ -2,138 +2,68 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 153D2260715
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  8 Sep 2020 01:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F48E260901
+	for <lists+linux-fscrypt@lfdr.de>; Tue,  8 Sep 2020 05:38:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727944AbgIGXBB (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 7 Sep 2020 19:01:01 -0400
-Received: from smtprelay0192.hostedemail.com ([216.40.44.192]:32790 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726929AbgIGXBA (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 7 Sep 2020 19:01:00 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 2A26E18029121;
-        Mon,  7 Sep 2020 23:00:56 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1543:1593:1594:1605:1711:1730:1747:1777:1792:2194:2199:2393:2553:2559:2562:2693:2828:3138:3139:3140:3141:3142:3865:3867:3868:3870:3871:3872:3873:3874:4321:4605:5007:6119:8603:9108:10004:10400:10848:11026:11232:11473:11658:11914:12043:12296:12297:12438:12555:12740:12760:12895:12986:13071:13439:14180:14181:14659:14721:21060:21080:21212:21324:21451:21627:21660:21740:21990:30054:30056:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: sky91_0512991270cf
-X-Filterd-Recvd-Size: 4449
-Received: from XPS-9350 (cpe-72-134-242-36.natsow.res.rr.com [72.134.242.36])
-        (Authenticated sender: joe@perches.com)
-        by omf19.hostedemail.com (Postfix) with ESMTPA;
-        Mon,  7 Sep 2020 23:00:55 +0000 (UTC)
-Message-ID: <a661d908cd6e2b0396c75c2eb52b95f33e92cd5e.camel@perches.com>
-Subject: Re: [PATCH] fscrypt: Reduce object size of logging messages
-From:   Joe Perches <joe@perches.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-fscrypt@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Date:   Mon, 07 Sep 2020 16:00:52 -0700
-In-Reply-To: <20200907222338.GA68127@sol.localdomain>
-References: <d9e2693cc157bbc09df92a91a9ecad8dcc8438ce.camel@perches.com>
-         <20200904230341.GA6172@sol.localdomain>
-         <ec1347522c95c89425b3189b071b35f9d912e3e0.camel@perches.com>
-         <20200907222338.GA68127@sol.localdomain>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        id S1728516AbgIHDiY (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 7 Sep 2020 23:38:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42152 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728327AbgIHDiV (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 7 Sep 2020 23:38:21 -0400
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1158B2075A;
+        Tue,  8 Sep 2020 03:38:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599536301;
+        bh=BanmiEvbGMWVIhkeYXUdmPe/vH8P2n26h9sXyKtB4E0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=2Y3vXWeVFofFzu+GH1t0rVmNIMeav5M/KvIEqsAOXfrQ4y6Qmvi+uwQpNRjKER/lj
+         +tG4kb+LIZgfYCWoDI4majUE1eoNE/Y6ahIKRFDNR9AzH7+GUUCGA3m0MMGFklomVn
+         bOBl4FWNCKdfiOWw3r5HbyCbPIuAaFzuiCrXGeBw=
+Date:   Mon, 7 Sep 2020 20:38:19 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     ceph-devel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org
+Subject: Re: [RFC PATCH v2 01/18] vfs: export new_inode_pseudo
+Message-ID: <20200908033819.GD68127@sol.localdomain>
+References: <20200904160537.76663-1-jlayton@kernel.org>
+ <20200904160537.76663-2-jlayton@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200904160537.76663-2-jlayton@kernel.org>
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hi again.
-
-On Mon, 2020-09-07 at 15:23 -0700, Eric Biggers wrote:
-> On Fri, Sep 04, 2020 at 09:38:23PM -0700, Joe Perches wrote:
-> > > > diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
-> > > > index 9212325763b0..c82cc3907e43 100644
-> > > > --- a/fs/crypto/crypto.c
-> > > > +++ b/fs/crypto/crypto.c
-> > > > @@ -329,25 +329,27 @@ int fscrypt_initialize(unsigned int cop_flags)
-> > > >  	return err;
-> > > >  }
-> > > >  
-> > > > -void fscrypt_msg(const struct inode *inode, const char *level,
-> > > > -		 const char *fmt, ...)
-> > > > +void fscrypt_printk(const struct inode *inode, const char *fmt, ...)
-> > > >  {
-> > > >  	static DEFINE_RATELIMIT_STATE(rs, DEFAULT_RATELIMIT_INTERVAL,
-> > > >  				      DEFAULT_RATELIMIT_BURST);
-> > > >  	struct va_format vaf;
-> > > >  	va_list args;
-> > > > +	int level;
-> > > >  
-> > > >  	if (!__ratelimit(&rs))
-> > > >  		return;
-> > > >  
-> > > >  	va_start(args, fmt);
-> > > > -	vaf.fmt = fmt;
-> > > > +	level = printk_get_level(fmt);
-> > > > +	vaf.fmt = printk_skip_level(fmt);
-> > > >  	vaf.va = &args;
-> > > >  	if (inode)
-> > > > -		printk("%sfscrypt (%s, inode %lu): %pV\n",
-> > > > -		       level, inode->i_sb->s_id, inode->i_ino, &vaf);
-> > > > +		printk("%c%cfscrypt (%s, inode %lu): %pV\n",
-> > > > +		       KERN_SOH_ASCII, level, inode->i_sb->s_id, inode->i_ino,
-> > > > +		       &vaf);
-> > > >  	else
-> > > > -		printk("%sfscrypt: %pV\n", level, &vaf);
-> > > > +		printk("%c%cfscrypt: %pV\n", KERN_SOH_ASCII, level, &vaf);
-> > > >  	va_end(args);
-> > > 
-> > > The problem with this approach is that if fscrypt_printk() is called without
-> > > providing a log level in the format string (which one would assume would work,
-> > > since printk() allows it), then the real format string will be truncated to just
-> > > KERN_SOH because 'level' will be 0.
-> > > Can you find a way to avoid that?
-> > 
-> > While I don't think this is a problem in that all the fscrypt_<level>
-> > calls will always prefix a KERN_<LEVEL>,
+On Fri, Sep 04, 2020 at 12:05:20PM -0400, Jeff Layton wrote:
+> Ceph needs to be able to allocate inodes ahead of a create that might
+> involve a fscrypt-encrypted inode. new_inode() almost fits the bill,
+> but it puts the inode on the sb->s_inodes list, and we don't want to
+> do that until we're ready to insert it into the hash.
 > 
-> It's still a pitfall that people could run into later.  It would be better to
-> make fscrypt_printk() work in the expected way.
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>  fs/inode.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> > what btrfs uses:
-> > 
-> > 	char lvl[PRINTK_MAX_SINGLE_HEADER_LEN + 1] = "\0";
-> > ...
-> > 	while ((kern_level = printk_get_level(fmt)) != 0) {
-> > 		size_t size = printk_skip_level(fmt) - fmt;
-> > 
-> > 		if (kern_level >= '0' && kern_level <= '7') {
-> > 			memcpy(lvl, fmt,  size);
-> > 			lvl[size] = '\0';
-> > 		}
-> > 		fmt += size;
-> > 	}
-> > 
-> > and use "%s...", lvl, ...
-> 
-> Is the loop really needed?
+> diff --git a/fs/inode.c b/fs/inode.c
+> index 72c4c347afb7..61554c2477ab 100644
+> --- a/fs/inode.c
+> +++ b/fs/inode.c
+> @@ -935,6 +935,7 @@ struct inode *new_inode_pseudo(struct super_block *sb)
+>  	}
+>  	return inode;
+>  }
+> +EXPORT_SYMBOL(new_inode_pseudo);
+>  
 
-It prevents defects (that btrfs had) where
-btrfs_<level> used formats with KERN_<LEVEL>.
+What's the problem with putting the new inode on sb->s_inodes already?
+That's what all the other filesystems do.
 
-> > > > +#define fscrypt_warn(inode, fmt, ...)					\
-> > > > +	fscrypt_printk(inode, KERN_WARNING fmt, ##__VA_ARGS__)
-> > > 
-> > > It's probably best to keep the parentheses around 'inode'.
-> > 
-> > Not really as it's an independent argument that can't
-> > effectively have any other purpose but to be an argument
-> > to the fsrypt_printk function.
-> 
-> True, but since forgetting to include parentheses around macro arguments is such
-> a common mistake, IMO they should just always be included so that people don't
-> have to think about whether the omission is correct or not.
-
-We think differently.
-Unnecessary parentheses are unnecessary and there
-isn't a possiblity adding them here can be useful.
-
-
+- Eric
