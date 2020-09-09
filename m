@@ -2,40 +2,39 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4143F262D64
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  9 Sep 2020 12:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94CAE262E6F
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  9 Sep 2020 14:23:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728197AbgIIKrm (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 9 Sep 2020 06:47:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42094 "EHLO mail.kernel.org"
+        id S1729614AbgIIMWV (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 9 Sep 2020 08:22:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726293AbgIIKrc (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 9 Sep 2020 06:47:32 -0400
+        id S1728663AbgIIMWS (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 9 Sep 2020 08:22:18 -0400
 Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4E57721582;
-        Wed,  9 Sep 2020 10:47:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8E3E221941;
+        Wed,  9 Sep 2020 12:20:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599648449;
-        bh=YL1u/Q6l6ylVJ4gFaljuUHTJ4/2/Bq6SG3X4zuAjOto=;
+        s=default; t=1599654033;
+        bh=NA809kHsYKqOiMcEMprfqh/6y4X7ypAyjYhtTKu0dQQ=;
         h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=jf13pOFQ8q7hjeiU0U7CBN+2n2TW7zHzulgECI9HwmUkb8DDk7nhTRgJUUM8Ko9dl
-         O77fc0zV4tD+iX4P6TO30brkrU6z7/N5F7u27Q57ZpY0egjMGqoAEx5rTJKPanbSVZ
-         9cYDXJyMg+tLHj4ojm9HbC7W+a0g7QYtAJces2xA=
-Message-ID: <6cfe023df5cf6c50d6197bb7c71b3fa6a51bf555.camel@kernel.org>
-Subject: Re: [RFC PATCH v2 01/18] vfs: export new_inode_pseudo
+        b=rpm5Zk+k5ggRqfi6ypUax/4SanZrowDiyULI301LQfPKC81YgwPVq8XtuT7Dw8kKq
+         tTpfH5Ws/LyPx8lNhSaeJYZgPo4KWAu9TwUG9z5DRX4anfrxMPomt+zGvs3388aMCW
+         2NjTPd0p5lDBQNK/+0Jh0WVJp1D1EpRm1nYaz0O4=
+Message-ID: <ff3df54fde21a4a83959930b6af3cceb2f3b7c1f.camel@kernel.org>
+Subject: Re: [RFC PATCH v2 12/18] ceph: set S_ENCRYPTED bit if new inode has
+ encryption.ctx xattr
 From:   Jeff Layton <jlayton@kernel.org>
 To:     Eric Biggers <ebiggers@kernel.org>
 Cc:     ceph-devel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-fscrypt@vger.kernel.org
-Date:   Wed, 09 Sep 2020 06:47:28 -0400
-In-Reply-To: <20200908223125.GA3760467@gmail.com>
+Date:   Wed, 09 Sep 2020 08:20:31 -0400
+In-Reply-To: <20200908045737.GK68127@sol.localdomain>
 References: <20200904160537.76663-1-jlayton@kernel.org>
-         <20200904160537.76663-2-jlayton@kernel.org>
-         <20200908033819.GD68127@sol.localdomain>
-         <42e2de297552a8642bfe21ab082e490678b5be38.camel@kernel.org>
-         <20200908223125.GA3760467@gmail.com>
+         <20200904160537.76663-13-jlayton@kernel.org>
+         <20200908045737.GK68127@sol.localdomain>
 Content-Type: text/plain; charset="UTF-8"
 User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
@@ -45,84 +44,65 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, 2020-09-08 at 15:31 -0700, Eric Biggers wrote:
-> On Tue, Sep 08, 2020 at 07:27:58AM -0400, Jeff Layton wrote:
-> > On Mon, 2020-09-07 at 20:38 -0700, Eric Biggers wrote:
-> > > On Fri, Sep 04, 2020 at 12:05:20PM -0400, Jeff Layton wrote:
-> > > > Ceph needs to be able to allocate inodes ahead of a create that might
-> > > > involve a fscrypt-encrypted inode. new_inode() almost fits the bill,
-> > > > but it puts the inode on the sb->s_inodes list, and we don't want to
-> > > > do that until we're ready to insert it into the hash.
-> > > > 
-> > > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > > > ---
-> > > >  fs/inode.c | 1 +
-> > > >  1 file changed, 1 insertion(+)
-> > > > 
-> > > > diff --git a/fs/inode.c b/fs/inode.c
-> > > > index 72c4c347afb7..61554c2477ab 100644
-> > > > --- a/fs/inode.c
-> > > > +++ b/fs/inode.c
-> > > > @@ -935,6 +935,7 @@ struct inode *new_inode_pseudo(struct super_block *sb)
-> > > >  	}
-> > > >  	return inode;
-> > > >  }
-> > > > +EXPORT_SYMBOL(new_inode_pseudo);
-> > > >  
-> > > 
-> > > What's the problem with putting the new inode on sb->s_inodes already?
-> > > That's what all the other filesystems do.
-> > > 
-> > 
-> > The existing ones are all local filesystems that use
-> > insert_inode_locked() and similar paths. Ceph needs to use the '5'
-> > variants of those functions (inode_insert5(), iget5_locked(), etc.).
-> > 
-> > When we go to insert it into the hash in inode_insert5(), we'd need to
-> > set I_CREATING if allocated from new_inode(). But, if you do _that_,
-> > then you'll get back ESTALE from find_inode() if (eg.) someone calls
-> > iget5_locked() before you can clear I_CREATING.
-> > 
-> > Hitting that race is easy with an asynchronous create. The simplest
-> > scheme to avoid that is to just export new_inode_pseudo and keep it off
-> > of s_inodes until we're ready to do the insert. The only real issue here
-> > is that this inode won't be findable by evict_inodes during umount, but
-> > that shouldn't be happening during an active syscall anyway.
+On Mon, 2020-09-07 at 21:57 -0700, Eric Biggers wrote:
+> On Fri, Sep 04, 2020 at 12:05:31PM -0400, Jeff Layton wrote:
+> > This hack fixes a chicken-and-egg problem when fetching inodes from the
+> > server. Once we move to a dedicated field in the inode, then this should
+> > be able to go away.
 > 
-> Is your concern the following scenario?
-> 
-> 1. ceph successfully created a new file on the server
-> 2. inode_insert5() is called for the new file's inode
-> 3. error occurs in ceph_fill_inode()
-> 4. discard_new_inode() is called
-> 5. another thread looks up the inode and gets ESTALE
-> 6. iput() is finally called
-> 
-> And the claim is that the ESTALE in (5) is unexpected?  I'm not sure that it's
-> unexpected, given that the file allegedly failed to be created...  Also, it
-> seems that maybe (3) isn't something that should actually happen, since after
-> (1) it's too late to fail the file creation.
+> To clarify: while this *could* be the permanent solution, you're planning to
+> make ceph support storing an "is inode encrypted?" flag on the server, similar
+> to what the local filesystems do with i_flags (since searching the xattrs for
+> every inode is much more expensive than a simple flag check)?
 > 
 
-No, more like:
+That was what I was thinking before, but now it's looking like we'll
+need to keep this in the xattrs. So I may still need this hack in
+perpetuity.
 
-Syscall					Workqueue
-------------------------------------------------------------------------------
-1. allocate an inode
-2. determine we can do an async create
-   and allocate an inode number for it
-3. hash the inode (must set I_CREATING
-   if we allocated with new_inode()) 
-4. issue the call to the MDS
-5. finish filling out the inode()
-6.					MDS reply comes in, and workqueue thread
-					looks up new inode (-ESTALE)
-7. unlock_new_inode()
+> > +#define DUMMY_ENCRYPTION_ENABLED(fsc) ((fsc)->dummy_enc_ctx.ctx != NULL)
+> > +
+> 
+> As I mentioned on an earlier patch, please put the support for the
+> "test_dummy_encryption" mount option in a separate patch.  It's best thought of
+> separately from the basic fscrypt support.
+> 
 
+Yep. The next series will have that in a separate patch.
 
-Because 6 happens before 7 in this case, we get an ESTALE on that
-lookup. By using new_inode_pseudo() and not setting I_CREATING, 6 ends
-up waiting on the inode to be unlocked rather than giving up.
+> >  int ceph_fscrypt_set_ops(struct super_block *sb);
+> >  int ceph_fscrypt_prepare_context(struct inode *dir, struct inode *inode,
+> >  				 struct ceph_acl_sec_ctx *as);
+> >  
+> >  #else /* CONFIG_FS_ENCRYPTION */
+> >  
+> > +#define DUMMY_ENCRYPTION_ENABLED(fsc) (0)
+> > +
+> >  static inline int ceph_fscrypt_set_ops(struct super_block *sb)
+> >  {
+> >  	return 0;
+> > diff --git a/fs/ceph/inode.c b/fs/ceph/inode.c
+> > index 651148194316..c1c1fe2547f9 100644
+> > --- a/fs/ceph/inode.c
+> > +++ b/fs/ceph/inode.c
+> > @@ -964,6 +964,10 @@ int ceph_fill_inode(struct inode *inode, struct page *locked_page,
+> >  		ceph_forget_all_cached_acls(inode);
+> >  		ceph_security_invalidate_secctx(inode);
+> >  		xattr_blob = NULL;
+> > +		if ((inode->i_state & I_NEW) &&
+> > +		    (DUMMY_ENCRYPTION_ENABLED(mdsc->fsc) ||
+> > +		     ceph_inode_has_xattr(ci, CEPH_XATTR_NAME_ENCRYPTION_CONTEXT)))
+> > +			inode_set_flags(inode, S_ENCRYPTED, S_ENCRYPTED);
+> 
+> The check for DUMMY_ENCRYPTION_ENABLED() here is wrong and should be removed.
+> When the filesystem is mounted with test_dummy_encryption, there may be
+> unencrypted inodes already on-disk.  Those shouldn't get S_ENCRYPTED set.
+> test_dummy_encryption does add some special handling for unencrypted
+> directories, but that doesn't require S_ENCRYPTED to be set on them.
+> 
+
+Got it, thanks. The fact that you still need to keep a context when you
+enable dummy encryption wasn't clear to me before.
 
 -- 
 Jeff Layton <jlayton@kernel.org>
