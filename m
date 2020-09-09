@@ -2,39 +2,39 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCE73262FE5
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  9 Sep 2020 16:43:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB5E2263100
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  9 Sep 2020 17:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730455AbgIIOkr (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 9 Sep 2020 10:40:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37104 "EHLO mail.kernel.org"
+        id S1730585AbgIIPxo (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 9 Sep 2020 11:53:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730140AbgIIMfl (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 9 Sep 2020 08:35:41 -0400
+        id S1730187AbgIIPxh (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 9 Sep 2020 11:53:37 -0400
 Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5EE8021941;
-        Wed,  9 Sep 2020 12:24:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 598C22064B;
+        Wed,  9 Sep 2020 15:53:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599654280;
-        bh=2DbSBwKd5N1exdPp99yIXH8KFc5YWL59o2CAnXhlsOk=;
+        s=default; t=1599666816;
+        bh=NejtTJTgmOPiYWyXqDjSjrA5fG/Yl1LvR7QrRHtW+/Y=;
         h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=lGg22N3K6QxJIa+Cw6Xlj8g5/DnX3ir2eD1HyExWVWmzH8flSuAtHSPV/nzthIWU4
-         dErrQgfz35IrL0XJG1wcpksxd8fUNj9ySukQt2ARAekI2OVNgfn79YeVmkQ3LFHLU3
-         XINSI67UsKYac7Wp/QFqP8kZY54CnNFJdNwaH98A=
-Message-ID: <fbf3c8cea47f021200937273fc810b1244e186a1.camel@kernel.org>
-Subject: Re: [RFC PATCH v2 14/18] ceph: add encrypted fname handling to
- ceph_mdsc_build_path
+        b=JYVLJ7UoB3HCHINUdWeL2qi2itwdZ9+/TscgnLHNUMc8FqNSr8TrnkmiVAENPk8fq
+         jY5jjx8scqDpAOtgIQCdR+NXXqeHl525lj5b06t9QL2Ws+3prdQpsfbL65LqLALFMi
+         pbBtjccBFNdr5iz+GrLRwDvi4L5HQFZ06IJEwYdA=
+Message-ID: <c4fd5093a5996840e6fe23dc4507760a5ad70624.camel@kernel.org>
+Subject: Re: [RFC PATCH v2 12/18] ceph: set S_ENCRYPTED bit if new inode has
+ encryption.ctx xattr
 From:   Jeff Layton <jlayton@kernel.org>
 To:     Eric Biggers <ebiggers@kernel.org>
 Cc:     ceph-devel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, Xiubo Li <xiubli@redhat.com>
-Date:   Wed, 09 Sep 2020 08:24:39 -0400
-In-Reply-To: <20200908050643.GL68127@sol.localdomain>
+        linux-fscrypt@vger.kernel.org
+Date:   Wed, 09 Sep 2020 11:53:35 -0400
+In-Reply-To: <20200908045737.GK68127@sol.localdomain>
 References: <20200904160537.76663-1-jlayton@kernel.org>
-         <20200904160537.76663-15-jlayton@kernel.org>
-         <20200908050643.GL68127@sol.localdomain>
+         <20200904160537.76663-13-jlayton@kernel.org>
+         <20200908045737.GK68127@sol.localdomain>
 Content-Type: text/plain; charset="UTF-8"
 User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
@@ -44,122 +44,70 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, 2020-09-07 at 22:06 -0700, Eric Biggers wrote:
-> On Fri, Sep 04, 2020 at 12:05:33PM -0400, Jeff Layton wrote:
-> > Allow ceph_mdsc_build_path to encrypt and base64 encode the filename
-> > when the parent is encrypted and we're sending the path to the MDS.
-> > 
-> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > ---
-> >  fs/ceph/mds_client.c | 51 ++++++++++++++++++++++++++++++++++----------
-> >  1 file changed, 40 insertions(+), 11 deletions(-)
-> > 
-> > diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
-> > index e3dc061252d4..26b43ae09823 100644
-> > --- a/fs/ceph/mds_client.c
-> > +++ b/fs/ceph/mds_client.c
-> > @@ -11,6 +11,7 @@
-> >  #include <linux/ratelimit.h>
-> >  #include <linux/bits.h>
-> >  #include <linux/ktime.h>
-> > +#include <linux/base64_fname.h>
+On Mon, 2020-09-07 at 21:57 -0700, Eric Biggers wrote:
+> On Fri, Sep 04, 2020 at 12:05:31PM -0400, Jeff Layton wrote:
+> > This hack fixes a chicken-and-egg problem when fetching inodes from the
+> > server. Once we move to a dedicated field in the inode, then this should
+> > be able to go away.
+> 
+> To clarify: while this *could* be the permanent solution, you're planning to
+> make ceph support storing an "is inode encrypted?" flag on the server, similar
+> to what the local filesystems do with i_flags (since searching the xattrs for
+> every inode is much more expensive than a simple flag check)?
+> 
+> > +#define DUMMY_ENCRYPTION_ENABLED(fsc) ((fsc)->dummy_enc_ctx.ctx != NULL)
+> > +
+> 
+> As I mentioned on an earlier patch, please put the support for the
+> "test_dummy_encryption" mount option in a separate patch.  It's best thought of
+> separately from the basic fscrypt support.
+> 
+> >  int ceph_fscrypt_set_ops(struct super_block *sb);
+> >  int ceph_fscrypt_prepare_context(struct inode *dir, struct inode *inode,
+> >  				 struct ceph_acl_sec_ctx *as);
 > >  
-> >  #include "super.h"
-> >  #include "mds_client.h"
-> > @@ -2324,8 +2325,7 @@ static inline  u64 __get_oldest_tid(struct ceph_mds_client *mdsc)
-> >   * Encode hidden .snap dirs as a double /, i.e.
-> >   *   foo/.snap/bar -> foo//bar
-> >   */
-> > -char *ceph_mdsc_build_path(struct dentry *dentry, int *plen, u64 *pbase,
-> > -			   int stop_on_nosnap)
-> > +char *ceph_mdsc_build_path(struct dentry *dentry, int *plen, u64 *pbase, int for_wire)
+> >  #else /* CONFIG_FS_ENCRYPTION */
+> >  
+> > +#define DUMMY_ENCRYPTION_ENABLED(fsc) (0)
+> > +
+> >  static inline int ceph_fscrypt_set_ops(struct super_block *sb)
 > >  {
-> >  	struct dentry *cur;
-> >  	struct inode *inode;
-> > @@ -2347,30 +2347,59 @@ char *ceph_mdsc_build_path(struct dentry *dentry, int *plen, u64 *pbase,
-> >  	seq = read_seqbegin(&rename_lock);
-> >  	cur = dget(dentry);
-> >  	for (;;) {
-> > -		struct dentry *temp;
-> > +		struct dentry *parent;
-> >  
-> >  		spin_lock(&cur->d_lock);
-> >  		inode = d_inode(cur);
-> > +		parent = cur->d_parent;
-> >  		if (inode && ceph_snap(inode) == CEPH_SNAPDIR) {
-> >  			dout("build_path path+%d: %p SNAPDIR\n",
-> >  			     pos, cur);
-> > -		} else if (stop_on_nosnap && inode && dentry != cur &&
-> > -			   ceph_snap(inode) == CEPH_NOSNAP) {
-> > +			dget(parent);
-> > +			spin_unlock(&cur->d_lock);
-> > +		} else if (for_wire && inode && dentry != cur && ceph_snap(inode) == CEPH_NOSNAP) {
-> >  			spin_unlock(&cur->d_lock);
-> >  			pos++; /* get rid of any prepended '/' */
-> >  			break;
-> > -		} else {
-> > +		} else if (!for_wire || !IS_ENCRYPTED(d_inode(parent))) {
-> >  			pos -= cur->d_name.len;
-> >  			if (pos < 0) {
-> >  				spin_unlock(&cur->d_lock);
-> >  				break;
-> >  			}
-> >  			memcpy(path + pos, cur->d_name.name, cur->d_name.len);
-> > +			dget(parent);
-> > +			spin_unlock(&cur->d_lock);
-> > +		} else {
-> > +			int err;
-> > +			struct fscrypt_name fname = { };
-> > +			int len;
-> > +			char buf[BASE64_CHARS(NAME_MAX)];
-> > +
-> > +			dget(parent);
-> > +			spin_unlock(&cur->d_lock);
-> > +
-> > +			err = fscrypt_setup_filename(d_inode(parent), &cur->d_name, 1, &fname);
+> >  	return 0;
+> > diff --git a/fs/ceph/inode.c b/fs/ceph/inode.c
+> > index 651148194316..c1c1fe2547f9 100644
+> > --- a/fs/ceph/inode.c
+> > +++ b/fs/ceph/inode.c
+> > @@ -964,6 +964,10 @@ int ceph_fill_inode(struct inode *inode, struct page *locked_page,
+> >  		ceph_forget_all_cached_acls(inode);
+> >  		ceph_security_invalidate_secctx(inode);
+> >  		xattr_blob = NULL;
+> > +		if ((inode->i_state & I_NEW) &&
+> > +		    (DUMMY_ENCRYPTION_ENABLED(mdsc->fsc) ||
+> > +		     ceph_inode_has_xattr(ci, CEPH_XATTR_NAME_ENCRYPTION_CONTEXT)))
+> > +			inode_set_flags(inode, S_ENCRYPTED, S_ENCRYPTED);
 > 
-> How are no-key filenames handled with ceph?  You're calling
-> fscrypt_setup_filename() with lookup=1, so it will give you back a no-key
-> filename if the directory's encryption key is unavailable.
+> The check for DUMMY_ENCRYPTION_ENABLED() here is wrong and should be removed.
+> When the filesystem is mounted with test_dummy_encryption, there may be
+> unencrypted inodes already on-disk.  Those shouldn't get S_ENCRYPTED set.
+> test_dummy_encryption does add some special handling for unencrypted
+> directories, but that doesn't require S_ENCRYPTED to be set on them.
 > 
 
-Still TBD.
+I've been working through your comments. Symlinks work now, as long as I
+use the fscrypt utility instead of test_dummy_encryption.
 
-For now, I'm just ignoring long filenames. Eventually we'll need to
-extend the MDS and protocol to handle the nokey names properly and this
-code will need to be reworked.
+When I remove that condition above, then test_dummy_encryption no longer
+works.  I think I must be missing some context in how
+test_dummy_encryption is supposed to be used.
 
-I have this bug opened for tracking that work:
+Suppose I mount a ceph filesystem with -o test_dummy_encryption. The
+root inode of the fs is instantiated by going through here, but it's not
+marked with S_ENCRYPTED because the root has no context.
 
-    https://tracker.ceph.com/issues/47162
+How will descendant dentries end up encrypted if this one is not marked
+as such?
 
- 
-> > +			if (err) {
-> > +				dput(parent);
-> > +				dput(cur);
-> > +				return ERR_PTR(err);
-> > +			}
-> > +
-> > +			/* base64 encode the encrypted name */
-> > +			len = base64_encode_fname(fname.disk_name.name, fname.disk_name.len, buf);
-> > +			pos -= len;
-> > +			if (pos < 0) {
-> > +				dput(parent);
-> > +				fscrypt_free_filename(&fname);
-> > +				break;
-> > +			}
-> > +			memcpy(path + pos, buf, len);
-> > +			dout("non-ciphertext name = %.*s\n", len, buf);
-> > +			fscrypt_free_filename(&fname);
-> 
-> This would be easier to understand if the encryption and encoding logic was
-> moved into its own function.
-> 
-
-
-Agreed, though it's a little hard given the way this function is
-structured. I'll see what I can do to clean it up though.
-
+Thanks,
 -- 
 Jeff Layton <jlayton@kernel.org>
 
