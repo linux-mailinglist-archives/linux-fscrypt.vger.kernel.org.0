@@ -2,36 +2,36 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0984C267EC7
-	for <lists+linux-fscrypt@lfdr.de>; Sun, 13 Sep 2020 10:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFDB6267EBF
+	for <lists+linux-fscrypt@lfdr.de>; Sun, 13 Sep 2020 10:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726019AbgIMIiz (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sun, 13 Sep 2020 04:38:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60862 "EHLO mail.kernel.org"
+        id S1726016AbgIMIix (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sun, 13 Sep 2020 04:38:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725961AbgIMIiC (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        id S1725963AbgIMIiC (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
         Sun, 13 Sep 2020 04:38:02 -0400
 Received: from sol.attlocal.net (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1F82221974;
+        by mail.kernel.org (Postfix) with ESMTPSA id 668D421D1A;
         Sun, 13 Sep 2020 08:37:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1599986279;
-        bh=kONvZL9ec2SBbE4EAel9mci0YCQN1pZc7hmFt/F6qwY=;
+        bh=QcAYVOOtDATZpIRqzv/LkDypHnDI6SB1ZfPpGvjEMKo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Dt37vv3oahYtgL3ZyctM6QKg97LdSKU34ArCqE9y/U84AQImmjJjp3IWpIeQl2boS
-         KR5a1PsbxdPL8JYbUIX8BxdraDjfMGMuehFFlmoxAmRLN8Iu8UVTjj0WRil4BKsjzY
-         V8lffoJKumHVSbQOwdTzejpV6lXUi6DoBaK6UQQ4=
+        b=oUtAxnwOQeM7Dr2kgVlV4dfly4HkPpXojureiWqD3KugJJtonikaBJ/0WmS3mzwuK
+         qMm4vt2DVIHEOZTV+hdqzAxhm6zjVO48B+OZgoviTP4C8OaMEwnUsQFSxeKIaiKp0X
+         OfnRS1CorFgwModQHk4r5wqxh3MkMjhLTDRNgh6Y=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-fscrypt@vger.kernel.org
 Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
         linux-mtd@lists.infradead.org, ceph-devel@vger.kernel.org,
         Jeff Layton <jlayton@kernel.org>,
         Daniel Rosenberg <drosen@google.com>
-Subject: [PATCH v2 05/11] ubifs: use fscrypt_prepare_new_inode() and fscrypt_set_context()
-Date:   Sun, 13 Sep 2020 01:36:14 -0700
-Message-Id: <20200913083620.170627-6-ebiggers@kernel.org>
+Subject: [PATCH v2 06/11] fscrypt: remove fscrypt_inherit_context()
+Date:   Sun, 13 Sep 2020 01:36:15 -0700
+Message-Id: <20200913083620.170627-7-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200913083620.170627-1-ebiggers@kernel.org>
 References: <20200913083620.170627-1-ebiggers@kernel.org>
@@ -44,103 +44,91 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Convert ubifs to use the new functions fscrypt_prepare_new_inode() and
-fscrypt_set_context().
-
-Unlike ext4 and f2fs, this doesn't appear to fix any deadlock bug.  But
-it does shorten the code slightly and get all filesystems using the same
-helper functions, so that fscrypt_inherit_context() can be removed.
-
-It also fixes an incorrect error code where ubifs returned EPERM instead
-of the expected ENOKEY.
+Now that all filesystems have been converted to use
+fscrypt_prepare_new_inode() and fscrypt_set_context(),
+fscrypt_inherit_context() is no longer used.  Remove it.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/ubifs/dir.c | 38 ++++++++++++++++----------------------
- 1 file changed, 16 insertions(+), 22 deletions(-)
+ fs/crypto/policy.c      | 37 -------------------------------------
+ include/linux/fscrypt.h |  9 ---------
+ 2 files changed, 46 deletions(-)
 
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index a9c1f5a9c9bdd..155521e51ac57 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -81,19 +81,6 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
- 	struct ubifs_inode *ui;
- 	bool encrypted = false;
+diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
+index 7e96953d385ec..4ff893f7b030a 100644
+--- a/fs/crypto/policy.c
++++ b/fs/crypto/policy.c
+@@ -628,43 +628,6 @@ int fscrypt_has_permitted_context(struct inode *parent, struct inode *child)
+ }
+ EXPORT_SYMBOL(fscrypt_has_permitted_context);
  
--	if (IS_ENCRYPTED(dir)) {
--		err = fscrypt_get_encryption_info(dir);
--		if (err) {
--			ubifs_err(c, "fscrypt_get_encryption_info failed: %i", err);
--			return ERR_PTR(err);
--		}
+-/**
+- * fscrypt_inherit_context() - Sets a child context from its parent
+- * @parent: Parent inode from which the context is inherited.
+- * @child:  Child inode that inherits the context from @parent.
+- * @fs_data:  private data given by FS.
+- * @preload:  preload child i_crypt_info if true
+- *
+- * Return: 0 on success, -errno on failure
+- */
+-int fscrypt_inherit_context(struct inode *parent, struct inode *child,
+-						void *fs_data, bool preload)
+-{
+-	u8 nonce[FSCRYPT_FILE_NONCE_SIZE];
+-	union fscrypt_context ctx;
+-	int ctxsize;
+-	struct fscrypt_info *ci;
+-	int res;
 -
--		if (!fscrypt_has_encryption_key(dir))
--			return ERR_PTR(-EPERM);
+-	res = fscrypt_get_encryption_info(parent);
+-	if (res < 0)
+-		return res;
 -
--		encrypted = true;
--	}
+-	ci = fscrypt_get_info(parent);
+-	if (ci == NULL)
+-		return -ENOKEY;
 -
- 	inode = new_inode(c->vfs_sb);
- 	ui = ubifs_inode(inode);
- 	if (!inode)
-@@ -112,6 +99,12 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
- 			 current_time(inode);
- 	inode->i_mapping->nrpages = 0;
+-	get_random_bytes(nonce, FSCRYPT_FILE_NONCE_SIZE);
+-	ctxsize = fscrypt_new_context(&ctx, &ci->ci_policy, nonce);
+-
+-	BUILD_BUG_ON(sizeof(ctx) != FSCRYPT_SET_CONTEXT_MAX_SIZE);
+-	res = parent->i_sb->s_cop->set_context(child, &ctx, ctxsize, fs_data);
+-	if (res)
+-		return res;
+-	return preload ? fscrypt_get_encryption_info(child): 0;
+-}
+-EXPORT_SYMBOL(fscrypt_inherit_context);
+-
+ /**
+  * fscrypt_set_context() - Set the fscrypt context of a new inode
+  * @inode: a new inode
+diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
+index 9cf7ca90f3abb..81d6ded243288 100644
+--- a/include/linux/fscrypt.h
++++ b/include/linux/fscrypt.h
+@@ -156,8 +156,6 @@ int fscrypt_ioctl_get_policy(struct file *filp, void __user *arg);
+ int fscrypt_ioctl_get_policy_ex(struct file *filp, void __user *arg);
+ int fscrypt_ioctl_get_nonce(struct file *filp, void __user *arg);
+ int fscrypt_has_permitted_context(struct inode *parent, struct inode *child);
+-int fscrypt_inherit_context(struct inode *parent, struct inode *child,
+-			    void *fs_data, bool preload);
+ int fscrypt_set_context(struct inode *inode, void *fs_data);
  
-+	err = fscrypt_prepare_new_inode(dir, inode, &encrypted);
-+	if (err) {
-+		ubifs_err(c, "fscrypt_prepare_new_inode failed: %i", err);
-+		goto out_iput;
-+	}
-+
- 	switch (mode & S_IFMT) {
- 	case S_IFREG:
- 		inode->i_mapping->a_ops = &ubifs_file_address_operations;
-@@ -131,7 +124,6 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
- 	case S_IFBLK:
- 	case S_IFCHR:
- 		inode->i_op  = &ubifs_file_inode_operations;
--		encrypted = false;
- 		break;
- 	default:
- 		BUG();
-@@ -151,9 +143,8 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
- 		if (c->highest_inum >= INUM_WATERMARK) {
- 			spin_unlock(&c->cnt_lock);
- 			ubifs_err(c, "out of inode numbers");
--			make_bad_inode(inode);
--			iput(inode);
--			return ERR_PTR(-EINVAL);
-+			err = -EINVAL;
-+			goto out_iput;
- 		}
- 		ubifs_warn(c, "running out of inode numbers (current %lu, max %u)",
- 			   (unsigned long)c->highest_inum, INUM_WATERMARK);
-@@ -171,16 +162,19 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
- 	spin_unlock(&c->cnt_lock);
- 
- 	if (encrypted) {
--		err = fscrypt_inherit_context(dir, inode, &encrypted, true);
-+		err = fscrypt_set_context(inode, NULL);
- 		if (err) {
--			ubifs_err(c, "fscrypt_inherit_context failed: %i", err);
--			make_bad_inode(inode);
--			iput(inode);
--			return ERR_PTR(err);
-+			ubifs_err(c, "fscrypt_set_context failed: %i", err);
-+			goto out_iput;
- 		}
- 	}
- 
- 	return inode;
-+
-+out_iput:
-+	make_bad_inode(inode);
-+	iput(inode);
-+	return ERR_PTR(err);
+ struct fscrypt_dummy_context {
+@@ -343,13 +341,6 @@ static inline int fscrypt_has_permitted_context(struct inode *parent,
+ 	return 0;
  }
  
- static int dbg_check_name(const struct ubifs_info *c,
+-static inline int fscrypt_inherit_context(struct inode *parent,
+-					  struct inode *child,
+-					  void *fs_data, bool preload)
+-{
+-	return -EOPNOTSUPP;
+-}
+-
+ static inline int fscrypt_set_context(struct inode *inode, void *fs_data)
+ {
+ 	return -EOPNOTSUPP;
 -- 
 2.28.0
 
