@@ -2,36 +2,36 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 467D6267E9A
-	for <lists+linux-fscrypt@lfdr.de>; Sun, 13 Sep 2020 10:38:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0984C267EC7
+	for <lists+linux-fscrypt@lfdr.de>; Sun, 13 Sep 2020 10:39:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725966AbgIMIiD (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sun, 13 Sep 2020 04:38:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60770 "EHLO mail.kernel.org"
+        id S1726019AbgIMIiz (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sun, 13 Sep 2020 04:38:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725952AbgIMIiA (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sun, 13 Sep 2020 04:38:00 -0400
+        id S1725961AbgIMIiC (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Sun, 13 Sep 2020 04:38:02 -0400
 Received: from sol.attlocal.net (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CCDDB21655;
-        Sun, 13 Sep 2020 08:37:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1F82221974;
+        Sun, 13 Sep 2020 08:37:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1599986279;
-        bh=zejOgicpkvvmMFhZrMwnmiCb7goGZK7Q97xiTR6JSH8=;
+        bh=kONvZL9ec2SBbE4EAel9mci0YCQN1pZc7hmFt/F6qwY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n11IT1hhQb77UCP2bEEcG/beILGMlhRe+fSjff5reIPEWW9kdcATSTO9XHz1V4Chi
-         h4xzhbz1a5sYUiKr6b243U/wP/4X+I4AMc3n+bQXWx/m3bS8jTnUO031AbOxjTg2L7
-         vNC21WM7uk+GO93acsK5nw+857QFhbNttSg0o4uk=
+        b=Dt37vv3oahYtgL3ZyctM6QKg97LdSKU34ArCqE9y/U84AQImmjJjp3IWpIeQl2boS
+         KR5a1PsbxdPL8JYbUIX8BxdraDjfMGMuehFFlmoxAmRLN8Iu8UVTjj0WRil4BKsjzY
+         V8lffoJKumHVSbQOwdTzejpV6lXUi6DoBaK6UQQ4=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-fscrypt@vger.kernel.org
 Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
         linux-mtd@lists.infradead.org, ceph-devel@vger.kernel.org,
         Jeff Layton <jlayton@kernel.org>,
         Daniel Rosenberg <drosen@google.com>
-Subject: [PATCH v2 04/11] f2fs: use fscrypt_prepare_new_inode() and fscrypt_set_context()
-Date:   Sun, 13 Sep 2020 01:36:13 -0700
-Message-Id: <20200913083620.170627-5-ebiggers@kernel.org>
+Subject: [PATCH v2 05/11] ubifs: use fscrypt_prepare_new_inode() and fscrypt_set_context()
+Date:   Sun, 13 Sep 2020 01:36:14 -0700
+Message-Id: <20200913083620.170627-6-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200913083620.170627-1-ebiggers@kernel.org>
 References: <20200913083620.170627-1-ebiggers@kernel.org>
@@ -44,158 +44,103 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Convert f2fs to use the new functions fscrypt_prepare_new_inode() and
-fscrypt_set_context().  This avoids calling
-fscrypt_get_encryption_info() from under f2fs_lock_op(), which can
-deadlock because fscrypt_get_encryption_info() isn't GFP_NOFS-safe.
+Convert ubifs to use the new functions fscrypt_prepare_new_inode() and
+fscrypt_set_context().
 
-For more details about this problem, see the earlier patch
-"fscrypt: add fscrypt_prepare_new_inode() and fscrypt_set_context()".
+Unlike ext4 and f2fs, this doesn't appear to fix any deadlock bug.  But
+it does shorten the code slightly and get all filesystems using the same
+helper functions, so that fscrypt_inherit_context() can be removed.
 
-This also fixes a f2fs-specific deadlock when the filesystem is mounted
-with '-o test_dummy_encryption' and a file is created in an unencrypted
-directory other than the root directory:
+It also fixes an incorrect error code where ubifs returned EPERM instead
+of the expected ENOKEY.
 
-    INFO: task touch:207 blocked for more than 30 seconds.
-          Not tainted 5.9.0-rc4-00099-g729e3d0919844 #2
-    "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-    task:touch           state:D stack:    0 pid:  207 ppid:   167 flags:0x00000000
-    Call Trace:
-     [...]
-     lock_page include/linux/pagemap.h:548 [inline]
-     pagecache_get_page+0x25e/0x310 mm/filemap.c:1682
-     find_or_create_page include/linux/pagemap.h:348 [inline]
-     grab_cache_page include/linux/pagemap.h:424 [inline]
-     f2fs_grab_cache_page fs/f2fs/f2fs.h:2395 [inline]
-     f2fs_grab_cache_page fs/f2fs/f2fs.h:2373 [inline]
-     __get_node_page.part.0+0x39/0x2d0 fs/f2fs/node.c:1350
-     __get_node_page fs/f2fs/node.c:35 [inline]
-     f2fs_get_node_page+0x2e/0x60 fs/f2fs/node.c:1399
-     read_inline_xattr+0x88/0x140 fs/f2fs/xattr.c:288
-     lookup_all_xattrs+0x1f9/0x2c0 fs/f2fs/xattr.c:344
-     f2fs_getxattr+0x9b/0x160 fs/f2fs/xattr.c:532
-     f2fs_get_context+0x1e/0x20 fs/f2fs/super.c:2460
-     fscrypt_get_encryption_info+0x9b/0x450 fs/crypto/keysetup.c:472
-     fscrypt_inherit_context+0x2f/0xb0 fs/crypto/policy.c:640
-     f2fs_init_inode_metadata+0xab/0x340 fs/f2fs/dir.c:540
-     f2fs_add_inline_entry+0x145/0x390 fs/f2fs/inline.c:621
-     f2fs_add_dentry+0x31/0x80 fs/f2fs/dir.c:757
-     f2fs_do_add_link+0xcd/0x130 fs/f2fs/dir.c:798
-     f2fs_add_link fs/f2fs/f2fs.h:3234 [inline]
-     f2fs_create+0x104/0x290 fs/f2fs/namei.c:344
-     lookup_open.isra.0+0x2de/0x500 fs/namei.c:3103
-     open_last_lookups+0xa9/0x340 fs/namei.c:3177
-     path_openat+0x8f/0x1b0 fs/namei.c:3365
-     do_filp_open+0x87/0x130 fs/namei.c:3395
-     do_sys_openat2+0x96/0x150 fs/open.c:1168
-     [...]
-
-That happened because f2fs_add_inline_entry() locks the directory
-inode's page in order to add the dentry, then f2fs_get_context() tries
-to lock it recursively in order to read the encryption xattr.  This
-problem is specific to "test_dummy_encryption" because normally the
-directory's fscrypt_info would be set up prior to
-f2fs_add_inline_entry() in order to encrypt the new filename.
-
-Regardless, the new design fixes this test_dummy_encryption deadlock as
-well as potential deadlocks with fs reclaim, by setting up any needed
-fscrypt_info structs prior to taking so many locks.
-
-The test_dummy_encryption deadlock was reported by Daniel Rosenberg.
-
-Reported-by: Daniel Rosenberg <drosen@google.com>
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/f2fs/dir.c   |  2 +-
- fs/f2fs/f2fs.h  | 23 -----------------------
- fs/f2fs/namei.c |  7 ++++++-
- 3 files changed, 7 insertions(+), 25 deletions(-)
+ fs/ubifs/dir.c | 38 ++++++++++++++++----------------------
+ 1 file changed, 16 insertions(+), 22 deletions(-)
 
-diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
-index b2530b9507bd9..414bc94fbd546 100644
---- a/fs/f2fs/dir.c
-+++ b/fs/f2fs/dir.c
-@@ -537,7 +537,7 @@ struct page *f2fs_init_inode_metadata(struct inode *inode, struct inode *dir,
- 			goto put_error;
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index a9c1f5a9c9bdd..155521e51ac57 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -81,19 +81,6 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
+ 	struct ubifs_inode *ui;
+ 	bool encrypted = false;
  
- 		if (IS_ENCRYPTED(inode)) {
--			err = fscrypt_inherit_context(dir, inode, page, false);
-+			err = fscrypt_set_context(inode, page);
- 			if (err)
- 				goto put_error;
- 		}
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index d9e52a7f3702f..0503371f88ed4 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -1315,13 +1315,6 @@ enum fsync_mode {
- #define IS_IO_TRACED_PAGE(page) (0)
- #endif
- 
--#ifdef CONFIG_FS_ENCRYPTION
--#define DUMMY_ENCRYPTION_ENABLED(sbi) \
--	(unlikely(F2FS_OPTION(sbi).dummy_enc_ctx.ctx != NULL))
--#else
--#define DUMMY_ENCRYPTION_ENABLED(sbi) (0)
--#endif
+-	if (IS_ENCRYPTED(dir)) {
+-		err = fscrypt_get_encryption_info(dir);
+-		if (err) {
+-			ubifs_err(c, "fscrypt_get_encryption_info failed: %i", err);
+-			return ERR_PTR(err);
+-		}
 -
- /* For compression */
- enum compress_algorithm_type {
- 	COMPRESS_LZO,
-@@ -4022,22 +4015,6 @@ static inline bool f2fs_lfs_mode(struct f2fs_sb_info *sbi)
- 	return F2FS_OPTION(sbi).fs_mode == FS_MODE_LFS;
+-		if (!fscrypt_has_encryption_key(dir))
+-			return ERR_PTR(-EPERM);
+-
+-		encrypted = true;
+-	}
+-
+ 	inode = new_inode(c->vfs_sb);
+ 	ui = ubifs_inode(inode);
+ 	if (!inode)
+@@ -112,6 +99,12 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
+ 			 current_time(inode);
+ 	inode->i_mapping->nrpages = 0;
+ 
++	err = fscrypt_prepare_new_inode(dir, inode, &encrypted);
++	if (err) {
++		ubifs_err(c, "fscrypt_prepare_new_inode failed: %i", err);
++		goto out_iput;
++	}
++
+ 	switch (mode & S_IFMT) {
+ 	case S_IFREG:
+ 		inode->i_mapping->a_ops = &ubifs_file_address_operations;
+@@ -131,7 +124,6 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
+ 	case S_IFBLK:
+ 	case S_IFCHR:
+ 		inode->i_op  = &ubifs_file_inode_operations;
+-		encrypted = false;
+ 		break;
+ 	default:
+ 		BUG();
+@@ -151,9 +143,8 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
+ 		if (c->highest_inum >= INUM_WATERMARK) {
+ 			spin_unlock(&c->cnt_lock);
+ 			ubifs_err(c, "out of inode numbers");
+-			make_bad_inode(inode);
+-			iput(inode);
+-			return ERR_PTR(-EINVAL);
++			err = -EINVAL;
++			goto out_iput;
+ 		}
+ 		ubifs_warn(c, "running out of inode numbers (current %lu, max %u)",
+ 			   (unsigned long)c->highest_inum, INUM_WATERMARK);
+@@ -171,16 +162,19 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
+ 	spin_unlock(&c->cnt_lock);
+ 
+ 	if (encrypted) {
+-		err = fscrypt_inherit_context(dir, inode, &encrypted, true);
++		err = fscrypt_set_context(inode, NULL);
+ 		if (err) {
+-			ubifs_err(c, "fscrypt_inherit_context failed: %i", err);
+-			make_bad_inode(inode);
+-			iput(inode);
+-			return ERR_PTR(err);
++			ubifs_err(c, "fscrypt_set_context failed: %i", err);
++			goto out_iput;
+ 		}
+ 	}
+ 
+ 	return inode;
++
++out_iput:
++	make_bad_inode(inode);
++	iput(inode);
++	return ERR_PTR(err);
  }
  
--static inline bool f2fs_may_encrypt(struct inode *dir, struct inode *inode)
--{
--#ifdef CONFIG_FS_ENCRYPTION
--	struct f2fs_sb_info *sbi = F2FS_I_SB(dir);
--	umode_t mode = inode->i_mode;
--
--	/*
--	 * If the directory encrypted or dummy encryption enabled,
--	 * then we should encrypt the inode.
--	 */
--	if (IS_ENCRYPTED(dir) || DUMMY_ENCRYPTION_ENABLED(sbi))
--		return (S_ISREG(mode) || S_ISDIR(mode) || S_ISLNK(mode));
--#endif
--	return false;
--}
--
- static inline bool f2fs_may_compress(struct inode *inode)
- {
- 	if (IS_SWAPFILE(inode) || f2fs_is_pinned_file(inode) ||
-diff --git a/fs/f2fs/namei.c b/fs/f2fs/namei.c
-index 84e4bbc1a64de..45f324511a19e 100644
---- a/fs/f2fs/namei.c
-+++ b/fs/f2fs/namei.c
-@@ -28,6 +28,7 @@ static struct inode *f2fs_new_inode(struct inode *dir, umode_t mode)
- 	nid_t ino;
- 	struct inode *inode;
- 	bool nid_free = false;
-+	bool encrypt = false;
- 	int xattr_size = 0;
- 	int err;
- 
-@@ -69,13 +70,17 @@ static struct inode *f2fs_new_inode(struct inode *dir, umode_t mode)
- 		F2FS_I(inode)->i_projid = make_kprojid(&init_user_ns,
- 							F2FS_DEF_PROJID);
- 
-+	err = fscrypt_prepare_new_inode(dir, inode, &encrypt);
-+	if (err)
-+		goto fail_drop;
-+
- 	err = dquot_initialize(inode);
- 	if (err)
- 		goto fail_drop;
- 
- 	set_inode_flag(inode, FI_NEW_INODE);
- 
--	if (f2fs_may_encrypt(dir, inode))
-+	if (encrypt)
- 		f2fs_set_encrypted_inode(inode);
- 
- 	if (f2fs_sb_has_extra_attr(sbi)) {
+ static int dbg_check_name(const struct ubifs_info *c,
 -- 
 2.28.0
 
