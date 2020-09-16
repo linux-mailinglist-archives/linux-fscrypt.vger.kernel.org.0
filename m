@@ -2,39 +2,41 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C9AC26C41B
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 16 Sep 2020 17:24:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5FC626C666
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 16 Sep 2020 19:48:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726312AbgIPPYB (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 16 Sep 2020 11:24:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43362 "EHLO mail.kernel.org"
+        id S1727450AbgIPRru (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 16 Sep 2020 13:47:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726332AbgIPPVg (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 16 Sep 2020 11:21:36 -0400
+        id S1727426AbgIPRqW (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:46:22 -0400
 Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4249922241;
-        Wed, 16 Sep 2020 12:41:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 75E2720872;
+        Wed, 16 Sep 2020 12:16:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600260071;
-        bh=wpolOvjqW37XvCaJsodanttdPRliCEAotM78Hsp5R6E=;
+        s=default; t=1600258569;
+        bh=YwjrKFeCizHh1E75zdoKPRol7rdCFhBLd+n6EntX4lI=;
         h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=aJoKnzTWuJHYvtYXsXcG8i+W/LVtpUs/iZfGMiRqVYgzR3n+mK7h+dy3F5UuMSojv
-         LhAevAzsHyMqoFGqxCnS48ReY4mvuZnt32iFSrRT0CoW2FZZp/lmSV1H0N4Q+AfeEc
-         jIB9yB3oh7OKBaGw1SHlS2Qz1sJRu3pGJWRAuCy4=
-Message-ID: <37da4f39a987e66bad001f4db75a43661de53919.camel@kernel.org>
-Subject: Re: [RFC PATCH v3 09/16] ceph: preallocate inode for ops that may
- create one
+        b=FwF973/bGsjwAIRYwZ8MTf9VW4AXnViN3IzTm6htJ5hx4QQ6WGUPbInOY5+9thJ6H
+         6eHZctedvKR0eMs6oQijn9pR+WUGT90ACi9iXNCvKHyNUK+4m4ZnXjsQLxX8kESQkC
+         MHfYdGTqEpx82TcSavPRUzvUhvL3E67NiSsSfq8Q=
+Message-ID: <39809abc369f810c9b227f50ae34a33b51a51f01.camel@kernel.org>
+Subject: Re: [RFC PATCH v3 14/16] ceph: add support to readdir for encrypted
+ filenames
 From:   Jeff Layton <jlayton@kernel.org>
 To:     Eric Biggers <ebiggers@kernel.org>
 Cc:     ceph-devel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         linux-fsdevel@vger.kernel.org
-Date:   Wed, 16 Sep 2020 08:41:10 -0400
-In-Reply-To: <20200915013041.GI899@sol.localdomain>
+Date:   Wed, 16 Sep 2020 08:16:08 -0400
+In-Reply-To: <20200915204018.GA3999121@gmail.com>
 References: <20200914191707.380444-1-jlayton@kernel.org>
-         <20200914191707.380444-10-jlayton@kernel.org>
-         <20200915013041.GI899@sol.localdomain>
+         <20200914191707.380444-15-jlayton@kernel.org>
+         <20200915015719.GL899@sol.localdomain>
+         <bf448095f9d675bad3adb0ddc2d7652625824bc6.camel@kernel.org>
+         <20200915204018.GA3999121@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
@@ -44,90 +46,40 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, 2020-09-14 at 18:30 -0700, Eric Biggers wrote:
-> On Mon, Sep 14, 2020 at 03:17:00PM -0400, Jeff Layton wrote:
-> > @@ -663,6 +658,7 @@ int ceph_atomic_open(struct inode *dir, struct dentry *dentry,
-> >  	struct ceph_fs_client *fsc = ceph_sb_to_client(dir->i_sb);
-> >  	struct ceph_mds_client *mdsc = fsc->mdsc;
-> >  	struct ceph_mds_request *req;
-> > +	struct inode *new_inode = NULL;
-> >  	struct dentry *dn;
-> >  	struct ceph_acl_sec_ctx as_ctx = {};
-> >  	bool try_async = ceph_test_mount_opt(fsc, ASYNC_DIROPS);
-> > @@ -675,21 +671,21 @@ int ceph_atomic_open(struct inode *dir, struct dentry *dentry,
-> >  
-> >  	if (dentry->d_name.len > NAME_MAX)
-> >  		return -ENAMETOOLONG;
-> > -
-> > +retry:
-> >  	if (flags & O_CREAT) {
-> >  		if (ceph_quota_is_max_files_exceeded(dir))
-> >  			return -EDQUOT;
-> > -		err = ceph_pre_init_acls(dir, &mode, &as_ctx);
-> > -		if (err < 0)
-> > -			return err;
-> > -		err = ceph_security_init_secctx(dentry, mode, &as_ctx);
-> > -		if (err < 0)
-> > +
-> > +		new_inode = ceph_new_inode(dir, dentry, &mode, &as_ctx);
-> > +		if (IS_ERR(new_inode)) {
-> > +			err = PTR_ERR(new_inode);
-> >  			goto out_ctx;
-> > +		}
+On Tue, 2020-09-15 at 13:40 -0700, Eric Biggers wrote:
+> On Tue, Sep 15, 2020 at 09:27:49AM -0400, Jeff Layton wrote:
+> > > > +	}
+> > > > +
+> > > > +	declen = fscrypt_base64_decode(name, len, tname->name);
+> > > > +	if (declen < 0 || declen > NAME_MAX) {
+> > > > +		ret = -EIO;
+> > > > +		goto out;
+> > > > +	}
+> > > 
+> > > declen <= 0, to cover the empty name case.
+> > > 
+> > > Also, is there a point in checking for > NAME_MAX?
+> > > 
+> > 
+> > IDK. We're getting these strings from the MDS and they could end up
+> > being corrupt if there are bugs there (or if the MDS is compromised). 
+> > Of course, if we get a name longer than NAME_MAX then we've overrun the
+> > buffer.
+> > 
+> > Maybe we should add a maxlen parameter to fscrypt_base64_encode/decode ?
+> > Or maybe I should just have fscrypt_fname_alloc_buffer allocate a buffer
+> > the same size as "len"? It might be a little larger than necessary, but
+> > that would be safer.
 > 
-> Is the 'goto out_ctx;' correct here?  It looks like it should be
-> 'return PTR_ERR(new_inode)'
+> How about checking that the base64-encoded filename is <= BASE64_CHARS(NAME_MAX)
+> in length?  Then decoding it can't give more than NAME_MAX bytes.
+> 
+> fscrypt_setup_filename() does a similar check when decoding a no-key name.
 > 
 
-Yes, it's correct...see below.
+Good idea. I'll roll that in.
 
-> > +/**
-> > + * ceph_new_inode - allocate a new inode in advance of an expected create
-> > + * @dir: parent directory for new inode
-> > + * @mode: mode of new inode
-> > + */
-> > +struct inode *ceph_new_inode(struct inode *dir, struct dentry *dentry,
-> > +			     umode_t *mode, struct ceph_acl_sec_ctx *as_ctx)
-> 
-> Some parameters aren't documented.
-> 
-
-Thanks, fixed.
-
-> > +	int err;
-> >  	struct inode *inode;
-> >  
-> > -	inode = iget5_locked(sb, (unsigned long)vino.ino, ceph_ino_compare,
-> > -			     ceph_set_ino_cb, &vino);
-> > +	inode = new_inode_pseudo(dir->i_sb);
-> >  	if (!inode)
-> >  		return ERR_PTR(-ENOMEM);
-> >  
-> > +	if (!S_ISLNK(*mode)) {
-> > +		err = ceph_pre_init_acls(dir, mode, as_ctx);
-> > +		if (err < 0)
-> > +			goto out_err;
-> > +	}
-> > +
-> > +	err = ceph_security_init_secctx(dentry, *mode, as_ctx);
-> > +	if (err < 0)
-> > +		goto out_err;
-> > +
-> > +	inode->i_state = 0;
-> > +	inode->i_mode = *mode;
-> > +	return inode;
-> > +out_err:
-> > +	iput(inode);
-> > +	return ERR_PTR(err);
-> > +}
-> 
-> Should this be freeing anything from the ceph_acl_sec_ctx on error?
-> 
-
-For now, I'm leaving that to the callers. It's arguably uglier to do it
-that way but ceph_release_acl_sec_ctx needs to be called at the end of
-the callers anyway, and it's not currently idempotent.
-
+Thanks,
 -- 
 Jeff Layton <jlayton@kernel.org>
 
