@@ -2,39 +2,39 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A9E126B7B9
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 16 Sep 2020 02:28:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C9AC26C41B
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 16 Sep 2020 17:24:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726769AbgIOOGq (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 15 Sep 2020 10:06:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56262 "EHLO mail.kernel.org"
+        id S1726312AbgIPPYB (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 16 Sep 2020 11:24:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43362 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726748AbgIOOFz (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:05:55 -0400
+        id S1726332AbgIPPVg (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 16 Sep 2020 11:21:36 -0400
 Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 84076206A1;
-        Tue, 15 Sep 2020 14:05:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4249922241;
+        Wed, 16 Sep 2020 12:41:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600178755;
-        bh=WN/QqxErWebXTJi5I5vXL5r6WSAz9r37RH/cAQ3I5Wo=;
+        s=default; t=1600260071;
+        bh=wpolOvjqW37XvCaJsodanttdPRliCEAotM78Hsp5R6E=;
         h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=h0tpSe8pJNaC0/c087YTJPu3ap6lZ8/1juxsuzlQ5B2A5CFrXj4IrYpmTRaht2Gsi
-         Rlo7U+Udi/RFveE9rLdgEGcckKfwHPDryT/Am348XF8LB26bceRhhMOl8YMBwEbC+g
-         lV/SYiB5sLfWufPbvOEGh5VjW//dUaHRijBRC8ww=
-Message-ID: <5bdc7608df4ff480c07eb6a0e85514ebd986e5d9.camel@kernel.org>
-Subject: Re: [RFC PATCH v3 16/16] ceph: create symlinks with encrypted and
- base64-encoded targets
+        b=aJoKnzTWuJHYvtYXsXcG8i+W/LVtpUs/iZfGMiRqVYgzR3n+mK7h+dy3F5UuMSojv
+         LhAevAzsHyMqoFGqxCnS48ReY4mvuZnt32iFSrRT0CoW2FZZp/lmSV1H0N4Q+AfeEc
+         jIB9yB3oh7OKBaGw1SHlS2Qz1sJRu3pGJWRAuCy4=
+Message-ID: <37da4f39a987e66bad001f4db75a43661de53919.camel@kernel.org>
+Subject: Re: [RFC PATCH v3 09/16] ceph: preallocate inode for ops that may
+ create one
 From:   Jeff Layton <jlayton@kernel.org>
 To:     Eric Biggers <ebiggers@kernel.org>
 Cc:     ceph-devel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         linux-fsdevel@vger.kernel.org
-Date:   Tue, 15 Sep 2020 10:05:53 -0400
-In-Reply-To: <20200915020725.GM899@sol.localdomain>
+Date:   Wed, 16 Sep 2020 08:41:10 -0400
+In-Reply-To: <20200915013041.GI899@sol.localdomain>
 References: <20200914191707.380444-1-jlayton@kernel.org>
-         <20200914191707.380444-17-jlayton@kernel.org>
-         <20200915020725.GM899@sol.localdomain>
+         <20200914191707.380444-10-jlayton@kernel.org>
+         <20200915013041.GI899@sol.localdomain>
 Content-Type: text/plain; charset="UTF-8"
 User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
@@ -44,113 +44,90 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, 2020-09-14 at 19:07 -0700, Eric Biggers wrote:
-> On Mon, Sep 14, 2020 at 03:17:07PM -0400, Jeff Layton wrote:
-> > +	if (IS_ENCRYPTED(req->r_new_inode)) {
-> > +		int len = strlen(dest);
-> > +
-> > +		err = fscrypt_prepare_symlink(dir, dest, len, PATH_MAX, &osd_link);
-> > +		if (err)
-> > +			goto out_req;
-> > +
-> > +		err = fscrypt_encrypt_symlink(req->r_new_inode, dest, len, &osd_link);
-> > +		if (err)
-> > +			goto out_req;
-> > +
-> > +		req->r_path2 = kmalloc(FSCRYPT_BASE64_CHARS(osd_link.len) + 1, GFP_KERNEL);
-> 
-> osd_link.len includes a null terminator.  It seems that's not what's wanted
-> here, and you should be subtracting 1 here.
-> 
-> (fscrypt_prepare_symlink() maybe should exclude the null terminator from the
-> length instead.  But for the other filesystems it was easier to include it...)
-> 
-
-Got it. Fixed.
-
-> > @@ -996,26 +995,39 @@ int ceph_fill_inode(struct inode *inode, struct page *locked_page,
-> >  		inode->i_fop = &ceph_file_fops;
-> >  		break;
-> >  	case S_IFLNK:
-> > -		inode->i_op = &ceph_symlink_iops;
-> >  		if (!ci->i_symlink) {
-> >  			u32 symlen = iinfo->symlink_len;
-> >  			char *sym;
+On Mon, 2020-09-14 at 18:30 -0700, Eric Biggers wrote:
+> On Mon, Sep 14, 2020 at 03:17:00PM -0400, Jeff Layton wrote:
+> > @@ -663,6 +658,7 @@ int ceph_atomic_open(struct inode *dir, struct dentry *dentry,
+> >  	struct ceph_fs_client *fsc = ceph_sb_to_client(dir->i_sb);
+> >  	struct ceph_mds_client *mdsc = fsc->mdsc;
+> >  	struct ceph_mds_request *req;
+> > +	struct inode *new_inode = NULL;
+> >  	struct dentry *dn;
+> >  	struct ceph_acl_sec_ctx as_ctx = {};
+> >  	bool try_async = ceph_test_mount_opt(fsc, ASYNC_DIROPS);
+> > @@ -675,21 +671,21 @@ int ceph_atomic_open(struct inode *dir, struct dentry *dentry,
 > >  
-> >  			spin_unlock(&ci->i_ceph_lock);
-> >  
-> > -			if (symlen != i_size_read(inode)) {
-> > -				pr_err("%s %llx.%llx BAD symlink "
-> > -					"size %lld\n", __func__,
-> > -					ceph_vinop(inode),
-> > -					i_size_read(inode));
-> > +			if (IS_ENCRYPTED(inode)) {
-> > +				/* Do base64 decode so that we get the right size (maybe?) */
-> > +				err = -ENOMEM;
-> > +				sym = kmalloc(symlen + 1, GFP_NOFS);
-> > +				if (!sym)
-> > +					goto out;
+> >  	if (dentry->d_name.len > NAME_MAX)
+> >  		return -ENAMETOOLONG;
+> > -
+> > +retry:
+> >  	if (flags & O_CREAT) {
+> >  		if (ceph_quota_is_max_files_exceeded(dir))
+> >  			return -EDQUOT;
+> > -		err = ceph_pre_init_acls(dir, &mode, &as_ctx);
+> > -		if (err < 0)
+> > -			return err;
+> > -		err = ceph_security_init_secctx(dentry, mode, &as_ctx);
+> > -		if (err < 0)
 > > +
-> > +				symlen = fscrypt_base64_decode(iinfo->symlink, symlen, sym);
-> > +				/*
-> > +				 * i_size as reported by the MDS may be wrong, due to base64
-> > +				 * inflation and padding. Fix it up here.
-> > +				 */
-> >  				i_size_write(inode, symlen);
+> > +		new_inode = ceph_new_inode(dir, dentry, &mode, &as_ctx);
+> > +		if (IS_ERR(new_inode)) {
+> > +			err = PTR_ERR(new_inode);
+> >  			goto out_ctx;
+> > +		}
 > 
-> Note that fscrypt_base64_decode() can fail (return -1) if the input is not valid
-> base64.  That isn't being handled here.
-> 
-
-Thanks, fixed. It'll return -EIO in that case now.
-
-> > +static const char *ceph_encrypted_get_link(struct dentry *dentry, struct inode *inode,
-> > +					   struct delayed_call *done)
-> > +{
-> > +	struct ceph_inode_info *ci = ceph_inode(inode);
-> > +
-> > +	if (!dentry)
-> > +		return ERR_PTR(-ECHILD);
-> > +
-> > +	return fscrypt_get_symlink(inode, ci->i_symlink, ksize(ci->i_symlink), done);
-> 
-> Using ksize() seems wrong here, since that would allow fscrypt_get_symlink() to
-> read beyond the part of the buffer that is actually initialized.
+> Is the 'goto out_ctx;' correct here?  It looks like it should be
+> 'return PTR_ERR(new_inode)'
 > 
 
-Is that actually a problem? I did have an earlier patch that carried
-around the length, but it didn't seem to be necessary.
+Yes, it's correct...see below.
 
-ISTM that that might end up decrypting more data than is actually
-needed, but eventually there will be a NULL terminator in the data and
-the rest would be ignored.
-
-If it is a problem, then we should probably change the comment header
-over fscrypt_get_symlink. It currently says:
-
-   * @max_size: size of @caddr buffer
-
-...which is another reason why I figured using ksize there was OK.
-
-> > -static const struct inode_operations ceph_symlink_iops = {
-> > +const struct inode_operations ceph_symlink_iops = {
-> >  	.get_link = simple_get_link,
-> >  	.setattr = ceph_setattr,
-> >  	.getattr = ceph_getattr,
-> >  	.listxattr = ceph_listxattr,
-> >  };
-> >  
-> > +const struct inode_operations ceph_encrypted_symlink_iops = {
-> > +	.get_link = ceph_encrypted_get_link,
-> > +	.setattr = ceph_setattr,
-> > +	.getattr = ceph_getattr,
-> > +	.listxattr = ceph_listxattr,
-> > +};
+> > +/**
+> > + * ceph_new_inode - allocate a new inode in advance of an expected create
+> > + * @dir: parent directory for new inode
+> > + * @mode: mode of new inode
+> > + */
+> > +struct inode *ceph_new_inode(struct inode *dir, struct dentry *dentry,
+> > +			     umode_t *mode, struct ceph_acl_sec_ctx *as_ctx)
 > 
-> These don't need to be made global, as they're only used in fs/ceph/inode.c.
+> Some parameters aren't documented.
 > 
 
 Thanks, fixed.
+
+> > +	int err;
+> >  	struct inode *inode;
+> >  
+> > -	inode = iget5_locked(sb, (unsigned long)vino.ino, ceph_ino_compare,
+> > -			     ceph_set_ino_cb, &vino);
+> > +	inode = new_inode_pseudo(dir->i_sb);
+> >  	if (!inode)
+> >  		return ERR_PTR(-ENOMEM);
+> >  
+> > +	if (!S_ISLNK(*mode)) {
+> > +		err = ceph_pre_init_acls(dir, mode, as_ctx);
+> > +		if (err < 0)
+> > +			goto out_err;
+> > +	}
+> > +
+> > +	err = ceph_security_init_secctx(dentry, *mode, as_ctx);
+> > +	if (err < 0)
+> > +		goto out_err;
+> > +
+> > +	inode->i_state = 0;
+> > +	inode->i_mode = *mode;
+> > +	return inode;
+> > +out_err:
+> > +	iput(inode);
+> > +	return ERR_PTR(err);
+> > +}
+> 
+> Should this be freeing anything from the ceph_acl_sec_ctx on error?
+> 
+
+For now, I'm leaving that to the callers. It's arguably uglier to do it
+that way but ceph_release_acl_sec_ctx needs to be called at the end of
+the callers anyway, and it's not currently idempotent.
+
 -- 
 Jeff Layton <jlayton@kernel.org>
 
