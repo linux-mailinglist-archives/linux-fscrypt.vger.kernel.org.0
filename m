@@ -2,74 +2,87 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3A2626CA55
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 16 Sep 2020 21:56:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7788426CD6C
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 16 Sep 2020 22:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728132AbgIPTyE (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 16 Sep 2020 15:54:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48200 "EHLO mail.kernel.org"
+        id S1728614AbgIPU7N (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 16 Sep 2020 16:59:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727219AbgIPRgU (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:36:20 -0400
-Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        id S1726324AbgIPQbe (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 16 Sep 2020 12:31:34 -0400
+Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ABEF4206A5;
-        Wed, 16 Sep 2020 17:36:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B4A8722228;
+        Wed, 16 Sep 2020 12:18:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600277764;
-        bh=yfe0B96TjNHpcAsawqjrrf7+IjHmy67vaiqa85BWIAA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I+hC2nQ+ZOPA571P2RhI3RjRHIeqnS8CFYsB1rjy8HQTS+a2VSX+648dcZXFLEPOB
-         WDnTByDdKVTjchwSYR66xKed5nxfUPFjAZ0Qm1LU4C6e1Y7zgr/cuvQgnqM/OC4A1Y
-         AtnlSxj8RyhCEw2Sq5daEBAdbWDe4O2SLXgVpGFg=
-Date:   Wed, 16 Sep 2020 10:36:03 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Jeff Layton <jlayton@kernel.org>
+        s=default; t=1600258712;
+        bh=dIAu59T4SYU/adnWE9ylH53MOsWZJPlPNzf33P+w0G8=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=itdFKVte18xxHKQKEGBDOuEd+lfcVV0N1Kwkm+BDnOizG2ZdjWdfrsEcVVm4wOrFI
+         GI4GMX2aRnIM0XULDX2My5Tbsk+KZwQn1De6LJED4xg3DI4Z4H0+VUE2afO1KWYTyX
+         FuGV10umftDikdoyL2ZgI5TwZ/I6odqKK0QQbG+k=
+Message-ID: <6889fd7528052f014b4c7fe5b3ac0d0e22fa8cc0.camel@kernel.org>
+Subject: Re: [RFC PATCH v3 10/16] ceph: add routine to create context prior
+ to RPC
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>
 Cc:     ceph-devel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Xiubo Li <xiubli@redhat.com>
-Subject: Re: [RFC PATCH v3 12/16] ceph: add encrypted fname handling to
- ceph_mdsc_build_path
-Message-ID: <20200916173603.GA4373@sol.localdomain>
+        linux-fsdevel@vger.kernel.org
+Date:   Wed, 16 Sep 2020 08:18:30 -0400
+In-Reply-To: <20200915013724.GJ899@sol.localdomain>
 References: <20200914191707.380444-1-jlayton@kernel.org>
- <20200914191707.380444-13-jlayton@kernel.org>
- <20200915014159.GK899@sol.localdomain>
- <bd9257732cfd98ee30ccc151125d21d6955d6f66.camel@kernel.org>
+         <20200914191707.380444-11-jlayton@kernel.org>
+         <20200915013724.GJ899@sol.localdomain>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bd9257732cfd98ee30ccc151125d21d6955d6f66.camel@kernel.org>
+Content-Transfer-Encoding: 7bit
 Sender: linux-fscrypt-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 08:30:01AM -0400, Jeff Layton wrote:
+On Mon, 2020-09-14 at 18:37 -0700, Eric Biggers wrote:
+> On Mon, Sep 14, 2020 at 03:17:01PM -0400, Jeff Layton wrote:
+> > diff --git a/fs/ceph/crypto.h b/fs/ceph/crypto.h
+> > index b5f38ee80553..c1b6ec4b2961 100644
+> > --- a/fs/ceph/crypto.h
+> > +++ b/fs/ceph/crypto.h
+> > @@ -11,6 +11,8 @@
+> >  #define	CEPH_XATTR_NAME_ENCRYPTION_CONTEXT	"encryption.ctx"
+> >  
+> >  void ceph_fscrypt_set_ops(struct super_block *sb);
+> > +int ceph_fscrypt_prepare_context(struct inode *dir, struct inode *inode,
+> > +				 struct ceph_acl_sec_ctx *as);
+> >  
+> >  #else /* CONFIG_FS_ENCRYPTION */
+> >  
+> > @@ -19,6 +21,12 @@ static inline int ceph_fscrypt_set_ops(struct super_block *sb)
+> >  	return 0;
+> >  }
+> >  
+> > +static inline int ceph_fscrypt_prepare_context(struct inode *dir, struct inode *inode,
+> > +						struct ceph_acl_sec_ctx *as)
+> > +{
+> > +	return 0;
+> > +}
+> > +
+> >  #endif /* CONFIG_FS_ENCRYPTION */
 > 
-> It sounds like we'll probably need to stabilize some version of the
-> nokey name so that we can allow the MDS to look them up. Would it be a
-> problem for us to use the current version of the nokey name format for
-> this, or would it be better to come up with some other distinct format
-> for this?
+> Seems there should at least be something that prevents you from creating a file
+> in an encrypted directory when !CONFIG_FS_ENCRYPTION.
+> 
+> The other filesystems use fscrypt_prepare_new_inode() for this; it returns
+> EOPNOTSUPP when IS_ENCRYPTED(dir).
 > 
 
-You could use the current version, with the dirhash field changed from u32 to
-__le32 so that it doesn't depend on CPU endianness.  But you should also
-consider using just base64(SHA256(filename)).  The SHA256(filename) approach
-wouldn't include a dirhash, and it would handle short filenames less
-efficiently.  However, it would be simpler.  Would it be any easier for you?
+Once we have the MDS support done, we should be able to make it reject
+create requests from clients that don't support the new feature flag,
+but denying it on the client is more efficient. Fixed in my tree.
 
-I'm not sure which would be better from a fs/crypto/ perspective.  For *now*, it
-would be easier if you just used the current 'struct fscrypt_nokey_name'.
-However, anything you use would be set in stone, whereas as-is the format can be
-changed at any time.  In fact, we changed it recently; see commit edc440e3d27f.
+Thanks!
+-- 
+Jeff Layton <jlayton@kernel.org>
 
-If we happen to change the nokey name in the future for local filesystems (say,
-to use BLAKE2 instead of SHA256, or to support longer dirhashes), then it would
-be easier if the stable format were just SHA256(filename).
-
-It's not a huge deal though.  So if e.g. you like that the current format avoids
-the cryptographic hash for the vast majority of filenames, and if you're fine
-with the slightly increased complexity, you can just use it.
-
-- Eric
