@@ -2,36 +2,36 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C56F26D24E
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 17 Sep 2020 06:21:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA20226D22F
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 17 Sep 2020 06:20:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726285AbgIQEU6 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 17 Sep 2020 00:20:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33838 "EHLO mail.kernel.org"
+        id S1726185AbgIQEUf (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 17 Sep 2020 00:20:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726154AbgIQEUv (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 17 Sep 2020 00:20:51 -0400
+        id S1726115AbgIQEUd (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 17 Sep 2020 00:20:33 -0400
 Received: from sol.attlocal.net (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 53BB021D1B;
+        by mail.kernel.org (Postfix) with ESMTPSA id 9750121D41;
         Thu, 17 Sep 2020 04:13:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1600315989;
-        bh=kONvZL9ec2SBbE4EAel9mci0YCQN1pZc7hmFt/F6qwY=;
+        bh=pcuDTH9STD/mcWVjY9xk4V3olh0O7QdLKYJXVZYhQo8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UV/WrbzmMh/m1GcJfVh/IfrXQYzbYI++xzjHNF1UVeIGheoZk8x4jPK18g8sIGotG
-         CbC5PHYju1c79ieBLnAf26mkx6hB5TXPaWBq2uxvQ+NKofgZXvuUg5y5OThKsE4CBu
-         fosUQqDRp3/xsmxSqVSrTDuIO8vQ3CRlBZZ7H3ws=
+        b=WjOZn/iFKAnidcOCFe+ysawmOaq+wZI9ahIoTC+JpTCuGheF3T5BHxOwXh1kL3zCZ
+         3bymu2kDogYINSoFHUgY+sOPCKrKs0XS/Hi5wozjy5gL6kj6NUPkMa8IZcCNDveVRT
+         WvDDwm829kBpdreaI9WfPgzWgY3w2UuXhMRU3Kk4=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-fscrypt@vger.kernel.org
 Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
         linux-mtd@lists.infradead.org, ceph-devel@vger.kernel.org,
         Jeff Layton <jlayton@kernel.org>,
         Daniel Rosenberg <drosen@google.com>
-Subject: [PATCH v3 05/13] ubifs: use fscrypt_prepare_new_inode() and fscrypt_set_context()
-Date:   Wed, 16 Sep 2020 21:11:28 -0700
-Message-Id: <20200917041136.178600-6-ebiggers@kernel.org>
+Subject: [PATCH v3 06/13] fscrypt: adjust logging for in-creation inodes
+Date:   Wed, 16 Sep 2020 21:11:29 -0700
+Message-Id: <20200917041136.178600-7-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200917041136.178600-1-ebiggers@kernel.org>
 References: <20200917041136.178600-1-ebiggers@kernel.org>
@@ -43,103 +43,63 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Convert ubifs to use the new functions fscrypt_prepare_new_inode() and
-fscrypt_set_context().
-
-Unlike ext4 and f2fs, this doesn't appear to fix any deadlock bug.  But
-it does shorten the code slightly and get all filesystems using the same
-helper functions, so that fscrypt_inherit_context() can be removed.
-
-It also fixes an incorrect error code where ubifs returned EPERM instead
-of the expected ENOKEY.
+Now that a fscrypt_info may be set up for inodes that are currently
+being created and haven't yet had an inode number assigned, avoid
+logging confusing messages about "inode 0".
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/ubifs/dir.c | 38 ++++++++++++++++----------------------
- 1 file changed, 16 insertions(+), 22 deletions(-)
+ fs/crypto/crypto.c  | 4 +++-
+ fs/crypto/keyring.c | 9 +++++++--
+ 2 files changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index a9c1f5a9c9bdd..155521e51ac57 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -81,19 +81,6 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
- 	struct ubifs_inode *ui;
- 	bool encrypted = false;
+diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
+index 9212325763b0f..4ef3f714046aa 100644
+--- a/fs/crypto/crypto.c
++++ b/fs/crypto/crypto.c
+@@ -343,9 +343,11 @@ void fscrypt_msg(const struct inode *inode, const char *level,
+ 	va_start(args, fmt);
+ 	vaf.fmt = fmt;
+ 	vaf.va = &args;
+-	if (inode)
++	if (inode && inode->i_ino)
+ 		printk("%sfscrypt (%s, inode %lu): %pV\n",
+ 		       level, inode->i_sb->s_id, inode->i_ino, &vaf);
++	else if (inode)
++		printk("%sfscrypt (%s): %pV\n", level, inode->i_sb->s_id, &vaf);
+ 	else
+ 		printk("%sfscrypt: %pV\n", level, &vaf);
+ 	va_end(args);
+diff --git a/fs/crypto/keyring.c b/fs/crypto/keyring.c
+index e74f239c44280..53cc552a7b8fd 100644
+--- a/fs/crypto/keyring.c
++++ b/fs/crypto/keyring.c
+@@ -817,6 +817,7 @@ static int check_for_busy_inodes(struct super_block *sb,
+ 	struct list_head *pos;
+ 	size_t busy_count = 0;
+ 	unsigned long ino;
++	char ino_str[50] = "";
  
--	if (IS_ENCRYPTED(dir)) {
--		err = fscrypt_get_encryption_info(dir);
--		if (err) {
--			ubifs_err(c, "fscrypt_get_encryption_info failed: %i", err);
--			return ERR_PTR(err);
--		}
--
--		if (!fscrypt_has_encryption_key(dir))
--			return ERR_PTR(-EPERM);
--
--		encrypted = true;
--	}
--
- 	inode = new_inode(c->vfs_sb);
- 	ui = ubifs_inode(inode);
- 	if (!inode)
-@@ -112,6 +99,12 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
- 			 current_time(inode);
- 	inode->i_mapping->nrpages = 0;
+ 	spin_lock(&mk->mk_decrypted_inodes_lock);
  
-+	err = fscrypt_prepare_new_inode(dir, inode, &encrypted);
-+	if (err) {
-+		ubifs_err(c, "fscrypt_prepare_new_inode failed: %i", err);
-+		goto out_iput;
-+	}
-+
- 	switch (mode & S_IFMT) {
- 	case S_IFREG:
- 		inode->i_mapping->a_ops = &ubifs_file_address_operations;
-@@ -131,7 +124,6 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
- 	case S_IFBLK:
- 	case S_IFCHR:
- 		inode->i_op  = &ubifs_file_inode_operations;
--		encrypted = false;
- 		break;
- 	default:
- 		BUG();
-@@ -151,9 +143,8 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
- 		if (c->highest_inum >= INUM_WATERMARK) {
- 			spin_unlock(&c->cnt_lock);
- 			ubifs_err(c, "out of inode numbers");
--			make_bad_inode(inode);
--			iput(inode);
--			return ERR_PTR(-EINVAL);
-+			err = -EINVAL;
-+			goto out_iput;
- 		}
- 		ubifs_warn(c, "running out of inode numbers (current %lu, max %u)",
- 			   (unsigned long)c->highest_inum, INUM_WATERMARK);
-@@ -171,16 +162,19 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
- 	spin_unlock(&c->cnt_lock);
- 
- 	if (encrypted) {
--		err = fscrypt_inherit_context(dir, inode, &encrypted, true);
-+		err = fscrypt_set_context(inode, NULL);
- 		if (err) {
--			ubifs_err(c, "fscrypt_inherit_context failed: %i", err);
--			make_bad_inode(inode);
--			iput(inode);
--			return ERR_PTR(err);
-+			ubifs_err(c, "fscrypt_set_context failed: %i", err);
-+			goto out_iput;
- 		}
+@@ -838,11 +839,15 @@ static int check_for_busy_inodes(struct super_block *sb,
  	}
+ 	spin_unlock(&mk->mk_decrypted_inodes_lock);
  
- 	return inode;
++	/* If the inode is currently being created, ino may still be 0. */
++	if (ino)
++		snprintf(ino_str, sizeof(ino_str), ", including ino %lu", ino);
 +
-+out_iput:
-+	make_bad_inode(inode);
-+	iput(inode);
-+	return ERR_PTR(err);
+ 	fscrypt_warn(NULL,
+-		     "%s: %zu inode(s) still busy after removing key with %s %*phN, including ino %lu",
++		     "%s: %zu inode(s) still busy after removing key with %s %*phN%s",
+ 		     sb->s_id, busy_count, master_key_spec_type(&mk->mk_spec),
+ 		     master_key_spec_len(&mk->mk_spec), (u8 *)&mk->mk_spec.u,
+-		     ino);
++		     ino_str);
+ 	return -EBUSY;
  }
  
- static int dbg_check_name(const struct ubifs_info *c,
 -- 
 2.28.0
 
