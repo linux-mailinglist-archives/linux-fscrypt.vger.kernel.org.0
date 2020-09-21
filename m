@@ -2,98 +2,108 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46C7F2718F0
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 21 Sep 2020 03:11:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 871B02731F1
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 21 Sep 2020 20:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726367AbgIUBLF (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sun, 20 Sep 2020 21:11:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726253AbgIUBLE (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sun, 20 Sep 2020 21:11:04 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98606C061755;
-        Sun, 20 Sep 2020 18:11:04 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id CA5D628BA5A
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     Daniel Rosenberg <drosen@google.com>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        id S1727030AbgIUS3u (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 21 Sep 2020 14:29:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35026 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726950AbgIUS3u (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 21 Sep 2020 14:29:50 -0400
+Received: from gmail.com (unknown [104.132.1.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DC2A220758;
+        Mon, 21 Sep 2020 18:29:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600712990;
+        bh=xfKd1sWDGNhVdepPEKC1RdDT0tu6IQ/iGDe1bIAhKWE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eeL3T5WAha4l7IADwnyUubjJZSCetFw5JMJ+kxtH/TvUthibhmb+DvBnGmWcChcbt
+         iE30z75SNSivfly/Ae3pYKjc5xglPEaExNgz/vjPN/BEKGQ2BYDU8wDgNsNkKBn1Cm
+         QSWUJ0N/kinYBsYwIrCEsanyApVuhkGpI+Dtzz9Y=
+Date:   Mon, 21 Sep 2020 11:29:48 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     Daniel Rosenberg <drosen@google.com>,
+        Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
         Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
         linux-f2fs-devel@lists.sourceforge.net,
-        Eric Biggers <ebiggers@kernel.org>,
         linux-fscrypt@vger.kernel.org,
         Alexander Viro <viro@zeniv.linux.org.uk>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        kernel-team@android.com, Eric Biggers <ebiggers@google.com>
+        kernel-team@android.com
 Subject: Re: [PATCH v12 4/4] ext4: Use generic casefolding support
-Organization: Collabora
+Message-ID: <20200921182948.GA885472@gmail.com>
 References: <20200708091237.3922153-1-drosen@google.com>
-        <20200708091237.3922153-5-drosen@google.com>
-Date:   Sun, 20 Sep 2020 21:10:57 -0400
-In-Reply-To: <20200708091237.3922153-5-drosen@google.com> (Daniel Rosenberg's
-        message of "Wed, 8 Jul 2020 02:12:37 -0700")
-Message-ID: <87lfh4djdq.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+ <20200708091237.3922153-5-drosen@google.com>
+ <87lfh4djdq.fsf@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87lfh4djdq.fsf@collabora.com>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Daniel Rosenberg <drosen@google.com> writes:
+On Sun, Sep 20, 2020 at 09:10:57PM -0400, Gabriel Krisman Bertazi wrote:
+> Daniel Rosenberg <drosen@google.com> writes:
+> 
+> > This switches ext4 over to the generic support provided in
+> > the previous patch.
+> >
+> > Since casefolded dentries behave the same in ext4 and f2fs, we decrease
+> > the maintenance burden by unifying them, and any optimizations will
+> > immediately apply to both.
+> >
+> > Signed-off-by: Daniel Rosenberg <drosen@google.com>
+> > Reviewed-by: Eric Biggers <ebiggers@google.com>
+> >  
+> >  #ifdef CONFIG_UNICODE
+> > -	if (EXT4_SB(parent->i_sb)->s_encoding && IS_CASEFOLDED(parent)) {
+> > +	if (parent->i_sb->s_encoding && IS_CASEFOLDED(parent)) {
+> >  		if (fname->cf_name.name) {
+> >  			struct qstr cf = {.name = fname->cf_name.name,
+> >  					  .len = fname->cf_name.len};
+> > @@ -2171,9 +2171,6 @@ static int ext4_add_entry(handle_t *handle, struct dentry *dentry,
+> >  	struct buffer_head *bh = NULL;
+> >  	struct ext4_dir_entry_2 *de;
+> >  	struct super_block *sb;
+> > -#ifdef CONFIG_UNICODE
+> > -	struct ext4_sb_info *sbi;
+> > -#endif
+> >  	struct ext4_filename fname;
+> >  	int	retval;
+> >  	int	dx_fallback=0;
+> > @@ -2190,9 +2187,8 @@ static int ext4_add_entry(handle_t *handle, struct dentry *dentry,
+> >  		return -EINVAL;
+> >  
+> >  #ifdef CONFIG_UNICODE
+> > -	sbi = EXT4_SB(sb);
+> > -	if (ext4_has_strict_mode(sbi) && IS_CASEFOLDED(dir) &&
+> > -	    sbi->s_encoding && utf8_validate(sbi->s_encoding, &dentry->d_name))
+> > +	if (sb_has_strict_encoding(sb) && IS_CASEFOLDED(dir) &&
+> > +	    sb->s_encoding && utf8_validate(sb->s_encoding, &dentry->d_name))
+> >  		return -EINVAL;
+> 
+> hm, just noticed the sb->s_encoding check here is superfluous, since the
+> has_strict_mode() cannot be true if !s_encoding.  Not related to this
+> patch though.
+> 
+> Daniel, are you still working on getting this upstream?  The fscrypt
+> support would be very useful for us. :)
+> 
+> In the hope this will get upstream, as its been flying for a while and
+> looks correct.
+> 
+> Reviewed-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 
-> This switches ext4 over to the generic support provided in
-> the previous patch.
->
-> Since casefolded dentries behave the same in ext4 and f2fs, we decrease
-> the maintenance burden by unifying them, and any optimizations will
-> immediately apply to both.
->
-> Signed-off-by: Daniel Rosenberg <drosen@google.com>
-> Reviewed-by: Eric Biggers <ebiggers@google.com>
->  
->  #ifdef CONFIG_UNICODE
-> -	if (EXT4_SB(parent->i_sb)->s_encoding && IS_CASEFOLDED(parent)) {
-> +	if (parent->i_sb->s_encoding && IS_CASEFOLDED(parent)) {
->  		if (fname->cf_name.name) {
->  			struct qstr cf = {.name = fname->cf_name.name,
->  					  .len = fname->cf_name.len};
-> @@ -2171,9 +2171,6 @@ static int ext4_add_entry(handle_t *handle, struct dentry *dentry,
->  	struct buffer_head *bh = NULL;
->  	struct ext4_dir_entry_2 *de;
->  	struct super_block *sb;
-> -#ifdef CONFIG_UNICODE
-> -	struct ext4_sb_info *sbi;
-> -#endif
->  	struct ext4_filename fname;
->  	int	retval;
->  	int	dx_fallback=0;
-> @@ -2190,9 +2187,8 @@ static int ext4_add_entry(handle_t *handle, struct dentry *dentry,
->  		return -EINVAL;
->  
->  #ifdef CONFIG_UNICODE
-> -	sbi = EXT4_SB(sb);
-> -	if (ext4_has_strict_mode(sbi) && IS_CASEFOLDED(dir) &&
-> -	    sbi->s_encoding && utf8_validate(sbi->s_encoding, &dentry->d_name))
-> +	if (sb_has_strict_encoding(sb) && IS_CASEFOLDED(dir) &&
-> +	    sb->s_encoding && utf8_validate(sb->s_encoding, &dentry->d_name))
->  		return -EINVAL;
+We couldn't get a response from Ted, so instead Jaegeuk has applied patches 1-3
+to f2fs/dev for 5.10.  Hopefully Ted will take the ext4 patch for 5.11.
 
-hm, just noticed the sb->s_encoding check here is superfluous, since the
-has_strict_mode() cannot be true if !s_encoding.  Not related to this
-patch though.
+I believe that Daniel is planning to resend the actual encryption+casefolding
+support soon, but initially only for f2fs since that will be ready first.
 
-Daniel, are you still working on getting this upstream?  The fscrypt
-support would be very useful for us. :)
-
-In the hope this will get upstream, as its been flying for a while and
-looks correct.
-
-Reviewed-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-
--- 
-Gabriel Krisman Bertazi
+- Eric
