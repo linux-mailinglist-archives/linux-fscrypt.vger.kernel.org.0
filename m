@@ -2,88 +2,98 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4F5B26E0CB
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 17 Sep 2020 18:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46C7F2718F0
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 21 Sep 2020 03:11:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728569AbgIQQdp (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 17 Sep 2020 12:33:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43992 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728369AbgIQQdd (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 17 Sep 2020 12:33:33 -0400
-Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C27D2214D8;
-        Thu, 17 Sep 2020 16:33:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600360408;
-        bh=64guTUZ7EKPT2qpTc7D0yaFTflRcH4pcyFWo+xuAOGU=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=eU1pP6hgmXz25xyBg9bazb9fKAso0aXmNP2dVveMx2ztmBwOjVdBVik39B9/dsfyi
-         l7B1BELQj4b0ud+U4UFntHF3lCMR/Rq5xrFwpLL3OBQuZckdLAshp7dwLe0wC59tkq
-         GBid0tzn4y03cySN4r38Z/i9cVEe43zaJsX5UFUA=
-Message-ID: <197468586b4a9b933755d2f9a462a234d654e280.camel@kernel.org>
-Subject: Re: [PATCH v3 13/13] fscrypt: make
- fscrypt_set_test_dummy_encryption() take a 'const char *'
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        id S1726367AbgIUBLF (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sun, 20 Sep 2020 21:11:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726253AbgIUBLE (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Sun, 20 Sep 2020 21:11:04 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98606C061755;
+        Sun, 20 Sep 2020 18:11:04 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id CA5D628BA5A
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     Daniel Rosenberg <drosen@google.com>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
         linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, ceph-devel@vger.kernel.org,
-        Daniel Rosenberg <drosen@google.com>
-Date:   Thu, 17 Sep 2020 12:33:26 -0400
-In-Reply-To: <20200917152907.GB855@sol.localdomain>
-References: <20200917041136.178600-1-ebiggers@kernel.org>
-         <20200917041136.178600-14-ebiggers@kernel.org>
-         <41ad3cd50f4d213455bef4e7c42143c289690222.camel@kernel.org>
-         <20200917152907.GB855@sol.localdomain>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        Eric Biggers <ebiggers@kernel.org>,
+        linux-fscrypt@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        kernel-team@android.com, Eric Biggers <ebiggers@google.com>
+Subject: Re: [PATCH v12 4/4] ext4: Use generic casefolding support
+Organization: Collabora
+References: <20200708091237.3922153-1-drosen@google.com>
+        <20200708091237.3922153-5-drosen@google.com>
+Date:   Sun, 20 Sep 2020 21:10:57 -0400
+In-Reply-To: <20200708091237.3922153-5-drosen@google.com> (Daniel Rosenberg's
+        message of "Wed, 8 Jul 2020 02:12:37 -0700")
+Message-ID: <87lfh4djdq.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, 2020-09-17 at 08:29 -0700, Eric Biggers wrote:
-> On Thu, Sep 17, 2020 at 08:32:39AM -0400, Jeff Layton wrote:
-> > On Wed, 2020-09-16 at 21:11 -0700, Eric Biggers wrote:
-> > > From: Eric Biggers <ebiggers@google.com>
-> > > 
-> > > fscrypt_set_test_dummy_encryption() requires that the optional argument
-> > > to the test_dummy_encryption mount option be specified as a substring_t.
-> > > That doesn't work well with filesystems that use the new mount API,
-> > > since the new way of parsing mount options doesn't use substring_t.
-> > > 
-> > > Make it take the argument as a 'const char *' instead.
-> > > 
-> > > Instead of moving the match_strdup() into the callers in ext4 and f2fs,
-> > > make them just use arg->from directly.  Since the pattern is
-> > > "test_dummy_encryption=%s", the argument will be null-terminated.
-> > > 
-> > 
-> > Are you sure about that? I thought the point of substring_t was to give
-> > you a token from the string without null terminating it.
-> > 
-> > ISTM that when you just pass in ->from, you might end up with trailing
-> > arguments in your string like this. e.g.:
-> > 
-> >     "v2,foo,bar,baz"
-> > 
-> > ...and then that might fail to match properly
-> > in fscrypt_set_test_dummy_encryption.
-> > 
-> 
-> Yes I'm sure, and I had also tested it.  The use of match_token() here is to
-> parse one null-terminated mount option at a time.
-> 
-> The reason that match_token() can return multiple substrings is that the pattern
-> might be something like "foo=%d:%d".
-> 
-> But here it's just "test_dummy_encryption=%s". "%s" matches until end-of-string.
+Daniel Rosenberg <drosen@google.com> writes:
 
-Got it. Thanks for explaining!
+> This switches ext4 over to the generic support provided in
+> the previous patch.
+>
+> Since casefolded dentries behave the same in ext4 and f2fs, we decrease
+> the maintenance burden by unifying them, and any optimizations will
+> immediately apply to both.
+>
+> Signed-off-by: Daniel Rosenberg <drosen@google.com>
+> Reviewed-by: Eric Biggers <ebiggers@google.com>
+>  
+>  #ifdef CONFIG_UNICODE
+> -	if (EXT4_SB(parent->i_sb)->s_encoding && IS_CASEFOLDED(parent)) {
+> +	if (parent->i_sb->s_encoding && IS_CASEFOLDED(parent)) {
+>  		if (fname->cf_name.name) {
+>  			struct qstr cf = {.name = fname->cf_name.name,
+>  					  .len = fname->cf_name.len};
+> @@ -2171,9 +2171,6 @@ static int ext4_add_entry(handle_t *handle, struct dentry *dentry,
+>  	struct buffer_head *bh = NULL;
+>  	struct ext4_dir_entry_2 *de;
+>  	struct super_block *sb;
+> -#ifdef CONFIG_UNICODE
+> -	struct ext4_sb_info *sbi;
+> -#endif
+>  	struct ext4_filename fname;
+>  	int	retval;
+>  	int	dx_fallback=0;
+> @@ -2190,9 +2187,8 @@ static int ext4_add_entry(handle_t *handle, struct dentry *dentry,
+>  		return -EINVAL;
+>  
+>  #ifdef CONFIG_UNICODE
+> -	sbi = EXT4_SB(sb);
+> -	if (ext4_has_strict_mode(sbi) && IS_CASEFOLDED(dir) &&
+> -	    sbi->s_encoding && utf8_validate(sbi->s_encoding, &dentry->d_name))
+> +	if (sb_has_strict_encoding(sb) && IS_CASEFOLDED(dir) &&
+> +	    sb->s_encoding && utf8_validate(sb->s_encoding, &dentry->d_name))
+>  		return -EINVAL;
+
+hm, just noticed the sb->s_encoding check here is superfluous, since the
+has_strict_mode() cannot be true if !s_encoding.  Not related to this
+patch though.
+
+Daniel, are you still working on getting this upstream?  The fscrypt
+support would be very useful for us. :)
+
+In the hope this will get upstream, as its been flying for a while and
+looks correct.
+
+Reviewed-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+
 -- 
-Jeff Layton <jlayton@kernel.org>
-
+Gabriel Krisman Bertazi
