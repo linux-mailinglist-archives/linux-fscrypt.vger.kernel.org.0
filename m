@@ -2,48 +2,66 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3E9A274F9E
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 23 Sep 2020 05:41:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB8F4275073
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 23 Sep 2020 07:47:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726770AbgIWDlg (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 22 Sep 2020 23:41:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726448AbgIWDlg (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 22 Sep 2020 23:41:36 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8354EC061755;
-        Tue, 22 Sep 2020 20:41:36 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kKvew-004GoQ-Q1; Wed, 23 Sep 2020 03:41:35 +0000
-Date:   Wed, 23 Sep 2020 04:41:34 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     ceph-devel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [RFC PATCH v3 01/16] vfs: export new_inode_pseudo
-Message-ID: <20200923034134.GE3421308@ZenIV.linux.org.uk>
-References: <20200914191707.380444-1-jlayton@kernel.org>
- <20200914191707.380444-2-jlayton@kernel.org>
+        id S1726944AbgIWFrQ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 23 Sep 2020 01:47:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57882 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726883AbgIWFrQ (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 23 Sep 2020 01:47:16 -0400
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D80D82065E;
+        Wed, 23 Sep 2020 05:47:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600840036;
+        bh=++X+8xe8ksxtaAPLTC3s7LLyQp4x7rbFiWoZMedsomY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0PaOt3uokBZgumht4KFfo0Bi5Pdzn8rPnyDclTMCD47QGTeVVUypAgZdEFBA3qpw4
+         /Xw6aYy/tyPMudYfTpRtjTSmawmtjb9KPK0K8eIaKVS9uBwWBD41gyyYVyx1Tk+Fh6
+         p5u+hnxp8N9hejVxJLGIKnaNWU5BPEtdZ3p3QjNY=
+Date:   Tue, 22 Sep 2020 22:47:14 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Daniel Rosenberg <drosen@google.com>
+Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chao Yu <chao@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Richard Weinberger <richard@nod.at>,
+        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mtd@lists.infradead.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH 1/5] ext4: Use generic casefolding support
+Message-ID: <20200923054714.GB9538@sol.localdomain>
+References: <20200923010151.69506-1-drosen@google.com>
+ <20200923010151.69506-2-drosen@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200914191707.380444-2-jlayton@kernel.org>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <20200923010151.69506-2-drosen@google.com>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 03:16:52PM -0400, Jeff Layton wrote:
-> Ceph needs to be able to allocate inodes ahead of a create that might
-> involve a fscrypt-encrypted inode. new_inode() almost fits the bill,
-> but it puts the inode on the sb->s_inodes list and when we go to hash
-> it, that might be done again.
+On Wed, Sep 23, 2020 at 01:01:47AM +0000, Daniel Rosenberg wrote:
+> This switches ext4 over to the generic support provided in
+> the previous patch.
 > 
-> We could work around that by setting I_CREATING on the new inode, but
-> that causes ilookup5 to return -ESTALE if something tries to find it
-> before I_NEW is cleared. To work around all of this, just use
-> new_inode_pseudo which doesn't add it to the list.
+> Since casefolded dentries behave the same in ext4 and f2fs, we decrease
+> the maintenance burden by unifying them, and any optimizations will
+> immediately apply to both.
+> 
+> Signed-off-by: Daniel Rosenberg <drosen@google.com>
+> Reviewed-by: Eric Biggers <ebiggers@google.com>
 
-Er...  Why would you _not_ want -ESTALE in that situation?
+You could also add Gabriel's Reviewed-by from last time:
+https://lkml.kernel.org/linux-fsdevel/87lfh4djdq.fsf@collabora.com/
+
+- Eric
