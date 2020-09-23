@@ -2,65 +2,153 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFA7D275711
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 23 Sep 2020 13:19:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 600322761F9
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 23 Sep 2020 22:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726672AbgIWLTE (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 23 Sep 2020 07:19:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42072 "EHLO mail.kernel.org"
+        id S1726466AbgIWUYR (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 23 Sep 2020 16:24:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58122 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726669AbgIWLTD (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 23 Sep 2020 07:19:03 -0400
-Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726265AbgIWUYQ (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 23 Sep 2020 16:24:16 -0400
+Received: from sol.attlocal.net (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F29D8205F4;
-        Wed, 23 Sep 2020 11:19:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 15F71206DB;
+        Wed, 23 Sep 2020 20:24:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600859943;
-        bh=s7KZlKW570YDukapLdA9Wt51ipQNLRtgJmRlNjzRr80=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=S+bgCkwx13YIxJWEFMXiSyWmhfWKdJC1CPdvGdhKDixRF4orYecNrobhqHF0XAxs9
-         qAoxwCvTkuDjtgr0FIpF5dNacigxkE/5fY05jpDpel1z0hhCIUMSdK27Wy5/pSvudK
-         p5DARIQ7kziOXE+l8wqWDTJtivGRuF36WueEbJB4=
-Message-ID: <6a630729889a962746a28d33e92bc7320ebfd02b.camel@kernel.org>
-Subject: Re: [RFC PATCH v3 01/16] vfs: export new_inode_pseudo
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     ceph-devel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Date:   Wed, 23 Sep 2020 07:19:01 -0400
-In-Reply-To: <20200923034134.GE3421308@ZenIV.linux.org.uk>
-References: <20200914191707.380444-1-jlayton@kernel.org>
-         <20200914191707.380444-2-jlayton@kernel.org>
-         <20200923034134.GE3421308@ZenIV.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        s=default; t=1600892656;
+        bh=m9lLy4YG7QUviV6NxrG8TOxK7p5EndnC6dSyGBjBtPc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=xtx4f/F+09wDgWErCMvOHx74N0+91BA5eA0nyLvB+FfgO6uILFpLn2+4QepYSnNQF
+         ZU5XesogRP2H8LdXcCPZC7WYJfgd05WlorosZrCzaPI/M7SxNY1Xi3sisRWRGh6VJu
+         6pwcaSag7A+H44Vz97ys6xJBKkLBQwHAhhFPZaB4=
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     Victor Hsieh <victorhsieh@google.com>,
+        Martijn Coenen <maco@android.com>
+Subject: [fsverity-utils PATCH] Move libfsverity.h to its own directory
+Date:   Wed, 23 Sep 2020 13:23:28 -0700
+Message-Id: <20200923202328.16310-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, 2020-09-23 at 04:41 +0100, Al Viro wrote:
-> On Mon, Sep 14, 2020 at 03:16:52PM -0400, Jeff Layton wrote:
-> > Ceph needs to be able to allocate inodes ahead of a create that might
-> > involve a fscrypt-encrypted inode. new_inode() almost fits the bill,
-> > but it puts the inode on the sb->s_inodes list and when we go to hash
-> > it, that might be done again.
-> > 
-> > We could work around that by setting I_CREATING on the new inode, but
-> > that causes ilookup5 to return -ESTALE if something tries to find it
-> > before I_NEW is cleared. To work around all of this, just use
-> > new_inode_pseudo which doesn't add it to the list.
-> 
-> Er...  Why would you _not_ want -ESTALE in that situation?
+From: Eric Biggers <ebiggers@google.com>
 
-I'm hashing the new inode just before sending the create request to the
-MDS. When the reply comes in, the client then searches for that inode in
-the hash. If I_NEW has been cleared in the meantime -- no problem. If
-not, then we want the task handling the reply to wait until it is (and
-not get back an -ESTALE).
+libfsverity.h is the public API, but the other headers in common/ are
+private headers for fsverity-utils.  Move libfsverity.h to its own
+directory to make this clear.  This is also needed for Android's build
+system in order to restrict the exported headers to libfsverity.h.
+
+This doesn't affect users who are using 'make install', since
+'make install' still installs libfsverity.h to the same place,
+and it doesn't install any private headers.
+
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ Makefile                          | 4 ++--
+ {common => include}/libfsverity.h | 0
+ lib/lib_private.h                 | 2 +-
+ programs/utils.h                  | 2 +-
+ scripts/do-release.sh             | 2 +-
+ scripts/run-sparse.sh             | 2 +-
+ scripts/run-tests.sh              | 2 +-
+ 7 files changed, 7 insertions(+), 7 deletions(-)
+ rename {common => include}/libfsverity.h (100%)
+
+diff --git a/Makefile b/Makefile
+index ec23ed6..deffe8b 100644
+--- a/Makefile
++++ b/Makefile
+@@ -44,7 +44,7 @@ CFLAGS ?= -O2 -Wall -Wundef					\
+ 	$(call cc-option,-Wunused-parameter)			\
+ 	$(call cc-option,-Wvla)
+ 
+-override CPPFLAGS := -D_FILE_OFFSET_BITS=64 $(CPPFLAGS)
++override CPPFLAGS := -Iinclude -D_FILE_OFFSET_BITS=64 $(CPPFLAGS)
+ 
+ ifneq ($(V),1)
+ QUIET_CC        = @echo '  CC      ' $@;
+@@ -182,7 +182,7 @@ install:all
+ 	install -m644 libfsverity.a $(DESTDIR)$(LIBDIR)
+ 	install -m755 libfsverity.so.$(SOVERSION) $(DESTDIR)$(LIBDIR)
+ 	ln -sf libfsverity.so.$(SOVERSION) $(DESTDIR)$(LIBDIR)/libfsverity.so
+-	install -m644 common/libfsverity.h $(DESTDIR)$(INCDIR)
++	install -m644 include/libfsverity.h $(DESTDIR)$(INCDIR)
+ 
+ uninstall:
+ 	rm -f $(DESTDIR)$(BINDIR)/fsverity
+diff --git a/common/libfsverity.h b/include/libfsverity.h
+similarity index 100%
+rename from common/libfsverity.h
+rename to include/libfsverity.h
+diff --git a/lib/lib_private.h b/lib/lib_private.h
+index 54f583e..ff00490 100644
+--- a/lib/lib_private.h
++++ b/lib/lib_private.h
+@@ -11,7 +11,7 @@
+ #ifndef LIB_LIB_PRIVATE_H
+ #define LIB_LIB_PRIVATE_H
+ 
+-#include "../common/libfsverity.h"
++#include "libfsverity.h"
+ #include "../common/common_defs.h"
+ #include "../common/fsverity_uapi.h"
+ 
+diff --git a/programs/utils.h b/programs/utils.h
+index cd5641c..6968708 100644
+--- a/programs/utils.h
++++ b/programs/utils.h
+@@ -11,7 +11,7 @@
+ #ifndef PROGRAMS_UTILS_H
+ #define PROGRAMS_UTILS_H
+ 
+-#include "../common/libfsverity.h"
++#include "libfsverity.h"
+ #include "../common/common_defs.h"
+ 
+ #include <stdio.h>
+diff --git a/scripts/do-release.sh b/scripts/do-release.sh
+index 9662919..255fc53 100755
+--- a/scripts/do-release.sh
++++ b/scripts/do-release.sh
+@@ -27,7 +27,7 @@ major=$(echo "$VERS" | cut -d. -f1)
+ minor=$(echo "$VERS" | cut -d. -f2)
+ sed -E -i -e "/FSVERITY_UTILS_MAJOR_VERSION/s/[0-9]+/$major/" \
+ 	  -e "/FSVERITY_UTILS_MINOR_VERSION/s/[0-9]+/$minor/" \
+-	  common/libfsverity.h
++	  include/libfsverity.h
+ git commit -a --signoff --message="v$VERS"
+ git tag --sign "v$VERS" --message="$PKG"
+ 
+diff --git a/scripts/run-sparse.sh b/scripts/run-sparse.sh
+index 5b6a0ba..fe43ce2 100755
+--- a/scripts/run-sparse.sh
++++ b/scripts/run-sparse.sh
+@@ -10,5 +10,5 @@ set -e -u -o pipefail
+ 
+ find . -name '*.c' | while read -r file; do
+ 	sparse "$file" -gcc-base-dir "$(gcc --print-file-name=)"	\
+-		-D_FILE_OFFSET_BITS=64 -I. -Wbitwise
++		-D_FILE_OFFSET_BITS=64 -Iinclude -Wbitwise
+ done
+diff --git a/scripts/run-tests.sh b/scripts/run-tests.sh
+index 44df304..c061e34 100755
+--- a/scripts/run-tests.sh
++++ b/scripts/run-tests.sh
+@@ -71,7 +71,7 @@ int main()
+ 	std::cout << libfsverity_get_digest_size(FS_VERITY_HASH_ALG_SHA256) << std::endl;
+ }
+ EOF
+-c++ -Wall -Werror "$TMPDIR/test.cc" -Icommon -L. -lfsverity -o "$TMPDIR/test"
++c++ -Wall -Werror "$TMPDIR/test.cc" -Iinclude -L. -lfsverity -o "$TMPDIR/test"
+ [ "$(LD_LIBRARY_PATH=. "$TMPDIR/test")" = "32" ]
+ rm "${TMPDIR:?}"/*
+ 
 -- 
-Jeff Layton <jlayton@kernel.org>
+2.28.0
 
