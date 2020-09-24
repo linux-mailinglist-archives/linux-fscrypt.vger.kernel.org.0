@@ -2,39 +2,36 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17F192767DC
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 24 Sep 2020 06:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BDBF27688C
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 24 Sep 2020 07:48:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726469AbgIXE3E (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 24 Sep 2020 00:29:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48584 "EHLO mail.kernel.org"
+        id S1726844AbgIXFss (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 24 Sep 2020 01:48:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726466AbgIXE3C (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 24 Sep 2020 00:29:02 -0400
+        id S1726683AbgIXFss (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 24 Sep 2020 01:48:48 -0400
 Received: from sol.attlocal.net (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 67FAA238E4;
-        Thu, 24 Sep 2020 04:29:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5527A235FD;
+        Thu, 24 Sep 2020 05:48:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600921741;
-        bh=zkbK3kc+vjesm/oo0BR3v4YFB7mgYl6/SjNVtaJC49I=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Tf+3f9n9whDLE3nRQBGBiXSBPyJBU5+wbl0Pzxy1oCesqnjN+hwcu1TZ3Crt7oe8w
-         +VrERYCOeGY6zv1gmE8R4l1E5n4V+56OUhJTmCp+u35lAl+nOOoxMwnY0FVDRfpiKR
-         lmE8PryChQoOaSxuK9i2Ja8Q4GUSoNu1QyPdPDhE=
+        s=default; t=1600926527;
+        bh=ZBd12iiaWrJLLa5wlKz4XAdvI+v27GCLwdJDLWNHLIY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=yxcfpsFWdaISRwAI+JVWSVcxnMGJEi4ShtKIgyoJgyvWOVArjZfAHg8LIHipiUC6V
+         QMGF7qU5twNettIbNqxJCnUBLmarGE/ysxglhg3oHN61q/vyHwjZyzoCBNs0tdGBKd
+         hdHf1ETiZYCxPPjHI7/27bpsdedx2WvOrXU8y9L0=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Daniel Rosenberg <drosen@google.com>,
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        ceph-devel@vger.kernel.org, Daniel Rosenberg <drosen@google.com>,
         Jeff Layton <jlayton@kernel.org>
-Subject: [PATCH 2/2] fscrypt: rename DCACHE_ENCRYPTED_NAME to DCACHE_NOKEY_NAME
-Date:   Wed, 23 Sep 2020 21:26:24 -0700
-Message-Id: <20200924042624.98439-3-ebiggers@kernel.org>
+Subject: [PATCH] fscrypt: export fscrypt_d_revalidate()
+Date:   Wed, 23 Sep 2020 22:47:21 -0700
+Message-Id: <20200924054721.187797-1-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200924042624.98439-1-ebiggers@kernel.org>
-References: <20200924042624.98439-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -43,110 +40,86 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Originally we used the term "encrypted name" or "ciphertext name" to
-mean the encoded filename that is shown when an encrypted directory is
-listed without its key.  But these terms are ambiguous since they also
-mean the filename stored on-disk.  "Encrypted name" is especially
-ambiguous since it could also be understood to mean "this filename is
-encrypted on-disk", similar to "encrypted file".
+Dentries that represent no-key names must have a dentry_operations that
+includes fscrypt_d_revalidate().  Currently, this is handled by
+fscrypt_prepare_lookup() installing fscrypt_d_ops.
 
-So we've started calling these encoded names "no-key names" instead.
+However, ceph support for encryption
+(https://lore.kernel.org/r/20200914191707.380444-1-jlayton@kernel.org)
+can't use fscrypt_d_ops, since ceph already has its own
+dentry_operations.
 
-Therefore, rename DCACHE_ENCRYPTED_NAME to DCACHE_NOKEY_NAME to avoid
-confusion about what this flag means.
+Similarly, ext4 and f2fs support for directories that are both encrypted
+and casefolded
+(https://lore.kernel.org/r/20200923010151.69506-1-drosen@google.com)
+can't use fscrypt_d_ops either, since casefolding requires some dentry
+operations too.
+
+To satisfy both users, we need to move the responsibility of installing
+the dentry_operations to filesystems.
+
+In preparation for this, export fscrypt_d_revalidate() and give it a
+!CONFIG_FS_ENCRYPTION stub.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/crypto/fname.c       |  2 +-
- fs/crypto/hooks.c       |  7 +++----
- include/linux/dcache.h  |  2 +-
- include/linux/fscrypt.h | 12 ++++++------
- 4 files changed, 11 insertions(+), 12 deletions(-)
+
+Compared to the versions of this patch from Jeff and Daniel, I've
+improved the commit message and added a !CONFIG_FS_ENCRYPTION stub,
+which was missing.  I'm planning to apply this for 5.10 in preparation
+for both the ceph patchset and the encrypt+casefold patchset.
+
+
+ fs/crypto/fname.c       | 3 ++-
+ include/linux/fscrypt.h | 7 +++++++
+ 2 files changed, 9 insertions(+), 1 deletion(-)
 
 diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
-index 391acea4bc96..c65979452844 100644
+index c65979452844..1fbe6c24d705 100644
 --- a/fs/crypto/fname.c
 +++ b/fs/crypto/fname.c
-@@ -541,7 +541,7 @@ static int fscrypt_d_revalidate(struct dentry *dentry, unsigned int flags)
- 	 * reverting to no-key names without evicting the directory's inode
- 	 * -- which implies eviction of the dentries in the directory.
- 	 */
--	if (!(dentry->d_flags & DCACHE_ENCRYPTED_NAME))
-+	if (!(dentry->d_flags & DCACHE_NOKEY_NAME))
- 		return 1;
+@@ -530,7 +530,7 @@ EXPORT_SYMBOL_GPL(fscrypt_fname_siphash);
+  * Validate dentries in encrypted directories to make sure we aren't potentially
+  * caching stale dentries after a key has been added.
+  */
+-static int fscrypt_d_revalidate(struct dentry *dentry, unsigned int flags)
++int fscrypt_d_revalidate(struct dentry *dentry, unsigned int flags)
+ {
+ 	struct dentry *dir;
+ 	int err;
+@@ -569,6 +569,7 @@ static int fscrypt_d_revalidate(struct dentry *dentry, unsigned int flags)
  
- 	/*
-diff --git a/fs/crypto/hooks.c b/fs/crypto/hooks.c
-index ca996e1c92d9..20b0df47fe6a 100644
---- a/fs/crypto/hooks.c
-+++ b/fs/crypto/hooks.c
-@@ -61,7 +61,7 @@ int __fscrypt_prepare_link(struct inode *inode, struct inode *dir,
- 		return err;
+ 	return valid;
+ }
++EXPORT_SYMBOL_GPL(fscrypt_d_revalidate);
  
- 	/* ... in case we looked up no-key name before key was added */
--	if (dentry->d_flags & DCACHE_ENCRYPTED_NAME)
-+	if (dentry->d_flags & DCACHE_NOKEY_NAME)
- 		return -ENOKEY;
- 
- 	if (!fscrypt_has_permitted_context(dir, inode))
-@@ -86,8 +86,7 @@ int __fscrypt_prepare_rename(struct inode *old_dir, struct dentry *old_dentry,
- 		return err;
- 
- 	/* ... in case we looked up no-key name(s) before key was added */
--	if ((old_dentry->d_flags | new_dentry->d_flags) &
--	    DCACHE_ENCRYPTED_NAME)
-+	if ((old_dentry->d_flags | new_dentry->d_flags) & DCACHE_NOKEY_NAME)
- 		return -ENOKEY;
- 
- 	if (old_dir != new_dir) {
-@@ -116,7 +115,7 @@ int __fscrypt_prepare_lookup(struct inode *dir, struct dentry *dentry,
- 
- 	if (fname->is_nokey_name) {
- 		spin_lock(&dentry->d_lock);
--		dentry->d_flags |= DCACHE_ENCRYPTED_NAME;
-+		dentry->d_flags |= DCACHE_NOKEY_NAME;
- 		spin_unlock(&dentry->d_lock);
- 		d_set_d_op(dentry, &fscrypt_d_ops);
- 	}
-diff --git a/include/linux/dcache.h b/include/linux/dcache.h
-index 65d975bf9390..6f95c3300cbb 100644
---- a/include/linux/dcache.h
-+++ b/include/linux/dcache.h
-@@ -213,7 +213,7 @@ struct dentry_operations {
- 
- #define DCACHE_MAY_FREE			0x00800000
- #define DCACHE_FALLTHRU			0x01000000 /* Fall through to lower layer */
--#define DCACHE_ENCRYPTED_NAME		0x02000000 /* Encrypted name (dir key was unavailable) */
-+#define DCACHE_NOKEY_NAME		0x02000000 /* Encrypted name encoded without key */
- #define DCACHE_OP_REAL			0x04000000
- 
- #define DCACHE_PAR_LOOKUP		0x10000000 /* being looked up (with parent locked shared) */
+ const struct dentry_operations fscrypt_d_ops = {
+ 	.d_revalidate = fscrypt_d_revalidate,
 diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index bc9ec727e993..f1757e73162d 100644
+index f1757e73162d..a8f7a43f031b 100644
 --- a/include/linux/fscrypt.h
 +++ b/include/linux/fscrypt.h
-@@ -100,15 +100,15 @@ static inline bool fscrypt_needs_contents_encryption(const struct inode *inode)
+@@ -197,6 +197,7 @@ int fscrypt_fname_disk_to_usr(const struct inode *inode,
+ bool fscrypt_match_name(const struct fscrypt_name *fname,
+ 			const u8 *de_name, u32 de_name_len);
+ u64 fscrypt_fname_siphash(const struct inode *dir, const struct qstr *name);
++int fscrypt_d_revalidate(struct dentry *dentry, unsigned int flags);
+ 
+ /* bio.c */
+ void fscrypt_decrypt_bio(struct bio *bio);
+@@ -454,6 +455,12 @@ static inline u64 fscrypt_fname_siphash(const struct inode *dir,
+ 	return 0;
  }
  
- /*
-- * When d_splice_alias() moves a directory's encrypted alias to its decrypted
-- * alias as a result of the encryption key being added, DCACHE_ENCRYPTED_NAME
-- * must be cleared.  Note that we don't have to support arbitrary moves of this
-- * flag because fscrypt doesn't allow encrypted aliases to be the source or
-- * target of a rename().
-+ * When d_splice_alias() moves a directory's no-key alias to its plaintext alias
-+ * as a result of the encryption key being added, DCACHE_NOKEY_NAME must be
-+ * cleared.  Note that we don't have to support arbitrary moves of this flag
-+ * because fscrypt doesn't allow no-key names to be the source or target of a
-+ * rename().
-  */
- static inline void fscrypt_handle_d_move(struct dentry *dentry)
++static inline int fscrypt_d_revalidate(struct dentry *dentry,
++				       unsigned int flags)
++{
++	return 1;
++}
++
+ /* bio.c */
+ static inline void fscrypt_decrypt_bio(struct bio *bio)
  {
--	dentry->d_flags &= ~DCACHE_ENCRYPTED_NAME;
-+	dentry->d_flags &= ~DCACHE_NOKEY_NAME;
- }
- 
- /* crypto.c */
 -- 
 2.28.0
 
