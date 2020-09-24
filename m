@@ -2,168 +2,60 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B39B27625B
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 23 Sep 2020 22:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEC702767D7
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 24 Sep 2020 06:29:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726638AbgIWUoj (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 23 Sep 2020 16:44:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726199AbgIWUoh (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 23 Sep 2020 16:44:37 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEE1AC0613CE;
-        Wed, 23 Sep 2020 13:44:36 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id 0338129C28A
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     Daniel Rosenberg <drosen@google.com>
-Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chao Yu <chao@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Richard Weinberger <richard@nod.at>,
-        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        id S1726504AbgIXE3B (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 24 Sep 2020 00:29:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48564 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726466AbgIXE3B (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 24 Sep 2020 00:29:01 -0400
+Received: from sol.attlocal.net (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C260E20888;
+        Thu, 24 Sep 2020 04:29:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600921741;
+        bh=rO/bNcZHwLT9QTBkuyjZ4ahgv+SZFROlqsq/52bymt0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Rs5Fnpx1+kMOIPp6FrLcwizUYAmnr1trqn6z58T4WhfCNzSfjwSkIuvmrCLNNKuYV
+         h83JFF9l8jBLk1oFYxyaFvH/LUHYjCSMon4nXUxTY7K8bQM01kFjKU3t49ioWLBDsM
+         ZJzba7PzU5Ino48o+muguuzoP2FYvRDOSDaHNrdQ=
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org,
         linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mtd@lists.infradead.org, kernel-team@android.com
-Subject: Re: [PATCH 3/5] libfs: Add generic function for setting dentry_ops
-Organization: Collabora
-References: <20200923010151.69506-1-drosen@google.com>
-        <20200923010151.69506-4-drosen@google.com>
-Date:   Wed, 23 Sep 2020 16:44:28 -0400
-In-Reply-To: <20200923010151.69506-4-drosen@google.com> (Daniel Rosenberg's
-        message of "Wed, 23 Sep 2020 01:01:49 +0000")
-Message-ID: <87ft785ikz.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        Daniel Rosenberg <drosen@google.com>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: [PATCH 0/2] fscrypt: avoid ambiguous terms for "no-key name"
+Date:   Wed, 23 Sep 2020 21:26:22 -0700
+Message-Id: <20200924042624.98439-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Daniel Rosenberg <drosen@google.com> writes:
+This series fixes overloading of the terms "ciphertext name" and
+"encrypted name" to also sometimes mean "no-key name".
+The overloading of these terms has caused some confusion.
 
-> This adds a function to set dentry operations at lookup time that will
-> work for both encrypted files and casefolded filenames.
->
-> A filesystem that supports both features simultaneously can use this
-> function during lookup preperations to set up its dentry operations once
-> fscrypt no longer does that itself.
->
-> Currently the casefolding dentry operation are always set because the
-> feature is toggleable on empty directories. Since we don't know what
-> set of functions we'll eventually need, and cannot change them later,
-> we add just add them.
->
-> Signed-off-by: Daniel Rosenberg <drosen@google.com>
-> ---
->  fs/libfs.c         | 49 ++++++++++++++++++++++++++++++++++++++++++++++
->  include/linux/fs.h |  1 +
->  2 files changed, 50 insertions(+)
->
-> diff --git a/fs/libfs.c b/fs/libfs.c
-> index fc34361c1489..83303858f1fe 100644
-> --- a/fs/libfs.c
-> +++ b/fs/libfs.c
-> @@ -1449,4 +1449,53 @@ int generic_ci_d_hash(const struct dentry *dentry, struct qstr *str)
->  	return 0;
->  }
->  EXPORT_SYMBOL(generic_ci_d_hash);
-> +
-> +static const struct dentry_operations generic_ci_dentry_ops = {
-> +	.d_hash = generic_ci_d_hash,
-> +	.d_compare = generic_ci_d_compare,
-> +};
-> +#endif
-> +
-> +#ifdef CONFIG_FS_ENCRYPTION
-> +static const struct dentry_operations generic_encrypted_dentry_ops = {
-> +	.d_revalidate = fscrypt_d_revalidate,
-> +};
-> +#endif
-> +
-> +#if IS_ENABLED(CONFIG_UNICODE) && IS_ENABLED(CONFIG_FS_ENCRYPTION)
-> +static const struct dentry_operations generic_encrypted_ci_dentry_ops = {
-> +	.d_hash = generic_ci_d_hash,
-> +	.d_compare = generic_ci_d_compare,
-> +	.d_revalidate = fscrypt_d_revalidate,
-> +};
-> +#endif
-> +
-> +/**
-> + * generic_set_encrypted_ci_d_ops - helper for setting d_ops for given dentry
-> + * @dentry:	dentry to set ops on
-> + *
-> + * This function sets the dentry ops for the given dentry to handle both
-> + * casefolding and encryption of the dentry name.
-> + */
-> +void generic_set_encrypted_ci_d_ops(struct dentry *dentry)
-> +{
-> +#ifdef CONFIG_FS_ENCRYPTION
-> +	if (dentry->d_flags & DCACHE_ENCRYPTED_NAME) {
-> +#ifdef CONFIG_UNICODE
-> +		if (dentry->d_sb->s_encoding) {
-> +			d_set_d_op(dentry, &generic_encrypted_ci_dentry_ops);
-> +			return;
-> +		}
->  #endif
-> +		d_set_d_op(dentry, &generic_encrypted_dentry_ops);
-> +		return;
-> +	}
-> +#endif
-> +#ifdef CONFIG_UNICODE
-> +	if (dentry->d_sb->s_encoding) {
-> +		d_set_d_op(dentry, &generic_ci_dentry_ops);
-> +		return;
-> +	}
-> +#endif
-> +}
+No change in behavior.
 
-I think this is harder to read than necessary.  What do you think about
-just splitting the three cases like the following:
+Eric Biggers (2):
+  fscrypt: don't call no-key names "ciphertext names"
+  fscrypt: rename DCACHE_ENCRYPTED_NAME to DCACHE_NOKEY_NAME
 
-void generic_set_encrypted_ci_d_ops(struct dentry *dentry) {
-
-#if defined(CONFIG_FS_ENCRYPTION) && defined(CONFIG_UNICODE)
-    if (encoding && encryption) {
-    	d_set_d_op(dentry, &generic_encrypted_ci_dentry_ops);
-            return;
-    }
-#endif
-
-#if defined (CONFIG_FS_ENCRYPTION)
-    if (encryption) {
-    	d_set_d_op(dentry, &generic_encrypted_dentry_ops);
-        return;
-    }
-#endif
-
-#if defined (CONFIG_UNICODE)
-    if (encoding) {
-    	d_set_d_op(dentry, &generic_ci_dentry_ops);
-        return;
-    }
-#endif
-}
-
-> +EXPORT_SYMBOL(generic_set_encrypted_ci_d_ops);
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index bc5417c61e12..6627896db835 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -3277,6 +3277,7 @@ extern int generic_ci_d_hash(const struct dentry *dentry, struct qstr *str);
->  extern int generic_ci_d_compare(const struct dentry *dentry, unsigned int len,
->  				const char *str, const struct qstr *name);
->  #endif
-> +extern void generic_set_encrypted_ci_d_ops(struct dentry *dentry);
->  
->  #ifdef CONFIG_MIGRATION
->  extern int buffer_migrate_page(struct address_space *,
+ fs/crypto/fname.c       | 16 ++++++++--------
+ fs/crypto/hooks.c       | 13 ++++++-------
+ fs/f2fs/dir.c           |  2 +-
+ include/linux/dcache.h  |  2 +-
+ include/linux/fscrypt.h | 25 ++++++++++++-------------
+ 5 files changed, 28 insertions(+), 30 deletions(-)
 
 -- 
-Gabriel Krisman Bertazi
+2.28.0
+
