@@ -2,53 +2,89 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D578F2777DE
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 24 Sep 2020 19:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A6A3277A45
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 24 Sep 2020 22:30:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728619AbgIXRcx (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 24 Sep 2020 13:32:53 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:49928 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728563AbgIXRcw (ORCPT
+        id S1726629AbgIXU35 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 24 Sep 2020 16:29:57 -0400
+Received: from [125.140.134.231] ([125.140.134.231]:59260 "EHLO
+        WIN-DAONO245HJF" rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726281AbgIXU34 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 24 Sep 2020 13:32:52 -0400
-X-Greylist: delayed 316 seconds by postgrey-1.27 at vger.kernel.org; Thu, 24 Sep 2020 13:32:52 EDT
-Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 08OHRTu1014389
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 24 Sep 2020 13:27:29 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 2C7CF42003C; Thu, 24 Sep 2020 13:27:29 -0400 (EDT)
-Date:   Thu, 24 Sep 2020 13:27:29 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Satya Tangirala <satyat@google.com>, linux-fscrypt@vger.kernel.org,
-        linux-ext4@vger.kernel.org
-Subject: Re: [xfstests-bld PATCH v2] test-appliance: exclude generic/587 from
- the encrypt tests
-Message-ID: <20200924172729.GI482521@mit.edu>
-References: <20200709184145.GA3855682@gmail.com>
- <20200709185832.2568081-1-satyat@google.com>
- <20200709191031.GB3855682@gmail.com>
+        Thu, 24 Sep 2020 16:29:56 -0400
+Received: from User ([185.191.231.247]) by WIN-DAONO245HJF with Microsoft SMTPSVC(8.5.9600.16384);
+         Fri, 25 Sep 2020 05:26:34 +0900
+Reply-To: <samthong5555@yahoo.com>
+From:   "SAM THONG" <samthong5555@gmail.com>
+Subject: Business Acquisition 1
+Date:   Thu, 24 Sep 2020 13:26:34 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200709191031.GB3855682@gmail.com>
+Content-Type: text/plain;
+        charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+Message-ID: <WIN-DAONO245HJFc4tf00e70a05@WIN-DAONO245HJF>
+X-OriginalArrivalTime: 24 Sep 2020 20:26:34.0476 (UTC) FILETIME=[FF0A1AC0:01D692B0]
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, Jul 09, 2020 at 12:10:31PM -0700, Eric Biggers wrote:
-> On Thu, Jul 09, 2020 at 06:58:32PM +0000, Satya Tangirala wrote:
-> > The encryption feature doesn't play well with quota, and generic/587
-> > tests quota functionality.
-> > 
-> > Signed-off-by: Satya Tangirala <satyat@google.com>
-> 
-> Reviewed-by: Eric Biggers <ebiggers@google.com>
 
-Applied, thanks
 
-						- Ted
+Dear sir
+
+Our underwriter company is seeking the attention of genuine and reliable persons, companies
+
+who are indeed in need of funds as investment capital or business expansion in form of a
+
+direct loan to partner with us and benefit in our new Loan and Project funding programs.
+
+
+
+We offer flexible loans and funding for various projects at very affordable low interest
+
+rate of 3% annually for a period of 1-15 years on Non collateral loan/funding . We offer
+
+loan/funding from a minimum of Euro ? / USD$ 1 Million to Euro ? / USD$ 1 Billion. Max,
+
+depending on the nature of business/project.
+
+We are currently funding for:-
+
+
+
+* Starting up a Franchise
+
+* Business Acquisition
+
+* Business Expansion
+
+* Commercial Real Estate purchase
+
+* Consultancy and Contract Execution, Marine , ETC.
+
+
+
+Kindly get in touch for further details and procedure. samthong5555@yahoo.com 
+
+
+
+Respectfully,
+
+
+SAM THONG
+
+
+
+
+
+
+
+	
+
+
+
