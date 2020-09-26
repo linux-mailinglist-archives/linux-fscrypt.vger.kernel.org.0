@@ -2,89 +2,43 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A6A3277A45
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 24 Sep 2020 22:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9A1D279699
+	for <lists+linux-fscrypt@lfdr.de>; Sat, 26 Sep 2020 06:18:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726629AbgIXU35 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 24 Sep 2020 16:29:57 -0400
-Received: from [125.140.134.231] ([125.140.134.231]:59260 "EHLO
-        WIN-DAONO245HJF" rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726281AbgIXU34 (ORCPT
+        id S1729997AbgIZESi (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sat, 26 Sep 2020 00:18:38 -0400
+Received: from 167-98-140-49.cust-167.exponential-e.net ([167.98.140.49]:49181
+        "EHLO VICTOR.rafmuseum.local" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729035AbgIZESh (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 24 Sep 2020 16:29:56 -0400
-Received: from User ([185.191.231.247]) by WIN-DAONO245HJF with Microsoft SMTPSVC(8.5.9600.16384);
-         Fri, 25 Sep 2020 05:26:34 +0900
-Reply-To: <samthong5555@yahoo.com>
-From:   "SAM THONG" <samthong5555@gmail.com>
-Subject: Business Acquisition 1
-Date:   Thu, 24 Sep 2020 13:26:34 -0700
+        Sat, 26 Sep 2020 00:18:37 -0400
+Received: from User (52.152.226.104) by mail.rafmuseum.org (172.16.0.15) with
+ Microsoft SMTP Server id 14.3.439.0; Sat, 26 Sep 2020 05:18:35 +0100
+Reply-To: <angela.richardson16@yahoo.com>
+From:   Angela Richardson <london@rafmuseum.org>
+Subject: For your information..
+Date:   Sat, 26 Sep 2020 04:18:35 +0000
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1251"
+Content-Type: text/plain; charset="Windows-1251"
 Content-Transfer-Encoding: 7bit
 X-Priority: 3
 X-MSMail-Priority: Normal
 X-Mailer: Microsoft Outlook Express 6.00.2600.0000
 X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-ID: <WIN-DAONO245HJFc4tf00e70a05@WIN-DAONO245HJF>
-X-OriginalArrivalTime: 24 Sep 2020 20:26:34.0476 (UTC) FILETIME=[FF0A1AC0:01D692B0]
-To:     unlisted-recipients:; (no To-header on input)
+Message-ID: <0f942974-9223-41e9-9c07-9bce0425f703@VICTOR.rafmuseum.local>
+To:     Undisclosed recipients:;
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
+Dear Sir/Ma,
 
+My name is Angela Richardson. I am the Director Of Information (D.O.F) of Her Majesty Custom and Revenue, London United Kingdom. Our duty is to look into transactions and records of banks, Securities Companies and Financial Houses within Europe based on the directive of former British Prime Minister and United Nations Secretary. View the website for more information:  http://news.bbc.co.uk/1/hi/business/5171222.stm
 
-Dear sir
-
-Our underwriter company is seeking the attention of genuine and reliable persons, companies
-
-who are indeed in need of funds as investment capital or business expansion in form of a
-
-direct loan to partner with us and benefit in our new Loan and Project funding programs.
-
-
-
-We offer flexible loans and funding for various projects at very affordable low interest
-
-rate of 3% annually for a period of 1-15 years on Non collateral loan/funding . We offer
-
-loan/funding from a minimum of Euro ? / USD$ 1 Million to Euro ? / USD$ 1 Billion. Max,
-
-depending on the nature of business/project.
-
-We are currently funding for:-
-
-
-
-* Starting up a Franchise
-
-* Business Acquisition
-
-* Business Expansion
-
-* Commercial Real Estate purchase
-
-* Consultancy and Contract Execution, Marine , ETC.
-
-
-
-Kindly get in touch for further details and procedure. samthong5555@yahoo.com 
+As a matter of urgency, get back to me with your full names and telephone number to my direct email address below: angela.richardson16@yahoo.com
 
 
 
 Respectfully,
 
-
-SAM THONG
-
-
-
-
-
-
-
-	
-
-
-
+Angela Richardson
