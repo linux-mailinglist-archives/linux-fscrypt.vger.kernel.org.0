@@ -2,43 +2,63 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9A1D279699
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 26 Sep 2020 06:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC39527B81E
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 29 Sep 2020 01:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729997AbgIZESi (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sat, 26 Sep 2020 00:18:38 -0400
-Received: from 167-98-140-49.cust-167.exponential-e.net ([167.98.140.49]:49181
-        "EHLO VICTOR.rafmuseum.local" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729035AbgIZESh (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sat, 26 Sep 2020 00:18:37 -0400
-Received: from User (52.152.226.104) by mail.rafmuseum.org (172.16.0.15) with
- Microsoft SMTP Server id 14.3.439.0; Sat, 26 Sep 2020 05:18:35 +0100
-Reply-To: <angela.richardson16@yahoo.com>
-From:   Angela Richardson <london@rafmuseum.org>
-Subject: For your information..
-Date:   Sat, 26 Sep 2020 04:18:35 +0000
+        id S1727078AbgI1Xac (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 28 Sep 2020 19:30:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53592 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726948AbgI1Xab (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 28 Sep 2020 19:30:31 -0400
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 77F1121775;
+        Mon, 28 Sep 2020 21:55:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601330121;
+        bh=htsG7cgCjOWP+vwgIjl2Fqt34Hd6Ri+elKAS7Sa4s9I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JeRoDOX5fGNEqD17+mt8alMS/Ia9anUvzJ/J58HMWp75rczK5TvFc7upYr25aFTI8
+         bTg4Nx/nPXozSDG5jlQS/tXr1awsFaY2y51DJRpQEEk2ieG+nhP8Ujyvy03NzcunRo
+         7kVX8u2ZU2gx42MvnDioqFMgJ0OtAzWZ2S6ug+FU=
+Date:   Mon, 28 Sep 2020 14:55:20 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Daniel Rosenberg <drosen@google.com>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: Re: [PATCH 0/2] fscrypt: avoid ambiguous terms for "no-key name"
+Message-ID: <20200928215520.GC1340@sol.localdomain>
+References: <20200924042624.98439-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-ID: <0f942974-9223-41e9-9c07-9bce0425f703@VICTOR.rafmuseum.local>
-To:     Undisclosed recipients:;
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924042624.98439-1-ebiggers@kernel.org>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Dear Sir/Ma,
+On Wed, Sep 23, 2020 at 09:26:22PM -0700, Eric Biggers wrote:
+> This series fixes overloading of the terms "ciphertext name" and
+> "encrypted name" to also sometimes mean "no-key name".
+> The overloading of these terms has caused some confusion.
+> 
+> No change in behavior.
+> 
+> Eric Biggers (2):
+>   fscrypt: don't call no-key names "ciphertext names"
+>   fscrypt: rename DCACHE_ENCRYPTED_NAME to DCACHE_NOKEY_NAME
+> 
+>  fs/crypto/fname.c       | 16 ++++++++--------
+>  fs/crypto/hooks.c       | 13 ++++++-------
+>  fs/f2fs/dir.c           |  2 +-
+>  include/linux/dcache.h  |  2 +-
+>  include/linux/fscrypt.h | 25 ++++++++++++-------------
+>  5 files changed, 28 insertions(+), 30 deletions(-)
 
-My name is Angela Richardson. I am the Director Of Information (D.O.F) of Her Majesty Custom and Revenue, London United Kingdom. Our duty is to look into transactions and records of banks, Securities Companies and Financial Houses within Europe based on the directive of former British Prime Minister and United Nations Secretary. View the website for more information:  http://news.bbc.co.uk/1/hi/business/5171222.stm
+Applied to fscrypt.git#master for 5.10.
 
-As a matter of urgency, get back to me with your full names and telephone number to my direct email address below: angela.richardson16@yahoo.com
-
-
-
-Respectfully,
-
-Angela Richardson
+- Eric
