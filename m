@@ -2,86 +2,103 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FB1F28500E
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  6 Oct 2020 18:41:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C474528524A
+	for <lists+linux-fscrypt@lfdr.de>; Tue,  6 Oct 2020 21:19:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725970AbgJFQlI (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 6 Oct 2020 12:41:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57132 "EHLO mail.kernel.org"
+        id S1727046AbgJFTT4 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 6 Oct 2020 15:19:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52316 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725902AbgJFQlI (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 6 Oct 2020 12:41:08 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        id S1727005AbgJFTT4 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 6 Oct 2020 15:19:56 -0400
+Received: from gmail.com (unknown [104.132.1.76])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 18F01206D4;
-        Tue,  6 Oct 2020 16:41:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0C248206B5;
+        Tue,  6 Oct 2020 19:19:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602002466;
-        bh=rDLLCAfcpbKWcjiDraDDSN94bLOF55Woeg1qUpEpZss=;
+        s=default; t=1602011995;
+        bh=ov/h1Xqg0UOCJfEEBRiRrL5VVBUq6at/su2wB3rWscM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1XMM2DnEL0suZYEsKoQ4gvHK221+DNjzTkhDb/jC68bGBPrpJ47KmZGY2Dhmaz9XA
-         FTLdSzUXsJbqwg5/8kCi8kMUuiG2QmvADxuduTSykB/Dd179CGtmxw8jo2YYzEa+GA
-         608bhe780TJ8H8CeosB+67BzvasTbDhIVpDDq1Oc=
-Date:   Tue, 6 Oct 2020 18:41:52 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+        b=Mv5ki+7+ByDNKqS4mIXj0C7OTINtnjK0tQS7WQEfhuUfGHOz+yn0F1TlQ1dJtBVea
+         Wh4KnR0E5VZKb2rHxtjQXSP/mnp7LAu6u2upjfVcO6k2bhJ0+bfifkCRUKcx3LzHmj
+         BMpoDxNUlmGjtOGePIZnuAT/Q62E7pN62cuc1V9Q=
+Date:   Tue, 6 Oct 2020 12:19:53 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
 To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@collabora.com>,
         "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Eric Biggers <ebiggers@kernel.org>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Moritz Fischer <mdf@kernel.org>,
-        Puranjay Mohan <puranjay12@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Satya Tangirala <satyat@google.com>,
-        Takashi Iwai <tiwai@suse.com>, Tom Rix <trix@redhat.com>,
-        alsa-devel@alsa-project.org, linux-fpga@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-mm@kvack.org,
-        Takashi Iwai <tiwai@suse.de>,
-        Mike Rapoport <rppt@linux.ibm.com>
-Subject: Re: [PATCH v5 22/52] docs: get rid of :c:type explicit declarations
- for structs
-Message-ID: <20201006164152.GB36638@kroah.com>
+        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 35/52] docs: fs: fscrypt.rst: get rid of :c:type: tags
+Message-ID: <20201006191953.GA3598358@gmail.com>
 References: <cover.1601992016.git.mchehab+huawei@kernel.org>
- <1f9d7dfd5e8557b55218af01045331939f1add28.1601992016.git.mchehab+huawei@kernel.org>
+ <81cd5da550e06de8e85dcadef4909ff5f1d23319.1601992016.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1f9d7dfd5e8557b55218af01045331939f1add28.1601992016.git.mchehab+huawei@kernel.org>
+In-Reply-To: <81cd5da550e06de8e85dcadef4909ff5f1d23319.1601992016.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 04:03:19PM +0200, Mauro Carvalho Chehab wrote:
-> The :c:type:`foo` only works properly with structs before
-> Sphinx 3.x.
+On Tue, Oct 06, 2020 at 04:03:32PM +0200, Mauro Carvalho Chehab wrote:
+> The :c:type: tag has problems with Sphinx 3.x, as structs
+> there should be declared with c:struct.
 > 
-> On Sphinx 3.x, structs should now be declared using the
-> .. c:struct, and referenced via :c:struct tag.
+> So, remove them, relying at automarkup.py extension to
+> convert them into cross-references.
+
+I tried 'make htmldocs' before and after your patchset ("sphinx3-fixes-v5").
+Before, all the struct fscrypt_* are rendered in code font.  After, they are
+rendered in the regular text font.  Is that really working as intended?
+
 > 
-> As we now have the automarkup.py macro, that automatically
-> convert:
-> 	struct foo
-> 
-> into cross-references, let's get rid of that, solving
-> several warnings when building docs with Sphinx 3.x.
-> 
-> Reviewed-by: André Almeida <andrealmeid@collabora.com> # blk-mq.rst
-> Reviewed-by: Takashi Iwai <tiwai@suse.de> # sound
-> Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
 > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 > ---
+>  Documentation/filesystems/fscrypt.rst | 51 ++++++++++++---------------
+>  1 file changed, 23 insertions(+), 28 deletions(-)
+> 
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Why are the changes to fscrypt.rst split between two patches,
+
+	docs: get rid of :c:type explicit declarations for structs
+
+and
+
+	docs: fs: fscrypt.rst: get rid of :c:type: tags
+
+?  They're the same type of changes.  The first just removes half the :c:type:
+tags, and the second removes the rest.  Shouldn't it be one patch?
+
+> diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
+> index 4f858b38a412..46a9d1bd2ab5 100644
+> --- a/Documentation/filesystems/fscrypt.rst
+> +++ b/Documentation/filesystems/fscrypt.rst
+> @@ -437,8 +437,7 @@ FS_IOC_SET_ENCRYPTION_POLICY
+>  The FS_IOC_SET_ENCRYPTION_POLICY ioctl sets an encryption policy on an
+>  empty directory or verifies that a directory or regular file already
+>  has the specified encryption policy.  It takes in a pointer to a
+> -struct fscrypt_policy_v1 or a :c:type:`struct
+> -fscrypt_policy_v2`, defined as follows::
+> +struct fscrypt_policy_v1 or a struct fscrypt_policy_v2, defined as follows::
+[...]
+>  If the file is not yet encrypted, then FS_IOC_SET_ENCRYPTION_POLICY
+>  verifies that the file is an empty directory.  If so, the specified
+> @@ -637,9 +634,8 @@ The FS_IOC_GET_ENCRYPTION_POLICY ioctl can also retrieve the
+>  encryption policy, if any, for a directory or regular file.  However,
+>  unlike `FS_IOC_GET_ENCRYPTION_POLICY_EX`_,
+>  FS_IOC_GET_ENCRYPTION_POLICY only supports the original policy
+> -version.  It takes in a pointer directly to a :c:type:`struct
+> -fscrypt_policy_v1` rather than a :c:type:`struct
+> -fscrypt_get_policy_ex_arg`.
+> +version.  It takes in a pointer directly to struct fscrypt_policy_v1
+> +rather than struct fscrypt_get_policy_ex_arg.
+
+In some cases you deleted the "a" in "a struct" but in other cases you didn't.
+Intentional?  It seems the file should consistently use one style or the other.
+
+Also please use textwidth=70 for consistency with the rest of the file.
+
+- Eric
