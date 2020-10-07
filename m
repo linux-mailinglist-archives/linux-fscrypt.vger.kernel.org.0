@@ -2,79 +2,938 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67D98286427
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  7 Oct 2020 18:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E22FE286877
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  7 Oct 2020 21:42:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728132AbgJGQa6 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 7 Oct 2020 12:30:58 -0400
-Received: from sonic311-14.consmr.mail.bf2.yahoo.com ([74.6.131.124]:40745
-        "EHLO sonic311-14.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728071AbgJGQa4 (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 7 Oct 2020 12:30:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1602088255; bh=PxMwWzXvs+dqOoH0/FHvFmQpYH2JguaCUHYAVLLmaiw=; h=Date:From:Reply-To:Subject:References:From:Subject; b=Eyg6+y7F+LYPs1JL7GqgNsvO0nfvvD6QTQz0zOjjYH19h7e8uybDqNpfpbvrPJPohEyJzEiU3Q/ZG1NSMK16U64m5lhBv6rL4BI4VHHhBZXH/586P0Y6eadgI7oc5jaWs6MK4R6jE7V2kPE+nWnPevVh043TlvsRz2DNVWISVUbpSdNnzUVow/iau1wdIxg/nud5SXCu/DYo/8oWxzE3q6VSgpN/Fic0UL2WjL9++9HJn10Ltvs/n5mVlKDFJ9xVA58bmqSWtx/gzKI28dlfexENwG4oU4DRYR5Ogs7SOneJr6ToEIv4lOeqzdn+AaIs4dSRNg00hmRst8NWoFhJHg==
-X-YMail-OSG: 4aQ3EjIVM1kNrUzwOnljlQu8.0p2CfIRAN5JD0Cli4AuIgTd4MQO28dQQQgnSBW
- L4u3VPCRBJYYqL1mSHyimTelxTZ76mT_etPsIRCR84Ii49WCxCGfSO.iRBd4SeTBGHOfixcLTIPh
- kY2SSP5Dt03abSms08gfR.uMZEee9oroZOgsHLt.zc5PoIzDIDCTUT8JgiCfFokZBb6mqGs1BfkJ
- rAu0Td.2MfiohMIneIOWswKeOz8JKGQKZJzzShmV0y7WLa.mAMei_qrCYtAND66BZBLh3agr127g
- nYfEjplF0_oUTv7nQmuIegapgQo7mIy6OJ0S0AlvAV4q91LHaSMzUOdkRylqhFVkVAeDHwXog4j5
- l9Bci60cAsSJuZdnnx9fiobxCHLfbN7_dMXrJG65zAVCJMRGE22dK7ChcjRP9IjHxHpGA7gq6lfb
- eLaVjrhzifoUCQ.pOnekG9zR7M1t.2Btgf2l_TPhLHf552VcYbaxcyGDTQE167N5owsOkfxACdmD
- CyCIIso9Ug80vBYkJV.suOkA11FY5v1Q2qJafGgTesMlGEwPfWKbg2KH3s9UXTPApxKCfN1FkhK8
- LJm0I_Kdg1JCO7GtDOQcvbQtiL7GkShC7sLcEvvi5rWC4bklf_gK0l8rUv6EPeZw3eqt01l3gYNs
- AIsMMY1LWFA_ZmciYH4HDFxauzIUCghA47rkl.zkUZGOlCSGzTWYZBy05bnfGETI9Hbn1KHe0msU
- VLsU7V4qsvkBieplxNf5TNz2LlD0iHgVvzBO4IygCaDV2RoRBVUMHYjaYOQrTKlPg1Crn7f.ny6q
- QptRned0bH0jU8UMwW0n76PmzxJC2pnjv2aMZl3kzxuxOyQo5CX5Ug4fK5fp0E1mfFBNtlE_lFdO
- REF_X9Rr5KfFPyervVhLAgcUFGEh0lNnIDBmcVUXP4NUli_ydtGnZXGfuHrpbiOVIWlWLS_e9dvx
- OS9EgyTUziHWKme90bdpqCbwd20.344v.x9QMuIoMFYJwqKJ6dGDTHbJu2eIMyXaOni1DWT_jyY4
- Fm7YdjA9yPk4mLkj2DVmKna5dG3tr.8DRcoUHCsRfTy0mAOvX3zm_YDVRgTS8j31twXJv5DIBBVl
- scLgYiOlSj_uw_oVN6jni2UW6Mx_0eXYj7pIMPvedsuPVaixjDJL8thKX7.TXKB6YN56ZRtlxJgt
- I.ns9VCCrofiw7T0gZqb_hA91bnOV9TcdRv8zieiNriXcVw6cboKIVio2Ss_sOO6_mAXL16tnGEa
- HW173U2iCb8hRwauswHMtkc_lZCZ2DvNW37QDfaNiCzuWZdwGkMbfy0k8cz6dgmVU3audXJcl1hk
- qUeJkR_PSZ0ttNHxf39j6oRPQw8I2AQ53Ce0szMlbyUCN0V9DNWuNUJ5ZS1ooqbTyldbPaPw_F9H
- EV6VpmChy8oI6k2jsWPLjxjLATmETWeg70PjJFMJ1v9IJrQ--
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic311.consmr.mail.bf2.yahoo.com with HTTP; Wed, 7 Oct 2020 16:30:55 +0000
-Date:   Wed, 7 Oct 2020 16:30:55 +0000 (UTC)
-From:   Marilyn Robert <fredodinga22@gmail.com>
-Reply-To: marilyobert@gmail.com
-Message-ID: <1936210565.150941.1602088255223@mail.yahoo.com>
-Subject: =?UTF-8?B?0J3QsNGY0LzQuNC70LAg0LrQsNGYINCz0L7RgdC/0L7QtNCw0YDQvtGC?=
+        id S1727958AbgJGTmM (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 7 Oct 2020 15:42:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33952 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727858AbgJGTmM (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 7 Oct 2020 15:42:12 -0400
+Received: from localhost (unknown [104.132.1.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 95DA2206F0;
+        Wed,  7 Oct 2020 19:42:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602099730;
+        bh=fcZaRKhKRONbgjh2LH89ovWxbCtWBGsq9G8uD0aLCmU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=2seMcJ7OJLjVr15fK2AP+yAx2ekirt2ecw90xHFdrIwDDMxPIIHzKv59uSdAVpb6M
+         x0kYL1pHKI2p88SYIKbmZtqC47PDnADn3SYIICTLd7nZVaZOLFdOS4JV2BrqGPEbi+
+         1riDyOKNmd0dnSOEONSDapv/LbzIf0lQ8uorGJk0=
+Date:   Wed, 7 Oct 2020 12:42:09 -0700
+From:   jaegeuk@kernel.org
+To:     Satya Tangirala <satyat@google.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fscrypt@vger.kernel.org
+Subject: Re: [PATCH 1/1] f2fs-tools: Introduce metadata encryption support
+Message-ID: <20201007194209.GB611836@google.com>
+References: <20201005074133.1958633-1-satyat@google.com>
+ <20201005074133.1958633-2-satyat@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-References: <1936210565.150941.1602088255223.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16795 YMailNodin Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201005074133.1958633-2-satyat@google.com>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-DQoNCtCd0LDRmNC80LjQu9CwINC60LDRmCDQs9C+0YHQv9C+0LTQsNGA0L7Rgg0KDQrQiNCw0YEg
-0YHRg9C8IDY4LdCz0L7QtNC40YjQvdCwINC20LXQvdCwLCDQutC+0ZjQsCDRgdGC0YDQsNC00LAg
-0L7QtCDQv9GA0L7QtNC+0LvQttC10L0g0LrQsNGA0YbQuNC90L7QvCDQvdCwINC00L7RmNC60LAs
-INC+0LQg0YHQuNGC0LUg0LzQtdC00LjRhtC40L3RgdC60Lgg0LjQvdC00LjQutCw0YbQuNC4LCDQ
-vNC+0ZjQsNGC0LAg0YHQvtGB0YLQvtGY0LHQsCDQvdCw0LLQuNGB0YLQuNC90LAg0YHQtSDQstC7
-0L7RiNC4INC4INC+0YfQuNCz0LvQtdC00L3QviDQtSDQtNC10LrQsCDQvNC+0LbQtdCx0Lgg0L3Q
-tdC80LAg0LTQsCDQttC40LLQtdCw0Lwg0L/QvtCy0LXRnNC1INC+0LQg0YjQtdGB0YIg0LzQtdGB
-0LXRhtC4INC60LDQutC+INGA0LXQt9GD0LvRgtCw0YIg0L3QsCDQsdGA0LfQuNC+0YIg0YDQsNGB
-0YIg0Lgg0LHQvtC70LrQsNGC0LAg0YjRgtC+INGB0LUg0ZjQsNCy0YPQstCwINC60LDRmCDQvdC1
-0LAuINCc0L7RmNC+0YIg0YHQvtC/0YDRg9CzINC/0L7Rh9C40L3QsCDQvdC10LrQvtC70LrRgyDQ
-s9C+0LTQuNC90Lgg0L3QsNC90LDQt9Cw0LQg0Lgg0L3QsNGI0LjRgtC1INC00L7Qu9Cz0Lgg0LPQ
-vtC00LjQvdC4INCx0YDQsNC6INC90LUg0LHQtdCwINCx0LvQsNCz0L7RgdC70L7QstC10L3QuCDR
-gdC+INC90LjRgtGDINC10LTQvdC+INC00LXRgtC1LCDQv9C+INC90LXQs9C+0LLQsNGC0LAg0YHQ
-vNGA0YIg0LPQviDQvdCw0YHQu9C10LTQuNCyINGG0LXQu9C+0YLQviDQvdC10LPQvtCy0L4g0LHQ
-vtCz0LDRgtGB0YLQstC+Lg0KDQrQlNC+0LDRk9Cw0Lwg0LrQsNGYINCy0LDRgSDQvtGC0LrQsNC6
-0L4g0YHQtSDQv9C+0LzQvtC70LjQsiDQt9CwINGC0L7QsCwg0L/QvtC00LPQvtGC0LLQtdC9INGB
-0YPQvCDQtNCwINC00L7QvdC40YDQsNC8INGB0YPQvNCwINC+0LQgMiwgMzAwLCAwMDAg0LXQstGA
-0LAg0LfQsCDQv9C+0LzQvtGIINC90LAg0YHQuNGA0L7QvNCw0YjQvdC40YLQtSwg0YHQuNGA0L7Q
-vNCw0YjQvdC40YLQtSDQuCDQv9C+0LzQsNC70LrRgyDQv9GA0LjQstC40LvQtdCz0LjRgNCw0L3Q
-uNGC0LUg0LzQtdGT0YMg0LLQsNGI0LjRgtC1INGB0L7QsdGA0LDQvdC40ZjQsCAvINC+0L/RiNGC
-0LXRgdGC0LLQvi4g0JfQsNCx0LXQu9C10LbQtdGC0LUg0LTQtdC60LAg0L7QstC+0Zgg0YTQvtC9
-0LQg0LUg0LTQtdC/0L7QvdC40YDQsNC9INCy0L4g0LHQsNC90LrQsCDQutCw0LTQtSDRiNGC0L4g
-0YDQsNCx0L7RgtC10YjQtSDQvNC+0ZjQvtGCINGB0L7Qv9GA0YPQsy4gQXBwcmVjaWF0ZdC1INGG
-0LXQvdCw0Lwg0LDQutC+INC+0LHRgNC90LXRgtC1INCy0L3QuNC80LDQvdC40LUg0L3QsCDQvNC+
-0LXRgtC+INCx0LDRgNCw0ZrQtSDQt9CwINC/0YDQvtC/0LDQs9C40YDQsNGa0LUg0L3QsCDQvNCw
-0YHQsNC20LDRgtCwINC90LAg0LrRgNCw0LvRgdGC0LLQvtGC0L4sINGc0LUg0LLQuCDQtNCw0LTQ
-sNC8INC/0L7QstC10ZzQtSDQtNC10YLQsNC70Lgg0LfQsCDRgtC+0LAg0LrQsNC60L4g0LTQsCDQ
-v9C+0YHRgtCw0L/QuNGC0LUuDQoNCtCR0LvQsNCz0L7QtNCw0YDQsNC8DQrQky3Rk9CwINCc0LXR
-gNC40LvQuNC9INCg0L7QsdC10YDRgg==
+Hi Satya,
+
+On 10/05, Satya Tangirala wrote:
+> Introduce native metadata encryption support for F2FS. All blocks
+> other than the super block are encrypted with the specified metadata
+> encryption key and algorithm. The data unit number for each block is its
+> block number in the filesystem.
+> 
+> This patch introduces two new options '-A' and '-M' for specifying metadata
+> crypt options. '-A' takes the desired metadata encryption algorithm as
+> argument. '-M' takes the linux key_serial of the metadata encryption key as
+> the argument. The keyring key provided must be of a key type that supports
+> reading the payload from userspace.
+
+Could you please update manpages as well?
+
+> 
+> mkfs.f2fs takes both these arguments, and stores the encryption algorithm
+> in the superblock of the FS.
+> 
+> The rest of the programs only take '-M', and use the encryption algorithm
+> stored in the superblock of the FS.
+> 
+> Signed-off-by: Satya Tangirala <satyat@google.com>
+> ---
+>  fsck/main.c                   |  47 ++++++-
+>  fsck/mount.c                  |  33 ++++-
+>  include/f2fs_fs.h             |  10 +-
+>  include/f2fs_metadata_crypt.h |  21 ++++
+>  lib/Makefile.am               |   4 +-
+>  lib/f2fs_metadata_crypt.c     | 226 ++++++++++++++++++++++++++++++++++
+>  lib/libf2fs_io.c              |  87 +++++++++++--
+>  mkfs/f2fs_format.c            |   5 +-
+>  mkfs/f2fs_format_main.c       |  33 ++++-
+>  9 files changed, 446 insertions(+), 20 deletions(-)
+>  create mode 100644 include/f2fs_metadata_crypt.h
+>  create mode 100644 lib/f2fs_metadata_crypt.c
+> 
+> diff --git a/fsck/main.c b/fsck/main.c
+> index 32559f1..6a4d867 100644
+> --- a/fsck/main.c
+> +++ b/fsck/main.c
+> @@ -26,6 +26,8 @@
+>  #include <stdbool.h>
+>  #include "quotaio.h"
+>  
+> +#include "f2fs_metadata_crypt.h"
+> +
+>  struct f2fs_fsck gfsck;
+>  
+>  #ifdef WITH_ANDROID
+> @@ -62,6 +64,7 @@ void fsck_usage()
+>  			" (default 0)\n");
+>  	MSG(0, "  -m <max-hash-collision>  set max cache hash collision"
+>  			" (default 16)\n");
+> +	MSG(0, "  -M Metadata encryption key_serial in keyring\n");
+>  	MSG(0, "  -C encoding[:flag1,flag2] Set options for enabling"
+>  			" casefolding\n");
+>  	MSG(0, "  -d debug level [default:0]\n");
+> @@ -92,6 +95,7 @@ void dump_usage()
+>  	MSG(0, "  -S sparse_mode\n");
+>  	MSG(0, "  -a [SSA dump segno from #1~#2 (decimal), for all 0~-1]\n");
+>  	MSG(0, "  -b blk_addr (in 4KB)\n");
+> +	MSG(0, "  -M Metadata encryption key_serial in keyring\n");
+>  	MSG(0, "  -V print the version number and exit\n");
+>  
+>  	exit(1);
+> @@ -107,6 +111,7 @@ void defrag_usage()
+>  	MSG(0, "  -l length [default:512 (2MB)]\n");
+>  	MSG(0, "  -t target block address [default: main_blkaddr + 2MB]\n");
+>  	MSG(0, "  -i set direction as shrink [default: expand]\n");
+> +	MSG(0, "  -M Metadata encryption key_serial in keyring\n");
+>  	MSG(0, "  -V print the version number and exit\n");
+>  	exit(1);
+>  }
+> @@ -119,6 +124,7 @@ void resize_usage()
+>  	MSG(0, "  -i extended node bitmap, node ratio is 20%% by default\n");
+>  	MSG(0, "  -s safe resize (Does not resize metadata)");
+>  	MSG(0, "  -t target sectors [default: device size]\n");
+> +	MSG(0, "  -M Metadata encryption key_serial in keyring\n");
+>  	MSG(0, "  -V print the version number and exit\n");
+>  	exit(1);
+>  }
+> @@ -129,6 +135,7 @@ void sload_usage()
+>  	MSG(0, "[options]:\n");
+>  	MSG(0, "  -C fs_config\n");
+>  	MSG(0, "  -f source directory [path of the source directory]\n");
+> +	MSG(0, "  -M Metadata encryption key_serial in keyring\n");
+>  	MSG(0, "  -p product out directory\n");
+>  	MSG(0, "  -s file_contexts\n");
+>  	MSG(0, "  -S sparse_mode\n");
+> @@ -200,7 +207,7 @@ void f2fs_parse_options(int argc, char *argv[])
+>  	}
+>  
+>  	if (!strcmp("fsck.f2fs", prog)) {
+> -		const char *option_string = ":aC:c:m:d:fg:O:p:q:StyV";
+> +		const char *option_string = ":aC:c:m:M:d:fg:O:p:q:StyV";
+>  		int opt = 0, val;
+>  		char *token;
+>  		struct option long_opt[] = {
+> @@ -243,6 +250,12 @@ void f2fs_parse_options(int argc, char *argv[])
+>  				c.cache_config.max_hash_collision =
+>  						atoi(optarg);
+>  				break;
+> +			case 'M':
+> +				if (f2fs_metadata_process_key(optarg)) {
+> +					MSG(0, "Error: Invalid metadata key\n");
+> +					fsck_usage();
+> +				}
+> +				break;
+>  			case 'g':
+>  				if (!strcmp(optarg, "android"))
+>  					c.defset = CONF_ANDROID;
+> @@ -345,7 +358,7 @@ void f2fs_parse_options(int argc, char *argv[])
+>  				break;
+>  		}
+>  	} else if (!strcmp("dump.f2fs", prog)) {
+> -		const char *option_string = "d:i:n:s:Sa:b:V";
+> +		const char *option_string = "d:i:n:s:Sa:b:M:V";
+>  		static struct dump_option dump_opt = {
+>  			.nid = 0,	/* default root ino */
+>  			.start_nat = -1,
+> @@ -413,6 +426,12 @@ void f2fs_parse_options(int argc, char *argv[])
+>  					ret = sscanf(optarg, "%x",
+>  							&dump_opt.blk_addr);
+>  				break;
+> +			case 'M':
+> +				if (f2fs_metadata_process_key(optarg)) {
+> +					MSG(0, "Error: Invalid metadata key\n");
+> +					dump_usage();
+> +				}
+> +				break;
+>  			case 'V':
+>  				show_version(prog);
+>  				exit(0);
+> @@ -427,7 +446,7 @@ void f2fs_parse_options(int argc, char *argv[])
+>  
+>  		c.private = &dump_opt;
+>  	} else if (!strcmp("defrag.f2fs", prog)) {
+> -		const char *option_string = "d:s:Sl:t:iV";
+> +		const char *option_string = "d:M:s:Sl:t:iV";
+>  
+>  		c.func = DEFRAG;
+>  		while ((option = getopt(argc, argv, option_string)) != EOF) {
+> @@ -473,6 +492,12 @@ void f2fs_parse_options(int argc, char *argv[])
+>  			case 'i':
+>  				c.defrag_shrink = 1;
+>  				break;
+> +			case 'M':
+> +				if (f2fs_metadata_process_key(optarg)) {
+> +					MSG(0, "Error: Invalid metadata key\n");
+> +					defrag_usage();
+> +				}
+> +				break;
+>  			case 'V':
+>  				show_version(prog);
+>  				exit(0);
+> @@ -485,7 +510,7 @@ void f2fs_parse_options(int argc, char *argv[])
+>  				break;
+>  		}
+>  	} else if (!strcmp("resize.f2fs", prog)) {
+> -		const char *option_string = "d:st:iV";
+> +		const char *option_string = "d:M:st:iV";
+>  
+>  		c.func = RESIZE;
+>  		while ((option = getopt(argc, argv, option_string)) != EOF) {
+> @@ -515,6 +540,12 @@ void f2fs_parse_options(int argc, char *argv[])
+>  			case 'i':
+>  				c.large_nat_bitmap = 1;
+>  				break;
+> +			case 'M':
+> +				if (f2fs_metadata_process_key(optarg)) {
+> +					MSG(0, "Error: Invalid metadata key\n");
+> +					resize_usage();
+> +				}
+> +				break;
+>  			case 'V':
+>  				show_version(prog);
+>  				exit(0);
+> @@ -527,7 +558,7 @@ void f2fs_parse_options(int argc, char *argv[])
+>  				break;
+>  		}
+>  	} else if (!strcmp("sload.f2fs", prog)) {
+> -		const char *option_string = "C:d:f:p:s:St:T:V";
+> +		const char *option_string = "C:d:f:M:p:s:St:T:V";
+>  #ifdef HAVE_LIBSELINUX
+>  		int max_nr_opt = (int)sizeof(c.seopt_file) /
+>  			sizeof(c.seopt_file[0]);
+> @@ -553,6 +584,12 @@ void f2fs_parse_options(int argc, char *argv[])
+>  			case 'f':
+>  				c.from_dir = absolute_path(optarg);
+>  				break;
+> +			case 'M':
+> +				if (f2fs_metadata_process_key(optarg)) {
+> +					MSG(0, "Error: Invalid metadata key\n");
+> +					sload_usage();
+> +				}
+> +				break;
+>  			case 'p':
+>  				c.target_out_dir = absolute_path(optarg);
+>  				break;
+> diff --git a/fsck/mount.c b/fsck/mount.c
+> index 8ebc5b0..7520a8a 100644
+> --- a/fsck/mount.c
+> +++ b/fsck/mount.c
+> @@ -11,6 +11,7 @@
+>  #include "fsck.h"
+>  #include "node.h"
+>  #include "xattr.h"
+> +#include "f2fs_metadata_crypt.h"
+>  #include <locale.h>
+>  #include <stdbool.h>
+>  #ifdef HAVE_LINUX_POSIX_ACL_H
+> @@ -561,6 +562,10 @@ void print_sb_state(struct f2fs_super_block *sb)
+>  	if (f & cpu_to_le32(F2FS_FEATURE_COMPRESSION)) {
+>  		MSG(0, "%s", " compression");
+>  	}
+> +	if (sb->metadata_crypt_alg) {
+> +		MSG(0, "%s", " metadata_crypt");
+> +	}
+> +
+>  	MSG(0, "\n");
+>  	MSG(0, "Info: superblock encrypt level = %d, salt = ",
+>  					sb->encryption_level);
+> @@ -686,7 +691,7 @@ void update_superblock(struct f2fs_super_block *sb, int sb_mask)
+>  	memcpy(buf + F2FS_SUPER_OFFSET, sb, sizeof(*sb));
+>  	for (addr = SB0_ADDR; addr < SB_MAX_ADDR; addr++) {
+>  		if (SB_MASK(addr) & sb_mask) {
+> -			ret = dev_write_block(buf, addr);
+> +			ret = dev_write_block_unencrypted(buf, addr);
+>  			ASSERT(ret >= 0);
+>  		}
+>  	}
+> @@ -927,6 +932,24 @@ int sanity_check_raw_super(struct f2fs_super_block *sb, enum SB_ADDR sb_addr)
+>  		return -1;
+>  	}
+>  
+> +	/*
+> +	 * Check that metadata encryption is enabled on superblock when metadata
+> +	 * crypt key is specified
+> +	 */
+> +	if (get_sb(metadata_crypt_alg) && !c.metadata_crypt_key) {
+> +		MSG(0, "\tFilesystem has metadata encryption, but we're missing the metadata encryption key.\n");
+> +		return -1;
+> +	}
+> +
+> +	/*
+> +	 * Check that metadata encryption is disabled on superblock when metadata
+> +	 * crypt key is not specified
+> +	 */
+> +	if (!get_sb(metadata_crypt_alg) && c.metadata_crypt_key) {
+> +		MSG(0, "\tFilesystem has does not have metadata encryption, but a metadata encryption key was specified.\n");
+> +		return -1;
+> +	}
+> +
+>  	if (sanity_check_area_boundary(sb, sb_addr))
+>  		return -1;
+>  	return 0;
+> @@ -940,7 +963,7 @@ int validate_super_block(struct f2fs_sb_info *sbi, enum SB_ADDR sb_addr)
+>  	if (!sbi->raw_super)
+>  		return -ENOMEM;
+>  
+> -	if (dev_read_block(buf, sb_addr))
+> +	if (dev_read_block_unencrypted(buf, sb_addr))
+>  		return -1;
+>  
+>  	memcpy(sbi->raw_super, buf + F2FS_SUPER_OFFSET,
+> @@ -3499,6 +3522,12 @@ int f2fs_do_mount(struct f2fs_sb_info *sbi)
+>  	}
+>  	sb = F2FS_RAW_SUPER(sbi);
+>  
+> +	/* Get metadata encryption algorithm */
+> +	c.metadata_crypt_alg = get_sb(metadata_crypt_alg);
+> +
+> +	if (f2fs_metadata_verify_args())
+> +		exit(1);
+> +
+>  	ret = check_sector_size(sb);
+>  	if (ret)
+>  		return -1;
+> diff --git a/include/f2fs_fs.h b/include/f2fs_fs.h
+> index b5bda13..6b1912d 100644
+> --- a/include/f2fs_fs.h
+> +++ b/include/f2fs_fs.h
+> @@ -441,6 +441,11 @@ struct f2fs_configuration {
+>  
+>  	/* cache parameters */
+>  	dev_cache_config_t cache_config;
+> +
+> +	/* metadata encryption */
+> +	__u8 *metadata_crypt_key;
+> +	int metadata_crypt_key_len;
+> +	int metadata_crypt_alg;
+>  };
+>  
+>  #ifdef CONFIG_64BIT
+> @@ -675,7 +680,8 @@ struct f2fs_super_block {
+>  	__u8 hot_ext_count;		/* # of hot file extension */
+>  	__le16  s_encoding;		/* Filename charset encoding */
+>  	__le16  s_encoding_flags;	/* Filename charset encoding flags */
+> -	__u8 reserved[306];		/* valid reserved region */
+> +	__le32	metadata_crypt_alg;	/* The metadata encryption algorithm (FSCRYPT_MODE_*) */
+> +	__u8 reserved[302];		/* valid reserved region */
+>  	__le32 crc;			/* checksum of superblock */
+>  } __attribute__((packed));
+>  
+> @@ -1237,12 +1243,14 @@ extern int dev_readahead(__u64, size_t UNUSED(len));
+>  #endif
+>  extern int dev_write(void *, __u64, size_t);
+>  extern int dev_write_block(void *, __u64);
+> +extern int dev_write_block_unencrypted(void *, __u64);
+>  extern int dev_write_dump(void *, __u64, size_t);
+>  /* All bytes in the buffer must be 0 use dev_fill(). */
+>  extern int dev_fill(void *, __u64, size_t);
+>  extern int dev_fill_block(void *, __u64);
+>  
+>  extern int dev_read_block(void *, __u64);
+> +extern int dev_read_block_unencrypted(void *, __u64);
+>  extern int dev_reada_block(__u64);
+>  
+>  extern int dev_read_version(void *, __u64, size_t);
+> diff --git a/include/f2fs_metadata_crypt.h b/include/f2fs_metadata_crypt.h
+> new file mode 100644
+> index 0000000..d15873d
+> --- /dev/null
+> +++ b/include/f2fs_metadata_crypt.h
+> @@ -0,0 +1,21 @@
+> +/**
+> + * f2fs_metadata_crypt.h
+> + *
+> + * Copyright (c) 2020 Google LLC
+> + *
+> + * Dual licensed under the GPL or LGPL version 2 licenses.
+> + */
+> +
+> +#include <inttypes.h>
+> +#include <linux/fscrypt.h>
+> +
+> +int f2fs_get_crypt_alg(const char *optarg);
+> +
+> +void f2fs_print_crypt_algs(void);
+> +
+> +int f2fs_metadata_process_key(const char *key_serial);
+> +
+> +int f2fs_metadata_verify_args(void);
+> +
+> +void *f2fs_metadata_crypt_blocks(void *src_buf, size_t len, __u64 blk_addr,
+> +	bool encrypt);
+> diff --git a/lib/Makefile.am b/lib/Makefile.am
+> index 871d773..a82d753 100644
+> --- a/lib/Makefile.am
+> +++ b/lib/Makefile.am
+> @@ -2,10 +2,10 @@
+>  
+>  lib_LTLIBRARIES = libf2fs.la
+>  
+> -libf2fs_la_SOURCES = libf2fs.c libf2fs_io.c libf2fs_zoned.c nls_utf8.c
+> +libf2fs_la_SOURCES = libf2fs.c libf2fs_io.c libf2fs_zoned.c nls_utf8.c f2fs_metadata_crypt.c
+>  libf2fs_la_CFLAGS = -Wall
+>  libf2fs_la_CPPFLAGS = -I$(top_srcdir)/include
+> -libf2fs_la_LDFLAGS = -version-info $(LIBF2FS_CURRENT):$(LIBF2FS_REVISION):$(LIBF2FS_AGE)
+> +libf2fs_la_LDFLAGS = -lkeyutils -version-info $(LIBF2FS_CURRENT):$(LIBF2FS_REVISION):$(LIBF2FS_AGE)
+>  
+>  root_libdir=@root_libdir@
+>  
+> diff --git a/lib/f2fs_metadata_crypt.c b/lib/f2fs_metadata_crypt.c
+> new file mode 100644
+> index 0000000..faf399a
+> --- /dev/null
+> +++ b/lib/f2fs_metadata_crypt.c
+> @@ -0,0 +1,226 @@
+> +/**
+> + * f2fs_metadata_crypt.c
+> + *
+> + * Copyright (c) 2020 Google LLC
+> + *
+> + * Dual licensed under the GPL or LGPL version 2 licenses.
+> + */
+> +#include <string.h>
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <unistd.h>
+> +#include <sys/socket.h>
+> +#include <linux/if_alg.h>
+> +#include <linux/socket.h>
+> +#include <assert.h>
+> +#include <errno.h>
+> +#include <keyutils.h>
+> +
+> +#include "f2fs_fs.h"
+> +#include "f2fs_metadata_crypt.h"
+> +
+> +extern struct f2fs_configuration c;
+> +struct f2fs_crypt_mode {
+> +	const char *friendly_name;
+> +	const char *cipher_str;
+> +	unsigned int keysize;
+> +	unsigned int ivlen;
+> +} f2fs_crypt_modes[] = {
+> +	[FSCRYPT_MODE_AES_256_XTS] = {
+> +		.friendly_name = "AES-256-XTS",
+> +		.cipher_str = "xts(aes)",
+> +		.keysize = 64,
+> +		.ivlen = 16,
+> +	},
+> +	[FSCRYPT_MODE_ADIANTUM] = {
+> +		.friendly_name = "Adiantum",
+> +		.cipher_str = "adiantum(xchacha12,aes)",
+> +		.keysize = 32,
+> +		.ivlen = 32,
+> +	},
+> +};
+> +#define MAX_IV_LEN 32
+> +
+> +void f2fs_print_crypt_algs(void)
+> +{
+> +	int i;
+> +
+> +	for (i = 1; i <= __FSCRYPT_MODE_MAX; i++) {
+> +		if (!f2fs_crypt_modes[i].friendly_name)
+> +			continue;
+> +		MSG(0, "\t%s\n", f2fs_crypt_modes[i].friendly_name);
+> +	}
+> +}
+> +
+> +int f2fs_get_crypt_alg(const char *optarg)
+> +{
+> +	int i;
+> +
+> +	for (i = 1; i <= __FSCRYPT_MODE_MAX; i++) {
+> +		if (f2fs_crypt_modes[i].friendly_name &&
+> +		    !strcmp(f2fs_crypt_modes[i].friendly_name, optarg)) {
+> +			return i;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +int f2fs_metadata_process_key(const char *key_serial_str)
+> +{
+> +	key_serial_t key_serial = strtol(key_serial_str, NULL, 10);
+> +
+> +	c.metadata_crypt_key_len =
+> +		keyctl_read_alloc(key_serial, (void **)&c.metadata_crypt_key);
+> +
+> +	if (c.metadata_crypt_key_len < 0)
+> +		return errno;
+> +
+> +	return 0;
+> +}
+> +
+> +int f2fs_metadata_verify_args(void)
+> +{
+> +	/* If neither specified, nothing to do */
+> +	if (!c.metadata_crypt_key && !c.metadata_crypt_alg)
+> +		return 0;
+> +
+> +	/* We need both specified */
+> +	if (!c.metadata_crypt_key || !c.metadata_crypt_alg)
+> +		return -EINVAL;
+> +
+> +	if (c.metadata_crypt_key_len !=
+> +	    f2fs_crypt_modes[c.metadata_crypt_alg].keysize) {
+> +		MSG(0, "\tMetadata encryption key length %d didn't match required size %d\n",
+> +		    c.metadata_crypt_key_len,
+> +		    f2fs_crypt_modes[c.metadata_crypt_alg].keysize);
+> +
+> +		return -EINVAL;
+> +	}
+
+Need to check sparse mode here?
+
+And, what about multiple partition case?
+
+> +
+> +	return 0;
+> +}
+> +
+> +void f2fs_metadata_crypt_gen_iv(struct af_alg_iv *iv, __u64 blk_addr)
+> +{
+> +	int i = 0;
+> +
+> +	memset(iv->iv, 0, iv->ivlen);
+> +
+> +	while (blk_addr > 0) {
+> +		iv->iv[i] = blk_addr & 0xFF;
+> +		blk_addr >>= 8;
+> +		i++;
+> +	}
+> +}
+> +
+> +int f2fs_metadata_crypt_block(void *buf, size_t len, __u64 blk_addr,
+> +			      bool encrypt)
+> +{
+> +	struct f2fs_crypt_mode *crypt_mode;
+> +	int sockfd, fd;
+> +	struct sockaddr_alg sa = {
+> +		.salg_family = AF_ALG,
+> +		.salg_type = "skcipher",
+> +	};
+> +	struct msghdr msg = {};
+> +	struct cmsghdr *cmsg;
+> +	char cbuf[CMSG_SPACE(4) + CMSG_SPACE(4 + MAX_IV_LEN)] = {0};
+> +	int blk_offset;
+> +	struct af_alg_iv *iv;
+> +	struct iovec iov;
+> +	int err;
+> +
+> +	crypt_mode = &f2fs_crypt_modes[c.metadata_crypt_alg];
+> +	memcpy(sa.salg_name, crypt_mode->cipher_str,
+> +	       strlen(crypt_mode->cipher_str));
+> +
+> +	sockfd = socket(AF_ALG, SOCK_SEQPACKET, 0);
+> +	if (sockfd < 0)
+> +		return errno;
+> +	err = bind(sockfd, (struct sockaddr *)&sa, sizeof(sa));
+> +	if (err) {
+> +		MSG(0, "\tCouldn't bind crypto socket. Maybe support for the crypto algorithm isn't enabled?\n");
+> +		close(sockfd);
+> +		return errno;
+> +	}
+> +	err = setsockopt(sockfd, SOL_ALG, ALG_SET_KEY, c.metadata_crypt_key,
+> +			 crypt_mode->keysize);
+> +	if (err) {
+> +		MSG(0, "\tCouldn't set crypto socket options.\n");
+> +		close(sockfd);
+> +		return errno;
+> +	}
+> +	fd = accept(sockfd, NULL, 0);
+> +	if (fd < 0)
+> +		goto err_out;
+> +
+> +	msg.msg_control = cbuf;
+> +	msg.msg_controllen = sizeof(cbuf);
+> +
+> +	cmsg = CMSG_FIRSTHDR(&msg);
+> +	cmsg->cmsg_level = SOL_ALG;
+> +	cmsg->cmsg_type = ALG_SET_OP;
+> +	cmsg->cmsg_len = CMSG_LEN(4);
+> +	*(__u32 *)CMSG_DATA(cmsg) = encrypt ? ALG_OP_ENCRYPT : ALG_OP_DECRYPT;
+> +
+> +	cmsg = CMSG_NXTHDR(&msg, cmsg);
+> +	cmsg->cmsg_level = SOL_ALG;
+> +	cmsg->cmsg_type = ALG_SET_IV;
+> +	cmsg->cmsg_len = CMSG_LEN(4 + MAX_IV_LEN);
+> +	iv = (void *)CMSG_DATA(cmsg);
+> +	iv->ivlen = crypt_mode->ivlen;
+> +
+> +	iov.iov_len = F2FS_BLKSIZE;
+> +
+> +	msg.msg_iov = &iov;
+> +	msg.msg_iovlen = 1;
+> +
+> +	for (blk_offset = 0; blk_offset < len / F2FS_BLKSIZE; blk_offset++) {
+> +		f2fs_metadata_crypt_gen_iv(iv, blk_addr + blk_offset);
+> +
+> +		iov.iov_base = (char *)buf + blk_offset * F2FS_BLKSIZE;
+> +
+> +		err = sendmsg(fd, &msg, 0);
+> +		if (err < 0)
+> +			goto err_out;
+> +		err = read(fd, (char *)buf + blk_offset * F2FS_BLKSIZE,
+> +			   F2FS_BLKSIZE);
+> +		if (err < 0)
+> +			goto err_out;
+> +	}
+> +
+> +	close(fd);
+> +	close(sockfd);
+> +
+> +	return 0;
+> +
+> +err_out:
+> +	err = errno;
+> +	close(fd);
+> +	close(sockfd);
+> +
+> +	return err;
+> +}
+> +
+> +void *f2fs_metadata_crypt_blocks(void *buf, size_t len, __u64 blk_addr,
+> +	bool encrypt)
+> +{
+> +	int err = 0;
+> +	void *enc_buf;
+> +
+> +	if (!c.metadata_crypt_key)
+> +		return buf;
+> +
+> +	enc_buf = malloc(len);
+> +	memcpy(enc_buf, buf, len);
+> +
+> +	err = f2fs_metadata_crypt_block(enc_buf, len, blk_addr, encrypt);
+> +	if (err) {
+> +		MSG(0, "\tFailed to en/decrypt blocks. Errno %d\n", err);
+> +		free(enc_buf);
+> +		return NULL;
+> +	}
+> +
+> +	return enc_buf;
+> +}
+> diff --git a/lib/libf2fs_io.c b/lib/libf2fs_io.c
+> index 138285d..f117e1e 100644
+> --- a/lib/libf2fs_io.c
+> +++ b/lib/libf2fs_io.c
+> @@ -33,6 +33,7 @@
+>  #include <assert.h>
+>  #include <inttypes.h>
+>  #include "f2fs_fs.h"
+> +#include "f2fs_metadata_crypt.h"
+>  
+>  struct f2fs_configuration c;
+>  
+> @@ -499,10 +500,12 @@ static int sparse_write_blk(__u64 block, int count, const void *buf) { return 0;
+>  static int sparse_write_zeroed_blk(__u64 block, int count) { return 0; }
+>  #endif
+>  
+> -int dev_read(void *buf, __u64 offset, size_t len)
+> +int __dev_read(void *buf, __u64 offset, size_t len, bool unencrypted)
+>  {
+>  	int fd;
+> +	__u64 blk_addr = offset >> F2FS_BLKSIZE_BITS;
+>  	int err;
+> +	void *new_buf = NULL;
+>  
+>  	if (c.sparse_mode)
+>  		return sparse_read_blk(offset / F2FS_BLKSIZE,
+> @@ -521,9 +524,29 @@ int dev_read(void *buf, __u64 offset, size_t len)
+>  		return -1;
+>  	if (read(fd, buf, len) < 0)
+>  		return -1;
+> +	if (!unencrypted) {
+> +		new_buf = f2fs_metadata_crypt_blocks(buf, len, blk_addr, false);
+> +		if (!new_buf)
+> +			return -1;
+> +		if (new_buf != buf) {
+> +			memcpy(buf, new_buf, len);
+> +			free(new_buf);
+> +		}
+> +	}
+> +
+>  	return 0;
+>  }
+>  
+> +int dev_read(void *buf, __u64 offset, size_t len)
+> +{
+> +	return __dev_read(buf, offset, len, false);
+> +}
+> +
+> +int dev_read_unencrypted(void *buf, __u64 offset, size_t len)
+> +{
+> +	return __dev_read(buf, offset, len, true);
+> +}
+> +
+>  #ifdef POSIX_FADV_WILLNEED
+>  int dev_readahead(__u64 offset, size_t len)
+>  #else
+> @@ -541,13 +564,17 @@ int dev_readahead(__u64 offset, size_t UNUSED(len))
+>  #endif
+>  }
+>  
+> -int dev_write(void *buf, __u64 offset, size_t len)
+> +int __dev_write(void *buf, __u64 offset, size_t len, bool unencrypted)
+>  {
+>  	int fd;
+> +	__u64 blk_addr = offset >> F2FS_BLKSIZE_BITS;
+> +	void *src_buf = buf;
+> +	int err = -1;
+>  
+>  	if (c.dry_run)
+>  		return 0;
+>  
+> +	/* TODO: handle sparse mode with metadata encryption */
+>  	if (c.sparse_mode)
+>  		return sparse_write_blk(offset / F2FS_BLKSIZE,
+>  					len / F2FS_BLKSIZE, buf);
+> @@ -562,11 +589,26 @@ int dev_write(void *buf, __u64 offset, size_t len)
+>  	 */
+>  	if (dcache_update_cache(fd, buf, (off64_t)offset, len) < 0)
+>  		return -1;
+> +	if (!unencrypted) {
+> +		buf = f2fs_metadata_crypt_blocks(buf, len, blk_addr, true);
+> +		if (!buf)
+> +			return -1;
+> +	}
+>  	if (lseek64(fd, (off64_t)offset, SEEK_SET) < 0)
+> -		return -1;
+> +		goto out;
+>  	if (write(fd, buf, len) < 0)
+> -		return -1;
+> -	return 0;
+> +		goto out;
+> +
+> +	err = 0;
+> +out:
+> +	if (buf != src_buf)
+> +		free(buf);
+> +	return err;
+> +}
+> +
+> +int dev_write(void *buf, __u64 offset, size_t len)
+> +{
+> +	return __dev_write(buf, offset, len, false);
+>  }
+>  
+>  int dev_write_block(void *buf, __u64 blk_addr)
+> @@ -574,6 +616,16 @@ int dev_write_block(void *buf, __u64 blk_addr)
+>  	return dev_write(buf, blk_addr << F2FS_BLKSIZE_BITS, F2FS_BLKSIZE);
+>  }
+>  
+> +static int dev_write_unencrypted(void *buf, __u64 offset, size_t len)
+> +{
+> +	return __dev_write(buf, offset, len, true);
+> +}
+> +
+> +int dev_write_block_unencrypted(void *buf, __u64 blk_addr)
+> +{
+> +	return dev_write_unencrypted(buf, blk_addr << F2FS_BLKSIZE_BITS, F2FS_BLKSIZE);
+> +}
+> +
+>  int dev_write_dump(void *buf, __u64 offset, size_t len)
+>  {
+>  	if (lseek64(c.dump_fd, (off64_t)offset, SEEK_SET) < 0)
+> @@ -586,7 +638,11 @@ int dev_write_dump(void *buf, __u64 offset, size_t len)
+>  int dev_fill(void *buf, __u64 offset, size_t len)
+>  {
+>  	int fd;
+> +	__u64 blk_addr = offset >> F2FS_BLKSIZE_BITS;
+> +	void *src_buf = buf;
+> +	int err = -1;
+>  
+> +	/* TODO: handle sparse mode with metadata encryption */
+>  	if (c.sparse_mode)
+>  		return sparse_write_zeroed_blk(offset / F2FS_BLKSIZE,
+>  						len / F2FS_BLKSIZE);
+> @@ -598,11 +654,21 @@ int dev_fill(void *buf, __u64 offset, size_t len)
+>  	/* Only allow fill to zero */
+>  	if (*((__u8*)buf))
+>  		return -1;
+> -	if (lseek64(fd, (off64_t)offset, SEEK_SET) < 0)
+> +
+> +	buf = f2fs_metadata_crypt_blocks(buf, len, blk_addr, true);
+> +	if (!buf)
+>  		return -1;
+> +
+> +	if (lseek64(fd, (off64_t)offset, SEEK_SET) < 0)
+> +		goto out;
+>  	if (write(fd, buf, len) < 0)
+> -		return -1;
+> -	return 0;
+> +		goto out;
+> +
+> +	err = 0;
+> +out:
+> +	if (buf != src_buf)
+> +		free(buf);
+> +	return err;
+>  }
+>  
+>  int dev_fill_block(void *buf, __u64 blk_addr)
+> @@ -615,6 +681,11 @@ int dev_read_block(void *buf, __u64 blk_addr)
+>  	return dev_read(buf, blk_addr << F2FS_BLKSIZE_BITS, F2FS_BLKSIZE);
+>  }
+>  
+> +int dev_read_block_unencrypted(void *buf, __u64 blk_addr)
+> +{
+> +	return dev_read_unencrypted(buf, blk_addr << F2FS_BLKSIZE_BITS, F2FS_BLKSIZE);
+> +}
+> +
+>  int dev_reada_block(__u64 blk_addr)
+>  {
+>  	return dev_readahead(blk_addr << F2FS_BLKSIZE_BITS, F2FS_BLKSIZE);
+> diff --git a/mkfs/f2fs_format.c b/mkfs/f2fs_format.c
+> index a6c542e..bf587bf 100644
+> --- a/mkfs/f2fs_format.c
+> +++ b/mkfs/f2fs_format.c
+> @@ -537,6 +537,9 @@ static int f2fs_prepare_super_block(void)
+>  		set_sb(s_encoding_flags, c.s_encoding_flags);
+>  	}
+>  
+> +	if (c.metadata_crypt_key)
+> +		set_sb(metadata_crypt_alg, c.metadata_crypt_alg);
+> +
+>  	sb->feature = c.feature;
+>  
+>  	if (get_sb(feature) & F2FS_FEATURE_SB_CHKSUM) {
+> @@ -1046,7 +1049,7 @@ static int f2fs_write_super_block(void)
+>  	memcpy(zero_buff + F2FS_SUPER_OFFSET, sb, sizeof(*sb));
+>  	DBG(1, "\tWriting super block, at offset 0x%08x\n", 0);
+>  	for (index = 0; index < 2; index++) {
+> -		if (dev_write_block(zero_buff, index)) {
+> +		if (dev_write_block_unencrypted(zero_buff, index)) {
+>  			MSG(1, "\tError: While while writing super_blk "
+>  					"on disk!!! index : %d\n", index);
+>  			free(zero_buff);
+> diff --git a/mkfs/f2fs_format_main.c b/mkfs/f2fs_format_main.c
+> index f2f0a80..8856850 100644
+> --- a/mkfs/f2fs_format_main.c
+> +++ b/mkfs/f2fs_format_main.c
+> @@ -28,6 +28,7 @@
+>  
+>  #include "f2fs_fs.h"
+>  #include "f2fs_format_utils.h"
+> +#include "f2fs_metadata_crypt.h"
+>  
+>  #ifdef WITH_ANDROID
+>  #include <sparse/sparse.h>
+> @@ -44,6 +45,7 @@ static void mkfs_usage()
+>  	MSG(0, "\nUsage: mkfs.f2fs [options] device [sectors]\n");
+>  	MSG(0, "[options]:\n");
+>  	MSG(0, "  -a heap-based allocation [default:0]\n");
+> +	MSG(0, "  -A Metadata encryption algorithm\n");
+>  	MSG(0, "  -c device1[,device2,...] up to 7 additional devices, except meta device\n");
+>  	MSG(0, "  -d debug level [default:0]\n");
+>  	MSG(0, "  -e [cold file ext list] e.g. \"mp3,gif,mov\"\n");
+> @@ -54,6 +56,7 @@ static void mkfs_usage()
+>  	MSG(0, "  -l label\n");
+>  	MSG(0, "  -U uuid\n");
+>  	MSG(0, "  -m support zoned block device [default:0]\n");
+> +	MSG(0, "  -M Metadata encryption key_serial in keyring\n");
+>  	MSG(0, "  -o overprovision percentage [default:auto]\n");
+>  	MSG(0, "  -O feature1[,feature2,...] e.g. \"encrypt\"\n");
+>  	MSG(0, "  -C [encoding[:flag1,...]] Support casefolding with optional flags\n");
+> @@ -97,6 +100,12 @@ static void f2fs_show_info()
+>  					f2fs_encoding2str(c.s_encoding));
+>  	if (c.feature & le32_to_cpu(F2FS_FEATURE_PRJQUOTA))
+>  		MSG(0, "Info: Enable Project quota\n");
+> +
+> +	if (c.metadata_crypt_key)
+> +		MSG(0, "Info: Metadata key is %s\n", c.metadata_crypt_key);
+> +
+> +	if (c.metadata_crypt_alg)
+> +		MSG(0, "Info: Metadata alg is %d\n", c.metadata_crypt_alg);
+>  }
+>  
+>  static void add_default_options(void)
+> @@ -125,7 +134,7 @@ static void add_default_options(void)
+>  
+>  static void f2fs_parse_options(int argc, char *argv[])
+>  {
+> -	static const char *option_string = "qa:c:C:d:e:E:g:il:mo:O:rR:s:S:z:t:T:U:Vfw:";
+> +	static const char *option_string = "qa:A:c:C:d:e:E:g:il:mM:o:O:rR:s:S:z:t:T:U:Vfw:";
+>  	int32_t option=0;
+>  	int val;
+>  	char *token;
+> @@ -138,6 +147,14 @@ static void f2fs_parse_options(int argc, char *argv[])
+>  		case 'a':
+>  			c.heap = atoi(optarg);
+>  			break;
+> +		case 'A':
+> +			c.metadata_crypt_alg = f2fs_get_crypt_alg(optarg);
+> +			if (c.metadata_crypt_alg < 0) {
+> +				MSG(0, "Error: invalid crypt algorithm specified. The choices are:");
+> +				f2fs_print_crypt_algs();
+> +				exit(1);
+> +			}
+> +			break;
+>  		case 'c':
+>  			if (c.ndevs >= MAX_DEVICES) {
+>  				MSG(0, "Error: Too many devices\n");
+> @@ -178,6 +195,12 @@ static void f2fs_parse_options(int argc, char *argv[])
+>  		case 'm':
+>  			c.zoned_mode = 1;
+>  			break;
+> +		case 'M':
+> +			if (f2fs_metadata_process_key(optarg)) {
+> +				MSG(0, "Error: Invalid metadata key\n");
+> +				mkfs_usage();
+> +			}
+> +			break;
+>  		case 'o':
+>  			c.overprovision = atof(optarg);
+>  			break;
+> @@ -244,6 +267,14 @@ static void f2fs_parse_options(int argc, char *argv[])
+>  		}
+>  	}
+>  
+> +	if ((!!c.metadata_crypt_key) != (!!c.metadata_crypt_alg)) {
+> +		MSG(0, "\tError: Both the metadata crypt key and crypt algorithm must be specified!");
+> +		exit(1);
+> +	}
+> +
+> +	if (f2fs_metadata_verify_args())
+> +		exit(1);
+> +
+>  	add_default_options();
+
+Need to check options after add_default_options()?
+
+Thanks,
+
+>  
+>  	if (!(c.feature & cpu_to_le32(F2FS_FEATURE_EXTRA_ATTR))) {
+> -- 
+> 2.28.0.806.g8561365e88-goog
