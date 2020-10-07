@@ -2,96 +2,79 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61ECE2869FD
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  7 Oct 2020 23:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D42D286A5A
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  7 Oct 2020 23:39:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728593AbgJGVUy (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 7 Oct 2020 17:20:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40146 "EHLO mail.kernel.org"
+        id S1726105AbgJGVjm (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 7 Oct 2020 17:39:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727798AbgJGVUy (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 7 Oct 2020 17:20:54 -0400
+        id S1726013AbgJGVjm (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 7 Oct 2020 17:39:42 -0400
 Received: from gmail.com (unknown [104.132.1.76])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C08952083B;
-        Wed,  7 Oct 2020 21:20:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9C8E22083B;
+        Wed,  7 Oct 2020 21:39:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602105654;
-        bh=zenTSMmmb5eoRKiXCYgBR26ANJMtA08lFO4cBuL9ebw=;
+        s=default; t=1602106781;
+        bh=sdRxveUhVytWLRhWGk462Ot+awyuVxCG/A90yWYdq/c=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mBsJfroYtovwhJx/hZzE6EiVmQp8z2bwboXPwbY3mPrt7JG9O2mySDQHT+Tm5qxzP
-         O674Ww+cCnufqlNRk6YUyA9CXZj6VKEJkOqik4Qa/nQ9+xpWDXFfZyBueAKFMCTKE/
-         7zImGzySs7JGLKEhB9Zm41gorW65f8m9A46g8EwI=
-Date:   Wed, 7 Oct 2020 14:20:52 -0700
+        b=MzfvFlFTY4ZrVPRXDn5j7jg6BP43NEwJHSuM+ziF4i9UzTd0CUmg6a1FZG6vyxBgy
+         X9JDRAyds9tGyNTwoGhmEynUgxanc6PpEUUibSiTAK4G8D4fyCxFidES9jbrWA/ZbP
+         Xl/Pe7ev1K+G4GGmGVFyXCzbuwSPkmj27S44yGac=
+Date:   Wed, 7 Oct 2020 14:39:40 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     Satya Tangirala <satyat@google.com>
-Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH 3/3] f2fs: Add metadata encryption support
-Message-ID: <20201007212052.GC1530638@gmail.com>
-References: <20201005073606.1949772-1-satyat@google.com>
- <20201005073606.1949772-4-satyat@google.com>
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fscrypt@vger.kernel.org
+Subject: Re: [PATCH 0/1] userspace support for F2FS metadata encryption
+Message-ID: <20201007213940.GE1530638@gmail.com>
+References: <20201005074133.1958633-1-satyat@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201005073606.1949772-4-satyat@google.com>
+In-Reply-To: <20201005074133.1958633-1-satyat@google.com>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 07:36:06AM +0000, Satya Tangirala wrote:
-> Wire up metadata encryption support with the fscrypt metadata crypt
-> additions.
+On Mon, Oct 05, 2020 at 07:41:32AM +0000, Satya Tangirala wrote:
+> The kernel patches for F2FS metadata encryption are at:
 > 
-> Introduces a new mount option for metadata encryption -
-> metadata_crypt_key=%s. The argument to this option is the key descriptor of
-> the metadata encryption key in hex. 
+> https://lore.kernel.org/linux-fscrypt/20201005073606.1949772-4-satyat@google.com/
+> 
+> This patch implements the userspace changes required for metadata
+> encryption support as implemented in the kernel changes above. All blocks
+> in the filesystem are encrypted with the user provided metadata encryption
+> key except for the superblock (and its redundant copy). The DUN for a block
+> is its offset from the start of the filesystem.
+> 
+> This patch introduces two new options for the userspace tools: '-A' to
+> specify the encryption algorithm, and '-M' to specify the encryption key.
+> mkfs.f2fs will store the encryption algorithm used for metadata encryption
+> in the superblock itself, so '-A' is only applicable to mkfs.f2fs. The rest
+> of the tools only take the '-M' option, and will obtain the encryption
+> algorithm from the superblock of the FS.
 
-It's unclear what "key descriptor in hex" means in this context.  Keys in the
-Linux keyrings subsystem can be specified either by an integer ID or by a string
-"description".
+As I mentioned on the kernel patches, it might make sense to compute a
+metadata_key_identifier and store it in the super_block so that it can be
+automatically requested without needing to provide an option.
 
-fscrypt_policy_v1 has an 8-byte binary master_key_descriptor, which specifies a
-keyring key with description "fscrypt:" + ToHex(master_key_descriptor).  So I'm
-guessing that's where this terminology is coming from.
+> 
+> Limitations: 
+> Metadata encryption with sparse storage has not been implemented yet in
+> this patch.
+> 
+> This patch requires the metadata encryption key to be readable from
+> userspace, and does not ensure that it is zeroed before the program exits
+> for any reason.
+> 
+> Satya Tangirala (1):
+>   f2fs-tools: Introduce metadata encryption support
 
-However, here the value passed to metadata_crypt_key is just a key description
-that's passed directly to the Linux keyrings subsystem.  I don't see why it has
-to be a hex string (and it fact, it seems it's not enforced?).
-
-The current proposal is also missing any sort of key verification.  The
-filesystem will use any key that is provided, even if a different key was used
-at format time.
-
-In "fscrypt v2", we solved the equivalent problem by making the keys be
-specified by a HKDF-derived master_key_identifier.
-
-How about doing something similar for the metadata encryption key?  I.e. the
-metadata encryption key could be used as input to HKDF to derive two subkeys:
-metadata_key_identifier and the real metadata encryption key.  Then
-metadata_key_identifier could be stored in the superblock.  Then the filesystem
-could request the keyring key "fscrypt:" + ToHex(metadata_key_identifier) at
-mount time, which would eliminate the need for a mount option.
-
-> Direct I/O with metadata encryption is also not supported for now.
-> Attempts to do direct I/O on a metadata encrypted F2FS filesystem will fall
-> back to using buffered I/O (just as attempts to do direct I/O on fscrypt
-> encrypted files also fall back to buffered I/O).
-
-What would it take to get direct I/O working?
-
-> +#ifdef CONFIG_FS_ENCRYPTION_METADATA
-> +	if (metadata_crypt_alg &&
-> +	    !fscrypt_metadata_crypted(sb)) {
-> +		f2fs_err(sbi, "Filesystem has metadata encryption. Please provide metadata encryption key to mount filesystem");
-> +		return -EINVAL;
-> +	}
-> +#endif
-
-Please try to avoid #ifdefs.  It looks like some of these could be replaced with
-IS_ENABLED() or the use of stub functions.
+A cover letter shouldn't be used for a 1-patch series.  Just include these
+details in the patch instead.
 
 - Eric
