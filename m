@@ -2,187 +2,101 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30D22286A84
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  7 Oct 2020 23:53:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E43F5286AA4
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  8 Oct 2020 00:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728753AbgJGVwZ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 7 Oct 2020 17:52:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50754 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728649AbgJGVwZ (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 7 Oct 2020 17:52:25 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 274382083B;
-        Wed,  7 Oct 2020 21:52:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602107544;
-        bh=VdkmJJp1c5bqqhJdGgZSlalw2xii9IqwJrWwX4QLgLg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=n0l98GHSsSAUDO5qxArcBpKiEq304YkENSqz44eeuuMHonjCZvtr4abAPrp1dGixU
-         WY33tKU2Z8ldxpWtt86sKQjSq5FPmcnD+bJX1TcqQMMZgrF8+dt9NQR3Z+kqXJLOAh
-         K7KivvQcZO6Jhnyy+eMGrHbzQx+nr6r6G2pg76CY=
-Date:   Wed, 7 Oct 2020 14:52:22 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH 1/1] f2fs-tools: Introduce metadata encryption support
-Message-ID: <20201007215222.GF1530638@gmail.com>
-References: <20201005074133.1958633-1-satyat@google.com>
- <20201005074133.1958633-2-satyat@google.com>
+        id S1728753AbgJGWFH (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 7 Oct 2020 18:05:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728674AbgJGWFH (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 7 Oct 2020 18:05:07 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C624C0613D2
+        for <linux-fscrypt@vger.kernel.org>; Wed,  7 Oct 2020 15:05:05 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id g9so2472933pgh.8
+        for <linux-fscrypt@vger.kernel.org>; Wed, 07 Oct 2020 15:05:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+V7sZxEf6mQQioi6/3fm4YR6csX1PamPT+xsX7pNB4w=;
+        b=ep50T10dpOtQ6OLVV05z3OtJ/y5qq6xfZST1mEKfChwtiRhcO3i/N4I2jdp9MNovJk
+         pCKOd/eZwaZnV2KWv1TUqBmy/Gu3YCAdmn2W/P9tqvR4EIUmxSfRR6oCT2+UptOCoxYz
+         osAjjmkEmMm2ID+cJZ0TEfmtLYQNdpmmgQWnYXDtNwOxdB1HwOy81zc8y87p/ql4aEtl
+         rungVNTAaNvn1+j6w2VrV74FMWuiEcg/Ls9u87zllfaWoUrX3uD8c/ssBHk0n6iMSXZf
+         YFqgZdHZe4pPhylbuYcrd9eAzzNaQKbFJKRMvAJcT1fwFcThuz2o76vhh/JvTLhtvJ97
+         Bt9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+V7sZxEf6mQQioi6/3fm4YR6csX1PamPT+xsX7pNB4w=;
+        b=o5Tn+J91h4+ZH155TPVWzxGdhyi+dS1FoljXZX1q0Pmn8FmDW4nY/2wtTi8RLYX8kb
+         P5eoWF6KmjgU7VRnS/fy5AHXiyWKcV00n76XZAr1N1rBdDJOKvTZ/Uzcd0aVLlg5lGNI
+         bVWvpLPTyMbVAmzwnQ1Di/T/r0Gavb9S/WH62lzKyZ/QIbRPIKGD+Z+mQpvnNMLGnVMF
+         cVfd4z/W58uA2hm9MNTZRce5qXZM0bLkuHDzCebnSFKlGrNI8YOWilny4U7nTg8P9BTx
+         ROHbvTup0co9TWdePXbIO570OtULvowEzHbWobAPfJxNoX5QBxJP0bvntTwWtE9/2fbZ
+         ZkgA==
+X-Gm-Message-State: AOAM531S/FR49jvl8W1zodxbgRMSjqXPt9GccR9XQGYozcP5kEyryXoA
+        YAn+VPcmmjfqfxbIRAknyTmeAg==
+X-Google-Smtp-Source: ABdhPJys6F86XrljUH8qz8gcZargaIbvBEZ19MwlhxtUE/XlZ7tHjdwI5A2a2e1IHecb/WpyiWo9OQ==
+X-Received: by 2002:a63:4c4e:: with SMTP id m14mr4441454pgl.199.1602108304796;
+        Wed, 07 Oct 2020 15:05:04 -0700 (PDT)
+Received: from google.com (154.137.233.35.bc.googleusercontent.com. [35.233.137.154])
+        by smtp.gmail.com with ESMTPSA id n67sm4425110pgn.14.2020.10.07.15.05.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Oct 2020 15:05:03 -0700 (PDT)
+Date:   Wed, 7 Oct 2020 22:05:00 +0000
+From:   Satya Tangirala <satyat@google.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [PATCH 0/3] add support for metadata encryption to F2FS
+Message-ID: <20201007220500.GA2544297@google.com>
+References: <20201005073606.1949772-1-satyat@google.com>
+ <20201007210040.GB1530638@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201005074133.1958633-2-satyat@google.com>
+In-Reply-To: <20201007210040.GB1530638@gmail.com>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 07:41:33AM +0000, Satya Tangirala wrote:
-> diff --git a/lib/Makefile.am b/lib/Makefile.am
-> index 871d773..a82d753 100644
-> --- a/lib/Makefile.am
-> +++ b/lib/Makefile.am
-> @@ -2,10 +2,10 @@
->  
->  lib_LTLIBRARIES = libf2fs.la
->  
-> -libf2fs_la_SOURCES = libf2fs.c libf2fs_io.c libf2fs_zoned.c nls_utf8.c
-> +libf2fs_la_SOURCES = libf2fs.c libf2fs_io.c libf2fs_zoned.c nls_utf8.c f2fs_metadata_crypt.c
->  libf2fs_la_CFLAGS = -Wall
->  libf2fs_la_CPPFLAGS = -I$(top_srcdir)/include
-> -libf2fs_la_LDFLAGS = -version-info $(LIBF2FS_CURRENT):$(LIBF2FS_REVISION):$(LIBF2FS_AGE)
-> +libf2fs_la_LDFLAGS = -lkeyutils -version-info $(LIBF2FS_CURRENT):$(LIBF2FS_REVISION):$(LIBF2FS_AGE)
-
-This introduces a dependency on libkeyutils.  Doesn't that need to be checked in
-configure.ac?
-
-> diff --git a/lib/f2fs_metadata_crypt.c b/lib/f2fs_metadata_crypt.c
-> new file mode 100644
-> index 0000000..faf399a
-> --- /dev/null
-> +++ b/lib/f2fs_metadata_crypt.c
-> @@ -0,0 +1,226 @@
-> +/**
-> + * f2fs_metadata_crypt.c
-> + *
-> + * Copyright (c) 2020 Google LLC
-> + *
-> + * Dual licensed under the GPL or LGPL version 2 licenses.
-> + */
-> +#include <string.h>
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <unistd.h>
-> +#include <sys/socket.h>
-> +#include <linux/if_alg.h>
-> +#include <linux/socket.h>
-> +#include <assert.h>
-> +#include <errno.h>
-> +#include <keyutils.h>
-> +
-> +#include "f2fs_fs.h"
-> +#include "f2fs_metadata_crypt.h"
-> +
-> +extern struct f2fs_configuration c;
-> +struct f2fs_crypt_mode {
-> +	const char *friendly_name;
-> +	const char *cipher_str;
-> +	unsigned int keysize;
-> +	unsigned int ivlen;
-> +} f2fs_crypt_modes[] = {
-
-Use 'const' for static or global data that isn't modified.
-
-> +void f2fs_print_crypt_algs(void)
-> +{
-> +	int i;
-> +
-> +	for (i = 1; i <= __FSCRYPT_MODE_MAX; i++) {
-> +		if (!f2fs_crypt_modes[i].friendly_name)
-> +			continue;
-> +		MSG(0, "\t%s\n", f2fs_crypt_modes[i].friendly_name);
-> +	}
-> +}
-> +
-> +int f2fs_get_crypt_alg(const char *optarg)
-> +{
-> +	int i;
-> +
-> +	for (i = 1; i <= __FSCRYPT_MODE_MAX; i++) {
-> +		if (f2fs_crypt_modes[i].friendly_name &&
-> +		    !strcmp(f2fs_crypt_modes[i].friendly_name, optarg)) {
-> +			return i;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-
-Although __FSCRYPT_MODE_MAX is defined in <linux/fscrypt.h>, it isn't intended
-to be used in userspace programs, as its value will change depending on the
-version of the kernel headers.  Just use ARRAY_SIZE(f2fs_crypt_modes) instead.
-
-> +int f2fs_metadata_crypt_block(void *buf, size_t len, __u64 blk_addr,
-> +			      bool encrypt)
-> +{
-> +	struct f2fs_crypt_mode *crypt_mode;
-> +	int sockfd, fd;
-> +	struct sockaddr_alg sa = {
-> +		.salg_family = AF_ALG,
-> +		.salg_type = "skcipher",
-> +	};
-> +	struct msghdr msg = {};
-> +	struct cmsghdr *cmsg;
-> +	char cbuf[CMSG_SPACE(4) + CMSG_SPACE(4 + MAX_IV_LEN)] = {0};
-> +	int blk_offset;
-> +	struct af_alg_iv *iv;
-> +	struct iovec iov;
-> +	int err;
-> +
-> +	crypt_mode = &f2fs_crypt_modes[c.metadata_crypt_alg];
-> +	memcpy(sa.salg_name, crypt_mode->cipher_str,
-> +	       strlen(crypt_mode->cipher_str));
-> +
-> +	sockfd = socket(AF_ALG, SOCK_SEQPACKET, 0);
-> +	if (sockfd < 0)
-> +		return errno;
-
-This will fail if AF_ALG isn't enabled in the kernel config, or if the process
-isn't allowed to use AF_ALG by SELinux policy.  Can you show a proper error
-message?
-
-> +	err = bind(sockfd, (struct sockaddr *)&sa, sizeof(sa));
-> +	if (err) {
-> +		MSG(0, "\tCouldn't bind crypto socket. Maybe support for the crypto algorithm isn't enabled?\n");
-> +		close(sockfd);
-> +		return errno;
-> +	}
-
-This will fail if either CRYPTO_USER_API_SKCIPHER isn't enabled in the kernel
-config, or if the required crypto algorithm isn't enabled in the kernel config.
-Can you show a better error message?
-
-Also, these new kernel config option dependencies should be documented in the
-documentation for f2fs-tools.
-
-> +	err = setsockopt(sockfd, SOL_ALG, ALG_SET_KEY, c.metadata_crypt_key,
-> +			 crypt_mode->keysize);
-> +	if (err) {
-> +		MSG(0, "\tCouldn't set crypto socket options.\n");
-> +		close(sockfd);
-> +		return errno;
-> +	}
-> +	fd = accept(sockfd, NULL, 0);
-> +	if (fd < 0)
-> +		goto err_out;
-
-It's a lot of work to allocate an AF_ALG algorithm socket, set the key, and
-allocate a request socket for every block.  Can any of this be cached?  For
-single threaded use, it seems the request socket can be cached; otherwise the
-algorithm socket with a key set can be cached.
-
-- Eric
+On Wed, Oct 07, 2020 at 02:00:40PM -0700, Eric Biggers wrote:
+> On Mon, Oct 05, 2020 at 07:36:03AM +0000, Satya Tangirala wrote:
+> > This patch series adds support for metadata encryption to F2FS using
+> > blk-crypto.
+> 
+> This patch series needs more explanation about what "metadata encryption" is,
+> why people will want to use it (as opposed to either not using it, or using
+> fscrypt + dm-crypt instead), and why this is the best implementation of it.
+> 
+Sure, I'll add that in the next version
+> > Patch 2 introduces some functions to fscrypt that help filesystems perform
+> > metadata encryption. Any filesystem that wants to use metadata encryption
+> > can call fscrypt_setup_metadata_encryption() with the super_block of the
+> > filesystem, the encryption algorithm and the descriptor of the encryption
+> > key. The descriptor is looked up in the logon keyring of the current
+> > session with "fscrypt:" as the prefix of the descriptor.
+> 
+> I notice this is missing the step I suggested to include the metadata encryption
+> key in the HKDF application-specific info string when deriving subkeys from the
+> fscrypt master keys.
+> 
+> The same effect could also be achieved by adding an additional level to the key
+> hierarchy: each HKDF key would be derived from a fscrypt master key and the
+> metadata encryption key.
+> 
+> We need one of those, to guarantee that the file contents encryption is at least
+> as strong as the "metadata encryption".
+>
+Yes - I didn't get around to that in the first version, but I'll add
+that too in the next version. I was going to go with the first approach
+before I saw your comment - is there one method you'd recommend going
+with over the other?
+> - Eric
