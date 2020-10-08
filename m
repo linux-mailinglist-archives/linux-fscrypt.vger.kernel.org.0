@@ -2,95 +2,54 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D904A287B28
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  8 Oct 2020 19:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A81B5287DCD
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  8 Oct 2020 23:18:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731677AbgJHRqo (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 8 Oct 2020 13:46:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53354 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725888AbgJHRqo (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 8 Oct 2020 13:46:44 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CBB04221FE;
-        Thu,  8 Oct 2020 17:46:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602179203;
-        bh=qR3kt5ngoTrkP6SeXaz22MvAG3J8V5pwp5o9tEVX8kI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LoAkoKArDyVvtY1vmpGflmDCv1LFFNmfSu0imo9EHlunCAHTuvnHONLjAhxRHkgRU
-         6X85Uixynk3BpA+8Rm/WN9X7VbDTE50wPXqQPiyEBxOUcXU3uMLm2KUZsFhz7Q4QS/
-         M+65IDat/o6loayOF2CL83BI65xWuguixSw/oQQA=
-Date:   Thu, 8 Oct 2020 10:46:40 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org
-Subject: Re: fscrypt, i_blkbits and network filesystems
-Message-ID: <20201008174640.GC1869638@gmail.com>
-References: <24943af8b2ede65d5ff1c8ff78c7a00b914e1a20.camel@kernel.org>
+        id S1729853AbgJHVS2 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 8 Oct 2020 17:18:28 -0400
+Received: from [58.87.100.240] ([58.87.100.240]:45364 "EHLO
+        mail.hebei-kuixing.com" rhost-flags-FAIL-FAIL-OK-OK)
+        by vger.kernel.org with ESMTP id S1726766AbgJHVS1 (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 8 Oct 2020 17:18:27 -0400
+X-Greylist: delayed 668 seconds by postgrey-1.27 at vger.kernel.org; Thu, 08 Oct 2020 17:18:22 EDT
+Received: from localhost (unknown [127.0.0.1])
+        by mail.hebei-kuixing.com (Postfix) with ESMTP id AC1A460E64;
+        Thu,  8 Oct 2020 21:07:07 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at hebei-kuixing.com
+Received: from mail.hebei-kuixing.com ([127.0.0.1])
+        by localhost (mail.hebei-kuixing.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 2baZvT9QzwCy; Fri,  9 Oct 2020 05:07:06 +0800 (CST)
+Received: from User (unknown [185.248.12.71])
+        by mail.hebei-kuixing.com (Postfix) with ESMTPA id 0E9CB60E6A;
+        Fri,  9 Oct 2020 05:06:50 +0800 (CST)
+Reply-To: <kim.leang2011@yahoo.com>
+From:   " Kim Leang" <sales@hebei-kuixing.com>
+Subject: Greeting!
+Date:   Fri, 9 Oct 2020 00:07:05 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <24943af8b2ede65d5ff1c8ff78c7a00b914e1a20.camel@kernel.org>
+Content-Type: text/plain;
+        charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+Message-Id: <20201008210707.AC1A460E64@mail.hebei-kuixing.com>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 08:25:10AM -0400, Jeff Layton wrote:
-> I've had to table the work on fscrypt+ceph for a bit to take care of
-> some other issues, but I'm hoping to return to it soon, and I've started
-> looking at the content encryption in more detail.
-> 
-> One thing I'm not sure how to handle yet is fscrypt's reliance on
-> inode->i_blkbits. For ceph (and most netfs's), this value is a fiction.
-> We're not constrained to reading/writing along block boundaries.
-> 
-> Cephfs usually sets the blocksize in a S_ISREG inode to the same as a
-> "chunk" on the OSD (usu. 4M). That's a bit too large to deal with IMO,
-> so I'm looking at lowering that to PAGE_SIZE when fscrypt is enabled.
-> 
-> That's reasonable when we can do pagecache-based I/O, but sometimes
-> netfs's will do I/O directly from read_iter/write_iter. For ceph, we may
-> need to do a rmw cycle if the iovec passed down from userland doesn't
-> align to crypto block boundaries. Ceph has a way to do a cmp_extent
-> operation such that it will only do the write if nothing changed in the
-> interim, so we can handle that case, but it would be better not to have
-> to read/write more than we need.
-> 
-> For the netfs case, would we be better off avoiding routines that take
-> i_blkbits into account, and instead just work with
-> fscrypt_encrypt_block_inplace / fscrypt_decrypt_block_inplace, maybe
-> even by rolling new helpers that call them under the hood? Or, would
-> that cause issues that I haven't forseen, and I should just stick to
-> PAGE_SIZE blocks?
+Greeting!
 
-First, you should avoid using "PAGE_SIZE" as the crypto data unit size, since
-PAGE_SIZE isn't the same everywhere.  E.g. PAGE_SIZE is 4096 bytes on x86, but
-usually 65536 bytes on PowerPC.  If encrypted files are created on x86, they
-should be readable on PowerPC too, and vice versa.  That means the crypto data
-unit size should be a specific value, generally 4096 bytes.  But other
-power-of-2 sizes could be allowed too.
+I am contacting you to receive and share with me an abandoned fund ( $21,537.000.00 ) left in our bank by a deceased customer. I was going through the Internet search when I found your email address. My name is Mr. Kim Leang.
 
-Second, I'm not really understanding what the problem is with setting i_blkbits
-for IS_ENCRYPTED() inodes to the log2 of the crypto data unit size.  Wouldn't
-that be the right thing to do?  Even though it wouldn't have any meaning for the
-server, it would have a meaning for the client -- it would be the granularity of
-encryption (and decryption).
+I want to utilize this opportunity and make use of this fund if I should present your name to the bank to stand as his business associate/ trustee for the fund to be released to you via Visa card for easy withdrawals in any VISA ATM machine anywhere in the World.
 
-If it really is a problem, by "fscrypt's reliance on inode->i_blkbits" are you
-specifically referring to fscrypt_encrypt_pagecache_blocks() and
-fscrypt_decrypt_pagecache_blocks()?  If so, I think the way to go would be to
-add __fscrypt_encrypt_pagecache_blocks() and
-__fscrypt_decrypt_pagecache_blocks() which have a blkbits argument.
+The bank will also give you international online transfer options. With these you can transfer the funds without any risk.
 
-Or alternatively just add a blkbits argument to the existing functions, but I'd
-prefer to avoid adding error-prone arguments to all callers of these.
+Should you be interested in working with me in this project? Please reply back and let's benefit from this golden opportunity.You are my first contact. I shall wait a few days and if I do not hear from you, I shall look for another person.
 
-fscrypt_encrypt_block_inplace() does in-place encryption, which isn't what you
-want because you want to encrypt into a bounce page, right?
-fscrypt_encrypt_block_inplace() and fscrypt_decrypt_block_inplace() also take
-too many arguments, including lblk_num, which is error-prone.
-
-- Eric
+Thanks and have a nice day,
+Mr. Kim Leang.
