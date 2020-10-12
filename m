@@ -2,120 +2,116 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA1F728A4FB
-	for <lists+linux-fscrypt@lfdr.de>; Sun, 11 Oct 2020 04:05:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEB0028BE13
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 12 Oct 2020 18:35:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728687AbgJKCFS (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sat, 10 Oct 2020 22:05:18 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:40424 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726473AbgJKCFR (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sat, 10 Oct 2020 22:05:17 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 2FE562A869CF12B54854;
-        Sat, 10 Oct 2020 17:53:12 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.205) with Microsoft SMTP Server (TLS) id 14.3.487.0; Sat, 10 Oct
- 2020 17:53:07 +0800
-Subject: Re: [PATCH 0/3] add support for metadata encryption to F2FS
-To:     Satya Tangirala <satyat@google.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        id S2390610AbgJLQfq (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 12 Oct 2020 12:35:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36238 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390442AbgJLQfp (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 12 Oct 2020 12:35:45 -0400
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A743C2087E;
+        Mon, 12 Oct 2020 16:35:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602520545;
+        bh=YcQkpt6LAikAkB8QxaNKH7LeylYY9QtLEPxQqeO6Opc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=h3CNKfqwIHPV7BZ9hlGFurPVOoV3tPc0rsL8zhSQ3bYNeva/1gL1LMR6EgvNgZ1ky
+         Iue96vWauoxpSjbJ0nTKmHeG1rslzfbYWaB/Mq5x5OWvhn/dOTTQ8G9m+BlO9Y3Tp0
+         Y7SUutsnxm/64ZLRdP9PVhAzUFjaKyM+162FzfvU=
+Date:   Mon, 12 Oct 2020 09:35:43 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>, Chao Yu <chao@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-fscrypt@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <20201005073606.1949772-1-satyat@google.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <471e0eb7-b035-03da-3ee3-35d5880a6748@huawei.com>
-Date:   Sat, 10 Oct 2020 17:53:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Jeff Layton <jlayton@kernel.org>,
+        Daniel Rosenberg <drosen@google.com>
+Subject: [GIT PULL] fscrypt updates for 5.10
+Message-ID: <20201012163543.GB858@sol.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <20201005073606.1949772-1-satyat@google.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On 2020/10/5 15:36, Satya Tangirala wrote:
-> This patch series adds support for metadata encryption to F2FS using
-> blk-crypto.
+The following changes since commit f4d51dffc6c01a9e94650d95ce0104964f8ae822:
 
-It looks this implementation is based on hardware crypto engine, could you
-please add this info into f2fs.rst as well like inlinecrypt...
+  Linux 5.9-rc4 (2020-09-06 17:11:40 -0700)
 
-> 
-> Patch 1 replaces fscrypt_get_devices (which took an array of request_queues
-> and filled it up) with fscrypt_get_device, which takes a index of the
-> desired device and returns the device at that index (so the index passed
-> to fscrypt_get_device must be between 0 and (fscrypt_get_num_devices() - 1)
-> inclusive). This allows callers to avoid having to allocate an array to
-> pass to fscrypt_get_devices() when they only need to iterate through
-> each element in the array (and have no use for the array itself).
-> 
-> Patch 2 introduces some functions to fscrypt that help filesystems perform
-> metadata encryption. Any filesystem that wants to use metadata encryption
-> can call fscrypt_setup_metadata_encryption() with the super_block of the
-> filesystem, the encryption algorithm and the descriptor of the encryption
-> key. The descriptor is looked up in the logon keyring of the current
-> session with "fscrypt:" as the prefix of the descriptor.
-> 
-> The patch also introduces fscrypt_metadata_crypt_bio() which an FS should
-> call on a bio that the FS wants metadata crypted. The function will add
-> an encryption context with the metadata encryption key set up by the call
-> to the above mentioned fscrypt_setup_metadata_encryption().
-> 
-> The patch also introduces fscrypt_metadata_crypt_prepare_all_devices().
-> Filesystems that use multiple devices should call this function once all
-> the underlying devices have been determined. An FS might only be able to
-> determine all the underlying devices after some initial processing that
-> might already require metadata en/decryption, which is why this function
-> is separate from fscrypt_setup_metadata_encryption().
-> 
-> Patch 3 wires up F2FS with the functions introduced in Patch 2. F2FS
-> will encrypt every block (that's not being encrypted by some other
-> encryption key, e.g. a per-file key) with the metadata encryption key
-> except the superblock (and the redundant copy of the superblock). The DUN
-> of a block is the offset of the block from the start of the F2FS
-> filesystem.
+are available in the Git repository at:
 
-Why not using nid as DUN, then GC could migrate encrypted node block directly via
-meta inode's address space like we do for encrypted data block, rather than
-decrypting node block to node page and then encrypting node page with DUN of new
-blkaddr it migrates to.
+  https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
 
-Thanks,
+for you to fetch changes up to 5b2a828b98ec1872799b1b4d82113c76a12d594f:
 
-> 
-> Please refer to the commit message for why the superblock was excluded from
-> en/decryption, and other limitations. The superblock and its copy are
-> stored in plaintext on disk. The encryption algorithm used for metadata
-> encryption is stored within the superblock itself. Changes to the userspace
-> tools (that are required to test out metadata encryption with F2FS) are
-> also being sent out - I'll post a link as a reply to this mail once it's
-> out.
-> 
-> Satya Tangirala (3):
->    fscrypt, f2fs: replace fscrypt_get_devices with fscrypt_get_device
->    fscrypt: Add metadata encryption support
->    f2fs: Add metadata encryption support
-> 
->   Documentation/filesystems/f2fs.rst |  12 ++
->   fs/crypto/Kconfig                  |   6 +
->   fs/crypto/Makefile                 |   1 +
->   fs/crypto/fscrypt_private.h        |  19 +++
->   fs/crypto/inline_crypt.c           |  37 +----
->   fs/crypto/metadata_crypt.c         | 220 +++++++++++++++++++++++++++++
->   fs/f2fs/data.c                     |  24 ++--
->   fs/f2fs/f2fs.h                     |   2 +
->   fs/f2fs/super.c                    |  83 +++++++++--
->   include/linux/f2fs_fs.h            |   3 +-
->   include/linux/fs.h                 |   3 +
->   include/linux/fscrypt.h            |  51 ++++++-
->   12 files changed, 410 insertions(+), 51 deletions(-)
->   create mode 100644 fs/crypto/metadata_crypt.c
-> 
+  fscrypt: export fscrypt_d_revalidate() (2020-09-28 14:44:51 -0700)
+
+----------------------------------------------------------------
+
+This release, we rework the implementation of creating new encrypted
+files in order to fix some deadlocks and prepare for adding fscrypt
+support to CephFS, which Jeff Layton is working on.
+
+We also export a symbol in preparation for the above-mentioned CephFS
+support and also for ext4/f2fs encrypt+casefold support.
+
+Finally, there are a few other small cleanups.
+
+As usual, all these patches have been in linux-next with no reported
+issues, and I've tested them with xfstests.
+
+----------------------------------------------------------------
+Eric Biggers (18):
+      fscrypt: restrict IV_INO_LBLK_32 to ino_bits <= 32
+      fscrypt: add fscrypt_prepare_new_inode() and fscrypt_set_context()
+      ext4: factor out ext4_xattr_credits_for_new_inode()
+      ext4: use fscrypt_prepare_new_inode() and fscrypt_set_context()
+      f2fs: use fscrypt_prepare_new_inode() and fscrypt_set_context()
+      ubifs: use fscrypt_prepare_new_inode() and fscrypt_set_context()
+      fscrypt: adjust logging for in-creation inodes
+      fscrypt: remove fscrypt_inherit_context()
+      fscrypt: require that fscrypt_encrypt_symlink() already has key
+      fscrypt: stop pretending that key setup is nofs-safe
+      fscrypt: make "#define fscrypt_policy" user-only
+      fscrypt: move fscrypt_prepare_symlink() out-of-line
+      fscrypt: handle test_dummy_encryption in more logical way
+      fscrypt: make fscrypt_set_test_dummy_encryption() take a 'const char *'
+      fscrypt: use sha256() instead of open coding
+      fscrypt: don't call no-key names "ciphertext names"
+      fscrypt: rename DCACHE_ENCRYPTED_NAME to DCACHE_NOKEY_NAME
+      fscrypt: export fscrypt_d_revalidate()
+
+Jeff Layton (1):
+      fscrypt: drop unused inode argument from fscrypt_fname_alloc_buffer
+
+ fs/crypto/crypto.c           |   4 +-
+ fs/crypto/fname.c            |  60 ++++++-------
+ fs/crypto/fscrypt_private.h  |  10 ++-
+ fs/crypto/hooks.c            |  80 +++++++++++------
+ fs/crypto/inline_crypt.c     |   7 +-
+ fs/crypto/keyring.c          |   9 +-
+ fs/crypto/keysetup.c         | 182 +++++++++++++++++++++++++++----------
+ fs/crypto/keysetup_v1.c      |   8 +-
+ fs/crypto/policy.c           | 209 ++++++++++++++++++++++++-------------------
+ fs/ext4/dir.c                |   2 +-
+ fs/ext4/ext4.h               |   6 +-
+ fs/ext4/ialloc.c             | 119 ++++++++++++------------
+ fs/ext4/namei.c              |   7 +-
+ fs/ext4/super.c              |  16 ++--
+ fs/f2fs/dir.c                |   6 +-
+ fs/f2fs/f2fs.h               |  25 +-----
+ fs/f2fs/namei.c              |   7 +-
+ fs/f2fs/super.c              |  15 ++--
+ fs/ubifs/dir.c               |  40 ++++-----
+ include/linux/dcache.h       |   2 +-
+ include/linux/fscrypt.h      | 159 +++++++++++++-------------------
+ include/uapi/linux/fscrypt.h |   6 +-
+ 22 files changed, 535 insertions(+), 444 deletions(-)
