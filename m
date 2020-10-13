@@ -2,57 +2,56 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11F1028D227
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 13 Oct 2020 18:24:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EE8728D316
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 13 Oct 2020 19:25:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389739AbgJMQYF (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 13 Oct 2020 12:24:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49334 "EHLO mail.kernel.org"
+        id S1730026AbgJMRZP (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 13 Oct 2020 13:25:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43616 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389732AbgJMQYF (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 13 Oct 2020 12:24:05 -0400
-Subject: Re: [GIT PULL] fscrypt updates for 5.10
+        id S1729800AbgJMRZP (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 13 Oct 2020 13:25:15 -0400
+Received: from gmail.com (unknown [104.132.1.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 809C325352;
+        Tue, 13 Oct 2020 17:25:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602606244;
-        bh=0GDL0FDvlJWyLDYOyGXqNYN79mm0g6czXO6Y14y8hrk=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=mofhlG7EDLN4Wve2vrb/jiWtdjc82+lqb+c3kTbmI1iFf2xdVgtLjlQf0+l9/MtrC
-         sE81COzKRt4L22V5GvwJKgzI+XyZCUsfnYqG3/HK4o0gRIglNXN8s9xuYDCF7C+Van
-         fYZnaujwVqmKli37bmbx/DRw8xt2EHPDN/A1MYzs=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201012163543.GB858@sol.localdomain>
-References: <20201012163543.GB858@sol.localdomain>
-X-PR-Tracked-List-Id: <linux-ext4.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201012163543.GB858@sol.localdomain>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
-X-PR-Tracked-Commit-Id: 5b2a828b98ec1872799b1b4d82113c76a12d594f
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 6f5032a852f9bf3c449db58a9209ba267f11869a
-Message-Id: <160260624476.24492.420695043633414876.pr-tracker-bot@kernel.org>
-Date:   Tue, 13 Oct 2020 16:24:04 +0000
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        s=default; t=1602609914;
+        bh=V95KNOynADgyNJkbMcakWMDVLJhk1UkWeH59c6nVuF8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=srAc5VjgMBfmXT/SLN9eUj3vHn2r18dijjjTZjQ7fH3zOdvMA4D7GWBAWQ41fmEA4
+         bBJAu1RcGOJyHOgBaVmYu/J5NiAU3j74lFSETJRXzR5rJDnUkax1VhURLUOYqD2EFw
+         jhcGriTvK3wF0rLsd7pgqlMCGvVZ11T7bUymUWaM=
+Date:   Tue, 13 Oct 2020 10:25:12 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Daniel Rosenberg <drosen@google.com>
+        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 35/80] docs: fs: fscrypt.rst: get rid of :c:type: tags
+Message-ID: <20201013172512.GA1306858@gmail.com>
+References: <cover.1602589096.git.mchehab+huawei@kernel.org>
+ <2ca36d4903a6c024c7605cd58eab417c8e5296b5.1602589096.git.mchehab+huawei@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2ca36d4903a6c024c7605cd58eab417c8e5296b5.1602589096.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-The pull request you sent on Mon, 12 Oct 2020 09:35:43 -0700:
+On Tue, Oct 13, 2020 at 01:53:50PM +0200, Mauro Carvalho Chehab wrote:
+> The :c:type: tag has problems with Sphinx 3.x, as structs
+> there should be declared with c:struct.
+> 
+> So, remove them, relying at automarkup.py extension to
+> convert them into cross-references.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-> https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
+I left some comments on v5 which weren't addressed.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/6f5032a852f9bf3c449db58a9209ba267f11869a
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+- Eric
