@@ -2,52 +2,69 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F25B28F3C6
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 15 Oct 2020 15:53:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9834928F6E2
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 15 Oct 2020 18:36:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387919AbgJONxS (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 15 Oct 2020 09:53:18 -0400
-Received: from edge.kilargo.pl ([77.252.52.110]:24065 "EHLO edge.kilargo.pl"
+        id S2389746AbgJOQgI (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 15 Oct 2020 12:36:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387851AbgJONxR (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 15 Oct 2020 09:53:17 -0400
-X-Greylist: delayed 593 seconds by postgrey-1.27 at vger.kernel.org; Thu, 15 Oct 2020 09:52:17 EDT
-Received: from mail.kilargo.pl (77.252.52.107) by edge.kilargo.pl
- (77.252.52.109) with Microsoft SMTP Server (TLS) id 8.3.485.1; Thu, 15 Oct
- 2020 15:41:37 +0200
-Received: from User (185.248.12.71) by MAIL.kilargo.pl (172.22.0.36) with
- Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 15 Oct 2020 14:54:49 +0200
-Reply-To: <kim.leang2011@yahoo.com>
-From:   Kim Leang <mechanik@kilargo.pl>
-Subject: Greeting! !!
-Date:   Thu, 15 Oct 2020 15:54:53 +0300
+        id S2389258AbgJOQgI (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 15 Oct 2020 12:36:08 -0400
+Received: from gmail.com (unknown [104.132.1.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1601D22210;
+        Thu, 15 Oct 2020 16:36:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602779767;
+        bh=yaXOtRmASXSGJpCPGckZbgBc9TUYjmkPJKXlD7mzlXQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IEDd8b3kSmvCKaSQgP32yIf6CUR+HKmU/TuAEhFfi5mJvRx1Kto78pqz2ygBKjAKO
+         YsrAcghKR+qxlk5LVKNYYGgcmkYe0ENcQ8rVxJq4VZreo3qZ2G+94DOspCxRrfZxxI
+         ka/TwgvBUB4mRc76ob3JkGnIU7yaZtYPxmjXMSSw=
+Date:   Thu, 15 Oct 2020 09:36:05 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 35/80] docs: fs: fscrypt.rst: get rid of :c:type: tags
+Message-ID: <20201015163605.GA3336735@gmail.com>
+References: <cover.1602589096.git.mchehab+huawei@kernel.org>
+ <2ca36d4903a6c024c7605cd58eab417c8e5296b5.1602589096.git.mchehab+huawei@kernel.org>
+ <20201013172512.GA1306858@gmail.com>
+ <20201014085907.7da5bed3@coco.lan>
+ <20201014215954.GB2545693@gmail.com>
+ <20201015073207.7504a55b@coco.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-ID: <3fbd9a3dc5e04de19174c5184ffa4827@mail.kilargo.pl>
-To:     Undisclosed recipients:;
-X-Originating-IP: [185.248.12.71]
-X-ClientProxiedBy: mail.kilargo.pl (172.22.0.36) To MAIL.kilargo.pl
- (172.22.0.36)
-X-EsetResult: clean, is OK
-X-EsetId: 37303A295AAB9B6B647163
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201015073207.7504a55b@coco.lan>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Greeting!
+On Thu, Oct 15, 2020 at 07:32:07AM +0200, Mauro Carvalho Chehab wrote:
+> On the other hand, if one finds a valid "struct foo" using normal
+> fonts, this would mean that either the doc is outdated, mentioning
+> an struct that were removed/renamed or that there's a missing 
+> kernel-doc markup.
+> 
+> In any case, the fix is to simply fix the kernel-doc markup for
+> struct foo.
+> 
+> I guess in the future automarkup.py could issue a warning in
+> order to warn about missing cross-references, perhaps when
+> W=1 or W=2 is used.
 
-I am contacting you to receive and share with me an abandoned fund ( $21,537.000.00 ) left in our bank by a deceased customer. I was going through the Internet search when I found your email address. My name is Mr. Kim Leang.
+Well, most structs that fscrypt.rst refers to are defined in
+include/uapi/linux/fscrypt.h.  The whole fscrypt UAPI, including the fields of
+these structs, is documented in fscrypt.rst.  So I didn't really intend the
+fscrypt UAPI structs to have kerneldoc comments, as people are supposed to refer
+to the documentation in fscrypt.rst instead.  We could have both, but it feels a
+bit redundant.
 
-I want to utilize this opportunity and make use of this fund if I should present your name to the bank to stand as his business associate/ trustee for the fund to be released to you via Visa card for easy withdrawals in any VISA ATM machine anywhere in the World.
-
-The bank will also give you international online transfer options. With these you can transfer the funds without any risk.
-
-Should you be interested in working with me in this project? Please reply back and let's benefit from this golden opportunity.You are my first contact. I shall wait a few days and if I do not hear from you, I shall look for another person.
-
-Thanks and have a nice day,
-Mr. Kim Leang.
+- Eric
