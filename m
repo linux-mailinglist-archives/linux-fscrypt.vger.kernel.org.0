@@ -2,189 +2,144 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16F01297A1D
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 24 Oct 2020 02:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E2E4297A94
+	for <lists+linux-fscrypt@lfdr.de>; Sat, 24 Oct 2020 05:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1757148AbgJXAwb (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 23 Oct 2020 20:52:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45914 "EHLO mail.kernel.org"
+        id S1759458AbgJXD4r (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 23 Oct 2020 23:56:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1757142AbgJXAwa (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 23 Oct 2020 20:52:30 -0400
-Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1759457AbgJXD4r (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Fri, 23 Oct 2020 23:56:47 -0400
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7D67A2137B;
-        Sat, 24 Oct 2020 00:52:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CD39221D43;
+        Sat, 24 Oct 2020 03:56:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603500749;
-        bh=NZB0h7Jpq6DmOfGEmEupTswD29UD7PJtM1kWqbdQOrQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=LGMq/RZ/UYSfgBSKwH8FZ1OKec5/ct1jLIJjNYJDMSkCVDLKTu4mdbkLzqPDl+tpg
-         heaIS1PFy9pHCkzyhipDWR0gbOH+oL3FBLOAoGxLaPcMphqnFBGNd9jfBBrGUI8Nhm
-         CvTSp29EcgzSakAXd2/Fu6APFZWJLGoMrxEu58Ro=
+        s=default; t=1603511806;
+        bh=JK0z6jzmDm9r+jhBXdaoMr0fbsoFelZqRCiX0Uf5398=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=F0SJXOxGN52rpot1foWKdnDKhJut978VkKRf1gErJ8k4OyYPzfyeAgeyZEyRSmK2M
+         HFKzG8k+CFRMf3Tg03v4FynWgnMTcW8K02HeWMSRarmRovlzW7XlVpM1YohuajrA4p
+         H4kfqrVyjWxdrNmGc6Vgbn0RVi0zHYnI+51oJg2w=
+Date:   Fri, 23 Oct 2020 20:56:45 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-api@vger.kernel.org
-Subject: [PATCH] fscrypt: remove kernel-internal constants from UAPI header
-Date:   Fri, 23 Oct 2020 17:51:31 -0700
-Message-Id: <20201024005132.495952-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
+To:     luca.boccassi@gmail.com
+Cc:     linux-fscrypt@vger.kernel.org
+Subject: Re: [fsverity-utils PATCH 2/2] Generate and install libfsverity.pc
+Message-ID: <20201024035645.GA83494@sol.localdomain>
+References: <20201022175934.2999543-1-luca.boccassi@gmail.com>
+ <20201022175934.2999543-2-luca.boccassi@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201022175934.2999543-2-luca.boccassi@gmail.com>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On Thu, Oct 22, 2020 at 06:59:34PM +0100, luca.boccassi@gmail.com wrote:
+> From: Luca Boccassi <luca.boccassi@microsoft.com>
+> 
+> pkg-config is commonly used by libraries to convey information about
+> compiler flags and dependencies.
+> As packagers, we heavily rely on it so that all our tools do the right
+> thing by default regardless of the environment.
+> 
+> Signed-off-by: Luca Boccassi <luca.boccassi@microsoft.com>
+> ---
+>  Makefile              | 13 ++++++++++++-
+>  lib/libfsverity.pc.in | 10 ++++++++++
+>  scripts/do-release.sh |  2 ++
+>  3 files changed, 24 insertions(+), 1 deletion(-)
+>  create mode 100644 lib/libfsverity.pc.in
+> 
+> diff --git a/Makefile b/Makefile
+> index 122c0a2..07b828f 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -119,6 +119,15 @@ libfsverity.so:libfsverity.so.$(SOVERSION)
+>  
+>  DEFAULT_TARGETS += libfsverity.so
+>  
+> +# Create the pkg-config file
+> +libfsverity.pc:
 
-There isn't really any valid reason to use __FSCRYPT_MODE_MAX or
-FSCRYPT_POLICY_FLAGS_VALID in a userspace program.  These constants are
-only meant to be used by the kernel internally, and they are defined in
-the UAPI header next to the mode numbers and flags only so that kernel
-developers don't forget to update them when adding new modes or flags.
+The dependency on lib/libfsverity.pc.in should be listed here.
 
-In https://lkml.kernel.org/r/20201005074133.1958633-2-satyat@google.com
-there was an example of someone wanting to use __FSCRYPT_MODE_MAX in a
-user program, and it was wrong because the program would have broken if
-__FSCRYPT_MODE_MAX were ever increased.  So having this definition
-available is harmful.  FSCRYPT_POLICY_FLAGS_VALID has the same problem.
+Also, this depends on $(PREFIX), $(LIBDIR), and $(INCDIR).  Can you also add
+those and $(BINDIR) to the string that gets written to .build-config, then add a
+dependency on .build-config?
 
-So, remove these definitions from the UAPI header.  Replace
-FSCRYPT_POLICY_FLAGS_VALID with just listing the valid flags explicitly
-in the one kernel function that needs it.  Move __FSCRYPT_MODE_MAX to
-fscrypt_private.h, remove the double underscores (which were only
-present to discourage use by userspace), and add a BUILD_BUG_ON() and
-comments to (hopefully) ensure it is kept in sync.
+> +	sed -e "s|@PREFIX@|$(PREFIX)|" \
+> +		-e "s|@LIBDIR@|$(LIBDIR)|" \
+> +		-e "s|@INCDIR@|$(INCDIR)|" \
+> +		lib/libfsverity.pc.in > $@
+> +
 
-Keep the old name FS_POLICY_FLAGS_VALID, since it's been around for
-longer and there's a greater chance that removing it would break source
-compatibility with some program.  Indeed, mtd-utils is using it in
-an #ifdef, and removing it would introduce compiler warnings (about
-FS_POLICY_FLAGS_PAD_* being redefined) into the mtd-utils build.
-However, reduce its value to 0x07 so that it only includes the flags
-with old names (the ones present before Linux 5.4), and try to make it
-clear that it's now "frozen" and no new flags should be added to it.
+This looks messy in the build output:
 
-Fixes: 2336d0deb2d4 ("fscrypt: use FSCRYPT_ prefix for uapi constants")
-Cc: <stable@vger.kernel.org> # v5.4+
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/crypto/fscrypt_private.h  | 9 ++++++---
- fs/crypto/keyring.c          | 2 +-
- fs/crypto/keysetup.c         | 4 +++-
- fs/crypto/policy.c           | 5 ++++-
- include/uapi/linux/fscrypt.h | 5 ++---
- 5 files changed, 16 insertions(+), 9 deletions(-)
+	$ make
+	  CC       lib/compute_digest.o
+	  CC       lib/hash_algs.o
+	  CC       lib/sign_digest.o
+	  CC       lib/utils.o
+	  AR       libfsverity.a
+	  CC       lib/compute_digest.shlib.o
+	  CC       lib/hash_algs.shlib.o
+	  CC       lib/sign_digest.shlib.o
+	  CC       lib/utils.shlib.o
+	  CCLD     libfsverity.so.0
+	  LN       libfsverity.so
+	sed -e "s|@PREFIX@|/usr/local|" \
+		-e "s|@LIBDIR@|/usr/local/lib|" \
+		-e "s|@INCDIR@|/usr/local/include|" \
+		lib/libfsverity.pc.in > libfsverity.pc
+	  CC       programs/utils.o
+	  CC       programs/cmd_enable.o
+	  CC       programs/cmd_measure.o
+	  CC       programs/cmd_sign.o
+	  CC       programs/fsverity.o
+	  CCLD     fsverity
 
-diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-index 4f5806a3b73d..322ecae9a758 100644
---- a/fs/crypto/fscrypt_private.h
-+++ b/fs/crypto/fscrypt_private.h
-@@ -25,6 +25,9 @@
- #define FSCRYPT_CONTEXT_V1	1
- #define FSCRYPT_CONTEXT_V2	2
- 
-+/* Keep this in sync with include/uapi/linux/fscrypt.h */
-+#define FSCRYPT_MODE_MAX	FSCRYPT_MODE_ADIANTUM
-+
- struct fscrypt_context_v1 {
- 	u8 version; /* FSCRYPT_CONTEXT_V1 */
- 	u8 contents_encryption_mode;
-@@ -491,9 +494,9 @@ struct fscrypt_master_key {
- 	 * Per-mode encryption keys for the various types of encryption policies
- 	 * that use them.  Allocated and derived on-demand.
- 	 */
--	struct fscrypt_prepared_key mk_direct_keys[__FSCRYPT_MODE_MAX + 1];
--	struct fscrypt_prepared_key mk_iv_ino_lblk_64_keys[__FSCRYPT_MODE_MAX + 1];
--	struct fscrypt_prepared_key mk_iv_ino_lblk_32_keys[__FSCRYPT_MODE_MAX + 1];
-+	struct fscrypt_prepared_key mk_direct_keys[FSCRYPT_MODE_MAX + 1];
-+	struct fscrypt_prepared_key mk_iv_ino_lblk_64_keys[FSCRYPT_MODE_MAX + 1];
-+	struct fscrypt_prepared_key mk_iv_ino_lblk_32_keys[FSCRYPT_MODE_MAX + 1];
- 
- 	/* Hash key for inode numbers.  Initialized only when needed. */
- 	siphash_key_t		mk_ino_hash_key;
-diff --git a/fs/crypto/keyring.c b/fs/crypto/keyring.c
-index 53cc552a7b8f..d7ec52cb3d9a 100644
---- a/fs/crypto/keyring.c
-+++ b/fs/crypto/keyring.c
-@@ -44,7 +44,7 @@ static void free_master_key(struct fscrypt_master_key *mk)
- 
- 	wipe_master_key_secret(&mk->mk_secret);
- 
--	for (i = 0; i <= __FSCRYPT_MODE_MAX; i++) {
-+	for (i = 0; i <= FSCRYPT_MODE_MAX; i++) {
- 		fscrypt_destroy_prepared_key(&mk->mk_direct_keys[i]);
- 		fscrypt_destroy_prepared_key(&mk->mk_iv_ino_lblk_64_keys[i]);
- 		fscrypt_destroy_prepared_key(&mk->mk_iv_ino_lblk_32_keys[i]);
-diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index d3c3e5d9b41f..43408d2f0acf 100644
---- a/fs/crypto/keysetup.c
-+++ b/fs/crypto/keysetup.c
-@@ -56,6 +56,8 @@ static struct fscrypt_mode *
- select_encryption_mode(const union fscrypt_policy *policy,
- 		       const struct inode *inode)
- {
-+	BUILD_BUG_ON(ARRAY_SIZE(fscrypt_modes) != FSCRYPT_MODE_MAX + 1);
-+
- 	if (S_ISREG(inode->i_mode))
- 		return &fscrypt_modes[fscrypt_policy_contents_mode(policy)];
- 
-@@ -168,7 +170,7 @@ static int setup_per_mode_enc_key(struct fscrypt_info *ci,
- 	unsigned int hkdf_infolen = 0;
- 	int err;
- 
--	if (WARN_ON(mode_num > __FSCRYPT_MODE_MAX))
-+	if (WARN_ON(mode_num > FSCRYPT_MODE_MAX))
- 		return -EINVAL;
- 
- 	prep_key = &keys[mode_num];
-diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
-index 4441d9944b9e..faa0f21daa68 100644
---- a/fs/crypto/policy.c
-+++ b/fs/crypto/policy.c
-@@ -175,7 +175,10 @@ static bool fscrypt_supported_v2_policy(const struct fscrypt_policy_v2 *policy,
- 		return false;
- 	}
- 
--	if (policy->flags & ~FSCRYPT_POLICY_FLAGS_VALID) {
-+	if (policy->flags & ~(FSCRYPT_POLICY_FLAGS_PAD_MASK |
-+			      FSCRYPT_POLICY_FLAG_DIRECT_KEY |
-+			      FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64 |
-+			      FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32)) {
- 		fscrypt_warn(inode, "Unsupported encryption flags (0x%02x)",
- 			     policy->flags);
- 		return false;
-diff --git a/include/uapi/linux/fscrypt.h b/include/uapi/linux/fscrypt.h
-index e5de60336938..9f4428be3e36 100644
---- a/include/uapi/linux/fscrypt.h
-+++ b/include/uapi/linux/fscrypt.h
-@@ -20,7 +20,6 @@
- #define FSCRYPT_POLICY_FLAG_DIRECT_KEY		0x04
- #define FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64	0x08
- #define FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32	0x10
--#define FSCRYPT_POLICY_FLAGS_VALID		0x1F
- 
- /* Encryption algorithms */
- #define FSCRYPT_MODE_AES_256_XTS		1
-@@ -28,7 +27,7 @@
- #define FSCRYPT_MODE_AES_128_CBC		5
- #define FSCRYPT_MODE_AES_128_CTS		6
- #define FSCRYPT_MODE_ADIANTUM			9
--#define __FSCRYPT_MODE_MAX			9
-+/* If adding a mode number > 9, update FSCRYPT_MODE_MAX in fscrypt_private.h */
- 
- /*
-  * Legacy policy version; ad-hoc KDF and no key verification.
-@@ -177,7 +176,7 @@ struct fscrypt_get_key_status_arg {
- #define FS_POLICY_FLAGS_PAD_32		FSCRYPT_POLICY_FLAGS_PAD_32
- #define FS_POLICY_FLAGS_PAD_MASK	FSCRYPT_POLICY_FLAGS_PAD_MASK
- #define FS_POLICY_FLAG_DIRECT_KEY	FSCRYPT_POLICY_FLAG_DIRECT_KEY
--#define FS_POLICY_FLAGS_VALID		FSCRYPT_POLICY_FLAGS_VALID
-+#define FS_POLICY_FLAGS_VALID		0x07	/* contains old flags only */
- #define FS_ENCRYPTION_MODE_INVALID	0	/* never used */
- #define FS_ENCRYPTION_MODE_AES_256_XTS	FSCRYPT_MODE_AES_256_XTS
- #define FS_ENCRYPTION_MODE_AES_256_GCM	2	/* never used */
--- 
-2.29.0.rc1.297.gfa9743e501-goog
+Below QUIET_LN, can you add:
 
+	QUIET_GEN       = @echo '  GEN     ' $@;
+
+Then prefix the sed command with $(QUIET_GEN) so the output looks nice.
+
+Also, $< can be used instead of lib/libfsverity.pc.in, once the dependency is
+added.
+
+> +DEFAULT_TARGETS += libfsverity.pc
+> +
+>  ##############################################################################
+>  
+>  #### Programs
+> @@ -190,11 +199,12 @@ check:fsverity test_programs
+>  	@echo "All tests passed!"
+>  
+>  install:all
+> -	install -d $(DESTDIR)$(LIBDIR) $(DESTDIR)$(INCDIR) $(DESTDIR)$(BINDIR)
+> +	install -d $(DESTDIR)$(LIBDIR)/pkgconfig $(DESTDIR)$(INCDIR) $(DESTDIR)$(BINDIR)
+>  	install -m755 fsverity $(DESTDIR)$(BINDIR)
+>  	install -m644 libfsverity.a $(DESTDIR)$(LIBDIR)
+>  	install -m755 libfsverity.so.$(SOVERSION) $(DESTDIR)$(LIBDIR)
+>  	ln -sf libfsverity.so.$(SOVERSION) $(DESTDIR)$(LIBDIR)/libfsverity.so
+> +	install -m644 libfsverity.pc $(DESTDIR)$(LIBDIR)/pkgconfig
+>  	install -m644 include/libfsverity.h $(DESTDIR)$(INCDIR)
+>  
+>  uninstall:
+> @@ -202,6 +212,7 @@ uninstall:
+>  	rm -f $(DESTDIR)$(LIBDIR)/libfsverity.a
+>  	rm -f $(DESTDIR)$(LIBDIR)/libfsverity.so.$(SOVERSION)
+>  	rm -f $(DESTDIR)$(LIBDIR)/libfsverity.so
+> +	rm -f $(DESTDIR)$(LIBDIR)/pkgconfig/libfsverity.pc
+>  	rm -f $(DESTDIR)$(INCDIR)/libfsverity.h
+
+'make clean' should remove libfsverity.pc as well.
+
+Also, libfsverity.pc should be listed in .gitignore.
+
+- Eric
