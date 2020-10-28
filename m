@@ -2,81 +2,131 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A58029CB13
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 27 Oct 2020 22:18:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4094229D54E
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 28 Oct 2020 23:00:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S373720AbgJ0VSF (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 27 Oct 2020 17:18:05 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:37813 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S373460AbgJ0VSE (ORCPT
+        id S1728660AbgJ1WAD (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 28 Oct 2020 18:00:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729380AbgJ1V77 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 27 Oct 2020 17:18:04 -0400
-Received: by mail-wr1-f66.google.com with SMTP id w1so3494273wrm.4
-        for <linux-fscrypt@vger.kernel.org>; Tue, 27 Oct 2020 14:18:03 -0700 (PDT)
+        Wed, 28 Oct 2020 17:59:59 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FE5CC0613CF
+        for <linux-fscrypt@vger.kernel.org>; Wed, 28 Oct 2020 14:59:59 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id h5so428106vsp.3
+        for <linux-fscrypt@vger.kernel.org>; Wed, 28 Oct 2020 14:59:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Xowaxx4EBsMqHNfMng1D9+ESmBC5z5xQFGK0DDXXDl8=;
-        b=nDDfRW+a0o9sue4RQyz1BzvsRnRzFiEtUyNXJpMTrducFNenzs3Mw1M82avGTj+57U
-         rYqsDohlu5C+b+0hOMOvOSLTQArTCQfetQL5NxXgF+dwb5MRJGw5BfHERj4rbcSVyev+
-         eNFB0ITG80VQlXW7E8+LavTj4gXDjNHiWEbUXfpEITLdPj/a5hKlfqLSpStZpmJBLdQ0
-         1nVT/UxA7z4P5vJiltuW5g8jAEz18obe8vzFxugdIg7n0LHUSqTdij67b7a/Q0eDY9L6
-         B0sOhP90DG9Mg0GO6cZ4PAu9ColhpXgwR/ue1QmOrrgW0ZgwzHTXsr88jwoZCyjkaKHl
-         UxKQ==
+        h=from:subject:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Uck2YNcuuaM9Q4ZPFVSiK7dl3B/KTjxlkFJ58vsXqX0=;
+        b=l/Wj1v8+/rolSuumRQDoW1u/m54FmFDB6jRkprXGzcdlgl/cIctml1IprWf7rVsTbA
+         jMO7D2FsB0eBEq0Edxki/NlHwET15cnLLT8/Dj4kac+dkeyywTcBHhVDvoA0X+gWS+tn
+         cvNRgCD0R/1TIRFZ648lUe+KVWl8NwUJ4KYjJNCWWYHCSTPV1svyOtLV0owlbU9Nk9jF
+         KcrVHycSXvvjIElClPKwzqU64GO3Ol18eeagJdX44m+FEdoRO4Lnr944UQrwlX5ORQeU
+         I8PEWol14TDerVXFoKYsSuDq3Obv0oGXQtRCYNA+a8wVMd+cN8uwiaRSDj73iB8eyY/q
+         Z1kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Xowaxx4EBsMqHNfMng1D9+ESmBC5z5xQFGK0DDXXDl8=;
-        b=pK8G7+3p7oIeeB9NRPkUCFPjGe7Sda3K/qOqSEQDNQvhFAqaHK1sM22QQMpTfxuOl4
-         0lTjwhjSyT1MVjStgr5UEvE3YEdtfGfRsWaSW1S4C7lgeLjLNbgH/NI4gjDGIuDGUBNt
-         D/bJ86oh6gJQaJSmfsNyfF719xhDuPwbkvF2wls5OirtgM2BPDb0Y93IgFuoyzzCVoQo
-         J7OaFlszijldI30/pcCYMBawd3SUUpK2EeXoeAf5cvj2S7Ym24/UJlbPzUyAVdM26A2+
-         ay4kD3s91/XrfTbZhcYbSliVEAJ6M3o09fYcyD3FEEwSBf68WEKEI0pA/vduLmC+eOYF
-         ZRww==
-X-Gm-Message-State: AOAM531PyZjG4xRKanGSKegXGQAaHpQVfe3tjQPcmo+AjYZhSlfeOh91
-        Fl9Jva7iAffcV+rrLcVUw5qTzjIpUwSwrNMKa+s=
-X-Google-Smtp-Source: ABdhPJw26wCjeyCOvKYG2WtPH18umLKf27V2hubO+XTFEArmOt9rEJkX3D4RTDknjio7DVwFZN7bDLnfYJkeNZS4YR8=
-X-Received: by 2002:adf:fd8a:: with SMTP id d10mr4776887wrr.85.1603833482893;
- Tue, 27 Oct 2020 14:18:02 -0700 (PDT)
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Uck2YNcuuaM9Q4ZPFVSiK7dl3B/KTjxlkFJ58vsXqX0=;
+        b=Nm1bLurKhdz27NgpMw/RR1RdgJH2z2X9uPZKT2e0HPzszbJq2W9hBsW+tndQu7j8wJ
+         kq885H2RsABnSImxRqIWMldxFwSmwVKUmgV8RS4m2DMJkRNaHQMO6PNBJtWfDfUSW2l2
+         fkecS3EX9RUlxd6N0BuP3j3IvuiDRftqf0Rfa56qNMawIlePmJ/Z9Fyz0/ZcbCluXPRl
+         uht39WONcQRQficY0CVnzVLOKY9pKJxeTSVhVs7yEreTR1LLQAQUAeJQwUWOVeYOfTQc
+         1EyEzXr0vsOR++qbjRodak5f+r9tuZlIVXffhWUh/J82+sOaciIQSTop6gOM21JAQsJp
+         I9sA==
+X-Gm-Message-State: AOAM530T/j+WFzpOD9cTAkh+L++H3XB18w0EH0C1CY09pxRX4qC51gvz
+        rbKTnqUL4+u/iS/baSeqiNhIyEVqMoQ=
+X-Google-Smtp-Source: ABdhPJx60hIE6k564kcjEmaSESt+ZH66kG8ynmY6RkdwyZY6WYkSJcFqVbvKOGOR+Karm8s3Y+odMg==
+X-Received: by 2002:a05:6214:148a:: with SMTP id bn10mr157075qvb.51.1603903624988;
+        Wed, 28 Oct 2020 09:47:04 -0700 (PDT)
+Received: from ?IPv6:2620:10d:c0a8:1102::1844? ([2620:10d:c091:480::1:4133])
+        by smtp.gmail.com with ESMTPSA id n24sm3258597qtv.39.2020.10.28.09.47.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Oct 2020 09:47:04 -0700 (PDT)
+From:   Jes Sorensen <jes.sorensen@gmail.com>
+X-Google-Original-From: Jes Sorensen <Jes.Sorensen@gmail.com>
+Subject: Re: [fsverity-utils PATCH] override CFLAGS too
+To:     Eric Biggers <ebiggers@kernel.org>, luca.boccassi@gmail.com
+Cc:     linux-fscrypt@vger.kernel.org, malmond@fb.com
+References: <20201026204831.3337360-1-luca.boccassi@gmail.com>
+ <20201026221019.GB185792@sol.localdomain>
+Message-ID: <7bfc9c61-d847-f7d2-f2fc-c0ba012136c1@gmail.com>
+Date:   Wed, 28 Oct 2020 12:47:03 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <20201027191106.2447401-1-ebiggers@kernel.org>
-In-Reply-To: <20201027191106.2447401-1-ebiggers@kernel.org>
-From:   Luca Boccassi <luca.boccassi@gmail.com>
-Date:   Tue, 27 Oct 2020 21:17:51 +0000
-Message-ID: <CAMw=ZnRBN989HfGEYCp=O7xLnbeVrKq_s6DkFVfGoVNftP7cCQ@mail.gmail.com>
-Subject: Re: [PATCH] fs-verity: rename fsverity_signed_digest to fsverity_formatted_digest
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org,
-        Victor Hsieh <victorhsieh@google.com>,
-        Jes Sorensen <Jes.Sorensen@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201026221019.GB185792@sol.localdomain>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, 27 Oct 2020 at 19:13, Eric Biggers <ebiggers@kernel.org> wrote:
->
-> From: Eric Biggers <ebiggers@google.com>
->
-> The name "struct fsverity_signed_digest" is causing confusion because it
-> isn't actually a signed digest, but rather it's the way that the digest
-> is formatted in order to be signed.  Rename it to
-> "struct fsverity_formatted_digest" to prevent this confusion.
->
-> Also update the struct's comment to clarify that it's specific to the
-> built-in signature verification support and isn't a requirement for all
-> fs-verity users.
->
-> I'll be renaming this struct in fsverity-utils too.
->
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
->  Documentation/filesystems/fsverity.rst |  2 +-
->  fs/verity/fsverity_private.h           | 17 ++++++++++++-----
->  fs/verity/signature.c                  |  2 +-
->  3 files changed, 14 insertions(+), 7 deletions(-)
+On 10/26/20 6:10 PM, Eric Biggers wrote:
+> [+Jes Sorensen]
+> 
+> On Mon, Oct 26, 2020 at 08:48:31PM +0000, luca.boccassi@gmail.com wrote:
+>> From: Romain Perier <romain.perier@gmail.com>
+>>
+>> Currently, CFLAGS are defined by default. It has to effect to define its
+>> c-compiler options only when the variable is not defined on the cmdline
+>> by the user, it is not possible to merge or mix both, while it could
+>> be interesting for using the app warning cflags or the pkg-config
+>> cflags, while using the distributor flags. Most distributions packages
+>> use their own compilation flags, typically for hardening purpose but not
+>> only. This fixes the issue by using the override keyword.
+>>
+>> Signed-off-by: Romain Perier <romain.perier@gmail.com>
+>> ---
+>> Currently used in Debian, were we want to append context-specific
+>> compiler flags (eg: for compiler hardening options) without
+>> removing the default flags
+>>
+>>  Makefile | 5 +++--
+>>  1 file changed, 3 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/Makefile b/Makefile
+>> index 6c6c8c9..5020cac 100644
+>> --- a/Makefile
+>> +++ b/Makefile
+>> @@ -35,14 +35,15 @@
+>>  cc-option = $(shell if $(CC) $(1) -c -x c /dev/null -o /dev/null > /dev/null 2>&1; \
+>>  	      then echo $(1); fi)
+>>  
+>> -CFLAGS ?= -O2 -Wall -Wundef					\
+>> +override CFLAGS := -O2 -Wall -Wundef				\
+>>  	$(call cc-option,-Wdeclaration-after-statement)		\
+>>  	$(call cc-option,-Wimplicit-fallthrough)		\
+>>  	$(call cc-option,-Wmissing-field-initializers)		\
+>>  	$(call cc-option,-Wmissing-prototypes)			\
+>>  	$(call cc-option,-Wstrict-prototypes)			\
+>>  	$(call cc-option,-Wunused-parameter)			\
+>> -	$(call cc-option,-Wvla)
+>> +	$(call cc-option,-Wvla)					\
+>> +	$(CFLAGS)
+>>  
+>>  override CPPFLAGS := -Iinclude -D_FILE_OFFSET_BITS=64 $(CPPFLAGS)
+> 
+> I had it like this originally, but Jes requested that it be changed to the
+> current way for rpm packaging.  See the thread:
+> https://lkml.kernel.org/linux-fscrypt/20200515205649.1670512-3-Jes.Sorensen@gmail.com/T/#u
+> 
+> Can we come to an agreement on one way to do it?
+> 
+> To me, the approach with 'override' makes more sense.  The only non-warning
+> option is -O2, and if someone doesn't want that, they can just specify
+> CFLAGS=-O0 and it will override -O2 (since the last option "wins").
+> 
+> Jes, can you explain why that way doesn't work with rpm?
 
-Acked-by: Luca Boccassi <luca.boccassi@microsoft.com>
+I don't remember all the details and I haven't looked at this in a
+while. Matthew Almond has helpfully offered to look into it.
+
+Jes
