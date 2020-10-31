@@ -2,35 +2,35 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94D0F2A1A59
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 31 Oct 2020 20:58:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C9B32A1AEB
+	for <lists+linux-fscrypt@lfdr.de>; Sat, 31 Oct 2020 23:09:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728457AbgJaT66 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sat, 31 Oct 2020 15:58:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57330 "EHLO mail.kernel.org"
+        id S1725888AbgJaWJx (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sat, 31 Oct 2020 18:09:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728449AbgJaT66 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sat, 31 Oct 2020 15:58:58 -0400
+        id S1725782AbgJaWJx (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Sat, 31 Oct 2020 18:09:53 -0400
 Received: from sol.attlocal.net (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 286D8206E9;
-        Sat, 31 Oct 2020 19:58:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 96A282072C;
+        Sat, 31 Oct 2020 22:09:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604174338;
-        bh=pg93KM0ZOaLrR1WbAPRS3b1mszl+k1+y2wAs9bVDi5Q=;
+        s=default; t=1604182192;
+        bh=S03k1YGXaJQvf3NAsk0rAuPNkYHGojNJSpqWlOKkY6Y=;
         h=From:To:Cc:Subject:Date:From;
-        b=UH8w45+kfcmduZ8atKoG5GbgzR5hQSSgbgMIL7cm7kgUuiZRIVidWyQxwokMuD8+u
-         9JiGIKFzkz2qFmK9c4vCN3onboqPNLvAKukZFNr91O7GLdbYzHfvIhf+nbQGTqwF+q
-         3sRN68nNeoO2CGO606/e08Tcl+ORtAZqAg2grkAQ=
+        b=a8mMgEQtpZ3jNyytBfAA07mZtl+9vbm6YLLv+FzNDnWsLRWKesdnQyD8DGDQ9NlKo
+         NBZjY049c5RkEWrHQHTQiUYaXvEuh5HHjNvlFxn20MOKcGS2hg5wFkYa2cWehnnO0k
+         uwKX3GPe/Eyo28ZG698zXqwWlaIL66HoIPdZkgxU=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     stable@vger.kernel.org
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-fscrypt@vger.kernel.org, Chao Yu <yuchao0@huawei.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [PATCH 4.4] f2fs crypto: avoid unneeded memory allocation in ->readdir
-Date:   Sat, 31 Oct 2020 12:58:09 -0700
-Message-Id: <20201031195809.377983-1-ebiggers@kernel.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org
+Subject: [PATCH 4.19 0/5] backport some more fscrypt fixes to 4.19
+Date:   Sat, 31 Oct 2020 15:05:48 -0700
+Message-Id: <20201031220553.1085782-1-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.29.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -38,48 +38,42 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Chao Yu <yuchao0@huawei.com>
+Backport some fscrypt fixes from upstream 5.2 to 4.19-stable.
 
-commit e06f86e61d7a67fe6e826010f57aa39c674f4b1b upstream.
-[This backport fixes a regression in 4.4-stable caused by commit
-11a6e8f89521 ("f2fs: check memory boundary by insane namelen"), which
-depended on this missing commit.  This bad backport broke f2fs
-encryption because it moved the incrementing of 'bit_pos' to earlier in
-f2fs_fill_dentries() without accounting for it being used in the
-encrypted dir case.  This caused readdir() on encrypted directories to
-start failing.  Tested with 'kvm-xfstests -c f2fs -g encrypt'.]
+This is needed to get 'kvm-xfstests -c ext4,f2fs,ubifs -g encrypt' to
+fully pass on 4.19-stable.  Before, generic/397 and generic/429 failed
+on UBIFS due to missing "fscrypt: fix race where ->lookup() marks
+plaintext dentry as ciphertext".
 
-When decrypting dirents in ->readdir, fscrypt_fname_disk_to_usr won't
-change content of original encrypted dirent, we don't need to allocate
-additional buffer for storing mirror of it, so get rid of it.
+This also fixes some bugs that aren't yet covered by the xfstests.
+E.g., "fs, fscrypt: clear DCACHE_ENCRYPTED_NAME when unaliasing
+directory" fixes a bug that caused real-world problems on Chrome OS.
 
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/f2fs/dir.c | 7 -------
- 1 file changed, 7 deletions(-)
+Some relatively straightforward adjustments were needed to the patches,
+mainly due to the refactoring of fscrypt.h that was done in 5.1.
 
-diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
-index e2ff0eb16f89c..c1130914d6ed7 100644
---- a/fs/f2fs/dir.c
-+++ b/fs/f2fs/dir.c
-@@ -820,15 +820,8 @@ bool f2fs_fill_dentries(struct dir_context *ctx, struct f2fs_dentry_ptr *d,
- 			int save_len = fstr->len;
- 			int ret;
- 
--			de_name.name = kmalloc(de_name.len, GFP_NOFS);
--			if (!de_name.name)
--				return false;
--
--			memcpy(de_name.name, d->filename[bit_pos], de_name.len);
--
- 			ret = f2fs_fname_disk_to_usr(d->inode, &de->hash_code,
- 							&de_name, fstr);
--			kfree(de_name.name);
- 			if (ret < 0)
- 				return true;
- 
+Eric Biggers (5):
+  fscrypt: clean up and improve dentry revalidation
+  fscrypt: fix race allowing rename() and link() of ciphertext dentries
+  fs, fscrypt: clear DCACHE_ENCRYPTED_NAME when unaliasing directory
+  fscrypt: only set dentry_operations on ciphertext dentries
+  fscrypt: fix race where ->lookup() marks plaintext dentry as
+    ciphertext
+
+ fs/crypto/crypto.c              | 58 +++++++++++++------------
+ fs/crypto/fname.c               |  1 +
+ fs/crypto/hooks.c               | 28 ++++++++----
+ fs/dcache.c                     | 15 +++++++
+ fs/ext4/ext4.h                  | 62 ++++++++++++++++++++-------
+ fs/ext4/namei.c                 | 76 ++++++++++++++++++++++-----------
+ fs/f2fs/namei.c                 | 17 +++++---
+ fs/ubifs/dir.c                  |  8 ++--
+ include/linux/dcache.h          |  2 +-
+ include/linux/fscrypt.h         | 30 +++++++------
+ include/linux/fscrypt_notsupp.h |  9 ++--
+ include/linux/fscrypt_supp.h    |  6 ++-
+ 12 files changed, 205 insertions(+), 107 deletions(-)
+
 -- 
 2.29.1
 
