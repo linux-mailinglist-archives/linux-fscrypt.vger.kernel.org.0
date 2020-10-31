@@ -2,33 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1A3D2A13AF
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 31 Oct 2020 06:41:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4726F2A13B0
+	for <lists+linux-fscrypt@lfdr.de>; Sat, 31 Oct 2020 06:41:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725924AbgJaFl1 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sat, 31 Oct 2020 01:41:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38522 "EHLO mail.kernel.org"
+        id S1726073AbgJaFlc (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sat, 31 Oct 2020 01:41:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38588 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725822AbgJaFl1 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sat, 31 Oct 2020 01:41:27 -0400
+        id S1725822AbgJaFlc (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Sat, 31 Oct 2020 01:41:32 -0400
 Received: from sol.attlocal.net (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 31EF020791;
-        Sat, 31 Oct 2020 05:41:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C284A20791;
+        Sat, 31 Oct 2020 05:41:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604122886;
-        bh=nCGTBX9tDEqmWbzaPbBBKNNXSVAAPdzmhCtdaU5JG3o=;
+        s=default; t=1604122891;
+        bh=MHn37pxd8izzOsEnhIJaztg9gs11pffqfEmh6L/CvSw=;
         h=From:To:Cc:Subject:Date:From;
-        b=vbYpcCy1kQQaKf4LqRHnEVba/ssq8svKbX7T+GqeFwFIATHBOmYg0fJN0wubI1xi8
-         seCRpkyF1v+Vk0cK5nkD+Hhm0OT87E3IuzXzJirzq3l7ITC/KxbhxLXY4gY7Fb0zTf
-         mR9RPAn2bMi1bwsGJ967jUWx2hwlfEdlynTr/j4s=
+        b=hFnCvfyg9IFEifGc+zLDrp0YfS9Oa2qGuOfr2YvGj1gffbUG6pMeXbq6ZdAEPOegr
+         5a2UaeW5gCbYPhsbrWfeWb5SmgHlgu0fk1ncLPoGPX1IJEMx7O/xs0qwEqq/nNoCKK
+         gsKVL4YwRzkyveG95RkwIB38Ibb1CqHPUBFqSFN8=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     fstests@vger.kernel.org
 Cc:     linux-fscrypt@vger.kernel.org
-Subject: [PATCH] generic/395: remove workarounds for wrong error codes
-Date:   Fri, 30 Oct 2020 22:40:18 -0700
-Message-Id: <20201031054018.695314-1-ebiggers@kernel.org>
+Subject: [PATCH] generic/397: remove workarounds for wrong error codes
+Date:   Fri, 30 Oct 2020 22:41:29 -0700
+Message-Id: <20201031054129.695442-1-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.29.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -38,115 +38,66 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-generic/395 contains workarounds to allow for some of the fscrypt ioctls
-to fail with different error codes.  However, the error codes were all
-fixed up and documented years ago:
+generic/397 contains workarounds to allow for kernel bugs where trying
+to open or create files in an encrypted directory without the encryption
+key failed with ENOENT, EACCES, or EPERM instead of the expected ENOKEY.
 
-- FS_IOC_GET_ENCRYPTION_POLICY on ext4 failed with ENOENT instead of
-  ENODATA on unencrypted files.  Fixed by commit db717d8e26c2
-  ("fscrypto: move ioctl processing more fully into common code").
-
-- FS_IOC_SET_ENCRYPTION_POLICY failed with EINVAL instead of EEXIST
-  on encrypted files.  Fixed by commit 8488cd96ff88 ("fscrypt: use
-  EEXIST when file already uses different policy").
-
-- FS_IOC_SET_ENCRYPTION_POLICY failed with EINVAL instead of ENOTDIR
-  on nondirectories.  Fixed by commit dffd0cfa06d4 ("fscrypt: use
-  ENOTDIR when setting encryption policy on nondirectory").
+However, all these bugs have been fixed.  ext4 and f2fs were fixed years
+ago by commit 54475f531bb8 ("fscrypt: use ENOKEY when file cannot be
+created w/o key").  ubifs was fixed by commit b01531db6cec ("fscrypt:
+fix race where ->lookup() marks plaintext dentry as ciphertext").
 
 It's been long enough, so update the test to expect the correct behavior
 only, so we don't accidentally reintroduce the wrong behavior.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- tests/generic/395 | 31 ++++++++-----------------------
- 1 file changed, 8 insertions(+), 23 deletions(-)
+ tests/generic/397 | 25 ++++++-------------------
+ 1 file changed, 6 insertions(+), 19 deletions(-)
 
-diff --git a/tests/generic/395 b/tests/generic/395
-index 3fa2a823..34121dd9 100755
---- a/tests/generic/395
-+++ b/tests/generic/395
-@@ -38,31 +38,19 @@ _require_user
- _scratch_mkfs_encrypted &>> $seqres.full
- _scratch_mount
- 
--check_no_policy()
--{
--	# When a file is unencrypted, FS_IOC_GET_ENCRYPTION_POLICY currently
--	# fails with ENOENT on ext4 but with ENODATA on f2fs.  TODO: it's
--	# planned to consistently use ENODATA.  For now this test accepts both.
--	_get_encpolicy $1 |&
--		sed -e 's/No such file or directory/No data available/'
--}
+diff --git a/tests/generic/397 b/tests/generic/397
+index 73b41b38..97111555 100755
+--- a/tests/generic/397
++++ b/tests/generic/397
+@@ -78,19 +78,6 @@ diff -r $SCRATCH_MNT/edir $SCRATCH_MNT/ref_dir
+ # every time this test is run, even if we were to put a fixed key into the
+ # keyring instead of a random one.  The same applies to symlink targets.
+ #
+-# TODO: there are some inconsistencies in which error codes are returned on
+-# different kernel versions and filesystems when trying to create a file or
+-# subdirectory without access to the parent directory's encryption key.  It's
+-# planned to consistently use ENOKEY, but for now make this test accept multiple
+-# error codes...
+-#
 -
- # Should be able to set an encryption policy on an empty directory
- empty_dir=$SCRATCH_MNT/empty_dir
- echo -e "\n*** Setting encryption policy on empty directory ***"
- mkdir $empty_dir
--check_no_policy $empty_dir |& _filter_scratch
-+_get_encpolicy $empty_dir |& _filter_scratch
- _set_encpolicy $empty_dir 0000111122223333
- _get_encpolicy $empty_dir | _filter_scratch
+-filter_create_errors()
+-{
+-	sed -e 's/No such file or directory/Required key not available/' \
+-	    -e 's/Permission denied/Required key not available/' \
+-	    -e 's/Operation not permitted/Required key not available/'
+-}
  
- # Should be able to set the same policy again, but not a different one.
--# TODO: the error code for "already has a different policy" is planned to switch
--# from EINVAL to EEXIST.  For now this test accepts both.
- echo -e "\n*** Setting encryption policy again ***"
- _set_encpolicy $empty_dir 0000111122223333
- _get_encpolicy $empty_dir | _filter_scratch
--_set_encpolicy $empty_dir 4444555566667777 |& \
--	_filter_scratch | sed -e 's/Invalid argument/File exists/'
-+_set_encpolicy $empty_dir 4444555566667777 |& _filter_scratch
- _get_encpolicy $empty_dir | _filter_scratch
+ _unlink_session_encryption_key $keydesc
+ _scratch_cycle_mount
+@@ -110,12 +97,12 @@ md5sum $(find $SCRATCH_MNT/edir -maxdepth 1 -type f | head -1) |& \
+ # Try to create new files, directories, and symlinks in the encrypted directory,
+ # both with and without using correctly base-64 encoded filenames.  These should
+ # all fail with ENOKEY.
+-$XFS_IO_PROG -f $SCRATCH_MNT/edir/newfile |& filter_create_errors | _filter_scratch
+-$XFS_IO_PROG -f $SCRATCH_MNT/edir/0123456789abcdef |& filter_create_errors | _filter_scratch
+-mkdir $SCRATCH_MNT/edir/newdir |& filter_create_errors | _filter_scratch
+-mkdir $SCRATCH_MNT/edir/0123456789abcdef |& filter_create_errors | _filter_scratch
+-ln -s foo $SCRATCH_MNT/edir/newlink |& filter_create_errors | _filter_scratch
+-ln -s foo $SCRATCH_MNT/edir/0123456789abcdef |& filter_create_errors | _filter_scratch
++$XFS_IO_PROG -f $SCRATCH_MNT/edir/newfile |& _filter_scratch
++$XFS_IO_PROG -f $SCRATCH_MNT/edir/0123456789abcdef |& _filter_scratch
++mkdir $SCRATCH_MNT/edir/newdir |& _filter_scratch
++mkdir $SCRATCH_MNT/edir/0123456789abcdef |& _filter_scratch
++ln -s foo $SCRATCH_MNT/edir/newlink |& _filter_scratch
++ln -s foo $SCRATCH_MNT/edir/0123456789abcdef |& _filter_scratch
  
- # Should *not* be able to set an encryption policy on a nonempty directory
-@@ -71,19 +59,16 @@ echo -e "\n*** Setting encryption policy on nonempty directory ***"
- mkdir $nonempty_dir
- touch $nonempty_dir/file
- _set_encpolicy $nonempty_dir |& _filter_scratch
--check_no_policy $nonempty_dir |& _filter_scratch
-+_get_encpolicy $nonempty_dir |& _filter_scratch
- 
- # Should *not* be able to set an encryption policy on a nondirectory file, even
- # an empty one.  Regression test for 002ced4be642: "fscrypto: only allow setting
- # encryption policy on directories".
--# TODO: the error code for "not a directory" is planned to switch from EINVAL to
--# ENOTDIR.  For now this test accepts both.
- nondirectory=$SCRATCH_MNT/nondirectory
- echo -e "\n*** Setting encryption policy on nondirectory ***"
- touch $nondirectory
--_set_encpolicy $nondirectory |& \
--	_filter_scratch | sed -e 's/Invalid argument/Not a directory/'
--check_no_policy $nondirectory |& _filter_scratch
-+_set_encpolicy $nondirectory |& _filter_scratch
-+_get_encpolicy $nondirectory |& _filter_scratch
- 
- # Should *not* be able to set an encryption policy on another user's directory.
- # Regression test for 163ae1c6ad62: "fscrypto: add authorization check for
-@@ -92,7 +77,7 @@ unauthorized_dir=$SCRATCH_MNT/unauthorized_dir
- echo -e "\n*** Setting encryption policy on another user's directory ***"
- mkdir $unauthorized_dir
- _user_do_set_encpolicy $unauthorized_dir |& _filter_scratch
--check_no_policy $unauthorized_dir |& _filter_scratch
-+_get_encpolicy $unauthorized_dir |& _filter_scratch
- 
- # Should *not* be able to set an encryption policy on a directory on a
- # filesystem mounted readonly.  Regression test for ba63f23d69a3: "fscrypto:
-@@ -102,12 +87,12 @@ echo -e "\n*** Setting encryption policy on readonly filesystem ***"
- mkdir $SCRATCH_MNT/ro_dir $SCRATCH_MNT/ro_bind_mnt
- _scratch_remount ro
- _set_encpolicy $SCRATCH_MNT/ro_dir |& _filter_scratch
--check_no_policy $SCRATCH_MNT/ro_dir |& _filter_scratch
-+_get_encpolicy $SCRATCH_MNT/ro_dir |& _filter_scratch
- _scratch_remount rw
- mount --bind $SCRATCH_MNT $SCRATCH_MNT/ro_bind_mnt
- mount -o remount,ro,bind $SCRATCH_MNT/ro_bind_mnt
- _set_encpolicy $SCRATCH_MNT/ro_bind_mnt/ro_dir |& _filter_scratch
--check_no_policy $SCRATCH_MNT/ro_bind_mnt/ro_dir |& _filter_scratch
-+_get_encpolicy $SCRATCH_MNT/ro_bind_mnt/ro_dir |& _filter_scratch
- umount $SCRATCH_MNT/ro_bind_mnt
- 
- # success, all done
+ # Delete the encrypted directory (should succeed)
+ rm -r $SCRATCH_MNT/edir
 -- 
 2.29.1
 
