@@ -2,112 +2,53 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C3352AEE13
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 11 Nov 2020 10:49:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2962AF25E
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 11 Nov 2020 14:40:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726534AbgKKJt5 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 11 Nov 2020 04:49:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726847AbgKKJt5 (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 11 Nov 2020 04:49:57 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F579C0613D4
-        for <linux-fscrypt@vger.kernel.org>; Wed, 11 Nov 2020 01:49:56 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id w20so469493pjh.1
-        for <linux-fscrypt@vger.kernel.org>; Wed, 11 Nov 2020 01:49:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wy9KYNhp3gLXHxDS3wldI7ei9OvcjTNMDjVAtG+sk3I=;
-        b=D40IYtVzVbalXaF6OaIasJDGe+NoAenJ4j1BxKnohUR/K3/6xIvRpl6RAq8xrrlZMN
-         2mSJRl+OMm8AkbifuVOFugVGFxd9UQ1ONpFI/PauYwQ6xiWTPnuVYrQFP1FQCcZ6ZB3G
-         V1KAoOU3OwU2eYMECd6mOD8bio1Nh0kZ/nn18MB6u08eJyuzTTmiSs4I1FMAVCfUxECz
-         nmkXRQuU/5psF+coA45QnX8O+NF2sfjGPVIaN1/2NiqRd7xzeePgFwaaYYnnEF05VcAA
-         6ZnbvRb+QCisguIaHTuV/8MDUtzgBVxN520Qlv8Z45o9dBy1YPkYx6LPIrb/3+bD+g9x
-         p8ZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wy9KYNhp3gLXHxDS3wldI7ei9OvcjTNMDjVAtG+sk3I=;
-        b=ReBlqWZbREw+uLVoHXL75OfwYS3sV0RXq+/afZEvJEqYxqJNesbUVFca1a6dQAWNg7
-         kw9CKVWSTZUhwGuWEFpxXnhAJeCPxiJah0aVYsx0r+Zk98FfhRufKdHxwRhoU48BvGaA
-         KtFVOzPib4dtYatKCp1Oti5jUEKlbBmGl/wifBBTnpcVlkkjCOcUph+cUGzv1fTYb/Nw
-         sLocupYcft55Eia5s00VUN7OWWS6mraYCNEXoqRE4mVX48zNWPULnfb8ZRCFm0+d2tx6
-         gzxCafxRfhWg4BkWanl5WpBgEJoJswurwVCux8I5YzF8cEmBTO3/lEwBlnjMWh3PsBGW
-         VkSQ==
-X-Gm-Message-State: AOAM533nIshvniQ2bQXPq7zUWEAsl7SjmGLnLexQ7nPlHE3+ItTD8lOV
-        CtSkp0O8vest5nWI3CZtC/eJqQ==
-X-Google-Smtp-Source: ABdhPJyqViOoiWT7aV5JXBTlH1xIMTKFRSp/aJCTu7kGf747y/N23xV9AXPxu8S7IXnFGVu8j9/xSQ==
-X-Received: by 2002:a17:902:244:b029:d6:c451:8566 with SMTP id 62-20020a1709020244b02900d6c4518566mr20626958plc.46.1605088195763;
-        Wed, 11 Nov 2020 01:49:55 -0800 (PST)
-Received: from google.com (154.137.233.35.bc.googleusercontent.com. [35.233.137.154])
-        by smtp.gmail.com with ESMTPSA id e17sm1972385pfl.216.2020.11.11.01.49.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 01:49:55 -0800 (PST)
-Date:   Wed, 11 Nov 2020 09:49:51 +0000
-From:   Satya Tangirala <satyat@google.com>
+        id S1727116AbgKKNkT (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 11 Nov 2020 08:40:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34640 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727131AbgKKNjc (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 11 Nov 2020 08:39:32 -0500
+Subject: Re: [GIT PULL] fscrypt fix for 5.10-rc4
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605101972;
+        bh=St3T7u0v/pdG3Dve+wH090n95DpCzdR3wdreDU1jGWE=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=r5u9FEgKdmht4lj9F2DNSrru89JsF/FHyj7RlSh3dQ/KUQpsNtM4DQj+bklK47W0K
+         KJhD7q5tbeVjzO1YglJcqMKVfrQAOrplyMKQ3cQ7YFFNZ5crfHt5n64RSVea7XA68r
+         iAbvCM8YIAEC14P3QIfZKrZtraR3b7KAOIkOYS7Q=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20201109231151.GB853@sol.localdomain>
+References: <20201109231151.GB853@sol.localdomain>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20201109231151.GB853@sol.localdomain>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
+X-PR-Tracked-Commit-Id: 92cfcd030e4b1de11a6b1edb0840e55c26332d31
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 52d1998d09af92d44ffce7454637dd3fd1afdc7d
+Message-Id: <160510197238.25708.1718923078782898073.pr-tracker-bot@kernel.org>
+Date:   Wed, 11 Nov 2020 13:39:32 +0000
 To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH] block/keyslot-manager: prevent crash when num_slots=1
-Message-ID: <20201111094951.GB3907007@google.com>
-References: <20201111021427.466349-1-ebiggers@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201111021427.466349-1-ebiggers@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 06:14:27PM -0800, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> If there is only one keyslot, then blk_ksm_init() computes
-> slot_hashtable_size=1 and log_slot_ht_size=0.  This causes
-> blk_ksm_find_keyslot() to crash later because it uses
-> hash_ptr(key, log_slot_ht_size) to find the hash bucket containing the
-> key, and hash_ptr() doesn't support the bits == 0 case.
-> 
-> Fix this by making the hash table always have at least 2 buckets.
-> 
-> Tested by running:
-> 
->     kvm-xfstests -c ext4 -g encrypt -m inlinecrypt \
->                  -o blk-crypto-fallback.num_keyslots=1
-> 
-> Fixes: 1b2628397058 ("block: Keyslot Manager for Inline Encryption")
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
->  block/keyslot-manager.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/block/keyslot-manager.c b/block/keyslot-manager.c
-> index 35abcb1ec051d..0a5b2772324ad 100644
-> --- a/block/keyslot-manager.c
-> +++ b/block/keyslot-manager.c
-> @@ -103,6 +103,13 @@ int blk_ksm_init(struct blk_keyslot_manager *ksm, unsigned int num_slots)
->  	spin_lock_init(&ksm->idle_slots_lock);
->  
->  	slot_hashtable_size = roundup_pow_of_two(num_slots);
-> +
-> +	/*
-> +	 * hash_ptr() assumes bits != 0, so ensure the hash table has at least 2
-> +	 * buckets.  This only makes a difference when there is only 1 keyslot.
-> +	 */
-> +	slot_hashtable_size = max(slot_hashtable_size, 2U);
-> +
->  	ksm->log_slot_ht_size = ilog2(slot_hashtable_size);
->  	ksm->slot_hashtable = kvmalloc_array(slot_hashtable_size,
->  					     sizeof(ksm->slot_hashtable[0]),
-> 
-> base-commit: f8394f232b1eab649ce2df5c5f15b0e528c92091
-> -- 
-> 2.29.2
-> 
-Looks good to me. Please feel free to add
-Reviewed-by: Satya Tangirala <satyat@google.com>
+The pull request you sent on Mon, 9 Nov 2020 15:11:51 -0800:
+
+> https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/52d1998d09af92d44ffce7454637dd3fd1afdc7d
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
