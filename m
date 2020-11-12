@@ -2,109 +2,53 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D164D2AFE8E
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 12 Nov 2020 06:39:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 313442AFEB6
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 12 Nov 2020 06:39:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728736AbgKLFjC (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 12 Nov 2020 00:39:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727924AbgKLClA (ORCPT
+        id S1728600AbgKLFjD (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 12 Nov 2020 00:39:03 -0500
+Received: from mail-proxy102.phy.heteml.jp ([157.7.189.102]:60950 "EHLO
+        mail-proxy102.phy.heteml.jp" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728130AbgKLDcF (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 11 Nov 2020 21:41:00 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C45C0613D6
-        for <linux-fscrypt@vger.kernel.org>; Wed, 11 Nov 2020 18:41:00 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id f38so2912027pgm.2
-        for <linux-fscrypt@vger.kernel.org>; Wed, 11 Nov 2020 18:41:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TPVBYTjJe0hHmPnczFzGKQ6IA34dXAh8mCwAyisyNuc=;
-        b=HsIKmy2mHTXPwQWLxT4t4wMTLWDqRF5L0W6i0qLwHTLP0BTicyOwRlVS/u3RGVkS3C
-         RJu4DtUK8Lh1VeQ0Fs8R5cbJEOb/KIkknyTWSIlbVMHhwEeu7GDekDQ/SV18yfChQ43u
-         f5vBpgZwYvIZXfftSHO6UNWQ2nO1I3Cblgwuwic4geXh3UcAEcVGpwC88AbQgivqgoih
-         5Qk4grVFGf2rvo2ZlDamtz3W2G2rSwLcQNC+AHJ4Ef7IfjYB5tNvaoZKN+2kjzfT9PFn
-         e5JMHTGUxFXQH+qS5+PJ/EIdj0wMijhOFFGs6yDsANBc0YNo66B2zmJuqpMIiwdoAcWL
-         a3wA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TPVBYTjJe0hHmPnczFzGKQ6IA34dXAh8mCwAyisyNuc=;
-        b=sjVImdB0IgzWjgfrTH0F0prvDyWOkFVAqUs071whPqCjdgEikbRXuHfCIP7PPXGQvg
-         XLslMwl7wmoVF6s5j2SXkBm0Afm4tq1bossxfUTe4r67OKIhocUOq6jO7CPXflFMWFvb
-         nKGVzx9/Oia0UUGPv1m8zwCVRaQqWCgUno7msNhD0FddHVfT/+3hJL8wMQol1KflxrAi
-         JiIBzE8mjCXugGXp4zYBHvW8uGWeMcCAh72+tj0HA3tzMGKQ7pFhbLKtqeX2anNryNWh
-         bt5bVCH5xt6x6kLCsopKWtjnSo9Ym0aOOhBHmeFNnJkjkOr7LcAp7A+w2c2pBjVs1TVP
-         yfBg==
-X-Gm-Message-State: AOAM533YbGZSxarT1OJnH88hTAPGYAkPe+TOldk6Y0ULRpOoVOY66c8M
-        XXWpkJX5GJSZ/YKwMQpWp3SqAw==
-X-Google-Smtp-Source: ABdhPJxyWqEnhtC2yWsqGmtNX7PfX0PEmHE0bU42jkynWKfam4h3j/TgIeVQcJC3A4TtJNl389fptg==
-X-Received: by 2002:a62:2cc1:0:b029:18c:85f5:864b with SMTP id s184-20020a622cc10000b029018c85f5864bmr502272pfs.29.1605148859471;
-        Wed, 11 Nov 2020 18:40:59 -0800 (PST)
-Received: from google.com (154.137.233.35.bc.googleusercontent.com. [35.233.137.154])
-        by smtp.gmail.com with ESMTPSA id p4sm3814925pjo.6.2020.11.11.18.40.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 18:40:58 -0800 (PST)
-Date:   Thu, 12 Nov 2020 02:40:54 +0000
-From:   Satya Tangirala <satyat@google.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: Re: [PATCH] fscrypt: fix inline encryption not used on new files
-Message-ID: <20201112024054.GA4042272@google.com>
-References: <20201111015224.303073-1-ebiggers@kernel.org>
+        Wed, 11 Nov 2020 22:32:05 -0500
+X-Greylist: delayed 399 seconds by postgrey-1.27 at vger.kernel.org; Wed, 11 Nov 2020 22:32:03 EST
+Received: from mail-proxy102.phy.heteml.jp (localhost [127.0.0.1])
+        by mail-proxy102.phy.heteml.jp (Postfix) with ESMTP id E68169C10B9;
+        Thu, 12 Nov 2020 12:25:19 +0900 (JST)
+Received: from 127.0.0.1 (127.0.0.1)
+ by mail-proxy102.phy.heteml.jp (HETEML-Fsecure);
+ Thu, 12 Nov 2020 12:25:19 +0900 (JST)
+X-Virus-Status: clean(HETEML-Fsecure)
+Received: from User (unknown [52.231.203.57])
+        (Authenticated sender: form@healingart-n.jp)
+        by mail-proxy102.phy.heteml.jp (Postfix) with ESMTPA;
+        Thu, 12 Nov 2020 12:25:19 +0900 (JST)
+Reply-To: <reemhashimymail@gmail.com>
+From:   "Reem" <form@healingart-n.jp>
+Subject: Hello Friend  12/11/2020
+Date:   Thu, 12 Nov 2020 03:25:21 -0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201111015224.303073-1-ebiggers@kernel.org>
+Content-Type: text/plain;
+        charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+Message-Id: <20201112032519.E68169C10B9@mail-proxy102.phy.heteml.jp>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 05:52:24PM -0800, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> The new helper function fscrypt_prepare_new_inode() runs before
-> S_ENCRYPTED has been set on the new inode.  This accidentally made
-> fscrypt_select_encryption_impl() never enable inline encryption on newly
-> created files, due to its use of fscrypt_needs_contents_encryption()
-> which only returns true when S_ENCRYPTED is set.
-> 
-> Fix this by using S_ISREG() directly instead of
-> fscrypt_needs_contents_encryption(), analogous to what
-> select_encryption_mode() does.
-> 
-> I didn't notice this earlier because by design, the user-visible
-> behavior is the same (other than performance, potentially) regardless of
-> whether inline encryption is used or not.
-> 
-> Fixes: a992b20cd4ee ("fscrypt: add fscrypt_prepare_new_inode() and fscrypt_set_context()")
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
->  fs/crypto/inline_crypt.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/crypto/inline_crypt.c b/fs/crypto/inline_crypt.c
-> index 89bffa82ed74a..c57bebfa48fea 100644
-> --- a/fs/crypto/inline_crypt.c
-> +++ b/fs/crypto/inline_crypt.c
-> @@ -74,7 +74,7 @@ int fscrypt_select_encryption_impl(struct fscrypt_info *ci)
->  	int i;
->  
->  	/* The file must need contents encryption, not filenames encryption */
-> -	if (!fscrypt_needs_contents_encryption(inode))
-> +	if (!S_ISREG(inode->i_mode))
->  		return 0;
->  
->  	/* The crypto mode must have a blk-crypto counterpart */
-> 
-> base-commit: 92cfcd030e4b1de11a6b1edb0840e55c26332d31
-> -- 
-> 2.29.2
-> 
-Looks good to me. Please feel free to add
-Reviewed-by: Satya Tangirala <satyat@google.com>
+My name is Reem Hashimy, the Emirates Minister of State and Managing Director of the United Arab Emirates (Dubai) World Expo 2020 Committee which has been postponed to October 2021 to March 2022 because of the Covid-19 pandemic.
+ 
+I am writing to you to manage the funds I received as financial gratification from various foreign companies I assisted to receive a participation approval to the coming event. The amount is $44,762,906.00 United States dollars. But I can not personally manage the fund in my country because of the sensitive nature of my office and the certain restriction on married Muslim women.
+
+For this reason, an agreement was reached with a consulting firm to direct the various financial gifts into an open beneficiary account in my name with a bank where it will be possible for me to instruct the transfer of ownership right to a third party for investment purpose; which is the reason I am contacting you to receive the fund and manage it as my investment partner. Note that the fund is NOT connected to any criminal or terrorist activity.
+ 
+On your indication of interest with your information to include your name, your phone number and contact mailing address; I will instruct the consulting firm to process the fund from the bank to your country for investment purposes.
+
+Regards.
+Reem Hashimy.
