@@ -2,226 +2,87 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6C372B26FA
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 13 Nov 2020 22:34:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30FA72B28CC
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 13 Nov 2020 23:54:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726143AbgKMVe0 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 13 Nov 2020 16:34:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45490 "EHLO mail.kernel.org"
+        id S1726087AbgKMWyY (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 13 Nov 2020 17:54:24 -0500
+Received: from mout.gmx.net ([212.227.17.20]:42241 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726158AbgKMVeJ (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 13 Nov 2020 16:34:09 -0500
-Received: from sol.attlocal.net (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 19DF222256;
-        Fri, 13 Nov 2020 21:34:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605303246;
-        bh=bNLy9LGrd6IhofG6muI+GXT86C5EDFohOuuYxRajStk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dW7WdERy8CfuTXz6HJdbAkQPZmgUyv1BFcJ51UuotGT51CTLiQ6VNAIwOg3e+nBko
-         4T2Bouo9tLtNyTaU0GQwFDIW13f53cbGJbNWNxqOdp7ba/XPTg7GfFGzA2mq/AXANs
-         ktDshad/rGNnhd2clSFCf0hQoX2M6fD1gJklAbms=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     Victor Hsieh <victorhsieh@google.com>,
-        Jes Sorensen <Jes.Sorensen@gmail.com>,
-        Luca Boccassi <luca.boccassi@gmail.com>,
-        Martijn Coenen <maco@android.com>,
-        Paul Lawrence <paullawrence@google.com>
-Subject: [fsverity-utils PATCH 2/2] Rename "file measurement" to "file digest"
-Date:   Fri, 13 Nov 2020 13:33:14 -0800
-Message-Id: <20201113213314.73616-3-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201113213314.73616-1-ebiggers@kernel.org>
-References: <20201113213314.73616-1-ebiggers@kernel.org>
+        id S1725981AbgKMWyY (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Fri, 13 Nov 2020 17:54:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1605308062;
+        bh=GS+hQG/eVfKYhZN1QWK3waff4+wcT82GmC29HxPzEIw=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=Gr63NeW1snv0HHYUMT+0WHek1yqFq5uIcp3xRIJp77l+t6bpAFYa7L+52R/kG/Nwh
+         0knVlClrqehF0ghV1qKnHnktmlPF95Sh7JT/qjlavKToIjGQhlEs8pxdVtVHjVUb7p
+         5meO5HWXXQxQW9vnyssJiRFq08ns4+O7C6CrCbeM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost ([91.61.48.149]) by mail.gmx.com (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MLQxX-1kuY9d2v1n-00IX2c; Fri, 13
+ Nov 2020 23:54:22 +0100
+Date:   Fri, 13 Nov 2020 23:54:21 +0100
+From:   Marcus =?utf-8?B?SMO8d2U=?= <suse-tux@gmx.de>
+To:     luca.boccassi@gmail.com
+Cc:     linux-fscrypt@vger.kernel.org
+Subject: Re: [fsverity-utils RFC PATCH] Add libfsverity_enable() API
+Message-ID: <20201113225421.552sw2aguupcrvkp@linux>
+References: <20201113143527.1097499-1-luca.boccassi@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201113143527.1097499-1-luca.boccassi@gmail.com>
+X-Provags-ID: V03:K1:LsONwIWKGwwT1iU/hc8gEwo5unfLWXJTWhPzZzUUorfOuge5gzv
+ K5Etq00ftiIBseEAod2hcxPbKe8Z6djUONGpHG0TfRZJ5CCDq6RfYhLtmxaJIEkoTjT8cU2
+ u+jw/PYM5Q6eZywDhs76ccKbKXbtY+dds6cfogBRXE9gXb7v5gVS4pKktWv2z1kQOwNvXzZ
+ TtKzP9y6SYF+INoslaMoA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:oUAKpsozkLw=:h556xuyJ5PTLuV0c83O3J+
+ HS3QoaohY9KZy/kh+MR1H86AKXHiveb70fpkhqt0M8nPe1AqzKBiMCFE5VFEanK3DlgdEP9ud
+ g7WY5JcQ0cD0qUpG/gD1390VlVd1zuwsx1bRmOBaOP7O1MiCdYGECVALuUM31mdCqn1Zm5UKy
+ u4dwK7hANJ7B+A5YXgilCDqQSkH8YPQrf/WiCAUhobF4DnPe/maxRryFtLf5z62BmOLpzZyK9
+ iKPor6s8OAQgOliqzgNeLWJNWYa5c9rY2IRADuAJr0NoLIhHWhjJiuf96qCP13Q5bQMeOS22n
+ Bk1KK/BYAlckgpZHXqKiueb9taoV3wR/CEitNonDRhy6VXXztgO2UByWHNRY2zvLneqbDxRb+
+ LwY7rTbY8U96Fov47oj7EKE86XjArml8fJWjEfNfCzRbFue+nsgtCJ+irBfgCciX07ccqZznn
+ AC2R6ZAUiaqHvCfsPrEaZxhjfnh81HhcbzvC93xgArB5kzv9wSRnhg3ftdocFv7td3fh2CfoD
+ ZqV2XNrf8+Y2NDru71VmJ2RQeTVT7m7C0nbYoe4R6cAg/ZX5DVC7XSkbpEuuqb0zqFozrW7Z6
+ ywb/HpKKUBd6pN2E0kX6Ex/RbL/T/zatEpR+ZUqNEbT6VUK1rpEE2hw4PEFDePsgBtv6FNKDu
+ dGxhZcA7D/Ni3mWCsB92K0SK6iYWsDVtNdiAc6U4WdgUpiExkXkQF+aX2Ui/jactFmXSyy0qG
+ bTjTJ6pM/YNRntMC92/jQonymeHP03Le7MFI0TAkqhoBYJX5MH0Fzt9LAnvBGIZHa+wFbiDir
+ 1gzT/t2S9PE3y1hp3HCd4k3EmfRkiq2TFBwYD4oL5nhY0BXX/XoLDp/4w7BmeFQrAqVTiuP32
+ OMTKeXfX5Gxaqs54vPeA==
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On 2020-11-13 14:35:27 +0000, luca.boccassi@gmail.com wrote:
+> diff --git a/lib/enable.c b/lib/enable.c
+> new file mode 100644
+> index 0000000..ad86cc5
+> --- /dev/null
+> +++ b/lib/enable.c
 
-As was done in the kernel, rename "file measurement" to "file digest".
-"File digest" has ended up being the more intuitive name, and it avoids
-using multiple names for the same thing.
+...
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- NEWS.md                |  6 +++---
- README.md              | 20 ++++++++++----------
- include/libfsverity.h  | 18 +++++++++---------
- programs/cmd_digest.c  |  2 +-
- programs/cmd_measure.c |  2 +-
- programs/cmd_sign.c    |  2 +-
- programs/fsverity.c    |  4 ++--
- 7 files changed, 27 insertions(+), 27 deletions(-)
+> +static bool open_file(struct filedes *file, const char *filename, int flags, int mode)
+> +{
+> +	file->fd = open(filename, flags, mode);
+> +	if (file->fd < 0) {
+> +		libfsverity_error_msg("can't open '%s' for %s", filename,
+> +				(flags & O_ACCMODE) == O_RDONLY ? "reading" :
+> +				(flags & O_ACCMODE) == O_WRONLY ? "writing" :
+> +				"reading and writing");
+> +		return false;
+> +	}
+> +	file->name = strdup(filename);
 
-diff --git a/NEWS.md b/NEWS.md
-index 87896cf..116ff0f 100644
---- a/NEWS.md
-+++ b/NEWS.md
-@@ -8,9 +8,9 @@
- 
- ## Version 1.1
- 
--* Split the file measurement computation and signing functionality
--  of the `fsverity` program into a library `libfsverity`.  See
--  `README.md` and `Makefile` for more details.
-+* Split the file digest computation and signing functionality of the
-+  `fsverity` program into a library `libfsverity`.  See `README.md`
-+  and `Makefile` for more details.
- 
- * Improved the Makefile.
- 
-diff --git a/README.md b/README.md
-index 36a52e9..6045c75 100644
---- a/README.md
-+++ b/README.md
-@@ -18,9 +18,9 @@ might add support for fs-verity in the future.
- 
- fsverity-utils currently contains just one program, `fsverity`.  The
- `fsverity` program allows you to set up fs-verity protected files.
--In addition, the file measurement computation and signing
--functionality of `fsverity` is optionally exposed through a C library
--`libfsverity`.  See `libfsverity.h` for the API of this library.
-+In addition, the file digest computation and signing functionality of
-+`fsverity` is optionally exposed through a C library `libfsverity`.
-+See `libfsverity.h` for the API of this library.
- 
- ## Building and installing
- 
-@@ -66,13 +66,13 @@ See the `Makefile` for other supported build and installation options.
-     # Enable verity on the file
-     fsverity enable file
- 
--    # Show the verity file measurement
-+    # Show the verity file digest
-     fsverity measure file
- 
-     # File should still be readable as usual.  However, all data read
-     # is now transparently checked against a hidden Merkle tree, whose
--    # root hash is incorporated into the verity file measurement.
--    # Reads of any corrupted parts of the data will fail.
-+    # root hash is incorporated into the verity file digest.  Reads of
-+    # any corrupted parts of the data will fail.
-     sha256sum file
- ```
- 
-@@ -84,10 +84,10 @@ against a trusted value.
- ### Using builtin signatures
- 
- With `CONFIG_FS_VERITY_BUILTIN_SIGNATURES=y`, the filesystem supports
--automatically verifying a signed file measurement that has been
--included in the verity metadata.  The signature is verified against
--the set of X.509 certificates that have been loaded into the
--".fs-verity" kernel keyring.  Here's an example:
-+automatically verifying a signed file digest that has been included in
-+the verity metadata.  The signature is verified against the set of
-+X.509 certificates that have been loaded into the ".fs-verity" kernel
-+keyring.  Here's an example:
- 
- ```bash
-     # Generate a new certificate and private key:
-diff --git a/include/libfsverity.h b/include/libfsverity.h
-index 8f78a13..d6c3092 100644
---- a/include/libfsverity.h
-+++ b/include/libfsverity.h
-@@ -64,9 +64,9 @@ typedef int (*libfsverity_read_fn_t)(void *fd, void *buf, size_t count);
- 
- /**
-  * libfsverity_compute_digest() - Compute digest of a file
-- *          An fsverity_digest (also called a "file measurement") is the root of
-- *          a file's Merkle tree.  Not to be confused with a traditional file
-- *          digest computed over the entire file.
-+ *          A fs-verity file digest is the hash of a file's fsverity_descriptor.
-+ *          Not to be confused with a traditional file digest computed over the
-+ *          entire file, or with the bare fsverity_descriptor::root_hash.
-  * @fd: context that will be passed to @read_fn
-  * @read_fn: a function that will read the data of the file
-  * @params: struct libfsverity_merkle_tree_params specifying the fs-verity
-@@ -87,12 +87,12 @@ libfsverity_compute_digest(void *fd, libfsverity_read_fn_t read_fn,
- 
- /**
-  * libfsverity_sign_digest() - Sign previously computed digest of a file
-- *          This signature is used by the file system to validate the
-- *          signed file measurement against a public key loaded into the
-- *          .fs-verity kernel keyring, when CONFIG_FS_VERITY_BUILTIN_SIGNATURES
-- *          is enabled. The signature is formatted as PKCS#7 stored in DER
-- *          format. See Documentation/filesystems/fsverity.rst in the kernel
-- *          source tree for further details.
-+ *          This signature is used by the filesystem to validate the signed file
-+ *          digest against a public key loaded into the .fs-verity kernel
-+ *          keyring, when CONFIG_FS_VERITY_BUILTIN_SIGNATURES is enabled. The
-+ *          signature is formatted as PKCS#7 stored in DER format. See
-+ *          Documentation/filesystems/fsverity.rst in the kernel source tree for
-+ *          further details.
-  * @digest: pointer to previously computed digest
-  * @sig_params: struct libfsverity_signature_params providing filenames of
-  *          the keyfile and certificate file. Reserved fields must be zero.
-diff --git a/programs/cmd_digest.c b/programs/cmd_digest.c
-index 420ba82..31dfd45 100644
---- a/programs/cmd_digest.c
-+++ b/programs/cmd_digest.c
-@@ -32,7 +32,7 @@ static const struct option longopts[] = {
- };
- 
- /*
-- * Compute the fs-verity measurement of the given file(s), for offline signing.
-+ * Compute the fs-verity digest of the given file(s), for offline signing.
-  */
- int fsverity_cmd_digest(const struct fsverity_command *cmd,
- 		      int argc, char *argv[])
-diff --git a/programs/cmd_measure.c b/programs/cmd_measure.c
-index 98382ab..d78969c 100644
---- a/programs/cmd_measure.c
-+++ b/programs/cmd_measure.c
-@@ -14,7 +14,7 @@
- #include <fcntl.h>
- #include <sys/ioctl.h>
- 
--/* Display the measurement of the given verity file(s). */
-+/* Display the fs-verity digest of the given verity file(s). */
- int fsverity_cmd_measure(const struct fsverity_command *cmd,
- 			 int argc, char *argv[])
- {
-diff --git a/programs/cmd_sign.c b/programs/cmd_sign.c
-index 580e4df..2f06007 100644
---- a/programs/cmd_sign.c
-+++ b/programs/cmd_sign.c
-@@ -43,7 +43,7 @@ static const struct option longopts[] = {
- 	{NULL, 0, NULL, 0}
- };
- 
--/* Sign a file for fs-verity by computing its measurement, then signing it. */
-+/* Sign a file for fs-verity by computing its digest, then signing it. */
- int fsverity_cmd_sign(const struct fsverity_command *cmd,
- 		      int argc, char *argv[])
- {
-diff --git a/programs/fsverity.c b/programs/fsverity.c
-index 4a2f8df..b12c878 100644
---- a/programs/fsverity.c
-+++ b/programs/fsverity.c
-@@ -24,7 +24,7 @@ static const struct fsverity_command {
- 		.name = "digest",
- 		.func = fsverity_cmd_digest,
- 		.short_desc =
--"Compute the fs-verity measurement of the given file(s), for offline signing",
-+"Compute the fs-verity digest of the given file(s), for offline signing",
- 		.usage_str =
- "    fsverity digest FILE...\n"
- "               [--hash-alg=HASH_ALG] [--block-size=BLOCK_SIZE] [--salt=SALT]\n"
-@@ -41,7 +41,7 @@ static const struct fsverity_command {
- 		.name = "measure",
- 		.func = fsverity_cmd_measure,
- 		.short_desc =
--"Display the measurement of the given verity file(s)",
-+"Display the fs-verity digest of the given verity file(s)",
- 		.usage_str =
- "    fsverity measure FILE...\n"
- 	}, {
--- 
-2.29.2
+Hmm we should probably check for NULL.
 
+> +	return true;
+> +}
+
+(Otherwise, I cannot really comment on the patch...)
+
+
+Marcus
