@@ -2,27 +2,27 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0736F2B26FB
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 13 Nov 2020 22:34:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6C372B26FA
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 13 Nov 2020 22:34:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726039AbgKMVeY (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 13 Nov 2020 16:34:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45478 "EHLO mail.kernel.org"
+        id S1726143AbgKMVe0 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 13 Nov 2020 16:34:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45490 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726143AbgKMVeG (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 13 Nov 2020 16:34:06 -0500
+        id S1726158AbgKMVeJ (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Fri, 13 Nov 2020 16:34:09 -0500
 Received: from sol.attlocal.net (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B750022255;
-        Fri, 13 Nov 2020 21:34:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 19DF222256;
+        Fri, 13 Nov 2020 21:34:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605303245;
-        bh=Mkx7D5wb3Z3sP0Sjns8IQg+PVKBTLPNKLffUKJD+s3k=;
+        s=default; t=1605303246;
+        bh=bNLy9LGrd6IhofG6muI+GXT86C5EDFohOuuYxRajStk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qWgteyvLLeurqFSrk1UnwjZIw31UGGqHCCyPsUCKQp6oYSUtMc3uQQvwY/3l9YZbd
-         Geu0bmCvWzjSAOPrdIa/jLvzPChgiDefAca3iPwjuY8iBBfithJl4A4w/NSxfbkDmr
-         gHhh8E4BZJtDNMzsSTne9ExrOeB/E8KbkPMPV3oE=
+        b=dW7WdERy8CfuTXz6HJdbAkQPZmgUyv1BFcJ51UuotGT51CTLiQ6VNAIwOg3e+nBko
+         4T2Bouo9tLtNyTaU0GQwFDIW13f53cbGJbNWNxqOdp7ba/XPTg7GfFGzA2mq/AXANs
+         ktDshad/rGNnhd2clSFCf0hQoX2M6fD1gJklAbms=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-fscrypt@vger.kernel.org
 Cc:     Victor Hsieh <victorhsieh@google.com>,
@@ -30,9 +30,9 @@ Cc:     Victor Hsieh <victorhsieh@google.com>,
         Luca Boccassi <luca.boccassi@gmail.com>,
         Martijn Coenen <maco@android.com>,
         Paul Lawrence <paullawrence@google.com>
-Subject: [fsverity-utils PATCH 1/2] Upgrade to latest fsverity_uapi.h
-Date:   Fri, 13 Nov 2020 13:33:13 -0800
-Message-Id: <20201113213314.73616-2-ebiggers@kernel.org>
+Subject: [fsverity-utils PATCH 2/2] Rename "file measurement" to "file digest"
+Date:   Fri, 13 Nov 2020 13:33:14 -0800
+Message-Id: <20201113213314.73616-3-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201113213314.73616-1-ebiggers@kernel.org>
 References: <20201113213314.73616-1-ebiggers@kernel.org>
@@ -44,170 +44,184 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-The latest UAPI header includes the declarations of fsverity_descriptor
-and fsverity_formatted_digest (previously fsverity_signed_digest).
-Therefore they no longer need to be declared in other files.
+As was done in the kernel, rename "file measurement" to "file digest".
+"File digest" has ended up being the more intuitive name, and it avoids
+using multiple names for the same thing.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- common/fsverity_uapi.h | 49 ++++++++++++++++++++++++++++++++++++++++++
- lib/compute_digest.c   | 17 ---------------
- lib/sign_digest.c      | 15 +------------
- programs/cmd_digest.c  | 11 ++--------
- 4 files changed, 52 insertions(+), 40 deletions(-)
+ NEWS.md                |  6 +++---
+ README.md              | 20 ++++++++++----------
+ include/libfsverity.h  | 18 +++++++++---------
+ programs/cmd_digest.c  |  2 +-
+ programs/cmd_measure.c |  2 +-
+ programs/cmd_sign.c    |  2 +-
+ programs/fsverity.c    |  4 ++--
+ 7 files changed, 27 insertions(+), 27 deletions(-)
 
-diff --git a/common/fsverity_uapi.h b/common/fsverity_uapi.h
-index da0daf6..260017a 100644
---- a/common/fsverity_uapi.h
-+++ b/common/fsverity_uapi.h
-@@ -34,6 +34,55 @@ struct fsverity_digest {
- 	__u8 digest[];
- };
+diff --git a/NEWS.md b/NEWS.md
+index 87896cf..116ff0f 100644
+--- a/NEWS.md
++++ b/NEWS.md
+@@ -8,9 +8,9 @@
  
-+/*
-+ * Struct containing a file's Merkle tree properties.  The fs-verity file digest
-+ * is the hash of this struct.  A userspace program needs this struct only if it
-+ * needs to compute fs-verity file digests itself, e.g. in order to sign files.
-+ * It isn't needed just to enable fs-verity on a file.
-+ *
-+ * Note: when computing the file digest, 'sig_size' and 'signature' must be left
-+ * zero and empty, respectively.  These fields are present only because some
-+ * filesystems reuse this struct as part of their on-disk format.
-+ */
-+struct fsverity_descriptor {
-+	__u8 version;		/* must be 1 */
-+	__u8 hash_algorithm;	/* Merkle tree hash algorithm */
-+	__u8 log_blocksize;	/* log2 of size of data and tree blocks */
-+	__u8 salt_size;		/* size of salt in bytes; 0 if none */
-+#ifdef __KERNEL__
-+	__le32 sig_size;
-+#else
-+	__le32 __reserved_0x04;
-+#endif
-+	__le64 data_size;	/* size of file the Merkle tree is built over */
-+	__u8 root_hash[64];	/* Merkle tree root hash */
-+	__u8 salt[32];		/* salt prepended to each hashed block */
-+	__u8 __reserved[144];	/* must be 0's */
-+#ifdef __KERNEL__
-+	__u8 signature[];
-+#endif
-+};
-+
-+/*
-+ * Format in which fs-verity file digests are signed in built-in signatures.
-+ * This is the same as 'struct fsverity_digest', except here some magic bytes
-+ * are prepended to provide some context about what is being signed in case the
-+ * same key is used for non-fsverity purposes, and here the fields have fixed
-+ * endianness.
-+ *
-+ * This struct is specific to the built-in signature verification support, which
-+ * is optional.  fs-verity users may also verify signatures in userspace, in
-+ * which case userspace is responsible for deciding on what bytes are signed.
-+ * This struct may still be used, but it doesn't have to be.  For example,
-+ * userspace could instead use a string like "sha256:$digest_as_hex_string".
-+ */
-+struct fsverity_formatted_digest {
-+	char magic[8];			/* must be "FSVerity" */
-+	__le16 digest_algorithm;
-+	__le16 digest_size;
-+	__u8 digest[];
-+};
-+
- #define FS_IOC_ENABLE_VERITY	_IOW('f', 133, struct fsverity_enable_arg)
- #define FS_IOC_MEASURE_VERITY	_IOWR('f', 134, struct fsverity_digest)
+ ## Version 1.1
  
-diff --git a/lib/compute_digest.c b/lib/compute_digest.c
-index e0b213b..25bba1f 100644
---- a/lib/compute_digest.c
-+++ b/lib/compute_digest.c
-@@ -17,23 +17,6 @@
+-* Split the file measurement computation and signing functionality
+-  of the `fsverity` program into a library `libfsverity`.  See
+-  `README.md` and `Makefile` for more details.
++* Split the file digest computation and signing functionality of the
++  `fsverity` program into a library `libfsverity`.  See `README.md`
++  and `Makefile` for more details.
  
- #define FS_VERITY_MAX_LEVELS	64
+ * Improved the Makefile.
  
--/*
-- * Merkle tree properties.  The file measurement is the hash of this structure
-- * excluding the signature and with the sig_size field set to 0.
-- */
--struct fsverity_descriptor {
--	__u8 version;		/* must be 1 */
--	__u8 hash_algorithm;	/* Merkle tree hash algorithm */
--	__u8 log_blocksize;	/* log2 of size of data and tree blocks */
--	__u8 salt_size;		/* size of salt in bytes; 0 if none */
--	__le32 sig_size;	/* size of signature in bytes; 0 if none */
--	__le64 data_size;	/* size of file the Merkle tree is built over */
--	__u8 root_hash[64];	/* Merkle tree root hash */
--	__u8 salt[32];		/* salt prepended to each hashed block */
--	__u8 __reserved[144];	/* must be 0's */
--	__u8 signature[];	/* optional PKCS#7 signature */
--};
--
- struct block_buffer {
- 	u32 filled;
- 	u8 *data;
-diff --git a/lib/sign_digest.c b/lib/sign_digest.c
-index 1f73007..9a35256 100644
---- a/lib/sign_digest.c
-+++ b/lib/sign_digest.c
-@@ -19,19 +19,6 @@
- #include <openssl/pkcs7.h>
- #include <string.h>
+diff --git a/README.md b/README.md
+index 36a52e9..6045c75 100644
+--- a/README.md
++++ b/README.md
+@@ -18,9 +18,9 @@ might add support for fs-verity in the future.
  
--/*
-- * Format in which verity file measurements are signed.  This is the same as
-- * 'struct fsverity_digest', except here some magic bytes are prepended to
-- * provide some context about what is being signed in case the same key is used
-- * for non-fsverity purposes, and here the fields have fixed endianness.
-- */
--struct fsverity_signed_digest {
--	char magic[8];			/* must be "FSVerity" */
--	__le16 digest_algorithm;
--	__le16 digest_size;
--	__u8 digest[];
--};
--
- static int print_openssl_err_cb(const char *str,
- 				size_t len __attribute__((unused)),
- 				void *u __attribute__((unused)))
-@@ -339,7 +326,7 @@ libfsverity_sign_digest(const struct libfsverity_digest *digest,
- 	EVP_PKEY *pkey = NULL;
- 	X509 *cert = NULL;
- 	const EVP_MD *md;
--	struct fsverity_signed_digest *d = NULL;
-+	struct fsverity_formatted_digest *d = NULL;
- 	int err;
+ fsverity-utils currently contains just one program, `fsverity`.  The
+ `fsverity` program allows you to set up fs-verity protected files.
+-In addition, the file measurement computation and signing
+-functionality of `fsverity` is optionally exposed through a C library
+-`libfsverity`.  See `libfsverity.h` for the API of this library.
++In addition, the file digest computation and signing functionality of
++`fsverity` is optionally exposed through a C library `libfsverity`.
++See `libfsverity.h` for the API of this library.
  
- 	if (!digest || !sig_params || !sig_ret || !sig_size_ret)  {
+ ## Building and installing
+ 
+@@ -66,13 +66,13 @@ See the `Makefile` for other supported build and installation options.
+     # Enable verity on the file
+     fsverity enable file
+ 
+-    # Show the verity file measurement
++    # Show the verity file digest
+     fsverity measure file
+ 
+     # File should still be readable as usual.  However, all data read
+     # is now transparently checked against a hidden Merkle tree, whose
+-    # root hash is incorporated into the verity file measurement.
+-    # Reads of any corrupted parts of the data will fail.
++    # root hash is incorporated into the verity file digest.  Reads of
++    # any corrupted parts of the data will fail.
+     sha256sum file
+ ```
+ 
+@@ -84,10 +84,10 @@ against a trusted value.
+ ### Using builtin signatures
+ 
+ With `CONFIG_FS_VERITY_BUILTIN_SIGNATURES=y`, the filesystem supports
+-automatically verifying a signed file measurement that has been
+-included in the verity metadata.  The signature is verified against
+-the set of X.509 certificates that have been loaded into the
+-".fs-verity" kernel keyring.  Here's an example:
++automatically verifying a signed file digest that has been included in
++the verity metadata.  The signature is verified against the set of
++X.509 certificates that have been loaded into the ".fs-verity" kernel
++keyring.  Here's an example:
+ 
+ ```bash
+     # Generate a new certificate and private key:
+diff --git a/include/libfsverity.h b/include/libfsverity.h
+index 8f78a13..d6c3092 100644
+--- a/include/libfsverity.h
++++ b/include/libfsverity.h
+@@ -64,9 +64,9 @@ typedef int (*libfsverity_read_fn_t)(void *fd, void *buf, size_t count);
+ 
+ /**
+  * libfsverity_compute_digest() - Compute digest of a file
+- *          An fsverity_digest (also called a "file measurement") is the root of
+- *          a file's Merkle tree.  Not to be confused with a traditional file
+- *          digest computed over the entire file.
++ *          A fs-verity file digest is the hash of a file's fsverity_descriptor.
++ *          Not to be confused with a traditional file digest computed over the
++ *          entire file, or with the bare fsverity_descriptor::root_hash.
+  * @fd: context that will be passed to @read_fn
+  * @read_fn: a function that will read the data of the file
+  * @params: struct libfsverity_merkle_tree_params specifying the fs-verity
+@@ -87,12 +87,12 @@ libfsverity_compute_digest(void *fd, libfsverity_read_fn_t read_fn,
+ 
+ /**
+  * libfsverity_sign_digest() - Sign previously computed digest of a file
+- *          This signature is used by the file system to validate the
+- *          signed file measurement against a public key loaded into the
+- *          .fs-verity kernel keyring, when CONFIG_FS_VERITY_BUILTIN_SIGNATURES
+- *          is enabled. The signature is formatted as PKCS#7 stored in DER
+- *          format. See Documentation/filesystems/fsverity.rst in the kernel
+- *          source tree for further details.
++ *          This signature is used by the filesystem to validate the signed file
++ *          digest against a public key loaded into the .fs-verity kernel
++ *          keyring, when CONFIG_FS_VERITY_BUILTIN_SIGNATURES is enabled. The
++ *          signature is formatted as PKCS#7 stored in DER format. See
++ *          Documentation/filesystems/fsverity.rst in the kernel source tree for
++ *          further details.
+  * @digest: pointer to previously computed digest
+  * @sig_params: struct libfsverity_signature_params providing filenames of
+  *          the keyfile and certificate file. Reserved fields must be zero.
 diff --git a/programs/cmd_digest.c b/programs/cmd_digest.c
-index 180f438..420ba82 100644
+index 420ba82..31dfd45 100644
 --- a/programs/cmd_digest.c
 +++ b/programs/cmd_digest.c
-@@ -31,13 +31,6 @@ static const struct option longopts[] = {
+@@ -32,7 +32,7 @@ static const struct option longopts[] = {
+ };
+ 
+ /*
+- * Compute the fs-verity measurement of the given file(s), for offline signing.
++ * Compute the fs-verity digest of the given file(s), for offline signing.
+  */
+ int fsverity_cmd_digest(const struct fsverity_command *cmd,
+ 		      int argc, char *argv[])
+diff --git a/programs/cmd_measure.c b/programs/cmd_measure.c
+index 98382ab..d78969c 100644
+--- a/programs/cmd_measure.c
++++ b/programs/cmd_measure.c
+@@ -14,7 +14,7 @@
+ #include <fcntl.h>
+ #include <sys/ioctl.h>
+ 
+-/* Display the measurement of the given verity file(s). */
++/* Display the fs-verity digest of the given verity file(s). */
+ int fsverity_cmd_measure(const struct fsverity_command *cmd,
+ 			 int argc, char *argv[])
+ {
+diff --git a/programs/cmd_sign.c b/programs/cmd_sign.c
+index 580e4df..2f06007 100644
+--- a/programs/cmd_sign.c
++++ b/programs/cmd_sign.c
+@@ -43,7 +43,7 @@ static const struct option longopts[] = {
  	{NULL, 0, NULL, 0}
  };
  
--struct fsverity_signed_digest {
--	char magic[8];			/* must be "FSVerity" */
--	__le16 digest_algorithm;
--	__le16 digest_size;
--	__u8 digest[];
--};
--
- /*
-  * Compute the fs-verity measurement of the given file(s), for offline signing.
-  */
-@@ -93,10 +86,10 @@ int fsverity_cmd_digest(const struct fsverity_command *cmd,
- 		tree_params.block_size = get_default_block_size();
- 
- 	for (int i = 0; i < argc; i++) {
--		struct fsverity_signed_digest *d = NULL;
-+		struct fsverity_formatted_digest *d = NULL;
- 		struct libfsverity_digest *digest = NULL;
- 		char digest_hex[FS_VERITY_MAX_DIGEST_SIZE * 2 +
--				sizeof(struct fsverity_signed_digest) * 2 + 1];
-+				sizeof(*d) * 2 + 1];
- 
- 		if (!open_file(&file, argv[i], O_RDONLY, 0))
- 			goto out_err;
+-/* Sign a file for fs-verity by computing its measurement, then signing it. */
++/* Sign a file for fs-verity by computing its digest, then signing it. */
+ int fsverity_cmd_sign(const struct fsverity_command *cmd,
+ 		      int argc, char *argv[])
+ {
+diff --git a/programs/fsverity.c b/programs/fsverity.c
+index 4a2f8df..b12c878 100644
+--- a/programs/fsverity.c
++++ b/programs/fsverity.c
+@@ -24,7 +24,7 @@ static const struct fsverity_command {
+ 		.name = "digest",
+ 		.func = fsverity_cmd_digest,
+ 		.short_desc =
+-"Compute the fs-verity measurement of the given file(s), for offline signing",
++"Compute the fs-verity digest of the given file(s), for offline signing",
+ 		.usage_str =
+ "    fsverity digest FILE...\n"
+ "               [--hash-alg=HASH_ALG] [--block-size=BLOCK_SIZE] [--salt=SALT]\n"
+@@ -41,7 +41,7 @@ static const struct fsverity_command {
+ 		.name = "measure",
+ 		.func = fsverity_cmd_measure,
+ 		.short_desc =
+-"Display the measurement of the given verity file(s)",
++"Display the fs-verity digest of the given verity file(s)",
+ 		.usage_str =
+ "    fsverity measure FILE...\n"
+ 	}, {
 -- 
 2.29.2
 
