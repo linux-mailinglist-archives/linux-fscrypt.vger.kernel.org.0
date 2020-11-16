@@ -2,34 +2,34 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 575EF2B5351
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 16 Nov 2020 21:58:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E1DC2B534F
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 16 Nov 2020 21:58:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732795AbgKPU44 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 16 Nov 2020 15:56:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45070 "EHLO mail.kernel.org"
+        id S1732815AbgKPU4z (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 16 Nov 2020 15:56:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732798AbgKPU4z (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        id S1728760AbgKPU4z (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
         Mon, 16 Nov 2020 15:56:55 -0500
 Received: from sol.attlocal.net (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B54592224B;
-        Mon, 16 Nov 2020 20:56:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 11E312078D;
+        Mon, 16 Nov 2020 20:56:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605560213;
-        bh=OOuIczPF6IJCCjIE5+wlaIaVp/KM8ngsZaR4hlVgs9E=;
+        s=default; t=1605560214;
+        bh=rDDP1dPWYvs6cKaNIgaxG29BHVije+drPkGJ+U5TZOM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MBe+uGFs431P+J4XgwmGug6gQ/RqRlfdPv/JE4DH1MpReD1j4lSrIbxu/ZTFFty7H
-         FjVsUH/24kC1X9IsvFze5o96GzEJHKYf0MpEPcP+mPMyZIB+i7ztmAzM5I3cYG3vv8
-         OMVgc+QyNx3tRX2DrILQ1MI6mwWImdRI7acIbe+k=
+        b=Ax/PLfRpP2lKezqCHqoGTrvn+4UHv9OZjvCntRPpcillBt3q3+WlFsl+YDzZaRKTT
+         4mfQBj6uoyDp7y/4XK19i0B9nmYSUAgadZuuji7+0IK0JLTXBVEBv+GP6vDTC2On3S
+         ujJxvVaFQti6MvHMILpUFsof1O5Z8ynOY+EE8u0A=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-fscrypt@vger.kernel.org
 Cc:     Luca Boccassi <luca.boccassi@gmail.com>,
         Jes Sorensen <Jes.Sorensen@gmail.com>
-Subject: [fsverity-utils PATCH v2 2/4] lib/compute_digest: add default hash_algorithm and block_size
-Date:   Mon, 16 Nov 2020 12:56:26 -0800
-Message-Id: <20201116205628.262173-3-ebiggers@kernel.org>
+Subject: [fsverity-utils PATCH v2 3/4] lib: add libfsverity_enable() and libfsverity_enable_with_sig()
+Date:   Mon, 16 Nov 2020 12:56:27 -0800
+Message-Id: <20201116205628.262173-4-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201116205628.262173-1-ebiggers@kernel.org>
 References: <20201116205628.262173-1-ebiggers@kernel.org>
@@ -41,293 +41,204 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-If hash_algorithm is left 0, default it to FS_VERITY_HASH_ALG_SHA256;
-and if block_size is left 0, default it to 4096 bytes.
-
-While it's nice to be explicit, having defaults makes things easier for
-library users.
+Add convenience functions that wrap FS_IOC_ENABLE_VERITY but take a
+'struct libfsverity_merkle_tree_params' instead of
+'struct fsverity_enable_arg'.  This is useful because it allows
+libfsverity users to deal with one common struct, and also get the
+default parameter handling that libfsverity_compute_digest() does.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- include/libfsverity.h          | 47 ++++++++++++++++++++++++++--------
- lib/compute_digest.c           | 27 +++++++++++--------
- lib/lib_private.h              |  6 +++++
- programs/cmd_digest.c          |  8 +-----
- programs/cmd_sign.c            |  9 +------
- programs/test_compute_digest.c | 18 ++++++++-----
- 6 files changed, 71 insertions(+), 44 deletions(-)
+ include/libfsverity.h | 36 +++++++++++++++++++++++++++++++++
+ lib/enable.c          | 47 +++++++++++++++++++++++++++++++++++++++++++
+ programs/cmd_enable.c | 26 +++++++++++-------------
+ programs/fsverity.h   |  3 ---
+ 4 files changed, 95 insertions(+), 17 deletions(-)
+ create mode 100644 lib/enable.c
 
 diff --git a/include/libfsverity.h b/include/libfsverity.h
-index 8f78a13..985b364 100644
+index 985b364..369e1cf 100644
 --- a/include/libfsverity.h
 +++ b/include/libfsverity.h
-@@ -27,15 +27,42 @@ extern "C" {
- #define FS_VERITY_HASH_ALG_SHA256       1
- #define FS_VERITY_HASH_ALG_SHA512       2
+@@ -137,6 +137,42 @@ libfsverity_sign_digest(const struct libfsverity_digest *digest,
+ 			const struct libfsverity_signature_params *sig_params,
+ 			uint8_t **sig_ret, size_t *sig_size_ret);
  
 +/**
-+ * struct libfsverity_merkle_tree_params - properties of a file's Merkle tree
++ * libfsverity_enable() - Enable fs-verity on a file
++ * @fd: read-only file descriptor to the file
++ * @params: pointer to the Merkle tree parameters
 + *
-+ * Zero this, then fill in at least @version and @file_size.
++ * This is a simple wrapper around the FS_IOC_ENABLE_VERITY ioctl.
++ *
++ * Return: 0 on success, -EINVAL for invalid arguments, or a negative errno
++ *	   value from the FS_IOC_ENABLE_VERITY ioctl.  See
++ *	   Documentation/filesystems/fsverity.rst in the kernel source tree for
++ *	   the possible error codes from FS_IOC_ENABLE_VERITY.
 + */
- struct libfsverity_merkle_tree_params {
--	uint32_t version;		/* must be 1			*/
--	uint32_t hash_algorithm;	/* one of FS_VERITY_HASH_ALG_*	*/
--	uint64_t file_size;		/* file size in bytes		*/
--	uint32_t block_size;		/* Merkle tree block size in bytes */
--	uint32_t salt_size;		/* salt size in bytes (0 if unsalted) */
--	const uint8_t *salt;		/* pointer to salt (optional)	*/
--	uint64_t reserved1[8];		/* must be 0 */
--	uintptr_t reserved2[8];		/* must be 0 */
++int
++libfsverity_enable(int fd, const struct libfsverity_merkle_tree_params *params);
 +
-+	/** @version: must be 1 */
-+	uint32_t version;
++/**
++ * libfsverity_enable_with_sig() - Enable fs-verity on a file, with a signature
++ * @fd: read-only file descriptor to the file
++ * @params: pointer to the Merkle tree parameters
++ * @sig: pointer to the file's signature
++ * @sig_size: size of the file's signature in bytes
++ *
++ * Like libfsverity_enable(), but allows specifying a built-in signature (i.e. a
++ * singature created with libfsverity_sign_digest()) to associate with the file.
++ * This is only needed if the in-kernel signature verification support is being
++ * used; it is not needed if signatures are being verified in userspace.
++ *
++ * If @sig is NULL and @sig_size is 0, this is the same as libfsverity_enable().
++ *
++ * Return: See libfsverity_enable().
++ */
++int
++libfsverity_enable_with_sig(int fd,
++			    const struct libfsverity_merkle_tree_params *params,
++			    const uint8_t *sig, size_t sig_size);
 +
-+	/**
-+	 * @hash_algorithm: one of FS_VERITY_HASH_ALG_*, or 0 to use the default
-+	 * of FS_VERITY_HASH_ALG_SHA256
-+	 */
-+	uint32_t hash_algorithm;
+ /**
+  * libfsverity_find_hash_alg_by_name() - Find hash algorithm by name
+  * @name: Pointer to name of hash algorithm
+diff --git a/lib/enable.c b/lib/enable.c
+new file mode 100644
+index 0000000..c27ec89
+--- /dev/null
++++ b/lib/enable.c
+@@ -0,0 +1,47 @@
++// SPDX-License-Identifier: MIT
++/*
++ * Implementation of libfsverity_enable() and libfsverity_enable_with_sig().
++ *
++ * Copyright 2020 Google LLC
++ *
++ * Use of this source code is governed by an MIT-style
++ * license that can be found in the LICENSE file or at
++ * https://opensource.org/licenses/MIT.
++ */
 +
-+	/** @file_size: the file size in bytes */
-+	uint64_t file_size;
++#include "lib_private.h"
 +
-+	/**
-+	 * @block_size: the Merkle tree block size in bytes, or 0 to use the
-+	 * default of 4096 bytes
-+	 */
-+	uint32_t block_size;
++#include <sys/ioctl.h>
 +
-+	/** @salt_size: the salt size in bytes, or 0 if unsalted */
-+	uint32_t salt_size;
++LIBEXPORT int
++libfsverity_enable(int fd, const struct libfsverity_merkle_tree_params *params)
++{
++	return libfsverity_enable_with_sig(fd, params, NULL, 0);
++}
 +
-+	/** @salt: pointer to the salt, or NULL if unsalted */
-+	const uint8_t *salt;
++LIBEXPORT int
++libfsverity_enable_with_sig(int fd,
++			    const struct libfsverity_merkle_tree_params *params,
++			    const uint8_t *sig, size_t sig_size)
++{
++	struct fsverity_enable_arg arg = {};
 +
-+	/** @reserved1: must be 0 */
-+	uint64_t reserved1[8];
++	if (!params) {
++		libfsverity_error_msg("missing required parameters for enable");
++		return -EINVAL;
++	}
 +
-+	/** @reserved2: must be 0 */
-+	uintptr_t reserved2[8];
- };
- 
- struct libfsverity_digest {
-@@ -69,9 +96,7 @@ typedef int (*libfsverity_read_fn_t)(void *fd, void *buf, size_t count);
-  *          digest computed over the entire file.
-  * @fd: context that will be passed to @read_fn
-  * @read_fn: a function that will read the data of the file
-- * @params: struct libfsverity_merkle_tree_params specifying the fs-verity
-- *	    version, the hash algorithm, the file size, the block size, and
-- *	    optionally a salt.  Reserved fields must be zero.
-+ * @params: Pointer to the Merkle tree parameters
-  * @digest_ret: Pointer to pointer for computed digest.
-  *
-  * Returns:
-diff --git a/lib/compute_digest.c b/lib/compute_digest.c
-index e0b213b..a36795d 100644
---- a/lib/compute_digest.c
-+++ b/lib/compute_digest.c
-@@ -164,6 +164,8 @@ libfsverity_compute_digest(void *fd, libfsverity_read_fn_t read_fn,
- 			   const struct libfsverity_merkle_tree_params *params,
- 			   struct libfsverity_digest **digest_ret)
++	arg.version = 1;
++	arg.hash_algorithm =
++		params->hash_algorithm ?: FS_VERITY_HASH_ALG_DEFAULT;
++	arg.block_size =
++		params->block_size ?: FS_VERITY_BLOCK_SIZE_DEFAULT;
++	arg.salt_size = params->salt_size;
++	arg.salt_ptr = (uintptr_t)params->salt;
++	arg.sig_size = sig_size;
++	arg.sig_ptr = (uintptr_t)sig;
++
++	if (ioctl(fd, FS_IOC_ENABLE_VERITY, &arg) != 0)
++		return -errno;
++	return 0;
++}
+diff --git a/programs/cmd_enable.c b/programs/cmd_enable.c
+index ba5b088..b0e0c98 100644
+--- a/programs/cmd_enable.c
++++ b/programs/cmd_enable.c
+@@ -68,9 +68,10 @@ static const struct option longopts[] = {
+ int fsverity_cmd_enable(const struct fsverity_command *cmd,
+ 			int argc, char *argv[])
  {
-+	u32 alg_num;
-+	u32 block_size;
- 	const struct fsverity_hash_alg *hash_alg;
- 	struct hash_ctx *hash = NULL;
- 	struct libfsverity_digest *digest;
-@@ -179,9 +181,13 @@ libfsverity_compute_digest(void *fd, libfsverity_read_fn_t read_fn,
- 				      params->version);
- 		return -EINVAL;
- 	}
--	if (!is_power_of_2(params->block_size)) {
-+
-+	alg_num = params->hash_algorithm ?: FS_VERITY_HASH_ALG_DEFAULT;
-+	block_size = params->block_size ?: FS_VERITY_BLOCK_SIZE_DEFAULT;
-+
-+	if (!is_power_of_2(block_size)) {
- 		libfsverity_error_msg("unsupported block size (%u)",
--				      params->block_size);
-+				      block_size);
- 		return -EINVAL;
- 	}
- 	if (params->salt_size > sizeof(desc.salt)) {
-@@ -201,16 +207,15 @@ libfsverity_compute_digest(void *fd, libfsverity_read_fn_t read_fn,
- 		return -EINVAL;
- 	}
- 
--	hash_alg = libfsverity_find_hash_alg_by_num(params->hash_algorithm);
-+	hash_alg = libfsverity_find_hash_alg_by_num(alg_num);
- 	if (!hash_alg) {
--		libfsverity_error_msg("unknown hash algorithm: %u",
--				      params->hash_algorithm);
-+		libfsverity_error_msg("unknown hash algorithm: %u", alg_num);
- 		return -EINVAL;
- 	}
- 
--	if (params->block_size < 2 * hash_alg->digest_size) {
-+	if (block_size < 2 * hash_alg->digest_size) {
- 		libfsverity_error_msg("block size (%u) too small for hash algorithm %s",
--				      params->block_size, hash_alg->name);
-+				      block_size, hash_alg->name);
- 		return -EINVAL;
- 	}
- 
-@@ -220,8 +225,8 @@ libfsverity_compute_digest(void *fd, libfsverity_read_fn_t read_fn,
- 
- 	memset(&desc, 0, sizeof(desc));
- 	desc.version = 1;
--	desc.hash_algorithm = params->hash_algorithm;
--	desc.log_blocksize = ilog2(params->block_size);
-+	desc.hash_algorithm = alg_num;
-+	desc.log_blocksize = ilog2(block_size);
- 	desc.data_size = cpu_to_le64(params->file_size);
- 	if (params->salt_size != 0) {
- 		memcpy(desc.salt, params->salt, params->salt_size);
-@@ -229,7 +234,7 @@ libfsverity_compute_digest(void *fd, libfsverity_read_fn_t read_fn,
- 	}
- 
- 	err = compute_root_hash(fd, read_fn, params->file_size, hash,
--				params->block_size, params->salt,
-+				block_size, params->salt,
- 				params->salt_size, desc.root_hash);
- 	if (err)
- 		goto out;
-@@ -239,7 +244,7 @@ libfsverity_compute_digest(void *fd, libfsverity_read_fn_t read_fn,
- 		err = -ENOMEM;
- 		goto out;
- 	}
--	digest->digest_algorithm = params->hash_algorithm;
-+	digest->digest_algorithm = alg_num;
- 	digest->digest_size = hash_alg->digest_size;
- 	libfsverity_hash_full(hash, &desc, sizeof(desc), digest->digest);
- 	*digest_ret = digest;
-diff --git a/lib/lib_private.h b/lib/lib_private.h
-index ff00490..7768eea 100644
---- a/lib/lib_private.h
-+++ b/lib/lib_private.h
-@@ -19,6 +19,12 @@
- 
- #define LIBEXPORT	__attribute__((visibility("default")))
- 
-+/* The hash algorithm that libfsverity assumes when none is specified */
-+#define FS_VERITY_HASH_ALG_DEFAULT	FS_VERITY_HASH_ALG_SHA256
-+
-+/* The block size that libfsverity assumes when none is specified */
-+#define FS_VERITY_BLOCK_SIZE_DEFAULT	4096
-+
- /* hash_algs.c */
- 
- struct fsverity_hash_alg {
-diff --git a/programs/cmd_digest.c b/programs/cmd_digest.c
-index 7899b04..4f7818e 100644
---- a/programs/cmd_digest.c
-+++ b/programs/cmd_digest.c
-@@ -86,12 +86,6 @@ int fsverity_cmd_digest(const struct fsverity_command *cmd,
- 	if (argc < 1)
+-	struct fsverity_enable_arg arg = { .version = 1 };
++	struct libfsverity_merkle_tree_params tree_params = { .version = 1 };
+ 	u8 *salt = NULL;
+ 	u8 *sig = NULL;
++	u32 sig_size = 0;
+ 	struct filedes file;
+ 	int status;
+ 	int c;
+@@ -78,26 +79,28 @@ int fsverity_cmd_enable(const struct fsverity_command *cmd,
+ 	while ((c = getopt_long(argc, argv, "", longopts, NULL)) != -1) {
+ 		switch (c) {
+ 		case OPT_HASH_ALG:
+-			if (!parse_hash_alg_option(optarg, &arg.hash_algorithm))
++			if (!parse_hash_alg_option(optarg,
++						   &tree_params.hash_algorithm))
+ 				goto out_usage;
+ 			break;
+ 		case OPT_BLOCK_SIZE:
+-			if (!parse_block_size_option(optarg, &arg.block_size))
++			if (!parse_block_size_option(optarg,
++						     &tree_params.block_size))
+ 				goto out_usage;
+ 			break;
+ 		case OPT_SALT:
+-			if (!parse_salt_option(optarg, &salt, &arg.salt_size))
++			if (!parse_salt_option(optarg, &salt,
++					       &tree_params.salt_size))
+ 				goto out_usage;
+-			arg.salt_ptr = (uintptr_t)salt;
++			tree_params.salt = salt;
+ 			break;
+ 		case OPT_SIGNATURE:
+ 			if (sig != NULL) {
+ 				error_msg("--signature can only be specified once");
+ 				goto out_usage;
+ 			}
+-			if (!read_signature(optarg, &sig, &arg.sig_size))
++			if (!read_signature(optarg, &sig, &sig_size))
+ 				goto out_err;
+-			arg.sig_ptr = (uintptr_t)sig;
+ 			break;
+ 		default:
+ 			goto out_usage;
+@@ -110,15 +113,10 @@ int fsverity_cmd_enable(const struct fsverity_command *cmd,
+ 	if (argc != 1)
  		goto out_usage;
  
--	if (tree_params.hash_algorithm == 0)
--		tree_params.hash_algorithm = FS_VERITY_HASH_ALG_DEFAULT;
+-	if (arg.hash_algorithm == 0)
+-		arg.hash_algorithm = FS_VERITY_HASH_ALG_DEFAULT;
 -
--	if (tree_params.block_size == 0)
--		tree_params.block_size = 4096;
+-	if (arg.block_size == 0)
+-		arg.block_size = 4096;
 -
- 	for (int i = 0; i < argc; i++) {
- 		struct fsverity_signed_digest *d = NULL;
- 		struct libfsverity_digest *digest = NULL;
-@@ -137,7 +131,7 @@ int fsverity_cmd_digest(const struct fsverity_command *cmd,
- 			printf("%s %s\n", digest_hex, argv[i]);
- 		else
- 			printf("%s:%s %s\n",
--			       libfsverity_get_hash_name(tree_params.hash_algorithm),
-+			       libfsverity_get_hash_name(digest->digest_algorithm),
- 			       digest_hex, argv[i]);
- 
+ 	if (!open_file(&file, argv[0], O_RDONLY, 0))
+ 		goto out_err;
+-	if (ioctl(file.fd, FS_IOC_ENABLE_VERITY, &arg) != 0) {
++
++	if (libfsverity_enable_with_sig(file.fd, &tree_params, sig, sig_size)) {
+ 		error_msg_errno("FS_IOC_ENABLE_VERITY failed on '%s'",
+ 				file.name);
  		filedes_close(&file);
-diff --git a/programs/cmd_sign.c b/programs/cmd_sign.c
-index 9cb7507..4b90944 100644
---- a/programs/cmd_sign.c
-+++ b/programs/cmd_sign.c
-@@ -101,12 +101,6 @@ int fsverity_cmd_sign(const struct fsverity_command *cmd,
- 	if (argc != 2)
- 		goto out_usage;
+diff --git a/programs/fsverity.h b/programs/fsverity.h
+index 2af5527..37a6294 100644
+--- a/programs/fsverity.h
++++ b/programs/fsverity.h
+@@ -14,9 +14,6 @@
+ #include "utils.h"
+ #include "../common/fsverity_uapi.h"
  
--	if (tree_params.hash_algorithm == 0)
--		tree_params.hash_algorithm = FS_VERITY_HASH_ALG_DEFAULT;
+-/* The hash algorithm that 'fsverity' assumes when none is specified */
+-#define FS_VERITY_HASH_ALG_DEFAULT	FS_VERITY_HASH_ALG_SHA256
 -
--	if (tree_params.block_size == 0)
--		tree_params.block_size = 4096;
--
- 	if (sig_params.keyfile == NULL) {
- 		error_msg("Missing --key argument");
- 		goto out_usage;
-@@ -138,8 +132,7 @@ int fsverity_cmd_sign(const struct fsverity_command *cmd,
- 	ASSERT(digest->digest_size <= FS_VERITY_MAX_DIGEST_SIZE);
- 	bin2hex(digest->digest, digest->digest_size, digest_hex);
- 	printf("Signed file '%s' (%s:%s)\n", argv[0],
--	       libfsverity_get_hash_name(tree_params.hash_algorithm),
--	       digest_hex);
-+	       libfsverity_get_hash_name(digest->digest_algorithm), digest_hex);
- 	status = 0;
- out:
- 	filedes_close(&file);
-diff --git a/programs/test_compute_digest.c b/programs/test_compute_digest.c
-index eee10f7..e7f2645 100644
---- a/programs/test_compute_digest.c
-+++ b/programs/test_compute_digest.c
-@@ -139,7 +139,13 @@ static const struct test_case {
- 			  "\x56\xce\x29\xa9\x60\xbf\x4b\xb0"
- 			  "\xe5\x95\xec\x38\x6c\xa5\x8c\x06"
- 			  "\x51\x9d\x54\x6d\xc5\xb1\x97\xbb",
--	}
-+	}, { /* default hash algorithm (SHA-256) and block size (4096) */
-+		.file_size = 100000,
-+		.digest = "\xf2\x09\x6a\x36\xc5\xcd\xca\x4f"
-+			  "\xa3\x3e\xe8\x85\x28\x33\x15\x0b"
-+			  "\xb3\x24\x99\x2e\x54\x17\xa9\xd5"
-+			  "\x71\xf1\xbf\xff\xf7\x3b\x9e\xfc",
-+	},
- };
- 
- static void fix_digest_and_print(const struct test_case *t,
-@@ -206,15 +212,11 @@ static void test_invalid_params(void)
- 
- 	/* bad hash_algorithm */
- 	params = good_params;
--	params.hash_algorithm = 0;
--	ASSERT(libfsverity_compute_digest(&f, read_fn, &params, &d) == -EINVAL);
- 	params.hash_algorithm = 1000;
- 	ASSERT(libfsverity_compute_digest(&f, read_fn, &params, &d) == -EINVAL);
- 
- 	/* bad block_size */
- 	params = good_params;
--	params.block_size = 0;
--	ASSERT(libfsverity_compute_digest(&f, read_fn, &params, &d) == -EINVAL);
- 	params.block_size = 1;
- 	ASSERT(libfsverity_compute_digest(&f, read_fn, &params, &d) == -EINVAL);
- 	params.block_size = 4097;
-@@ -266,6 +268,8 @@ int main(int argc, char *argv[])
- 		f.data[i] = (i % 11) + (i % 439) + (i % 1103);
- 
- 	for (i = 0; i < ARRAY_SIZE(test_cases); i++) {
-+		u32 expected_alg = test_cases[i].hash_algorithm ?:
-+				   FS_VERITY_HASH_ALG_SHA256;
- 
- 		memset(&params, 0, sizeof(params));
- 		params.version = 1;
-@@ -283,9 +287,9 @@ int main(int argc, char *argv[])
- 		err = libfsverity_compute_digest(&f, read_fn, &params, &d);
- 		ASSERT(err == 0);
- 
--		ASSERT(d->digest_algorithm == test_cases[i].hash_algorithm);
-+		ASSERT(d->digest_algorithm == expected_alg);
- 		ASSERT(d->digest_size ==
--		       libfsverity_get_digest_size(test_cases[i].hash_algorithm));
-+		       libfsverity_get_digest_size(expected_alg));
- 		if (update)
- 			fix_digest_and_print(&test_cases[i], d);
- 		else
+ /*
+  * Largest digest size among all hash algorithms supported by fs-verity.
+  * This can be increased if needed.
 -- 
 2.29.2
 
