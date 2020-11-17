@@ -2,54 +2,54 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A943F2B5C27
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 17 Nov 2020 10:49:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3122B5C7E
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 17 Nov 2020 11:02:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726085AbgKQJrm (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 17 Nov 2020 04:47:42 -0500
-Received: from mail-eopbgr70135.outbound.protection.outlook.com ([40.107.7.135]:12407
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        id S1727764AbgKQKBL (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 17 Nov 2020 05:01:11 -0500
+Received: from mail-eopbgr140121.outbound.protection.outlook.com ([40.107.14.121]:8999
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727729AbgKQJrm (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 17 Nov 2020 04:47:42 -0500
+        id S1727710AbgKQKBK (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 17 Nov 2020 05:01:10 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YNuhpTOkw3C5tX/ljSNzfUZoQJdLBo74uZtpiMT1FQWpnvTj6I2mAfAwYykxkvF1Uy+iDwSnlPvgmS7tP3z5+hfhQYe5/TbxdXhNQeOfDvfYv6JQ4tV6Lj81R7QLLi01wh1tXQ3bAryMt2JO4HYWenVp/Uh3v2a1cSaLwCXsDlNqEmTIB/AcU28Iiyg7q8YlK3SDIQUIzor++ohr/kOJ9atoXYWRsoyfYuKoC7cP/T0YIqiNCG5oOPRXGRigoRGkxS/GOWJICEyUKV5ZazJrbvkydvZmIe+14OI4yoprm+uh/ZQtX5xcTJTO3D49vZ83JDgYb2ERKOawy3u2dyef0Q==
+ b=ViPHj9wvCqivBB9kOUnkz5kEkL1B1mKvamJnvq77qzw25Sx5gkVBkWA1d+ag2xHwiFP1bC/uqIsFYPPaamXeKyP55ATdz+DLJENALTgTJCNfsn5oNpxhM8kxivPyPTW8gYZcdVwIxCThWigcTWNqTr2HG5qHhxi16Y3G10ZMjIM+pTmmusAj+wXJRIIptQwbQtKoYRFVjiMCB+fviSKIB9p/kp0kl4M5xs/TGNltlhvFTq5ImdhXoHQy6IBeEfPITsd/mOlNMmXQQ3j0zNcQ9dmm53mRq/rCgKLacm7SuIJhb/53XPrSEEvlFBeuUt9I7jhsUGVG2qPD5V6IKRqpBw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fqk18xA8IzLz2VixrPlkkLs81Bi/6VSdU0TNVeQVPSo=;
- b=UCS7Pw/dbB16dhBmdkUmEPXQi4Fvd2xq88p1q7OwDLsdM4CCfJu9LCJyL5fQAhpOcaxoHknWprZFiyxFjvWv7eOqzImgHfTwb5RZodZH8ObTkkpNaGbuv7R9gYS4/HLwlweCD1IlVXOMK977eqFoPdiClKY38SntvULu4PZPzZff5x00tZJCA5v6jf9R2uU0GpdGrOWa+rVhDQD43m+A4yZoTG3kGu0+H1nANkjE7fRI/fROpHf5VtJTQeaaS154ONSvZmCt/XIR+QBYssEy9AOizoVLFuZw2DCpfNFdDKxz1gaR4eHlJgEktxdLCTb3LPGZVUwPIS1pjDBsLi+Fuw==
+ bh=A9oDUP8Mz3q5e1qlw9u7krmyC8P6H0rJkGaRG7aBNGE=;
+ b=ZzkDYOu/FJLawyd+I0KShVTgmkqti+F84XOFne+XNLXINrY8fJpaWKD3NVpvn3A19rh4zEQNlr4T7NifRn70ufZnMaJ9xvCkD3vnGzqZbeHlF3qdGQ5pPVJDKhv8HgpSv+EIp+9ZPu+KT6Ph0GbKrRkeWYwVW7/HJHDgxkJ8FJNXooqO29br951oD1UrFtGv55EW8Sxdl/gRvSx/eU9lIf54Q4GrOrz4ehhruWy9PaBuzdZ0vq03Z+mmotTz9Ce2r1pcofaSE6xPMlKBGwttHX/LfVPLxOHoM/hU7GYcN33ss2PwP4TGTHjy7cSq5FFGwUGufQ+rVBgzTYIk4cIX9Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=microsoft.com; dmarc=pass action=none
  header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fqk18xA8IzLz2VixrPlkkLs81Bi/6VSdU0TNVeQVPSo=;
- b=FRdjlVpt6R5xxlmWPY/Vfsk50vYuQnTa/u1F6KgJJM7PMBWLcmIFMJhax5vrr9xsqX7mFuFGhNG5EYl/7buJJtnMvXMvM3kYk/6XSrUWHpgrok13gg9PNQa4mB1uN1TBkLhFsu5K6P0cUsGzrh1wwZKasP3b0icfs5C8UviXU0s=
+ bh=A9oDUP8Mz3q5e1qlw9u7krmyC8P6H0rJkGaRG7aBNGE=;
+ b=R4mja6hi2LluoWCoZREx9RzTNkdbCxbRk697LNJrcoU5rmAwd4Lzo7fxga9JKZAAPvculACO3tg6Gmu78NfKFXnIxi4+sl6fpY/cGEUElT9QMwwWNfuWt5PcQMCqptf4U5ZwLXpppTzIcv8h9dFBII0I9n0TWf/+3qq4rq2Sg6Q=
 Received: from AM5PR83MB0178.EURPRD83.prod.outlook.com (2603:10a6:206:25::31)
- by AM5PR83MB0162.EURPRD83.prod.outlook.com (2603:10a6:206:25::27) with
+ by AM7PR83MB0417.EURPRD83.prod.outlook.com (2603:10a6:20b:1b5::10) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.6; Tue, 17 Nov
- 2020 09:47:38 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.4; Tue, 17 Nov
+ 2020 10:01:05 +0000
 Received: from AM5PR83MB0178.EURPRD83.prod.outlook.com
  ([fe80::3983:12a4:4f34:39d]) by AM5PR83MB0178.EURPRD83.prod.outlook.com
  ([fe80::3983:12a4:4f34:39d%5]) with mapi id 15.20.3611.004; Tue, 17 Nov 2020
- 09:47:38 +0000
+ 10:01:05 +0000
 From:   Luca Boccassi <Luca.Boccassi@microsoft.com>
 To:     "ebiggers@kernel.org" <ebiggers@kernel.org>,
         "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>
 CC:     "Jes.Sorensen@gmail.com" <Jes.Sorensen@gmail.com>
-Subject: Re: [fsverity-utils PATCH v2 1/4] programs/fsverity: change default
- block size from PAGE_SIZE to 4096
-Thread-Topic: [fsverity-utils PATCH v2 1/4] programs/fsverity: change default
- block size from PAGE_SIZE to 4096
-Thread-Index: AQHWvMavoQpfXIolWkOxRt3TPmrfmA==
-Date:   Tue, 17 Nov 2020 09:47:38 +0000
-Message-ID: <f1b4d97dbcac6358b33a554be327aba6038567f1.camel@microsoft.com>
+Subject: Re: [fsverity-utils PATCH v2 2/4] lib/compute_digest: add default
+ hash_algorithm and block_size
+Thread-Topic: [fsverity-utils PATCH v2 2/4] lib/compute_digest: add default
+ hash_algorithm and block_size
+Thread-Index: AQHWvMiQYImZUwaXPUOLAp5jJroRgg==
+Date:   Tue, 17 Nov 2020 10:01:05 +0000
+Message-ID: <bfcda9021e62d690f9ef43d6ad7d56af1bd05467.camel@microsoft.com>
 References: <20201116205628.262173-1-ebiggers@kernel.org>
-         <20201116205628.262173-2-ebiggers@kernel.org>
-In-Reply-To: <20201116205628.262173-2-ebiggers@kernel.org>
+         <20201116205628.262173-3-ebiggers@kernel.org>
+In-Reply-To: <20201116205628.262173-3-ebiggers@kernel.org>
 Accept-Language: en-GB, en-US
 Content-Language: en-US
 X-MS-Has-Attach: yes
@@ -60,61 +60,56 @@ authentication-results: kernel.org; dkim=none (message not signed)
 x-originating-ip: [88.98.246.218]
 x-ms-publictraffictype: Email
 x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 6a9b3249-78cb-4591-6a76-08d88addd1c5
-x-ms-traffictypediagnostic: AM5PR83MB0162:
-x-microsoft-antispam-prvs: <AM5PR83MB016283231DB8DCD976543261F1E20@AM5PR83MB0162.EURPRD83.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6108;
+x-ms-office365-filtering-correlation-id: db7a5289-8905-4abb-b8a1-08d88adfb2d7
+x-ms-traffictypediagnostic: AM7PR83MB0417:
+x-microsoft-antispam-prvs: <AM7PR83MB04176D00AA2EE1AF435779E5F1E20@AM7PR83MB0417.EURPRD83.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4714;
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: oii6tH9o7hXMLeIvbBpoUNFyFw6y8YpZlXB42FkowrPu8Hk7aqqOuG+J/4ymqgutTghQuPB+tmwHREufTTEepkMETOcRiFEUO3dESef4hXMBmh2+I8XmH9NRpqO9yRxqBIDcCt7L/QohVTXL+j1Tnj0FhgXrJuV8vW2ttbI2CzypD2MwFzb1h2iO75aSiCXdmo1E0qKzxmVBO9HxQdrnI1/YreXQbuWk/SFUHMoV3RVZkkQKMZcoFkZagm7dQkCytCJzzyGF18PDWCAn4CdR3p3WIrrQOQSLRwjz/Anfy1amiu0IOQukd1RyZvqklt7d
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM5PR83MB0178.EURPRD83.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(396003)(376002)(366004)(346002)(66556008)(66616009)(66476007)(478600001)(66446008)(64756008)(10290500003)(76116006)(66946007)(99936003)(36756003)(82960400001)(82950400001)(83380400001)(4001150100001)(6486002)(6506007)(110136005)(8936002)(8676002)(2906002)(316002)(86362001)(2616005)(4326008)(5660300002)(186003)(71200400001)(26005)(6512007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: rSZ7h7++yJ4nOiHUwekmj7SXkaOPN/ug980N3OZ9a/G/e1+0R+HkPxowOxjvyuCb5qpS9psiUq3JVJdXLqe1s1vCv7XJ0XMDRgpu6khUs6oJismYm/fNQSLdFPoUHXMClxLSeC/+wfa8Ea1oAQebyqdEUzM5WH50gN0bvMFx8S8b8jlHgLW3Cz6O0YUYYNtXI8BiBfPOYznFdS9PVsdqtww41dWtVwFT7+Yh9QYSB+bVlV8M8TZUSWlcyCbwzuBAOeQ+ORynC+vO50/dpWRvg5QR+jO1SoSHu0Pvfi9fEN6d+ADNeaT/lallTBLp3y15twCRmWgh6MZJJFYgM4+aS3ncChHTeKt2tvX9JHjUaJa4qizkWIGbeXWFJjWRCSJb2e8/bz1wAS3yDJiJ6Mjvn/XYHL1I/vWewAceE0zyU3/R3byw3urc++YXnIOnqWfkh+sGTMh0K5u0Ao2rPxoh5GOQJrnW6Ey113YoYrnKX5Sxq6lOl9uN5P4Qoc4+/xjP/5autbpGapp03XMLZ8hG13vCzrteEN94yxEE4Pcn4776eHuvoUkyrKgtAz1YxZF4BmvuzlNEVHjSsCrLgUei3nc40+0lFN5sM0NWvUv1ebeAaGTsiVSKnWrM/Z/kprfunYy/HayCX5wNuBhz59IXhpT/9bgjk8+c32bQ3pX0GnkplnpJDBKEpyXx2Onms5o7yrPPV15jjliF3FAVGjK6YUYqGKYouHOB8mE5a4/UX1pz5np0ZlPRj7swweUTFLvfoO5zQLYqyeYeD6yxjhJnokzItUAJKYib6iN46C01fwHgw61ctTa5KcKZMIAUKqdLSOeQLtfbC1XxrWEddmHuBax4Xm+lOh84jIQrtk87Qaj2jIeCwnlMv7LdzAhrvTN1r4D1197NwDoXbL3qGsvX5Q==
+x-microsoft-antispam-message-info: Tr1ZpJxaEM15I1evaRMLnYl2mOZalhkYFYAa+iwpsrk0hpF0+Hicwr+rZzkDwJc4Dtz//qOMbLvCVwCP3EZeQOfXyQVvZK7u9tDkvocd1p3Qw40IptjD9wHfEFeJuWNvN1T2RAVyC3mjTC9Cs/mHvZ8MY4WW7CPU3VOILuPQmoILwM6aAeaZg9WJLhP8P5cVT0a62EJ568LKOk8cWsGc3Xp3dmvtRhx4yE5c6AHOKgBmrJYDUbfZUKQd6aJ83jeqxsB9E9+4J8D16d4qmJIbzuaQ8hnbHbne/dEH2g+yJnVfRaxgojiSS+nb+3NYGNZUFHu71oENLnE9fb6vqXSc9Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM5PR83MB0178.EURPRD83.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(376002)(346002)(366004)(39860400002)(2906002)(82950400001)(26005)(6506007)(4001150100001)(4744005)(478600001)(186003)(2616005)(86362001)(110136005)(10290500003)(5660300002)(64756008)(66556008)(66446008)(36756003)(66476007)(99936003)(66616009)(6512007)(83380400001)(82960400001)(71200400001)(6486002)(8936002)(76116006)(8676002)(4326008)(316002)(66946007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: cKL3s6iO7oSbjVmLL4u2n72pJybwQqmOksu/tXLEe+veidP4sK3sMKcMLSxkYhIr1GlAa0vLDCz8RieTjINaxWi2vunM2Pa50E60gvr5MDv2JqcXNabVue6AN2HgpA+s3/etqdTCOF7EUALSOMK/oES+izlWKzA6LxN4EtNB/EkSGkIzRwUDBtGAWAkvV5gaMsI8nzI1Gw9Wh54i5m/WXRWEFOng/fm369FMrprsHaYBxkmJge5KuqLuxSjEzSaZj4f0aaQn/YDuECN139XZHkOeazD3APF2YuVs46CXgYuBPLSCU1XGiG3VE34zc7oEsCG2+Ruuj91GwF/hCVqq2MSiAijS9fE4921y+4+wHnedvMibNo+nY93EkkfEogBo3zcYTj3rrUXzgMckOdkzz1jeD9Wjt8eE+i+kiPV/2gZuTqG478cmVDif4X5XIDO+41p+6svjBoQP3MKwt/POI+4PnE7vbNr+e+J+3iGv65T4xO0AZkJ1posW17CG26a2akmxGEK9Jiqcoklbl8oVsUUGGHBHP8CJG46mtuUJeOoZ3/dGpaIlwO4/nuzZfr6dQahXelZTgNyfEYzWvhTt24+fC8WX1v1neN8k/0hR1dh6tOX8PEWkoeIHHiHEQW+vVztZtkx5GtCbVQHuHmy08VnKR8QEqz5IxLzLxut0FygSJdipLgZHGy3zD/o/iTF54jyA874BTbgosWR58ZWLc/ZL+wncdT80Zm1U5diCiZn4UR7DQ97NsMFCZMqe0xmJeIFFHjahhUR8t33bbgB+sss2/HxWKhqvyxhC/e2HGRNK94EZD0DoBOyUyVBJlOelzb9tgFAs+cU8QYcRo9fol5IIOfQBEXwanuHA36l6h911xxh0l1uY2X7TqyhRFkaLOMDxR6nvz1I6dyZ2hcaydg==
 x-ms-exchange-transport-forked: True
 Content-Type: multipart/signed; micalg="pgp-sha512";
-        protocol="application/pgp-signature"; boundary="=-tRYPzABxf52xm4QiHqNp"
+        protocol="application/pgp-signature"; boundary="=-PGVTQna36h2Z1NWiQRzx"
 MIME-Version: 1.0
 X-OriginatorOrg: microsoft.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: AM5PR83MB0178.EURPRD83.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6a9b3249-78cb-4591-6a76-08d88addd1c5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Nov 2020 09:47:38.3187
+X-MS-Exchange-CrossTenant-Network-Message-Id: db7a5289-8905-4abb-b8a1-08d88adfb2d7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Nov 2020 10:01:05.4577
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: VgtL3YEBx+FVqs/6ZDpDPT8UfSr91I0b67VRYKoxIVHAvEuGzA0AwrPXol7fAom5JUBUibRv5T5+hUcgxG95EQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM5PR83MB0162
+X-MS-Exchange-CrossTenant-userprincipalname: /HA4CzoGByGPrVm+yDlCq92a1SyHQ54HNIpU2aD4HX/fMcjTGwbVZ6fJlblFOjUxOVxjj71xbmryprk2QrYWWQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR83MB0417
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
---=-tRYPzABxf52xm4QiHqNp
+--=-PGVTQna36h2Z1NWiQRzx
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 On Mon, 2020-11-16 at 12:56 -0800, Eric Biggers wrote:
 > From: Eric Biggers <ebiggers@google.com>
 >=20
-> Even though the kernel currently only supports PAGE_SIZE =3D=3D Merkle tr=
-ee
-> block size, PAGE_SIZE isn't a good default Merkle tree block size for
-> fsverity-utils, since it means that if someone doesn't explicitly
-> specify the block size, then the results of 'fsverity sign' and
-> 'fsverity enable' will differ between different architectures.
+> If hash_algorithm is left 0, default it to FS_VERITY_HASH_ALG_SHA256;
+> and if block_size is left 0, default it to 4096 bytes.
 >=20
-> So change the default Merkle tree block size to 4096, which is the most
-> common PAGE_SIZE.  This will break anyone using the fsverity program
-> without the --block-size option on an architecture with a non-4K page
-> size.  But I don't think anyone is actually doing that yet anyway.
+> While it's nice to be explicit, having defaults makes things easier for
+> library users.
 >=20
 > Signed-off-by: Eric Biggers <ebiggers@google.com>
 > ---
->  programs/cmd_digest.c |  2 +-
->  programs/cmd_enable.c |  2 +-
->  programs/cmd_sign.c   |  2 +-
->  programs/fsverity.c   | 14 --------------
->  programs/fsverity.h   |  1 -
->  5 files changed, 3 insertions(+), 18 deletions(-)
+>  include/libfsverity.h          | 47 ++++++++++++++++++++++++++--------
+>  lib/compute_digest.c           | 27 +++++++++++--------
+>  lib/lib_private.h              |  6 +++++
+>  programs/cmd_digest.c          |  8 +-----
+>  programs/cmd_sign.c            |  9 +------
+>  programs/test_compute_digest.c | 18 ++++++++-----
+>  6 files changed, 71 insertions(+), 44 deletions(-)
 
 Acked-by: Luca Boccassi <luca.boccassi@microsoft.com>
 
@@ -122,21 +117,21 @@ Acked-by: Luca Boccassi <luca.boccassi@microsoft.com>
 Kind regards,
 Luca Boccassi
 
---=-tRYPzABxf52xm4QiHqNp
+--=-PGVTQna36h2Z1NWiQRzx
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEE6g0RLAGYhL9yp9G8SylmgFB4UWIFAl+znDgACgkQSylmgFB4
-UWIf1Qf9GDfsgxMb8DbIHecyqTC3aLUDBeiUu2KeeUYO048Vlmfr1Bq+4Spzdqqt
-onmIEHJNRYS9lFxMjIHajPm1ZK5japt+n2R8R6zcjMOHdzCBHcEtBNi4wPzQPZZ9
-AdfFkcZXCvK4WZh8sBhVPhlD3vYfc8lndhGP6ZGffwk+nRpEDXEdASDcag/2PLDR
-b8ovd03BGhlok+7FfW0z1uQQzF+Tz38ZVqSqB+WmO+W0YZc4V9Ev475DsJeEmfOu
-L/yw3hYbbQNDZDZoXtlGrZ0In4QF9wtJ/kvSt/RWpkGwmeHLTAcWPY/qX3R1lz+G
-+g+0BVQMOiPXj78PDJ2gldpu79bvpA==
-=LwtD
+iQEzBAABCgAdFiEE6g0RLAGYhL9yp9G8SylmgFB4UWIFAl+zn2AACgkQSylmgFB4
+UWLUfQf/WF282jjGwue6IDlntbR0N18iVVhZ9iNyxBSYmaX7dTD7cEDOb7vKFQYN
+xho6AwLlCg/CdAnP1ScuJpE97TdLUpkaaSyPB7Mm5IhJiqW4iC84NVt8+OKk4VTK
+RC1sv+ioFXZrXgd0L5FQF6eRIeuGyiABTnY7StN1FbvFLycZ637BobwHWtt+5+8k
+PmtqwnJAtke285oA71aAm7QyQJO27qkjs4Wq5p+6lNYpWNrGlE6D8PXNjSuxH0fi
+TFQhvWcKpRhJMBysRJKzHMAuiIAiJoAzUC0N4ayZ09Oq5oj300SnRtc+ZVQqvFd0
+db1j1Kl5pn7MTCcVOoySHHSoHRzZQQ==
+=tkYN
 -----END PGP SIGNATURE-----
 
---=-tRYPzABxf52xm4QiHqNp--
+--=-PGVTQna36h2Z1NWiQRzx--
