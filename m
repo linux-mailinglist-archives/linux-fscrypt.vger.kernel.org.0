@@ -2,76 +2,65 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DFE52B6B07
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 17 Nov 2020 18:05:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4BB52B6B85
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 17 Nov 2020 18:16:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726982AbgKQREP (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 17 Nov 2020 12:04:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48554 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726204AbgKQREO (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 17 Nov 2020 12:04:14 -0500
-Received: from google.com (unknown [104.132.1.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9438122447;
-        Tue, 17 Nov 2020 17:04:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605632654;
-        bh=RI02fUAgmCDGR1I9KhbEZKJySeezxBuuog/z0BglPjE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DBjGqfkcNFh7VnYo3RQNdBge1TQ+YYC4YKNDLYI8nPndHth5oUkMgNCidgSm2Hu0u
-         KLA2crWMx3LsXcgN+T8C26/Kt+F8ujLobWFjlbLjJfxmDID5V1znx5uEEnL0pL3olq
-         21GDqIO5jmYr1HGyy4Cx80uxW0RI1rifflYbZMYQ=
-Date:   Tue, 17 Nov 2020 09:04:11 -0800
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Daniel Rosenberg <drosen@google.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chao Yu <chao@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Richard Weinberger <richard@nod.at>,
-        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mtd@lists.infradead.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v2 2/3] fscrypt: Have filesystems handle their d_ops
-Message-ID: <20201117170411.GC1636127@google.com>
-References: <20201117040315.28548-1-drosen@google.com>
- <20201117040315.28548-3-drosen@google.com>
- <20201117140326.GA445084@mit.edu>
+        id S1729093AbgKQRQA (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 17 Nov 2020 12:16:00 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:53457 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727641AbgKQRP7 (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 17 Nov 2020 12:15:59 -0500
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0AHHFQSN025997
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Nov 2020 12:15:27 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 611CD420107; Tue, 17 Nov 2020 12:15:26 -0500 (EST)
+Date:   Tue, 17 Nov 2020 12:15:26 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Satya Tangirala <satyat@google.com>
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>, Chao Yu <chao@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v7 0/8] add support for direct I/O with fscrypt using
+ blk-crypto
+Message-ID: <20201117171526.GD445084@mit.edu>
+References: <20201117140708.1068688-1-satyat@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201117140326.GA445084@mit.edu>
+In-Reply-To: <20201117140708.1068688-1-satyat@google.com>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On 11/17, Theodore Y. Ts'o wrote:
-> On Tue, Nov 17, 2020 at 04:03:14AM +0000, Daniel Rosenberg wrote:
-> > This shifts the responsibility of setting up dentry operations from
-> > fscrypt to the individual filesystems, allowing them to have their own
-> > operations while still setting fscrypt's d_revalidate as appropriate.
-> > 
-> > Most filesystems can just use generic_set_encrypted_ci_d_ops, unless
-> > they have their own specific dentry operations as well. That operation
-> > will set the minimal d_ops required under the circumstances.
-> > 
-> > Since the fscrypt d_ops are set later on, we must set all d_ops there,
-> > since we cannot adjust those later on. This should not result in any
-> > change in behavior.
-> > 
-> > Signed-off-by: Daniel Rosenberg <drosen@google.com>
-> 
-> Acked-by: Theodore Ts'o <tytso@mit.edu>
+What is the expected use case for Direct I/O using fscrypt?  This
+isn't a problem which is unique to fscrypt, but one of the really
+unfortunate aspects of the DIO interface is the silent fallback to
+buffered I/O.  We've lived with this because DIO goes back decades,
+and the original use case was to keep enterprise databases happy, and
+the rules around what is necessary for DIO to work was relatively well
+understood.
 
-Hi Ted/Richard,
+But with fscrypt, there's going to be some additional requirements
+(e.g., using inline crypto) required or else DIO silently fall back to
+buffered I/O for encrypted files.  Depending on the intended use case
+of DIO with fscrypt, this caveat might or might not be unfortunately
+surprising for applications.
 
-I'd like to pick this patch series in f2fs/dev for -next, so please let me know
-if you have any concern.
+I wonder if we should have some kind of interface so we can more
+explicitly allow applications to query exactly what the requirements
+might be for a particular file vis-a-vis Direct I/O.  What are the
+memory alignment requirements, what are the file offset alignment
+requirements, what are the write size requirements, for a particular
+file.
 
-Thanks,
+						- Ted
