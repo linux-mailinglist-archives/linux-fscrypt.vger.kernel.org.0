@@ -2,54 +2,58 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 177A62B66D0
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 17 Nov 2020 15:11:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F74E2B66D9
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 17 Nov 2020 15:11:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731247AbgKQOHO (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 17 Nov 2020 09:07:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38274 "EHLO
+        id S2387544AbgKQOHY (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 17 Nov 2020 09:07:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729624AbgKQOHN (ORCPT
+        with ESMTP id S2387524AbgKQOHQ (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 17 Nov 2020 09:07:13 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 965C5C061A48
-        for <linux-fscrypt@vger.kernel.org>; Tue, 17 Nov 2020 06:07:13 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id k7so25045437ybm.13
-        for <linux-fscrypt@vger.kernel.org>; Tue, 17 Nov 2020 06:07:13 -0800 (PST)
+        Tue, 17 Nov 2020 09:07:16 -0500
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 387D8C0613CF
+        for <linux-fscrypt@vger.kernel.org>; Tue, 17 Nov 2020 06:07:15 -0800 (PST)
+Received: by mail-qt1-x849.google.com with SMTP id w88so12505196qtd.4
+        for <linux-fscrypt@vger.kernel.org>; Tue, 17 Nov 2020 06:07:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=rw0Ed4Q8S7/0UOAJg6i7kX2tfO017R1DvnxFGE4XW9w=;
-        b=NReczbaHu9/CFRDb3rdYVrym1fzuELIgzmiF/MaA0LhP6McoqXUvIt1+GWqRBSHUSW
-         J+G5smAoIdIdorgeztNhxc5Hp2jzPwElnUVFEdjQWy+kWJt6EELV2uvDNshbwBt0Y7wo
-         LtGflc9sQoffO21+ojbgkgjZQAzhLGMLASs/yfSH2FQsAesHOqWhKAggyXq2gxHlz+SE
-         DQFI5bwzpRHkJ7tf99gWDfp+YGwCb0H3BN0BLLL5HTmVcQ8PQN+kuBK4ssD0De5hmqHp
-         yUWCQOUr6+QhXISYNLA6ABu/QiSqy7Dyg2eEiDxT1w50/HuguMcbm2Rsbp2un5DTcsJl
-         jNpQ==
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=TAjmsBc6qqfsA6JtVzH7iXxCcqn3Re43ZeihhwJWblk=;
+        b=EMyEaxPRqKp6BJmvLRed7xNjmflfFIDpyGmyIGRvHgAeWoukL1WjrHvHe+O3b8rvLF
+         8EI0zLB41F1sZawhV0uB603CdXjhro7CHUPP0rayhula8vN8WIdmPlSP60B1eecKULn5
+         gTOQ9+9r5sq5GCsfD3ezd0jFpMuisFBf2mgC026o8DJmPV4x3edrmvcW+NXopyyf4nhT
+         wBU/jWJT+2LhpPjmugxc0DLsv6/Dxj7PMbTbpFsa3ISpxIiBuqqwuXwNg2JTJr4GmTB8
+         wopCcpBlc4k5j4S6DwLaJECovbaBQX0nBj85zqJi++0Rg8CIiknFMxqdKf/yhImhcATN
+         s0KA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=rw0Ed4Q8S7/0UOAJg6i7kX2tfO017R1DvnxFGE4XW9w=;
-        b=V2xwr2ckmZdGY8j0GNSnVEkL1hAuDKBM3fP1lN7lmyp0HvQTa8oso2FPeYYiaSlDPE
-         vdnbbltEwnXuGNS3EE3ITpaOTShdQs4WJnVKJ9YBnbLcHiyhK0hNAyb0PSzMqbk0whKm
-         9eWBVtvZuAjjwmHLQW4pv5F7B1fQGdpa+OzbHdjl1HZUsdlIglNm0xYNH1TkSsW0XR7L
-         q1zurlZT+VML2+Rbm0iQOcABUU6wv+cNQKsmK7eZaUjTTxdwf6rUccdEFs+Pzose6Lv4
-         GaP3Yc4MA0QwA16LlCpW6PUB5OFGzcq8OxYZlWvjYG8C4TzpJHuOSWteGb1BF0oqt6w6
-         4HYg==
-X-Gm-Message-State: AOAM530P5rIwrIEoJdODIajQDY311Kv6qGnaLv5u4Soy0VL5zMxQIt/p
-        cujM+YH8kSqJZPl3eEi+1nY8Y5bhZyM=
-X-Google-Smtp-Source: ABdhPJxLL4xzfVKkB1iKAtBTgSADDClJLbPI3B9hR6JxqH7x/hZVCG3inPAnhmWtUy9asa1KCHNhTeqJtX8=
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=TAjmsBc6qqfsA6JtVzH7iXxCcqn3Re43ZeihhwJWblk=;
+        b=Yf52osj0t31/zbQEZulDhNPzBy2gfjAvWhz03a646vevApm+CwcdjFqQu+lFUZNrtE
+         RgCsRTGAqJb5naBjyMvXCr4sNDKRgvwSN7T/nPuboj/AW280O1G4nWdvytndCLw3mH0d
+         SVkEx9c+69R9nra9HrqEJJUfGPagHk1OZrVyCMrcKNUPu/rxsI0oQ5ey0fL+NBa/OdVW
+         dLEBDh05u9PzmnD8KsxmwWCwKOKITiNiJNunPbGrGSXgmvaLcAaUpX3+hwAY9wM8xwhF
+         8LBMzjth3Hej1S5DuecfWcKBI3ZHomE9F0iNFxonX+wfRUiav1i1GKttrjeG/D24IX7Y
+         IhDA==
+X-Gm-Message-State: AOAM5317qF6hzD6VaoAKptzl6/3JcZluN2KtbkBgZr3FO6MiBrpmzcgg
+        wdNj8b2iEhnlPkgPyXEvQAmhD82yjgI=
+X-Google-Smtp-Source: ABdhPJyGAlbPfHrO4NdA530/bUyk6s6UcuhFEoGPXg9d+QKChA9y9f47sWaLpQrfr/X+MyYGDds7q+TuEqM=
 Sender: "satyat via sendgmr" <satyat@satyaprateek.c.googlers.com>
 X-Received: from satyaprateek.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:1092])
- (user=satyat job=sendgmr) by 2002:a25:7083:: with SMTP id l125mr35483953ybc.250.1605622032485;
- Tue, 17 Nov 2020 06:07:12 -0800 (PST)
-Date:   Tue, 17 Nov 2020 14:07:00 +0000
-Message-Id: <20201117140708.1068688-1-satyat@google.com>
+ (user=satyat job=sendgmr) by 2002:ad4:45eb:: with SMTP id q11mr21110656qvu.20.1605622034377;
+ Tue, 17 Nov 2020 06:07:14 -0800 (PST)
+Date:   Tue, 17 Nov 2020 14:07:01 +0000
+In-Reply-To: <20201117140708.1068688-1-satyat@google.com>
+Message-Id: <20201117140708.1068688-2-satyat@google.com>
 Mime-Version: 1.0
+References: <20201117140708.1068688-1-satyat@google.com>
 X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
-Subject: [PATCH v7 0/8] add support for direct I/O with fscrypt using blk-crypto
+Subject: [PATCH v7 1/8] block: ensure bios are not split in middle of crypto
+ data unit
 From:   Satya Tangirala <satyat@google.com>
 To:     "Theodore Y . Ts'o" <tytso@mit.edu>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
@@ -65,114 +69,317 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-This patch series adds support for direct I/O with fscrypt using
-blk-crypto. It has been rebased on fscrypt/master (i.e. the "master"
-branch of the fscrypt tree at
-https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git)
+Introduce blk_crypto_bio_sectors_alignment() that returns the required
+alignment for the number of sectors in a bio. Any bio split must ensure
+that the number of sectors in the resulting bios is aligned to that
+returned value. This patch also updates __blk_queue_split(),
+__blk_queue_bounce() and blk_crypto_split_bio_if_needed() to respect
+blk_crypto_bio_sectors_alignment() when splitting bios.
 
-Patch 1 ensures that bios are not split in the middle of a crypto data
-unit.
+Signed-off-by: Satya Tangirala <satyat@google.com>
+---
+ block/bio.c                 |  1 +
+ block/blk-crypto-fallback.c | 10 ++--
+ block/blk-crypto-internal.h | 18 +++++++
+ block/blk-merge.c           | 96 ++++++++++++++++++++++++++++++++-----
+ block/blk-mq.c              |  3 ++
+ block/bounce.c              |  4 ++
+ 6 files changed, 117 insertions(+), 15 deletions(-)
 
-Till now, blk-crypto expected the offset and length of each bvec in a bio
-to be aligned to the crypto data unit size. Patch 2 enables
-blk-crypto-fallback to work without this requirement. It also relaxes the
-alignment requirement that blk-crypto checks for - now, blk-crypto only
-requires that the length of the I/O is aligned to the crypto data unit
-size.
-
-Patch 3 adds two functions to fscrypt that need to be called to determine
-if direct I/O is supported for a request.
-
-Patches 4 and 5 modify direct-io and iomap respectively to set bio crypt
-contexts on bios when appropriate by calling into fscrypt.
-
-Patches 6 and 7 allow ext4 and f2fs direct I/O to support fscrypt without
-falling back to buffered I/O.
-
-Patch 8 updates the fscrypt documentation for direct I/O support.
-The documentation now notes the required conditions for inline encryption
-and direct I/O on encrypted files.
-
-This patch series was tested by running xfstests with test_dummy_encryption
-with and without the 'inlinecrypt' mount option, and there were no
-meaningful regressions. One regression was for generic/587 on ext4,
-but that test isn't compatible with test_dummy_encryption in the first
-place, and the test "incorrectly" passes without the 'inlinecrypt' mount
-option - a patch will be sent out to exclude that test when
-test_dummy_encryption is turned on with ext4 (like the other quota related
-tests that use user visible quota files).
-
-Changes v6 => v7:
- - add patches 1 and 2 to allow blk-crypto to work with user buffers not
-   aligned to crypto data unit size, so that direct I/O doesn't require
-   that alignment either.
- - some cleanups
-
-Changes v5 => v6:
- - fix bug with fscrypt_limit_io_blocks() and make it ready for 64 bit
-   block numbers.
- - remove Reviewed-by for Patch 1 due to significant changes from when
-   the Reviewed-by was given.
-
-Changes v4 => v5:
- - replace fscrypt_limit_io_pages() with fscrypt_limit_io_block(), which
-   is now called by individual filesystems (currently only ext4) instead
-   of the iomap code. This new function serves the same end purpose as
-   the one it replaces (ensuring that DUNs within a bio are contiguous)
-   but operates purely with blocks instead of with pages.
- - make iomap_dio_zero() set bio_crypt_ctx's again, instead of just a
-   WARN_ON() since some folks prefer that instead.
- - add Reviewed-by's
-
-Changes v3 => v4:
- - Fix bug in iomap_dio_bio_actor() where fscrypt_limit_io_pages() was
-   being called too early (thanks Eric!)
- - Improve comments and fix formatting in documentation
- - iomap_dio_zero() is only called to zero out partial blocks, but
-   direct I/O is only supported on encrypted files when I/O is
-   blocksize aligned, so it doesn't need to set encryption contexts on
-   bios. Replace setting the encryption context with a WARN_ON(). (Eric)
-
-Changes v2 => v3:
- - add changelog to coverletter
-
-Changes v1 => v2:
- - Fix bug in f2fs caused by replacing f2fs_post_read_required() with
-   !fscrypt_dio_supported() since the latter doesn't check for
-   compressed inodes unlike the former.
- - Add patches 6 and 7 for fscrypt documentation
- - cleanups and comments
-
-Eric Biggers (5):
-  fscrypt: add functions for direct I/O support
-  direct-io: add support for fscrypt using blk-crypto
-  iomap: support direct I/O with fscrypt using blk-crypto
-  ext4: support direct I/O with fscrypt using blk-crypto
-  f2fs: support direct I/O with fscrypt using blk-crypto
-
-Satya Tangirala (3):
-  block: ensure bios are not split in middle of crypto data unit
-  blk-crypto: don't require user buffer alignment
-  fscrypt: update documentation for direct I/O support
-
- Documentation/filesystems/fscrypt.rst |  21 ++-
- block/bio.c                           |   1 +
- block/blk-crypto-fallback.c           | 212 +++++++++++++++++++-------
- block/blk-crypto-internal.h           |  18 +++
- block/blk-crypto.c                    |  19 +--
- block/blk-merge.c                     |  96 ++++++++++--
- block/blk-mq.c                        |   3 +
- block/bounce.c                        |   4 +
- fs/crypto/crypto.c                    |   8 +
- fs/crypto/inline_crypt.c              |  74 +++++++++
- fs/direct-io.c                        |  15 +-
- fs/ext4/file.c                        |  10 +-
- fs/ext4/inode.c                       |   7 +
- fs/f2fs/f2fs.h                        |   6 +-
- fs/iomap/direct-io.c                  |   6 +
- include/linux/fscrypt.h               |  18 +++
- 16 files changed, 431 insertions(+), 87 deletions(-)
-
+diff --git a/block/bio.c b/block/bio.c
+index fa01bef35bb1..259cef126df3 100644
+--- a/block/bio.c
++++ b/block/bio.c
+@@ -1472,6 +1472,7 @@ struct bio *bio_split(struct bio *bio, int sectors,
+ 
+ 	BUG_ON(sectors <= 0);
+ 	BUG_ON(sectors >= bio_sectors(bio));
++	WARN_ON(!IS_ALIGNED(sectors, blk_crypto_bio_sectors_alignment(bio)));
+ 
+ 	/* Zone append commands cannot be split */
+ 	if (WARN_ON_ONCE(bio_op(bio) == REQ_OP_ZONE_APPEND))
+diff --git a/block/blk-crypto-fallback.c b/block/blk-crypto-fallback.c
+index c162b754efbd..db2d2c67b308 100644
+--- a/block/blk-crypto-fallback.c
++++ b/block/blk-crypto-fallback.c
+@@ -209,20 +209,22 @@ static bool blk_crypto_alloc_cipher_req(struct blk_ksm_keyslot *slot,
+ static bool blk_crypto_split_bio_if_needed(struct bio **bio_ptr)
+ {
+ 	struct bio *bio = *bio_ptr;
++	struct bio_crypt_ctx *bc = bio->bi_crypt_context;
+ 	unsigned int i = 0;
+-	unsigned int num_sectors = 0;
++	unsigned int len = 0;
+ 	struct bio_vec bv;
+ 	struct bvec_iter iter;
+ 
+ 	bio_for_each_segment(bv, bio, iter) {
+-		num_sectors += bv.bv_len >> SECTOR_SHIFT;
++		len += bv.bv_len;
+ 		if (++i == BIO_MAX_PAGES)
+ 			break;
+ 	}
+-	if (num_sectors < bio_sectors(bio)) {
++	if (len < bio->bi_iter.bi_size) {
+ 		struct bio *split_bio;
+ 
+-		split_bio = bio_split(bio, num_sectors, GFP_NOIO, NULL);
++		len = round_down(len, bc->bc_key->crypto_cfg.data_unit_size);
++		split_bio = bio_split(bio, len >> SECTOR_SHIFT, GFP_NOIO, NULL);
+ 		if (!split_bio) {
+ 			bio->bi_status = BLK_STS_RESOURCE;
+ 			return false;
+diff --git a/block/blk-crypto-internal.h b/block/blk-crypto-internal.h
+index 0d36aae538d7..304e90ed99f5 100644
+--- a/block/blk-crypto-internal.h
++++ b/block/blk-crypto-internal.h
+@@ -60,6 +60,19 @@ static inline bool blk_crypto_rq_is_encrypted(struct request *rq)
+ 	return rq->crypt_ctx;
+ }
+ 
++/*
++ * Returns the alignment requirement for the number of sectors in this bio based
++ * on its bi_crypt_context. Any bios split from this bio must follow this
++ * alignment requirement as well.
++ */
++static inline unsigned int blk_crypto_bio_sectors_alignment(struct bio *bio)
++{
++	if (!bio_has_crypt_ctx(bio))
++		return 1;
++	return bio->bi_crypt_context->bc_key->crypto_cfg.data_unit_size >>
++								SECTOR_SHIFT;
++}
++
+ #else /* CONFIG_BLK_INLINE_ENCRYPTION */
+ 
+ static inline bool bio_crypt_rq_ctx_compatible(struct request *rq,
+@@ -93,6 +106,11 @@ static inline bool blk_crypto_rq_is_encrypted(struct request *rq)
+ 	return false;
+ }
+ 
++static inline unsigned int blk_crypto_bio_sectors_alignment(struct bio *bio)
++{
++	return 1;
++}
++
+ #endif /* CONFIG_BLK_INLINE_ENCRYPTION */
+ 
+ void __bio_crypt_advance(struct bio *bio, unsigned int bytes);
+diff --git a/block/blk-merge.c b/block/blk-merge.c
+index bcf5e4580603..f34dda7132f9 100644
+--- a/block/blk-merge.c
++++ b/block/blk-merge.c
+@@ -149,13 +149,15 @@ static inline unsigned get_max_io_size(struct request_queue *q,
+ 	unsigned pbs = queue_physical_block_size(q) >> SECTOR_SHIFT;
+ 	unsigned lbs = queue_logical_block_size(q) >> SECTOR_SHIFT;
+ 	unsigned start_offset = bio->bi_iter.bi_sector & (pbs - 1);
++	unsigned int bio_sectors_alignment =
++					blk_crypto_bio_sectors_alignment(bio);
+ 
+ 	max_sectors += start_offset;
+ 	max_sectors &= ~(pbs - 1);
+-	if (max_sectors > start_offset)
+-		return max_sectors - start_offset;
++	if (max_sectors - start_offset >= bio_sectors_alignment)
++		return round_down(max_sectors - start_offset, bio_sectors_alignment);
+ 
+-	return sectors & ~(lbs - 1);
++	return round_down(sectors & ~(lbs - 1), bio_sectors_alignment);
+ }
+ 
+ static inline unsigned get_max_segment_size(const struct request_queue *q,
+@@ -174,6 +176,41 @@ static inline unsigned get_max_segment_size(const struct request_queue *q,
+ 			(unsigned long)queue_max_segment_size(q));
+ }
+ 
++/**
++ * update_aligned_sectors_and_segs() - Ensures that *@aligned_sectors is aligned
++ *				       to @bio_sectors_alignment, and that
++ *				       *@aligned_segs is the value of nsegs
++ *				       when sectors reached/first exceeded that
++ *				       value of *@aligned_sectors.
++ *
++ * @nsegs: [in] The current number of segs
++ * @sectors: [in] The current number of sectors
++ * @aligned_segs: [in,out] The number of segments that make up @aligned_sectors
++ * @aligned_sectors: [in,out] The largest number of sectors <= @sectors that is
++ *		     aligned to @sectors
++ * @bio_sectors_alignment: [in] The alignment requirement for the number of
++ *			  sectors
++ *
++ * Updates *@aligned_sectors to the largest number <= @sectors that is also a
++ * multiple of @bio_sectors_alignment. This is done by updating *@aligned_sectors
++ * whenever @sectors is at least @bio_sectors_alignment more than
++ * *@aligned_sectors, since that means we can increment *@aligned_sectors while
++ * still keeping it aligned to @bio_sectors_alignment and also keeping it <=
++ * @sectors. *@aligned_segs is updated to the value of nsegs when @sectors first
++ * reaches/exceeds any value that causes *@aligned_sectors to be updated.
++ */
++static inline void update_aligned_sectors_and_segs(const unsigned int nsegs,
++						   const unsigned int sectors,
++						   unsigned int *aligned_segs,
++				unsigned int *aligned_sectors,
++				const unsigned int bio_sectors_alignment)
++{
++	if (sectors - *aligned_sectors < bio_sectors_alignment)
++		return;
++	*aligned_sectors = round_down(sectors, bio_sectors_alignment);
++	*aligned_segs = nsegs;
++}
++
+ /**
+  * bvec_split_segs - verify whether or not a bvec should be split in the middle
+  * @q:        [in] request queue associated with the bio associated with @bv
+@@ -195,9 +232,12 @@ static inline unsigned get_max_segment_size(const struct request_queue *q,
+  * the block driver.
+  */
+ static bool bvec_split_segs(const struct request_queue *q,
+-			    const struct bio_vec *bv, unsigned *nsegs,
+-			    unsigned *sectors, unsigned max_segs,
+-			    unsigned max_sectors)
++			    const struct bio_vec *bv, unsigned int *nsegs,
++			    unsigned int *sectors, unsigned int *aligned_segs,
++			    unsigned int *aligned_sectors,
++			    unsigned int bio_sectors_alignment,
++			    unsigned int max_segs,
++			    unsigned int max_sectors)
+ {
+ 	unsigned max_len = (min(max_sectors, UINT_MAX >> 9) - *sectors) << 9;
+ 	unsigned len = min(bv->bv_len, max_len);
+@@ -211,6 +251,11 @@ static bool bvec_split_segs(const struct request_queue *q,
+ 
+ 		(*nsegs)++;
+ 		total_len += seg_size;
++		update_aligned_sectors_and_segs(*nsegs,
++						*sectors + (total_len >> 9),
++						aligned_segs,
++						aligned_sectors,
++						bio_sectors_alignment);
+ 		len -= seg_size;
+ 
+ 		if ((bv->bv_offset + total_len) & queue_virt_boundary(q))
+@@ -235,6 +280,8 @@ static bool bvec_split_segs(const struct request_queue *q,
+  * following is guaranteed for the cloned bio:
+  * - That it has at most get_max_io_size(@q, @bio) sectors.
+  * - That it has at most queue_max_segments(@q) segments.
++ * - That the number of sectors in the returned bio is aligned to
++ *   blk_crypto_bio_sectors_alignment(@bio)
+  *
+  * Except for discard requests the cloned bio will point at the bi_io_vec of
+  * the original bio. It is the responsibility of the caller to ensure that the
+@@ -252,6 +299,9 @@ static struct bio *blk_bio_segment_split(struct request_queue *q,
+ 	unsigned nsegs = 0, sectors = 0;
+ 	const unsigned max_sectors = get_max_io_size(q, bio);
+ 	const unsigned max_segs = queue_max_segments(q);
++	const unsigned int bio_sectors_alignment =
++					blk_crypto_bio_sectors_alignment(bio);
++	unsigned int aligned_segs = 0, aligned_sectors = 0;
+ 
+ 	bio_for_each_bvec(bv, bio, iter) {
+ 		/*
+@@ -266,8 +316,14 @@ static struct bio *blk_bio_segment_split(struct request_queue *q,
+ 		    bv.bv_offset + bv.bv_len <= PAGE_SIZE) {
+ 			nsegs++;
+ 			sectors += bv.bv_len >> 9;
+-		} else if (bvec_split_segs(q, &bv, &nsegs, &sectors, max_segs,
+-					 max_sectors)) {
++			update_aligned_sectors_and_segs(nsegs, sectors,
++							&aligned_segs,
++							&aligned_sectors,
++							bio_sectors_alignment);
++		} else if (bvec_split_segs(q, &bv, &nsegs, &sectors,
++					   &aligned_segs, &aligned_sectors,
++					   bio_sectors_alignment, max_segs,
++					   max_sectors)) {
+ 			goto split;
+ 		}
+ 
+@@ -275,11 +331,24 @@ static struct bio *blk_bio_segment_split(struct request_queue *q,
+ 		bvprvp = &bvprv;
+ 	}
+ 
++	/*
++	 * The input bio's number of sectors is assumed to be aligned to
++	 * bio_sectors_alignment. If that's the case, then this function should
++	 * ensure that aligned_segs == nsegs and aligned_sectors == sectors if
++	 * the bio is not going to be split.
++	 */
++	WARN_ON(aligned_segs != nsegs || aligned_sectors != sectors);
+ 	*segs = nsegs;
+ 	return NULL;
+ split:
+-	*segs = nsegs;
+-	return bio_split(bio, sectors, GFP_NOIO, bs);
++	*segs = aligned_segs;
++	if (WARN_ON(aligned_sectors == 0))
++		goto err;
++	return bio_split(bio, aligned_sectors, GFP_NOIO, bs);
++err:
++	bio->bi_status = BLK_STS_IOERR;
++	bio_endio(bio);
++	return bio;
+ }
+ 
+ /**
+@@ -366,6 +435,9 @@ unsigned int blk_recalc_rq_segments(struct request *rq)
+ {
+ 	unsigned int nr_phys_segs = 0;
+ 	unsigned int nr_sectors = 0;
++	unsigned int nr_aligned_phys_segs = 0;
++	unsigned int nr_aligned_sectors = 0;
++	unsigned int bio_sectors_alignment;
+ 	struct req_iterator iter;
+ 	struct bio_vec bv;
+ 
+@@ -381,9 +453,11 @@ unsigned int blk_recalc_rq_segments(struct request *rq)
+ 		return 1;
+ 	}
+ 
++	bio_sectors_alignment = blk_crypto_bio_sectors_alignment(rq->bio);
+ 	rq_for_each_bvec(bv, rq, iter)
+ 		bvec_split_segs(rq->q, &bv, &nr_phys_segs, &nr_sectors,
+-				UINT_MAX, UINT_MAX);
++				&nr_aligned_phys_segs, &nr_aligned_sectors,
++				bio_sectors_alignment, UINT_MAX, UINT_MAX);
+ 	return nr_phys_segs;
+ }
+ 
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index 55bcee5dc032..de5c97ab8e5a 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -2161,6 +2161,9 @@ blk_qc_t blk_mq_submit_bio(struct bio *bio)
+ 	blk_queue_bounce(q, &bio);
+ 	__blk_queue_split(&bio, &nr_segs);
+ 
++	if (bio->bi_status != BLK_STS_OK)
++		goto queue_exit;
++
+ 	if (!bio_integrity_prep(bio))
+ 		goto queue_exit;
+ 
+diff --git a/block/bounce.c b/block/bounce.c
+index 162a6eee8999..b15224799008 100644
+--- a/block/bounce.c
++++ b/block/bounce.c
+@@ -295,6 +295,7 @@ static void __blk_queue_bounce(struct request_queue *q, struct bio **bio_orig,
+ 	bool bounce = false;
+ 	int sectors = 0;
+ 	bool passthrough = bio_is_passthrough(*bio_orig);
++	unsigned int bio_sectors_alignment;
+ 
+ 	bio_for_each_segment(from, *bio_orig, iter) {
+ 		if (i++ < BIO_MAX_PAGES)
+@@ -305,6 +306,9 @@ static void __blk_queue_bounce(struct request_queue *q, struct bio **bio_orig,
+ 	if (!bounce)
+ 		return;
+ 
++	bio_sectors_alignment = blk_crypto_bio_sectors_alignment(bio);
++	sectors = round_down(sectors, bio_sectors_alignment);
++
+ 	if (!passthrough && sectors < bio_sectors(*bio_orig)) {
+ 		bio = bio_split(*bio_orig, sectors, GFP_NOIO, &bounce_bio_split);
+ 		bio_chain(bio, *bio_orig);
 -- 
 2.29.2.299.gdc1121823c-goog
 
