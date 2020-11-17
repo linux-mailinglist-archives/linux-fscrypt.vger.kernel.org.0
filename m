@@ -2,64 +2,76 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE7DD2B6AB0
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 17 Nov 2020 17:53:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DFE52B6B07
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 17 Nov 2020 18:05:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726412AbgKQQxQ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 17 Nov 2020 11:53:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40390 "EHLO mail.kernel.org"
+        id S1726982AbgKQREP (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 17 Nov 2020 12:04:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726181AbgKQQxQ (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 17 Nov 2020 11:53:16 -0500
-Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        id S1726204AbgKQREO (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 17 Nov 2020 12:04:14 -0500
+Received: from google.com (unknown [104.132.1.66])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 705E422447;
-        Tue, 17 Nov 2020 16:53:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9438122447;
+        Tue, 17 Nov 2020 17:04:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605631995;
-        bh=xiNBS6ziLfLJGZHE8XyWAeV26fdPG02BxqDAflsxRIo=;
+        s=default; t=1605632654;
+        bh=RI02fUAgmCDGR1I9KhbEZKJySeezxBuuog/z0BglPjE=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eTDIw16vyMgDWghO7BCZaQqjCBH42xwMQ3bkcexqWBMkWJjw4wsGQRmCQ0Xy79BRf
-         qwyAePHiRHj+8lyRj66gZee/jfpcSIPeTj8dRfdZwAvtOcKpSKM1nciGYWf8jSGOrq
-         Vpc6inhUvRRtBEEWqaHa4umGkgDdl7d4Upwa6LfI=
-Date:   Tue, 17 Nov 2020 08:53:13 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     Luca Boccassi <luca.boccassi@gmail.com>,
-        Jes Sorensen <Jes.Sorensen@gmail.com>
-Subject: Re: [fsverity-utils PATCH v2 0/4] Add libfsverity_enable() and
- default params
-Message-ID: <X7P/+UFX/6hSzSIc@sol.localdomain>
-References: <20201116205628.262173-1-ebiggers@kernel.org>
+        b=DBjGqfkcNFh7VnYo3RQNdBge1TQ+YYC4YKNDLYI8nPndHth5oUkMgNCidgSm2Hu0u
+         KLA2crWMx3LsXcgN+T8C26/Kt+F8ujLobWFjlbLjJfxmDID5V1znx5uEEnL0pL3olq
+         21GDqIO5jmYr1HGyy4Cx80uxW0RI1rifflYbZMYQ=
+Date:   Tue, 17 Nov 2020 09:04:11 -0800
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     Daniel Rosenberg <drosen@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chao Yu <chao@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Richard Weinberger <richard@nod.at>,
+        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mtd@lists.infradead.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH v2 2/3] fscrypt: Have filesystems handle their d_ops
+Message-ID: <20201117170411.GC1636127@google.com>
+References: <20201117040315.28548-1-drosen@google.com>
+ <20201117040315.28548-3-drosen@google.com>
+ <20201117140326.GA445084@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201116205628.262173-1-ebiggers@kernel.org>
+In-Reply-To: <20201117140326.GA445084@mit.edu>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 12:56:24PM -0800, Eric Biggers wrote:
-> This patchset adds wrappers around FS_IOC_ENABLE_VERITY to libfsverity,
-> makes libfsverity (rather than just the fsverity program) default to
-> SHA-256 and 4096-byte blocks, and makes the fsverity commands share code
-> to parse the libfsverity_merkle_tree_params.
+On 11/17, Theodore Y. Ts'o wrote:
+> On Tue, Nov 17, 2020 at 04:03:14AM +0000, Daniel Rosenberg wrote:
+> > This shifts the responsibility of setting up dentry operations from
+> > fscrypt to the individual filesystems, allowing them to have their own
+> > operations while still setting fscrypt's d_revalidate as appropriate.
+> > 
+> > Most filesystems can just use generic_set_encrypted_ci_d_ops, unless
+> > they have their own specific dentry operations as well. That operation
+> > will set the minimal d_ops required under the circumstances.
+> > 
+> > Since the fscrypt d_ops are set later on, we must set all d_ops there,
+> > since we cannot adjust those later on. This should not result in any
+> > change in behavior.
+> > 
+> > Signed-off-by: Daniel Rosenberg <drosen@google.com>
 > 
-> This is my proposed alternative to Luca's patch
-> https://lkml.kernel.org/linux-fscrypt/20201113143527.1097499-1-luca.boccassi@gmail.com
-> 
-> Changed since v1:
->   - Moved the default hash algorithm and block size handling into
->     libfsverity.
-> 
-> Eric Biggers (4):
->   programs/fsverity: change default block size from PAGE_SIZE to 4096
->   lib/compute_digest: add default hash_algorithm and block_size
->   lib: add libfsverity_enable() and libfsverity_enable_with_sig()
->   programs/fsverity: share code to parse tree parameters
-> 
+> Acked-by: Theodore Ts'o <tytso@mit.edu>
 
-All applied.
+Hi Ted/Richard,
 
-- Eric
+I'd like to pick this patch series in f2fs/dev for -next, so please let me know
+if you have any concern.
+
+Thanks,
