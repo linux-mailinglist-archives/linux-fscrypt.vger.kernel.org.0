@@ -2,107 +2,89 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAB592BB453
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 20 Nov 2020 20:00:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 992992BB469
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 20 Nov 2020 20:00:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731861AbgKTSud (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 20 Nov 2020 13:50:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33818 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728797AbgKTSuc (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 20 Nov 2020 13:50:32 -0500
-Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7CF212242B;
-        Fri, 20 Nov 2020 18:50:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605898231;
-        bh=2GkBOMd7CukxlpckOlpmJEVMrKsNhNOcejaVCTvUEd8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AOuM++Ph1LRNJ05RYsUSv2UYNrSZhccF+8xm6t+9i34VXG1PO74yNE1BfXT4AHyqX
-         oHWo54HGrtQ+yDawTJW4EPoeNz2tyM/m3vnbueOtTl+dDGDm1057IJpMJnr89AGJFK
-         HNmlziosh1mLEznp39Ay23JobXpuKCCCKkV067qk=
-Date:   Fri, 20 Nov 2020 10:50:30 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org
-Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] fs/inode.c: make inode_init_always() initialize i_ino to
- 0
-Message-ID: <X7gP9iuTuRp9MHpP@sol.localdomain>
-References: <20201031004420.87678-1-ebiggers@kernel.org>
- <20201106175205.GE845@sol.localdomain>
+        id S1730855AbgKTSxL (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 20 Nov 2020 13:53:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729154AbgKTSxL (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Fri, 20 Nov 2020 13:53:11 -0500
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8C1FC0617A7
+        for <linux-fscrypt@vger.kernel.org>; Fri, 20 Nov 2020 10:53:10 -0800 (PST)
+Received: by mail-il1-x142.google.com with SMTP id z14so7698964ilm.10
+        for <linux-fscrypt@vger.kernel.org>; Fri, 20 Nov 2020 10:53:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KGmpqHXl2E5s58RjENuxxIDXzRsrZkrBKU0UphW/tR8=;
+        b=TqIGKvJKPK0LUXhmilcXhOka1tg1kLUiKi7ISSNktbKjbiSOicJEmiktUi4xgS5AtU
+         r4lUrkGPrs2z3TiS++cbxgGVVEbsMvv/VcpQUW4h/j0skRqbCqZOXp94MTnRUUrMQy8k
+         h/ojIxYkFV7aT7omVFBOgZj88t7rtja7EjX1OQdkgV97PgSbQCxW+Ek19iAnxyK1ARgU
+         TlAZtWadfNPWmQVIcHPo3gKGqh2XqjVTueMhzeQNJqBoFyddCCjAVS4dcprd8IBrS/5e
+         K+pKJSnypocwmHXxMZAnmklUw3a9kISwnFnpyKOuiUDQCkBJ1zzxvGsyge+OUA8D/9U9
+         Nurw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KGmpqHXl2E5s58RjENuxxIDXzRsrZkrBKU0UphW/tR8=;
+        b=Rk1ZA7m+3gDJ7PQRWOvFWHgPP6atGDHxqnVc0Ehe279Kl4DRW64w3OBWyRIEY1LqXE
+         sn5wyBBRV1AvUmYQI49QZwo+te0N+DiuU5096ZoLsWCa59x0CeHEP7Wrm/eO3R+EASr9
+         ie/blAp8aEeUbuf0xh13WhS5AndClpJJzi9vzO3c/7KOZ23coisK1wtdJM5Wir5Sh34l
+         V1AkMdbvxJcf+A+UvpnNsPbv/HqFG+GtpBRgZPivXCGTVgrc6slQtQTXGDIrvibusJu1
+         7aUGgb7Ak5VLxgFO7IH9xaMML7/ChLUWNtVda0eTyPXslkQ/KNxUhZwEDbERd/t+TuHz
+         NPCg==
+X-Gm-Message-State: AOAM531vLqwGYxKl4ZozFUc3d4ad9JpFmTi0uX65/+6smnsGDLPpVzxb
+        MPbxrnas9dcqMGB+l5oEC2Jm+Y39m7yhUg==
+X-Google-Smtp-Source: ABdhPJzq+otmd5dEMF2vstKk7rtHVtNtjfOIqW98HYZS9XU3pcHjmdZBIcCVxu3T75f3CJnw7ARc8g==
+X-Received: by 2002:a92:cf51:: with SMTP id c17mr28414694ilr.113.1605898389924;
+        Fri, 20 Nov 2020 10:53:09 -0800 (PST)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id c13sm2177021ilr.39.2020.11.20.10.53.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Nov 2020 10:53:09 -0800 (PST)
+Subject: Re: [PATCH v2] block/keyslot-manager: prevent crash when num_slots=1
+To:     Eric Biggers <ebiggers@kernel.org>, linux-block@vger.kernel.org
+Cc:     linux-fscrypt@vger.kernel.org, Satya Tangirala <satyat@google.com>
+References: <20201111214855.428044-1-ebiggers@kernel.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <d0d64133-1d4f-fa50-18c1-8f3d09bb2a70@kernel.dk>
+Date:   Fri, 20 Nov 2020 11:53:08 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201106175205.GE845@sol.localdomain>
+In-Reply-To: <20201111214855.428044-1-ebiggers@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 09:52:05AM -0800, Eric Biggers wrote:
-> On Fri, Oct 30, 2020 at 05:44:20PM -0700, Eric Biggers wrote:
-> > From: Eric Biggers <ebiggers@google.com>
-> > 
-> > Currently inode_init_always() doesn't initialize i_ino to 0.  This is
-> > unexpected because unlike the other inode fields that aren't initialized
-> > by inode_init_always(), i_ino isn't guaranteed to end up back at its
-> > initial value after the inode is freed.  Only one filesystem (XFS)
-> > actually sets set i_ino back to 0 when freeing its inodes.
-> > 
-> > So, callers of new_inode() see some random previous i_ino.  Normally
-> > that's fine, since normally i_ino isn't accessed before being set.
-> > There can be edge cases where that isn't necessarily true, though.
-> > 
-> > The one I've run into is that on ext4, when creating an encrypted file,
-> > the new file's encryption key has to be set up prior to the jbd2
-> > transaction, and thus prior to i_ino being set.  If something goes
-> > wrong, fs/crypto/ may log warning or error messages, which normally
-> > include i_ino.  So it needs to know whether it is valid to include i_ino
-> > yet or not.  Also, on some files i_ino needs to be hashed for use in the
-> > crypto, so fs/crypto/ needs to know whether that can be done yet or not.
-> > 
-> > There are ways this could be worked around, either in fs/crypto/ or in
-> > fs/ext4/.  But, it seems there's no reason not to just fix
-> > inode_init_always() to do the expected thing and initialize i_ino to 0.
-> > 
-> > So, do that, and also remove the initialization in jfs_fill_super() that
-> > becomes redundant.
-> > 
-> > Signed-off-by: Eric Biggers <ebiggers@google.com>
-> > ---
-> >  fs/inode.c     | 1 +
-> >  fs/jfs/super.c | 1 -
-> >  2 files changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/inode.c b/fs/inode.c
-> > index 9d78c37b00b81..eb001129f157c 100644
-> > --- a/fs/inode.c
-> > +++ b/fs/inode.c
-> > @@ -142,6 +142,7 @@ int inode_init_always(struct super_block *sb, struct inode *inode)
-> >  	atomic_set(&inode->i_count, 1);
-> >  	inode->i_op = &empty_iops;
-> >  	inode->i_fop = &no_open_fops;
-> > +	inode->i_ino = 0;
-> >  	inode->__i_nlink = 1;
-> >  	inode->i_opflags = 0;
-> >  	if (sb->s_xattr)
-> > diff --git a/fs/jfs/super.c b/fs/jfs/super.c
-> > index b2dc4d1f9dcc5..1f0ffabbde566 100644
-> > --- a/fs/jfs/super.c
-> > +++ b/fs/jfs/super.c
-> > @@ -551,7 +551,6 @@ static int jfs_fill_super(struct super_block *sb, void *data, int silent)
-> >  		ret = -ENOMEM;
-> >  		goto out_unload;
-> >  	}
-> > -	inode->i_ino = 0;
-> >  	inode->i_size = i_size_read(sb->s_bdev->bd_inode);
-> >  	inode->i_mapping->a_ops = &jfs_metapage_aops;
-> >  	inode_fake_hash(inode);
-> > 
+On 11/11/20 2:48 PM, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> Al, any thoughts on this?
+> If there is only one keyslot, then blk_ksm_init() computes
+> slot_hashtable_size=1 and log_slot_ht_size=0.  This causes
+> blk_ksm_find_keyslot() to crash later because it uses
+> hash_ptr(key, log_slot_ht_size) to find the hash bucket containing the
+> key, and hash_ptr() doesn't support the bits == 0 case.
 > 
+> Fix this by making the hash table always have at least 2 buckets.
+> 
+> Tested by running:
+> 
+>     kvm-xfstests -c ext4 -g encrypt -m inlinecrypt \
+>                  -o blk-crypto-fallback.num_keyslots=1
 
-Ping?
+Applied for 5.10, thanks.
+
+-- 
+Jens Axboe
+
