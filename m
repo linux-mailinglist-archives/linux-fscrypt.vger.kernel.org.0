@@ -2,89 +2,107 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 992992BB469
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 20 Nov 2020 20:00:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D2FC2BB498
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 20 Nov 2020 20:00:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730855AbgKTSxL (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 20 Nov 2020 13:53:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729154AbgKTSxL (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 20 Nov 2020 13:53:11 -0500
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8C1FC0617A7
-        for <linux-fscrypt@vger.kernel.org>; Fri, 20 Nov 2020 10:53:10 -0800 (PST)
-Received: by mail-il1-x142.google.com with SMTP id z14so7698964ilm.10
-        for <linux-fscrypt@vger.kernel.org>; Fri, 20 Nov 2020 10:53:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KGmpqHXl2E5s58RjENuxxIDXzRsrZkrBKU0UphW/tR8=;
-        b=TqIGKvJKPK0LUXhmilcXhOka1tg1kLUiKi7ISSNktbKjbiSOicJEmiktUi4xgS5AtU
-         r4lUrkGPrs2z3TiS++cbxgGVVEbsMvv/VcpQUW4h/j0skRqbCqZOXp94MTnRUUrMQy8k
-         h/ojIxYkFV7aT7omVFBOgZj88t7rtja7EjX1OQdkgV97PgSbQCxW+Ek19iAnxyK1ARgU
-         TlAZtWadfNPWmQVIcHPo3gKGqh2XqjVTueMhzeQNJqBoFyddCCjAVS4dcprd8IBrS/5e
-         K+pKJSnypocwmHXxMZAnmklUw3a9kISwnFnpyKOuiUDQCkBJ1zzxvGsyge+OUA8D/9U9
-         Nurw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KGmpqHXl2E5s58RjENuxxIDXzRsrZkrBKU0UphW/tR8=;
-        b=Rk1ZA7m+3gDJ7PQRWOvFWHgPP6atGDHxqnVc0Ehe279Kl4DRW64w3OBWyRIEY1LqXE
-         sn5wyBBRV1AvUmYQI49QZwo+te0N+DiuU5096ZoLsWCa59x0CeHEP7Wrm/eO3R+EASr9
-         ie/blAp8aEeUbuf0xh13WhS5AndClpJJzi9vzO3c/7KOZ23coisK1wtdJM5Wir5Sh34l
-         V1AkMdbvxJcf+A+UvpnNsPbv/HqFG+GtpBRgZPivXCGTVgrc6slQtQTXGDIrvibusJu1
-         7aUGgb7Ak5VLxgFO7IH9xaMML7/ChLUWNtVda0eTyPXslkQ/KNxUhZwEDbERd/t+TuHz
-         NPCg==
-X-Gm-Message-State: AOAM531vLqwGYxKl4ZozFUc3d4ad9JpFmTi0uX65/+6smnsGDLPpVzxb
-        MPbxrnas9dcqMGB+l5oEC2Jm+Y39m7yhUg==
-X-Google-Smtp-Source: ABdhPJzq+otmd5dEMF2vstKk7rtHVtNtjfOIqW98HYZS9XU3pcHjmdZBIcCVxu3T75f3CJnw7ARc8g==
-X-Received: by 2002:a92:cf51:: with SMTP id c17mr28414694ilr.113.1605898389924;
-        Fri, 20 Nov 2020 10:53:09 -0800 (PST)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id c13sm2177021ilr.39.2020.11.20.10.53.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Nov 2020 10:53:09 -0800 (PST)
-Subject: Re: [PATCH v2] block/keyslot-manager: prevent crash when num_slots=1
-To:     Eric Biggers <ebiggers@kernel.org>, linux-block@vger.kernel.org
-Cc:     linux-fscrypt@vger.kernel.org, Satya Tangirala <satyat@google.com>
-References: <20201111214855.428044-1-ebiggers@kernel.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <d0d64133-1d4f-fa50-18c1-8f3d09bb2a70@kernel.dk>
-Date:   Fri, 20 Nov 2020 11:53:08 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1732134AbgKTSys (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 20 Nov 2020 13:54:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35436 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732125AbgKTSys (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Fri, 20 Nov 2020 13:54:48 -0500
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CBA5D22464;
+        Fri, 20 Nov 2020 18:54:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605898487;
+        bh=vuiELE5XGU2+DhDJPR79jq8faVGdeHJnuOWD7QrME9A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0Dx9cKYv4iEpn1EMXfrXA/dGLwaMcH8S9IDWos5qfxCz3UdK8HCjW15M9S93qimK7
+         f1TjQ42Fs9XTNNkwEpK6KE4o/O7nbIZzL4fo34vJj1+nQU3QoJjl2335Hln3UqJuRY
+         1+h3qaep5AIRzRiOTMNs6jb+4fpsgIZwGcaPUBgw=
+Date:   Fri, 20 Nov 2020 10:54:45 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-mmc@vger.kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, Satya Tangirala <satyat@google.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ritesh Harjani <riteshh@codeaurora.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Neeraj Soni <neersoni@codeaurora.org>,
+        Barani Muthukumaran <bmuthuku@codeaurora.org>,
+        Peng Zhou <peng.zhou@mediatek.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Konrad Dybcio <konradybcio@gmail.com>
+Subject: Re: [PATCH 0/8] eMMC inline encryption support
+Message-ID: <X7gQ9Y44iIgkiM64@sol.localdomain>
+References: <20201112194011.103774-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20201111214855.428044-1-ebiggers@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201112194011.103774-1-ebiggers@kernel.org>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On 11/11/20 2:48 PM, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
+On Thu, Nov 12, 2020 at 11:40:03AM -0800, Eric Biggers wrote:
+> Hello,
 > 
-> If there is only one keyslot, then blk_ksm_init() computes
-> slot_hashtable_size=1 and log_slot_ht_size=0.  This causes
-> blk_ksm_find_keyslot() to crash later because it uses
-> hash_ptr(key, log_slot_ht_size) to find the hash bucket containing the
-> key, and hash_ptr() doesn't support the bits == 0 case.
+> This patchset adds support for eMMC inline encryption, as specified by
+> the upcoming version of the eMMC specification and as already
+> implemented and used on many devices.  Building on that, it then adds
+> Qualcomm ICE support and wires it up for the Snapdragon 630 SoC.
 > 
-> Fix this by making the hash table always have at least 2 buckets.
+> Inline encryption hardware improves the performance of storage
+> encryption and reduces power usage.  See
+> Documentation/block/inline-encryption.rst for more information about
+> inline encryption and the blk-crypto framework (upstreamed in v5.8)
+> which supports it.  Most mobile devices already use UFS or eMMC inline
+> encryption hardware; UFS support was already upstreamed in v5.9.
 > 
-> Tested by running:
+> Patches 1-3 add support for the standard eMMC inline encryption.
 > 
->     kvm-xfstests -c ext4 -g encrypt -m inlinecrypt \
->                  -o blk-crypto-fallback.num_keyslots=1
+> However, as with UFS, host controller-specific patches are needed on top
+> of the standard support.  Therefore, patches 4-8 add Qualcomm ICE
+> (Inline Crypto Engine) support and wire it up on the Snapdragon 630 SoC.
+> 
+> To test this I took advantage of the recently upstreamed support for the
+> Snapdragon 630 SoC, plus work-in-progress patches from the SoMainline
+> project (https://github.com/SoMainline/linux/tree/konrad/v5.10-rc3).  In
+> particular, I was able to run the fscrypt xfstests for ext4 and f2fs in
+> a Debian chroot.  Among other things, these tests verified that the
+> correct ciphertext is written to disk (the same as software encryption).
+> 
+> It will also be possible to add support for Mediatek eMMC inline
+> encryption hardware in mtk-sd, and it should be easier than the Qualcomm
+> hardware since the Mediatek hardware follows the standard more closely.
+> I.e., patches 1-3 should be almost enough for the Mediatek hardware.
+> However, I don't have the hardware to do this yet.
+> 
+> This patchset is based on v5.10-rc3, and it can also be retrieved from
+> tag "mmc-crypto-v1" of
+> https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git
+> 
+> Note: the fscrypt inline encryption support is partially broken in
+> v5.10-rc3, so for testing a fscrypt fix needs to be applied too:
+> https://lkml.kernel.org/r/20201111015224.303073-1-ebiggers@kernel.org
+> 
+> Eric Biggers (8):
+>   mmc: add basic support for inline encryption
+>   mmc: cqhci: rename cqhci.c to cqhci-core.c
+>   mmc: cqhci: add support for inline encryption
+>   mmc: cqhci: add cqhci_host_ops::program_key
+>   firmware: qcom_scm: update comment for ICE-related functions
+>   dt-bindings: mmc: sdhci-msm: add ICE registers and clock
+>   arm64: dts: qcom: sdm630: add ICE registers and clocks
+>   mmc: sdhci-msm: add Inline Crypto Engine support
 
-Applied for 5.10, thanks.
+Any comments on this patchset?
 
--- 
-Jens Axboe
-
+- Eric
