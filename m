@@ -2,95 +2,90 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABAD72C0073
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 23 Nov 2020 08:05:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E8662C1868
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 23 Nov 2020 23:31:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726996AbgKWHE7 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 23 Nov 2020 02:04:59 -0500
-Received: from mga09.intel.com ([134.134.136.24]:54305 "EHLO mga09.intel.com"
+        id S1730934AbgKWWaj (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 23 Nov 2020 17:30:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726861AbgKWHE6 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 23 Nov 2020 02:04:58 -0500
-IronPort-SDR: eswpywBM+ziv7WMyYhncKA/dGbh8sb5TkRhufoxuB0tT0lRLDw6rhKomGO6ZTSyxUhtY1e04lk
- ALEsxwy0vCJw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9813"; a="171875377"
-X-IronPort-AV: E=Sophos;i="5.78,361,1599548400"; 
-   d="scan'208";a="171875377"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2020 23:04:41 -0800
-IronPort-SDR: Qp6vNE+Kp14DbsXd3hs6+OEJ2ZFTg3BdgKZcqb/Zhp2InkvPwMD8tGF2FrBqmQ3LjiQkQ2LR0t
- g39Ocph5fDYg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,361,1599548400"; 
-   d="scan'208";a="327099501"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.94]) ([10.237.72.94])
-  by orsmga003.jf.intel.com with ESMTP; 22 Nov 2020 23:04:33 -0800
-Subject: Re: [PATCH 0/8] eMMC inline encryption support
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-mmc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        Satya Tangirala <satyat@google.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ritesh Harjani <riteshh@codeaurora.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Neeraj Soni <neersoni@codeaurora.org>,
-        Barani Muthukumaran <bmuthuku@codeaurora.org>,
-        Peng Zhou <peng.zhou@mediatek.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Konrad Dybcio <konradybcio@gmail.com>
-References: <20201112194011.103774-1-ebiggers@kernel.org>
- <X7gQ9Y44iIgkiM64@sol.localdomain>
- <ea904bcc-3f01-d968-2a16-f9ff9f012968@intel.com>
- <X7gcsC6IS80sUy4K@sol.localdomain>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <9010afea-1075-8f72-99c7-c471840685db@intel.com>
-Date:   Mon, 23 Nov 2020 09:04:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1728649AbgKWWai (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 23 Nov 2020 17:30:38 -0500
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 75A21206D5;
+        Mon, 23 Nov 2020 22:30:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606170638;
+        bh=qMsLhguUfZGHthn8o/bIe+LRx3PrKd4xYprbL94g5Es=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DNfDxTnuJc/9ZOQO+U1ViZqPntmi9u+PapFohdzgovjh/jy/Yy4xVB33Rww+qBRm7
+         az2CJzZnLZkYf7iatMCzDNGSHVMHyPoXq/qiSNoa3lsby8//RGmrveXMtq3Cqen2Q2
+         SidiEvRqa7Jbzx0Zmg8juZV1Q8JiUJnD9dIkecsc=
+Date:   Mon, 23 Nov 2020 14:30:35 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     Daniel Rosenberg <drosen@google.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chao Yu <chao@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Richard Weinberger <richard@nod.at>,
+        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mtd@lists.infradead.org, kernel-team@android.com
+Subject: Re: [PATCH v4 2/3] fscrypt: Have filesystems handle their d_ops
+Message-ID: <X7w4C8GAy+P9KNU6@sol.localdomain>
+References: <20201119060904.463807-1-drosen@google.com>
+ <20201119060904.463807-3-drosen@google.com>
+ <87y2iuj8y2.fsf@collabora.com>
 MIME-Version: 1.0
-In-Reply-To: <X7gcsC6IS80sUy4K@sol.localdomain>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87y2iuj8y2.fsf@collabora.com>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On 20/11/20 9:44 pm, Eric Biggers wrote:
-> Hi Adrian,
+On Sat, Nov 21, 2020 at 11:45:41PM -0500, Gabriel Krisman Bertazi wrote:
+> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> > index 6633b20224d5..0288bedf46e1 100644
+> > --- a/fs/ext4/super.c
+> > +++ b/fs/ext4/super.c
+> > @@ -4968,11 +4968,6 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+> >  		goto failed_mount4;
+> >  	}
+> >  
+> > -#ifdef CONFIG_UNICODE
+> > -	if (sb->s_encoding)
+> > -		sb->s_d_op = &ext4_dentry_ops;
+> > -#endif
 > 
-> On Fri, Nov 20, 2020 at 09:29:59PM +0200, Adrian Hunter wrote:
->> I haven't had a chance to look at it properly, but I do have a couple of
->> dumb questions.  How do you ensure the host controller is not runtime
->> suspended when the key is programmed?
+> This change has the side-effect of removing the capability of the root
+> directory from being case-insensitive.  It is not a backward
+> incompatible change because there is no way to make the root directory
+> CI at the moment (it is never empty). But this restriction seems
+> artificial. Is there a real reason to prevent the root inode from being
+> case-insensitive?
 > 
-> This is handled by the block layer, in block/keyslot-manager.c.  It ensures that
-> the device is resumed before calling blk_ksm_ll_ops::keyslot_program() or
-> blk_ksm_ll_ops::keyslot_evict().  See blk_ksm_hw_enter().
 
-Cool, although cqhci is doing a lazy kind of resume, so maybe not be enabled
-when a key is programmed?  Would that be a problem?
+The problem is that the "lost+found" directory is special in that e2fsck needs
+to be able to find it.
 
-> 
->> Are the keys lost when the host controller is reset, and then how do you know
->> the host controller does not get reset after the key is programmed but before
->> the I/O is submitted?
-> 
-> As with UFS, keys might be lost when the host controller is reset, so we're
-> reprogramming all the keys when that happens.  See patch 1:
-> 
->     mmc_set_initial_state()
->         mmc_crypto_set_initial_state()
->             blk_ksm_reprogram_all_keys()
-> 
-> (That's the intent, at least.  For MMC, I'm not sure if resets were properly
-> covered by the testing I've done so far.  But the code looks right to me.)
+That's the reason why ext4 doesn't allow the root directory to be encrypted.
+(And encrypting the root directory isn't really useful anyway, since if the goal
+is to encrypt a whole filesystem with one key, dm-crypt is a better solution.)
 
-After reset, cqhci will not necessarily be enabled at this point.  Is that OK?
+Casefolding is a bit less problematic than encryption.  But it still doesn't
+entirely work, as e.g. if you name the directory "LOST+FOUND" instead (the
+directory is casefolded after all...), then e2fsck can't find it.
+
+Unless there's a real use case for the root directory being casefolded and
+people are willing to fix e2fsck, I think we should just make ext4 return an
+error when setting the casefold flag on the root directory, like it does when
+trying to enable encryption on the root directory.
+
+- Eric
