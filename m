@@ -2,122 +2,143 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE24C2C18DE
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 23 Nov 2020 23:59:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60A672C1B26
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 24 Nov 2020 03:03:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730353AbgKWWwf (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 23 Nov 2020 17:52:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50816 "EHLO mail.kernel.org"
+        id S1727550AbgKXCBW (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 23 Nov 2020 21:01:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387529AbgKWWvr (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 23 Nov 2020 17:51:47 -0500
+        id S1726702AbgKXCBV (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 23 Nov 2020 21:01:21 -0500
 Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4F86C20715;
-        Mon, 23 Nov 2020 22:51:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 248AE206B2;
+        Tue, 24 Nov 2020 02:01:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606171906;
-        bh=ZXc9vIM5l13483UKyWWsubayfXoDDXtja33VNeTcUhU=;
+        s=default; t=1606183280;
+        bh=rvk4UvQelAz3FI2aatvLeb1xe7xw9k3Zha3PLJY/zXA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qsDDuDnWK5GUaGQVbz8/5EO0/9DSdVrAPwZxZyKsgRZfSg/kyAN/ExsfMf6vCCBrg
-         Bxpxd6KXI7WTvuvsYFKMGz2q2Z3jn+8IqNQnKyAF+mOclvnBsqJVUQI0a8ZsKfitu0
-         oI21w81HVsopyq5JuVAM+2IYVC2aMkThQZlQxCTY=
-Date:   Mon, 23 Nov 2020 14:51:44 -0800
+        b=aAU5awcoER7aVRCunR3lsNV1wyQ8Ekd1IF7YJK5aQAUcHYR/RT9PNUTiTkH277EtL
+         v5mKcf6NkcLgijRlgxzuBW6AfE85Eq9WEKiJy4nRSCKJeAAQKJu58gODS22hbNFhdX
+         KQbe0fWsyC5mXgIPJ2Nh966zbr3s7XBVraNEIAjU=
+Date:   Mon, 23 Nov 2020 18:01:16 -0800
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Gao Xiang <hsiangkao@redhat.com>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Daniel Rosenberg <drosen@google.com>
-Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chao Yu <chao@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Richard Weinberger <richard@nod.at>,
-        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mtd@lists.infradead.org, kernel-team@android.com
-Subject: Re: [PATCH v4 2/3] fscrypt: Have filesystems handle their d_ops
-Message-ID: <X7w9AO0x8vG85JQU@sol.localdomain>
-References: <20201119060904.463807-1-drosen@google.com>
- <20201119060904.463807-3-drosen@google.com>
- <20201122051218.GA2717478@xiangao.remote.csb>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     linux-mmc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        Satya Tangirala <satyat@google.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ritesh Harjani <riteshh@codeaurora.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Neeraj Soni <neersoni@codeaurora.org>,
+        Barani Muthukumaran <bmuthuku@codeaurora.org>,
+        Peng Zhou <peng.zhou@mediatek.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Konrad Dybcio <konradybcio@gmail.com>
+Subject: Re: [PATCH 0/8] eMMC inline encryption support
+Message-ID: <X7xpbJf4gDcFdEc/@sol.localdomain>
+References: <20201112194011.103774-1-ebiggers@kernel.org>
+ <X7gQ9Y44iIgkiM64@sol.localdomain>
+ <ea904bcc-3f01-d968-2a16-f9ff9f012968@intel.com>
+ <X7gcsC6IS80sUy4K@sol.localdomain>
+ <9010afea-1075-8f72-99c7-c471840685db@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201122051218.GA2717478@xiangao.remote.csb>
+In-Reply-To: <9010afea-1075-8f72-99c7-c471840685db@intel.com>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Sun, Nov 22, 2020 at 01:12:18PM +0800, Gao Xiang wrote:
-> Hi all,
-> 
-> On Thu, Nov 19, 2020 at 06:09:03AM +0000, Daniel Rosenberg wrote:
-> > This shifts the responsibility of setting up dentry operations from
-> > fscrypt to the individual filesystems, allowing them to have their own
-> > operations while still setting fscrypt's d_revalidate as appropriate.
-> > 
-> > Most filesystems can just use generic_set_encrypted_ci_d_ops, unless
-> > they have their own specific dentry operations as well. That operation
-> > will set the minimal d_ops required under the circumstances.
-> > 
-> > Since the fscrypt d_ops are set later on, we must set all d_ops there,
-> > since we cannot adjust those later on. This should not result in any
-> > change in behavior.
-> > 
-> > Signed-off-by: Daniel Rosenberg <drosen@google.com>
-> > Acked-by: Eric Biggers <ebiggers@google.com>
-> > ---
-> 
-> ...
-> 
-> >  extern const struct file_operations ext4_dir_operations;
-> >  
-> > -#ifdef CONFIG_UNICODE
-> > -extern const struct dentry_operations ext4_dentry_ops;
-> > -#endif
-> > -
-> >  /* file.c */
-> >  extern const struct inode_operations ext4_file_inode_operations;
-> >  extern const struct file_operations ext4_file_operations;
-> > diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-> > index 33509266f5a0..12a417ff5648 100644
-> > --- a/fs/ext4/namei.c
-> > +++ b/fs/ext4/namei.c
-> > @@ -1614,6 +1614,7 @@ static struct buffer_head *ext4_lookup_entry(struct inode *dir,
-> >  	struct buffer_head *bh;
-> >  
-> >  	err = ext4_fname_prepare_lookup(dir, dentry, &fname);
-> > +	generic_set_encrypted_ci_d_ops(dentry);
-> 
-> One thing might be worth noticing is that currently overlayfs might
-> not work properly when dentry->d_sb->s_encoding is set even only some
-> subdirs are CI-enabled but the others not, see generic_set_encrypted_ci_d_ops(),
-> ovl_mount_dir_noesc => ovl_dentry_weird()
-> 
-> For more details, see:
-> https://android-review.googlesource.com/c/device/linaro/hikey/+/1483316/2#message-2e1f6ab0010a3e35e7d8effea73f60341f84ee4d
-> 
-> Just found it by chance (and not sure if it's vital for now), and
-> a kind reminder about this.
-> 
+Hi Adrian,
 
-Yes, overlayfs doesn't work on ext4 or f2fs filesystems that have the casefold
-feature enabled, regardless of which directories are actually using casefolding.
-This is an existing limitation which was previously discussed, e.g. at
-https://lkml.kernel.org/linux-ext4/CAOQ4uxgPXBazE-g2v=T_vOvnr_f0ZHyKYZ4wvn7A3ePatZrhnQ@mail.gmail.com/T/#u
-and
-https://lkml.kernel.org/linux-ext4/20191203051049.44573-1-drosen@google.com/T/#u.
+On Mon, Nov 23, 2020 at 09:04:12AM +0200, Adrian Hunter wrote:
+> On 20/11/20 9:44 pm, Eric Biggers wrote:
+> > Hi Adrian,
+> > 
+> > On Fri, Nov 20, 2020 at 09:29:59PM +0200, Adrian Hunter wrote:
+> >> I haven't had a chance to look at it properly, but I do have a couple of
+> >> dumb questions.  How do you ensure the host controller is not runtime
+> >> suspended when the key is programmed?
+> > 
+> > This is handled by the block layer, in block/keyslot-manager.c.  It ensures that
+> > the device is resumed before calling blk_ksm_ll_ops::keyslot_program() or
+> > blk_ksm_ll_ops::keyslot_evict().  See blk_ksm_hw_enter().
+> 
+> Cool, although cqhci is doing a lazy kind of resume, so maybe not be enabled
+> when a key is programmed?  Would that be a problem?
+> 
+> > 
+> >> Are the keys lost when the host controller is reset, and then how do you know
+> >> the host controller does not get reset after the key is programmed but before
+> >> the I/O is submitted?
+> > 
+> > As with UFS, keys might be lost when the host controller is reset, so we're
+> > reprogramming all the keys when that happens.  See patch 1:
+> > 
+> >     mmc_set_initial_state()
+> >         mmc_crypto_set_initial_state()
+> >             blk_ksm_reprogram_all_keys()
+> > 
+> > (That's the intent, at least.  For MMC, I'm not sure if resets were properly
+> > covered by the testing I've done so far.  But the code looks right to me.)
+> 
+> After reset, cqhci will not necessarily be enabled at this point.  Is that OK?
 
-Gabriel and Daniel, is one of you still looking into fixing this?  IIUC, the
-current thinking is that when the casefolding flag is set on a directory, it's
-too late to assign dentry_operations at that point.  But what if all child
-dentries (which must be negative) are invalidated first, and also the filesystem
-forbids setting the casefold flag on encrypted directories that are accessed via
-a no-key name (so that fscrypt_d_revalidate isn't needed -- i.e. the directory
-would only go from "no d_ops" to "generic_ci_dentry_ops", not from
-"generic_encrypted_dentry_ops" to "generic_encrypted_ci_dentry_ops")?
+The hardware that I have (sdm630) appears to allow programming and evicting keys
+even while CQHCI_CFG.CQHCI_ENABLE is clear, i.e. even when the CQE is "off".
+I tested it using the patch below.
 
-- Eric
+The eMMC specification isn't clear about this point.  But I'm thinking that the
+crypto configuration registers (the keyslots) are probably supposed to work like
+most of the other CQHCI registers, which can be written to while CQHCI_ENABLE is
+clear.  Then setting CQHCI_ENABLE just enables the ability to actually issue
+requests.  Likewise, setting CQHCI_CRYPTO_GENERAL_ENABLE just allows using
+crypto in requests; it isn't needed to write to the crypto configurations.
+
+For what it's worth, UFS crypto (which has been supported by upstream since
+v5.9) works similarly.  Keys can be programmed while the UFS host is powered on,
+even before it's "enabled".
+
+But maybe someone interpreted the eMMC specification differently.  Hopefully
+Mediatek can give some insight into how they implemented it, and test this
+patchset on their hardware too.
+
+Here's the patch I used to verify that sdm630 allows programming and evicting
+keys even while the CQE is off:
+
+diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+index eaf2f1074326..eb2d88d0b3ba 100644
+--- a/drivers/mmc/core/block.c
++++ b/drivers/mmc/core/block.c
+@@ -1406,6 +1406,9 @@ static void mmc_blk_cqe_complete_rq(struct mmc_queue *mq, struct request *req)
+ 
+ 	mmc_cqe_check_busy(mq);
+ 
++	if (mmc_tot_in_flight(mq) == 0 && host->cqe_on)
++		host->cqe_ops->cqe_off(host);
++
+ 	spin_unlock_irqrestore(&mq->lock, flags);
+ 
+ 	if (!mq->cqe_busy)
+diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
+index 6ce21414d510..70d8dbc6515f 100644
+--- a/drivers/mmc/host/sdhci-msm.c
++++ b/drivers/mmc/host/sdhci-msm.c
+@@ -1971,6 +1971,12 @@ static int sdhci_msm_program_key(struct cqhci_host *cq_host,
+ 	int i;
+ 	int err;
+ 
++	if (!cq_host->mmc->cqe_on) {
++		pr_info("@@@ cqe is off for %s slot %d\n",
++			(cfg->config_enable & CQHCI_CRYPTO_CONFIGURATION_ENABLE) ?
++			"program" : "evict", slot);
++	}
++
+ 	if (!(cfg->config_enable & CQHCI_CRYPTO_CONFIGURATION_ENABLE))
+ 		return qcom_scm_ice_invalidate_key(slot);
