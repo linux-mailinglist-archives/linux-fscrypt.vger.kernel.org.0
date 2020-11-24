@@ -2,142 +2,84 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA28B2C1CEB
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 24 Nov 2020 05:38:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4AFC2C34AA
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 25 Nov 2020 00:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729219AbgKXEhv (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 23 Nov 2020 23:37:51 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:42594 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729212AbgKXEhv (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 23 Nov 2020 23:37:51 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id D57A11F4481C
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Gao Xiang <hsiangkao@redhat.com>,
-        Daniel Rosenberg <drosen@google.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chao Yu <chao@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Richard Weinberger <richard@nod.at>,
-        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mtd@lists.infradead.org, kernel-team@android.com
-Subject: Re: [PATCH v4 2/3] fscrypt: Have filesystems handle their d_ops
-Organization: Collabora
-References: <20201119060904.463807-1-drosen@google.com>
-        <20201119060904.463807-3-drosen@google.com>
-        <20201122051218.GA2717478@xiangao.remote.csb>
-        <X7w9AO0x8vG85JQU@sol.localdomain>
-Date:   Mon, 23 Nov 2020 23:37:45 -0500
-In-Reply-To: <X7w9AO0x8vG85JQU@sol.localdomain> (Eric Biggers's message of
-        "Mon, 23 Nov 2020 14:51:44 -0800")
-Message-ID: <877dqbpdye.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S2388579AbgKXX2R (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 24 Nov 2020 18:28:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37914 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388499AbgKXX2R (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 24 Nov 2020 18:28:17 -0500
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 213DF2100A;
+        Tue, 24 Nov 2020 23:28:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606260496;
+        bh=Oo4Tlzm+6V2f+cAlPJ1FnNFARv4c7gmBZzibGJ+KTPA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xe5/qIrgFn//Ktx8T3FzD8iH+OmarHXR72XJec5aY3dKU9ct5j77kLudzv2sZf5oJ
+         OGLz2xon5t1SKARHH1Shpa+fH+vE/ro2Dxh4IgiIiXhu9GMsszm9Js/C2MAv2yO0kf
+         +eIj3mO0kFqZH0y5k2Aj81/VXm+rLTLYJc0plIV0=
+Date:   Tue, 24 Nov 2020 15:28:14 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 0/5] fscrypt: prevent creating duplicate encrypted
+ filenames
+Message-ID: <X72XDv89kSPWCqTQ@sol.localdomain>
+References: <20201118075609.120337-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201118075609.120337-1-ebiggers@kernel.org>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Eric Biggers <ebiggers@kernel.org> writes:
+On Tue, Nov 17, 2020 at 11:56:04PM -0800, Eric Biggers wrote:
+> This series fixes a longstanding race condition where a duplicate
+> filename can be created in an encrypted directory if a syscall that
+> creates a new filename (e.g. open() or mkdir()) races with the
+> directory's encryption key being added.
+> 
+> To close this race, we need to prevent creating files if the dentry is
+> still marked as a no-key name.  I.e. we need to fail the ->create() (or
+> other operation that creates a new filename) if the key wasn't available
+> when doing the dentry lookup earlier in the syscall, even if the key was
+> concurrently added between the dentry lookup and ->create().
+> 
+> See patch 1 for a more detailed explanation.
+> 
+> Patch 1 introduces a helper function required for the fix.  Patches 2-4
+> fix the bug on ext4, f2fs, and ubifs.  Patch 5 is a cleanup.
+> 
+> This fixes xfstest generic/595 on ubifs, but that test was hitting this
+> bug only accidentally.  I've also written a new xfstest which reproduces
+> this bug on both ext4 and ubifs.
+> 
+> Eric Biggers (5):
+>   fscrypt: add fscrypt_is_nokey_name()
+>   ext4: prevent creating duplicate encrypted filenames
+>   f2fs: prevent creating duplicate encrypted filenames
+>   ubifs: prevent creating duplicate encrypted filenames
+>   fscrypt: remove unnecessary calls to fscrypt_require_key()
+> 
+>  fs/crypto/hooks.c       | 31 +++++++++++--------------------
+>  fs/ext4/namei.c         |  3 +++
+>  fs/f2fs/f2fs.h          |  2 ++
+>  fs/ubifs/dir.c          | 17 +++++++++++++----
+>  include/linux/fscrypt.h | 37 +++++++++++++++++++++++++++++++++++--
+>  5 files changed, 64 insertions(+), 26 deletions(-)
+> 
+> 
+> base-commit: 3ceb6543e9cf6ed87cc1fbc6f23ca2db903564cd
 
-> On Sun, Nov 22, 2020 at 01:12:18PM +0800, Gao Xiang wrote:
->> Hi all,
->> 
->> On Thu, Nov 19, 2020 at 06:09:03AM +0000, Daniel Rosenberg wrote:
->> > This shifts the responsibility of setting up dentry operations from
->> > fscrypt to the individual filesystems, allowing them to have their own
->> > operations while still setting fscrypt's d_revalidate as appropriate.
->> > 
->> > Most filesystems can just use generic_set_encrypted_ci_d_ops, unless
->> > they have their own specific dentry operations as well. That operation
->> > will set the minimal d_ops required under the circumstances.
->> > 
->> > Since the fscrypt d_ops are set later on, we must set all d_ops there,
->> > since we cannot adjust those later on. This should not result in any
->> > change in behavior.
->> > 
->> > Signed-off-by: Daniel Rosenberg <drosen@google.com>
->> > Acked-by: Eric Biggers <ebiggers@google.com>
->> > ---
->> 
->> ...
->> 
->> >  extern const struct file_operations ext4_dir_operations;
->> >  
->> > -#ifdef CONFIG_UNICODE
->> > -extern const struct dentry_operations ext4_dentry_ops;
->> > -#endif
->> > -
->> >  /* file.c */
->> >  extern const struct inode_operations ext4_file_inode_operations;
->> >  extern const struct file_operations ext4_file_operations;
->> > diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
->> > index 33509266f5a0..12a417ff5648 100644
->> > --- a/fs/ext4/namei.c
->> > +++ b/fs/ext4/namei.c
->> > @@ -1614,6 +1614,7 @@ static struct buffer_head *ext4_lookup_entry(struct inode *dir,
->> >  	struct buffer_head *bh;
->> >  
->> >  	err = ext4_fname_prepare_lookup(dir, dentry, &fname);
->> > +	generic_set_encrypted_ci_d_ops(dentry);
->> 
->> One thing might be worth noticing is that currently overlayfs might
->> not work properly when dentry->d_sb->s_encoding is set even only some
->> subdirs are CI-enabled but the others not, see generic_set_encrypted_ci_d_ops(),
->> ovl_mount_dir_noesc => ovl_dentry_weird()
->> 
->> For more details, see:
->> https://android-review.googlesource.com/c/device/linaro/hikey/+/1483316/2#message-2e1f6ab0010a3e35e7d8effea73f60341f84ee4d
->> 
->> Just found it by chance (and not sure if it's vital for now), and
->> a kind reminder about this.
->> 
->
-> Yes, overlayfs doesn't work on ext4 or f2fs filesystems that have the casefold
-> feature enabled, regardless of which directories are actually using casefolding.
-> This is an existing limitation which was previously discussed, e.g. at
-> https://lkml.kernel.org/linux-ext4/CAOQ4uxgPXBazE-g2v=T_vOvnr_f0ZHyKYZ4wvn7A3ePatZrhnQ@mail.gmail.com/T/#u
-> and
-> https://lkml.kernel.org/linux-ext4/20191203051049.44573-1-drosen@google.com/T/#u.
->
-> Gabriel and Daniel, is one of you still looking into fixing this?
+All applied to fscrypt.git#master for 5.11.
 
-Eric,
+I'd still appreciate acks for ext4, f2fs, and ubifs though.
 
-overlayfs+CI has been on my todo list for over a year now, as I have a
-customer who wants to mix them, but I haven't been able to get to it.
-I'm sure I won't be able to get to it until mid next year, so if anyone
-wants to tackle it, feel free to do it.
-
-
-> IIUC, the current thinking is that when the casefolding flag is set on
-> a directory, it's too late to assign dentry_operations at that point.
-
-yes
-
-> But what if all child dentries (which must be negative) are
-> invalidated first,
-
-I recall I tried this approach when I quickly looked over this last
-year, but my limited vfs knowledge prevented me from getting something
-working.  But it makes sense.
-
-> and also the filesystem forbids setting the casefold flag on encrypted
-> directories that are accessed via a no-key name (so that
-> fscrypt_d_revalidate isn't needed -- i.e. the directory would only go
-> from "no d_ops" to "generic_ci_dentry_ops", not from
-> "generic_encrypted_dentry_ops" to "generic_encrypted_ci_dentry_ops")?
-
-
-
-
--- 
-Gabriel Krisman Bertazi
+- Eric
