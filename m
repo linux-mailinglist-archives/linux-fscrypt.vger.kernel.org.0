@@ -2,91 +2,100 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62D972C4AB5
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 25 Nov 2020 23:18:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69BDF2C4EAB
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 26 Nov 2020 07:24:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732613AbgKYWPI (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 25 Nov 2020 17:15:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49484 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730465AbgKYWPG (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 25 Nov 2020 17:15:06 -0500
-Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 676AD206D9;
-        Wed, 25 Nov 2020 22:15:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606342505;
-        bh=//mTbDz2JjRGYIh1GwXxXW8kmqk4YvkDaY1/++XJIn0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VY5RPIIyvrFY4c/vetEDGaxUA9jOSaakmSVQw0Q1OasRAiZUBJ/F7aSPHVJNJV4i6
-         t408rVBospirzyiG4A0Bz0x10gjsY8A9wASMrrtC8rHc++m/VZ5sLatmlHd/f6CjyS
-         /z2CHKSoNg4dCcDvPeFPMis8mAMTCtEVPIDia/1Q=
-Date:   Wed, 25 Nov 2020 14:15:03 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v7 1/8] block: ensure bios are not split in middle of
- crypto data unit
-Message-ID: <X77XZ/WVIuw9aCHb@sol.localdomain>
-References: <20201117140708.1068688-1-satyat@google.com>
- <20201117140708.1068688-2-satyat@google.com>
+        id S1732141AbgKZGUt (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 26 Nov 2020 01:20:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732249AbgKZGUt (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 26 Nov 2020 01:20:49 -0500
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2638FC061A47
+        for <linux-fscrypt@vger.kernel.org>; Wed, 25 Nov 2020 22:20:49 -0800 (PST)
+Received: by mail-oi1-x244.google.com with SMTP id o25so1160394oie.5
+        for <linux-fscrypt@vger.kernel.org>; Wed, 25 Nov 2020 22:20:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Q2R4BbQCpkO9YBouwmBRKUyTxHnROMBCPNNTzvr+bTs=;
+        b=ezaCvQHNP4rXVlX6xgXScBgYsPbPPYeNewlmWmduFOZEwCAQiePxmYmVXxRNWIAKBj
+         npE5+8DtXXxl5lIDZZS0EJDFMin+cuNhqnF9GVWXdwt95ToczUH17XgI/N/f5RDdgVTk
+         K20LAvN4Q8KwIAWKWxz7lhuudgoUDjDQNgOQ9wCJS5pv4UlJ8k6N+hip7il4Tw3qlp8b
+         FAv350pYhHk1L7GaNKcFbR2Ti54nHn0eqb/zzb9ABRY2bdSGl5MHh8QN5HMKW/YmAQsN
+         F/W7hV8uygULP8RYNfy2hBUXjRLteBmuEIR1j5uixtkiJBAM3lzJbujbvujPp0OydxG5
+         21dQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Q2R4BbQCpkO9YBouwmBRKUyTxHnROMBCPNNTzvr+bTs=;
+        b=K5atiHxBjORuUNVxKG7QKXYiLWhiNhBGNybEB3HiMSnmmDxvjN7SxMixfnChtNNBAT
+         fyafCOp0C6gDfHyOeq9OxoFl/pnAXPUJg9h9UFnCzkcUBy0v6BGc7duLvEOgOU3+Gh7a
+         kiYBhlb5TjOpMyE1DGmXuNZezebXthWGjRq2xsBcPbcc5yrqqpoffoGdb4mLLJRJH2sb
+         VADCSTXjW42QICKMr467W624HxrUwhLOLGb+FY42BuAVahvqfQy6TKVY61k6ATG0kGRH
+         5cJa0Juagcr+AlPUnp4fu7ylzdDb8z4pxIAQYtmXDzD/UGjvlaQ9XFMbzYD9fWusRT4L
+         Kdsw==
+X-Gm-Message-State: AOAM532XQmjpWfcPe2bv/21M3zW9p9X9YOUnuGndrAsk8X34/GlIlQPC
+        ZBIpyEXQWnKr6brz0gwshm4PJR9TGMoln1TIXlAS5Q==
+X-Google-Smtp-Source: ABdhPJyKkUGNp5ptVTQH/y3fdaO8WHD96bnV/Avp1SQ7JFU5f6ksIk+NGtCwlONjNfoJPAp1skv4dkqV7brJ0Qje4qs=
+X-Received: by 2002:a05:6808:8c8:: with SMTP id k8mr1163796oij.84.1606371648249;
+ Wed, 25 Nov 2020 22:20:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117140708.1068688-2-satyat@google.com>
+References: <20201119060904.463807-1-drosen@google.com> <20201119060904.463807-3-drosen@google.com>
+ <20201122051218.GA2717478@xiangao.remote.csb> <X7w9AO0x8vG85JQU@sol.localdomain>
+ <877dqbpdye.fsf@collabora.com>
+In-Reply-To: <877dqbpdye.fsf@collabora.com>
+From:   Daniel Rosenberg <drosen@google.com>
+Date:   Wed, 25 Nov 2020 22:20:37 -0800
+Message-ID: <CA+PiJmQ8-Qxu7yNWBvRLAeGa31PT5=hsYCcoW9QKsKnJQXqnMQ@mail.gmail.com>
+Subject: Re: [PATCH v4 2/3] fscrypt: Have filesystems handle their d_ops
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        Gao Xiang <hsiangkao@redhat.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chao Yu <chao@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Richard Weinberger <richard@nod.at>,
+        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mtd@lists.infradead.org, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 02:07:01PM +0000, Satya Tangirala wrote:
-> @@ -275,11 +331,24 @@ static struct bio *blk_bio_segment_split(struct request_queue *q,
->  		bvprvp = &bvprv;
->  	}
->  
-> +	/*
-> +	 * The input bio's number of sectors is assumed to be aligned to
-> +	 * bio_sectors_alignment. If that's the case, then this function should
-> +	 * ensure that aligned_segs == nsegs and aligned_sectors == sectors if
-> +	 * the bio is not going to be split.
-> +	 */
-> +	WARN_ON(aligned_segs != nsegs || aligned_sectors != sectors);
->  	*segs = nsegs;
->  	return NULL;
->  split:
-> -	*segs = nsegs;
-> -	return bio_split(bio, sectors, GFP_NOIO, bs);
-> +	*segs = aligned_segs;
-> +	if (WARN_ON(aligned_sectors == 0))
-> +		goto err;
-> +	return bio_split(bio, aligned_sectors, GFP_NOIO, bs);
-> +err:
-> +	bio->bi_status = BLK_STS_IOERR;
-> +	bio_endio(bio);
-> +	return bio;
->  }
-[...]
-> diff --git a/block/blk-mq.c b/block/blk-mq.c
-> index 55bcee5dc032..de5c97ab8e5a 100644
-> --- a/block/blk-mq.c
-> +++ b/block/blk-mq.c
-> @@ -2161,6 +2161,9 @@ blk_qc_t blk_mq_submit_bio(struct bio *bio)
->  	blk_queue_bounce(q, &bio);
->  	__blk_queue_split(&bio, &nr_segs);
->  
-> +	if (bio->bi_status != BLK_STS_OK)
-> +		goto queue_exit;
-> +
+>
+> This change has the side-effect of removing the capability of the root
+> directory from being case-insensitive.  It is not a backward
+> incompatible change because there is no way to make the root directory
+> CI at the moment (it is never empty). But this restriction seems
+> artificial. Is there a real reason to prevent the root inode from being
+> case-insensitive?
 
-Note that as soon as bio_endio() is called, the bio may be freed.
+> I don't have a use case where I need a root directory to be CI.  In
+> fact, when I first implemented CI, I did want to block the root directory
+> from being made CI, just to prevent people from doing "chattr +F /" and
+> complaining afterwards when /usr/lib breaks.
+>
+> My concern with the curent patch was whether this side-effect was
+> considered, but I'm happy with either semantics.
+>
+> --
+> Gabriel Krisman Bertazi
 
-So accessing the bio after that is not correct.
+That's just from the lost+found directory right? If you remove it you
+can still change it, and then add the lost+found directory back. Isn't
+that how it works currently? I definitely didn't intend to change any
+behavior around non-encrypted casefolding there.
 
-- Eric
+I should look at what fsck does if you do that and have a LoSt+fOuNd folder...
+
+
+-Daniel Rosenberg
