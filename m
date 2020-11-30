@@ -2,37 +2,34 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88D442C8E49
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 30 Nov 2020 20:43:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4F562C8EB8
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 30 Nov 2020 21:11:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729107AbgK3TnL (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 30 Nov 2020 14:43:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50332 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727942AbgK3TnL (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 30 Nov 2020 14:43:11 -0500
-Received: from gmail.com (unknown [104.132.1.84])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 83C7820709;
-        Mon, 30 Nov 2020 19:42:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606765350;
-        bh=0NMZI3KwqVrJhjvhdKXBVCYUQQFFXi3QbS59sB9SJz8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JOzo5GT8CfJGGdJ9E94TIKlDdqVO0mqkysWP9am6QBz3tLla3cKlSUCOyZ44yEonf
-         xNjNX8jyj5Her2thZe8lARYwbex8IW+dPe6nd5wU65l2OAj2NP8KGb97XNG2OA9KwK
-         5cB9H/imoEEn5Z7Rx91da40EON5gzH4ub9Jjl+fs=
-Date:   Mon, 30 Nov 2020 11:42:28 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Andreas Dilger <adilger@dilger.ca>
-Cc:     Theodore Ts'o <tytso@mit.edu>, linux-fscrypt@vger.kernel.org,
+        id S1728899AbgK3UKP (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 30 Nov 2020 15:10:15 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:57385 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727328AbgK3UKP (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 30 Nov 2020 15:10:15 -0500
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0AUK99nM026331
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 30 Nov 2020 15:09:10 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 4EE63420136; Mon, 30 Nov 2020 15:09:09 -0500 (EST)
+Date:   Mon, 30 Nov 2020 15:09:09 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Andreas Dilger <adilger@dilger.ca>, linux-fscrypt@vger.kernel.org,
         Ext4 Developers List <linux-ext4@vger.kernel.org>,
         linux-f2fs-devel@lists.sourceforge.net,
         linux-fsdevel <linux-fsdevel@vger.kernel.org>,
         Sebastien Buisson <sbuisson@ddn.com>
 Subject: Re: backup/restore of fscrypt files
-Message-ID: <20201130194228.GA1248532@gmail.com>
+Message-ID: <20201130200909.GI5364@mit.edu>
 References: <D1AD7D55-94D6-4C19-96B4-BAD0FD33CF49@dilger.ca>
  <X8U8TG2ie77YiCF5@sol.localdomain>
 MIME-Version: 1.0
@@ -43,16 +40,57 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 10:39:10AM -0800, Eric Biggers wrote:
-> (Allowing only direct I/O on files that don't have encryption key unavailable
-> may help...)
+On Mon, Nov 30, 2020 at 10:39:08AM -0800, Eric Biggers wrote:
+> Then there is the issue of ordering and how different operations would interact
+> with each other.  This proposal would require the ability to open() a regular
+> file that doesn't have its encryption key available, and read and write from it.
+> open() gives you a file descriptor on which lots of other things could be called
+> too, so we'd need to make sure to explicitly prevent a lot of things which we
+> didn't have to worry about before, like fallocate() and various ioctl()s.  Then,
+> what happens if someone adds an encryption key -- when does the file's page
+> cache get invalidated, and how does it get synchronized with any ongoing I/O, or
+> memory maps that may exist, and so on.  (Allowing only direct I/O on files that
+> don't have encryption key unavailable may help...)
 
-It may sense to only provide the ciphertext when reads are done using
-RWF_ENCODED
-(https://lkml.kernel.org/linux-fsdevel/cover.1605723568.git.osandov@fb.com),
-rather than making normal reads return ciphertext when the key is unavailable.
+I had put together a draft patch series which used a combination of
+ioctls to set and get the necessary encryption metadata (including the
+filename), and then allowed root to allow Direct I/O to fetch the data
+blocks.
 
-Ciphertext reads would always be uncached, which would avoid two conflicting
-uses of the same address_space.
+But it wa a mess, especially if you were backing up a directory
+hierarchy, in terms of what would need to be done on userspace side
+during the restore operation --- especially if one of the requirements
+is that the *restore* operation had to work if you didn't have the
+encryption key at restore time.  (Think of an Android tablet that had
+muliple users, and the person doing the backup and restore might not
+have all of the encryption keys available to her.)
 
-- Eric
+Fortunately, the business requirement for this disappeared, and the
+patch series (which was super messy, and not tested because it would
+have required writing some complex code on the restore side --- the
+issue is with the fact that mkdir generates a new encryption key for
+new directories, so we would need to have a way to reset the key for a
+directory after it was freshly created, but before any filenames were
+added --- like I said, it was a real mess), and so I was happy to let
+that patch series die a natural death.
+
+These days, we now have support for Direct I/O when the encrpytion is
+done by hardware between the OS and the storage device, and the
+addition of inline crypto and the v2 encryption keys would have made
+the patch series invalid (and far more complex, if someone wanted to
+reconstitute it).
+
+So it *could* be done, but it's a huge amount of work, and without the
+business justification to dedicate the software engineering time to
+implement both the kernel side patches, and the userspace backup and
+restore (which would be different for a traditional Linux desktop and
+what might be used by say, an Android userspace application), I
+suspect it's pretty unlikely to happen.
+
+Of course, if some volunteer wants to try do all of the work, I
+suspect Eric and I could provide some design help --- but it really
+isn't going to be trivial to design and implement.
+
+Cheers,
+
+					- Ted
