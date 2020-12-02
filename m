@@ -2,245 +2,193 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B68E62CC9F8
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  2 Dec 2020 23:54:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D1022CCA00
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  2 Dec 2020 23:56:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727096AbgLBWxh (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 2 Dec 2020 17:53:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36486 "EHLO
+        id S1728687AbgLBWyd (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 2 Dec 2020 17:54:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726903AbgLBWxh (ORCPT
+        with ESMTP id S1728499AbgLBWyd (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 2 Dec 2020 17:53:37 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE275C061A4A
-        for <linux-fscrypt@vger.kernel.org>; Wed,  2 Dec 2020 14:52:56 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id x15so53773pll.2
-        for <linux-fscrypt@vger.kernel.org>; Wed, 02 Dec 2020 14:52:56 -0800 (PST)
+        Wed, 2 Dec 2020 17:54:33 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22277C0617A7
+        for <linux-fscrypt@vger.kernel.org>; Wed,  2 Dec 2020 14:53:53 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id f1so29443plt.12
+        for <linux-fscrypt@vger.kernel.org>; Wed, 02 Dec 2020 14:53:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=w13vKkQO9QCP0aR5R9Nv4FOw9sZU+DjLBFqmX3t26s8=;
-        b=rxIMvrsLz416YTkoh8oP0XwIZGWM+lG9YJHHqWJFZPAJfdeUMvP8RjKlfZq98Rtmoj
-         51XR5TMkAuVUmfbpRWeUYX2kReToKwMJxeCDaQAD4wb5BBQ0YDsOsp2MZViotWu9SI0X
-         WYaing/GdzvYBEdsc7YEhc1/eVjqn58Lq2HNaKlwDFLykzFGKRaBJifz1RKFCWORX67N
-         QqpxoNgr1sMlhz0EOwRyFVFgilPv7b58VK8xZ9L1w6ZREg/iO+rECdVjZ+SPYpk3mtv5
-         n5AWnXd9VZw9D/DC4Ps2r8qIYENdVpJpYlEEmCS8ymJK3QZlqa5Q0FD0/c2TZbobCLnq
-         GdGQ==
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=6sMbfK6xSUKcyWfUeGG79f6zv6xb7kATzaDcIn4zO0I=;
+        b=LJKvyhCz/emjw+E+7zoN6LwOSoLLsWeCO5XLuP0j/JRTD7q5K1/lU29OT5eTmpHFmD
+         0n2TtGUKM1nsWEM1P5fy5DwT9XDEw5UW8zQ9EX7wpm4B4U17LPkrighPUFx5gKBioLCL
+         ci/Zf7lodb5ThEg864+XURYdEgLLr0h/kQLwFcV087DvFgfNgBfl5H16thY5UJaUcD4n
+         mvCRQoqiSyVsf7LFldGzHqHIya03oR3FOcPFruikczdP2OL2ZQX3TqxI1B0VCuDWN6fD
+         m4xoECJ0iSSBGnEI04xJaLZXO/Dk5cbyesHzZOimApj4WRR94H512bETjuN8v8Gn3Ame
+         wFZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=w13vKkQO9QCP0aR5R9Nv4FOw9sZU+DjLBFqmX3t26s8=;
-        b=VKbUPDOkFjoGPIH9frKjACmjDZ+PWWlryb0LLmk64HxGaw7NeC+BCkb9xj/xm1wEpp
-         aVJZ5BuBfxLCh774B1DrNZwoJboO++jyHF+8oIENtlX5rj8erZhuA5lWHSO0/FxhwjMN
-         a54V6FHN8AmR+RJFooXGzm5VimTW2+haMTlB+/lfsNuk2vR2DgPN/6MjdDLwP8rrOygQ
-         RakJhXnd9UIuSgliEzQbitooGZPOU0ErSiqE+xqJeSj54AZSkm4CZlUjl/Ldu4SZC5h2
-         RmDBpWD3yPpzd4HCQvO4R7t7C4HGW12eXU6bpgMjVP6bDGYf3dnofyePPH+FnJQCPQUB
-         eGiw==
-X-Gm-Message-State: AOAM530mMX6iyM9aRoQIRHiWCHPOC4tAPGhNqGj6yA+rRYiN1UxX2g33
-        u265S9Lo2L7RmXhUWA7+WbFgyA==
-X-Google-Smtp-Source: ABdhPJxMYQCCb1zJfnzSpLJeB756gwkPBF5cUE4tVCqByyJoHNiQ65qHwLsKgJXa31l+PERlBN+Reg==
-X-Received: by 2002:a17:902:9307:b029:d9:d097:fd6c with SMTP id bc7-20020a1709029307b02900d9d097fd6cmr302473plb.10.1606949576165;
-        Wed, 02 Dec 2020 14:52:56 -0800 (PST)
-Received: from google.com (154.137.233.35.bc.googleusercontent.com. [35.233.137.154])
-        by smtp.gmail.com with ESMTPSA id z22sm119458pfn.153.2020.12.02.14.52.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 14:52:55 -0800 (PST)
-Date:   Wed, 2 Dec 2020 22:52:51 +0000
-From:   Satya Tangirala <satyat@google.com>
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=6sMbfK6xSUKcyWfUeGG79f6zv6xb7kATzaDcIn4zO0I=;
+        b=lWVe+5nW7wHB+7RvnTzDFXeSymZDXxRWY31mAkzhhJr7fYBYlayQKoPZ0XXZbmdxeU
+         OWlav6uZhL6y+lrG/BXfJWlyu5g0VU+E/0RREgVpsILkkj3eB/HN+tRFQL+jh7GHLhXa
+         5DVn0qJIpfQdnC4vkXKANcwhVsgozgmCQsB88x1wun0aEQTAGtixVbFn+qb+XY7hXaF1
+         BjktsA+froJp+4G1i3BVh+otUM7C5ptAgpCW7FbOiyE3NF7dTlF2dYatjr0y5uONjOtW
+         28XeBAxJNmJSwbXI/BUCkCsxrlxEjFHcCmALoz30EXnjXE7JMfcIe1pBf41LxYpnR9O1
+         mGzw==
+X-Gm-Message-State: AOAM531DP3EgNZ2iQ9I33RGlVjsj1YlcStkvYXMELy/cAUz9eJbvhOgW
+        H+ioTIBYXK5yCpQKjOhFLhizGNAGT+5bK1mC
+X-Google-Smtp-Source: ABdhPJz6ECrgDDZ+XdBZgCMqN1FpiHkNJc84tlPJNn2N0B+y7e+IT9zMAdGJb799KJgWqzkCobJ4Tg==
+X-Received: by 2002:a17:902:ee0b:b029:da:20e7:bcfe with SMTP id z11-20020a170902ee0bb02900da20e7bcfemr359725plb.13.1606949632663;
+        Wed, 02 Dec 2020 14:53:52 -0800 (PST)
+Received: from [192.168.10.160] (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id x23sm107703pfo.209.2020.12.02.14.53.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 02 Dec 2020 14:53:52 -0800 (PST)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <A2F01966-90F0-4DD2-A61C-21414666EF9A@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_5B6E5F61-8EF9-4DE3-806E-E887B9EB323B";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH 6/9] fscrypt: move body of fscrypt_prepare_setattr()
+ out-of-line
+Date:   Wed, 2 Dec 2020 15:53:50 -0700
+In-Reply-To: <20201125002336.274045-7-ebiggers@kernel.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org
 To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v7 1/8] block: ensure bios are not split in middle of
- crypto data unit
-Message-ID: <X8gaw4ouQQFd9unN@google.com>
-References: <20201117140708.1068688-1-satyat@google.com>
- <20201117140708.1068688-2-satyat@google.com>
- <X7RdS2cINwFkl/MN@sol.localdomain>
- <20201118003815.GA1155188@google.com>
- <X77W05O8Pl8t0gPi@sol.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X77W05O8Pl8t0gPi@sol.localdomain>
+References: <20201125002336.274045-1-ebiggers@kernel.org>
+ <20201125002336.274045-7-ebiggers@kernel.org>
+X-Mailer: Apple Mail (2.3273)
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 02:12:35PM -0800, Eric Biggers wrote:
-> On Wed, Nov 18, 2020 at 12:38:15AM +0000, Satya Tangirala wrote:
-> > > > +/**
-> > > > + * update_aligned_sectors_and_segs() - Ensures that *@aligned_sectors is aligned
-> > > > + *				       to @bio_sectors_alignment, and that
-> > > > + *				       *@aligned_segs is the value of nsegs
-> > > > + *				       when sectors reached/first exceeded that
-> > > > + *				       value of *@aligned_sectors.
-> > > > + *
-> > > > + * @nsegs: [in] The current number of segs
-> > > > + * @sectors: [in] The current number of sectors
-> > > > + * @aligned_segs: [in,out] The number of segments that make up @aligned_sectors
-> > > > + * @aligned_sectors: [in,out] The largest number of sectors <= @sectors that is
-> > > > + *		     aligned to @sectors
-> > > > + * @bio_sectors_alignment: [in] The alignment requirement for the number of
-> > > > + *			  sectors
-> > > > + *
-> > > > + * Updates *@aligned_sectors to the largest number <= @sectors that is also a
-> > > > + * multiple of @bio_sectors_alignment. This is done by updating *@aligned_sectors
-> > > > + * whenever @sectors is at least @bio_sectors_alignment more than
-> > > > + * *@aligned_sectors, since that means we can increment *@aligned_sectors while
-> > > > + * still keeping it aligned to @bio_sectors_alignment and also keeping it <=
-> > > > + * @sectors. *@aligned_segs is updated to the value of nsegs when @sectors first
-> > > > + * reaches/exceeds any value that causes *@aligned_sectors to be updated.
-> > > > + */
-> > > > +static inline void update_aligned_sectors_and_segs(const unsigned int nsegs,
-> > > > +						   const unsigned int sectors,
-> > > > +						   unsigned int *aligned_segs,
-> > > > +				unsigned int *aligned_sectors,
-> > > > +				const unsigned int bio_sectors_alignment)
-> > > > +{
-> > > > +	if (sectors - *aligned_sectors < bio_sectors_alignment)
-> > > > +		return;
-> > > > +	*aligned_sectors = round_down(sectors, bio_sectors_alignment);
-> > > > +	*aligned_segs = nsegs;
-> > > > +}
-> > > > +
-> > > >  /**
-> > > >   * bvec_split_segs - verify whether or not a bvec should be split in the middle
-> > > >   * @q:        [in] request queue associated with the bio associated with @bv
-> > > > @@ -195,9 +232,12 @@ static inline unsigned get_max_segment_size(const struct request_queue *q,
-> > > >   * the block driver.
-> > > >   */
-> > > >  static bool bvec_split_segs(const struct request_queue *q,
-> > > > -			    const struct bio_vec *bv, unsigned *nsegs,
-> > > > -			    unsigned *sectors, unsigned max_segs,
-> > > > -			    unsigned max_sectors)
-> > > > +			    const struct bio_vec *bv, unsigned int *nsegs,
-> > > > +			    unsigned int *sectors, unsigned int *aligned_segs,
-> > > > +			    unsigned int *aligned_sectors,
-> > > > +			    unsigned int bio_sectors_alignment,
-> > > > +			    unsigned int max_segs,
-> > > > +			    unsigned int max_sectors)
-> > > >  {
-> > > >  	unsigned max_len = (min(max_sectors, UINT_MAX >> 9) - *sectors) << 9;
-> > > >  	unsigned len = min(bv->bv_len, max_len);
-> > > > @@ -211,6 +251,11 @@ static bool bvec_split_segs(const struct request_queue *q,
-> > > >  
-> > > >  		(*nsegs)++;
-> > > >  		total_len += seg_size;
-> > > > +		update_aligned_sectors_and_segs(*nsegs,
-> > > > +						*sectors + (total_len >> 9),
-> > > > +						aligned_segs,
-> > > > +						aligned_sectors,
-> > > > +						bio_sectors_alignment);
-> > > >  		len -= seg_size;
-> > > >  
-> > > >  		if ((bv->bv_offset + total_len) & queue_virt_boundary(q))
-> > > > @@ -235,6 +280,8 @@ static bool bvec_split_segs(const struct request_queue *q,
-> > > >   * following is guaranteed for the cloned bio:
-> > > >   * - That it has at most get_max_io_size(@q, @bio) sectors.
-> > > >   * - That it has at most queue_max_segments(@q) segments.
-> > > > + * - That the number of sectors in the returned bio is aligned to
-> > > > + *   blk_crypto_bio_sectors_alignment(@bio)
-> > > >   *
-> > > >   * Except for discard requests the cloned bio will point at the bi_io_vec of
-> > > >   * the original bio. It is the responsibility of the caller to ensure that the
-> > > > @@ -252,6 +299,9 @@ static struct bio *blk_bio_segment_split(struct request_queue *q,
-> > > >  	unsigned nsegs = 0, sectors = 0;
-> > > >  	const unsigned max_sectors = get_max_io_size(q, bio);
-> > > >  	const unsigned max_segs = queue_max_segments(q);
-> > > > +	const unsigned int bio_sectors_alignment =
-> > > > +					blk_crypto_bio_sectors_alignment(bio);
-> > > > +	unsigned int aligned_segs = 0, aligned_sectors = 0;
-> > > >  
-> > > >  	bio_for_each_bvec(bv, bio, iter) {
-> > > >  		/*
-> > > > @@ -266,8 +316,14 @@ static struct bio *blk_bio_segment_split(struct request_queue *q,
-> > > >  		    bv.bv_offset + bv.bv_len <= PAGE_SIZE) {
-> > > >  			nsegs++;
-> > > >  			sectors += bv.bv_len >> 9;
-> > > > -		} else if (bvec_split_segs(q, &bv, &nsegs, &sectors, max_segs,
-> > > > -					 max_sectors)) {
-> > > > +			update_aligned_sectors_and_segs(nsegs, sectors,
-> > > > +							&aligned_segs,
-> > > > +							&aligned_sectors,
-> > > > +							bio_sectors_alignment);
-> > > > +		} else if (bvec_split_segs(q, &bv, &nsegs, &sectors,
-> > > > +					   &aligned_segs, &aligned_sectors,
-> > > > +					   bio_sectors_alignment, max_segs,
-> > > > +					   max_sectors)) {
-> > > >  			goto split;
-> > > >  		}
-> > > >  
-> > > > @@ -275,11 +331,24 @@ static struct bio *blk_bio_segment_split(struct request_queue *q,
-> > > >  		bvprvp = &bvprv;
-> > > >  	}
-> > > >  
-> > > > +	/*
-> > > > +	 * The input bio's number of sectors is assumed to be aligned to
-> > > > +	 * bio_sectors_alignment. If that's the case, then this function should
-> > > > +	 * ensure that aligned_segs == nsegs and aligned_sectors == sectors if
-> > > > +	 * the bio is not going to be split.
-> > > > +	 */
-> > > > +	WARN_ON(aligned_segs != nsegs || aligned_sectors != sectors);
-> > > >  	*segs = nsegs;
-> > > >  	return NULL;
-> > > >  split:
-> > > > -	*segs = nsegs;
-> > > > -	return bio_split(bio, sectors, GFP_NOIO, bs);
-> > > > +	*segs = aligned_segs;
-> > > > +	if (WARN_ON(aligned_sectors == 0))
-> > > > +		goto err;
-> > > > +	return bio_split(bio, aligned_sectors, GFP_NOIO, bs);
-> > > > +err:
-> > > > +	bio->bi_status = BLK_STS_IOERR;
-> > > > +	bio_endio(bio);
-> > > > +	return bio;
-> > > >  }
-> > > 
-> > > This part is pretty complex.  Are you sure it's needed?  How was alignment to
-> > > logical_block_size ensured before?
-> > > 
-> > Afaict, alignment to logical_block_size (lbs) is done by assuming that
-> > bv->bv_len is always lbs aligned (among other things). Is that not the
-> > case?
-> 
-> I believe that's the case; bvecs are logical_block_size aligned.
-> 
-> So the new thing (with data_unit_size > logical_block_size) is that
-> bvec boundaries aren't necessarily valid split points anymore.
-> 
-> > 
-> > If it is the case, that's what we're trying to avoid with this patch (we
-> > want to be able to submit bios that have 2 bvecs that together make up a
-> > single crypto data unit, for example). And this is complex because
-> > multiple segments could "add up" to make up a single crypto data unit,
-> > but this function's job is to limit both the number of segments *and*
-> > the number of sectors - so when ensuring that the number of sectors is
-> > aligned to crypto data unit size, we also want the smallest number of
-> > segments that can make up that aligned number of sectors.
-> 
-> Does the number of physical segments that is calculated have to be exact, or
-> could it be a slight overestimate?  If the purpose of the calculation is just to
-> size scatterlists and to avoid exceeding the hardware limit on the number of
-> physical segments (and at a quick glance that seems to be the purpose, though I
-> didn't look at everything), it seems that a slight overestimate would be okay.
-> 
-> If so, couldn't the number of sectors could simply be rounded down to
-> blk_crypto_bio_sectors_alignment(bio) when blk_bio_segment_split() actually
-> calls bio_split()?  That would be much simpler; why doesn't that work?
-> 
-I was assuming we'd prefer the better bound, but yeah it would be much
-simpler if an overestimate was alright.
 
-I'll look through the users of that estimate to try to gauge better
-whether overestimating is ok to do (although if someone can already
-authoritatively say that it's ok/not ok to overestimate, that would be
-awesome too :)).
-> - Eric
+--Apple-Mail=_5B6E5F61-8EF9-4DE3-806E-E887B9EB323B
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
+
+On Nov 24, 2020, at 5:23 PM, Eric Biggers <ebiggers@kernel.org> wrote:
+>=20
+> From: Eric Biggers <ebiggers@google.com>
+>=20
+> In preparation for reducing the visibility of fscrypt_require_key() by
+> moving it to fscrypt_private.h, move the call to it from
+> fscrypt_prepare_setattr() to an out-of-line function.
+>=20
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+
+> ---
+> fs/crypto/hooks.c       |  8 ++++++++
+> include/linux/fscrypt.h | 11 +++++++++--
+> 2 files changed, 17 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/fs/crypto/hooks.c b/fs/crypto/hooks.c
+> index 82f351d3113a..1c16dba222d9 100644
+> --- a/fs/crypto/hooks.c
+> +++ b/fs/crypto/hooks.c
+> @@ -120,6 +120,14 @@ int __fscrypt_prepare_readdir(struct inode *dir)
+> }
+> EXPORT_SYMBOL_GPL(__fscrypt_prepare_readdir);
+>=20
+> +int __fscrypt_prepare_setattr(struct dentry *dentry, struct iattr =
+*attr)
+> +{
+> +	if (attr->ia_valid & ATTR_SIZE)
+> +		return fscrypt_require_key(d_inode(dentry));
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(__fscrypt_prepare_setattr);
+> +
+> /**
+>  * fscrypt_prepare_setflags() - prepare to change flags with =
+FS_IOC_SETFLAGS
+>  * @inode: the inode on which flags are being changed
+> diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
+> index 8cbb26f55695..b20900bb829f 100644
+> --- a/include/linux/fscrypt.h
+> +++ b/include/linux/fscrypt.h
+> @@ -243,6 +243,7 @@ int __fscrypt_prepare_rename(struct inode =
+*old_dir, struct dentry *old_dentry,
+> int __fscrypt_prepare_lookup(struct inode *dir, struct dentry *dentry,
+> 			     struct fscrypt_name *fname);
+> int __fscrypt_prepare_readdir(struct inode *dir);
+> +int __fscrypt_prepare_setattr(struct dentry *dentry, struct iattr =
+*attr);
+> int fscrypt_prepare_setflags(struct inode *inode,
+> 			     unsigned int oldflags, unsigned int flags);
+> int fscrypt_prepare_symlink(struct inode *dir, const char *target,
+> @@ -543,6 +544,12 @@ static inline int =
+__fscrypt_prepare_readdir(struct inode *dir)
+> 	return -EOPNOTSUPP;
+> }
+>=20
+> +static inline int __fscrypt_prepare_setattr(struct dentry *dentry,
+> +					    struct iattr *attr)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> static inline int fscrypt_prepare_setflags(struct inode *inode,
+> 					   unsigned int oldflags,
+> 					   unsigned int flags)
+> @@ -840,8 +847,8 @@ static inline int fscrypt_prepare_readdir(struct =
+inode *dir)
+> static inline int fscrypt_prepare_setattr(struct dentry *dentry,
+> 					  struct iattr *attr)
+> {
+> -	if (attr->ia_valid & ATTR_SIZE)
+> -		return fscrypt_require_key(d_inode(dentry));
+> +	if (IS_ENCRYPTED(d_inode(dentry)))
+> +		return __fscrypt_prepare_setattr(dentry, attr);
+> 	return 0;
+> }
+>=20
+> --
+> 2.29.2
+>=20
+
+
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_5B6E5F61-8EF9-4DE3-806E-E887B9EB323B
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl/IGv4ACgkQcqXauRfM
+H+BEuhAAm/v75p+tdLX3VyODRb1mULfJBeY25WD5wMaqEAkSuLZUmUfepeSljY0f
+ok/rpkOYVBtfzQB4YS30GMjC/HbKUdkmPuvWfHpFsLKO7CPHJMZcr2FQFNYlIaLR
+Of6kEFqSpxNNh46FOEq+ufFbNxWj++Tq7agI8b7qtp8AscEdRBydLmf1O92GAJMh
+O4hG6LlHAtS8W0zFjXm+QXw7aO5a1fkeG8BzD05VPwVI2EAksxCJl3oRFgLnQ8go
+c0+NOiEc31MlE8v0KSBhWvvYNIDvVsrqX/IBcHAU2bAULVLTiF41EFPZhZD1ddgu
+I8VN9tedrK4sZ0uTwtamzBwUDTQbWQD6mdzX57NXpgha8zU+cN8OJ5UeVByyDhLX
+uD1GnM2x8WvzkWd+EIfgNpXZ1kRKZr6LnefMT3lhSjPrDPDzs/QFjMDqLtakdGPa
++Dl9eGB9Y6HE5CkX2b5KDn94gKbEgXdPIJZ8QzBLPcukwhjpBlwNQrRBrybF0UEC
+6IuWi+6dqCPJ1B+z6H7BLVVQ/IgyEfgdFLyFzTQ1PwSCW/8Qna37XF9UFODhYyrH
+q9lVoWV/HAvHqdTtC5BJNHFPb7qE5cs4YB1yQ7FWw2PseRAK0+tXNE95uuYQYtt8
+h7B1yNxEGzk/mLYYhL1k31/lnFt/9HDe3XOcmTGrzzsEyfyS/Rs=
+=vQsk
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_5B6E5F61-8EF9-4DE3-806E-E887B9EB323B--
