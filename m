@@ -2,60 +2,60 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7207E2CC9F3
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  2 Dec 2020 23:54:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6162B2CC9F5
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  2 Dec 2020 23:54:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726841AbgLBWxD (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 2 Dec 2020 17:53:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36374 "EHLO
+        id S1726578AbgLBWxU (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 2 Dec 2020 17:53:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726578AbgLBWxC (ORCPT
+        with ESMTP id S1726267AbgLBWxU (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 2 Dec 2020 17:53:02 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C79DEC061A04
-        for <linux-fscrypt@vger.kernel.org>; Wed,  2 Dec 2020 14:52:16 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id x15so52975pll.2
-        for <linux-fscrypt@vger.kernel.org>; Wed, 02 Dec 2020 14:52:16 -0800 (PST)
+        Wed, 2 Dec 2020 17:53:20 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8483C0617A7
+        for <linux-fscrypt@vger.kernel.org>; Wed,  2 Dec 2020 14:52:39 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id u2so33333pls.10
+        for <linux-fscrypt@vger.kernel.org>; Wed, 02 Dec 2020 14:52:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=dilger-ca.20150623.gappssmtp.com; s=20150623;
         h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
          :references;
-        bh=lAa6ISm7uCrPT+h5o/8USKpvXIqsWq8U2NOa5556/m8=;
-        b=cNWo4yBwRTwBwps8iyf8xmXmepIGTSCNf2LNGSIVMYdxdwlw6oVkX1Kl2NcbO5Zzq6
-         Ei+x9gnv/ErCspG8p37WUrwiRoribroM4jK4LiahFy4A7mcu/GsMxVqWIIZsICuSPm3e
-         BwN9orCgpdbZfC5izYfsDSTJIhRr/Vxv+YcWfl/tgkDTE/f46tvdOuwTHEVr9yA1CitO
-         WAOTYd8siLfnKPDQKSeItxevtwzNjjG4fWfL71JFX6ndHZtrtkNLEq32DrQgAImMa111
-         b07Uk4E6XS5n2cJt5a/hP3VgG+u50Rzu0PVSI8pZjbXqpd3gSsE6fYr8zmzpZjjdrXfF
-         H0gw==
+        bh=OmUP2MPcenXFfmwZ7lA2aT/KxEZB62H8R34vZjhjmNI=;
+        b=nw+pbUJsDE2VGEhZebCyVBzZz9salofRyj4jtbw9NAhJa/FW41OT396ayeu5T5yNVW
+         ggBcULktVieAz/K5iTAmfBrfPR+6AMDnIu7qM27gV/cpqqGPi9rFsR+I/eHm49ki9F1b
+         kgYIygygOk56hoE+TjmqHVyViHTT6gs8ENlYEX8Qg1101IWRAFq8iEZnQadRjOLv+8Ki
+         3zIOUCNId03yHgbFiLsTiLXWdjwWrcU0LyqbxWjNA53QdQSXRHJTS1mL3O6xoHR3VHKz
+         WuKmkKikbNUct6yPWXRNohQhtbcN1LFYc9cn4K9CFvJM6Mx0vbUXfOK0YyHipdTA4p8K
+         vlmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:message-id:mime-version:subject:date
          :in-reply-to:cc:to:references;
-        bh=lAa6ISm7uCrPT+h5o/8USKpvXIqsWq8U2NOa5556/m8=;
-        b=MCimRur9NkAB4W2JO4ZB7EiBGOsGBGOQ0pF4g797jfdzTqTk9xXAWseb+8xveAC4aV
-         z8Iqa3h3LmC1RRaznHdBVgAxhFt7mgikoXIbsVskU/Fv7PdLS+yBXTF58YfGVoi+Qh5/
-         tigiSCQk7+G/RRecWN0xUj1RgIthNTzX938POIVRD8PVzTEnZg8fNe8qf+9+oBbrS++X
-         G6/VeXFC76+uyqb0ECZh+PfEOiPbK3fOIuB5B17OXAkTjuCnw3nABwkI+H13H7VSZyl+
-         gAJpkGdZtPYymN7dMTp+uaHPNJrTspamsfIZhA3VJDzijy31wtWlSEOXAzVae8AW+sI7
-         vf5Q==
-X-Gm-Message-State: AOAM532h1u0pcCaiiGyIX4zoahFquwztGTTzRuwSIIrHJsoGcnPCnjcM
-        r354pxh0YPFtTBzeT/6cawRYkg==
-X-Google-Smtp-Source: ABdhPJxtnCQS2009pSf+S+On0hCx6qSAE8Q3l/QJC0K2JWJb2MdsnrrnPhEAqtLqDMMh7/JX8+0pLQ==
-X-Received: by 2002:a17:902:ab98:b029:d8:c5e8:978a with SMTP id f24-20020a170902ab98b02900d8c5e8978amr280062plr.56.1606949536254;
-        Wed, 02 Dec 2020 14:52:16 -0800 (PST)
+        bh=OmUP2MPcenXFfmwZ7lA2aT/KxEZB62H8R34vZjhjmNI=;
+        b=SeT/7J0biDafeRKyx/uDfANf01D+QhqL3uWukVmSjmX22wM2LOV3DpYn9xHul6YzI5
+         SCD0pIPLBY7xM37QdMrc4uzrg2hjaenJnhn67sd3DmvkLa3wVDsFCG5TwjrlvzEF5vhX
+         Zkr9ZLTCuFu+TCU5KYCPez4Qxd9DvTg1oikVQfuf2icEMB7ed+66mvPU+54AZENDwK49
+         qs9yMCOF5h0PqCAOSmIRq831CUHmLlRRm66HSyGQ+rsAtwsCzsdC6paEShdpDYzKPwzX
+         2XB+3FEoB/h0yCSa4zGqCSq/F3763sT/7AN8r9Frq+cltvlRLQ1aTje0/Qt/linBAscV
+         rgZA==
+X-Gm-Message-State: AOAM530gHju98C35IBFkhI37KrMd+jfilumd54ubcdHyC3slPzCnP5Ip
+        nLxpZvwZPCiIe1ju8a5debNr+w==
+X-Google-Smtp-Source: ABdhPJy2sFJxHWGZ5G6i7qp1heXgxdv9zTwWgR9Q3+y8MTeiOA+nkHTIWvtORcYby+4Y7NSqrLY9mQ==
+X-Received: by 2002:a17:902:8209:b029:d6:d2c9:1db5 with SMTP id x9-20020a1709028209b02900d6d2c91db5mr281911pln.54.1606949559241;
+        Wed, 02 Dec 2020 14:52:39 -0800 (PST)
 Received: from [192.168.10.160] (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id k4sm119861pfa.103.2020.12.02.14.52.15
+        by smtp.gmail.com with ESMTPSA id k4sm119861pfa.103.2020.12.02.14.52.38
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 02 Dec 2020 14:52:15 -0800 (PST)
+        Wed, 02 Dec 2020 14:52:38 -0800 (PST)
 From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <5C84DBE6-E9AE-44D9-8BFC-0683C85F666C@dilger.ca>
+Message-Id: <61983A66-FC9F-413D-B712-1F30E9BDFCBC@dilger.ca>
 Content-Type: multipart/signed;
- boundary="Apple-Mail=_086127B6-A5B9-4644-AEED-CBE64C521D8D";
+ boundary="Apple-Mail=_E798FBC2-B426-42EC-9AAE-51D67E6BE4E1";
  protocol="application/pgp-signature"; micalg=pgp-sha256
 Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
 Subject: Re: [PATCH 5/9] fscrypt: introduce fscrypt_prepare_readdir()
-Date:   Wed, 2 Dec 2020 15:52:13 -0700
+Date:   Wed, 2 Dec 2020 15:52:37 -0700
 In-Reply-To: <20201125002336.274045-6-ebiggers@kernel.org>
 Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
         linux-f2fs-devel@lists.sourceforge.net,
@@ -69,12 +69,13 @@ List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 
---Apple-Mail=_086127B6-A5B9-4644-AEED-CBE64C521D8D
+--Apple-Mail=_E798FBC2-B426-42EC-9AAE-51D67E6BE4E1
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain;
 	charset=us-ascii
 
-On Nov 24, 2020, at 5:23 PM, Eric Biggers <ebiggers@kernel.org> wrote:
+
+> On Nov 24, 2020, at 5:23 PM, Eric Biggers <ebiggers@kernel.org> wrote:
 >=20
 > From: Eric Biggers <ebiggers@google.com>
 >=20
@@ -86,6 +87,9 @@ filesystems
 > We need to add a new argument to fscrypt_get_encryption_info() to
 > indicate whether the encryption policy to allowed to be unrecognized =
 or
+
+(typo) *is* allowed
+
 > not.  Doing this is easier if we can work with high-level operations
 > rather than direct filesystem use of fscrypt_get_encryption_info().
 >=20
@@ -93,9 +97,6 @@ or
 > fscrypt_get_encryption_info() for the readdir use case.
 >=20
 > Signed-off-by: Eric Biggers <ebiggers@google.com>
-
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
-
 > ---
 > fs/crypto/hooks.c       |  6 ++++++
 > fs/ext4/dir.c           |  8 +++-----
@@ -255,7 +256,7 @@ Cheers, Andreas
 
 
 
---Apple-Mail=_086127B6-A5B9-4644-AEED-CBE64C521D8D
+--Apple-Mail=_E798FBC2-B426-42EC-9AAE-51D67E6BE4E1
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment;
 	filename=signature.asc
@@ -266,19 +267,19 @@ Content-Description: Message signed with OpenPGP
 -----BEGIN PGP SIGNATURE-----
 Comment: GPGTools - http://gpgtools.org
 
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl/IGp0ACgkQcqXauRfM
-H+AP6Q/+MHpJH7lRfuvglXXmU4UThuvLs/rAMJKbloZXk/CvPKBUEtAUpscsZEur
-9/Z4MUJTzAtVlc3PG391SSc4QqSOu58K5r8ZBtv9GsFZniEtRbRmuJJoAXorKz5Q
-BiglWRT0Z2xWl0UdWMui5e8TldO2xAU3S4mznT+lZfiJsbjxM8u7vz4MkfPPNZx5
-hKskvYV5YPSPlA1LGkNF89vyNxYXxDelt9lQJSs8tNMrhueXra5ddki6YO7ulwpL
-6eaLYmnkPVZt7STEVNG5Aq/ZRkAlav/DIb2f6+9qHULMVMoibulXeyWSvCzshbt6
-zGL7e5+MQUE+wb8rFe25Ic92sUZtEZ8JAKdQB6K6ZdZ0PWCNWLSRXDJJJwCi0MQM
-XDKgR2ysAjioEpiNydcFDj5KMLEmVI4gu19KN0MpaX0B/kHNn+BG2QfVes25mSCT
-XMgccEzyHISrDWtBRuUQoscTRKqUMLspJw++fPgCmT8lXARfV1YvI3C2GqzFd4HT
-PRUCoArtHppOu7RgPNT12mTjmmwGF+YJ8WmgXgITWkkVfacHWFYVyf8DKT7JqYXy
-VHfJoxwb73Xb/zQV73iPllCKfU0F4sRVNWHb0UeaoLZU7PecqTBzNSsPSpo/C/pL
-hAmIUa7+slR997Sc0ng5C3PEhlAY5iLTdoiejVyYtknlAO05puA=
-=kCNT
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl/IGrUACgkQcqXauRfM
+H+DTQhAAuYlAZUnmGq1PBm62te5T4PH0Rz7ZV8pizJPaidGHUb8wgNx+XEEQ3RKJ
+zkP12wPe5i/2CQuuGyJAihuGQDBEocJhz8xAnCTVSJtp9i5cLzgOoP7FlMlIzeXC
+5//PQE+eQIXfqaAcsYFbMSlogupdVOUxNiA5Vsit4zVAbaWqZH/1E4CQl/4xIS3L
+wV20KyhzylH1nxbYoNYC+AFEhbp+/rHLGlu6ZlrkLPs6EtsPHSJMywdyj7rS9wty
+iAE82ZGdDRKhf+s4hxCiMVKNtsJ0Qq+psHLzUpLo3Nn/F40mdSo2lt0KDS7dhONB
+Z3KmukXq8D8/4bmb5P6+yVtF6wRwsZrQ+PwCdjT6Z9Y48fZxpZin0KqKgoDGBlkT
+zTSZBDDxys5KGEQ91lJA0EJrl20F3RJckwUHeaiNNYpUS2JMzDipVZHSFpJzqsk6
+9MdyETVc0RbGCMIavUyAuxMxHg9zEccqZNZgGo6OCfsQ7t4Z4zFsVLjbzARonldl
+hmczfzZw5xb7qh2Fte7Wl2wk0ltyuhB9mPhbMiotfdwkq9ZQoaCD4NtSXb9DCJvc
+qunKdVZD+ig/geI5ZgTBsPW3YC5olrItqRJzXbGM6guW5WXZIjcd3lJK7+ixG6xI
+xBBRk59t5uh34lt8OoOECGOmD4IyFGHpEoRxn9eT3aB7pDsDcQQ=
+=6a0V
 -----END PGP SIGNATURE-----
 
---Apple-Mail=_086127B6-A5B9-4644-AEED-CBE64C521D8D--
+--Apple-Mail=_E798FBC2-B426-42EC-9AAE-51D67E6BE4E1--
