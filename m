@@ -2,70 +2,81 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51D232CD821
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  3 Dec 2020 14:48:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F32C52CDEBC
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  3 Dec 2020 20:24:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726194AbgLCNqw (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 3 Dec 2020 08:46:52 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:52366 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725966AbgLCNqv (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 3 Dec 2020 08:46:51 -0500
-Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0B3DjdIr014834
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 3 Dec 2020 08:45:40 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 58FF3420136; Thu,  3 Dec 2020 08:45:39 -0500 (EST)
-Date:   Thu, 3 Dec 2020 08:45:39 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>, Chao Yu <chao@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Eric Biggers <ebiggers@google.com>
-Subject: Re: [PATCH v7 6/8] ext4: support direct I/O with fscrypt using
- blk-crypto
-Message-ID: <20201203134539.GB441757@mit.edu>
-References: <20201117140708.1068688-1-satyat@google.com>
- <20201117140708.1068688-7-satyat@google.com>
+        id S1728708AbgLCTYW (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 3 Dec 2020 14:24:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51164 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728339AbgLCTYW (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 3 Dec 2020 14:24:22 -0500
+Date:   Thu, 3 Dec 2020 11:23:38 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607023421;
+        bh=dgKZ0GPXALlHJ8HX2WzQ7blAJ5ntasiHe5O/gfXbvTc=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=S6FEgB8jX/1c70EB2oYEoo/CAvEBHADLY8FuQNB5oOG4rV63f6o634o9/9m8gejVC
+         k4deXopmHpKWW2htjAJeQK87u3IKCh+1g3QgPlOnDffMwAWTgMAFgDdlbBbWfUqeTd
+         sMpndykYU2BSng1r6adQs2xXUCdzK7fm8ztoVzPV3c0Yous7vui7YcFjk23DiFNbOu
+         rh7k5Gt7MaBO6bPhD/2Wd2Osh5PZxCZZoQVpbLx6UzEWpivYcLxHBYt1z4a0AfVWSu
+         hZqjSsyzYhR55bF1Nx7t0aJQUMTVHlm/vKcupwACm92gqX2/Us+hLTOyNFKCZYF7fw
+         DNlU2KrGIc2dw==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     linux-mmc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        Satya Tangirala <satyat@google.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Neeraj Soni <neersoni@codeaurora.org>,
+        Barani Muthukumaran <bmuthuku@codeaurora.org>,
+        Peng Zhou <peng.zhou@mediatek.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Konrad Dybcio <konradybcio@gmail.com>
+Subject: Re: [PATCH v2 3/9] mmc: cqhci: initialize upper 64 bits of 128-bit
+ task descriptors
+Message-ID: <X8k7Oj7e7ARtsmol@gmail.com>
+References: <20201203020516.225701-1-ebiggers@kernel.org>
+ <20201203020516.225701-4-ebiggers@kernel.org>
+ <bf74d785-a88e-f621-24a3-4e68aeeee753@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201117140708.1068688-7-satyat@google.com>
+In-Reply-To: <bf74d785-a88e-f621-24a3-4e68aeeee753@intel.com>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 02:07:06PM +0000, Satya Tangirala wrote:
-> From: Eric Biggers <ebiggers@google.com>
+On Thu, Dec 03, 2020 at 08:45:15AM +0200, Adrian Hunter wrote:
+> On 3/12/20 4:05 am, Eric Biggers wrote:
+> > From: Eric Biggers <ebiggers@google.com>
+> > 
+> > Move the task descriptor initialization into cqhci_prep_task_desc(), and
+> > make it initialize all 128 bits of the task descriptor if the host
+> > controller is using 128-bit task descriptors.
+> > 
+> > This is needed to prepare for CQHCI inline encryption support, which
+> > requires 128-bit task descriptors and uses the upper 64 bits.
+> > 
+> > Note: since some host controllers already enable 128-bit task
+> > descriptors, it's unclear why the previous code worked when it wasn't
+> > initializing the upper 64 bits.  One possibility is that the bits are
+> > being ignored because the features that use them aren't enabled yet.
+> > In any case, setting them to 0 won't hurt.
 > 
-> Wire up ext4 with fscrypt direct I/O support. Direct I/O with fscrypt is
-> only supported through blk-crypto (i.e. CONFIG_BLK_INLINE_ENCRYPTION must
-> have been enabled, the 'inlinecrypt' mount option must have been specified,
-> and either hardware inline encryption support must be present or
-> CONFIG_BLK_INLINE_ENCYRPTION_FALLBACK must have been enabled). Further,
-> direct I/O on encrypted files is only supported when the *length* of the
-> I/O is aligned to the filesystem block size (which is *not* necessarily the
-> same as the block device's block size).
-> 
-> fscrypt_limit_io_blocks() is called before setting up the iomap to ensure
-> that the blocks of each bio that iomap will submit will have contiguous
-> DUNs. Note that fscrypt_limit_io_blocks() is normally a no-op, as normally
-> the DUNs simply increment along with the logical blocks. But it's needed
-> to handle an edge case in one of the fscrypt IV generation methods.
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> Co-developed-by: Satya Tangirala <satyat@google.com>
-> Signed-off-by: Satya Tangirala <satyat@google.com>
-> Reviewed-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> Coherent allocations are zero-initialized.  So the upper 64-bits stay zero.
+> People set 128-bit anyway because the hardware needs it.
 
-Acked-by: Theodore Ts'o <tytso@mit.edu>
+Okay, that explains it then -- I didn't realize that dma_alloc_coherent() always
+returns zeroed memory.  It isn't mentioned in
+Documentation/core-api/dma-api.rst, and there's no kerneldoc comment, so it
+wasn't clear.  But apparently it's intentional; see commit 518a2f1925c3
+("dma-mapping: zero memory returned from dma_alloc_*").
 
+I'll fix this commit message in the next version.
+
+- Eric
