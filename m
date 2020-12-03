@@ -2,61 +2,70 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDDC62CD1A8
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  3 Dec 2020 09:47:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51D232CD821
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  3 Dec 2020 14:48:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730007AbgLCIqm (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 3 Dec 2020 03:46:42 -0500
-Received: from mail.boldwhite24.com ([80.211.42.67]:51130 "EHLO
-        mail.boldwhite24.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730002AbgLCIqm (ORCPT
+        id S1726194AbgLCNqw (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 3 Dec 2020 08:46:52 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:52366 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725966AbgLCNqv (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 3 Dec 2020 03:46:42 -0500
-Received: by mail.boldwhite24.com (Postfix, from userid 1001)
-        id 94747A2BBB; Thu,  3 Dec 2020 08:45:25 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=boldwhite24.com;
-        s=mail; t=1606985149;
-        bh=hS3ibs4caZkahrzgcMN2TAJo2B2H5Muwb2NidDYlIzQ=;
-        h=Date:From:To:Subject:From;
-        b=i2QvZl6v4WvBvbiN/M7hwzlRWsiwgk4TrCIhwzJZoAs9GHOQUMc2X8y2I1I7cZzOE
-         +wPILfdgBJ2kC8VaLNXakFU46eTWR7/u+4EaOmwTPLUuahS262HYOSnnKGCt6Apaaw
-         NlXyhEjdsAtV14Wh9veBA9FwTE4PizHWZTiDylSAxqMoJ/+IXCZgA7nQu43a/BxKl9
-         Sny0kx85fTdCjLQQ+Eu1yShadt1tClJHam7Vzz5fRqPnogKvucyRHXmtYMJkOO55sG
-         KWQwdZi4FcUo33fOd9ntpd/BGzttojcV8q3dwyb4lbP2dAEpfTLid7+OCl6OyHiQxq
-         AXcWsAIYGnPUg==
-Received: by mail.boldwhite24.com for <linux-fscrypt@vger.kernel.org>; Thu,  3 Dec 2020 08:45:13 GMT
-Message-ID: <20201203074501-0.1.2m.amrc.0.pie3fv3dzi@boldwhite24.com>
-Date:   Thu,  3 Dec 2020 08:45:13 GMT
-From:   =?UTF-8?Q? "Diego_S=C3=A1nchez" ?= <diego.sanchez@boldwhite24.com>
-To:     <linux-fscrypt@vger.kernel.org>
-Subject: Disinfection
-X-Mailer: mail.boldwhite24.com
+        Thu, 3 Dec 2020 08:46:51 -0500
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0B3DjdIr014834
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 3 Dec 2020 08:45:40 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 58FF3420136; Thu,  3 Dec 2020 08:45:39 -0500 (EST)
+Date:   Thu, 3 Dec 2020 08:45:39 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Satya Tangirala <satyat@google.com>
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>, Chao Yu <chao@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Eric Biggers <ebiggers@google.com>
+Subject: Re: [PATCH v7 6/8] ext4: support direct I/O with fscrypt using
+ blk-crypto
+Message-ID: <20201203134539.GB441757@mit.edu>
+References: <20201117140708.1068688-1-satyat@google.com>
+ <20201117140708.1068688-7-satyat@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117140708.1068688-7-satyat@google.com>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Good morning,
+On Tue, Nov 17, 2020 at 02:07:06PM +0000, Satya Tangirala wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> Wire up ext4 with fscrypt direct I/O support. Direct I/O with fscrypt is
+> only supported through blk-crypto (i.e. CONFIG_BLK_INLINE_ENCRYPTION must
+> have been enabled, the 'inlinecrypt' mount option must have been specified,
+> and either hardware inline encryption support must be present or
+> CONFIG_BLK_INLINE_ENCYRPTION_FALLBACK must have been enabled). Further,
+> direct I/O on encrypted files is only supported when the *length* of the
+> I/O is aligned to the filesystem block size (which is *not* necessarily the
+> same as the block device's block size).
+> 
+> fscrypt_limit_io_blocks() is called before setting up the iomap to ensure
+> that the blocks of each bio that iomap will submit will have contiguous
+> DUNs. Note that fscrypt_limit_io_blocks() is normally a no-op, as normally
+> the DUNs simply increment along with the logical blocks. But it's needed
+> to handle an edge case in one of the fscrypt IV generation methods.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> Co-developed-by: Satya Tangirala <satyat@google.com>
+> Signed-off-by: Satya Tangirala <satyat@google.com>
+> Reviewed-by: Jaegeuk Kim <jaegeuk@kernel.org>
 
-looking for companies interested in raising additional capital by diversi=
-fying their offer in soaps, liquids and gels for hand disinfection and co=
-smetics for body and hair care.
+Acked-by: Theodore Ts'o <tytso@mit.edu>
 
-The distribution of innovative products corresponding to the current pref=
-erences of customers in the field of hygiene and preventive healthcare al=
-lows our partners to gain new markets and achieve better economic results=
-=2E
-
-In addition to products with bactericidal action, our range includes show=
-er gels, shampoos and hair conditioners, as well as efficient, concentrat=
-ed detergents.
-
-The versatility (suitable for all skin types) combined with an affordable=
- price means that customers make an informed choice of a product among ot=
-hers available on the market.
-
-Are you interested in cooperation?
-
-Diego S=C3=A1nchez
