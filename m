@@ -2,92 +2,54 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02ECA2D1810
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  7 Dec 2020 19:02:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3E732D1F98
+	for <lists+linux-fscrypt@lfdr.de>; Tue,  8 Dec 2020 01:52:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725816AbgLGSBu (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 7 Dec 2020 13:01:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52508 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725804AbgLGSBt (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 7 Dec 2020 13:01:49 -0500
-Date:   Mon, 7 Dec 2020 10:01:06 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607364068;
-        bh=0q3hSpdHGahpDyi3FplEQN1u2LRkg5kTzxu59n1eKhg=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hdKwUj035xPG2qjEGfZ/kt62gYC4VsNNPVoY6PgYRuwYPaCwm3DTIQaDFpLLU5KzR
-         TEzIiA273JQ5+kEdsoQ0fsjMgVbqz2wLUHtD2OM+8vXZnyZ1McvLmt1zSpTgC5FZ19
-         Y0DEv0OffgUCJVPpo4XZ/lyqD3q1T8ayRGsg6+SmG8h0BhmkEJ/p7wQhPGs+ap+pLZ
-         NmVI+XSsVc8inoDEC/HBzOiFaO+H0Eq5tSdSA9yvVjCOoD6qnBVpA5rwsiJo70fpbD
-         cIsLi1qtugGglhcPjRm59gYgJbH5obnllMG/kV95yCksEtbQi3f9cXqYwlWYwyNJJs
-         f4/hx4rVbR1rA==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Chirantan Ekbote <chirantan@chromium.org>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>, linux-fsdevel@vger.kernel.org,
-        Dylan Reid <dgreid@chromium.org>,
-        Suleiman Souhlal <suleiman@chromium.org>,
-        fuse-devel@lists.sourceforge.net, linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH] fuse: Support FS_IOC_GET_ENCRYPTION_POLICY_EX
-Message-ID: <X85t4o2fmVUo8RpZ@gmail.com>
-References: <20201207040303.906100-1-chirantan@chromium.org>
+        id S1728540AbgLHAvj (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 7 Dec 2020 19:51:39 -0500
+Received: from vsm-gw.hyogo-dai.ac.jp ([202.244.76.12]:35012 "EHLO
+        vsm-gw.hyogo-dai.ac.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727744AbgLHAvi (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 7 Dec 2020 19:51:38 -0500
+Received: from humans-kc.hyogo-dai.ac.jp (humans-kc.hyogo-dai.ac.jp [202.244.77.11])
+        by vsm-gw.hyogo-dai.ac.jp (Postfix) with ESMTP id CBA0F1A606C;
+        Tue,  8 Dec 2020 04:09:26 +0900 (JST)
+Received: from humans-kc.hyogo-dai.ac.jp (humans-kc.hyogo-dai.ac.jp [127.0.0.1])
+        by postfix.imss71 (Postfix) with ESMTP id 71FC683826D;
+        Tue,  8 Dec 2020 04:09:26 +0900 (JST)
+Received: from hyogo-dai.ac.jp (unknown [202.244.77.11])
+        by humans-kc.hyogo-dai.ac.jp (Postfix) with SMTP id 426EA83825B;
+        Tue,  8 Dec 2020 04:09:26 +0900 (JST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201207040303.906100-1-chirantan@chromium.org>
+Message-ID: <20201207190926.000057A2.0664@hyogo-dai.ac.jp>
+Date:   Tue, 08 Dec 2020 04:09:26 +0900
+From:   "Raymond " <hozumi@hyogo-dai.ac.jp>
+To:     <infocarferw1@aim.com>
+Reply-To: <infocarfer@aim.com>
+Subject: I am Vice Chairman of Hang Seng Bank, Dr. Raymond Chien
+         Kuo Fung I have Important Matter to Discuss with you concerning
+         my late client. Died without a NEXT OF KIN. Send me your private
+         email for full details information.
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MAILER: Active! mail
+X-TM-AS-MML: disable
+X-TM-AS-Product-Ver: IMSS-7.1.0.1808-8.2.0.1013-25446.007
+X-TM-AS-Result: No--2.951-5.0-31-10
+X-imss-scan-details: No--2.951-5.0-31-10
+X-TM-AS-User-Approved-Sender: No
+X-TMASE-MatchedRID: X41QhRrT5f5ITndh1lLRASsOycAMAhSTkCM77ifYafsBLhz6t76Ce6P0
+        clhHAFPyJA6GJqxAEzL554DD9nXlqqPFjJEFr+olfeZdJ1XsoriOub3SYcq1hJf7eAx/Ae/AbQo
+        eraIcZBRw7u01FqNA2K1Ia4IbeAdLm9ukrtqhno/rIUidklntLAP5zT0d393cymsk/wUE4hoZaR
+        NzIP3XI5u3uLPgwbAMH5RdHnhWfwyq9gpuf+A6coDeeVSgzszVDx5n520Z3eZyT7DDRtYlKaWBy
+        ZE9nSaC/rhfyjvqkZu/pNa4BidtZEMMprcbiest
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Please Cc linux-fscrypt@vger.kernel.org on all fscrypt-related patches.
+email:kraymond75@aol.com
 
-On Mon, Dec 07, 2020 at 01:03:03PM +0900, Chirantan Ekbote wrote:
-> This is a dynamically sized ioctl so we need to check the user-provided
-> parameter for the actual length.
-> 
-> Signed-off-by: Chirantan Ekbote <chirantan@chromium.org>
 
-Could you add something here about why this ioctl in particular needs to be
-passed through FUSE?  This isn't the only dynamically-sized ioctl.
 
-> @@ -2808,6 +2809,21 @@ long fuse_do_ioctl(struct file *file, unsigned int cmd, unsigned long arg,
->  		case FS_IOC_SETFLAGS:
->  			iov->iov_len = sizeof(int);
->  			break;
-> +		case FS_IOC_GET_ENCRYPTION_POLICY_EX: {
-
-This is in the middle of a 200 lines function.  It would be easier to understand
-if you refactored this to use a helper function that that takes in the ioctl
-number and user buffer and returns the size.
-
-> +			struct fscrypt_get_policy_ex_arg policy;
-
-'__u64 policy_size' would be sufficient, since only that part of the struct is
-used.
-
-> +			unsigned long size_ptr =
-> +				arg + offsetof(struct fscrypt_get_policy_ex_arg,
-> +					       policy_size);
-
-Doing pointer arithmetic on unsigned long is unusual.  It would be easier to
-understand if you did:
-
-	struct fscrypt_get_policy_ex_arg __user *uarg =
-		(struct fscrypt_get_policy_ex_arg __user *)arg;
-
-Then pass &uarg->policy_size to copy_from_user().
-
-> +
-> +			if (copy_from_user(&policy.policy_size,
-> +					   (void __user *)size_ptr,
-> +					   sizeof(policy.policy_size)))
-> +				return -EFAULT;
-> +
-> +			iov->iov_len =
-> +				sizeof(policy.policy_size) + policy.policy_size;
-> +			break;
-
-This may overflow SIZE_MAX, as policy_size is a __u64 directly from userspace.
-Wouldn't FUSE need to limit the size to a smaller value?
-
-- Eric
