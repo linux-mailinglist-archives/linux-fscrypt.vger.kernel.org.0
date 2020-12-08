@@ -2,53 +2,53 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80E1A2D3704
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  9 Dec 2020 00:41:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EDB92D371A
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  9 Dec 2020 00:47:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731798AbgLHXkt (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 8 Dec 2020 18:40:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40886 "EHLO
+        id S1730353AbgLHXqn (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 8 Dec 2020 18:46:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731797AbgLHXkt (ORCPT
+        with ESMTP id S1730366AbgLHXqn (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 8 Dec 2020 18:40:49 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FFD2C061794
-        for <linux-fscrypt@vger.kernel.org>; Tue,  8 Dec 2020 15:40:09 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id b26so198385pfi.3
-        for <linux-fscrypt@vger.kernel.org>; Tue, 08 Dec 2020 15:40:09 -0800 (PST)
+        Tue, 8 Dec 2020 18:46:43 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A1FCC061794
+        for <linux-fscrypt@vger.kernel.org>; Tue,  8 Dec 2020 15:46:03 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id 11so206732pfu.4
+        for <linux-fscrypt@vger.kernel.org>; Tue, 08 Dec 2020 15:46:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=f2Rw+12cZC2KSwMyweXqKWzxEzMTuwN2X3XRonxyDdA=;
-        b=Mz0jCmzBsRIsp6HP7rMkXmC1oAS36LfYs+kRAsDygVnppOCLwWPX8MoRymHuRZNfkH
-         ScZb8P92S4iqLty1mCDmarNyP459J1Wub5rvM5f0mkh44nbbZ/RNtPCT28DE4VL8v+i/
-         4j/1wTvGoV/rXDAiWm2HHWNolbvmIF3hB1Mwmda5xumQk9PFu8WsAQaz+g66Ln/86BS1
-         qPPD0WS7g+OtrfTmXXWjPyl1zFOJNWnA2i+AiyNDbXMHsXlR2VRC+Z0XfXKuoeuzjLK4
-         /5/IRpRMbY1x5tnucGzrbbQYcg7IjpQtav10fk9czuwx3kSDH2zf2v4tFMsJdLyR51Vz
-         02qQ==
+        bh=4yKNxCl+vQDHfatyg/GcsY0hnIkoBzf+/9KfiXssTbk=;
+        b=j3cf3covSKiEEgqlptY0VhDHLRYGHGX9Rccbg6vafc+TS1yoTZDylFNBgVeGm5CpEq
+         QA1vi/34q9BSpQrH+Vy2eP/Dqse2qrDAd7HxQ7GsdDYxPPFCYH9HYesNAaVsawl9Fk2s
+         OBWYBDDPBWKTqvL64Wlz2AaWL//qdrpUq+sFSQpTWtBzDvhqw4hhtizgvGXd0WOtiYlx
+         Mjd93cLFHgt8ILpIY20BdoA1LTDGQm8/WYdPvXxl92lgL64EyDwM7Va32QKArcaWIxZY
+         HrAob+eVigI2Uz3yGRCe6NjbcH7oWvRes+TIKhfwbIkB4ZDJ3ZGK5gP2VDhi5vS15ORr
+         F6QQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=f2Rw+12cZC2KSwMyweXqKWzxEzMTuwN2X3XRonxyDdA=;
-        b=SzfGpqUy7f533tFuVkOfP+SfOfV3hXd3XU0sWngAAtE3FuEwV1w0MDtGwQCvgyiKgn
-         EbdEjnpnrC/95/P/wDDds9Oo6LBtQmhAO3TjSyuxsf6NkaZFeyIQ9KZ/imq0bETmqtKH
-         2Y3D/GWDRCe1jBEbps50VN7UzbD1RpF0Iy+9ClbjW1xL4pc/2BkZXBDu7YOu6QOwV8X4
-         pY/iaFT6CM+uQEQQusEPrsM7huVdn2JEAq3tM+FgMWYkhgzJ+lBBYAHX/hIE2Y/U9Np9
-         0ACR5/VFWS2jFDte1H8B19b1LFfh6dMGsVGSowh+abyKUWFYmFdk8ZnxFIxrZGCHSeli
-         AZ4g==
-X-Gm-Message-State: AOAM530OffGeW7YjHEJiBsRnL+4O13NoQ7F4u3mLuI8D5q+tW7g8979P
-        c4mxAmmCd3MTV3eVTIPdZfVrmg==
-X-Google-Smtp-Source: ABdhPJwJSPIK2+J8m6zel41LGCYs14ViXvidllaMUKjG9MhQuooGx+n8TJqn7++xeEVbbG6dQ/YtSw==
-X-Received: by 2002:a63:5f49:: with SMTP id t70mr422693pgb.288.1607470808422;
-        Tue, 08 Dec 2020 15:40:08 -0800 (PST)
+        bh=4yKNxCl+vQDHfatyg/GcsY0hnIkoBzf+/9KfiXssTbk=;
+        b=oqE5rseVnxw0Hx0i3+phHpIMfYN4b49y014LdOblvCkC/uIzTZp7WN6aMXQTzr8yx3
+         skm5BfCeY3sTYVhK7/uoQmiNb9Wk/UoC7/lb8n8FP/CQyoxBOar4S08cIy8M/44/pSjf
+         ZA/ewS1yyx2WC1b5jxt6C6i4WiL+d1abUYM5soqDAhVOYNIUHZHwJw/g5VuMze3pA8vO
+         OHMWpMtmWxkwGm5VNks9gKRwwt2lJTPvbz4PIlVXE0g4xi9canGOA/NsIfJfUc3by9s0
+         H0f8ova3vJp23dZRPfjh7+g3MWO6+3P035ypQbDAJKca1j3b7wAz1cBcWzIEq3hRDOXU
+         Dajw==
+X-Gm-Message-State: AOAM531X5FRwbmVtd0JoFyDlUavOdO+ctN42hb6rQwiiFS57unbszcpN
+        z93SO94xV5EzXwfQ4BUfPQ+QmA==
+X-Google-Smtp-Source: ABdhPJyI/vseLuf6fqn0RbssnJqSnhSx2Zt0Y1bE1VF6+Ho9YPaIoTKi8qTqmMHsuVmheP/0V9yFcQ==
+X-Received: by 2002:a17:90a:e386:: with SMTP id b6mr164919pjz.134.1607471162567;
+        Tue, 08 Dec 2020 15:46:02 -0800 (PST)
 Received: from google.com (154.137.233.35.bc.googleusercontent.com. [35.233.137.154])
-        by smtp.gmail.com with ESMTPSA id e13sm72326pgh.54.2020.12.08.15.40.07
+        by smtp.gmail.com with ESMTPSA id x6sm82407pgr.20.2020.12.08.15.46.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 15:40:07 -0800 (PST)
-Date:   Tue, 8 Dec 2020 23:40:04 +0000
+        Tue, 08 Dec 2020 15:46:01 -0800 (PST)
+Date:   Tue, 8 Dec 2020 23:45:58 +0000
 From:   Satya Tangirala <satyat@google.com>
 To:     Eric Biggers <ebiggers@kernel.org>
 Cc:     linux-mmc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
@@ -64,329 +64,106 @@ Cc:     linux-mmc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         Peng Zhou <peng.zhou@mediatek.com>,
         Stanley Chu <stanley.chu@mediatek.com>,
         Konrad Dybcio <konradybcio@gmail.com>
-Subject: Re: [PATCH v2 1/9] mmc: add basic support for inline encryption
-Message-ID: <X9AO1Azlf4SSNuxR@google.com>
+Subject: Re: [PATCH v2 3/9] mmc: cqhci: initialize upper 64 bits of 128-bit
+ task descriptors
+Message-ID: <X9AQNsePlMQK7a0i@google.com>
 References: <20201203020516.225701-1-ebiggers@kernel.org>
- <20201203020516.225701-2-ebiggers@kernel.org>
+ <20201203020516.225701-4-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201203020516.225701-2-ebiggers@kernel.org>
+In-Reply-To: <20201203020516.225701-4-ebiggers@kernel.org>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 06:05:08PM -0800, Eric Biggers wrote:
+On Wed, Dec 02, 2020 at 06:05:10PM -0800, Eric Biggers wrote:
 > From: Eric Biggers <ebiggers@google.com>
 > 
-> In preparation for adding CQHCI crypto engine (inline encryption)
-> support, add the code required to make mmc_core and mmc_block aware of
-> inline encryption.  Specifically:
+> Move the task descriptor initialization into cqhci_prep_task_desc(), and
+> make it initialize all 128 bits of the task descriptor if the host
+> controller is using 128-bit task descriptors.
 > 
-> - Add a capability flag MMC_CAP2_CRYPTO to struct mmc_host.  Drivers
->   will set this if the host and driver support inline encryption.
+> This is needed to prepare for CQHCI inline encryption support, which
+> requires 128-bit task descriptors and uses the upper 64 bits.
 > 
-> - Embed a blk_keyslot_manager in struct mmc_host.  Drivers will
->   initialize this if the host and driver support inline encryption.
->   mmc_block registers this keyslot manager with the request_queue of any
->   MMC card attached to the host.  mmc_core destroys this keyslot manager
->   when freeing the mmc_host.
+> Note: since some host controllers already enable 128-bit task
+> descriptors, it's unclear why the previous code worked when it wasn't
+> initializing the upper 64 bits.  One possibility is that the bits are
+> being ignored because the features that use them aren't enabled yet.
+> In any case, setting them to 0 won't hurt.
 > 
-> - Make mmc_block copy the crypto keyslot and crypto data unit number
->   from struct request to struct mmc_request, so that drivers will have
->   access to them.
-> 
-> - If the MMC host is reset, reprogram all the keyslots to ensure that
->   the software state stays in sync with the hardware state.
-> 
-> Co-developed-by: Satya Tangirala <satyat@google.com>
-> Signed-off-by: Satya Tangirala <satyat@google.com>
-> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 > Signed-off-by: Eric Biggers <ebiggers@google.com>
 > ---
->  drivers/mmc/core/Kconfig  |  8 ++++++
->  drivers/mmc/core/Makefile |  1 +
->  drivers/mmc/core/block.c  |  3 +++
->  drivers/mmc/core/core.c   |  3 +++
->  drivers/mmc/core/crypto.c | 54 +++++++++++++++++++++++++++++++++++++++
->  drivers/mmc/core/crypto.h | 46 +++++++++++++++++++++++++++++++++
->  drivers/mmc/core/host.c   |  2 ++
->  drivers/mmc/core/queue.c  |  3 +++
->  include/linux/mmc/core.h  |  6 +++++
->  include/linux/mmc/host.h  |  7 +++++
->  10 files changed, 133 insertions(+)
->  create mode 100644 drivers/mmc/core/crypto.c
->  create mode 100644 drivers/mmc/core/crypto.h
+>  drivers/mmc/host/cqhci-core.c | 30 ++++++++++++++++++++----------
+>  1 file changed, 20 insertions(+), 10 deletions(-)
 > 
-> diff --git a/drivers/mmc/core/Kconfig b/drivers/mmc/core/Kconfig
-> index c12fe13e4b147..ae8b69aee6190 100644
-> --- a/drivers/mmc/core/Kconfig
-> +++ b/drivers/mmc/core/Kconfig
-> @@ -81,3 +81,11 @@ config MMC_TEST
->  	  This driver is only of interest to those developing or
->  	  testing a host driver. Most people should say N here.
->  
-> +config MMC_CRYPTO
-> +	bool "MMC Crypto Engine Support"
-> +	depends on BLK_INLINE_ENCRYPTION
-> +	help
-> +	  Enable Crypto Engine Support in MMC.
-> +	  Enabling this makes it possible for the kernel to use the crypto
-> +	  capabilities of the MMC device (if present) to perform crypto
-> +	  operations on data being transferred to/from the device.
-> diff --git a/drivers/mmc/core/Makefile b/drivers/mmc/core/Makefile
-> index 95ffe008ebdf8..6a907736cd7a5 100644
-> --- a/drivers/mmc/core/Makefile
-> +++ b/drivers/mmc/core/Makefile
-> @@ -18,3 +18,4 @@ obj-$(CONFIG_MMC_BLOCK)		+= mmc_block.o
->  mmc_block-objs			:= block.o queue.o
->  obj-$(CONFIG_MMC_TEST)		+= mmc_test.o
->  obj-$(CONFIG_SDIO_UART)		+= sdio_uart.o
-> +mmc_core-$(CONFIG_MMC_CRYPTO)	+= crypto.o
-> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-> index 8d3df0be0355c..eaf2f10743260 100644
-> --- a/drivers/mmc/core/block.c
-> +++ b/drivers/mmc/core/block.c
-> @@ -51,6 +51,7 @@
->  #include "block.h"
->  #include "core.h"
->  #include "card.h"
-> +#include "crypto.h"
->  #include "host.h"
->  #include "bus.h"
->  #include "mmc_ops.h"
-> @@ -1247,6 +1248,8 @@ static void mmc_blk_data_prep(struct mmc_queue *mq, struct mmc_queue_req *mqrq,
->  
->  	memset(brq, 0, sizeof(struct mmc_blk_request));
->  
-> +	mmc_crypto_prepare_req(mqrq);
-> +
->  	brq->mrq.data = &brq->data;
->  	brq->mrq.tag = req->tag;
->  
-> diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
-> index d42037f0f10d7..275de270232b3 100644
-> --- a/drivers/mmc/core/core.c
-> +++ b/drivers/mmc/core/core.c
-> @@ -37,6 +37,7 @@
->  
->  #include "core.h"
->  #include "card.h"
-> +#include "crypto.h"
->  #include "bus.h"
->  #include "host.h"
->  #include "sdio_bus.h"
-> @@ -992,6 +993,8 @@ void mmc_set_initial_state(struct mmc_host *host)
->  		host->ops->hs400_enhanced_strobe(host, &host->ios);
->  
->  	mmc_set_ios(host);
-> +
-> +	mmc_crypto_set_initial_state(host);
+> diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqhci-core.c
+> index 697fe40756bf2..ad7c9acff1728 100644
+> --- a/drivers/mmc/host/cqhci-core.c
+> +++ b/drivers/mmc/host/cqhci-core.c
+> @@ -408,13 +408,15 @@ static void cqhci_disable(struct mmc_host *mmc)
 >  }
 >  
->  /**
-> diff --git a/drivers/mmc/core/crypto.c b/drivers/mmc/core/crypto.c
-> new file mode 100644
-> index 0000000000000..4f47eb4740db0
-> --- /dev/null
-> +++ b/drivers/mmc/core/crypto.c
-> @@ -0,0 +1,54 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * MMC crypto engine (inline encryption) support
-> + *
-> + * Copyright 2020 Google LLC
-> + */
-> +
-> +#include <linux/blk-crypto.h>
-> +#include <linux/mmc/host.h>
-> +
-> +#include "core.h"
-> +#include "crypto.h"
-> +#include "queue.h"
-> +
-> +void mmc_crypto_set_initial_state(struct mmc_host *host)
-> +{
-> +	/* Reset might clear all keys, so reprogram all the keys. */
-> +	if (host->caps2 & MMC_CAP2_CRYPTO)
-> +		blk_ksm_reprogram_all_keys(&host->ksm);
-> +}
-> +
-> +void mmc_crypto_free_host(struct mmc_host *host)
-> +{
-> +	if (host->caps2 & MMC_CAP2_CRYPTO)
-> +		blk_ksm_destroy(&host->ksm);
-> +}
-> +
-> +void mmc_crypto_setup_queue(struct request_queue *q, struct mmc_host *host)
-> +{
-> +	if (host->caps2 & MMC_CAP2_CRYPTO)
-> +		blk_ksm_register(&host->ksm, q);
-> +}
-> +EXPORT_SYMBOL_GPL(mmc_crypto_setup_queue);
-> +
-> +void mmc_crypto_prepare_req(struct mmc_queue_req *mqrq)
-> +{
-> +	struct request *req = mmc_queue_req_to_req(mqrq);
-> +	struct mmc_request *mrq = &mqrq->brq.mrq;
-> +
-> +	if (!req->crypt_keyslot)
-> +		return;
-> +
-> +	mrq->crypto_enabled = true;
-> +	mrq->crypto_key_slot = blk_ksm_get_slot_idx(req->crypt_keyslot);
-> +
-> +	/*
-> +	 * For now we assume that all MMC drivers set max_dun_bytes_supported=4,
-> +	 * which is the limit for CQHCI crypto.  So all DUNs should be 32-bit.
-> +	 */
-> +	WARN_ON_ONCE(req->crypt_ctx->bc_dun[0] > U32_MAX);
-> +
-> +	mrq->data_unit_num = req->crypt_ctx->bc_dun[0];
-> +}
-> +EXPORT_SYMBOL_GPL(mmc_crypto_prepare_req);
-> diff --git a/drivers/mmc/core/crypto.h b/drivers/mmc/core/crypto.h
-> new file mode 100644
-> index 0000000000000..4780639b832f4
-> --- /dev/null
-> +++ b/drivers/mmc/core/crypto.h
-> @@ -0,0 +1,46 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * MMC crypto engine (inline encryption) support
-> + *
-> + * Copyright 2020 Google LLC
-> + */
-> +
-> +#ifndef _MMC_CORE_CRYPTO_H
-> +#define _MMC_CORE_CRYPTO_H
-> +
-> +struct mmc_host;
-> +struct mmc_queue_req;
-> +struct request_queue;
-> +
-> +#ifdef CONFIG_MMC_CRYPTO
-> +
-> +void mmc_crypto_set_initial_state(struct mmc_host *host);
-> +
-> +void mmc_crypto_free_host(struct mmc_host *host);
-> +
-> +void mmc_crypto_setup_queue(struct request_queue *q, struct mmc_host *host);
-> +
-> +void mmc_crypto_prepare_req(struct mmc_queue_req *mqrq);
-> +
-> +#else /* CONFIG_MMC_CRYPTO */
-> +
-> +static inline void mmc_crypto_set_initial_state(struct mmc_host *host)
-> +{
-> +}
-> +
-> +static inline void mmc_crypto_free_host(struct mmc_host *host)
-> +{
-> +}
-> +
-> +static inline void mmc_crypto_setup_queue(struct request_queue *q,
-> +					  struct mmc_host *host)
-> +{
-> +}
-> +
-> +static inline void mmc_crypto_prepare_req(struct mmc_queue_req *mqrq)
-> +{
-> +}
-> +
-> +#endif /* !CONFIG_MMC_CRYPTO */
-> +
-> +#endif /* _MMC_CORE_CRYPTO_H */
-> diff --git a/drivers/mmc/core/host.c b/drivers/mmc/core/host.c
-> index 96b2ca1f1b06d..d962b9ca0e37a 100644
-> --- a/drivers/mmc/core/host.c
-> +++ b/drivers/mmc/core/host.c
-> @@ -25,6 +25,7 @@
->  #include <linux/mmc/slot-gpio.h>
->  
->  #include "core.h"
-> +#include "crypto.h"
->  #include "host.h"
->  #include "slot-gpio.h"
->  #include "pwrseq.h"
-> @@ -532,6 +533,7 @@ EXPORT_SYMBOL(mmc_remove_host);
->   */
->  void mmc_free_host(struct mmc_host *host)
+>  static void cqhci_prep_task_desc(struct mmc_request *mrq,
+> -					u64 *data, bool intr)
+> +				 struct cqhci_host *cq_host, int tag)
 >  {
-> +	mmc_crypto_free_host(host);
->  	mmc_pwrseq_free(host);
->  	put_device(&host->class_dev);
+> +	__le64 *task_desc = (__le64 __force *)get_desc(cq_host, tag);
+>  	u32 req_flags = mrq->data->flags;
+> +	u64 desc0;
+>  
+> -	*data = CQHCI_VALID(1) |
+> +	desc0 = CQHCI_VALID(1) |
+>  		CQHCI_END(1) |
+> -		CQHCI_INT(intr) |
+> +		CQHCI_INT(1) |
+>  		CQHCI_ACT(0x5) |
+>  		CQHCI_FORCED_PROG(!!(req_flags & MMC_DATA_FORCED_PRG)) |
+>  		CQHCI_DATA_TAG(!!(req_flags & MMC_DATA_DAT_TAG)) |
+> @@ -425,8 +427,19 @@ static void cqhci_prep_task_desc(struct mmc_request *mrq,
+>  		CQHCI_BLK_COUNT(mrq->data->blocks) |
+>  		CQHCI_BLK_ADDR((u64)mrq->data->blk_addr);
+>  
+> -	pr_debug("%s: cqhci: tag %d task descriptor 0x%016llx\n",
+> -		 mmc_hostname(mrq->host), mrq->tag, (unsigned long long)*data);
+> +	task_desc[0] = cpu_to_le64(desc0);
+> +
+> +	if (cq_host->caps & CQHCI_TASK_DESC_SZ_128) {
+> +		u64 desc1 = 0;
+> +
+> +		task_desc[1] = cpu_to_le64(desc1);
+> +
+> +		pr_debug("%s: cqhci: tag %d task descriptor 0x%016llx%016llx\n",
+> +			 mmc_hostname(mrq->host), mrq->tag, desc1, desc0);
+> +	} else {
+> +		pr_debug("%s: cqhci: tag %d task descriptor 0x%016llx\n",
+> +			 mmc_hostname(mrq->host), mrq->tag, desc0);
+> +	}
 >  }
-> diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
-> index de7cb0369c308..d96db852bb91a 100644
-> --- a/drivers/mmc/core/queue.c
-> +++ b/drivers/mmc/core/queue.c
-> @@ -19,6 +19,7 @@
->  #include "block.h"
->  #include "core.h"
->  #include "card.h"
-> +#include "crypto.h"
->  #include "host.h"
 >  
->  #define MMC_DMA_MAP_MERGE_SEGMENTS	512
-> @@ -405,6 +406,8 @@ static void mmc_setup_queue(struct mmc_queue *mq, struct mmc_card *card)
->  	mutex_init(&mq->complete_lock);
+>  static int cqhci_dma_map(struct mmc_host *host, struct mmc_request *mrq)
+> @@ -567,8 +580,6 @@ static inline int cqhci_tag(struct mmc_request *mrq)
+>  static int cqhci_request(struct mmc_host *mmc, struct mmc_request *mrq)
+>  {
+>  	int err = 0;
+> -	u64 data = 0;
+> -	u64 *task_desc = NULL;
+>  	int tag = cqhci_tag(mrq);
+>  	struct cqhci_host *cq_host = mmc->cqe_private;
+>  	unsigned long flags;
+> @@ -598,9 +609,8 @@ static int cqhci_request(struct mmc_host *mmc, struct mmc_request *mrq)
+>  	}
 >  
->  	init_waitqueue_head(&mq->wait);
+>  	if (mrq->data) {
+> -		task_desc = (__le64 __force *)get_desc(cq_host, tag);
+> -		cqhci_prep_task_desc(mrq, &data, 1);
+> -		*task_desc = cpu_to_le64(data);
+> +		cqhci_prep_task_desc(mrq, cq_host, tag);
 > +
-> +	mmc_crypto_setup_queue(mq->queue, host);
->  }
->  
->  static inline bool mmc_merge_capable(struct mmc_host *host)
-> diff --git a/include/linux/mmc/core.h b/include/linux/mmc/core.h
-> index 29aa507116261..ab19245e99451 100644
-> --- a/include/linux/mmc/core.h
-> +++ b/include/linux/mmc/core.h
-> @@ -162,6 +162,12 @@ struct mmc_request {
->  	bool			cap_cmd_during_tfr;
->  
->  	int			tag;
-> +
-> +#ifdef CONFIG_MMC_CRYPTO
-> +	bool			crypto_enabled;
-> +	int			crypto_key_slot;
-> +	u32			data_unit_num;
-> +#endif
->  };
->  
->  struct mmc_card;
-> diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
-> index c079b932330f2..550460bf1b37c 100644
-> --- a/include/linux/mmc/host.h
-> +++ b/include/linux/mmc/host.h
-> @@ -15,6 +15,7 @@
->  #include <linux/mmc/card.h>
->  #include <linux/mmc/pm.h>
->  #include <linux/dma-direction.h>
-> +#include <linux/keyslot-manager.h>
->  
->  struct mmc_ios {
->  	unsigned int	clock;			/* clock rate */
-> @@ -377,6 +378,7 @@ struct mmc_host {
->  #define MMC_CAP2_CQE_DCMD	(1 << 24)	/* CQE can issue a direct command */
->  #define MMC_CAP2_AVOID_3_3V	(1 << 25)	/* Host must negotiate down from 3.3V */
->  #define MMC_CAP2_MERGE_CAPABLE	(1 << 26)	/* Host can merge a segment over the segment size */
-> +#define MMC_CAP2_CRYPTO		(1 << 27)	/* Host supports inline encryption */
->  
->  	int			fixed_drv_type;	/* fixed driver type for non-removable media */
->  
-> @@ -471,6 +473,11 @@ struct mmc_host {
->  	bool			cqe_enabled;
->  	bool			cqe_on;
->  
-> +	/* Inline encryption support */
-> +#ifdef CONFIG_MMC_CRYPTO
-> +	struct blk_keyslot_manager ksm;
-> +#endif
-> +
->  	/* Host Software Queue support */
->  	bool			hsq_enabled;
->  
+>  		err = cqhci_prep_tran_desc(mrq, cq_host, tag);
+>  		if (err) {
+>  			pr_err("%s: cqhci: failed to setup tx desc: %d\n",
 > -- 
 > 2.29.2
 > 
