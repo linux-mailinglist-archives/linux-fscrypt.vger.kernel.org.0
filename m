@@ -2,29 +2,57 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB2BA2D6EE6
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 11 Dec 2020 04:50:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78EC32D6F02
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 11 Dec 2020 05:12:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395203AbgLKDt2 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 10 Dec 2020 22:49:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59276 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392246AbgLKDtL (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 10 Dec 2020 22:49:11 -0500
-Date:   Thu, 10 Dec 2020 19:48:28 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607658510;
-        bh=Br3yuvlVdobQPxlXHKs4wQB/cIvXf86koFgZ9Pt0j/I=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CeGmuBGmrNQ0UgfHF4HrDRwl+Z2xompa+zzA01sr1fHrJH6pXEjy0OcNodFXvaQDs
-         nBAsfbqsvdSysp5a5L1nXGMxK0fowJ2oWqCF0VPlXFUKYHwDijXED02ekeHFhFwsHM
-         japuICgQFbL95/FOmfFkpu6OJyKASc35G1hpzX9X8gIXUsNBuY9+7oH+WMltQMh4Jy
-         wJsMHwVAb3Wl3bWR0abtoXa8Wn1xltBwUxS6qVvDbDj3JoRynjZ5BvWVVZzgQjH4pt
-         /ePYcokVHvuGgWTsVOBXIZAL9emokM26HL7LVZU9gTbqm96ngwbLmxpG5LdS6eo/1w
-         dcGcOYcSnctKQ==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        id S2395254AbgLKEJQ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 10 Dec 2020 23:09:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726253AbgLKEIw (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 10 Dec 2020 23:08:52 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76E14C0613CF;
+        Thu, 10 Dec 2020 20:08:12 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id q22so6168942pfk.12;
+        Thu, 10 Dec 2020 20:08:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Ius18itnGQVstq9bqYZLUwNWbZ8T7njWch6EzxvjPsA=;
+        b=Qd/trmlZE61igq11WRWlvIXhwMKIGAzikr4i85zvqPvP0xZu3RPsj+GWkP7PWqYqbV
+         hKhnyA8nl0zK3Y7gS3Dx3zvWWER5pFfzo10n0asMk/GPUnexwT2IK/zJoFBacHO9n/Gr
+         qY0uY4Fig/b2Z9L00DDx7YKXxXA3X2735Ip1LrYRoq+nh71jxV9PddF7X63i0gI/qF2i
+         0erYwJVM1aO02gLsEjR9/MHMoO5+KLTyC48+qADFNqfjgc8NgPfE6jgbg0CLKlsNzzGx
+         WUxPoirrrHCK9E4xjQwcYhiYiPRvE/wxzKsEq9ZZdRyEJSPws1mXYkHP2LaT36f+KUDN
+         Fncg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ius18itnGQVstq9bqYZLUwNWbZ8T7njWch6EzxvjPsA=;
+        b=YfVxQ4K0dhW81MBw5sy0LpBNEgAKrsklKkmoXUEvLjY9XgMSnpDjrmLetY4Jm7znGa
+         hv/J7OExRnoaMHBdoiwdZrOxwl9p4sh6XJmY7NRR/ea9909u/hZMqrRzJ3tlAnKwupp2
+         Bd3VrL8WKIThZMo21evvsilc/IryNjiTV3Kc+Ahay1reCTw2u/1XLOJOYVqhTjWXssx7
+         e1NeXy5hYLCAQpMnU7R1o5tkuHeepcX01FDaPN+xRGxkJ0uKZRg1rvVZWhbnmC3SrPnc
+         DohbX5xJDLnObxzg5MvV3ByNE0oHP7yRWZy46Dpu+gO6Pv1w4hW0IOlbe38/0n4wrE7N
+         FJhQ==
+X-Gm-Message-State: AOAM533F+D9VGdAO8/FnW/Kda/iDn72osp9tHAhbApT2vnWxjAp2HVZ9
+        KR5qurC6AHkXShmheoIriyw=
+X-Google-Smtp-Source: ABdhPJy6X+B1ThgRb512lrgxQUK0VKgDoRZDc0qiKYGrIfhMfxa3FRkxaEj/zY8y9KLjoo8S+hWuzw==
+X-Received: by 2002:a62:7fc1:0:b029:19f:1dab:5029 with SMTP id a184-20020a627fc10000b029019f1dab5029mr3656993pfd.13.1607659691987;
+        Thu, 10 Dec 2020 20:08:11 -0800 (PST)
+Received: from localhost ([2401:fa00:8f:203:a6ae:11ff:fe11:4b46])
+        by smtp.gmail.com with ESMTPSA id b4sm8017019pju.33.2020.12.10.20.08.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 20:08:11 -0800 (PST)
+Date:   Fri, 11 Dec 2020 13:08:07 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
         "Theodore Y. Ts'o" <tytso@mit.edu>,
         Suleiman Souhlal <suleiman@google.com>,
@@ -32,112 +60,88 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org
 Subject: Re: [stable] ext4 fscrypt_get_encryption_info() circular locking
  dependency
-Message-ID: <X9LsDPsXdLNv0+va@sol.localdomain>
+Message-ID: <20201211040807.GF1667627@google.com>
 References: <20201211033657.GE1667627@google.com>
+ <X9LsDPsXdLNv0+va@sol.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201211033657.GE1667627@google.com>
+In-Reply-To: <X9LsDPsXdLNv0+va@sol.localdomain>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 12:36:57PM +0900, Sergey Senozhatsky wrote:
-> Hi,
+On (20/12/10 19:48), Eric Biggers wrote:
+> > 
+> > [  133.454836] Chain exists of:
+> >                  jbd2_handle --> fscrypt_init_mutex --> fs_reclaim
+> > 
+> > [  133.454840]  Possible unsafe locking scenario:
+> > 
+> > [  133.454841]        CPU0                    CPU1
+> > [  133.454843]        ----                    ----
+> > [  133.454844]   lock(fs_reclaim);
+> > [  133.454846]                                lock(fscrypt_init_mutex);
+> > [  133.454848]                                lock(fs_reclaim);
+> > [  133.454850]   lock(jbd2_handle);
+> > [  133.454851] 
 > 
-> I got the following lockdep splat the other day, while running some
-> tests on 4.19. I didn't test other stable kernels, but it seems that
-> 5.4 should also have similar problem.
+> This actually got fixed by the patch series
+> https://lkml.kernel.org/linux-fscrypt/20200913083620.170627-1-ebiggers@kernel.org/
+> which went into 5.10.  The more recent patch to remove ext4_dir_open() isn't
+> related.
 > 
-> As far as I can tell, ext4_dir_open() has been removed quite recently:
-> https://www.mail-archive.com/linux-f2fs-devel@lists.sourceforge.net/msg18727.html
+> It's a hard patch series to backport.  Backporting it to 5.4 would be somewhat
+> feasible, while 4.19 would be very difficult as there have been a lot of other
+> fscrypt commits which would heavily conflict with cherry-picks.
 > 
-> Eric, Ted, Jaegeuk, how difficult would it be to remove ext4_dir_open()
-> from the stable kernels? (I'm interested in ext4 in particular, I
-> understand that other filesystems may also need similar patches)
-> 
-> 
-> 
-> [  133.454721] kswapd0/79 is trying to acquire lock:
-> [  133.454724] 00000000a815a55f (jbd2_handle){++++}, at: start_this_handle+0x1f9/0x859
-> [  133.454730]                     
->                but task is already holding lock:
-> [  133.454731] 00000000106bd5a3 (fs_reclaim){+.+.}, at: __fs_reclaim_acquire+0x5/0x2f
-> [  133.454736]                         
->                which lock already depends on the new lock.
-> 
-> [  133.454739] 
->                the existing dependency chain (in reverse order) is:
-> [  133.454740] 
->                -> #2 (fs_reclaim){+.+.}:
-> [  133.454745]        kmem_cache_alloc_trace+0x44/0x28b
-> [  133.454748]        mempool_create_node+0x46/0x92
-> [  133.454750]        fscrypt_initialize+0xa0/0xbf
-> [  133.454752]        fscrypt_get_encryption_info+0xa4/0x774
-> [  133.454754]        ext4_dir_open+0x1b/0x2d
-> [  133.454757]        do_dentry_open+0x144/0x36d
-> [  133.454759]        path_openat+0x2d7/0x156d
-> [  133.454762]        do_filp_open+0x97/0x13e
-> [  133.454764]        do_sys_open+0x128/0x3a3
-> [  133.454766]        do_syscall_64+0x6f/0x22a
-> [  133.454769]        entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> [  133.454771] 
->                -> #1 (fscrypt_init_mutex){+.+.}:
-> [  133.454774]        mutex_lock_nested+0x20/0x26
-> [  133.454776]        fscrypt_initialize+0x20/0xbf
-> [  133.454778]        fscrypt_get_encryption_info+0xa4/0x774
-> [  133.454780]        fscrypt_inherit_context+0xbe/0xe6
-> [  133.454782]        __ext4_new_inode+0x11ee/0x1631
-> [  133.454785]        ext4_mkdir+0x112/0x416
-> [  133.454787]        vfs_mkdir2+0x135/0x1c6
-> [  133.454789]        do_mkdirat+0xc3/0x138
-> [  133.454791]        do_syscall_64+0x6f/0x22a
-> [  133.454793]        entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> [  133.454795] 
->                -> #0 (jbd2_handle){++++}:
-> [  133.454798]        start_this_handle+0x21c/0x859
-> [  133.454800]        jbd2__journal_start+0xa2/0x282
-> [  133.454802]        ext4_release_dquot+0x58/0x93
-> [  133.454804]        dqput+0x196/0x1ec
-> [  133.454806]        __dquot_drop+0x8d/0xb2
-> [  133.454809]        ext4_clear_inode+0x22/0x8c
-> [  133.454811]        ext4_evict_inode+0x127/0x662
-> [  133.454813]        evict+0xc0/0x241
-> [  133.454816]        dispose_list+0x36/0x54
-> [  133.454818]        prune_icache_sb+0x56/0x76
-> [  133.454820]        super_cache_scan+0x13a/0x19c
-> [  133.454822]        shrink_slab+0x39a/0x572
-> [  133.454824]        shrink_node+0x3f8/0x63b
-> [  133.454826]        balance_pgdat+0x1bd/0x326
-> [  133.454828]        kswapd+0x2ad/0x510
-> [  133.454831]        kthread+0x14d/0x155
-> [  133.454833]        ret_from_fork+0x24/0x50
-> [  133.454834] 
->                other info that might help us debug this:
-> 
-> [  133.454836] Chain exists of:
->                  jbd2_handle --> fscrypt_init_mutex --> fs_reclaim
-> 
-> [  133.454840]  Possible unsafe locking scenario:
-> 
-> [  133.454841]        CPU0                    CPU1
-> [  133.454843]        ----                    ----
-> [  133.454844]   lock(fs_reclaim);
-> [  133.454846]                                lock(fscrypt_init_mutex);
-> [  133.454848]                                lock(fs_reclaim);
-> [  133.454850]   lock(jbd2_handle);
-> [  133.454851] 
+> How interested are you in having this fixed?  Did you encounter an actual
+> deadlock or just the lockdep report?
 
-This actually got fixed by the patch series
-https://lkml.kernel.org/linux-fscrypt/20200913083620.170627-1-ebiggers@kernel.org/
-which went into 5.10.  The more recent patch to remove ext4_dir_open() isn't
-related.
+Difficult to say. On one hand 'yes' I see lockups on my devices (4.19
+kernel); I can't tell at the moment what's the root cause. So on the
+other hand 'no' I can't say that it's because of ext4_dir_open().
 
-It's a hard patch series to backport.  Backporting it to 5.4 would be somewhat
-feasible, while 4.19 would be very difficult as there have been a lot of other
-fscrypt commits which would heavily conflict with cherry-picks.
+What I saw so far involved ext4, kswapd, khugepaged and lots of other things.
 
-How interested are you in having this fixed?  Did you encounter an actual
-deadlock or just the lockdep report?
+[ 1598.655901] INFO: task khugepaged:66 blocked for more than 122 seconds.
+[ 1598.655914] Call Trace:
+[ 1598.655920]  __schedule+0x506/0x1240
+[ 1598.655924]  ? kvm_zap_rmapp+0x52/0x69
+[ 1598.655927]  schedule+0x3f/0x78
+[ 1598.655929]  __rwsem_down_read_failed_common+0x186/0x201
+[ 1598.655933]  call_rwsem_down_read_failed+0x14/0x30
+[ 1598.655936]  down_read+0x2e/0x45
+[ 1598.655939]  rmap_walk_file+0x73/0x1ce
+[ 1598.655941]  page_referenced+0x10d/0x154
+[ 1598.655948]  shrink_active_list+0x1d4/0x475
 
-- Eric
+[..]
+
+[ 1598.655986] INFO: task kswapd0:79 blocked for more than 122 seconds.
+[ 1598.655993] Call Trace:
+[ 1598.655995]  __schedule+0x506/0x1240
+[ 1598.655998]  schedule+0x3f/0x78
+[ 1598.656000]  __rwsem_down_read_failed_common+0x186/0x201
+[ 1598.656003]  call_rwsem_down_read_failed+0x14/0x30
+[ 1598.656006]  down_read+0x2e/0x45
+[ 1598.656008]  rmap_walk_file+0x73/0x1ce
+[ 1598.656010]  page_referenced+0x10d/0x154
+[ 1598.656015]  shrink_active_list+0x1d4/0x475
+
+[..]
+
+[ 1598.658233]  __rwsem_down_read_failed_common+0x186/0x201
+[ 1598.658235]  call_rwsem_down_read_failed+0x14/0x30
+[ 1598.658238]  down_read+0x2e/0x45
+[ 1598.658240]  rmap_walk_file+0x73/0x1ce
+[ 1598.658242]  page_referenced+0x10d/0x154
+[ 1598.658247]  shrink_active_list+0x1d4/0x475
+[ 1598.658250]  shrink_node+0x27e/0x661
+[ 1598.658254]  try_to_free_pages+0x425/0x7ec
+[ 1598.658258]  __alloc_pages_nodemask+0x80b/0x1514
+[ 1598.658279]  __do_page_cache_readahead+0xd4/0x1a9
+[ 1598.658282]  filemap_fault+0x346/0x573
+[ 1598.658287]  ext4_filemap_fault+0x31/0x44
+
+	-ss
