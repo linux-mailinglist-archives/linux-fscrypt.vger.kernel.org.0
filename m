@@ -2,52 +2,58 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38C462D9C25
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 14 Dec 2020 17:15:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B9AA2DA255
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 14 Dec 2020 22:10:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439865AbgLNQFk (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 14 Dec 2020 11:05:40 -0500
-Received: from server.kenspensetc.com ([185.148.128.76]:48008 "EHLO
-        server.kenspensetc.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439358AbgLNQFj (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 14 Dec 2020 11:05:39 -0500
-Received: from localhost ([127.0.0.1]:47936 helo=server.kenspensetc.com)
-        by server.kenspensetc.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <sender@ridecals.com>)
-        id 1knLn0-00029V-6J; Thu, 10 Dec 2020 08:15:22 -0500
-Received: from [70.32.0.46] ([70.32.0.46]) by ridecals.com (Horde Framework)
- with HTTPS; Thu, 10 Dec 2020 08:15:22 -0500
-Date:   Thu, 10 Dec 2020 08:15:22 -0500
-Message-ID: <20201210081522.Horde.GEA1j18D53oi4VTUxYWD_87@ridecals.com>
-From:   Russell Branting <sender@ridecals.com>
-Subject: Vital
-Reply-to: Goodagent01@gmail.com
-User-Agent: Horde Application Framework 5
-Content-Type: text/plain; charset=utf-8; format=flowed; DelSp=Yes
-MIME-Version: 1.0
-Content-Disposition: inline
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - server.kenspensetc.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - ridecals.com
-X-Get-Message-Sender-Via: server.kenspensetc.com: authenticated_id: sender9@ridecals.com
-X-Authenticated-Sender: server.kenspensetc.com: sender9@ridecals.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-To:     unlisted-recipients:; (no To-header on input)
+        id S2503476AbgLNU5J (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 14 Dec 2020 15:57:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37188 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2503471AbgLNU5I (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 14 Dec 2020 15:57:08 -0500
+Subject: Re: [GIT PULL] fscrypt updates for 5.11
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607979388;
+        bh=8TA3M2fJC6eWzRxFjGh7dv0C/qOTmpZPhaCxujp6Nhw=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=GtNRIf8R7iFQLnZ+asV6awJfdvY2iwacFvGd201A+KsaSGv5L+sPRSk+rckYd37BU
+         dJsaBrFj+FkiM81+odFK3mOHmVSfJ+V3tTJqvnyyPJOXNiKzmWbBvzazJi5j8hoFeZ
+         kGqi7m6jvq6RVjshfQ3tJ1GUoJYgTBZIycDDZXcoa3spz11vvqzIBCWdWhv32tp11n
+         KtlE8PlVu2QNUB7EmUFyX3g9IbBzqa26oGodoKh2lc0ouwJ3nRdVEDrIqbXi/URI3t
+         EGXoEL1d9kNZSkj6aJr9m7MrYDNdbEBDKvNsz1HmG2hm6Yh83empS9+JWe1XDDi7QB
+         3KKEjibp7dU1g==
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <X9b9G8p8AiRAzDwV@sol.localdomain>
+References: <X9b9G8p8AiRAzDwV@sol.localdomain>
+X-PR-Tracked-List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
+X-PR-Tracked-Message-Id: <X9b9G8p8AiRAzDwV@sol.localdomain>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
+X-PR-Tracked-Commit-Id: a14d0b6764917b21ee6fdfd2a8a4c2920fbefcce
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 7c7fdaf6ad9fe868553c2e1fc8a920249820ac3e
+Message-Id: <160797938816.26822.16942745095924482464.pr-tracker-bot@kernel.org>
+Date:   Mon, 14 Dec 2020 20:56:28 +0000
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Theodore Ts'o <tytso@mit.edu>, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fscrypt@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-ext4@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
+The pull request you sent on Sun, 13 Dec 2020 21:50:19 -0800:
 
-I am instructed to inform you of your appointment as the next of kin  
-to your deceased relative estate. Kindly indicate your acceptance by  
-reconfirming your Full Name, Address & Phone Number for immediate  
-processing of the funds release to your control OR the deceased  
-deposited funds will be declared unclaimed.
+> https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
 
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/7c7fdaf6ad9fe868553c2e1fc8a920249820ac3e
 
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
