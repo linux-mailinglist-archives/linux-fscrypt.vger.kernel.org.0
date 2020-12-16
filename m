@@ -2,67 +2,97 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED7A2DB30E
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 15 Dec 2020 18:55:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E5F62DC551
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 16 Dec 2020 18:28:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730739AbgLORxh (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 15 Dec 2020 12:53:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37868 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730154AbgLORxf (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 15 Dec 2020 12:53:35 -0500
-Date:   Tue, 15 Dec 2020 09:52:51 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608054774;
-        bh=hXPUuO6IQOjzr+sj64k3SZ3Y/yxjs2z8ZppnJqErAEY=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AiwUOOqvaALNAa9kg0a9Xkvn6d23jW8jD9fP+LVg2rXai4DOh4cO3mjtIZ0IOVVr7
-         6ov6RTxQKV5w3EfPaJ9jv3zxQuPWUFenCJimYmHh5q1+HsK6Rj9XLwfy6FUnv2KEi8
-         FliGXAEN5tD/Yf36A/5PRI2uevdO+kniLNZl//xdR2mXZGcZcOTnf/1iDSfCVAZwjU
-         kRE/jkZHyAnnZMlzK3Ax92N/rltQZ+VOcKAEfTjtONe5No0igt14hYQVpVYG1ox1/w
-         IE8+oTUiTcWFs+8VHBO62il6badS9NyKNETNe+d9L3bdyxDubAaqvQyA8qPTIyir4y
-         aQ7iAiSlzMTVA==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     "Peng.Zhou" <peng.zhou@mediatek.com>
-Cc:     linux-mmc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        Satya Tangirala <satyat@google.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Neeraj Soni <neersoni@codeaurora.org>,
-        Barani Muthukumaran <bmuthuku@codeaurora.org>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Konrad Dybcio <konradybcio@gmail.com>
-Subject: Re: [PATCH v3 0/9] eMMC inline encryption support
-Message-ID: <X9j38+54HGOEK7C/@sol.localdomain>
-References: <20201209044238.78659-1-ebiggers@kernel.org>
- <1608019654.31445.8.camel@mbjsdccf07>
+        id S1727051AbgLPR2O (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 16 Dec 2020 12:28:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726837AbgLPR2N (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 16 Dec 2020 12:28:13 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4312EC061794
+        for <linux-fscrypt@vger.kernel.org>; Wed, 16 Dec 2020 09:27:33 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id m5so23940682wrx.9
+        for <linux-fscrypt@vger.kernel.org>; Wed, 16 Dec 2020 09:27:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8pSQ7FQQTufiJ0E8hJeqjgTXcBBLVDZeJhRtHa5U8Hg=;
+        b=PWzITIsdxaplfBfAhSfeQElFfUeGvrLf84bG+CbovrlCbWjoJQEk6lJv536UX5Htea
+         qn5ynnPXsv37jIE3d4xI9UWgtZAF6qrwxeX5kJMiCrTZdKW2yT+f8Isb2O8I0RqRmE92
+         aRhklJQfByoDMCcVg9GFoAH5a1mAkJ1yHm2FWFEnKMs2pTHu6fXPRpTONwgz7b4c00rr
+         O0gKcFB3hmj4Mpi2lr5HPRyTio19izwq0CNHzJRk/tiV4lLe/+xXUssA6vfv2tYFl612
+         26RY32z9Gf6Mkpwk8ykcv3lSTtNKlsj781ipFE/lOiB1NmmK2Mf1gUhOm3OzbLxo8gZq
+         H9+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8pSQ7FQQTufiJ0E8hJeqjgTXcBBLVDZeJhRtHa5U8Hg=;
+        b=o/XleEDbmYPmrtc7NpK/0g9Hb4a3whBAFUJb9DbQwuVDgmLL+JefmP3m6ZL9vXqbda
+         dhdALt6RxNItsupeTQjfQpBWu7sDIO83U2MRS4YS3QcX5Ryh8dXmBg1zXo7xzxVASJT3
+         bUBRlOAwuPaPO8+7as1UvjPKaYvZwwwJod+LLG8RpKVQ0SYx/MNdYCKnXVderk0kiBuu
+         L7wx79l/5fHCmroWp3xpzLlaiTocW1xDwZsEkKXItXnfJ2ZTyYkiU21VUx6lxkOdVsJ2
+         gIVs63yr3FzajHc+Pw/kXuYNEiN3Wxx99uNSUt92I2mFapMdsGEaGW1kRZbiR/MIDbZX
+         LsYw==
+X-Gm-Message-State: AOAM530JeILInqcfJWZJKF/NzVAnpPg7R98EkdoB4qD9NO+SCI+sU3XH
+        Oy2yMPB0soabTmK5X2DKZiSfC/Uz1mCX4w==
+X-Google-Smtp-Source: ABdhPJz2czkspfbLfpxg84gIpdhUU0cu8V+AWh0AiWW1xjZBqjfMDTzrPDr4FcghCc6k2moC3kf3yA==
+X-Received: by 2002:adf:e348:: with SMTP id n8mr2685430wrj.148.1608139651724;
+        Wed, 16 Dec 2020 09:27:31 -0800 (PST)
+Received: from localhost ([88.98.246.218])
+        by smtp.gmail.com with ESMTPSA id j10sm4108883wmj.7.2020.12.16.09.27.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Dec 2020 09:27:30 -0800 (PST)
+From:   luca.boccassi@gmail.com
+To:     linux-fscrypt@vger.kernel.org
+Cc:     ebiggers@google.com
+Subject: [fsverity-utils PATCH 1/2] Remove unneeded includes
+Date:   Wed, 16 Dec 2020 17:27:18 +0000
+Message-Id: <20201216172719.540610-1-luca.boccassi@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1608019654.31445.8.camel@mbjsdccf07>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 04:07:34PM +0800, Peng.Zhou wrote:
-> > 
-> I had verified this patchset in MT6853 (A 5G mobile smartphone platform
-> of Mediatek which meets eMMC v5.2 specification) and they work normally
-> in Android environment.
-> Reviewed and Tested by: Peng Zhou<peng.zhou@mediatek.com>
+From: Luca Boccassi <luca.boccassi@microsoft.com>
 
-Thanks Peng.  Is your Reviewed-and-tested-by for the whole patchset, or just for
-patches 1-5?  Patches 6-9 only affect Qualcomm hardware.
+Signed-off-by: Luca Boccassi <luca.boccassi@microsoft.com>
+---
+ common/fsverity_uapi.h | 1 -
+ programs/cmd_enable.c  | 1 -
+ 2 files changed, 2 deletions(-)
 
-Also, were many changes to mtk-sd.c required to get the crypto support working
-on your hardware, or was it just a matter of making a SMC call and setting the
-crypto capability flag, like it was for ufs-mediatek (commit 46426552e74f)?
-If you could send your patch for mtk-sd.c on top of this patchset, that would be
-helpful for people to see.
+diff --git a/common/fsverity_uapi.h b/common/fsverity_uapi.h
+index 33f4415..0006c35 100644
+--- a/common/fsverity_uapi.h
++++ b/common/fsverity_uapi.h
+@@ -10,7 +10,6 @@
+ #ifndef _UAPI_LINUX_FSVERITY_H
+ #define _UAPI_LINUX_FSVERITY_H
+ 
+-#include <linux/ioctl.h>
+ #include <linux/types.h>
+ 
+ #define FS_VERITY_HASH_ALG_SHA256	1
+diff --git a/programs/cmd_enable.c b/programs/cmd_enable.c
+index fdf26c7..14c3c17 100644
+--- a/programs/cmd_enable.c
++++ b/programs/cmd_enable.c
+@@ -14,7 +14,6 @@
+ #include <fcntl.h>
+ #include <getopt.h>
+ #include <limits.h>
+-#include <sys/ioctl.h>
+ 
+ static bool read_signature(const char *filename, u8 **sig_ret,
+ 			   u32 *sig_size_ret)
+-- 
+2.29.2
 
-- Eric
