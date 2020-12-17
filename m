@@ -2,176 +2,117 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65A4D2DD829
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 17 Dec 2020 19:22:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A3B42DD86F
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 17 Dec 2020 19:34:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728081AbgLQSUu (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 17 Dec 2020 13:20:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35314 "EHLO mail.kernel.org"
+        id S1728192AbgLQSd3 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 17 Dec 2020 13:33:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38654 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727063AbgLQSUu (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 17 Dec 2020 13:20:50 -0500
-Date:   Thu, 17 Dec 2020 10:20:06 -0800
+        id S1728080AbgLQSd3 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 17 Dec 2020 13:33:29 -0500
+Date:   Thu, 17 Dec 2020 10:32:47 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608229209;
-        bh=9cPO9+D2N3FGyZSbf5zsTU2pLaw+QPvmEFMIrPhPLC4=;
+        s=k20201202; t=1608229968;
+        bh=9txPX8aooGF6zUzLtkG4bkBVIdi12IrnczwggD1oF90=;
         h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QehPFQI+9OmEvBAkIA027Y/qhvWQjTeG5EszoFvJyZ5JgxQmj5rQ4Xxfq4u9due25
-         YQK8KprZq8+bysB5az6ho39O8YDoV7ynTI6juX36p0kqEdBwefhaSEfb8kiDpOIUTt
-         trd6J1zkzeRQNUWalE7EVzFM4Z8ycdZVjiNuolh+bo7JKLup3ZbKZtKhIZw4BQ5d/w
-         GKiOgyZ4BoCof+aVIUS6u15KfrqSPVX42Gh3tnqvuUpZtcaOAEuorOSix3VWUIPwmY
-         SIm+gjs8YGf6okydwUE1TpwEkpgXPAIdvvTRLbwFpqc7C+95jXtkbWIhF1fqgliiJE
-         PMYSt6k7blyKQ==
+        b=bYzOF9Nf6Efls+ubttkfuMCo6q3KP1s7zlW1+qocOfFcNbPYAjoMmyPOssC9N2npE
+         oSN2ocef9SQibUBoeaaPQzWAW3twDSr2ylJQ35Qnuk2NrDFgsxTgeGzD3z/QNJcDJI
+         DVyNh7S+t0vtffjspfjabqg7gXrh4pZ8DNJRBGBYy6z6khlp5pmA2tgJrkir0O/5wj
+         NkWATkMUTWIrzqh4LqQSnwVQHCRPZ6+D2Zky2jBvWbOm0B8lJNGdft1BYaQIJ26iLP
+         nshmwM52AhOIe8MwSlRekrmAbzdhTLAhDLnTykcb6kQnVKUtg0Qa0pY+j+idV6Z/A2
+         66i0k8qYiiuIw==
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     "Peng.Zhou" <peng.zhou@mediatek.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>, linux-mmc@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, Satya Tangirala <satyat@google.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ritesh Harjani <riteshh@codeaurora.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Neeraj Soni <neersoni@codeaurora.org>,
-        Barani Muthukumaran <bmuthuku@codeaurora.org>,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        kuohong.wang@mediatek.com, gray.jia@mediatek.com,
-        StanleyChu <stanley.chu@mediatek.com>
-Subject: Re: [PATCH 0/8] eMMC inline encryption support
-Message-ID: <X9uhVj080rvyhAVl@sol.localdomain>
-References: <20201112194011.103774-1-ebiggers@kernel.org>
- <X7gQ9Y44iIgkiM64@sol.localdomain>
- <ea904bcc-3f01-d968-2a16-f9ff9f012968@intel.com>
- <X7gcsC6IS80sUy4K@sol.localdomain>
- <9010afea-1075-8f72-99c7-c471840685db@intel.com>
- <X7xpbJf4gDcFdEc/@sol.localdomain>
- <1606294991.31568.5.camel@mtkswgap22>
- <1608196892.11508.0.camel@mbjsdccf07>
+To:     luca.boccassi@gmail.com
+Cc:     linux-fscrypt@vger.kernel.org
+Subject: Re: [fsverity-utils PATCH v2 2/2] Allow to build and run sign/digest
+ on Windows
+Message-ID: <X9ukTy5iKB4FfFqc@sol.localdomain>
+References: <20201217144749.647533-1-luca.boccassi@gmail.com>
+ <20201217144749.647533-2-luca.boccassi@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1608196892.11508.0.camel@mbjsdccf07>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201217144749.647533-2-luca.boccassi@gmail.com>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 05:21:32PM +0800, Peng.Zhou wrote:
+On Thu, Dec 17, 2020 at 02:47:49PM +0000, luca.boccassi@gmail.com wrote:
+> From: Luca Boccassi <luca.boccassi@microsoft.com>
 > 
-> On Wed, 2020-11-25 at 17:03 +0800, Stanley Chu wrote:
-> > Hi Eric,
-> > 
-> > On Mon, 2020-11-23 at 18:01 -0800, Eric Biggers wrote:
-> > > Hi Adrian,
-> > > 
-> > > On Mon, Nov 23, 2020 at 09:04:12AM +0200, Adrian Hunter wrote:
-> > > > On 20/11/20 9:44 pm, Eric Biggers wrote:
-> > > > > Hi Adrian,
-> > > > > 
-> > > > > On Fri, Nov 20, 2020 at 09:29:59PM +0200, Adrian Hunter wrote:
-> > > > >> I haven't had a chance to look at it properly, but I do have a couple of
-> > > > >> dumb questions.  How do you ensure the host controller is not runtime
-> > > > >> suspended when the key is programmed?
-> > > > > 
-> > > > > This is handled by the block layer, in block/keyslot-manager.c.  It ensures that
-> > > > > the device is resumed before calling blk_ksm_ll_ops::keyslot_program() or
-> > > > > blk_ksm_ll_ops::keyslot_evict().  See blk_ksm_hw_enter().
-> > > > 
-> > > > Cool, although cqhci is doing a lazy kind of resume, so maybe not be enabled
-> > > > when a key is programmed?  Would that be a problem?
-> > > > 
-> > > > > 
-> > > > >> Are the keys lost when the host controller is reset, and then how do you know
-> > > > >> the host controller does not get reset after the key is programmed but before
-> > > > >> the I/O is submitted?
-> > > > > 
-> > > > > As with UFS, keys might be lost when the host controller is reset, so we're
-> > > > > reprogramming all the keys when that happens.  See patch 1:
-> > > > > 
-> > > > >     mmc_set_initial_state()
-> > > > >         mmc_crypto_set_initial_state()
-> > > > >             blk_ksm_reprogram_all_keys()
-> > > > > 
-> > > > > (That's the intent, at least.  For MMC, I'm not sure if resets were properly
-> > > > > covered by the testing I've done so far.  But the code looks right to me.)
-> > > > 
-> > > > After reset, cqhci will not necessarily be enabled at this point.  Is that OK?
-> > > 
-> > > The hardware that I have (sdm630) appears to allow programming and evicting keys
-> > > even while CQHCI_CFG.CQHCI_ENABLE is clear, i.e. even when the CQE is "off".
-> > > I tested it using the patch below.
-> > > 
-> > > The eMMC specification isn't clear about this point.  But I'm thinking that the
-> > > crypto configuration registers (the keyslots) are probably supposed to work like
-> > > most of the other CQHCI registers, which can be written to while CQHCI_ENABLE is
-> > > clear.  Then setting CQHCI_ENABLE just enables the ability to actually issue
-> > > requests.  Likewise, setting CQHCI_CRYPTO_GENERAL_ENABLE just allows using
-> > > crypto in requests; it isn't needed to write to the crypto configurations.
-> > > 
-> > > For what it's worth, UFS crypto (which has been supported by upstream since
-> > > v5.9) works similarly.  Keys can be programmed while the UFS host is powered on,
-> > > even before it's "enabled".
-> > > 
-> > > But maybe someone interpreted the eMMC specification differently.  Hopefully
-> > > Mediatek can give some insight into how they implemented it, and test this
-> > > patchset on their hardware too.
-> > 
-> > MediaTek CQHCI also works in this way.
-> > 
-> > Complete test is on-going now and we will update the results as soon as
-> > possible.
-> > 
-> > Thanks,
-> > Stanley Chu
-> > 
-> > > 
-> > > Here's the patch I used to verify that sdm630 allows programming and evicting
-> > > keys even while the CQE is off:
-> > > 
-> > > diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-> > > index eaf2f1074326..eb2d88d0b3ba 100644
-> > > --- a/drivers/mmc/core/block.c
-> > > +++ b/drivers/mmc/core/block.c
-> > > @@ -1406,6 +1406,9 @@ static void mmc_blk_cqe_complete_rq(struct mmc_queue *mq, struct request *req)
-> > >  
-> > >  	mmc_cqe_check_busy(mq);
-> > >  
-> > > +	if (mmc_tot_in_flight(mq) == 0 && host->cqe_on)
-> > > +		host->cqe_ops->cqe_off(host);
-> > > +
-> > >  	spin_unlock_irqrestore(&mq->lock, flags);
-> > >  
-> > >  	if (!mq->cqe_busy)
-> > > diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
-> > > index 6ce21414d510..70d8dbc6515f 100644
-> > > --- a/drivers/mmc/host/sdhci-msm.c
-> > > +++ b/drivers/mmc/host/sdhci-msm.c
-> > > @@ -1971,6 +1971,12 @@ static int sdhci_msm_program_key(struct cqhci_host *cq_host,
-> > >  	int i;
-> > >  	int err;
-> > >  
-> > > +	if (!cq_host->mmc->cqe_on) {
-> > > +		pr_info("@@@ cqe is off for %s slot %d\n",
-> > > +			(cfg->config_enable & CQHCI_CRYPTO_CONFIGURATION_ENABLE) ?
-> > > +			"program" : "evict", slot);
-> > > +	}
-> > > +
-> > >  	if (!(cfg->config_enable & CQHCI_CRYPTO_CONFIGURATION_ENABLE))
-> > >  		return qcom_scm_ice_invalidate_key(slot);
-> > 
-> > 
+> Add some minimal compat type defs, and stub out the enable/measure
+> sources. Also add a way to handle the fact that mingw adds a
+> .exe extension automatically in the Makefile install rules, and
+> that there is not pkg-config and the libcrypto linker flag is
+> different.
 > 
-> Hi Eric,
+> Signed-off-by: Luca Boccassi <luca.boccassi@microsoft.com>
+> ---
+> v2: rework the stubbing out to detect mingw in the Makefile and remove
+>     sources from compilation, instead of ifdefs.
+>     add a new common/win32_defs.h for the compat definitions.
+>     define strerror_r using strerror_s.
 > 
-> I also have a question about reprogramming keys scenarios, if some SoC
-> vensors' eMMC host will power down or something else like that keys will
-> be lost after runtime suspend, that means we must do reprogramming keys
-> in runtime resume, right? Do you think that we should add it in
-> cqhci-core layer(such as __cqhci_enable()) or every SoC vendor's host
-> driver resume path?
+>     To compile with mingw:
+>       make CC=x86_64-w64-mingw32-gcc-8.3-win32
+>     note that the openssl headers and a win32 libcrypto.dll need
+>     to be available in the default search paths, and otherwise have
+>     to be specified as expected via CPPFLAGS/LDFLAGS
 > 
 
-The keys should only be lost on reset, not on runtime suspend.  So I believe the
-code I've proposed is sufficient.
+I got some warnings and an error when compiling:
+
+$ make CC=x86_64-w64-mingw32-gcc
+  CC       lib/compute_digest.o
+  CC       lib/hash_algs.o
+  CC       lib/sign_digest.o
+  CC       lib/utils.o
+lib/utils.c: In function ‘xmalloc’:
+lib/utils.c:25:25: warning: unknown conversion type character ‘l’ in format [-Wformat=]
+   25 |   libfsverity_error_msg("out of memory (tried to allocate %" SIZET_PF " bytes)",
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from lib/../common/win32_defs.h:24,
+                 from lib/../common/common_defs.h:18,
+                 from lib/lib_private.h:15,
+                 from lib/utils.c:14:
+/usr/x86_64-w64-mingw32/include/inttypes.h:36:18: note: format string is defined here
+   36 | #define PRIu64 "llu"
+      |                  ^
+lib/utils.c:25:25: warning: too many arguments for format [-Wformat-extra-args]
+   25 |   libfsverity_error_msg("out of memory (tried to allocate %" SIZET_PF " bytes)",
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  AR       libfsverity.a
+  CC       lib/compute_digest.shlib.o
+  CC       lib/hash_algs.shlib.o
+  CC       lib/sign_digest.shlib.o
+  CC       lib/utils.shlib.o
+lib/utils.c: In function ‘xmalloc’:
+lib/utils.c:25:25: warning: unknown conversion type character ‘l’ in format [-Wformat=]
+   25 |   libfsverity_error_msg("out of memory (tried to allocate %" SIZET_PF " bytes)",
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from lib/../common/win32_defs.h:24,
+                 from lib/../common/common_defs.h:18,
+                 from lib/lib_private.h:15,
+                 from lib/utils.c:14:
+/usr/x86_64-w64-mingw32/include/inttypes.h:36:18: note: format string is defined here
+   36 | #define PRIu64 "llu"
+      |                  ^
+lib/utils.c:25:25: warning: too many arguments for format [-Wformat-extra-args]
+   25 |   libfsverity_error_msg("out of memory (tried to allocate %" SIZET_PF " bytes)",
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  CCLD     libfsverity.so.0
+/usr/lib/gcc/x86_64-w64-mingw32/10.2.0/../../../../x86_64-w64-mingw32/bin/ld: cannot find -l:libcrypto.dll
+collect2: error: ld returned 1 exit status
+make: *** [Makefile:137: libfsverity.so.0] Error 1
+
+
+
+This is on Arch Linux with mingw-w64-gcc and mingw-w64-openssl installed.
+
+So there's something wrong with the SIZET_PF format string, and also
+-l:libcrypto.dll isn't correct; it should be just -lcrypto like it is on Linux.
+(MinGW knows to look for a .dll file.)
 
 - Eric
