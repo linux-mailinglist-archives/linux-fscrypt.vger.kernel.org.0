@@ -2,343 +2,207 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F180F2DD355
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 17 Dec 2020 15:55:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F4192DD3B4
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 17 Dec 2020 16:06:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727543AbgLQOys (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 17 Dec 2020 09:54:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40182 "EHLO
+        id S1727936AbgLQPF0 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 17 Dec 2020 10:05:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727414AbgLQOyr (ORCPT
+        with ESMTP id S1727394AbgLQPFZ (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 17 Dec 2020 09:54:47 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 733A6C061794
-        for <linux-fscrypt@vger.kernel.org>; Thu, 17 Dec 2020 06:54:07 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id e25so6002590wme.0
-        for <linux-fscrypt@vger.kernel.org>; Thu, 17 Dec 2020 06:54:07 -0800 (PST)
+        Thu, 17 Dec 2020 10:05:25 -0500
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51FEBC061794
+        for <linux-fscrypt@vger.kernel.org>; Thu, 17 Dec 2020 07:04:45 -0800 (PST)
+Received: by mail-qk1-x74a.google.com with SMTP id i82so11612389qke.19
+        for <linux-fscrypt@vger.kernel.org>; Thu, 17 Dec 2020 07:04:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version;
-        bh=Z/jjOajFSqbs11MApycflUqf4LdeC9afGuIozaXG3Qw=;
-        b=tVOuP38q1ql1VfVKfxsjayVnmFsl4kcJ8XmSu/7MVeaS7ZYFOVEjFfWid3RGBAy3QM
-         /qDL5tBEfiv6PjWxrnCF05RX9B32cly0EEEQAm4UEwcGGR/sWoo1OZEiTUcNzXYIkYz2
-         7FGPtg/RjRgZ6BLZIs1kBdOoFLk5NHDuDiIWMukN54e2pNWCFM6vnBaj6SrejOu/89yD
-         o8vS3ciz+6wIW2RYM0s0EvwDfXfwVfeIMekZrZ7yA6OWHmmoAE9jWllmQXxVx4XlTuW2
-         9oE+oXkxM9qXB3X9hUl0najII+RPPjeFwUCR6Mu/kLte2OYZ9ZqeR+0JQb14khYzMdN6
-         Xamw==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=Yk0fWIDpYSRXNFlvOOk6G8jCPlvAFL7y91EQrAZ1ReI=;
+        b=mr2pGb6Ug8sFbn6nsJV39BmxtDqXSgMty9VRhi4fw/oUwA1VVRxorzdlpbwaLHHhW6
+         kClxH6KlsV0JluSSglqx7kq4oym5rQyH2bP2DCw2jvxjER47Kn9LfeK09AFDlB6w0X/M
+         CoysKAxeKEYFY9N5JMIsgzw0on0XJmTRpVRvo0k7ggiBVUzI/XukO4gAtM1qU/9VVn87
+         FTg1Fhfr53JAtgdMUl7sj3cGSxp6o15ExwemihkSL3sP8+KaCHbwoaAyMpWP7CyRqo3P
+         y4/LEK7ijSCnSS7LGHSD0Tp1UanZhsZOhzendhCedxSA8OU7thFa+RSx/dfmP8UYNnQX
+         r6xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version;
-        bh=Z/jjOajFSqbs11MApycflUqf4LdeC9afGuIozaXG3Qw=;
-        b=eufdjbkAP9E+LUZtRCnoR0Qa1na/r6pQ20q5lrSaSPoYPtjxknfgQY9zXHbwgNq3FX
-         gLzJ77dvA6gZJoY/DDuN9LXdqQ3NqL0U57TGGhgspEMb+efjjqBd+WUFWgS6uwpZYkGk
-         WQK8xpt0KsM/c4ZcK/sjJHZvhFSbrynpKhPqtVTti9ET1Slou5/omGMROmkGVuUAwH+C
-         FqhUVW2Kv85Ky3Xkg4Mx/qNlljEbNWcmpj9A9EiSHuXuyfjZEN73c4ioeXSylKwsff2e
-         KQat4JqwTsd8fSrbJBJxWzSyID7E7NyMgooEYNjYD3BFn8JV4vE5u3y/I/OwHLFTxYXI
-         WnaA==
-X-Gm-Message-State: AOAM531kpCNPg6ssl6q3nUqAriPasZ4bSJ5bonzob6qcxbiQgl2sJGzo
-        8Jvu9avkeb+hmAXoxAz+YHE=
-X-Google-Smtp-Source: ABdhPJwozBuaipVc2Njmntc5ZJ7vr1S3c6VrzNN41MDUA0mPl7EhU5Qr+yMf3YUE660FncosQsi1gg==
-X-Received: by 2002:a1c:9e86:: with SMTP id h128mr9191099wme.171.1608216845982;
-        Thu, 17 Dec 2020 06:54:05 -0800 (PST)
-Received: from bluca-lenovo ([88.98.246.218])
-        by smtp.gmail.com with ESMTPSA id y13sm4337995wrl.63.2020.12.17.06.54.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Dec 2020 06:54:04 -0800 (PST)
-Message-ID: <5791213a622ab31d102845a0b0f412dafe064bab.camel@gmail.com>
-Subject: Re: [fsverity-utils PATCH 2/2] Allow to build and run sign/digest
- on Windows
-From:   Luca Boccassi <luca.boccassi@gmail.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org
-Date:   Thu, 17 Dec 2020 14:54:03 +0000
-In-Reply-To: <X9pbQjFDwr/Vd0/O@sol.localdomain>
-References: <20201216172719.540610-1-luca.boccassi@gmail.com>
-         <20201216172719.540610-2-luca.boccassi@gmail.com>
-         <X9pbQjFDwr/Vd0/O@sol.localdomain>
-Content-Type: multipart/signed; micalg="pgp-sha512";
-        protocol="application/pgp-signature"; boundary="=-G++X5AcVr6P6B/DWAlPU"
-User-Agent: Evolution 3.30.5-1.2 
-MIME-Version: 1.0
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=Yk0fWIDpYSRXNFlvOOk6G8jCPlvAFL7y91EQrAZ1ReI=;
+        b=X+fR+WlHRlqeGqO4ME4ha/3eZ49lfQNVOdOEFzsnuF4Ir2c+M8tTMz3bPkSbfOkPnx
+         vzWT2pP23+Lm3eNy365dFrJ4qH850H6LYcCUoLFTuGZ0/aZaW1ko/edAexh77NKbPvBi
+         G1nyuzepoLVDmwQZEi/pNmYG/8q7qw3p3Pqj+Q9aspciy5dwXneAySELtRFJGZS3U14Z
+         pdh1/QRNt6JwNb9Y5TjB4fKVBsVJsQET9Dr6Qt763zSB7uNRfc0G/moNWg0C3vn9UK24
+         tXDVDSQbiI+plcbyAA6DJ7EVH2fpSQfOYqwy9ymEDc62CK/oBQ2Ur6f0I++TWkTIMUtB
+         HVjA==
+X-Gm-Message-State: AOAM532VkMaALP1Ud3GGhBqQnhAH4+KS9CvhB0kmK16wfgmPK/TP2lIz
+        t1XYXo0x8fZ3vbhI2dJY7OOXn7d1Fjc=
+X-Google-Smtp-Source: ABdhPJzt/WpiPThyfJOP52ud+2ffcF3oKSw6cetCFfe4FYdRSEvVK4B8STY6mFD+mtQDqMOq19ELoJDkEVU=
+Sender: "satyat via sendgmr" <satyat@satyaprateek.c.googlers.com>
+X-Received: from satyaprateek.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:1092])
+ (user=satyat job=sendgmr) by 2002:ad4:4c8c:: with SMTP id bs12mr50361550qvb.11.1608217484419;
+ Thu, 17 Dec 2020 07:04:44 -0800 (PST)
+Date:   Thu, 17 Dec 2020 15:04:32 +0000
+Message-Id: <20201217150435.1505269-1-satyat@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.684.gfbc64c5ab5-goog
+Subject: [PATCH v2 0/3] add support for metadata encryption to F2FS
+From:   Satya Tangirala <satyat@google.com>
+To:     "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>, Chao Yu <chao@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Satya Tangirala <satyat@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
+This patch series adds support for metadata encryption to F2FS using
+blk-crypto.
 
---=-G++X5AcVr6P6B/DWAlPU
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Currently, F2FS supports native file based encryption (FBE) via fscrypt.
+FBE encrypts the contents of files that reside in folders with encryption
+policies, as well as their filenames, but all other file contents
+and filesystem metadata is stored unencrypted. We'd like to have metadata
+and the contents of non-FBE files encrypted too, to protect data like
+file sizes, xattrs, locations, etc. which can be valuable in certain
+contexts.
 
-On Wed, 2020-12-16 at 11:08 -0800, Eric Biggers wrote:
-> On Wed, Dec 16, 2020 at 05:27:19PM +0000, luca.boccassi@gmail.com wrote:
-> > From: Luca Boccassi <luca.boccassi@microsoft.com>
-> >=20
-> > Add some minimal compat type defs, and stub out the enable/measure
-> > functions. Also add a way to handle the fact that mingw adds a
-> > .exe extension automatically in the Makefile install rules.
-> >=20
-> > Signed-off-by: Luca Boccassi <luca.boccassi@microsoft.com>
-> > ---
-> > So this is proably going to look strange, and believe me the feeling is=
- shared.
-> > It's actually the first time _ever_ I had to compile and run something =
-on
-> > Windows, which is ironic in itself - the O_BINARY stuff is probably WIN=
-32-101 and
-> > it took me an hour to find out.
-> > Anyway, I've got some groups building their payloads on Windows, so we =
-need to
-> > provide native tooling. Among these are fsverity tools to get the diges=
-t and
-> > sign files.
-> > This patch stubs out and returns EOPNOTSUPP from the measure/enable fun=
-ctions,
-> > since they are linux-host only, and adds some (hopefully) minimal and u=
-nintrusive
-> > compat ifdefs for the rest. There's also a change in the makefile, sinc=
-e the
-> > build toolchain (yocto + mingw) for some reason automatically names exe=
-cutables
-> > as .exe. Biggest chunk is the types definitions I guess. The ugliest is=
- the
-> > print stuff.
-> >=20
-> > Note that with this I do not ask you in any way, shape or form to be re=
-sponsible
-> > for the correct functioning or even compiling on WIN32 of these utiliti=
-es - if
-> > anything ever breaks, we'll find out and take care of it. I could keep =
-all of this
-> > out of tree, but I figured I'd try to see if you are amenable to merge =
-at least
-> > some part of it.
-> >=20
-> > I've tested that both Linux and WIN32 builds of digest and sign command=
-s return
-> > the exact same output for the same input.
->=20
-> On Linux, can you make it easily cross-compile for Windows using
-> 'make CC=3Dx86_64-w64-mingw32-gcc'?  That would be ideal, so that that co=
-mmand can
-> be added to scripts/run-tests.sh, so that I can make sure it stays buildi=
-ng.
->=20
-> I probably won't actually test *running* it on Windows, as that would be =
-more
-> work.  But building should be easy.
+The simplest way to do metadata encryption would be to run the filesystem
+over dm-crypt (set up to encrypt all bios with the metadata encryption
+key). This would essentially encrypt file contents twice (once with the FBE
+key and once with the metadata encryption key).  On many android devices,
+this is slower than we'd like, and also doesn't play well with inline
+encryption engines (which only allow for one layer of encryption, so the
+other layer must be done by the kernel crypto API).
 
-Yes, that's how I've been compiling it - with the addition to find the
-openssl library and headers, as it seems on Debian mingw32-gcc doesn't
-define any system paths. Ie:
+Android currently has metadata encryption, and due to the drawbacks
+listed above, doesn't use the above mentioned approach, and avoids
+double encryption. Metadata encryption on android is currently
+implemented using a new DM target (dm-default-key) that encrypts any
+bio it receives that has data which has not previously been encrypted
+(in practice, it checks for the presence of bio->bi_crypt_context, and
+if it's missing, dm-default-key adds a bi_crypt_context to the bio with
+the metadata encryption key that it was configured with). This works fine
+as long as filesystems submit bios without bi_crypt_contexts for
+filesystem metadata/unencrypted file contents, or submit bios with
+bi_crypt_contexts for encrypted file contents. However, filesystems like
+F2FS sometimes want to read the ciphertext of fscrypt encrypted data
+contents (so F2FS will submit a bio without any bi_crypt_context, but
+expects to receive ciphertext rather than the file contents decrypted
+with the metadata encryption key). To address this issue, F2FS sets a flag
+on the bio which essentially instructs dm-default-key not to add a
+bi_crypt_context on that bio even though there isn't already one on it.
+We'd like to try to come up with a metadata encryption solution that avoids
+this layering violation.
 
-make CC=3Dx86_64-w64-mingw32-gcc-8.3-win32 CPPFLAGS=3D"-I /tmp/win" LDFLAGS=
-=3D"-L/tmp/win"
+The most natural solution that avoids double encryption and layering
+violations is to let the filesystem take care of metadata encryption,
+since the filesystem is what's responsible for knowing where the filesystem
+metadata/unencrypted file contents/encrypted file contents are. This patch
+series follows that approach, and adds support for metadata encryption to
+F2FS and fscrypt.
 
-If libcrypto.dll and include/openssl are visible to mingw32-gcc out of
-the box, then CC is the only thing you should need.
+Patch 1 replaces fscrypt_get_devices (which took an array of request_queues
+and filled it up) with fscrypt_get_device, which takes a index of the
+desired device and returns the device at that index (so the index passed
+to fscrypt_get_device must be between 0 and (fscrypt_get_num_devices() - 1)
+inclusive). This allows callers to avoid having to allocate an array to
+pass to fscrypt_get_devices() when they only need to iterate through
+each element in the array (and have no use for the array itself).
 
-> > diff --git a/Makefile b/Makefile
-> > index bfe83c4..fe89e18 100644
-> > --- a/Makefile
-> > +++ b/Makefile
-> > @@ -63,6 +63,7 @@ INCDIR          ?=3D $(PREFIX)/include
-> >  LIBDIR          ?=3D $(PREFIX)/lib
-> >  DESTDIR         ?=3D
-> >  PKGCONF         ?=3D pkg-config
-> > +EXEEXT          ?=3D
->=20
-> It looks like you're requiring the caller to manually specify EXEEXT.  Yo=
-u could
-> use something like the following to automatically detect when CC is MinGW=
- and
-> set EXEEXT and AR appropriately:
->=20
-> # Compiling for Windows with MinGW?
-> ifneq ($(findstring -mingw,$(shell $(CC) -dumpmachine 2>/dev/null)),)
-> 	EXEEXT :=3D .exe
-> 	# Derive $(AR) from $(CC).
-> 	AR :=3D $(shell echo $(CC) | \
->                 sed -E 's/g?cc(-?[0-9]+(\.[0-9]+)*)?(\.exe)?$$/ar\3/')
-> endif
+Patch 2 introduces some functions to fscrypt that help filesystems perform
+metadata encryption. Any filesystem that wants to use metadata encryption
+can call fscrypt_setup_metadata_encryption() with the super_block of the
+filesystem, the encryption algorithm and the descriptor of the metadata
+crypt key. The descriptor is looked up in the logon keyring of the
+current session with "fscrypt:" as the prefix of the descriptor. The
+metadata crypt key is not directly used for encryption - the actual
+metadata encryption key is derived from this metadata key (refer to
+fscrypt_setup_metadata_encryption() in fs/crypto/metadata_crypt.c for
+details). 
 
-Done in v2, without overriding AR - it seems to work as-is.
+The patch also introduces fscrypt_metadata_crypt_bio() which an FS should
+call on a bio that the FS wants metadata crypted. The function will add
+an encryption context with the metadata encryption key set up by the call
+to the above mentioned fscrypt_setup_metadata_encryption().
 
-> >  # Rebuild if a user-specified setting that affects the build changed.
-> >  .build-config: FORCE
-> > @@ -87,9 +88,9 @@ CFLAGS          +=3D $(shell "$(PKGCONF)" libcrypto -=
--cflags 2>/dev/null || echo)
-> >  # If we are dynamically linking, when running tests we need to overrid=
-e
-> >  # LD_LIBRARY_PATH as no RPATH is set
-> >  ifdef USE_SHARED_LIB
-> > -RUN_FSVERITY    =3D LD_LIBRARY_PATH=3D./ ./fsverity
-> > +RUN_FSVERITY    =3D LD_LIBRARY_PATH=3D./ ./fsverity$(EXEEXT)
-> >  else
-> > -RUN_FSVERITY    =3D ./fsverity
-> > +RUN_FSVERITY    =3D ./fsverity$(EXEEXT)
-> >  endif
-> > =20
-> >  ######################################################################=
-########
-> > @@ -186,7 +187,7 @@ test_programs:$(TEST_PROGRAMS)
-> >  # want to run the full tests.
-> >  check:fsverity test_programs
-> >  	for prog in $(TEST_PROGRAMS); do \
-> > -		$(TEST_WRAPPER_PROG) ./$$prog || exit 1; \
-> > +		$(TEST_WRAPPER_PROG) ./$$prog$(EXEEXT) || exit 1; \
-> >  	done
-> >  	$(RUN_FSVERITY) --help > /dev/null
-> >  	$(RUN_FSVERITY) --version > /dev/null
-> > @@ -202,7 +203,7 @@ check:fsverity test_programs
-> > =20
-> >  install:all
-> >  	install -d $(DESTDIR)$(LIBDIR)/pkgconfig $(DESTDIR)$(INCDIR) $(DESTDI=
-R)$(BINDIR)
-> > -	install -m755 fsverity $(DESTDIR)$(BINDIR)
-> > +	install -m755 fsverity$(EXEEXT) $(DESTDIR)$(BINDIR)
-> >  	install -m644 libfsverity.a $(DESTDIR)$(LIBDIR)
-> >  	install -m755 libfsverity.so.$(SOVERSION) $(DESTDIR)$(LIBDIR)
-> >  	ln -sf libfsverity.so.$(SOVERSION) $(DESTDIR)$(LIBDIR)/libfsverity.so
-> > @@ -215,7 +216,7 @@ install:all
-> >  	chmod 644 $(DESTDIR)$(LIBDIR)/pkgconfig/libfsverity.pc
-> > =20
-> >  uninstall:
-> > -	rm -f $(DESTDIR)$(BINDIR)/fsverity
-> > +	rm -f $(DESTDIR)$(BINDIR)/fsverity$(EXEEXT)
-> >  	rm -f $(DESTDIR)$(LIBDIR)/libfsverity.a
-> >  	rm -f $(DESTDIR)$(LIBDIR)/libfsverity.so.$(SOVERSION)
-> >  	rm -f $(DESTDIR)$(LIBDIR)/libfsverity.so
-> > @@ -232,4 +233,4 @@ help:
-> > =20
-> >  clean:
-> >  	rm -f $(DEFAULT_TARGETS) $(TEST_PROGRAMS) \
-> > -		lib/*.o programs/*.o .build-config fsverity.sig
-> > +		fsverity$(EXEEXT) lib/*.o programs/*.o .build-config fsverity.sig
->=20
-> Do you need libfsverity to be built properly for Windows (producing .dll,=
- .lib,
-> and .def files), or are you just looking to build the fsverity binary?  A=
-t the
-> moment you're just doing the latter.  There are a bunch of differences be=
-tween
-> libraries on Windows and Linux, so hopefully you don't need the library b=
-uilt
-> properly for Windows, but it would be possible.
+The patch also introduces fscrypt_metadata_crypt_prepare_all_devices().
+Filesystems that use multiple devices should call this function once all
+the underlying devices have been determined. An FS might only be able to
+determine all the underlying devices after some initial processing that
+might already require metadata en/decryption, which is why this function
+is separate from fscrypt_setup_metadata_encryption().
 
-I do not need the library at the moment no, I just need the binary.
+Finally, the patch makes the metadata crypt key for the filesystem part
+of the key derivation process for all fscrypt file content encryption
+keys used with that filesystem - this way, the file content encryption
+keys are at least as strong as the metadata encryption key. For more
+details please refer to fscrypt_mix_in_metadata_key() in
+fs/crypto/metadata_crypt.c
 
-> > diff --git a/common/common_defs.h b/common/common_defs.h
-> > index 279385a..a869532 100644
-> > --- a/common/common_defs.h
-> > +++ b/common/common_defs.h
-> > @@ -15,6 +15,30 @@
-> >  #include <stddef.h>
-> >  #include <stdint.h>
-> > =20
-> > +#ifdef _WIN32
-> > +/* Some minimal definitions to allow the digest/sign commands to run u=
-nder Windows */
-> > +#  ifndef ENOPKG
-> > +#    define ENOPKG 65
-> > +#  endif
-> > +#  ifndef __cold
-> > +#    define __cold
-> > +#  endif
-> > +typedef __signed__ char __s8;
-> > +typedef unsigned char __u8;
-> > +typedef __signed__ short __s16;
-> > +typedef unsigned short __u16;
-> > +typedef __signed__ int __s32;
-> > +typedef unsigned int __u32;
-> > +typedef __signed__ long long  __s64;
-> > +typedef unsigned long long  __u64;
-> > +typedef __u16 __le16;
-> > +typedef __u16 __be16;
-> > +typedef __u32 __le32;
-> > +typedef __u32 __be32;
-> > +typedef __u64 __le64;
-> > +typedef __u64 __be64;
-> > +#endif /* _WIN32 */
-> > +
-> >  typedef uint8_t u8;
-> >  typedef uint16_t u16;
-> >  typedef uint32_t u32;
->=20
-> Could you put most of the Windows compatibility definitions in a single n=
-ew
-> header so that they don't clutter things up too much?
->=20
-> Including for things you put in other places, like O_BINARY.
+Patch 3 wires up F2FS with the functions introduced in Patch 2. F2FS
+will encrypt every block (that's not being encrypted by some other
+encryption key, e.g. a per-file key) with the metadata encryption key
+except the superblock (and the redundant copy of the superblock). The DUN
+of a block is the offset of the block from the start of the F2FS
+filesystem.
 
-Added common/win32_defs.h in v2
+Please refer to the commit message for why the superblock was excluded from
+en/decryption, and other limitations. The superblock and its copy are
+stored in plaintext on disk. The encryption algorithm used for metadata
+encryption is stored within the superblock itself. Changes to the userspace
+tools (that are required to test out metadata encryption with F2FS) are
+also being sent out - I'll post a link as a reply to this mail once it's
+out.
 
-> > diff --git a/lib/enable.c b/lib/enable.c
-> > index 2478077..b49ba26 100644
-> > --- a/lib/enable.c
-> > +++ b/lib/enable.c
-> > @@ -11,14 +11,10 @@
-> > =20
-> >  #include "lib_private.h"
-> > =20
-> > +#ifndef _WIN32
-> > +
->=20
-> Could you just have the Makefile exclude files from the build instead?
->=20
-> 	lib/enable.c
-> 	programs/cmd_measure.c
-> 	programs/cmd_enable.c
->=20
-> Then in programs/fsverity.c, ifdef out the 'measure' and 'enable' command=
-s in
-> fsverity_commands[].
->=20
-> I think that would be easier.  Plus users won't get weird errors if they =
-try to
-> use unsupported commands on Windows; the commands just won't be available=
-.
+Changes v1 => v2:
+ - The metadata crypt key is no longer used directly for encryption. The
+   actual metadata encryption key is now derived from the metadata crypt key.
+   A key identifier is also derived from the metadata crypt key (and this
+   identifier is verified at FS mount time). The key identifier is stored
+   directly in the F2FS superblock, so there's no longer a need for any new
+   mount options.
+ - The metadata crypt key is now mixed into the key derivation process for
+   all subkeys derived from fscrypt master keys
+ - Make the metadata key payload in the keyring just the raw bytes of the
+   key (instead of having it represent a struct fscrypt_key)
+ - export some of the metadata_crypt.c functions, since F2FS can be built
+   as a module
+ - make FS_ENCRYPTION_METADATA depend on FS_ENCRYPTION_INLINE_CRYPT
+ - fscrypt_set_bio_crypt_ctx() calls fscrypt_metadata_crypt_bio()
+   directly, so filesystems only need to call fscrypt_set_bio_crypt_ctx()
+ - Cleanups and updated docs
 
-Done in v2
+Satya Tangirala (3):
+  fscrypt, f2fs: replace fscrypt_get_devices with fscrypt_get_device
+  fscrypt: Add metadata encryption support
+  f2fs: Add metadata encryption support
 
-> > +#ifndef _WIN32
-> >  		if (asprintf(&msg2, "%s: %s", msg,
-> >  			     strerror_r(err, errbuf, sizeof(errbuf))) < 0)
-> > +#else
-> > +		strerror_s(errbuf, sizeof(errbuf), err);
-> > +		if (asprintf(&msg2, "%s: %s", msg, errbuf) < 0)
-> > +#endif
-> >  			goto out2;
->=20
-> Instead of doing this, could you provide a strerror_r() implementation in
-> programs/utils.c for _WIN32?
+ Documentation/filesystems/fscrypt.rst |  86 +++++++-
+ fs/crypto/Kconfig                     |  12 +
+ fs/crypto/Makefile                    |   1 +
+ fs/crypto/bio.c                       |   2 +-
+ fs/crypto/fscrypt_private.h           |  46 ++++
+ fs/crypto/hkdf.c                      |   1 +
+ fs/crypto/inline_crypt.c              |  52 ++---
+ fs/crypto/keyring.c                   |   4 +
+ fs/crypto/metadata_crypt.c            | 303 ++++++++++++++++++++++++++
+ fs/ext4/readpage.c                    |   2 +-
+ fs/f2fs/data.c                        |  17 +-
+ fs/f2fs/f2fs.h                        |   2 +
+ fs/f2fs/super.c                       |  60 ++++-
+ include/linux/f2fs_fs.h               |   7 +-
+ include/linux/fs.h                    |  10 +
+ include/linux/fscrypt.h               |  50 ++++-
+ 16 files changed, 586 insertions(+), 69 deletions(-)
+ create mode 100644 fs/crypto/metadata_crypt.c
 
-Added in v2.
-
-Thanks for the review!
-
---=20
-Kind regards,
-Luca Boccassi
-
---=-G++X5AcVr6P6B/DWAlPU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEE6g0RLAGYhL9yp9G8SylmgFB4UWIFAl/bcQsACgkQSylmgFB4
-UWKhLAf7BNk+PCjjEhtC6PyUxBtF+UGVjBUePBAZ7kVbiliNaK8EeJYbFXnE/n/E
-S2Gm5tKAeeu2LyISzblxgwm6i46pRzN9g7s0pdUXpxex/uXjfx6xO4S28sVQMXfN
-0ByKPJgrCQDWZ6fcNkVUYm2EmOJC1264NAeFtwaklaxD/bwgafVXSWqF9B1UVol1
-W41TE0Tzjyo3UX+z4OQ4mJrOANlkX/nn76mZ86Udh1DlwgR4TLRSAAhbEEIHq8j4
-lewqK+NUCymFrURtUhrABvjiE6bYhwWhmvwQwO7/Jgw82lmi+TPb3xqWjwi+OtHY
-CnVUhpZDqgRN5YZJvLN6nrLqM9sZvA==
-=3K0F
------END PGP SIGNATURE-----
-
---=-G++X5AcVr6P6B/DWAlPU--
+-- 
+2.29.2.729.g45daf8777d-goog
 
