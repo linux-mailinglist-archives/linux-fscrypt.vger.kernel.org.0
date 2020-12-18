@@ -2,101 +2,107 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 692072DE238
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 18 Dec 2020 12:54:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB85E2DE75C
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 18 Dec 2020 17:20:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726452AbgLRLyo (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 18 Dec 2020 06:54:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726422AbgLRLyn (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 18 Dec 2020 06:54:43 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76EE3C0617A7
-        for <linux-fscrypt@vger.kernel.org>; Fri, 18 Dec 2020 03:54:03 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id n3so4775013pjm.1
-        for <linux-fscrypt@vger.kernel.org>; Fri, 18 Dec 2020 03:54:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EMOyMmi5OQh1mMw6pWH3HTsh9nX0nJvvkb+01sG5L6Q=;
-        b=OEqRBfN9ikmHv25/4WO0ioVGt+dtMVY9rOSKsI5lIuKBTvU4b+aYp4CCK82nWHGnS2
-         rjLxRrIr/TQvF8gZBpg25+9PrMfCR6teCbq6+7toS/4enCVZg87drrlN9cOTyBOQ/+kZ
-         0rIMRQV3Y7H5lJr5N7MFfK2xTyTOvpPt+kbgejrqeYe4xCTJCu26W53nxg3KXT55BVSj
-         4BK1Bj6Ug2n5ufoys9NpoYzTBTU6KrsVsbBArZ6gDAycN/ciqAfBF73YU/QS6I6ENmpf
-         DNXhWTbx7nR6WtTw9YBgslobxO3i88AalvYg1IuJaWD4eLKdTQbjO00LOIWzdBrcirIx
-         UiLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EMOyMmi5OQh1mMw6pWH3HTsh9nX0nJvvkb+01sG5L6Q=;
-        b=ENJ1o4IxmTy9D/vDLknQy2+29tI72PeiFJe63DiXXUylhSsEqJU8huXDAwCQ4FTBuT
-         9nF/68xZnoUonz5hot89l/lBGWPM05cgfddAg3AyzFKS39N+JK2cDW+IIHlGhLnEPdrl
-         Msnp1x9bszoSPsc85d/BVWPhs6vbi0oRxNA2Wlzfajiq1wjxjggIgHzUG1PBQJDFPx01
-         hhKpLAOK003ATm33swkk2hStarhFgKWoabPebDWFL1YSbbxR+CRvhm1W1XlI22JBX77n
-         Aw+4ZWTktfvOs4jRSGyRASORlr5kSTilxIo5je5wHdNUc8eiZ6S2LBiea6DW1YWnLarc
-         cDCQ==
-X-Gm-Message-State: AOAM532nFqSwD9/3qT49O6ybDRQpvu0aJEbArBMAhNf8/LIABGtjSlnm
-        EJeBd5GxkuJLh7vq8flGcIFBOw==
-X-Google-Smtp-Source: ABdhPJwSlTiK2XI1930qTKhXQbTvQGl7TXUde9fI8+X06ym1hrnx7dRsCU6ClGix/2RdhYaIhNBIHQ==
-X-Received: by 2002:a17:90a:5894:: with SMTP id j20mr3959568pji.107.1608292442787;
-        Fri, 18 Dec 2020 03:54:02 -0800 (PST)
-Received: from google.com (139.60.82.34.bc.googleusercontent.com. [34.82.60.139])
-        by smtp.gmail.com with ESMTPSA id gp14sm7862161pjb.6.2020.12.18.03.54.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Dec 2020 03:54:02 -0800 (PST)
-Date:   Fri, 18 Dec 2020 11:53:58 +0000
-From:   Satya Tangirala <satyat@google.com>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH 0/3] add support for metadata encryption to F2FS
-Message-ID: <X9yYVuuLt3/hL17J@google.com>
-References: <20201005073606.1949772-1-satyat@google.com>
- <471e0eb7-b035-03da-3ee3-35d5880a6748@huawei.com>
- <X9t8y3rElyAPCLoD@google.com>
- <9a8d3ae2-a09f-f199-5cb1-48b1317b3d37@huawei.com>
+        id S1727787AbgLRQUM (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 18 Dec 2020 11:20:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42262 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726181AbgLRQUM (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Fri, 18 Dec 2020 11:20:12 -0500
+Date:   Fri, 18 Dec 2020 08:19:30 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608308371;
+        bh=UdK9bWHSWwaD8pkbofLQoN+WMmYvS6pnIAYDt9jhLZ8=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=N/VU2QGs9u15hcdNADikNh+/r4kJ4g55G+esAwPY9E+a30b6/6KzrlH03qxYJkJeS
+         NVlfbsxKI5TNJ1fAtYXkbtkIn/QlficVuE64rL64/JXfmdovJR+j0uvK2ZWRTMPlH6
+         OARzqTsWpWkvdEi12rzmdfGWE4SpK/JRNPrDKUPNxpjAovzhVybf63aSkUX08TVkPT
+         ze79c2dzIbVQYnqu11R8z5fTssPZqJwo4OS7/BSpKQLHPfqtUYG8DxHhhheO8wMFwF
+         OXe+KfXNgweR8Iujih9pMnNR2oMeyZQr3sQf2V9QvLQAAAVEcOrPAZQE6c+SxFXTQr
+         ws7MtN7Z6Zdug==
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Satya Tangirala <satyat@google.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fscrypt@vger.kernel.org
+Subject: Re: [PATCH 0/1] userspace support for F2FS metadata encryption
+Message-ID: <X9zWkphqcot8rSZC@google.com>
+References: <20201005074133.1958633-1-satyat@google.com>
+ <X9uF9kNjWFq8KlL9@google.com>
+ <X9xPHDPhsOfGYIgv@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9a8d3ae2-a09f-f199-5cb1-48b1317b3d37@huawei.com>
+In-Reply-To: <X9xPHDPhsOfGYIgv@google.com>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 05:02:23PM +0800, Chao Yu wrote:
-> On 2020/12/17 23:44, Satya Tangirala wrote:
-> > On Sat, Oct 10, 2020 at 05:53:06PM +0800, Chao Yu wrote:
-> > > Why not using nid as DUN, then GC could migrate encrypted node block directly via
-> > > meta inode's address space like we do for encrypted data block, rather than
-> > > decrypting node block to node page and then encrypting node page with DUN of new
-> > > blkaddr it migrates to.
+On 12/18, Satya Tangirala wrote:
+> On Thu, Dec 17, 2020 at 08:23:18AM -0800, Jaegeuk Kim wrote:
+> > Hi Satya,
+> > 
+> > Could you please consider to rebase the patches on f2fs-tools/dev branch?
+> > I've applied compression support which will have some conflicts with this
+> > series. And, could you check this works with multi-partition support?
+> > 
+> Sure, I'll do that! I sent out v2 of this patch series earlier today,
+> so would you want me to send out a rebased version asap? or when
+> I send out v3?
+
+Thank you. Please let me have the latest update like v3.
+
+> 
+> Also, newbie question - multi-partition support is the same as
+> multi-device support, right?
+
+Yes, right. :)
+
+> > Thanks,
+> > 
+> > On 10/05, Satya Tangirala wrote:
+> > > The kernel patches for F2FS metadata encryption are at:
 > > > 
-> > The issue is, the bi_crypt_context in a bio holds a single DUN value,
-> > which is the DUN for the first data unit in the bio. blk-crypto assumes
-> > that the DUN of each subsequent data unit can be computed by simply
-> > incrementing the DUN. So physically contiguous data units can only be put
-> > into the same bio if they also have contiguous DUNs. I don't know much
-> > about nids, but if the nid is invariant w.r.t the physical block location,
-> > then there might be more fragmentation of bios in regular read/writes
-> 
-> Correct, considering performance of in batch node flush, it will be better to
-> use pba as IV value.
-> 
-> But, what's the plan about supporting software encryption for metadata? Current
-> f2fs write flow will handle all operations which may encounter failure before
-> allocating block address for node, if we do allocation first, and then use pba
-> as IV to encrypt node block, it will be a little complicated to revert allocation
-> if we fail to encrypt node block.
-> 
-Software encryption for metadata is supported through the blk-crypto
-framework - so encryption will happen in the block layer, not the
-filesystem layer. So there's nothing extra/special we need to do if
-there's an encryption failure - an encryption failure is no different
-from a read/write failure in a lower layer from f2fs' perspective.
+> > > https://lore.kernel.org/linux-fscrypt/20201005073606.1949772-4-satyat@google.com/
+> > > 
+> > > This patch implements the userspace changes required for metadata
+> > > encryption support as implemented in the kernel changes above. All blocks
+> > > in the filesystem are encrypted with the user provided metadata encryption
+> > > key except for the superblock (and its redundant copy). The DUN for a block
+> > > is its offset from the start of the filesystem.
+> > > 
+> > > This patch introduces two new options for the userspace tools: '-A' to
+> > > specify the encryption algorithm, and '-M' to specify the encryption key.
+> > > mkfs.f2fs will store the encryption algorithm used for metadata encryption
+> > > in the superblock itself, so '-A' is only applicable to mkfs.f2fs. The rest
+> > > of the tools only take the '-M' option, and will obtain the encryption
+> > > algorithm from the superblock of the FS.
+> > > 
+> > > Limitations: 
+> > > Metadata encryption with sparse storage has not been implemented yet in
+> > > this patch.
+> > > 
+> > > This patch requires the metadata encryption key to be readable from
+> > > userspace, and does not ensure that it is zeroed before the program exits
+> > > for any reason.
+> > > 
+> > > Satya Tangirala (1):
+> > >   f2fs-tools: Introduce metadata encryption support
+> > > 
+> > >  fsck/main.c                   |  47 ++++++-
+> > >  fsck/mount.c                  |  33 ++++-
+> > >  include/f2fs_fs.h             |  10 +-
+> > >  include/f2fs_metadata_crypt.h |  21 ++++
+> > >  lib/Makefile.am               |   4 +-
+> > >  lib/f2fs_metadata_crypt.c     | 226 ++++++++++++++++++++++++++++++++++
+> > >  lib/libf2fs_io.c              |  87 +++++++++++--
+> > >  mkfs/f2fs_format.c            |   5 +-
+> > >  mkfs/f2fs_format_main.c       |  33 ++++-
+> > >  9 files changed, 446 insertions(+), 20 deletions(-)
+> > >  create mode 100644 include/f2fs_metadata_crypt.h
+> > >  create mode 100644 lib/f2fs_metadata_crypt.c
+> > > 
+> > > -- 
+> > > 2.28.0.806.g8561365e88-goog
