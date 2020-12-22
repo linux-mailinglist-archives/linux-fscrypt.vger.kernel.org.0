@@ -2,397 +2,102 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF6022E034D
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 22 Dec 2020 01:12:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 327142E0350
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 22 Dec 2020 01:12:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727058AbgLVALZ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 21 Dec 2020 19:11:25 -0500
-Received: from mail-wm1-f42.google.com ([209.85.128.42]:54682 "EHLO
-        mail-wm1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727050AbgLVALZ (ORCPT
+        id S1726314AbgLVAMQ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 21 Dec 2020 19:12:16 -0500
+Received: from mail-lf1-f46.google.com ([209.85.167.46]:35158 "EHLO
+        mail-lf1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726167AbgLVAMQ (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 21 Dec 2020 19:11:25 -0500
-Received: by mail-wm1-f42.google.com with SMTP id c133so449638wme.4
-        for <linux-fscrypt@vger.kernel.org>; Mon, 21 Dec 2020 16:11:07 -0800 (PST)
+        Mon, 21 Dec 2020 19:12:16 -0500
+Received: by mail-lf1-f46.google.com with SMTP id h22so18347345lfu.2
+        for <linux-fscrypt@vger.kernel.org>; Mon, 21 Dec 2020 16:11:59 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jSxrmWe41RKjMOcMvtCbAbp9MLhALnJdKLgYH1ALzUg=;
-        b=TpW1WOacf5n/Cq+swrs0mhAI6sV4G/fPhTvNYbkjqUCXphLNuy54GMoLXTP2hk1Xpu
-         1OB8aHT2PuN4OknuxcJAGYFo0PFK24hm858GeXFy/h86u0FgIrgAS0RQ5+s3vVyBLJI7
-         5uNM3S5qDZnOlBecFfRJnUP7+ZbIWSkCYx/pYSqrprtqXBEN1VRbThcYLWlEKG6wpPTg
-         QqmOgDYgLtjkzS0Xnt/mnPFpUUwEUxuwpAOFv5fWttzWQk5hDxNGEpoHlsa2ONWvQmst
-         KYbeDo8ZuotlRaCFZdvUfLmGayA7//og7gVJJVesyN1o0XKOtj4qC9M/6/wo2kPkF1nj
-         lAyw==
-X-Gm-Message-State: AOAM531TCEsRmdM+BM1WuyRNZizHgG6nXZwBEJGmkTUGdTou753bFARP
-        IPxeTpccy2cKKWOy0m5FjoOr+h4C7Yv9ypW3
-X-Google-Smtp-Source: ABdhPJyYHAvMfWfHazqIo0YZMITpJbP4NRO+kTWK/8JfJYH1Rt6fJJsjskp4EFlVx0r6qpOcLeAKiw==
-X-Received: by 2002:a1c:9692:: with SMTP id y140mr12695405wmd.128.1608595841342;
-        Mon, 21 Dec 2020 16:10:41 -0800 (PST)
-Received: from localhost ([2a01:4b00:f419:6f00:e2db:6a88:4676:d01b])
-        by smtp.gmail.com with ESMTPSA id v1sm20825320wmj.31.2020.12.21.16.10.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 16:10:40 -0800 (PST)
-From:   Luca Boccassi <bluca@debian.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     ebiggers@google.com
-Subject: [PATCH v7 3/3] Allow to build and run sign/digest on Windows
-Date:   Tue, 22 Dec 2020 00:10:33 +0000
-Message-Id: <20201222001033.302274-3-bluca@debian.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201222001033.302274-1-bluca@debian.org>
-References: <20201221232428.298710-1-bluca@debian.org>
- <20201222001033.302274-1-bluca@debian.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rejQrtbwF6EjNP6IjovgIbHCtCSocl644+WLcgfhOtA=;
+        b=iio1MyV/B3mguCoY4UHqdHhx6EFLzje4jofxWEM+qjfh1PCh22visXfeJaHynrGsSP
+         D1Hdn3hwWracDIPMMP1OoRpzXr/3DBGwmyLEvLtVbipM4cCuP+EVgwTFt7Flx12NH6Y+
+         EKL6LYX5CXLI4SS9Ns1N5myRdsnyMaxLCE4UOaAyGGbzLI/Oi3o/XFPAG6KUa82KrF/0
+         Fl8cbLE0vRBsCNasL/FOYrdRWMOeywNOK3i852kHZQ0Tbz/hp7hNfda+95a8cqcyXEfo
+         XpMBF4ik6uUULoEr5itlI2BUKBa6/EvjnHA3HRZ2QF76txw+V0ETTPTssSt+oAaWjImI
+         TKYw==
+X-Gm-Message-State: AOAM532HBcxtuALvNS3o5eJ7nlCzQeYO3p6LoGfnZTNP6PwYGMaHhTST
+        PDeuA8jJVCJyPTsG2fe9O0qlWxsIgJHG4w==
+X-Google-Smtp-Source: ABdhPJzZniXZw0m6MrkiGo5bkuKIhfJF3/2te8fONMseXcgYOdGqYpitKA2WCog17uzJPXyij7pYPw==
+X-Received: by 2002:a05:6512:693:: with SMTP id t19mr8149060lfe.22.1608595893054;
+        Mon, 21 Dec 2020 16:11:33 -0800 (PST)
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
+        by smtp.gmail.com with ESMTPSA id i19sm2485250ljj.26.2020.12.21.16.11.32
+        for <linux-fscrypt@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Dec 2020 16:11:32 -0800 (PST)
+Received: by mail-lf1-f52.google.com with SMTP id 23so27816659lfg.10
+        for <linux-fscrypt@vger.kernel.org>; Mon, 21 Dec 2020 16:11:32 -0800 (PST)
+X-Received: by 2002:a19:10:: with SMTP id 16mr7507742lfa.334.1608595892123;
+ Mon, 21 Dec 2020 16:11:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201221221953.256059-1-bluca@debian.org> <20201221232428.298710-1-bluca@debian.org>
+ <20201221232428.298710-3-bluca@debian.org> <X+E1a5jRbkZzS3j4@sol.localdomain>
+ <CAMw=ZnTm7TOWg=yBeYr6tnpLux_pU7QXH3OtfPW3Rd1reuAtgA@mail.gmail.com> <X+E3wa/sdzGDHf7I@sol.localdomain>
+In-Reply-To: <X+E3wa/sdzGDHf7I@sol.localdomain>
+From:   Luca Boccassi <bluca@debian.org>
+Date:   Tue, 22 Dec 2020 00:11:20 +0000
+X-Gmail-Original-Message-ID: <CAMw=ZnR0=eJA+_bvxU-Da09jmJ0okQ4k71AfpOVmgM_PknucCg@mail.gmail.com>
+Message-ID: <CAMw=ZnR0=eJA+_bvxU-Da09jmJ0okQ4k71AfpOVmgM_PknucCg@mail.gmail.com>
+Subject: Re: [PATCH v6 3/3] Allow to build and run sign/digest on Windows
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-fscrypt@vger.kernel.org,
+        Luca Boccassi <luca.boccassi@microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Add some minimal compat type defs, and omit the enable/measure
-sources. Also add a way to handle the fact that mingw adds a
-.exe extension automatically in the Makefile install rules.
+On Tue, 22 Dec 2020 at 00:03, Eric Biggers <ebiggers@kernel.org> wrote:
+>
+> On Mon, Dec 21, 2020 at 11:57:41PM +0000, Luca Boccassi wrote:
+> > On Mon, 21 Dec 2020 at 23:53, Eric Biggers <ebiggers@kernel.org> wrote:
+> > >
+> > > On Mon, Dec 21, 2020 at 11:24:28PM +0000, Luca Boccassi wrote:
+> > > > +### Building on Windows
+> > > > +
+> > > > +There is minimal support for building Windows executables using MinGW.
+> > > > +```bash
+> > > > +    make CC=x86_64-w64-mingw32-gcc-win32
+> > > > +```
+> > > > +
+> > > > +`fsverity.exe` will be built, and it supports the `digest` and `sign` commands.
+> > > > +
+> > > > +A Windows build of OpenSSL/libcrypto needs to be available.
+> > >
+> > > For me "CC=x86_64-w64-mingw32-gcc-win32" doesn't work; I need
+> > > "x86_64-w64-mingw32-gcc" instead.  Is this difference intentional?
+> > >
+> > > - Eric
+> >
+> > It's a distro setup difference I think, on Debian
+> > x86_64-w64-mingw32-gcc is a symlink to x86_64-w64-mingw32-gcc-win32:
+> >
+> > $ ls -l /usr/bin/x86_64-w64-mingw32-gcc-win32
+> > -rwxr-xr-x 2 root root 1160320 Nov 27 05:57
+> > /usr/bin/x86_64-w64-mingw32-gcc-win32
+> > $ ls -l /usr/bin/x86_64-w64-mingw32-gcc
+> > lrwxrwxrwx 1 root root 40 Sep 27 18:41 /usr/bin/x86_64-w64-mingw32-gcc
+> > -> /etc/alternatives/x86_64-w64-mingw32-gcc
+> > $ ls -l /etc/alternatives/x86_64-w64-mingw32-gcc
+> > lrwxrwxrwx 1 root root 37 Sep 27 18:44
+> > /etc/alternatives/x86_64-w64-mingw32-gcc ->
+> > /usr/bin/x86_64-w64-mingw32-gcc-win32
+>
+> Okay, it would be better to document the one that works on all distros.
+>
+> - Eric
 
-Signed-off-by: Luca Boccassi <luca.boccassi@microsoft.com>
----
-v2: rework the stubbing out to detect mingw in the Makefile and remove
-    sources from compilation, instead of ifdefs.
-    add a new common/win32_defs.h for the compat definitions.
-    define strerror_r using strerror_s.
+Adjusted in v7.
 
-    To compile with mingw:
-      make CC=x86_64-w64-mingw32-gcc-8.3-win32
-    note that the openssl headers and a win32 libcrypto.dll need
-    to be available in the default search paths, and otherwise have
-    to be specified as expected via CPPFLAGS/LDFLAGS
-v3: apply suggestion to remove -D_GNU_SOURCE from the header and define
-    it as a CPPFLAGS, and to add  a definition of __printf for _WIN32
-    to fix compiler warnings
-    removed override of -lcrypto, not needed
-v4: apply suggestion to remove overrides of %zu, as it now "just works".
-    no more compilation warnings.
-v5: change makefile fsverity target to use $(EXEEXT), and ensure make check
-    can run under Windows (tested with wine, using TEST_WRAPPER_PROG=wine)
-v6: split GNU_SOURCES and TEST_WRAPPER_PROG out in separate patches.
-    add note about mingw to README.md.
-    note in Makefile that we don't build libfsverity.dll yet.
-    ensure the TEST_PROGS targets get the .exe suffix if needed.
-v7: adjust path to mingw compiler in README.md
-
-
- Makefile               | 48 ++++++++++++++++++++++++-----------
- README.md              | 11 ++++++++
- common/common_defs.h   |  2 ++
- common/fsverity_uapi.h |  2 ++
- common/win32_defs.h    | 57 ++++++++++++++++++++++++++++++++++++++++++
- lib/utils.c            |  9 +++++++
- programs/fsverity.c    |  2 ++
- programs/utils.c       |  2 +-
- 8 files changed, 117 insertions(+), 16 deletions(-)
- create mode 100644 common/win32_defs.h
-
-diff --git a/Makefile b/Makefile
-index 583db8e..0354f62 100644
---- a/Makefile
-+++ b/Makefile
-@@ -35,6 +35,12 @@
- cc-option = $(shell if $(CC) $(1) -c -x c /dev/null -o /dev/null > /dev/null 2>&1; \
- 	      then echo $(1); fi)
- 
-+# Support building with MinGW for minimal Windows fsverity.exe, but not for
-+# libfsverity. fsverity.exe will be statically linked.
-+ifneq ($(findstring -mingw,$(shell $(CC) -dumpmachine 2>/dev/null)),)
-+MINGW = 1
-+endif
-+
- CFLAGS ?= -O2
- 
- override CFLAGS := -Wall -Wundef				\
-@@ -62,7 +68,13 @@ BINDIR          ?= $(PREFIX)/bin
- INCDIR          ?= $(PREFIX)/include
- LIBDIR          ?= $(PREFIX)/lib
- DESTDIR         ?=
-+ifneq ($(MINGW),1)
- PKGCONF         ?= pkg-config
-+else
-+PKGCONF         := false
-+EXEEXT          := .exe
-+endif
-+FSVERITY        := fsverity$(EXEEXT)
- 
- # Rebuild if a user-specified setting that affects the build changed.
- .build-config: FORCE
-@@ -87,9 +99,9 @@ CFLAGS          += $(shell "$(PKGCONF)" libcrypto --cflags 2>/dev/null || echo)
- # If we are dynamically linking, when running tests we need to override
- # LD_LIBRARY_PATH as no RPATH is set
- ifdef USE_SHARED_LIB
--RUN_FSVERITY    = LD_LIBRARY_PATH=./ $(TEST_WRAPPER_PROG) ./fsverity
-+RUN_FSVERITY    = LD_LIBRARY_PATH=./ $(TEST_WRAPPER_PROG) ./$(FSVERITY)
- else
--RUN_FSVERITY    = $(TEST_WRAPPER_PROG) ./fsverity
-+RUN_FSVERITY    = $(TEST_WRAPPER_PROG) ./$(FSVERITY)
- endif
- 
- ##############################################################################
-@@ -99,6 +111,9 @@ endif
- SOVERSION       := 0
- LIB_CFLAGS      := $(CFLAGS) -fvisibility=hidden
- LIB_SRC         := $(wildcard lib/*.c)
-+ifeq ($(MINGW),1)
-+LIB_SRC         := $(filter-out lib/enable.c,${LIB_SRC})
-+endif
- LIB_HEADERS     := $(wildcard lib/*.h) $(COMMON_HEADERS)
- STATIC_LIB_OBJ  := $(LIB_SRC:.c=.o)
- SHARED_LIB_OBJ  := $(LIB_SRC:.c=.shlib.o)
-@@ -141,12 +156,15 @@ PROG_COMMON_SRC   := programs/utils.c
- PROG_COMMON_OBJ   := $(PROG_COMMON_SRC:.c=.o)
- FSVERITY_PROG_OBJ := $(PROG_COMMON_OBJ)		\
- 		     programs/cmd_digest.o	\
--		     programs/cmd_enable.o	\
--		     programs/cmd_measure.o	\
- 		     programs/cmd_sign.o	\
- 		     programs/fsverity.o
-+ifneq ($(MINGW),1)
-+FSVERITY_PROG_OBJ += \
-+		     programs/cmd_enable.o	\
-+		     programs/cmd_measure.o
-+endif
- TEST_PROG_SRC     := $(wildcard programs/test_*.c)
--TEST_PROGRAMS     := $(TEST_PROG_SRC:programs/%.c=%)
-+TEST_PROGRAMS     := $(TEST_PROG_SRC:programs/%.c=%$(EXEEXT))
- 
- # Compile program object files
- $(ALL_PROG_OBJ): %.o: %.c $(ALL_PROG_HEADERS) .build-config
-@@ -154,18 +172,18 @@ $(ALL_PROG_OBJ): %.o: %.c $(ALL_PROG_HEADERS) .build-config
- 
- # Link the fsverity program
- ifdef USE_SHARED_LIB
--fsverity: $(FSVERITY_PROG_OBJ) libfsverity.so
-+$(FSVERITY): $(FSVERITY_PROG_OBJ) libfsverity.so
- 	$(QUIET_CCLD) $(CC) -o $@ $(FSVERITY_PROG_OBJ) \
- 		$(CFLAGS) $(LDFLAGS) -L. -lfsverity
- else
--fsverity: $(FSVERITY_PROG_OBJ) libfsverity.a
-+$(FSVERITY): $(FSVERITY_PROG_OBJ) libfsverity.a
- 	$(QUIET_CCLD) $(CC) -o $@ $+ $(CFLAGS) $(LDFLAGS) $(LDLIBS)
- endif
- 
--DEFAULT_TARGETS += fsverity
-+DEFAULT_TARGETS += $(FSVERITY)
- 
- # Link the test programs
--$(TEST_PROGRAMS): %: programs/%.o $(PROG_COMMON_OBJ) libfsverity.a
-+$(TEST_PROGRAMS): %$(EXEEXT): programs/%.o $(PROG_COMMON_OBJ) libfsverity.a
- 	$(QUIET_CCLD) $(CC) -o $@ $+ $(CFLAGS) $(LDFLAGS) $(LDLIBS)
- 
- ##############################################################################
-@@ -184,25 +202,25 @@ test_programs:$(TEST_PROGRAMS)
- 
- # This just runs some quick, portable tests.  Use scripts/run-tests.sh if you
- # want to run the full tests.
--check:fsverity test_programs
-+check:$(FSVERITY) test_programs
- 	for prog in $(TEST_PROGRAMS); do \
- 		$(TEST_WRAPPER_PROG) ./$$prog || exit 1; \
- 	done
- 	$(RUN_FSVERITY) --help > /dev/null
- 	$(RUN_FSVERITY) --version > /dev/null
--	$(RUN_FSVERITY) sign fsverity fsverity.sig \
-+	$(RUN_FSVERITY) sign $(FSVERITY) fsverity.sig \
- 		--key=testdata/key.pem --cert=testdata/cert.pem > /dev/null
--	$(RUN_FSVERITY) sign fsverity fsverity.sig --hash=sha512 \
-+	$(RUN_FSVERITY) sign $(FSVERITY) fsverity.sig --hash=sha512 \
- 		--block-size=512 --salt=12345678 \
- 		--key=testdata/key.pem --cert=testdata/cert.pem > /dev/null
--	$(RUN_FSVERITY) digest fsverity --hash=sha512 \
-+	$(RUN_FSVERITY) digest $(FSVERITY) --hash=sha512 \
- 		--block-size=512 --salt=12345678 > /dev/null
- 	rm -f fsverity.sig
- 	@echo "All tests passed!"
- 
- install:all
- 	install -d $(DESTDIR)$(LIBDIR)/pkgconfig $(DESTDIR)$(INCDIR) $(DESTDIR)$(BINDIR)
--	install -m755 fsverity $(DESTDIR)$(BINDIR)
-+	install -m755 $(FSVERITY) $(DESTDIR)$(BINDIR)
- 	install -m644 libfsverity.a $(DESTDIR)$(LIBDIR)
- 	install -m755 libfsverity.so.$(SOVERSION) $(DESTDIR)$(LIBDIR)
- 	ln -sf libfsverity.so.$(SOVERSION) $(DESTDIR)$(LIBDIR)/libfsverity.so
-@@ -215,7 +233,7 @@ install:all
- 	chmod 644 $(DESTDIR)$(LIBDIR)/pkgconfig/libfsverity.pc
- 
- uninstall:
--	rm -f $(DESTDIR)$(BINDIR)/fsverity
-+	rm -f $(DESTDIR)$(BINDIR)/$(FSVERITY)
- 	rm -f $(DESTDIR)$(LIBDIR)/libfsverity.a
- 	rm -f $(DESTDIR)$(LIBDIR)/libfsverity.so.$(SOVERSION)
- 	rm -f $(DESTDIR)$(LIBDIR)/libfsverity.so
-diff --git a/README.md b/README.md
-index 6045c75..2b63488 100644
---- a/README.md
-+++ b/README.md
-@@ -50,6 +50,17 @@ use `make USE_SHARED_LIB=1` to use dynamic linking instead.
- 
- See the `Makefile` for other supported build and installation options.
- 
-+### Building on Windows
-+
-+There is minimal support for building Windows executables using MinGW.
-+```bash
-+    make CC=x86_64-w64-mingw32-gcc
-+```
-+
-+`fsverity.exe` will be built, and it supports the `digest` and `sign` commands.
-+
-+A Windows build of OpenSSL/libcrypto needs to be available.
-+
- ## Examples
- 
- ### Basic use
-diff --git a/common/common_defs.h b/common/common_defs.h
-index 279385a..3ae5561 100644
---- a/common/common_defs.h
-+++ b/common/common_defs.h
-@@ -15,6 +15,8 @@
- #include <stddef.h>
- #include <stdint.h>
- 
-+#include "win32_defs.h"
-+
- typedef uint8_t u8;
- typedef uint16_t u16;
- typedef uint32_t u32;
-diff --git a/common/fsverity_uapi.h b/common/fsverity_uapi.h
-index 33f4415..be1d3f6 100644
---- a/common/fsverity_uapi.h
-+++ b/common/fsverity_uapi.h
-@@ -10,8 +10,10 @@
- #ifndef _UAPI_LINUX_FSVERITY_H
- #define _UAPI_LINUX_FSVERITY_H
- 
-+#ifndef _WIN32
- #include <linux/ioctl.h>
- #include <linux/types.h>
-+#endif /* _WIN32 */
- 
- #define FS_VERITY_HASH_ALG_SHA256	1
- #define FS_VERITY_HASH_ALG_SHA512	2
-diff --git a/common/win32_defs.h b/common/win32_defs.h
-new file mode 100644
-index 0000000..29ef9b2
---- /dev/null
-+++ b/common/win32_defs.h
-@@ -0,0 +1,57 @@
-+/* SPDX-License-Identifier: MIT */
-+/*
-+ * WIN32 compat definitions for libfsverity and the 'fsverity' program
-+ *
-+ * Copyright 2020 Microsoft
-+ *
-+ * Use of this source code is governed by an MIT-style
-+ * license that can be found in the LICENSE file or at
-+ * https://opensource.org/licenses/MIT.
-+ */
-+#ifndef COMMON_WIN32_DEFS_H
-+#define COMMON_WIN32_DEFS_H
-+
-+/* Some minimal definitions to allow the digest/sign commands to run under Windows */
-+
-+/* All file reads we do need this flag on _WIN32 */
-+#ifndef O_BINARY
-+#  define O_BINARY 0
-+#endif
-+
-+#ifdef _WIN32
-+
-+#include <stdint.h>
-+#include <inttypes.h>
-+
-+#ifndef ENOPKG
-+#   define ENOPKG 65
-+#endif
-+
-+#ifndef __cold
-+#  define __cold
-+#endif
-+
-+/* For %zu in printf() */
-+#ifndef __printf
-+#  define __printf(fmt_idx, vargs_idx) \
-+       __attribute__((format(gnu_printf, fmt_idx, vargs_idx)))
-+#endif
-+
-+typedef __signed__ char __s8;
-+typedef unsigned char __u8;
-+typedef __signed__ short __s16;
-+typedef unsigned short __u16;
-+typedef __signed__ int __s32;
-+typedef unsigned int __u32;
-+typedef __signed__ long long  __s64;
-+typedef unsigned long long  __u64;
-+typedef __u16 __le16;
-+typedef __u16 __be16;
-+typedef __u32 __le32;
-+typedef __u32 __be32;
-+typedef __u64 __le64;
-+typedef __u64 __be64;
-+
-+#endif /* _WIN32 */
-+
-+#endif /* COMMON_WIN32_DEFS_H */
-diff --git a/lib/utils.c b/lib/utils.c
-index 13e3b35..036dd60 100644
---- a/lib/utils.c
-+++ b/lib/utils.c
-@@ -51,6 +51,15 @@ libfsverity_set_error_callback(void (*cb)(const char *msg))
- 	libfsverity_error_cb = cb;
- }
- 
-+#ifdef _WIN32
-+static char *strerror_r(int errnum, char *buf, size_t buflen)
-+{
-+	strerror_s(buf, buflen, errnum);
-+
-+	return buf;
-+}
-+#endif
-+
- void libfsverity_do_error_msg(const char *format, va_list va, int err)
- {
- 	int saved_errno = errno;
-diff --git a/programs/fsverity.c b/programs/fsverity.c
-index 5d5fbe2..f68e034 100644
---- a/programs/fsverity.c
-+++ b/programs/fsverity.c
-@@ -28,6 +28,7 @@ static const struct fsverity_command {
- "    fsverity digest FILE...\n"
- "               [--hash-alg=HASH_ALG] [--block-size=BLOCK_SIZE] [--salt=SALT]\n"
- "               [--compact] [--for-builtin-sig]\n"
-+#ifndef _WIN32
- 	}, {
- 		.name = "enable",
- 		.func = fsverity_cmd_enable,
-@@ -43,6 +44,7 @@ static const struct fsverity_command {
- "Display the fs-verity digest of the given verity file(s)",
- 		.usage_str =
- "    fsverity measure FILE...\n"
-+#endif /* _WIN32 */
- 	}, {
- 		.name = "sign",
- 		.func = fsverity_cmd_sign,
-diff --git a/programs/utils.c b/programs/utils.c
-index facccda..ce19b57 100644
---- a/programs/utils.c
-+++ b/programs/utils.c
-@@ -102,7 +102,7 @@ void install_libfsverity_error_handler(void)
- 
- bool open_file(struct filedes *file, const char *filename, int flags, int mode)
- {
--	file->fd = open(filename, flags, mode);
-+	file->fd = open(filename, flags | O_BINARY, mode);
- 	if (file->fd < 0) {
- 		error_msg_errno("can't open '%s' for %s", filename,
- 				(flags & O_ACCMODE) == O_RDONLY ? "reading" :
--- 
-2.29.2
-
+Kind regards,
+Luca Boccassi
