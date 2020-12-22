@@ -2,102 +2,93 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 327142E0350
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 22 Dec 2020 01:12:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CEE22E0351
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 22 Dec 2020 01:13:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726314AbgLVAMQ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 21 Dec 2020 19:12:16 -0500
-Received: from mail-lf1-f46.google.com ([209.85.167.46]:35158 "EHLO
-        mail-lf1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726167AbgLVAMQ (ORCPT
+        id S1726275AbgLVAMz (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 21 Dec 2020 19:12:55 -0500
+Received: from mail-lf1-f45.google.com ([209.85.167.45]:37892 "EHLO
+        mail-lf1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726642AbgLVAMy (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 21 Dec 2020 19:12:16 -0500
-Received: by mail-lf1-f46.google.com with SMTP id h22so18347345lfu.2
-        for <linux-fscrypt@vger.kernel.org>; Mon, 21 Dec 2020 16:11:59 -0800 (PST)
+        Mon, 21 Dec 2020 19:12:54 -0500
+Received: by mail-lf1-f45.google.com with SMTP id h205so27877810lfd.5
+        for <linux-fscrypt@vger.kernel.org>; Mon, 21 Dec 2020 16:12:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=rejQrtbwF6EjNP6IjovgIbHCtCSocl644+WLcgfhOtA=;
-        b=iio1MyV/B3mguCoY4UHqdHhx6EFLzje4jofxWEM+qjfh1PCh22visXfeJaHynrGsSP
-         D1Hdn3hwWracDIPMMP1OoRpzXr/3DBGwmyLEvLtVbipM4cCuP+EVgwTFt7Flx12NH6Y+
-         EKL6LYX5CXLI4SS9Ns1N5myRdsnyMaxLCE4UOaAyGGbzLI/Oi3o/XFPAG6KUa82KrF/0
-         Fl8cbLE0vRBsCNasL/FOYrdRWMOeywNOK3i852kHZQ0Tbz/hp7hNfda+95a8cqcyXEfo
-         XpMBF4ik6uUULoEr5itlI2BUKBa6/EvjnHA3HRZ2QF76txw+V0ETTPTssSt+oAaWjImI
-         TKYw==
-X-Gm-Message-State: AOAM532HBcxtuALvNS3o5eJ7nlCzQeYO3p6LoGfnZTNP6PwYGMaHhTST
-        PDeuA8jJVCJyPTsG2fe9O0qlWxsIgJHG4w==
-X-Google-Smtp-Source: ABdhPJzZniXZw0m6MrkiGo5bkuKIhfJF3/2te8fONMseXcgYOdGqYpitKA2WCog17uzJPXyij7pYPw==
-X-Received: by 2002:a05:6512:693:: with SMTP id t19mr8149060lfe.22.1608595893054;
-        Mon, 21 Dec 2020 16:11:33 -0800 (PST)
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
-        by smtp.gmail.com with ESMTPSA id i19sm2485250ljj.26.2020.12.21.16.11.32
+        bh=VRofcbXFvc1hUhp2qFoHcVgVrhSjefbwxtLI70s8NfM=;
+        b=uoRkPwqeKrqlkVMRRF9KjBy7ELRDE9vsiCSu4+7osmNccyVxdCI27O1nyKKsb+GyVT
+         xYpA3wZJ9BU6VNqVOH3bpUBvVbL+s8TU5z47cRHv0WKougLlD0q1EW16Lfz4OgqjhqQF
+         hpiqASgWGbFskE78EkRt1Lg7NMesENn1PWxdj0U6r0koqosMZN29/lTUE6144yJxe6OX
+         NrVukG0pLhyRBd2oJsLSLp2udHL/HsICLNsdc/egSann5h+gWJiCs6n91kgxnOKxufVi
+         9A9Zdj1Jr9EmL7P5EDMdHXe6cMLGVhIvZvSzrW+zepDmpd03xIlUbo0hNNJwRaTYX4ah
+         oPPw==
+X-Gm-Message-State: AOAM532o1+p4P5YuQYO7hSM9XxRAaShID2EhEEdgpiz0/+4QV2V8FMgc
+        Ht7x6CEWZvryjwfrkmK7ijW9VeIumXd5gg==
+X-Google-Smtp-Source: ABdhPJy20L2gYpDMqBasjLB2uEkKvcGkA9LxgudZUI1L8LVl//HSoSK7+Q98/qmK+f57yUD878K9zQ==
+X-Received: by 2002:a19:6447:: with SMTP id b7mr7706169lfj.206.1608595932420;
+        Mon, 21 Dec 2020 16:12:12 -0800 (PST)
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
+        by smtp.gmail.com with ESMTPSA id v5sm2525590ljj.135.2020.12.21.16.12.12
         for <linux-fscrypt@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Dec 2020 16:11:32 -0800 (PST)
-Received: by mail-lf1-f52.google.com with SMTP id 23so27816659lfg.10
-        for <linux-fscrypt@vger.kernel.org>; Mon, 21 Dec 2020 16:11:32 -0800 (PST)
-X-Received: by 2002:a19:10:: with SMTP id 16mr7507742lfa.334.1608595892123;
- Mon, 21 Dec 2020 16:11:32 -0800 (PST)
+        Mon, 21 Dec 2020 16:12:12 -0800 (PST)
+Received: by mail-lf1-f41.google.com with SMTP id y19so27752302lfa.13
+        for <linux-fscrypt@vger.kernel.org>; Mon, 21 Dec 2020 16:12:12 -0800 (PST)
+X-Received: by 2002:a05:6512:48d:: with SMTP id v13mr3729856lfq.546.1608595932070;
+ Mon, 21 Dec 2020 16:12:12 -0800 (PST)
 MIME-Version: 1.0
 References: <20201221221953.256059-1-bluca@debian.org> <20201221232428.298710-1-bluca@debian.org>
- <20201221232428.298710-3-bluca@debian.org> <X+E1a5jRbkZzS3j4@sol.localdomain>
- <CAMw=ZnTm7TOWg=yBeYr6tnpLux_pU7QXH3OtfPW3Rd1reuAtgA@mail.gmail.com> <X+E3wa/sdzGDHf7I@sol.localdomain>
-In-Reply-To: <X+E3wa/sdzGDHf7I@sol.localdomain>
+ <X+E3LDjQOMMVUuEv@sol.localdomain>
+In-Reply-To: <X+E3LDjQOMMVUuEv@sol.localdomain>
 From:   Luca Boccassi <bluca@debian.org>
-Date:   Tue, 22 Dec 2020 00:11:20 +0000
-X-Gmail-Original-Message-ID: <CAMw=ZnR0=eJA+_bvxU-Da09jmJ0okQ4k71AfpOVmgM_PknucCg@mail.gmail.com>
-Message-ID: <CAMw=ZnR0=eJA+_bvxU-Da09jmJ0okQ4k71AfpOVmgM_PknucCg@mail.gmail.com>
-Subject: Re: [PATCH v6 3/3] Allow to build and run sign/digest on Windows
+Date:   Tue, 22 Dec 2020 00:12:00 +0000
+X-Gmail-Original-Message-ID: <CAMw=ZnSxbC=qSZR-N+qAgcNsac__-XvQMTMC_noQRmRxzws4Sw@mail.gmail.com>
+Message-ID: <CAMw=ZnSxbC=qSZR-N+qAgcNsac__-XvQMTMC_noQRmRxzws4Sw@mail.gmail.com>
+Subject: Re: [PATCH v6 1/3] Move -D_GNU_SOURCE to CPPFLAGS
 To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org,
-        Luca Boccassi <luca.boccassi@microsoft.com>
+Cc:     linux-fscrypt@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, 22 Dec 2020 at 00:03, Eric Biggers <ebiggers@kernel.org> wrote:
+On Tue, 22 Dec 2020 at 00:00, Eric Biggers <ebiggers@kernel.org> wrote:
 >
-> On Mon, Dec 21, 2020 at 11:57:41PM +0000, Luca Boccassi wrote:
-> > On Mon, 21 Dec 2020 at 23:53, Eric Biggers <ebiggers@kernel.org> wrote:
-> > >
-> > > On Mon, Dec 21, 2020 at 11:24:28PM +0000, Luca Boccassi wrote:
-> > > > +### Building on Windows
-> > > > +
-> > > > +There is minimal support for building Windows executables using MinGW.
-> > > > +```bash
-> > > > +    make CC=x86_64-w64-mingw32-gcc-win32
-> > > > +```
-> > > > +
-> > > > +`fsverity.exe` will be built, and it supports the `digest` and `sign` commands.
-> > > > +
-> > > > +A Windows build of OpenSSL/libcrypto needs to be available.
-> > >
-> > > For me "CC=x86_64-w64-mingw32-gcc-win32" doesn't work; I need
-> > > "x86_64-w64-mingw32-gcc" instead.  Is this difference intentional?
-> > >
-> > > - Eric
-> >
-> > It's a distro setup difference I think, on Debian
-> > x86_64-w64-mingw32-gcc is a symlink to x86_64-w64-mingw32-gcc-win32:
-> >
-> > $ ls -l /usr/bin/x86_64-w64-mingw32-gcc-win32
-> > -rwxr-xr-x 2 root root 1160320 Nov 27 05:57
-> > /usr/bin/x86_64-w64-mingw32-gcc-win32
-> > $ ls -l /usr/bin/x86_64-w64-mingw32-gcc
-> > lrwxrwxrwx 1 root root 40 Sep 27 18:41 /usr/bin/x86_64-w64-mingw32-gcc
-> > -> /etc/alternatives/x86_64-w64-mingw32-gcc
-> > $ ls -l /etc/alternatives/x86_64-w64-mingw32-gcc
-> > lrwxrwxrwx 1 root root 37 Sep 27 18:44
-> > /etc/alternatives/x86_64-w64-mingw32-gcc ->
-> > /usr/bin/x86_64-w64-mingw32-gcc-win32
+> On Mon, Dec 21, 2020 at 11:24:26PM +0000, Luca Boccassi wrote:
+> > Ensures it is actually defined before any include is preprocessed.
 >
-> Okay, it would be better to document the one that works on all distros.
->
-> - Eric
+> It was already at the beginning of the .c file, so this isn't a very good
+> explanation.  A better explanation would be "Use _GNU_SOURCE consistently in
+> every file rather than in just one file.  This is needed for the Windows build
+> in order to consistently get the MinGW version of printf.".
 
-Adjusted in v7.
+Ok, copied verbatim in v7.
+
+> > diff --git a/Makefile b/Makefile
+> > index bfe83c4..f1ba956 100644
+> > --- a/Makefile
+> > +++ b/Makefile
+> > @@ -47,7 +47,7 @@ override CFLAGS := -Wall -Wundef                            \
+> >       $(call cc-option,-Wvla)                                 \
+> >       $(CFLAGS)
+> >
+> > -override CPPFLAGS := -Iinclude -D_FILE_OFFSET_BITS=64 $(CPPFLAGS)
+> > +override CPPFLAGS := -Iinclude -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE $(CPPFLAGS)
+> >
+> >  ifneq ($(V),1)
+> >  QUIET_CC        = @echo '  CC      ' $@;
+>
+> Can you add -D_GNU_SOURCE to ./scripts/run-sparse.sh too?
+> Otherwise I get errors when running scripts/run-tests.sh:
+>
+> [Mon Dec 21 03:52:15 PM PST 2020] Run sparse
+> ./lib/utils.c:71:13: error: undefined identifier 'vasprintf'
+> ./lib/utils.c:78:21: error: undefined identifier 'asprintf'
+
+Sure, done in v7.
 
 Kind regards,
 Luca Boccassi
