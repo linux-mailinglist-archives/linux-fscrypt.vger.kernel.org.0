@@ -2,43 +2,43 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26C002E9FB6
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  4 Jan 2021 22:58:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 406572E9FB4
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  4 Jan 2021 22:58:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726983AbhADV6t (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 4 Jan 2021 16:58:49 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.50]:23010 "EHLO
+        id S1726980AbhADV6r (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 4 Jan 2021 16:58:47 -0500
+Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.167]:11820 "EHLO
         mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726929AbhADV6t (ORCPT
+        with ESMTP id S1726894AbhADV6r (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 4 Jan 2021 16:58:49 -0500
+        Mon, 4 Jan 2021 16:58:47 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1609797354;
         s=strato-dkim-0002; d=chronox.de;
         h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:From:
         Subject:Sender;
-        bh=pAgy1otXzvJufKgLKh/aLwRJrmcHtfA9dc+JXv9QmgU=;
-        b=mXkmFOFIRn9UABk36iBUgalfsdGB6AqBA0oZp6q8nF9u3/iHSLratoBpAeQMqPB5YS
-        VK8SjjTHV7L6jMap3gdLclhMEzhqu5rdXyxazhp81k9SaVoI/uaEj7LfJjooFkiPaHlb
-        /QjMgZr2N/drhMZ2ztb02xeDQiy52xs6UHkXmi+ge9CfIzyqPW/kDwMrqxkDHbWtQP6y
-        9gyT0z+2/i56lzYxXEJSFb79Bgva0YP9WkbDDpst2UA7yGCMM6vyOfYgW2bhjRYAhbZb
-        1fPqrV3246LpAVhkl8qpMPFplOwCwicpJWGFPJrtxfRQp+nzrt71OrzXhB4LZcdw/Z+M
-        CENQ==
+        bh=6fGapvYj1KUbHyiUaqLugayVcLwc8fLHw2DuUxRIf1I=;
+        b=Bz5ljw7tQ+MN6HibseZZb72afaYxc2bkLJFnUODmNBM8A/0ySGucRLIqURbKfbEBQe
+        /lDmjpo4SEiHYcfRgMhMFO4D53kzTWF7oX/kj1Be9r4phrf8nrtrAhnhpzNaiWjv1nYo
+        QsdN8Kh+pr/CPzruW574v9UcdAxXU1U6vsenoMwCqMTi18sD4wa/2SX5TWgXt6PcSGaG
+        ZkCJ8ymBg20QwlYcB1p//d1hNI6RSRNLrsw/WzCGItW0wAy4cdsxDyFLuoDU3+V1TR0m
+        qbxVBlnXYpQq4SYVM4ZyewbL6TLbAsQPUVinvoZmo+t2bB6M9872K/XwB+2wDpBqX/lH
+        Ymdw==
 X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPaIvSZFqc="
 X-RZG-CLASS-ID: mo00
 Received: from positron.chronox.de
         by smtp.strato.de (RZmta 47.10.7 DYNA|AUTH)
-        with ESMTPSA id h02bd9x04LqjxfK
+        with ESMTPSA id h02bd9x04LqhxfJ
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-        Mon, 4 Jan 2021 22:52:45 +0100 (CET)
+        Mon, 4 Jan 2021 22:52:43 +0100 (CET)
 From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
 To:     herbert@gondor.apana.org.au, ebiggers@kernel.org,
         mathew.j.martineau@linux.intel.com, dhowells@redhat.com
 Cc:     linux-crypto@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         linux-kernel@vger.kernel.org, keyrings@vger.kernel.org
-Subject: [PATCH 4/5] security: DH - use KDF implementation from crypto API
-Date:   Mon, 04 Jan 2021 22:49:50 +0100
-Message-ID: <3088284.aeNJFYEL58@positron.chronox.de>
+Subject: [PATCH 5/5] fs: use HKDF implementation from kernel crypto API
+Date:   Mon, 04 Jan 2021 22:50:49 +0100
+Message-ID: <7857050.T7Z3S40VBb@positron.chronox.de>
 In-Reply-To: <4616980.31r3eYUQgx@positron.chronox.de>
 References: <4616980.31r3eYUQgx@positron.chronox.de>
 MIME-Version: 1.0
@@ -48,233 +48,215 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-The kernel crypto API provides the SP800-108 counter KDF implementation.
-Thus, the separate implementation provided as part of the keys subsystem
-can be replaced with calls to the KDF offered by the kernel crypto API.
-
-The keys subsystem uses the counter KDF with a hash cipher primitive.
-Thus, it only uses the call to crypto_kdf108_ctr_generate.
-
-The change removes the specific code that adds a zero padding that was
-intended to be invoked when the DH operation result was smaller than the
-modulus. However, this cannot occur any more these days because the
-function mpi_write_to_sgl is used in the code path that calculates the
-shared secret in dh_compute_value. This MPI service function guarantees
-that leading zeros are introduced as needed to ensure the resulting data
-is exactly as long as the modulus. This implies that the specific code
-to add zero padding is dead code which can be safely removed.
+As the kernel crypto API implements HKDF, replace the
+file-system-specific HKDF implementation with the generic HKDF
+implementation.
 
 Signed-off-by: Stephan Mueller <smueller@chronox.de>
 ---
- security/keys/Kconfig |   2 +-
- security/keys/dh.c    | 118 ++++++------------------------------------
- 2 files changed, 17 insertions(+), 103 deletions(-)
+ fs/crypto/Kconfig           |   2 +-
+ fs/crypto/fscrypt_private.h |   4 +-
+ fs/crypto/hkdf.c            | 108 +++++++++---------------------------
+ 3 files changed, 30 insertions(+), 84 deletions(-)
 
-diff --git a/security/keys/Kconfig b/security/keys/Kconfig
-index 83bc23409164..e6604499f0a8 100644
---- a/security/keys/Kconfig
-+++ b/security/keys/Kconfig
-@@ -106,7 +106,7 @@ config KEY_DH_OPERATIONS
-        bool "Diffie-Hellman operations on retained keys"
-        depends on KEYS
-        select CRYPTO
--       select CRYPTO_HASH
-+       select CRYPTO_KDF800108_CTR
-        select CRYPTO_DH
-        help
- 	 This option provides support for calculating Diffie-Hellman
-diff --git a/security/keys/dh.c b/security/keys/dh.c
-index 1abfa70ed6e1..46fa442b81ec 100644
---- a/security/keys/dh.c
-+++ b/security/keys/dh.c
-@@ -11,6 +11,7 @@
- #include <crypto/hash.h>
- #include <crypto/kpp.h>
- #include <crypto/dh.h>
-+#include <crypto/kdf_sp800108.h>
- #include <keys/user-type.h>
- #include "internal.h"
+diff --git a/fs/crypto/Kconfig b/fs/crypto/Kconfig
+index a5f5c30368a2..9450e958f1d1 100644
+--- a/fs/crypto/Kconfig
++++ b/fs/crypto/Kconfig
+@@ -2,7 +2,7 @@
+ config FS_ENCRYPTION
+ 	bool "FS Encryption (Per-file encryption)"
+ 	select CRYPTO
+-	select CRYPTO_HASH
++	select CRYPTO_HKDF
+ 	select CRYPTO_SKCIPHER
+ 	select CRYPTO_LIB_SHA256
+ 	select KEYS
+diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+index 3fa965eb3336..0d6871838099 100644
+--- a/fs/crypto/fscrypt_private.h
++++ b/fs/crypto/fscrypt_private.h
+@@ -304,7 +304,7 @@ struct fscrypt_hkdf {
+ 	struct crypto_shash *hmac_tfm;
+ };
  
-@@ -79,16 +80,9 @@ static void dh_crypto_done(struct crypto_async_request *req, int err)
- 	complete(&compl->completion);
- }
+-int fscrypt_init_hkdf(struct fscrypt_hkdf *hkdf, const u8 *master_key,
++int fscrypt_init_hkdf(struct fscrypt_hkdf *hkdf, u8 *master_key,
+ 		      unsigned int master_key_size);
  
--struct kdf_sdesc {
--	struct shash_desc shash;
--	char ctx[];
--};
+ /*
+@@ -323,7 +323,7 @@ int fscrypt_init_hkdf(struct fscrypt_hkdf *hkdf, const u8 *master_key,
+ #define HKDF_CONTEXT_INODE_HASH_KEY	7 /* info=<empty>		*/
+ 
+ int fscrypt_hkdf_expand(const struct fscrypt_hkdf *hkdf, u8 context,
+-			const u8 *info, unsigned int infolen,
++			u8 *info, unsigned int infolen,
+ 			u8 *okm, unsigned int okmlen);
+ 
+ void fscrypt_destroy_hkdf(struct fscrypt_hkdf *hkdf);
+diff --git a/fs/crypto/hkdf.c b/fs/crypto/hkdf.c
+index e0ec21055505..f837cb8ec0a5 100644
+--- a/fs/crypto/hkdf.c
++++ b/fs/crypto/hkdf.c
+@@ -9,7 +9,7 @@
+  * Copyright 2019 Google LLC
+  */
+ 
+-#include <crypto/hash.h>
++#include <crypto/hkdf.h>
+ #include <crypto/sha2.h>
+ 
+ #include "fscrypt_private.h"
+@@ -37,34 +37,25 @@
+  * unnecessarily long master keys.  Thus fscrypt still does HKDF-Extract.  No
+  * salt is used, since fscrypt master keys should already be pseudorandom and
+  * there's no way to persist a random salt per master key from kernel mode.
+- */
 -
--static int kdf_alloc(struct kdf_sdesc **sdesc_ret, char *hashname)
-+static int kdf_alloc(struct crypto_shash **hash, char *hashname)
- {
- 	struct crypto_shash *tfm;
--	struct kdf_sdesc *sdesc;
--	int size;
- 	int err;
- 
- 	/* allocate synchronous hash */
-@@ -102,14 +96,7 @@ static int kdf_alloc(struct kdf_sdesc **sdesc_ret, char *hashname)
- 	if (crypto_shash_digestsize(tfm) == 0)
- 		goto out_free_tfm;
- 
--	err = -ENOMEM;
--	size = sizeof(struct shash_desc) + crypto_shash_descsize(tfm);
--	sdesc = kmalloc(size, GFP_KERNEL);
--	if (!sdesc)
--		goto out_free_tfm;
--	sdesc->shash.tfm = tfm;
--
--	*sdesc_ret = sdesc;
-+	*hash = tfm;
- 
- 	return 0;
- 
-@@ -118,92 +105,20 @@ static int kdf_alloc(struct kdf_sdesc **sdesc_ret, char *hashname)
- 	return err;
- }
- 
--static void kdf_dealloc(struct kdf_sdesc *sdesc)
+-/* HKDF-Extract (RFC 5869 section 2.2), unsalted */
+-static int hkdf_extract(struct crypto_shash *hmac_tfm, const u8 *ikm,
+-			unsigned int ikmlen, u8 prk[HKDF_HASHLEN])
 -{
--	if (!sdesc)
--		return;
+-	static const u8 default_salt[HKDF_HASHLEN];
+-	int err;
 -
--	if (sdesc->shash.tfm)
--		crypto_free_shash(sdesc->shash.tfm);
+-	err = crypto_shash_setkey(hmac_tfm, default_salt, HKDF_HASHLEN);
+-	if (err)
+-		return err;
 -
--	kfree_sensitive(sdesc);
+-	return crypto_shash_tfm_digest(hmac_tfm, ikm, ikmlen, prk);
 -}
 -
 -/*
-- * Implementation of the KDF in counter mode according to SP800-108 section 5.1
-- * as well as SP800-56A section 5.8.1 (Single-step KDF).
-- *
-- * SP800-56A:
-- * The src pointer is defined as Z || other info where Z is the shared secret
-- * from DH and other info is an arbitrary string (see SP800-56A section
-- * 5.8.1.2).
-- *
-- * 'dlen' must be a multiple of the digest size.
-- */
--static int kdf_ctr(struct kdf_sdesc *sdesc, const u8 *src, unsigned int slen,
--		   u8 *dst, unsigned int dlen, unsigned int zlen)
-+static void kdf_dealloc(struct crypto_shash *hash)
++ *
+  * Compute HKDF-Extract using the given master key as the input keying material,
+  * and prepare an HMAC transform object keyed by the resulting pseudorandom key.
+  *
+  * Afterwards, the keyed HMAC transform object can be used for HKDF-Expand many
+  * times without having to recompute HKDF-Extract each time.
+  */
+-int fscrypt_init_hkdf(struct fscrypt_hkdf *hkdf, const u8 *master_key,
++int fscrypt_init_hkdf(struct fscrypt_hkdf *hkdf, u8 *master_key,
+ 		      unsigned int master_key_size)
  {
--	struct shash_desc *desc = &sdesc->shash;
--	unsigned int h = crypto_shash_digestsize(desc->tfm);
--	int err = 0;
--	u8 *dst_orig = dst;
--	__be32 counter = cpu_to_be32(1);
--
--	while (dlen) {
--		err = crypto_shash_init(desc);
--		if (err)
--			goto err;
--
--		err = crypto_shash_update(desc, (u8 *)&counter, sizeof(__be32));
--		if (err)
--			goto err;
--
--		if (zlen && h) {
--			u8 tmpbuffer[32];
--			size_t chunk = min_t(size_t, zlen, sizeof(tmpbuffer));
--			memset(tmpbuffer, 0, chunk);
--
--			do {
--				err = crypto_shash_update(desc, tmpbuffer,
--							  chunk);
--				if (err)
--					goto err;
--
--				zlen -= chunk;
--				chunk = min_t(size_t, zlen, sizeof(tmpbuffer));
--			} while (zlen);
--		}
--
--		if (src && slen) {
--			err = crypto_shash_update(desc, src, slen);
--			if (err)
--				goto err;
--		}
--
--		err = crypto_shash_final(desc, dst);
--		if (err)
--			goto err;
--
--		dlen -= h;
--		dst += h;
--		counter = cpu_to_be32(be32_to_cpu(counter) + 1);
--	}
--
--	return 0;
--
--err:
--	memzero_explicit(dst_orig, dlen);
--	return err;
-+	if (hash)
-+		crypto_free_shash(hash);
- }
++	/* HKDF-Extract (RFC 5869 section 2.2), unsalted */
++	const struct kvec seed[] = { {
++		.iov_base = NULL,
++		.iov_len = 0
++	}, {
++		.iov_base = master_key,
++		.iov_len = master_key_size
++	} };
+ 	struct crypto_shash *hmac_tfm;
+-	u8 prk[HKDF_HASHLEN];
+ 	int err;
  
--static int keyctl_dh_compute_kdf(struct kdf_sdesc *sdesc,
-+static int keyctl_dh_compute_kdf(struct crypto_shash *hash,
- 				 char __user *buffer, size_t buflen,
--				 uint8_t *kbuf, size_t kbuflen, size_t lzero)
-+				 uint8_t *kbuf, size_t kbuflen)
- {
-+	struct kvec kbuf_iov = { .iov_base = kbuf, .iov_len = kbuflen };
- 	uint8_t *outbuf = NULL;
- 	int ret;
--	size_t outbuf_len = roundup(buflen,
--				    crypto_shash_digestsize(sdesc->shash.tfm));
-+	size_t outbuf_len = roundup(buflen, crypto_shash_digestsize(hash));
- 
- 	outbuf = kmalloc(outbuf_len, GFP_KERNEL);
- 	if (!outbuf) {
-@@ -211,7 +126,7 @@ static int keyctl_dh_compute_kdf(struct kdf_sdesc *sdesc,
- 		goto err;
+ 	hmac_tfm = crypto_alloc_shash(HKDF_HMAC_ALG, 0, 0);
+@@ -74,16 +65,12 @@ int fscrypt_init_hkdf(struct fscrypt_hkdf *hkdf, const u8 *master_key,
+ 		return PTR_ERR(hmac_tfm);
  	}
  
--	ret = kdf_ctr(sdesc, kbuf, kbuflen, outbuf, outbuf_len, lzero);
-+	ret = crypto_kdf108_ctr_generate(hash, &kbuf_iov, 1, outbuf, outbuf_len);
- 	if (ret)
- 		goto err;
+-	if (WARN_ON(crypto_shash_digestsize(hmac_tfm) != sizeof(prk))) {
++	if (WARN_ON(crypto_shash_digestsize(hmac_tfm) != HKDF_HASHLEN)) {
+ 		err = -EINVAL;
+ 		goto err_free_tfm;
+ 	}
  
-@@ -240,7 +155,7 @@ long __keyctl_dh_compute(struct keyctl_dh_params __user *params,
- 	struct kpp_request *req;
- 	uint8_t *secret;
- 	uint8_t *outbuf;
--	struct kdf_sdesc *sdesc = NULL;
-+	struct crypto_shash *hash = NULL;
+-	err = hkdf_extract(hmac_tfm, master_key, master_key_size, prk);
+-	if (err)
+-		goto err_free_tfm;
+-
+-	err = crypto_shash_setkey(hmac_tfm, prk, sizeof(prk));
++	err = crypto_hkdf_setkey(hmac_tfm, seed, ARRAY_SIZE(seed));
+ 	if (err)
+ 		goto err_free_tfm;
  
- 	if (!params || (!buffer && buflen)) {
- 		ret = -EINVAL;
-@@ -273,7 +188,7 @@ long __keyctl_dh_compute(struct keyctl_dh_params __user *params,
- 		}
+@@ -93,7 +80,6 @@ int fscrypt_init_hkdf(struct fscrypt_hkdf *hkdf, const u8 *master_key,
+ err_free_tfm:
+ 	crypto_free_shash(hmac_tfm);
+ out:
+-	memzero_explicit(prk, sizeof(prk));
+ 	return err;
+ }
  
- 		/* allocate KDF from the kernel crypto API */
--		ret = kdf_alloc(&sdesc, hashname);
-+		ret = kdf_alloc(&hash, hashname);
- 		kfree(hashname);
- 		if (ret)
- 			goto out1;
-@@ -383,9 +298,8 @@ long __keyctl_dh_compute(struct keyctl_dh_params __user *params,
- 			goto out6;
- 		}
+@@ -109,65 +95,25 @@ int fscrypt_init_hkdf(struct fscrypt_hkdf *hkdf, const u8 *master_key,
+  * accidentally repeat an info string when using HKDF for different purposes.)
+  */
+ int fscrypt_hkdf_expand(const struct fscrypt_hkdf *hkdf, u8 context,
+-			const u8 *info, unsigned int infolen,
++			u8 *info, unsigned int infolen,
+ 			u8 *okm, unsigned int okmlen)
+ {
+-	SHASH_DESC_ON_STACK(desc, hkdf->hmac_tfm);
+-	u8 prefix[9];
+-	unsigned int i;
+-	int err;
+-	const u8 *prev = NULL;
+-	u8 counter = 1;
+-	u8 tmp[HKDF_HASHLEN];
+-
+-	if (WARN_ON(okmlen > 255 * HKDF_HASHLEN))
+-		return -EINVAL;
+-
+-	desc->tfm = hkdf->hmac_tfm;
+-
+-	memcpy(prefix, "fscrypt\0", 8);
+-	prefix[8] = context;
+-
+-	for (i = 0; i < okmlen; i += HKDF_HASHLEN) {
++	const struct kvec info_iov[] = { {
++		.iov_base = "fscrypt\0",
++		.iov_len = 8,
++	}, {
++		.iov_base = &context,
++		.iov_len = 1,
++	}, {
++		.iov_base = info,
++		.iov_len = infolen,
++	} };
++	int err = crypto_hkdf_generate(hkdf->hmac_tfm,
++				       info_iov, ARRAY_SIZE(info_iov),
++				       okm, okmlen);
  
--		ret = keyctl_dh_compute_kdf(sdesc, buffer, buflen, outbuf,
--					    req->dst_len + kdfcopy->otherinfolen,
--					    outlen - req->dst_len);
-+		ret = keyctl_dh_compute_kdf(hash, buffer, buflen, outbuf,
-+					    req->dst_len + kdfcopy->otherinfolen);
- 	} else if (copy_to_user(buffer, outbuf, req->dst_len) == 0) {
- 		ret = req->dst_len;
- 	} else {
-@@ -403,7 +317,7 @@ long __keyctl_dh_compute(struct keyctl_dh_params __user *params,
- out2:
- 	dh_free_data(&dh_inputs);
- out1:
--	kdf_dealloc(sdesc);
-+	kdf_dealloc(hash);
- 	return ret;
+-		err = crypto_shash_init(desc);
+-		if (err)
+-			goto out;
+-
+-		if (prev) {
+-			err = crypto_shash_update(desc, prev, HKDF_HASHLEN);
+-			if (err)
+-				goto out;
+-		}
+-
+-		err = crypto_shash_update(desc, prefix, sizeof(prefix));
+-		if (err)
+-			goto out;
+-
+-		err = crypto_shash_update(desc, info, infolen);
+-		if (err)
+-			goto out;
+-
+-		BUILD_BUG_ON(sizeof(counter) != 1);
+-		if (okmlen - i < HKDF_HASHLEN) {
+-			err = crypto_shash_finup(desc, &counter, 1, tmp);
+-			if (err)
+-				goto out;
+-			memcpy(&okm[i], tmp, okmlen - i);
+-			memzero_explicit(tmp, sizeof(tmp));
+-		} else {
+-			err = crypto_shash_finup(desc, &counter, 1, &okm[i]);
+-			if (err)
+-				goto out;
+-		}
+-		counter++;
+-		prev = &okm[i];
+-	}
+-	err = 0;
+-out:
+ 	if (unlikely(err))
+ 		memzero_explicit(okm, okmlen); /* so caller doesn't need to */
+-	shash_desc_zero(desc);
+ 	return err;
  }
  
 -- 
