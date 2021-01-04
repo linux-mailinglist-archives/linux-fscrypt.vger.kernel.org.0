@@ -2,189 +2,147 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A0BF2E9D1B
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  4 Jan 2021 19:34:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5E7D2E9D60
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  4 Jan 2021 19:49:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727310AbhADSeF (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 4 Jan 2021 13:34:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45516 "EHLO mail.kernel.org"
+        id S1727406AbhADStH (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 4 Jan 2021 13:49:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727091AbhADSeF (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 4 Jan 2021 13:34:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C26521D94;
-        Mon,  4 Jan 2021 18:33:24 +0000 (UTC)
+        id S1726176AbhADStH (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 4 Jan 2021 13:49:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C84021D93;
+        Mon,  4 Jan 2021 18:48:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609785204;
-        bh=5RTQTTLvrWfSFS9I/7a2ALTxjPTFHXPskfaLm7jrlTw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NY2/Wsv6KNsbneqkBwKFX+FDHKCx/vBNcP42+g+IL4O5MUNQjEPII27pcKFCY8ROE
-         KAGiBrBkpr1dtDvTd0eaD7X41JvMdvZEeAflDSjJJHNYbKxUMY+pOgQMq7i+kgiJpX
-         B7oBIkAlqvF3UFwSRVa3rwb/a19Ot9fBnPG8wA5GvBQTndYvvZDnBQDj+9EfFPdcX5
-         oz8CnruRFST1H+nLLTCZa/8wO5ts4KJDNXDZlMcN1prOGrRAjjwb9UwdzBIyw4AbTK
-         Go+1NosLv0tMNVo5N2NACqKnCAq1oWY1iSWwifTWarlFTbh2IUkeHVCEKF3iy3btNt
-         eI5jT4RXNRClQ==
-Date:   Mon, 4 Jan 2021 10:33:22 -0800
+        s=k20201202; t=1609786105;
+        bh=UeAEPSlmdNeY656v/iSeVlEWrO3oEH49AHa7ZG8PD0o=;
+        h=From:To:Cc:Subject:Date:From;
+        b=QMwkK6hpRCQWabRqaaoib8Zeg/WwoRSWGDvQTmX8Zf7xVA38AfQsynh/e9XiluJFj
+         U8moMkY3JBt3pE9m/HyqhHd1jKRzrA0rUpeS2fn9lRAhgldAVPm+9sh/HfJGbgguJN
+         GVVYgy7w9nF/DOLDF5qlB9xmfEGLMmBnNuI+q2XADMfTucLfYaqgC0lJUfsZVTasn/
+         x9HhqblKi7UF7XWiq6dUlZbus9i1OUxW8UEGC6tvOqqz0TM7B7kcGZIunhEzQUGui7
+         R0uWHeiCsoVEiHAMocwGYd2wT+iWqJ17RWi6r6A08vuXpCDIRlkbOPBdZYRd0CTDFn
+         +iTPPeO3EoQ7g==
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-fscrypt@vger.kernel.org
-Subject: Re: [f2fs-dev] [PATCH v2] f2fs: clean up post-read processing
-Message-ID: <X/NfcslNOlB2mNHO@sol.localdomain>
-References: <20201228232612.45538-1-ebiggers@kernel.org>
- <0f488de1-ec9d-b1f1-641c-d624fecbb12d@huawei.com>
+To:     linux-mmc@vger.kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, Satya Tangirala <satyat@google.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Neeraj Soni <neersoni@codeaurora.org>,
+        Barani Muthukumaran <bmuthuku@codeaurora.org>,
+        Peng Zhou <peng.zhou@mediatek.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Konrad Dybcio <konradybcio@gmail.com>
+Subject: [PATCH v4 0/9] eMMC inline encryption support
+Date:   Mon,  4 Jan 2021 10:45:33 -0800
+Message-Id: <20210104184542.4616-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0f488de1-ec9d-b1f1-641c-d624fecbb12d@huawei.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Jan 04, 2021 at 04:43:56PM +0800, Chao Yu wrote:
-> Hi Eric,
-> 
-> On 2021/1/4 11:45, Eric Biggers wrote:
-> > That's already handled; I made it so that STEP_DECOMPRESS is only enabled when
-> > it's actually needed.
-> 
-> Yup, now I see.
-> 
-> Some comments as below.
-> 
-> On 2020/12/29 7:26, Eric Biggers wrote:
-> > From: Eric Biggers <ebiggers@google.com>
-> > 
-> > Rework the post-read processing logic to be much easier to understand.
-> > 
-> > At least one bug is fixed by this: if an I/O error occurred when reading
-> > from disk, decryption and verity would be performed on the uninitialized
-> > data, causing misleading messages in the kernel log.
-> > 
-> > Signed-off-by: Eric Biggers <ebiggers@google.com>
-> > ---
+Hello,
 
-Please only quote the parts you're actually replying to.
+This patchset adds support for eMMC inline encryption, as specified by
+the upcoming version of the eMMC specification and as already
+implemented and used on many devices.  Building on that, it then adds
+Qualcomm ICE support and wires it up for the Snapdragon 630 SoC.
 
-> > +static void f2fs_post_read_work(struct work_struct *work)
-> >   {
-> > -	queue_work(sbi->post_read_wq, work);
-> > -}
-> > +	struct bio_post_read_ctx *ctx =
-> > +		container_of(work, struct bio_post_read_ctx, work);
-> > +	struct bio *bio = ctx->bio;
-> > -static void bio_post_read_processing(struct bio_post_read_ctx *ctx)
-> > -{
-> > -	/*
-> > -	 * We use different work queues for decryption and for verity because
-> > -	 * verity may require reading metadata pages that need decryption, and
-> > -	 * we shouldn't recurse to the same workqueue.
-> > -	 */
-> > +	if (ctx->enabled_steps & STEP_DECRYPT)
-> > +		fscrypt_decrypt_bio(bio);
-> > -	if (ctx->enabled_steps & (1 << STEP_DECRYPT) ||
-> > -		ctx->enabled_steps & (1 << STEP_DECOMPRESS)) {
-> > -		INIT_WORK(&ctx->work, f2fs_post_read_work);
-> > -		f2fs_enqueue_post_read_work(ctx->sbi, &ctx->work);
-> > -		return;
-> > -	}
-> > +	if (ctx->enabled_steps & STEP_DECOMPRESS) {
-> > +		struct bio_vec *bv;
-> > +		struct bvec_iter_all iter_all;
-> > +		bool all_compressed = true;
-> > -	if (ctx->enabled_steps & (1 << STEP_VERITY)) {
-> > -		INIT_WORK(&ctx->work, f2fs_verity_work);
-> > -		fsverity_enqueue_verify_work(&ctx->work);
-> > -		return;
-> > -	}
-> > +		bio_for_each_segment_all(bv, bio, iter_all) {
-> > +			struct page *page = bv->bv_page;
-> > +			/* PG_error will be set if decryption failed. */
-> > +			bool failed = PageError(page);
-> > -	__f2fs_read_end_io(ctx->bio, false, false);
-> > -}
-> > +			if (f2fs_is_compressed_page(page))
-> > +				f2fs_end_read_compressed_page(page, failed);
-> > +			else
-> > +				all_compressed = false;
-> > +		}
-> > +		/*
-> > +		 * Optimization: if all the bio's pages are compressed, then
-> > +		 * scheduling the per-bio verity work is unnecessary, as verity
-> > +		 * will be fully handled at the compression cluster level.
-> > +		 */
-> > +		if (all_compressed)
-> > +			ctx->enabled_steps &= ~STEP_VERITY;
-> > +	}
-> 
-> Can we wrap above logic into a function for cleanup?
+Inline encryption hardware improves the performance of storage
+encryption and reduces power usage.  See
+Documentation/block/inline-encryption.rst for more information about
+inline encryption and the blk-crypto framework (upstreamed in v5.8)
+which supports it.  Most mobile devices already use UFS or eMMC inline
+encryption hardware; UFS support was already upstreamed in v5.9.
 
-Are you saying you want the STEP_DECOMPRESS handling in a new function, e.g.
-f2fs_handle_step_decompress()?  I could do that, though this new function would
-only be called from f2fs_post_read_work(), which isn't too long.  So I'm not
-sure it would be better.
+Patches 1-4 add support for the standard eMMC inline encryption.
 
-> > +/* Context for decompressing one cluster on the read IO path */
-> >   struct decompress_io_ctx {
-> >   	u32 magic;			/* magic number to indicate page is compressed */
-> >   	struct inode *inode;		/* inode the context belong to */
-> > @@ -1353,11 +1353,13 @@ struct decompress_io_ctx {
-> >   	struct compress_data *cbuf;	/* virtual mapped address on cpages */
-> >   	size_t rlen;			/* valid data length in rbuf */
-> >   	size_t clen;			/* valid data length in cbuf */
-> > -	atomic_t pending_pages;		/* in-flight compressed page count */
-> > -	atomic_t verity_pages;		/* in-flight page count for verity */
-> > -	bool failed;			/* indicate IO error during decompression */
-> > +	atomic_t remaining_pages;	/* number of compressed pages remaining to be read */
-> > +	refcount_t refcnt;		/* 1 for decompression and 1 for each page still in a bio */
-> 
-> Now, we use .remaining_pages to control to trigger cluster decompression;
-> and .refcnt to control to release dic structure.
-> 
-> How about adding a bit more description about above info for better
-> readability?
+However, as with UFS, host controller-specific patches are needed on top
+of the standard support.  Therefore, patches 5-9 add Qualcomm ICE
+(Inline Crypto Engine) support and wire it up on the Snapdragon 630 SoC.
 
-Would you like longer comments even though every other field in this struct has
-a 1-line comment?
+To test this I took advantage of the recently upstreamed support for the
+Snapdragon 630 SoC, plus work-in-progress patches from the SoMainline
+project (https://github.com/SoMainline/linux/tree/konrad/v5.10-rc3).  In
+particular, I was able to run the fscrypt xfstests for ext4 and f2fs in
+a Debian chroot.  Among other things, these tests verified that the
+correct ciphertext is written to disk (the same as software encryption).
 
-> > -void f2fs_free_dic(struct decompress_io_ctx *dic);
-> > -void f2fs_decompress_end_io(struct page **rpages,
-> > -			unsigned int cluster_size, bool err, bool verity);
-> > +void f2fs_decompress_end_io(struct decompress_io_ctx *dic, bool failed);
-> > +void f2fs_put_page_decompress_io_ctx(struct page *page);
-> >   int f2fs_init_compress_ctx(struct compress_ctx *cc);
-> >   void f2fs_destroy_compress_ctx(struct compress_ctx *cc);
-> >   void f2fs_init_compress_info(struct f2fs_sb_info *sbi);
-> > @@ -3915,6 +3916,14 @@ static inline struct page *f2fs_compress_control_page(struct page *page)
-> >   }
-> >   static inline int f2fs_init_compress_mempool(void) { return 0; }
-> >   static inline void f2fs_destroy_compress_mempool(void) { }
-> > +static inline void f2fs_end_read_compressed_page(struct page *page, bool failed)
-> > +{
-> > +	WARN_ON_ONCE(1);
-> > +}
-> > +static inline void f2fs_put_page_decompress_io_ctx(struct page *page)
-> 
-> f2fs_put_page_in_dic() or f2fs_put_dic_page()?
+It will also be possible to add support for Mediatek eMMC inline
+encryption hardware in mtk-sd, and it should be easier than the Qualcomm
+hardware since the Mediatek hardware follows the standard more closely.
+I.e., patches 1-4 should be almost enough for the Mediatek hardware.
+However, I don't have the hardware to do this yet.
 
-It's putting the decompression context of the page, not the page itself.  So I
-feel the name I've proposed makes more sense.
+This patchset is based on v5.11-rc2, and it can also be retrieved from
+tag "mmc-crypto-v4" of
+https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git
 
-> > diff --git a/include/trace/events/f2fs.h b/include/trace/events/f2fs.h
-> > index 56b113e3cd6aa..9e2981733ea4a 100644
-> > --- a/include/trace/events/f2fs.h
-> > +++ b/include/trace/events/f2fs.h
-> > @@ -1794,7 +1794,7 @@ DEFINE_EVENT(f2fs_zip_start, f2fs_compress_pages_start,
-> >   	TP_ARGS(inode, cluster_idx, cluster_size, algtype)
-> >   );
-> > -DEFINE_EVENT(f2fs_zip_start, f2fs_decompress_pages_start,
-> > +DEFINE_EVENT(f2fs_zip_start, f2fs_decompress_cluster_start,
-> 
-> I suggest keeping original tracepoint name, it can avoid breaking userspace
-> binary or script.
-> 
+Changed since v3:
+  - Added Acked-by and Reviewed-and-tested-by tags.
+  - Rebased onto v5.11-rc2.
 
-Tracepoints aren't a stable UAPI, and the new name is more logical because it
-describes what is being decompressed rather than an implementation detail of
-where the data is located (in pages).
+Changed since v2:
+  - Improved comment for sdhci_msm_ice_wait_bist_status()
+  - Removed an unhelpful comment in union cqhci_crypto_cfg_entry.
+  - Fixed the commit message of "mmc: cqhci: initialize upper 64 bits of
+    128-bit task descriptors".
+  - Added Reviewed-by's and Acked-by's.
 
-- Eric
+Changed since v1:
+  - Only select QCOM_SCM if ARCH_QCOM.  (Fixes a build break.)
+  - Split most of the cqhci_prep_task_desc() change into its own patch.
+  - Made sdhci_msm_ice_wait_bist_status() use readl_poll_timeout().
+  - Added a couple more comments.
+  - Added some Acked-by's.
+
+Eric Biggers (9):
+  mmc: add basic support for inline encryption
+  mmc: cqhci: rename cqhci.c to cqhci-core.c
+  mmc: cqhci: initialize upper 64 bits of 128-bit task descriptors
+  mmc: cqhci: add support for inline encryption
+  mmc: cqhci: add cqhci_host_ops::program_key
+  firmware: qcom_scm: update comment for ICE-related functions
+  dt-bindings: mmc: sdhci-msm: add ICE registers and clock
+  arm64: dts: qcom: sdm630: add ICE registers and clocks
+  mmc: sdhci-msm: add Inline Crypto Engine support
+
+ .../devicetree/bindings/mmc/sdhci-msm.txt     |   3 +
+ arch/arm64/boot/dts/qcom/sdm630.dtsi          |  10 +-
+ drivers/firmware/qcom_scm.c                   |  16 +-
+ drivers/mmc/core/Kconfig                      |   8 +
+ drivers/mmc/core/Makefile                     |   1 +
+ drivers/mmc/core/block.c                      |   3 +
+ drivers/mmc/core/core.c                       |   3 +
+ drivers/mmc/core/crypto.c                     |  54 ++++
+ drivers/mmc/core/crypto.h                     |  46 +++
+ drivers/mmc/core/host.c                       |   2 +
+ drivers/mmc/core/queue.c                      |   3 +
+ drivers/mmc/host/Kconfig                      |   1 +
+ drivers/mmc/host/Makefile                     |   2 +
+ drivers/mmc/host/{cqhci.c => cqhci-core.c}    |  69 ++++-
+ drivers/mmc/host/cqhci-crypto.c               | 245 ++++++++++++++++
+ drivers/mmc/host/cqhci-crypto.h               |  47 +++
+ drivers/mmc/host/cqhci.h                      |  84 +++++-
+ drivers/mmc/host/sdhci-msm.c                  | 276 +++++++++++++++++-
+ include/linux/mmc/core.h                      |   6 +
+ include/linux/mmc/host.h                      |   7 +
+ 20 files changed, 861 insertions(+), 25 deletions(-)
+ create mode 100644 drivers/mmc/core/crypto.c
+ create mode 100644 drivers/mmc/core/crypto.h
+ rename drivers/mmc/host/{cqhci.c => cqhci-core.c} (94%)
+ create mode 100644 drivers/mmc/host/cqhci-crypto.c
+ create mode 100644 drivers/mmc/host/cqhci-crypto.h
+
+
+base-commit: e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62
+-- 
+2.30.0
+
