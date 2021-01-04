@@ -2,127 +2,284 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C2D52E9EFF
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  4 Jan 2021 21:47:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26C002E9FB6
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  4 Jan 2021 22:58:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726176AbhADUrJ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 4 Jan 2021 15:47:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36350 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726074AbhADUrJ (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 4 Jan 2021 15:47:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C4D02216C4;
-        Mon,  4 Jan 2021 20:46:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609793188;
-        bh=YqIdopmOGx1e+VJgMk2OWtmHGztHh2JIO7mbqBw+ZvA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ojDlygvzJm6AJYbApbRtXGu5fn8IHOoEsnavSY9e/5GqTUkwKASrHQkAOWGGsuHaL
-         zPgCMvdZ1mG3pkjWKWmrOOcA2HAwQSUkq5PhQULpdHrln3mUhFkSCJz5T58RlfH5Dl
-         L4Q+q3hmaW57vJiBmLD1Dza0h6gGx3lBp8r5OM2a3ojps/sWAjZRobLN9lKOLofN5G
-         +7Hq0Mz/qS5C9Ipd2xsUOIN0ibiZQ2tdvl7Jx9Pa00tWw4hMEJq4pgUwW3UG2sN+kU
-         ogb1tXgieCNFnX/hQ9+mQe5eNv3hiUe6+lOIPFf0BWAw+a91yMokFHel7RisgsH8ft
-         pH0Ia0dcFLlug==
-Date:   Mon, 4 Jan 2021 12:46:26 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>, linux-fscrypt@vger.kernel.org,
-        Satya Tangirala <satyat@google.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ritesh Harjani <riteshh@codeaurora.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Neeraj Soni <neersoni@codeaurora.org>,
-        Barani Muthukumaran <bmuthuku@codeaurora.org>,
-        Peng Zhou <peng.zhou@mediatek.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Konrad Dybcio <konradybcio@gmail.com>
-Subject: Re: [PATCH 0/8] eMMC inline encryption support
-Message-ID: <X/N+ouEtmMPYT0Qa@sol.localdomain>
-References: <20201112194011.103774-1-ebiggers@kernel.org>
- <X7gQ9Y44iIgkiM64@sol.localdomain>
- <CAPDyKFrXtqqj3RXJ4m666e_danpp2neRD_M+FCaMWPC+Ow2jsA@mail.gmail.com>
+        id S1726983AbhADV6t (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 4 Jan 2021 16:58:49 -0500
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.50]:23010 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726929AbhADV6t (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 4 Jan 2021 16:58:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1609797354;
+        s=strato-dkim-0002; d=chronox.de;
+        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:From:
+        Subject:Sender;
+        bh=pAgy1otXzvJufKgLKh/aLwRJrmcHtfA9dc+JXv9QmgU=;
+        b=mXkmFOFIRn9UABk36iBUgalfsdGB6AqBA0oZp6q8nF9u3/iHSLratoBpAeQMqPB5YS
+        VK8SjjTHV7L6jMap3gdLclhMEzhqu5rdXyxazhp81k9SaVoI/uaEj7LfJjooFkiPaHlb
+        /QjMgZr2N/drhMZ2ztb02xeDQiy52xs6UHkXmi+ge9CfIzyqPW/kDwMrqxkDHbWtQP6y
+        9gyT0z+2/i56lzYxXEJSFb79Bgva0YP9WkbDDpst2UA7yGCMM6vyOfYgW2bhjRYAhbZb
+        1fPqrV3246LpAVhkl8qpMPFplOwCwicpJWGFPJrtxfRQp+nzrt71OrzXhB4LZcdw/Z+M
+        CENQ==
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPaIvSZFqc="
+X-RZG-CLASS-ID: mo00
+Received: from positron.chronox.de
+        by smtp.strato.de (RZmta 47.10.7 DYNA|AUTH)
+        with ESMTPSA id h02bd9x04LqjxfK
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Mon, 4 Jan 2021 22:52:45 +0100 (CET)
+From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
+To:     herbert@gondor.apana.org.au, ebiggers@kernel.org,
+        mathew.j.martineau@linux.intel.com, dhowells@redhat.com
+Cc:     linux-crypto@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-kernel@vger.kernel.org, keyrings@vger.kernel.org
+Subject: [PATCH 4/5] security: DH - use KDF implementation from crypto API
+Date:   Mon, 04 Jan 2021 22:49:50 +0100
+Message-ID: <3088284.aeNJFYEL58@positron.chronox.de>
+In-Reply-To: <4616980.31r3eYUQgx@positron.chronox.de>
+References: <4616980.31r3eYUQgx@positron.chronox.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPDyKFrXtqqj3RXJ4m666e_danpp2neRD_M+FCaMWPC+Ow2jsA@mail.gmail.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 10:56:42AM +0100, Ulf Hansson wrote:
-> On Fri, 20 Nov 2020 at 19:54, Eric Biggers <ebiggers@kernel.org> wrote:
-> >
-> > On Thu, Nov 12, 2020 at 11:40:03AM -0800, Eric Biggers wrote:
-> > > Hello,
-> > >
-> > > This patchset adds support for eMMC inline encryption, as specified by
-> > > the upcoming version of the eMMC specification and as already
-> > > implemented and used on many devices.  Building on that, it then adds
-> > > Qualcomm ICE support and wires it up for the Snapdragon 630 SoC.
-> > >
-> > > Inline encryption hardware improves the performance of storage
-> > > encryption and reduces power usage.  See
-> > > Documentation/block/inline-encryption.rst for more information about
-> > > inline encryption and the blk-crypto framework (upstreamed in v5.8)
-> > > which supports it.  Most mobile devices already use UFS or eMMC inline
-> > > encryption hardware; UFS support was already upstreamed in v5.9.
-> > >
-> > > Patches 1-3 add support for the standard eMMC inline encryption.
-> > >
-> > > However, as with UFS, host controller-specific patches are needed on top
-> > > of the standard support.  Therefore, patches 4-8 add Qualcomm ICE
-> > > (Inline Crypto Engine) support and wire it up on the Snapdragon 630 SoC.
-> > >
-> > > To test this I took advantage of the recently upstreamed support for the
-> > > Snapdragon 630 SoC, plus work-in-progress patches from the SoMainline
-> > > project (https://github.com/SoMainline/linux/tree/konrad/v5.10-rc3).  In
-> > > particular, I was able to run the fscrypt xfstests for ext4 and f2fs in
-> > > a Debian chroot.  Among other things, these tests verified that the
-> > > correct ciphertext is written to disk (the same as software encryption).
-> > >
-> > > It will also be possible to add support for Mediatek eMMC inline
-> > > encryption hardware in mtk-sd, and it should be easier than the Qualcomm
-> > > hardware since the Mediatek hardware follows the standard more closely.
-> > > I.e., patches 1-3 should be almost enough for the Mediatek hardware.
-> > > However, I don't have the hardware to do this yet.
-> > >
-> > > This patchset is based on v5.10-rc3, and it can also be retrieved from
-> > > tag "mmc-crypto-v1" of
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git
-> > >
-> > > Note: the fscrypt inline encryption support is partially broken in
-> > > v5.10-rc3, so for testing a fscrypt fix needs to be applied too:
-> > > https://lkml.kernel.org/r/20201111015224.303073-1-ebiggers@kernel.org
-> > >
-> > > Eric Biggers (8):
-> > >   mmc: add basic support for inline encryption
-> > >   mmc: cqhci: rename cqhci.c to cqhci-core.c
-> > >   mmc: cqhci: add support for inline encryption
-> > >   mmc: cqhci: add cqhci_host_ops::program_key
-> > >   firmware: qcom_scm: update comment for ICE-related functions
-> > >   dt-bindings: mmc: sdhci-msm: add ICE registers and clock
-> > >   arm64: dts: qcom: sdm630: add ICE registers and clocks
-> > >   mmc: sdhci-msm: add Inline Crypto Engine support
-> >
-> > Any comments on this patchset?
-> 
-> I have been busy, but just wanted to let you know that I am moving to
-> start reviewing this series shortly.
-> 
-> I also need to catch up on the eMMC spec a bit, before I can provide
-> you with comments.
-> 
-> Kind regards
-> Uffe
+The kernel crypto API provides the SP800-108 counter KDF implementation.
+Thus, the separate implementation provided as part of the keys subsystem
+can be replaced with calls to the KDF offered by the kernel crypto API.
 
-Ulf, are you still planning to review this patchset?  I just sent out v4 of this
-patchset based on v5.11-rc2, but not a lot has changed from previous versions,
-since people have generally seemed happy with it.  Any chance that you will
-apply it for 5.12?  Thanks!
+The keys subsystem uses the counter KDF with a hash cipher primitive.
+Thus, it only uses the call to crypto_kdf108_ctr_generate.
 
-- Eric
+The change removes the specific code that adds a zero padding that was
+intended to be invoked when the DH operation result was smaller than the
+modulus. However, this cannot occur any more these days because the
+function mpi_write_to_sgl is used in the code path that calculates the
+shared secret in dh_compute_value. This MPI service function guarantees
+that leading zeros are introduced as needed to ensure the resulting data
+is exactly as long as the modulus. This implies that the specific code
+to add zero padding is dead code which can be safely removed.
+
+Signed-off-by: Stephan Mueller <smueller@chronox.de>
+---
+ security/keys/Kconfig |   2 +-
+ security/keys/dh.c    | 118 ++++++------------------------------------
+ 2 files changed, 17 insertions(+), 103 deletions(-)
+
+diff --git a/security/keys/Kconfig b/security/keys/Kconfig
+index 83bc23409164..e6604499f0a8 100644
+--- a/security/keys/Kconfig
++++ b/security/keys/Kconfig
+@@ -106,7 +106,7 @@ config KEY_DH_OPERATIONS
+        bool "Diffie-Hellman operations on retained keys"
+        depends on KEYS
+        select CRYPTO
+-       select CRYPTO_HASH
++       select CRYPTO_KDF800108_CTR
+        select CRYPTO_DH
+        help
+ 	 This option provides support for calculating Diffie-Hellman
+diff --git a/security/keys/dh.c b/security/keys/dh.c
+index 1abfa70ed6e1..46fa442b81ec 100644
+--- a/security/keys/dh.c
++++ b/security/keys/dh.c
+@@ -11,6 +11,7 @@
+ #include <crypto/hash.h>
+ #include <crypto/kpp.h>
+ #include <crypto/dh.h>
++#include <crypto/kdf_sp800108.h>
+ #include <keys/user-type.h>
+ #include "internal.h"
+ 
+@@ -79,16 +80,9 @@ static void dh_crypto_done(struct crypto_async_request *req, int err)
+ 	complete(&compl->completion);
+ }
+ 
+-struct kdf_sdesc {
+-	struct shash_desc shash;
+-	char ctx[];
+-};
+-
+-static int kdf_alloc(struct kdf_sdesc **sdesc_ret, char *hashname)
++static int kdf_alloc(struct crypto_shash **hash, char *hashname)
+ {
+ 	struct crypto_shash *tfm;
+-	struct kdf_sdesc *sdesc;
+-	int size;
+ 	int err;
+ 
+ 	/* allocate synchronous hash */
+@@ -102,14 +96,7 @@ static int kdf_alloc(struct kdf_sdesc **sdesc_ret, char *hashname)
+ 	if (crypto_shash_digestsize(tfm) == 0)
+ 		goto out_free_tfm;
+ 
+-	err = -ENOMEM;
+-	size = sizeof(struct shash_desc) + crypto_shash_descsize(tfm);
+-	sdesc = kmalloc(size, GFP_KERNEL);
+-	if (!sdesc)
+-		goto out_free_tfm;
+-	sdesc->shash.tfm = tfm;
+-
+-	*sdesc_ret = sdesc;
++	*hash = tfm;
+ 
+ 	return 0;
+ 
+@@ -118,92 +105,20 @@ static int kdf_alloc(struct kdf_sdesc **sdesc_ret, char *hashname)
+ 	return err;
+ }
+ 
+-static void kdf_dealloc(struct kdf_sdesc *sdesc)
+-{
+-	if (!sdesc)
+-		return;
+-
+-	if (sdesc->shash.tfm)
+-		crypto_free_shash(sdesc->shash.tfm);
+-
+-	kfree_sensitive(sdesc);
+-}
+-
+-/*
+- * Implementation of the KDF in counter mode according to SP800-108 section 5.1
+- * as well as SP800-56A section 5.8.1 (Single-step KDF).
+- *
+- * SP800-56A:
+- * The src pointer is defined as Z || other info where Z is the shared secret
+- * from DH and other info is an arbitrary string (see SP800-56A section
+- * 5.8.1.2).
+- *
+- * 'dlen' must be a multiple of the digest size.
+- */
+-static int kdf_ctr(struct kdf_sdesc *sdesc, const u8 *src, unsigned int slen,
+-		   u8 *dst, unsigned int dlen, unsigned int zlen)
++static void kdf_dealloc(struct crypto_shash *hash)
+ {
+-	struct shash_desc *desc = &sdesc->shash;
+-	unsigned int h = crypto_shash_digestsize(desc->tfm);
+-	int err = 0;
+-	u8 *dst_orig = dst;
+-	__be32 counter = cpu_to_be32(1);
+-
+-	while (dlen) {
+-		err = crypto_shash_init(desc);
+-		if (err)
+-			goto err;
+-
+-		err = crypto_shash_update(desc, (u8 *)&counter, sizeof(__be32));
+-		if (err)
+-			goto err;
+-
+-		if (zlen && h) {
+-			u8 tmpbuffer[32];
+-			size_t chunk = min_t(size_t, zlen, sizeof(tmpbuffer));
+-			memset(tmpbuffer, 0, chunk);
+-
+-			do {
+-				err = crypto_shash_update(desc, tmpbuffer,
+-							  chunk);
+-				if (err)
+-					goto err;
+-
+-				zlen -= chunk;
+-				chunk = min_t(size_t, zlen, sizeof(tmpbuffer));
+-			} while (zlen);
+-		}
+-
+-		if (src && slen) {
+-			err = crypto_shash_update(desc, src, slen);
+-			if (err)
+-				goto err;
+-		}
+-
+-		err = crypto_shash_final(desc, dst);
+-		if (err)
+-			goto err;
+-
+-		dlen -= h;
+-		dst += h;
+-		counter = cpu_to_be32(be32_to_cpu(counter) + 1);
+-	}
+-
+-	return 0;
+-
+-err:
+-	memzero_explicit(dst_orig, dlen);
+-	return err;
++	if (hash)
++		crypto_free_shash(hash);
+ }
+ 
+-static int keyctl_dh_compute_kdf(struct kdf_sdesc *sdesc,
++static int keyctl_dh_compute_kdf(struct crypto_shash *hash,
+ 				 char __user *buffer, size_t buflen,
+-				 uint8_t *kbuf, size_t kbuflen, size_t lzero)
++				 uint8_t *kbuf, size_t kbuflen)
+ {
++	struct kvec kbuf_iov = { .iov_base = kbuf, .iov_len = kbuflen };
+ 	uint8_t *outbuf = NULL;
+ 	int ret;
+-	size_t outbuf_len = roundup(buflen,
+-				    crypto_shash_digestsize(sdesc->shash.tfm));
++	size_t outbuf_len = roundup(buflen, crypto_shash_digestsize(hash));
+ 
+ 	outbuf = kmalloc(outbuf_len, GFP_KERNEL);
+ 	if (!outbuf) {
+@@ -211,7 +126,7 @@ static int keyctl_dh_compute_kdf(struct kdf_sdesc *sdesc,
+ 		goto err;
+ 	}
+ 
+-	ret = kdf_ctr(sdesc, kbuf, kbuflen, outbuf, outbuf_len, lzero);
++	ret = crypto_kdf108_ctr_generate(hash, &kbuf_iov, 1, outbuf, outbuf_len);
+ 	if (ret)
+ 		goto err;
+ 
+@@ -240,7 +155,7 @@ long __keyctl_dh_compute(struct keyctl_dh_params __user *params,
+ 	struct kpp_request *req;
+ 	uint8_t *secret;
+ 	uint8_t *outbuf;
+-	struct kdf_sdesc *sdesc = NULL;
++	struct crypto_shash *hash = NULL;
+ 
+ 	if (!params || (!buffer && buflen)) {
+ 		ret = -EINVAL;
+@@ -273,7 +188,7 @@ long __keyctl_dh_compute(struct keyctl_dh_params __user *params,
+ 		}
+ 
+ 		/* allocate KDF from the kernel crypto API */
+-		ret = kdf_alloc(&sdesc, hashname);
++		ret = kdf_alloc(&hash, hashname);
+ 		kfree(hashname);
+ 		if (ret)
+ 			goto out1;
+@@ -383,9 +298,8 @@ long __keyctl_dh_compute(struct keyctl_dh_params __user *params,
+ 			goto out6;
+ 		}
+ 
+-		ret = keyctl_dh_compute_kdf(sdesc, buffer, buflen, outbuf,
+-					    req->dst_len + kdfcopy->otherinfolen,
+-					    outlen - req->dst_len);
++		ret = keyctl_dh_compute_kdf(hash, buffer, buflen, outbuf,
++					    req->dst_len + kdfcopy->otherinfolen);
+ 	} else if (copy_to_user(buffer, outbuf, req->dst_len) == 0) {
+ 		ret = req->dst_len;
+ 	} else {
+@@ -403,7 +317,7 @@ long __keyctl_dh_compute(struct keyctl_dh_params __user *params,
+ out2:
+ 	dh_free_data(&dh_inputs);
+ out1:
+-	kdf_dealloc(sdesc);
++	kdf_dealloc(hash);
+ 	return ret;
+ }
+ 
+-- 
+2.26.2
+
+
+
+
