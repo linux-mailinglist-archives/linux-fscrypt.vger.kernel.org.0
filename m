@@ -2,99 +2,54 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 222362E7A7D
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 30 Dec 2020 16:41:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5F4F2E8F9F
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  4 Jan 2021 04:37:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726552AbgL3Plk (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 30 Dec 2020 10:41:40 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:41133 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726533AbgL3Plk (ORCPT
+        id S1727251AbhADDgp (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sun, 3 Jan 2021 22:36:45 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:10379 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727247AbhADDgo (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 30 Dec 2020 10:41:40 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id DDA835C0050;
-        Wed, 30 Dec 2020 10:40:53 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Wed, 30 Dec 2020 10:40:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=TUh6I4m1JvbyJsLFtp/BvpmkKzt
-        UH2S21H/iXrSq0fM=; b=fC2b8kuGxkYN25j38l4T1hM7YfsaWsYYnMdSd3YzAxh
-        E+oK9iXfq7gSmAr0jUL9mXRC7ifw/CTSpgvS4ezzfuXC8B0W2kie/oF+Zpz5j2LC
-        8fPuWEKibQWRTGIDU8FCJwbZa3erXonHicXVqU87mn3t3powtNWag+OG4KH7CmaS
-        1Agl2p/ncBC7u4zOmvTsbse6j3vjaNSZpoOQf1txMc/az9zZGvIvpwmMPeef3ygz
-        6mSa2pdf4cvAMMiLjwtH4SMZnsIj0GA0AUWL8qFaXKMRWLlE8cNVImC/iJC/j9S+
-        Ht6Ed2l+m2mlxx7lHzcLA2oyin7xwkSFblLYPviypAg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=TUh6I4
-        m1JvbyJsLFtp/BvpmkKztUH2S21H/iXrSq0fM=; b=HDUL2fOmiQDsI4ICwphH0r
-        DuJBTY23LWvMzlF5ovC+UXhajqxYu4Z2FrS3t0BPOCa+/6FcUX3T8zZdFdoknMZ6
-        ZeY0HRMsHAnYVbOCIhs/DrisKleu7Jg4jVilcgYYDs5IwevNLCXgzg6MgXfQV3aY
-        OFRn4nmiYav9USHAn6yYl9uv5IRHl+QqY1WHUXi4urzVodcBYJ87hp7AZPm41ZvD
-        rZOpA2tVKSX3tnSqrYsrm2SvLOHzvQssJGokWyUP3jpm+LYLRJxG7vmc6N086c5u
-        r2FFwLYGC5ZnR2N5e4XeLE5eFZ4XBapQd7Qs6LBkW7NW5bEPPKDdTrJNteJbhTwA
-        ==
-X-ME-Sender: <xms:hZ_sXwHJUNPS0i4kHsH_QK8k8dgXc3pLL1vaMxUXpp2s82YD9luk_w>
-    <xme:hZ_sX5WX3gDMQll5DiZPlFwVNLWpqS7IMzzU9uXKxQ_JFchrNjAzqFc_KkvN1QKm1
-    NonB2jU2s3ALw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvddvfedgjeekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
-    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:hZ_sX6LAskXaoKj4_vWCT_zBHoHsqIVU9VuHXVjL3p8DruujsfiIEA>
-    <xmx:hZ_sXyH9aJw6NwnByZ266ILSTOuNylj6hEioPI-tJ_M__RuydFP9zQ>
-    <xmx:hZ_sX2UxzyBJ03q7cqxEpEqYIHQhZLCIAPWhepxWG-T4GIS2R-kXuA>
-    <xmx:hZ_sX1SfwLxtUsOueKFlLfxpnBexUpfVVeCxIrRkMMn5OSmMOaD37Q>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id EF6AE24005B;
-        Wed, 30 Dec 2020 10:40:52 -0500 (EST)
-Date:   Wed, 30 Dec 2020 16:42:15 +0100
-From:   Greg KH <greg@kroah.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     stable@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 4.19 0/4] fscrypt: prevent creating duplicate encrypted
- filenames
-Message-ID: <X+yf12YbaUciBwwf@kroah.com>
-References: <20201228191211.138300-1-ebiggers@kernel.org>
+        Sun, 3 Jan 2021 22:36:44 -0500
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4D8LqJ70FYz7PxB;
+        Mon,  4 Jan 2021 11:35:08 +0800 (CST)
+Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server (TLS) id 14.3.498.0; Mon, 4 Jan 2021
+ 11:35:59 +0800
+Subject: Re: [f2fs-dev] [PATCH v2] f2fs: clean up post-read processing
+To:     Eric Biggers <ebiggers@kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+CC:     <linux-fscrypt@vger.kernel.org>
+References: <20201228232612.45538-1-ebiggers@kernel.org>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <a43158eb-114e-7f7f-871a-7bd9c70639d6@huawei.com>
+Date:   Mon, 4 Jan 2021 11:35:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201228191211.138300-1-ebiggers@kernel.org>
+In-Reply-To: <20201228232612.45538-1-ebiggers@kernel.org>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.114.67]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 11:12:07AM -0800, Eric Biggers wrote:
-> Backport four commits from v5.11-rc1.  I resolved conflicts in the first
-> two.
-> 
-> Eric Biggers (4):
->   fscrypt: add fscrypt_is_nokey_name()
->   ext4: prevent creating duplicate encrypted filenames
->   f2fs: prevent creating duplicate encrypted filenames
->   ubifs: prevent creating duplicate encrypted filenames
-> 
->  fs/crypto/hooks.c               | 10 +++++-----
->  fs/ext4/namei.c                 |  3 +++
->  fs/f2fs/f2fs.h                  |  2 ++
->  fs/ubifs/dir.c                  | 17 +++++++++++++----
->  include/linux/fscrypt_notsupp.h |  5 +++++
->  include/linux/fscrypt_supp.h    | 29 +++++++++++++++++++++++++++++
->  6 files changed, 57 insertions(+), 9 deletions(-)
-> 
-> -- 
-> 2.29.2
-> 
+On 2020/12/29 7:26, Eric Biggers wrote:
+> +	if (ctx && (ctx->enabled_steps & (STEP_DECRYPT | STEP_DECOMPRESS))) {
+> +		INIT_WORK(&ctx->work, f2fs_post_read_work);
+> +		queue_work(ctx->sbi->post_read_wq, &ctx->work);
 
-All now queued up, thanks.
+Could you keep STEP_DECOMPRESS_NOWQ related logic? so that bio only includes
+non-compressed pages could be handled in irq context rather than in wq context
+which should be unneeded.
 
-greg k-h
+Thanks,
+
+> +	} else {
+> +		f2fs_verify_and_finish_bio(bio);
+> +	}
