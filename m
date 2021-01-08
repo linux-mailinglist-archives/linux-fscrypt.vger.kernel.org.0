@@ -2,77 +2,65 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE7D32ED700
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  7 Jan 2021 19:54:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6887D2EF562
+	for <lists+linux-fscrypt@lfdr.de>; Fri,  8 Jan 2021 17:03:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729158AbhAGSy0 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 7 Jan 2021 13:54:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39942 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727215AbhAGSy0 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 7 Jan 2021 13:54:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 027AA23428;
-        Thu,  7 Jan 2021 18:53:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610045626;
-        bh=4NuZzLXjOFpgEN2Yzoo6R/ZAluYF2iO7Vq7NOU6blWM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AUOnbVERVw0fnIdBRyEeLh8o05/CE+wzls6yEWLvcTdqThOngaSEo37qcbAJaMcTa
-         su+PgsAQV5/fazGrQyMDqzt1U1KnSkHfqEIQxeYbyp4gnH/uQ6Y6SVM9iyD51N4Zc6
-         DlsGN9u2CyHubPSP9MkVivLLCLyv9p81jbZjFhal17I/4OBr1Bf0KOqwrg+8/EGwb3
-         mY8ES8PayNfYnVgiVnS6SykEesxv1coOSofvpmNoc1rlkVdgXnmorGc8w9lsqqyFcL
-         Y9MrpmXl8bW3SuM+l9AJXWAsyTcJoLI81R9/ATu2WZF4IISLFp11FC276aqiBwzNF8
-         ZX6q9ad1c4gCQ==
-Date:   Thu, 7 Jan 2021 10:53:42 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Stephan Mueller <smueller@chronox.de>
-Cc:     herbert@gondor.apana.org.au, mathew.j.martineau@linux.intel.com,
-        dhowells@redhat.com, linux-crypto@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org,
-        keyrings@vger.kernel.org
-Subject: Re: [PATCH 3/5] crypto: add RFC5869 HKDF
-Message-ID: <X/dYtjA6OJAKc3Pc@gmail.com>
-References: <4616980.31r3eYUQgx@positron.chronox.de>
- <12679948.uLZWGnKmhe@positron.chronox.de>
- <X/a4qt9Oiw4WgoRY@sol.localdomain>
- <a5c50afa7e11329ea301e64bc03951b38f4e1eda.camel@chronox.de>
+        id S1727850AbhAHQCU (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 8 Jan 2021 11:02:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727806AbhAHQCR (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Fri, 8 Jan 2021 11:02:17 -0500
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4AB6C0612A4
+        for <linux-fscrypt@vger.kernel.org>; Fri,  8 Jan 2021 08:00:56 -0800 (PST)
+Received: by mail-qk1-x730.google.com with SMTP id w79so8816676qkb.5
+        for <linux-fscrypt@vger.kernel.org>; Fri, 08 Jan 2021 08:00:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:in-reply-to:references:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=ik6B+6lkNc+iFrIPLOlH6nyfA0JsJ4cRGzVhof+Ll8w=;
+        b=VpA/rpQ5qi0dFR7Mowe5aGCpF9u7a1VmQn5q9ZZuQCrdDN5tZn6sXwU9XTDBXmdfYo
+         GHrqoepeF5HsPEyz7s83Q2FgcvfAPgYumhvcRGiBVC2GK+C5XV14Ui++lS3so5pA2/iT
+         1rfJS9pZ3rxyDmU9J33KM0ODd0VovMdrCXj4PDHLrX+mNc/gXoaOQ9JB4dQ8+Pi+t3Y5
+         owDd0dhEIxx5inTgS9uv9USD9ua3iUgbE7ZeBpPZmm3e8Mr6fY26xd3tbIKjFdXg+Z5e
+         HzKpZOj3j3xkWAI+2U0PJ6WCaJvaJp4eQ7JPK2DyyOLy9Is9PPJi0kyYoCvOmtdELPp9
+         eESw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:in-reply-to:references
+         :from:date:message-id:subject:to:content-transfer-encoding;
+        bh=ik6B+6lkNc+iFrIPLOlH6nyfA0JsJ4cRGzVhof+Ll8w=;
+        b=CI2Z0JxPuvU7h0+xYgZRdz9Wm3QjCogPdo9+Sq0kVYFkr7HgAKXxaBkOyYSbdmno1A
+         nFQdI/MHzKT+JBcNGo1eVNoiQVv+ZETxU8rEOBZlAZ7vlAK5rMVCAiQthqYrNCy3ospz
+         PbUJWsUMm7WfR47uuRrwA+h7D49TyXwPseAvGwTCwb1KY+UdpXVk437BgQN2mVXL3L6L
+         Rsm69OkZhkT4Lv/D5jK8PbvaRcgyQQy8HyzRZUaoaM5QgP7SppVsRwwLEw6RupGzPl7d
+         vhpMhoPGoubjI1cv+adWGeUVzV/XpABon29FAtVMXyXT/Xk3CCuH7D8KNBkgA+ZittWW
+         3L0g==
+X-Gm-Message-State: AOAM533/SZxygThEVQCj6z62DHtJFYS4rVWOsel8aFOYqtlssOoBf4XW
+        egYxTmWFIXxVq0/gWqbY3Jkkp5vl4yxPk5GWx64=
+X-Google-Smtp-Source: ABdhPJy5DcDb2tpoN6hwwNxbrQ4+6iS7cEF5BYexkcUy5+hBuogz8U9cM9vP/oN0NUHGYqGpdQYDJc3bSIrriX19zaw=
+X-Received: by 2002:a37:9f14:: with SMTP id i20mr4583418qke.321.1610121655742;
+ Fri, 08 Jan 2021 08:00:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a5c50afa7e11329ea301e64bc03951b38f4e1eda.camel@chronox.de>
+Received: by 2002:a05:6214:148d:0:0:0:0 with HTTP; Fri, 8 Jan 2021 08:00:55
+ -0800 (PST)
+Reply-To: camillejackson021@gmail.com
+In-Reply-To: <CAGCmbMQupVT-1ZX2--N7Bjf2eW4VuUQ4dE_hzd1qAGQuE_JBEQ@mail.gmail.com>
+References: <CAGCmbMQupVT-1ZX2--N7Bjf2eW4VuUQ4dE_hzd1qAGQuE_JBEQ@mail.gmail.com>
+From:   camille jackson <adamraouf78@gmail.com>
+Date:   Fri, 8 Jan 2021 16:00:55 +0000
+Message-ID: <CAGCmbMR9p4PyoggcTsQ1z8w+PCmEh+pd463ifnbWZyKw1o3FtQ@mail.gmail.com>
+Subject: =?UTF-8?B?0JfQtNGA0LDQstGB0YLQstGD0LnRgtC1LA==?=
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 08:53:15AM +0100, Stephan Mueller wrote:
-> > 
-> > > RFC5869
-> > > allows two optional parameters to be provided to the extract operation:
-> > > the salt and additional information. Both are to be provided with the
-> > > seed parameter where the salt is the first entry of the seed parameter
-> > > and all subsequent entries are handled as additional information. If
-> > > the caller intends to invoke the HKDF without salt, it has to provide a
-> > > NULL/0 entry as first entry in seed.
-> > 
-> > Where does "additional information" for extract come from?  RFC 5869 has:
-> > 
-> >         HKDF-Extract(salt, IKM) -> PRK
-> > 
-> >         Inputs:
-> >               salt     optional salt value (a non-secret random value);
-> >                        if not provided, it is set to a string of HashLen
-> > zeros.
-> >               IKM      input keying material
-> > 
-> > There's no "additional information".
-> 
-> I used the terminology from SP800-108. I will update the description
-> accordingly. 
-
-For HKDF, it would be better to stick to the terminology used in RFC 5869
-(https://tools.ietf.org/html/rfc5869), as generally that's what people are most
-familiar with for HKDF.  It also matches the HKDF paper
-(https://eprint.iacr.org/2010/264.pdf) more closely.
-
-- Eric
+0J/RgNC40LLQtdGC0YHRgtCy0YPRjiDRgtC10LHRjywg0LzQvtC5INC00YDRg9CzLCDQvdCw0LTQ
+tdGO0YHRjCwg0YLRiyDQsiDQv9C+0YDRj9C00LrQtSwg0L/QvtC20LDQu9GD0LnRgdGC0LAsINC+
+0YLQstC10YLRjCDQvNC90LUNCtCx0LvQsNCz0L7QtNCw0YDRjywNCg==
