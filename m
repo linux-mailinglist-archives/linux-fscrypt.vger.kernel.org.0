@@ -2,65 +2,282 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6887D2EF562
-	for <lists+linux-fscrypt@lfdr.de>; Fri,  8 Jan 2021 17:03:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15E172F2598
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 12 Jan 2021 02:48:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727850AbhAHQCU (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 8 Jan 2021 11:02:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727806AbhAHQCR (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 8 Jan 2021 11:02:17 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4AB6C0612A4
-        for <linux-fscrypt@vger.kernel.org>; Fri,  8 Jan 2021 08:00:56 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id w79so8816676qkb.5
-        for <linux-fscrypt@vger.kernel.org>; Fri, 08 Jan 2021 08:00:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:in-reply-to:references:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=ik6B+6lkNc+iFrIPLOlH6nyfA0JsJ4cRGzVhof+Ll8w=;
-        b=VpA/rpQ5qi0dFR7Mowe5aGCpF9u7a1VmQn5q9ZZuQCrdDN5tZn6sXwU9XTDBXmdfYo
-         GHrqoepeF5HsPEyz7s83Q2FgcvfAPgYumhvcRGiBVC2GK+C5XV14Ui++lS3so5pA2/iT
-         1rfJS9pZ3rxyDmU9J33KM0ODd0VovMdrCXj4PDHLrX+mNc/gXoaOQ9JB4dQ8+Pi+t3Y5
-         owDd0dhEIxx5inTgS9uv9USD9ua3iUgbE7ZeBpPZmm3e8Mr6fY26xd3tbIKjFdXg+Z5e
-         HzKpZOj3j3xkWAI+2U0PJ6WCaJvaJp4eQ7JPK2DyyOLy9Is9PPJi0kyYoCvOmtdELPp9
-         eESw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:in-reply-to:references
-         :from:date:message-id:subject:to:content-transfer-encoding;
-        bh=ik6B+6lkNc+iFrIPLOlH6nyfA0JsJ4cRGzVhof+Ll8w=;
-        b=CI2Z0JxPuvU7h0+xYgZRdz9Wm3QjCogPdo9+Sq0kVYFkr7HgAKXxaBkOyYSbdmno1A
-         nFQdI/MHzKT+JBcNGo1eVNoiQVv+ZETxU8rEOBZlAZ7vlAK5rMVCAiQthqYrNCy3ospz
-         PbUJWsUMm7WfR47uuRrwA+h7D49TyXwPseAvGwTCwb1KY+UdpXVk437BgQN2mVXL3L6L
-         Rsm69OkZhkT4Lv/D5jK8PbvaRcgyQQy8HyzRZUaoaM5QgP7SppVsRwwLEw6RupGzPl7d
-         vhpMhoPGoubjI1cv+adWGeUVzV/XpABon29FAtVMXyXT/Xk3CCuH7D8KNBkgA+ZittWW
-         3L0g==
-X-Gm-Message-State: AOAM533/SZxygThEVQCj6z62DHtJFYS4rVWOsel8aFOYqtlssOoBf4XW
-        egYxTmWFIXxVq0/gWqbY3Jkkp5vl4yxPk5GWx64=
-X-Google-Smtp-Source: ABdhPJy5DcDb2tpoN6hwwNxbrQ4+6iS7cEF5BYexkcUy5+hBuogz8U9cM9vP/oN0NUHGYqGpdQYDJc3bSIrriX19zaw=
-X-Received: by 2002:a37:9f14:: with SMTP id i20mr4583418qke.321.1610121655742;
- Fri, 08 Jan 2021 08:00:55 -0800 (PST)
-MIME-Version: 1.0
-Received: by 2002:a05:6214:148d:0:0:0:0 with HTTP; Fri, 8 Jan 2021 08:00:55
- -0800 (PST)
-Reply-To: camillejackson021@gmail.com
-In-Reply-To: <CAGCmbMQupVT-1ZX2--N7Bjf2eW4VuUQ4dE_hzd1qAGQuE_JBEQ@mail.gmail.com>
-References: <CAGCmbMQupVT-1ZX2--N7Bjf2eW4VuUQ4dE_hzd1qAGQuE_JBEQ@mail.gmail.com>
-From:   camille jackson <adamraouf78@gmail.com>
-Date:   Fri, 8 Jan 2021 16:00:55 +0000
-Message-ID: <CAGCmbMR9p4PyoggcTsQ1z8w+PCmEh+pd463ifnbWZyKw1o3FtQ@mail.gmail.com>
-Subject: =?UTF-8?B?0JfQtNGA0LDQstGB0YLQstGD0LnRgtC1LA==?=
-To:     undisclosed-recipients:;
+        id S1728743AbhALBfD (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 11 Jan 2021 20:35:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54266 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728387AbhALBfD (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 11 Jan 2021 20:35:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7994022EBF;
+        Tue, 12 Jan 2021 01:34:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610415261;
+        bh=8NTfa6eB6TLOe0Z5onwHF/F50VvgNzpzch/K5lNaCHw=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=TOdq7chmA5Wkl9sp9lE6bjT1XcEsGkdTbNB2jEkcqY/ailx+Er81C7rU7B9iPnWV+
+         0XO4CLN/Nehhf/8cBkwgr8aKE0Dq5wZWx/orPjyW/Zs+tbXDQfCbsJgBj3P8sCTpTy
+         CfmhmZ9xARrhon/EzZPDno391vIQxkt1kRDuRoBBTcH9opm3+HNmaFIoXsvQDxQqNJ
+         3CX0xDSsOP01p38N1lXh9WK3VUclbwaCGo6zp0jPTCOiCIU0L5dmYUQKtcVCnz07+1
+         WRz09AiMjiJ/RsADFjK1oDgXjSlGC7ts0cw6T72O+JQ+k59LVNfJDTkk09K7C+nl+4
+         s4Gu8ueDvIooA==
+Message-ID: <12c867b87e67e7d7db0633928654f92b3bfc83d7.camel@kernel.org>
+Subject: Re: [PATCH 4/5] security: DH - use KDF implementation from crypto
+ API
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>,
+        herbert@gondor.apana.org.au, ebiggers@kernel.org,
+        mathew.j.martineau@linux.intel.com, dhowells@redhat.com
+Cc:     linux-crypto@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-kernel@vger.kernel.org, keyrings@vger.kernel.org
+Date:   Tue, 12 Jan 2021 03:34:16 +0200
+In-Reply-To: <3088284.aeNJFYEL58@positron.chronox.de>
+References: <4616980.31r3eYUQgx@positron.chronox.de>
+         <3088284.aeNJFYEL58@positron.chronox.de>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+User-Agent: Evolution 3.38.3 (by Flathub.org) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-0J/RgNC40LLQtdGC0YHRgtCy0YPRjiDRgtC10LHRjywg0LzQvtC5INC00YDRg9CzLCDQvdCw0LTQ
-tdGO0YHRjCwg0YLRiyDQsiDQv9C+0YDRj9C00LrQtSwg0L/QvtC20LDQu9GD0LnRgdGC0LAsINC+
-0YLQstC10YLRjCDQvNC90LUNCtCx0LvQsNCz0L7QtNCw0YDRjywNCg==
+On Mon, 2021-01-04 at 22:49 +0100, Stephan Müller wrote:
+> The kernel crypto API provides the SP800-108 counter KDF implementation.
+> Thus, the separate implementation provided as part of the keys subsystem
+> can be replaced with calls to the KDF offered by the kernel crypto API.
+> 
+> The keys subsystem uses the counter KDF with a hash cipher primitive.
+> Thus, it only uses the call to crypto_kdf108_ctr_generate.
+> 
+> The change removes the specific code that adds a zero padding that was
+> intended to be invoked when the DH operation result was smaller than the
+> modulus. However, this cannot occur any more these days because the
+> function mpi_write_to_sgl is used in the code path that calculates the
+> shared secret in dh_compute_value. This MPI service function guarantees
+> that leading zeros are introduced as needed to ensure the resulting data
+> is exactly as long as the modulus. This implies that the specific code
+> to add zero padding is dead code which can be safely removed.
+
+Should be thn split into two patches, i.e. prepended with a patch
+removing the dead code.
+
+/Jarkko
+
+> Signed-off-by: Stephan Mueller <smueller@chronox.de>
+> ---
+>  security/keys/Kconfig |   2 +-
+>  security/keys/dh.c    | 118 ++++++------------------------------------
+>  2 files changed, 17 insertions(+), 103 deletions(-)
+> 
+> diff --git a/security/keys/Kconfig b/security/keys/Kconfig
+> index 83bc23409164..e6604499f0a8 100644
+> --- a/security/keys/Kconfig
+> +++ b/security/keys/Kconfig
+> @@ -106,7 +106,7 @@ config KEY_DH_OPERATIONS
+>         bool "Diffie-Hellman operations on retained keys"
+>         depends on KEYS
+>         select CRYPTO
+> -       select CRYPTO_HASH
+> +       select CRYPTO_KDF800108_CTR
+>         select CRYPTO_DH
+>         help
+>          This option provides support for calculating Diffie-Hellman
+> diff --git a/security/keys/dh.c b/security/keys/dh.c
+> index 1abfa70ed6e1..46fa442b81ec 100644
+> --- a/security/keys/dh.c
+> +++ b/security/keys/dh.c
+> @@ -11,6 +11,7 @@
+>  #include <crypto/hash.h>
+>  #include <crypto/kpp.h>
+>  #include <crypto/dh.h>
+> +#include <crypto/kdf_sp800108.h>
+>  #include <keys/user-type.h>
+>  #include "internal.h"
+>  
+> @@ -79,16 +80,9 @@ static void dh_crypto_done(struct crypto_async_request *req, int err)
+>         complete(&compl->completion);
+>  }
+>  
+> -struct kdf_sdesc {
+> -       struct shash_desc shash;
+> -       char ctx[];
+> -};
+> -
+> -static int kdf_alloc(struct kdf_sdesc **sdesc_ret, char *hashname)
+> +static int kdf_alloc(struct crypto_shash **hash, char *hashname)
+>  {
+>         struct crypto_shash *tfm;
+> -       struct kdf_sdesc *sdesc;
+> -       int size;
+>         int err;
+>  
+>         /* allocate synchronous hash */
+> @@ -102,14 +96,7 @@ static int kdf_alloc(struct kdf_sdesc **sdesc_ret, char *hashname)
+>         if (crypto_shash_digestsize(tfm) == 0)
+>                 goto out_free_tfm;
+>  
+> -       err = -ENOMEM;
+> -       size = sizeof(struct shash_desc) + crypto_shash_descsize(tfm);
+> -       sdesc = kmalloc(size, GFP_KERNEL);
+> -       if (!sdesc)
+> -               goto out_free_tfm;
+> -       sdesc->shash.tfm = tfm;
+> -
+> -       *sdesc_ret = sdesc;
+> +       *hash = tfm;
+>  
+>         return 0;
+>  
+> @@ -118,92 +105,20 @@ static int kdf_alloc(struct kdf_sdesc **sdesc_ret, char *hashname)
+>         return err;
+>  }
+>  
+> -static void kdf_dealloc(struct kdf_sdesc *sdesc)
+> -{
+> -       if (!sdesc)
+> -               return;
+> -
+> -       if (sdesc->shash.tfm)
+> -               crypto_free_shash(sdesc->shash.tfm);
+> -
+> -       kfree_sensitive(sdesc);
+> -}
+> -
+> -/*
+> - * Implementation of the KDF in counter mode according to SP800-108 section 5.1
+> - * as well as SP800-56A section 5.8.1 (Single-step KDF).
+> - *
+> - * SP800-56A:
+> - * The src pointer is defined as Z || other info where Z is the shared secret
+> - * from DH and other info is an arbitrary string (see SP800-56A section
+> - * 5.8.1.2).
+> - *
+> - * 'dlen' must be a multiple of the digest size.
+> - */
+> -static int kdf_ctr(struct kdf_sdesc *sdesc, const u8 *src, unsigned int slen,
+> -                  u8 *dst, unsigned int dlen, unsigned int zlen)
+> +static void kdf_dealloc(struct crypto_shash *hash)
+>  {
+> -       struct shash_desc *desc = &sdesc->shash;
+> -       unsigned int h = crypto_shash_digestsize(desc->tfm);
+> -       int err = 0;
+> -       u8 *dst_orig = dst;
+> -       __be32 counter = cpu_to_be32(1);
+> -
+> -       while (dlen) {
+> -               err = crypto_shash_init(desc);
+> -               if (err)
+> -                       goto err;
+> -
+> -               err = crypto_shash_update(desc, (u8 *)&counter, sizeof(__be32));
+> -               if (err)
+> -                       goto err;
+> -
+> -               if (zlen && h) {
+> -                       u8 tmpbuffer[32];
+> -                       size_t chunk = min_t(size_t, zlen, sizeof(tmpbuffer));
+> -                       memset(tmpbuffer, 0, chunk);
+> -
+> -                       do {
+> -                               err = crypto_shash_update(desc, tmpbuffer,
+> -                                                         chunk);
+> -                               if (err)
+> -                                       goto err;
+> -
+> -                               zlen -= chunk;
+> -                               chunk = min_t(size_t, zlen, sizeof(tmpbuffer));
+> -                       } while (zlen);
+> -               }
+> -
+> -               if (src && slen) {
+> -                       err = crypto_shash_update(desc, src, slen);
+> -                       if (err)
+> -                               goto err;
+> -               }
+> -
+> -               err = crypto_shash_final(desc, dst);
+> -               if (err)
+> -                       goto err;
+> -
+> -               dlen -= h;
+> -               dst += h;
+> -               counter = cpu_to_be32(be32_to_cpu(counter) + 1);
+> -       }
+> -
+> -       return 0;
+> -
+> -err:
+> -       memzero_explicit(dst_orig, dlen);
+> -       return err;
+> +       if (hash)
+> +               crypto_free_shash(hash);
+>  }
+>  
+> -static int keyctl_dh_compute_kdf(struct kdf_sdesc *sdesc,
+> +static int keyctl_dh_compute_kdf(struct crypto_shash *hash,
+>                                  char __user *buffer, size_t buflen,
+> -                                uint8_t *kbuf, size_t kbuflen, size_t lzero)
+> +                                uint8_t *kbuf, size_t kbuflen)
+>  {
+> +       struct kvec kbuf_iov = { .iov_base = kbuf, .iov_len = kbuflen };
+>         uint8_t *outbuf = NULL;
+>         int ret;
+> -       size_t outbuf_len = roundup(buflen,
+> -                                   crypto_shash_digestsize(sdesc->shash.tfm));
+> +       size_t outbuf_len = roundup(buflen, crypto_shash_digestsize(hash));
+>  
+>         outbuf = kmalloc(outbuf_len, GFP_KERNEL);
+>         if (!outbuf) {
+> @@ -211,7 +126,7 @@ static int keyctl_dh_compute_kdf(struct kdf_sdesc *sdesc,
+>                 goto err;
+>         }
+>  
+> -       ret = kdf_ctr(sdesc, kbuf, kbuflen, outbuf, outbuf_len, lzero);
+> +       ret = crypto_kdf108_ctr_generate(hash, &kbuf_iov, 1, outbuf, outbuf_len);
+>         if (ret)
+>                 goto err;
+>  
+> @@ -240,7 +155,7 @@ long __keyctl_dh_compute(struct keyctl_dh_params __user *params,
+>         struct kpp_request *req;
+>         uint8_t *secret;
+>         uint8_t *outbuf;
+> -       struct kdf_sdesc *sdesc = NULL;
+> +       struct crypto_shash *hash = NULL;
+>  
+>         if (!params || (!buffer && buflen)) {
+>                 ret = -EINVAL;
+> @@ -273,7 +188,7 @@ long __keyctl_dh_compute(struct keyctl_dh_params __user *params,
+>                 }
+>  
+>                 /* allocate KDF from the kernel crypto API */
+> -               ret = kdf_alloc(&sdesc, hashname);
+> +               ret = kdf_alloc(&hash, hashname);
+>                 kfree(hashname);
+>                 if (ret)
+>                         goto out1;
+> @@ -383,9 +298,8 @@ long __keyctl_dh_compute(struct keyctl_dh_params __user *params,
+>                         goto out6;
+>                 }
+>  
+> -               ret = keyctl_dh_compute_kdf(sdesc, buffer, buflen, outbuf,
+> -                                           req->dst_len + kdfcopy->otherinfolen,
+> -                                           outlen - req->dst_len);
+> +               ret = keyctl_dh_compute_kdf(hash, buffer, buflen, outbuf,
+> +                                           req->dst_len + kdfcopy->otherinfolen);
+>         } else if (copy_to_user(buffer, outbuf, req->dst_len) == 0) {
+>                 ret = req->dst_len;
+>         } else {
+> @@ -403,7 +317,7 @@ long __keyctl_dh_compute(struct keyctl_dh_params __user *params,
+>  out2:
+>         dh_free_data(&dh_inputs);
+>  out1:
+> -       kdf_dealloc(sdesc);
+> +       kdf_dealloc(hash);
+>         return ret;
+>  }
+>  
+
+
