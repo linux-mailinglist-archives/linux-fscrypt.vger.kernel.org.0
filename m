@@ -2,146 +2,183 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90F752FBF38
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 19 Jan 2021 19:42:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53CBE2FC1A2
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 19 Jan 2021 21:54:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731595AbhASS2w (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 19 Jan 2021 13:28:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49904 "EHLO mail.kernel.org"
+        id S2387750AbhASUwx (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 19 Jan 2021 15:52:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731809AbhASS2r (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 19 Jan 2021 13:28:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27A13216FD;
-        Tue, 19 Jan 2021 18:27:46 +0000 (UTC)
+        id S1730250AbhASUwm (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 19 Jan 2021 15:52:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 44D72206EC;
+        Tue, 19 Jan 2021 20:52:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611080866;
-        bh=htBl0n5q1kh9OZUvWrbG0zkdCbhNTZ/6FtkTdpiJSNQ=;
+        s=k20201202; t=1611089520;
+        bh=djekidYjWvjMH8tnXNd3fJu3gvlpUyA2n41tvRbo6M0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VFkZSQg/tUyHSHTotgYbyt8iwuZVVf5PJ2bItwtNvRbplr2r/6GU6+hEfyeBk4+Ju
-         KsN8iVpbYFWtMPxU4U2mEb+9EMtIPgFlDYgXLq15qJXSIglv1S1lVxq9jmtnAnCV5s
-         /hjJ6qW6z7j3+MKO85Zt+KKkPfIB+Q/JXRCQH+AH6ZhuNz5BkNN42K65gc03Qb/Cou
-         g/WWXPinMpRFypua2YLiTp2hWIP3FwwkR7ppQa0TSsNJYePDe7K90jw0tkqSZfbNwk
-         nSrRKtBrGhSkQJ8LTgIeds2DpXhoksM9MqdEq0sSsgwiTrmz0NiTx+4IduPrv9DLiu
-         Y/RIOP2u7D5iw==
-Date:   Tue, 19 Jan 2021 10:27:44 -0800
+        b=jO3hOngn1UoYu0GIbbF4eh/bIy/NyhHX5dJ/WxEQAxsGr6/h/wYLkMGDTywBo53lD
+         V8pDMwPa4NLzx1LwlcDQ8vPPzjwUzGW8AXpLyQR/8Gnyr/hz1HTOSxoy4yO/MYAfwm
+         JXYRKtGFgkVkU8oq0LE1qIxFg2n4pNqaY8OmDLw4Rb5SfxB8C4nOzWeKlIM7g3ZX21
+         tM0wPucHX6GMWHXBztxBD1FN3L9XTLuR8P+m8OAMRb4I4lft3gEPB0DXr5uAAJRB78
+         nU0QT/N5ofF+ri7rMQ1IOCBKW/fp2fzsR/JCMD1buNHHq/FBIB1HOFKVAaJVFKKmev
+         LllxjvlKAYacw==
+Date:   Tue, 19 Jan 2021 12:51:58 -0800
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Colin Walters <walters@verbum.org>
-Cc:     linux-fscrypt@vger.kernel.org
-Subject: Re: new libfsverity release?
-Message-ID: <YAcf2kryXlb9z40i@sol.localdomain>
-References: <cc99418f-4171-4113-9689-afcf46695d95@www.fastmail.com>
- <YAR6ZUIpfLmwg5Bo@sol.localdomain>
- <fa3cce0c-43c7-4d0d-aadf-2fb5cea9e0ff@www.fastmail.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>, linux-fscrypt@vger.kernel.org,
+        Satya Tangirala <satyat@google.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Neeraj Soni <neersoni@codeaurora.org>,
+        Barani Muthukumaran <bmuthuku@codeaurora.org>,
+        Peng Zhou <peng.zhou@mediatek.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Konrad Dybcio <konradybcio@gmail.com>
+Subject: Re: [PATCH v4 1/9] mmc: add basic support for inline encryption
+Message-ID: <YAdGbqU12cbJr78K@sol.localdomain>
+References: <20210104184542.4616-1-ebiggers@kernel.org>
+ <20210104184542.4616-2-ebiggers@kernel.org>
+ <CAPDyKFq717teu2HPZLCn9QVxLOwZHdi_iS+Ji69S0kYX1o52PQ@mail.gmail.com>
+ <YAHXPREJaKjK/z7+@sol.localdomain>
+ <CAPDyKFopKy6dwENJ6YQQ0KRPQdT25R_zmhrNH7jyu=+p6bKpNA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fa3cce0c-43c7-4d0d-aadf-2fb5cea9e0ff@www.fastmail.com>
+In-Reply-To: <CAPDyKFopKy6dwENJ6YQQ0KRPQdT25R_zmhrNH7jyu=+p6bKpNA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 01:40:08PM -0500, Colin Walters wrote:
-> 
-> On Sun, Jan 17, 2021, at 12:56 PM, Eric Biggers wrote:
-> > On Sun, Jan 17, 2021 at 09:20:32AM -0500, Colin Walters wrote:
-> 
-> > > Anything blocking a release?
+On Mon, Jan 18, 2021 at 03:21:01PM +0100, Ulf Hansson wrote:
+> > > Eric, again, my apologies for the delay. Overall, I think this looks good.
+> > >
+> > > My only hesitation to merge this as is, is that I want to make sure
+> > > you have thought of the life cycle issues for the struct
+> > > blk_keyslot_manager ksm. It's being used both from the mmc core/block
+> > > device driver and the mmc host driver. I am looking at this right now
+> > > and will get back to you very soon, if I find some issues with it.
+> > >
+> > > If you have some time, feel free to elaborate around how this is
+> > > intended to work.
+> > >
+> > > Kind regards
+> > > Uffe
 > >
-> > Not really.
+> > The blk_keyslot_manager is initialized early on when the other host structures
+> > (struct mmc_host, struct cqhci_host, struct sdhci_host, struct sdhci_msm_host)
+> > are initialized, prior to mmc_add_host().
+> >
+> > It is destroyed when the struct mmc_host is freed by mmc_free_host().
+> >
+> > So it should just work; it's the same lifecycle as the existing host structures.
+> > Is there something you think I'm overlooking?
 > 
-> Ok, cool.
+> I think so, but let me elaborate a bit.
 > 
-> > It would be annoying for all library functions to dynamically allocate
-> > an extended error structure on failure, because callers will forget to
-> > free it.  So that's not a very good solution either.
+> As I understand it, to initialize the data structures, blk_ksm_init()
+> is getting called and via cqhci_init().
 > 
-> All my C code today uses __attribute__((cleanup(func)).  Old blog entry
-> of mine on it:
-> https://blog.verbum.org/2012/05/09/__attribute__-cleanup-or-how-i-came-to-love-c-again/
-> systemd also uses it extensively today.  (Has this actually come up for
-> use in the Linux kernel?  It's hard to do a web search for, I don't see
-> it mentioned in
-> https://www.kernel.org/doc/Documentation/process/coding-style.rst
-> surprisingly - though I guess a lot of "hot paths" would still want
-> `goto out` for speed and control).
-> 
-> libfsverity would also benefit from this IMO.
-> 
-> Of course since 2012 Rust appeared and I try to write new code in it
-> where I can, but __attribute__((cleanup)) is the single best thing from
-> C++ available in C and still feels like "native C".
+> To hook up the block request queue, blk_ksm_register() is called via
+> mmc_setup_queue(), which means this happens when the mmc block device
+> driver is probed.
 
-Wouldn't callers still need to manually add __attribute__((cleanup)), though?
-So this wouldn't prevent callers from forgetting to free the error struct.
+Well, the call to blk_ksm_register() happens in mmc_crypto_setup_queue(), when
+allocating the request_queue for a particular mmc_card.  As far as I can tell,
+the mmc_host has already been initialized and added then, so we don't have to
+worry about cases where the mmc_host has only been partially initialized.
+And in particular, MMC_CAP2_CRYPTO will have its final value.
 
 > 
-> > Couldn't you allocate a per-thread variable (e.g. with
-> > pthread_setspecific()) that contains a pointer to your context or
-> > message buffer or whatever you need, and use it from the error
-> > callback function?
+> To free up the data structures, blk_ksm_destroy() is called from
+> mmc_free_host().
 > 
-> Yeah, a per-thread variable is better than a global mutex for this
-> indeed.  I'll try reworking my code.
-> 
-> > Anyway, I can't change the API because it is stable now, and other
-> > people are already using libfsverity.
-> 
-> True, but we could add new APIs?  There aren't that many. But I dunno, I
-> don't feel very strongly about this, I can live with a pthread variable.
-> If we decide to do that let's just add a note to the docs recommending
-> that (for callers that want to do something other than print to stderr).
-> 
-> That said of course this whole discussion about errno and strings
-> parallels the kernel side: https://lwn.net/Articles/374794/
-> https://lwn.net/Articles/532771/ and I guess no progress has been made
-> on that?  We just live with extracting more information about errors
-> like EIO or EPERM out-of-band from kernel subsystems (e.g. audit log for
-> SELinux, etc.).
+> To me, this can be made more consistent. For example, it looks like
+> blk_ksm_destroy() could be called, even if blk_ksm_init() hasn't been
+> called (depending on the probe error path of the mmc host).
 
-We can add new APIs if there is a good reason to.  But I'm not sure that whether
-what you suggest would even be better (for a C API).  I think something like
-OpenSSL's per-thread error queues would be better, and that could be added
-without changing the function prototypes.
+blk_ksm_destroy() is a no-op on an all-zeroed struct, so it's fine to call it
+unnecessarily.  We could call it unconditionally, if that would be clearer.
+
+> There are a couple of options to better deal with this.
+> 1) Extend the blk_ksm interface with a devm_blk_ksm_init() function
+> (thus let it deal with lifecycle problems for us) and simply drop the
+> call to blk_ksm_destroy().
+
+This would require adding APIs to devm to support zeroing buffers on free and to
+use kvmalloc() instead of kmalloc().  It looks like these new APIs wouldn't be
+useful for many drivers (since almost everyone else just wants regular kmalloc
+with no special behavior on free), so they don't seem worth adding yet.
+
+> 2) Extend the cqhci interface with a cleanup function (perhaps
+> "cqhci_deinit") and let it call blk_ksm_destroy().
+
+The blk_keyslot_manager is part of struct mmc_host, so it makes more sense for
+mmc_core to be responsible for freeing it.
+
+We could move it to cqhci_host, but that would require adding multiple new
+function pointers to mmc_cqe_ops for use by mmc_crypto_set_initial_state(),
+mmc_crypto_free_host(), and mmc_crypto_setup_queue(), as these all currently
+need access to the blk_keyslot_manager.
+
+I think that making mmc_core directly aware of the blk_keyslot_manager is the
+right call, as it avoids excessive callbacks, and it avoids tying the inline
+encryption support too closely to CQHCI.  (Keep in mind that in the future, MMC
+hosts could support inline encryption using other interfaces besides CQHCI.)
+
+> 3) Convert to let blk_ksm_init() to be called from mmc_add_host() and
+> blk_ksm_destroy() from mmc_remove_host().
+
+That won't work because the driver has to fill in the crypto capabilities in the
+blk_keyslot_manager after calling blk_ksm_init().  mmc_add_host() is too late to
+do that.  mmc_add_host() happens after the driver has already initialized the
+host structures and is finally registering them with the driver model.
 
 > 
-> > It sounds like you're interested in using the in-kernel signature
-> > verification support.  Can you elaborate on why you want to use it (as
-> > opposed to e.g. doing the signature verification in userspace), and
-> > what security properties you are aiming to achieve with it, and how
-> > you would be achieving them?  Keep in mind that userspace still needs
-> > to verify which files have fs-verity enabled.
-> 
-> This is a much longer discussion probably best done as a separate
-> thread.  But broadly speaking I'm looking at using fsverity as parts of systems
-> that look more like "traditional Linux" than e.g. Android.  The security
-> properties will be weaker, but I think that's an inherent part of shipping a system where
-> the user owns the computer and maintaining support for the vast array of systems management tooling out there.  I am hopeful that we can strengthen it over time while still providing some useful security properties.
-> 
-> OK more specific answers: just to start, I really, really like the "files are *truly* read-only even to root" aspect of fs-verity.
+> Moreover, even if there seems to be no real need to call
+> blk_ksm_unregister() for the mmc block device driver, perhaps we
+> should still do it to be consistent with blk_ksm_register()?
 
-I'm not sure what your definition of "truly" is, but keep in mind that root can
-usually still replace a verity file with another file, or ptrace all processes
-(including overriding all data read from a particular file), or write to raw
-block devices, or load kernel modules, etc...
+blk_ksm_unregister() isn't exported to modules.  Its only purpose is for the
+block layer to disable inline encryption support on a disk if blk-integrity
+support is registered on the same disk.  So it shouldn't (and can't) be called
+by drivers.
 
-> This alone avoids whole classes of accidental system damage and can mitigate some types of exploit chains (I gave the example of the runc exploit in the Fedora thread on IMA).  Another example (I didn't fully dig into this but just some thoughts) is that since dm-crypt doesn't provide integrity, fs-verity-on-dm-crypt can help mitigate some offline attacks as well as online attacks in "encrypted virtualization" (https://lwn.net/Articles/841549/) scenarios.
-> 
-> To answer your specific question, one idea I'd like to pursue is patching systemd to require the target of `ExecStart=` be verity signed.  And more generally (this leads into IMA-policy like flows) require any privileged (CAP_SYS_ADMIN) binaries be verity signed.
-> 
-> Now related to this...I see you have some recent patches to allow userspace to extract the signature from a verity file.  That sounds very useful because it will avoid the need for out of band signature data for e.g. `/usr/bin/bash` right?  Although hmm, I guess today one could store signatures in an xattr?
-> 
-> (Thanks for all your work on fsverity btw!)
+We probably should just remove blk_ksm_unregister() and make
+blk_integrity_register() set the ->ksm pointer to NULL directly.  Also maybe
+blk_ksm_register() should be renamed to something like
+"queue_set_keyslot_manager()" to avoid implying that "unregister" is needed.
 
-Okay, the use cases of "require the target of `ExecStart=` be verity signed" and
-"require any privileged (CAP_SYS_ADMIN) binaries be verity signed" sound
-reasonable.  I was concerned that you might be just adding signatures without
-any policy of what to do with them.  IIRC, in the last discussion we had on this
-list, you were just enabling fs-verity on files without actually writing any
-code to do anything with it.
+However those would be block layer changes, not related to this patchset.
 
-I recommend against using the built-in signature verification support (though,
-so far I've been unsuccessful at stopping people from using it...), as verifying
-out-of-band signatures in userspace would be much more flexible and reduce the
-kernel's attack surface.
+> 
+> Then a final concern. It looks like the mmc core relies on checking
+> "host->caps2 & MMC_CAP2_CRYPTO", when it calls blk_ksm_register() and
+> blk_ksm_reprogram_all_keys(), for example. Normally, host->caps2 bits
+> are considered as static configurations and set during the host driver
+> probe path, which may not be a good match for this case. Instead, it
+> seems like we should set a new separate flag, to indicate for the mmc
+> core that blk_ksm_init has been enabled. Otherwise it looks like we
+> could end up calling blk_ksm_reprogram_all_keys(), even if
+> blk_ksm_init() hasn't been called.
+
+MMC_CAP2_CRYPTO *is* a static configuration that is set during the host driver
+probe path.  So I don't understand your concern here.
+
+It's true that during the host driver probe path, MMC_CAP2_CRYPTO initially
+means "the hardware might support crypto", and then cqhci_crypto_init() clears
+it if it decides that the hardware doesn't support crypto after all, after which
+the bit really does mean "the hardware supports crypto".
+
+That seems fine because this all happens while the host structures are being
+initialized, before they are registered with the driver model and MMC cards are
+detected.  So AFAICS there can't be any concurrent calls to
+mmc_crypto_set_initial_state() or mmc_crypto_setup_queue().  Do you think
+otherwise?
 
 - Eric
