@@ -2,109 +2,272 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DC522FFF3A
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 22 Jan 2021 10:33:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7018C3008E2
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 22 Jan 2021 17:46:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725988AbhAVJar (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 22 Jan 2021 04:30:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727204AbhAVJWg (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 22 Jan 2021 04:22:36 -0500
-Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1490BC061786
-        for <linux-fscrypt@vger.kernel.org>; Fri, 22 Jan 2021 01:21:55 -0800 (PST)
-Received: by mail-vs1-xe35.google.com with SMTP id 186so2624783vsz.13
-        for <linux-fscrypt@vger.kernel.org>; Fri, 22 Jan 2021 01:21:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fNl4YWwXbSeUgeeE4NjNBeE9Y46mehLnVl5f/1sLqFM=;
-        b=CJ3SolmwQPIivR+cjS8Mddx8zvNblZ7j7blcJ9g640VSGUtOTUOA6D/6IvYejcsKa9
-         omDiRdFxPc0jFUqWAuk83M7egYm3NNqOUD4r1PN45DXfILVg3kB/s+CSyoz2WbBDdp5q
-         Erf0ZiyZhfistNnr3w4rtMmgqHgtfHs0LrCbGeVGnJuOPxOPdTyv5ra/SVzXgpvrj5js
-         3Rdt3QC2eQ0x17mCTDHn/V9jKmOvBIgPS6hbjLzGGhlclTChvP1AgNEew5WOlK4JtRXx
-         TPxOh9WWT/JgS81T0b6mIBtz7Rfldw+6DqST7a1vhamz0lt8wKaO084MPZW6vb+M5GYx
-         LyHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fNl4YWwXbSeUgeeE4NjNBeE9Y46mehLnVl5f/1sLqFM=;
-        b=kToW5HipifdmHVyHGSPdbOW+zyB/a7LUg4YMgEnyhpe8dYvJdHKAwlm6j3v7mKCnte
-         IYx02zR6CIO1ukasKC8uBHX/79rY/YtYJIVR1SWhClFWMWRlLDchPuQjz3QnFr2jcA2m
-         F7xhxFX3qPNMrk3iL0ji6NjPWA3bXOfnonanbwapj/epZ9VvbhVxekqKVuopAvJztRBw
-         dzbDhJWslJQteWYVHaeD4TwCOKmpjyUkTm91az17AKxgtOvIrBSPc2XYB77V9VI4Ur/0
-         el7MGX50kZspypiHgvwttnLpy35fdllSnC3xWuYEIvqA7AGMweDA+DNuMFoYCKOTWdNn
-         ayfw==
-X-Gm-Message-State: AOAM533pISJ+IPOj+elGx43WhHHJCBBJOxAHMjmRg8o63J7DPckda8zY
-        IVXdNYelSHjDmV7Jup8MbhKGjqYNS3uy9F3DXhFwQg==
-X-Google-Smtp-Source: ABdhPJzlDpOkOSJ3N3bBMlhwfPt8XQXPEi5zEwg/3I5Bzwul5pVkvkMEjzifQ8FzxqpAl8T+e143Q/pKLS/6P/Efe6U=
-X-Received: by 2002:a05:6102:48a:: with SMTP id n10mr267550vsa.42.1611307314186;
- Fri, 22 Jan 2021 01:21:54 -0800 (PST)
+        id S1728779AbhAVQmD (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 22 Jan 2021 11:42:03 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38208 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728710AbhAVQlr (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Fri, 22 Jan 2021 11:41:47 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C2C37B76C;
+        Fri, 22 Jan 2021 16:41:08 +0000 (UTC)
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id 8c71db06;
+        Fri, 22 Jan 2021 16:41:59 +0000 (UTC)
+From:   Luis Henriques <lhenriques@suse.de>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     ceph-devel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [RFC PATCH v4 05/17] ceph: crypto context handling for ceph
+References: <20210120182847.644850-1-jlayton@kernel.org>
+        <20210120182847.644850-6-jlayton@kernel.org>
+Date:   Fri, 22 Jan 2021 16:41:58 +0000
+In-Reply-To: <20210120182847.644850-6-jlayton@kernel.org> (Jeff Layton's
+        message of "Wed, 20 Jan 2021 13:28:35 -0500")
+Message-ID: <87y2gk53ft.fsf@suse.de>
 MIME-Version: 1.0
-References: <20210121090140.326380-1-ebiggers@kernel.org> <20210121090140.326380-5-ebiggers@kernel.org>
- <CAPDyKFqCz=N9R6RpEoMO+zoKhJbds1rbvgzHJ2z+6k2U2Wq6Yg@mail.gmail.com> <YAnFPC0f4vJsKbuL@sol.localdomain>
-In-Reply-To: <YAnFPC0f4vJsKbuL@sol.localdomain>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 22 Jan 2021 10:21:17 +0100
-Message-ID: <CAPDyKFr7OOOVh-RwQGu+VnChvf5EJjW_dW1xoD0950iMUW_ZEA@mail.gmail.com>
-Subject: Re: [PATCH v5 4/9] mmc: cqhci: add support for inline encryption
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>, linux-fscrypt@vger.kernel.org,
-        Satya Tangirala <satyat@google.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Neeraj Soni <neersoni@codeaurora.org>,
-        Barani Muthukumaran <bmuthuku@codeaurora.org>,
-        Peng Zhou <peng.zhou@mediatek.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Konrad Dybcio <konradybcio@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, 21 Jan 2021 at 19:17, Eric Biggers <ebiggers@kernel.org> wrote:
->
-> On Thu, Jan 21, 2021 at 02:04:37PM +0100, Ulf Hansson wrote:
-> > > +#else /* CONFIG_MMC_CRYPTO */
-> > > +
-> > > +static inline int cqhci_crypto_init(struct cqhci_host *host)
-> > > +{
-> > > +       return 0;
-> >
-> > The host calling this function may have MMC_CAP2_CRYPTO set for it.
-> >
-> > When CONFIG_MMC_CRYPTO is set, cqhci_crypto_init() may unset
-> > MMC_CAP2_CRYPTO if initialization fails. It seems like we should unset
-> > MMC_CAP2_CRYPTO in this stub function as well, right?
->
-> The code in sdhci-msm.c that sets MMC_CAP2_CRYPTO is conditional on
-> CONFIG_MMC_CRYPTO.  So, MMC_CAP2_CRYPTO won't be set when !CONFIG_MMC_CRYPTO.
->
-> I suppose we might as well do something to stop other drivers from accidentally
-> getting that wrong, though.
->
-> How about just defining the flag to 0 when !CONFIG_MMC_CRYPTO:
->
-> #ifdef CONFIG_MMC_CRYPTO
-> #define MMC_CAP2_CRYPTO         (1 << 27)       /* Host supports inline encryption */
-> #else
-> #define MMC_CAP2_CRYPTO         0
-> #endif
->
-> That would be more reliable than relying on the flag getting cleared by
-> something.
+Jeff Layton <jlayton@kernel.org> writes:
 
-Yep, this looks good to me!
+> Store the fscrypt context for an inode as an encryption.ctx xattr.
+> When we get a new inode in a trace, set the S_ENCRYPTED bit if
+> the xattr blob has an encryption.ctx xattr.
+>
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>  fs/ceph/Makefile |  1 +
+>  fs/ceph/crypto.c | 42 ++++++++++++++++++++++++++++++++++++++++++
+>  fs/ceph/crypto.h | 24 ++++++++++++++++++++++++
+>  fs/ceph/inode.c  |  6 ++++++
+>  fs/ceph/super.c  |  3 +++
+>  fs/ceph/super.h  |  1 +
+>  fs/ceph/xattr.c  | 32 ++++++++++++++++++++++++++++++++
+>  7 files changed, 109 insertions(+)
+>  create mode 100644 fs/ceph/crypto.c
+>  create mode 100644 fs/ceph/crypto.h
+>
+> diff --git a/fs/ceph/Makefile b/fs/ceph/Makefile
+> index 50c635dc7f71..1f77ca04c426 100644
+> --- a/fs/ceph/Makefile
+> +++ b/fs/ceph/Makefile
+> @@ -12,3 +12,4 @@ ceph-y := super.o inode.o dir.o file.o locks.o addr.o ioctl.o \
+>  
+>  ceph-$(CONFIG_CEPH_FSCACHE) += cache.o
+>  ceph-$(CONFIG_CEPH_FS_POSIX_ACL) += acl.o
+> +ceph-$(CONFIG_FS_ENCRYPTION) += crypto.o
+> diff --git a/fs/ceph/crypto.c b/fs/ceph/crypto.c
+> new file mode 100644
+> index 000000000000..dbe8b60fd1b0
+> --- /dev/null
+> +++ b/fs/ceph/crypto.c
+> @@ -0,0 +1,42 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <linux/ceph/ceph_debug.h>
+> +#include <linux/xattr.h>
+> +#include <linux/fscrypt.h>
+> +
+> +#include "super.h"
+> +#include "crypto.h"
+> +
+> +static int ceph_crypt_get_context(struct inode *inode, void *ctx, size_t len)
+> +{
+> +	return __ceph_getxattr(inode, CEPH_XATTR_NAME_ENCRYPTION_CONTEXT, ctx, len);
+> +}
+> +
+> +static int ceph_crypt_set_context(struct inode *inode, const void *ctx, size_t len, void *fs_data)
+> +{
+> +	int ret;
+> +
+> +	WARN_ON_ONCE(fs_data);
+> +	ret = __ceph_setxattr(inode, CEPH_XATTR_NAME_ENCRYPTION_CONTEXT, ctx, len, XATTR_CREATE);
+> +	if (ret == 0)
+> +		inode_set_flags(inode, S_ENCRYPTED, S_ENCRYPTED);
+> +	return ret;
+> +}
+> +
+> +static bool ceph_crypt_empty_dir(struct inode *inode)
+> +{
+> +	struct ceph_inode_info *ci = ceph_inode(inode);
+> +
+> +	return ci->i_rsubdirs + ci->i_rfiles == 1;
+> +}
 
-Kind regards
-Uffe
+This is very tricky, as this check can't really guaranty that the
+directory is empty.  We need to make sure no other client has access to
+this directory during the whole operation of setting policy.  Would it be
+enough to ensure we have Fxc here?
+
+> +
+> +static struct fscrypt_operations ceph_fscrypt_ops = {
+> +	.get_context		= ceph_crypt_get_context,
+> +	.set_context		= ceph_crypt_set_context,
+> +	.empty_dir		= ceph_crypt_empty_dir,
+> +	.max_namelen		= NAME_MAX,
+> +};
+> +
+> +void ceph_fscrypt_set_ops(struct super_block *sb)
+> +{
+> +	fscrypt_set_ops(sb, &ceph_fscrypt_ops);
+> +}
+> diff --git a/fs/ceph/crypto.h b/fs/ceph/crypto.h
+> new file mode 100644
+> index 000000000000..189bd8424284
+> --- /dev/null
+> +++ b/fs/ceph/crypto.h
+> @@ -0,0 +1,24 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Ceph fscrypt functionality
+> + */
+> +
+> +#ifndef _CEPH_CRYPTO_H
+> +#define _CEPH_CRYPTO_H
+> +
+> +#include <linux/fscrypt.h>
+> +
+> +#define	CEPH_XATTR_NAME_ENCRYPTION_CONTEXT	"encryption.ctx"
+> +
+> +#ifdef CONFIG_FS_ENCRYPTION
+> +void ceph_fscrypt_set_ops(struct super_block *sb);
+> +
+> +#else /* CONFIG_FS_ENCRYPTION */
+> +
+> +static inline void ceph_fscrypt_set_ops(struct super_block *sb)
+> +{
+> +}
+> +
+> +#endif /* CONFIG_FS_ENCRYPTION */
+> +
+> +#endif
+> diff --git a/fs/ceph/inode.c b/fs/ceph/inode.c
+> index 5d20a620e96c..d465ad48ade5 100644
+> --- a/fs/ceph/inode.c
+> +++ b/fs/ceph/inode.c
+> @@ -14,10 +14,12 @@
+>  #include <linux/random.h>
+>  #include <linux/sort.h>
+>  #include <linux/iversion.h>
+> +#include <linux/fscrypt.h>
+>  
+>  #include "super.h"
+>  #include "mds_client.h"
+>  #include "cache.h"
+> +#include "crypto.h"
+>  #include <linux/ceph/decode.h>
+>  
+>  /*
+> @@ -553,6 +555,7 @@ void ceph_evict_inode(struct inode *inode)
+>  	clear_inode(inode);
+>  
+>  	ceph_fscache_unregister_inode_cookie(ci);
+> +	fscrypt_put_encryption_info(inode);
+>  
+>  	__ceph_remove_caps(ci);
+>  
+> @@ -912,6 +915,9 @@ int ceph_fill_inode(struct inode *inode, struct page *locked_page,
+>  		ceph_forget_all_cached_acls(inode);
+>  		ceph_security_invalidate_secctx(inode);
+>  		xattr_blob = NULL;
+> +		if ((inode->i_state & I_NEW) &&
+> +		     ceph_inode_has_xattr(ci, CEPH_XATTR_NAME_ENCRYPTION_CONTEXT))
+> +			inode_set_flags(inode, S_ENCRYPTED, S_ENCRYPTED);
+>  	}
+>  
+>  	/* finally update i_version */
+> diff --git a/fs/ceph/super.c b/fs/ceph/super.c
+> index 9b1b7f4cfdd4..cdac6ff675e2 100644
+> --- a/fs/ceph/super.c
+> +++ b/fs/ceph/super.c
+> @@ -20,6 +20,7 @@
+>  #include "super.h"
+>  #include "mds_client.h"
+>  #include "cache.h"
+> +#include "crypto.h"
+>  
+>  #include <linux/ceph/ceph_features.h>
+>  #include <linux/ceph/decode.h>
+> @@ -988,6 +989,8 @@ static int ceph_set_super(struct super_block *s, struct fs_context *fc)
+>  	s->s_time_min = 0;
+>  	s->s_time_max = U32_MAX;
+>  
+> +	ceph_fscrypt_set_ops(s);
+> +
+>  	ret = set_anon_super_fc(s, fc);
+>  	if (ret != 0)
+>  		fsc->sb = NULL;
+> diff --git a/fs/ceph/super.h b/fs/ceph/super.h
+> index 13b02887b085..efe2e963c631 100644
+> --- a/fs/ceph/super.h
+> +++ b/fs/ceph/super.h
+> @@ -1013,6 +1013,7 @@ extern ssize_t ceph_listxattr(struct dentry *, char *, size_t);
+>  extern struct ceph_buffer *__ceph_build_xattrs_blob(struct ceph_inode_info *ci);
+>  extern void __ceph_destroy_xattrs(struct ceph_inode_info *ci);
+>  extern const struct xattr_handler *ceph_xattr_handlers[];
+> +bool ceph_inode_has_xattr(struct ceph_inode_info *ci, const char *name);
+>  
+>  struct ceph_acl_sec_ctx {
+>  #ifdef CONFIG_CEPH_FS_POSIX_ACL
+> diff --git a/fs/ceph/xattr.c b/fs/ceph/xattr.c
+> index 24997982de01..d0d719b768e4 100644
+> --- a/fs/ceph/xattr.c
+> +++ b/fs/ceph/xattr.c
+> @@ -1359,6 +1359,38 @@ void ceph_release_acl_sec_ctx(struct ceph_acl_sec_ctx *as_ctx)
+>  		ceph_pagelist_release(as_ctx->pagelist);
+>  }
+>  
+> +/* Return true if inode's xattr blob has an xattr named "name" */
+> +bool ceph_inode_has_xattr(struct ceph_inode_info *ci, const char *name)
+> +{
+> +	void *p, *end;
+> +	u32 numattr;
+> +	size_t namelen;
+> +
+> +	lockdep_assert_held(&ci->i_ceph_lock);
+> +
+> +	if (!ci->i_xattrs.blob || ci->i_xattrs.blob->vec.iov_len <= 4)
+> +		return false;
+> +
+> +	namelen = strlen(name);
+> +	p = ci->i_xattrs.blob->vec.iov_base;
+> +	end = p + ci->i_xattrs.blob->vec.iov_len;
+> +	ceph_decode_32_safe(&p, end, numattr, bad);
+> +
+> +	while (numattr--) {
+> +		u32 len;
+> +
+> +		ceph_decode_32_safe(&p, end, len, bad);
+> +		ceph_decode_need(&p, end, len, bad);
+> +		if (len == namelen && !memcmp(p, name, len))
+> +			return true;
+> +		p += len;
+> +		ceph_decode_32_safe(&p, end, len, bad);
+> +		ceph_decode_skip_n(&p, end, len, bad);
+> +	}
+> +bad:
+> +	return false;
+> +}
+
+I wonder if it wouldn't be better have an extra flag in struct
+ceph_inode_info instead of having to go through the xattr list every time
+we update an inode with data from the MDS.
+
+> 
+> +
+>  /*
+>   * List of handlers for synthetic system.* attributes. Other
+>   * attributes are handled directly.
+> -- 
+>
+> 2.29.2
+>
+
+-- 
+Luis
