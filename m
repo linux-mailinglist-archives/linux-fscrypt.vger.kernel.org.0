@@ -2,34 +2,35 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BF04301C99
-	for <lists+linux-fscrypt@lfdr.de>; Sun, 24 Jan 2021 15:11:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D49D8301C8C
+	for <lists+linux-fscrypt@lfdr.de>; Sun, 24 Jan 2021 15:11:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726049AbhAXOKg (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sun, 24 Jan 2021 09:10:36 -0500
-Received: from mo4-p03-ob.smtp.rzone.de ([85.215.255.101]:18552 "EHLO
-        mo4-p03-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726160AbhAXOKE (ORCPT
+        id S1725798AbhAXOJt (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sun, 24 Jan 2021 09:09:49 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.83]:22338 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725968AbhAXOJo (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sun, 24 Jan 2021 09:10:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1611497208;
+        Sun, 24 Jan 2021 09:09:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1611497207;
         s=strato-dkim-0002; d=chronox.de;
-        h=Message-ID:Date:Subject:Cc:To:From:From:Subject:Sender;
-        bh=kD8GXYJD7ne6R4TTKn1bkqiMktIc67naKuk3V4KmkGQ=;
-        b=rKxsCcbDsx8r0ELNMQf1n5B3j+esMZgzC0W7FX0UjSgcgth7aU9NBMVQGTe1H7gykp
-        JVXaej1zwuBQ4aNW9HhfYbX9k/LKWHPzuHDxFuUDFdzBr07PGcFmcPB10nuh4cRsnBAo
-        FGJiZtfly+IZ9IDK5T409UgcSA559dFGaeVD+jGQpCuYbzeEljJjbiIvArGT5kHxZ9/u
-        TzkBoc1e4uua1MutLxb16tshVgv5dE26nEwmBH1Nj9xfWldbbk8/WC9jBAX7GmEGMBgk
-        YtPGw5DjyB53RInjJUzVxAkj/ksFPIZG+QEIk5iMeg5HsVSH3CA+kyXJM+yFgPc25gEr
-        1YGg==
+        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:From:
+        Subject:Sender;
+        bh=zJqo8nf/jHkzH9Q6/0XyhbU/V8rrLtwyZJii/ef29vM=;
+        b=f2kW1Jhbt9M63652XWycanaxWYdh3wcDidKQUFJSNi1UyHbsPjeMiSNjbAfnowzHha
+        +fhaodTtBcVNeUZHNfRJTgSbQ7N8kbbz0jSDACP+NHerMxK+85jg+HRZ3S1ik5oSD7ak
+        mZXJZccaExfz/VqQn0KA4rJ9nj6PpZg8XCkmAd/qvZ62kKvOC+meGwIv+bAlCqhMLD/I
+        UjI4MtvjPB79+onr3Ix6/zkyqR2clmafCd90y4q81Ed/K4W76ImWob6ZXuiJ6Xr2cPvD
+        aaoZrMPrfOjOZv0qfKoWgv0pOL7Bz8Ub31AGPOwtbnfjTXkfr2JqqmbF59l5PAdVTzLY
+        CqyQ==
 X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPZI/ScIzb9"
 X-RZG-CLASS-ID: mo00
 Received: from positron.chronox.de
         by smtp.strato.de (RZmta 47.12.1 DYNA|AUTH)
-        with ESMTPSA id Z04c46x0OE6meic
+        with ESMTPSA id Z04c46x0OE6leib
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-        Sun, 24 Jan 2021 15:06:48 +0100 (CET)
+        Sun, 24 Jan 2021 15:06:47 +0100 (CET)
 From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
 To:     herbert@gondor.apana.org.au
 Cc:     ebiggers@kernel.org, Jarkko Sakkinen <jarkko@kernel.org>,
@@ -37,9 +38,11 @@ Cc:     ebiggers@kernel.org, Jarkko Sakkinen <jarkko@kernel.org>,
         linux-crypto@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         linux-kernel@vger.kernel.org, keyrings@vger.kernel.org,
         simo@redhat.com
-Subject: [PATCH v2 0/7] Add KDF implementations to crypto API
-Date:   Sun, 24 Jan 2021 15:01:12 +0100
-Message-ID: <1772794.tdWV9SEqCh@positron.chronox.de>
+Subject: [PATCH v2 1/7] crypto: Add key derivation self-test support code
+Date:   Sun, 24 Jan 2021 15:01:43 +0100
+Message-ID: <12692814.uLZWGnKmhe@positron.chronox.de>
+In-Reply-To: <1772794.tdWV9SEqCh@positron.chronox.de>
+References: <1772794.tdWV9SEqCh@positron.chronox.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
@@ -47,72 +50,101 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hi,
+As a preparation to add the key derivation implementations, the
+self-test data structure definition and the common test code is made
+available.
 
-The key derviation functions are considered to be a cryptographic
-operation. As cryptographic operations are provided via the kernel
-crypto API, this patch set consolidates the KDF implementations into the
-crypto API.
+The test framework follows the testing applied by the NIST CAVP test
+approach.
 
-The KDF implementations are provided as service functions. Yet, the
-interface to the two provided KDFs are identical with the goal to allow
-them to be transformed into a crypto API template eventually.
+The structure of the test code follows the implementations found in
+crypto/testmgr.c|h. In case the KDF implementations will be made
+available via a kernel crypto API templates, the test code is intended
+to be merged into testmgr.c|h.
 
-The KDFs execute a power-on self test with test vectors from commonly
-known sources.
-
-Tbe SP800-108 KDF implementation is used to replace the implementation
-in the keys subsystem. The implementation was verified using the
-keyutils command line test code provided in
-tests/keyctl/dh_compute/valid. All tests show that the expected values
-are calculated with the new code.
-
-The HKDF addition is used to replace the implementation in the filesystem
-crypto extension. This code was tested by using an EXT4 encrypted file
-system that was created and contains files written to by the current
-implementation. Using the new implementation a successful read of the
-existing files was possible and new files / directories were created
-and read successfully. These newly added file system objects could be
-successfully read using the current code. Yet if there is a test suite
-to validate whether the invokcation of the HKDF calculates the same
-result as the existing implementation, I would be happy to validate
-the implementation accordingly.
-
-Changes v2:
-
-* change HKDF function names
-* change HKDF/SP800-108 KDF extract / seed function prototype
-* ensure clearing of memory of destination buffer in KDF implementation
-  if KDF operation fails
-* security DH: split the removal of dead code into separate patch
-
-Stephan Mueller (7):
-  crypto: Add key derivation self-test support code
-  crypto: add SP800-108 counter key derivation function
-  crypto: add RFC5869 HKDF
-  security: DH - remove dead code for zero padding
-  security: DH - use KDF implementation from crypto API
-  fs: use HKDF implementation from kernel crypto API
-  fs: HKDF - remove duplicate memory clearing
-
- crypto/Kconfig                         |  14 ++
- crypto/Makefile                        |   6 +
- crypto/hkdf.c                          | 199 +++++++++++++++++++++++++
- crypto/kdf_sp800108.c                  | 149 ++++++++++++++++++
- fs/crypto/Kconfig                      |   2 +-
- fs/crypto/hkdf.c                       | 103 +++----------
- include/crypto/hkdf.h                  |  48 ++++++
- include/crypto/internal/kdf_selftest.h |  71 +++++++++
- include/crypto/kdf_sp800108.h          |  61 ++++++++
- security/keys/Kconfig                  |   2 +-
- security/keys/dh.c                     | 118 ++-------------
- 11 files changed, 586 insertions(+), 187 deletions(-)
- create mode 100644 crypto/hkdf.c
- create mode 100644 crypto/kdf_sp800108.c
- create mode 100644 include/crypto/hkdf.h
+Signed-off-by: Stephan Mueller <smueller@chronox.de>
+---
+ include/crypto/internal/kdf_selftest.h | 71 ++++++++++++++++++++++++++
+ 1 file changed, 71 insertions(+)
  create mode 100644 include/crypto/internal/kdf_selftest.h
- create mode 100644 include/crypto/kdf_sp800108.h
 
+diff --git a/include/crypto/internal/kdf_selftest.h b/include/crypto/internal/kdf_selftest.h
+new file mode 100644
+index 000000000000..373fcb11f2fa
+--- /dev/null
++++ b/include/crypto/internal/kdf_selftest.h
+@@ -0,0 +1,71 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++/*
++ * Copyright (C) 2020, Stephan Mueller <smueller@chronox.de>
++ */
++
++#ifndef _CRYPTO_KDF_SELFTEST_H
++#define _CRYPTO_KDF_SELFTEST_H
++
++#include <crypto/hash.h>
++#include <linux/uio.h>
++
++struct kdf_testvec {
++	unsigned char *key;
++	size_t keylen;
++	unsigned char *ikm;
++	size_t ikmlen;
++	struct kvec info;
++	unsigned char *expected;
++	size_t expectedlen;
++};
++
++static inline int
++kdf_test(const struct kdf_testvec *test, const char *name,
++	 int (*crypto_kdf_setkey)(struct crypto_shash *kmd,
++				  const u8 *key, size_t keylen,
++				  const u8 *ikm, size_t ikmlen),
++	 int (*crypto_kdf_generate)(struct crypto_shash *kmd,
++				    const struct kvec *info,
++				    unsigned int info_nvec,
++				    u8 *dst, unsigned int dlen))
++{
++	struct crypto_shash *kmd;
++	int ret;
++	u8 *buf = kzalloc(test->expectedlen, GFP_KERNEL);
++
++	if (!buf)
++		return -ENOMEM;
++
++	kmd = crypto_alloc_shash(name, 0, 0);
++	if (IS_ERR(kmd)) {
++		pr_err("alg: kdf: could not allocate hash handle for %s\n",
++		       name);
++		kfree(buf);
++		return -ENOMEM;
++	}
++
++	ret = crypto_kdf_setkey(kmd, test->key, test->keylen,
++				test->ikm, test->ikmlen);
++	if (ret) {
++		pr_err("alg: kdf: could not set key derivation key\n");
++		goto err;
++	}
++
++	ret = crypto_kdf_generate(kmd, &test->info, 1, buf, test->expectedlen);
++	if (ret) {
++		pr_err("alg: kdf: could not obtain key data\n");
++		goto err;
++	}
++
++	ret = memcmp(test->expected, buf, test->expectedlen);
++	if (ret)
++		ret = -EINVAL;
++
++err:
++	crypto_free_shash(kmd);
++	kfree(buf);
++	return ret;
++}
++
++#endif /* _CRYPTO_KDF_SELFTEST_H */
 -- 
 2.26.2
 
