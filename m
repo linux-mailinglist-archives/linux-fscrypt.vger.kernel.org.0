@@ -2,134 +2,138 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06D9E302A52
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 25 Jan 2021 19:35:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D97E302A7D
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 25 Jan 2021 19:41:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726868AbhAYScr (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 25 Jan 2021 13:32:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55436 "EHLO mail.kernel.org"
+        id S1726690AbhAYSlh (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 25 Jan 2021 13:41:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57764 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726843AbhAYScl (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:32:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A4A322B3F;
-        Mon, 25 Jan 2021 18:32:00 +0000 (UTC)
+        id S1727237AbhAYSlM (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:41:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0402120679;
+        Mon, 25 Jan 2021 18:40:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611599520;
-        bh=w1qFqT0Aa2HlrOrboI7cNoJeqGfCywLrnNoy6sZLk3M=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=TVwdE3KpDXdY5Aesx0FVadUwcrBRMWgQAH0NOsmcg6UUibI2PrCNAkVBgp0igGCz2
-         d2rZUr15RMn16dgRb9rCSXxdifYk4dxCz673YUddWQF39yoF/R9181yPWLLe3aTxg0
-         6FjCwaaQhTF5g9TinOEjxWNpVQCzN4NyJB1PKstkocYatpe9b0msAzzjUiDxRVd+qw
-         49ZcaSxcybH1UVd9ehTkfP5HHLpPo50Da9lj7hSoEmBGzuLnalzSjtJA2F+5tSC9co
-         Jl98v4wq6EBVYyJJDkljdONqChok7X9GHJYCYHYhTpA7+x7dvWK/ZNjpAhMISzIe1W
-         FUpGwHd/7kHKQ==
-Message-ID: <07d886e24308119c672f705f000a0a44f8ffe0e8.camel@kernel.org>
-Subject: Re: [RFC PATCH v4 16/17] ceph: create symlinks with encrypted and
- base64-encoded targets
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Luis Henriques <lhenriques@suse.de>
-Cc:     ceph-devel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Date:   Mon, 25 Jan 2021 13:31:58 -0500
-In-Reply-To: <87bldd57hc.fsf@suse.de>
-References: <20210120182847.644850-1-jlayton@kernel.org>
-         <20210120182847.644850-17-jlayton@kernel.org> <87bldd57hc.fsf@suse.de>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.38.3 (3.38.3-1.fc33) 
+        s=k20201202; t=1611600031;
+        bh=4SCmQuraOYmu7VQ5L24jw7LalSZJa0vOhswtHkrL8l8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=dQhEAmNbkNJcVp7O6w/pRtVKFKpOVeeNSP03a1eLAymols/YvYQcIZWzcZMWAMhy1
+         rLcp5PzhmthS5bjwl09DOab9MjiJXaVupnia0IEYvMf3L2FdAkeQjjJfztk/Wb8uW6
+         o9f0yQZwi7CWqWg0cZ50RybowA0TQpiRmB3QQThU+ZXCy7vEdZ3BUxi6urszkQo0I2
+         3HEHq5M+u1DkV+0uGCp7Wlk2fj0jdCwd5/lxmoVsqjCtPvp+WFhsV6YYt4Okq6R5Wv
+         YyK6C3NmLMSkHkjBcniU4Km8TUj+DT7cTu1Di2OAJspJVt+/IM3aDCvkMCW6xcfe8p
+         pkFGOgY+LlK5g==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-mmc@vger.kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, Satya Tangirala <satyat@google.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Neeraj Soni <neersoni@codeaurora.org>,
+        Barani Muthukumaran <bmuthuku@codeaurora.org>,
+        Peng Zhou <peng.zhou@mediatek.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Konrad Dybcio <konradybcio@gmail.com>
+Subject: [PATCH v6 3/9] mmc: cqhci: initialize upper 64 bits of 128-bit task descriptors
+Date:   Mon, 25 Jan 2021 10:38:04 -0800
+Message-Id: <20210125183810.198008-4-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210125183810.198008-1-ebiggers@kernel.org>
+References: <20210125183810.198008-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, 2021-01-25 at 16:03 +0000, Luis Henriques wrote:
-> Jeff Layton <jlayton@kernel.org> writes:
-> 
-> > When creating symlinks in encrypted directories, encrypt and
-> > base64-encode the target with the new inode's key before sending to the
-> > MDS.
-> > 
-> > When filling a symlinked inode, base64-decode it into a buffer that
-> > we'll keep in ci->i_symlink. When get_link is called, decrypt the buffer
-> > into a new one that will hang off i_link.
-> > 
-> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > ---
-> >  fs/ceph/dir.c   | 50 +++++++++++++++++++++++---
-> >  fs/ceph/inode.c | 95 ++++++++++++++++++++++++++++++++++++++++++-------
-> >  2 files changed, 128 insertions(+), 17 deletions(-)
-> > 
-> > diff --git a/fs/ceph/dir.c b/fs/ceph/dir.c
-> > index cb7ff91a243a..1721b70118b9 100644
-> > --- a/fs/ceph/dir.c
-> > +++ b/fs/ceph/dir.c
-> > @@ -924,6 +924,40 @@ static int ceph_create(struct inode *dir, struct dentry *dentry, umode_t mode,
-> >  	return ceph_mknod(dir, dentry, mode, 0);
-> >  }
-> >  
-> > 
-> > 
-> > 
-> > +#if IS_ENABLED(CONFIG_FS_ENCRYPTION)
-> > +static int prep_encrypted_symlink_target(struct ceph_mds_request *req, const char *dest)
-> > +{
-> > +	int err;
-> > +	int len = strlen(dest);
-> > +	struct fscrypt_str osd_link = FSTR_INIT(NULL, 0);
-> > +
-> > +	err = fscrypt_prepare_symlink(req->r_parent, dest, len, PATH_MAX, &osd_link);
-> > +	if (err)
-> > +		goto out;
-> > +
-> > +	err = fscrypt_encrypt_symlink(req->r_new_inode, dest, len, &osd_link);
-> > +	if (err)
-> > +		goto out;
-> > +
-> > +	req->r_path2 = kmalloc(FSCRYPT_BASE64_CHARS(osd_link.len), GFP_KERNEL);
-> > +	if (!req->r_path2) {
-> > +		err = -ENOMEM;
-> > +		goto out;
-> > +	}
-> > +
-> > +	len = fscrypt_base64_encode(osd_link.name, osd_link.len, req->r_path2);
-> > +	req->r_path2[len] = '\0';
-> > +out:
-> > +	fscrypt_fname_free_buffer(&osd_link);
-> > +	return err;
-> > +}
-> > +#else
-> > +static int prep_encrypted_symlink_target(struct ceph_mds_request *req, const char *dest)
-> > +{
-> > +	return -EOPNOTSUPP;
-> > +}
-> > +#endif
-> > +
-> >  static int ceph_symlink(struct inode *dir, struct dentry *dentry,
-> >  			    const char *dest)
-> >  {
-> > @@ -955,12 +989,18 @@ static int ceph_symlink(struct inode *dir, struct dentry *dentry,
-> >  		goto out_req;
-> >  	}
-> >  
-> > 
-> > 
-> > 
-> > -	req->r_path2 = kstrdup(dest, GFP_KERNEL);
-> > -	if (!req->r_path2) {
-> > -		err = -ENOMEM;
-> > -		goto out_req;
-> > -	}
-> >  	req->r_parent = dir;
-> > +
-> > +	if (IS_ENCRYPTED(req->r_new_inode)) {
-> > +		err = prep_encrypted_symlink_target(req, dest);
-> 
-> nit: missing the error handling for this branch.
-> 
+From: Eric Biggers <ebiggers@google.com>
 
-Thanks! I'll fix this right up.
+Move the task descriptor initialization into cqhci_prep_task_desc().
+In addition, make it explicitly initialize all 128 bits of the task
+descriptor if the host controller is using 128-bit task descriptors,
+rather than relying on the implicit zeroing from dmam_alloc_coherent().
 
+This is needed to prepare for CQHCI inline encryption support, which
+requires 128-bit task descriptors and uses the upper 64 bits.
 
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Reviewed-by: Satya Tangirala <satyat@google.com>
+Reviewed-and-tested-by: Peng Zhou <peng.zhou@mediatek.com>
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ drivers/mmc/host/cqhci-core.c | 30 ++++++++++++++++++++----------
+ 1 file changed, 20 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqhci-core.c
+index 697fe40756bf2..ad7c9acff1728 100644
+--- a/drivers/mmc/host/cqhci-core.c
++++ b/drivers/mmc/host/cqhci-core.c
+@@ -408,13 +408,15 @@ static void cqhci_disable(struct mmc_host *mmc)
+ }
+ 
+ static void cqhci_prep_task_desc(struct mmc_request *mrq,
+-					u64 *data, bool intr)
++				 struct cqhci_host *cq_host, int tag)
+ {
++	__le64 *task_desc = (__le64 __force *)get_desc(cq_host, tag);
+ 	u32 req_flags = mrq->data->flags;
++	u64 desc0;
+ 
+-	*data = CQHCI_VALID(1) |
++	desc0 = CQHCI_VALID(1) |
+ 		CQHCI_END(1) |
+-		CQHCI_INT(intr) |
++		CQHCI_INT(1) |
+ 		CQHCI_ACT(0x5) |
+ 		CQHCI_FORCED_PROG(!!(req_flags & MMC_DATA_FORCED_PRG)) |
+ 		CQHCI_DATA_TAG(!!(req_flags & MMC_DATA_DAT_TAG)) |
+@@ -425,8 +427,19 @@ static void cqhci_prep_task_desc(struct mmc_request *mrq,
+ 		CQHCI_BLK_COUNT(mrq->data->blocks) |
+ 		CQHCI_BLK_ADDR((u64)mrq->data->blk_addr);
+ 
+-	pr_debug("%s: cqhci: tag %d task descriptor 0x%016llx\n",
+-		 mmc_hostname(mrq->host), mrq->tag, (unsigned long long)*data);
++	task_desc[0] = cpu_to_le64(desc0);
++
++	if (cq_host->caps & CQHCI_TASK_DESC_SZ_128) {
++		u64 desc1 = 0;
++
++		task_desc[1] = cpu_to_le64(desc1);
++
++		pr_debug("%s: cqhci: tag %d task descriptor 0x%016llx%016llx\n",
++			 mmc_hostname(mrq->host), mrq->tag, desc1, desc0);
++	} else {
++		pr_debug("%s: cqhci: tag %d task descriptor 0x%016llx\n",
++			 mmc_hostname(mrq->host), mrq->tag, desc0);
++	}
+ }
+ 
+ static int cqhci_dma_map(struct mmc_host *host, struct mmc_request *mrq)
+@@ -567,8 +580,6 @@ static inline int cqhci_tag(struct mmc_request *mrq)
+ static int cqhci_request(struct mmc_host *mmc, struct mmc_request *mrq)
+ {
+ 	int err = 0;
+-	u64 data = 0;
+-	u64 *task_desc = NULL;
+ 	int tag = cqhci_tag(mrq);
+ 	struct cqhci_host *cq_host = mmc->cqe_private;
+ 	unsigned long flags;
+@@ -598,9 +609,8 @@ static int cqhci_request(struct mmc_host *mmc, struct mmc_request *mrq)
+ 	}
+ 
+ 	if (mrq->data) {
+-		task_desc = (__le64 __force *)get_desc(cq_host, tag);
+-		cqhci_prep_task_desc(mrq, &data, 1);
+-		*task_desc = cpu_to_le64(data);
++		cqhci_prep_task_desc(mrq, cq_host, tag);
++
+ 		err = cqhci_prep_tran_desc(mrq, cq_host, tag);
+ 		if (err) {
+ 			pr_err("%s: cqhci: failed to setup tx desc: %d\n",
 -- 
-Jeff Layton <jlayton@kernel.org>
+2.30.0
 
