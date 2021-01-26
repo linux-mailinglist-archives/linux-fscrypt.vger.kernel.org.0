@@ -2,58 +2,138 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 317893047D7
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 26 Jan 2021 20:13:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AA733047EC
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 26 Jan 2021 20:14:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388950AbhAZFzZ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 26 Jan 2021 00:55:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58350 "EHLO mail.kernel.org"
+        id S2388971AbhAZFzk (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 26 Jan 2021 00:55:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37338 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727610AbhAYSms (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:42:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 07A5A230FF;
-        Mon, 25 Jan 2021 18:41:53 +0000 (UTC)
+        id S1732171AbhAZCGQ (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 25 Jan 2021 21:06:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A308022ADF;
+        Tue, 26 Jan 2021 00:15:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611600113;
-        bh=BcQjpfINfveQmERew10h4a0n6dN8EsCa5I5lsAkb6Uo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Qisl3plDrCd6OrPM4RX01TZ3EzRVZhIIPqBvHsMU53MkaYfxvUrLMMHNJjTnFHqBT
-         tjxUPpYruIOFMXnbKbEymBeQIUOepUclZLvugJfkFZvVa/A3ngMw7W5V4eBOAF/RDV
-         siJKR4b4zuOFcB+BSX7G4VbVlna5M+qfEwOoSkYEb3V7I7AjHuVC8Yz5iVshQ6H850
-         XQXewvlYPcHUIYFplER/X1iD3GkzAK89IibAPUjuUDLP4H9IbLKlbA13f/OGkTJNkq
-         qBqFGHMZozKrQY/hicThNo7ZOqu7H651159DR5T626+ks2I4/+SyZFE8CXknWOHxGo
-         S0AP3otBlibjw==
-Date:   Mon, 25 Jan 2021 10:41:45 -0800
+        s=k20201202; t=1611620114;
+        bh=4SCmQuraOYmu7VQ5L24jw7LalSZJa0vOhswtHkrL8l8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=m7edEaCpEew0vDhx/9upmmNP4JqKWsq+kP2QJAQGT47X3dNZNlPae8Ea14yqvIJX0
+         wTSBhHWsDfoHqSDCyKyx8CVXwSoTFBKEy5eFZWSRBnrlp2g4xTjrRgo0cXxqhiZ7JH
+         CN3g6Ia2zarWHnrtMremsfqU4zFiEmAdMr456ZvwA+dSbxzONls3+Ddda1gJCS5rOo
+         Hmy+HmhUcLAFu10qCvGoCgprbGwY3NcJMCu7C9mzqn4bhLNhhO1T4C7absvwrqyqwR
+         MTQt2kjx49VsfOn8yAArEJYV1RKlRW/aLPbExeY/zq+WFRlHUvW5f+JcdpsglUM+O7
+         Snysm3MH5+4AQ==
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Victor Hsieh <victorhsieh@google.com>
-Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-api@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: Re: [PATCH 0/6] fs-verity: add an ioctl to read verity metadata
-Message-ID: <YA8Q6XLrLaaeMQeJ@sol.localdomain>
-References: <20210115181819.34732-1-ebiggers@kernel.org>
- <CAFCauYN12bWRn2N+uP455KuRmz7CQkCBXnz0B2sr5kCQtpJo4A@mail.gmail.com>
+To:     linux-mmc@vger.kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, Satya Tangirala <satyat@google.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Neeraj Soni <neersoni@codeaurora.org>,
+        Barani Muthukumaran <bmuthuku@codeaurora.org>,
+        Peng Zhou <peng.zhou@mediatek.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Konrad Dybcio <konradybcio@gmail.com>
+Subject: [PATCH RESEND v6 3/9] mmc: cqhci: initialize upper 64 bits of 128-bit task descriptors
+Date:   Mon, 25 Jan 2021 16:14:50 -0800
+Message-Id: <20210126001456.382989-4-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210126001456.382989-1-ebiggers@kernel.org>
+References: <20210126001456.382989-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFCauYN12bWRn2N+uP455KuRmz7CQkCBXnz0B2sr5kCQtpJo4A@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 03:26:48PM -0800, Victor Hsieh wrote:
-> LGTM. Thanks!
-> 
-> Reviewed-by: Victor Hsieh <victorhsieh@google.com>
-> 
-> On Fri, Jan 15, 2021 at 10:19 AM Eric Biggers <ebiggers@kernel.org> wrote:
-> >
-> > [This patchset applies to v5.11-rc3]
-> >
-> > Add an ioctl FS_IOC_READ_VERITY_METADATA which allows reading verity
-> > metadata from a file that has fs-verity enabled, including:
+From: Eric Biggers <ebiggers@google.com>
 
-Thanks Victor.  Does anyone else have comments on this patchset?
+Move the task descriptor initialization into cqhci_prep_task_desc().
+In addition, make it explicitly initialize all 128 bits of the task
+descriptor if the host controller is using 128-bit task descriptors,
+rather than relying on the implicit zeroing from dmam_alloc_coherent().
 
-- Eric
+This is needed to prepare for CQHCI inline encryption support, which
+requires 128-bit task descriptors and uses the upper 64 bits.
+
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Reviewed-by: Satya Tangirala <satyat@google.com>
+Reviewed-and-tested-by: Peng Zhou <peng.zhou@mediatek.com>
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ drivers/mmc/host/cqhci-core.c | 30 ++++++++++++++++++++----------
+ 1 file changed, 20 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqhci-core.c
+index 697fe40756bf2..ad7c9acff1728 100644
+--- a/drivers/mmc/host/cqhci-core.c
++++ b/drivers/mmc/host/cqhci-core.c
+@@ -408,13 +408,15 @@ static void cqhci_disable(struct mmc_host *mmc)
+ }
+ 
+ static void cqhci_prep_task_desc(struct mmc_request *mrq,
+-					u64 *data, bool intr)
++				 struct cqhci_host *cq_host, int tag)
+ {
++	__le64 *task_desc = (__le64 __force *)get_desc(cq_host, tag);
+ 	u32 req_flags = mrq->data->flags;
++	u64 desc0;
+ 
+-	*data = CQHCI_VALID(1) |
++	desc0 = CQHCI_VALID(1) |
+ 		CQHCI_END(1) |
+-		CQHCI_INT(intr) |
++		CQHCI_INT(1) |
+ 		CQHCI_ACT(0x5) |
+ 		CQHCI_FORCED_PROG(!!(req_flags & MMC_DATA_FORCED_PRG)) |
+ 		CQHCI_DATA_TAG(!!(req_flags & MMC_DATA_DAT_TAG)) |
+@@ -425,8 +427,19 @@ static void cqhci_prep_task_desc(struct mmc_request *mrq,
+ 		CQHCI_BLK_COUNT(mrq->data->blocks) |
+ 		CQHCI_BLK_ADDR((u64)mrq->data->blk_addr);
+ 
+-	pr_debug("%s: cqhci: tag %d task descriptor 0x%016llx\n",
+-		 mmc_hostname(mrq->host), mrq->tag, (unsigned long long)*data);
++	task_desc[0] = cpu_to_le64(desc0);
++
++	if (cq_host->caps & CQHCI_TASK_DESC_SZ_128) {
++		u64 desc1 = 0;
++
++		task_desc[1] = cpu_to_le64(desc1);
++
++		pr_debug("%s: cqhci: tag %d task descriptor 0x%016llx%016llx\n",
++			 mmc_hostname(mrq->host), mrq->tag, desc1, desc0);
++	} else {
++		pr_debug("%s: cqhci: tag %d task descriptor 0x%016llx\n",
++			 mmc_hostname(mrq->host), mrq->tag, desc0);
++	}
+ }
+ 
+ static int cqhci_dma_map(struct mmc_host *host, struct mmc_request *mrq)
+@@ -567,8 +580,6 @@ static inline int cqhci_tag(struct mmc_request *mrq)
+ static int cqhci_request(struct mmc_host *mmc, struct mmc_request *mrq)
+ {
+ 	int err = 0;
+-	u64 data = 0;
+-	u64 *task_desc = NULL;
+ 	int tag = cqhci_tag(mrq);
+ 	struct cqhci_host *cq_host = mmc->cqe_private;
+ 	unsigned long flags;
+@@ -598,9 +609,8 @@ static int cqhci_request(struct mmc_host *mmc, struct mmc_request *mrq)
+ 	}
+ 
+ 	if (mrq->data) {
+-		task_desc = (__le64 __force *)get_desc(cq_host, tag);
+-		cqhci_prep_task_desc(mrq, &data, 1);
+-		*task_desc = cpu_to_le64(data);
++		cqhci_prep_task_desc(mrq, cq_host, tag);
++
+ 		err = cqhci_prep_tran_desc(mrq, cq_host, tag);
+ 		if (err) {
+ 			pr_err("%s: cqhci: failed to setup tx desc: %d\n",
+-- 
+2.30.0
+
