@@ -2,444 +2,366 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53E9A3047E8
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 26 Jan 2021 20:13:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA638306A37
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 28 Jan 2021 02:17:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728157AbhAZFzm (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 26 Jan 2021 00:55:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37340 "EHLO mail.kernel.org"
+        id S231977AbhA1BRJ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 27 Jan 2021 20:17:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35340 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732178AbhAZCGR (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 25 Jan 2021 21:06:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF3EC22D58;
-        Tue, 26 Jan 2021 00:15:16 +0000 (UTC)
+        id S231730AbhA1BGL (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 27 Jan 2021 20:06:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D91164DD0;
+        Thu, 28 Jan 2021 01:03:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611620117;
-        bh=IL3fKoYywx8E3sEg7Ojvw5iaWwEK8cFMa0PYN3PSCdQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YTZ+OQ5myLuMYltULzv/7HSxGj62AxCu0aB7hT8ebfLMfPkQAkdtLdyiGGwbtYytK
-         hkFBwqPyT/CYGKDsCB24o3Byq8YItaQjqXVyjRia2AgIRMm4XnpZJoZSYfmLHV5qVa
-         kSu9BxZSAidXjZ+ohyCZXfUjBOAU1SB6A+0+nN37fMDKac6gylQ+uKzq1JxopFlXvf
-         yxSq3ivHCV2Ht3UxT8Z6ue6oODamo/82nNbqAczepfKTR3FP7LWWnv/CfXVOe5JS0z
-         uR0ULjztSgxbp6064K525bREr02bVtV16CiZRXiCP8+xB4qwJKqQhEJ040oXtGQDYi
-         StlfBdUfQe2kA==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-mmc@vger.kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, Satya Tangirala <satyat@google.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Neeraj Soni <neersoni@codeaurora.org>,
-        Barani Muthukumaran <bmuthuku@codeaurora.org>,
-        Peng Zhou <peng.zhou@mediatek.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Konrad Dybcio <konradybcio@gmail.com>
-Subject: [PATCH RESEND v6 8/9] mmc: sdhci-msm: add Inline Crypto Engine support
-Date:   Mon, 25 Jan 2021 16:14:55 -0800
-Message-Id: <20210126001456.382989-9-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210126001456.382989-1-ebiggers@kernel.org>
-References: <20210126001456.382989-1-ebiggers@kernel.org>
+        s=k20201202; t=1611795812;
+        bh=tJuLCkaxnqYFnC3r4DDt1NFER2ZydcgjYXSW64W0n78=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bQ0WUeJJGsK0Ef7i48tLegB0bL49nSgKQV3db8BbdYYhYQATxe49hr5ITwO1GqBaF
+         dQNAReA97gXP9sYyVlbY2x2os7sGYmA5dKeSVxHyUgEI8/wRWMeIgIElw6NCmbqTc3
+         o2BYVmgStiM1aZaChJnQuygCyfwtjdyLQ7hTSQg0dPhKIq7kflaHMrRBALTGQFXyuK
+         cLpdqffNoScVa9T+kYFIStTBGgNYoCoaQVYdxc81z9e2p4rrN/yJCvtPGqXSyxraGh
+         T86ZyDcSZyCwi0jmPjOMJxjK2bNngiy03BDJJEOYggkEVX3XT9+ANu9KWNZn6nf10k
+         VL4TZ+EOV+GdQ==
+Date:   Wed, 27 Jan 2021 17:03:30 -0800
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-api@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Victor Hsieh <victorhsieh@google.com>
+Subject: Re: [PATCH 3/6] fs-verity: add FS_IOC_READ_VERITY_METADATA ioctl
+Message-ID: <YBINYhAlBhQogk/+@google.com>
+References: <20210115181819.34732-1-ebiggers@kernel.org>
+ <20210115181819.34732-4-ebiggers@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210115181819.34732-4-ebiggers@kernel.org>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On 01/15, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> Add an ioctl FS_IOC_READ_VERITY_METADATA which will allow reading verity
+> metadata from a file that has fs-verity enabled, including:
+> 
+> - The Merkle tree
+> - The fsverity_descriptor (not including the signature if present)
+> - The built-in signature, if present
+> 
+> This ioctl has similar semantics to pread().  It is passed the type of
+> metadata to read (one of the above three), and a buffer, offset, and
+> size.  It returns the number of bytes read or an error.
+> 
+> Separate patches will add support for each of the above metadata types.
+> This patch just adds the ioctl itself.
+> 
+> This ioctl doesn't make any assumption about where the metadata is
+> stored on-disk.  It does assume the metadata is in a stable format, but
+> that's basically already the case:
+> 
+> - The Merkle tree and fsverity_descriptor are defined by how fs-verity
+>   file digests are computed; see the "File digest computation" section
+>   of Documentation/filesystems/fsverity.rst.  Technically, the way in
+>   which the levels of the tree are ordered relative to each other wasn't
+>   previously specified, but it's logical to put the root level first.
+> 
+> - The built-in signature is the value passed to FS_IOC_ENABLE_VERITY.
+> 
+> This ioctl is useful because it allows writing a server program that
+> takes a verity file and serves it to a client program, such that the
+> client can do its own fs-verity compatible verification of the file.
+> This only makes sense if the client doesn't trust the server and if the
+> server needs to provide the storage for the client.
+> 
+> More concretely, there is interest in using this ability in Android to
+> export APK files (which are protected by fs-verity) to "protected VMs".
+> This would use Protected KVM (https://lwn.net/Articles/836693), which
+> provides an isolated execution environment without having to trust the
+> traditional "host".  A "guest" VM can boot from a signed image and
+> perform specific tasks in a minimum trusted environment using files that
+> have fs-verity enabled on the host, without trusting the host or
+> requiring that the guest has its own trusted storage.
+> 
+> Technically, it would be possible to duplicate the metadata and store it
+> in separate files for serving.  However, that would be less efficient
+> and would require extra care in userspace to maintain file consistency.
+> 
+> In addition to the above, the ability to read the built-in signatures is
+> useful because it allows a system that is using the in-kernel signature
+> verification to migrate to userspace signature verification.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-Add support for Qualcomm Inline Crypto Engine (ICE) to sdhci-msm.
+Acked-by: Jaegeuk Kim <jaegeuk@kernel.org>
 
-The standard-compliant parts, such as querying the crypto capabilities
-and enabling crypto for individual MMC requests, are already handled by
-cqhci-crypto.c, which itself is wired into the blk-crypto framework.
-However, ICE requires vendor-specific init, enable, and resume logic,
-and it requires that keys be programmed and evicted by vendor-specific
-SMC calls.  Make the sdhci-msm driver handle these details.
-
-This is heavily inspired by the similar changes made for UFS, since the
-UFS and eMMC ICE instances are very similar.  See commit df4ec2fa7a4d
-("scsi: ufs-qcom: Add Inline Crypto Engine support").
-
-I tested this on a Sony Xperia 10, which uses the Snapdragon 630 SoC,
-which has basic upstream support.  Mainly, I used android-xfstests
-(https://github.com/tytso/xfstests-bld/blob/master/Documentation/android-xfstests.md)
-to run the ext4 and f2fs encryption tests in a Debian chroot:
-
-	android-xfstests -c ext4,f2fs -g encrypt -m inlinecrypt
-
-These tests included tests which verify that the on-disk ciphertext is
-identical to that produced by a software implementation.  I also
-verified that ICE was actually being used.
-
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Reviewed-by: Satya Tangirala <satyat@google.com>
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- drivers/mmc/host/Kconfig     |   1 +
- drivers/mmc/host/sdhci-msm.c | 276 ++++++++++++++++++++++++++++++++++-
- 2 files changed, 273 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
-index bbf6989e36386..a29411ca626f5 100644
---- a/drivers/mmc/host/Kconfig
-+++ b/drivers/mmc/host/Kconfig
-@@ -546,6 +546,7 @@ config MMC_SDHCI_MSM
- 	depends on MMC_SDHCI_PLTFM
- 	select MMC_SDHCI_IO_ACCESSORS
- 	select MMC_CQHCI
-+	select QCOM_SCM if MMC_CRYPTO && ARCH_QCOM
- 	help
- 	  This selects the Secure Digital Host Controller Interface (SDHCI)
- 	  support present in Qualcomm SOCs. The controller supports
-diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
-index 97902616a695e..5e1da4df096f6 100644
---- a/drivers/mmc/host/sdhci-msm.c
-+++ b/drivers/mmc/host/sdhci-msm.c
-@@ -13,6 +13,7 @@
- #include <linux/pm_opp.h>
- #include <linux/slab.h>
- #include <linux/iopoll.h>
-+#include <linux/qcom_scm.h>
- #include <linux/regulator/consumer.h>
- #include <linux/interconnect.h>
- #include <linux/pinctrl/consumer.h>
-@@ -255,10 +256,12 @@ struct sdhci_msm_variant_info {
- struct sdhci_msm_host {
- 	struct platform_device *pdev;
- 	void __iomem *core_mem;	/* MSM SDCC mapped address */
-+	void __iomem *ice_mem;	/* MSM ICE mapped address (if available) */
- 	int pwr_irq;		/* power irq */
- 	struct clk *bus_clk;	/* SDHC bus voter clock */
- 	struct clk *xo_clk;	/* TCXO clk needed for FLL feature of cm_dll*/
--	struct clk_bulk_data bulk_clks[4]; /* core, iface, cal, sleep clocks */
-+	/* core, iface, cal, sleep, and ice clocks */
-+	struct clk_bulk_data bulk_clks[5];
- 	unsigned long clk_rate;
- 	struct mmc_host *mmc;
- 	struct opp_table *opp_table;
-@@ -1792,6 +1795,246 @@ static void sdhci_msm_set_clock(struct sdhci_host *host, unsigned int clock)
- 	__sdhci_msm_set_clock(host, clock);
- }
- 
-+/*****************************************************************************\
-+ *                                                                           *
-+ * Inline Crypto Engine (ICE) support                                        *
-+ *                                                                           *
-+\*****************************************************************************/
-+
-+#ifdef CONFIG_MMC_CRYPTO
-+
-+#define AES_256_XTS_KEY_SIZE			64
-+
-+/* QCOM ICE registers */
-+
-+#define QCOM_ICE_REG_VERSION			0x0008
-+
-+#define QCOM_ICE_REG_FUSE_SETTING		0x0010
-+#define QCOM_ICE_FUSE_SETTING_MASK		0x1
-+#define QCOM_ICE_FORCE_HW_KEY0_SETTING_MASK	0x2
-+#define QCOM_ICE_FORCE_HW_KEY1_SETTING_MASK	0x4
-+
-+#define QCOM_ICE_REG_BIST_STATUS		0x0070
-+#define QCOM_ICE_BIST_STATUS_MASK		0xF0000000
-+
-+#define QCOM_ICE_REG_ADVANCED_CONTROL		0x1000
-+
-+#define sdhci_msm_ice_writel(host, val, reg)	\
-+	writel((val), (host)->ice_mem + (reg))
-+#define sdhci_msm_ice_readl(host, reg)	\
-+	readl((host)->ice_mem + (reg))
-+
-+static bool sdhci_msm_ice_supported(struct sdhci_msm_host *msm_host)
-+{
-+	struct device *dev = mmc_dev(msm_host->mmc);
-+	u32 regval = sdhci_msm_ice_readl(msm_host, QCOM_ICE_REG_VERSION);
-+	int major = regval >> 24;
-+	int minor = (regval >> 16) & 0xFF;
-+	int step = regval & 0xFFFF;
-+
-+	/* For now this driver only supports ICE version 3. */
-+	if (major != 3) {
-+		dev_warn(dev, "Unsupported ICE version: v%d.%d.%d\n",
-+			 major, minor, step);
-+		return false;
-+	}
-+
-+	dev_info(dev, "Found QC Inline Crypto Engine (ICE) v%d.%d.%d\n",
-+		 major, minor, step);
-+
-+	/* If fuses are blown, ICE might not work in the standard way. */
-+	regval = sdhci_msm_ice_readl(msm_host, QCOM_ICE_REG_FUSE_SETTING);
-+	if (regval & (QCOM_ICE_FUSE_SETTING_MASK |
-+		      QCOM_ICE_FORCE_HW_KEY0_SETTING_MASK |
-+		      QCOM_ICE_FORCE_HW_KEY1_SETTING_MASK)) {
-+		dev_warn(dev, "Fuses are blown; ICE is unusable!\n");
-+		return false;
-+	}
-+	return true;
-+}
-+
-+static inline struct clk *sdhci_msm_ice_get_clk(struct device *dev)
-+{
-+	return devm_clk_get(dev, "ice");
-+}
-+
-+static int sdhci_msm_ice_init(struct sdhci_msm_host *msm_host,
-+			      struct cqhci_host *cq_host)
-+{
-+	struct mmc_host *mmc = msm_host->mmc;
-+	struct device *dev = mmc_dev(mmc);
-+	struct resource *res;
-+	int err;
-+
-+	if (!(cqhci_readl(cq_host, CQHCI_CAP) & CQHCI_CAP_CS))
-+		return 0;
-+
-+	res = platform_get_resource_byname(msm_host->pdev, IORESOURCE_MEM,
-+					   "ice");
-+	if (!res) {
-+		dev_warn(dev, "ICE registers not found\n");
-+		goto disable;
-+	}
-+
-+	if (!qcom_scm_ice_available()) {
-+		dev_warn(dev, "ICE SCM interface not found\n");
-+		goto disable;
-+	}
-+
-+	msm_host->ice_mem = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(msm_host->ice_mem)) {
-+		err = PTR_ERR(msm_host->ice_mem);
-+		dev_err(dev, "Failed to map ICE registers; err=%d\n", err);
-+		return err;
-+	}
-+
-+	if (!sdhci_msm_ice_supported(msm_host))
-+		goto disable;
-+
-+	mmc->caps2 |= MMC_CAP2_CRYPTO;
-+	return 0;
-+
-+disable:
-+	dev_warn(dev, "Disabling inline encryption support\n");
-+	return 0;
-+}
-+
-+static void sdhci_msm_ice_low_power_mode_enable(struct sdhci_msm_host *msm_host)
-+{
-+	u32 regval;
-+
-+	regval = sdhci_msm_ice_readl(msm_host, QCOM_ICE_REG_ADVANCED_CONTROL);
-+	/*
-+	 * Enable low power mode sequence
-+	 * [0]-0, [1]-0, [2]-0, [3]-E, [4]-0, [5]-0, [6]-0, [7]-0
-+	 */
-+	regval |= 0x7000;
-+	sdhci_msm_ice_writel(msm_host, regval, QCOM_ICE_REG_ADVANCED_CONTROL);
-+}
-+
-+static void sdhci_msm_ice_optimization_enable(struct sdhci_msm_host *msm_host)
-+{
-+	u32 regval;
-+
-+	/* ICE Optimizations Enable Sequence */
-+	regval = sdhci_msm_ice_readl(msm_host, QCOM_ICE_REG_ADVANCED_CONTROL);
-+	regval |= 0xD807100;
-+	/* ICE HPG requires delay before writing */
-+	udelay(5);
-+	sdhci_msm_ice_writel(msm_host, regval, QCOM_ICE_REG_ADVANCED_CONTROL);
-+	udelay(5);
-+}
-+
-+/*
-+ * Wait until the ICE BIST (built-in self-test) has completed.
-+ *
-+ * This may be necessary before ICE can be used.
-+ *
-+ * Note that we don't really care whether the BIST passed or failed; we really
-+ * just want to make sure that it isn't still running.  This is because (a) the
-+ * BIST is a FIPS compliance thing that never fails in practice, (b) ICE is
-+ * documented to reject crypto requests if the BIST fails, so we needn't do it
-+ * in software too, and (c) properly testing storage encryption requires testing
-+ * the full storage stack anyway, and not relying on hardware-level self-tests.
-+ */
-+static int sdhci_msm_ice_wait_bist_status(struct sdhci_msm_host *msm_host)
-+{
-+	u32 regval;
-+	int err;
-+
-+	err = readl_poll_timeout(msm_host->ice_mem + QCOM_ICE_REG_BIST_STATUS,
-+				 regval, !(regval & QCOM_ICE_BIST_STATUS_MASK),
-+				 50, 5000);
-+	if (err)
-+		dev_err(mmc_dev(msm_host->mmc),
-+			"Timed out waiting for ICE self-test to complete\n");
-+	return err;
-+}
-+
-+static void sdhci_msm_ice_enable(struct sdhci_msm_host *msm_host)
-+{
-+	if (!(msm_host->mmc->caps2 & MMC_CAP2_CRYPTO))
-+		return;
-+	sdhci_msm_ice_low_power_mode_enable(msm_host);
-+	sdhci_msm_ice_optimization_enable(msm_host);
-+	sdhci_msm_ice_wait_bist_status(msm_host);
-+}
-+
-+static int __maybe_unused sdhci_msm_ice_resume(struct sdhci_msm_host *msm_host)
-+{
-+	if (!(msm_host->mmc->caps2 & MMC_CAP2_CRYPTO))
-+		return 0;
-+	return sdhci_msm_ice_wait_bist_status(msm_host);
-+}
-+
-+/*
-+ * Program a key into a QC ICE keyslot, or evict a keyslot.  QC ICE requires
-+ * vendor-specific SCM calls for this; it doesn't support the standard way.
-+ */
-+static int sdhci_msm_program_key(struct cqhci_host *cq_host,
-+				 const union cqhci_crypto_cfg_entry *cfg,
-+				 int slot)
-+{
-+	struct device *dev = mmc_dev(cq_host->mmc);
-+	union cqhci_crypto_cap_entry cap;
-+	union {
-+		u8 bytes[AES_256_XTS_KEY_SIZE];
-+		u32 words[AES_256_XTS_KEY_SIZE / sizeof(u32)];
-+	} key;
-+	int i;
-+	int err;
-+
-+	if (!(cfg->config_enable & CQHCI_CRYPTO_CONFIGURATION_ENABLE))
-+		return qcom_scm_ice_invalidate_key(slot);
-+
-+	/* Only AES-256-XTS has been tested so far. */
-+	cap = cq_host->crypto_cap_array[cfg->crypto_cap_idx];
-+	if (cap.algorithm_id != CQHCI_CRYPTO_ALG_AES_XTS ||
-+	    cap.key_size != CQHCI_CRYPTO_KEY_SIZE_256) {
-+		dev_err_ratelimited(dev,
-+				    "Unhandled crypto capability; algorithm_id=%d, key_size=%d\n",
-+				    cap.algorithm_id, cap.key_size);
-+		return -EINVAL;
-+	}
-+
-+	memcpy(key.bytes, cfg->crypto_key, AES_256_XTS_KEY_SIZE);
-+
-+	/*
-+	 * The SCM call byte-swaps the 32-bit words of the key.  So we have to
-+	 * do the same, in order for the final key be correct.
-+	 */
-+	for (i = 0; i < ARRAY_SIZE(key.words); i++)
-+		__cpu_to_be32s(&key.words[i]);
-+
-+	err = qcom_scm_ice_set_key(slot, key.bytes, AES_256_XTS_KEY_SIZE,
-+				   QCOM_SCM_ICE_CIPHER_AES_256_XTS,
-+				   cfg->data_unit_size);
-+	memzero_explicit(&key, sizeof(key));
-+	return err;
-+}
-+#else /* CONFIG_MMC_CRYPTO */
-+static inline struct clk *sdhci_msm_ice_get_clk(struct device *dev)
-+{
-+	return NULL;
-+}
-+
-+static inline int sdhci_msm_ice_init(struct sdhci_msm_host *msm_host,
-+				     struct cqhci_host *cq_host)
-+{
-+	return 0;
-+}
-+
-+static inline void sdhci_msm_ice_enable(struct sdhci_msm_host *msm_host)
-+{
-+}
-+
-+static inline int __maybe_unused
-+sdhci_msm_ice_resume(struct sdhci_msm_host *msm_host)
-+{
-+	return 0;
-+}
-+#endif /* !CONFIG_MMC_CRYPTO */
-+
- /*****************************************************************************\
-  *                                                                           *
-  * MSM Command Queue Engine (CQE)                                            *
-@@ -1810,6 +2053,16 @@ static u32 sdhci_msm_cqe_irq(struct sdhci_host *host, u32 intmask)
- 	return 0;
- }
- 
-+static void sdhci_msm_cqe_enable(struct mmc_host *mmc)
-+{
-+	struct sdhci_host *host = mmc_priv(mmc);
-+	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
-+	struct sdhci_msm_host *msm_host = sdhci_pltfm_priv(pltfm_host);
-+
-+	sdhci_cqe_enable(mmc);
-+	sdhci_msm_ice_enable(msm_host);
-+}
-+
- static void sdhci_msm_cqe_disable(struct mmc_host *mmc, bool recovery)
- {
- 	struct sdhci_host *host = mmc_priv(mmc);
-@@ -1842,8 +2095,11 @@ static void sdhci_msm_cqe_disable(struct mmc_host *mmc, bool recovery)
- }
- 
- static const struct cqhci_host_ops sdhci_msm_cqhci_ops = {
--	.enable		= sdhci_cqe_enable,
-+	.enable		= sdhci_msm_cqe_enable,
- 	.disable	= sdhci_msm_cqe_disable,
-+#ifdef CONFIG_MMC_CRYPTO
-+	.program_key	= sdhci_msm_program_key,
-+#endif
- };
- 
- static int sdhci_msm_cqe_add_host(struct sdhci_host *host,
-@@ -1879,6 +2135,10 @@ static int sdhci_msm_cqe_add_host(struct sdhci_host *host,
- 
- 	dma64 = host->flags & SDHCI_USE_64_BIT_DMA;
- 
-+	ret = sdhci_msm_ice_init(msm_host, cq_host);
-+	if (ret)
-+		goto cleanup;
-+
- 	ret = cqhci_init(cq_host, host->mmc, dma64);
- 	if (ret) {
- 		dev_err(&pdev->dev, "%s: CQE init: failed (%d)\n",
-@@ -2319,6 +2579,11 @@ static int sdhci_msm_probe(struct platform_device *pdev)
- 		clk = NULL;
- 	msm_host->bulk_clks[3].clk = clk;
- 
-+	clk = sdhci_msm_ice_get_clk(&pdev->dev);
-+	if (IS_ERR(clk))
-+		clk = NULL;
-+	msm_host->bulk_clks[4].clk = clk;
-+
- 	ret = clk_bulk_prepare_enable(ARRAY_SIZE(msm_host->bulk_clks),
- 				      msm_host->bulk_clks);
- 	if (ret)
-@@ -2532,12 +2797,15 @@ static __maybe_unused int sdhci_msm_runtime_resume(struct device *dev)
- 	 * Whenever core-clock is gated dynamically, it's needed to
- 	 * restore the SDR DLL settings when the clock is ungated.
- 	 */
--	if (msm_host->restore_dll_config && msm_host->clk_rate)
-+	if (msm_host->restore_dll_config && msm_host->clk_rate) {
- 		ret = sdhci_msm_restore_sdr_dll_config(host);
-+		if (ret)
-+			return ret;
-+	}
- 
- 	dev_pm_opp_set_rate(dev, msm_host->clk_rate);
- 
--	return ret;
-+	return sdhci_msm_ice_resume(msm_host);
- }
- 
- static const struct dev_pm_ops sdhci_msm_pm_ops = {
--- 
-2.30.0
-
+> ---
+>  Documentation/filesystems/fsverity.rst | 57 ++++++++++++++++++++++++++
+>  fs/ext4/ioctl.c                        |  7 ++++
+>  fs/f2fs/file.c                         | 11 +++++
+>  fs/verity/Makefile                     |  1 +
+>  fs/verity/read_metadata.c              | 55 +++++++++++++++++++++++++
+>  include/linux/fsverity.h               | 12 ++++++
+>  include/uapi/linux/fsverity.h          | 10 +++++
+>  7 files changed, 153 insertions(+)
+>  create mode 100644 fs/verity/read_metadata.c
+> 
+> diff --git a/Documentation/filesystems/fsverity.rst b/Documentation/filesystems/fsverity.rst
+> index e0204a23e997e..9ef7a7de60085 100644
+> --- a/Documentation/filesystems/fsverity.rst
+> +++ b/Documentation/filesystems/fsverity.rst
+> @@ -217,6 +217,63 @@ FS_IOC_MEASURE_VERITY can fail with the following errors:
+>  - ``EOVERFLOW``: the digest is longer than the specified
+>    ``digest_size`` bytes.  Try providing a larger buffer.
+>  
+> +FS_IOC_READ_VERITY_METADATA
+> +---------------------------
+> +
+> +The FS_IOC_READ_VERITY_METADATA ioctl reads verity metadata from a
+> +verity file.  This ioctl is available since Linux v5.12.
+> +
+> +This ioctl allows writing a server program that takes a verity file
+> +and serves it to a client program, such that the client can do its own
+> +fs-verity compatible verification of the file.  This only makes sense
+> +if the client doesn't trust the server and if the server needs to
+> +provide the storage for the client.
+> +
+> +This is a fairly specialized use case, and most fs-verity users won't
+> +need this ioctl.
+> +
+> +This ioctl takes in a pointer to the following structure::
+> +
+> +   struct fsverity_read_metadata_arg {
+> +           __u64 metadata_type;
+> +           __u64 offset;
+> +           __u64 length;
+> +           __u64 buf_ptr;
+> +           __u64 __reserved;
+> +   };
+> +
+> +``metadata_type`` specifies the type of metadata to read.
+> +
+> +The semantics are similar to those of ``pread()``.  ``offset``
+> +specifies the offset in bytes into the metadata item to read from, and
+> +``length`` specifies the maximum number of bytes to read from the
+> +metadata item.  ``buf_ptr`` is the pointer to the buffer to read into,
+> +cast to a 64-bit integer.  ``__reserved`` must be 0.  On success, the
+> +number of bytes read is returned.  0 is returned at the end of the
+> +metadata item.  The returned length may be less than ``length``, for
+> +example if the ioctl is interrupted.
+> +
+> +The metadata returned by FS_IOC_READ_VERITY_METADATA isn't guaranteed
+> +to be authenticated against the file digest that would be returned by
+> +`FS_IOC_MEASURE_VERITY`_, as the metadata is expected to be used to
+> +implement fs-verity compatible verification anyway (though absent a
+> +malicious disk, the metadata will indeed match).  E.g. to implement
+> +this ioctl, the filesystem is allowed to just read the Merkle tree
+> +blocks from disk without actually verifying the path to the root node.
+> +
+> +FS_IOC_READ_VERITY_METADATA can fail with the following errors:
+> +
+> +- ``EFAULT``: the caller provided inaccessible memory
+> +- ``EINTR``: the ioctl was interrupted before any data was read
+> +- ``EINVAL``: reserved fields were set, or ``offset + length``
+> +  overflowed
+> +- ``ENODATA``: the file is not a verity file
+> +- ``ENOTTY``: this type of filesystem does not implement fs-verity, or
+> +  this ioctl is not yet implemented on it
+> +- ``EOPNOTSUPP``: the kernel was not configured with fs-verity
+> +  support, or the filesystem superblock has not had the 'verity'
+> +  feature enabled on it.  (See `Filesystem support`_.)
+> +
+>  FS_IOC_GETFLAGS
+>  ---------------
+>  
+> diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
+> index 524e134324475..56dc58adba8ac 100644
+> --- a/fs/ext4/ioctl.c
+> +++ b/fs/ext4/ioctl.c
+> @@ -1306,6 +1306,12 @@ static long __ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+>  			return -EOPNOTSUPP;
+>  		return fsverity_ioctl_measure(filp, (void __user *)arg);
+>  
+> +	case FS_IOC_READ_VERITY_METADATA:
+> +		if (!ext4_has_feature_verity(sb))
+> +			return -EOPNOTSUPP;
+> +		return fsverity_ioctl_read_metadata(filp,
+> +						    (const void __user *)arg);
+> +
+>  	default:
+>  		return -ENOTTY;
+>  	}
+> @@ -1388,6 +1394,7 @@ long ext4_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+>  	case FS_IOC_GETFSMAP:
+>  	case FS_IOC_ENABLE_VERITY:
+>  	case FS_IOC_MEASURE_VERITY:
+> +	case FS_IOC_READ_VERITY_METADATA:
+>  	case EXT4_IOC_CLEAR_ES_CACHE:
+>  	case EXT4_IOC_GETSTATE:
+>  	case EXT4_IOC_GET_ES_CACHE:
+> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> index f585545277d77..d0aefb5b97fac 100644
+> --- a/fs/f2fs/file.c
+> +++ b/fs/f2fs/file.c
+> @@ -3357,6 +3357,14 @@ static int f2fs_ioc_measure_verity(struct file *filp, unsigned long arg)
+>  	return fsverity_ioctl_measure(filp, (void __user *)arg);
+>  }
+>  
+> +static int f2fs_ioc_read_verity_metadata(struct file *filp, unsigned long arg)
+> +{
+> +	if (!f2fs_sb_has_verity(F2FS_I_SB(file_inode(filp))))
+> +		return -EOPNOTSUPP;
+> +
+> +	return fsverity_ioctl_read_metadata(filp, (const void __user *)arg);
+> +}
+> +
+>  static int f2fs_ioc_getfslabel(struct file *filp, unsigned long arg)
+>  {
+>  	struct inode *inode = file_inode(filp);
+> @@ -4272,6 +4280,8 @@ static long __f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+>  		return f2fs_ioc_enable_verity(filp, arg);
+>  	case FS_IOC_MEASURE_VERITY:
+>  		return f2fs_ioc_measure_verity(filp, arg);
+> +	case FS_IOC_READ_VERITY_METADATA:
+> +		return f2fs_ioc_read_verity_metadata(filp, arg);
+>  	case FS_IOC_GETFSLABEL:
+>  		return f2fs_ioc_getfslabel(filp, arg);
+>  	case FS_IOC_SETFSLABEL:
+> @@ -4523,6 +4533,7 @@ long f2fs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+>  	case F2FS_IOC_RESIZE_FS:
+>  	case FS_IOC_ENABLE_VERITY:
+>  	case FS_IOC_MEASURE_VERITY:
+> +	case FS_IOC_READ_VERITY_METADATA:
+>  	case FS_IOC_GETFSLABEL:
+>  	case FS_IOC_SETFSLABEL:
+>  	case F2FS_IOC_GET_COMPRESS_BLOCKS:
+> diff --git a/fs/verity/Makefile b/fs/verity/Makefile
+> index 570e9136334d4..435559a4fa9ea 100644
+> --- a/fs/verity/Makefile
+> +++ b/fs/verity/Makefile
+> @@ -5,6 +5,7 @@ obj-$(CONFIG_FS_VERITY) += enable.o \
+>  			   init.o \
+>  			   measure.o \
+>  			   open.o \
+> +			   read_metadata.o \
+>  			   verify.o
+>  
+>  obj-$(CONFIG_FS_VERITY_BUILTIN_SIGNATURES) += signature.o
+> diff --git a/fs/verity/read_metadata.c b/fs/verity/read_metadata.c
+> new file mode 100644
+> index 0000000000000..43be990fd53e4
+> --- /dev/null
+> +++ b/fs/verity/read_metadata.c
+> @@ -0,0 +1,55 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Ioctl to read verity metadata
+> + *
+> + * Copyright 2021 Google LLC
+> + */
+> +
+> +#include "fsverity_private.h"
+> +
+> +#include <linux/uaccess.h>
+> +
+> +/**
+> + * fsverity_ioctl_read_metadata() - read verity metadata from a file
+> + * @filp: file to read the metadata from
+> + * @uarg: user pointer to fsverity_read_metadata_arg
+> + *
+> + * Return: length read on success, 0 on EOF, -errno on failure
+> + */
+> +int fsverity_ioctl_read_metadata(struct file *filp, const void __user *uarg)
+> +{
+> +	struct inode *inode = file_inode(filp);
+> +	const struct fsverity_info *vi;
+> +	struct fsverity_read_metadata_arg arg;
+> +	int length;
+> +	void __user *buf;
+> +
+> +	vi = fsverity_get_info(inode);
+> +	if (!vi)
+> +		return -ENODATA; /* not a verity file */
+> +	/*
+> +	 * Note that we don't have to explicitly check that the file is open for
+> +	 * reading, since verity files can only be opened for reading.
+> +	 */
+> +
+> +	if (copy_from_user(&arg, uarg, sizeof(arg)))
+> +		return -EFAULT;
+> +
+> +	if (arg.__reserved)
+> +		return -EINVAL;
+> +
+> +	/* offset + length must not overflow. */
+> +	if (arg.offset + arg.length < arg.offset)
+> +		return -EINVAL;
+> +
+> +	/* Ensure that the return value will fit in INT_MAX. */
+> +	length = min_t(u64, arg.length, INT_MAX);
+> +
+> +	buf = u64_to_user_ptr(arg.buf_ptr);
+> +
+> +	switch (arg.metadata_type) {
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +EXPORT_SYMBOL_GPL(fsverity_ioctl_read_metadata);
+> diff --git a/include/linux/fsverity.h b/include/linux/fsverity.h
+> index c1144a4503920..b568b3c7d095e 100644
+> --- a/include/linux/fsverity.h
+> +++ b/include/linux/fsverity.h
+> @@ -138,6 +138,10 @@ int fsverity_file_open(struct inode *inode, struct file *filp);
+>  int fsverity_prepare_setattr(struct dentry *dentry, struct iattr *attr);
+>  void fsverity_cleanup_inode(struct inode *inode);
+>  
+> +/* read_metadata.c */
+> +
+> +int fsverity_ioctl_read_metadata(struct file *filp, const void __user *uarg);
+> +
+>  /* verify.c */
+>  
+>  bool fsverity_verify_page(struct page *page);
+> @@ -183,6 +187,14 @@ static inline void fsverity_cleanup_inode(struct inode *inode)
+>  {
+>  }
+>  
+> +/* read_metadata.c */
+> +
+> +static inline int fsverity_ioctl_read_metadata(struct file *filp,
+> +					       const void __user *uarg)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +
+>  /* verify.c */
+>  
+>  static inline bool fsverity_verify_page(struct page *page)
+> diff --git a/include/uapi/linux/fsverity.h b/include/uapi/linux/fsverity.h
+> index 33f44156f8ea5..e062751294d01 100644
+> --- a/include/uapi/linux/fsverity.h
+> +++ b/include/uapi/linux/fsverity.h
+> @@ -83,7 +83,17 @@ struct fsverity_formatted_digest {
+>  	__u8 digest[];
+>  };
+>  
+> +struct fsverity_read_metadata_arg {
+> +	__u64 metadata_type;
+> +	__u64 offset;
+> +	__u64 length;
+> +	__u64 buf_ptr;
+> +	__u64 __reserved;
+> +};
+> +
+>  #define FS_IOC_ENABLE_VERITY	_IOW('f', 133, struct fsverity_enable_arg)
+>  #define FS_IOC_MEASURE_VERITY	_IOWR('f', 134, struct fsverity_digest)
+> +#define FS_IOC_READ_VERITY_METADATA \
+> +	_IOWR('f', 135, struct fsverity_read_metadata_arg)
+>  
+>  #endif /* _UAPI_LINUX_FSVERITY_H */
+> -- 
+> 2.30.0
