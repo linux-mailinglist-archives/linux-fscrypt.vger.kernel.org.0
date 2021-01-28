@@ -2,269 +2,254 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57441306F2F
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 28 Jan 2021 08:27:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A10A307052
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 28 Jan 2021 08:58:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231400AbhA1HYx (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 28 Jan 2021 02:24:53 -0500
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:8270 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231808AbhA1HWz (ORCPT
+        id S231570AbhA1HNC (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 28 Jan 2021 02:13:02 -0500
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:56944 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231573AbhA1HMx (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 28 Jan 2021 02:22:55 -0500
+        Thu, 28 Jan 2021 02:12:53 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1611818574; x=1643354574;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=9Hp1mmxIhP12exuHZUs6f4NIF64JekIbMU2y2gjowsY=;
-  b=KmiMkW4ERc8uQLBvck7mIo06Arcipz/SnNoovMstKYQsL/25huj/Eoxo
-   RQY0mm1mc5i1cSAkKi9LbydoKmryrqzzuzCNf2Y4DTooKcIM5UMwHy9o2
-   7wWTR/L5qt3I+fJ1jjHJde/0nIsnwwrgTaP7dUGFHg6l0j8ks83NCJ86f
-   amlkS/kUYpR5XWUitwRUoO9CsBDC/X74h/mO4jSEUqhAyl+ovzbKTKNwL
-   aqr74gYpSq2XQbRYgyrmwcLjymehuqz/06Gkhl0/TzugBQU+j6aqTpkNz
-   W2IyVuIggmdJ5g9BKU+RbUGEEquhjx2C2PXoLJuPQ8eGoqpE6eifKcxOH
-   A==;
-IronPort-SDR: QEF+8TGngCqTGDYAfES0k7Iq8Lj8Z1j23hWw3M3LnFhL6QZih1XM5LZxSRsfTJXgpv5E1SblKM
- Bsu7V10JhP5TnAvBjYRtRxEqUPv2HJm33T5x70FdtpKeTam8Lku0k8SIl7hluBD5ij/As5Vw9s
- nKuDQlS8VQ8KHSrpBH6erXI92dE58YUlccMAgxKbmkG5Krj4uGkirZn5TulPgUw8Qky4rfx2PQ
- aWCuLtWfwtNgNSyX+xM2wVuWWfLlJn8a8AVx4NTLiKKss4UTZKw7CG5gC5hQr1D2fM05/SrZuv
- r5A=
+  t=1611817972; x=1643353972;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=eWet3+GOqUNRw+dCyihtl3LTOeV3gTTJDd7Ea4w+clg=;
+  b=Z/Q/cUp0WjHW0/lDDrnZrBSMEvXgwTaDGuz0J9tHZJUsGZFzV7s1108c
+   S+9Ktd9IqfC4q8MEMKcUwP8pIiborwfE9f55DmOJzEoA2z+9z2UbHCBHW
+   lkGBCiCFTlmGDqwnfnUjHFnUhYv9oBsGNXlag10HfGuWulMoq7Ph842RM
+   zVDc6WugewgZuzmJUqmzZJb1uYjnG19Go7dyNwG9aSVkpSkuHtgoe/ZLn
+   PgI3M2TkDt+BpysBa6La2LsyzVaiMP1Uw1BiqcVYOR91qAL88gzALLVhH
+   lklyx3edGIKGPCXfi4RNYbtS7zpRL4xO8FVcPmX2fOmlQIcWx+cUyvVg6
+   Q==;
+IronPort-SDR: ikNxmrVd4pwwh9DAjzr/LPzb+8iZpOWSAf7j1UmN+9YPo/Q9Hgwj9iv8q63yUqErhhbmn3Ohb1
+ BIe+r6fj+Q0NyBetUFvZ+s1CHpwD1hX0j3aMVTHtWxtetANKcESVkceh9Zscoqq3M0xJsz8gPc
+ BbnHAeVrltkIOPxDicfZXoHByODQzD3BzQ/I33bhmbWGOBipy6qy6LeIR4yvKMX+4UMDIcWOY1
+ DzgKH9EXYhfAldCiM3Schs9DOEW8pLjJG2lETbz3kEikUjv49plpcm9cRt1ekRoYYQmvhjfAsg
+ 0Ww=
 X-IronPort-AV: E=Sophos;i="5.79,381,1602518400"; 
-   d="scan'208";a="158517951"
-Received: from mail-bn8nam11lp2168.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.168])
-  by ob1.hgst.iphmx.com with ESMTP; 28 Jan 2021 15:21:44 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XGvTFC0yVocA1hFeGOYvjQ+f/YSuD75Q/8tkuiyNxQkF23UxvMywneYGAln1lw8Xhs3qjQvWItdgd+CqdoCZOLpmuH4ptIfJkiKypbJOF8fjo6xly5kpeejMCcmb9TV+VYlceFyaNhO46nha82bqmy7/luCs/lrsoL/cArREno60UHuMizWsEmdy4Bxfq7LnJpERyi07H9ww2vM5jeFFQj0tMeAigkwO1DsWafJt0Fq839vVOSa6z1KrJTZS1iJDKKe3rPYdaA3pbji5icSyWi0MHi2Av8SuAEzbzvSxch0j+tb0kMkBwUJVhvH8tc9lyxzjLZbBWdlEFDj4KAQoSQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rZQ79VfW37oEjUPhbUXgVDt26btMTlh35TXahcKTIxw=;
- b=ewcyy+f5pm0Gvfuq66QLUzmljFfxV1XcSt+FlXT110bCllm3RqvEk+y6rdwmDmRsLuIdGvXsMnFhphdnjfxABcalxu6RrTkW7MnOnWh9EF/8L3nffa7eXXB95G3BRw9RE5QltDcCZ1vcJ9c2HoEAI4HaooQEfE5prpKhyIBJc+z2sT8ynyDdElAtc2TQJJC8yAuAd8n0jS7Wc+YTaNR4fwo2ziu1wBo7rB+4xYRJnj/90sIzgR+/oyqJ8hNKi14vk4mwaZnVXoctiOqF4V0CjyJ2prws95UPtxPw9I8GHkzSJXn0TdiFJJTWo1ZfduzHSE90W7Sesm7qKNrg2W5Wag==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rZQ79VfW37oEjUPhbUXgVDt26btMTlh35TXahcKTIxw=;
- b=hrFaGwglVnPWcvrZYYTSLmKDzWe4Ql8MYzMhE/ZNdzUUxZaQHpa0WUmIc6fKPln6CA7rT0gIe3GHUdejLdgow6Yj1ChwX6iG2QGP9vTtBq0U3ZLqwlykpawLR4D2R+Htay7VfWrlfDvS5SjOdFc1MzrgeW8k4qfHTZmC0UwhJ90=
-Received: from BL0PR04MB6514.namprd04.prod.outlook.com (2603:10b6:208:1ca::23)
- by MN2PR04MB6352.namprd04.prod.outlook.com (2603:10b6:208:1ab::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17; Thu, 28 Jan
- 2021 07:21:42 +0000
-Received: from BL0PR04MB6514.namprd04.prod.outlook.com
- ([fe80::b880:19d5:c7fe:329d]) by BL0PR04MB6514.namprd04.prod.outlook.com
- ([fe80::b880:19d5:c7fe:329d%7]) with mapi id 15.20.3784.017; Thu, 28 Jan 2021
- 07:21:42 +0000
-From:   Damien Le Moal <Damien.LeMoal@wdc.com>
-To:     Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "drbd-dev@lists.linbit.com" <drbd-dev@lists.linbit.com>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
-        "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
-        "jfs-discussion@lists.sourceforge.net" 
-        <jfs-discussion@lists.sourceforge.net>,
-        "linux-nilfs@vger.kernel.org" <linux-nilfs@vger.kernel.org>,
-        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-CC:     "axboe@kernel.dk" <axboe@kernel.dk>,
-        "philipp.reisner@linbit.com" <philipp.reisner@linbit.com>,
-        "lars.ellenberg@linbit.com" <lars.ellenberg@linbit.com>,
-        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
-        "roger.pau@citrix.com" <roger.pau@citrix.com>,
-        "minchan@kernel.org" <minchan@kernel.org>,
-        "ngupta@vflare.org" <ngupta@vflare.org>,
-        "sergey.senozhatsky.work@gmail.com" 
-        <sergey.senozhatsky.work@gmail.com>,
-        "agk@redhat.com" <agk@redhat.com>,
-        "snitzer@redhat.com" <snitzer@redhat.com>,
-        "hch@lst.de" <hch@lst.de>, "sagi@grimberg.me" <sagi@grimberg.me>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "jaegeuk@kernel.org" <jaegeuk@kernel.org>,
-        "ebiggers@kernel.org" <ebiggers@kernel.org>,
-        "djwong@kernel.org" <djwong@kernel.org>,
-        "shaggy@kernel.org" <shaggy@kernel.org>,
-        "konishi.ryusuke@gmail.com" <konishi.ryusuke@gmail.com>,
-        "mark@fasheh.com" <mark@fasheh.com>,
-        "jlbec@evilplan.org" <jlbec@evilplan.org>,
-        "joseph.qi@linux.alibaba.com" <joseph.qi@linux.alibaba.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>,
-        "jth@kernel.org" <jth@kernel.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "len.brown@intel.com" <len.brown@intel.com>,
-        "pavel@ucw.cz" <pavel@ucw.cz>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "hare@suse.de" <hare@suse.de>,
-        "gustavoars@kernel.org" <gustavoars@kernel.org>,
-        "tiwai@suse.de" <tiwai@suse.de>,
-        "alex.shi@linux.alibaba.com" <alex.shi@linux.alibaba.com>,
-        "asml.silence@gmail.com" <asml.silence@gmail.com>,
-        "ming.lei@redhat.com" <ming.lei@redhat.com>,
-        "tj@kernel.org" <tj@kernel.org>, "osandov@fb.com" <osandov@fb.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "jefflexu@linux.alibaba.com" <jefflexu@linux.alibaba.com>
-Subject: Re: [RFC PATCH 02/34] block: introduce and use bio_new
-Thread-Topic: [RFC PATCH 02/34] block: introduce and use bio_new
-Thread-Index: AQHW9UTnP+XqlvwCeEC+5iodtWSeNA==
-Date:   Thu, 28 Jan 2021 07:21:42 +0000
-Message-ID: <BL0PR04MB6514C554B4AC96866BC1B16FE7BA9@BL0PR04MB6514.namprd04.prod.outlook.com>
+   d="scan'208";a="162963087"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 28 Jan 2021 15:11:47 +0800
+IronPort-SDR: CXLJyjvTh2ozBl0J0n3M4HTJHZaOclzT/km/bBWAGtt9xOPAeCc3hLIeKdi+Dc/On1SogoRxoU
+ EMMcGWgpUm5mk+9NMMMxvPjZxf7VfSUqVBGSfi5qQjym9Vz0j3F5DspBQQpxCLeJ+5+Uf9ywWc
+ wb+xVHjIHBeHee4O0H7pPo8wUu19sXKcfCThMlKQx0s2unmCSBIKccvZzm9Gc9C/j10PEMJSjP
+ SUINTY43+C6IN75F5uccJvtsTWMn9BklriausM1MKzr8/ixMeOJxaforDPXXe56NSl346LNYnX
+ QBGAd3szpraHEF9bnD1PB8uA
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 22:54:05 -0800
+IronPort-SDR: UO027L+w2LmrSv+r4jHc7V6MfhclxochZ4q/gKoOnHb/alTZT7F9/4KjZrNCZAKJPJHjEl8zjQ
+ btfDHq8ntGB6arYkxikoGObA79gqCi3nJZAFBbpTjKtHzOWqNheZit1SHeKrnOkOlZqda10wHA
+ lKzVa+peWlZiSXNoZnitf2s3YH424/Lf6Od0Q5TvGZLxtIxoLSsxIGie29rcLN/atLab1ULG9S
+ UmjXPLLRWItiporouoLkwAzUh8fELyClcBeyT3S1PWdOuFAmZ6ShYxhRystXSbBeBsPW0LixEL
+ geY=
+WDCIronportException: Internal
+Received: from vm.labspan.wdc.com (HELO vm.sc.wdc.com) ([10.6.137.102])
+  by uls-op-cesaip02.wdc.com with ESMTP; 27 Jan 2021 23:11:46 -0800
+From:   Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+To:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        dm-devel@redhat.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, drbd-dev@lists.linbit.com,
+        xen-devel@lists.xenproject.org, linux-nvme@lists.infradead.org,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org,
+        jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org,
+        ocfs2-devel@oss.oracle.com, linux-pm@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     axboe@kernel.dk, philipp.reisner@linbit.com,
+        lars.ellenberg@linbit.com, konrad.wilk@oracle.com,
+        roger.pau@citrix.com, minchan@kernel.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, agk@redhat.com,
+        snitzer@redhat.com, hch@lst.de, sagi@grimberg.me,
+        chaitanya.kulkarni@wdc.com, martin.petersen@oracle.com,
+        viro@zeniv.linux.org.uk, tytso@mit.edu, jaegeuk@kernel.org,
+        ebiggers@kernel.org, djwong@kernel.org, shaggy@kernel.org,
+        konishi.ryusuke@gmail.com, mark@fasheh.com, jlbec@evilplan.org,
+        joseph.qi@linux.alibaba.com, damien.lemoal@wdc.com,
+        naohiro.aota@wdc.com, jth@kernel.org, rjw@rjwysocki.net,
+        len.brown@intel.com, pavel@ucw.cz, akpm@linux-foundation.org,
+        hare@suse.de, gustavoars@kernel.org, tiwai@suse.de,
+        alex.shi@linux.alibaba.com, asml.silence@gmail.com,
+        ming.lei@redhat.com, tj@kernel.org, osandov@fb.com,
+        bvanassche@acm.org, jefflexu@linux.alibaba.com
+Subject: [RFC PATCH 01/34] block: move common code into blk_next_bio()
+Date:   Wed, 27 Jan 2021 23:11:00 -0800
+Message-Id: <20210128071133.60335-2-chaitanya.kulkarni@wdc.com>
+X-Mailer: git-send-email 2.22.1
+In-Reply-To: <20210128071133.60335-1-chaitanya.kulkarni@wdc.com>
 References: <20210128071133.60335-1-chaitanya.kulkarni@wdc.com>
- <20210128071133.60335-3-chaitanya.kulkarni@wdc.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: wdc.com; dkim=none (message not signed)
- header.d=none;wdc.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2400:2411:43c0:6000:47a:7b5a:7dfa:1b1e]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: eb871fa1-3f12-44a2-a077-08d8c35d5ca2
-x-ms-traffictypediagnostic: MN2PR04MB6352:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MN2PR04MB6352DBDFAB902914B9C585EEE7BA9@MN2PR04MB6352.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: M09uEpCy2sHYnN+orzp8d3r4sKwPwnS+kovdPTr+X2vGltHHUOiuwt35YiL4pwUTQFJb9lI/cctrcvMtSEsYDG11B6WuQeQ5LhCFOm8xnCx/j7IUhZfAc+BSTsEsxty8tkWMahat2Us5tDlHI9XpWnzEpUBuIiTIis6CFGcSzDbZQv+YTkDwb0pb6zKYryvjjNyuaDbfN6d7lDvAFgMe/S84pCGpf8NIYlMhpfcnANa9rtVk1fEfaQ11KXM8VaoFYslEaC8FtVVKMdMiSlVm1G6wR6EIe9QpF54CPrt28byH/cHhwj053vEXp8RFF07hlGeGEHLWbouozYb93iT1K6F5OPFCWV/ewR8z5Kn/uykKQypwrh09HC+m3KNohPQSss4YboxRFNRKIUOjUD9KDfOD2dh3DMVG9Wehar1cknnRs6eoICQxgNf9XdAqhQxkvWGbAdwofxGFVG96zdq+KiRY7l6iGEQ9lizBBRpl1Cl5YsTWF3Ebz7haDS4uRI4CUlc0EEMGTEpRabqGyepXSSCQauC0I01aeQXMPzWGYL5JlkA/UoQC4yu0QYoNvMSIgo+cZP34MN7KkNUL2U0tyA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR04MB6514.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(39860400002)(366004)(136003)(396003)(7366002)(7406005)(64756008)(66556008)(66476007)(66946007)(5660300002)(7416002)(316002)(6506007)(186003)(66446008)(76116006)(110136005)(83380400001)(53546011)(7696005)(91956017)(54906003)(52536014)(9686003)(86362001)(55016002)(71200400001)(2906002)(478600001)(33656002)(4326008)(921005)(8676002)(8936002)(21314003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?ilRnIHb2W+3T2C2caNzRqpDzJ0Ea0Xivh3HFrmVjFepbjG/4fJPeoU7kjRlT?=
- =?us-ascii?Q?4cfEdoxq1pKIhTR8YC8VWpTJjQgCARNQwY+MfHwWAHyq7XzZrTJ+W5zBB4Nr?=
- =?us-ascii?Q?gbqboym+VApr7h2E6XSe0FmXOz+omKq6DFZVboi3NwQAYnWCDCcygMa0n5ZC?=
- =?us-ascii?Q?i+orw+uEOMmnA8L/tMdOkJYMmLEyVDh+G9pnjfMmYkt0blpGnFBWHNDym39U?=
- =?us-ascii?Q?dIrdmaQbh6883La06gFXbWGdjQgjXOXLEnZ3UgQdxTZ3JyxZKLQ71jVVbmhr?=
- =?us-ascii?Q?0p2pkHIwQoMPz5HKOnR6V80LYTmpcP7VgrO091zZ/4rct/lsBVwykJza+GD5?=
- =?us-ascii?Q?IHbQu1IRlEAKFeXGAtTjEb578LsnTaSvJCJYoQS2vP+axrzwvVVw8mOt+5k0?=
- =?us-ascii?Q?KL2XZSeojWALtQsww9PwXxXKo/u++tt+9E5GT2jM5O4BtWCGYIeHt1uhRADL?=
- =?us-ascii?Q?gJ0hzvvlILRjU/TqEgmmCXBE50OH3C99QT7ii97n4+QFDEjw2bGLKb5lrf6H?=
- =?us-ascii?Q?IHyTRN7gvNFJTUay5wTAkpCCUyYWXZIjEb2UFpB6lV531wPPtNPC4ZXwwrWy?=
- =?us-ascii?Q?UUwx0RViz7R7iLMJP7kZUpan/n9xAtlMTSdfuUl+LJK65X0ynOT4EUBmjZh1?=
- =?us-ascii?Q?7f2FeVb24U1zoxD5JnIuvykDuOYgmJlnvf2GvI4IfNA9RybrTxAbVd7Ev1uE?=
- =?us-ascii?Q?iYKXh1HRo38Gzl+/krexExV4e0GgKuB8ROJUM1mrrLxC0PLvUJVZZWIIKY/T?=
- =?us-ascii?Q?EtWttQJe8PPeFmAWMbSTnlaoUKPvNyDC93hjlfGSDIjTTLIFZ4iZg/v8/mfl?=
- =?us-ascii?Q?vPF743c6M4QtXnUUQcdd8jMU2Xffoi6iuon4E7e6TeLOR0e7niaTBUf3bgPv?=
- =?us-ascii?Q?W2AR7teeocTc9v/wp1bkGDqoO4PDXnCni+0tsViRKD+BHAkawcDVDIjbtPby?=
- =?us-ascii?Q?TmOiQAj1HhTITExgPZ3Am1ML0xT8XHeZOcxCj8XLjunGXY367EkeICLa7oc4?=
- =?us-ascii?Q?Hx+SgjQnG25wJn9UaUXUtvbZ+SxW0OdUJGfxAAPJaG/AhMr+s6nN+ezf5jC+?=
- =?us-ascii?Q?TnbTVjltXe3BweymPazgpv3fxkvT/+e3/ihgd/xwUglKOJv1POJWqDO9pOjp?=
- =?us-ascii?Q?vVmRwBKsvdP+eIgHWtuWTOV2jEyOlzJg4w=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR04MB6514.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eb871fa1-3f12-44a2-a077-08d8c35d5ca2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jan 2021 07:21:42.3813
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: HOBO+8eTXWVmpt6dgIHyBBjDN753lOgBMYt0QXNGr1qUdGHKogIJ1c3Ww3ZO4DM7PeQNbxVnSGwrctGN0hiVFw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR04MB6352
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On 2021/01/28 16:12, Chaitanya Kulkarni wrote:=0A=
-> Introduce bio_new() helper and use it in blk-lib.c to allocate and=0A=
-> initialize various non-optional or semi-optional members of the bio=0A=
-> along with bio allocation done with bio_alloc(). Here we also calmp the=
-=0A=
-> max_bvecs for bio with BIO_MAX_PAGES before we pass to bio_alloc().=0A=
-> =0A=
-> Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>=0A=
-> ---=0A=
->  block/blk-lib.c     |  6 +-----=0A=
->  include/linux/bio.h | 25 +++++++++++++++++++++++++=0A=
->  2 files changed, 26 insertions(+), 5 deletions(-)=0A=
-> =0A=
-> diff --git a/block/blk-lib.c b/block/blk-lib.c=0A=
-> index fb486a0bdb58..ec29415f00dd 100644=0A=
-> --- a/block/blk-lib.c=0A=
-> +++ b/block/blk-lib.c=0A=
-> @@ -14,17 +14,13 @@ struct bio *blk_next_bio(struct bio *bio, struct bloc=
-k_device *bdev,=0A=
->  			sector_t sect, unsigned op, unsigned opf,=0A=
->  			unsigned int nr_pages, gfp_t gfp)=0A=
->  {=0A=
-> -	struct bio *new =3D bio_alloc(gfp, nr_pages);=0A=
-> +	struct bio *new =3D bio_new(bdev, sect, op, opf, gfp, nr_pages);=0A=
->  =0A=
->  	if (bio) {=0A=
->  		bio_chain(bio, new);=0A=
->  		submit_bio(bio);=0A=
->  	}=0A=
->  =0A=
-> -	new->bi_iter.bi_sector =3D sect;=0A=
-> -	bio_set_dev(new, bdev);=0A=
-> -	bio_set_op_attrs(new, op, opf);=0A=
-> -=0A=
->  	return new;=0A=
->  }=0A=
->  =0A=
-> diff --git a/include/linux/bio.h b/include/linux/bio.h=0A=
-> index c74857cf1252..2a09ba100546 100644=0A=
-> --- a/include/linux/bio.h=0A=
-> +++ b/include/linux/bio.h=0A=
-> @@ -826,5 +826,30 @@ static inline void bio_set_polled(struct bio *bio, s=
-truct kiocb *kiocb)=0A=
->  	if (!is_sync_kiocb(kiocb))=0A=
->  		bio->bi_opf |=3D REQ_NOWAIT;=0A=
->  }=0A=
-> +/**=0A=
-> + * bio_new -	allcate and initialize new bio=0A=
-> + * @bdev:	blockdev to issue discard for=0A=
-> + * @sector:	start sector=0A=
-> + * @op:		REQ_OP_XXX from enum req_opf=0A=
-> + * @op_flags:	REQ_XXX from enum req_flag_bits=0A=
-> + * @max_bvecs:	maximum bvec to be allocated for this bio=0A=
-> + * @gfp_mask:	memory allocation flags (for bio_alloc)=0A=
-> + *=0A=
-> + * Description:=0A=
-> + *    Allocates, initializes common members, and returns a new bio.=0A=
-> + */=0A=
-> +static inline struct bio *bio_new(struct block_device *bdev, sector_t se=
-ctor,=0A=
-> +				  unsigned int op, unsigned int op_flags,=0A=
-> +				  unsigned int max_bvecs, gfp_t gfp_mask)=0A=
-> +{=0A=
-> +	unsigned nr_bvec =3D clamp_t(unsigned int, max_bvecs, 0, BIO_MAX_PAGES)=
-;=0A=
-> +	struct bio *bio =3D bio_alloc(gfp_mask, nr_bvec);=0A=
-=0A=
-I think that depending on the gfp_mask passed, bio can be NULL. So this sho=
-uld=0A=
-be checked.=0A=
-=0A=
-> +=0A=
-> +	bio_set_dev(bio, bdev);=0A=
-> +	bio->bi_iter.bi_sector =3D sector;=0A=
-> +	bio_set_op_attrs(bio, op, op_flags);=0A=
-=0A=
-This function is obsolete. Open code this.=0A=
-=0A=
-> +=0A=
-> +	return bio;=0A=
-> +}=0A=
->  =0A=
->  #endif /* __LINUX_BIO_H */=0A=
-> =0A=
-=0A=
-=0A=
--- =0A=
-Damien Le Moal=0A=
-Western Digital Research=0A=
+blk_next_bio() is the central function which allocates the bios for
+discard, write-same, write-zeroes and zone-mgmt. The initialization of
+various bio members is duplicated in disacrd, write-same, write-zeores.
+In this preparation patch we add bdev, sector, op, and opf arguments to
+the blk_next_bio() to reduce the duplication. 
+
+In the next patch we introduce bio_new(), this prepration patch allows
+us to call it inside blk_next_bio().
+
+Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+---
+ block/blk-lib.c   | 36 +++++++++++++++---------------------
+ block/blk-zoned.c |  4 +---
+ block/blk.h       |  5 +++--
+ 3 files changed, 19 insertions(+), 26 deletions(-)
+
+diff --git a/block/blk-lib.c b/block/blk-lib.c
+index 752f9c722062..fb486a0bdb58 100644
+--- a/block/blk-lib.c
++++ b/block/blk-lib.c
+@@ -10,7 +10,9 @@
+ 
+ #include "blk.h"
+ 
+-struct bio *blk_next_bio(struct bio *bio, unsigned int nr_pages, gfp_t gfp)
++struct bio *blk_next_bio(struct bio *bio, struct block_device *bdev,
++			sector_t sect, unsigned op, unsigned opf,
++			unsigned int nr_pages, gfp_t gfp)
+ {
+ 	struct bio *new = bio_alloc(gfp, nr_pages);
+ 
+@@ -19,6 +21,10 @@ struct bio *blk_next_bio(struct bio *bio, unsigned int nr_pages, gfp_t gfp)
+ 		submit_bio(bio);
+ 	}
+ 
++	new->bi_iter.bi_sector = sect;
++	bio_set_dev(new, bdev);
++	bio_set_op_attrs(new, op, opf);
++
+ 	return new;
+ }
+ 
+@@ -94,11 +100,7 @@ int __blkdev_issue_discard(struct block_device *bdev, sector_t sector,
+ 
+ 		WARN_ON_ONCE((req_sects << 9) > UINT_MAX);
+ 
+-		bio = blk_next_bio(bio, 0, gfp_mask);
+-		bio->bi_iter.bi_sector = sector;
+-		bio_set_dev(bio, bdev);
+-		bio_set_op_attrs(bio, op, 0);
+-
++		bio = blk_next_bio(bio, bdev, sector, op, 0, 0, gfp_mask);
+ 		bio->bi_iter.bi_size = req_sects << 9;
+ 		sector += req_sects;
+ 		nr_sects -= req_sects;
+@@ -168,6 +170,7 @@ static int __blkdev_issue_write_same(struct block_device *bdev, sector_t sector,
+ {
+ 	struct request_queue *q = bdev_get_queue(bdev);
+ 	unsigned int max_write_same_sectors;
++	unsigned int op = REQ_OP_WRITE_SAME;
+ 	struct bio *bio = *biop;
+ 	sector_t bs_mask;
+ 
+@@ -188,14 +191,11 @@ static int __blkdev_issue_write_same(struct block_device *bdev, sector_t sector,
+ 	max_write_same_sectors = bio_allowed_max_sectors(q);
+ 
+ 	while (nr_sects) {
+-		bio = blk_next_bio(bio, 1, gfp_mask);
+-		bio->bi_iter.bi_sector = sector;
+-		bio_set_dev(bio, bdev);
++		bio = blk_next_bio(bio, bdev, sector, op, 0, 1, gfp_mask);
+ 		bio->bi_vcnt = 1;
+ 		bio->bi_io_vec->bv_page = page;
+ 		bio->bi_io_vec->bv_offset = 0;
+ 		bio->bi_io_vec->bv_len = bdev_logical_block_size(bdev);
+-		bio_set_op_attrs(bio, REQ_OP_WRITE_SAME, 0);
+ 
+ 		if (nr_sects > max_write_same_sectors) {
+ 			bio->bi_iter.bi_size = max_write_same_sectors << 9;
+@@ -249,7 +249,9 @@ static int __blkdev_issue_write_zeroes(struct block_device *bdev,
+ {
+ 	struct bio *bio = *biop;
+ 	unsigned int max_write_zeroes_sectors;
++	unsigned int op = REQ_OP_WRITE_ZEROES;
+ 	struct request_queue *q = bdev_get_queue(bdev);
++	unsigned int opf = flags & BLKDEV_ZERO_NOUNMAP ? REQ_NOUNMAP : 0;
+ 
+ 	if (!q)
+ 		return -ENXIO;
+@@ -264,13 +266,7 @@ static int __blkdev_issue_write_zeroes(struct block_device *bdev,
+ 		return -EOPNOTSUPP;
+ 
+ 	while (nr_sects) {
+-		bio = blk_next_bio(bio, 0, gfp_mask);
+-		bio->bi_iter.bi_sector = sector;
+-		bio_set_dev(bio, bdev);
+-		bio->bi_opf = REQ_OP_WRITE_ZEROES;
+-		if (flags & BLKDEV_ZERO_NOUNMAP)
+-			bio->bi_opf |= REQ_NOUNMAP;
+-
++		bio = blk_next_bio(bio, bdev, sector, op, opf, 0, gfp_mask);
+ 		if (nr_sects > max_write_zeroes_sectors) {
+ 			bio->bi_iter.bi_size = max_write_zeroes_sectors << 9;
+ 			nr_sects -= max_write_zeroes_sectors;
+@@ -303,6 +299,7 @@ static int __blkdev_issue_zero_pages(struct block_device *bdev,
+ 		sector_t sector, sector_t nr_sects, gfp_t gfp_mask,
+ 		struct bio **biop)
+ {
++	unsigned int nr_pages = __blkdev_sectors_to_bio_pages(nr_sects);
+ 	struct request_queue *q = bdev_get_queue(bdev);
+ 	struct bio *bio = *biop;
+ 	int bi_size = 0;
+@@ -315,11 +312,8 @@ static int __blkdev_issue_zero_pages(struct block_device *bdev,
+ 		return -EPERM;
+ 
+ 	while (nr_sects != 0) {
+-		bio = blk_next_bio(bio, __blkdev_sectors_to_bio_pages(nr_sects),
++		bio = blk_next_bio(bio, bdev, sector, REQ_OP_WRITE, 0, nr_pages,
+ 				   gfp_mask);
+-		bio->bi_iter.bi_sector = sector;
+-		bio_set_dev(bio, bdev);
+-		bio_set_op_attrs(bio, REQ_OP_WRITE, 0);
+ 
+ 		while (nr_sects != 0) {
+ 			sz = min((sector_t) PAGE_SIZE, nr_sects << 9);
+diff --git a/block/blk-zoned.c b/block/blk-zoned.c
+index 7a68b6e4300c..68e77628348d 100644
+--- a/block/blk-zoned.c
++++ b/block/blk-zoned.c
+@@ -231,8 +231,7 @@ int blkdev_zone_mgmt(struct block_device *bdev, enum req_opf op,
+ 		return -EINVAL;
+ 
+ 	while (sector < end_sector) {
+-		bio = blk_next_bio(bio, 0, gfp_mask);
+-		bio_set_dev(bio, bdev);
++		bio = blk_next_bio(bio, bdev, 0 , op, REQ_SYNC, 0, gfp_mask);
+ 
+ 		/*
+ 		 * Special case for the zone reset operation that reset all
+@@ -244,7 +243,6 @@ int blkdev_zone_mgmt(struct block_device *bdev, enum req_opf op,
+ 			break;
+ 		}
+ 
+-		bio->bi_opf = op | REQ_SYNC;
+ 		bio->bi_iter.bi_sector = sector;
+ 		sector += zone_sectors;
+ 
+diff --git a/block/blk.h b/block/blk.h
+index 0198335c5838..0a278bae5478 100644
+--- a/block/blk.h
++++ b/block/blk.h
+@@ -329,8 +329,9 @@ extern int blk_iolatency_init(struct request_queue *q);
+ static inline int blk_iolatency_init(struct request_queue *q) { return 0; }
+ #endif
+ 
+-struct bio *blk_next_bio(struct bio *bio, unsigned int nr_pages, gfp_t gfp);
+-
++struct bio *blk_next_bio(struct bio *bio, struct block_device *bdev,
++			sector_t sect, unsigned op, unsigned opf,
++			unsigned int nr_pages, gfp_t gfp);
+ #ifdef CONFIG_BLK_DEV_ZONED
+ void blk_queue_free_zone_bitmaps(struct request_queue *q);
+ #else
+-- 
+2.22.1
+
