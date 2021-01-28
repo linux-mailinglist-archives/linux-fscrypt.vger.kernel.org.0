@@ -2,206 +2,99 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30420307B50
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 28 Jan 2021 17:52:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF8CC307BA2
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 28 Jan 2021 18:02:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232645AbhA1Qty (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 28 Jan 2021 11:49:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232715AbhA1Qsf (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 28 Jan 2021 11:48:35 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90211C061756;
-        Thu, 28 Jan 2021 08:47:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ok1YlK16MaIquA7ZYUHxK/CMaFxxxwNWazaMAgFieLU=; b=vuOaMGbyB7/+Dg91fNUqvgBiBD
-        4apxS7jU5nU9b/DveQFuS18fYHTQPOpBZxMrv3tCqxWOuQg228bSNlkmvJ1gQneLnOfM3WL1ObNGi
-        MTuz8xXL3LKzE+DH7errCMxepgPQ3Thh2HpLy2Nat9DQOLy35B1FC3UkIZuvmKmdZzwX86t+WV5Mk
-        /pCa23DxPP5a3Rlkwfqrn59vty95NQBRWyuZpKNZRkjNLQlQ2KJrMub6IYLsf3IL2tz3nuZRbVWe7
-        TKvbqzYB3UBc6MLrjn2HVQGE6rKRMshHOwu50Myfj/erONbRzfW9chvly9np7Q4o+a4JR4iRTNdIG
-        5mKhGc+Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l5ARp-008hlF-CH; Thu, 28 Jan 2021 16:47:23 +0000
-Date:   Thu, 28 Jan 2021 16:47:09 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
-Cc:     Damien Le Moal <Damien.LeMoal@wdc.com>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "drbd-dev@lists.linbit.com" <drbd-dev@lists.linbit.com>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
-        "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
-        "jfs-discussion@lists.sourceforge.net" 
-        <jfs-discussion@lists.sourceforge.net>,
-        "linux-nilfs@vger.kernel.org" <linux-nilfs@vger.kernel.org>,
-        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "shaggy@kernel.org" <shaggy@kernel.org>,
-        "sergey.senozhatsky.work@gmail.com" 
-        <sergey.senozhatsky.work@gmail.com>,
-        "snitzer@redhat.com" <snitzer@redhat.com>,
-        "len.brown@intel.com" <len.brown@intel.com>,
-        "tiwai@suse.de" <tiwai@suse.de>,
-        "djwong@kernel.org" <djwong@kernel.org>,
-        "gustavoars@kernel.org" <gustavoars@kernel.org>,
-        "pavel@ucw.cz" <pavel@ucw.cz>,
-        "alex.shi@linux.alibaba.com" <alex.shi@linux.alibaba.com>,
-        "agk@redhat.com" <agk@redhat.com>,
-        "sagi@grimberg.me" <sagi@grimberg.me>,
-        "osandov@fb.com" <osandov@fb.com>,
-        "ebiggers@kernel.org" <ebiggers@kernel.org>,
-        "ngupta@vflare.org" <ngupta@vflare.org>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>,
-        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
-        "hare@suse.de" <hare@suse.de>,
-        "ming.lei@redhat.com" <ming.lei@redhat.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "jefflexu@linux.alibaba.com" <jefflexu@linux.alibaba.com>,
-        "jaegeuk@kernel.org" <jaegeuk@kernel.org>,
-        "konishi.ryusuke@gmail.com" <konishi.ryusuke@gmail.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "jth@kernel.org" <jth@kernel.org>, "tytso@mit.edu" <tytso@mit.edu>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "philipp.reisner@linbit.com" <philipp.reisner@linbit.com>,
-        "minchan@kernel.org" <minchan@kernel.org>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "lars.ellenberg@linbit.com" <lars.ellenberg@linbit.com>,
-        "roger.pau@citrix.com" <roger.pau@citrix.com>,
-        "asml.silence@gmail.com" <asml.silence@gmail.com>
-Subject: Re: [Ocfs2-devel] [RFC PATCH 02/34] block: introduce and use bio_new
-Message-ID: <20210128164709.GZ308988@casper.infradead.org>
+        id S232844AbhA1RBP (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 28 Jan 2021 12:01:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47062 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232683AbhA1RA2 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 28 Jan 2021 12:00:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EEE564E0E;
+        Thu, 28 Jan 2021 16:59:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611853187;
+        bh=f6FDYR+2fbZ3ZjuVDKmJrkeFHlqyA4P3vGdmoyOPa1M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Rzag2xxRHgFBGSJ365/QUldWd9CTCZVGt3cs71rJutBhKs94QB4O0wVHJ78U0xIF9
+         n96V7cXtAmPsB9hu9gUYvKXwcH1SXtYNdkFw15Hr/lW1MQ6ApKzq4voIl5psE+u1SS
+         oIYlBt3CEfmzYKr/W9GKeV1ES9XtHwmC1KiXTL4cmN2/9EoY9kXCbDD71u9sIp+Nfr
+         FbyyfdHM+E5ZA+F8801PzzCElIq3kyLXwweF8LRAnfmH79wwG+57YuSijr3uE7kbk9
+         /DpcS6Ckt3f1RwDjmwI1QhKt/MkNHods9aX+BJj1ComGJOXJH3o25qnvlVltgShwCo
+         r/bA/dJbtb2Sw==
+Date:   Thu, 28 Jan 2021 08:59:46 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        dm-devel@redhat.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, drbd-dev@lists.linbit.com,
+        xen-devel@lists.xenproject.org, linux-nvme@lists.infradead.org,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org,
+        jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org,
+        ocfs2-devel@oss.oracle.com, linux-pm@vger.kernel.org,
+        linux-mm@kvack.org, axboe@kernel.dk, philipp.reisner@linbit.com,
+        lars.ellenberg@linbit.com, konrad.wilk@oracle.com,
+        roger.pau@citrix.com, minchan@kernel.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, agk@redhat.com,
+        snitzer@redhat.com, hch@lst.de, sagi@grimberg.me,
+        martin.petersen@oracle.com, viro@zeniv.linux.org.uk, tytso@mit.edu,
+        jaegeuk@kernel.org, ebiggers@kernel.org, shaggy@kernel.org,
+        konishi.ryusuke@gmail.com, mark@fasheh.com, jlbec@evilplan.org,
+        joseph.qi@linux.alibaba.com, damien.lemoal@wdc.com,
+        naohiro.aota@wdc.com, jth@kernel.org, rjw@rjwysocki.net,
+        len.brown@intel.com, pavel@ucw.cz, akpm@linux-foundation.org,
+        hare@suse.de, gustavoars@kernel.org, tiwai@suse.de,
+        alex.shi@linux.alibaba.com, asml.silence@gmail.com,
+        ming.lei@redhat.com, tj@kernel.org, osandov@fb.com,
+        bvanassche@acm.org, jefflexu@linux.alibaba.com
+Subject: Re: [RFC PATCH 17/34] iomap: use bio_new in iomap_dio_zero
+Message-ID: <20210128165946.GL7698@magnolia>
 References: <20210128071133.60335-1-chaitanya.kulkarni@wdc.com>
- <20210128071133.60335-3-chaitanya.kulkarni@wdc.com>
- <BL0PR04MB6514C554B4AC96866BC1B16FE7BA9@BL0PR04MB6514.namprd04.prod.outlook.com>
- <DM6PR04MB4972DA86892CF4531440064F86BA9@DM6PR04MB4972.namprd04.prod.outlook.com>
+ <20210128071133.60335-18-chaitanya.kulkarni@wdc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <DM6PR04MB4972DA86892CF4531440064F86BA9@DM6PR04MB4972.namprd04.prod.outlook.com>
+In-Reply-To: <20210128071133.60335-18-chaitanya.kulkarni@wdc.com>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
+On Wed, Jan 27, 2021 at 11:11:16PM -0800, Chaitanya Kulkarni wrote:
+> Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
 
-FYI your email is completely unreadable to those not using html.
-I can't tell what you wrote and what Damien wrote.
+Looks ok to me,
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
-On Thu, Jan 28, 2021 at 08:33:10AM +0000, Chaitanya Kulkarni wrote:
-> On 1/27/21 11:21 PM, Damien Le Moal wrote:
-> 
-> On 2021/01/28 16:12, Chaitanya Kulkarni wrote:
-> 
-> 
-> Introduce bio_new() helper and use it in blk-lib.c to allocate and
-> initialize various non-optional or semi-optional members of the bio
-> along with bio allocation done with bio_alloc(). Here we also calmp the
-> max_bvecs for bio with BIO_MAX_PAGES before we pass to bio_alloc().
-> 
-> Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com><mailto:chaitanya.kulkarni@wdc.com>
+--D
+
 > ---
->  block/blk-lib.c     |  6 +-----
->  include/linux/bio.h | 25 +++++++++++++++++++++++++
->  2 files changed, 26 insertions(+), 5 deletions(-)
+>  fs/iomap/direct-io.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
 > 
-> diff --git a/block/blk-lib.c b/block/blk-lib.c
-> index fb486a0bdb58..ec29415f00dd 100644
-> --- a/block/blk-lib.c
-> +++ b/block/blk-lib.c
-> @@ -14,17 +14,13 @@ struct bio *blk_next_bio(struct bio *bio, struct block_device *bdev,
->                         sector_t sect, unsigned op, unsigned opf,
->                         unsigned int nr_pages, gfp_t gfp)
->  {
-> -       struct bio *new = bio_alloc(gfp, nr_pages);
-> +       struct bio *new = bio_new(bdev, sect, op, opf, gfp, nr_pages);
-> 
->         if (bio) {
->                 bio_chain(bio, new);
->                 submit_bio(bio);
->         }
-> 
-> -       new->bi_iter.bi_sector = sect;
-> -       bio_set_dev(new, bdev);
-> -       bio_set_op_attrs(new, op, opf);
-> -
->         return new;
+> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+> index ea1e8f696076..f6c557a1bd25 100644
+> --- a/fs/iomap/direct-io.c
+> +++ b/fs/iomap/direct-io.c
+> @@ -189,15 +189,13 @@ iomap_dio_zero(struct iomap_dio *dio, struct iomap *iomap, loff_t pos,
+>  	int flags = REQ_SYNC | REQ_IDLE;
+>  	struct bio *bio;
+>  
+> -	bio = bio_alloc(GFP_KERNEL, 1);
+> -	bio_set_dev(bio, iomap->bdev);
+> -	bio->bi_iter.bi_sector = iomap_sector(iomap, pos);
+> +	bio = bio_new(iomap->bdev, iomap_sector(iomap, pos), REQ_OP_WRITE,
+> +		      flags, 1, GFP_KERNEL);
+>  	bio->bi_private = dio;
+>  	bio->bi_end_io = iomap_dio_bio_end_io;
+>  
+>  	get_page(page);
+>  	__bio_add_page(bio, page, len, 0);
+> -	bio_set_op_attrs(bio, REQ_OP_WRITE, flags);
+>  	iomap_dio_submit_bio(dio, iomap, bio, pos);
 >  }
+>  
+> -- 
+> 2.22.1
 > 
-> diff --git a/include/linux/bio.h b/include/linux/bio.h
-> index c74857cf1252..2a09ba100546 100644
-> --- a/include/linux/bio.h
-> +++ b/include/linux/bio.h
-> @@ -826,5 +826,30 @@ static inline void bio_set_polled(struct bio *bio, struct kiocb *kiocb)
->         if (!is_sync_kiocb(kiocb))
->                 bio->bi_opf |= REQ_NOWAIT;
->  }
-> +/**
-> + * bio_new -   allcate and initialize new bio
-> + * @bdev:      blockdev to issue discard for
-> + * @sector:    start sector
-> + * @op:                REQ_OP_XXX from enum req_opf
-> + * @op_flags:  REQ_XXX from enum req_flag_bits
-> + * @max_bvecs: maximum bvec to be allocated for this bio
-> + * @gfp_mask:  memory allocation flags (for bio_alloc)
-> + *
-> + * Description:
-> + *    Allocates, initializes common members, and returns a new bio.
-> + */
-> +static inline struct bio *bio_new(struct block_device *bdev, sector_t sector,
-> +                                 unsigned int op, unsigned int op_flags,
-> +                                 unsigned int max_bvecs, gfp_t gfp_mask)
-> +{
-> +       unsigned nr_bvec = clamp_t(unsigned int, max_bvecs, 0, BIO_MAX_PAGES);
-> +       struct bio *bio = bio_alloc(gfp_mask, nr_bvec);
-> 
-> 
-> I think that depending on the gfp_mask passed, bio can be NULL. So this should
-> be checked.
-> 
-> 
-> true, I'll add that check.
-> 
-> 
-> 
-> 
-> +
-> +       bio_set_dev(bio, bdev);
-> +       bio->bi_iter.bi_sector = sector;
-> +       bio_set_op_attrs(bio, op, op_flags);
-> 
-> 
-> This function is obsolete. Open code this.
-> 
-> 
-> true, will do.
-> 
-> 
-> 
-> 
-> +
-> +       return bio;
-> +}
-> 
->  #endif /* __LINUX_BIO_H */
-> 
-> 
-> 
-> Thanks for the comments Damien.
-
-> _______________________________________________
-> Ocfs2-devel mailing list
-> Ocfs2-devel@oss.oracle.com
-> https://oss.oracle.com/mailman/listinfo/ocfs2-devel
-
