@@ -2,89 +2,66 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 413C03122CA
-	for <lists+linux-fscrypt@lfdr.de>; Sun,  7 Feb 2021 09:35:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DC79312BB4
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  8 Feb 2021 09:33:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229992AbhBGIfH (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sun, 7 Feb 2021 03:35:07 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:12142 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230245AbhBGIdH (ORCPT
+        id S229982AbhBHIaM (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 8 Feb 2021 03:30:12 -0500
+Received: from smtp-18d.idc2.mandic.com.br ([177.70.124.135]:39111 "EHLO
+        smtp-18.idc2.mandic.com.br" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229894AbhBHIaI (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sun, 7 Feb 2021 03:33:07 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DYMmx4fsHz164sT;
-        Sun,  7 Feb 2021 16:30:57 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
- (10.3.19.213) with Microsoft SMTP Server (TLS) id 14.3.498.0; Sun, 7 Feb 2021
- 16:32:18 +0800
-Subject: Re: [PATCH 3/6] fs-verity: add FS_IOC_READ_VERITY_METADATA ioctl
-To:     Eric Biggers <ebiggers@kernel.org>
-CC:     <linux-fscrypt@vger.kernel.org>, Theodore Ts'o <tytso@mit.edu>,
-        <linux-api@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-fsdevel@vger.kernel.org>, Jaegeuk Kim <jaegeuk@kernel.org>,
-        <linux-ext4@vger.kernel.org>, Victor Hsieh <victorhsieh@google.com>
-References: <20210115181819.34732-1-ebiggers@kernel.org>
- <20210115181819.34732-4-ebiggers@kernel.org>
- <107cf2f2-a6fe-57c2-d17d-57679d7c612d@huawei.com>
- <YB+ead3SvsQy5ULH@sol.localdomain>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <fbe787cc-fcba-7c97-d5ca-cb67345d0c8c@huawei.com>
-Date:   Sun, 7 Feb 2021 16:32:17 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Mon, 8 Feb 2021 03:30:08 -0500
+Received: by smtp-18.smtp.mandic.prv (Postfix, from userid 491)
+        id 5BC52607E9FB; Mon,  8 Feb 2021 05:29:22 -0300 (-03)
+Received: from smtp-18.idc2.mandic.com.br (ifsmtp2 [192.168.1.38])
+        by smtp-18.smtp.mandic.prv (Postfix) with ESMTPS id C1044607AAA4;
+        Mon,  8 Feb 2021 05:29:16 -0300 (-03)
+Received: from User (unknown [52.235.38.23])
+        by smtp-18.smtp.mandic.prv (Postfix) with ESMTPA id 78375465E268;
+        Mon,  8 Feb 2021 05:26:42 -0300 (-03)
+Reply-To: <ms.reem@yandex.com>
+From:   "Ms. Reem" <stefy@macrometrica.com.br>
+Subject: Re:reply
+Date:   Mon, 8 Feb 2021 08:29:15 -0000
 MIME-Version: 1.0
-In-Reply-To: <YB+ead3SvsQy5ULH@sol.localdomain>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain;
+        charset="Windows-1251"
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
-X-CFilter-Loop: Reflected
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+X-Mandic-Auth: DYB6x5JcyVot9snxiAasWC73cfc93V+pC3vUrorm87+eXbqAUeEHL0ZNPgpM50IYQeUbiYx0PkMIK2oavHcOOA==
+X-Mandic-Sender: stefy@macrometrica.com.br
+Message-Id: <20210208082916.C1044607AAA4@smtp-18.smtp.mandic.prv>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On 2021/2/7 16:01, Eric Biggers wrote:
-> On Sun, Feb 07, 2021 at 03:46:43PM +0800, Chao Yu wrote:
->> Hi Eric,
->>
->> On 2021/1/16 2:18, Eric Biggers wrote:
->>> +static int f2fs_ioc_read_verity_metadata(struct file *filp, unsigned long arg)
->>> +{
->>> +	if (!f2fs_sb_has_verity(F2FS_I_SB(file_inode(filp))))
->>> +		return -EOPNOTSUPP;
->>
->> One case is after we update kernel image, f2fs module may no longer support
->> compress algorithm which current file was compressed with, to avoid triggering
->> IO with empty compress engine (struct f2fs_compress_ops pointer):
->>
->> It needs to add f2fs_is_compress_backend_ready() check condition here?
->>
->> Thanks,
->>
->>> +
->>> +	return fsverity_ioctl_read_metadata(filp, (const void __user *)arg);
->>> +}
-> 
-> In that case it wouldn't have been possible to open the file, because
-> f2fs_file_open() checks for it.  So it's not necessary to repeat the same check
-> in every operation on the file descriptor.
+Hello,
 
-Oh, yes, it's safe now.
+My name is Ms. Reem Ebrahim Al-Hashimi, I am the "Minister of state
+and Petroleum" also "Minister of State for International Cooperation"
+in UAE. I write to you on behalf of my other "three (3) colleagues"
+who has approved me to solicit for your "partnership in claiming of
+{us$47=Million}" from a Financial Home in Cambodia on their behalf and
+for our "Mutual Benefits".
 
-I'm thinking we need to remove the check in f2fs_file_open(), because the check
-will fail metadata access/update (via f{g,s}etxattr/ioctl), however original
-intention of that check is only to avoid syscalls to touch compressed data w/o
-the engine, anyway this is another topic.
+The Fund {us$47=Million} is our share from the (over-invoiced) Oil/Gas
+deal with Cambodian/Vietnam Government within 2013/2014, however, we
+don't want our government to know about the fund. If this proposal
+interests you, let me know, by sending me an email and I will send to
+you detailed information on how this business would be successfully
+transacted. Be informed that nobody knows about the secret of this
+fund except us, and we know how to carry out the entire transaction.
+So I am compelled to ask, that you will stand on our behalf and
+receive this fund into any account that is solely controlled by you.
 
-The whole patchset looks fine to me, feel free to add:
+We will compensate you with 15% of the total amount involved as
+gratification for being our partner in this transaction. Reply to:
+ms.reem@yandex.com
 
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
-
-Thanks,
-
-> 
-> - Eric
-> .
-> 
+Regards,
+Ms. Reem.
