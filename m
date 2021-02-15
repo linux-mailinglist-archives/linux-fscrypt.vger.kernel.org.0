@@ -2,150 +2,124 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D77B3170F1
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 10 Feb 2021 21:14:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E964E31BB63
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 15 Feb 2021 15:51:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229888AbhBJUOD (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 10 Feb 2021 15:14:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21227 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230229AbhBJUN5 (ORCPT
+        id S229931AbhBOOup (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 15 Feb 2021 09:50:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229888AbhBOOuo (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 10 Feb 2021 15:13:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612987950;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+5/q4KkbWaJxW0y9Vqi+SxrEmbHPTS66VfFtaay3Qw8=;
-        b=FXBfxST3DfyK8eCtjXCqwrljkY95OET4eS8DD8Twr+uNfV7sWJHF4WaUnVfAV9N8PPfNMC
-        QqvxioiYMyrczGnKtDJNboMTLa8fWK3hkY3W+VYLU5ZtbPO6PP/Rb6u4AkhE/ueENLqbtU
-        lvNlxF0xfdcZ2xcAbsOGd3R7DBRTA/o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-542-NIke8i8dP_SXgVy8Ee4X4A-1; Wed, 10 Feb 2021 15:12:26 -0500
-X-MC-Unique: NIke8i8dP_SXgVy8Ee4X4A-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8D56380199B;
-        Wed, 10 Feb 2021 20:12:25 +0000 (UTC)
-Received: from ovpn-113-105.phx2.redhat.com (ovpn-113-105.phx2.redhat.com [10.3.113.105])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0E3675D9DC;
-        Wed, 10 Feb 2021 20:12:24 +0000 (UTC)
-Message-ID: <45359a0121a3cb20dbdf217a1e96bd7263610913.camel@redhat.com>
-Subject: Re: fscrypt and FIPS
-From:   Simo Sorce <ssorce@redhat.com>
-To:     Thibaud Ecarot <thibaud.ecarot@gmail.com>,
-        Jeff Layton <jlayton@redhat.com>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        linux-fscrypt <linux-fscrypt@vger.kernel.org>
-Date:   Wed, 10 Feb 2021 15:12:24 -0500
-In-Reply-To: <CA+XEK3nU1jPHJ=FsJf+0rZ=KkNuuGZvo7WeBSpXUu3ytuFQEvw@mail.gmail.com>
-References: <c311c77131d0b146f00ab000104bd38e6fbc6b94.camel@redhat.com>
-         <YCQcj0jQ5/sywDgT@sol.localdomain>
-         <7fa8fc3ac6e15015df1ce5f3213e9901d98ffedd.camel@redhat.com>
-         <CA+XEK3nU1jPHJ=FsJf+0rZ=KkNuuGZvo7WeBSpXUu3ytuFQEvw@mail.gmail.com>
+        Mon, 15 Feb 2021 09:50:44 -0500
+Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EC66C061756
+        for <linux-fscrypt@vger.kernel.org>; Mon, 15 Feb 2021 06:50:04 -0800 (PST)
+Received: by mail-ua1-x930.google.com with SMTP id y35so2459113uad.5
+        for <linux-fscrypt@vger.kernel.org>; Mon, 15 Feb 2021 06:50:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GO6qWVWGkNVy6PcyJKZAktMxSp7M9BtyFH1r4gIztmI=;
+        b=pT5dUqvLqx2H9hcZ4RQFXFpT5ZWpORoTM2mK5iJwVfkierXjEW6A3U0jKVrJPBiPpj
+         w7RYfTz3E0zsuvn/jnYqmaW0Bw6dYpBqiYYegeIsEzJx/9Ux/kErgoQlO7N95FmJ+3gf
+         7s6OPEBwN7h+BMVMlpoQoxcryMaunZXFZbcCM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GO6qWVWGkNVy6PcyJKZAktMxSp7M9BtyFH1r4gIztmI=;
+        b=HmIXuf7SPDkvlMaLEh/DYTPSH+FVV1NhD1AV/iqzPQCF0sIuTC1y2wMtP9ut6QbFzS
+         dmNR+JKHT7+0mfxrD8EXQEWWV6qLmckHf+udocSI7Y+Yacsnfqa/Td7O71wo4JoFUnwY
+         r4999IQkYk4TeT4aE/DxfA6kO0wrzlCBNrQHGKs/fJnXg6uRLWhmWWmkKH/TBgqTUHVs
+         GJACGLb8NJjQKOu4vcEeU5cM/brgfsXKYyEFMyAPQEk3hTKWE4IwKItwj47ncQwuZPST
+         un8UF9bSrfSEk+sGQkzJHBxs4+tAwwSzQJhG0WbMMRGbBv8hHTATiEEhGaisEekGRSxf
+         zbNQ==
+X-Gm-Message-State: AOAM531FBGRepmtex/FHKvMBReNpZ99YDk0icL8L56pwZFfio8SaKUeC
+        0GJUZrRCi5jiN4N9ktyMA1lxSXuD558IyM5uafWnIA==
+X-Google-Smtp-Source: ABdhPJxHPZstJtZvarT0N3o2doLRe5vhZC5hvyxuxJV276tNk6aRNh5MNi+LTm4WCs5EEMZHlGVcbJq204upVafP9jQ=
+X-Received: by 2002:ab0:3c91:: with SMTP id a17mr9514794uax.9.1613400603278;
+ Mon, 15 Feb 2021 06:50:03 -0800 (PST)
+MIME-Version: 1.0
+References: <20201207040303.906100-1-chirantan@chromium.org>
+ <20201208093808.1572227-1-chirantan@chromium.org> <20201208093808.1572227-3-chirantan@chromium.org>
+In-Reply-To: <20201208093808.1572227-3-chirantan@chromium.org>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Mon, 15 Feb 2021 15:49:52 +0100
+Message-ID: <CAJfpegtq1fDapizFX3idgrYd3dahtiZ-32F8bvoEMZwGdD43hQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] fuse: Support FS_IOC_GET_ENCRYPTION_POLICY_EX
+To:     Chirantan Ekbote <chirantan@chromium.org>
+Cc:     linux-fsdevel@vger.kernel.org, Dylan Reid <dgreid@chromium.org>,
+        Suleiman Souhlal <suleiman@chromium.org>,
+        fuse-devel <fuse-devel@lists.sourceforge.net>,
+        Eric Biggers <ebiggers@kernel.org>,
+        linux-fscrypt@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Very quickly,
-our current assessment is that HKDF is approved to be used only within
-the protocols explicitly approved in FIPS 140-3 IG and 800-135r1, which
-include TLS 1.3 but not generally.
+On Tue, Dec 8, 2020 at 10:38 AM Chirantan Ekbote <chirantan@chromium.org> wrote:
+>
+> Chrome OS would like to support this ioctl when passed through the fuse
+> driver. However since it is dynamically sized, we can't rely on the
+> length encoded in the command.  Instead check the `policy_size` field of
+> the user provided parameter to get the max length of the data returned
+> by the server.
 
-I will come back with more info an pointers asap.
+I'd also maximize the length at sizeof(union fscrypt_policy).  I.e.
+virtiofs doesn't need to support higher level versions than the client
+kernel supports.
 
-Simo.
+Also, I'm thinking about whether it's safe to enable in plain fuse in
+addition to virtiofs.  I don't see a reason for not doing so, but
+maybe it makes sense to keep disabled until a use case comes up.
 
-On Wed, 2021-02-10 at 15:07 -0500, Thibaud Ecarot wrote:
-> Hi folks,
-> 
-> HKDF is widely used in various HSM so this is necessarily compliant
-> with FIPS 140-3 or 140-2. I have in mind Thales Luna HSM. I am curious
-> why this statement was made on your side.
-> 
-> Thanks Jeff.
-> 
-> Thibaud
-> 
-> 
-> Le mer. 10 févr. 2021, à 14 h 30, Jeff Layton <jlayton@redhat.com> a écrit :
-> > On Wed, 2021-02-10 at 09:49 -0800, Eric Biggers wrote:
-> > > On Wed, Feb 10, 2021 at 08:14:08AM -0500, Jeff Layton wrote:
-> > > > Hi Eric,
-> > > > 
-> > > > I'm still working on the ceph+fscrypt patches (it's been slow going, but
-> > > > I am making progress). Eventually RH would like to ship this as a
-> > > > feature, but there is one potential snag that  -- a lot of our customers
-> > > > need their boxes to be FIPS-enabled [1].
-> > > > 
-> > > > Most of the algorithms and implementations that fscrypt use are OK, but
-> > > > HKDF is not approved outside of TLS 1.3. The quote from our lab folks
-> > > > is:
-> > > > 
-> > > > "HKDF is not approved as a general-purpose KDF, but only for SP800-56C
-> > > > rev2 compliant use. That means that HKDF is only to be used to derive a
-> > > > key from a ECDH/DH or RSA-wrapped shared secret. This includes TLS 1.3."
-> > > > 
-> > > > Would you be amenable to allowing the KDF to be pluggable in some
-> > > > fashion, like the filename and content encryption algorithms are? It
-> > > > would be nice if we didn't have to disable this feature on FIPS-enabled
-> > > > boxes.
-> > > > 
-> > > > [1]: https://www.nist.gov/itl/fips-general-information
-> > > > 
-> > > > Thanks!
-> > > > --
-> > > > Jeff Layton <jlayton@redhat.com>
-> > > 
-> > > Can you elaborate on why you think that HKDF isn't FIPS approved?  It's been
-> > > recommended by NIST 800-56C since 2011, and almost any cryptographic application
-> > > developed within the last 10 years is likely to be using HKDF, if it needs a
-> > > non-passphrase based KDF.
-> > > 
-> > > In fact one of the reasons for switching from the weird AES-ECB-based KDF used
-> > > in v1 encryption policies to HKDF-SHA512 is that HKDF is much more standard.
-> > > 
-> > > Are you sure you're looking at the latest version of FIPS?
-> > > 
-> > > And if HKDF isn't approved, what *is* approved, exactly?
-> > > 
-> > > As far as supporting a new KDF if it were necessary, one of the reserved fields
-> > > in fscrypt_add_key_arg, fscrypt_policy_v2, fscrypt_context_v2, and
-> > > fscrypt_provisioning_key_payload could be used to specify the KDF.  This would
-> > > the first time someone has done so, so there would also be work required to add
-> > > a '--kdf' parameter to the userspace tools, and make the kernel keep track of
-> > > the keys for each KDF version separately.  Plus maybe some other things too.
-> > > 
-> > > I did figure that a new KDF might have to be supported eventually, but not to
-> > > replace the HKDF construction (which is provably secure), but rather if someone
-> > > wants to use something other than SHA-512 (which isn't provably secure).  I'm
-> > > not too enthusiastic about adding another KDF that uses the same underlying hash
-> > > function, as there would be no technical reason for this.
-> > > 
-> > > Note that the fscrypt userspace tool (https://github.com/google/fscrypt) also
-> > > uses HKDF for a key derivation step in userspace, separately from the kernel.
-> > > I suppose you'd want to change that too?
-> > > 
-> > > 
-> > 
-> > Bah, I meant to cc Simo on this since he's the one who brought it up. I
-> > know just enough to be dangerous.
-> > 
-> > Simo, can you answer Eric's questions, or loop in someone who can?
-> > 
-> > Thanks,
-> > --
-> > Jeff Layton <jlayton@redhat.com>
-> > 
-> 
-> 
+Thanks,
+Miklos
 
 
+>
+> Signed-off-by: Chirantan Ekbote <chirantan@chromium.org>
+> ---
+>  fs/fuse/file.c | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
+>
+> diff --git a/fs/fuse/file.c b/fs/fuse/file.c
+> index 69cffb77a0b25..b64ff7f2fe4dd 100644
+> --- a/fs/fuse/file.c
+> +++ b/fs/fuse/file.c
+> @@ -19,6 +19,7 @@
+>  #include <linux/falloc.h>
+>  #include <linux/uio.h>
+>  #include <linux/fs.h>
+> +#include <linux/fscrypt.h>
+>
+>  static struct page **fuse_pages_alloc(unsigned int npages, gfp_t flags,
+>                                       struct fuse_page_desc **desc)
+> @@ -2710,6 +2711,21 @@ static int fuse_get_ioctl_len(unsigned int cmd, unsigned long arg, size_t *len)
+>         case FS_IOC_SETFLAGS:
+>                 *len = sizeof(int);
+>                 break;
+> +       case FS_IOC_GET_ENCRYPTION_POLICY_EX: {
+> +               __u64 policy_size;
+> +               struct fscrypt_get_policy_ex_arg __user *uarg =
+> +                       (struct fscrypt_get_policy_ex_arg __user *)arg;
+> +
+> +               if (copy_from_user(&policy_size, &uarg->policy_size,
+> +                                  sizeof(policy_size)))
+> +                       return -EFAULT;
+> +
+> +               if (policy_size > SIZE_MAX - sizeof(policy_size))
+> +                       return -EINVAL;
+> +
+> +               *len = sizeof(policy_size) + policy_size;
+> +               break;
+> +       }
+>         default:
+>                 *len = _IOC_SIZE(cmd);
+>                 break;
+> --
+> 2.29.2.576.ga3fc446d84-goog
+>
