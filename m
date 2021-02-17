@@ -2,99 +2,106 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5439331D0EC
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 16 Feb 2021 20:24:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE20C31E1BD
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 17 Feb 2021 23:04:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229894AbhBPTXs (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 16 Feb 2021 14:23:48 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45522 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229874AbhBPTXr (ORCPT
+        id S232100AbhBQWEE (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 17 Feb 2021 17:04:04 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:41148 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231483AbhBQWED (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 16 Feb 2021 14:23:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613503340;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=G4pWSLRXaDUWlGfbtpTYLoNYM1x810+cZzTTeKPfylQ=;
-        b=bHS4lR6iaDr+OqlPA9sCzJTTt1wUkgbKZDo8BgWr/HufswiPSmMhoRdHaJG8wLUYLSZJBF
-        t5VJ69sL9/pi6c7xO+FJGlSSyGZWj2Pa9tmkQuBeUC7eAddpjb5eKJnJprns0RvyOgq+yt
-        epg2/k7JpY2PH2l3DOibcxcajndJc7c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-527-b_2d1WJvMAGgXD8Ezp3O2g-1; Tue, 16 Feb 2021 14:22:18 -0500
-X-MC-Unique: b_2d1WJvMAGgXD8Ezp3O2g-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 93E1480402E;
-        Tue, 16 Feb 2021 19:22:17 +0000 (UTC)
-Received: from ovpn-113-105.phx2.redhat.com (ovpn-113-105.phx2.redhat.com [10.3.113.105])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1CB0819D6C;
-        Tue, 16 Feb 2021 19:22:17 +0000 (UTC)
-Message-ID: <3d0bb46eb1791899475722bd27ee3826853a5027.camel@redhat.com>
-Subject: Re: fscrypt and FIPS
-From:   Simo Sorce <simo@redhat.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Thibaud Ecarot <thibaud.ecarot@gmail.com>,
-        Jeff Layton <jlayton@redhat.com>,
-        linux-fscrypt <linux-fscrypt@vger.kernel.org>
-Date:   Tue, 16 Feb 2021 14:22:15 -0500
-In-Reply-To: <YCwXSwseAoMdkXGG@gmail.com>
-References: <c311c77131d0b146f00ab000104bd38e6fbc6b94.camel@redhat.com>
-         <YCQcj0jQ5/sywDgT@sol.localdomain>
-         <7fa8fc3ac6e15015df1ce5f3213e9901d98ffedd.camel@redhat.com>
-         <CA+XEK3nU1jPHJ=FsJf+0rZ=KkNuuGZvo7WeBSpXUu3ytuFQEvw@mail.gmail.com>
-         <45359a0121a3cb20dbdf217a1e96bd7263610913.camel@redhat.com>
-         <29e4defba658cae99faccef451d7873b4cc056d9.camel@redhat.com>
-         <YCwXSwseAoMdkXGG@gmail.com>
-Organization: Red Hat, Inc.
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        Wed, 17 Feb 2021 17:04:03 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 88A821C0B8E; Wed, 17 Feb 2021 23:02:59 +0100 (CET)
+Date:   Wed, 17 Feb 2021 23:02:58 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        dm-devel@redhat.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, drbd-dev@lists.linbit.com,
+        xen-devel@lists.xenproject.org, linux-nvme@lists.infradead.org,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org,
+        jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org,
+        ocfs2-devel@oss.oracle.com, linux-pm@vger.kernel.org,
+        linux-mm@kvack.org, axboe@kernel.dk, philipp.reisner@linbit.com,
+        lars.ellenberg@linbit.com, konrad.wilk@oracle.com,
+        roger.pau@citrix.com, minchan@kernel.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, agk@redhat.com,
+        snitzer@redhat.com, hch@lst.de, sagi@grimberg.me,
+        martin.petersen@oracle.com, viro@zeniv.linux.org.uk, tytso@mit.edu,
+        jaegeuk@kernel.org, ebiggers@kernel.org, djwong@kernel.org,
+        shaggy@kernel.org, konishi.ryusuke@gmail.com, mark@fasheh.com,
+        jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
+        damien.lemoal@wdc.com, naohiro.aota@wdc.com, jth@kernel.org,
+        rjw@rjwysocki.net, len.brown@intel.com, akpm@linux-foundation.org,
+        hare@suse.de, gustavoars@kernel.org, tiwai@suse.de,
+        alex.shi@linux.alibaba.com, asml.silence@gmail.com,
+        ming.lei@redhat.com, tj@kernel.org, osandov@fb.com,
+        bvanassche@acm.org, jefflexu@linux.alibaba.com
+Subject: Re: [RFC PATCH 29/34] power/swap: use bio_new in hib_submit_io
+Message-ID: <20210217220257.GA10791@amd>
+References: <20210128071133.60335-1-chaitanya.kulkarni@wdc.com>
+ <20210128071133.60335-30-chaitanya.kulkarni@wdc.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="LQksG6bCIzRHxTLp"
+Content-Disposition: inline
+In-Reply-To: <20210128071133.60335-30-chaitanya.kulkarni@wdc.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, 2021-02-16 at 11:04 -0800, Eric Biggers wrote:
-> On Tue, Feb 16, 2021 at 12:47:05PM -0500, Simo Sorce wrote:
-> > Some more info, sorry for the delay.
-> > 
-> > Currently, as epxlained eralier, the HKDF is approved only in specific
-> > cases (from SP.800-56C rev 2), which is why I asked Jeff to inquire if
-> > KDF agility was possible for fscrypt.
-> > 
-> > That said, we are also trying to get NIST to approve HKDF for use in
-> > SP800-133 covered scenarios (Symmetric Keys Derived from Pre-Existing
-> > Key), which is the case applicable to fscrypt (afaict).
-> > 
-> > SP.800-133 currently only allows KDFs as defined in SP.800-108, but
-> > there is hope that SP.800-56C rev 2 KDFs can be alloed also, after all
-> > they are already allowed for key-agreement schemes.
-> > 
-> > Hope this clears a bit why we inquired, it is just in case, for
-> > whatever reason, NIST decided not to approve or delays a decision; to
-> > be clear, there is nothing wrong in HKDF itself that we know of.
-> > 
-> 
-> Just getting HKDF properly approved seems like a much better approach than doing
-> a lot of work for nothing.  Not just for fscrypt but also for everything else
-> using HKDF.
 
-Yes, this would be the ideal outcome!
-But I have to figure out the "what if" too ..
+--LQksG6bCIzRHxTLp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> - Eric
-> 
+Hi!
+>=20
+> diff --git a/kernel/power/swap.c b/kernel/power/swap.c
+> index c73f2e295167..e92e36c053a6 100644
+> --- a/kernel/power/swap.c
+> +++ b/kernel/power/swap.c
+> @@ -271,13 +271,12 @@ static int hib_submit_io(int op, int op_flags, pgof=
+f_t page_off, void *addr,
+>  		struct hib_bio_batch *hb)
+>  {
+>  	struct page *page =3D virt_to_page(addr);
+> +	sector_t sect =3D page_off * (PAGE_SIZE >> 9);
+>  	struct bio *bio;
+>  	int error =3D 0;
+> =20
+> -	bio =3D bio_alloc(GFP_NOIO | __GFP_HIGH, 1);
+> -	bio->bi_iter.bi_sector =3D page_off * (PAGE_SIZE >> 9);
+> -	bio_set_dev(bio, hib_resume_bdev);
+> -	bio_set_op_attrs(bio, op, op_flags);
+> +	bio =3D bio_new(hib_resume_bdev, sect, op, op_flags, 1,
+> +		      GFP_NOIO | __GFP_HIGH);
+> =20
 
--- 
-Simo Sorce
-RHEL Crypto Team
-Red Hat, Inc
+C function with 6 arguments... dunno. Old version looks comparable or
+even more readable...
 
+Best regards,
+							Pavel
 
+--=20
+http://www.livejournal.com/~pavelmachek
 
+--LQksG6bCIzRHxTLp
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmAtkpEACgkQMOfwapXb+vL5ywCguk9XRtMJ4/rJgwKlR42qzH7B
+ww4AoK8H3c5uHgpu/eHAUqpvoYMrxHuL
+=Rk1V
+-----END PGP SIGNATURE-----
+
+--LQksG6bCIzRHxTLp--
