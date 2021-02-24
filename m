@@ -2,35 +2,35 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C5073246F4
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 24 Feb 2021 23:37:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F31F3246F3
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 24 Feb 2021 23:37:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235411AbhBXWhg (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 24 Feb 2021 17:37:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58070 "EHLO mail.kernel.org"
+        id S235406AbhBXWhf (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 24 Feb 2021 17:37:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235410AbhBXWhe (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        id S235411AbhBXWhe (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
         Wed, 24 Feb 2021 17:37:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A98164F0C;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C955B64F0D;
         Wed, 24 Feb 2021 22:36:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614206212;
-        bh=9ROxyYh/MaXaAATrXRoOGh96fFZi/DSrU+oJAe7xnWc=;
+        s=k20201202; t=1614206213;
+        bh=XVB9mtWiVpXscrWHajKrky2qktMODcN6tzM3M74OnU8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bwsSO123i5Z1ZAZViq6fRPmtCTxnc0Xbiv2Au3Tx+fUdSzIY2oZdmACyug3yMP+bm
-         +UlNt9E5SwjOnbT/nfWW50CP2i1r5bt2xylIrw0pcijnp+nwJCu7Yc+DCsch1euz04
-         GwbUI3m9KSzqgaKSh3GypCuWT7LLIfDSfZCwyGmxW+/Q9jWhTE7YxQhvfatACCuTw0
-         cZg+0RoYko71rX/z1UDHPoZUPBLpAHc/qAiYzwXxBMIfHBqgviJxXDzvw9/+0K9QB4
-         wewg8LJpkS5/TAi0ttZ8RDzBO754ygpeT95rWINH65KdrCBZyX4csQrGTeIrxAFOK/
-         Lwg6eZiAAsZsg==
+        b=NYTHotL6vnYJW1I/mfKICnKhESknK5CRSc4EFgPgP6sje/sIMXvZSx5gWHj5yd3OS
+         0RIOs6zpjPV1XhCptg8CMmGHxDj3eRRDU8edbAfQ+B9REF+Iq9usnH7RfiJVyqXtBL
+         LYekha7dByF9NUiUdcphm9jhwSSD/C1FbSHIo923O7HCpVFkERh3EdcRltMDK+pDCN
+         exT4yp6mCwk9nUB3UYDz1I3YDjB+LXETJaUqDjeOEKdUM+R0Uqa7jfbk7lKXkgQXid
+         guIbnIWqHjX4GaZ7bjv0nDAb3Zqsy32Fl2yG6E4tTjYKqbGyHG7VlelUgtc9eytVsK
+         ykdzp9PcNFpCA==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     fstests@vger.kernel.org
 Cc:     linux-fscrypt@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
         Theodore Ts'o <tytso@mit.edu>,
         Victor Hsieh <victorhsieh@google.com>
-Subject: [PATCH v2 3/4] generic: test retrieving verity Merkle tree and descriptor
-Date:   Wed, 24 Feb 2021 14:35:36 -0800
-Message-Id: <20210224223537.110491-4-ebiggers@kernel.org>
+Subject: [PATCH v2 4/4] generic: test retrieving verity signature
+Date:   Wed, 24 Feb 2021 14:35:37 -0800
+Message-Id: <20210224223537.110491-5-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210224223537.110491-1-ebiggers@kernel.org>
 References: <20210224223537.110491-1-ebiggers@kernel.org>
@@ -42,33 +42,35 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Add a test which tests retrieving the Merkle tree and fs-verity
-descriptor of a verity file using the new FS_IOC_READ_VERITY_METADATA
-ioctl.
+Add a test which tests dumping the built-in signature of a verity file
+using the new FS_IOC_READ_VERITY_METADATA ioctl.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- tests/generic/901     | 79 +++++++++++++++++++++++++++++++++++++++++++
- tests/generic/901.out | 16 +++++++++
+ tests/generic/902     | 66 +++++++++++++++++++++++++++++++++++++++++++
+ tests/generic/902.out |  7 +++++
  tests/generic/group   |  1 +
- 3 files changed, 96 insertions(+)
- create mode 100755 tests/generic/901
- create mode 100644 tests/generic/901.out
+ 3 files changed, 74 insertions(+)
+ create mode 100755 tests/generic/902
+ create mode 100644 tests/generic/902.out
 
-diff --git a/tests/generic/901 b/tests/generic/901
+diff --git a/tests/generic/902 b/tests/generic/902
 new file mode 100755
-index 00000000..24889d63
+index 00000000..ee1096df
 --- /dev/null
-+++ b/tests/generic/901
-@@ -0,0 +1,79 @@
++++ b/tests/generic/902
+@@ -0,0 +1,66 @@
 +#! /bin/bash
 +# SPDX-License-Identifier: GPL-2.0-only
 +# Copyright 2021 Google LLC
 +#
-+# FS QA Test No. 901
++# FS QA Test No. 902
 +#
-+# Test retrieving the Merkle tree and fs-verity descriptor of a verity file
-+# using FS_IOC_READ_VERITY_METADATA.
++# Test retrieving the built-in signature of a verity file using
++# FS_IOC_READ_VERITY_METADATA.
++#
++# This is separate from the other tests for FS_IOC_READ_VERITY_METADATA because
++# the fs-verity built-in signature support is optional.
 +#
 +seq=`basename $0`
 +seqres=$RESULT_DIR/$seq
@@ -93,84 +95,59 @@ index 00000000..24889d63
 +
 +_supported_fs generic
 +_require_scratch_verity
-+_disable_fsverity_signatures
-+# For the output of this test to always be the same, it has to use a specific
-+# Merkle tree block size.
-+if [ $FSV_BLOCK_SIZE != 4096 ]; then
-+	_notrun "4096-byte verity block size not supported on this platform"
-+fi
++_require_fsverity_builtin_signatures
 +
 +_scratch_mkfs_verity &>> $seqres.full
 +_scratch_mount
 +
-+echo -e "\n# Creating a verity file"
++echo -e "\n# Setting up signed verity file"
++_fsv_generate_cert $tmp.key $tmp.cert $tmp.cert.der
++_fsv_clear_keyring
++_fsv_load_cert $tmp.cert.der
 +fsv_file=$SCRATCH_MNT/file
-+# Always use the same file contents, so that the output of the test is always
-+# the same.  Also use a file that is large enough to have multiple Merkle tree
-+# levels, so that the test verifies that the blocks are returned in the expected
-+# order.  A 1 MB file with SHA-256 and a Merkle tree block size of 4096 will
-+# have 3 Merkle tree blocks (3*4096 bytes): two at level 0 and one at level 1.
-+head -c 1000000 /dev/zero > $fsv_file
-+merkle_tree_size=$((3 * FSV_BLOCK_SIZE))
-+fsverity_descriptor_size=256
-+_fsv_enable $fsv_file --salt=abcd
++echo foo > $fsv_file
++_fsv_sign $fsv_file $tmp.sig --key=$tmp.key --cert=$tmp.cert >> $seqres.full
++_fsv_enable $fsv_file --signature=$tmp.sig
 +_require_fsverity_dump_metadata $fsv_file
-+_fsv_measure $fsv_file
 +
-+echo -e "\n# Dumping Merkle tree"
-+_fsv_dump_merkle_tree $fsv_file | sha256sum
++echo -e "\n# Dumping and comparing signature"
++_fsv_dump_signature $fsv_file > $tmp.sig2
++# The signature returned by FS_IOC_READ_VERITY_METADATA should exactly match the
++# one we passed to FS_IOC_ENABLE_VERITY earlier.
++cmp $tmp.sig $tmp.sig2
 +
-+echo -e "\n# Dumping Merkle tree (in chunks)"
-+# The above test may get the whole tree in one read, so also try reading it in
-+# chunks.
-+for (( i = 0; i < merkle_tree_size; i += 997 )); do
-+	_fsv_dump_merkle_tree $fsv_file --offset=$i --length=997
-+done | sha256sum
-+
-+echo -e "\n# Dumping descriptor"
-+# Note that the hash that is printed here should be the same hash that was
-+# printed by _fsv_measure above.
-+_fsv_dump_descriptor $fsv_file | sha256sum
-+
-+echo -e "\n# Dumping descriptor (in chunks)"
-+for (( i = 0; i < fsverity_descriptor_size; i += 13 )); do
-+	_fsv_dump_descriptor $fsv_file --offset=$i --length=13
-+done | sha256sum
++echo -e "\n# Dumping and comparing signature (in chunks)"
++sig_size=$(stat -c %s $tmp.sig)
++for (( i = 0; i < sig_size; i += 13 )); do
++	_fsv_dump_signature $fsv_file --offset=$i --length=13
++done > $tmp.sig2
++cmp $tmp.sig $tmp.sig2
 +
 +# success, all done
 +status=0
 +exit
-diff --git a/tests/generic/901.out b/tests/generic/901.out
+diff --git a/tests/generic/902.out b/tests/generic/902.out
 new file mode 100644
-index 00000000..ab018052
+index 00000000..4b8d9f6e
 --- /dev/null
-+++ b/tests/generic/901.out
-@@ -0,0 +1,16 @@
-+QA output created by 901
++++ b/tests/generic/902.out
+@@ -0,0 +1,7 @@
++QA output created by 902
 +
-+# Creating a verity file
-+sha256:11e4f886bf2d70a6ef3a8b6ce8e8c62c9e5d3263208b9f120ae46791f124be73
++# Setting up signed verity file
 +
-+# Dumping Merkle tree
-+db88cdad554734cd648a1bfbb5be7f86646c54397847aab0b3f42a28829fed17  -
++# Dumping and comparing signature
 +
-+# Dumping Merkle tree (in chunks)
-+db88cdad554734cd648a1bfbb5be7f86646c54397847aab0b3f42a28829fed17  -
-+
-+# Dumping descriptor
-+11e4f886bf2d70a6ef3a8b6ce8e8c62c9e5d3263208b9f120ae46791f124be73  -
-+
-+# Dumping descriptor (in chunks)
-+11e4f886bf2d70a6ef3a8b6ce8e8c62c9e5d3263208b9f120ae46791f124be73  -
++# Dumping and comparing signature (in chunks)
 diff --git a/tests/generic/group b/tests/generic/group
-index b10fdea4..3cc40795 100644
+index 3cc40795..ce9aa950 100644
 --- a/tests/generic/group
 +++ b/tests/generic/group
-@@ -625,3 +625,4 @@
- 620 auto mount quick
+@@ -626,3 +626,4 @@
  621 auto quick encrypt
  622 auto shutdown metadata atime
-+901 auto quick verity
+ 901 auto quick verity
++902 auto quick verity
 -- 
 2.30.1
 
