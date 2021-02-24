@@ -2,35 +2,35 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F1FC3246F6
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 24 Feb 2021 23:37:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B17EA3246F5
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 24 Feb 2021 23:37:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235427AbhBXWhf (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 24 Feb 2021 17:37:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58050 "EHLO mail.kernel.org"
+        id S232923AbhBXWhe (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 24 Feb 2021 17:37:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235406AbhBXWhc (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        id S235409AbhBXWhc (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
         Wed, 24 Feb 2021 17:37:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CEE3464F07;
-        Wed, 24 Feb 2021 22:36:51 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B76A64F03;
+        Wed, 24 Feb 2021 22:36:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1614206212;
-        bh=L4z2C4DuIZfWTqYBVHamH20RgGZzTjtaVEyRT8RWgJY=;
+        bh=oTVCwPzecV6I2cZ5E15iVdMSPRBuTMWbFl4v1zgMrYA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nwhemgLilp9QTp49yc7hlm6E3e9WaVzxl/RZxST+W1Mz1DDWXWD9XR9AECvbPNEjr
-         aPnjQ+BsW4b/66VYgth3UQH6zrOL4XaqSJg6ujHUiovjq5MzP3ixbhGY6tsLqmH8bV
-         Ix78UK/wNiZKGOMZCCqso09ddZaNTFjG0wcCXQumLqAFY6EO2ttS8jZpeZg6V7n1uU
-         KxhrcFf9Wsn8Z1NVm5JObYqhdpDD9u6+2l2UcBmeIQAb//zoOu96gryHk98pCWHrOq
-         l5OBGpxnTGnRLmw7KMSniVz7ZeTygCpmCXX3AbQBZCtNrdJyBAczIwyWyhjwYcqo0n
-         g40+YnBt90uYw==
+        b=beAfwZxoJAY8sQ5Uo6e0LQcKi38ZFjh0eagee0mOjJKX9u6A5QHdJMztMPs7rLPvl
+         dcApBKca4imWpawr2+P/HpzcFn0MzqugvW+dSitd7rZGBK4nZd0Ksgxt9JnxN8I9b2
+         sPTbQ5TH0dU2kUFees9x3INtQHOntJT2cf/pQ/qWVjE/fEeZrvujYze0VanitG4hRC
+         xq0E46VdiSNW0eMmfehtakKejEXWCBWFajLMdsPMgh4/EkG2/l54GswR1XV+adTRQ8
+         Kg6gudNNuXF9VwTyPxnjZw7ilcEVwMj0Tzs5YunD+s3K6WJ3WD3f5+Ni8DlhJj19pu
+         gzJxV33iwj67w==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     fstests@vger.kernel.org
 Cc:     linux-fscrypt@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
         Theodore Ts'o <tytso@mit.edu>,
         Victor Hsieh <victorhsieh@google.com>
-Subject: [PATCH v2 1/4] generic: factor out helpers for fs-verity built-in signatures
-Date:   Wed, 24 Feb 2021 14:35:34 -0800
-Message-Id: <20210224223537.110491-2-ebiggers@kernel.org>
+Subject: [PATCH v2 2/4] generic: add helpers for dumping fs-verity metadata
+Date:   Wed, 24 Feb 2021 14:35:35 -0800
+Message-Id: <20210224223537.110491-3-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210224223537.110491-1-ebiggers@kernel.org>
 References: <20210224223537.110491-1-ebiggers@kernel.org>
@@ -42,108 +42,68 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-The test for retrieving a verity file's built-in signature using
-FS_IOC_READ_VERITY_METADATA will need to set up a file with a built-in
-signature, which requires the same commands that generic/577 does.
-Factor this out into helper functions in common/verity.
+In common/verity, add helper functions for dumping a file's fs-verity
+metadata using the new FS_IOC_READ_VERITY_METADATA ioctl.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- common/verity     | 37 ++++++++++++++++++++++++++++++++++++-
- tests/generic/577 | 15 +++------------
- 2 files changed, 39 insertions(+), 13 deletions(-)
+ common/verity | 36 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
 
 diff --git a/common/verity b/common/verity
-index a8d3de06..9a182240 100644
+index 9a182240..38eea157 100644
 --- a/common/verity
 +++ b/common/verity
-@@ -48,12 +48,47 @@ _require_scratch_verity()
- 	FSV_BLOCK_SIZE=$(get_page_size)
+@@ -120,6 +120,27 @@ _restore_fsverity_signatures()
+         fi
  }
  
--# Check for CONFIG_FS_VERITY_BUILTIN_SIGNATURES=y.
-+# Check for CONFIG_FS_VERITY_BUILTIN_SIGNATURES=y, as well as the userspace
-+# commands needed to generate certificates and add them to the kernel.
- _require_fsverity_builtin_signatures()
- {
- 	if [ ! -e /proc/sys/fs/verity/require_signatures ]; then
- 		_notrun "kernel doesn't support fs-verity builtin signatures"
- 	fi
-+	_require_command "$OPENSSL_PROG" openssl
-+	_require_command "$KEYCTL_PROG" keyctl
-+}
-+
-+# Use the openssl program to generate a private key and a X.509 certificate for
-+# use with fs-verity built-in signature verification, and convert the
-+# certificate to DER format.
-+_fsv_generate_cert()
++# Require userspace and kernel support for 'fsverity dump_metadata'.
++# $1 must be a file with fs-verity enabled.
++_require_fsverity_dump_metadata()
 +{
-+	local keyfile=$1
-+	local certfile=$2
-+	local certfileder=$3
++	local verity_file=$1
++	local tmpfile=$tmp.require_fsverity_dump_metadata
 +
-+	if ! $OPENSSL_PROG req -newkey rsa:4096 -nodes -batch -x509 \
-+			-keyout $keyfile -out $certfile &>> $seqres.full; then
-+		_fail "Failed to generate certificate and private key (see $seqres.full)"
++	if _fsv_dump_merkle_tree "$verity_file" 2>"$tmpfile" >/dev/null; then
++		return
 +	fi
-+	$OPENSSL_PROG x509 -in $certfile -out $certfileder -outform der
++	if grep -q "^ERROR: unrecognized command: 'dump_metadata'$" "$tmpfile"
++	then
++		_notrun "Missing 'fsverity dump_metadata' command"
++	fi
++	if grep -q "^ERROR: FS_IOC_READ_VERITY_METADATA failed on '.*': Inappropriate ioctl for device$" "$tmpfile"
++	then
++		_notrun "Kernel doesn't support FS_IOC_READ_VERITY_METADATA"
++	fi
++	_fail "Unexpected output from 'fsverity dump_metadata': $(<"$tmpfile")"
 +}
 +
-+# Clear the .fs-verity keyring.
-+_fsv_clear_keyring()
-+{
-+	$KEYCTL_PROG clear %keyring:.fs-verity
-+}
-+
-+# Load the given X.509 certificate in DER format into the .fs-verity keyring so
-+# that the kernel can use it to verify built-in signatures.
-+_fsv_load_cert()
-+{
-+	local certfileder=$1
-+
-+	$KEYCTL_PROG padd asymmetric '' %keyring:.fs-verity \
-+		< $certfileder >> $seqres.full
+ _scratch_mkfs_verity()
+ {
+ 	case $FSTYP in
+@@ -157,6 +178,21 @@ _fsv_scratch_begin_subtest()
+ 	echo -e "\n# $msg"
  }
  
- # Disable mandatory signatures for fs-verity files, if they are supported.
-diff --git a/tests/generic/577 b/tests/generic/577
-index 0e945942..114463be 100755
---- a/tests/generic/577
-+++ b/tests/generic/577
-@@ -34,8 +34,6 @@ rm -f $seqres.full
- _supported_fs generic
- _require_scratch_verity
- _require_fsverity_builtin_signatures
--_require_command "$OPENSSL_PROG" openssl
--_require_command "$KEYCTL_PROG" keyctl
- 
- _scratch_mkfs_verity &>> $seqres.full
- _scratch_mount
-@@ -53,21 +51,14 @@ othersigfile=$tmp.othersig
- 
- echo -e "\n# Generating certificates and private keys"
- for suffix in '' '.2'; do
--	if ! $OPENSSL_PROG req -newkey rsa:4096 -nodes -batch -x509 \
--			-keyout $keyfile$suffix -out $certfile$suffix \
--			&>> $seqres.full; then
--		_fail "Failed to generate certificate and private key (see $seqres.full)"
--	fi
--	$OPENSSL_PROG x509 -in $certfile$suffix -out $certfileder$suffix \
--		-outform der
-+	_fsv_generate_cert $keyfile$suffix $certfile$suffix $certfileder$suffix
- done
- 
- echo -e "\n# Clearing fs-verity keyring"
--$KEYCTL_PROG clear %keyring:.fs-verity
-+_fsv_clear_keyring
- 
- echo -e "\n# Loading first certificate into fs-verity keyring"
--$KEYCTL_PROG padd asymmetric '' %keyring:.fs-verity \
--	< $certfileder >> $seqres.full
-+_fsv_load_cert $certfileder
- 
- echo -e "\n# Enabling fs.verity.require_signatures"
- _enable_fsverity_signatures
++_fsv_dump_merkle_tree()
++{
++	$FSVERITY_PROG dump_metadata merkle_tree "$@"
++}
++
++_fsv_dump_descriptor()
++{
++	$FSVERITY_PROG dump_metadata descriptor "$@"
++}
++
++_fsv_dump_signature()
++{
++	$FSVERITY_PROG dump_metadata signature "$@"
++}
++
+ _fsv_enable()
+ {
+ 	$FSVERITY_PROG enable "$@"
 -- 
 2.30.1
 
