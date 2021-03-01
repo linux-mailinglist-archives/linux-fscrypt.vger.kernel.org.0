@@ -2,102 +2,123 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 661F9327047
-	for <lists+linux-fscrypt@lfdr.de>; Sun, 28 Feb 2021 05:53:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED7CC328086
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  1 Mar 2021 15:18:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230206AbhB1ExS (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sat, 27 Feb 2021 23:53:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55584 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230190AbhB1ExR (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sat, 27 Feb 2021 23:53:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 98E9D64E10;
-        Sun, 28 Feb 2021 04:52:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614487955;
-        bh=TPuIvHd6Bs3bRcf4BzsMlYT1Gou/E7eosJtAO9spevc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XWT16qHiyEgYEN0ob4FNSqQgnCfQ43mP460op4rpQT66dn4Fgs7IsUpqLG2JNYtDy
-         lyTR/iNVLSrRWSzYlY2V6Hbv09osFS66gmwtmch8TPIB2U8morsrtYSSRK61UNk0bW
-         koQt8M22CxbzZBby7YoAlZVS9w1roVZXprnWrOYpE1ykxHUGfW98OxtaZGDbbQXER7
-         K3MtK7AdhMjg7M0pr11zcGILqHTaddZGeGEbZxoSP0ezV7FYO1SIBsr0Lcngk7JU0Q
-         W2DcSSDKOpezdbVlCe4Knz4sCn3RKOCl9S6Eobzr/W0lf8hFBiNj/HdVkjapTh2tsH
-         bZeaSrB1i/Slg==
-Date:   Sat, 27 Feb 2021 20:52:34 -0800
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     heyunlei 00015531 <heyunlei@hihonor.com>,
-        Chao Yu <chao@kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net, bintian.wang@hihonor.com,
-        linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH] f2fs: fsverity: Truncate cache pages if set verity failed
-Message-ID: <YDshkqMPGk3iY2YO@google.com>
-References: <20210223112425.19180-1-heyunlei@hihonor.com>
- <c1ce1421-2576-5b48-322c-fa682c7510d7@kernel.org>
- <YDbbGSsd6ibKOpzT@sol.localdomain>
- <YDbdEEcEV5bzgtL6@sol.localdomain>
- <fae4a2f9-b1c9-e673-cefe-fe024ce6f9ab@hihonor.com>
- <YDhZuaF8lEQPtBmp@sol.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YDhZuaF8lEQPtBmp@sol.localdomain>
+        id S232850AbhCAOSA (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 1 Mar 2021 09:18:00 -0500
+Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:47713
+        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with SMTP id S232859AbhCAOR7 (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 1 Mar 2021 09:17:59 -0500
+Received: from pekshcsitd06010.hihonor.com (unknown [198.19.133.5])
+        by front-2 (Coremail) with SMTP id DAGowADHkH0h9zxgMuJDAA--.911S2;
+        Mon, 01 Mar 2021 22:16:01 +0800 (CST)
+From:   Yunlei He <heyunlei@hihonor.com>
+To:     chao@kernel.org, jaegeuk@kernel.org, ebiggers@kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-fscrypt@vger.kernel.org, bintian.wang@hihonor.com,
+        Yunlei He <heyunlei@hihonor.com>, stable@vger.kernel.org
+Subject: [f2fs-dev][PATCH v2] f2fs: fsverity: Truncate cache pages if set verity failed
+Date:   Mon,  1 Mar 2021 22:15:06 +0800
+Message-Id: <20210301141506.6410-1-heyunlei@hihonor.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: DAGowADHkH0h9zxgMuJDAA--.911S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7KFW8AFW7KrWxuw1xXFWfAFb_yoW8tr4Dpr
+        9xAFWakw48XrW7WwnakF1UZr15Ka48K3yj9as3uwn3uF1kZw1FqFyIyrW0vFW3tFWDXw42
+        qr4jkay7Gw1DGw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBG1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
+        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW0oVCq3wA2z4x0Y4vEx4A2
+        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
+        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWU
+        XwAv7VCY1x0262k0Y48FwI0_Jr0_Gr1lYx0Ex4A2jsIE14v26r4UJVWxJr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY1x02
+        6xCI17CEII8vrVWkCVWkKwCY02Avz4vE-syl42xK82IYc2Ij64vIr41l42xK82IY6x8Erc
+        xFaVAv8VW5ur1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWU
+        GwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI4
+        8JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4U
+        MIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42
+        IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUm0PhUUUUU=
+X-CM-SenderInfo: pkh130hohlqxxlkr003uof0z/1tbiAQIJEV3ki2mkXQABs4
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hi Yunlei,
+If file enable verity failed, should truncate anything wrote
+past i_size, including cache pages.
 
-Could you please post another version to have all the suggestions? :)
+Fixes: 95ae251fe828 ("f2fs: add fs-verity support")
+Cc: <stable@vger.kernel.org> # v5.4+
+Signed-off-by: Yunlei He <heyunlei@hihonor.com>
+---
+ fs/f2fs/verity.c | 47 +++++++++++++++++++++++++----------------------
+ 1 file changed, 25 insertions(+), 22 deletions(-)
 
-Thanks,
+diff --git a/fs/f2fs/verity.c b/fs/f2fs/verity.c
+index 054ec852b5ea..3aa851affc46 100644
+--- a/fs/f2fs/verity.c
++++ b/fs/f2fs/verity.c
+@@ -158,33 +158,36 @@ static int f2fs_end_enable_verity(struct file *filp, const void *desc,
+ 		.size = cpu_to_le32(desc_size),
+ 		.pos = cpu_to_le64(desc_pos),
+ 	};
+-	int err = 0;
++	int err;
+ 
+-	if (desc != NULL) {
+-		/* Succeeded; write the verity descriptor. */
+-		err = pagecache_write(inode, desc, desc_size, desc_pos);
++	clear_inode_flag(inode, FI_VERITY_IN_PROGRESS);
++	if (!desc)
++		return 0;
+ 
+-		/* Write all pages before clearing FI_VERITY_IN_PROGRESS. */
+-		if (!err)
+-			err = filemap_write_and_wait(inode->i_mapping);
+-	}
++	/* Succeeded; write the verity descriptor. */
++	err = pagecache_write(inode, desc, desc_size, desc_pos);
++	if (err)
++		goto out;
+ 
+-	/* If we failed, truncate anything we wrote past i_size. */
+-	if (desc == NULL || err)
+-		f2fs_truncate(inode);
++	err = filemap_write_and_wait(inode->i_mapping);
++	if (err)
++		goto out;
+ 
+-	clear_inode_flag(inode, FI_VERITY_IN_PROGRESS);
++	err = f2fs_setxattr(inode, F2FS_XATTR_INDEX_VERITY,
++			    F2FS_XATTR_NAME_VERITY, &dloc, sizeof(dloc),
++			    NULL, XATTR_CREATE);
++	if (err)
++		goto out;
+ 
+-	if (desc != NULL && !err) {
+-		err = f2fs_setxattr(inode, F2FS_XATTR_INDEX_VERITY,
+-				    F2FS_XATTR_NAME_VERITY, &dloc, sizeof(dloc),
+-				    NULL, XATTR_CREATE);
+-		if (!err) {
+-			file_set_verity(inode);
+-			f2fs_set_inode_flags(inode);
+-			f2fs_mark_inode_dirty_sync(inode, true);
+-		}
+-	}
++	file_set_verity(inode);
++	f2fs_set_inode_flags(inode);
++	f2fs_mark_inode_dirty_sync(inode, true);
++
++	return 0;
++out:
++	/* If we failed, truncate anything we wrote past i_size. */
++	truncate_inode_pages(inode->i_mapping, inode->i_size);
++	f2fs_truncate(inode);
+ 	return err;
+ }
+ 
+-- 
+2.17.1
 
-On 02/25, Eric Biggers wrote:
-> On Fri, Feb 26, 2021 at 09:42:33AM +0800, heyunlei 00015531 wrote:
-> > 
-> > 在 2021/2/25 7:11, Eric Biggers 写道:
-> > > On Wed, Feb 24, 2021 at 03:02:52PM -0800, Eric Biggers wrote:
-> > > > Hi Yunlei,
-> > > > 
-> > > > On Wed, Feb 24, 2021 at 09:16:24PM +0800, Chao Yu wrote:
-> > > > > Hi Yunlei,
-> > > > > 
-> > > > > On 2021/2/23 19:24, heyunlei wrote:
-> > > > > > If file enable verity failed, should truncate anything wrote
-> > > > > > past i_size, including cache pages.
-> > > > > +Cc Eric,
-> > > > > 
-> > > > > After failure of enabling verity, we will see verity metadata if we truncate
-> > > > > file to larger size later?
-> > > > > 
-> > > > > Thanks,
-> > Hi Eric，
-> > > > > > Signed-off-by: heyunlei <heyunlei@hihonor.com>
-> > > > > > ---
-> > > > > >    fs/f2fs/verity.c | 4 +++-
-> > > > > >    1 file changed, 3 insertions(+), 1 deletion(-)
-> > > > > > 
-> > > > > > diff --git a/fs/f2fs/verity.c b/fs/f2fs/verity.c
-> > > > > > index 054ec852b5ea..f1f9b9361a71 100644
-> > > > > > --- a/fs/f2fs/verity.c
-> > > > > > +++ b/fs/f2fs/verity.c
-> > > > > > @@ -170,8 +170,10 @@ static int f2fs_end_enable_verity(struct file *filp, const void *desc,
-> > > > > >    	}
-> > > > > >    	/* If we failed, truncate anything we wrote past i_size. */
-> > > > > > -	if (desc == NULL || err)
-> > > > > > +	if (desc == NULL || err) {
-> > > > > > +		truncate_inode_pages(inode->i_mapping, inode->i_size);
-> > > > > >    		f2fs_truncate(inode);
-> > > > > > +	}
-> > > > > >    	clear_inode_flag(inode, FI_VERITY_IN_PROGRESS);
-> > > > > > 
-> > By the way，should  we consider  set xattr failed?
-> > 
-> 
-> Yes, that seems to be another oversight.  Similarly for ext4, if
-> ext4_journal_start(), ext4_orphan_del(), or ext4_reserve_inode_write() fails.
-> 
-> I think the right fix is to move the truncation to the end of the function.
-> 
-> - Eric
