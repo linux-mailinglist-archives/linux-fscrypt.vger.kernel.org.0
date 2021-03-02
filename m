@@ -2,90 +2,62 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6E2B32B419
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  3 Mar 2021 05:35:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E04E132B425
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  3 Mar 2021 05:43:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238496AbhCCEWo (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 2 Mar 2021 23:22:44 -0500
-Received: from zg8tmja2lje4os4yms4ymjma.icoremail.net ([206.189.21.223]:52035
-        "HELO zg8tmja2lje4os4yms4ymjma.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S1383767AbhCBMF6 (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 2 Mar 2021 07:05:58 -0500
-Received: from pekshcsitd06010.hihonor.com (unknown [198.19.131.39])
-        by front-1 (Coremail) with SMTP id CwGowAAXf07LIz5gcsNOAA--.1848S2;
-        Tue, 02 Mar 2021 19:38:52 +0800 (CST)
-From:   Yunlei He <heyunlei@hihonor.com>
-To:     chao@kernel.org, jaegeuk@kernel.org, ebiggers@kernel.org
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-fscrypt@vger.kernel.org, bintian.wang@hihonor.com,
-        Yunlei He <heyunlei@hihonor.com>, stable@vger.kernel.org
-Subject: [f2fs-dev][PATCH] f2fs: fsverity: modify truncation for verity enable failed
-Date:   Tue,  2 Mar 2021 19:38:50 +0800
-Message-Id: <20210302113850.17011-1-heyunlei@hihonor.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: CwGowAAXf07LIz5gcsNOAA--.1848S2
-X-Coremail-Antispam: 1UD129KBjvJXoWrtw47Xr1UCrW5ur4kGF45ZFb_yoW8JF17pF
-        yDGFyUWw1rG3y7Wr1vvF1Uuw1rKFy7KrW2vFyDuw1kW3WkXwnYvayvyFW09a1aqr97Jw40
-        qr4UCa9rCr17Ar7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkE1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-        w4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW0oVCq3wA2z4x0Y4vEx4A2
-        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
-        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUtVWr
-        XwAv7VC2z280aVAFwI0_Cr1j6rxdMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
-        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK6svPMxAIw28IcxkI7VAKI48JMxAI
-        w28IcVCjz48v1sIEY20_XFWUJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrV
-        AFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCI
-        c40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267
-        AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWU
-        JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUA8n
-        5UUUUU=
-X-CM-SenderInfo: pkh130hohlqxxlkr003uof0z/1tbiAQIKEV3ki2sD+gABs5
+        id S233622AbhCCEeg (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 2 Mar 2021 23:34:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57760 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349212AbhCBUGA (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 2 Mar 2021 15:06:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D4D1064F2C;
+        Tue,  2 Mar 2021 20:05:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614715504;
+        bh=R0uWWdo55T3Y2P3LKpd1Ma1UuCXVZi07erMDI9ljXRg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Oz98igqXh+9c0+eqzJYbO7IcceScj37KATh8VUDVq814CVm02xIfdSrgZs7ItY89X
+         lyGILhbaenhs1nXMRlAuJTNj8FTljQqIvO6DDGEN5ylJINfpO5m2hxjZngi29Rnyw0
+         zL95MaD/DhnWLLybAB2QzchHr91meBG9YfRNbG6N0jSz+P6aDqXAKt0J2tj3oWH4Zk
+         DxlIgkc/qbPdvIexTwIXXbmPaN14zq++fZ7+7VBS71U7IzSdEwEhsXCgDxcNI85kjn
+         5tVB/Xhd6SJvV0qiAoS+b/jGmJGyo9MBbWZX2yQLuLbhK7YJ5t6BLBruBIyiwgkW5t
+         c5POEGAMRQjyw==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
+Cc:     linux-fscrypt@vger.kernel.org, Yunlei He <heyunlei@hihonor.com>,
+        bintian.wang@hihonor.com
+Subject: [PATCH 0/2] fs-verity: fix error handling in ->end_enable_verity()
+Date:   Tue,  2 Mar 2021 12:04:18 -0800
+Message-Id: <20210302200420.137977-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.30.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-If file enable verity failed, should truncate anything wrote
-past i_size, including cache pages. Move the truncation to
-the end of function, in case of f2fs set xattr failed.
+Fix some bugs in how ext4_end_enable_verity() and
+f2fs_end_enable_verity() handle failure to enable verity on the file.
 
-Fixes: 95ae251fe828 ("f2fs: add fs-verity support")
-Cc: <stable@vger.kernel.org> # v5.4+
-Signed-off-by: Yunlei He <heyunlei@hihonor.com>
----
- fs/f2fs/verity.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+This is intended to supersede the f2fs patch from Yunlei He
+(https://lore.kernel.org/r/20210302113850.17011-1-heyunlei@hihonor.com,
+ https://lore.kernel.org/r/20210301141506.6410-1-heyunlei@hihonor.com,
+ https://lore.kernel.org/r/c1ce1421-2576-5b48-322c-fa682c7510d7@kernel.org).
+I fixed the same bugs in ext4 too, reworked the functions to cleanly
+separate the success and error paths, and improved the commit message.
 
-diff --git a/fs/f2fs/verity.c b/fs/f2fs/verity.c
-index 054ec852b5ea..610f2a9b4928 100644
---- a/fs/f2fs/verity.c
-+++ b/fs/f2fs/verity.c
-@@ -169,10 +169,6 @@ static int f2fs_end_enable_verity(struct file *filp, const void *desc,
- 			err = filemap_write_and_wait(inode->i_mapping);
- 	}
- 
--	/* If we failed, truncate anything we wrote past i_size. */
--	if (desc == NULL || err)
--		f2fs_truncate(inode);
--
- 	clear_inode_flag(inode, FI_VERITY_IN_PROGRESS);
- 
- 	if (desc != NULL && !err) {
-@@ -185,6 +181,13 @@ static int f2fs_end_enable_verity(struct file *filp, const void *desc,
- 			f2fs_mark_inode_dirty_sync(inode, true);
- 		}
- 	}
-+
-+	/* If we failed, truncate anything we wrote past i_size. */
-+	if (desc == NULL || err) {
-+		truncate_inode_pages(inode->i_mapping, inode->i_size);
-+		f2fs_truncate(inode);
-+	}
-+
- 	return err;
- }
- 
+These patches can be taken independently via the ext4 and f2fs trees.
+I've just sent them out together since they're similar.
+
+Eric Biggers (2):
+  ext4: fix error handling in ext4_end_enable_verity()
+  f2fs: fix error handling in f2fs_end_enable_verity()
+
+ fs/ext4/verity.c | 90 ++++++++++++++++++++++++++++++------------------
+ fs/f2fs/verity.c | 61 +++++++++++++++++++++-----------
+ 2 files changed, 97 insertions(+), 54 deletions(-)
+
 -- 
-2.17.1
+2.30.1
 
