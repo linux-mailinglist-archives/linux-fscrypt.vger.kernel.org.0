@@ -2,156 +2,70 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7127C32DF27
-	for <lists+linux-fscrypt@lfdr.de>; Fri,  5 Mar 2021 02:37:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83A8A32E0E0
+	for <lists+linux-fscrypt@lfdr.de>; Fri,  5 Mar 2021 05:52:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229592AbhCEBhf (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 4 Mar 2021 20:37:35 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:13433 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhCEBhf (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 4 Mar 2021 20:37:35 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Ds9LJ4wR4zjVb1;
-        Fri,  5 Mar 2021 09:36:08 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
- (10.3.19.204) with Microsoft SMTP Server (TLS) id 14.3.498.0; Fri, 5 Mar 2021
- 09:37:27 +0800
-Subject: Re: [f2fs-dev] [PATCH 2/2] f2fs: fix error handling in
- f2fs_end_enable_verity()
-To:     Eric Biggers <ebiggers@kernel.org>, <linux-ext4@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-CC:     <linux-fscrypt@vger.kernel.org>, <stable@vger.kernel.org>
+        id S229631AbhCEEwq (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 4 Mar 2021 23:52:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58066 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229463AbhCEEwp (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 4 Mar 2021 23:52:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9660664EF6;
+        Fri,  5 Mar 2021 04:52:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614919964;
+        bh=zxC/9kcMnACFzH9ITkD6VZhydnGwzCTG1L8sFScG1+g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NR5s6qZojEz91xa3HAt28QIC7ilr7VJvXJx9/mWCWO4FRBMVzUe4NKKfVaL0yCeJv
+         H7+NaaXIyT2Ms980B/Wzm9QqtpLbdZhnzjfpfJqulai7y3eFrMwSAWCi03EsxMfvmD
+         7Eas8GztpTBLgG+3KDOYLUDGBxegYRxxhklIrXKonWAlJ+YSU8/yridJ9IpZM+S524
+         czMoWgLwnydRSUwX9c4wiaoNK47w3LU/KCrBswOx+z1aOD23pxzETX35iUvbWdGWeQ
+         rZLHl355CVJweaeNblh+oh1YmOxqtkg4tL62hNaQ2LGCs5SlhEYrtIOt3/y76c9wT0
+         hJhrJJ89om/SA==
+Date:   Thu, 4 Mar 2021 20:52:43 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-fscrypt@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 2/2] f2fs: fix error handling in f2fs_end_enable_verity()
+Message-ID: <YEG5G5d2YisF8zB0@sol.localdomain>
 References: <20210302200420.137977-1-ebiggers@kernel.org>
  <20210302200420.137977-3-ebiggers@kernel.org>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <9980e263-aa25-cf50-5a94-9f63a5ae667e@huawei.com>
-Date:   Fri, 5 Mar 2021 09:37:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+ <9980e263-aa25-cf50-5a94-9f63a5ae667e@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20210302200420.137977-3-ebiggers@kernel.org>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9980e263-aa25-cf50-5a94-9f63a5ae667e@huawei.com>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On 2021/3/3 4:04, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
+On Fri, Mar 05, 2021 at 09:37:26AM +0800, Chao Yu wrote:
+> > +cleanup:
+> > +	/*
+> > +	 * Verity failed to be enabled, so clean up by truncating any verity
+> > +	 * metadata that was written beyond i_size (both from cache and from
+> > +	 * disk) and clearing FI_VERITY_IN_PROGRESS.
+> > +	 */
+> > +	truncate_inode_pages(inode->i_mapping, inode->i_size);
+> > +	f2fs_truncate(inode);
 > 
-> f2fs didn't properly clean up if verity failed to be enabled on a file:
+> Eric,
 > 
-> - It left verity metadata (pages past EOF) in the page cache, which
->    would be exposed to userspace if the file was later extended.
-> 
-> - It didn't truncate the verity metadata at all (either from cache or
->    from disk) if an error occurred while setting the verity bit.
-> 
-> Fix these bugs by adding a call to truncate_inode_pages() and ensuring
-> that we truncate the verity metadata (both from cache and from disk) in
-> all error paths.  Also rework the code to cleanly separate the success
-> path from the error paths, which makes it much easier to understand.
-> 
-> Reported-by: Yunlei He <heyunlei@hihonor.com>
-> Fixes: 95ae251fe828 ("f2fs: add fs-verity support")
-> Cc: <stable@vger.kernel.org> # v5.4+
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
->   fs/f2fs/verity.c | 61 ++++++++++++++++++++++++++++++++----------------
->   1 file changed, 41 insertions(+), 20 deletions(-)
-> 
-> diff --git a/fs/f2fs/verity.c b/fs/f2fs/verity.c
-> index 054ec852b5ea4..2db89967fde37 100644
-> --- a/fs/f2fs/verity.c
-> +++ b/fs/f2fs/verity.c
-> @@ -160,31 +160,52 @@ static int f2fs_end_enable_verity(struct file *filp, const void *desc,
->   	};
->   	int err = 0;
->   
-> -	if (desc != NULL) {
-> -		/* Succeeded; write the verity descriptor. */
-> -		err = pagecache_write(inode, desc, desc_size, desc_pos);
-> +	/*
-> +	 * If an error already occurred (which fs/verity/ signals by passing
-> +	 * desc == NULL), then only clean-up is needed.
-> +	 */
-> +	if (desc == NULL)
-> +		goto cleanup;
->   
-> -		/* Write all pages before clearing FI_VERITY_IN_PROGRESS. */
-> -		if (!err)
-> -			err = filemap_write_and_wait(inode->i_mapping);
-> -	}
-> +	/* Append the verity descriptor. */
-> +	err = pagecache_write(inode, desc, desc_size, desc_pos);
-> +	if (err)
-> +		goto cleanup;
->   
-> -	/* If we failed, truncate anything we wrote past i_size. */
-> -	if (desc == NULL || err)
-> -		f2fs_truncate(inode);
-> +	/*
-> +	 * Write all pages (both data and verity metadata).  Note that this must
-> +	 * happen before clearing FI_VERITY_IN_PROGRESS; otherwise pages beyond
-> +	 * i_size won't be written properly.  For crash consistency, this also
-> +	 * must happen before the verity inode flag gets persisted.
-> +	 */
-> +	err = filemap_write_and_wait(inode->i_mapping);
-> +	if (err)
-> +		goto cleanup;
-> +
-> +	/* Set the verity xattr. */
-> +	err = f2fs_setxattr(inode, F2FS_XATTR_INDEX_VERITY,
-> +			    F2FS_XATTR_NAME_VERITY, &dloc, sizeof(dloc),
-> +			    NULL, XATTR_CREATE);
-> +	if (err)
-> +		goto cleanup;
-> +
-> +	/* Finally, set the verity inode flag. */
-> +	file_set_verity(inode);
-> +	f2fs_set_inode_flags(inode);
-> +	f2fs_mark_inode_dirty_sync(inode, true);
->   
->   	clear_inode_flag(inode, FI_VERITY_IN_PROGRESS);
-> +	return 0;
->   
-> -	if (desc != NULL && !err) {
-> -		err = f2fs_setxattr(inode, F2FS_XATTR_INDEX_VERITY,
-> -				    F2FS_XATTR_NAME_VERITY, &dloc, sizeof(dloc),
-> -				    NULL, XATTR_CREATE);
-> -		if (!err) {
-> -			file_set_verity(inode);
-> -			f2fs_set_inode_flags(inode);
-> -			f2fs_mark_inode_dirty_sync(inode, true);
-> -		}
-> -	}
-> +cleanup:
-> +	/*
-> +	 * Verity failed to be enabled, so clean up by truncating any verity
-> +	 * metadata that was written beyond i_size (both from cache and from
-> +	 * disk) and clearing FI_VERITY_IN_PROGRESS.
-> +	 */
-> +	truncate_inode_pages(inode->i_mapping, inode->i_size);
-> +	f2fs_truncate(inode);
+> Truncation can fail due to a lot of reasons, if we fail in f2fs_truncate(),
+> do we need to at least print a message here? or it allows to keep those
+> meta/data silently.
 
-Eric,
+I suppose we might as well, although hopefully there will already be a message
+for the underlying failure reason too.  Also, f2fs_file_write_iter() has the
+same issue too, right?
 
-Truncation can fail due to a lot of reasons, if we fail in f2fs_truncate(),
-do we need to at least print a message here? or it allows to keep those
-meta/data silently.
+> One other concern is that how do you think of covering truncate_inode_pages &
+> f2fs_truncate with F2FS_I(inode)->i_gc_rwsem[WRITE] lock to avoid racing with
+> GC, so that page cache won't be revalidated after truncate_inode_pages().
 
-One other concern is that how do you think of covering truncate_inode_pages &
-f2fs_truncate with F2FS_I(inode)->i_gc_rwsem[WRITE] lock to avoid racing with
-GC, so that page cache won't be revalidated after truncate_inode_pages().
+Yes, that does seem to be needed, due to the way the f2fs garbage collection
+works.
 
-Thanks,
-
-> +	clear_inode_flag(inode, FI_VERITY_IN_PROGRESS); >   	return err;
->   }
->   
-> 
+- Eric
