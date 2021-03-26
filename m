@@ -2,176 +2,124 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4FE534AD97
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 26 Mar 2021 18:33:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AFA334AEAA
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 26 Mar 2021 19:38:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230413AbhCZRdP (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 26 Mar 2021 13:33:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48346 "EHLO mail.kernel.org"
+        id S230003AbhCZSiM (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 26 Mar 2021 14:38:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230252AbhCZRcn (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 26 Mar 2021 13:32:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CCEFC61A28;
-        Fri, 26 Mar 2021 17:32:41 +0000 (UTC)
+        id S229969AbhCZSiM (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Fri, 26 Mar 2021 14:38:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A620961A13;
+        Fri, 26 Mar 2021 18:38:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616779962;
-        bh=OK2KGWFptjTIN1OXjEChJKuyV3fd0j4GvVod8RQV4Kk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KtkXBn9ItWo8N68h8CWZRXbKHxgxgwiMkBuu7RmK9NDAQc71iT8t2vX0ucRZ5/HCQ
-         wsPlurc++bKJ6ckHKTWiTGl7NavTLyNA7eMPRuiiYUqidglaS5jEvi+eBhCM+ZMRIS
-         CcjGrvOMl0tFvk+Rg1sMLdDRvT//6xQmSUG+Zxpp5XmJo6kyDh7BilQ6BHlHS9tSQq
-         NXWc52APLZRIy5c7+J49QAQ3cWVLOPk9Eu7Xg5DRj+BwAFQrMydzxvIGYrssLM48bt
-         btMvMh31P8ZG55HwFPbJln0i0C8lfnTt6GNgf6usyfnck7L05FmTl6WHCCIlinVeVf
-         dMxk27nemf3oA==
+        s=k20201202; t=1616783892;
+        bh=tl2BnRgFFmTrCujm04id4QN8NI6kqyDBnURR8pQv+I4=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=HoLyiBkFPEI4CqtsPen93c8RmJpJ/0JCOnWBSwUGyhGsx4A5CQZuJ5ojDdDY3cQ3K
+         wPWeHORzlLzSBikwxghrbrHr85pytU3bEl0I0XRE3lBI6LEqyPSPZ5jv4PNgRlr49Z
+         /r+z/WgATkpXcRIJf9FRHXw0FU2pyzcmifFj40kfpTZNbEwLFlrYV7JS7tuFaJsEXQ
+         10V8w4yUf1TBJBvjm1ZTMF7QvxqH29/BeNnPpvK8e8iTahIOTiGRrBMFrk3yYDiY/4
+         uFHGTYSsJV/IQM8gLkOaIcl01OHmBZp6NFiG4N74pSluiFUQ6kn8Vibf3oYkpkWJyW
+         Jk2uGqV5zIp7w==
+Message-ID: <f7e34bd93f8e774cf11ff059d040a7ec19ef0b19.camel@kernel.org>
+Subject: Re: [RFC PATCH v5 00/19] ceph+fscrypt: context, filename and
+ symlink support
 From:   Jeff Layton <jlayton@kernel.org>
 To:     ceph-devel@vger.kernel.org
 Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [RFC PATCH v5 19/19] ceph: add fscrypt ioctls
-Date:   Fri, 26 Mar 2021 13:32:27 -0400
-Message-Id: <20210326173227.96363-20-jlayton@kernel.org>
-X-Mailer: git-send-email 2.30.2
+Date:   Fri, 26 Mar 2021 14:38:10 -0400
 In-Reply-To: <20210326173227.96363-1-jlayton@kernel.org>
 References: <20210326173227.96363-1-jlayton@kernel.org>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-We gate most of the ioctls on MDS feature support. The exception is the
-key removal and status functions that we still want to work if the MDS's
-were to (inexplicably) lose the feature.
+On Fri, 2021-03-26 at 13:32 -0400, Jeff Layton wrote:
+> I haven't posted this in a while and there were some bugs shaken out of
+> the last posting. This adds (partial) support for fscrypt to kcephfs,
+> including crypto contexts, filenames and encrypted symlink targets. At
+> this point, the xfstests quick tests that generally pass without fscrypt
+> also pass with test_dummy_encryption enabled.
+> 
+> There is one lingering bug that I'm having trouble tracking down: xfstest
+> generic/477 (an open_by_handle_at test) sometimes throws a "Busy inodes
+> after umount" warning. I'm narrowed down the issue a bit, but there is
+> some raciness involved so I haven't quite nailed it down yet.
+> 
+> This set is quite invasive. There is probably some further work to be
+> done to add common code helpers and the like, but the final diffstat
+> probably won't look too different.
+> 
+> This set does not include encryption of file contents. That is turning
+> out to be a bit trickier than first expected owing to the fact that the
+> MDS is usually what handles truncation, and the i_size no longer
+> represents the amount of data stored in the backing store. That will
+> probably require an MDS change to fix, and we're still sorting out the
+> details.
+> 
+> Jeff Layton (19):
+>   vfs: export new_inode_pseudo
+>   fscrypt: export fscrypt_base64_encode and fscrypt_base64_decode
+>   fscrypt: export fscrypt_fname_encrypt and fscrypt_fname_encrypted_size
+>   fscrypt: add fscrypt_context_for_new_inode
+>   ceph: crypto context handling for ceph
+>   ceph: implement -o test_dummy_encryption mount option
+>   ceph: preallocate inode for ops that may create one
+>   ceph: add routine to create fscrypt context prior to RPC
+>   ceph: make ceph_msdc_build_path use ref-walk
+>   ceph: add encrypted fname handling to ceph_mdsc_build_path
+>   ceph: decode alternate_name in lease info
+>   ceph: send altname in MClientRequest
+>   ceph: properly set DCACHE_NOKEY_NAME flag in lookup
+>   ceph: make d_revalidate call fscrypt revalidator for encrypted
+>     dentries
+>   ceph: add helpers for converting names for userland presentation
+>   ceph: add fscrypt support to ceph_fill_trace
+>   ceph: add support to readdir for encrypted filenames
+>   ceph: create symlinks with encrypted and base64-encoded targets
+>   ceph: add fscrypt ioctls
+> 
+>  fs/ceph/Makefile            |   1 +
+>  fs/ceph/crypto.c            | 185 +++++++++++++++++++++++
+>  fs/ceph/crypto.h            | 101 +++++++++++++
+>  fs/ceph/dir.c               | 178 ++++++++++++++++++-----
+>  fs/ceph/file.c              |  56 ++++---
+>  fs/ceph/inode.c             | 255 +++++++++++++++++++++++++++++---
+>  fs/ceph/ioctl.c             |  94 ++++++++++++
+>  fs/ceph/mds_client.c        | 283 ++++++++++++++++++++++++++++++------
+>  fs/ceph/mds_client.h        |  14 +-
+>  fs/ceph/super.c             |  80 +++++++++-
+>  fs/ceph/super.h             |  16 +-
+>  fs/ceph/xattr.c             |  32 ++++
+>  fs/crypto/fname.c           |  53 +++++--
+>  fs/crypto/fscrypt_private.h |   9 +-
+>  fs/crypto/hooks.c           |   6 +-
+>  fs/crypto/policy.c          |  34 ++++-
+>  fs/inode.c                  |   1 +
+>  include/linux/fscrypt.h     |  10 ++
+>  18 files changed, 1246 insertions(+), 162 deletions(-)
+>  create mode 100644 fs/ceph/crypto.c
+>  create mode 100644 fs/ceph/crypto.h
+> 
 
-For the set_policy ioctl, we take Fcx caps to ensure that nothing can
-create files in the directory while the ioctl is running. That should
-be enough to ensure that the "empty_dir" check is reliable.
+Oh, I should mention that this is all in my ceph-fscrypt-fnames branch:
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- fs/ceph/ioctl.c | 94 +++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 94 insertions(+)
+    https://git.kernel.org/pub/scm/linux/kernel/git/jlayton/linux.git/
 
-diff --git a/fs/ceph/ioctl.c b/fs/ceph/ioctl.c
-index 6e061bf62ad4..34b85bcfcfc7 100644
---- a/fs/ceph/ioctl.c
-+++ b/fs/ceph/ioctl.c
-@@ -6,6 +6,7 @@
- #include "mds_client.h"
- #include "ioctl.h"
- #include <linux/ceph/striper.h>
-+#include <linux/fscrypt.h>
- 
- /*
-  * ioctls
-@@ -268,8 +269,56 @@ static long ceph_ioctl_syncio(struct file *file)
- 	return 0;
- }
- 
-+static int vet_mds_for_fscrypt(struct file *file)
-+{
-+	int i, ret = -EOPNOTSUPP;
-+	struct ceph_mds_client	*mdsc = ceph_sb_to_mdsc(file_inode(file)->i_sb);
-+
-+	mutex_lock(&mdsc->mutex);
-+	for (i = 0; i < mdsc->max_sessions; i++) {
-+		struct ceph_mds_session *s = mdsc->sessions[i];
-+
-+		if (!s)
-+			continue;
-+		if (test_bit(CEPHFS_FEATURE_ALTERNATE_NAME, &s->s_features))
-+			ret = 0;
-+		break;
-+	}
-+	mutex_unlock(&mdsc->mutex);
-+	return ret;
-+}
-+
-+static long ceph_set_encryption_policy(struct file *file, unsigned long arg)
-+{
-+	int ret, got = 0;
-+	struct page *page = NULL;
-+	struct inode *inode = file_inode(file);
-+	struct ceph_inode_info *ci = ceph_inode(inode);
-+
-+	ret = vet_mds_for_fscrypt(file);
-+	if (ret)
-+		return ret;
-+
-+	/*
-+	 * Ensure we hold these caps so that we _know_ that the rstats check
-+	 * in the empty_dir check is reliable.
-+	 */
-+	ret = ceph_get_caps(file, CEPH_CAP_FILE_SHARED, 0, -1, &got, &page);
-+	if (ret)
-+		return ret;
-+	if (page)
-+		put_page(page);
-+	ret = fscrypt_ioctl_set_policy(file, (const void __user *)arg);
-+	if (got)
-+		ceph_put_cap_refs(ci, got);
-+	return ret;
-+}
-+
- long ceph_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- {
-+	int ret;
-+	struct ceph_inode_info *ci = ceph_inode(file_inode(file));
-+
- 	dout("ioctl file %p cmd %u arg %lu\n", file, cmd, arg);
- 	switch (cmd) {
- 	case CEPH_IOC_GET_LAYOUT:
-@@ -289,6 +338,51 @@ long ceph_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 
- 	case CEPH_IOC_SYNCIO:
- 		return ceph_ioctl_syncio(file);
-+
-+	case FS_IOC_SET_ENCRYPTION_POLICY:
-+		return ceph_set_encryption_policy(file, arg);
-+
-+	case FS_IOC_GET_ENCRYPTION_POLICY:
-+		ret = vet_mds_for_fscrypt(file);
-+		if (ret)
-+			return ret;
-+		return fscrypt_ioctl_get_policy(file, (void __user *)arg);
-+
-+	case FS_IOC_GET_ENCRYPTION_POLICY_EX:
-+		ret = vet_mds_for_fscrypt(file);
-+		if (ret)
-+			return ret;
-+		return fscrypt_ioctl_get_policy_ex(file, (void __user *)arg);
-+
-+	case FS_IOC_ADD_ENCRYPTION_KEY:
-+		ret = vet_mds_for_fscrypt(file);
-+		if (ret)
-+			return ret;
-+		atomic_inc(&ci->i_shared_gen);
-+		ceph_dir_clear_ordered(file_inode(file));
-+		ceph_dir_clear_complete(file_inode(file));
-+		return fscrypt_ioctl_add_key(file, (void __user *)arg);
-+
-+	case FS_IOC_REMOVE_ENCRYPTION_KEY:
-+		atomic_inc(&ci->i_shared_gen);
-+		ceph_dir_clear_ordered(file_inode(file));
-+		ceph_dir_clear_complete(file_inode(file));
-+		return fscrypt_ioctl_remove_key(file, (void __user *)arg);
-+
-+	case FS_IOC_REMOVE_ENCRYPTION_KEY_ALL_USERS:
-+		atomic_inc(&ci->i_shared_gen);
-+		ceph_dir_clear_ordered(file_inode(file));
-+		ceph_dir_clear_complete(file_inode(file));
-+		return fscrypt_ioctl_remove_key_all_users(file, (void __user *)arg);
-+
-+	case FS_IOC_GET_ENCRYPTION_KEY_STATUS:
-+		return fscrypt_ioctl_get_key_status(file, (void __user *)arg);
-+
-+	case FS_IOC_GET_ENCRYPTION_NONCE:
-+		ret = vet_mds_for_fscrypt(file);
-+		if (ret)
-+			return ret;
-+		return fscrypt_ioctl_get_nonce(file, (void __user *)arg);
- 	}
- 
- 	return -ENOTTY;
+This all still under heavy development, so I'm open to suggestions and
+review. If you're daring and want to test with it, please do.
+
+I do think this has the potential to be a "killer feature" for ceph (and
+maybe other network filesystems). Being able to store data securely on
+an otherwise "public" cluster seems like a very nice thing to have.
+
+Cheers,
 -- 
-2.30.2
+Jeff Layton <jlayton@kernel.org>
 
