@@ -2,124 +2,63 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AFA334AEAA
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 26 Mar 2021 19:38:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D372634BDFA
+	for <lists+linux-fscrypt@lfdr.de>; Sun, 28 Mar 2021 20:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230003AbhCZSiM (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 26 Mar 2021 14:38:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39036 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229969AbhCZSiM (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 26 Mar 2021 14:38:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A620961A13;
-        Fri, 26 Mar 2021 18:38:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616783892;
-        bh=tl2BnRgFFmTrCujm04id4QN8NI6kqyDBnURR8pQv+I4=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=HoLyiBkFPEI4CqtsPen93c8RmJpJ/0JCOnWBSwUGyhGsx4A5CQZuJ5ojDdDY3cQ3K
-         wPWeHORzlLzSBikwxghrbrHr85pytU3bEl0I0XRE3lBI6LEqyPSPZ5jv4PNgRlr49Z
-         /r+z/WgATkpXcRIJf9FRHXw0FU2pyzcmifFj40kfpTZNbEwLFlrYV7JS7tuFaJsEXQ
-         10V8w4yUf1TBJBvjm1ZTMF7QvxqH29/BeNnPpvK8e8iTahIOTiGRrBMFrk3yYDiY/4
-         uFHGTYSsJV/IQM8gLkOaIcl01OHmBZp6NFiG4N74pSluiFUQ6kn8Vibf3oYkpkWJyW
-         Jk2uGqV5zIp7w==
-Message-ID: <f7e34bd93f8e774cf11ff059d040a7ec19ef0b19.camel@kernel.org>
-Subject: Re: [RFC PATCH v5 00/19] ceph+fscrypt: context, filename and
- symlink support
-From:   Jeff Layton <jlayton@kernel.org>
-To:     ceph-devel@vger.kernel.org
-Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Date:   Fri, 26 Mar 2021 14:38:10 -0400
-In-Reply-To: <20210326173227.96363-1-jlayton@kernel.org>
-References: <20210326173227.96363-1-jlayton@kernel.org>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S231481AbhC1SHb (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sun, 28 Mar 2021 14:07:31 -0400
+Received: from mail.hanoi.gov.vn ([113.160.32.33]:31610 "EHLO
+        mx01.hanoi.gov.vn" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229647AbhC1SHR (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Sun, 28 Mar 2021 14:07:17 -0400
+X-Greylist: delayed 474 seconds by postgrey-1.27 at vger.kernel.org; Sun, 28 Mar 2021 14:07:01 EDT
+Received: from mx01.hanoi.gov.vn (localhost [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 30259EC3D8;
+        Mon, 29 Mar 2021 00:57:51 +0700 (+07)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hanoi.gov.vn;
+        s=default; t=1616954272;
+        bh=FuW10Z6fSdeNlf/0u/BQ1jcwkjYBw0uHUPQgn0LGo7I=; h=Date:From:To;
+        b=R9blPfqJCHUsZAyZxsyyryS61fl4krmBjYKWM6eGGwB8ZdbTBVPL1mmKOmZXMqNlA
+         7CEqA0MXgUAy+X4oK/wthh4vC9Xoov1Ce8tjf/qJvnL7KGsGNVg9ic0krGeHrdNzGM
+         5cIEKsz0emmHL/izbEfCtadst3HYllOJWdonlm5o=
+X-IMSS-DKIM-Authentication-Result: mx01.hanoi.gov.vn; sigcount=0
+Received: from mx01.hanoi.gov.vn (localhost [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 50FCBEC3DD;
+        Mon, 29 Mar 2021 00:57:49 +0700 (+07)
+Received: from mail.hanoi.gov.vn (mail.hanoi.gov.vn [10.1.1.25])
+        by mx01.hanoi.gov.vn (Postfix) with ESMTPS;
+        Mon, 29 Mar 2021 00:57:49 +0700 (+07)
+Received: from mail.hanoi.gov.vn (localhost [127.0.0.1])
+        by mail.hanoi.gov.vn (Postfix) with ESMTPS id 02AFC7F41B42;
+        Mon, 29 Mar 2021 00:57:44 +0700 (+07)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.hanoi.gov.vn (Postfix) with ESMTP id 08FE47F41B5D;
+        Mon, 29 Mar 2021 00:57:41 +0700 (+07)
+Received: from mail.hanoi.gov.vn ([127.0.0.1])
+        by localhost (mail.hanoi.gov.vn [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 1D3oZsOAVsx3; Mon, 29 Mar 2021 00:57:36 +0700 (+07)
+Received: from mail.hanoi.gov.vn (mail.hanoi.gov.vn [10.1.1.25])
+        by mail.hanoi.gov.vn (Postfix) with ESMTP id 478CE7F41B59;
+        Mon, 29 Mar 2021 00:57:33 +0700 (+07)
+Date:   Mon, 29 Mar 2021 00:57:33 +0700 (ICT)
+From:   Mackenzie Scott <ttptqd_thanhoai@hanoi.gov.vn>
+Reply-To: Mackenzie Scott <propack@propck.net>
+Message-ID: <354204758.25920932.1616954253215.JavaMail.zimbra@hanoi.gov.vn>
+Subject: Congratulations ($ 100,800,000.00)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [185.107.80.217]
+X-Mailer: Zimbra 8.8.15_GA_3894 (zclient/8.8.15_GA_3894)
+Thread-Index: ao/APhyKX+JH1nE2Rn/kAmnh2LEgkw==
+Thread-Topic: Congratulations ($ 100,800,000.00)
+To:     undisclosed-recipients:;
+X-TM-AS-GCONF: 00
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, 2021-03-26 at 13:32 -0400, Jeff Layton wrote:
-> I haven't posted this in a while and there were some bugs shaken out of
-> the last posting. This adds (partial) support for fscrypt to kcephfs,
-> including crypto contexts, filenames and encrypted symlink targets. At
-> this point, the xfstests quick tests that generally pass without fscrypt
-> also pass with test_dummy_encryption enabled.
-> 
-> There is one lingering bug that I'm having trouble tracking down: xfstest
-> generic/477 (an open_by_handle_at test) sometimes throws a "Busy inodes
-> after umount" warning. I'm narrowed down the issue a bit, but there is
-> some raciness involved so I haven't quite nailed it down yet.
-> 
-> This set is quite invasive. There is probably some further work to be
-> done to add common code helpers and the like, but the final diffstat
-> probably won't look too different.
-> 
-> This set does not include encryption of file contents. That is turning
-> out to be a bit trickier than first expected owing to the fact that the
-> MDS is usually what handles truncation, and the i_size no longer
-> represents the amount of data stored in the backing store. That will
-> probably require an MDS change to fix, and we're still sorting out the
-> details.
-> 
-> Jeff Layton (19):
->   vfs: export new_inode_pseudo
->   fscrypt: export fscrypt_base64_encode and fscrypt_base64_decode
->   fscrypt: export fscrypt_fname_encrypt and fscrypt_fname_encrypted_size
->   fscrypt: add fscrypt_context_for_new_inode
->   ceph: crypto context handling for ceph
->   ceph: implement -o test_dummy_encryption mount option
->   ceph: preallocate inode for ops that may create one
->   ceph: add routine to create fscrypt context prior to RPC
->   ceph: make ceph_msdc_build_path use ref-walk
->   ceph: add encrypted fname handling to ceph_mdsc_build_path
->   ceph: decode alternate_name in lease info
->   ceph: send altname in MClientRequest
->   ceph: properly set DCACHE_NOKEY_NAME flag in lookup
->   ceph: make d_revalidate call fscrypt revalidator for encrypted
->     dentries
->   ceph: add helpers for converting names for userland presentation
->   ceph: add fscrypt support to ceph_fill_trace
->   ceph: add support to readdir for encrypted filenames
->   ceph: create symlinks with encrypted and base64-encoded targets
->   ceph: add fscrypt ioctls
-> 
->  fs/ceph/Makefile            |   1 +
->  fs/ceph/crypto.c            | 185 +++++++++++++++++++++++
->  fs/ceph/crypto.h            | 101 +++++++++++++
->  fs/ceph/dir.c               | 178 ++++++++++++++++++-----
->  fs/ceph/file.c              |  56 ++++---
->  fs/ceph/inode.c             | 255 +++++++++++++++++++++++++++++---
->  fs/ceph/ioctl.c             |  94 ++++++++++++
->  fs/ceph/mds_client.c        | 283 ++++++++++++++++++++++++++++++------
->  fs/ceph/mds_client.h        |  14 +-
->  fs/ceph/super.c             |  80 +++++++++-
->  fs/ceph/super.h             |  16 +-
->  fs/ceph/xattr.c             |  32 ++++
->  fs/crypto/fname.c           |  53 +++++--
->  fs/crypto/fscrypt_private.h |   9 +-
->  fs/crypto/hooks.c           |   6 +-
->  fs/crypto/policy.c          |  34 ++++-
->  fs/inode.c                  |   1 +
->  include/linux/fscrypt.h     |  10 ++
->  18 files changed, 1246 insertions(+), 162 deletions(-)
->  create mode 100644 fs/ceph/crypto.c
->  create mode 100644 fs/ceph/crypto.h
-> 
 
-Oh, I should mention that this is all in my ceph-fscrypt-fnames branch:
 
-    https://git.kernel.org/pub/scm/linux/kernel/git/jlayton/linux.git/
-
-This all still under heavy development, so I'm open to suggestions and
-review. If you're daring and want to test with it, please do.
-
-I do think this has the potential to be a "killer feature" for ceph (and
-maybe other network filesystems). Being able to store data securely on
-an otherwise "public" cluster seems like a very nice thing to have.
-
-Cheers,
--- 
-Jeff Layton <jlayton@kernel.org>
-
+Hello,i&#39;m Mackenzie Scott,Ex-wife of Amazon founder i&#39;m donating $4 billion to charities,individuals,universities across the Globe from my divorce funds,i&#39;m donating part of it to provide immediate support to people suffering economically during the COVID-19 pandemic,i have a donation worth $100,800,000.00 Dollars for you,you can contact me for more information if you&#39;re interested.
