@@ -2,63 +2,48 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D372634BDFA
-	for <lists+linux-fscrypt@lfdr.de>; Sun, 28 Mar 2021 20:08:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77B8934F9E6
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 31 Mar 2021 09:30:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231481AbhC1SHb (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sun, 28 Mar 2021 14:07:31 -0400
-Received: from mail.hanoi.gov.vn ([113.160.32.33]:31610 "EHLO
-        mx01.hanoi.gov.vn" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229647AbhC1SHR (ORCPT
+        id S234060AbhCaHaN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 31 Mar 2021 03:30:13 -0400
+Received: from bizcloud-power.sawafuji.co.jp ([128.199.220.203]:47845 "EHLO
+        mta0.sawafuji.co.jp" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234064AbhCaHaF (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sun, 28 Mar 2021 14:07:17 -0400
-X-Greylist: delayed 474 seconds by postgrey-1.27 at vger.kernel.org; Sun, 28 Mar 2021 14:07:01 EDT
-Received: from mx01.hanoi.gov.vn (localhost [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 30259EC3D8;
-        Mon, 29 Mar 2021 00:57:51 +0700 (+07)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hanoi.gov.vn;
-        s=default; t=1616954272;
-        bh=FuW10Z6fSdeNlf/0u/BQ1jcwkjYBw0uHUPQgn0LGo7I=; h=Date:From:To;
-        b=R9blPfqJCHUsZAyZxsyyryS61fl4krmBjYKWM6eGGwB8ZdbTBVPL1mmKOmZXMqNlA
-         7CEqA0MXgUAy+X4oK/wthh4vC9Xoov1Ce8tjf/qJvnL7KGsGNVg9ic0krGeHrdNzGM
-         5cIEKsz0emmHL/izbEfCtadst3HYllOJWdonlm5o=
-X-IMSS-DKIM-Authentication-Result: mx01.hanoi.gov.vn; sigcount=0
-Received: from mx01.hanoi.gov.vn (localhost [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 50FCBEC3DD;
-        Mon, 29 Mar 2021 00:57:49 +0700 (+07)
-Received: from mail.hanoi.gov.vn (mail.hanoi.gov.vn [10.1.1.25])
-        by mx01.hanoi.gov.vn (Postfix) with ESMTPS;
-        Mon, 29 Mar 2021 00:57:49 +0700 (+07)
-Received: from mail.hanoi.gov.vn (localhost [127.0.0.1])
-        by mail.hanoi.gov.vn (Postfix) with ESMTPS id 02AFC7F41B42;
-        Mon, 29 Mar 2021 00:57:44 +0700 (+07)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.hanoi.gov.vn (Postfix) with ESMTP id 08FE47F41B5D;
-        Mon, 29 Mar 2021 00:57:41 +0700 (+07)
-Received: from mail.hanoi.gov.vn ([127.0.0.1])
-        by localhost (mail.hanoi.gov.vn [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 1D3oZsOAVsx3; Mon, 29 Mar 2021 00:57:36 +0700 (+07)
-Received: from mail.hanoi.gov.vn (mail.hanoi.gov.vn [10.1.1.25])
-        by mail.hanoi.gov.vn (Postfix) with ESMTP id 478CE7F41B59;
-        Mon, 29 Mar 2021 00:57:33 +0700 (+07)
-Date:   Mon, 29 Mar 2021 00:57:33 +0700 (ICT)
-From:   Mackenzie Scott <ttptqd_thanhoai@hanoi.gov.vn>
-Reply-To: Mackenzie Scott <propack@propck.net>
-Message-ID: <354204758.25920932.1616954253215.JavaMail.zimbra@hanoi.gov.vn>
-Subject: Congratulations ($ 100,800,000.00)
+        Wed, 31 Mar 2021 03:30:05 -0400
+X-Greylist: delayed 636 seconds by postgrey-1.27 at vger.kernel.org; Wed, 31 Mar 2021 03:30:04 EDT
+From:   Albert Bourla <info@universalautomation.com.pk>
+To:     linux-fscrypt@vger.kernel.org
+Subject: Bidding invitation
+Date:   31 Mar 2021 09:13:01 +0200
+Message-ID: <20210331091301.BB11AB1EE1E546CA@universalautomation.com.pk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [185.107.80.217]
-X-Mailer: Zimbra 8.8.15_GA_3894 (zclient/8.8.15_GA_3894)
-Thread-Index: ao/APhyKX+JH1nE2Rn/kAmnh2LEgkw==
-Thread-Topic: Congratulations ($ 100,800,000.00)
-To:     undisclosed-recipients:;
-X-TM-AS-GCONF: 00
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
+Good Day Sir/Ms,
+
+We are please to invite you or your company to quote the 
+following item listed below:
+ 
+Product/Model No: A702TH FYNE PRESSURE REGULATOR
+Model Number: A702TH
+Qty. 30 units
 
 
-Hello,i&#39;m Mackenzie Scott,Ex-wife of Amazon founder i&#39;m donating $4 billion to charities,individuals,universities across the Globe from my divorce funds,i&#39;m donating part of it to provide immediate support to people suffering economically during the COVID-19 pandemic,i have a donation worth $100,800,000.00 Dollars for you,you can contact me for more information if you&#39;re interested.
+Compulsory,Kindly send your quotation to: 
+quotation@pfizerbvsupply.com 
+for immediate approval.
+
+Kind Regards,
+Albert Bourla
+PFIZER B.V Supply Chain Manager
+Tel: +31(0)208080 880
+ADDRESS: Rivium Westlaan 142, 2909 LD
+Capelle aan den IJssel, Netherlands
