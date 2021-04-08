@@ -2,107 +2,98 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86C7B358CE9
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  8 Apr 2021 20:49:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8817F358D11
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  8 Apr 2021 20:57:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232908AbhDHStv (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 8 Apr 2021 14:49:51 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:34123 "EHLO
+        id S232952AbhDHS6F (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 8 Apr 2021 14:58:05 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:54519 "EHLO
         wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231676AbhDHStv (ORCPT
+        by vger.kernel.org with ESMTP id S232950AbhDHS6F (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 8 Apr 2021 14:49:51 -0400
+        Thu, 8 Apr 2021 14:58:05 -0400
 Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.west.internal (Postfix) with ESMTP id A8245D3E;
-        Thu,  8 Apr 2021 14:49:38 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Thu, 08 Apr 2021 14:49:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=date
-        :from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=Ui0NncOXZ1HAaeNTiKM+baPTBXy
-        ZLypqga1b195ukJo=; b=XuPBZPQ7pHeqRsNo7gXv7Gw7qT35SEspqUGDUIetQYS
-        R8J62uC6/PCXKxkOO+RUplIGisoH8LzmcM/pPCqgKo3BtwlfIVs6G+sahl7zBaIt
-        90eHuid2ncp/7WImLVXsLji8yuK446Hs854I876gKpBJ0/dIHjzgfo8N/xRX79R1
-        wxca7c8RpjBSAAJqU1FfPBFSnMnR3oBI9byO3w0+7fzUK8lCLeq0P033VOkTJ3wt
-        L12zZEy7AftFb5Add6qFK1KTYZPZb6OmFT7WSZZQb12kX8wP3YHQk8wBltCi8NEX
-        C4bkV6UrdwdXQ2lB0p9/gBnP1J++aQsqX0/IjxfFIqQ==
+        by mailout.west.internal (Postfix) with ESMTP id 0659510FF;
+        Thu,  8 Apr 2021 14:57:52 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Thu, 08 Apr 2021 14:57:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=from
+        :to:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm3; bh=/kjrdFM5FpWu6xNyLaBfr8uSpj
+        fmM0IKFSF81BLK1u4=; b=iNOjNcnN+KUFESEHucmXelY1seTu2Vzb2zA8y6jSSc
+        IeSxX3GhUNsJ2uS14q5yfz2VYnU1S1yGHOQnROqAUD5mDx7FQI+Q5ehRRTqiiV+8
+        P3OJUbICutjqYiKXXE8gIcH9ROPB8Y1KGlCD5KktS+6Fax0nGgkldjb4MuMPxNL5
+        i/fPNNNjhTE7AR2V57IM3EiCJuVHvaeiKg64e2zy64u4cinvJDySGnzxh/OmegnJ
+        /mlmeblzCQD9k872YvijMcQA5hKwXlJj7+0w4Ik7P4e0b+6rlH6fLb8x9TWZJlSm
+        QmIa/ixkL07h+XOYk1nwfnV/M26cOjOvMUG/eQSZtt7g==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=Ui0Nnc
-        OXZ1HAaeNTiKM+baPTBXyZLypqga1b195ukJo=; b=uj+q21qMLXKMS39TsYzwej
-        SPxHBLsI6Et17H4ijUgj6w6Nxw1wsMLqiWbNCVgbcvTlY1EnrEv2s+w1RA/tIQne
-        6aN8p3OFZfrl7iuYNGq5ZM8LILlu1srproGizOsP30t0HVP6+JEsnfdN4g/75t1E
-        6tR2n64jVK/fd0I6HlFy9PfIEkTuBHACPCGe+jG1/zUPwPDjwUObPxN4t1yfr8GK
-        Jrs72GNHyjnNLHTlCzhn1A8vgF6QvIaekg2ASnXxlFsOmkeo6SxOa10+tLbrI8ei
-        lOSS7fDoODe91LSoup5IxmACNG9o8WKD0EKEvryp7ti5HDKbDFJUwS+2M2ex1Rzg
-        ==
-X-ME-Sender: <xms:QlBvYGwjpdW8EyIw44N2opt2JsW5Dnv509iYs-2g59ZgeU8GJo_lyA>
-    <xme:QlBvYCQ5qexah5TfgSOdoSl1i-4topxAQnGhs8T7p8TXf7V9ZrcYdhS1YlmFTdhfU
-    DbgTYMLk4sTBcXD1Tw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudejledgudefudcutefuodetggdotefrod
+        messagingengine.com; h=content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=/kjrdFM5FpWu6xNyL
+        aBfr8uSpjfmM0IKFSF81BLK1u4=; b=QlJnoiq2jNeFc5AAd0rVZh3y9pVrNp2TE
+        tlFxhPaR+y5twpTaX6UcWZOczFaadsbI6BkMkxAl4Xg4dbO5TNiHsVQuFBMLLtio
+        fvQISzUPn7QlZ/430R3QDdYmKZ3NDLgIFZ8CAxhRxBCuiWEZFhkl9/ziL2TrdOfx
+        8ZvCvT1Q3vPZDVOV4C2a2x7ibsUSFYJxKTGGdD7WACphJdvDvoUxBjXi204iXOBb
+        bdgcvom2yjjNO8DjrpGbCm44EWL3wpWn4mrITkISaFjn7uGfa8FMXLnzmpWswswu
+        uqZIM31J4sfKKVMz+Y3VR1MZPyTvWzK70bPd/fgM9j1lxIiI8F/Lg==
+X-ME-Sender: <xms:MFJvYPrVUgF5blLa9xH0cPCdnsrdZjY4NDywSSozeW4BYGobpt5PeA>
+    <xme:MFJvYJrT8VIVdlhbi6dm7SJfAzcmEGJ9_84Rrsoyk1HFrLBOpZzwHIMN5cIYeU2tK
+    oDEqWPg9X0SHH58xpQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudejledgudeffecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
-    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
-    ehudevleekieetleevieeuhfduhedtiefgheekfeefgeelvdeuveeggfduueevfeenucfk
-    phepvddtjedrheefrddvheefrdejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
-    hmpehmrghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:QlBvYIUE9KnKJytnfAEXB5MZMVMvItV4KSIFI9a-yRJdI9xXv2pj5g>
-    <xmx:QlBvYMjWdF7nTwZt4BCsHqDOn7YKhHpITW-Ave7m6IkVZiMHwEAamw>
-    <xmx:QlBvYIDnWt2KdqR66N29NVkbp2R9I7s2Bqnfx0KSIJTykTKlhq_FZQ>
-    <xmx:QlBvYLNky7BMUxcbqSdEHUwDS3tJS_AFqRM27BMJzV14OPthewg8DA>
+    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertd
+    ertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
+    oheqnecuggftrfgrthhtvghrnhepudeitdelueeijeefleffveelieefgfejjeeigeekud
+    duteefkefffeethfdvjeevnecukfhppedvtdejrdehfedrvdehfedrjeenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrd
+    hioh
+X-ME-Proxy: <xmx:MFJvYMPMaypihTCNkPwuYrhM_AQKn_mphuv3qIQ-2XxDnCezSWumkg>
+    <xmx:MFJvYC7NhAzcaOTmmcQe7Mdtc2-pUTZNqpflVaGufSlfAJbj5Uk2fw>
+    <xmx:MFJvYO50jusCHvb2xQCdaOxRJhus2xOQxJiKUT4SCABJc3KeSeAhvQ>
+    <xmx:MFJvYEQQi229KqNg3jugMGF6lsL-MpxrusHoKmbXQoN_0_30OXpdgw>
 Received: from localhost (unknown [207.53.253.7])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 02EC41080057;
-        Thu,  8 Apr 2021 14:49:37 -0400 (EDT)
-Date:   Thu, 8 Apr 2021 11:49:37 -0700
+        by mail.messagingengine.com (Postfix) with ESMTPA id 3D622240057;
+        Thu,  8 Apr 2021 14:57:52 -0400 (EDT)
 From:   Boris Burkov <boris@bur.io>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+To:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v2 2/3] generic/574: corrupt btrfs merkle tree data
-Message-ID: <YG9QQUHzoA045Ngt@zen>
-References: <cover.1617906318.git.boris@bur.io>
- <ca320cd0c8427458828cc36d5d5168bbe6b6bab2.1617906318.git.boris@bur.io>
- <YG9OZseq1nGv/wMk@sol.localdomain>
+Subject: [PATCH v3 0/3] tests for btrfs fsverity
+Date:   Thu,  8 Apr 2021 11:57:48 -0700
+Message-Id: <cover.1617908086.git.boris@bur.io>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YG9OZseq1nGv/wMk@sol.localdomain>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 11:41:42AM -0700, Eric Biggers wrote:
-> On Thu, Apr 08, 2021 at 11:30:12AM -0700, Boris Burkov wrote:
-> > 
-> > Note that there is a bit of a kludge here: since btrfs_corrupt_block
-> > doesn't handle streaming corruption bytes from stdin (I could change
-> > that, but it feels like overkill for this purpose), I just read the
-> > first corruption byte and duplicate it for the desired length. That is
-> > how the test is using the interface in practice, anyway.
-> 
-> If that's the problem, couldn't you just write the data to a temporary file?
+This patchset provides tests for fsverity support in btrfs.
 
-Sorry, I was a bit too vague. It doesn't have a file or stdin interface,
-as far as I know.
+It includes modifications for generic tests to pass with btrfs as well
+as new btrfs specific tests.
 
-btrfs-corrupt-block has your typical "kitchen sink of flags" interface and
-doesn't currently read input from streams/files. I extended that
-interface in the simplest way to support arbitrary corruption, which
-didn't fit with the stream based corruption this test does.
+--
+v3: rebase onto xfstests master branch
+v2: pass generic tests, add logwrites test
 
-my options seem to be:
-shoehorn the "byte, length" interface into this test or
-shoehorn the "stream corruption input in" interface into
-btrfs-corrupt-block.
+Boris Burkov (3):
+  btrfs: test btrfs specific fsverity corruption
+  generic/574: corrupt btrfs merkle tree data
+  btrfs: test verity orphans with dmlogwrites
 
-I have no problem with either, the former was just less work because I
-already wrote it that way. If the junk I did here is a deal-breaker, I
-don't mind modifying btrfs-corrupt-block.
+ common/config       |   1 +
+ common/verity       |  22 ++++-
+ tests/btrfs/290     | 190 ++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/290.out |  17 ++++
+ tests/btrfs/291     | 156 ++++++++++++++++++++++++++++++++++++
+ tests/btrfs/291.out |   2 +
+ tests/btrfs/group   |   2 +
+ 7 files changed, 388 insertions(+), 2 deletions(-)
+ create mode 100755 tests/btrfs/290
+ create mode 100644 tests/btrfs/290.out
+ create mode 100755 tests/btrfs/291
+ create mode 100644 tests/btrfs/291.out
 
-> 
-> - Eric
+-- 
+2.30.2
 
-Thanks for the quick review,
-Boris
