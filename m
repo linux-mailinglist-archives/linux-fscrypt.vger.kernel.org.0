@@ -2,266 +2,263 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2124535A5A8
-	for <lists+linux-fscrypt@lfdr.de>; Fri,  9 Apr 2021 20:20:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19D4635A8EF
+	for <lists+linux-fscrypt@lfdr.de>; Sat, 10 Apr 2021 00:50:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234508AbhDISUs (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 9 Apr 2021 14:20:48 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:43281 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233332AbhDISUr (ORCPT
+        id S235053AbhDIWpd (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 9 Apr 2021 18:45:33 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:49073 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234880AbhDIWpd (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 9 Apr 2021 14:20:47 -0400
+        Fri, 9 Apr 2021 18:45:33 -0400
 Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id 4010C5C009F;
-        Fri,  9 Apr 2021 14:20:34 -0400 (EDT)
+        by mailout.nyi.internal (Postfix) with ESMTP id 2CA6F5C00E9;
+        Fri,  9 Apr 2021 18:45:19 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Fri, 09 Apr 2021 14:20:34 -0400
+  by compute2.internal (MEProxy); Fri, 09 Apr 2021 18:45:19 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=date
         :from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=DhH21a7Jp/LLnvw3iBNXY+AXe1C
-        35eXFmWbH0+mQBGY=; b=BsxgpKUL49QUAW/8L9PXZX30GUTT4bkUgBjQga3cLvE
-        Ak5iqJva57F3gDYmsiVBQJ6ZQtn/SNmTapkyJr++s3onM2IPEBF+VXTcOML8qW1U
-        Nk/iPzHLBafm1cXWUZD/lwRMZHHmUlET0PBDJ+tNmiKXqWlmwmYxqPy1I+tgl+PX
-        w9/M272bNwZzgFJcSI5ECKDrMX2Ihg8UvXh2We687EYQJXepKPQmOTBVmO3gIvsx
-        TA3rXfc2igEylhFoMqGvtN1TMKnVfOyqJTkNzrF/AOJEr1wo7Mjzv/tuPlFVTE/W
-        sS2w7rMFZljOaP9BgVo+uzBX7zf/LBiiHFbBhEh+RoA==
+        :content-type:in-reply-to; s=fm3; bh=OYjmJRHllS2Gy4zmX+Daft+eXQ5
+        IFCcvaqd14V22T14=; b=SCFtvS8ECses/Ox4gyk4Oi2Es8Y6DWBHLXRBj0xN74M
+        QX+m4h7cn4eSha71EajfYEKf2oOALNBx7TzzO6mB1gr/LrtbkNkoVI0h6f23nh8G
+        1gmCDFt72gXId6NSVwDayYraYrKUgXyPwxukzPqTK4pbFFAJDmhzqWNP4r0Lkuc9
+        48E3wW6BrXi3HbX5n14rvD674/e+7DxgWX/AA2dXr8MqNsb1d4QEvmdPQsWbuBWv
+        syCsWTYRjqzbp2mu9g7YJQWulgxyMLqSKt9Rl3qjn2Hvp1QjMIfadGC55QcgkCb4
+        dDygeLd+adV6NmBP+HJ9N4Tew+lmCX2bhYAaO7zhAGQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-type:date:from:in-reply-to
         :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=DhH21a
-        7Jp/LLnvw3iBNXY+AXe1C35eXFmWbH0+mQBGY=; b=FfTjf5Eh2DA6JAkD0afUng
-        LXCFICwgTUy4jcWakml83zr2RFU0dxsUkjf36bhzsR1R9Ds39TzboqSNJw7QgCJ7
-        GcbwUYGGHx1Fiq06Z+oo7l/Al1xDdR0MYZgydRWw605E9kPn9D7mlElb15a+MS5F
-        HTx+9+lI08NtWN+fDkSpOMblxrghqIlSWrY21pv5JptFCVbLSi9BeTDH+tC40y1J
-        RjmAB6gpqobGa0Uenpbss+4dG77RQOk0VfJOrgcLCN8ARW04QQux/LnESjCE8M4+
-        f2Wbd0XKEUpYcWbSgWlt1sYDwvfbspBFZ7vo2QqoNYbyfCXLmMKqnwx/rpsDCk4A
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=OYjmJR
+        HllS2Gy4zmX+Daft+eXQ5IFCcvaqd14V22T14=; b=C5EPWvWCDJHeX6me/108QR
+        jXfKsvBb5wPSbPV9fO8TSVekvGTgKdZVZeW6PkAkYJdS8TF0qMIgn6Jfb8hf9emK
+        n9qSUW0iOFXK38qSp5ppZQCNiTqfhguWczZEAAiXfZ2Uf7TV/ICVbGlbgwTyja8p
+        PHYEwUn57cf2Er8XXb0BRodOJRzN0vDqivwtd5yckl1lUNRPsTP5jRy7Hal68daa
+        ye8S/zhMs2EjQjg9rhew/FVK0jw19K9KX+B3ZQfTvbG7FhPGJ1ykoUtRf02TH5UI
+        K2+ri0BO4N125zzeEbutFi90Xm7NhTqhPItOdaa/GMPUYAw+sq2+hxKNh5PCxr1g
         ==
-X-ME-Sender: <xms:8ppwYHC5ox0O-huVeDA7I7DV5cYxfbAl6Kr-WdR9ktg6yxjQPX078Q>
-    <xme:8ppwYNiwhhILM86Z_E9AYJfbuPELaGXCbMjyKJuuhmiuY1vmrRHHRN2h_QT1g8XFK
-    0VxoYKRQ9s7tBAxpgg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudekuddguddvkecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
-    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
-    ehudevleekieetleevieeuhfduhedtiefgheekfeefgeelvdeuveeggfduueevfeenucfk
-    phepvddtjedrheefrddvheefrdejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
-    hmpehmrghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:8ppwYCm0uzRlDJ_0mCs4Oxo4MS3VQCYAw3Qxv9-8aak27RYpTY6WcA>
-    <xmx:8ppwYJz3dwDG2O3gR7izM1E6JC54nZcDUa7RKEFltIgLDui7mAMQ2Q>
-    <xmx:8ppwYMRZnsNkJOLCHjInD42-7zTKJmCD8smnZDNjOMVFjZNkb6Oxiw>
-    <xmx:8ppwYHLaI1stCA-EK26lQ9dcc9jKrI9T_jQRG4rhGCN51mCF1Vigyg>
+X-ME-Sender: <xms:_thwYLlKGJwAzoI4K4hUX53h2D2BQQvoaEiWmXc_3B_oCGJVwHb5EQ>
+    <xme:_thwYO0i_OGgmnIp1CpMEpRvlot_xv9b3c40nt_Fngj8K3cVjpwKb0znHIYijhpKd
+    1Jb0nx7e9Y5vSgQlTk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudekvddguddtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhs
+    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhephe
+    duveelkeeiteelveeiuefhudehtdeigfehkeeffeegledvueevgefgudeuveefnecukfhp
+    pedvtdejrdehfedrvdehfedrjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
+X-ME-Proxy: <xmx:_thwYBolmG-eEsO9LI0SPB-rOMnmaZFkxoAzHCVQHnJGktVXh5-OOQ>
+    <xmx:_thwYDmU-DkMl_j_LiLsmQD9LDZO9l-xx-JvqVyMwCTpTTSCit_z7Q>
+    <xmx:_thwYJ0W0lLQaf1CqPsDt7koWgdb6s2zs3nMfd1QcF8xBTcTLtAq2Q>
+    <xmx:_9hwYK-NrsvyjxLeqETqIi5XnVP59Ww4ayhdyFieAWytz_5TDw09nw>
 Received: from localhost (unknown [207.53.253.7])
-        by mail.messagingengine.com (Postfix) with ESMTPA id F3C6D1080057;
-        Fri,  9 Apr 2021 14:20:33 -0400 (EDT)
-Date:   Fri, 9 Apr 2021 11:20:32 -0700
+        by mail.messagingengine.com (Postfix) with ESMTPA id 9DDE71080063;
+        Fri,  9 Apr 2021 18:45:18 -0400 (EDT)
+Date:   Fri, 9 Apr 2021 15:45:17 -0700
 From:   Boris Burkov <boris@bur.io>
-To:     Anand Jain <anand.jain@oracle.com>
+To:     Eric Biggers <ebiggers@kernel.org>
 Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
         linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH v3 1/5] btrfs: add compat_flags to btrfs_inode_item
-Message-ID: <YHCa2lw4vBw/3ea1@zen>
+Subject: Re: [PATCH v3 2/5] btrfs: initial fsverity support
+Message-ID: <YHDY/ekYdxHhvHRW@zen>
 References: <cover.1617900170.git.boris@bur.io>
- <7fd3068c977de9dd25eb98fa2b9d3cd928613138.1617900170.git.boris@bur.io>
- <f0c82e93-6d21-740e-5ece-e3b5cc5a8677@oracle.com>
+ <c9335d862ee4ddc1f7193bbb06ca7313d9ff1b30.1617900170.git.boris@bur.io>
+ <YG+IoOqvDNtkwWQf@sol.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f0c82e93-6d21-740e-5ece-e3b5cc5a8677@oracle.com>
+In-Reply-To: <YG+IoOqvDNtkwWQf@sol.localdomain>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 07:40:44AM +0800, Anand Jain wrote:
-> On 09/04/2021 02:33, Boris Burkov wrote:
-> > The tree checker currently rejects unrecognized flags when it reads
-> > btrfs_inode_item. Practically, this means that adding a new flag makes
-> > the change backwards incompatible if the flag is ever set on a file.
+On Thu, Apr 08, 2021 at 03:50:08PM -0700, Eric Biggers wrote:
+> On Thu, Apr 08, 2021 at 11:33:53AM -0700, Boris Burkov wrote:
+> > diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+> > index f7a4ad86adee..e5282a8f566a 100644
+> > --- a/fs/btrfs/super.c
+> > +++ b/fs/btrfs/super.c
+> > @@ -1339,6 +1339,7 @@ static int btrfs_fill_super(struct super_block *sb,
+> >  	sb->s_op = &btrfs_super_ops;
+> >  	sb->s_d_op = &btrfs_dentry_operations;
+> >  	sb->s_export_op = &btrfs_export_ops;
+> > +	sb->s_vop = &btrfs_verityops;
+> >  	sb->s_xattr = btrfs_xattr_handlers;
+> >  	sb->s_time_gran = 1;
 > 
+> As the kernel test robot has hinted at, this line needs to be conditional on
+> CONFIG_FS_VERITY.
 > 
-> > Take up one of the 4 reserved u64 fields in the btrfs_inode_item as a
-> > new "compat_flags". These flags are zero on inode creation in btrfs and
-> > mkfs and are ignored by an older kernel, so it should be safe to use
-> > them in this way.
-> 
-> I don't see an incompt flags check during mount, how does this patch will
-> handle if you mount a disk with an older on-disk btrfs_inode_item data
-> structure which has no compat_flags?
-
-I'm referring to check_inode_item in fs/btrfs/tree-checker.c
-Specificall, the last check it does that fails with the string: "unknown
-flags detected".
-
-This patch ignores the new compat_flags from a checking perspective, so
-it won't complain no matter what an old on-disk format put there. As far
-as I can tell from inspecting the code and mkfs, it should be zero,
-though I suppose it's possible an older version of btrfs did not zero
-it. I think the worst case would be if it weren't zero and we
-incorrectly interpreted the file as having a compat_flags flag set.
-
-> 
-> Why not update the tree checker (need to fix stable kernel as well) and
-> inode flags, so that we spare u64 space in the btrfs_inode_item?
-
-I don't understand this suggestion, could you be more specific?
-
-> 
-> Also, I think we need the incompt flags to check during mount.
-
-Same for this one, sorry. What do you think I should check?
-
-> 
-> Thanks, Anand
-
-Thank you for the review,
-Boris
-> 
-> 
-> > Signed-off-by: Boris Burkov <boris@bur.io>
-> > ---
-> >   fs/btrfs/btrfs_inode.h          | 1 +
-> >   fs/btrfs/ctree.h                | 2 ++
-> >   fs/btrfs/delayed-inode.c        | 2 ++
-> >   fs/btrfs/inode.c                | 3 +++
-> >   fs/btrfs/ioctl.c                | 7 ++++---
-> >   fs/btrfs/tree-log.c             | 1 +
-> >   include/uapi/linux/btrfs_tree.h | 7 ++++++-
-> >   7 files changed, 19 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-> > index c652e19ad74e..e8dbc8e848ce 100644
-> > --- a/fs/btrfs/btrfs_inode.h
-> > +++ b/fs/btrfs/btrfs_inode.h
-> > @@ -191,6 +191,7 @@ struct btrfs_inode {
-> >   	/* flags field from the on disk inode */
-> >   	u32 flags;
-> > +	u64 compat_flags;
-> >   	/*
-> >   	 * Counters to keep track of the number of extent item's we may use due
-> > diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> > index f2fd73e58ee6..d633c563164b 100644
-> > --- a/fs/btrfs/ctree.h
-> > +++ b/fs/btrfs/ctree.h
-> > @@ -1754,6 +1754,7 @@ BTRFS_SETGET_FUNCS(inode_gid, struct btrfs_inode_item, gid, 32);
-> >   BTRFS_SETGET_FUNCS(inode_mode, struct btrfs_inode_item, mode, 32);
-> >   BTRFS_SETGET_FUNCS(inode_rdev, struct btrfs_inode_item, rdev, 64);
-> >   BTRFS_SETGET_FUNCS(inode_flags, struct btrfs_inode_item, flags, 64);
-> > +BTRFS_SETGET_FUNCS(inode_compat_flags, struct btrfs_inode_item, compat_flags, 64);
-> >   BTRFS_SETGET_STACK_FUNCS(stack_inode_generation, struct btrfs_inode_item,
-> >   			 generation, 64);
-> >   BTRFS_SETGET_STACK_FUNCS(stack_inode_sequence, struct btrfs_inode_item,
-> > @@ -1771,6 +1772,7 @@ BTRFS_SETGET_STACK_FUNCS(stack_inode_gid, struct btrfs_inode_item, gid, 32);
-> >   BTRFS_SETGET_STACK_FUNCS(stack_inode_mode, struct btrfs_inode_item, mode, 32);
-> >   BTRFS_SETGET_STACK_FUNCS(stack_inode_rdev, struct btrfs_inode_item, rdev, 64);
-> >   BTRFS_SETGET_STACK_FUNCS(stack_inode_flags, struct btrfs_inode_item, flags, 64);
-> > +BTRFS_SETGET_STACK_FUNCS(stack_inode_compat_flags, struct btrfs_inode_item, compat_flags, 64);
-> >   BTRFS_SETGET_FUNCS(timespec_sec, struct btrfs_timespec, sec, 64);
-> >   BTRFS_SETGET_FUNCS(timespec_nsec, struct btrfs_timespec, nsec, 32);
-> >   BTRFS_SETGET_STACK_FUNCS(stack_timespec_sec, struct btrfs_timespec, sec, 64);
-> > diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-> > index 1a88f6214ebc..ef4e0265dbe3 100644
-> > --- a/fs/btrfs/delayed-inode.c
-> > +++ b/fs/btrfs/delayed-inode.c
-> > @@ -1718,6 +1718,7 @@ static void fill_stack_inode_item(struct btrfs_trans_handle *trans,
-> >   	btrfs_set_stack_inode_transid(inode_item, trans->transid);
-> >   	btrfs_set_stack_inode_rdev(inode_item, inode->i_rdev);
-> >   	btrfs_set_stack_inode_flags(inode_item, BTRFS_I(inode)->flags);
-> > +	btrfs_set_stack_inode_compat_flags(inode_item, BTRFS_I(inode)->compat_flags);
-> >   	btrfs_set_stack_inode_block_group(inode_item, 0);
-> >   	btrfs_set_stack_timespec_sec(&inode_item->atime,
-> > @@ -1776,6 +1777,7 @@ int btrfs_fill_inode(struct inode *inode, u32 *rdev)
-> >   	inode->i_rdev = 0;
-> >   	*rdev = btrfs_stack_inode_rdev(inode_item);
-> >   	BTRFS_I(inode)->flags = btrfs_stack_inode_flags(inode_item);
-> > +	BTRFS_I(inode)->compat_flags = btrfs_stack_inode_compat_flags(inode_item);
-> >   	inode->i_atime.tv_sec = btrfs_stack_timespec_sec(&inode_item->atime);
-> >   	inode->i_atime.tv_nsec = btrfs_stack_timespec_nsec(&inode_item->atime);
-> > diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> > index 1e0e20ad25e4..3aa96ec27045 100644
-> > --- a/fs/btrfs/inode.c
-> > +++ b/fs/btrfs/inode.c
-> > @@ -3627,6 +3627,7 @@ static int btrfs_read_locked_inode(struct inode *inode,
-> >   	BTRFS_I(inode)->index_cnt = (u64)-1;
-> >   	BTRFS_I(inode)->flags = btrfs_inode_flags(leaf, inode_item);
-> > +	BTRFS_I(inode)->compat_flags = btrfs_inode_compat_flags(leaf, inode_item);
-> >   cache_index:
-> >   	/*
-> > @@ -3793,6 +3794,7 @@ static void fill_inode_item(struct btrfs_trans_handle *trans,
-> >   	btrfs_set_token_inode_transid(&token, item, trans->transid);
-> >   	btrfs_set_token_inode_rdev(&token, item, inode->i_rdev);
-> >   	btrfs_set_token_inode_flags(&token, item, BTRFS_I(inode)->flags);
-> > +	btrfs_set_token_inode_compat_flags(&token, item, BTRFS_I(inode)->compat_flags);
-> >   	btrfs_set_token_inode_block_group(&token, item, 0);
-> >   }
-> > @@ -8859,6 +8861,7 @@ struct inode *btrfs_alloc_inode(struct super_block *sb)
-> >   	ei->defrag_bytes = 0;
-> >   	ei->disk_i_size = 0;
-> >   	ei->flags = 0;
-> > +	ei->compat_flags = 0;
-> >   	ei->csum_bytes = 0;
-> >   	ei->index_cnt = (u64)-1;
-> >   	ei->dir_index = 0;
-> > diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> > index 3415a9f06c81..2c9cbd2642b1 100644
-> > --- a/fs/btrfs/ioctl.c
-> > +++ b/fs/btrfs/ioctl.c
-> > @@ -102,8 +102,9 @@ static unsigned int btrfs_mask_fsflags_for_type(struct inode *inode,
-> >    * Export internal inode flags to the format expected by the FS_IOC_GETFLAGS
-> >    * ioctl.
-> >    */
-> > -static unsigned int btrfs_inode_flags_to_fsflags(unsigned int flags)
-> > +static unsigned int btrfs_inode_flags_to_fsflags(struct btrfs_inode *binode)
-> >   {
-> > +	unsigned int flags = binode->flags;
-> >   	unsigned int iflags = 0;
-> >   	if (flags & BTRFS_INODE_SYNC)
-> > @@ -156,7 +157,7 @@ void btrfs_sync_inode_flags_to_i_flags(struct inode *inode)
-> >   static int btrfs_ioctl_getflags(struct file *file, void __user *arg)
-> >   {
-> >   	struct btrfs_inode *binode = BTRFS_I(file_inode(file));
-> > -	unsigned int flags = btrfs_inode_flags_to_fsflags(binode->flags);
-> > +	unsigned int flags = btrfs_inode_flags_to_fsflags(binode);
-> >   	if (copy_to_user(arg, &flags, sizeof(flags)))
-> >   		return -EFAULT;
-> > @@ -228,7 +229,7 @@ static int btrfs_ioctl_setflags(struct file *file, void __user *arg)
-> >   	btrfs_inode_lock(inode, 0);
-> >   	fsflags = btrfs_mask_fsflags_for_type(inode, fsflags);
-> > -	old_fsflags = btrfs_inode_flags_to_fsflags(binode->flags);
-> > +	old_fsflags = btrfs_inode_flags_to_fsflags(binode);
-> >   	ret = vfs_ioc_setflags_prepare(inode, old_fsflags, fsflags);
-> >   	if (ret)
-> > diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-> > index 72c4b66ed516..fed638f995ba 100644
-> > --- a/fs/btrfs/tree-log.c
-> > +++ b/fs/btrfs/tree-log.c
-> > @@ -3944,6 +3944,7 @@ static void fill_inode_item(struct btrfs_trans_handle *trans,
-> >   	btrfs_set_token_inode_transid(&token, item, trans->transid);
-> >   	btrfs_set_token_inode_rdev(&token, item, inode->i_rdev);
-> >   	btrfs_set_token_inode_flags(&token, item, BTRFS_I(inode)->flags);
-> > +	btrfs_set_token_inode_compat_flags(&token, item, BTRFS_I(inode)->compat_flags);
-> >   	btrfs_set_token_inode_block_group(&token, item, 0);
-> >   }
-> > diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
-> > index 58d7cff9afb1..ae25280316bd 100644
-> > --- a/include/uapi/linux/btrfs_tree.h
-> > +++ b/include/uapi/linux/btrfs_tree.h
-> > @@ -574,11 +574,16 @@ struct btrfs_inode_item {
-> >   	/* modification sequence number for NFS */
-> >   	__le64 sequence;
+> > +/*
+> > + * Helper function for computing cache index for Merkle tree pages
+> > + * @inode: verity file whose Merkle items we want.
+> > + * @merkle_index: index of the page in the Merkle tree (as in
+> > + *                read_merkle_tree_page).
+> > + * @ret_index: returned index in the inode's mapping
+> > + *
+> > + * Returns: 0 on success, -EFBIG if the location in the file would be beyond
+> > + * sb->s_maxbytes.
+> > + */
+> > +static int get_verity_mapping_index(struct inode *inode,
+> > +				    pgoff_t merkle_index,
+> > +				    pgoff_t *ret_index)
+> > +{
 > > +	/*
-> > +	 * flags which aren't checked for corruption at mount
-> > +	 * and can be added in a backwards compatible way
+> > +	 * the file is readonly, so i_size can't change here.  We jump
+> > +	 * some pages past the last page to cache our merkles.  The goal
+> > +	 * is just to jump past any hugepages that might be mapped in.
 > > +	 */
-> > +	__le64 compat_flags;
-> >   	/*
-> >   	 * a little future expansion, for more than this we can
-> >   	 * just grow the inode item and version it
-> >   	 */
-> > -	__le64 reserved[4];
-> > +	__le64 reserved[3];
-> >   	struct btrfs_timespec atime;
-> >   	struct btrfs_timespec ctime;
-> >   	struct btrfs_timespec mtime;
-> > 
+> > +	pgoff_t merkle_offset = 2048;
+> > +	u64 index = (i_size_read(inode) >> PAGE_SHIFT) + merkle_offset + merkle_index;
 > 
+> Would it make more sense to align the page index to 2048, rather than adding
+> 2048?  Or are huge pages not necessarily aligned in the page cache?
+> 
+
+What advantages are there to aligning? I don't have any objection to
+doing it besides keeping things as simple as possible.
+
+> > +
+> > +	if (index > inode->i_sb->s_maxbytes >> PAGE_SHIFT)
+> > +		return -EFBIG;
+> 
+> There's an off-by-one error here; it's considering the beginning of the page
+> rather than the end of the page.
+> 
+
+I can't see the error myself, yet..
+
+read_merkle_tree_page is what interacts with the page cache and does it
+with read_key_bytes in PAGE_SIZE chunks. So if index == maxbytes >>
+PAGE_SHIFT, I take that to mean we match on the start of the last
+possible page, which seems fine to read in all of. The next index will
+fail.
+
+I think the weird thing is I called get_verity_merkle_index to
+write_merkle_tree_block. It doesn't do much there since we aren't
+affecting the page cache till we read.
+
+As far as I can see, to make the btrfs implementation behave as
+similarly as possible to ext4, it should either interact with the page
+cache on the write path, or if that is undesirable (haven't thought it
+through carefully yet), it should accurately fail writes with EFBIG that
+would later fail as reads.
+
+> > +/*
+> > + * Insert and write inode items with a given key type and offset.
+> > + * @inode: The inode to insert for.
+> > + * @key_type: The key type to insert.
+> > + * @offset: The item offset to insert at.
+> > + * @src: Source data to write.
+> > + * @len: Length of source data to write.
+> > + *
+> > + * Write len bytes from src into items of up to 1k length.
+> > + * The inserted items will have key <ino, key_type, offset + off> where
+> > + * off is consecutively increasing from 0 up to the last item ending at
+> > + * offset + len.
+> > + *
+> > + * Returns 0 on success and a negative error code on failure.
+> > + */
+> > +static int write_key_bytes(struct btrfs_inode *inode, u8 key_type, u64 offset,
+> > +			   const char *src, u64 len)
+> > +{
+> > +	struct btrfs_trans_handle *trans;
+> > +	struct btrfs_path *path;
+> > +	struct btrfs_root *root = inode->root;
+> > +	struct extent_buffer *leaf;
+> > +	struct btrfs_key key;
+> > +	u64 orig_len = len;
+> > +	u64 copied = 0;
+> > +	unsigned long copy_bytes;
+> > +	unsigned long src_offset = 0;
+> > +	void *data;
+> > +	int ret;
+> > +
+> > +	path = btrfs_alloc_path();
+> > +	if (!path)
+> > +		return -ENOMEM;
+> > +
+> > +	while (len > 0) {
+> > +		trans = btrfs_start_transaction(root, 1);
+> > +		if (IS_ERR(trans)) {
+> > +			ret = PTR_ERR(trans);
+> > +			break;
+> > +		}
+> > +
+> > +		key.objectid = btrfs_ino(inode);
+> > +		key.offset = offset;
+> > +		key.type = key_type;
+> > +
+> > +		/*
+> > +		 * insert 1K at a time mostly to be friendly for smaller
+> > +		 * leaf size filesystems
+> > +		 */
+> > +		copy_bytes = min_t(u64, len, 1024);
+> > +
+> > +		ret = btrfs_insert_empty_item(trans, root, path, &key, copy_bytes);
+> > +		if (ret) {
+> > +			btrfs_end_transaction(trans);
+> > +			break;
+> > +		}
+> > +
+> > +		leaf = path->nodes[0];
+> > +
+> > +		data = btrfs_item_ptr(leaf, path->slots[0], void);
+> > +		write_extent_buffer(leaf, src + src_offset,
+> > +				    (unsigned long)data, copy_bytes);
+> > +		offset += copy_bytes;
+> > +		src_offset += copy_bytes;
+> > +		len -= copy_bytes;
+> > +		copied += copy_bytes;
+> > +
+> > +		btrfs_release_path(path);
+> > +		btrfs_end_transaction(trans);
+> > +	}
+> > +
+> > +	btrfs_free_path(path);
+> > +
+> > +	if (!ret && copied != orig_len)
+> > +		ret = -EIO;
+> 
+> The condition '!ret && copied != orig_len' at the end appears to be unnecessary,
+> since this function doesn't do short writes.
+> 
+> > +/*
+> > + * fsverity op that gets the struct fsverity_descriptor.
+> > + * fsverity does a two pass setup for reading the descriptor, in the first pass
+> > + * it calls with buf_size = 0 to query the size of the descriptor,
+> > + * and then in the second pass it actually reads the descriptor off
+> > + * disk.
+> > + */
+> > +static int btrfs_get_verity_descriptor(struct inode *inode, void *buf,
+> > +				       size_t buf_size)
+> > +{
+> > +	size_t true_size;
+> > +	ssize_t ret = 0;
+> > +	struct btrfs_verity_descriptor_item item;
+> > +
+> > +	memset(&item, 0, sizeof(item));
+> > +	ret = read_key_bytes(BTRFS_I(inode), BTRFS_VERITY_DESC_ITEM_KEY,
+> > +			     0, (char *)&item, sizeof(item), NULL);
+> > +	if (ret < 0)
+> > +		return ret;
+> > +
+> > +	true_size = btrfs_stack_verity_descriptor_size(&item);
+> > +	if (true_size > INT_MAX)
+> 
+> true_size is a __le64 on-disk, so it technically should be __u64 here; otherwise
+> its high 32 bits might be ignored.
+> 
+> > +struct btrfs_verity_descriptor_item {
+> > +	/* size of the verity descriptor in bytes */
+> > +	__le64 size;
+> > +	__le64 reserved[2];
+> > +	__u8 encryption;
+> > +} __attribute__ ((__packed__));
+> 
+> The 'reserved' field still isn't validated to be 0 before going ahead and using
+> the descriptor.  Is that still intentional?  If so, it might be clearer to call
+> this field 'unused'.
+> 
+> - Eric
