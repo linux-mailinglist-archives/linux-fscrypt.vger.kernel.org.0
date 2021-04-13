@@ -2,114 +2,106 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4979435B410
-	for <lists+linux-fscrypt@lfdr.de>; Sun, 11 Apr 2021 14:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D099E35E55D
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 13 Apr 2021 19:50:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235386AbhDKMTv (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sun, 11 Apr 2021 08:19:51 -0400
-Received: from out20-86.mail.aliyun.com ([115.124.20.86]:37421 "EHLO
-        out20-86.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229804AbhDKMTv (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sun, 11 Apr 2021 08:19:51 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.09471063|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.208122-0.00564878-0.786229;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047201;MF=guan@eryu.me;NM=1;PH=DS;RN=5;RT=5;SR=0;TI=SMTPD_---.JyJ0sD8_1618143572;
-Received: from localhost(mailfrom:guan@eryu.me fp:SMTPD_---.JyJ0sD8_1618143572)
-          by smtp.aliyun-inc.com(10.147.40.44);
-          Sun, 11 Apr 2021 20:19:32 +0800
-Date:   Sun, 11 Apr 2021 20:19:32 +0800
-From:   Eryu Guan <guan@eryu.me>
-To:     Boris Burkov <boris@bur.io>
-Cc:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v3 2/3] generic/574: corrupt btrfs merkle tree data
-Message-ID: <YHLpVNiPVXVPM1oP@desktop>
-References: <cover.1617908086.git.boris@bur.io>
- <4429f6365c3250efe9bf7bc0a1a22e642b149f61.1617908086.git.boris@bur.io>
+        id S1347322AbhDMRvO (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 13 Apr 2021 13:51:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44728 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231238AbhDMRvN (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 13 Apr 2021 13:51:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D64361244;
+        Tue, 13 Apr 2021 17:50:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618336253;
+        bh=DlDT1M7h71Y7EqwYU9oXuhe3iLixwu61+KibTJnRKkQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=KuTSMgw0joLAycxkw/Yoh7uyQIY1JW1Nqq3tJ0W2YnnG20cfy30uYQFmWlAday8qJ
+         w4SicVMPojdPPZiFb6PxaEulgEq1ZBmXEo2ojluUCk2SFU/yGfP34XdVoPI17M3M0O
+         zK0xKJ5adczVcYoNqr/mg5eJWcIyocDAN9H4kv5HsWxuTiEKjsbB727FW4LiHDCrZh
+         qzNFmkRpHcm6S+qzbYa9CpJI+WoNboYtf4wFHrZIubBKhxBr1uddj3FEk1XbLqmo35
+         sOVD/gVNoqyRZanLU6nb/cUVdiHH/Xm+u8F2G0S2WspwHnhih3TqKQ6PTia6ISjyZC
+         7ZOkHMSDuZ7qg==
+From:   Jeff Layton <jlayton@kernel.org>
+To:     ceph-devel@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        lhenriques@suse.de
+Subject: [RFC PATCH v6 00/20] ceph+fscrypt: context, filename and symlink support
+Date:   Tue, 13 Apr 2021 13:50:32 -0400
+Message-Id: <20210413175052.163865-1-jlayton@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4429f6365c3250efe9bf7bc0a1a22e642b149f61.1617908086.git.boris@bur.io>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 11:57:50AM -0700, Boris Burkov wrote:
-> generic/574 has tests for corrupting the merkle tree data stored by the
-> filesystem. Since btrfs uses a different scheme for storing this data,
-> the existing logic for corrupting it doesn't work out of the box. Adapt
-> it to properly corrupt btrfs merkle items.
-> 
-> Note that there is a bit of a kludge here: since btrfs_corrupt_block
-> doesn't handle streaming corruption bytes from stdin (I could change
-> that, but it feels like overkill for this purpose), I just read the
-> first corruption byte and duplicate it for the desired length. That is
-> how the test is using the interface in practice, anyway.
-> 
-> This relies on the following kernel patch for btrfs verity support:
-> <btrfs-verity-patch>
-> And the following btrfs-progs patch for btrfs_corrupt_block support:
-> <btrfs-corrupt-block-patch>
-> 
-> Signed-off-by: Boris Burkov <boris@bur.io>
-> ---
->  common/verity | 15 +++++++++++++--
->  1 file changed, 13 insertions(+), 2 deletions(-)
-> 
-> diff --git a/common/verity b/common/verity
-> index d2c1ea24..fdd05783 100644
-> --- a/common/verity
-> +++ b/common/verity
-> @@ -3,8 +3,7 @@
->  #
->  # Functions for setting up and testing fs-verity
->  
-> -_require_scratch_verity()
-> -{
-> +_require_scratch_verity() {
+The main change in this posting is in the detection of fscrypted inodes.
+The older set would grovel around in the xattr blob to see if it had an
+"encryption.ctx" xattr. This was problematic if the MDS didn't send
+xattrs in the trace, and not very efficient.
 
-No need to change this.
+This posting changes it to use the new "fscrypt" flag, which should
+always be reported by the MDS (Luis, I'm hoping this may fix the issues
+you were seeing with dcache coherency).
 
->  	_require_scratch
->  	_require_command "$FSVERITY_PROG" fsverity
->  
-> @@ -315,6 +314,18 @@ _fsv_scratch_corrupt_merkle_tree()
->  		(( offset += ($(_get_filesize $file) + 65535) & ~65535 ))
->  		_fsv_scratch_corrupt_bytes $file $offset
->  		;;
-> +	btrfs)
-> +		ino=$(ls -i $file | awk '{print $1}')
+This unfortunately requires an MDS fix, but that should hopefully make
+it in and be backported to Pacific fairly soon:
 
-stat -c %i $1
+    https://github.com/ceph/ceph/pull/40828
 
-And declare local variables with local.
+We also now handle get_name in the NFS export code correctly.
 
-> +		sync
+Aside from that, there are better changelogs, particularly on the
+fscrypt and vfs patches, and some smaller bugfixes and optimizations.
 
-Why a system wide sync is needed here?
+Jeff Layton (20):
+  vfs: export new_inode_pseudo
+  fscrypt: export fscrypt_base64_encode and fscrypt_base64_decode
+  fscrypt: export fscrypt_fname_encrypt and fscrypt_fname_encrypted_size
+  fscrypt: add fscrypt_context_for_new_inode
+  ceph: crypto context handling for ceph
+  ceph: implement -o test_dummy_encryption mount option
+  ceph: preallocate inode for ops that may create one
+  ceph: add routine to create fscrypt context prior to RPC
+  ceph: make ceph_msdc_build_path use ref-walk
+  ceph: add encrypted fname handling to ceph_mdsc_build_path
+  ceph: decode alternate_name in lease info
+  ceph: send altname in MClientRequest
+  ceph: properly set DCACHE_NOKEY_NAME flag in lookup
+  ceph: make d_revalidate call fscrypt revalidator for encrypted
+    dentries
+  ceph: add helpers for converting names for userland presentation
+  ceph: add fscrypt support to ceph_fill_trace
+  ceph: add support to readdir for encrypted filenames
+  ceph: create symlinks with encrypted and base64-encoded targets
+  ceph: make ceph_get_name decrypt filenames
+  ceph: add fscrypt ioctls
 
-> +		cat > $tmp.bytes
+ fs/ceph/Makefile            |   1 +
+ fs/ceph/crypto.c            | 185 ++++++++++++++++++++++
+ fs/ceph/crypto.h            | 101 ++++++++++++
+ fs/ceph/dir.c               | 178 ++++++++++++++++-----
+ fs/ceph/export.c            |  42 +++--
+ fs/ceph/file.c              |  58 ++++---
+ fs/ceph/inode.c             | 248 ++++++++++++++++++++++++++---
+ fs/ceph/ioctl.c             |  93 +++++++++++
+ fs/ceph/mds_client.c        | 303 ++++++++++++++++++++++++++++++------
+ fs/ceph/mds_client.h        |  15 +-
+ fs/ceph/super.c             |  80 +++++++++-
+ fs/ceph/super.h             |  15 +-
+ fs/ceph/xattr.c             |   5 +
+ fs/crypto/fname.c           |  53 +++++--
+ fs/crypto/fscrypt_private.h |   9 +-
+ fs/crypto/hooks.c           |   6 +-
+ fs/crypto/policy.c          |  34 +++-
+ fs/inode.c                  |   1 +
+ include/linux/fscrypt.h     |  10 ++
+ 19 files changed, 1263 insertions(+), 174 deletions(-)
+ create mode 100644 fs/ceph/crypto.c
+ create mode 100644 fs/ceph/crypto.h
 
-I think this cat would just hang there.
+-- 
+2.30.2
 
-> +		sz=$(_get_filesize $tmp.bytes)
-> +		read -n 1 byte < $tmp.bytes
-> +		ascii=$(printf "%d" "'$byte'")
-> +		_scratch_unmount
-> +		$BTRFS_CORRUPT_BLOCK_PROG -r 5 -I $ino,37,0 -v $ascii -o $offset -b $sz $SCRATCH_DEV
-
-It'd be better to explain this command in comments.
-
-> +		sync
-
-Again, is this sync really needed?
-
-Thanks,
-Eryu
-
-> +		_scratch_mount
-> +		;;
->  	*)
->  		_fail "_fsv_scratch_corrupt_merkle_tree() unimplemented on $FSTYP"
->  		;;
-> -- 
-> 2.30.2
