@@ -2,125 +2,87 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3E7B364D71
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 20 Apr 2021 00:03:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03257364D7A
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 20 Apr 2021 00:05:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229714AbhDSWDk (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 19 Apr 2021 18:03:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47084 "EHLO mail.kernel.org"
+        id S231481AbhDSWF5 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 19 Apr 2021 18:05:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229683AbhDSWDk (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 19 Apr 2021 18:03:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C01DA613B4;
-        Mon, 19 Apr 2021 22:03:09 +0000 (UTC)
+        id S229806AbhDSWF4 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 19 Apr 2021 18:05:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD7C1613B4;
+        Mon, 19 Apr 2021 22:05:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618869790;
-        bh=rbbzhhZdZDrBJYE1hTnPbkp8I1WDQqqO6Ud1fwbJ1Gg=;
+        s=k20201202; t=1618869926;
+        bh=7qxXUL+60tZO/lod/ToaBQJmBTycv2Zd4iAqoJm/Ieg=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bq2PDhmNlt9la0ymY2s9e/kGNVt4vAUOFB0fQ1wqK62oRKfcvMOMqplX/LBfHr1Yw
-         wziH+VLXh1f3sNlOhrimN8KcIHJo5Xhe+h401RFae0a8NSfgsyLGMuOlU7vbewIn7y
-         3ajv997ivxmS8GKrcx+eRzrEQhcYETFl+NMxUyE70x/p+8UBIdrEgaLLiS4dMdq9Vi
-         qaxQ6RdgZ9uJ3EaTsN7SJgseCtu6ez48zXJI76Qn3+2KuM3vSBJDbfVZegV2CFpt8e
-         psctgGFWEsBL9XS3lrUXe5pjDWgdGjSf3q8PJ/3tFHdwZpsIQ0nKCccp0KrG5BIEPe
-         tTfcM8HFsoM1g==
-Date:   Mon, 19 Apr 2021 15:03:08 -0700
+        b=mCRAHbLOOD0Uqg3frJEbdBxsnOsucQlbyCtdknPJzv8auys3C34tIJ03gsnqkk2tu
+         ZRmBJC5hgPR2vg8qyavmr8Ip5J8tfWDEvZHfLb8DD5GwSxXGZ6hvlSAr8mwQGatzKN
+         O/TvmOk1vH2yrcxh4ouYGWyJYx5BmzPfHTHBE0TQj6toMXuZ/bnsW08amHPEQB4PNm
+         yuo3iVSY3eVvrQ5dednFEeDWhs3r6klXjX98PrqmiRMv8XFpG/MaOq+pKSc/RR4AMH
+         HRJewi7AnY/lwIRkCYcqGLFD+/CbBFI/1E5fmcmZCImRzEneX31zGPUPumFwVJv0aL
+         EamfyDkYv/9yw==
+Date:   Mon, 19 Apr 2021 15:05:24 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     Ard Biesheuvel <ardb@kernel.org>
 Cc:     linux-crypto@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         "Theodore Y. Ts'o" <tytso@mit.edu>,
         Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: Re: [PATCH 1/2] fscrypt: relax Kconfig dependencies for crypto API
- algorithms
-Message-ID: <YH3+HBOyiLfa57Lw@gmail.com>
+Subject: Re: [PATCH 2/2] fsverity: relax build time dependency on
+ CRYPTO_SHA256
+Message-ID: <YH3+pEyzcON8eEKJ@gmail.com>
 References: <20210416160642.85387-1-ardb@kernel.org>
- <20210416160642.85387-2-ardb@kernel.org>
+ <20210416160642.85387-3-ardb@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210416160642.85387-2-ardb@kernel.org>
+In-Reply-To: <20210416160642.85387-3-ardb@kernel.org>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 06:06:41PM +0200, Ard Biesheuvel wrote:
-> Even if FS encryption has strict functional dependencies on various
-> crypto algorithms and chaining modes. those dependencies could potentially
-> be satisified by other implementations than the generic ones, and no link
-> time dependency exists on the 'depends on' claused defined by
-> CONFIG_FS_ENCRYPTION_ALGS.
+On Fri, Apr 16, 2021 at 06:06:42PM +0200, Ard Biesheuvel wrote:
+> CONFIG_CRYPTO_SHA256 denotes the generic C implementation of the SHA-256
+> shash algorithm, which is selected as the default crypto shash provider
+> for fsverity. However, fsverity has no strict link time dependency, and
+> the same shash could be exposed by an optimized implementation, and arm64
+> has a number of those (scalar, NEON-based and one based on special crypto
+> instructions). In such cases, it makes little sense to require that the
+> generic C implementation is incorporated as well, given that it will never
+> be called.
 > 
-> So let's relax these clauses to 'imply', so that the default behavior
-> is still to pull in those generic algorithms, but in a way that permits
-> them to be disabled again in Kconfig.
+> To address this, relax the 'select' clause to 'imply' so that the generic
+> driver can be omitted from the build if desired.
 > 
 > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 > ---
->  fs/crypto/Kconfig | 23 ++++++++++++++------
->  1 file changed, 16 insertions(+), 7 deletions(-)
+>  fs/verity/Kconfig | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
 > 
-> diff --git a/fs/crypto/Kconfig b/fs/crypto/Kconfig
-> index a5f5c30368a2..1e6c11de95c8 100644
-> --- a/fs/crypto/Kconfig
-> +++ b/fs/crypto/Kconfig
-> @@ -17,13 +17,22 @@ config FS_ENCRYPTION
->  # allows the algorithms to be built as modules when all the filesystems are.
->  config FS_ENCRYPTION_ALGS
->  	tristate
-> -	select CRYPTO_AES
-> -	select CRYPTO_CBC
-> -	select CRYPTO_CTS
-> -	select CRYPTO_ECB
-> -	select CRYPTO_HMAC
-> -	select CRYPTO_SHA512
-> -	select CRYPTO_XTS
-> +	imply CRYPTO_AES
-> +	imply CRYPTO_CBC
-> +	imply CRYPTO_CTS
-> +	imply CRYPTO_ECB
-> +	imply CRYPTO_HMAC
-> +	imply CRYPTO_SHA512
-> +	imply CRYPTO_XTS
-> +	help
-> +	  This pulls in the generic implementations of the various
-> +	  cryptographic algorithms and chaining modes that filesystem
-> +	  encryption relies on. These are 'soft' dependencies only, as
-> +	  architectures may supersede these generic implementations with
-> +	  special, optimized ones.
-> +
-> +	  If unsure, keep the generic algorithms enabled, as they can
-> +	  happily co-exist with per-architecture implementations.
->  
+> diff --git a/fs/verity/Kconfig b/fs/verity/Kconfig
+> index 88fb25119899..24d1b54de807 100644
+> --- a/fs/verity/Kconfig
+> +++ b/fs/verity/Kconfig
+> @@ -3,9 +3,13 @@
+>  config FS_VERITY
+>  	bool "FS Verity (read-only file-based authenticity protection)"
+>  	select CRYPTO
+> -	# SHA-256 is selected as it's intended to be the default hash algorithm.
+> +	# SHA-256 is implied as it's intended to be the default hash algorithm.
+>  	# To avoid bloat, other wanted algorithms must be selected explicitly.
+> -	select CRYPTO_SHA256
+> +	# Note that CRYPTO_SHA256 denotes the generic C implementation, but
+> +	# some architectures provided optimized implementations of the same
+> +	# algorithm that may be used instead. In this case, CRYPTO_SHA256 may
+> +	# be omitted even if SHA-256 is being used.
+> +	imply CRYPTO_SHA256
+>  	help
+>  	  This option enables fs-verity.  fs-verity is the dm-verity
+>  	  mechanism implemented at the file level.  On supported
 
-This seems reasonable to me.  It does have the disadvantage of allowing
-misconfigurations where algorithms that are supposed to be available are not
-actually made available.  But it's probably better to allow the flexibility to
-disable the generic implementations.
+Looks fine,
 
-I don't really like the help text, though.  First, the description of
-FS_ENCRYPTION_ALGS should be either in a comment *or* in a 'help' block, not
-split between both.  I think a comment would make more sense since
-FS_ENCRYPTION_ALGS isn't a user-selectable symbol, so the 'help' would only be
-seen by reading the Kconfig file anyway.
+Acked-by: Eric Biggers <ebiggers@google.com>
 
-Second, "algorithms that filesystem encryption relies on" is too vague.  We
-should clarify that only the "default" algorithms get automatically selected,
-and the user may still need to explicitly select more.
-
-Here's a suggested comment which I think would explain things a lot better:
-
-# Filesystems supporting encryption must select this if FS_ENCRYPTION.  This
-# allows the algorithms to be built as modules when all the filesystems are,
-# whereas selecting them from FS_ENCRYPTION would force them to be built-in.
-#
-# Note: this option only pulls in the algorithms that filesystem encryption
-# needs "by default".  If userspace will use "non-default" encryption modes such
-# as Adiantum encryption, then those other modes need to be explicitly enabled
-# in the crypto API; see Documentation/filesystems/fscrypt.rst for details.
-#
-# Also note that this option only pulls in the generic implementations of the
-# algorithms, not any per-architecture optimized implementations.  It is
-# strongly recommended to enable optimized implementations too.  It is safe to
-# disable these generic implementations if corresponding optimized
-# implementations will always be available too; for this reason, these are soft
-# dependencies ('imply' rather than 'select').  Only disable these generic
-# implementations if you're sure they will never be needed, though.
+- Eric
