@@ -2,87 +2,96 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03257364D7A
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 20 Apr 2021 00:05:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 556D6365572
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 20 Apr 2021 11:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231481AbhDSWF5 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 19 Apr 2021 18:05:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47366 "EHLO mail.kernel.org"
+        id S230429AbhDTJdJ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 20 Apr 2021 05:33:09 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37190 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229806AbhDSWF4 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 19 Apr 2021 18:05:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CD7C1613B4;
-        Mon, 19 Apr 2021 22:05:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618869926;
-        bh=7qxXUL+60tZO/lod/ToaBQJmBTycv2Zd4iAqoJm/Ieg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mCRAHbLOOD0Uqg3frJEbdBxsnOsucQlbyCtdknPJzv8auys3C34tIJ03gsnqkk2tu
-         ZRmBJC5hgPR2vg8qyavmr8Ip5J8tfWDEvZHfLb8DD5GwSxXGZ6hvlSAr8mwQGatzKN
-         O/TvmOk1vH2yrcxh4ouYGWyJYx5BmzPfHTHBE0TQj6toMXuZ/bnsW08amHPEQB4PNm
-         yuo3iVSY3eVvrQ5dednFEeDWhs3r6klXjX98PrqmiRMv8XFpG/MaOq+pKSc/RR4AMH
-         HRJewi7AnY/lwIRkCYcqGLFD+/CbBFI/1E5fmcmZCImRzEneX31zGPUPumFwVJv0aL
-         EamfyDkYv/9yw==
-Date:   Mon, 19 Apr 2021 15:05:24 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-crypto@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: Re: [PATCH 2/2] fsverity: relax build time dependency on
- CRYPTO_SHA256
-Message-ID: <YH3+pEyzcON8eEKJ@gmail.com>
-References: <20210416160642.85387-1-ardb@kernel.org>
- <20210416160642.85387-3-ardb@kernel.org>
+        id S229729AbhDTJdI (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 20 Apr 2021 05:33:08 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 93284B2DD;
+        Tue, 20 Apr 2021 09:32:36 +0000 (UTC)
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id 3ec5d8ea;
+        Tue, 20 Apr 2021 09:34:05 +0000 (UTC)
+From:   Luis Henriques <lhenriques@suse.de>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Jeff Layton <jlayton@kernel.org>, ceph-devel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org
+Subject: Re: [RFC PATCH v6 20/20] ceph: add fscrypt ioctls
+References: <20210413175052.163865-1-jlayton@kernel.org>
+        <20210413175052.163865-21-jlayton@kernel.org> <87lf9emvqv.fsf@suse.de>
+        <f6fa8d02d31099a688ae97450143aa0eed4b73f8.camel@kernel.org>
+        <YH3f6YQ7cxWCVb+b@gmail.com>
+Date:   Tue, 20 Apr 2021 10:34:04 +0100
+In-Reply-To: <YH3f6YQ7cxWCVb+b@gmail.com> (Eric Biggers's message of "Mon, 19
+        Apr 2021 12:54:17 -0700")
+Message-ID: <87wnsxl2pf.fsf@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416160642.85387-3-ardb@kernel.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 06:06:42PM +0200, Ard Biesheuvel wrote:
-> CONFIG_CRYPTO_SHA256 denotes the generic C implementation of the SHA-256
-> shash algorithm, which is selected as the default crypto shash provider
-> for fsverity. However, fsverity has no strict link time dependency, and
-> the same shash could be exposed by an optimized implementation, and arm64
-> has a number of those (scalar, NEON-based and one based on special crypto
-> instructions). In such cases, it makes little sense to require that the
-> generic C implementation is incorporated as well, given that it will never
-> be called.
-> 
-> To address this, relax the 'select' clause to 'imply' so that the generic
-> driver can be omitted from the build if desired.
-> 
-> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> ---
->  fs/verity/Kconfig | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/verity/Kconfig b/fs/verity/Kconfig
-> index 88fb25119899..24d1b54de807 100644
-> --- a/fs/verity/Kconfig
-> +++ b/fs/verity/Kconfig
-> @@ -3,9 +3,13 @@
->  config FS_VERITY
->  	bool "FS Verity (read-only file-based authenticity protection)"
->  	select CRYPTO
-> -	# SHA-256 is selected as it's intended to be the default hash algorithm.
-> +	# SHA-256 is implied as it's intended to be the default hash algorithm.
->  	# To avoid bloat, other wanted algorithms must be selected explicitly.
-> -	select CRYPTO_SHA256
-> +	# Note that CRYPTO_SHA256 denotes the generic C implementation, but
-> +	# some architectures provided optimized implementations of the same
-> +	# algorithm that may be used instead. In this case, CRYPTO_SHA256 may
-> +	# be omitted even if SHA-256 is being used.
-> +	imply CRYPTO_SHA256
->  	help
->  	  This option enables fs-verity.  fs-verity is the dm-verity
->  	  mechanism implemented at the file level.  On supported
+Eric Biggers <ebiggers@kernel.org> writes:
 
-Looks fine,
+> On Mon, Apr 19, 2021 at 08:19:59AM -0400, Jeff Layton wrote:
+>> On Mon, 2021-04-19 at 11:09 +0100, Luis Henriques wrote:
+>> > Hi Jeff!
+>> > 
+>> > Jeff Layton <jlayton@kernel.org> writes:
+>> > <...>
+>> > > +
+>> > > +	case FS_IOC_ADD_ENCRYPTION_KEY:
+>> > > +		ret = vet_mds_for_fscrypt(file);
+>> > > +		if (ret)
+>> > > +			return ret;
+>> > > +		atomic_inc(&ci->i_shared_gen);
+>> > 
+>> > After spending some (well... a lot, actually) time looking at the MDS code
+>> > to try to figure out my bug, I'm back at this point in the kernel client
+>> > code.  I understand that this code is trying to invalidate the directory
+>> > dentries here.  However, I just found that the directory we get at this
+>> > point is the filesystem root directory, and not the directory we're trying
+>> > to unlock.
+>> > 
+>> > So, I still don't fully understand the issue I'm seeing, but I believe the
+>> > code above is assuming 'ci' is the inode being unlocked, which isn't
+>> > correct.
+>> > 
+>> > (Note: I haven't checked if there are other ioctls getting the FS root.)
+>> > 
+>> > Cheers,
+>> 
+>> 
+>> Oh, interesting. That was my assumption. I'll have to take a look more
+>> closely at what effect that might have then.
+>> 
+>
+> FS_IOC_ADD_ENCRYPTION_KEY, FS_IOC_REMOVE_ENCRYPTION_KEY,
+> FS_IOC_REMOVE_ENCRYPTION_KEY_ALL_USERS, and FS_IOC_GET_ENCRYPTION_KEY_STATUS can
+> all be executed on any file or directory on the filesystem (but preferably on
+> the root directory) because they are operations on the filesystem, not on any
+> specific file or directory.  They deal with encryption keys, which can protect
+> any number of encrypted directories (even 0 or a large number) and/or even loose
+> encrypted files that got moved into an unencrypted directory.
+>
+> Note that this is all described in the documentation
+> (https://www.kernel.org/doc/html/latest/filesystems/fscrypt.html).
+> If the documentation is unclear please suggest improvements to it.
+>
+> Also, there shouldn't be any need for FS_IOC_ADD_ENCRYPTION_KEY to invalidate
+> dentries itself because that is the point of fscrypt_d_revalidate(); the
+> invalidation happens on-demand later.
 
-Acked-by: Eric Biggers <ebiggers@google.com>
+I think the documentation is very clear regarding these ioctls.  I guess I
+just need to go refresh my memory as I have read that document long time
+ago.  Thanks for reminding me to do that ;-)
 
-- Eric
+Cheers,
+-- 
+Luis
