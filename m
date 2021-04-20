@@ -2,100 +2,119 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F18F83657D1
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 20 Apr 2021 13:46:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 711DE365CAA
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 20 Apr 2021 17:52:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231651AbhDTLqb (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 20 Apr 2021 07:46:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58658 "EHLO mail.kernel.org"
+        id S233039AbhDTPwn (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 20 Apr 2021 11:52:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231200AbhDTLqa (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 20 Apr 2021 07:46:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CEFA0613B4;
-        Tue, 20 Apr 2021 11:45:58 +0000 (UTC)
+        id S232835AbhDTPwl (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 20 Apr 2021 11:52:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DEB2D61003;
+        Tue, 20 Apr 2021 15:52:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618919159;
-        bh=Q19hZIUoPWyy0AAOTHQ7niqZrttpFzMNViz3CShMRZA=;
+        s=k20201202; t=1618933929;
+        bh=/9RTrlVPmficjxGArbdNAYfmgxMyr7ATcSTXhbbHiIE=;
         h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=LiHbc8Tl+/srjiQnJJjlXuCfLxAHwKHPZ20hF6WWqnhaZr7Op3+3OuxT18FaNiGKQ
-         OGS+C8vgaZZUPplgeVyR9iWzLyyYo9Ki2zToPf4yrUTmxReWgCqkH8Xu6WzxEyfsze
-         U2lpzpJeZk/5QTLWeIQfIn0R1aKjcbBxtNZw7CHA1k2T62CD67dE5RCufrSBh/JtE1
-         n9zG8bKaGfN2oWPHGL44hURIYJXsbCGtEqzMw/8olS1fImept12c5NHrah2QRRIrH9
-         vGXyOHkpQRltAXYJE10djRSV+sEXLTBxa+FwHsIz31xvhQmKY/evXaKb0RLlYi2lMg
-         XogV8kzyz4qaA==
-Message-ID: <722e3715508fcbeb63082c2c8058350925cd03a2.camel@kernel.org>
-Subject: Re: [RFC PATCH v6 20/20] ceph: add fscrypt ioctls
+        b=uGmEWDazCC/j77pAB4CUd1BwGvnHSfWNk1cwVbYH1MYKI+5OiWL1t7+CipKyBXILX
+         B4gpGxdwET1IdALTdfGFQfhsdNpnlpfazKSQLx8Fhyj5qgl3Hn3N4xbnCB68xs3nSl
+         UeeiH238vHp1DXH5I+ugWvaJRl2kEsyF6Vwt4N5BqHHm/HH4qLPuon/9vhkvszM4ym
+         c5OPtOKdIhWzd65piG8AHChiXfNp6OlLq3whVmBRjOSoxrGk+l8ovQW1zj9Q12fsFr
+         cuMrmncdrXyOYkKgGg6OFs0V66Y4iM9ZxrE0TUMrC92wCBHr3CjP2NQPFmZe1eu26D
+         raQJOXtSNQalw==
+Message-ID: <53d5bebb28c1e0cd354a336a56bf103d5e3a6344.camel@kernel.org>
+Subject: Re: [RFC PATCH v6 00/20] ceph+fscrypt: context, filename and
+ symlink support
 From:   Jeff Layton <jlayton@kernel.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Luis Henriques <lhenriques@suse.de>, ceph-devel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org
-Date:   Tue, 20 Apr 2021 07:45:57 -0400
-In-Reply-To: <YH3f6YQ7cxWCVb+b@gmail.com>
+To:     Luis Henriques <lhenriques@suse.de>
+Cc:     ceph-devel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org
+Date:   Tue, 20 Apr 2021 11:52:07 -0400
+In-Reply-To: <87sg3ll0zm.fsf@suse.de>
 References: <20210413175052.163865-1-jlayton@kernel.org>
-         <20210413175052.163865-21-jlayton@kernel.org> <87lf9emvqv.fsf@suse.de>
-         <f6fa8d02d31099a688ae97450143aa0eed4b73f8.camel@kernel.org>
-         <YH3f6YQ7cxWCVb+b@gmail.com>
+         <87h7k2murr.fsf@suse.de>
+         <e411e914cd2d329e4b0e335968c21ba85f6e89c7.camel@kernel.org>
+         <871rb6mfch.fsf@suse.de>
+         <13750c0b72dccd84e75179d62e9a9038d6f57371.camel@kernel.org>
+         <87sg3ll0zm.fsf@suse.de>
 Content-Type: text/plain; charset="ISO-8859-15"
 User-Agent: Evolution 3.40.0 (3.40.0-1.fc34) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, 2021-04-19 at 12:54 -0700, Eric Biggers wrote:
-> On Mon, Apr 19, 2021 at 08:19:59AM -0400, Jeff Layton wrote:
-> > On Mon, 2021-04-19 at 11:09 +0100, Luis Henriques wrote:
-> > > Hi Jeff!
-> > > 
+On Tue, 2021-04-20 at 11:11 +0100, Luis Henriques wrote:
+> Jeff Layton <jlayton@kernel.org> writes:
+> 
+> > On Mon, 2021-04-19 at 17:03 +0100, Luis Henriques wrote:
 > > > Jeff Layton <jlayton@kernel.org> writes:
-> > > <...>
-> > > > +
-> > > > +	case FS_IOC_ADD_ENCRYPTION_KEY:
-> > > > +		ret = vet_mds_for_fscrypt(file);
-> > > > +		if (ret)
-> > > > +			return ret;
-> > > > +		atomic_inc(&ci->i_shared_gen);
 > > > 
-> > > After spending some (well... a lot, actually) time looking at the MDS code
-> > > to try to figure out my bug, I'm back at this point in the kernel client
-> > > code.  I understand that this code is trying to invalidate the directory
-> > > dentries here.  However, I just found that the directory we get at this
-> > > point is the filesystem root directory, and not the directory we're trying
-> > > to unlock.
+> > > > On Mon, 2021-04-19 at 11:30 +0100, Luis Henriques wrote:
+> > > ...
+> > > > Ouch. That looks like a real bug, alright.
+> > > > 
+> > > > Basically when building the path, we occasionally need to fetch the
+> > > > crypto context for parent inodes and such, and that can cause us to
+> > > > recurse back into __ceph_getxattr and try to issue another RPC to the
+> > > > MDS.
+> > > > 
+> > > > I'll have to look and see what we can do. Maybe it's safe to drop the
+> > > > mdsc->mutex while we're building the path? Or maybe this is a good time
+> > > > to re-think a lot of the really onerous locking in this codepath?
+> > > > 
+> > > > I'm open to suggestions here...
 > > > 
-> > > So, I still don't fully understand the issue I'm seeing, but I believe the
-> > > code above is assuming 'ci' is the inode being unlocked, which isn't
-> > > correct.
+> > > Yeah, I couldn't see a good fix at a first glace.  Dropping the mutex
+> > > while building the path was my initial thought too but it's not easy to
+> > > proof that's a safe thing to do.
 > > > 
-> > > (Note: I haven't checked if there are other ioctls getting the FS root.)
+> > 
+> > Indeed. It's an extremely coarse-grained mutex and not at all clear what
+> > it protects here.
+> > 
+> > > The other idea I had was to fetch all the needed fscrypt contexts at the
+> > > end, after building the path.  But I didn't found a way for doing that
+> > > because to build the path... we need the contexts.
+> > > 
+> > > It looks like this leaves us with the locking rethinking option.
+> > > 
+> > > /me tries harder to find another way out
 > > > 
 > > > Cheers,
 > > 
+> > The other option I think is to not store the context in an xattr at all,
+> > and instead make a dedicated field in the inode for it that we can
+> > ensure is always present for encrypted inodes.  For the most part the
+> > crypto context is a static thing. The only exception is when we're first
+> > encrypting an empty dir.
 > > 
-> > Oh, interesting. That was my assumption. I'll have to take a look more
-> > closely at what effect that might have then.
-> > 
+> > We already have the fscrypt bool in the inodestat, and we're going to
+> > need another field to hold the real size for files. It may be worthwhile
+> > to just reconsider the design at that level. Maybe we just need to carve
+> > out a chunk of fscrypt space in the inode for the client and let it
+> > manage that however it sees fit.
 > 
-> FS_IOC_ADD_ENCRYPTION_KEY, FS_IOC_REMOVE_ENCRYPTION_KEY,
-> FS_IOC_REMOVE_ENCRYPTION_KEY_ALL_USERS, and FS_IOC_GET_ENCRYPTION_KEY_STATUS can
-> all be executed on any file or directory on the filesystem (but preferably on
-> the root directory) because they are operations on the filesystem, not on any
-> specific file or directory.  They deal with encryption keys, which can protect
-> any number of encrypted directories (even 0 or a large number) and/or even loose
-> encrypted files that got moved into an unencrypted directory.
+> That's another solution.  Since the initial (naïfe) idea of having a
+> client-only implementation with fscrypt-agnostic MDSs is long gone, the
+> design can (still) be fixed to do that.  This will definitely allow to
+> move forward with the fscrypt implementation.  (But we'll probably be
+> bitten again with these recursive RPCs in the future!)
 > 
-> Note that this is all described in the documentation
-> (https://www.kernel.org/doc/html/latest/filesystems/fscrypt.html).
-> If the documentation is unclear please suggest improvements to it.
+> Anyway, this is probably the most interesting solution as it also reduces
+> the need for extra calls to MDS.  And the fscrypt bool in inodestat
+> probably becomes redundant and can be dropped.
 > 
-> Also, there shouldn't be any need for FS_IOC_ADD_ENCRYPTION_KEY to invalidate
-> dentries itself because that is the point of fscrypt_d_revalidate(); the
-> invalidation happens on-demand later.
 
+We probably can't drop the bool from the protocol, as it's now in a
+released version (Pacific).
 
-Ok, thanks. I'll plan to drop the invalidation from the ioctl codepaths,
-and leave it up to fscrypt_d_revalidate to sort out.
+What we can do is drop tracking the bool internally in the MDS, and just
+set that to true if the fscrypt blob isn't zero-length.
+
+Cheers,
 -- 
 Jeff Layton <jlayton@kernel.org>
 
