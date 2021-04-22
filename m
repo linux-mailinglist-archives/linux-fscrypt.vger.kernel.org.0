@@ -2,65 +2,51 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69CD736725B
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 21 Apr 2021 20:18:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FE3E3675FE
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 22 Apr 2021 02:02:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245144AbhDUSSn (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 21 Apr 2021 14:18:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47448 "EHLO mail.kernel.org"
+        id S240903AbhDVAB7 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 21 Apr 2021 20:01:59 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:45800 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238637AbhDUSSl (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 21 Apr 2021 14:18:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 71C256143B;
-        Wed, 21 Apr 2021 18:18:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619029087;
-        bh=vvEJ7OhCNNgyEkrC+b1mnLvIJJr1+wwY1dU/KtzL0Bc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D/SlkDO9lFoi4+cY9RsVJyQPMOqxLruQDKyEtbWsoqMnw71/p2fzGQybqNDaM1ckS
-         RD78VtaHdXvEQbY1bqT57FQWCXkV+9Qkzfbtb1AzahdtsfPXaduLqE6eOsxfM9B1FX
-         KwABHPKxiS/pdXrF6nMh8Maamju/mVoj4rltWKH9naUnF25qbs0RbgM6l+gE8rCXMw
-         bGp1htEbvhYsMikFMdKdY13zodOGi4krJrdH3FkHKrrYWMhd/0566RYwwt5VLtryf9
-         v8yMF31+ajp07dmk4NMmSJbGjHe+jtxtVFVHEJXVaEhu+MtgjDsfcJts1kXxSUsmUg
-         y5MFZ/aTUIl0w==
-Date:   Wed, 21 Apr 2021 11:18:05 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
+        id S234886AbhDVAB6 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 21 Apr 2021 20:01:58 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1lZMmW-0006CR-Ik; Thu, 22 Apr 2021 10:01:21 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 22 Apr 2021 10:01:20 +1000
+Date:   Thu, 22 Apr 2021 10:01:20 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Eric Biggers <ebiggers@kernel.org>
 Cc:     linux-crypto@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         "Theodore Y. Ts'o" <tytso@mit.edu>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
         Ard Biesheuvel <ardb@kernel.org>
 Subject: Re: [PATCH v2 1/2] fscrypt: relax Kconfig dependencies for crypto
  API algorithms
-Message-ID: <YIBsXY5QOcEjnZ6I@gmail.com>
+Message-ID: <20210422000120.GA4039@gondor.apana.org.au>
 References: <20210421075511.45321-1-ardb@kernel.org>
  <20210421075511.45321-2-ardb@kernel.org>
+ <YIBsXY5QOcEjnZ6I@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210421075511.45321-2-ardb@kernel.org>
+In-Reply-To: <YIBsXY5QOcEjnZ6I@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 09:55:10AM +0200, Ard Biesheuvel wrote:
-> Even if FS encryption has strict functional dependencies on various
-> crypto algorithms and chaining modes. those dependencies could potentially
-> be satisified by other implementations than the generic ones, and no link
-> time dependency exists on the 'depends on' claused defined by
-> CONFIG_FS_ENCRYPTION_ALGS.
-> 
-> So let's relax these clauses to 'imply', so that the default behavior
-> is still to pull in those generic algorithms, but in a way that permits
-> them to be disabled again in Kconfig.
-> 
-> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> ---
+On Wed, Apr 21, 2021 at 11:18:05AM -0700, Eric Biggers wrote:
+>
+> Herbert, is there still time for you to take these two patches through the
+> crypto tree for 5.13?  There aren't any other fscrypt or fsverity patches for
+> 5.13, so that would be easiest for me.
 
-Acked-by: Eric Biggers <ebiggers@google.com>
+Sure, I can take these patches.
 
-Herbert, is there still time for you to take these two patches through the
-crypto tree for 5.13?  There aren't any other fscrypt or fsverity patches for
-5.13, so that would be easiest for me.
-
-- Eric
+Cheers,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
