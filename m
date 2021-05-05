@@ -2,45 +2,45 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 990973749D4
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  5 May 2021 23:05:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E9B53749D7
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  5 May 2021 23:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233136AbhEEVFr (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 5 May 2021 17:05:47 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:44215 "EHLO
+        id S233287AbhEEVFu (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 5 May 2021 17:05:50 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:50853 "EHLO
         out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232878AbhEEVFr (ORCPT
+        by vger.kernel.org with ESMTP id S233142AbhEEVFs (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 5 May 2021 17:05:47 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id 9C0875C0156;
-        Wed,  5 May 2021 17:04:49 -0400 (EDT)
+        Wed, 5 May 2021 17:05:48 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 14EB55C01A6;
+        Wed,  5 May 2021 17:04:51 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Wed, 05 May 2021 17:04:49 -0400
+  by compute4.internal (MEProxy); Wed, 05 May 2021 17:04:51 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=from
         :to:subject:date:message-id:in-reply-to:references:mime-version
-        :content-transfer-encoding; s=fm3; bh=IgAeioOxlTyqRdXUnVATQBL5fk
-        +20RoZlf5xSSHhEfo=; b=MeFh9KxjmNt+azfi9WLMnJ6Y5AM0LZCs8qmYV4sggO
-        EUMN5IIo6zQg2uGWfecTgwPP1NIo8voRAbRu+bzCPQvaeanBcjmtY9rMrnJJ2tlz
-        H/kbgSr8QwIwvP+CTOpsv6U/BEq8Ps28ClUl0rEfHev8lWHPYo4rd/oHDxqzd9kl
-        XmThRULoygZqoeEmRC1zbPqjT5EG9AoKk4u7TXKztI5iD0R1X8tBbPjG4JSFAktM
-        GMtwtBh3GE6zjQDJ/ornnweHSABr5dM1WuZhoa+a1y6Cv4L+rndQMXgPQT508rW/
-        hDzWf1eaKRUt05zJxJi+KbHj8V4rPHyii0b1BD8t+eNg==
+        :content-transfer-encoding; s=fm3; bh=tZZ8s1p3XaymaxBPJ8vTBzDBV7
+        OqC1q3+aPNBJGE3QY=; b=p/4Jdz5CRoDfqOHFFwreQnFYksI+5rVN1CaSFHe1XL
+        DxcwH5HpLHrMOf2al/71qe6RSD026+u01NzS4qhs1ZNtbWb/UKCNmvpP8grULJA7
+        zahHIW/iJGZYWTIaCKAhHVGaod0mZogKwccxP7GtYNJYzKyrvlnv5v7/MAsou+8C
+        nFpxCBWWdzS69ek7gBTXwnhVUE1SUlrXuYTOVK24ymyhpAW+PUxT9zIeYzJDmSaI
+        75CVGps2lfBo9M3kb6nsdRaTCH29hwwkCWCAyxhc+nADdMNsT6Sc2hxhXHKfPITv
+        ejW2/69kf2juLQbXaFqDI4HW1wGpZpc44G1+k/CdXX8A==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; bh=IgAeioOxlTyqRdXUnVATQBL5fk+20RoZlf5xSSHhEfo=; b=wulrc81S
-        +Z1Zy6zUiFr9HkUAkFd1iHxR5Nrq69jsTPZVEc/ybtOq962rhCqeH134rn0P8nFP
-        zr6QFeqxuWgZ8Nz21kUwoLmyjHp2g0rE1D8XX5BzdQMo5zJnMCjFhuTgHBB1yV1m
-        QDrLhJk/gRC6jzpBsFMKMYVHlF5i9/k2AGJhqf1HYo7Kr7vak1OisgXqcOi75gkd
-        ZxdSDvdkc612DlkNe0XM9Wgaf3hqpkxSvt6/bB6z1c0++419MWCtiec88uCS226s
-        JNd1RfdN6Km3uxHxWFlHKvzz8px6fk08ioqVqZi7wub9bLwRy23ected1KFP5Fdc
-        AP/QbQ3WKBIWqw==
-X-ME-Sender: <xms:cQiTYPJATzrbr8j6KNXI8Dg_hvFmNG1DH3VdZhBjLcIjONSfJjWuJg>
-    <xme:cQiTYDIvJguxelfmhnelqj-efKcxB5YXEjoK_xxo6_wCDzEqRUcH6wZkv9wGGAXNc
-    bqVHrkzz6vFqKE9Nrc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdefkedgudehvdcutefuodetggdotefrod
+        fm2; bh=tZZ8s1p3XaymaxBPJ8vTBzDBV7OqC1q3+aPNBJGE3QY=; b=LjwibFi5
+        IQ/1wvv7+hbuVALeWa5q1zFcHL8/unpxb5+EjryP1rNLtXSipNpFGLbj0OYDVyIb
+        adODgDoFiJYpk3Qvr9SROEpOQ8bnMduZ54/hF7yktUCzeyKnAIZ9+CB8JS397NZx
+        EZBl/gaH82f0Fd8yzVRNL7/tyYqhsDzE70uIN0sWqpiL+xrvHDHS8j3fd+7utjXG
+        4+Nnx3BmBxYNgHOX+gNhFmlhzEOnlYNo6JhPQXvgTiFzHZpGCZ0sE43iSjEoBzpD
+        HLCL2k0PXLU4LlMIw5gz9zoT8Afw4VKH/BiFG4ITLyXyvEs5ZTN/36Bm3CHSfURz
+        zLIQJTreuV+QSQ==
+X-ME-Sender: <xms:cgiTYPZnjMbKpHcvub90VAnCs0beJzZNoRzS9267g3i9NMTDTfyP3Q>
+    <xme:cgiTYOZj7SFwBZ42H4KVvG50zwCVhWjR8M5FYlJmnKg6QJ0CCajS7AEBVKnG9Jl8h
+    icExQYNggHiI8w7XyI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdefkedgudehfecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtke
     ertdertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhr
@@ -48,19 +48,19 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdefkedgudehvdcutefuodetgg
     evvdehtddufeeihfekgeeuheelnecukfhppedvtdejrdehfedrvdehfedrjeenucevlhhu
     shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuh
     hrrdhioh
-X-ME-Proxy: <xmx:cQiTYHtcIeNHq3pBCN9ERtFHMzB48yLg-wcpqKRI-dPabH_8akuxOw>
-    <xmx:cQiTYIZOkt7EYySCVvzmnisYDZ5L9DL3Fca0pw87TSZEsxJdBM2IaA>
-    <xmx:cQiTYGaXowqdZMBMoVzluTXBfJmcgh1_VG6cMP7Gk5LRNYDIeCcQMg>
-    <xmx:cQiTYJxkVj7O8aCLvrgtol-jGRv_KCB9HDYOmIXv-5ssG_hdQBghPw>
+X-ME-Proxy: <xmx:cgiTYB-FPD1Ww54_PFVIXNYY0P5SzbteSOazPo6yA2x-oVztuq4k2Q>
+    <xmx:cgiTYFr01VGJ8Kmu0Pmrku2UuAAN9YPanm_CZS0b6ABLGgBWUUloug>
+    <xmx:cgiTYKqq3ZyMn63NQZU6UpMbxWH61wGPex3bJhzng-6IEUNukNKdUA>
+    <xmx:cwiTYPBwscGInA8mo85-IrtlJMZCh1xkSOFMtpPv9f31YVQBTX8v6A>
 Received: from localhost (unknown [207.53.253.7])
         by mail.messagingengine.com (Postfix) with ESMTPA;
-        Wed,  5 May 2021 17:04:49 -0400 (EDT)
+        Wed,  5 May 2021 17:04:50 -0400 (EDT)
 From:   Boris Burkov <boris@bur.io>
 To:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v4 1/4] btrfs: test btrfs specific fsverity corruption
-Date:   Wed,  5 May 2021 14:04:43 -0700
-Message-Id: <39a5e3f106db214a2d6416c7fda242c445cc6e53.1620248200.git.boris@bur.io>
+Subject: [PATCH v4 2/4] generic/574: corrupt btrfs merkle tree data
+Date:   Wed,  5 May 2021 14:04:44 -0700
+Message-Id: <1fce7bfd74d15ddc4492a642d275eec284910950.1620248200.git.boris@bur.io>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1620248200.git.boris@bur.io>
 References: <cover.1620248200.git.boris@bur.io>
@@ -70,14 +70,19 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-There are some btrfs specific fsverity scenarios that don't map
-neatly onto the tests in generic/574 like holes, inline extents,
-and preallocated extents. Cover those in a btrfs specific test.
+generic/574 has tests for corrupting the merkle tree data stored by the
+filesystem. Since btrfs uses a different scheme for storing this data,
+the existing logic for corrupting it doesn't work out of the box. Adapt
+it to properly corrupt btrfs merkle items.
 
 This test relies on the btrfs implementation of fsverity in the patches
 titled:
 btrfs: initial fsverity support
 btrfs: check verity for reads of inline extents and holes
+btrfs: fallback to buffered io for verity files
+
+A fix for fiemap in the patch titled:
+btrfs: return whole extents in fiemap
 
 and on btrfs-corrupt-block for corruption in the patches titled:
 btrfs-progs: corrupt generic item data with btrfs-corrupt-block
@@ -85,292 +90,55 @@ btrfs-progs: expand corrupt_file_extent in btrfs-corrupt-block
 
 Signed-off-by: Boris Burkov <boris@bur.io>
 ---
- common/btrfs        |   5 ++
- common/config       |   1 +
- common/verity       |   7 ++
- tests/btrfs/290     | 180 ++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/290.out |  25 ++++++
- tests/btrfs/group   |   1 +
- 6 files changed, 219 insertions(+)
- create mode 100755 tests/btrfs/290
- create mode 100644 tests/btrfs/290.out
+ common/verity     | 18 ++++++++++++++++++
+ tests/generic/574 |  5 +++++
+ 2 files changed, 23 insertions(+)
 
-diff --git a/common/btrfs b/common/btrfs
-index ebe6ce26..bd6e87ce 100644
---- a/common/btrfs
-+++ b/common/btrfs
-@@ -419,3 +419,8 @@ _btrfs_rescan_devices()
- {
- 	$BTRFS_UTIL_PROG device scan &> /dev/null
- }
-+
-+_require_btrfs_corrupt_block()
-+{
-+	_require_command "$BTRFS_CORRUPT_BLOCK_PROG" btrfs_corrupt_block
-+}
-diff --git a/common/config b/common/config
-index a47e462c..003b2a88 100644
---- a/common/config
-+++ b/common/config
-@@ -256,6 +256,7 @@ export BTRFS_UTIL_PROG=$(type -P btrfs)
- export BTRFS_SHOW_SUPER_PROG=$(type -P btrfs-show-super)
- export BTRFS_CONVERT_PROG=$(type -P btrfs-convert)
- export BTRFS_TUNE_PROG=$(type -P btrfstune)
-+export BTRFS_CORRUPT_BLOCK_PROG=$(type -P btrfs-corrupt-block)
- export XFS_FSR_PROG=$(type -P xfs_fsr)
- export MKFS_NFS_PROG="false"
- export MKFS_CIFS_PROG="false"
 diff --git a/common/verity b/common/verity
-index 38eea157..d2c1ea24 100644
+index d2c1ea24..1636e88b 100644
 --- a/common/verity
 +++ b/common/verity
-@@ -8,6 +8,10 @@ _require_scratch_verity()
- 	_require_scratch
- 	_require_command "$FSVERITY_PROG" fsverity
- 
-+	if [ $FSTYP == "btrfs" ]; then
-+		_require_command "$BTRFS_CORRUPT_BLOCK_PROG" btrfs_corrupt_block
-+	fi
-+
- 	if ! _scratch_mkfs_verity &>>$seqres.full; then
- 		# ext4: need e2fsprogs v1.44.5 or later (but actually v1.45.2+
- 		#       is needed for some tests to pass, due to an e2fsck bug)
-@@ -147,6 +151,9 @@ _scratch_mkfs_verity()
- 	ext4|f2fs)
- 		_scratch_mkfs -O verity
+@@ -315,6 +315,24 @@ _fsv_scratch_corrupt_merkle_tree()
+ 		(( offset += ($(_get_filesize $file) + 65535) & ~65535 ))
+ 		_fsv_scratch_corrupt_bytes $file $offset
  		;;
 +	btrfs)
-+		_scratch_mkfs
++		local ino=$(stat -c '%i' $file)
++		_scratch_unmount
++		local byte=""
++		while read -n 1 byte; do
++			if [ -z $byte ]; then
++				break
++			fi
++			local ascii=$(printf "%d" "'$byte'")
++			# This command will find a Merkle tree item for the inode (-I $ino,37,0)
++			# in the default filesystem tree (-r 5) and corrupt one byte (-b 1) at
++			# $offset (-o $offset) with the ascii representation of the byte we read
++			# (-v $ascii)
++			$BTRFS_CORRUPT_BLOCK_PROG -r 5 -I $ino,37,0 -v $ascii -o $offset -b 1 $SCRATCH_DEV
++			(( offset += 1 ))
++		done
++		_scratch_mount
 +		;;
  	*)
- 		_notrun "No verity support for $FSTYP"
+ 		_fail "_fsv_scratch_corrupt_merkle_tree() unimplemented on $FSTYP"
  		;;
-diff --git a/tests/btrfs/290 b/tests/btrfs/290
-new file mode 100755
-index 00000000..26939833
---- /dev/null
-+++ b/tests/btrfs/290
-@@ -0,0 +1,180 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2021 Facebook, Inc. All Rights Reserved.
-+#
-+# FS QA Test 290
-+#
-+# Test btrfs support for fsverity.
-+# This test extends the generic fsverity testing by corrupting inline extents,
-+# preallocated extents, holes, and the Merkle descriptor in a btrfs-aware way.
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
+diff --git a/tests/generic/574 b/tests/generic/574
+index 1e296618..e4370dae 100755
+--- a/tests/generic/574
++++ b/tests/generic/574
+@@ -43,6 +43,11 @@ _scratch_mount
+ fsv_orig_file=$SCRATCH_MNT/file
+ fsv_file=$SCRATCH_MNT/file.fsv
+ 
++# utility needed for corrupting Merkle data itself in btrfs
++if [ $FSTYP == "btrfs" ]; then
++	_require_command "$BTRFS_CORRUPT_BLOCK_PROG" btrfs_corrupt_block
++fi
 +
-+here=`pwd`
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+. ./common/verity
-+
-+# remove previous $seqres.full before test
-+rm -f $seqres.full
-+
-+_supported_fs btrfs
-+_require_scratch_verity
-+_require_scratch_nocheck
-+_require_odirect
-+_require_btrfs_corrupt_block
-+
-+_cleanup()
-+{
-+	cd /
-+	rm -f $tmp.*
-+}
-+
-+get_ino() {
-+	local file=$1
-+	stat -c "%i" $file
-+}
-+
-+validate() {
-+	local f=$1
-+	local sz=$(_get_filesize $f)
-+	# buffered io
-+	echo $(basename $f)
-+	$XFS_IO_PROG -rc "pread -q 0 $sz" $f 2>&1 | _filter_scratch
-+	# direct io
-+	$XFS_IO_PROG -rdc "pread -q 0 $sz" $f 2>&1 | _filter_scratch
-+}
-+
-+# corrupt the data portion of an inline extent
-+corrupt_inline() {
-+	local f=$SCRATCH_MNT/inl
-+	$XFS_IO_PROG -fc "pwrite -q -S 0x58 0 42" $f
-+	local ino=$(get_ino $f)
-+	_fsv_enable $f
-+	_scratch_unmount
-+	# inline data starts at disk_bytenr
-+	# overwrite the first u64 with random bogus junk
-+	$BTRFS_CORRUPT_BLOCK_PROG -i $ino -x 0 -f disk_bytenr $SCRATCH_DEV > /dev/null 2>&1
-+	_scratch_mount
-+	validate $f
-+}
-+
-+# preallocate a file, then corrupt it by changing it to a regular file
-+corrupt_prealloc_to_reg() {
-+	local f=$SCRATCH_MNT/prealloc
-+	$XFS_IO_PROG -fc "falloc 0 12k" $f
-+	local ino=$(get_ino $f)
-+	_fsv_enable $f
-+	_scratch_unmount
-+	# set extent type from prealloc (2) to reg (1)
-+	$BTRFS_CORRUPT_BLOCK_PROG -i $ino -x 0 -f type -v 1 $SCRATCH_DEV >/dev/null 2>&1
-+	_scratch_mount
-+	validate $f
-+}
-+
-+# corrupt a regular file by changing the type to preallocated
-+corrupt_reg_to_prealloc() {
-+	local f=$SCRATCH_MNT/reg
-+	$XFS_IO_PROG -fc "pwrite -q -S 0x58 0 12288" $f
-+	local ino=$(get_ino $f)
-+	_fsv_enable $f
-+	_scratch_unmount
-+	# set type from reg (1) to prealloc (2)
-+	$BTRFS_CORRUPT_BLOCK_PROG -i $ino -x 0 -f type -v 2 $SCRATCH_DEV >/dev/null 2>&1
-+	_scratch_mount
-+	validate $f
-+}
-+
-+# corrupt a file by punching a hole
-+corrupt_punch_hole() {
-+	local f=$SCRATCH_MNT/punch
-+	$XFS_IO_PROG -fc "pwrite -q -S 0x58 0 12288" $f
-+	local ino=$(get_ino $f)
-+	# make a new extent in the middle, sync so the writes don't coalesce
-+	$XFS_IO_PROG -c sync $SCRATCH_MNT
-+	$XFS_IO_PROG -fc "pwrite -q -S 0x59 4096 4096" $f
-+	_fsv_enable $f
-+	_scratch_unmount
-+	# change disk_bytenr to 0, representing a hole
-+	$BTRFS_CORRUPT_BLOCK_PROG -i $ino -x 4096 -f disk_bytenr -v 0 $SCRATCH_DEV > /dev/null 2>&1
-+	_scratch_mount
-+	validate $f
-+}
-+
-+# plug hole
-+corrupt_plug_hole() {
-+	local f=$SCRATCH_MNT/plug
-+	$XFS_IO_PROG -fc "pwrite -q -S 0x58 0 12288" $f
-+	local ino=$(get_ino $f)
-+	$XFS_IO_PROG -fc "falloc 4k 4k" $f
-+	_fsv_enable $f
-+	_scratch_unmount
-+	# change disk_bytenr to some value, plugging the hole
-+	$BTRFS_CORRUPT_BLOCK_PROG -i $ino -x 4096 -f disk_bytenr -v 13639680 $SCRATCH_DEV > /dev/null 2>&1
-+	_scratch_mount
-+	validate $f
-+}
-+
-+# corrupt the fsverity descriptor item indiscriminately (causes EINVAL)
-+corrupt_verity_descriptor() {
-+	local f=$SCRATCH_MNT/desc
-+	$XFS_IO_PROG -fc "pwrite -q -S 0x58 0 12288" $f
-+	local ino=$(get_ino $f)
-+	_fsv_enable $f
-+	_scratch_unmount
-+	# key for the descriptor item is <inode, BTRFS_VERITY_DESC_ITEM_KEY, 1>,
-+	# 88 is X. So we write 5 Xs to the start of the descriptor
-+	$BTRFS_CORRUPT_BLOCK_PROG -r 5 -I $ino,36,1 -v 88 -o 0 -b 5 $SCRATCH_DEV > /dev/null 2>&1
-+	_scratch_mount
-+	validate $f
-+}
-+
-+# specifically target the root hash in the descriptor (causes EIO)
-+corrupt_root_hash() {
-+	local f=$SCRATCH_MNT/roothash
-+	$XFS_IO_PROG -fc "pwrite -q -S 0x58 0 12288" $f
-+	local ino=$(get_ino $f)
-+	_fsv_enable $f
-+	_scratch_unmount
-+	$BTRFS_CORRUPT_BLOCK_PROG -r 5 -I $ino,36,1 -v 88 -o 16 -b 1 $SCRATCH_DEV > /dev/null 2>&1
-+	_scratch_mount
-+	validate $f
-+}
-+
-+# corrupt the Merkle tree data itself
-+corrupt_merkle_tree() {
-+	local f=$SCRATCH_MNT/merkle
-+	$XFS_IO_PROG -fc "pwrite -q -S 0x58 0 12288" $f
-+	local ino=$(get_ino $f)
-+	_fsv_enable $f
-+	_scratch_unmount
-+	# key for the descriptor item is <inode, BTRFS_VERITY_MERKLE_ITEM_KEY, 0>,
-+	# 88 is X. So we write 5 Xs to somewhere in the middle of the first
-+	# merkle item
-+	$BTRFS_CORRUPT_BLOCK_PROG -r 5 -I $ino,37,0 -v 88 -o 100 -b 5 $SCRATCH_DEV > /dev/null 2>&1
-+	_scratch_mount
-+	validate $f
-+}
-+
-+# real QA test starts here
-+_scratch_mkfs >/dev/null
-+_scratch_mount
-+
-+corrupt_inline
-+corrupt_prealloc_to_reg
-+corrupt_reg_to_prealloc
-+corrupt_punch_hole
-+corrupt_plug_hole
-+corrupt_verity_descriptor
-+corrupt_root_hash
-+corrupt_merkle_tree
-+
-+status=0
-+exit
-diff --git a/tests/btrfs/290.out b/tests/btrfs/290.out
-new file mode 100644
-index 00000000..056b114b
---- /dev/null
-+++ b/tests/btrfs/290.out
-@@ -0,0 +1,25 @@
-+QA output created by 290
-+inl
-+pread: Input/output error
-+pread: Input/output error
-+prealloc
-+pread: Input/output error
-+pread: Input/output error
-+reg
-+pread: Input/output error
-+pread: Input/output error
-+punch
-+pread: Input/output error
-+pread: Input/output error
-+plug
-+pread: Input/output error
-+pread: Input/output error
-+desc
-+SCRATCH_MNT/desc: Invalid argument
-+SCRATCH_MNT/desc: Invalid argument
-+roothash
-+pread: Input/output error
-+pread: Input/output error
-+merkle
-+pread: Input/output error
-+pread: Input/output error
-diff --git a/tests/btrfs/group b/tests/btrfs/group
-index 331dd432..13051562 100644
---- a/tests/btrfs/group
-+++ b/tests/btrfs/group
-@@ -238,3 +238,4 @@
- 233 auto quick subvolume
- 234 auto quick compress rw
- 235 auto quick send
-+290 auto quick verity
+ setup_zeroed_file()
+ {
+ 	local len=$1
 -- 
 2.30.2
 
