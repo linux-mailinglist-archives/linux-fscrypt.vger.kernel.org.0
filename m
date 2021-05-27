@@ -2,34 +2,34 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79F7E3938D9
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 28 May 2021 00:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B20F393974
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 28 May 2021 01:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236321AbhE0XAC (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 27 May 2021 19:00:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34186 "EHLO mail.kernel.org"
+        id S235827AbhE0Xyv (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 27 May 2021 19:54:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43950 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233203AbhE0XAC (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 27 May 2021 19:00:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B3324613B4;
-        Thu, 27 May 2021 22:58:28 +0000 (UTC)
+        id S233938AbhE0Xyv (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 27 May 2021 19:54:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C18A61178;
+        Thu, 27 May 2021 23:53:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622156308;
-        bh=88+eV716DIdAR5tUqch1HNXLPldwfov0uEMbNQcqzSk=;
+        s=k20201202; t=1622159597;
+        bh=unu2CwRiIklLEI2TXoBveyWjP3PNdHwKr8/qOcOwHz0=;
         h=From:To:Cc:Subject:Date:From;
-        b=USUAUQjUtNWzqcudS3yex3pfLJhCHJxn96LN10teB1uRolUdbFXqmYtAIhr5fZwVA
-         ydfAB/sAiwJZiJYP4mh+/NEhElElpFks/CCzimQypgzsvb2wM9zLCYRYhawT2aZHSw
-         YKeByIJ7ToHN4hJsxZssdSBwe/YrTkR1XfbC9hb6wBnq001G2B4U3+rHLDHB2u+REG
-         4YTCve+HKoYqbBeVbT4kYn8kKkEJrnvsO1I/C+3rp6W7//306k4Vd8CYoUuGSd6dVx
-         kALocVvXzUfJtzHWuZ+Zn0rOu3WcOxfmSWx0fOCnHfqkpROnbPbOUQDGugMtsZW5NU
-         iPaRCYmERRmtw==
+        b=hkto4pcLDdjg2amAWXxT+C//4V+e6tlGib27nP72HTOxXnR12jea3mWhtLFQ4dm0E
+         7gwn3yhQgn+Q9mY4pgnnWtM19dxKvdC+D3JFlgXKY/zQbcHieUH1I/os3kiQaWnWa8
+         7StchJcisGJpEhNQxJQIlaL4KJC1m3VRSS7Ju1ZaDoe77Col5CYNf88ewi/OFQ5RKw
+         7Yt6KfSlRbCNsUcDqAKmbR4xtASP6DXqsDDkYHSQCDHe3Giqjl6WSFc6N/76VUO+uy
+         lYdSz5Vj1wzt8WHYuF05AytMP14o1V84uCWmMHAo1pYLmHfHcHGtrLFxeYcYzlanQI
+         EH1Gc8b/jdHLw==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-fscrypt@vger.kernel.org
 Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        Daniel Rosenberg <drosen@google.com>, stable@vger.kernel.org
-Subject: [PATCH] fscrypt: fix derivation of SipHash keys on big endian CPUs
-Date:   Thu, 27 May 2021 15:55:25 -0700
-Message-Id: <20210527225525.2365513-1-ebiggers@kernel.org>
+        linux-mtd@lists.infradead.org, stable@vger.kernel.org
+Subject: [PATCH] fscrypt: don't ignore minor_hash when hash is 0
+Date:   Thu, 27 May 2021 16:52:36 -0700
+Message-Id: <20210527235236.2376556-1-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -39,49 +39,58 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Typically, the cryptographic APIs that fscrypt uses take keys as byte
-arrays, which avoids endianness issues.  However, siphash_key_t is an
-exception.  It is defined as 'u64 key[2];', i.e. the 128-bit key is
-expected to be given directly as two 64-bit words in CPU endianness.
+When initializing a no-key name, fscrypt_fname_disk_to_usr() sets the
+minor_hash to 0 if the (major) hash is 0.
 
-fscrypt_derive_dirhash_key() forgot to take this into account.
-Therefore, the SipHash keys used to index encrypted+casefolded
-directories differ on big endian vs. little endian platforms.
-This makes such directories non-portable between these platforms.
+This doesn't make sense because 0 is a valid hash code, so we shouldn't
+ignore the filesystem-provided minor_hash in that case.  Fix this by
+removing the special case for 'hash == 0'.
 
-Fix this by always using the little endian order.  This is a breaking
-change for big endian platforms, but this should be fine in practice
-since the encrypt+casefold support isn't known to actually be used on
-any big endian platforms yet.
+This is an old bug that appears to have originated when the encryption
+code in ext4 and f2fs was moved into fs/crypto/.  The original ext4 and
+f2fs code passed the hash by pointer instead of by value.  So
+'if (hash)' actually made sense then, as it was checking whether a
+pointer was NULL.  But now the hashes are passed by value, and
+filesystems just pass 0 for any hashes they don't have.  There is no
+need to handle this any differently from the hashes actually being 0.
 
-Fixes: aa408f835d02 ("fscrypt: derive dirhash key for casefolded directories")
-Cc: <stable@vger.kernel.org> # v5.6+
+It is difficult to reproduce this bug, as it only made a difference in
+the case where a filename's 32-bit major hash happened to be 0.
+However, it probably had the largest chance of causing problems on
+ubifs, since ubifs uses minor_hash to do lookups of no-key names, in
+addition to using it as a readdir cookie.  ext4 only uses minor_hash as
+a readdir cookie, and f2fs doesn't use minor_hash at all.
+
+Fixes: 0b81d0779072 ("fs crypto: move per-file encryption from f2fs tree to fs/crypto")
+Cc: <stable@vger.kernel.org> # v4.6+
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/crypto/keysetup.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ fs/crypto/fname.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index 261293fb7097..4d98377c07a7 100644
---- a/fs/crypto/keysetup.c
-+++ b/fs/crypto/keysetup.c
-@@ -221,6 +221,16 @@ int fscrypt_derive_dirhash_key(struct fscrypt_info *ci,
- 				  sizeof(ci->ci_dirhash_key));
- 	if (err)
- 		return err;
+diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
+index 6ca7d16593ff..d00455440d08 100644
+--- a/fs/crypto/fname.c
++++ b/fs/crypto/fname.c
+@@ -344,13 +344,9 @@ int fscrypt_fname_disk_to_usr(const struct inode *inode,
+ 		     offsetof(struct fscrypt_nokey_name, sha256));
+ 	BUILD_BUG_ON(BASE64_CHARS(FSCRYPT_NOKEY_NAME_MAX) > NAME_MAX);
+ 
+-	if (hash) {
+-		nokey_name.dirhash[0] = hash;
+-		nokey_name.dirhash[1] = minor_hash;
+-	} else {
+-		nokey_name.dirhash[0] = 0;
+-		nokey_name.dirhash[1] = 0;
+-	}
++	nokey_name.dirhash[0] = hash;
++	nokey_name.dirhash[1] = minor_hash;
 +
-+	/*
-+	 * The SipHash APIs expect the key as a pair of 64-bit words, not as a
-+	 * byte array.  Make sure to use a consistent endianness.
-+	 */
-+	BUILD_BUG_ON(sizeof(ci->ci_dirhash_key) != 16);
-+	BUILD_BUG_ON(ARRAY_SIZE(ci->ci_dirhash_key.key) != 2);
-+	le64_to_cpus(&ci->ci_dirhash_key.key[0]);
-+	le64_to_cpus(&ci->ci_dirhash_key.key[1]);
-+
- 	ci->ci_dirhash_key_initialized = true;
- 	return 0;
- }
+ 	if (iname->len <= sizeof(nokey_name.bytes)) {
+ 		memcpy(nokey_name.bytes, iname->name, iname->len);
+ 		size = offsetof(struct fscrypt_nokey_name, bytes[iname->len]);
+
+base-commit: c4681547bcce777daf576925a966ffa824edd09d
 -- 
 2.32.0.rc0.204.g9fa02ecfa5-goog
 
