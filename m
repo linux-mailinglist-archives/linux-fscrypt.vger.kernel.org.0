@@ -2,95 +2,51 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B20F393974
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 28 May 2021 01:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 574B1393A15
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 28 May 2021 02:12:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235827AbhE0Xyv (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 27 May 2021 19:54:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43950 "EHLO mail.kernel.org"
+        id S235188AbhE1AOU (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 27 May 2021 20:14:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48382 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233938AbhE0Xyv (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 27 May 2021 19:54:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C18A61178;
-        Thu, 27 May 2021 23:53:17 +0000 (UTC)
+        id S234573AbhE1AOQ (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 27 May 2021 20:14:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E84D1613B6;
+        Fri, 28 May 2021 00:12:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622159597;
-        bh=unu2CwRiIklLEI2TXoBveyWjP3PNdHwKr8/qOcOwHz0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=hkto4pcLDdjg2amAWXxT+C//4V+e6tlGib27nP72HTOxXnR12jea3mWhtLFQ4dm0E
-         7gwn3yhQgn+Q9mY4pgnnWtM19dxKvdC+D3JFlgXKY/zQbcHieUH1I/os3kiQaWnWa8
-         7StchJcisGJpEhNQxJQIlaL4KJC1m3VRSS7Ju1ZaDoe77Col5CYNf88ewi/OFQ5RKw
-         7Yt6KfSlRbCNsUcDqAKmbR4xtASP6DXqsDDkYHSQCDHe3Giqjl6WSFc6N/76VUO+uy
-         lYdSz5Vj1wzt8WHYuF05AytMP14o1V84uCWmMHAo1pYLmHfHcHGtrLFxeYcYzlanQI
-         EH1Gc8b/jdHLw==
+        s=k20201202; t=1622160762;
+        bh=71pzvdAMyAxadmBGtbgFS3tTAduPqfB1ZrDgW23iYXI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Hu9/hXcUSEUHjeLhkboF3pLiaOs02j8I1WsrnFmoFu0OBrh1fES17MkbHkOL2h7GZ
+         NTFET2q1j63UrzcmaHFg0Eqdqqeda9bXl8qOe8uU4cFthbgB7+E96qLG4FyWGYYY0k
+         uHHZoAZuk+Xf7Mm2bqPeLgXEklJkhLx3AHKn0ZtEKLluwKUQnvCWiKahJY9jwwjzEC
+         caKS8bijXfFudhonjnRs5l2QzM/6Dex92lyJoYTI/8EllqjtImcbHvGmS4ERdcRkSB
+         Tg35LkmGrtiQTm1WAKI/F8zaEA8k+zX/dHoRT6MQKtOHSyYKD2Xnek/2xBKLTl99M7
+         c+WW7Nh/Qr86A==
+Date:   Thu, 27 May 2021 17:12:40 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, stable@vger.kernel.org
-Subject: [PATCH] fscrypt: don't ignore minor_hash when hash is 0
-Date:   Thu, 27 May 2021 16:52:36 -0700
-Message-Id: <20210527235236.2376556-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
+To:     Jerry Chung <jchung@proofpoint.com>
+Cc:     "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>
+Subject: Re: Is fscrypt encryption FIPS compliant?
+Message-ID: <YLA1eIEOi3yHWk4X@gmail.com>
+References: <BL1PR12MB5334C36420D5A8669D7856BFA0239@BL1PR12MB5334.namprd12.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BL1PR12MB5334C36420D5A8669D7856BFA0239@BL1PR12MB5334.namprd12.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On Thu, May 27, 2021 at 08:08:20PM +0000, Jerry Chung wrote:
+> Hi Team,
+> 
+> I am considering to use `fscrypt` to encrypt directory files and just wondered if fscrypt encryption is complaint with FIPS. If so, would it be possible to get the CMVP number for that? If not, is there any plan to get the certification?
+> 
+> Thanks,
+> Jerry Chung
 
-When initializing a no-key name, fscrypt_fname_disk_to_usr() sets the
-minor_hash to 0 if the (major) hash is 0.
+No, there is no plan to certify fscrypt (kernel part or userspace part) as a
+FIPS cryptographic module.
 
-This doesn't make sense because 0 is a valid hash code, so we shouldn't
-ignore the filesystem-provided minor_hash in that case.  Fix this by
-removing the special case for 'hash == 0'.
-
-This is an old bug that appears to have originated when the encryption
-code in ext4 and f2fs was moved into fs/crypto/.  The original ext4 and
-f2fs code passed the hash by pointer instead of by value.  So
-'if (hash)' actually made sense then, as it was checking whether a
-pointer was NULL.  But now the hashes are passed by value, and
-filesystems just pass 0 for any hashes they don't have.  There is no
-need to handle this any differently from the hashes actually being 0.
-
-It is difficult to reproduce this bug, as it only made a difference in
-the case where a filename's 32-bit major hash happened to be 0.
-However, it probably had the largest chance of causing problems on
-ubifs, since ubifs uses minor_hash to do lookups of no-key names, in
-addition to using it as a readdir cookie.  ext4 only uses minor_hash as
-a readdir cookie, and f2fs doesn't use minor_hash at all.
-
-Fixes: 0b81d0779072 ("fs crypto: move per-file encryption from f2fs tree to fs/crypto")
-Cc: <stable@vger.kernel.org> # v4.6+
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/crypto/fname.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
-
-diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
-index 6ca7d16593ff..d00455440d08 100644
---- a/fs/crypto/fname.c
-+++ b/fs/crypto/fname.c
-@@ -344,13 +344,9 @@ int fscrypt_fname_disk_to_usr(const struct inode *inode,
- 		     offsetof(struct fscrypt_nokey_name, sha256));
- 	BUILD_BUG_ON(BASE64_CHARS(FSCRYPT_NOKEY_NAME_MAX) > NAME_MAX);
- 
--	if (hash) {
--		nokey_name.dirhash[0] = hash;
--		nokey_name.dirhash[1] = minor_hash;
--	} else {
--		nokey_name.dirhash[0] = 0;
--		nokey_name.dirhash[1] = 0;
--	}
-+	nokey_name.dirhash[0] = hash;
-+	nokey_name.dirhash[1] = minor_hash;
-+
- 	if (iname->len <= sizeof(nokey_name.bytes)) {
- 		memcpy(nokey_name.bytes, iname->name, iname->len);
- 		size = offsetof(struct fscrypt_nokey_name, bytes[iname->len]);
-
-base-commit: c4681547bcce777daf576925a966ffa824edd09d
--- 
-2.32.0.rc0.204.g9fa02ecfa5-goog
-
+- Eric
