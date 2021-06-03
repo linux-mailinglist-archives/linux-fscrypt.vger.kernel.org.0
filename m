@@ -2,33 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B04239AB30
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  3 Jun 2021 22:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B040F39AB37
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  3 Jun 2021 22:00:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229764AbhFCUBv (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 3 Jun 2021 16:01:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36830 "EHLO mail.kernel.org"
+        id S229927AbhFCUCB (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 3 Jun 2021 16:02:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36834 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229675AbhFCUBu (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 3 Jun 2021 16:01:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA4936139A;
-        Thu,  3 Jun 2021 20:00:05 +0000 (UTC)
+        id S229704AbhFCUBv (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 3 Jun 2021 16:01:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 155F7613F8;
+        Thu,  3 Jun 2021 20:00:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622750405;
-        bh=2YrqxSaDbqrkFqauDM9hRRvR/T2mY7ydopo8x9/nUM8=;
+        s=k20201202; t=1622750406;
+        bh=FyxqNFXOsJAjD5ZjY8O3sH1AcSKIs+m3wBMDe7VatAk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CJ8gwo14bYXKXby51c+KvUMBeqeFJt3hLxvz+1q5z3M1CAx+RCg2UwHZt+kZcByb2
-         HTSp858jEmDc/fBBUwlPJ1I1SoL1nzccDRQ3Q0ER66Q2Ra6Fr6zau+Sv/AoBuoU7pq
-         obBofjl9nmZ8vlYa009IPrlIT020wWt034cY36BrB3yRtBBhuq8b1Hc4DX7CDK0OrO
-         /zRN0KW27U0P3sE9VN1k5mXhT/lZqUVSgvVzZdvpX+5PHaq+ua3TBC3q8jxPJP9doF
-         a2tnbnpEmnzjU/FrIb+Y+jwj0wnnxmSeRvDQk3Y3HSW/qm4J3OPTqVmsqf+DN0oY3U
-         TmDmKLdpWJ89Q==
+        b=JQHwyOVllvBMZvrrjEa1EiRpo/5aexnE9PrwMuEOgr5tG9FOBdD1o+PjhK9jQzJNe
+         8AdS0k1XxaB1s4CnFOrgytKqcErJI/BEozLpqzEYUhMwbtudacxOMFDCYcY3mcR+pM
+         V5ZYClD+i0vNzRYwrUNV/N6lVEFEFF1NHkBWbicwXktphy841KtF2aBZ3GggwEhX2t
+         p1zsl5LELMtoF7KZvUtB2SQ8n47cqvPye4DCb4vNQZ7IZ+lcPX8iL3G9ODxgZx2ze8
+         lpBArrM7mEo9bj6vHv2Xa9Hn7SQrjOeA7aztenlKyd86raCQjQFLSgffDVqlYkZn+D
+         NgQVp1BwyL4+Q==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-fscrypt@vger.kernel.org
 Cc:     Victor Hsieh <victorhsieh@google.com>
-Subject: [fsverity-utils PATCH 1/4] lib/compute_digest: add callbacks for getting the verity metadata
-Date:   Thu,  3 Jun 2021 12:58:09 -0700
-Message-Id: <20210603195812.50838-2-ebiggers@kernel.org>
+Subject: [fsverity-utils PATCH 2/4] programs/test_compute_digest: test the metadata callbacks
+Date:   Thu,  3 Jun 2021 12:58:10 -0700
+Message-Id: <20210603195812.50838-3-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210603195812.50838-1-ebiggers@kernel.org>
 References: <20210603195812.50838-1-ebiggers@kernel.org>
@@ -40,298 +40,179 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Allow callers of libfsverity_compute_digest() to provide callback
-functions which get passed the Merkle tree and fs-verity descriptor
-after they are calculated.
-
-This will allow adding options to 'fsverity digest' and 'fsverity sign'
-which cause this metadata to be dumped to files.  Normally this isn't
-useful, but this can be needed in cases where the fs-verity metadata
-needs to be consumed by something other than one of the native Linux
-kernel implementations of fs-verity.
+Test that the libfsverity_metadata_callbacks support seems to be working
+correctly.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- include/libfsverity.h |  46 ++++++++++++++-
- lib/compute_digest.c  | 130 ++++++++++++++++++++++++++++++++++++------
- 2 files changed, 156 insertions(+), 20 deletions(-)
+ programs/test_compute_digest.c | 133 +++++++++++++++++++++++++++++++++
+ 1 file changed, 133 insertions(+)
 
-diff --git a/include/libfsverity.h b/include/libfsverity.h
-index 6c42e5e..c2c6c18 100644
---- a/include/libfsverity.h
-+++ b/include/libfsverity.h
-@@ -61,8 +61,18 @@ struct libfsverity_merkle_tree_params {
- 	/** @reserved1: must be 0 */
- 	uint64_t reserved1[8];
+diff --git a/programs/test_compute_digest.c b/programs/test_compute_digest.c
+index e7f2645..67266fa 100644
+--- a/programs/test_compute_digest.c
++++ b/programs/test_compute_digest.c
+@@ -13,6 +13,7 @@
  
-+	/**
-+	 * @metadata_callbacks: if non-NULL, this gives a set of callback
-+	 * functions to which libfsverity_compute_digest() will pass the Merkle
-+	 * tree blocks and fs-verity descriptor after they are computed.
-+	 * Normally this isn't useful, but this can be needed in rare cases
-+	 * where the metadata needs to be consumed by something other than one
-+	 * of the native Linux kernel implementations of fs-verity.
-+	 */
-+	const struct libfsverity_metadata_callbacks *metadata_callbacks;
-+
- 	/** @reserved2: must be 0 */
--	uintptr_t reserved2[8];
-+	uintptr_t reserved2[7];
- };
+ #include <ctype.h>
+ #include <inttypes.h>
++#include <openssl/sha.h>
  
- struct libfsverity_digest {
-@@ -78,6 +88,37 @@ struct libfsverity_signature_params {
- 	uintptr_t reserved2[8];		/* must be 0 */
- };
- 
-+struct libfsverity_metadata_callbacks {
-+
-+	/** @ctx: context passed to the below callbacks (opaque to library) */
-+	void *ctx;
-+
-+	/**
-+	 * @merkle_tree_size: if non-NULL, called with the total size of the
-+	 * Merkle tree in bytes, prior to any call to @merkle_tree_block.  Must
-+	 * return 0 on success, or a negative errno value on failure.
-+	 */
-+	int (*merkle_tree_size)(void *ctx, uint64_t size);
-+
-+	/**
-+	 * @merkle_tree_block: if non-NULL, called with each block of the
-+	 * Merkle tree after it is computed.  The offset is the offset in bytes
-+	 * to the block within the Merkle tree, using the Merkle tree layout
-+	 * used by FS_IOC_READ_VERITY_METADATA.  The offsets won't necessarily
-+	 * be in increasing order.  Must return 0 on success, or a negative
-+	 * errno value on failure.
-+	 */
-+	int (*merkle_tree_block)(void *ctx, const void *block, size_t size,
-+				 uint64_t offset);
-+
-+	/**
-+	 * @descriptor: if non-NULL, called with the fs-verity descriptor after
-+	 * it is computed.  Must return 0 on success, or a negative errno value
-+	 * on failure.
-+	 */
-+	int (*descriptor)(void *ctx, const void *descriptor, size_t size);
-+};
-+
- /*
-  * libfsverity_read_fn_t - callback that incrementally provides a file's data
-  * @fd: the user-provided "file descriptor" (opaque to library)
-@@ -101,7 +142,8 @@ typedef int (*libfsverity_read_fn_t)(void *fd, void *buf, size_t count);
-  *
-  * Returns:
-  * * 0 for success, -EINVAL for invalid input arguments, -ENOMEM if libfsverity
-- *   failed to allocate memory, or an error returned by @read_fn.
-+ *   failed to allocate memory, or an error returned by @read_fn or by one of
-+ *   the @params->metadata_callbacks.
-  * * digest_ret returns a pointer to the digest on success. The digest object
-  *   is allocated by libfsverity and must be freed by the caller using free().
-  */
-diff --git a/lib/compute_digest.c b/lib/compute_digest.c
-index a4f649c..c5b0100 100644
---- a/lib/compute_digest.c
-+++ b/lib/compute_digest.c
-@@ -24,9 +24,8 @@ struct block_buffer {
- 
- /*
-  * Hash a block, writing the result to the next level's pending block buffer.
-- * Returns true if the next level's block became full, else false.
-  */
--static bool hash_one_block(struct hash_ctx *hash, struct block_buffer *cur,
-+static void hash_one_block(struct hash_ctx *hash, struct block_buffer *cur,
- 			   u32 block_size, const u8 *salt, u32 salt_size)
- {
- 	struct block_buffer *next = cur + 1;
-@@ -41,8 +40,60 @@ static bool hash_one_block(struct hash_ctx *hash, struct block_buffer *cur,
- 
- 	next->filled += hash->alg->digest_size;
- 	cur->filled = 0;
-+}
-+
-+static bool block_is_full(const struct block_buffer *block, u32 block_size,
-+			  struct hash_ctx *hash)
-+{
-+	/* Would the next hash put us over the limit? */
-+	return block->filled + hash->alg->digest_size > block_size;
-+}
-+
-+static int report_merkle_tree_size(const struct libfsverity_metadata_callbacks *cbs,
-+				   u64 size)
-+{
-+	if (cbs && cbs->merkle_tree_size) {
-+		int err = cbs->merkle_tree_size(cbs->ctx, size);
- 
--	return next->filled + hash->alg->digest_size > block_size;
-+		if (err) {
-+			libfsverity_error_msg("error processing Merkle tree size");
-+			return err;
-+		}
-+	}
-+	return 0;
-+}
-+
-+static int report_merkle_tree_block(const struct libfsverity_metadata_callbacks *cbs,
-+				    const struct block_buffer *block,
-+				    u32 block_size, u64 *level_offset)
-+{
-+
-+	if (cbs && cbs->merkle_tree_block) {
-+		int err = cbs->merkle_tree_block(cbs->ctx, block->data,
-+						 block_size,
-+						 *level_offset * block_size);
-+
-+		if (err) {
-+			libfsverity_error_msg("error processing Merkle tree block");
-+			return err;
-+		}
-+		(*level_offset)++;
-+	}
-+	return 0;
-+}
-+
-+static int report_descriptor(const struct libfsverity_metadata_callbacks *cbs,
-+			     const void *descriptor, size_t size)
-+{
-+	if (cbs && cbs->descriptor) {
-+		int err = cbs->descriptor(cbs->ctx, descriptor, size);
-+
-+		if (err) {
-+			libfsverity_error_msg("error processing fs-verity descriptor");
-+			return err;
-+		}
-+	}
-+	return 0;
+ struct mem_file {
+ 	u8 *data;
+@@ -37,6 +38,13 @@ static int error_read_fn(void *fd __attribute__((unused)),
+ 	return -EIO;
  }
  
- /*
-@@ -52,6 +103,7 @@ static bool hash_one_block(struct hash_ctx *hash, struct block_buffer *cur,
- static int compute_root_hash(void *fd, libfsverity_read_fn_t read_fn,
- 			     u64 file_size, struct hash_ctx *hash,
- 			     u32 block_size, const u8 *salt, u32 salt_size,
-+			     const struct libfsverity_metadata_callbacks *metadata_cbs,
- 			     u8 *root_hash)
- {
- 	const u32 hashes_per_block = block_size / hash->alg->digest_size;
-@@ -60,6 +112,7 @@ static int compute_root_hash(void *fd, libfsverity_read_fn_t read_fn,
- 	u64 blocks;
- 	int num_levels = 0;
- 	int level;
-+	u64 level_offset[FS_VERITY_MAX_LEVELS];
- 	struct block_buffer _buffers[1 + FS_VERITY_MAX_LEVELS + 1] = {};
- 	struct block_buffer *buffers = &_buffers[1];
- 	u64 offset;
-@@ -68,7 +121,7 @@ static int compute_root_hash(void *fd, libfsverity_read_fn_t read_fn,
- 	/* Root hash of empty file is all 0's */
- 	if (file_size == 0) {
- 		memset(root_hash, 0, hash->alg->digest_size);
--		return 0;
-+		return report_merkle_tree_size(metadata_cbs, 0);
- 	}
++static int zeroes_read_fn(void *fd __attribute__((unused)),
++			  void *buf, size_t count)
++{
++	memset(buf, 0, count);
++	return 0;
++}
++
+ static const struct test_case {
+ 	u32 hash_algorithm;
+ 	u32 block_size;
+@@ -249,6 +257,130 @@ static void test_invalid_params(void)
+ 	ASSERT(d == NULL);
+ }
  
- 	if (salt_size != 0) {
-@@ -78,15 +131,39 @@ static int compute_root_hash(void *fd, libfsverity_read_fn_t read_fn,
- 		memcpy(padded_salt, salt, salt_size);
- 	}
- 
--	/* Compute number of levels */
--	for (blocks = DIV_ROUND_UP(file_size, block_size); blocks > 1;
--	     blocks = DIV_ROUND_UP(blocks, hashes_per_block)) {
-+	/* Compute number of levels and the number of blocks in each level. */
-+	blocks = DIV_ROUND_UP(file_size, block_size);
-+	while (blocks > 1)  {
- 		if (WARN_ON(num_levels >= FS_VERITY_MAX_LEVELS)) {
- 			err = -EINVAL;
- 			goto out;
- 		}
--		num_levels++;
-+		blocks = DIV_ROUND_UP(blocks, hashes_per_block);
-+		/*
-+		 * Temporarily use level_offset[] to store the number of blocks
-+		 * in each level.  It will be overwritten later.
-+		 */
-+		level_offset[num_levels++] = blocks;
-+	}
++static struct {
++	u64 merkle_tree_size;
++	u64 merkle_tree_block;
++	u64 descriptor;
++} metadata_callback_counts;
++
++static int handle_merkle_tree_size(void *ctx, u64 size)
++{
++	metadata_callback_counts.merkle_tree_size++;
++
++	/* Test that the ctx argument is passed through correctly. */
++	ASSERT(ctx == (void *)1);
++
++	/* Test that the expected Merkle tree size is reported. */
++	ASSERT(size == 5 * 1024);
++	return 0;
++}
++
++static int handle_merkle_tree_block(void *ctx, const void *block, size_t size,
++				    u64 offset)
++{
++	u8 digest[SHA256_DIGEST_LENGTH];
++	u64 count = metadata_callback_counts.merkle_tree_block++;
++	const char *expected_digest;
++
++	/* Test that ->merkle_tree_size() was called first. */
++	ASSERT(metadata_callback_counts.merkle_tree_size == 1);
++
++	/* Test that the ctx argument is passed through correctly. */
++	ASSERT(ctx == (void *)1);
 +
 +	/*
-+	 * Compute the starting block of each level, using the convention where
-+	 * the root level is first, i.e. the convention used by
-+	 * FS_IOC_READ_VERITY_METADATA.  At the same time, compute the total
-+	 * size of the Merkle tree.  These values are only needed for the
-+	 * metadata callbacks (if they were given), as the hash computation
-+	 * itself doesn't prescribe an ordering of the levels and doesn't
-+	 * prescribe any special meaning to the total size of the Merkle tree.
++	 * Test that this Merkle tree block has the expected size, offset, and
++	 * contents.  The 4 blocks at "level 0" should be reported first, in
++	 * order; then the 1 block at "level 1" should be reported last (but the
++	 * level 1 block should have the smallest offset).
 +	 */
-+	offset = 0;
-+	for (level = num_levels - 1; level >= 0; level--) {
-+		blocks = level_offset[level];
-+		level_offset[level] = offset;
-+		offset += blocks;
- 	}
-+	err = report_merkle_tree_size(metadata_cbs, offset * block_size);
-+	if (err)
-+		goto out;
- 
- 	/*
- 	 * Allocate the block buffers.  Buffer "-1" is for data blocks.
-@@ -112,21 +189,33 @@ static int compute_root_hash(void *fd, libfsverity_read_fn_t read_fn,
- 			goto out;
- 		}
- 
--		level = -1;
--		while (hash_one_block(hash, &buffers[level], block_size,
--				      padded_salt, padded_salt_size)) {
--			level++;
--			if (WARN_ON(level >= num_levels)) {
--				err = -EINVAL;
-+		hash_one_block(hash, &buffers[-1], block_size,
-+			       padded_salt, padded_salt_size);
-+		for (level = 0; level < num_levels; level++) {
-+			if (!block_is_full(&buffers[level], block_size, hash))
-+				break;
-+			hash_one_block(hash, &buffers[level], block_size,
-+				       padded_salt, padded_salt_size);
-+			err = report_merkle_tree_block(metadata_cbs,
-+						       &buffers[level],
-+						       block_size,
-+						       &level_offset[level]);
-+			if (err)
- 				goto out;
--			}
- 		}
- 	}
- 	/* Finish all nonempty pending tree blocks */
- 	for (level = 0; level < num_levels; level++) {
--		if (buffers[level].filled != 0)
-+		if (buffers[level].filled != 0) {
- 			hash_one_block(hash, &buffers[level], block_size,
- 				       padded_salt, padded_salt_size);
-+			err = report_merkle_tree_block(metadata_cbs,
-+						       &buffers[level],
-+						       block_size,
-+						       &level_offset[level]);
-+			if (err)
-+				goto out;
++	ASSERT(size == 1024);
++	SHA256(block, size, digest);
++	if (count == 4) {
++		/* 1 block at level 1 */
++		ASSERT(offset == 0);
++		expected_digest = "\x68\xc5\x38\xe1\x19\x58\xd6\x5d"
++				  "\x68\xb6\xfe\x8e\x9f\xb8\xcc\xab"
++				  "\xec\xfd\x92\x8b\x01\xd0\x63\x44"
++				  "\xe2\x23\xed\x41\xdd\xc4\x54\x4a";
++	} else {
++		/* 4 blocks at level 0 */
++		ASSERT(offset == 1024 + (count * 1024));
++		if (count < 3) {
++			expected_digest = "\xf7\x89\xba\xab\x53\x85\x9f\xaf"
++					  "\x36\xd6\xd7\x5d\x10\x42\x06\x42"
++					  "\x94\x20\x2d\x6e\x13\xe7\x71\x6f"
++					  "\x39\x4f\xba\x43\x4c\xcc\x49\x86";
++		} else {
++			expected_digest = "\x00\xfe\xd0\x3c\x5d\x6e\xab\x21"
++					  "\x31\x43\xf3\xd9\x6a\x5c\xa3\x1c"
++					  "\x2b\x89\xf5\x68\x4e\x6c\x8e\x07"
++					  "\x87\x3e\x5e\x97\x65\x17\xb4\x8f";
 +		}
- 	}
- 
- 	/* Root hash was filled by the last call to hash_one_block() */
-@@ -217,8 +306,13 @@ libfsverity_compute_digest(void *fd, libfsverity_read_fn_t read_fn,
- 	}
- 
- 	err = compute_root_hash(fd, read_fn, params->file_size, hash,
--				block_size, params->salt,
--				params->salt_size, desc.root_hash);
-+				block_size, params->salt, params->salt_size,
-+				params->metadata_callbacks, desc.root_hash);
-+	if (err)
-+		goto out;
++	}
++	ASSERT(!memcmp(digest, expected_digest, SHA256_DIGEST_LENGTH));
++	return 0;
++}
 +
-+	err = report_descriptor(params->metadata_callbacks,
-+				&desc, sizeof(desc));
- 	if (err)
- 		goto out;
++static const u8 expected_file_digest[SHA256_DIGEST_LENGTH] =
++	"\x09\xcb\xba\xee\xd2\xa0\x4c\x2d\xa2\x42\xc1\x0e\x15\x68\xd9\x6f"
++	"\x35\x8a\x16\xaa\x1e\xbe\x8c\xf0\x28\x61\x20\xc1\x3c\x93\x66\xd1";
++
++static int handle_descriptor(void *ctx, const void *descriptor, size_t size)
++{
++	u8 digest[SHA256_DIGEST_LENGTH];
++
++	metadata_callback_counts.descriptor++;
++	/* Test that the ctx argument is passed through correctly. */
++	ASSERT(ctx == (void *)1);
++
++	/* Test that the fs-verity descriptor is reported correctly. */
++	ASSERT(size == 256);
++	SHA256(descriptor, size, digest);
++	ASSERT(!memcmp(digest, expected_file_digest, SHA256_DIGEST_LENGTH));
++	return 0;
++}
++
++static const struct libfsverity_metadata_callbacks metadata_callbacks = {
++	.ctx = (void *)1, /* arbitrary value for testing purposes */
++	.merkle_tree_size = handle_merkle_tree_size,
++	.merkle_tree_block = handle_merkle_tree_block,
++	.descriptor = handle_descriptor,
++};
++
++/* Test that the libfsverity_metadata_callbacks work correctly. */
++static void test_metadata_callbacks(void)
++{
++	/*
++	 * For a useful test, we want a file whose Merkle tree will have at
++	 * least 2 levels (this one will have exactly 2).  The contents of the
++	 * file aren't too important.
++	 */
++	struct libfsverity_merkle_tree_params params = {
++		.version = 1,
++		.hash_algorithm = FS_VERITY_HASH_ALG_SHA256,
++		.block_size = 1024,
++		.file_size = 100000,
++		.metadata_callbacks = &metadata_callbacks,
++	};
++	struct libfsverity_digest *d;
++
++	ASSERT(libfsverity_compute_digest(NULL, zeroes_read_fn,
++					  &params, &d) == 0);
++
++	/* Test that the callbacks were called the correct number of times. */
++	ASSERT(metadata_callback_counts.merkle_tree_size == 1);
++	ASSERT(metadata_callback_counts.merkle_tree_block == 5);
++	ASSERT(metadata_callback_counts.descriptor == 1);
++
++	/* Test that the computed file digest is as expected. */
++	ASSERT(d->digest_algorithm == FS_VERITY_HASH_ALG_SHA256);
++	ASSERT(d->digest_size == SHA256_DIGEST_LENGTH);
++	ASSERT(!memcmp(d->digest, expected_file_digest, SHA256_DIGEST_LENGTH));
++
++	free(d);
++}
++
+ int main(int argc, char *argv[])
+ {
+ 	const bool update = (argc == 2 && !strcmp(argv[1], "--update"));
+@@ -305,6 +437,7 @@ int main(int argc, char *argv[])
+ 	}
  
+ 	test_invalid_params();
++	test_metadata_callbacks();
+ 	printf("test_compute_digest passed\n");
+ 	return 0;
+ }
 -- 
 2.31.1
 
