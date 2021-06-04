@@ -2,99 +2,89 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D82539BBCA
-	for <lists+linux-fscrypt@lfdr.de>; Fri,  4 Jun 2021 17:26:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3888739BDC1
+	for <lists+linux-fscrypt@lfdr.de>; Fri,  4 Jun 2021 18:55:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229864AbhFDP2G (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 4 Jun 2021 11:28:06 -0400
-Received: from mail-il1-f182.google.com ([209.85.166.182]:46835 "EHLO
-        mail-il1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbhFDP2F (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 4 Jun 2021 11:28:05 -0400
-Received: by mail-il1-f182.google.com with SMTP id v13so9160294ilh.13
-        for <linux-fscrypt@vger.kernel.org>; Fri, 04 Jun 2021 08:26:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AU7V5+c54hD7uJy+lRPqYGW+gRcOyK+yCOwATE4vF7A=;
-        b=ZdbbUKNf8Oe0QSkw0CtpnMyOFUw7MoJFdvnhIjXI19jKe07EfCKR5QAASCM4zRkLmS
-         TGAkZxHUKt5C3NQDNSN8wWimKyblTuiUgb9W2J1Q9tnSTGQkxsiriIm4VGp9BDF9lgVp
-         VJ5FCMAdJNqC13vwoufXByCvbfsdAuwyUOi2DTpf2oqC242+uGmatCMos9IIa7CwCBfj
-         DE7iZ+YLLmtRrWrunJ8xB/c57AQAQSoJxg0AJz9PlPy+XEyHyidV3xP/WZUG9x3bINcj
-         JNvWnknEs3vKsyjSBJTvaTDiac0I4RzGxZXj6A9rGswPTDvagmzphtvk+Mg++/SE8cU8
-         xXNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AU7V5+c54hD7uJy+lRPqYGW+gRcOyK+yCOwATE4vF7A=;
-        b=fvxXsC9XiaDpn6rhcNnDKdzSRSSQN+MUUfFGvPSiFs0DUL14gAL2/55/jYhlaexkPD
-         i5L4uAdoTnEwINXRtSuin7tOYYgEXhnFoefxGaqN2/r+QPkIadg91Z7oUiM0IxUZNpUS
-         8/u3dlJVSYWCmrdt03Bs28auF8mDC91Kc9PYXnHDu7jaknwKxo5VsOERYhZKpW9YB/Lg
-         G1f/DyJ/Qjc/l2K+KQy/ov90VzWK9rNhfBbsrTXS+6JM5gmVozumVkYVDPzNL+zo/Ym4
-         WusBl38r1nSTgSc8zEDK1X6I7lUl/WFk2C/27BF4SR7rWllyHH7WmWb3xsGLp7dNv3mG
-         b0ow==
-X-Gm-Message-State: AOAM531bryWxMzXSDKv+P4bshRjHoUZT2NQEGkuv140vbV0PganxHkTB
-        6m+ybI+TuzxDrpREGT4MMINAukaY3xHK3ID95c3f/w==
-X-Google-Smtp-Source: ABdhPJx12NjINhgyYF5viVxupk2w6EYRwIQUgYC4YKEOboSQ6ccjaD8m/4jKwbCaz/MDLgil/9QcbnNcZGVxS9uAWic=
-X-Received: by 2002:a92:d3ca:: with SMTP id c10mr4382571ilh.82.1622820318609;
- Fri, 04 Jun 2021 08:25:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210603195812.50838-1-ebiggers@kernel.org>
-In-Reply-To: <20210603195812.50838-1-ebiggers@kernel.org>
-From:   Victor Hsieh <victorhsieh@google.com>
-Date:   Fri, 4 Jun 2021 08:25:07 -0700
-Message-ID: <CAFCauYMH_DVNF+CLoC5kpxTb+5uO+Uw9SNGbp=YQsDmXthPPvA@mail.gmail.com>
-Subject: Re: [fsverity-utils PATCH 0/4] Add option to write Merkle tree to a file
-To:     Eric Biggers <ebiggers@kernel.org>
+        id S229850AbhFDQ5Z (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 4 Jun 2021 12:57:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36502 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229791AbhFDQ5Z (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Fri, 4 Jun 2021 12:57:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CFDDB613B4;
+        Fri,  4 Jun 2021 16:55:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622825738;
+        bh=6TUleeBxMycMAjQItLB0G+hRako0syJLhA3Ykdueq+o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vItcd5e5fAS1jUQTvpwu2/XUGxYfRn7D7ize1Mt96yGYY3NLLpr7A9Ei7dUMt6tPw
+         4/0Nr0D4UFfxsCYrFa5g/cfEcZaTZzlmcnqs8v/bjh3vGw+u3C38vdvQZom8cZ8KoO
+         OoLUX0GKPPUxGAdlRGVvoaDsDQzPUs38A7pbPscawzi8+S/bZ2ErAOkZsvzW8+uUVS
+         6dez1ZKvI8hIdkQ5kbxv0aqfQ1uskacGf0on9Z/VHMcfVfgiLSC4aPVPI1pbGN0AgD
+         Ojlj1Ul/dP7swLd2oh4P1/r5zZjxcrCpgQwfrbKoXRZVN8iek/IxPbM1w2aOM0pr7d
+         6tETMUQI1u2Ng==
+Date:   Fri, 4 Jun 2021 09:55:37 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Victor Hsieh <victorhsieh@google.com>
 Cc:     linux-fscrypt@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [fsverity-utils PATCH 3/4] programs/utils: add full_pwrite() and
+ preallocate_file()
+Message-ID: <YLpbCRnVVGGkjl19@sol.localdomain>
+References: <20210603195812.50838-1-ebiggers@kernel.org>
+ <20210603195812.50838-4-ebiggers@kernel.org>
+ <CAFCauYO9Hrg-jjNzfMwruU4BQTOD5dFbPnASJXPRKdCQH5tETw@mail.gmail.com>
+ <YLl6l0MKaWGR08Tv@sol.localdomain>
+ <CAFCauYNPvC=otUWXD5ytqM5rvoaMBLXXfdGHTUcCvWwFG4PEmw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFCauYNPvC=otUWXD5ytqM5rvoaMBLXXfdGHTUcCvWwFG4PEmw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Reviewed-by: Victor Hsieh <victorhsieh@google.com>
+On Fri, Jun 04, 2021 at 08:24:50AM -0700, Victor Hsieh wrote:
+> On Thu, Jun 3, 2021 at 5:58 PM Eric Biggers <ebiggers@kernel.org> wrote:
+> >
+> > On Thu, Jun 03, 2021 at 05:33:18PM -0700, Victor Hsieh wrote:
+> > > > +
+> > > > +bool full_pwrite(struct filedes *file, const void *buf, size_t count,
+> > > > +                u64 offset)
+> > > > +{
+> > > > +       while (count) {
+> > > > +               int n = raw_pwrite(file->fd, buf, min(count, INT_MAX), offset);
+> > > > +
+> > > > +               if (n < 0) {
+> > > > +                       error_msg_errno("writing to '%s'", file->name);
+> > > > +                       return false;
+> > > > +               }
+> > > > +               buf += n;
+> > > I think this pointer arithmetic is not portable?  Consider changing
+> > > the type of buf to "const char*".
+> > >
+> >
+> > fsverity-utils is already using void pointer arithmetic elsewhere, for example
+> > in full_read() and full_write().
+> >
+> > I am allowing the use of some gcc/clang extensions which are widely used,
+> > including in the Linux kernel (which fsverity-utils is generally trying to
+> > follow the coding style of), and are annoying to do without.  Void pointer
+> > arithmetic is one of these.
+> >
+> > If we really needed to support someone compiling fsverity-utils with e.g.
+> > Visual Studio, we could add -Wpedantic to the compiler flags and get rid of all
+> > the gcc/clang extensions.  But I don't see a reason to do that now.
+> 
+> Yeah, that's what I was thinking since the code has #ifdef _WIN32.
+> I'd think the
+> "host" side program should be more portable than the kernel itself.
+> But if this is
+> already used elsewhere, no objection to keeping assuming so.
+> 
+> Reviewed-by: Victor Hsieh <victorhsieh@google.com>
+> 
 
-Thanks Eric!
+Windows builds are supported with Mingw-w64, not with Visual Studio.  So that
+isn't an issue.
 
-On Thu, Jun 3, 2021 at 1:00 PM Eric Biggers <ebiggers@kernel.org> wrote:
->
-> Make 'fsverity digest' and 'fsverity sign' support writing the Merkle
-> tree and fs-verity descriptor to files, using new options
-> '--out-merkle-tree=FILE' and '--out-descriptor=FILE'.
->
-> Normally these new options aren't useful, but they can be needed in
-> cases where the fs-verity metadata needs to be consumed by something
-> other than one of the native Linux kernel implementations of fs-verity.
->
-> This is different from 'fsverity dump_metadata' in that
-> 'fsverity dump_metadata' only works on a file with fs-verity enabled,
-> whereas these new options are for the userspace file digest computation.
->
-> Supporting this required adding some optional callbacks to
-> libfsverity_compute_digest().
->
-> Eric Biggers (4):
->   lib/compute_digest: add callbacks for getting the verity metadata
->   programs/test_compute_digest: test the metadata callbacks
->   programs/utils: add full_pwrite() and preallocate_file()
->   programs/fsverity: add --out-merkle-tree and --out-descriptor options
->
->  include/libfsverity.h          |  46 +++++++++++-
->  lib/compute_digest.c           | 130 +++++++++++++++++++++++++++-----
->  programs/cmd_digest.c          |   7 +-
->  programs/cmd_sign.c            |  17 +++--
->  programs/fsverity.c            |  88 +++++++++++++++++++++-
->  programs/fsverity.h            |   4 +-
->  programs/test_compute_digest.c | 133 +++++++++++++++++++++++++++++++++
->  programs/utils.c               |  59 +++++++++++++++
->  programs/utils.h               |   3 +
->  9 files changed, 458 insertions(+), 29 deletions(-)
->
->
-> base-commit: cf8fa5e5a7ac5b3b2dbfcc87e5dbd5f984c2d83a
-> --
-> 2.31.1
->
+- Eric
