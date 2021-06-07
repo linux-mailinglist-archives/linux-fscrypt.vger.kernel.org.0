@@ -2,137 +2,83 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEA6039C6AC
-	for <lists+linux-fscrypt@lfdr.de>; Sat,  5 Jun 2021 09:51:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 287CE39E8F4
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  7 Jun 2021 23:13:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbhFEHxP (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sat, 5 Jun 2021 03:53:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46184 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230026AbhFEHxN (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sat, 5 Jun 2021 03:53:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6659261042;
-        Sat,  5 Jun 2021 07:51:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622879486;
-        bh=oU7rLWlDtRnK5OqhhwuLiZAyphz7z0h1gnj2095cQ6I=;
-        h=From:To:Cc:Subject:Date:From;
-        b=mxwCu6VYqyEjqlKtghQAP7PY6VGEj1y1vow00zcCuVswe9XHCAT1vSXlSfqG5Pf9j
-         q4+Eq+S7y/6Mo+hGQGPm8yB6eGJms+1wBM3XrAPbrVm6vIt0ChyGFubUig2hkJ7BCu
-         GAjOh1kDH36YqLxqYiydv4EuSjqivVWgqiSUoZyatLA9toVGzX2CsTORZfIfU1ysRQ
-         WCIGZemvg3C+qhFlVvdoJJtQuLUiNebiDqiSmb1LbrwCeXHBnby99/y5D2HNR5m+Yj
-         vz1FklyBBFCFwcqLGlnrdgsqgH9raF95XqmkuI+UpGGo8qCMswub/ls32E75CR1dfp
-         M2LxfUXgsR1gw==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        Daniel Rosenberg <drosen@google.com>, stable@vger.kernel.org
-Subject: [PATCH v2] fscrypt: fix derivation of SipHash keys on big endian CPUs
-Date:   Sat,  5 Jun 2021 00:50:33 -0700
-Message-Id: <20210605075033.54424-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.31.1
+        id S230483AbhFGVOv (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 7 Jun 2021 17:14:51 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:55862 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230450AbhFGVOv (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 7 Jun 2021 17:14:51 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id D2B8D219C2;
+        Mon,  7 Jun 2021 21:12:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623100378;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gElMYfSXqsNiKD1OOnvNhTJ70YygUr713fzi9KR+zdc=;
+        b=L5Re/naDXUxkuFm4XK8ZswCVMh3Jgw17EMQNPYyahGkwzu2NfkSCXrRJ1aoVfffxoI76+N
+        0s9dF4I1UA5p2GMdrWW+iCuPHdcdhv51Vh4SIv1o216sSLOK8rpygtWJrmVgE43T6bwakD
+        q8zjAqQeleKdsWo0dmoz5RA/QVlZKj8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623100378;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gElMYfSXqsNiKD1OOnvNhTJ70YygUr713fzi9KR+zdc=;
+        b=U9jgcTHR6xjbbi1BICt+ROHvkMQY6jVaByNyAuIvAncjiOdkBNiVV4SFld+1YB37Ht9cWP
+        +YfEJ03D6HVCztAw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id AAFCDA3BE3;
+        Mon,  7 Jun 2021 21:12:58 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 76261DB228; Mon,  7 Jun 2021 23:10:15 +0200 (CEST)
+Date:   Mon, 7 Jun 2021 23:10:15 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v4 1/5] btrfs: add compat_flags to btrfs_inode_item
+Message-ID: <20210607211015.GN31483@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Eric Biggers <ebiggers@kernel.org>,
+        Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, kernel-team@fb.com
+References: <cover.1620241221.git.boris@bur.io>
+ <6ed83a27f88e18f295f7d661e9c87e7ec7d33428.1620241221.git.boris@bur.io>
+ <YK0+BU9twmldQ9Q0@sol.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YK0+BU9twmldQ9Q0@sol.localdomain>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On Tue, May 25, 2021 at 11:12:21AM -0700, Eric Biggers wrote:
+> On Wed, May 05, 2021 at 12:20:39PM -0700, Boris Burkov wrote:
+> > The tree checker currently rejects unrecognized flags when it reads
+> > btrfs_inode_item. Practically, this means that adding a new flag makes
+> > the change backwards incompatible if the flag is ever set on a file.
+> > 
+> > Take up one of the 4 reserved u64 fields in the btrfs_inode_item as a
+> > new "compat_flags". These flags are zero on inode creation in btrfs and
+> > mkfs and are ignored by an older kernel, so it should be safe to use
+> > them in this way.
+> > 
+> > Signed-off-by: Boris Burkov <boris@bur.io>
+> 
+> This patchset doesn't have a cover letter anymore for some reason.
+> 
+> Also, please mention where this patchset applies to.  I tried mainline and
+> btrfs/for-next, but neither works.
 
-Typically, the cryptographic APIs that fscrypt uses take keys as byte
-arrays, which avoids endianness issues.  However, siphash_key_t is an
-exception.  It is defined as 'u64 key[2];', i.e. the 128-bit key is
-expected to be given directly as two 64-bit words in CPU endianness.
-
-fscrypt_derive_dirhash_key() and fscrypt_setup_iv_ino_lblk_32_key()
-forgot to take this into account.  Therefore, the SipHash keys used to
-index encrypted+casefolded directories differ on big endian vs. little
-endian platforms, as do the SipHash keys used to hash inode numbers for
-IV_INO_LBLK_32-encrypted directories.  This makes such directories
-non-portable between these platforms.
-
-Fix this by always using the little endian order.  This is a breaking
-change for big endian platforms, but this should be fine in practice
-since these features (encrypt+casefold support, and the IV_INO_LBLK_32
-flag) aren't known to actually be used on any big endian platforms yet.
-
-Fixes: aa408f835d02 ("fscrypt: derive dirhash key for casefolded directories")
-Fixes: e3b1078bedd3 ("fscrypt: add support for IV_INO_LBLK_32 policies")
-Cc: <stable@vger.kernel.org> # v5.6+
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
-
-v2: Fixed fscrypt_setup_iv_ino_lblk_32_key() too, not just
-    fscrypt_derive_dirhash_key().
-
- fs/crypto/keysetup.c | 40 ++++++++++++++++++++++++++++++++--------
- 1 file changed, 32 insertions(+), 8 deletions(-)
-
-diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index 261293fb70974..bca9c6658a7c5 100644
---- a/fs/crypto/keysetup.c
-+++ b/fs/crypto/keysetup.c
-@@ -210,15 +210,40 @@ static int setup_per_mode_enc_key(struct fscrypt_info *ci,
- 	return err;
- }
- 
-+/*
-+ * Derive a SipHash key from the given fscrypt master key and the given
-+ * application-specific information string.
-+ *
-+ * Note that the KDF produces a byte array, but the SipHash APIs expect the key
-+ * as a pair of 64-bit words.  Therefore, on big endian CPUs we have to do an
-+ * endianness swap in order to get the same results as on little endian CPUs.
-+ */
-+static int fscrypt_derive_siphash_key(const struct fscrypt_master_key *mk,
-+				      u8 context, const u8 *info,
-+				      unsigned int infolen, siphash_key_t *key)
-+{
-+	int err;
-+
-+	err = fscrypt_hkdf_expand(&mk->mk_secret.hkdf, context, info, infolen,
-+				  (u8 *)key, sizeof(*key));
-+	if (err)
-+		return err;
-+
-+	BUILD_BUG_ON(sizeof(*key) != 16);
-+	BUILD_BUG_ON(ARRAY_SIZE(key->key) != 2);
-+	le64_to_cpus(&key->key[0]);
-+	le64_to_cpus(&key->key[1]);
-+	return 0;
-+}
-+
- int fscrypt_derive_dirhash_key(struct fscrypt_info *ci,
- 			       const struct fscrypt_master_key *mk)
- {
- 	int err;
- 
--	err = fscrypt_hkdf_expand(&mk->mk_secret.hkdf, HKDF_CONTEXT_DIRHASH_KEY,
--				  ci->ci_nonce, FSCRYPT_FILE_NONCE_SIZE,
--				  (u8 *)&ci->ci_dirhash_key,
--				  sizeof(ci->ci_dirhash_key));
-+	err = fscrypt_derive_siphash_key(mk, HKDF_CONTEXT_DIRHASH_KEY,
-+					 ci->ci_nonce, FSCRYPT_FILE_NONCE_SIZE,
-+					 &ci->ci_dirhash_key);
- 	if (err)
- 		return err;
- 	ci->ci_dirhash_key_initialized = true;
-@@ -253,10 +278,9 @@ static int fscrypt_setup_iv_ino_lblk_32_key(struct fscrypt_info *ci,
- 		if (mk->mk_ino_hash_key_initialized)
- 			goto unlock;
- 
--		err = fscrypt_hkdf_expand(&mk->mk_secret.hkdf,
--					  HKDF_CONTEXT_INODE_HASH_KEY, NULL, 0,
--					  (u8 *)&mk->mk_ino_hash_key,
--					  sizeof(mk->mk_ino_hash_key));
-+		err = fscrypt_derive_siphash_key(mk,
-+						 HKDF_CONTEXT_INODE_HASH_KEY,
-+						 NULL, 0, &mk->mk_ino_hash_key);
- 		if (err)
- 			goto unlock;
- 		/* pairs with smp_load_acquire() above */
-
-base-commit: 77f30bfcfcf484da7208affd6a9e63406420bf91
--- 
-2.31.1
-
+There was a parallel change updating file attributes causing conflict
+with the patchset as sent. Boris is aware of that and the new version
+will be on top of something that appalies on top of the btrfs
+development branch again.
