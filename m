@@ -2,115 +2,180 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAA603B8050
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 30 Jun 2021 11:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A29F3B8942
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 30 Jun 2021 21:42:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234101AbhF3Jtk (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 30 Jun 2021 05:49:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234111AbhF3Jti (ORCPT
+        id S233867AbhF3Top (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 30 Jun 2021 15:44:45 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:60639 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229700AbhF3Top (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 30 Jun 2021 05:49:38 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12BB6C0617A6
-        for <linux-fscrypt@vger.kernel.org>; Wed, 30 Jun 2021 02:47:10 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id p10-20020a05600c430ab02901df57d735f7so3932729wme.3
-        for <linux-fscrypt@vger.kernel.org>; Wed, 30 Jun 2021 02:47:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Z6oz2a6snhnXVo8MXg6uFjLMjRtla/ZcY7D6SjSAauA=;
-        b=zLTi5aCbnypPB5E3aUA0ZTW2QZ9ElWO1rUMChAnrYkbnv5R1HppvSR83sz83GmhmUA
-         UMxwvrtyn70Zd9AoLodBjAgPxIMvZ1UB4cERbwNt9h4ezFzozjlRXTJceovl8itCNtkO
-         ZHpCXotz6yp1b1LU/oBZfpMMbHJ9z37zfQLOhI93YEXu77Z1hvbdB1hXccB0ErO3BuRM
-         2v2H3xdjL56voJXkKEkXOJouofN6tE6pWAPsziIGqT+x1uxsqXS8aHT7JlV4vp9xlNdX
-         RRmNLJxKm6216ZAGJ10+La1loxmhKlUG8r/gC+MQIkg6soAQE9aR2vguk2YO28brVd4+
-         UeDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Z6oz2a6snhnXVo8MXg6uFjLMjRtla/ZcY7D6SjSAauA=;
-        b=C80rdf8UnNDzIpvktRdsj4mwY6GvvjLoPm3vJ7tAsSmTCoemDViQHgnYexXevOlPWz
-         s0XXFj2D6QTuK6cf8kprUY3MAZihXlqj1zYy65H7I8PnufhE4cCD1mCMwPtoASEb23c0
-         aGK6iK+oLf/QRwdskgofNmMCFJkzcYXGlUBWnzDipNCUf6b5N9fJdnPTlIrsQfDcK/Xb
-         7SrQAzMmMF0yWxZ//JVMYVObp5gOi+iJ5iQAZEeWP5HHNZ68jTNqG64nqRp4C6IerkxG
-         qG9GcfmeduiTv5dQJSgdJtfXCoL/tciUayjjsw1W4wNvRzTPQ9ZcL5UtCjTgagBv6zu1
-         Hj7A==
-X-Gm-Message-State: AOAM530mbUwWqRwreEhVwT6RkWmdv3xLhYTmT/lFUPkxqPXQtDwlAWpQ
-        ouJWodQEoo+lKwFM0T7DgqhK/A==
-X-Google-Smtp-Source: ABdhPJysgaWNsxoQ1Ekn5yIfyUpjV6tLOTWrZta/4RIlCjFmHAXWqbWe870FTEuNbqmWvtd9IqJeZQ==
-X-Received: by 2002:a1c:7f4a:: with SMTP id a71mr3558850wmd.33.1625046428092;
-        Wed, 30 Jun 2021 02:47:08 -0700 (PDT)
-Received: from dell ([95.144.13.171])
-        by smtp.gmail.com with ESMTPSA id p7sm8990839wrr.68.2021.06.30.02.47.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jun 2021 02:47:07 -0700 (PDT)
-Date:   Wed, 30 Jun 2021 10:47:05 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Satya Tangirala <satyaprateek2357@gmail.com>
-Cc:     Satya Tangirala <satyat@google.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>, Chao Yu <chao@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-fscrypt@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v8 0/8] add support for direct I/O with fscrypt using
- blk-crypto
-Message-ID: <YNw9me1Fd6Siy18A@dell>
-References: <20210121230336.1373726-1-satyat@google.com>
- <CAF2Aj3jbEnnG1-bHARSt6xF12VKttg7Bt52gV=bEQUkaspDC9w@mail.gmail.com>
- <YK09eG0xm9dphL/1@google.com>
- <20210526080224.GI4005783@dell>
- <20210609024556.GA11153@fractal>
+        Wed, 30 Jun 2021 15:44:45 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id E32C532002B6;
+        Wed, 30 Jun 2021 15:42:14 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Wed, 30 Jun 2021 15:42:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=date
+        :from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=pSCZ+MvUdyoXL2waiMJX8caRYRd
+        SqpyDZkUtStv7C9g=; b=RXonf+BseE6ZwvgreE7O0Tsqi9cxU49U8jjBjAIteUo
+        rT0cOnO7FQms9Zhgpmx8QIDitEGvoPyg8vsdJY1hgN6kqvDy/yjmwBL8uvC+WczX
+        xC+wISSUpYkTXxmS5VLxGfBZHKuDrTJnpbSWu+JQvIxSNr5AxjQ5m6Zdsvoc61gi
+        HhSkYdB/QtLLD+FtlA5rXTw9y+x8f/f08tIV8Ipo9+pfeWaY2cZCnKFx/97Huo3R
+        IMaQnQRhbMbOVuDZV+8Q/5ozv9kSrNVvmI49N7biwnONEwqI6ipjya9YzGxlkvHq
+        J+iZeJsa5kL2kkraVWoGPft7I/HNXF9/A/D5wdbxhaw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=pSCZ+M
+        vUdyoXL2waiMJX8caRYRdSqpyDZkUtStv7C9g=; b=O8bm88KWOhsKoA1ycTlql6
+        AKJGl9w61r8QsPjId7gH3bAIanI3+4HdH9Gjh4dYeowA2sOBwutKDlYixfufmoyL
+        g1Sn5EpCapJzdQmoDCdbqqPZPqEW6zfsVWZI2se+3RTxNG9/fDftAhS/atUM9yUi
+        b9KdI5OwsVk+tohHCurwHA7yuNlDbLz/LlA32LnkGLfOfAbjsFvcYI1+AWzo0Xvd
+        xxyXloNuKOlSIqegRaPWmlG5SkmcQDxvXQV/cBJ68vQpQk1zmXeEAiMFpogXcPW9
+        hjA35ukU3qMzrxh5Lgya48Qz4SX841mH/idW3OrrP5lt3x2fT6k1bd5BIlRjR9rw
+        ==
+X-ME-Sender: <xms:FcncYFB0GZPE4NC7TyXeFvocAWVlTB3Hzw_oDB-zBFJP3tfzenNj8g>
+    <xme:FcncYDiCDGJfKpz9msQIResshaqTV2auX30oQP3ef8wsYkIKMMBoiS5LqjHQIKsk3
+    4dSSAWiDBcBFukqj3M>
+X-ME-Received: <xmr:FcncYAkaUo-6S0ISlgwHkc2x9HD1Cu0byhLqasnMNcEE7wgJDgaEOt0qCA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeeigedggeeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdortddttddvnecuhfhrohhmpeeuohhrihhs
+    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepje
+    etkeekkeevieefudduudeutddthfefieehveehjeekveehueehudetlefgkeeknecuffho
+    mhgrihhnpehgihhthhhusgdrtghomhdpkhgvrhhnvghlrdhorhhgpddtuddrohhrghenuc
+    evlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhs
+    segsuhhrrdhioh
+X-ME-Proxy: <xmx:FcncYPyXiNzW8rC9gWknHw4muMsJy10pby7Hq_LZGsnUCbKr9OPr4Q>
+    <xmx:FcncYKTiSH9CINBLrP6dgRrzLhomSiMN0AENQdAvvcHAI0WMM7DzBg>
+    <xmx:FcncYCZ0vlX7QsbfyDBLcFoABbYbmRDzAKLnI2L1r2rYKLivi9Su_g>
+    <xmx:FsncYHJIWYpXMBsUaR7jgKMPa7UKrW5Fa3Uw2_WGBBfEPCXH2KrIFg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 30 Jun 2021 15:42:13 -0400 (EDT)
+Date:   Wed, 30 Jun 2021 12:42:11 -0700
+From:   Boris Burkov <boris@bur.io>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     kbuild@lists.01.org, linux-btrfs@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, kernel-team@fb.com, lkp@intel.com,
+        kbuild-all@lists.01.org
+Subject: Re: [PATCH v5 2/3] btrfs: initial fsverity support
+Message-ID: <YNzJBAOomwEiNgDn@zen>
+References: <459e0acf996441628bc465bbe64218d7fea132c4.1624573983.git.boris@bur.io>
+ <202106260148.y7YIYV3M-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210609024556.GA11153@fractal>
+In-Reply-To: <202106260148.y7YIYV3M-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, 08 Jun 2021, Satya Tangirala wrote:
+On Mon, Jun 28, 2021 at 11:23:51AM +0300, Dan Carpenter wrote:
+> Hi Boris,
+> 
+> url:    https://github.com/0day-ci/linux/commits/Boris-Burkov/btrfs-support-fsverity/20210625-064209
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
+> config: parisc-randconfig-m031-20210625 (attached as .config)
+> compiler: hppa-linux-gcc (GCC) 9.3.0
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> 
+> New smatch warnings:
+> fs/btrfs/verity.c:268 write_key_bytes() error: uninitialized symbol 'ret'.
+> fs/btrfs/verity.c:745 btrfs_write_merkle_tree_block() warn: should '1 << log_blocksize' be a 64 bit type?
 
-> On Wed, May 26, 2021 at 09:02:24AM +0100, Lee Jones wrote:
-> > On Tue, 25 May 2021, Satya Tangirala wrote:
-> > 65;6200;1c
-> > > On Tue, May 25, 2021 at 01:57:28PM +0100, Lee Jones wrote:
-> > > > On Thu, 21 Jan 2021 at 23:06, Satya Tangirala <satyat@google.com> wrote:
-> > > > 
-> > > > > This patch series adds support for direct I/O with fscrypt using
-> > > > > blk-crypto.
-> > > > >
-> > > > 
-> > > > Is there an update on this set please?
-> > > > 
-> > > > I can't seem to find any reviews or follow-up since v8 was posted back in
-> > > > January.
-> > > > 
-> > > This patchset relies on the block layer fixes patchset here
-> > > https://lore.kernel.org/linux-block/20210325212609.492188-1-satyat@google.com/
-> > > That said, I haven't been able to actively work on both the patchsets
-> > > for a while, but I'll send out updates for both patchsets over the
-> > > next week or so.
-> > 
-> > Thanks Satya, I'd appreciate that.
-> FYI I sent out an updated patch series last week at
-> https://lore.kernel.org/linux-fscrypt/20210604210908.2105870-1-satyat@google.com/
+good catch :)
 
-If you end up [RESEND]ing this or submitting another version, would
-you mind adding me on Cc please?
+> 
+> Old smatch warnings:
+> fs/btrfs/verity.c:552 btrfs_begin_enable_verity() error: uninitialized symbol 'trans'.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+This was a screw up from re-arranging the patches, will clean up.
+
+> 
+> vim +/ret +268 fs/btrfs/verity.c
+> 
+> 24749321fc3abc Boris Burkov 2021-06-24  209  static int write_key_bytes(struct btrfs_inode *inode, u8 key_type, u64 offset,
+> 24749321fc3abc Boris Burkov 2021-06-24  210  			   const char *src, u64 len)
+> 24749321fc3abc Boris Burkov 2021-06-24  211  {
+> 24749321fc3abc Boris Burkov 2021-06-24  212  	struct btrfs_trans_handle *trans;
+> 24749321fc3abc Boris Burkov 2021-06-24  213  	struct btrfs_path *path;
+> 24749321fc3abc Boris Burkov 2021-06-24  214  	struct btrfs_root *root = inode->root;
+> 24749321fc3abc Boris Burkov 2021-06-24  215  	struct extent_buffer *leaf;
+> 24749321fc3abc Boris Burkov 2021-06-24  216  	struct btrfs_key key;
+> 24749321fc3abc Boris Burkov 2021-06-24  217  	u64 copied = 0;
+> 24749321fc3abc Boris Burkov 2021-06-24  218  	unsigned long copy_bytes;
+> 24749321fc3abc Boris Burkov 2021-06-24  219  	unsigned long src_offset = 0;
+> 24749321fc3abc Boris Burkov 2021-06-24  220  	void *data;
+> 24749321fc3abc Boris Burkov 2021-06-24  221  	int ret;
+> 24749321fc3abc Boris Burkov 2021-06-24  222  
+> 24749321fc3abc Boris Burkov 2021-06-24  223  	path = btrfs_alloc_path();
+> 24749321fc3abc Boris Burkov 2021-06-24  224  	if (!path)
+> 24749321fc3abc Boris Burkov 2021-06-24  225  		return -ENOMEM;
+> 24749321fc3abc Boris Burkov 2021-06-24  226  
+> 24749321fc3abc Boris Burkov 2021-06-24  227  	while (len > 0) {
+> 
+> Can we write zero bytes?  My test system has linux-next so I don't know.
+> I don't think the kbuild bot uses the cross function DB so it doesn't
+> know either.
+
+Considering the three callsites and then the callsite of
+end_enable_verity in fs/verity/enable.c, I don't think it's possible to
+call write_key_bytes with len==0, but it doesn't hurt to fix it anyway,
+just in case. It makes write_key_bytes more correct as documented, at
+least.
+
+> 
+> 24749321fc3abc Boris Burkov 2021-06-24  228  		/*
+> 24749321fc3abc Boris Burkov 2021-06-24  229  		 * 1 for the new item being inserted
+> 24749321fc3abc Boris Burkov 2021-06-24  230  		 */
+> 24749321fc3abc Boris Burkov 2021-06-24  231  		trans = btrfs_start_transaction(root, 1);
+> 24749321fc3abc Boris Burkov 2021-06-24  232  		if (IS_ERR(trans)) {
+> 24749321fc3abc Boris Burkov 2021-06-24  233  			ret = PTR_ERR(trans);
+> 24749321fc3abc Boris Burkov 2021-06-24  234  			break;
+> 24749321fc3abc Boris Burkov 2021-06-24  235  		}
+> 24749321fc3abc Boris Burkov 2021-06-24  236  
+> 24749321fc3abc Boris Burkov 2021-06-24  237  		key.objectid = btrfs_ino(inode);
+> 24749321fc3abc Boris Burkov 2021-06-24  238  		key.type = key_type;
+> 24749321fc3abc Boris Burkov 2021-06-24  239  		key.offset = offset;
+> 24749321fc3abc Boris Burkov 2021-06-24  240  
+> 24749321fc3abc Boris Burkov 2021-06-24  241  		/*
+> 24749321fc3abc Boris Burkov 2021-06-24  242  		 * Insert 2K at a time mostly to be friendly for smaller
+> 24749321fc3abc Boris Burkov 2021-06-24  243  		 * leaf size filesystems
+> 24749321fc3abc Boris Burkov 2021-06-24  244  		 */
+> 24749321fc3abc Boris Burkov 2021-06-24  245  		copy_bytes = min_t(u64, len, 2048);
+> 24749321fc3abc Boris Burkov 2021-06-24  246  
+> 24749321fc3abc Boris Burkov 2021-06-24  247  		ret = btrfs_insert_empty_item(trans, root, path, &key, copy_bytes);
+> 24749321fc3abc Boris Burkov 2021-06-24  248  		if (ret) {
+> 24749321fc3abc Boris Burkov 2021-06-24  249  			btrfs_end_transaction(trans);
+> 24749321fc3abc Boris Burkov 2021-06-24  250  			break;
+> 24749321fc3abc Boris Burkov 2021-06-24  251  		}
+> 24749321fc3abc Boris Burkov 2021-06-24  252  
+> 24749321fc3abc Boris Burkov 2021-06-24  253  		leaf = path->nodes[0];
+> 24749321fc3abc Boris Burkov 2021-06-24  254  
+> 24749321fc3abc Boris Burkov 2021-06-24  255  		data = btrfs_item_ptr(leaf, path->slots[0], void);
+> 24749321fc3abc Boris Burkov 2021-06-24  256  		write_extent_buffer(leaf, src + src_offset,
+> 24749321fc3abc Boris Burkov 2021-06-24  257  				    (unsigned long)data, copy_bytes);
+> 24749321fc3abc Boris Burkov 2021-06-24  258  		offset += copy_bytes;
+> 24749321fc3abc Boris Burkov 2021-06-24  259  		src_offset += copy_bytes;
+> 24749321fc3abc Boris Burkov 2021-06-24  260  		len -= copy_bytes;
+> 24749321fc3abc Boris Burkov 2021-06-24  261  		copied += copy_bytes;
+> 24749321fc3abc Boris Burkov 2021-06-24  262  
+> 24749321fc3abc Boris Burkov 2021-06-24  263  		btrfs_release_path(path);
+> 24749321fc3abc Boris Burkov 2021-06-24  264  		btrfs_end_transaction(trans);
+> 24749321fc3abc Boris Burkov 2021-06-24  265  	}
+> 24749321fc3abc Boris Burkov 2021-06-24  266  
+> 24749321fc3abc Boris Burkov 2021-06-24  267  	btrfs_free_path(path);
+> 24749321fc3abc Boris Burkov 2021-06-24 @268  	return ret;
+> 24749321fc3abc Boris Burkov 2021-06-24  269  }
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 
