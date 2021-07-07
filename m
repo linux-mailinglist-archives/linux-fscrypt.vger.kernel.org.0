@@ -2,69 +2,239 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE48E3B9C87
-	for <lists+linux-fscrypt@lfdr.de>; Fri,  2 Jul 2021 08:55:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 292963BE190
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  7 Jul 2021 05:38:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230093AbhGBG53 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 2 Jul 2021 02:57:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42476 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230109AbhGBG5X (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 2 Jul 2021 02:57:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E1F366141D;
-        Fri,  2 Jul 2021 06:54:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625208892;
-        bh=ayeoPIhe+1s08/UaNpC3a37YFzxNe7bjxypfKHgUNos=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M6Yn1TVluxIn/JJFYkOy5+lRoF9vC12KdanEUnM4zrAZOprYGMps7cdmMLWxJavhD
-         mMsIbETp12zPxypnUK3ATnelRJfK/ziY6z+UE8cqwU6O5PwhfIgQwQoU14hm6uLind
-         jSCdBg2kpZbttNLOu6/+b5gWEVfB37pTDtV2r6pwVIqmr9j0vEv/C8lO6rTVTUJE70
-         vWyUq6mQq8ieMYQzHcrz86OZ2WaGZO9Pqf0r5et/J7ZN9XolFqdOt3blxktv9kqDMn
-         X75GJK3n3UB3SvY/yPEU/IFeYTarVVr3ncwxhxGL9/z3fyGvleNhmJpv0MU5ie0DPm
-         ykMU84u2xEGUw==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH 5/5] fscrypt: remove mention of symlink st_size quirk from documentation
-Date:   Thu,  1 Jul 2021 23:53:50 -0700
-Message-Id: <20210702065350.209646-6-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210702065350.209646-1-ebiggers@kernel.org>
-References: <20210702065350.209646-1-ebiggers@kernel.org>
+        id S230108AbhGGDk4 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 6 Jul 2021 23:40:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54128 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230081AbhGGDk4 (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Tue, 6 Jul 2021 23:40:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625629096;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=h2aWbDZbFo4kzS9y74gUrqgwbmoseq7BXNDY/LziZbQ=;
+        b=NUoUKNW2FVnOOdjA1KP+B0It2cXEcwEL5lWS4pm3H9P9A80+k9/8rQm9ITxLOfXARgaXC7
+        5sY3XsiB5p2SKbVhBHctwtkNvVEBAAAnczQLsuJNfnC+z2IWwKO+G52Fv9qZOf0grKfz0O
+        6efOhAXbw3K080+wRgzZg5zXbDKm7so=
+Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
+ [209.85.210.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-64-5ZxrWnLlMQyWFTWPEeYGOw-1; Tue, 06 Jul 2021 23:38:15 -0400
+X-MC-Unique: 5ZxrWnLlMQyWFTWPEeYGOw-1
+Received: by mail-pf1-f200.google.com with SMTP id l21-20020a056a0016d5b0290319e1ac27b1so647632pfc.12
+        for <linux-fscrypt@vger.kernel.org>; Tue, 06 Jul 2021 20:38:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=h2aWbDZbFo4kzS9y74gUrqgwbmoseq7BXNDY/LziZbQ=;
+        b=T+vWb4s6NtE3vo7guKS1YJUd8ZixjflbR+5zwbeWnxD45gW7Jj7SyEabt/1P2WRyMy
+         vT5Whv+V8C7CWMJn7BXEyVW8aVBGpqJNheQr/7382/YJS263nFCUrb4k9ZzEeWtpuHXc
+         uhAD96LLkYgvYIBq1DPOW7inRTZJPXBwJhzJf9PqxZElkvs0tbG5yXZiCd+emlAxe8Cx
+         IP90l/xcm4apHFY0eQUheekZYMkJk1St38cD7kb1B181Y8QFqZS32UJEx84UvT6io70j
+         DJaxaR9jBUZCaTItHdwfsJm8yxJeK9QpXAIk+6CXW1QNr9f5qnCvkuyw9B/0r4gcNDYt
+         RmqA==
+X-Gm-Message-State: AOAM530f3BOstfcbbQ3QhYyEVH4sy3GbrlSYFdO/Xzojn66FI3nNL9iz
+        ocM/mWLpCRp+iAjvEnISe6QlTJDJhjnxz84HlxY2arm/Rb7dInq292BFhLDgsWBkc5zunY7es4E
+        m5PdnQEsE7aTObY5+hc2Sa8TFCA==
+X-Received: by 2002:a17:90a:f2c2:: with SMTP id gt2mr24309145pjb.86.1625629094155;
+        Tue, 06 Jul 2021 20:38:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwp9tsBWasHibXpYhkN407hti3EvzOBBo0XHjAt+5NtZ/0PszQJRKWn58zOIE/JFHpmpi+E2Q==
+X-Received: by 2002:a17:90a:f2c2:: with SMTP id gt2mr24309124pjb.86.1625629093907;
+        Tue, 06 Jul 2021 20:38:13 -0700 (PDT)
+Received: from [10.72.13.191] ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id v4sm19471875pgr.65.2021.07.06.20.38.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Jul 2021 20:38:13 -0700 (PDT)
+Subject: Re: [RFC PATCH v7 05/24] ceph: preallocate inode for ops that may
+ create one
+To:     Jeff Layton <jlayton@kernel.org>, ceph-devel@vger.kernel.org
+Cc:     lhenriques@suse.de, linux-fsdevel@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, dhowells@redhat.com
+References: <20210625135834.12934-1-jlayton@kernel.org>
+ <20210625135834.12934-6-jlayton@kernel.org>
+From:   Xiubo Li <xiubli@redhat.com>
+Message-ID: <83dcbc5c-7a87-b6cd-b364-2ca4aa5bd440@redhat.com>
+Date:   Wed, 7 Jul 2021 11:37:53 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210625135834.12934-6-jlayton@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
 
-Now that the correct st_size is reported for encrypted symlinks on all
-filesystems, update the documentation accordingly.
+On 6/25/21 9:58 PM, Jeff Layton wrote:
+> When creating a new inode, we need to determine the crypto context
+> before we can transmit the RPC. The fscrypt API has a routine for getting
+> a crypto context before a create occurs, but it requires an inode.
+>
+> Change the ceph code to preallocate an inode in advance of a create of
+> any sort (open(), mknod(), symlink(), etc). Move the existing code that
+> generates the ACL and SELinux blobs into this routine since that's
+> mostly common across all the different codepaths.
+>
+> In most cases, we just want to allow ceph_fill_trace to use that inode
+> after the reply comes in, so add a new field to the MDS request for it
+> (r_new_inode).
+>
+> The async create codepath is a bit different though. In that case, we
+> want to hash the inode in advance of the RPC so that it can be used
+> before the reply comes in. If the call subsequently fails with
+> -EJUKEBOX, then just put the references and clean up the as_ctx. Note
+> that with this change, we now need to regenerate the as_ctx when this
+> occurs, but it's quite rare for it to happen.
+>
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>   fs/ceph/dir.c        | 70 ++++++++++++++++++++-----------------
+>   fs/ceph/file.c       | 62 ++++++++++++++++++++-------------
+>   fs/ceph/inode.c      | 82 ++++++++++++++++++++++++++++++++++++++++----
+>   fs/ceph/mds_client.c |  3 +-
+>   fs/ceph/mds_client.h |  1 +
+>   fs/ceph/super.h      |  7 +++-
+>   6 files changed, 160 insertions(+), 65 deletions(-)
+>
+[...]
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- Documentation/filesystems/fscrypt.rst | 5 -----
- 1 file changed, 5 deletions(-)
+> diff --git a/fs/ceph/inode.c b/fs/ceph/inode.c
+> index eb562e259347..f62785e4dbcb 100644
+> --- a/fs/ceph/inode.c
+> +++ b/fs/ceph/inode.c
+> @@ -52,17 +52,85 @@ static int ceph_set_ino_cb(struct inode *inode, void *data)
+>   	return 0;
+>   }
+>   
+> -struct inode *ceph_get_inode(struct super_block *sb, struct ceph_vino vino)
+> +/**
+> + * ceph_new_inode - allocate a new inode in advance of an expected create
+> + * @dir: parent directory for new inode
+> + * @dentry: dentry that may eventually point to new inode
+> + * @mode: mode of new inode
+> + * @as_ctx: pointer to inherited security context
+> + *
+> + * Allocate a new inode in advance of an operation to create a new inode.
+> + * This allocates the inode and sets up the acl_sec_ctx with appropriate
+> + * info for the new inode.
+> + *
+> + * Returns a pointer to the new inode or an ERR_PTR.
+> + */
+> +struct inode *ceph_new_inode(struct inode *dir, struct dentry *dentry,
+> +			     umode_t *mode, struct ceph_acl_sec_ctx *as_ctx)
+> +{
+> +	int err;
+> +	struct inode *inode;
+> +
+> +	inode = new_inode_pseudo(dir->i_sb);
+> +	if (!inode)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	if (!S_ISLNK(*mode)) {
+> +		err = ceph_pre_init_acls(dir, mode, as_ctx);
+> +		if (err < 0)
+> +			goto out_err;
+> +	}
+> +
+> +	err = ceph_security_init_secctx(dentry, *mode, as_ctx);
+> +	if (err < 0)
+> +		goto out_err;
+> +
+> +	inode->i_state = 0;
+> +	inode->i_mode = *mode;
+> +	return inode;
+> +out_err:
+> +	iput(inode);
+> +	return ERR_PTR(err);
+> +}
+> +
+> +void ceph_as_ctx_to_req(struct ceph_mds_request *req, struct ceph_acl_sec_ctx *as_ctx)
+> +{
+> +	if (as_ctx->pagelist) {
+> +		req->r_pagelist = as_ctx->pagelist;
+> +		as_ctx->pagelist = NULL;
+> +	}
+> +}
+> +
+> +/**
+> + * ceph_get_inode - find or create/hash a new inode
+> + * @sb: superblock to search and allocate in
+> + * @vino: vino to search for
+> + * @newino: optional new inode to insert if one isn't found (may be NULL)
+> + *
+> + * Search for or insert a new inode into the hash for the given vino, and return a
+> + * reference to it. If new is non-NULL, its reference is consumed.
+> + */
+> +struct inode *ceph_get_inode(struct super_block *sb, struct ceph_vino vino, struct inode *newino)
+>   {
+>   	struct inode *inode;
+>   
+>   	if (ceph_vino_is_reserved(vino))
+>   		return ERR_PTR(-EREMOTEIO);
+>   
+> -	inode = iget5_locked(sb, (unsigned long)vino.ino, ceph_ino_compare,
+> -			     ceph_set_ino_cb, &vino);
+> -	if (!inode)
+> +	if (newino) {
+> +		inode = inode_insert5(newino, (unsigned long)vino.ino, ceph_ino_compare,
+> +					ceph_set_ino_cb, &vino);
+> +		if (inode != newino)
+> +			iput(newino);
+> +	} else {
+> +		inode = iget5_locked(sb, (unsigned long)vino.ino, ceph_ino_compare,
+> +				     ceph_set_ino_cb, &vino);
+> +	}
+> +
+> +	if (!inode) {
+> +		dout("No inode found for %llx.%llx\n", vino.ino, vino.snap);
+>   		return ERR_PTR(-ENOMEM);
+> +	}
+>   
+>   	dout("get_inode on %llu=%llx.%llx got %p new %d\n", ceph_present_inode(inode),
+>   	     ceph_vinop(inode), inode, !!(inode->i_state & I_NEW));
+> @@ -78,7 +146,7 @@ struct inode *ceph_get_snapdir(struct inode *parent)
+>   		.ino = ceph_ino(parent),
+>   		.snap = CEPH_SNAPDIR,
+>   	};
+> -	struct inode *inode = ceph_get_inode(parent->i_sb, vino);
+> +	struct inode *inode = ceph_get_inode(parent->i_sb, vino, NULL);
+>   	struct ceph_inode_info *ci = ceph_inode(inode);
+>   
+>   	if (IS_ERR(inode))
 
-diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
-index 44b67ebd6e40..02ec57818920 100644
---- a/Documentation/filesystems/fscrypt.rst
-+++ b/Documentation/filesystems/fscrypt.rst
-@@ -1063,11 +1063,6 @@ astute users may notice some differences in behavior:
- 
- - DAX (Direct Access) is not supported on encrypted files.
- 
--- The st_size of an encrypted symlink will not necessarily give the
--  length of the symlink target as required by POSIX.  It will actually
--  give the length of the ciphertext, which will be slightly longer
--  than the plaintext due to NUL-padding and an extra 2-byte overhead.
--
- - The maximum length of an encrypted symlink is 2 bytes shorter than
-   the maximum length of an unencrypted symlink.  For example, on an
-   EXT4 filesystem with a 4K block size, unencrypted symlinks can be up
--- 
-2.32.0
+Should we always check this just before using it before 'struct 
+ceph_inode_info *ci = ceph_inode(inode);' ?
+
+But it seems the 'ceph_inode()' won't introduce any issue here.
+
+Thanks,
+
+> @@ -1546,7 +1614,7 @@ static int readdir_prepopulate_inodes_only(struct ceph_mds_request *req,
+>   		vino.ino = le64_to_cpu(rde->inode.in->ino);
+>   		vino.snap = le64_to_cpu(rde->inode.in->snapid);
+>   
+> -		in = ceph_get_inode(req->r_dentry->d_sb, vino);
+> +		in = ceph_get_inode(req->r_dentry->d_sb, vino, NULL);
+>   		if (IS_ERR(in)) {
+>   			err = PTR_ERR(in);
+>   			dout("new_inode badness got %d\n", err);
+> @@ -1748,7 +1816,7 @@ int ceph_readdir_prepopulate(struct ceph_mds_request *req,
+>   		if (d_really_is_positive(dn)) {
+>   			in = d_inode(dn);
+>   		} else {
+> -			in = ceph_get_inode(parent->d_sb, tvino);
+> +			in = ceph_get_inode(parent->d_sb, tvino, NULL);
+>   			if (IS_ERR(in)) {
+>   				dout("new_inode badness\n");
+>   				d_drop(dn);
+[...]
 
