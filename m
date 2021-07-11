@@ -2,216 +2,390 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 242E83BF915
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  8 Jul 2021 13:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D24F3C3D75
+	for <lists+linux-fscrypt@lfdr.de>; Sun, 11 Jul 2021 16:53:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231716AbhGHLfd (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 8 Jul 2021 07:35:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30618 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231618AbhGHLfc (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 8 Jul 2021 07:35:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625743970;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OnBGurHzEmnbPIJjNhwa4TPwnm7svYBq0xSh3uzR7V0=;
-        b=iw9O75t7BiL3GTDDZ5NdEpGcA8/thLtuuqwBd1H5Qn2NL6bBXFbHQQWCvkQyEfEPNGld4c
-        0Meh+h/MOHYBZh0/xXewAv/KCd07mS5dxJgiQHv7+YjppZZmQdf5DgAFAxMBeuPu10UPXb
-        vk+Dum8dqX4bsxn8NOpHHMmyFCRpaHU=
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
- [209.85.210.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-124-vJppTlvoNRy0k057moj3Lg-1; Thu, 08 Jul 2021 07:32:49 -0400
-X-MC-Unique: vJppTlvoNRy0k057moj3Lg-1
-Received: by mail-pf1-f200.google.com with SMTP id u13-20020a056a00158db0290327c0cd42deso1062284pfk.16
-        for <linux-fscrypt@vger.kernel.org>; Thu, 08 Jul 2021 04:32:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=OnBGurHzEmnbPIJjNhwa4TPwnm7svYBq0xSh3uzR7V0=;
-        b=P9JQ9LM4g8vKGselTlDqI87jUaZnOvyQzjZGagzrA+MCiQsXaouZW9USQ8XaMoR26P
-         fXAQRpCLFvOQdOeDJWs6YVffyFu3cyatg7/pmZqJHP0w3V2ffGK8h9/ql4RU7SRW5jvh
-         UMtJZuGUKlPgAZFz/LqYKifJN08wRpjAIVQQ8l++PdMiTJZ0yv/IBPV9ZsgzPpkTV6sZ
-         c/2Wra0cSuRVwVoPrkg6Se7yU2OW+TfPVwZbMGs4SHuhdHJbyUd5RGXNPRvafiS+YinJ
-         dMPfsriOwZ0a6J4VASbjz0rNUFIUA9DO6IuY3j8cXovrGMZZaLU+jxjK/E4UiRrEBeMp
-         Jpig==
-X-Gm-Message-State: AOAM532YfC8IzZynwbIHxLnq9cyDsS2heVrKLS54MdKPQuTnXAxkM1OL
-        HcSOxBdI0xJ16ZMUgnGvN7/qK0MjBrWpOWp1j6Tki/hfLP7JH+ws49j0vgjuo4RYyoKPyMOKqXg
-        PZwsrbD0xSVUImWxgkCy8BcR3pg==
-X-Received: by 2002:a62:8603:0:b029:31c:5cb3:ca2e with SMTP id x3-20020a6286030000b029031c5cb3ca2emr25385844pfd.1.1625743968505;
-        Thu, 08 Jul 2021 04:32:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxBogfvoG+8Oy4irpgiG8MLVSyJ6kI9ca/rjsIT7mg6LSRyLnpX5fOuGnBNh9jozvnNwCx82g==
-X-Received: by 2002:a62:8603:0:b029:31c:5cb3:ca2e with SMTP id x3-20020a6286030000b029031c5cb3ca2emr25385819pfd.1.1625743968166;
-        Thu, 08 Jul 2021 04:32:48 -0700 (PDT)
-Received: from [10.72.12.57] ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id l20sm9586711pjq.24.2021.07.08.04.32.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Jul 2021 04:32:47 -0700 (PDT)
-Subject: Re: [RFC PATCH v7 12/24] ceph: add fscrypt ioctls
-To:     Jeff Layton <jlayton@kernel.org>, ceph-devel@vger.kernel.org
-Cc:     lhenriques@suse.de, linux-fsdevel@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, dhowells@redhat.com
-References: <20210625135834.12934-1-jlayton@kernel.org>
- <20210625135834.12934-13-jlayton@kernel.org>
- <912b5949-ae85-f093-0f23-0650aad606fc@redhat.com>
- <63ed309073c0d57cdb1a02ea43c566fd3d4116b9.camel@kernel.org>
-From:   Xiubo Li <xiubli@redhat.com>
-Message-ID: <33776a62-e6ba-b0db-fcc8-3462d62a1439@redhat.com>
-Date:   Thu, 8 Jul 2021 19:32:41 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S233756AbhGKOzq (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sun, 11 Jul 2021 10:55:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54896 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233808AbhGKOzq (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Sun, 11 Jul 2021 10:55:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE97F611AF;
+        Sun, 11 Jul 2021 14:52:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626015179;
+        bh=en8NWBS7SQkMrCqsmNM4oGOlzvfsho8bNhtN/lwORWY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MWeL/oZLN9zPaECz0poIzr3eyBT7BjOkEnZSGnBQv6JPOziR5NXbr0j9ugRVfG/ii
+         zgcrh2d3zcpfy7h7YOh6A+Hteyd8EjtqD/k1Sorb5fjDByfMEygrq/air5gGN7Sdsn
+         lA4ehwuL4wSOeJlC59gisI6AKBWz4zZGirlMMxPbMNROp0wQ6SH2ZqFrIZU/ZIIUna
+         yBxlG6nVfXrGEcAdv6HUsOJFtNSxDVLuzn3cWn6d/VcdOrRg8z+xKwX5k/KQCKFRsV
+         rrtEg94C6ISzvbnasiWy9CmhrHsviI0ApRnb1YoJZIEAVc9t3Nk7ZxD1qusksYx/2P
+         XzHCMADzhpcLA==
+Date:   Sun, 11 Jul 2021 09:52:56 -0500
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Boris Burkov <boris@bur.io>
+Cc:     linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH v6 2/3] btrfs: initial fsverity support
+Message-ID: <YOsFyCA1QIKlgHFh@quark.localdomain>
+References: <cover.1625083099.git.boris@bur.io>
+ <797d6524e4e6386fc343cd5d0bcdd53878a6593e.1625083099.git.boris@bur.io>
 MIME-Version: 1.0
-In-Reply-To: <63ed309073c0d57cdb1a02ea43c566fd3d4116b9.camel@kernel.org>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <797d6524e4e6386fc343cd5d0bcdd53878a6593e.1625083099.git.boris@bur.io>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
+On Wed, Jun 30, 2021 at 01:01:49PM -0700, Boris Burkov wrote:
+> Add support for fsverity in btrfs. To support the generic interface in
+> fs/verity, we add two new item types in the fs tree for inodes with
+> verity enabled. One stores the per-file verity descriptor and btrfs
+> verity item and the other stores the Merkle tree data itself.
+> 
+> Verity checking is done in end_page_read just before a page is marked
+> uptodate. This naturally handles a variety of edge cases like holes,
+> preallocated extents, and inline extents. Some care needs to be taken to
+> not try to verity pages past the end of the file, which are accessed by
+> the generic buffered file reading code under some circumstances like
+> reading to the end of the last page and trying to read again. Direct IO
+> on a verity file falls back to buffered reads.
+> 
+> Verity relies on PageChecked for the Merkle tree data itself to avoid
+> re-walking up shared paths in the tree. For this reason, we need to
+> cache the Merkle tree data. Since the file is immutable after verity is
+> turned on, we can cache it at an index past EOF.
+> 
+> Use the new inode ro_flags to store verity on the inode item, so that we
+> can enable verity on a file, then rollback to an older kernel and still
+> mount the file system and read the file. Since we can't safely write the
+> file anymore without ruining the invariants of the Merkle tree, we mark
+> a ro_compat flag on the file system when a file has verity enabled.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Co-developed-by: Chris Mason <clm@fb.com>
+> Signed-off-by: Chris Mason <clm@fb.com>
+> Signed-off-by: Boris Burkov <boris@bur.io>
 
-On 7/8/21 7:26 PM, Jeff Layton wrote:
-> On Thu, 2021-07-08 at 15:30 +0800, Xiubo Li wrote:
->> On 6/25/21 9:58 PM, Jeff Layton wrote:
->>> We gate most of the ioctls on MDS feature support. The exception is the
->>> key removal and status functions that we still want to work if the MDS's
->>> were to (inexplicably) lose the feature.
->>>
->>> For the set_policy ioctl, we take Fcx caps to ensure that nothing can
->>> create files in the directory while the ioctl is running. That should
->>> be enough to ensure that the "empty_dir" check is reliable.
->>>
->>> Signed-off-by: Jeff Layton <jlayton@kernel.org>
->>> ---
->>>    fs/ceph/ioctl.c | 83 +++++++++++++++++++++++++++++++++++++++++++++++++
->>>    1 file changed, 83 insertions(+)
->>>
->>> diff --git a/fs/ceph/ioctl.c b/fs/ceph/ioctl.c
->>> index 6e061bf62ad4..477ecc667aee 100644
->>> --- a/fs/ceph/ioctl.c
->>> +++ b/fs/ceph/ioctl.c
->>> @@ -6,6 +6,7 @@
->>>    #include "mds_client.h"
->>>    #include "ioctl.h"
->>>    #include <linux/ceph/striper.h>
->>> +#include <linux/fscrypt.h>
->>>    
->>>    /*
->>>     * ioctls
->>> @@ -268,8 +269,54 @@ static long ceph_ioctl_syncio(struct file *file)
->>>    	return 0;
->>>    }
->>>    
->>> +static int vet_mds_for_fscrypt(struct file *file)
->>> +{
->>> +	int i, ret = -EOPNOTSUPP;
->>> +	struct ceph_mds_client	*mdsc = ceph_sb_to_mdsc(file_inode(file)->i_sb);
->>> +
->>> +	mutex_lock(&mdsc->mutex);
->>> +	for (i = 0; i < mdsc->max_sessions; i++) {
->>> +		struct ceph_mds_session *s = mdsc->sessions[i];
->>> +
->>> +		if (!s)
->>> +			continue;
->>> +		if (test_bit(CEPHFS_FEATURE_ALTERNATE_NAME, &s->s_features))
->>> +			ret = 0;
->>> +		break;
->>> +	}
->>> +	mutex_unlock(&mdsc->mutex);
->>> +	return ret;
->>> +}
->>> +
->>> +static long ceph_set_encryption_policy(struct file *file, unsigned long arg)
->>> +{
->>> +	int ret, got = 0;
->>> +	struct inode *inode = file_inode(file);
->>> +	struct ceph_inode_info *ci = ceph_inode(inode);
->>> +
->>> +	ret = vet_mds_for_fscrypt(file);
->>> +	if (ret)
->>> +		return ret;
->>> +
->>> +	/*
->>> +	 * Ensure we hold these caps so that we _know_ that the rstats check
->>> +	 * in the empty_dir check is reliable.
->>> +	 */
->>> +	ret = ceph_get_caps(file, CEPH_CAP_FILE_SHARED, 0, -1, &got);
->> In the commit comment said it will host the Fsx, but here it is only
->> trying to hold the Fs. Will the Fx really needed ?
->>
-> No. What we're interested in here is that the directory remains empty
-> while we're encrypting it. If we hold Fs caps, then no one else can
-> modify the directory, so this is enough to ensure that.
+Generally looks good, feel free to add:
 
-Yeah, this is what I thought.
+Acked-by: Eric Biggers <ebiggers@google.com>
 
-Thanks
+A few minor comments below:
 
+> @@ -2688,7 +2677,14 @@ static void end_page_read(struct page *page, bool uptodate, u64 start, u32 len)
+>  	       start + len <= page_offset(page) + PAGE_SIZE);
+>  
+>  	if (uptodate) {
+> -		btrfs_page_set_uptodate(fs_info, page, start, len);
+> +		if (!PageError(page) && !PageUptodate(page) &&
+> +		    start < i_size_read(page->mapping->host) &&
+> +		    fsverity_active(page->mapping->host) &&
+> +		    !fsverity_verify_page(page)) {
+> +			btrfs_page_set_error(fs_info, page, start, len);
+> +		} else {
+> +			btrfs_page_set_uptodate(fs_info, page, start, len);
+> +		}
 
->>
->>> +	if (ret)
->>> +		return ret;
->>> +
->>> +	ret = fscrypt_ioctl_set_policy(file, (const void __user *)arg);
->>> +	if (got)
->>> +		ceph_put_cap_refs(ci, got);
->>> +
->>> +	return ret;
->>> +}
->>> +
->>>    long ceph_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
->>>    {
->>> +	int ret;
->>> +
->>>    	dout("ioctl file %p cmd %u arg %lu\n", file, cmd, arg);
->>>    	switch (cmd) {
->>>    	case CEPH_IOC_GET_LAYOUT:
->>> @@ -289,6 +336,42 @@ long ceph_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
->>>    
->>>    	case CEPH_IOC_SYNCIO:
->>>    		return ceph_ioctl_syncio(file);
->>> +
->>> +	case FS_IOC_SET_ENCRYPTION_POLICY:
->>> +		return ceph_set_encryption_policy(file, arg);
->>> +
->>> +	case FS_IOC_GET_ENCRYPTION_POLICY:
->>> +		ret = vet_mds_for_fscrypt(file);
->>> +		if (ret)
->>> +			return ret;
->>> +		return fscrypt_ioctl_get_policy(file, (void __user *)arg);
->>> +
->>> +	case FS_IOC_GET_ENCRYPTION_POLICY_EX:
->>> +		ret = vet_mds_for_fscrypt(file);
->>> +		if (ret)
->>> +			return ret;
->>> +		return fscrypt_ioctl_get_policy_ex(file, (void __user *)arg);
->>> +
->>> +	case FS_IOC_ADD_ENCRYPTION_KEY:
->>> +		ret = vet_mds_for_fscrypt(file);
->>> +		if (ret)
->>> +			return ret;
->>> +		return fscrypt_ioctl_add_key(file, (void __user *)arg);
->>> +
->>> +	case FS_IOC_REMOVE_ENCRYPTION_KEY:
->>> +		return fscrypt_ioctl_remove_key(file, (void __user *)arg);
->>> +
->>> +	case FS_IOC_REMOVE_ENCRYPTION_KEY_ALL_USERS:
->>> +		return fscrypt_ioctl_remove_key_all_users(file, (void __user *)arg);
->>> +
->>> +	case FS_IOC_GET_ENCRYPTION_KEY_STATUS:
->>> +		return fscrypt_ioctl_get_key_status(file, (void __user *)arg);
->>> +
->>> +	case FS_IOC_GET_ENCRYPTION_NONCE:
->>> +		ret = vet_mds_for_fscrypt(file);
->>> +		if (ret)
->>> +			return ret;
->>> +		return fscrypt_ioctl_get_nonce(file, (void __user *)arg);
->>>    	}
->>>    
->>>    	return -ENOTTY;
+When is it ever the case that PageError(page) or PageUptodate(page) here?
 
+Also: in general, fsverity_active() should be checked first, in order to avoid
+any overhead when !CONFIG_FS_VERITY.
+
+> @@ -5014,6 +5020,10 @@ long btrfs_ioctl(struct file *file, unsigned int
+>  		return btrfs_ioctl_get_subvol_rootref(file, argp);
+>  	case BTRFS_IOC_INO_LOOKUP_USER:
+>  		return btrfs_ioctl_ino_lookup_user(file, argp);
+> +	case FS_IOC_ENABLE_VERITY:
+> +		return fsverity_ioctl_enable(file, (const void __user *)argp);
+> +	case FS_IOC_MEASURE_VERITY:
+> +		return fsverity_ioctl_measure(file, argp);
+
+You could wire up FS_IOC_READ_VERITY_METADATA as well.  It should just work
+without having to do anything else.
+
+> + * The merkle tree items:
+> + * [ inode objectid, BTRFS_VERITY_MERKLE_ITEM_KEY, offset ]
+> + *
+> + * These also start at offset 0, and correspond to the merkle tree bytes.
+> + * So when fsverity asks for page 0 of the merkle tree, we pull up one page
+> + * starting at offset 0 for this key type.  These are also opaque to btrfs,
+> + * we're blindly storing whatever fsverity sends down.
+> + */
+
+Is it defined which offsets, specifically, the Merkle tree items start at?  Or
+is any arrangement valid -- say, one filesystem might use one item per Merkle
+tree block, while another might have multiple blocks per item, while another
+might have multiple items per block?  What about the degenerate case where there
+is a separate btrfs item for each individual Merkle tree byte, and maybe even
+some empty items -- is that being considered a valid/supported on-disk format,
+or is there a limit?
+
+> +static loff_t merkle_file_pos(const struct inode *inode)
+> +{
+> +	loff_t ret;
+> +	u64 sz = inode->i_size;
+> +	u64 rounded = round_up(sz, MERKLE_START_ALIGN);
+> +
+> +	if (rounded > inode->i_sb->s_maxbytes)
+> +		return -EFBIG;
+> +	ret = rounded;
+> +	return ret;
+> +}
+
+The 'ret' variable is unnecessary; this can just 'return rounded'.
+
+> +/*
+> + * Drop all the items for this inode with this key_type.
+> + *
+> + * @inode: The inode to drop items for
+> + * @key_type: The type of items to drop (VERITY_DESC_ITEM or
+> + *            VERITY_MERKLE_ITEM)
+
+BTRFS_VERITY_DESC_ITEM_KEY or BTRFS_VERITY_MERKLE_ITEM_KEY
+
+> + *
+> + * Before doing a verity enable we cleanup any existing verity items.
+> + * This is also used to clean up if a verity enable failed half way
+> + * through.
+> + *
+> + * Returns number of dropped items on success, negative error code on failure.
+> + */
+> +static int drop_verity_items(struct btrfs_inode *inode, u8 key_type)
+
+The caller doesn't actually care about the number of dropped items, so this
+could just return 0 on success or a negative error code on failure.
+
+> +	while (1) {
+> +		/*
+> +		 * 1 for the item being dropped
+> +		 */
+> +		trans = btrfs_start_transaction(root, 1);
+> +		if (IS_ERR(trans)) {
+> +			ret = PTR_ERR(trans);
+> +			goto out;
+> +		}
+> +
+> +		/*
+> +		 * Walk backwards through all the items until we find one
+> +		 * that isn't from our key type or objectid
+> +		 */
+> +		key.objectid = btrfs_ino(inode);
+> +		key.type = key_type;
+> +		key.offset = (u64)-1;
+> +
+> +		ret = btrfs_search_slot(trans, root, &key, path, -1, 1);
+> +		if (ret > 0) {
+> +			ret = 0;
+> +			/* No more keys of this type, we're done */
+> +			if (path->slots[0] == 0)
+> +				break;
+> +			path->slots[0]--;
+> +		} else if (ret < 0) {
+> +			btrfs_end_transaction(trans);
+> +			goto out;
+> +		}
+
+Pardon my unfamiliarity with btrfs, but it looks like if the key isn't present,
+then btrfs_search_slot() returns the position where the key would be inserted.
+What if the previous leaf is completely full -- does btrfs_search_slot() return
+a new leaf, or does it return a pointer past the end of the previous one?  (It
+looks like the latter is assumed here.)  The comment for btrfs_search_slot()
+doesn't make this clear.
+
+> +int btrfs_drop_verity_items(struct btrfs_inode *inode)
+> +{
+> +	int ret;
+> +
+> +	ret = drop_verity_items(inode, BTRFS_VERITY_DESC_ITEM_KEY);
+> +	if (ret < 0)
+> +		goto out;
+> +	ret = drop_verity_items(inode, BTRFS_VERITY_MERKLE_ITEM_KEY);
+> +	if (ret < 0)
+> +		goto out;
+> +	ret = 0;
+> +out:
+> +	return ret;
+> +}
+
+This could be simplified a bit if drop_verity_items() returned 0 on success.
+
+> +/*
+> + * Insert and write inode items with a given key type and offset.
+> + *
+> + * @inode: The inode to insert for.
+> + * @key_type: The key type to insert.
+> + * @offset: The item offset to insert at.
+> + * @src: Source data to write.
+> + * @len: Length of source data to write.
+> + *
+> + * Write len bytes from src into items of up to 1k length.
+> + * The inserted items will have key <ino, key_type, offset + off> where
+> + * off is consecutively increasing from 0 up to the last item ending at
+> + * offset + len.
+> + *
+> + * Returns 0 on success and a negative error code on failure.
+> + */
+> +static int write_key_bytes(struct btrfs_inode *inode, u8 key_type, u64 offset,
+> +			   const char *src, u64 len)
+
+The comment says items of up to 1k length, but the code uses 2K.
+
+> +/*
+> + * Read inode items of the given key type and offset from the btree.
+> + *
+> + * @inode: The inode to read items of.
+> + * @key_type: The key type to read.
+> + * @offset: The item offset to read from.
+> + * @dest: The buffer to read into. This parameter has slightly tricky
+> + *        semantics.  If it is NULL, the function will not do any copying
+> + *        and will just return the size of all the items up to len bytes.
+> + *        If dest_page is passed, then the function will kmap_local the
+> + *        page and ignore dest, but it must still be non-NULL to avoid the
+> + *        counting-only behavior.
+> + * @len: Length in bytes to read.
+> + * @dest_page: Copy into this page instead of the dest buffer.
+> + *
+> + * Helper function to read items from the btree.  This returns the number
+> + * of bytes read or < 0 for errors.  We can return short reads if the
+> + * items don't exist on disk or aren't big enough to fill the desired length.
+> + * Supports reading into a provided buffer (dest) or into the page cache
+> + *
+> + * Returns number of bytes read or a negative error code on failure.
+> + */
+> +static int read_key_bytes(struct btrfs_inode *inode, u8 key_type, u64 offset,
+> +			  char *dest, u64 len, struct page *dest_page)
+> +{
+> +	struct btrfs_path *path;
+> +	struct btrfs_root *root = inode->root;
+> +	struct extent_buffer *leaf;
+> +	struct btrfs_key key;
+> +	u64 item_end;
+> +	u64 copy_end;
+> +	int copied = 0;
+> +	u32 copy_offset;
+> +	unsigned long copy_bytes;
+> +	unsigned long dest_offset = 0;
+> +	void *data;
+> +	char *kaddr = dest;
+> +	int ret;
+> +
+> +	path = btrfs_alloc_path();
+> +	if (!path)
+> +		return -ENOMEM;
+> +
+> +	if (dest_page)
+> +		path->reada = READA_FORWARD;
+> +
+> +	key.objectid = btrfs_ino(inode);
+> +	key.type = key_type;
+> +	key.offset = offset;
+> +
+> +	ret = btrfs_search_slot(NULL, root, &key, path, 0, 0);
+> +	if (ret < 0) {
+> +		goto out;
+> +	} else if (ret > 0) {
+> +		ret = 0;
+> +		if (path->slots[0] == 0)
+> +			goto out;
+> +		path->slots[0]--;
+> +	}
+
+Same question about btrfs_search_slot() here.  If the key isn't found and the
+previous leaf is completely full, will it return a pointer past the end of it?
+
+> +/*
+> + * fsverity op that begins enabling verity.
+> + *
+> + * @filp: the file to enable verity on
+> + *
+> + * Begin enabling fsverity for the file. We drop any existing verity items
+> + * and set the in progress bit.
+> + *
+> + * Returns 0 on success, negative error code on failure.
+> + */
+> +static int btrfs_begin_enable_verity(struct file *filp)
+> +{
+> +	struct btrfs_inode *inode = BTRFS_I(file_inode(filp));
+> +	int ret;
+> +
+> +	ASSERT(inode_is_locked(file_inode(filp)));
+> +
+> +	if (test_bit(BTRFS_INODE_VERITY_IN_PROGRESS, &inode->runtime_flags)) {
+> +		ret = -EBUSY;
+> +		goto out;
+> +	}
+> +
+> +	ret = btrfs_drop_verity_items(inode);
+> +	if (ret)
+> +		goto out;
+> +
+> +	set_bit(BTRFS_INODE_VERITY_IN_PROGRESS, &inode->runtime_flags);
+> +out:
+> +	return ret;
+> +}
+
+There's no need for 'goto out' if no cleanup is being done.  Just return
+directly instead.
+
+> +static struct page *btrfs_read_merkle_tree_page(struct inode *inode,
+> +					       pgoff_t index,
+> +					       unsigned long num_ra_pages)
+> +{
+> +	struct page *page;
+> +	u64 off = (u64)index << PAGE_SHIFT;
+> +	loff_t merkle_pos = merkle_file_pos(inode);
+> +	int ret;
+> +
+> +	if (merkle_pos < 0)
+> +		return ERR_PTR(merkle_pos);
+> +	if (merkle_pos > inode->i_sb->s_maxbytes - off - PAGE_SIZE)
+> +		return ERR_PTR(-EFBIG);
+> +	index += merkle_pos >> PAGE_SHIFT;
+> +again:
+> +	page = find_get_page_flags(inode->i_mapping, index, FGP_ACCESSED);
+> +	if (page) {
+> +		if (PageUptodate(page))
+> +			return page;
+> +
+> +		lock_page(page);
+> +		/*
+> +		 * We only insert uptodate pages, so !Uptodate has to be
+> +		 * an error
+> +		 */
+> +		if (!PageUptodate(page)) {
+> +			unlock_page(page);
+> +			put_page(page);
+> +			return ERR_PTR(-EIO);
+> +		}
+> +		unlock_page(page);
+> +		return page;
+
+As per the comment above, aren't the Merkle tree pages marked Uptodate before
+being inserted into the page cache?  If so, isn't it unnecessary to re-check
+Uptodate under the page lock?
+
+> +struct btrfs_verity_descriptor_item {
+> +	/* size of the verity descriptor in bytes */
+> +	__le64 size;
+> +	/*
+> +	 * When we implement support for fscrypt, we will need to encrypt the
+> +	 * Merkle tree for encrypted verity files. These 128 bits are for the
+> +	 * eventual storage of an fscrypt initialization vector.
+> +	 */
+> +	__le64 reserved[2];
+> +	__u8 encryption;
+> +} __attribute__ ((__packed__));
+
+Do you have something in mind for how an initialization vector stored here would
+be used?  I'd have thought that if/when fscrypt support is added, you'd either
+derive a new per-file key for encrypting the verity metadata specifically, or
+you'd encrypt the verity metadata with the regular per-file key using IVs that
+are chosen as if the verity metadata were appended to the file contents.
+Neither case would require that any additional information be stored here.
+
+- Eric
