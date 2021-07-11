@@ -2,86 +2,128 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 098BA3C3E84
-	for <lists+linux-fscrypt@lfdr.de>; Sun, 11 Jul 2021 19:44:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21F473C3FD1
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 12 Jul 2021 00:53:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232969AbhGKRrf (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sun, 11 Jul 2021 13:47:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41714 "EHLO mail.kernel.org"
+        id S229770AbhGKW41 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sun, 11 Jul 2021 18:56:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232999AbhGKRrd (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sun, 11 Jul 2021 13:47:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CAFD61153;
-        Sun, 11 Jul 2021 17:44:45 +0000 (UTC)
+        id S229544AbhGKW41 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Sun, 11 Jul 2021 18:56:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 52C3A61008;
+        Sun, 11 Jul 2021 22:53:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626025486;
-        bh=AunWFpEBTvppLmOE8HRvKrazR9bLTM9rMms+fo8lf5A=;
+        s=k20201202; t=1626044019;
+        bh=fNZh4l5+lAvcCs6wrBgsew6D+ISP6YlpA4DG02ZWRkw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IMOXvMsNFASFp+m49G6NkcW/xN86yHCUBIoCL4OZFHcKFk4VcSVQqDfAey9k+xpNE
-         dfReM1wY9RNgloRj1VJ9UHOxz0nZB7HCGTmTeBVKTk4wbWWOKXgkxa3/mez88nu7Au
-         0JWZMsW/nd+K4qabVTVaYz42wdomiyFlIs2AI53jNMM2JmmyW2WPCYumCUHv0A7T83
-         rw6GXxAXHq2RB0FKkfkx5aVDtHkaUYvVvgHtFTHMCkmSJQuHdzNCux4mnp16P1+jCd
-         VVf+2EKZ3tPti/cfY5Moz6mZ8C5NB0P+N8/nr2QY6uiBGB5yMi9dGAa/vRTAHQRSza
-         5gEO7U4+7f5BQ==
-Date:   Sun, 11 Jul 2021 12:44:43 -0500
+        b=Wx7JTfKZGIPThCFJw8Ei4ATDdjzdA+nYsMArQrxUhTlwXjFKkjpFK70Yx/s0MX3om
+         1ITY545roAcS2LyFicZC/86EPCKBMvCWPiSagzSYxx4lh/rZ4bbdC6boGlQEKD0vxw
+         qsYb2OSRRlfU9TmmH2KR/I6Z+sYZ31fQPex1la6MQ150KQMEkW/GpnDZ6tCRig0kw+
+         HEg/G1PkisJoCjddPGd3El5HVwnISmwP0N3bkapjKxn7VVJdtycL9K1xyL4HtWwhSE
+         Bzq147OClDBlyIc89AsW7qUxXLyTuEwG2nis6oQovNucnmYVizFW0QDKOvaGzgiqdj
+         nl0cWU/mUcUZQ==
+Date:   Sun, 11 Jul 2021 17:53:37 -0500
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     Jeff Layton <jlayton@kernel.org>
 Cc:     ceph-devel@vger.kernel.org, lhenriques@suse.de, xiubli@redhat.com,
         linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         dhowells@redhat.com
-Subject: Re: [RFC PATCH v7 04/24] fscrypt: add fscrypt_context_for_new_inode
-Message-ID: <YOsuC9qGRyUTb4qh@quark.localdomain>
+Subject: Re: [RFC PATCH v7 15/24] ceph: add encrypted fname handling to
+ ceph_mdsc_build_path
+Message-ID: <YOt2cVJLEXt88SVJ@quark.localdomain>
 References: <20210625135834.12934-1-jlayton@kernel.org>
- <20210625135834.12934-5-jlayton@kernel.org>
+ <20210625135834.12934-16-jlayton@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210625135834.12934-5-jlayton@kernel.org>
+In-Reply-To: <20210625135834.12934-16-jlayton@kernel.org>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 09:58:14AM -0400, Jeff Layton wrote:
-> Most filesystems just call fscrypt_set_context on new inodes, which
-> usually causes a setxattr. That's a bit late for ceph, which can send
-> along a full set of attributes with the create request.
-> 
-> Doing so allows it to avoid race windows that where the new inode could
-> be seen by other clients without the crypto context attached. It also
-> avoids the separate round trip to the server.
-> 
-> Refactor the fscrypt code a bit to allow us to create a new crypto
-> context, attach it to the inode, and write it to the buffer, but without
-> calling set_context on it. ceph can later use this to marshal the
-> context into the attributes we send along with the create request.
-> 
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> ---
->  fs/crypto/policy.c      | 34 ++++++++++++++++++++++++++++------
->  include/linux/fscrypt.h |  1 +
->  2 files changed, 29 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
-> index ed3d623724cd..6a895a31560f 100644
-> --- a/fs/crypto/policy.c
-> +++ b/fs/crypto/policy.c
-> @@ -664,6 +664,31 @@ const union fscrypt_policy *fscrypt_policy_to_inherit(struct inode *dir)
->  	return fscrypt_get_dummy_policy(dir->i_sb);
->  }
->  
-> +/**
-> + * fscrypt_context_for_new_inode() - create an encryption context for a new inode
-> + * @ctx: where context should be written
-> + * @inode: inode from which to fetch policy and nonce
+On Fri, Jun 25, 2021 at 09:58:25AM -0400, Jeff Layton wrote:
+> +/*
+> + * We want to encrypt filenames when creating them, but the encrypted
+> + * versions of those names may have illegal characters in them. To mitigate
+> + * that, we base64 encode them, but that gives us a result that can exceed
+> + * NAME_MAX.
 > + *
-> + * Given an in-core "prepared" (via fscrypt_prepare_new_inode) inode,
-> + * generate a new context and write it to ctx. ctx _must_ be at least
-> + * FSCRYPT_SET_CONTEXT_MAX_SIZE bytes.
+> + * Follow a similar scheme to fscrypt itself, and cap the filename to a
+> + * smaller size. If the cleartext name is longer than the value below, then
+> + * sha256 hash the remaining bytes.
 > + *
-> + * Returns size of the resulting context or a negative error code.
+> + * 189 bytes => 252 bytes base64-encoded, which is <= NAME_MAX (255)
 > + */
-> +int fscrypt_context_for_new_inode(void *ctx, struct inode *inode)
+> +#define CEPH_NOHASH_NAME_MAX (189 - SHA256_DIGEST_SIZE)
 
-This generates a kerneldoc warning because "Returns" should be "Return:".
+Shouldn't this say "If the ciphertext name is longer than the value below", not
+"If the cleartext name is longer than the value below"?
+
+It would also be helpful if the above comment mentioned that when the hashing is
+done, the real encrypted name is stored separately.
+
+> +#if IS_ENABLED(CONFIG_FS_ENCRYPTION)
+> +static int encode_encrypted_fname(const struct inode *parent, struct dentry *dentry, char *buf)
+> +{
+> +	u32 len;
+> +	int elen;
+> +	int ret;
+> +	u8 *cryptbuf;
+> +
+> +	WARN_ON_ONCE(!fscrypt_has_encryption_key(parent));
+> +
+> +	/*
+> +	 * convert cleartext dentry name to ciphertext
+> +	 * if result is longer than CEPH_NOKEY_NAME_MAX,
+> +	 * sha256 the remaining bytes
+> +	 *
+> +	 * See: fscrypt_setup_filename
+> +	 */
+> +	if (!fscrypt_fname_encrypted_size(parent, dentry->d_name.len, NAME_MAX, &len))
+> +		return -ENAMETOOLONG;
+> +
+> +	/* If we have to hash the end, then we need a full-length buffer */
+> +	if (len > CEPH_NOHASH_NAME_MAX)
+> +		len = NAME_MAX;
+> +
+> +	cryptbuf = kmalloc(len, GFP_KERNEL);
+> +	if (!cryptbuf)
+> +		return -ENOMEM;
+> +
+> +	ret = fscrypt_fname_encrypt(parent, &dentry->d_name, cryptbuf, len);
+> +	if (ret) {
+> +		kfree(cryptbuf);
+> +		return ret;
+> +	}
+> +
+> +	/* hash the end if the name is long enough */
+> +	if (len > CEPH_NOHASH_NAME_MAX) {
+> +		u8 hash[SHA256_DIGEST_SIZE];
+> +		u8 *extra = cryptbuf + CEPH_NOHASH_NAME_MAX;
+> +
+> +		/* hash the extra bytes and overwrite crypttext beyond that point with it */
+> +		sha256(extra, len - CEPH_NOHASH_NAME_MAX, hash);
+> +		memcpy(extra, hash, SHA256_DIGEST_SIZE);
+> +		len = CEPH_NOHASH_NAME_MAX + SHA256_DIGEST_SIZE;
+> +	}
+
+When the ciphertext name is longer than CEPH_NOHASH_NAME_MAX, why is the
+filename being padded all the way to NAME_MAX?  That can produce a totally
+different ciphertext from that produced by get_fscrypt_altname() in the next
+patch.
+
+The logical thing to do would be to do the encryption in the same way as
+get_fscrypt_altname(), and then replace any bytes beyond CEPH_NOHASH_NAME_MAX
+with their hash.
+
+> +
+> +	/* base64 encode the encrypted name */
+> +	elen = fscrypt_base64_encode(cryptbuf, len, buf);
+> +	kfree(cryptbuf);
+> +	dout("base64-encoded ciphertext name = %.*s\n", len, buf);
+> +	return elen;
+
+The argument to dout() should be elen, not len.
 
 - Eric
