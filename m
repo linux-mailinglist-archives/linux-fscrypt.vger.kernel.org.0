@@ -2,99 +2,94 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE23B3C5D25
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 12 Jul 2021 15:22:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C37A13C5E48
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 12 Jul 2021 16:22:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230187AbhGLNY5 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 12 Jul 2021 09:24:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50492 "EHLO mail.kernel.org"
+        id S233949AbhGLOZ2 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 12 Jul 2021 10:25:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229978AbhGLNY4 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 12 Jul 2021 09:24:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D140E60FE3;
-        Mon, 12 Jul 2021 13:22:07 +0000 (UTC)
+        id S230070AbhGLOZ0 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 12 Jul 2021 10:25:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E488F61026;
+        Mon, 12 Jul 2021 14:22:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626096128;
-        bh=2n+/KxcQvGM7mFI1P39IHXxYavZRDtXP5ygdwdIhhM0=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=IewmfISieYz+qgFvJQ/sBBzPI2rLrn7HTBRgb8wWGgrnLgyMT7MRkJpheeVOqfNnR
-         AZYea+PMuyUx9zzGpsjj+5f1vUZzZC9OxiomwLlj2b3NeNDFqUzXHf6WO+7cQF0ptF
-         Q74LgiuFMQuJTGPrWb3CTfvQpEdpy8n6kOCqvyeST27Fsh94ub4cAhOZ9EikC8oiu0
-         26PTeXKgdmsh+bpJblpejlp2wA41D9xF2o4jOpIEfG2Gd0ZAOuIkcVqwWkTRT7Jotp
-         OQPqRshpd7MwO0nrWSdLjuYJZXDHPjyNpPGSnGbfHwia5xKG+n8wjays+FK9A/HGol
-         iPiC+4OJJz4XQ==
-Message-ID: <1e16ba2b69dd03c61e7c9db6ee124aa53ce60f3b.camel@kernel.org>
-Subject: Re: [RFC PATCH v7 07/24] ceph: add fscrypt_* handling to caps.c
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Eric Biggers <ebiggers@kernel.org>
+        s=k20201202; t=1626099758;
+        bh=WDLpyiYZPuIbdT5FYXxPE9ngp9ZuV7QqvfJGcKZInfM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=m2GjlAH5IhOzU46VW3MwayvjOOvLw4XRb/YrkXH76igFXtP8m0J5tmSBolcv/S/1Z
+         /sZRa81q5laowrrpH0xFMJs8XEG41veidnE/h1s5aexPrsU6s62mqMkLXkywnAckAP
+         gjZ1DhjT99eYd67ux3PSctuHwBp6LTR46tYwqbig80aQh7FAiNruD0Eji/xlXEm/L1
+         CuDK2rxotI872jeawbL99QoeCX/e8hxgcfRPFVfqsOcst8nVgH+3yR1oSiVPI9Fzjt
+         IsO9cP2GkJuq6CokDL+IzH8USF5l8u6X2L543BRWEVI1Ng2ccvYGyihcf6jZnbEBKN
+         VL6aXosGVdmiw==
+Date:   Mon, 12 Jul 2021 09:22:35 -0500
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Jeff Layton <jlayton@kernel.org>
 Cc:     ceph-devel@vger.kernel.org, lhenriques@suse.de, xiubli@redhat.com,
         linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         dhowells@redhat.com
-Date:   Mon, 12 Jul 2021 09:22:06 -0400
-In-Reply-To: <YOt38ayEMpECKQeP@quark.localdomain>
+Subject: Re: [RFC PATCH v7 02/24] fscrypt: export fscrypt_base64_encode and
+ fscrypt_base64_decode
+Message-ID: <YOxQKyZtWgFZ85YK@quark.localdomain>
 References: <20210625135834.12934-1-jlayton@kernel.org>
-         <20210625135834.12934-8-jlayton@kernel.org>
-         <YOt38ayEMpECKQeP@quark.localdomain>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.40.2 (3.40.2-1.fc34) 
+ <20210625135834.12934-3-jlayton@kernel.org>
+ <YOstFfnzitZrAlLZ@quark.localdomain>
+ <6b701c8dfc9e16964718f2b4c1e52fda954ed26b.camel@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6b701c8dfc9e16964718f2b4c1e52fda954ed26b.camel@kernel.org>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Sun, 2021-07-11 at 18:00 -0500, Eric Biggers wrote:
-> On Fri, Jun 25, 2021 at 09:58:17AM -0400, Jeff Layton wrote:
-> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > ---
-> >  fs/ceph/caps.c | 62 +++++++++++++++++++++++++++++++++++++++-----------
-> >  1 file changed, 49 insertions(+), 13 deletions(-)
+On Mon, Jul 12, 2021 at 07:55:37AM -0400, Jeff Layton wrote:
+> On Sun, 2021-07-11 at 12:40 -0500, Eric Biggers wrote:
+> > Some nits about comments:
 > > 
-> > diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
-> > index 038f59cc4250..1be6c5148700 100644
-> > --- a/fs/ceph/caps.c
-> > +++ b/fs/ceph/caps.c
-> > @@ -13,6 +13,7 @@
-> >  #include "super.h"
-> >  #include "mds_client.h"
-> >  #include "cache.h"
-> > +#include "crypto.h"
-> >  #include <linux/ceph/decode.h>
-> >  #include <linux/ceph/messenger.h>
-> >  
-> > @@ -1229,15 +1230,12 @@ struct cap_msg_args {
-> >  	umode_t			mode;
-> >  	bool			inline_data;
-> >  	bool			wake;
-> > +	u32			fscrypt_auth_len;
-> > +	u32			fscrypt_file_len;
-> > +	u8			fscrypt_auth[sizeof(struct ceph_fscrypt_auth)]; // for context
-> > +	u8			fscrypt_file[sizeof(u64)]; // for size
-> >  };
+> > On Fri, Jun 25, 2021 at 09:58:12AM -0400, Jeff Layton wrote:
+> > > diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
+> > > index 6ca7d16593ff..32b1f50433ba 100644
+> > > --- a/fs/crypto/fname.c
+> > > +++ b/fs/crypto/fname.c
+> > > @@ -178,10 +178,8 @@ static int fname_decrypt(const struct inode *inode,
+> > >  static const char lookup_table[65] =
+> > >  	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+,";
+> > >  
+> > > -#define BASE64_CHARS(nbytes)	DIV_ROUND_UP((nbytes) * 4, 3)
+> > > -
+> > >  /**
+> > > - * base64_encode() - base64-encode some bytes
+> > > + * fscrypt_base64_encode() - base64-encode some bytes
+> > >   * @src: the bytes to encode
+> > >   * @len: number of bytes to encode
+> > >   * @dst: (output) the base64-encoded string.  Not NUL-terminated.
+> > >   *
+> > >   * Encodes the input string using characters from the set [A-Za-z0-9+,].
+> > >   * The encoded string is roughly 4/3 times the size of the input string.
+> > >   *
+> > >   * Return: length of the encoded string
+> > >   */
+> > > -static int base64_encode(const u8 *src, int len, char *dst)
+> > > +int fscrypt_base64_encode(const u8 *src, int len, char *dst)
+> > 
+> > As this function will be used more widely, this comment should be fixed to be
+> > more precise.  "Roughly 4/3" isn't precise; it's actually exactly
+> > FSCRYPT_BASE64_CHARS(len), right?  The following would be better:
+> > 
+> >  * Encode the input bytes using characters from the set [A-Za-z0-9+,].
+> >  *
+> >  * Return: length of the encoded string.  This will be equal to
+> >  *         FSCRYPT_BASE64_CHARS(len).
+> > 
 > 
-> The naming of these is confusing to me.  If these are the fscrypt context and
-> the original file size, why aren't they called something like fscrypt_context
-> and fscrypt_file_size?
-> 
-> Also does the file size really need to be variable-length, or could it just be a
-> 64-bit integer?
+> I'm not certain, but I thought that FSCRYPT_BASE64_CHARS gave you a
+> worst-case estimate of the inflation. This returns the actual length of
+> the resulting encoded string, which may be less than
+> FSCRYPT_BASE64_CHARS(len).
 > 
 
-Fscrypt is really a kernel client-side feature. Both of these new fields
-are treated as opaque by the MDS and are wholly managed by the client.
+As far as I can tell, it's the exact amount.
 
-We need two fields because they are governed by different cephfs
-capabilities (aka "caps"). AUTH caps for the context and FILE caps for
-the size. So we have two new fields -- fscrypt_file and fscrypt_auth. 
-
-The size could be a __le64 or something, but I think it makes sense to
-allow it to be opaque as we aren't certain what other info we might want
-to keep in there. We might also want to encrypt the fscrypt_file field
-to cloak the true size of a file from anyone without the key.
-
-Now, all that said, the fact that the MDS largely handles truncation
-poses some special challenges for the content encryption piece. We may
-ultimately end up making this more special-purpose than it is now.
--- 
-Jeff Layton <jlayton@kernel.org>
-
+- Eric
