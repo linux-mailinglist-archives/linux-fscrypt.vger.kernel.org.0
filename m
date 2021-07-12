@@ -2,78 +2,120 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF2AE3C3FD8
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 12 Jul 2021 01:00:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F3963C5BCA
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 12 Jul 2021 14:21:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229793AbhGKXCw (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sun, 11 Jul 2021 19:02:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55862 "EHLO mail.kernel.org"
+        id S231406AbhGLL62 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 12 Jul 2021 07:58:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32834 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229544AbhGKXCv (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sun, 11 Jul 2021 19:02:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B89D61008;
-        Sun, 11 Jul 2021 23:00:03 +0000 (UTC)
+        id S230457AbhGLL61 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 12 Jul 2021 07:58:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D359F610E6;
+        Mon, 12 Jul 2021 11:55:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626044404;
-        bh=I4vAZy8a2LCjua+472w8/bDPFLa2CFeyXjUriI/0zpY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nOzRq3/1n3vBV4sO/ggfFiqjHD5maYQ4mooLBTvSu6gkZExbZ6RDrHUaSBBcXfnIE
-         bstUqhdvmgO0azplMElWlxHxQCT6XzqeUFSUkivc1cXL95tM30gGrLxOZbGY34W6jd
-         3WBLZkZqfRBioBDUo/JzH0hx47dnEIYJy0H8KWNe2ot+Ku9mo0CHMFLpd0QiP5vAtO
-         Nv/LhixmFguiaxVA+ULBoe0jdudxi0uALbr6FXSrSGu2XUcBSG0z+djYaPsizWdVB4
-         8Vl//mQNaX0Zz5ytQSrswlItmSDJ+o1EHLq0VHJ2UukXkYw4++zrTbZ9tdWhdRgbu5
-         xbUASkCT9AVJQ==
-Date:   Sun, 11 Jul 2021 18:00:01 -0500
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Jeff Layton <jlayton@kernel.org>
+        s=k20201202; t=1626090939;
+        bh=agbXnkI+d1pZleZ1eNq+cwaIbUmy13yPymXoqaO/PXc=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=Am9xiyRURyzgvn5W9WwkMZoaPwFb29Qhxa7mPCu9OWKimRdSFBVs2jc5ovBYBsV0H
+         tN7natS3Ln5yhPQDkstDHOb/SM+7sflTqebeNxRnSf7VhXW8KEJKdQuYiKfulAtTR5
+         KnuCNvAh4uoBvloqF+n/9/m8HDliwVGSgr25RlKULVt6yL8MfXIDOvn6+Y9+S0BSPI
+         m42R6wkJpBQ/4XYaR/UrFaLVBW84hJbQLFYHVieqJQEqaq7Rt2Mo2OxwKiZrbTwdep
+         piCGCjqzk2KJsjn5EU9iD9I6vc3Uten+6s/zmhw5QobxCXTWjhk0ZvLB4ivaIOyQj6
+         //cek6y4Hx8pg==
+Message-ID: <6b701c8dfc9e16964718f2b4c1e52fda954ed26b.camel@kernel.org>
+Subject: Re: [RFC PATCH v7 02/24] fscrypt: export fscrypt_base64_encode and
+ fscrypt_base64_decode
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>
 Cc:     ceph-devel@vger.kernel.org, lhenriques@suse.de, xiubli@redhat.com,
         linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         dhowells@redhat.com
-Subject: Re: [RFC PATCH v7 07/24] ceph: add fscrypt_* handling to caps.c
-Message-ID: <YOt38ayEMpECKQeP@quark.localdomain>
+Date:   Mon, 12 Jul 2021 07:55:37 -0400
+In-Reply-To: <YOstFfnzitZrAlLZ@quark.localdomain>
 References: <20210625135834.12934-1-jlayton@kernel.org>
- <20210625135834.12934-8-jlayton@kernel.org>
+         <20210625135834.12934-3-jlayton@kernel.org>
+         <YOstFfnzitZrAlLZ@quark.localdomain>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.40.2 (3.40.2-1.fc34) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210625135834.12934-8-jlayton@kernel.org>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 09:58:17AM -0400, Jeff Layton wrote:
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> ---
->  fs/ceph/caps.c | 62 +++++++++++++++++++++++++++++++++++++++-----------
->  1 file changed, 49 insertions(+), 13 deletions(-)
+On Sun, 2021-07-11 at 12:40 -0500, Eric Biggers wrote:
+> Some nits about comments:
 > 
-> diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
-> index 038f59cc4250..1be6c5148700 100644
-> --- a/fs/ceph/caps.c
-> +++ b/fs/ceph/caps.c
-> @@ -13,6 +13,7 @@
->  #include "super.h"
->  #include "mds_client.h"
->  #include "cache.h"
-> +#include "crypto.h"
->  #include <linux/ceph/decode.h>
->  #include <linux/ceph/messenger.h>
->  
-> @@ -1229,15 +1230,12 @@ struct cap_msg_args {
->  	umode_t			mode;
->  	bool			inline_data;
->  	bool			wake;
-> +	u32			fscrypt_auth_len;
-> +	u32			fscrypt_file_len;
-> +	u8			fscrypt_auth[sizeof(struct ceph_fscrypt_auth)]; // for context
-> +	u8			fscrypt_file[sizeof(u64)]; // for size
->  };
+> On Fri, Jun 25, 2021 at 09:58:12AM -0400, Jeff Layton wrote:
+> > diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
+> > index 6ca7d16593ff..32b1f50433ba 100644
+> > --- a/fs/crypto/fname.c
+> > +++ b/fs/crypto/fname.c
+> > @@ -178,10 +178,8 @@ static int fname_decrypt(const struct inode *inode,
+> >  static const char lookup_table[65] =
+> >  	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+,";
+> >  
+> > -#define BASE64_CHARS(nbytes)	DIV_ROUND_UP((nbytes) * 4, 3)
+> > -
+> >  /**
+> > - * base64_encode() - base64-encode some bytes
+> > + * fscrypt_base64_encode() - base64-encode some bytes
+> >   * @src: the bytes to encode
+> >   * @len: number of bytes to encode
+> >   * @dst: (output) the base64-encoded string.  Not NUL-terminated.
+> >   *
+> >   * Encodes the input string using characters from the set [A-Za-z0-9+,].
+> >   * The encoded string is roughly 4/3 times the size of the input string.
+> >   *
+> >   * Return: length of the encoded string
+> >   */
+> > -static int base64_encode(const u8 *src, int len, char *dst)
+> > +int fscrypt_base64_encode(const u8 *src, int len, char *dst)
+> 
+> As this function will be used more widely, this comment should be fixed to be
+> more precise.  "Roughly 4/3" isn't precise; it's actually exactly
+> FSCRYPT_BASE64_CHARS(len), right?  The following would be better:
+> 
+>  * Encode the input bytes using characters from the set [A-Za-z0-9+,].
+>  *
+>  * Return: length of the encoded string.  This will be equal to
+>  *         FSCRYPT_BASE64_CHARS(len).
+> 
 
-The naming of these is confusing to me.  If these are the fscrypt context and
-the original file size, why aren't they called something like fscrypt_context
-and fscrypt_file_size?
+I'm not certain, but I thought that FSCRYPT_BASE64_CHARS gave you a
+worst-case estimate of the inflation. This returns the actual length of
+the resulting encoded string, which may be less than
+FSCRYPT_BASE64_CHARS(len).
 
-Also does the file size really need to be variable-length, or could it just be a
-64-bit integer?
+> > +/**
+> > + * fscrypt_base64_decode() - base64-decode some bytes
+> > + * @src: the bytes to decode
+> > + * @len: number of bytes to decode
+> > + * @dst: (output) decoded binary data
+> 
+> It's a bit confusing to talk about decoding "bytes"; it's really a string.
+> How about:
+> 
+>  * fscrypt_base64_decode() - base64-decode a string
+>  * @src: the string to decode
+>  * @len: length of the source string, in bytes
+>  * @dst: (output) decoded binary data
+>  *
+>  * Decode a string that was previously encoded using fscrypt_base64_encode().
+>  * The string doesn't need to be NUL-terminated.
+> 
+> > + * Return: length of the decoded binary data
+> 
+> Also the error return values should be documented, e.g.:
+> 
+>  * Return: length of the decoded binary data, or a negative number if the source
+>  *         string isn't a valid base64-encoded string.
+> 
 
-- Eric
+That update looks reasonable.
+
+Thanks,
+-- 
+Jeff Layton <jlayton@kernel.org>
+
