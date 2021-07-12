@@ -2,40 +2,40 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3963C5BCA
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 12 Jul 2021 14:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 957F83C5C3E
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 12 Jul 2021 14:37:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231406AbhGLL62 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 12 Jul 2021 07:58:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32834 "EHLO mail.kernel.org"
+        id S233294AbhGLMjE (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 12 Jul 2021 08:39:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39438 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230457AbhGLL61 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 12 Jul 2021 07:58:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D359F610E6;
-        Mon, 12 Jul 2021 11:55:38 +0000 (UTC)
+        id S230361AbhGLMjD (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 12 Jul 2021 08:39:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 01DD560FF3;
+        Mon, 12 Jul 2021 12:36:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626090939;
-        bh=agbXnkI+d1pZleZ1eNq+cwaIbUmy13yPymXoqaO/PXc=;
+        s=k20201202; t=1626093375;
+        bh=zN9Hq9FpIAMVrdPNdDqA/6rgCOrfBlpDNhEcHAUrM7U=;
         h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=Am9xiyRURyzgvn5W9WwkMZoaPwFb29Qhxa7mPCu9OWKimRdSFBVs2jc5ovBYBsV0H
-         tN7natS3Ln5yhPQDkstDHOb/SM+7sflTqebeNxRnSf7VhXW8KEJKdQuYiKfulAtTR5
-         KnuCNvAh4uoBvloqF+n/9/m8HDliwVGSgr25RlKULVt6yL8MfXIDOvn6+Y9+S0BSPI
-         m42R6wkJpBQ/4XYaR/UrFaLVBW84hJbQLFYHVieqJQEqaq7Rt2Mo2OxwKiZrbTwdep
-         piCGCjqzk2KJsjn5EU9iD9I6vc3Uten+6s/zmhw5QobxCXTWjhk0ZvLB4ivaIOyQj6
-         //cek6y4Hx8pg==
-Message-ID: <6b701c8dfc9e16964718f2b4c1e52fda954ed26b.camel@kernel.org>
-Subject: Re: [RFC PATCH v7 02/24] fscrypt: export fscrypt_base64_encode and
- fscrypt_base64_decode
+        b=SF9OPKGDsq/b/BdHy4ZrkaFL1/OvCKGN9zHT/j1MEFj12V4C7jx25QDpweILs5u9R
+         XM6XbKfwlTaAySAxRG7T1HXU2HElkXYvnmmiyMCsYGOStpJBYghLam3yqls2zEOaLw
+         kbK2qj0FvCuGpcUORdxzYzKBcZO3XF/6sfuLve0IviqxZbKj7MWeNCKSBQvBLh+jKS
+         Ppd5wvpNoZg8knD57Fnk614ZcuYcEXiR58QlP4gZz9OELesA4Lk6XpZGYtskURsuM0
+         PA77xdxt3EPWcSVO7dPL7Kj3ueF6+2B7jq5JPBeY/rNAtNDFdNf1DS8zYgDxBc+zMt
+         ZzxpyGgz987ZA==
+Message-ID: <7c57504514c107aa1cde04b566575a6e1461ecd5.camel@kernel.org>
+Subject: Re: [RFC PATCH v7 15/24] ceph: add encrypted fname handling to
+ ceph_mdsc_build_path
 From:   Jeff Layton <jlayton@kernel.org>
 To:     Eric Biggers <ebiggers@kernel.org>
 Cc:     ceph-devel@vger.kernel.org, lhenriques@suse.de, xiubli@redhat.com,
         linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         dhowells@redhat.com
-Date:   Mon, 12 Jul 2021 07:55:37 -0400
-In-Reply-To: <YOstFfnzitZrAlLZ@quark.localdomain>
+Date:   Mon, 12 Jul 2021 08:36:13 -0400
+In-Reply-To: <YOt2cVJLEXt88SVJ@quark.localdomain>
 References: <20210625135834.12934-1-jlayton@kernel.org>
-         <20210625135834.12934-3-jlayton@kernel.org>
-         <YOstFfnzitZrAlLZ@quark.localdomain>
+         <20210625135834.12934-16-jlayton@kernel.org>
+         <YOt2cVJLEXt88SVJ@quark.localdomain>
 Content-Type: text/plain; charset="ISO-8859-15"
 User-Agent: Evolution 3.40.2 (3.40.2-1.fc34) 
 MIME-Version: 1.0
@@ -44,78 +44,102 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Sun, 2021-07-11 at 12:40 -0500, Eric Biggers wrote:
-> Some nits about comments:
+On Sun, 2021-07-11 at 17:53 -0500, Eric Biggers wrote:
+> On Fri, Jun 25, 2021 at 09:58:25AM -0400, Jeff Layton wrote:
+> > +/*
+> > + * We want to encrypt filenames when creating them, but the encrypted
+> > + * versions of those names may have illegal characters in them. To mitigate
+> > + * that, we base64 encode them, but that gives us a result that can exceed
+> > + * NAME_MAX.
+> > + *
+> > + * Follow a similar scheme to fscrypt itself, and cap the filename to a
+> > + * smaller size. If the cleartext name is longer than the value below, then
+> > + * sha256 hash the remaining bytes.
+> > + *
+> > + * 189 bytes => 252 bytes base64-encoded, which is <= NAME_MAX (255)
+> > + */
+> > +#define CEPH_NOHASH_NAME_MAX (189 - SHA256_DIGEST_SIZE)
 > 
-> On Fri, Jun 25, 2021 at 09:58:12AM -0400, Jeff Layton wrote:
-> > diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
-> > index 6ca7d16593ff..32b1f50433ba 100644
-> > --- a/fs/crypto/fname.c
-> > +++ b/fs/crypto/fname.c
-> > @@ -178,10 +178,8 @@ static int fname_decrypt(const struct inode *inode,
-> >  static const char lookup_table[65] =
-> >  	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+,";
-> >  
-> > -#define BASE64_CHARS(nbytes)	DIV_ROUND_UP((nbytes) * 4, 3)
-> > -
-> >  /**
-> > - * base64_encode() - base64-encode some bytes
-> > + * fscrypt_base64_encode() - base64-encode some bytes
-> >   * @src: the bytes to encode
-> >   * @len: number of bytes to encode
-> >   * @dst: (output) the base64-encoded string.  Not NUL-terminated.
-> >   *
-> >   * Encodes the input string using characters from the set [A-Za-z0-9+,].
-> >   * The encoded string is roughly 4/3 times the size of the input string.
-> >   *
-> >   * Return: length of the encoded string
-> >   */
-> > -static int base64_encode(const u8 *src, int len, char *dst)
-> > +int fscrypt_base64_encode(const u8 *src, int len, char *dst)
+> Shouldn't this say "If the ciphertext name is longer than the value below", not
+> "If the cleartext name is longer than the value below"?
 > 
-> As this function will be used more widely, this comment should be fixed to be
-> more precise.  "Roughly 4/3" isn't precise; it's actually exactly
-> FSCRYPT_BASE64_CHARS(len), right?  The following would be better:
+> It would also be helpful if the above comment mentioned that when the hashing is
+> done, the real encrypted name is stored separately.
 > 
->  * Encode the input bytes using characters from the set [A-Za-z0-9+,].
->  *
->  * Return: length of the encoded string.  This will be equal to
->  *         FSCRYPT_BASE64_CHARS(len).
+> > +#if IS_ENABLED(CONFIG_FS_ENCRYPTION)
+> > +static int encode_encrypted_fname(const struct inode *parent, struct dentry *dentry, char *buf)
+> > +{
+> > +	u32 len;
+> > +	int elen;
+> > +	int ret;
+> > +	u8 *cryptbuf;
+> > +
+> > +	WARN_ON_ONCE(!fscrypt_has_encryption_key(parent));
+> > +
+> > +	/*
+> > +	 * convert cleartext dentry name to ciphertext
+> > +	 * if result is longer than CEPH_NOKEY_NAME_MAX,
+> > +	 * sha256 the remaining bytes
+> > +	 *
+> > +	 * See: fscrypt_setup_filename
+> > +	 */
+> > +	if (!fscrypt_fname_encrypted_size(parent, dentry->d_name.len, NAME_MAX, &len))
+> > +		return -ENAMETOOLONG;
+> > +
+> > +	/* If we have to hash the end, then we need a full-length buffer */
+> > +	if (len > CEPH_NOHASH_NAME_MAX)
+> > +		len = NAME_MAX;
+> > +
+> > +	cryptbuf = kmalloc(len, GFP_KERNEL);
+> > +	if (!cryptbuf)
+> > +		return -ENOMEM;
+> > +
+> > +	ret = fscrypt_fname_encrypt(parent, &dentry->d_name, cryptbuf, len);
+> > +	if (ret) {
+> > +		kfree(cryptbuf);
+> > +		return ret;
+> > +	}
+> > +
+> > +	/* hash the end if the name is long enough */
+> > +	if (len > CEPH_NOHASH_NAME_MAX) {
+> > +		u8 hash[SHA256_DIGEST_SIZE];
+> > +		u8 *extra = cryptbuf + CEPH_NOHASH_NAME_MAX;
+> > +
+> > +		/* hash the extra bytes and overwrite crypttext beyond that point with it */
+> > +		sha256(extra, len - CEPH_NOHASH_NAME_MAX, hash);
+> > +		memcpy(extra, hash, SHA256_DIGEST_SIZE);
+> > +		len = CEPH_NOHASH_NAME_MAX + SHA256_DIGEST_SIZE;
+> > +	}
+> 
+> When the ciphertext name is longer than CEPH_NOHASH_NAME_MAX, why is the
+> filename being padded all the way to NAME_MAX?  That can produce a totally
+> different ciphertext from that produced by get_fscrypt_altname() in the next
+> patch.
 > 
 
-I'm not certain, but I thought that FSCRYPT_BASE64_CHARS gave you a
-worst-case estimate of the inflation. This returns the actual length of
-the resulting encoded string, which may be less than
-FSCRYPT_BASE64_CHARS(len).
+Oh, I misunderstood the meaning of the last parameter to
+fscrypt_fname_encrypt. I had thought that was the length of the target
+buffer, but it's not -- it's the length of the resulting filename (which
+we need to precompute). I'll fix that up.
 
-> > +/**
-> > + * fscrypt_base64_decode() - base64-decode some bytes
-> > + * @src: the bytes to decode
-> > + * @len: number of bytes to decode
-> > + * @dst: (output) decoded binary data
-> 
-> It's a bit confusing to talk about decoding "bytes"; it's really a string.
-> How about:
-> 
->  * fscrypt_base64_decode() - base64-decode a string
->  * @src: the string to decode
->  * @len: length of the source string, in bytes
->  * @dst: (output) decoded binary data
->  *
->  * Decode a string that was previously encoded using fscrypt_base64_encode().
->  * The string doesn't need to be NUL-terminated.
-> 
-> > + * Return: length of the decoded binary data
-> 
-> Also the error return values should be documented, e.g.:
-> 
->  * Return: length of the decoded binary data, or a negative number if the source
->  *         string isn't a valid base64-encoded string.
+> The logical thing to do would be to do the encryption in the same way as
+> get_fscrypt_altname(), and then replace any bytes beyond CEPH_NOHASH_NAME_MAX
+> with their hash.
 > 
 
-That update looks reasonable.
+That might make more sense.
 
-Thanks,
+> > +
+> > +	/* base64 encode the encrypted name */
+> > +	elen = fscrypt_base64_encode(cryptbuf, len, buf);
+> > +	kfree(cryptbuf);
+> > +	dout("base64-encoded ciphertext name = %.*s\n", len, buf);
+> > +	return elen;
+> 
+> The argument to dout() should be elen, not len.
+> 
+
+Will fix, thanks.
 -- 
 Jeff Layton <jlayton@kernel.org>
 
