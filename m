@@ -2,103 +2,95 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96C513C5E63
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 12 Jul 2021 16:32:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BB7E3C5F43
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 12 Jul 2021 17:29:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235151AbhGLOfL (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 12 Jul 2021 10:35:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35478 "EHLO mail.kernel.org"
+        id S235428AbhGLPcp (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 12 Jul 2021 11:32:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234869AbhGLOfL (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 12 Jul 2021 10:35:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B0E461156;
-        Mon, 12 Jul 2021 14:32:22 +0000 (UTC)
+        id S229987AbhGLPcp (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 12 Jul 2021 11:32:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2F2160E08;
+        Mon, 12 Jul 2021 15:29:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626100343;
-        bh=kzAMr6x9W8QB1Mb/Dxfqkufi1FLyAx2wvP2lKj/OtbM=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=uT88ec0RVq7O0WmUsaf/pDnqatVPTufZvRgveNXec+id6893SYFDjvo+5b7jiEawR
-         E2a0JhHDG9kIclR1GMVc9CEaBqER8UhqYr/mHBGxdWsSZOkJhXmH71HKatGIQbPT6F
-         wx6jRRBvugfuCoVXSZGC40PSpRoOtgDnZcqWIRJGA1QWn9+zk/CuxptioWpNlcN/Xq
-         XvH8fItmyrX9JvaDaJMJsEupSXzCu5Uc8s6Y3dIuLztOdaURZ49w8Iu92nXYGObyBV
-         SKd75fn/Fdt0APTGPVimythpLa48NEfJX4VxYDw8Ue9k+8AhHkT2LUREPag+Ug5Kc8
-         alcsSqRFcFGhA==
-Message-ID: <48fd676431f1589e8fc1cbc27c8ec011498de6c5.camel@kernel.org>
-Subject: Re: [RFC PATCH v7 02/24] fscrypt: export fscrypt_base64_encode and
- fscrypt_base64_decode
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     ceph-devel@vger.kernel.org, lhenriques@suse.de, xiubli@redhat.com,
-        linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        dhowells@redhat.com
-Date:   Mon, 12 Jul 2021 10:32:21 -0400
-In-Reply-To: <YOxQKyZtWgFZ85YK@quark.localdomain>
-References: <20210625135834.12934-1-jlayton@kernel.org>
-         <20210625135834.12934-3-jlayton@kernel.org>
-         <YOstFfnzitZrAlLZ@quark.localdomain>
-         <6b701c8dfc9e16964718f2b4c1e52fda954ed26b.camel@kernel.org>
-         <YOxQKyZtWgFZ85YK@quark.localdomain>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.40.2 (3.40.2-1.fc34) 
+        s=k20201202; t=1626103797;
+        bh=EETKv1I4YGOmBxga+KZiuwr9pxvmkfcPdpdY1biTvq4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Fy0XJdC9Afif46oIDUjOh7CkNt7rkHuWkO5bg/W29g9l28HGDMYk642gqwjjhMzcP
+         M2wYQ2YCpF6IJz99QgyNE4XH2xfuKvuwdjyRVHxzu5irpJIQyGcJIBJOUlDbL/cq67
+         4wu9M2xAlhuhUd7AsbOOHjlkqTpCn/0uqO5ZSl/TbmqeLMfuTY0LwCC8p/PzDv62SQ
+         yaNBr+sn2Y0P80U1JLCsXsbf+Kgj87aEowjsFa4zE10vVWIK1dIAmdQuQP1dEDr/zG
+         qj022gelCSf/nYDgjMefXismo2fRuTeo6KbQU51B8A5R04fSFc9p39OT0e566v/j5m
+         8/4+gnrA6dNlQ==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     stable@vger.kernel.org
+Cc:     linux-fscrypt@vger.kernel.org
+Subject: [PATCH 5.4/4.19/4.14] fscrypt: don't ignore minor_hash when hash is 0
+Date:   Mon, 12 Jul 2021 10:27:17 -0500
+Message-Id: <20210712152717.6480-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, 2021-07-12 at 09:22 -0500, Eric Biggers wrote:
-> On Mon, Jul 12, 2021 at 07:55:37AM -0400, Jeff Layton wrote:
-> > On Sun, 2021-07-11 at 12:40 -0500, Eric Biggers wrote:
-> > > Some nits about comments:
-> > > 
-> > > On Fri, Jun 25, 2021 at 09:58:12AM -0400, Jeff Layton wrote:
-> > > > diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
-> > > > index 6ca7d16593ff..32b1f50433ba 100644
-> > > > --- a/fs/crypto/fname.c
-> > > > +++ b/fs/crypto/fname.c
-> > > > @@ -178,10 +178,8 @@ static int fname_decrypt(const struct inode *inode,
-> > > >  static const char lookup_table[65] =
-> > > >  	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+,";
-> > > >  
-> > > > -#define BASE64_CHARS(nbytes)	DIV_ROUND_UP((nbytes) * 4, 3)
-> > > > -
-> > > >  /**
-> > > > - * base64_encode() - base64-encode some bytes
-> > > > + * fscrypt_base64_encode() - base64-encode some bytes
-> > > >   * @src: the bytes to encode
-> > > >   * @len: number of bytes to encode
-> > > >   * @dst: (output) the base64-encoded string.  Not NUL-terminated.
-> > > >   *
-> > > >   * Encodes the input string using characters from the set [A-Za-z0-9+,].
-> > > >   * The encoded string is roughly 4/3 times the size of the input string.
-> > > >   *
-> > > >   * Return: length of the encoded string
-> > > >   */
-> > > > -static int base64_encode(const u8 *src, int len, char *dst)
-> > > > +int fscrypt_base64_encode(const u8 *src, int len, char *dst)
-> > > 
-> > > As this function will be used more widely, this comment should be fixed to be
-> > > more precise.  "Roughly 4/3" isn't precise; it's actually exactly
-> > > FSCRYPT_BASE64_CHARS(len), right?  The following would be better:
-> > > 
-> > >  * Encode the input bytes using characters from the set [A-Za-z0-9+,].
-> > >  *
-> > >  * Return: length of the encoded string.  This will be equal to
-> > >  *         FSCRYPT_BASE64_CHARS(len).
-> > > 
-> > 
-> > I'm not certain, but I thought that FSCRYPT_BASE64_CHARS gave you a
-> > worst-case estimate of the inflation. This returns the actual length of
-> > the resulting encoded string, which may be less than
-> > FSCRYPT_BASE64_CHARS(len).
-> > 
-> 
-> As far as I can tell, it's the exact amount.
+From: Eric Biggers <ebiggers@google.com>
 
-Yeah, now that I went back and re-read the code, I think you're right.
-I'll fix the comment.
+commit 77f30bfcfcf484da7208affd6a9e63406420bf91 upstream.
+[Please apply to 5.4-stable, 4.19-stable, and 4.14-stable.]
 
-Thanks,
+When initializing a no-key name, fscrypt_fname_disk_to_usr() sets the
+minor_hash to 0 if the (major) hash is 0.
+
+This doesn't make sense because 0 is a valid hash code, so we shouldn't
+ignore the filesystem-provided minor_hash in that case.  Fix this by
+removing the special case for 'hash == 0'.
+
+This is an old bug that appears to have originated when the encryption
+code in ext4 and f2fs was moved into fs/crypto/.  The original ext4 and
+f2fs code passed the hash by pointer instead of by value.  So
+'if (hash)' actually made sense then, as it was checking whether a
+pointer was NULL.  But now the hashes are passed by value, and
+filesystems just pass 0 for any hashes they don't have.  There is no
+need to handle this any differently from the hashes actually being 0.
+
+It is difficult to reproduce this bug, as it only made a difference in
+the case where a filename's 32-bit major hash happened to be 0.
+However, it probably had the largest chance of causing problems on
+ubifs, since ubifs uses minor_hash to do lookups of no-key names, in
+addition to using it as a readdir cookie.  ext4 only uses minor_hash as
+a readdir cookie, and f2fs doesn't use minor_hash at all.
+
+Fixes: 0b81d0779072 ("fs crypto: move per-file encryption from f2fs tree to fs/crypto")
+Cc: <stable@vger.kernel.org> # v4.6+
+Link: https://lore.kernel.org/r/20210527235236.2376556-1-ebiggers@kernel.org
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ fs/crypto/fname.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
+
+diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
+index 3da3707c10e3..891328f09b3c 100644
+--- a/fs/crypto/fname.c
++++ b/fs/crypto/fname.c
+@@ -273,13 +273,8 @@ int fscrypt_fname_disk_to_usr(struct inode *inode,
+ 					   oname->name);
+ 		return 0;
+ 	}
+-	if (hash) {
+-		digested_name.hash = hash;
+-		digested_name.minor_hash = minor_hash;
+-	} else {
+-		digested_name.hash = 0;
+-		digested_name.minor_hash = 0;
+-	}
++	digested_name.hash = hash;
++	digested_name.minor_hash = minor_hash;
+ 	memcpy(digested_name.digest,
+ 	       FSCRYPT_FNAME_DIGEST(iname->name, iname->len),
+ 	       FSCRYPT_FNAME_DIGEST_SIZE);
 -- 
-Jeff Layton <jlayton@kernel.org>
+2.32.0
 
