@@ -2,144 +2,99 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 957F83C5C3E
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 12 Jul 2021 14:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE23B3C5D25
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 12 Jul 2021 15:22:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233294AbhGLMjE (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 12 Jul 2021 08:39:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39438 "EHLO mail.kernel.org"
+        id S230187AbhGLNY5 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 12 Jul 2021 09:24:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50492 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230361AbhGLMjD (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 12 Jul 2021 08:39:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 01DD560FF3;
-        Mon, 12 Jul 2021 12:36:14 +0000 (UTC)
+        id S229978AbhGLNY4 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 12 Jul 2021 09:24:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D140E60FE3;
+        Mon, 12 Jul 2021 13:22:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626093375;
-        bh=zN9Hq9FpIAMVrdPNdDqA/6rgCOrfBlpDNhEcHAUrM7U=;
+        s=k20201202; t=1626096128;
+        bh=2n+/KxcQvGM7mFI1P39IHXxYavZRDtXP5ygdwdIhhM0=;
         h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=SF9OPKGDsq/b/BdHy4ZrkaFL1/OvCKGN9zHT/j1MEFj12V4C7jx25QDpweILs5u9R
-         XM6XbKfwlTaAySAxRG7T1HXU2HElkXYvnmmiyMCsYGOStpJBYghLam3yqls2zEOaLw
-         kbK2qj0FvCuGpcUORdxzYzKBcZO3XF/6sfuLve0IviqxZbKj7MWeNCKSBQvBLh+jKS
-         Ppd5wvpNoZg8knD57Fnk614ZcuYcEXiR58QlP4gZz9OELesA4Lk6XpZGYtskURsuM0
-         PA77xdxt3EPWcSVO7dPL7Kj3ueF6+2B7jq5JPBeY/rNAtNDFdNf1DS8zYgDxBc+zMt
-         ZzxpyGgz987ZA==
-Message-ID: <7c57504514c107aa1cde04b566575a6e1461ecd5.camel@kernel.org>
-Subject: Re: [RFC PATCH v7 15/24] ceph: add encrypted fname handling to
- ceph_mdsc_build_path
+        b=IewmfISieYz+qgFvJQ/sBBzPI2rLrn7HTBRgb8wWGgrnLgyMT7MRkJpheeVOqfNnR
+         AZYea+PMuyUx9zzGpsjj+5f1vUZzZC9OxiomwLlj2b3NeNDFqUzXHf6WO+7cQF0ptF
+         Q74LgiuFMQuJTGPrWb3CTfvQpEdpy8n6kOCqvyeST27Fsh94ub4cAhOZ9EikC8oiu0
+         26PTeXKgdmsh+bpJblpejlp2wA41D9xF2o4jOpIEfG2Gd0ZAOuIkcVqwWkTRT7Jotp
+         OQPqRshpd7MwO0nrWSdLjuYJZXDHPjyNpPGSnGbfHwia5xKG+n8wjays+FK9A/HGol
+         iPiC+4OJJz4XQ==
+Message-ID: <1e16ba2b69dd03c61e7c9db6ee124aa53ce60f3b.camel@kernel.org>
+Subject: Re: [RFC PATCH v7 07/24] ceph: add fscrypt_* handling to caps.c
 From:   Jeff Layton <jlayton@kernel.org>
 To:     Eric Biggers <ebiggers@kernel.org>
 Cc:     ceph-devel@vger.kernel.org, lhenriques@suse.de, xiubli@redhat.com,
         linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         dhowells@redhat.com
-Date:   Mon, 12 Jul 2021 08:36:13 -0400
-In-Reply-To: <YOt2cVJLEXt88SVJ@quark.localdomain>
+Date:   Mon, 12 Jul 2021 09:22:06 -0400
+In-Reply-To: <YOt38ayEMpECKQeP@quark.localdomain>
 References: <20210625135834.12934-1-jlayton@kernel.org>
-         <20210625135834.12934-16-jlayton@kernel.org>
-         <YOt2cVJLEXt88SVJ@quark.localdomain>
+         <20210625135834.12934-8-jlayton@kernel.org>
+         <YOt38ayEMpECKQeP@quark.localdomain>
 Content-Type: text/plain; charset="ISO-8859-15"
 User-Agent: Evolution 3.40.2 (3.40.2-1.fc34) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Sun, 2021-07-11 at 17:53 -0500, Eric Biggers wrote:
-> On Fri, Jun 25, 2021 at 09:58:25AM -0400, Jeff Layton wrote:
-> > +/*
-> > + * We want to encrypt filenames when creating them, but the encrypted
-> > + * versions of those names may have illegal characters in them. To mitigate
-> > + * that, we base64 encode them, but that gives us a result that can exceed
-> > + * NAME_MAX.
-> > + *
-> > + * Follow a similar scheme to fscrypt itself, and cap the filename to a
-> > + * smaller size. If the cleartext name is longer than the value below, then
-> > + * sha256 hash the remaining bytes.
-> > + *
-> > + * 189 bytes => 252 bytes base64-encoded, which is <= NAME_MAX (255)
-> > + */
-> > +#define CEPH_NOHASH_NAME_MAX (189 - SHA256_DIGEST_SIZE)
+On Sun, 2021-07-11 at 18:00 -0500, Eric Biggers wrote:
+> On Fri, Jun 25, 2021 at 09:58:17AM -0400, Jeff Layton wrote:
+> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > ---
+> >  fs/ceph/caps.c | 62 +++++++++++++++++++++++++++++++++++++++-----------
+> >  1 file changed, 49 insertions(+), 13 deletions(-)
+> > 
+> > diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
+> > index 038f59cc4250..1be6c5148700 100644
+> > --- a/fs/ceph/caps.c
+> > +++ b/fs/ceph/caps.c
+> > @@ -13,6 +13,7 @@
+> >  #include "super.h"
+> >  #include "mds_client.h"
+> >  #include "cache.h"
+> > +#include "crypto.h"
+> >  #include <linux/ceph/decode.h>
+> >  #include <linux/ceph/messenger.h>
+> >  
+> > @@ -1229,15 +1230,12 @@ struct cap_msg_args {
+> >  	umode_t			mode;
+> >  	bool			inline_data;
+> >  	bool			wake;
+> > +	u32			fscrypt_auth_len;
+> > +	u32			fscrypt_file_len;
+> > +	u8			fscrypt_auth[sizeof(struct ceph_fscrypt_auth)]; // for context
+> > +	u8			fscrypt_file[sizeof(u64)]; // for size
+> >  };
 > 
-> Shouldn't this say "If the ciphertext name is longer than the value below", not
-> "If the cleartext name is longer than the value below"?
+> The naming of these is confusing to me.  If these are the fscrypt context and
+> the original file size, why aren't they called something like fscrypt_context
+> and fscrypt_file_size?
 > 
-> It would also be helpful if the above comment mentioned that when the hashing is
-> done, the real encrypted name is stored separately.
-> 
-> > +#if IS_ENABLED(CONFIG_FS_ENCRYPTION)
-> > +static int encode_encrypted_fname(const struct inode *parent, struct dentry *dentry, char *buf)
-> > +{
-> > +	u32 len;
-> > +	int elen;
-> > +	int ret;
-> > +	u8 *cryptbuf;
-> > +
-> > +	WARN_ON_ONCE(!fscrypt_has_encryption_key(parent));
-> > +
-> > +	/*
-> > +	 * convert cleartext dentry name to ciphertext
-> > +	 * if result is longer than CEPH_NOKEY_NAME_MAX,
-> > +	 * sha256 the remaining bytes
-> > +	 *
-> > +	 * See: fscrypt_setup_filename
-> > +	 */
-> > +	if (!fscrypt_fname_encrypted_size(parent, dentry->d_name.len, NAME_MAX, &len))
-> > +		return -ENAMETOOLONG;
-> > +
-> > +	/* If we have to hash the end, then we need a full-length buffer */
-> > +	if (len > CEPH_NOHASH_NAME_MAX)
-> > +		len = NAME_MAX;
-> > +
-> > +	cryptbuf = kmalloc(len, GFP_KERNEL);
-> > +	if (!cryptbuf)
-> > +		return -ENOMEM;
-> > +
-> > +	ret = fscrypt_fname_encrypt(parent, &dentry->d_name, cryptbuf, len);
-> > +	if (ret) {
-> > +		kfree(cryptbuf);
-> > +		return ret;
-> > +	}
-> > +
-> > +	/* hash the end if the name is long enough */
-> > +	if (len > CEPH_NOHASH_NAME_MAX) {
-> > +		u8 hash[SHA256_DIGEST_SIZE];
-> > +		u8 *extra = cryptbuf + CEPH_NOHASH_NAME_MAX;
-> > +
-> > +		/* hash the extra bytes and overwrite crypttext beyond that point with it */
-> > +		sha256(extra, len - CEPH_NOHASH_NAME_MAX, hash);
-> > +		memcpy(extra, hash, SHA256_DIGEST_SIZE);
-> > +		len = CEPH_NOHASH_NAME_MAX + SHA256_DIGEST_SIZE;
-> > +	}
-> 
-> When the ciphertext name is longer than CEPH_NOHASH_NAME_MAX, why is the
-> filename being padded all the way to NAME_MAX?  That can produce a totally
-> different ciphertext from that produced by get_fscrypt_altname() in the next
-> patch.
+> Also does the file size really need to be variable-length, or could it just be a
+> 64-bit integer?
 > 
 
-Oh, I misunderstood the meaning of the last parameter to
-fscrypt_fname_encrypt. I had thought that was the length of the target
-buffer, but it's not -- it's the length of the resulting filename (which
-we need to precompute). I'll fix that up.
+Fscrypt is really a kernel client-side feature. Both of these new fields
+are treated as opaque by the MDS and are wholly managed by the client.
 
-> The logical thing to do would be to do the encryption in the same way as
-> get_fscrypt_altname(), and then replace any bytes beyond CEPH_NOHASH_NAME_MAX
-> with their hash.
-> 
+We need two fields because they are governed by different cephfs
+capabilities (aka "caps"). AUTH caps for the context and FILE caps for
+the size. So we have two new fields -- fscrypt_file and fscrypt_auth. 
 
-That might make more sense.
+The size could be a __le64 or something, but I think it makes sense to
+allow it to be opaque as we aren't certain what other info we might want
+to keep in there. We might also want to encrypt the fscrypt_file field
+to cloak the true size of a file from anyone without the key.
 
-> > +
-> > +	/* base64 encode the encrypted name */
-> > +	elen = fscrypt_base64_encode(cryptbuf, len, buf);
-> > +	kfree(cryptbuf);
-> > +	dout("base64-encoded ciphertext name = %.*s\n", len, buf);
-> > +	return elen;
-> 
-> The argument to dout() should be elen, not len.
-> 
-
-Will fix, thanks.
+Now, all that said, the fact that the MDS largely handles truncation
+poses some special challenges for the content encryption piece. We may
+ultimately end up making this more special-purpose than it is now.
 -- 
 Jeff Layton <jlayton@kernel.org>
 
