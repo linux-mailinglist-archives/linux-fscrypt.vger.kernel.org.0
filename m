@@ -2,83 +2,77 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AFB33C9D43
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 15 Jul 2021 12:50:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51D053CA3F5
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 15 Jul 2021 19:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241717AbhGOKxD (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 15 Jul 2021 06:53:03 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:56941 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241715AbhGOKxD (ORCPT
+        id S234010AbhGOR1p (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 15 Jul 2021 13:27:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234430AbhGOR1o (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 15 Jul 2021 06:53:03 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 0E57F5C0276;
-        Thu, 15 Jul 2021 06:50:10 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Thu, 15 Jul 2021 06:50:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=VXXNnZWQeRfhZDJT3wISjtqUs8k
-        n/PPDTkCsEYUw/r4=; b=B7/EVaMmWM7rmxPGoTT1FdG5VUrQ4y1QneKcktN4B4r
-        i6xrDQPdDSst75iSft3zmHFl3u6EkrmPk0ONhE+kk4s7fN8ieB/Zl6IBnMuZYNJX
-        bJ6aY7tSE3JQnAayeVRkz0NCC6uv6G2u1oZH94DGnfZmXk48aT9Je1lwGjDLoiQC
-        msjny78vDHNOQiwZGWubdssHe2xjUpy6wTbgpGgpbkYwH/QNfibqwnP0AOaNL6Wq
-        A7kHa3VT2vvppVLqPOzjv1PA+fGWlmxlKNaWplW/uTTzQoEgBAI2hRmbGgQG1I2e
-        1fFwg6Ksp6YVPuR6W0hljLeLo5CBEVEMV+5hOzpXXlw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=VXXNnZ
-        WQeRfhZDJT3wISjtqUs8kn/PPDTkCsEYUw/r4=; b=lqrHlMPnOaJwCu0hEcWxGi
-        ZTzvC9SVZa0bRzNN8494ESu2L5WBl4SNvz+jkDXqbeCasWeMsPBwAemttfWOB+zS
-        LdE/GMW3ItidNCk3OVuK9Etd+/8eCwgbLns6WGYLvGGVyLzrD5ytpwVV1QKS92oa
-        g6GbxPetmWGxK7/MQPlAzbmXoZwq01mJHA0tmNhdbhpnOHsx+80GuoNEhHDJVvGe
-        /UhUutzPKyq65gkDUtRMGYEGRrRe0qHsa7mg9UGxda3U+xH4S0wFoVq9+oFJFzes
-        /qbp1fOcknOO7cBPElEO5W4hHtQBk5JUqZC1gM9mFJ+NgIjf4ugrv+xpod5XoWTw
-        ==
-X-ME-Sender: <xms:4RLwYPJ9jCxNlcaLvhqh1tUwJH79vsvIMTDJ3fEWhVzE6m9gJyC92A>
-    <xme:4RLwYDIoB3AQJCFKK5q6JOwUvLE5Q_AH5G8vKaT2Xl72S6APRRM4icTiUm_iHedlb
-    hTj2T3EzJOyIA>
-X-ME-Received: <xmr:4RLwYHthoYKEYR2d11wvY7hb_29HDd8AQhm-p-6BPQ4LMa5os2ia1o3y2xqLcA40Qb3xa0NY-FTzNE9CUGp55W7gyg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddtgddvvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
-    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
-    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecuvehluhhsthgv
-    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrd
-    gtohhm
-X-ME-Proxy: <xmx:4RLwYIZvkmiSWcpWOn9oWHuM2XwYhLte52TRhquyax2wIPcoR0rt8Q>
-    <xmx:4RLwYGakV1bgMoyFhwAZppVsrGt4CLQJRVtseNSb9qiCpbMJLaSyNw>
-    <xmx:4RLwYMA_8wMX2W9M4M8SnsHjLSpLQOPMnsJq6V1tcIcQ5mw1LqiEFA>
-    <xmx:4hLwYNUHAjNtekyUf8VBl9RLcLdWZ2gcC5GKpUCFj_5ZeiJbBVWCyA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 15 Jul 2021 06:50:09 -0400 (EDT)
-Date:   Thu, 15 Jul 2021 12:50:04 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     stable@vger.kernel.org, linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH 5.4/4.19/4.14] fscrypt: don't ignore minor_hash when hash
- is 0
-Message-ID: <YPAS3GbIhMKKjRWT@kroah.com>
-References: <20210712152717.6480-1-ebiggers@kernel.org>
+        Thu, 15 Jul 2021 13:27:44 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD410C0613DE
+        for <linux-fscrypt@vger.kernel.org>; Thu, 15 Jul 2021 10:24:50 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id q18-20020a1ce9120000b02901f259f3a250so4148571wmc.2
+        for <linux-fscrypt@vger.kernel.org>; Thu, 15 Jul 2021 10:24:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=Ibb5KNEw1DKqJEg9n4gJy5KnzVasBofn6QaWYsu9UCQ=;
+        b=o95sP91j4SYQ4F4yMZkQdklAh0tECHyOVF4RDJjtqUpxjOk9jlE6ak/li2a6dEdoLY
+         Cu/4ATPM6l+UKUPlRyWzSRojszX9yymc830gEsDRmUXSoUg/Rt0JgeXoLMPluA8yAQzV
+         tgYcEDkVdB6I1RTRWNmVbZdNwU+JgEnhbRNrDkpgFSyF6uYMYuDUAp7PtM2OWYu6SrQv
+         AbCNlo2HlF3yBytq1BuPSqTZ1Ek1L09vpfuSz7qHTp/F56F/hGXEvrRbmsWaboXcgfGZ
+         gSnfdLo206nrfXwsKAgJ943zzqbKUAZEaUZVVZFqFq77Qxw37mHpsJz1ncHU4WIQMQOg
+         ewxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=Ibb5KNEw1DKqJEg9n4gJy5KnzVasBofn6QaWYsu9UCQ=;
+        b=JZGHSntVmsAhm9LXjCjzyisQo+QF53RtcgI5wBoOiKWJxYp/WmFCOparjS7AjdNYJ9
+         38FYvObCv+0XMCbiJo6lzfbljHHdPCP/ztpBiiDZsPZycxQvJZKvl2BiUcdmFiTjWByz
+         1dvoH610CPwamdEa3uQCo2OOzF4l6BQLC7pJnB/2RjZJNHTq1hOaZcsm3Xapxl7L77Mv
+         jfCt5Ryw+ayvqzHPpnyaEZrmE4+ScKBaMmrfVpj/CgxLTsdtjLgsiCabbiALPcdVXpQ9
+         od1TVMwibW1nmdHkwBaJLC6TlMMHrbGyIqT8NdfCG/r81g0RP2cVM5Od+7/IsUB49DOT
+         S+AA==
+X-Gm-Message-State: AOAM531k1GeD1mRw+tGbEnHu5nu2ulDZrWxHAItI9hDXfdz3pRVSqozz
+        z2Ue7pjkOmFjfS7i2lFCOFYtE6oBuY4J4EA/B7U=
+X-Google-Smtp-Source: ABdhPJz1M/hHf7BdBz3GK7XR8mhZC4pBBhAF+fLnwTSbvlF4nAAEeZ3GSVXKADw3h1fGJ9uaWaIZdjj3kCo2gQ1U7qM=
+X-Received: by 2002:a1c:416:: with SMTP id 22mr11923787wme.59.1626369888523;
+ Thu, 15 Jul 2021 10:24:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210712152717.6480-1-ebiggers@kernel.org>
+Received: by 2002:adf:f30c:0:0:0:0:0 with HTTP; Thu, 15 Jul 2021 10:24:47
+ -0700 (PDT)
+Reply-To: faty.muhamad@gmail.com
+From:   Fatima Muhammad <rallispeterrallie@gmail.com>
+Date:   Thu, 15 Jul 2021 17:24:47 +0000
+Message-ID: <CAG5NioepHT-5D-VOA-wEcKyXRgSxA1SHew6MMS7cLtWEG6fXmw@mail.gmail.com>
+Subject: Hello Dear
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 10:27:17AM -0500, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> commit 77f30bfcfcf484da7208affd6a9e63406420bf91 upstream.
-> [Please apply to 5.4-stable, 4.19-stable, and 4.14-stable.]
+Hello Dear,
 
-Now queued up.  Do we also need this for 4.9?
+My name is Ms.Fatima Muhammad., Please forgive me for stressing you
+with my predicaments and I sorry to approach you through this media
+because is serves the fastest means of  my communication right now,
 
-thanks,
+I came across your Email from my personal search and I decided to
+contact you believing you will be honest to fulfill my business
+proposal which I believe that will be a very good opportunity for both
+of us. Please it is my pleasure to contact you today for a business
+partnership investments projects worth $4.6 million USD which I intend
+to establish in your country..
 
-greg k-h
+Pls If this business proposal offends your moral and ethic values do
+accept my apology. therefore kindly contact me immediately if you are
+interested for more details.
+
+Thank you for your wiliness to help me
+Yours Sincerely Fatima Muhammad
