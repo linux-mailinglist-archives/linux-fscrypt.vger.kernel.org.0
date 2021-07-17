@@ -2,77 +2,94 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51D053CA3F5
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 15 Jul 2021 19:24:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7BE13CC000
+	for <lists+linux-fscrypt@lfdr.de>; Sat, 17 Jul 2021 02:09:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234010AbhGOR1p (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 15 Jul 2021 13:27:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234430AbhGOR1o (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 15 Jul 2021 13:27:44 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD410C0613DE
-        for <linux-fscrypt@vger.kernel.org>; Thu, 15 Jul 2021 10:24:50 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id q18-20020a1ce9120000b02901f259f3a250so4148571wmc.2
-        for <linux-fscrypt@vger.kernel.org>; Thu, 15 Jul 2021 10:24:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=Ibb5KNEw1DKqJEg9n4gJy5KnzVasBofn6QaWYsu9UCQ=;
-        b=o95sP91j4SYQ4F4yMZkQdklAh0tECHyOVF4RDJjtqUpxjOk9jlE6ak/li2a6dEdoLY
-         Cu/4ATPM6l+UKUPlRyWzSRojszX9yymc830gEsDRmUXSoUg/Rt0JgeXoLMPluA8yAQzV
-         tgYcEDkVdB6I1RTRWNmVbZdNwU+JgEnhbRNrDkpgFSyF6uYMYuDUAp7PtM2OWYu6SrQv
-         AbCNlo2HlF3yBytq1BuPSqTZ1Ek1L09vpfuSz7qHTp/F56F/hGXEvrRbmsWaboXcgfGZ
-         gSnfdLo206nrfXwsKAgJ943zzqbKUAZEaUZVVZFqFq77Qxw37mHpsJz1ncHU4WIQMQOg
-         ewxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=Ibb5KNEw1DKqJEg9n4gJy5KnzVasBofn6QaWYsu9UCQ=;
-        b=JZGHSntVmsAhm9LXjCjzyisQo+QF53RtcgI5wBoOiKWJxYp/WmFCOparjS7AjdNYJ9
-         38FYvObCv+0XMCbiJo6lzfbljHHdPCP/ztpBiiDZsPZycxQvJZKvl2BiUcdmFiTjWByz
-         1dvoH610CPwamdEa3uQCo2OOzF4l6BQLC7pJnB/2RjZJNHTq1hOaZcsm3Xapxl7L77Mv
-         jfCt5Ryw+ayvqzHPpnyaEZrmE4+ScKBaMmrfVpj/CgxLTsdtjLgsiCabbiALPcdVXpQ9
-         od1TVMwibW1nmdHkwBaJLC6TlMMHrbGyIqT8NdfCG/r81g0RP2cVM5Od+7/IsUB49DOT
-         S+AA==
-X-Gm-Message-State: AOAM531k1GeD1mRw+tGbEnHu5nu2ulDZrWxHAItI9hDXfdz3pRVSqozz
-        z2Ue7pjkOmFjfS7i2lFCOFYtE6oBuY4J4EA/B7U=
-X-Google-Smtp-Source: ABdhPJz1M/hHf7BdBz3GK7XR8mhZC4pBBhAF+fLnwTSbvlF4nAAEeZ3GSVXKADw3h1fGJ9uaWaIZdjj3kCo2gQ1U7qM=
-X-Received: by 2002:a1c:416:: with SMTP id 22mr11923787wme.59.1626369888523;
- Thu, 15 Jul 2021 10:24:48 -0700 (PDT)
+        id S232956AbhGQAMB (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 16 Jul 2021 20:12:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37256 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229665AbhGQAMB (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Fri, 16 Jul 2021 20:12:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8C5B613EB;
+        Sat, 17 Jul 2021 00:09:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626480545;
+        bh=mQalqo4yX2/WFHAqcCR3M6bAckgMZv+GoQQVguZUojg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Czdd4R2lKv9MIM/JhhYPTXjFLbxHS/3C8TFz1pqtME8vjlwZ9NRvoqylyHr2jab0P
+         +SVFWvEPUyuA4cY+/QN6ULoIcIYVyTipq0iG4JGxR2HKvKCVBSM/ja93Tn9DE04BEl
+         DmAojerbttD4YAoyHMjgo3Ev8CE8vyZHfZBKXO8tyflhjm5UHuy7UBjPxHn3p+dp/N
+         5PtlqH6gVxQnmW77akZG6PPdraU8FzEYObbGcHU0hYtVoSZPIvAgOo9IKU6MuMagIt
+         ZQ2rXQFYquYTcQ+kCCYvod+SXBNEJGrJ9QUqaWZo0Yvd0fw6NOlAcKSdGsesL7fZ2u
+         3hpOPiPJRcy0A==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     stable@vger.kernel.org
+Cc:     linux-fscrypt@vger.kernel.org
+Subject: [PATCH 4.9] fscrypt: don't ignore minor_hash when hash is 0
+Date:   Fri, 16 Jul 2021 19:05:57 -0500
+Message-Id: <20210717000557.60029-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Received: by 2002:adf:f30c:0:0:0:0:0 with HTTP; Thu, 15 Jul 2021 10:24:47
- -0700 (PDT)
-Reply-To: faty.muhamad@gmail.com
-From:   Fatima Muhammad <rallispeterrallie@gmail.com>
-Date:   Thu, 15 Jul 2021 17:24:47 +0000
-Message-ID: <CAG5NioepHT-5D-VOA-wEcKyXRgSxA1SHew6MMS7cLtWEG6fXmw@mail.gmail.com>
-Subject: Hello Dear
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hello Dear,
+From: Eric Biggers <ebiggers@google.com>
 
-My name is Ms.Fatima Muhammad., Please forgive me for stressing you
-with my predicaments and I sorry to approach you through this media
-because is serves the fastest means of  my communication right now,
+commit 77f30bfcfcf484da7208affd6a9e63406420bf91 upstream.
+[Please apply to 4.9-stable.]
 
-I came across your Email from my personal search and I decided to
-contact you believing you will be honest to fulfill my business
-proposal which I believe that will be a very good opportunity for both
-of us. Please it is my pleasure to contact you today for a business
-partnership investments projects worth $4.6 million USD which I intend
-to establish in your country..
+When initializing a no-key name, fscrypt_fname_disk_to_usr() sets the
+minor_hash to 0 if the (major) hash is 0.
 
-Pls If this business proposal offends your moral and ethic values do
-accept my apology. therefore kindly contact me immediately if you are
-interested for more details.
+This doesn't make sense because 0 is a valid hash code, so we shouldn't
+ignore the filesystem-provided minor_hash in that case.  Fix this by
+removing the special case for 'hash == 0'.
 
-Thank you for your wiliness to help me
-Yours Sincerely Fatima Muhammad
+This is an old bug that appears to have originated when the encryption
+code in ext4 and f2fs was moved into fs/crypto/.  The original ext4 and
+f2fs code passed the hash by pointer instead of by value.  So
+'if (hash)' actually made sense then, as it was checking whether a
+pointer was NULL.  But now the hashes are passed by value, and
+filesystems just pass 0 for any hashes they don't have.  There is no
+need to handle this any differently from the hashes actually being 0.
+
+It is difficult to reproduce this bug, as it only made a difference in
+the case where a filename's 32-bit major hash happened to be 0.
+However, it probably had the largest chance of causing problems on
+ubifs, since ubifs uses minor_hash to do lookups of no-key names, in
+addition to using it as a readdir cookie.  ext4 only uses minor_hash as
+a readdir cookie, and f2fs doesn't use minor_hash at all.
+
+Fixes: 0b81d0779072 ("fs crypto: move per-file encryption from f2fs tree to fs/crypto")
+Cc: <stable@vger.kernel.org> # v4.6+
+Link: https://lore.kernel.org/r/20210527235236.2376556-1-ebiggers@kernel.org
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ fs/crypto/fname.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
+
+diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
+index e14bb7b67e9c..5136ea195934 100644
+--- a/fs/crypto/fname.c
++++ b/fs/crypto/fname.c
+@@ -294,12 +294,8 @@ int fscrypt_fname_disk_to_usr(struct inode *inode,
+ 					   oname->name);
+ 		return 0;
+ 	}
+-	if (hash) {
+-		memcpy(buf, &hash, 4);
+-		memcpy(buf + 4, &minor_hash, 4);
+-	} else {
+-		memset(buf, 0, 8);
+-	}
++	memcpy(buf, &hash, 4);
++	memcpy(buf + 4, &minor_hash, 4);
+ 	memcpy(buf + 8, iname->name + ((iname->len - 17) & ~15), 16);
+ 	oname->name[0] = '_';
+ 	oname->len = 1 + digest_encode(buf, 24, oname->name + 1);
+-- 
+2.32.0
+
