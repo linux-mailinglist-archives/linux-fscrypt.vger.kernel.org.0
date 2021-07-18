@@ -2,58 +2,266 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22C183CCA56
+	by mail.lfdr.de (Postfix) with ESMTP id 840903CCA57
 	for <lists+linux-fscrypt@lfdr.de>; Sun, 18 Jul 2021 21:08:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229853AbhGRTL3 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sun, 18 Jul 2021 15:11:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41424 "EHLO mail.kernel.org"
+        id S230156AbhGRTLa (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sun, 18 Jul 2021 15:11:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229585AbhGRTL3 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sun, 18 Jul 2021 15:11:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 799AF61186;
-        Sun, 18 Jul 2021 19:08:30 +0000 (UTC)
+        id S229986AbhGRTLa (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Sun, 18 Jul 2021 15:11:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 195BD611AE;
+        Sun, 18 Jul 2021 19:08:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626635310;
-        bh=fxx6tMa0qpX2JkVrw4gb1C02TNGJC/HUBh5Oi7cLVlI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=p583c2fAjjvKm4rv0MAEDuhETBFdzYYeKELBs4uqgYvf9b4LS59KFtgEkXHhuBmFE
-         TfUndxXcmcqv7sRcbjScnoYkCHxwIQIuw4pS4SR2BwSUlbJ9ag88E8xugXk3hUu2GW
-         ofq3aAxCvG8RWQbSNnBcfFQemk2aqyVzWOjlxr93io2qLqDiUnkpbgYqATmynxjFkC
-         6yzmGb8WJd7JZ/IRHY1zg8aDu/VTtbWYTgH2DPq38LxwR3whRCD724i/Gcbs82bcdy
-         w6k5eV/OdE1nrXSpF5EyHdEs7/JUuRUQo5wtlxxmQKwJrkV/fsFFxiFENn3QMDOxjX
-         BHROY78lsgZCw==
+        s=k20201202; t=1626635311;
+        bh=ytc+LhbrjrpZx0SknGFmRhYv38+TYFpibajgI7VpTZ0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=G+GKr0t0JPzKvdb45ViXCEZzMAhpEhYajEyl/3HqrY86cR+x4Un89y8tWKSNn1Bhc
+         wik076ijbAjH3PwB6OXG6fBRuIq+FchgalC2dZbF9JIa0JJWNOnOzMbXJ3QT1vybH3
+         N6ku4R3aRYMj69eb9Uf2xgAnerpXpkdFflghNrjkPuvfa/J4iI7lPD5SsbHDGDtBVV
+         8uEU7wXYSLGN8YkMukfwo89sfSQF3ayvs1y5kREe3qMv2/Um7fQZkHR7TvH2L1iH7E
+         6pArxcs/zxcGjJJmSSajK4CpQbe9qsj3Eplay5TRP8HMz3eSthi15xPvXXy5mIFwrL
+         n+wej2rccMpVg==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     fstests@vger.kernel.org
 Cc:     linux-fscrypt@vger.kernel.org
-Subject: [PATCH 0/3] xfstests: fscrypt no-key name updates
-Date:   Sun, 18 Jul 2021 14:06:55 -0500
-Message-Id: <20210718190658.61621-1-ebiggers@kernel.org>
+Subject: [PATCH 1/3] generic: update encryption tests to use term "no-key names"
+Date:   Sun, 18 Jul 2021 14:06:56 -0500
+Message-Id: <20210718190658.61621-2-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210718190658.61621-1-ebiggers@kernel.org>
+References: <20210718190658.61621-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-This series cleans up handling of no-key names in the encryption tests.
+From: Eric Biggers <ebiggers@google.com>
 
-Eric Biggers (3):
-  generic: update encryption tests to use term "no-key names"
-  common/encrypt: add helper function for filtering no-key names
-  common/encrypt: accept '-' character in no-key names
+To avoid ambiguity, don't use the terms "ciphertext names" or "encrypted
+names" when we really mean "no-key names" (the names that the filesystem
+shows when userspace lists an encrypted directory without the
+directory's encryption key being present).  This aligns with changes
+that have been made to the kernel source code and documentation
+(https://lore.kernel.org/r/20200924042624.98439-1-ebiggers@kernel.org).
 
- common/encrypt        | 20 +++++++++++++++++++
- tests/generic/397     | 12 +++++------
- tests/generic/419     |  6 +++---
- tests/generic/419.out |  2 +-
+No change to the actual test logic.
+
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ tests/generic/397     | 12 ++++++------
+ tests/generic/419     |  4 ++--
  tests/generic/421     |  8 ++++----
- tests/generic/429     | 46 ++++++++++++++++++++-----------------------
- tests/generic/429.out | 22 ++++++++++-----------
- 7 files changed, 66 insertions(+), 50 deletions(-)
+ tests/generic/429     | 44 +++++++++++++++++++++----------------------
+ tests/generic/429.out | 22 +++++++++++-----------
+ 5 files changed, 45 insertions(+), 45 deletions(-)
 
-
-base-commit: 623b4ea4082b8be71acaf261435d33fa4488993a
+diff --git a/tests/generic/397 b/tests/generic/397
+index 56771a76..5ff65cd9 100755
+--- a/tests/generic/397
++++ b/tests/generic/397
+@@ -52,15 +52,15 @@ diff -r $SCRATCH_MNT/edir $SCRATCH_MNT/ref_dir
+ #
+ # Now try accessing the files without the encryption key.  It should still be
+ # possible to list the directory and remove files.  But filenames should be
+-# encrypted, and it should not be possible to read regular files or to create
+-# new files or subdirectories.
++# presented in no-key form, and it should not be possible to read regular files
++# or to create new files or subdirectories.
+ #
+-# Note that we cannot simply use ls -R to verify the files because the encrypted
++# Note that we cannot simply use ls -R to verify the files because the no-key
+ # filenames are unpredictable.  By design, the key used to encrypt a directory's
+ # filenames is derived from the master key (the key in the keyring) and a nonce
+-# generated by the kernel.  Hence, the encrypted filenames will be different
+-# every time this test is run, even if we were to put a fixed key into the
+-# keyring instead of a random one.  The same applies to symlink targets.
++# generated by the kernel.  Hence, the no-key filenames will be different every
++# time this test is run, even if we were to put a fixed key into the keyring
++# instead of a random one.  The same applies to symlink targets.
+ #
+ 
+ _unlink_session_encryption_key $keydesc
+diff --git a/tests/generic/419 b/tests/generic/419
+index cb55a5bb..61f9d605 100755
+--- a/tests/generic/419
++++ b/tests/generic/419
+@@ -37,8 +37,8 @@ echo b > $SCRATCH_MNT/edir/b
+ _unlink_session_encryption_key $keydesc
+ _scratch_cycle_mount
+ 
+-# Note that because encrypted filenames are unpredictable, this needs to be
+-# written in a way that does not assume any particular filenames.
++# Note that because no-key filenames are unpredictable, this needs to be written
++# in a way that does not assume any particular filenames.
+ efile1=$(find $SCRATCH_MNT/edir -maxdepth 1 -type f | head -1)
+ efile2=$(find $SCRATCH_MNT/edir -maxdepth 1 -type f | tail -1)
+ mv $efile1 $efile2 |& _filter_scratch | sed 's|edir/[a-zA-Z0-9+,_]\+|edir/FILENAME|g'
+diff --git a/tests/generic/421 b/tests/generic/421
+index 1080e577..04462d17 100755
+--- a/tests/generic/421
++++ b/tests/generic/421
+@@ -59,10 +59,10 @@ keyid=$(_revoke_session_encryption_key $keydesc)
+ # Now try to open the file again.  In buggy kernels this caused concurrent
+ # readers to crash with a NULL pointer dereference during decryption.
+ #
+-# Note that the fix also made filenames stop "immediately" reverting to their
+-# ciphertext on key revocation.  Therefore, the name of the file we're opening
+-# here may be in either plaintext or ciphertext depending on the kernel version,
+-# and ciphertext names are unpredictable anyway, so just use 'find' to find it.
++# Note that the fix also made filenames stop "immediately" reverting to no-key
++# names on key revocation.  Therefore, the name of the file we're opening here
++# may be in either plaintext or no-key form depending on the kernel version, and
++# no-key names are unpredictable anyway, so just use 'find' to find it.
+ cat "$(find $dir -type f)" > /dev/null
+ 
+ # Wait for readers to exit
+diff --git a/tests/generic/429 b/tests/generic/429
+index 034063d9..ba2281c9 100755
+--- a/tests/generic/429
++++ b/tests/generic/429
+@@ -4,12 +4,12 @@
+ #
+ # FS QA Test No. 429
+ #
+-# Test that encrypted dentries are revalidated after adding a key.
+-# Regression test for:
++# Test that no-key dentries are revalidated after adding a key.  Regression test
++# for:
+ #	28b4c263961c ("ext4 crypto: revalidate dentry after adding or removing the key")
+ #
+-# Furthermore, test that encrypted directories are *not* revalidated after
+-# "revoking" a key.  This used to be done, but it was broken and was removed by:
++# Furthermore, test that no-key dentries are *not* revalidated after "revoking"
++# a key.  This used to be done, but it was broken and was removed by:
+ #	1b53cf9815bb ("fscrypt: remove broken support for detecting keyring key revocation")
+ #
+ # Also test for a race condition bug in 28b4c263961c, fixed by:
+@@ -43,18 +43,18 @@ _add_session_encryption_key $keydesc $raw_key
+ _set_encpolicy $SCRATCH_MNT/edir $keydesc
+ 
+ # Create two files in the directory: one whose name is valid in the base64
+-# format used for encoding ciphertext filenames, and one whose name is not.  The
+-# exact filenames *should* be irrelevant, but due to yet another bug, ->lookup()
+-# in an encrypted directory without the key returned ERR_PTR(-ENOENT) rather
+-# than NULL if the name was not valid ciphertext, causing a negative dentry to
+-# not be created.  For the purpose of this test, we want at least one negative
+-# dentry to be created, so just create both types of name.
++# format used in no-key filenames, and one whose name is not.  The exact
++# filenames *should* be irrelevant, but due to yet another bug, ->lookup() in an
++# encrypted directory without the key returned ERR_PTR(-ENOENT) rather than NULL
++# if the name was not a valid no-key name, causing a negative dentry to not be
++# created.  For the purpose of this test, we want at least one negative dentry
++# to be created, so just create both types of name.
+ echo contents_@@@ > $SCRATCH_MNT/edir/@@@ # not valid base64
+ echo contents_abcd > $SCRATCH_MNT/edir/abcd # valid base64
+ 
+-filter_ciphertext_filenames()
++filter_nokey_filenames()
+ {
+-	_filter_scratch | sed 's|edir/[a-zA-Z0-9+,_]\+|edir/ENCRYPTED_NAME|g'
++	_filter_scratch | sed 's|edir/[a-zA-Z0-9+,_]\+|edir/NOKEY_NAME|g'
+ }
+ 
+ show_file_contents()
+@@ -62,8 +62,8 @@ show_file_contents()
+ 	echo "--- Contents of files using plaintext names:"
+ 	cat $SCRATCH_MNT/edir/@@@ |& _filter_scratch
+ 	cat $SCRATCH_MNT/edir/abcd |& _filter_scratch
+-	echo "--- Contents of files using ciphertext names:"
+-	cat ${ciphertext_names[@]} |& filter_ciphertext_filenames
++	echo "--- Contents of files using no-key names:"
++	cat ${nokey_names[@]} |& filter_nokey_filenames
+ }
+ 
+ show_directory_with_key()
+@@ -75,21 +75,21 @@ show_directory_with_key()
+ 
+ # View the directory without the encryption key.  The plaintext names shouldn't
+ # exist, but 'cat' each to verify this, which also should create negative
+-# dentries.  The ciphertext names are unpredictable by design, but verify that
+-# the correct number of them are listed by readdir, and save them for later.
++# dentries.  The no-key names are unpredictable by design, but verify that the
++# correct number of them are listed by readdir, and save them for later.
+ echo
+ echo "***** Without encryption key *****"
+ _unlink_session_encryption_key $keydesc
+ _scratch_cycle_mount
+ echo "--- Directory listing:"
+-ciphertext_names=( $(find $SCRATCH_MNT/edir -mindepth 1 | sort) )
+-printf '%s\n' "${ciphertext_names[@]}" | filter_ciphertext_filenames
++nokey_names=( $(find $SCRATCH_MNT/edir -mindepth 1 | sort) )
++printf '%s\n' "${nokey_names[@]}" | filter_nokey_filenames
+ show_file_contents
+ 
+ # Without remounting or dropping caches, add the encryption key and view the
+-# directory again.  Now the plaintext names should all be there, and the
+-# ciphertext names should be gone.  Make sure to 'cat' all the names to test for
+-# stale dentries.
++# directory again.  Now the plaintext names should all be there, and the no-key
++# names should be gone.  Make sure to 'cat' all the names to test for stale
++# dentries.
+ echo
+ echo "***** With encryption key *****"
+ _add_session_encryption_key $keydesc $raw_key
+@@ -103,7 +103,7 @@ rm -rf $SCRATCH_MNT/edir/dir
+ 
+ # Now open the files to pin them in the inode cache (needed to make the test
+ # reliable), then revoke the encryption key.  This should no longer cause the
+-# files to be presented in ciphertext form immediately.
++# files to be presented in no-key form immediately.
+ echo
+ echo "***** After key revocation *****"
+ (
+diff --git a/tests/generic/429.out b/tests/generic/429.out
+index bebc4865..68c2590d 100644
+--- a/tests/generic/429.out
++++ b/tests/generic/429.out
+@@ -2,14 +2,14 @@ QA output created by 429
+ 
+ ***** Without encryption key *****
+ --- Directory listing:
+-SCRATCH_MNT/edir/ENCRYPTED_NAME
+-SCRATCH_MNT/edir/ENCRYPTED_NAME
++SCRATCH_MNT/edir/NOKEY_NAME
++SCRATCH_MNT/edir/NOKEY_NAME
+ --- Contents of files using plaintext names:
+ cat: SCRATCH_MNT/edir/@@@: No such file or directory
+ cat: SCRATCH_MNT/edir/abcd: No such file or directory
+---- Contents of files using ciphertext names:
+-cat: SCRATCH_MNT/edir/ENCRYPTED_NAME: Required key not available
+-cat: SCRATCH_MNT/edir/ENCRYPTED_NAME: Required key not available
++--- Contents of files using no-key names:
++cat: SCRATCH_MNT/edir/NOKEY_NAME: Required key not available
++cat: SCRATCH_MNT/edir/NOKEY_NAME: Required key not available
+ 
+ ***** With encryption key *****
+ --- Directory listing:
+@@ -18,9 +18,9 @@ SCRATCH_MNT/edir/abcd
+ --- Contents of files using plaintext names:
+ contents_@@@
+ contents_abcd
+---- Contents of files using ciphertext names:
+-cat: SCRATCH_MNT/edir/ENCRYPTED_NAME: No such file or directory
+-cat: SCRATCH_MNT/edir/ENCRYPTED_NAME: No such file or directory
++--- Contents of files using no-key names:
++cat: SCRATCH_MNT/edir/NOKEY_NAME: No such file or directory
++cat: SCRATCH_MNT/edir/NOKEY_NAME: No such file or directory
+ 
+ ***** Race conditions *****
+ t_encrypted_d_revalidate finished
+@@ -32,6 +32,6 @@ SCRATCH_MNT/edir/abcd
+ --- Contents of files using plaintext names:
+ contents_@@@
+ contents_abcd
+---- Contents of files using ciphertext names:
+-cat: SCRATCH_MNT/edir/ENCRYPTED_NAME: No such file or directory
+-cat: SCRATCH_MNT/edir/ENCRYPTED_NAME: No such file or directory
++--- Contents of files using no-key names:
++cat: SCRATCH_MNT/edir/NOKEY_NAME: No such file or directory
++cat: SCRATCH_MNT/edir/NOKEY_NAME: No such file or directory
 -- 
 2.32.0
 
