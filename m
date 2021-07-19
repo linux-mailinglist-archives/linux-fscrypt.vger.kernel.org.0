@@ -2,121 +2,80 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E89F43CCDBB
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 19 Jul 2021 08:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7620F3CD4F5
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 19 Jul 2021 14:41:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234559AbhGSGDI (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 19 Jul 2021 02:03:08 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:48148 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229916AbhGSGDG (ORCPT
+        id S236641AbhGSMBO (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 19 Jul 2021 08:01:14 -0400
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:51731 "EHLO
+        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231388AbhGSMBO (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 19 Jul 2021 02:03:06 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id D0C6A201DB;
-        Mon, 19 Jul 2021 06:00:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1626674406; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LSJZS6Jq4QudlpEfILRCfkUag24Hk+LiCeehdWVHlco=;
-        b=NR5B1floJAziDy/VETPjHEDehsoSbT6MOy5cb10ijgeduD/5RBv1mkqH7B5FHGYvMAgGTh
-        mLUrYNpsMYXM1efuAOoxuFtcu36/BUJ38EZsJMgblxTBqY1VGUMXIAC3IimQDCeZITN96d
-        bOpVIetODD0iU7Uxqr4+sM4gZvCxuOI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1626674406;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LSJZS6Jq4QudlpEfILRCfkUag24Hk+LiCeehdWVHlco=;
-        b=lXA7TZBoYjVkSrGZqD/G1YP0J7sjuX+Nhqh81iFg2q660ELbjr9X4Tkd5aHeHvLLSl55Hh
-        PoNlEjeu1o0HBNBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C083E13C8B;
-        Mon, 19 Jul 2021 06:00:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Onf6LeYU9WB8cQAAMHmgww
-        (envelope-from <hare@suse.de>); Mon, 19 Jul 2021 06:00:06 +0000
-Subject: Re: [PATCH] fscrypt: align Base64 encoding with RFC 4648 base64url
-To:     Eric Biggers <ebiggers@kernel.org>, linux-fscrypt@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
-References: <20210718000125.59701-1-ebiggers@kernel.org>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <619969e7-f044-2f15-69cf-3eeb7a7ccb54@suse.de>
-Date:   Mon, 19 Jul 2021 08:00:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 19 Jul 2021 08:01:14 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id A5BA632008FC;
+        Mon, 19 Jul 2021 08:41:53 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 19 Jul 2021 08:41:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=amyQYpBvFYPfdNhUff4Z1cpZooE
+        dKlHEQeGTIIX5Fmw=; b=N0sADinJHO7mxz5NYCcQYGZmGNwnEiPTKLLuUIdILLD
+        JBrUhL18lDByVN2BCkWbKkX+8Q9M29OwD85hq4jg2aTMpqkaubDOYNi6+m/vZ/tX
+        HEvaM+7kZRv4MTkd8BkrvHlRPkRemgOtH3e2M5ItCzxqhN+R9NWCjLHlf2fzVpc8
+        i/YiuEq6Z05NVCM6JuIXEnxFLgs25CDT/Jw2iKYChtIMw9ksHk9hFo9d/1ME3rAP
+        Z8G6/MlZR3xNN31mt8NXzBgybSJnfcUE0FLJZCL1npHrk7zvYqe7E97feFDqB5kS
+        0clXYdATiJnFRqnvf1jLjhxlhp3ldYs1TeIM7fol+FA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=amyQYp
+        BvFYPfdNhUff4Z1cpZooEdKlHEQeGTIIX5Fmw=; b=aBnQPma3qxo6s8TxLfsCxW
+        yLHRUe9QmaRpsq+Nu2M8XvO9mcm2NPaZfkn4i2+HOuOES/WTPUbKlS395mNEgBa3
+        JdXR32xk4bZrfTDsZEp9UervhU/vuDTKZ/B1ZdQKQzKykGaCopgI9i1z4bAgN1rV
+        DCZZqWhlLgiheZOTfOV7ut3MUxmDdqQFt/dZNljKArJlsZE3OlpT92bPoCDOkxVT
+        7KNlmPQ5uHiGonQPqIIa0vuljxmjPFhlYAc0kHrVDTXpyXhKL+oZ7X0vxrn2Kff7
+        +I0qbMEq+/jqAftrCekPUPLCwFjyRfm1g0ONoshtIlzXWeNlz61O/J2SysHVsdKQ
+        ==
+X-ME-Sender: <xms:EXP1YAAASJu_k5G9of7kmc9kMOzYUdP1AqFUtpAGu0QjXDNQt6XLzA>
+    <xme:EXP1YCgcnhUK4p2YHalMI51pdf0b92OOaHdzfOdliiwBZH5qqO_1DV1yLOCmQJjpV
+    0B0Oq9KINfbSA>
+X-ME-Received: <xmr:EXP1YDlF3t15E_7Lgp_0YMd9GIQOW_Y4IOF8YzGuDbI0u9ftyI38D3CPXcXylVeX0IzeCqVPLRuPaydPmBGZ9B2Sd5h4RqrK>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrfedtgdehgecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtrodttddtvdenucfhrhhomhepifhrvghgucfm
+    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveehgfejie
+    dtffefhfdvgeelieegjeegieffkeeiffejfeelhfeigeethfdujeeunecuvehluhhsthgv
+    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrd
+    gtohhm
+X-ME-Proxy: <xmx:EXP1YGwbRK3xXqCffXi7b-nzI1QSg6gWLrHXJ_WtfddNcSvfuiWx5Q>
+    <xmx:EXP1YFR5diLVz0T-lP6IFRFkfZD5JvlTMxjcG3I86wkf4CAThYvICg>
+    <xmx:EXP1YBa9yU9gI50sWedJivgwRZ58bMM8A1gUDXeNPAUgSZr4WK_szg>
+    <xmx:EXP1YDP_Q4T_e-M5nersHSv5rJG9fRq9FOW19frEYGWgfyn06R2Nfg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 19 Jul 2021 08:41:52 -0400 (EDT)
+Date:   Mon, 19 Jul 2021 14:41:45 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     stable@vger.kernel.org, linux-fscrypt@vger.kernel.org
+Subject: Re: [PATCH 4.9] fscrypt: don't ignore minor_hash when hash is 0
+Message-ID: <YPVzCTmfqbtjqMHh@kroah.com>
+References: <20210717000557.60029-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210718000125.59701-1-ebiggers@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210717000557.60029-1-ebiggers@kernel.org>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On 7/18/21 2:01 AM, Eric Biggers wrote:
+On Fri, Jul 16, 2021 at 07:05:57PM -0500, Eric Biggers wrote:
 > From: Eric Biggers <ebiggers@google.com>
 > 
-> fscrypt uses a Base64 encoding to encode no-key filenames (the filenames
-> that are presented to userspace when a directory is listed without its
-> encryption key).  There are many variants of Base64, but the most common
-> ones are specified by RFC 4648.  fscrypt can't use the regular RFC 4648
-> "base64" variant because "base64" uses the '/' character, which isn't
-> allowed in filenames.  However, RFC 4648 also specifies a "base64url"
-> variant for use in URLs and filenames.  "base64url" is less common than
-> "base64", but it's still implemented in many programming libraries.
-> 
-> Unfortunately, what fscrypt actually uses is a custom Base64 variant
-> that differs from "base64url" in several ways:
-> 
-> - The binary data is divided into 6-bit chunks differently.
-> 
-> - Values 62 and 63 are encoded with '+' and ',' instead of '-' and '_'.
-> 
-> - '='-padding isn't used.  This isn't a problem per se, as the padding
->   isn't technically necessary, and RFC 4648 doesn't strictly require it.
->   But it needs to be properly documented.
-> 
-> There have been two attempts to copy the fscrypt Base64 code into lib/
-> (https://lkml.kernel.org/r/20200821182813.52570-6-jlayton@kernel.org and
-> https://lkml.kernel.org/r/20210716110428.9727-5-hare@suse.de), and both
-> have been caught up by the fscrypt Base64 variant being nonstandard and
-> not properly documented.  Also, the planned use of the fscrypt Base64
-> code in the CephFS storage back-end will prevent it from being changed
-> later (whereas currently it can still be changed), so we need to choose
-> an encoding that we're happy with before it's too late.
-> 
-> Therefore, switch the fscrypt Base64 variant to base64url, in order to
-> align more closely with RFC 4648 and other implementations and uses of
-> Base64.  However, I opted not to implement '='-padding, as '='-padding
-> adds complexity, is unnecessary, and isn't required by the RFC.
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
->  Documentation/filesystems/fscrypt.rst |  10 +--
->  fs/crypto/fname.c                     | 106 ++++++++++++++++----------
->  2 files changed, 70 insertions(+), 46 deletions(-)
-> 
-Thanks for doing it. I got confused by it myself, and having it named
-'base64encode' while not _actually_ being base64 didn't help, either.
+> commit 77f30bfcfcf484da7208affd6a9e63406420bf91 upstream.
+> [Please apply to 4.9-stable.]
 
-Reviewed-by: Hannes Reinecke <hare@suse.de>
+Now queued up, thanks!
 
-Cheers,
-
-Hannes
--- 
-Dr. Hannes Reinecke		           Kernel Storage Architect
-hare@suse.de			                  +49 911 74053 688
-SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), GF: Felix Imendörffer
+greg k-h
