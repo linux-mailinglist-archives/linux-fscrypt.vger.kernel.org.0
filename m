@@ -2,80 +2,82 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7620F3CD4F5
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 19 Jul 2021 14:41:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F153D2620
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 22 Jul 2021 16:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236641AbhGSMBO (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 19 Jul 2021 08:01:14 -0400
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:51731 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231388AbhGSMBO (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 19 Jul 2021 08:01:14 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id A5BA632008FC;
-        Mon, 19 Jul 2021 08:41:53 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Mon, 19 Jul 2021 08:41:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=amyQYpBvFYPfdNhUff4Z1cpZooE
-        dKlHEQeGTIIX5Fmw=; b=N0sADinJHO7mxz5NYCcQYGZmGNwnEiPTKLLuUIdILLD
-        JBrUhL18lDByVN2BCkWbKkX+8Q9M29OwD85hq4jg2aTMpqkaubDOYNi6+m/vZ/tX
-        HEvaM+7kZRv4MTkd8BkrvHlRPkRemgOtH3e2M5ItCzxqhN+R9NWCjLHlf2fzVpc8
-        i/YiuEq6Z05NVCM6JuIXEnxFLgs25CDT/Jw2iKYChtIMw9ksHk9hFo9d/1ME3rAP
-        Z8G6/MlZR3xNN31mt8NXzBgybSJnfcUE0FLJZCL1npHrk7zvYqe7E97feFDqB5kS
-        0clXYdATiJnFRqnvf1jLjhxlhp3ldYs1TeIM7fol+FA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=amyQYp
-        BvFYPfdNhUff4Z1cpZooEdKlHEQeGTIIX5Fmw=; b=aBnQPma3qxo6s8TxLfsCxW
-        yLHRUe9QmaRpsq+Nu2M8XvO9mcm2NPaZfkn4i2+HOuOES/WTPUbKlS395mNEgBa3
-        JdXR32xk4bZrfTDsZEp9UervhU/vuDTKZ/B1ZdQKQzKykGaCopgI9i1z4bAgN1rV
-        DCZZqWhlLgiheZOTfOV7ut3MUxmDdqQFt/dZNljKArJlsZE3OlpT92bPoCDOkxVT
-        7KNlmPQ5uHiGonQPqIIa0vuljxmjPFhlYAc0kHrVDTXpyXhKL+oZ7X0vxrn2Kff7
-        +I0qbMEq+/jqAftrCekPUPLCwFjyRfm1g0ONoshtIlzXWeNlz61O/J2SysHVsdKQ
-        ==
-X-ME-Sender: <xms:EXP1YAAASJu_k5G9of7kmc9kMOzYUdP1AqFUtpAGu0QjXDNQt6XLzA>
-    <xme:EXP1YCgcnhUK4p2YHalMI51pdf0b92OOaHdzfOdliiwBZH5qqO_1DV1yLOCmQJjpV
-    0B0Oq9KINfbSA>
-X-ME-Received: <xmr:EXP1YDlF3t15E_7Lgp_0YMd9GIQOW_Y4IOF8YzGuDbI0u9ftyI38D3CPXcXylVeX0IzeCqVPLRuPaydPmBGZ9B2Sd5h4RqrK>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrfedtgdehgecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtrodttddtvdenucfhrhhomhepifhrvghgucfm
-    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveehgfejie
-    dtffefhfdvgeelieegjeegieffkeeiffejfeelhfeigeethfdujeeunecuvehluhhsthgv
-    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrd
-    gtohhm
-X-ME-Proxy: <xmx:EXP1YGwbRK3xXqCffXi7b-nzI1QSg6gWLrHXJ_WtfddNcSvfuiWx5Q>
-    <xmx:EXP1YFR5diLVz0T-lP6IFRFkfZD5JvlTMxjcG3I86wkf4CAThYvICg>
-    <xmx:EXP1YBa9yU9gI50sWedJivgwRZ58bMM8A1gUDXeNPAUgSZr4WK_szg>
-    <xmx:EXP1YDP_Q4T_e-M5nersHSv5rJG9fRq9FOW19frEYGWgfyn06R2Nfg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 19 Jul 2021 08:41:52 -0400 (EDT)
-Date:   Mon, 19 Jul 2021 14:41:45 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     stable@vger.kernel.org, linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH 4.9] fscrypt: don't ignore minor_hash when hash is 0
-Message-ID: <YPVzCTmfqbtjqMHh@kroah.com>
-References: <20210717000557.60029-1-ebiggers@kernel.org>
+        id S232429AbhGVOIK (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 22 Jul 2021 10:08:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50722 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232328AbhGVOIK (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 22 Jul 2021 10:08:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F21360FEE;
+        Thu, 22 Jul 2021 14:48:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626965325;
+        bh=kjIiN475TqYty0z7PIG+/pMDUBt+OSnFGGmVVgMKoNs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tc+SdqxggbbqbTwN0onZFGwh5ZmEywzzNR89LpVLby39UCAWx4h4yqlPURhVbOncf
+         KO6YdbeB4zmYYs42oENDY/fKUz+QoAIV4OnlbOnGxvVvgR2wJ6x43sdIHiIF9dLVfG
+         g7ILJbQio/iTJkibMqB7mJ0xtUe17Fva3M2NRpP5Tdgn73LqOJgshreiHi490eXmP0
+         50PjB4kG+vNuP/UHXTJSqknemuwEn8dw7XKd8S10eR1NRH+Oqy1g0k9EMo+iZXzKea
+         1TuenfuARM8NDdS38D33/4/2W8QGWzkHysasB3zq2IeE6c311F0/CwDQLQKIPRPh0w
+         Khg5eR81VTn5Q==
+Date:   Thu, 22 Jul 2021 07:48:43 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Satya Tangirala <satyat@google.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-fscrypt@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v9 0/9] add support for direct I/O with fscrypt using
+ blk-crypto
+Message-ID: <YPmFSw4JbWnIozSZ@gmail.com>
+References: <20210604210908.2105870-1-satyat@google.com>
+ <CAF2Aj3h-Gt3bOxH4wXB7aeQ3jVzR3TEqd3uLsh4T9Q=e6W6iqQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210717000557.60029-1-ebiggers@kernel.org>
+In-Reply-To: <CAF2Aj3h-Gt3bOxH4wXB7aeQ3jVzR3TEqd3uLsh4T9Q=e6W6iqQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 07:05:57PM -0500, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
+Hi Lee,
+
+On Thu, Jul 22, 2021 at 12:23:47PM +0100, Lee Jones wrote:
 > 
-> commit 77f30bfcfcf484da7208affd6a9e63406420bf91 upstream.
-> [Please apply to 4.9-stable.]
+> No review after 7 weeks on the list.
+> 
+> Is there anything Satya can do to help expedite this please?
+> 
 
-Now queued up, thanks!
+This series is basically ready, but I can't apply it because it depends on the
+other patch series
+"[PATCH v4 0/9] ensure bios aren't split in middle of crypto data unit"
+(https://lkml.kernel.org/linux-block/20210707052943.3960-1-satyaprateek2357@gmail.com/T/#u).
+I will be re-reviewing that other patch series soon, but it primary needs review
+by the people who work more regularly with the block layer, and it will have to
+go in through the block tree (I can't apply it to the fscrypt tree).
 
-greg k-h
+The original version of this series didn't require so many block layer changes,
+but it would have only allowed direct I/O with user buffer pointers aligned to
+the filesystem block size, which was too controversial with other filesystem
+developers; see the long discussion at
+https://lkml.kernel.org/linux-fscrypt/20200720233739.824943-1-satyat@google.com/T/#u.
+
+In addition, it was requested that we not add features to the "legacy" direct
+I/O implementation (fs/direct-io.c), so I have a patch series in progress
+"[PATCH 0/9] f2fs: use iomap for direct I/O"
+(https://lkml.kernel.org/linux-f2fs-devel/20210716143919.44373-1-ebiggers@kernel.org/T/#u)
+which will change f2fs to use iomap.
+
+Also please understand that Satya has left Google, so any further work from him
+on this is happening on a personal capacity in his free time.
+
+- Eric
