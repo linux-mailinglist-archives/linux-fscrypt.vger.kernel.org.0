@@ -2,45 +2,55 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9545B3D2D36
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 22 Jul 2021 22:09:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB7623D366E
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 23 Jul 2021 10:16:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230458AbhGVT3C (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 22 Jul 2021 15:29:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230451AbhGVT3C (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 22 Jul 2021 15:29:02 -0400
-Received: from 68-252-206-104.staticrdns.eonix.net (unknown [IPv6:2607:ff28:b005:2a:ec52:75ff:fe50:d321])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8E586C06175F;
-        Thu, 22 Jul 2021 13:09:36 -0700 (PDT)
-Received: from User (localhost [IPv6:::1])
-        by 68-252-206-104.staticrdns.eonix.net (Postfix) with SMTP id D84C38F1F50;
-        Mon, 19 Jul 2021 22:13:39 -0400 (EDT)
-Reply-To: <mrs_hannah@rediffmail.com>
-From:   "Mrs. Hajia Hannah Ahmed" <info@247vidz.com>
-Subject: Re: I WANT TO INVESTMENT IN YOUR COUNTRY?
-Date:   Tue, 20 Jul 2021 05:13:12 -0700
+        id S234516AbhGWHgN (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 23 Jul 2021 03:36:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55622 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234488AbhGWHgL (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Fri, 23 Jul 2021 03:36:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DBB2560EBD;
+        Fri, 23 Jul 2021 08:16:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627028205;
+        bh=FmcsTWKVBtnIpV3kMjIYbVPEWxN8HccIeY7NweLv3fc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=p83qFCUO8L5H8TZ0pJz+hXz6JmnLt1esXuHZQ1efs1LWA9Opu0oBskpMKhw8FGdEn
+         nRBdyz7JfEQ9qdkIcTf1s6jWVmXGJz0B10YnsGkoqu0Z+PT8MNdItnRK5/riqJ3n3N
+         dMEmHj1FJUqoWauRhi1kqPUaFo4eMLlPmU5/k2LHvRDGmayVlV1MmoN75lE4I69XcO
+         wzI4Wbxrh+pZFV+3FZfLhUXTIWs12fPDDRqUdqsH3RGGbE/sYaa1SZjPi0URUsmrV4
+         MyrBojV249e4n2k4um2W07m0rzgP3013tggjYWhp30V03kOWm9xowzoMT08vWHlk2I
+         2Lox9cg4HZL2A==
+Date:   Fri, 23 Jul 2021 01:16:43 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Hannes Reinecke <hare@suse.de>
+Subject: Re: [PATCH] fscrypt: align Base64 encoding with RFC 4648 base64url
+Message-ID: <YPp667igbuyElEcD@sol.localdomain>
+References: <20210718000125.59701-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-Id: <20210720021340.D84C38F1F50@68-252-206-104.staticrdns.eonix.net>
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210718000125.59701-1-ebiggers@kernel.org>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Attn:
- 
-I am Mrs. Hajia Hannah Ahmed I am a Widow and member of the contract award committee and 14 project allocation manager, of the Department of Minerals and Natural Resources in Syria;
- 
-Due to the war in Syria, I am in search of an agent or company to assist me to invest my fund  (USD$35Million) and subsequent investment in properties in your country. You will be required to. If you decide to render your service to me in this regard, 30% of the total sum of USD$35M will be given to you for your service. 
- 
-Yours Faithfully,
-Mrs. Hajia Hannah Ahmed
+On Sat, Jul 17, 2021 at 07:01:25PM -0500, Eric Biggers wrote:
+> 
+> There have been two attempts to copy the fscrypt Base64 code into lib/
+> (https://lkml.kernel.org/r/20200821182813.52570-6-jlayton@kernel.org and
+> https://lkml.kernel.org/r/20210716110428.9727-5-hare@suse.de), and both
+> have been caught up by the fscrypt Base64 variant being nonstandard and
+> not properly documented.  Also, the planned use of the fscrypt Base64
+> code in the CephFS storage back-end will prevent it from being changed
+> later (whereas currently it can still be changed), so we need to choose
+> an encoding that we're happy with before it's too late.
+
+Jeff, any thoughts on whether this is the variant of Base64 you want to use in
+the CephFS fscrypt support?
+
+- Eric
