@@ -2,140 +2,188 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 476743D98D5
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 29 Jul 2021 00:28:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7C7C3D9CD8
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 29 Jul 2021 06:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232169AbhG1W2e (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 28 Jul 2021 18:28:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232559AbhG1W2b (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 28 Jul 2021 18:28:31 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 664DDC08E9AF
-        for <linux-fscrypt@vger.kernel.org>; Wed, 28 Jul 2021 15:27:32 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[127.0.0.1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1m8s1P-0004d1-BN; Thu, 29 Jul 2021 00:27:27 +0200
-Subject: Re: [RFC PATCH v1] fscrypt: support encrypted and trusted keys
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        David Howells <dhowells@redhat.com>,
-        linux-fscrypt@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210727144349.11215-1-a.fatoum@pengutronix.de>
- <20210728222243.4wqs64pqngzzii3b@kernel.org>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <3d0a380b-ea75-6c99-0515-0988d6ecab1c@pengutronix.de>
-Date:   Thu, 29 Jul 2021 00:27:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S233607AbhG2Ejx (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 29 Jul 2021 00:39:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40136 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233540AbhG2Ejw (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 29 Jul 2021 00:39:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 24D15604DB;
+        Thu, 29 Jul 2021 04:39:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627533590;
+        bh=Py7uHiYvnpaO5x3vt7x+I4Cdzj8pn/J9hAojlQsYNqg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Nm4e/Q5NpXZIm8u/BrvQEem3BHJyQgpKF82jQaxsZDTY/c2kOFyFCHPDtavaJlJOm
+         +/TeEJdbV944g4NPbg0dfCIDH4vxgPBO+5vfnJWgd2QWYvN/Wkp0apuOJQcmAUeswq
+         5TfYmqhfCdJxreb8LJADIB7AuHO3QpuQdkqyUUhq4nFPoP+QaaMc87cc2rBogCAf4A
+         bhNS7B3RQnZXgKYGHHDWCGKB18VEhkW78dA958QrIK/LGxNzPWx0bDRRCKWNEf3f5q
+         AfskjGmGzdUo1BtsEnAD5mCsPVDqcoEe12Tkbhc4zRTicnWu6Xs6ji9sJ2maIEdXTb
+         oL4oDAJO0UMtg==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, Jeff Layton <jlayton@kernel.org>
+Subject: [PATCH] fscrypt: document struct fscrypt_operations
+Date:   Wed, 28 Jul 2021 21:37:28 -0700
+Message-Id: <20210729043728.18480-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <20210728222243.4wqs64pqngzzii3b@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-fscrypt@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hello Jarkko,
+From: Eric Biggers <ebiggers@google.com>
 
-On 29.07.21 00:22, Jarkko Sakkinen wrote:
-> On Tue, Jul 27, 2021 at 04:43:49PM +0200, Ahmad Fatoum wrote:
->> For both v1 and v2 key setup mechanisms, userspace supplies the raw key
->> material to the kernel after which it is never again disclosed to
->> userspace.
->>
->> Use of encrypted and trusted keys offers stronger guarantees:
->> The key material is generated within the kernel and is never disclosed to
->> userspace in clear text and, in the case of trusted keys, can be
->> directly rooted to a trust source like a TPM chip.
->>
->> Add support for trusted and encrypted keys by repurposing
->> fscrypt_add_key_arg::raw to hold the key description when the new
->> FSCRYPT_KEY_ARG_TYPE_DESC flag is supplied. The location of the flag
->> was previously reserved and enforced by ioctl code to be zero, so this
->> change won't break backwards compatibility.
->>
->> Corresponding userspace patches are available for fscryptctl:
->> https://github.com/google/fscryptctl/pull/23
->>
->> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
->> ---
->> key_extract_material used by this patch is added in
->> <cover.b2fdd70b830d12853b12a12e32ceb0c8162c1346.1626945419.git-series.a.fatoum@pengutronix.de>
->> which still awaits feedback.
->>
->> Sending this RFC out anyway to get some feedback from the fscrypt
->> developers whether this is the correct way to go about it.
->>
->> To: "Theodore Y. Ts'o" <tytso@mit.edu>
->> To: Jaegeuk Kim <jaegeuk@kernel.org>
->> To: Eric Biggers <ebiggers@kernel.org>
->> Cc: Jarkko Sakkinen <jarkko@kernel.org>
->> Cc: James Morris <jmorris@namei.org>
->> Cc: "Serge E. Hallyn" <serge@hallyn.com>
->> Cc: James Bottomley <jejb@linux.ibm.com>
->> Cc: Mimi Zohar <zohar@linux.ibm.com>
->> Cc: Sumit Garg <sumit.garg@linaro.org>
->> Cc: David Howells <dhowells@redhat.com>
->> Cc: linux-fscrypt@vger.kernel.org
->> Cc: linux-crypto@vger.kernel.org
->> Cc: linux-integrity@vger.kernel.org
->> Cc: linux-security-module@vger.kernel.org
->> Cc: keyrings@vger.kernel.org
->> Cc: linux-kernel@vger.kernel.org
->> ---
->>  Documentation/filesystems/fscrypt.rst | 24 ++++++++---
->>  fs/crypto/keyring.c                   | 59 ++++++++++++++++++++++++---
->>  include/uapi/linux/fscrypt.h          | 16 +++++++-
->>  3 files changed, 87 insertions(+), 12 deletions(-)
->>
->> diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
->> index 44b67ebd6e40..83738af2afa3 100644
->> --- a/Documentation/filesystems/fscrypt.rst
->> +++ b/Documentation/filesystems/fscrypt.rst
->> @@ -681,11 +681,15 @@ It can be executed on any file or directory on the target filesystem,
->>  but using the filesystem's root directory is recommended.  It takes in
->>  a pointer to struct fscrypt_add_key_arg, defined as follows::
->>  
->> +    #define FSCRYPT_KEY_ADD_RAW_ASIS		0
->> +    #define FSCRYPT_KEY_ADD_RAW_DESC		1
-> 
-> Would be nice to have these documented.
+Document all fields of struct fscrypt_operations so that it's more clear
+what filesystems that use (or plan to use) fs/crypto/ need to implement.
 
-They have explanatory comments in the uAPI header. The Documentation file
-purposefully omits these comments and describes each field separately after
-the code block. I am just following suit.
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ include/linux/fscrypt.h | 109 ++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 105 insertions(+), 4 deletions(-)
 
-FWIW, I intend to drop these flags for v2 anyway.
-
-Cheers,
-Ahmad
-
-> 
-> /Jarkko
-> 
-
-
+diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
+index b7bfd0cd4f3e..e912ed9141d9 100644
+--- a/include/linux/fscrypt.h
++++ b/include/linux/fscrypt.h
+@@ -47,27 +47,128 @@ struct fscrypt_name {
+ #define FSCRYPT_SET_CONTEXT_MAX_SIZE	40
+ 
+ #ifdef CONFIG_FS_ENCRYPTION
++
+ /*
+- * fscrypt superblock flags
++ * If set, the fscrypt bounce page pool won't be allocated (unless another
++ * filesystem needs it).  Set this if the filesystem always uses its own bounce
++ * pages for writes and therefore won't need the fscrypt bounce page pool.
+  */
+ #define FS_CFLG_OWN_PAGES (1U << 1)
+ 
+-/*
+- * crypto operations for filesystems
+- */
++/* Crypto operations for filesystems */
+ struct fscrypt_operations {
++
++	/* Set of optional flags; see above for allowed flags */
+ 	unsigned int flags;
++
++	/*
++	 * If set, this is a filesystem-specific key description prefix that
++	 * will be accepted for "logon" keys for v1 fscrypt policies, in
++	 * addition to the generic prefix "fscrypt:".  This functionality is
++	 * deprecated, so new filesystems shouldn't set this field.
++	 */
+ 	const char *key_prefix;
++
++	/*
++	 * Get the fscrypt context of the given inode.
++	 *
++	 * @inode: the inode whose context to get
++	 * @ctx: the buffer into which to get the context
++	 * @len: length of the @ctx buffer in bytes
++	 *
++	 * Return: On success, returns the length of the context in bytes; this
++	 *	   may be less than @len.  On failure, returns -ENODATA if the
++	 *	   inode doesn't have a context, -ERANGE if the context is
++	 *	   longer than @len, or another -errno code.
++	 */
+ 	int (*get_context)(struct inode *inode, void *ctx, size_t len);
++
++	/*
++	 * Set an fscrypt context on the given inode.
++	 *
++	 * @inode: the inode whose context to set.  The inode won't already have
++	 *	   an fscrypt context.
++	 * @ctx: the context to set
++	 * @len: length of @ctx in bytes (at most FSCRYPT_SET_CONTEXT_MAX_SIZE)
++	 * @fs_data: If called from fscrypt_set_context(), this will be the
++	 *	     value the filesystem passed to fscrypt_set_context().
++	 *	     Otherwise (i.e. when called from
++	 *	     FS_IOC_SET_ENCRYPTION_POLICY) this will be NULL.
++	 *
++	 * i_rwsem will be held for write.
++	 *
++	 * Return: 0 on success, -errno on failure.
++	 */
+ 	int (*set_context)(struct inode *inode, const void *ctx, size_t len,
+ 			   void *fs_data);
++
++	/*
++	 * Get the dummy fscrypt policy in use on the filesystem (if any).
++	 *
++	 * Filesystems only need to implement this function if they support the
++	 * test_dummy_encryption mount option.
++	 *
++	 * Return: A pointer to the dummy fscrypt policy, if the filesystem is
++	 *	   mounted with test_dummy_encryption; otherwise NULL.
++	 */
+ 	const union fscrypt_policy *(*get_dummy_policy)(struct super_block *sb);
++
++	/*
++	 * Check whether a directory is empty.  i_rwsem will be held for write.
++	 */
+ 	bool (*empty_dir)(struct inode *inode);
++
++	/* The filesystem's maximum ciphertext filename length, in bytes */
+ 	unsigned int max_namelen;
++
++	/*
++	 * Check whether the filesystem's inode numbers and UUID are stable,
++	 * meaning that they will never be changed even by offline operations
++	 * such as filesystem shrinking and therefore can be used in the
++	 * encryption without the possibility of files becoming unreadable.
++	 *
++	 * Filesystems only need to implement this function if they want to
++	 * support the FSCRYPT_POLICY_FLAG_IV_INO_LBLK_{32,64} flags.  These
++	 * flags are designed to work around the limitations of UFS and eMMC
++	 * inline crypto hardware, and they shouldn't be used in scenarios where
++	 * such hardware isn't being used.
++	 *
++	 * Leaving this NULL is equivalent to always returning false.
++	 */
+ 	bool (*has_stable_inodes)(struct super_block *sb);
++
++	/*
++	 * Get the number of bits that the filesystem uses to represent inode
++	 * numbers and file logical block numbers.
++	 *
++	 * By default, both of these are assumed to be 64-bit.  This function
++	 * can be implemented to declare that either or both of these numbers is
++	 * shorter, which may allow the use of the
++	 * FSCRYPT_POLICY_FLAG_IV_INO_LBLK_{32,64} flags and/or the use of
++	 * inline crypto hardware whose maximum DUN length is less than 64 bits
++	 * (e.g., eMMC v5.2 spec compliant hardware).  This function only needs
++	 * to be implemented if support for one of these features is needed.
++	 */
+ 	void (*get_ino_and_lblk_bits)(struct super_block *sb,
+ 				      int *ino_bits_ret, int *lblk_bits_ret);
++
++	/*
++	 * Return the number of block devices to which the filesystem may write
++	 * encrypted file contents.
++	 *
++	 * If the filesystem can use multiple block devices (other than block
++	 * devices that aren't used for encrypted file contents, such as
++	 * external journal devices), and wants to support inline encryption,
++	 * then it must implement this function.  Otherwise it's not needed.
++	 */
+ 	int (*get_num_devices)(struct super_block *sb);
++
++	/*
++	 * If ->get_num_devices() returns a value greater than 1, then this
++	 * function is called to get the array of request_queues that the
++	 * filesystem is using -- one per block device.  (There may be duplicate
++	 * entries in this array, as block devices can share a request_queue.)
++	 */
+ 	void (*get_devices)(struct super_block *sb,
+ 			    struct request_queue **devs);
+ };
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.32.0
+
