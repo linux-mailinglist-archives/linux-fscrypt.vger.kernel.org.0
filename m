@@ -2,134 +2,125 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C8723DA895
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 29 Jul 2021 18:12:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C089D3DAAE1
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 29 Jul 2021 20:28:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232951AbhG2QLb (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 29 Jul 2021 12:11:31 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:48680 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234248AbhG2QJw (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 29 Jul 2021 12:09:52 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 156D122270;
-        Thu, 29 Jul 2021 16:09:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1627574942; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lq/O8Y0CB9RHKdJxxOQdFWMqsh1BnqsluCSel35j/Ws=;
-        b=sSu76YsVtqBJq5/Bguo2I/CH0YFJ/DjJgd3sR7TZ2DA/9jv8pxNb4fOGXp00TGv6AvdpQP
-        0TG7+P31Ox7BlQlAw1sNQ35ypEOw2iL1eqE5Gn6rLEXoIgbwz0Y+fyeENataIlBgUU/1y0
-        dKuHTwBDnDgpD2ujb+ksJ+WfMhdsEKw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1627574942;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lq/O8Y0CB9RHKdJxxOQdFWMqsh1BnqsluCSel35j/Ws=;
-        b=Qg4MWPER216A8pfT5Bwdf8hoai1JgM7ZGugt/w3qMT0FdASkrxZU7BjskWfAz4XponrUDh
-        /Xz3gbeKaOtkCwBA==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id A052213357;
-        Thu, 29 Jul 2021 16:09:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id 5jqyF53SAmEgOgAAGKfGzw
-        (envelope-from <rgoldwyn@suse.de>); Thu, 29 Jul 2021 16:09:01 +0000
-Date:   Thu, 29 Jul 2021 11:08:59 -0500
-From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-nfs@vger.kernel.org
-Subject: Re: [PATCH] fs: reduce pointers while using file_ra_state_init()
-Message-ID: <20210729160859.sfdypnrti5hxk6fg@fiona>
-References: <20210726164647.brx3l2ykwv3zz7vr@fiona>
- <YP7uqRrXsbCqTpfx@casper.infradead.org>
+        id S229684AbhG2S2R (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 29 Jul 2021 14:28:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39900 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229614AbhG2S2R (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 29 Jul 2021 14:28:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1132660EBD;
+        Thu, 29 Jul 2021 18:28:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627583293;
+        bh=CBrRBRO/tDGawMDo7/5lR6U7y1rcL3K2D2QD62EAY6s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SSnwQJ29s1xjFeEYWBu1pRC14ZtIm/hTtIUu0k3HawS4MB3N4ncTvbVEzae3ViuU7
+         jMa5AUdbBxSVR+sU86OHV8imvEEQ0yRcLvsmV4wgr9p97tx+SeN1m745TVZBloK3NU
+         +PLPoJvqKc+M0iUzkNEBBMzdETD8o3otG55JX/H678jYHFCZICO3RZvay7zsQNEqPU
+         3cPc9DshIMs//k25ZFoTZ6Az0Yyk/ivATKSGF6hGzGUO8ZndNr3l0ZNfodBZozS8lt
+         +bp3xPA5qOIzn21SiBqnQd6NFa3O1VRuEuw5UPvi8FxVaMdAJRFpvLAjIeTYx7kcAj
+         GpNEVPswy/0ig==
+Date:   Thu, 29 Jul 2021 11:28:11 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     Sumit Garg <sumit.garg@linaro.org>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        linux-fscrypt@vger.kernel.org,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        "open list:SECURITY SUBSYSTEM" 
+        <linux-security-module@vger.kernel.org>,
+        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        git@andred.net, Omar Sandoval <osandov@osandov.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>
+Subject: Re: [RFC PATCH v1] fscrypt: support encrypted and trusted keys
+Message-ID: <YQLzOwnPF1434kUk@gmail.com>
+References: <20210727144349.11215-1-a.fatoum@pengutronix.de>
+ <YQA2fHPwH6EsH9BR@sol.localdomain>
+ <367ea5bb-76cf-6020-cb99-91b5ca82d679@pengutronix.de>
+ <YQGAOTdQRHFv9rlr@gmail.com>
+ <CAFA6WYO-h+ngCAT_PS=bZTQkBBtOpBRUmZNP4zhvRuLDJYQXkA@mail.gmail.com>
+ <1530428a-ad2c-a169-86a7-24bfafb9b9bd@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YP7uqRrXsbCqTpfx@casper.infradead.org>
+In-Reply-To: <1530428a-ad2c-a169-86a7-24bfafb9b9bd@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On 18:19 26/07, Matthew Wilcox wrote:
-> On Mon, Jul 26, 2021 at 11:46:47AM -0500, Goldwyn Rodrigues wrote:
-> > Simplification.
-> > 
-> > file_ra_state_init() take struct address_space *, just to use inode
-> > pointer by dereferencing from mapping->host.
-> > 
-> > The callers also derive mapping either by file->f_mapping, or
-> > even file->f_mapping->host->i_mapping.
-> > 
-> > Change file_ra_state_init() to accept struct inode * to reduce pointer
-> > dereferencing, both in the callee and the caller.
-> > 
-> > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+On Thu, Jul 29, 2021 at 11:07:00AM +0200, Ahmad Fatoum wrote:
+> >> Most people don't change defaults.
+> >>
+> >> Essentially your same argument was used for Dual_EC_DRBG; people argued it was
+> >> okay to standardize because people had the option to choose their own constants
+> >> if they felt the default constants were backdoored.  That didn't really matter,
+> >> though, since in practice everyone just used the default constants.
 > 
-> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> 
-> (some adjacent comments)
-> 
-> > diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-> > index 4806295116d8..c43bf9915cda 100644
-> > --- a/fs/btrfs/free-space-cache.c
-> > +++ b/fs/btrfs/free-space-cache.c
-> > @@ -351,7 +351,7 @@ static void readahead_cache(struct inode *inode)
-> >  	if (!ra)
-> >  		return;
-> >  
-> > -	file_ra_state_init(ra, inode->i_mapping);
-> > +	file_ra_state_init(ra, inode);
-> >  	last_index = (i_size_read(inode) - 1) >> PAGE_SHIFT;
-> >  
-> >  	page_cache_sync_readahead(inode->i_mapping, ra, NULL, 0, last_index);
-> 
-> Why does btrfs allocate a file_ra_state using kmalloc instead of
-> on the stack?
-> 
-> > +++ b/include/linux/fs.h
-> > @@ -3260,7 +3260,7 @@ extern long do_splice_direct(struct file *in, loff_t *ppos, struct file *out,
-> >  
-> >  
-> >  extern void
-> > -file_ra_state_init(struct file_ra_state *ra, struct address_space *mapping);
-> > +file_ra_state_init(struct file_ra_state *ra, struct inode *inode);
-> 
-> This should move to pagemap.h (and lose the extern).
-> I'd put it near the definition of VM_READAHEAD_PAGES.
-> 
-> > diff --git a/mm/readahead.c b/mm/readahead.c
-> > index d589f147f4c2..3541941df5e7 100644
-> > --- a/mm/readahead.c
-> > +++ b/mm/readahead.c
-> > @@ -31,9 +31,9 @@
-> >   * memset *ra to zero.
-> >   */
-> >  void
-> > -file_ra_state_init(struct file_ra_state *ra, struct address_space *mapping)
-> > +file_ra_state_init(struct file_ra_state *ra, struct inode *inode)
-> >  {
-> > -	ra->ra_pages = inode_to_bdi(mapping->host)->ra_pages;
-> > +	ra->ra_pages = inode_to_bdi(inode)->ra_pages;
-> >  	ra->prev_pos = -1;
-> >  }
-> >  EXPORT_SYMBOL_GPL(file_ra_state_init);
-> 
-> I'm not entirely sure why this function is out-of-line, tbh.
-> Would it make more sense for it to be static inline in a header?
+> I'd appreciate your feedback on my CAAM series if you think the defaults
+> can be improved. Trusted keys are no longer restricted to TPMs,
+> so users of other backends shouldn't be dismissed, because one backend
+> can be used with fscrypt by alternative means.
 
-Which one? pagemap.h or fs.h does not know of inode_to_bdi(), should
-linux/backing-dev.h be included?
+I already gave feedback:
+https://lkml.kernel.org/keyrings/YGOcZtkw3ZM5kvl6@gmail.com
+https://lkml.kernel.org/keyrings/YGUHBelwhvJDhKoo@gmail.com
+https://lkml.kernel.org/keyrings/YGViOc3DG+Pjuur6@sol.localdomain
 
--- 
-Goldwyn
+> >>>> - trusted and encrypted keys aren't restricted to specific uses in the kernel
+> >>>>   (like the fscrypt-provisioning key type is) but rather are general-purpose.
+> >>>>   Hence, it may be possible to leak their contents to userspace by requesting
+> >>>>   their use for certain algorithms/features, e.g. to encrypt a dm-crypt target
+> >>>>   using a weak cipher that is vulnerable to key recovery attacks.
+> >>>
+> >>> The footgun is already there by allowing users to specify their own
+> >>>
+> >>> raw key. Users can already use $keyid for dm-crypt and then do
+> >>>
+> >>>   $ keyctl pipe $keyid | fscryptctl add_key /mnt
+> >>>
+> >>> The responsibility to not reuse key material already lies with the users,
+> >>> regardless if they handle the raw key material directly or indirectly via
+> >>> a trusted key description/ID.
+> >>
+> >> Elsewhere you are claiming that "trusted" keys can never be disclosed to
+> >> userspace.  So you can't rely on userspace cooperating, right?
+> 
+> The users I meant are humans, e.g. system integrators. They need to think about
+> 
+> burning fuses, signing bootloaders, verifying kernel and root file systems,
+> 
+> encrypting file systems and safekeeping their crypto keys. Ample opportunity for
+> 
+> stuff to go wrong. They would benefit from having relevant kernel functionality
+> 
+> integrate with each other instead of having to carry downstream patches, which
+> we and many others[1] did for years. We now finally have a chance to drop this
+> technical debt thanks to Sumit's trusted key rework and improve user security
+> along the way.
+> 
+> So, Eric, how should we proceed?
+> 
+
+It is probably inevitable that this be added, but you need to document it
+properly and not make misleading claims like "The key material is generated
+within the kernel" (for the TPM "trust" source the default is to use the TPM's
+RNG, *not* the kernel RNG), and "is never disclosed to userspace in clear text"
+(that's only guaranteed to be true for non-malicious userspace).  Also please
+properly document that this is mainly intended for accessing key wrapping
+hardware such as CAAM that can't be accessed from userspace in another way like
+TPMs can.
+
+- Eric
