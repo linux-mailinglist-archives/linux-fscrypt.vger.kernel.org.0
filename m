@@ -2,62 +2,54 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C74163E3064
-	for <lists+linux-fscrypt@lfdr.de>; Fri,  6 Aug 2021 22:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0EDF3E33BF
+	for <lists+linux-fscrypt@lfdr.de>; Sat,  7 Aug 2021 08:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231972AbhHFUhD (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 6 Aug 2021 16:37:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231728AbhHFUhD (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 6 Aug 2021 16:37:03 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD68DC0613CF
-        for <linux-fscrypt@vger.kernel.org>; Fri,  6 Aug 2021 13:36:46 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id z11so14760685edb.11
-        for <linux-fscrypt@vger.kernel.org>; Fri, 06 Aug 2021 13:36:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=MLEzEfZ8rYEtbsDXKIsPn3xtdL3tPiYKOh5Xccn0/kQ=;
-        b=cWpzv9KB57xSVcy7ZM/5EWBtEesMDzphBYWq2XNiv1uifNjiKhXH+RC0YiH/4SfUWP
-         oza2PyTqOmiOCOG0jnTCIbV4bgfhmmhYBMvwGGBUv4e8YVN0898JlNKn2fcszmPMZpk3
-         V4gdap818QyXYVKRm4yejXhgJI1hi85O5aLAYBNIRnR1qk6Qn32f0JK6jwaETodXjdPs
-         /aKfG2bQIY/HkI3fgjEHipHiSgdUO26YULQNvWpCx8hJqcsP2XS63gM0ft6gtS6bZbl9
-         oGsrTsEntkRjVtT9IXfWDiG2BCwYrsfg7PQp1h3LNGsZVlky5mt8CuhmlJvVmHY6+N/W
-         MfTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=MLEzEfZ8rYEtbsDXKIsPn3xtdL3tPiYKOh5Xccn0/kQ=;
-        b=PSXPg4fPx8LrBjo6ZSiz6/LVAxSBBouH/yKxe6zQX4GvDKH6zt6BbJoW8vfSmtFQVH
-         ErtSCZQHLciKLVA/i222PH77vIe2kV9dffLFUmB8EjK3rMc6EH3Nw+DfxS7xxhfYoGtz
-         dDm7qugzfG+CUgs+7cvt3peMbMaZE8fG973KEBfcuosNQog01Xc1nvNllgLXkqKmEhqI
-         wlNlhqaKXab+3CI5eYn4Pb//sYeGwakifB1H+4NKssu31yTkbEbcnHzy98FS6CRQj0z0
-         VYjITGNSWUfwS+uhcYY1JNkJom6LP1NXCGG9luHxkpXpoAA0XBTEHwX1gqYOuZcpSziI
-         R2hA==
-X-Gm-Message-State: AOAM530wBMYNb5vDt5GQwXY9HkAoU6c+1k/XAOCc/bk/1QnH0ftUTlDG
-        YgQI/tcQAfdTraLd+qbLA3r/CFluiIfhL/wRm3k=
-X-Google-Smtp-Source: ABdhPJx1aVZ1kGHY2D9uR7s2Ir9W2126WTUx3oHKZtHvqxV2qHGst9/Vop3A38ryoQ6kEUbQam7y60Dhnnmw1thHLaM=
-X-Received: by 2002:aa7:c647:: with SMTP id z7mr15277857edr.52.1628282205264;
- Fri, 06 Aug 2021 13:36:45 -0700 (PDT)
+        id S231308AbhHGGbJ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sat, 7 Aug 2021 02:31:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33774 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229495AbhHGGbI (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Sat, 7 Aug 2021 02:31:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8596360EEA;
+        Sat,  7 Aug 2021 06:30:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628317851;
+        bh=gqBbm7RQvMmGiA3+sO0OFu5gS/QfanB2nByt2Gwpxgs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FZIE/jRKv7kWLZA2wXSQwDq9hr6eB0pk/cWpEoy68ubzTdGleeflaGLAnR7YPhFKH
+         fjQtBQpnH57rlyH4JfTw92i9rJFlpocxI9GSQCXA9Vn8cbuTlVI3ySZxs+CEa5SsHZ
+         p6/415HlU/z8Kcz7SzW20AX8rNnWIWbPYW9qFMtS1czQu/dIKlFJ4KnhW/XOhMp9ZG
+         M1z3QVHPSISdZAmyuYYuwedK+JGKGZyyGWWPrRT5lma/KI0UOi7iymhtrQE8a66d9f
+         MH/Y4WCM3hPn4dMkOvPdWReMFiaBl9CqMcZg6eDLFKgNjTg6Wj8BXsz4VK4K67PenR
+         Wsakcx87MBmCQ==
+Date:   Fri, 6 Aug 2021 23:30:49 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, Jeff Layton <jlayton@kernel.org>
+Subject: Re: [PATCH] fscrypt: document struct fscrypt_operations
+Message-ID: <YQ4omeTN73JFZQY+@sol.localdomain>
+References: <20210729043728.18480-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-Received: by 2002:a50:351:0:0:0:0:0 with HTTP; Fri, 6 Aug 2021 13:36:44 -0700 (PDT)
-From:   EVANS DOMINIC <evansdom1960@gmail.com>
-Date:   Fri, 6 Aug 2021 21:36:44 +0100
-Message-ID: <CAJaRnVpf3Q1vaT3ZH-uCBkoopDj3qvedn9UwzdWb5OWybyx2tw@mail.gmail.com>
-Subject: PRIVEE
-To:     evansdom1960 <evansdom1960@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210729043728.18480-1-ebiggers@kernel.org>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Good day , my name is Evans Dominic , i sent you a mail and there was
-no response , please confirm that you did get this mail .
+On Wed, Jul 28, 2021 at 09:37:28PM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> Document all fields of struct fscrypt_operations so that it's more clear
+> what filesystems that use (or plan to use) fs/crypto/ need to implement.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+>  include/linux/fscrypt.h | 109 ++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 105 insertions(+), 4 deletions(-)
 
-Regards.
+Applied to fscrypt.git#master for 5.15.
 
-Evans Dominic
-+393509075740 (Whatsapp)
+- Eric
