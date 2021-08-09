@@ -2,123 +2,108 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7E263E4389
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  9 Aug 2021 12:02:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DF503E4E1E
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  9 Aug 2021 22:52:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234207AbhHIKDM (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 9 Aug 2021 06:03:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234800AbhHIKDL (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 9 Aug 2021 06:03:11 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6237FC061796
-        for <linux-fscrypt@vger.kernel.org>; Mon,  9 Aug 2021 03:02:51 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[127.0.0.1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1mD27K-0004Xk-4p; Mon, 09 Aug 2021 12:02:46 +0200
-Subject: Re: [PATCH v2] fscrypt: support trusted keys
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+        id S236306AbhHIUwY (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 9 Aug 2021 16:52:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42706 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231439AbhHIUwY (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 9 Aug 2021 16:52:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A5C3E61019;
+        Mon,  9 Aug 2021 20:52:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628542323;
+        bh=Hmwxlf5nQ7ImK2R2BhO30AV/6FpqvIYKru/OacCO/yI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=e+SB5V7BnHWZA1+CxKpnSYavXT98W4ODpDVlD+XnnVvKsjZbLwcMZaIjQPimc+wty
+         HeRSgLLvr0bL+nvQEhQYmFMNzgUdXpBUkYxsSofCOST9b7gtqMsLb2dS7ZywqI+PfJ
+         jqWJKwkDczv9HXamv4LdC1Y841+ehrsggFvhehTUWt4TynfJ6pvOvuxqH61NN+//ne
+         Gq4IRclpNdCln9SoQCCKdwGoZXM4gtSbwAkO/wl/MTpKkfwNxMV3A0FtsKSuL69t0K
+         r1O31SpBeVUg8PgVABpL4gGF6vvwr/qnYH33nxARtCg1w9zNGYpYLU7C5fHtDAKQcy
+         5fS2dwdG18wgw==
+Date:   Mon, 9 Aug 2021 13:52:01 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
 To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Sumit Garg <sumit.garg@linaro.org>,
-        David Howells <dhowells@redhat.com>,
+Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
         "Theodore Y. Ts'o" <tytso@mit.edu>,
-        linux-security-module@vger.kernel.org,
-        James Bottomley <jejb@linux.ibm.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, kernel@pengutronix.de,
         James Morris <jmorris@namei.org>,
-        Mimi Zohar <zohar@linux.ibm.com>, linux-kernel@vger.kernel.org,
-        Eric Biggers <ebiggers@kernel.org>,
-        linux-fscrypt@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, kernel@pengutronix.de,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        David Howells <dhowells@redhat.com>,
+        linux-fscrypt@vger.kernel.org, linux-crypto@vger.kernel.org,
         linux-integrity@vger.kernel.org,
-        "Serge E. Hallyn" <serge@hallyn.com>
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] fscrypt: support trusted keys
+Message-ID: <YRGVcaquAJiuc8bp@gmail.com>
 References: <20210806150928.27857-1-a.fatoum@pengutronix.de>
  <20210809094408.4iqwsx77u64usfx6@kernel.org>
- <10dac5c6-4530-217c-e1ea-a7e2e3572f43@pengutronix.de>
-Message-ID: <57619a74-8292-64c6-0dbb-2f01de281652@pengutronix.de>
-Date:   Mon, 9 Aug 2021 12:02:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <10dac5c6-4530-217c-e1ea-a7e2e3572f43@pengutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-fscrypt@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210809094408.4iqwsx77u64usfx6@kernel.org>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On 09.08.21 12:00, Ahmad Fatoum wrote:
-> Hello Jarkko,
+On Mon, Aug 09, 2021 at 12:44:08PM +0300, Jarkko Sakkinen wrote:
+> > @@ -577,28 +578,44 @@ static int get_keyring_key(u32 key_id, u32 type,
+> >  	key_ref_t ref;
+> >  	struct key *key;
+> >  	const struct fscrypt_provisioning_key_payload *payload;
+> > -	int err;
+> > +	int err = 0;
+> >  
+> >  	ref = lookup_user_key(key_id, 0, KEY_NEED_SEARCH);
+> >  	if (IS_ERR(ref))
+> >  		return PTR_ERR(ref);
+> >  	key = key_ref_to_ptr(ref);
+> >  
+> > -	if (key->type != &key_type_fscrypt_provisioning)
+> > -		goto bad_key;
+> > -	payload = key->payload.data[0];
+> > +	if (key->type == &key_type_fscrypt_provisioning) {
 > 
-> On 09.08.21 11:44, Jarkko Sakkinen wrote:
->> On Fri, Aug 06, 2021 at 05:09:28PM +0200, Ahmad Fatoum wrote:
->>> Kernel trusted keys don't require userspace knowledge of the raw key
->>> material and instead export a sealed blob, which can be persisted to
->>> unencrypted storage. Userspace can then load this blob into the kernel,
->>> where it's unsealed and from there on usable for kernel crypto.
->>>
->>> This is incompatible with fscrypt, where userspace is supposed to supply
->>> the raw key material. For TPMs, a work around is to do key unsealing in
->>> userspace, but this may not be feasible for other trusted key backends.
->>>
->>> Make it possible to benefit from both fscrypt and trusted key sealing
->>> by extending fscrypt_add_key_arg::key_id to hold either the ID of a
->>> fscrypt-provisioning or a trusted key.
->>>
->>> A non fscrypt-provisioning key_id was so far prohibited, so additionally
->>> allowing trusted keys won't break backwards compatibility.
->>>
->>> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
->>> ---
->>> Tested with:
->>> https://github.com/google/fscryptctl/pull/23
->>> -	if (key->type != &key_type_fscrypt_provisioning)
->>> -		goto bad_key;
->>> -	payload = key->payload.data[0];
->>> +	if (key->type == &key_type_fscrypt_provisioning) {
->>
->> Why does fscrypt have own key type, and does not extend 'encrypted' with a
->> new format [*]?
-> 
-> See the commit[1] adding it for more information. TL;DR:
-> 
-> fscrypt maintainers would've preferred keys to be associated with
-> a "domain". So an encrypted key generated for fscrypt use couldn't be reused
-> for e.g. dm-crypt. They are wary of fscrypt users being more exposed if their
-> keys can be used with weaker ciphers via other kernel functionality that could
-> be used to extract information about the raw key material.
-> 
-> Eric also mentioned dislike of the possibility of rooting encrypted keys to
-> user keys. v2 is only restricted to v2, so we didn't discuss this further.
+> Why does fscrypt have own key type, and does not extend 'encrypted' with a
+> new format [*]?
 
-Typo: v2 (of my series) is only restricted to s/v2/trusted keys/
+Are you referring to the "fscrypt-provisioning" key type?  That is an existing
+feature (which in most cases isn't used, but there is a use case that requires
+it), not something being added by this patch.  We just needed a key type where
+userspace can add a raw key to the kernel and not be able to read it back (so
+like the "logon" key type), but also have the kernel enforce that that key is
+only used for fscrypt with a particular KDF version, and not with other random
+kernel features.  The "encrypted" key type wouldn't have worked for this at all;
+it's a totally different thing.
 
+> > +	} else if (IS_REACHABLE(CONFIG_TRUSTED_KEYS) && key->type == &key_type_trusted) {
+> > +		struct trusted_key_payload *tkp;
+> > +
+> > +		/* avoid reseal changing payload while we memcpy key */
+> > +		down_read(&key->sem);
+> > +		tkp = key->payload.data[0];
+> > +		if (!tkp || tkp->key_len < FSCRYPT_MIN_KEY_SIZE ||
+> > +		    tkp->key_len > FSCRYPT_MAX_KEY_SIZE) {
+> > +			up_read(&key->sem);
+> > +			err = -EINVAL;
+> > +			goto out_put;
+> > +		}
+> > +
+> > +		secret->size = tkp->key_len;
+> > +		memcpy(secret->raw, tkp->key, secret->size);
+> > +		up_read(&key->sem);
+> > +	} else {
 > 
-> Restricting the key to fscrypt-only precludes this reuse.
 > 
-> My commit makes no attempts in changing that. It just adds a new way to pass
-> raw key material into fscrypt. For more information, see the commit[1] adding
-> that key type.
-> 
->> [*] https://www.kernel.org/doc/html/v5.13/security/keys/trusted-encrypted.html
-> 
-> [1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=93edd392ca
-> 
-> Cheers,
-> Ahmad
-> 
+> I don't think this is right, or at least it does not follow the pattern
+> in [*]. I.e. you should rather use trusted key to seal your fscrypt key.
 
+What's the benefit of the extra layer of indirection over just using a "trusted"
+key directly?  The use case for "encrypted" keys is not at all clear to me.
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+- Eric
