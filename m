@@ -2,33 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DF503E4E1E
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  9 Aug 2021 22:52:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 696F23E4E65
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  9 Aug 2021 23:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236306AbhHIUwY (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 9 Aug 2021 16:52:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42706 "EHLO mail.kernel.org"
+        id S236443AbhHIVYs (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 9 Aug 2021 17:24:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49690 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231439AbhHIUwY (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 9 Aug 2021 16:52:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A5C3E61019;
-        Mon,  9 Aug 2021 20:52:02 +0000 (UTC)
+        id S236441AbhHIVYq (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 9 Aug 2021 17:24:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 203B860EB9;
+        Mon,  9 Aug 2021 21:24:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628542323;
-        bh=Hmwxlf5nQ7ImK2R2BhO30AV/6FpqvIYKru/OacCO/yI=;
+        s=k20201202; t=1628544264;
+        bh=D2aOWPkZRvo4FPeQiqOYNBi8S+9DKShgichgczsHHWo=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=e+SB5V7BnHWZA1+CxKpnSYavXT98W4ODpDVlD+XnnVvKsjZbLwcMZaIjQPimc+wty
-         HeRSgLLvr0bL+nvQEhQYmFMNzgUdXpBUkYxsSofCOST9b7gtqMsLb2dS7ZywqI+PfJ
-         jqWJKwkDczv9HXamv4LdC1Y841+ehrsggFvhehTUWt4TynfJ6pvOvuxqH61NN+//ne
-         Gq4IRclpNdCln9SoQCCKdwGoZXM4gtSbwAkO/wl/MTpKkfwNxMV3A0FtsKSuL69t0K
-         r1O31SpBeVUg8PgVABpL4gGF6vvwr/qnYH33nxARtCg1w9zNGYpYLU7C5fHtDAKQcy
-         5fS2dwdG18wgw==
-Date:   Mon, 9 Aug 2021 13:52:01 -0700
+        b=iZLhpA+/gitAAaAEJQa+SuwtTRtdWqNg6KiI+uJ7wTvD3Slz3f1q3M9eNHEFeRye0
+         skvrWsmpZpvzteGIgxz4pTEpOgAipWgy9d7eUlNX8TSLP79IWGFGwweo0PtzzXd7OB
+         AEZsAAVVZ292uDGutkHjSqtKaODj/EDag/I63+6go3rh+dCs85LjWzbrvCixe8fofF
+         dgyiqfDqJVa2wzIudk1PTzSFI5sW3HaAMH3j/iQ+w7cgz2z0y4fJVAo4aRdc/zM6FO
+         /bYKoXwAhjmPGJpABv1eqcLcp3CKE5y689yJhJ/+5zZVIW9+Yy4Zn2AvdCx12kotWk
+         fG+pgXQ5/og3w==
+Date:   Mon, 9 Aug 2021 14:24:22 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
         Jaegeuk Kim <jaegeuk@kernel.org>, kernel@pengutronix.de,
+        Jarkko Sakkinen <jarkko@kernel.org>,
         James Morris <jmorris@namei.org>,
         "Serge E. Hallyn" <serge@hallyn.com>,
         James Bottomley <jejb@linux.ibm.com>,
@@ -40,70 +40,125 @@ Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
         linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Subject: Re: [PATCH v2] fscrypt: support trusted keys
-Message-ID: <YRGVcaquAJiuc8bp@gmail.com>
+Message-ID: <YRGdBiJQ3xqZAT4w@gmail.com>
 References: <20210806150928.27857-1-a.fatoum@pengutronix.de>
- <20210809094408.4iqwsx77u64usfx6@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210809094408.4iqwsx77u64usfx6@kernel.org>
+In-Reply-To: <20210806150928.27857-1-a.fatoum@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 12:44:08PM +0300, Jarkko Sakkinen wrote:
-> > @@ -577,28 +578,44 @@ static int get_keyring_key(u32 key_id, u32 type,
-> >  	key_ref_t ref;
-> >  	struct key *key;
-> >  	const struct fscrypt_provisioning_key_payload *payload;
-> > -	int err;
-> > +	int err = 0;
-> >  
-> >  	ref = lookup_user_key(key_id, 0, KEY_NEED_SEARCH);
-> >  	if (IS_ERR(ref))
-> >  		return PTR_ERR(ref);
-> >  	key = key_ref_to_ptr(ref);
-> >  
-> > -	if (key->type != &key_type_fscrypt_provisioning)
-> > -		goto bad_key;
-> > -	payload = key->payload.data[0];
-> > +	if (key->type == &key_type_fscrypt_provisioning) {
-> 
-> Why does fscrypt have own key type, and does not extend 'encrypted' with a
-> new format [*]?
+Hi Ahmad,
 
-Are you referring to the "fscrypt-provisioning" key type?  That is an existing
-feature (which in most cases isn't used, but there is a use case that requires
-it), not something being added by this patch.  We just needed a key type where
-userspace can add a raw key to the kernel and not be able to read it back (so
-like the "logon" key type), but also have the kernel enforce that that key is
-only used for fscrypt with a particular KDF version, and not with other random
-kernel features.  The "encrypted" key type wouldn't have worked for this at all;
-it's a totally different thing.
+This generally looks okay, but I have some comments below.
 
-> > +	} else if (IS_REACHABLE(CONFIG_TRUSTED_KEYS) && key->type == &key_type_trusted) {
-> > +		struct trusted_key_payload *tkp;
-> > +
-> > +		/* avoid reseal changing payload while we memcpy key */
-> > +		down_read(&key->sem);
-> > +		tkp = key->payload.data[0];
-> > +		if (!tkp || tkp->key_len < FSCRYPT_MIN_KEY_SIZE ||
-> > +		    tkp->key_len > FSCRYPT_MAX_KEY_SIZE) {
-> > +			up_read(&key->sem);
-> > +			err = -EINVAL;
-> > +			goto out_put;
-> > +		}
-> > +
-> > +		secret->size = tkp->key_len;
-> > +		memcpy(secret->raw, tkp->key, secret->size);
-> > +		up_read(&key->sem);
-> > +	} else {
-> 
-> 
-> I don't think this is right, or at least it does not follow the pattern
-> in [*]. I.e. you should rather use trusted key to seal your fscrypt key.
+On Fri, Aug 06, 2021 at 05:09:28PM +0200, Ahmad Fatoum wrote:
+> Kernel trusted keys don't require userspace knowledge of the raw key
+> material and instead export a sealed blob, which can be persisted to
+> unencrypted storage. Userspace can then load this blob into the kernel,
+> where it's unsealed and from there on usable for kernel crypto.
 
-What's the benefit of the extra layer of indirection over just using a "trusted"
-key directly?  The use case for "encrypted" keys is not at all clear to me.
+Please be explicit about where and how the keys get generated in this case.
+
+> This is incompatible with fscrypt, where userspace is supposed to supply
+> the raw key material. For TPMs, a work around is to do key unsealing in
+> userspace, but this may not be feasible for other trusted key backends.
+
+As far as I can see, "Key unsealing in userspace" actually is the preferred way
+to implement TPM-bound encryption.  So it doesn't seem fair to call it a "work
+around".
+
+> +  Most users leave this 0 and specify the raw key directly.
+> +  "trusted" keys are useful to leverage kernel support for sealing
+> +  and unsealing key material. Sealed keys can be persisted to
+> +  unencrypted storage and later be used to decrypt the file system
+> +  without requiring userspace to have knowledge of the raw key
+> +  material.
+> +  "fscrypt-provisioning" key support is intended mainly to allow
+> +  re-adding keys after a filesystem is unmounted and re-mounted,
+>    without having to store the raw keys in userspace memory.
+>  
+>  - ``raw`` is a variable-length field which must contain the actual
+>    key, ``raw_size`` bytes long.  Alternatively, if ``key_id`` is
+>    nonzero, then this field is unused.
+>  
+> +.. note::
+> +
+> +   Users should take care not to reuse the fscrypt key material with
+> +   different ciphers or in multiple contexts as this may make it
+> +   easier to deduce the key.
+> +   This also applies when the key material is supplied indirectly
+> +   via a kernel trusted key. In this case, the trusted key should
+> +   perferably be used only in a single context.
+
+Again, please be explicit about key generation.  Note that key generation is
+already discussed in a different section, "Master Keys".  There should be a
+mention of trusted keys there.  The above note about not reusing keys probably
+belongs there too.  (The section you're editing here is
+"FS_IOC_ADD_ENCRYPTION_KEY", which is primarily intended to just document the
+ioctl, so it's not necessarily the best place for this type of information.)
+
+> @@ -577,28 +578,44 @@ static int get_keyring_key(u32 key_id, u32 type,
+>  	key_ref_t ref;
+>  	struct key *key;
+>  	const struct fscrypt_provisioning_key_payload *payload;
+> -	int err;
+> +	int err = 0;
+>  
+>  	ref = lookup_user_key(key_id, 0, KEY_NEED_SEARCH);
+>  	if (IS_ERR(ref))
+>  		return PTR_ERR(ref);
+>  	key = key_ref_to_ptr(ref);
+>  
+> -	if (key->type != &key_type_fscrypt_provisioning)
+> -		goto bad_key;
+> -	payload = key->payload.data[0];
+> +	if (key->type == &key_type_fscrypt_provisioning) {
+
+This function is getting long; it probably should be broken this up into several
+functions.  E.g.:
+
+static int get_keyring_key(u32 key_id, u32 type,
+                           struct fscrypt_master_key_secret *secret)
+{
+        key_ref_t ref;
+        struct key *key;
+        int err;
+
+        ref = lookup_user_key(key_id, 0, KEY_NEED_SEARCH);
+        if (IS_ERR(ref))
+                return PTR_ERR(ref);
+        key = key_ref_to_ptr(ref);
+
+        if (key->type == &key_type_fscrypt_provisioning) {
+                err = fscrypt_get_provisioning_key(key, type, secret);
+        } else if (IS_REACHABLE(CONFIG_TRUSTED_KEYS) &&
+                   key->type == &key_type_trusted) {
+                err = fscrypt_get_trusted_key(key, secret);
+        } else {
+                err = -EKEYREJECTED;
+        }
+        key_ref_put(ref);
+        return err;
+}
+
+> +		/* Don't allow fscrypt v1 keys to be used as v2 keys and vice versa. */
+
+Please avoid overly-long lines.
+
+> +		tkp = key->payload.data[0];
+> +		if (!tkp || tkp->key_len < FSCRYPT_MIN_KEY_SIZE ||
+> +		    tkp->key_len > FSCRYPT_MAX_KEY_SIZE) {
+> +			up_read(&key->sem);
+> +			err = -EINVAL;
+> +			goto out_put;
+> +		}
+
+What does the !tkp case mean?  For "user" and "logon" keys it means "key
+revoked", but the "trusted" key type doesn't implement revoke.  Is this included
+just to be safe?  That might be reasonable, but perhaps the error code in that
+case (but not the invalid length cases) should be -EKEYREVOKED instead?
 
 - Eric
