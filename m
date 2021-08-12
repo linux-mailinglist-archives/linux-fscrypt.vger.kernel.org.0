@@ -2,30 +2,63 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1B823E96A4
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 11 Aug 2021 19:16:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A0533E9BB9
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 12 Aug 2021 02:55:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231236AbhHKRQe (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 11 Aug 2021 13:16:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57480 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231264AbhHKRQ3 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 11 Aug 2021 13:16:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A77F760720;
-        Wed, 11 Aug 2021 17:16:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628702165;
-        bh=9h03uKGoS94D5joA0oQ8vjBfh49XzjEF5chJiZqRUSM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R4lANRmD7F79aJk1QwsPA2lv4OQqEB1kpG2XjTPtoXxx6kuKdityhC7zcwKDhreDm
-         XsJtAmOJwSddjxQ448+ktoeI/eZG+BkVyc8KFEo9igVGQiUXZozh4ciYpL3BBkmy/C
-         MSYHY5jOe/mKDm+DeplA7idJPn7uEyxVgcHpr/tEE0XIP51hv1ElOHYW1uwu9jfjA+
-         5YH/uPw3qKgSzzl5x8Ds9Ib4uFTwfnJNyYHvdvJQ8gOhgKZnARoeLVfV4/WPn2nr8T
-         BtQn83YSoqFY/rAzopncT84KP1iFL+r8KclwjGHTrQL7ZQQK11C+VpuZ4WRpn9JLly
-         baVtflrGpwJlA==
-Date:   Wed, 11 Aug 2021 10:16:03 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Mimi Zohar <zohar@linux.ibm.com>
+        id S233111AbhHLAzZ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 11 Aug 2021 20:55:25 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:58608 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232704AbhHLAzY (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 11 Aug 2021 20:55:24 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17C0Xi9q165976;
+        Wed, 11 Aug 2021 20:54:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=ULNYVhyMXQ6SJqEPuIb/V3Ar+77kio3M9soDEn4mVZI=;
+ b=U7vzE5v9UZZ45xrsck6jEvH7LjuhW/AIlkt6QO9HWq+MXbMHBhVbx9UM/7w4YTX7vZhI
+ 4hmxgbN0JetK1AXkuD6WJFss+1KlN1J26QS7kLYBKNmySgYwpclRLyJuMN8+ZKogCRa3
+ 8EI1LO/kmK56Z0Rz6OYRBtA3PlSJZPSMhutitZ5A31s92IkbBYNe7BmqUls7tv2pK4Mm
+ HAIWQUQVTgSsUdDn5oH2Gzpzks4f5aJBQpzihj/AxFGmy5cCca+GtABs5NAPwTXgk+4J
+ VXLJFA9IfsPKywQeMx2YezCCHX+mEYJrAqNomrLXSE3dHNiyAppYi+KGDJejY6yWcm34 8Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3abk4rb3nn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Aug 2021 20:54:45 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17C0jLs3019800;
+        Wed, 11 Aug 2021 20:54:44 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3abk4rb3n0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Aug 2021 20:54:44 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17C0mr4b023293;
+        Thu, 12 Aug 2021 00:54:42 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma06fra.de.ibm.com with ESMTP id 3abaq4bpt9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Aug 2021 00:54:42 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17C0seAc57409946
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 12 Aug 2021 00:54:40 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EC8B64C058;
+        Thu, 12 Aug 2021 00:54:39 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CF5AD4C044;
+        Thu, 12 Aug 2021 00:54:35 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.39.92])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 12 Aug 2021 00:54:35 +0000 (GMT)
+Message-ID: <0e69a0aa394dd20347b06ae4e700aa17d52583ef.camel@linux.ibm.com>
+Subject: Re: [PATCH v2] fscrypt: support trusted keys
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Eric Biggers <ebiggers@kernel.org>
 Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
         Ahmad Fatoum <a.fatoum@pengutronix.de>,
         "Theodore Y. Ts'o" <tytso@mit.edu>,
@@ -39,91 +72,49 @@ Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
         linux-integrity@vger.kernel.org,
         linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] fscrypt: support trusted keys
-Message-ID: <YRQF09f8st95yrFZ@gmail.com>
+Date:   Wed, 11 Aug 2021 20:54:34 -0400
+In-Reply-To: <YRQF09f8st95yrFZ@gmail.com>
 References: <20210806150928.27857-1-a.fatoum@pengutronix.de>
- <20210809094408.4iqwsx77u64usfx6@kernel.org>
- <YRGVcaquAJiuc8bp@gmail.com>
- <20210810180636.vqwaeftv7alsodgn@kernel.org>
- <YRLJmaafp941uOdA@gmail.com>
- <20210810212140.sdq5dq2wy5uaj7h7@kernel.org>
- <YRLvPJehAeMiYb2Z@gmail.com>
- <20210811001743.ofzkwdwa6rcjsf4d@kernel.org>
- <d4f5c2593380c82ceebae2c8782a1c440b35f165.camel@linux.ibm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d4f5c2593380c82ceebae2c8782a1c440b35f165.camel@linux.ibm.com>
+         <20210809094408.4iqwsx77u64usfx6@kernel.org> <YRGVcaquAJiuc8bp@gmail.com>
+         <20210810180636.vqwaeftv7alsodgn@kernel.org> <YRLJmaafp941uOdA@gmail.com>
+         <20210810212140.sdq5dq2wy5uaj7h7@kernel.org> <YRLvPJehAeMiYb2Z@gmail.com>
+         <20210811001743.ofzkwdwa6rcjsf4d@kernel.org>
+         <d4f5c2593380c82ceebae2c8782a1c440b35f165.camel@linux.ibm.com>
+         <YRQF09f8st95yrFZ@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: Bw0BKgjnxSvjPERnFY5J8y3TGYn8Lb-u
+X-Proofpoint-GUID: nknNgAnVYtbwy3IFx8trALR_Z1mI68X2
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-11_08:2021-08-11,2021-08-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ clxscore=1015 impostorscore=0 phishscore=0 lowpriorityscore=0 spamscore=0
+ mlxlogscore=999 mlxscore=0 bulkscore=0 adultscore=0 suspectscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108120001
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 07:34:18AM -0400, Mimi Zohar wrote:
-> On Wed, 2021-08-11 at 03:17 +0300, Jarkko Sakkinen wrote:
-> > On Tue, Aug 10, 2021 at 02:27:24PM -0700, Eric Biggers wrote:
-> > > On Wed, Aug 11, 2021 at 12:21:40AM +0300, Jarkko Sakkinen wrote:
-> > > > On Tue, Aug 10, 2021 at 11:46:49AM -0700, Eric Biggers wrote:
-> > > > > On Tue, Aug 10, 2021 at 09:06:36PM +0300, Jarkko Sakkinen wrote:
-> > > > > > > > 
-> > > > > > > > I don't think this is right, or at least it does not follow the pattern
-> > > > > > > > in [*]. I.e. you should rather use trusted key to seal your fscrypt key.
-> > > > > > > 
-> > > > > > > What's the benefit of the extra layer of indirection over just using a "trusted"
-> > > > > > > key directly?  The use case for "encrypted" keys is not at all clear to me.
-> > > > > > 
-> > > > > > Because it is more robust to be able to use small amount of trusted keys,
-> > > > > > which are not entirely software based.
-> > > > > > 
-> > > > > > And since it's also a pattern on existing kernel features utilizing trusted
-> > > > > > keys, the pressure here to explain why break the pattern, should be on the
-> > > > > > side of the one who breaks it.
-> > > > > 
-> > > > > This is a new feature, so it's on the person proposing the feature to explain
-> > > > > why it's useful.  The purpose of "encrypted" keys is not at all clear, and the
-> > > > > documentation for them is heavily misleading.  E.g.:
-> > > > > 
-> > > > >     "user space sees, stores, and loads only encrypted blobs"
-> > > > >     (Not necessarily true, as I've explained previously.)
-> > > > > 
-> > > > >     "Encrypted keys do not depend on a trust source" ...  "The main disadvantage
-> > > > >     of encrypted keys is that if they are not rooted in a trusted key"
-> > > > >     (Not necessarily true, and in fact it seems they're only useful when they
-> > > > >     *do* depend on a trust source.  At least that's the use case that is being
-> > > > >     proposed here, IIUC.)
-> > > > > 
-> > > > > I do see a possible use for the layer of indirection that "encrypted" keys are,
-> > > > > which is that it would reduce the overhead of having lots of keys be directly
-> > > > > encrypted by the TPM/TEE/CAAM.  Is this the use case?  If so, it needs to be
-> > > > > explained.
-> > > > 
-> > > > If trusted keys are used directly, it's an introduction of a bottleneck.
-> > > > If they are used indirectly, you can still choose to have one trusted
-> > > > key per fscrypt key.
-> > > > 
-> > > > Thus, it's obviously a bad idea to use them directly.
-> > > 
-> > > So actually explain that in the documentation.  It's not obvious at all.  And
-> > > does this imply that the support for trusted keys in dm-crypt is a mistake?
-> > 
-> > Looking at dm-crypt implementation, you can choose to use 'encrypted' key
-> > type, which you can seal with a trusted key.
-> > 
-> > Note: I have not been involved when the feature was added to dm-crypt.
-> 
-> At least for TPM 1.2,  "trusted" keys may be sealed to a PCR and then
-> extended to prevent subsequent usage.  For example, in the initramfs
-> all of the "encrypted" keys could be decrypted by a single "trusted"
-> key, before extending the PCR.
-> 
-> Mimi
-> 
+On Wed, 2021-08-11 at 10:16 -0700, Eric Biggers wrote:
 
-Neither of you actually answered my question, which is whether the support for
-trusted keys in dm-crypt is a mistake.  I think you're saying that it is?  That
-would imply that fscrypt shouldn't support trusted keys, but rather encrypted
-keys -- which conflicts with Ahmad's patch which is adding support for trusted
-keys.  Note that your reasoning for this is not documented at all in the
-trusted-encrypted keys documentation; it needs to be (email threads don't really
-matter), otherwise how would anyone know when/how to use this feature?
+> Neither of you actually answered my question, which is whether the support for
+> trusted keys in dm-crypt is a mistake.  I think you're saying that it is?  That
+> would imply that fscrypt shouldn't support trusted keys, but rather encrypted
+> keys -- which conflicts with Ahmad's patch which is adding support for trusted
+> keys.  Note that your reasoning for this is not documented at all in the
+> trusted-encrypted keys documentation; it needs to be (email threads don't really
+> matter), otherwise how would anyone know when/how to use this feature?
 
-- Eric
+True, but all of the trusted-encrypted key examples in the
+documentation are "encrypted" type keys, encrypted/decrypted based on a
+"trusted" type key.  There are no examples of using the "trusted" key
+type directly.  Before claiming that adding "trusted" key support in
+dm-crypt was a mistake, we should ask Ahmad why he felt dm-crypt needed
+to directly support "trusted" type keys.
+
+Mimi
+
