@@ -2,124 +2,76 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ECB53F8BB4
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 26 Aug 2021 18:20:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2010A3F8BB7
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 26 Aug 2021 18:20:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243080AbhHZQVE (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 26 Aug 2021 12:21:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44580 "EHLO mail.kernel.org"
+        id S243086AbhHZQVF (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 26 Aug 2021 12:21:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243060AbhHZQVE (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 26 Aug 2021 12:21:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D8C9B610A6;
-        Thu, 26 Aug 2021 16:20:15 +0000 (UTC)
+        id S243060AbhHZQVF (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 26 Aug 2021 12:21:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CACC3610A7;
+        Thu, 26 Aug 2021 16:20:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629994816;
-        bh=9TMoeajy1RbxXoqRpxkEA8HrWNAbaAsewikQ1du4G9Q=;
-        h=From:To:Cc:Subject:Date:From;
-        b=DW8s57imt0rSsLG4HJe5e0FNWtm8Ikf8pD7ebKSfZt4nQAz9u+U6SCPqDmIlDhO8L
-         xXrDKRMjORC1BStWlti2HiYaSkIXHfAjV56ZIrE+nWG3RqntxvoJ7G8insKMehAsjc
-         clT3xCL1wNgv4Eg1Gq7G6YV8/btMaBjiF5pJ6TsHkhEvhS/FPQJ+vCTvPApYg9kzG8
-         sjiSqziUBmF3xstNdxRAu2p4KH/9fkAR7/wEv7JUT0eiUA6vHq9Se1M/dYmdHFpy6k
-         X8gYvXwpRFhHsbYnQe+aTR8+AaFc+vrpqX8AkxBSSZJlfK3HwWIvHfPIAcKZvTGJLO
-         +zcq3d3IvGBOQ==
+        s=k20201202; t=1629994817;
+        bh=yCNNKLVqbExFzsrwpKfzckRntYEGnKYJ3zcgAvD6uYE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=QVDAUiw3Ipr3uUNLJIoyCbiUwQBapcUQVAGEJRP9zOkNp1NcOAvEqKY39GWUo/0Tn
+         JnhPcSJF4UduI2AhRgaQVM5RF5C1xINsrEfl9NQMeOGt250EfS/ZOSggORR4BYL7gG
+         a1JIrCS/Hpe6yoOCR/y4f7UIfj8Z5nvsYIdOHd8T+coksVzAl6No6U73yCS+4waVT6
+         p/fGjCuElR0OcGINiymTUR+PrJ06KAvWJf6UqD2rnyKSkHoVtHuoPr5CuLvU6A/Dv2
+         hNwSCMMWeU1BDLd0/Af7FnhHhDzeE7T3VWalB4W4m4AxKRTaEpAOxH4o+K8FGpVn3v
+         wsTjOHnmS1FVw==
 From:   Jeff Layton <jlayton@kernel.org>
 To:     ceph-devel@vger.kernel.org
 Cc:     linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         dhowells@redhat.com, xiubli@redhat.com, lhenriques@suse.de,
-        khiremat@redhat.com, ebiggers@kernel.org
-Subject: [RFC PATCH v8 00/24] ceph+fscrypt: context, filename and symlink support
-Date:   Thu, 26 Aug 2021 12:19:50 -0400
-Message-Id: <20210826162014.73464-1-jlayton@kernel.org>
+        khiremat@redhat.com, ebiggers@kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: [RFC PATCH v8 01/24] vfs: export new_inode_pseudo
+Date:   Thu, 26 Aug 2021 12:19:51 -0400
+Message-Id: <20210826162014.73464-2-jlayton@kernel.org>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210826162014.73464-1-jlayton@kernel.org>
+References: <20210826162014.73464-1-jlayton@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-v8: bugfixes, comment cleanups, etc.
+Ceph needs to be able to allocate inodes ahead of a create that might
+involve a fscrypt-encrypted inode. new_inode() almost fits the bill,
+but it puts the inode on the sb->s_inodes list and when we go to hash
+it, that might be done again.
 
-It's been a little while since my last posting of this series. Not a lot
-has changed in this series since then. This is mostly addressing review
-comments on the v7 posting. Many thanks to Eric, Xiubo and Luis for
-helping review the last set.
+We could work around that by setting I_CREATING on the new inode, but
+that causes ilookup5 to return -ESTALE if something tries to find it
+before I_NEW is cleared. This is desirable behavior for most
+filesystems, but doesn't work for ceph.
 
-There are a few smaller bugfixes, some comment fixes, and a new helper
-to determine the length of a ceph_fscrypt_auth field was added.
+To work around all of this, just use new_inode_pseudo which doesn't add
+it to the sb->s_inodes list.
 
-This support requires changes to the MDS that are currently being
-tracked here:
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
+---
+ fs/inode.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-    https://github.com/ceph/ceph/pull/41284
-
-This patchset also requires a patch that's not yet in tree from Eric
-Biggers:
-
-    [PATCH] fscrypt: align Base64 encoding with RFC 4648 base64url
-
-Hopefully, that will go into v5.15.
-
-Work continues on the content piece, but I don't think we want to merge
-any of this until we have a fully-working prototype. I'm planning to
-send a ceph+fscrypt state of the union email in a bit that covers the
-state of the larger project.
-
-Stay tuned...
-
-Jeff Layton (24):
-  vfs: export new_inode_pseudo
-  fscrypt: export fscrypt_base64url_encode and fscrypt_base64url_decode
-  fscrypt: export fscrypt_fname_encrypt and fscrypt_fname_encrypted_size
-  fscrypt: add fscrypt_context_for_new_inode
-  ceph: preallocate inode for ops that may create one
-  ceph: parse new fscrypt_auth and fscrypt_file fields in inode traces
-  ceph: add fscrypt_* handling to caps.c
-  ceph: crypto context handling for ceph
-  ceph: add ability to set fscrypt_auth via setattr
-  ceph: implement -o test_dummy_encryption mount option
-  ceph: add fscrypt ioctls
-  ceph: decode alternate_name in lease info
-  ceph: make ceph_msdc_build_path use ref-walk
-  ceph: add encrypted fname handling to ceph_mdsc_build_path
-  ceph: send altname in MClientRequest
-  ceph: encode encrypted name in dentry release
-  ceph: properly set DCACHE_NOKEY_NAME flag in lookup
-  ceph: make d_revalidate call fscrypt revalidator for encrypted
-    dentries
-  ceph: add helpers for converting names for userland presentation
-  ceph: add fscrypt support to ceph_fill_trace
-  ceph: add support to readdir for encrypted filenames
-  ceph: create symlinks with encrypted and base64-encoded targets
-  ceph: make ceph_get_name decrypt filenames
-  ceph: add a new ceph.fscrypt.auth vxattr
-
- fs/ceph/Makefile             |   1 +
- fs/ceph/acl.c                |   4 +-
- fs/ceph/caps.c               |  93 ++++++++--
- fs/ceph/crypto.c             | 254 ++++++++++++++++++++++++++
- fs/ceph/crypto.h             | 129 +++++++++++++
- fs/ceph/dir.c                | 198 +++++++++++++++-----
- fs/ceph/export.c             |  44 +++--
- fs/ceph/file.c               |  64 ++++---
- fs/ceph/inode.c              | 304 ++++++++++++++++++++++++++++---
- fs/ceph/ioctl.c              |  83 +++++++++
- fs/ceph/mds_client.c         | 342 +++++++++++++++++++++++++++++------
- fs/ceph/mds_client.h         |  22 ++-
- fs/ceph/super.c              |  82 ++++++++-
- fs/ceph/super.h              |  31 +++-
- fs/ceph/xattr.c              |  25 +++
- fs/crypto/fname.c            |  40 +++-
- fs/crypto/fscrypt_private.h  |   9 +-
- fs/crypto/hooks.c            |   6 +-
- fs/crypto/policy.c           |  34 +++-
- fs/inode.c                   |   1 +
- include/linux/ceph/ceph_fs.h |  21 ++-
- include/linux/fscrypt.h      |  10 +
- 22 files changed, 1572 insertions(+), 225 deletions(-)
- create mode 100644 fs/ceph/crypto.c
- create mode 100644 fs/ceph/crypto.h
-
+diff --git a/fs/inode.c b/fs/inode.c
+index c93500d84264..cf9ea4b260b0 100644
+--- a/fs/inode.c
++++ b/fs/inode.c
+@@ -941,6 +941,7 @@ struct inode *new_inode_pseudo(struct super_block *sb)
+ 	}
+ 	return inode;
+ }
++EXPORT_SYMBOL(new_inode_pseudo);
+ 
+ /**
+  *	new_inode 	- obtain an inode
 -- 
 2.31.1
 
