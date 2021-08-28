@@ -2,346 +2,132 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78DE93F8E7D
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 26 Aug 2021 21:12:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 588153FA277
+	for <lists+linux-fscrypt@lfdr.de>; Sat, 28 Aug 2021 02:41:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233147AbhHZTMg (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 26 Aug 2021 15:12:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40018 "EHLO mail.kernel.org"
+        id S232503AbhH1AkN (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 27 Aug 2021 20:40:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57488 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229996AbhHZTMf (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 26 Aug 2021 15:12:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 21D9C6103E;
-        Thu, 26 Aug 2021 19:11:48 +0000 (UTC)
+        id S232754AbhH1AkJ (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Fri, 27 Aug 2021 20:40:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B6EE560ED5;
+        Sat, 28 Aug 2021 00:39:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630005108;
-        bh=Ss+ujEeyMmCHyfz1t1eXqT4HvGms8VAWxlZ9bmASsuk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VvS6xVJ56R3GkqbwBDY85r9X4OOxsJf9P/CgQ7BLvPDeKIMuoclcsh/g132qk/ZWz
-         mRSMxaEn0LJ3g2/M6OAVEiNZRv9TfLRXTsMPpnXZ2RzZq+g0/OMdmUQaERAVNAdExw
-         lM3DHKuWOC9lCNUER4dwSKkeAnczrdrex2CXBUpSZPShKDUVLICdz3gSKkt0ib5bvx
-         wscGEJYXUf0RsuOY9nd/bbm8VJ/YUifFox7mTW1ymnxopcoI2MT24YHk7XC1o4hlcE
-         QCJ4agwHA19ayMysuKeQG9/eVds7kJZugDBwoHqNJ0pP8Cuy0SSDzW7L2Yg2mBOqP7
-         4wxDmgGaXtRvA==
-Date:   Thu, 26 Aug 2021 12:11:46 -0700
+        s=k20201202; t=1630111159;
+        bh=x8xm7Zu1FSSKdY8WmtQ+VGn86yR2UwhQHXTTFsESEJc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=gz5LtA7lJ/qFiUQmXe7XKmH6+A3ERshpWUN3sU8Vaf8/kpaO18cF39ziXFFribGGd
+         6hfVlT+ol1nYECDeOYzfjmspZL0HbVSIkT/qclNq02FTSzugC3R6hxEbTXm7eiyPJQ
+         dfl7isFdJZJd4bLH0mOuuAHXjWi+JW5BHifgUaMAcKzGkjruL+SN4Zivo7IyHC+gGL
+         c5GSfSgHmJAYlnMIAP0cbAn3T7z9Fq0u58ctj01VuA5/aTpNvLAZ3S2mK5EMLZldAZ
+         ytJsutkZa2S7G3R1YvbjeXZPXafzHx2xD85GXlj0IFj6rrOi030/h/VxeJAlkej7yf
+         eNtVsbmlbAAag==
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Aleksander Adamowski <olo@fb.com>
-Cc:     linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH] Implement PKCS#11 opaque keys support through OpenSSL
- pkcs11 engine
-Message-ID: <YSfncv8Agfam4P2m@sol.localdomain>
-References: <20210826001346.1899149-1-olo@fb.com>
+To:     linux-block@vger.kernel.org, linux-fscrypt@vger.kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, kernel-team@android.com,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        Gaurav Kashyap <gaurkash@codeaurora.org>,
+        Satya Tangirala <satyaprateek2357@gmail.com>
+Subject: [RFC PATCH 0/4] Support for hardware-wrapped inline encryption keys
+Date:   Fri, 27 Aug 2021 17:32:20 -0700
+Message-Id: <20210828003224.33346-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210826001346.1899149-1-olo@fb.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hi Aleksander,
+[ NOTE: this patchset is an RFC that isn't ready for merging yet because
+  it doesn't yet include the vendor-specific UFS or eMMC driver changes
+  needed to actually use the feature.  I.e., this patchset isn't
+  sufficient to actually use hardware-wrapped keys with upstream yet.
 
-First, can you make sure to include "[fsverity-utils PATCH]" in the subject like
-the fsverity-utils README file suggests?  I almost missed this patch as it
-initially didn't look relevant to me.
+  For context, hardware-wrapped key support has been out-of-tree in the
+  Android kernels since early last year; upstreaming has been blocked on
+  hardware availability and support.  However, an SoC that supports this
+  feature (SM8350, a.k.a. Qualcomm Snapdragon 888) finally has been
+  publicly released and had basic SoC support upstreamed.  Also, some
+  other hardware will support the same feature soon.  So, things should
+  be progressing soon.  So while the driver changes are gotten into an
+  upstream-ready form, I wanted to get things started and give people a
+  chance to give early feedback on the plan for how the kernel will
+  support this type of hardware.  Also, anyone please let me know if
+  you're interested in helping with the Qualcomm driver changes.]
 
-I'm not particularly familiar with the OpenSSL PKCS#11 engine, but this patch
-looks reasonable at a high level (assuming that you really want to use the
-kernel's built-in fs-verity signature verification support -- I've been trying
-to encourage people to do userspace signature verification instead).  Some
-comments on the implementation below.
+This patchset adds framework-level support (i.e., block and fscrypt
+support) for hardware-wrapped keys when the inline encryption hardware
+supports them.  Hardware-wrapped keys are keys that are wrapped
+(encrypted) by a key internal to the hardware.  Except at initial
+unlocking time, the wrapping key is an ephemeral, per-boot key.
+Hardware-wrapped keys can only be unwrapped (decrypted) by the hardware,
+e.g. when a key is programmed into a keyslot.  They are never visible to
+software in raw form, except optionally during key generation (the
+hardware supports importing keys as well as generating keys itself).
 
-On Wed, Aug 25, 2021 at 05:13:46PM -0700, Aleksander Adamowski wrote:
-> PKCS#11 API allows us to use opaque keys confined in hardware security
-> modules (HSMs) and similar hardware tokens without direct access to the
-> key material, providing logical separation of the keys from the
-> cryptographic operations performed using them.
-> 
-> This commit allows using the popular libp11 pkcs11 module for the
-> OpenSSL library with `fsverity` so that direct access to a private key
-> file isn't necessary to sign files.
-> 
-> The user needs to supply the path to the engine shared library
-> (typically libp11 shared object file) and the PKCS#11 module library (a
-> shared object file specific to the given hardware token).
-> 
-> Additionally, the existing `key` argument can be used to pass an
-> optional token-specific key identifier (instead of a private key file
-> name) for tokens that can contain multiple keys.
-> 
-> Test evidence with a hardware PKCS#11 token:
-> 
->   $ echo test > dummy
->   $ ./fsverity sign dummy dummy.sig \
->     --pkcs11-engine=/usr/lib64/engines-1.1/libpkcs11.so \
->     --pkcs11-module=/usr/local/lib64/pkcs11_module.so \
->     --cert=test-pkcs11-cert.pem && echo OK;
->   Signed file 'dummy'
->   (sha256:c497326752e21b3992b57f7eff159102d474a97d972dc2c2d99d23e0f5fbdb65)
->   OK
+This feature protects the encryption keys from read-only compromises of
+kernel memory, such as that which can occur during a cold boot attack.
+It does this without limiting the number of keys that can be used, as
+would be the case with solutions that didn't use key wrapping.
 
-Please update the man page (man/fsverity.1.md) to document these new options.
+The kernel changes to support this feature basically consist of changes
+to blk-crypto to allow a blk_crypto_key to be hardware-wrapped and to
+allow storage drivers to support hardware-wrapped keys, and changes to
+fscrypt to allow the fscrypt master keys to be hardware-wrapped.
 
-> 
-> Test evidence for regression check (checking that regular file-based key
-> signing still works):
-> 
->   $ ./fsverity sign dummy dummy.sig --key=key.pem --cert=cert.pem && \
->     echo  OK;
->   Signed file 'dummy'
->   (sha256:c497326752e21b3992b57f7eff159102d474a97d972dc2c2d99d23e0f5fbdb65)
->   OK
-> 
-> Signed-off-by: Aleksander Adamowski <olo@fb.com>
-> ---
->  include/libfsverity.h |  9 ++++-
->  lib/sign_digest.c     | 94 +++++++++++++++++++++++++++++++++++++++++++
->  programs/cmd_sign.c   | 57 ++++++++++++++++++++++++++
->  programs/fsverity.c   |  6 ++-
->  programs/fsverity.h   |  2 +
->  5 files changed, 166 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/libfsverity.h b/include/libfsverity.h
-> index 6cefa2b..4b27b3a 100644
-> --- a/include/libfsverity.h
-> +++ b/include/libfsverity.h
-> @@ -82,8 +82,15 @@ struct libfsverity_digest {
->  };
->  
->  struct libfsverity_signature_params {
-> -	const char *keyfile;		/* path to key file (PEM format) */
-> +	const char *keyfile; /* path to key file (PEM format), optional,
-> +				conflicts with pkcs11 */
+Key generation and import, as well as the conversion of keys from
+long-term wrapped form to ephemerally-wrapped form, are currently
+considered out-of-scope.  An open question is if/how the kernel can
+provide a generic UAPI for these parts (new block ioctls that call
+through to new methods in blk_ksm_ll_ops, maybe)?
 
-This comment is incorrect, as your code uses keyfile even in the pkcs11 case.
+For full details, see the individual patches, especially the detailed
+documentation they add to Documentation/block/inline-encryption.rst and
+Documentation/filesystems/fscrypt.rst.
 
-Also, keyfile is only optional in the pkcs11 case.  Please write a comment that
-clearly explains which parameters must be specified and when.
+This patchset is organized as follows:
 
->  	const char *certfile;		/* path to certificate (PEM format) */
-> +#ifndef OPENSSL_IS_BORINGSSL
-> +	const char *pkcs11_engine;	/* path to PKCS#11 engine .so, optional,
-> +					   conflicts with *keyfile */
-> +	const char *pkcs11_module;	/* path to PKCS#11 module .so, optional,
-> +					   conflicts with *keyfile */
-> +#endif
->  	uint64_t reserved1[8];		/* must be 0 */
->  	uintptr_t reserved2[8];		/* must be 0 */
->  };
+- Patch 1 adds the block support and documentation.
 
-Inserting these new fields into the middle of the struct breaks the library ABI.
-They need to be placed in reserved2 instead, and the size of reserved2 needs to
-be decreased accordingly.
+- Patches 2-3 are cleanups to fscrypt documentation and key validation.
+  These aren't specific to hardware-wrapped keys per se, so these don't
+  need to wait for the rest of the patches.
 
-> +static ENGINE *get_engine(const char *pkcs11_engine, const char *pkcs11_module)
-> +{
+- Patch 4 adds the fscrypt support and documentation.
 
-Calling this get_pkcs11_engine() would be clearer.
+This patchset applies to v5.14-rc7.  It can also be retrieved from tag
+"wrapped-keys-v1" of
+https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git.
 
-> +static int read_pkcs11_token(ENGINE *engine, const char *key_id,
-> +			     EVP_PKEY **pkey_ret)
-> +{
-> +	EVP_PKEY *pkey;
-> +	int err;
-> +
-> +	pkey = ENGINE_load_private_key(engine, key_id, NULL, NULL);
-> +	if (!pkey) {
-> +		error_msg_openssl(
-> +		    "failed to load private key from PKCS#11 token");
-> +		err = -EINVAL;
-> +		goto out;
-> +	} else {
-> +		*pkey_ret = pkey;
-> +		err = 0;
-> +	}
-> +out:
-> +	// Free the functional reference obtained from ENGINE_init()
-> +	ENGINE_finish(engine);
-> +	return err;
-> +}
-> +
->  static BIO *new_mem_buf(const void *buf, size_t size)
->  {
->  	BIO *bio;
-> @@ -334,10 +389,20 @@ libfsverity_sign_digest(const struct libfsverity_digest *digest,
->  		return -EINVAL;
->  	}
->  
-> +#ifdef OPENSSL_IS_BORINGSSL
->  	if (!sig_params->keyfile || !sig_params->certfile) {
->  		libfsverity_error_msg("keyfile and certfile must be specified");
-> +	}
-> +#else
-> +	if ((!sig_params->keyfile &&
-> +	     (!sig_params->pkcs11_engine || !sig_params->pkcs11_module)) ||
-> +	    !sig_params->certfile) {
-> +		libfsverity_error_msg(
-> +		    "(keyfile or pkcs11_engine and pkcs11_module) and certfile "
-> +		    "must be specified");
->  		return -EINVAL;
->  	}
-> +#endif
->  
->  	if (!libfsverity_mem_is_zeroed(sig_params->reserved1,
->  				       sizeof(sig_params->reserved1)) ||
-> @@ -353,9 +418,38 @@ libfsverity_sign_digest(const struct libfsverity_digest *digest,
->  		return -EINVAL;
->  	}
->  
-> +#ifdef OPENSSL_IS_BORINGSSL
->  	err = read_private_key(sig_params->keyfile, &pkey);
->  	if (err)
->  		goto out;
-> +#else
-> +	if (sig_params->pkcs11_engine && sig_params->pkcs11_module) {
-> +		ENGINE *engine;
-> +		engine = get_engine(sig_params->pkcs11_engine,
-> +				    sig_params->pkcs11_module);
-> +		if (!engine) {
-> +			err = -EINVAL;
-> +			goto out;
-> +		}
-> +		/*
-> +		 * We overload the keyfile arg as an optional PKCS#11 key
-> +		 * identifier (NULL will cause engine to use the default key
-> +		 * from the token)
-> +		 */
-> +		err = read_pkcs11_token(engine, sig_params->keyfile, &pkey);
-> +		if (err)
-> +			goto out;
-> +	} else if (sig_params->keyfile) {
-> +		err = read_private_key(sig_params->keyfile, &pkey);
-> +		if (err)
-> +			goto out;
-> +
-> +	} else {
-> +		libfsverity_error_msg("Either private key or both pkcs11 "
-> +				      "params need to be provided");
-> +		return -EINVAL;
-> +	}
-> +#endif
+Eric Biggers (4):
+  block: add hardware-wrapped key support
+  fscrypt: improve documentation for inline encryption
+  fscrypt: allow 256-bit master keys with AES-256-XTS
+  fscrypt: add support for hardware-wrapped keys
 
-There are several bugs here.  The !OPENSSL_IS_BORINGSSL case no longer returns
-an error if sig_params->keyfile or sig_params->certfile is unset, and it doesn't
-return an error if the pkcs11 parameters are set.  Also, either case fails to
-return an error if pkcs11_engine is set but not pkcs11_module, or vice versa.
+ Documentation/block/inline-encryption.rst | 222 ++++++++++++++++++++-
+ Documentation/filesystems/fscrypt.rst     | 223 ++++++++++++++++++----
+ block/blk-crypto-fallback.c               |   5 +-
+ block/blk-crypto-internal.h               |   1 +
+ block/blk-crypto.c                        |  45 ++++-
+ block/keyslot-manager.c                   |  67 +++++--
+ drivers/md/dm-table.c                     |   1 +
+ drivers/mmc/host/cqhci-crypto.c           |   2 +
+ drivers/scsi/ufs/ufshcd-crypto.c          |   1 +
+ fs/crypto/fscrypt_private.h               |  88 ++++++++-
+ fs/crypto/hkdf.c                          |  15 +-
+ fs/crypto/inline_crypt.c                  |  64 ++++++-
+ fs/crypto/keyring.c                       | 119 ++++++++----
+ fs/crypto/keysetup.c                      | 131 +++++++++++--
+ fs/crypto/keysetup_v1.c                   |   5 +-
+ fs/crypto/policy.c                        |  11 +-
+ include/linux/blk-crypto.h                |  70 ++++++-
+ include/linux/keyslot-manager.h           |  20 ++
+ include/uapi/linux/fscrypt.h              |   7 +-
+ 19 files changed, 959 insertions(+), 138 deletions(-)
 
-I think it would be best to create a new function get_private_key() that just
-handles getting the private key correctly.  Something like the following:
+base-commit: e22ce8eb631bdc47a4a4ea7ecf4e4ba499db4f93
+-- 
+2.32.0
 
-static int
-get_private_key(const struct libfsverity_signature_params *sig_params,
-		EVP_PKEY **pkey_ret)
-{
-	if (sig_params->pkcs11_engine || sig_params->pkcs11_module) {
-#ifdef OPENSSL_IS_BORINGSSL
-		libfsverity_error_msg("BoringSSL doesn't support PKCS#11 feature");
-		return -EINVAL;
-#else
-		ENGINE *engine;
-
-		if (!sig_params->pkcs11_engine) {
-			libfsverity_error_msg("missing PKCS#11 engine parameter");
-			return -EINVAL;
-		}
-		if (!sig_params->pkcs11_module) {
-			libfsverity_error_msg("missing PKCS#11 module parameter");
-			return -EINVAL;
-		}
-		engine = get_pkcs11_engine(sig_params->pkcs11_engine,
-					   sig_params->pkcs11_module);
-		if (!engine)
-			return -EINVAL;
-		/*
-		 * We overload the keyfile parameter as an optional PKCS#11 key
-		 * identifier.  NULL will cause the engine to use the default
-		 * key from the token.
-		 */
-		*pkey_ret = ENGINE_load_private_key(engine, sig_params->keyfile,
-						    NULL, NULL);
-		ENGINE_finish(engine);
-		if (!*pkey_ret) {
-			error_msg_openssl("failed to load private key from PKCS#11 token");
-			return -EINVAL;
-		}
-		return 0;
-#endif
-	}
-	if (!sig_params->keyfile) {
-		error_msg_openssl("missing keyfile parameter (or PKCS11 parameters)");
-		return -EINVAL;
-	}
-	return read_private_key(sig_params->keyfile, pkey_ret);
-}
-
-
-The NULL check of certfile can be moved into read_certificate().
-
-Then libfsverity_sign_digest() itself would be pretty simple:
-
-	err = read_certificate(sig_params->certfile, &cert);
-	if (err)
-		goto out;
-
-	err = get_private_key(sig_params, &pkey);
-	if (err)
-		goto out;
-
-> diff --git a/programs/cmd_sign.c b/programs/cmd_sign.c
-> index 81a4ddc..81de18c 100644
-> --- a/programs/cmd_sign.c
-> +++ b/programs/cmd_sign.c
-> @@ -32,8 +32,16 @@ static const struct option longopts[] = {
->  	{"salt",	    required_argument, NULL, OPT_SALT},
->  	{"out-merkle-tree", required_argument, NULL, OPT_OUT_MERKLE_TREE},
->  	{"out-descriptor",  required_argument, NULL, OPT_OUT_DESCRIPTOR},
-> +#ifdef OPENSSL_IS_BORINGSSL
->  	{"key",		    required_argument, NULL, OPT_KEY},
-> +#else
-> +	{"key",		    optional_argument, NULL, OPT_KEY},
-> +#endif
-
-The --key option still requires an argument in both cases, so it should still be
-"required_argument".  I think what you're trying to say is that the --key option
-is not required in the !OPENSSL_IS_BORINGSSL case.  That's something different;
-it's handled in the code that processes the options.
-
-Another thing to keep in mind is that the 'fsverity' binary might not know
-whether 'libfsverity' is linked to BoringSSL or OpenSSL.  So any use of
-OPENSSL_IS_BORINGSSL should be avoided in the programs/ directory.
-
->  	{"cert",	    required_argument, NULL, OPT_CERT},
-> +#ifndef OPENSSL_IS_BORINGSSL
-> +	{"pkcs11-engine",	    optional_argument, NULL, OPT_PKCS11_ENGINE},
-> +	{"pkcs11-module",	    optional_argument, NULL, OPT_PKCS11_MODULE},
-> +#endif
->  	{NULL, 0, NULL, 0}
->  };
-
-Likewise, using OPENSSL_IS_BORINGSSL isn't valid here.
-
-> +#ifndef OPENSSL_IS_BORINGSSL
-> +		case OPT_PKCS11_ENGINE:
-> +			if (sig_params.keyfile != NULL) {
-> +				error_msg("--pkcs11-engine cannot be specified "
-> +					  "when on-disk --key is in use");
-> +				goto out_usage;
-> +			}
-> +			sig_params.pkcs11_engine = optarg;
-> +			break;
-> +		case OPT_PKCS11_MODULE:
-> +			if (sig_params.keyfile != NULL) {
-> +				error_msg("--pkcs11-module cannot be specified "
-> +					  "when on-disk --key is in use");
-> +				goto out_usage;
-> +			}
-> +			sig_params.pkcs11_module = optarg;
-> +			break;
-> +#endif
-
-This seems to contradict elsewhere in the patch where keyfile is used even in
-the PKCS#11 case.
-
-Also as mentioned above, it isn't really valid to use OPENSSL_IS_BORINGSSL here.
-
-- Eric
