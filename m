@@ -2,412 +2,82 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D08213FA2ED
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 28 Aug 2021 03:35:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 065BD3FBA53
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 30 Aug 2021 18:47:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232953AbhH1Bbv (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 27 Aug 2021 21:31:51 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:18664 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230238AbhH1Bbu (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 27 Aug 2021 21:31:50 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 17S1FWar030034
-        for <linux-fscrypt@vger.kernel.org>; Fri, 27 Aug 2021 18:31:00 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=Vf2nNBxFPJEiuH5jmLRZhKnxDIpzPCNDAe3zL6vuKaM=;
- b=dNXfmAEFjfRS04qOCPC47ReK8GI3a40M+e0/kYnGCygfF5X+U/D7e/pTDIgt2LtoNOt2
- +pvwqQVBdUvtSFzuvJzYy+AkmOO59UH9OH+aByOxn/sI4ztm9ZVm8DyoOxTHOAqkzfYE
- RVws2l4lKWIM3SIX1n0U4CLs4SNWzXshCz0= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 3apaeq3ynh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-fscrypt@vger.kernel.org>; Fri, 27 Aug 2021 18:31:00 -0700
-Received: from intmgw001.06.ash9.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 27 Aug 2021 18:30:58 -0700
-Received: by devvm4043.ftw0.facebook.com (Postfix, from userid 11172)
-        id 0BEA734EB704; Fri, 27 Aug 2021 18:30:42 -0700 (PDT)
-From:   Aleksander Adamowski <olo@fb.com>
-To:     <linux-fscrypt@vger.kernel.org>
-CC:     Aleksander Adamowski <olo@fb.com>
-Subject: [fsverity-utils PATCH v2] Implement PKCS#11 opaque keys support through OpenSSL pkcs11 engine
-Date:   Fri, 27 Aug 2021 18:30:37 -0700
-Message-ID: <20210828013037.2250639-1-olo@fb.com>
-X-Mailer: git-send-email 2.30.2
+        id S237892AbhH3QsN (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 30 Aug 2021 12:48:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34392 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237882AbhH3QsN (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 30 Aug 2021 12:48:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E01B160F5B;
+        Mon, 30 Aug 2021 16:47:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630342039;
+        bh=/ZbEAxvBW5ig7WPYzIG6ftbGUGoR7j4+CJT1CyKUAgE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=pPqSREqxmcM2xCHL9kODFPILmxDGalIsKDmDe4jGEPsUozDmh+ruX/O/LmhFODtxt
+         VIYvEwC66svykfXl46dTWe79Ys9le0rVp8NZQw7+j4+oAkLtIeqaBDdNerIXmXcYy2
+         DL1OPRMOsyyZ2q+lnCE7aOMpGrtF1gToEk+RLJeAnoj92vfbhp0ATxlcesE0t4ukna
+         UCMbyhEXzp4HW4Eeddf/2PerQXND5kpqT+osxua6VBfYadx7WWHEOBZqSUV18dXwku
+         NgpMAbi14Mi2x+cqbjH7Q8Ol9FNwDAMOZ5wOFyU3Kl+CO6fH5m7N17PykROLOlsM3a
+         try7iQyJi19Lg==
+Date:   Mon, 30 Aug 2021 09:47:17 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [GIT PULL] fscrypt updates for 5.15
+Message-ID: <YS0LlXIhvZc4r5Vt@sol.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-ORIG-GUID: h9F0Opv2Pc1ZkQYSNupd8oFIRbJINt31
-X-Proofpoint-GUID: h9F0Opv2Pc1ZkQYSNupd8oFIRbJINt31
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-27_07:2021-08-27,2021-08-27 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0 mlxscore=0
- suspectscore=0 clxscore=1015 priorityscore=1501 spamscore=0 bulkscore=0
- malwarescore=0 impostorscore=0 phishscore=0 mlxlogscore=999
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108280006
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-PKCS#11 API allows us to use opaque keys confined in hardware security
-modules (HSMs) and similar hardware tokens without direct access to the
-key material, providing logical separation of the keys from the
-cryptographic operations performed using them.
+The following changes since commit ff1176468d368232b684f75e82563369208bc371:
 
-This commit allows using the popular libp11 pkcs11 module for the
-OpenSSL library with `fsverity` so that direct access to a private key
-file isn't necessary to sign files.
+  Linux 5.14-rc3 (2021-07-25 15:35:14 -0700)
 
-The user needs to supply the path to the engine shared library
-(typically libp11 shared object file) and the PKCS#11 module library (a
-shared object file specific to the given hardware token).
+are available in the Git repository at:
 
-Additionally, the existing `key` argument can be used to pass an
-optional token-specific key identifier (instead of a private key file
-name) for tokens that can contain multiple keys.
+  https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
 
-Test evidence with a hardware PKCS#11 token:
+for you to fetch changes up to 38ef66b05cfa3560323344a0b3e09e583f1eb974:
 
-  $ echo test > dummy
-  $ ./fsverity sign dummy dummy.sig \
-    --pkcs11-engine=3D/usr/lib64/engines-1.1/libpkcs11.so \
-    --pkcs11-module=3D/usr/local/lib64/pkcs11_module.so \
-    --cert=3Dtest-pkcs11-cert.pem && echo OK;
-  Signed file 'dummy'
-  (sha256:c497326752e21b3992b57f7eff159102d474a97d972dc2c2d99d23e0f5fbdb6=
-5)
-  OK
+  fscrypt: document struct fscrypt_operations (2021-07-28 21:40:36 -0700)
 
-Test evidence for regression check (checking that regular file-based key
-signing still works):
+----------------------------------------------------------------
 
-  $ ./fsverity sign dummy dummy.sig --key=3Dkey.pem --cert=3Dcert.pem && =
-\
-    echo  OK;
-  Signed file 'dummy'
-  (sha256:c497326752e21b3992b57f7eff159102d474a97d972dc2c2d99d23e0f5fbdb6=
-5)
-  OK
+Some small fixes and cleanups for fs/crypto/:
 
-Signed-off-by: Aleksander Adamowski <olo@fb.com>
----
- include/libfsverity.h |  6 ++-
- lib/sign_digest.c     | 96 ++++++++++++++++++++++++++++++++++++++++---
- man/fsverity.1.md     | 23 ++++++++++-
- programs/cmd_sign.c   | 31 ++++++++++++++
- programs/fsverity.c   |  4 +-
- programs/fsverity.h   |  2 +
- 6 files changed, 151 insertions(+), 11 deletions(-)
+- Fix ->getattr() for ext4, f2fs, and ubifs to report the correct
+  st_size for encrypted symlinks.
 
-diff --git a/include/libfsverity.h b/include/libfsverity.h
-index 6cefa2b..4b34f43 100644
---- a/include/libfsverity.h
-+++ b/include/libfsverity.h
-@@ -82,10 +82,12 @@ struct libfsverity_digest {
- };
-=20
- struct libfsverity_signature_params {
--	const char *keyfile;		/* path to key file (PEM format) */
-+	const char *keyfile;	/* path to key file (PEM format), optional */
- 	const char *certfile;		/* path to certificate (PEM format) */
- 	uint64_t reserved1[8];		/* must be 0 */
--	uintptr_t reserved2[8];		/* must be 0 */
-+	const char *pkcs11_engine;	/* path to PKCS#11 engine .so, optional */
-+	const char *pkcs11_module;	/* path to PKCS#11 module .so, optional */
-+	uintptr_t reserved2[6];		/* must be 0 */
- };
-=20
- struct libfsverity_metadata_callbacks {
-diff --git a/lib/sign_digest.c b/lib/sign_digest.c
-index 9a35256..f0830f3 100644
---- a/lib/sign_digest.c
-+++ b/lib/sign_digest.c
-@@ -17,6 +17,9 @@
- #include <openssl/err.h>
- #include <openssl/pem.h>
- #include <openssl/pkcs7.h>
-+#ifndef OPENSSL_IS_BORINGSSL
-+#include <openssl/engine.h>
-+#endif
- #include <string.h>
-=20
- static int print_openssl_err_cb(const char *str,
-@@ -81,6 +84,10 @@ static int read_certificate(const char *certfile, X509=
- **cert_ret)
- 	X509 *cert;
- 	int err;
-=20
-+	if (!certfile) {
-+		libfsverity_error_msg("certfile must be specified");
-+	}
-+
- 	errno =3D 0;
- 	bio =3D BIO_new_file(certfile, "r");
- 	if (!bio) {
-@@ -214,6 +221,37 @@ out:
-=20
- #else /* OPENSSL_IS_BORINGSSL */
-=20
-+static ENGINE *get_pkcs11_engine(const char *pkcs11_engine,
-+				 const char *pkcs11_module)
-+{
-+	ENGINE *engine;
-+
-+	ENGINE_load_dynamic();
-+	engine =3D ENGINE_by_id("dynamic");
-+	if (!engine) {
-+		error_msg_openssl(
-+		    "failed to initialize OpenSSL PKCS#11 engine");
-+		return NULL;
-+	}
-+	if (!ENGINE_ctrl_cmd_string(engine, "SO_PATH", pkcs11_engine, 0) ||
-+	    !ENGINE_ctrl_cmd_string(engine, "ID", "pkcs11", 0) ||
-+	    !ENGINE_ctrl_cmd_string(engine, "LIST_ADD", "1", 0) ||
-+	    !ENGINE_ctrl_cmd_string(engine, "LOAD", NULL, 0) ||
-+	    !ENGINE_ctrl_cmd_string(engine, "MODULE_PATH", pkcs11_module, 0) ||
-+	    !ENGINE_init(engine)) {
-+		error_msg_openssl(
-+		    "failed to initialize OpenSSL PKCS#11 engine");
-+		ENGINE_free(engine);
-+		return NULL;
-+	}
-+	/*
-+	 * engine now holds a functional reference after ENGINE_init(), free
-+	 * the structural reference from ENGINE_by_id()
-+	 */
-+	ENGINE_free(engine);
-+	return engine;
-+}
-+
- static BIO *new_mem_buf(const void *buf, size_t size)
- {
- 	BIO *bio;
-@@ -317,6 +355,57 @@ out:
-=20
- #endif /* !OPENSSL_IS_BORINGSSL */
-=20
-+/* Get a private key - either off disk or PKCS#11 token */
-+static int
-+get_private_key(const struct libfsverity_signature_params *sig_params,
-+		EVP_PKEY **pkey_ret)
-+{
-+	if (sig_params->pkcs11_engine || sig_params->pkcs11_module) {
-+#ifdef OPENSSL_IS_BORINGSSL
-+		libfsverity_error_msg(
-+		    "BoringSSL doesn't support PKCS#11 feature");
-+		return -EINVAL;
-+#else
-+		ENGINE *engine;
-+
-+		if (!sig_params->pkcs11_engine) {
-+			libfsverity_error_msg(
-+			    "missing PKCS#11 engine parameter");
-+			return -EINVAL;
-+		}
-+		if (!sig_params->pkcs11_module) {
-+			libfsverity_error_msg(
-+			    "missing PKCS#11 module parameter");
-+			return -EINVAL;
-+		}
-+		engine =3D get_pkcs11_engine(sig_params->pkcs11_engine,
-+					   sig_params->pkcs11_module);
-+		if (!engine)
-+			return -EINVAL;
-+		/*
-+		 * We overload the keyfile parameter as an optional PKCS#11 key
-+		 * identifier.  NULL will cause the engine to use the default
-+		 * key from the token.
-+		 */
-+		*pkey_ret =3D ENGINE_load_private_key(engine, sig_params->keyfile,
-+						    NULL, NULL);
-+		ENGINE_finish(engine);
-+		if (!*pkey_ret) {
-+			error_msg_openssl(
-+			    "failed to load private key from PKCS#11 token");
-+			return -EINVAL;
-+		}
-+		return 0;
-+#endif
-+	}
-+	if (!sig_params->keyfile) {
-+		error_msg_openssl(
-+		    "missing keyfile parameter (or PKCS11 parameters)");
-+		return -EINVAL;
-+	}
-+	return read_private_key(sig_params->keyfile, pkey_ret);
-+}
-+
- LIBEXPORT int
- libfsverity_sign_digest(const struct libfsverity_digest *digest,
- 			const struct libfsverity_signature_params *sig_params,
-@@ -334,11 +423,6 @@ libfsverity_sign_digest(const struct libfsverity_dig=
-est *digest,
- 		return -EINVAL;
- 	}
-=20
--	if (!sig_params->keyfile || !sig_params->certfile) {
--		libfsverity_error_msg("keyfile and certfile must be specified");
--		return -EINVAL;
--	}
--
- 	if (!libfsverity_mem_is_zeroed(sig_params->reserved1,
- 				       sizeof(sig_params->reserved1)) ||
- 	    !libfsverity_mem_is_zeroed(sig_params->reserved2,
-@@ -353,7 +437,7 @@ libfsverity_sign_digest(const struct libfsverity_dige=
-st *digest,
- 		return -EINVAL;
- 	}
-=20
--	err =3D read_private_key(sig_params->keyfile, &pkey);
-+	err =3D get_private_key(sig_params, &pkey);
- 	if (err)
- 		goto out;
-=20
-diff --git a/man/fsverity.1.md b/man/fsverity.1.md
-index e1007f5..f44aeb0 100644
---- a/man/fsverity.1.md
-+++ b/man/fsverity.1.md
-@@ -169,8 +169,27 @@ Options accepted by **fsverity sign**:
- :   Same as for **fsverity digest**.
-=20
- **\-\-key**=3D*KEYFILE*
--:   Specifies the file that contains the private key, in PEM format.  Th=
-is
--    option is required.
-+:   Specifies the file that contains the private key, in PEM format.  If=
- any
-+    PKCS#11 options are used, it can be used instead to specify the key
-+    identifier in the form of PKCS#11 URI.  This option is required when
-+    private key is read from disk and optional when using a PKCS#11 toke=
-n.
-+
-+**\-\-pkcs11-engine**=3D*SOFILE*
-+:   Specifies the path to the OpenSSL engine library to be used, when a =
-PKCS#11
-+    cryptographic token is used instead of a private key file. Typically=
- it
-+    will be a path to the libp11 .so file.  This option is required when
-+    **\-\-pkcs11-module** is used.
-+
-+    Note that this option is only supported with classical OpenSSL, and =
-not
-+    BoringSSL.
-+
-+**\-\-pkcs11-module**=3D*SOFILE*
-+:   Specifies the path to the token-specific module library, when a PKCS=
-#11
-+    cryptographic token is used instead of a private key file.  This opt=
-ion is
-+    required when **\-\-pkcs11-engine** is used.
-+
-+    Note that this option is only supported with classical OpenSSL, and =
-not
-+    BoringSSL.
-=20
- **\-\-out-descriptor**=3D*FILE*
- :   Same as for **fsverity digest**.
-diff --git a/programs/cmd_sign.c b/programs/cmd_sign.c
-index 81a4ddc..0d502c9 100644
---- a/programs/cmd_sign.c
-+++ b/programs/cmd_sign.c
-@@ -34,6 +34,8 @@ static const struct option longopts[] =3D {
- 	{"out-descriptor",  required_argument, NULL, OPT_OUT_DESCRIPTOR},
- 	{"key",		    required_argument, NULL, OPT_KEY},
- 	{"cert",	    required_argument, NULL, OPT_CERT},
-+	{"pkcs11-engine",	    required_argument, NULL, OPT_PKCS11_ENGINE},
-+	{"pkcs11-module",	    required_argument, NULL, OPT_PKCS11_MODULE},
- 	{NULL, 0, NULL, 0}
- };
-=20
-@@ -68,6 +70,12 @@ int fsverity_cmd_sign(const struct fsverity_command *c=
-md,
- 			}
- 			sig_params.keyfile =3D optarg;
- 			break;
-+		case OPT_PKCS11_ENGINE:
-+			sig_params.pkcs11_engine =3D optarg;
-+			break;
-+		case OPT_PKCS11_MODULE:
-+			sig_params.pkcs11_module =3D optarg;
-+			break;
- 		case OPT_CERT:
- 			if (sig_params.certfile !=3D NULL) {
- 				error_msg("--cert can only be specified once");
-@@ -86,12 +94,35 @@ int fsverity_cmd_sign(const struct fsverity_command *=
-cmd,
- 	if (argc !=3D 2)
- 		goto out_usage;
-=20
-+#ifdef OPENSSL_IS_BORINGSSL
- 	if (sig_params.keyfile =3D=3D NULL) {
- 		error_msg("Missing --key argument");
- 		goto out_usage;
- 	}
- 	if (sig_params.certfile =3D=3D NULL)
- 		sig_params.certfile =3D sig_params.keyfile;
-+#else
-+	if (sig_params.keyfile =3D=3D NULL && sig_params.pkcs11_engine =3D=3D N=
-ULL &&
-+	    sig_params.pkcs11_module =3D=3D NULL) {
-+		error_msg("Missing --key argument or a pair of --pkcs11-engine "
-+			  "and --pkcs11-module");
-+		goto out_usage;
-+	}
-+	if (sig_params.certfile =3D=3D NULL) {
-+		if (sig_params.keyfile =3D=3D NULL) {
-+			error_msg(
-+			    "--cert must be specified when PKCS#11 is used");
-+			goto out_usage;
-+		}
-+		sig_params.certfile =3D sig_params.keyfile;
-+	}
-+	if ((sig_params.pkcs11_engine =3D=3D NULL) !=3D
-+	    (sig_params.pkcs11_module =3D=3D NULL)) {
-+		error_msg("Both --pkcs11-engine and --pkcs11-module must be "
-+			  "specified when used");
-+		goto out_usage;
-+	}
-+#endif
-=20
- 	if (!open_file(&file, argv[0], O_RDONLY, 0))
- 		goto out_err;
-diff --git a/programs/fsverity.c b/programs/fsverity.c
-index f6aff3a..a4e8f5b 100644
---- a/programs/fsverity.c
-+++ b/programs/fsverity.c
-@@ -58,7 +58,9 @@ static const struct fsverity_command {
- 		.func =3D fsverity_cmd_sign,
- 		.short_desc =3D "Sign a file for fs-verity",
- 		.usage_str =3D
--"    fsverity sign FILE OUT_SIGFILE --key=3DKEYFILE\n"
-+"    fsverity sign FILE OUT_SIGFILE [--key=3DKEYFILE]\n"
-+"               [--pkcs11-engine=3DPATH_TO_OPENSSL_ENGINE]\n"
-+"               [--pkcs11-module=3DPATH_TO_OPENSSL_MODULE]\n"
- "               [--hash-alg=3DHASH_ALG] [--block-size=3DBLOCK_SIZE] [--s=
-alt=3DSALT]\n"
- "               [--out-merkle-tree=3DFILE] [--out-descriptor=3DFILE]\n"
- "               [--cert=3DCERTFILE]\n"
-diff --git a/programs/fsverity.h b/programs/fsverity.h
-index fe24087..eb5ba33 100644
---- a/programs/fsverity.h
-+++ b/programs/fsverity.h
-@@ -33,6 +33,8 @@ enum {
- 	OPT_OUT_MERKLE_TREE,
- 	OPT_SALT,
- 	OPT_SIGNATURE,
-+	OPT_PKCS11_ENGINE,
-+	OPT_PKCS11_MODULE,
- };
-=20
- struct fsverity_command;
---=20
-2.30.2
+- Use base64url instead of a custom Base64 variant.
 
+- Document struct fscrypt_operations.
+
+----------------------------------------------------------------
+Eric Biggers (7):
+      fscrypt: add fscrypt_symlink_getattr() for computing st_size
+      ext4: report correct st_size for encrypted symlinks
+      f2fs: report correct st_size for encrypted symlinks
+      ubifs: report correct st_size for encrypted symlinks
+      fscrypt: remove mention of symlink st_size quirk from documentation
+      fscrypt: align Base64 encoding with RFC 4648 base64url
+      fscrypt: document struct fscrypt_operations
+
+ Documentation/filesystems/fscrypt.rst |  15 ++---
+ fs/crypto/fname.c                     | 106 +++++++++++++++++++------------
+ fs/crypto/hooks.c                     |  44 +++++++++++++
+ fs/ext4/symlink.c                     |  12 +++-
+ fs/f2fs/namei.c                       |  12 +++-
+ fs/ubifs/file.c                       |  13 +++-
+ include/linux/fscrypt.h               | 116 ++++++++++++++++++++++++++++++++--
+ 7 files changed, 260 insertions(+), 58 deletions(-)
