@@ -2,34 +2,32 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F8B9405CF4
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  9 Sep 2021 20:46:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98C85405D2B
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  9 Sep 2021 21:08:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237595AbhIISqt (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 9 Sep 2021 14:46:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59550 "EHLO mail.kernel.org"
+        id S237617AbhIITJu (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 9 Sep 2021 15:09:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237208AbhIISqs (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 9 Sep 2021 14:46:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE7B8610CE;
-        Thu,  9 Sep 2021 18:45:38 +0000 (UTC)
+        id S231425AbhIITJu (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 9 Sep 2021 15:09:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BFB261167
+        for <linux-fscrypt@vger.kernel.org>; Thu,  9 Sep 2021 19:08:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631213139;
-        bh=aoyQEZvSd1+vYy9qkBjguGDggRTI0dLHoK9hq7Mx2yY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=KXvkGpIrxCmJIdH1Km0g/8dgNjJHNKJJjqP5enlPVfhL+RYlDftQ7viPPIy8THpR8
-         quKG2AnonGHE5r2rhH8iPJejTdvE+0/IKAS0AlZTE67DfWfmStoSo1STy0uhp3O/3J
-         WzJBeoe1XtOeeVT+d4oRzrcQ82eexPguYWwiRLqDzRxQ4LQqnZ2m9Ag3wmcOquaCWs
-         POCb9PUcH+dYTMwRwMYHI81XtGSSfr9/S5+/s63PsGqNWuoW0q+O6HTBPmUYgojO3i
-         fQEADAswkp/rtccTS8vLlJ49dNtxGcC8gtcM5JdR1CWyxizM4p2g65XnKOJp5rMYZ8
-         SANHIGYjwBAVA==
+        s=k20201202; t=1631214520;
+        bh=63tgs8Y3y3gfHHFrioeHQHe12NcoN2nSerjoG8o7A08=;
+        h=From:To:Subject:Date:From;
+        b=pRzqgHz4Uad8alJcs14A2gvLpQmx9+iZOSx342zC8SxCeSylfD4VzztWhV4sxU+TD
+         FVq8E3hXI+VZpMYEKIG/EFQMckEjziwO3NSCEyExDleqNvZQMQJzjc2tQBamlJkwQ/
+         M9j06vD7rayy7Roap2X/Hl9UUbAWXvC+knTIM3thJZhGaHkB+aWqDLM/eY3Q45maxo
+         sJutZfTQlBb3dAxMbCfkR1zhPOiZEz6YGLIzB44i0LlNQ/ac5/jR315mFloJWDfn1K
+         5eiPY72ce4XnoWHndfYi63kCWZ5PtwMwbbDfQf9QXqcmGlfMk6KkD9Sga8vv2yvU6o
+         egBNyVGIffCeA==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org
-Subject: [PATCH] fscrypt: remove fscrypt_operations::max_namelen
-Date:   Thu,  9 Sep 2021 11:45:13 -0700
-Message-Id: <20210909184513.139281-1-ebiggers@kernel.org>
+Subject: [PATCH] fscrypt: clean up comments in bio.c
+Date:   Thu,  9 Sep 2021 12:07:37 -0700
+Message-Id: <20210909190737.140841-1-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -39,81 +37,67 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-The max_namelen field is unnecessary, as it is set to 255 (NAME_MAX) on
-all filesystems that support fscrypt (or plan to support fscrypt).  For
-simplicity, just use NAME_MAX directly instead.
+The file comment in bio.c is almost completely irrelevant to the actual
+contents of the file; it was originally copied from crypto.c.  Fix it
+up, and also add a kerneldoc comment for fscrypt_decrypt_bio().
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/crypto/fname.c       | 3 +--
- fs/ext4/super.c         | 1 -
- fs/f2fs/super.c         | 1 -
- fs/ubifs/crypto.c       | 1 -
- include/linux/fscrypt.h | 3 ---
- 5 files changed, 1 insertion(+), 8 deletions(-)
+ fs/crypto/bio.c | 32 +++++++++++++++++---------------
+ 1 file changed, 17 insertions(+), 15 deletions(-)
 
-diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
-index eb538c28df940..a9be4bc74a94a 100644
---- a/fs/crypto/fname.c
-+++ b/fs/crypto/fname.c
-@@ -429,8 +429,7 @@ int fscrypt_setup_filename(struct inode *dir, const struct qstr *iname,
+diff --git a/fs/crypto/bio.c b/fs/crypto/bio.c
+index 68a2de6b5a9b1..bfc2a5b74ed39 100644
+--- a/fs/crypto/bio.c
++++ b/fs/crypto/bio.c
+@@ -1,23 +1,10 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /*
+- * This contains encryption functions for per-file encryption.
++ * Utility functions for file contents encryption/decryption on
++ * block device-based filesystems.
+  *
+  * Copyright (C) 2015, Google, Inc.
+  * Copyright (C) 2015, Motorola Mobility
+- *
+- * Written by Michael Halcrow, 2014.
+- *
+- * Filename encryption additions
+- *	Uday Savagaonkar, 2014
+- * Encryption policy handling additions
+- *	Ildar Muslukhov, 2014
+- * Add fscrypt_pullback_bio_page()
+- *	Jaegeuk Kim, 2015.
+- *
+- * This has not yet undergone a rigorous security audit.
+- *
+- * The usage of AES-XTS should conform to recommendations in NIST
+- * Special Publication 800-38E and IEEE P1619/D16.
+  */
  
- 	if (fscrypt_has_encryption_key(dir)) {
- 		if (!fscrypt_fname_encrypted_size(&dir->i_crypt_info->ci_policy,
--						  iname->len,
--						  dir->i_sb->s_cop->max_namelen,
-+						  iname->len, NAME_MAX,
- 						  &fname->crypto_buf.len))
- 			return -ENAMETOOLONG;
- 		fname->crypto_buf.name = kmalloc(fname->crypto_buf.len,
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 136940af00b88..47212d7c02b84 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1566,7 +1566,6 @@ static const struct fscrypt_operations ext4_cryptops = {
- 	.set_context		= ext4_set_context,
- 	.get_dummy_policy	= ext4_get_dummy_policy,
- 	.empty_dir		= ext4_empty_dir,
--	.max_namelen		= EXT4_NAME_LEN,
- 	.has_stable_inodes	= ext4_has_stable_inodes,
- 	.get_ino_and_lblk_bits	= ext4_get_ino_and_lblk_bits,
- };
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 78ebc306ee2b5..cf049a042482b 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -2976,7 +2976,6 @@ static const struct fscrypt_operations f2fs_cryptops = {
- 	.set_context		= f2fs_set_context,
- 	.get_dummy_policy	= f2fs_get_dummy_policy,
- 	.empty_dir		= f2fs_empty_dir,
--	.max_namelen		= F2FS_NAME_LEN,
- 	.has_stable_inodes	= f2fs_has_stable_inodes,
- 	.get_ino_and_lblk_bits	= f2fs_get_ino_and_lblk_bits,
- 	.get_num_devices	= f2fs_get_num_devices,
-diff --git a/fs/ubifs/crypto.c b/fs/ubifs/crypto.c
-index 22be7aeb96c4f..c57b46a352d8f 100644
---- a/fs/ubifs/crypto.c
-+++ b/fs/ubifs/crypto.c
-@@ -82,5 +82,4 @@ const struct fscrypt_operations ubifs_crypt_operations = {
- 	.get_context		= ubifs_crypt_get_context,
- 	.set_context		= ubifs_crypt_set_context,
- 	.empty_dir		= ubifs_crypt_empty_dir,
--	.max_namelen		= UBIFS_MAX_NLEN,
- };
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index e912ed9141d9d..91ea9477e9bd2 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -118,9 +118,6 @@ struct fscrypt_operations {
- 	 */
- 	bool (*empty_dir)(struct inode *inode);
+ #include <linux/pagemap.h>
+@@ -26,6 +13,21 @@
+ #include <linux/namei.h>
+ #include "fscrypt_private.h"
  
--	/* The filesystem's maximum ciphertext filename length, in bytes */
--	unsigned int max_namelen;
--
- 	/*
- 	 * Check whether the filesystem's inode numbers and UUID are stable,
- 	 * meaning that they will never be changed even by offline operations
++/**
++ * fscrypt_decrypt_bio() - decrypt the contents of a bio
++ * @bio: the bio to decrypt
++ *
++ * Decrypt the contents of a "read" bio following successful completion of the
++ * underlying disk read.  The bio must be reading a whole number of blocks of an
++ * encrypted file directly into the page cache.  If the bio is reading the
++ * ciphertext into bounce pages instead of the page cache (for example, because
++ * the file is also compressed, so decompression is required after decryption),
++ * then this function isn't applicable.  This function may sleep, so it must be
++ * called from a workqueue rather than from the bio's bi_end_io callback.
++ *
++ * This function sets PG_error on any pages that contain any blocks that failed
++ * to be decrypted.  The filesystem must not mark such pages uptodate.
++ */
+ void fscrypt_decrypt_bio(struct bio *bio)
+ {
+ 	struct bio_vec *bv;
 -- 
 2.33.0
 
