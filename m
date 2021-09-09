@@ -2,161 +2,552 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B7AA405EB9
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  9 Sep 2021 23:22:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9F7D405EC0
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  9 Sep 2021 23:27:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346871AbhIIVXK (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 9 Sep 2021 17:23:10 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:11678 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1346551AbhIIVXK (ORCPT
+        id S1346721AbhIIV3A (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 9 Sep 2021 17:29:00 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:61940 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239163AbhIIV3A (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 9 Sep 2021 17:23:10 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 189LG0kF011916
-        for <linux-fscrypt@vger.kernel.org>; Thu, 9 Sep 2021 14:22:00 -0700
+        Thu, 9 Sep 2021 17:29:00 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 189LLs5O022940
+        for <linux-fscrypt@vger.kernel.org>; Thu, 9 Sep 2021 14:27:49 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=IAeiGMWgnZO62f1wYRphqwIRleAjvAvhUj6O551/KNc=;
- b=jaROG03An19qF5vDzpIjipkWX4ddLQJUmrmembfQlwVQYQusH9sm7gsdnIeV1GEoE5pi
- HswhyYlY/G0U17vo3eamafl52oPYKaMRrce2KjbdNAIJAfnOpPXDkYD2D8DxfgXjtScV
- WsrFDY+Rob6MojZk7p8e+7B0kHrZFgx4GCE= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3aya9h66mn-2
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=8pAdUNY/qpKkcMutzn2dIlzvVXeErzYEtuJAPSHUP5E=;
+ b=JaqvU8D/UTpaqyQba//Ls5rJ9iG55a0OeThGxb56e8P5EB3KNE0ZE8ik57s0/m718HVD
+ kW+4GZo5L6udiLwQ2CjCaUUoo6Pl5BHjfLtg6gTvL/fOzHyPUzGKJu/m158ajE+7QB06
+ LDoS5HgW6HS3GwaZ0/bi+q4kXcxNf9tEvIo= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3ay5brhjx5-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-fscrypt@vger.kernel.org>; Thu, 09 Sep 2021 14:22:00 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
+        for <linux-fscrypt@vger.kernel.org>; Thu, 09 Sep 2021 14:27:49 -0700
+Received: from intmgw001.05.ash9.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Thu, 9 Sep 2021 14:21:58 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Cs9cBLZqHtqysRBa9VE52FI/N8Rv50Q2/l4uyBEcn9ZJr6vLP9YYEWP2zpdHBtu6YwQGnAeLkMzrEOQyn3rpj1cW+LXVcLrZZpINZ7pRK8a/N5YhongTGNiMhEa55OiM3UHzvs4g6GHktPSfZXLPtlvvdxThRqW7/N++Wia+JS5GT0evAc63VTZV/EeLplsVDQt4ZsijaiMnsCu3yA7eQjJvb2oj+xvkdOgwGZKofGhxMAYlkGqmauYWxDOgUkrV3lT7psYOWda76Yk7PnsmQ37gi9pKj9YLOckO5I38q2coZwP8EJuNYy7iNvjWu5JuBOq5hpkO42xar3yUOYiC3A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=IAeiGMWgnZO62f1wYRphqwIRleAjvAvhUj6O551/KNc=;
- b=akEAimdIS5qUOWTtBsrt98GbDWmPJbdUnMuPmDERZNHpOAMhu83Zl8r2Et5QZR/F6cttdz6r37SJTrDJfOLvsJzRymvSCf+Rh+02lj+EEIkAx5wC45Dna8eguiz+gFdNMnlAlFLQOaewe8LOlO8tGBeM69HuW3ak1143GMjSVH6BCJnDoGH6W8A3Vj4bFuxM9YiHHiRG1x37zO8eknbpenqU+rf8hE3Sbw5QMbnysgLRgi1ioFcWF+XXWYWgzS3FLBbBWIm3wYe+y19wVj0pAuowGPXuf0BIBYI5iXZy0CQhF/t+7c1M6zMc06LZAqbdacvVBDCrkEL1cca1TFROeg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SA1PR15MB4824.namprd15.prod.outlook.com (2603:10b6:806:1e3::15)
- by SA1PR15MB4984.namprd15.prod.outlook.com (2603:10b6:806:1d7::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Thu, 9 Sep
- 2021 21:21:52 +0000
-Received: from SA1PR15MB4824.namprd15.prod.outlook.com
- ([fe80::e438:ebd:8fbf:1ed7]) by SA1PR15MB4824.namprd15.prod.outlook.com
- ([fe80::e438:ebd:8fbf:1ed7%8]) with mapi id 15.20.4500.016; Thu, 9 Sep 2021
- 21:21:52 +0000
+ 15.1.2308.14; Thu, 9 Sep 2021 14:27:46 -0700
+Received: by devvm4043.ftw0.facebook.com (Postfix, from userid 11172)
+        id 20A784043703; Thu,  9 Sep 2021 14:27:43 -0700 (PDT)
 From:   Aleksander Adamowski <olo@fb.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-CC:     "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>
-Subject: Re: [fsverity-utils PATCH v4] Implement PKCS#11 opaque keys support
- through OpenSSL pkcs11 engine
-Thread-Topic: [fsverity-utils PATCH v4] Implement PKCS#11 opaque keys support
- through OpenSSL pkcs11 engine
-Thread-Index: AQHXpRW/fVgmI0/fk0emaLxX2+uSaqubTUcAgADocKo=
-Date:   Thu, 9 Sep 2021 21:21:52 +0000
-Message-ID: <SA1PR15MB482423A29504AFD4EE0C8BF3DDD59@SA1PR15MB4824.namprd15.prod.outlook.com>
-References: <20210909005734.154434-1-olo@fb.com>
- <YTmqoDtXXFbwHM/4@sol.localdomain>
-In-Reply-To: <YTmqoDtXXFbwHM/4@sol.localdomain>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-suggested_attachment_session_id: 64f1924d-4212-409c-3847-e1722a00b470
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 72925e8d-0a0c-45b4-695b-08d973d7d7c3
-x-ms-traffictypediagnostic: SA1PR15MB4984:
-x-microsoft-antispam-prvs: <SA1PR15MB49846DDB4DA8874F0C583DD8DDD59@SA1PR15MB4984.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 7fggghTSCxIBoyE524i62aE2x4gZUdxTbLZ+8HH8huqqssj7L7Rwah20NOc+nBo/rd9ZCfd95fvmCYJUz+WG8+Qo5JoVhL9dPXCpi35drZlp+44Q3zaj/AhLBE0TAOzRK6eQV1Nf1+OIJLcBP/oL/qbgmNuyGl33pPS1k7Nx9UbsHv0t+UjAyiGcq8onZXAGOqAP2GW2ZCXyND+iExJNvPXpl2YXwg9aWYGwdHFjfjANZw+HUqyShlatqDhCioNYndK11fuWmYYem8UrmBMnKscXKZ/XHDtABnAUIaTRw8+qBxQxjtd2kt0wY3paoGZrDiKNL5u24b0EgogzkRb+71fHG0Vyd+PfmcZ+sbz9+VhF7bzigE38xXdI9P4N+kmfkyS3TxVuoy9dmCvIEtmaKZOBJGfdZXuEt/pMrv3wkz1JFXf7hDlBi1qXXPHNe33S0v3lBTelvGjWg0iIEq1s19tK3I+xsfK8sgEMyjy6dbm9ISGUCMZJF74SQ8XvVJiju5EZCrWAE2QPkHURKh3bt8OI2SXepHxO+nxmeV38/Cn1QcnnnQZZOG7/PBrL44hVcviTyfnWto7BKuqef05aGzz9APHyLndCM6jn523j+VjfOAQ9bCMNiniTpmdKioGRlZEkWsD7pp7aCEi4zP8BcYMwKyRx1wLWBoXhieGLK1cKc9KCAWEI89DLgZm9pp+ROGSe9sv/YOjCbgcgfqCiYA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB4824.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(136003)(396003)(366004)(376002)(5660300002)(86362001)(33656002)(71200400001)(2906002)(122000001)(8676002)(38100700002)(316002)(55016002)(186003)(66946007)(76116006)(4326008)(91956017)(66446008)(64756008)(6506007)(38070700005)(6916009)(8936002)(66556008)(66476007)(9686003)(4744005)(83380400001)(52536014)(478600001)(7696005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?+tAp6snMygQ9kPGn/sBVCQlgR8Mz6ZUMDLdSXXIBIsOTDlPWh3qpKgUIHP?=
- =?iso-8859-1?Q?Kc2LomSEqAbjy82Q9ClGjuHUs3/vRZLMGFr205jRWFvcq7DjMHzhNh/B+n?=
- =?iso-8859-1?Q?MKxuX8ihRJjEibjxXhilmB5fI+i11oBdHiqeu3GBXf6lcPxlPxwkCCLQ9f?=
- =?iso-8859-1?Q?XRvLaoYlW1QSLnI8WonbMcHKcCCvJPqTcjZ7H2xgz/SnY9dHvAVIoQAg4M?=
- =?iso-8859-1?Q?vqk7Zw10L+GZTABETi6Z53AJt4PL2NEhYv8eT8S03C8USWOPu8ZJqCXJ/V?=
- =?iso-8859-1?Q?pePxzpUHEiQZAKjP0xfL7mr1sqGzEN39UwO7xB5gwBJrqI5bWXsem+1zt4?=
- =?iso-8859-1?Q?DmHnkchhnLRh4LKrA5c8eQMMzfCDOJXJVIBuDKq68zzQBJ6lRaHXKmCH5A?=
- =?iso-8859-1?Q?iGVxyP0rX0/fErSrE2bSQzmdTFtYM/Go6X5jTtcP4TO8x4LD1ZKyvRh9op?=
- =?iso-8859-1?Q?aWDvFam8H0+0ZRMjSkOcE6fqBXDk2L8tJEsVu2SLkXvKSGZsIAqwZvNejt?=
- =?iso-8859-1?Q?3fEe+PGv3mHJDDgjgkpaaYtopD9IAPwYpD++aEXg2S3hXwEDf7bOt/toPM?=
- =?iso-8859-1?Q?MbSDb+BW1J6/T7/kQAx5MKZ2uBqnZbc68cC8pPLh9/H9Ew8DAyrtfGWABJ?=
- =?iso-8859-1?Q?K3Y64VmGdMSat8dqLNcQ/G/s8BOKOSU6MPkmby0JdwKW8ARfNTG64xN45W?=
- =?iso-8859-1?Q?c2zemYtnAXhRKAE4p6SuYuiKRbnh6fsp78co0kcGO1K9TNKc3K/0XnqKG8?=
- =?iso-8859-1?Q?G6bnoLq9JB5Yu9rVV5Qi8ohoyBz8T2VFYf+pFESNF76Hx+OERijTKbeaYp?=
- =?iso-8859-1?Q?SNE0sQgvybN4a0+OEx9Plw1wXcItFlcfn962NzXsEsVDeRqyvEjiFqfgpa?=
- =?iso-8859-1?Q?3OfFdbpWNuIQiYam+x387MLErzmwfkKgddiZDWC2kelrjnqM0Oai6LgBYR?=
- =?iso-8859-1?Q?Inhq6y2H9yQTEkr7Q8DkuyFdGARvS6ptrfByek4CurfSSQIyA3y7JndyCR?=
- =?iso-8859-1?Q?xyNMr2zcvanRWCJng/qE3dER8k7nCZfHXED24FiclOvLKNKOkU9jAcVNWm?=
- =?iso-8859-1?Q?F4p2cNU85K3Qo9PuGX4/ikNuZkdcf9T8/Hdu6XQUZLXORwwj6LhCfikF90?=
- =?iso-8859-1?Q?d7RtFBwbiFa8AIqFo0/f6VvhUIi3kbf7fwuaAw8LN6gJmE3w09QgP7uQRs?=
- =?iso-8859-1?Q?GT3NAQpD581bSpU02htuacx+XnBtD36AjrEWxX+xbBMRa49bl5waTEwe62?=
- =?iso-8859-1?Q?lXX56jEHbTaLn7Bhn4uE8bG/WzPu3YyGJA8vnftK9a7FTq1VJPvMrU7ODw?=
- =?iso-8859-1?Q?TsDGBF1pLvz5fA9WV9g6/jNddaJunJ3Sg1/lfMiWvkt0vsHlYl5TYCSBRT?=
- =?iso-8859-1?Q?PlkoyXo9P2zvitySpBOFejRDz0xErnlg=3D=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+To:     <linux-fscrypt@vger.kernel.org>
+CC:     Aleksander Adamowski <olo@fb.com>,
+        Eric Biggers <ebiggers@google.com>
+Subject: [fsverity-utils PATCH v5] Implement PKCS#11 opaque keys support through OpenSSL pkcs11 engine
+Date:   Thu, 9 Sep 2021 14:27:31 -0700
+Message-ID: <20210909212731.1151190-1-olo@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB4824.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 72925e8d-0a0c-45b4-695b-08d973d7d7c3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Sep 2021 21:21:52.3372
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: vQTMDI8OVk8Kp9A3KX9f+xwm3c5UGFo8TaMT1PKBXosU+0suc44w07PrLC/t+52X
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4984
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: AIiiC8XBGpm70DROFNUzeuc1nKthKXJS
-X-Proofpoint-ORIG-GUID: AIiiC8XBGpm70DROFNUzeuc1nKthKXJS
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-GUID: kIFmf2PwQy5wXkKU_2gsIehkHOBWNRMn
+X-Proofpoint-ORIG-GUID: kIFmf2PwQy5wXkKU_2gsIehkHOBWNRMn
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
  definitions=2021-09-09_08:2021-09-09,2021-09-09 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- clxscore=1015 mlxscore=0 malwarescore=0 adultscore=0 bulkscore=0
- phishscore=0 mlxlogscore=719 spamscore=0 priorityscore=1501 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
+ adultscore=0 lowpriorityscore=0 mlxscore=0 malwarescore=0 phishscore=0
+ suspectscore=0 impostorscore=0 bulkscore=0 clxscore=1015 spamscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2109030001 definitions=main-2109090131
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-=0A=
-On Wed, Sep 08, 2021 at 12:24AM, Eric Biggers wrote:=0A=
-> Taking a closer look at this patch, I don't think we should be overloadin=
-g the=0A=
-> '--key' option and 'keyfile' field like this, as it's confusing.  It's al=
-so not=0A=
-> really necessary for 'fsverity sign' to do all this option validation its=
-elf; I=0A=
-> think we should keep it simple and just rely on libfsverity.=0A=
-> =0A=
-> Also, I think this feature could use clearer documentation that clearly e=
-xplains=0A=
-> that there are now two ways to specify a private key.=0A=
-> =0A=
-> I ended up making the above changes and cleaning up a bunch of other thin=
-gs; can=0A=
-> you consider the following patch instead?  Thanks!=0A=
-=0A=
-Your patch looks good to me! I particularly like getting rid of all the=0A=
-OPENSSL_IS_BORINGSSL ifdefs and instead returning an error from its=0A=
-implementation of load_pkcs11_private_key().=0A=
-=0A=
-I ran my tests with PKCS#11 token and regular file-based keys, and everythi=
-ng=0A=
-including error handling seems to be working as expected.=0A=
-=0A=
-I'll submit this version as V5.=0A=
+PKCS#11 API allows us to use opaque keys confined in hardware security
+modules (HSMs) and similar hardware tokens without direct access to the
+key material, providing logical separation of the keys from the
+cryptographic operations performed using them.
+
+This commit allows using the popular libp11 pkcs11 module for the
+OpenSSL library with `fsverity` so that direct access to a private key
+file isn't necessary to sign files.
+
+The user needs to supply the path to the engine shared library
+(typically the libp11 shared object file) and the PKCS#11 module library
+(a shared object file specific to the given hardware token).  The user
+may also supply a token-specific key identifier.
+
+Test evidence with a hardware PKCS#11 token:
+
+  $ echo test > dummy
+  $ ./fsverity sign dummy dummy.sig \
+    --pkcs11-engine=3D/usr/lib64/engines-1.1/libpkcs11.so \
+    --pkcs11-module=3D/usr/local/lib64/pkcs11_module.so \
+    --cert=3Dtest-pkcs11-cert.pem && echo OK;
+  Signed file 'dummy'
+  (sha256:c497326752e21b3992b57f7eff159102d474a97d972dc2c2d99d23e0f5fbdb6=
+5)
+  OK
+
+Test evidence for regression check (checking that regular file-based key
+signing still works):
+
+  $ ./fsverity sign dummy dummy.sig --key=3Dkey.pem --cert=3Dcert.pem && =
+\
+    echo  OK;
+  Signed file 'dummy'
+  (sha256:c497326752e21b3992b57f7eff159102d474a97d972dc2c2d99d23e0f5fbdb6=
+5)
+  OK
+
+Signed-off-by: Aleksander Adamowski <olo@fb.com>
+[EB: Avoided overloading the --key option and keyfile field, clarified
+ the documentation, removed logic from cmd_sign.c that libfsverity
+ already handles, and many other improvements.]
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ include/libfsverity.h | 44 ++++++++++++++++++---
+ lib/sign_digest.c     | 92 ++++++++++++++++++++++++++++++++++++++-----
+ man/fsverity.1.md     | 28 +++++++++++--
+ programs/cmd_sign.c   | 48 +++++++++++++++-------
+ programs/fsverity.c   |  5 ++-
+ programs/fsverity.h   |  3 ++
+ 6 files changed, 185 insertions(+), 35 deletions(-)
+
+diff --git a/include/libfsverity.h b/include/libfsverity.h
+index 6cefa2b..fe89371 100644
+--- a/include/libfsverity.h
++++ b/include/libfsverity.h
+@@ -81,11 +81,44 @@ struct libfsverity_digest {
+ 	uint8_t digest[];		/* the actual digest */
+ };
+=20
++/**
++ * struct libfsverity_signature_params - certificate and private key inf=
+ormation
++ *
++ * Zero this, then set @certfile.  Then, to specify the private key by k=
+ey file,
++ * set @keyfile.  Alternatively, to specify the private key by PKCS#11 t=
+oken,
++ * set @pkcs11_engine, @pkcs11_module, and optionally @pkcs11_keyid.
++ *
++ * Support for PKCS#11 tokens is unavailable when libfsverity was linked=
+ to
++ * BoringSSL rather than OpenSSL.
++ */
+ struct libfsverity_signature_params {
+-	const char *keyfile;		/* path to key file (PEM format) */
+-	const char *certfile;		/* path to certificate (PEM format) */
+-	uint64_t reserved1[8];		/* must be 0 */
+-	uintptr_t reserved2[8];		/* must be 0 */
++
++	/** @keyfile: the path to the key file in PEM format, when applicable *=
+/
++	const char *keyfile;
++
++	/** @certfile: the path to the certificate file in PEM format */
++	const char *certfile;
++
++	/** @reserved1: must be 0 */
++	uint64_t reserved1[8];
++
++	/**
++	 * @pkcs11_engine: the path to the PKCS#11 engine .so file, when
++	 * applicable
++	 */
++	const char *pkcs11_engine;
++
++	/**
++	 * @pkcs11_module: the path to the PKCS#11 module .so file, when
++	 * applicable
++	 */
++	const char *pkcs11_module;
++
++	/** @pkcs11_keyid: the PKCS#11 key identifier, when applicable */
++	const char *pkcs11_keyid;
++
++	/** @reserved2: must be 0 */
++	uintptr_t reserved2[5];
+ };
+=20
+ struct libfsverity_metadata_callbacks {
+@@ -161,8 +194,7 @@ libfsverity_compute_digest(void *fd, libfsverity_read=
+_fn_t read_fn,
+  *          Documentation/filesystems/fsverity.rst in the kernel source =
+tree for
+  *          further details.
+  * @digest: pointer to previously computed digest
+- * @sig_params: struct libfsverity_signature_params providing filenames =
+of
+- *          the keyfile and certificate file. Reserved fields must be ze=
+ro.
++ * @sig_params: pointer to the certificate and private key information
+  * @sig_ret: Pointer to pointer for signed digest
+  * @sig_size_ret: Pointer to size of signed return digest
+  *
+diff --git a/lib/sign_digest.c b/lib/sign_digest.c
+index 9a35256..da23d04 100644
+--- a/lib/sign_digest.c
++++ b/lib/sign_digest.c
+@@ -81,6 +81,11 @@ static int read_certificate(const char *certfile, X509=
+ **cert_ret)
+ 	X509 *cert;
+ 	int err;
+=20
++	if (!certfile) {
++		libfsverity_error_msg("no certificate specified");
++		return -EINVAL;
++	}
++
+ 	errno =3D 0;
+ 	bio =3D BIO_new_file(certfile, "r");
+ 	if (!bio) {
+@@ -212,8 +217,62 @@ out:
+ 	return err;
+ }
+=20
++static int
++load_pkcs11_private_key(const struct libfsverity_signature_params *sig_p=
+arams
++			__attribute__((unused)),
++			EVP_PKEY **pkey_ret __attribute__((unused)))
++{
++	libfsverity_error_msg("BoringSSL doesn't support PKCS#11 tokens");
++	return -EINVAL;
++}
++
+ #else /* OPENSSL_IS_BORINGSSL */
+=20
++#include <openssl/engine.h>
++
++static int
++load_pkcs11_private_key(const struct libfsverity_signature_params *sig_p=
+arams,
++			EVP_PKEY **pkey_ret)
++{
++	ENGINE *engine;
++
++	if (!sig_params->pkcs11_engine) {
++		libfsverity_error_msg("PKCS#11 engine not specified");
++		return -EINVAL;
++	}
++	if (!sig_params->pkcs11_module) {
++		libfsverity_error_msg("PKCS#11 module not specified");
++		return -EINVAL;
++	}
++	ENGINE_load_dynamic();
++	engine =3D ENGINE_by_id("dynamic");
++	if (!engine) {
++		error_msg_openssl("failed to initialize OpenSSL PKCS#11 engine");
++		return -EINVAL;
++	}
++	if (!ENGINE_ctrl_cmd_string(engine, "SO_PATH",
++				    sig_params->pkcs11_engine, 0) ||
++	    !ENGINE_ctrl_cmd_string(engine, "ID", "pkcs11", 0) ||
++	    !ENGINE_ctrl_cmd_string(engine, "LIST_ADD", "1", 0) ||
++	    !ENGINE_ctrl_cmd_string(engine, "LOAD", NULL, 0) ||
++	    !ENGINE_ctrl_cmd_string(engine, "MODULE_PATH",
++				    sig_params->pkcs11_module, 0) ||
++	    !ENGINE_init(engine)) {
++		error_msg_openssl("failed to initialize OpenSSL PKCS#11 engine");
++		ENGINE_free(engine);
++		return -EINVAL;
++	}
++	*pkey_ret =3D ENGINE_load_private_key(engine, sig_params->pkcs11_keyid,
++					    NULL, NULL);
++	ENGINE_finish(engine);
++	ENGINE_free(engine);
++	if (!*pkey_ret) {
++		error_msg_openssl("failed to load private key from PKCS#11 token");
++		return -EINVAL;
++	}
++	return 0;
++}
++
+ static BIO *new_mem_buf(const void *buf, size_t size)
+ {
+ 	BIO *bio;
+@@ -317,14 +376,34 @@ out:
+=20
+ #endif /* !OPENSSL_IS_BORINGSSL */
+=20
++/* Get a private key, either from disk or from a PKCS#11 token. */
++static int
++get_private_key(const struct libfsverity_signature_params *sig_params,
++		EVP_PKEY **pkey_ret)
++{
++	if (sig_params->pkcs11_engine || sig_params->pkcs11_module ||
++	    sig_params->pkcs11_keyid) {
++		if (sig_params->keyfile) {
++			libfsverity_error_msg("private key must be specified either by file o=
+r by PKCS#11 token, not both");
++			return -EINVAL;
++		}
++		return load_pkcs11_private_key(sig_params, pkey_ret);
++	}
++	if (!sig_params->keyfile) {
++		libfsverity_error_msg("no private key specified");
++		return -EINVAL;
++	}
++	return read_private_key(sig_params->keyfile, pkey_ret);
++}
++
+ LIBEXPORT int
+ libfsverity_sign_digest(const struct libfsverity_digest *digest,
+ 			const struct libfsverity_signature_params *sig_params,
+ 			u8 **sig_ret, size_t *sig_size_ret)
+ {
+ 	const struct fsverity_hash_alg *hash_alg;
+-	EVP_PKEY *pkey =3D NULL;
+ 	X509 *cert =3D NULL;
++	EVP_PKEY *pkey =3D NULL;
+ 	const EVP_MD *md;
+ 	struct fsverity_formatted_digest *d =3D NULL;
+ 	int err;
+@@ -334,11 +413,6 @@ libfsverity_sign_digest(const struct libfsverity_dig=
+est *digest,
+ 		return -EINVAL;
+ 	}
+=20
+-	if (!sig_params->keyfile || !sig_params->certfile) {
+-		libfsverity_error_msg("keyfile and certfile must be specified");
+-		return -EINVAL;
+-	}
+-
+ 	if (!libfsverity_mem_is_zeroed(sig_params->reserved1,
+ 				       sizeof(sig_params->reserved1)) ||
+ 	    !libfsverity_mem_is_zeroed(sig_params->reserved2,
+@@ -353,11 +427,11 @@ libfsverity_sign_digest(const struct libfsverity_di=
+gest *digest,
+ 		return -EINVAL;
+ 	}
+=20
+-	err =3D read_private_key(sig_params->keyfile, &pkey);
++	err =3D read_certificate(sig_params->certfile, &cert);
+ 	if (err)
+ 		goto out;
+=20
+-	err =3D read_certificate(sig_params->certfile, &cert);
++	err =3D get_private_key(sig_params, &pkey);
+ 	if (err)
+ 		goto out;
+=20
+@@ -383,8 +457,8 @@ libfsverity_sign_digest(const struct libfsverity_dige=
+st *digest,
+ 	err =3D sign_pkcs7(d, sizeof(*d) + digest->digest_size,
+ 			 pkey, cert, md, sig_ret, sig_size_ret);
+  out:
+-	EVP_PKEY_free(pkey);
+ 	X509_free(cert);
++	EVP_PKEY_free(pkey);
+ 	free(d);
+ 	return err;
+ }
+diff --git a/man/fsverity.1.md b/man/fsverity.1.md
+index e1007f5..a983912 100644
+--- a/man/fsverity.1.md
++++ b/man/fsverity.1.md
+@@ -11,7 +11,7 @@ fsverity - userspace utility for fs-verity
+ **fsverity dump_metadata** [*OPTION*...] *TYPE* *FILE* \
+ **fsverity enable** [*OPTION*...] *FILE* \
+ **fsverity measure** *FILE*... \
+-**fsverity sign \-\-key**=3D*KEYFILE* [*OPTION*...] *FILE* *OUT_SIGFILE*
++**fsverity sign** [*OPTION*...] *FILE* *OUT_SIGFILE*
+=20
+ # DESCRIPTION
+=20
+@@ -149,12 +149,18 @@ for each file regardless of the size of the file.
+=20
+ **fsverity measure** does not accept any options.
+=20
+-## **fsverity sign** **\-\-key**=3D*KEYFILE* [*OPTION*...] *FILE* *OUT_S=
+IGFILE*
++## **fsverity sign** [*OPTION*...] *FILE* *OUT_SIGFILE*
+=20
+ Sign the given file for fs-verity, in a way that is compatible with the =
+Linux
+ kernel's fs-verity built-in signature verification support.  The signatu=
+re will
+ be written to *OUT_SIGFILE* in PKCS#7 DER format.
+=20
++The private key can be specified either by key file or by PKCS#11 token.=
+  To use
++a key file, provide **\-\-key** and optionally **\-\-cert**.  To use a P=
+KCS#11
++token, provide **\-\-pkcs11-engine**, **\-\-pkcs11-module**, **\-\-cert*=
+*, and
++optionally **\-\-pkcs11-keyid**.  PKCS#11 token support is unavailable w=
+hen
++fsverity-utils was built with BoringSSL rather than OpenSSL.
++
+ Options accepted by **fsverity sign**:
+=20
+ **\-\-block-size**=3D*BLOCK_SIZE*
+@@ -163,14 +169,14 @@ Options accepted by **fsverity sign**:
+ **\-\-cert**=3D*CERTFILE*
+ :   Specifies the file that contains the certificate, in PEM format.  Th=
+is
+     option is required if *KEYFILE* contains only the private key and no=
+t also
+-    the certificate.
++    the certificate, or if a PKCS#11 token is used.
+=20
+ **\-\-hash-alg**=3D*HASH_ALG*
+ :   Same as for **fsverity digest**.
+=20
+ **\-\-key**=3D*KEYFILE*
+ :   Specifies the file that contains the private key, in PEM format.  Th=
+is
+-    option is required.
++    option is required when not using a PKCS#11 token.
+=20
+ **\-\-out-descriptor**=3D*FILE*
+ :   Same as for **fsverity digest**.
+@@ -178,6 +184,20 @@ Options accepted by **fsverity sign**:
+ **\-\-out-merkle-tree**=3D*FILE*
+ :   Same as for **fsverity digest**.
+=20
++**\-\-pkcs11-engine**=3D*SOFILE*
++:   Specifies the path to the OpenSSL PKCS#11 engine file.  This typical=
+ly will
++    be a path to the libp11 .so file.  This option is required when usin=
+g a
++    PKCS#11 token.
++
++**\-\-pkcs11-keyid**=3D*KEYID*
++:   Specifies the key identifier in the form of a PKCS#11 URI.  If not p=
+rovided,
++    the default key associated with the token is used.  This option is o=
+nly
++    applicable when using a PKCS#11 token.
++
++**\-\-pkcs11-module**=3D*SOFILE*
++:   Specifies the path to the PKCS#11 token-specific module library.  Th=
+is
++    option is required when using a PKCS#11 token.
++
+ **\-\-salt**=3D*SALT*
+ :   Same as for **fsverity digest**.
+=20
+diff --git a/programs/cmd_sign.c b/programs/cmd_sign.c
+index 81a4ddc..aab8f00 100644
+--- a/programs/cmd_sign.c
++++ b/programs/cmd_sign.c
+@@ -27,13 +27,16 @@ static bool write_signature(const char *filename, con=
+st u8 *sig, u32 sig_size)
+ }
+=20
+ static const struct option longopts[] =3D {
++	{"key",		    required_argument, NULL, OPT_KEY},
++	{"cert",	    required_argument, NULL, OPT_CERT},
++	{"pkcs11-engine",   required_argument, NULL, OPT_PKCS11_ENGINE},
++	{"pkcs11-module",   required_argument, NULL, OPT_PKCS11_MODULE},
++	{"pkcs11-keyid",    required_argument, NULL, OPT_PKCS11_KEYID},
+ 	{"hash-alg",	    required_argument, NULL, OPT_HASH_ALG},
+ 	{"block-size",	    required_argument, NULL, OPT_BLOCK_SIZE},
+ 	{"salt",	    required_argument, NULL, OPT_SALT},
+ 	{"out-merkle-tree", required_argument, NULL, OPT_OUT_MERKLE_TREE},
+ 	{"out-descriptor",  required_argument, NULL, OPT_OUT_DESCRIPTOR},
+-	{"key",		    required_argument, NULL, OPT_KEY},
+-	{"cert",	    required_argument, NULL, OPT_CERT},
+ 	{NULL, 0, NULL, 0}
+ };
+=20
+@@ -53,14 +56,6 @@ int fsverity_cmd_sign(const struct fsverity_command *c=
+md,
+=20
+ 	while ((c =3D getopt_long(argc, argv, "", longopts, NULL)) !=3D -1) {
+ 		switch (c) {
+-		case OPT_HASH_ALG:
+-		case OPT_BLOCK_SIZE:
+-		case OPT_SALT:
+-		case OPT_OUT_MERKLE_TREE:
+-		case OPT_OUT_DESCRIPTOR:
+-			if (!parse_tree_param(c, optarg, &tree_params))
+-				goto out_usage;
+-			break;
+ 		case OPT_KEY:
+ 			if (sig_params.keyfile !=3D NULL) {
+ 				error_msg("--key can only be specified once");
+@@ -75,6 +70,35 @@ int fsverity_cmd_sign(const struct fsverity_command *c=
+md,
+ 			}
+ 			sig_params.certfile =3D optarg;
+ 			break;
++		case OPT_PKCS11_ENGINE:
++			if (sig_params.pkcs11_engine !=3D NULL) {
++				error_msg("--pkcs11-engine can only be specified once");
++				goto out_usage;
++			}
++			sig_params.pkcs11_engine =3D optarg;
++			break;
++		case OPT_PKCS11_MODULE:
++			if (sig_params.pkcs11_module !=3D NULL) {
++				error_msg("--pkcs11-module can only be specified once");
++				goto out_usage;
++			}
++			sig_params.pkcs11_module =3D optarg;
++			break;
++		case OPT_PKCS11_KEYID:
++			if (sig_params.pkcs11_keyid !=3D NULL) {
++				error_msg("--pkcs11-keyid can only be specified once");
++				goto out_usage;
++			}
++			sig_params.pkcs11_keyid =3D optarg;
++			break;
++		case OPT_HASH_ALG:
++		case OPT_BLOCK_SIZE:
++		case OPT_SALT:
++		case OPT_OUT_MERKLE_TREE:
++		case OPT_OUT_DESCRIPTOR:
++			if (!parse_tree_param(c, optarg, &tree_params))
++				goto out_usage;
++			break;
+ 		default:
+ 			goto out_usage;
+ 		}
+@@ -86,10 +110,6 @@ int fsverity_cmd_sign(const struct fsverity_command *=
+cmd,
+ 	if (argc !=3D 2)
+ 		goto out_usage;
+=20
+-	if (sig_params.keyfile =3D=3D NULL) {
+-		error_msg("Missing --key argument");
+-		goto out_usage;
+-	}
+ 	if (sig_params.certfile =3D=3D NULL)
+ 		sig_params.certfile =3D sig_params.keyfile;
+=20
+diff --git a/programs/fsverity.c b/programs/fsverity.c
+index f6aff3a..813ea2a 100644
+--- a/programs/fsverity.c
++++ b/programs/fsverity.c
+@@ -58,10 +58,11 @@ static const struct fsverity_command {
+ 		.func =3D fsverity_cmd_sign,
+ 		.short_desc =3D "Sign a file for fs-verity",
+ 		.usage_str =3D
+-"    fsverity sign FILE OUT_SIGFILE --key=3DKEYFILE\n"
++"    fsverity sign FILE OUT_SIGFILE\n"
++"               [--key=3DKEYFILE] [--cert=3DCERTFILE] [--pkcs11-engine=3D=
+SOFILE]\n"
++"               [--pkcs11-module=3DSOFILE] [--pkcs11-keyid=3DKEYID]\n"
+ "               [--hash-alg=3DHASH_ALG] [--block-size=3DBLOCK_SIZE] [--s=
+alt=3DSALT]\n"
+ "               [--out-merkle-tree=3DFILE] [--out-descriptor=3DFILE]\n"
+-"               [--cert=3DCERTFILE]\n"
+ 	}
+ };
+=20
+diff --git a/programs/fsverity.h b/programs/fsverity.h
+index fe24087..ad54cc2 100644
+--- a/programs/fsverity.h
++++ b/programs/fsverity.h
+@@ -31,6 +31,9 @@ enum {
+ 	OPT_OFFSET,
+ 	OPT_OUT_DESCRIPTOR,
+ 	OPT_OUT_MERKLE_TREE,
++	OPT_PKCS11_ENGINE,
++	OPT_PKCS11_KEYID,
++	OPT_PKCS11_MODULE,
+ 	OPT_SALT,
+ 	OPT_SIGNATURE,
+ };
+--=20
+2.30.2
+
