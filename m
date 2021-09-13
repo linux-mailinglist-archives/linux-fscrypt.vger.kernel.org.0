@@ -2,85 +2,119 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 839EC409B98
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 13 Sep 2021 19:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A6DF409C74
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 13 Sep 2021 20:44:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242962AbhIMSBE (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 13 Sep 2021 14:01:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49710 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239852AbhIMSBE (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 13 Sep 2021 14:01:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D08760F3A;
-        Mon, 13 Sep 2021 17:59:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631555988;
-        bh=pxSLrfQALbitgdYScNCysW/1moAPeQGUi9Q+vRF+62Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=m0kD1UaKObb+YJUUgmKPb0L4hACQlTfoMXJPUNGqu7D6wseUreydvWKnkYUI9n+V+
-         WQpWw5caFHnYZo7my6UkcVfQGjYUfjNuVITcrrBShC1w68+F8bdWKdAG219nZD913N
-         9vl9/41TkMFCyJxb4MCfUt9PPT0Y1nEHQx62mDRRaGb3oqeIWEtujMCYRLB/HXp0Gd
-         RPXuNGB//sDyPdRMvACLJkJi0SR2AXovEhscUSNWJ0iD9QbV9FEwki7vg+OFicogZ9
-         CLCHCFUEufN6zJuZRDSCP7+PCAZXCMNKXFA9KzpfoHl7QQkmIKqk8ZlB/6NBAt1esh
-         douanigTJch+g==
-Date:   Mon, 13 Sep 2021 10:59:46 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Aleksander Adamowski <olo@fb.com>
-Cc:     linux-fscrypt@vger.kernel.org
-Subject: Re: [fsverity-utils PATCH v5] Implement PKCS#11 opaque keys support
- through OpenSSL pkcs11 engine
-Message-ID: <YT+RktgS+WUXvq2t@sol.localdomain>
-References: <20210909212731.1151190-1-olo@fb.com>
+        id S239677AbhIMSp5 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 13 Sep 2021 14:45:57 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:43195 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236631AbhIMSp4 (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 13 Sep 2021 14:45:56 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 2906C5C011C;
+        Mon, 13 Sep 2021 14:44:40 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 13 Sep 2021 14:44:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=from
+        :to:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=qt1xY/gUXmKuBr01z7pM8I1adc
+        Ed2o5wUKfVco5Dm/g=; b=r3Emd3gvqZ4ncvD88IjusdrPzMc1GXBqqc5hvsyXa4
+        cSHQvHF25DUdckhZMIp+rqULnN+qW3iwMx7A2E0wUTDEyYBR13Z9ObOeBm3y1CUk
+        gR7ylzpYaw+8TvCdcbsKkqpBfxnM7xY3jlG3CE5Bm2k4PspEpvsiwPxBuxkOJQHl
+        TKNdhx9Xszh75xm4YqfZ5oziol1ts/QGVy6R8/NxSPC/1j4APY2j05Ye8UDzfbn6
+        QDI9mGl6CTHa+gP7ffbRbArLvkChY1BqZVW0GzS2MITxrJ174lOuKxbJRFyCQjKv
+        MMYQPWM9Ssx0aXpWwpor+bgIj0esZ1SD8e/tbryS92ng==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=qt1xY/gUXmKuBr01z
+        7pM8I1adcEd2o5wUKfVco5Dm/g=; b=aX35WSxz1RU5eYcoqrIJJ0Mt5Ifr85wmQ
+        Lw3RWcO5hsLDfWL5HOcZr7Jw1FUBtH/J14rN/cN3KpsENbgwlu3dsPi7SMggFgT8
+        HCRsEs7TDsjhzDBZy6zKq8M0Z5FOp4dfuZ75jASFd6gjMXCS3RGp6ypnfq2263Lx
+        nw0bwaISMHO7KcgLwvO3skceOzHlT11gN0balrq0qhmqNuixFpK2Hx5SvoQuY1Sl
+        d6ZTSJuEU2WMXkTy7AVZnQtruU1cqmto7Fgtjjn4Q1hXpI1EAyrBZz77RuJ+JUdL
+        nuHoQnRqZKGkxMpJIwMfvWSmFR0A3Ui7LRdDLbrInbAE3NjYn5kjQ==
+X-ME-Sender: <xms:F5w_YTlMT0S5kX_uHC9aqaJIchZ8cEMM1zLFyN6x132EH7xlOVhK5Q>
+    <xme:F5w_YW3GwE5hOY7imhf5oeYmhuS2MmwPEt4u5OJHEYiGzRtsiZvJIv-hb1bBxGgPL
+    b9LT2acovqKTRkqiZA>
+X-ME-Received: <xmr:F5w_YZrCNiTT-UxwgP8oMuiPJCvWnBic-yL9R_RGAlRWSNt3XvUYyXSMMdLuGNNOSP-I2SyLz8C9oRwB4pcKWqCVstLlKw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegjedguddviecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertd
+    ertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
+    oheqnecuggftrfgrthhtvghrnhepudeitdelueeijeefleffveelieefgfejjeeigeekud
+    duteefkefffeethfdvjeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
+    rghilhhfrhhomhepsghorhhishessghurhdrihho
+X-ME-Proxy: <xmx:F5w_YbmjAtXtSM058EoRfFUw9ghAQmccCZhB9eciypAiTTS9YuXbVA>
+    <xmx:F5w_YR2wB6r2FZTqV66Rx9e0UhDpBCz-yHz7JAJ6wNXmFzIkNXPgqQ>
+    <xmx:F5w_YaumIk9yFdLuHbdIXJ394UGZ1DDVX75oBVh1c63kzQsh8DUqjA>
+    <xmx:GJw_YfDDW-V1CNoW0VWBNvABgFeYK-yvAhEyetYkxgft0iURJaTrdA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 13 Sep 2021 14:44:39 -0400 (EDT)
+From:   Boris Burkov <boris@bur.io>
+To:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH v5 0/4] tests for btrfs fsverity
+Date:   Mon, 13 Sep 2021 11:44:33 -0700
+Message-Id: <cover.1631558495.git.boris@bur.io>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210909212731.1151190-1-olo@fb.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 02:27:31PM -0700, Aleksander Adamowski wrote:
-> PKCS#11 API allows us to use opaque keys confined in hardware security
-> modules (HSMs) and similar hardware tokens without direct access to the
-> key material, providing logical separation of the keys from the
-> cryptographic operations performed using them.
-> 
-> This commit allows using the popular libp11 pkcs11 module for the
-> OpenSSL library with `fsverity` so that direct access to a private key
-> file isn't necessary to sign files.
-> 
-> The user needs to supply the path to the engine shared library
-> (typically the libp11 shared object file) and the PKCS#11 module library
-> (a shared object file specific to the given hardware token).  The user
-> may also supply a token-specific key identifier.
-> 
-> Test evidence with a hardware PKCS#11 token:
-> 
->   $ echo test > dummy
->   $ ./fsverity sign dummy dummy.sig \
->     --pkcs11-engine=/usr/lib64/engines-1.1/libpkcs11.so \
->     --pkcs11-module=/usr/local/lib64/pkcs11_module.so \
->     --cert=test-pkcs11-cert.pem && echo OK;
->   Signed file 'dummy'
->   (sha256:c497326752e21b3992b57f7eff159102d474a97d972dc2c2d99d23e0f5fbdb65)
->   OK
-> 
-> Test evidence for regression check (checking that regular file-based key
-> signing still works):
-> 
->   $ ./fsverity sign dummy dummy.sig --key=key.pem --cert=cert.pem && \
->     echo  OK;
->   Signed file 'dummy'
->   (sha256:c497326752e21b3992b57f7eff159102d474a97d972dc2c2d99d23e0f5fbdb65)
->   OK
-> 
-> Signed-off-by: Aleksander Adamowski <olo@fb.com>
-> [EB: Avoided overloading the --key option and keyfile field, clarified
->  the documentation, removed logic from cmd_sign.c that libfsverity
->  already handles, and many other improvements.]
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
+This patchset provides tests for fsverity support in btrfs.
 
-Applied, thanks.
+It includes modifications for generic tests to pass with btrfs as well
+as new tests.
 
-- Eric
+--
+v5:
+- more idiomatic requires structure for making efbig test generic
+- make efbig test use truncate instead of pwrite for making a big file
+- improve documentation for efbig test approximation
+- fix underscores vs dashes in btrfs_requires_corrupt_block
+- improvements in missing/redundant requires invocations
+- move orphan test image file to $TEST_DIR
+- make orphan test replay/snapshot device size depend on log device
+  instead of hard-coding it.
+- rebase (signicant: no more "groups" file; use preamble)
+v4:
+- mark local variables
+- get rid of redundant mounts and syncs
+- use '_' in function names correctly
+- add a test for the EFBIG case
+- reduce usage of requires_btrfs_corrupt_block
+- handle variable input when corrupting merkle tree
+v3: rebase onto xfstests master branch
+v2: pass generic tests, add logwrites test
+
+Boris Burkov (4):
+  btrfs: test btrfs specific fsverity corruption
+  generic/574: corrupt btrfs merkle tree data
+  btrfs: test verity orphans with dmlogwrites
+  generic: test fs-verity EFBIG scenarios
+
+ common/btrfs          |   5 ++
+ common/config         |   1 +
+ common/verity         |  38 ++++++++++
+ tests/btrfs/290       | 165 ++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/290.out   |  25 +++++++
+ tests/btrfs/291       | 161 +++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/291.out   |   2 +
+ tests/generic/690     |  86 ++++++++++++++++++++++
+ tests/generic/690.out |   7 ++
+ 9 files changed, 490 insertions(+)
+ create mode 100755 tests/btrfs/290
+ create mode 100644 tests/btrfs/290.out
+ create mode 100755 tests/btrfs/291
+ create mode 100644 tests/btrfs/291.out
+ create mode 100755 tests/generic/690
+ create mode 100644 tests/generic/690.out
+
+-- 
+2.33.0
+
