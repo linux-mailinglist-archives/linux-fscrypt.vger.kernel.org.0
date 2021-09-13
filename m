@@ -2,56 +2,64 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 491C24073F2
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 11 Sep 2021 01:33:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3329A408848
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 13 Sep 2021 11:33:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234871AbhIJXeV (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 10 Sep 2021 19:34:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35302 "EHLO mail.kernel.org"
+        id S238684AbhIMJfM (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 13 Sep 2021 05:35:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48952 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234883AbhIJXeA (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 10 Sep 2021 19:34:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5503761213;
-        Fri, 10 Sep 2021 23:32:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631316768;
-        bh=UxYAz98NwSsIXqE3TUKUGodmHk57D6Vieot8raC5ZYk=;
+        id S238683AbhIMJfL (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 13 Sep 2021 05:35:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C880961004;
+        Mon, 13 Sep 2021 09:33:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631525636;
+        bh=GY8EbtbGrgePZfSn3NDCuLNemetE1SRK37HKfuiJrzI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Mu3+DEl5ryTOG0D28Nyg+gNmctTdngmd1o5792kxAHwJqMdZU5DffutL0GuDu38S8
-         WhlAZB4rEIZfx3l81BDTAOMO2zAYsvPxphjmkKRrqfdyxEJt9UZ0uodKBO+xiz/WfA
-         zUaRhhA1lPMWaLem8i8Im6U7IHp+K9Pf3NqCo2eKkPZPfKy6EGeD30bkiuz8GLa4sw
-         wkgme0h4NwbMdBNHWZJIxpKOOMYnmlEknp2rgJXMIrgx4p+IRIE5HPpD4aAEaoG0oA
-         sCGeHJviWiD0vneAeXz7+NoLyxO+AQuRh/2Dx6hDlZv/3e9uVD61WeRv2YdD+puP0e
-         W1vThBj+YKHcg==
-Date:   Fri, 10 Sep 2021 16:32:46 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Boris Burkov <boris@bur.io>
-Cc:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v4 4/4] generic: test fs-verity EFBIG scenarios
-Message-ID: <YTvrHnqnwm9cIzgN@sol.localdomain>
-References: <cover.1620248200.git.boris@bur.io>
- <508058f805a45808764a477e9ad04353a841cf53.1620248200.git.boris@bur.io>
- <YK1c62bh1WQ/h45O@sol.localdomain>
- <YTvpsib6hrp/9ZPY@zen>
+        b=lXfVZu5j0ppumZyeQdoQvH4+bjWZ2qTjg+7G2oYG4+8A6qFXQ1t9Ht1Wy00W3Dxli
+         OeFQkayIypGECabAt0QI2dN2J3NHxXZiJ1A5dQ2xtWflk3NdrQdcbdCjSSMPLDLUXt
+         qr+gz75pyugwlAj99JLG6U0f/kVMoJzmSk2BcAZU=
+Date:   Mon, 13 Sep 2021 11:33:54 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     stable@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 0/4] backport fscrypt symlink fixes to 4.19
+Message-ID: <YT8bAlnKAYXMqFpe@kroah.com>
+References: <20210908215033.1122580-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YTvpsib6hrp/9ZPY@zen>
+In-Reply-To: <20210908215033.1122580-1-ebiggers@kernel.org>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 04:26:42PM -0700, Boris Burkov wrote:
+On Wed, Sep 08, 2021 at 02:50:29PM -0700, Eric Biggers wrote:
+> This series backports some patches that failed to apply to 4.19-stable
+> due to the prototype of inode_operations::getattr having changed in
+> v5.12, as well as several other conflicts.  Please apply to 4.19-stable.
 > 
-> I am leaning towards making this a btrfs specific test. Just wanted to
-> double check with you if you think ext4 and f2fs would benefit from
-> running this test too..
+> Eric Biggers (4):
+>   fscrypt: add fscrypt_symlink_getattr() for computing st_size
+>   ext4: report correct st_size for encrypted symlinks
+>   f2fs: report correct st_size for encrypted symlinks
+>   ubifs: report correct st_size for encrypted symlinks
+> 
+>  fs/crypto/hooks.c               | 44 +++++++++++++++++++++++++++++++++
+>  fs/ext4/symlink.c               | 11 ++++++++-
+>  fs/f2fs/namei.c                 | 11 ++++++++-
+>  fs/ubifs/file.c                 | 12 ++++++++-
+>  include/linux/fscrypt_notsupp.h |  6 +++++
+>  include/linux/fscrypt_supp.h    |  1 +
+>  6 files changed, 82 insertions(+), 3 deletions(-)
+> 
+> -- 
+> 2.33.0.153.gba50c8fa24-goog
+> 
 
-It's applicable to ext4 and f2fs too, so it probably should be kept as a generic
-test.  Just make sure that filesystems have to "opt in" to it (with a new
-function _require_fsverity_max_file_size_limit() in common/verity or something),
-since it's probably not going to be applicable to every filesystem that
-implements fs-verity.
+All now queued up, thanks!
 
-- Eric
+greg k-h
