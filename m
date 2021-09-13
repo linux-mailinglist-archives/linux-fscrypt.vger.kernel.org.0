@@ -2,64 +2,85 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3329A408848
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 13 Sep 2021 11:33:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 839EC409B98
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 13 Sep 2021 19:59:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238684AbhIMJfM (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 13 Sep 2021 05:35:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48952 "EHLO mail.kernel.org"
+        id S242962AbhIMSBE (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 13 Sep 2021 14:01:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238683AbhIMJfL (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 13 Sep 2021 05:35:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C880961004;
-        Mon, 13 Sep 2021 09:33:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631525636;
-        bh=GY8EbtbGrgePZfSn3NDCuLNemetE1SRK37HKfuiJrzI=;
+        id S239852AbhIMSBE (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 13 Sep 2021 14:01:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D08760F3A;
+        Mon, 13 Sep 2021 17:59:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631555988;
+        bh=pxSLrfQALbitgdYScNCysW/1moAPeQGUi9Q+vRF+62Q=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lXfVZu5j0ppumZyeQdoQvH4+bjWZ2qTjg+7G2oYG4+8A6qFXQ1t9Ht1Wy00W3Dxli
-         OeFQkayIypGECabAt0QI2dN2J3NHxXZiJ1A5dQ2xtWflk3NdrQdcbdCjSSMPLDLUXt
-         qr+gz75pyugwlAj99JLG6U0f/kVMoJzmSk2BcAZU=
-Date:   Mon, 13 Sep 2021 11:33:54 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     stable@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 0/4] backport fscrypt symlink fixes to 4.19
-Message-ID: <YT8bAlnKAYXMqFpe@kroah.com>
-References: <20210908215033.1122580-1-ebiggers@kernel.org>
+        b=m0kD1UaKObb+YJUUgmKPb0L4hACQlTfoMXJPUNGqu7D6wseUreydvWKnkYUI9n+V+
+         WQpWw5caFHnYZo7my6UkcVfQGjYUfjNuVITcrrBShC1w68+F8bdWKdAG219nZD913N
+         9vl9/41TkMFCyJxb4MCfUt9PPT0Y1nEHQx62mDRRaGb3oqeIWEtujMCYRLB/HXp0Gd
+         RPXuNGB//sDyPdRMvACLJkJi0SR2AXovEhscUSNWJ0iD9QbV9FEwki7vg+OFicogZ9
+         CLCHCFUEufN6zJuZRDSCP7+PCAZXCMNKXFA9KzpfoHl7QQkmIKqk8ZlB/6NBAt1esh
+         douanigTJch+g==
+Date:   Mon, 13 Sep 2021 10:59:46 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Aleksander Adamowski <olo@fb.com>
+Cc:     linux-fscrypt@vger.kernel.org
+Subject: Re: [fsverity-utils PATCH v5] Implement PKCS#11 opaque keys support
+ through OpenSSL pkcs11 engine
+Message-ID: <YT+RktgS+WUXvq2t@sol.localdomain>
+References: <20210909212731.1151190-1-olo@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210908215033.1122580-1-ebiggers@kernel.org>
+In-Reply-To: <20210909212731.1151190-1-olo@fb.com>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, Sep 08, 2021 at 02:50:29PM -0700, Eric Biggers wrote:
-> This series backports some patches that failed to apply to 4.19-stable
-> due to the prototype of inode_operations::getattr having changed in
-> v5.12, as well as several other conflicts.  Please apply to 4.19-stable.
+On Thu, Sep 09, 2021 at 02:27:31PM -0700, Aleksander Adamowski wrote:
+> PKCS#11 API allows us to use opaque keys confined in hardware security
+> modules (HSMs) and similar hardware tokens without direct access to the
+> key material, providing logical separation of the keys from the
+> cryptographic operations performed using them.
 > 
-> Eric Biggers (4):
->   fscrypt: add fscrypt_symlink_getattr() for computing st_size
->   ext4: report correct st_size for encrypted symlinks
->   f2fs: report correct st_size for encrypted symlinks
->   ubifs: report correct st_size for encrypted symlinks
+> This commit allows using the popular libp11 pkcs11 module for the
+> OpenSSL library with `fsverity` so that direct access to a private key
+> file isn't necessary to sign files.
 > 
->  fs/crypto/hooks.c               | 44 +++++++++++++++++++++++++++++++++
->  fs/ext4/symlink.c               | 11 ++++++++-
->  fs/f2fs/namei.c                 | 11 ++++++++-
->  fs/ubifs/file.c                 | 12 ++++++++-
->  include/linux/fscrypt_notsupp.h |  6 +++++
->  include/linux/fscrypt_supp.h    |  1 +
->  6 files changed, 82 insertions(+), 3 deletions(-)
+> The user needs to supply the path to the engine shared library
+> (typically the libp11 shared object file) and the PKCS#11 module library
+> (a shared object file specific to the given hardware token).  The user
+> may also supply a token-specific key identifier.
 > 
-> -- 
-> 2.33.0.153.gba50c8fa24-goog
+> Test evidence with a hardware PKCS#11 token:
 > 
+>   $ echo test > dummy
+>   $ ./fsverity sign dummy dummy.sig \
+>     --pkcs11-engine=/usr/lib64/engines-1.1/libpkcs11.so \
+>     --pkcs11-module=/usr/local/lib64/pkcs11_module.so \
+>     --cert=test-pkcs11-cert.pem && echo OK;
+>   Signed file 'dummy'
+>   (sha256:c497326752e21b3992b57f7eff159102d474a97d972dc2c2d99d23e0f5fbdb65)
+>   OK
+> 
+> Test evidence for regression check (checking that regular file-based key
+> signing still works):
+> 
+>   $ ./fsverity sign dummy dummy.sig --key=key.pem --cert=cert.pem && \
+>     echo  OK;
+>   Signed file 'dummy'
+>   (sha256:c497326752e21b3992b57f7eff159102d474a97d972dc2c2d99d23e0f5fbdb65)
+>   OK
+> 
+> Signed-off-by: Aleksander Adamowski <olo@fb.com>
+> [EB: Avoided overloading the --key option and keyfile field, clarified
+>  the documentation, removed logic from cmd_sign.c that libfsverity
+>  already handles, and many other improvements.]
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
 
-All now queued up, thanks!
+Applied, thanks.
 
-greg k-h
+- Eric
