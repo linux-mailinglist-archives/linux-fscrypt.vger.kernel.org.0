@@ -2,46 +2,46 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79DDB40B700
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 14 Sep 2021 20:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0355C40B7A7
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 14 Sep 2021 21:12:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229946AbhINSfu (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 14 Sep 2021 14:35:50 -0400
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:44043 "EHLO
+        id S233349AbhINTNJ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 14 Sep 2021 15:13:09 -0400
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:42829 "EHLO
         wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229728AbhINSft (ORCPT
+        by vger.kernel.org with ESMTP id S233277AbhINTMz (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 14 Sep 2021 14:35:49 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.west.internal (Postfix) with ESMTP id B3B8F32009B2;
-        Tue, 14 Sep 2021 14:34:31 -0400 (EDT)
+        Tue, 14 Sep 2021 15:12:55 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 0CB60320084E;
+        Tue, 14 Sep 2021 15:11:35 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Tue, 14 Sep 2021 14:34:32 -0400
+  by compute5.internal (MEProxy); Tue, 14 Sep 2021 15:11:36 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=date
         :from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=zPRPCoCwEd+r9kLxKM6N96s6FwA
-        DbcSSHKQ2YSc+spc=; b=V4bJM2FMcCfjhpBrvF6JykskKEJIlPYsyGjyOWHswAR
-        mRUCFeKQtfy21hjT+KO6uUMnojdfUEy4wqN6sy2KyQdKFuR7zI4jc74HTtD7Mx+Y
-        T18+G4tP9RwAfnI9n+7utbM3jW6pFtCpMcIIB+urxGs5jRbLuFQwEnyQAVkm7xXn
-        rZ5iHSnjT02efcTHr9Lohiy9fvXYIGjh/oYDplCEd/RBaCJilUezSiKTcp5xfeFT
-        awDzYlNg7lrLg35+fNt9gDKyF2p5vHRodcW8jEV/GO3TEQfVjTI3Qq+9i/KwvnD8
-        mFME6sXVTNuY7uhQkyY/Jj28s99JmU3ach8/wUSuu3Q==
+        :content-type:in-reply-to; s=fm1; bh=EvYWqsGHF6A08/ENJFhKJKZ9I9B
+        AuppZ35XvUPULW/c=; b=b3swDc98WH0aVuyRmJsEg9ksoBsQGNYgkqvOPGWr3WH
+        dFFd60PeDXtimfqyWbv6186WKlDYr002fI47hPj7VTjWGR0jFU9hjAqyZc124mhu
+        xsWyJ0p/yKhTGr70t1HxDnoSkIcPsxFQoEFAZGsI0BE919Cpzm1zzFazKI8vz5/E
+        MW4pEHvoayhH2etNwTqIgDHy4hzTobLrkJajDPmzZriXjX1ePNZ0i8x6kOwK6q8Z
+        ryGpGVGW68JNYq2gF4aHwOMGmsCGks32LO8vtZmk3Mgudvu02aQf7SAMmlAzAor8
+        NTNIEFl1XGpZMxP8lkLfb8n2m55A7uRbBoUdlnDNVQQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-type:date:from:in-reply-to
         :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=zPRPCo
-        CwEd+r9kLxKM6N96s6FwADbcSSHKQ2YSc+spc=; b=iSnr+Uv0zrP6S8CKlEkk0Z
-        AQIcbwC6LLgbgc+EeLMTxquUPa8CmAaMBytq7SUESWGWQPofo68SyaAhITo82CSu
-        7tf1BOJz1O5g2JAIcxkve+7Iu2wnrEs6K9BKu8dWmpHYeUFjl6pIg0B1//PxmQsX
-        yhcEXQyBNtAcTKCQWuRs4qdXIXKcNlU2ExvBcsfN/ZthGHnuItAyd6HmKkHF0TcP
-        /VpKSqmIvK+Pv/DVkc6EqD0fAodpterwnJpmi8DUq0G2aFmpE/0FJurooPJ+GzpP
-        EWs+JuWyHtnBF9BWNARHRFqRwCkV2l71NzCPLC0IoMRui45p6iQrL8Upg78ATIhw
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=EvYWqs
+        GHF6A08/ENJFhKJKZ9I9BAuppZ35XvUPULW/c=; b=i22CkO6prKULj05aij9ffV
+        PU9zeRNCt9VV175nNrePBlbceiSd46fzT/FUYxgxZXHY01H6ZxPIGo9FFrSNoCZc
+        HU2+x3dWNeFYAN7SsTTBcvA4lPBkPYwy+TdFs7QW4At/eAdcHUmJSf1T9QyuMcn7
+        jMtUrAjzVVxaqPoMLAlMhhvCfe9oIvQrNdTUGVP4Urun1100Q68vZUnUVvcbCZZl
+        5GlHKI54Ww3w+D/XcMjQyo+o4BlD5Qw6Y/ByGztmc+ZwwGoDFFfshGtHl28/ZMNx
+        XMu6QGGZJNAKB03sBuQyhv7dx6yUcoXk3iCaEN9P9xg6+DcjCkj56knnsC3RFjTA
         ==
-X-ME-Sender: <xms:N-tAYfFUDGE4vOMJ0uOfbkFr4bjJAHvFHnwh_e11rgymbeexjm5EvA>
-    <xme:N-tAYcXMsvpjidpJgKgAOtK0yz_s66A5SY_kp6SOmgrxHL6pGa_aG6RTUX2sWLnLd
-    ElWBGRvSJeZg6DvNvs>
-X-ME-Received: <xmr:N-tAYRKGFvUiUNKg8uCUkVoS0eRDqp5yWVygITZxb0xBvE-ZZMGJDK898mTvCZ5Z1Io3WV7ociiLpDKbXv8nHo5knt8rig>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegledguddvfecutefuodetggdotefrod
+X-ME-Sender: <xms:5_NAYSyEA6kApOoPB8HNb3kEr5VW7YDlEs3moc6d9su41ImvKJv_7w>
+    <xme:5_NAYeTqxGfR9NpECEzwXDdhDset0qYO7vtnsQeKzjX4-1FwikRh9vWhQeI_q3vCY
+    dRKbuE-XW4Y74w-yOs>
+X-ME-Received: <xmr:5_NAYUUzcVOQcsm5GRcX9N-8ZitXXGo8loBYFeAukAPspR-ZDeyGWa4jRfifRGvWLzUJXFj8V_wRkPhHMcM0ITi0Rq7QDw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegledgudefudcutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
     enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
@@ -49,101 +49,108 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegledguddvfecutefuodetgg
     ehudevleekieetleevieeuhfduhedtiefgheekfeefgeelvdeuveeggfduueevfeenucev
     lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhsse
     gsuhhrrdhioh
-X-ME-Proxy: <xmx:N-tAYdGthhDBHOdLC-SNFL6A-arIjZjfcXYd5JC0rALMWYmByHjlQg>
-    <xmx:N-tAYVWMccDjuFrf_0NatbxT0zHQTxwCN9rFHWdXp0B0UT6nLEPkUw>
-    <xmx:N-tAYYO6r4laEGiAGQZ3ghlzsqQehPocKzhMj0JlrVNmAtZkehE_9A>
-    <xmx:N-tAYSjv3yS9JJCtriaHlbHexxHDHdrWhiFx2TYRVMjsR7-zOziUOw>
+X-ME-Proxy: <xmx:5_NAYYg-wpnhA-YSfIONrvazyrqXzaLFh07wBFL8GvjxkAs4gbYtxQ>
+    <xmx:5_NAYUCUhs3WVSw3QneE8i7Lm_prO_wPxJK-AzN4bVIpQJu09MyNaA>
+    <xmx:5_NAYZI7ZRe9B9_arhEn47Y76MSfg2-y6NQ5K9ZJR1BM5zIoFzW6yQ>
+    <xmx:5_NAYd6S3xOpAdlZQ7OUtRXvQJqrkblzb3JcVSgd_k9YpxIGB9IlZA>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 14 Sep 2021 14:34:30 -0400 (EDT)
-Date:   Tue, 14 Sep 2021 11:34:29 -0700
+ 14 Sep 2021 15:11:35 -0400 (EDT)
+Date:   Tue, 14 Sep 2021 12:11:34 -0700
 From:   Boris Burkov <boris@bur.io>
 To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH v6 2/3] btrfs: initial fsverity support
-Message-ID: <YUDrNR+72WMno10q@zen>
-References: <cover.1625083099.git.boris@bur.io>
- <797d6524e4e6386fc343cd5d0bcdd53878a6593e.1625083099.git.boris@bur.io>
- <YUDcy73zXVPneImG@sol.localdomain>
- <YUDgmgq1Q5l5e/K4@zen>
- <YUDiTFvaVZ4INJOO@sol.localdomain>
+Cc:     linux-fscrypt@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [RFC PATCH] fsverity: add enable sysctl
+Message-ID: <YUDz0dGsLGoFbHXg@zen>
+References: <ebc9c81c31119e0ce8f810c5729b42eef4c5c3af.1631560857.git.boris@bur.io>
+ <YUATekKOECWznxl8@sol.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YUDiTFvaVZ4INJOO@sol.localdomain>
+In-Reply-To: <YUATekKOECWznxl8@sol.localdomain>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 10:56:28AM -0700, Eric Biggers wrote:
-> On Tue, Sep 14, 2021 at 10:49:33AM -0700, Boris Burkov wrote:
-> > On Tue, Sep 14, 2021 at 10:32:59AM -0700, Eric Biggers wrote:
-> > > Hi Boris,
-> > > 
-> > > On Wed, Jun 30, 2021 at 01:01:49PM -0700, Boris Burkov wrote:
-> > > > Add support for fsverity in btrfs. To support the generic interface in
-> > > > fs/verity, we add two new item types in the fs tree for inodes with
-> > > > verity enabled. One stores the per-file verity descriptor and btrfs
-> > > > verity item and the other stores the Merkle tree data itself.
-> > > > 
-> > > > Verity checking is done in end_page_read just before a page is marked
-> > > > uptodate. This naturally handles a variety of edge cases like holes,
-> > > > preallocated extents, and inline extents. Some care needs to be taken to
-> > > > not try to verity pages past the end of the file, which are accessed by
-> > > > the generic buffered file reading code under some circumstances like
-> > > > reading to the end of the last page and trying to read again. Direct IO
-> > > > on a verity file falls back to buffered reads.
-> > > > 
-> > > > Verity relies on PageChecked for the Merkle tree data itself to avoid
-> > > > re-walking up shared paths in the tree. For this reason, we need to
-> > > > cache the Merkle tree data. Since the file is immutable after verity is
-> > > > turned on, we can cache it at an index past EOF.
-> > > > 
-> > > > Use the new inode ro_flags to store verity on the inode item, so that we
-> > > > can enable verity on a file, then rollback to an older kernel and still
-> > > > mount the file system and read the file. Since we can't safely write the
-> > > > file anymore without ruining the invariants of the Merkle tree, we mark
-> > > > a ro_compat flag on the file system when a file has verity enabled.
-> > > 
-> > > I want to mention the btrfs verity support in
-> > > Documentation/filesystems/fsverity.rst, and I have a couple questions:
-> > > 
-> > > 1. Is the ro_compat filesystem flag still a thing?  The commit message claims it
-> > >    is, and BTRFS_FEATURE_COMPAT_RO_VERITY is defined in the code, but it doesn't
-> > >    seem to actually be used.  It's not needed since you found a way to make the
-> > >    inode flags ro_compat instead, right?
+On Mon, Sep 13, 2021 at 08:14:02PM -0700, Eric Biggers wrote:
+> On Mon, Sep 13, 2021 at 05:37:15PM -0700, Boris Burkov wrote:
+> > At Facebook, we would find a global killswitch sysctl reassuring while
+> > rolling fs-verity out widely. i.e., we could run it in a logging mode
+> > for a while, measure how it's doing, then fully enable it later.
 > > 
-> > I believe it is still being used, unless I messed up the patch I sent in
-> > the end. Taking a quick look, I think it's set at fs/btrfs/verity.c:558.
+> > However, I feel that "let root turn off verity" seems pretty sketchy, so
+> > I was hoping to ask for some feedback on it.
 > > 
-> > btrfs_set_fs_compat_ro(root->fs_info, VERITY);
+> > I had another idea of making it per-file sort of like MODE_LOGGING in
+> > dm-verity. I could add a mode to the ioctl args, and perhaps a new ioctl
+> > for getting/setting the mode?
 > > 
-> > I believe I still needed it because the tree checker doesn't scan every
-> > inode on the filesystem when you mount, so it would only freak out about
-> > a ro-compat inode later on if the inode didn't happen to be in a leaf
-> > that was being checked at mount time.
+> > The rest is the commit message from the patch I originally wrote:
 > > 
+> > 
+> > Add a sysctl killswitch for verity:
+> > 0: verity has no effect, even if configured or used
+> > 1: verity is in "audit" mode, only log on failures
+> > 2: verity fully enabled; the behavior before this patch
+> > 
+> > This also precipitated re-organizing sysctls for verity as previously
+> > the only sysctl was for signatures and setting up the sysctl was coupled
+> > with the signature logic.
+> > 
+> > Signed-off-by: Boris Burkov <boris@bur.io>
 > 
-> Okay, so it is used.  (Due to the macro, it didn't show up when grepping.)
+> I don't think there's any security problem with having this root-only sysctl.
+> The fs.verity.require_signatures sysctl already works that way.  We aren't
+> trying to protect against root, unless you've set up your system properly with
+> SELinux, in which case fine-grained access control of sysctls is available.
+
+Good to know. I couldn't quickly think of a way a root user could really
+badly defeat verity (get in an evil file that would trick userspace
+hiding in dm-verity) but I didn't really think about what you could do
+with modules, bpf, just rebooting into a new kernel, etc..
+
 > 
-> Doesn't it defeat the purpose of a ro_compat inode flag if the whole filesystem
-> is marked with a ro_compat feature flag, though?  I thought that the point of
-> the ro_compat inode flag is to allow old kernels to mount the filesystem
-> read-write, with only verity files being forced to read-only.  That would be
-> more flexible than ext4's implementation of fs-verity which forces the whole
-> filesystem to read-only.  But it seems you're forcing the whole filesystem to
-> read-only anyway?
+> The mode 0 is the one I like the least, as it makes some ad-hoc changes like
+> making the fs-verity ioctls fail with -EOPNOTSUPP.  If userspace doesn't want to
+> use those ioctls, shouldn't it just not use those ioctls?
+> 
+> It might help if you elaborated on what sort of problems you are trying to plan
+> for.  One concern that was raised on Android was that on low-end flash storage,
+> files can have bit-flips that would normally be "benign" but would cause errors
+> if fs-verity detects them.  Falling back to your mode 1 (logging-only) would be
+> sufficient if that happened and caused problems.  So I am wondering more what
+> the purpose of mode 0 would be; it seems it might be overkill, and an
+> "enforcing" boolean equivalent to your modes 1 and 2 might be sufficient?
+
+In our situation, I think we are less worried about these sorts of
+bit-flips as we already use btrfs checksums and verity would only catch
+the cases where the checksum also changed (presumably this is only the
+malicious case, in practice)
+
+Mode 0 is actually probably more interesting to us, as it would be
+insurance against the case where there is either a serious bug in the
+btrfs implementation or if there is a performance regression on some
+unforeseen workload. Without being able to shut it off entirely, we
+would be in a tough spot of having to replace the affected files.
+
+The most important part of this mode to me is the skip and return 0 in
+fsverity_verify_page. I agree that failing the enables is sort of lame
+because userspace would need to be ignoring errors or falling back to
+not-verity for that to even "help".
+
+Maybe I could make them a no-op? That could be too surprising, but is
+in line with verify being a no-op and could actually have useful
+semantics in an emergency shutoff scenario.
+
+> 
+> Did you also consider a filesystem mount option?  I guess the sysctl makes sense
+> especially since we already have the require_signatures one, but you probably
+> should CC this to the filesystem mailing lists (ext4, f2fs, and btrfs) in case
+> other people have opinions on this.
+
+I didn't consider a mount option, but I'll follow up as you suggest.
+
 > 
 > - Eric
 
-I was thinking of it in terms of "RO compat is the goal" and having new
-inode flags totally broke that and was treated as a corruption of the
-inode regardless of the fs being ro/rw. I think a check on a live fs
-would just flip the fs ro, which was the goal anyway, but a check that
-happened during mount would fail the mount, even for a read-only fs. 
-
-Making it fully per file would be pretty cool! The only thing
-really missing as far as I can tell is a way to mark a file read only
-with the same semantics fsverity uses from within btrfs.
-
+Thanks,
 Boris
