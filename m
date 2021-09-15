@@ -2,98 +2,72 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27EB640BC83
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 15 Sep 2021 02:16:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8403140CE61
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 15 Sep 2021 22:45:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236030AbhIOAR3 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 14 Sep 2021 20:17:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58132 "EHLO mail.kernel.org"
+        id S231912AbhIOUqq (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 15 Sep 2021 16:46:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42692 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235972AbhIOAR2 (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 14 Sep 2021 20:17:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BA6960E90;
-        Wed, 15 Sep 2021 00:16:10 +0000 (UTC)
+        id S231703AbhIOUqq (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 15 Sep 2021 16:46:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3570260E08;
+        Wed, 15 Sep 2021 20:45:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631664970;
-        bh=enjNfR4WaUaM06R96C4rRITDPMrrGDyIbwRrfIV6o9U=;
+        s=k20201202; t=1631738725;
+        bh=Zp08hMDWhVy5cOJ2+ev8aGbNZ7wp41TNwsGBQ31uLLg=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kCmENhy85CCuBVHCa1VxNArN2o1zzOZXWl/gl3EWFIQudpxwXvOeLowonOOENkHMF
-         ovih45J+VC+2o3nwoPHCG1uhzmejSEP7WarV4d66zJGJ1ZWJurkQ3z7m9PRM6OT8sO
-         UpOYKOlXX/LhvQjYZneVR3cOBxH0jQG75dLaGKn6TGZhpVRFjZB7G7V++YZOTc3NkB
-         bS9waQm3Oz1du8RA2XAMgVsVYryhHEomKGKnpdqoH/XSWw7pMTv/+vNQhVB8LpIKos
-         G8XkPMb8czGA/spUxVai6ZhaXAnvYsNUg1iPUJg1O4uypx2DQr9vQ+kR5NuAAXDIU1
-         bo/191YA3e38Q==
-Date:   Tue, 14 Sep 2021 17:16:09 -0700
+        b=qIei9DzJlY6WFaNfCfOXlbt4yNCLMVJfy6JnnPR85MRFmTh0qWvD2xNE9bddGHueI
+         hHtDpqnkzf/+dE2uTllwjx3hT+nxMxjH4TWAhUeir2Vlzzpq0ugVW0QTY0Ze0eRAlm
+         v31w1OmoMz5JkD2iy6fwyTmUbJZmxS1/kNPEXL/uJZHFuIciURSKqVflrEBj2/5lD1
+         sJuphM/jcoAu7j1rvwtia7wy0daC427BEP1RHHXxgZgYVh6oarKZawf7sF/ytuzTj4
+         uF3aOs0hyJjh6DCj+LcYq68Xl9M6eOmb5TLYsq0G/prOh9Fy/39fz5MDSsF1ZGzqSy
+         y7kY9J/Ut1Q/Q==
+Date:   Wed, 15 Sep 2021 13:45:23 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     Boris Burkov <boris@bur.io>
-Cc:     linux-fscrypt@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [RFC PATCH] fsverity: add enable sysctl
-Message-ID: <YUE7STrCSDobno6R@sol.localdomain>
-References: <ebc9c81c31119e0ce8f810c5729b42eef4c5c3af.1631560857.git.boris@bur.io>
- <YUATekKOECWznxl8@sol.localdomain>
- <YUDz0dGsLGoFbHXg@zen>
+Cc:     linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH v6 2/3] btrfs: initial fsverity support
+Message-ID: <YUJbYyVZr543cfg0@sol.localdomain>
+References: <cover.1625083099.git.boris@bur.io>
+ <797d6524e4e6386fc343cd5d0bcdd53878a6593e.1625083099.git.boris@bur.io>
+ <YUDcy73zXVPneImG@sol.localdomain>
+ <YUDgmgq1Q5l5e/K4@zen>
+ <YUDiTFvaVZ4INJOO@sol.localdomain>
+ <YUDrNR+72WMno10q@zen>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YUDz0dGsLGoFbHXg@zen>
+In-Reply-To: <YUDrNR+72WMno10q@zen>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 12:11:34PM -0700, Boris Burkov wrote:
+On Tue, Sep 14, 2021 at 11:34:29AM -0700, Boris Burkov wrote:
+> > Okay, so it is used.  (Due to the macro, it didn't show up when grepping.)
 > > 
-> > The mode 0 is the one I like the least, as it makes some ad-hoc changes like
-> > making the fs-verity ioctls fail with -EOPNOTSUPP.  If userspace doesn't want to
-> > use those ioctls, shouldn't it just not use those ioctls?
+> > Doesn't it defeat the purpose of a ro_compat inode flag if the whole filesystem
+> > is marked with a ro_compat feature flag, though?  I thought that the point of
+> > the ro_compat inode flag is to allow old kernels to mount the filesystem
+> > read-write, with only verity files being forced to read-only.  That would be
+> > more flexible than ext4's implementation of fs-verity which forces the whole
+> > filesystem to read-only.  But it seems you're forcing the whole filesystem to
+> > read-only anyway?
 > > 
-> > It might help if you elaborated on what sort of problems you are trying to plan
-> > for.  One concern that was raised on Android was that on low-end flash storage,
-> > files can have bit-flips that would normally be "benign" but would cause errors
-> > if fs-verity detects them.  Falling back to your mode 1 (logging-only) would be
-> > sufficient if that happened and caused problems.  So I am wondering more what
-> > the purpose of mode 0 would be; it seems it might be overkill, and an
-> > "enforcing" boolean equivalent to your modes 1 and 2 might be sufficient?
+> > - Eric
 > 
-> In our situation, I think we are less worried about these sorts of
-> bit-flips as we already use btrfs checksums and verity would only catch
-> the cases where the checksum also changed (presumably this is only the
-> malicious case, in practice)
+> I was thinking of it in terms of "RO compat is the goal" and having new
+> inode flags totally broke that and was treated as a corruption of the
+> inode regardless of the fs being ro/rw. I think a check on a live fs
+> would just flip the fs ro, which was the goal anyway, but a check that
+> happened during mount would fail the mount, even for a read-only fs. 
 > 
-> Mode 0 is actually probably more interesting to us, as it would be
-> insurance against the case where there is either a serious bug in the
-> btrfs implementation or if there is a performance regression on some
-> unforeseen workload. Without being able to shut it off entirely, we
-> would be in a tough spot of having to replace the affected files.
-> 
-> The most important part of this mode to me is the skip and return 0 in
-> fsverity_verify_page. I agree that failing the enables is sort of lame
-> because userspace would need to be ignoring errors or falling back to
-> not-verity for that to even "help".
-> 
-> Maybe I could make them a no-op? That could be too surprising, but is
-> in line with verify being a no-op and could actually have useful
-> semantics in an emergency shutoff scenario.
+> Making it fully per file would be pretty cool! The only thing
+> really missing as far as I can tell is a way to mark a file read only
+> with the same semantics fsverity uses from within btrfs.
 
-In that case I guess it's reasonable to have all three modes, but they need to
-have clearly defined semantics and have an intuitive interface, and be
-documented.  Setting "enabled" to 1 to disable something is unintuitive; it
-probably should be fs.verity.mode with string values, e.g. "enforcing",
-"log-only" (or "audit"?), and "disabled".
-
-For the log-only mode, you also need to consider which types of errors it
-applies to, specifically.  In your patch, it appears that only data verification
-errors would be log-only, whereas other errors such as bad signatures and
-fsverity_descriptor corruption would still be fatal.  It probably would make
-sense to have these other errors be log-only as well, so that log-only applies
-to all fs-verity errors.
-
-I don't think the "disabled" mode making the fs-verity ioctls be no-ops is a
-good idea.  I think you should just make them return an error code, preferably a
-distinct error code rather than overloading EOPNOTSUPP.  You can always make
-userspace aware of whether fs-verity is disabled or not, if needed.  Trying to
-make userspace think that it's using fs-verity when it's actually not isn't
-going to work well, especially if it's using the FS_IOC_MEASURE_VERITY ioctl, as
-there is no way to return a meaningful value from that if the prior call to
-FS_IOC_ENABLE_VERITY was ignored.
+I don't understand.  Why are you bothering with the ro_compat inode flag at all
+if it doesn't actually work?
 
 - Eric
