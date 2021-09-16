@@ -2,36 +2,36 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00FE640E980
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 16 Sep 2021 20:02:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1507F40E97D
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 16 Sep 2021 20:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245394AbhIPRzP (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        id S1343706AbhIPRzP (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
         Thu, 16 Sep 2021 13:55:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33922 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:33926 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345862AbhIPRxI (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        id S1345865AbhIPRxI (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
         Thu, 16 Sep 2021 13:53:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 84B646112E;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C6E1F610E9;
         Thu, 16 Sep 2021 17:51:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1631814706;
-        bh=CmfkyiqINGy/dUTigfCllumUlkFT8Jy8InrsRS6FQk4=;
+        bh=rpmpM/69X+42LEwBPNkBp3nxUP+00p/N9pihc2ryJn4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kgJTxXRoZXyrNzln5zs+CmJZCU/qQmWHyCOfJwg3gVEJErJ9qlwdibauX2rULKCLe
-         VDtr2YzxGglnHREplaR+LSthnOMDJroSdyvLoamu2JkJo/4ydN/yijZ31xXWLYRvuk
-         SjxSoxhmtKOSdIvtPrYR9tfSpOzyvJMwQQzCrLpVaUItCwKAx3xFjzDFVEmzAbp2Sw
-         H3bBPk2pY+UIYoOT0ek+S0FgXNwukPTZoHYaE1qw2XPY08JwKl6RYQFoE5NkaO1Iq7
-         VEianoXjeNePreB5vp2D8aDQ0LLfExtsl/bzdv97zxqASxuknfS8QA8AhkHioH9lmq
-         561s8Ua50q+Pg==
+        b=lmFSM611GyQ0Wxkb0FdYlL6Hf/QcpRAPPiWzxBQUm/C3bi8VjxAJHDrolMNwaFQ35
+         goo3m1nzau3utbActgHL7MKPhVcsWhjd3tmsJ1+b4NM/9TGL8PTxF0CUJWbzeMLlQ7
+         kotKYMCgY15AUcJ6t4v07DuVrUzgTKr3pRzlH0C6/8Abt+cbkCBGfmGc2umuuQKDyh
+         bdADVzRhFvVIMyMCuUJCLimR2xFh9tnQ4ANSKGvmWfPtetkVsi4dbtte7Jl8/mIlJt
+         Qyri68TJS98yJzoDTdbjKWcCmUdBWHUjrcHQ51uKwhXeijKs1bmjQS/jzuTEsib6h0
+         4d2O+r/MENJCw==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-block@vger.kernel.org, linux-fscrypt@vger.kernel.org
 Cc:     linux-arm-msm@vger.kernel.org, kernel-team@android.com,
         Thara Gopinath <thara.gopinath@linaro.org>,
         Gaurav Kashyap <gaurkash@codeaurora.org>,
         Satya Tangirala <satyaprateek2357@gmail.com>
-Subject: [RFC PATCH v2 3/5] fscrypt: improve documentation for inline encryption
-Date:   Thu, 16 Sep 2021 10:49:26 -0700
-Message-Id: <20210916174928.65529-4-ebiggers@kernel.org>
+Subject: [RFC PATCH v2 4/5] fscrypt: allow 256-bit master keys with AES-256-XTS
+Date:   Thu, 16 Sep 2021 10:49:27 -0700
+Message-Id: <20210916174928.65529-5-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210916174928.65529-1-ebiggers@kernel.org>
 References: <20210916174928.65529-1-ebiggers@kernel.org>
@@ -43,138 +43,183 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Currently the fscrypt inline encryption support is documented in the
-"Implementation details" section, and it doesn't go into much detail.
-It's really more than just an "implementation detail" though, as there
-is a user-facing mount option.  Also, hardware-wrapped key support (an
-upcoming feature) will depend on inline encryption and will affect the
-on-disk format; by definition that's not just an implementation detail.
+fscrypt currently requires a 512-bit master key when AES-256-XTS is
+used, since AES-256-XTS keys are 512-bit and fscrypt requires that the
+master key be at least as long any key that will be derived from it.
 
-Therefore, move this documentation into its own section and expand it.
+However, this is overly strict because AES-256-XTS doesn't actually have
+a 512-bit security strength, but rather 256-bit.  The fact that XTS
+takes twice the expected key size is a quirk of the XTS mode.  It is
+sufficient to use 256 bits of entropy for AES-256-XTS, provided that it
+is first properly expanded into a 512-bit key, which HKDF-SHA512 does.
+
+Therefore, relax the check of the master key size to use the security
+strength of the derived key rather than the size of the derived key
+(except for v1 encryption policies, which don't use HKDF).
+
+Besides making things more flexible for userspace, this is needed in
+order for the use of a KDF which only takes a 256-bit key to be
+introduced into the fscrypt key hierarchy.  This will happen with
+hardware-wrapped keys support, as all known hardware which supports that
+feature uses an SP800-108 KDF using AES-256-CMAC, so the wrapped keys
+are wrapped 256-bit AES keys.  Moreover, there is interest in fscrypt
+supporting the same type of AES-256-CMAC based KDF in software as an
+alternative to HKDF-SHA512.  There is no security problem with such
+features, so fix the key length check to work properly with them.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- Documentation/block/inline-encryption.rst |  2 +
- Documentation/filesystems/fscrypt.rst     | 73 +++++++++++++++++------
- 2 files changed, 58 insertions(+), 17 deletions(-)
+ fs/crypto/fscrypt_private.h |  5 ++--
+ fs/crypto/hkdf.c            | 11 +++++--
+ fs/crypto/keysetup.c        | 57 +++++++++++++++++++++++++++++--------
+ 3 files changed, 56 insertions(+), 17 deletions(-)
 
-diff --git a/Documentation/block/inline-encryption.rst b/Documentation/block/inline-encryption.rst
-index 12e8510d150ad..6110ed2b24c7e 100644
---- a/Documentation/block/inline-encryption.rst
-+++ b/Documentation/block/inline-encryption.rst
-@@ -1,5 +1,7 @@
- .. SPDX-License-Identifier: GPL-2.0
+diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+index 3fa965eb3336d..cb25ef0cdf1f3 100644
+--- a/fs/crypto/fscrypt_private.h
++++ b/fs/crypto/fscrypt_private.h
+@@ -549,8 +549,9 @@ int __init fscrypt_init_keyring(void);
+ struct fscrypt_mode {
+ 	const char *friendly_name;
+ 	const char *cipher_str;
+-	int keysize;
+-	int ivsize;
++	int keysize;		/* key size in bytes */
++	int security_strength;	/* security strength in bytes */
++	int ivsize;		/* IV size in bytes */
+ 	int logged_impl_name;
+ 	enum blk_crypto_mode_num blk_crypto_mode;
+ };
+diff --git a/fs/crypto/hkdf.c b/fs/crypto/hkdf.c
+index e0ec210555053..7607d18b35fc0 100644
+--- a/fs/crypto/hkdf.c
++++ b/fs/crypto/hkdf.c
+@@ -16,9 +16,14 @@
  
-+.. _inline_encryption:
-+
- =================
- Inline Encryption
- =================
-diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
-index 0eb799d9d05a2..d6f6495b56c0c 100644
---- a/Documentation/filesystems/fscrypt.rst
-+++ b/Documentation/filesystems/fscrypt.rst
-@@ -77,11 +77,11 @@ Side-channel attacks
+ /*
+  * HKDF supports any unkeyed cryptographic hash algorithm, but fscrypt uses
+- * SHA-512 because it is reasonably secure and efficient; and since it produces
+- * a 64-byte digest, deriving an AES-256-XTS key preserves all 64 bytes of
+- * entropy from the master key and requires only one iteration of HKDF-Expand.
++ * SHA-512 because it is well-established, secure, and reasonably efficient.
++ *
++ * HKDF-SHA256 was also considered, as its 256-bit security strength would be
++ * sufficient here.  A 512-bit security strength is "nice to have", though.
++ * Also, on 64-bit CPUs, SHA-512 is usually just as fast as SHA-256.  In the
++ * common case of deriving an AES-256-XTS key (512 bits), that can result in
++ * HKDF-SHA512 being much faster than HKDF-SHA256, as the longer digest size of
++ * SHA-512 causes HKDF-Expand to only need to do one iteration rather than two.
+  */
+ #define HKDF_HMAC_ALG		"hmac(sha512)"
+ #define HKDF_HASHLEN		SHA512_DIGEST_SIZE
+diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
+index bca9c6658a7c5..89cd533a88bff 100644
+--- a/fs/crypto/keysetup.c
++++ b/fs/crypto/keysetup.c
+@@ -19,6 +19,7 @@ struct fscrypt_mode fscrypt_modes[] = {
+ 		.friendly_name = "AES-256-XTS",
+ 		.cipher_str = "xts(aes)",
+ 		.keysize = 64,
++		.security_strength = 32,
+ 		.ivsize = 16,
+ 		.blk_crypto_mode = BLK_ENCRYPTION_MODE_AES_256_XTS,
+ 	},
+@@ -26,12 +27,14 @@ struct fscrypt_mode fscrypt_modes[] = {
+ 		.friendly_name = "AES-256-CTS-CBC",
+ 		.cipher_str = "cts(cbc(aes))",
+ 		.keysize = 32,
++		.security_strength = 32,
+ 		.ivsize = 16,
+ 	},
+ 	[FSCRYPT_MODE_AES_128_CBC] = {
+ 		.friendly_name = "AES-128-CBC-ESSIV",
+ 		.cipher_str = "essiv(cbc(aes),sha256)",
+ 		.keysize = 16,
++		.security_strength = 16,
+ 		.ivsize = 16,
+ 		.blk_crypto_mode = BLK_ENCRYPTION_MODE_AES_128_CBC_ESSIV,
+ 	},
+@@ -39,12 +42,14 @@ struct fscrypt_mode fscrypt_modes[] = {
+ 		.friendly_name = "AES-128-CTS-CBC",
+ 		.cipher_str = "cts(cbc(aes))",
+ 		.keysize = 16,
++		.security_strength = 16,
+ 		.ivsize = 16,
+ 	},
+ 	[FSCRYPT_MODE_ADIANTUM] = {
+ 		.friendly_name = "Adiantum",
+ 		.cipher_str = "adiantum(xchacha12,aes)",
+ 		.keysize = 32,
++		.security_strength = 32,
+ 		.ivsize = 32,
+ 		.blk_crypto_mode = BLK_ENCRYPTION_MODE_ADIANTUM,
+ 	},
+@@ -357,6 +362,45 @@ static int fscrypt_setup_v2_file_key(struct fscrypt_info *ci,
+ 	return 0;
+ }
  
- fscrypt is only resistant to side-channel attacks, such as timing or
- electromagnetic attacks, to the extent that the underlying Linux
--Cryptographic API algorithms are.  If a vulnerable algorithm is used,
--such as a table-based implementation of AES, it may be possible for an
--attacker to mount a side channel attack against the online system.
--Side channel attacks may also be mounted against applications
--consuming decrypted data.
-+Cryptographic API algorithms or inline encryption hardware are.  If a
-+vulnerable algorithm is used, such as a table-based implementation of
-+AES, it may be possible for an attacker to mount a side channel attack
-+against the online system.  Side channel attacks may also be mounted
-+against applications consuming decrypted data.
++/*
++ * Check whether the size of the given master key (@mk) is appropriate for the
++ * encryption settings which a particular file will use (@ci).
++ *
++ * If the file uses a v1 encryption policy, then the master key must be at least
++ * as long as the derived key, as this is a requirement of the v1 KDF.
++ *
++ * Otherwise, the KDF can accept any size key, so we enforce a slightly looser
++ * requirement: we require that the size of the master key be at least the
++ * maximum security strength of any algorithm whose key will be derived from it
++ * (but in practice we only need to consider @ci->ci_mode, since any other
++ * possible subkeys such as DIRHASH and INODE_HASH will never increase the
++ * required key size over @ci->ci_mode).  This allows AES-256-XTS keys to be
++ * derived from a 256-bit master key, which is cryptographically sufficient,
++ * rather than requiring a 512-bit master key which is unnecessarily long.  (We
++ * still allow 512-bit master keys if the user chooses to use them, though.)
++ */
++static bool fscrypt_valid_master_key_size(const struct fscrypt_master_key *mk,
++					  const struct fscrypt_info *ci)
++{
++	unsigned int min_keysize;
++
++	if (ci->ci_policy.version == FSCRYPT_POLICY_V1)
++		min_keysize = ci->ci_mode->keysize;
++	else
++		min_keysize = ci->ci_mode->security_strength;
++
++	if (mk->mk_secret.size < min_keysize) {
++		fscrypt_warn(NULL,
++			     "key with %s %*phN is too short (got %u bytes, need %u+ bytes)",
++			     master_key_spec_type(&mk->mk_spec),
++			     master_key_spec_len(&mk->mk_spec),
++			     (u8 *)&mk->mk_spec.u,
++			     mk->mk_secret.size, min_keysize);
++		return false;
++	}
++	return true;
++}
++
+ /*
+  * Find the master key, then set up the inode's actual encryption key.
+  *
+@@ -422,18 +466,7 @@ static int setup_file_encryption_key(struct fscrypt_info *ci,
+ 		goto out_release_key;
+ 	}
  
- Unauthorized file access
- ~~~~~~~~~~~~~~~~~~~~~~~~
-@@ -1135,6 +1135,50 @@ where applications may later write sensitive data.  It is recommended
- that systems implementing a form of "verified boot" take advantage of
- this by validating all top-level encryption policies prior to access.
- 
-+Inline encryption support
-+=========================
-+
-+By default, fscrypt uses the kernel crypto API for all cryptographic
-+operations (other than HKDF, which fscrypt partially implements
-+itself).  The kernel crypto API supports hardware crypto accelerators,
-+but only ones that work in the traditional way where all inputs and
-+outputs (e.g. plaintexts and ciphertexts) are in memory.  fscrypt can
-+take advantage of such hardware, but the traditional acceleration
-+model isn't particularly efficient and fscrypt hasn't been optimized
-+for it.
-+
-+Instead, many newer systems (especially mobile SoCs) have *inline
-+encryption hardware* that can encrypt/decrypt data while it is on its
-+way to/from the storage device.  Linux supports inline encryption
-+through a set of extensions to the block layer called *blk-crypto*.
-+blk-crypto allows filesystems to attach encryption contexts to bios
-+(I/O requests) to specify how the data will be encrypted or decrypted
-+in-line.  For more information about blk-crypto, see
-+:ref:`Documentation/block/inline-encryption.rst <inline_encryption>`.
-+
-+On supported filesystems (currently ext4 and f2fs), fscrypt can use
-+blk-crypto instead of the kernel crypto API to encrypt/decrypt file
-+contents.  To enable this, set CONFIG_FS_ENCRYPTION_INLINE_CRYPT=y in
-+the kernel configuration, and specify the "inlinecrypt" mount option
-+when mounting the filesystem.
-+
-+Note that the "inlinecrypt" mount option just specifies to use inline
-+encryption when possible; it doesn't force its use.  fscrypt will
-+still fall back to using the kernel crypto API on files where the
-+inline encryption hardware doesn't have the needed crypto capabilities
-+(e.g. support for the needed encryption algorithm and data unit size)
-+and where blk-crypto-fallback is unusable.  (For blk-crypto-fallback
-+to be usable, it must be enabled in the kernel configuration with
-+CONFIG_BLK_INLINE_ENCRYPTION_FALLBACK=y.)
-+
-+Currently fscrypt always uses the filesystem block size (which is
-+usually 4096 bytes) as the data unit size.  Therefore, it can only use
-+inline encryption hardware that supports that data unit size.
-+
-+Inline encryption doesn't affect the ciphertext or other aspects of
-+the on-disk format, so users may freely switch back and forth between
-+using "inlinecrypt" and not using "inlinecrypt".
-+
- Implementation details
- ======================
- 
-@@ -1184,6 +1228,13 @@ keys`_ and `DIRECT_KEY policies`_.
- Data path changes
- -----------------
- 
-+When inline encryption is used, filesystems just need to associate
-+encryption contexts with bios to specify how the block layer or the
-+inline encryption hardware will encrypt/decrypt the file contents.
-+
-+When inline encryption isn't used, filesystems must encrypt/decrypt
-+the file contents themselves, as described below:
-+
- For the read path (->readpage()) of regular files, filesystems can
- read the ciphertext into the page cache and decrypt it in-place.  The
- page lock must be held until decryption has finished, to prevent the
-@@ -1197,18 +1248,6 @@ buffer.  Some filesystems, such as UBIFS, already use temporary
- buffers regardless of encryption.  Other filesystems, such as ext4 and
- F2FS, have to allocate bounce pages specially for encryption.
- 
--Fscrypt is also able to use inline encryption hardware instead of the
--kernel crypto API for en/decryption of file contents.  When possible,
--and if directed to do so (by specifying the 'inlinecrypt' mount option
--for an ext4/F2FS filesystem), it adds encryption contexts to bios and
--uses blk-crypto to perform the en/decryption instead of making use of
--the above read/write path changes.  Of course, even if directed to
--make use of inline encryption, fscrypt will only be able to do so if
--either hardware inline encryption support is available for the
--selected encryption algorithm or CONFIG_BLK_INLINE_ENCRYPTION_FALLBACK
--is selected.  If neither is the case, fscrypt will fall back to using
--the above mentioned read/write path changes for en/decryption.
--
- Filename hashing and encoding
- -----------------------------
- 
+-	/*
+-	 * Require that the master key be at least as long as the derived key.
+-	 * Otherwise, the derived key cannot possibly contain as much entropy as
+-	 * that required by the encryption mode it will be used for.  For v1
+-	 * policies it's also required for the KDF to work at all.
+-	 */
+-	if (mk->mk_secret.size < ci->ci_mode->keysize) {
+-		fscrypt_warn(NULL,
+-			     "key with %s %*phN is too short (got %u bytes, need %u+ bytes)",
+-			     master_key_spec_type(&mk_spec),
+-			     master_key_spec_len(&mk_spec), (u8 *)&mk_spec.u,
+-			     mk->mk_secret.size, ci->ci_mode->keysize);
++	if (!fscrypt_valid_master_key_size(mk, ci)) {
+ 		err = -ENOKEY;
+ 		goto out_release_key;
+ 	}
 -- 
 2.33.0
 
