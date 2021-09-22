@@ -2,81 +2,72 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28DC9415047
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 22 Sep 2021 20:57:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 828024151E4
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 22 Sep 2021 22:55:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230407AbhIVS7I (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 22 Sep 2021 14:59:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60962 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237154AbhIVS7H (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 22 Sep 2021 14:59:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9292D6112F;
-        Wed, 22 Sep 2021 18:57:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632337057;
-        bh=Ug6zzOQ0V+KPOFAeYjgpY+jJbOUi39ScE2Vn7geSDRQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PLpx/xNJFi8epju5gIG6uj63uDbQg/UixrZVVSAQXPRWTvjJTYaoy3i2QjQ2Uxp2X
-         LVvzFwaHOdj3knQP3pEB0KP5Bhs5C+sEWEwHcoVziz/Y3zC+m3r9nWxqX6/HYQ+ZgX
-         QgpzTf+J4vY8FIOhfh4C89mZNre2lORxFy24s4Wvqq2vjG+3gswlV2f0+BVpXH3a1q
-         k6+MQAW4otsETkLr3xkcyItC0t5pEYvwrzvoHFdzxeq7D/zOnqd7fb5iLf3EL/Omoq
-         fw8loAYDAVmC+taA+GYImUgxNhNA5f1eEfbapqsni+g1Ql6Z2NtqW2wgRkCLwnWct/
-         2yRZADjyNoYUA==
-Date:   Wed, 22 Sep 2021 11:57:36 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Aleksander Adamowski <olo@fb.com>,
-        Tomasz =?utf-8?Q?K=C5=82oczko?= <kloczko.tomasz@gmail.com>
-Cc:     "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>
-Subject: Re: [fsverity-utils] 1.4: test suite does not build
-Message-ID: <YUt8oAgoapdvJREi@sol.localdomain>
-References: <CABB28CwFNRhjgrT7NL6xqnasFQRJwhHZ4F0Xrd2XO-AZEyRBHQ@mail.gmail.com>
- <YUZGUIRpVjNpupSi@sol.localdomain>
- <SA1PR15MB48247A9238700C0A1B12CCB6DDA09@SA1PR15MB4824.namprd15.prod.outlook.com>
- <YUj667bPkKxM4L+z@gmail.com>
- <SA1PR15MB4824F4BC9969A55AFD556182DDA09@SA1PR15MB4824.namprd15.prod.outlook.com>
+        id S237864AbhIVU4o (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 22 Sep 2021 16:56:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237867AbhIVU4i (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 22 Sep 2021 16:56:38 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0618EC0613D5
+        for <linux-fscrypt@vger.kernel.org>; Wed, 22 Sep 2021 13:55:07 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id i25so17427015lfg.6
+        for <linux-fscrypt@vger.kernel.org>; Wed, 22 Sep 2021 13:55:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=ijKrByR1/KtEp2Ut8Wj0vMi00kBZm/A/r1gPwOEYZIg=;
+        b=fr8lNb1tzuroNDnbJJtYWeXOCGZbssrkZvaRy8HVdYCeSSxS96vSwd3R2+r1vg3M6/
+         ex66FoD7Oi9BZ+eroN2ctcLno3UxJhL89X1t6yEsFayGc2q4Pz0zZQBaUGqcHr3s/S1+
+         lgIwwHuJ4O8SDnA5oR3zC/CFwa9fWO84703n6I2aQyNKP1VzeqgyNRTdZaVTG81gy6Vx
+         t6u58+esbUQxWBZY5IFD1w784RDrV2U7d72/V+RQAoF8LyHU+KHsqwJTuZK+RI9xoYHQ
+         hU/k+XKo5P60J+yjbN5r0LQMnBzU5qvJitpMdoh7dt6f9DChJ/lZbweVN/xESakomSrI
+         Tc/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=ijKrByR1/KtEp2Ut8Wj0vMi00kBZm/A/r1gPwOEYZIg=;
+        b=ZJNK4fCK4DPS3E4ipkCdy0+Z7dE8dpmyc8H+NPEgPTqgJ4K6iV7Zi7useTig5qacuC
+         d7jaF9qV62ZJievYoT8BhhIRiv+/xijyaQS0EyHCjF+yhLGjGIWoEeMWMCD7NOEMCxg8
+         66ePQ5h8QhyLsnZ7m3ye2aNmnH632WC8QDrYQirh0wFXLh/xyloKApKsHiOI09Ig110J
+         W0W6RcCx7b1RdBEffOR6xiV22JF4vTDj1agS24r8IVprt+ap0XoHGpZmz2KnNypSEmjI
+         q70vHJ752OSMGQqCH4HX/RP4XBKZ3YDTvvM4d5DrV+P622nsihZvgNUYeFVFKFJFeEMA
+         co2w==
+X-Gm-Message-State: AOAM531nVdC2FrTsWClAOJfTvNA7WWU+s31T1v93ZhVgZPbRe17MdUsP
+        3Qe3QwQh8cGpOjjH0TwE/uwgRB3Nw14VuJ6QquE1DgypVa0=
+X-Google-Smtp-Source: ABdhPJwYYn7ZwazUxB30/XTxKCOf4dlZaC6TfP1ljKsU4ZNb40cpLRsdAvw7sAb51nYQkeG7S6W5vU7Cgq+lC3FYxgE=
+X-Received: by 2002:a05:651c:1546:: with SMTP id y6mr1383813ljp.53.1632344095088;
+ Wed, 22 Sep 2021 13:54:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <SA1PR15MB4824F4BC9969A55AFD556182DDA09@SA1PR15MB4824.namprd15.prod.outlook.com>
+Sender: ratcliffijames58@gmail.com
+Received: by 2002:a05:6504:5067:0:0:0:0 with HTTP; Wed, 22 Sep 2021 13:54:54
+ -0700 (PDT)
+From:   Aisha Al-Qaddafi <aisha.gdaffi24@gmail.com>
+Date:   Wed, 22 Sep 2021 21:54:54 +0100
+X-Google-Sender-Auth: B3PIuwFz7UcaHNCffYC8akvbLEk
+Message-ID: <CAKVTYWSPSMf085dB7FkhkLr9XtoZHkjbvunoMard5qsSPn4ZOg@mail.gmail.com>
+Subject: My Dear Friend
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 09:52:55PM +0000, Aleksander Adamowski wrote:
-> On Mon, Sep 20, 2021 at 2:19 PM, Eric Biggers wrote:
-> 
-> > Aleksander: there still shouldn't be any compiler warnings.  In my test script
-> > (scripts/run-tests.sh) I actually use -Werror.  If there isn't a good way to
-> > avoid these deprecation warnings (and I'd prefer not to have code that's
-> > conditional on different OpenSSL versions), we can just add
-> > -Wno-deprecated-declarations to the Makefile for now.
-> 
-> I think -Wno-deprecated-declarations is the best option for now.
-> 
-> I took a few looks around and the community isn't ready for OpenSSL 3.0 just
-> yet with PKCS#11 support.
-> 
-> The release happened just 2 weeks ago.
-> 
-> Projects like libp11 (https://github.com/OpenSC/libp11), the PKCS#11 engine
-> implementation for OpenSSL, haven't yet caught up to that fact - there's no
-> trace of discussion about migrating to the Providers API anywhere on their
-> mailing lists or issue tracker.
-> 
-> The official OpenSSL release does not come with a PKCS#11 provider, and it only
-> acknowledges a potential future existence of such in a single sentence in their
-> design doc (https://www.openssl.org/docs/OpenSSL300Design.html):
-> 
-> "For example a PKCS#11 provider may opt out of caching because its algorithms
-> may become available and unavailable over time."
-> 
-> Since this is a completely new, redesigned API, I expect it to take some time
-> before alternatives to existing Engine-based implementations arise.
-
-I've pushed out a change which adds -Wno-deprecated-declarations.
-
-Tomasz, I'd still appreciate any details on what actually caused the test
-programs to not build for you, as I can't reproduce it myself.
-
-- Eric
+Assalamu alaikum,
+I came across your e-mail contact prior to a private search while in
+need of your assistance. I am Aisha Al-Qaddafi, the only biological,
+Daughter of Former President of Libya Col. Muammar Al-Qaddafi. Am a
+single Mother and a Widow with three Children. I have investment funds
+worth Twenty Seven Million Five Hundred Thousand United State Dollar
+($27.500.000.00 ) and i need a trusted  investment Manager/Partner
+because of my current refugee status, however, I am interested in you
+for investment project assistance in your country. If you are willing
+to handle this project on my behalf kindly reply urgently to enable me
+to provide you more information about the investment
+funds.
+Best Regards
