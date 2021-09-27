@@ -2,72 +2,109 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 828024151E4
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 22 Sep 2021 22:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 594F4419DE3
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 27 Sep 2021 20:12:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237864AbhIVU4o (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 22 Sep 2021 16:56:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237867AbhIVU4i (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 22 Sep 2021 16:56:38 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0618EC0613D5
-        for <linux-fscrypt@vger.kernel.org>; Wed, 22 Sep 2021 13:55:07 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id i25so17427015lfg.6
-        for <linux-fscrypt@vger.kernel.org>; Wed, 22 Sep 2021 13:55:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=ijKrByR1/KtEp2Ut8Wj0vMi00kBZm/A/r1gPwOEYZIg=;
-        b=fr8lNb1tzuroNDnbJJtYWeXOCGZbssrkZvaRy8HVdYCeSSxS96vSwd3R2+r1vg3M6/
-         ex66FoD7Oi9BZ+eroN2ctcLno3UxJhL89X1t6yEsFayGc2q4Pz0zZQBaUGqcHr3s/S1+
-         lgIwwHuJ4O8SDnA5oR3zC/CFwa9fWO84703n6I2aQyNKP1VzeqgyNRTdZaVTG81gy6Vx
-         t6u58+esbUQxWBZY5IFD1w784RDrV2U7d72/V+RQAoF8LyHU+KHsqwJTuZK+RI9xoYHQ
-         hU/k+XKo5P60J+yjbN5r0LQMnBzU5qvJitpMdoh7dt6f9DChJ/lZbweVN/xESakomSrI
-         Tc/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=ijKrByR1/KtEp2Ut8Wj0vMi00kBZm/A/r1gPwOEYZIg=;
-        b=ZJNK4fCK4DPS3E4ipkCdy0+Z7dE8dpmyc8H+NPEgPTqgJ4K6iV7Zi7useTig5qacuC
-         d7jaF9qV62ZJievYoT8BhhIRiv+/xijyaQS0EyHCjF+yhLGjGIWoEeMWMCD7NOEMCxg8
-         66ePQ5h8QhyLsnZ7m3ye2aNmnH632WC8QDrYQirh0wFXLh/xyloKApKsHiOI09Ig110J
-         W0W6RcCx7b1RdBEffOR6xiV22JF4vTDj1agS24r8IVprt+ap0XoHGpZmz2KnNypSEmjI
-         q70vHJ752OSMGQqCH4HX/RP4XBKZ3YDTvvM4d5DrV+P622nsihZvgNUYeFVFKFJFeEMA
-         co2w==
-X-Gm-Message-State: AOAM531nVdC2FrTsWClAOJfTvNA7WWU+s31T1v93ZhVgZPbRe17MdUsP
-        3Qe3QwQh8cGpOjjH0TwE/uwgRB3Nw14VuJ6QquE1DgypVa0=
-X-Google-Smtp-Source: ABdhPJwYYn7ZwazUxB30/XTxKCOf4dlZaC6TfP1ljKsU4ZNb40cpLRsdAvw7sAb51nYQkeG7S6W5vU7Cgq+lC3FYxgE=
-X-Received: by 2002:a05:651c:1546:: with SMTP id y6mr1383813ljp.53.1632344095088;
- Wed, 22 Sep 2021 13:54:55 -0700 (PDT)
+        id S235816AbhI0SOG (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 27 Sep 2021 14:14:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48118 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234406AbhI0SOF (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 27 Sep 2021 14:14:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F389D60F11;
+        Mon, 27 Sep 2021 18:12:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632766347;
+        bh=rdgw3F1Kdg54mhTg7zw6yM4sruhDudWDVilQ00hU6B0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jiLJJvorosORlvLuM/PIpoArMAOWXSJsRVxKqu8GDcNFP66fXH3x6f1070Om5C8nI
+         LwOysRGuGh/hmIVe0YCM2BucMNrk7ghD4hYHr6aVdB5Bs/jMlrM86qlzWBI2r7ZSO5
+         0K9T3e/deKMaBoiPtw/3/1aUxFCMgSvngI0jCF6IirAufjJs5j+VbCDi6tPGI6L9OX
+         VQyNNFtAYXKFRlUHj4IJdaD1ggS/e9E48aYzLOLVZ9tbeSCKRC1UuIJrEsJkaptNnI
+         3Vxr46ZALv1ZVT0ehTuzbUbc60F3Mn4oA4Fcb92F2OpyzIddG6bNzXOAksRPOQ9Lvq
+         Nhkxm5ItW4amA==
+Date:   Mon, 27 Sep 2021 11:12:25 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-block@vger.kernel.org, linux-fscrypt@vger.kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, kernel-team@android.com,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        Gaurav Kashyap <gaurkash@codeaurora.org>,
+        Satya Tangirala <satyaprateek2357@gmail.com>
+Subject: Re: [RFC PATCH v2 0/5] Support for hardware-wrapped inline
+ encryption keys
+Message-ID: <YVIJiX5CAI0cCh3H@gmail.com>
+References: <20210916174928.65529-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-Sender: ratcliffijames58@gmail.com
-Received: by 2002:a05:6504:5067:0:0:0:0 with HTTP; Wed, 22 Sep 2021 13:54:54
- -0700 (PDT)
-From:   Aisha Al-Qaddafi <aisha.gdaffi24@gmail.com>
-Date:   Wed, 22 Sep 2021 21:54:54 +0100
-X-Google-Sender-Auth: B3PIuwFz7UcaHNCffYC8akvbLEk
-Message-ID: <CAKVTYWSPSMf085dB7FkhkLr9XtoZHkjbvunoMard5qsSPn4ZOg@mail.gmail.com>
-Subject: My Dear Friend
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210916174928.65529-1-ebiggers@kernel.org>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Assalamu alaikum,
-I came across your e-mail contact prior to a private search while in
-need of your assistance. I am Aisha Al-Qaddafi, the only biological,
-Daughter of Former President of Libya Col. Muammar Al-Qaddafi. Am a
-single Mother and a Widow with three Children. I have investment funds
-worth Twenty Seven Million Five Hundred Thousand United State Dollar
-($27.500.000.00 ) and i need a trusted  investment Manager/Partner
-because of my current refugee status, however, I am interested in you
-for investment project assistance in your country. If you are willing
-to handle this project on my behalf kindly reply urgently to enable me
-to provide you more information about the investment
-funds.
-Best Regards
+On Thu, Sep 16, 2021 at 10:49:23AM -0700, Eric Biggers wrote:
+> [ NOTE: this patchset is an RFC that isn't ready for merging yet because
+>   it doesn't yet include the vendor-specific UFS or eMMC driver changes
+>   needed to actually use the feature.  I.e., this patchset isn't
+>   sufficient to actually use hardware-wrapped keys with upstream yet.
+> 
+>   For context, hardware-wrapped key support has been out-of-tree in the
+>   Android kernels since early last year; upstreaming has been blocked on
+>   hardware availability and support.  However, an SoC that supports this
+>   feature (SM8350, a.k.a. Qualcomm Snapdragon 888) finally has been
+>   publicly released and had basic SoC support upstreamed.  Also, some
+>   other hardware will support the same feature soon.  So, things should
+>   be progressing soon.  So while the driver changes are gotten into an
+>   upstream-ready form, I wanted to get things started and give people a
+>   chance to give early feedback on the plan for how the kernel will
+>   support this type of hardware.]
+> 
+> This patchset adds framework-level support (i.e., block and fscrypt
+> support) for hardware-wrapped keys when the inline encryption hardware
+> supports them.  Hardware-wrapped keys are inline encryption keys that
+> are wrapped (encrypted) by a key internal to the hardware.  Except at
+> initial unlocking time, the wrapping key is an ephemeral, per-boot key.
+> Hardware-wrapped keys can only be unwrapped (decrypted) by the hardware,
+> e.g. when a key is programmed into a keyslot.  They are never visible to
+> software in raw form, except optionally during key generation (the
+> hardware supports importing keys as well as generating keys itself).
+> 
+> This feature protects the encryption keys from read-only compromises of
+> kernel memory, such as that which can occur during a cold boot attack.
+> It does this without limiting the number of keys that can be used, as
+> would be the case with solutions that didn't use key wrapping.
+> 
+> The kernel changes to support this feature basically consist of changes
+> to blk-crypto to allow a blk_crypto_key to be hardware-wrapped and to
+> allow storage drivers to support hardware-wrapped keys, new block device
+> ioctls for creating and preparing hardware-wrapped keys, and changes to
+> fscrypt to allow the fscrypt master keys to be hardware-wrapped.
+> 
+> For full details, see the individual patches, especially the detailed
+> documentation they add to Documentation/block/inline-encryption.rst and
+> Documentation/filesystems/fscrypt.rst.
+> 
+> This patchset is organized as follows:
+> 
+> - Patch 1 adds the block support and documentation, excluding the ioctls
+>   needed to get a key ready to be used in the first place.
+> 
+> - Patch 2 adds new block device ioctls for creating and preparing
+>   hardware-wrapped keys.
+> 
+> - Patches 3-4 clean up the fscrypt documentation and key validation
+>   logic.  These aren't specific to hardware-wrapped keys per se, so
+>   these don't need to wait for the rest of the patches.
+> 
+> - Patch 5 adds the fscrypt support and documentation.
+> 
+> This patchset applies to v5.15-rc1 plus my other patchset
+> "[PATCH v2 0/4] blk-crypto cleanups".  It can also be retrieved from tag
+> "wrapped-keys-v2" of
+> https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git.
+
+I'd greatly appreciate any feedback on this patch series; I don't know whether
+silence means everyone likes this, or everyone hates this, or no one cares :-)
+(Or maybe no one is interested until driver changes are included?)
+
+- Eric
