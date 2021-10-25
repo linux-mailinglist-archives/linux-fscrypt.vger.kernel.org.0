@@ -2,98 +2,94 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 470CD43A059
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 25 Oct 2021 21:27:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3045843A37F
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 25 Oct 2021 21:58:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235178AbhJYT35 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 25 Oct 2021 15:29:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48428 "EHLO mail.kernel.org"
+        id S237326AbhJYT7s (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 25 Oct 2021 15:59:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235588AbhJYT2s (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:28:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 535A76115B;
-        Mon, 25 Oct 2021 19:25:17 +0000 (UTC)
+        id S238559AbhJYT5n (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:57:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E8CD61167;
+        Mon, 25 Oct 2021 19:49:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635189917;
-        bh=BQPuoan/SFpa8mNqVgzRLgNVibScROpRuiUrkpMQRls=;
+        s=k20201202; t=1635191392;
+        bh=30fmfFz6l3SFT4Ek3GYe5i53GtxZudEDo0gOdYIcz6U=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XqbWoM6M2AV94w5fc6HUe7OnKwOSUsFrlPn3fZdXztkoeXSLpDCrHc1mPOVHGAiPh
-         ZCYZlAGSDMTvThzFFWSTJm0pytgIXP2u/yrs1klBgKdHH3d8iZ3H5dFzhUTSXs4d2Q
-         8bTK37r8CymPonwymU+cUkASWWAAS7T5YYN2i+F4z3Dy+pzZtlc65s2uBDKkQYdqwn
-         CyQ9XS557VuQzWTOTvZmkryOL57rvoLGTVuDYJ1ZRX0Zq+HobmE5HNUibU+Qr7gX4U
-         hzd4g3vtb9OdiTUhMfgMw77bVh2oSjh7R4A7dTjV8SSbeveKduv4B6pM/NnSDGeLCL
-         /7yTNyXiw3C6A==
-Date:   Mon, 25 Oct 2021 12:25:15 -0700
+        b=ZDMDiUZEVhRVnTbyydqALGfStWj1DqcyQJVRR4ogvpMI0kfAIm0S3noHrfwJZpfjt
+         cHn6MSXh6MREevi00QTt/jp8KdNV5h0EcsH8cJrDIqG/ojQ39Khuf7socGz6HgRDWI
+         Jiw1rExvWTpd8LTtJxY+XRCFhP0rU0i4EGJigtPyRMVz06GxS4G7FUJp/awynfrEJM
+         cn2EyXrlZ0KC0Q7XNs1wp+UxUyZahOTKidtmKLgc+xNqQzNFRCy0XBMwsTh6trcvr8
+         tYfoarYe7Q5cfsFkj1TM1i8gFW3FwQF3drBp1p6i9526CPjpc6/2jOc6e46rln09vk
+         yCJJGhbu0q3jw==
+Date:   Mon, 25 Oct 2021 12:49:51 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     Omar Sandoval <osandov@osandov.com>
-Cc:     Vadim Akimov <lvd.mhm@gmail.com>, linux-btrfs@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, "Theodore Y. Ts'o" <tytso@mit.edu>,
+Cc:     linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
         Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@fb.com
 Subject: Re: Btrfs Fscrypt Design Document
-Message-ID: <YXcEm2Ws02KydImk@gmail.com>
+Message-ID: <YXcKX3iNmqlGsdzv@gmail.com>
 References: <YXGyq+buM79A1S0L@relinquished.localdomain>
- <CAMnT83tLqZU-bdsOJX9L==c82EvmQ2QTiOYCLch=kasscU+MiA@mail.gmail.com>
- <YXMYJ9nOd/88T8gc@relinquished.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YXMYJ9nOd/88T8gc@relinquished.localdomain>
+In-Reply-To: <YXGyq+buM79A1S0L@relinquished.localdomain>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 12:59:35PM -0700, Omar Sandoval wrote:
-> On Fri, Oct 22, 2021 at 10:14:11PM +0300, Vadim Akimov wrote:
-> > Hi!
-> > 
-> > On Thu, 21 Oct 2021 at 21:34, Omar Sandoval <osandov@osandov.com> wrote:
-> > 
-> > > Here is the Google Doc:
-> > >
-> > > https://docs.google.com/document/d/1iNnrqyZqJ2I5nfWKt7cd1T9xwU0iHhjhk9ALQW3XuII/edit?usp=sharing
-> > >
-> > 
-> > As I've understood, you are inclined to have single key and only change IV
-> > for each extent. This might be dangerous as per this answer (and comments
-> > below):  https://crypto.stackexchange.com/a/70630/71448
+On Thu, Oct 21, 2021 at 11:34:19AM -0700, Omar Sandoval wrote:
+> Hello,
 > 
-> Correct me if I'm wrong, but I don't think this is a practical concern
-> in the fscrypt threat model. The birthday bound for AES is 256 EiB
-> (2^(128 / 2) blocks * 16 bytes per block). The theoretical maximum size
-> of a Btrfs filesystem is 16 EiB (since we use 64-bit byte addresses).
-> fscrypt protects against a "single point-in-time permanent offline
-> compromise". This means that the attacker only has what was on disk at
-> the time that they stole your disk. In this case, they won't have enough
-> data for a birthday attack. I'm curious where that post got the
-> "multiple petabytes" number.
+> I've been working on adding fscrypt support to Btrfs. Btrfs has some
+> features (namely, reflinks and snapshots) that don't work well with the
+> existing fscrypt encryption policies. I've been discussing and
+> prototyping how to support these Btrfs features with fscrypt, so I
+> figured it was high time I write it down and loop in the fscrypt
+> developers as well.
+> 
+> Here is the Google Doc:
+> https://docs.google.com/document/d/1iNnrqyZqJ2I5nfWKt7cd1T9xwU0iHhjhk9ALQW3XuII/edit?usp=sharing
+> 
+> Please feel free to comment there or via email.
+> 
 
-So, fscrypt originally only supported per-file keys.  The reason we added
-support for some "one key per encryption policy" settings are because there are
-cases where many keys can't be handled efficiently.  In the case of Adiantum
-encryption (which is intended for devices which might not have a lot of memory)
-a key takes a lot of memory, so we didn't want to have one for every file.
-Similarly, in the case where file contents encryption is done using UFS or eMMC
-inline encryption hardware rather than in software, there might be only a small
-number of hardware keyslots and changing them can be slow, so we didn't want to
-have to change keys for every file.
+Just some preliminary comments:
 
-There are definitely some advantages to per-file keys, including reducing the
-amount of data which is encrypted with each key, increasing the difficulty of
-recovering deleted files, and eliminating the need to distinguish between
-different files in the IVs.
+Given that you need reflinking to remain supported, for file contents encryption
+I think it's the right choice to store the IVs explicitly rather than have them
+determined by the offset within the file.
 
-None of these are too important in practice, though.  E.g. we don't get anywhere
-near the cryptographic bounds in practice anyway, and secure deletion isn't
-guaranteed even with per-file keys.
+How many derived encryption keys to use is somewhat orthogonal to that.  As I
+mentioned in my other mail, you could still have one key per extent rather than
+one per encryption policy as you're proposing.  I'm *guessing* it wouldn't be
+practical, and I don't consider it to be required (just preferable), but the
+document doesn't discuss this possibility at all.
 
-For btrfs, it sounds like per-file keys won't work out due to reflinks anyway.
-However you could do per-extent keys in the same way, where the key for each
-extent is derived from a nonce (stored in the metadata describing the extent)
-and the master key.
+Storing just the "starting IV" for each extent also makes sense, assuming that
+you only want to support an unauthenticated mode such as AES-XTS.  However,
+given that btrfs is a copy-on-write filesystem and thus can support per-block
+metadata, a natural question is why not support an authenticated mode such as
+AES-GCM, with a nonce and authentication tag stored per block?  Have you thought
+about this?
 
-Did you consider per-extent keys?  If they are practical, that would be the best
-approach cryptographically.  But if they aren't practical (more likely IMO,
-given that a file can contain a large number of extents), I think it would be
-acceptable to not use them.
+Now, I personally think that authenticating file contents only wouldn't give
+much benefit, and whole-filesystem authentication would be needed to get a real
+benefit.  But "why aren't you using an authenticated mode" is a *very* common
+question, so you need an answer to that -- or ideally, just support it if it
+isn't much work.
+
+What is your proposal for how filenames encryption would work when the
+EXPLICIT_IV flag is used?  That doesn't appear to be mentioned.
+
+Finally, the proposal to allow encrypting the changed data of snapshots is a
+larger departure from the fscrypt model.  I'm still trying to wrap my head
+around how that could work.  Could you provide any more details about that?
+E.g. what metadata would actually be stored on-disk, and how would it be used?
+When would things be done in terms of filesystem operations?  E.g. let's say I
+open a file for writing -- would the encryption key be set up right away, or
+would it not happen until I actually write data?
 
 - Eric
