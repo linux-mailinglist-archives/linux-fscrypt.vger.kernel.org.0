@@ -2,48 +2,48 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF2B444B80
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  4 Nov 2021 00:19:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA0F2444B86
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  4 Nov 2021 00:19:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbhKCXW1 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 3 Nov 2021 19:22:27 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:4756 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229792AbhKCXW0 (ORCPT
+        id S230451AbhKCXWc (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 3 Nov 2021 19:22:32 -0400
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:34649 "EHLO
+        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230310AbhKCXW3 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 3 Nov 2021 19:22:26 -0400
+        Wed, 3 Nov 2021 19:22:29 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1635981590; x=1667517590;
+  t=1635981592; x=1667517592;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=CWgzDFgrRvUk/uk2a/JrYphlhenWdze50BxsUZFep0s=;
-  b=ICySOIdO8c+T6vvvP177JHDbE+Z0Z3pWF5l4fZb8pXhq+OdlIbqoRrGL
-   5k57pQh2XplKm+cwLSFCj2k/wk6OklwTi0YjwKFA9xnU0anfvrUxUQQ9M
-   bVkoQSM7jDNWSXbqBqi5UojEtcp8MfIQgFKRJuHJTmCGwsWWsoJ3C+E8D
-   o=;
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 03 Nov 2021 16:19:49 -0700
+  bh=uWdfw0XmJ834AUovZZ/JbeOAxouPkUBpMCRDh1E8t+Y=;
+  b=WnEl7l0EergUk4o1wlMnXpHrbppkvnnsYIEcEHKka497uuLgpZKyeFyB
+   87Mbvl5xfCAoZdEGy+/0NN0Gx/ltBg1tpw+wFu2ek8eEk2WLRbKJglGOs
+   LPF/fnJcMKfxtQWoPHY/Dd970dEnx+KRPTJD1II5RPofYuWR+f6lOWpgk
+   Q=;
+Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 03 Nov 2021 16:19:52 -0700
 X-QCInternal: smtphost
 Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2021 16:19:49 -0700
+  by ironmsg03-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2021 16:19:51 -0700
 Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
  nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Wed, 3 Nov 2021 16:19:48 -0700
+ Wed, 3 Nov 2021 16:19:50 -0700
 Received: from gabriel.qualcomm.com (10.80.80.8) by nalasex01a.na.qualcomm.com
  (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7; Wed, 3 Nov 2021
- 16:19:48 -0700
+ 16:19:49 -0700
 From:   Gaurav Kashyap <quic_gaurkash@quicinc.com>
 To:     <linux-scsi@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>
 CC:     <linux-mmc@vger.kernel.org>, <linux-block@vger.kernel.org>,
         <linux-fscrypt@vger.kernel.org>, <thara.gopinath@linaro.org>,
         <asutoshd@codeaurora.org>,
         Gaurav Kashyap <quic_gaurkash@quicinc.com>
-Subject: [PATCH 3/4] soc: qcom: add HWKM library for storage encryption
-Date:   Wed, 3 Nov 2021 16:18:39 -0700
-Message-ID: <20211103231840.115521-4-quic_gaurkash@quicinc.com>
+Subject: [PATCH 4/4] soc: qcom: add wrapped key support for ICE
+Date:   Wed, 3 Nov 2021 16:18:40 -0700
+Message-ID: <20211103231840.115521-5-quic_gaurkash@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20211103231840.115521-1-quic_gaurkash@quicinc.com>
 References: <20211103231840.115521-1-quic_gaurkash@quicinc.com>
@@ -56,277 +56,435 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Wrapped keys should utilize hardware to protect the keys
-used for storage encryption. Qualcomm's Inline Crypto Engine
-supports a hardware block called Hardware Key Manager (HWKM)
-for key management.
+Add support for wrapped keys in ufs and common ICE library.
+Qualcomm's ICE solution uses a hardware block called Hardware
+Key Manager (HWKM) to handle wrapped keys.
 
-Although most of the interactions to this hardware block happens
-via a secure execution environment, some initializations for the
-slave present in ICE can be done from the kernel.
-
-This can also be a placeholder for when the hardware provides more
-capabilites to be acessed from the linux kernel in the future.
+This patch adds the following changes to support this.
+1. Link to HWKM library for initialization.
+2. Most of the key management is done from Trustzone via scm calls.
+   Added calls to this from the ICE library.
+3. Added support for this framework in UFS.
+4. Added support for deriving SW secret as it cannot be done in
+   linux kernel for wrapped keys.
 
 Signed-off-by: Gaurav Kashyap <quic_gaurkash@quicinc.com>
 ---
- drivers/soc/qcom/Kconfig        |   7 ++
- drivers/soc/qcom/Makefile       |   1 +
- drivers/soc/qcom/qti-ice-hwkm.c |  77 ++++++++++++++++++++++
- drivers/soc/qcom/qti-ice-regs.h | 112 ++++++++++++++++++++++++++++++++
- include/linux/qti-ice-common.h  |   6 ++
- 5 files changed, 203 insertions(+)
- create mode 100644 drivers/soc/qcom/qti-ice-hwkm.c
+ drivers/scsi/ufs/ufs-qcom-ice.c   |  34 +++++++++-
+ drivers/scsi/ufs/ufs-qcom.c       |   1 +
+ drivers/scsi/ufs/ufs-qcom.h       |   5 ++
+ drivers/scsi/ufs/ufshcd-crypto.c  |  47 ++++++++++---
+ drivers/scsi/ufs/ufshcd.h         |   5 ++
+ drivers/soc/qcom/qti-ice-common.c | 108 ++++++++++++++++++++++++++----
+ include/linux/qti-ice-common.h    |   7 +-
+ 7 files changed, 180 insertions(+), 27 deletions(-)
 
-diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
-index 39f223ed8cdd..d441d5b81c53 100644
---- a/drivers/soc/qcom/Kconfig
-+++ b/drivers/soc/qcom/Kconfig
-@@ -216,4 +216,11 @@ config QTI_ICE_COMMON
- 	help
- 	  Enable the common ICE library that can be used
- 	  by UFS and EMMC drivers for ICE functionality.
-+
-+config QTI_HW_WRAPPED_KEYS
-+	tristate "QTI HW Wrapped Keys"
-+	depends on QTI_ICE_COMMON
-+	help
-+	  Enable wrapped key functionality for storage
-+	  encryption.
- endmenu
-diff --git a/drivers/soc/qcom/Makefile b/drivers/soc/qcom/Makefile
-index 57840b19b7ee..56d1f4b8d436 100644
---- a/drivers/soc/qcom/Makefile
-+++ b/drivers/soc/qcom/Makefile
-@@ -27,3 +27,4 @@ obj-$(CONFIG_QCOM_RPMHPD) += rpmhpd.o
- obj-$(CONFIG_QCOM_RPMPD) += rpmpd.o
- obj-$(CONFIG_QCOM_KRYO_L2_ACCESSORS) +=	kryo-l2-accessors.o
- obj-$(CONFIG_QTI_ICE_COMMON) += qti-ice-common.o
-+obj-$(CONFIG_QTI_HW_WRAPPED_KEYS) += qti-ice-hwkm.o
-diff --git a/drivers/soc/qcom/qti-ice-hwkm.c b/drivers/soc/qcom/qti-ice-hwkm.c
-new file mode 100644
-index 000000000000..d65873745999
---- /dev/null
-+++ b/drivers/soc/qcom/qti-ice-hwkm.c
-@@ -0,0 +1,77 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * HWKM ICE library for storage encryption.
-+ *
-+ * Copyright (c) 2021, Linux Foundation. All rights reserved.
-+ */
-+
-+#include <linux/qti-ice-common.h>
-+#include "qti-ice-regs.h"
-+
-+static int qti_ice_hwkm_bist_status(const struct ice_mmio_data *mmio, int version)
-+{
-+	if (!qti_ice_hwkm_testb(mmio->ice_hwkm_mmio, QTI_HWKM_ICE_RG_TZ_KM_STATUS,
-+			(version == 1) ? BIST_DONE_V1 : BIST_DONE_V2) ||
-+        !qti_ice_hwkm_testb(mmio->ice_hwkm_mmio, QTI_HWKM_ICE_RG_TZ_KM_STATUS,
-+			(version == 1) ? CRYPTO_LIB_BIST_DONE_V1 :
-+			CRYPTO_LIB_BIST_DONE_V2) ||
-+        !qti_ice_hwkm_testb(mmio->ice_hwkm_mmio, QTI_HWKM_ICE_RG_TZ_KM_STATUS,
-+			(version == 1) ? BOOT_CMD_LIST1_DONE_V1 :
-+			BOOT_CMD_LIST1_DONE_V2) ||
-+        !qti_ice_hwkm_testb(mmio->ice_hwkm_mmio, QTI_HWKM_ICE_RG_TZ_KM_STATUS,
-+			(version == 1) ? BOOT_CMD_LIST0_DONE_V1 :
-+			BOOT_CMD_LIST0_DONE_V2) ||
-+        !qti_ice_hwkm_testb(mmio->ice_hwkm_mmio, QTI_HWKM_ICE_RG_TZ_KM_STATUS,
-+			(version == 1) ? KT_CLEAR_DONE_V1 :
-+			KT_CLEAR_DONE_V2))
-+		return -EINVAL;
-+	return 0;
-+}
-+
-+static int qti_ice_hwkm_init_sequence(const struct ice_mmio_data *mmio,
-+                                      int version)
-+{
-+	u32 val = 0;
-+
-+	/*
-+	 * Put ICE in standard mode, ICE defaults to legacy mode.
-+	 * Legacy mode - ICE HWKM slave not supported.
-+	 * Standard mode - ICE HWKM slave supported.
-+	 *
-+	 * Depending on the version of HWKM, it is controlled by different
-+	 * registers in ICE.
-+	 */
-+	if (version >= 2) {
-+		val = qti_ice_readl(mmio->ice_mmio, QTI_ICE_REGS_CONTROL);
-+		val = val & 0xFFFFFFFE;
-+		qti_ice_writel(mmio->ice_mmio, val, QTI_ICE_REGS_CONTROL);
-+	} else {
-+		qti_ice_hwkm_writel(mmio->ice_hwkm_mmio, 0x7,
-+				    QTI_HWKM_ICE_RG_TZ_KM_CTL);
+diff --git a/drivers/scsi/ufs/ufs-qcom-ice.c b/drivers/scsi/ufs/ufs-qcom-ice.c
+index 6608a9015eab..79d642190997 100644
+--- a/drivers/scsi/ufs/ufs-qcom-ice.c
++++ b/drivers/scsi/ufs/ufs-qcom-ice.c
+@@ -45,6 +45,21 @@ int ufs_qcom_ice_init(struct ufs_qcom_host *host)
+ 	}
+ 	mmio.ice_mmio = host->ice_mmio;
+ 
++#if IS_ENABLED(CONFIG_QTI_HW_WRAPPED_KEYS)
++	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "ice_hwkm");
++	if (!res) {
++		dev_warn(dev, "ICE HWKM registers not found\n");
++		goto disable;
 +	}
 +
-+	/* Check BIST status */
-+	if (qti_ice_hwkm_bist_status(mmio, version))
-+		return -EINVAL;
++	host->ice_hwkm_mmio = devm_ioremap_resource(dev, res);
++	if (IS_ERR(host->ice_hwkm_mmio)) {
++		err = PTR_ERR(host->ice_hwkm_mmio);
++		dev_err(dev, "Failed to map ICE registers; err=%d\n", err);
++		return err;
++	}
++	mmio.ice_hwkm_mmio = host->ice_hwkm_mmio;
++#endif
+ 	if (!qti_ice_init(&mmio))
+ 		goto disable;
+ 
+@@ -60,6 +75,9 @@ static void get_ice_mmio_data(struct ice_mmio_data *data,
+ 			      const struct ufs_qcom_host *host)
+ {
+ 	data->ice_mmio = host->ice_mmio;
++#if IS_ENABLED(CONFIG_QTI_HW_WRAPPED_KEYS)
++	data->ice_hwkm_mmio = host->ice_hwkm_mmio;
++#endif
+ }
+ 
+ int ufs_qcom_ice_enable(struct ufs_qcom_host *host)
+@@ -88,6 +106,7 @@ int ufs_qcom_ice_resume(struct ufs_qcom_host *host)
+  * vendor-specific SCM calls for this; it doesn't support the standard way.
+  */
+ int ufs_qcom_ice_program_key(struct ufs_hba *hba,
++			     const struct blk_crypto_key *key,
+ 			     const union ufs_crypto_cfg_entry *cfg, int slot)
+ {
+ 	union ufs_crypto_cap_entry cap;
+@@ -108,6 +127,17 @@ int ufs_qcom_ice_program_key(struct ufs_hba *hba,
+ 		return -EINVAL;
+ 	}
+ 
+-	return qti_ice_keyslot_program(&mmio, cfg->crypto_key, AES_256_XTS_KEY_SIZE,
+-				       slot, cfg->data_unit_size, cfg->crypto_cap_idx);
++	return qti_ice_keyslot_program(&mmio, key, slot,
++				       cfg->data_unit_size, cfg->crypto_cap_idx);
++}
 +
-+	/* Disable CRC check */
-+	qti_ice_hwkm_clearb(mmio->ice_hwkm_mmio, QTI_HWKM_ICE_RG_TZ_KM_CTL,
-+			    CRC_CHECK_EN);
++/*
++ * Derive a SW secret from the wrapped key to be used in fscrypt. The key
++ * is unwrapped in QTI and a SW key is then derived.
++ */
++int ufs_qcom_ice_derive_sw_secret(const u8 *wrapped_key,
++				  unsigned int wrapped_key_size,
++				  u8 sw_secret[BLK_CRYPTO_SW_SECRET_SIZE])
++{
++	return qti_ice_derive_sw_secret(wrapped_key, wrapped_key_size, sw_secret);
+ }
+diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
+index 9d9770f1db4f..9f85332fbe64 100644
+--- a/drivers/scsi/ufs/ufs-qcom.c
++++ b/drivers/scsi/ufs/ufs-qcom.c
+@@ -1495,6 +1495,7 @@ static const struct ufs_hba_variant_ops ufs_hba_qcom_vops = {
+ 	.device_reset		= ufs_qcom_device_reset,
+ 	.config_scaling_param = ufs_qcom_config_scaling_param,
+ 	.program_key		= ufs_qcom_ice_program_key,
++	.derive_secret		= ufs_qcom_ice_derive_sw_secret,
+ };
+ 
+ /**
+diff --git a/drivers/scsi/ufs/ufs-qcom.h b/drivers/scsi/ufs/ufs-qcom.h
+index 8208e3a3ef59..420fdc1dfeaa 100644
+--- a/drivers/scsi/ufs/ufs-qcom.h
++++ b/drivers/scsi/ufs/ufs-qcom.h
+@@ -207,6 +207,7 @@ struct ufs_qcom_host {
+ 	struct ufs_hw_version hw_ver;
+ #ifdef CONFIG_SCSI_UFS_CRYPTO
+ 	void __iomem *ice_mmio;
++	void __iomem *ice_hwkm_mmio;
+ #endif
+ 
+ 	u32 dev_ref_clk_en_mask;
+@@ -252,7 +253,11 @@ int ufs_qcom_ice_init(struct ufs_qcom_host *host);
+ int ufs_qcom_ice_enable(struct ufs_qcom_host *host);
+ int ufs_qcom_ice_resume(struct ufs_qcom_host *host);
+ int ufs_qcom_ice_program_key(struct ufs_hba *hba,
++			     const struct blk_crypto_key *key,
+ 			     const union ufs_crypto_cfg_entry *cfg, int slot);
++int ufs_qcom_ice_derive_sw_secret(const u8 *wrapped_key,
++				  unsigned int wrapped_key_size,
++				  u8 sw_secret[BLK_CRYPTO_SW_SECRET_SIZE]);
+ #else
+ static inline int ufs_qcom_ice_init(struct ufs_qcom_host *host)
+ {
+diff --git a/drivers/scsi/ufs/ufshcd-crypto.c b/drivers/scsi/ufs/ufshcd-crypto.c
+index 0ed82741f981..965a8cc6c183 100644
+--- a/drivers/scsi/ufs/ufshcd-crypto.c
++++ b/drivers/scsi/ufs/ufshcd-crypto.c
+@@ -18,6 +18,7 @@ static const struct ufs_crypto_alg_entry {
+ };
+ 
+ static int ufshcd_program_key(struct ufs_hba *hba,
++				  const struct blk_crypto_key *key,
+ 			      const union ufs_crypto_cfg_entry *cfg, int slot)
+ {
+ 	int i;
+@@ -27,7 +28,7 @@ static int ufshcd_program_key(struct ufs_hba *hba,
+ 	ufshcd_hold(hba, false);
+ 
+ 	if (hba->vops && hba->vops->program_key) {
+-		err = hba->vops->program_key(hba, cfg, slot);
++		err = hba->vops->program_key(hba, key, cfg, slot);
+ 		goto out;
+ 	}
+ 
+@@ -80,16 +81,18 @@ static int ufshcd_crypto_keyslot_program(struct blk_crypto_profile *profile,
+ 	cfg.crypto_cap_idx = cap_idx;
+ 	cfg.config_enable = UFS_CRYPTO_CONFIGURATION_ENABLE;
+ 
+-	if (ccap_array[cap_idx].algorithm_id == UFS_CRYPTO_ALG_AES_XTS) {
+-		/* In XTS mode, the blk_crypto_key's size is already doubled */
+-		memcpy(cfg.crypto_key, key->raw, key->size/2);
+-		memcpy(cfg.crypto_key + UFS_CRYPTO_KEY_MAX_SIZE/2,
+-		       key->raw + key->size/2, key->size/2);
+-	} else {
+-		memcpy(cfg.crypto_key, key->raw, key->size);
++	if (key->crypto_cfg.key_type != BLK_CRYPTO_KEY_TYPE_HW_WRAPPED) {
++		if (ccap_array[cap_idx].algorithm_id == UFS_CRYPTO_ALG_AES_XTS) {
++			/* In XTS mode, the blk_crypto_key's size is already doubled */
++			memcpy(cfg.crypto_key, key->raw, key->size/2);
++			memcpy(cfg.crypto_key + UFS_CRYPTO_KEY_MAX_SIZE/2,
++			       key->raw + key->size/2, key->size/2);
++		} else {
++			memcpy(cfg.crypto_key, key->raw, key->size);
++		}
+ 	}
+ 
+-	err = ufshcd_program_key(hba, &cfg, slot);
++	err = ufshcd_program_key(hba, key, &cfg, slot);
+ 
+ 	memzero_explicit(&cfg, sizeof(cfg));
+ 	return err;
+@@ -103,7 +106,7 @@ static int ufshcd_clear_keyslot(struct ufs_hba *hba, int slot)
+ 	 */
+ 	union ufs_crypto_cfg_entry cfg = {};
+ 
+-	return ufshcd_program_key(hba, &cfg, slot);
++	return ufshcd_program_key(hba, NULL, &cfg, slot);
+ }
+ 
+ static int ufshcd_crypto_keyslot_evict(struct blk_crypto_profile *profile,
+@@ -126,9 +129,29 @@ bool ufshcd_crypto_enable(struct ufs_hba *hba)
+ 	return true;
+ }
+ 
++#if IS_ENABLED(CONFIG_QTI_HW_WRAPPED_KEYS)
++static int ufshcd_crypto_derive_sw_secret(struct blk_crypto_profile *profile,
++					 const u8 *wrapped_key,
++					 unsigned int wrapped_key_size,
++					 u8 sw_secret[BLK_CRYPTO_SW_SECRET_SIZE])
++{
++	struct ufs_hba *hba =
++		container_of(profile, struct ufs_hba, crypto_profile);
 +
-+	/* Set RSP_FIFO_FULL bit */
-+	qti_ice_hwkm_setb(mmio->ice_hwkm_mmio,
-+			QTI_HWKM_ICE_RG_BANK0_BANKN_IRQ_STATUS, RSP_FIFO_FULL);
++	if (hba->vops && hba->vops->derive_secret)
++		return  hba->vops->derive_secret(wrapped_key,
++							wrapped_key_size, sw_secret);
 +
 +	return 0;
 +}
++#endif
 +
-+int qti_ice_hwkm_init(const struct ice_mmio_data *mmio, int version)
-+{
-+	if (!mmio->ice_hwkm_mmio)
-+		return -EINVAL;
-+
-+	return qti_ice_hwkm_init_sequence(mmio, version);
-+}
-+EXPORT_SYMBOL(qti_ice_hwkm_init);
-+
-+MODULE_LICENSE("GPL v2");
-diff --git a/drivers/soc/qcom/qti-ice-regs.h b/drivers/soc/qcom/qti-ice-regs.h
-index 47c625c9d536..4c8d9fd62e42 100644
---- a/drivers/soc/qcom/qti-ice-regs.h
-+++ b/drivers/soc/qcom/qti-ice-regs.h
-@@ -137,9 +137,121 @@
- 			 QTI_ICE_QTIC_DBG_OPEN_EVENT |		\
- 			 QTI_ICE_KEYS_RAM_RESET_COMPLETED)
+ static const struct blk_crypto_ll_ops ufshcd_crypto_ops = {
+ 	.keyslot_program	= ufshcd_crypto_keyslot_program,
+ 	.keyslot_evict		= ufshcd_crypto_keyslot_evict,
++#if IS_ENABLED(CONFIG_QTI_HW_WRAPPED_KEYS)
++	.derive_sw_secret	= ufshcd_crypto_derive_sw_secret,
++#endif
+ };
  
-+/* Read/write macros for ICE address space */
- #define qti_ice_writel(mmio, val, reg)		\
- 	writel_relaxed((val), mmio + (reg))
- #define qti_ice_readl(mmio, reg)		\
- 	readl_relaxed(mmio + (reg))
+ static enum blk_crypto_mode_num
+@@ -190,7 +213,11 @@ int ufshcd_hba_init_crypto_capabilities(struct ufs_hba *hba)
+ 	hba->crypto_profile.ll_ops = ufshcd_crypto_ops;
+ 	/* UFS only supports 8 bytes for any DUN */
+ 	hba->crypto_profile.max_dun_bytes_supported = 8;
++#if IS_ENABLED(CONFIG_QTI_HW_WRAPPED_KEYS)
++	hba->crypto_profile.key_types_supported = BLK_CRYPTO_KEY_TYPE_HW_WRAPPED;
++#else
+ 	hba->crypto_profile.key_types_supported = BLK_CRYPTO_KEY_TYPE_STANDARD;
++#endif
+ 	hba->crypto_profile.dev = hba->dev;
  
-+/* Registers for ICE HWKM Slave */
+ 	/*
+diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+index df5439b12208..ff712358225d 100644
+--- a/drivers/scsi/ufs/ufshcd.h
++++ b/drivers/scsi/ufs/ufshcd.h
+@@ -320,6 +320,7 @@ struct ufs_pwr_mode_info {
+  * @device_reset: called to issue a reset pulse on the UFS device
+  * @program_key: program or evict an inline encryption key
+  * @event_notify: called to notify important events
++ * @derive_secret: derive sw secret from wrapped inline encryption key
+  */
+ struct ufs_hba_variant_ops {
+ 	const char *name;
+@@ -353,9 +354,13 @@ struct ufs_hba_variant_ops {
+ 					struct devfreq_dev_profile *profile,
+ 					void *data);
+ 	int	(*program_key)(struct ufs_hba *hba,
++			       const struct blk_crypto_key *crypto_key,
+ 			       const union ufs_crypto_cfg_entry *cfg, int slot);
+ 	void	(*event_notify)(struct ufs_hba *hba,
+ 				enum ufs_event_type evt, void *data);
++	int (*derive_secret)(const u8 *wrapped_key,
++					 unsigned int wrapped_key_size,
++					 u8 sw_secret[BLK_CRYPTO_SW_SECRET_SIZE]);
+ };
+ 
+ /* clock gating state  */
+diff --git a/drivers/soc/qcom/qti-ice-common.c b/drivers/soc/qcom/qti-ice-common.c
+index b344a4cab5d4..ffec27087543 100644
+--- a/drivers/soc/qcom/qti-ice-common.c
++++ b/drivers/soc/qcom/qti-ice-common.c
+@@ -13,6 +13,23 @@
+ 
+ #define QTI_ICE_MAX_BIST_CHECK_COUNT    100
+ 
++/*
++ * ICE resets during power collapse and HWKM has to be
++ * reconfigured which can be kept track with this flag.
++ */
++static bool qti_hwkm_init_done;
++static int hwkm_version;
 +
-+#define HWKM_VERSION_STEP_REV_MASK 			0xFFFF
-+#define HWKM_VERSION_STEP_REV				0 /* bit 15-0 */
-+#define HWKM_VERSION_MAJOR_REV_MASK			0xFF000000
-+#define HWKM_VERSION_MAJOR_REV				24 /* bit 31-24 */
-+#define HWKM_VERSION_MINOR_REV_MASK			0xFF0000
-+#define HWKM_VERSION_MINOR_REV				16 /* bit 23-16 */
++union crypto_cfg {
++	__le32 regval;
++	struct {
++		u8 dusize;
++		u8 capidx;
++		u8 reserved;
++		u8 cfge;
++	};
++};
 +
-+/* QTI HWKM ICE slave config and status registers */
+ static bool qti_ice_supported(const struct ice_mmio_data *mmio)
+ {
+ 	u32 regval = qti_ice_readl(mmio->ice_mmio, QTI_ICE_REGS_VERSION);
+@@ -27,6 +44,11 @@ static bool qti_ice_supported(const struct ice_mmio_data *mmio)
+ 		return false;
+ 	}
+ 
++	if ((major >=4) || ((major == 3) && (minor == 2) && (step >= 1)))
++		hwkm_version = 2;
++	else
++		hwkm_version = 1;
 +
-+#define QTI_HWKM_ICE_RG_IPCAT_VERSION			0x0000
-+#define QTI_HWKM_ICE_RG_KEY_POLICY_VERSION		0x0004
-+#define QTI_HWKM_ICE_RG_SHARED_STATUS			0x0008
-+#define QTI_HWKM_ICE_RG_KEYTABLE_SIZE			0x000C
-+
-+#define QTI_HWKM_ICE_RG_TZ_KM_CTL			0x1000
-+#define QTI_HWKM_ICE_RG_TZ_KM_STATUS			0x1004
-+#define QTI_HWKM_ICE_RG_TZ_KM_STATUS_IRQ_MASK		0x1008
-+#define QTI_HWKM_ICE_RG_TZ_KM_BOOT_STAGE_OTP		0x100C
-+#define QTI_HWKM_ICE_RG_TZ_KM_DEBUG_CTL			0x1010
-+#define QTI_HWKM_ICE_RG_TZ_KM_DEBUG_WRITE		0x1014
-+#define QTI_HWKM_ICE_RG_TZ_KM_DEBUG_READ		0x1018
-+#define QTI_HWKM_ICE_RG_TZ_TPKEY_RECEIVE_CTL		0x101C
-+#define QTI_HWKM_ICE_RG_TZ_TPKEY_RECEIVE_STATUS		0x1020
-+#define QTI_HWKM_ICE_RG_TZ_KM_COMMON_IRQ_ROUTING	0x1024
-+
-+/* HWKM_ICEMEM_SLAVE_ICE_KM_RG_TZ_KM_CTL */
-+#define CRC_CHECK_EN					0
-+#define KEYTABLE_HW_WR_ACCESS_EN			1
-+#define KEYTABLE_HW_RD_ACCESS_EN			2
-+#define BOOT_INIT0_DISABLE				3
-+#define BOOT_INIT1_DISABLE				4
-+#define ICE_LEGACY_MODE_EN_OTP				5
-+
-+/* HWKM_ICEMEM_SLAVE_ICE_KM_RG_TZ_KM_STATUS for v2 and above*/
-+#define KT_CLEAR_DONE_V2				0
-+#define BOOT_CMD_LIST0_DONE_V2				1
-+#define BOOT_CMD_LIST1_DONE_V2				2
-+#define LAST_ACTIVITY_BANK_V2				3
-+#define CRYPTO_LIB_BIST_ERROR_V2			6
-+#define CRYPTO_LIB_BIST_DONE_V2				7
-+#define BIST_ERROR_V2					8
-+#define BIST_DONE_V2					9
-+#define LAST_ACTIVITY_BANK_MASK_V2			0x38
-+
-+/* HWKM_ICEMEM_SLAVE_ICE_KM_RG_TZ_KM_STATUS for v1*/
-+#define KT_CLEAR_DONE_V1				0
-+#define BOOT_CMD_LIST0_DONE_V1				1
-+#define BOOT_CMD_LIST1_DONE_V1				2
-+#define KEYTABLE_KEY_POLICY_V1				3
-+#define KEYTABLE_INTEGRITY_ERROR_V1			4
-+#define KEYTABLE_KEY_SLOT_ERROR_V1			5
-+#define KEYTABLE_KEY_SLOT_NOT_EVEN_ERROR_V1		6
-+#define KEYTABLE_KEY_SLOT_OUT_OF_RANGE_V1		7
-+#define KEYTABLE_KEY_SIZE_ERROR_V1			8
-+#define KEYTABLE_OPERATION_ERROR_V1			9
-+#define LAST_ACTIVITY_BANK_V1				10
-+#define CRYPTO_LIB_BIST_ERROR_V1			13
-+#define CRYPTO_LIB_BIST_DONE_V1				14
-+#define BIST_ERROR_V1					15
-+#define BIST_DONE_V1					16
-+
-+/* HWKM_ICEMEM_SLAVE_ICE_KM_RG_TZ_TPKEY_RECEIVE_CTL */
-+#define TPKEY_EN					8
-+
-+/* QTI HWKM ICE slave register bank 0 */
-+#define QTI_HWKM_ICE_RG_BANK0_BANKN_CTL			0x2000
-+#define QTI_HWKM_ICE_RG_BANK0_BANKN_STATUS		0x2004
-+#define QTI_HWKM_ICE_RG_BANK0_BANKN_IRQ_STATUS		0x2008
-+#define QTI_HWKM_ICE_RG_BANK0_BANKN_IRQ_MASK		0x200C
-+#define QTI_HWKM_ICE_RG_BANK0_BANKN_ESR			0x2010
-+#define QTI_HWKM_ICE_RG_BANK0_BANKN_ESR_IRQ_MASK	0x2014
-+#define QTI_HWKM_ICE_RG_BANK0_BANKN_ESYNR		0x2018
-+
-+/* QTI_HWKM_ICE_RG_BANKN_IRQ_STATUS */
-+#define ARB_GRAN_WINNER					0
-+#define CMD_DONE_BIT					1
-+#define RSP_FIFO_NOT_EMPTY				2
-+#define RSP_FIFO_FULL					3
-+#define RSP_FIFO_UNDERFLOW				4
-+#define CMD_FIFO_UNDERFLOW				5
-+
-+/* Read/write macros for ICE HWKM address space */
-+
-+#define qti_ice_hwkm_readl(hwkm_mmio, reg)		\
-+	(readl_relaxed(hwkm_mmio + (reg)))
-+#define qti_ice_hwkm_writel(hwkm_mmio, val, reg)	\
-+	(writel_relaxed((val), hwkm_mmio + (reg)))
-+#define qti_ice_hwkm_setb(hwkm_mmio, reg, nr) {		\
-+	u32 val = qti_ice_hwkm_readl(hwkm_mmio, reg);	\
-+	val |= (0x1 << nr);				\
-+	qti_ice_hwkm_writel(hwkm_mmio, val, reg);	\
-+}
-+#define qti_ice_hwkm_clearb(hwkm_mmio, reg, nr) {	\
-+	u32 val = qti_ice_hwkm_readl(hwkm_mmio, reg);	\
-+	val &= ~(0x1 << nr);				\
-+	qti_ice_hwkm_writel(hwkm_mmio, val, reg);	\
-+}
-+
-+static inline bool qti_ice_hwkm_testb(void __iomem *ice_hwkm_mmio,
-+				      u32 reg, u8 nr)
+ 	pr_info("Found QC Inline Crypto Engine (ICE) v%d.%d.%d\n",
+ 		 major, minor, step);
+ 
+@@ -97,8 +119,51 @@ int qti_ice_resume(const struct ice_mmio_data *mmio)
+ }
+ EXPORT_SYMBOL(qti_ice_resume);
+ 
++static int qti_ice_program_wrapped_key(const struct ice_mmio_data *mmio,
++                const struct blk_crypto_key *crypto_key,
++                unsigned int slot, u8 data_unit_mask, int capid)
 +{
-+	u32 val = qti_ice_hwkm_readl(ice_hwkm_mmio, reg);
++	int err = 0;
++	union crypto_cfg cfg;
 +
-+	val = (val >> nr) & 0x1;
-+	if (val == 0)
-+		return false;
-+	return true;
++	if (!qti_hwkm_init_done) {
++		err = qti_ice_hwkm_init(mmio, hwkm_version);
++		if (err) {
++			pr_err("%s: Error initializing hwkm, err = %d",
++							__func__, err);
++			return -EINVAL;
++		}
++		qti_hwkm_init_done = true;
++	}
++
++	memset(&cfg, 0, sizeof(cfg));
++	cfg.dusize = data_unit_mask;
++	cfg.capidx = capid;
++	cfg.cfge = 0x80;
++
++	/* Make sure CFGE is cleared */
++	qti_ice_writel(mmio->ice_mmio, 0x0,(QTI_ICE_LUT_KEYS_CRYPTOCFG_R_16 +
++				QTI_ICE_LUT_KEYS_CRYPTOCFG_OFFSET*slot));
++	wmb();
++
++	/* Call trustzone to program the wrapped key using hwkm */
++	err =  qcom_scm_ice_set_key(slot, crypto_key->raw, crypto_key->size,
++				    capid, data_unit_mask);
++	if (err)
++		pr_err("%s:SCM call Error: 0x%x slot %d\n",
++					__func__, err, slot);
++
++	/* Make sure CFGE is enabled after programming the key */
++	qti_ice_writel(mmio->ice_mmio, cfg.regval,
++			(QTI_ICE_LUT_KEYS_CRYPTOCFG_R_16 +
++			 QTI_ICE_LUT_KEYS_CRYPTOCFG_OFFSET*slot));
++	wmb();
++
++	return err;
 +}
 +
- #endif /* _QTI_INLINE_CRYPTO_ENGINE_REGS_H_ */
+ int qti_ice_keyslot_program(const struct ice_mmio_data *mmio,
+-                const u8* crypto_key, unsigned int crypto_key_size,
++                const struct blk_crypto_key *crypto_key,
+                 unsigned int slot, u8 data_unit_mask, int capid)
+ {
+ 	int err = 0;
+@@ -108,20 +173,26 @@ int qti_ice_keyslot_program(const struct ice_mmio_data *mmio,
+ 		u32 words[AES_256_XTS_KEY_SIZE / sizeof(u32)];
+ 	} key;
+ 
+-	memcpy(key.bytes, crypto_key, crypto_key_size);
+-	/*
+-	 * The SCM call byte-swaps the 32-bit words of the key.  So we have to
+-	 * do the same, in order for the final key be correct.
+-	 */
+-	for (i = 0; i < ARRAY_SIZE(key.words); i++)
+-		__cpu_to_be32s(&key.words[i]);
+-
+-	err = qcom_scm_ice_set_key(slot, key.bytes, AES_256_XTS_KEY_SIZE,
+-				   capid, data_unit_mask);
+-	if (err)
+-		pr_err("%s:SCM call Error: 0x%x slot %d\n", __func__, err, slot);
++	if (crypto_key->crypto_cfg.key_type != BLK_CRYPTO_KEY_TYPE_HW_WRAPPED) {
++		err = qti_ice_program_wrapped_key(mmio, crypto_key, slot,
++                        data_unit_mask, capid);
++	} else {
++		memcpy(key.bytes, crypto_key->raw, crypto_key->size);
++		/*
++		 * The SCM call byte-swaps the 32-bit words of the key.  So we have to
++		 * do the same, in order for the final key be correct.
++		 */
++		for (i = 0; i < ARRAY_SIZE(key.words); i++)
++			__cpu_to_be32s(&key.words[i]);
++
++		err = qcom_scm_ice_set_key(slot, key.bytes, 
++				AES_256_XTS_KEY_SIZE, capid, data_unit_mask);
++		if (err)
++			pr_err("%s:SCM call Error: 0x%x slot %d\n",
++							__func__, err, slot);
++		memzero_explicit(&key, sizeof(key));
++	}
+ 
+-	memzero_explicit(&key, sizeof(key));
+ 	return err;
+ }
+ EXPORT_SYMBOL(qti_ice_keyslot_program);
+@@ -132,4 +203,13 @@ int qti_ice_keyslot_evict(unsigned int slot)
+ }
+ EXPORT_SYMBOL(qti_ice_keyslot_evict);
+ 
++int qti_ice_derive_sw_secret(const u8 *wrapped_key,
++			     unsigned int wrapped_key_size,
++			     u8 sw_secret[BLK_CRYPTO_SW_SECRET_SIZE])
++{
++    return qcom_scm_derive_sw_secret(wrapped_key, wrapped_key_size,
++				     sw_secret, BLK_CRYPTO_SW_SECRET_SIZE);
++}
++EXPORT_SYMBOL(qti_ice_derive_sw_secret);
++
+ MODULE_LICENSE("GPL v2");
 diff --git a/include/linux/qti-ice-common.h b/include/linux/qti-ice-common.h
-index 433422b34a7d..b0a50a1c6876 100644
+index b0a50a1c6876..73365764a595 100644
 --- a/include/linux/qti-ice-common.h
 +++ b/include/linux/qti-ice-common.h
-@@ -23,4 +23,10 @@ int qti_ice_keyslot_program(const struct ice_mmio_data *mmio,
+@@ -8,23 +8,28 @@
+ 
+ #include <linux/types.h>
+ #include <linux/device.h>
++#include <linux/blk-crypto.h>
+ 
+ #define AES_256_XTS_KEY_SIZE    64
+ 
+ struct ice_mmio_data {
+ 	void __iomem *ice_mmio;
++	void __iomem *ice_hwkm_mmio;
+ };
+ 
+ int qti_ice_init(const struct ice_mmio_data *mmio);
+ int qti_ice_enable(const struct ice_mmio_data *mmio);
+ int qti_ice_resume(const struct ice_mmio_data *mmio);
+ int qti_ice_keyslot_program(const struct ice_mmio_data *mmio,
+-                const u8* key, unsigned int key_size,
++                const struct blk_crypto_key *crypto_key,
                  unsigned int slot, u8 data_unit_mask, int capid);
  int qti_ice_keyslot_evict(unsigned int slot);
  
-+#if IS_ENABLED(CONFIG_QTI_HW_WRAPPED_KEYS)
-+int qti_ice_hwkm_init(const struct ice_mmio_data *mmio, int version);
-+#else
-+static inline int qti_ice_hwkm_init(const struct ice_mmio_data *mmio,
-+					int version) { return -ENODEV; }
-+#endif /* CONFIG_QTI_HW_WRAPPED_KEYS */
- #endif /* _QTI_ICE_COMMON_H */
+ #if IS_ENABLED(CONFIG_QTI_HW_WRAPPED_KEYS)
+ int qti_ice_hwkm_init(const struct ice_mmio_data *mmio, int version);
++int qti_ice_derive_sw_secret(const u8 *wrapped_key,
++					 unsigned int wrapped_key_size,
++					 u8 sw_secret[BLK_CRYPTO_SW_SECRET_SIZE]);
+ #else
+ static inline int qti_ice_hwkm_init(const struct ice_mmio_data *mmio,
+ 					int version) { return -ENODEV; }
 -- 
 2.17.1
 
