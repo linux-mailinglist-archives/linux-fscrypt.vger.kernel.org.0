@@ -2,104 +2,146 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7A13445C64
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  4 Nov 2021 23:49:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7776445C8D
+	for <lists+linux-fscrypt@lfdr.de>; Fri,  5 Nov 2021 00:05:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231759AbhKDWwL (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 4 Nov 2021 18:52:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43410 "EHLO mail.kernel.org"
+        id S229881AbhKDXIN (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 4 Nov 2021 19:08:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230000AbhKDWwK (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 4 Nov 2021 18:52:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D107E60F36;
-        Thu,  4 Nov 2021 22:49:31 +0000 (UTC)
+        id S229725AbhKDXIN (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Thu, 4 Nov 2021 19:08:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B4AC611CE;
+        Thu,  4 Nov 2021 23:05:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636066172;
-        bh=kYqtI0mPMx4gcviSBi44P510ajI/enNAKDVG0kdjQLk=;
+        s=k20201202; t=1636067134;
+        bh=2Ipe1kss9nj6sde/9a2sy00aG/fgD2aHfh41B1wB9jQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ik7xFatCo+8BVT1paXK/d2Hw/6DPTxNYNUskfzPUK0bHtlWZIAsVOtncSM1Bchtp3
-         WTUOFx4+OrOjkxocBiwZxbbQcmqcpjmThB6Y1BRjRBnkACoXWmMuf0cFgGH9XoFOgD
-         XFdXd2PvuVY2Jxa/xjRpeIMrQEUTAZfzy6NYr2T/tocBj+J6R6ogIWpLm9vZWLtjIG
-         Sju3HWHakRKW8lFwGpRuzcAozD8vG+5LpUpe0YWxnxUL51bHn+To34t6vpEnuEtxct
-         McT0/pXFcxRDGnY+DfJ3ymCPriTGdjaFOQy1ZJVIU6AC+ZXMcD2PDV84lIIeV3c4j2
-         Qo6AzIb/ftXYQ==
-Date:   Thu, 4 Nov 2021 15:49:16 -0700
+        b=Q//q2ZUQAXzviqDlnsUFEbP942XyqQnXJFpp2Rk7GT1iF5NkYxO9a6uL+6IieTdq7
+         c92Cnr9hGjwXFeFG17srOi8/Z3T2vZFn9BBLGKj/zcM7dUv6xUs6s5zs0vTMym9GQD
+         NJJGhfRzUIkDz/WCfRmZFteU6SdjrlgIUj4CEKmy8X4AT2bLHRtFOSJ3UAGAXjdoGY
+         ElUu2+iPUB8YXJ5coI7oPxMpzMPZc7ahDKZmYRfwxA1T13UFwSBzT2G04Dd4Mu/cJI
+         t9qr0tLexodAsd+oo9O/GBi9vg+KzgDx1PdQVPj3/XjETaHc1VcoBUhXmJZwimarNJ
+         xw/VPjgaVXXUg==
+Date:   Thu, 4 Nov 2021 16:05:32 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     Gaurav Kashyap <quic_gaurkash@quicinc.com>
 Cc:     linux-scsi@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         linux-mmc@vger.kernel.org, linux-block@vger.kernel.org,
         linux-fscrypt@vger.kernel.org, thara.gopinath@linaro.org,
         asutoshd@codeaurora.org
-Subject: Re: [PATCH 0/4] Adds wrapped key support for inline storage
- encryption
-Message-ID: <YYRjbCDhEt8Vh1xv@gmail.com>
+Subject: Re: [PATCH 1/4] ufs: move ICE functionality to a common library
+Message-ID: <YYRnPN6e2/YMS9Zt@gmail.com>
 References: <20211103231840.115521-1-quic_gaurkash@quicinc.com>
+ <20211103231840.115521-2-quic_gaurkash@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211103231840.115521-1-quic_gaurkash@quicinc.com>
+In-Reply-To: <20211103231840.115521-2-quic_gaurkash@quicinc.com>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hi Gaurav,
+On Wed, Nov 03, 2021 at 04:18:37PM -0700, Gaurav Kashyap wrote:
+> The Inline Crypto Engine functionality is not limited to
+> ufs and it can be used by other storage controllers like emmc
+> which have the HW capabilities. It would be better to move this
+> functionality to a common location.
 
-On Wed, Nov 03, 2021 at 04:18:36PM -0700, Gaurav Kashyap wrote:
-> This currently has 4 patches with another coming in shortly for MMC.
+I think you should be a bit more concrete here: both sdhci-msm and ufs-qcom
+already have ICE support, and this common library allows code to be shared.
+
+> Moreover, when wrapped key functionality is added, it would
+> reduce the effort required to add it for all storage
+> controllers.
 > 
-> 1. Moves ICE functionality to a common library, so that different storage controllers can use it.
-> 2. Adds a SCM call for derive raw secret needed for wrapped keys.
-> 3. Adds a hardware key manager library needed for wrapped keys.
-> 4. Adds wrapped key support in ufs for storage encryption
-> 
-> Gaurav Kashyap (4):
->   ufs: move ICE functionality to a common library
->   qcom_scm: scm call for deriving a software secret
->   soc: qcom: add HWKM library for storage encryption
->   soc: qcom: add wrapped key support for ICE
-> 
->  drivers/firmware/qcom_scm.c       |  61 +++++++
->  drivers/firmware/qcom_scm.h       |   1 +
->  drivers/scsi/ufs/ufs-qcom-ice.c   | 200 ++++++-----------------
->  drivers/scsi/ufs/ufs-qcom.c       |   1 +
->  drivers/scsi/ufs/ufs-qcom.h       |   5 +
->  drivers/scsi/ufs/ufshcd-crypto.c  |  47 ++++--
->  drivers/scsi/ufs/ufshcd.h         |   5 +
->  drivers/soc/qcom/Kconfig          |  14 ++
->  drivers/soc/qcom/Makefile         |   2 +
->  drivers/soc/qcom/qti-ice-common.c | 215 +++++++++++++++++++++++++
->  drivers/soc/qcom/qti-ice-hwkm.c   |  77 +++++++++
->  drivers/soc/qcom/qti-ice-regs.h   | 257 ++++++++++++++++++++++++++++++
->  include/linux/qcom_scm.h          |   5 +
->  include/linux/qti-ice-common.h    |  37 +++++
->  14 files changed, 766 insertions(+), 161 deletions(-)
+> Signed-off-by: Gaurav Kashyap <quic_gaurkash@quicinc.com>
+> ---
+>  drivers/scsi/ufs/ufs-qcom-ice.c   | 172 ++++--------------------------
+>  drivers/soc/qcom/Kconfig          |   7 ++
+>  drivers/soc/qcom/Makefile         |   1 +
+>  drivers/soc/qcom/qti-ice-common.c | 135 +++++++++++++++++++++++
+>  drivers/soc/qcom/qti-ice-regs.h   | 145 +++++++++++++++++++++++++
+>  include/linux/qti-ice-common.h    |  26 +++++
+>  6 files changed, 334 insertions(+), 152 deletions(-)
 >  create mode 100644 drivers/soc/qcom/qti-ice-common.c
->  create mode 100644 drivers/soc/qcom/qti-ice-hwkm.c
 >  create mode 100644 drivers/soc/qcom/qti-ice-regs.h
 >  create mode 100644 include/linux/qti-ice-common.h
 
-Thanks for the patches!  These are on top of my patchset
-"[RFC PATCH v2 0/5] Support for hardware-wrapped inline encryption keys"
-(https://lore.kernel.org/linux-block/20210916174928.65529-1-ebiggers@kernel.org),
-right?  You should mention that in your cover letter, so that it's possible for
-people to apply your patches for reviewing or testing, and also to provide
-context about what this feature is and why it is important.
+This should be split up into two patches: one that adds the library, and one
+that converts ufs-qcom to use it.  There should also be a third patch that
+converts sdhci-msm to use it.
 
-As part of that, it would be helpful to specifically mention the documentation
-for hardware-wrapped keys in Documentation/block/inline-encryption.rst that I
-included in my patchset.  It provides a lot of background information that your
-patches are hard to understand without (at least your patches 2-4; your first
-patch isn't dependent on the hardware-wrapped keys feature).
+> +static void get_ice_mmio_data(struct ice_mmio_data *data,
+> +			      const struct ufs_qcom_host *host)
+> +{
+> +	data->ice_mmio = host->ice_mmio;
+> +}
 
-Can you include information about how your patches were tested?  That's really
-important to include.
+I think the struct ice_mmio_data should just be a field of struct ufs_qcom_host.
+Then you wouldn't have to keep initializing a new one.
 
-Please run './scripts/checkpatch.pl' on your patches, as recommended in
-Documentation/process/submitting-patches.rst.  It can catch a lot of issues.
+> diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
+> index 79b568f82a1c..39f223ed8cdd 100644
+> --- a/drivers/soc/qcom/Kconfig
+> +++ b/drivers/soc/qcom/Kconfig
+> @@ -209,4 +209,11 @@ config QCOM_APR
+>  	  application processor and QDSP6. APR is
+>  	  used by audio driver to configure QDSP6
+>  	  ASM, ADM and AFE modules.
+> +
+> +config QTI_ICE_COMMON
+> +	tristate "QTI common ICE functionality"
+> +	depends on SCSI_UFS_CRYPTO && SCSI_UFS_QCOM
+> +	help
+> +	  Enable the common ICE library that can be used
+> +	  by UFS and EMMC drivers for ICE functionality.
 
-Please use the imperative tense, like "add wrapped key support" rather than
-"adds wrapped key support".
+"Libraries" should not be user-selectable.  Instead, they should be selected by
+the kconfig options that need them.  That also means that the "depends on"
+clause should not be here.
 
-I'll leave some more comments on the individual patches.
+So it should look more like:
+
+config QTI_ICE_COMMON
+	tristate
+	help
+	  Enable the common ICE library that can be used
+	  by UFS and EMMC drivers for ICE functionality.
+
+If the library itself has dependencies (perhaps ARCH_QCOM?), then add those.
+
+> +
+> +int qti_ice_init(const struct ice_mmio_data *mmio)
+> +{
+> +	return qti_ice_supported(mmio);
+> +}
+> +EXPORT_SYMBOL(qti_ice_init);
+
+Please use EXPORT_SYMBOL_GPL instead of EXPORT_SYMBOL.
+
+The exported functions could also use kerneldoc comments.
+
+> diff --git a/include/linux/qti-ice-common.h b/include/linux/qti-ice-common.h
+> new file mode 100644
+> index 000000000000..433422b34a7d
+> --- /dev/null
+> +++ b/include/linux/qti-ice-common.h
+> @@ -0,0 +1,26 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Copyright (c) 2021, The Linux Foundation. All rights reserved.
+> + */
+> +
+> +#ifndef _QTI_ICE_COMMON_H
+> +#define _QTI_ICE_COMMON_H
+> +
+> +#include <linux/types.h>
+> +#include <linux/device.h>
+> +
+> +#define AES_256_XTS_KEY_SIZE    64
+
+Is the definition of AES_256_XTS_KEY_SIZE needed in this header?  It's not
+properly "namespaced", so it's sort of the odd thing out in this header.
 
 - Eric
