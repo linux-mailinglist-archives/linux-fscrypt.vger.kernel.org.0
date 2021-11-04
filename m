@@ -2,48 +2,63 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC9FC4457C3
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  4 Nov 2021 17:59:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E04A445813
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  4 Nov 2021 18:12:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231837AbhKDRBo (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 4 Nov 2021 13:01:44 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:53428 "EHLO
+        id S232428AbhKDROv (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 4 Nov 2021 13:14:51 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:55138 "EHLO
         linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231616AbhKDRBn (ORCPT
+        with ESMTP id S232614AbhKDROt (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 4 Nov 2021 13:01:43 -0400
+        Thu, 4 Nov 2021 13:14:49 -0400
 Received: from [10.137.106.139] (unknown [131.107.159.11])
-        by linux.microsoft.com (Postfix) with ESMTPSA id D817320ABA92;
-        Thu,  4 Nov 2021 09:59:04 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D817320ABA92
+        by linux.microsoft.com (Postfix) with ESMTPSA id 5ED1720ABA94;
+        Thu,  4 Nov 2021 10:12:10 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5ED1720ABA94
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1636045145;
-        bh=6Fhu1fVrlEM+zAeqzfl+2y2B+pfRDcedOWmMzTvJw68=;
-        h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
-        b=qbxZqAsxfR+uZTMqf4wXUs1iyN/O0A9xneB0ugX07sKH4oYoJGlekFy5vbq79mK1h
-         MMnPCiWKoOKbLKYoMjOY7jqTP6yv1bSanJLOzZSGaLn8s1dJOojCUNY6+wZZJ0vs69
-         Mu73irmZ7f10kfbIy2N+gkfEspEQ5jrQWbygMak4=
-Message-ID: <bd189273-7640-e135-9ca3-e6f3b909b3a1@linux.microsoft.com>
-Date:   Thu, 4 Nov 2021 09:59:04 -0700
+        s=default; t=1636045930;
+        bh=qEPw2InKnsvskNfMVAs79ETCgoEtkA0LqlU3T/wm4UU=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=TOKjsjpHy/6jP6DASOEiio4+SFbY1bV2zRvkMssy96xZM0i5VxP1rkA4e/T9SCZ6P
+         4waObN9FPi2nFKpG56+iXnUxO+7Q+NmeIx/NfccfBZOI2tCSlSsiK5C+0559jeIH7u
+         f+DR+oor43nyIe7u/bOblKF60y+83HkhuOSbu32Q=
+Message-ID: <8d12dcf4-165d-9db6-5a42-591bc8b97c00@linux.microsoft.com>
+Date:   Thu, 4 Nov 2021 10:12:09 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
  Thunderbird/91.2.1
-From:   Deven Bowers <deven.desai@linux.microsoft.com>
-Subject: Re: [RFC PATCH v7 07/16] ipe: add auditing support
-To:     Steve Grubb <sgrubb@redhat.com>, corbet@lwn.net, axboe@kernel.dk,
-        agk@redhat.com, snitzer@redhat.com, ebiggers@kernel.org,
-        tytso@mit.edu, paul@paul-moore.com, eparis@redhat.com,
-        jmorris@namei.org, serge@hallyn.com, linux-audit@redhat.com
-Cc:     linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org,
-        jannh@google.com, linux-fscrypt@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        dm-devel@redhat.com
-References: <1634151995-16266-1-git-send-email-deven.desai@linux.microsoft.com>
- <2159283.iZASKD2KPV@x2>
- <8802b1ff-3028-642a-22c5-bc4896450a60@linux.microsoft.com>
- <1898302.usQuhbGJ8B@x2>
+Subject: Re: [RFC PATCH v7 12/16] fsverity|security: add security hooks to
+ fsverity digest and signature
 Content-Language: en-US
-In-Reply-To: <1898302.usQuhbGJ8B@x2>
+To:     Roberto Sassu <roberto.sassu@huawei.com>,
+        Eric Biggers <ebiggers@kernel.org>
+Cc:     "corbet@lwn.net" <corbet@lwn.net>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "agk@redhat.com" <agk@redhat.com>,
+        "snitzer@redhat.com" <snitzer@redhat.com>,
+        "tytso@mit.edu" <tytso@mit.edu>,
+        "paul@paul-moore.com" <paul@paul-moore.com>,
+        "eparis@redhat.com" <eparis@redhat.com>,
+        "jmorris@namei.org" <jmorris@namei.org>,
+        "serge@hallyn.com" <serge@hallyn.com>,
+        "jannh@google.com" <jannh@google.com>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
+        "linux-audit@redhat.com" <linux-audit@redhat.com>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>
+References: <1634151995-16266-1-git-send-email-deven.desai@linux.microsoft.com>
+ <1634151995-16266-13-git-send-email-deven.desai@linux.microsoft.com>
+ <YWcyYBuNppjrVOe2@gmail.com>
+ <9089bdb0-b28a-9fa0-c510-00fa275af621@linux.microsoft.com>
+ <0b4c9a91afb441b085ec914118617ee7@huawei.com>
+From:   Deven Bowers <deven.desai@linux.microsoft.com>
+In-Reply-To: <0b4c9a91afb441b085ec914118617ee7@huawei.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -51,124 +66,65 @@ List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 
-On 11/2/2021 12:44 PM, Steve Grubb wrote:
-> Hello,
+On 11/3/2021 5:28 AM, Roberto Sassu wrote:
+>> From: Deven Bowers [mailto:deven.desai@linux.microsoft.com]
+>> Sent: Friday, October 15, 2021 9:26 PM
+>> On 10/13/2021 12:24 PM, Eric Biggers wrote:
+>>> On Wed, Oct 13, 2021 at 12:06:31PM -0700,
+>> deven.desai@linux.microsoft.com wrote:
+>>>> From: Fan Wu <wufan@linux.microsoft.com>
+>>>>
+>>>> Add security_inode_setsecurity to fsverity signature verification.
+>>>> This can let LSMs save the signature data and digest hashes provided
+>>>> by fsverity.
+>>> Can you elaborate on why LSMs need this information?
+>> The proposed LSM (IPE) of this series will be the only one to need
+>> this information at the  moment. IPE’s goal is to have provide
+>> trust-based access control. Trust and Integrity are tied together,
+>> as you cannot prove trust without proving integrity.
+> I wanted to go back on this question.
 >
-> On Friday, October 15, 2021 3:25:47 PM EDT Deven Bowers wrote:
->> On 10/13/2021 1:02 PM, Steve Grubb wrote:
->>> On Wednesday, October 13, 2021 3:06:26 PM EDT
->>> deven.desai@linux.microsoft.com> 
->>> wrote:
->>>> Users of IPE require a way to identify when and why an operation fails,
->>>> allowing them to both respond to violations of policy and be notified
->>>> of potentially malicious actions on their systens with respect to IPE
->>>> itself.
->>> Would you mind sending examples of audit events so that we can see what
->>> the end result is? Some people add them to the commit text. But we still
->>> need to see what they look like.
->> Sure, sorry. I’ll add them to the commit description (and the documentation
->> patch at the end) for v8 – In the interest of asynchronous feedback, I’ve
->> copied the relevant examples:
-> Thanks for sending these. This helps.
+> It seems, at least for fsverity, that you could obtain the
+> root digest at run-time, without storing it in a security blob.
 >
->   
->> AUDIT1420 IPE ctx_pid=229 ctx_op=EXECUTE ctx_hook=MMAP ctx_enforce=0
->> ctx_comm="grep" ctx_pathname="/usr/lib/libc-2.23.so"
->> ctx_ino=532 ctx_dev=vda rule="DEFAULT op=EXECUTE action=DENY"
-> Question...why do all of these have a ctx_  prefix?
-
-Ah, the ctx_ was because these fields are all grouped in ipe in a 
-context (ctx)
-structure. An private version (pre-v1) had these grouped like:
-
-    ctx={ pid=229 comm="grep" op=EXECUTE ... }
-
-But during an internal review, it was brought up that the grouping is likely
-non-standard and to cause more issues than its worth instead of just 
-prefixing
-the field with ctx_. Now that I think about it a bit more, the context is
-implicit, so the prefix and grouping doesn't make sense.
-
-> Is it possible to trigger an audit context so that the audit machinery
-> collects all of this stuff in  it's own way? Which means you could drop
-> everything execept op, hook, enforce, rule, and action.
-
-I could do something internal in IPE that will create the context in the 
-right
-way. As far as inside the audit stack it looks like the closest analogue 
-would
-be common_lsm_audit - which fixes the type to be AVC. I don't think 
-adding another
-form of AVC is appropriate?
-
-I could also either extend common_lsm_audit to accept a type parameter, or
-make a more generalized function as part of the audit framework. Do you have
-a preference? Paul, do you have a preference?
-
-> We also have a field dictionary here:
-> https://github.com/linux-audit/audit-documentation/blob/main/specs/fields/
-> field-dictionary.csv
+> I thought I should use fsverity_get_info() but the fsverity_info
+> structure is not exported (it is defined in fs/verity/fsverity_private.h).
 >
-> which names the known fields and how they should be formatted. If there is a
-> collision where they are something else and cannot be in the same format,
-> then we make a new name and hopefully update the dictionary. For example, if
-> you are collecting a process id, use pid and not ctx_pid so that it matches a
-> known definition.
-
-Wow. I didn't know about this - it should be pretty easy to change the 
-fields
-to follow this mapping. Almost everything has a correlation already. It 
-looks
-like there would be only one collision with hook being currently defined
-with netfilter. Everything else would be new (e.g. rule), or could map
-an existingfield.
-> Also, I don't thnk these events can stand on their own. Who did this action?
-> You have the pid, but no uid, auid, or session_id.
-
-It makes sense to add these fields; and it'd be taken care of with your 
-suggestion
-above to make the audit context just gathers this information in its 
-own, consistent
-way.
-
-> Hope this helps...
+> Then, I defined a new function, fsverity_get_file_digest() to copy
+> the file_digest member of fsverity_info to a buffer and to pass
+> the associated hash algorithm.
 >
-> -Steve
+> With that, the code of evaluate() for DIGLIM becomes:
 >
->   
->> AUDIT1420 IPE ctx_pid=229 ctx_op=EXECUTE ctx_hook=MMAP ctx_enforce=0
->> ctx_comm="grep" ctx_pathname="/usr/lib/libc-2.23.so"
->> ctx_ino=532 ctx_dev=vda rule="DEFAULT action=DENY"
->>
->> AUDIT1420 IPE ctx_pid=253 ctx_op=EXECUTE ctx_hook=MMAP ctx_enforce=1
->> ctx_comm="anon" rule="DEFAULT op=EXECUTE action=DENY"
->>
->> These three audit records represent various types of results after
->> evaluating
->> the trust of a resource. The first two differ in the rule that was
->> matched in
->> IPE's policy, the first being an operation-specific default, the second
->> being
->> a global default. The third is an example of what is audited when anonymous
->> memory is blocked (as there is no way to verify the trust of an anonymous
->> page).
->>
->> The remaining three events, AUDIT_TRUST_POLICY_LOAD (1421),
->> AUDIT_TRUST_POLICY_ACTIVATE (1422), and AUDIT_TRUST_STATUS (1423) have this
->> form:
->>
->> AUDIT1421 IPE policy_name="my-policy" policy_version=0.0.0
->> <hash_alg_name>=<hash>
->> AUDIT1422 IPE policy_name="my-policy" policy_version=0.0.0
->> <hash_alg_name>=<hash>
->> AUDIT1423 IPE enforce=1
->>
->> The 1421 (AUDIT_TRUST_POLICY_LOAD) event represents a new policy was loaded
->> into the kernel, but not is not marked as the policy to enforce. The
->>
->> The 1422 (AUDIT_TRUST_POLICY_ACTIVATE) event represents a policy that was
->> already loaded was made the enforcing policy.
->>
->> The 1423 (AUDIT_TRUST_STATUS) event represents a switch between
->> permissive and
->> enforce, it is added in 08/16 (the following patch)
+>          info = fsverity_get_info(file_inode(ctx->file));
+>          if (info)
+>                  ret = fsverity_get_file_digest(info, buffer, sizeof(buffer), &algo);
+>
+>          if (!strcmp(expect->data, "diglim") && ret > 0) {
+>                  ret = diglim_digest_get_info(buffer, algo, COMPACT_FILE, &modifiers, &actions);
+>                  if (!ret)
+>                          return true;
+>          }
+This would work with the digest with a bit more code in fs-verity. It
+also has benefits if there are other callers who want this information.
+
+I was planning on grouping the digest and signature into 
+apublic_key_signature
+structure in v8 to pass the digest, digest algorithm,digest size, signature
+and signature size (as opposed to defining a new structfor this purpose),
+reducing the number of LSM hook calls down to one functionin fsverity.
+
+I think both approaches have merit. fsverity_get_file_digest is more useful
+if there are callers outside of LSMs that want this information. The LSM 
+hook
+is cleaner if only LSMs want this information.
+
+At least, at the moment, it seems like it's only IPE who wants this 
+information,
+and it's not like it won't be able to change later if the need arises, 
+as this
+is all implementation details that wouldn't effect the end-user.
+
+I'll defer to Eric - his opinion holds the most weight, as fsverity would be
+the main code affected in either case.
+
