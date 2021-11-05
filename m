@@ -2,175 +2,95 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30154445CEA
-	for <lists+linux-fscrypt@lfdr.de>; Fri,  5 Nov 2021 01:08:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB01446620
+	for <lists+linux-fscrypt@lfdr.de>; Fri,  5 Nov 2021 16:45:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232433AbhKEALF (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 4 Nov 2021 20:11:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52756 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232040AbhKEALE (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 4 Nov 2021 20:11:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA8AF61213;
-        Fri,  5 Nov 2021 00:08:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636070905;
-        bh=o7fFEo7v95r3iaFFPQHwPY1pIQpE9DbEFCqQaOJe6Lw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pfTCFDU4zWT1NbEWL4TbXNmTbeYHhbEpOvZnCEgSFp1XjOi+oe8VVSXRRwecpV8yc
-         6UGhRvK1ypR4w8u5zjLj4qClt2sJTiYOVEtCjxRhI6uPHilBxNGTjnzq2a3DKNUIUu
-         IOGSrUNFLvydShYxr1XPzSK7+k2VVWFE+fsv/moiZVf/0FQPdnPzF55b/5ZqgdWj73
-         iz7vhHFqILa/+NpK3Ho77WNPSFMc+zY4t1gwgmG34jf+Evis8AcJqJdX5u01ujWxf0
-         lxVYYQ+mR0XdkvP9U8OvCZmQ4p2rZq4AV8zY1wSNt2mvsEMN5gJ6JfA6BSpe0yDtKt
-         fLzIbRnWuwM7g==
-Date:   Thu, 4 Nov 2021 17:08:24 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Gaurav Kashyap <quic_gaurkash@quicinc.com>
-Cc:     linux-scsi@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, thara.gopinath@linaro.org,
-        asutoshd@codeaurora.org
-Subject: Re: [PATCH 4/4] soc: qcom: add wrapped key support for ICE
-Message-ID: <YYR1+LgBnSQ+pVhr@gmail.com>
-References: <20211103231840.115521-1-quic_gaurkash@quicinc.com>
- <20211103231840.115521-5-quic_gaurkash@quicinc.com>
+        id S232578AbhKEPsG (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 5 Nov 2021 11:48:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232536AbhKEPsG (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Fri, 5 Nov 2021 11:48:06 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9132C061714
+        for <linux-fscrypt@vger.kernel.org>; Fri,  5 Nov 2021 08:45:26 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id x16-20020a17090a789000b001a69735b339so3657360pjk.5
+        for <linux-fscrypt@vger.kernel.org>; Fri, 05 Nov 2021 08:45:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=k3+PIl84BDEKsR+afDftURi+daSqqQKQrezVjb4o2gs=;
+        b=IJBX8ucirp71vX5YGGhIfNGw+Dc6SDg37kO5OFbQ8JLafDg2QTkzJzm3IuOBNcLssy
+         DwoZ7pbtgQAfEXFdnqdiH35JhmkHOyyzZRT67Ya2kmraJ2P/RbkKbAye9TM2y3fSwUp7
+         N3LKVnYcU7BLYY2iDrfZAnVdtfEntcMzHFOBMBM0ATe3NPjEsL2l7j4TyijhZv9NvGuC
+         NKeVhQDucOq0h4aW6bmSnW3a/Eubga2VjXyejy7QWw5ttBmljhWUKJRMJJ8ZpWxhTdGc
+         Yig5pc3eR85Cn3AmpVuIY/Plf0c3of7C+POabR62tmHCLaVn/hNtoC8TImjALGv0YMr2
+         LzrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=k3+PIl84BDEKsR+afDftURi+daSqqQKQrezVjb4o2gs=;
+        b=n40LtCRSiEmTsMlyuCLuryodEILPRSGVvjY1T6bl1YDs/4fIqBfWWa+TQcMgqGPdi3
+         jtmdtF/dJZ/rfAyPhfeJbICO/pF4VkMEY9UnU3W2O6c/UgPO+KFHErLVU0COw4Lj7O2C
+         8c7njHztROpnyMuwc7Yt+Lhg6nQ6PTISZcA6BW8aet7fUGBlPKsZgAIAVboP12D1Eywf
+         aT3fsB2xzulf+eAFa+FwBnn0giInEfKBWk/yzLqtoGBW1yPL7fyoCE0qdd4j9sW9CUnK
+         SPhFPquar+4Skv3G/Wdu6tVzoWNHSzQRNVcEST1s6sg31+4hatJFV46xBKLeyvurYg/G
+         Lv6Q==
+X-Gm-Message-State: AOAM531lfuEcffU3KE20Utk+GVtI7PgcZWsIs16zS4hmIciLa0aboYlb
+        X1tMUMv4TgwAuC3ORokRZXMfB2e3eCmhb4Ys5u8=
+X-Google-Smtp-Source: ABdhPJwYi+oHBjSuwkb2zJ4DiQhskM1AWNf+UpjFyMcH9ClN4ybIU/GBGeAwaX7LI8uusuEzgUHFuUMZneGflZ2EJDI=
+X-Received: by 2002:a17:90b:4a0e:: with SMTP id kk14mr20625977pjb.42.1636127126352;
+ Fri, 05 Nov 2021 08:45:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211103231840.115521-5-quic_gaurkash@quicinc.com>
+Sender: mrslilahaber299@gmail.com
+Received: by 2002:a17:90b:4b0a:0:0:0:0 with HTTP; Fri, 5 Nov 2021 08:45:25
+ -0700 (PDT)
+From:   Mrs Lila Haber <mrslilahabe2016@gmail.com>
+Date:   Fri, 5 Nov 2021 15:45:25 +0000
+X-Google-Sender-Auth: goKKw7MRC_yuVoFbkRPTAgVbOto
+Message-ID: <CAJG73iRRxFnQ+kP9fep5VTzcn0d_hecJX7DqXei5gkLc6Ottsw@mail.gmail.com>
+Subject: Dear Child of God
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, Nov 03, 2021 at 04:18:40PM -0700, Gaurav Kashyap wrote:
-> Add support for wrapped keys in ufs and common ICE library.
-> Qualcomm's ICE solution uses a hardware block called Hardware
-> Key Manager (HWKM) to handle wrapped keys.
-> 
-> This patch adds the following changes to support this.
-> 1. Link to HWKM library for initialization.
-> 2. Most of the key management is done from Trustzone via scm calls.
->    Added calls to this from the ICE library.
-> 3. Added support for this framework in UFS.
-> 4. Added support for deriving SW secret as it cannot be done in
->    linux kernel for wrapped keys.
-> 
-> Signed-off-by: Gaurav Kashyap <quic_gaurkash@quicinc.com>
-> ---
->  drivers/scsi/ufs/ufs-qcom-ice.c   |  34 +++++++++-
->  drivers/scsi/ufs/ufs-qcom.c       |   1 +
->  drivers/scsi/ufs/ufs-qcom.h       |   5 ++
->  drivers/scsi/ufs/ufshcd-crypto.c  |  47 ++++++++++---
->  drivers/scsi/ufs/ufshcd.h         |   5 ++
->  drivers/soc/qcom/qti-ice-common.c | 108 ++++++++++++++++++++++++++----
->  include/linux/qti-ice-common.h    |   7 +-
->  7 files changed, 180 insertions(+), 27 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufs-qcom-ice.c b/drivers/scsi/ufs/ufs-qcom-ice.c
-> index 6608a9015eab..79d642190997 100644
-> --- a/drivers/scsi/ufs/ufs-qcom-ice.c
-> +++ b/drivers/scsi/ufs/ufs-qcom-ice.c
-> @@ -45,6 +45,21 @@ int ufs_qcom_ice_init(struct ufs_qcom_host *host)
->  	}
->  	mmio.ice_mmio = host->ice_mmio;
->  
-> +#if IS_ENABLED(CONFIG_QTI_HW_WRAPPED_KEYS)
-> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "ice_hwkm");
-> +	if (!res) {
-> +		dev_warn(dev, "ICE HWKM registers not found\n");
-> +		goto disable;
-> +	}
-> +
-> +	host->ice_hwkm_mmio = devm_ioremap_resource(dev, res);
-> +	if (IS_ERR(host->ice_hwkm_mmio)) {
-> +		err = PTR_ERR(host->ice_hwkm_mmio);
-> +		dev_err(dev, "Failed to map ICE registers; err=%d\n", err);
-> +		return err;
-> +	}
-> +	mmio.ice_hwkm_mmio = host->ice_hwkm_mmio;
-> +#endif
+Dear Child of God,
 
-The driver shouldn't completely disable ICE support just because HW wrapped keys
-aren't supported by the hardware or by the device tree file.  Instead, it should
-declare support for standard keys only.  I.e. CONFIG_QTI_HW_WRAPPED_KEYS
-shouldn't force the use of HW wrapped keys, it should just add support for them.
+Calvary Greetings in the name of the LORD Almighty and Our LORD JESUS
+CHRIST the giver of every good thing. Good day and compliments of the
+seasons, i know this letter will definitely come to you as a huge
+surprise, but I implore you to take the time to go through it
+carefully as the decision you make will go off a long way to determine
+my future and continued existence. I am Mrs Lila Haber aging widow of
+57 years old suffering from long time illness.I have some funds I
+inherited from my late husband, the sum of (19.1Million Dollars) and I
+needed a very honest and God fearing who can withdraw this money then
+use the funds for Charity works. I WISH TO GIVE THIS FUNDS TO YOU FOR
+CHARITY WORKS. I found your email address from the internet after
+honest prayers to the LORD to bring me a helper and i decided to
+contact you if you may be willing and interested to handle these trust
+funds in good faith before anything happens to me.
 
-> diff --git a/drivers/scsi/ufs/ufshcd-crypto.c b/drivers/scsi/ufs/ufshcd-crypto.c
-> index 0ed82741f981..965a8cc6c183 100644
-> --- a/drivers/scsi/ufs/ufshcd-crypto.c
-> +++ b/drivers/scsi/ufs/ufshcd-crypto.c
+I accept this decision because I do not have any child who will
+inherit this money after I die. I want your urgent reply to me so that
+I will give you the deposit receipt which the SECURITY COMPANY issued
+to me as next of kin for immediate transfer of the money to your
+account in your country, to start the good work of God, I want you to
+use the 25/percent of the total amount to help yourself in doing the
+project. I am desperately in keen need of assistance and I have
+summoned up courage to contact you for this task, you must not fail me
+and the millions of the poor people in our todays WORLD. This is no
+stolen money and there are no dangers involved,100% RISK FREE with
+full legal proof. Please if you would be able to use the funds for the
+Charity works kindly let me know immediately.I will appreciate your
+utmost confidentiality and trust in this matter to accomplish my heart
+desire, as I don't want anything that will jeopardize my last wish.
+Please
+kindly respond quickly for further details.
 
-ufshcd-crypto.c is part of ufshcd-core, not ufs_qcom.  It should be changed in a
-separate patch.
-
-> @@ -18,6 +18,7 @@ static const struct ufs_crypto_alg_entry {
->  };
->  
->  static int ufshcd_program_key(struct ufs_hba *hba,
-> +				  const struct blk_crypto_key *key,
->  			      const union ufs_crypto_cfg_entry *cfg, int slot)
->  {
->  	int i;
-> @@ -27,7 +28,7 @@ static int ufshcd_program_key(struct ufs_hba *hba,
->  	ufshcd_hold(hba, false);
->  
->  	if (hba->vops && hba->vops->program_key) {
-> -		err = hba->vops->program_key(hba, cfg, slot);
-> +		err = hba->vops->program_key(hba, key, cfg, slot);
->  		goto out;
->  	}
-
-vops->program_key shouldn't take in both a key and a cfg.  It should be just one
-or the other.  'cfg' doesn't appear to work for HW wrapped keys, and it seems
-the existing user doesn't really need a 'cfg' in the first place, so it would
-have to be just 'key'.
-
-> +#if IS_ENABLED(CONFIG_QTI_HW_WRAPPED_KEYS)
-
-As noted above, ufshcd-crypto isn't specific to ufs_qcom.  It therefore must not
-contain references to CONFIG_QTI_HW_WRAPPED_KEYS, as that kconfig option is
-specific to Qualcomm platforms.
-
-> +static int ufshcd_crypto_derive_sw_secret(struct blk_crypto_profile *profile,
-> +					 const u8 *wrapped_key,
-> +					 unsigned int wrapped_key_size,
-> +					 u8 sw_secret[BLK_CRYPTO_SW_SECRET_SIZE])
-> +{
-> +	struct ufs_hba *hba =
-> +		container_of(profile, struct ufs_hba, crypto_profile);
-> +
-> +	if (hba->vops && hba->vops->derive_secret)
-> +		return  hba->vops->derive_secret(wrapped_key,
-> +							wrapped_key_size, sw_secret);
-> +
-> +	return 0;
-> +}
-
-The fallback case should return -EOPNOTSUPP, which indicates that the operation
-is not supported, rather than 0 which indicates that it succeeded.
-
-> @@ -190,7 +213,11 @@ int ufshcd_hba_init_crypto_capabilities(struct ufs_hba *hba)
->  	hba->crypto_profile.ll_ops = ufshcd_crypto_ops;
->  	/* UFS only supports 8 bytes for any DUN */
->  	hba->crypto_profile.max_dun_bytes_supported = 8;
-> +#if IS_ENABLED(CONFIG_QTI_HW_WRAPPED_KEYS)
-> +	hba->crypto_profile.key_types_supported = BLK_CRYPTO_KEY_TYPE_HW_WRAPPED;
-> +#else
->  	hba->crypto_profile.key_types_supported = BLK_CRYPTO_KEY_TYPE_STANDARD;
-> +#endif
->  	hba->crypto_profile.dev = hba->dev;
-
-My comments from above apply to this too.  Checking a Qualcomm-specific kconfig
-option isn't appropriate here.  Also the supported key types shouldn't be static
-from the kconfig; they should be determined by the actual hardware capabilities.
-
-Note that in the Android kernels, for the division of work between ufshcd-core
-and host drivers, we ended up going with a solution where the UFS host drivers
-can just override the whole blk_crypto_profile (previously called
-blk_keyslot_manager).  You may have to do the same, although it would be
-preferable to find a way to share more code.
-
-Also, at runtime, does any of the Qualcomm hardware support multiple key types,
-and if so can they be used at the same time?
-
-- Eric
+Warmest Regards,
+Mrs Lila Haber
