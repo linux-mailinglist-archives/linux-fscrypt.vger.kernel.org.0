@@ -2,62 +2,72 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16A62446AF1
-	for <lists+linux-fscrypt@lfdr.de>; Fri,  5 Nov 2021 23:34:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E79D1447425
+	for <lists+linux-fscrypt@lfdr.de>; Sun,  7 Nov 2021 17:50:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233357AbhKEWhO (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 5 Nov 2021 18:37:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52100 "EHLO
+        id S235894AbhKGQxW (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sun, 7 Nov 2021 11:53:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230054AbhKEWhM (ORCPT
+        with ESMTP id S235911AbhKGQxS (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 5 Nov 2021 18:37:12 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97B8AC061570
-        for <linux-fscrypt@vger.kernel.org>; Fri,  5 Nov 2021 15:34:32 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id i12so10909379ila.12
-        for <linux-fscrypt@vger.kernel.org>; Fri, 05 Nov 2021 15:34:32 -0700 (PDT)
+        Sun, 7 Nov 2021 11:53:18 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F871C061220
+        for <linux-fscrypt@vger.kernel.org>; Sun,  7 Nov 2021 08:50:35 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id np3so6418688pjb.4
+        for <linux-fscrypt@vger.kernel.org>; Sun, 07 Nov 2021 08:50:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=eriDMJ1VSc5nz4G+g+1zHzTH043RgXlZ6cpKSPDYOeU=;
-        b=V8ihsxlWvii9ykWAosYp3IZ2HStn6sOx05hwdJABkuFTTmhpden1g1SgK0sa6SyL4i
-         it0H5FIT5gLE0zDck9v0elRAE4zJRd6x7mhlQMFdObPriict4A5kc3TdmyxRioI7LOMi
-         K4v/WFajAdqC0MDlRr6DQJr6QLMH08zkP1LZN874HHMKYaTVoy5p4j7Kb/HuzZrdnJWI
-         Wrwns3akCwDFe4gCDCi2KB3mCv42Zx19z+EtFT4klIS+JMsU87zVG8w2cAjxM9RBa4kL
-         NLROrbHO4NPYPqD6JbQ1sU+ySiY9alzGpv/MXVN48hJTkUgX73octq4ScolkEmUHUpPZ
-         pLfA==
+        bh=3KhLtwCKP93j3EcWq+BGTsAWsp8Oi4eBuXX0Ov40ah8=;
+        b=EWSeuwGW0MwopZk6+JQj2LPLP+kn6j+n6zcELOfFZ2WWjJX2dgivodx6hXZfQ+vlSS
+         Bgdmc5AMr+L2JY9clB1XVfl5q11/kgOjlAWQeygS8KyifAY0d0yX9y2bbfXfGAn5aE6V
+         ogb9m/nxt7SXZixXZv5lJtlFdPSDBCXanGJMKLvGY8Vh5rPkvEm+wRax8zziNjziN18L
+         V3AjR36b7Kj5f7h9TqbYhJlnXqoYzcFbb2X3eeIx5wRGp/16bCVCyQEqrIz0D5KOpCUC
+         SPYOl4LPtaEyUSntyV/iTLNaUXW2yYflvSVjb3O9TG4Sfks9nED35gmPgI416l3YLwhE
+         CxpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:reply-to:from:date:message-id
          :subject:to;
-        bh=eriDMJ1VSc5nz4G+g+1zHzTH043RgXlZ6cpKSPDYOeU=;
-        b=M9mjcM3QqUSL2eQzjTjsG/VXPAV5WywwDlf6ewjE9il6cGm1dwwbcf7c2S5n4XS1+N
-         bke5hApBWWsIfyfkStSIyG7Fk+Hw2VpgXjZumDi/UK04nWiDpYM14jyCpkJ+3/GAvX1e
-         jmAK2Th+PbswLuVnXVYcvKqomQIYBluSIAPA0xHYQ9A/j9OzYh0cYy3wiYfok9X4Vc6i
-         5W1tZmAQLE+RTXyDytHa4JZiTvhXaEwtMrMfCwRPx7a5/z6hMyWwtrShtGxvfhSSqSKH
-         rlIm7jFkvIc64X/algYi0BCSvfoDU3mH3TcRN9ZWvImnvNbDeW2gbKTEweV1YnLC47tn
-         y/6Q==
-X-Gm-Message-State: AOAM5301/8xsKLhtnToMF3Hs5+Sd03SjAC4ZADKA24FEjzvLJtLzgUog
-        tBFIkffekEH5f1NeIK4jmIfYeOBJD6oDB3i2A7E=
-X-Google-Smtp-Source: ABdhPJwDw//9w5bNxZOD8CzTR4OrMDl86wBIBnN/YYDyh+tRmzNGAajX5JtwMYlidXfRoLHnjcFBs4F3nIR60trhApQ=
-X-Received: by 2002:a05:6e02:1848:: with SMTP id b8mr17249798ilv.299.1636151672065;
- Fri, 05 Nov 2021 15:34:32 -0700 (PDT)
+        bh=3KhLtwCKP93j3EcWq+BGTsAWsp8Oi4eBuXX0Ov40ah8=;
+        b=qp2FifLUG/NF7CZFrkJJoEcEMHD1xhJMpKlrw6M+8L2QUQWXggNAku703e+MAbdfPd
+         Mxh8SJG5R2ONWBdBCYn0jpgTsvxBZinNnAq1iqTQm/v4JY4+t3cSmFl7LK01pLg6Vlno
+         NiyoEEIqmFqzjG0GPZKFrBTEEwjLq6GL4HVK5p6hOfOUhhebF9J9Oc+ahcOCgZBBfzHM
+         /J5WWgsBX/Ap04eo/KkVi9u4k/I+5VsCKWQCNY/wUCU1j4geI0qJsCiXlfybBB4V+yrW
+         klTVBBFIKb/1roBEij24yo757kfgvXTI0CSXX397bX7edizgqXvJFnUMgGmeasfUqPCd
+         rkvA==
+X-Gm-Message-State: AOAM533MUQFsfdXICa8DWE4lmtiUc5eTkG0RDreuyLoiTLeqvEPHf3ob
+        z2y6cnm6lOY/4RxfctjwN3Ze67IrelCG1pt223k=
+X-Google-Smtp-Source: ABdhPJxkCqReol7UR24Aw9NYMyqT7sVxbhk5EYO1bgdnJ/3iAMRi09QfMfqwLDNM12eoIGQJfPeU/nWQ5FJo/sPkN/o=
+X-Received: by 2002:a17:902:a60b:b0:142:7621:be0b with SMTP id
+ u11-20020a170902a60b00b001427621be0bmr4078099plq.58.1636303834746; Sun, 07
+ Nov 2021 08:50:34 -0800 (PST)
 MIME-Version: 1.0
-Received: by 2002:a05:6638:24ce:0:0:0:0 with HTTP; Fri, 5 Nov 2021 15:34:31
- -0700 (PDT)
-Reply-To: morissarhodesville326@gmail.com
-From:   Morissa Rhodesville <bahalhassane726@gmail.com>
-Date:   Fri, 5 Nov 2021 22:34:31 +0000
-Message-ID: <CALtWYMFWW8Rcx_hmsaCdr=xPZ1-WZtDg+1E0bevf4U10LaHB1Q@mail.gmail.com>
-Subject: my pleasure meeting you
+Received: by 2002:a05:6a10:4a14:0:0:0:0 with HTTP; Sun, 7 Nov 2021 08:50:34
+ -0800 (PST)
+Reply-To: amabenchambers00@gmail.com
+From:   Amadou Benjamin <ousmanekarim54@gmail.com>
+Date:   Sun, 7 Nov 2021 08:50:34 -0800
+Message-ID: <CAJFAt4ZBhTYuN-nemNTedKsmLo3Bvi-=Fak557pWmDAv5j9mnw@mail.gmail.com>
+Subject: 
 To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hello Greetings.
-I wish to discuss very important issues with you, your urgent response
-is highly appreciated
-Miss Morissa
+-- 
+Hello good day.
+
+I am Barrister Amadou Benjamin by name, with due respect, I am
+contacting you to help get the deposit 10.5 million Dollars, my late
+client Engineer Vasiliy left in his Bank before his sudden death on
+April 21, 2007, to avoid confiscation by Lloyds bank. Please write me
+back through this email (amabenchambers00@gmail.com)for more
+information about this transaction or send me your private email to
+Contact you myself.
+
+Sincerely,
+Barrister Amadou Benjamin Esq
