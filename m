@@ -2,27 +2,27 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B98444A12A
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  9 Nov 2021 02:05:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B93344A19B
+	for <lists+linux-fscrypt@lfdr.de>; Tue,  9 Nov 2021 02:09:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240590AbhKIBHr (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 8 Nov 2021 20:07:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33370 "EHLO mail.kernel.org"
+        id S240650AbhKIBKs (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 8 Nov 2021 20:10:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238962AbhKIBFz (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 8 Nov 2021 20:05:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FA2061A03;
-        Tue,  9 Nov 2021 01:02:25 +0000 (UTC)
+        id S242004AbhKIBIu (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 8 Nov 2021 20:08:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 03D4D61A07;
+        Tue,  9 Nov 2021 01:03:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636419747;
-        bh=c0QPfypoqZVxYs28xlb+Wql7YAgQ8YUKaG9i8tLaE9c=;
+        s=k20201202; t=1636419835;
+        bh=iBPJCU7QSqqp3Zd8ENuUl7lsu0PKaiGAOqqmO4lN/4s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k66Ds8hjGa0Hd1WXbW+b7icpHODIGgBjyFfi8X12m0sgTXgnYX8NDJODYqJJgH7pE
-         ZW7SQA2RsLgjLCQuJrVlAyRAHJoXi4GIzB4WUvtNynO9GxUa7ZOI/CmzmwIr3F5JzS
-         XH9cL/q5nLy4cx5Uu2JHuRVSCIP58Qq3b2lUNZ4GFlAquH0SbWfzRImRTOq8vujq4z
-         VqbrdD+VqX8+EUbJqk5PoztlHXU+AC44ZXsXgW3qdbIqmVtNjJFoJFzvFtyyWjZ64Y
-         dzBELGQdRtbEwI84dPBtG9hKCFKqWfhIDfLRLgaIaue4uv4LRfZ6i7oopW1BQ47/th
-         lj1Gnc+d7xGsw==
+        b=M4+pEQJb+5H61WsDcuUJwLeMm0YpZcoHhaa1qgL4I3kEN4/ODGkfp+iu8rpsUV6Im
+         VLKOCBPUObQy8CoHBX7ZjHl+X9BfPSQDrk1bxhjSXHXSkUT0socrZJ0n+78sHU2QCk
+         +1/i78QPUD94KnGy73/C9f5+uwt5G6q/OteUyLFjL4kTJirwlIT5luIBNrkd6ToSzH
+         2/OYo2oTJMrO0yLl6xo6H08obXBQpLimRLk3JgQiE9JMfMsUb/MFHh9KTYZRNOBfAo
+         alYiPF+0YDgm4gbgA5kaTcx8CEm0iZWLji/3KqRfZOmtGw4296zArdlmv27NQWZBz0
+         iKER3vfru1EpA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Eric Biggers <ebiggers@google.com>,
@@ -30,12 +30,12 @@ Cc:     Eric Biggers <ebiggers@google.com>,
         Sasha Levin <sashal@kernel.org>, tytso@mit.edu,
         jaegeuk@kernel.org, ebiggers@kernel.org, corbet@lwn.net,
         linux-fscrypt@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.14 025/138] fscrypt: allow 256-bit master keys with AES-256-XTS
-Date:   Mon,  8 Nov 2021 12:44:51 -0500
-Message-Id: <20211108174644.1187889-25-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 021/101] fscrypt: allow 256-bit master keys with AES-256-XTS
+Date:   Mon,  8 Nov 2021 12:47:11 -0500
+Message-Id: <20211108174832.1189312-21-sashal@kernel.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211108174644.1187889-1-sashal@kernel.org>
-References: <20211108174644.1187889-1-sashal@kernel.org>
+In-Reply-To: <20211108174832.1189312-1-sashal@kernel.org>
+References: <20211108174832.1189312-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -105,10 +105,10 @@ index 44b67ebd6e40d..936fae06db770 100644
  To "unlock" an encrypted directory tree, userspace must provide the
  appropriate master key.  There can be any number of master keys, each
 diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-index 3fa965eb3336d..cb25ef0cdf1f3 100644
+index 322ecae9a7580..052ad40ecdb28 100644
 --- a/fs/crypto/fscrypt_private.h
 +++ b/fs/crypto/fscrypt_private.h
-@@ -549,8 +549,9 @@ int __init fscrypt_init_keyring(void);
+@@ -557,8 +557,9 @@ int __init fscrypt_init_keyring(void);
  struct fscrypt_mode {
  	const char *friendly_name;
  	const char *cipher_str;
@@ -121,7 +121,7 @@ index 3fa965eb3336d..cb25ef0cdf1f3 100644
  	enum blk_crypto_mode_num blk_crypto_mode;
  };
 diff --git a/fs/crypto/hkdf.c b/fs/crypto/hkdf.c
-index e0ec210555053..7607d18b35fc0 100644
+index 0cba7928446d3..24172bf3e8c6f 100644
 --- a/fs/crypto/hkdf.c
 +++ b/fs/crypto/hkdf.c
 @@ -16,9 +16,14 @@
@@ -143,7 +143,7 @@ index e0ec210555053..7607d18b35fc0 100644
  #define HKDF_HMAC_ALG		"hmac(sha512)"
  #define HKDF_HASHLEN		SHA512_DIGEST_SIZE
 diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index bca9c6658a7c5..89cd533a88bff 100644
+index 9a6f9a188efb9..73d96e35d9ae4 100644
 --- a/fs/crypto/keysetup.c
 +++ b/fs/crypto/keysetup.c
 @@ -19,6 +19,7 @@ struct fscrypt_mode fscrypt_modes[] = {
