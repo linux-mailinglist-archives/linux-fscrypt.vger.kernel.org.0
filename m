@@ -2,72 +2,95 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E79D1447425
-	for <lists+linux-fscrypt@lfdr.de>; Sun,  7 Nov 2021 17:50:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B24644796D
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  8 Nov 2021 05:37:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235894AbhKGQxW (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sun, 7 Nov 2021 11:53:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235911AbhKGQxS (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sun, 7 Nov 2021 11:53:18 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F871C061220
-        for <linux-fscrypt@vger.kernel.org>; Sun,  7 Nov 2021 08:50:35 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id np3so6418688pjb.4
-        for <linux-fscrypt@vger.kernel.org>; Sun, 07 Nov 2021 08:50:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=3KhLtwCKP93j3EcWq+BGTsAWsp8Oi4eBuXX0Ov40ah8=;
-        b=EWSeuwGW0MwopZk6+JQj2LPLP+kn6j+n6zcELOfFZ2WWjJX2dgivodx6hXZfQ+vlSS
-         Bgdmc5AMr+L2JY9clB1XVfl5q11/kgOjlAWQeygS8KyifAY0d0yX9y2bbfXfGAn5aE6V
-         ogb9m/nxt7SXZixXZv5lJtlFdPSDBCXanGJMKLvGY8Vh5rPkvEm+wRax8zziNjziN18L
-         V3AjR36b7Kj5f7h9TqbYhJlnXqoYzcFbb2X3eeIx5wRGp/16bCVCyQEqrIz0D5KOpCUC
-         SPYOl4LPtaEyUSntyV/iTLNaUXW2yYflvSVjb3O9TG4Sfks9nED35gmPgI416l3YLwhE
-         CxpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=3KhLtwCKP93j3EcWq+BGTsAWsp8Oi4eBuXX0Ov40ah8=;
-        b=qp2FifLUG/NF7CZFrkJJoEcEMHD1xhJMpKlrw6M+8L2QUQWXggNAku703e+MAbdfPd
-         Mxh8SJG5R2ONWBdBCYn0jpgTsvxBZinNnAq1iqTQm/v4JY4+t3cSmFl7LK01pLg6Vlno
-         NiyoEEIqmFqzjG0GPZKFrBTEEwjLq6GL4HVK5p6hOfOUhhebF9J9Oc+ahcOCgZBBfzHM
-         /J5WWgsBX/Ap04eo/KkVi9u4k/I+5VsCKWQCNY/wUCU1j4geI0qJsCiXlfybBB4V+yrW
-         klTVBBFIKb/1roBEij24yo757kfgvXTI0CSXX397bX7edizgqXvJFnUMgGmeasfUqPCd
-         rkvA==
-X-Gm-Message-State: AOAM533MUQFsfdXICa8DWE4lmtiUc5eTkG0RDreuyLoiTLeqvEPHf3ob
-        z2y6cnm6lOY/4RxfctjwN3Ze67IrelCG1pt223k=
-X-Google-Smtp-Source: ABdhPJxkCqReol7UR24Aw9NYMyqT7sVxbhk5EYO1bgdnJ/3iAMRi09QfMfqwLDNM12eoIGQJfPeU/nWQ5FJo/sPkN/o=
-X-Received: by 2002:a17:902:a60b:b0:142:7621:be0b with SMTP id
- u11-20020a170902a60b00b001427621be0bmr4078099plq.58.1636303834746; Sun, 07
- Nov 2021 08:50:34 -0800 (PST)
+        id S234158AbhKHEkT (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sun, 7 Nov 2021 23:40:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34166 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231463AbhKHEkS (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Sun, 7 Nov 2021 23:40:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E3D1261076;
+        Mon,  8 Nov 2021 04:37:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636346255;
+        bh=Pdd82xrVzMnfiWi2u+fTvK6TMnsM7+MLbMGx3FZWteg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=meMzeIxb90AZ12Nr9C9Di6wPtrxB4uLZAQs3rQ5VXuSJMlF4gpUS4mZW0CGuZdgeA
+         lJjvodhnrAKwBIxYm3miQrO0RAjQ7bzEmfjlAq3H1uKOMTPhyVDdm7H0QyiddMWypj
+         5mNdbcpCV1HLZDQ3FzwWTxaJE36f+qNctPS9qWvUP14VQ2J7hxr59ncOASYhSj84Rf
+         MyzXIYMtq637NIAhjG+BJaQjh6I3NAsAAS6ntrqRP1VcfQT3rmFmgszqJpUW6pAKlB
+         LMiWCN8425XyTVEzVXe0OQYQ50L+RwFIZzbYkj1uQ7oCEcHxDi/ggghpE3HJYv5iha
+         e7hgzVfNg2Dfw==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     fstests@vger.kernel.org
+Cc:     linux-fscrypt@vger.kernel.org, David Howells <dhowells@redhat.com>
+Subject: [PATCH] generic/574: remove invalid test of read completely past EOF
+Date:   Sun,  7 Nov 2021 20:36:20 -0800
+Message-Id: <20211108043620.155257-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:4a14:0:0:0:0 with HTTP; Sun, 7 Nov 2021 08:50:34
- -0800 (PST)
-Reply-To: amabenchambers00@gmail.com
-From:   Amadou Benjamin <ousmanekarim54@gmail.com>
-Date:   Sun, 7 Nov 2021 08:50:34 -0800
-Message-ID: <CAJFAt4ZBhTYuN-nemNTedKsmLo3Bvi-=Fak557pWmDAv5j9mnw@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
+From: Eric Biggers <ebiggers@google.com>
+
+One of the test cases in generic/574 tests that if a file of length
+130999 has fs-verity enabled, and if bytes 131000..131071 (i.e. some
+bytes past EOF and in the same block as EOF) are corrupted with nonzero
+values, then reads of the corrupted part should fail with EIO.
+
+This isn't a valid test case, because reads that start at or past EOF
+are allowed to simply return 0 without doing any I/O.
+
+Therefore, don't run this test case.
+
+This fixes a test failure caused by the kernel commit 8c8387ee3f55
+("mm: stop filemap_read() from grabbing a superfluous page").
+
+Note that the other test cases for this same corrupted file remain
+valid, including testing that an error is reported during full file
+reads and during mmap "reads".  This is because the fs-verity Merkle
+tree is defined over full blocks, so the file's last block won't be
+readable if it contains corrupted (nonzero) bytes past EOF.  This may
+seem odd, but it's working as intended, especially considering that
+bytes past EOF in a file's last block are exposed to userspace in mmaps.
+
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ tests/generic/574     | 2 +-
+ tests/generic/574.out | 2 --
+ 2 files changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/tests/generic/574 b/tests/generic/574
+index df0ef95f..882baa21 100755
+--- a/tests/generic/574
++++ b/tests/generic/574
+@@ -106,7 +106,7 @@ corruption_test()
+ 	dd if=$fsv_file bs=$FSV_BLOCK_SIZE iflag=direct status=none \
+ 		of=/dev/null |& _filter_scratch
+ 
+-	if ! $is_merkle_tree; then
++	if (( zap_offset < file_len )) && ! $is_merkle_tree; then
+ 		echo "Validating corruption (reading just corrupted part)..."
+ 		dd if=$fsv_file bs=1 skip=$zap_offset count=$zap_len \
+ 			of=/dev/null status=none |& _filter_scratch
+diff --git a/tests/generic/574.out b/tests/generic/574.out
+index d43474c5..3c08d3e8 100644
+--- a/tests/generic/574.out
++++ b/tests/generic/574.out
+@@ -63,8 +63,6 @@ Validating corruption (reading full file)...
+ md5sum: SCRATCH_MNT/file.fsv: Input/output error
+ Validating corruption (direct I/O)...
+ dd: error reading 'SCRATCH_MNT/file.fsv': Input/output error
+-Validating corruption (reading just corrupted part)...
+-dd: error reading 'SCRATCH_MNT/file.fsv': Input/output error
+ Validating corruption (reading full file via mmap)...
+ Bus error
+ Validating corruption (reading just corrupted part via mmap)...
 -- 
-Hello good day.
+2.33.1
 
-I am Barrister Amadou Benjamin by name, with due respect, I am
-contacting you to help get the deposit 10.5 million Dollars, my late
-client Engineer Vasiliy left in his Bank before his sudden death on
-April 21, 2007, to avoid confiscation by Lloyds bank. Please write me
-back through this email (amabenchambers00@gmail.com)for more
-information about this transaction or send me your private email to
-Contact you myself.
-
-Sincerely,
-Barrister Amadou Benjamin Esq
