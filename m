@@ -2,95 +2,62 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B24644796D
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  8 Nov 2021 05:37:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A51D0447B23
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  8 Nov 2021 08:31:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234158AbhKHEkT (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sun, 7 Nov 2021 23:40:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34166 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231463AbhKHEkS (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sun, 7 Nov 2021 23:40:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E3D1261076;
-        Mon,  8 Nov 2021 04:37:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636346255;
-        bh=Pdd82xrVzMnfiWi2u+fTvK6TMnsM7+MLbMGx3FZWteg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=meMzeIxb90AZ12Nr9C9Di6wPtrxB4uLZAQs3rQ5VXuSJMlF4gpUS4mZW0CGuZdgeA
-         lJjvodhnrAKwBIxYm3miQrO0RAjQ7bzEmfjlAq3H1uKOMTPhyVDdm7H0QyiddMWypj
-         5mNdbcpCV1HLZDQ3FzwWTxaJE36f+qNctPS9qWvUP14VQ2J7hxr59ncOASYhSj84Rf
-         MyzXIYMtq637NIAhjG+BJaQjh6I3NAsAAS6ntrqRP1VcfQT3rmFmgszqJpUW6pAKlB
-         LMiWCN8425XyTVEzVXe0OQYQ50L+RwFIZzbYkj1uQ7oCEcHxDi/ggghpE3HJYv5iha
-         e7hgzVfNg2Dfw==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     fstests@vger.kernel.org
-Cc:     linux-fscrypt@vger.kernel.org, David Howells <dhowells@redhat.com>
-Subject: [PATCH] generic/574: remove invalid test of read completely past EOF
-Date:   Sun,  7 Nov 2021 20:36:20 -0800
-Message-Id: <20211108043620.155257-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.33.1
+        id S237886AbhKHHbJ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 8 Nov 2021 02:31:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237909AbhKHHan (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 8 Nov 2021 02:30:43 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E6ABC06118D
+        for <linux-fscrypt@vger.kernel.org>; Sun,  7 Nov 2021 23:27:34 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id o18so33945279lfu.13
+        for <linux-fscrypt@vger.kernel.org>; Sun, 07 Nov 2021 23:27:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=gS+G2bXPLTc8QV9oSOsVFPfildfSifO+gabOlUjPn+8=;
+        b=lohGAXI96njXpZ5r6vgYlUkp2V68iRMzDV25uaLpmT1WmpX2h0YNNnPekuKOrJR7Hh
+         rCcmOUgGjsAkeHEvvQCkM6ux+TyqL0CqGbf0IPfL8V+eIKLF7r3X9QWFup/xVl2xV9qZ
+         NGc0LQ7JpvXhk+YTEHFaFd2QnuENE8mCWi0drmIQkANv1zf9DM6Bfjx/yF/A/b9RtJFU
+         CT2DuJeqJ7evq+rJKQgmUSCIg2GjkqvLZlnb0ekZ1/3u7apFf2k73Uqo2u8YZ8hKmOIw
+         ZGA3M8LZJFGSmW3P+nQyYMCLCtL13s+WCsnPOmCuuFd5xieMsN0vbLhindKIE3OfrP6U
+         BcYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=gS+G2bXPLTc8QV9oSOsVFPfildfSifO+gabOlUjPn+8=;
+        b=ife8Lk1bCiybCkGygW1umL8IAIO/v7Z1Q37xTdL4FlGvfn1Pf2uHuO8qRWK9tsiok1
+         uBLAbo5JUDtO0+HkH9gsGWHF4m5xhvZLZPOhoPp4EeflDGNZ62DpsoJL6953trCf0iNG
+         wOikPm58ii2AKSxyMqx9XOUf9s2BISPtQlgRYwB4lcbfcHjrRj/Q1CqpAGlhTH01donY
+         daMra0iVt1Yf++jTnnBdwCBbUfHN5j7CRwP81KRNhxlI5bgLvv4Pz8L8CkHCIBprfd6+
+         sKbgPMQr17N+8BDlE/KV+REAeMJtzQHnk0hkoG8GXdOpKHPfi/2STxg2SaLv0FqK32aR
+         hFbA==
+X-Gm-Message-State: AOAM533iTTsYAtmGHVJEOEzLrX3JGR2KRftlNM3cSrvsDK7QiW+v4DXK
+        c5H8TIDyUGnP1L/Ler7lNCZD3yF03ApzdtKCKj0/drT3cak=
+X-Google-Smtp-Source: ABdhPJwiROS9SRRNMvDLES4YHo6uT5d60ZUwIiFmBNAm9OxEfLgMU9cee9PqVQWim0XNVifN/Rk5vWcyMQ7rvBndYNE=
+X-Received: by 2002:a05:6402:557:: with SMTP id i23mr66769092edx.176.1636356441798;
+ Sun, 07 Nov 2021 23:27:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a50:2501:0:0:0:0:0 with HTTP; Sun, 7 Nov 2021 23:27:21 -0800 (PST)
+Reply-To: mariaschaefler@gmx.com
+From:   Maria Schaefler <ziskoraa@gmail.com>
+Date:   Mon, 8 Nov 2021 07:27:21 +0000
+Message-ID: <CAJh0FjiFL7uihMBL6ckYO8FJ6tnzM+tBivU2c60yDbG14LZLeA@mail.gmail.com>
+Subject: MY HEART CHOOSE YOU.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
-
-One of the test cases in generic/574 tests that if a file of length
-130999 has fs-verity enabled, and if bytes 131000..131071 (i.e. some
-bytes past EOF and in the same block as EOF) are corrupted with nonzero
-values, then reads of the corrupted part should fail with EIO.
-
-This isn't a valid test case, because reads that start at or past EOF
-are allowed to simply return 0 without doing any I/O.
-
-Therefore, don't run this test case.
-
-This fixes a test failure caused by the kernel commit 8c8387ee3f55
-("mm: stop filemap_read() from grabbing a superfluous page").
-
-Note that the other test cases for this same corrupted file remain
-valid, including testing that an error is reported during full file
-reads and during mmap "reads".  This is because the fs-verity Merkle
-tree is defined over full blocks, so the file's last block won't be
-readable if it contains corrupted (nonzero) bytes past EOF.  This may
-seem odd, but it's working as intended, especially considering that
-bytes past EOF in a file's last block are exposed to userspace in mmaps.
-
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- tests/generic/574     | 2 +-
- tests/generic/574.out | 2 --
- 2 files changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/tests/generic/574 b/tests/generic/574
-index df0ef95f..882baa21 100755
---- a/tests/generic/574
-+++ b/tests/generic/574
-@@ -106,7 +106,7 @@ corruption_test()
- 	dd if=$fsv_file bs=$FSV_BLOCK_SIZE iflag=direct status=none \
- 		of=/dev/null |& _filter_scratch
- 
--	if ! $is_merkle_tree; then
-+	if (( zap_offset < file_len )) && ! $is_merkle_tree; then
- 		echo "Validating corruption (reading just corrupted part)..."
- 		dd if=$fsv_file bs=1 skip=$zap_offset count=$zap_len \
- 			of=/dev/null status=none |& _filter_scratch
-diff --git a/tests/generic/574.out b/tests/generic/574.out
-index d43474c5..3c08d3e8 100644
---- a/tests/generic/574.out
-+++ b/tests/generic/574.out
-@@ -63,8 +63,6 @@ Validating corruption (reading full file)...
- md5sum: SCRATCH_MNT/file.fsv: Input/output error
- Validating corruption (direct I/O)...
- dd: error reading 'SCRATCH_MNT/file.fsv': Input/output error
--Validating corruption (reading just corrupted part)...
--dd: error reading 'SCRATCH_MNT/file.fsv': Input/output error
- Validating corruption (reading full file via mmap)...
- Bus error
- Validating corruption (reading just corrupted part via mmap)...
--- 
-2.33.1
-
+Given my current state of health, I have decided to donate what I
+inherited from my late husband to you to help the poor and needy. I am
+Mrs Maria Schaefler,a 57years old dying woman. I was diagnosed for
+cancer about 2 years ago and I have few months to live according to
+medical experts. Email me for my directives
