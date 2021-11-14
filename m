@@ -2,60 +2,91 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 856AF44ED1B
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 12 Nov 2021 20:15:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DFA844F86F
+	for <lists+linux-fscrypt@lfdr.de>; Sun, 14 Nov 2021 15:16:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235483AbhKLTRz (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 12 Nov 2021 14:17:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39120 "EHLO mail.kernel.org"
+        id S235143AbhKNOTL (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sun, 14 Nov 2021 09:19:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58580 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235265AbhKLTRy (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 12 Nov 2021 14:17:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 47A9D60F0F;
-        Fri, 12 Nov 2021 19:15:03 +0000 (UTC)
+        id S234393AbhKNOTI (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
+        Sun, 14 Nov 2021 09:19:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6375360EE7;
+        Sun, 14 Nov 2021 14:16:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636744503;
-        bh=he4nr5Zv1gj4KhLHrTt/kC3kiKokVah8k8LJvlxoIRI=;
+        s=k20201202; t=1636899374;
+        bh=yNa8nfA17W0IA0dH0cmt1uaH3DN4+9mcx2CuNZRUwKI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kU7HDMriA9hhIsiB0T9A9b+mcLYld4tLHPl2C9DwU/nD5vae/RmDMSCpv66q/G12y
-         ul4lU4/LmdD7OddSFchAgI52Gdy+L5UEVLSyPkRsRJTfc10OfKuo1f0epLGQXN0R+G
-         1cNa3K/AYNOUf6lxyLOjGjffTKvVcg9jTuujT143VcQJA5lGVagdXrTD4pcol0UJRo
-         ABdgqB72Q3O0pGUykGDPmqps8j1ZTYn3yxmOlvY92/cnPrhfBZJcrpDF0ULz3tzxCH
-         mbxf7Mhw6JH7anfDf9YyYoIZD9LWVO0W0oRixyXXg2LDm7VNLtFk4wpLdl65HazcxA
-         0YmnomMJh2zow==
-Date:   Fri, 12 Nov 2021 11:15:01 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Roberto Sassu <roberto.sassu@huawei.com>
-Cc:     tytso@mit.edu, corbet@lwn.net, viro@zeniv.linux.org.uk,
-        hughd@google.com, akpm@linux-foundation.org,
-        linux-fscrypt@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC][PATCH 2/5] fsverity: Revalidate built-in signatures at
- file open
-Message-ID: <YY69NaucW+0t474Q@gmail.com>
-References: <20211112124411.1948809-1-roberto.sassu@huawei.com>
- <20211112124411.1948809-3-roberto.sassu@huawei.com>
+        b=EyCV+DBbQuAF3GeFCQDYKg9JxWDhPIZf/OkuAlCgQeO9fd8X9igtRfKzOvxlD9CqC
+         huhdOr9Hw7Nhv21f0+TkXRH+qlX9MoMhbjBfXhqDaVchSQjonk1MDdr4vRCu1WvwMK
+         1kR31ALEcXgf0wgO4n/ekREC5/T35nnm4EIN5pFupRwgFxfnlNCYoDbxx8lg3JkNmf
+         +7N98eZe1BAtcpT8bVLbJlKkHJOflTef+W6cO9N36LJ0Ui4uvblq8BQlGf2gPBbFI7
+         c3pgyCGI4y34mddOIspcVlg1vqMfgIt2EiOSMfbRpC6zt1vaV8cSYaZpeY4mpNF2lN
+         BnBFeOKjKx03w==
+Date:   Sun, 14 Nov 2021 09:16:13 -0500
+From:   Sasha Levin <sashal@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Paul Crowley <paulcrowley@google.com>, tytso@mit.edu,
+        jaegeuk@kernel.org, corbet@lwn.net, linux-fscrypt@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.10 021/101] fscrypt: allow 256-bit master keys
+ with AES-256-XTS
+Message-ID: <YZEaLdsj7mA6WM8W@sashalap>
+References: <20211108174832.1189312-1-sashal@kernel.org>
+ <20211108174832.1189312-21-sashal@kernel.org>
+ <YYnTeBCwn6fd/kVU@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20211112124411.1948809-3-roberto.sassu@huawei.com>
+In-Reply-To: <YYnTeBCwn6fd/kVU@gmail.com>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 01:44:08PM +0100, Roberto Sassu wrote:
-> Fsverity signatures are validated only upon request by the user by setting
-> the requirement through procfs or sysctl.
-> 
-> However, signatures are validated only when the fsverity-related
-> initialization is performed on the file. If the initialization happened
-> while the signature requirement was disabled, the signature is not
-> validated again.
+On Mon, Nov 08, 2021 at 05:48:40PM -0800, Eric Biggers wrote:
+>On Mon, Nov 08, 2021 at 12:47:11PM -0500, Sasha Levin wrote:
+>> From: Eric Biggers <ebiggers@google.com>
+>>
+>> [ Upstream commit 7f595d6a6cdc336834552069a2e0a4f6d4756ddf ]
+>>
+>> fscrypt currently requires a 512-bit master key when AES-256-XTS is
+>> used, since AES-256-XTS keys are 512-bit and fscrypt requires that the
+>> master key be at least as long any key that will be derived from it.
+>>
+>> However, this is overly strict because AES-256-XTS doesn't actually have
+>> a 512-bit security strength, but rather 256-bit.  The fact that XTS
+>> takes twice the expected key size is a quirk of the XTS mode.  It is
+>> sufficient to use 256 bits of entropy for AES-256-XTS, provided that it
+>> is first properly expanded into a 512-bit key, which HKDF-SHA512 does.
+>>
+>> Therefore, relax the check of the master key size to use the security
+>> strength of the derived key rather than the size of the derived key
+>> (except for v1 encryption policies, which don't use HKDF).
+>>
+>> Besides making things more flexible for userspace, this is needed in
+>> order for the use of a KDF which only takes a 256-bit key to be
+>> introduced into the fscrypt key hierarchy.  This will happen with
+>> hardware-wrapped keys support, as all known hardware which supports that
+>> feature uses an SP800-108 KDF using AES-256-CMAC, so the wrapped keys
+>> are wrapped 256-bit AES keys.  Moreover, there is interest in fscrypt
+>> supporting the same type of AES-256-CMAC based KDF in software as an
+>> alternative to HKDF-SHA512.  There is no security problem with such
+>> features, so fix the key length check to work properly with them.
+>>
+>> Reviewed-by: Paul Crowley <paulcrowley@google.com>
+>> Link: https://lore.kernel.org/r/20210921030303.5598-1-ebiggers@kernel.org
+>> Signed-off-by: Eric Biggers <ebiggers@google.com>
+>> Signed-off-by: Sasha Levin <sashal@kernel.org>
+>
+>I don't expect any problem with backporting this, but I don't see how this
+>follows the stable kernel rules (Documentation/process/stable-kernel-rules.rst).
+>I don't see what distinguishes this patch from ones that don't get picked up by
+>AUTOSEL; it seems pretty arbitrary to me.
 
-I'm not sure this really matters.  If someone has started using a verity file
-before the require_signatures sysctl was set, then there is already a race
-condition; this patch doesn't fix that.  Don't you need to set the
-require_signatures sysctl early enough anyway?
+It is, to some extent. My understanding was that this is a minor fix to
+make something that should have worked, work.
 
-- Eric
+-- 
+Thanks,
+Sasha
