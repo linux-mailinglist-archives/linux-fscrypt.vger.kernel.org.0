@@ -2,91 +2,90 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DFA844F86F
-	for <lists+linux-fscrypt@lfdr.de>; Sun, 14 Nov 2021 15:16:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5385B44FFA7
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 15 Nov 2021 09:03:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235143AbhKNOTL (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sun, 14 Nov 2021 09:19:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58580 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234393AbhKNOTI (ORCPT <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sun, 14 Nov 2021 09:19:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6375360EE7;
-        Sun, 14 Nov 2021 14:16:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636899374;
-        bh=yNa8nfA17W0IA0dH0cmt1uaH3DN4+9mcx2CuNZRUwKI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EyCV+DBbQuAF3GeFCQDYKg9JxWDhPIZf/OkuAlCgQeO9fd8X9igtRfKzOvxlD9CqC
-         huhdOr9Hw7Nhv21f0+TkXRH+qlX9MoMhbjBfXhqDaVchSQjonk1MDdr4vRCu1WvwMK
-         1kR31ALEcXgf0wgO4n/ekREC5/T35nnm4EIN5pFupRwgFxfnlNCYoDbxx8lg3JkNmf
-         +7N98eZe1BAtcpT8bVLbJlKkHJOflTef+W6cO9N36LJ0Ui4uvblq8BQlGf2gPBbFI7
-         c3pgyCGI4y34mddOIspcVlg1vqMfgIt2EiOSMfbRpC6zt1vaV8cSYaZpeY4mpNF2lN
-         BnBFeOKjKx03w==
-Date:   Sun, 14 Nov 2021 09:16:13 -0500
-From:   Sasha Levin <sashal@kernel.org>
+        id S229962AbhKOIGT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 15 Nov 2021 03:06:19 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:4092 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236413AbhKOIFz (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Mon, 15 Nov 2021 03:05:55 -0500
+Received: from fraeml709-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Ht1mV4FtGz67mLl;
+        Mon, 15 Nov 2021 15:59:06 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml709-chm.china.huawei.com (10.206.15.37) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Mon, 15 Nov 2021 09:02:47 +0100
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2308.020;
+ Mon, 15 Nov 2021 09:02:47 +0100
+From:   Roberto Sassu <roberto.sassu@huawei.com>
 To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Paul Crowley <paulcrowley@google.com>, tytso@mit.edu,
-        jaegeuk@kernel.org, corbet@lwn.net, linux-fscrypt@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.10 021/101] fscrypt: allow 256-bit master keys
- with AES-256-XTS
-Message-ID: <YZEaLdsj7mA6WM8W@sashalap>
-References: <20211108174832.1189312-1-sashal@kernel.org>
- <20211108174832.1189312-21-sashal@kernel.org>
- <YYnTeBCwn6fd/kVU@gmail.com>
+CC:     "tytso@mit.edu" <tytso@mit.edu>, "corbet@lwn.net" <corbet@lwn.net>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "hughd@google.com" <hughd@google.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [RFC][PATCH 4/5] shmem: Avoid segfault in
+ shmem_read_mapping_page_gfp()
+Thread-Topic: [RFC][PATCH 4/5] shmem: Avoid segfault in
+ shmem_read_mapping_page_gfp()
+Thread-Index: AQHX18MROltj/rJe+kKE1cDtluXUoawALbMAgAQP9RA=
+Date:   Mon, 15 Nov 2021 08:02:46 +0000
+Message-ID: <987ab9f6dc844f8584a0224924e13bea@huawei.com>
+References: <20211112124411.1948809-1-roberto.sassu@huawei.com>
+ <20211112124411.1948809-5-roberto.sassu@huawei.com>
+ <YY642nxarVElvKUS@gmail.com>
+In-Reply-To: <YY642nxarVElvKUS@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.204.63.33]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <YYnTeBCwn6fd/kVU@gmail.com>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 05:48:40PM -0800, Eric Biggers wrote:
->On Mon, Nov 08, 2021 at 12:47:11PM -0500, Sasha Levin wrote:
->> From: Eric Biggers <ebiggers@google.com>
->>
->> [ Upstream commit 7f595d6a6cdc336834552069a2e0a4f6d4756ddf ]
->>
->> fscrypt currently requires a 512-bit master key when AES-256-XTS is
->> used, since AES-256-XTS keys are 512-bit and fscrypt requires that the
->> master key be at least as long any key that will be derived from it.
->>
->> However, this is overly strict because AES-256-XTS doesn't actually have
->> a 512-bit security strength, but rather 256-bit.  The fact that XTS
->> takes twice the expected key size is a quirk of the XTS mode.  It is
->> sufficient to use 256 bits of entropy for AES-256-XTS, provided that it
->> is first properly expanded into a 512-bit key, which HKDF-SHA512 does.
->>
->> Therefore, relax the check of the master key size to use the security
->> strength of the derived key rather than the size of the derived key
->> (except for v1 encryption policies, which don't use HKDF).
->>
->> Besides making things more flexible for userspace, this is needed in
->> order for the use of a KDF which only takes a 256-bit key to be
->> introduced into the fscrypt key hierarchy.  This will happen with
->> hardware-wrapped keys support, as all known hardware which supports that
->> feature uses an SP800-108 KDF using AES-256-CMAC, so the wrapped keys
->> are wrapped 256-bit AES keys.  Moreover, there is interest in fscrypt
->> supporting the same type of AES-256-CMAC based KDF in software as an
->> alternative to HKDF-SHA512.  There is no security problem with such
->> features, so fix the key length check to work properly with them.
->>
->> Reviewed-by: Paul Crowley <paulcrowley@google.com>
->> Link: https://lore.kernel.org/r/20210921030303.5598-1-ebiggers@kernel.org
->> Signed-off-by: Eric Biggers <ebiggers@google.com>
->> Signed-off-by: Sasha Levin <sashal@kernel.org>
->
->I don't expect any problem with backporting this, but I don't see how this
->follows the stable kernel rules (Documentation/process/stable-kernel-rules.rst).
->I don't see what distinguishes this patch from ones that don't get picked up by
->AUTOSEL; it seems pretty arbitrary to me.
+> From: Eric Biggers [mailto:ebiggers@kernel.org]
+> Sent: Friday, November 12, 2021 7:56 PM
+> On Fri, Nov 12, 2021 at 01:44:10PM +0100, Roberto Sassu wrote:
+> > Check the hwpoison page flag only if the page is valid in
+> > shmem_read_mapping_page_gfp(). The PageHWPoison() macro tries to
+> access
+> > the page flags and cannot work on an error pointer.
+> >
+> > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> 
+> This looks like a recent regression from the commit:
+> 
+> 	commit b9d02f1bdd98f38e6e5ecacc9786a8f58f3f8b2c
+> 	Author: Yang Shi <shy828301@gmail.com>
+> 	Date:   Fri Nov 5 13:41:10 2021 -0700
+> 
+> 	    mm: shmem: don't truncate page if memory failure happens
+> 
+> Can you please send this fix out as a standalone patch, to the right people and
+> including the appropriate "Fixes" tag?
 
-It is, to some extent. My understanding was that this is a minor fix to
-make something that should have worked, work.
+Hi Eric
 
--- 
-Thanks,
-Sasha
+it looks there is another patch. Given that it was proposed before,
+I will drop mine. Thanks anyway.
+
+Roberto
+
+HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
+Managing Director: Li Peng, Zhong Ronghua
