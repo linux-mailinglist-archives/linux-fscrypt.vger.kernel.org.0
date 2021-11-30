@@ -2,257 +2,132 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B4A5463E30
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 30 Nov 2021 19:55:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50A1F4641C6
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 30 Nov 2021 23:49:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239772AbhK3S6m (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 30 Nov 2021 13:58:42 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:43938 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235387AbhK3S6k (ORCPT
+        id S234749AbhK3WxF (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 30 Nov 2021 17:53:05 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:34234 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233731AbhK3WxF (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 30 Nov 2021 13:58:40 -0500
-Received: from [10.137.106.139] (unknown [131.107.159.11])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 7526020DEE27;
-        Tue, 30 Nov 2021 10:55:20 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7526020DEE27
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1638298520;
-        bh=jdJ3O+n/LkBO98hWieh7dVs9KitCGmYhprvFZHk6PLk=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=YTILtOkEbTZwRWJmewl5mN87VA4st2CE3JZSd1WYfYEJdIZP+2VlG0gesXwp7zu93
-         U4SIdob24AcRoO3d4ZbxVLSIXo1q87l8Bym8UI+NOSDnq5yuPhNCBqBjZh0AtrS7o1
-         Kqk712gvF4+URWAA4SG1WmlXi3FTLbeZsZ0VmM9c=
-Message-ID: <81d5e825-1ee2-8f6b-cd9d-07b0f8bd36d3@linux.microsoft.com>
-Date:   Tue, 30 Nov 2021 10:55:20 -0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.2
-Subject: Re: [RFC PATCH v7 11/16] ipe: add support for dm-verity as a trust
- provider
-Content-Language: en-US
-To:     Roberto Sassu <roberto.sassu@huawei.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "agk@redhat.com" <agk@redhat.com>,
-        "snitzer@redhat.com" <snitzer@redhat.com>,
-        "ebiggers@kernel.org" <ebiggers@kernel.org>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "paul@paul-moore.com" <paul@paul-moore.com>,
-        "eparis@redhat.com" <eparis@redhat.com>,
-        "jmorris@namei.org" <jmorris@namei.org>,
-        "serge@hallyn.com" <serge@hallyn.com>
-Cc:     "jannh@google.com" <jannh@google.com>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
-        "linux-audit@redhat.com" <linux-audit@redhat.com>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "tusharsu@linux.microsoft.com" <tusharsu@linux.microsoft.com>
-References: <1634151995-16266-1-git-send-email-deven.desai@linux.microsoft.com>
- <1634151995-16266-12-git-send-email-deven.desai@linux.microsoft.com>
- <721462c3da064d359ca3c83845298ccf@huawei.com>
-From:   Deven Bowers <deven.desai@linux.microsoft.com>
-In-Reply-To: <721462c3da064d359ca3c83845298ccf@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        Tue, 30 Nov 2021 17:53:05 -0500
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AUMkZEW022501;
+        Tue, 30 Nov 2021 22:49:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=z4DGoY8XdH+P+eAOKsjRpwmyvkYyrqgoRVOtJ1mts54=;
+ b=c0ZTCyvQyUOkLj9Y4SL/nMoKamqeWifzw/Kquzzup4kmMh+9EsNa4DGTzCeCX9ACE9dd
+ eQ4qOEyq8/Su2dRxd6GvZfndAjBNJKIk9XDbSQ6QFL63lfSjfaceM08pcUzJmK/WF7Z8
+ 2VtkTmXBCdwbjf+bW81avtvPJTSlAqINJ3f6InQaCNYqHH9phOwyTbFyZbatxE/b2wLu
+ PaxaiSU1wfXxzrz+n7C1rNAnjyinoz+Qot1rkHjFDD88nOkg1mKIwaKp7ill6QcpoyWY
+ a2P7ClwUkyH3OyxRETZ99WWbiSQg6Gx7R0atB+aIMTcoBiIvLhuQagbnN2B7TpSn+vhq xA== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3cnw20g2fb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 30 Nov 2021 22:49:41 +0000
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AUMmVwt016761;
+        Tue, 30 Nov 2021 22:49:39 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04ams.nl.ibm.com with ESMTP id 3ckcack8w8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 30 Nov 2021 22:49:39 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AUMnbIU23331206
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 30 Nov 2021 22:49:37 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 369EB42042;
+        Tue, 30 Nov 2021 22:49:37 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6885942041;
+        Tue, 30 Nov 2021 22:49:36 +0000 (GMT)
+Received: from sig-9-65-92-250.ibm.com (unknown [9.65.92.250])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 30 Nov 2021 22:49:36 +0000 (GMT)
+Message-ID: <2120df834ded1811b39349552c34587bb79b212d.camel@linux.ibm.com>
+Subject: Re: [PATCH 0/4] ima: support fs-verity signatures stored as
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-integrity@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 30 Nov 2021 17:49:35 -0500
+In-Reply-To: <16364d376af32a97fc6a119d4e7366862f16f417.camel@linux.ibm.com>
+References: <20211129170057.243127-1-zohar@linux.ibm.com>
+         <YaWOR+Bav6PBgHHq@sol.localdomain>
+         <16364d376af32a97fc6a119d4e7366862f16f417.camel@linux.ibm.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: d9HPCuipX8lWo-tm_3KfJTaE4uszF_Ov
+X-Proofpoint-ORIG-GUID: d9HPCuipX8lWo-tm_3KfJTaE4uszF_Ov
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-30_10,2021-11-28_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ phishscore=0 clxscore=1015 suspectscore=0 bulkscore=0 adultscore=0
+ impostorscore=0 mlxlogscore=999 spamscore=0 mlxscore=0 lowpriorityscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111300111
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
+On Tue, 2021-11-30 at 07:56 -0500, Mimi Zohar wrote:
+> On Mon, 2021-11-29 at 18:36 -0800, Eric Biggers wrote:
+> > On Mon, Nov 29, 2021 at 12:00:53PM -0500, Mimi Zohar wrote:
+> > > Support for fs-verity file digests in IMA was discussed from the beginning,
+> > > prior to fs-verity being upstreamed[1,2].  This patch set adds signature
+> > > verification support based on the fs-verity file digest.  Both the
+> > > file digest and the signature must be included in the IMA measurement list
+> > > in order to disambiguate the type of file digest.
+> > > 
+> > > [1] https://events19.linuxfoundation.org/wp-content/uploads/2017/11/fs-verify_Mike-Halcrow_Eric-Biggers.pdf
+> > > [2] Documentation/filesystems/fsverity.rst
+> > > 
+> > > Mimi Zohar (4):
+> > >   fs-verity: define a function to return the integrity protected file
+> > >     digest
+> > >   ima: define a new signature type named IMA_VERITY_DIGSIG
+> > >   ima: limit including fs-verity's file digest in measurement list
+> > >   ima: support fs-verity file digest based signatures
+> > > 
+> > >  fs/verity/fsverity_private.h              |  6 ---
+> > >  fs/verity/measure.c                       | 49 +++++++++++++++++++++++
+> > >  include/linux/fsverity.h                  | 17 ++++++++
+> > >  security/integrity/ima/ima.h              |  3 +-
+> > >  security/integrity/ima/ima_api.c          | 23 ++++++++++-
+> > >  security/integrity/ima/ima_appraise.c     |  9 ++++-
+> > >  security/integrity/ima/ima_main.c         |  7 +++-
+> > >  security/integrity/ima/ima_template_lib.c |  3 +-
+> > >  security/integrity/integrity.h            |  1 +
+> > >  9 files changed, 107 insertions(+), 11 deletions(-)
+> > 
+> > I left some comments, but this generally looks like the right approach.
+> > However, I'm not an expert in IMA, so it's hard for me to review the IMA parts.
+> 
+> Thank you for the quick review!
+> 
+> > 
+> > Can you add documentation for this feature?
+> 
+> Yes, of course.  Originally I assumed the fs-verity support would be a
+> lot more complicated, but to my pleasant surprise by limiting the IMA
+> fsverity support to just signatures and requiring the file signature be
+> included in the IMA measurement list, it's a lot simpler than expected.
+> As there aren't any IMA policy changes, I'm just thinking about where
+> to document it.
 
-On 11/25/2021 1:37 AM, Roberto Sassu wrote:
->> From: deven.desai@linux.microsoft.com
->> [mailto:deven.desai@linux.microsoft.com]
->> Sent: Wednesday, October 13, 2021 9:07 PM
->> From: Deven Bowers <deven.desai@linux.microsoft.com>
+I'll update both Documentation/filesystems/fsverity.rst and
+Documentation/security/IMA-templates.rst.
 
-..snip
+thanks,
 
->> diff --git a/security/ipe/modules/Makefile b/security/ipe/modules/Makefile
->> index e0045ec65434..84fadce85193 100644
->> --- a/security/ipe/modules/Makefile
->> +++ b/security/ipe/modules/Makefile
->> @@ -6,3 +6,5 @@
->>   #
->>
->>   obj-$(CONFIG_IPE_PROP_BOOT_VERIFIED) += boot_verified.o
->> +obj-$(CONFIG_IPE_PROP_DM_VERITY_SIGNATURE) += dmverity_signature.o
->> +obj-$(CONFIG_IPE_PROP_DM_VERITY_ROOTHASH) += dmverity_roothash.o
->> diff --git a/security/ipe/modules/dmverity_roothash.c
->> b/security/ipe/modules/dmverity_roothash.c
->> new file mode 100644
->> index 000000000000..0f82bec3b842
->> --- /dev/null
->> +++ b/security/ipe/modules/dmverity_roothash.c
->> @@ -0,0 +1,80 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Copyright (C) Microsoft Corporation. All rights reserved.
->> + */
->> +
->> +#include "ipe_module.h"
->> +
->> +#include <linux/fs.h>
->> +#include <linux/types.h>
->> +
->> +struct counted_array {
->> +	size_t	len;
->> +	u8     *data;
->> +};
->> +
->> +static int dvrh_parse(const char *valstr, void **value)
->> +{
->> +	int rv = 0;
->> +	struct counted_array *arr;
->> +
->> +	arr = kzalloc(sizeof(*arr), GFP_KERNEL);
->> +	if (!arr) {
->> +		rv = -ENOMEM;
->> +		goto err;
->> +	}
->> +
->> +	arr->len = (strlen(valstr) / 2);
->> +
->> +	arr->data = kzalloc(arr->len, GFP_KERNEL);
->> +	if (!arr->data) {
->> +		rv = -ENOMEM;
->> +		goto err;
->> +	}
->> +
->> +	rv = hex2bin(arr->data, valstr, arr->len);
->> +	if (rv != 0)
->> +		goto err2;
->> +
->> +	*value = arr;
->> +	return rv;
->> +err2:
->> +	kfree(arr->data);
->> +err:
->> +	kfree(arr);
->> +	return rv;
->> +}
->> +
->> +static bool dvrh_eval(const struct ipe_eval_ctx *ctx, const void *val)
->> +{
->> +	const u8 *src;
->> +	struct counted_array *expect = (struct counted_array *)val;
->> +
->> +	if (!ctx->ipe_bdev)
->> +		return false;
->> +
->> +	if (ctx->ipe_bdev->hashlen != expect->len)
->> +		return false;
->> +
->> +	src = ctx->ipe_bdev->hash;
->> +
->> +	return !memcmp(expect->data, src, expect->len);
-> Hi Deven
->
-> I was curious to see if determining the property at run-time
-> could apply also to dm-verity. It seems it could be done
-> (I omit some checks, I also keep the expected value in hex
-> format):
->
-> ---
->          md = dm_get_md(file_inode(ctx->file)->i_sb->s_dev);
->          table = dm_get_live_table(md, &srcu_idx);
->          num_targets = dm_table_get_num_targets(table);
->
->          for (i = 0; i < num_targets; i++) {
->                  struct dm_target *ti = dm_table_get_target(table, i);
->
->                  if (strcmp(ti->type->name, "verity"))
->                          continue;
->
->                  ti->type->status(ti, STATUSTYPE_IMA, 0, result, sizeof(result));
->          }
->
->          dm_put_live_table(md, srcu_idx);
->          dm_put(md);
->
->          root_digest_ptr = strstr(result, "root_digest=");
->          return !strncmp(expect->data, root_digest_ptr + 12, expect->len);
-> ---
->
-> Only dm_table_get_target() is not exported yet, but I guess it could
-> be. dm_table_get_num_targets() is exported.
+Mimi
 
-I had tried something similar in a very early draft of IPE. The issue
-that comes with this is that when you compile device-mapper as a module
-(CONFIG_BLK_DEV_DM=m) you start to get linking errors with this
-approach.
-
-Obviously, we can fix this in the IPE's module Kconfig by setting the
-dependency to be =y, but it's something to highlight. My general
-preference is to support the =m configuration by using these blobs.
-
-The runtime approach does work with fs-verity, because fs-verity is a
-file-system level feature that cannot be compiled as a module.
-
-> With this code, you would not have to manage security blobs
-> outside IPE. Maybe you could add a blob for the super block, so
-> that you verify the dm-verity property just once per filesystem.
->
-> Roberto
->
-> HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
-> Managing Director: Li Peng, Zhong Ronghua
->
->> +}
->> +
->> +static int dvrh_free(void **val)
->> +{
->> +	struct counted_array *expect = (struct counted_array *)val;
->> +
->> +	kfree(expect->data);
->> +	kfree(expect);
->> +
->> +	return 0;
->> +}
->> +
->> +IPE_MODULE(dvrh) = {
->> +	.name = "dmverity_roothash",
->> +	.version = 1,
->> +	.parse = dvrh_parse,
->> +	.free = dvrh_free,
->> +	.eval = dvrh_eval,
->> +};
->> diff --git a/security/ipe/modules/dmverity_signature.c
->> b/security/ipe/modules/dmverity_signature.c
->> new file mode 100644
->> index 000000000000..08746fcbcb3e
->> --- /dev/null
->> +++ b/security/ipe/modules/dmverity_signature.c
->> @@ -0,0 +1,25 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Copyright (C) Microsoft Corporation. All rights reserved.
->> + */
->> +
->> +#include "ipe_module.h"
->> +
->> +#include <linux/fs.h>
->> +#include <linux/types.h>
->> +
->> +static bool dvv_eval(const struct ipe_eval_ctx *ctx, const void *val)
->> +{
->> +	bool expect = (bool)val;
->> +	bool eval = ctx->ipe_bdev && (!!ctx->ipe_bdev->sigdata);
->> +
->> +	return expect == eval;
->> +}
->> +
->> +IPE_MODULE(dvv) = {
->> +	.name = "dmverity_signature",
->> +	.version = 1,
->> +	.parse = ipe_bool_parse,
->> +	.free = NULL,
->> +	.eval = dvv_eval,
->> +};
->> --
->> 2.33.0
