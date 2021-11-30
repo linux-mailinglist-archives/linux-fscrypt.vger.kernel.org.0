@@ -2,83 +2,109 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0505F462A9D
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 30 Nov 2021 03:37:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A841B462C36
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 30 Nov 2021 06:33:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237660AbhK3CkS (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 29 Nov 2021 21:40:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237657AbhK3CkS (ORCPT
+        id S238323AbhK3Fgt (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 30 Nov 2021 00:36:49 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:46422 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230163AbhK3Fgs (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 29 Nov 2021 21:40:18 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 027BAC061574;
-        Mon, 29 Nov 2021 18:36:59 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id A365EB80D1E;
-        Tue, 30 Nov 2021 02:36:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21AE5C53FAD;
-        Tue, 30 Nov 2021 02:36:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638239817;
-        bh=HeQc/9NihZ7cBBi42KaXPDogv19hU3v73HAJN/cZTSc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OucQndYxihrnoGB8UuFkyVfSlw+qCcbsgUV1hFo2NR0p3FSag1Orw2LQ3HtT3rccx
-         Aiz919dkGGbHD89tFspPtN6zSQ+YG8PFI7B5O4+cRDtZ4GRWRAPOwVdXoNHtjGmxu6
-         g3zeRuL13ny0uxSPpS5h0yzXL+4IT8daBLBnfNiau3Xb9O7l2VsWggnybWl2jACwBH
-         YLRvqk5JWkibkWV8REUfGC351Lo+X4sV/nmM+ua6sloWGL+AbMqk4F+Oocmi694LO+
-         Olk7JW2raKX5KwdHTQyQ+qwufMzZOTwh+kbOC55/qRE04xrRFBkb3IxY4lP4EANReM
-         4TlUg90wmcCtQ==
-Date:   Mon, 29 Nov 2021 18:36:55 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Mimi Zohar <zohar@linux.ibm.com>
+        Tue, 30 Nov 2021 00:36:48 -0500
+Received: from [10.137.112.111] (unknown [131.107.147.111])
+        by linux.microsoft.com (Postfix) with ESMTPSA id E2F0B20DEED2;
+        Mon, 29 Nov 2021 21:33:29 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E2F0B20DEED2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1638250410;
+        bh=Ka0mPJgYWmiDnzwsdqmRMIk4RJt332upLQtsgsCn/dc=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=DovVDIeZ3Wk5BWgvAvkCFlTP8xh0m4/KwjRKzNT4UxmUoMb2HGiKFwl23OmtgG64p
+         dcuIW/1LucLBJ+M5s70CVF0Ei9Ctthc0h7PgLAampsdeRfK0KaEbt5pVgnHFigvWJJ
+         LpSZ1pMQoiwVz9ZInscmql2LI9ohi6qHkLpek2XM=
+Message-ID: <53ee68b8-e3fe-887c-89d3-a327c8dc181f@linux.microsoft.com>
+Date:   Mon, 29 Nov 2021 21:33:29 -0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
+Subject: Re: [PATCH 1/4] fs-verity: define a function to return the integrity
+ protected file digest
+Content-Language: en-US
+To:     Eric Biggers <ebiggers@kernel.org>,
+        Mimi Zohar <zohar@linux.ibm.com>
 Cc:     linux-integrity@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] ima: support fs-verity signatures stored as
-Message-ID: <YaWOR+Bav6PBgHHq@sol.localdomain>
 References: <20211129170057.243127-1-zohar@linux.ibm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211129170057.243127-1-zohar@linux.ibm.com>
+ <20211129170057.243127-2-zohar@linux.ibm.com>
+ <YaWKJEqD6G23uG/A@sol.localdomain>
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+In-Reply-To: <YaWKJEqD6G23uG/A@sol.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Nov 29, 2021 at 12:00:53PM -0500, Mimi Zohar wrote:
-> Support for fs-verity file digests in IMA was discussed from the beginning,
-> prior to fs-verity being upstreamed[1,2].  This patch set adds signature
-> verification support based on the fs-verity file digest.  Both the
-> file digest and the signature must be included in the IMA measurement list
-> in order to disambiguate the type of file digest.
-> 
-> [1] https://events19.linuxfoundation.org/wp-content/uploads/2017/11/fs-verify_Mike-Halcrow_Eric-Biggers.pdf
-> [2] Documentation/filesystems/fsverity.rst
-> 
-> Mimi Zohar (4):
->   fs-verity: define a function to return the integrity protected file
->     digest
->   ima: define a new signature type named IMA_VERITY_DIGSIG
->   ima: limit including fs-verity's file digest in measurement list
->   ima: support fs-verity file digest based signatures
-> 
->  fs/verity/fsverity_private.h              |  6 ---
->  fs/verity/measure.c                       | 49 +++++++++++++++++++++++
->  include/linux/fsverity.h                  | 17 ++++++++
->  security/integrity/ima/ima.h              |  3 +-
->  security/integrity/ima/ima_api.c          | 23 ++++++++++-
->  security/integrity/ima/ima_appraise.c     |  9 ++++-
->  security/integrity/ima/ima_main.c         |  7 +++-
->  security/integrity/ima/ima_template_lib.c |  3 +-
->  security/integrity/integrity.h            |  1 +
->  9 files changed, 107 insertions(+), 11 deletions(-)
+Hi Mimi,
 
-I left some comments, but this generally looks like the right approach.
-However, I'm not an expert in IMA, so it's hard for me to review the IMA parts.
+On 11/29/2021 6:19 PM, Eric Biggers wrote:
+> Generally looks fine.  A few nits below:
+> 
+> On Mon, Nov 29, 2021 at 12:00:54PM -0500, Mimi Zohar wrote:
+>> Define a function named fsverity_measure() to return the verity file digest
+>> and the associated hash algorithm (enum hash_algo).
+>>
+>> Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+>> ---
+>>   fs/verity/fsverity_private.h |  6 -----
+>>   fs/verity/measure.c          | 49 ++++++++++++++++++++++++++++++++++++
+>>   include/linux/fsverity.h     | 17 +++++++++++++
+>>   3 files changed, 66 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/fs/verity/fsverity_private.h b/fs/verity/fsverity_private.h
+>> index a7920434bae5..54c5f0993541 100644
+>> --- a/fs/verity/fsverity_private.h
+>> +++ b/fs/verity/fsverity_private.h
+>> @@ -26,12 +26,6 @@ struct ahash_request;
+>>    */
+>>   #define FS_VERITY_MAX_LEVELS		8
+>>   
+>> -/*
+>> - * Largest digest size among all hash algorithms supported by fs-verity.
+>> - * Currently assumed to be <= size of fsverity_descriptor::root_hash.
+>> - */
+>> -#define FS_VERITY_MAX_DIGEST_SIZE	SHA512_DIGEST_SIZE
+> 
+> The include of sha2.h should be removed from this file.
+> 
+>> +/**
+>> + * fsverity_measure() - get a verity file's digest
+nit: The function name seems to suggest it is measuring the fs-verity 
+file's digest. Since it is reading the file's digest: 
+fsverity_read_digest() or fsverity_read_measure()?
 
-Can you add documentation for this feature?
+  -lakshmi
 
-- Eric
+>> + * @inode: inode to get digest of
+>> + * @digest: pointer to the digest
+>> + * @alg: pointer to the hash algorithm enumeration
+> 
+> It should be made clear that @digest and @alg are output, for example:
+> 
+>   * @digest: (out) pointer to the digest
+>   * @alg: (out) pointer to the hash algorithm enumeration
+> 
+>> + * Return the file hash algorithm, digest size, and digest of an fsverity
+>> + * protected file.
+> 
+> The digest size is implied, not returned.
+> 
+>> +
+>> +		if (!strcmp(hash_alg->name, hash_algo_name[i])) {
+> 
+> As the kernel test robot pointed out, this creates a dependency on
+> CRYPTO_HASH_INFO.  So FS_VERITY will need to select CRYPTO_HASH_INFO.
+> 
+> - Eric
+> 
