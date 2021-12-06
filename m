@@ -2,48 +2,48 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE22A46ADFB
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  6 Dec 2021 23:59:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6948046AE00
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  6 Dec 2021 23:59:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347563AbhLFXCs (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 6 Dec 2021 18:02:48 -0500
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:25283 "EHLO
-        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1377040AbhLFXCj (ORCPT
+        id S1358903AbhLFXCt (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 6 Dec 2021 18:02:49 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:16498 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1377123AbhLFXCl (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 6 Dec 2021 18:02:39 -0500
+        Mon, 6 Dec 2021 18:02:41 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1638831550; x=1670367550;
+  t=1638831552; x=1670367552;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=9pDqBy7b4J82ylZCzc4TAkcjhQdpn6D73KXKK36EV68=;
-  b=EHdJQK49Bgp/TgU+5c2ZXnDJgWT6rV+TAZgk5A5cBacrv3deJZa5+yHk
-   jtujRv2EmlFhWAKnqLYgs03Fx61Rb7k7zy6veuosoUxdwMXrNjJaWGT0b
-   sHXOplE0atNudDKW2TzhvxyLSVlGeNo6+UotJ6VueHVJXYpx4V0fIQQYs
-   M=;
-Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 06 Dec 2021 14:59:09 -0800
+  bh=ECagi/BaTQQeNMjMZWtRvSI3lnAfi1QCeUU8K69Xtrc=;
+  b=QVoeE1ap3nytNDbvoJ7JPdryF15qrlIBxmU/X64RlD1FTNKkusLCtPOj
+   iDv49cQAzXwA52JjjmpYCTtZ4HZy4JYMpkkqE6qKswXV9Yk6fHQUMjkhT
+   Dmsxj4t+EZXGvdkQ5EQlGMoYxu1P0z3JcltsuUXLNnR/erLPFwk5v9NaL
+   s=;
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 06 Dec 2021 14:59:11 -0800
 X-QCInternal: smtphost
 Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg05-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2021 14:59:09 -0800
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2021 14:59:11 -0800
 Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
  nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Mon, 6 Dec 2021 14:59:09 -0800
+ 15.2.922.19; Mon, 6 Dec 2021 14:59:10 -0800
 Received: from gabriel.qualcomm.com (10.80.80.8) by nalasex01a.na.qualcomm.com
  (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Mon, 6 Dec 2021
- 14:59:08 -0800
+ 14:59:10 -0800
 From:   Gaurav Kashyap <quic_gaurkash@quicinc.com>
 To:     <linux-scsi@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>
 CC:     <linux-mmc@vger.kernel.org>, <linux-block@vger.kernel.org>,
         <linux-fscrypt@vger.kernel.org>, <thara.gopinath@linaro.org>,
         <quic_neersoni@quicinc.com>, <dineshg@quicinc.com>,
         Gaurav Kashyap <quic_gaurkash@quicinc.com>
-Subject: [PATCH 07/10] qcom_scm: scm call for create, prepare and import keys
-Date:   Mon, 6 Dec 2021 14:57:22 -0800
-Message-ID: <20211206225725.77512-8-quic_gaurkash@quicinc.com>
+Subject: [PATCH 08/10] scsi: ufs: add support for generate, import and prepare keys
+Date:   Mon, 6 Dec 2021 14:57:23 -0800
+Message-ID: <20211206225725.77512-9-quic_gaurkash@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20211206225725.77512-1-quic_gaurkash@quicinc.com>
 References: <20211206225725.77512-1-quic_gaurkash@quicinc.com>
@@ -56,310 +56,122 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Storage encryption has two IOCTLs for creating, importing
-and preparing keys for encryption. For wrapped keys, these
-IOCTLs need to interface with the secure environment, which
-require these SCM calls.
-
-generate_key: This is used to generate and return a longterm
-              wrapped key. Trustzone achieves this by generating
-	      a key and then wrapping it using hwkm, returning
-	      a wrapped keyblob.
-import_key:   The functionality is similar to generate, but here,
-              a raw key is imported into hwkm and a longterm wrapped
-	      keyblob is returned.
-prepare_key:  The longterm wrapped key from import or generate
-              is made further secure by rewrapping it with a per-boot
-	      ephemeral wrapped key before installing it to the linux
-	      kernel for programming to ICE.
+This patch contains two changes in UFS for wrapped keys.
+1. Implements the blk_crypto_profile ops for generate, import
+   and prepare key apis.
+2. Adds UFS vops for generate, import and prepare keys so
+   that vendors can hooks to them.
 
 Signed-off-by: Gaurav Kashyap <quic_gaurkash@quicinc.com>
 ---
- drivers/firmware/qcom_scm.c | 213 ++++++++++++++++++++++++++++++++++++
- drivers/firmware/qcom_scm.h |   3 +
- include/linux/qcom_scm.h    |  24 +++-
- 3 files changed, 239 insertions(+), 1 deletion(-)
+ drivers/scsi/ufs/ufshcd-crypto.c | 50 ++++++++++++++++++++++++++++++--
+ drivers/scsi/ufs/ufshcd.h        | 11 +++++++
+ 2 files changed, 58 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
-index 4a7703846788..cca5c1ac5666 100644
---- a/drivers/firmware/qcom_scm.c
-+++ b/drivers/firmware/qcom_scm.c
-@@ -1135,6 +1135,219 @@ int qcom_scm_derive_sw_secret(const u8 *wrapped_key, u32 wrapped_key_size,
+diff --git a/drivers/scsi/ufs/ufshcd-crypto.c b/drivers/scsi/ufs/ufshcd-crypto.c
+index 9d68621a0eb4..2bea9b924f77 100644
+--- a/drivers/scsi/ufs/ufshcd-crypto.c
++++ b/drivers/scsi/ufs/ufshcd-crypto.c
+@@ -136,9 +136,9 @@ bool ufshcd_crypto_enable(struct ufs_hba *hba)
  }
- EXPORT_SYMBOL(qcom_scm_derive_sw_secret);
  
-+/**
-+ * qcom_scm_generate_ice_key() - Generate a wrapped key for encryption.
-+ * @longterm_wrapped_key: the wrapped key returned after key generation
-+ * @longterm_wrapped_key_size: size of the wrapped key to be returned.
-+ *
-+ * Qualcomm wrapped keys need to be generated in a trusted environment.
-+ * A generate key  IOCTL call is used to achieve this. These are longterm
-+ * in nature as they need to be generated and wrapped only once per
-+ * requirement.
-+ *
-+ * This SCM calls adds support for the generate key IOCTL to interface
-+ * with the secure environment to generate and return a wrapped key..
-+ *
-+ * Return: 0 on success; -errno on failure.
-+ */
-+int qcom_scm_generate_ice_key(u8 *longterm_wrapped_key,
-+			    u32 longterm_wrapped_key_size)
-+{
-+	struct qcom_scm_desc desc = {
-+		.svc = QCOM_SCM_SVC_ES,
-+		.cmd =  QCOM_SCM_ES_GENERATE_ICE_KEY,
-+		.arginfo = QCOM_SCM_ARGS(2, QCOM_SCM_RW,
-+					 QCOM_SCM_VAL),
-+		.args[1] = longterm_wrapped_key_size,
-+		.owner = ARM_SMCCC_OWNER_SIP,
-+	};
-+
-+	void *longterm_wrapped_keybuf;
-+	dma_addr_t longterm_wrapped_key_phys;
-+	int ret;
-+
-+	/*
-+	 * Like qcom_scm_ice_set_key(), we use dma_alloc_coherent() to properly
-+	 * get a physical address, while guaranteeing that we can zeroize the
-+	 * key material later using memzero_explicit().
-+	 *
-+	 */
-+	longterm_wrapped_keybuf = dma_alloc_coherent(__scm->dev,
-+				  longterm_wrapped_key_size,
-+				  &longterm_wrapped_key_phys, GFP_KERNEL);
-+	if (!longterm_wrapped_keybuf)
-+		return -ENOMEM;
-+
-+	desc.args[0] = longterm_wrapped_key_phys;
-+
-+	ret = qcom_scm_call(__scm->dev, &desc, NULL);
-+	memcpy(longterm_wrapped_key, longterm_wrapped_keybuf,
-+	       longterm_wrapped_key_size);
-+
-+	memzero_explicit(longterm_wrapped_keybuf, longterm_wrapped_key_size);
-+	dma_free_coherent(__scm->dev, longterm_wrapped_key_size,
-+			  longterm_wrapped_keybuf, longterm_wrapped_key_phys);
-+
-+	return ret;
+ static int ufshcd_crypto_derive_sw_secret(struct blk_crypto_profile *profile,
+-				const u8 *wrapped_key,
+-				unsigned int wrapped_key_size,
+-				u8 sw_secret[BLK_CRYPTO_SW_SECRET_SIZE])
++					  const u8 *wrapped_key,
++					  unsigned int wrapped_key_size,
++					  u8 sw_secret[BLK_CRYPTO_SW_SECRET_SIZE])
+ {
+ 	struct ufs_hba *hba =
+ 		container_of(profile, struct ufs_hba, crypto_profile);
+@@ -146,6 +146,47 @@ static int ufshcd_crypto_derive_sw_secret(struct blk_crypto_profile *profile,
+ 	if (hba->vops && hba->vops->derive_secret)
+ 		return  hba->vops->derive_secret(hba, wrapped_key,
+ 						 wrapped_key_size, sw_secret);
++	return 0;
 +}
-+EXPORT_SYMBOL(qcom_scm_generate_ice_key);
 +
-+/**
-+ * qcom_scm_prepare_ice_key() - Get per boot ephemeral wrapped key
-+ * @longterm_wrapped_key: the wrapped key
-+ * @longterm_wrapped_key_size: size of the wrapped key
-+ * @ephemeral_wrapped_key: ephemeral wrapped key to be returned
-+ * @ephemeral_wrapped_key_size: size of the ephemeral wrapped key
-+ *
-+ * Qualcomm wrapped keys (longterm keys) are rewrapped with a per-boot
-+ * ephemeral key for added protection. These are ephemeral in nature as
-+ * they are valid only for that boot. A create key IOCTL is used to
-+ * achieve this. These are the keys that are installed into the kernel
-+ * to be then unwrapped and programmed into ICE.
-+ *
-+ * This SCM call adds support for the create key IOCTL to interface
-+ * with the secure environment to rewrap the wrapped key with an
-+ * ephemeral wrapping key.
-+ *
-+ * Return: 0 on success; -errno on failure.
-+ */
-+int qcom_scm_prepare_ice_key(const u8 *longterm_wrapped_key,
-+			     u32 longterm_wrapped_key_size,
-+			     u8 *ephemeral_wrapped_key,
-+			     u32 ephemeral_wrapped_key_size)
++static int ufshcd_crypto_generate_key(struct blk_crypto_profile *profile,
++		u8 longterm_wrapped_key[BLK_CRYPTO_MAX_HW_WRAPPED_KEY_SIZE])
 +{
-+	struct qcom_scm_desc desc = {
-+		.svc = QCOM_SCM_SVC_ES,
-+		.cmd =  QCOM_SCM_ES_PREPARE_ICE_KEY,
-+		.arginfo = QCOM_SCM_ARGS(4, QCOM_SCM_RO,
-+					 QCOM_SCM_VAL, QCOM_SCM_RW,
-+					 QCOM_SCM_VAL),
-+		.args[1] = longterm_wrapped_key_size,
-+		.args[3] = ephemeral_wrapped_key_size,
-+		.owner = ARM_SMCCC_OWNER_SIP,
-+	};
++	struct ufs_hba *hba =
++		container_of(profile, struct ufs_hba, crypto_profile);
 +
-+	void *longterm_wrapped_keybuf, *ephemeral_wrapped_keybuf;
-+	dma_addr_t longterm_wrapped_key_phys, ephemeral_wrapped_key_phys;
-+	int ret;
++	if (hba->vops && hba->vops->generate_key)
++		return  hba->vops->generate_key(longterm_wrapped_key);
 +
-+	/*
-+	 * Like qcom_scm_ice_set_key(), we use dma_alloc_coherent() to properly
-+	 * get a physical address, while guaranteeing that we can zeroize the
-+	 * key material later using memzero_explicit().
-+	 *
-+	 */
-+	longterm_wrapped_keybuf = dma_alloc_coherent(__scm->dev,
-+				  longterm_wrapped_key_size,
-+				  &longterm_wrapped_key_phys, GFP_KERNEL);
-+	if (!longterm_wrapped_keybuf)
-+		return -ENOMEM;
-+	ephemeral_wrapped_keybuf = dma_alloc_coherent(__scm->dev,
-+				   ephemeral_wrapped_key_size,
-+				   &ephemeral_wrapped_key_phys, GFP_KERNEL);
-+	if (!ephemeral_wrapped_keybuf) {
-+		ret = -ENOMEM;
-+		goto bail_keybuf;
-+	}
-+
-+	memcpy(longterm_wrapped_keybuf, longterm_wrapped_key,
-+	       longterm_wrapped_key_size);
-+	desc.args[0] = longterm_wrapped_key_phys;
-+	desc.args[2] = ephemeral_wrapped_key_phys;
-+
-+	ret = qcom_scm_call(__scm->dev, &desc, NULL);
-+	if (!ret)
-+		memcpy(ephemeral_wrapped_key, ephemeral_wrapped_keybuf,
-+		       ephemeral_wrapped_key_size);
-+
-+	memzero_explicit(ephemeral_wrapped_keybuf, ephemeral_wrapped_key_size);
-+	dma_free_coherent(__scm->dev, ephemeral_wrapped_key_size,
-+			  ephemeral_wrapped_keybuf,
-+			  ephemeral_wrapped_key_phys);
-+
-+bail_keybuf:
-+	memzero_explicit(longterm_wrapped_keybuf, longterm_wrapped_key_size);
-+	dma_free_coherent(__scm->dev, longterm_wrapped_key_size,
-+			  longterm_wrapped_keybuf, longterm_wrapped_key_phys);
-+
-+	return ret;
++	return -EOPNOTSUPP;
 +}
-+EXPORT_SYMBOL(qcom_scm_prepare_ice_key);
 +
-+/**
-+ * qcom_scm_import_ice_key() - Import a wrapped key for encryption
-+ * @imported_key: the raw key that is imported
-+ * @imported_key_size: size of the key to be imported
-+ * @longterm_wrapped_key: the wrapped key to be returned
-+ * @longterm_wrapped_key_size: size of the wrapped key
-+ *
-+ * Conceptually, this is very similar to generate, the difference being,
-+ * here we want to import a raw key and return a longterm wrapped key
-+ * from it. THe same create key IOCTL is used to achieve this.
-+ *
-+ * This SCM call adds support for the create key IOCTL to interface with
-+ * the secure environment to import a raw key and generate a longterm
-+ * wrapped key.
-+ *
-+ * Return: 0 on success; -errno on failure.
-+ */
-+int qcom_scm_import_ice_key(const u8 *imported_key, u32 imported_key_size,
-+			    u8 *longterm_wrapped_key,
-+			    u32 longterm_wrapped_key_size)
++static int ufshcd_crypto_prepare_key(struct blk_crypto_profile *profile,
++		const u8 *longterm_wrapped_key,
++		size_t longterm_wrapped_key_size,
++		u8 ephemerally_wrapped_key[BLK_CRYPTO_MAX_HW_WRAPPED_KEY_SIZE])
 +{
-+	struct qcom_scm_desc desc = {
-+		.svc = QCOM_SCM_SVC_ES,
-+		.cmd =  QCOM_SCM_ES_IMPORT_ICE_KEY,
-+		.arginfo = QCOM_SCM_ARGS(4, QCOM_SCM_RO,
-+					 QCOM_SCM_VAL, QCOM_SCM_RW,
-+					 QCOM_SCM_VAL),
-+		.args[1] = imported_key_size,
-+		.args[3] = longterm_wrapped_key_size,
-+		.owner = ARM_SMCCC_OWNER_SIP,
-+	};
++	struct ufs_hba *hba =
++		container_of(profile, struct ufs_hba, crypto_profile);
 +
-+	void *imported_keybuf, *longterm_wrapped_keybuf;
-+	dma_addr_t imported_key_phys, longterm_wrapped_key_phys;
-+	int ret;
-+	/*
-+	 * Like qcom_scm_ice_set_key(), we use dma_alloc_coherent() to properly
-+	 * get a physical address, while guaranteeing that we can zeroize the
-+	 * key material later using memzero_explicit().
-+	 *
-+	 */
-+	imported_keybuf = dma_alloc_coherent(__scm->dev, imported_key_size,
-+			  &imported_key_phys, GFP_KERNEL);
-+	if (!imported_keybuf)
-+		return -ENOMEM;
-+	longterm_wrapped_keybuf = dma_alloc_coherent(__scm->dev,
-+				  longterm_wrapped_key_size,
-+				  &longterm_wrapped_key_phys, GFP_KERNEL);
-+	if (!longterm_wrapped_keybuf) {
-+		ret = -ENOMEM;
-+		goto bail_keybuf;
-+	}
++	if (hba->vops && hba->vops->prepare_key)
++		return  hba->vops->prepare_key(longterm_wrapped_key,
++			longterm_wrapped_key_size, ephemerally_wrapped_key);
 +
-+	memcpy(imported_keybuf, imported_key, imported_key_size);
-+	desc.args[0] = imported_key_phys;
-+	desc.args[2] = longterm_wrapped_key_phys;
-+
-+	ret = qcom_scm_call(__scm->dev, &desc, NULL);
-+	if (!ret)
-+		memcpy(longterm_wrapped_key, longterm_wrapped_keybuf,
-+		       longterm_wrapped_key_size);
-+
-+	memzero_explicit(longterm_wrapped_keybuf, longterm_wrapped_key_size);
-+	dma_free_coherent(__scm->dev, longterm_wrapped_key_size,
-+			  longterm_wrapped_keybuf, longterm_wrapped_key_phys);
-+bail_keybuf:
-+	memzero_explicit(imported_keybuf, imported_key_size);
-+	dma_free_coherent(__scm->dev, imported_key_size, imported_keybuf,
-+			  imported_key_phys);
-+
-+	return ret;
++	return -EOPNOTSUPP;
 +}
-+EXPORT_SYMBOL(qcom_scm_import_ice_key);
 +
- /**
-  * qcom_scm_hdcp_available() - Check if secure environment supports HDCP.
-  *
-diff --git a/drivers/firmware/qcom_scm.h b/drivers/firmware/qcom_scm.h
-index 08bb2a4c80db..efd0ede1fb37 100644
---- a/drivers/firmware/qcom_scm.h
-+++ b/drivers/firmware/qcom_scm.h
-@@ -111,6 +111,9 @@ extern int scm_legacy_call(struct device *dev, const struct qcom_scm_desc *desc,
- #define QCOM_SCM_ES_INVALIDATE_ICE_KEY	0x03
- #define QCOM_SCM_ES_CONFIG_SET_ICE_KEY	0x04
- #define QCOM_SCM_ES_DERIVE_SW_SECRET	0x07
-+#define QCOM_SCM_ES_GENERATE_ICE_KEY	0x08
-+#define QCOM_SCM_ES_PREPARE_ICE_KEY	0x09
-+#define QCOM_SCM_ES_IMPORT_ICE_KEY	0xA
++static int ufshcd_crypto_import_key(struct blk_crypto_profile *profile,
++		const u8 *imported_key,
++		size_t imported_key_size,
++		u8 longterm_wrapped_key[BLK_CRYPTO_MAX_HW_WRAPPED_KEY_SIZE])
++{
++	struct ufs_hba *hba =
++		container_of(profile, struct ufs_hba, crypto_profile);
++
++	if (hba->vops && hba->vops->import_key)
++		return  hba->vops->import_key(imported_key,
++			imported_key_size, longterm_wrapped_key);
  
- #define QCOM_SCM_SVC_HDCP		0x11
- #define QCOM_SCM_HDCP_INVOKE		0x01
-diff --git a/include/linux/qcom_scm.h b/include/linux/qcom_scm.h
-index ccd764bdc357..865e4b4392a1 100644
---- a/include/linux/qcom_scm.h
-+++ b/include/linux/qcom_scm.h
-@@ -106,6 +106,16 @@ extern int qcom_scm_ice_set_key(u32 index, const u8 *key, u32 key_size,
- extern int qcom_scm_derive_sw_secret(const u8 *wrapped_key,
- 				     u32 wrapped_key_size, u8 *sw_secret,
- 				     u32 secret_size);
-+extern int qcom_scm_generate_ice_key(u8 *longterm_wrapped_key,
-+				     u32 longterm_wrapped_key_size);
-+extern int qcom_scm_prepare_ice_key(const u8 *longterm_wrapped_key,
-+				    u32 longterm_wrapped_key_size,
-+				    u8 *ephemeral_wrapped_key,
-+				    u32 ephemeral_wrapped_key_size);
-+extern int qcom_scm_import_ice_key(const u8 *imported_key,
-+				   u32 imported_key_size,
-+				   u8 *longterm_wrapped_key,
-+				   u32 longterm_wrapped_key_size);
+ 	return -EOPNOTSUPP;
+ }
+@@ -154,6 +195,9 @@ static const struct blk_crypto_ll_ops ufshcd_crypto_ops = {
+ 	.keyslot_program	= ufshcd_crypto_keyslot_program,
+ 	.keyslot_evict		= ufshcd_crypto_keyslot_evict,
+ 	.derive_sw_secret	= ufshcd_crypto_derive_sw_secret,
++	.generate_key		= ufshcd_crypto_generate_key,
++	.prepare_key		= ufshcd_crypto_prepare_key,
++	.import_key		= ufshcd_crypto_import_key,
+ };
  
- extern bool qcom_scm_hdcp_available(void);
- extern int qcom_scm_hdcp_req(struct qcom_scm_hdcp_req *req, u32 req_cnt,
-@@ -175,7 +185,19 @@ static inline int qcom_scm_ice_set_key(u32 index, const u8 *key, u32 key_size,
- static inline int qcom_scm_derive_sw_secret(const u8 *wrapped_key,
- 					u32 wrapped_key_size, u8 *sw_secret,
- 					u32 secret_size) { return -ENODEV; }
--
-+static inline int qcom_scm_generate_ice_key(u8 *longterm_wrapped_key,
-+				     u32 longterm_wrapped_key_size)
-+		{ return -ENODEV; }
-+static inline int qcom_scm_prepare_ice_key(const u8 *longterm_wrapped_key,
-+				    u32 longterm_wrapped_key_size,
-+				    u8 *ephemeral_wrapped_key,
-+				    u32 ephemeral_wrapped_key_size)
-+		{ return -ENODEV; }
-+static inline int qcom_scm_import_ice_key(const u8 *imported_key,
-+				   u32 imported_key_size,
-+				   u8 *longterm_wrapped_key,
-+				   u32 longterm_wrapped_key_size)
-+		{ return -ENODEV; }
- static inline bool qcom_scm_hdcp_available(void) { return false; }
- static inline int qcom_scm_hdcp_req(struct qcom_scm_hdcp_req *req, u32 req_cnt,
- 		u32 *resp) { return -ENODEV; }
+ static enum blk_crypto_mode_num
+diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+index 095c2d660aa7..88cd21dec0d9 100644
+--- a/drivers/scsi/ufs/ufshcd.h
++++ b/drivers/scsi/ufs/ufshcd.h
+@@ -321,6 +321,10 @@ struct ufs_pwr_mode_info {
+  * @program_key: program or evict an inline encryption key
+  * @event_notify: called to notify important events
+  * @derive_secret: derive sw secret from wrapped inline encryption key
++ * @generate_key: generate a longterm wrapped key for inline encryption
++ * @prepare_key: prepare the longterm wrapped key for inline encryption
++ *               by rewrapping with a ephemeral wrapping key.
++ * @import_key: import a raw key and return a longterm wrapped key.
+  */
+ struct ufs_hba_variant_ops {
+ 	const char *name;
+@@ -362,6 +366,13 @@ struct ufs_hba_variant_ops {
+ 	int	(*derive_secret)(struct ufs_hba *hba, const u8 *wrapped_key,
+ 				 unsigned int wrapped_key_size,
+ 				 u8 sw_secret[BLK_CRYPTO_SW_SECRET_SIZE]);
++	int	(*generate_key)(u8 longterm_wrapped_key[BLK_CRYPTO_MAX_HW_WRAPPED_KEY_SIZE]);
++	int	(*prepare_key)(const u8 *longterm_wrapped_key,
++			       unsigned int longterm_wrapped_key_size,
++			       u8 ephemerally_wrapped_key[BLK_CRYPTO_MAX_HW_WRAPPED_KEY_SIZE]);
++	int	(*import_key)(const u8 *imported_key,
++			       unsigned int imported_key_size,
++			       u8 longterm_wrapped_key[BLK_CRYPTO_MAX_HW_WRAPPED_KEY_SIZE]);
+ };
+ 
+ /* clock gating state  */
 -- 
 2.17.1
 
