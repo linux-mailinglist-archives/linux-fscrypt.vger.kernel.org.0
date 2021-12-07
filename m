@@ -2,88 +2,81 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2441946AE05
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  6 Dec 2021 23:59:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6784246AF17
+	for <lists+linux-fscrypt@lfdr.de>; Tue,  7 Dec 2021 01:24:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359495AbhLFXCu (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 6 Dec 2021 18:02:50 -0500
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:25287 "EHLO
-        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1376929AbhLFXCo (ORCPT
+        id S238730AbhLGA2C (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 6 Dec 2021 19:28:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232085AbhLGA2C (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 6 Dec 2021 18:02:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1638831555; x=1670367555;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=Ue4j4uhm1swKWHsP5swU+lpTqR0o0aLaH/vHm0ED9Xc=;
-  b=ad6rULnG6q02l8dIRnJ7OwVqPpCyFrwDlqOQvwGawN6eW1em7u2j1Enf
-   1RT8POt1x87ra9/twRa96J1mFqHzsXqsAF7/CyTvrTw6Ui7/ZKpW1n9xJ
-   U1gpItjSvEdYbclYsqutrKsxEvOCu/bv7atHNO50w18W09sLzn7yfFiF9
-   o=;
-Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 06 Dec 2021 14:59:14 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg05-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2021 14:59:14 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Mon, 6 Dec 2021 14:59:13 -0800
-Received: from gabriel.qualcomm.com (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Mon, 6 Dec 2021
- 14:59:13 -0800
-From:   Gaurav Kashyap <quic_gaurkash@quicinc.com>
-To:     <linux-scsi@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>
-CC:     <linux-mmc@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-fscrypt@vger.kernel.org>, <thara.gopinath@linaro.org>,
-        <quic_neersoni@quicinc.com>, <dineshg@quicinc.com>,
-        Gaurav Kashyap <quic_gaurkash@quicinc.com>
-Subject: [PATCH 10/10] arm64: dts: qcom: sm8350: add ice and hwkm mappings
-Date:   Mon, 6 Dec 2021 14:57:25 -0800
-Message-ID: <20211206225725.77512-11-quic_gaurkash@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211206225725.77512-1-quic_gaurkash@quicinc.com>
-References: <20211206225725.77512-1-quic_gaurkash@quicinc.com>
+        Mon, 6 Dec 2021 19:28:02 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBF05C061746;
+        Mon,  6 Dec 2021 16:24:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=7UgHLxAwB+zONRj21LgECxYuL6NnuK4jfF/f8ftEa0c=; b=nxZWrU5Y8KGF29cav9NBxYV1Y/
+        eCcz82NJcSyiM3U9yfnuHsm8iezcOmuTAv7+TSxhg7GNZEAs7vKojk2fbw18BvnorWilRaxtJJIST
+        boxuKvkk9ynu6deI0W6oFZxK6TKTQJ02O7QXlxbarzrPzQQvXGnXu1l6BNL1ikQZvOXIFemak1T+Q
+        g7YFqSE+3wcvCj37a+kavJOQxyow+NeBC9eIwKarkopmD48VgXi53bdf/2yB2RZP8iKlFZrJfmTjY
+        qyzo49RV8zNte1gtnsQAcp1iEgAvYd2ussGi2XTEM5+1Emaf2mp3y6Z0UH3oSLjR1Sz63drX3vHLN
+        knYDdv8A==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1muOHW-002fCg-3n; Tue, 07 Dec 2021 00:24:30 +0000
+Message-ID: <6605ed9e-7cae-fd65-e39c-bc708d1df7ef@infradead.org>
+Date:   Mon, 6 Dec 2021 16:24:22 -0800
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
+Subject: Re: [PATCH 01/10] soc: qcom: new common library for ICE functionality
+Content-Language: en-US
+To:     Gaurav Kashyap <quic_gaurkash@quicinc.com>,
+        linux-scsi@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Cc:     linux-mmc@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, thara.gopinath@linaro.org,
+        quic_neersoni@quicinc.com, dineshg@quicinc.com
+References: <20211206225725.77512-1-quic_gaurkash@quicinc.com>
+ <20211206225725.77512-2-quic_gaurkash@quicinc.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20211206225725.77512-2-quic_gaurkash@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Add register mappings for ICE (Inline Crypto Engine) and
-HWKM (Hardware Key Manager) slave, which are both part
-of the UFS controller for sm8350.
+Hi,
 
-These are required for inline storage encryption using
-hardware wrapped key.
+Since I have no idea what "ICE" means in this context:
 
-Signed-off-by: Gaurav Kashyap <quic_gaurkash@quicinc.com>
----
- arch/arm64/boot/dts/qcom/sm8350.dtsi | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+On 12/6/21 14:57, Gaurav Kashyap wrote:
+> diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
+> index 79b568f82a1c..a900f5ab6263 100644
+> --- a/drivers/soc/qcom/Kconfig
+> +++ b/drivers/soc/qcom/Kconfig
+> @@ -209,4 +209,11 @@ config QCOM_APR
+>  	  application processor and QDSP6. APR is
+>  	  used by audio driver to configure QDSP6
+>  	  ASM, ADM and AFE modules.
+> +
+> +config QTI_ICE_COMMON
+> +	tristate "QTI common ICE functionality"
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8350.dtsi b/arch/arm64/boot/dts/qcom/sm8350.dtsi
-index e91cd8a5e535..8e15524731b3 100644
---- a/arch/arm64/boot/dts/qcom/sm8350.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8350.dtsi
-@@ -1019,7 +1019,10 @@
- 		ufs_mem_hc: ufshc@1d84000 {
- 			compatible = "qcom,sm8350-ufshc", "qcom,ufshc",
- 				     "jedec,ufs-2.0";
--			reg = <0 0x01d84000 0 0x3000>;
-+			reg = <0 0x01d84000 0 0x3000>,
-+			      <0 0x01d88000 0 0x8000>,
-+			      <0 0x01d90000 0 0x9000>;
-+			reg-names = "ufs_mem", "ice", "ice_hwkm";
- 			interrupts = <GIC_SPI 265 IRQ_TYPE_LEVEL_HIGH>;
- 			phys = <&ufs_mem_phy_lanes>;
- 			phy-names = "ufsphy";
+please do something like (just an example!):
+
+	tristate "QTI common ICE (internal compiler error) functionality"
+
+> +	depends on ARCH_QCOM
+> +	help
+> +	  Enable the common ICE library that can be used
+> +	  by UFS and EMMC drivers for ICE functionality.
+>  endmenu
+
+thanks.
 -- 
-2.17.1
-
+~Randy
