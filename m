@@ -2,140 +2,64 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3CAE489980
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 10 Jan 2022 14:12:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C46F048A292
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 10 Jan 2022 23:15:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231432AbiAJNMA (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 10 Jan 2022 08:12:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231448AbiAJNLr (ORCPT
+        id S1345300AbiAJWPq (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 10 Jan 2022 17:15:46 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:45504 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345293AbiAJWPp (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 10 Jan 2022 08:11:47 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA1FC06175D
-        for <linux-fscrypt@vger.kernel.org>; Mon, 10 Jan 2022 05:11:46 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id h10so16532494wrb.1
-        for <linux-fscrypt@vger.kernel.org>; Mon, 10 Jan 2022 05:11:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=STst/NZz7XpLuhkw/fjT1YooCLQUEgoChj9j28RAYfs=;
-        b=Bgie3w5lZXcUpEJsNUNnYT9D80sz6831OKMgWSWMpAMR4c04HQM1hwHkoZ1AqHgJ5M
-         pQJfhFBsNTGc+jfMsWTuSDXhNBe5XPwJ8/UQZKbYcWTDQ68Eu4MBBVsHf0V3Baa+27Pp
-         IUJW/950IUGNsTto2NnsTW49/Cy4Vf+KfgzDT0+KZ2gcb/QkEKg3LEIj8qPJpiII0Qbk
-         buE3CbPl0T8T6omQLXT3KYJBxN98pPIrfxDam1Qs0diPFN43pWVugWbd8LU8WaIGviK3
-         O/t/NLMKhR03EdE8rMi5c8T5epCw09Yzc4YmAU5QrO9ZaREbayNwAtpm1SWYSR1IiBuY
-         5w9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=STst/NZz7XpLuhkw/fjT1YooCLQUEgoChj9j28RAYfs=;
-        b=Q47qX7LKRXdcbxMeA/HjvFgXJPFzsF4FvL7cNesk9IGx0pDEcLoIQKs/3g4AGd9U7W
-         2yl8WuafPktM48PDMGIDTRtkWcPv/1TvU7Z6uxcM1y3gJ/7w6SSy5RjjZW1p57vQnJW3
-         6NylPiRj+t4uGtwMyeu6pTxNfFDa9LAgo7RoQZbZy1bTDTSH3NGz8t5z5eSERlt1/auI
-         2haSMDARChCnEQrabf58dg2i1/o+YbG8ss7h5jWll5dkwR2bqiq+/Im4iRBf4j9cK2yO
-         HlUrS5tLRgXBUlZideprBh0EfN1XiquRbgWwNutEpqh7DN+5zImzU5v5hIRiDS2yT2bd
-         xe8w==
-X-Gm-Message-State: AOAM530CA3RC/X0oC2uqbNTNUB6wh19jDP5smq1+GB37AOJZXGeIyUEJ
-        aoT6Ppf+PA7eRiqdV6Ibundef0PtWHqBlQzSJgqD7j7URKk=
-X-Google-Smtp-Source: ABdhPJyUuzfRq9+VAp3YIslVsNF7E8r6u+SDvjtiaFw6sfTA9uOxrmlrl9JDay/jDh10uqplhgk07a+YHTpM3Ge0znw=
-X-Received: by 2002:ac2:4c51:: with SMTP id o17mr60639917lfk.558.1641820293776;
- Mon, 10 Jan 2022 05:11:33 -0800 (PST)
+        Mon, 10 Jan 2022 17:15:45 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C803D60DBF;
+        Mon, 10 Jan 2022 22:15:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15F72C36AE3;
+        Mon, 10 Jan 2022 22:15:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1641852944;
+        bh=V2Zjw5W6p93DG2iC85/vjKbGVhI9gUdRSgYRCp2L7gU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Dwl1LcZEtMd79IyL5CKtumJpiIWW1L6wYq61OFKxSZsupM1dCgXrx11KK1Z9ZYVV/
+         fBUHVOg0KU+Xk40E4JizUi4McNFStS1GvVy41f1dOqrC4WDzlKz7W7C1U8nHG1YF+M
+         Io9uuNORCmym/aa/2P0VrUHmHbH0nUmVwEjl6tnS6/ekWfSdQLvmTGMMHB70vk4+oU
+         TIiA9LS/GvUZU6zAlDGp5GwstsdmvZ/2hGiYRrl/J6BpVPRWXSJPJbATx+4/ylk0QE
+         5w8aSAmdHF1wjEYGBk74CQI+V1MQUoShrvhi9oTcoUywgi3bHR/dKJGDjRHkEI41cP
+         8kdDmbm3fD+Yw==
+Date:   Mon, 10 Jan 2022 14:15:42 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     linux-integrity@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/6] fs-verity: define a function to return the
+ integrity protected file digest
+Message-ID: <YdywDmBl0u55Qod0@gmail.com>
+References: <20220109185517.312280-1-zohar@linux.ibm.com>
+ <20220109185517.312280-3-zohar@linux.ibm.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6504:15d1:0:0:0:0 with HTTP; Mon, 10 Jan 2022 05:11:32
- -0800 (PST)
-Reply-To: gtbank107@yahoo.com
-From:   Barr Robert Richter <westernunion.benin982@gmail.com>
-Date:   Mon, 10 Jan 2022 14:11:32 +0100
-Message-ID: <CAP=nHBK9zHzp_=-EVswWQiLxEoc+HV4oqddgtnEqf-9qYab_4Q@mail.gmail.com>
-Subject: Contact GT Bank-Benin to receive your transfer amount of $18.5m US Dollars.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220109185517.312280-3-zohar@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Attn,Dear
-I need you to know that the fear of the LORD is
-the beginning of wisdom, and knowledge of the Holy One is
-understanding. As power of God Most High. And This is the confidence
-we have in approaching God, that if we ask anything according to his
-will, he hears us. I will make you know that Slow and steady wins the race.
-It is your turn to receive your overdue compensation funds total
-amount $18.5Milion  USD.
-I actualized that you will receive your transfer today without any more delay
-No More fee OK, Believe me , I am your Attorney standing here on your favor.
-I just concluded conversation with the Gt Bank Director, Mrs Mary Gate
-And She told me that your transfer is ready today
+On Sun, Jan 09, 2022 at 01:55:13PM -0500, Mimi Zohar wrote:
+> Define a function named fsverity_get_digest() to return the verity file
+> digest and the associated hash algorithm (enum hash_algo).
+> 
+> Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+> ---
 
-So the Bank Asked you to contact them immediately by re-confirming
-your Bank details asap.
-Because this is the Only thing holding this transfer
-If you did not trust me and Mrs Mary Gate,Who Else will you Trust?
-For we are the ones trying to protect your funds here
-and make sure that your funds is secure.
-So Promisingly, I am here to assure you, that Grate Miracle is coming on
-your way, and this funds total amount of $18.500,000 is your
-compensation, entitlement inheritance overdue funds on your name.
-Which you cannot let anything delay you from receiving your funds now,
+Acked-by: Eric Biggers <ebiggers@google.com>
 
-Finally i advised you to try your possible best and contact Gt Bank Benin
-once you get this message to receive your transfer $18.5 USD today.
-I know that a journey of thousand miles begins with a single step.
-Always put your best foot forward
-Try as hard as you can, God give you best.
-take my advice and follow the due process of your payment, the
-transfer will be released to
-you smoothly without any hitches or hindrance.
+> +int fsverity_get_digest(struct inode *inode,
+> +			    u8 digest[FS_VERITY_MAX_DIGEST_SIZE],
+> +			    enum hash_algo *alg)
 
-Contact DR.MRS MARY GATE, Director Gt bank-Benin to receive your
-transfer amount of $18.5m US Dollars
-It was deposited and registered to your name this morning.
-Contact the Bank now to know when they will transfer to your
-country today
+There's some weird indentation here.
 
-Email id: gtbank107@yahoo.com
-Tel/mobile, +229 99069872
-Contact person, Mrs Mary Gate,Director Gt bank-Benin.
-Among the blind the one-eyed man is king
-
-As you sow, so you shall reap, i want you to receive your funds
-Best things in life are free
-Send to her your Bank Details as i listed here.
-
-Your account name-------------
-Your Bank Name----------------
-Account Number----------
-your Bank address----------
-Country-----------
-Your private phone number---------
-Routing Numbers-------------
-Swift Code-----------
-
-Note, Your funds is %100 Percent ready for
-transfer.
-Everything you do remember that Good things come to those who wait.
-I have done this work for you with my personally effort, Honesty is
-the best policy.
-now your transfer is currently deposited with paying bank this morning.
-It is by the grace of God that I received Christ, having known the truth.
-I had no choice than to do what is lawful and justice in the
-sight of God for eternal life and in the sight of man for witness of
-God & His Mercies and glory upon my life.
-
-send this needed bank details to the bank today, so that you receive
-your transfer today as
-it is available for your confirmation today.
-Please do your best as a serious person and send the fee urgent, Note
-that this transfer of $18.500.000 M USD is a Gift from God to Bless
-you.
-
-If you did not contact the bank urgent, finally the Bank will release
-your transfer of $18.500.000M USD to  Mr. David Bollen as your
-representative.
-So not allow another to claim your Money.
-Thanks For your Understanding.
-
-Barr Robert Richter, UN Attorney At Law Court-Benin
+- Eric
