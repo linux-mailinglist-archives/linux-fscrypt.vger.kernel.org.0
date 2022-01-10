@@ -2,159 +2,140 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDF2548985E
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 10 Jan 2022 13:15:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3CAE489980
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 10 Jan 2022 14:12:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245327AbiAJMO6 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 10 Jan 2022 07:14:58 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:22168 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S245358AbiAJMNv (ORCPT
+        id S231432AbiAJNMA (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 10 Jan 2022 08:12:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231448AbiAJNLr (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 10 Jan 2022 07:13:51 -0500
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 20AC8hCG028776;
-        Mon, 10 Jan 2022 12:13:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=Xak/CKLMnioeGOSndHD6lQ+kfo22g2B8NuO2kHa7z0E=;
- b=TmqMf5H6DVJ8wH7eTGzr6aWgdMp+Aa6moKzaVc28L9S385jSv7u7b3ngf90du0mNw+vM
- iTlhJvZ08BXo8d7Oz/PgsOgUihkujeRXVLvpb54RBIKHnYDhJZZfC5i5ja3j9mWeUDOx
- p0dv9+yLp9J5CR9ccZjz/W9/HVdoxlYR/SEvg4H338ho+p9gv5FAt4W1dU+nKzOjjEMV
- QKHN+p2KZGEBsLnN7hd1B4pY71DtNC16YaOzUIkU/Tami+kAlOMxe4Tw2X2bQWEnRz97
- fijKKPFpFhiJMcF72mSOsREdxPM/S3ZIf9xvqpFK1EifnRrm0mP8uqG8oMLa3fiwsm+b Sw== 
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3df37wv2yr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 10 Jan 2022 12:13:42 +0000
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 20ACDR7p032182;
-        Mon, 10 Jan 2022 12:13:41 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma05fra.de.ibm.com with ESMTP id 3df288ukb2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 10 Jan 2022 12:13:39 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 20ACDO5v43843854
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 10 Jan 2022 12:13:24 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F09CBA405E;
-        Mon, 10 Jan 2022 12:13:23 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 41957A4055;
-        Mon, 10 Jan 2022 12:13:23 +0000 (GMT)
-Received: from sig-9-65-93-173.ibm.com (unknown [9.65.93.173])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 10 Jan 2022 12:13:23 +0000 (GMT)
-Message-ID: <6361f769a41d319810f33c559f52938cf93607bb.camel@linux.ibm.com>
-Subject: Re: [PATCH v2 2/6] fs-verity: define a function to return the
- integrity protected file digest
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Vitaly Chikunov <vt@altlinux.org>
-Cc:     linux-integrity@vger.kernel.org,
-        Eric Biggers <ebiggers@kernel.org>,
-        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 10 Jan 2022 07:13:22 -0500
-In-Reply-To: <20220110004738.kzhzyastvq5rn2g5@altlinux.org>
-References: <20220109185517.312280-1-zohar@linux.ibm.com>
-         <20220109185517.312280-3-zohar@linux.ibm.com>
-         <20220110004738.kzhzyastvq5rn2g5@altlinux.org>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-18.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 8t7hD3g3bgukSVN8lyjGERRfOlEohop0
-X-Proofpoint-ORIG-GUID: 8t7hD3g3bgukSVN8lyjGERRfOlEohop0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-01-10_05,2022-01-10_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=999
- priorityscore=1501 suspectscore=0 clxscore=1015 spamscore=0 phishscore=0
- mlxscore=0 impostorscore=0 bulkscore=0 malwarescore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2201100085
+        Mon, 10 Jan 2022 08:11:47 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA1FC06175D
+        for <linux-fscrypt@vger.kernel.org>; Mon, 10 Jan 2022 05:11:46 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id h10so16532494wrb.1
+        for <linux-fscrypt@vger.kernel.org>; Mon, 10 Jan 2022 05:11:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=STst/NZz7XpLuhkw/fjT1YooCLQUEgoChj9j28RAYfs=;
+        b=Bgie3w5lZXcUpEJsNUNnYT9D80sz6831OKMgWSWMpAMR4c04HQM1hwHkoZ1AqHgJ5M
+         pQJfhFBsNTGc+jfMsWTuSDXhNBe5XPwJ8/UQZKbYcWTDQ68Eu4MBBVsHf0V3Baa+27Pp
+         IUJW/950IUGNsTto2NnsTW49/Cy4Vf+KfgzDT0+KZ2gcb/QkEKg3LEIj8qPJpiII0Qbk
+         buE3CbPl0T8T6omQLXT3KYJBxN98pPIrfxDam1Qs0diPFN43pWVugWbd8LU8WaIGviK3
+         O/t/NLMKhR03EdE8rMi5c8T5epCw09Yzc4YmAU5QrO9ZaREbayNwAtpm1SWYSR1IiBuY
+         5w9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=STst/NZz7XpLuhkw/fjT1YooCLQUEgoChj9j28RAYfs=;
+        b=Q47qX7LKRXdcbxMeA/HjvFgXJPFzsF4FvL7cNesk9IGx0pDEcLoIQKs/3g4AGd9U7W
+         2yl8WuafPktM48PDMGIDTRtkWcPv/1TvU7Z6uxcM1y3gJ/7w6SSy5RjjZW1p57vQnJW3
+         6NylPiRj+t4uGtwMyeu6pTxNfFDa9LAgo7RoQZbZy1bTDTSH3NGz8t5z5eSERlt1/auI
+         2haSMDARChCnEQrabf58dg2i1/o+YbG8ss7h5jWll5dkwR2bqiq+/Im4iRBf4j9cK2yO
+         HlUrS5tLRgXBUlZideprBh0EfN1XiquRbgWwNutEpqh7DN+5zImzU5v5hIRiDS2yT2bd
+         xe8w==
+X-Gm-Message-State: AOAM530CA3RC/X0oC2uqbNTNUB6wh19jDP5smq1+GB37AOJZXGeIyUEJ
+        aoT6Ppf+PA7eRiqdV6Ibundef0PtWHqBlQzSJgqD7j7URKk=
+X-Google-Smtp-Source: ABdhPJyUuzfRq9+VAp3YIslVsNF7E8r6u+SDvjtiaFw6sfTA9uOxrmlrl9JDay/jDh10uqplhgk07a+YHTpM3Ge0znw=
+X-Received: by 2002:ac2:4c51:: with SMTP id o17mr60639917lfk.558.1641820293776;
+ Mon, 10 Jan 2022 05:11:33 -0800 (PST)
+MIME-Version: 1.0
+Received: by 2002:a05:6504:15d1:0:0:0:0 with HTTP; Mon, 10 Jan 2022 05:11:32
+ -0800 (PST)
+Reply-To: gtbank107@yahoo.com
+From:   Barr Robert Richter <westernunion.benin982@gmail.com>
+Date:   Mon, 10 Jan 2022 14:11:32 +0100
+Message-ID: <CAP=nHBK9zHzp_=-EVswWQiLxEoc+HV4oqddgtnEqf-9qYab_4Q@mail.gmail.com>
+Subject: Contact GT Bank-Benin to receive your transfer amount of $18.5m US Dollars.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hi Vitaly,
+Attn,Dear
+I need you to know that the fear of the LORD is
+the beginning of wisdom, and knowledge of the Holy One is
+understanding. As power of God Most High. And This is the confidence
+we have in approaching God, that if we ask anything according to his
+will, he hears us. I will make you know that Slow and steady wins the race.
+It is your turn to receive your overdue compensation funds total
+amount $18.5Milion  USD.
+I actualized that you will receive your transfer today without any more delay
+No More fee OK, Believe me , I am your Attorney standing here on your favor.
+I just concluded conversation with the Gt Bank Director, Mrs Mary Gate
+And She told me that your transfer is ready today
 
-On Mon, 2022-01-10 at 03:47 +0300, Vitaly Chikunov wrote:
-> Mimi,
-> 
-> On Sun, Jan 09, 2022 at 01:55:13PM -0500, Mimi Zohar wrote:
-> > Define a function named fsverity_get_digest() to return the verity file
-> > digest and the associated hash algorithm (enum hash_algo).
-> > 
-> > Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
-> > ---
-> >  fs/verity/Kconfig            |  1 +
-> >  fs/verity/fsverity_private.h |  7 -------
-> >  fs/verity/measure.c          | 40 ++++++++++++++++++++++++++++++++++++
-> >  include/linux/fsverity.h     | 18 ++++++++++++++++
-> >  4 files changed, 59 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/fs/verity/measure.c b/fs/verity/measure.c
-> > index f0d7b30c62db..52906b2e5811 100644
-> > --- a/fs/verity/measure.c
-> > +++ b/fs/verity/measure.c
-> > @@ -57,3 +57,43 @@ int fsverity_ioctl_measure(struct file *filp, void __user *_uarg)
-> >  	return 0;
-> >  }
-> >  EXPORT_SYMBOL_GPL(fsverity_ioctl_measure);
-> > +
-> > +/**
-> > + * fsverity_get_digest() - get a verity file's digest
-> > + * @inode: inode to get digest of
-> > + * @digest: (out) pointer to the digest
-> > + * @alg: (out) pointer to the hash algorithm enumeration
-> > + *
-> > + * Return the file hash algorithm and digest of an fsverity protected file.
-> > + *
-> > + * Return: 0 on success, -errno on failure
-> > + */
-> > +int fsverity_get_digest(struct inode *inode,
-> > +			    u8 digest[FS_VERITY_MAX_DIGEST_SIZE],
-> > +			    enum hash_algo *alg)
-> > +{
-> > +	const struct fsverity_info *vi;
-> > +	const struct fsverity_hash_alg *hash_alg;
-> > +	int i;
-> > +
-> > +	vi = fsverity_get_info(inode);
-> > +	if (!vi)
-> > +		return -ENODATA; /* not a verity file */
-> > +
-> > +	hash_alg = vi->tree_params.hash_alg;
-> > +	memset(digest, 0, FS_VERITY_MAX_DIGEST_SIZE);
-> > +	*alg = HASH_ALGO__LAST;
-> 
-> Perhaps this line is redundant (*alg is overwritten later) and would
-> needlessly mangle output value in case of -EINVAL while it's being
-> untouched on -ENODATA.
-> 
+So the Bank Asked you to contact them immediately by re-confirming
+your Bank details asap.
+Because this is the Only thing holding this transfer
+If you did not trust me and Mrs Mary Gate,Who Else will you Trust?
+For we are the ones trying to protect your funds here
+and make sure that your funds is secure.
+So Promisingly, I am here to assure you, that Grate Miracle is coming on
+your way, and this funds total amount of $18.500,000 is your
+compensation, entitlement inheritance overdue funds on your name.
+Which you cannot let anything delay you from receiving your funds now,
 
-Thanks!
+Finally i advised you to try your possible best and contact Gt Bank Benin
+once you get this message to receive your transfer $18.5 USD today.
+I know that a journey of thousand miles begins with a single step.
+Always put your best foot forward
+Try as hard as you can, God give you best.
+take my advice and follow the due process of your payment, the
+transfer will be released to
+you smoothly without any hitches or hindrance.
 
-Mimi
+Contact DR.MRS MARY GATE, Director Gt bank-Benin to receive your
+transfer amount of $18.5m US Dollars
+It was deposited and registered to your name this morning.
+Contact the Bank now to know when they will transfer to your
+country today
 
-> 
-> > +
-> > +	/* convert hash algorithm to hash_algo_name */
-> > +	i = match_string(hash_algo_name, HASH_ALGO__LAST, hash_alg->name);
-> > +	if (i < 0)
-> > +		return -EINVAL;
-> > +	*alg = i;
-> > +
-> > +	memcpy(digest, vi->file_digest, hash_alg->digest_size);
-> > +
-> > +	pr_debug("file digest %s:%*phN\n", hash_algo_name[*alg],
-> > +		  hash_digest_size[*alg], digest);
-> > +
-> > +	return 0;
-> > +}
+Email id: gtbank107@yahoo.com
+Tel/mobile, +229 99069872
+Contact person, Mrs Mary Gate,Director Gt bank-Benin.
+Among the blind the one-eyed man is king
 
+As you sow, so you shall reap, i want you to receive your funds
+Best things in life are free
+Send to her your Bank Details as i listed here.
 
+Your account name-------------
+Your Bank Name----------------
+Account Number----------
+your Bank address----------
+Country-----------
+Your private phone number---------
+Routing Numbers-------------
+Swift Code-----------
+
+Note, Your funds is %100 Percent ready for
+transfer.
+Everything you do remember that Good things come to those who wait.
+I have done this work for you with my personally effort, Honesty is
+the best policy.
+now your transfer is currently deposited with paying bank this morning.
+It is by the grace of God that I received Christ, having known the truth.
+I had no choice than to do what is lawful and justice in the
+sight of God for eternal life and in the sight of man for witness of
+God & His Mercies and glory upon my life.
+
+send this needed bank details to the bank today, so that you receive
+your transfer today as
+it is available for your confirmation today.
+Please do your best as a serious person and send the fee urgent, Note
+that this transfer of $18.500.000 M USD is a Gift from God to Bless
+you.
+
+If you did not contact the bank urgent, finally the Bank will release
+your transfer of $18.500.000M USD to  Mr. David Bollen as your
+representative.
+So not allow another to claim your Money.
+Thanks For your Understanding.
+
+Barr Robert Richter, UN Attorney At Law Court-Benin
