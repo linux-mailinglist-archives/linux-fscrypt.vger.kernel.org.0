@@ -2,122 +2,171 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABA3E48A6E3
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 11 Jan 2022 05:48:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62AD848B4E7
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 11 Jan 2022 19:04:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347916AbiAKEsK (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 10 Jan 2022 23:48:10 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:60386 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346578AbiAKEsJ (ORCPT
+        id S1350105AbiAKSEE (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 11 Jan 2022 13:04:04 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:4388 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345156AbiAKSDv (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 10 Jan 2022 23:48:09 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 39D0161464;
-        Tue, 11 Jan 2022 04:48:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65C1EC36AEB;
-        Tue, 11 Jan 2022 04:48:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1641876488;
-        bh=9k7gOl/NHLklU+ZV4oa3MqfoDU/Ae8pDZuPPq4e+vuY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TKjMXLohTL3KBqdbMa/XT/78E7lOCg80MzUcrVl+POwdOzlNXTT/v0XkpQwMvO1Hu
-         ZnU6/oVx7vDiq94PluRGsnKlzMmqBIMIgxjE/oB+jK/xKxjxcggUAQjuHl+pUw8QvM
-         KHQDp5jvSf5OOouYoM8ZvLrTEMrN7ErmtAXPGV0KdQD0qODl1bozuIzexS+6I2UtvY
-         jcF49TsTNXgig1bnFP57SOskccPCfVnn6iAlCy9GjW0xGoCvhHoM2kKH82Os4Qbt7t
-         pAg3Usuc/CKwk8R3hP9ExITRl7oSO3LfDWxRe1bVlzVLsyvtH4qxPz30hWlJWutPOi
-         L72N3+S77MUfw==
-Date:   Mon, 10 Jan 2022 20:48:06 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Stefan Berger <stefanb@linux.ibm.com>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>, linux-integrity@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/6] ima: support fs-verity file digest based
- signatures
-Message-ID: <Yd0MBkL9J5CGF0W9@sol.localdomain>
-References: <20220109185517.312280-1-zohar@linux.ibm.com>
- <20220109185517.312280-6-zohar@linux.ibm.com>
- <Ydy3EA9ONY3kn1xr@gmail.com>
- <b4105f9b-98f7-f941-47db-2f72e0c5b8bd@linux.ibm.com>
+        Tue, 11 Jan 2022 13:03:51 -0500
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4JYJQj1JcLz67Cr0;
+        Wed, 12 Jan 2022 02:01:01 +0800 (CST)
+Received: from roberto-ThinkStation-P620.huawei.com (10.204.63.22) by
+ fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Tue, 11 Jan 2022 19:03:46 +0100
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     <dhowells@redhat.com>, <dwmw2@infradead.org>,
+        <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+CC:     <keyrings@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <linux-integrity@vger.kernel.org>, <linux-fscrypt@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <zohar@linux.ibm.com>,
+        <ebiggers@kernel.org>, Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [PATCH 00/14] KEYS: Add support for PGP keys and signatures
+Date:   Tue, 11 Jan 2022 19:03:04 +0100
+Message-ID: <20220111180318.591029-1-roberto.sassu@huawei.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b4105f9b-98f7-f941-47db-2f72e0c5b8bd@linux.ibm.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.204.63.22]
+X-ClientProxiedBy: lhreml754-chm.china.huawei.com (10.201.108.204) To
+ fraeml714-chm.china.huawei.com (10.206.15.33)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Jan 10, 2022 at 10:26:23PM -0500, Stefan Berger wrote:
-> 
-> On 1/10/22 17:45, Eric Biggers wrote:
-> > On Sun, Jan 09, 2022 at 01:55:16PM -0500, Mimi Zohar wrote:
-> > > +	case IMA_VERITY_DIGSIG:
-> > > +		set_bit(IMA_DIGSIG, &iint->atomic_flags);
-> > > +
-> > > +		algo = iint->ima_hash->algo;
-> > > +		hash = kzalloc(sizeof(*hash) + hash_digest_size[algo],
-> > > +			       GFP_KERNEL);
-> > > +		if (!hash) {
-> > > +			*cause = "verity-hashing-error";
-> > > +			*status = INTEGRITY_FAIL;
-> > > +			break;
-> > > +		}
-> > > +
-> > > +		rc = calc_tbs_hash(IMA_VERITY_DIGSIG, iint->ima_hash->algo,
-> > > +				   iint->ima_hash->digest, hash);
-> > > +		if (rc) {
-> > > +			*cause = "verity-hashing-error";
-> > > +			*status = INTEGRITY_FAIL;
-> > > +			break;
-> > > +		}
-> > > +
-> > > +		rc = integrity_digsig_verify(INTEGRITY_KEYRING_IMA,
-> > > +					     (const char *)xattr_value,
-> > > +					     xattr_len, hash->digest,
-> > > +					     hash->length);
-> > This is still verifying a raw hash value, which is wrong as I've explained
-> > several times.  Yes, you are now hashing the hash algorithm ID together with the
-> > original hash value, but at the end the thing being signed/verified is still a
-> > raw hash value, which is ambigious.
-> > 
-> > I think I see where the confusion is.  If rsa-pkcs1pad is used, then the
-> > asymmetric algorithm is parameterized by a hash algorithm, and this hash
-> > algorithm's identifier is automatically built-in to the data which is
-> > signed/verified.  And the data being signed/verified is assumed to be a hash
-> > value of the same type.  So in this case, the caller doesn't need to handle
-> > disambiguating raw hashes.
-> > 
-> > However, asymmetric_verify() also supports ecdsa and ecrdsa signatures.  As far
-> > as I can tell, those do *not* have the hash algorithm identifier built-in to the
-> > data which is signed/verified; they just sign/verify the data given.  That
-> 
-> 
-> The signatures are generated by evmctl by this code here, which works for
-> RSA and ECDSA and likely also ECRDSA:
-> 
-> https://sourceforge.net/p/linux-ima/ima-evm-utils/ci/master/tree/src/libimaevm.c#l1036
-> 
->    if (!EVP_PKEY_sign_init(ctx))
->         goto err;
->     st = "EVP_get_digestbyname";
->     if (!(md = EVP_get_digestbyname(algo)))
->         goto err;
->     st = "EVP_PKEY_CTX_set_signature_md";
->     if (!EVP_PKEY_CTX_set_signature_md(ctx, md))
->         goto err;
->     st = "EVP_PKEY_sign";
->     sigsize = MAX_SIGNATURE_SIZE - sizeof(struct signature_v2_hdr) - 1;
->     if (!EVP_PKEY_sign(ctx, hdr->sig, &sigsize, hash, size))
->         goto err;
->     len = (int)sigsize;
-> 
-> As far as I know, these are not raw signatures but generate the OIDs for RSA
-> + shaXYZ or ECDSA + shaXYZ (1.2.840.10045.4.1 et al) and prepend them to the
-> hash and then sign that.
+Support for PGP keys and signatures was proposed by David long time ago,
+before the decision of using PKCS#7 for kernel modules signatures
+verification was made. After that, there has been not enough interest to
+support PGP too.
 
-As I said, this appears to be true for RSA but not for ECDSA or ECRDSA.
+Lately, when discussing a proposal of introducing fsverity signatures in
+Fedora [1], developers expressed their preference on not having a separate
+key for signing, which would complicate the management of the distribution.
+They would be more in favor of using the same PGP key, currently used for
+signing RPM headers, also for file-based signatures (not only fsverity, but
+also IMA ones).
 
-- Eric
+Another envisioned use case would be to add the ability to appraise RPM
+headers with their existing PGP signature, so that they can be used as an
+authenticated source of reference values for appraising remaining
+files [2].
+
+To make these use cases possible, introduce support for PGP keys and
+signatures in the kernel, and load provided PGP keys in the built-in
+keyring, so that PGP signatures of RPM headers, fsverity digests, and IMA
+digests can be verified from this trust anchor.
+
+In addition to the original version of the patch set, also introduce
+support for signature verification of PGP keys, so that those keys can be
+added to keyrings with a signature-based restriction (e.g. .ima). PGP keys
+are searched with partial IDs, provided with signature subtype 16 (Issuer).
+Search with full IDs could be supported with
+draft-ietf-openpgp-rfc4880bis-10, by retrieving the information from
+signature subtype 33 (Issuer Fingerprint). Due to the possibility of ID
+collisions, the key_or_keyring restriction is not supported.
+
+The patch set includes two preliminary patches: patch 1 introduces
+mpi_key_length(), to get the number of bits and bytes of an MPI; patch 2
+introduces rsa_parse_priv_key_raw() and rsa_parse_pub_key_raw(), to parse
+an RSA key in RAW format if the ASN.1 parser returns an error.
+
+Patches 3-5 introduce the library necessary to parse PGP keys and
+signatures, whose support is added with patches 6-10. Patch 11 introduces
+verify_pgp_signature() to be used by kernel subsystems (e.g. fsverity and
+IMA). Patch 12 is for testing of PGP signatures. Finally, patches 13-14
+allow loading a set of PGP keys from a supplied blob at boot time.
+
+I generated the diff from [3] (rebased). It is available at:
+
+https://github.com/robertosassu/linux/compare/pgp-signatures-v1-orig..pgp-signatures-v1
+
+Changelog
+
+v0 [3]:
+- style fixes
+- move include/linux/pgp.h and pgplib.h to crypto/asymmetric_keys
+- introduce verify_pgp_signature()
+- replace KEY_ALLOC_TRUSTED flag with KEY_ALLOC_BUILT_IN
+- don't fetch PGP subkeys
+- drop support for DSA
+- store number of MPIs in pgp_key_algo_p_num_mpi array
+- replace dynamic memory allocations with static ones in
+  pgp_generate_fingerprint()
+- store only keys with capability of verifying signatures
+- remember selection of PGP signature packet and don't repeat parsing
+- move search of the PGP key to verify the signature from the beginning
+  to the end of the verification process (to be similar with PKCS#7)
+- don't retry key search in the session keyring from the signature
+  verification code, let the caller pass the desired keyring
+- for the PGP signature test key type, retry the key search in the session
+  keyring
+- retry key search in restrict_link_by_signature() with a partial ID
+  (provided in the PGP signature)
+
+[1] https://fedoraproject.org/wiki/Changes/FsVerityRPM
+[2] https://fedoraproject.org/wiki/Changes/DIGLIM
+[3] https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-modsign.git/log/?h=pgp-parser
+
+David Howells (8):
+  PGPLIB: PGP definitions (RFC 4880)
+  PGPLIB: Basic packet parser
+  PGPLIB: Signature parser
+  KEYS: PGP data parser
+  KEYS: Provide PGP key description autogeneration
+  KEYS: PGP-based public key signature verification
+  PGP: Provide a key type for testing PGP signatures
+  KEYS: Provide a function to load keys from a PGP keyring blob
+
+Roberto Sassu (6):
+  mpi: Introduce mpi_key_length()
+  rsa: add parser of raw format
+  KEYS: Retry asym key search with partial ID in
+    restrict_link_by_signature()
+  KEYS: Calculate key digest and get signature of the key
+  verification: introduce verify_pgp_signature()
+  KEYS: Introduce load_pgp_public_keyring()
+
+ MAINTAINERS                             |   1 +
+ certs/Kconfig                           |  11 +
+ certs/Makefile                          |   7 +
+ certs/system_certificates.S             |  18 +
+ certs/system_keyring.c                  |  91 ++++
+ crypto/asymmetric_keys/Kconfig          |  38 ++
+ crypto/asymmetric_keys/Makefile         |  13 +
+ crypto/asymmetric_keys/pgp.h            | 206 ++++++++
+ crypto/asymmetric_keys/pgp_library.c    | 620 ++++++++++++++++++++++++
+ crypto/asymmetric_keys/pgp_parser.h     |  18 +
+ crypto/asymmetric_keys/pgp_preload.c    | 110 +++++
+ crypto/asymmetric_keys/pgp_public_key.c | 484 ++++++++++++++++++
+ crypto/asymmetric_keys/pgp_signature.c  | 507 +++++++++++++++++++
+ crypto/asymmetric_keys/pgp_test_key.c   | 129 +++++
+ crypto/asymmetric_keys/pgplib.h         |  74 +++
+ crypto/asymmetric_keys/restrict.c       |  10 +-
+ crypto/rsa.c                            |  14 +-
+ crypto/rsa_helper.c                     |  69 +++
+ include/crypto/internal/rsa.h           |   6 +
+ include/crypto/pgp.h                    |  35 ++
+ include/linux/mpi.h                     |   2 +
+ include/linux/verification.h            |  23 +
+ lib/mpi/mpicoder.c                      |  33 +-
+ 23 files changed, 2506 insertions(+), 13 deletions(-)
+ create mode 100644 crypto/asymmetric_keys/pgp.h
+ create mode 100644 crypto/asymmetric_keys/pgp_library.c
+ create mode 100644 crypto/asymmetric_keys/pgp_parser.h
+ create mode 100644 crypto/asymmetric_keys/pgp_preload.c
+ create mode 100644 crypto/asymmetric_keys/pgp_public_key.c
+ create mode 100644 crypto/asymmetric_keys/pgp_signature.c
+ create mode 100644 crypto/asymmetric_keys/pgp_test_key.c
+ create mode 100644 crypto/asymmetric_keys/pgplib.h
+ create mode 100644 include/crypto/pgp.h
+
+-- 
+2.32.0
+
