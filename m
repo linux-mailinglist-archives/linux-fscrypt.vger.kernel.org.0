@@ -2,227 +2,201 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AA6C48B724
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 11 Jan 2022 20:18:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C58A748B74E
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 11 Jan 2022 20:26:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350684AbiAKTR7 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 11 Jan 2022 14:17:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40464 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350833AbiAKTRU (ORCPT
+        id S231148AbiAKT0e (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 11 Jan 2022 14:26:34 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:42882 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229677AbiAKT0e (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 11 Jan 2022 14:17:20 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0A06C028BF9;
-        Tue, 11 Jan 2022 11:16:45 -0800 (PST)
+        Tue, 11 Jan 2022 14:26:34 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8F55861771;
-        Tue, 11 Jan 2022 19:16:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A7DAC36AEF;
-        Tue, 11 Jan 2022 19:16:44 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CE42B61784;
+        Tue, 11 Jan 2022 19:26:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88C19C36AE3;
+        Tue, 11 Jan 2022 19:26:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1641928605;
-        bh=R5S/f2Ey57n+umrHlx7vWUtd8ZhKH/znxmk9tzTFNok=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n2DgHoPftfLr4jMcurx9AEY2ymNjb/SmgCaIN2Ow0MD3gy44+ye06zryTdF6SwhL8
-         eSQWrSXWdwLIcjx2BUk+pBiF2s0SyqIVi6ke0X/wv3m7xTrNrvKVLneJ83zNVrGY5N
-         6gUb7wDQCR5CS1bgAXLXY7T7p1c84IGylkne3WqwCBWRfeu8Yq9s8op9CvcxwFKeVl
-         stkGQetMQ3GsfTJBsE91MuKoiO1gXoraNtcboNpI+idc9wis1+Ljmyref6EM5FiugD
-         2TAp6C+IukOg4uMDrmqNUdVEXeabTHiYvY4TJcwtYdCosLLVauFyP81X4iJOwN6ULF
-         bPvMvqH/9UOew==
+        s=k20201202; t=1641929193;
+        bh=Uiqq2GOscSkTVHC2A5gyz9KyUQQGw4zbvgmNCOoqtLQ=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=Nmu0n+VIUn/MUxxGXOodIzIAjPrpWhrjVn4xrBib5IFEHyfWfDVrEfCxDGhZmxx+F
+         blq7RoYkyV3Rz0XSedwB+71hS9tbpCAFXMgmCF5HPB+ChaHiY/jyiU52qfAaPhJZtg
+         U3dMoNCsEGwEAf2YvDhq/hZynK82ddkZGd2dtMbwqkCRcojZOEmMCwva3Jao2JAKag
+         YhqDwmDW+N8fdlq6983QLlhSJjmFJ6YVHxlp6IykGxf+bAcTulpkQixWgSQVBEmfPO
+         Gn9NY5Wr6Sf67RO6NQ74UukPI1IRottehIUgFPGRBVvIIzP9gUZ27Q+wp+1HWKWeyg
+         RIJkAAJrDd6IQ==
+Message-ID: <3805468de9a6a97ce55d5ce56b4debe2df8ec99f.camel@kernel.org>
+Subject: Re: [RFC PATCH v10 00/48] ceph+fscrypt: full support
 From:   Jeff Layton <jlayton@kernel.org>
 To:     ceph-devel@vger.kernel.org, linux-fscrypt@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, idryomov@gmail.com
-Subject: [RFC PATCH v10 48/48] ceph: fscrypt support for writepages
-Date:   Tue, 11 Jan 2022 14:16:08 -0500
-Message-Id: <20220111191608.88762-49-jlayton@kernel.org>
-X-Mailer: git-send-email 2.34.1
+Cc:     linux-fsdevel@vger.kernel.org, idryomov@gmail.com,
+        xiubli <xiubli@redhat.com>, Luis Henriques <lhenriques@suse.com>
+Date:   Tue, 11 Jan 2022 14:26:31 -0500
 In-Reply-To: <20220111191608.88762-1-jlayton@kernel.org>
 References: <20220111191608.88762-1-jlayton@kernel.org>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.42.2 (3.42.2-1.fc35) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- fs/ceph/addr.c   | 61 +++++++++++++++++++++++++++++++++++++++---------
- fs/ceph/crypto.h | 17 ++++++++++++++
- 2 files changed, 67 insertions(+), 11 deletions(-)
+On Tue, 2022-01-11 at 14:15 -0500, Jeff Layton wrote:
+> This patchset represents a (mostly) complete rough draft of fscrypt
+> support for cephfs. The context, filename and symlink support is more or
+> less the same as the versions posted before, and comprise the first half
+> of the patches.
+> 
+> The new bits here are the size handling changes and support for content
+> encryption, in buffered, direct and synchronous codepaths. Much of this
+> code is still very rough and needs a lot of cleanup work.
+> 
+> fscrypt support relies on some MDS changes that are being tracked here:
+> 
+>     https://github.com/ceph/ceph/pull/43588
+> 
+> In particular, this PR adds some new opaque fields in the inode that we
+> use to store fscrypt-specific information, like the context and the real
+> size of a file. That is slated to be merged for the upcoming Quincy
+> release (which is sometime this northern spring).
+> 
+> There are still some notable bugs:
+> 
+> 1/ we've identified a few more potential races in truncate handling
+> which will probably necessitate a protocol change, as well as changes to
+> the MDS and kclient patchsets. The good news is that we think we have
+> an approach that will resolve this.
+> 
+> 2/ the kclient doesn't handle reading sparse regions in OSD objects
+> properly yet. The client can end up writing to a non-zero offset in a
+> non-existent object. Then, if the client tries to read the written
+> region back later, it'll get back zeroes and give you garbage when you
+> try to decrypt them.
+> 
+> It turns out that the OSD already supports a SPARSE_READ operation, so
+> I'm working on implementing that in the kclient to make it not try to
+> decrypt the sparse regions.
+> 
+> Still, I was able to run xfstests on this set yesterday. Bug #2 above
+> prevented all of the tests from passing, but it didn't oops! I call that
+> progress! Given that, I figured this is a good time to post what I have
+> so far.
+> 
+> Note that the buffered I/O changes in this set are not suitable for
+> merge and will likely end up being discarded. We need to plumb the
+> encryption in at the netfs layer, so that we can store encrypted data
+> in fscache.
+> 
+> The non-buffered codepaths will likely also need substantial changes
+> before merging. It may be simpler to just move that into the netfs layer
+> too as cifs will need something similar anyway.
+> 
+> My goal is to get most of this into v5.18, but v5.19 might be more
+> realistiv. Hopefully I'll have a non-RFC patchset to send in a few
+> weeks.
+> 
+> Special thanks to Xiubo who came through with the MDS patches. Also,
+> thanks to everyone (especially Eric Biggers) for all of the previous
+> reviews. It's much appreciated!
+> 
+> Jeff Layton (43):
+>   vfs: export new_inode_pseudo
+>   fscrypt: export fscrypt_base64url_encode and fscrypt_base64url_decode
+>   fscrypt: export fscrypt_fname_encrypt and fscrypt_fname_encrypted_size
+>   fscrypt: add fscrypt_context_for_new_inode
+>   ceph: preallocate inode for ops that may create one
+>   ceph: crypto context handling for ceph
+>   ceph: parse new fscrypt_auth and fscrypt_file fields in inode traces
+>   ceph: add fscrypt_* handling to caps.c
+>   ceph: add ability to set fscrypt_auth via setattr
+>   ceph: implement -o test_dummy_encryption mount option
+>   ceph: decode alternate_name in lease info
+>   ceph: add fscrypt ioctls
+>   ceph: make ceph_msdc_build_path use ref-walk
+>   ceph: add encrypted fname handling to ceph_mdsc_build_path
+>   ceph: send altname in MClientRequest
+>   ceph: encode encrypted name in dentry release
+>   ceph: properly set DCACHE_NOKEY_NAME flag in lookup
+>   ceph: make d_revalidate call fscrypt revalidator for encrypted
+>     dentries
+>   ceph: add helpers for converting names for userland presentation
+>   ceph: add fscrypt support to ceph_fill_trace
+>   ceph: add support to readdir for encrypted filenames
+>   ceph: create symlinks with encrypted and base64-encoded targets
+>   ceph: make ceph_get_name decrypt filenames
+>   ceph: add a new ceph.fscrypt.auth vxattr
+>   ceph: add some fscrypt guardrails
+>   libceph: add CEPH_OSD_OP_ASSERT_VER support
+>   ceph: size handling for encrypted inodes in cap updates
+>   ceph: fscrypt_file field handling in MClientRequest messages
+>   ceph: get file size from fscrypt_file when present in inode traces
+>   ceph: handle fscrypt fields in cap messages from MDS
+>   ceph: add infrastructure for file encryption and decryption
+>   libceph: allow ceph_osdc_new_request to accept a multi-op read
+>   ceph: disable fallocate for encrypted inodes
+>   ceph: disable copy offload on encrypted inodes
+>   ceph: don't use special DIO path for encrypted inodes
+>   ceph: set encryption context on open
+>   ceph: align data in pages in ceph_sync_write
+>   ceph: add read/modify/write to ceph_sync_write
+>   ceph: plumb in decryption during sync reads
+>   ceph: set i_blkbits to crypto block size for encrypted inodes
+>   ceph: add fscrypt decryption support to ceph_netfs_issue_op
+>   ceph: add encryption support to writepage
+>   ceph: fscrypt support for writepages
+> 
+> Luis Henriques (1):
+>   ceph: don't allow changing layout on encrypted files/directories
+> 
+> Xiubo Li (4):
+>   ceph: add __ceph_get_caps helper support
+>   ceph: add __ceph_sync_read helper support
+>   ceph: add object version support for sync read
+>   ceph: add truncate size handling support for fscrypt
+> 
+>  fs/ceph/Makefile                |   1 +
+>  fs/ceph/acl.c                   |   4 +-
+>  fs/ceph/addr.c                  | 128 +++++--
+>  fs/ceph/caps.c                  | 211 ++++++++++--
+>  fs/ceph/crypto.c                | 374 +++++++++++++++++++++
+>  fs/ceph/crypto.h                | 237 +++++++++++++
+>  fs/ceph/dir.c                   | 209 +++++++++---
+>  fs/ceph/export.c                |  44 ++-
+>  fs/ceph/file.c                  | 476 +++++++++++++++++++++-----
+>  fs/ceph/inode.c                 | 576 +++++++++++++++++++++++++++++---
+>  fs/ceph/ioctl.c                 |  87 +++++
+>  fs/ceph/mds_client.c            | 349 ++++++++++++++++---
+>  fs/ceph/mds_client.h            |  24 +-
+>  fs/ceph/super.c                 |  90 ++++-
+>  fs/ceph/super.h                 |  43 ++-
+>  fs/ceph/xattr.c                 |  29 ++
+>  fs/crypto/fname.c               |  44 ++-
+>  fs/crypto/fscrypt_private.h     |   9 +-
+>  fs/crypto/hooks.c               |   6 +-
+>  fs/crypto/policy.c              |  35 +-
+>  fs/inode.c                      |   1 +
+>  include/linux/ceph/ceph_fs.h    |  21 +-
+>  include/linux/ceph/osd_client.h |   6 +-
+>  include/linux/ceph/rados.h      |   4 +
+>  include/linux/fscrypt.h         |  10 +
+>  net/ceph/osd_client.c           |  32 +-
+>  26 files changed, 2700 insertions(+), 350 deletions(-)
+>  create mode 100644 fs/ceph/crypto.c
+>  create mode 100644 fs/ceph/crypto.h
+> 
 
-diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
-index 46ff50a2474e..e9a886282af0 100644
---- a/fs/ceph/addr.c
-+++ b/fs/ceph/addr.c
-@@ -507,10 +507,12 @@ static u64 get_writepages_data_length(struct inode *inode,
- 				      struct page *page, u64 start)
- {
- 	struct ceph_inode_info *ci = ceph_inode(inode);
--	struct ceph_snap_context *snapc = page_snap_context(page);
-+	struct ceph_snap_context *snapc;
- 	struct ceph_cap_snap *capsnap = NULL;
- 	u64 end = i_size_read(inode);
-+	u64 ret;
- 
-+	snapc = page_snap_context(ceph_fscrypt_pagecache_page(page));
- 	if (snapc != ci->i_head_snapc) {
- 		bool found = false;
- 		spin_lock(&ci->i_ceph_lock);
-@@ -525,9 +527,12 @@ static u64 get_writepages_data_length(struct inode *inode,
- 		spin_unlock(&ci->i_ceph_lock);
- 		WARN_ON(!found);
- 	}
--	if (end > page_offset(page) + thp_size(page))
--		end = page_offset(page) + thp_size(page);
--	return end > start ? end - start : 0;
-+	if (end > ceph_fscrypt_page_offset(page) + thp_size(page))
-+		end = ceph_fscrypt_page_offset(page) + thp_size(page);
-+	ret = end > start ? end - start : 0;
-+	if (ret && fscrypt_is_bounce_page(page))
-+		ret = round_up(ret, CEPH_FSCRYPT_BLOCK_SIZE);
-+	return ret;
- }
- 
- /*
-@@ -743,6 +748,11 @@ static void writepages_finish(struct ceph_osd_request *req)
- 		total_pages += num_pages;
- 		for (j = 0; j < num_pages; j++) {
- 			page = osd_data->pages[j];
-+			if (fscrypt_is_bounce_page(page)) {
-+				page = fscrypt_pagecache_page(page);
-+				fscrypt_free_bounce_page(osd_data->pages[j]);
-+				osd_data->pages[j] = page;
-+			}
- 			BUG_ON(!page);
- 			WARN_ON(!PageUptodate(page));
- 
-@@ -1001,8 +1011,27 @@ static int ceph_writepages_start(struct address_space *mapping,
- 						  BLK_RW_ASYNC);
- 			}
- 
-+			if (IS_ENCRYPTED(inode)) {
-+				pages[locked_pages] =
-+					fscrypt_encrypt_pagecache_blocks(page,
-+						PAGE_SIZE, 0,
-+						locked_pages ? GFP_NOWAIT : GFP_NOFS);
-+				if (IS_ERR(pages[locked_pages])) {
-+					if (PTR_ERR(pages[locked_pages]) == -EINVAL)
-+						pr_err("%s: inode->i_blkbits=%hhu\n",
-+							__func__, inode->i_blkbits);
-+					/* better not fail on first page! */
-+					BUG_ON(locked_pages == 0);
-+					pages[locked_pages] = NULL;
-+					redirty_page_for_writepage(wbc, page);
-+					unlock_page(page);
-+					break;
-+				}
-+				++locked_pages;
-+			} else {
-+				pages[locked_pages++] = page;
-+			}
- 
--			pages[locked_pages++] = page;
- 			pvec.pages[i] = NULL;
- 
- 			len += thp_size(page);
-@@ -1032,7 +1061,7 @@ static int ceph_writepages_start(struct address_space *mapping,
- 		}
- 
- new_request:
--		offset = page_offset(pages[0]);
-+		offset = ceph_fscrypt_page_offset(pages[0]);
- 		len = wsize;
- 
- 		req = ceph_osdc_new_request(&fsc->client->osdc,
-@@ -1053,8 +1082,8 @@ static int ceph_writepages_start(struct address_space *mapping,
- 						ceph_wbc.truncate_size, true);
- 			BUG_ON(IS_ERR(req));
- 		}
--		BUG_ON(len < page_offset(pages[locked_pages - 1]) +
--			     thp_size(page) - offset);
-+		BUG_ON(len < ceph_fscrypt_page_offset(pages[locked_pages - 1]) +
-+			     thp_size(pages[locked_pages -1]) - offset);
- 
- 		req->r_callback = writepages_finish;
- 		req->r_inode = inode;
-@@ -1064,7 +1093,9 @@ static int ceph_writepages_start(struct address_space *mapping,
- 		data_pages = pages;
- 		op_idx = 0;
- 		for (i = 0; i < locked_pages; i++) {
--			u64 cur_offset = page_offset(pages[i]);
-+			struct page *page = ceph_fscrypt_pagecache_page(pages[i]);
-+
-+			u64 cur_offset = page_offset(page);
- 			/*
- 			 * Discontinuity in page range? Ceph can handle that by just passing
- 			 * multiple extents in the write op.
-@@ -1093,9 +1124,9 @@ static int ceph_writepages_start(struct address_space *mapping,
- 				op_idx++;
- 			}
- 
--			set_page_writeback(pages[i]);
-+			set_page_writeback(page);
- 			if (caching)
--				ceph_set_page_fscache(pages[i]);
-+				ceph_set_page_fscache(page);
- 			len += thp_size(page);
- 		}
- 		ceph_fscache_write_to_cache(inode, offset, len, caching);
-@@ -1111,8 +1142,16 @@ static int ceph_writepages_start(struct address_space *mapping,
- 							 offset);
- 			len = max(len, min_len);
- 		}
-+		if (IS_ENCRYPTED(inode))
-+			len = round_up(len, CEPH_FSCRYPT_BLOCK_SIZE);
-+
- 		dout("writepages got pages at %llu~%llu\n", offset, len);
- 
-+		if (IS_ENCRYPTED(inode) &&
-+		    ((offset | len) & ~CEPH_FSCRYPT_BLOCK_MASK))
-+			pr_warn("%s: bad encrypted write offset=%lld len=%llu\n",
-+				__func__, offset, len);
-+
- 		osd_req_op_extent_osd_data_pages(req, op_idx, data_pages, len,
- 						 0, from_pool, false);
- 		osd_req_op_extent_update(req, op_idx, len);
-diff --git a/fs/ceph/crypto.h b/fs/ceph/crypto.h
-index 3b7efffecbeb..33c11653d177 100644
---- a/fs/ceph/crypto.h
-+++ b/fs/ceph/crypto.h
-@@ -140,6 +140,13 @@ int ceph_fscrypt_encrypt_block_inplace(const struct inode *inode,
- int ceph_fscrypt_decrypt_pages(struct inode *inode, struct page **page, u64 off, int len);
- int ceph_fscrypt_encrypt_pages(struct inode *inode, struct page **page, u64 off,
- 				int len, gfp_t gfp);
-+
-+static inline struct page *ceph_fscrypt_pagecache_page(struct page *page)
-+{
-+        return fscrypt_is_bounce_page(page) ?
-+		fscrypt_pagecache_page(page) : page;
-+}
-+
- #else /* CONFIG_FS_ENCRYPTION */
- 
- static inline void ceph_fscrypt_set_ops(struct super_block *sb)
-@@ -215,6 +222,16 @@ static inline int ceph_fscrypt_encrypt_pages(struct inode *inode, struct page **
- {
- 	return 0;
- }
-+
-+static inline struct page *ceph_fscrypt_pagecache_page(struct page *page)
-+{
-+        return page;
-+}
- #endif /* CONFIG_FS_ENCRYPTION */
- 
-+static inline loff_t ceph_fscrypt_page_offset(struct page *page)
-+{
-+        return page_offset(ceph_fscrypt_pagecache_page(page));
-+}
-+
- #endif
+I should also mention that I've pushed this series into a new
+wip-fscrypt branch in the ceph-client tree for anyone that wants to
+check it out.
+
+    https://github.com/ceph/ceph-client/commits/wip-fscrypt
+
+I can't recommend this for general use yet until the data corruption
+bugs are fixed, of course.
 -- 
-2.34.1
-
+Jeff Layton <jlayton@kernel.org>
