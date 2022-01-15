@@ -2,162 +2,111 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55ADB48D4D4
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 13 Jan 2022 10:49:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C72C148F523
+	for <lists+linux-fscrypt@lfdr.de>; Sat, 15 Jan 2022 06:31:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234000AbiAMJMG (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 13 Jan 2022 04:12:06 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:4409 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233890AbiAMJLf (ORCPT
+        id S231631AbiAOFbD (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sat, 15 Jan 2022 00:31:03 -0500
+Received: from vmicros1.altlinux.org ([194.107.17.57]:34312 "EHLO
+        vmicros1.altlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231184AbiAOFbD (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 13 Jan 2022 04:11:35 -0500
-Received: from fraeml713-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4JZJZk6BsVz67lZV;
-        Thu, 13 Jan 2022 17:11:26 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml713-chm.china.huawei.com (10.206.15.32) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Thu, 13 Jan 2022 10:11:31 +0100
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2308.020;
- Thu, 13 Jan 2022 10:11:31 +0100
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-CC:     "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "ebiggers@kernel.org" <ebiggers@kernel.org>,
-        "dhowells@redhat.com" <dhowells@redhat.com>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "davem@davemloft.net" <davem@davemloft.net>
-Subject: RE: [PATCH 00/14] KEYS: Add support for PGP keys and signatures
-Thread-Topic: [PATCH 00/14] KEYS: Add support for PGP keys and signatures
-Thread-Index: AQHYBxWUAJoIvMeqLk2UYoD6PZRMZ6xeNfyAgADgBLCAAK1lAIAA3Hrw
-Date:   Thu, 13 Jan 2022 09:11:31 +0000
-Message-ID: <f30d8240a38b48bb92f86a6e4c951918@huawei.com>
-References: <20220111180318.591029-1-roberto.sassu@huawei.com>
- <ab29dd6f-1301-e012-8898-9c739ca511a3@maciej.szmigiero.name>
- <b37f9c0e9bf941f0b778c6949538835d@huawei.com>
- <ab3d2bda-a704-f5d3-adee-e52b7d0a4641@maciej.szmigiero.name>
-In-Reply-To: <ab3d2bda-a704-f5d3-adee-e52b7d0a4641@maciej.szmigiero.name>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.204.63.33]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Sat, 15 Jan 2022 00:31:03 -0500
+Received: from imap.altlinux.org (imap.altlinux.org [194.107.17.38])
+        by vmicros1.altlinux.org (Postfix) with ESMTP id 8C9A972C8DC;
+        Sat, 15 Jan 2022 08:31:01 +0300 (MSK)
+Received: from altlinux.org (sole.flsd.net [185.75.180.6])
+        by imap.altlinux.org (Postfix) with ESMTPSA id 73E714A46FE;
+        Sat, 15 Jan 2022 08:31:01 +0300 (MSK)
+Date:   Sat, 15 Jan 2022 08:31:01 +0300
+From:   Vitaly Chikunov <vt@altlinux.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>, linux-integrity@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 4/5] ima: support fs-verity file digest based
+ signatures
+Message-ID: <20220115053101.36xoy2bc7ypozo6l@altlinux.org>
+References: <20211202215507.298415-1-zohar@linux.ibm.com>
+ <20211202215507.298415-5-zohar@linux.ibm.com>
+ <YalDvGjq0inMFKln@sol.localdomain>
+ <56c53b027ae8ae6909d38904bf089e73011657d7.camel@linux.ibm.com>
+ <YdYrw4eiQPryOMkZ@gmail.com>
+ <20220109204537.oueokvvkrkyy3ipq@altlinux.org>
+ <YdtOhsv/A5dqlApY@sol.localdomain>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=koi8-r
+Content-Disposition: inline
+In-Reply-To: <YdtOhsv/A5dqlApY@sol.localdomain>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-PiBGcm9tOiBNYWNpZWogUy4gU3ptaWdpZXJvIFttYWlsdG86bWFpbEBtYWNpZWouc3ptaWdpZXJv
-Lm5hbWVdDQo+IFNlbnQ6IFdlZG5lc2RheSwgSmFudWFyeSAxMiwgMjAyMiA5OjE2IFBNDQo+IE9u
-IDEyLjAxLjIwMjIgMTA6MTYsIFJvYmVydG8gU2Fzc3Ugd3JvdGU6DQo+ID4+IEZyb206IE1hY2ll
-aiBTLiBTem1pZ2llcm8gW21haWx0bzptYWlsQG1hY2llai5zem1pZ2llcm8ubmFtZV0NCj4gPj4g
-U2VudDogVHVlc2RheSwgSmFudWFyeSAxMSwgMjAyMiA5OjMzIFBNDQo+ID4+IE9uIDExLjAxLjIw
-MjIgMTk6MDMsIFJvYmVydG8gU2Fzc3Ugd3JvdGU6DQo+ID4+PiBTdXBwb3J0IGZvciBQR1Aga2V5
-cyBhbmQgc2lnbmF0dXJlcyB3YXMgcHJvcG9zZWQgYnkgRGF2aWQgbG9uZyB0aW1lIGFnbywNCj4g
-Pj4+IGJlZm9yZSB0aGUgZGVjaXNpb24gb2YgdXNpbmcgUEtDUyM3IGZvciBrZXJuZWwgbW9kdWxl
-cyBzaWduYXR1cmVzDQo+ID4+PiB2ZXJpZmljYXRpb24gd2FzIG1hZGUuIEFmdGVyIHRoYXQsIHRo
-ZXJlIGhhcyBiZWVuIG5vdCBlbm91Z2ggaW50ZXJlc3QgdG8NCj4gPj4+IHN1cHBvcnQgUEdQIHRv
-by4NCj4gPj4+DQo+ID4+PiBMYXRlbHksIHdoZW4gZGlzY3Vzc2luZyBhIHByb3Bvc2FsIG9mIGlu
-dHJvZHVjaW5nIGZzdmVyaXR5IHNpZ25hdHVyZXMgaW4NCj4gPj4+IEZlZG9yYSBbMV0sIGRldmVs
-b3BlcnMgZXhwcmVzc2VkIHRoZWlyIHByZWZlcmVuY2Ugb24gbm90IGhhdmluZyBhIHNlcGFyYXRl
-DQo+ID4+PiBrZXkgZm9yIHNpZ25pbmcsIHdoaWNoIHdvdWxkIGNvbXBsaWNhdGUgdGhlIG1hbmFn
-ZW1lbnQgb2YgdGhlDQo+IGRpc3RyaWJ1dGlvbi4NCj4gPj4+IFRoZXkgd291bGQgYmUgbW9yZSBp
-biBmYXZvciBvZiB1c2luZyB0aGUgc2FtZSBQR1Aga2V5LCBjdXJyZW50bHkgdXNlZCBmb3INCj4g
-Pj4+IHNpZ25pbmcgUlBNIGhlYWRlcnMsIGFsc28gZm9yIGZpbGUtYmFzZWQgc2lnbmF0dXJlcyAo
-bm90IG9ubHkgZnN2ZXJpdHksIGJ1dA0KPiA+Pj4gYWxzbyBJTUEgb25lcykuDQo+ID4+DQo+ID4+
-IEFyZW4ndCBQR1Aga2V5cyBzaW1wbHkgUlNBIC8gRUNDIC8gRWREU0Ega2V5cyB3aXRoIGFkZGl0
-aW9uYWwgbWV0YWRhdGE/DQo+ID4+IENhbid0IHRoZXkgYmUgdW53cmFwcGVkIGZyb20gdGhlaXIg
-KGNvbXBsZXgpIFBHUCBmb3JtYXQgaW4gdXNlcnNwYWNlIGFuZA0KPiA+PiBsb2FkZWQgcmF3IGlu
-dG8gdGhlIGtlcm5lbCwgaW4gYSBzaW1pbGFyIHdheSBhcyB0aGV5IGFyZSBzb21ldGltZXMgdXNl
-ZA0KPiA+PiBmb3IgU1NIIGF1dGhlbnRpY2F0aW9uPw0KPiA+DQo+ID4gUHJvYmFibHksIHRoaXMg
-d291bGQgYmUgcG9zc2libGUgYnkgaW50cm9kdWNpbmcgYSBuZXcgYXN5bW1ldHJpYw0KPiA+IGtl
-eSBzdWJ0eXBlIHBhcnNpbmcgUEdQIGtleXMgYW5kIHNpZ25hdHVyZXMgaW4gYSBtb3JlIHNpbXBs
-ZSBmb3JtYXQsDQo+ID4gYWZ0ZXIgY29udmVyc2lvbiBieSB1c2VyIHNwYWNlLiBCdXQgc3RpbGws
-IGEgcGFyc2VyIHdvdWxkIGJlIHJlcXVpcmVkLg0KPiA+IFRvIGJlIGhvbmVzdCwgSSB3b3VsZCBw
-cmVmZXIgdG8gaW1wbGVtZW50IChhY3R1YWxseSBEYXZpZCBkaWQpIGENCj4gPiBwYXJzZXIgZm9s
-bG93aW5nIGFuIFJGQywgdGhhbiBkZXZlbG9waW5nIGEgbmV3IG9uZS4NCj4gDQo+IEEgcGFyc2Vy
-IGluIHVzZXJzcGFjZSBpcyBwcmVmZXJyZWQgdG8gb25lIGluIGtlcm5lbCBzaW5jZSBpZiB0aGVy
-ZSBpcw0KPiBhIGJ1ZyBzb21ld2hlcmUgaXRzIGNvbnNlcXVlbmNlcyBhcmUgbXVjaCBsZXNzIHNl
-dmVyZS4NCj4gQW5kIGV4cGVyaWVuY2Ugc2hvd3MgdGhhdCBwYXJzZXJzIGFyZSBlc3BlY2lhbGx5
-IHByb25lIHRvIGJ1Z3MuDQo+IEEgdXNlcnNwYWNlIGltcGxlbWVudGF0aW9uIGNhbiBhbHNvIGJl
-IHRpZ2h0bHkgc2FuZGJveGVkIGZvciBleHRyYQ0KPiBzZWN1cml0eS4NCj4gDQo+IFRoZXJlIGFy
-ZSBtYW55IGV4aXN0aW5nIE9wZW5QR1AgcGFyc2luZyBsaWJyYXJpZXMgdG8gY2hvb3NlIGZyb20u
-DQoNCkkgdW5kZXJzdGFuZCB5b3VyIHBvaW50LiBIb3dldmVyLCBpdCBkb2VzIG5vdCBzZWVtIHRv
-IG1lIGxlc3MNCnJpc2t5IHRvIGRlZmluZSBhIG5ldyBmb3JtYXQgdG8gdXBsb2FkIHRoZSBSU0Eg
-a2V5IGFuZCB0aGUgc2lnbmF0dXJlDQp0byBhdm9pZCB0aGUgY29tcGxleGl0eSBvZiBQR1AuIEFs
-c28sIGl0IGRvZXMgbm90IHNlZW0gbW9yZQ0KY29tcGxleCB0aGFuIFBLQ1MjNywgd2hpY2ggaXMg
-YWxyZWFkeSBpbiB0aGUga2VybmVsLg0KDQpJbiBhZGRpdGlvbiwgdGhlcmUgYXJlIGFzcGVjdHMg
-b2YgUEdQIHRoYXQgYW55d2F5IGhhdmUgdG8gYmUgdGFrZW4NCmludG8gYWNjb3VudC4gT25lIGV4
-YW1wbGUgaXMgdGhlIGRpZ2VzdCBjYWxjdWxhdGlvbiwgd2hpY2ggZGVwZW5kcw0KYWxzbyBvbiB0
-aGUgUEdQIHBhY2tldC4gV2hlbmV2ZXIgdGhlIGtlcm5lbCB2ZXJpZmllcyB0aGUgc2lnbmF0dXJl
-LA0KdGhlIGFkZGl0aW9uYWwgZGF0YSBuZWVkIHRvIGJlIGFwcGVuZGVkIHRvIHRoZSBvcmlnaW5h
-bCBkYXRhLiBUaGlzDQpyaXNrcyB0byBjcmVhdGUgbW9yZSBjb25mdXNpb24sIGFzIHRoZSBjb25z
-dW1lciBvZiB0aGUgZGF0YSBiZWluZw0KdmVyaWZpZWQgbWlnaHQgbm90IGJlIHByZXBhcmVkIHRv
-IGhhbmRsZSB0aGUgYWRkaXRpb25hbCBkYXRhDQpyZXF1aXJlZCBmb3Igc2lnbmF0dXJlIHZlcmlm
-aWNhdGlvbi4NCg0KVGhlIGtlcm5lbCBoYXMgYWxyZWFkeSBhIHdlbGwtZGVmaW5lZCB3YXkgdG8g
-cHJvY2VzcyBkYXRhIHdpdGgNCmEgc2lnbmF0dXJlLiBJdCBleHBlY3RzIGEgZGF0YSBzdHJ1Y3R1
-cmUgY2FsbGVkIG1vZHVsZV9zaWduYXR1cmUNCmF0IHRoZSBlbmQgb2YgdGhlIGRhdGEgdG8gdmVy
-aWZ5LCB3aGljaCBpbmNsdWRlIGluZm9ybWF0aW9uIHJlcXVpcmVkDQpmb3IgdGhlIHZlcmlmaWNh
-dGlvbiBzdWNoIGFzIHRoZSBkaWdlc3QgYWxnb3JpdGhtLCBrZXkgSUQsIGV0Yy4gSXQNCmFsc28g
-aGFzIGEgc2VsZWN0b3IgY2FsbGVkIFBLRVlfSURfUEdQLCBzbyB0aGF0IHRoZSBjb2RlIHdvdWxk
-DQpoYW5kbGUgYSBQR1Agc2lnbmF0dXJlLiBUaGlzIGRhdGEgc3RydWN0dXJlIGRvZXMgbm90IGlu
-Y2x1ZGUgc3BhY2UNCmZvciB0aGUgYWRkaXRpb25hbCBkYXRhIHJlcXVpcmVkIGZvciB0aGUgc2ln
-bmF0dXJlIHZlcmlmaWNhdGlvbi4NCg0KVGhpcyBwYXRjaCBzZXQgaW5zdGVhZCBvZmZlcnMgdGhl
-IG5ldyBmdW5jdGlvbiB2ZXJpZnlfcGdwX3NpZ25hdHVyZSgpLA0Kd2hpY2ggdGFrZXMgdGhlIHNh
-bWUgYXJndW1lbnRzIGFzIHZlcmlmeV9wa2NzN19zaWduYXR1cmUoKSwgYW5kDQpjYW4gYmUgdXNl
-ZCBhcyBpbiB0aGUgZXhhbXBsZSBJIG1lbnRpb25lZCBhYm92ZSBpbiBhIHN3aXRjaCgpIHdoZXJl
-DQp0aGUgc2VsZWN0b3IgaXMgdGhlIHNpZ25hdHVyZSB0eXBlLg0KDQpUaGlzIHBhdGNoIHNldCBh
-bHNvIG9mZmVycyB0aGUgaW5kaXZpZHVhbCBmdW5jdGlvbnMgY2FsbGVkIGluc2lkZQ0KdmVyaWZ5
-X3BncF9zaWduYXR1cmUoKSwgdG8gc3VwcG9ydCB0aGUgY2FzZSB3aGVyZSB0aGUgc2lnbmF0dXJl
-DQp2ZXJpZmljYXRpb24gcHJvY2VzcyBpcyBzcGxpdCBpbiBtdWx0aXBsZSBwYXJ0cw0KKGUuZy4g
-c2VjdXJpdHkvaW50ZWdyaXR5L2ltYS9pbWFfbW9kc2lnLmMpLiBBbHNvIGluIHRoaXMgY2FzZSwN
-CnRoZSBhcmd1bWVudHMgcGFzc2VkIHRvIHRoZSBQR1AtcmVsYXRlZCBmdW5jdGlvbnMgYXJlIHNp
-bWlsYXINCnRvIHRoZSBQS0NTIzcgb25lcy4NCg0KQW5vdGhlciBjb25jZXJuIHRoYXQgSSBoYXZl
-IGlzIHRoYXQsIHRoZSBhcHByb2FjaCBvZiB1c2luZyBhbg0KT3BlblBHUCBsaWJyYXJ5IHN0aWxs
-IHJlcXVpcmVzIHRoZSBMaW51eCBkaXN0cmlidXRpb24gdmVuZG9ycyB0bw0KZG8gYSB0cmFuc2Zv
-cm1hdGlvbiBmcm9tIHRoZSBzb3VyY2UgZGF0YSB0aGV5IGhhdmUgdG8gYW5vdGhlcg0KZm9ybWF0
-LiBUaGV5IGhhdmUgYW55d2F5IHRvIGNlcnRpZnkgdGhpcyB0cmFuc2Zvcm1hdGlvbiwgZXZlbg0K
-aWYgaXQgaXMgZG9uZSBpbiB1c2VyIHNwYWNlLiBNYXliZSBpdCBpcyBlYXNpZXIgdG8ga2VlcCB0
-aGUgb3JpZ2luYWwNCmRhdGEgYW5kIHZlcmlmeSB0aGUgbWluaW11bSBuZWNlc3NhcnkgdG8gaGFu
-ZGxlIFBHUCBrZXlzIGFuZA0Kc2lnbmF0dXJlIGluIHRoZSBrZXJuZWwsIHJhdGhlciB0aGFuIHZl
-cmlmeWluZyBhIGxpYnJhcnkgcnVubmluZw0KaW4gdXNlciBzcGFjZSB3aXRoIG1hbnkgb3RoZXIg
-ZnVuY3Rpb25zLg0KDQo+ID4+IFRoaXMgd2lsbCBzYXZlIHVzIGZyb20gaGF2aW5nIHRvIGFkZCBj
-b21wbGV4IHBhcnNlcnMgKGEgd2VsbC1rbm93biBzb3VyY2UNCj4gPj4gb2YgYnVncykgaW50byB0
-aGUga2VybmVsIC0gSSBndWVzcyB0aGVyZSBhcmVuJ3QgYW55IHBsYW5zIHRvIGFkZCBhbg0KPiA+
-PiBpbi1rZXJuZWwgUEdQIFdlYiBvZiBUcnVzdCBpbXBsZW1lbnRhdGlvbi4NCj4gPg0KPiA+IEkg
-ZXh0ZW5zaXZlbHkgdGVzdGVkIHRoZSBpbXBsZW1lbnRhdGlvbiB3aXRoIGFuIGFkLWhvYyBmYXVs
-dCBpbmplY3RvciwNCj4gPiB0byBzZWUgaWYgdGhlIGNvZGUgY2FuIGNvcnJlY3RseSBoYW5kbGUg
-ZXJyb3JzLiBJIGFsc28gZGV2ZWxvcGVkIGENCj4gPiBmdXp6ZXIgdG8gY29ycnVwdCB0aGUgZGF0
-YSBiZWZvcmUgaXQgaXMgcmVhZCBieSB0aGUga2VybmVsLiBGaW5hbGx5LA0KPiA+IEkgY2hlY2tl
-ZCB0aGF0IHRoZXJlIGFyZSBub3QgbWVtb3J5IGxlYWtzLiBCdXQgSSBhZ3JlZSwgdGhlcmUgY291
-bGQNCj4gPiBzdGlsbCBiZSBidWdzLg0KPiA+DQo+ID4gSWYgeW91IG1lYW4gdGhhdCBhIGtleSBj
-YW4gYmUgYWRkZWQgdG8gdGhlIGtlcm5lbCBpZiBpcyB2b3VjaGVkIGZvcg0KPiA+IGJ5IGFub3Ro
-ZXIga2V5IGluIHRoZSBidWlsdC1pbiBrZXlyaW5nLCBJIGFjdHVhbGx5IGltcGxlbWVudGVkIHRo
-aXMNCj4gPiAod2FzIG1pc3NpbmcgaW4gdGhlIG9yaWdpbmFsIGltcGxlbWVudGF0aW9uKS4gU29t
-ZSBrZXlyaW5ncywgZS5nLiAuaW1hLA0KPiA+IGhhdmUgdGhpcyByZXN0cmljdGlvbi4NCj4gPg0K
-PiA+IFRoZSB3YXkgdGhpcyB3b3JrcyBpcyB0aGF0LCB3aGVuZXZlciB5b3UgYWRkIGEgUEdQIGtl
-eSB0byB0aGUNCj4gPiBrZXJuZWwsIHRoZSBwYXJzZXIgdGFrZXMgbm90IG9ubHkgdGhlIHB1Ymxp
-YyBrZXkgYW5kIHRoZSB1c2VyIElELA0KPiA+IGJ1dCBhbHNvIGl0cyBzaWduYXR1cmUgYnkgdGhl
-IHNhbWUgb3IgYW5vdGhlciBQR1Aga2V5Lg0KPiA+DQo+ID4gVGhlIHNpZ25hdHVyZSBpcyB2ZXJp
-ZmllZCB3aGVuIHRoZSBrZXkgaXMgYWRkZWQgdG8gdGhlIGtleXJpbmcNCj4gPiB3aXRoIHRoYXQg
-cmVzdHJpY3Rpb24sIGFuZCBvbmx5IGlmIHRoZSB2ZXJpZmljYXRpb24gaXMgc3VjY2Vzc2Z1bA0K
-PiA+IHRoZSBrZXkgY2FuIGJlIGFkZGVkLg0KPiANCj4gSSB1bmRlcnN0YW5kIGJ1dCBpdCB3b3Vs
-ZCBiZSBncmVhdCB0byBtYWtlIHVzZSBhcyBtdWNoIGFzIHBvc3NpYmxlIG9mDQo+IHRoZSBleGlz
-dGluZyBpbi1rZXJuZWwgc2lnbmF0dXJlIHZlcmlmaWNhdGlvbiBtZWNoYW5pc21zLg0KDQpZZXMu
-IEkgdGhpbmsgdGhpcyBpcyB0aGUgcHVycG9zZSBvZiB0aGUgYXN5bW1ldHJpYyBzdWJ0eXBlcy4g
-VGhleQ0KaW50cm9kdWNlIGEgcGFyc2VyIGZvciB0aGUgc3BlY2lmaWMgZm9ybWF0LCBidXQgb25j
-ZSB0aGUgcmVsZXZhbnQNCmluZm9ybWF0aW9uIGFyZSBleHRyYWN0ZWQsIHRoZSBpbi1rZXJuZWwg
-bWVjaGFuaXNtcyBhcmUgdXNlZC4NCg0KUm9iZXJ0bw0KDQpIVUFXRUkgVEVDSE5PTE9HSUVTIER1
-ZXNzZWxkb3JmIEdtYkgsIEhSQiA1NjA2Mw0KTWFuYWdpbmcgRGlyZWN0b3I6IExpIFBlbmcsIFpo
-b25nIFJvbmdodWENCg0KPiA+IFJvYmVydG8NCj4gDQo+IFRoYW5rcywNCj4gTWFjaWVqDQoNCg==
+Eric,
+
+On Sun, Jan 09, 2022 at 01:07:18PM -0800, Eric Biggers wrote:
+> On Sun, Jan 09, 2022 at 11:45:37PM +0300, Vitaly Chikunov wrote:
+> > On Wed, Jan 05, 2022 at 03:37:39PM -0800, Eric Biggers wrote:
+> > > On Fri, Dec 31, 2021 at 10:35:00AM -0500, Mimi Zohar wrote:
+> > > > On Thu, 2021-12-02 at 14:07 -0800, Eric Biggers wrote:
+> > > > > On Thu, Dec 02, 2021 at 04:55:06PM -0500, Mimi Zohar wrote:
+> > > > > >  	case IMA_VERITY_DIGSIG:
+> > > > > > -		fallthrough;
+> > > > > > +		set_bit(IMA_DIGSIG, &iint->atomic_flags);
+> > > > > > +
+> > > > > > +		/*
+> > > > > > +		 * The IMA signature is based on a hash of IMA_VERITY_DIGSIG
+> > > > > > +		 * and the fs-verity file digest, not directly on the
+> > > > > > +		 * fs-verity file digest.  Both digests should probably be
+> > > > > > +		 * included in the IMA measurement list, but for now this
+> > > > > > +		 * digest is only used for verifying the IMA signature.
+> > > > > > +		 */
+> > > > > > +		verity_digest[0] = IMA_VERITY_DIGSIG;
+> > > > > > +		memcpy(verity_digest + 1, iint->ima_hash->digest,
+> > > > > > +		       iint->ima_hash->length);
+> > > > > > +
+> > > > > > +		hash.hdr.algo = iint->ima_hash->algo;
+> > > > > > +		hash.hdr.length = iint->ima_hash->length;
+> > > > > 
+> > > > > This is still wrong because the bytes being signed don't include the hash
+> > > > > algorithm.  Unless you mean for it to be implicitly always SHA-256?  fs-verity
+> > > > > supports SHA-512 too, and it may support other hash algorithms in the future.
+> > > > 
+> > > > IMA assumes that the file hash algorithm and the signature algorithm
+> > > > are the same.   If they're not the same, for whatever reason, the
+> > > > signature verification would simply fail.
+> > > > 
+> > > > Based on the v2 signature header 'type' field, IMA can differentiate
+> > > > between regular IMA file hash based signatures and fs-verity file
+> > > > digest based signatures.  The digest field (d-ng) in the IMA
+> > > > meausrement list prefixes the digest with the hash algorithm. I'm
+> > > > missing the reason for needing to hash fs-verity's file digest with
+> > > > other metadata, and sign that hash rather than fs-verity's file digest
+> > > > directly.
+> > > 
+> > > Because if someone signs a raw hash, then they also implicitly sign the same
+> > > hash value for all supported hash algorithms that produce the same length hash.
+> > 
+> > Unless there is broken hash algorithm allowing for preimage attacks this
+> > is irrelevant. If there is two broken algorithms allowing for collisions,
+> > colliding hashes could be prepared even if algo id is hashed too.
+> > 
+> 
+> Only one algorithm needs to be broken.  For example, SM3 has the same hash
+> length as SHA-256.  If SM3 support were to be added to fs-verity, and if someone
+> were to find a way to find an input that has a specific SM3 digest, then they
+> could also make it match a specific SHA-256 digest.  Someone might intend to
+> sign a SHA-256 digest, but if they are only signing the raw 32 bytes of the
+> digest, then they would also be signing the corresponding SM3 digest.  That's
+> why the digest that is signed *must* also include the algorithm used in the
+> digest (not the algorithm(s) used in the signature, which is different).
+
+I think it will be beneficial if we pass hash algo id to the
+akcipher_alg::verify. In fact, ecrdsa should only be used with streebog.
+And perhaps, sm2 with sm3, pkcs1 with md/sha/sm3, and ecdsa with sha family
+hashes.
+
+Thanks,
+
+
+> 
+> - Eric
