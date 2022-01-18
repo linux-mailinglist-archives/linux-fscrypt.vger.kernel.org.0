@@ -2,102 +2,77 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E4AF491172
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 17 Jan 2022 22:54:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 398304921D7
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 18 Jan 2022 10:04:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243375AbiAQVyy (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 17 Jan 2022 16:54:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54734 "EHLO
+        id S1345119AbiARJDz (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 18 Jan 2022 04:03:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233431AbiAQVyx (ORCPT
+        with ESMTP id S233192AbiARJDv (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 17 Jan 2022 16:54:53 -0500
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CE1EC06173F
-        for <linux-fscrypt@vger.kernel.org>; Mon, 17 Jan 2022 13:54:53 -0800 (PST)
-Received: by mail-qk1-x736.google.com with SMTP id j85so20956707qke.2
-        for <linux-fscrypt@vger.kernel.org>; Mon, 17 Jan 2022 13:54:53 -0800 (PST)
+        Tue, 18 Jan 2022 04:03:51 -0500
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9E56C061574
+        for <linux-fscrypt@vger.kernel.org>; Tue, 18 Jan 2022 01:03:50 -0800 (PST)
+Received: by mail-yb1-xb32.google.com with SMTP id o80so1954852yba.6
+        for <linux-fscrypt@vger.kernel.org>; Tue, 18 Jan 2022 01:03:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KmBygC3q5AQG8qkNJvnSnx+ggl7+9U+ombjnJKusFG4=;
-        b=BBYk7pWCxTpa4e9gEBi36zq0wZnDK1j8g3Khe3W2pLKftHSHr/CXDUEoyfqz3ooNbi
-         Glv8rYMWVGazEcND3kjnCvRMhHh/gu6xQWjwk8OJcUpOewIl+l/ejIwlhSRThY2N0OVs
-         mwTbFhmbf+K+mhRd0FmNjgwoVw20osV7MBe8U=
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=IAamEH5Xu1dJ3X0trVcFTPIrL7aTtcDGn5mUS4vw1a8=;
+        b=MKVoGuH84JEqwH7FLePXiHWn749zPRU0NdtP8Sm2JMhUl9c1iVyWjbwz6g8cfGp/lf
+         wGwjovvsv0mdzOrkruLS7VCe5a7nqOLOAOguQfLlO7KlNogBFH31ts7TJnJIMROay93O
+         zLFD2FXmAbjh/mANJwaPSceaNEIBY2ial/GMPVceYyFjbk49spZ6usuG0YECL34rgvGB
+         iei5o2VJiTWPHrHs+06yeYgSnvm3Lro4YfCcKClwdqQV0oHYRRf0rSUvau/jSGUGIY/g
+         PIq25ry8zIUYTR1kpaKtOSp5p5QnPiBRoNfQN58gXlJM4igUY1pzRJNojXS4U/9SVgkd
+         1m4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KmBygC3q5AQG8qkNJvnSnx+ggl7+9U+ombjnJKusFG4=;
-        b=OPri/8OCIj++se5JZ+csmB8i9ZGDcRATsD2zyCiEJRoYxHnLS7t8wJJvJpthVGcwqJ
-         S6itw8cEO362/O9n3JZtR3EXSEMXTvXNrznmLe5eIFeSidPxnHdPaz9kytU2qiab87EQ
-         Vz9HDLBCyccOTO3aUAPyqz4L/UuOZhtC2rHsxsCfXPgWl8CHFrJvP7WxbHCPfqWz59QM
-         ZDeziXMf4ZlOCM7aCQ/xw6CpH4LgSdIJzM5GL9H8dm0ckLCKEzzv1aT3u/ZDYFPTBowh
-         N8wBzuJM4hzBi1BZL8m3Wv5mhYSaZZ7MQaNiQyn0T336bcaR6TG/mIpDTgx+fXQ1b/K5
-         /73Q==
-X-Gm-Message-State: AOAM530bsjZwF++biLRUxcC3A346BkYUGscg3v7voY/TurvNtHPQJh4o
-        2OYx/DdB5rnVqMPMqSK7D4a1Kg==
-X-Google-Smtp-Source: ABdhPJxaMz1oYURs6e5lMt7vVVBbGEnFSB7TjiLRH+xlZuiq3V/0TG+DoST9VWbXv6HeYfW5osR6TA==
-X-Received: by 2002:a37:aad8:: with SMTP id t207mr15930861qke.216.1642456492290;
-        Mon, 17 Jan 2022 13:54:52 -0800 (PST)
-Received: from nitro.local (bras-base-mtrlpq5031w-grc-32-216-209-220-181.dsl.bell.ca. [216.209.220.181])
-        by smtp.gmail.com with ESMTPSA id f9sm9371606qkp.94.2022.01.17.13.54.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jan 2022 13:54:51 -0800 (PST)
-Date:   Mon, 17 Jan 2022 16:54:49 -0500
-From:   Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc:     Roberto Sassu <roberto.sassu@huawei.com>, dhowells@redhat.com,
-        dwmw2@infradead.org, herbert@gondor.apana.org.au,
-        davem@davemloft.net, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zohar@linux.ibm.com, ebiggers@kernel.org,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: Re: [PATCH 00/14] KEYS: Add support for PGP keys and signatures
-Message-ID: <20220117215449.2qboqd3nmsky2g3w@nitro.local>
-References: <20220111180318.591029-1-roberto.sassu@huawei.com>
- <YeV+jkGg6mpQdRID@zx2c4.com>
- <20220117165933.l3762ppcbj5jxicc@meerkat.local>
- <392d28fa-7a2c-867a-5fbb-640064461eb7@maciej.szmigiero.name>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=IAamEH5Xu1dJ3X0trVcFTPIrL7aTtcDGn5mUS4vw1a8=;
+        b=MkSdvh/F/Epe5+rqiaDZlpKV4Ikvdq4SWaXMYhCF1iN70DQkVMSD3PxJm+uLCOaNia
+         XciTKo+WYS0s9ojPMlLrZ4wtYIGa5NYSs3ZxjaNH8PI8poljz2sr7gumOvFR5lO6yCI4
+         8nww+hGKx+c27xQQJy3IK+F1z+bUGVBXU99RaIQEuQb8xwi50ByllUJnlDqfvIMRGho6
+         pAm6RJenS6e59n58o2zBPNLFzUAR4Wu9OrHBJtsQjolPgumfJvaP7uJvRlWhTx/ALjy1
+         xjmpWmH5NbDqhExGxs+mgzbo1syGTKk64/qlIUdXphaiGkSoWXh0eLV1I9DC8W/M6aJt
+         xc/w==
+X-Gm-Message-State: AOAM532ziIABRyECJ819UweSEa3eI6e1IHVd3sgYC05/aS25mAFiqH8N
+        Inic2mija0pCj/cvqBl2GCrZK8bWXuNvS6bFEGE=
+X-Google-Smtp-Source: ABdhPJy6S8YpzyetQz5KgFrhfh63qx4z5C4Z/Y2SVI8oau6/Qt6fRl+454Z9GiaGeU2dYh9fMxr8ktnL9Tw7RDFSq4I=
+X-Received: by 2002:a25:7287:: with SMTP id n129mr30710797ybc.351.1642496630031;
+ Tue, 18 Jan 2022 01:03:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <392d28fa-7a2c-867a-5fbb-640064461eb7@maciej.szmigiero.name>
+Received: by 2002:a05:7108:3655:0:0:0:0 with HTTP; Tue, 18 Jan 2022 01:03:49
+ -0800 (PST)
+Reply-To: asil.ajwad@gmail.com
+From:   Asil Ajwad <graceyaogokamboule@gmail.com>
+Date:   Mon, 17 Jan 2022 21:03:49 -1200
+Message-ID: <CA+Yy_gAHH8Aue7iwiH_cJ4+g8NkHKK3sLYXeb_HRC+HesC70HA@mail.gmail.com>
+Subject: Greetings,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Jan 17, 2022 at 09:59:22PM +0100, Maciej S. Szmigiero wrote:
-> > I am concerned that ed25519 private key management is very rudimentary -- more
-> > often than not it is just kept somewhere on disk, often without any passphrase
-> > encryption.
-> > 
-> > With all its legacy warts, GnuPG at least has decent support for hardware
-> > off-load via OpenPGP smartcards or TPM integration in GnuPG 2.3, but the best
-> > we have with ed25519 is passhprase protection as implemented in minisign (and
-> 
-> I am not sure that I understood your point here correctly, but GnuPG
-> already supports ed25519 keys, including stored on a smartcard - for
-> example, on a YubiKey [1].
+-- 
+Greetings,
 
-Yes, I know, but you cannot use ed25519-capable OpenPGP smartcards to create
-non-PGP signatures. The discussion was about using ed25519 signatures
-directly (e.g. like signify/minisign do). Jason pointed out to me on IRC that
-it's possible to do it with YubiHSM, but it's an expensive device ($650 USD
-from Yubico).
+I am Mr.Asil Ajwad, I work with United Bank of Africa, can you use
+an ATM Visa Card to withdraw money at, ATM Cash Machine in your
+country, if yes I want to transfer abounded fund the sum of $10.5million
+US-Dollars, to you from my country, this is part of the money that was
+abounded by our late old client a politician who unfortunately lost
+his life and was forced out of power Du to greedy act, the bank will
 
-> While the current software support for ed25519 might be limited, there
-> is certainly progress being made, RFC 8410 allowed these algos for X.509
-> certificates.
-> Support for such certificates is already implemented in OpenSSL [2].
-> 
-> ECDSA, on the other hand, is very fragile with respect to random number
-> generation at signing time.
-> We know that people got burned here in the past.
+change the account details to your name, and apply for a Visa Card
+with your details, the Visa Card will be send to you, and you can be
+withdrawing money with it always, whatever any amount you withdraw
+daily, you will send 60% to me and you will take 40%, the Visa Card
+and the bank account will be on your name, I will be waiting for your
+response for more details, thanks to you a lot for giving me your time.
 
-I think this is taking us far away from the main topic (which
-signing/verification standards to use in-kernel).
-
--K
+regards,
+Mr.Asil Ajwad.
