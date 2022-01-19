@@ -2,460 +2,227 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85BFB493938
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 19 Jan 2022 12:07:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD919493AC1
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 19 Jan 2022 14:02:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353984AbiASLHE (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 19 Jan 2022 06:07:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354020AbiASLG5 (ORCPT
+        id S1354520AbiASNCE (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 19 Jan 2022 08:02:04 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:4431 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232897AbiASNCD (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 19 Jan 2022 06:06:57 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51683C06173E;
-        Wed, 19 Jan 2022 03:06:57 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D544661585;
-        Wed, 19 Jan 2022 11:06:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6516C004E1;
-        Wed, 19 Jan 2022 11:06:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1642590416;
-        bh=+MGMJGjTC4l7GqQu8FamsDgxt/+lMgzDIYhR185T0tc=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=AjOcw3r8KC8QR5pi1R5qyDWeyS2kkKDDwPog0BjgyvcrLQl09Ny67iRPNzD5c2gzb
-         crQ2SEqx1XLAcB4vtwOjUYBvCr6is+TMGkKQUu6e1qbu9tDwNg5m7frZj3NE8TJHJ+
-         nBXIaJIXCOliIZrG9DKtPiG4leATmDU7Vhqu3098u2kOQLm/BNvoFPOdEa8RhWMrLQ
-         8DG5hi4J9TRW8Z49f9k90t1xws7yTZ/EWUhcOJxLxBRa6W8RfEfmeF8n0569sKtSrn
-         BOdqkCh+iAtai3ouU3aR2y05X5hZC9rhqz9trMczuQuSyQ6eg4S2MS2/OYGAPXj318
-         qfIZ62xFMp0lg==
-Message-ID: <cd8a7a425d0ca09e817d7c480ce5dcfde55ebcef.camel@kernel.org>
-Subject: Re: [RFC PATCH v10 43/48] ceph: add read/modify/write to
- ceph_sync_write
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Xiubo Li <xiubli@redhat.com>, ceph-devel@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, idryomov@gmail.com
-Date:   Wed, 19 Jan 2022 06:06:54 -0500
-In-Reply-To: <bc1b83ca-7979-2b5b-3f45-f0b2d969bfa6@redhat.com>
-References: <20220111191608.88762-1-jlayton@kernel.org>
-         <20220111191608.88762-44-jlayton@kernel.org>
-         <0992447d-3522-c5d5-5d4b-1875e9d3128f@redhat.com>
-         <bc1b83ca-7979-2b5b-3f45-f0b2d969bfa6@redhat.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.42.2 (3.42.2-1.fc35) 
+        Wed, 19 Jan 2022 08:02:03 -0500
+Received: from fraeml713-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Jf5Pl0RgDz67bFy;
+        Wed, 19 Jan 2022 21:01:47 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml713-chm.china.huawei.com (10.206.15.32) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Wed, 19 Jan 2022 14:02:00 +0100
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2308.021;
+ Wed, 19 Jan 2022 14:02:00 +0100
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Antony Vennard <antony@vennard.ch>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>
+CC:     "dhowells@redhat.com" <dhowells@redhat.com>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
+        "ebiggers@kernel.org" <ebiggers@kernel.org>
+Subject: RE: [PATCH 00/14] KEYS: Add support for PGP keys and signatures
+Thread-Topic: [PATCH 00/14] KEYS: Add support for PGP keys and signatures
+Thread-Index: AQHYBxWUAJoIvMeqLk2UYoD6PZRMZ6xnP9oAgAAHlwCAAfOkgIAA+X0Q
+Date:   Wed, 19 Jan 2022 13:02:00 +0000
+Message-ID: <f42065e2f52a4939b379a8453369aa7b@huawei.com>
+References: <20220111180318.591029-1-roberto.sassu@huawei.com>
+ <YeV+jkGg6mpQdRID@zx2c4.com>
+ <d92912bba61ee37e42d04b64073b9031604acc0f.camel@HansenPartnership.com>
+ <079f10b9-060b-3a36-2224-fa1b483cbad5@vennard.ch>
+In-Reply-To: <079f10b9-060b-3a36-2224-fa1b483cbad5@vennard.ch>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.48.214.59]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, 2022-01-19 at 13:08 +0800, Xiubo Li wrote:
-> On 1/19/22 11:21 AM, Xiubo Li wrote:
-> > 
-> > On 1/12/22 3:16 AM, Jeff Layton wrote:
-> > > When doing a synchronous write on an encrypted inode, we have no
-> > > guarantee that the caller is writing crypto block-aligned data. When
-> > > that happens, we must do a read/modify/write cycle.
-> > > 
-> > > First, expand the range to cover complete blocks. If we had to change
-> > > the original pos or length, issue a read to fill the first and/or last
-> > > pages, and fetch the version of the object from the result.
-> > > 
-> > > We then copy data into the pages as usual, encrypt the result and issue
-> > > a write prefixed by an assertion that the version hasn't changed. If 
-> > > it has
-> > > changed then we restart the whole thing again.
-> > > 
-> > > If there is no object at that position in the file (-ENOENT), we prefix
-> > > the write on an exclusive create of the object instead.
-> > > 
-> > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > > ---
-> > >   fs/ceph/file.c | 260 +++++++++++++++++++++++++++++++++++++++++++------
-> > >   1 file changed, 228 insertions(+), 32 deletions(-)
-> > > 
-> > > diff --git a/fs/ceph/file.c b/fs/ceph/file.c
-> > > index a6305ad5519b..41766b2012e9 100644
-> > > --- a/fs/ceph/file.c
-> > > +++ b/fs/ceph/file.c
-> > > @@ -1468,18 +1468,16 @@ ceph_sync_write(struct kiocb *iocb, struct 
-> > > iov_iter *from, loff_t pos,
-> > >       struct inode *inode = file_inode(file);
-> > >       struct ceph_inode_info *ci = ceph_inode(inode);
-> > >       struct ceph_fs_client *fsc = ceph_inode_to_client(inode);
-> > > -    struct ceph_vino vino;
-> > > +    struct ceph_osd_client *osdc = &fsc->client->osdc;
-> > >       struct ceph_osd_request *req;
-> > >       struct page **pages;
-> > >       u64 len;
-> > >       int num_pages;
-> > >       int written = 0;
-> > > -    int flags;
-> > >       int ret;
-> > >       bool check_caps = false;
-> > >       struct timespec64 mtime = current_time(inode);
-> > >       size_t count = iov_iter_count(from);
-> > > -    size_t off;
-> > >         if (ceph_snap(file_inode(file)) != CEPH_NOSNAP)
-> > >           return -EROFS;
-> > > @@ -1499,70 +1497,267 @@ ceph_sync_write(struct kiocb *iocb, struct 
-> > > iov_iter *from, loff_t pos,
-> > >       if (ret < 0)
-> > >           dout("invalidate_inode_pages2_range returned %d\n", ret);
-> > >   -    flags = /* CEPH_OSD_FLAG_ORDERSNAP | */ CEPH_OSD_FLAG_WRITE;
-> > > -
-> > >       while ((len = iov_iter_count(from)) > 0) {
-> > >           size_t left;
-> > >           int n;
-> > > +        u64 write_pos = pos;
-> > > +        u64 write_len = len;
-> > > +        u64 objnum, objoff;
-> > > +        u32 xlen;
-> > > +        u64 assert_ver;
-> > > +        bool rmw;
-> > > +        bool first, last;
-> > > +        struct iov_iter saved_iter = *from;
-> > > +        size_t off;
-> > > +
-> > > +        fscrypt_adjust_off_and_len(inode, &write_pos, &write_len);
-> > > +
-> > > +        /* clamp the length to the end of first object */
-> > > +        ceph_calc_file_object_mapping(&ci->i_layout, write_pos,
-> > > +                        write_len, &objnum, &objoff,
-> > > +                        &xlen);
-> > > +        write_len = xlen;
-> > > +
-> > > +        /* adjust len downward if it goes beyond current object */
-> > > +        if (pos + len > write_pos + write_len)
-> > > +            len = write_pos + write_len - pos;
-> > >   -        vino = ceph_vino(inode);
-> > > -        req = ceph_osdc_new_request(&fsc->client->osdc, &ci->i_layout,
-> > > -                        vino, pos, &len, 0, 1,
-> > > -                        CEPH_OSD_OP_WRITE, flags, snapc,
-> > > -                        ci->i_truncate_seq,
-> > > -                        ci->i_truncate_size,
-> > > -                        false);
-> > > -        if (IS_ERR(req)) {
-> > > -            ret = PTR_ERR(req);
-> > > -            break;
-> > > -        }
-> > > +        /*
-> > > +         * If we had to adjust the length or position to align with a
-> > > +         * crypto block, then we must do a read/modify/write cycle. We
-> > > +         * use a version assertion to redrive the thing if something
-> > > +         * changes in between.
-> > > +         */
-> > > +        first = pos != write_pos;
-> > > +        last = (pos + len) != (write_pos + write_len);
-> > > +        rmw = first || last;
-> > >   -        /* FIXME: express in FSCRYPT_BLOCK_SIZE units */
-> > > -        num_pages = calc_pages_for(pos, len);
-> > > +        /*
-> > > +         * The data is emplaced into the page as it would be if it 
-> > > were in
-> > > +         * an array of pagecache pages.
-> > > +         */
-> > > +        num_pages = calc_pages_for(write_pos, write_len);
-> > >           pages = ceph_alloc_page_vector(num_pages, GFP_KERNEL);
-> > >           if (IS_ERR(pages)) {
-> > >               ret = PTR_ERR(pages);
-> > > -            goto out;
-> > > +            break;
-> > > +        }
-> > > +
-> > > +        /* Do we need to preload the pages? */
-> > > +        if (rmw) {
-> > > +            u64 first_pos = write_pos;
-> > > +            u64 last_pos = (write_pos + write_len) - 
-> > > CEPH_FSCRYPT_BLOCK_SIZE;
-> > > +            u64 read_len = CEPH_FSCRYPT_BLOCK_SIZE;
-> > > +
-> > > +            /* We should only need to do this for encrypted inodes */
-> > > +            WARN_ON_ONCE(!IS_ENCRYPTED(inode));
-> > > +
-> > > +            /* No need to do two reads if first and last blocks are 
-> > > same */
-> > > +            if (first && last_pos == first_pos)
-> > > +                last = false;
-> > > +
-> > > +            /*
-> > > +             * Allocate a read request for one or two extents, 
-> > > depending
-> > > +             * on how the request was aligned.
-> > > +             */
-> > > +            req = ceph_osdc_new_request(osdc, &ci->i_layout,
-> > > +                    ci->i_vino, first ? first_pos : last_pos,
-> > > +                    &read_len, 0, (first && last) ? 2 : 1,
-> > > +                    CEPH_OSD_OP_READ, CEPH_OSD_FLAG_READ,
-> > > +                    NULL, ci->i_truncate_seq,
-> > > +                    ci->i_truncate_size, false);
-> > > +            if (IS_ERR(req)) {
-> > > +                ceph_release_page_vector(pages, num_pages);
-> > > +                ret = PTR_ERR(req);
-> > > +                break;
-> > > +            }
-> > > +
-> > > +            /* Something is misaligned! */
-> > > +            if (read_len != CEPH_FSCRYPT_BLOCK_SIZE) {
-> > > +                ret = -EIO;
-> > > +                break;
-> > > +            }
-> > 
-> > Do we need to call "ceph_release_page_vector()" here ?
-> > 
-> > 
-> > 
-> > > +
-> > > +            /* Add extent for first block? */
-> > > +            if (first)
-> > > +                osd_req_op_extent_osd_data_pages(req, 0, pages,
-> > > +                             CEPH_FSCRYPT_BLOCK_SIZE,
-> > > +                             offset_in_page(first_pos),
-> > > +                             false, false);
-> > > +
-> > > +            /* Add extent for last block */
-> > > +            if (last) {
-> > > +                /* Init the other extent if first extent has been 
-> > > used */
-> > > +                if (first) {
-> > > +                    osd_req_op_extent_init(req, 1, CEPH_OSD_OP_READ,
-> > > +                            last_pos, CEPH_FSCRYPT_BLOCK_SIZE,
-> > > +                            ci->i_truncate_size,
-> > > +                            ci->i_truncate_seq);
-> > > +                }
-> > > +
-> > > +                osd_req_op_extent_osd_data_pages(req, first ? 1 : 0,
-> > > +                            &pages[num_pages - 1],
-> > > +                            CEPH_FSCRYPT_BLOCK_SIZE,
-> > > +                            offset_in_page(last_pos),
-> > > +                            false, false);
-> > > +            }
-> > > +
-> > > +            ret = ceph_osdc_start_request(osdc, req, false);
-> > > +            if (!ret)
-> > > +                ret = ceph_osdc_wait_request(osdc, req);
-> > > +
-> > > +            /* FIXME: length field is wrong if there are 2 extents */
-> > > + ceph_update_read_metrics(&fsc->mdsc->metric,
-> > > +                         req->r_start_latency,
-> > > +                         req->r_end_latency,
-> > > +                         read_len, ret);
-> > > +
-> > > +            /* Ok if object is not already present */
-> > > +            if (ret == -ENOENT) {
-> > > +                /*
-> > > +                 * If there is no object, then we can't assert
-> > > +                 * on its version. Set it to 0, and we'll use an
-> > > +                 * exclusive create instead.
-> > > +                 */
-> > > +                ceph_osdc_put_request(req);
-> > > +                assert_ver = 0;
-> > > +                ret = 0;
-> > > +
-> > > +                /*
-> > > +                 * zero out the soon-to-be uncopied parts of the
-> > > +                 * first and last pages.
-> > > +                 */
-> > > +                if (first)
-> > > +                    zero_user_segment(pages[0], 0,
-> > 
-> > The pages should already be released in "ceph_osdc_put_request()" ?
-> > 
-> > 
-> > > + offset_in_page(first_pos));
-> > > +                if (last)
-> > > +                    zero_user_segment(pages[num_pages - 1],
-> > > +                              offset_in_page(last_pos),
-> > > +                              PAGE_SIZE);
-> > > +            } else {
-> > > +                /* Grab assert version. It must be non-zero. */
-> > > +                assert_ver = req->r_version;
-> > > +                WARN_ON_ONCE(ret > 0 && assert_ver == 0);
-> > > +
-> > > +                ceph_osdc_put_request(req);
-> > > +                if (ret < 0) {
-> > > +                    ceph_release_page_vector(pages, num_pages);
-> > 
-> > Shouldn't the pages are already released in "ceph_osdc_put_request()" ?
-> > 
-> > IMO you should put the request when you are breaking the while loop 
-> > and just before the next "ceph_osdc_new_request()" below.
-> > 
-> > 
-> Okay, I missed the "own_page" parameter, the caller is responsible to 
-> release it.
-> 
-> But you need to call the "ceph_release_page_vector()" when 
-> "ceph_fscrypt_decrypt_block_inplace()" fails below.
-> 
-> 
-
-
-Well spotted!
-
-Yeah, own_pages is not set here because we need to continue working with
-the pages after the read completes. We do set it for the write, however,
-so we don't need to set it after that.
-
-I've fixed up the places you noted (and a couple of others) in my tree.
-I'll plan to re-push wip-fscrypt after I do some testing.
-
-Thanks!
-
-> > 
-> > > +                    break;
-> > > +                }
-> > > +
-> > > +                if (first) {
-> > > +                    ret = ceph_fscrypt_decrypt_block_inplace(inode,
-> > > +                            pages[0],
-> > > +                            CEPH_FSCRYPT_BLOCK_SIZE,
-> > > +                            offset_in_page(first_pos),
-> > > +                            first_pos >> CEPH_FSCRYPT_BLOCK_SHIFT);
-> > > +                    if (ret < 0)
-> > > +                        break;
-> > > +                }
-> > > +                if (last) {
-> > > +                    ret = ceph_fscrypt_decrypt_block_inplace(inode,
-> > > +                            pages[num_pages - 1],
-> > > +                            CEPH_FSCRYPT_BLOCK_SIZE,
-> > > +                            offset_in_page(last_pos),
-> > > +                            last_pos >> CEPH_FSCRYPT_BLOCK_SHIFT);
-> > > +                    if (ret < 0)
-> > > +                        break;
-> > > +                }
-> > > +            }
-> > >           }
-> > >             left = len;
-> > > -        off = pos & ~CEPH_FSCRYPT_BLOCK_MASK;
-> > > +        off = offset_in_page(pos);
-> > >           for (n = 0; n < num_pages; n++) {
-> > > -            size_t plen = min_t(size_t, left, 
-> > > CEPH_FSCRYPT_BLOCK_SIZE - off);
-> > > +            size_t plen = min_t(size_t, left, PAGE_SIZE - off);
-> > > +
-> > > +            /* copy the data */
-> > >               ret = copy_page_from_iter(pages[n], off, plen, from);
-> > > -            off = 0;
-> > >               if (ret != plen) {
-> > >                   ret = -EFAULT;
-> > >                   break;
-> > >               }
-> > > +            off = 0;
-> > >               left -= ret;
-> > >           }
-> > > -
-> > >           if (ret < 0) {
-> > > +            dout("sync_write write failed with %d\n", ret);
-> > >               ceph_release_page_vector(pages, num_pages);
-> > > -            goto out;
-> > > +            break;
-> > >           }
-> > >   -        req->r_inode = inode;
-> > > +        if (IS_ENCRYPTED(inode)) {
-> > > +            ret = ceph_fscrypt_encrypt_pages(inode, pages,
-> > > +                             write_pos, write_len,
-> > > +                             GFP_KERNEL);
-> > > +            if (ret < 0) {
-> > > +                dout("encryption failed with %d\n", ret);
-> 
-> And here ?
-> 
-> 
-> > > +                break;
-> > > +            }
-> > > +        }
-> > >   -        osd_req_op_extent_osd_data_pages(req, 0, pages, len,
-> > > -                         pos & ~CEPH_FSCRYPT_BLOCK_MASK,
-> > > -                         false, true);
-> > 
-> > The pages have already been released, you need to allocate new pages 
-> > again here.
-> > 
-> > > +        req = ceph_osdc_new_request(osdc, &ci->i_layout,
-> > > +                        ci->i_vino, write_pos, &write_len,
-> > > +                        rmw ? 1 : 0, rmw ? 2 : 1,
-> > > +                        CEPH_OSD_OP_WRITE,
-> > > +                        CEPH_OSD_FLAG_WRITE,
-> > > +                        snapc, ci->i_truncate_seq,
-> > > +                        ci->i_truncate_size, false);
-> > > +        if (IS_ERR(req)) {
-> > > +            ret = PTR_ERR(req);
-> > > +            ceph_release_page_vector(pages, num_pages);
-> > > +            break;
-> > > +        }
-> > >   +        dout("sync_write write op %lld~%llu\n", write_pos, 
-> > > write_len);
-> > > +        osd_req_op_extent_osd_data_pages(req, rmw ? 1 : 0, pages, 
-> > > write_len,
-> > > +                         offset_in_page(write_pos), false,
-> > > +                         true);
-> > > +        req->r_inode = inode;
-> > >           req->r_mtime = mtime;
-> > > -        ret = ceph_osdc_start_request(&fsc->client->osdc, req, false);
-> > > +
-> > > +        /* Set up the assertion */
-> > > +        if (rmw) {
-> > > +            /*
-> > > +             * Set up the assertion. If we don't have a version number,
-> > > +             * then the object doesn't exist yet. Use an exclusive 
-> > > create
-> > > +             * instead of a version assertion in that case.
-> > > +             */
-> > > +            if (assert_ver) {
-> > > +                osd_req_op_init(req, 0, CEPH_OSD_OP_ASSERT_VER, 0);
-> > > +                req->r_ops[0].assert_ver.ver = assert_ver;
-> > > +            } else {
-> > > +                osd_req_op_init(req, 0, CEPH_OSD_OP_CREATE,
-> > > +                        CEPH_OSD_OP_FLAG_EXCL);
-> > > +            }
-> > > +        }
-> > > +
-> > > +        ret = ceph_osdc_start_request(osdc, req, false);
-> > >           if (!ret)
-> > > -            ret = ceph_osdc_wait_request(&fsc->client->osdc, req);
-> > > +            ret = ceph_osdc_wait_request(osdc, req);
-> > > ceph_update_write_metrics(&fsc->mdsc->metric, req->r_start_latency,
-> > >                         req->r_end_latency, len, ret);
-> > > -out:
-> > >           ceph_osdc_put_request(req);
-> > >           if (ret != 0) {
-> > > +            dout("sync_write osd write returned %d\n", ret);
-> > > +            /* Version changed! Must re-do the rmw cycle */
-> > > +            if ((assert_ver && (ret == -ERANGE || ret == 
-> > > -EOVERFLOW)) ||
-> > > +                 (!assert_ver && ret == -EEXIST)) {
-> > > +                /* We should only ever see this on a rmw */
-> > > +                WARN_ON_ONCE(!rmw);
-> > > +
-> > > +                /* The version should never go backward */
-> > > +                WARN_ON_ONCE(ret == -EOVERFLOW);
-> > > +
-> > > +                *from = saved_iter;
-> > > +
-> > > +                /* FIXME: limit number of times we loop? */
-> > > +                continue;
-> > > +            }
-> > >               ceph_set_error_write(ci);
-> > >               break;
-> > >           }
-> > > -
-> > >           ceph_clear_error_write(ci);
-> > >           pos += len;
-> > >           written += len;
-> > > @@ -1580,6 +1775,7 @@ ceph_sync_write(struct kiocb *iocb, struct 
-> > > iov_iter *from, loff_t pos,
-> > >           ret = written;
-> > >           iocb->ki_pos = pos;
-> > >       }
-> > > +    dout("sync_write returning %d\n", ret);
-> > >       return ret;
-> > >   }
-> 
-
--- 
-Jeff Layton <jlayton@kernel.org>
+PiBGcm9tOiBBbnRvbnkgVmVubmFyZCBbbWFpbHRvOmFudG9ueUB2ZW5uYXJkLmNoXQ0KPiBTZW50
+OiBUdWVzZGF5LCBKYW51YXJ5IDE4LCAyMDIyIDk6NTAgUE0NCj4gSGkgQWxsLA0KPiANCj4gT24g
+MTcvMDEvMjAyMiAxNjowMiwgSmFtZXMgQm90dG9tbGV5IHdyb3RlOg0KPiA+IE9uIE1vbiwgMjAy
+Mi0wMS0xNyBhdCAxNTozNCArMDEwMCwgSmFzb24gQS4gRG9uZW5mZWxkIHdyb3RlOg0KPiA+PiBI
+aSwNCj4gPj4NCj4gPj4gV2hpbGUgaXQgbG9va3MgbGlrZSB5b3UgcHV0IGEgbG90IG9mIHdvcmsg
+aW50byB0aGlzIHBhdGNoc2V0LCBJIHRoaW5rDQo+ID4+IHRoZSBnZW5lcmFsIGlkZWEgb2YgYWRk
+aW5nIFBHUCAqdG8gdGhlIGtlcm5lbCogaXMgYSBwcmV0dHkgZGF1bnRpbmcNCj4gPj4gcHJvcG9z
+aXRpb24uIFRoZSBnZW5lcmFsIGNvbnNlbnN1cyBpbiB0aGUgY3J5cHRvIGVuZ2luZWVyaW5nIHdv
+cmxkIGlzDQo+ID4+IHRoYXQgUEdQIG91Z2h0IHRvIGJlIG9uIGl0cyB3YXkgb3V0LiBXZSBkZWZp
+bml0ZWx5IGRvbid0IHdhbnQgdG8NCj4gPj4gcGVycGV0dWF0ZSB0aGlzIHByb2plY3Qtb24tbGlm
+ZS1zdXBwb3J0IGludG8gdGhlIHBlcm1hbmVuY2Ugb2Yga2VybmVsDQo+ID4+IGNvZGUuIFNvbWUg
+cXVpY2sgR29vZ2xlIHNlYXJjaGVzIHdpbGwgcmV2ZWFsIGEgbGl0YW55IG9mIGJsb2cgcG9zdHMN
+Cj4gPj4gdG8gdGhlIHR1bmUgb2YsICJ3aHkgb2ggd2h5IGFyZSBwZW9wbGUgc3RpbGwgdXNpbmcg
+dGhpcz8iIEhlcmUncyBvbmUNCj4gPj4gZnJvbSAyMDE5Og0KPiA+PiBodHRwczovL2xhdGFjb3Jh
+Lm1pY3JvLmJsb2cvMjAxOS8wNy8xNi90aGUtcGdwLXByb2JsZW0uaHRtbCAuIEkNCj4gPj4gdGhp
+bmsgdGhlc2UgYXJlIGFyZ3VtZW50cyB0byB0YWtlIHNlcmlvdXNseS4gQW5kIGV2ZW4gaWYgeW91
+IGRpc2FncmVlDQo+ID4+IHdpdGggc29tZSBwYXJ0cywgeW91IG1heSB3YW50IHRvIGNvbnNpZGVy
+IHdoZXRoZXIgdGhlIHJlbWFpbmluZyBwYXJ0cw0KPiA+PiB3YXJyYW50IGEgYml0IG9mIHBhdXNl
+IGJlZm9yZSBhZGRpbmcgdGhpcyB0byB0aGUga2VybmVsIGFuZA0KPiA+PiBwZXJwZXR1YXRpbmcg
+UEdQJ3MgZGVzaWduIGZ1cnRoZXIuDQo+IA0KPiBTbyB3aGlsZSBJIHVuZGVyc3RhbmQgd2h5IHRo
+aXMgaXMgYmVpbmcgcHJvcG9zZWQgYW5kIGNsZWFybHkgZWZmb3J0IGhhcw0KPiBnb25lIGludG8g
+aXQsIEkgYWxzbyB0aGluayBpdCBpcyBub3QgdGhlIHJpZ2h0IGFwcHJvYWNoLiBJdCBzZWVtcyB0
+aGlzDQo+IHByb3Bvc2FsIGlzIHRvIGluY2x1ZGUgYSBmdWxsIFBHUCBwYWNrZXQgcGFyc2VyIGFu
+ZCB2ZXJpZmljYXRpb24gbG9naWMNCj4gaW4gdGhlIGtlcm5lbCBhcyBhbiBlcXVpdmFsZW50IHRv
+IGFsbG93IFBHUCBzaWduYXR1cmVzIHRvIGJlIHN1Ym1pdHRlZA0KPiB2aWEgRlNfSU9DX0VOQUJM
+RV9WRVJJVFk6DQo+IA0KPiAiRlNfSU9DX0VOQUJMRV9WRVJJVFkgYWNjZXB0cyBhIHBvaW50ZXIg
+dG8gYSBQS0NTIzcgZm9ybWF0dGVkIGRldGFjaGVkDQo+IHNpZ25hdHVyZSBpbiBERVIgZm9ybWF0
+IG9mIHRoZSBmaWxl4oCZcyBmcy12ZXJpdHkgZGlnZXN0LiINCj4gDQo+IEkgbWF5IGJlIG1pc2lu
+dGVycHJldGluZywgYnV0IGFzIEkgdW5kZXJzdGFuZCBpdCBsb2dpYyBmb3IgWC41MDkvUEtDUw0K
+PiB2YWxpZGF0aW9uIGFscmVhZHkgZXhpc3RzIGluLWtlcm5lbCBiZWNhdXNlIG9mIFVFRkkgYW5k
+IG1vZHVsZSBzaWduaW5nLA0KPiBzbyB0aGlzIHNpZ25hdHVyZSB3b3VsZCBiZSB2ZXJpZmllZCB1
+cCB0byB0cnVzdGVkIHJvb3RzLiBUaGUgcHJvcG9zYWwgaXMNCj4gdG8gZHVwbGljYXRlIGFsbCBv
+ZiB0aGlzIGxvZ2ljIGJ1dCBpbiB0ZXJtcyBvZiBQR1AtZm9ybWF0dGVkIGtleXMuDQo+IA0KPiBJ
+IGJlbGlldmUgdGhpcyBpcyB1bm5lY2Vzc2FyeS4gU2luY2UgaXQgc2VlbXMgdG8gcmVxdWlyZSBi
+b3RoIGENCj4gc2lnbmF0dXJlIGFuZCB2ZXJpZmljYXRpb24gdXAgdG8gYSByb290LCBhbmQgZGlz
+dHJpYnV0aW9ucyBsaWtlIEZlZG9yYQ0KPiBhbHJlYWR5IGRlYWwgd2l0aCB4NTA5IG1vZHVsZSBz
+aWduaW5nIGtleXMgZm9yIHRoZWlyIGtlcm5lbCBtb2R1bGVzLCBJDQo+IGNhbid0IHNlZSB0aGUg
+bWVyaXQgaW4gaW5jbHVkaW5nIHRoZSBmdWxsIFBHUCBzeXN0ZW0gdG9vLiBUaGUNCg0KT25lIG9m
+IHRoZSBwcm9ibGVtcywgYnV0IEkgbmVlZCB0byB2ZXJpZnkgdGhhdCwgaXMgdGhhdCB0aGUga2V5
+IHVzZWQNCmZvciBzaWduaW5nIGtlcm5lbCBtb2R1bGVzIG1pZ2h0IGJlIGF2YWlsYWJsZSBvbmx5
+IHdoZW4gdGhlIGtlcm5lbA0KcGFja2FnZSBpcyBidWlsdC4gVGhlIEdQRyBrZXkgc2hvdWxkIGJl
+IGF2YWlsYWJsZSBmb3IgZXZlcnkgUlBNLg0KDQpJZiB0aGUgR1BHIGtleSBpcyB0aGUgb25seSBh
+dmFpbGFibGUsIHRoZW4gcHJvYmFibHkgdGhlIGxlYXN0LWVmZm9ydA0Kb3B0aW9uIHdvdWxkIGJl
+IHRvIGxvYWQgdGhlIEdQRyBrZXkgYXMgaXQgaXMuIE9yIHlvdSBoYXZlIHRvIGNyZWF0ZQ0KYSBk
+dW1teSwgdW5zaWduZWQgWDUwOSBjZXJ0aWZpY2F0ZSB3aXRoIHRoZSBwdWJsaWMga2V5IGV4dHJh
+Y3RlZA0KZnJvbSB0aGUgR1BHIGtleS4gVGhlIG90aGVyIG9wdGlvbiBJIG1lbnRpb25lZCBpbiB0
+aGlzIGRpc2N1c3Npb24NCndhcyB0byBpbnRyb2R1Y2UgYSBzaW1wbGUgZm9ybWF0IHRvIHVwbG9h
+ZCB0aGUga2V5IHRvIHRoZSBrZXJuZWwsDQp3aGljaCBzdGlsbCBkb2VzIG5vdCBlbGltaW5hdGUg
+dGhlIHJpc2tzIGR1ZSB0byBwYXJzaW5nIGRhdGEuDQoNCkluIGFkZGl0aW9uIHRvIHRoYXQsIHRo
+ZXJlIGlzIHRoZSBwcm9ibGVtIG9mIG1haW50YWluaW5nIHRoZSBjb3JyZWN0DQprZXkgSURzLiBJ
+ZiB5b3UgY3JlYXRlIGEgZHVtbXkgWDUwOSBjZXJ0aWZpY2F0ZSwgdGhpcyBtZWFucyBjYWxjdWxh
+dGluZw0KYSBuZXcgSUQgYW5kIHVzaW5nIHRoZW0gaW4gdGhlIHNpZ25hdHVyZXMuDQoNClRoZSBs
+YXN0IHByb2JsZW0gb2YgdHJ5aW5nIHRvIHJldXNlIHRoZSBHUEcga2V5IGFuZCBjb252ZXJ0IGl0
+IHRvIGENCmR1bW15IFg1MDkgY2VydGlmaWNhdGUgaXMgdGhhdCB0aGUga2V5cmluZyByZXN0cmlj
+dGlvbiB3aWxsIG5vdCB3b3JrLg0KSU1BIGFuZCBFVk0ga2V5cmluZ3MgcmVxdWlyZXMgdGhhdCB0
+aGUga2V5IGJlaW5nIGFkZGVkIGlzIHNpZ25lZA0Kd2l0aCBvbmUgb2YgdGhlIGtleXMgaW4gdGhl
+IGJ1aWx0LWluIG9yIHNlY29uZGFyeSBrZXlyaW5nLiBXaXRoIHRoZQ0KZHVtbXkgWDUwOSBjZXJ0
+aWZpY2F0ZSwgdXNpbmcgdGhvc2Uga2V5cmluZ3Mgd291bGQgbm90IGJlIHBvc3NpYmxlLg0KDQpN
+YXliZSB5b3UgY291bGQgaW5jbHVkZSB0aGUgc2lnbmF0dXJlIGluIHRoZSBYNTA5IGNlcnRpZmlj
+YXRlLCBidXQNCnlvdSBwcm9iYWJseSB3b3VsZCBub3QgYmUgYWJsZSB0byBjYWxjdWxhdGUgdGhl
+IGRpZ2VzdCBmb3IgdmVyaWZ5aW5nDQp0aGUgc2lnbmF0dXJlIGluIHRoZSBzYW1lIHdheSBQR1Ag
+ZG9lcy4NCg0KPiBsZWFzdC1lZmZvcnQgYXBwcm9hY2gsIEkgd291bGQgc3VnZ2VzdCwgaXMgdG8g
+aW5jbHVkZSBhbiB4NTA5DQo+IHJlcHJlc2VudGF0aW9uIG9mIHRoZSBzaWduYXR1cmUgaW4gdGhl
+IFJQTSBhbmQgdXNlIHRoZSBleGlzdGluZyBBUEkgdG8NCj4gcHVzaCB0aGF0IHVwIGludG8gdGhl
+IGtlcm5lbCwgd2l0aCB0aGUgdHJ1c3QgYW5jaG9yIHRoZSBzYW1lIGFzIGlzIHVzZWQNCj4gZm9y
+IG1vZHVsZSBzaWduaW5nIGtleXMsIG9yIHdoYXRldmVyIGRpc3RyaWJ1dGlvbnMgcHJlZmVyICh0
+aGV5LCBhZnRlcg0KPiBhbGwsIGNvbnRyb2wgdGhlIGtlcm5lbCB0cnVzdCBhbmNob3JzKS4NCg0K
+SXQgY291bGQgYmUgZXZlbiBlYXNpZXIuIElNQSBoYXMgYWxyZWFkeSBhIHZlcnkgc2ltcGxlIHNp
+Z25hdHVyZQ0KZm9ybWF0LiBIb3dldmVyLCB0aGUgbWFpbiBwcm9ibGVtIGlzIHRoZSBtYW5hZ2Vt
+ZW50IG9mIHRoZQ0Ka2V5cyByZXF1aXJlZCB0byB2ZXJpZnkgdGhlIHNpZ25hdHVyZXMuDQoNCkFm
+dGVyIHNldmVyYWwgaXRlcmF0aW9ucywgdHJ5aW5nIHRvIHJlbW92ZSBhbnl0aGluZyB0aGF0IHdh
+cyBub3QNCmVzc2VudGlhbCBmcm9tIHRoZSBwYXRjaCBzZXQsIEkgY2FtZSB0byB0aGUgY29uY2x1
+c2lvbiB0aGF0IGhhdmluZw0KdGhlIGxvZ2ljIGZvciBib3RoIHRoZSBrZXlzIGFuZCB0aGUgc2ln
+bmF0dXJlcyB3YXMgdGhlIGJlc3QNCmNvbXByb21pc2UuIFRydWUsIGl0IG1lYW5zIG1vcmUgbWFp
+bnRlbmFuY2UgZWZmb3J0IGZvciB0aGUNCmtlcm5lbCwgYnV0IHRoaXMgZW5zdXJlcyB0aGUgYmVz
+dCBpbnRlcm9wZXJhYmlsaXR5IHdpdGggdGhlIGN1cnJlbnQNCmVjb3N5c3RlbS4NCg0KSSB0aGlu
+ayB0aGUgY29kZSBpcyBub3QgcGFydGljdWxhcmx5IGNvbXBsaWNhdGVkIHRoYXQgd291bGQgYmUN
+CmltcHJhY3RpY2FsIHRvIHJldmlldy4NCg0KPiBJIHVuZGVyc3RhbmQgdGhpcyByZXF1aXJlcyBz
+b21lIGVmZm9ydCwgYnV0IHNvIHRvbyBkb2VzIG1haW50YWluaW5nIGENCj4gZnVsbHkgZmxlZGdl
+ZCBQR1AgcGFja2V0IHBhcnNlciBhcyBwcml2aWxlZ2VkIGNvZGUgZm9yIGFsbCB0aW1lLCBhbmQg
+SQ0KPiB0aGluayBtYWludGFpbmluZyB0aGlzIGluIHVzZXJzcGFjZSBpcyBhKSBlYXNpZXIgYW5k
+IGIpIGxlc3MgY29zdGx5IHRoYW4NCj4gZG9pbmcgaXQgaW4ga2VybmVsLiBBcyBhbiBhZGRlZCBi
+b251cywgYSBQR1AtcGFyc2luZyBsaWJyYXJ5IGluIGENCj4gbWVtb3J5LXNhZmUgbGFuZ3VhZ2Ug
+Y291bGQgYmUgdXNlZCBpbiB1c2Vyc3BhY2UuDQoNCkl0IGp1c3QgbmVlZHMgdG8gcGFyc2UgdGhl
+IGtleSwgdXNlciBJRCBhbmQgdGhlIHNpZ25hdHVyZSBwYWNrZXQgYW5kDQpzdWJwYWNrZXRzLiBD
+b25zaWRlciBhbHNvIHRoYXQgYWZ0ZXIgcGFyc2luZywgbm90aGluZyBhYm91dCBQR1ANCnJlbWFp
+bnMgaW4gdGhlIGtlcm5lbC4gVGhlIGFzeW1tZXRyaWMga2V5IHR5cGUgbWFpbnRhaW5zIGp1c3Qg
+dGhlDQpwdWJsaWMga2V5LCB0aGUga2V5IElEIGFuZCB0aGUgc2lnbmF0dXJlIG9mIHRoZSBrZXkg
+KG9wdGlvbmFsbHkpLg0KDQo+IEEgc2xpZ2h0bHkgbW9yZSBkcmFzdGljIHN0ZXAgd291bGQgYmUg
+dG8gd2hvbGVzYWxlIG1vdmUgdG8gUEtDUw0KPiBzaWduYXR1cmVzIGZvciBwYWNrYWdpbmcuIExp
+bnV4IGRpc3RyaWJ1dGlvbnMgY291bGQgYmUgdGhlaXIgb3duIHRydXN0ZWQNCj4gcm9vdHMgZm9y
+IHRoaXMgcHVycG9zZSBpZiB0aGV5IHNvIGRlc2lyZWQsIGFuZCBzaW5jZSB0aGV5IGNvbnRyb2wN
+Cj4gY2VydGlmaWNhdGUgYnVuZGxlcyBhbnl3YXkgdGhleSd2ZSBubyBuZWVkIHRvIGFkZCB0aGVt
+IHRvIHRoZSBicm93c2VyDQo+IGxpc3QgaWYgdGhhdCBpcyBhIGNvbmNlcm4sIGFuZCBjYW4gaXNz
+dWUgY2VydHMgd2l0aG91dCBTU0wgQ2xpZW50L1NTTA0KPiBTZXJ2ZXIgdHlwZXMgYW5kIE9JRHMu
+DQo+IA0KPiA+IFRoZSByZWFzb24gaXMgc2ltcGxlIHRob3VnaDogZm9yIGFsbCB0aGUgZGV0cmFj
+dG9ycyBhbmQgd2hpbmluZywgbm8tDQo+ID4gb25lJ3MgYWN0dWFsbHkgYmVlbiBhYmxlIHRvIGNv
+bWUgdXAgd2l0aCBhIG1vcmUgdXNhYmxlIHJlcGxhY2VtZW50Lg0KPiA+IFZlcnkgZmV3IHBlb3Bs
+ZSB3aG8gY29tcGxhaW4gYWJvdXQgR1BHIGFjdHVhbGx5IHN1Ym1pdCBwYXRjaGVzIHRvIGZpeA0K
+PiA+IGl0LiAgQSBmZXcgY29tZSB1cCB3aXRoIHRoZWlyIG93biBpbmZyYXN0cnVjdHVyZSB3aGlj
+aCB0ZW5kcyB0byBoYXZlDQo+ID4gZXZlbiBtb3JlIHByb2JsZW1zLg0KPiANCj4gUHJvYmFibHkg
+cmVwbGFjaW5nIHdpdGggUEtDUyBpcyBhIG5vbi1zdGFydGVyLCBidXQgaXQgaXMgYXQgbGVhc3QN
+Cj4gcG9zc2libGUgYW5kIGl0IGlzIGhpZ2hseSBsaWtlbHkgZGlzdHJvcyBwYWNrYWdlIG9uZSBv
+ciBtb3JlIHRvb2xzDQo+IGNhcGFibGUgb2YgdmFsaWRhdGluZyBzdWNoIHNpZ25hdHVyZXMgaW4g
+dGhlaXIgYmFzZSBpbnN0YWxscy4NCj4gDQo+IFRoZXJlIGFyZSBtdWx0aXBsZSBwcm9ibGVtcyB3
+aXRoIFBHUCB0aGF0IHJlY2VpdmUgY29tcGxhaW50cy4gVGhleSBhcmU6DQo+IA0KPiAgIDEpIE5v
+IGZvcndhcmQgc2VjcmVjeSBpbiBtZXNzYWdpbmctYmFzZWQgY3J5cHRvLg0KPiAgIDIpIFRoZSBk
+YXRhIGZvcm1hdC4NCj4gICAzKSBPdXRkYXRlZCBjcnlwdG9ncmFwaHkgc3RpbGwgc3VwcG9ydGVk
+Lg0KPiAgIDQpIFVYLg0KDQpXZSBhcmUgdXNpbmcgUEdQIGp1c3QgZm9yIGEgdmVyeSBzcGVjaWZp
+YyBwdXJwb3NlLCB2ZXJpZnlpbmcgc2lnbmF0dXJlcy4NCk91dGRhdGVkIGNyeXB0b2dyYXBoeSBj
+b3VsZCBiZSBkaXNhYmxlZCwgaWYgd2Ugd2lzaC4NCg0KPiBPZiB0aGVzZSwgYWxsIGZvdXIgY291
+bGQgYmUgbGV2ZWxsZWQgYWdhaW5zdCBQS0NTIHN0YW5kYXJkcyBhbmQgcmVsYXRlZA0KPiB0b29s
+cyB0b28gKGV4Y2VwdCBUTFMgcHJvdG9jb2xzIGZvciB0aGUgZmlyc3QgcG9pbnQpLCBhbmQgb25s
+eSAyIGFuZCAzDQo+IGFyZSByZWxldmFudCBoZXJlIHNpbmNlIHdlIGFyZSBjb25jZXJuZWQgd2l0
+aCBzaWduYXR1cmUgdmFsaWRhdGlvbiBvbmx5Lg0KPiANCj4gSSdtIG5vdCAiYWdhaW5zdCIgUEdQ
+IHBlciBzZSwgYnV0IEknbSBub3QgY29udmluY2VkIGJ5IHRoZSBpZGVhIG9mDQo+IGFkZGluZyBQ
+R1Agc3VwcG9ydCBqdXN0IGZvciBmcy12ZXJpdHkuDQo+IA0KPiA+PiBJZiB5b3UncmUgbG9va2lu
+ZyBmb3IgYSBzaW1wbGUgc2lnbmF0dXJlIG1lY2hhbmlzbSB0byByZXBsYWNlIHRoZSB1c2UNCj4g
+Pj4gb2YgWC41MDkgYW5kIGFsbCBvZiB0aGF0IGluZnJhc3RydWN0dXJlLCBtYXkgSSBzdWdnZXN0
+IGp1c3QgY29taW5nIHVwDQo+ID4+IHdpdGggc29tZXRoaW5nIHNpbXBsZSB1c2luZyBlZDI1NTE5
+LA0KPiA+DQo+ID4gUGxlYXNlLCBubywgdXNlIHVuaXZlcnNhbGx5IHN1cHBvcnRlZCBjcnlwdG8g
+dGhhdCB3ZSBjYW4gdXNlIFRQTQ0KPiA+IGhhcmR3YXJlIGZvciwgd2hpY2ggZm9yIEVDIGN1cnJl
+bnRseSBtZWFucyBQLTI1Ni4gIEl0IG1heSBiZSBwb3NzaWJsZQ0KPiA+IHRvIGdldCB0aGUgVENH
+IGFuZCB0aGUgb3RoZXIgc2VjdXJpdHkgYm9kaWVzIHRvIGFkZCBFZHdhcmRzIHNpZ25hdHVyZXMN
+Cj4gPiBidXQgdGhlIHJhdGUgb2YgcHJvZ3Jlc3Npb24gb2YgcXVhbnR1bSBtZWFucyB0aGF0IEdy
+b3ZlcidzIEFsZ29yaXRobQ0KPiA+IHdpbGwgbGlrZWx5IGdldCB0aGVyZSBmaXJzdCBhbmQgd2Un
+bGwgbmVlZCBQLTUyMSBvciBYNDQ4Lg0KPiANCj4gSSBhZ3JlZTogd2hhdGV2ZXIgaXMgY2hvc2Vu
+IHNob3VsZCBpbiBteSB2aWV3IGhhdmUgZGVjZW50IHN1cHBvcnQgZm9yDQo+IGhhcmR3YXJlLWJh
+Y2tlZCBrZXlzLCBiZWNhdXNlIEkgc3Ryb25nbHkgaG9wZSB0aGF0IGlzIHdoYXQgZGlzdHJpYnV0
+aW9uDQo+IGtleSBzdG9yYWdlIGxvb2tzIGxpa2UuIElmIG5vdCBJIG1pZ2h0IG5lZWQgdG8gbW92
+ZSB0byBHZW50b28uDQo+IA0KPiBUaGUgY3VycmVudCBSUE0gc2lnbmluZyBrZXlzIGZvciBGZWRv
+cmEgYXJlIFJTQS00MDk2LCB3aGljaCBpbiBteQ0KPiBvcGluaW9uIGRvZXMgbm90IGFjdHVhbGx5
+IG1lZXQgdGhlIGJhciBmb3IgImdvb2QgaGFyZHdhcmUgc3VwcG9ydCBmb3INCj4gYWxnb3JpdGht
+Ii4gUlNBLTIwNDggdG9rZW5zIGFyZSBjb21tb24sIGJ1dCA0MDk2IG11Y2ggbGVzcyBzby4NCj4g
+DQo+IFVuZm9ydHVuYXRlbHkgZm9yIHRoaXMgcmVhc29uIHNpZ25pZnkvbWluaXNpZ24gaXMgbm90
+IGlkZWFsIGFzIHRvb2xzOiBzbw0KPiBmYXIgYXMgSSBjYW4gc2VlIGl0IGhhcyBubyBzdXBwb3J0
+IGZvciBoYXJkd2FyZS1iYWNrZWQga2V5cy4gVGhhdCdzIG5vdA0KPiB0byBzYXkgdGhleSBjb3Vs
+ZG4ndCwgYWx0aG91Z2ggdGhleSBib3RoIHVzZSBlZDI1NTE5Lg0KPiANCj4gSSBhbSBub3Qgc3Vy
+ZSBpZiB3ZSdsbCBlbmQgdXAgaW4gdGhlIHNpdHVhdGlvbiB3aGVyZSBHcm92ZXIncyBhbGdvcml0
+aG0NCj4gaXMgZWZmaWNpZW50IGJ1dCBTaG9yIGlzIG5vdCwgYnV0IHRoaXMgaXMgYWxsIGd1ZXNz
+d29yayB1bnRpbCB3ZSBnZXQNCj4gY2xvc2VyIHRvIGEgcXVhbnR1bSBjb21wdXRlciB3aXRoIGVu
+b3VnaCBsb2dpY2FsIFF1Yml0cy4gQnV0IHlvdXINCj4gc3Vic3RhbnRpdmUgcG9pbnQgSSB0aGlu
+ayBpcyB2YWxpZDogaGFyZHdhcmUgdmVuZG9ycyBhcmUgZGlzYXBwb2ludGluZ2x5DQo+IHNsb3cg
+YXQgYWRvcHRpbmcgZWR3YXJkcyBjdXJ2ZXMuDQo+IA0KPiA+PiAgIHNpbWlsYXIgdG8gc2lnbmlm
+eSBvciBtaW5pc2lnbj8gVmVyeSBtaW5pbWFsIGNvZGUgaW4gdGhlIGtlcm5lbCwgaW4NCj4gPj4g
+dXNlcnNwYWNlLCBhbmQgdmVyeSBmZXcgbW92aW5nIHBhcnRzIHRvIGJyZWFrLg0KPiA+DQo+ID4g
+SGVoLCB0aGlzIGlzIHRoZSBjbGFzc2ljIGNyeXB0b2dyYXBoZXJzIGRpbGVtbWE6IGdvIGZvciBz
+b21ldGhpbmcNCj4gPiBwZWpvcmF0aXZlIHdoaWNoIGNhbiBiZSBtaW5pbWFsIGJ1dCB3aGljaCBo
+YXMgb25seSBhIHJlbGF0aXZlbHkgc21hbGwNCj4gPiBzZXQgb2YgcG9zc2libGUgdXNlIGNhc2Vz
+IGFuZCBubyBmdXR1cmUgcHJvb2Zpbmcgb3IgZ28gZm9yIHNvbWV0aGluZw0KPiA+IGV4dGVuc2li
+bGUgd2hpY2ggZW5kcyB1cCBtb3JlIGNvbXBsZXggYW5kIG90aGVycyB0aGVuIGNyaXRpY2l6ZSBh
+cw0KPiA+IGJlaW5nIGEgInN3aXNzIGFybXkga25pZmUiLg0KPiANCj4gSSB0aGluayB0aGlzIGlz
+IHRoZSB3cm9uZyBmcmFtaW5nIGZvciB0aGUgcHJvYmxlbS4gV2UgYWxyZWFkeSBoYXZlIG9uZQ0K
+PiBleHRlbnNpYmxlIHN5c3RlbSB0aGF0IGlzIGNvbXBsaWNhdGVkIGluIHRoZSBrZXJuZWwuIFRo
+aXMgcGF0Y2ggcHJvcG9zZXMNCj4gdG8gYWRkIGEgc2Vjb25kIG9uZSBhY2hpZXZpbmcgdGhlIHNh
+bWUgcHVycG9zZSBpbnN0ZWFkIG9mIGEgdXNlcnNwYWNlDQo+IHNvbHV0aW9uIHRvIHRha2UgYWR2
+YW50YWdlIG9mIHRoZSBleGlzdGluZyBjb2RlLCB3aGljaCBJIHRoaW5rIHdvdWxkIGJlDQo+IHBy
+ZWZlcmFibGUgYW5kIHNhZmVyLg0KDQpTb3JyeSwgSSB0aGluayB0aGF0IGZvcmNpbmcgYWxsIExp
+bnV4IGRpc3RyaWJ1dGlvbnMgdG8gZG8gaXQgc2VlbXMgdW5yZWFsaXN0aWMuDQoNClBhcnNpbmcg
+ZGF0YSBpbiB0aGUgUEdQIGZvcm1hdCBzZWVtcyB0byBiZSB0aGUgb25seSBiYXJyaWVyLiBPbmNl
+IHdlDQphcmUgY29uZmlkZW50IHRoYXQgd2UgcGFyc2UgdGhpcyBzbWFsbCBudW1iZXIgb2YgcGFj
+a2V0cyBjb3JyZWN0bHksIHRoZQ0KcmVzdCBpcyBqdXN0IHJldXNpbmcgdGhlIG1lY2hhbmlzbXMg
+YWxyZWFkeSBpbiBwbGFjZS4gQW5kIHdlIG1ha2UgaXQNCmVhc2llciBmb3IgcGVvcGxlIHRvIGFk
+b3B0IHNlY3VyaXR5IGZlYXR1cmVzLg0KDQpUaGFua3MNCg0KUm9iZXJ0bw0KDQpIVUFXRUkgVEVD
+SE5PTE9HSUVTIER1ZXNzZWxkb3JmIEdtYkgsIEhSQiA1NjA2Mw0KTWFuYWdpbmcgRGlyZWN0b3I6
+IExpIFBlbmcsIFpob25nIFJvbmdodWENCg==
