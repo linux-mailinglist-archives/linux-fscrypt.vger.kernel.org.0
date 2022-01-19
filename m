@@ -2,227 +2,448 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F1A9493200
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 19 Jan 2022 01:49:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9B66493391
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 19 Jan 2022 04:21:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349603AbiASAtE (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 18 Jan 2022 19:49:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57640 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349367AbiASAtE (ORCPT
+        id S1351157AbiASDVf (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 18 Jan 2022 22:21:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20261 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1350999AbiASDVf (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 18 Jan 2022 19:49:04 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F4A2C061574;
-        Tue, 18 Jan 2022 16:49:04 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4755B61484;
-        Wed, 19 Jan 2022 00:49:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76BA9C340E0;
-        Wed, 19 Jan 2022 00:49:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1642553342;
-        bh=fAebEo9D2w4bZ3VevQjkt0fPkJdGlFkA2aCUDz7lyzE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KjtRmqcHOKAuOt9I80FDebonvaFOaJrngWuTTScP+XNnNAotws3lH0U/gampjxUWF
-         q3M5Q482tOyHvMnAKeYLquNNBBfV9V5GNgOempIa1JDK5uW8CNQuEkp5LP1+X5/HJs
-         zWZKm6YTaQ9yICaLwJLz4JatnvO+oF1j6r1QdfDe/4dFrY9+Npf0e0l4f25XNEqPAR
-         yUiurRYwR1IMqdZk5rzRYTn+a+5B115rq7nR+XoP+X8UCC2iPF4CaMhQV2f+rgZ33s
-         iq4VUIxzmaQMIrjDmLGqKxhSm/7br54bnZP/8tmw4tgfsiEFfM/wlGFTZt0YRk8mJ/
-         UlI74ewK9GNZg==
-Date:   Tue, 18 Jan 2022 16:49:01 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Stefan Berger <stefanb@linux.ibm.com>
-Cc:     Vitaly Chikunov <vt@altlinux.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        linux-integrity@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 4/5] ima: support fs-verity file digest based
- signatures
-Message-ID: <Yedf/VyOsTha++b8@sol.localdomain>
-References: <20211202215507.298415-1-zohar@linux.ibm.com>
- <20211202215507.298415-5-zohar@linux.ibm.com>
- <YalDvGjq0inMFKln@sol.localdomain>
- <56c53b027ae8ae6909d38904bf089e73011657d7.camel@linux.ibm.com>
- <YdYrw4eiQPryOMkZ@gmail.com>
- <20220109204537.oueokvvkrkyy3ipq@altlinux.org>
- <YdtOhsv/A5dqlApY@sol.localdomain>
- <20220115053101.36xoy2bc7ypozo6l@altlinux.org>
- <YeJn7hxLEfdVrUQT@sol.localdomain>
- <7e611504-eed8-6943-f1ae-7fb23298d3e5@linux.ibm.com>
+        Tue, 18 Jan 2022 22:21:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1642562494;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zI5/M4hZ3G0MvfuHbi3Z73517/vGjVqZ2PVlZvkizhw=;
+        b=hTSEcHsGfnASJdtGwPtfqPv+1/NWQQZO7oHumaPy9/1kNxj9pgmD3ZFMwAwXN44UD2q64l
+        32I+9xPWoQykefzWUigzO/G03GBNK8oISag35NlMqOsyq3YXKIbNRwE34EMw+TjH7AUVWq
+        CAx1px5pgmuCBA7gaHHDExkRbVotJOs=
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
+ [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-474-moXy71HLNGS5MJrPOoc_cg-1; Tue, 18 Jan 2022 22:21:33 -0500
+X-MC-Unique: moXy71HLNGS5MJrPOoc_cg-1
+Received: by mail-pj1-f70.google.com with SMTP id ij17-20020a17090af81100b001b498904910so847374pjb.5
+        for <linux-fscrypt@vger.kernel.org>; Tue, 18 Jan 2022 19:21:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=zI5/M4hZ3G0MvfuHbi3Z73517/vGjVqZ2PVlZvkizhw=;
+        b=oXqei5kBNQXGoFvRlJYzDPhHuzRz85qm9qerAIiIqFoBi8OL+SxA0x5vp0GvV4+2C4
+         H23si+44O0Mn/XUEnXVIcD/W/WndehcmFeZYEdFCNzRpQGv8ytsj3LS4XVRlPQGiMSqY
+         7uXqWNa/JsP91lCfp6W1HhAraopf4+cY43mm4t3r/8akYvgBwDNpcJvpnnqjxsH5/zFe
+         vEydfhH9IdKKeVsNMZ1zyrFkJz1y2wGXS0O4vGVkT7lXMzXfkY7z7+xN/0+fZ0WEv0kn
+         1Iktko8RnHJCqTno0NWhHApvvI2Wi/AXDQixijdoRikWE/XmwS60nclpPYcgu4WN1GbV
+         cTBw==
+X-Gm-Message-State: AOAM533qOM+fdBZBKuVB+TFTytzjRTWzh6mJxhZV9AQKFD7cEXlwWbkw
+        ZQaLpO8pTb0vxnKzrzgw/FIu0oZafBfuKzX6yuVJQFrrD7azxsLjla/Kttvbhyg0NoulcVY0BNP
+        GW8EygpRe8BT5KtDBhlHZneOkBQ==
+X-Received: by 2002:aa7:92c5:0:b0:4bd:9f44:9562 with SMTP id k5-20020aa792c5000000b004bd9f449562mr28517018pfa.80.1642562492086;
+        Tue, 18 Jan 2022 19:21:32 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx2r+ku1Gi345okF1G1cUNAm3eTq99Z/1eJVnAAZONCVQGpw9OnTTrFwzEIEapqCSS2F+CGDg==
+X-Received: by 2002:aa7:92c5:0:b0:4bd:9f44:9562 with SMTP id k5-20020aa792c5000000b004bd9f449562mr28516994pfa.80.1642562491722;
+        Tue, 18 Jan 2022 19:21:31 -0800 (PST)
+Received: from [10.72.12.81] ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id x20sm1732596pjk.29.2022.01.18.19.21.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Jan 2022 19:21:31 -0800 (PST)
+Subject: Re: [RFC PATCH v10 43/48] ceph: add read/modify/write to
+ ceph_sync_write
+To:     Jeff Layton <jlayton@kernel.org>, ceph-devel@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, idryomov@gmail.com
+References: <20220111191608.88762-1-jlayton@kernel.org>
+ <20220111191608.88762-44-jlayton@kernel.org>
+From:   Xiubo Li <xiubli@redhat.com>
+Message-ID: <0992447d-3522-c5d5-5d4b-1875e9d3128f@redhat.com>
+Date:   Wed, 19 Jan 2022 11:21:21 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7e611504-eed8-6943-f1ae-7fb23298d3e5@linux.ibm.com>
+In-Reply-To: <20220111191608.88762-44-jlayton@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Sat, Jan 15, 2022 at 10:31:40PM -0500, Stefan Berger wrote:
-> 
-> On 1/15/22 01:21, Eric Biggers wrote:
-> > On Sat, Jan 15, 2022 at 08:31:01AM +0300, Vitaly Chikunov wrote:
-> > > Eric,
-> > > 
-> > > On Sun, Jan 09, 2022 at 01:07:18PM -0800, Eric Biggers wrote:
-> > > > On Sun, Jan 09, 2022 at 11:45:37PM +0300, Vitaly Chikunov wrote:
-> > > > > On Wed, Jan 05, 2022 at 03:37:39PM -0800, Eric Biggers wrote:
-> > > > > > On Fri, Dec 31, 2021 at 10:35:00AM -0500, Mimi Zohar wrote:
-> > > > > > > On Thu, 2021-12-02 at 14:07 -0800, Eric Biggers wrote:
-> > > > > > > > On Thu, Dec 02, 2021 at 04:55:06PM -0500, Mimi Zohar wrote:
-> > > > > > > > >   	case IMA_VERITY_DIGSIG:
-> > > > > > > > > -		fallthrough;
-> > > > > > > > > +		set_bit(IMA_DIGSIG, &iint->atomic_flags);
-> > > > > > > > > +
-> > > > > > > > > +		/*
-> > > > > > > > > +		 * The IMA signature is based on a hash of IMA_VERITY_DIGSIG
-> > > > > > > > > +		 * and the fs-verity file digest, not directly on the
-> > > > > > > > > +		 * fs-verity file digest.  Both digests should probably be
-> > > > > > > > > +		 * included in the IMA measurement list, but for now this
-> > > > > > > > > +		 * digest is only used for verifying the IMA signature.
-> > > > > > > > > +		 */
-> > > > > > > > > +		verity_digest[0] = IMA_VERITY_DIGSIG;
-> > > > > > > > > +		memcpy(verity_digest + 1, iint->ima_hash->digest,
-> > > > > > > > > +		       iint->ima_hash->length);
-> > > > > > > > > +
-> > > > > > > > > +		hash.hdr.algo = iint->ima_hash->algo;
-> > > > > > > > > +		hash.hdr.length = iint->ima_hash->length;
-> > > > > > > > This is still wrong because the bytes being signed don't include the hash
-> > > > > > > > algorithm.  Unless you mean for it to be implicitly always SHA-256?  fs-verity
-> > > > > > > > supports SHA-512 too, and it may support other hash algorithms in the future.
-> > > > > > > IMA assumes that the file hash algorithm and the signature algorithm
-> > > > > > > are the same.   If they're not the same, for whatever reason, the
-> > > > > > > signature verification would simply fail.
-> > > > > > > 
-> > > > > > > Based on the v2 signature header 'type' field, IMA can differentiate
-> > > > > > > between regular IMA file hash based signatures and fs-verity file
-> > > > > > > digest based signatures.  The digest field (d-ng) in the IMA
-> > > > > > > meausrement list prefixes the digest with the hash algorithm. I'm
-> > > > > > > missing the reason for needing to hash fs-verity's file digest with
-> > > > > > > other metadata, and sign that hash rather than fs-verity's file digest
-> > > > > > > directly.
-> > > > > > Because if someone signs a raw hash, then they also implicitly sign the same
-> > > > > > hash value for all supported hash algorithms that produce the same length hash.
-> > > > > Unless there is broken hash algorithm allowing for preimage attacks this
-> > > > > is irrelevant. If there is two broken algorithms allowing for collisions,
-> > > > > colliding hashes could be prepared even if algo id is hashed too.
-> > > > > 
-> > > > Only one algorithm needs to be broken.  For example, SM3 has the same hash
-> > > > length as SHA-256.  If SM3 support were to be added to fs-verity, and if someone
-> > > > were to find a way to find an input that has a specific SM3 digest, then they
-> > > > could also make it match a specific SHA-256 digest.  Someone might intend to
-> > > > sign a SHA-256 digest, but if they are only signing the raw 32 bytes of the
-> > > > digest, then they would also be signing the corresponding SM3 digest.  That's
-> > > > why the digest that is signed *must* also include the algorithm used in the
-> > > > digest (not the algorithm(s) used in the signature, which is different).
-> > > I think it will be beneficial if we pass hash algo id to the
-> > > akcipher_alg::verify. In fact, ecrdsa should only be used with streebog.
-> > > And perhaps, sm2 with sm3, pkcs1 with md/sha/sm3, and ecdsa with sha family
-> > > hashes.
-> > > 
-> > I was going to reply to this thread again, but I got a bit distracted by
-> > everything else being broken.  Yes, the kernel needs to be restricting which
-> > hash algorithms can be used with each public key algorithm, along the lines of
-> > what you said.  I asked the BoringSSL maintainers for advice, and they confirmed
-> > that ECDSA just signs/verifies a raw hash, and in fact it *must* be a raw hash
-> > for it to be secure.  This is a design flaw in ECDSA, which was fixed in newer
-> > algorithms such as EdDSA and SM2 as those have a hash built-in to the signature
-> > scheme.  To mitigate it, the allowed hash algorithms must be restricted; in the
-> > case of ECDSA, that means to the SHA family (preferably excluding SHA-1).
-> > 
-> > akcipher_alg::verify doesn't actually know which hash algorithm is used, except
-> > in the case of rsa-pkcs1pad where it is built into the name of the algorithm.
-> > So it can't check the hash algorithm.  I believe it needs to happen in
-> > public_key_verify_signature() (and I'm working on a patch for that).
-> > 
-> > Now, SM2 is different from ECDSA and ECRDSA in that it uses the modern design
-> > that includes the hash into the signature algorithm.  This means that it must be
-> > used to sign/verify *data*, not a hash.  (Well, you can sign/verify a hash, but
-> > SM2 will hash it again internally.)  Currently, public_key_verify_signature()
-> > allows SM2 to be used to sign/verify a hash, skipping the SM2 internal hash, and
-> > IMA uses this.  This is broken and must be removed, since it isn't actually the
-> > SM2 algorithm as specified anymore, but rather some homebrew thing with unknown
-> > security properties. (Well, I'm not confident about SM2, but homebrew is worse.)
-> > 
-> > Adding fs-verity support to IMA also complicates things, as doing it naively
-> > would introduce an ambiguity about what is signed.  Naively, the *data* that is
-> > signed (considering the hash as part of the signature algorithm) would be either
-> > the whole file, in the case of traditional IMA, or the fsverity_descriptor
-> > struct, in the case of IMA with fs-verity.  However, a file could have contents
-> > which match an fsverity_descriptor struct; that would create an ambiguity.
-> > 
-> > Assuming that it needs to be allowed that the same key can sign files for both
-> > traditional and fs-verity hashing, solving this problem will require a second
-> > hash.  The easiest way to do this would be sign/verify the following struct:
-> > 
-> > 	struct ima_file_id {
-> > 		u8 is_fsverity;
-> > 		u8 hash_algorithm;
-> > 		u8 hash[];
-> > 	};
-> 
-> 
-> To calrify, I suppose that for ECDSA NIST P256 you would allow pairing with
-> any of the SHA family hashes (also as defined by the existing OIDs) and as
-> the standard allows today? And the same then applies for NIST p384 etc.?
-> 
-> Further, I suppose similar restriction would apply for ECRDSA to pair it
-> with Streebog only, as Vitaly said.
 
-I don't have any better ideas.
+On 1/12/22 3:16 AM, Jeff Layton wrote:
+> When doing a synchronous write on an encrypted inode, we have no
+> guarantee that the caller is writing crypto block-aligned data. When
+> that happens, we must do a read/modify/write cycle.
+>
+> First, expand the range to cover complete blocks. If we had to change
+> the original pos or length, issue a read to fill the first and/or last
+> pages, and fetch the version of the object from the result.
+>
+> We then copy data into the pages as usual, encrypt the result and issue
+> a write prefixed by an assertion that the version hasn't changed. If it has
+> changed then we restart the whole thing again.
+>
+> If there is no object at that position in the file (-ENOENT), we prefix
+> the write on an exclusive create of the object instead.
+>
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>   fs/ceph/file.c | 260 +++++++++++++++++++++++++++++++++++++++++++------
+>   1 file changed, 228 insertions(+), 32 deletions(-)
+>
+> diff --git a/fs/ceph/file.c b/fs/ceph/file.c
+> index a6305ad5519b..41766b2012e9 100644
+> --- a/fs/ceph/file.c
+> +++ b/fs/ceph/file.c
+> @@ -1468,18 +1468,16 @@ ceph_sync_write(struct kiocb *iocb, struct iov_iter *from, loff_t pos,
+>   	struct inode *inode = file_inode(file);
+>   	struct ceph_inode_info *ci = ceph_inode(inode);
+>   	struct ceph_fs_client *fsc = ceph_inode_to_client(inode);
+> -	struct ceph_vino vino;
+> +	struct ceph_osd_client *osdc = &fsc->client->osdc;
+>   	struct ceph_osd_request *req;
+>   	struct page **pages;
+>   	u64 len;
+>   	int num_pages;
+>   	int written = 0;
+> -	int flags;
+>   	int ret;
+>   	bool check_caps = false;
+>   	struct timespec64 mtime = current_time(inode);
+>   	size_t count = iov_iter_count(from);
+> -	size_t off;
+>   
+>   	if (ceph_snap(file_inode(file)) != CEPH_NOSNAP)
+>   		return -EROFS;
+> @@ -1499,70 +1497,267 @@ ceph_sync_write(struct kiocb *iocb, struct iov_iter *from, loff_t pos,
+>   	if (ret < 0)
+>   		dout("invalidate_inode_pages2_range returned %d\n", ret);
+>   
+> -	flags = /* CEPH_OSD_FLAG_ORDERSNAP | */ CEPH_OSD_FLAG_WRITE;
+> -
+>   	while ((len = iov_iter_count(from)) > 0) {
+>   		size_t left;
+>   		int n;
+> +		u64 write_pos = pos;
+> +		u64 write_len = len;
+> +		u64 objnum, objoff;
+> +		u32 xlen;
+> +		u64 assert_ver;
+> +		bool rmw;
+> +		bool first, last;
+> +		struct iov_iter saved_iter = *from;
+> +		size_t off;
+> +
+> +		fscrypt_adjust_off_and_len(inode, &write_pos, &write_len);
+> +
+> +		/* clamp the length to the end of first object */
+> +		ceph_calc_file_object_mapping(&ci->i_layout, write_pos,
+> +						write_len, &objnum, &objoff,
+> +						&xlen);
+> +		write_len = xlen;
+> +
+> +		/* adjust len downward if it goes beyond current object */
+> +		if (pos + len > write_pos + write_len)
+> +			len = write_pos + write_len - pos;
+>   
+> -		vino = ceph_vino(inode);
+> -		req = ceph_osdc_new_request(&fsc->client->osdc, &ci->i_layout,
+> -					    vino, pos, &len, 0, 1,
+> -					    CEPH_OSD_OP_WRITE, flags, snapc,
+> -					    ci->i_truncate_seq,
+> -					    ci->i_truncate_size,
+> -					    false);
+> -		if (IS_ERR(req)) {
+> -			ret = PTR_ERR(req);
+> -			break;
+> -		}
+> +		/*
+> +		 * If we had to adjust the length or position to align with a
+> +		 * crypto block, then we must do a read/modify/write cycle. We
+> +		 * use a version assertion to redrive the thing if something
+> +		 * changes in between.
+> +		 */
+> +		first = pos != write_pos;
+> +		last = (pos + len) != (write_pos + write_len);
+> +		rmw = first || last;
+>   
+> -		/* FIXME: express in FSCRYPT_BLOCK_SIZE units */
+> -		num_pages = calc_pages_for(pos, len);
+> +		/*
+> +		 * The data is emplaced into the page as it would be if it were in
+> +		 * an array of pagecache pages.
+> +		 */
+> +		num_pages = calc_pages_for(write_pos, write_len);
+>   		pages = ceph_alloc_page_vector(num_pages, GFP_KERNEL);
+>   		if (IS_ERR(pages)) {
+>   			ret = PTR_ERR(pages);
+> -			goto out;
+> +			break;
+> +		}
+> +
+> +		/* Do we need to preload the pages? */
+> +		if (rmw) {
+> +			u64 first_pos = write_pos;
+> +			u64 last_pos = (write_pos + write_len) - CEPH_FSCRYPT_BLOCK_SIZE;
+> +			u64 read_len = CEPH_FSCRYPT_BLOCK_SIZE;
+> +
+> +			/* We should only need to do this for encrypted inodes */
+> +			WARN_ON_ONCE(!IS_ENCRYPTED(inode));
+> +
+> +			/* No need to do two reads if first and last blocks are same */
+> +			if (first && last_pos == first_pos)
+> +				last = false;
+> +
+> +			/*
+> +			 * Allocate a read request for one or two extents, depending
+> +			 * on how the request was aligned.
+> +			 */
+> +			req = ceph_osdc_new_request(osdc, &ci->i_layout,
+> +					ci->i_vino, first ? first_pos : last_pos,
+> +					&read_len, 0, (first && last) ? 2 : 1,
+> +					CEPH_OSD_OP_READ, CEPH_OSD_FLAG_READ,
+> +					NULL, ci->i_truncate_seq,
+> +					ci->i_truncate_size, false);
+> +			if (IS_ERR(req)) {
+> +				ceph_release_page_vector(pages, num_pages);
+> +				ret = PTR_ERR(req);
+> +				break;
+> +			}
+> +
+> +			/* Something is misaligned! */
+> +			if (read_len != CEPH_FSCRYPT_BLOCK_SIZE) {
+> +				ret = -EIO;
+> +				break;
+> +			}
 
-> What's happening now is that to verify a signature, IMA/integrity subsystem
-> fills out the following structure:
-> 
-> struct public_key_signature pks;
-> 
-> pks.hash_algo = hash_algo_name[hdr->hash_algo];  // name of hash algo will
-> go into this here, e.g., 'sha256'
-> pks.pkey_algo = pk->pkey_algo; // this is either 'rsa', 'ecdsa-', 'ecrdsa-'
-> or 'sm2' string
-> 
-> It then calls:
-> 
->     ret = verify_signature(key, &pks);
-> 
-> IMO, in the call path down this function the pairing of public key and hash
-> algo would have to be enforced in order to enforce the standards. Would this
-> not be sufficient to be able to stay with the standards ?
+Do we need to call "ceph_release_page_vector()" here ?
 
-That sounds right, though there are a number of other issues including SM2 being
-implemented incorrectly, the "encoding" string isn't validated, and it not being
-enforced that public_key_signature::pkey_algo actually matches
-public_key::pkey_algo.
 
-> File hashes: IMA calculates the hash over a file itself by calling crypto
-> functions, so at least the digest's bytes are trusted input in that respect
-> and using the sha family type of hashes directly with ECDSA should work.
-> Which algorithm IMA is supposed to use for the hashing is given in the xattr
-> bytestream header. IMA could then take that type of hash, lookup the hash
-> function, perform the hashing on the data, and let verify_signature enforce
-> the pairing, rejecting file signatures with wrong pairing. This way the only
-> thing that is needed is 'enforcement of pairing'.
-> 
-> Fsverity: How much control does a user have over the hash family fsverity is
-> using? Can IMA ECDSA/RSA users tell it to use a sha family hash and ECRDSA
-> users make it use a Streebog hash so that also the pairing of hash and key
-> type can work 'naturally' and we don't need the level of indirection via
-> your structure above?
 
-The hash algorithm used by fs-verity is configurable and is always returned
-along with the file digest.  Currently, only SHA-256 and SHA-512 are supported.
+> +
+> +			/* Add extent for first block? */
+> +			if (first)
+> +				osd_req_op_extent_osd_data_pages(req, 0, pages,
+> +							 CEPH_FSCRYPT_BLOCK_SIZE,
+> +							 offset_in_page(first_pos),
+> +							 false, false);
+> +
+> +			/* Add extent for last block */
+> +			if (last) {
+> +				/* Init the other extent if first extent has been used */
+> +				if (first) {
+> +					osd_req_op_extent_init(req, 1, CEPH_OSD_OP_READ,
+> +							last_pos, CEPH_FSCRYPT_BLOCK_SIZE,
+> +							ci->i_truncate_size,
+> +							ci->i_truncate_seq);
+> +				}
+> +
+> +				osd_req_op_extent_osd_data_pages(req, first ? 1 : 0,
+> +							&pages[num_pages - 1],
+> +							CEPH_FSCRYPT_BLOCK_SIZE,
+> +							offset_in_page(last_pos),
+> +							false, false);
+> +			}
+> +
+> +			ret = ceph_osdc_start_request(osdc, req, false);
+> +			if (!ret)
+> +				ret = ceph_osdc_wait_request(osdc, req);
+> +
+> +			/* FIXME: length field is wrong if there are 2 extents */
+> +			ceph_update_read_metrics(&fsc->mdsc->metric,
+> +						 req->r_start_latency,
+> +						 req->r_end_latency,
+> +						 read_len, ret);
+> +
+> +			/* Ok if object is not already present */
+> +			if (ret == -ENOENT) {
+> +				/*
+> +				 * If there is no object, then we can't assert
+> +				 * on its version. Set it to 0, and we'll use an
+> +				 * exclusive create instead.
+> +				 */
+> +				ceph_osdc_put_request(req);
+> +				assert_ver = 0;
+> +				ret = 0;
+> +
+> +				/*
+> +				 * zero out the soon-to-be uncopied parts of the
+> +				 * first and last pages.
+> +				 */
+> +				if (first)
+> +					zero_user_segment(pages[0], 0,
 
-Keep in mind that if you sign the fs-verity file digest directly with RSA,
-ECDSA, or ECRDSA, the *data* you are actually signing is the fsverity_descriptor
--- the struct which the hash is a hash of.
+The pages should already be released in "ceph_osdc_put_request()" ?
 
-That creates an ambiguity when full file hashes are also signed by the same key,
-as I previously mentioned.  A level of indirection is needed to avoid that.
 
-In the naive method, the *data* being signed would also be different with SM2.
-The level of indirection would avoid that.
+> +							  offset_in_page(first_pos));
+> +				if (last)
+> +					zero_user_segment(pages[num_pages - 1],
+> +							  offset_in_page(last_pos),
+> +							  PAGE_SIZE);
+> +			} else {
+> +				/* Grab assert version. It must be non-zero. */
+> +				assert_ver = req->r_version;
+> +				WARN_ON_ONCE(ret > 0 && assert_ver == 0);
+> +
+> +				ceph_osdc_put_request(req);
+> +				if (ret < 0) {
+> +					ceph_release_page_vector(pages, num_pages);
 
-- Eric
+Shouldn't the pages are already released in "ceph_osdc_put_request()" ?
+
+IMO you should put the request when you are breaking the while loop and 
+just before the next "ceph_osdc_new_request()" below.
+
+
+
+> +					break;
+> +				}
+> +
+> +				if (first) {
+> +					ret = ceph_fscrypt_decrypt_block_inplace(inode,
+> +							pages[0],
+> +							CEPH_FSCRYPT_BLOCK_SIZE,
+> +							offset_in_page(first_pos),
+> +							first_pos >> CEPH_FSCRYPT_BLOCK_SHIFT);
+> +					if (ret < 0)
+> +						break;
+> +				}
+> +				if (last) {
+> +					ret = ceph_fscrypt_decrypt_block_inplace(inode,
+> +							pages[num_pages - 1],
+> +							CEPH_FSCRYPT_BLOCK_SIZE,
+> +							offset_in_page(last_pos),
+> +							last_pos >> CEPH_FSCRYPT_BLOCK_SHIFT);
+> +					if (ret < 0)
+> +						break;
+> +				}
+> +			}
+>   		}
+>   
+>   		left = len;
+> -		off = pos & ~CEPH_FSCRYPT_BLOCK_MASK;
+> +		off = offset_in_page(pos);
+>   		for (n = 0; n < num_pages; n++) {
+> -			size_t plen = min_t(size_t, left, CEPH_FSCRYPT_BLOCK_SIZE - off);
+> +			size_t plen = min_t(size_t, left, PAGE_SIZE - off);
+> +
+> +			/* copy the data */
+>   			ret = copy_page_from_iter(pages[n], off, plen, from);
+> -			off = 0;
+>   			if (ret != plen) {
+>   				ret = -EFAULT;
+>   				break;
+>   			}
+> +			off = 0;
+>   			left -= ret;
+>   		}
+> -
+>   		if (ret < 0) {
+> +			dout("sync_write write failed with %d\n", ret);
+>   			ceph_release_page_vector(pages, num_pages);
+> -			goto out;
+> +			break;
+>   		}
+>   
+> -		req->r_inode = inode;
+> +		if (IS_ENCRYPTED(inode)) {
+> +			ret = ceph_fscrypt_encrypt_pages(inode, pages,
+> +							 write_pos, write_len,
+> +							 GFP_KERNEL);
+> +			if (ret < 0) {
+> +				dout("encryption failed with %d\n", ret);
+> +				break;
+> +			}
+> +		}
+>   
+> -		osd_req_op_extent_osd_data_pages(req, 0, pages, len,
+> -						 pos & ~CEPH_FSCRYPT_BLOCK_MASK,
+> -						 false, true);
+
+The pages have already been released, you need to allocate new pages 
+again here.
+
+> +		req = ceph_osdc_new_request(osdc, &ci->i_layout,
+> +					    ci->i_vino, write_pos, &write_len,
+> +					    rmw ? 1 : 0, rmw ? 2 : 1,
+> +					    CEPH_OSD_OP_WRITE,
+> +					    CEPH_OSD_FLAG_WRITE,
+> +					    snapc, ci->i_truncate_seq,
+> +					    ci->i_truncate_size, false);
+> +		if (IS_ERR(req)) {
+> +			ret = PTR_ERR(req);
+> +			ceph_release_page_vector(pages, num_pages);
+> +			break;
+> +		}
+>   
+> +		dout("sync_write write op %lld~%llu\n", write_pos, write_len);
+> +		osd_req_op_extent_osd_data_pages(req, rmw ? 1 : 0, pages, write_len,
+> +						 offset_in_page(write_pos), false,
+> +						 true);
+> +		req->r_inode = inode;
+>   		req->r_mtime = mtime;
+> -		ret = ceph_osdc_start_request(&fsc->client->osdc, req, false);
+> +
+> +		/* Set up the assertion */
+> +		if (rmw) {
+> +			/*
+> +			 * Set up the assertion. If we don't have a version number,
+> +			 * then the object doesn't exist yet. Use an exclusive create
+> +			 * instead of a version assertion in that case.
+> +			 */
+> +			if (assert_ver) {
+> +				osd_req_op_init(req, 0, CEPH_OSD_OP_ASSERT_VER, 0);
+> +				req->r_ops[0].assert_ver.ver = assert_ver;
+> +			} else {
+> +				osd_req_op_init(req, 0, CEPH_OSD_OP_CREATE,
+> +						CEPH_OSD_OP_FLAG_EXCL);
+> +			}
+> +		}
+> +
+> +		ret = ceph_osdc_start_request(osdc, req, false);
+>   		if (!ret)
+> -			ret = ceph_osdc_wait_request(&fsc->client->osdc, req);
+> +			ret = ceph_osdc_wait_request(osdc, req);
+>   
+>   		ceph_update_write_metrics(&fsc->mdsc->metric, req->r_start_latency,
+>   					  req->r_end_latency, len, ret);
+> -out:
+>   		ceph_osdc_put_request(req);
+>   		if (ret != 0) {
+> +			dout("sync_write osd write returned %d\n", ret);
+> +			/* Version changed! Must re-do the rmw cycle */
+> +			if ((assert_ver && (ret == -ERANGE || ret == -EOVERFLOW)) ||
+> +			     (!assert_ver && ret == -EEXIST)) {
+> +				/* We should only ever see this on a rmw */
+> +				WARN_ON_ONCE(!rmw);
+> +
+> +				/* The version should never go backward */
+> +				WARN_ON_ONCE(ret == -EOVERFLOW);
+> +
+> +				*from = saved_iter;
+> +
+> +				/* FIXME: limit number of times we loop? */
+> +				continue;
+> +			}
+>   			ceph_set_error_write(ci);
+>   			break;
+>   		}
+> -
+>   		ceph_clear_error_write(ci);
+>   		pos += len;
+>   		written += len;
+> @@ -1580,6 +1775,7 @@ ceph_sync_write(struct kiocb *iocb, struct iov_iter *from, loff_t pos,
+>   		ret = written;
+>   		iocb->ki_pos = pos;
+>   	}
+> +	dout("sync_write returning %d\n", ret);
+>   	return ret;
+>   }
+>   
+
