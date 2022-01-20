@@ -2,171 +2,123 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D320495281
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 20 Jan 2022 17:40:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C9724952E9
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 20 Jan 2022 18:10:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243712AbiATQkL (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 20 Jan 2022 11:40:11 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:12316 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243030AbiATQkJ (ORCPT
+        id S1347441AbiATRKa (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 20 Jan 2022 12:10:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236190AbiATRKa (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 20 Jan 2022 11:40:09 -0500
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 20KGF9N8026896;
-        Thu, 20 Jan 2022 16:40:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=+1n7Fi25DBUOMI0Zb/z6ZedRuN25KlbopUMoutGPpBs=;
- b=PuydMwoJS9xlHDrkgvvaHRdpE8gxizmrPs8otb+Bs4F1sLgTwUeH3sHKIp351YBzkIVw
- Wg/V2schN3R9Im0km/JfvBuyUGPidb/FfCilm6qYE7FCxTtfncOon9/GykscS0TDvBcj
- 6MaZNHgn1dFQbB2xlJaC7x0ysnTBBDh5nJ2ZOoLbPC1H0ZGau7a6Os8WRp5BOcnOB7WG
- d8i3/m5sQ/VGMv9P7BO10gcosuPRRlTCkA9OogBNtlP2pqdldllodBnVA4rMM5j2+iNj
- J6j7r+B35vgT38MaaKMdcZyAmGxpahWewLaJnH7TMAwivsSFBRismBJ6xpRaMSYbAM6g lQ== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3dq6vs7apt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 20 Jan 2022 16:40:02 +0000
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 20KGJq5h026390;
-        Thu, 20 Jan 2022 16:40:01 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06ams.nl.ibm.com with ESMTP id 3dknhk3hem-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 20 Jan 2022 16:40:00 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 20KGdwQi43123192
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 20 Jan 2022 16:39:58 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6D6FD11C04C;
-        Thu, 20 Jan 2022 16:39:58 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 56C3811C05B;
-        Thu, 20 Jan 2022 16:39:57 +0000 (GMT)
-Received: from sig-9-65-73-24.ibm.com (unknown [9.65.73.24])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 20 Jan 2022 16:39:57 +0000 (GMT)
-Message-ID: <c0676336a7992b6495c5f5dec7ca1897fb4005eb.camel@linux.ibm.com>
-Subject: Re: [PATCH v1 4/5] ima: support fs-verity file digest based
- signatures
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Eric Biggers <ebiggers@kernel.org>,
-        Vitaly Chikunov <vt@altlinux.org>
-Cc:     linux-integrity@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 20 Jan 2022 11:39:56 -0500
-In-Reply-To: <Yedd0CKCHSq1ugFk@sol.localdomain>
-References: <20211202215507.298415-1-zohar@linux.ibm.com>
-         <20211202215507.298415-5-zohar@linux.ibm.com>
-         <YalDvGjq0inMFKln@sol.localdomain>
-         <56c53b027ae8ae6909d38904bf089e73011657d7.camel@linux.ibm.com>
-         <YdYrw4eiQPryOMkZ@gmail.com> <20220109204537.oueokvvkrkyy3ipq@altlinux.org>
-         <YdtOhsv/A5dqlApY@sol.localdomain>
-         <20220115053101.36xoy2bc7ypozo6l@altlinux.org>
-         <YeJn7hxLEfdVrUQT@sol.localdomain>
-         <bc803a35d914dde65640428d2b29cc6e89d176d4.camel@linux.ibm.com>
-         <Yedd0CKCHSq1ugFk@sol.localdomain>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-18.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: vaUPOoqq10PgPMtBSoNMEAgtgw4uLfxC
-X-Proofpoint-ORIG-GUID: vaUPOoqq10PgPMtBSoNMEAgtgw4uLfxC
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-01-20_06,2022-01-20_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- priorityscore=1501 malwarescore=0 mlxscore=0 impostorscore=0
- lowpriorityscore=0 bulkscore=0 suspectscore=0 mlxlogscore=999
- clxscore=1015 spamscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2110150000 definitions=main-2201200084
+        Thu, 20 Jan 2022 12:10:30 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A3BEC061574;
+        Thu, 20 Jan 2022 09:10:30 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id C885CB81DB6;
+        Thu, 20 Jan 2022 17:10:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95112C340E3;
+        Thu, 20 Jan 2022 17:10:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1642698627;
+        bh=9PrP2YPwXIw91H36sa+ARSocJ1Cu1ipD8VSQgbT6nsA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bhOy/kkCPk22TFeoPt2RuBI8RgWYvZQ4Q+WFtZjvDyGcYQVZUpqdG5f0VUgm48K0h
+         MAJ5Td5mQTsGy6R0nKSPKNAuHmiQRFPMWGOJK0pWRMbGTYMDpHnksDXZGhe+pFPQ2d
+         2bRQbwL3T+pLDBMnj01EyoieNkhV45F1Lhh+r8UZIrzDKk3rGWTMRZ8eBzL1W/BOxs
+         K4eeC/S6bq53oHhxE60pa3B/MiQmgmzr/9Z4AzvnfHWnNqy5BEjJG3IXdYfiP2Cr91
+         RQPzfu7rc3eq7EC08CEIDJzpjFAiTI8wtD7IcmJ6LCNRyIcL3jl6mSk+xkPhQS/8FW
+         ZcRex+d8Jee8A==
+Date:   Thu, 20 Jan 2022 09:10:27 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Eric Biggers <ebiggers@kernel.org>, linux-fscrypt@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        Dave Chinner <david@fromorbit.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>
+Subject: Re: [PATCH v10 0/5] add support for direct I/O with fscrypt using
+ blk-crypto
+Message-ID: <20220120171027.GL13540@magnolia>
+References: <20220120071215.123274-1-ebiggers@kernel.org>
+ <YekdnxpeunTGfXqX@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YekdnxpeunTGfXqX@infradead.org>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Eric, Vitaly,
-
-On Tue, 2022-01-18 at 16:39 -0800, Eric Biggers wrote:
-
-> > > The easiest way to do this would be sign/verify the following struct:
-> > > 	struct ima_file_id {
-> > > 		u8 is_fsverity;
-> > > 		u8 hash_algorithm;
-> > > 		u8 hash[];
-> > > 	};
-
-
-> > This would be the *data* that is signed/verified -- meaning that it
-would be
-> > > hashed again as part of the signature algorithm (whether that hash is built-in
-> > > to the signature algorithm, as is the case for modern algorithms, or handled by
-> > > the caller as is the case for legacy algorithms).
+On Thu, Jan 20, 2022 at 12:30:23AM -0800, Christoph Hellwig wrote:
+> On Wed, Jan 19, 2022 at 11:12:10PM -0800, Eric Biggers wrote:
 > > 
-> > There seems to be an inconsistency, here, with what you said above,
-> > "... ECDSA just signs/verifies a raw hash, and in fact it *must* be a
-> > raw hash for it to be secure."
+> > Given the above, as far as I know the only remaining objection to this
+> > patchset would be that DIO constraints aren't sufficiently discoverable
+> > by userspace.  Now, to put this in context, this is a longstanding issue
+> > with all Linux filesystems, except XFS which has XFS_IOC_DIOINFO.  It's
+> > not specific to this feature, and it doesn't actually seem to be too
+> > important in practice; many other filesystem features place constraints
+> > on DIO, and f2fs even *only* allows fully FS block size aligned DIO.
+> > (And for better or worse, many systems using fscrypt already have
+> > out-of-tree patches that enable DIO support, and people don't seem to
+> > have trouble with the FS block size alignment requirement.)
 > 
-> There isn't an inconsistency.  ECDSA is among the algorithms where the caller is
-> expected to handle the hash.
-> 
-> It is confusing dealing with all these different signature algorithms.  I think
-> the right way to think about this is in terms of what *data* is being
-> signed/verified.  Currently the data is the full file contents.  I think it
-> needs to be made into an annotated hash, e.g. the struct I gave.
-> 
-> public_key_verify_signature() also needs to be fixed to support both types of
-> signature algorithms (caller-provided hash and internal hash) in a logical way.
-> Originally it only supported caller-provided hashes, but then SM2 support was
-> added and now it is super broken.
+> It might make sense to use this as an opportunity to implement
+> XFS_IOC_DIOINFO for ext4 and f2fs.
 
-Eric, did you say you're working on fixes to address these problems?
+Hmm.  A potential problem with DIOINFO is that it doesn't explicitly
+list the /file/ position alignment requirement:
 
-> 
-> > > Note that both traditional
-> > > and fs-verity hashes would need to use this same method for it to be secure; the
-> > > kernel must not accept signatures using the old method at the same time.
-> > 
-> > The v2 version of this patch set signed the hash of a hash just for fs-
-> > verity signatures.  Adding the equivalent support for regular file
-> > hashes will require the version in the IMA signature_v2_hdr to be
-> > incremented.  If the version is incremented now, both signatures
-> > versions should then be able to co-exist.
-> 
-> That seems like a good thing, unless you want users to be responsible for only
-> ever signing full file hashes *or* fs-verity file hashes with each key.  That
-> seems like something that users will get wrong.
-
-Instead of using a flexible array, Vitaly suggested defining the hash
-as FS_VERITY_MAX_DIGEST_SIZE, so that it could be allocated temporarily
-on stack
-instead of kalloc.
-
-As the above struct is not limited to fsverity, we could use
-MAX_HASH_DIGESTSIZE, if it was exported, but it isn't.  Would the
-following work for you?
-
-/*
- * IMA signature header version 3 disambiguates the data that is signed
-by
- * indirectly signing the hash of this structure, containing either the
- * fsverity_descriptor struct digest or, in the future, the traditional
-IMA
- * file hash.
- */
-struct ima_file_id {
-        __u8 is_fsverity;       /* set to 1 for IMA_VERITY_DIGSIG */
-        __u8 hash_algorithm;    /* Digest algorithm [enum hash_algo] */
-#ifdef __KERNEL__
-        __u8 hash[HASH_MAX_DIGESTSIZE];
-#else
-        __u8 hash[];
-#endif
+struct dioattr {
+	__u32		d_mem;		/* data buffer memory alignment */
+	__u32		d_miniosz;	/* min xfer size		*/
+	__u32		d_maxiosz;	/* max xfer size		*/
 };
 
-thanks,
+Since I /think/ fscrypt requires that directio writes be aligned to file
+block size, right?
 
-Mimi
+> > I plan to propose a new generic ioctl to address the issue of DIO
+> > constraints being insufficiently discoverable.  But until then, I'm
 
+Which is what I suspect Eric meant by this sentence. :)
+
+> > wondering if people are willing to consider this patchset again, or
+> > whether it is considered blocked by this issue alone.  (And if this
+> > patchset is still unacceptable, would it be acceptable with f2fs support
+> > only, given that f2fs *already* only allows FS block size aligned DIO?)
+> 
+> I think the patchset looks fine, but I'd really love to have a way for
+> the alignment restrictions to be discoverable from the start.
+
+I agree.  The mechanics of the patchset look ok to me, but it's very
+unfortunate that there's no way for userspace programs to ask the kernel
+about the directio geometry for a file.
+
+Ever since we added reflink to XFS I've wanted to add a way to tell
+userspace that direct writes to a reflink(able) file will be much more
+efficient if they can align the io request to 1 fs block instead of 1
+sector.
+
+How about something like this:
+
+struct dioattr2 {
+	__u32		d_mem;		/* data buffer memory alignment */
+	__u32		d_miniosz;	/* min xfer size		*/
+	__u32		d_maxiosz;	/* max xfer size		*/
+
+	/* file range must be aligned to this value */
+	__u32		d_min_fpos;
+
+	/* for optimal performance, align file range to this */
+	__u32		d_opt_fpos;
+
+	__u32		d_padding[11];
+};
+
+--D
