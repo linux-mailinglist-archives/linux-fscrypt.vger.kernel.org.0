@@ -2,76 +2,77 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC5F949497F
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 20 Jan 2022 09:31:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E70D0494A49
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 20 Jan 2022 10:04:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240228AbiATIa6 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 20 Jan 2022 03:30:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240169AbiATIaZ (ORCPT
+        id S240591AbiATJEW (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 20 Jan 2022 04:04:22 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:39968 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231354AbiATJEW (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 20 Jan 2022 03:30:25 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E12BC06175A;
-        Thu, 20 Jan 2022 00:30:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=4YLv12vaH5SBxgO/VH+IFNLxgK8TDHDUDIGloGpzq0o=; b=Q3dHqDRR7It61x+wYLIdNp05S/
-        u6VPSwFrw0IY2CI7N3H2ifaUZ68axyBfGF181H5kwwOhrafeJWImtn1gRt+0d0IBDN99yIfge1PJG
-        hP9BReWxiFQ3g/pJxQ+RMonEZ0AjNLRvDSKEXm1JMv2oKnyCo1oU5TnOZAmkQQ0dQbhJeODMJJSov
-        Jh1B1T+BW+K3aI5Oxe7eJZnwq95ZaW94LU/r4X7TmJNogOB+WlE3woZv0Oiko+7qp6E/nli6pMZFI
-        vMTM9Wn0SwZIO73GEuuNAmtZiXw0BILywxroF0GSo4m8pPMgSas9xV2RAeoAbgk8cQ3qeOPcLohCa
-        1cV9RIUA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nASpr-009lmb-O7; Thu, 20 Jan 2022 08:30:23 +0000
-Date:   Thu, 20 Jan 2022 00:30:23 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Eric Biggers <ebiggers@kernel.org>
+        Thu, 20 Jan 2022 04:04:22 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 07CAEB81D09;
+        Thu, 20 Jan 2022 09:04:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 740ACC340E0;
+        Thu, 20 Jan 2022 09:04:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1642669459;
+        bh=pfcthZCzooY2kl7Qa+cy/1Et4X5WXDRQLsSpT+07JNk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=C4VrIZYfGPgn0lzFMGsDmv/5TJ65MtkSeLkZ/xugErRO7yEmM4T4FUpDKKp9LkDZy
+         m8nHN+Zv9vYV74Fn9nFjB+k1iKKVZrT8SYKWQ9NloeIENKz9SjLn9ekr6svNGmlu9X
+         9E/T5KZS/LphCPHQp879QSPVdpzM0XMkIV6e4DlDR+4VH2Q7Ri1v5lOHFotzeQeQEE
+         nkI8FaSX9rs8WMHkIUd28GD0IzwAkP1FX+iX0Ha+d2y0f0pdnoTGc7N0JTJzMEBqcJ
+         5y5fmKtLWxbDHNdHEGMtZRGwwHCJQOIca4mT4LQ3CanX8yoM1G7an7HiaMPVVWYm9E
+         BXhiBw6TTdh+A==
+Date:   Thu, 20 Jan 2022 01:04:17 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Christoph Hellwig <hch@infradead.org>
 Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-xfs@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
-        Dave Chinner <david@fromorbit.com>,
+        linux-xfs@vger.kernel.org, Dave Chinner <david@fromorbit.com>,
         "Darrick J . Wong" <djwong@kernel.org>,
         Theodore Ts'o <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>
-Subject: Re: [PATCH v10 0/5] add support for direct I/O with fscrypt using
- blk-crypto
-Message-ID: <YekdnxpeunTGfXqX@infradead.org>
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        Satya Tangirala <satyat@google.com>
+Subject: Re: [PATCH v10 1/5] fscrypt: add functions for direct I/O support
+Message-ID: <Yeklkcc7NXKYDHUL@sol.localdomain>
 References: <20220120071215.123274-1-ebiggers@kernel.org>
+ <20220120071215.123274-2-ebiggers@kernel.org>
+ <YekdAa4fCKw7VY3J@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220120071215.123274-1-ebiggers@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <YekdAa4fCKw7VY3J@infradead.org>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, Jan 19, 2022 at 11:12:10PM -0800, Eric Biggers wrote:
+On Thu, Jan 20, 2022 at 12:27:45AM -0800, Christoph Hellwig wrote:
+> > +/**
+> > + * fscrypt_dio_unsupported() - check whether a DIO (direct I/O) request is
+> > + *			       unsupported due to encryption constraints
+> > + * @iocb: the file and position the I/O is targeting
+> > + * @iter: the I/O data segment(s)
+> > + *
+> > + * Return: true if DIO is unsupported
+> > + */
+> > +bool fscrypt_dio_unsupported(struct kiocb *iocb, struct iov_iter *iter)
 > 
-> Given the above, as far as I know the only remaining objection to this
-> patchset would be that DIO constraints aren't sufficiently discoverable
-> by userspace.  Now, to put this in context, this is a longstanding issue
-> with all Linux filesystems, except XFS which has XFS_IOC_DIOINFO.  It's
-> not specific to this feature, and it doesn't actually seem to be too
-> important in practice; many other filesystem features place constraints
-> on DIO, and f2fs even *only* allows fully FS block size aligned DIO.
-> (And for better or worse, many systems using fscrypt already have
-> out-of-tree patches that enable DIO support, and people don't seem to
-> have trouble with the FS block size alignment requirement.)
+> I always find non-negated functions easier to follow, i.e. turn this
+> into fscrypt_dio_supported().
+> 
 
-It might make sense to use this as an opportunity to implement
-XFS_IOC_DIOINFO for ext4 and f2fs.
+I actually had changed this from v9 because fscrypt_dio_supported() seemed
+backwards, given that its purpose is to check whether DIO is unsupported, not
+whether it's supported per se (and the function's comment reflected this).  What
+ext4 and f2fs do is check a list of reasons why DIO would *not* be supported,
+and if none apply, then it is supported.  This is just one of those reasons.
 
-> I plan to propose a new generic ioctl to address the issue of DIO
-> constraints being insufficiently discoverable.  But until then, I'm
-> wondering if people are willing to consider this patchset again, or
-> whether it is considered blocked by this issue alone.  (And if this
-> patchset is still unacceptable, would it be acceptable with f2fs support
-> only, given that f2fs *already* only allows FS block size aligned DIO?)
+This is subjective though, so if people prefer the old way, I'll change it back.
 
-I think the patchset looks fine, but I'd really love to have a way for
-the alignment restrictions to be discoverable from the start.
+- Eric
