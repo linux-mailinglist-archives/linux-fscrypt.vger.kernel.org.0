@@ -2,164 +2,103 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFDAB49631F
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 21 Jan 2022 17:50:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 036084975A4
+	for <lists+linux-fscrypt@lfdr.de>; Sun, 23 Jan 2022 22:00:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351328AbiAUQu5 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 21 Jan 2022 11:50:57 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:4440 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349221AbiAUQu5 (ORCPT
+        id S240159AbiAWVAn (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sun, 23 Jan 2022 16:00:43 -0500
+Received: from chameleon.vennard.ch ([37.35.107.252]:58038 "EHLO
+        chameleon.vennard.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240141AbiAWVAm (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 21 Jan 2022 11:50:57 -0500
-Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4JgQKQ2tgTz67qjY;
-        Sat, 22 Jan 2022 00:47:38 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Fri, 21 Jan 2022 17:50:52 +0100
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2308.021;
- Fri, 21 Jan 2022 17:50:52 +0100
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Antony Vennard <antony@vennard.ch>
-CC:     James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Sun, 23 Jan 2022 16:00:42 -0500
+Received: from localhost (localhost [IPv6:::1])
+        by chameleon.vennard.ch (Postfix) with ESMTP id 4CBCF120BBF;
+        Sun, 23 Jan 2022 21:00:36 +0000 (GMT)
+Received: from chameleon.vennard.ch ([IPv6:::1])
+        by localhost (chameleon.vennard.ch [IPv6:::1]) (amavisd-new, port 10032)
+        with ESMTP id uhevxyFMwwfF; Sun, 23 Jan 2022 21:00:30 +0000 (GMT)
+Received: from localhost (localhost [IPv6:::1])
+        by chameleon.vennard.ch (Postfix) with ESMTP id E803D120BF2;
+        Sun, 23 Jan 2022 21:00:29 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 chameleon.vennard.ch E803D120BF2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vennard.ch;
+        s=9ECFC226-3425-11E4-849C-FD7C69C5B08C; t=1642971630;
+        bh=wYCS3S8iRLYkdQZ1IN33mUgc56a+EDfAzR7fwxMS9Zo=;
+        h=To:From:Message-ID:Date:MIME-Version;
+        b=bqbbJtUNsjQUiDHX7Xt909aSY+UOXZPKs9GUAOWxMXoBn96OxoSykyBMkcdO+ccj7
+         y2aByqvx1ltq4mtK9O1V3wpeTtcPKLI3yvCZTTunDP1/7sCob1I4Db6Z0NRWHG8bo2
+         t5dMcYhblyqoW1RqXmmzAcYT/xP7XgQe1TJcB4OEPLsrEU9m7t8l3N6GwNsbBOGYla
+         jLxQ/6he00hOh3HkekBHOTjg18GHywyALwCkmabGqwBa3rR4dlcWrYMqRB5EJY9Txw
+         s3Ilat5vgp8ZKnR+myU3YyKIlyG3SF8q35MbyNln/zglDHEL9CuCS6ZhlxIVfE5u+o
+         r+1BtYIDg8W05npsr28eOeEkfN8ku/VTpFiDEd7oCVURwiH/PASn08Nu1BRdVMalzo
+         f+3mj5zKN4DPe8ghZc+Kzh5UBqEDTv/3UUOPATDRsjp2pMgEPYvWpEW+ptdIS/3Fq5
+         T5bewjQcquNnYDMc91GbAE04wO0bp2PCVzmxS4iKoq11+uVec3s8RUbev7ZfA/Og/S
+         FEaokvzOKFGVEZySUg+gZ2aVd7+C5NyDNvDy/M0eH5pF3RaJ3nC/dePhN6U9UTXyVY
+         2lhOYf3kk0xChgXx5ZJ6B/ic53K/uruuCYITINv6JRAyqthq6IZ1f5AogztL2r5vZZ
+         kxwMtSjC/ETEr0EqwJ9ymGwU=
+X-Virus-Scanned: amavisd-new at vennard.ch
+Received: from chameleon.vennard.ch ([IPv6:::1])
+        by localhost (chameleon.vennard.ch [IPv6:::1]) (amavisd-new, port 10026)
+        with ESMTP id MyYrkqBLqrMj; Sun, 23 Jan 2022 21:00:21 +0000 (GMT)
+Received: from [IPV6:2001:470:26:1b7::8a8a] (unknown [IPv6:2001:470:26:1b7::8a8a])
+        by chameleon.vennard.ch (Postfix) with ESMTPSA id 09456120BBF;
+        Sun, 23 Jan 2022 21:00:18 +0000 (GMT)
+Authentication-Results: chameleon.vennard.ch; dkim=none
+Subject: Re: [PATCH 00/14] KEYS: Add support for PGP keys and signatures
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
         "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        "dhowells@redhat.com" <dhowells@redhat.com>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "zohar@linux.ibm.com" <zohar@linux.ibm.com>
-Subject: RE: [PATCH 00/14] KEYS: Add support for PGP keys and signatures
-Thread-Topic: [PATCH 00/14] KEYS: Add support for PGP keys and signatures
-Thread-Index: AQHYBxWUAJoIvMeqLk2UYoD6PZRMZ6xnP9oAgAAHlwCAAfOkgIAAJTmAgAD7bXCAA18/UA==
-Date:   Fri, 21 Jan 2022 16:50:52 +0000
-Message-ID: <289f4694fc084f029187af7e8a3120cc@huawei.com>
+        Roberto Sassu <roberto.sassu@huawei.com>, dhowells@redhat.com,
+        dwmw2@infradead.org, herbert@gondor.apana.org.au,
+        davem@davemloft.net, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zohar@linux.ibm.com
 References: <20220111180318.591029-1-roberto.sassu@huawei.com>
  <YeV+jkGg6mpQdRID@zx2c4.com>
  <d92912bba61ee37e42d04b64073b9031604acc0f.camel@HansenPartnership.com>
  <079f10b9-060b-3a36-2224-fa1b483cbad5@vennard.ch>
  <YedHR93wPLS/JEsE@sol.localdomain>
- <d71ea8ae51e1438c894b44b011f3efda@huawei.com>
-In-Reply-To: <d71ea8ae51e1438c894b44b011f3efda@huawei.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.204.63.33]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From:   Antony Vennard <antony@vennard.ch>
+Message-ID: <24206663-b0ee-8c99-28c3-da4d433dee9d@vennard.ch>
+Date:   Sun, 23 Jan 2022 22:00:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.0
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+In-Reply-To: <YedHR93wPLS/JEsE@sol.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-PiBGcm9tOiBSb2JlcnRvIFNhc3N1IFttYWlsdG86cm9iZXJ0by5zYXNzdUBodWF3ZWkuY29tXQ0K
-PiBTZW50OiBXZWRuZXNkYXksIEphbnVhcnkgMTksIDIwMjIgMjoyNSBQTQ0KPiA+IEZyb206IEVy
-aWMgQmlnZ2VycyBbbWFpbHRvOmViaWdnZXJzQGtlcm5lbC5vcmddDQo+ID4gU2VudDogV2VkbmVz
-ZGF5LCBKYW51YXJ5IDE5LCAyMDIyIDEyOjA0IEFNDQo+ID4gT24gVHVlLCBKYW4gMTgsIDIwMjIg
-YXQgMDk6NTA6MjFQTSArMDEwMCwgQW50b255IFZlbm5hcmQgd3JvdGU6DQo+ID4gPg0KPiA+ID4g
-SGkgQWxsLA0KPiA+ID4NCj4gPiA+IE9uIDE3LzAxLzIwMjIgMTY6MDIsIEphbWVzIEJvdHRvbWxl
-eSB3cm90ZToNCj4gPiA+ID4gT24gTW9uLCAyMDIyLTAxLTE3IGF0IDE1OjM0ICswMTAwLCBKYXNv
-biBBLiBEb25lbmZlbGQgd3JvdGU6DQo+ID4gPiA+ID4gSGksDQo+ID4gPiA+ID4NCj4gPiA+ID4g
-PiBXaGlsZSBpdCBsb29rcyBsaWtlIHlvdSBwdXQgYSBsb3Qgb2Ygd29yayBpbnRvIHRoaXMgcGF0
-Y2hzZXQsIEkgdGhpbmsNCj4gPiA+ID4gPiB0aGUgZ2VuZXJhbCBpZGVhIG9mIGFkZGluZyBQR1Ag
-KnRvIHRoZSBrZXJuZWwqIGlzIGEgcHJldHR5IGRhdW50aW5nDQo+ID4gPiA+ID4gcHJvcG9zaXRp
-b24uIFRoZSBnZW5lcmFsIGNvbnNlbnN1cyBpbiB0aGUgY3J5cHRvIGVuZ2luZWVyaW5nIHdvcmxk
-IGlzDQo+ID4gPiA+ID4gdGhhdCBQR1Agb3VnaHQgdG8gYmUgb24gaXRzIHdheSBvdXQuIFdlIGRl
-ZmluaXRlbHkgZG9uJ3Qgd2FudCB0bw0KPiA+ID4gPiA+IHBlcnBldHVhdGUgdGhpcyBwcm9qZWN0
-LW9uLWxpZmUtc3VwcG9ydCBpbnRvIHRoZSBwZXJtYW5lbmNlIG9mIGtlcm5lbA0KPiA+ID4gPiA+
-IGNvZGUuIFNvbWUgcXVpY2sgR29vZ2xlIHNlYXJjaGVzIHdpbGwgcmV2ZWFsIGEgbGl0YW55IG9m
-IGJsb2cgcG9zdHMNCj4gPiA+ID4gPiB0byB0aGUgdHVuZSBvZiwgIndoeSBvaCB3aHkgYXJlIHBl
-b3BsZSBzdGlsbCB1c2luZyB0aGlzPyIgSGVyZSdzIG9uZQ0KPiA+ID4gPiA+IGZyb20gMjAxOToN
-Cj4gPiA+ID4gPiBodHRwczovL2xhdGFjb3JhLm1pY3JvLmJsb2cvMjAxOS8wNy8xNi90aGUtcGdw
-LXByb2JsZW0uaHRtbCAuIEkNCj4gPiA+ID4gPiB0aGluayB0aGVzZSBhcmUgYXJndW1lbnRzIHRv
-IHRha2Ugc2VyaW91c2x5LiBBbmQgZXZlbiBpZiB5b3UgZGlzYWdyZWUNCj4gPiA+ID4gPiB3aXRo
-IHNvbWUgcGFydHMsIHlvdSBtYXkgd2FudCB0byBjb25zaWRlciB3aGV0aGVyIHRoZSByZW1haW5p
-bmcgcGFydHMNCj4gPiA+ID4gPiB3YXJyYW50IGEgYml0IG9mIHBhdXNlIGJlZm9yZSBhZGRpbmcg
-dGhpcyB0byB0aGUga2VybmVsIGFuZA0KPiA+ID4gPiA+IHBlcnBldHVhdGluZyBQR1AncyBkZXNp
-Z24gZnVydGhlci4NCj4gPiA+DQo+ID4gPiBTbyB3aGlsZSBJIHVuZGVyc3RhbmQgd2h5IHRoaXMg
-aXMgYmVpbmcgcHJvcG9zZWQgYW5kIGNsZWFybHkgZWZmb3J0IGhhcyBnb25lDQo+ID4gPiBpbnRv
-IGl0LCBJIGFsc28gdGhpbmsgaXQgaXMgbm90IHRoZSByaWdodCBhcHByb2FjaC4gSXQgc2VlbXMg
-dGhpcyBwcm9wb3NhbA0KPiA+ID4gaXMgdG8gaW5jbHVkZSBhIGZ1bGwgUEdQIHBhY2tldCBwYXJz
-ZXIgYW5kIHZlcmlmaWNhdGlvbiBsb2dpYyBpbiB0aGUga2VybmVsDQo+ID4gPiBhcyBhbiBlcXVp
-dmFsZW50IHRvIGFsbG93IFBHUCBzaWduYXR1cmVzIHRvIGJlIHN1Ym1pdHRlZCB2aWENCj4gPiA+
-IEZTX0lPQ19FTkFCTEVfVkVSSVRZOg0KPiA+ID4NCj4gPiA+ICJGU19JT0NfRU5BQkxFX1ZFUklU
-WSBhY2NlcHRzIGEgcG9pbnRlciB0byBhIFBLQ1MjNyBmb3JtYXR0ZWQgZGV0YWNoZWQNCj4gPiA+
-IHNpZ25hdHVyZSBpbiBERVIgZm9ybWF0IG9mIHRoZSBmaWxl4oCZcyBmcy12ZXJpdHkgZGlnZXN0
-LiINCj4gPiA+DQo+ID4NCj4gPiBJdCdzIHdvcnRoIG5vdGluZyB0aGF0IGlmIGZzLXZlcml0eSBi
-dWlsdC1pbiBzaWduYXR1cmVzIGFyZSB1c2VkLCBhIHRydXN0ZWQNCj4gPiB1c2Vyc3BhY2UgcHJv
-Z3JhbSBpcyBzdGlsbCByZXF1aXJlZCB0byBkZXRlcm1pbmUgYW5kIGVuZm9yY2UgdGhlIHBvbGlj
-eSBvZg0KPiB3aGljaA0KPiA+IGZpbGVzIGFyZSByZXF1aXJlZCB0byBiZSBzaWduZWQuICBUaGUg
-a2VybmVsIG9ubHkgaGFuZGxlcyB0aGUgYWN0dWFsIHNpZ25hdHVyZQ0KPiA+IHZlcmlmaWNhdGlv
-bi4gIFRoaXMgd2FzIGJhc2ljYWxseSBhIHByb29mLW9mLWNvbmNlcHQgd2hpY2ggcmV1c2VkIHRo
-ZSBrZXJuZWwncw0KPiA+IG1vZHVsZSBzaWduYXR1cmUgdmVyaWZpY2F0aW9uIGNvZGUgKHdoaWNo
-IGhhcHBlbnMgdG8gdXNlIFBLQ1MjNykuDQo+IA0KPiBKdXN0IHRvIHNob3cgaG93IHRoZSBmc3Zl
-cml0eSBjb2RlIHdpbGwgbG9vayBsaWtlIGFmdGVyIGFkZGluZyBzdXBwb3J0DQo+IGZvciBQR1Ag
-c2lnbmF0dXJlczoNCj4gDQo+ICsgICAgICAgc3dpdGNoICh2aS0+dHlwZSkgew0KPiArICAgICAg
-IGNhc2UgUEtFWV9JRF9QS0NTNzoNCj4gKyAgICAgICAgICAgICAgIGVyciA9IHZlcmlmeV9wa2Nz
-N19zaWduYXR1cmUoZCwgc2l6ZW9mKCpkKSArIGhhc2hfYWxnLT5kaWdlc3Rfc2l6ZSwNCj4gKyAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2lnbmF0dXJlLCBzaWdf
-c2l6ZSwgZnN2ZXJpdHlfa2V5cmluZywNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgVkVSSUZZSU5HX1VOU1BFQ0lGSUVEX1NJR05BVFVSRSwNCj4gKyAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgTlVMTCwgTlVMTCk7DQo+ICsg
-ICAgICAgICAgICAgICBicmVhazsNCj4gKyAgICAgICBjYXNlIFBLRVlfSURfUEdQOg0KPiArICAg
-ICAgICAgICAgICAgZXJyID0gdmVyaWZ5X3BncF9zaWduYXR1cmUoZCwgc2l6ZW9mKCpkKSArIGhh
-c2hfYWxnLT5kaWdlc3Rfc2l6ZSwNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIHNpZ25hdHVyZSwgc2lnX3NpemUsIGZzdmVyaXR5X2tleXJpbmcsDQo+ICsgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBWRVJJRllJTkdfVU5TUEVDSUZJ
-RURfU0lHTkFUVVJFLA0KPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgTlVMTCwgTlVMTCk7DQo+ICsgICAgICAgICAgICAgICBicmVhazsNCj4gKyAgICAgICBkZWZh
-dWx0Og0KPiArICAgICAgICAgICAgICAgZXJyID0gLUVPUE5PVFNVUFA7DQo+ICsgICAgICAgfQ0K
-PiANCj4gQXMgeW91IGNhbiBzZWUsIHRoZSBjaGFuZ2Ugd2lsbCBiZSBzdHJhaWdodGZvcndhcmQu
-DQo+IA0KPiBPbiB1c2VyIHNwYWNlIHNpZGUsIEkgcGxhbiB0byBhZGQgdGhlIGNhcGFiaWxpdHkg
-dG8gZnN2ZXJpdHktdXRpbHMNCj4gdG8gcHJvZHVjZSBhIFBHUCBzaWduYXR1cmUgd2l0aCB0aGUg
-R1BHIGtleSBwYXNzZWQgYnkgcnBtc2lnbi4NCg0KQXQgdGhlIGVuZCwgaXQgd2FzIG5vdCBuZWNl
-c3NhcnkuIFdpdGggdGhpcyBwYXRjaCBzZXQsIHJwbXNpZ24gaXMgYWJsZQ0KdG8gcHJvZHVjZSBh
-IFBHUCBzaWduYXR1cmUgd2l0aG91dCBtb2RpZmljYXRpb25zIHRvIGZzdmVyaXR5LXV0aWxzOg0K
-DQpodHRwczovL2dpdGh1Yi5jb20vcm9iZXJ0b3Nhc3N1L3JwbS9jb21taXRzL2ZzdmVyaXR5LWdw
-Zy12MQ0KDQpUaGUgbW9kaWZpY2F0aW9ucyBhcmUgdmVyeSBtaW5pbWFsLCBiYXNpY2FsbHkgY29u
-c2lzdCBpbiBpbnRyb2R1Y2luZw0KdGhlIG5ldyBmdW5jdGlvbiBycG1WZXJpdHlTaWduRmlsZUdQ
-RygpIHRoYXQgY3JlYXRlcyBhIGZpbGUgd2l0aA0KdGhlIGZzdmVyaXR5X2Zvcm1hdHRlZF9kaWdl
-c3Qgc3RydWN0dXJlLCBhbmQgc2lnbnMgaXQgd2l0aCB0aGUNCmV4cG9zZWQgZnVuY3Rpb24gbWFr
-ZUdQR1NpZ25hdHVyZUFyZ3MoKS4NCg0KVGhlIGZzdmVyaXR5IHJwbSBwbHVnaW4gd29ya3Mgd2l0
-aG91dCBtb2RpZmljYXRpb24sIGFuZCB0aGUNCmtlcm5lbCB0YWtlcyBjYXJlIG9mIHRoZSB2ZXJp
-ZmljYXRpb24gb2YgdGhlIFBHUCBzaWduYXR1cmVzIHdoZW4NCmEgcGFja2FnZSBpcyBpbnN0YWxs
-ZWQuDQoNCkkgd3JvdGUgYSBtb3JlIGRldGFpbGVkIHByb2NlZHVyZSB0byBzaWduIGFuZCBpbnN0
-YWxsIGEgcGFja2FnZQ0Kd2l0aCBmc3Zlcml0eSBzaWduYXR1cmVzIGluIHRoZSBQR1AgZm9ybWF0
-LiBJdCBjYW4gYmUgZm91bmQgaGVyZToNCg0KaHR0cHM6Ly93d3cuc3Bpbmljcy5uZXQvbGlzdHMv
-ZmVkb3JhLWRldmVsL21zZzI5NjU2Mi5odG1sDQoNClJvYmVydG8NCg0KSFVBV0VJIFRFQ0hOT0xP
-R0lFUyBEdWVzc2VsZG9yZiBHbWJILCBIUkIgNTYwNjMNCk1hbmFnaW5nIERpcmVjdG9yOiBMaSBQ
-ZW5nLCBaaG9uZyBSb25naHVhDQoNCj4gPiBJJ2QgZW5jb3VyYWdlIG5ldyB1c2VycyB0byBlaXRo
-ZXIgZ28gYWxsLWluIG9uIGEgdXNlcnNwYWNlIHNvbHV0aW9uLCB1c2luZyBhDQo+ID4gdHJ1c3Rl
-ZCB1c2Vyc3BhY2UgcHJvZ3JhbSB0byB2ZXJpZnkgc2lnbmF0dXJlcyBvZiBmcy12ZXJpdHkgZmls
-ZSBkaWdlc3RzOw0KPiA+ICpvciogZ28gYWxsLWluIG9uIGFuIGluLWtlcm5lbCBzb2x1dGlvbiwg
-dXNpbmcgdGhlIElNQSBzdXBwb3J0IGZvciBmcy12ZXJpdHkNCj4gPiB3aGljaCBNaW1pIFpvaGFy
-IGlzIHdvcmtpbmcgb24uICBBIHVzZXJzcGFjZSBzb2x1dGlvbiBjb3VsZCB1c2UgYSBzaW1wbGUN
-Cj4gDQo+IFByb2JhYmx5LCB0aGVyZSBpcyBhbHNvIHRoZSB0aGlyZCBvcHRpb24gb2YgYW4gTFNN
-IChzdWNoIGFzIElQRSkgdGhhdCBnZXRzDQo+IGZyb20gZnN2ZXJpdHkgdGhlIGluZm9ybWF0aW9u
-IGlmIHRoZSBzaWduYXR1cmUgd2FzIHZhbGlkYXRlZCwgYW5kIGRlY2lkZQ0KPiBkZXBlbmRpbmcg
-b24gYSBwb2xpY3kuIEkgd291bGQgYWxzbyBleHBvc2UgdGhlIGluZm9ybWF0aW9uIGFib3V0IHRo
-ZQ0KPiByZXN0cmljdGlvbiBpbXBvc2VkIG9uIHRoZSBrZXlyaW5nIGZyb20gd2hpY2ggdGhlIGtl
-eSB1c2VkIHRvIHZlcmlmeQ0KPiB0aGUgc2lnbmF0dXJlIHdhcyBmb3VuZC4NCj4gDQo+IE1heWJl
-IElNQSBjb3VsZCB1c2UgdGhpcyBhcHByb2FjaCB0b28sIHdoaWNoIHdvdWxkIGF2b2lkIHRoZSBu
-ZWVkDQo+IG9mIGludHJvZHVjaW5nIGFub3RoZXIgc2lnbmF0dXJlIGZvcm1hdC4gSWYgdGhhdCBp
-cyBkZXNpcmVkLCB5b3UgbWlnaHQNCj4gd2FudCB0byBjb29yZGluYXRlIHdpdGggdGhlIGF1dGhv
-cnMgb2YgYSBGZWRvcmEgZmVhdHVyZToNCj4gDQo+IGh0dHBzOi8vZmVkb3JhcHJvamVjdC5vcmcv
-d2lraS9DaGFuZ2VzL0ZzVmVyaXR5UlBNDQo+IA0KPiB3aGljaCwgYXMgZmFyIGFzIEkga25vdywg
-cGxhbiB0byB1c2UgdGhlIHNpZ25hdHVyZSBmb3JtYXQgYWxyZWFkeQ0KPiB1cHN0cmVhbWVkLg0K
-PiANCj4gVGhhbmtzDQo+IA0KPiBSb2JlcnRvDQo+IA0KPiBIVUFXRUkgVEVDSE5PTE9HSUVTIER1
-ZXNzZWxkb3JmIEdtYkgsIEhSQiA1NjA2Mw0KPiBNYW5hZ2luZyBEaXJlY3RvcjogTGkgUGVuZywg
-WmhvbmcgUm9uZ2h1YQ0KPiANCj4gPiBzaWduYXR1cmUgZm9ybWF0LCB1c2luZyBhIG1vZGVybiBh
-bGdvcml0aG0gc3VjaCBhcyBFZDI1NTE5LiAgSU1BIHVzZXMgYQ0KPiBzaW1wbGUNCj4gPiBzaWdu
-YXR1cmUgZm9ybWF0IHRvbywgdGhvdWdoIGl0IHVzZXMgYSBjb21wbGV4IGZvcm1hdCAoWC41MDkp
-IGZvciBwdWJsaWMga2V5cy4NCj4gPg0KPiA+IC0gRXJpYw0K
+
+On 19/01/2022 00:03, Eric Biggers wrote:
+> On Tue, Jan 18, 2022 at 09:50:21PM +0100, Antony Vennard wrote:
+>>
+>> Hi All,
+
+> It's worth noting that if fs-verity built-in signatures are used, a trusted
+> userspace program is still required to determine and enforce the policy of which
+> files are required to be signed.  The kernel only handles the actual signature
+> verification.  This was basically a proof-of-concept which reused the kernel's
+> module signature verification code (which happens to use PKCS#7).
+> 
+> I'd encourage new users to either go all-in on a userspace solution, using a
+> trusted userspace program to verify signatures of fs-verity file digests;
+> *or* go all-in on an in-kernel solution, using the IMA support for fs-verity
+> which Mimi Zohar is working on.  A userspace solution could use a simple
+> signature format, using a modern algorithm such as Ed25519.  IMA uses a simple
+> signature format too, though it uses a complex format (X.509) for public keys.
+
+FWIW I checked some of the options for hardware key storage. Thales HSMs 
+support Ed25519, at least according to their marketing materials. 
+Similarly Javacard 3.1 supports (will support) X/Ed 25519/448, so when 
+tokens supporting this emerge (if they haven't already) hardware support 
+for modern algorithms should exist too.
+
+I therefore agree. Use Ed25519.
+
+Antony
