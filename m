@@ -2,128 +2,95 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F13C849BFEF
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 26 Jan 2022 01:07:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DF4D49C9F1
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 26 Jan 2022 13:44:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235155AbiAZAH2 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 25 Jan 2022 19:07:28 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:35354 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235166AbiAZAHY (ORCPT
+        id S234230AbiAZMoW (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 26 Jan 2022 07:44:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:21364 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234178AbiAZMoW (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 25 Jan 2022 19:07:24 -0500
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 20PNgHVj026457;
-        Wed, 26 Jan 2022 00:07:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=zROlUnGp7KwW/JRJDF1wWCeMVgCxWkXiPtbI6LaWmgA=;
- b=J86s2Md/Hr7go6qIbSwV+7RbychzpluXqIU+yP4bmdvUPkeGSVJuVocLODP36hnk5IYh
- +LlYb44tGjaYhx3qNVu8RohO0Frw3G9N7tsfdLecbCjeFgvJVqEmNSUBQqCVYasa555c
- 5nAd9K1+yVW/n2jm7Yx3dF8yeyRcLWDCLBWNRuU8JZGAQVfWrH9wyplGnOQ7QQc00Dla
- w3QmzskSg9HANIGdyTB1sc06Hmj72ce+DEcq/NCLEkGh0397DT/8tjhfYx48ZDMVhe8H
- YSunmyViQ8k6uJlq2SkVr9Ni8SzTlViOBDZEHSgG9DDcFSf+7RonzfBZzknLKLmz8PLt wg== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3dtu3u8e0p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Jan 2022 00:07:22 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 20Q03ur7014076;
-        Wed, 26 Jan 2022 00:07:20 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03ams.nl.ibm.com with ESMTP id 3dr9j9a7u8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Jan 2022 00:07:19 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 20Q07GBQ20447568
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 26 Jan 2022 00:07:16 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D1E704C040;
-        Wed, 26 Jan 2022 00:07:16 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 01DCF4C059;
-        Wed, 26 Jan 2022 00:07:16 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com.com (unknown [9.65.78.94])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 26 Jan 2022 00:07:15 +0000 (GMT)
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     linux-integrity@vger.kernel.org
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 8/8] fsverity: update the documentation
-Date:   Tue, 25 Jan 2022 19:06:58 -0500
-Message-Id: <20220126000658.138345-9-zohar@linux.ibm.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20220126000658.138345-1-zohar@linux.ibm.com>
-References: <20220126000658.138345-1-zohar@linux.ibm.com>
+        Wed, 26 Jan 2022 07:44:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1643201062;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=lcgXnF+PwIYGfn2u5tNUBbDBAw5Do5Myjafl0JrRTE0=;
+        b=I7ygIRGcqtYkFrG5oQ2KhrlpoVTz1yBtfx1ecObkZW/GsV9WJNuaxchRaROPghDZOj9ZMA
+        ybtC8z6p1ToYZSZeyVYR59/gWpi58iTu7ttW+RKuV08cwTHh1tLkO9NZg2LPaJOAB3j2V/
+        qFH0IV5pG9OAEB5wPJM+M7v7kvAjGPU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-645-sNLM-IOzOQinTsbLXXQfcw-1; Wed, 26 Jan 2022 07:44:18 -0500
+X-MC-Unique: sNLM-IOzOQinTsbLXXQfcw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 065F51006AA0;
+        Wed, 26 Jan 2022 12:44:17 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A8A1F7B9D9;
+        Wed, 26 Jan 2022 12:44:14 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>
+cc:     dhowells@redhat.com, jlayton@kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: fscrypt and potential issues from file sparseness
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 8ATXkNbAEPxEWOFzGJZNBIPFAKkfpcOK
-X-Proofpoint-GUID: 8ATXkNbAEPxEWOFzGJZNBIPFAKkfpcOK
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-01-25_06,2022-01-25_02,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- phishscore=0 spamscore=0 suspectscore=0 adultscore=0 lowpriorityscore=0
- impostorscore=0 mlxlogscore=959 clxscore=1015 priorityscore=1501
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2201250145
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <124548.1643201054.1@warthog.procyon.org.uk>
+Date:   Wed, 26 Jan 2022 12:44:14 +0000
+Message-ID: <124549.1643201054@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Update the fsverity documentation related to IMA signature support.
+Hi,
 
-Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
----
- Documentation/filesystems/fsverity.rst | 22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
+I'm looking at doing content encryption in the network filesystem support
+library.  It occurs to me that if the filesystem can record sparsity in the
+file, then a couple of issues may arise if we wish to use that to record
+zeroed source blocks (ie. the unencrypted blocks).  It further occurs to me
+that this may occur in extent-based filesystems such as ext4 that support
+fscrypt and also do extent optimisation.
 
-diff --git a/Documentation/filesystems/fsverity.rst b/Documentation/filesystems/fsverity.rst
-index 1d831e3cbcb3..7d8a574a0d3b 100644
---- a/Documentation/filesystems/fsverity.rst
-+++ b/Documentation/filesystems/fsverity.rst
-@@ -74,8 +74,12 @@ authenticating the files is up to userspace.  However, to meet some
- users' needs, fs-verity optionally supports a simple signature
- verification mechanism where users can configure the kernel to require
- that all fs-verity files be signed by a key loaded into a keyring; see
--`Built-in signature verification`_.  Support for fs-verity file hashes
--in IMA (Integrity Measurement Architecture) policies is also planned.
-+`Built-in signature verification`_.
-+
-+IMA supports including fs-verity file digests and signatures based
-+on the fs-verity file digests in the IMA (Integrity Measurement
-+Architecture) measurement list and verifying fs-verity based file
-+signatures stored as security.ima xattrs, based on policy.
- 
- User API
- ========
-@@ -653,13 +657,13 @@ weren't already directly answered in other parts of this document.
-     hashed and what to do with those hashes, such as log them,
-     authenticate them, or add them to a measurement list.
- 
--    IMA is planned to support the fs-verity hashing mechanism as an
--    alternative to doing full file hashes, for people who want the
--    performance and security benefits of the Merkle tree based hash.
--    But it doesn't make sense to force all uses of fs-verity to be
--    through IMA.  As a standalone filesystem feature, fs-verity
--    already meets many users' needs, and it's testable like other
--    filesystem features e.g. with xfstests.
-+    IMA supports the fs-verity hashing mechanism as an alternative
-+    to doing full file hashes, for people who want the performance
-+    and security benefits of the Merkle tree based hash.  But it
-+    doesn't make sense to force all uses of fs-verity to be through
-+    IMA.  As a standalone filesystem feature, fs-verity already meets
-+    many users' needs, and it's testable like other filesystem
-+    features e.g. with xfstests.
- 
- :Q: Isn't fs-verity useless because the attacker can just modify the
-     hashes in the Merkle tree, which is stored on-disk?
--- 
-2.27.0
+The issues are:
+
+ (1) Recording source blocks that are all zeroes by not storing them and
+     leaving a hole in a content is a minor security hole as someone looking
+     at the file can derive information about the contents from that.  This
+     probably wouldn't affect most files, but it might affect database files.
+
+ (2) If the filesystem stores a hole for a *source* block of zeroes (not an
+     encrypted block), then it has the same problems as cachefiles:
+
+     (a) A block of zeroes written to disk (ie. an actually encrypted block)
+     is very, very unlikely to represent a source block of zeroes, but the
+     optimiser can punch it out to reduce an extent and recover disk space,
+     thereby leaving a hole.
+
+     (b) The optimiser could also *insert* blocks of zeroes to bridge an
+     extent, thereby erasing a hole - but the zeroes would be very unlikely to
+     decrypt back to a source block of zeroes.
+
+     If either event occurs, data corruption will ensue.
+
+     To evade this one, we have to do one of the following:
+
+	1. Don't use sparsity to record source blocks of zeroes
+	2. Disable extent optimisations of these sorts
+	3. Keep a separate map of the content
+
+Now, I don't know if fscrypt does this.  It's hard to tell.
+
+David
 
