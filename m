@@ -2,98 +2,72 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02FF349D6F8
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 27 Jan 2022 01:51:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B072749D7A7
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 27 Jan 2022 02:58:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231712AbiA0AvZ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 26 Jan 2022 19:51:25 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:53086 "EHLO
+        id S234725AbiA0B6D (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 26 Jan 2022 20:58:03 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:32886 "EHLO
         dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231533AbiA0AvZ (ORCPT
+        with ESMTP id S231336AbiA0B6D (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 26 Jan 2022 19:51:25 -0500
+        Wed, 26 Jan 2022 20:58:03 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7E2EA61B60;
-        Thu, 27 Jan 2022 00:51:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92875C340E3;
-        Thu, 27 Jan 2022 00:51:23 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D4AB761C2A;
+        Thu, 27 Jan 2022 01:58:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B3D1C340E7;
+        Thu, 27 Jan 2022 01:58:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643244683;
-        bh=4Mfk12KQfEEtPKhz5q6wmn/51AroOcN3gjCZnA6JALI=;
+        s=k20201202; t=1643248682;
+        bh=eCvemmKn1glANDLwNe15EfZc8W8g0wsGFmOFB9BvvC4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tJ2g3KAU1gh48p97de8DlKNDKULc0D7dZ+zKnvFrJVx5VzYeuPpKZ3f/emBbFQQyb
-         7Q9QUN6h2yerWnY4PPDdviQJT4AOXTGYtCHg0fxukUux66gfKxHq4hZCVmB+yRBocL
-         TuWNvNGnCsUcJrQPda9IRFJq+7zf1LOYCSLrG4H/4AchxSDkFEyk1x6wWzYwqrgKHF
-         wv9g7wVHD8WkFd3VD0jgGQdb/ADZ/ppxdvKx/xOnVjrQv+2GwQ/GTNJyI4sRQINki1
-         +QKi3pozZw4Ow3PfCNr8MWU6X37xwqz3JaY5et9pIaTvCqnwb7RXGY206z04pFk+fY
-         yhTPXC8Y/XD2Q==
-Date:   Wed, 26 Jan 2022 16:51:22 -0800
+        b=LjlkKC4WeI35e6cztiGpo6Nl2E4EbMcy52YSs/MUwxSxXG6uTgStbm3sn0lUIxNaI
+         1c8Q297Brzzd8N3N902RmMVG1nW40YsvofDWZfEzX6c+ML5oqA5JDo1MswW0TSFOlv
+         Vl8NcqG80ikE75oWQX2GVWwQpXxOmlI8nZ+a0gVz3w5kNwzz0ioXANm6XMZ/8sW1Tk
+         Jog7/OOL8VPiEX5utEy/4ELQcA98/N0DeFU8wzUZk/5k409V+AHB1DGCkX464jDkjY
+         18rE2j6no0CQTf54xPsUvmlol9g42S/4HmQzWzWvd06HBxW2vOvKlbDF6zZMDjZyyU
+         I6ChYXWS8FShQ==
+Date:   Wed, 26 Jan 2022 17:58:00 -0800
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Gaurav Kashyap <gaurkash@qti.qualcomm.com>
-Cc:     "Gaurav Kashyap (QUIC)" <quic_gaurkash@quicinc.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
-        "thara.gopinath@linaro.org" <thara.gopinath@linaro.org>,
-        "Neeraj Soni (QUIC)" <quic_neersoni@quicinc.com>,
-        Dinesh Garg <dineshg@quicinc.com>
-Subject: Re: [PATCH 00/10] Add wrapped key support for Qualcomm ICE
-Message-ID: <YfHsimSOxedhRBdI@sol.localdomain>
-References: <20211206225725.77512-1-quic_gaurkash@quicinc.com>
- <YddHbRx2UGeAOhji@sol.localdomain>
- <BYAPR02MB4071D51F6DFB371E46E424ACE24C9@BYAPR02MB4071.namprd02.prod.outlook.com>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     ceph-devel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, idryomov@gmail.com
+Subject: Re: [RFC PATCH v10 03/48] fscrypt: export fscrypt_fname_encrypt and
+ fscrypt_fname_encrypted_size
+Message-ID: <YfH8KBOLGA+zPInc@sol.localdomain>
+References: <20220111191608.88762-1-jlayton@kernel.org>
+ <20220111191608.88762-4-jlayton@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <BYAPR02MB4071D51F6DFB371E46E424ACE24C9@BYAPR02MB4071.namprd02.prod.outlook.com>
+In-Reply-To: <20220111191608.88762-4-jlayton@kernel.org>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hi Gaurav,
-
-On Thu, Jan 06, 2022 at 09:14:22PM +0000, Gaurav Kashyap wrote:
-> Hey Eric
+On Tue, Jan 11, 2022 at 02:15:23PM -0500, Jeff Layton wrote:
+> For ceph, we want to use our own scheme for handling filenames that are
+> are longer than NAME_MAX after encryption and Base64 encoding. This
+> allows us to have a consistent view of the encrypted filenames for
+> clients that don't support fscrypt and clients that do but that don't
+> have the key.
 > 
-> > Have you tested that QCOM_SCM_ES_DERIVE_SW_SECRET is working properly?
+> Currently, fs/crypto only supports encrypting filenames using
+> fscrypt_setup_filename, but that also handles encoding nokey names. Ceph
+> can't use that because it handles nokey names in a different way.
 > 
-> - You will need updated trustzone build for that (as I was missing a minor detail in the original one pertaining to SW secret) , please request again on the same ticket for the updated build.
-> - I have reminded the people in Qualcomm too to provide you the build.
-> - Note that with the new build you should be using the correct directions, i.e QCOM_SCM_RO where intended
+> Export fscrypt_fname_encrypt. Rename fscrypt_fname_encrypted_size to
+> __fscrypt_fname_encrypted_size and add a new wrapper called
+> fscrypt_fname_encrypted_size that takes an inode argument rather than a
+> pointer to a fscrypt_policy union.
 > 
-> Warm Regards
-> Gaurav Kashyap
-> 
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
 
-I verified that the latest TrustZone build is working; thanks for the help!
+Acked-by: Eric Biggers <ebiggers@google.com>
 
-Note, these are the branches I'm using for now:
-
-  * Kernel patches: https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git/log/?h=wip-wrapped-keys
-  * fscryptctl tool and test scripts: https://github.com/ebiggers/fscryptctl/tree/wip-wrapped-keys
-
-The kernel branch is based on v5.17-rc1.  I haven't changed your patches from
-your latest series other than rebasing them and adding a fix
-"qcom_scm: fix return values" on top.
-
-Note that v5.16-rc5 and later have a bug where the UFS controller on SM8350
-isn't recognized.  Therefore, my branch contains a fix from Bjorn Andersson for
-that bug, which I applied from the mailing list.
-
-One oddity I noticed is that if I import the same raw key twice, the long-term
-wrapped key blob is the same.  This implies that the key encryption algorithm
-used by the Qualcomm hardware is deterministic, which is unexpected.  I would
-expect the wrapped key to contain a random nonce.  Do you know why deterministic
-encryption is used?  This probably isn't much of a problem, but it's unexpected.
-
-Besides that, I think the next steps are for you to address the comments I've
-left on this series, and for me to get started on adding ciphertext verification
-tests for this to xfstests (alongside the other fscrypt ciphertext verification
-tests that are already there) so that we can prove this feature is actually
-encrypting the data as intended.
+Please make sure to run checkpatch.pl, though.  There is still some weird
+indentation in this patch.
 
 - Eric
