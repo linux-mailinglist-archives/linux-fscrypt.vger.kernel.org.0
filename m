@@ -2,104 +2,98 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D4B549D211
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 26 Jan 2022 19:52:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02FF349D6F8
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 27 Jan 2022 01:51:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232582AbiAZSwO (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 26 Jan 2022 13:52:14 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:45242 "EHLO
+        id S231712AbiA0AvZ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 26 Jan 2022 19:51:25 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:53086 "EHLO
         dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229880AbiAZSwO (ORCPT
+        with ESMTP id S231533AbiA0AvZ (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 26 Jan 2022 13:52:14 -0500
+        Wed, 26 Jan 2022 19:51:25 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EB8826158E;
-        Wed, 26 Jan 2022 18:52:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27C70C340E3;
-        Wed, 26 Jan 2022 18:52:13 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7E2EA61B60;
+        Thu, 27 Jan 2022 00:51:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92875C340E3;
+        Thu, 27 Jan 2022 00:51:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643223133;
-        bh=bq+ubs72mt1p96IPmqJ3At3GXgXmm5/hMhOnaLGNUVQ=;
+        s=k20201202; t=1643244683;
+        bh=4Mfk12KQfEEtPKhz5q6wmn/51AroOcN3gjCZnA6JALI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=e6JnpaevJYs+1WgEA+FdJwdbrFxH729NqMr8XGf2BOKVJXUN6JrfNcHjfC42/KVUA
-         75ISQzrtAPIWBGGWEWk8J9DF5Qz2tIuXs2HdY3eu7/4HszJydbZBCbze+tI5cYGfLG
-         Dt4lfSOD5FpasFG9adQW18DE5WhXer3QWF8YWLQwluxiq6yPKzJA9jJSWFROKQMKE/
-         nYvq/LDV0UBNLdPQBGt04O/CfRpK0fvPJY8o3/OrOzh2uJJSqbWl77PagDFhSAfXJf
-         YkZm325a2LEeqnUq3SkTR2tNu0AqZo0Xg3t5QIl1IB+RzJCnMSU05rDeNCyTnz1m0t
-         JRxd90/eOedRQ==
-Date:   Wed, 26 Jan 2022 10:52:11 -0800
+        b=tJ2g3KAU1gh48p97de8DlKNDKULc0D7dZ+zKnvFrJVx5VzYeuPpKZ3f/emBbFQQyb
+         7Q9QUN6h2yerWnY4PPDdviQJT4AOXTGYtCHg0fxukUux66gfKxHq4hZCVmB+yRBocL
+         TuWNvNGnCsUcJrQPda9IRFJq+7zf1LOYCSLrG4H/4AchxSDkFEyk1x6wWzYwqrgKHF
+         wv9g7wVHD8WkFd3VD0jgGQdb/ADZ/ppxdvKx/xOnVjrQv+2GwQ/GTNJyI4sRQINki1
+         +QKi3pozZw4Ow3PfCNr8MWU6X37xwqz3JaY5et9pIaTvCqnwb7RXGY206z04pFk+fY
+         yhTPXC8Y/XD2Q==
+Date:   Wed, 26 Jan 2022 16:51:22 -0800
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, jlayton@kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: fscrypt and potential issues from file sparseness
-Message-ID: <YfGYW7DGecySgYOH@sol.localdomain>
-References: <124549.1643201054@warthog.procyon.org.uk>
+To:     Gaurav Kashyap <gaurkash@qti.qualcomm.com>
+Cc:     "Gaurav Kashyap (QUIC)" <quic_gaurkash@quicinc.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
+        "thara.gopinath@linaro.org" <thara.gopinath@linaro.org>,
+        "Neeraj Soni (QUIC)" <quic_neersoni@quicinc.com>,
+        Dinesh Garg <dineshg@quicinc.com>
+Subject: Re: [PATCH 00/10] Add wrapped key support for Qualcomm ICE
+Message-ID: <YfHsimSOxedhRBdI@sol.localdomain>
+References: <20211206225725.77512-1-quic_gaurkash@quicinc.com>
+ <YddHbRx2UGeAOhji@sol.localdomain>
+ <BYAPR02MB4071D51F6DFB371E46E424ACE24C9@BYAPR02MB4071.namprd02.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <124549.1643201054@warthog.procyon.org.uk>
+In-Reply-To: <BYAPR02MB4071D51F6DFB371E46E424ACE24C9@BYAPR02MB4071.namprd02.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hi David,
+Hi Gaurav,
 
-On Wed, Jan 26, 2022 at 12:44:14PM +0000, David Howells wrote:
-> Hi,
+On Thu, Jan 06, 2022 at 09:14:22PM +0000, Gaurav Kashyap wrote:
+> Hey Eric
 > 
-> I'm looking at doing content encryption in the network filesystem support
-> library.  It occurs to me that if the filesystem can record sparsity in the
-> file, then a couple of issues may arise if we wish to use that to record
-> zeroed source blocks (ie. the unencrypted blocks).  It further occurs to me
-> that this may occur in extent-based filesystems such as ext4 that support
-> fscrypt and also do extent optimisation.
+> > Have you tested that QCOM_SCM_ES_DERIVE_SW_SECRET is working properly?
 > 
-> The issues are:
+> - You will need updated trustzone build for that (as I was missing a minor detail in the original one pertaining to SW secret) , please request again on the same ticket for the updated build.
+> - I have reminded the people in Qualcomm too to provide you the build.
+> - Note that with the new build you should be using the correct directions, i.e QCOM_SCM_RO where intended
 > 
->  (1) Recording source blocks that are all zeroes by not storing them and
->      leaving a hole in a content is a minor security hole as someone looking
->      at the file can derive information about the contents from that.  This
->      probably wouldn't affect most files, but it might affect database files.
-
-This is working as intended; it's a known trade-off between security and
-usability that is documented in Documentation/filesystems/fscrypt.rst.  eCryptfs
-worked differently, and that caused lots of problems because things that would
-be fast on normal filesystems were instead extremely slow.
-
-> 
->  (2) If the filesystem stores a hole for a *source* block of zeroes (not an
->      encrypted block), then it has the same problems as cachefiles:
-> 
->      (a) A block of zeroes written to disk (ie. an actually encrypted block)
->      is very, very unlikely to represent a source block of zeroes, but the
->      optimiser can punch it out to reduce an extent and recover disk space,
->      thereby leaving a hole.
-> 
->      (b) The optimiser could also *insert* blocks of zeroes to bridge an
->      extent, thereby erasing a hole - but the zeroes would be very unlikely to
->      decrypt back to a source block of zeroes.
-> 
->      If either event occurs, data corruption will ensue.
-> 
->      To evade this one, we have to do one of the following:
-> 
-> 	1. Don't use sparsity to record source blocks of zeroes
-> 	2. Disable extent optimisations of these sorts
-> 	3. Keep a separate map of the content
-> 
-> Now, I don't know if fscrypt does this.  It's hard to tell.
+> Warm Regards
+> Gaurav Kashyap
 > 
 
-Changing an all-zeroes region to a hole (or vice versa) in an encrypted file is
-impossible without the key, so yes that sort of thing needs to be disabled, e.g.
-based on whether the inode has the encrypt flag set or not.
+I verified that the latest TrustZone build is working; thanks for the help!
 
-As far as I know, neither e2fsprogs nor f2fs-tools implement this sort of
-optimization.  e2fsck supports optimizing how the extents are represented on
-disk, but it doesn't mess with the actual data blocks.
+Note, these are the branches I'm using for now:
+
+  * Kernel patches: https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git/log/?h=wip-wrapped-keys
+  * fscryptctl tool and test scripts: https://github.com/ebiggers/fscryptctl/tree/wip-wrapped-keys
+
+The kernel branch is based on v5.17-rc1.  I haven't changed your patches from
+your latest series other than rebasing them and adding a fix
+"qcom_scm: fix return values" on top.
+
+Note that v5.16-rc5 and later have a bug where the UFS controller on SM8350
+isn't recognized.  Therefore, my branch contains a fix from Bjorn Andersson for
+that bug, which I applied from the mailing list.
+
+One oddity I noticed is that if I import the same raw key twice, the long-term
+wrapped key blob is the same.  This implies that the key encryption algorithm
+used by the Qualcomm hardware is deterministic, which is unexpected.  I would
+expect the wrapped key to contain a random nonce.  Do you know why deterministic
+encryption is used?  This probably isn't much of a problem, but it's unexpected.
+
+Besides that, I think the next steps are for you to address the comments I've
+left on this series, and for me to get started on adding ciphertext verification
+tests for this to xfstests (alongside the other fscrypt ciphertext verification
+tests that are already there) so that we can prove this feature is actually
+encrypting the data as intended.
 
 - Eric
