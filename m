@@ -2,133 +2,88 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DD394A01CC
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 28 Jan 2022 21:25:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E4D94A0225
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 28 Jan 2022 21:40:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238987AbiA1UZ5 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 28 Jan 2022 15:25:57 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:58708 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232469AbiA1UZ4 (ORCPT
+        id S1344405AbiA1UkE (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 28 Jan 2022 15:40:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351218AbiA1Uj4 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 28 Jan 2022 15:25:56 -0500
+        Fri, 28 Jan 2022 15:39:56 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60243C061756;
+        Fri, 28 Jan 2022 12:39:55 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 7FAD0B825E4;
-        Fri, 28 Jan 2022 20:25:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D38DC340E7;
-        Fri, 28 Jan 2022 20:25:54 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id C21A3CE275B;
+        Fri, 28 Jan 2022 20:39:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB5CEC36AF2;
+        Fri, 28 Jan 2022 20:39:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643401554;
-        bh=Ph1OyR1ecXlZ+Bdc35dZNoDYirpUuMYM5Ao7nVsb3XM=;
+        s=k20201202; t=1643402391;
+        bh=mx4sBLSf1WrbamZ5+mfAkPh51VnD1NLOVjvx+CC92e0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ly2c+WcC64vuUxS2yM7Ja9KzeZG3/gUJ1Me66weZMQ9tFKcHzxHs7/lLFpT77b8do
-         Ir05XW4W+FHR3B1mQY7Gd8MxBksc1AJAX+tvMO4CasGVPWPXsY5GWvzZ2ilV5abDN/
-         iuuNU3qDhYhTQhPH3AxCcGFSF3qNyNSGQe2Rk2PiRzvxmTeVzSEUCBVoZNtAYF/wGW
-         qG2q0AJWQJgSZbZA3ohuhCyltyY/t9lzl13gDj300WdUwZLDNW7ByoQi88vLJHCbrO
-         qUjnD+wlaAR4+lSUktSgQ7tAwfdPOqjJODrv0cW+KT9AFqOsPy/25wtcl6nF9Fu1z1
-         qaH2bknZ/h+8g==
-Date:   Fri, 28 Jan 2022 12:25:52 -0800
+        b=LmAlza0Xk4OOevkhoZ5j6scQQylr2PszXxeevCclwbvsnowbCmptlC0VTvOsDAoW4
+         eoAqUlL9Zhy5JkluKQ5OVAsXj+/P+ySe5R/honCf8ABB+XxVXm62Zg752bSldF7F8T
+         xlrVbDR0LQEC+PcBiBcuvrzEqsgI9E2t8RyNBrYZcTx2bDquSrqUdv0wu0bGkJhkKq
+         aqmXPFBAAJkUP5vteydi+ZtUE5H52ZRY7W0T9FS39Q4VFnQiusSDTGVzRjFmlLyPa3
+         3ul1ffAom9IAhH9oez9Jq5dCL0wiEy3FLFHRi5mqoPtkYWrAG79agf7DciEN6DK/wV
+         xDUS3iPtfdMGQ==
+Date:   Fri, 28 Jan 2022 12:39:50 -0800
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Roberto Sassu <roberto.sassu@huawei.com>
-Cc:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "stefanb@linux.ibm.com" <stefanb@linux.ibm.com>,
-        "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC][PATCH v3a 00/11] ima: support fs-verity digests and
- signatures (alternative)
-Message-ID: <YfRRUBZpQv2Hi1sL@sol.localdomain>
-References: <20220127184614.2837938-1-roberto.sassu@huawei.com>
- <YfLz8NftvbZtKvLT@sol.localdomain>
- <YfL0+q/ekv4H8lZg@sol.localdomain>
- <d122893c426f44aa95d5168773b60b9d@huawei.com>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     ceph-devel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, idryomov@gmail.com
+Subject: Re: [RFC PATCH v10 00/48] ceph+fscrypt: full support
+Message-ID: <YfRUlmVHyVBRsFIU@sol.localdomain>
+References: <20220111191608.88762-1-jlayton@kernel.org>
+ <YfH/8xCAtyCA9raH@sol.localdomain>
+ <9777517aececf5d178e555315afc2453ab8dc9b7.camel@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d122893c426f44aa95d5168773b60b9d@huawei.com>
+In-Reply-To: <9777517aececf5d178e555315afc2453ab8dc9b7.camel@kernel.org>
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Jan 28, 2022 at 09:05:01AM +0000, Roberto Sassu wrote:
-> > From: Eric Biggers [mailto:ebiggers@kernel.org]
-> > Sent: Thursday, January 27, 2022 8:40 PM
-> > On Thu, Jan 27, 2022 at 11:35:12AM -0800, Eric Biggers wrote:
-> > > On Thu, Jan 27, 2022 at 07:46:09PM +0100, Roberto Sassu wrote:
-> > > > I wanted to propose a different approach for handling fsverity digests and
-> > > > signatures, compared to:
-> > > >
-> > > > https://lore.kernel.org/linux-integrity/20220126000658.138345-1-
-> > zohar@linux.ibm.com/
-> > > >
-> > > > In the original proposal, a new signature version has been introduced (v3)
-> > > > to allow the possibility of signing the digest of a more flexible data
-> > > > structure, ima_file_id, which could also include the fsverity file digest.
-> > > >
-> > > > While the new signature type would be sufficient to handle fsverity file
-> > > > digests, the problem is that its format would not be compatible with the
-> > > > signature format supported by the built-in verification module in fsverity.
-> > > > The rpm package manager already has an extension to include fsverity
-> > > > signatures, with the existing format, in the RPM header.
-> > > >
-> > > > Given that the fsverity signature is in the PKCS#7 format, IMA has already
-> > > > the capability of handling it with the existing code, more specifically the
-> > > > modsig code. It would be sufficient to provide to modsig the correct data
-> > > > to avoid introducing a new signature format.
-> > >
-> > > I think it would be best to get people moved off of the fs-verity built-in
-> > > signatures, rather than further extend the use of it.  PKCS#7 is a pretty
-> > > terrible signature format.  The IMA one is better, though it's unfortunate that
-> > > IMA still relies on X.509 for keys.
+On Thu, Jan 27, 2022 at 06:08:40AM -0500, Jeff Layton wrote:
+> On Wed, 2022-01-26 at 18:14 -0800, Eric Biggers wrote:
+> > On Tue, Jan 11, 2022 at 02:15:20PM -0500, Jeff Layton wrote:
+> > > Still, I was able to run xfstests on this set yesterday. Bug #2 above
+> > > prevented all of the tests from passing, but it didn't oops! I call that
+> > > progress! Given that, I figured this is a good time to post what I have
+> > > so far.
 > > 
-> > Note, the only reason that support for fs-verity built-in signatures was added
-> > to RPM is that people didn't want to use IMA:
-> > https://lore.kernel.org/linux-fscrypt/b49b4367-51e7-f62a-6209-
-> > b46a6880824b@gmail.com
+> > One question: what sort of testing are you doing to show that the file contents
+> > and filenames being stored (i.e., sent by the client to the server in this case)
+> > have been encrypted correctly?  xfstests has tests that verify this for block
+> > device based filesystems; are you doing any equivalent testing?
 > > 
-> > If people are going to use IMA anyway, then there would be no point.
 > 
-> Hi Eric
+> I've been testing this pretty regularly with xfstests, and the filenames
+> portion all seems to be working correctly. Parts of the content
+> encryption also seem to work ok. I'm still working that piece, so I
+> haven't been able to validate that part yet.
 > 
-> I thought that the solution I came with could satisfy multiple needs.
-> 
-> For people that don't want to use IMA, they could still continue
-> to use the existing signature format, and wait for an LSM that
-> satisfy their needs. They also have the option to migrate to the
-> new signature format you are defining. But will those people be
-> willing to switch to something IMA-specific?
-> 
-> For people that use IMA, they could benefit from the effort
-> of people creating packages with the original fsverity signature.
-> 
-> For people that are skeptical about IMA, they could be interested
-> in trying the full solution, which would probably be more easily
-> available if the efforts from both sides converge.
-> 
-> If, as you say, you have concerns about the existing signature
-> format, wouldn't it be better that you address them from the
-> fsverity side, so that all users of fsverity can benefit from it?
-> 
-> Currently, fsverity hashes the formatted digest whose format
-> is FSVerity<digest algo><digest size><digest>. Couldn't IMA
-> hash the same data as well?
-> 
-> An idea could be to always sign the formatted digest, and have
-> a selector for the signature format: IMA, PKCS#7 or PGP.
+> At the moment I'm working on switching the ceph client over to doing
+> sparse reads, which is necessary in order to be able to handle sparse
+> writes without filling in unwritten holes.
 
-Adding support for the new IMA signature format to fsverity_verify_signature()
-*might* make sense.  (When I added this code, my understanding was that it was
-just verifying signatures the way the kernel usually verifies signatures.  I
-don't think I realized there was a more direct, PKCS#7-less way to do it and
-that IMA used that way.)  However, it would be better to use this as an
-opportunity to move people off of the built-in signatures entirely, either by
-switching to a full userspace solution or by switching to IMA.
+To clarify, I'm asking about the correctness of the ciphertext written to
+"disk", not about the user-visible filesystem behavior which is something
+different (but also super important as well, of course).  xfstests includes both
+types of tests.
 
-Part of the problem with IMA is that no one wants to use it because it has
-terrible documentation.  It sounds like it's really complicated, and tied to
-specific TCG standards and to TPMs.  I think if it was documented better, people
-would find it more attractive and wouldn't be trying to avoid it at all costs.
+Grepping for _verify_ciphertext_for_encryption_policy in xfstests will show the
+tests that verify the ciphertext written to disk.  I doubt that you're running
+those, as they rely on a block device.  So you'll need to write some equivalent
+tests.  In a pinch, you could simply check that the ciphertext is random rather
+than correct (that would at least show that it's not plaintext) like what
+generic/399 does.  But actually verifying its correctness would be ideal to
+ensure that nothing went wrong along the way.
 
 - Eric
