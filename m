@@ -2,125 +2,67 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E7D54A2A93
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 29 Jan 2022 01:27:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B87D4A33E0
+	for <lists+linux-fscrypt@lfdr.de>; Sun, 30 Jan 2022 05:28:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344681AbiA2A1r (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 28 Jan 2022 19:27:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38456 "EHLO
+        id S1354215AbiA3E2m (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sat, 29 Jan 2022 23:28:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344642AbiA2A1q (ORCPT
+        with ESMTP id S1354216AbiA3E2a (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 28 Jan 2022 19:27:46 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56447C061714;
-        Fri, 28 Jan 2022 16:27:46 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F189061F6B;
-        Sat, 29 Jan 2022 00:27:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16B71C340E7;
-        Sat, 29 Jan 2022 00:27:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643416065;
-        bh=pMYiYWwTXCaMUttKGxLCbba/TS8VTa1Kq/qthmLQc8A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hTAM+kCV/tcMtH1taJy3HbXKHFdeNrapKvJ55E6k6BNArYcDR9hvzVgpghKlX+fo8
-         HSMYhybQBTB3flb/RRUQcCjU/wcnYCL3Jt1CTeg+J9diUVbSi1+k/E6nd9NK8ZSRHU
-         QPAuxWZPSPNSrt2i47uKzMi7EydVnxmMd06oSEIaEqbxc5XzW539kHtLE5NeNWKwyg
-         GF1Y/+nW/SESPfVZxVHkIqFDwtt1JIUzHbBjA7oeQIhiTtmv6Gt8OqmagKkT/tsq0r
-         staxJFN6kFqa9jRH5RC5sjz723a4e4C3jEV0y6EyJ2XFxaPkcfzlFoVx9/KThoREV1
-         ybqbbx6by3l4A==
-Date:   Fri, 28 Jan 2022 16:27:43 -0800
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-xfs@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Satya Tangirala <satyat@google.com>
-Subject: Re: [PATCH v11 4/5] f2fs: support direct I/O with fscrypt using
- blk-crypto
-Message-ID: <YfSJ/xstxw8mFw80@google.com>
-References: <20220128233940.79464-1-ebiggers@kernel.org>
- <20220128233940.79464-5-ebiggers@kernel.org>
+        Sat, 29 Jan 2022 23:28:30 -0500
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E0AC0613E4
+        for <linux-fscrypt@vger.kernel.org>; Sat, 29 Jan 2022 20:28:25 -0800 (PST)
+Received: by mail-yb1-xb30.google.com with SMTP id w81so8171341ybg.12
+        for <linux-fscrypt@vger.kernel.org>; Sat, 29 Jan 2022 20:28:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=B5teSI3NqSzeGu7ngV/22RiyR60khzQ8THYZDZ9DX3Q=;
+        b=QI2firgHOSt+2ZiRAEUqBnRqfCndbuygIyUz1kdYlPzS6AXkdk+mfMubksdM+6U8hJ
+         A4UbXdfo0bhasYFmsw5ceBBj4ub2bgaEqkI+Cp5foQd/M11l9HiEax3hX9+hB29fNDF1
+         4XtAbOKK0Jrn48roHo8mUNvKaz7FG0Csy4DWdnw8Q+/oXs7GbWFZBjN+ifwhy6Rfe8k0
+         Pzhs5uXUX+5v6iQyGpPCJWV84GisQUz+5cfOraMc3PalgV6vYI9t2Z4JMkhIMshepKV2
+         BM+Zj3o1QTUTRt1Kxwo+5vz+cvvR7n44irHUjPq0LbDCW52O0lwQK7qPtMHxw7vn0Id9
+         5U2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=B5teSI3NqSzeGu7ngV/22RiyR60khzQ8THYZDZ9DX3Q=;
+        b=VCR7o+BbRaiQsmMWpYfLAvmpURqPUD5Iw8ls0VzJQhqDdwkKybsxRtv6vsQgS9+u+z
+         fhZ+gwO0ZalUuEfi+ubynfN6c9qq8Zg/8g9uTatUMhW5YuMTpJEi+zeaEOzm1CKwT2wT
+         IKMBlveKYeCQbPnp2ooQDrHXzh3eWH9+rdbqaE3uO+K/vCVHcUKhOcL6fOdtSpki9Dow
+         4MfmB3q2fva6wWDg9TptdziYLUE+Ldgwlt8IiranJD6plBpv0vSy8us5sHiYnXfprn92
+         nhZiGslE9BIVmvrwwihKTsW4hAJLaKkzs45mS/c0cjlYqexrQLYbHdtqJDna48rkrHT3
+         9F1Q==
+X-Gm-Message-State: AOAM532WbX1UO1tNA6XN1OUYiDedJ23Bn6W9q/GPTQoH8YGny4LnaVF1
+        Jq1Ayk+TPbokl9te2xN8rDxitaR+EDvKFL7mCEkB6/p/5qI=
+X-Google-Smtp-Source: ABdhPJz3bgso8viJFkNwiW8XigzdjL6JZBPDE3NfxKOCgEqvWjdU/qagorQKM5joSRLXylFmq9/zlHP85rUYuZ5fTGQ=
+X-Received: by 2002:a25:6d45:: with SMTP id i66mr23246397ybc.352.1643516893721;
+ Sat, 29 Jan 2022 20:28:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220128233940.79464-5-ebiggers@kernel.org>
+Received: by 2002:a05:7010:2312:b0:201:cd76:102e with HTTP; Sat, 29 Jan 2022
+ 20:28:13 -0800 (PST)
+Reply-To: mrs.bill.chantalone01@gmail.com
+From:   "Mrs.Bill.Chantal" <grassroot309@gmail.com>
+Date:   Sun, 30 Jan 2022 05:28:13 +0100
+Message-ID: <CAO3iUMDzg_ZovNWXtuQhU6sDXk7LsNwvNc2pOb7zvX7pPCdMAw@mail.gmail.com>
+Subject: Hello....
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On 01/28, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> Encrypted files traditionally haven't supported DIO, due to the need to
-> encrypt/decrypt the data.  However, when the encryption is implemented
-> using inline encryption (blk-crypto) instead of the traditional
-> filesystem-layer encryption, it is straightforward to support DIO.
-> 
-> Therefore, make f2fs support DIO on files that are using inline
-> encryption.  Since f2fs uses iomap for DIO, and fscrypt support was
-> already added to iomap DIO, this just requires two small changes:
-> 
-> - Let DIO proceed when supported, by checking fscrypt_dio_supported()
->   instead of assuming that encrypted files never support DIO.
-> 
-> - In f2fs_iomap_begin(), use fscrypt_limit_io_blocks() to limit the
->   length of the mapping in the rare case where a DUN discontiguity
->   occurs in the middle of an extent.  The iomap DIO implementation
->   requires this, since it assumes that it can submit a bio covering (up
->   to) the whole mapping, without checking fscrypt constraints itself.
-> 
-> Co-developed-by: Satya Tangirala <satyat@google.com>
-> Signed-off-by: Satya Tangirala <satyat@google.com>
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
+You have been compensated with the sum of 9.5 million dollars in this
+united nation the payment will be issue into atm visa  card and send
+to you from the santander bank we need your address and your
+Whatsapp number  + 1 6465853907  this my email.ID
+( mrs.bill.chantal.roland@gmail.com )  contact  me
 
-Acked-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Thanks my
 
-> ---
->  fs/f2fs/data.c | 7 +++++++
->  fs/f2fs/f2fs.h | 6 +++++-
->  2 files changed, 12 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> index 8c417864c66ae..020d47f97969c 100644
-> --- a/fs/f2fs/data.c
-> +++ b/fs/f2fs/data.c
-> @@ -4044,6 +4044,13 @@ static int f2fs_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
->  
->  	iomap->offset = blks_to_bytes(inode, map.m_lblk);
->  
-> +	/*
-> +	 * When inline encryption is enabled, sometimes I/O to an encrypted file
-> +	 * has to be broken up to guarantee DUN contiguity.  Handle this by
-> +	 * limiting the length of the mapping returned.
-> +	 */
-> +	map.m_len = fscrypt_limit_io_blocks(inode, map.m_lblk, map.m_len);
-> +
->  	if (map.m_flags & (F2FS_MAP_MAPPED | F2FS_MAP_UNWRITTEN)) {
->  		iomap->length = blks_to_bytes(inode, map.m_len);
->  		if (map.m_flags & F2FS_MAP_MAPPED) {
-> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> index eb22fa91c2b26..db46f3cf0885d 100644
-> --- a/fs/f2fs/f2fs.h
-> +++ b/fs/f2fs/f2fs.h
-> @@ -4371,7 +4371,11 @@ static inline bool f2fs_force_buffered_io(struct inode *inode,
->  	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
->  	int rw = iov_iter_rw(iter);
->  
-> -	if (f2fs_post_read_required(inode))
-> +	if (!fscrypt_dio_supported(iocb, iter))
-> +		return true;
-> +	if (fsverity_active(inode))
-> +		return true;
-> +	if (f2fs_compressed_file(inode))
->  		return true;
->  
->  	/* disallow direct IO if any of devices has unaligned blksize */
-> -- 
-> 2.35.0
+mrs bill chantal
