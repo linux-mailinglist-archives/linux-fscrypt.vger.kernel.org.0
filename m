@@ -2,194 +2,140 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD6DF4A5023
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 31 Jan 2022 21:31:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EC434A508B
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 31 Jan 2022 21:51:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230283AbiAaUbP (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 31 Jan 2022 15:31:15 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:49912 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230133AbiAaUbM (ORCPT
+        id S1377841AbiAaUvu (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 31 Jan 2022 15:51:50 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38838 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1378462AbiAaUvt (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 31 Jan 2022 15:31:12 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 1C8B1B82AD8;
-        Mon, 31 Jan 2022 20:31:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD9C2C340E8;
-        Mon, 31 Jan 2022 20:31:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643661069;
-        bh=mzzdra74ur9eVXlCW1Uz95SUmxm4bd57lUeVLJ28rQQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QmXTWETrZCVHmaIjT4Nb8HYAzWEbwCAQSUlszwL6oRCNdlNyZWbjcC+9aMlN6Auev
-         Y5JbS4ucrTM2ceHpjHgSfuDgJwCDzvbLFYUjMKydKMj3A7Cx9lXtfz342d9+1pTdtQ
-         hfm9RbyvQ4iecW7TJc5AmUghaHvZJbCM0pzhTfbplxXuRtqAZK4otlhtjhz61dU9WT
-         DoyDVemzdW/+srNEpwGcq/XNCBfKJR1CACePMuHkL1ToU3GD+gaMw8PvPpj8JH1QH9
-         4NyvLWKksKI9CREx7WUXGzWUN21o6KCYL3zrCV5TKtKONt0lqny+EA6BHME1vFHHoP
-         LqSYMamv74OLw==
-Date:   Mon, 31 Jan 2022 20:31:08 +0000
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Roberto Sassu <roberto.sassu@huawei.com>
-Cc:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "stefanb@linux.ibm.com" <stefanb@linux.ibm.com>,
-        "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+        Mon, 31 Jan 2022 15:51:49 -0500
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 20VKbxlM019317;
+        Mon, 31 Jan 2022 20:51:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=IfFG2icOgeTcRGGdsSdqmUiXr02BVOtC/GnDf5j3uNI=;
+ b=tuaCegeG9QnE+M8L1gvNV4gn2N3NrzM+i5C6ihen8ZtYouge5nUWayE6iNUlUNE1mM/R
+ MPdKdE1fKeyrU/N8CitudDuv/etk5BGeRCRft0zP1+aUvM43PLORdjYTy0gMBIOA+Ckn
+ lCFfv5Uz3QD3SlA/1zxloKjLRTxREWakf0FhGwOn9Tr6J20ElCx0N/4cVNqLS8gPZXnK
+ /+Yr0MGWYNphboRaQybCw9KkA0ME+n9YXawIwfyq04RN1ElZwHZu5U6xEQk6GdwMOsQd
+ PmDrV9p6fuU33XO3N8P6Tlw8zwKA4w3FEOr4llIMc87mNM4PZZ9HrM7/G2qDU0EoISvi Dw== 
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3dxjcaqcyk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 31 Jan 2022 20:51:42 +0000
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 20VKmLxQ012846;
+        Mon, 31 Jan 2022 20:51:40 GMT
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
+        by ppma05wdc.us.ibm.com with ESMTP id 3dvw7abe1g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 31 Jan 2022 20:51:40 +0000
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 20VKpeIA32768302
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 Jan 2022 20:51:40 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 33BE9B2066;
+        Mon, 31 Jan 2022 20:51:40 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EE577B2064;
+        Mon, 31 Jan 2022 20:51:39 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Mon, 31 Jan 2022 20:51:39 +0000 (GMT)
+Message-ID: <b36b49c9-479f-8a33-c6d6-1cb00939150f@linux.ibm.com>
+Date:   Mon, 31 Jan 2022 15:51:39 -0500
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
 Subject: Re: [RFC][PATCH v3a 00/11] ima: support fs-verity digests and
  signatures (alternative)
-Message-ID: <YfhHDBdtW6uyiN/j@gmail.com>
+Content-Language: en-US
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Roberto Sassu <roberto.sassu@huawei.com>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
+        "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 References: <20220127184614.2837938-1-roberto.sassu@huawei.com>
- <YfLz8NftvbZtKvLT@sol.localdomain>
- <YfL0+q/ekv4H8lZg@sol.localdomain>
+ <YfLz8NftvbZtKvLT@sol.localdomain> <YfL0+q/ekv4H8lZg@sol.localdomain>
  <d122893c426f44aa95d5168773b60b9d@huawei.com>
  <YfRRUBZpQv2Hi1sL@sol.localdomain>
  <9af14af14beb46a28f57559e4b1dc1a7@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9af14af14beb46a28f57559e4b1dc1a7@huawei.com>
+ <b262cb06-37fd-9760-8f6e-1dcacbf738b4@linux.ibm.com>
+ <YfhFgtg4X1DLJtAQ@gmail.com>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <YfhFgtg4X1DLJtAQ@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: o7_XE9-Hh7P0BMQXHullAo0lFjXb7rKf
+X-Proofpoint-ORIG-GUID: o7_XE9-Hh7P0BMQXHullAo0lFjXb7rKf
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-01-31_07,2022-01-31_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 adultscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0
+ lowpriorityscore=0 bulkscore=0 clxscore=1015 phishscore=0 spamscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2201310130
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Jan 31, 2022 at 03:12:42PM +0000, Roberto Sassu wrote:
-> > From: Eric Biggers [mailto:ebiggers@kernel.org]
-> > Sent: Friday, January 28, 2022 9:26 PM
-> > On Fri, Jan 28, 2022 at 09:05:01AM +0000, Roberto Sassu wrote:
-> > > > From: Eric Biggers [mailto:ebiggers@kernel.org]
-> > > > Sent: Thursday, January 27, 2022 8:40 PM
-> > > > On Thu, Jan 27, 2022 at 11:35:12AM -0800, Eric Biggers wrote:
-> > > > > On Thu, Jan 27, 2022 at 07:46:09PM +0100, Roberto Sassu wrote:
-> > > > > > I wanted to propose a different approach for handling fsverity digests
-> > and
-> > > > > > signatures, compared to:
-> > > > > >
-> > > > > > https://lore.kernel.org/linux-integrity/20220126000658.138345-1-
-> > > > zohar@linux.ibm.com/
-> > > > > >
-> > > > > > In the original proposal, a new signature version has been introduced (v3)
-> > > > > > to allow the possibility of signing the digest of a more flexible data
-> > > > > > structure, ima_file_id, which could also include the fsverity file digest.
-> > > > > >
-> > > > > > While the new signature type would be sufficient to handle fsverity file
-> > > > > > digests, the problem is that its format would not be compatible with the
-> > > > > > signature format supported by the built-in verification module in fsverity.
-> > > > > > The rpm package manager already has an extension to include fsverity
-> > > > > > signatures, with the existing format, in the RPM header.
-> > > > > >
-> > > > > > Given that the fsverity signature is in the PKCS#7 format, IMA has already
-> > > > > > the capability of handling it with the existing code, more specifically the
-> > > > > > modsig code. It would be sufficient to provide to modsig the correct data
-> > > > > > to avoid introducing a new signature format.
-> > > > >
-> > > > > I think it would be best to get people moved off of the fs-verity built-in
-> > > > > signatures, rather than further extend the use of it.  PKCS#7 is a pretty
-> > > > > terrible signature format.  The IMA one is better, though it's unfortunate
-> > that
-> > > > > IMA still relies on X.509 for keys.
-> > > >
-> > > > Note, the only reason that support for fs-verity built-in signatures was added
-> > > > to RPM is that people didn't want to use IMA:
-> > > > https://lore.kernel.org/linux-fscrypt/b49b4367-51e7-f62a-6209-
-> > > > b46a6880824b@gmail.com
-> > > >
-> > > > If people are going to use IMA anyway, then there would be no point.
-> > >
-> > > Hi Eric
-> > >
-> > > I thought that the solution I came with could satisfy multiple needs.
-> > >
-> > > For people that don't want to use IMA, they could still continue
-> > > to use the existing signature format, and wait for an LSM that
-> > > satisfy their needs. They also have the option to migrate to the
-> > > new signature format you are defining. But will those people be
-> > > willing to switch to something IMA-specific?
-> > >
-> > > For people that use IMA, they could benefit from the effort
-> > > of people creating packages with the original fsverity signature.
-> > >
-> > > For people that are skeptical about IMA, they could be interested
-> > > in trying the full solution, which would probably be more easily
-> > > available if the efforts from both sides converge.
-> > >
-> > > If, as you say, you have concerns about the existing signature
-> > > format, wouldn't it be better that you address them from the
-> > > fsverity side, so that all users of fsverity can benefit from it?
-> > >
-> > > Currently, fsverity hashes the formatted digest whose format
-> > > is FSVerity<digest algo><digest size><digest>. Couldn't IMA
-> > > hash the same data as well?
-> > >
-> > > An idea could be to always sign the formatted digest, and have
-> > > a selector for the signature format: IMA, PKCS#7 or PGP.
-> > 
-> > Adding support for the new IMA signature format to fsverity_verify_signature()
-> > *might* make sense.  (When I added this code, my understanding was that it
-> > was
-> > just verifying signatures the way the kernel usually verifies signatures.  I
-> 
-> Ok. Do we need something more to sign other than the fsverity
-> formatted digest? If not, this could be the same for any method
-> we support.
-> 
-> > don't think I realized there was a more direct, PKCS#7-less way to do it and
-> > that IMA used that way.)  However, it would be better to use this as an
-> > opportunity to move people off of the built-in signatures entirely, either by
-> > switching to a full userspace solution or by switching to IMA.
-> 
-> If what we sign remains the same, then we could support multiple
-> methods and use a selector to let fsverity_verify_signature() know
-> how it should verify the signature. I don't know what would be a
-> proper place for the selector.
-> 
-> PKCS#7 seems ok, as it is used for kernel modules. IMA would be
-> also ok, as it can verify the signature more directly. I would also
-> be interested in supporting PGP, to avoid the requirement for
-> Linux distributions to manage a secondary key. I have a small
-> extension for rpmsign, that I would like to test in the Fedora
-> infrastructure.
-> 
-> Both the PKCS#7 and the PGP methods don't require additional
-> support from outside, the functions verify_pkcs7_signature()
-> and verify_pgp_signature() (proposed, not yet in the upstream
-> kernel) would be sufficient.
-> 
-> The IMA method instead would require the signature_v2_hdr
-> structure to be exported to user space, so that rpm could
-> produce a blob that can be interpreted by the kernel (this
-> work could also be done by evmctl). Also, IMA should pass
-> its .ima keyring to fsverity for signature verification, or should
-> simply get the signature and do the verification internally.
-> 
-> Given that fsverity has already the capability of managing the
-> signature blob, it would make sense to still keep it. Adding it
-> in an xattr could be possible, but it would introduce more
-> constraints (requiring the filesystem to support xattrs). And,
-> an user of fsverity willing to use the IMA method would have
-> to look at security.ima.
-> 
-> To summarize: I would prefer a method that relies on an
-> existing signature verification mechanism (PKCS#7) or that
-> has an equivalent API and simplify support for Linux distributions
-> (PGP). If we add the IMA method, available outside IMA, we
-> need to also add support for user space so that it can produces
-> the signature in the desired format, and preferably should use
-> the fsverity way of getting the signature. If the IMA method
-> would be used by IMA only, then IMA could store the signature
-> in its xattr and do the verification independently.
-> 
-> Roberto
-> 
 
-I think you are conflating the signatures themselves from where they are stored.
-The fs-verity built-in signatures feature could be extended to support the same
-signatures as IMA, while still storing the signature in the same way the
-fs-verity built-in signatures are currently stored (which doesn't use xattrs).
+On 1/31/22 15:24, Eric Biggers wrote:
+> On Mon, Jan 31, 2022 at 02:29:19PM -0500, Stefan Berger wrote:
+>>>> don't think I realized there was a more direct, PKCS#7-less way to do it and
+>>>> that IMA used that way.)  However, it would be better to use this as an
+>>>> opportunity to move people off of the built-in signatures entirely, either by
+>>>> switching to a full userspace solution or by switching to IMA.
+>>> If what we sign remains the same, then we could support multiple
+>>> methods and use a selector to let fsverity_verify_signature() know
+>>> how it should verify the signature. I don't know what would be a
+>>> proper place for the selector.
+>>>
+>>> PKCS#7 seems ok, as it is used for kernel modules. IMA would be
+>>> also ok, as it can verify the signature more directly. I would also
+>>> be interested in supporting PGP, to avoid the requirement for
+>>> Linux distributions to manage a secondary key. I have a small
+>>> extension for rpmsign, that I would like to test in the Fedora
+>>> infrastructure.
+>>>
+>>> Both the PKCS#7 and the PGP methods don't require additional
+>>> support from outside, the functions verify_pkcs7_signature()
+>>> and verify_pgp_signature() (proposed, not yet in the upstream
+>>> kernel) would be sufficient.
+>> FYI: An empty file signed with pkcs7 and an ecc key for NIST p256 generates
+>> a signature of size 817 bytes. If an RPM needs to carry such signatures on a
+>> per-file basis we are back to the size increase of nearly an RSA signature.
+>> I would say for packages this is probably too much size increase.. and this
+>> is what drove the implementation of ECC support.
+> I am getting 256 bytes for an ECC signature in PKCS#7 format:
+>
+> 	cd src/fsverity-utils
+> 	make
+> 	openssl ecparam -name prime256v1 -genkey -noout -out key.pem
+> 	openssl req -new -x509 -key key.pem -out cert.pem -days 360
+> 	touch file
+> 	./fsverity sign file file.sig --key=key.pem --cert=cert.pem
+> 	stat -c %s file.sig
+>
+> Probably you accidentally included the whole certificate in the PKCS#7 message.
+> That's not required here.
+>
+> There are definitely problems with PKCS#7, and it does have space overhead.  But
+> the space overhead is not as bad as you state.
 
-But as I said, I don't think it makes sense to continue building on the
-fs-verity built-in signatures feature, as opposed to guiding users towards a
-full userspace solution or to IMA instead.
+You are right. I used openssl cms without -nocerts and -noattr 
+(unintentionately). Though 256 bytes is RSA 2048 signature size again. 
+ECDSA with NIST p256 key is around 70 bytes.
 
-- Eric
+
+>
+> - Eric
