@@ -2,128 +2,110 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8DD84ADBC8
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  8 Feb 2022 15:57:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1CB84AE544
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  9 Feb 2022 00:11:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378960AbiBHO52 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 8 Feb 2022 09:57:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50320 "EHLO
+        id S235138AbiBHXK5 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 8 Feb 2022 18:10:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378991AbiBHO51 (ORCPT
+        with ESMTP id S235850AbiBHXKw (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 8 Feb 2022 09:57:27 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EE08C06157A;
-        Tue,  8 Feb 2022 06:57:26 -0800 (PST)
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 218EfT69029974;
-        Tue, 8 Feb 2022 14:57:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=YIELr6G77NKbsfwh+N0gl4RoNyBwUD/wqOTeC2MHvk8=;
- b=Pj11Ydg7PLoNTBbkwm7aEp/YqyrrD8SLXrFgtmJLN5KiSjUNmaA9OL+a2g9EC/siBfzO
- MCK1OqIgUwqBxhq0lgkP12EF6iN37BdZaMm3n2iRhjnTxlTkG+C6imMiIASAQ7iq7H2V
- 4mzQWP5ZJdAgXdTRVVXK3OWT4VI1QL3cskGX+jmDjjRz0hBQg7M4SKAUydxeNlEtvRkw
- AcGx5mGyUl2Z1xwzVZs2YMRC6TN2JZnyPqLV+Y8M8MOkHYtlTvYnom/38+GhtzCf8fRQ
- 4nji+4wTtQCnoVuzX1CiMeG0iTO/TIkAE3TRxbOs2SFNBfUhM1tEy3g3qEPa48+7uEDx PA== 
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3e231a2h54-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Feb 2022 14:57:23 +0000
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 218EqWTt028404;
-        Tue, 8 Feb 2022 14:57:22 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma01fra.de.ibm.com with ESMTP id 3e1gv9dme0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Feb 2022 14:57:22 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 218ElE9u34472284
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 8 Feb 2022 14:47:14 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 59582A405B;
-        Tue,  8 Feb 2022 14:57:19 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 76450A405C;
-        Tue,  8 Feb 2022 14:57:18 +0000 (GMT)
-Received: from sig-9-65-88-92.ibm.com (unknown [9.65.88.92])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  8 Feb 2022 14:57:18 +0000 (GMT)
-Message-ID: <329b719e7fe302a9fa13325687061634a8d99977.camel@linux.ibm.com>
-Subject: Re: [PATCH v4 0/8] ima: support fs-verity digests and signatures
-From:   Mimi Zohar <zohar@linux.ibm.com>
+        Tue, 8 Feb 2022 18:10:52 -0500
+X-Greylist: delayed 1200 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 08 Feb 2022 15:10:51 PST
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD5F0C06129A;
+        Tue,  8 Feb 2022 15:10:50 -0800 (PST)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 608305C0198;
+        Tue,  8 Feb 2022 17:34:47 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Tue, 08 Feb 2022 17:34:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+        :content-type:date:date:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to; s=fm3; bh=JoRj4KWGRRiDl7x/HIg/xpnWE1dDQsbDkYCgUu
+        piVa0=; b=wd1s1fSKrA8BETJ2QjQ2vdhDB5CuPwalpNhJ/4LPx/Y4uWRmMAuZ5G
+        Pph2S/mn0YJ/eQVu+3M8XQW7Zyvw5Yx8ZVIo+J/nTbkqZ7xbIx6+bKt05yI+2JzZ
+        O0EOktEsAiEljbUNWfdXVDdtctwgkLhohzT6hcgSAbvH1T0/8QMJXeeyzyaMIFmI
+        xWgGrKzuV2UfO3IsTk5N3dpVHSHEhdEuiqfZcbXPBcb45XDtUZzLOeVpWG5mNHPh
+        hQ21wXgrpJjHXYhsmM6fY5DBCv5WD4rpQK3YHKBW/dJfD7JMttbwSjQU6+k6AnkN
+        KcQ+0d6TsLfq1FnaLIFG49K11RA7pbYw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=JoRj4KWGRRiDl7x/H
+        Ig/xpnWE1dDQsbDkYCgUupiVa0=; b=GlM2R7HBnt1AtgQH0nr4xz6zTLej54Oz/
+        cfa/zdGVMdDrMaD/HR3oqbGXC/CujgK2ww5pDdlg+FQ4Cz7G5concmN7BDcSSn+D
+        P8tyTdL7teREWvRpYT05J9WXAcn8w4vXGriC3s46Ww5qGiwHSUVpgBDghNqPecg5
+        o5Gj0Y3wCTumiLljXOjlOeyz5tSbcTOErtfF38fD2vW9rEQXK0OsQ9WeDC3QTqs2
+        f5Z2XMyOojN7oJJvliOX3hmn3g/gsWenmjpnuU9JKnYfuoi3AXxgBsmYrwxYBX8f
+        j54St8s/J0hwQszTioAyGn8gOJENa2cQNCgFhzuCcPgJJKibeKsyQ==
+X-ME-Sender: <xms:B_ACYtwQjlNPKnFofg9QFUni6U3QH7ToBWH7asa0YQrsGxOA0KNQCA>
+    <xme:B_ACYtTxaNFiFD91DVxiNeIIfUmmtYTvtxBw_x1bhBuIuuLILP0pDyzouj2c3SYSg
+    W0XSktT7KmrkLKtI7Y>
+X-ME-Received: <xmr:B_ACYnXHwzEURgV2ZmCXrEGrr5Fhn4-CVfV3OV5JYk8BXIBa-FhlhU-_-ZkE8uPizuMBsxjvlcstCLWJ0crbAlSt_SQRKg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrheejgdduheekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhs
+    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhephe
+    duveelkeeiteelveeiuefhudehtdeigfehkeeffeegledvueevgefgudeuveefnecuvehl
+    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessg
+    hurhdrihho
+X-ME-Proxy: <xmx:B_ACYvh2TrDvK7BYX8E_r28VBoPny9bujbMtvVpAJr5kXewFuCaa1g>
+    <xmx:B_ACYvA7L4nVc-3q6RHhtl-1k0eZSSGooLc6PqzmAMxUHqtUDlnJrA>
+    <xmx:B_ACYoLBHLs8KUrGfERTHcFAsQ30G50aK-KWVJZDdG2GP99OkqyfOg>
+    <xmx:B_ACYmMVV5aluu7zqoW2BLrnsFXxZiKStT-gyyaq-2weNClqklz3XA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 8 Feb 2022 17:34:46 -0500 (EST)
+Date:   Tue, 8 Feb 2022 14:34:45 -0800
+From:   Boris Burkov <boris@bur.io>
 To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-integrity@vger.kernel.org,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 08 Feb 2022 09:57:17 -0500
-In-Reply-To: <YgIEsLsoe/sHsjBr@sol.localdomain>
-References: <20220208014140.483447-1-zohar@linux.ibm.com>
-         <YgIEsLsoe/sHsjBr@sol.localdomain>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-18.el8) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: dNHKBCjZs7DhyG0jU034nOodRBFZCB1R
-X-Proofpoint-GUID: dNHKBCjZs7DhyG0jU034nOodRBFZCB1R
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+Cc:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v5 0/4] tests for btrfs fsverity
+Message-ID: <YgLwBeFkkYK15j1+@zen>
+References: <cover.1631558495.git.boris@bur.io>
+ <YgHTeMETyYlatbuM@sol.localdomain>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-08_04,2022-02-07_02,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- lowpriorityscore=0 malwarescore=0 impostorscore=0 adultscore=0
- mlxlogscore=999 suspectscore=0 spamscore=0 bulkscore=0 mlxscore=0
- phishscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2201110000 definitions=main-2202080090
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YgHTeMETyYlatbuM@sol.localdomain>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, 2022-02-07 at 21:50 -0800, Eric Biggers wrote:
-> On Mon, Feb 07, 2022 at 08:41:32PM -0500, Mimi Zohar wrote:
-> > Support for including fs-verity file digests and signatures in the IMA
-> > measurement list as well as verifying the fs-verity file digest based
-> > signatures, both based on IMA policy rules, was discussed prior to
-> > fs-verity being upstreamed[1,2].
+On Mon, Feb 07, 2022 at 06:20:40PM -0800, Eric Biggers wrote:
+> On Mon, Sep 13, 2021 at 11:44:33AM -0700, Boris Burkov wrote:
+> > This patchset provides tests for fsverity support in btrfs.
 > > 
-> > Support for including fs-verity file digests in the 'd-ng' template field
-> > is based on a new policy rule option named 'digest_type=verity'.  A new
-> > template field named 'd-type' as well as a new template named 'ima-ngv2'
-> > are defined to differentiate between the regular IMA file hashes from the
-> > fs-verity file digests (tree-hash based file hashes) stored in the 'd-ng'
-> > template field.
+> > It includes modifications for generic tests to pass with btrfs as well
+> > as new tests.
 > > 
-> > Support for verifying fs-verity based file signatures stored in the
-> > 'security.ima' xattr is similarly based on the policy rule option
-> > 'digest_type=verity'.
-> > 
-> > To differentiate IMA from fs-verity file signatures a new xattr_type
-> > named IMA_VERITY_DIGSIG is defined.  Signature version 3, which is a hash
-> > of the ima_file_id struct, disambiguates the signatures stored as
-> > 'security.ima' xattr.  fs-verity only supports the new signature format
-> > (version 3).  To prevent abuse of the different signature formats, policy
-> > rules must be limited to a specific signature version.
-> > 
-> > [1] https://events19.linuxfoundation.org/wp-content/uploads/2017/11/fs-verify_Mike-Halcrow_Eric-Biggers.pdf
-> > [2] Documentation/filesystems/fsverity.rst
 > 
-> What does this patchset apply to?  I'm no longer able to apply it.  I tried
-> both v5.17-rc3, and the next-integrity branch of
-> https://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git.
+> Hi Boris, there's been no activity on this patchset in a while.  Are you
+> planning to keep working on it?  I'd like to see it finished so that I can start
+> including btrfs in the fs-verity testing I do.
 
-Just refreshed 'next-integrity' now.
+Hi Eric,
 
--- 
-thanks,
+Sorry for not following through on this. I just lost momentum and got
+carried off focusing on other more pressing things. I do want to get
+this (and the verity kill-switch I started and abandoned...) in, and
+will make time to do so soon.
 
-Mimi
+Hopefully this week, but if not, then definitely next week.
 
+Thanks for following up,
+Boris
+
+> 
+> - Eric
