@@ -2,110 +2,108 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1CB84AE544
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  9 Feb 2022 00:11:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E54CF4AE6BF
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  9 Feb 2022 03:41:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235138AbiBHXK5 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 8 Feb 2022 18:10:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35908 "EHLO
+        id S245133AbiBICk0 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 8 Feb 2022 21:40:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235850AbiBHXKw (ORCPT
+        with ESMTP id S242048AbiBIBKM (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 8 Feb 2022 18:10:52 -0500
-X-Greylist: delayed 1200 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 08 Feb 2022 15:10:51 PST
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD5F0C06129A;
-        Tue,  8 Feb 2022 15:10:50 -0800 (PST)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 608305C0198;
-        Tue,  8 Feb 2022 17:34:47 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Tue, 08 Feb 2022 17:34:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-        :content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm3; bh=JoRj4KWGRRiDl7x/HIg/xpnWE1dDQsbDkYCgUu
-        piVa0=; b=wd1s1fSKrA8BETJ2QjQ2vdhDB5CuPwalpNhJ/4LPx/Y4uWRmMAuZ5G
-        Pph2S/mn0YJ/eQVu+3M8XQW7Zyvw5Yx8ZVIo+J/nTbkqZ7xbIx6+bKt05yI+2JzZ
-        O0EOktEsAiEljbUNWfdXVDdtctwgkLhohzT6hcgSAbvH1T0/8QMJXeeyzyaMIFmI
-        xWgGrKzuV2UfO3IsTk5N3dpVHSHEhdEuiqfZcbXPBcb45XDtUZzLOeVpWG5mNHPh
-        hQ21wXgrpJjHXYhsmM6fY5DBCv5WD4rpQK3YHKBW/dJfD7JMttbwSjQU6+k6AnkN
-        KcQ+0d6TsLfq1FnaLIFG49K11RA7pbYw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=JoRj4KWGRRiDl7x/H
-        Ig/xpnWE1dDQsbDkYCgUupiVa0=; b=GlM2R7HBnt1AtgQH0nr4xz6zTLej54Oz/
-        cfa/zdGVMdDrMaD/HR3oqbGXC/CujgK2ww5pDdlg+FQ4Cz7G5concmN7BDcSSn+D
-        P8tyTdL7teREWvRpYT05J9WXAcn8w4vXGriC3s46Ww5qGiwHSUVpgBDghNqPecg5
-        o5Gj0Y3wCTumiLljXOjlOeyz5tSbcTOErtfF38fD2vW9rEQXK0OsQ9WeDC3QTqs2
-        f5Z2XMyOojN7oJJvliOX3hmn3g/gsWenmjpnuU9JKnYfuoi3AXxgBsmYrwxYBX8f
-        j54St8s/J0hwQszTioAyGn8gOJENa2cQNCgFhzuCcPgJJKibeKsyQ==
-X-ME-Sender: <xms:B_ACYtwQjlNPKnFofg9QFUni6U3QH7ToBWH7asa0YQrsGxOA0KNQCA>
-    <xme:B_ACYtTxaNFiFD91DVxiNeIIfUmmtYTvtxBw_x1bhBuIuuLILP0pDyzouj2c3SYSg
-    W0XSktT7KmrkLKtI7Y>
-X-ME-Received: <xmr:B_ACYnXHwzEURgV2ZmCXrEGrr5Fhn4-CVfV3OV5JYk8BXIBa-FhlhU-_-ZkE8uPizuMBsxjvlcstCLWJ0crbAlSt_SQRKg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrheejgdduheekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhs
-    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhephe
-    duveelkeeiteelveeiuefhudehtdeigfehkeeffeegledvueevgefgudeuveefnecuvehl
-    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessg
-    hurhdrihho
-X-ME-Proxy: <xmx:B_ACYvh2TrDvK7BYX8E_r28VBoPny9bujbMtvVpAJr5kXewFuCaa1g>
-    <xmx:B_ACYvA7L4nVc-3q6RHhtl-1k0eZSSGooLc6PqzmAMxUHqtUDlnJrA>
-    <xmx:B_ACYoLBHLs8KUrGfERTHcFAsQ30G50aK-KWVJZDdG2GP99OkqyfOg>
-    <xmx:B_ACYmMVV5aluu7zqoW2BLrnsFXxZiKStT-gyyaq-2weNClqklz3XA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 8 Feb 2022 17:34:46 -0500 (EST)
-Date:   Tue, 8 Feb 2022 14:34:45 -0800
-From:   Boris Burkov <boris@bur.io>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v5 0/4] tests for btrfs fsverity
-Message-ID: <YgLwBeFkkYK15j1+@zen>
-References: <cover.1631558495.git.boris@bur.io>
- <YgHTeMETyYlatbuM@sol.localdomain>
+        Tue, 8 Feb 2022 20:10:12 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C26C061576;
+        Tue,  8 Feb 2022 17:10:10 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 25BA9CE1B70;
+        Wed,  9 Feb 2022 01:10:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1738FC004E1;
+        Wed,  9 Feb 2022 01:10:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1644369005;
+        bh=G5uU/wOKKaUc/jSB9K/5/TwossD5zIXWmIxvGuOzgDE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=g64r5u3/yYniiCa/eGal3suK3t2qCPO5J8yjTr+WXAz7eV8KGckCF1qJnGp4mlxhX
+         crxCbvMqVjF5t9z3Kuu1yHICd1AwKVPz3WqXQnJYZ0PF+coVPc/INbvPtR92OX3HcR
+         dBCA8/tfnlboHQALxTmSwSdkdK+N8WfRFJWOuNK5Nm6AgMGyFPkClxPMB/1pE7ZC4C
+         5PKfXBrFi/q2I57lmvcg+8rUmLtSyDlaEf77EXpbYqh+gGIXMnDUHQ7qAwldeiiq88
+         +CJL66sz2DcUB4BxmkrZ2zXSjF4uhel4U7JdVSe6+TycxOaMGjw/YzGUBLNnxgJY0o
+         R3TY12fL2xvBA==
+Date:   Tue, 8 Feb 2022 17:10:03 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-xfs@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>
+Subject: Re: [PATCH v10 0/5] add support for direct I/O with fscrypt using
+ blk-crypto
+Message-ID: <YgMUa2Cdr/QoMTPh@sol.localdomain>
+References: <20220120071215.123274-1-ebiggers@kernel.org>
+ <YekdnxpeunTGfXqX@infradead.org>
+ <20220120171027.GL13540@magnolia>
+ <YenIcshA706d/ziV@sol.localdomain>
+ <20220120210027.GQ13540@magnolia>
+ <20220120220414.GH59729@dread.disaster.area>
+ <Yenm1Ipx87JAlyXg@sol.localdomain>
+ <20220120235755.GI59729@dread.disaster.area>
+ <20220121023603.GH13563@magnolia>
+ <20220123230332.GL59729@dread.disaster.area>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YgHTeMETyYlatbuM@sol.localdomain>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20220123230332.GL59729@dread.disaster.area>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Feb 07, 2022 at 06:20:40PM -0800, Eric Biggers wrote:
-> On Mon, Sep 13, 2021 at 11:44:33AM -0700, Boris Burkov wrote:
-> > This patchset provides tests for fsverity support in btrfs.
+On Mon, Jan 24, 2022 at 10:03:32AM +1100, Dave Chinner wrote:
 > > 
-> > It includes modifications for generic tests to pass with btrfs as well
-> > as new tests.
+> > 	/* 0xa0 */
 > > 
+> > 	/* File range alignment needed for best performance, in bytes. */
+> > 	__u32	stx_dio_fpos_align_opt;
 > 
-> Hi Boris, there's been no activity on this patchset in a while.  Are you
-> planning to keep working on it?  I'd like to see it finished so that I can start
-> including btrfs in the fs-verity testing I do.
-
-Hi Eric,
-
-Sorry for not following through on this. I just lost momentum and got
-carried off focusing on other more pressing things. I do want to get
-this (and the verity kill-switch I started and abandoned...) in, and
-will make time to do so soon.
-
-Hopefully this week, but if not, then definitely next week.
-
-Thanks for following up,
-Boris
-
+> This is a common property of both DIO and buffered IO, so no need
+> for it to be dio-only property.
 > 
-> - Eric
+> 	__u32	stx_offset_align_optimal;
+> 
+
+Looking at this more closely: will stx_offset_align_optimal actually be useful,
+given that st[x]_blksize already exists?
+
+From the stat(2) and statx(2) man pages:
+
+	st_blksize
+		This field  gives  the  "preferred"  block  size  for  efficient
+		filesystem I/O.
+
+	stx_blksize
+		The "preferred" block size for efficient filesystem I/O.  (Writ‐
+		ing  to  a file in smaller chunks may cause an inefficient read-
+		modify-rewrite.)
+
+File offsets aren't explicitly mentioned, but I think it's implied they should
+be a multiple of st[x]_blksize, just like the I/O size.  Otherwise, the I/O
+would obviously require reading/writing partial blocks.
+
+So, the proposed stx_offset_align_optimal field sounds like the same thing to
+me.  Is there anything I'm misunderstanding?
+
+Putting stx_offset_align_optimal behind the STATX_DIRECTIO flag would also be
+confusing if it would apply to both direct and buffered I/O.
+
+- Eric
