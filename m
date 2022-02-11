@@ -2,120 +2,115 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEEBD4B1A55
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 11 Feb 2022 01:21:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFE854B1E4E
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 11 Feb 2022 07:13:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240547AbiBKAUt (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 10 Feb 2022 19:20:49 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:53224 "EHLO
+        id S237076AbiBKGN2 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 11 Feb 2022 01:13:28 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:54936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240966AbiBKAUs (ORCPT
+        with ESMTP id S231996AbiBKGN1 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 10 Feb 2022 19:20:48 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6962C7;
-        Thu, 10 Feb 2022 16:20:48 -0800 (PST)
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21ALpFdd021812;
-        Fri, 11 Feb 2022 00:20:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=EBGSsOWS/PPAqu6i6+6YCHl6NifmZUaWgBhLauUDJzQ=;
- b=URgRZOKIFcLRQ+oc//YKMpeWhHDcGUDXFubsZiF1dNaoA4nwPpVn6mPEC8Wg/lrRh1G5
- NZGkEbrIR7a1S/veWIzqukctRnwLod2Py44S1/0C/REVmqevqsCjYgFQurDzujtEdOeq
- 9yYKeypEsPahE4ZHAgwQVYw7yHI8XzF5M+D74kimK5hdw+xcxoaHT0Hng4FVFKZy1WzU
- 5kC11a45TvJeqoqn0xXenszx+nBS9pM2FjC+Lg1wZeeAML+AsII/GuJcJMjd0qJ9Yj6q
- /PViGTEwcxIwBneBLQO1mhH8j+icUa/TZQG5ECmyoeJg/njAS2Yk2cNkuNjT+ItQycUy Kg== 
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3e50hj26vd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Feb 2022 00:20:45 +0000
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 21B0DTu7008631;
-        Fri, 11 Feb 2022 00:20:44 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma01fra.de.ibm.com with ESMTP id 3e1gva32rc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Feb 2022 00:20:43 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 21B0Kf6K29295052
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 11 Feb 2022 00:20:41 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 313DC52051;
-        Fri, 11 Feb 2022 00:20:41 +0000 (GMT)
-Received: from sig-9-65-92-50.ibm.com (unknown [9.65.92.50])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 239C752050;
-        Fri, 11 Feb 2022 00:20:40 +0000 (GMT)
-Message-ID: <ea2a11b0b55ee34c7edc16f32928a81f21be461f.camel@linux.ibm.com>
-Subject: Re: [PATCH v4 7/8] ima: support fs-verity file digest based version
- 3 signatures
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     linux-integrity@vger.kernel.org
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        Stefan Berger <stefanb@linux.ibm.com>,
+        Fri, 11 Feb 2022 01:13:27 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D2225CC;
+        Thu, 10 Feb 2022 22:13:27 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4ECC561888;
+        Fri, 11 Feb 2022 06:13:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 787EFC340E9;
+        Fri, 11 Feb 2022 06:13:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1644560006;
+        bh=BKA5jTy6pTvT/2eTBFcXj02nmCgqitj7KJJ1UiB3EpU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Iu5/Sa4pfkEpR9o0eBTJ1V30YT6bCxpLasszI/CU4T8A42NiY45wXgX3h3GybGgiB
+         NAzGvdsxlLAolhxEa7IsbAiY3JjF3ewzNeuqCqsWmfxz6wc3ZOL7JKTGom90zAEl8N
+         02IlrBVB6LknF2DDc4ILNOZuXFcduDCnLKPlC5KocAJzuYaaARaxYBTpvdGwinClME
+         LQ3TYwsVH/k3NmkATxDZxPMWHcbSMYINM2CkMcygXTpniHEZDxOiqq093qz2s0tLNr
+         sAvQyo3kbKf/HAmxOt+ukiAviUgVZjakrR0xmE5nlVlNkDjZ4k2/fqvceH/ietEPU7
+         N7xrtFLmVK1Jw==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-xfs@vger.kernel.org, linux-api@vger.kernel.org,
         linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 10 Feb 2022 19:20:37 -0500
-In-Reply-To: <20220208014140.483447-8-zohar@linux.ibm.com>
-References: <20220208014140.483447-1-zohar@linux.ibm.com>
-         <20220208014140.483447-8-zohar@linux.ibm.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-18.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 9n7eW2Sk8_o682RKH0HAk_FiOKGmzI0T
-X-Proofpoint-ORIG-GUID: 9n7eW2Sk8_o682RKH0HAk_FiOKGmzI0T
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-10_11,2022-02-09_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- priorityscore=1501 mlxscore=0 lowpriorityscore=0 adultscore=0
- suspectscore=0 mlxlogscore=999 impostorscore=0 clxscore=1015 phishscore=0
- malwarescore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2202100123
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: [RFC PATCH 0/7] make statx() return I/O alignment information
+Date:   Thu, 10 Feb 2022 22:11:51 -0800
+Message-Id: <20220211061158.227688-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.35.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,SUSPICIOUS_RECIPS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, 2022-02-07 at 20:41 -0500, Mimi Zohar wrote:
-> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
-> index 28aca1f9633b..576cbe790e27 100644
-> --- a/security/integrity/ima/ima_policy.c
-> +++ b/security/integrity/ima/ima_policy.c
-> @@ -1728,10 +1728,13 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
->                         break;
->                 case Opt_digest_type:
->                         ima_log_string(ab, "digest_type", args[0].from);
-> -                       if ((strcmp(args[0].from, "verity")) == 0)
-> +                       if ((strcmp(args[0].from, "verity")) == 0) {
->                                 entry->flags |= IMA_VERITY_REQUIRED;
-> -                       else
-> +                               if (entry->action == APPRAISE)
-> +                                       entry->flags |= IMA_DIGSIG_REQUIRED;
+This patchset makes the statx() system call return I/O alignment
+information, roughly following the design that was suggested at
+https://lore.kernel.org/linux-fsdevel/20220120071215.123274-1-ebiggers@kernel.org/T/#u
 
-Instead of overloading the "digest_type=verity" to require a signature,
-extend the existing "appraise_type" to support signature v3 (e.g.
-appraise_type=sigv3).  This will simplify IMA signature v3 support in
-the future.
+This feature solves two problems: (a) it allows userspace to determine
+when a file supports direct I/O, and with what alignment restrictions;
+and (b) it allows userspace to determine the optimum I/O alignment for a
+file.  For more details, see patch 1.
 
-> +                       } else {
->                                 result = -EINVAL;
-> +                       }
->                         break;
->                 case Opt_appraise_type:
->                         ima_log_string(ab, "appraise_type", args[0].from);
-> 
+This is an RFC.  I'd greatly appreciate any feedback on the UAPI, as
+that obviously needs to be gotten right from the beginning.  E.g., does
+the proposed set of fields make sense?  Am I including the right
+information in stx_offset_align_optimal?
 
+Patch 1 adds the VFS support for STATX_IOALIGN.  The remaining patches
+wire it up to ext4 and f2fs.  Support for other filesystems can be added
+later.  We could also support this on block device files; however, since
+block device nodes have different inodes from the block devices
+themselves, it wouldn't apply to statx("/dev/$foo") but rather just to
+'fd = open("/dev/foo"); statx(fd)'.  I'm unsure how useful that would be.
+
+Note, f2fs has one corner case where DIO reads are allowed but not DIO
+writes.  The proposed statx fields can't represent this.  My proposal
+(patch 5) is to just eliminate this case, as it seems much too weird.
+But I'd appreciate any feedback on that part.
+
+This patchset applies on top of my other patchset
+"[PATCH v11 0/5] add support for direct I/O with fscrypt using blk-crypto"
+(https://lore.kernel.org/linux-fsdevel/20220128233940.79464-1-ebiggers@kernel.org/T/#u),
+which can be retrieved from branch "master" of
+https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git.  The statx()
+patchset could be a standalone patchset; however, I wanted to show that
+it will work properly on encrypted files, and the statx() patchset
+probably will take longer due to the new UAPI.
+
+Eric Biggers (7):
+  statx: add I/O alignment information
+  fscrypt: change fscrypt_dio_supported() to prepare for STATX_IOALIGN
+  ext4: support STATX_IOALIGN
+  f2fs: move f2fs_force_buffered_io() into file.c
+  f2fs: don't allow DIO reads but not DIO writes
+  f2fs: simplify f2fs_force_buffered_io()
+  f2fs: support STATX_IOALIGN
+
+ fs/crypto/inline_crypt.c  | 48 +++++++++++++++---------------
+ fs/ext4/ext4.h            |  1 +
+ fs/ext4/file.c            | 10 +++----
+ fs/ext4/inode.c           | 31 ++++++++++++++++++++
+ fs/f2fs/f2fs.h            | 45 -----------------------------
+ fs/f2fs/file.c            | 61 ++++++++++++++++++++++++++++++++++++++-
+ fs/stat.c                 |  3 ++
+ include/linux/fscrypt.h   |  7 ++---
+ include/linux/stat.h      |  3 ++
+ include/uapi/linux/stat.h |  9 ++++--
+ 10 files changed, 136 insertions(+), 82 deletions(-)
+
+
+base-commit: cdaa1b1941f667814300799ddb74f3079517cd5a
 -- 
-thanks,
-
-Mimi
+2.35.1
 
