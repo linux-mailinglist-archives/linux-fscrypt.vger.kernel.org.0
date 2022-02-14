@@ -2,168 +2,137 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E8744B5BBC
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 14 Feb 2022 22:01:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50C324B5BE4
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 14 Feb 2022 22:02:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229630AbiBNUz0 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 14 Feb 2022 15:55:26 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:37344 "EHLO
+        id S229877AbiBNVAT (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 14 Feb 2022 16:00:19 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:32940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbiBNUz0 (ORCPT
+        with ESMTP id S229502AbiBNVAS (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 14 Feb 2022 15:55:26 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AEE0FA200;
-        Mon, 14 Feb 2022 12:55:05 -0800 (PST)
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21EI4XRX026782;
-        Mon, 14 Feb 2022 20:38:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=RFRim46dVEX/HWt+vVkSniQsaEJBboiclm7GP8zWmHw=;
- b=VZ0CpleugKrWQbvdpuPtrFjiSelxRc9LWlG0K17Gw4KEeu2Hzt+vL8Ofl0AvqPLPT5y+
- +UV2ueeh1oUrN6uwOUSi2STFbjtq8AgVXVf48A9p9KKqZs9LLTeXL0yZAtFQPX1l3fXb
- bBYhQjzIJPLAMi3fbXj3Pi3LUTOiDfey02p1JJhR6I9Ow1zl4KIhDUPrY1LALmagT2C5
- IwpRABylm6vK4/nXffLId8lV2vyD9sV/bDXm/BEHy+QWnCaBVUBmwkzm+z0TarPrFhSD
- 1tyKezr/fgzq8s4yxF2jZn4xK1ka4vxY+Pwba0l3lbGdv33zS+mJ0jlrGhPBFd/9oToM Og== 
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3e79213xs7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Feb 2022 20:38:31 +0000
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 21EKH5i1005260;
-        Mon, 14 Feb 2022 20:38:30 GMT
-Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
-        by ppma01wdc.us.ibm.com with ESMTP id 3e64ha8c37-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Feb 2022 20:38:30 +0000
-Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
-        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 21EKcTmI32178632
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Feb 2022 20:38:29 GMT
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 18B49C6061;
-        Mon, 14 Feb 2022 20:38:29 +0000 (GMT)
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B4107C6057;
-        Mon, 14 Feb 2022 20:38:28 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon, 14 Feb 2022 20:38:28 +0000 (GMT)
-Message-ID: <3133af38-4d68-1f69-3610-f87fca640354@linux.ibm.com>
-Date:   Mon, 14 Feb 2022 15:38:28 -0500
+        Mon, 14 Feb 2022 16:00:18 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6F6275C04;
+        Mon, 14 Feb 2022 13:00:08 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 696661F38A;
+        Mon, 14 Feb 2022 21:00:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1644872407; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6U+ftnG6KNWkm/Wol/rAzogJeX4wqwhy3kiuuU7ykW8=;
+        b=VpcYUzWg1CSI7dIxQNPrVpTsKuBbCTm630p+v2tIuAourNM8KsZowJNHAzNs7tGm3QPwem
+        Jt+PiHE3dCtaDsqbN6TLyhEtHaUFrrHwYeCtiG/3LdVqzbA4F7M4Y/wBj08NXSYCdmpGrT
+        t6Ewew/4jpannujU6mbrVn8UtU4k5+4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1644872407;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6U+ftnG6KNWkm/Wol/rAzogJeX4wqwhy3kiuuU7ykW8=;
+        b=Mj0moBbCtUw8Phxc0fGqFJ2YnbujgGC24HG0yrzAXQaxetkD+0rDFfzzyR1ogEQPV22T2r
+        WFexxkxF4c8oZHAg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 06C6D13A05;
+        Mon, 14 Feb 2022 21:00:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 2M8FOtbCCmJSeQAAMHmgww
+        (envelope-from <lhenriques@suse.de>); Mon, 14 Feb 2022 21:00:06 +0000
+Received: from localhost (brahms.olymp [local])
+        by brahms.olymp (OpenSMTPD) with ESMTPA id c13cadd7;
+        Mon, 14 Feb 2022 21:00:20 +0000 (UTC)
+From:   =?utf-8?Q?Lu=C3=ADs_Henriques?= <lhenriques@suse.de>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     ceph-devel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, idryomov@gmail.com
+Subject: Re: [RFC PATCH v10 00/48] ceph+fscrypt: full support
+References: <20220111191608.88762-1-jlayton@kernel.org>
+        <87r185tjpi.fsf@brahms.olymp>
+        <62e06980ebc36c91e368e4d8bfa340b5ff291369.camel@kernel.org>
+Date:   Mon, 14 Feb 2022 21:00:20 +0000
+In-Reply-To: <62e06980ebc36c91e368e4d8bfa340b5ff291369.camel@kernel.org> (Jeff
+        Layton's message of "Mon, 14 Feb 2022 13:39:34 -0500")
+Message-ID: <87mtittb8b.fsf@brahms.olymp>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH v5 4/8] ima: define a new template field 'd-type' and a
- new template 'ima-ngv2'
-Content-Language: en-US
-To:     Mimi Zohar <zohar@linux.ibm.com>, linux-integrity@vger.kernel.org
-Cc:     Eric Biggers <ebiggers@kernel.org>, linux-fscrypt@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20220211214310.119257-1-zohar@linux.ibm.com>
- <20220211214310.119257-5-zohar@linux.ibm.com>
-From:   Stefan Berger <stefanb@linux.ibm.com>
-In-Reply-To: <20220211214310.119257-5-zohar@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: idWyenUAAO3QKt3lr44-h8I8jxofxECX
-X-Proofpoint-ORIG-GUID: idWyenUAAO3QKt3lr44-h8I8jxofxECX
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-14_07,2022-02-14_03,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- mlxlogscore=999 clxscore=1015 mlxscore=0 lowpriorityscore=0 spamscore=0
- priorityscore=1501 phishscore=0 adultscore=0 impostorscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2202140118
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
+Jeff Layton <jlayton@kernel.org> writes:
 
-On 2/11/22 16:43, Mimi Zohar wrote:
-> In preparation to differentiate between regular IMA file hashes and
-> fs-verity's file digests, define a new template field named 'd-type'.
-> Define a new template named 'ima-ngv2', which includes the new 'd-type'
-> field.
+> On Mon, 2022-02-14 at 17:57 +0000, Lu=C3=ADs Henriques wrote:
+>> Jeff Layton <jlayton@kernel.org> writes:
+>>=20
+>> > This patchset represents a (mostly) complete rough draft of fscrypt
+>> > support for cephfs. The context, filename and symlink support is more =
+or
+>> > less the same as the versions posted before, and comprise the first ha=
+lf
+>> > of the patches.
+>> >=20
+>> > The new bits here are the size handling changes and support for content
+>> > encryption, in buffered, direct and synchronous codepaths. Much of this
+>> > code is still very rough and needs a lot of cleanup work.
+>> >=20
+>> > fscrypt support relies on some MDS changes that are being tracked here:
+>> >=20
+>> >     https://github.com/ceph/ceph/pull/43588
+>> >=20
+>>=20
+>> Please correct me if I'm wrong (and I've a feeling that I *will* be
+>> wrong): we're still missing some mechanism that prevents clients that do
+>> not support fscrypt from creating new files in an encryption directory,
+>> right?  I'm pretty sure I've discussed this "somewhere" with "someone",
+>> but I can't remember anything else.
+>>=20
+>> At this point, I can create an encrypted directory and, from a different
+>> client (that doesn't support fscrypt), create a new non-encrypted file in
+>> that directory.  The result isn't good, of course.
+>>=20
+>> I guess that a new feature bit can be used so that the MDS won't allow a=
+ny
+>> sort of operations (or, at least, write/create operations) on encrypted
+>> dirs from clients that don't have this bit set.
+>>=20
+>> So, am I missing something or is this still on the TODO list?
+>>=20
+>> (I can try to have a look at it if this is still missing.)
+>>=20
+>> Cheers,
 >
-> Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
-> ---
->   security/integrity/ima/ima_template.c     |  3 +++
->   security/integrity/ima/ima_template_lib.c | 13 +++++++++++++
->   security/integrity/ima/ima_template_lib.h |  2 ++
->   3 files changed, 18 insertions(+)
+> It's still on the TODO list.
 >
-> diff --git a/security/integrity/ima/ima_template.c b/security/integrity/ima/ima_template.c
-> index db1ad6d7a57f..b321342e5bee 100644
-> --- a/security/integrity/ima/ima_template.c
-> +++ b/security/integrity/ima/ima_template.c
-> @@ -19,6 +19,7 @@ enum header_fields { HDR_PCR, HDR_DIGEST, HDR_TEMPLATE_NAME,
->   static struct ima_template_desc builtin_templates[] = {
->   	{.name = IMA_TEMPLATE_IMA_NAME, .fmt = IMA_TEMPLATE_IMA_FMT},
->   	{.name = "ima-ng", .fmt = "d-ng|n-ng"},
-> +	{.name = "ima-ngv2", .fmt = "d-ng|n-ng|d-type"},
->   	{.name = "ima-sig", .fmt = "d-ng|n-ng|sig"},
->   	{.name = "ima-buf", .fmt = "d-ng|n-ng|buf"},
->   	{.name = "ima-modsig", .fmt = "d-ng|n-ng|sig|d-modsig|modsig"},
-> @@ -40,6 +41,8 @@ static const struct ima_template_field supported_fields[] = {
->   	 .field_show = ima_show_template_digest_ng},
->   	{.field_id = "n-ng", .field_init = ima_eventname_ng_init,
->   	 .field_show = ima_show_template_string},
-> +	{.field_id = "d-type", .field_init = ima_eventdigest_type_init,
-> +	 .field_show = ima_show_template_string},
->   	{.field_id = "sig", .field_init = ima_eventsig_init,
->   	 .field_show = ima_show_template_sig},
->   	{.field_id = "buf", .field_init = ima_eventbuf_init,
-> diff --git a/security/integrity/ima/ima_template_lib.c b/security/integrity/ima/ima_template_lib.c
-> index 7155d17a3b75..a213579e825e 100644
-> --- a/security/integrity/ima/ima_template_lib.c
-> +++ b/security/integrity/ima/ima_template_lib.c
-> @@ -383,6 +383,19 @@ int ima_eventdigest_ng_init(struct ima_event_data *event_data,
->   					   hash_algo, field_data);
->   }
->   
-> +/*
-> + * This function writes the digest type of an event.
-> + */
-> +int ima_eventdigest_type_init(struct ima_event_data *event_data,
-> +			      struct ima_field_data *field_data)
-> +{
-> +	static const char * const digest_type[] = {"ima"};
+> Basically, I think we'll want to allow non-fscrypt-enabled clients to
+> stat and readdir in an fscrypt-enabled directory tree, and unlink files
+> and directories in it.
+>
+> They should have no need to do anything else. You can't run backups from
+> such clients since you wouldn't have the real size or crypto context.
 
-This array makes sense with 6/8.
+Yep, that makes sense.  And do you think that adding a new feature bit is
+the best way to sort this out, or did you had other solution in mind?
 
-Acked-by: Stefan Berger <stefanb@linux.ibm.com>
+I'll try to spend some time on this tomorrow.
 
-
-> +
-> +	return ima_write_template_field_data(digest_type[0],
-> +					     strlen(digest_type[0]),
-> +					     DATA_FMT_STRING, field_data);
-> +}
-> +
->   /*
->    * This function writes the digest of the file which is expected to match the
->    * digest contained in the file's appended signature.
-> diff --git a/security/integrity/ima/ima_template_lib.h b/security/integrity/ima/ima_template_lib.h
-> index c71f1de95753..539a5e354925 100644
-> --- a/security/integrity/ima/ima_template_lib.h
-> +++ b/security/integrity/ima/ima_template_lib.h
-> @@ -38,6 +38,8 @@ int ima_eventname_init(struct ima_event_data *event_data,
->   		       struct ima_field_data *field_data);
->   int ima_eventdigest_ng_init(struct ima_event_data *event_data,
->   			    struct ima_field_data *field_data);
-> +int ima_eventdigest_type_init(struct ima_event_data *event_data,
-> +			      struct ima_field_data *field_data);
->   int ima_eventdigest_modsig_init(struct ima_event_data *event_data,
->   				struct ima_field_data *field_data);
->   int ima_eventname_ng_init(struct ima_event_data *event_data,
+Cheers,
+--=20
+Lu=C3=ADs
