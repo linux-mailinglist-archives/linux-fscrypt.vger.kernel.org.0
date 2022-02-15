@@ -2,321 +2,119 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AEB84B5F3C
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 15 Feb 2022 01:45:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CF9D4B7547
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 15 Feb 2022 21:47:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbiBOApP (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 14 Feb 2022 19:45:15 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:44996 "EHLO
+        id S237713AbiBOSLv (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 15 Feb 2022 13:11:51 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:59806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbiBOApO (ORCPT
+        with ESMTP id S235191AbiBOSLu (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 14 Feb 2022 19:45:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EF53F108571
-        for <linux-fscrypt@vger.kernel.org>; Mon, 14 Feb 2022 16:45:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1644885903;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=E4sVzJV9vyJMQ+Qv7GtdWbRot11RPz6fZEzPe3b5lQc=;
-        b=ID1jjSE6gqr0FYEwnNYa8GdSvxOkQaFcZmWyzLjUX33XRIOftACfI6soaE8lw2B/cildP2
-        F5NFghK4xXOj84fb1+YaIvWspkhHg3sySvUjZpujkr3Ekm4hYdUQUJHy+nVSx5/Ptvk+hY
-        8aVL/cIimllXu9S4x7KphZkT09OeYME=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-445-Zj39rKeKPiKb44vjPEndEg-1; Mon, 14 Feb 2022 19:45:02 -0500
-X-MC-Unique: Zj39rKeKPiKb44vjPEndEg-1
-Received: by mail-pj1-f69.google.com with SMTP id h13-20020a17090ac38d00b001b8d61ec280so520711pjt.1
-        for <linux-fscrypt@vger.kernel.org>; Mon, 14 Feb 2022 16:45:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=E4sVzJV9vyJMQ+Qv7GtdWbRot11RPz6fZEzPe3b5lQc=;
-        b=4Ek32kWEBnRCYddhm9ARDHCptVigRBR3KN22APTh1kR5+EbepNgpghTHwAutsMzibc
-         9XU8OrJgp5yfNWL48wX/f0irDYjPm8xQhsVMOP9BRVNQkTud+lsL7gaApr0cRlz4Deyv
-         w0MJwr9nOu1Rv70agIeW4VsNK06GYXLTtcKv6Ki0AU/agJnTeXJSDBWktYCvrkSm1gQs
-         EflhZBzpA2frL0+xgDDbYomMj3YCiClczv1FI/gYKtImKDQ/s0un2DlEFTV4quKNziLh
-         DHwbs46h5RlaLMjM9G97ZDWqaknJ7t86KVtbwP/QRye8dSTjqflPYYuAXFZcQjIjirZC
-         c+uw==
-X-Gm-Message-State: AOAM5335PcPF1GnUI3m2Fn257l6bqyzYwX/LoBWZV2fsd2EdmmU9hht6
-        v6l40Id1IRim9znBLT5HJT39UTTJ0lbeT/OaPHNhaJ/aYl/Yr2cJlyu0gCVnE3dehwO7zWg9XCu
-        Jw7anNgMkbjoYbubFT7bPuRqWwA==
-X-Received: by 2002:a17:903:2083:: with SMTP id d3mr1443383plc.110.1644885900710;
-        Mon, 14 Feb 2022 16:45:00 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw4HGgl/2bL0eVjVzVEtl3SPHeawiD6P3u1S46miCvqKlJ3S342jPd1TD+OdR3wxDI8QdYlsA==
-X-Received: by 2002:a17:903:2083:: with SMTP id d3mr1443362plc.110.1644885900360;
-        Mon, 14 Feb 2022 16:45:00 -0800 (PST)
-Received: from [10.72.12.153] ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id f12sm37800950pfv.30.2022.02.14.16.44.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Feb 2022 16:44:59 -0800 (PST)
-Subject: Re: [RFC PATCH v10 00/48] ceph+fscrypt: full support
-From:   Xiubo Li <xiubli@redhat.com>
-To:     Jeff Layton <jlayton@kernel.org>, ceph-devel@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, idryomov@gmail.com,
-        xiubli@redhat.com
-References: <20220111191608.88762-1-jlayton@kernel.org>
- <e7812f96-dae2-208d-bb95-372f3a92b1f6@redhat.com>
- <439916d0590448120a6e92261207bc91fe672dca.camel@kernel.org>
- <ba8115f5-3c38-d152-05ef-e02f7aff22a1@redhat.com>
-Message-ID: <1abc1c28-e27a-df9c-ee2a-37c32e36cafe@redhat.com>
-Date:   Tue, 15 Feb 2022 08:44:53 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
-MIME-Version: 1.0
-In-Reply-To: <ba8115f5-3c38-d152-05ef-e02f7aff22a1@redhat.com>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 15 Feb 2022 13:11:50 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1627119433;
+        Tue, 15 Feb 2022 10:11:39 -0800 (PST)
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21FGDFan030060;
+        Tue, 15 Feb 2022 18:11:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=f2sl2vrF5Du39vLhEqi94RE6S3He2uQNXfw3pVxQB+4=;
+ b=PeUGiT1izDi1oKNZPaX5T67thkz8ajhYm6VSX1QRCigMNAuqlFEkOfkQ8pFKZpy5wkxn
+ XmbF7bIt+YM+u2iXTQ43AAjdCxlgPG7wkL4q242JRubGSwKOE+A3iQo6pDG/w77hTPFn
+ URsmlhhZuq14y5f6HMq4Z/eTrravUVC3hP6k9FJO/b0e4P33RSyqxD4TQf1anW/snCrz
+ Q3XKJToHirti1CD4NQFsYMmkSz75u7GFb+olqT47i4ieIf2WD4dWypXTPCkliO9iwUi9
+ T5BzWW+nzx1wePVf2wj9J6MBfJwRsHCN15+AvG4Hk2Pf4tMEoaW2U7gmyr6vIfh85i33 rA== 
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3e8ekvmqme-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Feb 2022 18:11:36 +0000
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 21FIAAqJ020040;
+        Tue, 15 Feb 2022 18:11:35 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma06fra.de.ibm.com with ESMTP id 3e645jrju1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Feb 2022 18:11:35 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 21FIBXl144040626
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 15 Feb 2022 18:11:33 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0DBE811C054;
+        Tue, 15 Feb 2022 18:11:33 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 37D7311C050;
+        Tue, 15 Feb 2022 18:11:32 +0000 (GMT)
+Received: from sig-9-65-88-149.ibm.com (unknown [9.65.88.149])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 15 Feb 2022 18:11:32 +0000 (GMT)
+Message-ID: <b59e8bc8f6b880ab16d4b883a32b537321f513d4.camel@linux.ibm.com>
+Subject: Re: [PATCH v5 1/8] ima: rename IMA_ACTION_FLAGS to
+ IMA_NONACTION_FLAGS
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Stefan Berger <stefanb@linux.ibm.com>,
+        linux-integrity@vger.kernel.org
+Cc:     Eric Biggers <ebiggers@kernel.org>, linux-fscrypt@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 15 Feb 2022 13:11:31 -0500
+In-Reply-To: <ea619561-fe29-6864-0a07-a49dee8549ab@linux.ibm.com>
+References: <20220211214310.119257-1-zohar@linux.ibm.com>
+         <20220211214310.119257-2-zohar@linux.ibm.com>
+         <ea619561-fe29-6864-0a07-a49dee8549ab@linux.ibm.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-18.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: n0wWR8g5qFmDprcTzT_eMi_FRUarSV0v
+X-Proofpoint-ORIG-GUID: n0wWR8g5qFmDprcTzT_eMi_FRUarSV0v
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-15_05,2022-02-14_04,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
+ suspectscore=0 phishscore=0 clxscore=1015 priorityscore=1501 mlxscore=0
+ mlxlogscore=900 lowpriorityscore=0 impostorscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202150101
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
+On Mon, 2022-02-14 at 15:03 -0500, Stefan Berger wrote:
+> On 2/11/22 16:43, Mimi Zohar wrote:
+> > Simple policy rule options, such as fowner, uid, or euid, can be checked
+> > immediately, while other policy rule options, such as requiring a file
+> > signature, need to be deferred.
+> >
+> > The 'flags' field in the integrity_iint_cache struct contains the policy
+> > action', 'subaction', and non action/subaction.
+> >
+> > action: measure/measured, appraise/appraised, (collect)/collected,
+> >          audit/audited
+> > subaction: appraise status for each hook (e.g. file, mmap, bprm, read,
+> >          creds)
+> > non action/subaction: deferred policy rule options and state
+> >
+> > Rename the IMA_ACTION_FLAGS to IMA_NONACTION_FLAGS.
+> >
+> > Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+> 
+> Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
 
-On 2/14/22 8:08 PM, Xiubo Li wrote:
->
-> On 2/14/22 7:33 PM, Jeff Layton wrote:
->> On Mon, 2022-02-14 at 17:37 +0800, Xiubo Li wrote:
->>> Hi Jeff,
->>>
->>> I am using the 'wip-fscrypt' branch to test other issue and hit:
->>>
->>> cp: cannot access './dir___683': No buffer space available
->>> cp: cannot access './dir___686': No buffer space available
->>> cp: cannot access './dir___687': No buffer space available
->>> cp: cannot access './dir___688': No buffer space available
->>> cp: cannot access './dir___689': No buffer space available
->>> cp: cannot access './dir___693': No buffer space available
->>>
->>> ...
->>>
->>> [root@lxbceph1 kcephfs]# diff ./dir___997 /data/backup/kernel/dir___997
->>> diff: ./dir___997: No buffer space available
->>>
->>>
->>> The dmesg logs:
->>>
->>> <7>[ 1256.918228] ceph:  do_getattr inode 0000000089964a71 mask AsXsFs
->>> mode 040755
->>> <7>[ 1256.918232] ceph:  __ceph_caps_issued_mask ino 0x100000009be cap
->>> 0000000014f1c64b issued pAsLsXsFs (mask AsXsFs)
->>> <7>[ 1256.918237] ceph:  __touch_cap 0000000089964a71 cap
->>> 0000000014f1c64b mds0
->>> <7>[ 1256.918250] ceph:  readdir 0000000089964a71 file 00000000065cb689
->>> pos 0
->>> <7>[ 1256.918254] ceph:  readdir off 0 -> '.'
->>> <7>[ 1256.918258] ceph:  readdir off 1 -> '..'
->>> <4>[ 1256.918262] fscrypt (ceph, inode 1099511630270): Error -105
->>> getting encryption context
->>> <7>[ 1256.918269] ceph:  readdir 0000000089964a71 file 00000000065cb689
->>> pos 2
->>> <4>[ 1256.918273] fscrypt (ceph, inode 1099511630270): Error -105
->>> getting encryption context
->>> <7>[ 1256.918288] ceph:  release inode 0000000089964a71 dir file
->>> 00000000065cb689
->>> <7>[ 1256.918310] ceph:  __ceph_caps_issued_mask ino 0x1 cap
->>> 00000000aa2afb8b issued pAsLsXsFs (mask Fs)
->>> <7>[ 1257.574593] ceph:  mdsc delayed_work
->>>
->>> I did nothing about the fscrypt after mounting the kclient, just create
->>> 2000 directories and then made some snapshots on the root dir and then
->>> try to copy the root directory to the backup.
->>>
->>> - Xiubo
->>>
->> That means that ceph_crypt_get_context returned -ENODATA, which it can
->
-> It should be -ENOBUFS.
->
-> I am not sure it relates to the snapshot stuff. I will try without the 
-> snapshot later.
+Thanks, Stefan.  Both 1/8 & 2/8 cleanup are now queued in next-
+integrity.
 
-Without snapshot, I also can see this error.
+-- 
+thanks,
 
--- Xiubo
-
->
-> I can debug it later, maybe in next week.
->
-> -- Xiubo
->
->> do for several different reasons. We probably need to add in some
->> debugging there to see which one it is...
->>
->> TBH, I've done absolutely no testing with snapshots, so it's quite
->> possible there is some interaction there that is causing problems.
->>
->> -- Jeff
->>
->>> On 1/12/22 3:15 AM, Jeff Layton wrote:
->>>> This patchset represents a (mostly) complete rough draft of fscrypt
->>>> support for cephfs. The context, filename and symlink support is 
->>>> more or
->>>> less the same as the versions posted before, and comprise the first 
->>>> half
->>>> of the patches.
->>>>
->>>> The new bits here are the size handling changes and support for 
->>>> content
->>>> encryption, in buffered, direct and synchronous codepaths. Much of 
->>>> this
->>>> code is still very rough and needs a lot of cleanup work.
->>>>
->>>> fscrypt support relies on some MDS changes that are being tracked 
->>>> here:
->>>>
->>>>       https://github.com/ceph/ceph/pull/43588
->>>>
->>>> In particular, this PR adds some new opaque fields in the inode 
->>>> that we
->>>> use to store fscrypt-specific information, like the context and the 
->>>> real
->>>> size of a file. That is slated to be merged for the upcoming Quincy
->>>> release (which is sometime this northern spring).
->>>>
->>>> There are still some notable bugs:
->>>>
->>>> 1/ we've identified a few more potential races in truncate handling
->>>> which will probably necessitate a protocol change, as well as 
->>>> changes to
->>>> the MDS and kclient patchsets. The good news is that we think we have
->>>> an approach that will resolve this.
->>>>
->>>> 2/ the kclient doesn't handle reading sparse regions in OSD objects
->>>> properly yet. The client can end up writing to a non-zero offset in a
->>>> non-existent object. Then, if the client tries to read the written
->>>> region back later, it'll get back zeroes and give you garbage when you
->>>> try to decrypt them.
->>>>
->>>> It turns out that the OSD already supports a SPARSE_READ operation, so
->>>> I'm working on implementing that in the kclient to make it not try to
->>>> decrypt the sparse regions.
->>>>
->>>> Still, I was able to run xfstests on this set yesterday. Bug #2 above
->>>> prevented all of the tests from passing, but it didn't oops! I call 
->>>> that
->>>> progress! Given that, I figured this is a good time to post what I 
->>>> have
->>>> so far.
->>>>
->>>> Note that the buffered I/O changes in this set are not suitable for
->>>> merge and will likely end up being discarded. We need to plumb the
->>>> encryption in at the netfs layer, so that we can store encrypted data
->>>> in fscache.
->>>>
->>>> The non-buffered codepaths will likely also need substantial changes
->>>> before merging. It may be simpler to just move that into the netfs 
->>>> layer
->>>> too as cifs will need something similar anyway.
->>>>
->>>> My goal is to get most of this into v5.18, but v5.19 might be more
->>>> realistiv. Hopefully I'll have a non-RFC patchset to send in a few
->>>> weeks.
->>>>
->>>> Special thanks to Xiubo who came through with the MDS patches. Also,
->>>> thanks to everyone (especially Eric Biggers) for all of the previous
->>>> reviews. It's much appreciated!
->>>>
->>>> Jeff Layton (43):
->>>>     vfs: export new_inode_pseudo
->>>>     fscrypt: export fscrypt_base64url_encode and 
->>>> fscrypt_base64url_decode
->>>>     fscrypt: export fscrypt_fname_encrypt and 
->>>> fscrypt_fname_encrypted_size
->>>>     fscrypt: add fscrypt_context_for_new_inode
->>>>     ceph: preallocate inode for ops that may create one
->>>>     ceph: crypto context handling for ceph
->>>>     ceph: parse new fscrypt_auth and fscrypt_file fields in inode 
->>>> traces
->>>>     ceph: add fscrypt_* handling to caps.c
->>>>     ceph: add ability to set fscrypt_auth via setattr
->>>>     ceph: implement -o test_dummy_encryption mount option
->>>>     ceph: decode alternate_name in lease info
->>>>     ceph: add fscrypt ioctls
->>>>     ceph: make ceph_msdc_build_path use ref-walk
->>>>     ceph: add encrypted fname handling to ceph_mdsc_build_path
->>>>     ceph: send altname in MClientRequest
->>>>     ceph: encode encrypted name in dentry release
->>>>     ceph: properly set DCACHE_NOKEY_NAME flag in lookup
->>>>     ceph: make d_revalidate call fscrypt revalidator for encrypted
->>>>       dentries
->>>>     ceph: add helpers for converting names for userland presentation
->>>>     ceph: add fscrypt support to ceph_fill_trace
->>>>     ceph: add support to readdir for encrypted filenames
->>>>     ceph: create symlinks with encrypted and base64-encoded targets
->>>>     ceph: make ceph_get_name decrypt filenames
->>>>     ceph: add a new ceph.fscrypt.auth vxattr
->>>>     ceph: add some fscrypt guardrails
->>>>     libceph: add CEPH_OSD_OP_ASSERT_VER support
->>>>     ceph: size handling for encrypted inodes in cap updates
->>>>     ceph: fscrypt_file field handling in MClientRequest messages
->>>>     ceph: get file size from fscrypt_file when present in inode traces
->>>>     ceph: handle fscrypt fields in cap messages from MDS
->>>>     ceph: add infrastructure for file encryption and decryption
->>>>     libceph: allow ceph_osdc_new_request to accept a multi-op read
->>>>     ceph: disable fallocate for encrypted inodes
->>>>     ceph: disable copy offload on encrypted inodes
->>>>     ceph: don't use special DIO path for encrypted inodes
->>>>     ceph: set encryption context on open
->>>>     ceph: align data in pages in ceph_sync_write
->>>>     ceph: add read/modify/write to ceph_sync_write
->>>>     ceph: plumb in decryption during sync reads
->>>>     ceph: set i_blkbits to crypto block size for encrypted inodes
->>>>     ceph: add fscrypt decryption support to ceph_netfs_issue_op
->>>>     ceph: add encryption support to writepage
->>>>     ceph: fscrypt support for writepages
->>>>
->>>> Luis Henriques (1):
->>>>     ceph: don't allow changing layout on encrypted files/directories
->>>>
->>>> Xiubo Li (4):
->>>>     ceph: add __ceph_get_caps helper support
->>>>     ceph: add __ceph_sync_read helper support
->>>>     ceph: add object version support for sync read
->>>>     ceph: add truncate size handling support for fscrypt
->>>>
->>>>    fs/ceph/Makefile                |   1 +
->>>>    fs/ceph/acl.c                   |   4 +-
->>>>    fs/ceph/addr.c                  | 128 +++++--
->>>>    fs/ceph/caps.c                  | 211 ++++++++++--
->>>>    fs/ceph/crypto.c                | 374 +++++++++++++++++++++
->>>>    fs/ceph/crypto.h                | 237 +++++++++++++
->>>>    fs/ceph/dir.c                   | 209 +++++++++---
->>>>    fs/ceph/export.c                |  44 ++-
->>>>    fs/ceph/file.c                  | 476 +++++++++++++++++++++-----
->>>>    fs/ceph/inode.c                 | 576 
->>>> +++++++++++++++++++++++++++++---
->>>>    fs/ceph/ioctl.c                 |  87 +++++
->>>>    fs/ceph/mds_client.c            | 349 ++++++++++++++++---
->>>>    fs/ceph/mds_client.h            |  24 +-
->>>>    fs/ceph/super.c                 |  90 ++++-
->>>>    fs/ceph/super.h                 |  43 ++-
->>>>    fs/ceph/xattr.c                 |  29 ++
->>>>    fs/crypto/fname.c               |  44 ++-
->>>>    fs/crypto/fscrypt_private.h     |   9 +-
->>>>    fs/crypto/hooks.c               |   6 +-
->>>>    fs/crypto/policy.c              |  35 +-
->>>>    fs/inode.c                      |   1 +
->>>>    include/linux/ceph/ceph_fs.h    |  21 +-
->>>>    include/linux/ceph/osd_client.h |   6 +-
->>>>    include/linux/ceph/rados.h      |   4 +
->>>>    include/linux/fscrypt.h         |  10 +
->>>>    net/ceph/osd_client.c           |  32 +-
->>>>    26 files changed, 2700 insertions(+), 350 deletions(-)
->>>>    create mode 100644 fs/ceph/crypto.c
->>>>    create mode 100644 fs/ceph/crypto.h
->>>>
+Mimi
 
