@@ -2,209 +2,321 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A42B14B5EDE
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 15 Feb 2022 01:10:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AEB84B5F3C
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 15 Feb 2022 01:45:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232448AbiBOAKT (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 14 Feb 2022 19:10:19 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:49882 "EHLO
+        id S230197AbiBOApP (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 14 Feb 2022 19:45:15 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:44996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232206AbiBOAKS (ORCPT
+        with ESMTP id S229459AbiBOApO (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 14 Feb 2022 19:10:18 -0500
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 857FDA66DF;
-        Mon, 14 Feb 2022 16:10:09 -0800 (PST)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 8C7EB5C02D8;
-        Mon, 14 Feb 2022 19:10:08 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Mon, 14 Feb 2022 19:10:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
-        :content-transfer-encoding:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; bh=GxZggmqNYCmwaqWV7dJDhj4lMSEA48
-        3iaBW1BCfwmx8=; b=zSXk47CGyPWzgoFG0qRX0k90izsv4A3J1DbxMZiuMq3YmL
-        UZ9V8gtjnt/h4p/Wd1XPsNvdm9ypzeXcK7r3RYtsPVZ6h8Y1tgDBvvi5ttU1MuPd
-        qLG8DQ+n5EttuKsoVpZMX+yGxUmcJCykZRFZJfzs9JPyZLVtPe3E4j6/66Et9OKQ
-        C1d/7tvzM+c09wmX4XWx/rFsn4caTBC3Ns/5duwgtVJemM2p8ywBX3adKKUlgZTp
-        i38+GpxTLVnBmDs/qD8LA553HSp4PODlY9Zk64MhKEoemqe1ntI3K692d0ctyJ2r
-        BQmzB0uUibNwGx6FlHIFPrrdB7JwMwZHsRDl8FJg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:date
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=GxZggm
-        qNYCmwaqWV7dJDhj4lMSEA483iaBW1BCfwmx8=; b=O0Ef9Xo9B9YXBf4RTOfEep
-        KUeoArh283QAFBt9mHklNf3VAnAbYgM8/wilbB3gA1TY0a7+iIHAsDedsFs/A+S0
-        V+3TLP6p5iOoe32ONp7WZ+eMIeIOWWs4mws55Kjw6c0i8N3HRL4EN3eT+3WnfoDm
-        bDT9aHZv+e8bINnWvhjc+GaYqVgeGTc3B0kNqefKGQ1+YP9AcBe2DGpU3A0mYF3u
-        r46MD1bFGabcv8GCjF1CpKmTuY3/JdYXHmevY7wQ2QwJG+kQtjDDCl+56ROJHyoJ
-        NJB087s4oaTyn3u/no/fNSSb2CN8daI6mdxK6s12mK19jJXLBZ39/dd9018Io+qg
-        ==
-X-ME-Sender: <xms:YO8KYneujVAxSAf5iDWjeX9LG0hRTVrjfrWt2U9zoxwQh878-nShvA>
-    <xme:YO8KYtNOvOZI39Heje3fDkSOCMz99cq30HIAx7sMSyDQHSkVc-KXmHwgCR60_7m-L
-    ETvRqbTvomziaf2PvY>
-X-ME-Received: <xmr:YO8KYgh64whREvy6BgU79UccYa92rklRZwIgoCyFhf6KeSUXSlQYR6KzMxy_ty_LdvrvEusUQT_RDrx8SoEPmhK__KQDsw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrjeefgddulecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
-    ertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
-    oheqnecuggftrfgrthhtvghrnhepieeuffeuvdeiueejhfehiefgkeevudejjeejffevvd
-    ehtddufeeihfekgeeuheelnecuvehluhhsthgvrhfuihiivgepvdenucfrrghrrghmpehm
-    rghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:YO8KYo-RwdyPHi5YA-frXVggYK8prsCgHNV_fwWMuDYGsypmTLCs0w>
-    <xmx:YO8KYjs4SVWCrCgnjrlQUU8xs6lgtJ2EuaXidN32i_fONWGFLpyZAA>
-    <xmx:YO8KYnGP_JnxNxO4mFjIM_nEAuwTO6K0KDufxRVFC1TZUk8IZKKpBQ>
-    <xmx:YO8KYs7xrvrY36ooEYhnMJVHvCtDNKUJEfEIgDhrqUUDNYV9cy96zg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 14 Feb 2022 19:10:07 -0500 (EST)
-From:   Boris Burkov <boris@bur.io>
-To:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v6 4/4] generic: test fs-verity EFBIG scenarios
-Date:   Mon, 14 Feb 2022 16:09:58 -0800
-Message-Id: <f8189930d20888a7ac95b7fc2fbb0d522e8851fc.1644883592.git.boris@bur.io>
-X-Mailer: git-send-email 2.34.0
-In-Reply-To: <cover.1644883592.git.boris@bur.io>
-References: <cover.1644883592.git.boris@bur.io>
+        Mon, 14 Feb 2022 19:45:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EF53F108571
+        for <linux-fscrypt@vger.kernel.org>; Mon, 14 Feb 2022 16:45:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1644885903;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=E4sVzJV9vyJMQ+Qv7GtdWbRot11RPz6fZEzPe3b5lQc=;
+        b=ID1jjSE6gqr0FYEwnNYa8GdSvxOkQaFcZmWyzLjUX33XRIOftACfI6soaE8lw2B/cildP2
+        F5NFghK4xXOj84fb1+YaIvWspkhHg3sySvUjZpujkr3Ekm4hYdUQUJHy+nVSx5/Ptvk+hY
+        8aVL/cIimllXu9S4x7KphZkT09OeYME=
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
+ [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-445-Zj39rKeKPiKb44vjPEndEg-1; Mon, 14 Feb 2022 19:45:02 -0500
+X-MC-Unique: Zj39rKeKPiKb44vjPEndEg-1
+Received: by mail-pj1-f69.google.com with SMTP id h13-20020a17090ac38d00b001b8d61ec280so520711pjt.1
+        for <linux-fscrypt@vger.kernel.org>; Mon, 14 Feb 2022 16:45:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=E4sVzJV9vyJMQ+Qv7GtdWbRot11RPz6fZEzPe3b5lQc=;
+        b=4Ek32kWEBnRCYddhm9ARDHCptVigRBR3KN22APTh1kR5+EbepNgpghTHwAutsMzibc
+         9XU8OrJgp5yfNWL48wX/f0irDYjPm8xQhsVMOP9BRVNQkTud+lsL7gaApr0cRlz4Deyv
+         w0MJwr9nOu1Rv70agIeW4VsNK06GYXLTtcKv6Ki0AU/agJnTeXJSDBWktYCvrkSm1gQs
+         EflhZBzpA2frL0+xgDDbYomMj3YCiClczv1FI/gYKtImKDQ/s0un2DlEFTV4quKNziLh
+         DHwbs46h5RlaLMjM9G97ZDWqaknJ7t86KVtbwP/QRye8dSTjqflPYYuAXFZcQjIjirZC
+         c+uw==
+X-Gm-Message-State: AOAM5335PcPF1GnUI3m2Fn257l6bqyzYwX/LoBWZV2fsd2EdmmU9hht6
+        v6l40Id1IRim9znBLT5HJT39UTTJ0lbeT/OaPHNhaJ/aYl/Yr2cJlyu0gCVnE3dehwO7zWg9XCu
+        Jw7anNgMkbjoYbubFT7bPuRqWwA==
+X-Received: by 2002:a17:903:2083:: with SMTP id d3mr1443383plc.110.1644885900710;
+        Mon, 14 Feb 2022 16:45:00 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw4HGgl/2bL0eVjVzVEtl3SPHeawiD6P3u1S46miCvqKlJ3S342jPd1TD+OdR3wxDI8QdYlsA==
+X-Received: by 2002:a17:903:2083:: with SMTP id d3mr1443362plc.110.1644885900360;
+        Mon, 14 Feb 2022 16:45:00 -0800 (PST)
+Received: from [10.72.12.153] ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id f12sm37800950pfv.30.2022.02.14.16.44.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Feb 2022 16:44:59 -0800 (PST)
+Subject: Re: [RFC PATCH v10 00/48] ceph+fscrypt: full support
+From:   Xiubo Li <xiubli@redhat.com>
+To:     Jeff Layton <jlayton@kernel.org>, ceph-devel@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, idryomov@gmail.com,
+        xiubli@redhat.com
+References: <20220111191608.88762-1-jlayton@kernel.org>
+ <e7812f96-dae2-208d-bb95-372f3a92b1f6@redhat.com>
+ <439916d0590448120a6e92261207bc91fe672dca.camel@kernel.org>
+ <ba8115f5-3c38-d152-05ef-e02f7aff22a1@redhat.com>
+Message-ID: <1abc1c28-e27a-df9c-ee2a-37c32e36cafe@redhat.com>
+Date:   Tue, 15 Feb 2022 08:44:53 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
+In-Reply-To: <ba8115f5-3c38-d152-05ef-e02f7aff22a1@redhat.com>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Language: en-US
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-btrfs, ext4, and f2fs cache the Merkle tree past EOF, which restricts
-the maximum file size beneath the normal maximum. Test the logic in
-those filesystems against files with sizes near the maximum.
 
-To work properly, this does require some understanding of the practical
-but not standardized layout of the Merkle tree. This is a bit unpleasant
-and could make the test incorrect in the future, if the implementation
-changes. On the other hand, it feels quite useful to test this tricky
-edge case. It could perhaps be made more generic by adding some ioctls
-to let the file system communicate the maximum file size for a verity
-file or some information about the storage of the Merkle tree.
+On 2/14/22 8:08 PM, Xiubo Li wrote:
+>
+> On 2/14/22 7:33 PM, Jeff Layton wrote:
+>> On Mon, 2022-02-14 at 17:37 +0800, Xiubo Li wrote:
+>>> Hi Jeff,
+>>>
+>>> I am using the 'wip-fscrypt' branch to test other issue and hit:
+>>>
+>>> cp: cannot access './dir___683': No buffer space available
+>>> cp: cannot access './dir___686': No buffer space available
+>>> cp: cannot access './dir___687': No buffer space available
+>>> cp: cannot access './dir___688': No buffer space available
+>>> cp: cannot access './dir___689': No buffer space available
+>>> cp: cannot access './dir___693': No buffer space available
+>>>
+>>> ...
+>>>
+>>> [root@lxbceph1 kcephfs]# diff ./dir___997 /data/backup/kernel/dir___997
+>>> diff: ./dir___997: No buffer space available
+>>>
+>>>
+>>> The dmesg logs:
+>>>
+>>> <7>[ 1256.918228] ceph:  do_getattr inode 0000000089964a71 mask AsXsFs
+>>> mode 040755
+>>> <7>[ 1256.918232] ceph:  __ceph_caps_issued_mask ino 0x100000009be cap
+>>> 0000000014f1c64b issued pAsLsXsFs (mask AsXsFs)
+>>> <7>[ 1256.918237] ceph:  __touch_cap 0000000089964a71 cap
+>>> 0000000014f1c64b mds0
+>>> <7>[ 1256.918250] ceph:  readdir 0000000089964a71 file 00000000065cb689
+>>> pos 0
+>>> <7>[ 1256.918254] ceph:  readdir off 0 -> '.'
+>>> <7>[ 1256.918258] ceph:  readdir off 1 -> '..'
+>>> <4>[ 1256.918262] fscrypt (ceph, inode 1099511630270): Error -105
+>>> getting encryption context
+>>> <7>[ 1256.918269] ceph:  readdir 0000000089964a71 file 00000000065cb689
+>>> pos 2
+>>> <4>[ 1256.918273] fscrypt (ceph, inode 1099511630270): Error -105
+>>> getting encryption context
+>>> <7>[ 1256.918288] ceph:  release inode 0000000089964a71 dir file
+>>> 00000000065cb689
+>>> <7>[ 1256.918310] ceph:  __ceph_caps_issued_mask ino 0x1 cap
+>>> 00000000aa2afb8b issued pAsLsXsFs (mask Fs)
+>>> <7>[ 1257.574593] ceph:  mdsc delayed_work
+>>>
+>>> I did nothing about the fscrypt after mounting the kclient, just create
+>>> 2000 directories and then made some snapshots on the root dir and then
+>>> try to copy the root directory to the backup.
+>>>
+>>> - Xiubo
+>>>
+>> That means that ceph_crypt_get_context returned -ENODATA, which it can
+>
+> It should be -ENOBUFS.
+>
+> I am not sure it relates to the snapshot stuff. I will try without the 
+> snapshot later.
 
-Signed-off-by: Boris Burkov <boris@bur.io>
----
- common/verity         | 11 ++++++++
- tests/generic/690     | 66 +++++++++++++++++++++++++++++++++++++++++++
- tests/generic/690.out |  7 +++++
- 3 files changed, 84 insertions(+)
- create mode 100755 tests/generic/690
- create mode 100644 tests/generic/690.out
+Without snapshot, I also can see this error.
 
-diff --git a/common/verity b/common/verity
-index 07d9d3fe..8be86ef7 100644
---- a/common/verity
-+++ b/common/verity
-@@ -345,3 +345,14 @@ _fsv_scratch_corrupt_merkle_tree()
- 		;;
- 	esac
- }
-+
-+_require_fsverity_max_file_size_limit()
-+{
-+	case $FSTYP in
-+	btrfs|ext4|f2fs)
-+		;;
-+	*)
-+		_notrun "$FSTYP does not store verity data past EOF; no special file size limit"
-+		;;
-+	esac
-+}
-diff --git a/tests/generic/690 b/tests/generic/690
-new file mode 100755
-index 00000000..77906dd8
---- /dev/null
-+++ b/tests/generic/690
-@@ -0,0 +1,66 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2021 Facebook, Inc.  All Rights Reserved.
-+#
-+# FS QA Test 690
-+#
-+# fs-verity requires the filesystem to decide how it stores the Merkle tree,
-+# which can be quite large.
-+# It is convenient to treat the Merkle tree as past EOF, and ext4, f2fs, and
-+# btrfs do so in at least some fashion. This leads to an edge case where a
-+# large file can be under the file system file size limit, but trigger EFBIG
-+# on enabling fs-verity. Test enabling verity on some large files to exercise
-+# EFBIG logic for filesystems with fs-verity specific limits.
-+#
-+. ./common/preamble
-+_begin_fstest auto quick verity
-+
-+
-+# Import common functions.
-+. ./common/filter
-+. ./common/verity
-+
-+# real QA test starts here
-+_supported_fs generic
-+_require_test
-+_require_math
-+_require_scratch_verity
-+_require_fsverity_max_file_size_limit
-+_require_scratch_nocheck
-+
-+_scratch_mkfs_verity &>> $seqres.full
-+_scratch_mount
-+
-+fsv_file=$SCRATCH_MNT/file.fsv
-+
-+max_sz=$(_get_max_file_size)
-+_fsv_scratch_begin_subtest "way too big: fail on first merkle block"
-+# have to go back by 4096 from max to not hit the fsverity MAX_LEVELS check.
-+truncate -s $max_sz $fsv_file
-+_fsv_enable $fsv_file |& _filter_scratch
-+
-+# The goal of this second test is to make a big enough file that we trip the
-+# EFBIG codepath, but not so big that we hit it immediately when writing the
-+# first Merkle leaf.
-+#
-+# The Merkle tree is stored with the leaf node level (L0) last, but it is
-+# written first.  To get an interesting overflow, we need the maximum file size
-+# (MAX) to be in the middle of L0 -- ideally near the beginning of L0 so that we
-+# don't have to write many blocks before getting an error.
-+#
-+# With SHA-256 and 4K blocks, there are 128 hashes per block.  Thus, ignoring
-+# padding, L0 is 1/128 of the file size while the other levels in total are
-+# 1/128**2 + 1/128**3 + 1/128**4 + ... = 1/16256 of the file size.  So still
-+# ignoring padding, for L0 start exactly at MAX, the file size must be s such
-+# that s + s/16256 = MAX, i.e. s = MAX * (16256/16257).  Then to get a file size
-+# where MAX occurs *near* the start of L0 rather than *at* the start, we can
-+# just subtract an overestimate of the padding: 64K after the file contents,
-+# then 4K per level, where the consideration of 8 levels is sufficient.
-+sz=$(echo "scale=20; $max_sz * (16256/16257) - 65536 - 4096*8" | $BC -q | cut -d. -f1)
-+_fsv_scratch_begin_subtest "still too big: fail on first invalid merkle block"
-+truncate -s $sz $fsv_file
-+_fsv_enable $fsv_file |& _filter_scratch
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/generic/690.out b/tests/generic/690.out
-new file mode 100644
-index 00000000..a3e2b9b9
---- /dev/null
-+++ b/tests/generic/690.out
-@@ -0,0 +1,7 @@
-+QA output created by 690
-+
-+# way too big: fail on first merkle block
-+ERROR: FS_IOC_ENABLE_VERITY failed on 'SCRATCH_MNT/file.fsv': File too large
-+
-+# still too big: fail on first invalid merkle block
-+ERROR: FS_IOC_ENABLE_VERITY failed on 'SCRATCH_MNT/file.fsv': File too large
--- 
-2.34.0
+-- Xiubo
+
+>
+> I can debug it later, maybe in next week.
+>
+> -- Xiubo
+>
+>> do for several different reasons. We probably need to add in some
+>> debugging there to see which one it is...
+>>
+>> TBH, I've done absolutely no testing with snapshots, so it's quite
+>> possible there is some interaction there that is causing problems.
+>>
+>> -- Jeff
+>>
+>>> On 1/12/22 3:15 AM, Jeff Layton wrote:
+>>>> This patchset represents a (mostly) complete rough draft of fscrypt
+>>>> support for cephfs. The context, filename and symlink support is 
+>>>> more or
+>>>> less the same as the versions posted before, and comprise the first 
+>>>> half
+>>>> of the patches.
+>>>>
+>>>> The new bits here are the size handling changes and support for 
+>>>> content
+>>>> encryption, in buffered, direct and synchronous codepaths. Much of 
+>>>> this
+>>>> code is still very rough and needs a lot of cleanup work.
+>>>>
+>>>> fscrypt support relies on some MDS changes that are being tracked 
+>>>> here:
+>>>>
+>>>>       https://github.com/ceph/ceph/pull/43588
+>>>>
+>>>> In particular, this PR adds some new opaque fields in the inode 
+>>>> that we
+>>>> use to store fscrypt-specific information, like the context and the 
+>>>> real
+>>>> size of a file. That is slated to be merged for the upcoming Quincy
+>>>> release (which is sometime this northern spring).
+>>>>
+>>>> There are still some notable bugs:
+>>>>
+>>>> 1/ we've identified a few more potential races in truncate handling
+>>>> which will probably necessitate a protocol change, as well as 
+>>>> changes to
+>>>> the MDS and kclient patchsets. The good news is that we think we have
+>>>> an approach that will resolve this.
+>>>>
+>>>> 2/ the kclient doesn't handle reading sparse regions in OSD objects
+>>>> properly yet. The client can end up writing to a non-zero offset in a
+>>>> non-existent object. Then, if the client tries to read the written
+>>>> region back later, it'll get back zeroes and give you garbage when you
+>>>> try to decrypt them.
+>>>>
+>>>> It turns out that the OSD already supports a SPARSE_READ operation, so
+>>>> I'm working on implementing that in the kclient to make it not try to
+>>>> decrypt the sparse regions.
+>>>>
+>>>> Still, I was able to run xfstests on this set yesterday. Bug #2 above
+>>>> prevented all of the tests from passing, but it didn't oops! I call 
+>>>> that
+>>>> progress! Given that, I figured this is a good time to post what I 
+>>>> have
+>>>> so far.
+>>>>
+>>>> Note that the buffered I/O changes in this set are not suitable for
+>>>> merge and will likely end up being discarded. We need to plumb the
+>>>> encryption in at the netfs layer, so that we can store encrypted data
+>>>> in fscache.
+>>>>
+>>>> The non-buffered codepaths will likely also need substantial changes
+>>>> before merging. It may be simpler to just move that into the netfs 
+>>>> layer
+>>>> too as cifs will need something similar anyway.
+>>>>
+>>>> My goal is to get most of this into v5.18, but v5.19 might be more
+>>>> realistiv. Hopefully I'll have a non-RFC patchset to send in a few
+>>>> weeks.
+>>>>
+>>>> Special thanks to Xiubo who came through with the MDS patches. Also,
+>>>> thanks to everyone (especially Eric Biggers) for all of the previous
+>>>> reviews. It's much appreciated!
+>>>>
+>>>> Jeff Layton (43):
+>>>>     vfs: export new_inode_pseudo
+>>>>     fscrypt: export fscrypt_base64url_encode and 
+>>>> fscrypt_base64url_decode
+>>>>     fscrypt: export fscrypt_fname_encrypt and 
+>>>> fscrypt_fname_encrypted_size
+>>>>     fscrypt: add fscrypt_context_for_new_inode
+>>>>     ceph: preallocate inode for ops that may create one
+>>>>     ceph: crypto context handling for ceph
+>>>>     ceph: parse new fscrypt_auth and fscrypt_file fields in inode 
+>>>> traces
+>>>>     ceph: add fscrypt_* handling to caps.c
+>>>>     ceph: add ability to set fscrypt_auth via setattr
+>>>>     ceph: implement -o test_dummy_encryption mount option
+>>>>     ceph: decode alternate_name in lease info
+>>>>     ceph: add fscrypt ioctls
+>>>>     ceph: make ceph_msdc_build_path use ref-walk
+>>>>     ceph: add encrypted fname handling to ceph_mdsc_build_path
+>>>>     ceph: send altname in MClientRequest
+>>>>     ceph: encode encrypted name in dentry release
+>>>>     ceph: properly set DCACHE_NOKEY_NAME flag in lookup
+>>>>     ceph: make d_revalidate call fscrypt revalidator for encrypted
+>>>>       dentries
+>>>>     ceph: add helpers for converting names for userland presentation
+>>>>     ceph: add fscrypt support to ceph_fill_trace
+>>>>     ceph: add support to readdir for encrypted filenames
+>>>>     ceph: create symlinks with encrypted and base64-encoded targets
+>>>>     ceph: make ceph_get_name decrypt filenames
+>>>>     ceph: add a new ceph.fscrypt.auth vxattr
+>>>>     ceph: add some fscrypt guardrails
+>>>>     libceph: add CEPH_OSD_OP_ASSERT_VER support
+>>>>     ceph: size handling for encrypted inodes in cap updates
+>>>>     ceph: fscrypt_file field handling in MClientRequest messages
+>>>>     ceph: get file size from fscrypt_file when present in inode traces
+>>>>     ceph: handle fscrypt fields in cap messages from MDS
+>>>>     ceph: add infrastructure for file encryption and decryption
+>>>>     libceph: allow ceph_osdc_new_request to accept a multi-op read
+>>>>     ceph: disable fallocate for encrypted inodes
+>>>>     ceph: disable copy offload on encrypted inodes
+>>>>     ceph: don't use special DIO path for encrypted inodes
+>>>>     ceph: set encryption context on open
+>>>>     ceph: align data in pages in ceph_sync_write
+>>>>     ceph: add read/modify/write to ceph_sync_write
+>>>>     ceph: plumb in decryption during sync reads
+>>>>     ceph: set i_blkbits to crypto block size for encrypted inodes
+>>>>     ceph: add fscrypt decryption support to ceph_netfs_issue_op
+>>>>     ceph: add encryption support to writepage
+>>>>     ceph: fscrypt support for writepages
+>>>>
+>>>> Luis Henriques (1):
+>>>>     ceph: don't allow changing layout on encrypted files/directories
+>>>>
+>>>> Xiubo Li (4):
+>>>>     ceph: add __ceph_get_caps helper support
+>>>>     ceph: add __ceph_sync_read helper support
+>>>>     ceph: add object version support for sync read
+>>>>     ceph: add truncate size handling support for fscrypt
+>>>>
+>>>>    fs/ceph/Makefile                |   1 +
+>>>>    fs/ceph/acl.c                   |   4 +-
+>>>>    fs/ceph/addr.c                  | 128 +++++--
+>>>>    fs/ceph/caps.c                  | 211 ++++++++++--
+>>>>    fs/ceph/crypto.c                | 374 +++++++++++++++++++++
+>>>>    fs/ceph/crypto.h                | 237 +++++++++++++
+>>>>    fs/ceph/dir.c                   | 209 +++++++++---
+>>>>    fs/ceph/export.c                |  44 ++-
+>>>>    fs/ceph/file.c                  | 476 +++++++++++++++++++++-----
+>>>>    fs/ceph/inode.c                 | 576 
+>>>> +++++++++++++++++++++++++++++---
+>>>>    fs/ceph/ioctl.c                 |  87 +++++
+>>>>    fs/ceph/mds_client.c            | 349 ++++++++++++++++---
+>>>>    fs/ceph/mds_client.h            |  24 +-
+>>>>    fs/ceph/super.c                 |  90 ++++-
+>>>>    fs/ceph/super.h                 |  43 ++-
+>>>>    fs/ceph/xattr.c                 |  29 ++
+>>>>    fs/crypto/fname.c               |  44 ++-
+>>>>    fs/crypto/fscrypt_private.h     |   9 +-
+>>>>    fs/crypto/hooks.c               |   6 +-
+>>>>    fs/crypto/policy.c              |  35 +-
+>>>>    fs/inode.c                      |   1 +
+>>>>    include/linux/ceph/ceph_fs.h    |  21 +-
+>>>>    include/linux/ceph/osd_client.h |   6 +-
+>>>>    include/linux/ceph/rados.h      |   4 +
+>>>>    include/linux/fscrypt.h         |  10 +
+>>>>    net/ceph/osd_client.c           |  32 +-
+>>>>    26 files changed, 2700 insertions(+), 350 deletions(-)
+>>>>    create mode 100644 fs/ceph/crypto.c
+>>>>    create mode 100644 fs/ceph/crypto.h
+>>>>
 
