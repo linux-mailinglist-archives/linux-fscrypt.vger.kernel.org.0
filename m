@@ -2,119 +2,149 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CF9D4B7547
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 15 Feb 2022 21:47:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D28294B8D95
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 16 Feb 2022 17:13:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237713AbiBOSLv (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 15 Feb 2022 13:11:51 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:59806 "EHLO
+        id S236061AbiBPQNc (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 16 Feb 2022 11:13:32 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:58264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235191AbiBOSLu (ORCPT
+        with ESMTP id S236198AbiBPQNZ (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 15 Feb 2022 13:11:50 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1627119433;
-        Tue, 15 Feb 2022 10:11:39 -0800 (PST)
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21FGDFan030060;
-        Tue, 15 Feb 2022 18:11:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=f2sl2vrF5Du39vLhEqi94RE6S3He2uQNXfw3pVxQB+4=;
- b=PeUGiT1izDi1oKNZPaX5T67thkz8ajhYm6VSX1QRCigMNAuqlFEkOfkQ8pFKZpy5wkxn
- XmbF7bIt+YM+u2iXTQ43AAjdCxlgPG7wkL4q242JRubGSwKOE+A3iQo6pDG/w77hTPFn
- URsmlhhZuq14y5f6HMq4Z/eTrravUVC3hP6k9FJO/b0e4P33RSyqxD4TQf1anW/snCrz
- Q3XKJToHirti1CD4NQFsYMmkSz75u7GFb+olqT47i4ieIf2WD4dWypXTPCkliO9iwUi9
- T5BzWW+nzx1wePVf2wj9J6MBfJwRsHCN15+AvG4Hk2Pf4tMEoaW2U7gmyr6vIfh85i33 rA== 
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3e8ekvmqme-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Feb 2022 18:11:36 +0000
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 21FIAAqJ020040;
-        Tue, 15 Feb 2022 18:11:35 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06fra.de.ibm.com with ESMTP id 3e645jrju1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Feb 2022 18:11:35 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 21FIBXl144040626
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Feb 2022 18:11:33 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0DBE811C054;
-        Tue, 15 Feb 2022 18:11:33 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 37D7311C050;
-        Tue, 15 Feb 2022 18:11:32 +0000 (GMT)
-Received: from sig-9-65-88-149.ibm.com (unknown [9.65.88.149])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 15 Feb 2022 18:11:32 +0000 (GMT)
-Message-ID: <b59e8bc8f6b880ab16d4b883a32b537321f513d4.camel@linux.ibm.com>
-Subject: Re: [PATCH v5 1/8] ima: rename IMA_ACTION_FLAGS to
- IMA_NONACTION_FLAGS
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Stefan Berger <stefanb@linux.ibm.com>,
-        linux-integrity@vger.kernel.org
-Cc:     Eric Biggers <ebiggers@kernel.org>, linux-fscrypt@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 15 Feb 2022 13:11:31 -0500
-In-Reply-To: <ea619561-fe29-6864-0a07-a49dee8549ab@linux.ibm.com>
-References: <20220211214310.119257-1-zohar@linux.ibm.com>
-         <20220211214310.119257-2-zohar@linux.ibm.com>
-         <ea619561-fe29-6864-0a07-a49dee8549ab@linux.ibm.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-18.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: n0wWR8g5qFmDprcTzT_eMi_FRUarSV0v
-X-Proofpoint-ORIG-GUID: n0wWR8g5qFmDprcTzT_eMi_FRUarSV0v
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-15_05,2022-02-14_04,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
- suspectscore=0 phishscore=0 clxscore=1015 priorityscore=1501 mlxscore=0
- mlxlogscore=900 lowpriorityscore=0 impostorscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2202150101
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 16 Feb 2022 11:13:25 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A5D1ECB2A;
+        Wed, 16 Feb 2022 08:13:09 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 743B41F383;
+        Wed, 16 Feb 2022 16:13:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1645027988; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nrkHpDQ0Iq5S31UNYEnjNtq7DQVZFxeFOdhBjdU+8+o=;
+        b=wMK6nZrsIezU2PrbmwsOAkOK11UKhlmRS7FJsjYBTHVysJkMagS5QYyt4o3SAqRLK7Btmn
+        CGztLwBOlifTL4L9DIqMLvTRObRuUFeHlrHyT8WhG7vz0/97SCkQvQxzQ6nSd27d3tfMJJ
+        TLuQ6KWa98hOwcPKQmuXf74YH2SjmFs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1645027988;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nrkHpDQ0Iq5S31UNYEnjNtq7DQVZFxeFOdhBjdU+8+o=;
+        b=RK8wCgeLOlyrCxDXxUlr+3hEoxFgHUBPRsTRpy4GJP+2tmXqLHyq5PTh93fnNZ+Vkrg8lc
+        d2H5FZZkGmWOkQCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F3C5013B15;
+        Wed, 16 Feb 2022 16:13:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id HP2OOJMiDWJPSQAAMHmgww
+        (envelope-from <lhenriques@suse.de>); Wed, 16 Feb 2022 16:13:07 +0000
+Received: from localhost (brahms.olymp [local])
+        by brahms.olymp (OpenSMTPD) with ESMTPA id e2651311;
+        Wed, 16 Feb 2022 16:13:21 +0000 (UTC)
+From:   =?utf-8?Q?Lu=C3=ADs_Henriques?= <lhenriques@suse.de>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     ceph-devel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, idryomov@gmail.com
+Subject: Re: [RFC PATCH v10 00/48] ceph+fscrypt: full support
+References: <20220111191608.88762-1-jlayton@kernel.org>
+        <87r185tjpi.fsf@brahms.olymp>
+        <62e06980ebc36c91e368e4d8bfa340b5ff291369.camel@kernel.org>
+Date:   Wed, 16 Feb 2022 16:13:21 +0000
+In-Reply-To: <62e06980ebc36c91e368e4d8bfa340b5ff291369.camel@kernel.org> (Jeff
+        Layton's message of "Mon, 14 Feb 2022 13:39:34 -0500")
+Message-ID: <87iltessbi.fsf@brahms.olymp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, 2022-02-14 at 15:03 -0500, Stefan Berger wrote:
-> On 2/11/22 16:43, Mimi Zohar wrote:
-> > Simple policy rule options, such as fowner, uid, or euid, can be checked
-> > immediately, while other policy rule options, such as requiring a file
-> > signature, need to be deferred.
-> >
-> > The 'flags' field in the integrity_iint_cache struct contains the policy
-> > action', 'subaction', and non action/subaction.
-> >
-> > action: measure/measured, appraise/appraised, (collect)/collected,
-> >          audit/audited
-> > subaction: appraise status for each hook (e.g. file, mmap, bprm, read,
-> >          creds)
-> > non action/subaction: deferred policy rule options and state
-> >
-> > Rename the IMA_ACTION_FLAGS to IMA_NONACTION_FLAGS.
-> >
-> > Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
-> 
-> Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
+Jeff Layton <jlayton@kernel.org> writes:
 
-Thanks, Stefan.  Both 1/8 & 2/8 cleanup are now queued in next-
-integrity.
+> On Mon, 2022-02-14 at 17:57 +0000, Lu=C3=ADs Henriques wrote:
+>> Jeff Layton <jlayton@kernel.org> writes:
+>>=20
+>> > This patchset represents a (mostly) complete rough draft of fscrypt
+>> > support for cephfs. The context, filename and symlink support is more =
+or
+>> > less the same as the versions posted before, and comprise the first ha=
+lf
+>> > of the patches.
+>> >=20
+>> > The new bits here are the size handling changes and support for content
+>> > encryption, in buffered, direct and synchronous codepaths. Much of this
+>> > code is still very rough and needs a lot of cleanup work.
+>> >=20
+>> > fscrypt support relies on some MDS changes that are being tracked here:
+>> >=20
+>> >     https://github.com/ceph/ceph/pull/43588
+>> >=20
+>>=20
+>> Please correct me if I'm wrong (and I've a feeling that I *will* be
+>> wrong): we're still missing some mechanism that prevents clients that do
+>> not support fscrypt from creating new files in an encryption directory,
+>> right?  I'm pretty sure I've discussed this "somewhere" with "someone",
+>> but I can't remember anything else.
+>>=20
+>> At this point, I can create an encrypted directory and, from a different
+>> client (that doesn't support fscrypt), create a new non-encrypted file in
+>> that directory.  The result isn't good, of course.
+>>=20
+>> I guess that a new feature bit can be used so that the MDS won't allow a=
+ny
+>> sort of operations (or, at least, write/create operations) on encrypted
+>> dirs from clients that don't have this bit set.
+>>=20
+>> So, am I missing something or is this still on the TODO list?
+>>=20
+>> (I can try to have a look at it if this is still missing.)
+>>=20
+>> Cheers,
+>
+> It's still on the TODO list.
+>
+> Basically, I think we'll want to allow non-fscrypt-enabled clients to
+> stat and readdir in an fscrypt-enabled directory tree, and unlink files
+> and directories in it.
+>
+> They should have no need to do anything else. You can't run backups from
+> such clients since you wouldn't have the real size or crypto context.
+> --=20
+> Jeff Layton <jlayton@kernel.org>
 
--- 
-thanks,
+OK, I've looked at the code and I've a patch that works (sort of).  Here's
+what I've done:
 
-Mimi
+I'm blocking all the dangerous Ops (CEPH_MDS_OP_{CREATE,MKDIR,...}) early
+in the client requests handling code.  I.e., returning -EROFS if the
+client session doesn't have the feature *and* the inode has fscrypt_auth
+set.
 
+It sort of works (I still need to find if I need any locks, that's black
+magic for me!), but it won't prevent a client from doing things like
+appending garbage to an encrypted file.  Doing this will obviously make
+that file useless, but it's not that much different from non-encrypted
+files (sure, in this case it might be possible to recover some data).  But
+I'm not seeing an easy way to caps into this mix.
+
+Cheers,
+--=20
+Lu=C3=ADs
