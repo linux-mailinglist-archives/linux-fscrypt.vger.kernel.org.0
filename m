@@ -2,149 +2,298 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D28294B8D95
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 16 Feb 2022 17:13:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ECF14B9AD3
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 17 Feb 2022 09:25:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236061AbiBPQNc (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 16 Feb 2022 11:13:32 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:58264 "EHLO
+        id S237482AbiBQIZf (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 17 Feb 2022 03:25:35 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:53922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236198AbiBPQNZ (ORCPT
+        with ESMTP id S235758AbiBQIZf (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 16 Feb 2022 11:13:25 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A5D1ECB2A;
-        Wed, 16 Feb 2022 08:13:09 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 743B41F383;
-        Wed, 16 Feb 2022 16:13:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1645027988; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Thu, 17 Feb 2022 03:25:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 760FA298AC2
+        for <linux-fscrypt@vger.kernel.org>; Thu, 17 Feb 2022 00:25:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1645086320;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=nrkHpDQ0Iq5S31UNYEnjNtq7DQVZFxeFOdhBjdU+8+o=;
-        b=wMK6nZrsIezU2PrbmwsOAkOK11UKhlmRS7FJsjYBTHVysJkMagS5QYyt4o3SAqRLK7Btmn
-        CGztLwBOlifTL4L9DIqMLvTRObRuUFeHlrHyT8WhG7vz0/97SCkQvQxzQ6nSd27d3tfMJJ
-        TLuQ6KWa98hOwcPKQmuXf74YH2SjmFs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1645027988;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nrkHpDQ0Iq5S31UNYEnjNtq7DQVZFxeFOdhBjdU+8+o=;
-        b=RK8wCgeLOlyrCxDXxUlr+3hEoxFgHUBPRsTRpy4GJP+2tmXqLHyq5PTh93fnNZ+Vkrg8lc
-        d2H5FZZkGmWOkQCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F3C5013B15;
-        Wed, 16 Feb 2022 16:13:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id HP2OOJMiDWJPSQAAMHmgww
-        (envelope-from <lhenriques@suse.de>); Wed, 16 Feb 2022 16:13:07 +0000
-Received: from localhost (brahms.olymp [local])
-        by brahms.olymp (OpenSMTPD) with ESMTPA id e2651311;
-        Wed, 16 Feb 2022 16:13:21 +0000 (UTC)
-From:   =?utf-8?Q?Lu=C3=ADs_Henriques?= <lhenriques@suse.de>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     ceph-devel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, idryomov@gmail.com
-Subject: Re: [RFC PATCH v10 00/48] ceph+fscrypt: full support
+        bh=MNXmWL/SfUW4dVBb5/T3bnYmxC5N+BjlH2+TCW/Y10w=;
+        b=N8d9lXubX6xFFXtTmIN7oDV1Lr8rkEOjVEJdFvDzGBaU3z5GflajddNRU774MuESx5/eJi
+        ShYXjbIxdQRO/9bFGcrQhFKoez+RKv0xsQdXAq0+PIIEv2y5p1O4bu3MpjJ++kzxRrsFMh
+        aRBVmYvJjmg/x10rNGYYU4b7wWOBXXw=
+Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
+ [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-479-K3gjsbcKORe_OIeotcvBZQ-1; Thu, 17 Feb 2022 03:25:19 -0500
+X-MC-Unique: K3gjsbcKORe_OIeotcvBZQ-1
+Received: by mail-pg1-f197.google.com with SMTP id b9-20020a63e709000000b00362f44b02aeso2614391pgi.17
+        for <linux-fscrypt@vger.kernel.org>; Thu, 17 Feb 2022 00:25:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=MNXmWL/SfUW4dVBb5/T3bnYmxC5N+BjlH2+TCW/Y10w=;
+        b=nIReeEfNzpqED0CJHLC+XDvdvJuytuyQknFP98eCG9RPizMgYQy/DV13Khp0deMugo
+         rHyecdnJvZCguTHwqr21TfsUgmgXZEn86e0hYdzO89vWE0TWm0HmkRGOv15mGpsew0Qb
+         u3jtngGkfV6+fy1k8KsExxdPI5Zk9pPT0ZV9l4N2xa1DKFqtPnCQ+Wc2M3fOORmOsrI/
+         gi/01mwFcyhQI6SnLKNHsiipIVmi+4RPMjPv+dBBnXfCRZlnyL2y5kzxruPfx/sEyu9Q
+         j6J4HuF7em9iBcDNZguFuIs0q3Lbtikzsp+QsTw8/FLzhtw82qmVy6dM6HlPavX6UiQi
+         n8Ng==
+X-Gm-Message-State: AOAM533XTdMUnbEfRaj6yjcQrWQOxNMC1HdcFbYCkOPrdjc0Jii172QC
+        v/Ul2geSt8Z5kqd2EqPvkmftNZNAMI/Etlz681RZXfZHTbmWzM97WdIWFM0l2PqpOFOHqmxHeVH
+        9oQgqZ6zWsLjtlPnyOPt0G6ZSYg==
+X-Received: by 2002:a17:902:c789:b0:14d:ae35:1ac3 with SMTP id w9-20020a170902c78900b0014dae351ac3mr1846589pla.64.1645086317942;
+        Thu, 17 Feb 2022 00:25:17 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwJjVop5oVlB4G5J7rhADXql8UHMMeFrOvqL59GK0Glm51F/el9byJR8fLQTm0LUpfT4aR2Jg==
+X-Received: by 2002:a17:902:c789:b0:14d:ae35:1ac3 with SMTP id w9-20020a170902c78900b0014dae351ac3mr1846580pla.64.1645086317633;
+        Thu, 17 Feb 2022 00:25:17 -0800 (PST)
+Received: from [10.72.12.153] ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id j15sm49753108pfj.102.2022.02.17.00.25.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Feb 2022 00:25:17 -0800 (PST)
+Subject: Re: [RFC PATCH v10 07/48] ceph: parse new fscrypt_auth and
+ fscrypt_file fields in inode traces
+To:     Jeff Layton <jlayton@kernel.org>, ceph-devel@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, idryomov@gmail.com
 References: <20220111191608.88762-1-jlayton@kernel.org>
-        <87r185tjpi.fsf@brahms.olymp>
-        <62e06980ebc36c91e368e4d8bfa340b5ff291369.camel@kernel.org>
-Date:   Wed, 16 Feb 2022 16:13:21 +0000
-In-Reply-To: <62e06980ebc36c91e368e4d8bfa340b5ff291369.camel@kernel.org> (Jeff
-        Layton's message of "Mon, 14 Feb 2022 13:39:34 -0500")
-Message-ID: <87iltessbi.fsf@brahms.olymp>
+ <20220111191608.88762-8-jlayton@kernel.org>
+From:   Xiubo Li <xiubli@redhat.com>
+Message-ID: <4faa6b1e-1e64-da2e-f722-0fc75fec51b7@redhat.com>
+Date:   Thu, 17 Feb 2022 16:25:11 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20220111191608.88762-8-jlayton@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Jeff Layton <jlayton@kernel.org> writes:
 
-> On Mon, 2022-02-14 at 17:57 +0000, Lu=C3=ADs Henriques wrote:
->> Jeff Layton <jlayton@kernel.org> writes:
->>=20
->> > This patchset represents a (mostly) complete rough draft of fscrypt
->> > support for cephfs. The context, filename and symlink support is more =
-or
->> > less the same as the versions posted before, and comprise the first ha=
-lf
->> > of the patches.
->> >=20
->> > The new bits here are the size handling changes and support for content
->> > encryption, in buffered, direct and synchronous codepaths. Much of this
->> > code is still very rough and needs a lot of cleanup work.
->> >=20
->> > fscrypt support relies on some MDS changes that are being tracked here:
->> >=20
->> >     https://github.com/ceph/ceph/pull/43588
->> >=20
->>=20
->> Please correct me if I'm wrong (and I've a feeling that I *will* be
->> wrong): we're still missing some mechanism that prevents clients that do
->> not support fscrypt from creating new files in an encryption directory,
->> right?  I'm pretty sure I've discussed this "somewhere" with "someone",
->> but I can't remember anything else.
->>=20
->> At this point, I can create an encrypted directory and, from a different
->> client (that doesn't support fscrypt), create a new non-encrypted file in
->> that directory.  The result isn't good, of course.
->>=20
->> I guess that a new feature bit can be used so that the MDS won't allow a=
-ny
->> sort of operations (or, at least, write/create operations) on encrypted
->> dirs from clients that don't have this bit set.
->>=20
->> So, am I missing something or is this still on the TODO list?
->>=20
->> (I can try to have a look at it if this is still missing.)
->>=20
->> Cheers,
+On 1/12/22 3:15 AM, Jeff Layton wrote:
+> ...and store them in the ceph_inode_info.
 >
-> It's still on the TODO list.
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>   fs/ceph/file.c       |  2 ++
+>   fs/ceph/inode.c      | 18 ++++++++++++++-
+>   fs/ceph/mds_client.c | 55 ++++++++++++++++++++++++++++++++++++++++++++
+>   fs/ceph/mds_client.h |  4 ++++
+>   fs/ceph/super.h      |  6 +++++
+>   5 files changed, 84 insertions(+), 1 deletion(-)
 >
-> Basically, I think we'll want to allow non-fscrypt-enabled clients to
-> stat and readdir in an fscrypt-enabled directory tree, and unlink files
-> and directories in it.
->
-> They should have no need to do anything else. You can't run backups from
-> such clients since you wouldn't have the real size or crypto context.
-> --=20
-> Jeff Layton <jlayton@kernel.org>
+> diff --git a/fs/ceph/file.c b/fs/ceph/file.c
+> index ace72a052254..5937a25ddddd 100644
+> --- a/fs/ceph/file.c
+> +++ b/fs/ceph/file.c
+> @@ -597,6 +597,8 @@ static int ceph_finish_async_create(struct inode *dir, struct inode *inode,
+>   	iinfo.xattr_data = xattr_buf;
+>   	memset(iinfo.xattr_data, 0, iinfo.xattr_len);
+>   
+> +	/* FIXME: set fscrypt_auth and fscrypt_file */
+> +
+>   	in.ino = cpu_to_le64(vino.ino);
+>   	in.snapid = cpu_to_le64(CEPH_NOSNAP);
+>   	in.version = cpu_to_le64(1);	// ???
+> diff --git a/fs/ceph/inode.c b/fs/ceph/inode.c
+> index 649d7a059d7b..d090fe081093 100644
+> --- a/fs/ceph/inode.c
+> +++ b/fs/ceph/inode.c
+> @@ -609,7 +609,10 @@ struct inode *ceph_alloc_inode(struct super_block *sb)
+>   	INIT_WORK(&ci->i_work, ceph_inode_work);
+>   	ci->i_work_mask = 0;
+>   	memset(&ci->i_btime, '\0', sizeof(ci->i_btime));
+> -
+> +#ifdef CONFIG_FS_ENCRYPTION
+> +	ci->fscrypt_auth = NULL;
+> +	ci->fscrypt_auth_len = 0;
+> +#endif
+>   	ceph_fscache_inode_init(ci);
+>   
+>   	return &ci->vfs_inode;
+> @@ -620,6 +623,9 @@ void ceph_free_inode(struct inode *inode)
+>   	struct ceph_inode_info *ci = ceph_inode(inode);
+>   
+>   	kfree(ci->i_symlink);
+> +#ifdef CONFIG_FS_ENCRYPTION
+> +	kfree(ci->fscrypt_auth);
+> +#endif
+>   	kmem_cache_free(ceph_inode_cachep, ci);
+>   }
+>   
+> @@ -1020,6 +1026,16 @@ int ceph_fill_inode(struct inode *inode, struct page *locked_page,
+>   		xattr_blob = NULL;
+>   	}
+>   
+> +#ifdef CONFIG_FS_ENCRYPTION
+> +	if (iinfo->fscrypt_auth_len && !ci->fscrypt_auth) {
+> +		ci->fscrypt_auth_len = iinfo->fscrypt_auth_len;
+> +		ci->fscrypt_auth = iinfo->fscrypt_auth;
+> +		iinfo->fscrypt_auth = NULL;
+> +		iinfo->fscrypt_auth_len = 0;
+> +		inode_set_flags(inode, S_ENCRYPTED, S_ENCRYPTED);
+> +	}
+> +#endif
+> +
+>   	/* finally update i_version */
+>   	if (le64_to_cpu(info->version) > ci->i_version)
+>   		ci->i_version = le64_to_cpu(info->version);
+> diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
+> index 57cf21c9199f..bd824e989449 100644
+> --- a/fs/ceph/mds_client.c
+> +++ b/fs/ceph/mds_client.c
+> @@ -184,8 +184,50 @@ static int parse_reply_info_in(void **p, void *end,
+>   			info->rsnaps = 0;
+>   		}
+>   
+> +		if (struct_v >= 5) {
+> +			u32 alen;
+> +
+> +			ceph_decode_32_safe(p, end, alen, bad);
+> +
+> +			while (alen--) {
+> +				u32 len;
+> +
+> +				/* key */
+> +				ceph_decode_32_safe(p, end, len, bad);
+> +				ceph_decode_skip_n(p, end, len, bad);
+> +				/* value */
+> +				ceph_decode_32_safe(p, end, len, bad);
+> +				ceph_decode_skip_n(p, end, len, bad);
+> +			}
+> +		}
+> +
+> +		/* fscrypt flag -- ignore */
+> +		if (struct_v >= 6)
+> +			ceph_decode_skip_8(p, end, bad);
+> +
+> +		info->fscrypt_auth = NULL;
+> +		info->fscrypt_file = NULL;
 
-OK, I've looked at the code and I've a patch that works (sort of).  Here's
-what I've done:
+The 'fscrypt_auth_len' and 'fscrypt_file_len' should also be reset here. 
+Or we will hit the issue I mentioned as bellow:
 
-I'm blocking all the dangerous Ops (CEPH_MDS_OP_{CREATE,MKDIR,...}) early
-in the client requests handling code.  I.e., returning -EROFS if the
-client session doesn't have the feature *and* the inode has fscrypt_auth
-set.
 
-It sort of works (I still need to find if I need any locks, that's black
-magic for me!), but it won't prevent a client from doing things like
-appending garbage to an encrypted file.  Doing this will obviously make
-that file useless, but it's not that much different from non-encrypted
-files (sure, in this case it might be possible to recover some data).  But
-I'm not seeing an easy way to caps into this mix.
+cp: cannot access './dir___683': No buffer space available
+cp: cannot access './dir___686': No buffer space available
 
-Cheers,
---=20
-Lu=C3=ADs
+The dmesg logs:
+
+<7>[ 1256.918250] ceph:  readdir 0000000089964a71 file 00000000065cb689
+pos 0
+<7>[ 1256.918254] ceph:  readdir off 0 -> '.'
+<7>[ 1256.918258] ceph:  readdir off 1 -> '..'
+<4>[ 1256.918262] fscrypt (ceph, inode 1099511630270): Error -105
+getting encryption context
+<7>[ 1256.918269] ceph:  readdir 0000000089964a71 file 00000000065cb689
+pos 2
+<4>[ 1256.918273] fscrypt (ceph, inode 1099511630270): Error -105
+getting encryption context
+
+
+This can be reproduced when using an old ceph cluster without fscrypt 
+support.
+
+And also I have sent out one fix to zero the memory when allocating it 
+in ceph_readdir() to fix the potential bug like this.
+
+Thanks
+
+BRs
+
+-- Xiubo
+
+
+> +		if (struct_v >= 7) {
+> +			ceph_decode_32_safe(p, end, info->fscrypt_auth_len, bad);
+> +			if (info->fscrypt_auth_len) {
+> +				info->fscrypt_auth = kmalloc(info->fscrypt_auth_len, GFP_KERNEL);
+> +				if (!info->fscrypt_auth)
+> +					return -ENOMEM;
+> +				ceph_decode_copy_safe(p, end, info->fscrypt_auth,
+> +						      info->fscrypt_auth_len, bad);
+> +			}
+> +			ceph_decode_32_safe(p, end, info->fscrypt_file_len, bad);
+> +			if (info->fscrypt_file_len) {
+> +				info->fscrypt_file = kmalloc(info->fscrypt_file_len, GFP_KERNEL);
+> +				if (!info->fscrypt_file)
+> +					return -ENOMEM;
+> +				ceph_decode_copy_safe(p, end, info->fscrypt_file,
+> +						      info->fscrypt_file_len, bad);
+> +			}
+> +		}
+>   		*p = end;
+>   	} else {
+> +		/* legacy (unversioned) struct */
+>   		if (features & CEPH_FEATURE_MDS_INLINE_DATA) {
+>   			ceph_decode_64_safe(p, end, info->inline_version, bad);
+>   			ceph_decode_32_safe(p, end, info->inline_len, bad);
+> @@ -626,8 +668,21 @@ static int parse_reply_info(struct ceph_mds_session *s, struct ceph_msg *msg,
+>   
+>   static void destroy_reply_info(struct ceph_mds_reply_info_parsed *info)
+>   {
+> +	int i;
+> +
+> +	kfree(info->diri.fscrypt_auth);
+> +	kfree(info->diri.fscrypt_file);
+> +	kfree(info->targeti.fscrypt_auth);
+> +	kfree(info->targeti.fscrypt_file);
+>   	if (!info->dir_entries)
+>   		return;
+> +
+> +	for (i = 0; i < info->dir_nr; i++) {
+> +		struct ceph_mds_reply_dir_entry *rde = info->dir_entries + i;
+> +
+> +		kfree(rde->inode.fscrypt_auth);
+> +		kfree(rde->inode.fscrypt_file);
+> +	}
+>   	free_pages((unsigned long)info->dir_entries, get_order(info->dir_buf_size));
+>   }
+>   
+> diff --git a/fs/ceph/mds_client.h b/fs/ceph/mds_client.h
+> index c3986a412fb5..98a8710807d1 100644
+> --- a/fs/ceph/mds_client.h
+> +++ b/fs/ceph/mds_client.h
+> @@ -88,6 +88,10 @@ struct ceph_mds_reply_info_in {
+>   	s32 dir_pin;
+>   	struct ceph_timespec btime;
+>   	struct ceph_timespec snap_btime;
+> +	u8 *fscrypt_auth;
+> +	u8 *fscrypt_file;
+> +	u32 fscrypt_auth_len;
+> +	u32 fscrypt_file_len;
+>   	u64 rsnaps;
+>   	u64 change_attr;
+>   };
+> diff --git a/fs/ceph/super.h b/fs/ceph/super.h
+> index 532ee9fca878..5b4092e5f291 100644
+> --- a/fs/ceph/super.h
+> +++ b/fs/ceph/super.h
+> @@ -433,6 +433,12 @@ struct ceph_inode_info {
+>   	struct work_struct i_work;
+>   	unsigned long  i_work_mask;
+>   
+> +#ifdef CONFIG_FS_ENCRYPTION
+> +	u32 fscrypt_auth_len;
+> +	u32 fscrypt_file_len;
+> +	u8 *fscrypt_auth;
+> +	u8 *fscrypt_file;
+> +#endif
+>   #ifdef CONFIG_CEPH_FSCACHE
+>   	struct fscache_cookie *fscache;
+>   #endif
+
