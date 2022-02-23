@@ -2,311 +2,361 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC9DA4BAF0F
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 18 Feb 2022 02:10:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C9D34C0F8C
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 23 Feb 2022 10:49:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231183AbiBRBKE (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 17 Feb 2022 20:10:04 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:39942 "EHLO
+        id S239407AbiBWJuP (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 23 Feb 2022 04:50:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231186AbiBRBKE (ORCPT
+        with ESMTP id S239408AbiBWJuK (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 17 Feb 2022 20:10:04 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 683CE3CA67
-        for <linux-fscrypt@vger.kernel.org>; Thu, 17 Feb 2022 17:09:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1645146584;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=77v//07Q7Ub0x6y6b3OazX/wTU5H+y/7bl9FrnzFqoM=;
-        b=hsSfsUuuy1jMgH6zfQhbhdgBvT+7kCXeigJbTDx27TVTyhJMM2tGnDslZar4bGbK5kbO59
-        vKhER/jPso457e2s32NuylPPfziaWO7JzGbr06I+gwoA1A8Ebby88cpRPaSTRVATdQK/R6
-        a1a4Dd+W3JDNqIlJbkxCZn6W8eTyHkE=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-453-mLuBAelIPsiYo0fCkkh53g-1; Thu, 17 Feb 2022 20:09:42 -0500
-X-MC-Unique: mLuBAelIPsiYo0fCkkh53g-1
-Received: by mail-pj1-f70.google.com with SMTP id h16-20020a17090ac39000b001b8d02b2efaso4393107pjt.5
-        for <linux-fscrypt@vger.kernel.org>; Thu, 17 Feb 2022 17:09:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=77v//07Q7Ub0x6y6b3OazX/wTU5H+y/7bl9FrnzFqoM=;
-        b=uo4YcW+B3g8mtDKa2X9DGXgxG4B8xvirUa6BEbzzsqBQo3klvVyerdHqtjQfF9zEyF
-         oZEfkM3w8PMavZGqIyt94ABqS0+R1yZf+5At6qLLfnHMoSqCCaAsjP3UHetQQG8rGOOV
-         WcTjjX3HrXx3vCRhrwNKY0xUVGuVTKQnejuWP30uC7PmtVAH5ufTnz//0cuv0iofdgOQ
-         VVOhMQQzmZHF5cOQc9Vn9BJ+etTHU9mfg7x3ejhx3q6Y8rcspVYDB8qRoEX/5E73H6Gq
-         creWmH/f8U2zfuMR/vA7T9iKXeP5twuCzx3yiuMgmmzi/5AGPRItdrVkU2Jlso2lf4jN
-         P+NA==
-X-Gm-Message-State: AOAM533ACbUA3yEWRlCJ0ZUNGVL8O7GKkHPBSNx9XhPvYVt+tZZHxL4W
-        jLv0TL+eBbk8+g0syje5/r5uz8i6fuZIbD1Rl/gKmY6YDkn/EUh1kj0aT3PVO9jyAvN46ZAITB/
-        XDAEWlspicq2GObJAKQdVqBWkVA==
-X-Received: by 2002:a17:90a:2e07:b0:1b9:e28d:4f6d with SMTP id q7-20020a17090a2e0700b001b9e28d4f6dmr10059632pjd.81.1645146581243;
-        Thu, 17 Feb 2022 17:09:41 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwNnV1at+3ISbtwHH1vcv7uVWPCT98tmw/1kAkk/ypaov14xXhYNxViiblMVH4UghKULgWIiw==
-X-Received: by 2002:a17:90a:2e07:b0:1b9:e28d:4f6d with SMTP id q7-20020a17090a2e0700b001b9e28d4f6dmr10059608pjd.81.1645146580901;
-        Thu, 17 Feb 2022 17:09:40 -0800 (PST)
-Received: from [10.72.12.153] ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id o1sm9089281pgv.47.2022.02.17.17.09.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Feb 2022 17:09:40 -0800 (PST)
-Subject: Re: [RFC PATCH v10 07/48] ceph: parse new fscrypt_auth and
- fscrypt_file fields in inode traces
-To:     Jeff Layton <jlayton@kernel.org>, ceph-devel@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, idryomov@gmail.com
-References: <20220111191608.88762-1-jlayton@kernel.org>
- <20220111191608.88762-8-jlayton@kernel.org>
- <4faa6b1e-1e64-da2e-f722-0fc75fec51b7@redhat.com>
- <91736a9af23930729a7079dfaf77d3933464fa9f.camel@kernel.org>
-From:   Xiubo Li <xiubli@redhat.com>
-Message-ID: <7d77fcf4-72f0-329d-7791-01c3193a47da@redhat.com>
-Date:   Fri, 18 Feb 2022 09:09:34 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Wed, 23 Feb 2022 04:50:10 -0500
+Received: from smtpbguseast3.qq.com (smtpbguseast3.qq.com [54.243.244.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CBFE888C3
+        for <linux-fscrypt@vger.kernel.org>; Wed, 23 Feb 2022 01:49:41 -0800 (PST)
+X-QQ-mid: bizesmtp81t1645609725tgacnsug
+Received: from localhost.localdomain (unknown [58.240.82.166])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Wed, 23 Feb 2022 17:48:38 +0800 (CST)
+X-QQ-SSF: 01400000002000B0F000B00C0000000
+X-QQ-FEAT: Ut0pB98mtT/Q74JFXA2I0gDDRkD1CRAorAGPSvE5lod+8gsyxhEWXh+uNX4C9
+        ORgYrqohjTAp+dCE3NBe96O/4h/raydPtsVJ06qEtYk5drgYr+1FaKnL/syIydFfTKmslpA
+        qWdVTZwnFhHBTEUddFxAGPDdGHzfANgV6i+5C4Snr9BFYM5ZM+nW+5OvcqZ5cSF13zNYCuP
+        TQLrLsZM6XGBUqBU7gFGAUkka28pV4OotIIFd2D8zSm8bkwlDKbj0iFx1tWXuC7YOcqxhDb
+        hglTKU6WL9pdf2AnzjlQEASRd4m2g3h8PM59uj30z+65+JWpDXH8u0MM5Vgp7aJdcKGIZWc
+        b8n427Je/MXL2Cu5Fbyl+2nEsSguQ==
+X-QQ-GoodBg: 2
+From:   Meng Tang <tangmeng@uniontech.com>
+To:     mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com
+Cc:     guoren@kernel.org, nickhu@andestech.com, green.hu@gmail.com,
+        deanbo422@gmail.com, ebiggers@kernel.org, tytso@mit.edu,
+        wad@chromium.org, john.johansen@canonical.com, jmorris@namei.org,
+        serge@hallyn.com, linux-csky@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Meng Tang <tangmeng@uniontech.com>
+Subject: [PATCH] fs/proc: Optimize arrays defined by struct ctl_path
+Date:   Wed, 23 Feb 2022 17:48:37 +0800
+Message-Id: <20220223094837.20337-1-tangmeng@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <91736a9af23930729a7079dfaf77d3933464fa9f.camel@kernel.org>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign1
+X-QQ-Bgrelay: 1
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,
+        PP_MIME_FAKE_ASCII_TEXT,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
+Previously, arrays defined by struct ctl_path is terminated
+with an empty one. For example, when we actually only register
+one ctl_path, we've gone from 8 bytes to 16 bytes.
 
-On 2/17/22 7:39 PM, Jeff Layton wrote:
-> On Thu, 2022-02-17 at 16:25 +0800, Xiubo Li wrote:
->> On 1/12/22 3:15 AM, Jeff Layton wrote:
->>> ...and store them in the ceph_inode_info.
->>>
->>> Signed-off-by: Jeff Layton <jlayton@kernel.org>
->>> ---
->>>    fs/ceph/file.c       |  2 ++
->>>    fs/ceph/inode.c      | 18 ++++++++++++++-
->>>    fs/ceph/mds_client.c | 55 ++++++++++++++++++++++++++++++++++++++++++++
->>>    fs/ceph/mds_client.h |  4 ++++
->>>    fs/ceph/super.h      |  6 +++++
->>>    5 files changed, 84 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/fs/ceph/file.c b/fs/ceph/file.c
->>> index ace72a052254..5937a25ddddd 100644
->>> --- a/fs/ceph/file.c
->>> +++ b/fs/ceph/file.c
->>> @@ -597,6 +597,8 @@ static int ceph_finish_async_create(struct inode *dir, struct inode *inode,
->>>    	iinfo.xattr_data = xattr_buf;
->>>    	memset(iinfo.xattr_data, 0, iinfo.xattr_len);
->>>    
->>> +	/* FIXME: set fscrypt_auth and fscrypt_file */
->>> +
->>>    	in.ino = cpu_to_le64(vino.ino);
->>>    	in.snapid = cpu_to_le64(CEPH_NOSNAP);
->>>    	in.version = cpu_to_le64(1);	// ???
->>> diff --git a/fs/ceph/inode.c b/fs/ceph/inode.c
->>> index 649d7a059d7b..d090fe081093 100644
->>> --- a/fs/ceph/inode.c
->>> +++ b/fs/ceph/inode.c
->>> @@ -609,7 +609,10 @@ struct inode *ceph_alloc_inode(struct super_block *sb)
->>>    	INIT_WORK(&ci->i_work, ceph_inode_work);
->>>    	ci->i_work_mask = 0;
->>>    	memset(&ci->i_btime, '\0', sizeof(ci->i_btime));
->>> -
->>> +#ifdef CONFIG_FS_ENCRYPTION
->>> +	ci->fscrypt_auth = NULL;
->>> +	ci->fscrypt_auth_len = 0;
->>> +#endif
->>>    	ceph_fscache_inode_init(ci);
->>>    
->>>    	return &ci->vfs_inode;
->>> @@ -620,6 +623,9 @@ void ceph_free_inode(struct inode *inode)
->>>    	struct ceph_inode_info *ci = ceph_inode(inode);
->>>    
->>>    	kfree(ci->i_symlink);
->>> +#ifdef CONFIG_FS_ENCRYPTION
->>> +	kfree(ci->fscrypt_auth);
->>> +#endif
->>>    	kmem_cache_free(ceph_inode_cachep, ci);
->>>    }
->>>    
->>> @@ -1020,6 +1026,16 @@ int ceph_fill_inode(struct inode *inode, struct page *locked_page,
->>>    		xattr_blob = NULL;
->>>    	}
->>>    
->>> +#ifdef CONFIG_FS_ENCRYPTION
->>> +	if (iinfo->fscrypt_auth_len && !ci->fscrypt_auth) {
->>> +		ci->fscrypt_auth_len = iinfo->fscrypt_auth_len;
->>> +		ci->fscrypt_auth = iinfo->fscrypt_auth;
->>> +		iinfo->fscrypt_auth = NULL;
->>> +		iinfo->fscrypt_auth_len = 0;
->>> +		inode_set_flags(inode, S_ENCRYPTED, S_ENCRYPTED);
->>> +	}
->>> +#endif
->>> +
->>>    	/* finally update i_version */
->>>    	if (le64_to_cpu(info->version) > ci->i_version)
->>>    		ci->i_version = le64_to_cpu(info->version);
->>> diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
->>> index 57cf21c9199f..bd824e989449 100644
->>> --- a/fs/ceph/mds_client.c
->>> +++ b/fs/ceph/mds_client.c
->>> @@ -184,8 +184,50 @@ static int parse_reply_info_in(void **p, void *end,
->>>    			info->rsnaps = 0;
->>>    		}
->>>    
->>> +		if (struct_v >= 5) {
->>> +			u32 alen;
->>> +
->>> +			ceph_decode_32_safe(p, end, alen, bad);
->>> +
->>> +			while (alen--) {
->>> +				u32 len;
->>> +
->>> +				/* key */
->>> +				ceph_decode_32_safe(p, end, len, bad);
->>> +				ceph_decode_skip_n(p, end, len, bad);
->>> +				/* value */
->>> +				ceph_decode_32_safe(p, end, len, bad);
->>> +				ceph_decode_skip_n(p, end, len, bad);
->>> +			}
->>> +		}
->>> +
->>> +		/* fscrypt flag -- ignore */
->>> +		if (struct_v >= 6)
->>> +			ceph_decode_skip_8(p, end, bad);
->>> +
->>> +		info->fscrypt_auth = NULL;
->>> +		info->fscrypt_file = NULL;
->> The 'fscrypt_auth_len' and 'fscrypt_file_len' should also be reset here.
->> Or we will hit the issue I mentioned as bellow:
->>
->>
->> cp: cannot access './dir___683': No buffer space available
->> cp: cannot access './dir___686': No buffer space available
->>
->> The dmesg logs:
->>
->> <7>[ 1256.918250] ceph:† readdir 0000000089964a71 file 00000000065cb689
->> pos 0
->> <7>[ 1256.918254] ceph:† readdir off 0 -> '.'
->> <7>[ 1256.918258] ceph:† readdir off 1 -> '..'
->> <4>[ 1256.918262] fscrypt (ceph, inode 1099511630270): Error -105
->> getting encryption context
->> <7>[ 1256.918269] ceph:† readdir 0000000089964a71 file 00000000065cb689
->> pos 2
->> <4>[ 1256.918273] fscrypt (ceph, inode 1099511630270): Error -105
->> getting encryption context
->>
->>
->> This can be reproduced when using an old ceph cluster without fscrypt
->> support.
->>
->> And also I have sent out one fix to zero the memory when allocating it
->> in ceph_readdir() to fix the potential bug like this.
->>
->> Thanks
->>
->> BRs
->>
->> -- Xiubo
->>
->>
-> Good catch, Xiubo.
->
-> I merged your patch into the testing branch, and fixed this patch to
-> also zero out the fscrypt_auth_len and fscrypt_file_len. I've also
-> rebased the wip-fscrypt branch onto the current testing branch.
+So, I use ARRAY_SIZE() as a boundary condition to optimize it.
 
-Sure, I will test it.
+Signed-off-by: Meng Tang <tangmeng@uniontech.com>
+---
+ arch/csky/abiv1/alignment.c |  8 ++++----
+ arch/nds32/mm/alignment.c   |  8 ++++----
+ fs/proc/proc_sysctl.c       | 12 +++++++-----
+ fs/verity/signature.c       |  7 ++++---
+ include/linux/sysctl.h      |  6 +++---
+ kernel/pid_namespace.c      |  5 +++--
+ kernel/seccomp.c            |  7 ++++---
+ security/apparmor/lsm.c     |  7 ++++---
+ security/loadpin/loadpin.c  |  7 ++++---
+ security/yama/yama_lsm.c    |  6 +++---
+ 10 files changed, 40 insertions(+), 33 deletions(-)
 
--- Xiubo
+diff --git a/arch/csky/abiv1/alignment.c b/arch/csky/abiv1/alignment.c
+index 2df115d0e210..f2fe6a4d2388 100644
+--- a/arch/csky/abiv1/alignment.c
++++ b/arch/csky/abiv1/alignment.c
+@@ -340,14 +340,14 @@ static struct ctl_table sysctl_table[2] = {
+ 	{}
+ };
+ 
+-static struct ctl_path sysctl_path[2] = {
+-	{.procname = "csky"},
+-	{}
++static struct ctl_path sysctl_path[1] = {
++	{.procname = "csky"}
+ };
++#define SYSCTL_PATH_SIZE ARRAY_SIZE(sysctl_path)
+ 
+ static int __init csky_alignment_init(void)
+ {
+-	register_sysctl_paths(sysctl_path, sysctl_table);
++	register_sysctl_paths(sysctl_path, sysctl_table, SYSCTL_PATH_SIZE);
+ 	return 0;
+ }
+ 
+diff --git a/arch/nds32/mm/alignment.c b/arch/nds32/mm/alignment.c
+index 1eb7ded6992b..ee073f6b5822 100644
+--- a/arch/nds32/mm/alignment.c
++++ b/arch/nds32/mm/alignment.c
+@@ -560,17 +560,17 @@ static struct ctl_table nds32_sysctl_table[2] = {
+ 	{}
+ };
+ 
+-static struct ctl_path nds32_path[2] = {
+-	{.procname = "nds32"},
+-	{}
++static struct ctl_path nds32_path[1] = {
++	{.procname = "nds32"}
+ };
++#define NDS32_PATH_SIZE ARRAY_SIZE(nds32_path)
+ 
+ /*
+  * Initialize nds32 alignment-correction interface
+  */
+ static int __init nds32_sysctl_init(void)
+ {
+-	register_sysctl_paths(nds32_path, nds32_sysctl_table);
++	register_sysctl_paths(nds32_path, nds32_sysctl_table, NDS32_PATH_SIZE);
+ 	return 0;
+ }
+ 
+diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
+index 7d9cfc730bd4..d6f6d9d5d3f8 100644
+--- a/fs/proc/proc_sysctl.c
++++ b/fs/proc/proc_sysctl.c
+@@ -1552,20 +1552,21 @@ static int register_leaf_sysctl_tables(const char *path, char *pos,
+  */
+ struct ctl_table_header *__register_sysctl_paths(
+ 	struct ctl_table_set *set,
+-	const struct ctl_path *path, struct ctl_table *table)
++	const struct ctl_path *path, struct ctl_table *table, int table_size)
+ {
+ 	struct ctl_table *ctl_table_arg = table;
+ 	int nr_subheaders = count_subheaders(table);
+ 	struct ctl_table_header *header = NULL, **subheaders, **subheader;
+ 	const struct ctl_path *component;
+ 	char *new_path, *pos;
++	int i;
+ 
+ 	pos = new_path = kmalloc(PATH_MAX, GFP_KERNEL);
+ 	if (!new_path)
+ 		return NULL;
+ 
+ 	pos[0] = '\0';
+-	for (component = path; component->procname; component++) {
++	for (component = path, i = 0; component->procname && i < table_size; component++, i++) {
+ 		pos = append_path(new_path, pos, component->procname);
+ 		if (!pos)
+ 			goto out;
+@@ -1622,10 +1623,11 @@ struct ctl_table_header *__register_sysctl_paths(
+  * See __register_sysctl_paths for more details.
+  */
+ struct ctl_table_header *register_sysctl_paths(const struct ctl_path *path,
+-						struct ctl_table *table)
++						struct ctl_table *table,
++						int table_size)
+ {
+ 	return __register_sysctl_paths(&sysctl_table_root.default_set,
+-					path, table);
++					path, table, table_size);
+ }
+ EXPORT_SYMBOL(register_sysctl_paths);
+ 
+@@ -1642,7 +1644,7 @@ struct ctl_table_header *register_sysctl_table(struct ctl_table *table)
+ {
+ 	static const struct ctl_path null_path[] = { {} };
+ 
+-	return register_sysctl_paths(null_path, table);
++	return register_sysctl_paths(null_path, table, ARRAY_SIZE(null_path));
+ }
+ EXPORT_SYMBOL(register_sysctl_table);
+ 
+diff --git a/fs/verity/signature.c b/fs/verity/signature.c
+index 143a530a8008..e04be57da6ab 100644
+--- a/fs/verity/signature.c
++++ b/fs/verity/signature.c
+@@ -92,9 +92,9 @@ static struct ctl_table_header *fsverity_sysctl_header;
+ 
+ static const struct ctl_path fsverity_sysctl_path[] = {
+ 	{ .procname = "fs", },
+-	{ .procname = "verity", },
+-	{ }
++	{ .procname = "verity", }
+ };
++#define FSVERITY_SYSCTL_PATH_SIZE ARRAY_SIZE(fsverity_sysctl_path)
+ 
+ static struct ctl_table fsverity_sysctl_table[] = {
+ 	{
+@@ -112,7 +112,8 @@ static struct ctl_table fsverity_sysctl_table[] = {
+ static int __init fsverity_sysctl_init(void)
+ {
+ 	fsverity_sysctl_header = register_sysctl_paths(fsverity_sysctl_path,
+-						       fsverity_sysctl_table);
++						       fsverity_sysctl_table,
++						       FSVERITY_SYSCTL_PATH_SIZE);
+ 	if (!fsverity_sysctl_header) {
+ 		pr_err("sysctl registration failed!\n");
+ 		return -ENOMEM;
+diff --git a/include/linux/sysctl.h b/include/linux/sysctl.h
+index 6353d6db69b2..781874ed9179 100644
+--- a/include/linux/sysctl.h
++++ b/include/linux/sysctl.h
+@@ -220,11 +220,11 @@ struct ctl_table_header *__register_sysctl_table(
+ 	const char *path, struct ctl_table *table);
+ struct ctl_table_header *__register_sysctl_paths(
+ 	struct ctl_table_set *set,
+-	const struct ctl_path *path, struct ctl_table *table);
++	const struct ctl_path *path, struct ctl_table *table, int table_size);
+ struct ctl_table_header *register_sysctl(const char *path, struct ctl_table *table);
+ struct ctl_table_header *register_sysctl_table(struct ctl_table * table);
+ struct ctl_table_header *register_sysctl_paths(const struct ctl_path *path,
+-						struct ctl_table *table);
++						struct ctl_table *table, int table_size);
+ 
+ void unregister_sysctl_table(struct ctl_table_header * table);
+ 
+@@ -271,7 +271,7 @@ static inline struct ctl_table_header *register_sysctl_mount_point(const char *p
+ }
+ 
+ static inline struct ctl_table_header *register_sysctl_paths(
+-			const struct ctl_path *path, struct ctl_table *table)
++			const struct ctl_path *path, struct ctl_table *table, int table_size)
+ {
+ 	return NULL;
+ }
+diff --git a/kernel/pid_namespace.c b/kernel/pid_namespace.c
+index a46a3723bc66..18a1a3bb37a0 100644
+--- a/kernel/pid_namespace.c
++++ b/kernel/pid_namespace.c
+@@ -294,7 +294,8 @@ static struct ctl_table pid_ns_ctl_table[] = {
+ 	},
+ 	{ }
+ };
+-static struct ctl_path kern_path[] = { { .procname = "kernel", }, { } };
++static struct ctl_path kern_path[] = { { .procname = "kernel", } };
++#define KERN_PATH_SIZE ARRAY_SIZE(kern_path)
+ #endif	/* CONFIG_CHECKPOINT_RESTORE */
+ 
+ int reboot_pid_ns(struct pid_namespace *pid_ns, int cmd)
+@@ -453,7 +454,7 @@ static __init int pid_namespaces_init(void)
+ 	pid_ns_cachep = KMEM_CACHE(pid_namespace, SLAB_PANIC | SLAB_ACCOUNT);
+ 
+ #ifdef CONFIG_CHECKPOINT_RESTORE
+-	register_sysctl_paths(kern_path, pid_ns_ctl_table);
++	register_sysctl_paths(kern_path, pid_ns_ctl_table, KERN_PATH_SIZE);
+ #endif
+ 	return 0;
+ }
+diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+index db10e73d06e0..d4759cdb0335 100644
+--- a/kernel/seccomp.c
++++ b/kernel/seccomp.c
+@@ -2333,9 +2333,9 @@ static int seccomp_actions_logged_handler(struct ctl_table *ro_table, int write,
+ 
+ static struct ctl_path seccomp_sysctl_path[] = {
+ 	{ .procname = "kernel", },
+-	{ .procname = "seccomp", },
+-	{ }
++	{ .procname = "seccomp", }
+ };
++#define SECCOMP_SYSCTL_PATH_SIZE ARRAY_SIZE(seccomp_sysctl_path)
+ 
+ static struct ctl_table seccomp_sysctl_table[] = {
+ 	{
+@@ -2357,7 +2357,8 @@ static int __init seccomp_sysctl_init(void)
+ {
+ 	struct ctl_table_header *hdr;
+ 
+-	hdr = register_sysctl_paths(seccomp_sysctl_path, seccomp_sysctl_table);
++	hdr = register_sysctl_paths(seccomp_sysctl_path, seccomp_sysctl_table,
++				    SECCOMP_SYSCTL_PATH_SIZE);
+ 	if (!hdr)
+ 		pr_warn("sysctl registration failed\n");
+ 	else
+diff --git a/security/apparmor/lsm.c b/security/apparmor/lsm.c
+index 4f0eecb67dde..09a0461db6b1 100644
+--- a/security/apparmor/lsm.c
++++ b/security/apparmor/lsm.c
+@@ -1729,9 +1729,9 @@ static int apparmor_dointvec(struct ctl_table *table, int write,
+ }
+ 
+ static struct ctl_path apparmor_sysctl_path[] = {
+-	{ .procname = "kernel", },
+-	{ }
++	{ .procname = "kernel", }
+ };
++#define APPARMOR_SYSCTL_PATH_SIZE ARRAY_SIZE(apparmor_sysctl_path)
+ 
+ static struct ctl_table apparmor_sysctl_table[] = {
+ 	{
+@@ -1747,7 +1747,8 @@ static struct ctl_table apparmor_sysctl_table[] = {
+ static int __init apparmor_init_sysctl(void)
+ {
+ 	return register_sysctl_paths(apparmor_sysctl_path,
+-				     apparmor_sysctl_table) ? 0 : -ENOMEM;
++				     apparmor_sysctl_table,
++				     APPARMOR_SYSCTL_PATH_SIZE) ? 0 : -ENOMEM;
+ }
+ #else
+ static inline int apparmor_init_sysctl(void)
+diff --git a/security/loadpin/loadpin.c b/security/loadpin/loadpin.c
+index b12f7d986b1e..45e0b8952a1d 100644
+--- a/security/loadpin/loadpin.c
++++ b/security/loadpin/loadpin.c
+@@ -48,9 +48,9 @@ static DEFINE_SPINLOCK(pinned_root_spinlock);
+ 
+ static struct ctl_path loadpin_sysctl_path[] = {
+ 	{ .procname = "kernel", },
+-	{ .procname = "loadpin", },
+-	{ }
++	{ .procname = "loadpin", }
+ };
++#define LOADPIN_SYSCTL_PATH_SIZE ARRAY_SIZE(loadpin_sysctl_path)
+ 
+ static struct ctl_table loadpin_sysctl_table[] = {
+ 	{
+@@ -91,7 +91,8 @@ static void check_pinning_enforcement(struct super_block *mnt_sb)
+ 
+ 	if (!ro) {
+ 		if (!register_sysctl_paths(loadpin_sysctl_path,
+-					   loadpin_sysctl_table))
++					   loadpin_sysctl_table,
++					   LOADPIN_SYSCTL_PATH_SIZE))
+ 			pr_notice("sysctl registration failed!\n");
+ 		else
+ 			pr_info("enforcement can be disabled.\n");
+diff --git a/security/yama/yama_lsm.c b/security/yama/yama_lsm.c
+index 06e226166aab..c4472d17b46d 100644
+--- a/security/yama/yama_lsm.c
++++ b/security/yama/yama_lsm.c
+@@ -449,9 +449,9 @@ static int max_scope = YAMA_SCOPE_NO_ATTACH;
+ 
+ static struct ctl_path yama_sysctl_path[] = {
+ 	{ .procname = "kernel", },
+-	{ .procname = "yama", },
+-	{ }
++	{ .procname = "yama", }
+ };
++#define YAMA_SYSCTL_PATH_SIZE ARRAY_SIZE(yama_sysctl_path)
+ 
+ static struct ctl_table yama_sysctl_table[] = {
+ 	{
+@@ -467,7 +467,7 @@ static struct ctl_table yama_sysctl_table[] = {
+ };
+ static void __init yama_init_sysctl(void)
+ {
+-	if (!register_sysctl_paths(yama_sysctl_path, yama_sysctl_table))
++	if (!register_sysctl_paths(yama_sysctl_path, yama_sysctl_table, YAMA_SYSCTL_PATH_SIZE))
+ 		panic("Yama: sysctl registration failed.\n");
+ }
+ #else
+-- 
+2.20.1
 
->>> +		if (struct_v >= 7) {
->>> +			ceph_decode_32_safe(p, end, info->fscrypt_auth_len, bad);
->>> +			if (info->fscrypt_auth_len) {
->>> +				info->fscrypt_auth = kmalloc(info->fscrypt_auth_len, GFP_KERNEL);
->>> +				if (!info->fscrypt_auth)
->>> +					return -ENOMEM;
->>> +				ceph_decode_copy_safe(p, end, info->fscrypt_auth,
->>> +						      info->fscrypt_auth_len, bad);
->>> +			}
->>> +			ceph_decode_32_safe(p, end, info->fscrypt_file_len, bad);
->>> +			if (info->fscrypt_file_len) {
->>> +				info->fscrypt_file = kmalloc(info->fscrypt_file_len, GFP_KERNEL);
->>> +				if (!info->fscrypt_file)
->>> +					return -ENOMEM;
->>> +				ceph_decode_copy_safe(p, end, info->fscrypt_file,
->>> +						      info->fscrypt_file_len, bad);
->>> +			}
->>> +		}
->>>    		*p = end;
->>>    	} else {
->>> +		/* legacy (unversioned) struct */
->>>    		if (features & CEPH_FEATURE_MDS_INLINE_DATA) {
->>>    			ceph_decode_64_safe(p, end, info->inline_version, bad);
->>>    			ceph_decode_32_safe(p, end, info->inline_len, bad);
->>> @@ -626,8 +668,21 @@ static int parse_reply_info(struct ceph_mds_session *s, struct ceph_msg *msg,
->>>    
->>>    static void destroy_reply_info(struct ceph_mds_reply_info_parsed *info)
->>>    {
->>> +	int i;
->>> +
->>> +	kfree(info->diri.fscrypt_auth);
->>> +	kfree(info->diri.fscrypt_file);
->>> +	kfree(info->targeti.fscrypt_auth);
->>> +	kfree(info->targeti.fscrypt_file);
->>>    	if (!info->dir_entries)
->>>    		return;
->>> +
->>> +	for (i = 0; i < info->dir_nr; i++) {
->>> +		struct ceph_mds_reply_dir_entry *rde = info->dir_entries + i;
->>> +
->>> +		kfree(rde->inode.fscrypt_auth);
->>> +		kfree(rde->inode.fscrypt_file);
->>> +	}
->>>    	free_pages((unsigned long)info->dir_entries, get_order(info->dir_buf_size));
->>>    }
->>>    
->>> diff --git a/fs/ceph/mds_client.h b/fs/ceph/mds_client.h
->>> index c3986a412fb5..98a8710807d1 100644
->>> --- a/fs/ceph/mds_client.h
->>> +++ b/fs/ceph/mds_client.h
->>> @@ -88,6 +88,10 @@ struct ceph_mds_reply_info_in {
->>>    	s32 dir_pin;
->>>    	struct ceph_timespec btime;
->>>    	struct ceph_timespec snap_btime;
->>> +	u8 *fscrypt_auth;
->>> +	u8 *fscrypt_file;
->>> +	u32 fscrypt_auth_len;
->>> +	u32 fscrypt_file_len;
->>>    	u64 rsnaps;
->>>    	u64 change_attr;
->>>    };
->>> diff --git a/fs/ceph/super.h b/fs/ceph/super.h
->>> index 532ee9fca878..5b4092e5f291 100644
->>> --- a/fs/ceph/super.h
->>> +++ b/fs/ceph/super.h
->>> @@ -433,6 +433,12 @@ struct ceph_inode_info {
->>>    	struct work_struct i_work;
->>>    	unsigned long  i_work_mask;
->>>    
->>> +#ifdef CONFIG_FS_ENCRYPTION
->>> +	u32 fscrypt_auth_len;
->>> +	u32 fscrypt_file_len;
->>> +	u8 *fscrypt_auth;
->>> +	u8 *fscrypt_file;
->>> +#endif
->>>    #ifdef CONFIG_CEPH_FSCACHE
->>>    	struct fscache_cookie *fscache;
->>>    #endif
 
+Å/
