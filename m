@@ -2,52 +2,82 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 436C14C2151
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 24 Feb 2022 02:49:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0AA24C2164
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 24 Feb 2022 02:55:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229754AbiBXBrE (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 23 Feb 2022 20:47:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32928 "EHLO
+        id S229830AbiBXBzO (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 23 Feb 2022 20:55:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229739AbiBXBrC (ORCPT
+        with ESMTP id S229821AbiBXBzO (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 23 Feb 2022 20:47:02 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFFC7221;
-        Wed, 23 Feb 2022 17:46:33 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C0B5B60C83;
-        Thu, 24 Feb 2022 00:50:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00F0CC340E7;
-        Thu, 24 Feb 2022 00:50:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1645663859;
-        bh=00lrl6UcD5tDJadETCE9ZmRWSbIqAmhkJXg/tqXIirw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pbSYlBUcJexoGL5pBv1GsRg3JiR/1isNduqCxjKYePY1OOEyGrb6VY3z7AjWyqVRc
-         o1wS5dwT0u4YzBgKUYfwtPhihksCjZgOJn1GWVSF79xMP5B0g652Rij5cXnac4/Ut2
-         EPm6Nthhznl188RpE1vVmxuWWw0YnM5bhivfp5/oQ5jVAKPSSDG9I25viWemfFRQD7
-         2S8JaunAjT8wHG48wxYFdJEfOj6F26WDZAvmzYvMDUb0L24QQ8ckg38d8gTAD0Sr9W
-         F9ExNHYlPef4oOBm1J0xWJwuJ3bV7xo/8VFDaFFjuV/FsTVTjf7t/DUrXeppFKn/oo
-         iaYvs29rsQsRA==
-Date:   Wed, 23 Feb 2022 16:50:57 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Mimi Zohar <zohar@linux.ibm.com>
+        Wed, 23 Feb 2022 20:55:14 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9790949901;
+        Wed, 23 Feb 2022 17:54:45 -0800 (PST)
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21NLknP1007256;
+        Thu, 24 Feb 2022 01:21:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=dy+WaOjEGb/+byPq+LMneqdJ8ZUeXAvTiYBdF0B4VjE=;
+ b=Q1ovKxLbiCb26NbYTHHzBnlgb5sph1WpQOYVygrtMtD/7GXWqwk0ayAN0Ia34IdDwte7
+ O4WhWsP6ED3Yg11BgoFQ4b8fk49ozTnwPd2Y4wfmXsRyZSXUzZOomFv0Cy8UGtDAo3yc
+ ZHaKGLDA7jlXe2afjVOjBqL7gh1bfy51svCaE0nahFZo6MKVoiF0iUxw/dp5sVMP+p2h
+ lTXWxLiP/Bq9zgH54uJsr3T4BqTN6WIuTw240ZMCfELwzZsl1EcJ09vKhjyjzS6X2P5l
+ wVPFbFyFs2o2D1ZIOkzCxiVgRBwBRkWy+IwhF22Xcyqi9a55fC/VNkbmC3G6iakcG+2f tg== 
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3edw513k2e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Feb 2022 01:21:07 +0000
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 21O18B6g029736;
+        Thu, 24 Feb 2022 01:21:05 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma05fra.de.ibm.com with ESMTP id 3ear69ksy3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Feb 2022 01:21:05 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 21O1L3BN49021226
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 24 Feb 2022 01:21:03 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 18EF25204F;
+        Thu, 24 Feb 2022 01:21:03 +0000 (GMT)
+Received: from sig-9-65-80-154.ibm.com (unknown [9.65.80.154])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 521C75204E;
+        Thu, 24 Feb 2022 01:21:02 +0000 (GMT)
+Message-ID: <f322ae351dde71b92d7d4037d78190c7338ca710.camel@linux.ibm.com>
+Subject: Re: [PATCH v5 3/8] fs-verity: define a function to return the
+ integrity protected file digest
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Eric Biggers <ebiggers@kernel.org>
 Cc:     linux-integrity@vger.kernel.org,
         Stefan Berger <stefanb@linux.ibm.com>,
         linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 6/8] ima: define signature version 3
-Message-ID: <YhbWcRfo/Cz8EyNw@sol.localdomain>
+Date:   Wed, 23 Feb 2022 20:21:01 -0500
+In-Reply-To: <YhbKYZcWxmi4auJU@sol.localdomain>
 References: <20220211214310.119257-1-zohar@linux.ibm.com>
- <20220211214310.119257-7-zohar@linux.ibm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220211214310.119257-7-zohar@linux.ibm.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+         <20220211214310.119257-4-zohar@linux.ibm.com>
+         <YhbKYZcWxmi4auJU@sol.localdomain>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-18.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 44v8-ClwRKkbiM19w30QSAMnC5H7WXKk
+X-Proofpoint-ORIG-GUID: 44v8-ClwRKkbiM19w30QSAMnC5H7WXKk
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
+ definitions=2022-02-23_09,2022-02-23_01,2022-02-23_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ suspectscore=0 priorityscore=1501 lowpriorityscore=0 spamscore=0
+ mlxscore=0 adultscore=0 bulkscore=0 malwarescore=0 phishscore=0
+ impostorscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2201110000 definitions=main-2202240002
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -56,70 +86,49 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Feb 11, 2022 at 04:43:08PM -0500, Mimi Zohar wrote:
-> To disambiguate the signed data stored in the 'security.ima' xattr,
-> define signature version 3 as the hash of the ima_file_id structure.
+On Wed, 2022-02-23 at 15:59 -0800, Eric Biggers wrote:
+> On Fri, Feb 11, 2022 at 04:43:05PM -0500, Mimi Zohar wrote:
+> > +/**
+> > + * fsverity_get_digest() - get a verity file's digest
+> > + * @inode: inode to get digest of
+> > + * @digest: (out) pointer to the digest
+> > + * @alg: (out) pointer to the hash algorithm enumeration
+> > + *
+> > + * Return the file hash algorithm and digest of an fsverity protected file.
+> > + *
+> > + * Return: 0 on success, -errno on failure
+> > + */
+> > +int fsverity_get_digest(struct inode *inode,
+> > +			u8 digest[FS_VERITY_MAX_DIGEST_SIZE],
+> > +			enum hash_algo *alg)
+> > +{
+> > +	const struct fsverity_info *vi;
+> > +	const struct fsverity_hash_alg *hash_alg;
+> > +	int i;
+> > +
+> > +	vi = fsverity_get_info(inode);
+> > +	if (!vi)
+> > +		return -ENODATA; /* not a verity file */
 > 
-> Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
-> ---
->  security/integrity/digsig.c           |  3 ++-
->  security/integrity/ima/ima_appraise.c | 35 +++++++++++++++++++++++++++
->  security/integrity/integrity.h        | 20 +++++++++++++--
->  3 files changed, 55 insertions(+), 3 deletions(-)
+> Sorry for the slow reviews; I'm taking a look again now.  One question about
+> something I missed earlier: is the file guaranteed to have been opened before
+> this is called?  fsverity_get_info() only returns a non-NULL value if the file
+> has been opened at least once since the inode has been loaded into memory.  If
+> the inode has just been loaded into memory without being opened, for example due
+> to a call to stat(), then fsverity_get_info() will return NULL.
 > 
-> diff --git a/security/integrity/digsig.c b/security/integrity/digsig.c
-> index 3b06a01bd0fd..fd8f77d92a62 100644
-> --- a/security/integrity/digsig.c
-> +++ b/security/integrity/digsig.c
-> @@ -74,7 +74,8 @@ int integrity_digsig_verify(const unsigned int id, const char *sig, int siglen,
->  		/* v1 API expect signature without xattr type */
->  		return digsig_verify(keyring, sig + 1, siglen - 1, digest,
->  				     digestlen);
-> -	case 2:
-> +	case 2: /* regular file data hash based sginature */
-> +	case 3: /* struct ima_file_id data base signature */
->  		return asymmetric_verify(keyring, sig, siglen, digest,
->  					 digestlen);
->  	}
-> diff --git a/security/integrity/ima/ima_appraise.c b/security/integrity/ima/ima_appraise.c
-> index 17232bbfb9f9..c2b429c141a7 100644
-> --- a/security/integrity/ima/ima_appraise.c
-> +++ b/security/integrity/ima/ima_appraise.c
-> @@ -225,6 +225,33 @@ int ima_read_xattr(struct dentry *dentry,
->  	return ret;
->  }
->  
-> +/*
-> + * calc_file_id_hash - calculate the hash of the ima_file_id struct data
-> + * @type: xattr type [enum evm_ima_xattr_type]
-> + * @algo: hash algorithm [enum hash_algo]
-> + * @digest: pointer to the digest to be hashed
-> + * @hash: (out) pointer to the hash
-> + *
-> + * IMA signature version 3 disambiguates the data that is signed by
-> + * indirectly signing the hash of the ima_file_id structure data.
-> + *
-> + * Return 0 on success, error code otherwise.
-> + */
-> +static int calc_file_id_hash(enum evm_ima_xattr_type type,
-> +			     enum hash_algo algo, const u8 *digest,
-> +			     struct ima_digest_data *hash)
-> +{
-> +	struct ima_file_id file_id = {.hash_algorithm = algo};
-> +	uint unused = HASH_MAX_DIGESTSIZE - hash_digest_size[algo];
-> +
-> +	memcpy(file_id.hash, digest, hash_digest_size[algo]);
-> +
-> +	hash->algo = algo;
-> +	hash->length = hash_digest_size[algo];
-> +
-> +	return ima_calc_buffer_hash(&file_id, sizeof(file_id) - unused, hash);
-> +}
-> +
+> If the file is guaranteed to have been opened, then the code is fine, but the
+> comment for fsverity_get_digest() perhaps should be updated to mention this
+> assumption, given that it takes a struct inode rather than a struct file.
+> 
+> If the file is *not* guaranteed to have been opened, then it would be necessary
+> to make fsverity_get_digest() call ensure_verity_info() to set up the
+> fsverity_info.
 
-calc_file_id_hash() isn't used in this patch.
+Yes, fsverity_get_digest() is called as a result of a syscall - open,
+execve, mmap, etc.   
+Refer to the LSM hooks security_bprm_check() and security_mmap_file().
+ima_file_check() is called directly in do_open().
 
-Perhaps this patch should be merged with the following one?  I don't understand
-the point of this patch on its own.
+Mimi
 
-- Eric
