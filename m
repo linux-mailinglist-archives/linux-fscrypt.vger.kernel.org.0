@@ -2,125 +2,177 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62DF74C2A4C
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 24 Feb 2022 12:06:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 002534C2D17
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 24 Feb 2022 14:33:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233728AbiBXLGK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 24 Feb 2022 06:06:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35414 "EHLO
+        id S235022AbiBXNdT (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 24 Feb 2022 08:33:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233460AbiBXLGJ (ORCPT
+        with ESMTP id S234593AbiBXNdR (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 24 Feb 2022 06:06:09 -0500
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 918302905BF
-        for <linux-fscrypt@vger.kernel.org>; Thu, 24 Feb 2022 03:05:39 -0800 (PST)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-231-L_oAWQfwOO-nrY_yIXSoNw-1; Thu, 24 Feb 2022 11:05:36 +0000
-X-MC-Unique: L_oAWQfwOO-nrY_yIXSoNw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.28; Thu, 24 Feb 2022 11:05:35 +0000
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.028; Thu, 24 Feb 2022 11:05:35 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Meng Tang' <tangmeng@uniontech.com>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "yzaikin@google.com" <yzaikin@google.com>
-CC:     "guoren@kernel.org" <guoren@kernel.org>,
-        "nickhu@andestech.com" <nickhu@andestech.com>,
-        "green.hu@gmail.com" <green.hu@gmail.com>,
-        "deanbo422@gmail.com" <deanbo422@gmail.com>,
-        "ebiggers@kernel.org" <ebiggers@kernel.org>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "wad@chromium.org" <wad@chromium.org>,
-        "john.johansen@canonical.com" <john.johansen@canonical.com>,
-        "jmorris@namei.org" <jmorris@namei.org>,
-        "serge@hallyn.com" <serge@hallyn.com>,
-        "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
-        "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: RE: [PATCH v2] fs/proc: Optimize arrays defined by struct ctl_path
-Thread-Topic: [PATCH v2] fs/proc: Optimize arrays defined by struct ctl_path
-Thread-Index: AQHYKWy3HNMHKpP9M0mvOc+sJsFjY6yiiFdA
-Date:   Thu, 24 Feb 2022 11:05:35 +0000
-Message-ID: <376fe4403af346ccbdc7294259b8d11a@AcuMS.aculab.com>
-References: <20220224105234.19379-1-tangmeng@uniontech.com>
-In-Reply-To: <20220224105234.19379-1-tangmeng@uniontech.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 24 Feb 2022 08:33:17 -0500
+Received: from smtpbgau1.qq.com (smtpbgau1.qq.com [54.206.16.166])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF32C16DAFA
+        for <linux-fscrypt@vger.kernel.org>; Thu, 24 Feb 2022 05:32:46 -0800 (PST)
+X-QQ-mid: bizesmtp70t1645709547tpwkhq7i
+Received: from localhost.localdomain (unknown [58.240.82.166])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Thu, 24 Feb 2022 21:32:20 +0800 (CST)
+X-QQ-SSF: 01400000002000B0F000B00A0000000
+X-QQ-FEAT: /38I06TeVDt/A9RUhVZYOINAD/wPpx9pW1Fb3qmhzq4x7Q2Ua+MBKouMh0Uzn
+        mF7ioiAmnlUyMwrWJmNKv+nmVGoBWKsVxjGl5q6nYE8pE+TExWnUpBh5SlcD/UZFVCM8Isk
+        bRvIkO+BkFI+Vo+R9MC3qN9npU/RvArveLimfqrBtfH1aUfXiI8dUS4EHHNz68oxLxEUFUJ
+        j4VSg9QJkWUkJBIMdt8Y2FgEob+tjpdKZ0jxDzHys7ObyddxOeYpBCEG5EBa7OsZwYK7XSy
+        3wxpQ7bLzxjCGFutx+fQbnjEOV6rtr4OuEtPMNineyYAsgPwEn3u+IcmfHlX0l7XI4xJ46X
+        Ev8c7UftVm2ZQSwKxnjYepAa9bYffdyMQ1gKLRZqw1Q1vTfZvQ=
+X-QQ-GoodBg: 2
+From:   Meng Tang <tangmeng@uniontech.com>
+To:     mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com
+Cc:     guoren@kernel.org, nickhu@andestech.com, green.hu@gmail.com,
+        deanbo422@gmail.com, ebiggers@kernel.org, tytso@mit.edu,
+        wad@chromium.org, john.johansen@canonical.com, jmorris@namei.org,
+        serge@hallyn.com, linux-csky@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Meng Tang <tangmeng@uniontech.com>
+Subject: [PATCH v3 1/2] fs/proc: Optimize arrays defined by struct ctl_path
+Date:   Thu, 24 Feb 2022 21:32:16 +0800
+Message-Id: <20220224133217.1755-1-tangmeng@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign2
+X-QQ-Bgrelay: 1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Meng Tang <tangmeng@uniontech.com>
-> Sent: 24 February 2022 10:53
-> 
-> Previously, arrays defined by struct ctl_path is terminated
-> with an empty one. For example, when we actually only register
-> one ctl_path, we've gone from 8 bytes to 16 bytes.
-> 
-...
-> diff --git a/arch/csky/abiv1/alignment.c b/arch/csky/abiv1/alignment.c
-> index 2df115d0e210..b9290a252d84 100644
-> --- a/arch/csky/abiv1/alignment.c
-> +++ b/arch/csky/abiv1/alignment.c
-> @@ -340,14 +340,14 @@ static struct ctl_table sysctl_table[2] = {
->  	{}
->  };
-> 
-> -static struct ctl_path sysctl_path[2] = {
-> -	{.procname = "csky"},
-> -	{}
-> +static struct ctl_path sysctl_path[1] = {
-> +	{.procname = "csky"}
->  };
-> +#define SYSCTL_PATH_NUM ARRAY_SIZE(sysctl_path)
-> 
->  static int __init csky_alignment_init(void)
->  {
-> -	 (sysctl_path, sysctl_table);
-> +	register_sysctl_paths(sysctl_path, SYSCTL_PATH_NUM, sysctl_table);
->  	return 0;
->  }
+Previously, arrays defined by struct ctl_path is terminated
+with an empty one. When we actually only register one ctl_path,
+we've gone from 8 bytes to 16 bytes.
 
-That is horribly error prone.
-What might work is to add the ctl_path_num parameter but leave in the
-check for NULL.
-Then add:
+So, I use ARRAY_SIZE() as a boundary condition to optimize it.
 
-#define register_sysctl_paths(p, t) register_sysctl_paths(p, ARRAY_SIZE(t), t)
+Since the original __register_sysctl_paths is only used in
+fs/proc/proc_sysctl.c, in order to not change the usage of
+register_sysctl_paths, delete __register_sysctl_paths from
+include/linux/sysctl.h, change it to __register_sysctl_paths_init
+in fs/proc/proc_sysctl.c, and modify it with static.
+The register_sysctl_paths becomes __register_sysctl_paths,
+and the macro definition is used in include/linux/sysctl.h
+to expand register_sysctl_paths(path, table) to
+__register_sysctl_paths(path, ARRAY_SIZE(path), table).
 
-in the header file after the prototype.
-Put the function name in () in the definition to stop the macro expansion.
+Signed-off-by: Meng Tang <tangmeng@uniontech.com>
+---
+ fs/proc/proc_sysctl.c  | 22 +++++++++++++---------
+ include/linux/sysctl.h |  9 ++++-----
+ 2 files changed, 17 insertions(+), 14 deletions(-)
 
-	David
+diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
+index 9ecd5c87e8dd..721a8bec63d6 100644
+--- a/fs/proc/proc_sysctl.c
++++ b/fs/proc/proc_sysctl.c
+@@ -1589,9 +1589,10 @@ static int register_leaf_sysctl_tables(const char *path, char *pos,
+ }
+ 
+ /**
+- * __register_sysctl_paths - register a sysctl table hierarchy
++ * __register_sysctl_paths_init - register a sysctl table hierarchy
+  * @set: Sysctl tree to register on
+  * @path: The path to the directory the sysctl table is in.
++ * @ctl_path_num: The numbers(ARRAY_SIZE(path)) of ctl_path
+  * @table: the top-level table structure
+  *
+  * Register a sysctl table hierarchy. @table should be a filled in ctl_table
+@@ -1599,22 +1600,23 @@ static int register_leaf_sysctl_tables(const char *path, char *pos,
+  *
+  * See __register_sysctl_table for more details.
+  */
+-struct ctl_table_header *__register_sysctl_paths(
++static struct ctl_table_header *__register_sysctl_paths_init(
+ 	struct ctl_table_set *set,
+-	const struct ctl_path *path, struct ctl_table *table)
++	const struct ctl_path *path, int ctl_path_num, struct ctl_table *table)
+ {
+ 	struct ctl_table *ctl_table_arg = table;
+ 	int nr_subheaders = count_subheaders(table);
+ 	struct ctl_table_header *header = NULL, **subheaders, **subheader;
+ 	const struct ctl_path *component;
+ 	char *new_path, *pos;
++	int i;
+ 
+ 	pos = new_path = kmalloc(PATH_MAX, GFP_KERNEL);
+ 	if (!new_path)
+ 		return NULL;
+ 
+ 	pos[0] = '\0';
+-	for (component = path; component->procname; component++) {
++	for (component = path, i = 0; component->procname && i < ctl_path_num; component++, i++) {
+ 		pos = append_path(new_path, pos, component->procname);
+ 		if (!pos)
+ 			goto out;
+@@ -1663,20 +1665,22 @@ struct ctl_table_header *__register_sysctl_paths(
+ /**
+  * register_sysctl_paths - register a sysctl table hierarchy
+  * @path: The path to the directory the sysctl table is in.
++ * @ctl_path_num: The numbers(ARRAY_SIZE(path)) of ctl_path
+  * @table: the top-level table structure
+  *
+  * Register a sysctl table hierarchy. @table should be a filled in ctl_table
+  * array. A completely 0 filled entry terminates the table.
+  *
+- * See __register_sysctl_paths for more details.
++ * See __register_sysctl_paths_init for more details.
+  */
+-struct ctl_table_header *register_sysctl_paths(const struct ctl_path *path,
++struct ctl_table_header *__register_sysctl_paths(const struct ctl_path *path,
++						int ctl_path_num,
+ 						struct ctl_table *table)
+ {
+-	return __register_sysctl_paths(&sysctl_table_root.default_set,
+-					path, table);
++	return __register_sysctl_paths_init(&sysctl_table_root.default_set,
++					path, ctl_path_num, table);
+ }
+-EXPORT_SYMBOL(register_sysctl_paths);
++EXPORT_SYMBOL(__register_sysctl_paths);
+ 
+ /**
+  * register_sysctl_table - register a sysctl table hierarchy
+diff --git a/include/linux/sysctl.h b/include/linux/sysctl.h
+index 889c995d8a08..37958aeecfb5 100644
+--- a/include/linux/sysctl.h
++++ b/include/linux/sysctl.h
+@@ -219,13 +219,12 @@ extern void retire_sysctl_set(struct ctl_table_set *set);
+ struct ctl_table_header *__register_sysctl_table(
+ 	struct ctl_table_set *set,
+ 	const char *path, struct ctl_table *table);
+-struct ctl_table_header *__register_sysctl_paths(
+-	struct ctl_table_set *set,
+-	const struct ctl_path *path, struct ctl_table *table);
+ struct ctl_table_header *register_sysctl(const char *path, struct ctl_table *table);
+ struct ctl_table_header *register_sysctl_table(struct ctl_table * table);
+-struct ctl_table_header *register_sysctl_paths(const struct ctl_path *path,
+-						struct ctl_table *table);
++#define register_sysctl_paths(path, table) \
++	__register_sysctl_paths(path, ARRAY_SIZE(path), table)
++extern struct ctl_table_header *__register_sysctl_paths(const struct ctl_path *path,
++						int ctl_path_num, struct ctl_table *table);
+ 
+ void unregister_sysctl_table(struct ctl_table_header * table);
+ 
+-- 
+2.20.1
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+
 
