@@ -2,51 +2,51 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 418FF4C20A7
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 24 Feb 2022 01:32:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D1854C20BA
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 24 Feb 2022 01:40:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229570AbiBXAdC (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 23 Feb 2022 19:33:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51458 "EHLO
+        id S229587AbiBXAlN (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 23 Feb 2022 19:41:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229617AbiBXAcx (ORCPT
+        with ESMTP id S229569AbiBXAlN (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 23 Feb 2022 19:32:53 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BD6C83002;
-        Wed, 23 Feb 2022 16:32:24 -0800 (PST)
+        Wed, 23 Feb 2022 19:41:13 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 057EFCB90A;
+        Wed, 23 Feb 2022 16:40:38 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E1732B82285;
-        Thu, 24 Feb 2022 00:32:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 510E8C340E7;
-        Thu, 24 Feb 2022 00:32:21 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8ADE360ED9;
+        Thu, 24 Feb 2022 00:40:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C336FC340E7;
+        Thu, 24 Feb 2022 00:40:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1645662741;
-        bh=3xhiKUuBO/ryIwyB50Q0hQEcWFfrZ0Emh0O02qSTEMU=;
+        s=k20201202; t=1645663237;
+        bh=ziQOSAhDXJgwY7NYsTem4a1wH3ZzbHa8A+6fyznxquM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=i5wkIRMOyyVvPD3+fM5IBNwt4clMFh0hZf35VQl6Iiz8a4IwBBUhXOPJK7fHuff4a
-         k7ueAeRuV9vyD4M0rwnp2MIIjslqqcMBg1cTUXUo3CT4+iC0by2I/3RvZGxcwN0p4Z
-         H6tQPRNssU9kBpy23l0zk0tboR/EkNEIUtGdwZLCY2BiozFiIFXerYnIv6kxa9XMzI
-         NkICB4tQpRACKKbG/evS8MAR+uet6jbqGAUaEBxhoQG8b/8SmZ0zT5FMTeN+qiiUgY
-         7siTbLF4/dGfG+3Y5koaYXDEknZXYy1Kcsa1/aloim3dcbRUehEB6VUX6yA3r37Evl
-         jLKHbB4Luz7lA==
-Date:   Wed, 23 Feb 2022 16:32:19 -0800
+        b=kAo7N29V5pBSN6BCtjwBlK2qvGJyvHu6e3bicy24IRCFChqTDY+Lj/X+iDrnaLZEh
+         qc/xAO4FbdWU/H6YHvXC+UxyGzXlO0sZq5p+A5+VrKbxsKg+KK2MuKegyTlsmsdZnZ
+         y2Fh3P7ldogrybdjrZ9Wuv40kk3wgK4rb2DdtUXK7ZK3BQkyF9D5W18K2I9QMtH1Eb
+         my+3L/S5StoTdWu2AgX3VQDQOGcDyXyAaJ8AmguyJSGVKj5bRNBMytKXBV2gm2xRwg
+         KIA9j9NKZEPUzdbiN5wOU03rUXKQ7AG0ExxPg25NEb7xu1aVcfNbbm2AQgkZBUJUhr
+         eE/16o3aU6cGQ==
+Date:   Wed, 23 Feb 2022 16:40:36 -0800
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     Mimi Zohar <zohar@linux.ibm.com>
 Cc:     linux-integrity@vger.kernel.org,
         Stefan Berger <stefanb@linux.ibm.com>,
         linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 4/8] ima: define a new template field 'd-type' and a
- new template 'ima-ngv2'
-Message-ID: <YhbSE/k4mElcehDN@sol.localdomain>
+Subject: Re: [PATCH v5 5/8] ima: permit fsverity's file digests in the IMA
+ measurement list
+Message-ID: <YhbUBJbQ+nCN515p@sol.localdomain>
 References: <20220211214310.119257-1-zohar@linux.ibm.com>
- <20220211214310.119257-5-zohar@linux.ibm.com>
+ <20220211214310.119257-6-zohar@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220211214310.119257-5-zohar@linux.ibm.com>
+In-Reply-To: <20220211214310.119257-6-zohar@linux.ibm.com>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -57,47 +57,73 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Feb 11, 2022 at 04:43:06PM -0500, Mimi Zohar wrote:
-> In preparation to differentiate between regular IMA file hashes and
-> fs-verity's file digests, define a new template field named 'd-type'.
-> Define a new template named 'ima-ngv2', which includes the new 'd-type'
-> field.
-> 
-> Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
-> ---
->  security/integrity/ima/ima_template.c     |  3 +++
->  security/integrity/ima/ima_template_lib.c | 13 +++++++++++++
->  security/integrity/ima/ima_template_lib.h |  2 ++
->  3 files changed, 18 insertions(+)
-> 
-> diff --git a/security/integrity/ima/ima_template.c b/security/integrity/ima/ima_template.c
-> index db1ad6d7a57f..b321342e5bee 100644
-> --- a/security/integrity/ima/ima_template.c
-> +++ b/security/integrity/ima/ima_template.c
-> @@ -19,6 +19,7 @@ enum header_fields { HDR_PCR, HDR_DIGEST, HDR_TEMPLATE_NAME,
->  static struct ima_template_desc builtin_templates[] = {
->  	{.name = IMA_TEMPLATE_IMA_NAME, .fmt = IMA_TEMPLATE_IMA_FMT},
->  	{.name = "ima-ng", .fmt = "d-ng|n-ng"},
-> +	{.name = "ima-ngv2", .fmt = "d-ng|n-ng|d-type"},
->  	{.name = "ima-sig", .fmt = "d-ng|n-ng|sig"},
->  	{.name = "ima-buf", .fmt = "d-ng|n-ng|buf"},
->  	{.name = "ima-modsig", .fmt = "d-ng|n-ng|sig|d-modsig|modsig"},
-> @@ -40,6 +41,8 @@ static const struct ima_template_field supported_fields[] = {
->  	 .field_show = ima_show_template_digest_ng},
->  	{.field_id = "n-ng", .field_init = ima_eventname_ng_init,
->  	 .field_show = ima_show_template_string},
-> +	{.field_id = "d-type", .field_init = ima_eventdigest_type_init,
-> +	 .field_show = ima_show_template_string},
->  	{.field_id = "sig", .field_init = ima_eventsig_init,
->  	 .field_show = ima_show_template_sig},
->  	{.field_id = "buf", .field_init = ima_eventbuf_init,
+On Fri, Feb 11, 2022 at 04:43:07PM -0500, Mimi Zohar wrote:
+> diff --git a/Documentation/ABI/testing/ima_policy b/Documentation/ABI/testing/ima_policy
+> index 839fab811b18..ff3c906738cb 100644
+> --- a/Documentation/ABI/testing/ima_policy
+> +++ b/Documentation/ABI/testing/ima_policy
+> @@ -51,6 +51,9 @@ Description:
+>  			appraise_flag:= [check_blacklist]
+>  			Currently, blacklist check is only for files signed with appended
+>  			signature.
+> +			digest_type:= verity
+> +			    Require fs-verity's file digest instead of the
+> +			    regular IMA file hash.
+>  			keyrings:= list of keyrings
+>  			(eg, .builtin_trusted_keys|.ima). Only valid
+>  			when action is "measure" and func is KEY_CHECK.
+> @@ -149,3 +152,10 @@ Description:
+>  		security.ima xattr of a file:
+>  
+>  			appraise func=SETXATTR_CHECK appraise_algos=sha256,sha384,sha512
+> +
+> +		Example of 'measure' rule requiring fs-verity's digests on a
+> +		particular filesystem with indication of type of digest in
+> +		the measurement list.
+> +
+> +			measure func=FILE_CHECK digest_type=verity \
+> +				fsuuid=... template=ima-ngv2
+> diff --git a/Documentation/security/IMA-templates.rst b/Documentation/security/IMA-templates.rst
+> index 1a91d92950a7..1e3fe986764e 100644
+> --- a/Documentation/security/IMA-templates.rst
+> +++ b/Documentation/security/IMA-templates.rst
+> @@ -69,6 +69,8 @@ descriptors by adding their identifier to the format string
+>     algorithm (field format: [<hash algo>:]digest, where the digest
+>     prefix is shown only if the hash algorithm is not SHA1 or MD5);
+>   - 'd-modsig': the digest of the event without the appended modsig;
+> + - 'd-type': differentiate between fs-verity's Merkle tree based file hash
+> +   from a regular IMA file hash measurement.
+>   - 'n-ng': the name of the event, without size limitations;
+>   - 'sig': the file signature, or the EVM portable signature if the file
+>     signature is not found;
+> @@ -106,3 +108,8 @@ currently the following methods are supported:
+>     the ``ima_template=`` parameter;
+>   - register a new template descriptor with custom format through the kernel
+>     command line parameter ``ima_template_fmt=``.
 
-I notice that the "d-ng" field already contains both the hash algorithm and the
-hash itself, in the form <algorithm>:<hash>.  Wouldn't it make more sense to
-define a "d-ngv2" field that contains <type>:<algorithm>:<hash>?  After all,
-both the type and algorithm are required to interpret the hash.
+Is there more IMA documentation elsewhere, or is this everything?  These files
+are hard to follow.
 
-Or in other words, what about the hash type is different from the hash algorithm
-that would result in them needing different handling here?
+> diff --git a/security/integrity/integrity.h b/security/integrity/integrity.h
+> index daf49894fd7d..39a999877013 100644
+> --- a/security/integrity/integrity.h
+> +++ b/security/integrity/integrity.h
+> @@ -32,7 +32,7 @@
+>  #define IMA_HASHED		0x00000200
+>  
+>  /* iint policy rule cache flags */
+> -#define IMA_NONACTION_FLAGS	0xff000000
+> +#define IMA_NONACTION_FLAGS	0xff800000
+>  #define IMA_DIGSIG_REQUIRED	0x01000000
+>  #define IMA_PERMIT_DIRECTIO	0x02000000
+>  #define IMA_NEW_FILE		0x04000000
+> @@ -40,6 +40,8 @@
+>  #define IMA_FAIL_UNVERIFIABLE_SIGS	0x10000000
+>  #define IMA_MODSIG_ALLOWED	0x20000000
+>  #define IMA_CHECK_BLACKLIST	0x40000000
+> +#define IMA_VERITY_REQUIRED	0x80000000
+> +#define IMA_VERITY_DIGEST	0x00800000
+
+How about defining these flags in numerical order?
 
 - Eric
