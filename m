@@ -2,82 +2,53 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0AA24C2164
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 24 Feb 2022 02:55:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9496B4C210D
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 24 Feb 2022 02:35:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229830AbiBXBzO (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 23 Feb 2022 20:55:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33654 "EHLO
+        id S229447AbiBXBcG (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 23 Feb 2022 20:32:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229821AbiBXBzO (ORCPT
+        with ESMTP id S229470AbiBXBcF (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 23 Feb 2022 20:55:14 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9790949901;
-        Wed, 23 Feb 2022 17:54:45 -0800 (PST)
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21NLknP1007256;
-        Thu, 24 Feb 2022 01:21:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=dy+WaOjEGb/+byPq+LMneqdJ8ZUeXAvTiYBdF0B4VjE=;
- b=Q1ovKxLbiCb26NbYTHHzBnlgb5sph1WpQOYVygrtMtD/7GXWqwk0ayAN0Ia34IdDwte7
- O4WhWsP6ED3Yg11BgoFQ4b8fk49ozTnwPd2Y4wfmXsRyZSXUzZOomFv0Cy8UGtDAo3yc
- ZHaKGLDA7jlXe2afjVOjBqL7gh1bfy51svCaE0nahFZo6MKVoiF0iUxw/dp5sVMP+p2h
- lTXWxLiP/Bq9zgH54uJsr3T4BqTN6WIuTw240ZMCfELwzZsl1EcJ09vKhjyjzS6X2P5l
- wVPFbFyFs2o2D1ZIOkzCxiVgRBwBRkWy+IwhF22Xcyqi9a55fC/VNkbmC3G6iakcG+2f tg== 
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3edw513k2e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 24 Feb 2022 01:21:07 +0000
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 21O18B6g029736;
-        Thu, 24 Feb 2022 01:21:05 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma05fra.de.ibm.com with ESMTP id 3ear69ksy3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 24 Feb 2022 01:21:05 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 21O1L3BN49021226
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 24 Feb 2022 01:21:03 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 18EF25204F;
-        Thu, 24 Feb 2022 01:21:03 +0000 (GMT)
-Received: from sig-9-65-80-154.ibm.com (unknown [9.65.80.154])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 521C75204E;
-        Thu, 24 Feb 2022 01:21:02 +0000 (GMT)
-Message-ID: <f322ae351dde71b92d7d4037d78190c7338ca710.camel@linux.ibm.com>
-Subject: Re: [PATCH v5 3/8] fs-verity: define a function to return the
- integrity protected file digest
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Eric Biggers <ebiggers@kernel.org>
+        Wed, 23 Feb 2022 20:32:05 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E18365CB;
+        Wed, 23 Feb 2022 17:31:34 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1595460FCE;
+        Thu, 24 Feb 2022 01:24:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50B24C340EF;
+        Thu, 24 Feb 2022 01:24:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1645665854;
+        bh=eQfAZltdUG4mDqD4yPpgabYWAEQGMIeeu2UXiTgjl3w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QVOThs1DJLpp6RKm2WBRauaEH8PdlgXau2pkVIP9BoUePiXZAswrcyc3PXFBbQikt
+         2oDtpaFdnWG6hYqPJlHRvEAGOxkucDmBdsjdEEEl4TDyJ/Z4fh1eDueJSKU13Jdy7Z
+         BAE0PxVMNxXPjnhAOM76bNuwBKoAXHF5p5gr1cyhLBdqcFqblu8khZO8Y4NsE79lpc
+         cQ7nQQ4niDH79xmBJaLIgAk+trPJHBiMjLD0YDawtNOATJOUvgvyngxuAyWFqD1dkp
+         mC6fTvwjyna6qMzaIgjSyEdM7doPBd0NG3N31GP1n9vDEzZOUJ6xqocB9B/MI97R1q
+         MG91fUK1cZUfQ==
+Date:   Wed, 23 Feb 2022 17:24:12 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Mimi Zohar <zohar@linux.ibm.com>
 Cc:     linux-integrity@vger.kernel.org,
         Stefan Berger <stefanb@linux.ibm.com>,
         linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 23 Feb 2022 20:21:01 -0500
-In-Reply-To: <YhbKYZcWxmi4auJU@sol.localdomain>
+Subject: Re: [PATCH v5 7/8] ima: support fs-verity file digest based version
+ 3 signatures
+Message-ID: <YhbePM/BiRCzL3bn@sol.localdomain>
 References: <20220211214310.119257-1-zohar@linux.ibm.com>
-         <20220211214310.119257-4-zohar@linux.ibm.com>
-         <YhbKYZcWxmi4auJU@sol.localdomain>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-18.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 44v8-ClwRKkbiM19w30QSAMnC5H7WXKk
-X-Proofpoint-ORIG-GUID: 44v8-ClwRKkbiM19w30QSAMnC5H7WXKk
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-02-23_09,2022-02-23_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- suspectscore=0 priorityscore=1501 lowpriorityscore=0 spamscore=0
- mlxscore=0 adultscore=0 bulkscore=0 malwarescore=0 phishscore=0
- impostorscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2201110000 definitions=main-2202240002
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+ <20220211214310.119257-8-zohar@linux.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220211214310.119257-8-zohar@linux.ibm.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -86,49 +57,127 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, 2022-02-23 at 15:59 -0800, Eric Biggers wrote:
-> On Fri, Feb 11, 2022 at 04:43:05PM -0500, Mimi Zohar wrote:
-> > +/**
-> > + * fsverity_get_digest() - get a verity file's digest
-> > + * @inode: inode to get digest of
-> > + * @digest: (out) pointer to the digest
-> > + * @alg: (out) pointer to the hash algorithm enumeration
-> > + *
-> > + * Return the file hash algorithm and digest of an fsverity protected file.
-> > + *
-> > + * Return: 0 on success, -errno on failure
-> > + */
-> > +int fsverity_get_digest(struct inode *inode,
-> > +			u8 digest[FS_VERITY_MAX_DIGEST_SIZE],
-> > +			enum hash_algo *alg)
-> > +{
-> > +	const struct fsverity_info *vi;
-> > +	const struct fsverity_hash_alg *hash_alg;
-> > +	int i;
-> > +
-> > +	vi = fsverity_get_info(inode);
-> > +	if (!vi)
-> > +		return -ENODATA; /* not a verity file */
+On Fri, Feb 11, 2022 at 04:43:09PM -0500, Mimi Zohar wrote:
+> Instead of calculating a regular file hash and verifying the signature
+> stored in the 'security.ima' xattr against the calculated file hash, get
+> fs-verity's file digest and verify the signature (version 3) stored in
+> 'security.ima' against the digest.
 > 
-> Sorry for the slow reviews; I'm taking a look again now.  One question about
-> something I missed earlier: is the file guaranteed to have been opened before
-> this is called?  fsverity_get_info() only returns a non-NULL value if the file
-> has been opened at least once since the inode has been loaded into memory.  If
-> the inode has just been loaded into memory without being opened, for example due
-> to a call to stat(), then fsverity_get_info() will return NULL.
+> The policy rule 'appraise_type=' option is extended to support 'sigv3',
+> which is initiality limited to fs-verity.
 > 
-> If the file is guaranteed to have been opened, then the code is fine, but the
-> comment for fsverity_get_digest() perhaps should be updated to mention this
-> assumption, given that it takes a struct inode rather than a struct file.
+> The fs-verity 'appraise' rules are identified by the 'digest-type=verity'
+> option and require the 'appraise_type=sigv3' option.  The following
+> 'appraise' policy rule requires fsverity file digests.  (The rule may be
+> constrained, for example based on a fsuuid or LSM label.)
 > 
-> If the file is *not* guaranteed to have been opened, then it would be necessary
-> to make fsverity_get_digest() call ensure_verity_info() to set up the
-> fsverity_info.
+> Basic fs-verity policy rule example:
+>   appraise func=BPRM_CHECK digest_type=verity appraise_type=sigv3
+> 
+> Lastly, for IMA to differentiate between the original IMA signature
+> from an fs-verity signature a new 'xattr_type' named IMA_VERITY_DIGSIG
+> is defined.
 
-Yes, fsverity_get_digest() is called as a result of a syscall - open,
-execve, mmap, etc.   
-Refer to the LSM hooks security_bprm_check() and security_mmap_file().
-ima_file_check() is called directly in do_open().
+I'm having a hard time understanding this patch.  Can you please describe the
+motivation for doing things, not just the things themselves, and make sure the
+explanation is understandable to someone who isn't an IMA expert?
 
-Mimi
+> diff --git a/Documentation/ABI/testing/ima_policy b/Documentation/ABI/testing/ima_policy
+> index ff3c906738cb..508053b8dd0a 100644
+> --- a/Documentation/ABI/testing/ima_policy
+> +++ b/Documentation/ABI/testing/ima_policy
+> @@ -47,7 +47,7 @@ Description:
+>  			fgroup:= decimal value
+>  		  lsm:  are LSM specific
+>  		  option:
+> -			appraise_type:= [imasig] [imasig|modsig]
+> +			appraise_type:= [imasig] | [imasig|modsig] | [sigv3]
+>  			appraise_flag:= [check_blacklist]
+>  			Currently, blacklist check is only for files signed with appended
+>  			signature.
+> @@ -153,9 +153,27 @@ Description:
+>  
+>  			appraise func=SETXATTR_CHECK appraise_algos=sha256,sha384,sha512
+>  
+> -		Example of 'measure' rule requiring fs-verity's digests on a
+> -		particular filesystem with indication of type of digest in
+> -		the measurement list.
+> +		Example of a 'measure' rule requiring fs-verity's digests
+> +		with indication of type of digest in the measurement list.
+>  
+>  			measure func=FILE_CHECK digest_type=verity \
+> -				fsuuid=... template=ima-ngv2
+> +				template=ima-ngv2
+> +
+> +		Example of 'measure' and 'appraise' rules requiring fs-verity
+> +		signatures (version 3) stored in security.ima xattr.
+> +
+> +		The 'measure' rule specifies the 'ima-sig' template option,
+> +		which includes the file signature in the measurement list.
+> +
+> +			measure func=BPRM_CHECK digest_type=verity \
+> +				template=ima-sig
+> +
+> +		The 'appraise' rule specifies the type and signature version
+> +		(sigv3) required.
+> +
+> +			appraise func=BPRM_CHECK digest_type=verity \
+> +				appraise_type=sigv3
+> +
+> +		All of these policy rules could, for example, be constrained
+> +		either based on a filesystem's UUID (fsuuid) or based on LSM
+> +		labels.
 
+Is there documentation for what the appraise_type argument means, or does it
+just need to be reverse engineered from the above example?
+
+> + - 'sig': the file signature, based on either the file's/fsverity's digest[1],
+> +   or the EVM portable signature if the file signature is not found;
+
+This sentence doesn't make sense.  How can it be the file signature if the
+"file signature is not found"?
+
+> @@ -303,6 +321,12 @@ static int xattr_verify(enum ima_hooks func, struct integrity_iint_cache *iint,
+>  	case EVM_IMA_XATTR_DIGSIG:
+>  		set_bit(IMA_DIGSIG, &iint->atomic_flags);
+>  
+> +		if (iint->flags & (IMA_DIGSIG_REQUIRED | IMA_VERITY_REQUIRED)) {
+> +			*cause = "verity-signature-required";
+> +			*status = INTEGRITY_FAIL;
+> +			break;
+> +		}
+
+Shouldn't this check whether *both* of these flags are set?
+
+> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+> index 28aca1f9633b..d3006cc22ab1 100644
+> --- a/security/integrity/ima/ima_policy.c
+> +++ b/security/integrity/ima/ima_policy.c
+> @@ -1311,6 +1311,12 @@ static bool ima_validate_rule(struct ima_rule_entry *entry)
+>  	    !(entry->flags & IMA_MODSIG_ALLOWED))
+>  		return false;
+>  
+> +	/* Ensure APPRAISE verity file implies a v3 signature */
+> +	if (entry->action == APPRAISE &&
+> +	    (entry->flags & IMA_VERITY_REQUIRED) &&
+> +	    !(entry->flags & IMA_DIGSIG_REQUIRED))
+> +		return false;
+
+This comment doesn't seem to match the code.
+
+> diff --git a/security/integrity/ima/ima_template_lib.c b/security/integrity/ima/ima_template_lib.c
+> index d370fca04de4..ecbe61c53d40 100644
+> --- a/security/integrity/ima/ima_template_lib.c
+> +++ b/security/integrity/ima/ima_template_lib.c
+> @@ -495,7 +495,8 @@ int ima_eventsig_init(struct ima_event_data *event_data,
+>  {
+>  	struct evm_ima_xattr_data *xattr_value = event_data->xattr_value;
+>  
+> -	if ((!xattr_value) || (xattr_value->type != EVM_IMA_XATTR_DIGSIG))
+> +	if (!xattr_value ||
+> +	    !(xattr_value->type & (EVM_IMA_XATTR_DIGSIG | IMA_VERITY_DIGSIG)))
+>  		return ima_eventevmsig_init(event_data, field_data);
+
+This is OR-ing together values that aren't bit flags.
+
+- Eric
