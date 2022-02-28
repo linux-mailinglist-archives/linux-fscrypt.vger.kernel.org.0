@@ -2,167 +2,159 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 261DE4C5830
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 26 Feb 2022 21:59:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F3244C6393
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 28 Feb 2022 08:06:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229694AbiBZU6R (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sat, 26 Feb 2022 15:58:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45354 "EHLO
+        id S233490AbiB1HGi (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 28 Feb 2022 02:06:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229693AbiBZU6R (ORCPT
+        with ESMTP id S233521AbiB1HGg (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sat, 26 Feb 2022 15:58:17 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 572BC45062;
-        Sat, 26 Feb 2022 12:57:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=KLo/tabVubutfy1mGMWoSKgTckAkWT3y7wjIivTyetY=; b=A8kLm3samn7S1snqeLcd31/QDr
-        htS71j2p+Achh5GNVvqC4mVxn5KBxXEo+X7KV7trwMIKoNUCZUu6/uzOE9ryJfPs2+OsC8Zg7b2ma
-        2id97rmFDAkNKTfGXfNoOE7t1S4J+7ET9wc9uLzAL82TMB/d6XIRrPOPupeISgvLZa4VCYAURb5ux
-        1GGOk6M1H1RbU6D3jp1d/k1CvuKtAzy1cK3SZGAwtm3dHVXXkrpjbzgHg2DeqbrSCMPgoLzGPodZp
-        CVVAaOGWBTO3JHARiPgotlv2N34uIIJYOf0yyoXllsdGZ8Ws2LKkDfYtcgPZ3SmL1ewVbyViag9sv
-        EKmW0bSQ==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nO47w-008XO3-0Z; Sat, 26 Feb 2022 20:57:16 +0000
-Date:   Sat, 26 Feb 2022 12:57:15 -0800
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Meng Tang <tangmeng@uniontech.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     keescook@chromium.org, yzaikin@google.com, guoren@kernel.org,
-        nickhu@andestech.com, green.hu@gmail.com, deanbo422@gmail.com,
-        ebiggers@kernel.org, tytso@mit.edu, wad@chromium.org,
-        john.johansen@canonical.com, jmorris@namei.org, serge@hallyn.com,
-        linux-csky@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] fs/proc: Optimize arrays defined by struct
- ctl_path
-Message-ID: <YhqUK6B1m2tdpOPI@bombadil.infradead.org>
-References: <20220224133217.1755-1-tangmeng@uniontech.com>
+        Mon, 28 Feb 2022 02:06:36 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 854DE673D7;
+        Sun, 27 Feb 2022 23:05:58 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 366BEB80E45;
+        Mon, 28 Feb 2022 07:05:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8451C340F1;
+        Mon, 28 Feb 2022 07:05:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1646031955;
+        bh=J36PJOgeTlo/05NdauMIt29rmiW4FJKTj7+qOHuMfFc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=IumIuW+vVgoP+3OQ4WH1GFqGIjggezNH4IL7hlwsnnKf3QZVnSQX1TO7a4ProyA91
+         d5hKuLGtP7wZaeyqSp+Dxj4Z7IsOz30b/6y0kaYceIm9eZW1A4uGOHuWvErDK0Bh9+
+         Xl6wtXMqkI62g1nyjAd25aWIcoF1VogII6Qq9QGe9etGpzR1GEwGZjfaFzC4NDxGqa
+         IKMgBqoWGdAhT8gxdNtbgntTikva9p/b/9Yv5PwXipfMMExU+BXQA2g+F9Y/+rEMmk
+         T5KezDTKNRn9XOo9TzGXM1jdQoBkhSZFBVz1I3nnJsHAaZp9mKxnbPP6qllOTtJlv1
+         5NPu9TNQT4KGA==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-block@vger.kernel.org, linux-fscrypt@vger.kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com,
+        Gaurav Kashyap <quic_gaurkash@quicinc.com>,
+        Israel Rukshin <israelr@nvidia.com>
+Subject: [PATCH v5 0/3] Support for hardware-wrapped inline encryption keys
+Date:   Sun, 27 Feb 2022 23:05:17 -0800
+Message-Id: <20220228070520.74082-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220224133217.1755-1-tangmeng@uniontech.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Please include Eric and Willy (Willy because he suggested this)
-on future iterations.
+[This patchset is based on v5.17-rc6.  It can also be retrieved from tag
+"wrapped-keys-v5" of https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git]
 
-On Thu, Feb 24, 2022 at 09:32:16PM +0800, Meng Tang wrote:
-> Previously, arrays defined by struct ctl_path is terminated
+This patchset adds block and fscrypt support for hardware-wrapped keys
+when the inline encryption hardware supports them.
 
-Not previousy, as it is today.
+Hardware-wrapped keys are inline encryption keys that are wrapped
+(encrypted) by a key internal to the hardware.  The wrapping key is an
+ephemeral per-boot key, except at initial unlocking time.
+Hardware-wrapped keys can only be unwrapped (decrypted) by the hardware,
+e.g. when a key is programmed into a keyslot.  They are never visible to
+software in raw form, except optionally during key generation.  The
+hardware supports importing keys as well as generating keys itself.
 
-> with an empty one. When we actually only register one ctl_path,
-> we've gone from 8 bytes to 16 bytes.
+This feature protects encryption keys from read-only compromises of
+kernel memory, such as that which can occur during a cold boot attack.
+It does this without limiting the number of keys that can be used, as
+would be the case with solutions that didn't use key wrapping.
 
-This doesn't real well, can you elaborate that this implies we
-are adding an extra 8 bytes by requiring the termination of a
-path to be empty? You can even quantify the effect of this by
-building a allyesconfig kernel, measuring the size before and
-then after your patches to see how many bytes are saved and
-reflecting that on your commit log.
+Hardware supporting this feature is present on recent Qualcomm SoCs
+(SM8350 and later) as well as on the Google Tensor SoC.
 
-Another thing your commit log should mention is that while this
-minor optimization might not be so critical before, as we start
-moving sysctls out from kernel/sysctl.c to their own files we
-are often then also bloating the kernel slightly when doing this.
-This work prevents that.
+This patchset is organized as follows:
 
-> So, I use ARRAY_SIZE() as a boundary condition to optimize it.
-> 
-> Since the original __register_sysctl_paths is only used in
-> fs/proc/proc_sysctl.c, in order to not change the usage of
-> register_sysctl_paths, delete __register_sysctl_paths from
-> include/linux/sysctl.h, change it to __register_sysctl_paths_init
-> in fs/proc/proc_sysctl.c, and modify it with static.
-> The register_sysctl_paths becomes __register_sysctl_paths,
-> and the macro definition is used in include/linux/sysctl.h
-> to expand register_sysctl_paths(path, table) to
-> __register_sysctl_paths(path, ARRAY_SIZE(path), table).
+- Patch 1 adds the block support and documentation, excluding the ioctls
+  needed to get a key ready to be used in the first place.
+
+- Patch 2 adds new block device ioctls for importing, generating, and
+  preparing hardware-wrapped keys.
+
+- Patch 3 adds the fscrypt support and documentation.
+
+For full details, see the individual patches, especially the detailed
+documentation they add to Documentation/block/inline-encryption.rst and
+Documentation/filesystems/fscrypt.rst.
+
+This feature also requires UFS driver changes.  For Qualcomm SoCs, these
+are being worked on at
+https://lore.kernel.org/linux-scsi/20211206225725.77512-1-quic_gaurkash@quicinc.com/T/#u.
+I've verified that this feature works end-to-end on the SM8350 HDK with
+the upstream kernel with these two patchsets applied.  (One caveat is
+that a custom TrustZone image needs to be flashed to the board too; I
+understand that Qualcomm is working on addressing that.)
+
+I've also written xfstests which verify that this feature encrypts files
+correctly.  These tests can currently be found at
+https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/xfstests-dev.git/log/?h=wip-wrapped-keys.
+I'll be sending these tests in a separate patchset.
+
+Changed v4 => v5:
+    - Dropped the RFC tag, now that these patches are actually testable.
+    - Split the BLKCRYPTOCREATEKEY ioctl into BLKCRYPTOIMPORTKEY and
+      BLKCRYPTOGENERATEKEY.  (I'm thinking that these operations are
+      distinct enough that two separate ioctls would be best.)
+    - Added some warning messages in fscrypt_derive_sw_secret().
+    - Rebased onto v5.17-rc6.
+
+Changed v3 => v4:
+    - Rebased onto v5.16-rc1 and dropped a few bits that were upstreamed.
+    - Updated cover letter to link to Gaurav's UFS driver patchset.
+
+Changed v2 => v3:
+    - Dropped some fscrypt cleanups that were applied.
+    - Rebased on top of the latest linux-block and fscrypt branches.
+    - Minor cleanups.
+
+Changed v1 => v2:
+    - Added new ioctls for creating and preparing hardware-wrapped keys.
+    - Rebased onto my patchset which renames blk_keyslot_manager to
+      blk_crypto_profile.
+
+Eric Biggers (3):
+  block: add basic hardware-wrapped key support
+  block: add ioctls to create and prepare hardware-wrapped keys
+  fscrypt: add support for hardware-wrapped keys
+
+ Documentation/block/inline-encryption.rst | 241 +++++++++++++++++++++-
+ Documentation/filesystems/fscrypt.rst     | 154 ++++++++++++--
+ block/blk-crypto-fallback.c               |   5 +-
+ block/blk-crypto-internal.h               |  10 +
+ block/blk-crypto-profile.c                |  97 +++++++++
+ block/blk-crypto.c                        | 190 ++++++++++++++++-
+ block/ioctl.c                             |   5 +
+ drivers/md/dm-table.c                     |   1 +
+ drivers/mmc/host/cqhci-crypto.c           |   2 +
+ drivers/scsi/ufs/ufshcd-crypto.c          |   1 +
+ fs/crypto/fscrypt_private.h               |  72 ++++++-
+ fs/crypto/hkdf.c                          |   4 +-
+ fs/crypto/inline_crypt.c                  |  75 ++++++-
+ fs/crypto/keyring.c                       | 119 ++++++++---
+ fs/crypto/keysetup.c                      |  71 ++++++-
+ fs/crypto/keysetup_v1.c                   |   5 +-
+ fs/crypto/policy.c                        |  11 +-
+ include/linux/blk-crypto-profile.h        |  80 +++++++
+ include/linux/blk-crypto.h                |  70 ++++++-
+ include/uapi/linux/fs.h                   |  26 +++
+ include/uapi/linux/fscrypt.h              |   7 +-
+ 21 files changed, 1153 insertions(+), 93 deletions(-)
 
 
-Please split this up into a 2 patches, one which moves
-__register_sysctl_paths() to fs/proc/proc_sysctl.c and
-make it static. Doing this separately will make the other
-work easier to review.
+base-commit: 7e57714cd0ad2d5bb90e50b5096a0e671dec1ef3
+-- 
+2.35.1
 
-Then your second patch can use do the other stuff.
-
-Add:
-
-Suggested-by: Matthew Wilcox <willy@infradead.org>
-
-> Signed-off-by: Meng Tang <tangmeng@uniontech.com>
-> ---
->  fs/proc/proc_sysctl.c  | 22 +++++++++++++---------
->  include/linux/sysctl.h |  9 ++++-----
->  2 files changed, 17 insertions(+), 14 deletions(-)
-> 
-> diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
-> index 9ecd5c87e8dd..721a8bec63d6 100644
-> --- a/fs/proc/proc_sysctl.c
-> +++ b/fs/proc/proc_sysctl.c
-> @@ -1589,9 +1589,10 @@ static int register_leaf_sysctl_tables(const char *path, char *pos,
->  }
->  
->  /**
-> - * __register_sysctl_paths - register a sysctl table hierarchy
-> + * __register_sysctl_paths_init - register a sysctl table hierarchy
->   * @set: Sysctl tree to register on
->   * @path: The path to the directory the sysctl table is in.
-> + * @ctl_path_num: The numbers(ARRAY_SIZE(path)) of ctl_path
->   * @table: the top-level table structure
->   *
->   * Register a sysctl table hierarchy. @table should be a filled in ctl_table
-> @@ -1599,22 +1600,23 @@ static int register_leaf_sysctl_tables(const char *path, char *pos,
->   *
->   * See __register_sysctl_table for more details.
->   */
-> -struct ctl_table_header *__register_sysctl_paths(
-> +static struct ctl_table_header *__register_sysctl_paths_init(
->  	struct ctl_table_set *set,
-> -	const struct ctl_path *path, struct ctl_table *table)
-> +	const struct ctl_path *path, int ctl_path_num, struct ctl_table *table)
->  {
->  	struct ctl_table *ctl_table_arg = table;
->  	int nr_subheaders = count_subheaders(table);
->  	struct ctl_table_header *header = NULL, **subheaders, **subheader;
->  	const struct ctl_path *component;
->  	char *new_path, *pos;
-> +	int i;
->  
->  	pos = new_path = kmalloc(PATH_MAX, GFP_KERNEL);
->  	if (!new_path)
->  		return NULL;
->  
->  	pos[0] = '\0';
-> -	for (component = path; component->procname; component++) {
-> +	for (component = path, i = 0; component->procname && i < ctl_path_num; component++, i++) {
-
-I'd refer if the bounds check is done first, so i < ctl_path_num before
-the component->procname check.
-
->  		pos = append_path(new_path, pos, component->procname);
->  		if (!pos)
->  			goto out;
-> @@ -1663,20 +1665,22 @@ struct ctl_table_header *__register_sysctl_paths(
->  /**
->   * register_sysctl_paths - register a sysctl table hierarchy
-
-You are changing the routine name below but not here.
-
-  Luis
