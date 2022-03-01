@@ -2,186 +2,264 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1558D4C640D
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 28 Feb 2022 08:49:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27AD54C8A25
+	for <lists+linux-fscrypt@lfdr.de>; Tue,  1 Mar 2022 11:57:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233721AbiB1Htg (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 28 Feb 2022 02:49:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32978 "EHLO
+        id S231287AbiCAK6P (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 1 Mar 2022 05:58:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229664AbiB1Hte (ORCPT
+        with ESMTP id S229759AbiCAK6O (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 28 Feb 2022 02:49:34 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39DE23D1D2;
-        Sun, 27 Feb 2022 23:48:56 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 72162610A4;
-        Mon, 28 Feb 2022 07:48:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2854CC36AE3;
-        Mon, 28 Feb 2022 07:48:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646034535;
-        bh=dNhFGMROSIDvPCnQSBawc2ub7nxSShPfueI2bzsEfMg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CFLzk888PsDt/RXZezLtV6WOwbd+ubyx26G96Nu2AmrslHMmvif2czdBzcFVZgoBC
-         +rudEBCrT0p7dORa3edlu7/mxBhGQIPI35oBF7cDf+GTsVxGztWoWdmBpziCY32aiw
-         K3PcgYg1pO4oxZ0/4QcgN4EatGCrkqGwb8o+0BFPkOw5dtn+0DNVAIT+AvIO3ErALm
-         BncYn7mzzb39C/e7fInqH38Oihi1WsRTo7H3fShyqr0c91Ua2P76nFdwVR1UGx5FHS
-         lSMTQk19ivZj8rQajRMB/keknSdXH3QaVQP/hmgZkl9hhJ8QoUIE5yly+YqC+EqHDR
-         w4P//ZBGHGKLw==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     fstests@vger.kernel.org
-Cc:     linux-block@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        Gaurav Kashyap <quic_gaurkash@quicinc.com>
-Subject: [RFC PATCH 8/8] generic: verify ciphertext with hardware-wrapped keys
-Date:   Sun, 27 Feb 2022 23:47:22 -0800
-Message-Id: <20220228074722.77008-9-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220228074722.77008-1-ebiggers@kernel.org>
-References: <20220228074722.77008-1-ebiggers@kernel.org>
+        Tue, 1 Mar 2022 05:58:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 70B0A2E6AF
+        for <linux-fscrypt@vger.kernel.org>; Tue,  1 Mar 2022 02:57:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1646132252;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rTDnVPnfohntA6gS3N1Dq6PzjjBXnod4G2YetN69TLc=;
+        b=AzAce2a0QJNK9Vk5K5rvmM0zzB7UyVvdrbNW9U/G9P0o+S63tvcGE+tyQ4LI+2p2WJpYjy
+        GpW8T4bq0kDjWjm1+vFsXNOmJs6KxisLKwAZPW7pvlCcV6O731b+XWL8mQ8UuKyLMJL4zX
+        xLNEuozRLrkEuAdbESI7B9iI3OeBjNM=
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
+ [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-600-rMRt3JwsNgOmfSvTCv3vig-1; Tue, 01 Mar 2022 05:57:31 -0500
+X-MC-Unique: rMRt3JwsNgOmfSvTCv3vig-1
+Received: by mail-pj1-f71.google.com with SMTP id u11-20020a17090ae00b00b001bc4cef20f1so8190842pjy.9
+        for <linux-fscrypt@vger.kernel.org>; Tue, 01 Mar 2022 02:57:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=rTDnVPnfohntA6gS3N1Dq6PzjjBXnod4G2YetN69TLc=;
+        b=L17xsrO0g2l7Wgtkjffdu7hKHoVW0oZFfHsuqhRSTipv/OLFgZ4RGi6o7uVD8ZTg84
+         8ntzPCStchtph2hmklNsyVD+O0CpVDyr30EZebbs0OrnKSRAolXipOgzPiIuwTrtdvA/
+         webMvnuPXba0q1JcHRa7bawnrk8GMm79/SWsYgDgS698PtuH8NSXdN0aBDkkyFfbag2v
+         dTy4eQSuws0LJKjie0XcXai/IRy2kH43EgsxIjNHCO8Z7FJX31fae9vV/QmiIA5dX9ym
+         v0vIdDRnXW/DyKynq2aRgdHwhiVi6U1YWAvyKgtBwE3oBVRimMxXQh5+fo/xrJyJ5nZ/
+         P7Vg==
+X-Gm-Message-State: AOAM531Os7JMrkz85Hwi8UWXjFKzhYlEEbgGX4VwSDzqb0YWGGrihBp7
+        EXPfv61ozVL/XLJavWBmnXfILgLjF/A46Hms/Svuc3zF5203U5LZYc2Q88eYYiEVuTIh3u9nTND
+        SGATqZX84cDXzI0RSIBjgaKCM8g==
+X-Received: by 2002:a17:902:f652:b0:150:1af4:85e7 with SMTP id m18-20020a170902f65200b001501af485e7mr23592769plg.105.1646132250199;
+        Tue, 01 Mar 2022 02:57:30 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzryXxvJgntpsPT5nxhAuMq2U6pQNdWfv0XUA5kqCkRICBd7VtJc5RNqg7xCc3bRT7Fez4AKg==
+X-Received: by 2002:a17:902:f652:b0:150:1af4:85e7 with SMTP id m18-20020a170902f65200b001501af485e7mr23592746plg.105.1646132249803;
+        Tue, 01 Mar 2022 02:57:29 -0800 (PST)
+Received: from [10.72.12.114] ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id m6-20020a62f206000000b004e152bc0527sm16454963pfh.153.2022.03.01.02.57.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Mar 2022 02:57:28 -0800 (PST)
+Subject: Re: [RFC PATCH v10 11/48] ceph: decode alternate_name in lease info
+To:     Jeff Layton <jlayton@kernel.org>, ceph-devel@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, idryomov@gmail.com
+References: <20220111191608.88762-1-jlayton@kernel.org>
+ <20220111191608.88762-12-jlayton@kernel.org>
+From:   Xiubo Li <xiubli@redhat.com>
+Message-ID: <ae096a5b-2f2e-c392-e598-59fd82b44734@redhat.com>
+Date:   Tue, 1 Mar 2022 18:57:22 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
+In-Reply-To: <20220111191608.88762-12-jlayton@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Language: en-US
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
 
-Add two tests which verify that encrypted files are encrypted correctly
-when a hardware-wrapped inline encryption key is used.  The two tests
-are identical except that one uses FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64
-and the other uses FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32.  These cover both
-of the settings where hardware-wrapped keys currently may be used.
+On 1/12/22 3:15 AM, Jeff Layton wrote:
+> Ceph is a bit different from local filesystems, in that we don't want
+> to store filenames as raw binary data, since we may also be dealing
+> with clients that don't support fscrypt.
+>
+> We could just base64-encode the encrypted filenames, but that could
+> leave us with filenames longer than NAME_MAX. It turns out that the
+> MDS doesn't care much about filename length, but the clients do.
+>
+> To manage this, we've added a new "alternate name" field that can be
+> optionally added to any dentry that we'll use to store the binary
+> crypttext of the filename if its base64-encoded value will be longer
+> than NAME_MAX. When a dentry has one of these names attached, the MDS
+> will send it along in the lease info, which we can then store for
+> later usage.
+>
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>   fs/ceph/mds_client.c | 40 ++++++++++++++++++++++++++++++----------
+>   fs/ceph/mds_client.h | 11 +++++++----
+>   2 files changed, 37 insertions(+), 14 deletions(-)
+>
+> diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
+> index 34a4f6dbac9d..709f3f654555 100644
+> --- a/fs/ceph/mds_client.c
+> +++ b/fs/ceph/mds_client.c
+> @@ -306,27 +306,44 @@ static int parse_reply_info_dir(void **p, void *end,
+>   
+>   static int parse_reply_info_lease(void **p, void *end,
+>   				  struct ceph_mds_reply_lease **lease,
+> -				  u64 features)
+> +				  u64 features, u32 *altname_len, u8 **altname)
+>   {
+> +	u8 struct_v;
+> +	u32 struct_len;
+> +
+>   	if (features == (u64)-1) {
+> -		u8 struct_v, struct_compat;
+> -		u32 struct_len;
+> +		u8 struct_compat;
+> +
+>   		ceph_decode_8_safe(p, end, struct_v, bad);
+>   		ceph_decode_8_safe(p, end, struct_compat, bad);
+> +
+>   		/* struct_v is expected to be >= 1. we only understand
+>   		 * encoding whose struct_compat == 1. */
+>   		if (!struct_v || struct_compat != 1)
+>   			goto bad;
+> +
+>   		ceph_decode_32_safe(p, end, struct_len, bad);
+> -		ceph_decode_need(p, end, struct_len, bad);
+> -		end = *p + struct_len;
 
-I've verified that these tests run and pass when all prerequisites are
-met, namely:
+Hi Jeff,
 
-- Hardware supporting the feature must be present.  I tested this on the
-  SM8350 HDK (note: this currently requires a custom TrustZone image);
-  this hardware is compatible with both of IV_INO_LBLK_{64,32}.
-- The kernel patches for hardware-wrapped key support must be applied.
-- The filesystem must be ext4 or f2fs.
-- The kernel must have CONFIG_FS_ENCRYPTION_INLINE_CRYPT=y.
-- The fscryptctl program must be available, and must have patches for
-  hardware-wrapped key support applied.
+This is buggy, more detail please see https://tracker.ceph.com/issues/54430.
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- tests/generic/900     | 30 ++++++++++++++++++++++++++++++
- tests/generic/900.out |  6 ++++++
- tests/generic/901     | 30 ++++++++++++++++++++++++++++++
- tests/generic/901.out |  6 ++++++
- 4 files changed, 72 insertions(+)
- create mode 100755 tests/generic/900
- create mode 100644 tests/generic/900.out
- create mode 100755 tests/generic/901
- create mode 100644 tests/generic/901.out
+The following patch will fix it. We should skip the extra memories anyway.
 
-diff --git a/tests/generic/900 b/tests/generic/900
-new file mode 100755
-index 00000000..a021732e
---- /dev/null
-+++ b/tests/generic/900
-@@ -0,0 +1,30 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright 2022 Google LLC
-+#
-+# FS QA Test No. 900
-+#
-+# Verify the ciphertext for encryption policies that use the HW_WRAPPED_KEY and
-+# IV_INO_LBLK_64 flags and that use AES-256-XTS to encrypt file contents and
-+# AES-256-CTS-CBC to encrypt file names.
-+#
-+. ./common/preamble
-+_begin_fstest auto quick encrypt
-+
-+# Import common functions.
-+. ./common/filter
-+. ./common/encrypt
-+
-+# real QA test starts here
-+_supported_fs generic
-+
-+# Hardware-wrapped keys require the inlinecrypt mount option.
-+_require_scratch_inlinecrypt
-+export MOUNT_OPTIONS="$MOUNT_OPTIONS -o inlinecrypt"
-+
-+_verify_ciphertext_for_encryption_policy AES-256-XTS AES-256-CTS-CBC \
-+	v2 iv_ino_lblk_64 hw_wrapped_key
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/generic/900.out b/tests/generic/900.out
-new file mode 100644
-index 00000000..9edc012c
---- /dev/null
-+++ b/tests/generic/900.out
-@@ -0,0 +1,6 @@
-+QA output created by 900
-+
-+Verifying ciphertext with parameters:
-+	contents_encryption_mode: AES-256-XTS
-+	filenames_encryption_mode: AES-256-CTS-CBC
-+	options: v2 iv_ino_lblk_64 hw_wrapped_key
-diff --git a/tests/generic/901 b/tests/generic/901
-new file mode 100755
-index 00000000..dd5c6e5f
---- /dev/null
-+++ b/tests/generic/901
-@@ -0,0 +1,30 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright 2022 Google LLC
-+#
-+# FS QA Test No. 901
-+#
-+# Verify the ciphertext for encryption policies that use the HW_WRAPPED_KEY and
-+# IV_INO_LBLK_32 flags and that use AES-256-XTS to encrypt file contents and
-+# AES-256-CTS-CBC to encrypt file names.
-+#
-+. ./common/preamble
-+_begin_fstest auto quick encrypt
-+
-+# Import common functions.
-+. ./common/filter
-+. ./common/encrypt
-+
-+# real QA test starts here
-+_supported_fs generic
-+
-+# Hardware-wrapped keys require the inlinecrypt mount option.
-+_require_scratch_inlinecrypt
-+export MOUNT_OPTIONS="$MOUNT_OPTIONS -o inlinecrypt"
-+
-+_verify_ciphertext_for_encryption_policy AES-256-XTS AES-256-CTS-CBC \
-+	v2 iv_ino_lblk_32 hw_wrapped_key
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/generic/901.out b/tests/generic/901.out
-new file mode 100644
-index 00000000..2f928465
---- /dev/null
-+++ b/tests/generic/901.out
-@@ -0,0 +1,6 @@
-+QA output created by 901
-+
-+Verifying ciphertext with parameters:
-+	contents_encryption_mode: AES-256-XTS
-+	filenames_encryption_mode: AES-256-CTS-CBC
-+	options: v2 iv_ino_lblk_32 hw_wrapped_key
--- 
-2.35.1
+
+diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
+index 94b4c6508044..3dea96df4769 100644
+--- a/fs/ceph/mds_client.c
++++ b/fs/ceph/mds_client.c
+@@ -326,6 +326,7 @@ static int parse_reply_info_lease(void **p, void *end,
+                         goto bad;
+
+                 ceph_decode_32_safe(p, end, struct_len, bad);
++               end = *p + struct_len;
+         } else {
+                 struct_len = sizeof(**lease);
+                 *altname_len = 0;
+@@ -346,6 +347,7 @@ static int parse_reply_info_lease(void **p, void *end,
+                         *altname = NULL;
+                         *altname_len = 0;
+                 }
++               *p = end;
+         }
+         return 0;
+  bad:
+
+
+
+> +	} else {
+> +		struct_len = sizeof(**lease);
+> +		*altname_len = 0;
+> +		*altname = NULL;
+>   	}
+>   
+> -	ceph_decode_need(p, end, sizeof(**lease), bad);
+> +	ceph_decode_need(p, end, struct_len, bad);
+>   	*lease = *p;
+>   	*p += sizeof(**lease);
+> -	if (features == (u64)-1)
+> -		*p = end;
+> +
+> +	if (features == (u64)-1) {
+> +		if (struct_v >= 2) {
+> +			ceph_decode_32_safe(p, end, *altname_len, bad);
+> +			ceph_decode_need(p, end, *altname_len, bad);
+> +			*altname = *p;
+> +			*p += *altname_len;
+> +		} else {
+> +			*altname = NULL;
+> +			*altname_len = 0;
+> +		}
+> +	}
+>   	return 0;
+>   bad:
+>   	return -EIO;
+> @@ -356,7 +373,8 @@ static int parse_reply_info_trace(void **p, void *end,
+>   		info->dname = *p;
+>   		*p += info->dname_len;
+>   
+> -		err = parse_reply_info_lease(p, end, &info->dlease, features);
+> +		err = parse_reply_info_lease(p, end, &info->dlease, features,
+> +					     &info->altname_len, &info->altname);
+>   		if (err < 0)
+>   			goto out_bad;
+>   	}
+> @@ -423,9 +441,11 @@ static int parse_reply_info_readdir(void **p, void *end,
+>   		dout("parsed dir dname '%.*s'\n", rde->name_len, rde->name);
+>   
+>   		/* dentry lease */
+> -		err = parse_reply_info_lease(p, end, &rde->lease, features);
+> +		err = parse_reply_info_lease(p, end, &rde->lease, features,
+> +					     &rde->altname_len, &rde->altname);
+>   		if (err)
+>   			goto out_bad;
+> +
+>   		/* inode */
+>   		err = parse_reply_info_in(p, end, &rde->inode, features);
+>   		if (err < 0)
+> diff --git a/fs/ceph/mds_client.h b/fs/ceph/mds_client.h
+> index e7d2c8a1b9c1..128901a847af 100644
+> --- a/fs/ceph/mds_client.h
+> +++ b/fs/ceph/mds_client.h
+> @@ -29,8 +29,8 @@ enum ceph_feature_type {
+>   	CEPHFS_FEATURE_MULTI_RECONNECT,
+>   	CEPHFS_FEATURE_DELEG_INO,
+>   	CEPHFS_FEATURE_METRIC_COLLECT,
+> -
+> -	CEPHFS_FEATURE_MAX = CEPHFS_FEATURE_METRIC_COLLECT,
+> +	CEPHFS_FEATURE_ALTERNATE_NAME,
+> +	CEPHFS_FEATURE_MAX = CEPHFS_FEATURE_ALTERNATE_NAME,
+>   };
+>   
+>   /*
+> @@ -45,8 +45,7 @@ enum ceph_feature_type {
+>   	CEPHFS_FEATURE_MULTI_RECONNECT,		\
+>   	CEPHFS_FEATURE_DELEG_INO,		\
+>   	CEPHFS_FEATURE_METRIC_COLLECT,		\
+> -						\
+> -	CEPHFS_FEATURE_MAX,			\
+> +	CEPHFS_FEATURE_ALTERNATE_NAME,		\
+>   }
+>   #define CEPHFS_FEATURES_CLIENT_REQUIRED {}
+>   
+> @@ -98,7 +97,9 @@ struct ceph_mds_reply_info_in {
+>   
+>   struct ceph_mds_reply_dir_entry {
+>   	char                          *name;
+> +	u8			      *altname;
+>   	u32                           name_len;
+> +	u32			      altname_len;
+>   	struct ceph_mds_reply_lease   *lease;
+>   	struct ceph_mds_reply_info_in inode;
+>   	loff_t			      offset;
+> @@ -117,7 +118,9 @@ struct ceph_mds_reply_info_parsed {
+>   	struct ceph_mds_reply_info_in diri, targeti;
+>   	struct ceph_mds_reply_dirfrag *dirfrag;
+>   	char                          *dname;
+> +	u8			      *altname;
+>   	u32                           dname_len;
+> +	u32                           altname_len;
+>   	struct ceph_mds_reply_lease   *dlease;
+>   
+>   	/* extra */
 
