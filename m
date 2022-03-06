@@ -2,83 +2,76 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37C0E4CCB2A
-	for <lists+linux-fscrypt@lfdr.de>; Fri,  4 Mar 2022 02:07:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 062094CE99D
+	for <lists+linux-fscrypt@lfdr.de>; Sun,  6 Mar 2022 07:51:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231954AbiCDBI3 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 3 Mar 2022 20:08:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41300 "EHLO
+        id S233035AbiCFGvt (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sun, 6 Mar 2022 01:51:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235576AbiCDBI1 (ORCPT
+        with ESMTP id S233039AbiCFGvo (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 3 Mar 2022 20:08:27 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6965F1EC4B;
-        Thu,  3 Mar 2022 17:07:40 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B9F0FB826D4;
-        Fri,  4 Mar 2022 01:07:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32781C004E1;
-        Fri,  4 Mar 2022 01:07:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646356057;
-        bh=3mi7VxXpLHb5nSJP4Fl9rRCoWjt0fOGvcpAtnS+zlq0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SBRmJtsLeS4H3LTufeok6l2thSvNhjLSZ9Ew1WA/am/rFGLUWlyfeJFJCfV/YSLB6
-         bQItQUclIp2+767l2tLEmfu0IfMcm2da/qOzDpKWMETA/zYD8VGenf7iyV5mXaHtSv
-         yDw6WmWl4VtDwByvDVbG9DonEdEQ/ECVuns96yiQwSR1ATgrwr4wCmGMr5NW625aBE
-         XiT9HzQ3cKE8SS+kuHhi+xRhZ85yVaPMw1oJkhOK9l+cocyyqOMm/wA9KSONmhBEee
-         XPSNveb4J1euzOTOslg/FUhbm2GUsBe0N8LdHVe/q5n53c2ciGDQf+qngwkVABSnjz
-         SPVIgosHLj//A==
-Date:   Fri, 4 Mar 2022 01:07:35 +0000
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     linux-block@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com,
-        Gaurav Kashyap <quic_gaurkash@quicinc.com>,
-        Israel Rukshin <israelr@nvidia.com>
-Subject: Re: [PATCH v5 1/3] block: add basic hardware-wrapped key support
-Message-ID: <YiFmV+WXY+mKsM83@gmail.com>
-References: <20220228070520.74082-1-ebiggers@kernel.org>
- <20220228070520.74082-2-ebiggers@kernel.org>
- <ac499ff9-eeb4-4f25-bb59-3f37477190ed@acm.org>
+        Sun, 6 Mar 2022 01:51:44 -0500
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B927755756
+        for <linux-fscrypt@vger.kernel.org>; Sat,  5 Mar 2022 22:50:50 -0800 (PST)
+Received: by mail-lj1-x234.google.com with SMTP id q5so1600442ljb.11
+        for <linux-fscrypt@vger.kernel.org>; Sat, 05 Mar 2022 22:50:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=VaaSLAJ+hgNGNq49WyPsh3ndDLo+mnrYcswrOHpJSv8=;
+        b=KDgAx1nMZI4VA0728iAuqALj69hyn7X0WLLUiz2m+OH09NDtWJqkn0K0IjhaqXccDL
+         nYA9IS56U+BvEYDp5ZuYOTDJ28DkbGQXOo4nCoFRXwOq8btCUGBKve+nLdvXGAtQGfZd
+         8/3HmQyIohZytZNIAaZ2YSJ+VGfF2cuAbX+92kqJIy7dPjcCYPV+qxcIVHj5OJkNioe8
+         RnnPJV63I7FofbcYlKCR7cawwHR+Gyj/OksLFoNh7LOBENUnMHRRrWfgS+R5N0DbQgRd
+         FM7OvtlHYW5haJ9bCovh/xFv8pj40s/F/HFWyLhlvxnDTkjGlvvz7xTkeBicCtgptiHh
+         fIkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=VaaSLAJ+hgNGNq49WyPsh3ndDLo+mnrYcswrOHpJSv8=;
+        b=S2LP87gIYTzXvQ4s2b6u5JVMni9B8dlU3hggsGTkAxgVzIJUI3fZDm48QCX56mlL3x
+         HAw6GzbToDUVBLSDE1yBy9VsdkFMGAaeAIZ1euouNkN54zwGbRyX8gyf9f/vPYNw4VOq
+         jC2VSyQArBCasufxRvcrI5OIEBbhXYWRcgYhSs8UywZNWjpUMpliLpG+Cc+i91Hww2gH
+         ht3CNxCNf/kwOxDpuSOnSxiCogDbRUV1nkQik1e3RQupYm7ojj2gLwyp0tHVww20+VOu
+         HTe+mMKih1XlhetUNKBX8kagrt4vQfFkMy01VDE7ad6CrkLaWzVAav5L2g+tYF3yR00Z
+         MVBQ==
+X-Gm-Message-State: AOAM531BH4oYhm3ZVszscuj3kWCU1g7107vQwv5e9vksE3DpNTdqdeJ3
+        mnI21E5pLEht2GcRwiJ3eaJPAxi+oP43BCJ3bAI=
+X-Google-Smtp-Source: ABdhPJzq04i8VJyC6uwySEx5tzgrtxCg/XL0hqdBTWFWm66/zQAuy3m2ubrZV75jrYUP9jvmG0PdhfRUhLuebg8/B7w=
+X-Received: by 2002:a2e:94c7:0:b0:247:de4e:e9bc with SMTP id
+ r7-20020a2e94c7000000b00247de4ee9bcmr2397951ljh.397.1646549448778; Sat, 05
+ Mar 2022 22:50:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ac499ff9-eeb4-4f25-bb59-3f37477190ed@acm.org>
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Reply-To: mrs.susanelwoodhara17@gmail.com
+Sender: mrs.arawyann@gmail.com
+Received: by 2002:ab3:7d89:0:0:0:0:0 with HTTP; Sat, 5 Mar 2022 22:50:48 -0800 (PST)
+From:   Mrs Susan Elwood Hara <mrs.susanelwoodhara17@gmail.com>
+Date:   Sun, 6 Mar 2022 06:50:48 +0000
+X-Google-Sender-Auth: NOWRSnt_sskMD3s295a30bcHvEs
+Message-ID: <CACppo47TD9J4Sy+vaJu1wXHqd88WqFwMNn6OdkY1khwXu3TuFw@mail.gmail.com>
+Subject: GOD BLESS YOU AS YOU REPLY URGENTLY
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=4.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        SUBJ_ALL_CAPS,T_HK_NAME_FM_MR_MRS,T_SCC_BODY_TEXT_LINE,UNDISC_MONEY
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, Mar 03, 2022 at 04:53:56PM -0800, Bart Van Assche wrote:
-> On 2/27/22 23:05, Eric Biggers wrote:
-> > @@ -68,7 +71,10 @@ static int __init bio_crypt_ctx_init(void)
-> >   	/* Sanity check that no algorithm exceeds the defined limits. */
-> >   	for (i = 0; i < BLK_ENCRYPTION_MODE_MAX; i++) {
-> > -		BUG_ON(blk_crypto_modes[i].keysize > BLK_CRYPTO_MAX_KEY_SIZE);
-> > +		BUG_ON(blk_crypto_modes[i].keysize >
-> > +		       BLK_CRYPTO_MAX_STANDARD_KEY_SIZE);
-> > +		BUG_ON(blk_crypto_modes[i].security_strength >
-> > +		       blk_crypto_modes[i].keysize);
-> >   		BUG_ON(blk_crypto_modes[i].ivsize > BLK_CRYPTO_MAX_IV_SIZE);
-> >   	}
-> 
-> Does the following advice from Linus Torvalds apply to the above code:
-> "because there is NO EXCUSE to knowingly kill the kernel"? See also
-> https://lkml.org/lkml/2016/10/4/1.
+GOD BLESS YOU AS YOU REPLY URGENTLY
 
-These are boot time checks, so the advice doesn't apply.  If the code is buggy
-here, then kernels with CONFIG_BLK_INLINE_ENCRYPTION enabled won't boot.  I
-would prefer compile-time checks, of course, but that isn't possible here.  This
-is the next best thing.
-
-- Eric
+ Hello Dear,
+Greetings, I am contacting you regarding an important information i
+have for you please reply to confirm your email address and for more
+details Thanks
+Regards
+Mrs Susan Elwood Hara.
