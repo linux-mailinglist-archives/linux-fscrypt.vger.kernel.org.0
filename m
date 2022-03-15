@@ -2,102 +2,137 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 662B34D9280
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 15 Mar 2022 03:16:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A80A94DA4F7
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 15 Mar 2022 23:02:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344421AbiCOCRq (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 14 Mar 2022 22:17:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41746 "EHLO
+        id S1348289AbiCOWDU (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 15 Mar 2022 18:03:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237208AbiCOCRp (ORCPT
+        with ESMTP id S234246AbiCOWDT (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 14 Mar 2022 22:17:45 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E80BD3ED22;
-        Mon, 14 Mar 2022 19:16:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 74C35B810DC;
-        Tue, 15 Mar 2022 02:16:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06445C340E9;
-        Tue, 15 Mar 2022 02:16:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1647310592;
-        bh=N3l5h0HSnJSFnf5tii3zND3WVlw885lYcYbglKJCG6o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NIYvAaB01YTiL7ROHsjbljX6002DqyJqFOv/GTzHZwB97kqeZeW1n9Dkkjlx0qNGr
-         Ku75EjZne9Rmt8heugBzn5s3T46GBSOUWGas4L/Exfgjr00RM1KHKm+Azu7TxlapIy
-         6VBF+oq4oTE0oD0MmvXoveliAre0xSfifpefW6Bnki7OWaR103NQteJjATnitr2yXz
-         noa94jCFi1IS63YFQ3IfGUcfE9f7nwTmAuKiPF8BY4Yd/TfmTlQ4E1N7cNIpnaomTg
-         A3McoEZGpXFVXkQNRJstfy8XRFFeZS0sqO3MUMwmx3idkrRwzyK8D3A2TI44Lfv67c
-         KR0gQ4GFPK+TA==
-Date:   Tue, 15 Mar 2022 02:16:30 +0000
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Boris Burkov <boris@bur.io>
+        Tue, 15 Mar 2022 18:03:19 -0400
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35C795C35C;
+        Tue, 15 Mar 2022 15:02:07 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id CF01F5C0172;
+        Tue, 15 Mar 2022 18:02:04 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Tue, 15 Mar 2022 18:02:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+        :content-type:date:date:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to; s=fm1; bh=HXYeKiY8AjlIM21cM6NmnccS0Cc2oqXlPcs9mm
+        1Ec+A=; b=JzBkOi1/XFOVPcnGs1MOf5z5a6Ms+nbx3+LdhmipPcTT7XftpZZMWx
+        Svqx1YOHguilCyMydw5IZnkBc0uUDYXS4mKrE1mdHnONgpUczhjaKmVidSKX6/GL
+        f+GcWglfoDXRC5aOT4zmFj5+ZzgXPE8mWeIpcYEpLEU0B5pXAafaRzquLSGkP0dt
+        sFRVvoCfYt4raeMFdK6Hw5nK8bAh9vlBaz/xTGLSNFQJDwMtPktV/vBh8BwI/5ga
+        vce+CHJp+RCqf7A0HLNDL14ohdDf5MWGU64rE6/VNxojCzF/D46rAm4KZLleMa+z
+        dB3VpC8ITqNFgUvDq0WBh5fQ9kISBT1w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=HXYeKiY8AjlIM21cM
+        6NmnccS0Cc2oqXlPcs9mm1Ec+A=; b=jyZb3ISkEwgLKN+uHVKhXTL5dWuj0rMZR
+        rRC1uSLqcgZUC2asGAwp/eOiZklie+5sx244W1IXpCg9oPnTiV6JxKn6VZA0U1rY
+        kTLIaoKb2rJO0yo5IoUj794oXJcut5Va16In828gIm50Bf/y+451J0BBUlS5o7Ax
+        +bZNvvpyHj5ftFGdusQtlljUSXpGghcSBecxB+/r2G3WWJcMwknbYRUDSzFCZv2+
+        htxrPpf4vjmZaWGSnltdrlYLgUhURlazVJIB81xuTj0bmRJufmeAAeV1LHF+u/J+
+        8gsEzg3HL+fNYOWq3UlkhXRfH6ROVTbgklDnJw+ZkmHy4Qeq8D6Tg==
+X-ME-Sender: <xms:3AwxYkS3gLgNNranUUx-F5QfheidtUJAvqtIovTx5uC0NzW0XNRAag>
+    <xme:3AwxYhw8G2YoPEUz_bkihLlEv2rHMvN7FZYzyRiVwkbIibQWKEYitscvLMr7ocD97
+    nCyGobc7DYdAAh0LIs>
+X-ME-Received: <xmr:3AwxYh0Yypr7wzTQGo5LqRLvrHHSSo1HA_UGClL_d7v5wB1R-1m94pUPK8rV6Z34r7BFpBVAqx6uloy0XRPqS9yXFKZMZA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrudeftddgudehhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
+    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
+    ehudevleekieetleevieeuhfduhedtiefgheekfeefgeelvdeuveeggfduueevfeenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhsse
+    gsuhhrrdhioh
+X-ME-Proxy: <xmx:3AwxYoC-VR95lSfejQWut4CbqpqLdu1_EEc5fF4tM6-ZqZx5J0GMeA>
+    <xmx:3AwxYtjg7DoIpG-jt7DtxBHiGdXiuJNhTK_t6W8LaxSJFGGsZF8RhQ>
+    <xmx:3AwxYkpo5ADx5inKrXq3GJ9OdZHHZEDmIe3s86FrPG1imwanU5C5Vg>
+    <xmx:3AwxYivNkeivJhJ10sIFZAAli0Di8d4G2qQoDGenvZIummIFrOmpvA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 15 Mar 2022 18:02:04 -0400 (EDT)
+Date:   Tue, 15 Mar 2022 15:02:02 -0700
+From:   Boris Burkov <boris@bur.io>
+To:     Eric Biggers <ebiggers@kernel.org>
 Cc:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v6 4/4] generic: test fs-verity EFBIG scenarios
-Message-ID: <Yi/2/isOZMX3Riww@gmail.com>
+Subject: Re: [PATCH v6 1/4] btrfs: test btrfs specific fsverity corruption
+Message-ID: <YjEM2k/UFOLar3ix@zen>
 References: <cover.1644883592.git.boris@bur.io>
- <f8189930d20888a7ac95b7fc2fbb0d522e8851fc.1644883592.git.boris@bur.io>
+ <de58122e6cb1712fa5304f0759b40b36351dfc36.1644883592.git.boris@bur.io>
+ <Yi/Wq/e7qv0jcQIb@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f8189930d20888a7ac95b7fc2fbb0d522e8851fc.1644883592.git.boris@bur.io>
-X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <Yi/Wq/e7qv0jcQIb@gmail.com>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Feb 14, 2022 at 04:09:58PM -0800, Boris Burkov wrote:
-> diff --git a/tests/generic/690 b/tests/generic/690
-> new file mode 100755
-> index 00000000..77906dd8
-> --- /dev/null
-> +++ b/tests/generic/690
-> @@ -0,0 +1,66 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2021 Facebook, Inc.  All Rights Reserved.
-> +#
-> +# FS QA Test 690
-> +#
-> +# fs-verity requires the filesystem to decide how it stores the Merkle tree,
-> +# which can be quite large.
-> +# It is convenient to treat the Merkle tree as past EOF, and ext4, f2fs, and
-> +# btrfs do so in at least some fashion. This leads to an edge case where a
-> +# large file can be under the file system file size limit, but trigger EFBIG
-> +# on enabling fs-verity. Test enabling verity on some large files to exercise
-> +# EFBIG logic for filesystems with fs-verity specific limits.
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto quick verity
-> +
-> +
-> +# Import common functions.
-> +. ./common/filter
-> +. ./common/verity
-> +
-> +# real QA test starts here
-> +_supported_fs generic
-> +_require_test
-> +_require_math
-> +_require_scratch_verity
-> +_require_fsverity_max_file_size_limit
-> +_require_scratch_nocheck
+On Mon, Mar 14, 2022 at 11:58:35PM +0000, Eric Biggers wrote:
+> On Mon, Feb 14, 2022 at 04:09:55PM -0800, Boris Burkov wrote:
+> > diff --git a/common/verity b/common/verity
+> > index 38eea157..eec8ae72 100644
+> > --- a/common/verity
+> > +++ b/common/verity
+> > @@ -3,6 +3,8 @@
+> >  #
+> >  # Functions for setting up and testing fs-verity
+> >  
+> > +. common/btrfs
+> 
+> Why does common/btrfs need to be included here?
 
-Why is _require_scratch_nocheck() needed?  _require_scratch_verity() already
-does _require_scratch(), and I don't see why skipping fsck would be needed.
+To get _require_btrfs_corrupt_block. I can move that in here, as it
+doesn't have any non-verity use case in btrfs tests yet. But it should
+probably stay a named function rather than get rolled into
+require_fsverity_corruption if I make btrfs/290 use it directly (which I
+think is a good suggestion).
 
-> +# have to go back by 4096 from max to not hit the fsverity MAX_LEVELS check.
-> +truncate -s $max_sz $fsv_file
+> 
+> > +# Check for userspace tools needed to corrupt verity data or metadata.
+> > +_require_fsverity_corruption()
+> > +{
+> > +	_require_xfs_io_command "fiemap"
+> > +	if [ $FSTYP == "btrfs" ]; then
+> > +		_require_btrfs_corrupt_block
+> > +	fi
+> > +}
+> 
+> Which function(s), specifically, is this function a prerequisite for?  Based on
+> the name, it sounds like it would be a prerequisite for calling
+> _fsv_scratch_corrupt_bytes() and _fsv_scratch_corrupt_merkle_tree().  But that's
+> apparently not the case, seeing as generic/576 calls
+> _fsv_scratch_corrupt_bytes() but doesn't call _require_fsverity_corruption(),
+> and your new test btrfs/290 calls _require_fsverity_corruption() but doesn't
+> call either _fsv_scratch_corrupt_bytes() or _fsv_scratch_corrupt_merkle_tree().
+> 
+> So, the purpose of this function is unclear.
+> 
+> Perhaps it should be a prerequisite for all _fsv_scratch_corrupt*() functions,
+> and btrfs/290 should check for btrfs-corrupt-block directly?
 
-The above comment should be removed.
+My intent was for it to be a requirement for _fsv_scratch_corrupt_bytes
+and _fsv_scratch_corrupt_merkle_tree, but I missed 576, since I was
+testing with btrfs and that doesn't have transparent encryption. Apologies
+for missing that test. I'll make _require_fsverity_corruption 1:1 with
+_fsv_scratch_corrupt_bytes. However, I believe I still need
+btrfs_corrupt_block here, since that is part of the "generic" corruption
+for btrfs.
 
-- Eric
+> 
+> - Eric
