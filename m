@@ -2,49 +2,49 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 766BD4DB709
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 16 Mar 2022 18:21:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 951564DB71D
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 16 Mar 2022 18:27:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352867AbiCPRWg (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 16 Mar 2022 13:22:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42206 "EHLO
+        id S1357566AbiCPR2S (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 16 Mar 2022 13:28:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350025AbiCPRWf (ORCPT
+        with ESMTP id S1357554AbiCPR2Q (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 16 Mar 2022 13:22:35 -0400
+        Wed, 16 Mar 2022 13:28:16 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 219565AA6D;
-        Wed, 16 Mar 2022 10:21:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E124DF71;
+        Wed, 16 Mar 2022 10:27:02 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B8BDA61830;
-        Wed, 16 Mar 2022 17:21:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CEDAC340EE;
-        Wed, 16 Mar 2022 17:21:20 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B375F617D1;
+        Wed, 16 Mar 2022 17:27:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C3D1C340E9;
+        Wed, 16 Mar 2022 17:27:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1647451280;
-        bh=BBu3AB8sHT8mVAZZC+EZVdPzsQ18ecXO9gqk4BKyoYA=;
+        s=k20201202; t=1647451621;
+        bh=gMbBz6NRybOeWT5Zv2GvjYSD5c+i/BJe3Gy1cMKjdYY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pfTNxFQGn3LN/aHxJjTMGWQ5Kf9FE4/qIDzRLJrhA/ZhOqwUQLoT6zF6GItLM67XU
-         t+phHK+elXG1GqCQE8iE9b9ZgulhRC2EM80jr1KU7Rc+4yXtTa2J+g4qVHLhPSNPvQ
-         mOuLfph6n5+31+izAVWQ89xlcvXP65fKupx4YXkByXKTJIpTAQPPUzDnWt3NkucumO
-         OdaAW/G5YRn88MkSgNTkJ80/vIeEhk26dMWoO9iDi2spjUOetDJ/DGF4+gp3mr2SKv
-         iRQ4pPOFKV7J6+/WHnpnKBR62sClkXn8A1cqcIrLI2VbXbUefqQll+ja5RqxoFrOcE
-         +e79fQxVZxw8A==
-Date:   Wed, 16 Mar 2022 17:21:18 +0000
+        b=laBluiYTkga0Wd2e6I+uxbZkBqCSs21lXPLvUgLcfHAIIS0hCyB/iMPnA9aT6UMpH
+         xvr3sBheJ8HfMMHu46a7f8jl1kWv+dp2bFXoI5MZyB3W3IUU3MgzxEl5d+xTZq7sdM
+         J455hh+kX9QTZPRLW2XTUitte7CkyyNbK/BehvNSGDMP3N7A2ce5g9+oJjFV95k4jF
+         v2nm3MpmpqsyJkMWM4nTuq3V21ns5xaEZSTtQgvABKCBBQC3tN43M4e2/sFVFAPytA
+         vkOg+i7gHymOQcq2nSF4HA3DhzRt95ztAYrYPTAwpw6BjQamSf7BADpzge6uNAT1bQ
+         hv6wKhmWchI+A==
+Date:   Wed, 16 Mar 2022 17:26:59 +0000
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     Boris Burkov <boris@bur.io>
 Cc:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v7 1/5] verity: require corruption functionality
-Message-ID: <YjIcjiHLwTENvqZe@gmail.com>
+Subject: Re: [PATCH v7 2/5] btrfs: test btrfs specific fsverity corruption
+Message-ID: <YjId47Ta24xoEbW/@gmail.com>
 References: <cover.1647382272.git.boris@bur.io>
- <73ea99df928e64baf172fa38a0648fb21494e864.1647382272.git.boris@bur.io>
+ <a860be32471a885292c2f6f3136cac40bebdbf05.1647382272.git.boris@bur.io>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <73ea99df928e64baf172fa38a0648fb21494e864.1647382272.git.boris@bur.io>
+In-Reply-To: <a860be32471a885292c2f6f3136cac40bebdbf05.1647382272.git.boris@bur.io>
 X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -55,62 +55,102 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, Mar 15, 2022 at 03:15:57PM -0700, Boris Burkov wrote:
-> Corrupting ext4 and f2fs relies on xfs_io fiemap. Btrfs corruption
-> testing will rely on a btrfs specific corruption utility. Add the
-> ability to require corruption functionality to make this properly
-> modular. To start, just check for fiemap, as that is needed
-> universally for _fsv_scratch_corrupt_bytes.
+On Tue, Mar 15, 2022 at 03:15:58PM -0700, Boris Burkov wrote:
+> There are some btrfs specific fsverity scenarios that don't map
+> neatly onto the tests in generic/574 like holes, inline extents,
+> and preallocated extents. Cover those in a btrfs specific test.
+> 
+> This test relies on the btrfs implementation of fsverity in the patch:
+> btrfs: initial fsverity support
+> 
+> and on btrfs-corrupt-block for corruption in the patches titled:
+> btrfs-progs: corrupt generic item data with btrfs-corrupt-block
+> btrfs-progs: expand corrupt_file_extent in btrfs-corrupt-block
 > 
 > Signed-off-by: Boris Burkov <boris@bur.io>
 > ---
->  common/verity     | 6 ++++++
->  tests/generic/574 | 1 +
->  tests/generic/576 | 1 +
->  3 files changed, 8 insertions(+)
+>  common/btrfs        |   5 ++
+>  common/config       |   1 +
+>  common/verity       |  14 ++++
+>  tests/btrfs/290     | 168 ++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/290.out |  25 +++++++
+>  5 files changed, 213 insertions(+)
+>  create mode 100755 tests/btrfs/290
+>  create mode 100644 tests/btrfs/290.out
 > 
+> diff --git a/common/btrfs b/common/btrfs
+> index 670d9d1f..c3a7dc6e 100644
+> --- a/common/btrfs
+> +++ b/common/btrfs
+> @@ -511,3 +511,8 @@ _btrfs_metadump()
+>  	$BTRFS_IMAGE_PROG "$device" "$dumpfile"
+>  	[ -n "$DUMP_COMPRESSOR" ] && $DUMP_COMPRESSOR -f "$dumpfile" &> /dev/null
+>  }
+> +
+> +_require_btrfs_corrupt_block()
+> +{
+> +	_require_command "$BTRFS_CORRUPT_BLOCK_PROG" btrfs-corrupt-block
+> +}
+> diff --git a/common/config b/common/config
+> index 479e50d1..67bdf912 100644
+> --- a/common/config
+> +++ b/common/config
+> @@ -296,6 +296,7 @@ export BTRFS_UTIL_PROG=$(type -P btrfs)
+>  export BTRFS_SHOW_SUPER_PROG=$(type -P btrfs-show-super)
+>  export BTRFS_CONVERT_PROG=$(type -P btrfs-convert)
+>  export BTRFS_TUNE_PROG=$(type -P btrfstune)
+> +export BTRFS_CORRUPT_BLOCK_PROG=$(type -P btrfs-corrupt-block)
+>  export XFS_FSR_PROG=$(type -P xfs_fsr)
+>  export MKFS_NFS_PROG="false"
+>  export MKFS_CIFS_PROG="false"
 > diff --git a/common/verity b/common/verity
-> index 38eea157..1afe4a82 100644
+> index 1afe4a82..77766fca 100644
 > --- a/common/verity
 > +++ b/common/verity
-> @@ -141,6 +141,12 @@ _require_fsverity_dump_metadata()
->  	_fail "Unexpected output from 'fsverity dump_metadata': $(<"$tmpfile")"
+> @@ -3,6 +3,8 @@
+>  #
+>  # Functions for setting up and testing fs-verity
+>  
+> +. common/btrfs
+> +
+>  _require_scratch_verity()
+>  {
+>  	_require_scratch
+> @@ -48,6 +50,15 @@ _require_scratch_verity()
+>  	FSV_BLOCK_SIZE=$(get_page_size)
 >  }
 >  
 > +# Check for userspace tools needed to corrupt verity data or metadata.
 > +_require_fsverity_corruption()
 > +{
-> +       _require_xfs_io_command "fiemap"
+> +	_require_xfs_io_command "fiemap"
+> +	if [ $FSTYP == "btrfs" ]; then
+> +		_require_btrfs_corrupt_block
+> +	fi
 > +}
-> +
->  _scratch_mkfs_verity()
->  {
->  	case $FSTYP in
-> diff --git a/tests/generic/574 b/tests/generic/574
-> index 882baa21..17fdea52 100755
-> --- a/tests/generic/574
-> +++ b/tests/generic/574
-> @@ -28,6 +28,7 @@ _cleanup()
->  _supported_fs generic
->  _require_scratch_verity
->  _disable_fsverity_signatures
-> +_require_fsverity_corruption
->  
->  _scratch_mkfs_verity &>> $seqres.full
->  _scratch_mount
-> diff --git a/tests/generic/576 b/tests/generic/576
-> index 82fbdd71..d3e0a2d6 100755
-> --- a/tests/generic/576
-> +++ b/tests/generic/576
-> @@ -28,6 +28,7 @@ _supported_fs generic
->  _require_scratch_verity
->  _require_scratch_encryption
->  _require_command "$KEYCTL_PROG" keyctl
-> +_require_fsverity_corruption
->  _disable_fsverity_signatures
->  
->  _scratch_mkfs_encrypted_verity &>> $seqres.full
 
-Reviewed-by: Eric Biggers <ebiggers@google.com>
+This is adding a second definition of _require_fsverity_corruption().
+Probably a rebase error.
+
+Also, is this hunk in the right patch?  This patch is for adding btrfs/290;
+however, btrfs/290 doesn't use _require_fsverity_corruption() anymore.
+
+> +
+>  # Check for CONFIG_FS_VERITY_BUILTIN_SIGNATURES=y, as well as the userspace
+>  # commands needed to generate certificates and add them to the kernel.
+>  _require_fsverity_builtin_signatures()
+> @@ -153,6 +164,9 @@ _scratch_mkfs_verity()
+>  	ext4|f2fs)
+>  		_scratch_mkfs -O verity
+>  		;;
+> +	btrfs)
+> +		_scratch_mkfs
+> +		;;
+
+I think a good way to organize things would be to wire up the existing verity
+tests for btrfs first, then to add the btrfs-specific tests at thet end of the
+series.  That would mean the above hunk would go earlier in the series, not with
+btrfs/290.  It's a little hard to review as-is, as the different hunks needed to
+wire up the existing tests are mixed around in different patches.
 
 - Eric
