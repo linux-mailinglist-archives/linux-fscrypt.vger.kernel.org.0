@@ -2,212 +2,217 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73B0F4E5446
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 23 Mar 2022 15:33:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 419754E56F8
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 23 Mar 2022 17:56:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244780AbiCWOea (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 23 Mar 2022 10:34:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45322 "EHLO
+        id S239263AbiCWQ53 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 23 Mar 2022 12:57:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234745AbiCWOe3 (ORCPT
+        with ESMTP id S236920AbiCWQ53 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 23 Mar 2022 10:34:29 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9599831222;
-        Wed, 23 Mar 2022 07:32:59 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Wed, 23 Mar 2022 12:57:29 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F5A46E4E1;
+        Wed, 23 Mar 2022 09:55:57 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 4FC2A1F37F;
-        Wed, 23 Mar 2022 14:32:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1648045978; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FNiwTKRmVGioNI4r3rxOC3Dp0Dgtr6hFyDUErY47Yb0=;
-        b=Lod5jB7AbPd8wgpAbueuW4Q7Urgn8vbi39g3qX6KNRBwbPr9PdXRQo62i5e7svmbjlYl3o
-        wDBwmUAJNeDJzH90wJT18nRUX39hNPlKUpUIXm7TNbbGtLRAZ7N8vA8rXFRTzpe2gg1MDx
-        czOWZ2uPI/H+MZkhPeO4+mLoIcYZFQI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1648045978;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FNiwTKRmVGioNI4r3rxOC3Dp0Dgtr6hFyDUErY47Yb0=;
-        b=q35h0+7EjuB6ibw2M6MJxT4eaU8rIUdX+w43HH/nmFLDiEGOsNg3HYP/pHfQz9JUsT4YeT
-        mRWRcy2TgUddiuBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BC62913302;
-        Wed, 23 Mar 2022 14:32:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id h9wCK5kvO2IATgAAMHmgww
-        (envelope-from <lhenriques@suse.de>); Wed, 23 Mar 2022 14:32:57 +0000
-Received: from localhost (brahms.olymp [local])
-        by brahms.olymp (OpenSMTPD) with ESMTPA id 39ee974f;
-        Wed, 23 Mar 2022 14:33:17 +0000 (UTC)
-From:   =?utf-8?Q?Lu=C3=ADs_Henriques?= <lhenriques@suse.de>
-To:     Eric Biggers <ebiggers@google.com>
-Cc:     Jeff Layton <jlayton@kernel.org>, idryomov@gmail.com,
-        xiubli@redhat.com, ceph-devel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v11 02/51] fscrypt: export fscrypt_base64url_encode
- and fscrypt_base64url_decode
+        by sin.source.kernel.org (Postfix) with ESMTPS id DAA26CE1F8E;
+        Wed, 23 Mar 2022 16:55:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98F3FC340F2;
+        Wed, 23 Mar 2022 16:55:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1648054554;
+        bh=81nfjiQFeTPRAGOqW0aoil91fkoUvymS7z9RcUla0K0=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=ofyi97hboKxpE/pTa+ftOp/+oZCRyHADhyI8FcijbBV3/CvCk42BCVN059vz4KwUa
+         gE1wn43OEVpNIw242WOqUiRZn9ABQiK1kbuqyqmLBAR24Eo3kzWEEB2gkvr1NaM86f
+         4Qz8Vep6KzvW5c7Ll1nh994LjHqnNvGoD2Rx9ZG49BRt/rUViVf5R2eP1/7xA/TLEF
+         jWDOXFUxVpSqjxwG18ZOpYjc/EhVMW64CSS0phvAxOuqmnFnJXamy8hvud33+ZR1hO
+         pviv9ZN4azZ84nG9xsOKfZd0NfDcJ4Jq1YkaN5+4gJDv4Lf0TarZ6rR22T8YRRh195
+         IIfAg8Us2S/gg==
+Message-ID: <9a3dab30b8657351ab6a73de533b7e3f2a41f72a.camel@kernel.org>
+Subject: Re: [RFC PATCH v11 08/51] ceph: add support for
+ fscrypt_auth/fscrypt_file to cap messages
+From:   Jeff Layton <jlayton@kernel.org>
+To:     idryomov@gmail.com, xiubli@redhat.com
+Cc:     ceph-devel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lhenriques@suse.de
+Date:   Wed, 23 Mar 2022 12:55:52 -0400
+In-Reply-To: <20220322141316.41325-9-jlayton@kernel.org>
 References: <20220322141316.41325-1-jlayton@kernel.org>
-        <20220322141316.41325-3-jlayton@kernel.org>
-Date:   Wed, 23 Mar 2022 14:33:17 +0000
-In-Reply-To: <20220322141316.41325-3-jlayton@kernel.org> (Jeff Layton's
-        message of "Tue, 22 Mar 2022 10:12:27 -0400")
-Message-ID: <87zglgoi1e.fsf@brahms.olymp>
+         <20220322141316.41325-9-jlayton@kernel.org>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.42.4 (3.42.4-1.fc35) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hi Eric,
-
-Jeff Layton <jlayton@kernel.org> writes:
-
-> Ceph is going to add fscrypt support, but we still want encrypted
-> filenames to be composed of printable characters, so we can maintain
-> compatibility with clients that don't support fscrypt.
->
-> We could just adopt fscrypt's current nokey name format, but that is
-> subject to change in the future, and it also contains dirhash fields
-> that we don't need for cephfs. Because of this, we're going to concoct
-> our own scheme for encoding encrypted filenames. It's very similar to
-> fscrypt's current scheme, but doesn't bother with the dirhash fields.
->
-> The ceph encoding scheme will use base64 encoding as well, and we also
-> want it to avoid characters that are illegal in filenames. Export the
-> fscrypt base64 encoding/decoding routines so we can use them in ceph's
-> fscrypt implementation.
->
-> Acked-by: Eric Biggers <ebiggers@google.com>
+On Tue, 2022-03-22 at 10:12 -0400, Jeff Layton wrote:
+> Add support for new version 12 cap messages that carry the new
+> fscrypt_auth and fscrypt_file fields from the inode.
+> 
 > Signed-off-by: Jeff Layton <jlayton@kernel.org>
 > ---
->  fs/crypto/fname.c       | 8 ++++----
->  include/linux/fscrypt.h | 5 +++++
->  2 files changed, 9 insertions(+), 4 deletions(-)
->
-> diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
-> index a9be4bc74a94..1e4233c95005 100644
-> --- a/fs/crypto/fname.c
-> +++ b/fs/crypto/fname.c
-> @@ -182,8 +182,6 @@ static int fname_decrypt(const struct inode *inode,
->  static const char base64url_table[65] =3D
->  	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
->=20=20
-> -#define FSCRYPT_BASE64URL_CHARS(nbytes)	DIV_ROUND_UP((nbytes) * 4, 3)
+>  fs/ceph/caps.c | 76 +++++++++++++++++++++++++++++++++++++++++---------
+>  1 file changed, 63 insertions(+), 13 deletions(-)
+> 
+> diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
+> index 7d8ef67a1032..b0b7688331b4 100644
+> --- a/fs/ceph/caps.c
+> +++ b/fs/ceph/caps.c
+> @@ -13,6 +13,7 @@
+>  #include "super.h"
+>  #include "mds_client.h"
+>  #include "cache.h"
+> +#include "crypto.h"
+>  #include <linux/ceph/decode.h>
+>  #include <linux/ceph/messenger.h>
+>  
+> @@ -1214,15 +1215,12 @@ struct cap_msg_args {
+>  	umode_t			mode;
+>  	bool			inline_data;
+>  	bool			wake;
+> +	u32			fscrypt_auth_len;
+> +	u32			fscrypt_file_len;
+> +	u8			fscrypt_auth[sizeof(struct ceph_fscrypt_auth)]; // for context
+> +	u8			fscrypt_file[sizeof(u64)]; // for size
+>  };
+>  
+> -/*
+> - * cap struct size + flock buffer size + inline version + inline data size +
+> - * osd_epoch_barrier + oldest_flush_tid
+> - */
+> -#define CAP_MSG_SIZE (sizeof(struct ceph_mds_caps) + \
+> -		      4 + 8 + 4 + 4 + 8 + 4 + 4 + 4 + 8 + 8 + 4)
 > -
->  /**
->   * fscrypt_base64url_encode() - base64url-encode some binary data
->   * @src: the binary data to encode
-> @@ -198,7 +196,7 @@ static const char base64url_table[65] =3D
->   * Return: the length of the resulting base64url-encoded string in bytes.
->   *	   This will be equal to FSCRYPT_BASE64URL_CHARS(srclen).
->   */
-> -static int fscrypt_base64url_encode(const u8 *src, int srclen, char *dst)
-> +int fscrypt_base64url_encode(const u8 *src, int srclen, char *dst)
-
-I know you've ACK'ed this patch already, but I was wondering if you'd be
-open to change these encode/decode interfaces so that they could be used
-for non-url base64 too.
-
-My motivation is that ceph has this odd limitation where snapshot names
-can not start with the '_' character.  And I've an RFC that adds snapshot
-names encryption support which, unfortunately, can end up starting with
-this char after base64 encoding.
-
-So, my current proposal is to use a different encoding table.  I was
-thinking about the IMAP mailboxes naming which uses '+' and ',' instead of
-the '-' and '_', but any other charset would be OK (except those that
-include '/' of course).  So, instead of adding yet another base64
-implementation to the kernel, I was wondering if you'd be OK accepting a
-patch to add an optional arg to these encoding/decoding functions to pass
-an alternative table.  Or, if you'd prefer, keep the existing interface
-but turning these functions into wrappers to more generic functions.
-
-Obviously, Jeff, please feel free to comment too if you have any reserves
-regarding this approach.
-
-Cheers,
---=20
-Lu=C3=ADs
-
+>  /* Marshal up the cap msg to the MDS */
+>  static void encode_cap_msg(struct ceph_msg *msg, struct cap_msg_args *arg)
 >  {
->  	u32 ac =3D 0;
->  	int bits =3D 0;
-> @@ -217,6 +215,7 @@ static int fscrypt_base64url_encode(const u8 *src, in=
-t srclen, char *dst)
->  		*cp++ =3D base64url_table[(ac << (6 - bits)) & 0x3f];
->  	return cp - dst;
->  }
-> +EXPORT_SYMBOL_GPL(fscrypt_base64url_encode);
->=20=20
->  /**
->   * fscrypt_base64url_decode() - base64url-decode a string
-> @@ -233,7 +232,7 @@ static int fscrypt_base64url_encode(const u8 *src, in=
-t srclen, char *dst)
->   * Return: the length of the resulting decoded binary data in bytes,
->   *	   or -1 if the string isn't a valid base64url string.
->   */
-> -static int fscrypt_base64url_decode(const char *src, int srclen, u8 *dst)
-> +int fscrypt_base64url_decode(const char *src, int srclen, u8 *dst)
->  {
->  	u32 ac =3D 0;
->  	int bits =3D 0;
-> @@ -256,6 +255,7 @@ static int fscrypt_base64url_decode(const char *src, =
-int srclen, u8 *dst)
->  		return -1;
->  	return bp - dst;
->  }
-> +EXPORT_SYMBOL_GPL(fscrypt_base64url_decode);
->=20=20
->  bool fscrypt_fname_encrypted_size(const union fscrypt_policy *policy,
->  				  u32 orig_len, u32 max_len,
-> diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-> index 91ea9477e9bd..671181d196a8 100644
-> --- a/include/linux/fscrypt.h
-> +++ b/include/linux/fscrypt.h
-> @@ -46,6 +46,9 @@ struct fscrypt_name {
->  /* Maximum value for the third parameter of fscrypt_operations.set_conte=
-xt(). */
->  #define FSCRYPT_SET_CONTEXT_MAX_SIZE	40
->=20=20
-> +/* len of resulting string (sans NUL terminator) after base64 encoding n=
-bytes */
-> +#define FSCRYPT_BASE64URL_CHARS(nbytes)		DIV_ROUND_UP((nbytes) * 4, 3)
+> @@ -1238,7 +1236,7 @@ static void encode_cap_msg(struct ceph_msg *msg, struct cap_msg_args *arg)
+>  	     arg->size, arg->max_size, arg->xattr_version,
+>  	     arg->xattr_buf ? (int)arg->xattr_buf->vec.iov_len : 0);
+>  
+> -	msg->hdr.version = cpu_to_le16(10);
+> +	msg->hdr.version = cpu_to_le16(12);
+>  	msg->hdr.tid = cpu_to_le64(arg->flush_tid);
+>  
+>  	fc = msg->front.iov_base;
+> @@ -1309,6 +1307,21 @@ static void encode_cap_msg(struct ceph_msg *msg, struct cap_msg_args *arg)
+>  
+>  	/* Advisory flags (version 10) */
+>  	ceph_encode_32(&p, arg->flags);
 > +
->  #ifdef CONFIG_FS_ENCRYPTION
->=20=20
+> +	/* dirstats (version 11) - these are r/o on the client */
+> +	ceph_encode_64(&p, 0);
+> +	ceph_encode_64(&p, 0);
+> +
+> +#if IS_ENABLED(CONFIG_FS_ENCRYPTION)
+> +	/* fscrypt_auth and fscrypt_file (version 12) */
+> +	ceph_encode_32(&p, arg->fscrypt_auth_len);
+> +	ceph_encode_copy(&p, arg->fscrypt_auth, arg->fscrypt_auth_len);
+> +	ceph_encode_32(&p, arg->fscrypt_file_len);
+> +	ceph_encode_copy(&p, arg->fscrypt_file, arg->fscrypt_file_len);
+> +#else /* CONFIG_FS_ENCRYPTION */
+> +	ceph_encode_32(&p, 0);
+> +	ceph_encode_32(&p, 0);
+> +#endif /* CONFIG_FS_ENCRYPTION */
+>  }
+>  
 >  /*
-> @@ -305,6 +308,8 @@ void fscrypt_free_inode(struct inode *inode);
->  int fscrypt_drop_inode(struct inode *inode);
->=20=20
->  /* fname.c */
-> +int fscrypt_base64url_encode(const u8 *src, int len, char *dst);
-> +int fscrypt_base64url_decode(const char *src, int len, u8 *dst);
->  int fscrypt_setup_filename(struct inode *inode, const struct qstr *iname,
->  			   int lookup, struct fscrypt_name *fname);
->=20=20
-> --=20
->
-> 2.35.1
->
+> @@ -1430,8 +1443,37 @@ static void __prep_cap(struct cap_msg_args *arg, struct ceph_cap *cap,
+>  		}
+>  	}
+>  	arg->flags = flags;
+> +#if IS_ENABLED(CONFIG_FS_ENCRYPTION)
+> +	if (ci->fscrypt_auth_len &&
+> +	    WARN_ON_ONCE(ci->fscrypt_auth_len != sizeof(struct ceph_fscrypt_auth))) {
 
+The above WARN_ON_ONCE is too strict, and causes the client to reject v1
+fscrypt contexts (as well as throw the warning). That should be a ">"
+instead. I've fixed this in my tree and pushed the fix into wip-fscrypt.
+
+
+> +		/* Don't set this if it isn't right size */
+> +		arg->fscrypt_auth_len = 0;
+> +	} else {
+> +		arg->fscrypt_auth_len = ci->fscrypt_auth_len;
+> +		memcpy(arg->fscrypt_auth, ci->fscrypt_auth,
+> +			min_t(size_t, ci->fscrypt_auth_len, sizeof(arg->fscrypt_auth)));
+> +	}
+> +	/* FIXME: use this to track "real" size */
+> +	arg->fscrypt_file_len = 0;
+> +#endif /* CONFIG_FS_ENCRYPTION */
+>  }
+>  
+> +#define CAP_MSG_FIXED_FIELDS (sizeof(struct ceph_mds_caps) + \
+> +		      4 + 8 + 4 + 4 + 8 + 4 + 4 + 4 + 8 + 8 + 4 + 8 + 8 + 4 + 4)
+> +
+> +#if IS_ENABLED(CONFIG_FS_ENCRYPTION)
+> +static inline int cap_msg_size(struct cap_msg_args *arg)
+> +{
+> +	return CAP_MSG_FIXED_FIELDS + arg->fscrypt_auth_len +
+> +			arg->fscrypt_file_len;
+> +}
+> +#else
+> +static inline int cap_msg_size(struct cap_msg_args *arg)
+> +{
+> +	return CAP_MSG_FIXED_FIELDS;
+> +}
+> +#endif /* CONFIG_FS_ENCRYPTION */
+> +
+>  /*
+>   * Send a cap msg on the given inode.
+>   *
+> @@ -1442,7 +1484,7 @@ static void __send_cap(struct cap_msg_args *arg, struct ceph_inode_info *ci)
+>  	struct ceph_msg *msg;
+>  	struct inode *inode = &ci->vfs_inode;
+>  
+> -	msg = ceph_msg_new(CEPH_MSG_CLIENT_CAPS, CAP_MSG_SIZE, GFP_NOFS, false);
+> +	msg = ceph_msg_new(CEPH_MSG_CLIENT_CAPS, cap_msg_size(arg), GFP_NOFS, false);
+>  	if (!msg) {
+>  		pr_err("error allocating cap msg: ino (%llx.%llx) flushing %s tid %llu, requeuing cap.\n",
+>  		       ceph_vinop(inode), ceph_cap_string(arg->dirty),
+> @@ -1468,10 +1510,6 @@ static inline int __send_flush_snap(struct inode *inode,
+>  	struct cap_msg_args	arg;
+>  	struct ceph_msg		*msg;
+>  
+> -	msg = ceph_msg_new(CEPH_MSG_CLIENT_CAPS, CAP_MSG_SIZE, GFP_NOFS, false);
+> -	if (!msg)
+> -		return -ENOMEM;
+> -
+>  	arg.session = session;
+>  	arg.ino = ceph_vino(inode).ino;
+>  	arg.cid = 0;
+> @@ -1509,6 +1547,18 @@ static inline int __send_flush_snap(struct inode *inode,
+>  	arg.flags = 0;
+>  	arg.wake = false;
+>  
+> +	/*
+> +	 * No fscrypt_auth changes from a capsnap. It will need
+> +	 * to update fscrypt_file on size changes (TODO).
+> +	 */
+> +	arg.fscrypt_auth_len = 0;
+> +	arg.fscrypt_file_len = 0;
+> +
+> +	msg = ceph_msg_new(CEPH_MSG_CLIENT_CAPS, cap_msg_size(&arg),
+> +			   GFP_NOFS, false);
+> +	if (!msg)
+> +		return -ENOMEM;
+> +
+>  	encode_cap_msg(msg, &arg);
+>  	ceph_con_send(&arg.session->s_con, msg);
+>  	return 0;
+
+-- 
+Jeff Layton <jlayton@kernel.org>
