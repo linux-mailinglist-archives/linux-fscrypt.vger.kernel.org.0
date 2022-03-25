@@ -2,188 +2,130 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 106634E7063
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 25 Mar 2022 11:00:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30C634E737D
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 25 Mar 2022 13:31:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358586AbiCYKAY (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 25 Mar 2022 06:00:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55908 "EHLO
+        id S1358032AbiCYMdT (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 25 Mar 2022 08:33:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230496AbiCYKAY (ORCPT
+        with ESMTP id S1355069AbiCYMcv (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 25 Mar 2022 06:00:24 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 035666E2A8;
-        Fri, 25 Mar 2022 02:58:50 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id B534E1F745;
-        Fri, 25 Mar 2022 09:58:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1648202328; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qE3ijpN3JzxZRinNK3bY7itv2EzK7o8jpCboIZgMOrk=;
-        b=PiSKKvvvD9ORMpFiph9LNgdYzV+1b+SMiJWH8a4ZrvzPNMxCx+92w8//Nwh5pnbfJSh/s2
-        ttAfN+KbiBcZmf3T1nmmoILzLPFl20o/tSjESDUKWqqPaMEBHNwwPMNRp4xNsvAxobKpJd
-        P/paw+0XfHloh17+LRUhgob+mmXd3IE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1648202328;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qE3ijpN3JzxZRinNK3bY7itv2EzK7o8jpCboIZgMOrk=;
-        b=iO2SonJglDeQTgQPlWaycm3HefPzlzqXev9YSaQnny+TqDUSe2ZKnyqRkDOEJltuDNFcsq
-        8xCLxwlSnQUZzrAg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 38053132E9;
-        Fri, 25 Mar 2022 09:58:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id wW3qCliSPWIHDwAAMHmgww
-        (envelope-from <lhenriques@suse.de>); Fri, 25 Mar 2022 09:58:48 +0000
-Received: from localhost (brahms.olymp [local])
-        by brahms.olymp (OpenSMTPD) with ESMTPA id 4fb5c2e5;
-        Fri, 25 Mar 2022 09:59:08 +0000 (UTC)
-From:   =?utf-8?Q?Lu=C3=ADs_Henriques?= <lhenriques@suse.de>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Jeff Layton <jlayton@kernel.org>, idryomov@gmail.com,
-        xiubli@redhat.com, ceph-devel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        Fri, 25 Mar 2022 08:32:51 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0953CD080C;
+        Fri, 25 Mar 2022 05:31:17 -0700 (PDT)
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 22PAS6J6013215;
+        Fri, 25 Mar 2022 12:31:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=goJB0SCqo5d39ZSNDAI7BU78CtP+9thRdvFF6R5J+wc=;
+ b=A+wnsv4VInGsI6YKMTOyxSPCHej84JaylddJWXa6MNlPUx0Wutle5qE/uTtPREa9YZb9
+ u/Os8thesgO5U5ciDqL1QqPsk/qbbGBXBPWfsIgC7puN8G/ICeJo1fCGPxZ3t4Gck6KM
+ E3tzjsYeHV9uhBxcqJPmJeCtMCvBOKp7Z33Wv6eDrUfNN4Y4l/Vr3WasrdwaRhpr/Rgt
+ Pcexh1lNbtQOdnVLOtayrI52YF5sVkF4uUTXKktRkYur9y4qX2RGBaFlPDPf1XMyxPHs
+ XTXWGAhyC5y3Ca2WycRvnzusp3PHRnJ3eQoHHrzE+iSE2XY0kj3N71Q3U5AiojyGWeeY qA== 
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3f0t26y2pj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Mar 2022 12:31:14 +0000
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 22PCD6SS026663;
+        Fri, 25 Mar 2022 12:31:12 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma06fra.de.ibm.com with ESMTP id 3ew6ej3aqk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Mar 2022 12:31:12 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 22PCVA9N54985002
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 25 Mar 2022 12:31:10 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4583C11C04A;
+        Fri, 25 Mar 2022 12:31:10 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5A8E011C04C;
+        Fri, 25 Mar 2022 12:31:09 +0000 (GMT)
+Received: from sig-9-65-72-52.ibm.com (unknown [9.65.72.52])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 25 Mar 2022 12:31:09 +0000 (GMT)
+Message-ID: <9bda9c8a9f161763f420bf8e7bd639fe0d7e1691.camel@linux.ibm.com>
+Subject: Re: [PATCH v6 4/5] ima: support fs-verity file digest based version
+ 3 signatures
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Stefan Berger <stefanb@linux.ibm.com>,
+        linux-integrity@vger.kernel.org
+Cc:     Eric Biggers <ebiggers@kernel.org>, linux-fscrypt@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v11 02/51] fscrypt: export fscrypt_base64url_encode
- and fscrypt_base64url_decode
-References: <20220322141316.41325-1-jlayton@kernel.org>
-        <20220322141316.41325-3-jlayton@kernel.org>
-        <87zglgoi1e.fsf@brahms.olymp> <YjyubQgfbQbUn4Ct@gmail.com>
-Date:   Fri, 25 Mar 2022 09:59:08 +0000
-In-Reply-To: <YjyubQgfbQbUn4Ct@gmail.com> (Eric Biggers's message of "Thu, 24
-        Mar 2022 17:46:21 +0000")
-Message-ID: <87sfr6nyj7.fsf@brahms.olymp>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Date:   Fri, 25 Mar 2022 08:31:08 -0400
+In-Reply-To: <d79baf40-6bb7-d4f4-666d-91e1ad20be74@linux.ibm.com>
+References: <20220318182151.100847-1-zohar@linux.ibm.com>
+         <20220318182151.100847-5-zohar@linux.ibm.com>
+         <d79baf40-6bb7-d4f4-666d-91e1ad20be74@linux.ibm.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-18.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 6RIghj8AlccUgY2wbnH3it5WzrtsKJa8
+X-Proofpoint-GUID: 6RIghj8AlccUgY2wbnH3it5WzrtsKJa8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.850,Hydra:6.0.425,FMLib:17.11.64.514
+ definitions=2022-03-25_02,2022-03-24_01,2022-02-23_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ mlxlogscore=999 suspectscore=0 phishscore=0 clxscore=1015 impostorscore=0
+ malwarescore=0 spamscore=0 adultscore=0 bulkscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2202240000
+ definitions=main-2203250070
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Eric Biggers <ebiggers@kernel.org> writes:
+On Mon, 2022-03-21 at 09:10 -0400, Stefan Berger wrote:
+> 
+> On 3/18/22 14:21, Mimi Zohar wrote:
+> > IMA may verify a file's integrity against a "good" value stored in the
+> > 'security.ima' xattr or as an appended signature, based on policy.  When
+> > the "good value" is stored in the xattr, the xattr may contain a file
+> > hash or signature.  In either case, the "good" value is preceded by a
+> > header.  The first byte of the xattr header indicates the type of data
+> > - hash, signature - stored in the xattr.  To support storing fs-verity
+> > signatures in the 'security.ima' xattr requires further differentiating
+> > the fs-verity signature from the existing IMA signature.
+> > 
+> > In addition the signatures stored in 'security.ima' xattr, need to be
+> > disambiguated.  Instead of directly signing the fs-verity digest, a new
+> > signature version 3 is defined as the hash of the ima_file_id structure,
+> > which identifies the type of signature and the digest.
+> 
+> Would it not be enough to just differentiat by the type of signature 
+> rather than also bumping the version? It's still signature_v2_hdr but a 
+> new type IMA_VERITY_DIGSIG is introduced there that shoud be sufficient 
+> to indicate that a different method for calculating the hash is to be 
+> used than for anything that existed before? sigv3 would then become the 
+> more obvious veriftysig... ?
 
-> On Wed, Mar 23, 2022 at 02:33:17PM +0000, Lu=C3=ADs Henriques wrote:
->> Hi Eric,
->>=20
->> Jeff Layton <jlayton@kernel.org> writes:
->>=20
->> > Ceph is going to add fscrypt support, but we still want encrypted
->> > filenames to be composed of printable characters, so we can maintain
->> > compatibility with clients that don't support fscrypt.
->> >
->> > We could just adopt fscrypt's current nokey name format, but that is
->> > subject to change in the future, and it also contains dirhash fields
->> > that we don't need for cephfs. Because of this, we're going to concoct
->> > our own scheme for encoding encrypted filenames. It's very similar to
->> > fscrypt's current scheme, but doesn't bother with the dirhash fields.
->> >
->> > The ceph encoding scheme will use base64 encoding as well, and we also
->> > want it to avoid characters that are illegal in filenames. Export the
->> > fscrypt base64 encoding/decoding routines so we can use them in ceph's
->> > fscrypt implementation.
->> >
->> > Acked-by: Eric Biggers <ebiggers@google.com>
->> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
->> > ---
->> >  fs/crypto/fname.c       | 8 ++++----
->> >  include/linux/fscrypt.h | 5 +++++
->> >  2 files changed, 9 insertions(+), 4 deletions(-)
->> >
->> > diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
->> > index a9be4bc74a94..1e4233c95005 100644
->> > --- a/fs/crypto/fname.c
->> > +++ b/fs/crypto/fname.c
->> > @@ -182,8 +182,6 @@ static int fname_decrypt(const struct inode *inode,
->> >  static const char base64url_table[65] =3D
->> >  	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
->> >=20=20
->> > -#define FSCRYPT_BASE64URL_CHARS(nbytes)	DIV_ROUND_UP((nbytes) * 4, 3)
->> > -
->> >  /**
->> >   * fscrypt_base64url_encode() - base64url-encode some binary data
->> >   * @src: the binary data to encode
->> > @@ -198,7 +196,7 @@ static const char base64url_table[65] =3D
->> >   * Return: the length of the resulting base64url-encoded string in by=
-tes.
->> >   *	   This will be equal to FSCRYPT_BASE64URL_CHARS(srclen).
->> >   */
->> > -static int fscrypt_base64url_encode(const u8 *src, int srclen, char *=
-dst)
->> > +int fscrypt_base64url_encode(const u8 *src, int srclen, char *dst)
->>=20
->> I know you've ACK'ed this patch already, but I was wondering if you'd be
->> open to change these encode/decode interfaces so that they could be used
->> for non-url base64 too.
->>=20
->> My motivation is that ceph has this odd limitation where snapshot names
->> can not start with the '_' character.  And I've an RFC that adds snapshot
->> names encryption support which, unfortunately, can end up starting with
->> this char after base64 encoding.
->>=20
->> So, my current proposal is to use a different encoding table.  I was
->> thinking about the IMAP mailboxes naming which uses '+' and ',' instead =
-of
->> the '-' and '_', but any other charset would be OK (except those that
->> include '/' of course).  So, instead of adding yet another base64
->> implementation to the kernel, I was wondering if you'd be OK accepting a
->> patch to add an optional arg to these encoding/decoding functions to pass
->> an alternative table.  Or, if you'd prefer, keep the existing interface
->> but turning these functions into wrappers to more generic functions.
->>=20
->> Obviously, Jeff, please feel free to comment too if you have any reserves
->> regarding this approach.
->>=20
->> Cheers,
->> --=20
->> Lu=C3=ADs
->>=20
->
-> Base64 encoding/decoding is trivial enough that I think you should just a=
-dd your
-> own functions to fs/ceph/ for now if you need yet another Base64 variant.=
-  If we
-> were to add general functions that allow "building your own" Base64 varia=
-nt, I
-> think they'd belong in lib/, not fs/crypto/.  (I objected to lib/ in the =
-first
-> version of Jeff's patchset because that patchset proposed adding just the=
- old,
-> idiosyncratic fscrypt Base64 variant to lib/ and just calling it "base64"=
-, which
-> was misleading.  But, if there were to be properly documented functions to
-> "build your own" Base64 variant, allowing control over both the character=
- set
-> and whether padding is done, lib/ would be the place...)
+One of Eric's concerns was that, "an attacker (who controls the file's
+contents and IMA xattr) [could] replace the file with one with a
+differrent content and still be able to pass the IMA check."  His
+solution was to only allow one signature version on a running system.  
+For the complete description of the attack, refer to Eric's comments on
+v3.
 
-OK, that makes sense.  I agree that the right place for a generic
-implementation would be somewhere out of the fs/crypto/ directory.  I
-guess that, for now, I'll follow your advice and keep a local
-implementation (in fact, the libceph *has* already an implementation!).
+Instead of only allowing one signature version on a running system,
+subsequent versions of this patch set addressed his concern, by
+limiting the signature version based on policy.
 
-But adding a generic implementation and clean-up all the different
-implementations in the kernel tree is probably a nice project.  For the
-future.  Maybe.  *sigh*
+-- 
+thanks,
 
-Cheers,
---=20
-Lu=C3=ADs
+Mimi
+
