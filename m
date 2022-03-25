@@ -2,90 +2,82 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E5EB4E7CA1
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 26 Mar 2022 01:21:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60C114E7BA6
+	for <lists+linux-fscrypt@lfdr.de>; Sat, 26 Mar 2022 01:21:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233827AbiCYWkb (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 25 Mar 2022 18:40:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38688 "EHLO
+        id S233878AbiCYWkf (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 25 Mar 2022 18:40:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233859AbiCYWka (ORCPT
+        with ESMTP id S233865AbiCYWkb (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 25 Mar 2022 18:40:30 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B2FB18FAE7;
-        Fri, 25 Mar 2022 15:38:55 -0700 (PDT)
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 22PIGVWR006103;
+        Fri, 25 Mar 2022 18:40:31 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4406C1925A7;
+        Fri, 25 Mar 2022 15:38:56 -0700 (PDT)
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 22PKsgrd012078;
         Fri, 25 Mar 2022 22:38:53 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pp1;
- bh=GwtGts66HuBQm1Ia8Txmyh27qjWDGvlLwZG+bEo71D0=;
- b=j+1c59zvSgjnBZbJhAn2e7n1ClzscGBjZbZ51shNzceO4yxSUYsKhLh8bD1ST6ej9CQu
- xY+kPrbTgR3IgaHDssQUW4OP99r1GvjcE6CL5HRCM8oxAPBl9h77ujrjhBVIcHNsxqEn
- FnWuNU5D3+co4rnOMNacKeJqSJtgGoWLjLWdX6U1fx6RWZD/3NO9S+NyI5i8+UBdMjZZ
- QTCwsqNl5Rya0tSIRidaOpU1FFEa5WwXK4YlhytE16Fh/N/T1tZNbq4V5RmyCTTgW0Ny
- HG7sp5P52e4VDwsmjCJfdHEME6kjIWaENvddg59S/C+ZmGRk/W7nAM04iY9g8Ska4C8T bw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3f0rgtp6ks-1
+ bh=+0s66wGHjUxHTJIbtfEcK+1R97kheEPB3mDhV/scL94=;
+ b=aq55Wko0dsZBhCGtqP/tzxPh4DZ9zfbjf6a98KOBwKlM/ABGmdh+ZZEBAyR4NUV2pnv0
+ KBxFb2onmMMRQxwGlGjJTcvlpxMZk0ejPbrHpwPAkKbXteH2UmffjJWhhnt569KtwFzF
+ izSS19ouUQgJkx2cEDAYb3hvbcDYchVyKNMEoW05sJGWYr2DnTmKwwRCPAJgE5bfpY5b
+ NpLPqZxFrTqWCywNrSPvvm5Ouo7kcW73mtwCL+NLnCifQsuLpUihwW72VSBin4sz/t0R
+ 7y5gSk/vbbhhfKDGCBGl9ZSYAp5HnFSZepzCZsmPzaIVe/kEJ0M8xl4F8ZS7BUJb/Nd/ 5A== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3f0sd4vc9v-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Fri, 25 Mar 2022 22:38:53 +0000
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 22PMcaak029486;
-        Fri, 25 Mar 2022 22:38:52 GMT
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3f0rgtp6kn-1
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 22PMWBlw021609;
+        Fri, 25 Mar 2022 22:38:51 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03ams.nl.ibm.com with ESMTP id 3ew6t9632e-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 25 Mar 2022 22:38:52 +0000
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 22PMX7b9025622;
-        Fri, 25 Mar 2022 22:38:50 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma06fra.de.ibm.com with ESMTP id 3ew6ej41k4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 25 Mar 2022 22:38:49 +0000
+        Fri, 25 Mar 2022 22:38:51 +0000
 Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 22PMckVn40436192
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 22PMcmkc55968250
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 25 Mar 2022 22:38:46 GMT
+        Fri, 25 Mar 2022 22:38:48 GMT
 Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B5F80A4054;
-        Fri, 25 Mar 2022 22:38:46 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 5E77EA4060;
+        Fri, 25 Mar 2022 22:38:48 +0000 (GMT)
 Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 633DDA405C;
-        Fri, 25 Mar 2022 22:38:45 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 0B0F4A4054;
+        Fri, 25 Mar 2022 22:38:47 +0000 (GMT)
 Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com.com (unknown [9.65.72.52])
         by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 25 Mar 2022 22:38:45 +0000 (GMT)
+        Fri, 25 Mar 2022 22:38:46 +0000 (GMT)
 From:   Mimi Zohar <zohar@linux.ibm.com>
 To:     linux-integrity@vger.kernel.org
 Cc:     Mimi Zohar <zohar@linux.ibm.com>,
         Eric Biggers <ebiggers@kernel.org>,
         Stefan Berger <stefanb@linux.ibm.com>,
-        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Eric Biggers <ebiggers@google.com>
-Subject: [PATCH v7 1/5] fs-verity: define a function to return the integrity protected file digest
-Date:   Fri, 25 Mar 2022 18:38:20 -0400
-Message-Id: <20220325223824.310119-2-zohar@linux.ibm.com>
+        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v7 2/5] ima: define a new template field named 'd-ngv2' and templates
+Date:   Fri, 25 Mar 2022 18:38:21 -0400
+Message-Id: <20220325223824.310119-3-zohar@linux.ibm.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20220325223824.310119-1-zohar@linux.ibm.com>
 References: <20220325223824.310119-1-zohar@linux.ibm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: gbjAuQ28oIk_bcb-KxKFVytHj7igDcAE
-X-Proofpoint-GUID: hMTUixdEwv0-WD86BcCwsOtyXyjxoQbO
+X-Proofpoint-GUID: nI8JyUyeNryP_1SsJQdMPCXPVm8YrCYW
+X-Proofpoint-ORIG-GUID: nI8JyUyeNryP_1SsJQdMPCXPVm8YrCYW
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.850,Hydra:6.0.425,FMLib:17.11.64.514
  definitions=2022-03-25_08,2022-03-24_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
- bulkscore=0 adultscore=0 phishscore=0 priorityscore=1501 impostorscore=0
- suspectscore=0 clxscore=1015 lowpriorityscore=0 mlxlogscore=999
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 malwarescore=0
+ suspectscore=0 mlxlogscore=999 bulkscore=0 priorityscore=1501
+ clxscore=1015 impostorscore=0 phishscore=0 mlxscore=0 lowpriorityscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2202240000 definitions=main-2203250124
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -94,156 +86,231 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Define a function named fsverity_get_digest() to return the verity file
-digest and the associated hash algorithm (enum hash_algo).
+In preparation to differentiate between unsigned regular IMA file
+hashes and fs-verity's file digests in the IMA measurement list,
+define a new template field named 'd-ngv2'.
 
-This assumes that before calling fsverity_get_digest() the file must have
-been opened, which is even true for the IMA measure/appraise on file
-open policy rule use case (func=FILE_CHECK).  do_open() calls vfs_open()
-immediately prior to ima_file_check().
+Also define two new templates named 'ima-ngv2' and 'ima-sigv2', which
+include the new 'd-ngv2' field.
 
-Acked-by: Eric Biggers <ebiggers@google.com>
 Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
 ---
- fs/verity/Kconfig            |  1 +
- fs/verity/fsverity_private.h |  7 ------
- fs/verity/measure.c          | 43 ++++++++++++++++++++++++++++++++++++
- include/linux/fsverity.h     | 18 +++++++++++++++
- 4 files changed, 62 insertions(+), 7 deletions(-)
+ .../admin-guide/kernel-parameters.txt         |  3 +-
+ security/integrity/ima/ima_template.c         |  4 +
+ security/integrity/ima/ima_template_lib.c     | 78 ++++++++++++++++---
+ security/integrity/ima/ima_template_lib.h     |  4 +
+ 4 files changed, 79 insertions(+), 10 deletions(-)
 
-diff --git a/fs/verity/Kconfig b/fs/verity/Kconfig
-index 24d1b54de807..54598cd80145 100644
---- a/fs/verity/Kconfig
-+++ b/fs/verity/Kconfig
-@@ -3,6 +3,7 @@
- config FS_VERITY
- 	bool "FS Verity (read-only file-based authenticity protection)"
- 	select CRYPTO
-+	select CRYPTO_HASH_INFO
- 	# SHA-256 is implied as it's intended to be the default hash algorithm.
- 	# To avoid bloat, other wanted algorithms must be selected explicitly.
- 	# Note that CRYPTO_SHA256 denotes the generic C implementation, but
-diff --git a/fs/verity/fsverity_private.h b/fs/verity/fsverity_private.h
-index a7920434bae5..c6fb62e0ef1a 100644
---- a/fs/verity/fsverity_private.h
-+++ b/fs/verity/fsverity_private.h
-@@ -14,7 +14,6 @@
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index f5a27f067db9..47386ac10471 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -1876,7 +1876,8 @@
  
- #define pr_fmt(fmt) "fs-verity: " fmt
+ 	ima_template=	[IMA]
+ 			Select one of defined IMA measurements template formats.
+-			Formats: { "ima" | "ima-ng" | "ima-sig" }
++			Formats: { "ima" | "ima-ng" | "ima-ngv2" | "ima-sig" |
++				   "ima-sigv2" }
+ 			Default: "ima-ng"
  
--#include <crypto/sha2.h>
- #include <linux/fsverity.h>
- #include <linux/mempool.h>
+ 	ima_template_fmt=
+diff --git a/security/integrity/ima/ima_template.c b/security/integrity/ima/ima_template.c
+index db1ad6d7a57f..c25079faa208 100644
+--- a/security/integrity/ima/ima_template.c
++++ b/security/integrity/ima/ima_template.c
+@@ -20,6 +20,8 @@ static struct ima_template_desc builtin_templates[] = {
+ 	{.name = IMA_TEMPLATE_IMA_NAME, .fmt = IMA_TEMPLATE_IMA_FMT},
+ 	{.name = "ima-ng", .fmt = "d-ng|n-ng"},
+ 	{.name = "ima-sig", .fmt = "d-ng|n-ng|sig"},
++	{.name = "ima-ngv2", .fmt = "d-ngv2|n-ng"},
++	{.name = "ima-sigv2", .fmt = "d-ngv2|n-ng|sig"},
+ 	{.name = "ima-buf", .fmt = "d-ng|n-ng|buf"},
+ 	{.name = "ima-modsig", .fmt = "d-ng|n-ng|sig|d-modsig|modsig"},
+ 	{.name = "evm-sig",
+@@ -38,6 +40,8 @@ static const struct ima_template_field supported_fields[] = {
+ 	 .field_show = ima_show_template_string},
+ 	{.field_id = "d-ng", .field_init = ima_eventdigest_ng_init,
+ 	 .field_show = ima_show_template_digest_ng},
++	{.field_id = "d-ngv2", .field_init = ima_eventdigest_ngv2_init,
++	 .field_show = ima_show_template_digest_ngv2},
+ 	{.field_id = "n-ng", .field_init = ima_eventname_ng_init,
+ 	 .field_show = ima_show_template_string},
+ 	{.field_id = "sig", .field_init = ima_eventsig_init,
+diff --git a/security/integrity/ima/ima_template_lib.c b/security/integrity/ima/ima_template_lib.c
+index 7155d17a3b75..af269b94b369 100644
+--- a/security/integrity/ima/ima_template_lib.c
++++ b/security/integrity/ima/ima_template_lib.c
+@@ -24,11 +24,22 @@ static bool ima_template_hash_algo_allowed(u8 algo)
+ enum data_formats {
+ 	DATA_FMT_DIGEST = 0,
+ 	DATA_FMT_DIGEST_WITH_ALGO,
++	DATA_FMT_DIGEST_WITH_TYPE_AND_ALGO,
+ 	DATA_FMT_STRING,
+ 	DATA_FMT_HEX,
+ 	DATA_FMT_UINT
+ };
  
-@@ -26,12 +25,6 @@ struct ahash_request;
-  */
- #define FS_VERITY_MAX_LEVELS		8
++enum digest_type {
++	DIGEST_TYPE_IMA,
++	DIGEST_TYPE__LAST
++};
++
++#define DIGEST_TYPE_NAME_LEN_MAX 4	/* including NULL */
++static const char * const digest_type_name[DIGEST_TYPE__LAST] = {
++	[DIGEST_TYPE_IMA] = "ima"
++};
++
+ static int ima_write_template_field_data(const void *data, const u32 datalen,
+ 					 enum data_formats datafmt,
+ 					 struct ima_field_data *field_data)
+@@ -72,8 +83,9 @@ static void ima_show_template_data_ascii(struct seq_file *m,
+ 	u32 buflen = field_data->len;
  
--/*
-- * Largest digest size among all hash algorithms supported by fs-verity.
-- * Currently assumed to be <= size of fsverity_descriptor::root_hash.
-- */
--#define FS_VERITY_MAX_DIGEST_SIZE	SHA512_DIGEST_SIZE
--
- /* A hash algorithm supported by fs-verity */
- struct fsverity_hash_alg {
- 	struct crypto_ahash *tfm; /* hash tfm, allocated on demand */
-diff --git a/fs/verity/measure.c b/fs/verity/measure.c
-index f0d7b30c62db..e99c00350c28 100644
---- a/fs/verity/measure.c
-+++ b/fs/verity/measure.c
-@@ -57,3 +57,46 @@ int fsverity_ioctl_measure(struct file *filp, void __user *_uarg)
- 	return 0;
+ 	switch (datafmt) {
++	case DATA_FMT_DIGEST_WITH_TYPE_AND_ALGO:
+ 	case DATA_FMT_DIGEST_WITH_ALGO:
+-		buf_ptr = strnchr(field_data->data, buflen, ':');
++		buf_ptr = strrchr(field_data->data, ':');
+ 		if (buf_ptr != field_data->data)
+ 			seq_printf(m, "%s", field_data->data);
+ 
+@@ -178,6 +190,14 @@ void ima_show_template_digest_ng(struct seq_file *m, enum ima_show_type show,
+ 				     field_data);
  }
- EXPORT_SYMBOL_GPL(fsverity_ioctl_measure);
-+
-+/**
-+ * fsverity_get_digest() - get a verity file's digest
-+ * @inode: inode to get digest of
-+ * @digest: (out) pointer to the digest
-+ * @alg: (out) pointer to the hash algorithm enumeration
-+ *
-+ * Return the file hash algorithm and digest of an fsverity protected file.
-+ * Assumption: before calling fsverity_get_digest(), the file must have been
-+ * opened.
-+ *
-+ * Return: 0 on success, -errno on failure
-+ */
-+int fsverity_get_digest(struct inode *inode,
-+			u8 digest[FS_VERITY_MAX_DIGEST_SIZE],
-+			enum hash_algo *alg)
+ 
++void ima_show_template_digest_ngv2(struct seq_file *m, enum ima_show_type show,
++				   struct ima_field_data *field_data)
 +{
-+	const struct fsverity_info *vi;
-+	const struct fsverity_hash_alg *hash_alg;
-+	int i;
-+
-+	vi = fsverity_get_info(inode);
-+	if (!vi)
-+		return -ENODATA; /* not a verity file */
-+
-+	hash_alg = vi->tree_params.hash_alg;
-+	memset(digest, 0, FS_VERITY_MAX_DIGEST_SIZE);
-+
-+	/* convert the verity hash algorithm name to a hash_algo_name enum */
-+	i = match_string(hash_algo_name, HASH_ALGO__LAST, hash_alg->name);
-+	if (i < 0)
-+		return -EINVAL;
-+	*alg = i;
-+
-+	if (WARN_ON_ONCE(hash_alg->digest_size != hash_digest_size[*alg]))
-+		return -EINVAL;
-+	memcpy(digest, vi->file_digest, hash_alg->digest_size);
-+
-+	pr_debug("file digest %s:%*phN\n", hash_algo_name[*alg],
-+		 hash_digest_size[*alg], digest);
-+
-+	return 0;
++	ima_show_template_field_data(m, show,
++				     DATA_FMT_DIGEST_WITH_TYPE_AND_ALGO,
++				     field_data);
 +}
-diff --git a/include/linux/fsverity.h b/include/linux/fsverity.h
-index b568b3c7d095..9a1b70cc7318 100644
---- a/include/linux/fsverity.h
-+++ b/include/linux/fsverity.h
-@@ -12,8 +12,16 @@
- #define _LINUX_FSVERITY_H
++
+ void ima_show_template_string(struct seq_file *m, enum ima_show_type show,
+ 			      struct ima_field_data *field_data)
+ {
+@@ -265,26 +285,39 @@ int ima_parse_buf(void *bufstartp, void *bufendp, void **bufcurp,
+ }
  
- #include <linux/fs.h>
-+#include <crypto/hash_info.h>
-+#include <crypto/sha2.h>
- #include <uapi/linux/fsverity.h>
+ static int ima_eventdigest_init_common(const u8 *digest, u32 digestsize,
+-				       u8 hash_algo,
++				       u8 digest_type, u8 hash_algo,
+ 				       struct ima_field_data *field_data)
+ {
+ 	/*
+ 	 * digest formats:
+ 	 *  - DATA_FMT_DIGEST: digest
+ 	 *  - DATA_FMT_DIGEST_WITH_ALGO: [<hash algo>] + ':' + '\0' + digest,
++	 *  - DATA_FMT_DIGEST_WITH_TYPE_AND_ALGO:
++	 *	[<digest type> + ':' + <hash algo>] + ':' + '\0' + digest,
++	 *    where <hash type> is either "ima" or "verity",
+ 	 *    where <hash algo> is provided if the hash algorithm is not
+ 	 *    SHA1 or MD5
+ 	 */
+-	u8 buffer[CRYPTO_MAX_ALG_NAME + 2 + IMA_MAX_DIGEST_SIZE] = { 0 };
++	u8 buffer[DIGEST_TYPE_NAME_LEN_MAX + CRYPTO_MAX_ALG_NAME + 2 +
++		IMA_MAX_DIGEST_SIZE] = { 0 };
+ 	enum data_formats fmt = DATA_FMT_DIGEST;
+ 	u32 offset = 0;
  
+-	if (hash_algo < HASH_ALGO__LAST) {
+-		fmt = DATA_FMT_DIGEST_WITH_ALGO;
+-		offset += snprintf(buffer, CRYPTO_MAX_ALG_NAME + 1, "%s",
++	if (digest_type < DIGEST_TYPE__LAST && hash_algo < HASH_ALGO__LAST) {
++		fmt = DATA_FMT_DIGEST_WITH_TYPE_AND_ALGO;
++		offset += snprintf(buffer, DIGEST_TYPE_NAME_LEN_MAX +
++				   CRYPTO_MAX_ALG_NAME + 1, "%*s:%s",
++				   (int)strlen(digest_type_name[digest_type]),
++				   digest_type_name[digest_type],
+ 				   hash_algo_name[hash_algo]);
+ 		buffer[offset] = ':';
+ 		offset += 2;
++	} else if (hash_algo < HASH_ALGO__LAST) {
++		fmt = DATA_FMT_DIGEST_WITH_ALGO;
++		offset += snprintf(buffer, CRYPTO_MAX_ALG_NAME + 1,
++				   "%s", hash_algo_name[hash_algo]);
++		buffer[offset] = ':';
++		offset += 2;
+ 	}
+ 
+ 	if (digest)
+@@ -359,7 +392,8 @@ int ima_eventdigest_init(struct ima_event_data *event_data,
+ 	cur_digestsize = hash.hdr.length;
+ out:
+ 	return ima_eventdigest_init_common(cur_digest, cur_digestsize,
+-					   HASH_ALGO__LAST, field_data);
++					   DIGEST_TYPE__LAST, HASH_ALGO__LAST,
++					   field_data);
+ }
+ 
+ /*
+@@ -380,7 +414,32 @@ int ima_eventdigest_ng_init(struct ima_event_data *event_data,
+ 	hash_algo = event_data->iint->ima_hash->algo;
+ out:
+ 	return ima_eventdigest_init_common(cur_digest, cur_digestsize,
+-					   hash_algo, field_data);
++					   DIGEST_TYPE__LAST, hash_algo,
++					   field_data);
++}
++
 +/*
-+ * Largest digest size among all hash algorithms supported by fs-verity.
-+ * Currently assumed to be <= size of fsverity_descriptor::root_hash.
++ * This function writes the digest of an event (without size limit),
++ * prefixed with both the hash type and algorithm.
 + */
-+#define FS_VERITY_MAX_DIGEST_SIZE	SHA512_DIGEST_SIZE
++int ima_eventdigest_ngv2_init(struct ima_event_data *event_data,
++			      struct ima_field_data *field_data)
++{
++	u8 *cur_digest = NULL, hash_algo = HASH_ALGO_SHA1;
++	u32 cur_digestsize = 0;
++	u8 digest_type = DIGEST_TYPE_IMA;
 +
- /* Verity operations for filesystems */
- struct fsverity_operations {
- 
-@@ -131,6 +139,9 @@ int fsverity_ioctl_enable(struct file *filp, const void __user *arg);
- /* measure.c */
- 
- int fsverity_ioctl_measure(struct file *filp, void __user *arg);
-+int fsverity_get_digest(struct inode *inode,
-+			u8 digest[FS_VERITY_MAX_DIGEST_SIZE],
-+			enum hash_algo *alg);
- 
- /* open.c */
- 
-@@ -170,6 +181,13 @@ static inline int fsverity_ioctl_measure(struct file *filp, void __user *arg)
- 	return -EOPNOTSUPP;
++	if (event_data->violation)	/* recording a violation. */
++		goto out;
++
++	cur_digest = event_data->iint->ima_hash->digest;
++	cur_digestsize = event_data->iint->ima_hash->length;
++
++	hash_algo = event_data->iint->ima_hash->algo;
++out:
++	return ima_eventdigest_init_common(cur_digest, cur_digestsize,
++					   digest_type, hash_algo,
++					   field_data);
  }
  
-+static inline int fsverity_get_digest(struct inode *inode,
-+				      u8 digest[FS_VERITY_MAX_DIGEST_SIZE],
-+				      enum hash_algo *alg)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
- /* open.c */
+ /*
+@@ -415,7 +474,8 @@ int ima_eventdigest_modsig_init(struct ima_event_data *event_data,
+ 	}
  
- static inline int fsverity_file_open(struct inode *inode, struct file *filp)
+ 	return ima_eventdigest_init_common(cur_digest, cur_digestsize,
+-					   hash_algo, field_data);
++					   DIGEST_TYPE__LAST, hash_algo,
++					   field_data);
+ }
+ 
+ static int ima_eventname_init_common(struct ima_event_data *event_data,
+diff --git a/security/integrity/ima/ima_template_lib.h b/security/integrity/ima/ima_template_lib.h
+index c71f1de95753..9f7c335f304f 100644
+--- a/security/integrity/ima/ima_template_lib.h
++++ b/security/integrity/ima/ima_template_lib.h
+@@ -21,6 +21,8 @@ void ima_show_template_digest(struct seq_file *m, enum ima_show_type show,
+ 			      struct ima_field_data *field_data);
+ void ima_show_template_digest_ng(struct seq_file *m, enum ima_show_type show,
+ 				 struct ima_field_data *field_data);
++void ima_show_template_digest_ngv2(struct seq_file *m, enum ima_show_type show,
++				   struct ima_field_data *field_data);
+ void ima_show_template_string(struct seq_file *m, enum ima_show_type show,
+ 			      struct ima_field_data *field_data);
+ void ima_show_template_sig(struct seq_file *m, enum ima_show_type show,
+@@ -38,6 +40,8 @@ int ima_eventname_init(struct ima_event_data *event_data,
+ 		       struct ima_field_data *field_data);
+ int ima_eventdigest_ng_init(struct ima_event_data *event_data,
+ 			    struct ima_field_data *field_data);
++int ima_eventdigest_ngv2_init(struct ima_event_data *event_data,
++			      struct ima_field_data *field_data);
+ int ima_eventdigest_modsig_init(struct ima_event_data *event_data,
+ 				struct ima_field_data *field_data);
+ int ima_eventname_ng_init(struct ima_event_data *event_data,
 -- 
 2.27.0
 
