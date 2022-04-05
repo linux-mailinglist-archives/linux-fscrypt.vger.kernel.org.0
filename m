@@ -2,114 +2,185 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C78024ECC0B
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 30 Mar 2022 20:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7979C4F21BF
+	for <lists+linux-fscrypt@lfdr.de>; Tue,  5 Apr 2022 06:09:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346305AbiC3S0x (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 30 Mar 2022 14:26:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60410 "EHLO
+        id S229648AbiDECUl (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 4 Apr 2022 22:20:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350571AbiC3S01 (ORCPT
+        with ESMTP id S229628AbiDECUl (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 30 Mar 2022 14:26:27 -0400
-Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 904C749FA6
-        for <linux-fscrypt@vger.kernel.org>; Wed, 30 Mar 2022 11:23:49 -0700 (PDT)
-Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-de48295467so22926432fac.2
-        for <linux-fscrypt@vger.kernel.org>; Wed, 30 Mar 2022 11:23:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=6PnxJaVdYHTfEoSreao3ANO+XeqxY/p/4dxKSObIH1I=;
-        b=U1oUia1Thamt6Z7oWm6PGNKOk9RXK6Jv76DGrI1cLcYRcY5/d1Tt5qepQRdZm6lsyq
-         RBa/xpJM28ShOu5ibphzafHjPKptRC4OMeOVco0xYKihrCNFhnaGQOBDSvUdgHWgE3gf
-         cWTbx+dPO2nv/wujOZrrbxfJpePUzp7QZ1RCloUPxJhGXTvBKUziPieC1LSkK8oSaB+t
-         E85QJNBGnQK8HE8wei7Zq5jQSpeI5JY8kzofCGcJSUHLIHQXWsBy6ta+brl9WPLZzyWA
-         2jPBZlOFyxLxFI8awBJCcZtcLmSyu35IRMr8cJ72zb2pokIUUqe6EUB9pKUwVKwbq4my
-         ou5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=6PnxJaVdYHTfEoSreao3ANO+XeqxY/p/4dxKSObIH1I=;
-        b=75jsOkaq4mrZZwFcnhf6UrNlg/bPDw8wmHIAqEdxBW91IiUo5/B39kxLi/vZ68kCUR
-         bckJ3kwTnT8r+WHJeHhiC4+QykqyY+WnT3DP2kCZ97BU6tgCrPts0s9idYeVnXZ9YrOO
-         bxHUQg3L8/wAkaevqkO5CMqv9EpezrG3tiCB1pdnbn5fA/ehPjjlEZ/8o47QYnI/Dtdg
-         pE1MHkDDnbr84uOk8WibDQslm3oc6uAfo8JqHSs7vFOe79mJV5xV1k6cih1qQIUm+GWS
-         jxxWzKlEf8kZMA4qYSugsH5bKmDYMe3KpNveA+EU8rvxCPrbgR2oQATXnm6Ozdcu7DZK
-         B2AQ==
-X-Gm-Message-State: AOAM5302QNbgb3l0rWzBIX6L/U4sgFpg+7upH4rUB1UlTAWl8CUiKDKr
-        P15zbokzdfgHkhdSxWXUwQYNboDgAsJT8phezZ+ztn1jObvq
-X-Google-Smtp-Source: ABdhPJzkTl+tJbylc9dRvis6ZhULbTl7j4ynIkLgm4b/Lu4YSrf6PCWjehKBvofPJCmWKHUKJGD0xbE01MjL0VC50Jo=
-X-Received: by 2002:a17:90b:3143:b0:1c7:5cee:3948 with SMTP id
- ip3-20020a17090b314300b001c75cee3948mr852445pjb.140.1648664618224; Wed, 30
- Mar 2022 11:23:38 -0700 (PDT)
+        Mon, 4 Apr 2022 22:20:41 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A904D1AC41F;
+        Mon,  4 Apr 2022 18:15:33 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7C05D61794;
+        Tue,  5 Apr 2022 01:10:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5985C2BBE4;
+        Tue,  5 Apr 2022 01:10:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1649121043;
+        bh=/wQGv+a5YNqAzNePjyG4n29JhJYDL+Zyw5nRut7cPrc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=q8VfEa/oASHdKAkWs2vcgyr8IFyfZpgeO+2YxRec8fu1S5I/16C+2g1X8fOEDJ/dB
+         64eOp+fLrNCiX4pmDDz89Fvaz28wO5peHW1tvH8Q+ANFh8+b3JSAnWgTGSQNUnuMfY
+         GvDS3RbRdDy3f0v35lJ6CsuXQxnlXMq+uHCcECfkLY8apdfr3xbR7Nrm4TC6erTq1u
+         x8aKSIeDPdXmMZqU0KAZEKjtNJN/2enPWNfDMlHiU3yzn+DlIZORiMljEtv48rXNZN
+         +xS+ZQcGnl+E3Z37rSp9+BvQxGB7G7gIziWS54dIpEFGfYRYNpyU3TlXt9kBNrnKtT
+         rjU1AZVFsuHyQ==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, ceph-devel@vger.kernel.org
+Subject: [PATCH] fscrypt: split up FS_CRYPTO_BLOCK_SIZE
+Date:   Mon,  4 Apr 2022 18:09:14 -0700
+Message-Id: <20220405010914.18519-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Reply-To: isabellasayouba0@gmail.com
-Sender: 040stherchurch@gmail.com
-Received: by 2002:a05:6a20:691d:b0:76:6cf5:d552 with HTTP; Wed, 30 Mar 2022
- 11:23:37 -0700 (PDT)
-From:   Mrs Isabella Sayouba <isabellasayouba0@gmail.com>
-Date:   Wed, 30 Mar 2022 18:23:37 +0000
-X-Google-Sender-Auth: _Xe1kByDkvq-Dn04BagO7gok_qM
-Message-ID: <CAAzQq761QVaWKiKernxpKjqNCK+6V9mRKHBnOcqF8rXJO9Y+aA@mail.gmail.com>
-Subject: =?UTF-8?B?44GC44GE44GV44Gk44CC?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=3.8 required=5.0 tests=BAYES_99,BAYES_999,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_HK_NAME_FM_MR_MRS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: ***
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,SUSPICIOUS_RECIPS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-44GC44GE44GV44Gk44CCDQoNCua2meOCkua1geOBl+OBquOBjOOCieOBk+OBruODoeODvOODq+OC
-kuabuOOBhOOBpuOBhOOBvuOBmeOAguengeOBruebruOBq+OBr+Wkp+OBjeOBquaCsuOBl+OBv+OB
-jOOBguOCiuOBvuOBmeOAguengeOBruWQjeWJjeOBr+OCpOOCtuODmeODqeODu+OCteODqOOCpuOD
-kOOBleOCk+OBp+OBmeOAguODgeODpeODi+OCuOOCouWHuui6q+OBp+OAgeODluODq+OCreODiuOD
-leOCoeOCveOBrueXhemZouOBi+OCiemAo+e1oeOCkuWPluOCiuOBvuOBmeOAguengeOBr+OBguOB
-quOBn+OBq+W/g+OCkumWi+OBhOOBpuaEn+WLleOBl+OBn+OBruOBp+OAgeOBguOBquOBn+OBq+ip
-seOBmeS7peWkluOBq+mBuOaKnuiCouOBr+OBguOCiuOBvuOBm+OCk+OAguengeOBr+OAgTIwMTHl
-ubTjgavkuqHjgY/jgarjgovliY3jgavjg5bjg6vjgq3jg4rjg5XjgqHjgr3jga7jg4Hjg6Xjg4vj
-grjjgqLlpKfkvb/jgag55bm06ZaT5YON44GE44Gm44GE44GfU2F5b3ViYQ0KQnJvd27msI/jgajn
-tZDlqZrjgZfjgb7jgZfjgZ/jgILlrZDkvpvjgarjgZfjgacxMeW5tOmWk+e1kOWpmuOBl+OBn+OA
-gg0KDQrlvbzjga/jgZ/jgaPjgZ815pel6ZaT57aa44GE44Gf55+t44GE55eF5rCX44Gu5b6M44Gn
-5q2744Gr44G+44GX44Gf44CC5b2844Gu5q275b6M44CB56eB44Gv5YaN5ama44GX44Gq44GE44GT
-44Go44Gr5rG644KB44G+44GX44Gf44CC5Lqh44GP44Gq44Gj44Gf5aSr44GM55Sf44GN44Gm44GE
-44Gf44Go44GN44CB5b2844Gv57eP6aGNODUw5LiH44OJ44Or44KS6aCQ44GR44G+44GX44Gf44CC
-DQrvvIg4MDDkuIc1MDAw44OJ44Or77yJ6KW/44Ki44OV44Oq44Kr44Gu44OW44Or44Kt44OK44OV
-44Kh44K944Gu6aaW6YO944Ov44Ks44OJ44Kl44Kw44O844Gu6YqA6KGM44Gn44CC54++5Zyo44CB
-44GT44Gu44GK6YeR44Gv44G+44Gg6YqA6KGM44Gr44GC44KK44G+44GZ44CC5b2844Gv44GT44Gu
-44GK6YeR44KS44OW44Or44Kt44OK44OV44Kh44K944Gu6Ymx5qWt44GL44KJ44Gu6YeR44Gu6Ly4
-5Ye644Gr5Yip55So44Gn44GN44KL44KI44GG44Gr44GX44G+44GX44Gf44CCDQoNCuacgOi/keOA
-geengeOBruWMu+iAheOBr+engeOBjOeZjOOBqOiEs+WNkuS4reOBruWVj+mhjOOBruOBn+OCgeOB
-qzfjg7bmnIjplpPjga/ntprjgYvjgarjgYTjgaDjgo3jgYbjgajnp4HjgavoqIDjgYTjgb7jgZfj
-gZ/jgILnp4HjgpLmnIDjgoLmgqnjgb7jgZvjgabjgYTjgovjga7jga/ohLPljZLkuK3jga7nl4Xm
-sJfjgafjgZnjgILnp4Hjga7nirbmhYvjgpLnn6XjgaPjgZ/jga7jgafjgIHnp4Hjga/jgZPjga7j
-gYrph5HjgpLjgYLjgarjgZ/jgavmuKHjgZfjgabjgIHmgbXjgb7jgozjgarjgYTkurrjgIXjga7k
-uJboqbHjgpLjgZnjgovjgZPjgajjgavjgZfjgb7jgZfjgZ/jgILjgYLjgarjgZ/jga/jgZPjga7j
-gYrph5HjgpLnp4HjgYzjgZPjgZPjgafmjIfnpLrjgZnjgovmlrnms5XjgafliKnnlKjjgZnjgovj
-gafjgZfjgofjgYbjgILnp4Hjga/jgYLjgarjgZ/jgavjgYLjgarjgZ/jga7lgIvkurrnmoTjgark
-vb/nlKjjga7jgZ/jgoHjgavnt4/jgYrph5Hjga4zMOODkeODvOOCu+ODs+ODiOOCkuWPluOBo+OB
-puassuOBl+OBhOOBp+OBmeOAguOBiumHkeOBrjcw77yF44Gv56eB44Gu5ZCN5YmN44Gn5a2k5YWQ
-6Zmi44KS5bu644Gm44CB6YCa44KK44Gu6LKn44GX44GE5Lq644CF44KS5Yqp44GR44KL44Gf44KB
-44Gr5L2/44GG44Gn44GX44KH44GG44CC56eB44Gv5a2k5YWQ44Go44GX44Gm6IKy44Gh44G+44GX
-44Gf44GM44CB56We44Gu5a6244KS57at5oyB44GZ44KL44Gf44KB44Gg44GR44Gr44CB5a625peP
-44Gr44Gv6Kqw44KC44GE44G+44Gb44KT44CC44GT44Gu55eF5rCX44GM56eB44KS44Go44Gm44KC
-6Ium44GX44KB44Gf44Gu44Gn44CB56We44GM56eB44Gu572q44KS6LWm44GX44CB5qW95ZyS44Gn
-56eB44Gu6a2C44KS5Y+X44GR5YWl44KM44KL44KI44GG44Gr44GT44KM44KS44GX44Gm44GE44KL
-44Gu44Gn44GZ44CCDQoNCui/lOS/oeOCkuWPl+OBkeWPluOCiuasoeesrOOAgeODluODq+OCreOD
-iuODleOCoeOCveOBrumKgOihjOOBrumAo+e1oeWFiOOCkuOBiuefpeOCieOBm+OBl+OBvuOBmeOA
-guOBvuOBn+OAgemKgOihjOOBruePvuWcqOOBruWPl+WPluS6uuOBp+OBguOCi+OBk+OBqOOCkuio
-vOaYjuOBmeOCi+aoqemZkOabuOOCkueZuuihjOOBmeOCi+OCiOOBhumKgOihjOmVt+OBq+aMh+ek
-uuOBl+OBvuOBmeOAguengeOBjOOBk+OBk+OBp+i/sOOBueOBn+OCiOOBhuOBq+OBguOBquOBn+OB
-jOOBneOCjOOBq+W/nOOBmOOBpuihjOWLleOBmeOCi+OBk+OBqOOCkuengeOBq+S/neiovOOBl+OB
-puOBj+OBoOOBleOBhOOAgg0KDQrjgqTjgrbjg5njg6njg7vjgrXjg6jjgqbjg5DlpKvkurrjgYvj
-gonjgIINCg==
+From: Eric Biggers <ebiggers@google.com>
+
+FS_CRYPTO_BLOCK_SIZE is neither the filesystem block size nor the
+granularity of encryption.  Rather, it defines two logically separate
+constraints that both arise from the block size of the AES cipher:
+
+- The alignment required for the lengths of file contents blocks
+- The minimum input/output length for the filenames encryption modes
+
+Since there are way too many things called the "block size", and the
+connection with the AES block size is not easily understood, split
+FS_CRYPTO_BLOCK_SIZE into two constants FSCRYPT_CONTENTS_ALIGNMENT and
+FSCRYPT_FNAME_MIN_MSG_LEN that more clearly describe what they are.
+
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ fs/crypto/crypto.c      | 10 +++++-----
+ fs/crypto/fname.c       | 11 +++++++++--
+ fs/ubifs/ubifs.h        |  2 +-
+ include/linux/fscrypt.h | 12 +++++++++++-
+ 4 files changed, 26 insertions(+), 9 deletions(-)
+
+diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
+index 526a4c1bed994..e78be66bbf015 100644
+--- a/fs/crypto/crypto.c
++++ b/fs/crypto/crypto.c
+@@ -113,7 +113,7 @@ int fscrypt_crypt_block(const struct inode *inode, fscrypt_direction_t rw,
+ 
+ 	if (WARN_ON_ONCE(len <= 0))
+ 		return -EINVAL;
+-	if (WARN_ON_ONCE(len % FS_CRYPTO_BLOCK_SIZE != 0))
++	if (WARN_ON_ONCE(len % FSCRYPT_CONTENTS_ALIGNMENT != 0))
+ 		return -EINVAL;
+ 
+ 	fscrypt_generate_iv(&iv, lblk_num, ci);
+@@ -213,8 +213,8 @@ EXPORT_SYMBOL(fscrypt_encrypt_pagecache_blocks);
+  * fscrypt_encrypt_block_inplace() - Encrypt a filesystem block in-place
+  * @inode:     The inode to which this block belongs
+  * @page:      The page containing the block to encrypt
+- * @len:       Size of block to encrypt.  Doesn't need to be a multiple of the
+- *		fs block size, but must be a multiple of FS_CRYPTO_BLOCK_SIZE.
++ * @len:       Size of block to encrypt.  This must be a multiple of
++ *		FSCRYPT_CONTENTS_ALIGNMENT.
+  * @offs:      Byte offset within @page at which the block to encrypt begins
+  * @lblk_num:  Filesystem logical block number of the block, i.e. the 0-based
+  *		number of the block within the file
+@@ -283,8 +283,8 @@ EXPORT_SYMBOL(fscrypt_decrypt_pagecache_blocks);
+  * fscrypt_decrypt_block_inplace() - Decrypt a filesystem block in-place
+  * @inode:     The inode to which this block belongs
+  * @page:      The page containing the block to decrypt
+- * @len:       Size of block to decrypt.  Doesn't need to be a multiple of the
+- *		fs block size, but must be a multiple of FS_CRYPTO_BLOCK_SIZE.
++ * @len:       Size of block to decrypt.  This must be a multiple of
++ *		FSCRYPT_CONTENTS_ALIGNMENT.
+  * @offs:      Byte offset within @page at which the block to decrypt begins
+  * @lblk_num:  Filesystem logical block number of the block, i.e. the 0-based
+  *		number of the block within the file
+diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
+index a9be4bc74a94a..14e0ef5e9a20a 100644
+--- a/fs/crypto/fname.c
++++ b/fs/crypto/fname.c
+@@ -18,6 +18,13 @@
+ #include <crypto/skcipher.h>
+ #include "fscrypt_private.h"
+ 
++/*
++ * The minimum message length (input and output length), in bytes, for all
++ * filenames encryption modes.  Filenames shorter than this will be zero-padded
++ * before being encrypted.
++ */
++#define FSCRYPT_FNAME_MIN_MSG_LEN 16
++
+ /*
+  * struct fscrypt_nokey_name - identifier for directory entry when key is absent
+  *
+@@ -267,7 +274,7 @@ bool fscrypt_fname_encrypted_size(const union fscrypt_policy *policy,
+ 
+ 	if (orig_len > max_len)
+ 		return false;
+-	encrypted_len = max(orig_len, (u32)FS_CRYPTO_BLOCK_SIZE);
++	encrypted_len = max_t(u32, orig_len, FSCRYPT_FNAME_MIN_MSG_LEN);
+ 	encrypted_len = round_up(encrypted_len, padding);
+ 	*encrypted_len_ret = min(encrypted_len, max_len);
+ 	return true;
+@@ -350,7 +357,7 @@ int fscrypt_fname_disk_to_usr(const struct inode *inode,
+ 		return 0;
+ 	}
+ 
+-	if (iname->len < FS_CRYPTO_BLOCK_SIZE)
++	if (iname->len < FSCRYPT_FNAME_MIN_MSG_LEN)
+ 		return -EUCLEAN;
+ 
+ 	if (fscrypt_has_encryption_key(inode))
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index 008fa46ef61e7..7d6d2f152e039 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -132,7 +132,7 @@
+ #define WORST_COMPR_FACTOR 2
+ 
+ #ifdef CONFIG_FS_ENCRYPTION
+-#define UBIFS_CIPHER_BLOCK_SIZE FS_CRYPTO_BLOCK_SIZE
++#define UBIFS_CIPHER_BLOCK_SIZE FSCRYPT_CONTENTS_ALIGNMENT
+ #else
+ #define UBIFS_CIPHER_BLOCK_SIZE 0
+ #endif
+diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
+index 50d92d805bd8c..efc7f96e5e26b 100644
+--- a/include/linux/fscrypt.h
++++ b/include/linux/fscrypt.h
+@@ -18,7 +18,17 @@
+ #include <linux/slab.h>
+ #include <uapi/linux/fscrypt.h>
+ 
+-#define FS_CRYPTO_BLOCK_SIZE		16
++/*
++ * The lengths of all file contents blocks must be divisible by this value.
++ * This is needed to ensure that all contents encryption modes will work, as
++ * some of the supported modes don't support arbitrarily byte-aligned messages.
++ *
++ * Since the needed alignment is 16 bytes, most filesystems will meet this
++ * requirement naturally, as typical block sizes are powers of 2.  However, if a
++ * filesystem can generate arbitrarily byte-aligned block lengths (e.g., via
++ * compression), then it will need to pad to this alignment before encryption.
++ */
++#define FSCRYPT_CONTENTS_ALIGNMENT 16
+ 
+ union fscrypt_policy;
+ struct fscrypt_info;
+-- 
+2.35.1
+
