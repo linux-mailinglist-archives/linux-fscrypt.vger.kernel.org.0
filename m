@@ -2,42 +2,43 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9A8F50057D
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 14 Apr 2022 07:34:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E1955006CD
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 14 Apr 2022 09:20:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231517AbiDNFgy (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 14 Apr 2022 01:36:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47008 "EHLO
+        id S240380AbiDNHWw (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 14 Apr 2022 03:22:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229908AbiDNFgx (ORCPT
+        with ESMTP id S240337AbiDNHWg (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 14 Apr 2022 01:36:53 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF79128E13;
-        Wed, 13 Apr 2022 22:34:29 -0700 (PDT)
+        Thu, 14 Apr 2022 03:22:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B1F193DF;
+        Thu, 14 Apr 2022 00:20:11 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 5057EB827CE;
-        Thu, 14 Apr 2022 05:34:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAFABC385A1;
-        Thu, 14 Apr 2022 05:34:26 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 72F9D61F1F;
+        Thu, 14 Apr 2022 07:20:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B421EC385A5;
+        Thu, 14 Apr 2022 07:20:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649914466;
-        bh=wHbFG3DggZ5vxAeshgXbgApNdQmT+w1qK86JQDvki8E=;
+        s=k20201202; t=1649920810;
+        bh=zGKkFXHF2/aGqlh57LD/yJ1V5xODIYOrx/u2LxVTATc=;
         h=From:To:Cc:Subject:Date:From;
-        b=fHniNMHUCqyzPkzAsSGFbtjmt6AjfV14lpNnO97SL1jR349g/X0gEpW/z11V6Sl/w
-         ZVQp4EWGIFDMLMEKxR8PKB182HFzETU+w5CJA+B3L9eF39VR6PSLwcI0xkCZfij45d
-         043nWiH4sdCuL6LOsGlI+YnhuwZXPFxOV87EFACKHwaN1R+jBo96JAnxhQTug0nLGO
-         /7dgWqE5NdtYSyGK1eCwfMfyvXXRrhkGC93S00GUyPzDLpmybfeDAQOP62oxcamx2g
-         gKa3xHucGV/ub9ESxIKFhL5LItIrQImq+W7vAYOdlGE1Hl4g+iDXhz2C0OpwaOtZTi
-         ge7kYdo7qebAA==
+        b=axAYX4RKAzYNBncA6RcxPSprvkfGZ8gAkHK/g3Lv43HwBaksvB4krihBRqtReFPBm
+         8cNDfvSkmkWmsgM4f3VLo4FDWsxl1ctes8OYx/KbyC85YCi/uGPNA/4lM5GV/XE/ev
+         3ecEiCpJgZdmgUZkhaAVyvKO7Dgx/kr5HCLPFMosH+RBx+eevbseenJp9tOpot1Rea
+         XqNZZbPMupETwtu7u9KON3nkrrJn5TKM7Ub75N54cbAMiRDTxOp/3TomJKbao6BSH8
+         1NUsWhBFOD+xU3DZiN0yMmaFB6RQKzSyh+LvUaW/fG8zQVdEwugsw08fU971sMS+u9
+         B2sHDG6FQwRYA==
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
-Subject: [PATCH] fscrypt: log when starting to use inline encryption
-Date:   Wed, 13 Apr 2022 22:34:15 -0700
-Message-Id: <20220414053415.158986-1-ebiggers@kernel.org>
+To:     fstests@vger.kernel.org
+Cc:     linux-fscrypt@vger.kernel.org,
+        Ritesh Harjani <ritesh.list@gmail.com>
+Subject: [xfstests PATCH v2] common/encrypt: use a sub-keyring within the session keyring
+Date:   Thu, 14 Apr 2022 00:19:32 -0700
+Message-Id: <20220414071932.166090-1-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -53,107 +54,367 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-When inline encryption is used, the usual message "fscrypt: AES-256-XTS
-using implementation <impl>" doesn't appear in the kernel log.  Add a
-similar message for the blk-crypto case that indicates that inline
-encryption was used, and whether blk-crypto-fallback was used or not.
-This can be useful for debugging performance problems.
+Make the encryption tests create and use a named keyring "xfstests" in
+the session keyring that the tests happen to be running under, rather
+than replace the session keyring using 'keyctl new_session'.
+Unfortunately, the latter doesn't work when the session keyring is owned
+by a non-root user, which (depending on the Linux distro) can happen if
+xfstests is run in a sudo "session" rather than in a real root session.
 
+This isn't a great solution, as the lifetime of the keyring will no
+longer be tied to the tests as it should be, but it should work.  The
+alternative would be the weird hack of making the 'check' script
+re-execute itself using something like 'keyctl session - $0 $@'.
+
+Reported-by: Ritesh Harjani <ritesh.list@gmail.com>
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/crypto/fscrypt_private.h |  4 +++-
- fs/crypto/inline_crypt.c    | 33 ++++++++++++++++++++++++++++++++-
- fs/crypto/keysetup.c        |  2 +-
- 3 files changed, 36 insertions(+), 3 deletions(-)
 
-diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-index 5b0a9e6478b5d..33f08f1b1974e 100644
---- a/fs/crypto/fscrypt_private.h
-+++ b/fs/crypto/fscrypt_private.h
-@@ -561,7 +561,9 @@ struct fscrypt_mode {
- 	int keysize;		/* key size in bytes */
- 	int security_strength;	/* security strength in bytes */
- 	int ivsize;		/* IV size in bytes */
--	int logged_impl_name;
-+	int logged_cryptoapi_impl;
-+	int logged_blk_crypto_native;
-+	int logged_blk_crypto_fallback;
- 	enum blk_crypto_mode_num blk_crypto_mode;
- };
- 
-diff --git a/fs/crypto/inline_crypt.c b/fs/crypto/inline_crypt.c
-index 93c2ca8580923..90f3e68f166e3 100644
---- a/fs/crypto/inline_crypt.c
-+++ b/fs/crypto/inline_crypt.c
-@@ -12,7 +12,7 @@
-  * provides the key and IV to use.
-  */
- 
--#include <linux/blk-crypto.h>
-+#include <linux/blk-crypto-profile.h>
- #include <linux/blkdev.h>
- #include <linux/buffer_head.h>
- #include <linux/sched/mm.h>
-@@ -64,6 +64,35 @@ static unsigned int fscrypt_get_dun_bytes(const struct fscrypt_info *ci)
- 	return DIV_ROUND_UP(lblk_bits, 8);
+Changed v1 => v2: rebased onto latest master branch
+
+ common/encrypt    | 55 ++++++++++++++++++++++++++++++++++-------------
+ tests/ext4/024    |  2 +-
+ tests/generic/397 |  2 +-
+ tests/generic/398 |  2 +-
+ tests/generic/399 |  2 +-
+ tests/generic/419 |  2 +-
+ tests/generic/421 |  2 +-
+ tests/generic/429 |  2 +-
+ tests/generic/435 |  2 +-
+ tests/generic/440 |  2 +-
+ tests/generic/576 |  2 +-
+ tests/generic/593 | 13 +++++------
+ 12 files changed, 57 insertions(+), 31 deletions(-)
+
+diff --git a/common/encrypt b/common/encrypt
+index 3e8c7fd3..8f3c46f6 100644
+--- a/common/encrypt
++++ b/common/encrypt
+@@ -121,7 +121,7 @@ _require_encryption_policy_support()
+ 		local keyspec=$(_add_enckey $mnt "$raw_key" | awk '{print $NF}')
+ 	else
+ 		_require_command "$KEYCTL_PROG" keyctl
+-		_new_session_keyring
++		_init_session_keyring
+ 		local keyspec=$(_generate_session_encryption_key)
+ 	fi
+ 	if _set_encpolicy $dir $keyspec $set_encpolicy_args \
+@@ -138,7 +138,7 @@ _require_encryption_policy_support()
+ 		_notrun "encryption policy '$set_encpolicy_args' is unusable; probably missing kernel crypto API support"
+ 	fi
+ 	if (( policy_version <= 1 )); then
+-		$KEYCTL_PROG clear @s
++		$KEYCTL_PROG clear $TEST_KEYRING_ID
+ 	fi
+ 	rm -r $dir
  }
+@@ -199,11 +199,30 @@ TEST_KEY_DESCRIPTOR="0000111122223333"
+ # Key identifier: HKDF-SHA512(key=$TEST_RAW_KEY, salt="", info="fscrypt\0\x01")
+ TEST_KEY_IDENTIFIER="69b2f6edeee720cce0577937eb8a6751"
  
-+/*
-+ * Log a message when starting to use blk-crypto (native) or blk-crypto-fallback
-+ * for an encryption mode for the first time.  This is the blk-crypto
-+ * counterpart to the message logged when starting to use the crypto API for the
-+ * first time.  A limitation is that these messages don't convey which specific
-+ * filesystems or files are using each implementation.  However, *usually*
-+ * systems use just one implementation per mode, which makes these messages
-+ * helpful for debugging problems where the "wrong" implementation is used.
-+ */
-+static void fscrypt_log_blk_crypto_impl(struct fscrypt_mode *mode,
-+					struct request_queue **devs,
-+					int num_devs,
-+					const struct blk_crypto_config *cfg)
-+{
-+	int i;
+-# Give the invoking shell a new session keyring.  This makes any keys we add to
+-# the session keyring scoped to the lifetime of the test script.
+-_new_session_keyring()
++# This is the ID of the keyring that was created by _init_session_keyring().
++# You must call _init_session_keyring() before using this.
++TEST_KEYRING_ID=
 +
-+	for (i = 0; i < num_devs; i++) {
-+		if (!IS_ENABLED(CONFIG_BLK_INLINE_ENCRYPTION_FALLBACK) ||
-+		    __blk_crypto_cfg_supported(devs[i]->crypto_profile, cfg)) {
-+			if (!xchg(&mode->logged_blk_crypto_native, 1))
-+				pr_info("fscrypt: %s using blk-crypto (native)\n",
-+					mode->friendly_name);
-+		} else if (!xchg(&mode->logged_blk_crypto_fallback, 1)) {
-+			pr_info("fscrypt: %s using blk-crypto-fallback\n",
-+				mode->friendly_name);
-+		}
-+	}
++# Create a test keyring within the session keyring.  Keys added to this keyring
++# will be available within the test script and all its subprocesses.  If the
++# test keyring already exists, then it is replaced.
++#
++# This used to use 'keyctl new_session' to replace the session keyring itself.
++# However, that doesn't work if a non-root user owns the session keyring.
++_init_session_keyring()
+ {
+-	$KEYCTL_PROG new_session >>$seqres.full
++	TEST_KEYRING_ID=$($KEYCTL_PROG newring xfstests @s)
++	if [ -z "$TEST_KEYRING_ID" ]; then
++		_fail "Failed to create test keyring in session keyring"
++	fi
 +}
 +
- /* Enable inline encryption for this file if supported. */
- int fscrypt_select_encryption_impl(struct fscrypt_info *ci)
- {
-@@ -117,6 +146,8 @@ int fscrypt_select_encryption_impl(struct fscrypt_info *ci)
- 			goto out_free_devs;
- 	}
++# Check that _init_session_keyring() has been called.
++_check_session_keyring()
++{
++	if [ -z "$TEST_KEYRING_ID" ]; then
++		_fail "_init_session_keyring() must be called before using the test keyring"
++	fi
+ }
  
-+	fscrypt_log_blk_crypto_impl(ci->ci_mode, devs, num_devs, &crypto_cfg);
+ # Generate a key descriptor (16 character hex string)
+@@ -276,6 +295,8 @@ _add_session_encryption_key()
+ 	local keydesc=$1
+ 	local raw=$2
+ 
++	_check_session_keyring
 +
- 	ci->ci_inlinecrypt = true;
- out_free_devs:
- 	kfree(devs);
-diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index eede186b04ce3..6b509af13e0da 100644
---- a/fs/crypto/keysetup.c
-+++ b/fs/crypto/keysetup.c
-@@ -94,7 +94,7 @@ fscrypt_allocate_skcipher(struct fscrypt_mode *mode, const u8 *raw_key,
- 			    mode->cipher_str, PTR_ERR(tfm));
- 		return tfm;
- 	}
--	if (!xchg(&mode->logged_impl_name, 1)) {
-+	if (!xchg(&mode->logged_cryptoapi_impl, 1)) {
- 		/*
- 		 * fscrypt performance can vary greatly depending on which
- 		 * crypto algorithm implementation is used.  Help people debug
+ 	#
+ 	# Add the key to the session keyring.  The required structure is:
+ 	#
+@@ -291,14 +312,14 @@ _add_session_encryption_key()
+ 	local size=$(_num_to_hex 64 4)
+ 	local prefix=$(_get_fs_keyprefix)
+ 	echo -n -e "${mode}${raw}${size}" |
+-		$KEYCTL_PROG padd logon $prefix:$keydesc @s >>$seqres.full
++		$KEYCTL_PROG padd logon $prefix:$keydesc $TEST_KEYRING_ID \
++			>>$seqres.full
+ }
+ 
+ #
+ # Generate a random encryption key, add it to the session keyring, and print out
+ # the resulting key descriptor (example: "8bf798e1a494e1ec").  Requires the
+-# keyctl program.  It's assumed the caller has already set up a test-scoped
+-# session keyring using _new_session_keyring.
++# keyctl program and that _init_session_keyring() has been called.
+ #
+ _generate_session_encryption_key()
+ {
+@@ -313,18 +334,20 @@ _generate_session_encryption_key()
+ # Unlink an encryption key from the session keyring, given its key descriptor.
+ _unlink_session_encryption_key()
+ {
++	_check_session_keyring
+ 	local keydesc=$1
+ 	local prefix=$(_get_fs_keyprefix)
+-	local keyid=$($KEYCTL_PROG search @s logon $prefix:$keydesc)
++	local keyid=$($KEYCTL_PROG search $TEST_KEYRING_ID logon $prefix:$keydesc)
+ 	$KEYCTL_PROG unlink $keyid >>$seqres.full
+ }
+ 
+ # Revoke an encryption key from the session keyring, given its key descriptor.
+ _revoke_session_encryption_key()
+ {
++	_check_session_keyring
+ 	local keydesc=$1
+ 	local prefix=$(_get_fs_keyprefix)
+-	local keyid=$($KEYCTL_PROG search @s logon $prefix:$keydesc)
++	local keyid=$($KEYCTL_PROG search $TEST_KEYRING_ID logon $prefix:$keydesc)
+ 	$KEYCTL_PROG revoke $keyid >>$seqres.full
+ }
+ 
+@@ -443,6 +466,8 @@ _add_fscrypt_provisioning_key()
+ 	local type=$2
+ 	local raw=$3
+ 
++	_check_session_keyring
++
+ 	# The format of the key payload must be:
+ 	#
+ 	#	struct fscrypt_provisioning_key_payload {
+@@ -454,7 +479,7 @@ _add_fscrypt_provisioning_key()
+ 	local type_hex=$(_num_to_hex $type 4)
+ 	local reserved=$(_num_to_hex 0 4)
+ 	echo -n -e "${type_hex}${reserved}${raw}" |
+-		$KEYCTL_PROG padd fscrypt-provisioning "$desc" @s
++		$KEYCTL_PROG padd fscrypt-provisioning "$desc" $TEST_KEYRING_ID
+ }
+ 
+ # Retrieve the encryption nonce of the given inode as a hex string.  The nonce
+@@ -618,7 +643,7 @@ _require_get_ciphertext_filename_support()
+ 		_require_command "$DUMP_F2FS_PROG" dump.f2fs
+ 		_require_command "$KEYCTL_PROG" keyctl
+ 		_scratch_mount
+-		_new_session_keyring
++		_init_session_keyring
+ 
+ 		local keydesc=$(_generate_session_encryption_key)
+ 		local dir=$SCRATCH_MNT/test.${FUNCNAME[0]}
+@@ -629,7 +654,7 @@ _require_get_ciphertext_filename_support()
+ 		local inode=$(stat -c %i $file)
+ 
+ 		_scratch_unmount
+-		$KEYCTL_PROG clear @s
++		$KEYCTL_PROG clear $TEST_KEYRING_ID
+ 
+ 		# 255-character filename should result in 340 base64 characters.
+ 		if ! $DUMP_F2FS_PROG -i $inode $SCRATCH_DEV \
+@@ -912,7 +937,7 @@ _verify_ciphertext_for_encryption_policy()
+ 				| awk '{print $NF}')
+ 	else
+ 		local keyspec=$(_generate_key_descriptor)
+-		_new_session_keyring
++		_init_session_keyring
+ 		_add_session_encryption_key $keyspec $raw_key
+ 	fi
+ 	local raw_key_hex=$(echo "$raw_key" | tr -d '\\x')
+diff --git a/tests/ext4/024 b/tests/ext4/024
+index 116adca9..11b335f0 100755
+--- a/tests/ext4/024
++++ b/tests/ext4/024
+@@ -18,7 +18,7 @@ _supported_fs ext4
+ _require_scratch_encryption
+ _require_command "$KEYCTL_PROG" keyctl
+ 
+-_new_session_keyring
++_init_session_keyring
+ 
+ #
+ # Create an encrypted file whose size is not a multiple of the filesystem block
+diff --git a/tests/generic/397 b/tests/generic/397
+index 5ff65cd9..6c03f274 100755
+--- a/tests/generic/397
++++ b/tests/generic/397
+@@ -23,7 +23,7 @@ _require_symlinks
+ _require_scratch_encryption
+ _require_command "$KEYCTL_PROG" keyctl
+ 
+-_new_session_keyring
++_init_session_keyring
+ 
+ _scratch_mkfs_encrypted &>> $seqres.full
+ _scratch_mount
+diff --git a/tests/generic/398 b/tests/generic/398
+index 506513c1..e2cbad54 100755
+--- a/tests/generic/398
++++ b/tests/generic/398
+@@ -24,7 +24,7 @@ _supported_fs generic
+ _require_scratch_encryption
+ _require_renameat2 exchange
+ 
+-_new_session_keyring
++_init_session_keyring
+ _scratch_mkfs_encrypted &>> $seqres.full
+ _scratch_mount
+ 
+diff --git a/tests/generic/399 b/tests/generic/399
+index 55f07ae5..a5aa7107 100755
+--- a/tests/generic/399
++++ b/tests/generic/399
+@@ -30,7 +30,7 @@ _require_symlinks
+ _require_command "$XZ_PROG" xz
+ _require_command "$KEYCTL_PROG" keyctl
+ 
+-_new_session_keyring
++_init_session_keyring
+ 
+ #
+ # Set up a small filesystem containing an encrypted directory.  64 MB is enough
+diff --git a/tests/generic/419 b/tests/generic/419
+index 6be7865c..5d56d64f 100755
+--- a/tests/generic/419
++++ b/tests/generic/419
+@@ -24,7 +24,7 @@ _require_scratch_encryption
+ _require_command "$KEYCTL_PROG" keyctl
+ _require_renameat2 exchange
+ 
+-_new_session_keyring
++_init_session_keyring
+ 
+ _scratch_mkfs_encrypted &>> $seqres.full
+ _scratch_mount
+diff --git a/tests/generic/421 b/tests/generic/421
+index 04462d17..0c4fa8e3 100755
+--- a/tests/generic/421
++++ b/tests/generic/421
+@@ -20,7 +20,7 @@ _supported_fs generic
+ _require_scratch_encryption
+ _require_command "$KEYCTL_PROG" keyctl
+ 
+-_new_session_keyring
++_init_session_keyring
+ _scratch_mkfs_encrypted &>> $seqres.full
+ _scratch_mount
+ 
+diff --git a/tests/generic/429 b/tests/generic/429
+index 558e93ca..2cf12316 100755
+--- a/tests/generic/429
++++ b/tests/generic/429
+@@ -35,7 +35,7 @@ _require_test_program "t_encrypted_d_revalidate"
+ # Set up an encrypted directory
+ _scratch_mkfs_encrypted &>> $seqres.full
+ _scratch_mount
+-_new_session_keyring
++_init_session_keyring
+ keydesc=$(_generate_key_descriptor)
+ raw_key=$(_generate_raw_encryption_key)
+ mkdir $SCRATCH_MNT/edir
+diff --git a/tests/generic/435 b/tests/generic/435
+index 031e43cc..bb1cbb62 100755
+--- a/tests/generic/435
++++ b/tests/generic/435
+@@ -29,7 +29,7 @@ _require_command "$KEYCTL_PROG" keyctl
+ 
+ # set up an encrypted directory
+ 
+-_new_session_keyring
++_init_session_keyring
+ _scratch_mkfs_encrypted &>> $seqres.full
+ _scratch_mount
+ mkdir $SCRATCH_MNT/edir
+diff --git a/tests/generic/440 b/tests/generic/440
+index f445a386..5850a8fe 100755
+--- a/tests/generic/440
++++ b/tests/generic/440
+@@ -25,7 +25,7 @@ _require_symlinks
+ _require_command "$KEYCTL_PROG" keyctl
+ 
+ # Set up an encryption-capable filesystem and an encryption key.
+-_new_session_keyring
++_init_session_keyring
+ _scratch_mkfs_encrypted &>> $seqres.full
+ _scratch_mount
+ keydesc=$(_generate_key_descriptor)
+diff --git a/tests/generic/576 b/tests/generic/576
+index 82fbdd71..3ef04953 100755
+--- a/tests/generic/576
++++ b/tests/generic/576
+@@ -38,7 +38,7 @@ edir=$SCRATCH_MNT/edir
+ fsv_file=$edir/file.fsv
+ 
+ # Set up an encrypted directory.
+-_new_session_keyring
++_init_session_keyring
+ keydesc=$(_generate_session_encryption_key)
+ mkdir $edir
+ _set_encpolicy $edir $keydesc
+diff --git a/tests/generic/593 b/tests/generic/593
+index f0610c57..2dda5d76 100755
+--- a/tests/generic/593
++++ b/tests/generic/593
+@@ -20,7 +20,7 @@ _supported_fs generic
+ _require_scratch_encryption -v 2
+ _require_command "$KEYCTL_PROG" keyctl
+ 
+-_new_session_keyring
++_init_session_keyring
+ _scratch_mkfs_encrypted &>> $seqres.full
+ _scratch_mount
+ _require_add_enckey_by_key_id $SCRATCH_MNT
+@@ -113,25 +113,26 @@ echo -e "\n# keyctl_read() doesn't work on fscrypt-provisioning keys"
+ keyid=$(_add_fscrypt_provisioning_key desc $FSCRYPT_KEY_SPEC_TYPE_DESCRIPTOR \
+ 	"$TEST_RAW_KEY")
+ $KEYCTL_PROG read $keyid
+-$KEYCTL_PROG unlink $keyid @s
++$KEYCTL_PROG unlink $keyid $TEST_KEYRING_ID
+ 
+ echo -e "\n# Only keys with the correct fscrypt_provisioning_key_payload::type field can be added"
+ echo "# ... keyring key is v1, filesystem wants v2 key"
+ keyid=$(_add_fscrypt_provisioning_key desc $FSCRYPT_KEY_SPEC_TYPE_DESCRIPTOR \
+ 	"$TEST_RAW_KEY")
+ $XFS_IO_PROG -c "add_enckey -k $keyid" $SCRATCH_MNT
+-$KEYCTL_PROG unlink $keyid @s
++$KEYCTL_PROG unlink $keyid $TEST_KEYRING_ID
+ 
+ echo "# ... keyring key is v2, filesystem wants v1 key"
+ keyid=$(_add_fscrypt_provisioning_key desc $FSCRYPT_KEY_SPEC_TYPE_IDENTIFIER \
+ 	"$TEST_RAW_KEY")
+ $XFS_IO_PROG -c "add_enckey -k $keyid -d $TEST_KEY_DESCRIPTOR" $SCRATCH_MNT
+-$KEYCTL_PROG unlink $keyid @s
++$KEYCTL_PROG unlink $keyid $TEST_KEYRING_ID
+ 
+ echo -e "\n# Only keys of type fscrypt-provisioning can be added"
+-keyid=$(head -c 64 /dev/urandom | $KEYCTL_PROG padd logon foo:desc @s)
++keyid=$(head -c 64 /dev/urandom | \
++	$KEYCTL_PROG padd logon foo:desc $TEST_KEYRING_ID)
+ $XFS_IO_PROG -c "add_enckey -k $keyid" $SCRATCH_MNT
+-$KEYCTL_PROG unlink $keyid @s
++$KEYCTL_PROG unlink $keyid $TEST_KEYRING_ID
+ 
+ # success, all done
+ status=0
 
-base-commit: 63cec1389e116ae0e2a15e612a5b49651e04be3f
+base-commit: 4a7b35d7a76cd993ad7a62fd180e00589c73ac4b
 -- 
 2.35.1
 
