@@ -2,89 +2,99 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44CCD5094BE
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 21 Apr 2022 03:42:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30C005096A3
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 21 Apr 2022 07:23:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383667AbiDUBpK (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 20 Apr 2022 21:45:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60698 "EHLO
+        id S1344458AbiDUF0U (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 21 Apr 2022 01:26:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357358AbiDUBpJ (ORCPT
+        with ESMTP id S233065AbiDUF0T (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 20 Apr 2022 21:45:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB25765E;
-        Wed, 20 Apr 2022 18:42:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7752761AE3;
-        Thu, 21 Apr 2022 01:42:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA6EEC385A1;
-        Thu, 21 Apr 2022 01:42:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650505340;
-        bh=ul1Udr04xMg38GJAsG+k+SVe40hU0hrxodm0nmtCHlM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X7Dt0fsMsvIBWGdyS0gOJN8k3WQpPe00FO4YjS8Gl5VmCtusJkwsQzIwmUC4lUI6R
-         xV/lUyMSA6ZKuRVDT36iZFyYDZMdb4I+d++/FUF13Z3xVC76bPQf4FDzz5atI4KWai
-         JGZIRY/fNVsVe9yMOGVzj9SALS9cEpLh51+05puDdHz8fQ57sMGOp8//DokpO7Q70I
-         Po/2dp999OHq/rITVHsw3X2jxXHkFGblxZuMJ/8kGU2UMH6qtq2bKTaA+cAPy7lEoB
-         vK75T+EC4lDlU94EFM0qv7+YWpB0O83gsCSPwoA+L05nIoy7/6NR1H4Dr9N4L3vnau
-         P1jzptAzrMKFg==
-Date:   Thu, 21 Apr 2022 01:42:18 +0000
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     syzbot <syzbot+1a748d0007eeac3ab079@syzkaller.appspotmail.com>
-Cc:     jaegeuk@kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu, linux-ext4@vger.kernel.org
-Subject: Re: [syzbot] possible deadlock in fscrypt_initialize
-Message-ID: <YmC2epeJNChYxWB3@gmail.com>
-References: <00000000000070395e05dd1fb4d7@google.com>
+        Thu, 21 Apr 2022 01:26:19 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4027DFAB;
+        Wed, 20 Apr 2022 22:23:31 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id g9so3711364pgc.10;
+        Wed, 20 Apr 2022 22:23:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JOMb/ac9GEQhxgFWy102RrBi/96CWNQGAWYx4cSN7Pg=;
+        b=W/QJvfOG1S2aw8AHHspRF+F0Cru7bxKMKGSudgHFMjdbTFkvXsRrjzzksoSshU0943
+         dOjSY3fEilKzrKvAMX5fVeyO08Sls0cy1RE7lMKrJMbwHWYq7HcDrH9pnO2CHCug1OzH
+         EFpkodl8l8NxmF6befdxKXa0AoV0LN1QV3vVIJFuYQJFE0+U4NUtvZv9acGMs0aLid7E
+         ytZWOM394ILDE2kRiKz6Yi39QBTtKqP2sFs1nwBHLRPkrpeaGqlmZPkghmVuE+Qa6ICk
+         k8Yh445dfJID57bZePoeLSV5SpHMDWOUN2vrYddEV9/h1uDcAvIM5YDyN7JKzYNE/aQ2
+         0wLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JOMb/ac9GEQhxgFWy102RrBi/96CWNQGAWYx4cSN7Pg=;
+        b=qNz+uBo6mRWadKp7XyNiDbfVHZ3nChTupNXFjKT9Zs1RNwd778q7BsO7FhB1riJUzS
+         KJOOOqzjk5hK2ZF7H/8dLfqRIe9COkehizhAyleqZNu3gu1izhHXbEuc10SI4J/3z8Vb
+         kI0x88eSbKnI873+Nq6ocgz5tq1DWgn0y3ky/RKBm7K6Alpjw+5TKXfyNIWbTGcWJl5M
+         ge+lZj/bccNxxZ3GxeaZUsYldho6/HCYbUmvDH8dgvVWEHVE7kP33m7ZTDN4r2bxwfxX
+         IrYRv2Boh/4BJ10wgdaQlEyCORUmIcDOlGxz4IhHnjhwz5oBbcKUxqZ58q7TEf0Ba9zN
+         2+hg==
+X-Gm-Message-State: AOAM533eYF8yeOCzaQMFKf5nkUxPrfPDLRtQm3UkT+C6pjtASpTfVbOY
+        qxi28L4bYe+DbvGCtbwhV4WaVhHQric=
+X-Google-Smtp-Source: ABdhPJzuJPtls9PlUdw/9htvfh5whOq8fXTZ/myjZqwTXiDdhJoKdphLV50VILbFYEDY7RX8kpp0eA==
+X-Received: by 2002:a05:6a00:b52:b0:508:31e1:7d35 with SMTP id p18-20020a056a000b5200b0050831e17d35mr27122648pfo.33.1650518611169;
+        Wed, 20 Apr 2022 22:23:31 -0700 (PDT)
+Received: from localhost ([2406:7400:63:fca5:5639:1911:2ab6:cfe6])
+        by smtp.gmail.com with ESMTPSA id bc11-20020a656d8b000000b0039cc4dbb295sm20479937pgb.60.2022.04.20.22.23.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Apr 2022 22:23:30 -0700 (PDT)
+From:   Ritesh Harjani <ritesh.list@gmail.com>
+To:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org
+Cc:     Eric Biggers <ebiggers@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
+        Jan Kara <jack@suse.cz>, Ritesh Harjani <ritesh.list@gmail.com>
+Subject: [RFC 0/6] ext4: Move out crypto ops to ext4_crypto.c
+Date:   Thu, 21 Apr 2022 10:53:16 +0530
+Message-Id: <cover.1650517532.git.ritesh.list@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <00000000000070395e05dd1fb4d7@google.com>
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, Apr 20, 2022 at 06:05:24PM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    90ea17a9e27b Merge tag 'scsi-fixes' of git://git.kernel.or..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=16bf09d0f00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=ac042ae170e2c50f
-> dashboard link: https://syzkaller.appspot.com/bug?extid=1a748d0007eeac3ab079
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+1a748d0007eeac3ab079@syzkaller.appspotmail.com
-> 
-> ======================================================
-> WARNING: possible circular locking dependency detected
-> 5.18.0-rc2-syzkaller-00291-g90ea17a9e27b #0 Not tainted
-> ------------------------------------------------------
-> syz-executor.0/3694 is trying to acquire lock:
-> ffffffff8bf36428 (fscrypt_init_mutex){+.+.}-{3:3}, at: fscrypt_initialize+0x3c/0xa0 fs/crypto/crypto.c:324
-> 
-> but task is already holding lock:
-> ffff8880430c8990 (jbd2_handle){++++}-{0:0}, at: start_this_handle+0xfb4/0x14a0 fs/jbd2/transaction.c:461
+Hello,
 
-This is a regression from a while back from the ext4 fast_commit changes,
-specifically commit a80f7fcf1867 ("ext4: fixup ext4_fc_track_* functions'
-signature") which extended the scope of the transaction in ext4_unlink() too
-far.  It's been on my TODO list to fix, along with the reports of fast_commit
-and encryption not working together.  I'll try to get to it soon.
+This is 1st in the series to cleanup ext4/super.c, since it has grown quite large.
+This moves out crypto related ops and few definitions to fs/ext4/ext4_crypto.c
 
-- Eric
+Testing
+=========
+1. Tested "-g encrypt" with default configs.
+2. Compiled tested on x86 & Power.
+
+
+Ritesh Harjani (6):
+  fscrypt: Provide definition of fscrypt_set_test_dummy_encryption
+  ext4: Move ext4 crypto code to its own file ext4_crypto.c
+  ext4: Directly opencode ext4_set_test_dummy_encryption
+  ext4: Cleanup function defs from ext4.h into ext4_crypto.c
+  ext4: Move all encryption related into a common #ifdef
+  ext4: Use provided macro for checking dummy_enc_policy
+
+ fs/ext4/Makefile        |   1 +
+ fs/ext4/ext4.h          |  81 +++--------------
+ fs/ext4/ext4_crypto.c   | 192 ++++++++++++++++++++++++++++++++++++++++
+ fs/ext4/super.c         | 158 ++++-----------------------------
+ include/linux/fscrypt.h |   7 ++
+ 5 files changed, 227 insertions(+), 212 deletions(-)
+ create mode 100644 fs/ext4/ext4_crypto.c
+
+--
+2.31.1
+
