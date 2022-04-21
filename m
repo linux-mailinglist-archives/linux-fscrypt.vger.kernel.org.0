@@ -2,175 +2,256 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5557850624F
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 19 Apr 2022 04:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97F2E50947B
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 21 Apr 2022 03:05:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236211AbiDSCv3 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 18 Apr 2022 22:51:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52874 "EHLO
+        id S1383415AbiDUBIO (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 20 Apr 2022 21:08:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231327AbiDSCv2 (ORCPT
+        with ESMTP id S1383539AbiDUBIN (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 18 Apr 2022 22:51:28 -0400
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2133.outbound.protection.outlook.com [40.107.117.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E74C422501
-        for <linux-fscrypt@vger.kernel.org>; Mon, 18 Apr 2022 19:48:46 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IWtL1xymvX7UlFlXrnzWN9UVSXUmX4pO0najlNVDMwxv3w4uCilFGJxrOge3SiBl6YuHk46lyyIcsJaqAVDqT8FmFWdztNRrA9cSuORHDTuY1SrzbKE+7E+eDyGeui6mNVXgk+3HW14ZlB/lfOZdyssKU7TtnlP/lwIA0trKBa58z+bG0yEgIpcEKuhW60cjB/wTkZ30wYAhfFNwgT3PvYgzAnAcSdZ7aXwqN0CdTJJ2trF30cs1U5wZyfQKiYL+RsqREseIiQjkpUIStvc+axE0rpvrdw73QWXPtWZFKLjm29JGu1LMfxZ+8JaXesRPhBZzGzshKxnE1jgawtD3Mg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZhppFNiunxnkOrb+SrsnoOg6pZjAeVWxcG4K1TKAu/o=;
- b=L9pOtEV30l7TG1cDVai8JdIUxm34QZ+BFbPAL+SpEeGCli/erqjx+jNWLLTkwWrz1H+pzAk35WyDHThWoQfyvs/LtpJ36JvdLR4JEnUei5Y38Zceb9tI+LUT4om1UpnPmAz9o+Nk0UXyzUYZ2fQKNWrwE4qSfF+7negdrafYn0iZPGpZv6ubaDIYPgLX9pVfAcffcxi4K5E6zeqDvqZDqGP3WrHRAFV7RBI8DdOpE58bUr9Vb8XL+a7fVpPUH5RntHJTcXbBp1YUzHCuiXJpi47/BKtLphb6fxL/Ojo9b4IKfIlKoqLuT7kSI1FbR/tOEN5MX6y/kPikWrxuV2ceug==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
- s=selector2-vivo0-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZhppFNiunxnkOrb+SrsnoOg6pZjAeVWxcG4K1TKAu/o=;
- b=CjZsdIRxst/yfOaCWsmSYIOh8Vzd+Mxc8KQgKu4kD8pWr2a7IbKcsSJzOvTuB4GvfzFRnzg3NdeFMgU2R+iqoXkmaH8+/jeJKnAjAjYNvbASotbjEi5UAD6ZbQ8MGsK4X8KCOcir6JzvygIAufcqGTGFuaXyrKlvHx3O3VksbFI=
-Received: from KL1PR0601MB4003.apcprd06.prod.outlook.com (2603:1096:820:26::6)
- by HK2PR06MB3507.apcprd06.prod.outlook.com (2603:1096:202:3e::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5164.20; Tue, 19 Apr
- 2022 02:48:43 +0000
-Received: from KL1PR0601MB4003.apcprd06.prod.outlook.com
- ([fe80::f0c7:9081:8b5a:7e7e]) by KL1PR0601MB4003.apcprd06.prod.outlook.com
- ([fe80::f0c7:9081:8b5a:7e7e%8]) with mapi id 15.20.5164.026; Tue, 19 Apr 2022
- 02:48:42 +0000
-From:   =?utf-8?B?5bi45Yek5qWg?= <changfengnan@vivo.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-CC:     "jaegeuk@kernel.org" <jaegeuk@kernel.org>,
-        "chao@kernel.org" <chao@kernel.org>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "linux-f2fs-devel@lists.sourceforge.net" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>
-Subject: RE: f2fs compressed file bio merge problem
-Thread-Topic: f2fs compressed file bio merge problem
-Thread-Index: AdhS+AtDj5k4fJ3JTzKRhS7cHVTSKwAUe7EAABMcBSA=
-Date:   Tue, 19 Apr 2022 02:48:42 +0000
-Message-ID: <KL1PR0601MB40039A40AA4600669A04E707BBF29@KL1PR0601MB4003.apcprd06.prod.outlook.com>
-References: <KL1PR0601MB4003AA93745F5F9A79794BE4BBF39@KL1PR0601MB4003.apcprd06.prod.outlook.com>
- <Yl2gLG/8U9HdRpUT@gmail.com>
-In-Reply-To: <Yl2gLG/8U9HdRpUT@gmail.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f87dcbfd-df1b-4906-0ebe-08da21af1dd2
-x-ms-traffictypediagnostic: HK2PR06MB3507:EE_
-x-microsoft-antispam-prvs: <HK2PR06MB350793CA928CC2DAE1DA115ABBF29@HK2PR06MB3507.apcprd06.prod.outlook.com>
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: pRMx739b0zxquYc/EVJVM/yl2MpeiwuX77gTp4rb75kPNCHpCuqewrj0n9EWwKxG2YIGF1hcx939OITXWjyLxgnrGP0GsuP6dbNwboakRGUAJto0Ty6G1LjAimunMSttg7A8QXD8Ybl9aey5iXOEqozeNgG/1tsTbY9DWH3zLeOSwwZMlcEucH7U6JmynKjHrsnzqSoCsqOAx5HSKYnSn/NhUb6YsSwlEe5iKMwnRy10M7a3TuJWDOg77MbjlWLjfhz6EDOOaSnI3uxEfdoCf8N6pcRbkjDdkI3Owl3v12IcSRz4CwilGp/aaYYm6+qG0lurmqh7Dhpixl1tdKmfTQTBWELjZj6ilkWY7wNxloY/WtvrETkbMpaxVfLdAPg7d/dMohlFKKuJjkAyuVrwnwoQ4avUFdgBLtJjF3oR6no+GjizTZDs99AlD5lldXkosH1ZducHrwykA7q8nlOSswUgDL6LDkpiltB3ZXNRAmSWjgeuiVtrbe04QScMxGo8gCGvikCwAnClfVTLlmzL7NU4tCO82gaeKYtH43pRXYG6u5LIMaar5kcKK2r6YnBhz1SK+p0NWtHJA49NOyU+xAOj9PzjhOV1+Cvx6WIob0WbeNHWQm0KYznP+f9525+9Ej2kLDIgLisYl2n3nyXi1IS+6362Kz01moUo5xPPhw5OopR3aMeaN3l67ua5OmhfpfwUdqoKKG2vFIearrt2fXRwWKepEVC27y/Afz70OB/1xCDw/vtMHuH3I7OLHIVRM+iPKiEWq1Ew7BzGErmRchbZgwgpVBCTbmWGyqiYAEnNJrofVP4BkgHDZUVSvktaGF++zKyedMoid0wqN4vIbg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:KL1PR0601MB4003.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(52536014)(186003)(33656002)(9686003)(54906003)(53546011)(7696005)(6506007)(4326008)(64756008)(83380400001)(71200400001)(66946007)(76116006)(8676002)(86362001)(45080400002)(508600001)(26005)(6916009)(316002)(85182001)(38070700005)(66556008)(66476007)(66446008)(5660300002)(55016003)(8936002)(2906002)(38100700002)(122000001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?UytXSUp4NWNweGtCTDdkSW5mQXFvWmxNaEUxMTdCellsRHZ3NnR2ZStRc3Y0?=
- =?utf-8?B?ZEhVbWcrZ2tIN3grNnJVLzFMYnRhcnc4L2Vvd0hGWTVrZDBKRVpoRHFEYWgx?=
- =?utf-8?B?K0pKaGRrdGFxdFVPdmhMTEdUVzlhbmRMRVZuVUowUStmalhvb0RlRHYzbHB0?=
- =?utf-8?B?bFRUT0wrb1g2dk5TdklZTVVqSkI0ZXJSNnQvbUl0Z012eURBNGlOcm1sY2ww?=
- =?utf-8?B?TFk4eVNWZzNCaUpuTkVSSVZNa0tNVXpaR090YnRKRzJEeTVEbnBPbE9jNElw?=
- =?utf-8?B?MVQ3aG5aWnZPZnlIWDZlSUxSTW9zTWdvOWZCT0piU25CQWxBSHc3UTJVd3ZZ?=
- =?utf-8?B?Q1ZvaTFVaTJVMzZBNENJbWYrT1J5Unk1VzA2K2Q3UGJ4Lyt5cXZzRCtRajZm?=
- =?utf-8?B?dGo4NVZia1RkWlpmTGtJYW1yc3NHTVhkelJWd3lCUEdLSWlUOXFlQmxkbnhY?=
- =?utf-8?B?WmtnM1hNOXlaUDVkdzBIb2Z3M0FOQTEvMkhISkl1dlpTU25LempraGVJU0s4?=
- =?utf-8?B?b2dDTEpTb3cwMUNIbU1IcnZkOG5vM3JEdHJwczVmUGdjZ051Q3k5Qm9GTVRW?=
- =?utf-8?B?TXBNZ1ZuRVk1eCtCc0NQM1lGZUplQUxsU1dGemZFMTVEUTVrOHVGR05nTS9C?=
- =?utf-8?B?TVR5dlpkSXE0NWJjT01kald5dVQvMW5LMW1wOWQrTmpCNndNNS9ZNGhJZHFT?=
- =?utf-8?B?cVRvZExGajFuOXF6aXZsZldwWC9VbUF1Q2dna2x3N2JqSnFaRUtrbXJtSkVm?=
- =?utf-8?B?SHd0dDZ3VGNhZXE0NGNEQ01yOUppZGxvQ05zWDIzb3pJK1lRMEttSVp6b3BH?=
- =?utf-8?B?cnRsd2xLUm4zRVFnMUdJQjlPeWIvVXA5L0ZGODRrMnptOWdDRGJwbzhsa2FL?=
- =?utf-8?B?Z3BPMm42cmVXNFJGZHJSQUZUeDEwdkxDaWozcXYrUXlnOU9XVkVmdVBXTFhv?=
- =?utf-8?B?L0h2Z2xkOVhsR3hFOWUvYzZWQStHYnZ2WjNRSU5vM0U1VjJUeitMUjluL1Jz?=
- =?utf-8?B?YXYvSU80c3UxcGorNkhwVHBZc0FLZGx1dmNjRTJ3UVBEZ3EzOG1Oc2hZemw0?=
- =?utf-8?B?TEh6eDdZU2RQSDlyRWVTQ25Sd0JIS1ZDRE1iNEM0cmIrNXBuOEIxS3lOeGFM?=
- =?utf-8?B?N1JwN0ZFaTlKMFRRZ013bXc5SWpzbml3VVQwbG5jaGFkNmU1a2JIcStBNUdS?=
- =?utf-8?B?Z0dnM3JrcmVvQ2tlSENVaGJBUkxwKzN4VGRJMWRJOG0yZ2xWNm5QUDlOKzRn?=
- =?utf-8?B?NllnaGNJdXh2bkorVkpVcnVSV3o4ZHRFaGQwK1p0SFlLdDVCMHFMUUkvSlp4?=
- =?utf-8?B?S25ldGJWeGFFVHAzdFZjQTVybUZremFSMTNLQ2hoelFvM0l4REl6eEhtdmxX?=
- =?utf-8?B?U1VQbk9sUG14ZHkrRGY3eXozaFJhVjBnWmhFNStjRVAzR3Bqem15YVllcDdr?=
- =?utf-8?B?OXJwV3EwRC9zR0FhVDN5dFd0UXM4SVowNHdqc01jRWd3aUVUaGlVdWc4V1pr?=
- =?utf-8?B?Zk44Wm5NaGlzWk1nUTBZSEM2RW84R0p3em1icmM5WFZUd0ZacmMwZkw1RnpD?=
- =?utf-8?B?eVJxS3psZit3NlpKRGxPVE4xalhBZ0xWNktGbThxRDlqam5aNXJjYUV3SUtB?=
- =?utf-8?B?RnlHMHZtQi9tbGdsWTMzakt5VlVsRzQ5UDJqZmhEaU16VFMrUGZ5WkVjeXJj?=
- =?utf-8?B?UlBNRjNIOHdWWnhlYlNNQWdSblBBZWJoWXZ0bTBNSVNaNEs1ZDdGbjh1U0M5?=
- =?utf-8?B?WUFvUCtsNXM3QzEwbEN5cG55M0Fmek52S1poSDZMQ2duNm5SVGl1azF5NWVx?=
- =?utf-8?B?VndkSWt0Y0RDU3BrSThPd01nbEV4aitqak84RWE2bFdCVWNEZDVCdG5VeTdq?=
- =?utf-8?B?Z2w5dmkvTGtmS29ITmZzUjNVR21UZzZjSjdEWG5VY0tSbzUvQzNnTTBycXF5?=
- =?utf-8?B?RWFvcVV4QzMwZEUra0VrVy9CcEhPUU4vRnhxc2Q0ZnFhbk4xbGdiUDQ1QVlP?=
- =?utf-8?B?MktEMUlXcXg0b0FtQ29GbVJxY2Y1akh5b2Y1S09hUmdOZXZIazNpdG5JdnpY?=
- =?utf-8?B?ZjJDaW1JM2g0eTU5WFZmeGR1QnZiQW4zQlMwekxoODVzMjA0UEV2dVNCSFVx?=
- =?utf-8?B?Y2ZOcEx1NHpuWkRWTTF4Q1hTOTBzUXJCMWNWV0w5WTgxNjJWcUtzWnhDcmJ1?=
- =?utf-8?B?aVV2dktHckN5RDVoQTBKSjJrcWd0c2JDeWR6VFB6b3NuZW9TSXNXaWVWakN4?=
- =?utf-8?B?RlQ4VXpTaHkvdjdYcWxIeWVEenR3Y0M0NkhkZ0MxZlhxOFRJQzhBcDUrd3Ns?=
- =?utf-8?B?eFNXTFJSQ0Z3M1Q1Z3hWOXM5UDNKcnJOc3h1eEdWbnhPc1B4MllTZz09?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Wed, 20 Apr 2022 21:08:13 -0400
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30C65DEE4
+        for <linux-fscrypt@vger.kernel.org>; Wed, 20 Apr 2022 18:05:25 -0700 (PDT)
+Received: by mail-il1-f200.google.com with SMTP id j16-20020a056e02125000b002cc39632ab9so1830127ilq.9
+        for <linux-fscrypt@vger.kernel.org>; Wed, 20 Apr 2022 18:05:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=a9pH5rcH6cZW4gCODSOkvWJMXRWe4itgqzAkMUc2mXM=;
+        b=2BdbDtcEafcH1LrXZL5fM/0OzQUQXA5C//opeYxen1GnCibzYxcVPPby2yPSzIJPbT
+         KLo6becnX999TJOzGo9mbPxh8c9V5m5aOC1mMI5JmWBFJgvO/2epvmytqIwLMdGhX0Er
+         up7/sM87B+O612qSa8fd7kNTIaSbAIE/QdkfPNQ7dp1Ul4IphDjZjVOOkAjDs8VJTzUI
+         uRL6UE6toGbCEwsGQhr7KgTxeIT1ikhe/mqsYFOeUyhpk9jHgyhGBJwxhivzWZvrrJjs
+         ih5xSTdzoJfrneX2TQs4Hhsd1HI+HrnW7L+4KpqmL20Yc98riIpEiFNmVdIwVoH2qhcE
+         DD9Q==
+X-Gm-Message-State: AOAM531WdE5uUxX/WdscXWDaagAhv4PlVxI9IdOvv4t+rBNvUZeZmnrh
+        Vjgb9WA6q4ymFvctpn7evlLplBkIGaRQ0oEUM5vH1HUmPUi0
+X-Google-Smtp-Source: ABdhPJx9jyN2bwFSEOIs3D0/FO5AZ2aeascI5ph6L8J2M69QhfjlS+BUqJl7JXNVq1CQK+63dXgqXNkEWtfnYM3MAJrixBrV1OfS
 MIME-Version: 1.0
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: KL1PR0601MB4003.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f87dcbfd-df1b-4906-0ebe-08da21af1dd2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Apr 2022 02:48:42.7302
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: BmCuGxOj7EHfi2z7J4iLEo7pvyDpWm7PVBfrKXgNw9IsyWAbkZclwS/iszG/7e7uvz0n6BkHluAbtQxZwMs0RQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK2PR06MB3507
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6638:4919:b0:326:5cde:6fe0 with SMTP id
+ cx25-20020a056638491900b003265cde6fe0mr11558568jab.34.1650503124527; Wed, 20
+ Apr 2022 18:05:24 -0700 (PDT)
+Date:   Wed, 20 Apr 2022 18:05:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000070395e05dd1fb4d7@google.com>
+Subject: [syzbot] possible deadlock in fscrypt_initialize
+From:   syzbot <syzbot+1a748d0007eeac3ab079@syzkaller.appspotmail.com>
+To:     ebiggers@kernel.org, jaegeuk@kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogRXJpYyBCaWdnZXJzIDxl
-YmlnZ2Vyc0BrZXJuZWwub3JnPg0KPiBTZW50OiBUdWVzZGF5LCBBcHJpbCAxOSwgMjAyMiAxOjMw
-IEFNDQo+IFRvOiDluLjlh6TmpaAgPGNoYW5nZmVuZ25hbkB2aXZvLmNvbT4NCj4gQ2M6IGphZWdl
-dWtAa2VybmVsLm9yZzsgY2hhb0BrZXJuZWwub3JnOyBheGJvZUBrZXJuZWwuZGs7DQo+IGxpbnV4
-LWYyZnMtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0OyBsaW51eC1mc2NyeXB0QHZnZXIua2Vy
-bmVsLm9yZw0KPiBTdWJqZWN0OiBSZTogZjJmcyBjb21wcmVzc2VkIGZpbGUgYmlvIG1lcmdlIHBy
-b2JsZW0NCj4gDQo+IFsrQ2MgbGludXgtZnNjcnlwdF0NCj4gDQo+IE9uIE1vbiwgQXByIDE4LCAy
-MDIyIGF0IDA4OjE1OjQ3QU0gKzAwMDAsIOW4uOWHpOaloCB3cm90ZToNCj4gPiBIaToNCj4gPiAJ
-V2hlbiBJIHRlc3Qgc2VxLXdyaXRlIG9uIGYyZnMgY29tcHJlc3NlZCBmaWxlLCBJIGZvdW5kIGl0
-IG1heSBoYXZlDQo+IHNpZ25pZmljYW50IHBlcmZvcm1hbmNlIGRlZ3JhZGF0aW9uIHdoZW4gbW91
-bnQgd2l0aCBpbmxpbmVjcnlwdC4gSGVyZSBpcyBteQ0KPiBhbmFseXNpczoNCj4gPiAJZjJmcyB3
-cml0ZSBjb21wcmVzc2VkIGZpbGUgaW4gdW5pdCBvZiBjbHVzdGVyLCBhZnRlciBjb21wcmVzc2Vk
-LCBvbmUgY2x1c3Rlcg0KPiB1cCB0byBoYXZlIHRocmVlIHZhbGlkIHBhZ2VzIHRvIHdyaXRlLiBT
-byBiZXR3ZWVuIG11bHRpIGNsdXN0ZXJzLCB0aGUgcGFnZQ0KPiBpbmRleCBjb3VsZG4ndCBiZSBj
-b250aWd1b3VzLiBGb3IgZXhhbXBsZSwgSXQgbWF5IGxpa2UgdGhpczogQ2x1c3RlciAwIHdyaXRl
-DQo+IHBhZ2UgMCBhbmQgMSwgQ2x1c3RlciAxIHdyaXRlIHBhZ2UgNCBhbmQgNS4NCj4gPiAJSW4g
-ZjJmc19jcnlwdF9tZXJnZWFibGVfYmlvLCBmc2NyeXB0X21lcmdlYWJsZV9iaW8gd2lsbCBjaGVj
-ayB3ZWF0aGVyDQo+IGZpbGUgbG9naWNhbCBibG9jayBudW1iZXIgaXMgY29udGlndW91cywgcmVz
-dWx0IGluIG11bHRpIGNsdXN0ZXJzIGNhbm5vdCBiZQ0KPiBtZXJnZSBpbnRvIG9uZSBiaW8uDQo+
-ID4gCUluIG15IHRlc3QsIGlubGluZWNyeXB0IG1vdW50IG9wdGlvbiBtYXkgY2F1c2Ugc2VxLXdy
-aXRlIHBlcmZvcm1hbmNlIHRvDQo+IGRyb3AgYnkgaGFsZi4NCj4gPiAJVGhlIGF0dGFjaG1lbnQg
-aXMgbXkgZmlvIHRlc3QgY29uZmlndXJlIGZpbGUuDQo+ID4gCVRoaXMgaXMgYSB0cmlja3kgcHJv
-YmxlbSBmb3IgbWUuIElzIHRoZXJlIGFueSBzb2x1dGlvbiBmb3IgdGhpcyBwcm9ibGVtPw0KPiAN
-Cj4gVGhhbmtzIGZvciBjbGFyaWZ5aW5nIHRoYXQgeW91IGFyZSB1c2luZyBmMmZzIGNvbXByZXNz
-aW9uOyBpbiB5b3VyIHByZXZpb3VzDQo+IG1lc3NhZ2UgeW91IGRpZG4ndCBtZW50aW9uIHRoaXMN
-Cj4gKGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2FsbC9LTDFQUjA2MDFNQjQwMDM5OThCODQxNTEz
-QkNBQTM4NkFERUJCRUUNCj4gOUBLTDFQUjA2MDFNQjQwMDMuYXBjcHJkMDYucHJvZC5vdXRsb29r
-LmNvbS9ULyN1KS4NCj4gDQo+IFVuZm9ydHVuYXRlbHksIEkgZG9uJ3QgYmVsaWV2ZSB0aGVyZSBp
-cyBhbnkgcHJhY3RpY2FsIHdheSB0aGF0IHdlIGNvdWxkIGRvIHRoZQ0KPiBlbmNyeXB0aW9uIGRp
-ZmZlcmVudGx5IHRoYXQgd291bGQgcmVzdWx0IGluIHRoaXMgbm8gbG9uZ2VyIGJlaW5nIGEgcHJv
-YmxlbS4NCg0KRm9yIG5vdyBJIGFncmVlIHdpdGggeW91LiBNYXliZSBzb21lb25lIGVsc2UgaGF2
-ZSBiZXR0ZXIgaWRlYT8NCg0KPiANCj4gVGhpcyBpcyBiZWNhdXNlIGZvciBhZGphY2VudCBjbHVz
-dGVycyB0byBoYXZlIGNvbnRpZ3VvdXMgRFVOcywgdGhlIERVTnMNCj4gd291bGQgaGF2ZSB0byBp
-bmNyZW1lbnQgYWNjb3JkaW5nIHRvIHRoZSBjb21wcmVzc2VkIHNpemUsIG5vdCB0aGUNCj4gdW5j
-b21wcmVzc2VkIHNpemUuDQo+IEhvd2V2ZXIsIGluIHRoaXMgY2FzZSBpdCB3b3VsZG4ndCBiZSBw
-b3NzaWJsZSB0byBzdXBwb3J0IHJhbmRvbS1hY2Nlc3Mgd3JpdGVzLA0KPiBzaW5jZSBhbnkgd3Jp
-dGUgd291bGQgcmVxdWlyZSByZS13cml0aW5nIHRoZSBlbnRpcmUgZmlsZS4NCj4gDQo+IFRoaXMg
-Y291bGQgYmUgcHJvdmlkZWQgYXMgYW4gb3B0aW9uIGZvciByZWFkLW9ubHkgZmlsZXN5c3RlbXMs
-IEkgc3VwcG9zZS4gIEJ1dA0KPiBJIGRvdWJ0IHRoYXQgdGhhdCBpcyB5b3VyIHVzZSBjYXNlLg0K
-WWVzLCBtYXliZSB3ZSBjYW4gZml4IHRoaXMgZm9yIHJlYWQtb25seSBmaWxlc3lzdGVtcyBmaXJz
-dC4gVGhpcyBwcm9ibGVtIGV4aXN0IGluIHNlcS1yZWFkIHRvby4NCg0KPiANCj4gLSBFcmljDQo=
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    90ea17a9e27b Merge tag 'scsi-fixes' of git://git.kernel.or..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16bf09d0f00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ac042ae170e2c50f
+dashboard link: https://syzkaller.appspot.com/bug?extid=1a748d0007eeac3ab079
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1a748d0007eeac3ab079@syzkaller.appspotmail.com
+
+======================================================
+WARNING: possible circular locking dependency detected
+5.18.0-rc2-syzkaller-00291-g90ea17a9e27b #0 Not tainted
+------------------------------------------------------
+syz-executor.0/3694 is trying to acquire lock:
+ffffffff8bf36428 (fscrypt_init_mutex){+.+.}-{3:3}, at: fscrypt_initialize+0x3c/0xa0 fs/crypto/crypto.c:324
+
+but task is already holding lock:
+ffff8880430c8990 (jbd2_handle){++++}-{0:0}, at: start_this_handle+0xfb4/0x14a0 fs/jbd2/transaction.c:461
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #2 (jbd2_handle){++++}-{0:0}:
+       start_this_handle+0xfe7/0x14a0 fs/jbd2/transaction.c:463
+       jbd2__journal_start+0x399/0x930 fs/jbd2/transaction.c:520
+       __ext4_journal_start_sb+0x3a8/0x4a0 fs/ext4/ext4_jbd2.c:105
+       __ext4_journal_start fs/ext4/ext4_jbd2.h:326 [inline]
+       ext4_dirty_inode+0x9d/0x110 fs/ext4/inode.c:5932
+       __mark_inode_dirty+0x45b/0xfe0 fs/fs-writeback.c:2367
+       mark_inode_dirty_sync include/linux/fs.h:2329 [inline]
+       iput.part.0+0x57/0x820 fs/inode.c:1767
+       iput+0x58/0x70 fs/inode.c:1760
+       dentry_unlink_inode+0x2b1/0x460 fs/dcache.c:401
+       __dentry_kill+0x3c0/0x640 fs/dcache.c:607
+       shrink_dentry_list+0x23c/0x800 fs/dcache.c:1201
+       prune_dcache_sb+0xe7/0x140 fs/dcache.c:1282
+       super_cache_scan+0x336/0x590 fs/super.c:104
+       do_shrink_slab+0x42d/0xbd0 mm/vmscan.c:774
+       shrink_slab+0x17c/0x6f0 mm/vmscan.c:934
+       shrink_node_memcgs mm/vmscan.c:3100 [inline]
+       shrink_node+0x8b3/0x1df0 mm/vmscan.c:3221
+       shrink_zones mm/vmscan.c:3458 [inline]
+       do_try_to_free_pages+0x3b5/0x1700 mm/vmscan.c:3516
+       try_to_free_pages+0x2ac/0x840 mm/vmscan.c:3751
+       __perform_reclaim mm/page_alloc.c:4624 [inline]
+       __alloc_pages_direct_reclaim mm/page_alloc.c:4646 [inline]
+       __alloc_pages_slowpath.constprop.0+0xac7/0x20e0 mm/page_alloc.c:5046
+       __alloc_pages+0x412/0x500 mm/page_alloc.c:5421
+       __alloc_pages_node include/linux/gfp.h:587 [inline]
+       khugepaged_alloc_page+0xa0/0x170 mm/khugepaged.c:868
+       collapse_huge_page mm/khugepaged.c:1071 [inline]
+       khugepaged_scan_pmd mm/khugepaged.c:1357 [inline]
+       khugepaged_scan_mm_slot mm/khugepaged.c:2167 [inline]
+       khugepaged_do_scan mm/khugepaged.c:2248 [inline]
+       khugepaged+0x3474/0x66e0 mm/khugepaged.c:2293
+       kthread+0x2e9/0x3a0 kernel/kthread.c:376
+       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:298
+
+-> #1 (fs_reclaim){+.+.}-{0:0}:
+       __fs_reclaim_acquire mm/page_alloc.c:4572 [inline]
+       fs_reclaim_acquire+0x115/0x160 mm/page_alloc.c:4586
+       might_alloc include/linux/sched/mm.h:254 [inline]
+       slab_pre_alloc_hook mm/slab.h:722 [inline]
+       slab_alloc_node mm/slab.c:3214 [inline]
+       kmem_cache_alloc_node_trace+0x48/0x5b0 mm/slab.c:3625
+       kmalloc_node include/linux/slab.h:599 [inline]
+       kzalloc_node include/linux/slab.h:725 [inline]
+       mempool_create_node mm/mempool.c:266 [inline]
+       mempool_create+0x4e/0xc0 mm/mempool.c:255
+       mempool_create_page_pool include/linux/mempool.h:107 [inline]
+       fscrypt_initialize+0x86/0xa0 fs/crypto/crypto.c:330
+       fscrypt_setup_encryption_info+0xef/0xf00 fs/crypto/keysetup.c:545
+       fscrypt_get_encryption_info+0x34a/0x3f0 fs/crypto/keysetup.c:654
+       fscrypt_setup_filename+0x238/0xec0 fs/crypto/fname.c:426
+       __fscrypt_prepare_lookup+0x28/0xf0 fs/crypto/hooks.c:102
+       fscrypt_prepare_lookup include/linux/fscrypt.h:898 [inline]
+       ext4_fname_prepare_lookup+0x2b1/0x330 fs/ext4/ext4.h:2770
+       ext4_lookup_entry fs/ext4/namei.c:1694 [inline]
+       ext4_lookup fs/ext4/namei.c:1769 [inline]
+       ext4_lookup+0x12d/0x730 fs/ext4/namei.c:1760
+       lookup_open.isra.0+0x9aa/0x1690 fs/namei.c:3308
+       open_last_lookups fs/namei.c:3400 [inline]
+       path_openat+0x9a2/0x2910 fs/namei.c:3606
+       do_filp_open+0x1aa/0x400 fs/namei.c:3636
+       do_sys_openat2+0x16d/0x4c0 fs/open.c:1213
+       do_sys_open fs/open.c:1229 [inline]
+       __do_sys_openat fs/open.c:1245 [inline]
+       __se_sys_openat fs/open.c:1240 [inline]
+       __x64_sys_openat+0x13f/0x1f0 fs/open.c:1240
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+-> #0 (fscrypt_init_mutex){+.+.}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:3065 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3188 [inline]
+       validate_chain kernel/locking/lockdep.c:3803 [inline]
+       __lock_acquire+0x2ac6/0x56c0 kernel/locking/lockdep.c:5029
+       lock_acquire kernel/locking/lockdep.c:5641 [inline]
+       lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5606
+       __mutex_lock_common kernel/locking/mutex.c:600 [inline]
+       __mutex_lock+0x12f/0x12f0 kernel/locking/mutex.c:733
+       fscrypt_initialize+0x3c/0xa0 fs/crypto/crypto.c:324
+       fscrypt_setup_encryption_info+0xef/0xf00 fs/crypto/keysetup.c:545
+       fscrypt_get_encryption_info+0x34a/0x3f0 fs/crypto/keysetup.c:654
+       fscrypt_setup_filename+0x238/0xec0 fs/crypto/fname.c:426
+       ext4_fname_setup_filename+0x8d/0x240 fs/ext4/ext4.h:2751
+       ext4_find_entry+0x8c/0x170 fs/ext4/namei.c:1674
+       __ext4_unlink+0x92/0x920 fs/ext4/namei.c:3155
+       ext4_unlink+0x346/0x9e0 fs/ext4/namei.c:3231
+       vfs_unlink+0x351/0x920 fs/namei.c:4148
+       do_unlinkat+0x3c9/0x650 fs/namei.c:4216
+       __do_sys_unlink fs/namei.c:4264 [inline]
+       __se_sys_unlink fs/namei.c:4262 [inline]
+       __x64_sys_unlink+0xc6/0x110 fs/namei.c:4262
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+other info that might help us debug this:
+
+Chain exists of:
+  fscrypt_init_mutex --> fs_reclaim --> jbd2_handle
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(jbd2_handle);
+                               lock(fs_reclaim);
+                               lock(jbd2_handle);
+  lock(fscrypt_init_mutex);
+
+ *** DEADLOCK ***
+
+4 locks held by syz-executor.0/3694:
+ #0: ffff8880434f6460 (sb_writers#5){.+.+}-{0:0}, at: do_unlinkat+0x17f/0x650 fs/namei.c:4195
+ #1: ffff8880784f46c0 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:783 [inline]
+ #1: ffff8880784f46c0 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: do_unlinkat+0x269/0x650 fs/namei.c:4199
+ #2: ffff88801b236440 (&sb->s_type->i_mutex_key#8){++++}-{3:3}, at: inode_lock include/linux/fs.h:748 [inline]
+ #2: ffff88801b236440 (&sb->s_type->i_mutex_key#8){++++}-{3:3}, at: vfs_unlink+0xd5/0x920 fs/namei.c:4137
+ #3: ffff8880430c8990 (jbd2_handle){++++}-{0:0}, at: start_this_handle+0xfb4/0x14a0 fs/jbd2/transaction.c:461
+
+stack backtrace:
+CPU: 0 PID: 3694 Comm: syz-executor.0 Not tainted 5.18.0-rc2-syzkaller-00291-g90ea17a9e27b #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2145
+ check_prev_add kernel/locking/lockdep.c:3065 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3188 [inline]
+ validate_chain kernel/locking/lockdep.c:3803 [inline]
+ __lock_acquire+0x2ac6/0x56c0 kernel/locking/lockdep.c:5029
+ lock_acquire kernel/locking/lockdep.c:5641 [inline]
+ lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5606
+ __mutex_lock_common kernel/locking/mutex.c:600 [inline]
+ __mutex_lock+0x12f/0x12f0 kernel/locking/mutex.c:733
+ fscrypt_initialize+0x3c/0xa0 fs/crypto/crypto.c:324
+ fscrypt_setup_encryption_info+0xef/0xf00 fs/crypto/keysetup.c:545
+ fscrypt_get_encryption_info+0x34a/0x3f0 fs/crypto/keysetup.c:654
+ fscrypt_setup_filename+0x238/0xec0 fs/crypto/fname.c:426
+ ext4_fname_setup_filename+0x8d/0x240 fs/ext4/ext4.h:2751
+ ext4_find_entry+0x8c/0x170 fs/ext4/namei.c:1674
+ __ext4_unlink+0x92/0x920 fs/ext4/namei.c:3155
+ ext4_unlink+0x346/0x9e0 fs/ext4/namei.c:3231
+ vfs_unlink+0x351/0x920 fs/namei.c:4148
+ do_unlinkat+0x3c9/0x650 fs/namei.c:4216
+ __do_sys_unlink fs/namei.c:4264 [inline]
+ __se_sys_unlink fs/namei.c:4262 [inline]
+ __x64_sys_unlink+0xc6/0x110 fs/namei.c:4262
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f7581288a27
+Code: 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 57 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffd33ea0ca8 EFLAGS: 00000206 ORIG_RAX: 0000000000000057
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f7581288a27
+RDX: 00007ffd33ea0ce0 RSI: 00007ffd33ea0ce0 RDI: 00007ffd33ea0d70
+RBP: 00007ffd33ea0d70 R08: 0000000000000001 R09: 00007ffd33ea0b40
+R10: 0000555556665893 R11: 0000000000000206 R12: 00007f75812e21f8
+R13: 00007ffd33ea1e70 R14: 0000555556665850 R15: 00007ffd33ea2f70
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
