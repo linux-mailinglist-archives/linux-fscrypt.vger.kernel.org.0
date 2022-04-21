@@ -2,59 +2,59 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DA4A5096AC
+	by mail.lfdr.de (Postfix) with ESMTP id D9F185096AD
 	for <lists+linux-fscrypt@lfdr.de>; Thu, 21 Apr 2022 07:23:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384304AbiDUF0k (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 21 Apr 2022 01:26:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56900 "EHLO
+        id S1384307AbiDUF0p (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 21 Apr 2022 01:26:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233065AbiDUF0k (ORCPT
+        with ESMTP id S233065AbiDUF0p (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 21 Apr 2022 01:26:40 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB6F0DFB1;
-        Wed, 20 Apr 2022 22:23:51 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id l127so3973641pfl.6;
-        Wed, 20 Apr 2022 22:23:51 -0700 (PDT)
+        Thu, 21 Apr 2022 01:26:45 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1434DFAF;
+        Wed, 20 Apr 2022 22:23:56 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id iq10so192464pjb.0;
+        Wed, 20 Apr 2022 22:23:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=nAKdB7OlNBPLSXEPrWPj54rwnqnTQlbZgYB1Swf5oy4=;
-        b=fkYbjCMvDg0qkUwF8guksF3TwEPZnQCCyg+zk1xlXSgeArgoyfGnKnrKLPBs0qThB4
-         PolkXz0oOctKv/X/ci91Slc/6IT+N3IjoYoOm69wDvrw4lOmyzZ9EgEoKVnz1GDu+c5c
-         80TZHM6EVilHh7s/SX5B9ryEUVpRJ74FC6sBBO5oABST8iQTsmyzqjCv6VYrrb7IXByE
-         cRMqcMlh8OVPdj2h4XfI82griaJfgzR/uoH/GlSl17BZ0Nac50F/xIeNtD8vsMHPPYyG
-         xLSItzsmxjaW3G3TNSqtTdEb3qPlsW7NvVI/ovPauLyXaxx+KalgDgY0dwIKRD9tdEL8
-         znnw==
+        bh=kqyIPRpEKHi3QFbh2k8vw2KJbGiX1tCP5QuWevqqO4c=;
+        b=J0neBI/t2C848zvRKU4xgW7MW/VFnC1S1H5xglcX5U5iZRhV+I/sqt28r7Z8stJLDf
+         JFOzBlyvXHzTPfwMyu0LcKwYgLLClLpwXBIYQiVY/TsymAtGAMeBWwQ330SPwAjc6onl
+         1BTpOXN4Phzr33WoJFjYuZG4sKqhBoieCBOhQeUeCiBKSC0FNGaCqwp+y40VCJnYBAGl
+         YEJpGSEcxiA7YCvdJTlUI1aKQrYlgL2UnpKhK5NFYGSmHeVoptmIDW3ipUR8QxwtV/u+
+         d5BPE3Go5PCJ/HJbYuBOv/xCm4cghS9qmyEs7bRL7qEVlGlrHmTCpXyNmmhWAkoBPnrN
+         hj5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=nAKdB7OlNBPLSXEPrWPj54rwnqnTQlbZgYB1Swf5oy4=;
-        b=eR/6215F6R+KEK+iTJhuY2qJMJz0VYtHK58CEfTiP29/y2wXE7d/pC4lRqJS2kIlRQ
-         TkeTzjAIVaIIau6WFOZgC6p2Z9tZXeOKxoBkzljQgibbvdM52IMYjU2vqVLDdQUVjrYx
-         Xk+t4MDeWY9rgjuWWuaKOsy36TKcyScKSF0p2PG0KiDV0RkD4wR4L4JAHSDZs/GxYHKX
-         +UOb40YeJJ5yvWqP/aAI6iMBc5P72n8WH60soeC7TQiLwmg69ZhR4R7yUlppD7+z3gTJ
-         E+pNoKClmVxoiJ17zrLD2opw7z4P+Z2bqZfSaCjj2Wza/gcjFK8v5kzGuocBJNw6AlLb
-         HW1A==
-X-Gm-Message-State: AOAM530J/Nsz8JPGU1QbArVRykItswIRvpqZgVDL99elStEEM8N9b1K5
-        KggepoH1wzZZ8DxLyBtUsdxF2pCkyo8=
-X-Google-Smtp-Source: ABdhPJx8/NhAAgdA1VPtYLg+J5vqrTzY9NcllaF/sbVbOO2uH0D/6Pm8IexY0znMLR7jFTrpMUmz3A==
-X-Received: by 2002:a63:3e0a:0:b0:3aa:646f:f445 with SMTP id l10-20020a633e0a000000b003aa646ff445mr6597605pga.30.1650518631381;
-        Wed, 20 Apr 2022 22:23:51 -0700 (PDT)
+        bh=kqyIPRpEKHi3QFbh2k8vw2KJbGiX1tCP5QuWevqqO4c=;
+        b=scBFqn9+nfI22CxPe6O7S7DNZ8T3AUabiJaXgCKOttIKTgqkeAa8loONPjDoh9X+4H
+         zT7KGOy6VbpRJkTPVmM3/gh0dmpr5dVcVWD8RDPZ6XWIwg8Ss5qWrR3TEQXhF+jH/2Ow
+         rOWh4idvr5a+nQ2GANERGvuHGcAN54Na4oKKIRCflzkt5sp2NiARhoNVMtaN83RZRXhN
+         xMH8mnXvMemR47HJR0nweP+7nqR9LXbshYXSC5YGPMwGHVu3FzQg6m5PLaHk4kW2LeD5
+         J1K0IioozQkvPB/pXEvvhKQHTqJVrmZExaVsfsbF8uzHeU99QBIMcF/BZa4w6CijBDkO
+         VslA==
+X-Gm-Message-State: AOAM530rh4T2IlAJCl3OPnqgDMds5lI1enfOjD/JEuFMjGw4ZzoEiW2i
+        kWBSrP7HBp5HhQdEVtE/Ir5xoPKwqHY=
+X-Google-Smtp-Source: ABdhPJw+yV11ELgKTtNfxUw/xsRDwao3556g5tiFbEVMrv43Lm9Fx9hzmkeHRrXJeo65ocMjoGiuPw==
+X-Received: by 2002:a17:90a:f00c:b0:1cb:8361:c78e with SMTP id bt12-20020a17090af00c00b001cb8361c78emr8457233pjb.133.1650518636156;
+        Wed, 20 Apr 2022 22:23:56 -0700 (PDT)
 Received: from localhost ([2406:7400:63:fca5:5639:1911:2ab6:cfe6])
-        by smtp.gmail.com with ESMTPSA id w187-20020a6230c4000000b00505cde77826sm21554169pfw.159.2022.04.20.22.23.50
+        by smtp.gmail.com with ESMTPSA id s62-20020a635e41000000b003a9eb7f65absm4346225pgb.85.2022.04.20.22.23.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Apr 2022 22:23:51 -0700 (PDT)
+        Wed, 20 Apr 2022 22:23:55 -0700 (PDT)
 From:   Ritesh Harjani <ritesh.list@gmail.com>
 To:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org
 Cc:     Eric Biggers <ebiggers@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
         Jan Kara <jack@suse.cz>, Ritesh Harjani <ritesh.list@gmail.com>
-Subject: [RFC 4/6] ext4: Cleanup function defs from ext4.h into ext4_crypto.c
-Date:   Thu, 21 Apr 2022 10:53:20 +0530
-Message-Id: <e719bdd947a372d777ca425c99352f708fb04e26.1650517532.git.ritesh.list@gmail.com>
+Subject: [RFC 5/6] ext4: Move all encryption related into a common #ifdef
+Date:   Thu, 21 Apr 2022 10:53:21 +0530
+Message-Id: <74855c5d50db92722213a738c0fb43a878dc6557.1650517532.git.ritesh.list@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1650517532.git.ritesh.list@gmail.com>
 References: <cover.1650517532.git.ritesh.list@gmail.com>
@@ -62,184 +62,57 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_FILL_THIS_FORM_SHORT
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Some of these functions when CONFIG_FS_ENCRYPTION is enabled are not
-really inline (let compiler be the best judge of it).
-Remove inline and move them into ext4_crypto.c where they should be present.
+This just moves left over usages of #ifdef CONFIG_FS_ENCRYPTION
+into a common place for function/macro definitions.
 
 Signed-off-by: Ritesh Harjani <ritesh.list@gmail.com>
 ---
- fs/ext4/ext4.h        | 70 ++++---------------------------------------
- fs/ext4/ext4_crypto.c | 65 ++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 71 insertions(+), 64 deletions(-)
+ fs/ext4/ext4.h | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
 diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 8bac8af25ed8..caf154db4680 100644
+index caf154db4680..2fb69c500063 100644
 --- a/fs/ext4/ext4.h
 +++ b/fs/ext4/ext4.h
-@@ -2731,73 +2731,15 @@ extern int ext4_fname_setup_ci_filename(struct inode *dir,
- extern const struct fscrypt_operations ext4_cryptops;
- 
- #ifdef CONFIG_FS_ENCRYPTION
--static inline void ext4_fname_from_fscrypt_name(struct ext4_filename *dst,
--						const struct fscrypt_name *src)
--{
--	memset(dst, 0, sizeof(*dst));
--
--	dst->usr_fname = src->usr_fname;
--	dst->disk_name = src->disk_name;
--	dst->hinfo.hash = src->hash;
--	dst->hinfo.minor_hash = src->minor_hash;
--	dst->crypto_buf = src->crypto_buf;
--}
--
--static inline int ext4_fname_setup_filename(struct inode *dir,
--					    const struct qstr *iname,
--					    int lookup,
--					    struct ext4_filename *fname)
--{
--	struct fscrypt_name name;
--	int err;
-+int ext4_fname_setup_filename(struct inode *dir,
-+			      const struct qstr *iname, int lookup,
-+			      struct ext4_filename *fname);
- 
--	err = fscrypt_setup_filename(dir, iname, lookup, &name);
--	if (err)
--		return err;
-+int ext4_fname_prepare_lookup(struct inode *dir, struct dentry *dentry,
-+			      struct ext4_filename *fname);
- 
--	ext4_fname_from_fscrypt_name(fname, &name);
-+void ext4_fname_free_filename(struct ext4_filename *fname);
- 
--#if IS_ENABLED(CONFIG_UNICODE)
--	err = ext4_fname_setup_ci_filename(dir, iname, fname);
+@@ -1440,12 +1440,6 @@ struct ext4_super_block {
+
+ #ifdef __KERNEL__
+
+-#ifdef CONFIG_FS_ENCRYPTION
+-#define DUMMY_ENCRYPTION_ENABLED(sbi) ((sbi)->s_dummy_enc_policy.policy != NULL)
+-#else
+-#define DUMMY_ENCRYPTION_ENABLED(sbi) (0)
 -#endif
--	return err;
--}
 -
--static inline int ext4_fname_prepare_lookup(struct inode *dir,
--					    struct dentry *dentry,
--					    struct ext4_filename *fname)
--{
--	struct fscrypt_name name;
--	int err;
--
--	err = fscrypt_prepare_lookup(dir, dentry, &name);
--	if (err)
--		return err;
--
--	ext4_fname_from_fscrypt_name(fname, &name);
--
--#if IS_ENABLED(CONFIG_UNICODE)
--	err = ext4_fname_setup_ci_filename(dir, &dentry->d_name, fname);
--#endif
--	return err;
--}
--
--static inline void ext4_fname_free_filename(struct ext4_filename *fname)
--{
--	struct fscrypt_name name;
--
--	name.crypto_buf = fname->crypto_buf;
--	fscrypt_free_filename(&name);
--
--	fname->crypto_buf.name = NULL;
--	fname->usr_fname = NULL;
--	fname->disk_name.name = NULL;
--
--#if IS_ENABLED(CONFIG_UNICODE)
--	kfree(fname->cf_name.name);
--	fname->cf_name.name = NULL;
--#endif
--}
+ /* Number of quota types we support */
+ #define EXT4_MAXQUOTAS 3
+
+@@ -2740,6 +2734,8 @@ int ext4_fname_prepare_lookup(struct inode *dir, struct dentry *dentry,
+
+ void ext4_fname_free_filename(struct ext4_filename *fname);
+
++#define DUMMY_ENCRYPTION_ENABLED(sbi) ((sbi)->s_dummy_enc_policy.policy != NULL)
++
  #else /* !CONFIG_FS_ENCRYPTION */
  static inline int ext4_fname_setup_filename(struct inode *dir,
  					    const struct qstr *iname,
-diff --git a/fs/ext4/ext4_crypto.c b/fs/ext4/ext4_crypto.c
-index e5413c0970ee..7e89f86a4429 100644
---- a/fs/ext4/ext4_crypto.c
-+++ b/fs/ext4/ext4_crypto.c
-@@ -6,6 +6,71 @@
- #include "xattr.h"
- #include "ext4_jbd2.h"
- 
-+void ext4_fname_from_fscrypt_name(struct ext4_filename *dst,
-+				  const struct fscrypt_name *src)
-+{
-+	memset(dst, 0, sizeof(*dst));
+@@ -2772,6 +2768,8 @@ static inline void ext4_fname_free_filename(struct ext4_filename *fname)
+ 	fname->cf_name.name = NULL;
+ #endif
+ }
 +
-+	dst->usr_fname = src->usr_fname;
-+	dst->disk_name = src->disk_name;
-+	dst->hinfo.hash = src->hash;
-+	dst->hinfo.minor_hash = src->minor_hash;
-+	dst->crypto_buf = src->crypto_buf;
-+}
-+
-+int ext4_fname_setup_filename(struct inode *dir, const struct qstr *iname,
-+			      int lookup, struct ext4_filename *fname)
-+{
-+	struct fscrypt_name name;
-+	int err;
-+
-+	err = fscrypt_setup_filename(dir, iname, lookup, &name);
-+	if (err)
-+		return err;
-+
-+	ext4_fname_from_fscrypt_name(fname, &name);
-+
-+#if IS_ENABLED(CONFIG_UNICODE)
-+	err = ext4_fname_setup_ci_filename(dir, iname, fname);
-+#endif
-+	return err;
-+}
-+
-+int ext4_fname_prepare_lookup(struct inode *dir, struct dentry *dentry,
-+			      struct ext4_filename *fname)
-+{
-+	struct fscrypt_name name;
-+	int err;
-+
-+	err = fscrypt_prepare_lookup(dir, dentry, &name);
-+	if (err)
-+		return err;
-+
-+	ext4_fname_from_fscrypt_name(fname, &name);
-+
-+#if IS_ENABLED(CONFIG_UNICODE)
-+	err = ext4_fname_setup_ci_filename(dir, &dentry->d_name, fname);
-+#endif
-+	return err;
-+}
-+
-+void ext4_fname_free_filename(struct ext4_filename *fname)
-+{
-+	struct fscrypt_name name;
-+
-+	name.crypto_buf = fname->crypto_buf;
-+	fscrypt_free_filename(&name);
-+
-+	fname->crypto_buf.name = NULL;
-+	fname->usr_fname = NULL;
-+	fname->disk_name.name = NULL;
-+
-+#if IS_ENABLED(CONFIG_UNICODE)
-+	kfree(fname->cf_name.name);
-+	fname->cf_name.name = NULL;
-+#endif
-+}
-+
- static int ext4_get_context(struct inode *inode, void *ctx, size_t len)
- {
- 	return ext4_xattr_get(inode, EXT4_XATTR_INDEX_ENCRYPTION,
--- 
++#define DUMMY_ENCRYPTION_ENABLED(sbi) (0)
+ #endif /* !CONFIG_FS_ENCRYPTION */
+
+ /* dir.c */
+--
 2.31.1
 
