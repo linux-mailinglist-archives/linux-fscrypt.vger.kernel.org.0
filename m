@@ -2,59 +2,59 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9F185096AD
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 21 Apr 2022 07:23:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1B275096AF
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 21 Apr 2022 07:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384307AbiDUF0p (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 21 Apr 2022 01:26:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56932 "EHLO
+        id S1384317AbiDUF0v (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 21 Apr 2022 01:26:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233065AbiDUF0p (ORCPT
+        with ESMTP id S233065AbiDUF0u (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 21 Apr 2022 01:26:45 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1434DFAF;
-        Wed, 20 Apr 2022 22:23:56 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id iq10so192464pjb.0;
-        Wed, 20 Apr 2022 22:23:56 -0700 (PDT)
+        Thu, 21 Apr 2022 01:26:50 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0728BDFAB;
+        Wed, 20 Apr 2022 22:24:02 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id q19so3722396pgm.6;
+        Wed, 20 Apr 2022 22:24:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=kqyIPRpEKHi3QFbh2k8vw2KJbGiX1tCP5QuWevqqO4c=;
-        b=J0neBI/t2C848zvRKU4xgW7MW/VFnC1S1H5xglcX5U5iZRhV+I/sqt28r7Z8stJLDf
-         JFOzBlyvXHzTPfwMyu0LcKwYgLLClLpwXBIYQiVY/TsymAtGAMeBWwQ330SPwAjc6onl
-         1BTpOXN4Phzr33WoJFjYuZG4sKqhBoieCBOhQeUeCiBKSC0FNGaCqwp+y40VCJnYBAGl
-         YEJpGSEcxiA7YCvdJTlUI1aKQrYlgL2UnpKhK5NFYGSmHeVoptmIDW3ipUR8QxwtV/u+
-         d5BPE3Go5PCJ/HJbYuBOv/xCm4cghS9qmyEs7bRL7qEVlGlrHmTCpXyNmmhWAkoBPnrN
-         hj5w==
+        bh=ptNcYKMP2I9D0WN8B4M/VfkLKR53Y5iVYHD6TbxFc6U=;
+        b=AMRwCG3nUp5EE4g2BNFxqtPdBy9Yg0bottvFQICBOguL5h9OvNn6Hj39qVPOjzcHMr
+         43aH11zzpdSMiS9BOWbI0NNG235rOxztPsiPLTL/cnzmNCKrf5TqAUYZXN+Y1WjBG9wH
+         lAoXmibJysiWlt8pWXpKtQzmyyKrqPfHr1beWhOYOs/e5+SPg8T5fMyPSABpOxfrj80y
+         E/3vAKgsN0Z3uS3a2U8EoFZy/uo9cbOieH4zHOWK7EHg53JEPmGWBe/PxjOaZlySKgxV
+         5vrIsNfln+R0SriuiUrjSNEIsPBF1NUZybp4XRBnAxytY0DdgQjqXGr+6mBxa4y0Qzjg
+         vccw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=kqyIPRpEKHi3QFbh2k8vw2KJbGiX1tCP5QuWevqqO4c=;
-        b=scBFqn9+nfI22CxPe6O7S7DNZ8T3AUabiJaXgCKOttIKTgqkeAa8loONPjDoh9X+4H
-         zT7KGOy6VbpRJkTPVmM3/gh0dmpr5dVcVWD8RDPZ6XWIwg8Ss5qWrR3TEQXhF+jH/2Ow
-         rOWh4idvr5a+nQ2GANERGvuHGcAN54Na4oKKIRCflzkt5sp2NiARhoNVMtaN83RZRXhN
-         xMH8mnXvMemR47HJR0nweP+7nqR9LXbshYXSC5YGPMwGHVu3FzQg6m5PLaHk4kW2LeD5
-         J1K0IioozQkvPB/pXEvvhKQHTqJVrmZExaVsfsbF8uzHeU99QBIMcF/BZa4w6CijBDkO
-         VslA==
-X-Gm-Message-State: AOAM530rh4T2IlAJCl3OPnqgDMds5lI1enfOjD/JEuFMjGw4ZzoEiW2i
-        kWBSrP7HBp5HhQdEVtE/Ir5xoPKwqHY=
-X-Google-Smtp-Source: ABdhPJw+yV11ELgKTtNfxUw/xsRDwao3556g5tiFbEVMrv43Lm9Fx9hzmkeHRrXJeo65ocMjoGiuPw==
-X-Received: by 2002:a17:90a:f00c:b0:1cb:8361:c78e with SMTP id bt12-20020a17090af00c00b001cb8361c78emr8457233pjb.133.1650518636156;
-        Wed, 20 Apr 2022 22:23:56 -0700 (PDT)
+        bh=ptNcYKMP2I9D0WN8B4M/VfkLKR53Y5iVYHD6TbxFc6U=;
+        b=WZCdsgSHz6yDBp6tcbS4R3JiTG55nbItgapZEEI2Zsdcg6OmFtgGoMRH26462tHFfN
+         PKn9peaeLAvKLhkzKQCIFHeLoHx0fT+XqrR1ITlZYBzAvTHsztAMqWbUj8qL5bIpf6Sn
+         T13okfeZRUrKeu+3ig2xXW5trltyyo3a5yGeeE7u8gflGjU3Jg7HhCXK9H5dFJieD1h9
+         JCPF3ccZziWIviIdp5xH5V7K8y6391NvYAYgJQt16Lz+aYYbQ+O5okxWdDysxPwhzynj
+         dYWxRLgiMRcQtteyCVypVtsOEa/6Dr7QIHpuHwU77bIcXqjaHxfZyohX0mUfbnwxZw/h
+         iQpQ==
+X-Gm-Message-State: AOAM531sscWnD1MnSo6OUe7MtUKE3wRMwr3Eho5qycn8p/OMco+fR6P3
+        xlXLLmShU1j3pfEtObZbpPlmRycy8IE=
+X-Google-Smtp-Source: ABdhPJxvPyKtRGbVuOTSZ+N6NGcQgcjmTr2wqkxG6eA4SUPbQz95ybbMdKe+bPsN4nVgAXlH0g8J3Q==
+X-Received: by 2002:a05:6a00:1702:b0:50a:8181:fed7 with SMTP id h2-20020a056a00170200b0050a8181fed7mr16955898pfc.56.1650518641551;
+        Wed, 20 Apr 2022 22:24:01 -0700 (PDT)
 Received: from localhost ([2406:7400:63:fca5:5639:1911:2ab6:cfe6])
-        by smtp.gmail.com with ESMTPSA id s62-20020a635e41000000b003a9eb7f65absm4346225pgb.85.2022.04.20.22.23.55
+        by smtp.gmail.com with ESMTPSA id k11-20020a056a00168b00b004f7e1555538sm22787846pfc.190.2022.04.20.22.24.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Apr 2022 22:23:55 -0700 (PDT)
+        Wed, 20 Apr 2022 22:24:01 -0700 (PDT)
 From:   Ritesh Harjani <ritesh.list@gmail.com>
 To:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org
 Cc:     Eric Biggers <ebiggers@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
         Jan Kara <jack@suse.cz>, Ritesh Harjani <ritesh.list@gmail.com>
-Subject: [RFC 5/6] ext4: Move all encryption related into a common #ifdef
-Date:   Thu, 21 Apr 2022 10:53:21 +0530
-Message-Id: <74855c5d50db92722213a738c0fb43a878dc6557.1650517532.git.ritesh.list@gmail.com>
+Subject: [RFC 6/6] ext4: Use provided macro for checking dummy_enc_policy
+Date:   Thu, 21 Apr 2022 10:53:22 +0530
+Message-Id: <7ae6e9b0e700b494bcf2c92250a601b513d7e0c6.1650517532.git.ritesh.list@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1650517532.git.ritesh.list@gmail.com>
 References: <cover.1650517532.git.ritesh.list@gmail.com>
@@ -70,49 +70,27 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-This just moves left over usages of #ifdef CONFIG_FS_ENCRYPTION
-into a common place for function/macro definitions.
+We have a macro which test is dummy_enc_policy is enabled or not.
+Use that instead.
 
 Signed-off-by: Ritesh Harjani <ritesh.list@gmail.com>
 ---
- fs/ext4/ext4.h | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ fs/ext4/super.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index caf154db4680..2fb69c500063 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -1440,12 +1440,6 @@ struct ext4_super_block {
-
- #ifdef __KERNEL__
-
--#ifdef CONFIG_FS_ENCRYPTION
--#define DUMMY_ENCRYPTION_ENABLED(sbi) ((sbi)->s_dummy_enc_policy.policy != NULL)
--#else
--#define DUMMY_ENCRYPTION_ENABLED(sbi) (0)
--#endif
--
- /* Number of quota types we support */
- #define EXT4_MAXQUOTAS 3
-
-@@ -2740,6 +2734,8 @@ int ext4_fname_prepare_lookup(struct inode *dir, struct dentry *dentry,
-
- void ext4_fname_free_filename(struct ext4_filename *fname);
-
-+#define DUMMY_ENCRYPTION_ENABLED(sbi) ((sbi)->s_dummy_enc_policy.policy != NULL)
-+
- #else /* !CONFIG_FS_ENCRYPTION */
- static inline int ext4_fname_setup_filename(struct inode *dir,
- 					    const struct qstr *iname,
-@@ -2772,6 +2768,8 @@ static inline void ext4_fname_free_filename(struct ext4_filename *fname)
- 	fname->cf_name.name = NULL;
- #endif
- }
-+
-+#define DUMMY_ENCRYPTION_ENABLED(sbi) (0)
- #endif /* !CONFIG_FS_ENCRYPTION */
-
- /* dir.c */
---
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index e7e5c9c057d7..73fb54c3efd3 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -2685,7 +2685,7 @@ static int ext4_check_opt_consistency(struct fs_context *fc,
+ 	 * it to be specified during remount, but only if there is no change.
+ 	 */
+ 	if ((ctx->spec & EXT4_SPEC_DUMMY_ENCRYPTION) &&
+-	    is_remount && !sbi->s_dummy_enc_policy.policy) {
++	    is_remount && !DUMMY_ENCRYPTION_ENABLED(sbi)) {
+ 		ext4_msg(NULL, KERN_WARNING,
+ 			 "Can't set test_dummy_encryption on remount");
+ 		return -1;
+-- 
 2.31.1
 
