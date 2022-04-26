@@ -2,308 +2,286 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CA50510C26
+	by mail.lfdr.de (Postfix) with ESMTP id EC9F5510C28
 	for <lists+linux-fscrypt@lfdr.de>; Wed, 27 Apr 2022 00:40:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355900AbiDZWne (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 26 Apr 2022 18:43:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49168 "EHLO
+        id S1355910AbiDZWnh (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 26 Apr 2022 18:43:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355905AbiDZWnd (ORCPT
+        with ESMTP id S1355905AbiDZWng (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 26 Apr 2022 18:43:33 -0400
+        Tue, 26 Apr 2022 18:43:36 -0400
 Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7C4914096;
-        Tue, 26 Apr 2022 15:40:24 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 16AA35C0178;
-        Tue, 26 Apr 2022 18:40:24 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Tue, 26 Apr 2022 18:40:24 -0400
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C2B815806;
+        Tue, 26 Apr 2022 15:40:26 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id A1C845C0172;
+        Tue, 26 Apr 2022 18:40:25 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Tue, 26 Apr 2022 18:40:25 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
         :content-transfer-encoding:date:date:from:from:in-reply-to
         :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1651012824; x=1651099224; bh=kd
-        CQVT5iGxrkT4Rh51mMDn0TbprGq2A1KbBC1nlNg58=; b=Ow8s9+ksnR5NnpOANb
-        gx5zMFwOnDPbkoyuzvtbT/5Mou+by/PPEtRfgKA91r//jsXlMjROsLIkJQrH4DdV
-        2mVTKYyU2Q6XskeX7C1DaePsztC6tKrToTBmuDgcKIFc+b/3MvpTx5EE/5BWtpcK
-        g8U6sNGdg72d9Cq6yFKpRAtREoTLB7XIdqmjJGNpaI874YyjaPy1ElU24CbOu2Fh
-        uCzJel2tU7K1P5E5uOE9A4agSBU1Z4ai4jSRCaqJKfgO6q8z5jWYbdMhKL98w6HK
-        pxQeS6TcsHnbIvP+iuyLqXaBNsDL6Nc5hVC9JKreKEdJGWATVq7e9J/JdN2tDSQR
-        0mvA==
+        :subject:subject:to:to; s=fm1; t=1651012825; x=1651099225; bh=RY
+        lCIpGr73cUBkgW3S5yoqcSnk4QBZRP3VUSpFtXMmc=; b=EVQLqKyJZnUByoOvz9
+        u06C1wF4GYGIs0NQ3S1MKyFfHLk6bYzWU/rfWKCzSKN8gSBy9GEc0gIg4Bzg97Tv
+        emBuUQXwOeMHU2yLy5rQ8KATj21/0VSCll750KVPB69zykHM6vQlOUdTzFZ1Th84
+        bhuBWk5P2UC+CemTj5J9H63r4Vd6jgouVBX4qRoCx/Fvg5O6MnM4hckogH965Y0g
+        UPTbfv2dMeP55NW/yq5UVZhMRXm6bWzbzsQFiTAUhUPFGkjvfFFwgSesOAMp6Js/
+        nhtSZ7ZuPbjfsTUd8MvdThshAWruVD34hyZXutBCOmCylT6voKnibhaaj7G0aIM0
+        +vkA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:date
         :from:from:in-reply-to:in-reply-to:message-id:mime-version
         :references:reply-to:sender:subject:subject:to:to:x-me-proxy
         :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1651012824; x=1651099224; bh=kdCQVT5iGxrkT4Rh51mMDn0TbprGq2A1KbB
-        C1nlNg58=; b=LVDZhVf3DaEwFWkNPWX2MBLFnJYcWGoKpHfIDKBD6jJB9oApyF/
-        3OyudEiM6T9bkXBSHXnHAoSX1MG+3r3A44ixY2Y3K56SrnOCKQyQNSP+By81FQuS
-        LCsdahWCNe+xrXjOxoq1iuMzg7nCbrBsk02QmRZt8dZoIq7OsWaBqFoPWl9xePJ4
-        gfqJmI27f99cMu8/mN23Enpbp604SqUZrTzDoDHeYcNJ0SghlPOhPn8O0SIVHr2+
-        MzAKcXY8w9Dvm4Gsk0FO8zSE/dSzCjF/TzPnFAZF7KyrBQAWnG7Thz6mtYRUxd5S
-        I+ZQ+7ekabUViGbDcOFkCM8zF1jC9eQ+mjg==
-X-ME-Sender: <xms:13RoYnMamvqkfcA2oaBNm0a88HhqwVkaHZFQPLaNIDLXaw0mNGAhbA>
-    <xme:13RoYh-xWovtH-DVJzn_V8LuiruzOKh_Sc-kb296Esh_7Q7e4B1gUvznVFrv-bkO3
-    x-lK11oGz5r6GxRrFs>
-X-ME-Received: <xmr:13RoYmScs_IcrakONaCGaiqbVndbg4fqLId39XAvHOT1UjkPQqpEva1piT73VxiqbnvOERhchNK1Boq2xRNSppVH0iDSvw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrudeggddufecutefuodetggdotefrodftvf
+        1651012825; x=1651099225; bh=RYlCIpGr73cUBkgW3S5yoqcSnk4QBZRP3VU
+        SpFtXMmc=; b=ffQiCqKZLadvP/Gn1dN7QKAQWFTXkYDFOsbuZER0UFxna6VELsN
+        7bLomZgl/Z0k25HtUxEnud5B8BgXnSQ1hYSM4Hq4nqYauEAyKrqMhe4Qd/WPZ4B4
+        AvEL+VKkJNMBqn47jEKMXOdCPuBAwn2ucSQq8TsrWUiHdzCGuKi0o9LVcbJ2+Ovp
+        apH9glkQUs/640OQK/x4rtB3R4O7NovIDrJmCkMMGi/w79KI8hsRLJwp/JWo0pWL
+        zY89gDAYS6sK2H7y+vZDlGQv3P7+wXYpQEvNP8JiKZ07F5ZgiLxOMMNmShDSmpgz
+        YnxRVNgyVhsVtb7e/e0Yrby3YVuOTJ8XwWQ==
+X-ME-Sender: <xms:2XRoYjgg0P3wKWybe-ulh2q0pnxQBpkyGDIaZCgyVePva5l0Ybk_hw>
+    <xme:2XRoYgAkJprE3kqRpaUl-xdTdsUJZo0xA37OXDQjfjoa7mEJkApV7MwWzwfEUzUuG
+    akDzVgX2DKsmQ4IK1M>
+X-ME-Received: <xmr:2XRoYjGs9Q3NkunqGfBVNC35jV9WIRcNo6d2ScjS6TUevwbONzbWi_sX-xlqW5RMepMyPr3KsQnihavE0m1nmH-wUTOE6g>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrudeggddugecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
     ertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
     oheqnecuggftrfgrthhtvghrnhepieeuffeuvdeiueejhfehiefgkeevudejjeejffevvd
     ehtddufeeihfekgeeuheelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
     rghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:13RoYrvaDt6WU0dFtm6QtHlH5X7oOkmUY3n341lAGAElasTOmfHEiw>
-    <xmx:13RoYvfnfu-rd6wFKrxqD-yzbJWfXtpf_FX3yNzi7rkqHJ46EXsEqA>
-    <xmx:13RoYn1KC4hBOnsAAc9NECxZkr7KDozHkQoKKXmSfxjrOjKHORgL7w>
-    <xmx:2HRoYgpd7F29aVwSTR099VdH4N5SI3i4dmnl26hF8BA9dW6u02FXuA>
+X-ME-Proxy: <xmx:2XRoYgTDXSqjIVRyON8rCrgcYjP2bocA_cUJPvAt7LzlX-HXuzudQw>
+    <xmx:2XRoYgxlFcMGPTMfA78bK-N7YRNu2Ct5v72UmdhKdu3btHya-Y7qYQ>
+    <xmx:2XRoYm5q21hFMeJiWXIS_ZviXoJ3xJ4qhIKG_x0UWw-RtArCInE9DQ>
+    <xmx:2XRoYr-HCzvYBvTYBKTQo5TEHNpUDELnrdSVuO62lO88z_jFGxPz2Q>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 26 Apr 2022 18:40:23 -0400 (EDT)
+ 26 Apr 2022 18:40:25 -0400 (EDT)
 From:   Boris Burkov <boris@bur.io>
 To:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v9 3/5] btrfs: test btrfs specific fsverity corruption
-Date:   Tue, 26 Apr 2022 15:40:14 -0700
-Message-Id: <5fb8fbcf72ad2e7cca0badae1f48c695b3dd8e67.1651012461.git.boris@bur.io>
+Subject: [PATCH v9 4/5] btrfs: test verity orphans with dmlogwrites
+Date:   Tue, 26 Apr 2022 15:40:15 -0700
+Message-Id: <dd3bcd1e7a2b112a10a1cc928448157dbc72110b.1651012461.git.boris@bur.io>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <cover.1651012461.git.boris@bur.io>
 References: <cover.1651012461.git.boris@bur.io>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,LOTS_OF_MONEY,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-There are some btrfs specific fsverity scenarios that don't map
-neatly onto the tests in generic/574 like holes, inline extents,
-and preallocated extents. Cover those in a btrfs specific test.
+The behavior of orphans is most interesting across mounts, interrupted
+at arbitrary points during fsverity enable. To cover as many such cases
+as possible, use dmlogwrites and dmsnapshot as in
+log-writes/replay-individual.sh. At each log entry, we want to assert a
+somewhat complicated invariant:
 
-This test relies on the btrfs implementation of fsverity in the patch:
-btrfs: initial fsverity support
+If verity has not yet started: an orphan indicates that verity has
+started.
+If verity has started: mount should handle the orphan and blow away
+verity data: expect 0 merkle items after mounting the snapshot dev. If
+we can measure the file, verity has finished.
+If verity has finished: the orphan should be gone, so mount should not
+blow away merkle items. Expect the same number of merkle items before
+and after mounting the snapshot dev.
 
-and on btrfs-corrupt-block for corruption in the patches titled:
-btrfs-progs: corrupt generic item data with btrfs-corrupt-block
-btrfs-progs: expand corrupt_file_extent in btrfs-corrupt-block
+Note that this relies on grepping btrfs inspect-internal dump-tree.
+Until btrfs-progs has the ability to print the new Merkle items, they
+will show up as UNKNOWN.36/37.
 
 Signed-off-by: Boris Burkov <boris@bur.io>
 ---
- tests/btrfs/290     | 168 ++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/290.out |  25 +++++++
- 2 files changed, 193 insertions(+)
- create mode 100755 tests/btrfs/290
- create mode 100644 tests/btrfs/290.out
+ tests/btrfs/291     | 161 ++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/291.out |   2 +
+ 2 files changed, 163 insertions(+)
+ create mode 100755 tests/btrfs/291
+ create mode 100644 tests/btrfs/291.out
 
-diff --git a/tests/btrfs/290 b/tests/btrfs/290
+diff --git a/tests/btrfs/291 b/tests/btrfs/291
 new file mode 100755
-index 00000000..f9acd55a
+index 00000000..1bb3f1b3
 --- /dev/null
-+++ b/tests/btrfs/290
-@@ -0,0 +1,168 @@
++++ b/tests/btrfs/291
+@@ -0,0 +1,161 @@
 +#! /bin/bash
 +# SPDX-License-Identifier: GPL-2.0
 +# Copyright (C) 2021 Facebook, Inc. All Rights Reserved.
 +#
-+# FS QA Test 290
++# FS QA Test 291
 +#
-+# Test btrfs support for fsverity.
-+# This test extends the generic fsverity testing by corrupting inline extents,
-+# preallocated extents, holes, and the Merkle descriptor in a btrfs-aware way.
++# Test btrfs consistency after each FUA while enabling verity on a file
++# This test works by following the pattern in log-writes/replay-individual.sh:
++# 1. run a workload (verity + sync) while logging to the log device
++# 2. replay an entry to the replay device
++# 3. snapshot the replay device to the snapshot device
++# 4. run destructive tests on the snapshot device (e.g. mount with orphans)
++# 5. goto 2
 +#
 +. ./common/preamble
-+_begin_fstest auto quick verity
++_begin_fstest auto verity
++
++# Override the default cleanup function.
++_cleanup()
++{
++	cd /
++	_log_writes_cleanup &> /dev/null
++	rm -f $img
++	$LVM_PROG vgremove -f -y $vgname >>$seqres.full 2>&1
++	losetup -d $loop_dev >>$seqres.full 2>&1
++}
 +
 +# Import common functions.
 +. ./common/filter
++. ./common/attr
++. ./common/dmlogwrites
 +. ./common/verity
 +
 +# real QA test starts here
 +_supported_fs btrfs
++
++_require_scratch
++_require_test
++_require_log_writes
++_require_dm_target snapshot
++_require_command $LVM_PROG lvm
 +_require_scratch_verity
-+_require_scratch_nocheck
-+_require_odirect
-+_require_xfs_io_command "falloc"
-+_require_xfs_io_command "pread"
-+_require_xfs_io_command "pwrite"
-+_require_btrfs_corrupt_block
++_require_btrfs_command inspect-internal dump-tree
++_require_test_program "log-writes/replay-log"
 +
-+get_ino() {
-+	local file=$1
-+	stat -c "%i" $file
++sync_loop() {
++	i=$1
++	[ -z "$i" ] && _fail "sync loop needs a number of iterations"
++	while [ $i -gt 0 ]
++	do
++		$XFS_IO_PROG -c sync $SCRATCH_MNT
++		let i-=1
++	done
 +}
 +
-+validate() {
-+	local f=$1
-+	local sz=$(_get_filesize $f)
-+	# buffered io
-+	echo $(basename $f)
-+	$XFS_IO_PROG -rc "pread -q 0 $sz" $f 2>&1 | _filter_scratch
-+	# direct io
-+	$XFS_IO_PROG -rdc "pread -q 0 $sz" $f 2>&1 | _filter_scratch
++dump_tree() {
++	local dev=$1
++	$BTRFS_UTIL_PROG inspect-internal dump-tree $dev
 +}
 +
-+# corrupt the data portion of an inline extent
-+corrupt_inline() {
-+	local f=$SCRATCH_MNT/inl
-+	$XFS_IO_PROG -fc "pwrite -q -S 0x58 0 42" $f
-+	local ino=$(get_ino $f)
-+	_fsv_enable $f
-+	_scratch_unmount
-+	# inline data starts at disk_bytenr
-+	# overwrite the first u64 with random bogus junk
-+	$BTRFS_CORRUPT_BLOCK_PROG -i $ino -x 0 -f disk_bytenr $SCRATCH_DEV > /dev/null 2>&1
-+	_scratch_mount
-+	validate $f
++count_item() {
++	local dev=$1
++	local item=$2
++	dump_tree $dev | grep -c $item
 +}
 +
-+# preallocate a file, then corrupt it by changing it to a regular file
-+corrupt_prealloc_to_reg() {
-+	local f=$SCRATCH_MNT/prealloc
-+	$XFS_IO_PROG -fc "falloc 0 12k" $f
-+	local ino=$(get_ino $f)
-+	_fsv_enable $f
-+	_scratch_unmount
-+	# set extent type from prealloc (2) to reg (1)
-+	$BTRFS_CORRUPT_BLOCK_PROG -i $ino -x 0 -f type -v 1 $SCRATCH_DEV >/dev/null 2>&1
-+	_scratch_mount
-+	validate $f
-+}
++_log_writes_init $SCRATCH_DEV
++_log_writes_mkfs
++_log_writes_mount
 +
-+# corrupt a regular file by changing the type to preallocated
-+corrupt_reg_to_prealloc() {
-+	local f=$SCRATCH_MNT/reg
-+	$XFS_IO_PROG -fc "pwrite -q -S 0x58 0 12288" $f
-+	local ino=$(get_ino $f)
-+	_fsv_enable $f
-+	_scratch_unmount
-+	# set type from reg (1) to prealloc (2)
-+	$BTRFS_CORRUPT_BLOCK_PROG -i $ino -x 0 -f type -v 2 $SCRATCH_DEV >/dev/null 2>&1
-+	_scratch_mount
-+	validate $f
-+}
++f=$SCRATCH_MNT/fsv
++MB=$((1024 * 1024))
++img=$TEST_DIR/$$.img
++$XFS_IO_PROG -fc "pwrite -q 0 $((10 * $MB))" $f
++$XFS_IO_PROG -c sync $SCRATCH_MNT
++sync_loop 10 &
++sync_proc=$!
++_fsv_enable $f
++$XFS_IO_PROG -c sync $SCRATCH_MNT
++wait $sync_proc
 +
-+# corrupt a file by punching a hole
-+corrupt_punch_hole() {
-+	local f=$SCRATCH_MNT/punch
-+	$XFS_IO_PROG -fc "pwrite -q -S 0x58 0 12288" $f
-+	local ino=$(get_ino $f)
-+	# make a new extent in the middle, sync so the writes don't coalesce
-+	$XFS_IO_PROG -c sync $SCRATCH_MNT
-+	$XFS_IO_PROG -fc "pwrite -q -S 0x59 4096 4096" $f
-+	_fsv_enable $f
-+	_scratch_unmount
-+	# change disk_bytenr to 0, representing a hole
-+	$BTRFS_CORRUPT_BLOCK_PROG -i $ino -x 4096 -f disk_bytenr -v 0 $SCRATCH_DEV > /dev/null 2>&1
-+	_scratch_mount
-+	validate $f
-+}
++_log_writes_unmount
++_log_writes_remove
 +
-+# plug hole
-+corrupt_plug_hole() {
-+	local f=$SCRATCH_MNT/plug
-+	$XFS_IO_PROG -fc "pwrite -q -S 0x58 0 12288" $f
-+	local ino=$(get_ino $f)
-+	$XFS_IO_PROG -fc "falloc 4k 4k" $f
-+	_fsv_enable $f
-+	_scratch_unmount
-+	# change disk_bytenr to some value, plugging the hole
-+	$BTRFS_CORRUPT_BLOCK_PROG -i $ino -x 4096 -f disk_bytenr -v 13639680 $SCRATCH_DEV > /dev/null 2>&1
-+	_scratch_mount
-+	validate $f
-+}
++# the snapshot and the replay will each be the size of the log writes dev
++# so we create a loop device of size 2 * logwrites and then split it into
++# replay and snapshot with lvm.
++log_writes_blocks=$(blockdev --getsz $LOGWRITES_DEV)
++replay_bytes=$((512 * $log_writes_blocks))
++img_bytes=$((2 * $replay_bytes))
 +
-+# corrupt the fsverity descriptor item indiscriminately (causes EINVAL)
-+corrupt_verity_descriptor() {
-+	local f=$SCRATCH_MNT/desc
-+	$XFS_IO_PROG -fc "pwrite -q -S 0x58 0 12288" $f
-+	local ino=$(get_ino $f)
-+	_fsv_enable $f
-+	_scratch_unmount
-+	# key for the descriptor item is <inode, BTRFS_VERITY_DESC_ITEM_KEY, 1>,
-+	# 88 is X. So we write 5 Xs to the start of the descriptor
-+	$BTRFS_CORRUPT_BLOCK_PROG -r 5 -I $ino,36,1 -v 88 -o 0 -b 5 $SCRATCH_DEV > /dev/null 2>&1
-+	_scratch_mount
-+	validate $f
-+}
++$XFS_IO_PROG -fc "pwrite -q -S 0 $img_bytes $MB" $img >>$seqres.full 2>&1 || \
++	_fail "failed to create image for loop device"
++loop_dev=$(losetup -f --show $img)
++vgname=vg_replay
++lvname=lv_replay
++replay_dev=/dev/mapper/vg_replay-lv_replay
++snapname=lv_snap
++snap_dev=/dev/mapper/vg_replay-$snapname
 +
-+# specifically target the root hash in the descriptor (causes EIO)
-+corrupt_root_hash() {
-+	local f=$SCRATCH_MNT/roothash
-+	$XFS_IO_PROG -fc "pwrite -q -S 0x58 0 12288" $f
-+	local ino=$(get_ino $f)
-+	_fsv_enable $f
-+	_scratch_unmount
-+	$BTRFS_CORRUPT_BLOCK_PROG -r 5 -I $ino,36,1 -v 88 -o 16 -b 1 $SCRATCH_DEV > /dev/null 2>&1
-+	_scratch_mount
-+	validate $f
-+}
++$LVM_PROG vgcreate -f $vgname $loop_dev >>$seqres.full 2>&1 || _fail "failed to vgcreate $vgname"
++$LVM_PROG lvcreate -L "$replay_bytes"B -n $lvname $vgname -y >>$seqres.full 2>&1 || \
++	_fail "failed to lvcreate $lvname"
++$UDEV_SETTLE_PROG >>$seqres.full 2>&1
 +
-+# corrupt the Merkle tree data itself
-+corrupt_merkle_tree() {
-+	local f=$SCRATCH_MNT/merkle
-+	$XFS_IO_PROG -fc "pwrite -q -S 0x58 0 12288" $f
-+	local ino=$(get_ino $f)
-+	_fsv_enable $f
-+	_scratch_unmount
-+	# key for the descriptor item is <inode, BTRFS_VERITY_MERKLE_ITEM_KEY, 0>,
-+	# 88 is X. So we write 5 Xs to somewhere in the middle of the first
-+	# merkle item
-+	$BTRFS_CORRUPT_BLOCK_PROG -r 5 -I $ino,37,0 -v 88 -o 100 -b 5 $SCRATCH_DEV > /dev/null 2>&1
-+	_scratch_mount
-+	validate $f
-+}
++replay_log_prog=$here/src/log-writes/replay-log
++num_entries=$($replay_log_prog --log $LOGWRITES_DEV --num-entries)
++entry=$($replay_log_prog --log $LOGWRITES_DEV --replay $replay_dev --find --end-mark mkfs | cut -d@ -f1)
++$replay_log_prog --log $LOGWRITES_DEV --replay $replay_dev --limit $entry || \
++	_fail "failed to replay to start entry $entry"
++let entry+=1
 +
-+# real QA test starts here
-+_scratch_mkfs >/dev/null
-+_scratch_mount
++# state = 0: verity hasn't started
++# state = 1: verity underway
++# state = 2: verity done
++state=0
++while [ $entry -lt $num_entries ];
++do
++	$replay_log_prog --limit 1 --log $LOGWRITES_DEV --replay $replay_dev --start $entry || \
++		_fail "failed to take replay step at entry: $entry"
 +
-+corrupt_inline
-+corrupt_prealloc_to_reg
-+corrupt_reg_to_prealloc
-+corrupt_punch_hole
-+corrupt_plug_hole
-+corrupt_verity_descriptor
-+corrupt_root_hash
-+corrupt_merkle_tree
++	$LVM_PROG lvcreate -s -L 4M -n $snapname $vgname/$lvname >>$seqres.full 2>&1 || \
++		_fail "Failed to create snapshot"
++	$UDEV_SETTLE_PROG >>$seqres.full 2>&1
 +
++	orphan=$(count_item $snap_dev ORPHAN)
++	if [ $state -eq 0 ]; then
++		[ $orphan -gt 0 ] && state=1
++	fi
++
++	pre_mount=$(count_item $snap_dev UNKNOWN.3[67])
++	_mount $snap_dev $SCRATCH_MNT || _fail "mount failed at entry $entry"
++	fsverity measure $SCRATCH_MNT/fsv >>$seqres.full 2>&1
++	measured=$?
++	umount $SCRATCH_MNT
++	[ $state -eq 1 ] && [ $measured -eq 0 ] && state=2
++	[ $state -eq 2 ] && ([ $measured -eq 0 ] || _fail "verity done, but measurement failed at entry $entry")
++	post_mount=$(count_item $snap_dev UNKNOWN.3[67])
++
++	echo "entry: $entry, state: $state, orphan: $orphan, pre_mount: $pre_mount, post_mount: $post_mount" >> $seqres.full
++
++	if [ $state -eq 1 ]; then
++		[ $post_mount -eq 0 ] || \
++			_fail "mount failed to clear under-construction merkle items pre: $pre_mount, post: $post_mount at entry $entry";
++	fi
++	if [ $state -eq 2 ]; then
++		[ $pre_mount -gt 0 ] || \
++			_fail "expected to have verity items before mount at entry $entry"
++		[ $pre_mount -eq $post_mount ] || \
++			_fail "mount cleared merkle items after verity was enabled $pre_mount vs $post_mount at entry $entry";
++	fi
++
++	let entry+=1
++	$LVM_PROG lvremove $vgname/$snapname -y >>$seqres.full
++done
++
++echo "Silence is golden"
++
++# success, all done
 +status=0
 +exit
-diff --git a/tests/btrfs/290.out b/tests/btrfs/290.out
+diff --git a/tests/btrfs/291.out b/tests/btrfs/291.out
 new file mode 100644
-index 00000000..056b114b
+index 00000000..04605c70
 --- /dev/null
-+++ b/tests/btrfs/290.out
-@@ -0,0 +1,25 @@
-+QA output created by 290
-+inl
-+pread: Input/output error
-+pread: Input/output error
-+prealloc
-+pread: Input/output error
-+pread: Input/output error
-+reg
-+pread: Input/output error
-+pread: Input/output error
-+punch
-+pread: Input/output error
-+pread: Input/output error
-+plug
-+pread: Input/output error
-+pread: Input/output error
-+desc
-+SCRATCH_MNT/desc: Invalid argument
-+SCRATCH_MNT/desc: Invalid argument
-+roothash
-+pread: Input/output error
-+pread: Input/output error
-+merkle
-+pread: Input/output error
-+pread: Input/output error
++++ b/tests/btrfs/291.out
+@@ -0,0 +1,2 @@
++QA output created by 291
++Silence is golden
 -- 
 2.35.1
 
