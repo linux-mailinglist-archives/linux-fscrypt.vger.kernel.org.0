@@ -2,455 +2,206 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7374D513E76
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 29 Apr 2022 00:19:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC6BA514805
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 29 Apr 2022 13:26:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352839AbiD1WXA (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 28 Apr 2022 18:23:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37264 "EHLO
+        id S1358277AbiD2L3s (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 29 Apr 2022 07:29:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237230AbiD1WW7 (ORCPT
+        with ESMTP id S1358278AbiD2L3p (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 28 Apr 2022 18:22:59 -0400
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79D44BF32C
-        for <linux-fscrypt@vger.kernel.org>; Thu, 28 Apr 2022 15:19:43 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id B38A73200973;
-        Thu, 28 Apr 2022 18:19:42 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Thu, 28 Apr 2022 18:19:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
-        :content-transfer-encoding:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1651184382; x=1651270782; bh=Lk
-        u8dSa0YNRw/UmYyQIh0l7pvpo2E3YOc+OtY9zcVgw=; b=0jcEf1FeJZYiXkV6d6
-        SLWK0udPIIvzQXXJY/LMhI9pz7BoBJYr7bP197pFIjpfYvD02nBG8wW4eB98Glmh
-        gu0B/QdRnD9WneZu2fxE2s2wZviY7cEcC2+tGX1vkXX3gdV7EzxYnwLFo7dyRmwP
-        kDtrn3S+XRrhr/BnJMl4k7KtmyTkEL4qztmfQNyXZhbYyk9AVvne5kTng9tQWaF3
-        fD0CW+BaF/hO+HkDyCCfCCEcHY6bMaHfdUC+Jdvr6NtGo9D5eSqA9v3QJRNAoBvk
-        wbbJ0CB22TNkTLJ1bZ89xH7LKn9oMvZKJ8AK8SNhBguW+DQKjvuiiJ0KxwPLHlhn
-        rAAA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:date
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1651184382; x=1651270782; bh=Lku8dSa0YNRw/UmYyQIh0l7pvpo2E3YOc+O
-        tY9zcVgw=; b=Xlarn8kKCjBjcJDEzjiR/TvV1u1lHX2i3g/Ohaas4kJqFH8rq5w
-        1TzEMp1Z8nEfCQGfaglFKVM/eWo0UgxcgaFC6gspr2No1zvhADf7GZG0xE6H6vzD
-        Pg62RrdMB3ucaZ4nGp3d1VQHXhuuV2NjNfmK6A+RleS6k8eXebPVc80XJE84k3zy
-        S5mOo3VXUOnXxZEB7Y569NqKYoxi8Nn7W/w0DZvZjpB18QnsrEbHG/qMeHASuSEy
-        KZUnxu0v056E8ZIzwrO+SMBcsF0xGuzpg64vNgpnobuEI+oIBW2gq5i8/eS8x67p
-        2fichBj55xeUmqD0TpCU4rAAaO2wvrkfk9w==
-X-ME-Sender: <xms:_RJrYiy7ebIdS18zYxOR7xELPIZcIlb-8eRCwI-jLEmzEfyXQJIuCg>
-    <xme:_RJrYuRVhFjWK8QoMC6za4l3EfM5uWE2i3wgCyJNcaejhqgpO2NMBmrJSpBNXyhYL
-    -pFYkStVXPeWw_4QJI>
-X-ME-Received: <xmr:_RJrYkXCE3NNUGuluflTjcZzAXLrenSmD9H_3c6v0jEr5xRD6zPbQX-AAyg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrudekgddtjecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
-    ertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
-    oheqnecuggftrfgrthhtvghrnhepieeuffeuvdeiueejhfehiefgkeevudejjeejffevvd
-    ehtddufeeihfekgeeuheelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
-    rghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:_hJrYoghc_KbC6FlMthKau5Pp_z5cuBCefcFRKy3kWddVLzJsjIkvA>
-    <xmx:_hJrYkA7ycAIDjQXYbyg4z7BeVgr0xeEAugeQxUcsKxEa-KS5P2O_g>
-    <xmx:_hJrYpJW0ID76O6aHDTUvXnDuWjYVGzhWNk1DOCke_dByBPg9_eeMg>
-    <xmx:_hJrYvoCezIJg18EbYYBIfVSkHirSsenK9-ZT1QQaSUa-A-1X9X4WQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 28 Apr 2022 18:19:41 -0400 (EDT)
-From:   Boris Burkov <boris@bur.io>
-To:     linux-fscrypt@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 2/2] fsverity: add mode sysctl
-Date:   Thu, 28 Apr 2022 15:19:20 -0700
-Message-Id: <70ca249017356383ed420b8213713309b8d15d0f.1651184207.git.boris@bur.io>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <cover.1651184207.git.boris@bur.io>
-References: <cover.1651184207.git.boris@bur.io>
-MIME-Version: 1.0
+        Fri, 29 Apr 2022 07:29:45 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E9B449247;
+        Fri, 29 Apr 2022 04:26:26 -0700 (PDT)
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 23TB1q1S030988;
+        Fri, 29 Apr 2022 11:26:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=HIGWG2LklgoOP+7sCZl6MUqLIew0TUvW9f6vl4Sx3AE=;
+ b=buH7I5F2A54RGYKCBw4Q3eRLKJSamD/QSyQqCjGEdTPgOh5Oa1lSCC/cae+W1Wl51OLd
+ jtqxUyOWGTfxjh6X1fNVNSys4ighONKR++5eI4SUo7YkleTSnJSzafxwnxG0py6/5S+S
+ BscDOzm5tJxMLm2rCWrV6jM37RahVQamaF82lY05/q9iXiiYpSP86uwrMVNs2sN5cZbF
+ pLeGAPeEqaL4qjgAezS8btuAwJ2koh5Bma3/RDhkk8aHwE3pQTcd5oQnPAXGni85XzOW
+ 8/mROtDi47qF/hHX+sno1SYumpxOpa1dkhJwoRjfs889gf91zJQGJZxdmnfwTQMedv5k jw== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3fqsyj2rra-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Apr 2022 11:26:22 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 23TBD7gY023641;
+        Fri, 29 Apr 2022 11:26:21 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03ams.nl.ibm.com with ESMTP id 3fm93910vk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Apr 2022 11:26:20 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 23TBQHIU32047532
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 29 Apr 2022 11:26:17 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A5B2E11C050;
+        Fri, 29 Apr 2022 11:26:17 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2CA7211C058;
+        Fri, 29 Apr 2022 11:26:16 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com.com (unknown [9.65.70.88])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 29 Apr 2022 11:26:16 +0000 (GMT)
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     linux-integrity@vger.kernel.org
+Cc:     Mimi Zohar <zohar@linux.ibm.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Stefan Berger <stefanb@linux.ibm.com>,
+        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v8 0/7] ima: support fs-verity digests and signatures
+Date:   Fri, 29 Apr 2022 07:25:54 -0400
+Message-Id: <20220429112601.1421947-1-zohar@linux.ibm.com>
+X-Mailer: git-send-email 2.27.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: kJklGJg15wjaOR-VaJrCaYes3JR-zKj7
+X-Proofpoint-ORIG-GUID: kJklGJg15wjaOR-VaJrCaYes3JR-zKj7
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
+ definitions=2022-04-29_06,2022-04-28_01,2022-02-23_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 spamscore=0 impostorscore=0 mlxscore=0 malwarescore=0
+ mlxlogscore=999 suspectscore=0 phishscore=0 adultscore=0 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2202240000 definitions=main-2204290064
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Add a "mode" sysctl to act as a killswitch for fs-verity. The motivation
-is that in case there is an unforeseen performance regression or bug in
-verity as one attempts to use it in production, being able to disable it
-live gives a lot of peace of mind. One could also run in audit mode for
-a while before switching to the enforcing mode.
+Support for including fs-verity file digests and signatures in the IMA
+measurement list as well as verifying the fs-verity file digest based
+signatures was discussed prior to fs-verity being upstreamed[1,2].
 
-The modes are:
-disable: verity has no effect, even if configured or used
-audit: run the verity logic, permit ioctls, but only log on failures
-enforce: fully enabled; the default and the behavior before this patch
+Including fs-verity file digests and signatures in the IMA measurement
+list need to be based on policy and be identifiable.  To address being
+based on policy, a new policy rule option "digest_type=verity", applicable
+to both "measure" and "appraise" policy rules, is defined.  To address
+being identifiable, a new template field 'd-ngv2' and two new template
+formats 'ima-ngv2' and 'ima-sigv2' are defined.
 
-This also precipitated re-organizing sysctls for verity as previously
-the only sysctl was for signatures so sysctls and signatures were
-coupled.
+d-ngv2:  prefixes the digest type ("ima", "verity") to the digest
+algorithm and digest.
 
-One slightly subtle issue is what errors should "audit" swallow.
-Certainly verification or signature errors, but there is a slippery
-slope leading to inconsistent states with half set up verity if you try
-to ignore errors in enabling verity on a file. The intent of audit mode
-is to still fail normally in verity specific ioctls, but to leave the
-file be from the perspective of normal filesystem APIs. However, we must
-still disallow writes in audit mode, or else it would immediately lead
-to invalid verity state.
+ima-ngv2', ima-sigv2: templates with the new d-ngv2 field defined.
 
-Signed-off-by: Boris Burkov <boris@bur.io>
----
- fs/verity/enable.c           |  3 ++
- fs/verity/fsverity_private.h | 10 ++++++
- fs/verity/measure.c          |  3 ++
- fs/verity/open.c             | 14 +++++++--
- fs/verity/read_metadata.c    |  3 ++
- fs/verity/signature.c        | 14 +++++++--
- fs/verity/sysctl.c           | 59 ++++++++++++++++++++++++++++++++++++
- fs/verity/verify.c           | 34 +++++++++++++++++++--
- include/linux/fsverity.h     |  4 +--
- 9 files changed, 136 insertions(+), 8 deletions(-)
+In addition the signatures stored in 'security.ima' xattr need to be
+disambiguated.  So instead of directly signing the fs-verity digest, the
+fs-verity digest is indirectly signed, by signing the hash of the new
+ima_file_id structure data (signature version 3) containing the fs-verity
+digest and other metadata.
 
-diff --git a/fs/verity/enable.c b/fs/verity/enable.c
-index 60a4372aa4d7..dae21c09e518 100644
---- a/fs/verity/enable.c
-+++ b/fs/verity/enable.c
-@@ -343,6 +343,9 @@ int fsverity_ioctl_enable(struct file *filp, const void __user *uarg)
- 	struct fsverity_enable_arg arg;
- 	int err;
- 
-+	if (fsverity_disabled())
-+		return -EPERM;
-+
- 	if (copy_from_user(&arg, uarg, sizeof(arg)))
- 		return -EFAULT;
- 
-diff --git a/fs/verity/fsverity_private.h b/fs/verity/fsverity_private.h
-index c416c1cd9371..05faaa827a9d 100644
---- a/fs/verity/fsverity_private.h
-+++ b/fs/verity/fsverity_private.h
-@@ -140,6 +140,8 @@ void __init fsverity_exit_info_cache(void);
- #ifdef CONFIG_SYSCTL
- int __init fsverity_sysctl_init(void);
- void __init fsverity_exit_sysctl(void);
-+bool fsverity_disabled(void);
-+bool fsverity_enforced(void);
- #else /* !CONFIG_SYSCTL */
- static inline int __init fsverity_sysctl_init(void)
- {
-@@ -148,6 +150,14 @@ static inline int __init fsverity_sysctl_init(void)
- static inline void __init fsverity_exit_sysctl(void)
- {
- }
-+static inline bool fsverity_disabled(void)
-+{
-+	return true;
-+}
-+static inline bool fsverity_enforced(void)
-+{
-+	return false;
-+}
- #endif /* !CONFIG_SYSCTL */
- 
- /* signature.c */
-diff --git a/fs/verity/measure.c b/fs/verity/measure.c
-index f0d7b30c62db..f17efaa919e3 100644
---- a/fs/verity/measure.c
-+++ b/fs/verity/measure.c
-@@ -28,6 +28,9 @@ int fsverity_ioctl_measure(struct file *filp, void __user *_uarg)
- 	const struct fsverity_hash_alg *hash_alg;
- 	struct fsverity_digest arg;
- 
-+	if (fsverity_disabled())
-+		return -EPERM;
-+
- 	vi = fsverity_get_info(inode);
- 	if (!vi)
- 		return -ENODATA; /* not a verity file */
-diff --git a/fs/verity/open.c b/fs/verity/open.c
-index 92df87f5fa38..840ad62bf6ac 100644
---- a/fs/verity/open.c
-+++ b/fs/verity/open.c
-@@ -177,7 +177,7 @@ struct fsverity_info *fsverity_create_info(const struct inode *inode,
- 		fsverity_err(inode, "Error %d computing file digest", err);
- 		goto out;
- 	}
--	pr_debug("Computed file digest: %s:%*phN\n",
-+	pr_info("Computed file digest: %s:%*phN\n",
- 		 vi->tree_params.hash_alg->name,
- 		 vi->tree_params.digest_size, vi->file_digest);
- 
-@@ -344,6 +344,11 @@ static int ensure_verity_info(struct inode *inode)
-  */
- int fsverity_file_open(struct inode *inode, struct file *filp)
- {
-+	int ret;
-+
-+	if (fsverity_disabled())
-+		return 0;
-+
- 	if (!IS_VERITY(inode))
- 		return 0;
- 
-@@ -353,7 +358,12 @@ int fsverity_file_open(struct inode *inode, struct file *filp)
- 		return -EPERM;
- 	}
- 
--	return ensure_verity_info(inode);
-+	ret = ensure_verity_info(inode);
-+	if (!fsverity_enforced()) {
-+		fsverity_warn(inode, "AUDIT ONLY: ignore missing verity info");
-+		return 0;
-+	}
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(fsverity_file_open);
- 
-diff --git a/fs/verity/read_metadata.c b/fs/verity/read_metadata.c
-index 7e2d0c7bdf0d..5773fbaabf1e 100644
---- a/fs/verity/read_metadata.c
-+++ b/fs/verity/read_metadata.c
-@@ -157,6 +157,9 @@ int fsverity_ioctl_read_metadata(struct file *filp, const void __user *uarg)
- 	int length;
- 	void __user *buf;
- 
-+	if (fsverity_disabled())
-+		return -EPERM;
-+
- 	vi = fsverity_get_info(inode);
- 	if (!vi)
- 		return -ENODATA; /* not a verity file */
-diff --git a/fs/verity/signature.c b/fs/verity/signature.c
-index 67a471e4b570..b10515817d8a 100644
---- a/fs/verity/signature.c
-+++ b/fs/verity/signature.c
-@@ -42,12 +42,18 @@ int fsverity_verify_signature(const struct fsverity_info *vi,
- 	int err;
- 
- 	if (sig_size == 0) {
-+		err = 0;
- 		if (fsverity_require_signatures) {
- 			fsverity_err(inode,
- 				     "require_signatures=1, rejecting unsigned file!");
--			return -EPERM;
-+			if (fsverity_enforced()) {
-+				err = -EPERM;
-+			} else {
-+				fsverity_warn(vi->inode, "AUDIT ONLY. ignore unsigned");
-+				err = 0;
-+			}
- 		}
--		return 0;
-+		return err;
- 	}
- 
- 	d = kzalloc(sizeof(*d) + hash_alg->digest_size, GFP_KERNEL);
-@@ -75,6 +81,10 @@ int fsverity_verify_signature(const struct fsverity_info *vi,
- 		else
- 			fsverity_err(inode, "Error %d verifying file signature",
- 				     err);
-+		if (!fsverity_enforced()) {
-+			fsverity_warn(vi->inode, "AUDIT ONLY. ignore signature error");
-+			err = 0;
-+		}
- 		return err;
- 	}
- 
-diff --git a/fs/verity/sysctl.c b/fs/verity/sysctl.c
-index 3ba7b02282db..94ffb78f745c 100644
---- a/fs/verity/sysctl.c
-+++ b/fs/verity/sysctl.c
-@@ -9,6 +9,21 @@
-  * If 1, all verity files must have a valid builtin signature.
-  */
- int fsverity_require_signatures;
-+/*
-+ * /proc/sys/fs/verity/mode
-+ * If "disable": disable verity, don't verify, fail all ioctls.
-+ * If "audit": allow ioctls, and run verification logic, but only log on verification failure.
-+ * If "enforce": fully enforce, verification failure returns errors.
-+ * default: "enforce"
-+ */
-+#define FSVERITY_MODE_LEN 10
-+static const char * const fsverity_modes[] = {
-+	"disable",
-+	"audit",
-+	"enforce",
-+	NULL
-+};
-+static char fsverity_mode[FSVERITY_MODE_LEN] = "enforce";
- 
- #ifdef CONFIG_SYSCTL
- static struct ctl_table_header *fsverity_sysctl_header;
-@@ -19,6 +34,34 @@ static const struct ctl_path fsverity_sysctl_path[] = {
- 	{ }
- };
- 
-+static int proc_do_fsverity_mode(struct ctl_table *table, int write,
-+				 void *buffer, size_t *lenp, loff_t *ppos)
-+{
-+	char tmp_mode[FSVERITY_MODE_LEN];
-+	const char *const *mode = fsverity_modes;
-+	struct ctl_table tmp = {
-+		.data = tmp_mode,
-+		.maxlen = FSVERITY_MODE_LEN,
-+		.mode = table->mode,
-+	};
-+	int ret;
-+
-+	strncpy(tmp_mode, fsverity_mode, FSVERITY_MODE_LEN);
-+	ret = proc_dostring(&tmp, write, buffer, lenp, ppos);
-+	if (write) {
-+		while (*mode) {
-+			if (!strcmp(*mode, tmp_mode))
-+				break;
-+			++mode;
-+		}
-+		if (!*mode)
-+			ret = -EINVAL;
-+		else
-+			strncpy(fsverity_mode, *mode, FSVERITY_MODE_LEN);
-+	}
-+	return ret;
-+}
-+
- static struct ctl_table fsverity_sysctl_table[] = {
- 	{
- 		.procname       = "require_signatures",
-@@ -29,6 +72,13 @@ static struct ctl_table fsverity_sysctl_table[] = {
- 		.extra1         = SYSCTL_ZERO,
- 		.extra2         = SYSCTL_ONE,
- 	},
-+	{
-+		.procname       = "mode",
-+		.data           = fsverity_mode,
-+		.maxlen         = FSVERITY_MODE_LEN,
-+		.mode           = 0644,
-+		.proc_handler   = proc_do_fsverity_mode,
-+	},
- 	{ }
- };
- 
-@@ -48,4 +98,13 @@ void __init fsverity_exit_sysctl(void)
- 	unregister_sysctl_table(fsverity_sysctl_header);
- 	fsverity_sysctl_header = NULL;
- }
-+
-+bool fsverity_disabled(void)
-+{
-+	return !strcmp(fsverity_mode, "disable");
-+}
-+bool fsverity_enforced(void)
-+{
-+	return !strcmp(fsverity_mode, "enforce");
-+}
- #endif /* !CONFIG_SYSCTL */
-diff --git a/fs/verity/verify.c b/fs/verity/verify.c
-index 14e2fb49cff5..aedd8f8d864f 100644
---- a/fs/verity/verify.c
-+++ b/fs/verity/verify.c
-@@ -7,6 +7,7 @@
- 
- #include "fsverity_private.h"
- 
-+#include "linux/export.h"
- #include <crypto/hash.h>
- #include <linux/bio.h>
- #include <linux/ratelimit.h>
-@@ -63,6 +64,10 @@ static inline int cmp_hashes(const struct fsverity_info *vi,
- 		     index, level,
- 		     vi->tree_params.hash_alg->name, hsize, want_hash,
- 		     vi->tree_params.hash_alg->name, hsize, real_hash);
-+	if (!fsverity_enforced()) {
-+		fsverity_warn(vi->inode, "AUDIT ONLY. ignore corruption");
-+		return 0;
-+	}
- 	return -EBADMSG;
- }
- 
-@@ -98,8 +103,10 @@ static bool verify_page(struct inode *inode, const struct fsverity_info *vi,
- 	unsigned int hoffsets[FS_VERITY_MAX_LEVELS];
- 	int err;
- 
--	if (WARN_ON_ONCE(!PageLocked(data_page) || PageUptodate(data_page)))
--		return false;
-+	if (WARN_ON_ONCE(!PageLocked(data_page) || PageUptodate(data_page))) {
-+		err = -EINVAL;
-+		goto out;
-+	}
- 
- 	pr_debug_ratelimited("Verifying data page %lu...\n", index);
- 
-@@ -193,6 +200,8 @@ bool fsverity_verify_page(struct page *page)
- 	struct ahash_request *req;
- 	bool valid;
- 
-+	if (fsverity_disabled())
-+		return true;
- 	/* This allocation never fails, since it's mempool-backed. */
- 	req = fsverity_alloc_hash_request(vi->tree_params.hash_alg, GFP_NOFS);
- 
-@@ -276,6 +285,27 @@ void fsverity_enqueue_verify_work(struct work_struct *work)
- }
- EXPORT_SYMBOL_GPL(fsverity_enqueue_verify_work);
- 
-+/**
-+ * fsverity_active() - do reads from the inode need to go through fs-verity?
-+ * @inode: inode to check
-+ *
-+ * This checks whether ->i_verity_info has been set.
-+ *
-+ * Filesystems call this from ->readahead() to check whether the pages need to
-+ * be verified or not.  Don't use IS_VERITY() for this purpose; it's subject to
-+ * a race condition where the file is being read concurrently with
-+ * FS_IOC_ENABLE_VERITY completing.  (S_VERITY is set before ->i_verity_info.)
-+ *
-+ * Return: true if reads need to go through fs-verity, otherwise false
-+ */
-+bool fsverity_active(const struct inode *inode)
-+{
-+	if (fsverity_disabled())
-+		return false;
-+	return fsverity_get_info(inode) != NULL;
-+}
-+EXPORT_SYMBOL_GPL(fsverity_active);
-+
- int __init fsverity_init_workqueue(void)
- {
- 	/*
-diff --git a/include/linux/fsverity.h b/include/linux/fsverity.h
-index a7afc800bd8d..51ba4adf7b73 100644
---- a/include/linux/fsverity.h
-+++ b/include/linux/fsverity.h
-@@ -147,6 +147,7 @@ int fsverity_ioctl_read_metadata(struct file *filp, const void __user *uarg);
- bool fsverity_verify_page(struct page *page);
- void fsverity_verify_bio(struct bio *bio);
- void fsverity_enqueue_verify_work(struct work_struct *work);
-+bool fsverity_active(const struct inode *inode);
- 
- #else /* !CONFIG_FS_VERITY */
- 
-@@ -213,8 +214,6 @@ static inline void fsverity_enqueue_verify_work(struct work_struct *work)
- 	WARN_ON(1);
- }
- 
--#endif	/* !CONFIG_FS_VERITY */
--
- /**
-  * fsverity_active() - do reads from the inode need to go through fs-verity?
-  * @inode: inode to check
-@@ -232,5 +231,6 @@ static inline bool fsverity_active(const struct inode *inode)
- {
- 	return fsverity_get_info(inode) != NULL;
- }
-+#endif	/* !CONFIG_FS_VERITY */
- 
- #endif	/* _LINUX_FSVERITY_H */
+New policy rule option:
+appraise_type=sigv3: support for new IMA signature version 3
+
+
+[1] https://events19.linuxfoundation.org/wp-content/uploads/2017/11/fs-verify_Mike-Halcrow_Eric-Biggers.pdf
+[2] Documentation/filesystems/fsverity.rst
+
+Changelog v8:
+- Based on Eric Bigger's review, fixed the original 'd-ng' and the new
+  DATA_FMT_DIGEST_WITH_TYPE_ALGO comments and documentation, moved the
+  buffer measurement test to after fs-verity measurements, renamed
+  appraise_type "sigv2" to "sigv3", require the new "digest_type=verity"
+  policy option be specified prior to "appraise_type=sigv3", and updated
+  the fs-verity documentation.
+
+Changelog v7:
+- Based on Stefan Berger's review, cleaned up code by defining an enum,
+  removed unnecessary memcpy, fs-verity documentation suggestions.
+- Add comment in ima_get_verify_digest() with explanation for always
+  returning the fs-verity digest.
+
+Changelog v6:
+- As suggested by Eric Bigger's, instead of defining a new field to
+  differentiate between IMA and fs-verity signatures, prepend the
+  digest type to the digest field.
+- Addressed Eric Bigger's comments: updated the patch description,
+  corrected comment, squashed patches, fixed enumeration usage,and
+  added assumption to fsverity_get_digest.
+- Removed the now unnecessary IMA_VERITY_DIGEST flag
+- Updated kernel-parameters.txt
+
+Changelog v5:
+- Define ima_max_digest_size struct, removing the locally defined versions.
+- Don't overload the 'digest_type=verity' to imply a verity signature,
+  but extend the 'appraise_type' policy rule option to define 'sigv3'.
+
+Changelog v4:
+- Based on Eric Bigger's signature verification concerns of replacing the
+  contents of a file with the ima_file_id struct hash, require per policy
+  rule signature versions.
+- Addressed Eric Bigger's other comments.
+- Added new audit messages "causes".
+- Updated patch descriptions.
+
+Changelog v3:
+- Addressed Eric Bigger's comments: included Ack, incremented the
+  signature format version, the crypto issues are generic and will be
+  addressed by him separately.
+- Addressed Vitaly Chikunov's comments: hard coded maximum digest size
+  rather than using a flexible array, removed unnecessary assignment, and
+  fixed comment to match variable name.
+- Defined new "ima_max_digest_size" struct to avoid wrapping the
+  "ima_digest_data" struct inside a function local structure or
+  having to dynamically allocate it with enough memory for the specific
+  hash algo size.
+
+Changelog v2:
+- Addressed Eric Bigger's comments: sign the hash of fsverity's digest
+  and the digest's metadata, use match_string, use preferred function
+  name fsverity_get_digest(), support including unsigned fs-verity's
+  digests in the IMA measurement list.
+- Remove signatures requirement for including fs-verity's file digests in
+  the 'd-ng' field of the measurement list.
+
+Changelog v1:
+- Updated both fsverity and IMA documentation.
+- Addressed both Eric Bigger's and Lakshmi's comments.
+
+Mimi Zohar (7):
+  ima: fix 'd-ng' comments and documentation
+  ima: use IMA default hash algorithm for integrity violations
+  fs-verity: define a function to return the integrity protected file
+    digest
+  ima: define a new template field named 'd-ngv2' and templates
+  ima: permit fsverity's file digests in the IMA measurement list
+  ima: support fs-verity file digest based version 3 signatures
+  fsverity: update the documentation
+
+ Documentation/ABI/testing/ima_policy          |  45 ++++++-
+ .../admin-guide/kernel-parameters.txt         |   3 +-
+ Documentation/filesystems/fsverity.rst        |  35 ++++--
+ Documentation/security/IMA-templates.rst      |  11 +-
+ fs/verity/Kconfig                             |   1 +
+ fs/verity/fsverity_private.h                  |   7 --
+ fs/verity/measure.c                           |  43 +++++++
+ include/linux/fsverity.h                      |  18 +++
+ security/integrity/digsig.c                   |   3 +-
+ security/integrity/ima/ima_api.c              |  49 +++++++-
+ security/integrity/ima/ima_appraise.c         | 114 +++++++++++++++++-
+ security/integrity/ima/ima_main.c             |   2 +-
+ security/integrity/ima/ima_policy.c           |  79 ++++++++++--
+ security/integrity/ima/ima_template.c         |   4 +
+ security/integrity/ima/ima_template_lib.c     |  97 ++++++++++++---
+ security/integrity/ima/ima_template_lib.h     |   4 +
+ security/integrity/integrity.h                |  27 ++++-
+ 17 files changed, 480 insertions(+), 62 deletions(-)
+
 -- 
-2.30.2
+2.27.0
 
