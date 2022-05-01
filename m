@@ -2,48 +2,44 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7A115161E5
-	for <lists+linux-fscrypt@lfdr.de>; Sun,  1 May 2022 07:12:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5DA0516202
+	for <lists+linux-fscrypt@lfdr.de>; Sun,  1 May 2022 07:21:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240492AbiEAFQQ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sun, 1 May 2022 01:16:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40862 "EHLO
+        id S241060AbiEAFYv (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sun, 1 May 2022 01:24:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240279AbiEAFQP (ORCPT
+        with ESMTP id S241046AbiEAFYu (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sun, 1 May 2022 01:16:15 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3FF650E17;
-        Sat, 30 Apr 2022 22:12:50 -0700 (PDT)
+        Sun, 1 May 2022 01:24:50 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F37413D4B;
+        Sat, 30 Apr 2022 22:21:27 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 71460B80CE4;
-        Sun,  1 May 2022 05:12:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2EFCC385B3;
-        Sun,  1 May 2022 05:12:48 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BF43561188;
+        Sun,  1 May 2022 05:21:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F9FBC385AA;
+        Sun,  1 May 2022 05:21:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1651381969;
-        bh=YtbThwNrWRFAZXwtYRqFAKhwGVU0Vesj5yuz5dRPcmo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MkAOdZMy+onRagtGNOdJpAzL1DW55+hzoi7zktbWQo9H6S/w9w9ALLtjpXHhZwGRk
-         hMM0mWitK7vfAbZmNo4mvlEFAtyIgEeHsKXsh4ZQ/98HM/HORdDpSSIeb/gmoHKTtV
-         OVV65+5Kb5sAo0Gt6geHveAksXvgvDJR9nn+NGmrTbJreVn/ag1DHkg/7eNlUKMLcg
-         JE9X3tHtEPvENAF8lUdbZ6PbeAjlVteM+ZdufTlCrf1kKxKiV4eVl7Ynq4Kwuvw+dZ
-         p34Za8SPotxTLZmT5ZIckiX/jXOJZUbVFO7Nk6LvCI4xSKsIUKfnOpdPpdrR5wuRX5
-         kuuvpGTMadRUQ==
+        s=k20201202; t=1651382486;
+        bh=oqw2QlJKv5HbaXvjkUeK2eClFe54dcF0yYz3t+B3oWU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=dN6n4uIyFWqGhNfR1YrNSS0JK0RGp/5leaeNN/hvXLWxyKFMfV5sPCoM89fDDIRLB
+         5g91Zdl77hNXZuQYVOGGB45LtF9SAlJSj3jVqg8+z+3GTM4c+XoYjU4L22dS2WyhuT
+         1sojW1EPW0KbLNRXs+/BILLxPn1ETwrGahFULyIAABPGF+Sum7hGRp0h0WLzuR7Uv1
+         LObSuo0jRI51L7S7V6f594gyyXpxaMvUpb6lr2WjFTeAYUXUrIcE7zy7dBEBnhnoig
+         P6pLmzHe7g0NOPFMzWNG0K9ilS6Z3NP+XoEK5lHQBYPpjFdFY6L7P3fhF0FJvjLMqZ
+         BTUV8RdrsTtkg==
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Cc:     Lukas Czerner <lczerner@redhat.com>, Theodore Ts'o <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Jeff Layton <jlayton@kernel.org>
-Subject: [PATCH v2 7/7] fscrypt: remove fscrypt_set_test_dummy_encryption()
-Date:   Sat, 30 Apr 2022 22:08:57 -0700
-Message-Id: <20220501050857.538984-8-ebiggers@kernel.org>
+To:     fstests@vger.kernel.org
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Lukas Czerner <lczerner@redhat.com>
+Subject: [xfstests PATCH 0/2] update test_dummy_encryption testing in ext4/053
+Date:   Sat, 30 Apr 2022 22:19:26 -0700
+Message-Id: <20220501051928.540278-1-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.36.0
-In-Reply-To: <20220501050857.538984-1-ebiggers@kernel.org>
-References: <20220501050857.538984-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -55,55 +51,31 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+This series updates the testing of the test_dummy_encryption mount
+option in ext4/053.
 
-Now that all its callers have been converted to
-fscrypt_parse_test_dummy_encryption() and fscrypt_add_test_dummy_key()
-instead, fscrypt_set_test_dummy_encryption() can be removed.
+The first patch will be needed for the test to pass if the kernel patch
+"ext4: only allow test_dummy_encryption when supported"
+(https://lore.kernel.org/r/20220501050857.538984-2-ebiggers@kernel.org)
+is applied.
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/crypto/policy.c      | 13 -------------
- include/linux/fscrypt.h |  2 --
- 2 files changed, 15 deletions(-)
+The second patch starts testing a case that previously wasn't tested.
+It reproduces a bug that was introduced in the v5.17 kernel and will
+be fixed by the kernel patch
+"ext4: fix up test_dummy_encryption handling for new mount API"
+(https://lore.kernel.org/r/20220501050857.538984-6-ebiggers@kernel.org).
 
-diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
-index 5f858cee1e3b0..d0a8921577def 100644
---- a/fs/crypto/policy.c
-+++ b/fs/crypto/policy.c
-@@ -802,19 +802,6 @@ bool fscrypt_dummy_policies_equal(const struct fscrypt_dummy_policy *p1,
- }
- EXPORT_SYMBOL_GPL(fscrypt_dummy_policies_equal);
- 
--/* Deprecated, do not use */
--int fscrypt_set_test_dummy_encryption(struct super_block *sb, const char *arg,
--				      struct fscrypt_dummy_policy *dummy_policy)
--{
--	struct fs_parameter param = {
--		.type = fs_value_is_string,
--		.string = arg ? (char *)arg : "",
--	};
--	return fscrypt_parse_test_dummy_encryption(&param, dummy_policy) ?:
--		fscrypt_add_test_dummy_key(sb, dummy_policy);
--}
--EXPORT_SYMBOL_GPL(fscrypt_set_test_dummy_encryption);
--
- /**
-  * fscrypt_show_test_dummy_encryption() - show '-o test_dummy_encryption'
-  * @seq: the seq_file to print the option to
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index 099b881e63e49..11db6d61d4244 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -284,8 +284,6 @@ int fscrypt_parse_test_dummy_encryption(const struct fs_parameter *param,
- 				    struct fscrypt_dummy_policy *dummy_policy);
- bool fscrypt_dummy_policies_equal(const struct fscrypt_dummy_policy *p1,
- 				  const struct fscrypt_dummy_policy *p2);
--int fscrypt_set_test_dummy_encryption(struct super_block *sb, const char *arg,
--				struct fscrypt_dummy_policy *dummy_policy);
- void fscrypt_show_test_dummy_encryption(struct seq_file *seq, char sep,
- 					struct super_block *sb);
- static inline bool
+This applies on top of my recent patch
+"ext4/053: fix the rejected mount option testing"
+(https://lore.kernel.org/r/20220430192130.131842-1-ebiggers@kernel.org).
+
+Eric Biggers (2):
+  ext4/053: update the test_dummy_encryption tests
+  ext4/053: test changing test_dummy_encryption on remount
+
+ tests/ext4/053 | 38 ++++++++++++++++++++++++--------------
+ 1 file changed, 24 insertions(+), 14 deletions(-)
+
 -- 
 2.36.0
 
