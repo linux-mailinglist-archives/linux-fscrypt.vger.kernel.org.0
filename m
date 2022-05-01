@@ -2,54 +2,49 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDEBA516727
-	for <lists+linux-fscrypt@lfdr.de>; Sun,  1 May 2022 20:37:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31A765168A8
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  2 May 2022 00:34:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348551AbiEASlL (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sun, 1 May 2022 14:41:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36184 "EHLO
+        id S1377823AbiEAWiU (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sun, 1 May 2022 18:38:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234391AbiEASlL (ORCPT
+        with ESMTP id S233440AbiEAWiT (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sun, 1 May 2022 14:41:11 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B703819039;
-        Sun,  1 May 2022 11:37:44 -0700 (PDT)
+        Sun, 1 May 2022 18:38:19 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B099275F1;
+        Sun,  1 May 2022 15:34:50 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 2AABDB80D08;
-        Sun,  1 May 2022 18:37:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D2C1C385AA;
-        Sun,  1 May 2022 18:37:41 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 85037B80E33;
+        Sun,  1 May 2022 22:34:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13FD3C385A9;
+        Sun,  1 May 2022 22:34:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1651430261;
-        bh=RPbPn+ISgi6eo/0pALloybPyhv8zLJjGIiCsUz+5jkk=;
+        s=k20201202; t=1651444487;
+        bh=3zSbtcYblyqu5SolmZNKxYiAs4qYGOMfRwt5qpDXaO4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=l8KY085q1j58kNDn77EfgNTUs/QW0NgRLHFFsrP70fW6MmTc6/JdfQiu/IQDCeky0
-         Cd0zw5xxLmwosLTatvZDFiZ70aChyt+d9oRVmUmr+putbgNm/AAaRYCVURBNWAZ6+m
-         XR3XQEFxGyL+j3oTqW8DLTjCZtFm73uP1G7w2C5yH6KZtCVLIKZEn/ps/xgjAe3qCq
-         g0SSoWzlGJre074JiIH7Vv+FTjp8nwYBgkvO1ff6/y2zlgISwJfrKUsFOahBIU8faJ
-         8sz23MUwla1t6MVsU8klN9+K+k82xonNg06E4/rInHi+taPPiViGe24wUH9a6ueszP
-         Ud5hxAYzA6jFw==
-Date:   Sun, 1 May 2022 11:37:40 -0700
+        b=XihuWf2/gXNu+569dOzC+mLgOA1bS1t9RlmT1Wvmux22psCrJU4+ny2hJxsbCffKO
+         iQdd81vT4D1jd7ST1h1CdMzs1Pa+sCp+6vr/0gU92WSNKdS5zL4WmouAAIBJSUAOPZ
+         wL2y+mM01ojiO6XY4pTdYbwrlaMFg3RUImhIXnipWQP8NL3HZGaYGeUIbxKWSpny2J
+         pB0Yt+7/4HcLkInILSfflC6u73aZrgFw3YF6sfPOngQ8XjZUlx/+PNaepffs1uGSfD
+         d/Bu8xmUvyo9t7ifFmDk42cE+/fD2kyGVMNZ9FH5ptwm05N5ssIZ2ZJU+o9O5uGC+a
+         WfuXpY4fd6aIQ==
+Date:   Sun, 1 May 2022 15:34:41 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Nathan Huckleberry <nhuck@google.com>
-Cc:     linux-crypto@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-arm-kernel@lists.infradead.org,
-        Paul Crowley <paulcrowley@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH v5 8/8] fscrypt: Add HCTR2 support for filename encryption
-Message-ID: <Ym7TdNCe/3gXdVNr@sol.localdomain>
-References: <20220427003759.1115361-1-nhuck@google.com>
- <20220427003759.1115361-9-nhuck@google.com>
+To:     Boris Burkov <boris@bur.io>
+Cc:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v9 1/5] common/verity: require corruption functionality
+Message-ID: <Ym8LARSMOYxJtA9n@sol.localdomain>
+References: <cover.1651012461.git.boris@bur.io>
+ <657cd5facdbd0b41ee99ab18ad0bba9f0d690729.1651012461.git.boris@bur.io>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220427003759.1115361-9-nhuck@google.com>
+In-Reply-To: <657cd5facdbd0b41ee99ab18ad0bba9f0d690729.1651012461.git.boris@bur.io>
 X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -60,21 +55,20 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, Apr 27, 2022 at 12:37:59AM +0000, Nathan Huckleberry wrote:
-> HCTR2 is a tweakable, length-preserving encryption mode that is intended
-> for use on CPUs with dedicated crypto instructions.  HCTR2 has the
-> property that a bitflip in the plaintext changes the entire ciphertext.
-> This property fixes a known weakness with filename encryption: when two
-> filenames in the same directory share a prefix of >= 16 bytes, with
-> AES-CTS-CBC their encrypted filenames share a common substring, leaking
-> information.  HCTR2 does not have this problem.
+On Tue, Apr 26, 2022 at 03:40:12PM -0700, Boris Burkov wrote:
+> Corrupting ext4 and f2fs relies on xfs_io fiemap. Btrfs corruption
+> testing will rely on a btrfs specific corruption utility. Add the
+> ability to require corruption functionality to make this properly
+> modular. To start, just check for fiemap, as that is needed
+> universally for _fsv_scratch_corrupt_bytes.
 > 
-> More information on HCTR2 can be found here: "Length-preserving
-> encryption with HCTR2": https://eprint.iacr.org/2021/1441.pdf
-> 
-> Signed-off-by: Nathan Huckleberry <nhuck@google.com>
-> Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
+> Signed-off-by: Boris Burkov <boris@bur.io>
+> ---
+>  common/verity     | 6 ++++++
+>  tests/generic/574 | 1 +
+>  tests/generic/576 | 1 +
+>  3 files changed, 8 insertions(+)
 
-Acked-by: Eric Biggers <ebiggers@google.com>
+Reviewed-by: Eric Biggers <ebiggers@google.com>
 
 - Eric
