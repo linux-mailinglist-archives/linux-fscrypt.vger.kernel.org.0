@@ -2,80 +2,81 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20D8C516F5B
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  2 May 2022 14:14:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B2A6516F67
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  2 May 2022 14:16:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353182AbiEBMRv (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 2 May 2022 08:17:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39916 "EHLO
+        id S1384962AbiEBMTq (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 2 May 2022 08:19:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231680AbiEBMRu (ORCPT
+        with ESMTP id S1384989AbiEBMTm (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 2 May 2022 08:17:50 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A46B84B;
-        Mon,  2 May 2022 05:14:21 -0700 (PDT)
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 242B0Yn9029696;
-        Mon, 2 May 2022 12:14:18 GMT
+        Mon, 2 May 2022 08:19:42 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7A0D15A19;
+        Mon,  2 May 2022 05:16:12 -0700 (PDT)
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 242AmvWi021479;
+        Mon, 2 May 2022 12:16:09 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
  from : to : cc : date : in-reply-to : references : content-type :
  mime-version : content-transfer-encoding; s=pp1;
- bh=k2a1Q3umUpC7cls2Dd99KLebyMdsYQy5SRj4onVwGTQ=;
- b=AiETKYkU5ElG1AMFUTlk+1kOaLPYAJqar+nsXEBsLdTirRHJ+l/H0rVhSpKkeWHHvQLy
- UNw5xvJpxR8ny3XEcBBm/GyIAEt75EqRPp58sxJeUGu4cAZsfBcOHzpSR0pIIaBmL4AX
- KsIXN8mT/jIATogUXBpVs28n/oPr16YwgbpqKbPvaE3Cu/RYkqnSirDKODE0XD6Ozb1f
- r44gpmLa5dkkmSr5Hm1eK4jEW+6EQ7uQIeVr2xLB0+Ww4vQLGKgHaehB+NWDAgPMJb7a
- JADWsgo/26xKfeG5MSGuYgDII3vanj0zo61xwmmte/NLmNQX5eMGa1vel0exM8VFKvGz ig== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3fte23se8u-1
+ bh=DGExP6oLSvLNaEuKQ24CJDRu/rp2Mv+OMa2OdAf8ywM=;
+ b=J4O37aNkQX06kuW4bsa/zFP/FverwcmmLhAzFl6oaXs68K/HE65tUu+HcORsPCF9bGhX
+ dtSgVUjXbZALmz2zwbsrdYBQjTzUBst5a3cwmOzHHluleez2SXv/LJdqkuUz3iZMHAE/
+ AG2tYmnNShNVB5cXyl6nwwBES28zPIHhnA77fMaC1aM4eJPPrEKRgYBOes9Yae7+hS8f
+ vuvSILZSY6+4S+xBJsRa7zLb7Lv1a7tR/gKR6bRXHJArWqLTo2F3pVhqnIwDWYzseTJG
+ ZwjCtvxl5s9aBGrBy7fdD7YQNuzAwifvuzpDgVM67kPFgsZ/x8C5IlrjpcMB+hiEbSmC QA== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3ftdvjhpga-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 02 May 2022 12:14:18 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 242CBQTT016878;
-        Mon, 2 May 2022 12:14:16 GMT
+        Mon, 02 May 2022 12:16:09 +0000
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 242CCOqr005991;
+        Mon, 2 May 2022 12:16:07 GMT
 Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma04ams.nl.ibm.com with ESMTP id 3frvr8tnd1-1
+        by ppma06ams.nl.ibm.com with ESMTP id 3frvcj2p7d-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 02 May 2022 12:14:16 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 242CEEph49021202
+        Mon, 02 May 2022 12:16:07 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 242CG5iX56295876
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 2 May 2022 12:14:14 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EA3544C044;
-        Mon,  2 May 2022 12:14:13 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 36CC14C040;
-        Mon,  2 May 2022 12:14:13 +0000 (GMT)
+        Mon, 2 May 2022 12:16:05 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8C8FF42041;
+        Mon,  2 May 2022 12:16:05 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B0E694203F;
+        Mon,  2 May 2022 12:16:04 +0000 (GMT)
 Received: from sig-9-65-70-224.ibm.com (unknown [9.65.70.224])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon,  2 May 2022 12:14:13 +0000 (GMT)
-Message-ID: <214f4633d397905edc5fac91d779a6991c753c0c.camel@linux.ibm.com>
-Subject: Re: [PATCH v8 1/7] ima: fix 'd-ng' comments and documentation
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  2 May 2022 12:16:04 +0000 (GMT)
+Message-ID: <18587675b3c6ebc74b81cabe53dc293099304861.camel@linux.ibm.com>
+Subject: Re: [PATCH v8 6/7] ima: support fs-verity file digest based version
+ 3 signatures
 From:   Mimi Zohar <zohar@linux.ibm.com>
 To:     Stefan Berger <stefanb@linux.ibm.com>,
         linux-integrity@vger.kernel.org
 Cc:     Eric Biggers <ebiggers@kernel.org>, linux-fscrypt@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Date:   Mon, 02 May 2022 08:14:12 -0400
-In-Reply-To: <ebe1f760-7831-e627-299a-c6a22f4bc5fb@linux.ibm.com>
+Date:   Mon, 02 May 2022 08:16:04 -0400
+In-Reply-To: <8a18eb04-4d07-7bad-e6f9-0015788e6a11@linux.ibm.com>
 References: <20220429112601.1421947-1-zohar@linux.ibm.com>
-         <20220429112601.1421947-2-zohar@linux.ibm.com>
-         <ebe1f760-7831-e627-299a-c6a22f4bc5fb@linux.ibm.com>
+         <20220429112601.1421947-7-zohar@linux.ibm.com>
+         <8a18eb04-4d07-7bad-e6f9-0015788e6a11@linux.ibm.com>
 Content-Type: text/plain; charset="ISO-8859-15"
 X-Mailer: Evolution 3.28.5 (3.28.5-18.el8) 
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: j8IYKQPZ6a4c5SSoOJtipKxR-aDb3qDx
-X-Proofpoint-ORIG-GUID: j8IYKQPZ6a4c5SSoOJtipKxR-aDb3qDx
+X-Proofpoint-ORIG-GUID: N88oVwMXZoq6HL5Rw2n3PO8mIChkA1Rj
+X-Proofpoint-GUID: N88oVwMXZoq6HL5Rw2n3PO8mIChkA1Rj
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
- definitions=2022-05-02_03,2022-05-02_02,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- impostorscore=0 adultscore=0 bulkscore=0 clxscore=1015 lowpriorityscore=0
- phishscore=0 suspectscore=0 priorityscore=1501 mlxlogscore=999 mlxscore=0
+ definitions=2022-05-02_04,2022-05-02_02,2022-02-23_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
+ bulkscore=0 priorityscore=1501 phishscore=0 spamscore=0 lowpriorityscore=0
+ adultscore=0 suspectscore=0 mlxlogscore=999 impostorscore=0 malwarescore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2202240000
  definitions=main-2205020094
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -87,65 +88,105 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, 2022-04-29 at 12:44 -0400, Stefan Berger wrote:
+> > @@ -225,6 +232,40 @@ int ima_read_xattr(struct dentry *dentry,
+> >   	return ret;
+> >   }
+> >   
+> > +/*
+> > + * calc_file_id_hash - calculate the hash of the ima_file_id struct data
+> > + * @type: xattr type [enum evm_ima_xattr_type]
+> > + * @algo: hash algorithm [enum hash_algo]
+> > + * @digest: pointer to the digest to be hashed
+> > + * @hash: (out) pointer to the hash
+> > + *
+> > + * IMA signature version 3 disambiguates the data that is signed by
+> > + * indirectly signing the hash of the ima_file_id structure data.
+> > + *
+> > + * Signing the ima_file_id struct is currently only supported for
+> > + * IMA_VERITY_DIGSIG type xattrs.
+> > + *
+> > + * Return 0 on success, error code otherwise.
+> > + */
+> > +static int calc_file_id_hash(enum evm_ima_xattr_type type,
+> > +			     enum hash_algo algo, const u8 *digest,
+> > +			     struct ima_digest_data *hash)
+> > +{
+> > +	struct ima_file_id file_id = {
+> > +		.hash_type = IMA_VERITY_DIGSIG, .hash_algorithm = algo};
+> > +	unsigned int unused = HASH_MAX_DIGESTSIZE - hash_digest_size[algo];
+> > +
+> > +	if (type != IMA_VERITY_DIGSIG)
+> > +		return -EINVAL;
+> > +
+> > +	memcpy(file_id.hash, digest, hash_digest_size[algo]);
+> > +
+> > +	hash->algo = algo;
+> > +	hash->length = hash_digest_size[algo];
+> > +
+> > +	return ima_calc_buffer_hash(&file_id, sizeof(file_id) - unused, hash);
 > 
-> On 4/29/22 07:25, Mimi Zohar wrote:
-> > Initially the 'd-ng' template field did not prefix the digest with either
-> > "md5" or "sha1" hash algorithms.  Prior to being upstreamed this changed,
-> > but the comments and documentation were not updated.  Fix the comments
-> > and documentation.
-> > 
-> > Fixes: 4d7aeee73f53 ("ima: define new template ima-ng and template fields d-ng and n-ng")
-> > Reported-by: Eric Biggers <ebiggers@kernel.org>
-> > Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
-> > ---
-> >   Documentation/security/IMA-templates.rst  | 3 +--
-> >   security/integrity/ima/ima_template_lib.c | 8 +++++---
-> >   2 files changed, 6 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/Documentation/security/IMA-templates.rst b/Documentation/security/IMA-templates.rst
-> > index 1a91d92950a7..cab97f49971d 100644
-> > --- a/Documentation/security/IMA-templates.rst
-> > +++ b/Documentation/security/IMA-templates.rst
-> > @@ -66,8 +66,7 @@ descriptors by adding their identifier to the format string
-> >      calculated with the SHA1 or MD5 hash algorithm;
-> >    - 'n': the name of the event (i.e. the file name), with size up to 255 bytes;
-> >    - 'd-ng': the digest of the event, calculated with an arbitrary hash
-> > -   algorithm (field format: [<hash algo>:]digest, where the digest
-> > -   prefix is shown only if the hash algorithm is not SHA1 or MD5);
+> +struct ima_file_id {
+> +	__u8 hash_type;		/* xattr type [enum evm_ima_xattr_type] */
+> +	__u8 hash_algorithm;	/* Digest algorithm [enum hash_algo] */
+> +	__u8 hash[HASH_MAX_DIGESTSIZE];
+> +} __packed;
 > 
-> That seemed to be true for 'd'
+> did you maybe mean 'sizeof(file_id.hash) - unused' ?
 
-And initially for d-ng before it was upstreamed.
-
+No, the hash includes the other fields as well.  Instead of including a
+flexible array in struct ima_file_id and dynamically allocating the
+memory for the struct with the specific hash size, the maximum sized
+hash is included in the struct.
 > 
-> > +   algorithm (field format: <hash algo>:digest);
-> >    - 'd-modsig': the digest of the event without the appended modsig;
-> >    - 'n-ng': the name of the event, without size limitations;
-> >    - 'sig': the file signature, or the EVM portable signature if the file
-> > diff --git a/security/integrity/ima/ima_template_lib.c b/security/integrity/ima/ima_template_lib.c
-> > index 7155d17a3b75..e9d65f6fe2ae 100644
-> > --- a/security/integrity/ima/ima_template_lib.c
-> > +++ b/security/integrity/ima/ima_template_lib.c
-> > @@ -271,9 +271,11 @@ static int ima_eventdigest_init_common(const u8 *digest, u32 digestsize,
-> >   	/*
-> >   	 * digest formats:
-> >   	 *  - DATA_FMT_DIGEST: digest
-> > -	 *  - DATA_FMT_DIGEST_WITH_ALGO: [<hash algo>] + ':' + '\0' + digest,
-> > -	 *    where <hash algo> is provided if the hash algorithm is not
-> > -	 *    SHA1 or MD5
-> > +	 *  - DATA_FMT_DIGEST_WITH_ALGO: <hash algo> + ':' + '\0' + digest, > +	 *
-> > +	 *    where 'DATA_FMT_DIGEST' is the original digest format ('d')
-> > +	 *      with a hash size limitation of 20 bytes,
-> > +	 *    where <hash algo> is the hash_algo_name[] string.
-> >   	 */
-> >   	u8 buffer[CRYPTO_MAX_ALG_NAME + 2 + IMA_MAX_DIGEST_SIZE] = { 0 };
-> >   	enum data_formats fmt = DATA_FMT_DIGEST;
 > 
-> Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
+> > +}
+> > +
 
-Thank you, Stefan, for this and the other tags!
+
+> > diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+> > index 390a8faa77f9..e24531db95cd 100644
+> > --- a/security/integrity/ima/ima_policy.c
+> > +++ b/security/integrity/ima/ima_policy.c
+> > @@ -1310,6 +1310,15 @@ static bool ima_validate_rule(struct ima_rule_entry *entry)
+> >   	    !(entry->flags & IMA_MODSIG_ALLOWED))
+> >   		return false;
+> >   
+> > +	/*
+> > +	 * Ensure verity appraise rules require signature format v3 signatures
+> > +	 * ('appraise_type=sigv3').
+> 
+> This comment doesn't seem to reflect what is actually checked below ... 
+> at least for me it's difficult to see that.
+> 
+> It's more like 'ensure that appraise rules for verity signature type 
+> also have the IMA_DIGSIG_REQUIRED flag set.'
+
+Generally code should be understandable without requiring a comment.  
+In this case, the purpose of the comment is to require a file
+signature.  Here's the updated comment:
+
++        * Unlike for regular IMA 'appraise' policy rules where
+security.ima
++        * xattr may contain either a file hash or signature, the
+security.ima
++        * xattr for fsverity must contain a file signature
+(sigv3).  Ensure
++        * that 'appraise' rules for fsverity require file signatures
+by
++        * checking the IMA_DIGSIG_REQUIRED flag is set.
+
+
+> > +	 */
+> > +	if (entry->action == APPRAISE &&
+> > +	    (entry->flags & IMA_VERITY_REQUIRED) &&
+> > +	    !(entry->flags & IMA_DIGSIG_REQUIRED))
+> > +		return false;
+> > +
+> >   	return true;
+> >   }
+> >   
+
+thanks,
 
 Mimi
-
 
