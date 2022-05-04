@@ -2,57 +2,57 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4925C5192B1
+	by mail.lfdr.de (Postfix) with ESMTP id DCE675192B3
 	for <lists+linux-fscrypt@lfdr.de>; Wed,  4 May 2022 02:18:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244569AbiEDAW0 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 3 May 2022 20:22:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55142 "EHLO
+        id S236520AbiEDAW2 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 3 May 2022 20:22:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244568AbiEDAWW (ORCPT
+        with ESMTP id S244571AbiEDAWX (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 3 May 2022 20:22:22 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82639433A2
-        for <linux-fscrypt@vger.kernel.org>; Tue,  3 May 2022 17:18:47 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id h14-20020a25e20e000000b006484e4a1da2so16969576ybe.9
-        for <linux-fscrypt@vger.kernel.org>; Tue, 03 May 2022 17:18:47 -0700 (PDT)
+        Tue, 3 May 2022 20:22:23 -0400
+Received: from mail-ua1-x949.google.com (mail-ua1-x949.google.com [IPv6:2607:f8b0:4864:20::949])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 427CD4339B
+        for <linux-fscrypt@vger.kernel.org>; Tue,  3 May 2022 17:18:49 -0700 (PDT)
+Received: by mail-ua1-x949.google.com with SMTP id t20-20020ab04ad4000000b003627cd606a2so8124578uae.11
+        for <linux-fscrypt@vger.kernel.org>; Tue, 03 May 2022 17:18:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=kjQ9WRMvEuB+1hhhrADapNRIaOfe7R4HZIANbRC+kcc=;
-        b=NOs+rW0RaYZV28s2vk4hkWq7CXcStd0UNbS8f9D6eL9ptMJpYhTmLbWJHvPHjc4tT+
-         st0NjmX1NYyl9P5eKSliGW8XlgaVgRbBvCX8bS3rpOoBzMDB3gvVt9NPgd8mAQoaG41G
-         k2F5w4/CRUC3xHYgpEsJeqiZY8XPp3AH0RokqIGXPNWhry2Q1sG1WuHsy2Bgt3/DWbFI
-         +wQJ4MmaXk5/1s9BbDWebzwlRF8Y+4dW1haNPS7yJV5xdydUg5P//K2fp7A91yr97DEI
-         +0RRV9n0SEu1/gqSRmHQvINolI0iEuzDrMSkI35shQZnYtfMwT17snjoKnvjEpFitl01
-         b1hA==
+        bh=35FA06fEILHL7qrYy1dxk28nrKFJWuP8SoVDZdoYyZc=;
+        b=CHKFwZiSMTjh1CVE03sg3F+/bmKicuQnLG+VFX//e5PT/nKwW3e+4wRVAaMnvoczK0
+         th0OsdiOPLrLeKzrMSmAbDdMlR9fQIcyCg1j3wKmzBqygJKudzFlXLumyI7akNM7r57j
+         zd4IFfzfmi5kaTeMq6sk6hYvPCNLkxhW1AmEWe3bZn406hqs3E9QL0GV0A9aBLtx3GsP
+         vjpr5QdPFgYxDM9dONMAokEBLVGlih+oeXdBHvylYNbMLLpz9VUP1SPp3HfJ+LCZy9Ns
+         7V0DKlQLp9wWifahKWtB0pPju+B2qVPhyYJkSmzAq+rKwFsrvqYolKPnGQYJ7f5x5jIc
+         w97w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=kjQ9WRMvEuB+1hhhrADapNRIaOfe7R4HZIANbRC+kcc=;
-        b=KYj9SQlGTzikkevQriW5FTIkXs5BxUZJTD1KOjM3WEUakxgpIiYT1bOywZAI9r9m4A
-         rO02QVU5fDPFbcYdr2814KbsnADFc73XlyG5SVeTWaFhv9ZqpnlQ8wIyfO49PSeA03E0
-         KxYXF/4Gtbmhr8orm9FXCRhMFJqkowu8qkPK6+qfxct6Ihci/J8Dx0sRLaFjaJ8Z/3Si
-         kSs1tVlaMWnKKo8WDWF1HXojucTOVd8TDWQXennI8twP1oZ99wXvZ9Yh2+1fShQKK421
-         NL4r/T3+K91Kj9eQS8+Ftynk2cn6BQ7GruPFtjzjCOfl1kJRXu+ZBEgsOvRcqUJrCYFL
-         AX2A==
-X-Gm-Message-State: AOAM531Cw5C9RYUBVTLRcUr31IN5X18HRDYFf5vArCfCr+2SeOTb6BXu
-        AkzRoDACTurhfL78tvvzapjqgr52XA==
-X-Google-Smtp-Source: ABdhPJyPvRqZbC8Wzm+/8NbIMc1vF6Zbbw1+apCQ2AClEqvOnpj3uUIxE7ffBS6Z3ZnGhyuhcrEHq+5SJQ==
+        bh=35FA06fEILHL7qrYy1dxk28nrKFJWuP8SoVDZdoYyZc=;
+        b=SwHmOJMdV/hDguNneyZqbs5/VKeauB9q6XgzlhP6ejmMW/tbpuUzD306Z+4r6N34Sy
+         I88Y1Yc0tbjASNMUczZCRkk7VG+7zW1yXpwyj8QSmc7Vxh8tRKjLtR8eHUMjgoboqTwI
+         RM51xN2RtBu4wMJ81RJD9BpTZYdwvK9VOqN0Ap+lQIXRgTXDODwbRI5cptKVKCFRsSP2
+         6yozsXesNJmCxniI3ETN2RKLNdnF7Pn1Pw8cVQIDiYA0Ku4UvQ8w7SCTYizhzzkl4P59
+         Fb3IPHdjPq3nMtLGWMZhScu8n2qCQZxetN7uywEvNkdXUSXSkBf6AFepY2R26gHUqemW
+         sY4w==
+X-Gm-Message-State: AOAM533fEb2YlrzyyXiPXwP76T7DDVC83WWLH7hITDlwYnG5kOGb+uZw
+        8DrwgEprJq7X6uu/D/oJpt3VxyGgRA==
+X-Google-Smtp-Source: ABdhPJx3VHQWpB/7uVkpGilUBjB0IX/5LYPQSCHsk/q29zHNxPXi2FgPrHvcoza5+3EHiZAQY7gG0+XHQQ==
 X-Received: from nhuck.c.googlers.com ([fda3:e722:ac3:cc00:14:4d90:c0a8:39cc])
- (user=nhuck job=sendgmr) by 2002:a25:2e4c:0:b0:648:5380:dbbd with SMTP id
- b12-20020a252e4c000000b006485380dbbdmr16075829ybn.165.1651623526725; Tue, 03
- May 2022 17:18:46 -0700 (PDT)
-Date:   Wed,  4 May 2022 00:18:18 +0000
+ (user=nhuck job=sendgmr) by 2002:a05:6122:1215:b0:34d:7476:5963 with SMTP id
+ v21-20020a056122121500b0034d74765963mr5839434vkc.10.1651623528426; Tue, 03
+ May 2022 17:18:48 -0700 (PDT)
+Date:   Wed,  4 May 2022 00:18:19 +0000
 In-Reply-To: <20220504001823.2483834-1-nhuck@google.com>
-Message-Id: <20220504001823.2483834-5-nhuck@google.com>
+Message-Id: <20220504001823.2483834-6-nhuck@google.com>
 Mime-Version: 1.0
 References: <20220504001823.2483834-1-nhuck@google.com>
 X-Mailer: git-send-email 2.36.0.464.gb9c8b46e94-goog
-Subject: [PATCH v6 4/9] crypto: x86/aesni-xctr: Add accelerated implementation
+Subject: [PATCH v6 5/9] crypto: arm64/aes-xctr: Add accelerated implementation
  of XCTR
 From:   Nathan Huckleberry <nhuck@google.com>
 To:     linux-crypto@vger.kernel.org
@@ -76,551 +76,392 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Add hardware accelerated versions of XCTR for x86-64 CPUs with AESNI
-support.  These implementations are modified versions of the CTR
-implementations found in aesni-intel_asm.S and aes_ctrby8_avx-x86_64.S.
+Add hardware accelerated version of XCTR for ARM64 CPUs with ARMv8
+Crypto Extension support.  This XCTR implementation is based on the CTR
+implementation in aes-modes.S.
 
-More information on XCTR can be found in the HCTR2 paper:
-"Length-preserving encryption with HCTR2":
+More information on XCTR can be found in
+the HCTR2 paper: Length-preserving encryption with HCTR2:
 https://eprint.iacr.org/2021/1441.pdf
 
 Signed-off-by: Nathan Huckleberry <nhuck@google.com>
 Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- arch/x86/crypto/aes_ctrby8_avx-x86_64.S | 232 ++++++++++++++++--------
- arch/x86/crypto/aesni-intel_glue.c      | 114 +++++++++++-
- crypto/Kconfig                          |   2 +-
- 3 files changed, 266 insertions(+), 82 deletions(-)
+ arch/arm64/crypto/Kconfig     |   4 +-
+ arch/arm64/crypto/aes-glue.c  |  64 ++++++++++++-
+ arch/arm64/crypto/aes-modes.S | 168 +++++++++++++++++++++-------------
+ 3 files changed, 169 insertions(+), 67 deletions(-)
 
-diff --git a/arch/x86/crypto/aes_ctrby8_avx-x86_64.S b/arch/x86/crypto/aes_ctrby8_avx-x86_64.S
-index 43852ba6e19c..2402b9418cd7 100644
---- a/arch/x86/crypto/aes_ctrby8_avx-x86_64.S
-+++ b/arch/x86/crypto/aes_ctrby8_avx-x86_64.S
-@@ -23,6 +23,11 @@
+diff --git a/arch/arm64/crypto/Kconfig b/arch/arm64/crypto/Kconfig
+index 2a965aa0188d..897f9a4b5b67 100644
+--- a/arch/arm64/crypto/Kconfig
++++ b/arch/arm64/crypto/Kconfig
+@@ -84,13 +84,13 @@ config CRYPTO_AES_ARM64_CE_CCM
+ 	select CRYPTO_LIB_AES
  
- #define VMOVDQ		vmovdqu
+ config CRYPTO_AES_ARM64_CE_BLK
+-	tristate "AES in ECB/CBC/CTR/XTS modes using ARMv8 Crypto Extensions"
++	tristate "AES in ECB/CBC/CTR/XTS/XCTR modes using ARMv8 Crypto Extensions"
+ 	depends on KERNEL_MODE_NEON
+ 	select CRYPTO_SKCIPHER
+ 	select CRYPTO_AES_ARM64_CE
  
-+/*
-+ * Note: the "x" prefix in these aliases means "this is an xmm register".  The
-+ * alias prefixes have no relation to XCTR where the "X" prefix means "XOR
-+ * counter".
-+ */
- #define xdata0		%xmm0
- #define xdata1		%xmm1
- #define xdata2		%xmm2
-@@ -31,8 +36,10 @@
- #define xdata5		%xmm5
- #define xdata6		%xmm6
- #define xdata7		%xmm7
--#define xcounter	%xmm8
--#define xbyteswap	%xmm9
-+#define xcounter	%xmm8	// CTR mode only
-+#define xiv		%xmm8	// XCTR mode only
-+#define xbyteswap	%xmm9	// CTR mode only
-+#define xtmp		%xmm9	// XCTR mode only
- #define xkey0		%xmm10
- #define xkey4		%xmm11
- #define xkey8		%xmm12
-@@ -45,7 +52,7 @@
- #define p_keys		%rdx
- #define p_out		%rcx
- #define num_bytes	%r8
--
-+#define counter		%r9	// XCTR mode only
- #define tmp		%r10
- #define	DDQ_DATA	0
- #define	XDATA		1
-@@ -102,7 +109,7 @@ ddq_add_8:
-  * do_aes num_in_par load_keys key_len
-  * This increments p_in, but not p_out
-  */
--.macro do_aes b, k, key_len
-+.macro do_aes b, k, key_len, xctr
- 	.set by, \b
- 	.set load_keys, \k
- 	.set klen, \key_len
-@@ -111,29 +118,48 @@ ddq_add_8:
- 		vmovdqa	0*16(p_keys), xkey0
- 	.endif
+ config CRYPTO_AES_ARM64_NEON_BLK
+-	tristate "AES in ECB/CBC/CTR/XTS modes using NEON instructions"
++	tristate "AES in ECB/CBC/CTR/XTS/XCTR modes using NEON instructions"
+ 	depends on KERNEL_MODE_NEON
+ 	select CRYPTO_SKCIPHER
+ 	select CRYPTO_LIB_AES
+diff --git a/arch/arm64/crypto/aes-glue.c b/arch/arm64/crypto/aes-glue.c
+index 561dd2332571..b6883288234c 100644
+--- a/arch/arm64/crypto/aes-glue.c
++++ b/arch/arm64/crypto/aes-glue.c
+@@ -34,10 +34,11 @@
+ #define aes_essiv_cbc_encrypt	ce_aes_essiv_cbc_encrypt
+ #define aes_essiv_cbc_decrypt	ce_aes_essiv_cbc_decrypt
+ #define aes_ctr_encrypt		ce_aes_ctr_encrypt
++#define aes_xctr_encrypt	ce_aes_xctr_encrypt
+ #define aes_xts_encrypt		ce_aes_xts_encrypt
+ #define aes_xts_decrypt		ce_aes_xts_decrypt
+ #define aes_mac_update		ce_aes_mac_update
+-MODULE_DESCRIPTION("AES-ECB/CBC/CTR/XTS using ARMv8 Crypto Extensions");
++MODULE_DESCRIPTION("AES-ECB/CBC/CTR/XTS/XCTR using ARMv8 Crypto Extensions");
+ #else
+ #define MODE			"neon"
+ #define PRIO			200
+@@ -50,16 +51,18 @@ MODULE_DESCRIPTION("AES-ECB/CBC/CTR/XTS using ARMv8 Crypto Extensions");
+ #define aes_essiv_cbc_encrypt	neon_aes_essiv_cbc_encrypt
+ #define aes_essiv_cbc_decrypt	neon_aes_essiv_cbc_decrypt
+ #define aes_ctr_encrypt		neon_aes_ctr_encrypt
++#define aes_xctr_encrypt	neon_aes_xctr_encrypt
+ #define aes_xts_encrypt		neon_aes_xts_encrypt
+ #define aes_xts_decrypt		neon_aes_xts_decrypt
+ #define aes_mac_update		neon_aes_mac_update
+-MODULE_DESCRIPTION("AES-ECB/CBC/CTR/XTS using ARMv8 NEON");
++MODULE_DESCRIPTION("AES-ECB/CBC/CTR/XTS/XCTR using ARMv8 NEON");
+ #endif
+ #if defined(USE_V8_CRYPTO_EXTENSIONS) || !IS_ENABLED(CONFIG_CRYPTO_AES_ARM64_BS)
+ MODULE_ALIAS_CRYPTO("ecb(aes)");
+ MODULE_ALIAS_CRYPTO("cbc(aes)");
+ MODULE_ALIAS_CRYPTO("ctr(aes)");
+ MODULE_ALIAS_CRYPTO("xts(aes)");
++MODULE_ALIAS_CRYPTO("xctr(aes)");
+ #endif
+ MODULE_ALIAS_CRYPTO("cts(cbc(aes))");
+ MODULE_ALIAS_CRYPTO("essiv(cbc(aes),sha256)");
+@@ -89,6 +92,9 @@ asmlinkage void aes_cbc_cts_decrypt(u8 out[], u8 const in[], u32 const rk[],
+ asmlinkage void aes_ctr_encrypt(u8 out[], u8 const in[], u32 const rk[],
+ 				int rounds, int bytes, u8 ctr[]);
  
--	vpshufb	xbyteswap, xcounter, xdata0
--
--	.set i, 1
--	.rept (by - 1)
--		club XDATA, i
--		vpaddq	(ddq_add_1 + 16 * (i - 1))(%rip), xcounter, var_xdata
--		vptest	ddq_low_msk(%rip), var_xdata
--		jnz 1f
--		vpaddq	ddq_high_add_1(%rip), var_xdata, var_xdata
--		vpaddq	ddq_high_add_1(%rip), xcounter, xcounter
--		1:
--		vpshufb	xbyteswap, var_xdata, var_xdata
--		.set i, (i +1)
--	.endr
-+	.if \xctr
-+		movq counter, xtmp
-+		.set i, 0
-+		.rept (by)
-+			club XDATA, i
-+			vpaddq	(ddq_add_1 + 16 * i)(%rip), xtmp, var_xdata
-+			.set i, (i +1)
-+		.endr
-+		.set i, 0
-+		.rept (by)
-+			club	XDATA, i
-+			vpxor	xiv, var_xdata, var_xdata
-+			.set i, (i +1)
-+		.endr
-+	.else
-+		vpshufb	xbyteswap, xcounter, xdata0
-+		.set i, 1
-+		.rept (by - 1)
-+			club XDATA, i
-+			vpaddq	(ddq_add_1 + 16 * (i - 1))(%rip), xcounter, var_xdata
-+			vptest	ddq_low_msk(%rip), var_xdata
-+			jnz 1f
-+			vpaddq	ddq_high_add_1(%rip), var_xdata, var_xdata
-+			vpaddq	ddq_high_add_1(%rip), xcounter, xcounter
-+			1:
-+			vpshufb	xbyteswap, var_xdata, var_xdata
-+			.set i, (i +1)
-+		.endr
-+	.endif
- 
- 	vmovdqa	1*16(p_keys), xkeyA
- 
- 	vpxor	xkey0, xdata0, xdata0
--	vpaddq	(ddq_add_1 + 16 * (by - 1))(%rip), xcounter, xcounter
--	vptest	ddq_low_msk(%rip), xcounter
--	jnz	1f
--	vpaddq	ddq_high_add_1(%rip), xcounter, xcounter
--	1:
-+	.if \xctr
-+		add $by, counter
-+	.else
-+		vpaddq	(ddq_add_1 + 16 * (by - 1))(%rip), xcounter, xcounter
-+		vptest	ddq_low_msk(%rip), xcounter
-+		jnz	1f
-+		vpaddq	ddq_high_add_1(%rip), xcounter, xcounter
-+		1:
-+	.endif
- 
- 	.set i, 1
- 	.rept (by - 1)
-@@ -371,94 +397,99 @@ ddq_add_8:
- 	.endr
- .endm
- 
--.macro do_aes_load val, key_len
--	do_aes \val, 1, \key_len
-+.macro do_aes_load val, key_len, xctr
-+	do_aes \val, 1, \key_len, \xctr
- .endm
- 
--.macro do_aes_noload val, key_len
--	do_aes \val, 0, \key_len
-+.macro do_aes_noload val, key_len, xctr
-+	do_aes \val, 0, \key_len, \xctr
- .endm
- 
- /* main body of aes ctr load */
- 
--.macro do_aes_ctrmain key_len
-+.macro do_aes_ctrmain key_len, xctr
- 	cmp	$16, num_bytes
--	jb	.Ldo_return2\key_len
-+	jb	.Ldo_return2\xctr\key_len
- 
--	vmovdqa	byteswap_const(%rip), xbyteswap
--	vmovdqu	(p_iv), xcounter
--	vpshufb	xbyteswap, xcounter, xcounter
-+	.if \xctr
-+		shr	$4, counter
-+		vmovdqu	(p_iv), xiv
-+	.else
-+		vmovdqa	byteswap_const(%rip), xbyteswap
-+		vmovdqu	(p_iv), xcounter
-+		vpshufb	xbyteswap, xcounter, xcounter
-+	.endif
- 
- 	mov	num_bytes, tmp
- 	and	$(7*16), tmp
--	jz	.Lmult_of_8_blks\key_len
-+	jz	.Lmult_of_8_blks\xctr\key_len
- 
- 	/* 1 <= tmp <= 7 */
- 	cmp	$(4*16), tmp
--	jg	.Lgt4\key_len
--	je	.Leq4\key_len
-+	jg	.Lgt4\xctr\key_len
-+	je	.Leq4\xctr\key_len
- 
--.Llt4\key_len:
-+.Llt4\xctr\key_len:
- 	cmp	$(2*16), tmp
--	jg	.Leq3\key_len
--	je	.Leq2\key_len
-+	jg	.Leq3\xctr\key_len
-+	je	.Leq2\xctr\key_len
- 
--.Leq1\key_len:
--	do_aes_load	1, \key_len
-+.Leq1\xctr\key_len:
-+	do_aes_load	1, \key_len, \xctr
- 	add	$(1*16), p_out
- 	and	$(~7*16), num_bytes
--	jz	.Ldo_return2\key_len
--	jmp	.Lmain_loop2\key_len
-+	jz	.Ldo_return2\xctr\key_len
-+	jmp	.Lmain_loop2\xctr\key_len
- 
--.Leq2\key_len:
--	do_aes_load	2, \key_len
-+.Leq2\xctr\key_len:
-+	do_aes_load	2, \key_len, \xctr
- 	add	$(2*16), p_out
- 	and	$(~7*16), num_bytes
--	jz	.Ldo_return2\key_len
--	jmp	.Lmain_loop2\key_len
-+	jz	.Ldo_return2\xctr\key_len
-+	jmp	.Lmain_loop2\xctr\key_len
- 
- 
--.Leq3\key_len:
--	do_aes_load	3, \key_len
-+.Leq3\xctr\key_len:
-+	do_aes_load	3, \key_len, \xctr
- 	add	$(3*16), p_out
- 	and	$(~7*16), num_bytes
--	jz	.Ldo_return2\key_len
--	jmp	.Lmain_loop2\key_len
-+	jz	.Ldo_return2\xctr\key_len
-+	jmp	.Lmain_loop2\xctr\key_len
- 
--.Leq4\key_len:
--	do_aes_load	4, \key_len
-+.Leq4\xctr\key_len:
-+	do_aes_load	4, \key_len, \xctr
- 	add	$(4*16), p_out
- 	and	$(~7*16), num_bytes
--	jz	.Ldo_return2\key_len
--	jmp	.Lmain_loop2\key_len
-+	jz	.Ldo_return2\xctr\key_len
-+	jmp	.Lmain_loop2\xctr\key_len
- 
--.Lgt4\key_len:
-+.Lgt4\xctr\key_len:
- 	cmp	$(6*16), tmp
--	jg	.Leq7\key_len
--	je	.Leq6\key_len
-+	jg	.Leq7\xctr\key_len
-+	je	.Leq6\xctr\key_len
- 
--.Leq5\key_len:
--	do_aes_load	5, \key_len
-+.Leq5\xctr\key_len:
-+	do_aes_load	5, \key_len, \xctr
- 	add	$(5*16), p_out
- 	and	$(~7*16), num_bytes
--	jz	.Ldo_return2\key_len
--	jmp	.Lmain_loop2\key_len
-+	jz	.Ldo_return2\xctr\key_len
-+	jmp	.Lmain_loop2\xctr\key_len
- 
--.Leq6\key_len:
--	do_aes_load	6, \key_len
-+.Leq6\xctr\key_len:
-+	do_aes_load	6, \key_len, \xctr
- 	add	$(6*16), p_out
- 	and	$(~7*16), num_bytes
--	jz	.Ldo_return2\key_len
--	jmp	.Lmain_loop2\key_len
-+	jz	.Ldo_return2\xctr\key_len
-+	jmp	.Lmain_loop2\xctr\key_len
- 
--.Leq7\key_len:
--	do_aes_load	7, \key_len
-+.Leq7\xctr\key_len:
-+	do_aes_load	7, \key_len, \xctr
- 	add	$(7*16), p_out
- 	and	$(~7*16), num_bytes
--	jz	.Ldo_return2\key_len
--	jmp	.Lmain_loop2\key_len
-+	jz	.Ldo_return2\xctr\key_len
-+	jmp	.Lmain_loop2\xctr\key_len
- 
--.Lmult_of_8_blks\key_len:
-+.Lmult_of_8_blks\xctr\key_len:
- 	.if (\key_len != KEY_128)
- 		vmovdqa	0*16(p_keys), xkey0
- 		vmovdqa	4*16(p_keys), xkey4
-@@ -471,17 +502,19 @@ ddq_add_8:
- 		vmovdqa	9*16(p_keys), xkey12
- 	.endif
- .align 16
--.Lmain_loop2\key_len:
-+.Lmain_loop2\xctr\key_len:
- 	/* num_bytes is a multiple of 8 and >0 */
--	do_aes_noload	8, \key_len
-+	do_aes_noload	8, \key_len, \xctr
- 	add	$(8*16), p_out
- 	sub	$(8*16), num_bytes
--	jne	.Lmain_loop2\key_len
-+	jne	.Lmain_loop2\xctr\key_len
- 
--.Ldo_return2\key_len:
--	/* return updated IV */
--	vpshufb	xbyteswap, xcounter, xcounter
--	vmovdqu	xcounter, (p_iv)
-+.Ldo_return2\xctr\key_len:
-+	.if !\xctr
-+		/* return updated IV */
-+		vpshufb	xbyteswap, xcounter, xcounter
-+		vmovdqu	xcounter, (p_iv)
-+	.endif
- 	RET
- .endm
- 
-@@ -494,7 +527,7 @@ ddq_add_8:
-  */
- SYM_FUNC_START(aes_ctr_enc_128_avx_by8)
- 	/* call the aes main loop */
--	do_aes_ctrmain KEY_128
-+	do_aes_ctrmain KEY_128 0
- 
- SYM_FUNC_END(aes_ctr_enc_128_avx_by8)
- 
-@@ -507,7 +540,7 @@ SYM_FUNC_END(aes_ctr_enc_128_avx_by8)
-  */
- SYM_FUNC_START(aes_ctr_enc_192_avx_by8)
- 	/* call the aes main loop */
--	do_aes_ctrmain KEY_192
-+	do_aes_ctrmain KEY_192 0
- 
- SYM_FUNC_END(aes_ctr_enc_192_avx_by8)
- 
-@@ -520,6 +553,45 @@ SYM_FUNC_END(aes_ctr_enc_192_avx_by8)
-  */
- SYM_FUNC_START(aes_ctr_enc_256_avx_by8)
- 	/* call the aes main loop */
--	do_aes_ctrmain KEY_256
-+	do_aes_ctrmain KEY_256 0
- 
- SYM_FUNC_END(aes_ctr_enc_256_avx_by8)
++asmlinkage void aes_xctr_encrypt(u8 out[], u8 const in[], u32 const rk[],
++				 int rounds, int bytes, u8 ctr[], int byte_ctr);
 +
-+/*
-+ * routine to do AES128 XCTR enc/decrypt "by8"
-+ * XMM registers are clobbered.
-+ * Saving/restoring must be done at a higher level
-+ * aes_xctr_enc_128_avx_by8(const u8 *in, const u8 *iv, const void *keys,
-+ * 	u8* out, unsigned int num_bytes, unsigned int byte_ctr)
-+ */
-+SYM_FUNC_START(aes_xctr_enc_128_avx_by8)
-+	/* call the aes main loop */
-+	do_aes_ctrmain KEY_128 1
-+
-+SYM_FUNC_END(aes_xctr_enc_128_avx_by8)
-+
-+/*
-+ * routine to do AES192 XCTR enc/decrypt "by8"
-+ * XMM registers are clobbered.
-+ * Saving/restoring must be done at a higher level
-+ * aes_xctr_enc_192_avx_by8(const u8 *in, const u8 *iv, const void *keys,
-+ * 	u8* out, unsigned int num_bytes, unsigned int byte_ctr)
-+ */
-+SYM_FUNC_START(aes_xctr_enc_192_avx_by8)
-+	/* call the aes main loop */
-+	do_aes_ctrmain KEY_192 1
-+
-+SYM_FUNC_END(aes_xctr_enc_192_avx_by8)
-+
-+/*
-+ * routine to do AES256 XCTR enc/decrypt "by8"
-+ * XMM registers are clobbered.
-+ * Saving/restoring must be done at a higher level
-+ * aes_xctr_enc_256_avx_by8(const u8 *in, const u8 *iv, const void *keys,
-+ * 	u8* out, unsigned int num_bytes, unsigned int byte_ctr)
-+ */
-+SYM_FUNC_START(aes_xctr_enc_256_avx_by8)
-+	/* call the aes main loop */
-+	do_aes_ctrmain KEY_256 1
-+
-+SYM_FUNC_END(aes_xctr_enc_256_avx_by8)
-diff --git a/arch/x86/crypto/aesni-intel_glue.c b/arch/x86/crypto/aesni-intel_glue.c
-index 41901ba9d3a2..a5b0cb3efeba 100644
---- a/arch/x86/crypto/aesni-intel_glue.c
-+++ b/arch/x86/crypto/aesni-intel_glue.c
-@@ -135,6 +135,20 @@ asmlinkage void aes_ctr_enc_192_avx_by8(const u8 *in, u8 *iv,
- 		void *keys, u8 *out, unsigned int num_bytes);
- asmlinkage void aes_ctr_enc_256_avx_by8(const u8 *in, u8 *iv,
- 		void *keys, u8 *out, unsigned int num_bytes);
-+
-+
-+asmlinkage void aes_xctr_enc_128_avx_by8(const u8 *in, const u8 *iv,
-+	const void *keys, u8 *out, unsigned int num_bytes,
-+	unsigned int byte_ctr);
-+
-+asmlinkage void aes_xctr_enc_192_avx_by8(const u8 *in, const u8 *iv,
-+	const void *keys, u8 *out, unsigned int num_bytes,
-+	unsigned int byte_ctr);
-+
-+asmlinkage void aes_xctr_enc_256_avx_by8(const u8 *in, const u8 *iv,
-+	const void *keys, u8 *out, unsigned int num_bytes,
-+	unsigned int byte_ctr);
-+
- /*
-  * asmlinkage void aesni_gcm_init_avx_gen2()
-  * gcm_data *my_ctx_data, context data
-@@ -527,6 +541,59 @@ static int ctr_crypt(struct skcipher_request *req)
- 	return err;
+ asmlinkage void aes_xts_encrypt(u8 out[], u8 const in[], u32 const rk1[],
+ 				int rounds, int bytes, u32 const rk2[], u8 iv[],
+ 				int first);
+@@ -442,6 +448,44 @@ static int __maybe_unused essiv_cbc_decrypt(struct skcipher_request *req)
+ 	return err ?: cbc_decrypt_walk(req, &walk);
  }
  
-+static void aesni_xctr_enc_avx_tfm(struct crypto_aes_ctx *ctx, u8 *out,
-+				   const u8 *in, unsigned int len, u8 *iv,
-+				   unsigned int byte_ctr)
-+{
-+	if (ctx->key_length == AES_KEYSIZE_128)
-+		aes_xctr_enc_128_avx_by8(in, iv, (void *)ctx, out, len,
-+					 byte_ctr);
-+	else if (ctx->key_length == AES_KEYSIZE_192)
-+		aes_xctr_enc_192_avx_by8(in, iv, (void *)ctx, out, len,
-+					 byte_ctr);
-+	else
-+		aes_xctr_enc_256_avx_by8(in, iv, (void *)ctx, out, len,
-+					 byte_ctr);
-+}
-+
-+static int xctr_crypt(struct skcipher_request *req)
++static int __maybe_unused xctr_encrypt(struct skcipher_request *req)
 +{
 +	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
-+	struct crypto_aes_ctx *ctx = aes_ctx(crypto_skcipher_ctx(tfm));
-+	u8 keystream[AES_BLOCK_SIZE];
++	struct crypto_aes_ctx *ctx = crypto_skcipher_ctx(tfm);
++	int err, rounds = 6 + ctx->key_length / 4;
 +	struct skcipher_walk walk;
-+	unsigned int nbytes;
 +	unsigned int byte_ctr = 0;
-+	int err;
-+	__le32 block[AES_BLOCK_SIZE / sizeof(__le32)];
 +
 +	err = skcipher_walk_virt(&walk, req, false);
 +
-+	while ((nbytes = walk.nbytes) > 0) {
-+		kernel_fpu_begin();
-+		if (nbytes & AES_BLOCK_MASK)
-+			aesni_xctr_enc_avx_tfm(ctx, walk.dst.virt.addr,
-+				walk.src.virt.addr, nbytes & AES_BLOCK_MASK,
-+				walk.iv, byte_ctr);
-+		nbytes &= ~AES_BLOCK_MASK;
-+		byte_ctr += walk.nbytes - nbytes;
++	while (walk.nbytes > 0) {
++		const u8 *src = walk.src.virt.addr;
++		unsigned int nbytes = walk.nbytes;
++		u8 *dst = walk.dst.virt.addr;
++		u8 buf[AES_BLOCK_SIZE];
 +
-+		if (walk.nbytes == walk.total && nbytes > 0) {
-+			memcpy(block, walk.iv, AES_BLOCK_SIZE);
-+			block[0] ^= cpu_to_le32(1 + byte_ctr / AES_BLOCK_SIZE);
-+			aesni_enc(ctx, keystream, (u8 *)block);
-+			crypto_xor_cpy(walk.dst.virt.addr + walk.nbytes -
-+				       nbytes, walk.src.virt.addr + walk.nbytes
-+				       - nbytes, keystream, nbytes);
-+			byte_ctr += nbytes;
-+			nbytes = 0;
-+		}
-+		kernel_fpu_end();
-+		err = skcipher_walk_done(&walk, nbytes);
++		if (unlikely(nbytes < AES_BLOCK_SIZE))
++			src = dst = memcpy(buf + sizeof(buf) - nbytes,
++					   src, nbytes);
++		else if (nbytes < walk.total)
++			nbytes &= ~(AES_BLOCK_SIZE - 1);
++
++		kernel_neon_begin();
++		aes_xctr_encrypt(dst, src, ctx->key_enc, rounds, nbytes,
++						 walk.iv, byte_ctr);
++		kernel_neon_end();
++
++		if (unlikely(nbytes < AES_BLOCK_SIZE))
++			memcpy(walk.dst.virt.addr,
++			       buf + sizeof(buf) - nbytes, nbytes);
++		byte_ctr += nbytes;
++
++		err = skcipher_walk_done(&walk, walk.nbytes - nbytes);
 +	}
++
 +	return err;
 +}
 +
- static int
- rfc4106_set_hash_subkey(u8 *hash_subkey, const u8 *key, unsigned int key_len)
+ static int __maybe_unused ctr_encrypt(struct skcipher_request *req)
  {
-@@ -1050,6 +1117,33 @@ static struct skcipher_alg aesni_skciphers[] = {
- static
- struct simd_skcipher_alg *aesni_simd_skciphers[ARRAY_SIZE(aesni_skciphers)];
- 
-+#ifdef CONFIG_X86_64
-+/*
-+ * XCTR does not have a non-AVX implementation, so it must be enabled
-+ * conditionally.
-+ */
-+static struct skcipher_alg aesni_xctr = {
+ 	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
+@@ -669,6 +713,22 @@ static struct skcipher_alg aes_algs[] = { {
+ 	.setkey		= skcipher_aes_setkey,
+ 	.encrypt	= ctr_encrypt,
+ 	.decrypt	= ctr_encrypt,
++}, {
 +	.base = {
-+		.cra_name		= "__xctr(aes)",
-+		.cra_driver_name	= "__xctr-aes-aesni",
-+		.cra_priority		= 400,
-+		.cra_flags		= CRYPTO_ALG_INTERNAL,
++		.cra_name		= "xctr(aes)",
++		.cra_driver_name	= "xctr-aes-" MODE,
++		.cra_priority		= PRIO,
 +		.cra_blocksize		= 1,
-+		.cra_ctxsize		= CRYPTO_AES_CTX_SIZE,
++		.cra_ctxsize		= sizeof(struct crypto_aes_ctx),
 +		.cra_module		= THIS_MODULE,
 +	},
 +	.min_keysize	= AES_MIN_KEY_SIZE,
 +	.max_keysize	= AES_MAX_KEY_SIZE,
 +	.ivsize		= AES_BLOCK_SIZE,
 +	.chunksize	= AES_BLOCK_SIZE,
-+	.setkey		= aesni_skcipher_setkey,
-+	.encrypt	= xctr_crypt,
-+	.decrypt	= xctr_crypt,
-+};
++	.setkey		= skcipher_aes_setkey,
++	.encrypt	= xctr_encrypt,
++	.decrypt	= xctr_encrypt,
+ }, {
+ 	.base = {
+ 		.cra_name		= "xts(aes)",
+diff --git a/arch/arm64/crypto/aes-modes.S b/arch/arm64/crypto/aes-modes.S
+index dc35eb0245c5..55df157fce3a 100644
+--- a/arch/arm64/crypto/aes-modes.S
++++ b/arch/arm64/crypto/aes-modes.S
+@@ -318,80 +318,103 @@ AES_FUNC_END(aes_cbc_cts_decrypt)
+ 	.byte		0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
+ 	.previous
+ 
+-
+ 	/*
+-	 * aes_ctr_encrypt(u8 out[], u8 const in[], u8 const rk[], int rounds,
+-	 *		   int bytes, u8 ctr[])
++	 * This macro generates the code for CTR and XCTR mode.
+ 	 */
+-
+-AES_FUNC_START(aes_ctr_encrypt)
++.macro ctr_encrypt xctr
+ 	stp		x29, x30, [sp, #-16]!
+ 	mov		x29, sp
+ 
+ 	enc_prepare	w3, x2, x12
+ 	ld1		{vctr.16b}, [x5]
+ 
+-	umov		x12, vctr.d[1]		/* keep swabbed ctr in reg */
+-	rev		x12, x12
++	.if \xctr
++		umov		x12, vctr.d[0]
++		lsr		w11, w6, #4
++	.else
++		umov		x12, vctr.d[1] /* keep swabbed ctr in reg */
++		rev		x12, x12
++	.endif
+ 
+-.LctrloopNx:
++.LctrloopNx\xctr:
+ 	add		w7, w4, #15
+ 	sub		w4, w4, #MAX_STRIDE << 4
+ 	lsr		w7, w7, #4
+ 	mov		w8, #MAX_STRIDE
+ 	cmp		w7, w8
+ 	csel		w7, w7, w8, lt
+-	adds		x12, x12, x7
+ 
++	.if \xctr
++		add		x11, x11, x7
++	.else
++		adds		x12, x12, x7
++	.endif
+ 	mov		v0.16b, vctr.16b
+ 	mov		v1.16b, vctr.16b
+ 	mov		v2.16b, vctr.16b
+ 	mov		v3.16b, vctr.16b
+ ST5(	mov		v4.16b, vctr.16b		)
+-	bcs		0f
+-
+-	.subsection	1
+-	/* apply carry to outgoing counter */
+-0:	umov		x8, vctr.d[0]
+-	rev		x8, x8
+-	add		x8, x8, #1
+-	rev		x8, x8
+-	ins		vctr.d[0], x8
+-
+-	/* apply carry to N counter blocks for N := x12 */
+-	cbz		x12, 2f
+-	adr		x16, 1f
+-	sub		x16, x16, x12, lsl #3
+-	br		x16
+-	bti		c
+-	mov		v0.d[0], vctr.d[0]
+-	bti		c
+-	mov		v1.d[0], vctr.d[0]
+-	bti		c
+-	mov		v2.d[0], vctr.d[0]
+-	bti		c
+-	mov		v3.d[0], vctr.d[0]
+-ST5(	bti		c				)
+-ST5(	mov		v4.d[0], vctr.d[0]		)
+-1:	b		2f
+-	.previous
+-
+-2:	rev		x7, x12
+-	ins		vctr.d[1], x7
+-	sub		x7, x12, #MAX_STRIDE - 1
+-	sub		x8, x12, #MAX_STRIDE - 2
+-	sub		x9, x12, #MAX_STRIDE - 3
+-	rev		x7, x7
+-	rev		x8, x8
+-	mov		v1.d[1], x7
+-	rev		x9, x9
+-ST5(	sub		x10, x12, #MAX_STRIDE - 4	)
+-	mov		v2.d[1], x8
+-ST5(	rev		x10, x10			)
+-	mov		v3.d[1], x9
+-ST5(	mov		v4.d[1], x10			)
+-	tbnz		w4, #31, .Lctrtail
+-	ld1		{v5.16b-v7.16b}, [x1], #48
++	.if \xctr
++		sub		x6, x11, #MAX_STRIDE - 1
++		sub		x7, x11, #MAX_STRIDE - 2
++		sub		x8, x11, #MAX_STRIDE - 3
++		sub		x9, x11, #MAX_STRIDE - 4
++ST5(		sub		x10, x11, #MAX_STRIDE - 5	)
++		eor		x6, x6, x12
++		eor		x7, x7, x12
++		eor		x8, x8, x12
++		eor		x9, x9, x12
++		eor		x10, x10, x12
++		mov		v0.d[0], x6
++		mov		v1.d[0], x7
++		mov		v2.d[0], x8
++		mov		v3.d[0], x9
++ST5(		mov		v4.d[0], x10			)
++	.else
++		bcs		0f
++		.subsection	1
++		/* apply carry to outgoing counter */
++0:		umov		x8, vctr.d[0]
++		rev		x8, x8
++		add		x8, x8, #1
++		rev		x8, x8
++		ins		vctr.d[0], x8
 +
-+static struct simd_skcipher_alg *aesni_simd_xctr;
-+#endif /* CONFIG_X86_64 */
++		/* apply carry to N counter blocks for N := x12 */
++		cbz		x12, 2f
++		adr		x16, 1f
++		sub		x16, x16, x12, lsl #3
++		br		x16
++		bti		c
++		mov		v0.d[0], vctr.d[0]
++		bti		c
++		mov		v1.d[0], vctr.d[0]
++		bti		c
++		mov		v2.d[0], vctr.d[0]
++		bti		c
++		mov		v3.d[0], vctr.d[0]
++ST5(		bti		c				)
++ST5(		mov		v4.d[0], vctr.d[0]		)
++1:		b		2f
++		.previous
 +
- #ifdef CONFIG_X86_64
- static int generic_gcmaes_set_key(struct crypto_aead *aead, const u8 *key,
- 				  unsigned int key_len)
-@@ -1163,7 +1257,7 @@ static int __init aesni_init(void)
- 		static_call_update(aesni_ctr_enc_tfm, aesni_ctr_enc_avx_tfm);
- 		pr_info("AES CTR mode by8 optimization enabled\n");
- 	}
--#endif
-+#endif /* CONFIG_X86_64 */
++2:		rev		x7, x12
++		ins		vctr.d[1], x7
++		sub		x7, x12, #MAX_STRIDE - 1
++		sub		x8, x12, #MAX_STRIDE - 2
++		sub		x9, x12, #MAX_STRIDE - 3
++		rev		x7, x7
++		rev		x8, x8
++		mov		v1.d[1], x7
++		rev		x9, x9
++ST5(		sub		x10, x12, #MAX_STRIDE - 4	)
++		mov		v2.d[1], x8
++ST5(		rev		x10, x10			)
++		mov		v3.d[1], x9
++ST5(		mov		v4.d[1], x10			)
++	.endif
++	tbnz		w4, #31, .Lctrtail\xctr
++    	ld1		{v5.16b-v7.16b}, [x1], #48
+ ST4(	bl		aes_encrypt_block4x		)
+ ST5(	bl		aes_encrypt_block5x		)
+ 	eor		v0.16b, v5.16b, v0.16b
+@@ -403,16 +426,17 @@ ST5(	ld1		{v5.16b-v6.16b}, [x1], #32	)
+ ST5(	eor		v4.16b, v6.16b, v4.16b		)
+ 	st1		{v0.16b-v3.16b}, [x0], #64
+ ST5(	st1		{v4.16b}, [x0], #16		)
+-	cbz		w4, .Lctrout
+-	b		.LctrloopNx
++	cbz		w4, .Lctrout\xctr
++	b		.LctrloopNx\xctr
  
- 	err = crypto_register_alg(&aesni_cipher_alg);
- 	if (err)
-@@ -1180,8 +1274,22 @@ static int __init aesni_init(void)
- 	if (err)
- 		goto unregister_skciphers;
+-.Lctrout:
+-	st1		{vctr.16b}, [x5]	/* return next CTR value */
++.Lctrout\xctr:
++	.if !\xctr
++		st1		{vctr.16b}, [x5] /* return next CTR value */
++	.endif
+ 	ldp		x29, x30, [sp], #16
+ 	ret
  
-+#ifdef CONFIG_X86_64
-+	if (boot_cpu_has(X86_FEATURE_AVX))
-+		err = simd_register_skciphers_compat(&aesni_xctr, 1,
-+						     &aesni_simd_xctr);
-+	if (err)
-+		goto unregister_aeads;
-+#endif /* CONFIG_X86_64 */
+-.Lctrtail:
+-	/* XOR up to MAX_STRIDE * 16 - 1 bytes of in/output with v0 ... v3/v4 */
++.Lctrtail\xctr:
+ 	mov		x16, #16
+ 	ands		x6, x4, #0xf
+ 	csel		x13, x6, x16, ne
+@@ -427,7 +451,7 @@ ST5(	csel		x14, x16, xzr, gt		)
+ 
+ 	adr_l		x12, .Lcts_permute_table
+ 	add		x12, x12, x13
+-	ble		.Lctrtail1x
++	ble		.Lctrtail1x\xctr
+ 
+ ST5(	ld1		{v5.16b}, [x1], x14		)
+ 	ld1		{v6.16b}, [x1], x15
+@@ -459,9 +483,9 @@ ST5(	st1		{v5.16b}, [x0], x14		)
+ 	add		x13, x13, x0
+ 	st1		{v9.16b}, [x13]		// overlapping stores
+ 	st1		{v8.16b}, [x0]
+-	b		.Lctrout
++	b		.Lctrout\xctr
+ 
+-.Lctrtail1x:
++.Lctrtail1x\xctr:
+ 	sub		x7, x6, #16
+ 	csel		x6, x6, x7, eq
+ 	add		x1, x1, x6
+@@ -476,9 +500,27 @@ ST5(	mov		v3.16b, v4.16b			)
+ 	eor		v5.16b, v5.16b, v3.16b
+ 	bif		v5.16b, v6.16b, v11.16b
+ 	st1		{v5.16b}, [x0]
+-	b		.Lctrout
++	b		.Lctrout\xctr
++.endm
 +
- 	return 0;
- 
-+#ifdef CONFIG_X86_64
-+unregister_aeads:
-+	simd_unregister_aeads(aesni_aeads, ARRAY_SIZE(aesni_aeads),
-+				aesni_simd_aeads);
-+#endif /* CONFIG_X86_64 */
++	/*
++	 * aes_ctr_encrypt(u8 out[], u8 const in[], u8 const rk[], int rounds,
++	 *		   int bytes, u8 ctr[])
++	 */
 +
- unregister_skciphers:
- 	simd_unregister_skciphers(aesni_skciphers, ARRAY_SIZE(aesni_skciphers),
- 				  aesni_simd_skciphers);
-@@ -1197,6 +1305,10 @@ static void __exit aesni_exit(void)
- 	simd_unregister_skciphers(aesni_skciphers, ARRAY_SIZE(aesni_skciphers),
- 				  aesni_simd_skciphers);
- 	crypto_unregister_alg(&aesni_cipher_alg);
-+#ifdef CONFIG_X86_64
-+	if (boot_cpu_has(X86_FEATURE_AVX))
-+		simd_unregister_skciphers(&aesni_xctr, 1, &aesni_simd_xctr);
-+#endif /* CONFIG_X86_64 */
- }
++AES_FUNC_START(aes_ctr_encrypt)
++	ctr_encrypt 0
+ AES_FUNC_END(aes_ctr_encrypt)
  
- late_initcall(aesni_init);
-diff --git a/crypto/Kconfig b/crypto/Kconfig
-index 0dedba74db4a..aa06af0e0ebe 100644
---- a/crypto/Kconfig
-+++ b/crypto/Kconfig
-@@ -1161,7 +1161,7 @@ config CRYPTO_AES_NI_INTEL
- 	  In addition to AES cipher algorithm support, the acceleration
- 	  for some popular block cipher mode is supported too, including
- 	  ECB, CBC, LRW, XTS. The 64 bit version has additional
--	  acceleration for CTR.
-+	  acceleration for CTR and XCTR.
++	/*
++	 * aes_xctr_encrypt(u8 out[], u8 const in[], u8 const rk[], int rounds,
++	 *		   int bytes, u8 const iv[], int byte_ctr)
++	 */
++
++AES_FUNC_START(aes_xctr_encrypt)
++	ctr_encrypt 1
++AES_FUNC_END(aes_xctr_encrypt)
++
  
- config CRYPTO_AES_SPARC64
- 	tristate "AES cipher algorithms (SPARC64)"
+ 	/*
+ 	 * aes_xts_encrypt(u8 out[], u8 const in[], u8 const rk1[], int rounds,
 -- 
 2.36.0.464.gb9c8b46e94-goog
 
