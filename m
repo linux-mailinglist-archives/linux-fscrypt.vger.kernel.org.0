@@ -2,398 +2,211 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63D4751B835
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  5 May 2022 08:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69C8751BF57
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  5 May 2022 14:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238665AbiEEGxi (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 5 May 2022 02:53:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60234 "EHLO
+        id S1376684AbiEEMfn (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 5 May 2022 08:35:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238386AbiEEGxh (ORCPT
+        with ESMTP id S1376680AbiEEMfm (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 5 May 2022 02:53:37 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C813447045;
-        Wed,  4 May 2022 23:49:58 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 5FEBFB82BED;
-        Thu,  5 May 2022 06:49:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12D23C385AF;
-        Thu,  5 May 2022 06:49:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1651733396;
-        bh=lSak+gmChtT3mVmwO91xlHv2YotCvHVAYhtgGKNtJLs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=BJeaTFgBMtc827q5iN0XaqC+bBv4lM3hCw8P9T4lvdecp8b0Yv/ZbEJyZ39qfxE0f
-         44gmSi01ufjd+Nmcu0cfRwzIF5Est7GPKWIAJ7G/tMSXbGX22ZgSPo7B+SMXx+j0vm
-         prczYpWMfZOvTZM1FEjpyZdBJ0kFuSqnTRL0qik0ES5vhLgrj1gifH7tEe/d6GCyk4
-         ibZ1/WBCoHkaplGMegq2L83DNNEzK1nb9TUo0jJ6AatU4ouo6fkLBJnq+BLWwumRpP
-         1IjjnEuBsdTtbyTWnMB5vqqw+A8ZFhArjRiVl0BQa0Y77wLfEPBDf7/K4e+I+S/cNP
-         hLWEnCZTw8oZg==
-Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-e656032735so3430642fac.0;
-        Wed, 04 May 2022 23:49:55 -0700 (PDT)
-X-Gm-Message-State: AOAM531s5tW7WlQg5FXOIb3kWHWCva5qC1o0z61Wlyz4vbatEymrh+w2
-        sD2neejrYo79PDkwWTU3NyTCr2Y7eShHXl3gZAU=
-X-Google-Smtp-Source: ABdhPJxKnLWrnW1L8yR8uq2dbFpGPLDOMqX/j2YHJT0b9PPSxEa7WCkjxaZnMHtPpVjRqb3muybU9BS2nvfQcu68aFA=
-X-Received: by 2002:a05:6870:468e:b0:ed:de90:fa80 with SMTP id
- a14-20020a056870468e00b000edde90fa80mr1544477oap.126.1651733395046; Wed, 04
- May 2022 23:49:55 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220504001823.2483834-1-nhuck@google.com> <20220504001823.2483834-7-nhuck@google.com>
-In-Reply-To: <20220504001823.2483834-7-nhuck@google.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 5 May 2022 08:49:44 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXEBEkGqEx3PaFV0jnufQEkZxe0oiXoxoB2PYwz9BQJmEw@mail.gmail.com>
-Message-ID: <CAMj1kXEBEkGqEx3PaFV0jnufQEkZxe0oiXoxoB2PYwz9BQJmEw@mail.gmail.com>
-Subject: Re: [PATCH v6 6/9] crypto: arm64/aes-xctr: Improve readability of
- XCTR and CTR modes
-To:     Nathan Huckleberry <nhuck@google.com>
-Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-fscrypt@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Paul Crowley <paulcrowley@google.com>,
+        Thu, 5 May 2022 08:35:42 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DE1355228;
+        Thu,  5 May 2022 05:32:03 -0700 (PDT)
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 245BxhJ6027909;
+        Thu, 5 May 2022 12:32:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=qUXAepiDVmZx2bZLC9ayAdpC3X/oNkIf11N2exuWOCQ=;
+ b=KLlxYG3UH65psfTxx3UT/YoE6x/E5UcqyWurY3dQKjdLfdq4bb4auKPE5ij0xZMeMsIf
+ 1JB2S3o+BtBScGCM9LWM6jKC4CQjkSJL3LspY4zCUUlju4uiOuYh5KwDlShAPii6FJgW
+ TwTly5nEcnVtr21xsobCaJO18V4PKkSO//udpXWfPw1rjp89DT661EjiqRH0vpGHlXZ6
+ PSVpxQ6rtSFpzVtxnTNI9CsVdMPZrlwsxihWowW71o7h6/UyvKibQz7Cs9Yq/Qf7DD5W
+ mW6SQUyp5rMMg2d3/AkCqn8sPsSnx/fzMDbMw6/EoEqkYUAxZ03pDqoZF5MggX0wjIiT Og== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3fve6rrnq4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 May 2022 12:31:59 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 245CREdJ001521;
+        Thu, 5 May 2022 12:31:57 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma03ams.nl.ibm.com with ESMTP id 3ftp7fv1sw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 May 2022 12:31:57 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 245CVsFA47841578
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 5 May 2022 12:31:54 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 262684C059;
+        Thu,  5 May 2022 12:31:54 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 34B044C04E;
+        Thu,  5 May 2022 12:31:53 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com.com (unknown [9.65.81.94])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  5 May 2022 12:31:53 +0000 (GMT)
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     linux-integrity@vger.kernel.org
+Cc:     Mimi Zohar <zohar@linux.ibm.com>,
         Eric Biggers <ebiggers@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Stefan Berger <stefanb@linux.ibm.com>,
+        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v9 0/7] ima: support fs-verity digests and signatures
+Date:   Thu,  5 May 2022 08:31:34 -0400
+Message-Id: <20220505123141.1599622-1-zohar@linux.ibm.com>
+X-Mailer: git-send-email 2.27.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 7kNCAKdQCMdKPDlLV-V87FdgTInxbCpr
+X-Proofpoint-GUID: 7kNCAKdQCMdKPDlLV-V87FdgTInxbCpr
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
+ definitions=2022-05-05_05,2022-05-05_01,2022-02-23_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ impostorscore=0 malwarescore=0 clxscore=1015 mlxscore=0 priorityscore=1501
+ bulkscore=0 spamscore=0 phishscore=0 adultscore=0 mlxlogscore=999
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2202240000 definitions=main-2205050091
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hi Nathan,
+Support for including fs-verity file digests and signatures in the IMA
+measurement list as well as verifying the fs-verity file digest based
+signatures was discussed prior to fs-verity being upstreamed[1,2].
 
-Thanks for cleaning this up.
+Including fs-verity file digests and signatures in the IMA measurement
+list need to be based on policy and be identifiable.  To address being
+based on policy, a new policy rule option "digest_type=verity", applicable
+to both "measure" and "appraise" policy rules, is defined.  To address
+being identifiable, a new template field 'd-ngv2' and two new template
+formats 'ima-ngv2' and 'ima-sigv2' are defined.
 
-On Wed, 4 May 2022 at 02:18, Nathan Huckleberry <nhuck@google.com> wrote:
->
-> Added some clarifying comments, changed the register allocations to make
-> the code clearer, and added register aliases.
->
-> Signed-off-by: Nathan Huckleberry <nhuck@google.com>
+d-ngv2:  prefixes the digest type ("ima", "verity") to the digest
+algorithm and digest.
 
-With one comment below addressed:
+ima-ngv2', ima-sigv2: templates with the new d-ngv2 field defined.
 
-Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
+In addition the signatures stored in 'security.ima' xattr need to be
+disambiguated.  So instead of directly signing the fs-verity digest, the
+fs-verity digest is indirectly signed, by signing the hash of the new
+ima_file_id structure data (signature version 3) containing the fs-verity
+digest and other metadata.
 
-> ---
->  arch/arm64/crypto/aes-modes.S | 193 ++++++++++++++++++++++------------
->  1 file changed, 128 insertions(+), 65 deletions(-)
->
-> diff --git a/arch/arm64/crypto/aes-modes.S b/arch/arm64/crypto/aes-modes.S
-> index 55df157fce3a..da7c9f3380f8 100644
-> --- a/arch/arm64/crypto/aes-modes.S
-> +++ b/arch/arm64/crypto/aes-modes.S
-> @@ -322,32 +322,60 @@ AES_FUNC_END(aes_cbc_cts_decrypt)
->          * This macro generates the code for CTR and XCTR mode.
->          */
->  .macro ctr_encrypt xctr
-> +       // Arguments
-> +       OUT             .req x0
-> +       IN              .req x1
-> +       KEY             .req x2
-> +       ROUNDS_W        .req w3
-> +       BYTES_W         .req w4
-> +       IV              .req x5
-> +       BYTE_CTR_W      .req w6         // XCTR only
-> +       // Intermediate values
-> +       CTR_W           .req w11        // XCTR only
-> +       CTR             .req x11        // XCTR only
-> +       IV_PART         .req x12
-> +       BLOCKS          .req x13
-> +       BLOCKS_W        .req w13
-> +
->         stp             x29, x30, [sp, #-16]!
->         mov             x29, sp
->
-> -       enc_prepare     w3, x2, x12
-> -       ld1             {vctr.16b}, [x5]
-> +       enc_prepare     ROUNDS_W, KEY, IV_PART
-> +       ld1             {vctr.16b}, [IV]
->
-> +       /*
-> +        * Keep 64 bits of the IV in a register.  For CTR mode this lets us
-> +        * easily increment the IV.  For XCTR mode this lets us efficiently XOR
-> +        * the 64-bit counter with the IV.
-> +        */
->         .if \xctr
-> -               umov            x12, vctr.d[0]
-> -               lsr             w11, w6, #4
-> +               umov            IV_PART, vctr.d[0]
-> +               lsr             CTR_W, BYTE_CTR_W, #4
->         .else
-> -               umov            x12, vctr.d[1] /* keep swabbed ctr in reg */
-> -               rev             x12, x12
-> +               umov            IV_PART, vctr.d[1]
-> +               rev             IV_PART, IV_PART
->         .endif
->
->  .LctrloopNx\xctr:
-> -       add             w7, w4, #15
-> -       sub             w4, w4, #MAX_STRIDE << 4
-> -       lsr             w7, w7, #4
-> +       add             BLOCKS_W, BYTES_W, #15
-> +       sub             BYTES_W, BYTES_W, #MAX_STRIDE << 4
-> +       lsr             BLOCKS_W, BLOCKS_W, #4
->         mov             w8, #MAX_STRIDE
-> -       cmp             w7, w8
-> -       csel            w7, w7, w8, lt
-> +       cmp             BLOCKS_W, w8
-> +       csel            BLOCKS_W, BLOCKS_W, w8, lt
->
-> +       /*
-> +        * Set up the counter values in v0-v4.
-> +        *
-> +        * If we are encrypting less than MAX_STRIDE blocks, the tail block
-> +        * handling code expects the last keystream block to be in v4.  For
-> +        * example: if encrypting two blocks with MAX_STRIDE=5, then v3 and v4
-> +        * should have the next two counter blocks.
-> +        */
->         .if \xctr
-> -               add             x11, x11, x7
-> +               add             CTR, CTR, BLOCKS
->         .else
-> -               adds            x12, x12, x7
-> +               adds            IV_PART, IV_PART, BLOCKS
->         .endif
->         mov             v0.16b, vctr.16b
->         mov             v1.16b, vctr.16b
-> @@ -355,16 +383,16 @@ AES_FUNC_END(aes_cbc_cts_decrypt)
->         mov             v3.16b, vctr.16b
->  ST5(   mov             v4.16b, vctr.16b                )
->         .if \xctr
-> -               sub             x6, x11, #MAX_STRIDE - 1
-> -               sub             x7, x11, #MAX_STRIDE - 2
-> -               sub             x8, x11, #MAX_STRIDE - 3
-> -               sub             x9, x11, #MAX_STRIDE - 4
-> -ST5(           sub             x10, x11, #MAX_STRIDE - 5       )
-> -               eor             x6, x6, x12
-> -               eor             x7, x7, x12
-> -               eor             x8, x8, x12
-> -               eor             x9, x9, x12
-> -               eor             x10, x10, x12
-> +               sub             x6, CTR, #MAX_STRIDE - 1
-> +               sub             x7, CTR, #MAX_STRIDE - 2
-> +               sub             x8, CTR, #MAX_STRIDE - 3
-> +               sub             x9, CTR, #MAX_STRIDE - 4
-> +ST5(           sub             x10, CTR, #MAX_STRIDE - 5       )
-> +               eor             x6, x6, IV_PART
-> +               eor             x7, x7, IV_PART
-> +               eor             x8, x8, IV_PART
-> +               eor             x9, x9, IV_PART
-> +               eor             x10, x10, IV_PART
->                 mov             v0.d[0], x6
->                 mov             v1.d[0], x7
->                 mov             v2.d[0], x8
-> @@ -381,9 +409,9 @@ ST5(                mov             v4.d[0], x10                    )
->                 ins             vctr.d[0], x8
->
->                 /* apply carry to N counter blocks for N := x12 */
+New policy rule option:
+appraise_type=sigv3: support for new IMA signature version 3
 
-Please update this comment as well. And while at it, it might make
-sense to clarify that doing a conditional branch here is fine wrt time
-invariance, given that the IV is not part of the key or the plaintext,
-and this code rarely triggers in practice anyway.
 
-> -               cbz             x12, 2f
-> +               cbz             IV_PART, 2f
->                 adr             x16, 1f
-> -               sub             x16, x16, x12, lsl #3
-> +               sub             x16, x16, IV_PART, lsl #3
->                 br              x16
->                 bti             c
->                 mov             v0.d[0], vctr.d[0]
-> @@ -398,71 +426,88 @@ ST5(              mov             v4.d[0], vctr.d[0]              )
->  1:             b               2f
->                 .previous
->
-> -2:             rev             x7, x12
-> +2:             rev             x7, IV_PART
->                 ins             vctr.d[1], x7
-> -               sub             x7, x12, #MAX_STRIDE - 1
-> -               sub             x8, x12, #MAX_STRIDE - 2
-> -               sub             x9, x12, #MAX_STRIDE - 3
-> +               sub             x7, IV_PART, #MAX_STRIDE - 1
-> +               sub             x8, IV_PART, #MAX_STRIDE - 2
-> +               sub             x9, IV_PART, #MAX_STRIDE - 3
->                 rev             x7, x7
->                 rev             x8, x8
->                 mov             v1.d[1], x7
->                 rev             x9, x9
-> -ST5(           sub             x10, x12, #MAX_STRIDE - 4       )
-> +ST5(           sub             x10, IV_PART, #MAX_STRIDE - 4   )
->                 mov             v2.d[1], x8
->  ST5(           rev             x10, x10                        )
->                 mov             v3.d[1], x9
->  ST5(           mov             v4.d[1], x10                    )
->         .endif
-> -       tbnz            w4, #31, .Lctrtail\xctr
-> -       ld1             {v5.16b-v7.16b}, [x1], #48
-> +
-> +       /*
-> +        * If there are at least MAX_STRIDE blocks left, XOR the plaintext with
-> +        * keystream and store.  Otherwise jump to tail handling.
-> +        */
-> +       tbnz            BYTES_W, #31, .Lctrtail\xctr
-> +       ld1             {v5.16b-v7.16b}, [IN], #48
->  ST4(   bl              aes_encrypt_block4x             )
->  ST5(   bl              aes_encrypt_block5x             )
->         eor             v0.16b, v5.16b, v0.16b
-> -ST4(   ld1             {v5.16b}, [x1], #16             )
-> +ST4(   ld1             {v5.16b}, [IN], #16             )
->         eor             v1.16b, v6.16b, v1.16b
-> -ST5(   ld1             {v5.16b-v6.16b}, [x1], #32      )
-> +ST5(   ld1             {v5.16b-v6.16b}, [IN], #32      )
->         eor             v2.16b, v7.16b, v2.16b
->         eor             v3.16b, v5.16b, v3.16b
->  ST5(   eor             v4.16b, v6.16b, v4.16b          )
-> -       st1             {v0.16b-v3.16b}, [x0], #64
-> -ST5(   st1             {v4.16b}, [x0], #16             )
-> -       cbz             w4, .Lctrout\xctr
-> +       st1             {v0.16b-v3.16b}, [OUT], #64
-> +ST5(   st1             {v4.16b}, [OUT], #16            )
-> +       cbz             BYTES_W, .Lctrout\xctr
->         b               .LctrloopNx\xctr
->
->  .Lctrout\xctr:
->         .if !\xctr
-> -               st1             {vctr.16b}, [x5] /* return next CTR value */
-> +               st1             {vctr.16b}, [IV] /* return next CTR value */
->         .endif
->         ldp             x29, x30, [sp], #16
->         ret
->
->  .Lctrtail\xctr:
-> +       /*
-> +        * Handle up to MAX_STRIDE * 16 - 1 bytes of plaintext
-> +        *
-> +        * This code expects the last keystream block to be in v4.  For example:
-> +        * if encrypting two blocks with MAX_STRIDE=5, then v3 and v4 should
-> +        * have the next two counter blocks.
-> +        *
-> +        * This allows us to store the ciphertext by writing to overlapping
-> +        * regions of memory.  Any invalid ciphertext blocks get overwritten by
-> +        * correctly computed blocks.  This approach avoids extra conditional
-> +        * branches.
-> +        */
+[1] https://events19.linuxfoundation.org/wp-content/uploads/2017/11/fs-verify_Mike-Halcrow_Eric-Biggers.pdf
+[2] Documentation/filesystems/fsverity.rst
 
-Nit: Without overlapping stores, we'd have to load and store smaller
-quantities and use a loop here, or bounce it via a temp buffer and
-memcpy() it from the C code. So it's not just some extra branches.
+Changelog v9:
+- Based on Stefan Berger's review, fixed sprintf (again), updated comment
+  replacing NULL with NUL, adding fuller comment explanation, and
+  included his tags.
 
->         mov             x16, #16
-> -       ands            x6, x4, #0xf
-> -       csel            x13, x6, x16, ne
-> +       ands            w7, BYTES_W, #0xf
-> +       csel            x13, x7, x16, ne
->
-> -ST5(   cmp             w4, #64 - (MAX_STRIDE << 4)     )
-> +ST5(   cmp             BYTES_W, #64 - (MAX_STRIDE << 4))
->  ST5(   csel            x14, x16, xzr, gt               )
-> -       cmp             w4, #48 - (MAX_STRIDE << 4)
-> +       cmp             BYTES_W, #48 - (MAX_STRIDE << 4)
->         csel            x15, x16, xzr, gt
-> -       cmp             w4, #32 - (MAX_STRIDE << 4)
-> +       cmp             BYTES_W, #32 - (MAX_STRIDE << 4)
->         csel            x16, x16, xzr, gt
-> -       cmp             w4, #16 - (MAX_STRIDE << 4)
-> +       cmp             BYTES_W, #16 - (MAX_STRIDE << 4)
->
-> -       adr_l           x12, .Lcts_permute_table
-> -       add             x12, x12, x13
-> +       adr_l           x9, .Lcts_permute_table
-> +       add             x9, x9, x13
->         ble             .Lctrtail1x\xctr
->
-> -ST5(   ld1             {v5.16b}, [x1], x14             )
-> -       ld1             {v6.16b}, [x1], x15
-> -       ld1             {v7.16b}, [x1], x16
-> +ST5(   ld1             {v5.16b}, [IN], x14             )
-> +       ld1             {v6.16b}, [IN], x15
-> +       ld1             {v7.16b}, [IN], x16
->
->  ST4(   bl              aes_encrypt_block4x             )
->  ST5(   bl              aes_encrypt_block5x             )
->
-> -       ld1             {v8.16b}, [x1], x13
-> -       ld1             {v9.16b}, [x1]
-> -       ld1             {v10.16b}, [x12]
-> +       ld1             {v8.16b}, [IN], x13
-> +       ld1             {v9.16b}, [IN]
-> +       ld1             {v10.16b}, [x9]
->
->  ST4(   eor             v6.16b, v6.16b, v0.16b          )
->  ST4(   eor             v7.16b, v7.16b, v1.16b          )
-> @@ -477,30 +522,48 @@ ST5(      eor             v7.16b, v7.16b, v2.16b          )
->  ST5(   eor             v8.16b, v8.16b, v3.16b          )
->  ST5(   eor             v9.16b, v9.16b, v4.16b          )
->
-> -ST5(   st1             {v5.16b}, [x0], x14             )
-> -       st1             {v6.16b}, [x0], x15
-> -       st1             {v7.16b}, [x0], x16
-> -       add             x13, x13, x0
-> +ST5(   st1             {v5.16b}, [OUT], x14            )
-> +       st1             {v6.16b}, [OUT], x15
-> +       st1             {v7.16b}, [OUT], x16
-> +       add             x13, x13, OUT
->         st1             {v9.16b}, [x13]         // overlapping stores
-> -       st1             {v8.16b}, [x0]
-> +       st1             {v8.16b}, [OUT]
->         b               .Lctrout\xctr
->
->  .Lctrtail1x\xctr:
-> -       sub             x7, x6, #16
-> -       csel            x6, x6, x7, eq
-> -       add             x1, x1, x6
-> -       add             x0, x0, x6
-> -       ld1             {v5.16b}, [x1]
-> -       ld1             {v6.16b}, [x0]
-> +       /*
-> +        * Handle <= 16 bytes of plaintext
-> +        */
-> +       sub             x8, x7, #16
-> +       csel            x7, x7, x8, eq
-> +       add             IN, IN, x7
-> +       add             OUT, OUT, x7
-> +       ld1             {v5.16b}, [IN]
-> +       ld1             {v6.16b}, [OUT]
->  ST5(   mov             v3.16b, v4.16b                  )
->         encrypt_block   v3, w3, x2, x8, w7
-> -       ld1             {v10.16b-v11.16b}, [x12]
-> +       ld1             {v10.16b-v11.16b}, [x9]
->         tbl             v3.16b, {v3.16b}, v10.16b
->         sshr            v11.16b, v11.16b, #7
->         eor             v5.16b, v5.16b, v3.16b
->         bif             v5.16b, v6.16b, v11.16b
-> -       st1             {v5.16b}, [x0]
-> +       st1             {v5.16b}, [OUT]
->         b               .Lctrout\xctr
-> +
-> +       // Arguments
-> +       .unreq OUT
-> +       .unreq IN
-> +       .unreq KEY
-> +       .unreq ROUNDS_W
-> +       .unreq BYTES_W
-> +       .unreq IV
-> +       .unreq BYTE_CTR_W       // XCTR only
-> +       // Intermediate values
-> +       .unreq CTR_W            // XCTR only
-> +       .unreq CTR              // XCTR only
-> +       .unreq IV_PART
-> +       .unreq BLOCKS
-> +       .unreq BLOCKS_W
->  .endm
->
->         /*
-> --
-> 2.36.0.464.gb9c8b46e94-goog
->
+Changelog v8:
+- Based on Eric Bigger's review, fixed the original 'd-ng' and the new
+  DATA_FMT_DIGEST_WITH_TYPE_ALGO comments and documentation, moved the
+  buffer measurement test to after fs-verity measurements, renamed
+  appraise_type "sigv2" to "sigv3", require the new "digest_type=verity"
+  policy option be specified prior to "appraise_type=sigv3", and updated
+  the fs-verity documentation.
+
+Changelog v7:
+- Based on Stefan Berger's review, cleaned up code by defining an enum,
+  removed unnecessary memcpy, fs-verity documentation suggestions.
+- Add comment in ima_get_verify_digest() with explanation for always
+  returning the fs-verity digest.
+
+Changelog v6:
+- As suggested by Eric Bigger's, instead of defining a new field to
+  differentiate between IMA and fs-verity signatures, prepend the
+  digest type to the digest field.
+- Addressed Eric Bigger's comments: updated the patch description,
+  corrected comment, squashed patches, fixed enumeration usage,and
+  added assumption to fsverity_get_digest.
+- Removed the now unnecessary IMA_VERITY_DIGEST flag
+- Updated kernel-parameters.txt
+
+Changelog v5:
+- Define ima_max_digest_size struct, removing the locally defined versions.
+- Don't overload the 'digest_type=verity' to imply a verity signature,
+  but extend the 'appraise_type' policy rule option to define 'sigv3'.
+
+Changelog v4:
+- Based on Eric Bigger's signature verification concerns of replacing the
+  contents of a file with the ima_file_id struct hash, require per policy
+  rule signature versions.
+- Addressed Eric Bigger's other comments.
+- Added new audit messages "causes".
+- Updated patch descriptions.
+
+Changelog v3:
+- Addressed Eric Bigger's comments: included Ack, incremented the
+  signature format version, the crypto issues are generic and will be
+  addressed by him separately.
+- Addressed Vitaly Chikunov's comments: hard coded maximum digest size
+  rather than using a flexible array, removed unnecessary assignment, and
+  fixed comment to match variable name.
+- Defined new "ima_max_digest_size" struct to avoid wrapping the
+  "ima_digest_data" struct inside a function local structure or
+  having to dynamically allocate it with enough memory for the specific
+  hash algo size.
+
+Changelog v2:
+- Addressed Eric Bigger's comments: sign the hash of fsverity's digest
+  and the digest's metadata, use match_string, use preferred function
+  name fsverity_get_digest(), support including unsigned fs-verity's
+  digests in the IMA measurement list.
+- Remove signatures requirement for including fs-verity's file digests in
+  the 'd-ng' field of the measurement list.
+
+Changelog v1:
+- Updated both fsverity and IMA documentation.
+- Addressed both Eric Bigger's and Lakshmi's comments.
+
+Mimi Zohar (7):
+  ima: fix 'd-ng' comments and documentation
+  ima: use IMA default hash algorithm for integrity violations
+  fs-verity: define a function to return the integrity protected file
+    digest
+  ima: define a new template field named 'd-ngv2' and templates
+  ima: permit fsverity's file digests in the IMA measurement list
+  ima: support fs-verity file digest based version 3 signatures
+  fsverity: update the documentation
+
+ Documentation/ABI/testing/ima_policy          |  45 ++++++-
+ .../admin-guide/kernel-parameters.txt         |   3 +-
+ Documentation/filesystems/fsverity.rst        |  35 ++++--
+ Documentation/security/IMA-templates.rst      |  11 +-
+ fs/verity/Kconfig                             |   1 +
+ fs/verity/fsverity_private.h                  |   7 --
+ fs/verity/measure.c                           |  43 +++++++
+ include/linux/fsverity.h                      |  18 +++
+ security/integrity/digsig.c                   |   3 +-
+ security/integrity/ima/ima_api.c              |  47 +++++++-
+ security/integrity/ima/ima_appraise.c         | 114 +++++++++++++++++-
+ security/integrity/ima/ima_main.c             |   2 +-
+ security/integrity/ima/ima_policy.c           |  82 +++++++++++--
+ security/integrity/ima/ima_template.c         |   4 +
+ security/integrity/ima/ima_template_lib.c     |  97 ++++++++++++---
+ security/integrity/ima/ima_template_lib.h     |   4 +
+ security/integrity/integrity.h                |  27 ++++-
+ 17 files changed, 481 insertions(+), 62 deletions(-)
+
+-- 
+2.27.0
+
