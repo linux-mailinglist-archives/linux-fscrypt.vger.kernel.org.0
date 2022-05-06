@@ -2,136 +2,176 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42B5351D6C4
-	for <lists+linux-fscrypt@lfdr.de>; Fri,  6 May 2022 13:36:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27EE351E102
+	for <lists+linux-fscrypt@lfdr.de>; Fri,  6 May 2022 23:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346061AbiEFLjm (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 6 May 2022 07:39:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38056 "EHLO
+        id S1444409AbiEFV0p (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 6 May 2022 17:26:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1391400AbiEFLip (ORCPT
+        with ESMTP id S1444408AbiEFV0o (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 6 May 2022 07:38:45 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F5C60C9;
-        Fri,  6 May 2022 04:35:00 -0700 (PDT)
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 246B75QC019894;
-        Fri, 6 May 2022 11:34:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=8RspyK0PRVi0UwT8ZnmwyEdIxA4z/RirluGKXyNrCTA=;
- b=pLybBU5TqODQcC568tj3fPG9m/p81DE+btfiHLCN7MVEElM8PTwhyZQvEH24NloC6iA3
- Q9PoYWEKMp7a5cvHxNOhkR3oroXaGBVe0hToM7vq8M86Ye6W65tdEoUA8+cYCq2/3vT6
- lc46T/6dY38fzASUhWbGiadTbFnXsdXcRSdwpbyFMS0zVWMQ1Do1p2S6Pic9RsRPuaBs
- MHf/aAKPYK7LHb56EPjPvVfwlXMokTGb4lh5hKYPixOcFns5LhL9HcBCFW6+FR1C7ymR
- VzX/dDXARzU1y6Vu6nZp0WrkabKBnA9De+VsnWP7SPTfV8g0B4UlBkqzWXapfU+IA4kG bw== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3fw2av8pf6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 06 May 2022 11:34:58 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 246BRfrU012987;
-        Fri, 6 May 2022 11:34:56 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03ams.nl.ibm.com with ESMTP id 3ftp7fwdd9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 06 May 2022 11:34:56 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 246BYsfb10223956
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 6 May 2022 11:34:54 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2DEDC52050;
-        Fri,  6 May 2022 11:34:54 +0000 (GMT)
-Received: from sig-9-65-81-120.ibm.com (unknown [9.65.81.120])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 7979F5204F;
-        Fri,  6 May 2022 11:34:53 +0000 (GMT)
-Message-ID: <e223929f4fbbfcba51b8cc9dda6a07ace12f5dd8.camel@linux.ibm.com>
-Subject: Re: [PATCH v9 6/7] ima: support fs-verity file digest based version
- 3 signatures
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Stefan Berger <stefanb@linux.ibm.com>,
-        linux-integrity@vger.kernel.org
-Cc:     Eric Biggers <ebiggers@kernel.org>, linux-fscrypt@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 06 May 2022 07:34:52 -0400
-In-Reply-To: <ae5889bc-f5aa-6d0a-fdce-81819a15d22c@linux.ibm.com>
-References: <20220505123141.1599622-1-zohar@linux.ibm.com>
-         <20220505123141.1599622-7-zohar@linux.ibm.com>
-         <ae5889bc-f5aa-6d0a-fdce-81819a15d22c@linux.ibm.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-18.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: wZzEGnpUmiC3DEU-_QzHN1fbud1kxZT-
-X-Proofpoint-ORIG-GUID: wZzEGnpUmiC3DEU-_QzHN1fbud1kxZT-
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
- definitions=2022-05-06_04,2022-05-06_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- bulkscore=0 phishscore=0 suspectscore=0 mlxlogscore=758 adultscore=0
- mlxscore=0 clxscore=1015 spamscore=0 malwarescore=0 impostorscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2202240000 definitions=main-2205060064
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 6 May 2022 17:26:44 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 425136339A
+        for <linux-fscrypt@vger.kernel.org>; Fri,  6 May 2022 14:23:00 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id j4so14599063lfh.8
+        for <linux-fscrypt@vger.kernel.org>; Fri, 06 May 2022 14:23:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qxpYk/i1uMx/9W+J+m0qdABTnqS48FNlgI8p4QJG9kg=;
+        b=krrUKq7r9Ve/PfbbgWMQe08vgB7gzJafF4FAvb8xdfkMWPV87Dm7kmN/XGQTHHnaCE
+         02aP+pLoB/UW9KxGP9N8mg6lodgHOBnkJ6Dkrjp6hqrGu3cRShXzqTVGYEM1WfrpkRVD
+         AMdev99Vk9jW+HwRlkU+J9+77s3iaJNkrtDZnbR+5HUF5A8ZLF5WV9FPWV4RmmgeAFPA
+         228SnlwQBDRP4gEeYWoPwIxSptMj9ZWPCnrA96CCc97SKQWg72d4lC1m095yVo8Jdk3h
+         n4XtRJC0euV2An3UWY8MTXMQAHC44kkhW1rUXmoNCtOuT/heAtJJRJ0oZHOiBL8yKnoe
+         dlXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qxpYk/i1uMx/9W+J+m0qdABTnqS48FNlgI8p4QJG9kg=;
+        b=z8xDfa4AN0kdiU6iA+dBf5KkJ3LtO3mfpNrlNhdOmavmrmujlHtMUVBa0madtFjsyH
+         hzJXiZqMFDeprbhu/tPLpXiFnoca5LjPWbX7dtOG+ob6cGfxheW+xDVJIyZ9Y0tD3fM+
+         JgoFQ7gHdABVIKpGz4r5c/PHIeWeAEHO4OBs5xaQsLTHHYwwfEuqjo6nlwnowG15pzCQ
+         PHQ5zLceBUnnJEHtdR/ngVJctqy89vC6U4P9bItGTKhpcHg7lL9c2STylKv76iPD04AL
+         4NDYOAWA+mXTudZnVbLcImGsBKC4dkGj94KdB9dBhS7SFWNETLiz+a5axnvMJi3FcsV3
+         8llg==
+X-Gm-Message-State: AOAM533B+s1g1Gs7WOtAdiCx3eMqhdXV4ujurdg0vVt+0h/arINs7bKB
+        8tJ7cLocZ7bsahkA898tc3m6G6l4SJUij8mss/3lKlmVg+Q=
+X-Google-Smtp-Source: ABdhPJwtWl922lDNxtpgcPRbGCEUkm78yi8gsQd7xUwx2Ap9G/Q4F/o+IH1eKspy4pPQBMYDUeGtCUHBahsYZet3EtY=
+X-Received: by 2002:a05:6512:1051:b0:473:b70c:941a with SMTP id
+ c17-20020a056512105100b00473b70c941amr3894879lfb.238.1651872178383; Fri, 06
+ May 2022 14:22:58 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220504001823.2483834-1-nhuck@google.com> <20220504001823.2483834-7-nhuck@google.com>
+ <YnS07JPEoeFlsRAQ@sol.localdomain>
+In-Reply-To: <YnS07JPEoeFlsRAQ@sol.localdomain>
+From:   Nathan Huckleberry <nhuck@google.com>
+Date:   Fri, 6 May 2022 16:22:46 -0500
+Message-ID: <CAJkfWY4U9C3nAhZH+3Gt-hit9=8SHaCt5vX9ocPjYeABGMr_Mg@mail.gmail.com>
+Subject: Re: [PATCH v6 6/9] crypto: arm64/aes-xctr: Improve readability of
+ XCTR and CTR modes
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-crypto@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-arm-kernel@lists.infradead.org,
+        Paul Crowley <paulcrowley@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, 2022-05-05 at 13:12 -0400, Stefan Berger wrote:
-> 
-> On 5/5/22 08:31, Mimi Zohar wrote:
-> > IMA may verify a file's integrity against a "good" value stored in the
-> > 'security.ima' xattr or as an appended signature, based on policy.  When
-> > the "good value" is stored in the xattr, the xattr may contain a file
-> > hash or signature.  In either case, the "good" value is preceded by a
-> > header.  The first byte of the xattr header indicates the type of data
-> > - hash, signature - stored in the xattr.  To support storing fs-verity
-> > signatures in the 'security.ima' xattr requires further differentiating
-> > the fs-verity signature from the existing IMA signature.
-> > 
-> > In addition the signatures stored in 'security.ima' xattr, need to be
-> > disambiguated.  Instead of directly signing the fs-verity digest, a new
-> > signature format version 3 is defined as the hash of the ima_file_id
-> > structure, which identifies the type of signature and the digest.
-> > 
-> > The IMA policy defines "which" files are to be measured, verified, and/or
-> > audited.  For those files being verified, the policy rules indicate "how"
-> > the file should be verified.  For example to require a file be signed,
-> > the appraise policy rule must include the 'appraise_type' option.
-> > 
-> > 	appraise_type:= [imasig] | [imasig|modsig] | [sigv3]
-> >             where 'imasig' is the original or signature format v2 (default),
-> >             where 'modsig' is an appended signature,
-> >             where 'sigv3' is the signature format v3.
-> > 
-> > The policy rule must also indicate the type of digest, if not the IMA
-> > default, by first specifying the digest type:
-> > 
-> > 	digest_type:= [verity]
-> > 
-> > The following policy rule requires fsverity signatures.  The rule may be
-> > constrained, for example based on a fsuuid or LSM label.
-> > 
-> >        appraise func=BPRM_CHECK digest_type=verity appraise_type=sigv3
-> > 
-> > Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
-> 
-> Acked-by: Stefan Berger <stefanb@linux.ibm.com>
+On Fri, May 6, 2022 at 12:41 AM Eric Biggers <ebiggers@kernel.org> wrote:
+>
+> On Wed, May 04, 2022 at 12:18:20AM +0000, Nathan Huckleberry wrote:
+> > Added some clarifying comments, changed the register allocations to make
+> > the code clearer, and added register aliases.
+> >
+> > Signed-off-by: Nathan Huckleberry <nhuck@google.com>
+>
+> I was a bit surprised to see this after the xctr support patch rather than
+> before.  Doing the cleanup first would make adding and reviewing the xctr
+> support easier.  But it's not a big deal; if you already tested it this way you
+> can just leave it as-is if you want.
+>
+> A few minor comments below.
+>
+> > +     /*
+> > +      * Set up the counter values in v0-v4.
+> > +      *
+> > +      * If we are encrypting less than MAX_STRIDE blocks, the tail block
+> > +      * handling code expects the last keystream block to be in v4.  For
+> > +      * example: if encrypting two blocks with MAX_STRIDE=5, then v3 and v4
+> > +      * should have the next two counter blocks.
+> > +      */
+>
+> The first two mentions of v4 should actually be v{MAX_STRIDE-1}, as it is
+> actually v4 for MAX_STRIDE==5 and v3 for MAX_STRIDE==4.
+>
+> > @@ -355,16 +383,16 @@ AES_FUNC_END(aes_cbc_cts_decrypt)
+> >       mov             v3.16b, vctr.16b
+> >  ST5( mov             v4.16b, vctr.16b                )
+> >       .if \xctr
+> > -             sub             x6, x11, #MAX_STRIDE - 1
+> > -             sub             x7, x11, #MAX_STRIDE - 2
+> > -             sub             x8, x11, #MAX_STRIDE - 3
+> > -             sub             x9, x11, #MAX_STRIDE - 4
+> > -ST5(         sub             x10, x11, #MAX_STRIDE - 5       )
+> > -             eor             x6, x6, x12
+> > -             eor             x7, x7, x12
+> > -             eor             x8, x8, x12
+> > -             eor             x9, x9, x12
+> > -             eor             x10, x10, x12
+> > +             sub             x6, CTR, #MAX_STRIDE - 1
+> > +             sub             x7, CTR, #MAX_STRIDE - 2
+> > +             sub             x8, CTR, #MAX_STRIDE - 3
+> > +             sub             x9, CTR, #MAX_STRIDE - 4
+> > +ST5(         sub             x10, CTR, #MAX_STRIDE - 5       )
+> > +             eor             x6, x6, IV_PART
+> > +             eor             x7, x7, IV_PART
+> > +             eor             x8, x8, IV_PART
+> > +             eor             x9, x9, IV_PART
+> > +             eor             x10, x10, IV_PART
+>
+> The eor into x10 should be enclosed by ST5(), since it's dead code otherwise.
+>
+> > +     /*
+> > +      * If there are at least MAX_STRIDE blocks left, XOR the plaintext with
+> > +      * keystream and store.  Otherwise jump to tail handling.
+> > +      */
+>
+> Technically this could be XOR-ing with either the plaintext or the ciphertext.
+> Maybe write "data" instead.
+>
+> >  .Lctrtail1x\xctr:
+> > -     sub             x7, x6, #16
+> > -     csel            x6, x6, x7, eq
+> > -     add             x1, x1, x6
+> > -     add             x0, x0, x6
+> > -     ld1             {v5.16b}, [x1]
+> > -     ld1             {v6.16b}, [x0]
+> > +     /*
+> > +      * Handle <= 16 bytes of plaintext
+> > +      */
+> > +     sub             x8, x7, #16
+> > +     csel            x7, x7, x8, eq
+> > +     add             IN, IN, x7
+> > +     add             OUT, OUT, x7
+> > +     ld1             {v5.16b}, [IN]
+> > +     ld1             {v6.16b}, [OUT]
+> >  ST5( mov             v3.16b, v4.16b                  )
+> >       encrypt_block   v3, w3, x2, x8, w7
+>
+> w3 and x2 should be ROUNDS_W and KEY, respectively.
+>
+> This code also has the very unusual property that it reads and writes before the
+> buffers given.  Specifically, for bytes < 16, it access the 16 bytes beginning
+> at &in[bytes - 16] and &dst[bytes - 16].  Mentioning this explicitly would be
+> very helpful, particularly in the function comments for aes_ctr_encrypt() and
+> aes_xctr_encrypt(), and maybe in the C code, so that anyone calling these
+> functions has this in mind.
 
-Thanks, Stefan!
+If bytes < 16, then the C code uses a buffer of 16 bytes to avoid
+this. I'll add some comments explaining that because its not entirely
+clear what is happening in the C unless you've taken a deep dive into
+the asm.
 
-This patch set is now queued in the next-integrity-testing branch,
-waiting additional review/tags. 
-
-thanks,
-
-Mimi
-
+>
+> Anyway, with the above addressed feel free to add:
+>
+>         Reviewed-by: Eric Biggers <ebiggers@google.com>
+>
+> - Eric
