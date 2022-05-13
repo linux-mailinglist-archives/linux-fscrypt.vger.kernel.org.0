@@ -2,50 +2,52 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66DBF526D7D
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 14 May 2022 01:23:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 764A3526D88
+	for <lists+linux-fscrypt@lfdr.de>; Sat, 14 May 2022 01:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231236AbiEMXXh (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 13 May 2022 19:23:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34360 "EHLO
+        id S229603AbiEMXf6 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 13 May 2022 19:35:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229704AbiEMXX3 (ORCPT
+        with ESMTP id S229543AbiEMXf5 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 13 May 2022 19:23:29 -0400
+        Fri, 13 May 2022 19:35:57 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 485A42FDA14;
-        Fri, 13 May 2022 16:20:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D07533327D3;
+        Fri, 13 May 2022 16:26:03 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 72471617E2;
-        Fri, 13 May 2022 23:20:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A04CFC34119;
-        Fri, 13 May 2022 23:20:56 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5C6D761776;
+        Fri, 13 May 2022 23:26:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65764C34113;
+        Fri, 13 May 2022 23:26:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652484056;
-        bh=5M/AZsC8gJLP8HFVo/AGzWoR7VyDQEAa1r6XJg17fJE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nBkGJ+jTPn1NfvTN0PGMha6IDJgbcGKh0m9rtJZ3KB71/1QIMddlyvbm2nTpQEKou
-         YC9QgCZu75rOyw9JieGTFp9HE22DK5RnzOiEZp94UcwE+YrJKrYdvn1uUC7GKiYgAP
-         sA+MOjPNUTM/F+q4vVip2idiw/v3t0XQ5Ge3ypoc7/TmSSNxwYPtj6KfGv3waAUPD7
-         s5rF6utZjnHPVlyGOv5kwa2s8K8lUW+rSTq7Iqgp447Y5RmEyZeusYSHA/qSOlbzOI
-         /nK+VAXo4yfE4Ouh4iY1z1IiWI0DPptR/ivziccPYM8+q6TbQSUevLTRHPxrgfbxBF
-         rJN/TAG1ue4ZA==
+        s=k20201202; t=1652484362;
+        bh=VEmygfrCHywucMVMmgrfbT8EmWJSME+dfPPcFKelPLA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=W1mydoCEeLrq4kdzHWmgByH7V3mGFRclrb3BjOdic8VR5jWGxXziLNZl0SgG/Tl4R
+         9mI2Glau7zwC2K5uGiBtp4Mb1NBqhBoOlmdLy246xlRvDD0SrIU6ncQEahqS9ngvYc
+         W5s/wrmQnTo/gTsbBuFXQpO6mslc2ElfmP1a/SW6UuuX+wy0lvQ8+1ByQn4ivkSx5V
+         0pICcZ2hHbTDheOjaLYiKubqfttI2xjkLT/u+ZJcc6H8JZQNds/qfjjvD/3QHAJeAA
+         KcIee4qgJEz2TwrQCq6cyAUdMy7FTlEbVeUE4r/RDvDM83chiTKERVQLLrpf9ErL/0
+         A5HgYFOZWNbpg==
+Date:   Fri, 13 May 2022 16:26:00 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Cc:     Jeff Layton <jlayton@kernel.org>,
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
         Lukas Czerner <lczerner@redhat.com>,
-        Theodore Ts'o <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [PATCH v3 5/5] fscrypt: remove fscrypt_set_test_dummy_encryption()
-Date:   Fri, 13 May 2022 16:16:05 -0700
-Message-Id: <20220513231605.175121-6-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <20220513231605.175121-1-ebiggers@kernel.org>
-References: <20220513231605.175121-1-ebiggers@kernel.org>
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: Re: [PATCH v2 0/7] test_dummy_encryption fixes and cleanups
+Message-ID: <Yn7pCEVAq0V4pcp7@sol.localdomain>
+References: <20220501050857.538984-1-ebiggers@kernel.org>
+ <Yn6zJR2peMo5hIcF@mit.edu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Yn6zJR2peMo5hIcF@mit.edu>
 X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -56,55 +58,28 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On Fri, May 13, 2022 at 03:36:05PM -0400, Theodore Ts'o wrote:
+> On Sat, Apr 30, 2022 at 10:08:50PM -0700, Eric Biggers wrote:
+> > We can either take all these patches through the fscrypt tree, or we can
+> > take them in multiple cycles as follows:
+> > 
+> >     1. patch 1 via ext4, patch 2 via f2fs, patch 3-4 via fscrypt
+> >     2. patch 5 via ext4, patch 6 via f2fs
+> >     3. patch 7 via fscrypt
+> > 
+> > Ted and Jaegeuk, let me know what you prefer.
+> 
+> In order to avoid patch conflicts with other patch series, what I'd
+> prefer is to take them in multiple cycles.  I can take patch #1 in my
+> initial pull request to Linus, and then do a second pull request to
+> Linus with patch #5 post -rc1 or -rc2 (depending on when patches #3
+> and #4 hit Linus's tree).
+> 
+> Does that sound good?
 
-Now that all its callers have been converted to
-fscrypt_parse_test_dummy_encryption() and fscrypt_add_test_dummy_key()
-instead, fscrypt_set_test_dummy_encryption() can be removed.
+That basically sounds fine.  I've just sent out v3 of this series, with the fix
+for the memory leak in parse_apply_sb_mount_options() as its own patch.  That
+patch can be applied now too, so you can take patches 1-2 of the v3 series in
+your initial pull request.
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/crypto/policy.c      | 13 -------------
- include/linux/fscrypt.h |  2 --
- 2 files changed, 15 deletions(-)
-
-diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
-index 5f858cee1e3b0..d0a8921577def 100644
---- a/fs/crypto/policy.c
-+++ b/fs/crypto/policy.c
-@@ -802,19 +802,6 @@ bool fscrypt_dummy_policies_equal(const struct fscrypt_dummy_policy *p1,
- }
- EXPORT_SYMBOL_GPL(fscrypt_dummy_policies_equal);
- 
--/* Deprecated, do not use */
--int fscrypt_set_test_dummy_encryption(struct super_block *sb, const char *arg,
--				      struct fscrypt_dummy_policy *dummy_policy)
--{
--	struct fs_parameter param = {
--		.type = fs_value_is_string,
--		.string = arg ? (char *)arg : "",
--	};
--	return fscrypt_parse_test_dummy_encryption(&param, dummy_policy) ?:
--		fscrypt_add_test_dummy_key(sb, dummy_policy);
--}
--EXPORT_SYMBOL_GPL(fscrypt_set_test_dummy_encryption);
--
- /**
-  * fscrypt_show_test_dummy_encryption() - show '-o test_dummy_encryption'
-  * @seq: the seq_file to print the option to
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index 099b881e63e49..11db6d61d4244 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -284,8 +284,6 @@ int fscrypt_parse_test_dummy_encryption(const struct fs_parameter *param,
- 				    struct fscrypt_dummy_policy *dummy_policy);
- bool fscrypt_dummy_policies_equal(const struct fscrypt_dummy_policy *p1,
- 				  const struct fscrypt_dummy_policy *p2);
--int fscrypt_set_test_dummy_encryption(struct super_block *sb, const char *arg,
--				struct fscrypt_dummy_policy *dummy_policy);
- void fscrypt_show_test_dummy_encryption(struct seq_file *seq, char sep,
- 					struct super_block *sb);
- static inline bool
--- 
-2.36.1
-
+- Eric
