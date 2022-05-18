@@ -2,49 +2,49 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F6B652C11C
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 18 May 2022 19:50:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AB3252C196
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 18 May 2022 19:51:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240948AbiERRhw (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 18 May 2022 13:37:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38766 "EHLO
+        id S240950AbiERRsV (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 18 May 2022 13:48:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240889AbiERRhv (ORCPT
+        with ESMTP id S241006AbiERRsU (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 18 May 2022 13:37:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C2E01DFDAB;
-        Wed, 18 May 2022 10:37:50 -0700 (PDT)
+        Wed, 18 May 2022 13:48:20 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A789D219C1F;
+        Wed, 18 May 2022 10:48:19 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 370816179F;
-        Wed, 18 May 2022 17:37:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79E12C385A5;
-        Wed, 18 May 2022 17:37:49 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 69720B81F31;
+        Wed, 18 May 2022 17:48:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F4F8C385A9;
+        Wed, 18 May 2022 17:48:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652895469;
-        bh=ouxYcnUG3DMG8JeqNw3VUgAtJhJI0XoOf7fkaCI0LwQ=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=HqNq9WAxCpySAAV/YVvRRd3SjO/GXkTzh92RepFUJcStvK/yfKfIN35DFlRvUe+eO
-         oE7LSKVNRQ9Nwm3Ne3CjJ1EGwt7DpByCLZK9SRtNjd+n96qBPgll1jljuRE5c9+KBp
-         5C5d0hjf+oWTfU9MhEfRvEI/sjv+o51bj6+cP0VSmLfYsn9dCSVpZuhSBHFgIbLqQK
-         QtQ7jw9nZRd8i2LoeCOqyrofAqEl11zUBnJg01m7CGlWh4cXFgWugKIVaS8+XcA8pX
-         fklUIlr1W9XprcQw6yIkPLLmtLB7C8zJsOLFRDMybEeKcDWftg7e1Wv0HmT/5V/i7C
-         UO1pPqx/neGGw==
-Date:   Wed, 18 May 2022 10:37:47 -0700
+        s=k20201202; t=1652896097;
+        bh=XnOSY/YWP/OcJnztugs91qjWrXuN8mOlfPqK9qsZjd0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ie3JiPoAx1hbI3cG/vRTzx2XlMNlsoEGVcxmuEY2S3MqzNQ5wERZ6TIsmcYfQb5le
+         vd1Hu/CInDcejHu01Fwfq9iC795FjQKIz9OXYareDzgcURmHvh2IZuUElUBBamYeDI
+         VPV2K+EnuEG8ppBWZ6XE1CXtQ3qAtYdK5eNhjzHtJJVnZuDmG5JGROD33YkWgnhBy9
+         NHAWV++vvXKXzXxNVJ29xBBypCrgj6QlsVEypachZ09KY3HJuv0gcUu0EhnndgB8pj
+         BZsCbtTha6jWoRFo/C4sRYohCqoFRLVfkRcVZ/EkowTx3HH+MJC7dlPv8+5Ax9V9iL
+         kV1YktTGLyKvg==
+Date:   Wed, 18 May 2022 10:48:15 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-ext4@vger.kernel.org
-Subject: Re: [xfstests PATCH 0/2] update test_dummy_encryption testing in
- ext4/053
-Message-ID: <YoUu60S2AjP2fEOk@sol.localdomain>
-References: <20220501051928.540278-1-ebiggers@kernel.org>
- <20220518141911.zg73znk2o2krxxwk@zlang-mailbox>
+To:     Zhang Jianhua <chris.zjh@huawei.com>
+Cc:     tytso@mit.edu, linux-fscrypt@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] fs-verity: Use struct_size() helper in
+ fsverity_ioctl_measure()
+Message-ID: <YoUxX7iDBczYwGHC@sol.localdomain>
+References: <20220518093829.2248801-1-chris.zjh@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220518141911.zg73znk2o2krxxwk@zlang-mailbox>
+In-Reply-To: <20220518093829.2248801-1-chris.zjh@huawei.com>
 X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -55,41 +55,52 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, May 18, 2022 at 10:19:11PM +0800, Zorro Lang wrote:
-> On Sat, Apr 30, 2022 at 10:19:26PM -0700, Eric Biggers wrote:
-> > This series updates the testing of the test_dummy_encryption mount
-> > option in ext4/053.
-> > 
-> > The first patch will be needed for the test to pass if the kernel patch
-> > "ext4: only allow test_dummy_encryption when supported"
-> > (https://lore.kernel.org/r/20220501050857.538984-2-ebiggers@kernel.org)
-> > is applied.
-> > 
-> > The second patch starts testing a case that previously wasn't tested.
-> > It reproduces a bug that was introduced in the v5.17 kernel and will
-> > be fixed by the kernel patch
-> > "ext4: fix up test_dummy_encryption handling for new mount API"
-> > (https://lore.kernel.org/r/20220501050857.538984-6-ebiggers@kernel.org).
-> > 
-> > This applies on top of my recent patch
-> > "ext4/053: fix the rejected mount option testing"
-> > (https://lore.kernel.org/r/20220430192130.131842-1-ebiggers@kernel.org).
+On Wed, May 18, 2022 at 05:38:29PM +0800, Zhang Jianhua wrote:
+> Make use of the struct_size() helper instead of an open-coded version,
+> in order to avoid any potential type mistakes or integer overflows that,
+> in the worst scenario, could lead to heap overflows.
 > 
-> Hi Eric,
+> Also, address the following sparse warnings:
+> fs/verity/measure.c:48:9: warning: using sizeof on a flexible structure
+> fs/verity/measure.c:52:38: warning: using sizeof on a flexible structure
 > 
-> Your "ext4/053: fix the rejected mount option testing" has been merged. As the
-> two kernel patches haven't been merged by upstream linux, I'd like to merge
-> this patchset after the kernel patches be merged. (feel free to ping me, if
-> I forget this:)
+> Signed-off-by: Zhang Jianhua <chris.zjh@huawei.com>
+> ---
+>  fs/verity/measure.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/verity/measure.c b/fs/verity/measure.c
+> index e99c00350c28..4a388116d0de 100644
+> --- a/fs/verity/measure.c
+> +++ b/fs/verity/measure.c
+> @@ -27,6 +27,7 @@ int fsverity_ioctl_measure(struct file *filp, void __user *_uarg)
+>  	const struct fsverity_info *vi;
+>  	const struct fsverity_hash_alg *hash_alg;
+>  	struct fsverity_digest arg;
+> +	size_t arg_size = struct_size(&arg, digest, 0);
+>  
+>  	vi = fsverity_get_info(inode);
+>  	if (!vi)
+> @@ -44,11 +45,11 @@ int fsverity_ioctl_measure(struct file *filp, void __user *_uarg)
+>  	if (arg.digest_size < hash_alg->digest_size)
+>  		return -EOVERFLOW;
+>  
+> -	memset(&arg, 0, sizeof(arg));
+> +	memset(&arg, 0, arg_size);
+>  	arg.digest_algorithm = hash_alg - fsverity_hash_algs;
+>  	arg.digest_size = hash_alg->digest_size;
+>  
+> -	if (copy_to_user(uarg, &arg, sizeof(arg)))
+> +	if (copy_to_user(uarg, &arg, arg_size))
+>  		return -EFAULT;
 
-Yes, I'm waiting for them to be applied.
+'arg' is just a stack variable that doesn't use the flexible array field.  So
+this change on its own is pretty pointless and just obfuscates the code.
 
-> 
-> And I saw some discussion under this patchset, and no any RVB, so I'm wondering
-> if you are still working/changing on it?
-> 
-
-I might add a check for kernel version >= 5.19 in patch 1.  Otherwise I'm not
-planning any more changes.
+If it's nevertheless worth it to get rid of the sparse warning, to make the
+wider codebase clean of this class of warning, we could still do it anyway.  But
+please make the commit message correctly say that the purpose is just to
+eliminate the sparse warning, and don't incorrectly claim that the code "could
+lead to heap overflows".
 
 - Eric
