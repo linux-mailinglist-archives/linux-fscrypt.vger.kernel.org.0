@@ -2,42 +2,78 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1E0A52BCA1
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 18 May 2022 16:17:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1245E52BDCC
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 18 May 2022 17:25:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237756AbiERNYd (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 18 May 2022 09:24:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41694 "EHLO
+        id S232283AbiEROTX (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 18 May 2022 10:19:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237757AbiERNYb (ORCPT
+        with ESMTP id S237440AbiEROTW (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 18 May 2022 09:24:31 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4475169E0B;
-        Wed, 18 May 2022 06:24:28 -0700 (PDT)
-Received: from canpemm500005.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4L3D9H5JmhzCsmx;
-        Wed, 18 May 2022 21:19:31 +0800 (CST)
-Received: from huawei.com (10.67.174.96) by canpemm500005.china.huawei.com
- (7.192.104.229) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Wed, 18 May
- 2022 21:24:26 +0800
-From:   Zhang Jianhua <chris.zjh@huawei.com>
-To:     <ebiggers@kernel.org>, <tytso@mit.edu>
-CC:     <linux-fscrypt@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] fs-verity: remove unused parameter desc_size in fsverity_create_info()
-Date:   Wed, 18 May 2022 21:22:56 +0800
-Message-ID: <20220518132256.2297655-1-chris.zjh@huawei.com>
-X-Mailer: git-send-email 2.31.0
+        Wed, 18 May 2022 10:19:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BA8AF4EDD9
+        for <linux-fscrypt@vger.kernel.org>; Wed, 18 May 2022 07:19:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1652883560;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VfckOg9nc/G1Pfdg8hFEzkjneT+SXrT9/xnBgJMJNjw=;
+        b=BtK6uANpbrKHRfqnQCeAwB4qcpxGo4hFuTl1cepGigKRq59CeLFnbgvF1O74nzEKTP0cJE
+        kEz05Iu01cewQKLbElBBApsP5KrgP6ua6s8T2La9y8HIJwFVqDf8+1XrlfGblb5O1WMqQ0
+        cXlj+Np8DAKdyK/TlSKB9nDIGo7FzNQ=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-218-N8NBGxP2PASkuqv94mdagQ-1; Wed, 18 May 2022 10:19:18 -0400
+X-MC-Unique: N8NBGxP2PASkuqv94mdagQ-1
+Received: by mail-qk1-f197.google.com with SMTP id x191-20020a3763c8000000b0069fb66f3901so1658965qkb.12
+        for <linux-fscrypt@vger.kernel.org>; Wed, 18 May 2022 07:19:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=VfckOg9nc/G1Pfdg8hFEzkjneT+SXrT9/xnBgJMJNjw=;
+        b=JwzqMwdNtfqr5Tp+WTi73q+vHHLvnM5ZumAUNl/U++7PbrF4rhVmItbis5r3b1D7cs
+         CORwOi5umA9ISC2bBIDQmrsE0nblWxpBFvEnWA9ITEWL1ybBA23xvJld7Oqj6psWUN4F
+         Qz2FJCuD95M3Z9oTr8XxyhFEIVa974F6wpkCQaXHxoLqGbjeV/sJG8Z1zxgRk8gSDSC1
+         mV2EH2UfUxJgd9cxaokRrnHRkK7Ea67a2ADIPUktkyAnypdE6JbuomAbiCovTs/blYpn
+         pUlU2majUia4kxSsADqvJ2SU1cxuY+odYY14CR63qeEPJSkPOVrRQWabRz5cshvx1ffP
+         oTZQ==
+X-Gm-Message-State: AOAM531HNVNaYpP0Amn7AaTHV2e52dBEJcZ2vUNyNxbmA6aed7XGSrMP
+        4Wmhdot28dV7UonFd72PPPNo1X+fJ0JxnBYklNoWAAHoy1zYj0SztHN34VXTpPVdsooH3C4Ws71
+        2l7Lvk104KWZX5FOB4FVE6uuPfA==
+X-Received: by 2002:a05:620a:400f:b0:6a0:5a16:69f3 with SMTP id h15-20020a05620a400f00b006a05a1669f3mr20337006qko.103.1652883557916;
+        Wed, 18 May 2022 07:19:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJylKGmaR4h+fKRUx8ZDF0bpMUiS7wkjGXnxRlpZU9EGGNOWc9WDXcuIvIad24ACm2E8HEwu0A==
+X-Received: by 2002:a05:620a:400f:b0:6a0:5a16:69f3 with SMTP id h15-20020a05620a400f00b006a05a1669f3mr20336985qko.103.1652883557661;
+        Wed, 18 May 2022 07:19:17 -0700 (PDT)
+Received: from zlang-mailbox ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id s62-20020a372c41000000b0069fc13ce1e9sm1560424qkh.26.2022.05.18.07.19.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 May 2022 07:19:17 -0700 (PDT)
+Date:   Wed, 18 May 2022 22:19:11 +0800
+From:   Zorro Lang <zlang@redhat.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-ext4@vger.kernel.org
+Subject: Re: [xfstests PATCH 0/2] update test_dummy_encryption testing in
+ ext4/053
+Message-ID: <20220518141911.zg73znk2o2krxxwk@zlang-mailbox>
+Mail-Followup-To: Eric Biggers <ebiggers@kernel.org>,
+        fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-ext4@vger.kernel.org
+References: <20220501051928.540278-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.174.96]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500005.china.huawei.com (7.192.104.229)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220501051928.540278-1-ebiggers@kernel.org>
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -45,137 +81,47 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-The parameter desc_size in fsverity_create_info() is useless and it is
-not referenced anywhere. The greatest meaning of desc_size here is to
-indecate the size of struct fsverity_descriptor and futher calculate the
-size of signature. However, the desc->sig_size can do it also and it is
-indeed, so remove it.
+On Sat, Apr 30, 2022 at 10:19:26PM -0700, Eric Biggers wrote:
+> This series updates the testing of the test_dummy_encryption mount
+> option in ext4/053.
+> 
+> The first patch will be needed for the test to pass if the kernel patch
+> "ext4: only allow test_dummy_encryption when supported"
+> (https://lore.kernel.org/r/20220501050857.538984-2-ebiggers@kernel.org)
+> is applied.
+> 
+> The second patch starts testing a case that previously wasn't tested.
+> It reproduces a bug that was introduced in the v5.17 kernel and will
+> be fixed by the kernel patch
+> "ext4: fix up test_dummy_encryption handling for new mount API"
+> (https://lore.kernel.org/r/20220501050857.538984-6-ebiggers@kernel.org).
+> 
+> This applies on top of my recent patch
+> "ext4/053: fix the rejected mount option testing"
+> (https://lore.kernel.org/r/20220430192130.131842-1-ebiggers@kernel.org).
 
-Therefore, it is no need to acquire desc_size by fsverity_get_descriptor()
-in ensure_verity_info(), so remove the parameter desc_ret in
-fsverity_get_descriptor() too.
+Hi Eric,
 
-Signed-off-by: Zhang Jianhua <chris.zjh@huawei.com>
----
- fs/verity/enable.c           |  2 +-
- fs/verity/fsverity_private.h |  6 ++----
- fs/verity/open.c             | 12 ++++--------
- fs/verity/read_metadata.c    |  5 ++---
- 4 files changed, 9 insertions(+), 16 deletions(-)
+Your "ext4/053: fix the rejected mount option testing" has been merged. As the
+two kernel patches haven't been merged by upstream linux, I'd like to merge
+this patchset after the kernel patches be merged. (feel free to ping me, if
+I forget this:)
 
-diff --git a/fs/verity/enable.c b/fs/verity/enable.c
-index 075dc0aa5416..df6b499bf6a1 100644
---- a/fs/verity/enable.c
-+++ b/fs/verity/enable.c
-@@ -280,7 +280,7 @@ static int enable_verity(struct file *filp,
- 	 * from disk.  This is simpler, and it serves as an extra check that the
- 	 * metadata we're writing is valid before actually enabling verity.
- 	 */
--	vi = fsverity_create_info(inode, desc, desc_size);
-+	vi = fsverity_create_info(inode, desc);
- 	if (IS_ERR(vi)) {
- 		err = PTR_ERR(vi);
- 		goto rollback;
-diff --git a/fs/verity/fsverity_private.h b/fs/verity/fsverity_private.h
-index c6fb62e0ef1a..629785c95007 100644
---- a/fs/verity/fsverity_private.h
-+++ b/fs/verity/fsverity_private.h
-@@ -115,16 +115,14 @@ int fsverity_init_merkle_tree_params(struct merkle_tree_params *params,
- 				     const u8 *salt, size_t salt_size);
- 
- struct fsverity_info *fsverity_create_info(const struct inode *inode,
--					   struct fsverity_descriptor *desc,
--					   size_t desc_size);
-+					   struct fsverity_descriptor *desc);
- 
- void fsverity_set_info(struct inode *inode, struct fsverity_info *vi);
- 
- void fsverity_free_info(struct fsverity_info *vi);
- 
- int fsverity_get_descriptor(struct inode *inode,
--			    struct fsverity_descriptor **desc_ret,
--			    size_t *desc_size_ret);
-+			    struct fsverity_descriptor **desc_ret);
- 
- int __init fsverity_init_info_cache(void);
- void __init fsverity_exit_info_cache(void);
-diff --git a/fs/verity/open.c b/fs/verity/open.c
-index 92df87f5fa38..81ff94442f7b 100644
---- a/fs/verity/open.c
-+++ b/fs/verity/open.c
-@@ -147,8 +147,7 @@ static int compute_file_digest(struct fsverity_hash_alg *hash_alg,
-  * fsverity_descriptor must have already undergone basic validation.
-  */
- struct fsverity_info *fsverity_create_info(const struct inode *inode,
--					   struct fsverity_descriptor *desc,
--					   size_t desc_size)
-+					   struct fsverity_descriptor *desc)
- {
- 	struct fsverity_info *vi;
- 	int err;
-@@ -264,8 +263,7 @@ static bool validate_fsverity_descriptor(struct inode *inode,
-  * the filesystem, and do basic validation of it.
-  */
- int fsverity_get_descriptor(struct inode *inode,
--			    struct fsverity_descriptor **desc_ret,
--			    size_t *desc_size_ret)
-+			    struct fsverity_descriptor **desc_ret)
- {
- 	int res;
- 	struct fsverity_descriptor *desc;
-@@ -297,7 +295,6 @@ int fsverity_get_descriptor(struct inode *inode,
- 	}
- 
- 	*desc_ret = desc;
--	*desc_size_ret = res;
- 	return 0;
- }
- 
-@@ -306,17 +303,16 @@ static int ensure_verity_info(struct inode *inode)
- {
- 	struct fsverity_info *vi = fsverity_get_info(inode);
- 	struct fsverity_descriptor *desc;
--	size_t desc_size;
- 	int err;
- 
- 	if (vi)
- 		return 0;
- 
--	err = fsverity_get_descriptor(inode, &desc, &desc_size);
-+	err = fsverity_get_descriptor(inode, &desc);
- 	if (err)
- 		return err;
- 
--	vi = fsverity_create_info(inode, desc, desc_size);
-+	vi = fsverity_create_info(inode, desc);
- 	if (IS_ERR(vi)) {
- 		err = PTR_ERR(vi);
- 		goto out_free_desc;
-diff --git a/fs/verity/read_metadata.c b/fs/verity/read_metadata.c
-index 7e2d0c7bdf0d..6ee849dc7bc1 100644
---- a/fs/verity/read_metadata.c
-+++ b/fs/verity/read_metadata.c
-@@ -101,7 +101,7 @@ static int fsverity_read_descriptor(struct inode *inode,
- 	size_t desc_size;
- 	int res;
- 
--	res = fsverity_get_descriptor(inode, &desc, &desc_size);
-+	res = fsverity_get_descriptor(inode, &desc);
- 	if (res)
- 		return res;
- 
-@@ -119,10 +119,9 @@ static int fsverity_read_signature(struct inode *inode,
- 				   void __user *buf, u64 offset, int length)
- {
- 	struct fsverity_descriptor *desc;
--	size_t desc_size;
- 	int res;
- 
--	res = fsverity_get_descriptor(inode, &desc, &desc_size);
-+	res = fsverity_get_descriptor(inode, &desc);
- 	if (res)
- 		return res;
- 
--- 
-2.31.0
+And I saw some discussion under this patchset, and no any RVB, so I'm wondering
+if you are still working/changing on it?
+
+Thanks,
+Zorro
+
+> 
+> Eric Biggers (2):
+>   ext4/053: update the test_dummy_encryption tests
+>   ext4/053: test changing test_dummy_encryption on remount
+> 
+>  tests/ext4/053 | 38 ++++++++++++++++++++++++--------------
+>  1 file changed, 24 insertions(+), 14 deletions(-)
+> 
+> -- 
+> 2.36.0
+> 
 
