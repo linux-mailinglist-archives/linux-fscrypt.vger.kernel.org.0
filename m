@@ -2,41 +2,51 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B333E52C9C8
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 19 May 2022 04:29:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4822552C9FC
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 19 May 2022 05:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232860AbiESC3X (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 18 May 2022 22:29:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59372 "EHLO
+        id S233052AbiESDGK (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 18 May 2022 23:06:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbiESC3X (ORCPT
+        with ESMTP id S233049AbiESDGJ (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 18 May 2022 22:29:23 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA4F4C6E74;
-        Wed, 18 May 2022 19:29:21 -0700 (PDT)
-Received: from canpemm500005.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4L3Yg13b1RzgYCM;
-        Thu, 19 May 2022 10:27:57 +0800 (CST)
-Received: from huawei.com (10.67.174.96) by canpemm500005.china.huawei.com
- (7.192.104.229) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Thu, 19 May
- 2022 10:29:19 +0800
-From:   Zhang Jianhua <chris.zjh@huawei.com>
-To:     <ebiggers@kernel.org>, <tytso@mit.edu>
-CC:     <linux-fscrypt@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next v2] fs-verity: Use struct_size() helper in fsverity_ioctl_measure()
-Date:   Thu, 19 May 2022 10:27:49 +0800
-Message-ID: <20220519022749.2435114-1-chris.zjh@huawei.com>
-X-Mailer: git-send-email 2.31.0
+        Wed, 18 May 2022 23:06:09 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1456B3CFEE;
+        Wed, 18 May 2022 20:06:07 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BF0616190E;
+        Thu, 19 May 2022 03:06:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1E6BC385A5;
+        Thu, 19 May 2022 03:06:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1652929566;
+        bh=9qOFUq/lpbubY4Pgg4LomrYbZgcFce8ILsuHL2uzdII=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ixqcTcwA1w3QGsa/sk11i4rBPAlGlqHe6ktmLVbib0LWYumcp2whX96lrLfL5VC9l
+         /JoBjtxhevuXQTq7cUmAhF/9OY8FqQCPx0SRakFwpX337p7nfNkZrx/Wbf6OOwqK42
+         Smo1YLswuM7fFz6XG4kC9tgtnz6j3qWxB/6kzlfJ/NnXus2z2MOlUrjavxBl8jqbn1
+         9lS4H9pWMgx5shhdQfpesaOH6oWrqm6pr9fPrF8o9wVc0cer2M+ti6WCxZB7Zm0nD7
+         HSpPrHSuT72w91qt/6E4id0VE+ADR7xA+AbdGW8hyxsfoEoiMGjXOIqxZcq8D5PLuQ
+         E5Gz5BXOUpfpA==
+Date:   Wed, 18 May 2022 20:06:04 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Zhang Jianhua <chris.zjh@huawei.com>
+Cc:     tytso@mit.edu, linux-fscrypt@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next v2] fs-verity: Use struct_size() helper in
+ enable_verity()
+Message-ID: <YoW0HG+Nbg681yWL@sol.localdomain>
+References: <20220519022450.2434483-1-chris.zjh@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.174.96]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500005.china.huawei.com (7.192.104.229)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220519022450.2434483-1-chris.zjh@huawei.com>
+X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -45,47 +55,27 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Make use of the struct_size() to calculate the size of struct
-fsverity_digest instead of an open-coded version, in order to
-get rid of the sparse warnings about flexible structure.
+On Thu, May 19, 2022 at 10:24:50AM +0800, Zhang Jianhua wrote:
+> Also, address the following sparse warning:
+> fs/verity/enable.c:205:28: warning: using sizeof on a flexible structure
 
-As reported by sparse:
-fs/verity/measure.c:48:9: warning: using sizeof on a flexible structure
-fs/verity/measure.c:52:38: warning: using sizeof on a flexible structure
+How can I reproduce this warning?  I am using the latest version of sparse, and
+I don't see any of these warnings you're reporting.
 
-Signed-off-by: Zhang Jianhua <chris.zjh@huawei.com>
----
-v2:
-- change the commit message from bugfix to cleanup
- fs/verity/measure.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+$ sparse --version
+v0.6.4
+$ make C=2 fs/verity/
+  CHECK   scripts/mod/empty.c
+  CALL    scripts/checksyscalls.sh
+  CALL    scripts/atomic/check-atomics.sh
+  DESCEND objtool
+  CHECK   fs/verity/enable.c
+  CHECK   fs/verity/hash_algs.c
+  CHECK   fs/verity/init.c
+  CHECK   fs/verity/measure.c
+  CHECK   fs/verity/open.c
+  CHECK   fs/verity/read_metadata.c
+  CHECK   fs/verity/verify.c
+  CHECK   fs/verity/signature.c
 
-diff --git a/fs/verity/measure.c b/fs/verity/measure.c
-index e99c00350c28..4a388116d0de 100644
---- a/fs/verity/measure.c
-+++ b/fs/verity/measure.c
-@@ -27,6 +27,7 @@ int fsverity_ioctl_measure(struct file *filp, void __user *_uarg)
- 	const struct fsverity_info *vi;
- 	const struct fsverity_hash_alg *hash_alg;
- 	struct fsverity_digest arg;
-+	size_t arg_size = struct_size(&arg, digest, 0);
- 
- 	vi = fsverity_get_info(inode);
- 	if (!vi)
-@@ -44,11 +45,11 @@ int fsverity_ioctl_measure(struct file *filp, void __user *_uarg)
- 	if (arg.digest_size < hash_alg->digest_size)
- 		return -EOVERFLOW;
- 
--	memset(&arg, 0, sizeof(arg));
-+	memset(&arg, 0, arg_size);
- 	arg.digest_algorithm = hash_alg - fsverity_hash_algs;
- 	arg.digest_size = hash_alg->digest_size;
- 
--	if (copy_to_user(uarg, &arg, sizeof(arg)))
-+	if (copy_to_user(uarg, &arg, arg_size))
- 		return -EFAULT;
- 
- 	if (copy_to_user(uarg->digest, vi->file_digest, hash_alg->digest_size))
--- 
-2.31.0
-
+- Eric
