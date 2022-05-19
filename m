@@ -2,87 +2,58 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B39A552CBDE
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 19 May 2022 08:22:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 484FF52CC6D
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 19 May 2022 09:05:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231694AbiESGWr (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 19 May 2022 02:22:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35592 "EHLO
+        id S229963AbiESHFa (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 19 May 2022 03:05:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229654AbiESGWq (ORCPT
+        with ESMTP id S232578AbiESHF0 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 19 May 2022 02:22:46 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EB0F2719;
-        Wed, 18 May 2022 23:22:44 -0700 (PDT)
-Received: from canpemm500005.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4L3frH6TCfz1JCPG;
-        Thu, 19 May 2022 14:21:19 +0800 (CST)
-Received: from [10.67.110.73] (10.67.110.73) by canpemm500005.china.huawei.com
- (7.192.104.229) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Thu, 19 May
- 2022 14:22:42 +0800
-Message-ID: <6ef6905f-563d-2361-36fb-d6f56a5d6353@huawei.com>
-Date:   Thu, 19 May 2022 14:22:41 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH -next v2] fs-verity: Use struct_size() helper in
- enable_verity()
+        Thu, 19 May 2022 03:05:26 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5D4DBA540;
+        Thu, 19 May 2022 00:05:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=M7NmYC/Iylm9myghHwqILim55SAUt9QrM+UZYk0eJlw=; b=Y8eCw9I+3GvyTeVsRu3iF7t/os
+        G5K0v/pABcPNYA/V0ySZ5E9fkOtBGPudPc7DriUmkcsyHFP8EsG9WxdN9TewBjWVOWV10Jxsbf/UN
+        Kf3GgIakz9FIVHnUru632fnhkjetHZQYyPHNbFFyQ7cAMakjsZLeTkuapE48frmxWX2ocElecbgnJ
+        JAZYj+qxEJPzjib8lR5dFxutcI0flYsVohHR/3ID1f0UiX+dAPFmPTCf4eqqurs0hfQvWqpQvlPRS
+        16P3nvlTZBXQnBV4/y+ZgZ+hbxzxdE1V5qysznl2OlcRjhL3slS9C/QSVMbKHfsEdm7X7Iazzwm5z
+        u4uWYH6g==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nraDs-005QR0-D6; Thu, 19 May 2022 07:05:24 +0000
+Date:   Thu, 19 May 2022 00:05:24 -0700
+From:   Christoph Hellwig <hch@infradead.org>
 To:     Eric Biggers <ebiggers@kernel.org>
-CC:     <tytso@mit.edu>, <linux-fscrypt@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20220519022450.2434483-1-chris.zjh@huawei.com>
- <YoW0HG+Nbg681yWL@sol.localdomain> <YoW25wrIAiRVifMi@sol.localdomain>
- <e030eaf6-0b6b-7685-c5b6-fd0b57aea600@huawei.com>
- <YoXGEckfSNWKj2oT@sol.localdomain>
-From:   "zhangjianhua (E)" <chris.zjh@huawei.com>
-In-Reply-To: <YoXGEckfSNWKj2oT@sol.localdomain>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.110.73]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500005.china.huawei.com (7.192.104.229)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Keith Busch <kbusch@kernel.org>
+Subject: Re: [RFC PATCH v2 1/7] statx: add I/O alignment information
+Message-ID: <YoXsNDG/WMbCzz0x@infradead.org>
+References: <20220518235011.153058-1-ebiggers@kernel.org>
+ <20220518235011.153058-2-ebiggers@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220518235011.153058-2-ebiggers@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Thanks, I will do more work about sparse and maybe find some answers.
+Looks good:
 
-
-Zhang Jianhua
-
-在 2022/5/19 12:22, Eric Biggers 写道:
-> [Please use reply all, not just reply!]
->
-> On Thu, May 19, 2022 at 11:54:48AM +0800, zhangjianhua (E) wrote:
->> Hi Eric
->>
->> The warnings in commit message are from the build log in Jan 2022, and I
->> find these sizeof are still here, so I submit
->>
->> these two patches. I build the kernel just now and encounter the same
->> situation with you, there are lots of warnings.
->>
->> Maybe you are right, there should be some mechanism to solve this problem
->> completely.
->>
->>
-> I've updated the commit message and applied this patch, but not the other one,
-> as the other one wasn't actually dealing with a variable length which made it
-> pretty much pointless, as I mentioned.
->
-> If you'd like to look into making sparse enable this warning by default, I'd
-> certainly encourage you to do so.  But it looks like the warning itself could
-> use some more work.  It probably should only warn if the
-> sizeof(struct_with_flexible_array) is actually being added to another value, and
-> where that value is not a compile-time constant.
->
-> - Eric
-> .
+Reviewed-by: Christoph Hellwig <hch@lst.de>
