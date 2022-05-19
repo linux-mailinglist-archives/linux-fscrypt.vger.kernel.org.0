@@ -2,95 +2,77 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE5CE52D0FB
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 19 May 2022 12:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FF0D52D152
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 19 May 2022 13:22:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237099AbiESK6z (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 19 May 2022 06:58:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42586 "EHLO
+        id S233730AbiESLWF (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 19 May 2022 07:22:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237160AbiESK6q (ORCPT
+        with ESMTP id S232529AbiESLWE (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 19 May 2022 06:58:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 073F0B227A
-        for <linux-fscrypt@vger.kernel.org>; Thu, 19 May 2022 03:58:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1652957921;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=l4wUUc7LmhfljuyY0/HuRTpgr8VwARyFTE0ZQnyAXeU=;
-        b=MkuV/IMadFUfHk97qccvxG+zOsiEtqnJ0RWby4ZpzjUP7uMHdZ/QQjWhJwhCQivJMjrK53
-        a2MwxlJmA174ugKARAoByddVLqI9MaH4VjuyWKP7A8LWNUKTjNiz0aBoOsV9cM7X48Gxpd
-        yGjzs1Gm7WsMMEtvTL0WEdCwUYgWIjk=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-397-v_nr2-cqP2Guf3nFSjys4Q-1; Thu, 19 May 2022 06:58:38 -0400
-X-MC-Unique: v_nr2-cqP2Guf3nFSjys4Q-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Thu, 19 May 2022 07:22:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A55833EB9F;
+        Thu, 19 May 2022 04:22:02 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9AADA802A5B;
-        Thu, 19 May 2022 10:58:37 +0000 (UTC)
-Received: from fedora (unknown [10.40.193.239])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C9D6B2026D6A;
-        Thu, 19 May 2022 10:58:36 +0000 (UTC)
-Date:   Thu, 19 May 2022 12:58:34 +0200
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-ext4@vger.kernel.org
-Subject: Re: [xfstests PATCH 0/2] update test_dummy_encryption testing in
- ext4/053
-Message-ID: <20220519105834.4pypxwawqwjmlcmx@fedora>
-References: <20220501051928.540278-1-ebiggers@kernel.org>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4158D61B0D;
+        Thu, 19 May 2022 11:22:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9174DC385AA;
+        Thu, 19 May 2022 11:21:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1652959321;
+        bh=OpQI0301bWKKD5nOghoC8VBmzm7rsdH32HysVf1NgqQ=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=joaBZKKdAHTEjqvAoAOxSj2x2qw/RlDsQlHgwb8F91MctQyRr5JZQQR4JUh2/WSV/
+         +hGhW+wwum9hhtP/yJHdrZIxKRyLJ5qcFqD4b7lKEKOY70hBsVUTDVTHSLkgp/D0SJ
+         7hqlcRAW7YVPB83BCvXH5t+HNA50ksFlIeCWCM353Ox2tm3lh0tDVlG3GGXaOiO3wh
+         ofWl8To4gJUwGaEJMck4r/4ELsNRb3HGvrte+OIcTLXnGGXwYg7fPwhhm9jlwmE7Lw
+         etghlQB/YGn88nMObuYVJx+MPYFhJS0chFB+D+qX2pr7EV4PjPVgcTGRrQ/AflL8MX
+         fL4xTvFSDaWlw==
+Message-ID: <5c9b94f4-28f4-9f3c-8cc7-b0b09270b91a@kernel.org>
+Date:   Thu, 19 May 2022 19:21:56 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220501051928.540278-1-ebiggers@kernel.org>
-X-Scanned-By: MIMEDefang 2.78 on 10.11.54.4
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [f2fs-dev] [PATCH v3 4/5] f2fs: use the updated
+ test_dummy_encryption helper functions
+Content-Language: en-US
+To:     Eric Biggers <ebiggers@kernel.org>, linux-fscrypt@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
+Cc:     Lukas Czerner <lczerner@redhat.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>
+References: <20220513231605.175121-1-ebiggers@kernel.org>
+ <20220513231605.175121-5-ebiggers@kernel.org>
+From:   Chao Yu <chao@kernel.org>
+In-Reply-To: <20220513231605.175121-5-ebiggers@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Sat, Apr 30, 2022 at 10:19:26PM -0700, Eric Biggers wrote:
-> This series updates the testing of the test_dummy_encryption mount
-> option in ext4/053.
+On 2022/5/14 7:16, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> The first patch will be needed for the test to pass if the kernel patch
-> "ext4: only allow test_dummy_encryption when supported"
-> (https://lore.kernel.org/r/20220501050857.538984-2-ebiggers@kernel.org)
-> is applied.
+> Switch f2fs over to the functions that are replacing
+> fscrypt_set_test_dummy_encryption().  Since f2fs hasn't been converted
+> to the new mount API yet, this doesn't really provide a benefit for
+> f2fs.  But it allows fscrypt_set_test_dummy_encryption() to be removed.
 > 
-> The second patch starts testing a case that previously wasn't tested.
-> It reproduces a bug that was introduced in the v5.17 kernel and will
-> be fixed by the kernel patch
-> "ext4: fix up test_dummy_encryption handling for new mount API"
-> (https://lore.kernel.org/r/20220501050857.538984-6-ebiggers@kernel.org).
+> Also take the opportunity to eliminate an #ifdef.
 > 
-> This applies on top of my recent patch
-> "ext4/053: fix the rejected mount option testing"
-> (https://lore.kernel.org/r/20220430192130.131842-1-ebiggers@kernel.org).
-> 
-> Eric Biggers (2):
->   ext4/053: update the test_dummy_encryption tests
->   ext4/053: test changing test_dummy_encryption on remount
-> 
->  tests/ext4/053 | 38 ++++++++++++++++++++++++--------------
->  1 file changed, 24 insertions(+), 14 deletions(-)
-> 
-> -- 
-> 2.36.0
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-The series looks good to me, you can add
+Reviewed-by: Chao Yu <chao@kernel.org>
 
-Reviewed-by: Lukas Czerner <lczerner@redhat.com>
-
+Thanks,
