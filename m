@@ -2,48 +2,52 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B0652DAA4
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 19 May 2022 18:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0833952DABB
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 19 May 2022 18:57:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239364AbiESQwT (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 19 May 2022 12:52:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47608 "EHLO
+        id S229505AbiESQ5T (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 19 May 2022 12:57:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236304AbiESQwS (ORCPT
+        with ESMTP id S238895AbiESQ5R (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 19 May 2022 12:52:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BC9C5BD2B
-        for <linux-fscrypt@vger.kernel.org>; Thu, 19 May 2022 09:52:17 -0700 (PDT)
+        Thu, 19 May 2022 12:57:17 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A1858721F;
+        Thu, 19 May 2022 09:57:16 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8ED0660F76
-        for <linux-fscrypt@vger.kernel.org>; Thu, 19 May 2022 16:52:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2473C385AA;
-        Thu, 19 May 2022 16:52:15 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 17456B82740;
+        Thu, 19 May 2022 16:57:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 943CDC385AA;
+        Thu, 19 May 2022 16:57:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652979136;
-        bh=22hHy9EdQdbFc2O76w4qOjBbtLZL6dn2CHBKjFKFfno=;
+        s=k20201202; t=1652979433;
+        bh=VEjdU82/bow48A+cyfYtA8v8UU6wb/m9JAwU69VPaVA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EoURjnQtbZoOFf+2vlsFj+xADwf2FEeYZEh2RyMqm0M+YkBz8Z2mH0LsEzIxaPyiI
-         0nOJUuASw1FfEo5NWkfUeNYS6nNjMCKPWRRfYT6bN19UOeBDExaMej5UWjEO0KtJpK
-         C3vQpgseBBz41Me9cloDDD4djPeTgXHndF3gONx92qoH2+grXzeqle90nohfpADjw9
-         DE2fe36tn+CE5b1vPUXpZJFY60azwwReNURK6SWSOLnx3SC6kaEv08DBFJ7zLacKGm
-         a1rliRqxYvZSWzcr2MpDYQvtzEPpRbRrru1i1PIiz94FhhzWKzUfaNk7Et+AkrBLYl
-         Ler1zl6kZ12QQ==
-Date:   Thu, 19 May 2022 09:52:14 -0700
+        b=crPkALRU6wP+vnTMQkLBC/roxkASG6H7crrHLU7kNs1CK3+W8bqbDlTf9q+q4h5AZ
+         xQ+Ns3/OwbMagiHBiFSMe7AkdSfP5xCdtp1caRlRF2010H0iC3Z6G0SxT54uKL5c5L
+         N+iyaW7zdTbtQJVtnqvj+47XKi3igOo5r9oRkBHq8eYxnb6KbqfqYxToXDY1lYP670
+         WIjOpqcss6/MY8r8FiqwEsdzddgIRlalobRZO85e399emQpy5r6dYpQgrRlXlz/bDs
+         atnZz6+vkvMp1AwUHog4riQrCfzjsvE2krFYH54AWeCpCjRmhEE5E94P1sc9SKr04z
+         0IXMSiKAuE5TA==
+Date:   Thu, 19 May 2022 09:57:12 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     James Simmons <jsimmons@infradead.org>
-Cc:     Andreas Dilger <adilger@whamcloud.com>, NeilBrown <neilb@suse.de>,
-        linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH] fscrypt: allow alternative bounce buffers
-Message-ID: <YoZ1vlUWqX/ZF/iJ@sol.localdomain>
-References: <1652966485-7418-1-git-send-email-jsimmons@infradead.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Zhang Jianhua <chris.zjh@huawei.com>, tytso@mit.edu,
+        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next v2] fs-verity: Use struct_size() helper in
+ enable_verity()
+Message-ID: <YoZ26O3XCK0+7h2Y@sol.localdomain>
+References: <20220519022450.2434483-1-chris.zjh@huawei.com>
+ <YoW0HG+Nbg681yWL@sol.localdomain>
+ <YoW25wrIAiRVifMi@sol.localdomain>
+ <YoYo/XBmqn6KGz5k@hovoldconsulting.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1652966485-7418-1-git-send-email-jsimmons@infradead.org>
+In-Reply-To: <YoYo/XBmqn6KGz5k@hovoldconsulting.com>
 X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -54,67 +58,55 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, May 19, 2022 at 09:21:25AM -0400, James Simmons wrote:
-> Currently fscrypt offers two options. One option is to use the
-> internal bounce buffer allocated or perform inline encrpytion.
-> Add the option to use an external bounce buffer. This change can
-> be used useful for example for a network file systems which can
-> pass in a page from the page cache and place the encrypted data
-> into a page for a network packet to be sent. Another potential
-> use is the use of GPU pages with RDMA being the final destination
-> for the encrypted data. Lastly in performance measurements the
-> allocation of the bounce page incures a heavy cost. Using a page
-> from a predefined memory pool can lower the case. We can replace
-> the one off case of inplace encryption with the new general
-> functions.
+On Thu, May 19, 2022 at 01:24:45PM +0200, Johan Hovold wrote:
+> On Wed, May 18, 2022 at 08:17:59PM -0700, Eric Biggers wrote:
+> > On Wed, May 18, 2022 at 08:06:04PM -0700, Eric Biggers wrote:
+> > > On Thu, May 19, 2022 at 10:24:50AM +0800, Zhang Jianhua wrote:
+> > > > Also, address the following sparse warning:
+> > > > fs/verity/enable.c:205:28: warning: using sizeof on a flexible structure
+> > > 
+> > > How can I reproduce this warning?  I am using the latest version of sparse, and
+> > > I don't see any of these warnings you're reporting.
+> > > 
+> > > $ sparse --version
+> > > v0.6.4
+> > > $ make C=2 fs/verity/
+> > >   CHECK   scripts/mod/empty.c
+> > >   CALL    scripts/checksyscalls.sh
+> > >   CALL    scripts/atomic/check-atomics.sh
+> > >   DESCEND objtool
+> > >   CHECK   fs/verity/enable.c
+> > >   CHECK   fs/verity/hash_algs.c
+> > >   CHECK   fs/verity/init.c
+> > >   CHECK   fs/verity/measure.c
+> > >   CHECK   fs/verity/open.c
+> > >   CHECK   fs/verity/read_metadata.c
+> > >   CHECK   fs/verity/verify.c
+> > >   CHECK   fs/verity/signature.c
+> > > 
+> > 
+> > 'make C=2 CHECK="sparse -Wflexible-array-sizeof"' does the trick.  However, it
+> > produces a *lot* of warnings all over the place.
+> > 
+> > Unless there is an effort to actually address all of these so that this warning
+> > can be enabled by default, I don't see the poinnt in addressing these just for
+> > the warnings sake.  The change to fsverity_ioctl_measure() is definitely just
+> > for the warning's sake, so I don't really want to do that one.  The change to
+> > enable_verity() is a bit less useless, so I could still take that one.
 > 
-> Signed-Off-By: James Simmons <jsimmons@infradead.org>
-> ---
->  fs/crypto/crypto.c      | 34 +++++++++++++++++++---------------
->  fs/ubifs/crypto.c       | 16 +++++++++-------
->  include/linux/fscrypt.h | 31 ++++++++++++++++---------------
->  3 files changed, 44 insertions(+), 37 deletions(-)
+> Importantly, struct_size() still relies on sizeof() so this has zero
+> effect on those sparse warnings.
+> 
 
-Can you send a patch with the user of this at the same time?  This patch isn't
-useful on its own.  UBIFS doesn't count, since it works fine without this.
+Yeah, you're right.  In fact struct_size() generates two warnings, whereas
+directly writing sizeof only generates 1!  So clearly sparse's
+-Wflexible-array-sizeof warning is useless as-is.
 
->  /**
-> - * fscrypt_encrypt_block_inplace() - Encrypt a filesystem block in-place
-> + * fscrypt_encrypt_page() - Cache an encrypt filesystem block in a page
+I'm still keeping this patch, but I updated the commit message to not claim that
+it addresses a sparse warning.  Now it's just:
 
-fscrypt_encrypt_block() would be a better name, to avoid confusion between
-blocks and pages.
+    fs-verity: Use struct_size() helper in enable_verity()
 
-Also, "Cache an encrypt filesystem block" => "Encrypt a filesystem block"
-
->  /**
-> - * fscrypt_decrypt_block_inplace() - Decrypt a filesystem block in-place
-> + * fscrypt_decrypt_page() - Cache a decrypt a filesystem block in a page
-
-Likewise, fscrypt_decrypt_block().
-
->   * @inode:     The inode to which this block belongs
-> - * @page:      The page containing the block to decrypt
-> + * @src:       The page containing the block to decrypt
-> + * @dst:       The page which will contain the plain data
->   * @len:       Size of block to decrypt.  This must be a multiple of
->   *		FSCRYPT_CONTENTS_ALIGNMENT.
->   * @offs:      Byte offset within @page at which the block to decrypt begins
-> @@ -292,17 +295,18 @@ EXPORT_SYMBOL(fscrypt_decrypt_pagecache_blocks);
->   * Decrypt a possibly-compressed filesystem block that is located in an
->   * arbitrary page, not necessarily in the original pagecache page.  The @inode
->   * and @lblk_num must be specified, as they can't be determined from @page.
-> + * The encrypted data will be stored in @dst.
->   *
->   * Return: 0 on success; -errno on failure
->   */
-> -int fscrypt_decrypt_block_inplace(const struct inode *inode, struct page *page,
-> -				  unsigned int len, unsigned int offs,
-> -				  u64 lblk_num)
-> +int fscrypt_decrypt_page(const struct inode *inode, struct page *src,
-> +			 struct page *dst, unsigned int len, unsigned int offs,
-> +			 u64 lblk_num, gfp_t gfp_flags)
-
-The new gfp_flags parameter is not documented in the kerneldoc comment.
+    Follow the best practice for allocating a variable-sized structure.
 
 - Eric
