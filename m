@@ -2,53 +2,48 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A10052C818
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 19 May 2022 01:53:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B480D52C96C
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 19 May 2022 03:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231756AbiERXxj (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 18 May 2022 19:53:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55086 "EHLO
+        id S229566AbiESBun (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 18 May 2022 21:50:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231597AbiERXxf (ORCPT
+        with ESMTP id S232555AbiESBum (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 18 May 2022 19:53:35 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31B999BAFC;
-        Wed, 18 May 2022 16:53:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 463A4B8225C;
-        Wed, 18 May 2022 23:53:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6A28C3411C;
-        Wed, 18 May 2022 23:53:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652918012;
-        bh=mHfaNK/yqtCaO/YT1VZcqJFlQSMjauSczWDdIigQbH4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X9OLn4uN0IO4WyRABB3ByikS4qWBMsqFglNa8PeQ72cZC0adZSBvyLrplspqEtJRX
-         mZxZJWuw2e0+J9G4KOg8g+NuMV3eMDe6MRLVhA2PXNtqgJ/22jaYPwmRJBuar7XPkV
-         BZMEX5DB0YvhDEVWNjqSNgnIYGirlIO+VpWpNzNKoRiCPTwZ013i1D1hEWsq+odUQ0
-         jqK5EGlKizkZblHmj0qlIhshRQvVwH+kkUcnm3PZiENEHBLFjoXOZL42G3moRRaLxh
-         iMIuOcvo/Xjrlh0wnusnqJd4zv9t2f8C4dAh8KR9Ee024Rmn8spgTVzaebA0uQzBKl
-         AGm4vyf4h8/Mg==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-xfs@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>
-Subject: [RFC PATCH v2 7/7] f2fs: support STATX_IOALIGN
-Date:   Wed, 18 May 2022 16:50:11 -0700
-Message-Id: <20220518235011.153058-8-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <20220518235011.153058-1-ebiggers@kernel.org>
-References: <20220518235011.153058-1-ebiggers@kernel.org>
+        Wed, 18 May 2022 21:50:42 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2D311EC64;
+        Wed, 18 May 2022 18:50:40 -0700 (PDT)
+Received: from canpemm500005.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4L3Xmb5Wy9zQkGp;
+        Thu, 19 May 2022 09:47:43 +0800 (CST)
+Received: from [10.67.110.73] (10.67.110.73) by canpemm500005.china.huawei.com
+ (7.192.104.229) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Thu, 19 May
+ 2022 09:50:38 +0800
+Message-ID: <0002ef8b-ebce-4b4b-8597-9687722d4e55@huawei.com>
+Date:   Thu, 19 May 2022 09:50:38 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH -next] fs-verity: Use struct_size() helper in
+ fsverity_ioctl_measure()
+To:     Eric Biggers <ebiggers@kernel.org>
+CC:     <tytso@mit.edu>, <linux-fscrypt@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20220518093829.2248801-1-chris.zjh@huawei.com>
+ <YoUxX7iDBczYwGHC@sol.localdomain>
+From:   "zhangjianhua (E)" <chris.zjh@huawei.com>
+In-Reply-To: <YoUxX7iDBczYwGHC@sol.localdomain>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,SUSPICIOUS_RECIPS,T_SCC_BODY_TEXT_LINE
+X-Originating-IP: [10.67.110.73]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ canpemm500005.china.huawei.com (7.192.104.229)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,65 +51,58 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+Thanks, I will modify the commit message and send the next version.
 
-Add support for STATX_IOALIGN to f2fs, so that I/O alignment information
-is exposed to userspace in a consistent and easy-to-use way.
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/f2fs/file.c | 31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+Zhang Jianhua
 
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index c32f7722ba6b0..f89a190949c59 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -835,6 +835,21 @@ static bool f2fs_force_buffered_io(struct inode *inode)
- 	return false;
- }
- 
-+/* Return the maximum value of io_opt across all the filesystem's devices. */
-+static unsigned int f2fs_max_io_opt(struct inode *inode)
-+{
-+	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
-+	int io_opt = 0;
-+	int i;
-+
-+	if (!f2fs_is_multi_device(sbi))
-+		return bdev_io_opt(sbi->sb->s_bdev);
-+
-+	for (i = 0; i < sbi->s_ndevs; i++)
-+		io_opt = max(io_opt, bdev_io_opt(FDEV(i).bdev));
-+	return io_opt;
-+}
-+
- int f2fs_getattr(struct user_namespace *mnt_userns, const struct path *path,
- 		 struct kstat *stat, u32 request_mask, unsigned int query_flags)
- {
-@@ -851,6 +866,22 @@ int f2fs_getattr(struct user_namespace *mnt_userns, const struct path *path,
- 		stat->btime.tv_nsec = fi->i_crtime.tv_nsec;
- 	}
- 
-+	/*
-+	 * Return the I/O alignment information if requested.  We only return
-+	 * this information when requested, since on encrypted files it might
-+	 * take a fair bit of work to get if the file wasn't opened recently.
-+	 */
-+	if ((request_mask & STATX_IOALIGN) && S_ISREG(inode->i_mode)) {
-+		unsigned int bsize = i_blocksize(inode);
-+
-+		stat->result_mask |= STATX_IOALIGN;
-+		if (!f2fs_force_buffered_io(inode)) {
-+			stat->mem_align_dio = bsize;
-+			stat->offset_align_dio = bsize;
-+		}
-+		stat->offset_align_optimal = max(f2fs_max_io_opt(inode), bsize);
-+	}
-+
- 	flags = fi->i_flags;
- 	if (flags & F2FS_COMPR_FL)
- 		stat->attributes |= STATX_ATTR_COMPRESSED;
--- 
-2.36.1
-
+在 2022/5/19 1:48, Eric Biggers 写道:
+> On Wed, May 18, 2022 at 05:38:29PM +0800, Zhang Jianhua wrote:
+>> Make use of the struct_size() helper instead of an open-coded version,
+>> in order to avoid any potential type mistakes or integer overflows that,
+>> in the worst scenario, could lead to heap overflows.
+>>
+>> Also, address the following sparse warnings:
+>> fs/verity/measure.c:48:9: warning: using sizeof on a flexible structure
+>> fs/verity/measure.c:52:38: warning: using sizeof on a flexible structure
+>>
+>> Signed-off-by: Zhang Jianhua <chris.zjh@huawei.com>
+>> ---
+>>   fs/verity/measure.c | 5 +++--
+>>   1 file changed, 3 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/fs/verity/measure.c b/fs/verity/measure.c
+>> index e99c00350c28..4a388116d0de 100644
+>> --- a/fs/verity/measure.c
+>> +++ b/fs/verity/measure.c
+>> @@ -27,6 +27,7 @@ int fsverity_ioctl_measure(struct file *filp, void __user *_uarg)
+>>   	const struct fsverity_info *vi;
+>>   	const struct fsverity_hash_alg *hash_alg;
+>>   	struct fsverity_digest arg;
+>> +	size_t arg_size = struct_size(&arg, digest, 0);
+>>   
+>>   	vi = fsverity_get_info(inode);
+>>   	if (!vi)
+>> @@ -44,11 +45,11 @@ int fsverity_ioctl_measure(struct file *filp, void __user *_uarg)
+>>   	if (arg.digest_size < hash_alg->digest_size)
+>>   		return -EOVERFLOW;
+>>   
+>> -	memset(&arg, 0, sizeof(arg));
+>> +	memset(&arg, 0, arg_size);
+>>   	arg.digest_algorithm = hash_alg - fsverity_hash_algs;
+>>   	arg.digest_size = hash_alg->digest_size;
+>>   
+>> -	if (copy_to_user(uarg, &arg, sizeof(arg)))
+>> +	if (copy_to_user(uarg, &arg, arg_size))
+>>   		return -EFAULT;
+> 'arg' is just a stack variable that doesn't use the flexible array field.  So
+> this change on its own is pretty pointless and just obfuscates the code.
+>
+> If it's nevertheless worth it to get rid of the sparse warning, to make the
+> wider codebase clean of this class of warning, we could still do it anyway.  But
+> please make the commit message correctly say that the purpose is just to
+> eliminate the sparse warning, and don't incorrectly claim that the code "could
+> lead to heap overflows".
+>
+> - Eric
+> .
