@@ -2,50 +2,53 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9811552C99A
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 19 May 2022 04:09:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81D4052C9A0
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 19 May 2022 04:11:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232696AbiESCJB (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 18 May 2022 22:09:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56346 "EHLO
+        id S232745AbiESCLC (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 18 May 2022 22:11:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232713AbiESCI7 (ORCPT
+        with ESMTP id S232743AbiESCLB (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 18 May 2022 22:08:59 -0400
+        Wed, 18 May 2022 22:11:01 -0400
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52DB13DA47;
-        Wed, 18 May 2022 19:08:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80D0D186EF;
+        Wed, 18 May 2022 19:10:59 -0700 (PDT)
 Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 24J28j3s020022
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 24J2Absr020685
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 May 2022 22:08:46 -0400
+        Wed, 18 May 2022 22:10:38 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1652926127; bh=Sodfua2E8TPyApI5W9tYm1RDjEIUwIZUK14S5DsMn14=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=FN2ddy5+IwQv/r0PUkk8qR11tXDhwX6U30RHCXYJ/quVFOM3DfGSdQ1Tjgrcm2unI
-         /aoiGIr7ZkUYQmnQ7w9OuoVel7p59m9NMdb/QFOu59gNTgKyZLi0iGgXUqTPoisHbI
-         PNv2y7UfodpRq5r51Pf2rSQVr66CXbwlLkZVS5pC4PX0P56DLP1XL1QpZaIoqCjjpt
-         QIEjZX/AIkLVYN3LM7PxXB8xJ4Zx2A7rhIMM2Bgv6XgGLRSpS7TkTfQ2F5r5nzLalm
-         2mWqxbdKW4a9lZ1VJNQ6+k6tUFZ5ea8hlk1MhsmXfazzub4ZpbsUbiNtivdxbshfMO
-         G3VTXJRjbZMOA==
+        t=1652926239; bh=tR13JwUbXXXeiykjLNhK4pqKKdnGUOdKfC+6Atr7Qec=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=KY3MZRCTmd2jkp++r3S74yh8ujOH46dVzROEXMoxhUYCq6YqEsVLiNa9z56gC2bJX
+         12fgbb9hMeavEFfQmzO9FZEqge1/QMMZ4KLrBJQHwtF0qY6SLff4ZctdYz4q1G8WiI
+         WUPRss6ao9UlJIXxLBVxjKqHTO3rYM8bmP6r4gfuXXhblBUHbZ2m+WscMUjoH03biB
+         4HHxTjXPUR0xA1wBvEZmZkuxuMsjc7FI4HwBMcMnzW54ONA3RZn/YTLQjIxT6ZWNKG
+         HjvYP7WCH7HrcY5Z7YAEAiify4VsKjVBlw+bIXSahQiubRkTsxq2sXNvxkdQA2iXYk
+         AOyQNsCLz86TQ==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 6D9C515C3EC0; Wed, 18 May 2022 22:08:45 -0400 (EDT)
+        id 86D8015C3EC0; Wed, 18 May 2022 22:10:37 -0400 (EDT)
+Date:   Wed, 18 May 2022 22:10:37 -0400
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Ritesh Harjani <ritesh.list@gmail.com>, linux-ext4@vger.kernel.org
-Cc:     "Theodore Ts'o" <tytso@mit.edu>,
-        Eric Biggers <ebiggers@kernel.org>,
-        linux-fscrypt@vger.kernel.org, Jan Kara <jack@suse.cz>
-Subject: Re: [PATCHv3 0/3] ext4/crypto: Move out crypto related ops to crypto.c
-Date:   Wed, 18 May 2022 22:08:44 -0400
-Message-Id: <165292603479.1202345.2325254908745666453.b4-ty@mit.edu>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <cover.1652595565.git.ritesh.list@gmail.com>
-References: <cover.1652595565.git.ritesh.list@gmail.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Jeff Layton <jlayton@kernel.org>,
+        Lukas Czerner <lczerner@redhat.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, stable@vger.kernel.org
+Subject: Re: [PATCH v3 1/5] ext4: fix memory leak in
+ parse_apply_sb_mount_options()
+Message-ID: <YoWnHXZSQZA4CL6+@mit.edu>
+References: <20220513231605.175121-1-ebiggers@kernel.org>
+ <20220513231605.175121-2-ebiggers@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220513231605.175121-2-ebiggers@kernel.org>
 X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
         DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
@@ -55,27 +58,28 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Sun, 15 May 2022 12:07:45 +0530, Ritesh Harjani wrote:
-> Please find the v3 of this cleanup series. Thanks to Eric for his quick
-> review of the patch series.
+On Fri, May 13, 2022 at 04:16:01PM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> Description
-> =============
-> This is 1st in the series to cleanup ext4/super.c, since it has grown quite
-> large. This moves out crypto related ops and few fs encryption related
-> definitions to fs/ext4/crypto.c
+> If processing the on-disk mount options fails after any memory was
+> allocated in the ext4_fs_context, e.g. s_qf_names, then this memory is
+> leaked.  Fix this by calling ext4_fc_free() instead of kfree() directly.
 > 
-> [...]
+> Reproducer:
+> 
+>     mkfs.ext4 -F /dev/vdc
+>     tune2fs /dev/vdc -E mount_opts=usrjquota=file
+>     echo clear > /sys/kernel/debug/kmemleak
+>     mount /dev/vdc /vdc
+>     echo scan > /sys/kernel/debug/kmemleak
+>     sleep 5
+>     echo scan > /sys/kernel/debug/kmemleak
+>     cat /sys/kernel/debug/kmemleak
+> 
+> Fixes: 7edfd85b1ffd ("ext4: Completely separate options parsing and sb setup")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-Applied, thanks!
+Thanks, applied.
 
-[1/3] ext4: Move ext4 crypto code to its own file crypto.c
-      commit: ebe541bdc293d4b2511bc4abb640dcddd454e54c
-[2/3] ext4: Cleanup function defs from ext4.h into crypto.c
-      commit: df56bae5a36f891021ea868657ab85f501d85176
-[3/3] ext4: Refactor and move ext4_ioctl_get_encryption_pwsalt()
-      commit: a137c5b48cb48b6c2885eeeec398433a435cf078
-
-Best regards,
--- 
-Theodore Ts'o <tytso@mit.edu>
+					- Ted
