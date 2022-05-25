@@ -2,78 +2,108 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 174A35331F8
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 24 May 2022 21:53:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4AAD534411
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 25 May 2022 21:16:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241117AbiEXTxU (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 24 May 2022 15:53:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43226 "EHLO
+        id S1344089AbiEYTQS (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 25 May 2022 15:16:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241320AbiEXTxP (ORCPT
+        with ESMTP id S1344832AbiEYTPW (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 24 May 2022 15:53:15 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D279463BE5;
-        Tue, 24 May 2022 12:53:14 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B5698616C9;
-        Tue, 24 May 2022 19:53:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 28CFAC36AE5;
-        Tue, 24 May 2022 19:53:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653421994;
-        bh=7vCQf4vTrafHpbFlTVFe9qAPgMyoesliZ7cB5zsfznE=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=l7nVX+XLhiNFzMN0IvOoXAjS2btaJ/At8c3DNT5Wwu8r/LU3IYAD4o7dGumNySCAX
-         25C5LLzWDn+zC7WRnNcfg1JxD/U/kWv9gxLRNAS3Q428K/p3t0Z30qAbz6/mskVsYF
-         lp1lG0lMJh0rq8q7gtbwk93/ODvOPbSduCrWisWx3+/bcoDvyKy/zrsKNZYXZMM96p
-         +vigOT/A2S7qrxwYfK04YcIKzNT2wdTOiIDve+6/ZpVRoKdOSC0QuddJHnPDcGA5Sm
-         0OKOU+a78vQlmQ/YIn1Ckf274wuu2y3k8XACcgCzj2cBfE9GPDy2BnKSmuHIuOaz4d
-         tGu4sK+qXKW+g==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0CD80F03943;
-        Tue, 24 May 2022 19:53:14 +0000 (UTC)
-Subject: Re: [GIT PULL] fscrypt updates for 5.19
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <Yosyx2FYZOIOWs9g@sol.localdomain>
-References: <Yosyx2FYZOIOWs9g@sol.localdomain>
-X-PR-Tracked-List-Id: <linux-ext4.vger.kernel.org>
-X-PR-Tracked-Message-Id: <Yosyx2FYZOIOWs9g@sol.localdomain>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
-X-PR-Tracked-Commit-Id: 218d921b581eadf312c8ef0e09113b111f104eeb
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: c1f4cfdbef409971fd9d6b1faae4d7cc72af3e20
-Message-Id: <165342199404.18932.5994094539908457947.pr-tracker-bot@kernel.org>
-Date:   Tue, 24 May 2022 19:53:14 +0000
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 25 May 2022 15:15:22 -0400
+Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89C4EBDB
+        for <linux-fscrypt@vger.kernel.org>; Wed, 25 May 2022 12:15:15 -0700 (PDT)
+Received: by mail-vk1-xa30.google.com with SMTP id e144so10331559vke.9
+        for <linux-fscrypt@vger.kernel.org>; Wed, 25 May 2022 12:15:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=V3ilouT9genmWgVMdUNI5P/LrIsW5jIirCBfI8vk+4c=;
+        b=VNL84agSPUNMz5ZHn5hB8GKcuYXWF3UmMPWc7Bb+LTV1k24f+olrtYnNlECI/5grU/
+         gJfb9UnvXZhJDQqxsv/dzXgW1bjbq6IyojfmDsYouIZcF/WLojUh+pm2fw627QIhk2g/
+         McEXiBrW7myNWu/lTrZvV8JW18fcv6SsDZ/36tX/pTSJWvCIFih0lZxPpUgHRWNLrUle
+         p51+K/qbZ2PDQN0m49bSNWKknBDBPc4o0UNjJrkblUW7AxjIR7wXBWHyN8I3iTp4HVMq
+         y0q/tTDGDPnjhRXcTELUkXzKa/fVcyoZ9W4DIAPSTdDiTGXbXBGKFL0k9dTRI7X3nIhl
+         +vlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=V3ilouT9genmWgVMdUNI5P/LrIsW5jIirCBfI8vk+4c=;
+        b=jJAaY4mAp109PGqj5dTwCGpSM177+I8z7kOsFAxas0t3JFlBYk5BgtvIboi1OzGHkH
+         gjSRmwNNZSKl75yYaMUwtfecAmjK34k4pDRpUjbjFvBcUbtezzzotGqOwoDX+J2tmHwN
+         YbBSOMbj81YrspDeG0dVEEG6kvLW1hX6M/A9Wp/Z8JHfTQc3AiWTz3rDwAFxRQBFKMdt
+         cAJZ4ZklBwq5CexT2yjmOXJoVMw2oTAvNMTQ5lPaOxyceUZGZ3mXvU8LEjZ76xsXwRux
+         uXWien5l4XmOHtV6RYgAW1Pyy4tIPfWOzjyHlpLKLIw38C/5J8U0dOpzj2CuHRm/2EpM
+         dydg==
+X-Gm-Message-State: AOAM532WeSObp7PX50MsTTCcg4BmV80Z376l16/NsDItpyrD7pFiybKf
+        4k325X15PBBHPtr0wZsMATXPwCthuq0IQqtiCqM=
+X-Google-Smtp-Source: ABdhPJxvbXspaz4zW4ghROwe7mtZm5WXla6DcckQd/HYDwGnn3YvHT4Qg0k+dKQaME7SWYaZN0WbIPCLHXqJnnpri0k=
+X-Received: by 2002:a05:6122:2228:b0:32d:e4e:a79a with SMTP id
+ bb40-20020a056122222800b0032d0e4ea79amr12275696vkb.27.1653506113167; Wed, 25
+ May 2022 12:15:13 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:a59:d484:0:b0:2bc:cae4:6d22 with HTTP; Wed, 25 May 2022
+ 12:15:12 -0700 (PDT)
+From:   Rolf Benra <olfbenra@gmail.com>
+Date:   Wed, 25 May 2022 21:15:12 +0200
+Message-ID: <CA+z==VuwuBBVBk+=-U0t779uO36bFwSsYR6Qwgz2z9Wbkk3iGw@mail.gmail.com>
+Subject: Bitte kontaktaufnahme Erforderlich !!! Please Contact Required !!!
+To:     contact@firstdiamondbk.com
+Cc:     info@firstdiamondbk.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-The pull request you sent on Mon, 23 May 2022 00:07:51 -0700:
+Guten Tag,
 
-> https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
+Ich habe mich nur gefragt, ob Sie meine vorherige E-Mail bekommen
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/c1f4cfdbef409971fd9d6b1faae4d7cc72af3e20
+haben ?
 
-Thank you!
+Ich habe versucht, Sie per E-Mail zu erreichen.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Kommen Sie bitte schnell zu mir zur=C3=BCck, es ist sehr wichtig.
+
+Danke
+
+Rolf Benra
+
+olfbenra@gmail.com
+
+
+
+
+
+
+
+----------------------------------
+
+
+
+
+Good Afternoon,
+
+I was just wondering if you got my Previous E-mail
+have ?
+
+I tried to reach you by E-mail.
+
+Please come back to me quickly, it is very Important.
+
+Thanks
+
+Rolf Benra
+
+olfbenra@gmail.com
