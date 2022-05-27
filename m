@@ -2,54 +2,62 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E08A53531F
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 26 May 2022 20:08:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2861535CDB
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 27 May 2022 11:09:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233452AbiEZSIX (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 26 May 2022 14:08:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59052 "EHLO
+        id S237563AbiE0JGj (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 27 May 2022 05:06:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230133AbiEZSIW (ORCPT
+        with ESMTP id S1351227AbiE0JGB (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 26 May 2022 14:08:22 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57F6DAEE1F;
-        Thu, 26 May 2022 11:08:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Fri, 27 May 2022 05:06:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4FFAF1157E3
+        for <linux-fscrypt@vger.kernel.org>; Fri, 27 May 2022 02:02:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1653642175;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VxSx5WHE/is7ha0Qn9ZHkh6x3/barWbE89a+k35Foho=;
+        b=U1i/CMce/71+Vm99Gn0MUAGioyubgfWkRunDL45mcwWCas/s0RMv9EemQ/PPjNjZHBQN7a
+        TG4ms7S8yfCPS9LP1KHsFT1A4QX324jqJj9UoyA/Yzv/sm/H7FCpZNLFduehWfy7b6PG2n
+        hrwoLGYxr9xbEh2SwzGvsAIzRj+sh88=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-391-NTi_t_sZMdal6y7vIU_a0A-1; Fri, 27 May 2022 05:02:51 -0400
+X-MC-Unique: NTi_t_sZMdal6y7vIU_a0A-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 04D96B821A7;
-        Thu, 26 May 2022 18:08:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DCF6C385A9;
-        Thu, 26 May 2022 18:08:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653588498;
-        bh=E3Ww4J7ex7feyt/PK95NAWt8/v/PhCWPmrrUafnm9i4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YCn2UACqA/DvxyLQatFA9Qe7CW2bCF/79cMUvMAz++b1yU8W5zwMqPMbHoc8lPTST
-         Cz8B3HqWOeGp0iuCp3/O7kLSJ+uacdYpz3Q5wBNF9xPrt4NaG1mMoq6UY5H3yJ+BvB
-         1wvcFPoA2UST2XJm7kStlFmO6RNIfXFy6R8U3stUSU4IovthNRMjEFbh/rNbULEmmt
-         HzStMalQfwFni2ziF/H1xQsXwbQDDPt8hwT3G+UULdF44Xcl8UYVWvyRLR4eB9PlPq
-         Kt4uuuayI0EOnrG4SaRGewAnVAhW9uckttftri6Q/q+HY2ue8BkPHoXtJ1rLJc5EoH
-         fuuH18nRCKeOA==
-Date:   Thu, 26 May 2022 11:08:16 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Lukas Czerner <lczerner@redhat.com>
-Cc:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        linux-fscrypt@vger.kernel.org,
-        Ritesh Harjani <ritesh.list@gmail.com>
-Subject: Re: [PATCH v4] ext4: fix up test_dummy_encryption handling for new
- mount API
-Message-ID: <Yo/CEPx93S0k6TgB@sol.localdomain>
-References: <20220526040412.173025-1-ebiggers@kernel.org>
- <20220526085507.mmxndcypsa756eap@fedora>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BF12E858EEE;
+        Fri, 27 May 2022 09:02:50 +0000 (UTC)
+Received: from oldenburg.str.redhat.com (unknown [10.39.192.71])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 64FE7492C3B;
+        Fri, 27 May 2022 09:02:48 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Keith Busch <kbusch@kernel.org>
+Subject: Re: [RFC PATCH v2 1/7] statx: add I/O alignment information
+References: <20220518235011.153058-1-ebiggers@kernel.org>
+        <20220518235011.153058-2-ebiggers@kernel.org>
+Date:   Fri, 27 May 2022 11:02:46 +0200
+In-Reply-To: <20220518235011.153058-2-ebiggers@kernel.org> (Eric Biggers's
+        message of "Wed, 18 May 2022 16:50:05 -0700")
+Message-ID: <87r14ffivd.fsf@oldenburg.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220526085507.mmxndcypsa756eap@fedora>
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.85 on 10.11.54.9
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,64 +65,31 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-[Please use reply-all, not reply!]
+* Eric Biggers:
 
-On Thu, May 26, 2022 at 10:55:07AM +0200, Lukas Czerner wrote:
-> On Wed, May 25, 2022 at 09:04:12PM -0700, Eric Biggers wrote:
-> > From: Eric Biggers <ebiggers@google.com>
-> > 
-> > Since ext4 was converted to the new mount API, the test_dummy_encryption
-> > mount option isn't being handled entirely correctly, because the needed
-> > fscrypt_set_test_dummy_encryption() helper function combines
-> > parsing/checking/applying into one function.  That doesn't work well
-> > with the new mount API, which split these into separate steps.
-> > 
-> > This was sort of okay anyway, due to the parsing logic that was copied
-> > from fscrypt_set_test_dummy_encryption() into ext4_parse_param(),
-> > combined with an additional check in ext4_check_test_dummy_encryption().
-> > However, these overlooked the case of changing the value of
-> > test_dummy_encryption on remount, which isn't allowed but ext4 wasn't
-> > detecting until ext4_apply_options() when it's too late to fail.
-> > Another bug is that if test_dummy_encryption was specified multiple
-> > times with an argument, memory was leaked.
-> > 
-> > Fix this up properly by using the new helper functions that allow
-> > splitting up the parse/check/apply steps for test_dummy_encryption.
-> > 
-> > Fixes: cebe85d570cf ("ext4: switch to the new mount api")
-> > Signed-off-by: Eric Biggers <ebiggers@google.com>
-> > ---
-> 
-> Hi, thanks for the patch it looks good, exept maybe small consideration
-> below...
-> 
-> > @@ -2673,11 +2656,11 @@ static int ext4_check_quota_consistency(struct fs_context *fc,
-> >  static int ext4_check_test_dummy_encryption(const struct fs_context *fc,
-> >  					    struct super_block *sb)
-> >  {
-> > -#ifdef CONFIG_FS_ENCRYPTION
-> >  	const struct ext4_fs_context *ctx = fc->fs_private;
-> >  	const struct ext4_sb_info *sbi = EXT4_SB(sb);
-> > +	int err;
-> >  
-> > -	if (!(ctx->spec & EXT4_SPEC_DUMMY_ENCRYPTION))
-> > +	if (!fscrypt_is_dummy_policy_set(&ctx->dummy_enc_policy))
-> 
-> how about
-> 
-> 	if (!fscrypt_is_dummy_policy_set(&ctx->dummy_enc_policy) ||
-> 	    fscrypt_dummy_policies_equal(&sbi->s_dummy_enc_policy,
-> 					 &ctx->dummy_enc_policy))
-> 		return 0;
-> 
-> and remove the two fscrypt_dummy_policies_equal checks below?
-> 
-> But regardless whether you want to change it, you can add
-> 
-> Reviewed-by: Lukas Czerner <lczerner@redhat.com>
-> 
+> diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
+> index 1500a0f58041a..f822b23e81091 100644
+> --- a/include/uapi/linux/stat.h
+> +++ b/include/uapi/linux/stat.h
+> @@ -124,9 +124,13 @@ struct statx {
+>  	__u32	stx_dev_minor;
+>  	/* 0x90 */
+>  	__u64	stx_mnt_id;
+> -	__u64	__spare2;
+> +	__u32	stx_mem_align_dio;	/* Memory buffer alignment for direct I/O */
+> +	__u32	stx_offset_align_dio;	/* File offset alignment for direct I/O */
+>  	/* 0xa0 */
+> -	__u64	__spare3[12];	/* Spare space for future expansion */
+> +	__u32	stx_offset_align_optimal; /* Optimal file offset alignment for I/O */
+> +	__u32	__spare2;
+> +	/* 0xa8 */
+> +	__u64	__spare3[11];	/* Spare space for future expansion */
+>  	/* 0x100 */
+>  };
 
-That would work, but I think the code I've proposed makes it a little more
-explicit what's going on.
+Are 32 bits enough?  Would it make sense to store the base-2 logarithm
+instead?
 
-- Eric
+Thanks,
+Florian
+
