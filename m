@@ -2,76 +2,97 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A63C4536389
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 27 May 2022 15:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF83E5365E4
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 27 May 2022 18:23:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343620AbiE0NuA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 27 May 2022 09:50:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33170 "EHLO
+        id S1348987AbiE0QW6 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 27 May 2022 12:22:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352688AbiE0Nt7 (ORCPT
+        with ESMTP id S232903AbiE0QW5 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 27 May 2022 09:49:59 -0400
-X-Greylist: delayed 9598 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 27 May 2022 06:49:56 PDT
-Received: from mail.composit.net (mail.composit.net [195.49.185.119])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 242A443AE7
-        for <linux-fscrypt@vger.kernel.org>; Fri, 27 May 2022 06:49:56 -0700 (PDT)
-Received: from mail.composit.net (localhost.localdomain [127.0.0.1])
-        by mail.composit.net (Proxmox) with ESMTP id A5B9F38CAD6;
-        Fri, 27 May 2022 14:06:03 +0300 (MSK)
-Received: from mail.composit.net (mail.industrial-flow.com [192.168.101.14])
-        by mail.composit.net (Proxmox) with SMTP id 637653843F6;
-        Fri, 27 May 2022 14:06:03 +0300 (MSK)
-Received: from [192.168.1.105] (Unknown [197.234.219.23])
-        by mail.composit.net with ESMTPSA
-        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256)
-        ; Fri, 27 May 2022 14:06:04 +0300
-Message-ID: <EC65C503-A7AF-40C5-A101-9222148921CB@mail.composit.net>
-Content-Type: text/plain; charset="iso-8859-1"
+        Fri, 27 May 2022 12:22:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B043C403C6;
+        Fri, 27 May 2022 09:22:56 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4CD0E61DDB;
+        Fri, 27 May 2022 16:22:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99ED1C385A9;
+        Fri, 27 May 2022 16:22:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1653668575;
+        bh=8XAC02Xg3Py4hds1HUWlnnOVkjDum3hK8PsY6LQ/M1I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nbanzFw6hk+ZxmKvBYBHJvrevsjnL/H+zkSXoD9fxEqQWa7YQ/GM2r6J2flebnNPk
+         NPe+mNUtTNeKCCPHpf61gVNd7xWNTcyonFkBcaeqXmsOROx2Ap0VSGkpyGvAJurXaJ
+         5ajqSsKilEN0lvcbMrGl0mLjavEHF4KFROBKRTL2fVZsqYOy5Zzvi56y3UKk8c6TXn
+         L6BQzUAinNqQ0mKfP7nt6aqyxJT9lbnXadeQhxBkRQRKxxjgLiIzD9tfJGcqEM4P+B
+         GAlP947kLR30hrfGsg9aVcc34w4x2YXwmE8rlgwV+ki8cEbsPdRfrkMTujtXO1bTzb
+         lT0LXL87H+JvQ==
+Date:   Fri, 27 May 2022 09:22:54 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-xfs@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>
+Subject: Re: [RFC PATCH v2 1/7] statx: add I/O alignment information
+Message-ID: <YpD63ocQmmgpZVrd@magnolia>
+References: <20220518235011.153058-1-ebiggers@kernel.org>
+ <20220518235011.153058-2-ebiggers@kernel.org>
+ <87r14ffivd.fsf@oldenburg.str.redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Greetings From Ukraine.  
-To:     Recipients <heiss@dnet.it>
-From:   "Kostiantyn Chichkov" <heiss@dnet.it>
-Date:   Fri, 27 May 2022 12:05:46 +0100
-Reply-To: kostiantync@online.ee
-X-Spam-Status: Yes, score=5.1 required=5.0 tests=BAYES_50,
-        RCVD_IN_BL_SPAMCOP_NET,RCVD_IN_SBL,RCVD_IN_SORBS_WEB,
-        RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: *  1.3 RCVD_IN_BL_SPAMCOP_NET RBL: Received via a relay in
-        *      bl.spamcop.net
-        *      [Blocked - see <https://www.spamcop.net/bl.shtml?195.49.185.119>]
-        *  1.5 RCVD_IN_SORBS_WEB RBL: SORBS: sender is an abusable web server
-        *      [197.234.219.23 listed in dnsbl.sorbs.net]
-        *  0.1 RCVD_IN_SBL RBL: Received via a relay in Spamhaus SBL
-        *      [197.234.219.23 listed in zen.spamhaus.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.0 SPF_NONE SPF: sender does not publish an SPF Record
-        *  1.3 RCVD_IN_VALIDITY_RPBL RBL: Relay in Validity RPBL,
-        *      https://senderscore.org/blocklistlookup/
-        *      [195.49.185.119 listed in bl.score.senderscore.com]
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-X-Spam-Level: *****
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87r14ffivd.fsf@oldenburg.str.redhat.com>
+X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Good Morning,
+On Fri, May 27, 2022 at 11:02:46AM +0200, Florian Weimer wrote:
+> * Eric Biggers:
+> 
+> > diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
+> > index 1500a0f58041a..f822b23e81091 100644
+> > --- a/include/uapi/linux/stat.h
+> > +++ b/include/uapi/linux/stat.h
+> > @@ -124,9 +124,13 @@ struct statx {
+> >  	__u32	stx_dev_minor;
+> >  	/* 0x90 */
+> >  	__u64	stx_mnt_id;
+> > -	__u64	__spare2;
+> > +	__u32	stx_mem_align_dio;	/* Memory buffer alignment for direct I/O */
+> > +	__u32	stx_offset_align_dio;	/* File offset alignment for direct I/O */
+> >  	/* 0xa0 */
+> > -	__u64	__spare3[12];	/* Spare space for future expansion */
+> > +	__u32	stx_offset_align_optimal; /* Optimal file offset alignment for I/O */
+> > +	__u32	__spare2;
+> > +	/* 0xa8 */
+> > +	__u64	__spare3[11];	/* Spare space for future expansion */
+> >  	/* 0x100 */
+> >  };
+> 
+> Are 32 bits enough?  Would it make sense to store the base-2 logarithm
+> instead?
 
-We are Kostiantyn Chychkov and Maryna Chudnovska from Ukraine, we need your service, we have gone through your profile and we will like to work with you on an important service that needs urgent attention due to the ongoing war in our country. Kindly acknowledge this inquiry as soon as possible for a detailed discussion about the service.
+I don't think a log2 will work here, XFS will want to report things like
+raid stripe sizes, which can be any multiple of the fs blocksize.
 
-Thank you.
+32 bits is probably enough, seeing as the kernel won't do an IO larger
+than 2GB anyway.
 
-Yours expectantly,
+--D
 
-Kostiantyn Chichkov & Ms. Maryna Chudnovska,
-From Ukraine.
-
-
+> Thanks,
+> Florian
+> 
