@@ -2,129 +2,71 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBDF653FA70
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  7 Jun 2022 11:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EF0C54281C
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  8 Jun 2022 09:48:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238256AbiFGJz1 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 7 Jun 2022 05:55:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36246 "EHLO
+        id S233471AbiFHHdS (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 8 Jun 2022 03:33:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240371AbiFGJy4 (ORCPT
+        with ESMTP id S240323AbiFHG3q (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 7 Jun 2022 05:54:56 -0400
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 915F9D2444;
-        Tue,  7 Jun 2022 02:54:53 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 29B4632009B2;
-        Tue,  7 Jun 2022 05:54:50 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Tue, 07 Jun 2022 05:54:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
-        :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm2; t=1654595689; x=1654682089; bh=Hpeb2D3TKQ
-        4H2hp9llZjHy9pjNtHqPGHYAg6yQDNXIM=; b=QgVq+0Cts//N9rzEk3Gar9CVtB
-        Yu4kH/02B1QZNThE6M/E6U/ZI+kearWw63G8XfbiZwn2LxOiCmEJkh4FYZrOm0gN
-        mcl4qAAm3c4ceVrN4Mqs97tbpyo2I2toh15olHfdZWcHsdB+DpnQIGqvftnaxHCg
-        qrmBzHJ6jPHRcZ6nmz1oC72Tx1Zlcc2LqsHUUjwpiDR3h3EewyNC5R6G63OTfFTS
-        iJUc7ERBZDf2JNcXtCfdCH1pwAKRLC2eTXHiol3Crcag4d8GMn4VqJM6ajkMshUR
-        HcaEz1IVsWjyqmjMp/t6kEY3CLzZiX14MV9fubWvGPZHorwzvOPHj3CmqvoA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; t=1654595689; x=1654682089; bh=Hpeb2D3TKQ4H2hp9llZjHy9pjNtH
-        qPGHYAg6yQDNXIM=; b=brhkbWnJQ3j0sGy328RgcklyTrNtBW22+700mu6rspgF
-        bBnLCgicsvVC51aOPX95zUsGsSAFUuROE5dfk4Tt3Pu99UVVV7WsD3XZcPhuMxGs
-        ntXVzpNafOtHHd1TmI3/qa9pEJdocCj87HDu6FSOnX1H4cdqTSGXU+Tdfd159+iG
-        DI0rDe2qYyQWP4sIG4D7OZukGRI1juzngL7lU3tAeWEPpIrosDB2KzfsfBl+zYZ1
-        G4MDuQWFfh+5+2hfS2vsn07NA8jJLtkmESf9PtlCfHMR4vgTU5BvXuJ2eLZsBTLe
-        tXrcD/5qxZfEU5bmMY9fTpD6Zos/M6qNKN5Yut8NYA==
-X-ME-Sender: <xms:aSCfYmQ1Tojaru80ntpwzXkeQBsruepS8u9pmiajNcNUSMbnn4cnEA>
-    <xme:aSCfYryvaoX8vAPJ7M-de9VUxFouc7FDClEtgC4AhGY0KOGHH0I05DAN3E7xuxtW0
-    JBhmL8SxpHjlQ>
-X-ME-Received: <xmr:aSCfYj0TAKmHtru_apxnwAzf7LXeFQPtZrreQ1_6gwO5UeMBgTA-fyilOinK>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedruddthedgvdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
-    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepgeehue
-    ehgfdtledutdelkeefgeejteegieekheefudeiffdvudeffeelvedttddvnecuffhomhgr
-    ihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:aSCfYiBrcO2sav_m2mSMHK2uhspP32DxZLWInanrhrO8Lk9hJCkC7w>
-    <xmx:aSCfYvgg4NYfmkSSlxfQcUswwpYPjhLjnFr24I3uF3UNuxKwx7LpTw>
-    <xmx:aSCfYup1k9DfVw5V84bV_EMIXGkh_rt9PPgwqPeztZD7YeHBuAkXwA>
-    <xmx:aSCfYkbh8M9J5ZZtiAJK1_q8OMu5q-FvTahOn_5KI8IPRhLPYA3kXg>
-Feedback-ID: i787e41f1:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 7 Jun 2022 05:54:48 -0400 (EDT)
-Date:   Tue, 7 Jun 2022 11:54:46 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     stable@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Theodore Ts'o <tytso@mit.edu>
-Subject: Re: [PATCH 5.10] ext4: only allow test_dummy_encryption when
- supported
-Message-ID: <Yp8gZlE6oEhXIRzD@kroah.com>
-References: <20220606231233.165860-1-ebiggers@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220606231233.165860-1-ebiggers@kernel.org>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        Wed, 8 Jun 2022 02:29:46 -0400
+X-Greylist: delayed 37698 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 07 Jun 2022 23:29:44 PDT
+Received: from yodobashi.com (unknown [113.31.111.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D162E28712
+        for <linux-fscrypt@vger.kernel.org>; Tue,  7 Jun 2022 23:29:44 -0700 (PDT)
+Sender: info@yodobashi.com
+Date:   Wed, 8 Jun 2022 14:29:38 +0800
+From:   "yodobashi" <admin@yodobashi.com>
+To:     <linux-fscrypt@vger.kernel.org>
+Subject: =?gb2312?B?peilyaXQpbelyaXDpcils6Xgo7qhuKSqv82YlMfpiPOhuaXRpbml7w==?=
+        =?gb2312?B?qWClyYnkuPykzt9CvWo=?=
+Message-ID: <20220608142945185448@yodobashi.com>
+X-mailer: Foxmail 6, 13, 102, 15 [cn]
+Mime-Version: 1.0
+Content-Type: text/plain;
+        charset="gb2312"
+Content-Transfer-Encoding: base64
+X-Spam-Status: Yes, score=5.1 required=5.0 tests=BAYES_50,MAY_BE_FORGED,
+        RCVD_IN_SBL_CSS,SPF_FAIL,SPF_HELO_FAIL,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: *  3.3 RCVD_IN_SBL_CSS RBL: Received via a relay in Spamhaus SBL-CSS
+        *      [113.31.111.122 listed in zen.spamhaus.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 SPF_FAIL SPF: sender does not match SPF record (fail)
+        *      [SPF failed: Please see http://www.openspf.org/Why?s=mfrom;id=info%40yodobashi.com;ip=113.31.111.122;r=lindbergh.monkeyblade.net]
+        *  0.0 SPF_HELO_FAIL SPF: HELO does not match SPF record (fail)
+        *      [SPF failed: Please see http://www.openspf.org/Why?s=helo;id=yodobashi.com;ip=113.31.111.122;r=lindbergh.monkeyblade.net]
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  1.0 MAY_BE_FORGED Relay IP's reverse DNS does not resolve to IP
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Jun 06, 2022 at 04:12:33PM -0700, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> commit 5f41fdaea63ddf96d921ab36b2af4a90ccdb5744 upstream.
-> 
-> Make the test_dummy_encryption mount option require that the encrypt
-> feature flag be already enabled on the filesystem, rather than
-> automatically enabling it.  Practically, this means that "-O encrypt"
-> will need to be included in MKFS_OPTIONS when running xfstests with the
-> test_dummy_encryption mount option.  (ext4/053 also needs an update.)
-> 
-> Moreover, as long as the preconditions for test_dummy_encryption are
-> being tightened anyway, take the opportunity to start rejecting it when
-> !CONFIG_FS_ENCRYPTION rather than ignoring it.
-> 
-> The motivation for requiring the encrypt feature flag is that:
-> 
-> - Having the filesystem auto-enable feature flags is problematic, as it
->   bypasses the usual sanity checks.  The specific issue which came up
->   recently is that in kernel versions where ext4 supports casefold but
->   not encrypt+casefold (v5.1 through v5.10), the kernel will happily add
->   the encrypt flag to a filesystem that has the casefold flag, making it
->   unmountable -- but only for subsequent mounts, not the initial one.
->   This confused the casefold support detection in xfstests, causing
->   generic/556 to fail rather than be skipped.
-> 
-> - The xfstests-bld test runners (kvm-xfstests et al.) already use the
->   required mkfs flag, so they will not be affected by this change.  Only
->   users of test_dummy_encryption alone will be affected.  But, this
->   option has always been for testing only, so it should be fine to
->   require that the few users of this option update their test scripts.
-> 
-> - f2fs already requires it (for its equivalent feature flag).
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> Reviewed-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-> Link: https://lore.kernel.org/r/20220519204437.61645-1-ebiggers@kernel.org
-> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+ofah9qH2obikqr/NmJTH6Yjzobml0aW5pe+pYKXJieS4/KTO30K9aqH2ofah9g0Ko6iks6TOpeGp
+YKXrpM+hosXk0MWMn9PDpM6loqXJpeyluaTHxeTQxaS1pOykxqSkpN6kuaOpDQoNCqSqv82YlKTO
+pKq/zZiUx+mI84nkuPzK1r5BpK2k8qSqpLOkyqSkpN6kt6S/oaMNCsTayN2kzqS0tF/VSqTypKru
+iqSkpKSkv6S3pN6kuaGjDQqjqKXRpbml76lgpcmkz6Gise3KvqS3pMakqqTqpN6ku6Tzo6kNCg0K
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0NCqG+ieS4/Iydz/OkzrvhhlSl0aW5pe+pYKXJob8NCrvhhlRJRKGhOqGhbGludXgtZnNjcnlw
+dEB2Z2VyLmtlcm5lbC5vcmcNCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tDQoNCqHxieS4/KS1pOykv6Sqv82YlMfpiPMgDQotLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0K64rU
+kresusUNCsjV1tCkzqS030K9as/I64rUkresusUNCg0KpLS1x+Vox+mI86TPoaLPwtObobikqr/N
+mJSMn9PDpdqpYKW4obmkq6TppLS0X9VKpK+kwKS1pKShow0KDQqoi6Sqv82YlIyf08Ol2qlgpbgN
+Cmh0dHBzOi8vcy55YW0uY29tL2l4dVRkDQoNCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQqh+aSzpM6l4algpevE2sjdpMvQxKSipL+k
+6qTOpMqkpIj2us+kz6GipKrK1sr9pMekuaSsoaKl6KXJpdCltz+lyaXDpcg/pbOl4KSqhpakpLrP
+pO+ku7eZv9qk2NbBvLGktN9CvWqk8qSq7oqkpKSkpL+kt6TepLmhow0KDQqks6TOpeGpYKXrpM+h
+osXk0MWMn9PDpM6loqXJpeyluaTHxeTQxaS1pOykxqSkpN6kuaGjDQqkqsrWyv2k8qSqkuyksaSk
+pL+kt6TepLmkrKGipLOkzqXhqWCl66TOxNrI3aTLpMSkpKTGpM6kqoaWpKS6z6TvpLukz8/C05uk
+zt9CvWrPyKTepMekqu6KpKSkpKS/pLek3qS5oaMNCg0KpeilyaXQpbelyaXDpcils6XgIKSqhpak
+pLrPpO+ku7eZv9oNCkVtYWlsOiBpbmZvQHlvZG9iYXNoaS5jb20NCg0KDQpDb3B5cmlnaHQyMDIy
+IFlvZG9iYXNoaSBDYW1lcmEgQ28uLEx0ZC4NCg==
 
-Both now queued up, thanks.
 
-greg k-h
