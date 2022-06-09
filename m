@@ -2,33 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 132F2544C1E
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  9 Jun 2022 14:33:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E2B6544C22
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  9 Jun 2022 14:33:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245465AbiFIMds (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 9 Jun 2022 08:33:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52580 "EHLO
+        id S245448AbiFIMdu (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 9 Jun 2022 08:33:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235883AbiFIMdi (ORCPT
+        with ESMTP id S245424AbiFIMdk (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 9 Jun 2022 08:33:38 -0400
+        Thu, 9 Jun 2022 08:33:40 -0400
 Received: from smtp3.ccs.ornl.gov (smtp3.ccs.ornl.gov [160.91.203.39])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 075F4186FB
-        for <linux-fscrypt@vger.kernel.org>; Thu,  9 Jun 2022 05:33:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4106321E38
+        for <linux-fscrypt@vger.kernel.org>; Thu,  9 Jun 2022 05:33:38 -0700 (PDT)
 Received: from star.ccs.ornl.gov (star.ccs.ornl.gov [160.91.202.134])
-        by smtp3.ccs.ornl.gov (Postfix) with ESMTP id 46CD1EF6;
+        by smtp3.ccs.ornl.gov (Postfix) with ESMTP id 49E9AEF8;
         Thu,  9 Jun 2022 08:33:16 -0400 (EDT)
 Received: by star.ccs.ornl.gov (Postfix, from userid 2004)
-        id 3FF05D438A; Thu,  9 Jun 2022 08:33:16 -0400 (EDT)
+        id 43316D4404; Thu,  9 Jun 2022 08:33:16 -0400 (EDT)
 From:   James Simmons <jsimmons@infradead.org>
 To:     Eric Biggers <ebiggers@google.com>,
         Andreas Dilger <adilger@whamcloud.com>,
         NeilBrown <neilb@suse.de>
 Cc:     linux-fscrypt@vger.kernel.org,
         James Simmons <jsimmons@infradead.org>
-Subject: [PATCH 08/18] lnet: convert LNetPut to take 16byte nid and pid.
-Date:   Thu,  9 Jun 2022 08:33:04 -0400
-Message-Id: <1654777994-29806-9-git-send-email-jsimmons@infradead.org>
+Subject: [PATCH 09/18] lnet: change LNetGet to take 16byte nid and pid.
+Date:   Thu,  9 Jun 2022 08:33:05 -0400
+Message-Id: <1654777994-29806-10-git-send-email-jsimmons@infradead.org>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1654777994-29806-1-git-send-email-jsimmons@infradead.org>
 References: <1654777994-29806-1-git-send-email-jsimmons@infradead.org>
@@ -44,106 +44,177 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Mr NeilBrown <neilb@suse.de>
 
-LNetPut() now takes a 16byte nid for self and similar process_id for
-target.
+"self" is now passed to LNetGet as a pointer to a 16-byte-addr nid, or
+NULL for "ANY".  "target" is passed as a 16-bytes-addr process_id.
 
 WC-bug-id: https://jira.whamcloud.com/browse/LU-10391
-Lustre-commit: 50f6bb62987c54ea9 ("LU-10391 lnet: convert LNetPut to take 16byte nid and pid.")
+Lustre-commit: d727ec56b26cbd1b8 ("LU-10391 lnet: change LNetGet to take 16byte nid and pid.")
 Signed-off-by: Mr NeilBrown <neilb@suse.de>
-Reviewed-on: https://review.whamcloud.com/43619
+Reviewed-on: https://review.whamcloud.com/43620
 Reviewed-by: James Simmons <jsimmons@infradead.org>
 Reviewed-by: Chris Horn <chris.horn@hpe.com>
-Reviewed-by: Amir Shehata <ashehata@whamcloud.com>
 Reviewed-by: Oleg Drokin <green@whamcloud.com>
 Signed-off-by: James Simmons <jsimmons@infradead.org>
 ---
- fs/lustre/ptlrpc/niobuf.c | 15 ++++++++++-----
- include/linux/lnet/api.h  |  4 ++--
- net/lnet/lnet/lib-move.c  | 28 +++++++++++-----------------
- net/lnet/lnet/peer.c      | 10 +++++-----
- net/lnet/selftest/rpc.c   | 17 +++++++++++------
- 5 files changed, 39 insertions(+), 35 deletions(-)
+ include/linux/lnet/api.h |  4 ++--
+ net/lnet/lnet/api-ni.c   | 25 +++++++++++++------------
+ net/lnet/lnet/lib-move.c | 34 ++++++++++++++--------------------
+ net/lnet/selftest/rpc.c  |  2 +-
+ 4 files changed, 30 insertions(+), 35 deletions(-)
 
-diff --git a/fs/lustre/ptlrpc/niobuf.c b/fs/lustre/ptlrpc/niobuf.c
-index afe83ad..94a0329 100644
---- a/fs/lustre/ptlrpc/niobuf.c
-+++ b/fs/lustre/ptlrpc/niobuf.c
-@@ -46,15 +46,20 @@
-  */
- static int ptl_send_buf(struct lnet_handle_md *mdh, void *base, int len,
- 			enum lnet_ack_req ack, struct ptlrpc_cb_id *cbid,
--			lnet_nid_t self, struct lnet_process_id peer_id,
-+			lnet_nid_t self4, struct lnet_process_id peer_id4,
- 			int portal, u64 xid, unsigned int offset,
- 			struct lnet_handle_md *bulk_cookie)
- {
- 	int rc;
- 	struct lnet_md md;
-+	struct lnet_nid self;
-+	struct lnet_processid peer_id;
-+
-+	lnet_nid4_to_nid(self4, &self);
-+	lnet_pid4_to_pid(peer_id4, &peer_id);
- 
- 	LASSERT(portal != 0);
--	CDEBUG(D_INFO, "peer_id %s\n", libcfs_id2str(peer_id));
-+	CDEBUG(D_INFO, "peer_id %s\n", libcfs_id2str(peer_id4));
- 	md.start = base;
- 	md.length = len;
- 	md.threshold = (ack == LNET_ACK_REQ) ? 2 : 1;
-@@ -85,8 +90,8 @@ static int ptl_send_buf(struct lnet_handle_md *mdh, void *base, int len,
- 
- 	percpu_ref_get(&ptlrpc_pending);
- 
--	rc = LNetPut(self, *mdh, ack,
--		     peer_id, portal, xid, offset, 0);
-+	rc = LNetPut(&self, *mdh, ack,
-+		     &peer_id, portal, xid, offset, 0);
- 	if (unlikely(rc != 0)) {
- 		int rc2;
- 		/* We're going to get an UNLINK event when I unlink below,
-@@ -94,7 +99,7 @@ static int ptl_send_buf(struct lnet_handle_md *mdh, void *base, int len,
- 		 * I fall through and return success here!
- 		 */
- 		CERROR("LNetPut(%s, %d, %lld) failed: %d\n",
--		       libcfs_id2str(peer_id), portal, xid, rc);
-+		       libcfs_id2str(peer_id4), portal, xid, rc);
- 		rc2 = LNetMDUnlink(*mdh);
- 		LASSERTF(rc2 == 0, "rc2 = %d\n", rc2);
- 	}
 diff --git a/include/linux/lnet/api.h b/include/linux/lnet/api.h
-index 3657c13..514cbe7 100644
+index 514cbe7..7ea61cb 100644
 --- a/include/linux/lnet/api.h
 +++ b/include/linux/lnet/api.h
-@@ -137,10 +137,10 @@ int LNetMDBind(const struct lnet_md *md_in,
-  * and LNetGet().
-  * @{
-  */
--int LNetPut(lnet_nid_t self,
-+int LNetPut(struct lnet_nid *self,
+@@ -146,9 +146,9 @@ int LNetPut(struct lnet_nid *self,
+ 	    unsigned int offset_in,
+ 	    u64	hdr_data_in);
+ 
+-int LNetGet(lnet_nid_t self,
++int LNetGet(struct lnet_nid *self,
  	    struct lnet_handle_md md_in,
- 	    enum lnet_ack_req ack_req_in,
 -	    struct lnet_process_id target_in,
 +	    struct lnet_processid *target_in,
  	    unsigned int portal_in,
- 	    u64 match_bits_in,
+ 	    u64	match_bits_in,
  	    unsigned int offset_in,
+diff --git a/net/lnet/lnet/api-ni.c b/net/lnet/lnet/api-ni.c
+index c977b47..8643ac8d 100644
+--- a/net/lnet/lnet/api-ni.c
++++ b/net/lnet/lnet/api-ni.c
+@@ -205,7 +205,7 @@ static void lnet_set_lnd_timeout(void)
+  */
+ static atomic_t lnet_dlc_seq_no = ATOMIC_INIT(0);
+ 
+-static int lnet_ping(struct lnet_process_id id, struct lnet_nid *src_nid,
++static int lnet_ping(struct lnet_process_id id4, struct lnet_nid *src_nid,
+ 		     signed long timeout, struct lnet_process_id __user *ids,
+ 		     int n_ids);
+ 
+@@ -4562,7 +4562,7 @@ struct ping_data {
+ 		complete(&pd->completion);
+ }
+ 
+-static int lnet_ping(struct lnet_process_id id, struct lnet_nid *src_nid,
++static int lnet_ping(struct lnet_process_id id4, struct lnet_nid *src_nid,
+ 		     signed long timeout, struct lnet_process_id __user *ids,
+ 		     int n_ids)
+ {
+@@ -4570,13 +4570,14 @@ static int lnet_ping(struct lnet_process_id id, struct lnet_nid *src_nid,
+ 	struct ping_data pd = { 0 };
+ 	struct lnet_ping_buffer *pbuf;
+ 	struct lnet_process_id tmpid;
++	struct lnet_processid id;
+ 	int i;
+ 	int nob;
+ 	int rc;
+ 	int rc2;
+ 
+ 	/* n_ids limit is arbitrary */
+-	if (n_ids <= 0 || id.nid == LNET_NID_ANY)
++	if (n_ids <= 0 || id4.nid == LNET_NID_ANY)
+ 		return -EINVAL;
+ 
+ 	/* if the user buffer has more space than the lnet_interfaces_max
+@@ -4585,8 +4586,8 @@ static int lnet_ping(struct lnet_process_id id, struct lnet_nid *src_nid,
+ 	if (n_ids > lnet_interfaces_max)
+ 		n_ids = lnet_interfaces_max;
+ 
+-	if (id.pid == LNET_PID_ANY)
+-		id.pid = LNET_PID_LUSTRE;
++	if (id4.pid == LNET_PID_ANY)
++		id4.pid = LNET_PID_LUSTRE;
+ 
+ 	pbuf = lnet_ping_buffer_alloc(n_ids, GFP_NOFS);
+ 	if (!pbuf)
+@@ -4609,8 +4610,8 @@ static int lnet_ping(struct lnet_process_id id, struct lnet_nid *src_nid,
+ 		goto fail_ping_buffer_decref;
+ 	}
+ 
+-	rc = LNetGet(lnet_nid_to_nid4(src_nid), pd.mdh, id,
+-		     LNET_RESERVED_PORTAL,
++	lnet_pid4_to_pid(id4, &id);
++	rc = LNetGet(src_nid, pd.mdh, &id, LNET_RESERVED_PORTAL,
+ 		     LNET_PROTO_PING_MATCHBITS, 0, false);
+ 	if (rc) {
+ 		/* Don't CERROR; this could be deliberate! */
+@@ -4637,7 +4638,7 @@ static int lnet_ping(struct lnet_process_id id, struct lnet_nid *src_nid,
+ 
+ 	if (nob < 8) {
+ 		CERROR("%s: ping info too short %d\n",
+-		       libcfs_id2str(id), nob);
++		       libcfs_id2str(id4), nob);
+ 		goto fail_ping_buffer_decref;
+ 	}
+ 
+@@ -4645,19 +4646,19 @@ static int lnet_ping(struct lnet_process_id id, struct lnet_nid *src_nid,
+ 		lnet_swap_pinginfo(pbuf);
+ 	} else if (pbuf->pb_info.pi_magic != LNET_PROTO_PING_MAGIC) {
+ 		CERROR("%s: Unexpected magic %08x\n",
+-		       libcfs_id2str(id), pbuf->pb_info.pi_magic);
++		       libcfs_id2str(id4), pbuf->pb_info.pi_magic);
+ 		goto fail_ping_buffer_decref;
+ 	}
+ 
+ 	if (!(pbuf->pb_info.pi_features & LNET_PING_FEAT_NI_STATUS)) {
+ 		CERROR("%s: ping w/o NI status: 0x%x\n",
+-		       libcfs_id2str(id), pbuf->pb_info.pi_features);
++		       libcfs_id2str(id4), pbuf->pb_info.pi_features);
+ 		goto fail_ping_buffer_decref;
+ 	}
+ 
+ 	if (nob < LNET_PING_INFO_SIZE(0)) {
+ 		CERROR("%s: Short reply %d(%d min)\n",
+-		       libcfs_id2str(id),
++		       libcfs_id2str(id4),
+ 		       nob, (int)LNET_PING_INFO_SIZE(0));
+ 		goto fail_ping_buffer_decref;
+ 	}
+@@ -4667,7 +4668,7 @@ static int lnet_ping(struct lnet_process_id id, struct lnet_nid *src_nid,
+ 
+ 	if (nob < LNET_PING_INFO_SIZE(n_ids)) {
+ 		CERROR("%s: Short reply %d(%d expected)\n",
+-		       libcfs_id2str(id),
++		       libcfs_id2str(id4),
+ 		       nob, (int)LNET_PING_INFO_SIZE(n_ids));
+ 		goto fail_ping_buffer_decref;
+ 	}
 diff --git a/net/lnet/lnet/lib-move.c b/net/lnet/lnet/lib-move.c
-index bca33bf..55a001e 100644
+index 55a001e..9ee1075 100644
 --- a/net/lnet/lnet/lib-move.c
 +++ b/net/lnet/lnet/lib-move.c
-@@ -4707,36 +4707,30 @@ void lnet_monitor_thr_stop(void)
-  * \see lnet_event::hdr_data and lnet_event_kind.
+@@ -3630,7 +3630,7 @@ struct lnet_mt_event_info {
+ 	       void *user_data, lnet_handler_t handler, bool recovery)
+ {
+ 	struct lnet_md md = { NULL };
+-	struct lnet_process_id id;
++	struct lnet_processid id;
+ 	struct lnet_ping_buffer *pbuf;
+ 	int rc;
+ 
+@@ -3662,9 +3662,9 @@ struct lnet_mt_event_info {
+ 		goto fail_error;
+ 	}
+ 	id.pid = LNET_PID_LUSTRE;
+-	id.nid = lnet_nid_to_nid4(dest_nid);
++	id.nid = *dest_nid;
+ 
+-	rc = LNetGet(LNET_NID_ANY, *mdh, id,
++	rc = LNetGet(NULL, *mdh, &id,
+ 		     LNET_RESERVED_PORTAL,
+ 		     LNET_PROTO_PING_MATCHBITS, 0, recovery);
+ 	if (rc)
+@@ -4948,35 +4948,29 @@ struct lnet_msg *
+  *		-ENOENT Invalid MD object.
   */
  int
--LNetPut(lnet_nid_t self4, struct lnet_handle_md mdh, enum lnet_ack_req ack,
+-LNetGet(lnet_nid_t self4, struct lnet_handle_md mdh,
 -	struct lnet_process_id target4, unsigned int portal,
-+LNetPut(struct lnet_nid *self, struct lnet_handle_md mdh, enum lnet_ack_req ack,
++LNetGet(struct lnet_nid *self, struct lnet_handle_md mdh,
 +	struct lnet_processid *target, unsigned int portal,
- 	u64 match_bits, unsigned int offset,
- 	u64 hdr_data)
+ 	u64 match_bits, unsigned int offset, bool recovery)
  {
- 	struct lnet_rsp_tracker *rspt = NULL;
+ 	struct lnet_rsp_tracker *rspt;
 -	struct lnet_processid target;
  	struct lnet_msg *msg;
  	struct lnet_libmd *md;
@@ -160,7 +231,7 @@ index bca33bf..55a001e 100644
  	if (!list_empty(&the_lnet.ln_test_peers) &&	/* normally we don't */
 -	    fail_peer(&target.nid, 1)) {		/* shall we now? */
 +	    fail_peer(&target->nid, 1)) {		/* shall we now? */
- 		CERROR("Dropping PUT to %s: simulated failure\n",
+ 		CERROR("Dropping GET to %s: simulated failure\n",
 -		       libcfs_id2str(target4));
 +		       libcfs_idstr(target));
  		return -EIO;
@@ -168,31 +239,31 @@ index bca33bf..55a001e 100644
  
  	msg = kmem_cache_zalloc(lnet_msg_cachep, GFP_NOFS);
  	if (!msg) {
- 		CERROR("Dropping PUT to %s: ENOMEM on struct lnet_msg\n",
+ 		CERROR("Dropping GET to %s: ENOMEM on struct lnet_msg\n",
 -		       libcfs_id2str(target4));
 +		       libcfs_idstr(target));
  		return -ENOMEM;
  	}
- 	msg->msg_vmflush = !!(current->flags & PF_MEMALLOC);
-@@ -4747,7 +4741,7 @@ void lnet_monitor_thr_stop(void)
- 		rspt = lnet_rspt_alloc(cpt);
- 		if (!rspt) {
- 			CERROR("Dropping PUT to %s: ENOMEM on response tracker\n",
--			       libcfs_id2str(target4));
-+			       libcfs_idstr(target));
- 			return -ENOMEM;
- 		}
- 		INIT_LIST_HEAD(&rspt->rspt_on_list);
-@@ -4758,7 +4752,7 @@ void lnet_monitor_thr_stop(void)
+ 
+@@ -4985,7 +4979,7 @@ struct lnet_msg *
+ 	rspt = lnet_rspt_alloc(cpt);
+ 	if (!rspt) {
+ 		CERROR("Dropping GET to %s: ENOMEM on response tracker\n",
+-		       libcfs_id2str(target4));
++		       libcfs_idstr(target));
+ 		return -ENOMEM;
+ 	}
+ 	INIT_LIST_HEAD(&rspt->rspt_on_list);
+@@ -4997,7 +4991,7 @@ struct lnet_msg *
  	md = lnet_handle2md(&mdh);
  	if (!md || !md->md_threshold || md->md_me) {
- 		CERROR("Dropping PUT (%llu:%d:%s): MD (%d) invalid\n",
+ 		CERROR("Dropping GET (%llu:%d:%s): MD (%d) invalid\n",
 -		       match_bits, portal, libcfs_id2str(target4),
 +		       match_bits, portal, libcfs_idstr(target),
  		       !md ? -1 : md->md_threshold);
  		if (md && md->md_me)
- 			CERROR("Source MD also attached to portal %d\n",
-@@ -4772,11 +4766,11 @@ void lnet_monitor_thr_stop(void)
+ 			CERROR("REPLY MD also attached to portal %d\n",
+@@ -5010,11 +5004,11 @@ struct lnet_msg *
  		return -ENOENT;
  	}
  
@@ -201,110 +272,37 @@ index bca33bf..55a001e 100644
  
  	lnet_msg_attach_md(msg, md, 0, 0);
  
--	lnet_prep_send(msg, LNET_MSG_PUT, &target, 0, md->md_length);
-+	lnet_prep_send(msg, LNET_MSG_PUT, target, 0, md->md_length);
+-	lnet_prep_send(msg, LNET_MSG_GET, &target, 0, 0);
++	lnet_prep_send(msg, LNET_MSG_GET, target, 0, 0);
  
- 	msg->msg_hdr.msg.put.match_bits = cpu_to_le64(match_bits);
- 	msg->msg_hdr.msg.put.ptl_index = cpu_to_le32(portal);
-@@ -4810,10 +4804,10 @@ void lnet_monitor_thr_stop(void)
- 				 CFS_FAIL_ONCE))
- 		rc = -EIO;
+ 	msg->msg_hdr.msg.get.match_bits = cpu_to_le64(match_bits);
+ 	msg->msg_hdr.msg.get.ptl_index = cpu_to_le32(portal);
+@@ -5036,10 +5030,10 @@ struct lnet_msg *
  	else
--		rc = lnet_send(&self, msg, NULL);
-+		rc = lnet_send(self, msg, NULL);
- 	if (rc) {
- 		CNETERR("Error sending PUT to %s: %d\n",
+ 		lnet_rspt_free(rspt, cpt);
+ 
+-	rc = lnet_send(&self, msg, NULL);
++	rc = lnet_send(self, msg, NULL);
+ 	if (rc < 0) {
+ 		CNETERR("Error sending GET to %s: %d\n",
 -			libcfs_id2str(target4), rc);
 +			libcfs_idstr(target), rc);
  		msg->msg_no_resend = true;
  		lnet_finalize(msg, rc);
  	}
-diff --git a/net/lnet/lnet/peer.c b/net/lnet/lnet/peer.c
-index 2055f31..6c35901 100644
---- a/net/lnet/lnet/peer.c
-+++ b/net/lnet/lnet/peer.c
-@@ -3559,7 +3559,7 @@ static int lnet_peer_send_push(struct lnet_peer *lp)
- __must_hold(&lp->lp_lock)
- {
- 	struct lnet_ping_buffer *pbuf;
--	struct lnet_process_id id;
-+	struct lnet_processid id;
- 	struct lnet_md md;
- 	int cpt;
- 	int rc;
-@@ -3606,13 +3606,13 @@ static int lnet_peer_send_push(struct lnet_peer *lp)
- 	lnet_peer_addref_locked(lp);
- 	id.pid = LNET_PID_LUSTRE;
- 	if (!LNET_NID_IS_ANY(&lp->lp_disc_dst_nid))
--		id.nid = lnet_nid_to_nid4(&lp->lp_disc_dst_nid);
-+		id.nid = lp->lp_disc_dst_nid;
- 	else
--		id.nid = lnet_nid_to_nid4(&lp->lp_primary_nid);
-+		id.nid = lp->lp_primary_nid;
- 	lnet_net_unlock(cpt);
- 
--	rc = LNetPut(lnet_nid_to_nid4(&lp->lp_disc_src_nid), lp->lp_push_mdh,
--		     LNET_ACK_REQ, id, LNET_RESERVED_PORTAL,
-+	rc = LNetPut(&lp->lp_disc_src_nid, lp->lp_push_mdh,
-+		     LNET_ACK_REQ, &id, LNET_RESERVED_PORTAL,
- 		     LNET_PROTO_PING_MATCHBITS, 0, 0);
- 	/* reset the discovery nid. There is no need to restrict sending
- 	 * from that source, if we call lnet_push_update_to_peers(). It'll
 diff --git a/net/lnet/selftest/rpc.c b/net/lnet/selftest/rpc.c
-index d1538be..b16711a 100644
+index b16711a..17277b8 100644
 --- a/net/lnet/selftest/rpc.c
 +++ b/net/lnet/selftest/rpc.c
-@@ -397,12 +397,17 @@ struct srpc_bulk *
- 
- static int
- srpc_post_active_rdma(int portal, u64 matchbits, void *buf, int len,
--		      int options, struct lnet_process_id peer,
--		      lnet_nid_t self, struct lnet_handle_md *mdh,
-+		      int options, struct lnet_process_id peer4,
-+		      lnet_nid_t self4, struct lnet_handle_md *mdh,
- 		      struct srpc_event *ev)
- {
- 	int rc;
- 	struct lnet_md md;
-+	struct lnet_nid self;
-+	struct lnet_processid peer;
-+
-+	lnet_nid4_to_nid(self4, &self);
-+	lnet_pid4_to_pid(peer4, &peer);
- 
- 	md.user_ptr = ev;
- 	md.start = buf;
-@@ -424,18 +429,18 @@ struct srpc_bulk *
- 	 * buffers...
- 	 */
- 	if (options & LNET_MD_OP_PUT) {
--		rc = LNetPut(self, *mdh, LNET_NOACK_REQ, peer,
-+		rc = LNetPut(&self, *mdh, LNET_NOACK_REQ, &peer,
- 			     portal, matchbits, 0, 0);
+@@ -434,7 +434,7 @@ struct srpc_bulk *
  	} else {
  		LASSERT(options & LNET_MD_OP_GET);
  
--		rc = LNetGet(self, *mdh, peer, portal, matchbits, 0, false);
-+		rc = LNetGet(self4, *mdh, peer4, portal, matchbits, 0, false);
+-		rc = LNetGet(self4, *mdh, peer4, portal, matchbits, 0, false);
++		rc = LNetGet(&self, *mdh, &peer, portal, matchbits, 0, false);
  	}
  
  	if (rc) {
- 		CERROR("LNet%s(%s, %d, %lld) failed: %d\n",
- 		       options & LNET_MD_OP_PUT ? "Put" : "Get",
--		       libcfs_id2str(peer), portal, matchbits, rc);
-+		       libcfs_id2str(peer4), portal, matchbits, rc);
- 
- 		/*
- 		 * The forthcoming unlink event will complete this operation
-@@ -446,7 +451,7 @@ struct srpc_bulk *
- 	} else {
- 		CDEBUG(D_NET,
- 		       "Posted active RDMA: peer %s, portal %u, matchbits %#llx\n",
--		       libcfs_id2str(peer), portal, matchbits);
-+		       libcfs_id2str(peer4), portal, matchbits);
- 	}
- 	return 0;
- }
 -- 
 1.8.3.1
 
