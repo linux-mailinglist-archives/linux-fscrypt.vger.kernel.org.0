@@ -2,33 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C128544C25
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  9 Jun 2022 14:34:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89CC0544C27
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  9 Jun 2022 14:34:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235883AbiFIMeC (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 9 Jun 2022 08:34:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53678 "EHLO
+        id S245475AbiFIMeE (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 9 Jun 2022 08:34:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245500AbiFIMdu (ORCPT
+        with ESMTP id S245363AbiFIMeA (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 9 Jun 2022 08:33:50 -0400
+        Thu, 9 Jun 2022 08:34:00 -0400
 Received: from smtp3.ccs.ornl.gov (smtp3.ccs.ornl.gov [160.91.203.39])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE2E922B28
-        for <linux-fscrypt@vger.kernel.org>; Thu,  9 Jun 2022 05:33:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6AE622BC2
+        for <linux-fscrypt@vger.kernel.org>; Thu,  9 Jun 2022 05:33:47 -0700 (PDT)
 Received: from star.ccs.ornl.gov (star.ccs.ornl.gov [160.91.202.134])
-        by smtp3.ccs.ornl.gov (Postfix) with ESMTP id 4F0DCEFB;
+        by smtp3.ccs.ornl.gov (Postfix) with ESMTP id 51DBAEFC;
         Thu,  9 Jun 2022 08:33:16 -0400 (EDT)
 Received: by star.ccs.ornl.gov (Postfix, from userid 2004)
-        id 4C91ED43A3; Thu,  9 Jun 2022 08:33:16 -0400 (EDT)
+        id 4FA1BD43AC; Thu,  9 Jun 2022 08:33:16 -0400 (EDT)
 From:   James Simmons <jsimmons@infradead.org>
 To:     Eric Biggers <ebiggers@google.com>,
         Andreas Dilger <adilger@whamcloud.com>,
         NeilBrown <neilb@suse.de>
-Cc:     linux-fscrypt@vger.kernel.org,
+Cc:     linux-fscrypt@vger.kernel.org, Lai Siyao <lai.siyao@whamcloud.com>,
         James Simmons <jsimmons@infradead.org>
-Subject: [PATCH 12/18] lnet: socklnd: switch ksocknal_del_peer to lnet_processid
-Date:   Thu,  9 Jun 2022 08:33:08 -0400
-Message-Id: <1654777994-29806-13-git-send-email-jsimmons@infradead.org>
+Subject: [PATCH 13/18] lustre: llite: access lli_lsm_md with lock in all places
+Date:   Thu,  9 Jun 2022 08:33:09 -0400
+Message-Id: <1654777994-29806-14-git-send-email-jsimmons@infradead.org>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1654777994-29806-1-git-send-email-jsimmons@infradead.org>
 References: <1654777994-29806-1-git-send-email-jsimmons@infradead.org>
@@ -42,130 +42,192 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Mr NeilBrown <neilb@suse.de>
+From: Lai Siyao <lai.siyao@whamcloud.com>
 
-ksocknal_del_peer now takes a pointer to a lnet_processid,
-with room for a large address.
-A NULL means "ANY NID, AND PID".
-The "ip" argument was completely unused, so has been removed.
+lli_lsm_md should be accessed with lock in all places. Among all the
+changes, ll_rease_page() is inside lock already, except statahead
+code.
 
-This was the last use of 'struct lnet_process_id' in ksocklnd.
-
-WC-bug-id: https://jira.whamcloud.com/browse/LU-10391
-Lustre-commit: 782e37e54f5c54886 ("LU-10391 socklnd: switch ksocknal_del_peer to lnet_processid")
-Signed-off-by: Mr NeilBrown <neilb@suse.de>
-Reviewed-on: https://review.whamcloud.com/44623
-Reviewed-by: James Simmons <jsimmons@infradead.org>
-Reviewed-by: Chris Horn <chris.horn@hpe.com>
+WC-bug-id: https://jira.whamcloud.com/browse/LU-15284
+Lustre-commit: 1dfae156d1dbc11cf ("LU-15284 llite: access lli_lsm_md with lock in all places")
+Signed-off-by: Lai Siyao <lai.siyao@whamcloud.com>
+Reviewed-on: https://review.whamcloud.com/46355
+Reviewed-by: Mike Pershin <mpershin@whamcloud.com>
+Reviewed-by: John L. Hammond <jhammond@whamcloud.com>
 Reviewed-by: Oleg Drokin <green@whamcloud.com>
 Signed-off-by: James Simmons <jsimmons@infradead.org>
 ---
- net/lnet/klnds/socklnd/socklnd.c | 36 +++++++++++++-----------------------
- 1 file changed, 13 insertions(+), 23 deletions(-)
+ fs/lustre/llite/dir.c            |  6 +++---
+ fs/lustre/llite/file.c           |  8 +++++---
+ fs/lustre/llite/llite_internal.h | 17 +++++++++++++++--
+ fs/lustre/llite/llite_lib.c      | 20 +++++++++++---------
+ fs/lustre/llite/namei.c          |  7 +++++--
+ fs/lustre/llite/statahead.c      |  2 ++
+ fs/lustre/lmv/lmv_obd.c          |  3 ++-
+ 7 files changed, 43 insertions(+), 20 deletions(-)
 
-diff --git a/net/lnet/klnds/socklnd/socklnd.c b/net/lnet/klnds/socklnd/socklnd.c
-index 857aa05..01b434f 100644
---- a/net/lnet/klnds/socklnd/socklnd.c
-+++ b/net/lnet/klnds/socklnd/socklnd.c
-@@ -660,7 +660,7 @@ struct ksock_peer_ni *
- }
- 
- static void
--ksocknal_del_peer_locked(struct ksock_peer_ni *peer_ni, u32 ip)
-+ksocknal_del_peer_locked(struct ksock_peer_ni *peer_ni)
+diff --git a/fs/lustre/llite/dir.c b/fs/lustre/llite/dir.c
+index cfd8184..29d7e44 100644
+--- a/fs/lustre/llite/dir.c
++++ b/fs/lustre/llite/dir.c
+@@ -162,11 +162,11 @@ void ll_release_page(struct inode *inode, struct page *page, bool remove)
  {
- 	struct ksock_conn *conn;
- 	struct ksock_conn *cnxt;
-@@ -683,7 +683,7 @@ struct ksock_peer_ni *
- }
+ 	kunmap(page);
  
- static int
--ksocknal_del_peer(struct lnet_ni *ni, struct lnet_process_id id4, u32 ip)
-+ksocknal_del_peer(struct lnet_ni *ni, struct lnet_processid *id)
- {
- 	LIST_HEAD(zombies);
- 	struct hlist_node *pnxt;
-@@ -692,15 +692,11 @@ struct ksock_peer_ni *
- 	int hi;
- 	int i;
- 	int rc = -ENOENT;
--	struct lnet_processid id;
--
--	id.pid = id4.pid;
--	lnet_nid4_to_nid(id4.nid, &id.nid);
- 
- 	write_lock_bh(&ksocknal_data.ksnd_global_lock);
- 
--	if (!LNET_NID_IS_ANY(&id.nid)) {
--		lo = hash_min(nidhash(&id.nid),
-+	if (id && !LNET_NID_IS_ANY(&id->nid)) {
-+		lo = hash_min(nidhash(&id->nid),
- 			      HASH_BITS(ksocknal_data.ksnd_peers));
- 		hi = lo;
- 	} else {
-@@ -715,15 +711,15 @@ struct ksock_peer_ni *
- 			if (peer_ni->ksnp_ni != ni)
- 				continue;
- 
--			if (!((LNET_NID_IS_ANY(&id.nid) ||
--			       nid_same(&peer_ni->ksnp_id.nid, &id.nid)) &&
--			      (id.pid == LNET_PID_ANY ||
--			       peer_ni->ksnp_id.pid == id.pid)))
-+			if (!((!id || LNET_NID_IS_ANY(&id->nid) ||
-+			       nid_same(&peer_ni->ksnp_id.nid, &id->nid)) &&
-+			      (!id || id->pid == LNET_PID_ANY ||
-+			       peer_ni->ksnp_id.pid == id->pid)))
- 				continue;
- 
- 			ksocknal_peer_addref(peer_ni);     /* a ref for me... */
- 
--			ksocknal_del_peer_locked(peer_ni, ip);
-+			ksocknal_del_peer_locked(peer_ni);
- 
- 			if (peer_ni->ksnp_closing &&
- 			    !list_empty(&peer_ni->ksnp_tx_queue)) {
-@@ -1764,7 +1760,6 @@ static int ksocknal_push(struct lnet_ni *ni, struct lnet_processid *id)
- int
- ksocknal_ctl(struct lnet_ni *ni, unsigned int cmd, void *arg)
- {
--	struct lnet_process_id id4 = {};
- 	struct lnet_processid id = {};
- 	struct libcfs_ioctl_data *data = arg;
- 	int rc;
-@@ -1832,10 +1827,9 @@ static int ksocknal_push(struct lnet_ni *ni, struct lnet_processid *id)
- 		return ksocknal_add_peer(ni, &id, (struct sockaddr *)&sa);
+-	/*
+-	 * Always remove the page for striped dir, because the page is
++	/* Always remove the page for striped dir, because the page is
+ 	 * built from temporarily in LMV layer
+ 	 */
+-	if (inode && ll_dir_striped(inode)) {
++	if (inode && S_ISDIR(inode->i_mode) &&
++	    lmv_dir_striped(ll_i2info(inode)->lli_lsm_md)) {
+ 		__free_page(page);
+ 		return;
  	}
- 	case IOC_LIBCFS_DEL_PEER:
--		id4.nid = data->ioc_nid;
--		id4.pid = LNET_PID_ANY;
--		return ksocknal_del_peer(ni, id4,
--					 data->ioc_u32[0]); /* IP */
-+		lnet_nid4_to_nid(data->ioc_nid, &id.nid);
-+		id.pid = LNET_PID_ANY;
-+		return ksocknal_del_peer(ni, &id);
+diff --git a/fs/lustre/llite/file.c b/fs/lustre/llite/file.c
+index 1ac3e4f..30f522b 100644
+--- a/fs/lustre/llite/file.c
++++ b/fs/lustre/llite/file.c
+@@ -5066,12 +5066,14 @@ static int ll_merge_md_attr(struct inode *inode)
+ 	struct cl_attr attr = { 0 };
+ 	int rc;
  
- 	case IOC_LIBCFS_GET_CONN: {
- 		int txmem;
-@@ -2347,10 +2341,6 @@ static int ksocknal_inetaddr_event(struct notifier_block *unused,
- ksocknal_shutdown(struct lnet_ni *ni)
- {
- 	struct ksock_net *net = ni->ni_data;
--	struct lnet_process_id anyid = { 0 };
+-	LASSERT(lli->lli_lsm_md);
 -
--	anyid.nid = LNET_NID_ANY;
--	anyid.pid = LNET_PID_ANY;
+-	if (!lmv_dir_striped(lli->lli_lsm_md))
++	if (!lli->lli_lsm_md)
+ 		return 0;
  
- 	LASSERT(ksocknal_data.ksnd_init == SOCKNAL_INIT_ALL);
- 	LASSERT(ksocknal_data.ksnd_nnets > 0);
-@@ -2359,7 +2349,7 @@ static int ksocknal_inetaddr_event(struct notifier_block *unused,
- 	atomic_add(SOCKNAL_SHUTDOWN_BIAS, &net->ksnn_npeers);
+ 	down_read(&lli->lli_lsm_sem);
++	if (!lmv_dir_striped(lli->lli_lsm_md)) {
++		up_read(&lli->lli_lsm_sem);
++		return 0;
++	}
+ 	rc = md_merge_attr(ll_i2mdexp(inode), lli->lli_lsm_md, &attr,
+ 			   ll_md_blocking_ast);
+ 	up_read(&lli->lli_lsm_sem);
+diff --git a/fs/lustre/llite/llite_internal.h b/fs/lustre/llite/llite_internal.h
+index f51ab19..bc50169 100644
+--- a/fs/lustre/llite/llite_internal.h
++++ b/fs/lustre/llite/llite_internal.h
+@@ -1373,9 +1373,22 @@ static inline struct lu_fid *ll_inode2fid(struct inode *inode)
  
- 	/* Delete all peers */
--	ksocknal_del_peer(ni, anyid, 0);
-+	ksocknal_del_peer(ni, NULL);
+ static inline bool ll_dir_striped(struct inode *inode)
+ {
++	struct ll_inode_info *lli;
++	bool rc;
++
+ 	LASSERT(inode);
+-	return S_ISDIR(inode->i_mode) &&
+-	       lmv_dir_striped(ll_i2info(inode)->lli_lsm_md);
++	if (!S_ISDIR(inode->i_mode))
++		return false;
++
++	lli = ll_i2info(inode);
++	if (!lli->lli_lsm_md)
++		return false;
++
++	down_read(&lli->lli_lsm_sem);
++	rc = lmv_dir_striped(lli->lli_lsm_md);
++	up_read(&lli->lli_lsm_sem);
++
++	return rc;
+ }
  
- 	/* Wait for all peer_ni state to clean up */
- 	wait_var_event_warning(&net->ksnn_npeers,
+ static inline loff_t ll_file_maxbytes(struct inode *inode)
+diff --git a/fs/lustre/llite/llite_lib.c b/fs/lustre/llite/llite_lib.c
+index ad77ef0..99ab9ac 100644
+--- a/fs/lustre/llite/llite_lib.c
++++ b/fs/lustre/llite/llite_lib.c
+@@ -1626,23 +1626,25 @@ static int ll_update_lsm_md(struct inode *inode, struct lustre_md *md)
+ 	}
+ 
+ 	rc = ll_init_lsm_md(inode, md);
+-	up_write(&lli->lli_lsm_sem);
+-
+-	if (rc)
++	if (rc) {
++		up_write(&lli->lli_lsm_sem);
+ 		return rc;
++	}
++
++	/* md_merge_attr() may take long, since lsm is already set, switch to
++	 * read lock.
++	 */
++	downgrade_write(&lli->lli_lsm_sem);
+ 
+ 	/* set md->lmv to NULL, so the following free lustre_md will not free
+ 	 * this lsm.
+ 	 */
+ 	md->lmv = NULL;
+ 
+-	/* md_merge_attr() may take long, since lsm is already set, switch to
+-	 * read lock.
+-	 */
+-	down_read(&lli->lli_lsm_sem);
+-
+-	if (!lmv_dir_striped(lli->lli_lsm_md))
++	if (!lmv_dir_striped(lli->lli_lsm_md)) {
++		rc = 0;
+ 		goto unlock;
++	}
+ 
+ 	attr = kzalloc(sizeof(*attr), GFP_NOFS);
+ 	if (!attr) {
+diff --git a/fs/lustre/llite/namei.c b/fs/lustre/llite/namei.c
+index c05e3bf..f7e900d 100644
+--- a/fs/lustre/llite/namei.c
++++ b/fs/lustre/llite/namei.c
+@@ -765,14 +765,17 @@ static int ll_lookup_it_finish(struct ptlrpc_request *request,
+ 			.it_op = IT_GETATTR,
+ 			.it_lock_handle = 0
+ 		};
+-		struct lu_fid fid = ll_i2info(parent)->lli_fid;
++		struct ll_inode_info *lli = ll_i2info(parent);
++		struct lu_fid fid = lli->lli_fid;
+ 
+ 		/* If it is striped directory, get the real stripe parent */
+ 		if (unlikely(ll_dir_striped(parent))) {
++			down_read(&lli->lli_lsm_sem);
+ 			rc = md_get_fid_from_lsm(ll_i2mdexp(parent),
+-						 ll_i2info(parent)->lli_lsm_md,
++						 lli->lli_lsm_md,
+ 						 (*de)->d_name.name,
+ 						 (*de)->d_name.len, &fid);
++			up_read(&lli->lli_lsm_sem);
+ 			if (rc)
+ 				return rc;
+ 		}
+diff --git a/fs/lustre/llite/statahead.c b/fs/lustre/llite/statahead.c
+index c781e49..3043a51 100644
+--- a/fs/lustre/llite/statahead.c
++++ b/fs/lustre/llite/statahead.c
+@@ -1164,8 +1164,10 @@ static int ll_statahead_thread(void *arg)
+ 		}
+ 
+ 		pos = le64_to_cpu(dp->ldp_hash_end);
++		down_read(&lli->lli_lsm_sem);
+ 		ll_release_page(dir, page,
+ 				le32_to_cpu(dp->ldp_flags) & LDF_COLLIDE);
++		up_read(&lli->lli_lsm_sem);
+ 
+ 		if (sa_low_hit(sai)) {
+ 			rc = -EFAULT;
+diff --git a/fs/lustre/lmv/lmv_obd.c b/fs/lustre/lmv/lmv_obd.c
+index 5b43cfd..d83ba41ff 100644
+--- a/fs/lustre/lmv/lmv_obd.c
++++ b/fs/lustre/lmv/lmv_obd.c
+@@ -3654,7 +3654,8 @@ static int lmv_revalidate_lock(struct obd_export *exp, struct lookup_intent *it,
+ {
+ 	const struct lmv_oinfo *oinfo;
+ 
+-	LASSERT(lmv_dir_striped(lsm));
++	if (!lmv_dir_striped(lsm))
++		return -ESTALE;
+ 
+ 	oinfo = lsm_name_to_stripe_info(lsm, name, namelen, false);
+ 	if (IS_ERR(oinfo))
 -- 
 1.8.3.1
 
