@@ -2,33 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E2B6544C22
+	by mail.lfdr.de (Postfix) with ESMTP id 0ECB4544C21
 	for <lists+linux-fscrypt@lfdr.de>; Thu,  9 Jun 2022 14:33:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245448AbiFIMdu (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        id S245510AbiFIMdu (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
         Thu, 9 Jun 2022 08:33:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52744 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245424AbiFIMdk (ORCPT
+        with ESMTP id S245448AbiFIMds (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 9 Jun 2022 08:33:40 -0400
+        Thu, 9 Jun 2022 08:33:48 -0400
 Received: from smtp3.ccs.ornl.gov (smtp3.ccs.ornl.gov [160.91.203.39])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4106321E38
-        for <linux-fscrypt@vger.kernel.org>; Thu,  9 Jun 2022 05:33:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C993F220F6
+        for <linux-fscrypt@vger.kernel.org>; Thu,  9 Jun 2022 05:33:41 -0700 (PDT)
 Received: from star.ccs.ornl.gov (star.ccs.ornl.gov [160.91.202.134])
-        by smtp3.ccs.ornl.gov (Postfix) with ESMTP id 49E9AEF8;
+        by smtp3.ccs.ornl.gov (Postfix) with ESMTP id 4AC73EF9;
         Thu,  9 Jun 2022 08:33:16 -0400 (EDT)
 Received: by star.ccs.ornl.gov (Postfix, from userid 2004)
-        id 43316D4404; Thu,  9 Jun 2022 08:33:16 -0400 (EDT)
+        id 46891D439B; Thu,  9 Jun 2022 08:33:16 -0400 (EDT)
 From:   James Simmons <jsimmons@infradead.org>
 To:     Eric Biggers <ebiggers@google.com>,
         Andreas Dilger <adilger@whamcloud.com>,
         NeilBrown <neilb@suse.de>
 Cc:     linux-fscrypt@vger.kernel.org,
         James Simmons <jsimmons@infradead.org>
-Subject: [PATCH 09/18] lnet: change LNetGet to take 16byte nid and pid.
-Date:   Thu,  9 Jun 2022 08:33:05 -0400
-Message-Id: <1654777994-29806-10-git-send-email-jsimmons@infradead.org>
+Subject: [PATCH 10/18] lnet: socklnd: pass large processid to ksocknal_add_peer
+Date:   Thu,  9 Jun 2022 08:33:06 -0400
+Message-Id: <1654777994-29806-11-git-send-email-jsimmons@infradead.org>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1654777994-29806-1-git-send-email-jsimmons@infradead.org>
 References: <1654777994-29806-1-git-send-email-jsimmons@infradead.org>
@@ -44,265 +44,147 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Mr NeilBrown <neilb@suse.de>
 
-"self" is now passed to LNetGet as a pointer to a 16-byte-addr nid, or
-NULL for "ANY".  "target" is passed as a 16-bytes-addr process_id.
+Teach ksocknal_add_peer() to handle large-address processid, and now
+ksocknal_launch_packet() can support IPv6 addresses as well as IPv4.
 
 WC-bug-id: https://jira.whamcloud.com/browse/LU-10391
-Lustre-commit: d727ec56b26cbd1b8 ("LU-10391 lnet: change LNetGet to take 16byte nid and pid.")
+Lustre-commit: 6deddc3d46704643d ("LU-10391 socklnd: pass large processid to ksocknal_add_peer")
 Signed-off-by: Mr NeilBrown <neilb@suse.de>
-Reviewed-on: https://review.whamcloud.com/43620
+Reviewed-on: https://review.whamcloud.com/44621
 Reviewed-by: James Simmons <jsimmons@infradead.org>
 Reviewed-by: Chris Horn <chris.horn@hpe.com>
 Reviewed-by: Oleg Drokin <green@whamcloud.com>
 Signed-off-by: James Simmons <jsimmons@infradead.org>
 ---
- include/linux/lnet/api.h |  4 ++--
- net/lnet/lnet/api-ni.c   | 25 +++++++++++++------------
- net/lnet/lnet/lib-move.c | 34 ++++++++++++++--------------------
- net/lnet/selftest/rpc.c  |  2 +-
- 4 files changed, 30 insertions(+), 35 deletions(-)
+ net/lnet/klnds/socklnd/socklnd.c    | 22 +++++++++-------------
+ net/lnet/klnds/socklnd/socklnd.h    |  2 +-
+ net/lnet/klnds/socklnd/socklnd_cb.c | 28 ++++++++++++++++++----------
+ 3 files changed, 28 insertions(+), 24 deletions(-)
 
-diff --git a/include/linux/lnet/api.h b/include/linux/lnet/api.h
-index 514cbe7..7ea61cb 100644
---- a/include/linux/lnet/api.h
-+++ b/include/linux/lnet/api.h
-@@ -146,9 +146,9 @@ int LNetPut(struct lnet_nid *self,
- 	    unsigned int offset_in,
- 	    u64	hdr_data_in);
- 
--int LNetGet(lnet_nid_t self,
-+int LNetGet(struct lnet_nid *self,
- 	    struct lnet_handle_md md_in,
--	    struct lnet_process_id target_in,
-+	    struct lnet_processid *target_in,
- 	    unsigned int portal_in,
- 	    u64	match_bits_in,
- 	    unsigned int offset_in,
-diff --git a/net/lnet/lnet/api-ni.c b/net/lnet/lnet/api-ni.c
-index c977b47..8643ac8d 100644
---- a/net/lnet/lnet/api-ni.c
-+++ b/net/lnet/lnet/api-ni.c
-@@ -205,7 +205,7 @@ static void lnet_set_lnd_timeout(void)
-  */
- static atomic_t lnet_dlc_seq_no = ATOMIC_INIT(0);
- 
--static int lnet_ping(struct lnet_process_id id, struct lnet_nid *src_nid,
-+static int lnet_ping(struct lnet_process_id id4, struct lnet_nid *src_nid,
- 		     signed long timeout, struct lnet_process_id __user *ids,
- 		     int n_ids);
- 
-@@ -4562,7 +4562,7 @@ struct ping_data {
- 		complete(&pd->completion);
+diff --git a/net/lnet/klnds/socklnd/socklnd.c b/net/lnet/klnds/socklnd/socklnd.c
+index 4267832..2b6fa18 100644
+--- a/net/lnet/klnds/socklnd/socklnd.c
++++ b/net/lnet/klnds/socklnd/socklnd.c
+@@ -611,23 +611,19 @@ struct ksock_peer_ni *
  }
  
--static int lnet_ping(struct lnet_process_id id, struct lnet_nid *src_nid,
-+static int lnet_ping(struct lnet_process_id id4, struct lnet_nid *src_nid,
- 		     signed long timeout, struct lnet_process_id __user *ids,
- 		     int n_ids)
+ int
+-ksocknal_add_peer(struct lnet_ni *ni, struct lnet_process_id id4,
++ksocknal_add_peer(struct lnet_ni *ni, struct lnet_processid *id,
+ 		  struct sockaddr *addr)
  {
-@@ -4570,13 +4570,14 @@ static int lnet_ping(struct lnet_process_id id, struct lnet_nid *src_nid,
- 	struct ping_data pd = { 0 };
- 	struct lnet_ping_buffer *pbuf;
- 	struct lnet_process_id tmpid;
-+	struct lnet_processid id;
- 	int i;
- 	int nob;
- 	int rc;
- 	int rc2;
+ 	struct ksock_peer_ni *peer_ni;
+ 	struct ksock_peer_ni *peer2;
+ 	struct ksock_conn_cb *conn_cb;
+-	struct lnet_processid id;
  
- 	/* n_ids limit is arbitrary */
--	if (n_ids <= 0 || id.nid == LNET_NID_ANY)
-+	if (n_ids <= 0 || id4.nid == LNET_NID_ANY)
+-	if (id4.nid == LNET_NID_ANY ||
+-	    id4.pid == LNET_PID_ANY)
++	if (LNET_NID_IS_ANY(&id->nid) ||
++	    id->pid == LNET_PID_ANY)
  		return -EINVAL;
  
- 	/* if the user buffer has more space than the lnet_interfaces_max
-@@ -4585,8 +4586,8 @@ static int lnet_ping(struct lnet_process_id id, struct lnet_nid *src_nid,
- 	if (n_ids > lnet_interfaces_max)
- 		n_ids = lnet_interfaces_max;
- 
--	if (id.pid == LNET_PID_ANY)
--		id.pid = LNET_PID_LUSTRE;
-+	if (id4.pid == LNET_PID_ANY)
-+		id4.pid = LNET_PID_LUSTRE;
- 
- 	pbuf = lnet_ping_buffer_alloc(n_ids, GFP_NOFS);
- 	if (!pbuf)
-@@ -4609,8 +4610,8 @@ static int lnet_ping(struct lnet_process_id id, struct lnet_nid *src_nid,
- 		goto fail_ping_buffer_decref;
- 	}
- 
--	rc = LNetGet(lnet_nid_to_nid4(src_nid), pd.mdh, id,
--		     LNET_RESERVED_PORTAL,
-+	lnet_pid4_to_pid(id4, &id);
-+	rc = LNetGet(src_nid, pd.mdh, &id, LNET_RESERVED_PORTAL,
- 		     LNET_PROTO_PING_MATCHBITS, 0, false);
- 	if (rc) {
- 		/* Don't CERROR; this could be deliberate! */
-@@ -4637,7 +4638,7 @@ static int lnet_ping(struct lnet_process_id id, struct lnet_nid *src_nid,
- 
- 	if (nob < 8) {
- 		CERROR("%s: ping info too short %d\n",
--		       libcfs_id2str(id), nob);
-+		       libcfs_id2str(id4), nob);
- 		goto fail_ping_buffer_decref;
- 	}
- 
-@@ -4645,19 +4646,19 @@ static int lnet_ping(struct lnet_process_id id, struct lnet_nid *src_nid,
- 		lnet_swap_pinginfo(pbuf);
- 	} else if (pbuf->pb_info.pi_magic != LNET_PROTO_PING_MAGIC) {
- 		CERROR("%s: Unexpected magic %08x\n",
--		       libcfs_id2str(id), pbuf->pb_info.pi_magic);
-+		       libcfs_id2str(id4), pbuf->pb_info.pi_magic);
- 		goto fail_ping_buffer_decref;
- 	}
- 
- 	if (!(pbuf->pb_info.pi_features & LNET_PING_FEAT_NI_STATUS)) {
- 		CERROR("%s: ping w/o NI status: 0x%x\n",
--		       libcfs_id2str(id), pbuf->pb_info.pi_features);
-+		       libcfs_id2str(id4), pbuf->pb_info.pi_features);
- 		goto fail_ping_buffer_decref;
- 	}
- 
- 	if (nob < LNET_PING_INFO_SIZE(0)) {
- 		CERROR("%s: Short reply %d(%d min)\n",
--		       libcfs_id2str(id),
-+		       libcfs_id2str(id4),
- 		       nob, (int)LNET_PING_INFO_SIZE(0));
- 		goto fail_ping_buffer_decref;
- 	}
-@@ -4667,7 +4668,7 @@ static int lnet_ping(struct lnet_process_id id, struct lnet_nid *src_nid,
- 
- 	if (nob < LNET_PING_INFO_SIZE(n_ids)) {
- 		CERROR("%s: Short reply %d(%d expected)\n",
--		       libcfs_id2str(id),
-+		       libcfs_id2str(id4),
- 		       nob, (int)LNET_PING_INFO_SIZE(n_ids));
- 		goto fail_ping_buffer_decref;
- 	}
-diff --git a/net/lnet/lnet/lib-move.c b/net/lnet/lnet/lib-move.c
-index 55a001e..9ee1075 100644
---- a/net/lnet/lnet/lib-move.c
-+++ b/net/lnet/lnet/lib-move.c
-@@ -3630,7 +3630,7 @@ struct lnet_mt_event_info {
- 	       void *user_data, lnet_handler_t handler, bool recovery)
- {
- 	struct lnet_md md = { NULL };
--	struct lnet_process_id id;
-+	struct lnet_processid id;
- 	struct lnet_ping_buffer *pbuf;
- 	int rc;
- 
-@@ -3662,9 +3662,9 @@ struct lnet_mt_event_info {
- 		goto fail_error;
- 	}
- 	id.pid = LNET_PID_LUSTRE;
--	id.nid = lnet_nid_to_nid4(dest_nid);
-+	id.nid = *dest_nid;
- 
--	rc = LNetGet(LNET_NID_ANY, *mdh, id,
-+	rc = LNetGet(NULL, *mdh, &id,
- 		     LNET_RESERVED_PORTAL,
- 		     LNET_PROTO_PING_MATCHBITS, 0, recovery);
- 	if (rc)
-@@ -4948,35 +4948,29 @@ struct lnet_msg *
-  *		-ENOENT Invalid MD object.
-  */
- int
--LNetGet(lnet_nid_t self4, struct lnet_handle_md mdh,
--	struct lnet_process_id target4, unsigned int portal,
-+LNetGet(struct lnet_nid *self, struct lnet_handle_md mdh,
-+	struct lnet_processid *target, unsigned int portal,
- 	u64 match_bits, unsigned int offset, bool recovery)
- {
- 	struct lnet_rsp_tracker *rspt;
--	struct lnet_processid target;
- 	struct lnet_msg *msg;
- 	struct lnet_libmd *md;
--	struct lnet_nid self;
- 	int cpt;
- 	int rc;
- 
- 	LASSERT(the_lnet.ln_refcount > 0);
- 
--	lnet_nid4_to_nid(self4, &self);
--	lnet_nid4_to_nid(target4.nid, &target.nid);
--	target.pid = target4.pid;
+-	id.pid = id4.pid;
+-	lnet_nid4_to_nid(id4.nid, &id.nid);
 -
- 	if (!list_empty(&the_lnet.ln_test_peers) &&	/* normally we don't */
--	    fail_peer(&target.nid, 1)) {		/* shall we now? */
-+	    fail_peer(&target->nid, 1)) {		/* shall we now? */
- 		CERROR("Dropping GET to %s: simulated failure\n",
--		       libcfs_id2str(target4));
-+		       libcfs_idstr(target));
- 		return -EIO;
- 	}
+ 	/* Have a brand new peer_ni ready... */
+-	peer_ni = ksocknal_create_peer(ni, &id);
++	peer_ni = ksocknal_create_peer(ni, id);
+ 	if (IS_ERR(peer_ni))
+ 		return PTR_ERR(peer_ni);
  
- 	msg = kmem_cache_zalloc(lnet_msg_cachep, GFP_NOFS);
- 	if (!msg) {
- 		CERROR("Dropping GET to %s: ENOMEM on struct lnet_msg\n",
--		       libcfs_id2str(target4));
-+		       libcfs_idstr(target));
- 		return -ENOMEM;
- 	}
+@@ -642,14 +638,14 @@ struct ksock_peer_ni *
+ 	/* always called with a ref on ni, so shutdown can't have started */
+ 	LASSERT(atomic_read(&((struct ksock_net *)ni->ni_data)->ksnn_npeers) >= 0);
  
-@@ -4985,7 +4979,7 @@ struct lnet_msg *
- 	rspt = lnet_rspt_alloc(cpt);
- 	if (!rspt) {
- 		CERROR("Dropping GET to %s: ENOMEM on response tracker\n",
--		       libcfs_id2str(target4));
-+		       libcfs_idstr(target));
- 		return -ENOMEM;
- 	}
- 	INIT_LIST_HEAD(&rspt->rspt_on_list);
-@@ -4997,7 +4991,7 @@ struct lnet_msg *
- 	md = lnet_handle2md(&mdh);
- 	if (!md || !md->md_threshold || md->md_me) {
- 		CERROR("Dropping GET (%llu:%d:%s): MD (%d) invalid\n",
--		       match_bits, portal, libcfs_id2str(target4),
-+		       match_bits, portal, libcfs_idstr(target),
- 		       !md ? -1 : md->md_threshold);
- 		if (md && md->md_me)
- 			CERROR("REPLY MD also attached to portal %d\n",
-@@ -5010,11 +5004,11 @@ struct lnet_msg *
- 		return -ENOENT;
- 	}
- 
--	CDEBUG(D_NET, "%s -> %s\n", __func__, libcfs_id2str(target4));
-+	CDEBUG(D_NET, "%s -> %s\n", __func__, libcfs_idstr(target));
- 
- 	lnet_msg_attach_md(msg, md, 0, 0);
- 
--	lnet_prep_send(msg, LNET_MSG_GET, &target, 0, 0);
-+	lnet_prep_send(msg, LNET_MSG_GET, target, 0, 0);
- 
- 	msg->msg_hdr.msg.get.match_bits = cpu_to_le64(match_bits);
- 	msg->msg_hdr.msg.get.ptl_index = cpu_to_le32(portal);
-@@ -5036,10 +5030,10 @@ struct lnet_msg *
- 	else
- 		lnet_rspt_free(rspt, cpt);
- 
--	rc = lnet_send(&self, msg, NULL);
-+	rc = lnet_send(self, msg, NULL);
- 	if (rc < 0) {
- 		CNETERR("Error sending GET to %s: %d\n",
--			libcfs_id2str(target4), rc);
-+			libcfs_idstr(target), rc);
- 		msg->msg_no_resend = true;
- 		lnet_finalize(msg, rc);
- 	}
-diff --git a/net/lnet/selftest/rpc.c b/net/lnet/selftest/rpc.c
-index b16711a..17277b8 100644
---- a/net/lnet/selftest/rpc.c
-+++ b/net/lnet/selftest/rpc.c
-@@ -434,7 +434,7 @@ struct srpc_bulk *
+-	peer2 = ksocknal_find_peer_locked(ni, &id);
++	peer2 = ksocknal_find_peer_locked(ni, id);
+ 	if (peer2) {
+ 		ksocknal_peer_decref(peer_ni);
+ 		peer_ni = peer2;
  	} else {
- 		LASSERT(options & LNET_MD_OP_GET);
- 
--		rc = LNetGet(self4, *mdh, peer4, portal, matchbits, 0, false);
-+		rc = LNetGet(&self, *mdh, &peer, portal, matchbits, 0, false);
+ 		/* peer_ni table takes my ref on peer_ni */
+ 		hash_add(ksocknal_data.ksnd_peers, &peer_ni->ksnp_list,
+-			 nidhash(&id.nid));
++			 nidhash(&id->nid));
  	}
  
- 	if (rc) {
+ 	ksocknal_add_conn_cb_locked(peer_ni, conn_cb);
+@@ -1830,11 +1826,11 @@ static int ksocknal_push(struct lnet_ni *ni, struct lnet_processid *id)
+ 	case IOC_LIBCFS_ADD_PEER: {
+ 		struct sockaddr_in sa = {.sin_family = AF_INET};
+ 
+-		id4.nid = data->ioc_nid;
+-		id4.pid = LNET_PID_LUSTRE;
++		id.pid = LNET_PID_LUSTRE;
++		lnet_nid4_to_nid(data->ioc_nid, &id.nid);
+ 		sa.sin_addr.s_addr = htonl(data->ioc_u32[0]);
+ 		sa.sin_port = htons(data->ioc_u32[1]);
+-		return ksocknal_add_peer(ni, id4, (struct sockaddr *)&sa);
++		return ksocknal_add_peer(ni, &id, (struct sockaddr *)&sa);
+ 	}
+ 	case IOC_LIBCFS_DEL_PEER:
+ 		id4.nid = data->ioc_nid;
+diff --git a/net/lnet/klnds/socklnd/socklnd.h b/net/lnet/klnds/socklnd/socklnd.h
+index 13abe20..93368bd 100644
+--- a/net/lnet/klnds/socklnd/socklnd.h
++++ b/net/lnet/klnds/socklnd/socklnd.h
+@@ -627,7 +627,7 @@ int ksocknal_recv(struct lnet_ni *ni, void *private, struct lnet_msg *lntmsg,
+ 		  int delayed, struct iov_iter *to, unsigned int rlen);
+ int ksocknal_accept(struct lnet_ni *ni, struct socket *sock);
+ 
+-int ksocknal_add_peer(struct lnet_ni *ni, struct lnet_process_id id,
++int ksocknal_add_peer(struct lnet_ni *ni, struct lnet_processid *id,
+ 		      struct sockaddr *addr);
+ struct ksock_peer_ni *ksocknal_find_peer_locked(struct lnet_ni *ni,
+ 						struct lnet_processid *id);
+diff --git a/net/lnet/klnds/socklnd/socklnd_cb.c b/net/lnet/klnds/socklnd/socklnd_cb.c
+index adec183..94600f3 100644
+--- a/net/lnet/klnds/socklnd/socklnd_cb.c
++++ b/net/lnet/klnds/socklnd/socklnd_cb.c
+@@ -808,7 +808,7 @@ struct ksock_conn_cb *
+ {
+ 	struct ksock_peer_ni *peer_ni;
+ 	struct ksock_conn *conn;
+-	struct sockaddr_in sa;
++	struct sockaddr_storage sa;
+ 	rwlock_t *g_lock;
+ 	int retry;
+ 	int rc;
+@@ -859,16 +859,24 @@ struct ksock_conn_cb *
+ 		}
+ 
+ 		memset(&sa, 0, sizeof(sa));
+-		sa.sin_family = AF_INET;
+-		sa.sin_addr.s_addr = id->nid.nid_addr[0];
+-		sa.sin_port = htons(lnet_acceptor_port());
+-		{
+-			struct lnet_process_id id4 = {
+-				.pid = id->pid,
+-				.nid = lnet_nid_to_nid4(&id->nid),
+-			};
+-			rc = ksocknal_add_peer(ni, id4, (struct sockaddr *)&sa);
++		switch (NID_ADDR_BYTES(&id->nid)) {
++			struct sockaddr_in *sin;
++			struct sockaddr_in6 *sin6;
++		case 4:
++			sin = (void *)&sa;
++			sin->sin_family = AF_INET;
++			sin->sin_addr.s_addr = id->nid.nid_addr[0];
++			sin->sin_port = htons(lnet_acceptor_port());
++			break;
++		case 16:
++			sin6 = (void *)&sa;
++			sin6->sin6_family = AF_INET6;
++			memcpy(&sin6->sin6_addr, id->nid.nid_addr,
++			       sizeof(sin6->sin6_addr));
++			sin6->sin6_port = htons(lnet_acceptor_port());
++			break;
+ 		}
++		rc = ksocknal_add_peer(ni, id, (struct sockaddr *)&sa);
+ 		if (rc) {
+ 			CERROR("Can't add peer_ni %s: %d\n",
+ 			       libcfs_idstr(id), rc);
 -- 
 1.8.3.1
 
