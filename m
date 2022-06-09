@@ -2,34 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AB0A544C0F
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  9 Jun 2022 14:33:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1862544C19
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  9 Jun 2022 14:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235786AbiFIMdd (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 9 Jun 2022 08:33:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51912 "EHLO
+        id S238023AbiFIMdh (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 9 Jun 2022 08:33:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245425AbiFIMda (ORCPT
+        with ESMTP id S245441AbiFIMdc (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 9 Jun 2022 08:33:30 -0400
+        Thu, 9 Jun 2022 08:33:32 -0400
 Received: from smtp3.ccs.ornl.gov (smtp3.ccs.ornl.gov [160.91.203.39])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12501192AB
-        for <linux-fscrypt@vger.kernel.org>; Thu,  9 Jun 2022 05:33:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 008F5192AB
+        for <linux-fscrypt@vger.kernel.org>; Thu,  9 Jun 2022 05:33:30 -0700 (PDT)
 Received: from star.ccs.ornl.gov (star.ccs.ornl.gov [160.91.202.134])
-        by smtp3.ccs.ornl.gov (Postfix) with ESMTP id 3D405EF3;
+        by smtp3.ccs.ornl.gov (Postfix) with ESMTP id 3ECD6EF4;
         Thu,  9 Jun 2022 08:33:16 -0400 (EDT)
 Received: by star.ccs.ornl.gov (Postfix, from userid 2004)
-        id 31CF9D43A3; Thu,  9 Jun 2022 08:33:16 -0400 (EDT)
+        id 36142D43AC; Thu,  9 Jun 2022 08:33:16 -0400 (EDT)
 From:   James Simmons <jsimmons@infradead.org>
 To:     Eric Biggers <ebiggers@google.com>,
         Andreas Dilger <adilger@whamcloud.com>,
         NeilBrown <neilb@suse.de>
 Cc:     linux-fscrypt@vger.kernel.org,
-        Etienne AUJAMES <etienne.aujames@cea.fr>,
         James Simmons <jsimmons@infradead.org>
-Subject: [PATCH 04/18] lustre: llog: read canceled records in llog_backup
-Date:   Thu,  9 Jun 2022 08:33:00 -0400
-Message-Id: <1654777994-29806-5-git-send-email-jsimmons@infradead.org>
+Subject: [PATCH 05/18] lnet: change LNetPrimaryNID to use struct lnet_nid
+Date:   Thu,  9 Jun 2022 08:33:01 -0400
+Message-Id: <1654777994-29806-6-git-send-email-jsimmons@infradead.org>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1654777994-29806-1-git-send-email-jsimmons@infradead.org>
 References: <1654777994-29806-1-git-send-email-jsimmons@infradead.org>
@@ -43,162 +42,112 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Etienne AUJAMES <etienne.aujames@cea.fr>
+From: Mr NeilBrown <neilb@suse.de>
 
-llog_backup() do not reproduce index "holes" in the generated copy.
-This could result to a llog copy indexes different from the source.
-Then it might confuse the configuration update mechanism that rely on
-indexes between the MGS source and the target copy.
+Rather than taking and returning a 4-byte-addr nid, LNetPrimaryNID now
+takes a pointer to a struct lnet_nid, and updates it in-place.
 
-This index gaps can be caused by "lctl --device MGS llog_cancel".
-
-This patch add "raw" read mode to llog_process* to read canceled
-records.
-
-WC-bug-id: https://jira.whamcloud.com/browse/LU-15000
-Lustre-commit: d8e2723b4e9409954 ("LU-15000 llog: read canceled records in llog_backup")
-Signed-off-by: Etienne AUJAMES <etienne.aujames@cea.fr>
-Reviewed-on: https://review.whamcloud.com/46552
-Reviewed-by: Dominique Martinet <qhufhnrynczannqp.f@noclue.notk.org>
-Reviewed-by: DELBARY Gael <gael.delbary@cea.fr>
-Reviewed-by: Stephane Thiell <sthiell@stanford.edu>
+WC-bug-id: https://jira.whamcloud.com/browse/LU-10391
+Lustre-commit: ac881498fa19e6b04 ("LU-10391 lnet: change LNetPrimaryNID to use struct lnet_nid")
+Signed-off-by: Mr NeilBrown <neilb@suse.de>
+Reviewed-on: https://review.whamcloud.com/43616
+Reviewed-by: Serguei Smirnov <ssmirnov@whamcloud.com>
+Reviewed-by: Chris Horn <chris.horn@hpe.com>
+Reviewed-by: Cyril Bordage <cbordage@whamcloud.com>
+Reviewed-by: James Simmons <jsimmons@infradead.org>
 Reviewed-by: Oleg Drokin <green@whamcloud.com>
 Signed-off-by: James Simmons <jsimmons@infradead.org>
 ---
- fs/lustre/include/lustre_log.h  | 11 +++++++++++
- fs/lustre/obdclass/llog.c       | 22 +++++++++++++++++-----
- fs/lustre/obdclass/llog_cat.c   |  5 ++++-
- fs/lustre/obdclass/obd_config.c |  1 +
- 4 files changed, 33 insertions(+), 6 deletions(-)
+ fs/lustre/ptlrpc/connection.c |  2 +-
+ include/linux/lnet/api.h      |  2 +-
+ net/lnet/lnet/peer.c          | 21 +++++++++++----------
+ 3 files changed, 13 insertions(+), 12 deletions(-)
 
-diff --git a/fs/lustre/include/lustre_log.h b/fs/lustre/include/lustre_log.h
-index 1fc7729..2e43d56 100644
---- a/fs/lustre/include/lustre_log.h
-+++ b/fs/lustre/include/lustre_log.h
-@@ -94,6 +94,13 @@ int llog_open(const struct lu_env *env, struct llog_ctxt *ctxt,
- /* llog_process flags */
- #define LLOG_FLAG_NODEAMON 0x0001
+diff --git a/fs/lustre/ptlrpc/connection.c b/fs/lustre/ptlrpc/connection.c
+index d1f53c6..58161fe 100644
+--- a/fs/lustre/ptlrpc/connection.c
++++ b/fs/lustre/ptlrpc/connection.c
+@@ -82,8 +82,8 @@ struct ptlrpc_connection *
+ 	struct ptlrpc_connection *conn, *conn2;
+ 	struct lnet_processid peer;
  
-+/* llog read mode, LLOG_READ_MODE_RAW will process llog canceled records */
-+enum llog_read_mode {
-+	LLOG_READ_MODE_NORMAL	= 0x0000,
-+	LLOG_READ_MODE_RAW	= 0x0001,
-+};
-+
-+
- /* llog_cat.c - catalog api */
- struct llog_process_data {
- 	/**
-@@ -122,6 +129,10 @@ struct llog_process_cat_data {
- 	 * Temporary stored last_idx while scanning log.
- 	 */
- 	int			lpcd_last_idx;
-+	/**
-+	 * llog read mode
-+	 */
-+	enum llog_read_mode	lpcd_read_mode;
- };
+-	peer4.nid = LNetPrimaryNID(peer4.nid);
+ 	lnet_pid4_to_pid(peer4, &peer);
++	LNetPrimaryNID(&peer.nid);
+ 	conn = rhashtable_lookup_fast(&conn_hash, &peer, conn_hash_params);
+ 	if (conn) {
+ 		ptlrpc_connection_addref(conn);
+diff --git a/include/linux/lnet/api.h b/include/linux/lnet/api.h
+index 6d8e915..447b41d 100644
+--- a/include/linux/lnet/api.h
++++ b/include/linux/lnet/api.h
+@@ -77,7 +77,7 @@
+  */
+ int LNetGetId(unsigned int index, struct lnet_processid *id);
+ int LNetDist(lnet_nid_t nid, lnet_nid_t *srcnid, u32 *order);
+-lnet_nid_t LNetPrimaryNID(lnet_nid_t nid);
++void LNetPrimaryNID(struct lnet_nid *nid);
  
- struct thandle;
-diff --git a/fs/lustre/obdclass/llog.c b/fs/lustre/obdclass/llog.c
-index acede87..0cc64ce 100644
---- a/fs/lustre/obdclass/llog.c
-+++ b/fs/lustre/obdclass/llog.c
-@@ -256,6 +256,15 @@ int llog_verify_record(const struct llog_handle *llh, struct llog_rec_hdr *rec)
- 	return 0;
+ /** @} lnet_addr */
+ 
+diff --git a/net/lnet/lnet/peer.c b/net/lnet/lnet/peer.c
+index 714326a..2055f31 100644
+--- a/net/lnet/lnet/peer.c
++++ b/net/lnet/lnet/peer.c
+@@ -1430,18 +1430,20 @@ struct lnet_peer_ni *
  }
+ EXPORT_SYMBOL(LNetAddPeer);
  
-+static inline bool llog_is_index_skipable(int idx, struct llog_log_hdr *llh,
-+					  struct llog_process_cat_data *cd)
-+{
-+	if (cd && (cd->lpcd_read_mode & LLOG_READ_MODE_RAW))
-+		return false;
-+
-+	return !test_bit_le(idx, LLOG_HDR_BITMAP(llh));
-+}
-+
- static int llog_process_thread(void *arg)
+-/* FIXME support large-addr nid */
+-lnet_nid_t
+-LNetPrimaryNID(lnet_nid_t nid)
++void LNetPrimaryNID(struct lnet_nid *nid)
  {
- 	struct llog_process_info *lpi = arg;
-@@ -291,6 +300,8 @@ static int llog_process_thread(void *arg)
+ 	struct lnet_peer *lp;
+ 	struct lnet_peer_ni *lpni;
+-	lnet_nid_t primary_nid = nid;
++	struct lnet_nid orig;
+ 	int rc = 0;
+ 	int cpt;
+ 
++	if (!nid || nid_is_lo0(nid))
++		return;
++	orig = *nid;
++
+ 	cpt = lnet_net_lock_current();
+-	lpni = lnet_nid2peerni_locked(nid, LNET_NID_ANY, cpt);
++	lpni = lnet_peerni_by_nid_locked(nid, NULL, cpt);
+ 	if (IS_ERR(lpni)) {
+ 		rc = PTR_ERR(lpni);
+ 		goto out_unlock;
+@@ -1468,7 +1470,7 @@ struct lnet_peer_ni *
+ 		 * and lookup the lpni again
+ 		 */
+ 		lnet_peer_ni_decref_locked(lpni);
+-		lpni = lnet_find_peer_ni_locked(nid);
++		lpni = lnet_peer_ni_find_locked(nid);
+ 		if (!lpni) {
+ 			rc = -ENOENT;
+ 			goto out_unlock;
+@@ -1483,15 +1485,14 @@ struct lnet_peer_ni *
+ 		if (lnet_is_discovery_disabled(lp))
+ 			break;
  	}
- 	if (cd && cd->lpcd_last_idx)
- 		last_index = cd->lpcd_last_idx;
-+	else if (cd && (cd->lpcd_read_mode & LLOG_READ_MODE_RAW))
-+		last_index = loghandle->lgh_last_idx;
- 	else
- 		last_index = LLOG_HDR_BITMAP_SIZE(llh) - 1;
+-	primary_nid = lnet_nid_to_nid4(&lp->lp_primary_nid);
++	*nid = lp->lp_primary_nid;
+ out_decref:
+ 	lnet_peer_ni_decref_locked(lpni);
+ out_unlock:
+ 	lnet_net_unlock(cpt);
  
-@@ -303,7 +314,7 @@ static int llog_process_thread(void *arg)
+-	CDEBUG(D_NET, "NID %s primary NID %s rc %d\n", libcfs_nid2str(nid),
+-	       libcfs_nid2str(primary_nid), rc);
+-	return primary_nid;
++	CDEBUG(D_NET, "NID %s primary NID %s rc %d\n", libcfs_nidstr(&orig),
++	       libcfs_nidstr(nid), rc);
+ }
+ EXPORT_SYMBOL(LNetPrimaryNID);
  
- 		/* skip records not set in bitmap */
- 		while (index <= last_index &&
--		       !test_bit_le(index, LLOG_HDR_BITMAP(llh)))
-+		       llog_is_index_skipable(index, llh, cd))
- 			++index;
- 
- 		if (index > last_index)
-@@ -451,8 +462,8 @@ static int llog_process_thread(void *arg)
- 			loghandle->lgh_cur_offset = (char *)rec - (char *)buf +
- 						    chunk_offset;
- 
--			/* if set, process the callback on this record */
--			if (test_bit_le(index, LLOG_HDR_BITMAP(llh))) {
-+			/* if needed, process the callback on this record */
-+			if (!llog_is_index_skipable(index, llh, cd)) {
- 				rc = lpi->lpi_cb(lpi->lpi_env, loghandle, rec,
- 						 lpi->lpi_cbdata);
- 				last_called_index = index;
-@@ -522,11 +533,12 @@ int llog_process_or_fork(const struct lu_env *env,
- 	lpi->lpi_catdata = catdata;
- 
- 	CDEBUG(D_OTHER,
--	       "Processing " DFID " flags 0x%03x startcat %d startidx %d first_idx %d last_idx %d\n",
-+	       "Processing " DFID " flags 0x%03x startcat %d startidx %d first_idx %d last_idx %d read_mode %d\n",
- 	       PFID(&loghandle->lgh_id.lgl_oi.oi_fid), flags,
- 	       (flags & LLOG_F_IS_CAT) && d ? d->lpd_startcat : -1,
- 	       (flags & LLOG_F_IS_CAT) && d ? d->lpd_startidx : -1,
--	       cd ? cd->lpcd_first_idx : -1, cd ? cd->lpcd_last_idx : -1);
-+	       cd ? cd->lpcd_first_idx : -1, cd ? cd->lpcd_last_idx : -1,
-+	       cd ? cd->lpcd_read_mode : -1);
- 
- 	if (fork) {
- 		struct task_struct *task;
-diff --git a/fs/lustre/obdclass/llog_cat.c b/fs/lustre/obdclass/llog_cat.c
-index 7f55895..753422b 100644
---- a/fs/lustre/obdclass/llog_cat.c
-+++ b/fs/lustre/obdclass/llog_cat.c
-@@ -197,6 +197,7 @@ static int llog_cat_process_cb(const struct lu_env *env,
- 	else if (d->lpd_startidx > 0) {
- 		struct llog_process_cat_data cd;
- 
-+		cd.lpcd_read_mode = LLOG_READ_MODE_NORMAL;
- 		cd.lpcd_first_idx = d->lpd_startidx;
- 		cd.lpcd_last_idx = 0;
- 		rc = llog_process_or_fork(env, llh, d->lpd_cb, d->lpd_data,
-@@ -231,7 +232,9 @@ static int llog_cat_process_or_fork(const struct lu_env *env,
- 	d.lpd_startidx = startidx;
- 
- 	if (llh->llh_cat_idx > cat_llh->lgh_last_idx) {
--		struct llog_process_cat_data cd;
-+		struct llog_process_cat_data cd = {
-+			.lpcd_read_mode = LLOG_READ_MODE_NORMAL
-+		};
- 
- 		CWARN("%s: catlog " DFID " crosses index zero\n",
- 		      loghandle2name(cat_llh),
-diff --git a/fs/lustre/obdclass/obd_config.c b/fs/lustre/obdclass/obd_config.c
-index cb70ed5..4db7399 100644
---- a/fs/lustre/obdclass/obd_config.c
-+++ b/fs/lustre/obdclass/obd_config.c
-@@ -1401,6 +1401,7 @@ int class_config_parse_llog(const struct lu_env *env, struct llog_ctxt *ctxt,
- {
- 	struct llog_process_cat_data cd = {
- 		.lpcd_first_idx = 0,
-+		.lpcd_read_mode = LLOG_READ_MODE_NORMAL,
- 	};
- 	struct llog_handle *llh;
- 	llog_cb_t callback;
 -- 
 1.8.3.1
 
