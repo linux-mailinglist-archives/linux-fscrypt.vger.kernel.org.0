@@ -2,33 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1862544C19
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  9 Jun 2022 14:33:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B97D6544C1C
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  9 Jun 2022 14:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238023AbiFIMdh (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        id S245364AbiFIMdh (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
         Thu, 9 Jun 2022 08:33:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52046 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245441AbiFIMdc (ORCPT
+        with ESMTP id S245165AbiFIMde (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 9 Jun 2022 08:33:32 -0400
+        Thu, 9 Jun 2022 08:33:34 -0400
 Received: from smtp3.ccs.ornl.gov (smtp3.ccs.ornl.gov [160.91.203.39])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 008F5192AB
-        for <linux-fscrypt@vger.kernel.org>; Thu,  9 Jun 2022 05:33:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 716EB186FB
+        for <linux-fscrypt@vger.kernel.org>; Thu,  9 Jun 2022 05:33:32 -0700 (PDT)
 Received: from star.ccs.ornl.gov (star.ccs.ornl.gov [160.91.202.134])
-        by smtp3.ccs.ornl.gov (Postfix) with ESMTP id 3ECD6EF4;
+        by smtp3.ccs.ornl.gov (Postfix) with ESMTP id 429FEEF5;
         Thu,  9 Jun 2022 08:33:16 -0400 (EDT)
 Received: by star.ccs.ornl.gov (Postfix, from userid 2004)
-        id 36142D43AC; Thu,  9 Jun 2022 08:33:16 -0400 (EDT)
+        id 38701D4403; Thu,  9 Jun 2022 08:33:16 -0400 (EDT)
 From:   James Simmons <jsimmons@infradead.org>
 To:     Eric Biggers <ebiggers@google.com>,
         Andreas Dilger <adilger@whamcloud.com>,
         NeilBrown <neilb@suse.de>
 Cc:     linux-fscrypt@vger.kernel.org,
         James Simmons <jsimmons@infradead.org>
-Subject: [PATCH 05/18] lnet: change LNetPrimaryNID to use struct lnet_nid
-Date:   Thu,  9 Jun 2022 08:33:01 -0400
-Message-Id: <1654777994-29806-6-git-send-email-jsimmons@infradead.org>
+Subject: [PATCH 06/18] lnet: alter lnet_drop_rule_match() to take lnet_nid
+Date:   Thu,  9 Jun 2022 08:33:02 -0400
+Message-Id: <1654777994-29806-7-git-send-email-jsimmons@infradead.org>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1654777994-29806-1-git-send-email-jsimmons@infradead.org>
 References: <1654777994-29806-1-git-send-email-jsimmons@infradead.org>
@@ -44,109 +44,178 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Mr NeilBrown <neilb@suse.de>
 
-Rather than taking and returning a 4-byte-addr nid, LNetPrimaryNID now
-takes a pointer to a struct lnet_nid, and updates it in-place.
+The local nid passed to lnet_drop_rule_match() is now a 16-byte nid.
+Various support functions are also changed to embrace 'struct
+lnet_nid'.
 
 WC-bug-id: https://jira.whamcloud.com/browse/LU-10391
-Lustre-commit: ac881498fa19e6b04 ("LU-10391 lnet: change LNetPrimaryNID to use struct lnet_nid")
+Lustre-commit: 57b7b3d36f5fa1527 ("LU-10391 lnet: alter lnet_drop_rule_match() to take lnet_nid")
 Signed-off-by: Mr NeilBrown <neilb@suse.de>
-Reviewed-on: https://review.whamcloud.com/43616
-Reviewed-by: Serguei Smirnov <ssmirnov@whamcloud.com>
-Reviewed-by: Chris Horn <chris.horn@hpe.com>
-Reviewed-by: Cyril Bordage <cbordage@whamcloud.com>
+Reviewed-on: https://review.whamcloud.com/43617
 Reviewed-by: James Simmons <jsimmons@infradead.org>
+Reviewed-by: Chris Horn <chris.horn@hpe.com>
+Reviewed-by: Amir Shehata <ashehata@whamcloud.com>
 Reviewed-by: Oleg Drokin <green@whamcloud.com>
 Signed-off-by: James Simmons <jsimmons@infradead.org>
 ---
- fs/lustre/ptlrpc/connection.c |  2 +-
- include/linux/lnet/api.h      |  2 +-
- net/lnet/lnet/peer.c          | 21 +++++++++++----------
- 3 files changed, 13 insertions(+), 12 deletions(-)
+ include/linux/lnet/lib-lnet.h |  2 +-
+ net/lnet/lnet/lib-move.c      |  3 +--
+ net/lnet/lnet/lib-msg.c       |  3 +--
+ net/lnet/lnet/net_fault.c     | 40 +++++++++++++++++++++++-----------------
+ 4 files changed, 26 insertions(+), 22 deletions(-)
 
-diff --git a/fs/lustre/ptlrpc/connection.c b/fs/lustre/ptlrpc/connection.c
-index d1f53c6..58161fe 100644
---- a/fs/lustre/ptlrpc/connection.c
-+++ b/fs/lustre/ptlrpc/connection.c
-@@ -82,8 +82,8 @@ struct ptlrpc_connection *
- 	struct ptlrpc_connection *conn, *conn2;
- 	struct lnet_processid peer;
+diff --git a/include/linux/lnet/lib-lnet.h b/include/linux/lnet/lib-lnet.h
+index b6a7a54..2e3c391 100644
+--- a/include/linux/lnet/lib-lnet.h
++++ b/include/linux/lnet/lib-lnet.h
+@@ -751,7 +751,7 @@ void lnet_drop_message(struct lnet_ni *ni, int cpt, void *private,
+ int lnet_fault_init(void);
+ void lnet_fault_fini(void);
  
--	peer4.nid = LNetPrimaryNID(peer4.nid);
- 	lnet_pid4_to_pid(peer4, &peer);
-+	LNetPrimaryNID(&peer.nid);
- 	conn = rhashtable_lookup_fast(&conn_hash, &peer, conn_hash_params);
- 	if (conn) {
- 		ptlrpc_connection_addref(conn);
-diff --git a/include/linux/lnet/api.h b/include/linux/lnet/api.h
-index 6d8e915..447b41d 100644
---- a/include/linux/lnet/api.h
-+++ b/include/linux/lnet/api.h
-@@ -77,7 +77,7 @@
-  */
- int LNetGetId(unsigned int index, struct lnet_processid *id);
- int LNetDist(lnet_nid_t nid, lnet_nid_t *srcnid, u32 *order);
--lnet_nid_t LNetPrimaryNID(lnet_nid_t nid);
-+void LNetPrimaryNID(struct lnet_nid *nid);
+-bool lnet_drop_rule_match(struct lnet_hdr *hdr, lnet_nid_t local_nid,
++bool lnet_drop_rule_match(struct lnet_hdr *hdr, struct lnet_nid *local_nid,
+ 			  enum lnet_msg_hstatus *hstatus);
  
- /** @} lnet_addr */
- 
-diff --git a/net/lnet/lnet/peer.c b/net/lnet/lnet/peer.c
-index 714326a..2055f31 100644
---- a/net/lnet/lnet/peer.c
-+++ b/net/lnet/lnet/peer.c
-@@ -1430,18 +1430,20 @@ struct lnet_peer_ni *
- }
- EXPORT_SYMBOL(LNetAddPeer);
- 
--/* FIXME support large-addr nid */
--lnet_nid_t
--LNetPrimaryNID(lnet_nid_t nid)
-+void LNetPrimaryNID(struct lnet_nid *nid)
- {
- 	struct lnet_peer *lp;
- 	struct lnet_peer_ni *lpni;
--	lnet_nid_t primary_nid = nid;
-+	struct lnet_nid orig;
- 	int rc = 0;
- 	int cpt;
- 
-+	if (!nid || nid_is_lo0(nid))
-+		return;
-+	orig = *nid;
-+
- 	cpt = lnet_net_lock_current();
--	lpni = lnet_nid2peerni_locked(nid, LNET_NID_ANY, cpt);
-+	lpni = lnet_peerni_by_nid_locked(nid, NULL, cpt);
- 	if (IS_ERR(lpni)) {
- 		rc = PTR_ERR(lpni);
- 		goto out_unlock;
-@@ -1468,7 +1470,7 @@ struct lnet_peer_ni *
- 		 * and lookup the lpni again
- 		 */
- 		lnet_peer_ni_decref_locked(lpni);
--		lpni = lnet_find_peer_ni_locked(nid);
-+		lpni = lnet_peer_ni_find_locked(nid);
- 		if (!lpni) {
- 			rc = -ENOENT;
- 			goto out_unlock;
-@@ -1483,15 +1485,14 @@ struct lnet_peer_ni *
- 		if (lnet_is_discovery_disabled(lp))
- 			break;
+ int lnet_delay_rule_add(struct lnet_fault_attr *attr);
+diff --git a/net/lnet/lnet/lib-move.c b/net/lnet/lnet/lib-move.c
+index 0496bf5..080bfe6 100644
+--- a/net/lnet/lnet/lib-move.c
++++ b/net/lnet/lnet/lib-move.c
+@@ -4379,9 +4379,8 @@ void lnet_monitor_thr_stop(void)
+ 		goto drop;
  	}
--	primary_nid = lnet_nid_to_nid4(&lp->lp_primary_nid);
-+	*nid = lp->lp_primary_nid;
- out_decref:
- 	lnet_peer_ni_decref_locked(lpni);
- out_unlock:
- 	lnet_net_unlock(cpt);
  
--	CDEBUG(D_NET, "NID %s primary NID %s rc %d\n", libcfs_nid2str(nid),
--	       libcfs_nid2str(primary_nid), rc);
--	return primary_nid;
-+	CDEBUG(D_NET, "NID %s primary NID %s rc %d\n", libcfs_nidstr(&orig),
-+	       libcfs_nidstr(nid), rc);
+-	/* FIXME need to support large-addr nid */
+ 	if (!list_empty(&the_lnet.ln_drop_rules) &&
+-	    lnet_drop_rule_match(hdr, lnet_nid_to_nid4(&ni->ni_nid), NULL)) {
++	    lnet_drop_rule_match(hdr, &ni->ni_nid, NULL)) {
+ 		CDEBUG(D_NET, "%s, src %s, dst %s: Dropping %s to simulate silent message loss\n",
+ 		       libcfs_nidstr(from_nid), libcfs_nidstr(&src_nid),
+ 		       libcfs_nidstr(&dest_nid), lnet_msgtyp2str(type));
+diff --git a/net/lnet/lnet/lib-msg.c b/net/lnet/lnet/lib-msg.c
+index f476975..95695b2 100644
+--- a/net/lnet/lnet/lib-msg.c
++++ b/net/lnet/lnet/lib-msg.c
+@@ -1115,8 +1115,7 @@
+ 		return false;
+ 
+ 	/* match only health rules */
+-	if (!lnet_drop_rule_match(&msg->msg_hdr, LNET_NID_ANY,
+-				  hstatus))
++	if (!lnet_drop_rule_match(&msg->msg_hdr, NULL, hstatus))
+ 		return false;
+ 
+ 	CDEBUG(D_NET,
+diff --git a/net/lnet/lnet/net_fault.c b/net/lnet/lnet/net_fault.c
+index 1f08b38..fe7a07c 100644
+--- a/net/lnet/lnet/net_fault.c
++++ b/net/lnet/lnet/net_fault.c
+@@ -65,12 +65,16 @@ struct lnet_drop_rule {
+ };
+ 
+ static bool
+-lnet_fault_nid_match(lnet_nid_t nid, lnet_nid_t msg_nid)
++lnet_fault_nid_match(lnet_nid_t nid, struct lnet_nid *msg_nid)
+ {
+-	if (nid == msg_nid || nid == LNET_NID_ANY)
++	if (nid == LNET_NID_ANY)
++		return true;
++	if (!msg_nid)
++		return false;
++	if (lnet_nid_to_nid4(msg_nid) == nid)
+ 		return true;
+ 
+-	if (LNET_NIDNET(nid) != LNET_NIDNET(msg_nid))
++	if (LNET_NIDNET(nid) != LNET_NID_NET(msg_nid))
+ 		return false;
+ 
+ 	/* 255.255.255.255@net is wildcard for all addresses in a network */
+@@ -78,8 +82,10 @@ struct lnet_drop_rule {
  }
- EXPORT_SYMBOL(LNetPrimaryNID);
+ 
+ static bool
+-lnet_fault_attr_match(struct lnet_fault_attr *attr, lnet_nid_t src,
+-		      lnet_nid_t local_nid, lnet_nid_t dst,
++lnet_fault_attr_match(struct lnet_fault_attr *attr,
++		      struct lnet_nid *src,
++		      struct lnet_nid *local_nid,
++		      struct lnet_nid *dst,
+ 		      unsigned int type, unsigned int portal)
+ {
+ 	if (!lnet_fault_nid_match(attr->fa_src, src) ||
+@@ -339,8 +345,10 @@ struct lnet_drop_rule {
+  * decide whether should drop this message or not
+  */
+ static bool
+-drop_rule_match(struct lnet_drop_rule *rule, lnet_nid_t src,
+-		lnet_nid_t local_nid, lnet_nid_t dst,
++drop_rule_match(struct lnet_drop_rule *rule,
++		struct lnet_nid *src,
++		struct lnet_nid *local_nid,
++		struct lnet_nid *dst,
+ 		unsigned int type, unsigned int portal,
+ 		enum lnet_msg_hstatus *hstatus)
+ {
+@@ -424,11 +432,9 @@ struct lnet_drop_rule {
+  */
+ bool
+ lnet_drop_rule_match(struct lnet_hdr *hdr,
+-		     lnet_nid_t local_nid,
++		     struct lnet_nid *local_nid,
+ 		     enum lnet_msg_hstatus *hstatus)
+ {
+-	lnet_nid_t src = lnet_nid_to_nid4(&hdr->src_nid);
+-	lnet_nid_t dst = lnet_nid_to_nid4(&hdr->dest_nid);
+ 	unsigned int typ = hdr->type;
+ 	struct lnet_drop_rule *rule;
+ 	unsigned int ptl = -1;
+@@ -446,7 +452,8 @@ struct lnet_drop_rule {
+ 
+ 	cpt = lnet_net_lock_current();
+ 	list_for_each_entry(rule, &the_lnet.ln_drop_rules, dr_link) {
+-		drop = drop_rule_match(rule, src, local_nid, dst, typ, ptl,
++		drop = drop_rule_match(rule, &hdr->src_nid, local_nid,
++				       &hdr->dest_nid, typ, ptl,
+ 				       hstatus);
+ 		if (drop)
+ 			break;
+@@ -530,15 +537,15 @@ struct delay_daemon_data {
+  * decide whether should delay this message or not
+  */
+ static bool
+-delay_rule_match(struct lnet_delay_rule *rule, lnet_nid_t src,
+-		 lnet_nid_t dst, unsigned int type, unsigned int portal,
++delay_rule_match(struct lnet_delay_rule *rule, struct lnet_nid *src,
++		 struct lnet_nid *dst, unsigned int type, unsigned int portal,
+ 		 struct lnet_msg *msg)
+ {
+ 	struct lnet_fault_attr *attr = &rule->dl_attr;
+ 	bool delay;
+ 	time64_t now = ktime_get_seconds();
+ 
+-	if (!lnet_fault_attr_match(attr, src, LNET_NID_ANY,
++	if (!lnet_fault_attr_match(attr, src, NULL,
+ 				   dst, type, portal))
+ 		return false;
+ 
+@@ -605,8 +612,6 @@ struct delay_daemon_data {
+ lnet_delay_rule_match_locked(struct lnet_hdr *hdr, struct lnet_msg *msg)
+ {
+ 	struct lnet_delay_rule *rule;
+-	lnet_nid_t src = lnet_nid_to_nid4(&hdr->src_nid);
+-	lnet_nid_t dst = lnet_nid_to_nid4(&hdr->dest_nid);
+ 	unsigned int typ = hdr->type;
+ 	unsigned int ptl = -1;
+ 
+@@ -622,7 +627,8 @@ struct delay_daemon_data {
+ 		ptl = le32_to_cpu(hdr->msg.get.ptl_index);
+ 
+ 	list_for_each_entry(rule, &the_lnet.ln_delay_rules, dl_link) {
+-		if (delay_rule_match(rule, src, dst, typ, ptl, msg))
++		if (delay_rule_match(rule, &hdr->src_nid, &hdr->dest_nid,
++				     typ, ptl, msg))
+ 			return true;
+ 	}
  
 -- 
 1.8.3.1
