@@ -2,33 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0696544C24
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  9 Jun 2022 14:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C128544C25
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  9 Jun 2022 14:34:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245532AbiFIMeB (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 9 Jun 2022 08:34:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53546 "EHLO
+        id S235883AbiFIMeC (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 9 Jun 2022 08:34:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245480AbiFIMds (ORCPT
+        with ESMTP id S245500AbiFIMdu (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 9 Jun 2022 08:33:48 -0400
+        Thu, 9 Jun 2022 08:33:50 -0400
 Received: from smtp3.ccs.ornl.gov (smtp3.ccs.ornl.gov [160.91.203.39])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E9AC22520
-        for <linux-fscrypt@vger.kernel.org>; Thu,  9 Jun 2022 05:33:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE2E922B28
+        for <linux-fscrypt@vger.kernel.org>; Thu,  9 Jun 2022 05:33:45 -0700 (PDT)
 Received: from star.ccs.ornl.gov (star.ccs.ornl.gov [160.91.202.134])
-        by smtp3.ccs.ornl.gov (Postfix) with ESMTP id 4B4B6EFA;
+        by smtp3.ccs.ornl.gov (Postfix) with ESMTP id 4F0DCEFB;
         Thu,  9 Jun 2022 08:33:16 -0400 (EDT)
 Received: by star.ccs.ornl.gov (Postfix, from userid 2004)
-        id 498CCD43A0; Thu,  9 Jun 2022 08:33:16 -0400 (EDT)
+        id 4C91ED43A3; Thu,  9 Jun 2022 08:33:16 -0400 (EDT)
 From:   James Simmons <jsimmons@infradead.org>
 To:     Eric Biggers <ebiggers@google.com>,
         Andreas Dilger <adilger@whamcloud.com>,
         NeilBrown <neilb@suse.de>
 Cc:     linux-fscrypt@vger.kernel.org,
         James Simmons <jsimmons@infradead.org>
-Subject: [PATCH 11/18] lnet: socklnd: large processid for ksocknal_get_peer_info
-Date:   Thu,  9 Jun 2022 08:33:07 -0400
-Message-Id: <1654777994-29806-12-git-send-email-jsimmons@infradead.org>
+Subject: [PATCH 12/18] lnet: socklnd: switch ksocknal_del_peer to lnet_processid
+Date:   Thu,  9 Jun 2022 08:33:08 -0400
+Message-Id: <1654777994-29806-13-git-send-email-jsimmons@infradead.org>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1654777994-29806-1-git-send-email-jsimmons@infradead.org>
 References: <1654777994-29806-1-git-send-email-jsimmons@infradead.org>
@@ -44,88 +44,128 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Mr NeilBrown <neilb@suse.de>
 
-Have ksocknal_launch_packet() report a 'struct lnet_processid'
-with a large address.
+ksocknal_del_peer now takes a pointer to a lnet_processid,
+with room for a large address.
+A NULL means "ANY NID, AND PID".
+The "ip" argument was completely unused, so has been removed.
+
+This was the last use of 'struct lnet_process_id' in ksocklnd.
 
 WC-bug-id: https://jira.whamcloud.com/browse/LU-10391
-Lustre-commit: e4a49294530a5d5f7 ("LU-10391 socklnd: large processid for ksocknal_get_peer_info")
+Lustre-commit: 782e37e54f5c54886 ("LU-10391 socklnd: switch ksocknal_del_peer to lnet_processid")
 Signed-off-by: Mr NeilBrown <neilb@suse.de>
-Reviewed-on: https://review.whamcloud.com/44622
+Reviewed-on: https://review.whamcloud.com/44623
 Reviewed-by: James Simmons <jsimmons@infradead.org>
 Reviewed-by: Chris Horn <chris.horn@hpe.com>
 Reviewed-by: Oleg Drokin <green@whamcloud.com>
 Signed-off-by: James Simmons <jsimmons@infradead.org>
 ---
- net/lnet/klnds/socklnd/socklnd.c | 19 +++++++++----------
- 1 file changed, 9 insertions(+), 10 deletions(-)
+ net/lnet/klnds/socklnd/socklnd.c | 36 +++++++++++++-----------------------
+ 1 file changed, 13 insertions(+), 23 deletions(-)
 
 diff --git a/net/lnet/klnds/socklnd/socklnd.c b/net/lnet/klnds/socklnd/socklnd.c
-index 2b6fa18..857aa05 100644
+index 857aa05..01b434f 100644
 --- a/net/lnet/klnds/socklnd/socklnd.c
 +++ b/net/lnet/klnds/socklnd/socklnd.c
-@@ -292,7 +292,7 @@ struct ksock_peer_ni *
+@@ -660,7 +660,7 @@ struct ksock_peer_ni *
+ }
+ 
+ static void
+-ksocknal_del_peer_locked(struct ksock_peer_ni *peer_ni, u32 ip)
++ksocknal_del_peer_locked(struct ksock_peer_ni *peer_ni)
+ {
+ 	struct ksock_conn *conn;
+ 	struct ksock_conn *cnxt;
+@@ -683,7 +683,7 @@ struct ksock_peer_ni *
+ }
  
  static int
- ksocknal_get_peer_info(struct lnet_ni *ni, int index,
--		       struct lnet_process_id *id, u32 *myip, u32 *peer_ip,
-+		       struct lnet_processid *id, u32 *myip, u32 *peer_ip,
- 		       int *port, int *conn_count, int *share_count)
+-ksocknal_del_peer(struct lnet_ni *ni, struct lnet_process_id id4, u32 ip)
++ksocknal_del_peer(struct lnet_ni *ni, struct lnet_processid *id)
  {
- 	struct ksock_peer_ni *peer_ni;
-@@ -312,8 +312,7 @@ struct ksock_peer_ni *
- 			if (index-- > 0)
+ 	LIST_HEAD(zombies);
+ 	struct hlist_node *pnxt;
+@@ -692,15 +692,11 @@ struct ksock_peer_ni *
+ 	int hi;
+ 	int i;
+ 	int rc = -ENOENT;
+-	struct lnet_processid id;
+-
+-	id.pid = id4.pid;
+-	lnet_nid4_to_nid(id4.nid, &id.nid);
+ 
+ 	write_lock_bh(&ksocknal_data.ksnd_global_lock);
+ 
+-	if (!LNET_NID_IS_ANY(&id.nid)) {
+-		lo = hash_min(nidhash(&id.nid),
++	if (id && !LNET_NID_IS_ANY(&id->nid)) {
++		lo = hash_min(nidhash(&id->nid),
+ 			      HASH_BITS(ksocknal_data.ksnd_peers));
+ 		hi = lo;
+ 	} else {
+@@ -715,15 +711,15 @@ struct ksock_peer_ni *
+ 			if (peer_ni->ksnp_ni != ni)
  				continue;
  
--			id->pid = peer_ni->ksnp_id.pid;
--			id->nid = lnet_nid_to_nid4(&peer_ni->ksnp_id.nid);
-+			*id = peer_ni->ksnp_id;
- 			*myip = 0;
- 			*peer_ip = 0;
- 			*port = 0;
-@@ -327,8 +326,7 @@ struct ksock_peer_ni *
- 			if (index-- > 0)
+-			if (!((LNET_NID_IS_ANY(&id.nid) ||
+-			       nid_same(&peer_ni->ksnp_id.nid, &id.nid)) &&
+-			      (id.pid == LNET_PID_ANY ||
+-			       peer_ni->ksnp_id.pid == id.pid)))
++			if (!((!id || LNET_NID_IS_ANY(&id->nid) ||
++			       nid_same(&peer_ni->ksnp_id.nid, &id->nid)) &&
++			      (!id || id->pid == LNET_PID_ANY ||
++			       peer_ni->ksnp_id.pid == id->pid)))
  				continue;
  
--			id->pid = peer_ni->ksnp_id.pid;
--			id->nid = lnet_nid_to_nid4(&peer_ni->ksnp_id.nid);
-+			*id = peer_ni->ksnp_id;
- 			*myip = peer_ni->ksnp_passive_ips[j];
- 			*peer_ip = 0;
- 			*port = 0;
-@@ -344,8 +342,7 @@ struct ksock_peer_ni *
+ 			ksocknal_peer_addref(peer_ni);     /* a ref for me... */
  
- 			conn_cb = peer_ni->ksnp_conn_cb;
+-			ksocknal_del_peer_locked(peer_ni, ip);
++			ksocknal_del_peer_locked(peer_ni);
  
--			id->pid = peer_ni->ksnp_id.pid;
--			id->nid = lnet_nid_to_nid4(&peer_ni->ksnp_id.nid);
-+			*id = peer_ni->ksnp_id;
- 			if (conn_cb->ksnr_addr.ss_family == AF_INET) {
- 				struct sockaddr_in *sa;
- 
-@@ -1808,18 +1805,20 @@ static int ksocknal_push(struct lnet_ni *ni, struct lnet_processid *id)
- 		int share_count = 0;
- 
- 		rc = ksocknal_get_peer_info(ni, data->ioc_count,
--					    &id4, &myip, &ip, &port,
-+					    &id, &myip, &ip, &port,
- 					    &conn_count,  &share_count);
- 		if (rc)
- 			return rc;
- 
--		data->ioc_nid = id4.nid;
-+		if (!nid_is_nid4(&id.nid))
-+			return -EINVAL;
-+		data->ioc_nid = lnet_nid_to_nid4(&id.nid);
- 		data->ioc_count = share_count;
- 		data->ioc_u32[0] = ip;
- 		data->ioc_u32[1] = port;
- 		data->ioc_u32[2] = myip;
- 		data->ioc_u32[3] = conn_count;
--		data->ioc_u32[4] = id4.pid;
-+		data->ioc_u32[4] = id.pid;
- 		return 0;
+ 			if (peer_ni->ksnp_closing &&
+ 			    !list_empty(&peer_ni->ksnp_tx_queue)) {
+@@ -1764,7 +1760,6 @@ static int ksocknal_push(struct lnet_ni *ni, struct lnet_processid *id)
+ int
+ ksocknal_ctl(struct lnet_ni *ni, unsigned int cmd, void *arg)
+ {
+-	struct lnet_process_id id4 = {};
+ 	struct lnet_processid id = {};
+ 	struct libcfs_ioctl_data *data = arg;
+ 	int rc;
+@@ -1832,10 +1827,9 @@ static int ksocknal_push(struct lnet_ni *ni, struct lnet_processid *id)
+ 		return ksocknal_add_peer(ni, &id, (struct sockaddr *)&sa);
  	}
+ 	case IOC_LIBCFS_DEL_PEER:
+-		id4.nid = data->ioc_nid;
+-		id4.pid = LNET_PID_ANY;
+-		return ksocknal_del_peer(ni, id4,
+-					 data->ioc_u32[0]); /* IP */
++		lnet_nid4_to_nid(data->ioc_nid, &id.nid);
++		id.pid = LNET_PID_ANY;
++		return ksocknal_del_peer(ni, &id);
  
+ 	case IOC_LIBCFS_GET_CONN: {
+ 		int txmem;
+@@ -2347,10 +2341,6 @@ static int ksocknal_inetaddr_event(struct notifier_block *unused,
+ ksocknal_shutdown(struct lnet_ni *ni)
+ {
+ 	struct ksock_net *net = ni->ni_data;
+-	struct lnet_process_id anyid = { 0 };
+-
+-	anyid.nid = LNET_NID_ANY;
+-	anyid.pid = LNET_PID_ANY;
+ 
+ 	LASSERT(ksocknal_data.ksnd_init == SOCKNAL_INIT_ALL);
+ 	LASSERT(ksocknal_data.ksnd_nnets > 0);
+@@ -2359,7 +2349,7 @@ static int ksocknal_inetaddr_event(struct notifier_block *unused,
+ 	atomic_add(SOCKNAL_SHUTDOWN_BIAS, &net->ksnn_npeers);
+ 
+ 	/* Delete all peers */
+-	ksocknal_del_peer(ni, anyid, 0);
++	ksocknal_del_peer(ni, NULL);
+ 
+ 	/* Wait for all peer_ni state to clean up */
+ 	wait_var_event_warning(&net->ksnn_npeers,
 -- 
 1.8.3.1
 
