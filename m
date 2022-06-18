@@ -2,34 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B47550556
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 18 Jun 2022 16:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6D13550558
+	for <lists+linux-fscrypt@lfdr.de>; Sat, 18 Jun 2022 16:01:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236954AbiFROAw (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sat, 18 Jun 2022 10:00:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48824 "EHLO
+        id S1350572AbiFROAx (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sat, 18 Jun 2022 10:00:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236309AbiFRNx3 (ORCPT
+        with ESMTP id S236772AbiFRNxc (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sat, 18 Jun 2022 09:53:29 -0400
+        Sat, 18 Jun 2022 09:53:32 -0400
 Received: from smtp3.ccs.ornl.gov (smtp3.ccs.ornl.gov [160.91.203.39])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E61610572
-        for <linux-fscrypt@vger.kernel.org>; Sat, 18 Jun 2022 06:53:25 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11A5D13D21
+        for <linux-fscrypt@vger.kernel.org>; Sat, 18 Jun 2022 06:53:27 -0700 (PDT)
 Received: from star.ccs.ornl.gov (star.ccs.ornl.gov [160.91.202.134])
-        by smtp3.ccs.ornl.gov (Postfix) with ESMTP id 5434C1E89;
+        by smtp3.ccs.ornl.gov (Postfix) with ESMTP id 5ADDD1E8B;
         Sat, 18 Jun 2022 09:52:14 -0400 (EDT)
 Received: by star.ccs.ornl.gov (Postfix, from userid 2004)
-        id 51BB9E4F1D; Sat, 18 Jun 2022 09:52:14 -0400 (EDT)
+        id 55ABDE9152; Sat, 18 Jun 2022 09:52:14 -0400 (EDT)
 From:   James Simmons <jsimmons@infradead.org>
 To:     Eric Biggers <ebiggers@google.com>,
         Andreas Dilger <adilger@whamcloud.com>,
         NeilBrown <neilb@suse.de>
-Cc:     linux-fscrypt@vger.kernel.org,
-        "John L. Hammond" <jhammond@whamcloud.com>,
+Cc:     linux-fscrypt@vger.kernel.org, Chris Horn <chris.horn@hpe.com>,
         James Simmons <jsimmons@infradead.org>
-Subject: [PATCH 26/28] lustre: lov: remove lov_page
-Date:   Sat, 18 Jun 2022 09:52:08 -0400
-Message-Id: <1655560330-30743-27-git-send-email-jsimmons@infradead.org>
+Subject: [PATCH 27/28] lnet: libcfs: libcfs_debug_mb set incorrectly on init
+Date:   Sat, 18 Jun 2022 09:52:09 -0400
+Message-Id: <1655560330-30743-28-git-send-email-jsimmons@infradead.org>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1655560330-30743-1-git-send-email-jsimmons@infradead.org>
 References: <1655560330-30743-1-git-send-email-jsimmons@infradead.org>
@@ -42,266 +41,83 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: "John L. Hammond" <jhammond@whamcloud.com>
+From: Chris Horn <chris.horn@hpe.com>
 
-Remove the lov page layer since it does nothing but costs 24 bytes per
-page plus pointer chases.
+If libcfs_debug_mb parameter is specified to insmod (i.e. set before
+module is initialized) then it does not get initialized correctly.
 
-WC-bug-id: https://jira.whamcloud.com/browse/LU-10994
-Lustre-commit: 56f520b1a4c9ae64c ("LU-10994 lov: remove lov_page")
-Signed-off-by: John L. Hammond <jhammond@whamcloud.com>
-Reviewed-on: https://review.whamcloud.com/47221
-Reviewed-by: Patrick Farrell <pfarrell@whamcloud.com>
-Reviewed-by: Bobi Jam <bobijam@hotmail.com>
+libcfs_param_debug_mb_set() expects cfs_trace_get_debug_mb() to return
+zero if the module has not been initialized yet, but
+cfs_trace_get_debug_mb() will return 1 in this case. Modify
+cfs_trace_get_debug_mb() to return zero as expected. A related issue
+is that in this case we need to call cfs_trace_get_debug_mb() after
+cfs_tracefile_init() so that libcfs_debug_mb gets the same value it
+would get if we had set it after module init.
+
+When libcfs_debug_mb is specified to insmod, libcfs_debug_init()
+divides its value by num_possible_cpus(), but this is already done in
+libcfs_param_debug_mb_set().
+
+Fixes: 205b154f3b ("lustre: always range-check libcfs_debug_mb setting.")
+HPE-bug-id: LUS-10839
+WC-bug-id: https://jira.whamcloud.com/browse/LU-15689
+Lustre-commit: d38ef181d8250b083 ("LU-15689 libcfs: libcfs_debug_mb set incorrectly on init")
+Signed-off-by: Chris Horn <chris.horn@hpe.com>
+Reviewed-on: https://review.whamcloud.com/46925
+Reviewed-by: Neil Brown <neilb@suse.de>
+Reviewed-by: James Simmons <jsimmons@infradead.org>
 Reviewed-by: Oleg Drokin <green@whamcloud.com>
 Signed-off-by: James Simmons <jsimmons@infradead.org>
 ---
- fs/lustre/include/cl_object.h   | 13 ++++++------
- fs/lustre/lov/lov_cl_internal.h | 32 ++++++++++++----------------
- fs/lustre/lov/lov_object.c      |  5 ++---
- fs/lustre/lov/lov_page.c        | 46 ++++++-----------------------------------
- 4 files changed, 27 insertions(+), 69 deletions(-)
+ net/lnet/libcfs/debug.c     | 9 +++------
+ net/lnet/libcfs/tracefile.c | 5 ++++-
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/fs/lustre/include/cl_object.h b/fs/lustre/include/cl_object.h
-index 06f03b4..5be89d6 100644
---- a/fs/lustre/include/cl_object.h
-+++ b/fs/lustre/include/cl_object.h
-@@ -720,7 +720,7 @@ enum cl_page_type {
- 
- #define	CP_STATE_BITS	4
- #define	CP_TYPE_BITS	2
--#define	CP_MAX_LAYER	3
-+#define	CP_MAX_LAYER	2
- 
- /**
-  * Fields are protected by the lock on struct page, except for atomics and
-@@ -751,22 +751,21 @@ struct cl_page {
- 	/** Linkage of pages within group. Pages must be owned */
- 	struct list_head		 cp_batch;
- 	/** array of slices offset. Immutable after creation. */
--	unsigned char			 cp_layer_offset[CP_MAX_LAYER]; /* 24 bits */
-+	unsigned char			 cp_layer_offset[CP_MAX_LAYER];
- 	/** current slice index */
--	unsigned char			 cp_layer_count:2; /* 26 bits */
-+	unsigned char			 cp_layer_count:2;
- 	/**
- 	 * Page state. This field is const to avoid accidental update, it is
- 	 * modified only internally within cl_page.c. Protected by a VM lock.
+diff --git a/net/lnet/libcfs/debug.c b/net/lnet/libcfs/debug.c
+index f8ff5f7..c00e6da 100644
+--- a/net/lnet/libcfs/debug.c
++++ b/net/lnet/libcfs/debug.c
+@@ -544,12 +544,10 @@ int libcfs_debug_init(unsigned long bufsize)
+ 	/* If libcfs_debug_mb is uninitialized then just make the
+ 	 * total buffers smp_num_cpus * TCD_MAX_PAGES
  	 */
--	enum cl_page_state		 cp_state:CP_STATE_BITS; /* 30 bits */
-+	enum cl_page_state		 cp_state:CP_STATE_BITS;
- 	/**
- 	 * Page type. Only CPT_TRANSIENT is used so far. Immutable after
- 	 * creation.
- 	 */
--	enum cl_page_type		 cp_type:CP_TYPE_BITS; /* 32 bits */
-+	enum cl_page_type		 cp_type:CP_TYPE_BITS;
- 	/* which slab kmem index this memory allocated from */
--	short int			 cp_kmem_index; /* 48 bits */
--	unsigned int			 cp_unused1:16; /* 64 bits */
-+	short int			 cp_kmem_index;
+-	if (max < num_possible_cpus()) {
++	if (max < num_possible_cpus())
+ 		max = TCD_MAX_PAGES;
+-	} else {
+-		max = max / num_possible_cpus();
++	else
+ 		max <<= (20 - PAGE_SHIFT);
+-	}
  
- 	/**
- 	 * Owning IO in cl_page_state::CPS_OWNED state. Sub-page can be owned
-diff --git a/fs/lustre/lov/lov_cl_internal.h b/fs/lustre/lov/lov_cl_internal.h
-index 6b96543..95dbb43 100644
---- a/fs/lustre/lov/lov_cl_internal.h
-+++ b/fs/lustre/lov/lov_cl_internal.h
-@@ -48,14 +48,13 @@
- /** \defgroup lov lov
-  * Logical object volume layer. This layer implements data striping (raid0).
-  *
-- * At the lov layer top-entity (object, page, lock, io) is connected to one or
-+ * At the lov layer top-entity (object, lock, io) is connected to one or
-  * more sub-entities: top-object, representing a file is connected to a set of
-  * sub-objects, each representing a stripe, file-level top-lock is connected
-- * to a set of per-stripe sub-locks, top-page is connected to a (single)
-- * sub-page, and a top-level IO is connected to a set of (potentially
-- * concurrent) sub-IO's.
-+ * to a set of per-stripe sub-locks, and a top-level IO is connected to a set of
-+ * (potentially concurrent) sub-IO's.
-  *
-- * Sub-object, sub-page, and sub-io have well-defined top-object and top-page
-+ * Sub-object and sub-io have well-defined top-object and top-io
-  * respectively, while a single sub-lock can be part of multiple top-locks.
-  *
-  * Reference counting models are different for different types of entities:
-@@ -63,9 +62,6 @@
-  *     - top-object keeps a reference to its sub-objects, and destroys them
-  *       when it is destroyed.
-  *
-- *     - top-page keeps a reference to its sub-page, and destroys it when it
-- *       is destroyed.
-- *
-  *     - IO's are not reference counted.
-  *
-  * To implement a connection between top and sub entities, lov layer is split
-@@ -441,10 +437,6 @@ struct lov_lock {
- 	struct lov_lock_sub     lls_sub[0];
- };
+ 	rc = cfs_tracefile_init(max);
+ 	if (rc)
+@@ -557,8 +555,7 @@ int libcfs_debug_init(unsigned long bufsize)
  
--struct lov_page {
--	struct cl_page_slice	lps_cl;
--};
--
- /*
-  * Bottom half.
-  */
-@@ -626,6 +618,15 @@ int lov_io_init_released(const struct lu_env *env, struct cl_object *obj,
- struct lov_io_sub *lov_sub_get(const struct lu_env *env, struct lov_io *lio,
- 			       int stripe);
- 
-+enum {
-+	CP_LOV_INDEX_EMPTY = -1U,
-+};
-+
-+static inline bool lov_page_is_empty(const struct cl_page *cp)
-+{
-+	return cp->cp_lov_index == CP_LOV_INDEX_EMPTY;
-+}
-+
- int lov_page_init_empty(const struct lu_env *env, struct cl_object *obj,
- 			struct cl_page *page, pgoff_t index);
- int lov_page_init_composite(const struct lu_env *env, struct cl_object *obj,
-@@ -640,7 +641,6 @@ struct lu_object *lovsub_object_alloc(const struct lu_env *env,
- 				      const struct lu_object_header *hdr,
- 				      struct lu_device *dev);
- 
--bool lov_page_is_empty(const struct cl_page *page);
- int lov_lsm_entry(const struct lov_stripe_md *lsm, u64 offset);
- int lov_io_layout_at(struct lov_io *lio, u64 offset);
- 
-@@ -776,12 +776,6 @@ static inline struct lov_lock *cl2lov_lock(const struct cl_lock_slice *slice)
- 	return container_of(slice, struct lov_lock, lls_cl);
- }
- 
--static inline struct lov_page *cl2lov_page(const struct cl_page_slice *slice)
--{
--	LINVRNT(lov_is_object(&slice->cpl_obj->co_lu));
--	return container_of(slice, struct lov_page, lps_cl);
--}
--
- static inline struct lov_io *cl2lov_io(const struct lu_env *env,
- 				       const struct cl_io_slice *ios)
- {
-diff --git a/fs/lustre/lov/lov_object.c b/fs/lustre/lov/lov_object.c
-index d9eaf15..3934a98 100644
---- a/fs/lustre/lov/lov_object.c
-+++ b/fs/lustre/lov/lov_object.c
-@@ -113,8 +113,7 @@ static int lov_page_slice_fixup(struct lov_object *lov,
- 	struct cl_object *o;
- 
- 	if (!stripe)
--		return hdr->coh_page_bufsize - lov->lo_cl.co_slice_off -
--		       cfs_size_round(sizeof(struct lov_page));
-+		return hdr->coh_page_bufsize - lov->lo_cl.co_slice_off;
- 
- 	cl_object_for_each(o, stripe)
- 		o->co_slice_off += hdr->coh_page_bufsize;
-@@ -1329,7 +1328,7 @@ static int lov_object_init(const struct lu_env *env, struct lu_object *obj,
- 	init_rwsem(&lov->lo_type_guard);
- 	atomic_set(&lov->lo_active_ios, 0);
- 	init_waitqueue_head(&lov->lo_waitq);
--	cl_object_page_init(lu2cl(obj), sizeof(struct lov_page));
-+	cl_object_page_init(lu2cl(obj), 0);
- 
- 	lov->lo_type = LLT_EMPTY;
- 	if (cconf->u.coc_layout.lb_buf) {
-diff --git a/fs/lustre/lov/lov_page.c b/fs/lustre/lov/lov_page.c
-index 16bd7cd..bd6ba79 100644
---- a/fs/lustre/lov/lov_page.c
-+++ b/fs/lustre/lov/lov_page.c
-@@ -39,6 +39,8 @@
- 
- #include <linux/highmem.h>
- #include "lov_cl_internal.h"
-+#include <linux/bug.h>
-+#include <linux/compiler.h>
- 
- /** \addtogroup lov
-  *  @{
-@@ -49,20 +51,6 @@
-  * Lov page operations.
-  *
-  */
--static int lov_comp_page_print(const struct lu_env *env,
--			       const struct cl_page_slice *slice,
--			       void *cookie, lu_printer_t printer)
--{
--	struct lov_page *lp = cl2lov_page(slice);
--
--	return (*printer)(env, cookie,
--			  LUSTRE_LOV_NAME"-page@%p\n", lp);
--}
--
--static const struct cl_page_operations lov_comp_page_ops = {
--	.cpo_print	= lov_comp_page_print
--};
--
- int lov_page_init_composite(const struct lu_env *env, struct cl_object *obj,
- 			    struct cl_page *page, pgoff_t index)
- {
-@@ -72,7 +60,6 @@ int lov_page_init_composite(const struct lu_env *env, struct cl_object *obj,
- 	struct cl_object *subobj;
- 	struct cl_object *o;
- 	struct lov_io_sub *sub;
--	struct lov_page *lpg = cl_object_page_slice(obj, page);
- 	bool stripe_cached = false;
- 	u64 offset;
- 	u64 suboff;
-@@ -118,7 +105,7 @@ int lov_page_init_composite(const struct lu_env *env, struct cl_object *obj,
- 	       offset, entry, stripe, suboff);
- 
- 	page->cp_lov_index = lov_comp_index(entry, stripe);
--	cl_page_slice_add(page, &lpg->lps_cl, obj, &lov_comp_page_ops);
-+	LASSERT(page->cp_lov_index != CP_LOV_INDEX_EMPTY);
- 
- 	if (!stripe_cached) {
- 		sub = lov_sub_get(env, lio, page->cp_lov_index);
-@@ -146,28 +133,14 @@ int lov_page_init_composite(const struct lu_env *env, struct cl_object *obj,
+ 	libcfs_register_panic_notifier();
+ 	kernel_param_lock(THIS_MODULE);
+-	if (libcfs_debug_mb == 0)
+-		libcfs_debug_mb = cfs_trace_get_debug_mb();
++	libcfs_debug_mb = cfs_trace_get_debug_mb();
+ 	kernel_param_unlock(THIS_MODULE);
  	return rc;
  }
+diff --git a/net/lnet/libcfs/tracefile.c b/net/lnet/libcfs/tracefile.c
+index 948eaaa..f0b7a2e 100644
+--- a/net/lnet/libcfs/tracefile.c
++++ b/net/lnet/libcfs/tracefile.c
+@@ -1000,7 +1000,10 @@ int cfs_trace_get_debug_mb(void)
  
--static int lov_empty_page_print(const struct lu_env *env,
--				const struct cl_page_slice *slice,
--				void *cookie, lu_printer_t printer)
--{
--	struct lov_page *lp = cl2lov_page(slice);
--
--	return (*printer)(env, cookie, LUSTRE_LOV_NAME "-page@%p, empty.\n",
--			  lp);
--}
--
--static const struct cl_page_operations lov_empty_page_ops = {
--	.cpo_print	= lov_empty_page_print
--};
--
- int lov_page_init_empty(const struct lu_env *env, struct cl_object *obj,
- 			struct cl_page *page, pgoff_t index)
- {
--	struct lov_page *lpg = cl_object_page_slice(obj, page);
- 	void *addr;
+ 	up_read(&cfs_tracefile_sem);
  
--	page->cp_lov_index = ~0;
--	cl_page_slice_add(page, &lpg->lps_cl, obj, &lov_empty_page_ops);
-+	BUILD_BUG_ON(!__same_type(page->cp_lov_index, CP_LOV_INDEX_EMPTY));
-+	page->cp_lov_index = CP_LOV_INDEX_EMPTY;
-+
- 	addr = kmap(page->cp_vmpage);
- 	memset(addr, 0, cl_page_size(obj));
- 	kunmap(page->cp_vmpage);
-@@ -182,11 +155,4 @@ int lov_page_init_foreign(const struct lu_env *env, struct cl_object *obj,
- 	return -ENODATA;
+-	return (total_pages >> (20 - PAGE_SHIFT)) + 1;
++	if (total_pages)
++		return (total_pages >> (20 - PAGE_SHIFT)) + 1;
++	else
++		return 0;
  }
  
--bool lov_page_is_empty(const struct cl_page *page)
--{
--	const struct cl_page_slice *slice = cl_page_at(page, &lov_device_type);
--
--	LASSERT(slice);
--	return slice->cpl_ops == &lov_empty_page_ops;
--}
- /** @} lov */
+ static int tracefiled(void *arg)
 -- 
 1.8.3.1
 
