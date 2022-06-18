@@ -2,33 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 103EA550559
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 18 Jun 2022 16:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71358550554
+	for <lists+linux-fscrypt@lfdr.de>; Sat, 18 Jun 2022 16:01:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350560AbiFROAx (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sat, 18 Jun 2022 10:00:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48964 "EHLO
+        id S234268AbiFROAv (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sat, 18 Jun 2022 10:00:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235656AbiFRNxW (ORCPT
+        with ESMTP id S235992AbiFRNx2 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sat, 18 Jun 2022 09:53:22 -0400
+        Sat, 18 Jun 2022 09:53:28 -0400
 Received: from smtp3.ccs.ornl.gov (smtp3.ccs.ornl.gov [160.91.203.39])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFE89DEA6
-        for <linux-fscrypt@vger.kernel.org>; Sat, 18 Jun 2022 06:53:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7688DFB6
+        for <linux-fscrypt@vger.kernel.org>; Sat, 18 Jun 2022 06:53:22 -0700 (PDT)
 Received: from star.ccs.ornl.gov (star.ccs.ornl.gov [160.91.202.134])
-        by smtp3.ccs.ornl.gov (Postfix) with ESMTP id 4AA8D13FF;
+        by smtp3.ccs.ornl.gov (Postfix) with ESMTP id 4ED7C1E88;
         Sat, 18 Jun 2022 09:52:14 -0400 (EDT)
 Received: by star.ccs.ornl.gov (Postfix, from userid 2004)
-        id 47A00FD3BF; Sat, 18 Jun 2022 09:52:14 -0400 (EDT)
+        id 4D03ADC803; Sat, 18 Jun 2022 09:52:14 -0400 (EDT)
 From:   James Simmons <jsimmons@infradead.org>
 To:     Eric Biggers <ebiggers@google.com>,
         Andreas Dilger <adilger@whamcloud.com>,
         NeilBrown <neilb@suse.de>
 Cc:     linux-fscrypt@vger.kernel.org, Chris Horn <chris.horn@hpe.com>,
         James Simmons <jsimmons@infradead.org>
-Subject: [PATCH 24/28] lnet: DLC sets map_on_demand incorrectly
-Date:   Sat, 18 Jun 2022 09:52:06 -0400
-Message-Id: <1655560330-30743-25-git-send-email-jsimmons@infradead.org>
+Subject: [PATCH 25/28] lnet: Return ESHUTDOWN in lnet_parse()
+Date:   Sat, 18 Jun 2022 09:52:07 -0400
+Message-Id: <1655560330-30743-26-git-send-email-jsimmons@infradead.org>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1655560330-30743-1-git-send-email-jsimmons@infradead.org>
 References: <1655560330-30743-1-git-send-email-jsimmons@infradead.org>
@@ -43,45 +43,42 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Chris Horn <chris.horn@hpe.com>
 
-When any NET or LND tunable is specified via CLI or yaml, then the
-whole tunables struct gets memset to 0, or in the case of yaml config,
-0 gets assigned to any tunable that isn't specified in the yaml. This
-causes a problem for map_on_demand because 0 is a valid value for that
-parameter, and ko2iblnd cannot know whether the user specified that 0
-should be used or if DLC is specifying that the parameter was unset.
+If the peer NI lookup in lnet_parse() fails with ESHUTDOWN then we
+should return that value back to the LNDs so that they can treat the
+failed call the same way as other lnet_parse() failures.
 
-Rather than setting this parameter to 0 in the LND tunables struct,
-have DLC set it to UINT_MAX to indicate that ko2iblnd should use the
-value of the kernel module parameter.
+Returning zero results in at least one bug in socklnd where a
+reference on a ksock_conn can be leaked which prevents socklnd from
+shutting down.
 
-HPE-bug-id: LUS-10740
-WC-bug-id: https://jira.whamcloud.com/browse/LU-15538
-Lustre-commit: 896f4a082b93453f5 ("LU-15538 lnet: DLC sets map_on_demand incorrectly")
+Fixes: e426f0d24e ("staging: lustre: lnet: Do not drop message when shutting down LNet")
+HPE-bug-id: LUS-15794
+WC-bug-id: https://jira.whamcloud.com/browse/LU-15618
+Lustre-commit: 4fbd0705a3d25bbc8 ("LU-15618 lnet: Return ESHUTDOWN in lnet_parse()")
 Signed-off-by: Chris Horn <chris.horn@hpe.com>
-Reviewed-on: https://review.whamcloud.com/46492
-Reviewed-by: James Simmons <jsimmons@infradead.org>
-Reviewed-by: Serguei Smirnov <ssmirnov@whamcloud.com>
+Reviewed-on: https://review.whamcloud.com/46711
 Reviewed-by: Cyril Bordage <cbordage@whamcloud.com>
+Reviewed-by: Andriy Skulysh <andriy.skulysh@hpe.com>
+Reviewed-by: Serguei Smirnov <ssmirnov@whamcloud.com>
 Reviewed-by: Oleg Drokin <green@whamcloud.com>
 Signed-off-by: James Simmons <jsimmons@infradead.org>
 ---
- net/lnet/klnds/o2iblnd/o2iblnd_modparams.c | 3 +++
- 1 file changed, 3 insertions(+)
+ net/lnet/lnet/lib-move.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/lnet/klnds/o2iblnd/o2iblnd_modparams.c b/net/lnet/klnds/o2iblnd/o2iblnd_modparams.c
-index 022ed02..04286e1 100644
---- a/net/lnet/klnds/o2iblnd/o2iblnd_modparams.c
-+++ b/net/lnet/klnds/o2iblnd/o2iblnd_modparams.c
-@@ -261,6 +261,9 @@ int kiblnd_tunables_setup(struct lnet_ni *ni)
- 		net_tunables->lct_peer_tx_credits =
- 			net_tunables->lct_max_tx_credits;
+diff --git a/net/lnet/lnet/lib-move.c b/net/lnet/lnet/lib-move.c
+index 9ee1075..0c5bf82 100644
+--- a/net/lnet/lnet/lib-move.c
++++ b/net/lnet/lnet/lib-move.c
+@@ -4425,7 +4425,7 @@ void lnet_monitor_thr_stop(void)
+ 		kfree(msg);
+ 		if (rc == -ESHUTDOWN)
+ 			/* We are shutting down. Don't do anything more */
+-			return 0;
++			return rc;
+ 		goto drop;
+ 	}
  
-+	if (tunables->lnd_map_on_demand == UINT_MAX)
-+		tunables->lnd_map_on_demand = map_on_demand;
-+
- 	/*
- 	 * For kernels which do not support global memory regions, always
- 	 * enable map_on_demand
 -- 
 1.8.3.1
 
