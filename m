@@ -2,24 +2,24 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29DCA550550
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 18 Jun 2022 16:01:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 260A0550553
+	for <lists+linux-fscrypt@lfdr.de>; Sat, 18 Jun 2022 16:01:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230229AbiFROAt (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        id S232528AbiFROAt (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
         Sat, 18 Jun 2022 10:00:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48550 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231598AbiFRNxJ (ORCPT
+        with ESMTP id S233500AbiFRNxM (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sat, 18 Jun 2022 09:53:09 -0400
+        Sat, 18 Jun 2022 09:53:12 -0400
 Received: from smtp3.ccs.ornl.gov (smtp3.ccs.ornl.gov [160.91.203.39])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BE29639D
-        for <linux-fscrypt@vger.kernel.org>; Sat, 18 Jun 2022 06:53:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B8664F4
+        for <linux-fscrypt@vger.kernel.org>; Sat, 18 Jun 2022 06:53:10 -0700 (PDT)
 Received: from star.ccs.ornl.gov (star.ccs.ornl.gov [160.91.202.134])
-        by smtp3.ccs.ornl.gov (Postfix) with ESMTP id 3010513F9;
+        by smtp3.ccs.ornl.gov (Postfix) with ESMTP id 365AC13FA;
         Sat, 18 Jun 2022 09:52:14 -0400 (EDT)
 Received: by star.ccs.ornl.gov (Postfix, from userid 2004)
-        id 2DCA1E4F1D; Sat, 18 Jun 2022 09:52:14 -0400 (EDT)
+        id 318CBE9152; Sat, 18 Jun 2022 09:52:14 -0400 (EDT)
 From:   James Simmons <jsimmons@infradead.org>
 To:     Eric Biggers <ebiggers@google.com>,
         Andreas Dilger <adilger@whamcloud.com>,
@@ -27,9 +27,9 @@ To:     Eric Biggers <ebiggers@google.com>,
 Cc:     linux-fscrypt@vger.kernel.org,
         Patrick Farrell <pfarrell@whamcloud.com>,
         James Simmons <jsimmons@infradead.org>
-Subject: [PATCH 18/28] lustre: llite: Add COMPLETED iotrace messages
-Date:   Sat, 18 Jun 2022 09:52:00 -0400
-Message-Id: <1655560330-30743-19-git-send-email-jsimmons@infradead.org>
+Subject: [PATCH 19/28] lustre: osc: Add RPC to iotrace
+Date:   Sat, 18 Jun 2022 09:52:01 -0400
+Message-Id: <1655560330-30743-20-git-send-email-jsimmons@infradead.org>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1655560330-30743-1-git-send-email-jsimmons@infradead.org>
 References: <1655560330-30743-1-git-send-email-jsimmons@infradead.org>
@@ -44,91 +44,62 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Patrick Farrell <pfarrell@whamcloud.com>
 
-It's very useful to see how long an I/O call took.  There
-are other ways to do this, but the goal is for iotrace to
-provide all necessary information for basic I/O performance
-analysis, so we add COMPLETED messages to iotrace.
+Add RPCs to iotrace debugging.
+
+To avoid creating too much debug output, this debug
+ignores the possiblity that an RPC contains non-contiguous
+extents.  Thus the eventual visualization will act as
+though the RPC is a continuous whole.  I judge this to be
+superior to the amount of log data and complexity of
+capturing each extent separately.  If that level of detail
+is needed, a higher debug level can be used.
 
 WC-bug-id: https://jira.whamcloud.com/browse/LU-15317
-Lustre-commit: d48b10cef36d74cc6 ("LU-15317 llite: Add COMPLETED iotrace messages")
+Lustre-commit: 5cb722c384077dd24 ("LU-15317 osc: Add RPC to iotrace")
 Signed-off-by: Patrick Farrell <pfarrell@whamcloud.com>
-Reviewed-on: https://review.whamcloud.com/46484
+Reviewed-on: https://review.whamcloud.com/45894
 Reviewed-by: Sebastien Buisson <sbuisson@ddn.com>
 Reviewed-by: Andreas Dilger <adilger@whamcloud.com>
 Reviewed-by: Oleg Drokin <green@whamcloud.com>
 Signed-off-by: James Simmons <jsimmons@infradead.org>
 ---
- fs/lustre/llite/file.c       | 12 ++++++++++++
- fs/lustre/llite/llite_mmap.c | 12 +++++++++++-
- 2 files changed, 23 insertions(+), 1 deletion(-)
+ fs/lustre/osc/osc_request.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/fs/lustre/llite/file.c b/fs/lustre/llite/file.c
-index 5be77e8..efe117d 100644
---- a/fs/lustre/llite/file.c
-+++ b/fs/lustre/llite/file.c
-@@ -2013,6 +2013,12 @@ static ssize_t ll_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
- 				   ktime_us_delta(ktime_get(), kstart));
- 	}
+diff --git a/fs/lustre/osc/osc_request.c b/fs/lustre/osc/osc_request.c
+index 124d3c57..d84884f 100644
+--- a/fs/lustre/osc/osc_request.c
++++ b/fs/lustre/osc/osc_request.c
+@@ -2665,6 +2665,7 @@ int osc_build_rpc(const struct lu_env *env, struct client_obd *cli,
  
-+	CDEBUG(D_IOTRACE,
-+	       "COMPLETED: file %s:"DFID", ppos: %lld, count: %zu\n",
-+	       file_dentry(file)->d_name.name,
-+	       PFID(ll_inode2fid(file_inode(file))), iocb->ki_pos,
-+	       iov_iter_count(to));
+ 	spin_lock(&cli->cl_loi_list_lock);
+ 	starting_offset >>= PAGE_SHIFT;
++	ending_offset >>= PAGE_SHIFT;
+ 	if (cmd == OBD_BRW_READ) {
+ 		cli->cl_r_in_flight++;
+ 		lprocfs_oh_tally_log2(&cli->cl_read_page_hist, page_count);
+@@ -2681,8 +2682,19 @@ int osc_build_rpc(const struct lu_env *env, struct client_obd *cli,
+ 	spin_unlock(&cli->cl_loi_list_lock);
+ 
+ 	DEBUG_REQ(D_INODE, req, "%d pages, aa %p, now %ur/%dw in flight",
+-		  page_count, aa, cli->cl_r_in_flight,
+-		  cli->cl_w_in_flight);
++		  page_count, aa, cli->cl_r_in_flight, cli->cl_w_in_flight);
++	if (libcfs_debug & D_IOTRACE) {
++		struct lu_fid fid;
 +
- 	return result;
- }
++		fid.f_seq = crattr->cra_oa->o_parent_seq;
++		fid.f_oid = crattr->cra_oa->o_parent_oid;
++		fid.f_ver = crattr->cra_oa->o_parent_ver;
++		CDEBUG(D_IOTRACE,
++		       DFID": %d %s pages, start %lld, end %lld, now %ur/%uw in flight\n",
++		       PFID(&fid), page_count,
++		       cmd == OBD_BRW_READ ? "read" : "write", starting_offset,
++		       ending_offset, cli->cl_r_in_flight, cli->cl_w_in_flight);
++	}
+ 	OBD_FAIL_TIMEOUT(OBD_FAIL_OSC_DELAY_IO, cfs_fail_val);
  
-@@ -2158,6 +2164,12 @@ static ssize_t ll_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 				   ktime_us_delta(ktime_get(), kstart));
- 	}
- 
-+	CDEBUG(D_IOTRACE,
-+	       "COMPLETED: file %s:"DFID", ppos: %lld, count: %zu\n",
-+	       file_dentry(file)->d_name.name,
-+	       PFID(ll_inode2fid(file_inode(file))), iocb->ki_pos,
-+	       iov_iter_count(from));
-+
- 	return rc_normal;
- }
- 
-diff --git a/fs/lustre/llite/llite_mmap.c b/fs/lustre/llite/llite_mmap.c
-index 2e762b1..4acc7ee 100644
---- a/fs/lustre/llite/llite_mmap.c
-+++ b/fs/lustre/llite/llite_mmap.c
-@@ -415,7 +415,7 @@ static vm_fault_t ll_fault(struct vm_fault *vmf)
- 			goto restart;
- 		}
- 
--		result = VM_FAULT_LOCKED;
-+		result |= VM_FAULT_LOCKED;
- 	}
- 	sigprocmask(SIG_SETMASK, &old, NULL);
- 
-@@ -430,6 +430,11 @@ static vm_fault_t ll_fault(struct vm_fault *vmf)
- 				   ktime_us_delta(ktime_get(), kstart));
- 	}
- 
-+	CDEBUG(D_IOTRACE,
-+	       "COMPLETED: "DFID": vma=%p start=%#lx end=%#lx vm_flags=%#lx idx=%lu\n",
-+	       PFID(&ll_i2info(file_inode(vma->vm_file))->lli_fid),
-+	       vma, vma->vm_start, vma->vm_end, vma->vm_flags, vmf->pgoff);
-+
- 	return result;
- }
- 
-@@ -498,6 +503,11 @@ static vm_fault_t ll_page_mkwrite(struct vm_fault *vmf)
- 				   ktime_us_delta(ktime_get(), kstart));
- 	}
- 
-+	CDEBUG(D_IOTRACE,
-+	       "COMPLETED: "DFID": vma=%p start=%#lx end=%#lx vm_flags=%#lx idx=%lu\n",
-+	       PFID(&ll_i2info(file_inode(vma->vm_file))->lli_fid),
-+	       vma, vma->vm_start, vma->vm_end, vma->vm_flags,
-+	       vmf->page->index);
- 	return ret;
- }
- 
+ 	ptlrpcd_add_req(req);
 -- 
 1.8.3.1
 
