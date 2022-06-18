@@ -2,34 +2,34 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65FFB55055C
+	by mail.lfdr.de (Postfix) with ESMTP id 1AA4655055B
 	for <lists+linux-fscrypt@lfdr.de>; Sat, 18 Jun 2022 16:01:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232419AbiFROBN (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sat, 18 Jun 2022 10:01:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48788 "EHLO
+        id S233500AbiFROBO (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sat, 18 Jun 2022 10:01:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234886AbiFRNxS (ORCPT
+        with ESMTP id S235115AbiFRNxT (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sat, 18 Jun 2022 09:53:18 -0400
+        Sat, 18 Jun 2022 09:53:19 -0400
 Received: from smtp3.ccs.ornl.gov (smtp3.ccs.ornl.gov [160.91.203.39])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07C63E6B
-        for <linux-fscrypt@vger.kernel.org>; Sat, 18 Jun 2022 06:53:16 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87D51AE7F
+        for <linux-fscrypt@vger.kernel.org>; Sat, 18 Jun 2022 06:53:18 -0700 (PDT)
 Received: from star.ccs.ornl.gov (star.ccs.ornl.gov [160.91.202.134])
-        by smtp3.ccs.ornl.gov (Postfix) with ESMTP id 3DB9213FC;
+        by smtp3.ccs.ornl.gov (Postfix) with ESMTP id 40FF213FD;
         Sat, 18 Jun 2022 09:52:14 -0400 (EDT)
 Received: by star.ccs.ornl.gov (Postfix, from userid 2004)
-        id 3A3C6DC803; Sat, 18 Jun 2022 09:52:14 -0400 (EDT)
+        id 3E232E4F1D; Sat, 18 Jun 2022 09:52:14 -0400 (EDT)
 From:   James Simmons <jsimmons@infradead.org>
 To:     Eric Biggers <ebiggers@google.com>,
         Andreas Dilger <adilger@whamcloud.com>,
         NeilBrown <neilb@suse.de>
 Cc:     linux-fscrypt@vger.kernel.org,
-        James Simmons <jsimmons@infradead.org>,
-        Jian Yu <yujian@whamcloud.com>
-Subject: [PATCH 21/28] lustre: uapi: avoid gcc-11 -Werror=stringop-overread warning
-Date:   Sat, 18 Jun 2022 09:52:03 -0400
-Message-Id: <1655560330-30743-22-git-send-email-jsimmons@infradead.org>
+        Alexander Boyko <alexander.boyko@hpe.com>,
+        James Simmons <jsimmons@infradead.org>
+Subject: [PATCH 22/28] lustre: lmv: skip qos for qos_threshold_rr=100
+Date:   Sat, 18 Jun 2022 09:52:04 -0400
+Message-Id: <1655560330-30743-23-git-send-email-jsimmons@infradead.org>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1655560330-30743-1-git-send-email-jsimmons@infradead.org>
 References: <1655560330-30743-1-git-send-email-jsimmons@infradead.org>
@@ -42,94 +42,98 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-GCC 11 warns about string and memory operations on fixed address:
+From: Alexander Boyko <alexander.boyko@hpe.com>
 
-In function 'memcpy', inlined from 'obd_uuid2str' at
-lustre/include/uapi/linux/lustre/lustre_user.h:1222:3,
-include/linux/fortify-string.h:20:33: error: '__builtin_memcpy'
-reading 39 bytes from a region of size 0 [-Werror=stringop-overread]
-  20 | #define __underlying_memcpy     __builtin_memcpy
-     |                                 ^
-include/linux/fortify-string.h:191:16: note:
-in expansion of macro '__underlying_memcpy'
-  191 |         return __underlying_memcpy(p, q, size);
-      |                ^~~~~~~~~~~~~~~~~~~
+Current implementation of qos allocation is called for
+every statfs update. It takes lq_rw_sem for write and
+recalculate penalties, even whith setting qos_threshold_rr=100.
+Which means always use rr allocation. Let's skip unnecessary
+locking and calculation for 100% round robin allocation.
 
-The patch avoids the above warning by not using a fixed address.
-
-WC-bug-id: https://jira.whamcloud.com/browse/LU-15220
-Lustre-commit: c5fb44f5ecf8494cd ("LU-15220 tests: avoid gcc-11 -Werror=stringop-overread warning")
-Signed-off-by: Jian Yu <yujian@whamcloud.com>
-Reviewed-on: https://review.whamcloud.com/45777
-WC-bug-id: https://jira.whamcloud.com/browse/LU-15420
-Lustre-commit: 6331eadbd60a8c58c ("LU-15420 uapi: avoid gcc-11 -Werror=stringop-overread")
-Signed-off-by: James Simmons <jsimmons@infradead.org>
-Reviewed-on: https://review.whamcloud.com/46319
+HPE-bug-id: LUS-10388
+WC-bug-id: https://jira.whamcloud.com/browse/LU-15393
+Lustre-commit: 2f23140d5c1396fd0 ("LU-15393 lod: skip qos for qos_threshold_rr=100")
+Signed-off-by: Alexander Boyko <alexander.boyko@hpe.com>
+Reviewed-on: https://review.whamcloud.com/46388
+Reviewed-by: Andrew Perepechko <andrew.perepechko@hpe.com>
 Reviewed-by: Alexey Lyashkov <alexey.lyashkov@hpe.com>
-Reviewed-by: Arshad Hussain <arshad.hussain@aeoncomputing.com>
-Reviewed-by: Patrick Farrell <pfarrell@whamcloud.com>
-Reviewed-by: James Simmons <jsimmons@infradead.org>
+Reviewed-by: Andreas Dilger <adilger@whamcloud.com>
 Reviewed-by: Oleg Drokin <green@whamcloud.com>
+Signed-off-by: James Simmons <jsimmons@infradead.org>
 ---
- include/uapi/linux/lustre/lustre_user.h | 26 ++++++++++++++------------
- 1 file changed, 14 insertions(+), 12 deletions(-)
+ fs/lustre/include/lu_object.h     |  1 +
+ fs/lustre/lmv/lproc_lmv.c         |  5 +++--
+ fs/lustre/obdclass/lu_tgt_descs.c | 12 ++++++++----
+ 3 files changed, 12 insertions(+), 6 deletions(-)
 
-diff --git a/include/uapi/linux/lustre/lustre_user.h b/include/uapi/linux/lustre/lustre_user.h
-index ee789f2..c57929b 100644
---- a/include/uapi/linux/lustre/lustre_user.h
-+++ b/include/uapi/linux/lustre/lustre_user.h
-@@ -40,26 +40,27 @@
-  *
-  * @{
-  */
-+#include <linux/string.h>
-+#ifndef __KERNEL__
-+# define __USE_ISOC99  1
-+# include <stdbool.h>
-+# include <stdio.h> /* snprintf() */
-+# include <sys/stat.h>
-+
-+# define __USE_GNU	1
-+# define FILEID_LUSTRE 0x97 /* for name_to_handle_at() (and llapi_fd2fid()) */
-+#endif /* !__KERNEL__ */
+diff --git a/fs/lustre/include/lu_object.h b/fs/lustre/include/lu_object.h
+index 3fb40c6..e4dd287c5 100644
+--- a/fs/lustre/include/lu_object.h
++++ b/fs/lustre/include/lu_object.h
+@@ -1503,6 +1503,7 @@ struct lu_tgt_desc_idx {
+ };
  
- #include <linux/fs.h>
- #include <linux/limits.h>
- #include <linux/kernel.h>
- #include <linux/stat.h>
--#include <linux/string.h>
- #include <linux/quota.h>
- #include <linux/types.h>
- #include <linux/unistd.h>
- #include <linux/lustre/lustre_fiemap.h>
- #include <linux/lustre/lustre_ver.h>
+ /* QoS data for LOD/LMV */
++#define QOS_THRESHOLD_MAX 256 /* should be power of two */
+ struct lu_qos {
+ 	struct list_head	lq_svr_list;	 /* lu_svr_qos list */
+ 	struct rw_semaphore	lq_rw_sem;
+diff --git a/fs/lustre/lmv/lproc_lmv.c b/fs/lustre/lmv/lproc_lmv.c
+index b9efae9..6d4e8d9 100644
+--- a/fs/lustre/lmv/lproc_lmv.c
++++ b/fs/lustre/lmv/lproc_lmv.c
+@@ -158,7 +158,8 @@ static ssize_t qos_threshold_rr_show(struct kobject *kobj,
+ 					      obd_kset.kobj);
  
--#ifndef __KERNEL__
--# define __USE_ISOC99  1
--# include <stdbool.h>
--# include <stdio.h> /* snprintf() */
--# include <sys/stat.h>
--# define FILEID_LUSTRE 0x97 /* for name_to_handle_at() (and llapi_fd2fid()) */
--#endif /* __KERNEL__ */
--
- #if defined(__cplusplus)
- extern "C" {
- #endif
-@@ -937,10 +938,11 @@ static inline char *obd_uuid2str(const struct obd_uuid *uuid)
- 		/* Obviously not safe, but for printfs, no real harm done...
- 		 * we're always null-terminated, even in a race.
- 		 */
--		static char temp[sizeof(*uuid)];
-+		static char temp[sizeof(*uuid->uuid)];
-+
-+		memcpy(temp, uuid->uuid, sizeof(*uuid->uuid) - 1);
-+		temp[sizeof(*uuid->uuid) - 1] = '\0';
+ 	return scnprintf(buf, PAGE_SIZE, "%u%%\n",
+-			(obd->u.lmv.lmv_qos.lq_threshold_rr * 100 + 255) >> 8);
++			(obd->u.lmv.lmv_qos.lq_threshold_rr * 100 +
++			(QOS_THRESHOLD_MAX - 1)) / QOS_THRESHOLD_MAX);
+ }
  
--		memcpy(temp, uuid->uuid, sizeof(*uuid) - 1);
--		temp[sizeof(*uuid) - 1] = '\0';
- 		return temp;
+ static ssize_t qos_threshold_rr_store(struct kobject *kobj,
+@@ -190,7 +191,7 @@ static ssize_t qos_threshold_rr_store(struct kobject *kobj,
+ 	if (val > 100)
+ 		return -EINVAL;
+ 
+-	lmv->lmv_qos.lq_threshold_rr = (val << 8) / 100;
++	lmv->lmv_qos.lq_threshold_rr = (val * QOS_THRESHOLD_MAX) / 100;
+ 	set_bit(LQ_DIRTY, &lmv->lmv_qos.lq_flags);
+ 
+ 	return count;
+diff --git a/fs/lustre/obdclass/lu_tgt_descs.c b/fs/lustre/obdclass/lu_tgt_descs.c
+index 935cff6..51d2e21 100644
+--- a/fs/lustre/obdclass/lu_tgt_descs.c
++++ b/fs/lustre/obdclass/lu_tgt_descs.c
+@@ -275,11 +275,13 @@ int lu_tgt_descs_init(struct lu_tgt_descs *ltd, bool is_mdt)
+ 		ltd->ltd_lmv_desc.ld_pattern = LMV_HASH_TYPE_DEFAULT;
+ 		ltd->ltd_qos.lq_prio_free = LMV_QOS_DEF_PRIO_FREE * 256 / 100;
+ 		ltd->ltd_qos.lq_threshold_rr =
+-			LMV_QOS_DEF_THRESHOLD_RR_PCT * 256 / 100;
++			LMV_QOS_DEF_THRESHOLD_RR_PCT *
++			QOS_THRESHOLD_MAX / 100;
+ 	} else {
+ 		ltd->ltd_qos.lq_prio_free = LOV_QOS_DEF_PRIO_FREE * 256 / 100;
+ 		ltd->ltd_qos.lq_threshold_rr =
+-			LOV_QOS_DEF_THRESHOLD_RR_PCT * 256 / 100;
++			LOV_QOS_DEF_THRESHOLD_RR_PCT *
++			QOS_THRESHOLD_MAX / 100;
  	}
- 	return (char *)(uuid->uuid);
+ 
+ 	return 0;
+@@ -568,8 +570,10 @@ int ltd_qos_penalties_calc(struct lu_tgt_descs *ltd)
+ 	 * creation performance
+ 	 */
+ 	clear_bit(LQ_SAME_SPACE, &qos->lq_flags);
+-	if ((ba_max * (256 - qos->lq_threshold_rr)) >> 8 < ba_min &&
+-	    (ia_max * (256 - qos->lq_threshold_rr)) >> 8 < ia_min) {
++	if (((ba_max * (QOS_THRESHOLD_MAX - qos->lq_threshold_rr)) /
++	    QOS_THRESHOLD_MAX) < ba_min &&
++	    ((ia_max * (QOS_THRESHOLD_MAX - qos->lq_threshold_rr)) /
++	    QOS_THRESHOLD_MAX) < ia_min) {
+ 		set_bit(LQ_SAME_SPACE, &qos->lq_flags);
+ 		/* Reset weights for the next time we enter qos mode */
+ 		set_bit(LQ_RESET, &qos->lq_flags);
 -- 
 1.8.3.1
 
