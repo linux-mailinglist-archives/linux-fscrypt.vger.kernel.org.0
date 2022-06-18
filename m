@@ -2,34 +2,35 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 779CC550538
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 18 Jun 2022 15:53:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC1D555054D
+	for <lists+linux-fscrypt@lfdr.de>; Sat, 18 Jun 2022 16:00:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230469AbiFRNw6 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sat, 18 Jun 2022 09:52:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48084 "EHLO
+        id S233293AbiFRNxL (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sat, 18 Jun 2022 09:53:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233500AbiFRNwx (ORCPT
+        with ESMTP id S234164AbiFRNw6 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sat, 18 Jun 2022 09:52:53 -0400
+        Sat, 18 Jun 2022 09:52:58 -0400
 Received: from smtp3.ccs.ornl.gov (smtp3.ccs.ornl.gov [160.91.203.39])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B026CB2A
-        for <linux-fscrypt@vger.kernel.org>; Sat, 18 Jun 2022 06:52:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C31BCE2E
+        for <linux-fscrypt@vger.kernel.org>; Sat, 18 Jun 2022 06:52:55 -0700 (PDT)
 Received: from star.ccs.ornl.gov (star.ccs.ornl.gov [160.91.202.134])
-        by smtp3.ccs.ornl.gov (Postfix) with ESMTP id 16B2F13DB;
+        by smtp3.ccs.ornl.gov (Postfix) with ESMTP id 1C98313E7;
         Sat, 18 Jun 2022 09:52:14 -0400 (EDT)
 Received: by star.ccs.ornl.gov (Postfix, from userid 2004)
-        id 151FC1002C9; Sat, 18 Jun 2022 09:52:14 -0400 (EDT)
+        id 19855DC803; Sat, 18 Jun 2022 09:52:14 -0400 (EDT)
 From:   James Simmons <jsimmons@infradead.org>
 To:     Eric Biggers <ebiggers@google.com>,
         Andreas Dilger <adilger@whamcloud.com>,
         NeilBrown <neilb@suse.de>
 Cc:     linux-fscrypt@vger.kernel.org,
-        Patrick Farrell <pfarrell@whamcloud.com>,
+        Cyril Bordage <cbordage@whamcloud.com>,
+        Chris Horn <chris.horn@hpe.com>,
         James Simmons <jsimmons@infradead.org>
-Subject: [PATCH 12/28] lustre: llite: Correct cl_env comments
-Date:   Sat, 18 Jun 2022 09:51:54 -0400
-Message-Id: <1655560330-30743-13-git-send-email-jsimmons@infradead.org>
+Subject: [PATCH 13/28] lnet: set max recovery interval duration
+Date:   Sat, 18 Jun 2022 09:51:55 -0400
+Message-Id: <1655560330-30743-14-git-send-email-jsimmons@infradead.org>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1655560330-30743-1-git-send-email-jsimmons@infradead.org>
 References: <1655560330-30743-1-git-send-email-jsimmons@infradead.org>
@@ -42,98 +43,127 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Patrick Farrell <pfarrell@whamcloud.com>
+From: Cyril Bordage <cbordage@whamcloud.com>
 
-The comments related to cl_env caching behavior are
-dangerously out of date and misleading, describing an
-old caching mechanism which was linked to threads.
+Add a tunable parameter to limit the recovery ping interval which was
+previously statically set to 900.
+This can be done by using:
 
-This has not been present for some time, and we cannot use
-cl_env_get to get the environment for a thread as it
-describes.
+lnetctl set max_recovery_ping_interval <value>
 
-Correct the various comments and remove a now extraneous
-include.
-
-Fixes: a763e916d8 ("staging/lustre: Get rid of cl_env hash table")
-WC-bug-id: https://jira.whamcloud.com/browse/LU-14832
-Lustre-commit: c6d1f8aacafe67510 ("LU-14832 llite: Correct cl_env comments")
-Signed-off-by: Patrick Farrell <pfarrell@whamcloud.com>
-Reviewed-on: https://review.whamcloud.com/44191
-Reviewed-by: Andreas Dilger <adilger@whamcloud.com>
-Reviewed-by: Wang Shilong <wangshilong1991@gmail.com>
-Reviewed-by: Sebastien Buisson <sbuisson@ddn.com>
-Reviewed-by: John L. Hammond <jhammond@whamcloud.com>
+WC-bug-id: https://jira.whamcloud.com/browse/LU-14979
+Lustre-commit: 4027395fe463b6ea1 ("LU-14979 lnet: set max recovery interval duration")
+Signed-off-by: Cyril Bordage <cbordage@whamcloud.com>
+Signed-off-by: Chris Horn <chris.horn@hpe.com>
+Reviewed-on: https://review.whamcloud.com/44927
+Reviewed-by: Serguei Smirnov <ssmirnov@whamcloud.com>
+Reviewed-by: Frank Sehr <fsehr@whamcloud.com>
+Reviewed-by: Oleg Drokin <green@whamcloud.com>
 Signed-off-by: James Simmons <jsimmons@infradead.org>
 ---
- fs/lustre/obdclass/cl_object.c | 32 ++++++++++++--------------------
- 1 file changed, 12 insertions(+), 20 deletions(-)
+ include/linux/lnet/lib-lnet.h |  9 ++++----
+ net/lnet/lnet/api-ni.c        | 49 +++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 54 insertions(+), 4 deletions(-)
 
-diff --git a/fs/lustre/obdclass/cl_object.c b/fs/lustre/obdclass/cl_object.c
-index c5deb5c..6f87160 100644
---- a/fs/lustre/obdclass/cl_object.c
-+++ b/fs/lustre/obdclass/cl_object.c
-@@ -532,21 +532,6 @@ int cl_site_stats_print(const struct cl_site *site, struct seq_file *m)
-  *
-  */
- 
--/**
-- * The most efficient way is to store cl_env pointer in task specific
-- * structures. On Linux, it isn't easy to use task_struct->journal_info
-- * because Lustre code may call into other fs during memory reclaim, which
-- * has certain assumptions about journal_info. There are not currently any
-- * fields in task_struct that can be used for this purpose.
-- * \note As long as we use task_struct to store cl_env, we assume that once
-- * called into Lustre, we'll never call into the other part of the kernel
-- * which will use those fields in task_struct without explicitly exiting
-- * Lustre.
-- *
-- * Since there's no space in task_struct is available, hash will be used.
-- * bz20044, bz22683.
-- */
--
- static unsigned int cl_envs_cached_max = 32; /* XXX: prototype: arbitrary limit
- 					      * for now.
- 					      */
-@@ -628,6 +613,9 @@ static void cl_env_fini(struct cl_env *cle)
- 	kmem_cache_free(cl_env_kmem, cle);
+diff --git a/include/linux/lnet/lib-lnet.h b/include/linux/lnet/lib-lnet.h
+index ceb12b1..e21866b 100644
+--- a/include/linux/lnet/lib-lnet.h
++++ b/include/linux/lnet/lib-lnet.h
+@@ -559,6 +559,8 @@ unsigned int lnet_nid_cpt_hash(struct lnet_nid *nid,
+ extern unsigned int lnet_recovery_limit;
+ extern unsigned int lnet_peer_discovery_disabled;
+ extern unsigned int lnet_drop_asym_route;
++extern unsigned int lnet_max_recovery_ping_interval;
++extern unsigned int lnet_max_recovery_ping_count;
+ extern unsigned int router_sensitivity_percentage;
+ extern int alive_router_check_interval;
+ extern int live_router_check_interval;
+@@ -1009,15 +1011,14 @@ int lnet_get_peer_ni_info(u32 peer_index, u64 *nid,
+ 	return false;
  }
  
-+/* Get a cl_env, either from the per-CPU cache for the current CPU, or by
-+ * allocating a new one.
-+ */
- static struct lu_env *cl_env_obtain(void *debug)
+-#define LNET_RECOVERY_INTERVAL_MAX 900
+ static inline unsigned int
+ lnet_get_next_recovery_ping(unsigned int ping_count, time64_t now)
  {
- 	struct cl_env *cle;
-@@ -672,10 +660,14 @@ static inline struct cl_env *cl_env_container(struct lu_env *env)
+ 	unsigned int interval;
+ 
+-	/* 2^9 = 512, 2^10 = 1024 */
+-	if (ping_count > 9)
+-		interval = LNET_RECOVERY_INTERVAL_MAX;
++	/* lnet_max_recovery_interval <= 2^lnet_max_recovery_ping_count */
++	if (ping_count > lnet_max_recovery_ping_count)
++		interval = lnet_max_recovery_ping_interval;
+ 	else
+ 		interval = 1 << ping_count;
+ 
+diff --git a/net/lnet/lnet/api-ni.c b/net/lnet/lnet/api-ni.c
+index 8643ac8d..165728d 100644
+--- a/net/lnet/lnet/api-ni.c
++++ b/net/lnet/lnet/api-ni.c
+@@ -117,6 +117,22 @@ static int recovery_interval_set(const char *val,
+ MODULE_PARM_DESC(lnet_recovery_limit,
+ 		 "How long to attempt recovery of unhealthy peer interfaces in seconds. Set to 0 to allow indefinite recovery");
+ 
++unsigned int lnet_max_recovery_ping_interval = 900;
++unsigned int lnet_max_recovery_ping_count = 9;
++static int max_recovery_ping_interval_set(const char *val,
++					  const struct kernel_param *kp);
++
++#define param_check_max_recovery_ping_interval(name, p) \
++		__param_check(name, p, int)
++
++static struct kernel_param_ops param_ops_max_recovery_ping_interval = {
++	.set = max_recovery_ping_interval_set,
++	.get = param_get_int,
++};
++module_param(lnet_max_recovery_ping_interval, max_recovery_ping_interval, 0644);
++MODULE_PARM_DESC(lnet_max_recovery_ping_interval,
++		 "The max interval between LNet recovery pings, in seconds");
++
+ static int lnet_interfaces_max = LNET_INTERFACES_MAX_DEFAULT;
+ static int intf_max_set(const char *val, const struct kernel_param *kp);
+ module_param_call(lnet_interfaces_max, intf_max_set, param_get_int,
+@@ -258,6 +274,39 @@ static int lnet_discover(struct lnet_process_id id, u32 force,
  }
  
- /**
-- * Returns lu_env: if there already is an environment associated with the
-- * current thread, it is returned, otherwise, new environment is allocated.
-+ * Returns an lu_env.
-+ *
-+ * No link to thread, this returns an env from the cache or
-+ * allocates a new one.
-  *
-- * Allocations are amortized through the global cache of environments.
-+ * If you need to get the specific environment you created for this thread,
-+ * you must either pass the pointer directly or store it in the file/inode
-+ * private data and retrieve it from there using ll_cl_add/ll_cl_find.
-  *
-  * @refcheck pointer to a counter used to detect environment leaks. In
-  * the usual case cl_env_get() and cl_env_put() are called in the same lexical
-@@ -765,8 +757,8 @@ unsigned int cl_env_cache_purge(unsigned int nr)
-  * Release an environment.
-  *
-  * Decrement @env reference counter. When counter drops to 0, nothing in
-- * this thread is using environment and it is returned to the allocation
-- * cache, or freed straight away, if cache is large enough.
-+ * this thread is using environment and it is returned to the per-CPU cache or
-+ * freed immediately if the cache is full.
-  */
- void cl_env_put(struct lu_env *env, u16 *refcheck)
+ static int
++max_recovery_ping_interval_set(const char *val, const struct kernel_param *kp)
++{
++	int rc;
++	unsigned long value;
++
++	rc = kstrtoul(val, 0, &value);
++	if (rc) {
++		CERROR("Invalid module parameter value for 'lnet_max_recovery_ping_interval'\n");
++		return rc;
++	}
++
++	if (!value) {
++		CERROR("Invalid max ping timeout. Must be strictly positive\n");
++		return -EINVAL;
++	}
++
++	/* The purpose of locking the api_mutex here is to ensure that
++	 * the correct value ends up stored properly.
++	 */
++	mutex_lock(&the_lnet.ln_api_mutex);
++	lnet_max_recovery_ping_interval = value;
++	lnet_max_recovery_ping_count = 0;
++	value >>= 1;
++	while (value) {
++		lnet_max_recovery_ping_count++;
++		value >>= 1;
++	}
++	mutex_unlock(&the_lnet.ln_api_mutex);
++
++	return 0;
++}
++
++static int
+ discovery_set(const char *val, const struct kernel_param *kp)
  {
+ 	int rc;
 -- 
 1.8.3.1
 
