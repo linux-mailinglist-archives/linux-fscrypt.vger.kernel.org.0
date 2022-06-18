@@ -2,33 +2,34 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 691AE55054C
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 18 Jun 2022 16:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2D7955054F
+	for <lists+linux-fscrypt@lfdr.de>; Sat, 18 Jun 2022 16:01:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234158AbiFRNxM (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        id S234392AbiFRNxM (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
         Sat, 18 Jun 2022 09:53:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48250 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234185AbiFRNw7 (ORCPT
+        with ESMTP id S234228AbiFRNxE (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sat, 18 Jun 2022 09:52:59 -0400
+        Sat, 18 Jun 2022 09:53:04 -0400
 Received: from smtp3.ccs.ornl.gov (smtp3.ccs.ornl.gov [160.91.203.39])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 289E01104
-        for <linux-fscrypt@vger.kernel.org>; Sat, 18 Jun 2022 06:52:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76A4610F3
+        for <linux-fscrypt@vger.kernel.org>; Sat, 18 Jun 2022 06:53:01 -0700 (PDT)
 Received: from star.ccs.ornl.gov (star.ccs.ornl.gov [160.91.202.134])
-        by smtp3.ccs.ornl.gov (Postfix) with ESMTP id 1E4BE13F5;
+        by smtp3.ccs.ornl.gov (Postfix) with ESMTP id 258EF13F6;
         Sat, 18 Jun 2022 09:52:14 -0400 (EDT)
 Received: by star.ccs.ornl.gov (Postfix, from userid 2004)
-        id 1CBADE4F1D; Sat, 18 Jun 2022 09:52:14 -0400 (EDT)
+        id 21556E9152; Sat, 18 Jun 2022 09:52:14 -0400 (EDT)
 From:   James Simmons <jsimmons@infradead.org>
 To:     Eric Biggers <ebiggers@google.com>,
         Andreas Dilger <adilger@whamcloud.com>,
         NeilBrown <neilb@suse.de>
-Cc:     linux-fscrypt@vger.kernel.org, Alex Zhuravlev <bzzz@whamcloud.com>,
+Cc:     linux-fscrypt@vger.kernel.org,
+        Patrick Farrell <pfarrell@whamcloud.com>,
         James Simmons <jsimmons@infradead.org>
-Subject: [PATCH 14/28] lnet: libcfs: reset hs_rehash_bits
-Date:   Sat, 18 Jun 2022 09:51:56 -0400
-Message-Id: <1655560330-30743-15-git-send-email-jsimmons@infradead.org>
+Subject: [PATCH 15/28] lustre: llite: Make iotrace logging quieter
+Date:   Sat, 18 Jun 2022 09:51:57 -0400
+Message-Id: <1655560330-30743-16-git-send-email-jsimmons@infradead.org>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1655560330-30743-1-git-send-email-jsimmons@infradead.org>
 References: <1655560330-30743-1-git-send-email-jsimmons@infradead.org>
@@ -41,47 +42,43 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Alex Zhuravlev <bzzz@whamcloud.com>
+From: Patrick Farrell <pfarrell@whamcloud.com>
 
-if rehash work is cancelled, then nobody resets
-hs_rehash_bits and the first iterator asserts
-at LASSERT(!cfs_hash_is_rehashing(hs)) in
-cfs_hash_for_each_relax().
+Most of the time, we don't read any pages with readahead,
+since we're moving through the window and aren't ready to
+read more yet.  That's important for readahead debug, but
+there's no need to log it for iotrace.  (This matters
+because without this change, this message is the large
+majority of iotrace messages.)
 
-WC-bug-id: https://jira.whamcloud.com/browse/LU-15207
-Lustre-commit: 9257f24dfdf9f0a68 ("LU-15207 libcfs: reset hs_rehash_bits")
-Signed-off-by: Alex Zhuravlev <bzzz@whamcloud.com>
-Reviewed-on: https://review.whamcloud.com/45533
+WC-bug-id: https://jira.whamcloud.com/browse/LU-15317
+Lustre-commit: a91b5d4a990c6a870 ("LU-15317 llite: Make iotrace logging quieter")
+Signed-off-by: Patrick Farrell <pfarrell@whamcloud.com>
+Reviewed-on: https://review.whamcloud.com/45887
 Reviewed-by: Andreas Dilger <adilger@whamcloud.com>
-Reviewed-by: James Simmons <jsimmons@infradead.org>
+Reviewed-by: Sebastien Buisson <sbuisson@ddn.com>
 Reviewed-by: Oleg Drokin <green@whamcloud.com>
 Signed-off-by: James Simmons <jsimmons@infradead.org>
 ---
- net/lnet/libcfs/hash.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ fs/lustre/llite/rw.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/net/lnet/libcfs/hash.c b/net/lnet/libcfs/hash.c
-index d060eaa..c9ff92d 100644
---- a/net/lnet/libcfs/hash.c
-+++ b/net/lnet/libcfs/hash.c
-@@ -1765,8 +1765,15 @@ struct cfs_hash_cond_arg {
- void
- cfs_hash_rehash_cancel(struct cfs_hash *hs)
- {
--	LASSERT(cfs_hash_with_rehash(hs));
--	cancel_work_sync(&hs->hs_rehash_work);
-+	LASSERT(hs->hs_iterators > 0 || hs->hs_exiting);
-+	while (cfs_hash_is_rehashing(hs)) {
-+		if (cancel_work_sync(&hs->hs_rehash_work)) {
-+			cfs_hash_lock(hs, 1);
-+			hs->hs_rehash_bits = 0;
-+			cfs_hash_unlock(hs, 1);
-+		}
-+		cond_resched();
-+	}
- }
- 
- void
+diff --git a/fs/lustre/llite/rw.c b/fs/lustre/llite/rw.c
+index bd02a28..239f78b 100644
+--- a/fs/lustre/llite/rw.c
++++ b/fs/lustre/llite/rw.c
+@@ -1692,7 +1692,10 @@ int ll_io_read_page(const struct lu_env *env, struct cl_io *io,
+ 		rc2 = ll_readahead(env, io, &queue->c2_qin, ras,
+ 				   uptodate, file, skip_index,
+ 				   &ra_start_index);
+-		CDEBUG(D_READA|D_IOTRACE,
++		/* to keep iotrace clean, we only print here if we actually
++		 * read pages
++		 */
++		CDEBUG(D_READA | (rc2 ? D_IOTRACE : 0),
+ 		       DFID " %d pages read ahead at %lu, triggered by user read at %lu\n",
+ 		       PFID(ll_inode2fid(inode)), rc2, ra_start_index,
+ 		       vvp_index(vpg));
 -- 
 1.8.3.1
 
