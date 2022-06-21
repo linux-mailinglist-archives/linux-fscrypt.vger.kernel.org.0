@@ -2,212 +2,108 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1639D550A3B
-	for <lists+linux-fscrypt@lfdr.de>; Sun, 19 Jun 2022 13:30:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EDB5552ED4
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 21 Jun 2022 11:41:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236542AbiFSLaz (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sun, 19 Jun 2022 07:30:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55160 "EHLO
+        id S1349582AbiFUJkr (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 21 Jun 2022 05:40:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233282AbiFSLay (ORCPT
+        with ESMTP id S1349267AbiFUJkK (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sun, 19 Jun 2022 07:30:54 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7B9A7669
-        for <linux-fscrypt@vger.kernel.org>; Sun, 19 Jun 2022 04:30:52 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id l126-20020a1c2584000000b0039c1a10507fso4404906wml.1
-        for <linux-fscrypt@vger.kernel.org>; Sun, 19 Jun 2022 04:30:52 -0700 (PDT)
+        Tue, 21 Jun 2022 05:40:10 -0400
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A326527FC8
+        for <linux-fscrypt@vger.kernel.org>; Tue, 21 Jun 2022 02:39:57 -0700 (PDT)
+Received: by mail-oo1-xc2b.google.com with SMTP id r9-20020a4acb09000000b0041b6abb517fso2597724ooq.2
+        for <linux-fscrypt@vger.kernel.org>; Tue, 21 Jun 2022 02:39:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=scylladb.com; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=O2I45PoOglfUqWYYLgh36wUEI38mqN5c3WyJELiYVrQ=;
-        b=CMDX7ziQVP/ELJCQ2uYixvE/VDY4gI0qJRyGZ6YhB69FGdgWsPUtuQ4ujKYUJOLfr3
-         JecC5hxwQzEatbQfmcHzd4sjCyNFkj1eXcQa2IbP+NPsmH3iuu5a83ukp1hWLtrn+SDp
-         8gvphAot6Kf3zSzGxxzeUfJ6pluXb1axlJWDmuKfXjXHgxmIa3Ne9GsgU811Ua2tYlrE
-         OA1WN8N/jwauET/7+Xk91P+RwrybwSq+T3UMITLjpWa85tfQOfL/LK5uULCiFGPNytHq
-         /qfUyy4cM4U38c3lRisTyxMFzdqTuYbve/Ij7FcakHP7u3lqBMOhVDG5RpW9uGnPMM9A
-         3j5g==
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=/0bRExIb6Mv4sy5raFRmeQINC+UUx7zEZcUUOWWOPJg=;
+        b=NKhg6kSkfnglJlsPDVUWhCY3Iibudx7OhZC5CePFgeNekYJKNrcmU8wB8gkktmjPqY
+         f0o4DET3nwW7oGb1WQAmWVCm6yLISrVrQXMY/9qoCppMNLX7K/jA/JZ+JMs1mNT38j+N
+         qSlM2vTiSOIkQo5cZ6oY4dkMVda7fWn0vzKRT295Q67AStI8u0BTanvw38uSxo4IMvFm
+         mtbeFJOQugEk6bmbrSLJZHxNWvSEoU0AT9TQz59V3jAGDZbWiI6U0Fx8UlroTYMr9wGQ
+         +xC78kHT5AZK7k/f6wmWhdDj3ThC5Cy20ctCKCcYvb/idPExEpgvQXB/UX/ziCu3vO07
+         Q2/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=O2I45PoOglfUqWYYLgh36wUEI38mqN5c3WyJELiYVrQ=;
-        b=wQV7vdm/MYJd8egoRfz/ZA57B1rPEMbCnKl4oYqnOpXvqlyFnRHJd6KvVXZPwsdzQv
-         JrqRpAR29HLO7/pqqHUu9KwFGj59u0dK38qXIcXfkMGYg5xpAqA8EbIdwGDBqTmKcWLB
-         sAG1GFKI+Oto5cdUKCmf5aauX2Fl6WtqSHz/uJ46xbDT32EwXn9en0kwPj9kUo3Wp74L
-         Ho3Z96nSurXUNJzuKvdcEENCLQ1wKQ2RckWPz+yjyCPcaRuDCWjNCBkqng4aTA8KEsRS
-         B0Rlz/u0ETLxY1lKWjZa1a7T4jIsBw9961NofKyQ47N/YeQpaEIJPRerlIEMlmG0X6Yq
-         DeWg==
-X-Gm-Message-State: AJIora8z75ibCKDs04oB3uqeBuAtaigZkt/KzxtZJyEsOvkbd28aEPC1
-        ukj8RM5GPYhKTvDlmLueueluUBS54wEoHzn+
-X-Google-Smtp-Source: AGRyM1sQr/+BlLCjFYp7YIL2rW66A6O7S/z7a9tjlAuS/44BkYWT2Uw8taLHxSnMG2oypjiTMj2wcg==
-X-Received: by 2002:a05:600c:17cf:b0:39c:4b79:78c9 with SMTP id y15-20020a05600c17cf00b0039c4b7978c9mr19415525wmo.96.1655638251293;
-        Sun, 19 Jun 2022 04:30:51 -0700 (PDT)
-Received: from [10.0.0.1] (system.cloudius-systems.com. [199.203.229.89])
-        by smtp.gmail.com with ESMTPSA id x1-20020adff0c1000000b002103cfd2fbasm10156755wro.65.2022.06.19.04.30.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 19 Jun 2022 04:30:50 -0700 (PDT)
-Message-ID: <6c06b2d4-2d96-c4a6-7aca-5147a91e7cf2@scylladb.com>
-Date:   Sun, 19 Jun 2022 14:30:47 +0300
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=/0bRExIb6Mv4sy5raFRmeQINC+UUx7zEZcUUOWWOPJg=;
+        b=cALkS1MORjpclKLJ4BTPbfQPDKB6H2ulIJyjxP7UgIhWFphCjR+D/KfevljQj/vV9r
+         j72FMQC+E/Q6uaLKQeB+Lj9f+4u08v0coG3Fv4U8AsnD73DPDDm6vvLofxEWlb8Ev2Oe
+         uRfWbx4aKuHRGbI7K/ks0d9dKSYLCMVQH2zYXMznTR28Kz4RI6qPt0ccC0m9KdFEzpSr
+         hRB4FqCuc5C/ZPJPYxNCDYQimrlUEHzYVu+wmfH05+4N2O4OUuo3riGhOCeuCCpOKA8B
+         YfmcKEWJD0R6hIJvFpMAzmBZeqJIPNL9ksR+fmr41hYHlYZ2rTnnuJy8icJCYlnQpiO4
+         8pDQ==
+X-Gm-Message-State: AJIora98jOq9E8h10742wY7y3wh7SgpF1LQkbYy/aNnlBvgU+YiPzY4o
+        Z3u5PEa3CO3PpQv4LB+K+s8oInc3LQ0JY9J3POkbBfJrC9kE7tkD
+X-Google-Smtp-Source: AGRyM1sTF/SvvxCyraPE52znD36ZX02jNmxmam87lP8bWzXT3yTfChS1a9JgJI9LjBXh9tpS4qLO5E/t+5efudcEruY=
+X-Received: by 2002:a0d:d7c7:0:b0:317:bfe8:4f2 with SMTP id
+ z190-20020a0dd7c7000000b00317bfe804f2mr12417910ywd.276.1655804384555; Tue, 21
+ Jun 2022 02:39:44 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH v3 1/8] statx: add direct I/O alignment information
-Content-Language: en-US
-To:     Eric Biggers <ebiggers@kernel.org>, linux-fsdevel@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-xfs@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>
-References: <20220616201506.124209-1-ebiggers@kernel.org>
- <20220616201506.124209-2-ebiggers@kernel.org>
-From:   Avi Kivity <avi@scylladb.com>
-Organization: ScyllaDB
-In-Reply-To: <20220616201506.124209-2-ebiggers@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Received: by 2002:a05:7010:e10a:b0:2d9:e631:94d0 with HTTP; Tue, 21 Jun 2022
+ 02:39:44 -0700 (PDT)
+Reply-To: dimitryedik@gmail.com
+From:   Dimitry Edik <lsbthdwrds@gmail.com>
+Date:   Tue, 21 Jun 2022 02:39:44 -0700
+Message-ID: <CAGrL05aBO8rbFuij24J-APa+Luis69gEjhj35iv_GZfkHCVYDQ@mail.gmail.com>
+Subject: Dear Partner,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=7.8 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        LOTS_OF_MONEY,MONEY_FREEMAIL_REPTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_MONEY_PERCENT,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM,
+        UNDISC_MONEY autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:c2b listed in]
+        [list.dnswl.org]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [lsbthdwrds[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  2.2 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+        *  2.0 MONEY_FREEMAIL_REPTO Lots of money from someone using free
+        *      email?
+        *  0.0 T_MONEY_PERCENT X% of a lot of money for you
+        *  2.0 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
+Hello Dear,
 
-On 16/06/2022 23.14, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
->
-> Traditionally, the conditions for when DIO (direct I/O) is supported
-> were fairly simple.  For both block devices and regular files, DIO had
-> to be aligned to the logical block size of the block device.
->
-> However, due to filesystem features that have been added over time (e.g.
-> multi-device support, data journalling, inline data, encryption, verity,
-> compression, checkpoint disabling, log-structured mode), the conditions
-> for when DIO is allowed on a regular file have gotten increasingly
-> complex.  Whether a particular regular file supports DIO, and with what
-> alignment, can depend on various file attributes and filesystem mount
-> options, as well as which block device(s) the file's data is located on.
->
-> Moreover, the general rule of DIO needing to be aligned to the block
-> device's logical block size is being relaxed to allow user buffers (but
-> not file offsets) aligned to the DMA alignment instead
-> (https://lore.kernel.org/linux-block/20220610195830.3574005-1-kbusch@fb.com/T/#u).
->
-> XFS has an ioctl XFS_IOC_DIOINFO that exposes DIO alignment information.
-> Uplifting this to the VFS is one possibility.  However, as discussed
-> (https://lore.kernel.org/linux-fsdevel/20220120071215.123274-1-ebiggers@kernel.org/T/#u),
-> this ioctl is rarely used and not known to be used outside of
-> XFS-specific code.  It was also never intended to indicate when a file
-> doesn't support DIO at all, nor was it intended for block devices.
->
-> Therefore, let's expose this information via statx().  Add the
-> STATX_DIOALIGN flag and two new statx fields associated with it:
->
-> * stx_dio_mem_align: the alignment (in bytes) required for user memory
->    buffers for DIO, or 0 if DIO is not supported on the file.
->
-> * stx_dio_offset_align: the alignment (in bytes) required for file
->    offsets and I/O segment lengths for DIO, or 0 if DIO is not supported
->    on the file.  This will only be nonzero if stx_dio_mem_align is
->    nonzero, and vice versa.
+My Name is Dimitry Edik from Russia A special assistance to my Russia
+boss who deals in oil import and export He was killed by the Ukraine
+soldiers at the border side. He supplied
+oil to the Philippines company and he was paid over 90 per cent of the
+transaction and the remaining $18.6 Million dollars have been paid into a
+Taiwan bank in the Philippines..i want a partner that will assist me
+with the claims. Is a (DEAL ) 40% for you and 60% for me
+I have all information for the claims.
+Kindly read and reply to me back is 100 per cent risk-free
 
-
-If you consider AIO, this is actually three alignments:
-
-1. offset alignment for reads (sector size in XFS)
-
-2. offset alignment for overwrites (sector size in XFS since 
-ed1128c2d0c87e, block size earlier)
-
-3. offset alignment for appending writes (block size)
-
-
-This is critical for linux-aio since violation of these alignments will 
-stall the io_submit system call. Perhaps io_uring handles it better by 
-bouncing to a workqueue, but there is a significant performance and 
-latency penalty for that.
-
-
-Small appending writes are important for database commit logs (and so 
-it's better to overwrite a pre-formatted file to avoid aligning to block 
-size).
-
-
-It would be good to expose these differences.
-
-
->
-> Note that as with other statx() extensions, if STATX_DIOALIGN isn't set
-> in the returned statx struct, then these new fields won't be filled in.
-> This will happen if the file is neither a regular file nor a block
-> device, or if the file is a regular file and the filesystem doesn't
-> support STATX_DIOALIGN.  It might also happen if the caller didn't
-> include STATX_DIOALIGN in the request mask, since statx() isn't required
-> to return unrequested information.
->
-> This commit only adds the VFS-level plumbing for STATX_DIOALIGN.  For
-> regular files, individual filesystems will still need to add code to
-> support it.  For block devices, a separate commit will wire it up too.
->
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
->   fs/stat.c                 | 2 ++
->   include/linux/stat.h      | 2 ++
->   include/uapi/linux/stat.h | 4 +++-
->   3 files changed, 7 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/stat.c b/fs/stat.c
-> index 9ced8860e0f35..a7930d7444830 100644
-> --- a/fs/stat.c
-> +++ b/fs/stat.c
-> @@ -611,6 +611,8 @@ cp_statx(const struct kstat *stat, struct statx __user *buffer)
->   	tmp.stx_dev_major = MAJOR(stat->dev);
->   	tmp.stx_dev_minor = MINOR(stat->dev);
->   	tmp.stx_mnt_id = stat->mnt_id;
-> +	tmp.stx_dio_mem_align = stat->dio_mem_align;
-> +	tmp.stx_dio_offset_align = stat->dio_offset_align;
->   
->   	return copy_to_user(buffer, &tmp, sizeof(tmp)) ? -EFAULT : 0;
->   }
-> diff --git a/include/linux/stat.h b/include/linux/stat.h
-> index 7df06931f25d8..ff277ced50e9f 100644
-> --- a/include/linux/stat.h
-> +++ b/include/linux/stat.h
-> @@ -50,6 +50,8 @@ struct kstat {
->   	struct timespec64 btime;			/* File creation time */
->   	u64		blocks;
->   	u64		mnt_id;
-> +	u32		dio_mem_align;
-> +	u32		dio_offset_align;
->   };
->   
->   #endif
-> diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
-> index 1500a0f58041a..7cab2c65d3d7f 100644
-> --- a/include/uapi/linux/stat.h
-> +++ b/include/uapi/linux/stat.h
-> @@ -124,7 +124,8 @@ struct statx {
->   	__u32	stx_dev_minor;
->   	/* 0x90 */
->   	__u64	stx_mnt_id;
-> -	__u64	__spare2;
-> +	__u32	stx_dio_mem_align;	/* Memory buffer alignment for direct I/O */
-> +	__u32	stx_dio_offset_align;	/* File offset alignment for direct I/O */
->   	/* 0xa0 */
->   	__u64	__spare3[12];	/* Spare space for future expansion */
->   	/* 0x100 */
-> @@ -152,6 +153,7 @@ struct statx {
->   #define STATX_BASIC_STATS	0x000007ffU	/* The stuff in the normal stat struct */
->   #define STATX_BTIME		0x00000800U	/* Want/got stx_btime */
->   #define STATX_MNT_ID		0x00001000U	/* Got stx_mnt_id */
-> +#define STATX_DIOALIGN		0x00002000U	/* Want/got direct I/O alignment info */
->   
->   #define STATX__RESERVED		0x80000000U	/* Reserved for future struct statx expansion */
->   
+Yours Sincerely
+Dimitry Edik
