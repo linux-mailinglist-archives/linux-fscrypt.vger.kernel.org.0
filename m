@@ -2,206 +2,148 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CF77557F32
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 23 Jun 2022 18:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27D53557FB2
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 23 Jun 2022 18:25:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232031AbiFWQCk (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 23 Jun 2022 12:02:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38350 "EHLO
+        id S231680AbiFWQZA (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 23 Jun 2022 12:25:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231160AbiFWQCj (ORCPT
+        with ESMTP id S231708AbiFWQY7 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 23 Jun 2022 12:02:39 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADE3A37A9E;
-        Thu, 23 Jun 2022 09:02:38 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 70774B81370;
-        Thu, 23 Jun 2022 16:02:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B909C3411B;
-        Thu, 23 Jun 2022 16:02:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656000156;
-        bh=KDZro067hOs54V5FFK7xSXNOUbG2XQbnl6krjTY23Ck=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aFKuyHxI8O+khgn74cZXUbdL6rLFZn2OzWcLNJ4jb5lz+ls5l93I8W279wmcNAWUc
-         /oVyf141lxp/6Jb1TUiAkAHyMnnEMWCbiv7An9MDsHG+5fY830R3mcnDWxeLNdS0Wz
-         A2SJc9YiOWxYeV9667xlg4B5EdPahTWnJY9tmk5Q2Sfg094lTbv2XpJUhJqaOCMAhw
-         kGHGl1ZHDgNFmb0GXHDUt7S38X37aLh9l3Kut5/3WXv346eraEciXK5bb0Y9FPU55z
-         i1HMd9dcdEjUnB23t0tf2NDJ0AfTIOWEbhjNCnRB4H8+YgU1uweiDYVlQGpvfOl2u+
-         zrRmIFUgR6VEA==
-Date:   Thu, 23 Jun 2022 09:02:35 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-man@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-xfs@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>
+        Thu, 23 Jun 2022 12:24:59 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A442938180
+        for <linux-fscrypt@vger.kernel.org>; Thu, 23 Jun 2022 09:24:57 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id w24so46028pjg.5
+        for <linux-fscrypt@vger.kernel.org>; Thu, 23 Jun 2022 09:24:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20210112.gappssmtp.com; s=20210112;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=bcyfxdYDvwFKE4FcRkASoG03KisaDjvMQmq4ODLZY6Y=;
+        b=Q6EkS8J9o1kRFWTS1Sz7yUZQrVb9iZj6pO/U9kzzfvvlgRxFnL50FsOu6QYctzx4Zj
+         4AFwrrYShyaBMbMo/S//DCItdhB6Xhidd85LbLLCxhVPWdWfApQ8g/jLGL/zYxjMnhmB
+         xugmETGHUFP/NTpUaNxC3LJ8uNd1GAVXJfdx/0rp85cdY7Ghk6qITrxSFopDdfiLvenO
+         RRWQfBglfzjZeMXnkcJFN4vOV1vf6TcRPzixwqDrnxZlAnKBAJNAfji+cLcxuPTwVecy
+         yQOMeWEt/s2lxyaOoO1+OBzNWKgwuofTfgyeF7a8/TNbKiIEVB21YyJebVkm9tDvvBw2
+         jkgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=bcyfxdYDvwFKE4FcRkASoG03KisaDjvMQmq4ODLZY6Y=;
+        b=uij8B/eq2yArF/YmwkgC/TqluGmj+a+AFV71gFoDm/nQdXuYZLeQADrY1G143EUWPw
+         xYOaH/N/E6T/0eRL5qBITiQUgHPxJA71i4iElqPw9QXApxArRCJWxoNYO3PRKl0CA/SG
+         iBG0cuNeuBfid6j/jUSU1/StPR/0tU6mnfQJhI+siZMrS3oupC/qxuIIk7QNgMOWu4fn
+         LzWLSf50yfrLLjGjJpCe/HKlN1wXhZAunB0E+E5EamESBRv19drj04fFs0Lv8ffCo3d4
+         P9w7H5psOjOzHXbDFNxYZm9HlRyOOqOswq+5KlRNwJUxo99xmZjn0MJU1Wn7Lfp6oaeT
+         GtBg==
+X-Gm-Message-State: AJIora9v3zuKOf6FJw2MgGzJ9joNkPG5NMia+7SQ4TUe5E1SS9qJeIgz
+        lAjUyJjeWkt0n7xq9DvTPWX4Hw==
+X-Google-Smtp-Source: AGRyM1ukROTsV74eiDORs7U9DuEV5/TMYhdqOiMfNTcV5f2UeXO0T5u5WYzf57Iazk83XTH31glX2g==
+X-Received: by 2002:a17:90b:3b81:b0:1ec:e852:22db with SMTP id pc1-20020a17090b3b8100b001ece85222dbmr4865881pjb.77.1656001497135;
+        Thu, 23 Jun 2022 09:24:57 -0700 (PDT)
+Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id jh21-20020a170903329500b0016a109c7606sm11075493plb.259.2022.06.23.09.24.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 23 Jun 2022 09:24:56 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <622BA3BB-03EA-4271-8A2E-2ADAFB574155@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_1B6FC5B2-556F-4A2D-9F1C-A60D36468C15";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
 Subject: Re: [man-pages RFC PATCH] statx.2, open.2: document STATX_DIOALIGN
-Message-ID: <YrSOm2murB4Bc1RQ@magnolia>
+Date:   Thu, 23 Jun 2022 10:27:19 -0600
+In-Reply-To: <YrSOm2murB4Bc1RQ@magnolia>
+Cc:     Eric Biggers <ebiggers@kernel.org>, linux-fsdevel@vger.kernel.org,
+        linux-man@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Keith Busch <kbusch@kernel.org>
+To:     "Darrick J. Wong" <djwong@kernel.org>
 References: <20220616202141.125079-1-ebiggers@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220616202141.125079-1-ebiggers@kernel.org>
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,SUSPICIOUS_RECIPS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+ <YrSOm2murB4Bc1RQ@magnolia>
+X-Mailer: Apple Mail (2.3273)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, Jun 16, 2022 at 01:21:41PM -0700, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
+
+--Apple-Mail=_1B6FC5B2-556F-4A2D-9F1C-A60D36468C15
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset=us-ascii
+
+On Jun 23, 2022, at 10:02 AM, Darrick J. Wong <djwong@kernel.org> wrote:
 > 
-> Document the proposed STATX_DIOALIGN support for statx()
-> (https://lore.kernel.org/linux-fsdevel/20220616201506.124209-1-ebiggers@kernel.org).
+> On Thu, Jun 16, 2022 at 01:21:41PM -0700, Eric Biggers wrote:
+>> From: Eric Biggers <ebiggers@google.com>
+>> 
+>> @@ -244,8 +249,11 @@ STATX_SIZE	Want stx_size
+>> STATX_BLOCKS	Want stx_blocks
+>> STATX_BASIC_STATS	[All of the above]
+>> STATX_BTIME	Want stx_btime
+>> +STATX_ALL	The same as STATX_BASIC_STATS | STATX_BTIME.
+>> +         	This is deprecated and should not be used.
 > 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
->  man2/open.2  | 43 ++++++++++++++++++++++++++++++++-----------
->  man2/statx.2 | 32 +++++++++++++++++++++++++++++++-
->  2 files changed, 63 insertions(+), 12 deletions(-)
-> 
-> diff --git a/man2/open.2 b/man2/open.2
-> index d1485999f..ef29847c3 100644
-> --- a/man2/open.2
-> +++ b/man2/open.2
-> @@ -1732,21 +1732,42 @@ of user-space buffers and the file offset of I/Os.
->  In Linux alignment
->  restrictions vary by filesystem and kernel version and might be
->  absent entirely.
-> -However there is currently no filesystem\-independent
-> -interface for an application to discover these restrictions for a given
-> -file or filesystem.
-> -Some filesystems provide their own interfaces
-> -for doing so, for example the
-> +The handling of misaligned
-> +.B O_DIRECT
-> +I/Os also varies; they can either fail with
-> +.B EINVAL
-> +or fall back to buffered I/O.
-> +.PP
-> +Since Linux 5.20,
-> +.B O_DIRECT
-> +support and alignment restrictions for a file can be queried using
-> +.BR statx (2),
-> +using the
-> +.B STATX_DIOALIGN
-> +flag.
-> +Support for
-> +.B STATX_DIOALIGN
-> +varies by filesystem; see
-> +.BR statx (2).
-> +.PP
-> +Some filesystems provide their own interfaces for querying
-> +.B O_DIRECT
-> +alignment restrictions, for example the
->  .B XFS_IOC_DIOINFO
->  operation in
->  .BR xfsctl (3).
-> +.B STATX_DIOALIGN
-> +should be used instead when it is available.
->  .PP
-> -Under Linux 2.4, transfer sizes, the alignment of the user buffer,
-> -and the file offset must all be multiples of the logical block size
-> -of the filesystem.
-> -Since Linux 2.6.0, alignment to the logical block size of the
-> -underlying storage (typically 512 bytes) suffices.
-> -The logical block size can be determined using the
-> +If none of the above is available, then direct I/O support and alignment
-> +restrictions can only be assumed from known characteristics of the filesystem,
-> +the individual file, the underlying storage device(s), and the kernel version.
-> +In Linux 2.4, most block device based filesystems require that the file offset
-> +and the length and memory address of all I/O segments be multiples of the
-> +filesystem block size (typically 4096 bytes).
-> +In Linux 2.6.0, this was relaxed to the logical block size of the block device
-> +(typically 512 bytes).
-> +A block device's logical block size can be determined using the
->  .BR ioctl (2)
->  .B BLKSSZGET
->  operation or from the shell using the command:
-> diff --git a/man2/statx.2 b/man2/statx.2
-> index a8620be6f..fff0a63ec 100644
-> --- a/man2/statx.2
-> +++ b/man2/statx.2
-> @@ -61,7 +61,12 @@ struct statx {
->         containing the filesystem where the file resides */
->      __u32 stx_dev_major;   /* Major ID */
->      __u32 stx_dev_minor;   /* Minor ID */
-> +
->      __u64 stx_mnt_id;      /* Mount ID */
-> +
-> +    /* Direct I/O alignment restrictions */
-> +    __u32 stx_dio_mem_align;
-> +    __u32 stx_dio_offset_align;
->  };
->  .EE
->  .in
-> @@ -244,8 +249,11 @@ STATX_SIZE	Want stx_size
->  STATX_BLOCKS	Want stx_blocks
->  STATX_BASIC_STATS	[All of the above]
->  STATX_BTIME	Want stx_btime
-> +STATX_ALL	The same as STATX_BASIC_STATS | STATX_BTIME.
-> +         	This is deprecated and should not be used.
+> STATX_ALL is deprecated??  I was under the impression that _ALL meant
+> all the known bits for that kernel release, but...
 
-STATX_ALL is deprecated??  I was under the impression that _ALL meant
-all the known bits for that kernel release, but...
+For userspace STATX_ALL doesn't make sense, and it isn't used by the kernel.
 
->  STATX_MNT_ID	Want stx_mnt_id (since Linux 5.8)
+Firstly, that would be a compile-time value for an application, so it
+may be incorrect for the kernel the code is actually run on (either too
+many or too few bits could be set).
 
-...I guess that is not correct.
+Secondly, it isn't really useful for an app to request "all attributes"
+if it doesn't know what they all mean, as that potentially adds useless
+overhead.  Better for it to explicitly request the attributes that it
+needs.  If that is fewer than the kernel could return it is irrelevant,
+since the app would ignore them anyway.
 
-> -STATX_ALL	[All currently available fields]
-> +STATX_DIOALIGN	Want stx_dio_mem_align and stx_dio_offset_align
-> +              	(since Linux 5.20; support varies by filesystem)
->  .TE
->  .in
->  .PP
-> @@ -406,6 +414,28 @@ This is the same number reported by
->  .BR name_to_handle_at (2)
->  and corresponds to the number in the first field in one of the records in
->  .IR /proc/self/mountinfo .
-> +.TP
-> +.I stx_dio_mem_align
-> +The alignment (in bytes) required for user memory buffers for direct I/O
-> +.BR "" ( O_DIRECT )
-> +on this file. or 0 if direct I/O is not supported on this file.
+The kernel will already ignore and mask attributes that *it* doesn't
+understand, so requesting more is fine and STATX_ALL doesn't help this.
 
-"...on this file, or 0 if..."
+Cheers, Andreas
 
-> +.IP
-> +.B STATX_DIOALIGN
-> +.IR "" ( stx_dio_mem_align
-> +and
-> +.IR stx_dio_offset_align )
-> +is supported on block devices since Linux 5.20.
-> +The support on regular files varies by filesystem; it is supported by ext4 and
-> +f2fs since Linux 5.20.
 
-If the VFS changes don't provoke further bikeshedding, I'll contribute
-an XFS patch to go with your series.
 
---D
 
-> +.TP
-> +.I stx_dio_offset_align
-> +The alignment (in bytes) required for file offsets and I/O segment lengths for
-> +direct I/O
-> +.BR "" ( O_DIRECT )
-> +on this file, or 0 if direct I/O is not supported on this file.
-> +This will only be nonzero if
-> +.I stx_dio_mem_align
-> +is nonzero, and vice versa.
->  .PP
->  For further information on the above fields, see
->  .BR inode (7).
-> -- 
-> 2.36.1
-> 
+
+
+--Apple-Mail=_1B6FC5B2-556F-4A2D-9F1C-A60D36468C15
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmK0lGcACgkQcqXauRfM
+H+CkuA//avp4Tuh55VpE8yHOQ8z64y5vrwNesx7bZ8atQCuwyhbJlvdTGn27SVv1
+4j1+/hWy3q+Jsot1ja0njROgu9KlOetTJ7qK4tlq4buIjBuB1izLfyGtSUtRezui
+Z93g7NQEpOSFyNwknXMz2vTB4gOxgMd0V9jCkElXXC+EClReBJq/Jts+/qNH8cnU
+j2kdedwlaAg3zMbSWbygM0DxumX1YB0dCYuK/SyyAyjWr4I5mHFqHeyZf3ej2fVB
+g/wUfgv7Ku50XluSp4/deoA8R/TJbCkQikvKS4S9pI/LqMeOEZ6moyIJ8KRyWKSs
+wbSn8e2E49hUrxKO15kQx2vIs1BS1WLN1PWmv4TVnkTmfkuf7iUVVMxlU3Jfifcx
+qZXhYvTv7UvL/oV12MJHzQiYR/YUytHzdeliMC+sDa/tCyWE0UZMAZaKFgO9vV9h
+gdHfsvdNabGbFBE8ul5auWUT6QaqmytVQOk6239FD/gHD3Vw4ZVptZKDziYfwULV
+JgVDmWSi8RzmV3F+g3Lr9oGWqFbErsl+QWm80wXaC7yxHm3C2wKKqwPx6bfFbucT
+PuSiilxCV7qDXmDRISKNt/JMaLsxh8w+15v92wWhacEtgMzIyVsjudfePb2wiUtw
+bLbXOh9Pj4DCci4an5lxVhj8jEYThvOPq1FlB6e7qhrXwoGwugE=
+=83Nf
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_1B6FC5B2-556F-4A2D-9F1C-A60D36468C15--
