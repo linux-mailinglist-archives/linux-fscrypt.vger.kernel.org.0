@@ -2,46 +2,54 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7DB85588B7
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 23 Jun 2022 21:26:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B40425588CF
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 23 Jun 2022 21:29:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230512AbiFWT0o (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 23 Jun 2022 15:26:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45172 "EHLO
+        id S231355AbiFWT3a (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 23 Jun 2022 15:29:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230518AbiFWT0R (ORCPT
+        with ESMTP id S231220AbiFWT3C (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 23 Jun 2022 15:26:17 -0400
+        Thu, 23 Jun 2022 15:29:02 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B0576809A;
-        Thu, 23 Jun 2022 11:43:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5322D8E1F2;
+        Thu, 23 Jun 2022 11:58:39 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DCBBE6202D;
-        Thu, 23 Jun 2022 18:43:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01E16C341C6;
-        Thu, 23 Jun 2022 18:43:43 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8473B62044;
+        Thu, 23 Jun 2022 18:58:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AFD1C341C6;
+        Thu, 23 Jun 2022 18:58:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656009824;
-        bh=8JGe9eNXEurDtGUIOyQMri1/phHvJdA0fNLSfBzS7mg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=VTJnq498YgKS82Dy0bbSmatOgnVDF5fX0zO6WkqQSxO7/cUtrNLUpUD3RYVr1HG+J
-         hNgnkknImrSSx0uXv5u4q8wD0M3lMFo9z1qU63P0jME7UnfngZV7BFs7RkdADI9rQm
-         yaYTneIIVB7GcYHU1ggRao+3v9HUJ74AKsGePil7zeQzeNZxTgwO8W0pEYsFBDMDxD
-         ILgq52EVJbuSmwlwxkdLKtd13f+lPc2JTE3x3QWoyWeqPPwZPhcLd77OMyzACzSAdW
-         mE3XkW3l8wn/cPzsnBfuik7KdC6d4v/vc3SqWveuKJaW+TxWJC/IKboN+Iwl90CZef
-         DcjBfA35q7OQw==
+        s=k20201202; t=1656010717;
+        bh=wcnDAE6efCkUyOu/9igfaJxsfWfaKPG9S7OSaniKuNc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WQKN03GKc3xjYJxrsDtPtPxj231mXmv+7HUl8K06cmI4vPswygum9iBmiIotv8v90
+         52rc4x9HRdRewYOwGiyXOd3rhywelcFJr2iYHAoabwJYYXpDoTRMC2FLTai+k5zgI9
+         7i6eyhzRLhm5Jr8hLHbXBkAqdk7C6goKP9bUshzNgYJjlJD+zDv+9b5kQDtecRd/Ce
+         t8fpkXqpbiixPzTW5oPjxXMiuK437eriEXT6TYL800O3vpnoqZAoWFtYB9m6CCJo+K
+         rFl4YJnqmgCEZXzdgvHJSYa98bPNv8IagXucwatIdOPgtrQ2tk/ji5B9/eYJxuVn7g
+         2AK0Q9WEjXRGg==
+Date:   Thu, 23 Jun 2022 11:58:35 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     fstests@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        Lukas Czerner <lczerner@redhat.com>
-Subject: [xfstests PATCH v2] ext4/053: test changing test_dummy_encryption on remount
-Date:   Thu, 23 Jun 2022 11:41:13 -0700
-Message-Id: <20220623184113.330183-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.36.1
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     linux-block@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        Keith Busch <kbusch@kernel.org>, linux-fscrypt@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v3 1/8] statx: add direct I/O alignment information
+Message-ID: <YrS322LwMpQwiMT2@sol.localdomain>
+References: <20220616201506.124209-1-ebiggers@kernel.org>
+ <20220616201506.124209-2-ebiggers@kernel.org>
+ <YrSNlFgW6X4pUelg@magnolia>
+ <YrShiIjNCIANjSwL@sol.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YrShiIjNCIANjSwL@sol.localdomain>
 X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -52,39 +60,37 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On Thu, Jun 23, 2022 at 10:23:20AM -0700, Eric Biggers wrote:
+> On Thu, Jun 23, 2022 at 08:58:12AM -0700, Darrick J. Wong wrote:
+> > > diff --git a/include/linux/stat.h b/include/linux/stat.h
+> > > index 7df06931f25d8..ff277ced50e9f 100644
+> > > --- a/include/linux/stat.h
+> > > +++ b/include/linux/stat.h
+> > > @@ -50,6 +50,8 @@ struct kstat {
+> > >  	struct timespec64 btime;			/* File creation time */
+> > >  	u64		blocks;
+> > >  	u64		mnt_id;
+> > > +	u32		dio_mem_align;
+> > > +	u32		dio_offset_align;
+> > 
+> > Hmm.  Does the XFS port of XFS_IOC_DIOINFO to STATX_DIOALIGN look like
+> > this?
+> > 
+> > 	struct xfs_buftarg	*target = xfs_inode_buftarg(ip);
+> > 
+> > 	kstat.dio_mem_align = target->bt_logical_sectorsize;
+> > 	kstat.dio_offset_align = target->bt_logical_sectorsize;
+> > 	kstat.result_mask |= STATX_DIOALIGN;
+> 
+> Yes, I think so.
+> 
 
-The test_dummy_encryption mount option isn't supposed to be settable or
-changeable via a remount, so add test cases for this.  This is a
-regression test for a bug that was introduced in Linux v5.17 and fixed
-in v5.19-rc3 by commit 85456054e10b ("ext4: fix up test_dummy_encryption
-handling for new mount API").
+By the way, the patchset "[PATCHv6 00/11] direct-io dma alignment"
+(https://lore.kernel.org/linux-block/20220610195830.3574005-1-kbusch@fb.com/T/#u),
+which is currently queued in linux-block/for-next for 5.20, will relax the user
+buffer alignment requirement to the dma alignment for all filesystems using the
+iomap direct I/O implementation.  If that goes in, the XFS implementation of
+STATX_DIOALIGN, as well as the ext4 and f2fs ones, will need to be changed
+accordingly.  Also, the existing XFS_IOC_DIOINFO will need to be changed.
 
-Reviewed-by: Lukas Czerner <lczerner@redhat.com>
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
-
-v2: added info about fixing commit, and added a Reviewed-by tag
-
- tests/ext4/053 | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/tests/ext4/053 b/tests/ext4/053
-index 23e553c5..555e474e 100755
---- a/tests/ext4/053
-+++ b/tests/ext4/053
-@@ -685,6 +685,9 @@ for fstype in ext2 ext3 ext4; do
- 		mnt test_dummy_encryption=v2
- 		not_mnt test_dummy_encryption=bad
- 		not_mnt test_dummy_encryption=
-+		# Can't be set or changed on remount.
-+		mnt_then_not_remount defaults test_dummy_encryption
-+		mnt_then_not_remount test_dummy_encryption=v1 test_dummy_encryption=v2
- 		do_mkfs -O ^encrypt $SCRATCH_DEV ${SIZE}k
- 	fi
- 	not_mnt test_dummy_encryption
-
-base-commit: 0882b0913eae6fd6d2010323da1dde0ff96bf7d4
--- 
-2.36.1
-
+- Eric
