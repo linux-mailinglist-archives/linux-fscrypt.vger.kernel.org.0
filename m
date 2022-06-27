@@ -2,79 +2,50 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F40E755B11A
-	for <lists+linux-fscrypt@lfdr.de>; Sun, 26 Jun 2022 12:21:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 342D255D9E0
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 28 Jun 2022 15:22:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229565AbiFZKUb (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sun, 26 Jun 2022 06:20:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53492 "EHLO
+        id S232117AbiF0Gv6 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 27 Jun 2022 02:51:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233665AbiFZKUa (ORCPT
+        with ESMTP id S232524AbiF0Gv5 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sun, 26 Jun 2022 06:20:30 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 604D712612
-        for <linux-fscrypt@vger.kernel.org>; Sun, 26 Jun 2022 03:20:27 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id eo8so9312413edb.0
-        for <linux-fscrypt@vger.kernel.org>; Sun, 26 Jun 2022 03:20:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=scylladb.com; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=zy1Ih5xnZLYR31pscqnLVprtiUwTUenQdef+MWxKKMA=;
-        b=oBfck6+XscL2VeZ+MF8T02/Q0GkUoM1jN27mDG9zEwpHpTEFhiBjXDUOLSiVvUMvGM
-         2sicpmI3J24iRKAA/5RxJuX+VnPWJOq0n/0CFMTZwa0ERpZlFUFFpw22CJ5BPYHwH0NF
-         xzEehUBouX/IGDTkYFQ5Ev+S6CtOjASt8p1uYEBuekmHqcuo9NYiLJuBQ11SgTbV+s4Q
-         h+eTO5wsRZUjz6KnScQnB5ClLMK88d5eMfaRvO0FBf2N/bHMRc5rTU2sCUNWnro6M8G+
-         X6ErBcZ5i27Gmfz0rtcLWgvjPPhKS2RKwPNQrtAxFkITjgYwLdz6VFt3v67paBWA0AQH
-         wxMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=zy1Ih5xnZLYR31pscqnLVprtiUwTUenQdef+MWxKKMA=;
-        b=hlBAumG4HszY9saRo35EtD9o1Wgx42a92aoDYKjDdesBxAybUFo8qKmw69/2/bYO9W
-         8IXNXRl5g2t1j0ubODPncDvuYk3ffWVrFXbKPFDximY7UcExRzZCiBRHB9L8MyhNichX
-         7nwLHXcgdu0pwzcx+fWbGXKXaVteyLys7bQwnXLYszEj4SUdeVP7vTJmmCaGJN9OH9Ur
-         Lu5j3t7zHXfrBzHgCv9c178g2G3Vr2USjo34FlI+6prG72DVytgNA/S+clrbQUhUTz10
-         203wjFIsa9OnUZnJztWK+il7Q2MM0Mu4OBD49TkBQfP1Ltau41FXPofysrXZLv6MxHIL
-         DB2Q==
-X-Gm-Message-State: AJIora/vteU/wGRDW4cw/bJsTfPJ9QV9hk/7l2TQTXGX9k4Y9wuaDj1B
-        OnS1zCf88kMXcNRvp/bn+ZpVfA==
-X-Google-Smtp-Source: AGRyM1tv3WbUrJipd2xn/7Heq9RfOQOWLVedSKXLcrr95zGLiEg/pzWHi319OrG4Zqw5VAKidmbPoA==
-X-Received: by 2002:a05:6402:26d5:b0:435:aba2:9495 with SMTP id x21-20020a05640226d500b00435aba29495mr10073740edd.133.1656238825841;
-        Sun, 26 Jun 2022 03:20:25 -0700 (PDT)
-Received: from [10.0.0.1] (system.cloudius-systems.com. [199.203.229.89])
-        by smtp.gmail.com with ESMTPSA id c4-20020a170906340400b0070abf371274sm3634422ejb.136.2022.06.26.03.20.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 26 Jun 2022 03:20:25 -0700 (PDT)
-Message-ID: <23067de5-7955-7f58-f8ad-70a812602ac8@scylladb.com>
-Date:   Sun, 26 Jun 2022 13:20:22 +0300
+        Mon, 27 Jun 2022 02:51:57 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA1262661;
+        Sun, 26 Jun 2022 23:51:56 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 5C9F8B80ED9;
+        Mon, 27 Jun 2022 06:51:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C17B6C341C8;
+        Mon, 27 Jun 2022 06:51:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1656312713;
+        bh=EMTvjrRTRYMQ8NvdZxMXcH2NZ3gwtUoi5uAa917YgYU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=OdEhO/MAo3AFkdbctkb6BCcbEyvLcD4iwBI77ZyUX3ZvdU0F7DllZKYyE8gkP9WQK
+         ZGDAJVOJyTuwvF2MbvzhsZgXBQij7rXRYn1v5P6TFggka6ut+B4Zw6Fx5HmirG16y7
+         dNR3bAi/c+bMrQDQeCbGzDmA3eW2VCH+5wv9hyNjiI/25AXmxSSznadBvtfeWDqAm5
+         GDaD639zJe0rDxwWEEnNvT5Il6LpwGCgDvL1eH8knm3S4IrGL/WbxEc+8BHoVWRR9/
+         iz6Yv8bWPUxUtYKcaalGZHO52oCjg34LJIGiAKwQJSECgAohNEvxYHKe5gcS5MJHWY
+         +s0S6Cw+PBbzQ==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Matthew Wilcox <willy@infradead.org>
+Subject: [PATCH 0/2] ext4, f2fs: stop using PG_error for fscrypt and fsverity
+Date:   Sun, 26 Jun 2022 23:50:48 -0700
+Message-Id: <20220627065050.274716-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH v3 1/8] statx: add direct I/O alignment information
-Content-Language: en-US
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Eric Biggers <ebiggers@kernel.org>, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-xfs@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>
-References: <20220616201506.124209-1-ebiggers@kernel.org>
- <20220616201506.124209-2-ebiggers@kernel.org>
- <6c06b2d4-2d96-c4a6-7aca-5147a91e7cf2@scylladb.com>
- <YrgOUw6YM2c6k59U@infradead.org>
-From:   Avi Kivity <avi@scylladb.com>
-Organization: ScyllaDB
-In-Reply-To: <YrgOUw6YM2c6k59U@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,62 +53,28 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
+This series changes ext4 and f2fs to stop using PG_error to track
+decryption and verity errors.  This is a step towards freeing up
+PG_error for other uses, as discussed at
+https://lore.kernel.org/linux-fsdevel/Yn10Iz1mJX1Mu1rv@casper.infradead.org
 
-On 26/06/2022 10.44, Christoph Hellwig wrote:
-> On Sun, Jun 19, 2022 at 02:30:47PM +0300, Avi Kivity wrote:
->>> * stx_dio_offset_align: the alignment (in bytes) required for file
->>>     offsets and I/O segment lengths for DIO, or 0 if DIO is not supported
->>>     on the file.  This will only be nonzero if stx_dio_mem_align is
->>>     nonzero, and vice versa.
->>
->> If you consider AIO, this is actually three alignments:
->>
->> 1. offset alignment for reads (sector size in XFS)
->>
->> 2. offset alignment for overwrites (sector size in XFS since ed1128c2d0c87e,
->> block size earlier)
->>
->> 3. offset alignment for appending writes (block size)
->>
->>
->> This is critical for linux-aio since violation of these alignments will
->> stall the io_submit system call. Perhaps io_uring handles it better by
->> bouncing to a workqueue, but there is a significant performance and latency
->> penalty for that.
-> I think you are mixing things up here.
+Note: due to the interdependencies with fs/crypto/ and fs/verity/, I
+couldn't split this up into separate patches for each filesystem.
+
+Eric Biggers (2):
+  fscrypt: stop using PG_error to track error status
+  fsverity: stop using PG_error to track error status
+
+ fs/crypto/bio.c         | 16 +++++++----
+ fs/ext4/readpage.c      | 16 +++++------
+ fs/f2fs/compress.c      | 61 ++++++++++++++++++++---------------------
+ fs/f2fs/data.c          | 60 +++++++++++++++++++++-------------------
+ fs/verity/verify.c      | 12 ++++----
+ include/linux/fscrypt.h |  5 ++--
+ 6 files changed, 88 insertions(+), 82 deletions(-)
 
 
-Yes.
-
-
-> We actually have two limits that
-> matter:
->
->   a) the hard limit, which if violated will return an error.
->      This has been sector size for all common file systems for years,
->      but can be bigger than that with fscrypt in the game (which
->      triggered this series)
->   b) an optimal write size, which can be done asynchronous and
->      without exclusive locking.
->      This is what your cases 2) and 3) above refer to.
->
-> Exposting this additional optimal performance size might be a good idea
-> in addition to what is proposed here, even if matters a little less
-> with io_uring.  But I'm not sure I'd additional split it into append
-> vs overwrite vs hole filling but just round up to the maximum of those.
-
-
-Rounding up will penalize database workloads, with and without io_uring. 
-Database commit logs are characterized by frequent small writes. Telling 
-the database to round up to 4k vs 512 bytes means large write 
-amplification. The disk probably won't care (or maybe it will - it will 
-also have to generate more erase blocks), but the database will run out 
-of commitlog space much sooner and will have to compensate in expensive 
-ways.
-
-
-Of course, people that care can continue to use internal filesystem 
-knowledge, and maybe there are few enough of those that the API can 
-choose to ignore them.
-
+base-commit: 0840a7914caa14315a3191178a9f72c742477860
+-- 
+2.36.1
 
