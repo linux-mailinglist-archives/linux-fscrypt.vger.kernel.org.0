@@ -2,98 +2,172 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE810574722
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 14 Jul 2022 10:37:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82BEA57681A
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 15 Jul 2022 22:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236996AbiGNIhW (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 14 Jul 2022 04:37:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32802 "EHLO
+        id S230505AbiGOUcD (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 15 Jul 2022 16:32:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237045AbiGNIhE (ORCPT
+        with ESMTP id S230210AbiGOUcC (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 14 Jul 2022 04:37:04 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDF233FA2C
-        for <linux-fscrypt@vger.kernel.org>; Thu, 14 Jul 2022 01:37:01 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id bp17so1651782lfb.3
-        for <linux-fscrypt@vger.kernel.org>; Thu, 14 Jul 2022 01:37:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=H3bGT1ZyGPu3PRQJlJHyQI9TvTjBPuNSyHjFOzNfiP0=;
-        b=gaDZ6UkvWmoGLPkb5BiwWKXrxZqJRKNx4T2fn6EvGAM0nTMCvTzxyP4EuJ913j6Iv+
-         SvMX4/pvx4tmhR/0cDdL9pbkcCOAwg/dZQZJjKvYYHG5zoS6pTup2xrhZON7aPFodE61
-         jbdbe7f5x1iqsxnbqtRGk5VVyYe+GfguXyW53v/Jtk7m9BRLrugVau1mwPBhoM15I1rO
-         FgfB/JoMGOti2QefdfOSOcdpcygQeBiN0idXo3yCL6hW5Cz+uWpratECqWcSagxAB5xP
-         zT+sUZ3pJE3RjDVpLi/6z/hZ8yL43zLlaxwdm4ILJ3e9Bke6wVp5k2l7GAKtdogOGzmZ
-         5LQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=H3bGT1ZyGPu3PRQJlJHyQI9TvTjBPuNSyHjFOzNfiP0=;
-        b=Kv+dlEfI2cHa5ag8irguOZgmxihHDqRKwpbpuewBrKuQ4VIJnqyLCf9MM7wFtKc7PW
-         eFg/NLVmWpZxKYTxF420Vt95/hz3Yj0bsg/8SlIQuFdLPhg2j1k/pKjPKFXH+ijJZQ5q
-         PZfxzfXrKoXptDpBUQosgN2ZNNn3kpTShn7nmX5Lv/nTpwz+Gd5hc4J1CJMTlV54TdJg
-         5H/600E7AGrcFJqiqaEqCkGgvnfcescdjsmvajwTvhQw/DU+Xrs7WsErKjFiXWxJ0N3T
-         dUoEfZudlyuHvxAJaw6FUtvQRLHKPvoLt/XJ6WM7Dsuz80OjbOOnLh1MuhLen3ojWrvd
-         6Cfg==
-X-Gm-Message-State: AJIora8ldqqqN3ztfir3SULvKkDsRCDtaxEOXzqlTid5ZdAx4BBt3ttI
-        m6gM5BQGWJCs7TW5Yt4Ic2ZTZJNVptjpOj8EidA=
-X-Google-Smtp-Source: AGRyM1vX4Zd9WIWDxqKGtP81mt11peMiDiT310/qUqT5enM4eeA2HoIqQaHp0s5sIeDBZVZu8TIFwya2pg7lDHDFDeo=
-X-Received: by 2002:a05:6512:4004:b0:48a:12dc:7f63 with SMTP id
- br4-20020a056512400400b0048a12dc7f63mr2033540lfb.131.1657787820892; Thu, 14
- Jul 2022 01:37:00 -0700 (PDT)
+        Fri, 15 Jul 2022 16:32:02 -0400
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A6115B04F;
+        Fri, 15 Jul 2022 13:31:57 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 7681C5C00CC;
+        Fri, 15 Jul 2022 16:31:54 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Fri, 15 Jul 2022 16:31:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+        :content-transfer-encoding:date:date:from:from:in-reply-to
+        :message-id:mime-version:reply-to:sender:subject:subject:to:to;
+         s=fm3; t=1657917114; x=1658003514; bh=TM2gJiO+BOwaovUnwnzH0G1Z7
+        YMxp0m2bwFNikC8+Xc=; b=YUMMtaXjzWu5Jf584HvKsN7l35QHrn5fWuobi3AtW
+        7WwNoRCxEOub8vM6/nrnqYVjkskAkuUyNMrtWBW64RNFXfGDerKeK3LwYTNHrQjU
+        DPU8EAJCDZ+n+RVXByz5COP8/ZdCEOySx/W77vdsA/kJumKSW6IfdoCyKqe1rtl2
+        U5sRpxvL1y9VLpngNHOqnI5mOM+jfm8cvWIXOAxwy4zNQNDtdfzvjFum6JmGOf8r
+        bz16ZaIdS0uj/MBGvi0xrRfhgvXaHURO6t+wweJRyLD3DFG/vzFhXPmhmKnwkSHF
+        5Uh0JWdaejV4W3TylJNyu69NeitXyxRwkximhILJXxMAA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:message-id
+        :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+        1657917114; x=1658003514; bh=TM2gJiO+BOwaovUnwnzH0G1Z7YMxp0m2bwF
+        NikC8+Xc=; b=KukZ7wGuBi3hkN1u4sVVr0IbKfqVBmBG0tzEdZMsMaYdCDVSgkQ
+        OregSIJgEszeL5aRIAhQBrO35dRaLcD55y9sd2/7ZJElx42SCYnhFcWSQQG4K3Oy
+        sGGjUzQRT7yqJkw99agdwae4iuWM7q3WqXtxsQzDlO9FNFKihjvJPRRSVCIIvvKI
+        3cE2nzHDolWhEXJUfe+kv9aO5hMCjT3+XFQPvhAyXRo8IpqfVvcvCJn9w1PDMcc/
+        +2+AGSHU1FsKPfRQ4qlMalvWHDz7SGa6yckW9duggYWa6qM2nvuQL3+//uXxa6gg
+        7KhlMCojZARks4aOhWnEwJfqtBanc4/wehg==
+X-ME-Sender: <xms:us7RYiv177ou7E62uGJ4JgRlrZgZ5GIYNEVJLwXVgcaV5Ty3386mZA>
+    <xme:us7RYnchCsTh2hWUpyy5CDnpsIOlic63vH6VP1zD0OMuqanEp8xpLCNUiGRIGSKP2
+    6qSO6apYpbeM1JKLwM>
+X-ME-Received: <xmr:us7RYtyBdZU3yRXoHj2x2EeXPAd5ezXQ9DP_JD3j3DZM5BOvpvGhDxRnIOVDjHQe5xBvaerSVgaFQdOWwrNEGgINhGHonw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrudekuddgudehfecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefhvfevufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeeuohhrihhs
+    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepud
+    duhfevvddugffggefgkeeggfdvieejgfegkedvudetkeehhfdvffeugeevfedunecuvehl
+    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessg
+    hurhdrihho
+X-ME-Proxy: <xmx:us7RYtNeZ_kR6C3pgzIKtWtzp8EUckWqds8qzRS7Vxe5E0akWedRZQ>
+    <xmx:us7RYi-2_LAkzQvB2HL012_XjRZ7sYwdqvNeV680LXHq_20Mvrtgjw>
+    <xmx:us7RYlVogp3-MLYjliyUjN8S_RTYaifUMoo7FNRagJBsBygV1e4OvA>
+    <xmx:us7RYmYKI3W8KKMHkY74ZSWJBwlQsYRtwVbS_CYBYbOdCpxFSIZsXQ>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 15 Jul 2022 16:31:53 -0400 (EDT)
+From:   Boris Burkov <boris@bur.io>
+To:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Cc:     Eric Biggers <ebiggers@google.com>,
+        Josef Bacik <josefbacik@toxicpanda.com>
+Subject: [PATCH v10 0/5] tests for btrfs fsverity
+Date:   Fri, 15 Jul 2022 13:31:47 -0700
+Message-Id: <cover.1657916662.git.boris@bur.io>
+X-Mailer: git-send-email 2.37.0
 MIME-Version: 1.0
-Received: by 2002:a2e:9041:0:0:0:0:0 with HTTP; Thu, 14 Jul 2022 01:37:00
- -0700 (PDT)
-Reply-To: abdwabbomaddahm@gmail.com
-From:   Abdwabbo Maddah <abdwabbomaddah746@gmail.com>
-Date:   Thu, 14 Jul 2022 09:37:00 +0100
-Message-ID: <CAFC-3ieta-vbGq7=-xp9Wgp2Sr8SYhFWTPWR2J6JsyQ_pZJxLQ@mail.gmail.com>
-Subject: Get back to me... URGENT
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.0 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:133 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4902]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [abdwabbomaddah746[at]gmail.com]
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [abdwabbomaddah746[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  3.2 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
+This patchset provides tests for fsverity support in btrfs.
+
+It includes modifications for generic tests to pass with btrfs as well
+as new tests.
+
+--
+v10:
+- rebase
+- add nodatasum instead of setting it
+- rewrite eof block test to read zap_len at eof and to compare with a
+  zero file instead of using xxd
+- add _require_loop to the log_writes test
+  
+v9:
+- use nodatasum for btrfs corruption tests.
+- modify eof block corruption test to allow all zeroes rather than
+  requiring an error.
+v8:
+- reorganize to have a patch for enabling generic tests followed by the
+  patches with new and specific tests.
+- fix some rebasing miscues from v7.
+- fix a chunk of space characters instead of a tab in the new requires
+  function.
+v7:
+- add a new patch to make the new corruption requires more clear
+- require corruption in generic/576
+- require only btrfs_corrupt_block in btrfs/290
+- add missing xfs_io requirements in btrfs/290
+- remove unneeded zero byte check from btrfs corruption function
+- fix sloppy extras in generic/690
+v6:
+- refactor "requires" for verity corruption tests so that other verity
+  tests can run on btrfs even without the corruption command available.
+  Also, explicitly require xfs_io fiemap for all corruption tests.
+- simplify and clarify "non-trivial EFBIG" calculation and documentation
+  per suggestions by Eric Biggers.
+- remove unnecessary adjustment to max file size in the new EFBIG test;
+  the bug it worked around has been fixed.
+v5:
+- more idiomatic requires structure for making efbig test generic
+- make efbig test use truncate instead of pwrite for making a big file
+- improve documentation for efbig test approximation
+- fix underscores vs dashes in btrfs_requires_corrupt_block
+- improvements in missing/redundant requires invocations
+- move orphan test image file to $TEST_DIR
+- make orphan test replay/snapshot device size depend on log device
+  instead of hard-coding it.
+- rebase (signicant: no more "groups" file; use preamble)
+v4:
+- mark local variables
+- get rid of redundant mounts and syncs
+- use '_' in function names correctly
+- add a test for the EFBIG case
+- reduce usage of requires_btrfs_corrupt_block
+- handle variable input when corrupting merkle tree
+v3: rebase onto xfstests master branch
+v2: pass generic tests, add logwrites test
+
+
+Boris Burkov (5):
+  common/verity: require corruption functionality
+  common/verity: support btrfs in generic fsverity tests
+  btrfs: test btrfs specific fsverity corruption
+  btrfs: test verity orphans with dmlogwrites
+  generic: test fs-verity EFBIG scenarios
+
+ common/btrfs          |   5 ++
+ common/config         |   1 +
+ common/verity         |  49 ++++++++++++
+ tests/btrfs/290       | 168 ++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/290.out   |  25 +++++++
+ tests/btrfs/291       | 162 ++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/291.out   |   2 +
+ tests/generic/574     |  38 +++++++++-
+ tests/generic/574.out |  13 +---
+ tests/generic/576     |   1 +
+ tests/generic/692     |  64 ++++++++++++++++
+ tests/generic/692.out |   7 ++
+ 12 files changed, 523 insertions(+), 12 deletions(-)
+ create mode 100755 tests/btrfs/290
+ create mode 100644 tests/btrfs/290.out
+ create mode 100755 tests/btrfs/291
+ create mode 100644 tests/btrfs/291.out
+ create mode 100644 tests/generic/692
+ create mode 100644 tests/generic/692.out
+
 -- 
-Dear,
-I had sent you a mail but i don't think you received it that's why am
-writing you again.It is important you get back to me as soon as you
-can.
-Abd-Wabbo Maddah
+2.35.1
+
