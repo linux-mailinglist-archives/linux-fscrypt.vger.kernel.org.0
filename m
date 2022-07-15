@@ -2,74 +2,77 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82BEA57681A
+	by mail.lfdr.de (Postfix) with ESMTP id CEA7A57681B
 	for <lists+linux-fscrypt@lfdr.de>; Fri, 15 Jul 2022 22:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230505AbiGOUcD (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        id S230210AbiGOUcD (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
         Fri, 15 Jul 2022 16:32:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49530 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230210AbiGOUcC (ORCPT
+        with ESMTP id S229532AbiGOUcC (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
         Fri, 15 Jul 2022 16:32:02 -0400
 Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A6115B04F;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A5A15B044;
         Fri, 15 Jul 2022 13:31:57 -0700 (PDT)
 Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 7681C5C00CC;
-        Fri, 15 Jul 2022 16:31:54 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Fri, 15 Jul 2022 16:31:54 -0400
+        by mailout.nyi.internal (Postfix) with ESMTP id 479175C00F3;
+        Fri, 15 Jul 2022 16:31:56 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Fri, 15 Jul 2022 16:31:56 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
         :content-transfer-encoding:date:date:from:from:in-reply-to
-        :message-id:mime-version:reply-to:sender:subject:subject:to:to;
-         s=fm3; t=1657917114; x=1658003514; bh=TM2gJiO+BOwaovUnwnzH0G1Z7
-        YMxp0m2bwFNikC8+Xc=; b=YUMMtaXjzWu5Jf584HvKsN7l35QHrn5fWuobi3AtW
-        7WwNoRCxEOub8vM6/nrnqYVjkskAkuUyNMrtWBW64RNFXfGDerKeK3LwYTNHrQjU
-        DPU8EAJCDZ+n+RVXByz5COP8/ZdCEOySx/W77vdsA/kJumKSW6IfdoCyKqe1rtl2
-        U5sRpxvL1y9VLpngNHOqnI5mOM+jfm8cvWIXOAxwy4zNQNDtdfzvjFum6JmGOf8r
-        bz16ZaIdS0uj/MBGvi0xrRfhgvXaHURO6t+wweJRyLD3DFG/vzFhXPmhmKnwkSHF
-        5Uh0JWdaejV4W3TylJNyu69NeitXyxRwkximhILJXxMAA==
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1657917116; x=1658003516; bh=Td
+        ZnSCJGNrBEC/2Qzr7d09NUMvR1tmi1sQGMRBURoQM=; b=coF83jTAYKIKroUI9j
+        fACJSpnpySdKlXU8v7Z/f/ait0aVmNr2Gut7uSaSvYmenspjOrAeu5YwfbvSuEB0
+        HViMEOEcVbszUjx/WF/EDMs4WyFVQT+1I8JwQjGfpDBFi0EfL/yjHp+fUSGZ98yx
+        CRKx90DgVX0Xj0Rk6iH+Ql4JDtvoCRnVcRTUKZ1XQz8Gc4zTRtBamw7s9MvoNiHP
+        hcnxMPCtX85hcNgdiDW924GqIoR2uOHQRMDUh9HcgamBfaJhjYAPsoUcc1hlehCg
+        C2DIZMCTyRnBlS6oSbnyE9zcHm3wM1GcLCbuznye4rYbm+CLANtjOf4qym+V8R2r
+        uO/A==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:message-id
-        :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1657917114; x=1658003514; bh=TM2gJiO+BOwaovUnwnzH0G1Z7YMxp0m2bwF
-        NikC8+Xc=; b=KukZ7wGuBi3hkN1u4sVVr0IbKfqVBmBG0tzEdZMsMaYdCDVSgkQ
-        OregSIJgEszeL5aRIAhQBrO35dRaLcD55y9sd2/7ZJElx42SCYnhFcWSQQG4K3Oy
-        sGGjUzQRT7yqJkw99agdwae4iuWM7q3WqXtxsQzDlO9FNFKihjvJPRRSVCIIvvKI
-        3cE2nzHDolWhEXJUfe+kv9aO5hMCjT3+XFQPvhAyXRo8IpqfVvcvCJn9w1PDMcc/
-        +2+AGSHU1FsKPfRQ4qlMalvWHDz7SGa6yckW9duggYWa6qM2nvuQL3+//uXxa6gg
-        7KhlMCojZARks4aOhWnEwJfqtBanc4/wehg==
-X-ME-Sender: <xms:us7RYiv177ou7E62uGJ4JgRlrZgZ5GIYNEVJLwXVgcaV5Ty3386mZA>
-    <xme:us7RYnchCsTh2hWUpyy5CDnpsIOlic63vH6VP1zD0OMuqanEp8xpLCNUiGRIGSKP2
-    6qSO6apYpbeM1JKLwM>
-X-ME-Received: <xmr:us7RYtyBdZU3yRXoHj2x2EeXPAd5ezXQ9DP_JD3j3DZM5BOvpvGhDxRnIOVDjHQe5xBvaerSVgaFQdOWwrNEGgINhGHonw>
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1657917116; x=1658003516; bh=TdZnSCJGNrBEC
+        /2Qzr7d09NUMvR1tmi1sQGMRBURoQM=; b=PhxR2vtVxbqkWzGEY4yS93Um1Gfe8
+        904Izf/YmUUGLqlFwfszQBMGUg3yRwWTAEYwWYIBCrPN7zLiKuHK8yha0AcPARp2
+        HdtjLSKkbIZnuEGFAVy/yxt5kRNzxbZdDbJWn6k3Wvrrh1pdqRP02LypsgBv+C3Q
+        ztA8FOTAXE0cmKnHvq6tvH7kuKLjJ02sqSUXRpSVjQy+kUd8L9NLdbhGHZV4h0qf
+        wR5vmGPge/yAILqDm9+CQh7J6LG/CqYqOg/IkKuOm1iOY6eYXM/PthE+T1y8D4cX
+        rTp9ev8spQZyj868VI4aZhfYTF1Xre3jC1k45OK0oea1srOUZLY5uFDbA==
+X-ME-Sender: <xms:vM7RYoJZW5shpePqjufWcTYXDxaGgCJ4HveQIGwq8xtzmw0aZmr1eg>
+    <xme:vM7RYoIEHsBz2qa9cminQzDrJORjBP2hgsGRxwEWmEyk-dibV-KkxJOo0jPzMIlrN
+    eLmGZhJ4C_pt0HfdUU>
+X-ME-Received: <xmr:vM7RYosPDaATeVThoi7yamYohtnM8GU7cofz48AvmrkNVqUxBZRN3sS9289Tysj01xHrDWusIFB-E_PUMqMFAZaRglxb5Q>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrudekuddgudehfecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefhvfevufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeeuohhrihhs
-    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepud
-    duhfevvddugffggefgkeeggfdvieejgfegkedvudetkeehhfdvffeugeevfedunecuvehl
-    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessg
-    hurhdrihho
-X-ME-Proxy: <xmx:us7RYtNeZ_kR6C3pgzIKtWtzp8EUckWqds8qzRS7Vxe5E0akWedRZQ>
-    <xmx:us7RYi-2_LAkzQvB2HL012_XjRZ7sYwdqvNeV680LXHq_20Mvrtgjw>
-    <xmx:us7RYlVogp3-MLYjliyUjN8S_RTYaifUMoo7FNRagJBsBygV1e4OvA>
-    <xmx:us7RYmYKI3W8KKMHkY74ZSWJBwlQsYRtwVbS_CYBYbOdCpxFSIZsXQ>
+    enucfjughrpefhvfevufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeeuohhr
+    ihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnh
+    epgeduteffveeileetueejheevveeugfdttddvgfeijefhjeetjeduffehkeelkeehnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhish
+    essghurhdrihho
+X-ME-Proxy: <xmx:vM7RYlbsjQTGrf5s0kaaoXyN2laGjwishv_ZNWG0vIUOlpj4jNhNow>
+    <xmx:vM7RYvaoTiLm6FiWKG1q2LnsyTgFAIppCDz0E0PlzAH8dLKxSb0dug>
+    <xmx:vM7RYhCR-d7EuaXORw53x5GqzVh9yMYAtYcIYPx316VuXu00V0t5IQ>
+    <xmx:vM7RYuVYi-XuEl6shJUDCsFwlyuZbhV90NB9zYbIZHJDJu6WnjlgHQ>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 15 Jul 2022 16:31:53 -0400 (EDT)
+ 15 Jul 2022 16:31:55 -0400 (EDT)
 From:   Boris Burkov <boris@bur.io>
 To:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         linux-btrfs@vger.kernel.org, kernel-team@fb.com
 Cc:     Eric Biggers <ebiggers@google.com>,
         Josef Bacik <josefbacik@toxicpanda.com>
-Subject: [PATCH v10 0/5] tests for btrfs fsverity
-Date:   Fri, 15 Jul 2022 13:31:47 -0700
-Message-Id: <cover.1657916662.git.boris@bur.io>
+Subject: [PATCH v10 1/5] common/verity: require corruption functionality
+Date:   Fri, 15 Jul 2022 13:31:48 -0700
+Message-Id: <8a0a68f0729b66fceb43e2638305fc85ace58702.1657916662.git.boris@bur.io>
 X-Mailer: git-send-email 2.37.0
+In-Reply-To: <cover.1657916662.git.boris@bur.io>
+References: <cover.1657916662.git.boris@bur.io>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -82,92 +85,62 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-This patchset provides tests for fsverity support in btrfs.
+Corrupting ext4 and f2fs relies on xfs_io fiemap. Btrfs corruption
+testing will rely on a btrfs specific corruption utility. Add the
+ability to require corruption functionality to make this properly
+modular. To start, just check for fiemap, as that is needed
+universally for _fsv_scratch_corrupt_bytes.
 
-It includes modifications for generic tests to pass with btrfs as well
-as new tests.
+Signed-off-by: Boris Burkov <boris@bur.io>
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: Eric Biggers <ebiggers@google.com>
+---
+ common/verity     | 6 ++++++
+ tests/generic/574 | 1 +
+ tests/generic/576 | 1 +
+ 3 files changed, 8 insertions(+)
 
---
-v10:
-- rebase
-- add nodatasum instead of setting it
-- rewrite eof block test to read zap_len at eof and to compare with a
-  zero file instead of using xxd
-- add _require_loop to the log_writes test
-  
-v9:
-- use nodatasum for btrfs corruption tests.
-- modify eof block corruption test to allow all zeroes rather than
-  requiring an error.
-v8:
-- reorganize to have a patch for enabling generic tests followed by the
-  patches with new and specific tests.
-- fix some rebasing miscues from v7.
-- fix a chunk of space characters instead of a tab in the new requires
-  function.
-v7:
-- add a new patch to make the new corruption requires more clear
-- require corruption in generic/576
-- require only btrfs_corrupt_block in btrfs/290
-- add missing xfs_io requirements in btrfs/290
-- remove unneeded zero byte check from btrfs corruption function
-- fix sloppy extras in generic/690
-v6:
-- refactor "requires" for verity corruption tests so that other verity
-  tests can run on btrfs even without the corruption command available.
-  Also, explicitly require xfs_io fiemap for all corruption tests.
-- simplify and clarify "non-trivial EFBIG" calculation and documentation
-  per suggestions by Eric Biggers.
-- remove unnecessary adjustment to max file size in the new EFBIG test;
-  the bug it worked around has been fixed.
-v5:
-- more idiomatic requires structure for making efbig test generic
-- make efbig test use truncate instead of pwrite for making a big file
-- improve documentation for efbig test approximation
-- fix underscores vs dashes in btrfs_requires_corrupt_block
-- improvements in missing/redundant requires invocations
-- move orphan test image file to $TEST_DIR
-- make orphan test replay/snapshot device size depend on log device
-  instead of hard-coding it.
-- rebase (signicant: no more "groups" file; use preamble)
-v4:
-- mark local variables
-- get rid of redundant mounts and syncs
-- use '_' in function names correctly
-- add a test for the EFBIG case
-- reduce usage of requires_btrfs_corrupt_block
-- handle variable input when corrupting merkle tree
-v3: rebase onto xfstests master branch
-v2: pass generic tests, add logwrites test
-
-
-Boris Burkov (5):
-  common/verity: require corruption functionality
-  common/verity: support btrfs in generic fsverity tests
-  btrfs: test btrfs specific fsverity corruption
-  btrfs: test verity orphans with dmlogwrites
-  generic: test fs-verity EFBIG scenarios
-
- common/btrfs          |   5 ++
- common/config         |   1 +
- common/verity         |  49 ++++++++++++
- tests/btrfs/290       | 168 ++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/290.out   |  25 +++++++
- tests/btrfs/291       | 162 ++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/291.out   |   2 +
- tests/generic/574     |  38 +++++++++-
- tests/generic/574.out |  13 +---
- tests/generic/576     |   1 +
- tests/generic/692     |  64 ++++++++++++++++
- tests/generic/692.out |   7 ++
- 12 files changed, 523 insertions(+), 12 deletions(-)
- create mode 100755 tests/btrfs/290
- create mode 100644 tests/btrfs/290.out
- create mode 100755 tests/btrfs/291
- create mode 100644 tests/btrfs/291.out
- create mode 100644 tests/generic/692
- create mode 100644 tests/generic/692.out
-
+diff --git a/common/verity b/common/verity
+index 38eea157..d58cad90 100644
+--- a/common/verity
++++ b/common/verity
+@@ -141,6 +141,12 @@ _require_fsverity_dump_metadata()
+ 	_fail "Unexpected output from 'fsverity dump_metadata': $(<"$tmpfile")"
+ }
+ 
++# Check for userspace tools needed to corrupt verity data or metadata.
++_require_fsverity_corruption()
++{
++	_require_xfs_io_command "fiemap"
++}
++
+ _scratch_mkfs_verity()
+ {
+ 	case $FSTYP in
+diff --git a/tests/generic/574 b/tests/generic/574
+index 882baa21..17fdea52 100755
+--- a/tests/generic/574
++++ b/tests/generic/574
+@@ -28,6 +28,7 @@ _cleanup()
+ _supported_fs generic
+ _require_scratch_verity
+ _disable_fsverity_signatures
++_require_fsverity_corruption
+ 
+ _scratch_mkfs_verity &>> $seqres.full
+ _scratch_mount
+diff --git a/tests/generic/576 b/tests/generic/576
+index 3ef04953..c8862de2 100755
+--- a/tests/generic/576
++++ b/tests/generic/576
+@@ -28,6 +28,7 @@ _supported_fs generic
+ _require_scratch_verity
+ _require_scratch_encryption
+ _require_command "$KEYCTL_PROG" keyctl
++_require_fsverity_corruption
+ _disable_fsverity_signatures
+ 
+ _scratch_mkfs_encrypted_verity &>> $seqres.full
 -- 
 2.35.1
 
