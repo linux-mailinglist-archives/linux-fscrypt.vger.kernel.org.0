@@ -2,50 +2,49 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9BD157A6B9
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 19 Jul 2022 20:49:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DAE357A767
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 19 Jul 2022 21:49:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237268AbiGSStb (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 19 Jul 2022 14:49:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44936 "EHLO
+        id S239378AbiGSTtT (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 19 Jul 2022 15:49:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237103AbiGSSta (ORCPT
+        with ESMTP id S229379AbiGSTtT (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 19 Jul 2022 14:49:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 109AA564C2;
-        Tue, 19 Jul 2022 11:49:30 -0700 (PDT)
+        Tue, 19 Jul 2022 15:49:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16722491DC;
+        Tue, 19 Jul 2022 12:49:17 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9C7BA61639;
-        Tue, 19 Jul 2022 18:49:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE970C341C6;
-        Tue, 19 Jul 2022 18:49:28 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8EB7B618C1;
+        Tue, 19 Jul 2022 19:49:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA996C341C6;
+        Tue, 19 Jul 2022 19:49:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1658256568;
-        bh=/K91o+qKLCbtKDi3/tG73ZWIzxIa2IRxn4bwgg8SU6s=;
+        s=k20201202; t=1658260155;
+        bh=HAYo79tL5nA/TUGg0/d+zceBgjrEmBxH0qkqTHxd9ds=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TsFKLx4sa6WI7xRr8hTRSHdiETDX2u3xEXj/tlEC+1Mu31zXJrvYI9xURGhNqpvv9
-         Xw5+dYbEKmi3mHt6FnWaQjGenneQUuX/FaRUs10zZ81E+9Jerlw+s9wJ0+Ajm/ra14
-         5aJMLLJs7mEPG03TE9mbq4q9RQy+Ua/jQ6IeRIqDpdZ3l37548dMP/JJKn4eapN21r
-         gk900x3bkTn5tkq9RZghLYoJ3Xh1rP2qIWVmhtwpA77VS5HuTiLxV/xiGroLDuWidY
-         CZxany2wmb4+hrU1m+Jc0SClz/Dv39lFIVoaPIPexo8HhhCRJEbmqteDXodOOeOxeE
-         12Nwjs9wLN4RA==
-Date:   Tue, 19 Jul 2022 11:49:27 -0700
+        b=VGhSVCDL0WJrEJUp8HnsbwbJzpYdeBi3+vL8Jj2pPozaKAQhjbY1I6tqxQFB6TKsl
+         yorqRFrdIjqzaFruKvAbNtc6xwJ8EuzueyKk83QYpfAOfEdXlfUvT239irBfwKmOUU
+         8wlNKu01HZ1cCKutzH0DVaS5yALW5vg+WsEqPcaYLbVrS5UBl4INrHYU1+lYjc23ZI
+         YSLG9MWwghDQqbwrJkWXGgUzN975JFUyiJsF46Q+LbekuGs7avuZZ9bFqAABm8q4Jw
+         N0hNX7+4jnR6vAd8KZtDeT0fdA/vMvysAlFzKv5sPE7sCTkn2+LfzSMHPHWwy/WgBu
+         eOI1dlPPpoY/g==
+Date:   Tue, 19 Jul 2022 12:49:14 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH 0/2] ext4, f2fs: stop using PG_error for fscrypt and
- fsverity
-Message-ID: <Ytb8typAESKplJAN@sol.localdomain>
-References: <20220627065050.274716-1-ebiggers@kernel.org>
+To:     Nathan Huckleberry <nhuck@google.com>
+Cc:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        Sami Tolvanen <samitolvanen@google.com>
+Subject: Re: [RFC PATCH v4 1/2] fscrypt-crypt-util: add HCTR2 implementation
+Message-ID: <YtcKugK3KWHri1t3@sol.localdomain>
+References: <20220601071811.1353635-1-nhuck@google.com>
+ <20220601071811.1353635-2-nhuck@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220627065050.274716-1-ebiggers@kernel.org>
+In-Reply-To: <20220601071811.1353635-2-nhuck@google.com>
 X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -55,30 +54,56 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Sun, Jun 26, 2022 at 11:50:48PM -0700, Eric Biggers wrote:
-> This series changes ext4 and f2fs to stop using PG_error to track
-> decryption and verity errors.  This is a step towards freeing up
-> PG_error for other uses, as discussed at
-> https://lore.kernel.org/linux-fsdevel/Yn10Iz1mJX1Mu1rv@casper.infradead.org
-> 
-> Note: due to the interdependencies with fs/crypto/ and fs/verity/, I
-> couldn't split this up into separate patches for each filesystem.
-> 
-> Eric Biggers (2):
->   fscrypt: stop using PG_error to track error status
->   fsverity: stop using PG_error to track error status
-> 
->  fs/crypto/bio.c         | 16 +++++++----
->  fs/ext4/readpage.c      | 16 +++++------
->  fs/f2fs/compress.c      | 61 ++++++++++++++++++++---------------------
->  fs/f2fs/data.c          | 60 +++++++++++++++++++++-------------------
->  fs/verity/verify.c      | 12 ++++----
->  include/linux/fscrypt.h |  5 ++--
->  6 files changed, 88 insertions(+), 82 deletions(-)
-> 
-> 
-> base-commit: 0840a7914caa14315a3191178a9f72c742477860
+On Wed, Jun 01, 2022 at 12:18:10AM -0700, Nathan Huckleberry wrote:
+> diff --git a/src/fscrypt-crypt-util.c b/src/fscrypt-crypt-util.c
+[...]
+> +void gf2_128_mul_polyval(ble128 *r, const ble128 *b)
+> +{
 
-Any thoughts on this patchset from anyone?
+This function should be static.
+
+> +/*----------------------------------------------------------------------------*
+> + *                                 POLYVAL                                     *
+> + *----------------------------------------------------------------------------*/
+
+This could use a link to a specification, similar to the other more "unusual"
+algorithms in this file.  Try:
+
+		git grep -A1 'Reference:' src/fscrypt-crypt-util.c
+
+Likewise for HCTR2.  The commit message has a link to the HCTR2 paper, but it
+should be in the code itself too.  
+
+> +static void polyval_update(const u8 key[POLYVAL_KEY_SIZE],
+> +			   const u8 *msg, size_t msglen,
+> +			   u8 accumulator[POLYVAL_BLOCK_SIZE])
+> +{
+> +	ble128 h;
+> +	ble128 aligned_accumulator;
+> +	size_t chunk_size;
+> +	// x^{-128} = x^127 + x^124 + x^121 + x^114 + 1
+> +	static const ble128 inv128 = {
+> +		cpu_to_le64(1),
+> +		cpu_to_le64(0x9204ULL << 48)
+> +	};
+> +
+> +	memcpy(&h, key, POLYVAL_BLOCK_SIZE);
+> +	memcpy(&aligned_accumulator, accumulator, POLYVAL_BLOCK_SIZE);
+> +	gf2_128_mul_polyval(&h, &inv128);
+> +
+> +	while (msglen > 0) {
+> +		chunk_size = MIN(POLYVAL_BLOCK_SIZE, msglen);
+> +		xor((u8 *)&aligned_accumulator, (u8 *)&aligned_accumulator, msg,
+> +		    chunk_size);
+> +		gf2_128_mul_polyval(&aligned_accumulator, &h);
+> +		msg += chunk_size;
+> +		msglen -= chunk_size;
+> +	}
+
+The partial block support is unnecessary, so POLYVAL_BLOCK_SIZE could be used
+instead of chunk_size, and an assertion ASSERT(msglen % POLYVAL_BLOCK_SIZE ==
+0) could be added.  See poly1305() in the same file which works similarly.
+
+Otherwise this looks good, thanks!
 
 - Eric
