@@ -2,97 +2,204 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05DD857B88B
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 20 Jul 2022 16:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B37857C4AA
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 21 Jul 2022 08:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231760AbiGTOae (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 20 Jul 2022 10:30:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43626 "EHLO
+        id S231543AbiGUGtO (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 21 Jul 2022 02:49:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230225AbiGTOad (ORCPT
+        with ESMTP id S229653AbiGUGtN (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 20 Jul 2022 10:30:33 -0400
-Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE52F46DA5;
-        Wed, 20 Jul 2022 07:30:30 -0700 (PDT)
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        Thu, 21 Jul 2022 02:49:13 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0927C64E0F;
+        Wed, 20 Jul 2022 23:49:11 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id D96CB811CF;
-        Wed, 20 Jul 2022 10:30:29 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1658327430; bh=j6pSIsicmSDYHHmekm0xrii0oHIr0LiP8jaXBAoTmiI=;
-        h=Date:Subject:To:References:From:In-Reply-To:From;
-        b=uey/8sEPUCRod0x24n3hRuEawsN0hZ6771lb5tdbsYX0ap/1lJyxEBhjNyAuMf3QH
-         4lsW561Uiqccx2J+zfLcXFxAVZnmG1RS0QTsiiuT/0wUkNr6tDDlNCUZt9jHh1JesY
-         OvNSGLJfxnxiNj7DwG3gzmtgbDBuANhhBezheUlRzDyWZpiu2TgpJTIdT9INYjkWit
-         saq0tzqNQfUg6w1Li6e3nSv4YPIjxwY7PTtTS1acM8ctQCge8QE+MuWdwwPYtJbZMM
-         hjNbXZBK6CuNqqXVreeRAK41G2rO1wDzZMZGP0HMcscNigBV2HoQk6cFQ1hz48ISMW
-         +XSQORv04F4+w==
-Message-ID: <14f33fb7-c7f1-5463-ad4a-fe031d2a8583@dorminy.me>
-Date:   Wed, 20 Jul 2022 10:30:27 -0400
+        by ams.source.kernel.org (Postfix) with ESMTPS id 8C907B82295;
+        Thu, 21 Jul 2022 06:49:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8797C341C0;
+        Thu, 21 Jul 2022 06:49:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1658386148;
+        bh=sbmjTOZdbfb61pYAqfcLf+gQecjJoeuOtog/94c9WAQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YDdWNRHpsIpTaPx3DZlCey3vUfICJaSq9DGk4gXqMe/0+XUnxkkXV12IFa2DeTMWA
+         DhkCzN6gnAMLw7SQxNWdpb+eEH944oCYePUzeSwUOVzId2JNMx50o4/yvaMthwpm31
+         Yr+J3Tif63xyplnis8DWqUvny3lr6pBlJwpmTP8g71sWE0pzFk2GOND/fOeppppXNJ
+         aOQv69W1jQaMeD82D4tsMgxa2Cxiu2B6QhXTqJ1uyvy+kPTrRwJ67eKMulvoHKtaZH
+         P/bF//9yKQBix7zIs5v9t9BI0w6ICrPKFPgL89fuEWCbOY2XMN7eRRvLQujK0HeH+b
+         O1kpjj+kbGgjQ==
+Date:   Wed, 20 Jul 2022 23:49:07 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Israel Rukshin <israelr@nvidia.com>
+Cc:     Linux-block <linux-block@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+        Nitzan Carmi <nitzanc@nvidia.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>, dm-devel@redhat.com,
+        linux-fscrypt@vger.kernel.org
+Subject: Re: [PATCH 1/1] block: Add support for setting inline encryption key
+ per block device
+Message-ID: <Ytj249InQTKdFshA@sol.localdomain>
+References: <1658316391-13472-1-git-send-email-israelr@nvidia.com>
+ <1658316391-13472-2-git-send-email-israelr@nvidia.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v13 4/5] btrfs: test verity orphans with dmlogwrites
-Content-Language: en-US
-To:     Boris Burkov <boris@bur.io>, fstests@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1658277755.git.boris@bur.io>
- <57123fe31da2886cfae01e27ffc43095ef7db7d1.1658277755.git.boris@bur.io>
-From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-In-Reply-To: <57123fe31da2886cfae01e27ffc43095ef7db7d1.1658277755.git.boris@bur.io>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1658316391-13472-2-git-send-email-israelr@nvidia.com>
+X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On 7/19/22 20:49, Boris Burkov wrote:
-> The behavior of orphans is most interesting across mounts, interrupted
-> at arbitrary points during fsverity enable. To cover as many such cases
-> as possible, use dmlogwrites and dmsnapshot as in
-> log-writes/replay-individual.sh. As we replay the log events, we run a
-> state machine with different invariants enforced at each state.
-> 
-> There are three possible states for a given point in the log:
-> 0. Verity has not yet started
-> 1. Verity has started but not finished
-> 2. Verity has finished.
-> 
-> The possible transitions with causes are:
-> 0->1: We see an orphan item for the file.
-> 1->2: Running 'fsverity measure' succeeds on the file.
-> 
-> Each state has its own invariant for testing:
-> 0: No verity items exist.
-> 1: Mount should handle the orphan and blow away verity data: expect 0
->     Merkle items after mounting.
-> 2: The orphan should be gone and mount should not blow away merkle
->     items. Expect the same number of merkle items before and after
->     mounting.
-> 
-> As a result, we can be confident that if the file system loses power at
-> any point during enabling verity on a file, the work is either completed,
-> or gets rolled-back by mount.
-> 
-> Signed-off-by: Boris Burkov <boris@bur.io>
-> Reviewed-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-> ---
->   tests/btrfs/291     | 168 ++++++++++++++++++++++++++++++++++++++++++++
->   tests/btrfs/291.out |   2 +
->   2 files changed, 170 insertions(+)
->   create mode 100755 tests/btrfs/291
->   create mode 100644 tests/btrfs/291.out
-> 
+Hi Israel,
 
-Still looks good to me, with the fua-hunting rewrite.
+On Wed, Jul 20, 2022 at 02:26:31PM +0300, Israel Rukshin wrote:
+> Until now, using inline encryption key has been possible only at
+> filesystem level via fs-crypt. The patch allows to set a default
+> inline encryption key per block device. Once the key is set, all the
+> read commands will be decrypted, and all the write commands will
+> be encrypted. The key can be overridden by another key from a higher
+> level (FS/DM).
+> 
+> To add/remove a key, the patch introduces a block device ioctl:
+>  - BLKCRYPTOSETKEY: set a key with the following attributes:
+>     - crypto_mode: identifier for the encryption algorithm to use
+>     - raw_key_ptr:  pointer to a buffer of the raw key
+>     - raw_key_size: size in bytes of the raw key
+>     - data_unit_size: the data unit size to use for en/decryption
+>       (must be <= device logical block size)
+> To remove the key, use the same ioctl with raw_key_size = 0.
+> It is not possible to remove the key when it is in use by any
+> in-flight IO or when the block device is open.
+> 
+> Signed-off-by: Israel Rukshin <israelr@nvidia.com>
 
-It occurred to me last night that the test doesn't verify that it sees a 
-disk state in state 1 -- theoretically it could go directly from state 0 
-to state 2 -- but I don't see a good way to ensure the test spends time 
-in state 1.
+Thanks for sending this out.  I've added dm-devel@redhat.com to Cc, as I think
+the device-mapper developers need to be aware of this.  I also added
+linux-fscrypt@vger.kernel.org, as this is relevant there too.
+
+I'm glad to see a proposal in this area -- this is something that is greatly
+needed.  Chrome OS is looking for something like "dm-crypt with inline crypto
+support", which this should work for.  Android is also looking for something
+similar with the additional property that filesystems can override the key used.
+
+Some high-level comments about this approach (I'll send some more routine code
+review nits in a separate email):
+
+> @@ -134,7 +150,8 @@ static inline void bio_crypt_do_front_merge(struct request *rq,
+>  bool __blk_crypto_bio_prep(struct bio **bio_ptr);
+>  static inline bool blk_crypto_bio_prep(struct bio **bio_ptr)
+>  {
+> -	if (bio_has_crypt_ctx(*bio_ptr))
+> +	if (bio_has_crypt_ctx(*bio_ptr) ||
+> +	    blk_crypto_bio_set_default_ctx(*bio_ptr))
+>  		return __blk_crypto_bio_prep(bio_ptr);
+>  	return true;
+
+This allows upper layers to override the block device key, which as I've
+mentioned is very useful -- it allows block device encryption and file
+encryption to be used together without the performance cost of double
+encryption.  Android already needs and uses this type of encryption.
+
+Still, it's important to understand the limitations of this particular way to
+achieve this type of encryption, since I want to make sure everyone is on board.
+
+
+First, this implementation currently doesn't provide a way to skip the default
+key without setting an encryption context.  There are actually two cases where
+the default key must be skipped when there is no encryption context.  The first
+is when the filesystem is doing I/O to an encrypted file, but the filesystem
+wasn't mounted with the "inlinecrypt" mount option.  This could be worked around
+by requiring "inlinecrypt" if a default key is set; that loses some flexibility,
+but it could be done.  The second case, which can't be worked around at the
+filesystem level, is that the f2fs garbage collector sometimes has to move the
+data of encrypted files on-disk without having access to their encryption key.
+
+So we'll actually need a separate indicator for "skip the default key".  The
+simplest solution would be a new flag in the bio.  However, to avoid using space
+in struct bio, it could instead be a special value of the encryption context.
+
+
+Second, both this solution and dm-based solutions have the property that they
+allow the default key to be *arbitrarily* overridden by upper layers.  That
+means that there is no *general* guarantee that all data on the device is
+protected at least as well as the default key.  Consider e.g. the default key
+being overridden by an all-zeros key.  Concerns about this sort of architecture
+were raised on a dm-crypt patchset several years ago; see
+https://lore.kernel.org/r/0b268ff7-5fc8-c85f-a530-82e9844f0400@gmail.com and
+https://lore.kernel.org/r/20170616125511.GA11824@yeono.kjorling.se.
+
+The alternative architecture for this that I've had in mind, and which has been
+prototyped for f2fs
+(https://lore.kernel.org/linux-f2fs-devel/20201005073606.1949772-1-satyat@google.com/T/#u),
+is for the filesystem to manage *all* the encryption, and to mix the default key
+into all file keys.  Then, all data on the block device would always be
+protected by the default key or better, regardless of userspace.
+
+On the other hand, I'd personally be fine with saying that this isn't actually
+needed, i.e. that allowing arbitrary overriding of the default key is fine,
+since userspace should just set up the keys properly.  For example, Android
+doesn't need this at all, as it sets up all its keys properly.  But I want to
+make sure that everyone is generally okay with this now, as I personally don't
+see a fundamental difference between this and what the dm-crypt developers had
+rejected *very* forcefully before.  Perhaps it's acceptable now simply because
+it wouldn't be part of dm-crypt; it's a new thing, so it can have new semantics.
+
+> +static int blk_crypto_ioctl_create_key(struct request_queue *q,
+> +				       void __user *argp)
+> +{
+> +	struct blk_crypto_set_key_arg arg;
+> +	u8 raw_key[BLK_CRYPTO_MAX_KEY_SIZE];
+> +	struct blk_crypto_key *blk_key;
+> +	int ret;
+> +
+> +	if (copy_from_user(&arg, argp, sizeof(arg)))
+> +		return -EFAULT;
+> +
+> +	if (memchr_inv(arg.reserved, 0, sizeof(arg.reserved)))
+> +		return -EINVAL;
+> +
+> +	if (!arg.raw_key_size)
+> +		return blk_crypto_destroy_default_key(q);
+> +
+> +	if (q->blk_key) {
+> +		pr_err("Crypto key is already configured\n");
+> +		return -EBUSY;
+> +	}
+> +
+> +	if (arg.raw_key_size > sizeof(raw_key))
+> +		return -EINVAL;
+> +
+> +	if (arg.data_unit_size > queue_logical_block_size(q)) {
+> +		pr_err("Data unit size is bigger than logical block size\n");
+> +		return -EINVAL;
+> +	}
+
+This is forbidding data_unit_size greater than logical_block_size.  I see why
+you did this: the block layer doesn't know what is above it, and it could
+receive I/O requests targeting individual logical blocks.  However, this can
+result in a big efficiency loss; a common example is when a filesystem with a
+4096-byte block size is used on a block device with a logical block size of 512
+bytes.  Since such a filesystem only submits I/O in 4096-byte blocks, it's safe
+for the data_unit_size to be 4096 bytes as well.  This is much more efficient
+than 512 bytes, since there is overhead for every data unit.  Note that some of
+this overhead is intrinsic in the crypto algorithms themselves and cannot be
+optimized out by better hardware.
+
+The device-mapper based solution wouldn't have this problem, as the
+device-mapper target (dm-inlinecrypt or whatever) would just advertise the
+crypto data unit size as the logical block size, like dm-crypt does.
+
+I'm wondering if anyone any thoughts about how to allow data_unit_size >
+logical_block_size with this patch's approach.  I suppose that the ioctl could
+just allow setting it, and the block layer could fail any I/O that isn't
+properly aligned to the data_unit_size.
+
+- Eric
