@@ -2,68 +2,98 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 298A657E409
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 22 Jul 2022 18:03:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4118E57E448
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 22 Jul 2022 18:24:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231400AbiGVQDy (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 22 Jul 2022 12:03:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39060 "EHLO
+        id S233186AbiGVQYm (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 22 Jul 2022 12:24:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229880AbiGVQDx (ORCPT
+        with ESMTP id S229593AbiGVQYm (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 22 Jul 2022 12:03:53 -0400
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 269BD5A14D;
-        Fri, 22 Jul 2022 09:03:53 -0700 (PDT)
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 0086668AFE; Fri, 22 Jul 2022 18:03:49 +0200 (CEST)
-Date:   Fri, 22 Jul 2022 18:03:49 +0200
-From:   Christoph Hellwig <hch@lst.de>
+        Fri, 22 Jul 2022 12:24:42 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A1F58AB31;
+        Fri, 22 Jul 2022 09:24:41 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 245A2621BD;
+        Fri, 22 Jul 2022 16:24:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 801EFC341C6;
+        Fri, 22 Jul 2022 16:24:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1658507080;
+        bh=ERD6L0tGWO0x9Vzt+94y6IPYs2il1yz7+hLCIIQ9VMQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=M7syBNh7Q+slzlSg95Ty+U3caUx3OkvdZKYgFaT6zO7YKN9OsdTxAXKpzM/fQ8EUj
+         8laTCMg9BidYfI43AVNQjAskrSgTEIhdawoWcCWFN1EAKRyOqivbfv7qK9N59+Vvnq
+         ixHzlI/3Lkn2UIyRqLOaAICt3NyJKQeAO9La4LBsM3B/cUM9f6Cxa2XXZSNWSWP4n7
+         eKglhO2cux23pKTuvR31k1jROOcx4Jvj6L34W3fwmJ0EjPxsmlZpViqsKNhWnWhV8U
+         qZwtGZ8Kg87h7OJAYIWHEdlyKK+giZJRMb/S/JIukT8Eyn8v4Et7jPN0R8WTIdRmRv
+         SETEtPcVhPZPQ==
+Date:   Fri, 22 Jul 2022 09:24:39 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
 To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>, linux-fscrypt@vger.kernel.org,
-        linux-block@vger.kernel.org
-Subject: Re: RFC: what to do about fscrypt vs block device interaction
-Message-ID: <20220722160349.GA10142@lst.de>
-References: <20220721125929.1866403-1-hch@lst.de> <YtpfyZ8Dr9duVr45@sol.localdomain>
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Keith Busch <kbusch@kernel.org>
+Subject: Re: [PATCH v4 9/9] xfs: support STATX_DIOALIGN
+Message-ID: <YtrPRysafr5KK3NQ@magnolia>
+References: <20220722071228.146690-1-ebiggers@kernel.org>
+ <20220722071228.146690-10-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YtpfyZ8Dr9duVr45@sol.localdomain>
-User-Agent: Mutt/1.5.17 (2007-11-01)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220722071228.146690-10-ebiggers@kernel.org>
+X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Jul 22, 2022 at 01:28:57AM -0700, Eric Biggers wrote:
-> Yes, evicting the blk-crypto keys at unmount is the expected behavior.
-> And it basically is the actual behavior as well, but as currently
-> implemented there can be a slight delay.  There are two reasons for the
-> delay, both probably solvable.
+On Fri, Jul 22, 2022 at 12:12:28AM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> The first is that ->s_master_keys isn't released until __put_super().
-> It probably should be moved earlier, maybe to generic_shutdown_super().
-
-Yes, this does sound like a good idea.
-
-> The second reason is that the keyrings subsystem is being used to keep
-> track of the superblock's master keys (for several reasons, such as
-> integrating with the key quotas), and a side effect of that we get the
-> delay of the keyring's subsystem garbage collector before the destroy
-> callbacks of the keys actually  run.  That delays the eviction of the
-> blk-crypto keys.
+> Add support for STATX_DIOALIGN to xfs, so that direct I/O alignment
+> restrictions are exposed to userspace in a generic way.
 > 
-> To avoid that, I think we could go through and evict all the
-> blk_crypto_keys (i.e. call fscrypt_destroy_prepared_key() on the
-> fscrypt_prepared_keys embedded in each fscrypt_master_key) during the
-> unmount itself, separating it from the destruction of the key objects
-> from the keyring subsystem's perspective. That could happen in the
-> moved call to fscrypt_sb_free().
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-I'll give this a try.
+LGTM
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
-What would be a good test suite or set of tests to make sure I don't
-break fscrypt operation?
+--D
+
+> ---
+>  fs/xfs/xfs_iops.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+> index 29f5b8b8aca69a..bac3f56141801e 100644
+> --- a/fs/xfs/xfs_iops.c
+> +++ b/fs/xfs/xfs_iops.c
+> @@ -605,6 +605,15 @@ xfs_vn_getattr(
+>  		stat->blksize = BLKDEV_IOSIZE;
+>  		stat->rdev = inode->i_rdev;
+>  		break;
+> +	case S_IFREG:
+> +		if (request_mask & STATX_DIOALIGN) {
+> +			struct xfs_buftarg	*target = xfs_inode_buftarg(ip);
+> +
+> +			stat->result_mask |= STATX_DIOALIGN;
+> +			stat->dio_mem_align = target->bt_logical_sectorsize;
+> +			stat->dio_offset_align = target->bt_logical_sectorsize;
+> +		}
+> +		fallthrough;
+>  	default:
+>  		stat->blksize = xfs_stat_blksize(ip);
+>  		stat->rdev = 0;
+> -- 
+> 2.37.0
+> 
