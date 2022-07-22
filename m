@@ -2,98 +2,210 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4118E57E448
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 22 Jul 2022 18:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35AA757E463
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 22 Jul 2022 18:31:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233186AbiGVQYm (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 22 Jul 2022 12:24:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54330 "EHLO
+        id S235296AbiGVQb4 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 22 Jul 2022 12:31:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbiGVQYm (ORCPT
+        with ESMTP id S229567AbiGVQbz (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 22 Jul 2022 12:24:42 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A1F58AB31;
-        Fri, 22 Jul 2022 09:24:41 -0700 (PDT)
+        Fri, 22 Jul 2022 12:31:55 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E805C89A9B;
+        Fri, 22 Jul 2022 09:31:53 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 245A2621BD;
-        Fri, 22 Jul 2022 16:24:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 801EFC341C6;
-        Fri, 22 Jul 2022 16:24:40 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id C2190B82970;
+        Fri, 22 Jul 2022 16:31:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 682F5C341C6;
+        Fri, 22 Jul 2022 16:31:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1658507080;
-        bh=ERD6L0tGWO0x9Vzt+94y6IPYs2il1yz7+hLCIIQ9VMQ=;
+        s=k20201202; t=1658507510;
+        bh=2zJKttnRhj1+bfpQ1neKDFu0IlRxRblBoec0bp8Sdok=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M7syBNh7Q+slzlSg95Ty+U3caUx3OkvdZKYgFaT6zO7YKN9OsdTxAXKpzM/fQ8EUj
-         8laTCMg9BidYfI43AVNQjAskrSgTEIhdawoWcCWFN1EAKRyOqivbfv7qK9N59+Vvnq
-         ixHzlI/3Lkn2UIyRqLOaAICt3NyJKQeAO9La4LBsM3B/cUM9f6Cxa2XXZSNWSWP4n7
-         eKglhO2cux23pKTuvR31k1jROOcx4Jvj6L34W3fwmJ0EjPxsmlZpViqsKNhWnWhV8U
-         qZwtGZ8Kg87h7OJAYIWHEdlyKK+giZJRMb/S/JIukT8Eyn8v4Et7jPN0R8WTIdRmRv
-         SETEtPcVhPZPQ==
-Date:   Fri, 22 Jul 2022 09:24:39 -0700
+        b=R6uxrMTGkXqjhGQr3zA8qNa8GSPQYWhhd4mQ3yYrU74pGY1LX1IaIR5hc0nNP92LQ
+         q9wz+Ac3IrLVRoZlFBxpRSiQx2lr3niXhLmKlEKd0WaePq36/63ztLdxUHKVP91cna
+         iTiD0U+7tuK8NQRrlnfsoyqCoOVisiWxoj95uBcTC6TpEN1dPCJvAwk4AG+OLFbipY
+         Ev1zg3asT7LDP81fPvnsbpQUSyN9RHHDGbrlF5ehxKVjBYDOL18hUhi2yOduvU0hdK
+         zkACGw2vJii36YKdGWHobF9F/E/t5jlN1+H172Y6t7CaMxCzV8c30PiPug7zXwMxcb
+         86mtOuQB7uKRA==
+Date:   Fri, 22 Jul 2022 09:31:49 -0700
 From:   "Darrick J. Wong" <djwong@kernel.org>
 To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Keith Busch <kbusch@kernel.org>
-Subject: Re: [PATCH v4 9/9] xfs: support STATX_DIOALIGN
-Message-ID: <YtrPRysafr5KK3NQ@magnolia>
-References: <20220722071228.146690-1-ebiggers@kernel.org>
- <20220722071228.146690-10-ebiggers@kernel.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-xfs@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>
+Subject: Re: [man-pages RFC PATCH v2] statx.2, open.2: document STATX_DIOALIGN
+Message-ID: <YtrQ9cWwUkmOUe9r@magnolia>
+References: <20220722074229.148925-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220722071228.146690-10-ebiggers@kernel.org>
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+In-Reply-To: <20220722074229.148925-1-ebiggers@kernel.org>
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,SUSPICIOUS_RECIPS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Jul 22, 2022 at 12:12:28AM -0700, Eric Biggers wrote:
+On Fri, Jul 22, 2022 at 12:42:28AM -0700, Eric Biggers wrote:
 > From: Eric Biggers <ebiggers@google.com>
 > 
-> Add support for STATX_DIOALIGN to xfs, so that direct I/O alignment
-> restrictions are exposed to userspace in a generic way.
+> Document the proposed STATX_DIOALIGN support for statx()
+> (https://lore.kernel.org/linux-fsdevel/20220722071228.146690-1-ebiggers@kernel.org/T/#u).
 > 
 > Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+> 
+> v2: rebased onto man-pages master branch, mentioned xfs, and updated
+>     link to patchset
+> 
+>  man2/open.2  | 43 ++++++++++++++++++++++++++++++++-----------
+>  man2/statx.2 | 29 +++++++++++++++++++++++++++++
+>  2 files changed, 61 insertions(+), 11 deletions(-)
+> 
+> diff --git a/man2/open.2 b/man2/open.2
+> index d1485999f..ef29847c3 100644
+> --- a/man2/open.2
+> +++ b/man2/open.2
+> @@ -1732,21 +1732,42 @@ of user-space buffers and the file offset of I/Os.
+>  In Linux alignment
+>  restrictions vary by filesystem and kernel version and might be
+>  absent entirely.
+> -However there is currently no filesystem\-independent
+> -interface for an application to discover these restrictions for a given
+> -file or filesystem.
+> -Some filesystems provide their own interfaces
+> -for doing so, for example the
+> +The handling of misaligned
+> +.B O_DIRECT
+> +I/Os also varies; they can either fail with
+> +.B EINVAL
+> +or fall back to buffered I/O.
+> +.PP
+> +Since Linux 5.20,
+> +.B O_DIRECT
+> +support and alignment restrictions for a file can be queried using
+> +.BR statx (2),
+> +using the
+> +.B STATX_DIOALIGN
+> +flag.
+> +Support for
+> +.B STATX_DIOALIGN
+> +varies by filesystem; see
+> +.BR statx (2).
+> +.PP
+> +Some filesystems provide their own interfaces for querying
+> +.B O_DIRECT
+> +alignment restrictions, for example the
+>  .B XFS_IOC_DIOINFO
+>  operation in
+>  .BR xfsctl (3).
+> +.B STATX_DIOALIGN
+> +should be used instead when it is available.
+>  .PP
+> -Under Linux 2.4, transfer sizes, the alignment of the user buffer,
+> -and the file offset must all be multiples of the logical block size
+> -of the filesystem.
+> -Since Linux 2.6.0, alignment to the logical block size of the
+> -underlying storage (typically 512 bytes) suffices.
+> -The logical block size can be determined using the
+> +If none of the above is available, then direct I/O support and alignment
+> +restrictions can only be assumed from known characteristics of the filesystem,
+> +the individual file, the underlying storage device(s), and the kernel version.
+> +In Linux 2.4, most block device based filesystems require that the file offset
+> +and the length and memory address of all I/O segments be multiples of the
+> +filesystem block size (typically 4096 bytes).
+> +In Linux 2.6.0, this was relaxed to the logical block size of the block device
+> +(typically 512 bytes).
+> +A block device's logical block size can be determined using the
+>  .BR ioctl (2)
+>  .B BLKSSZGET
+>  operation or from the shell using the command:
+> diff --git a/man2/statx.2 b/man2/statx.2
+> index 0326e9af0..ea38ec829 100644
+> --- a/man2/statx.2
+> +++ b/man2/statx.2
+> @@ -61,7 +61,12 @@ struct statx {
+>         containing the filesystem where the file resides */
+>      __u32 stx_dev_major;   /* Major ID */
+>      __u32 stx_dev_minor;   /* Minor ID */
+> +
+>      __u64 stx_mnt_id;      /* Mount ID */
+> +
+> +    /* Direct I/O alignment restrictions */
+> +    __u32 stx_dio_mem_align;
+> +    __u32 stx_dio_offset_align;
+>  };
+>  .EE
+>  .in
+> @@ -247,6 +252,8 @@ STATX_BTIME	Want stx_btime
+>  STATX_ALL	The same as STATX_BASIC_STATS | STATX_BTIME.
+>  	It is deprecated and should not be used.
+>  STATX_MNT_ID	Want stx_mnt_id (since Linux 5.8)
+> +STATX_DIOALIGN	Want stx_dio_mem_align and stx_dio_offset_align
+> +	(since Linux 5.20; support varies by filesystem)
+>  .TE
+>  .in
+>  .PP
+> @@ -407,6 +414,28 @@ This is the same number reported by
+>  .BR name_to_handle_at (2)
+>  and corresponds to the number in the first field in one of the records in
+>  .IR /proc/self/mountinfo .
+> +.TP
+> +.I stx_dio_mem_align
+> +The alignment (in bytes) required for user memory buffers for direct I/O
+> +.BR "" ( O_DIRECT )
+> +on this file. or 0 if direct I/O is not supported on this file.
 
-LGTM
+Nit: "..on this file, or 0 if direct..."
+
+> +.IP
+> +.B STATX_DIOALIGN
+> +.IR "" ( stx_dio_mem_align
+> +and
+> +.IR stx_dio_offset_align )
+> +is supported on block devices since Linux 5.20.
+> +The support on regular files varies by filesystem; it is supported by ext4,
+> +f2fs, and xfs since Linux 5.20.
+> +.TP
+> +.I stx_dio_offset_align
+> +The alignment (in bytes) required for file offsets and I/O segment lengths for
+> +direct I/O
+> +.BR "" ( O_DIRECT )
+> +on this file, or 0 if direct I/O is not supported on this file.
+
+On this last part -- userspace can only conclude that directio is not
+supported on the file if ((STATX_DIOALIGN & stx_mask) &&
+stx_dio_offset_align == 0), right?
+
+IOWs, if (STATX_DIOALIGN & stx_mask)==0 then userspace can't draw any
+conclusions from stx_dio_offset_align, correct?
+
+If the answers are yes and yes, then I think I've understood all this
+and can say
 Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
 --D
 
-> ---
->  fs/xfs/xfs_iops.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
+
+> +This will only be nonzero if
+> +.I stx_dio_mem_align
+> +is nonzero, and vice versa.
+>  .PP
+>  For further information on the above fields, see
+>  .BR inode (7).
 > 
-> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-> index 29f5b8b8aca69a..bac3f56141801e 100644
-> --- a/fs/xfs/xfs_iops.c
-> +++ b/fs/xfs/xfs_iops.c
-> @@ -605,6 +605,15 @@ xfs_vn_getattr(
->  		stat->blksize = BLKDEV_IOSIZE;
->  		stat->rdev = inode->i_rdev;
->  		break;
-> +	case S_IFREG:
-> +		if (request_mask & STATX_DIOALIGN) {
-> +			struct xfs_buftarg	*target = xfs_inode_buftarg(ip);
-> +
-> +			stat->result_mask |= STATX_DIOALIGN;
-> +			stat->dio_mem_align = target->bt_logical_sectorsize;
-> +			stat->dio_offset_align = target->bt_logical_sectorsize;
-> +		}
-> +		fallthrough;
->  	default:
->  		stat->blksize = xfs_stat_blksize(ip);
->  		stat->rdev = 0;
+> base-commit: f9f25914e4ed393ac284ab921876e8a78722c504
 > -- 
 > 2.37.0
 > 
