@@ -2,38 +2,37 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E940A580951
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 26 Jul 2022 04:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38BE158095A
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 26 Jul 2022 04:16:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236121AbiGZCNT (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 25 Jul 2022 22:13:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53600 "EHLO
+        id S231517AbiGZCQM (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 25 Jul 2022 22:16:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236428AbiGZCNS (ORCPT
+        with ESMTP id S232129AbiGZCQL (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 25 Jul 2022 22:13:18 -0400
+        Mon, 25 Jul 2022 22:16:11 -0400
 Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C29DD28E21;
-        Mon, 25 Jul 2022 19:13:16 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD74CDEE2;
+        Mon, 25 Jul 2022 19:16:10 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 939A580856;
-        Mon, 25 Jul 2022 22:13:14 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id 3BC0880A59;
+        Mon, 25 Jul 2022 22:16:09 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1658801596; bh=ptXxAfZgAszQC6rVofIN+8stpKgcYrpCGjXOeETcBxI=;
+        t=1658801770; bh=zQjumHcwx8N+P46ydn2wqo3CdRvzwnPt6y51NEbiEPM=;
         h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=sY8+uTyYkmYgw5vXe18+OY5dPxTlS5lsMHmeATXw7zDP6bbTOuH6lqbVq5WQPGAFx
-         0H7tYofi+pWTxWq2edyUpvCgy57Q/E3jhVoiC8KDahGKp3XSGib55KK3xgRoIZPOIR
-         s83TFrzKd7lszUOB/TtvCnSio0k8SMM7E7Gr5bUOvgDCZetwC51u7vzFmATtW98XQn
-         CnFCk0BOpRWBmaQJBPR+NIqKDkBDHgrx7pAceAjaVLM/Qgcdzpqb2AU62lb241KVdG
-         zPetzFUaTQretRex1i+9uEz/warkPbb6shtOoHmbwyvwSWY6ujYldn+cjJKbHeCpd1
-         Akk0HuSyb+aaQ==
-Message-ID: <7b35f666-b474-9628-1cc4-7b8fc35e5074@dorminy.me>
-Date:   Mon, 25 Jul 2022 22:13:12 -0400
+        b=g6rxf5sjPgRwr6BMe+ppWZq9UFe+KB7VQPNPj8u8i3avNXB8hq+9lw42rcfsQbutf
+         ijrUeL18/rx+hgImZ5GStRzy4cQUpWmErHgJyJRlvdDX+f3EVGFEVVAZ2ItkKgKAKC
+         zS+KJXGOz+0EKZgLBBSDtRKco0ZFqgdwJCMTzpAbEAoqoonqXzJuOcDnGEu03dEK29
+         GAkmm2rfig99lTqhUfv+K02IHiJmdvWyydwAtcx0K17g9bjy5hLDpqiDl4UPvfL/2N
+         yI1Hu7/HbR5f/jYngVoel89koJ7N9ti4+IqTop6dyzTUlrgCO3Glk87+m8/uQ/gKzR
+         Z+HNEJw5YV8kw==
+Message-ID: <7130dd3f-202c-2e70-c37f-57be9b85548b@dorminy.me>
+Date:   Mon, 25 Jul 2022 22:16:07 -0400
 MIME-Version: 1.0
-Subject: Re: [PATCH RFC 2/4] fscrypt: add flag allowing partially-encrypted
- directories
+Subject: Re: [PATCH RFC 4/4] fscrypt: Add new encryption policy for btrfs.
 Content-Language: en-US
 To:     Eric Biggers <ebiggers@kernel.org>
 Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
@@ -42,10 +41,10 @@ Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
         linux-btrfs@vger.kernel.org, osandov@osandov.com,
         kernel-team@fb.com
 References: <cover.1658623235.git.sweettea-kernel@dorminy.me>
- <0508dac7fd6ec817007c5e21a565d1bb9d4f4921.1658623235.git.sweettea-kernel@dorminy.me>
- <Yt7zsMGrxwKiM+GH@sol.localdomain>
+ <675dd03f1a4498b09925fbf93cc38b8430cb7a59.1658623235.git.sweettea-kernel@dorminy.me>
+ <Yt8oEiN6AkglKfIc@sol.localdomain>
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-In-Reply-To: <Yt7zsMGrxwKiM+GH@sol.localdomain>
+In-Reply-To: <Yt8oEiN6AkglKfIc@sol.localdomain>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
@@ -58,44 +57,70 @@ List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 
->> diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
->> index 6020b738c3b2..fb48961c46f6 100644
->> --- a/include/linux/fscrypt.h
->> +++ b/include/linux/fscrypt.h
->> @@ -102,6 +102,8 @@ struct fscrypt_nokey_name {
->>    * pages for writes and therefore won't need the fscrypt bounce page pool.
->>    */
->>   #define FS_CFLG_OWN_PAGES (1U << 1)
->> +/* The filesystem allows partially encrypted directories/files. */
->> +#define FS_CFLG_ALLOW_PARTIAL (1U << 2)
+
+On 7/25/22 19:32, Eric Biggers wrote:
+> On Sat, Jul 23, 2022 at 08:52:28PM -0400, Sweet Tea Dorminy wrote:
+>> Certain filesystems may want to use IVs generated and stored outside of
+>> fscrypt's inode-based IV generation policies.  In particular, btrfs can
+>> have multiple inodes referencing a single block of data, and moves
+>> logical data blocks to different physical locations on disk; these two
+>> features mean inode or physical-location-based IV generation policies
+>> will not work for btrfs. For these or similar reasons, such filesystems
+>> may want to implement their own IV generation and storage for data
+>> blocks.
+>>
+>> Plumbing each such filesystem's internals into fscrypt for IV generation
+>> would be ungainly and fragile. Thus, this change adds a new policy,
+>> IV_FROM_FS, and a new operation function pointer, get_fs_derived_iv.  If
+>> this policy is selected, the filesystem is required to provide the
+>> function pointer, which populates the IV for a particular data block.
+>> The IV buffer passed to get_fs_derived_iv() is pre-populated with the
+>> inode contexts' nonce, in case the filesystem would like to use this
+>> information; for btrfs, this is used for filename encryption.  Any
+>> filesystem using this policy is expected to appropriately generate and
+>> store a persistent random IV for each block of data.
 > 
-> I'm very confused about what the semantics of this are.  So a directory will be
-> able to contain both encrypted and unencrypted filenames?  If so, how will it be
-> possible to distinguish between them? Or is it just both encrypted and
-> unencrypted files (which is actually already possible, in the case where
-> encrypted files are moved into an unencrypted directory)?  What sort of metadata
-> is stored with the parent directory?
-Yes, a directory for a filesystem with this flag could have both 
-encrypted and unencrypted filenames.
+> This is changed from the original proposal to store just a random "starting IV"
+> per extent, right? 
 
-When a directory switches to encrypted, the filesystem can get and store 
-a fscrypt_context for it, as though it were a new directory. All new 
-filenames for that directory will be encrypted, as will any filename 
-lookup requests, by fscrypt_prepare_filename() since the directory has a 
-context.
+This is intended to be a generic interface that doesn't require any 
+particular IV scheme from the filesystem. In practice, the btrfs side of 
+the code is using a per-extent starting IV, as originally proposed. I 
+don't see a way for the interface to require IVs per extent, but maybe 
+there is a better way than this. Or, is there more detail I can add to 
+the change description to clarify that the filesystem doesn't 
+necessarily have to store an IV for each individual data block?
 
-When a request for a lookup of a name in that directory comes in, it'll 
-be an encrypted or nokey name; the directory can be searched for both 
-the encrypted and unencrypted versions of that name. I don't think any 
-filename collisions can result, as any encrypted filename which happens 
-to match a plaintext filename will be detected as a collision when it's 
-first added.
+> Given that this new proposal uses per-block metadata, has
+> support for authenticated encryption been considered? Has space been reserved
+> in the per-block metadata for authentication tags so that authenticated
+> encryption support could be added later even if it's not in the initial version?
+
+I don't know sufficiently much about authenticated encryption to have 
+considered it. As currently drafted, btrfs encrypts before checksumming 
+if checksums are enabled, and checks against checksums before 
+decrypting. Although at present we haven't discussed authentication 
+tags, btrfs could store them in a separate itemtype which could be added 
+at any time, much as we currently store fsverity data. We do have 
+sufficient room saved for adding other encryption types, if necessary; 
+we could use some of that to indicate the existence of authentication 
+tags for the extents' data.
 
 > 
-> Please note that any new semantics and APIs will need to be documented in
-> Documentation/filesystems/fscrypt.rst.
-Good point.
+> Also, could the new IV generation method just be defined as RANDOM_IV instead of
+> IV_FROM_FS?  Why do individual filesystems have to generate the IVs?  Shouldn't
+> IV generation happen in common code, with filesystems just storing and
+> retrieving the IVs?
+I think you're imagining an interface similar to get/set_context, where 
+the first time a block is written the filesystem's set_IV method is 
+called, and subsequent encryption/decryption calls get_IV, which is 
+definitely elegant in its symmetry. But I'm not sure how to have a 
+per-block set_IV and also only store an IV per extent, and it would be a 
+significant cost to store an IV per block.
 
-Thanks!
+I would be happy to add a fscrypt_get_random_iv() method, instead of 
+having the filesystem call get_random_bytes() itself, if you'd like.
+
+Thank you!
 
 Sweet Tea
