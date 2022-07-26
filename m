@@ -2,53 +2,72 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38BE158095A
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 26 Jul 2022 04:16:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 082CC580991
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 26 Jul 2022 04:40:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231517AbiGZCQM (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 25 Jul 2022 22:16:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55860 "EHLO
+        id S237316AbiGZCk1 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 25 Jul 2022 22:40:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232129AbiGZCQL (ORCPT
+        with ESMTP id S237362AbiGZCkZ (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 25 Jul 2022 22:16:11 -0400
-Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD74CDEE2;
-        Mon, 25 Jul 2022 19:16:10 -0700 (PDT)
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 3BC0880A59;
-        Mon, 25 Jul 2022 22:16:09 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1658801770; bh=zQjumHcwx8N+P46ydn2wqo3CdRvzwnPt6y51NEbiEPM=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=g6rxf5sjPgRwr6BMe+ppWZq9UFe+KB7VQPNPj8u8i3avNXB8hq+9lw42rcfsQbutf
-         ijrUeL18/rx+hgImZ5GStRzy4cQUpWmErHgJyJRlvdDX+f3EVGFEVVAZ2ItkKgKAKC
-         zS+KJXGOz+0EKZgLBBSDtRKco0ZFqgdwJCMTzpAbEAoqoonqXzJuOcDnGEu03dEK29
-         GAkmm2rfig99lTqhUfv+K02IHiJmdvWyydwAtcx0K17g9bjy5hLDpqiDl4UPvfL/2N
-         yI1Hu7/HbR5f/jYngVoel89koJ7N9ti4+IqTop6dyzTUlrgCO3Glk87+m8/uQ/gKzR
-         Z+HNEJw5YV8kw==
-Message-ID: <7130dd3f-202c-2e70-c37f-57be9b85548b@dorminy.me>
-Date:   Mon, 25 Jul 2022 22:16:07 -0400
+        Mon, 25 Jul 2022 22:40:25 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C31E29CA8
+        for <linux-fscrypt@vger.kernel.org>; Mon, 25 Jul 2022 19:40:23 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id bh13so12007954pgb.4
+        for <linux-fscrypt@vger.kernel.org>; Mon, 25 Jul 2022 19:40:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YDCQ69+j6DNEGXcsFGhvww2iHW1abII9YyREo17Wc9M=;
+        b=nURnkjTNc8xF/ccGVoabMqVasflS0pMoXQ/Ik/dRiB0yWqinGlQdYjuNE/mofQjveP
+         glgKAaoDzMXfOgSzVV4PtfQLcqWlIKnYxQ94QwgjOzwdlEqFsXGxdLn1Jz4kobD2rkvw
+         vpAk4BmlARuz3J61Y4ICkCVUIqpEIi/j7YrEo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YDCQ69+j6DNEGXcsFGhvww2iHW1abII9YyREo17Wc9M=;
+        b=49Q7SactyeJGzbsbITNaUMlJKbxNQVO8/yk11lhRXSVUr41pv8BkwUrEGd9v3KX3Dm
+         3jbW9yqSU6dytzhrGE8yFgkfpB5HcIAHmAwuCcY3EdqZyD9wS+YNAld0v2dSR4fVXkfB
+         xVqO1vhveLc7PyTZ5mKeC1wg/Xt2M2rrR+5y+MqgV0SkOCUwgI+dtqMSeMpI1VR5MYX5
+         vC55eBxt+jHqTEP0PnBcpTzI7ZwkmEC92a98ltLL/LDrf80C7EMEVE3CF75xvUeyI6a0
+         lB1UVJ7tafY3/1hO74O61yH40Yhu3wxhT2o5kurqGrxjAjs8mGePY8vfGU9s++LoHP4K
+         QxHA==
+X-Gm-Message-State: AJIora/B6ikgM0WmgNreq1MiJi91cYskpKayYe95c3b/05Ru8/2w9xwI
+        sdvfkgM3xjkFS3coADMgC9ZaLH+m2KbgUw==
+X-Google-Smtp-Source: AGRyM1vx5o3O82d+UwS4QXR3lui4cdf2xPHbdWNIwHc/5apxbNSIwtpsF6MA6NxtaEX1qzpjbghRdw==
+X-Received: by 2002:a63:5fc9:0:b0:419:9871:fc8d with SMTP id t192-20020a635fc9000000b004199871fc8dmr13109285pgb.422.1658803222173;
+        Mon, 25 Jul 2022 19:40:22 -0700 (PDT)
+Received: from google.com (n122-107-196-14.sbr2.nsw.optusnet.com.au. [122.107.196.14])
+        by smtp.gmail.com with ESMTPSA id a16-20020aa78e90000000b0052b29fd7982sm10250313pfr.85.2022.07.25.19.40.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jul 2022 19:40:21 -0700 (PDT)
+From:   Daniil Lunev <dlunev@chromium.org>
+X-Google-Original-From: Daniil Lunev <dlunev@google.com>
+Date:   Tue, 26 Jul 2022 12:40:14 +1000
+To:     Israel Rukshin <israelr@nvidia.com>,
+        Eric Biggers <ebiggers@kernel.org>
+Cc:     Linux-block <linux-block@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+        Nitzan Carmi <nitzanc@nvidia.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>, dm-devel@redhat.com,
+        linux-fscrypt@vger.kernel.org
+Subject: Re: [PATCH 1/1] block: Add support for setting inline encryption key
+ per block device
+Message-ID: <Yt9UDoKbidXaTmYd@google.com>
+References: <1658316391-13472-1-git-send-email-israelr@nvidia.com>
+ <1658316391-13472-2-git-send-email-israelr@nvidia.com>
+ <Ytj249InQTKdFshA@sol.localdomain>
 MIME-Version: 1.0
-Subject: Re: [PATCH RFC 4/4] fscrypt: Add new encryption policy for btrfs.
-Content-Language: en-US
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, osandov@osandov.com,
-        kernel-team@fb.com
-References: <cover.1658623235.git.sweettea-kernel@dorminy.me>
- <675dd03f1a4498b09925fbf93cc38b8430cb7a59.1658623235.git.sweettea-kernel@dorminy.me>
- <Yt8oEiN6AkglKfIc@sol.localdomain>
-From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-In-Reply-To: <Yt8oEiN6AkglKfIc@sol.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Ytj249InQTKdFshA@sol.localdomain>
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,71 +75,44 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
+On Wed, Jul 20, 2022 at 11:49:07PM -0700, Eric Biggers wrote:
+> I'm glad to see a proposal in this area -- this is something that is greatly
+> needed.  Chrome OS is looking for something like "dm-crypt with inline crypto
+> support", which this should work for.  Android is also looking for something
+> similar with the additional property that filesystems can override the key used.
+Yes, this is exciting to see proposals in this area. In ChromeOS we were
+contemplating ways to upstream Eric's work for Android. This solution should
+work generally for our use-case, however I would like to add a few extra pieces
+we were considering.
 
+One thing we were looking for is having an option to pass inline encryption keys
+via keyrings, similarly to how dm-crypt allows suuplying keys both ways: raw and
+keyring attached. I would assume that is something that should still be possible
+with the IOCTL-based approach, though proposed API can make it a bit obscure. I
+was wondering whether there should be a separate field to allow this kind of
+differentiation?
 
-On 7/25/22 19:32, Eric Biggers wrote:
-> On Sat, Jul 23, 2022 at 08:52:28PM -0400, Sweet Tea Dorminy wrote:
->> Certain filesystems may want to use IVs generated and stored outside of
->> fscrypt's inode-based IV generation policies.  In particular, btrfs can
->> have multiple inodes referencing a single block of data, and moves
->> logical data blocks to different physical locations on disk; these two
->> features mean inode or physical-location-based IV generation policies
->> will not work for btrfs. For these or similar reasons, such filesystems
->> may want to implement their own IV generation and storage for data
->> blocks.
->>
->> Plumbing each such filesystem's internals into fscrypt for IV generation
->> would be ungainly and fragile. Thus, this change adds a new policy,
->> IV_FROM_FS, and a new operation function pointer, get_fs_derived_iv.  If
->> this policy is selected, the filesystem is required to provide the
->> function pointer, which populates the IV for a particular data block.
->> The IV buffer passed to get_fs_derived_iv() is pre-populated with the
->> inode contexts' nonce, in case the filesystem would like to use this
->> information; for btrfs, this is used for filename encryption.  Any
->> filesystem using this policy is expected to appropriately generate and
->> store a persistent random IV for each block of data.
-> 
-> This is changed from the original proposal to store just a random "starting IV"
-> per extent, right? 
+The other aspect is the key lifetime. Current implementation doesn't allow to
+unset the key once set. This is something that would still work with dm setups,
+presumably, since the key lifetime is tied to the lifetime of the device itself,
+but may render problematic if this is applied to a raw device or partition of a
+raw device, I would assume - allowing no ways to rotate the key without reboot.
+I am not sure if this is a particularly important issue, but something that I
+wanted to raise for the discussion. This also becomes relevant in the context of
+the keyring usages, i.e. whether to revoke the key from the block device when
+the key is removed from the keyring, or assume it is bound at the time of device
+setup. The dm-crypt follows the latter model, AFAIU, and it is fine to keep it
+consistent, but then the question comes back to inability to remove the key in
+the current API in general.
 
-This is intended to be a generic interface that doesn't require any 
-particular IV scheme from the filesystem. In practice, the btrfs side of 
-the code is using a per-extent starting IV, as originally proposed. I 
-don't see a way for the interface to require IVs per extent, but maybe 
-there is a better way than this. Or, is there more detail I can add to 
-the change description to clarify that the filesystem doesn't 
-necessarily have to store an IV for each individual data block?
+And speaking about dm, the other thing we were looking into is compatibility of
+inline encryption key setup with dm stacks. Current kernel implementaiton
+propagates the crypto context through linear and flakey target, we also had
+initial tests enabling it on thin pools by adding DM_TARGET_PASSES_CRYPTO, which
+didn't show any problems at first glance (but more testing is required). We
+believe that an ability to setup multiple different dm targets with different
+keys over the same physical device is an important use case - and as far as I
+can tell proposed approach supports it, but wanted to highlight that as well.
 
-> Given that this new proposal uses per-block metadata, has
-> support for authenticated encryption been considered? Has space been reserved
-> in the per-block metadata for authentication tags so that authenticated
-> encryption support could be added later even if it's not in the initial version?
+--Daniil
 
-I don't know sufficiently much about authenticated encryption to have 
-considered it. As currently drafted, btrfs encrypts before checksumming 
-if checksums are enabled, and checks against checksums before 
-decrypting. Although at present we haven't discussed authentication 
-tags, btrfs could store them in a separate itemtype which could be added 
-at any time, much as we currently store fsverity data. We do have 
-sufficient room saved for adding other encryption types, if necessary; 
-we could use some of that to indicate the existence of authentication 
-tags for the extents' data.
-
-> 
-> Also, could the new IV generation method just be defined as RANDOM_IV instead of
-> IV_FROM_FS?  Why do individual filesystems have to generate the IVs?  Shouldn't
-> IV generation happen in common code, with filesystems just storing and
-> retrieving the IVs?
-I think you're imagining an interface similar to get/set_context, where 
-the first time a block is written the filesystem's set_IV method is 
-called, and subsequent encryption/decryption calls get_IV, which is 
-definitely elegant in its symmetry. But I'm not sure how to have a 
-per-block set_IV and also only store an IV per extent, and it would be a 
-significant cost to store an IV per block.
-
-I would be happy to add a fscrypt_get_random_iv() method, instead of 
-having the filesystem call get_random_bytes() itself, if you'd like.
-
-Thank you!
-
-Sweet Tea
