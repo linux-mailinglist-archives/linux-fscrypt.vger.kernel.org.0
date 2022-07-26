@@ -2,71 +2,46 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D01C581905
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 26 Jul 2022 19:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A8E2581A4B
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 26 Jul 2022 21:29:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239751AbiGZRu5 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 26 Jul 2022 13:50:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45284 "EHLO
+        id S231809AbiGZT3S (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 26 Jul 2022 15:29:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239721AbiGZRur (ORCPT
+        with ESMTP id S229379AbiGZT3R (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 26 Jul 2022 13:50:47 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D96DF3057A;
-        Tue, 26 Jul 2022 10:50:37 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Tue, 26 Jul 2022 15:29:17 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87EA21A807;
+        Tue, 26 Jul 2022 12:29:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 877551FD3A;
-        Tue, 26 Jul 2022 17:50:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1658857836;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Gm3qnLAYsQBIJg426MOfCKsmEjrCPUPylpVnraWZmIk=;
-        b=LDBU8gKgoo1l96qIbktk1EUfEiOplxBi8RV2e7Z3+1YKXJv/7pCbHCD9SRRbohZy/x/wcA
-        ArDeymHiF7sZYafmErRqNys1oObbrts2B7WLaPBDRNE5wixznl7tW1oPeY/EavHQ/aW8yJ
-        yt4N6UYFtk35HTJaPxX3zGb9Xi4Jz1I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1658857836;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Gm3qnLAYsQBIJg426MOfCKsmEjrCPUPylpVnraWZmIk=;
-        b=BEv2XYQ854Yzij2xKUKWIEW4EH/0gSle8nB3lrXt2iAE6R933kxRwF7nqzwy9EOWiWFuxk
-        glCc6/XiVx22obBw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3945813A7C;
-        Tue, 26 Jul 2022 17:50:36 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id gTftDGwp4GIVDgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 26 Jul 2022 17:50:36 +0000
-Date:   Tue, 26 Jul 2022 19:45:38 +0200
-From:   David Sterba <dsterba@suse.cz>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 211086156B;
+        Tue, 26 Jul 2022 19:29:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 226E2C433D7;
+        Tue, 26 Jul 2022 19:29:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1658863755;
+        bh=WlwSgYuZ7DFZd25furNi2YJWO8JHrpAPXAv1LXJRhNI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vIZ6FT+gIccoXebDvLukleSESPSpc77naQ7Nq5Xa8ZsRAtW6rPeZLVUx0Md888S+M
+         WTw/z0N6gZJ9+VNeeBE29/EyuWIc+x9Eo1HiG3scsWcoanfMws5Qhnp4g20pPnjnZb
+         eSLb9QeSc7DPTUIRQODcBmQg7CvmIdKg2+9oGeipCwkrVVMZd9wn9wZ+bEn+Fx5cGh
+         VwOIrcgXYnpk9AlSrvLw/1KzWCKXQpAyS8VnZlwm2QT3s0dhi/PdqzsF0kIfrFG4gR
+         tjuKtuKbdE0W0pf0LO07KgdnDXuOyCARCvLyzHkPpO4H3xjggL8xkTw/jcY1mxYqtR
+         HgblGPdqp0H4g==
+Date:   Tue, 26 Jul 2022 19:29:13 +0000
+From:   Eric Biggers <ebiggers@kernel.org>
 To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
+Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
         linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-btrfs@vger.kernel.org, osandov@osandov.com,
         kernel-team@fb.com
 Subject: Re: [PATCH RFC 4/4] fscrypt: Add new encryption policy for btrfs.
-Message-ID: <20220726174538.GG13489@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, linux-fscrypt@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        osandov@osandov.com, kernel-team@fb.com
+Message-ID: <YuBAiRg9K8IrlCqV@gmail.com>
 References: <cover.1658623235.git.sweettea-kernel@dorminy.me>
  <675dd03f1a4498b09925fbf93cc38b8430cb7a59.1658623235.git.sweettea-kernel@dorminy.me>
  <Yt8oEiN6AkglKfIc@sol.localdomain>
@@ -75,10 +50,9 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <7130dd3f-202c-2e70-c37f-57be9b85548b@dorminy.me>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -86,23 +60,57 @@ List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 On Mon, Jul 25, 2022 at 10:16:07PM -0400, Sweet Tea Dorminy wrote:
+> 
+> 
 > On 7/25/22 19:32, Eric Biggers wrote:
 > > On Sat, Jul 23, 2022 at 08:52:28PM -0400, Sweet Tea Dorminy wrote:
-
-> > Given that this new proposal uses per-block metadata, has
-> > support for authenticated encryption been considered? Has space been reserved
-> > in the per-block metadata for authentication tags so that authenticated
-> > encryption support could be added later even if it's not in the initial version?
+> > > Certain filesystems may want to use IVs generated and stored outside of
+> > > fscrypt's inode-based IV generation policies.  In particular, btrfs can
+> > > have multiple inodes referencing a single block of data, and moves
+> > > logical data blocks to different physical locations on disk; these two
+> > > features mean inode or physical-location-based IV generation policies
+> > > will not work for btrfs. For these or similar reasons, such filesystems
+> > > may want to implement their own IV generation and storage for data
+> > > blocks.
+> > > 
+> > > Plumbing each such filesystem's internals into fscrypt for IV generation
+> > > would be ungainly and fragile. Thus, this change adds a new policy,
+> > > IV_FROM_FS, and a new operation function pointer, get_fs_derived_iv.  If
+> > > this policy is selected, the filesystem is required to provide the
+> > > function pointer, which populates the IV for a particular data block.
+> > > The IV buffer passed to get_fs_derived_iv() is pre-populated with the
+> > > inode contexts' nonce, in case the filesystem would like to use this
+> > > information; for btrfs, this is used for filename encryption.  Any
+> > > filesystem using this policy is expected to appropriately generate and
+> > > store a persistent random IV for each block of data.
+> > 
+> > This is changed from the original proposal to store just a random "starting IV"
+> > per extent, right?
 > 
-> I don't know sufficiently much about authenticated encryption to have 
-> considered it. As currently drafted, btrfs encrypts before checksumming 
-> if checksums are enabled, and checks against checksums before 
-> decrypting. Although at present we haven't discussed authentication 
-> tags, btrfs could store them in a separate itemtype which could be added 
-> at any time, much as we currently store fsverity data. We do have 
-> sufficient room saved for adding other encryption types, if necessary; 
-> we could use some of that to indicate the existence of authentication 
-> tags for the extents' data.
+> This is intended to be a generic interface that doesn't require any
+> particular IV scheme from the filesystem. 
 
-The AEAD tag can be used in place of checksum (also stored in the
-checksum item).
+I don't think that's a good way to do it.  The fscrypt settings are supposed to
+be very concrete, meaning that they specify a particular way of doing the
+encryption, which can be reviewed for its security and which can be tested for
+correctness of the on-disk format.  There shouldn't be cryptographic differences
+between how different filesystems implement the same setting.
+
+The fscrypt settings also shouldn't specify internal implementation details of
+the code, as "IV_FROM_FS" does.  From userspace's perspective, *all* fscrypt
+settings have IVs chosen by the filesystem; the division between the
+"filesystem" and fs/crypto/ is an internal kernel implementation detail.
+
+So I think you should go with something like RANDOM_IV or IV_PER_EXTENT.
+
+> In practice, the btrfs side of the code is using a per-extent starting IV, as
+> originally proposed. 
+
+This is inconsistent with your commit message, which says that there is a random
+IV for each block of data.  It's also inconsistent with your proposed change to
+fscrypt_limit_io_blocks().  So I don't know which to believe.
+
+Clearly this can't be properly reviewed on its own, so please send out the whole
+patch series and not just the fs/crypto/ parts.
+
+- Eric
