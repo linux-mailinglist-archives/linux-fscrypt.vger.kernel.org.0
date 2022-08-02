@@ -2,94 +2,75 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E2C4587E85
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  2 Aug 2022 17:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 185805882DC
+	for <lists+linux-fscrypt@lfdr.de>; Tue,  2 Aug 2022 21:55:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237349AbiHBPD6 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 2 Aug 2022 11:03:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46478 "EHLO
+        id S229845AbiHBTzu (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 2 Aug 2022 15:55:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234433AbiHBPD5 (ORCPT
+        with ESMTP id S229504AbiHBTzt (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 2 Aug 2022 11:03:57 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E1C5237FC;
-        Tue,  2 Aug 2022 08:03:56 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Tue, 2 Aug 2022 15:55:49 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C49EDE9E;
+        Tue,  2 Aug 2022 12:55:49 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id DFE633420E;
-        Tue,  2 Aug 2022 15:03:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1659452633;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=T/ylml1TMopPsWGf4bCgFH549wn8Z8dEYpYkupfsQcc=;
-        b=pcG1Mgc54lCdeZ0rwzc14HFQ0bkpBgWRazOrhWYX6mXOdrG9o6GRYqI/iGLnzNNVBlldX2
-        j0eNeFKMrqLBP9wsZ7xejKCXGKwRz6JhjSVLqVHhjzOHKaFthpiLzzbk9+H5bsbBTfQ0IG
-        vAflZ7uiyg4H/gM8PAnIFDg5N9j2DCs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1659452633;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=T/ylml1TMopPsWGf4bCgFH549wn8Z8dEYpYkupfsQcc=;
-        b=NTKFJXzJ3BRiSe5Sj8rp+bHiR7RGCa1vRVHyKhHdU6e+tMMYYQMVIHSGBnOhvH3YflyBCS
-        ivKv74qb0U37H+Aw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BF97D13A8E;
-        Tue,  2 Aug 2022 15:03:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 8JniLdk86WK3BgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 02 Aug 2022 15:03:53 +0000
-Date:   Tue, 2 Aug 2022 16:58:52 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Boris Burkov <boris@bur.io>
-Cc:     linux-fscrypt@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH v2] btrfs: send: add support for fs-verity
-Message-ID: <20220802145852.GP13489@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Boris Burkov <boris@bur.io>,
-        linux-fscrypt@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <9bfbf3b43d2c2663d2e3f196810288fd83c0b52e.1659031503.git.boris@bur.io>
+        by ams.source.kernel.org (Postfix) with ESMTPS id CCBF5B8205F;
+        Tue,  2 Aug 2022 19:55:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6185FC433D6;
+        Tue,  2 Aug 2022 19:55:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1659470146;
+        bh=peWWzehbf3IqEKCxVqXKq+x7rnMhBy0XuoXBw32BqhY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=gKnUVA6T53A+zKuxotZrppQbDFgusMgjj3GmR2Qo57NEKyv5oVQLpPjkE+qGvW+xl
+         ySO/W1xl5ZyoShzLwWIaOkq/SKGEHuAp93JNlHoToveZmM5mga8VRUKujCkk3pxAfq
+         XCruKTAF6+cH06/oI0RqCuG8gWdjkiCXtzphRI9zFmE7f5x+9Mqqw2KiA/Yz13gQAW
+         OelJETWaqiI+NmP5MguVbayOJLlHidqlyPS9HyGuiIeaR86U4W2ZbgaH+LsY+me6iQ
+         r1BNi/Yqraju1rywywqrA64JNpuHHAU79KwiLG1Yi82r1Sdq2+vr4im9hLPzkxlI9y
+         H0nFGsQqCIoKg==
+Date:   Tue, 2 Aug 2022 12:55:44 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] fsverity update for 5.20
+Message-ID: <YumBQPF6U9b6wGV9@sol.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9bfbf3b43d2c2663d2e3f196810288fd83c0b52e.1659031503.git.boris@bur.io>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_SOFTFAIL
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, Jul 28, 2022 at 11:11:42AM -0700, Boris Burkov wrote:
-> --- a/fs/btrfs/send.h
-> +++ b/fs/btrfs/send.h
-> @@ -92,8 +92,11 @@ enum btrfs_send_cmd {
->  	BTRFS_SEND_C_ENCODED_WRITE	= 25,
->  	BTRFS_SEND_C_MAX_V2		= 25,
->  
-> +	/* Version 3 */
-> +	BTRFS_SEND_C_ENABLE_VERITY	= 26,
+The following changes since commit 32346491ddf24599decca06190ebca03ff9de7f8:
 
-Regarding the name, same name for ioctl and command is a good idea, for
-potential future verity extensions we could add more and having plain
-'VERITY' would not be ideal. The other ioctl is 'measure', so I thought
-of something like consistency check during the stream, "verify this
-file before continuing".
+  Linux 5.19-rc6 (2022-07-10 14:40:51 -0700)
 
-The command names are either imperative or descriptive, so alternative
-name could be VERITY_RECORD or VERITY_DESC that matches the data stored,
-the BTRFS_VERITY_DESC_ITEM_KEY .
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fsverity-for-linus
+
+for you to fetch changes up to 8da572c52a9be6d006bae290339c629fc6501910:
+
+  fs-verity: mention btrfs support (2022-07-15 23:42:30 -0700)
+
+----------------------------------------------------------------
+
+Just a small documentation update to mention the btrfs support.
+
+----------------------------------------------------------------
+Eric Biggers (1):
+      fs-verity: mention btrfs support
+
+ Documentation/filesystems/fsverity.rst | 53 +++++++++++++++++++---------------
+ fs/verity/Kconfig                      | 10 +++----
+ 2 files changed, 35 insertions(+), 28 deletions(-)
