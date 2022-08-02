@@ -2,48 +2,56 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2759A58832B
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  2 Aug 2022 22:41:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D7A4588449
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  3 Aug 2022 00:31:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234970AbiHBUlt (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 2 Aug 2022 16:41:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42976 "EHLO
+        id S235064AbiHBW31 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 2 Aug 2022 18:29:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234628AbiHBUls (ORCPT
+        with ESMTP id S236146AbiHBW3X (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 2 Aug 2022 16:41:48 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D51D32FFE6;
-        Tue,  2 Aug 2022 13:41:46 -0700 (PDT)
+        Tue, 2 Aug 2022 18:29:23 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9DC854CA0;
+        Tue,  2 Aug 2022 15:29:21 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6DDC060B70;
-        Tue,  2 Aug 2022 20:41:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2FBFC433C1;
-        Tue,  2 Aug 2022 20:41:45 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 8EDDEB81F3A;
+        Tue,  2 Aug 2022 22:29:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5DFA0C433B5;
+        Tue,  2 Aug 2022 22:29:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1659472905;
-        bh=0l2K0CE8QJGS0iXPuakUsFEqB72QGZ4Z2VYml0BZsvg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=li6QEsKRRvggALntxwfM4iyJXnWYGTPWh7LyNqAROWSQWsIdc8Y/1fWQdh1OM+Cet
-         dHrlqqvqJ1VshSXONMHTd3rX/t0RIeXvSckNHPojGcXTukHFf7yAQE7QVMgzWO6azI
-         0jrUnbHyq3v85KPMuhiSTaE4+0N5NsjAojsu/VvdCBzDCcr12MeOnBrmFURoteSEZs
-         AFHz+7dOUfP7yrFmYhNQ8EiSxdCLa5tROugF9+GMoZQ8VF8atLOdCyXK7szSBW9KUG
-         Yv2oIW/wodUC6wSx0zFBA3TjmXzNtZPcNTNQVjC/RuOfVuZDdSdzzPEtkfKbf5gb1U
-         tWFRfIFPLaFpg==
-Date:   Tue, 2 Aug 2022 13:41:44 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Boris Burkov <boris@bur.io>
-Cc:     linux-fscrypt@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH v2] btrfs-progs: receive: add support for fs-verity
-Message-ID: <YumMCGlxNWCV/k9G@sol.localdomain>
-References: <e4789647b76c8b45c95256deed1cba583993b8b1.1659031931.git.boris@bur.io>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e4789647b76c8b45c95256deed1cba583993b8b1.1659031931.git.boris@bur.io>
+        s=k20201202; t=1659479359;
+        bh=6k3OatMgPbFy7xQbQpUf56CUoLQuCPMnWjRX91wl4Bw=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=n2w4HuXyBe8fZe07vE4TDtpKnfj3DsgskRWnCzbhwday1qkjpBS45Ixv6tN5375pv
+         1ev0d/Zr6KKCueIGVlWvwW/+nqd5xS1M09dLOwepoxEPiAOnbkzDusJwUIYofnKmiu
+         8MGDREf1A6lELK1nw64CaBqnVPWnbqZn29PUNVZ3Pc44SdOFKRMkLrbC+n6NffeBsg
+         418xyK5UgeV7KfWfFY8rxIbMM06alNCvABHisqCysB/3Y2WVT2TJGVqQtEV5Ul3wXa
+         2KIcvwN9+NRbL/BBnbFBjFERSVk90vbSdtMrat2a/rnRsQNOBiYYRwNwLIAxZd4QWw
+         6P/MdoQ+BY38Q==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 40B8CC43140;
+        Tue,  2 Aug 2022 22:29:19 +0000 (UTC)
+Subject: Re: [GIT PULL] fsverity update for 5.20
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YumBQPF6U9b6wGV9@sol.localdomain>
+References: <YumBQPF6U9b6wGV9@sol.localdomain>
+X-PR-Tracked-List-Id: <linux-fscrypt.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YumBQPF6U9b6wGV9@sol.localdomain>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fsverity-for-linus
+X-PR-Tracked-Commit-Id: 8da572c52a9be6d006bae290339c629fc6501910
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 569bede0cff5e98c0f862d486406b79dcada8eea
+Message-Id: <165947935925.5634.14595000911581676087.pr-tracker-bot@kernel.org>
+Date:   Tue, 02 Aug 2022 22:29:19 +0000
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -53,40 +61,15 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, Jul 28, 2022 at 11:14:35AM -0700, Boris Burkov wrote:
-> +static int process_enable_verity(const char *path, u8 algorithm, u32 block_size,
-> +				 int salt_len, char *salt,
-> +				 int sig_len, char *sig, void *user)
-> +{
-> +	int ret;
-> +	struct btrfs_receive *rctx = user;
-> +	char full_path[PATH_MAX];
-> +	struct fsverity_enable_arg verity_args = {
-> +		.version = 1,
-> +		.hash_algorithm = algorithm,
-> +		.block_size = block_size,
-> +	};
-> +	if (salt_len) {
-> +		verity_args.salt_size = salt_len;
-> +		verity_args.salt_ptr = (__u64)salt;
-> +	}
-> +	if (sig_len) {
-> +		verity_args.sig_size = sig_len;
-> +		verity_args.sig_ptr = (__u64)sig;
-> +	}
+The pull request you sent on Tue, 2 Aug 2022 12:55:44 -0700:
 
-Casting a pointer to a __u64 needs to be done using (__u64)(uintptr_t),
-otherwise it will cause a warning on 32-bit platforms.
+> https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fsverity-for-linus
 
-> +	/*
-> +	 * Enabling verity denies write access, so it cannot be done with an
-> +	 * open writeable file descriptor.
-> +	 */
-> +	close_inode_for_write(rctx);
-> +	ret = ioctl(ioctl_fd, FS_IOC_ENABLE_VERITY, &verity_args);
-> +	if (ret < 0)
-> +		fprintf(stderr, "Failed to enable verity on %s: %d\n", full_path, ret);
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/569bede0cff5e98c0f862d486406b79dcada8eea
 
-Errors from ioctl() are returned in errno, not in the return value.
+Thank you!
 
-- Eric
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
