@@ -2,66 +2,64 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88DB558947B
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  4 Aug 2022 00:41:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AC7958947F
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  4 Aug 2022 00:42:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236179AbiHCWlq (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 3 Aug 2022 18:41:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60988 "EHLO
+        id S238079AbiHCWmn (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 3 Aug 2022 18:42:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237699AbiHCWlq (ORCPT
+        with ESMTP id S229579AbiHCWmn (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 3 Aug 2022 18:41:46 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6D5317053
-        for <linux-fscrypt@vger.kernel.org>; Wed,  3 Aug 2022 15:41:44 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 137-20020a250b8f000000b0067a5a14d730so3924832ybl.12
-        for <linux-fscrypt@vger.kernel.org>; Wed, 03 Aug 2022 15:41:44 -0700 (PDT)
+        Wed, 3 Aug 2022 18:42:43 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53C7B17A95
+        for <linux-fscrypt@vger.kernel.org>; Wed,  3 Aug 2022 15:42:42 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id r14so20405472ljp.2
+        for <linux-fscrypt@vger.kernel.org>; Wed, 03 Aug 2022 15:42:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:from:to:cc;
-        bh=N1kHtACpfgmsbMFbEUNB8TGQc2yWFjE8j4fZSVbhCbA=;
-        b=MYrQDEJkJpZU+64tomnIuv6c0l5NBVa4NisQFtD0FqrneE7DihqpSyhx3e69gR2spk
-         yu16ySBifm6pZ9bvYhHzXSCTHVjQsU1npqW5lKfTAvzk6EvnEMUe6SEkNnFBTHFUKaaW
-         M2z8tV0SFYGf8uh5Ct4PtuuY6Ag+RkI0gmOFzdz9UzPsraYLR3UiY1qdK/SDGlXLBsKO
-         f6ss/UyFcMGNDIow2xA2+F5B0f6CsWysuk/usIHIfrAhWnVmo77rflZwxF1vJR51Yc+e
-         2OPAAIIuJN1sQZN9rQ8oVOpmVfsObaa6RsMPoFEYMoTdPtwiO6+2UFE6xhJllMfIeq2r
-         RI0Q==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=ZTC8pqnrrWrVXkLaGQrW0Mi6fvjHzMsYZgeoNR5c7Xk=;
+        b=ghCsBaGRN7NASruqI7lhfwUTZQUCbOzpvP8io/1rI0/bMsZmbloWcYtD7n7/IfiYPB
+         BUbObP8qhUbzu49ghHR0xHoq3F9nd7GUDpzyqDashy2AIrpo2tYEiDITExdqgn5RyAKD
+         NGcGKnicjt5zWuZs0tC3Ym5fAa28sR2pKCIYCKrPzRGF1hJxe82I0sxhO3wcXDLxsvMk
+         gDRzpxXz99Kh+U2XQW4kEEAEnO1jWe1osi/USnt08aGB0tVlXpEM8EwEs4FKAfdPMN3O
+         F4u0x9Q816EVOoMyC3vSU6fnPQkAjHSvKPBSeqzp+DbMZRxvy1Dtk0ezi8tuVnJbI2ly
+         Qy9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:x-gm-message-state:from:to:cc;
-        bh=N1kHtACpfgmsbMFbEUNB8TGQc2yWFjE8j4fZSVbhCbA=;
-        b=GFcfrykGh4Ewua5FvQVr/e9FBsoA9bWx6EUMyOVl/vLflYv5zd/1IHhc6G+OtEB9hb
-         eyXaX9BrGYEJ5CA4mBsc1aXYaIpR/DlCx5flTVxPtXMbW8QpMoPpO1xlGyGR+M5NiMGY
-         TgmD4S5kLHI9I/tsoAUwOGoqlkhWUxPlj2GeCLs15hiR+ar9bG26kCif6ox4Oi2vNZe3
-         zHMu6LmyP7G+HjpNeD4ZO4VCJIkDlsmKxP+mo4YOOpCaSxqrOWRgZ/fH0+L9TsJQT3AZ
-         N+Jt/NGB/DCUzgLjG+920YetbVtzmOr6woURQbYu8CPGcXar4ypgMlCmukF68tItqfps
-         ENcg==
-X-Gm-Message-State: ACgBeo3rnYYKRvx08ErutwHX04JLb1m+GTHtnQo6HKji7++QGCuJiqvX
-        HN5pGhSODe+GvgjzZf+6eK0NwSivFQ==
-X-Google-Smtp-Source: AA6agR7E6hUXf8P/U7i8yZUhvHwZv/Giuv/zoxarwEYqz75rqExVfFJKDJXfw4ISTo4hI2YfKgc78Q7zbQ==
-X-Received: from nhuck.c.googlers.com ([fda3:e722:ac3:cc00:14:4d90:c0a8:39cc])
- (user=nhuck job=sendgmr) by 2002:a0d:fcc7:0:b0:324:5b7b:5de6 with SMTP id
- m190-20020a0dfcc7000000b003245b7b5de6mr23086899ywf.506.1659566504273; Wed, 03
- Aug 2022 15:41:44 -0700 (PDT)
-Date:   Wed,  3 Aug 2022 15:41:21 -0700
-In-Reply-To: <20220803224121.420705-1-nhuck@google.com>
-Message-Id: <20220803224121.420705-3-nhuck@google.com>
-Mime-Version: 1.0
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=ZTC8pqnrrWrVXkLaGQrW0Mi6fvjHzMsYZgeoNR5c7Xk=;
+        b=htx/hiirOQsgd824nVu5kLH5tZS1Z6I9Aq6OC74q56A86/PGcjhA1Zn+p/KOSSn8bv
+         ye97DAgmbPJZSkskEp5b4qj18DINcPG4h57IpRY+rfWaQr+LMtwnpmMkSiPlTuwRCHjZ
+         aPiMR1u5Jwm0777qMrymQ7PWZKvlLtYllL4hRaKdlOIzRb5uNZieJtMB5p9KA02xUBe1
+         P5I61I0jxvCAwfjrdd7smdX/jn99lEROyo68JFEOWy47rLHcQpEcdN5WlxbHdQVzlP6y
+         C9Szab4pl9m/KyRzn/kAYH9Cz6BZGCho9RnBI3yr5PDGRbKOu7vk+FMHrssSPsKsmtYK
+         1UYA==
+X-Gm-Message-State: AJIora+lL6h0/FGvovRHGgJUAtRiUcCQYjYhEn9m+ryXxI/hdPSA18Ye
+        RQsjBf7bZ5QtRZHohEufBumTY7m26STDytvjurvJ8g==
+X-Google-Smtp-Source: AGRyM1sS3D+36i3ULxDy7oZWSbBf1r5kMqPnKHsEckihriqkGQmKe5vFAmu6KuyMr4ohPwCQKTi2L0a6MEK3kCTGrxg=
+X-Received: by 2002:a2e:9444:0:b0:25d:91c1:caa3 with SMTP id
+ o4-20020a2e9444000000b0025d91c1caa3mr9029485ljh.190.1659566560588; Wed, 03
+ Aug 2022 15:42:40 -0700 (PDT)
+MIME-Version: 1.0
 References: <20220803224121.420705-1-nhuck@google.com>
-X-Mailer: git-send-email 2.37.1.455.g008518b4e5-goog
-Subject: [PATCH v5 2/2] generic: add tests for fscrypt policies with HCTR2
+In-Reply-To: <20220803224121.420705-1-nhuck@google.com>
 From:   Nathan Huckleberry <nhuck@google.com>
+Date:   Wed, 3 Aug 2022 15:42:29 -0700
+Message-ID: <CAJkfWY7kJDqBzqnGD_X4vVKZc3tfnDShC=AbFOjyra+8o1shvw@mail.gmail.com>
+Subject: Re: [PATCH v5 0/2] generic: test HCTR2 filename encryption
 To:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org
 Cc:     Eric Biggers <ebiggers@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Nathan Huckleberry <nhuck@google.com>
+        Sami Tolvanen <samitolvanen@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,79 +67,53 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-This patch adds fscrypt policy tests for filename encryption using
-HCTR2.
+On Wed, Aug 3, 2022 at 3:41 PM Nathan Huckleberry <nhuck@google.com> wrote:
+>
+> This patchset is not intended to be accepted yet.  It is reliant on HCTR2
+> support in the kernel which has not yet been accepted.  See the HCTR2 patchset
+> here: https://lore.kernel.org/all/20220520181501.2159644-1-nhuck@google.com/
 
-More information on HCTR2 can be found here: "Length-preserving
-encryption with HCTR2" https://ia.cr/2021/1441
+Oops, I need to remove this.
 
-Signed-off-by: Nathan Huckleberry <nhuck@google.com>
----
- tests/generic/900     | 31 +++++++++++++++++++++++++++++++
- tests/generic/900.out | 16 ++++++++++++++++
- 2 files changed, 47 insertions(+)
- create mode 100755 tests/generic/900
- create mode 100644 tests/generic/900.out
-
-diff --git a/tests/generic/900 b/tests/generic/900
-new file mode 100755
-index 00000000..1ff7c512
---- /dev/null
-+++ b/tests/generic/900
-@@ -0,0 +1,31 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright 2022 Google LLC
-+#
-+# FS QA Test No. generic/900
-+#
-+# Verify ciphertext for v2 encryption policies that use AES-256-XTS to encrypt
-+# file contents and AES-256-HCTR2 to encrypt file names.
-+#
-+# HCTR2 was introduced in kernel commit 6b2a51ff03bf ("fscrypt: Add HCTR2
-+# support for filename encryption")
-+#
-+. ./common/preamble
-+_begin_fstest auto quick encrypt
-+
-+# Import common functions.
-+. ./common/filter
-+. ./common/encrypt
-+
-+# real QA test starts here
-+_supported_fs generic
-+
-+_verify_ciphertext_for_encryption_policy AES-256-XTS AES-256-HCTR2 v2
-+_verify_ciphertext_for_encryption_policy AES-256-XTS AES-256-HCTR2 \
-+	v2 iv_ino_lblk_32
-+_verify_ciphertext_for_encryption_policy AES-256-XTS AES-256-HCTR2 \
-+	v2 iv_ino_lblk_64
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/generic/900.out b/tests/generic/900.out
-new file mode 100644
-index 00000000..a87c80b3
---- /dev/null
-+++ b/tests/generic/900.out
-@@ -0,0 +1,16 @@
-+QA output created by 900
-+
-+Verifying ciphertext with parameters:
-+	contents_encryption_mode: AES-256-XTS
-+	filenames_encryption_mode: AES-256-HCTR2
-+	options: v2
-+
-+Verifying ciphertext with parameters:
-+	contents_encryption_mode: AES-256-XTS
-+	filenames_encryption_mode: AES-256-HCTR2
-+	options: v2 iv_ino_lblk_32
-+
-+Verifying ciphertext with parameters:
-+	contents_encryption_mode: AES-256-XTS
-+	filenames_encryption_mode: AES-256-HCTR2
-+	options: v2 iv_ino_lblk_64
--- 
-2.37.1.455.g008518b4e5-goog
-
+>
+> HCTR2 is a new wide-block encryption mode that can used for filename encryption
+> in fscrypt.  This patchset adds a reference implementation of HCTR2 to the
+> fscrypt testing utility and adds tests for filename encryption with HCTR2.
+>
+> More information on HCTR2 can be found here: "Length-preserving encryption with
+> HCTR2": https://ia.cr/2021/1441
+>
+> Changes in v5:
+> * Added links to relevant references for POLYVAL and HCTR2
+> * Removed POLYVAL partial block handling
+> * Referenced HCTR2 commit in test
+>
+> Changes in v4:
+> * Add helper functions for HCTR2 hashing
+> * Fix accumulator alignment bug
+> * Small style fixes
+>
+> Changes in v3:
+> * Consolidate tests into one file
+>
+> Changes in v2:
+> * Use POLYVAL multiplication directly instead of using GHASH trick
+> * Split reference implementation and tests into two patches
+> * Remove v1 policy tests
+> * Various small style fixes
+>
+> Nathan Huckleberry (2):
+>   fscrypt-crypt-util: add HCTR2 implementation
+>   generic: add tests for fscrypt policies with HCTR2
+>
+>  common/encrypt           |   2 +
+>  src/fscrypt-crypt-util.c | 358 ++++++++++++++++++++++++++++++++-------
+>  tests/generic/900        |  31 ++++
+>  tests/generic/900.out    |  16 ++
+>  4 files changed, 350 insertions(+), 57 deletions(-)
+>  create mode 100755 tests/generic/900
+>  create mode 100644 tests/generic/900.out
+>
+> --
+> 2.37.1.455.g008518b4e5-goog
+>
