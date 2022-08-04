@@ -2,118 +2,151 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AC7958947F
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  4 Aug 2022 00:42:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01B87589D7B
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  4 Aug 2022 16:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238079AbiHCWmn (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 3 Aug 2022 18:42:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33248 "EHLO
+        id S233108AbiHDOaT (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 4 Aug 2022 10:30:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbiHCWmn (ORCPT
+        with ESMTP id S229988AbiHDOaR (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 3 Aug 2022 18:42:43 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53C7B17A95
-        for <linux-fscrypt@vger.kernel.org>; Wed,  3 Aug 2022 15:42:42 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id r14so20405472ljp.2
-        for <linux-fscrypt@vger.kernel.org>; Wed, 03 Aug 2022 15:42:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=ZTC8pqnrrWrVXkLaGQrW0Mi6fvjHzMsYZgeoNR5c7Xk=;
-        b=ghCsBaGRN7NASruqI7lhfwUTZQUCbOzpvP8io/1rI0/bMsZmbloWcYtD7n7/IfiYPB
-         BUbObP8qhUbzu49ghHR0xHoq3F9nd7GUDpzyqDashy2AIrpo2tYEiDITExdqgn5RyAKD
-         NGcGKnicjt5zWuZs0tC3Ym5fAa28sR2pKCIYCKrPzRGF1hJxe82I0sxhO3wcXDLxsvMk
-         gDRzpxXz99Kh+U2XQW4kEEAEnO1jWe1osi/USnt08aGB0tVlXpEM8EwEs4FKAfdPMN3O
-         F4u0x9Q816EVOoMyC3vSU6fnPQkAjHSvKPBSeqzp+DbMZRxvy1Dtk0ezi8tuVnJbI2ly
-         Qy9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=ZTC8pqnrrWrVXkLaGQrW0Mi6fvjHzMsYZgeoNR5c7Xk=;
-        b=htx/hiirOQsgd824nVu5kLH5tZS1Z6I9Aq6OC74q56A86/PGcjhA1Zn+p/KOSSn8bv
-         ye97DAgmbPJZSkskEp5b4qj18DINcPG4h57IpRY+rfWaQr+LMtwnpmMkSiPlTuwRCHjZ
-         aPiMR1u5Jwm0777qMrymQ7PWZKvlLtYllL4hRaKdlOIzRb5uNZieJtMB5p9KA02xUBe1
-         P5I61I0jxvCAwfjrdd7smdX/jn99lEROyo68JFEOWy47rLHcQpEcdN5WlxbHdQVzlP6y
-         C9Szab4pl9m/KyRzn/kAYH9Cz6BZGCho9RnBI3yr5PDGRbKOu7vk+FMHrssSPsKsmtYK
-         1UYA==
-X-Gm-Message-State: AJIora+lL6h0/FGvovRHGgJUAtRiUcCQYjYhEn9m+ryXxI/hdPSA18Ye
-        RQsjBf7bZ5QtRZHohEufBumTY7m26STDytvjurvJ8g==
-X-Google-Smtp-Source: AGRyM1sS3D+36i3ULxDy7oZWSbBf1r5kMqPnKHsEckihriqkGQmKe5vFAmu6KuyMr4ohPwCQKTi2L0a6MEK3kCTGrxg=
-X-Received: by 2002:a2e:9444:0:b0:25d:91c1:caa3 with SMTP id
- o4-20020a2e9444000000b0025d91c1caa3mr9029485ljh.190.1659566560588; Wed, 03
- Aug 2022 15:42:40 -0700 (PDT)
+        Thu, 4 Aug 2022 10:30:17 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34572DAB;
+        Thu,  4 Aug 2022 07:30:16 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id CD79E3411D;
+        Thu,  4 Aug 2022 14:30:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1659623414;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0GxlzLl5N/q4v62y+5BJb9ld2PxnwSUsfvZNFvra8Uw=;
+        b=oCsZpV76HzNHC+iamz1PSkriEMMZbqzf/Y+GeH4arjQeql/kCPquA5+OXariZMXuYJqC2Z
+        rc7UvnEoMWs+9ywDiU16Rmb/YnRbTNEojmTG7N9exB6ma5zRMxXjHNFafhUXwAXIHkmluZ
+        c1y/y5CFk183Z12ANmzszrWHEZ4mZlE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1659623414;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0GxlzLl5N/q4v62y+5BJb9ld2PxnwSUsfvZNFvra8Uw=;
+        b=uAhpHODDA2REa0EdoB7D8sSUU0zphBylmaR0hmZftxw3FtJscF+bNj9YhyoNcenLHJ6kV2
+        GK3eCzHhTKKHJ7BQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9575313A94;
+        Thu,  4 Aug 2022 14:30:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id qoyaI/bX62JzdwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 04 Aug 2022 14:30:14 +0000
+Date:   Thu, 4 Aug 2022 16:25:11 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Boris Burkov <boris@bur.io>, linux-fscrypt@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v3] btrfs: send: add support for fs-verity
+Message-ID: <20220804142511.GO13489@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Eric Biggers <ebiggers@kernel.org>,
+        Boris Burkov <boris@bur.io>, linux-fscrypt@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <7ac3a01572a872f8779f357598215e0e07d191bd.1659379913.git.boris@bur.io>
+ <YumLTcHPUL5M8rY8@sol.localdomain>
 MIME-Version: 1.0
-References: <20220803224121.420705-1-nhuck@google.com>
-In-Reply-To: <20220803224121.420705-1-nhuck@google.com>
-From:   Nathan Huckleberry <nhuck@google.com>
-Date:   Wed, 3 Aug 2022 15:42:29 -0700
-Message-ID: <CAJkfWY7kJDqBzqnGD_X4vVKZc3tfnDShC=AbFOjyra+8o1shvw@mail.gmail.com>
-Subject: Re: [PATCH v5 0/2] generic: test HCTR2 filename encryption
-To:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YumLTcHPUL5M8rY8@sol.localdomain>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_SOFTFAIL
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, Aug 3, 2022 at 3:41 PM Nathan Huckleberry <nhuck@google.com> wrote:
->
-> This patchset is not intended to be accepted yet.  It is reliant on HCTR2
-> support in the kernel which has not yet been accepted.  See the HCTR2 patchset
-> here: https://lore.kernel.org/all/20220520181501.2159644-1-nhuck@google.com/
+On Tue, Aug 02, 2022 at 01:38:37PM -0700, Eric Biggers wrote:
+> On Mon, Aug 01, 2022 at 11:54:40AM -0700, Boris Burkov wrote:
+> > +#ifdef CONFIG_FS_VERITY
+> > +static int send_verity(struct send_ctx *sctx, struct fs_path *path,
+> > +		       struct fsverity_descriptor *desc)
+> > +{
+> > +	int ret;
+> > +
+> > +	ret = begin_cmd(sctx, BTRFS_SEND_C_ENABLE_VERITY);
+> > +	if (ret < 0)
+> > +		goto out;
+> > +
+> > +	TLV_PUT_PATH(sctx, BTRFS_SEND_A_PATH, path);
+> > +	TLV_PUT_U8(sctx, BTRFS_SEND_A_VERITY_ALGORITHM, desc->hash_algorithm);
+> > +	TLV_PUT_U32(sctx, BTRFS_SEND_A_VERITY_BLOCK_SIZE, 1U << desc->log_blocksize);
+> > +	TLV_PUT(sctx, BTRFS_SEND_A_VERITY_SALT_DATA, desc->salt, desc->salt_size);
+> > +	TLV_PUT(sctx, BTRFS_SEND_A_VERITY_SIG_DATA, desc->signature, (int)desc->sig_size);
+> 
+> le32_to_cpu(desc->sig_size)
 
-Oops, I need to remove this.
+Don't all the members of desc need the le/cpu helpers? The whole
+structure is read from disk directly to the memory buffer, there's no
+conversion to a cpu-native order structure, so this must be done when
+the members are accessed.
 
->
-> HCTR2 is a new wide-block encryption mode that can used for filename encryption
-> in fscrypt.  This patchset adds a reference implementation of HCTR2 to the
-> fscrypt testing utility and adds tests for filename encryption with HCTR2.
->
-> More information on HCTR2 can be found here: "Length-preserving encryption with
-> HCTR2": https://ia.cr/2021/1441
->
-> Changes in v5:
-> * Added links to relevant references for POLYVAL and HCTR2
-> * Removed POLYVAL partial block handling
-> * Referenced HCTR2 commit in test
->
-> Changes in v4:
-> * Add helper functions for HCTR2 hashing
-> * Fix accumulator alignment bug
-> * Small style fixes
->
-> Changes in v3:
-> * Consolidate tests into one file
->
-> Changes in v2:
-> * Use POLYVAL multiplication directly instead of using GHASH trick
-> * Split reference implementation and tests into two patches
-> * Remove v1 policy tests
-> * Various small style fixes
->
-> Nathan Huckleberry (2):
->   fscrypt-crypt-util: add HCTR2 implementation
->   generic: add tests for fscrypt policies with HCTR2
->
->  common/encrypt           |   2 +
->  src/fscrypt-crypt-util.c | 358 ++++++++++++++++++++++++++++++++-------
->  tests/generic/900        |  31 ++++
->  tests/generic/900.out    |  16 ++
->  4 files changed, 350 insertions(+), 57 deletions(-)
->  create mode 100755 tests/generic/900
->  create mode 100644 tests/generic/900.out
->
-> --
-> 2.37.1.455.g008518b4e5-goog
->
+While the first four are of type __u8 so there's no endianness
+conversion needed, I'd rather do it for clarity that the structure needs
+special handling.
+
+> > +	ret = send_cmd(sctx);
+> > +
+> > +tlv_put_failure:
+> > +out:
+> > +	return ret;
+> > +}
+> 
+> The 'out' label is unnecessary.
+
+It's a common pattern in send callbacks to have out: label next to
+tlv_put_failure.
+
+> > +static int process_new_verity(struct send_ctx *sctx)
+> 
+> What does "new verity" mean in this context?  The other functions called by
+> finish_inode_if_needed() have names like send_chown(), send_chmod(), etc., so
+> this name seems inconsistent (although I'm not familiar with this code).
+
+Yeah I think process_verity or process_verity_desc will be better.
+
+> > +	ret = send_verity(sctx, p, sctx->verity_descriptor);
+> > +	if (ret < 0)
+> > +		goto free_path;
+> > +
+> > +free_path:
+> > +	fs_path_free(p);
+> 
+> The goto above is unnecessary.
+> 
+> > +static int process_new_verity(struct send_ctx *sctx)
+> > +{
+> > +	int ret = 0;
+> > +	struct send_ctx tmp;
+> > +
+> > +	return -EPERM;
+> > +	/* avoid unused TLV_PUT_U8 build warning without CONFIG_FS_VERITY */
+> > +	TLV_PUT_U8(&tmp, 0, 0);
+> > +tlv_put_failure:
+> > +	return -EPERM;
+> > +}
+> > +#endif
+> 
+> How about adding __maybe_unused to tlv_put_u##bits instead?
+
+Or it could use U16 or U32 type, it's not strictly necessary to use the
+same type width as the in-memory structures.
