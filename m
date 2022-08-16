@@ -2,52 +2,52 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DECC59525F
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 16 Aug 2022 08:11:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27180595841
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 16 Aug 2022 12:31:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbiHPGKc (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 16 Aug 2022 02:10:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33374 "EHLO
+        id S234636AbiHPK3h (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 16 Aug 2022 06:29:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229920AbiHPGKG (ORCPT
+        with ESMTP id S234402AbiHPK3A (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 16 Aug 2022 02:10:06 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA5513033FD;
-        Mon, 15 Aug 2022 16:51:46 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 48FC7B81255;
-        Mon, 15 Aug 2022 23:51:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C91E7C433D7;
-        Mon, 15 Aug 2022 23:51:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660607504;
-        bh=a8xTPs/2obb/eI5tzoSm2LynkS751CkDAenZ2inY1tU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TIDHnT52CIC7iEoRDh4OsBduyAvii8R2t5iHMJnUWCflD0gCjFXWwCAThH671vGrJ
-         +yDQ2QL/YwTyA12ujc60vjetS4fsHf3ReLIall4qz/uUkY+RO2DK/nTRGSxQxVK8t2
-         u8iD0vDnfiKsAXSbVdQM9FyiKh0Dzn5TmNmcrwsQsBs/+ypC+PYyecyBsSMFDXKTYL
-         mJ+oLUEaSvIsD8SwjsFbd3PAnHlsWDfV38Z3CUA+eE6kNNWYGgiUL4gxXoa1CmcEe9
-         ZWuoWclyZPyA6+bV8IflYguDKeWZpH5hU9qRaxXQjgsFmxwaC1HjAFLVbM9InA2/Lc
-         tX8vuCaDFYYdg==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Matthew Wilcox <willy@infradead.org>
-Subject: [PATCH v2 2/2] fsverity: stop using PG_error to track error status
-Date:   Mon, 15 Aug 2022 16:50:52 -0700
-Message-Id: <20220815235052.86545-3-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.37.1
-In-Reply-To: <20220815235052.86545-1-ebiggers@kernel.org>
-References: <20220815235052.86545-1-ebiggers@kernel.org>
+        Tue, 16 Aug 2022 06:29:00 -0400
+Received: from mail104.syd.optusnet.com.au (mail104.syd.optusnet.com.au [211.29.132.246])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D01D65E309;
+        Tue, 16 Aug 2022 02:03:14 -0700 (PDT)
+Received: from dread.disaster.area (pa49-181-52-176.pa.nsw.optusnet.com.au [49.181.52.176])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 7B45B62D403;
+        Tue, 16 Aug 2022 19:03:13 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1oNsTg-00Dk22-Ca; Tue, 16 Aug 2022 19:03:12 +1000
+Date:   Tue, 16 Aug 2022 19:03:12 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-xfs@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>
+Subject: Re: [PATCH v4 6/9] f2fs: don't allow DIO reads but not DIO writes
+Message-ID: <20220816090312.GU3600936@dread.disaster.area>
+References: <20220722071228.146690-1-ebiggers@kernel.org>
+ <20220722071228.146690-7-ebiggers@kernel.org>
+ <YtyoF89iOg8gs7hj@google.com>
+ <Yt7dCcG0ns85QqJe@sol.localdomain>
+ <YuXyKh8Zvr56rR4R@google.com>
+ <YvrrEcw4E+rpDLwM@sol.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YvrrEcw4E+rpDLwM@sol.localdomain>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.4 cv=e9dl9Yl/ c=1 sm=1 tr=0 ts=62fb5d51
+        a=O3n/kZ8kT9QBBO3sWHYIyw==:117 a=O3n/kZ8kT9QBBO3sWHYIyw==:17
+        a=kj9zAlcOel0A:10 a=biHskzXt2R4A:10 a=1XWaLZrsAAAA:8 a=7-415B0cAAAA:8
+        a=0f_GdJSvYQN_4D2ffm4A:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,327 +55,72 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On Mon, Aug 15, 2022 at 05:55:45PM -0700, Eric Biggers wrote:
+> On Sat, Jul 30, 2022 at 08:08:26PM -0700, Jaegeuk Kim wrote:
+> > On 07/25, Eric Biggers wrote:
+> > > On Sat, Jul 23, 2022 at 07:01:59PM -0700, Jaegeuk Kim wrote:
+> > > > On 07/22, Eric Biggers wrote:
+> > > > > From: Eric Biggers <ebiggers@google.com>
+> > > > > 
+> > > > > Currently, if an f2fs filesystem is mounted with the mode=lfs and
+> > > > > io_bits mount options, DIO reads are allowed but DIO writes are not.
+> > > > > Allowing DIO reads but not DIO writes is an unusual restriction, which
+> > > > > is likely to be surprising to applications, namely any application that
+> > > > > both reads and writes from a file (using O_DIRECT).  This behavior is
+> > > > > also incompatible with the proposed STATX_DIOALIGN extension to statx.
+> > > > > Given this, let's drop the support for DIO reads in this configuration.
+> > > > 
+> > > > IIRC, we allowed DIO reads since applications complained a lower performance.
+> > > > So, I'm afraid this change will make another confusion to users. Could
+> > > > you please apply the new bahavior only for STATX_DIOALIGN?
+> > > > 
+> > > 
+> > > Well, the issue is that the proposed STATX_DIOALIGN fields cannot represent this
+> > > weird case where DIO reads are allowed but not DIO writes.  So the question is
+> > > whether this case actually matters, in which case we should make STATX_DIOALIGN
+> > > distinguish between DIO reads and DIO writes, or whether it's some odd edge case
+> > > that doesn't really matter, in which case we could just fix it or make
+> > > STATX_DIOALIGN report that DIO is unsupported.  I was hoping that you had some
+> > > insight here.  What sort of applications want DIO reads but not DIO writes?
+> > > Is this common at all?
+> > 
+> > I think there's no specific application to use the LFS mode at this
+> > moment, but I'd like to allow DIO read for zoned device which will be
+> > used for Android devices.
+> > 
+> 
+> So if the zoned device feature becomes widely adopted, then STATX_DIOALIGN will
+> be useless on all Android devices?  That sounds undesirable.  Are you sure that
+> supporting DIO reads but not DIO writes actually works?  Does it not cause
+> problems for existing applications?
 
-As a step towards freeing the PG_error flag for other uses, change ext4
-and f2fs to stop using PG_error to track verity errors.  Instead, if a
-verity error occurs, just mark the whole bio as failed.  The coarser
-granularity isn't really a problem since it isn't any worse than what
-the block layer provides, and errors from a multi-page readahead aren't
-reported to applications unless a single-page read fails too.
+What purpose does DIO in only one direction actually serve? All it
+means is that we're forcibly mixing buffered and direct IO to the
+same file and that simply never ends well from a data coherency POV.
 
-f2fs supports compression, which makes the f2fs changes a bit more
-complicated than desired, but the basic premise still works.
+Hence I'd suggest that mixing DIO reads and buffered writes like
+this ends up exposing uses to the worst of both worlds - all of the
+problems with none of the benefits...
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/ext4/readpage.c |  8 ++----
- fs/f2fs/compress.c | 64 ++++++++++++++++++++++------------------------
- fs/f2fs/data.c     | 52 ++++++++++++++++++++-----------------
- fs/verity/verify.c | 12 ++++-----
- 4 files changed, 68 insertions(+), 68 deletions(-)
+> What we need to do is make a decision about whether this means we should build
+> in a stx_dio_direction field (indicating no support / readonly support /
+> writeonly support / readwrite support) into the API from the beginning.  If we
+> don't do that, then I don't think we could simply add such a field later, as the
+> statx_dio_*_align fields will have already been assigned their meaning.  I think
+> we'd instead have to "duplicate" the API, with STATX_DIOROALIGN and
+> statx_dio_ro_*_align fields.  That seems uglier than building a directional
+> indicator into the API from the beginning.  On the other hand, requiring all
+> programs to check stx_dio_direction would add complexity to using the API.
+> 
+> Any thoughts on this?
 
-diff --git a/fs/ext4/readpage.c b/fs/ext4/readpage.c
-index 5ce4706f68a7c6..e604ea4e102b71 100644
---- a/fs/ext4/readpage.c
-+++ b/fs/ext4/readpage.c
-@@ -75,14 +75,10 @@ static void __read_end_io(struct bio *bio)
- 	bio_for_each_segment_all(bv, bio, iter_all) {
- 		page = bv->bv_page;
- 
--		/* PG_error was set if any post_read step failed */
--		if (bio->bi_status || PageError(page)) {
-+		if (bio->bi_status)
- 			ClearPageUptodate(page);
--			/* will re-read again later */
--			ClearPageError(page);
--		} else {
-+		else
- 			SetPageUptodate(page);
--		}
- 		unlock_page(page);
- 	}
- 	if (bio->bi_private)
-diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index 70e97075e535e5..f54fb3bb74197a 100644
---- a/fs/f2fs/compress.c
-+++ b/fs/f2fs/compress.c
-@@ -1715,50 +1715,27 @@ static void f2fs_put_dic(struct decompress_io_ctx *dic, bool in_task)
- 	}
- }
- 
--/*
-- * Update and unlock the cluster's pagecache pages, and release the reference to
-- * the decompress_io_ctx that was being held for I/O completion.
-- */
--static void __f2fs_decompress_end_io(struct decompress_io_ctx *dic, bool failed,
--				bool in_task)
-+static void f2fs_verify_cluster(struct work_struct *work)
- {
-+	struct decompress_io_ctx *dic =
-+		container_of(work, struct decompress_io_ctx, verity_work);
- 	int i;
- 
-+	/* Verify, update, and unlock the decompressed pages. */
- 	for (i = 0; i < dic->cluster_size; i++) {
- 		struct page *rpage = dic->rpages[i];
- 
- 		if (!rpage)
- 			continue;
- 
--		/* PG_error was set if verity failed. */
--		if (failed || PageError(rpage)) {
--			ClearPageUptodate(rpage);
--			/* will re-read again later */
--			ClearPageError(rpage);
--		} else {
-+		if (fsverity_verify_page(rpage))
- 			SetPageUptodate(rpage);
--		}
-+		else
-+			ClearPageUptodate(rpage);
- 		unlock_page(rpage);
- 	}
- 
--	f2fs_put_dic(dic, in_task);
--}
--
--static void f2fs_verify_cluster(struct work_struct *work)
--{
--	struct decompress_io_ctx *dic =
--		container_of(work, struct decompress_io_ctx, verity_work);
--	int i;
--
--	/* Verify the cluster's decompressed pages with fs-verity. */
--	for (i = 0; i < dic->cluster_size; i++) {
--		struct page *rpage = dic->rpages[i];
--
--		if (rpage && !fsverity_verify_page(rpage))
--			SetPageError(rpage);
--	}
--
--	__f2fs_decompress_end_io(dic, false, true);
-+	f2fs_put_dic(dic, true);
- }
- 
- /*
-@@ -1768,6 +1745,8 @@ static void f2fs_verify_cluster(struct work_struct *work)
- void f2fs_decompress_end_io(struct decompress_io_ctx *dic, bool failed,
- 				bool in_task)
- {
-+	int i;
-+
- 	if (!failed && dic->need_verity) {
- 		/*
- 		 * Note that to avoid deadlocks, the verity work can't be done
-@@ -1777,9 +1756,28 @@ void f2fs_decompress_end_io(struct decompress_io_ctx *dic, bool failed,
- 		 */
- 		INIT_WORK(&dic->verity_work, f2fs_verify_cluster);
- 		fsverity_enqueue_verify_work(&dic->verity_work);
--	} else {
--		__f2fs_decompress_end_io(dic, failed, in_task);
-+		return;
-+	}
-+
-+	/* Update and unlock the cluster's pagecache pages. */
-+	for (i = 0; i < dic->cluster_size; i++) {
-+		struct page *rpage = dic->rpages[i];
-+
-+		if (!rpage)
-+			continue;
-+
-+		if (failed)
-+			ClearPageUptodate(rpage);
-+		else
-+			SetPageUptodate(rpage);
-+		unlock_page(rpage);
- 	}
-+
-+	/*
-+	 * Release the reference to the decompress_io_ctx that was being held
-+	 * for I/O completion.
-+	 */
-+	f2fs_put_dic(dic, in_task);
- }
- 
- /*
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index 93cc2ec51c2aeb..34af260975a2e6 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -119,34 +119,41 @@ struct bio_post_read_ctx {
- 	block_t fs_blkaddr;
- };
- 
--static void f2fs_finish_read_bio(struct bio *bio, bool in_task)
-+/*
-+ * Update and unlock a bio's pages, and free the bio.
-+ *
-+ * This marks pages up-to-date only if there was no error in the bio (I/O error,
-+ * decryption error, or verity error), as indicated by bio->bi_status.
-+ *
-+ * "Compressed pages" (pagecache pages backed by a compressed cluster on-disk)
-+ * aren't marked up-to-date here, as decompression is done on a per-compression-
-+ * cluster basis rather than a per-bio basis.  Instead, we only must do two
-+ * things for each compressed page here: call f2fs_end_read_compressed_page()
-+ * with failed=true if an error occurred before it would have normally gotten
-+ * called (i.e., I/O error or decryption error, but *not* verity error), and
-+ * release the bio's reference to the decompress_io_ctx of the page's cluster.
-+ */
-+static void f2fs_finish_read_bio(struct bio *bio, bool in_task,
-+				 bool fail_compressed)
- {
- 	struct bio_vec *bv;
- 	struct bvec_iter_all iter_all;
- 
--	/*
--	 * Update and unlock the bio's pagecache pages, and put the
--	 * decompression context for any compressed pages.
--	 */
- 	bio_for_each_segment_all(bv, bio, iter_all) {
- 		struct page *page = bv->bv_page;
- 
- 		if (f2fs_is_compressed_page(page)) {
--			if (bio->bi_status)
-+			if (fail_compressed)
- 				f2fs_end_read_compressed_page(page, true, 0,
- 							in_task);
- 			f2fs_put_page_dic(page, in_task);
- 			continue;
- 		}
- 
--		/* PG_error was set if verity failed. */
--		if (bio->bi_status || PageError(page)) {
-+		if (bio->bi_status)
- 			ClearPageUptodate(page);
--			/* will re-read again later */
--			ClearPageError(page);
--		} else {
-+		else
- 			SetPageUptodate(page);
--		}
- 		dec_page_count(F2FS_P_SB(page), __read_io_type(page));
- 		unlock_page(page);
- 	}
-@@ -185,14 +192,17 @@ static void f2fs_verify_bio(struct work_struct *work)
- 			struct page *page = bv->bv_page;
- 
- 			if (!f2fs_is_compressed_page(page) &&
--			    !fsverity_verify_page(page))
--				SetPageError(page);
-+			    !fsverity_verify_page(page)) {
-+				bio->bi_status = BLK_STS_IOERR;
-+				break;
-+			}
- 		}
- 	} else {
- 		fsverity_verify_bio(bio);
- 	}
- 
--	f2fs_finish_read_bio(bio, true);
-+	f2fs_finish_read_bio(bio, true /* in_task */,
-+			     false /* fail_compressed */);
- }
- 
- /*
-@@ -212,7 +222,7 @@ static void f2fs_verify_and_finish_bio(struct bio *bio, bool in_task)
- 		INIT_WORK(&ctx->work, f2fs_verify_bio);
- 		fsverity_enqueue_verify_work(&ctx->work);
- 	} else {
--		f2fs_finish_read_bio(bio, in_task);
-+		f2fs_finish_read_bio(bio, in_task, false /* fail_compressed */);
- 	}
- }
- 
-@@ -261,7 +271,8 @@ static void f2fs_post_read_work(struct work_struct *work)
- 	struct bio *bio = ctx->bio;
- 
- 	if ((ctx->enabled_steps & STEP_DECRYPT) && !fscrypt_decrypt_bio(bio)) {
--		f2fs_finish_read_bio(bio, true);
-+		f2fs_finish_read_bio(bio, true /* in_task */,
-+				     true /* fail_compressed */);
- 		return;
- 	}
- 
-@@ -286,7 +297,7 @@ static void f2fs_read_end_io(struct bio *bio)
- 	}
- 
- 	if (bio->bi_status) {
--		f2fs_finish_read_bio(bio, intask);
-+		f2fs_finish_read_bio(bio, intask, true /* fail_compressed */);
- 		return;
- 	}
- 
-@@ -1083,7 +1094,6 @@ static int f2fs_submit_page_read(struct inode *inode, struct page *page,
- 		bio_put(bio);
- 		return -EFAULT;
- 	}
--	ClearPageError(page);
- 	inc_page_count(sbi, F2FS_RD_DATA);
- 	f2fs_update_iostat(sbi, FS_DATA_READ_IO, F2FS_BLKSIZE);
- 	__submit_bio(sbi, bio, DATA);
-@@ -2125,7 +2135,6 @@ static int f2fs_read_single_page(struct inode *inode, struct page *page,
- 
- 	inc_page_count(F2FS_I_SB(inode), F2FS_RD_DATA);
- 	f2fs_update_iostat(F2FS_I_SB(inode), FS_DATA_READ_IO, F2FS_BLKSIZE);
--	ClearPageError(page);
- 	*last_block_in_bio = block_nr;
- 	goto out;
- out:
-@@ -2274,7 +2283,6 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
- 		inc_page_count(sbi, F2FS_RD_DATA);
- 		f2fs_update_iostat(sbi, FS_DATA_READ_IO, F2FS_BLKSIZE);
- 		f2fs_update_iostat(sbi, FS_CDATA_READ_IO, F2FS_BLKSIZE);
--		ClearPageError(page);
- 		*last_block_in_bio = blkaddr;
- 	}
- 
-@@ -2291,7 +2299,6 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
- 	for (i = 0; i < cc->cluster_size; i++) {
- 		if (cc->rpages[i]) {
- 			ClearPageUptodate(cc->rpages[i]);
--			ClearPageError(cc->rpages[i]);
- 			unlock_page(cc->rpages[i]);
- 		}
- 	}
-@@ -2388,7 +2395,6 @@ static int f2fs_mpage_readpages(struct inode *inode,
- #ifdef CONFIG_F2FS_FS_COMPRESSION
- set_error_page:
- #endif
--			SetPageError(page);
- 			zero_user_segment(page, 0, PAGE_SIZE);
- 			unlock_page(page);
- 		}
-diff --git a/fs/verity/verify.c b/fs/verity/verify.c
-index 14e2fb49cff561..556dfbd4698dea 100644
---- a/fs/verity/verify.c
-+++ b/fs/verity/verify.c
-@@ -210,9 +210,8 @@ EXPORT_SYMBOL_GPL(fsverity_verify_page);
-  * @bio: the bio to verify
-  *
-  * Verify a set of pages that have just been read from a verity file.  The pages
-- * must be pagecache pages that are still locked and not yet uptodate.  Pages
-- * that fail verification are set to the Error state.  Verification is skipped
-- * for pages already in the Error state, e.g. due to fscrypt decryption failure.
-+ * must be pagecache pages that are still locked and not yet uptodate.  If a
-+ * page fails verification, then bio->bi_status is set to an error status.
-  *
-  * This is a helper function for use by the ->readahead() method of filesystems
-  * that issue bios to read data directly into the page cache.  Filesystems that
-@@ -254,9 +253,10 @@ void fsverity_verify_bio(struct bio *bio)
- 		unsigned long level0_ra_pages =
- 			min(max_ra_pages, params->level0_blocks - level0_index);
- 
--		if (!PageError(page) &&
--		    !verify_page(inode, vi, req, page, level0_ra_pages))
--			SetPageError(page);
-+		if (!verify_page(inode, vi, req, page, level0_ra_pages)) {
-+			bio->bi_status = BLK_STS_IOERR;
-+			break;
-+		}
- 	}
- 
- 	fsverity_free_hash_request(params->hash_alg, req);
+Decide whether partial, single direction DIO serves a useful purpose
+before trying to work out what is needed in the API to indicate that
+this sort of crazy will be supported....
+
+Cheers,
+
+Dave.
 -- 
-2.37.1
-
+Dave Chinner
+david@fromorbit.com
