@@ -2,125 +2,90 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27180595841
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 16 Aug 2022 12:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D8265957B2
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 16 Aug 2022 12:11:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234636AbiHPK3h (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 16 Aug 2022 06:29:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51474 "EHLO
+        id S234352AbiHPKLv (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 16 Aug 2022 06:11:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234402AbiHPK3A (ORCPT
+        with ESMTP id S233909AbiHPKL0 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 16 Aug 2022 06:29:00 -0400
-Received: from mail104.syd.optusnet.com.au (mail104.syd.optusnet.com.au [211.29.132.246])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D01D65E309;
-        Tue, 16 Aug 2022 02:03:14 -0700 (PDT)
-Received: from dread.disaster.area (pa49-181-52-176.pa.nsw.optusnet.com.au [49.181.52.176])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 7B45B62D403;
-        Tue, 16 Aug 2022 19:03:13 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1oNsTg-00Dk22-Ca; Tue, 16 Aug 2022 19:03:12 +1000
-Date:   Tue, 16 Aug 2022 19:03:12 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Jaegeuk Kim <jaegeuk@kernel.org>, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-xfs@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>
-Subject: Re: [PATCH v4 6/9] f2fs: don't allow DIO reads but not DIO writes
-Message-ID: <20220816090312.GU3600936@dread.disaster.area>
-References: <20220722071228.146690-1-ebiggers@kernel.org>
- <20220722071228.146690-7-ebiggers@kernel.org>
- <YtyoF89iOg8gs7hj@google.com>
- <Yt7dCcG0ns85QqJe@sol.localdomain>
- <YuXyKh8Zvr56rR4R@google.com>
- <YvrrEcw4E+rpDLwM@sol.localdomain>
+        Tue, 16 Aug 2022 06:11:26 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3766A326D8;
+        Tue, 16 Aug 2022 02:10:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1660641054; x=1692177054;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ZtSrh9C0lgdgBWQ5yjV5+/6+DtYvBCZy2ZJIkPl3zfs=;
+  b=JwiXphuWRAuS6XfaV/viPJ2htJ2aM17O4OqNwOQP0rMcR+15BS04Bb+n
+   lqJKgtpdU4zrlO9qO9zzN9wspJgW96+Uwull9vKnSrgtJ6iIUBpKCi2Af
+   v8wDTuO/fkwBxTt1+Oaw4TKixMrR3y7GnakmBg7qjz1LUWCT6+87pwyuN
+   9UVIPB6CHPQSxRkUwT+CSZuNQJeIh3U+u4EyHqx7pb9yQJyTbziObF5BX
+   gO90vglUhEr6ywVt9ypzu0ZIZOg1zXstGXfWYBQXNFVWgsNb9P9XrQMgz
+   PuQpkTy5xX+NEOQeKoeGHJZ/Y9/2CdRcfmpPLNtiKFfWmhJ+1wfxENyZx
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10440"; a="275223216"
+X-IronPort-AV: E=Sophos;i="5.93,240,1654585200"; 
+   d="scan'208";a="275223216"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2022 02:10:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,240,1654585200"; 
+   d="scan'208";a="934830021"
+Received: from lkp-server02.sh.intel.com (HELO 3d2a4d02a2a9) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 16 Aug 2022 02:10:51 -0700
+Received: from kbuild by 3d2a4d02a2a9 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1oNsb5-0001fV-1J;
+        Tue, 16 Aug 2022 09:10:51 +0000
+Date:   Tue, 16 Aug 2022 17:09:53 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com, linux-fscrypt@vger.kernel.org
+Cc:     kbuild-all@lists.01.org
+Subject: Re: [PATCH v4] btrfs: send: add support for fs-verity
+Message-ID: <202208161755.1c2WmPnn-lkp@intel.com>
+References: <0561e8a33f991fa15053054b7b089d176fde6523.1660596577.git.boris@bur.io>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YvrrEcw4E+rpDLwM@sol.localdomain>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.4 cv=e9dl9Yl/ c=1 sm=1 tr=0 ts=62fb5d51
-        a=O3n/kZ8kT9QBBO3sWHYIyw==:117 a=O3n/kZ8kT9QBBO3sWHYIyw==:17
-        a=kj9zAlcOel0A:10 a=biHskzXt2R4A:10 a=1XWaLZrsAAAA:8 a=7-415B0cAAAA:8
-        a=0f_GdJSvYQN_4D2ffm4A:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <0561e8a33f991fa15053054b7b089d176fde6523.1660596577.git.boris@bur.io>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Aug 15, 2022 at 05:55:45PM -0700, Eric Biggers wrote:
-> On Sat, Jul 30, 2022 at 08:08:26PM -0700, Jaegeuk Kim wrote:
-> > On 07/25, Eric Biggers wrote:
-> > > On Sat, Jul 23, 2022 at 07:01:59PM -0700, Jaegeuk Kim wrote:
-> > > > On 07/22, Eric Biggers wrote:
-> > > > > From: Eric Biggers <ebiggers@google.com>
-> > > > > 
-> > > > > Currently, if an f2fs filesystem is mounted with the mode=lfs and
-> > > > > io_bits mount options, DIO reads are allowed but DIO writes are not.
-> > > > > Allowing DIO reads but not DIO writes is an unusual restriction, which
-> > > > > is likely to be surprising to applications, namely any application that
-> > > > > both reads and writes from a file (using O_DIRECT).  This behavior is
-> > > > > also incompatible with the proposed STATX_DIOALIGN extension to statx.
-> > > > > Given this, let's drop the support for DIO reads in this configuration.
-> > > > 
-> > > > IIRC, we allowed DIO reads since applications complained a lower performance.
-> > > > So, I'm afraid this change will make another confusion to users. Could
-> > > > you please apply the new bahavior only for STATX_DIOALIGN?
-> > > > 
-> > > 
-> > > Well, the issue is that the proposed STATX_DIOALIGN fields cannot represent this
-> > > weird case where DIO reads are allowed but not DIO writes.  So the question is
-> > > whether this case actually matters, in which case we should make STATX_DIOALIGN
-> > > distinguish between DIO reads and DIO writes, or whether it's some odd edge case
-> > > that doesn't really matter, in which case we could just fix it or make
-> > > STATX_DIOALIGN report that DIO is unsupported.  I was hoping that you had some
-> > > insight here.  What sort of applications want DIO reads but not DIO writes?
-> > > Is this common at all?
-> > 
-> > I think there's no specific application to use the LFS mode at this
-> > moment, but I'd like to allow DIO read for zoned device which will be
-> > used for Android devices.
-> > 
-> 
-> So if the zoned device feature becomes widely adopted, then STATX_DIOALIGN will
-> be useless on all Android devices?  That sounds undesirable.  Are you sure that
-> supporting DIO reads but not DIO writes actually works?  Does it not cause
-> problems for existing applications?
+Hi Boris,
 
-What purpose does DIO in only one direction actually serve? All it
-means is that we're forcibly mixing buffered and direct IO to the
-same file and that simply never ends well from a data coherency POV.
+Thank you for the patch! Perhaps something to improve:
 
-Hence I'd suggest that mixing DIO reads and buffered writes like
-this ends up exposing uses to the worst of both worlds - all of the
-problems with none of the benefits...
+[auto build test WARNING on kdave/for-next]
+[also build test WARNING on linus/master v6.0-rc1 next-20220816]
+[cannot apply to fscrypt/fsverity]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-> What we need to do is make a decision about whether this means we should build
-> in a stx_dio_direction field (indicating no support / readonly support /
-> writeonly support / readwrite support) into the API from the beginning.  If we
-> don't do that, then I don't think we could simply add such a field later, as the
-> statx_dio_*_align fields will have already been assigned their meaning.  I think
-> we'd instead have to "duplicate" the API, with STATX_DIOROALIGN and
-> statx_dio_ro_*_align fields.  That seems uglier than building a directional
-> indicator into the API from the beginning.  On the other hand, requiring all
-> programs to check stx_dio_direction would add complexity to using the API.
-> 
-> Any thoughts on this?
+url:    https://github.com/intel-lab-lkp/linux/commits/Boris-Burkov/btrfs-send-add-support-for-fs-verity/20220816-130051
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
+config: sparc-randconfig-c003-20220815 (https://download.01.org/0day-ci/archive/20220816/202208161755.1c2WmPnn-lkp@intel.com/config)
+compiler: sparc-linux-gcc (GCC) 12.1.0
 
-Decide whether partial, single direction DIO serves a useful purpose
-before trying to work out what is needed in the API to indicate that
-this sort of crazy will be supported....
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
 
-Cheers,
+cocci warnings: (new ones prefixed by >>)
+>> fs/btrfs/send.c:6874:5-8: Unneeded variable: "ret". Return "0" on line 6880
 
-Dave.
 -- 
-Dave Chinner
-david@fromorbit.com
+0-DAY CI Kernel Test Service
+https://01.org/lkp
