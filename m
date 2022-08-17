@@ -2,33 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 695885971F0
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 17 Aug 2022 16:55:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76FF25971F9
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 17 Aug 2022 16:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237413AbiHQOuU (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 17 Aug 2022 10:50:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36338 "EHLO
+        id S236768AbiHQOuk (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 17 Aug 2022 10:50:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237192AbiHQOuT (ORCPT
+        with ESMTP id S237192AbiHQOuW (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 17 Aug 2022 10:50:19 -0400
-Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 084F71C907;
-        Wed, 17 Aug 2022 07:50:18 -0700 (PDT)
+        Wed, 17 Aug 2022 10:50:22 -0400
+Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A4DE1C907;
+        Wed, 17 Aug 2022 07:50:21 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id D97468042B;
-        Wed, 17 Aug 2022 10:50:17 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id 485F280A9D;
+        Wed, 17 Aug 2022 10:50:20 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1660747818; bh=URrThOKdnuB6mNHORAhwfYD+VV/qTxKiExG8tMGrELQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=i3Qa/hQ4YJuTS80aaKPiB9/Q1R6UNzXH359QhtpIf188wZIXK2bspyKYSfBky9nWr
-         UVmuRWW7R/lwx8T3zEIObIRJHBFwzERE1sOUXV6nV9ZdZL6tY/vKDVYbMigMEmfcto
-         an2lW2N2MPS5TpCbDLCmnqJ2jD0AVmZSDVnAnMS0aN/JLRQ02wgr/MPq3g2HzXZlKx
-         Gggtf4IAvSHQbpV7jxxnhTOaq2W0R/ylLT4XrWH+EH/1FmSVCZV4cKsO50mfmaDLVE
-         OSZ3SLtC+BynQHNEM9tHUbn1rU/t8CBNKRtK5kUqFOpuLj6jUcZECPuRomKlWMolTc
-         8d/wcgbnX8jeA==
+        t=1660747820; bh=6ttS17HMX9jnRHmi2B73jJMPx8T5zrFXGQxy/qaXLVw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=gAEOwZifAm3PoUnzwB8GTVp0Sd/pXYjnEOihZCv3n66aC8quuPvFIyn+QgdsY2UyD
+         N3Ulq9Aomst7b9HuDF72DU/tzfOaraAFBOc3e+SEv8QM71Yquxo70W16Seuym1zITY
+         ab4+3OylZnaVi4+uDSY64ev/ezVraZ15BmrXV5Y43fRsaQCB5yTMLY919Tht9SbHlH
+         sMqwRnowzLOAAWRGS4l6yFQu9i2i0LcTJmt+M1my59ilOAeRkK+Wt3K5zSvxcFuVhH
+         9yzurBOTYLk/jBxf67CUqPFOR5NjB8CXyaiXUZtmJtKv/ht5SzPMF7cGRqEXsQ3SEG
+         m0iy4cKZPAxYg==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
@@ -37,10 +37,13 @@ To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         Eric Biggers <ebiggers@kernel.org>,
         linux-fscrypt@vger.kernel.org, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
-Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH 00/21] btrfs: add fscrypt integration
-Date:   Wed, 17 Aug 2022 10:49:44 -0400
-Message-Id: <cover.1660744500.git.sweettea-kernel@dorminy.me>
+Cc:     Omar Sandoval <osandov@osandov.com>,
+        Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Subject: [PATCH 01/21] fscrypt: expose fscrypt_nokey_name
+Date:   Wed, 17 Aug 2022 10:49:45 -0400
+Message-Id: <f724e9c812183f58050f244bb0ebffd3d88683dc.1660744500.git.sweettea-kernel@dorminy.me>
+In-Reply-To: <cover.1660744500.git.sweettea-kernel@dorminy.me>
+References: <cover.1660744500.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -53,123 +56,136 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-This is a changeset adding encryption to btrfs.
+From: Omar Sandoval <osandov@osandov.com>
 
-Last October, Omar Sandoval sent out a design document for having fscrypt
-integration with btrfs [1]. In summary, it proposes btrfs storing its
-own encryption IVs on a per-file-extent basis. fscrypt usually encrypts
-files using an IV derived from per-inode information; this would prevent
-snapshotting or reflinking or data relocation for btrfs, but by using an
-IV associated with each file extent, all the inodes sharing a particular
-key and file extent may decrypt successfully.
+btrfs stores its data structures, including filenames in directories, in
+its own buffer implementation, struct extent_buffer, composed of
+several non-contiguous pages. We could copy filenames into a
+temporary buffer and use fscrypt_match_name() against that buffer, such
+extensive memcpying would be expensive. Instead, exposing
+fscrypt_nokey_name as in this change allows btrfs to recapitulate
+fscrypt_match_name() using methods on struct extent_buffer instead of
+dealing with a raw byte array.
 
-This series implements this integration for the simple
-case, non-compressed data extents. Followup changes will allow
-encryption of compressed extents, inline extents, and verity items. 
-This series should provide encryption for the simplest cases, but
-this series should not be used except for testing yet, as there are
-likely bugs particularly around IV retrieval.
+Signed-off-by: Omar Sandoval <osandov@osandov.com>
+Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+---
+ fs/crypto/fname.c       | 39 +--------------------------------------
+ include/linux/fscrypt.h | 37 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 38 insertions(+), 38 deletions(-)
+
+diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
+index 14e0ef5e9a20..5d5c26d827fd 100644
+--- a/fs/crypto/fname.c
++++ b/fs/crypto/fname.c
+@@ -14,7 +14,6 @@
+ #include <linux/namei.h>
+ #include <linux/scatterlist.h>
+ #include <crypto/hash.h>
+-#include <crypto/sha2.h>
+ #include <crypto/skcipher.h>
+ #include "fscrypt_private.h"
  
-Preliminary btrfs-progs changes are available at [2]; fstests changes
-are available at [3]. Additional tests around subvolume-level encryption
-will be added in the next version. 
-
-[1]
-https://lore.kernel.org/linux-btrfs/YXGyq+buM79A1S0L@relinquished.localdomain/
-[2] https://lore.kernel.org/linux-btrfs/cover.1660729916.git.sweettea-kernel@dorminy.me
-[3] https://lore.kernel.org/linux-btrfs/cover.1660729861.git.sweettea-kernel@dorminy.me
-
-Changelog:
-
-v1:
- - Recombined the fscrypt changes back into this patchset.
- - Fixed several races and incorrectly ordered operations.
- - Improved IV retrieval to correctly distinguish between
-   filename/symlink encryption and encryption of block 0 of a file.
- - https://lore.kernel.org/linux-btrfs/cover.1660744500.git.sweettea-kernel@dorminy.me
-RFC v2: 
- - Fixed all warnings and known incorrectnesses.
- - Split fscrypt changes into their own patchset:
-    https://lore.kernel.org/linux-fscrypt/cover.1658623235.git.sweettea-kernel@dorminy.me
- - Combined and reordered changes so that enabling fscrypt is the last change.
- - Removed unnecessary factoring.
- - Split a cleanup change off.
- - https://lore.kernel.org/linux-btrfs/cover.1658623319.git.sweettea-kernel@dorminy.me 
-
-RFC v1:
- - https://lore.kernel.org/linux-btrfs/cover.1657707686.git.sweettea-kernel@dorminy.me
-
-
-Omar Sandoval (16):
-  fscrypt: expose fscrypt_nokey_name
-  fscrypt: add flag allowing partially-encrypted directories
-  fscrypt: add fscrypt_have_same_policy() to check inode's compatibility
-  btrfs: store directorys' encryption state
-  btrfs: factor a fscrypt_name matching method
-  btrfs: disable various operations on encrypted inodes
-  btrfs: add fscrypt operation table to superblock
-  btrfs: start using fscrypt hooks.
-  btrfs: add fscrypt_context items.
-  btrfs: translate btrfs encryption flags and encrypted inode flag.
-  btrfs: store an IV per encrypted normal file extent
-  btrfs: Add new FEATURE_INCOMPAT_FSCRYPT feature flag.
-  btrfs: reuse encrypted filename hash when possible.
-  btrfs: adapt directory read and lookup to potentially encrypted
-    filenames
-  btrfs: encrypt normal file extent data if appropriate
-  btrfs: implement fscrypt ioctls
-
-Sweet Tea Dorminy (5):
-  fscrypt: add a function for a filesystem to generate an IV
-  fscrypt: add new encryption policy for btrfs.
-  btrfs: use fscrypt_name's instead of name/len everywhere.
-  btrfs: setup fscrypt_names from dentrys using helper
-  btrfs: add iv generation function for fscrypt
-
- fs/btrfs/Makefile               |   1 +
- fs/btrfs/btrfs_inode.h          |   3 +
- fs/btrfs/ctree.h                | 113 +++++--
- fs/btrfs/delayed-inode.c        |  48 ++-
- fs/btrfs/delayed-inode.h        |   9 +-
- fs/btrfs/dir-item.c             | 119 ++++---
- fs/btrfs/extent_io.c            |  93 +++++-
- fs/btrfs/extent_io.h            |   2 +
- fs/btrfs/extent_map.h           |   8 +
- fs/btrfs/file-item.c            |  20 +-
- fs/btrfs/file.c                 |  11 +-
- fs/btrfs/fscrypt.c              | 224 +++++++++++++
- fs/btrfs/fscrypt.h              |  49 +++
- fs/btrfs/inode-item.c           |  84 ++---
- fs/btrfs/inode-item.h           |  14 +-
- fs/btrfs/inode.c                | 573 ++++++++++++++++++++++++--------
- fs/btrfs/ioctl.c                |  80 ++++-
- fs/btrfs/ordered-data.c         |  13 +-
- fs/btrfs/ordered-data.h         |   3 +-
- fs/btrfs/print-tree.c           |   4 +-
- fs/btrfs/props.c                |  11 +-
- fs/btrfs/reflink.c              |   8 +
- fs/btrfs/root-tree.c            |  20 +-
- fs/btrfs/send.c                 | 141 +++++---
- fs/btrfs/super.c                |   8 +-
- fs/btrfs/transaction.c          |  43 ++-
- fs/btrfs/tree-checker.c         |  56 +++-
- fs/btrfs/tree-log.c             | 233 +++++++------
- fs/btrfs/tree-log.h             |   4 +-
- fs/btrfs/xattr.c                |  21 +-
- fs/crypto/crypto.c              |  40 ++-
- fs/crypto/fname.c               |  56 +---
- fs/crypto/fscrypt_private.h     |   4 +-
- fs/crypto/inline_crypt.c        |  20 +-
- fs/crypto/keysetup.c            |   5 +
- fs/crypto/policy.c              |  48 ++-
- include/linux/fscrypt.h         |  62 +++-
- include/uapi/linux/btrfs.h      |   1 +
- include/uapi/linux/btrfs_tree.h |  26 ++
- include/uapi/linux/fscrypt.h    |   1 +
- 40 files changed, 1719 insertions(+), 560 deletions(-)
- create mode 100644 fs/btrfs/fscrypt.c
- create mode 100644 fs/btrfs/fscrypt.h
-
+@@ -26,43 +25,7 @@
+ #define FSCRYPT_FNAME_MIN_MSG_LEN 16
+ 
+ /*
+- * struct fscrypt_nokey_name - identifier for directory entry when key is absent
+- *
+- * When userspace lists an encrypted directory without access to the key, the
+- * filesystem must present a unique "no-key name" for each filename that allows
+- * it to find the directory entry again if requested.  Naively, that would just
+- * mean using the ciphertext filenames.  However, since the ciphertext filenames
+- * can contain illegal characters ('\0' and '/'), they must be encoded in some
+- * way.  We use base64url.  But that can cause names to exceed NAME_MAX (255
+- * bytes), so we also need to use a strong hash to abbreviate long names.
+- *
+- * The filesystem may also need another kind of hash, the "dirhash", to quickly
+- * find the directory entry.  Since filesystems normally compute the dirhash
+- * over the on-disk filename (i.e. the ciphertext), it's not computable from
+- * no-key names that abbreviate the ciphertext using the strong hash to fit in
+- * NAME_MAX.  It's also not computable if it's a keyed hash taken over the
+- * plaintext (but it may still be available in the on-disk directory entry);
+- * casefolded directories use this type of dirhash.  At least in these cases,
+- * each no-key name must include the name's dirhash too.
+- *
+- * To meet all these requirements, we base64url-encode the following
+- * variable-length structure.  It contains the dirhash, or 0's if the filesystem
+- * didn't provide one; up to 149 bytes of the ciphertext name; and for
+- * ciphertexts longer than 149 bytes, also the SHA-256 of the remaining bytes.
+- *
+- * This ensures that each no-key name contains everything needed to find the
+- * directory entry again, contains only legal characters, doesn't exceed
+- * NAME_MAX, is unambiguous unless there's a SHA-256 collision, and that we only
+- * take the performance hit of SHA-256 on very long filenames (which are rare).
+- */
+-struct fscrypt_nokey_name {
+-	u32 dirhash[2];
+-	u8 bytes[149];
+-	u8 sha256[SHA256_DIGEST_SIZE];
+-}; /* 189 bytes => 252 bytes base64url-encoded, which is <= NAME_MAX (255) */
+-
+-/*
+- * Decoded size of max-size no-key name, i.e. a name that was abbreviated using
++ * Decoded size of max-size nokey name, i.e. a name that was abbreviated using
+  * the strong hash and thus includes the 'sha256' field.  This isn't simply
+  * sizeof(struct fscrypt_nokey_name), as the padding at the end isn't included.
+  */
+diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
+index e60d57c99cb6..6020b738c3b2 100644
+--- a/include/linux/fscrypt.h
++++ b/include/linux/fscrypt.h
+@@ -16,6 +16,7 @@
+ #include <linux/fs.h>
+ #include <linux/mm.h>
+ #include <linux/slab.h>
++#include <crypto/sha2.h>
+ #include <uapi/linux/fscrypt.h>
+ 
+ /*
+@@ -54,6 +55,42 @@ struct fscrypt_name {
+ #define fname_name(p)		((p)->disk_name.name)
+ #define fname_len(p)		((p)->disk_name.len)
+ 
++/*
++ * struct fscrypt_nokey_name - identifier for directory entry when key is absent
++ *
++ * When userspace lists an encrypted directory without access to the key, the
++ * filesystem must present a unique "no-key name" for each filename that allows
++ * it to find the directory entry again if requested.  Naively, that would just
++ * mean using the ciphertext filenames.  However, since the ciphertext filenames
++ * can contain illegal characters ('\0' and '/'), they must be encoded in some
++ * way.  We use base64url.  But that can cause names to exceed NAME_MAX (255
++ * bytes), so we also need to use a strong hash to abbreviate long names.
++ *
++ * The filesystem may also need another kind of hash, the "dirhash", to quickly
++ * find the directory entry.  Since filesystems normally compute the dirhash
++ * over the on-disk filename (i.e. the ciphertext), it's not computable from
++ * no-key names that abbreviate the ciphertext using the strong hash to fit in
++ * NAME_MAX.  It's also not computable if it's a keyed hash taken over the
++ * plaintext (but it may still be available in the on-disk directory entry);
++ * casefolded directories use this type of dirhash.  At least in these cases,
++ * each no-key name must include the name's dirhash too.
++ *
++ * To meet all these requirements, we base64url-encode the following
++ * variable-length structure.  It contains the dirhash, or 0's if the filesystem
++ * didn't provide one; up to 149 bytes of the ciphertext name; and for
++ * ciphertexts longer than 149 bytes, also the SHA-256 of the remaining bytes.
++ *
++ * This ensures that each no-key name contains everything needed to find the
++ * directory entry again, contains only legal characters, doesn't exceed
++ * NAME_MAX, is unambiguous unless there's a SHA-256 collision, and that we only
++ * take the performance hit of SHA-256 on very long filenames (which are rare).
++ */
++struct fscrypt_nokey_name {
++	u32 dirhash[2];
++	u8 bytes[149];
++	u8 sha256[SHA256_DIGEST_SIZE];
++}; /* 189 bytes => 252 bytes base64url-encoded, which is <= NAME_MAX (255) */
++
+ /* Maximum value for the third parameter of fscrypt_operations.set_context(). */
+ #define FSCRYPT_SET_CONTEXT_MAX_SIZE	40
+ 
 -- 
 2.35.1
 
