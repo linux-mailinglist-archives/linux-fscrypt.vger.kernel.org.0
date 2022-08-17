@@ -2,94 +2,112 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8F8859664C
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 17 Aug 2022 02:29:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED8B65971B6
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 17 Aug 2022 16:46:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237285AbiHQA3D (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 16 Aug 2022 20:29:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37332 "EHLO
+        id S240390AbiHQOp7 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 17 Aug 2022 10:45:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237647AbiHQA27 (ORCPT
+        with ESMTP id S240362AbiHQOp4 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 16 Aug 2022 20:28:59 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F90986706;
-        Tue, 16 Aug 2022 17:28:56 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Wed, 17 Aug 2022 10:45:56 -0400
+Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 611379C2E7;
+        Wed, 17 Aug 2022 07:45:55 -0700 (PDT)
+Received: from authenticated-user (box.fidei.email [71.19.144.250])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 73805B81B73;
-        Wed, 17 Aug 2022 00:28:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFA79C433D6;
-        Wed, 17 Aug 2022 00:28:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660696133;
-        bh=Rzz/M8Q0tiosyOZooUlRGvQSVZx536FrRe7zGsi+7Dw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uDp3WaZXGKqZH0pV5Z0TDzxsQtrGn65ZZXCECzYW9UwwnAs7mmtdEbJSUDJJJyx9R
-         yyZmjsgCkJs61FOGksO1agxe+1a9xtLouGvWG1jjSzv+MtyC9AeA3F0F7RG/NGFH1x
-         4t63u6v4IUzyAvNjQ4aqDN5Df2jHeQWK9mrCw4uaupqzjGu+aicLoN5MBb3c/csfOm
-         41/IaGQdhmnc69iKD2xj4AIFt8q+Btc65x5tToMCg9ou1f7R8jPG8SCFAlc1Rcy9vy
-         hv22HRnIjxYuL9sXZML7i8ty/6H+jMfuHBg4NKkyGFF6kuIXHWzKjf9hxh4HYuhyZN
-         EIAxyxL1ddFDg==
-Date:   Tue, 16 Aug 2022 17:28:52 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org
-Subject: Re: RFC: what to do about fscrypt vs block device interaction
-Message-ID: <Yvw2REXUEgvQQTWg@sol.localdomain>
-References: <20220721125929.1866403-1-hch@lst.de>
- <YtpfyZ8Dr9duVr45@sol.localdomain>
- <20220722160349.GA10142@lst.de>
- <Ytrrbd0F6OBdMcTv@gmail.com>
+        by box.fidei.email (Postfix) with ESMTPSA id AAEB380F11;
+        Wed, 17 Aug 2022 10:45:54 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
+        t=1660747555; bh=OVMZ8Ghp5oBNQxExAAISYyP2wel7pxjvEINJFQYDcNw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=kr8YJ5TdLPDK9s/ZZB2AhYxl7jlxELoCsgFw1zloj6izU/yb8TQpk1m36mt1XFPsW
+         q2Bdj4ZaQLNxFBOz++tbFujQKwsvaEdQcesdxTm68rV03jNy9wcxKj9LTbjPGpkuaK
+         mjv+PB4MDCWM9boVux2JLThpZ5Mvyr38nCDGdOviXIUFIc5boWuI8VF7+pPNEMn6e/
+         hi8cEoQG9Q1vU5w4KHNycWeSDOexSuDwhVW4HNEIGixTnCSaqISDg403vBwv5Hx48I
+         n7FNsXsoNwVZlAWsboeDU8C1dvGKz4n+M2RwnJk7zH4K/IU+eYexqNQVreJYmQJInP
+         PY4BPH6GyiYLw==
+From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+To:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Subject: [PATCH 0/2] fstests: add btrfs encryption support
+Date:   Wed, 17 Aug 2022 10:45:44 -0400
+Message-Id: <cover.1660729861.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Ytrrbd0F6OBdMcTv@gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Jul 22, 2022 at 06:24:45PM +0000, Eric Biggers wrote:
-> On Fri, Jul 22, 2022 at 06:03:49PM +0200, Christoph Hellwig wrote:
-> > > To avoid that, I think we could go through and evict all the
-> > > blk_crypto_keys (i.e. call fscrypt_destroy_prepared_key() on the
-> > > fscrypt_prepared_keys embedded in each fscrypt_master_key) during the
-> > > unmount itself, separating it from the destruction of the key objects
-> > > from the keyring subsystem's perspective. That could happen in the
-> > > moved call to fscrypt_sb_free().
-> 
-> Note: for iterating through the keys in ->s_master_keys, I'd try something like
-> assoc_array_iterate(&sb->s_master_keys->keys, fscrypt_teardown_key, sb)
-> 
-> > 
-> > I'll give this a try.
-> > 
-> > What would be a good test suite or set of tests to make sure I don't
-> > break fscrypt operation?
-> 
-> You can run xfstests on ext4 and f2fs with "-g encrypt", both with and without
-> the inlinecrypt mount option.
-> https://www.kernel.org/doc/html/latest/filesystems/fscrypt.html#tests shows the
-> commands to do this with kvm-xfstests, but it can also be done with regular
-> xfstests.  Note that for the inlinecrypt mount option to work you'll need a
-> kernel with CONFIG_BLK_INLINE_ENCRYPTION_FALLBACK=y and
-> CONFIG_FS_ENCRYPTION_INLINE_CRYPT=y.
-> 
-> There are relevant things that aren't tested by this, such as f2fs's
-> multi-device support and whether the blk-crypto keys really get evicted, but
-> that's the best we have.
+This changeset is in combination with a kernel changeset implementing
+btrfs encryption, and a btrfs-progs changeset 
 
-FYI, I'm working on a patchset that will address the issue with
-blk_crypto_evict_key() that you were having trouble with here.  It turns out
-there are some actual bugs caused by how fscrypt does things with
-->s_master_keys, so I'm planning a larger cleanup that changes ->s_master_keys
-to be a regular hash table instead, with lifetime rules adjusted accordingly.
+btrfs has several differences from other filesystems currently
+integrated with fscrypt. It stores IVs on a per-file-extent basis,
+rather than per-inode, using a new v2 policy to do so; and requires the
+use of a v2 policy and its IV_FROM_FS policy flag. The design document
+can be found at [1].
 
-- Eric
+As such, this adjusts many tests to explicitly require v1 policies if
+they require it, and generalizes the key handling for tests which can
+work fine with v2. It duplicates two generic tests which can't easily be
+generalized to work with btrfs, and adds all necessary function
+invocations to implement the ciphertext-checking functions.
+
+There are definitely additional areas which deserve testing. There are
+some tests which ought be split into v1-specific and v2-specific tests
+so that btrfs can work on the v2 part. A key feature for btrfs is
+subvolume encryption, and tests for that should be added.
+ 
+Necessary btrfs-progs changes are available at [2]; kernel changes
+are available at [3]. Additional tests around subvolume-level encryption
+will be added in the next version. 
+
+[1]
+https://lore.kernel.org/linux-btrfs/YXGyq+buM79A1S0L@relinquished.localdomain/
+[2] https://lore.kernel.org/linux-btrfs/cover.1660729916.git.sweettea-kernel@dorminy.me
+[3] https://lore.kernel.org/linux-btrfs/cover.1660744500.git.sweettea-kernel@dorminy.me
+
+Sweet Tea Dorminy (2):
+  fstests: fscrypt: enable btrfs testing.
+  fstests: fscrypt: update tests of encryption contents for btrfs
+
+ common/encrypt           | 184 +++++++++++++++++++++++++++++++++++++--
+ common/verity            |   2 +-
+ src/fscrypt-crypt-util.c |  34 +++++++-
+ tests/btrfs/298          |  85 ++++++++++++++++++
+ tests/btrfs/298.out      |  34 ++++++++
+ tests/btrfs/299          |  68 +++++++++++++++
+ tests/btrfs/299.out      |   4 +
+ tests/generic/395        |   2 +-
+ tests/generic/397        |   8 +-
+ tests/generic/398        |  12 +--
+ tests/generic/399        |   7 +-
+ tests/generic/419        |   7 +-
+ tests/generic/421        |   7 +-
+ tests/generic/429        |   2 +-
+ tests/generic/435        |   2 +-
+ tests/generic/440        |   2 +-
+ tests/generic/576        |   8 +-
+ tests/generic/580        |   1 +
+ tests/generic/581        |   1 +
+ tests/generic/593        |   1 +
+ tests/generic/613        |   1 +
+ 21 files changed, 439 insertions(+), 33 deletions(-)
+ create mode 100755 tests/btrfs/298
+ create mode 100644 tests/btrfs/298.out
+ create mode 100755 tests/btrfs/299
+ create mode 100644 tests/btrfs/299.out
+
+-- 
+2.35.1
+
