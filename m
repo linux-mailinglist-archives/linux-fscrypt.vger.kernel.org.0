@@ -2,33 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4C72597207
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 17 Aug 2022 16:55:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CECB5971D0
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 17 Aug 2022 16:54:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240379AbiHQOun (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        id S240376AbiHQOun (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
         Wed, 17 Aug 2022 10:50:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36406 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240312AbiHQOu2 (ORCPT
+        with ESMTP id S240365AbiHQOua (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 17 Aug 2022 10:50:28 -0400
-Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FF4933A26;
-        Wed, 17 Aug 2022 07:50:27 -0700 (PDT)
+        Wed, 17 Aug 2022 10:50:30 -0400
+Received: from box.fidei.email (box.fidei.email [71.19.144.250])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21B0B1C907;
+        Wed, 17 Aug 2022 07:50:29 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id E24C88042B;
-        Wed, 17 Aug 2022 10:50:26 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id 9B63B80A9D;
+        Wed, 17 Aug 2022 10:50:28 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1660747827; bh=JHa6cPgPBqm+c/l427NbSPkp5eYmufffl4SozhKvgaQ=;
+        t=1660747828; bh=7J4FcTMLQuAzhV6/TraBMCLD32c6C2Dmk69Ur4b8XMo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HXfA/tBlDmIjYMx7blrpDRIeKa4OoG9RVTZXgCuyMRPhW3ILu0EzLusuAGDriz/vl
-         aAkEdpuQRfRLBxcPfrsasjyuA2Nn7+EjmN5sk4xQ2EtXFu2I1v2NQclXm+ZijiBLsf
-         CfeJLfG2eqBZMsPK77MOlW1gsXz69Io9i0alFHKX4y3PTL11dZ7kc4ajKBsroLGc55
-         NjjWuXtxF9bpQhiHBhwKryeffDie0Ui4HI8bFKWMcCinL0rDTgAW4hLyggXzdS4ghz
-         UvRjKXz2gqP5Hg/MyV+XsDBqLXCUc9hHnZUD8s5jZNY6o4/sKNkxzeeUAzhx1uTVtt
-         FMyYalr2DP8Tg==
+        b=MXsjWKvFWy0IiuvLSgOQwPaojjnEQiIoj04LN8ws+bFvZquNeQOakhkQohyeHL8O3
+         Vm+qMquGk1WhwwlqIocWz37fqjF8wyTB7OSMTBaxXn5tGYKFudoOy8SU6wKETY/See
+         DRLFPJe5RQnM8eVoNfsb1lXuDatJTGYeYdcHIqzAh1BoXagO+/7xqLQP+5AKfZBfZO
+         kIn0ChL8XHvozdyC8dg4nu5WrXoXxyjp622sMhoTV9xBSjkwse/uoHsdrltwfWiihC
+         oNNAuZkP+CRwfB/V4kns/hc0MrEOdmcgOfnNESWnNfI+W4vM90MOa8UDPMiYFVUxNF
+         dQJzZ3FSHGtZw==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
@@ -38,9 +38,9 @@ To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         linux-fscrypt@vger.kernel.org, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH 04/21] fscrypt: add a function for a filesystem to generate an IV
-Date:   Wed, 17 Aug 2022 10:49:48 -0400
-Message-Id: <40f17d7f64a80e0d2746972b4f6b4b5831d4f455.1660744500.git.sweettea-kernel@dorminy.me>
+Subject: [PATCH 05/21] fscrypt: add new encryption policy for btrfs.
+Date:   Wed, 17 Aug 2022 10:49:49 -0400
+Message-Id: <66fcd64620c0c0711bbe80aa85e92f04d539bd83.1660744500.git.sweettea-kernel@dorminy.me>
 In-Reply-To: <cover.1660744500.git.sweettea-kernel@dorminy.me>
 References: <cover.1660744500.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
@@ -55,79 +55,265 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Unlike other filesystems, which store all necessary encryption context
-in the per-inode fscrypt context, btrfs will need to store an IV per
-extent in order to support snapshots and reflinks. To avoid exposing the
-internal details of extents to fscrypt, and to centralize IV generation
-in fscrypt, this change provides fscrypt_generate_random_iv(), which
-will be called for each newly created btrfs extent and will populate a
-btrfs-provided buffer with a new IV. Additionally, a function to get
-the necessary buffer size, fscrypt_mode_ivsize(), is also necessary.
+Encryption for btrfs must be extent-based, rather than fscrypt's
+inode-based IV generation policies.  In particular, btrfs can have
+multiple inodes referencing a single block of data, and moves logical
+data blocks to different physical locations on disk; these two features
+mean inode or physical-location-based IV generation policies will not
+work for btrfs. Instead, btrfs can store an IV per extent, generated by
+fscrypt and iterated per block within the extent, and provide that IV to
+fscrypt for encryption/decryption.
+
+Plumbing filesystem internals into fscrypt for IV generation would be
+ungainly and fragile. Thus, this change adds a new policy, IV_FROM_FS,
+and a new operation function pointer, get_fs_derived_iv.  btrfs will
+require this policy to be used, and implements get_fs_derived_iv by
+getting the IV stored with the relevant file extent and iterating the IV
+to the appropriate block number. Thus, each individual block has its own
+IV, but all blocks within a file extent have iterated IVs according to
+their block number, similarly to the IV_INO_LBLK* policy iterating IVs
+for a given inode by lblk number.
+
+The IV buffer passed to get_fs_derived_iv() is pre-populated with the
+inode contexts' nonce, as not all data to be encrypted is associated
+with a file extent: for btrfs, this is used for filename encryption.
+
+Filesystems implementing this policy are expected to be incompatible
+with existing IV generation policies, so if the function pointer is set,
+only dummy or IV_FROM_FS policies are permitted. If there is a
+filesystem which allows other policies as well as IV_FROM_FS, it may be
+better to expose the policy to filesystems, so they can determine
+whether any given policy is compatible with their operation.
 
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 ---
- fs/crypto/crypto.c      | 26 ++++++++++++++++++++++++++
- include/linux/fscrypt.h |  3 +++
- 2 files changed, 29 insertions(+)
+ fs/crypto/crypto.c           | 14 ++++++++++++--
+ fs/crypto/fscrypt_private.h  |  4 ++--
+ fs/crypto/inline_crypt.c     | 20 ++++++++++++++------
+ fs/crypto/keysetup.c         |  5 +++++
+ fs/crypto/policy.c           | 22 +++++++++++++++++++++-
+ include/linux/fscrypt.h      | 19 ++++++++++++++++++-
+ include/uapi/linux/fscrypt.h |  1 +
+ 7 files changed, 73 insertions(+), 12 deletions(-)
 
 diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
-index e78be66bbf01..e0e30d64837e 100644
+index e0e30d64837e..7194a30c7651 100644
 --- a/fs/crypto/crypto.c
 +++ b/fs/crypto/crypto.c
-@@ -23,6 +23,7 @@
- #include <linux/pagemap.h>
- #include <linux/mempool.h>
- #include <linux/module.h>
-+#include <linux/random.h>
- #include <linux/scatterlist.h>
- #include <linux/ratelimit.h>
- #include <crypto/skcipher.h>
-@@ -69,6 +70,31 @@ void fscrypt_free_bounce_page(struct page *bounce_page)
- }
- EXPORT_SYMBOL(fscrypt_free_bounce_page);
+@@ -107,13 +107,23 @@ void fscrypt_generate_iv(union fscrypt_iv *iv, u64 lblk_num,
+ 			 const struct fscrypt_info *ci)
+ {
+ 	u8 flags = fscrypt_policy_flags(&ci->ci_policy);
++	struct inode *inode = ci->ci_inode;
  
-+int fscrypt_mode_ivsize(struct inode *inode)
-+{
-+	struct fscrypt_info *ci;
+ 	memset(iv, 0, ci->ci_mode->ivsize);
++	if (flags & FSCRYPT_POLICY_FLAG_IV_FROM_FS) {
++		const struct fscrypt_operations *s_cop = inode->i_sb->s_cop;
++		/* Provide the nonce in case the filesystem wants to use it */
++		memcpy(iv->nonce, ci->ci_nonce, FSCRYPT_FILE_NONCE_SIZE);
++		s_cop->get_fs_defined_iv(iv->raw, ci->ci_mode->ivsize, inode,
++					 lblk_num);
++		return;
++	}
 +
-+	if (!fscrypt_needs_contents_encryption(inode))
-+		return 0;
+ 
+ 	if (flags & FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64) {
+ 		WARN_ON_ONCE(lblk_num > U32_MAX);
+-		WARN_ON_ONCE(ci->ci_inode->i_ino > U32_MAX);
+-		lblk_num |= (u64)ci->ci_inode->i_ino << 32;
++		WARN_ON_ONCE(inode->i_ino > U32_MAX);
++		lblk_num |= (u64)inode->i_ino << 32;
+ 	} else if (flags & FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32) {
+ 		WARN_ON_ONCE(lblk_num > U32_MAX);
+ 		lblk_num = (u32)(ci->ci_hashed_ino + lblk_num);
+diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+index 6b4c8094cc7b..084c6ba1e766 100644
+--- a/fs/crypto/fscrypt_private.h
++++ b/fs/crypto/fscrypt_private.h
+@@ -279,8 +279,6 @@ fscrypt_msg(const struct inode *inode, const char *level, const char *fmt, ...);
+ #define fscrypt_err(inode, fmt, ...)		\
+ 	fscrypt_msg((inode), KERN_ERR, fmt, ##__VA_ARGS__)
+ 
+-#define FSCRYPT_MAX_IV_SIZE	32
+-
+ union fscrypt_iv {
+ 	struct {
+ 		/* logical block number within the file */
+@@ -326,6 +324,7 @@ int fscrypt_init_hkdf(struct fscrypt_hkdf *hkdf, const u8 *master_key,
+ #define HKDF_CONTEXT_DIRHASH_KEY	5 /* info=file_nonce		*/
+ #define HKDF_CONTEXT_IV_INO_LBLK_32_KEY	6 /* info=mode_num||fs_uuid	*/
+ #define HKDF_CONTEXT_INODE_HASH_KEY	7 /* info=<empty>		*/
++#define HKDF_CONTEXT_IV_FROM_FS_KEY	8 /* info=mode_num	*/
+ 
+ int fscrypt_hkdf_expand(const struct fscrypt_hkdf *hkdf, u8 context,
+ 			const u8 *info, unsigned int infolen,
+@@ -498,6 +497,7 @@ struct fscrypt_master_key {
+ 	struct fscrypt_prepared_key mk_direct_keys[FSCRYPT_MODE_MAX + 1];
+ 	struct fscrypt_prepared_key mk_iv_ino_lblk_64_keys[FSCRYPT_MODE_MAX + 1];
+ 	struct fscrypt_prepared_key mk_iv_ino_lblk_32_keys[FSCRYPT_MODE_MAX + 1];
++	struct fscrypt_prepared_key mk_iv_from_fs_keys[FSCRYPT_MODE_MAX + 1];
+ 
+ 	/* Hash key for inode numbers.  Initialized only when needed. */
+ 	siphash_key_t		mk_ino_hash_key;
+diff --git a/fs/crypto/inline_crypt.c b/fs/crypto/inline_crypt.c
+index 90f3e68f166e..8a8330caadfa 100644
+--- a/fs/crypto/inline_crypt.c
++++ b/fs/crypto/inline_crypt.c
+@@ -476,14 +476,22 @@ u64 fscrypt_limit_io_blocks(const struct inode *inode, u64 lblk, u64 nr_blocks)
+ 		return nr_blocks;
+ 
+ 	ci = inode->i_crypt_info;
+-	if (!(fscrypt_policy_flags(&ci->ci_policy) &
+-	      FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32))
+-		return nr_blocks;
+ 
+-	/* With IV_INO_LBLK_32, the DUN can wrap around from U32_MAX to 0. */
++	if (fscrypt_policy_flags(&ci->ci_policy) &
++	    FSCRYPT_POLICY_FLAG_IV_FROM_FS) {
++		return 1;
++	}
+ 
+-	dun = ci->ci_hashed_ino + lblk;
++	if ((fscrypt_policy_flags(&ci->ci_policy) &
++	      FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32)) {
++		/*
++		 * With IV_INO_LBLK_32, the DUN can wrap around from U32_MAX to
++		 * 0.
++		 */
++		dun = ci->ci_hashed_ino + lblk;
++		return min_t(u64, nr_blocks, (u64)U32_MAX + 1 - dun);
++	}
+ 
+-	return min_t(u64, nr_blocks, (u64)U32_MAX + 1 - dun);
++	return nr_blocks;
+ }
+ EXPORT_SYMBOL_GPL(fscrypt_limit_io_blocks);
+diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
+index c35711896bd4..62b30b567c0d 100644
+--- a/fs/crypto/keysetup.c
++++ b/fs/crypto/keysetup.c
+@@ -323,6 +323,11 @@ static int fscrypt_setup_v2_file_key(struct fscrypt_info *ci,
+ 		 */
+ 		err = setup_per_mode_enc_key(ci, mk, mk->mk_direct_keys,
+ 					     HKDF_CONTEXT_DIRECT_KEY, false);
++	} else if (ci->ci_policy.v2.flags & FSCRYPT_POLICY_FLAG_IV_FROM_FS) {
++		err = setup_per_mode_enc_key(ci, mk,
++					     mk->mk_iv_from_fs_keys,
++					     HKDF_CONTEXT_IV_FROM_FS_KEY,
++					     false);
+ 	} else if (ci->ci_policy.v2.flags &
+ 		   FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64) {
+ 		/*
+diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
+index 5763462af9e8..f88db570a3eb 100644
+--- a/fs/crypto/policy.c
++++ b/fs/crypto/policy.c
+@@ -178,6 +178,12 @@ static bool fscrypt_supported_v1_policy(const struct fscrypt_policy_v1 *policy,
+ 			     "v1 policies can't be used on casefolded directories");
+ 		return false;
+ 	}
++	
++	if (inode->i_sb->s_cop->get_fs_defined_iv) {
++		fscrypt_warn(inode,
++			     "v1 policies can't be used with this filesystem");
++		return false;
++	}
+ 
+ 	return true;
+ }
+@@ -199,7 +205,8 @@ static bool fscrypt_supported_v2_policy(const struct fscrypt_policy_v2 *policy,
+ 	if (policy->flags & ~(FSCRYPT_POLICY_FLAGS_PAD_MASK |
+ 			      FSCRYPT_POLICY_FLAG_DIRECT_KEY |
+ 			      FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64 |
+-			      FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32)) {
++			      FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32 |
++			      FSCRYPT_POLICY_FLAG_IV_FROM_FS)) {
+ 		fscrypt_warn(inode, "Unsupported encryption flags (0x%02x)",
+ 			     policy->flags);
+ 		return false;
+@@ -208,6 +215,7 @@ static bool fscrypt_supported_v2_policy(const struct fscrypt_policy_v2 *policy,
+ 	count += !!(policy->flags & FSCRYPT_POLICY_FLAG_DIRECT_KEY);
+ 	count += !!(policy->flags & FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64);
+ 	count += !!(policy->flags & FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32);
++	count += !!(policy->flags & FSCRYPT_POLICY_FLAG_IV_FROM_FS);
+ 	if (count > 1) {
+ 		fscrypt_warn(inode, "Mutually exclusive encryption flags (0x%02x)",
+ 			     policy->flags);
+@@ -235,6 +243,18 @@ static bool fscrypt_supported_v2_policy(const struct fscrypt_policy_v2 *policy,
+ 					  32, 32))
+ 		return false;
+ 
++	if ((policy->flags & FSCRYPT_POLICY_FLAG_IV_FROM_FS) &&
++	    !inode->i_sb->s_cop->get_fs_defined_iv)
++		return false;
 +
-+	ci = inode->i_crypt_info;
-+	if (WARN_ON_ONCE(!ci))
-+		return 0;
-+	return ci->ci_mode->ivsize;
-+}
-+EXPORT_SYMBOL(fscrypt_mode_ivsize);
++	/*
++	 * If the filesystem defines its own IVs, presumably it does so because
++	 * no existing policy works, so disallow other policies.
++	 */
++	if (inode->i_sb->s_cop->get_fs_defined_iv &&
++	    !(policy->flags & FSCRYPT_POLICY_FLAG_IV_FROM_FS))
++		return false;
 +
-+/**
-+ * fscrypt_generate_random_iv() - initialize a new iv for an IV_FROM_FS filesystem
-+ * @inode: the inode to which the new IV will belong
-+ * @iv: an output buffer, long enough for the requisite IV
-+ */
-+void fscrypt_generate_random_iv(struct inode *inode, u8 *iv)
-+{
-+	get_random_bytes(iv, fscrypt_mode_ivsize(inode));
-+}
-+EXPORT_SYMBOL(fscrypt_generate_random_iv);
-+
- /*
-  * Generate the IV for the given logical block number within the given file.
-  * For filenames encryption, lblk_num == 0.
+ 	if (memchr_inv(policy->__reserved, 0, sizeof(policy->__reserved))) {
+ 		fscrypt_warn(inode, "Reserved bits set in encryption policy");
+ 		return false;
 diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index 1686b25f6d9c..ff572f8a88f8 100644
+index ff572f8a88f8..b3fb88064852 100644
 --- a/include/linux/fscrypt.h
 +++ b/include/linux/fscrypt.h
-@@ -317,6 +317,9 @@ static inline struct page *fscrypt_pagecache_page(struct page *bounce_page)
+@@ -94,6 +94,12 @@ struct fscrypt_nokey_name {
+ /* Maximum value for the third parameter of fscrypt_operations.set_context(). */
+ #define FSCRYPT_SET_CONTEXT_MAX_SIZE	40
  
- void fscrypt_free_bounce_page(struct page *bounce_page);
++/*
++ * Maximum size needed for an IV. Defines the size of the buffer passed to a
++ * get_fs_defined_iv() function.
++ */
++#define FSCRYPT_MAX_IV_SIZE	32
++
+ #ifdef CONFIG_FS_ENCRYPTION
  
-+int fscrypt_mode_ivsize(struct inode *inode);
-+void fscrypt_generate_random_iv(struct inode *inode, u8 *iv);
+ /*
+@@ -198,7 +204,13 @@ struct fscrypt_operations {
+ 	 */
+ 	void (*get_ino_and_lblk_bits)(struct super_block *sb,
+ 				      int *ino_bits_ret, int *lblk_bits_ret);
+-
++	/*
++	 * Generate an IV for a given inode and lblk number, for filesystems
++	 * where additional filesystem-internal information is necessary to
++	 * keep the IV stable.
++	 */
++	void (*get_fs_defined_iv)(u8 *iv, int ivsize, struct inode *inode,
++				  u64 lblk_num);
+ 	/*
+ 	 * Return the number of block devices to which the filesystem may write
+ 	 * encrypted file contents.
+@@ -495,6 +507,11 @@ static inline void fscrypt_free_bounce_page(struct page *bounce_page)
+ {
+ }
+ 
++static inline int fscrypt_mode_ivsize(struct inode *inode)
++{
++	return 0;
++}
 +
  /* policy.c */
- int fscrypt_have_same_policy(struct inode *inode1, struct inode *inode2);
- int fscrypt_ioctl_set_policy(struct file *filp, const void __user *arg);
+ static inline int fscrypt_ioctl_set_policy(struct file *filp,
+ 					   const void __user *arg)
+diff --git a/include/uapi/linux/fscrypt.h b/include/uapi/linux/fscrypt.h
+index 9f4428be3e36..3fbde7668b07 100644
+--- a/include/uapi/linux/fscrypt.h
++++ b/include/uapi/linux/fscrypt.h
+@@ -20,6 +20,7 @@
+ #define FSCRYPT_POLICY_FLAG_DIRECT_KEY		0x04
+ #define FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64	0x08
+ #define FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32	0x10
++#define FSCRYPT_POLICY_FLAG_IV_FROM_FS		0x20
+ 
+ /* Encryption algorithms */
+ #define FSCRYPT_MODE_AES_256_XTS		1
 -- 
 2.35.1
 
