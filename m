@@ -2,33 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 225895971E9
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 17 Aug 2022 16:55:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4C72597207
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 17 Aug 2022 16:55:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237192AbiHQOum (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 17 Aug 2022 10:50:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36382 "EHLO
+        id S240379AbiHQOun (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 17 Aug 2022 10:50:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240255AbiHQOuZ (ORCPT
+        with ESMTP id S240312AbiHQOu2 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 17 Aug 2022 10:50:25 -0400
-Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 206D61C907;
-        Wed, 17 Aug 2022 07:50:25 -0700 (PDT)
+        Wed, 17 Aug 2022 10:50:28 -0400
+Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FF4933A26;
+        Wed, 17 Aug 2022 07:50:27 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 70BAC81140;
-        Wed, 17 Aug 2022 10:50:24 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id E24C88042B;
+        Wed, 17 Aug 2022 10:50:26 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1660747824; bh=yY8S8o2qAHPyyq6T2MD0XGq4HDMU4SIfT6mesD4Qhxg=;
+        t=1660747827; bh=JHa6cPgPBqm+c/l427NbSPkp5eYmufffl4SozhKvgaQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YQ7CUKaB/iRTBvh5tCjoqJzFft0Lbc/6QdGSvVJDRzz2ljnOtChqBSa9mkZqb2zyO
-         hBV74jIWJs5ByMqDaXymG7uos0dt4sSciylsm96VG3siHitb9hrH0Vj17knacwo5fT
-         7Sb5CmETuR17cvM9ehvD511dytd3G6w/uYZrcfdcraSfQaFJcbDv7Qno0whRwiGn76
-         vrVRETyYAvjKxUyV8TqRXJo9VJ3hVGKdtfV6qhHP9irkP8nsxtxLH1A+QjgnVZ7uk+
-         BwUdxKeQtVHXtc7syWcIBhyUb+C8GBLPNSdUbwvqb2vei7DHlARDtfTE2arexfWULb
-         WLxBxkujxqOmA==
+        b=HXfA/tBlDmIjYMx7blrpDRIeKa4OoG9RVTZXgCuyMRPhW3ILu0EzLusuAGDriz/vl
+         aAkEdpuQRfRLBxcPfrsasjyuA2Nn7+EjmN5sk4xQ2EtXFu2I1v2NQclXm+ZijiBLsf
+         CfeJLfG2eqBZMsPK77MOlW1gsXz69Io9i0alFHKX4y3PTL11dZ7kc4ajKBsroLGc55
+         NjjWuXtxF9bpQhiHBhwKryeffDie0Ui4HI8bFKWMcCinL0rDTgAW4hLyggXzdS4ghz
+         UvRjKXz2gqP5Hg/MyV+XsDBqLXCUc9hHnZUD8s5jZNY6o4/sKNkxzeeUAzhx1uTVtt
+         FMyYalr2DP8Tg==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
@@ -37,11 +37,10 @@ To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         Eric Biggers <ebiggers@kernel.org>,
         linux-fscrypt@vger.kernel.org, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
-Cc:     Omar Sandoval <osandov@osandov.com>,
-        Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH 03/21] fscrypt: add fscrypt_have_same_policy() to check inode's compatibility
-Date:   Wed, 17 Aug 2022 10:49:47 -0400
-Message-Id: <0930fb773bcf56f8aacd079ec86a264cc746628a.1660744500.git.sweettea-kernel@dorminy.me>
+Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Subject: [PATCH 04/21] fscrypt: add a function for a filesystem to generate an IV
+Date:   Wed, 17 Aug 2022 10:49:48 -0400
+Message-Id: <40f17d7f64a80e0d2746972b4f6b4b5831d4f455.1660744500.git.sweettea-kernel@dorminy.me>
 In-Reply-To: <cover.1660744500.git.sweettea-kernel@dorminy.me>
 References: <cover.1660744500.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
@@ -56,69 +55,79 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Omar Sandoval <osandov@osandov.com>
+Unlike other filesystems, which store all necessary encryption context
+in the per-inode fscrypt context, btrfs will need to store an IV per
+extent in order to support snapshots and reflinks. To avoid exposing the
+internal details of extents to fscrypt, and to centralize IV generation
+in fscrypt, this change provides fscrypt_generate_random_iv(), which
+will be called for each newly created btrfs extent and will populate a
+btrfs-provided buffer with a new IV. Additionally, a function to get
+the necessary buffer size, fscrypt_mode_ivsize(), is also necessary.
 
-btrfs will have the possibility of encrypted and unencrypted files in
-the same directory, and it's important to not allow these two files to
-become linked together. Therefore, add a function which allows checking
-the encryption policies of two inodes to ensure they are compatible.
-
-Signed-off-by: Omar Sandoval <osandov@osandov.com>
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 ---
- fs/crypto/policy.c      | 26 ++++++++++++++++++++++++++
- include/linux/fscrypt.h |  1 +
- 2 files changed, 27 insertions(+)
+ fs/crypto/crypto.c      | 26 ++++++++++++++++++++++++++
+ include/linux/fscrypt.h |  3 +++
+ 2 files changed, 29 insertions(+)
 
-diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
-index 5f858cee1e3b..5763462af9e8 100644
---- a/fs/crypto/policy.c
-+++ b/fs/crypto/policy.c
-@@ -407,6 +407,32 @@ static int fscrypt_get_policy(struct inode *inode, union fscrypt_policy *policy)
- 	return fscrypt_policy_from_context(policy, &ctx, ret);
+diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
+index e78be66bbf01..e0e30d64837e 100644
+--- a/fs/crypto/crypto.c
++++ b/fs/crypto/crypto.c
+@@ -23,6 +23,7 @@
+ #include <linux/pagemap.h>
+ #include <linux/mempool.h>
+ #include <linux/module.h>
++#include <linux/random.h>
+ #include <linux/scatterlist.h>
+ #include <linux/ratelimit.h>
+ #include <crypto/skcipher.h>
+@@ -69,6 +70,31 @@ void fscrypt_free_bounce_page(struct page *bounce_page)
  }
+ EXPORT_SYMBOL(fscrypt_free_bounce_page);
  
-+/**
-+ * fscrypt_have_same_policy() - check whether two inodes have the same policy
-+ * @inode1: the first inode
-+ * @inode2: the second inode
-+ *
-+ * Return: %true if equal, else %false
-+ */
-+int fscrypt_have_same_policy(struct inode *inode1, struct inode *inode2)
++int fscrypt_mode_ivsize(struct inode *inode)
 +{
-+	union fscrypt_policy policy1, policy2;
-+	int err;
++	struct fscrypt_info *ci;
 +
-+	if (!IS_ENCRYPTED(inode1) && !IS_ENCRYPTED(inode2))
-+		return true;
-+	else if (!IS_ENCRYPTED(inode1) || !IS_ENCRYPTED(inode2))
-+		return false;
-+	err = fscrypt_get_policy(inode1, &policy1);
-+	if (err)
-+		return err;
-+	err = fscrypt_get_policy(inode2, &policy2);
-+	if (err)
-+		return err;
-+	return fscrypt_policies_equal(&policy1, &policy2);
++	if (!fscrypt_needs_contents_encryption(inode))
++		return 0;
++
++	ci = inode->i_crypt_info;
++	if (WARN_ON_ONCE(!ci))
++		return 0;
++	return ci->ci_mode->ivsize;
 +}
-+EXPORT_SYMBOL(fscrypt_have_same_policy);
++EXPORT_SYMBOL(fscrypt_mode_ivsize);
 +
- static int set_encryption_policy(struct inode *inode,
- 				 const union fscrypt_policy *policy)
- {
++/**
++ * fscrypt_generate_random_iv() - initialize a new iv for an IV_FROM_FS filesystem
++ * @inode: the inode to which the new IV will belong
++ * @iv: an output buffer, long enough for the requisite IV
++ */
++void fscrypt_generate_random_iv(struct inode *inode, u8 *iv)
++{
++	get_random_bytes(iv, fscrypt_mode_ivsize(inode));
++}
++EXPORT_SYMBOL(fscrypt_generate_random_iv);
++
+ /*
+  * Generate the IV for the given logical block number within the given file.
+  * For filenames encryption, lblk_num == 0.
 diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index fb48961c46f6..1686b25f6d9c 100644
+index 1686b25f6d9c..ff572f8a88f8 100644
 --- a/include/linux/fscrypt.h
 +++ b/include/linux/fscrypt.h
-@@ -318,6 +318,7 @@ static inline struct page *fscrypt_pagecache_page(struct page *bounce_page)
+@@ -317,6 +317,9 @@ static inline struct page *fscrypt_pagecache_page(struct page *bounce_page)
+ 
  void fscrypt_free_bounce_page(struct page *bounce_page);
  
++int fscrypt_mode_ivsize(struct inode *inode);
++void fscrypt_generate_random_iv(struct inode *inode, u8 *iv);
++
  /* policy.c */
-+int fscrypt_have_same_policy(struct inode *inode1, struct inode *inode2);
+ int fscrypt_have_same_policy(struct inode *inode1, struct inode *inode2);
  int fscrypt_ioctl_set_policy(struct file *filp, const void __user *arg);
- int fscrypt_ioctl_get_policy(struct file *filp, void __user *arg);
- int fscrypt_ioctl_get_policy_ex(struct file *filp, void __user *arg);
 -- 
 2.35.1
 
