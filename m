@@ -2,89 +2,110 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9A0C598AB9
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 18 Aug 2022 19:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A028598B2A
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 18 Aug 2022 20:31:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240238AbiHRRvz (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 18 Aug 2022 13:51:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52468 "EHLO
+        id S1345312AbiHRSaK (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 18 Aug 2022 14:30:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239324AbiHRRvy (ORCPT
+        with ESMTP id S1345478AbiHRSaF (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 18 Aug 2022 13:51:54 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 012F5C6B51;
-        Thu, 18 Aug 2022 10:51:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id A9442B8221C;
-        Thu, 18 Aug 2022 17:51:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27F25C433C1;
-        Thu, 18 Aug 2022 17:51:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660845111;
-        bh=tivNZwoj3zZKzgBW1fvdHFOuwBNUa53rvoT4SpXblRE=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=tcF3WSyhtXzrWSXkHXeI0UgqjSs8Mpm6SDzFicIvGqUu618Wl0utxhf3kKN2EbJN9
-         9i8dcQuJ6yaGKBDEoystxs/PJYrIL+YRgBGTX2//PEe0oUOkbM0Coyd8yI8h92YH4q
-         aVgXAurUsqMLXCoO8nzzCKCVWHd/8zz1275Lll4Oom43jQDYqlMccyH8EjS0cIR2XY
-         VEMV83DDohdc9Turk1mVWkapC8Vh8C5+Dd93ogQ/JZnj4Ye1VRfr8ksnOGDzsCObR0
-         FQ95H1idY+Y93RB1YaVyJ89dNnFdvOk+zGwv0nEfG4PkF9LLVDcmCIROO61MvyrbFC
-         sxl3bHq2ILqYw==
-Date:   Thu, 18 Aug 2022 17:51:49 +0000
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     dsterba@suse.cz, Boris Burkov <boris@bur.io>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        Thu, 18 Aug 2022 14:30:05 -0400
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF6A3A6C55;
+        Thu, 18 Aug 2022 11:30:03 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 13C4F5C01DB;
+        Thu, 18 Aug 2022 14:30:00 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Thu, 18 Aug 2022 14:30:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+        :content-type:date:date:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to; s=fm1; t=1660847400; x=1660933800; bh=q9xGVaPRHc
+        jGOxHjsHcRXsNg0K3yKNM+JL1P6eT/+aQ=; b=DSa9Xw+LN1/9nBZQHijD0gxRlA
+        48Dld5qroxxQSJwo2BH5dTteSGbv/UfDKRW6RPq4cZZnwTNWsZM1hfraAmfzXCS5
+        2/qLvVKYJrjJ4jCKTGHhTRq8jMQwZMSY3InWdUIOsXONRtBwYmCq67zCAbzj/vja
+        V+xPTkm7i1vtljcKE78As2wLIzHdHt9DMlSbkmsWyZN/WDHluiyD3hrgf+y0TsJz
+        t0r+k0y/8GAm68d1qcJFENo3687igdHFMNcdBGPIIBYyD0F9bK2XBZyr9moOX9p+
+        7KOGsy5WHbpyUVa6leHtfl7PYisUFJx7RjNUHLTFSubIRyiXf85I3B444dSw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm1; t=1660847400; x=1660933800; bh=q9xGVaPRHcjGOxHjsHcRXsNg0K3y
+        KNM+JL1P6eT/+aQ=; b=lDaC2GYFYNFKgCkKBydGVnMtb6/3zBF7cSg6Z0pDbrFz
+        Eo0X2pccyvXY4tt0w7jOoaLcRMGt0VgaTwjSwcHPUWGCaMVCXXB+GnDMPT427d6/
+        7N/QV8qqZ+wuwNrfqXi/+GUdicCMl3WWB+Xq/LuijXBIlj+471fOQWc6ng8Bab5T
+        axGNh+NbumrrS7YWl0+U+Z1hvAolNNTkA/CD1kaT1G4/LZPNB1smj3P6BKj0CaWo
+        jhWf2ygFDufH9YKG2LJ4R/3D1jxomNvriQUV2StLfFSgaDlYvFkC1DfOn2pdfQw9
+        vjEpvw3DMKIbKE3iXuvlFiY/fInPyO4+CRtAYMwQcw==
+X-ME-Sender: <xms:J4X-YnRDptpp7S--FkAywlHfIdwIA1yRVRBfFQXOPpZ4N07YBEtBOA>
+    <xme:J4X-YowMS4gv3xV8YqA9uy2AsmFGuoBS4Mqvq56e8XquAd8c1T8ndurz_sYmCKuA1
+    _7JIcZLmX2SSLF6el8>
+X-ME-Received: <xmr:J4X-Ys13qmX1epPBqCXImrYO6nN16_EAy1yF1E4EJK_JRmleROdYebYPCox1bIFPEfl6I2n8_3tNLjUpoCdzQXbzuN2zCw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvdehledgleelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
+    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
+    ekvdekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhsse
+    gsuhhrrdhioh
+X-ME-Proxy: <xmx:J4X-YnCcFu0Vcu-KVKvJAI3-NSZcs4WRvW5jqr3tN-eopd3CKbTOQQ>
+    <xmx:J4X-YggAsdbAHfHsY9p3ZO3QpkQNnJrOu61r_BIUseQjchm8p-HTxg>
+    <xmx:J4X-YrrPque1Y2lkysGRhtmoYGBU4JZDqSkK_WGQrbfJ2bgSuf_V4w>
+    <xmx:KIX-YjsGyVGV9e6aRPjLGL1-Bl-oF3eh5xeJBA8w8XN418tQnG-cKw>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 18 Aug 2022 14:29:59 -0400 (EDT)
+Date:   Thu, 18 Aug 2022 11:29:57 -0700
+From:   Boris Burkov <boris@bur.io>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
         linux-fscrypt@vger.kernel.org
 Subject: Re: [PATCH v4] btrfs: send: add support for fs-verity
-Message-ID: <Yv58NctXwBzG1Ry1@gmail.com>
+Message-ID: <Yv6FJf5Kf1dskUcz@zen>
 References: <0561e8a33f991fa15053054b7b089d176fde6523.1660596577.git.boris@bur.io>
  <Yv3GssrE8hAFzGLJ@sol.localdomain>
- <20220818174010.GO13489@twin.jikos.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220818174010.GO13489@twin.jikos.cz>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <Yv3GssrE8hAFzGLJ@sol.localdomain>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, Aug 18, 2022 at 07:40:10PM +0200, David Sterba wrote:
-> On Wed, Aug 17, 2022 at 09:57:22PM -0700, Eric Biggers wrote:
-> > On Mon, Aug 15, 2022 at 01:54:28PM -0700, Boris Burkov wrote:
-> > > diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-> > > index e7671afcee4f..9e8679848d54 100644
-> > > --- a/fs/btrfs/send.c
-> > > +++ b/fs/btrfs/send.c
-> > > @@ -3,6 +3,7 @@
-> > >   * Copyright (C) 2012 Alexander Block.  All rights reserved.
-> > >   */
-> > >  
-> > > +#include "linux/compiler_attributes.h"
-> > 
-> > I don't understand the purpose of this include.  And why is it in quotes?
+On Wed, Aug 17, 2022 at 09:57:22PM -0700, Eric Biggers wrote:
+> On Mon, Aug 15, 2022 at 01:54:28PM -0700, Boris Burkov wrote:
+> > diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+> > index e7671afcee4f..9e8679848d54 100644
+> > --- a/fs/btrfs/send.c
+> > +++ b/fs/btrfs/send.c
+> > @@ -3,6 +3,7 @@
+> >   * Copyright (C) 2012 Alexander Block.  All rights reserved.
+> >   */
+> >  
+> > +#include "linux/compiler_attributes.h"
 > 
-> It compiles without it so I've deleted it.
+> I don't understand the purpose of this include.  And why is it in quotes?
+
+Sorry about that. I have this weird feeling that vim-lsp is "helpfully"
+adding includes for me sometimes. I'll look out for it next time I send
+a patch.
+
+Thanks for the review.
+
 > 
-> > 
-> > Otherwise this patch looks good to me.
+> Otherwise this patch looks good to me.
 > 
-> I assume it's acked-by/reviewed-by namely for the fs-verity changes,
-> right?
-
-Yes if you're just fixing that without a new version, you can add:
-
-Acked-by: Eric Biggers <ebiggers@google.com>
-
-(By the way, please fix your email client to not generate a Mail-Followup-To
-header, as it causes replies to move everyone to "To".  If you're using mutt,
-you need 'set followup_to = no' in your muttrc.)
-
-- Eric
+> - Eric
