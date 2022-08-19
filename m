@@ -2,92 +2,107 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 907835990A1
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 19 Aug 2022 00:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AD825991B2
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 19 Aug 2022 02:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241929AbiHRWk3 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 18 Aug 2022 18:40:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36228 "EHLO
+        id S232732AbiHSAW7 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 18 Aug 2022 20:22:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344412AbiHRWk0 (ORCPT
+        with ESMTP id S232055AbiHSAW7 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 18 Aug 2022 18:40:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57C67D807D;
-        Thu, 18 Aug 2022 15:40:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Thu, 18 Aug 2022 20:22:59 -0400
+Received: from box.fidei.email (box.fidei.email [71.19.144.250])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9B67CE328;
+        Thu, 18 Aug 2022 17:22:56 -0700 (PDT)
+Received: from authenticated-user (box.fidei.email [71.19.144.250])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E531861722;
-        Thu, 18 Aug 2022 22:40:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39063C433C1;
-        Thu, 18 Aug 2022 22:40:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660862424;
-        bh=d+VDi/Gzjo7yfZhsFUe9vStU/58Sblx/+MTOZeGGqpU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=aDe2BXsT670C0wZrctN/G+XD90FBAsK5JzzZe6avmEOs57eTdIEdPU8gOWBtl3cKd
-         WBc5QJBTeMHNjPuWoGUplKNGpG3PNC5V6vQSjUEQIhLFOPXcIklBxRlSYAfFd5kzQH
-         TcHT1H4675Ufov7Ec+aWGad5tzDxdClTNQIRJY0nKenp6dyF2AXrTrOR+DUCTsdSeA
-         PNyd1OEC80Ri2N1NijnTgusm/XSoDguB1Kgz84ruhTqYzYj/9fE0VJ6xviuxhdZQme
-         myCCywE62Wgd+Vqo5kbf1+fEpCJW7ehXtzJzXaNIyQ7f4E79f8cXuvVlj5//kkq7nC
-         7dPRgRDBPybJg==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        "Fabio M . De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH] fs-verity: use kmap_local_page() instead of kmap()
-Date:   Thu, 18 Aug 2022 15:40:10 -0700
-Message-Id: <20220818224010.43778-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.37.1
+        by box.fidei.email (Postfix) with ESMTPSA id 8A7BF8037B;
+        Thu, 18 Aug 2022 20:22:54 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
+        t=1660868575; bh=KJO8iwxrW0bVho80KCGrZkmxDyezgyXHpsErpPzQgHE=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=N+93TpP6Li6o7H2ac0bwSroqd6xtkc3b8IAQyozKaUpO5jlWrOrQR4JbA8TX/Rk3P
+         2qvGPQAIsTsC/v6YF9aK2M69TAcpoB/bwehlvSBaWBRsRuN8w0V273S8I0upw7c6UF
+         1D38AQq3HG+C/nMsR7aQn9OtWj8E233WIB1xHUr+fC9CLptMe/VwyVEDoFhu+fL8oV
+         rG03UPzMkgiMHlaVroeEVAIHKUUATNc38CeR47WdlvfwS7EQ8B5pfLH0IU2DYFgnpu
+         z/ycNTPggm32sTYMwlrXNAeTJhfY6MiOhDVUbpo4maLdQi5nWu2ElRhCSmx9E11DCr
+         edOAGKmJ0MERg==
+Message-ID: <80a2e21a-0835-6a7e-d8b6-9c1ca4ae157c@dorminy.me>
+Date:   Thu, 18 Aug 2022 20:22:53 -0400
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH 05/21] fscrypt: add new encryption policy for btrfs.
+Content-Language: en-US
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-fscrypt@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1660744500.git.sweettea-kernel@dorminy.me>
+ <66fcd64620c0c0711bbe80aa85e92f04d539bd83.1660744500.git.sweettea-kernel@dorminy.me>
+ <89d9ff01-c405-ec25-736a-bfba4c03e72c@dorminy.me>
+ <Yv64LMFQjs081n3Z@sol.localdomain>
+From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+In-Reply-To: <Yv64LMFQjs081n3Z@sol.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
 
-Convert the use of kmap() to its recommended replacement
-kmap_local_page().  This avoids the overhead of doing a non-local
-mapping, which is unnecessary in this case.
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/verity/read_metadata.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+On 8/18/22 18:07, Eric Biggers wrote:
+> On Wed, Aug 17, 2022 at 11:54:56AM -0400, Sweet Tea Dorminy wrote:
+>>
+>>
+>> On 8/17/22 10:49, Sweet Tea Dorminy wrote:
+>>> Encryption for btrfs must be extent-based, rather than fscrypt's
+>>> inode-based IV generation policies.  In particular, btrfs can have
+>>> multiple inodes referencing a single block of data, and moves logical
+>>> data blocks to different physical locations on disk; these two features
+>>> mean inode or physical-location-based IV generation policies will not
+>>> work for btrfs. Instead, btrfs can store an IV per extent, generated by
+>>> fscrypt and iterated per block within the extent, and provide that IV to
+>>> fscrypt for encryption/decryption.
+>>>
+>>> Plumbing filesystem internals into fscrypt for IV generation would be
+>>> ungainly and fragile. Thus, this change adds a new policy, IV_FROM_FS,
+>>> and a new operation function pointer, get_fs_derived_iv.  btrfs will
+>>> require this policy to be used, and implements get_fs_derived_iv by
+>>> getting the IV stored with the relevant file extent and iterating the IV
+>>> to the appropriate block number. Thus, each individual block has its own
+>>> IV, but all blocks within a file extent have iterated IVs according to
+>>> their block number, similarly to the IV_INO_LBLK* policy iterating IVs
+>>> for a given inode by lblk number.
+>>>
+>>> The IV buffer passed to get_fs_derived_iv() is pre-populated with the
+>>> inode contexts' nonce, as not all data to be encrypted is associated
+>>> with a file extent: for btrfs, this is used for filename encryption.
+>>>
+>>> Filesystems implementing this policy are expected to be incompatible
+>>> with existing IV generation policies, so if the function pointer is set,
+>>> only dummy or IV_FROM_FS policies are permitted. If there is a
+>>> filesystem which allows other policies as well as IV_FROM_FS, it may be
+>>> better to expose the policy to filesystems, so they can determine
+>>> whether any given policy is compatible with their operation.
+>>>
+>>> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+>>> ---
+>>
+>> I realized after sending that this doesn't have Documentation/ updates for
+>> the new policy, still; apologies, and it remains on my queue.
+> 
+> It looks like you also didn't address my feedback about IV_FROM_FS at
+> https://lore.kernel.org/linux-fscrypt/YuBAiRg9K8IrlCqV@gmail.com ?
 
-diff --git a/fs/verity/read_metadata.c b/fs/verity/read_metadata.c
-index 6ee849dc7bc183..2aefc5565152ad 100644
---- a/fs/verity/read_metadata.c
-+++ b/fs/verity/read_metadata.c
-@@ -53,14 +53,14 @@ static int fsverity_read_merkle_tree(struct inode *inode,
- 			break;
- 		}
- 
--		virt = kmap(page);
-+		virt = kmap_local_page(page);
- 		if (copy_to_user(buf, virt + offs_in_page, bytes_to_copy)) {
--			kunmap(page);
-+			kunmap_local(virt);
- 			put_page(page);
- 			err = -EFAULT;
- 			break;
- 		}
--		kunmap(page);
-+		kunmap_local(virt);
- 		put_page(page);
- 
- 		retval += bytes_to_copy;
-
-base-commit: 568035b01cfb107af8d2e4bd2fb9aea22cf5b868
-prerequisite-patch-id: 188e114bdf3546eb18e7984b70be8a7c773acec3
--- 
-2.37.1
-
+Apologies; I must not have grasped what you were requesting fully. 
+Should I change the name from IV_FROM_FS to IV_PER_EXTENT?
