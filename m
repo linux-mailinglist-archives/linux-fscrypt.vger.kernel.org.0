@@ -2,63 +2,56 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BAFF59A91A
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 20 Aug 2022 01:15:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 354A759A9CC
+	for <lists+linux-fscrypt@lfdr.de>; Sat, 20 Aug 2022 02:11:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241318AbiHSXJz (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 19 Aug 2022 19:09:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34570 "EHLO
+        id S240821AbiHTAGP (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 19 Aug 2022 20:06:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236190AbiHSXJy (ORCPT
+        with ESMTP id S244394AbiHTAGN (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 19 Aug 2022 19:09:54 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0D554F6B2;
-        Fri, 19 Aug 2022 16:09:53 -0700 (PDT)
+        Fri, 19 Aug 2022 20:06:13 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D29DDC57B6;
+        Fri, 19 Aug 2022 17:06:11 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 4AA04B8280F;
-        Fri, 19 Aug 2022 23:09:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93BD3C433C1;
-        Fri, 19 Aug 2022 23:09:50 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 3ECF5CE2836;
+        Sat, 20 Aug 2022 00:06:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D478C433C1;
+        Sat, 20 Aug 2022 00:06:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660950591;
-        bh=jyQMlfDyLfQswfrcmubQj7ukvdgCEoTA8LhJP39mZNY=;
+        s=k20201202; t=1660953968;
+        bh=bmY/rIg42sR+LftATW/o/kfBdIvBcTzPrp7h7embqQk=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QuOfKLcTLqSxarEIMozH41HlKKSXIw1Ha5z+iGobBTp0XC/190sxrbX4xymxeQZFF
-         3WudYVrb63Ic60WpCeWYRRbbMC6sNiKGVAznV8UysIUN6uVjyi5NDY0XFhaprIuD8A
-         pF59daiDM0+L9HkOjVyll+2uPITOtrvjzgrPS16r1XJmBV5ma+KvcLc+BHhqr03upy
-         fMsLt1xcBM7/2jnJiXFv+FJPXeiiS+0sz7tw4jOhLuKIjQw+8yi7bYCZL/cqb3a2bJ
-         OHxlSv4rJUDd6AvnKU3c4q61YHoNXW9ZdFJr7Qw7jTpstVUaoUe5id8DJL1pk0juet
-         AgN1uJU3z9Rkg==
-Date:   Fri, 19 Aug 2022 16:09:48 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Andreas Dilger <adilger@dilger.ca>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        xfs <linux-xfs@vger.kernel.org>, linux-api@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org,
-        linux-block <linux-block@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        b=K39ZSV5fNmgcRWBMZwUdCZgWzZRx4KVPEHSqxIley39L2Z2hiBNBanX22WpWOfWNs
+         d15Ey+rZNSUwYf9js/7cqs3A2H+wTTFG5Ulkcy2RBlXLdCbePeSt/bQ6E6l4p/9SQ8
+         5Z8Ootp22+495DSeGwxqd6Zey02VUyOk2E8NmN5bnBdBNvz/ATRGex/EvcGPFBBDqH
+         VWc0FYVM4JTIZR6ahlo6DQ557864VIumRlzwgMuKA4bMr4nvtcd5M74wghck1FjlAp
+         HNWOgSTuJ7GIeSjlruT3QD0a7HzWwm2oGlU1QsG4ts4QbGQiWKUrmeFQbyTMBzplYu
+         tBO/GigY85Mow==
+Date:   Fri, 19 Aug 2022 17:06:06 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
         Keith Busch <kbusch@kernel.org>
 Subject: Re: [PATCH v4 6/9] f2fs: don't allow DIO reads but not DIO writes
-Message-ID: <YwAYPFxW7VV4M9D1@sol.localdomain>
+Message-ID: <YwAlbsorBsshkxfU@google.com>
 References: <20220722071228.146690-1-ebiggers@kernel.org>
  <20220722071228.146690-7-ebiggers@kernel.org>
  <YtyoF89iOg8gs7hj@google.com>
  <Yt7dCcG0ns85QqJe@sol.localdomain>
  <YuXyKh8Zvr56rR4R@google.com>
  <YvrrEcw4E+rpDLwM@sol.localdomain>
- <20220816090312.GU3600936@dread.disaster.area>
- <D1CDACE3-EC7E-43E4-8F49-EEA2B6E71A41@dilger.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <D1CDACE3-EC7E-43E4-8F49-EEA2B6E71A41@dilger.ca>
+In-Reply-To: <YvrrEcw4E+rpDLwM@sol.localdomain>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -69,42 +62,66 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, Aug 16, 2022 at 10:42:29AM -0600, Andreas Dilger wrote:
+On 08/15, Eric Biggers wrote:
+> On Sat, Jul 30, 2022 at 08:08:26PM -0700, Jaegeuk Kim wrote:
+> > On 07/25, Eric Biggers wrote:
+> > > On Sat, Jul 23, 2022 at 07:01:59PM -0700, Jaegeuk Kim wrote:
+> > > > On 07/22, Eric Biggers wrote:
+> > > > > From: Eric Biggers <ebiggers@google.com>
+> > > > > 
+> > > > > Currently, if an f2fs filesystem is mounted with the mode=lfs and
+> > > > > io_bits mount options, DIO reads are allowed but DIO writes are not.
+> > > > > Allowing DIO reads but not DIO writes is an unusual restriction, which
+> > > > > is likely to be surprising to applications, namely any application that
+> > > > > both reads and writes from a file (using O_DIRECT).  This behavior is
+> > > > > also incompatible with the proposed STATX_DIOALIGN extension to statx.
+> > > > > Given this, let's drop the support for DIO reads in this configuration.
+> > > > 
+> > > > IIRC, we allowed DIO reads since applications complained a lower performance.
+> > > > So, I'm afraid this change will make another confusion to users. Could
+> > > > you please apply the new bahavior only for STATX_DIOALIGN?
+> > > > 
+> > > 
+> > > Well, the issue is that the proposed STATX_DIOALIGN fields cannot represent this
+> > > weird case where DIO reads are allowed but not DIO writes.  So the question is
+> > > whether this case actually matters, in which case we should make STATX_DIOALIGN
+> > > distinguish between DIO reads and DIO writes, or whether it's some odd edge case
+> > > that doesn't really matter, in which case we could just fix it or make
+> > > STATX_DIOALIGN report that DIO is unsupported.  I was hoping that you had some
+> > > insight here.  What sort of applications want DIO reads but not DIO writes?
+> > > Is this common at all?
+> > 
+> > I think there's no specific application to use the LFS mode at this
+> > moment, but I'd like to allow DIO read for zoned device which will be
+> > used for Android devices.
+> > 
 > 
-> IMHO, this whole discussion is putting the cart before the horse.
-> Changing existing (and useful) IO behavior to accommodate an API that
-> nobody has ever used, and is unlikely to even be widely used, doesn't
-> make sense to me.  Most applications won't check or care about the new
-> DIO size fields, since they've lived this long without statx() returning
-> this info, and will just pick a "large enough" size (4KB, 1MB, whatever)
-> that gives them the performance they need.  They *WILL* care if the app
-> is suddenly unable to read data from a file in ways that have worked for
-> a long time.
+> So if the zoned device feature becomes widely adopted, then STATX_DIOALIGN will
+> be useless on all Android devices?  That sounds undesirable. 
+
+Do you have a plan to adopt STATX_DIOALIGN in android?
+
+> Are you sure that
+> supporting DIO reads but not DIO writes actually works?  Does it not cause
+> problems for existing applications?
+
+I haven't heard any issue so far.
+
 > 
-> Even if apps are modified to check these new DIO size fields, and then
-> try to DIO write to a file in f2fs that doesn't allow it, then f2fs will
-> return an error, which is what it would have done without the statx()
-> changes, so no harm done AFAICS.
+> What we need to do is make a decision about whether this means we should build
+> in a stx_dio_direction field (indicating no support / readonly support /
+> writeonly support / readwrite support) into the API from the beginning.  If we
+> don't do that, then I don't think we could simply add such a field later, as the
+> statx_dio_*_align fields will have already been assigned their meaning.  I think
+> we'd instead have to "duplicate" the API, with STATX_DIOROALIGN and
+> statx_dio_ro_*_align fields.  That seems uglier than building a directional
+> indicator into the API from the beginning.  On the other hand, requiring all
+> programs to check stx_dio_direction would add complexity to using the API.
 > 
-> Even with a more-complex DIO status return that handles a "direction"
-> field (which IMHO is needlessly complex), there is always the potential
-> for a TOCTOU race where a file changes between checking and access, so
-> the userspace code would need to handle this.
+> Any thoughts on this?
+
+I haven't seen the details of the implementation tho, why not supporting it
+only if filesystem has the same DIO RW policy?
+
 > 
-
-I'm having trouble making sense of your argument here; you seem to be saying
-that STATX_DIOALIGN isn't useful, so it doesn't matter if we design it
-correctly?  That line of reasoning is concerning, as it's certainly intended to
-be useful, and if it's not useful there's no point in adding it.
-
-Are there any specific concerns that you have, besides TOCTOU races and the lack
-of support for read-only DIO?
-
-I don't think that TOCTOU races are a real concern here.  Generally DIO
-constraints would only change if the application doing DIO intentionally does
-something to the file, or if there are changes that involve the filesystem being
-taken offline, e.g. the filesystem being mounted with significantly different
-options or being moved to a different block device.  And, well, everything else
-in stat()/statx() is subject to TOCTOU as well, but is still used...
-
-- Eric
+> - Eric
