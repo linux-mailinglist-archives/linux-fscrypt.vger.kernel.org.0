@@ -2,121 +2,87 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAC5F59AA47
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 20 Aug 2022 02:56:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3771E59AFDB
+	for <lists+linux-fscrypt@lfdr.de>; Sat, 20 Aug 2022 21:11:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245663AbiHTAuj (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 19 Aug 2022 20:50:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37724 "EHLO
+        id S229675AbiHTTKy (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sat, 20 Aug 2022 15:10:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236835AbiHTAui (ORCPT
+        with ESMTP id S229462AbiHTTKx (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 19 Aug 2022 20:50:38 -0400
+        Sat, 20 Aug 2022 15:10:53 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADACC1022BC;
-        Fri, 19 Aug 2022 17:50:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E53C26AF7;
+        Sat, 20 Aug 2022 12:10:50 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 356ED618FF;
-        Sat, 20 Aug 2022 00:50:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51F8AC433C1;
-        Sat, 20 Aug 2022 00:50:36 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E0F2B60F9D;
+        Sat, 20 Aug 2022 19:10:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 202FAC433C1;
+        Sat, 20 Aug 2022 19:10:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660956636;
-        bh=U0F0zSPNKxuAY6JOls6jvQa4zk4uPZ2rC67A6ackKBE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ME/DzJnEsxK2YAl9iK6ao7UeCItu3b1qrVgFrl0XQ/mQrtocWYNjCfX0l6xdSBsuH
-         Hq5L8CfZGP0vos/Au1tZUXs00oaV1xGtPaZWQMtAfhVSGZTz4V3ZjXwVvj54bUbL9a
-         DfqDHffqHpoO3zUR3qNWg9Btp+l9/nQiGwHx1DASERd08lu8QcT1fbjtlSzD/c5sFk
-         7nT5MGhxT4CbY8Q0BAUhSC+VsKgbQEhuvQHggMcZM5Pd1bj7l8jFRwikxoyRJiB/3a
-         lXHypQ+nUctz66s69PGdaWA2YfHqdRJ9sJ3yRD8hKlcOUxQXBHf734Wm5QLYp2jR+R
-         yzTb8d5Sx49xw==
-Date:   Fri, 19 Aug 2022 17:50:34 -0700
+        s=k20201202; t=1661022649;
+        bh=uNUb1M7CCQXGOxGrsYBQxCVkKEk2ADvQo+VwUlJ9jHQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=KzQ/lWHqSAiLkeoOQivxT89bOTDFv6C+41BHNiWuwaeSsE3Wsmfr4ybvTY+i7MKm6
+         kIC5kqNNUqyXGGprcbKIiXbJA51rNHvFYmRwj4qRXACUqb63yhId9WPe1l3A2aI/Fj
+         sTOTyORCQFdc61zxLhl3CHOBrdMjqJweKKfqlcbUA0pUebdKH7hswnkUEkzN/VhDnT
+         a0gZ5Rh713lZrWZPzgqDnTB1CW8g0CpwwPGx6zZS7HaQv5e9gsg/f9GFOmpm6UwJJJ
+         uVzRE8d4PvzS2DgzPHFMeAIUrbsZhZE1+hmQ1uXMh7dS2CSQr/xM9+y5I5FFL8GnGX
+         dbb8hI9LPdRAA==
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-fscrypt@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH 05/21] fscrypt: add new encryption policy for btrfs.
-Message-ID: <YwAv2qyXKH1NiJsQ@sol.localdomain>
-References: <cover.1660744500.git.sweettea-kernel@dorminy.me>
- <66fcd64620c0c0711bbe80aa85e92f04d539bd83.1660744500.git.sweettea-kernel@dorminy.me>
- <89d9ff01-c405-ec25-736a-bfba4c03e72c@dorminy.me>
- <Yv64LMFQjs081n3Z@sol.localdomain>
- <80a2e21a-0835-6a7e-d8b6-9c1ca4ae157c@dorminy.me>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        Christoph Hellwig <hch@lst.de>
+Subject: [PATCH v2 0/2] fscrypt: rework filesystem-level keyring
+Date:   Sat, 20 Aug 2022 12:02:08 -0700
+Message-Id: <20220820190210.169734-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.37.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <80a2e21a-0835-6a7e-d8b6-9c1ca4ae157c@dorminy.me>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,SUSPICIOUS_RECIPS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, Aug 18, 2022 at 08:22:53PM -0400, Sweet Tea Dorminy wrote:
-> 
-> 
-> On 8/18/22 18:07, Eric Biggers wrote:
-> > On Wed, Aug 17, 2022 at 11:54:56AM -0400, Sweet Tea Dorminy wrote:
-> > > 
-> > > 
-> > > On 8/17/22 10:49, Sweet Tea Dorminy wrote:
-> > > > Encryption for btrfs must be extent-based, rather than fscrypt's
-> > > > inode-based IV generation policies.  In particular, btrfs can have
-> > > > multiple inodes referencing a single block of data, and moves logical
-> > > > data blocks to different physical locations on disk; these two features
-> > > > mean inode or physical-location-based IV generation policies will not
-> > > > work for btrfs. Instead, btrfs can store an IV per extent, generated by
-> > > > fscrypt and iterated per block within the extent, and provide that IV to
-> > > > fscrypt for encryption/decryption.
-> > > > 
-> > > > Plumbing filesystem internals into fscrypt for IV generation would be
-> > > > ungainly and fragile. Thus, this change adds a new policy, IV_FROM_FS,
-> > > > and a new operation function pointer, get_fs_derived_iv.  btrfs will
-> > > > require this policy to be used, and implements get_fs_derived_iv by
-> > > > getting the IV stored with the relevant file extent and iterating the IV
-> > > > to the appropriate block number. Thus, each individual block has its own
-> > > > IV, but all blocks within a file extent have iterated IVs according to
-> > > > their block number, similarly to the IV_INO_LBLK* policy iterating IVs
-> > > > for a given inode by lblk number.
-> > > > 
-> > > > The IV buffer passed to get_fs_derived_iv() is pre-populated with the
-> > > > inode contexts' nonce, as not all data to be encrypted is associated
-> > > > with a file extent: for btrfs, this is used for filename encryption.
-> > > > 
-> > > > Filesystems implementing this policy are expected to be incompatible
-> > > > with existing IV generation policies, so if the function pointer is set,
-> > > > only dummy or IV_FROM_FS policies are permitted. If there is a
-> > > > filesystem which allows other policies as well as IV_FROM_FS, it may be
-> > > > better to expose the policy to filesystems, so they can determine
-> > > > whether any given policy is compatible with their operation.
-> > > > 
-> > > > Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-> > > > ---
-> > > 
-> > > I realized after sending that this doesn't have Documentation/ updates for
-> > > the new policy, still; apologies, and it remains on my queue.
-> > 
-> > It looks like you also didn't address my feedback about IV_FROM_FS at
-> > https://lore.kernel.org/linux-fscrypt/YuBAiRg9K8IrlCqV@gmail.com ?
-> 
-> Apologies; I must not have grasped what you were requesting fully. Should I
-> change the name from IV_FROM_FS to IV_PER_EXTENT?
+This series reworks the filesystem-level keyring to not use the keyrings
+subsystem as part of its internal implementation (except for ->mk_users,
+which remains unchanged for now).  This fixes several issues, described
+in the first patch.  This is also a prerequisite for removing the direct
+use of struct request_queue from filesystem code, as discussed at
+https://lore.kernel.org/linux-fscrypt/20220721125929.1866403-1-hch@lst.de/T/#u
 
-Yes, though IV_RAND_PER_EXTENT would probably be even better.  I am asking for a
-proper name that expresses how the cryptography works in your scheme...  And for
-a slightly different way of thinking about your scheme in general, where the way
-the cryptography works is a first class citizen of what your new flag means,
-rather than some abstract fs-specific thing that you are trying to hide from the
-UAPI and the fs/crypto/ library.
+Changed v1 => v2:
+    - Don't compare uninitialized bytes of struct fscrypt_key_specifier
+    - Don't use refcount_dec_and_lock() unnecessarily
+    - Other minor cleanups
 
-- Eric
+Eric Biggers (2):
+  fscrypt: stop using keyrings subsystem for fscrypt_master_key
+  fscrypt: stop holding extra request_queue references
+
+ fs/crypto/fscrypt_private.h |  74 ++++--
+ fs/crypto/hooks.c           |  10 +-
+ fs/crypto/inline_crypt.c    |  83 +++---
+ fs/crypto/keyring.c         | 495 +++++++++++++++++++-----------------
+ fs/crypto/keysetup.c        |  89 +++----
+ fs/crypto/keysetup_v1.c     |   4 +-
+ fs/crypto/policy.c          |   8 +-
+ fs/super.c                  |   2 +-
+ include/linux/fs.h          |   2 +-
+ include/linux/fscrypt.h     |   4 +-
+ 10 files changed, 406 insertions(+), 365 deletions(-)
+
+
+base-commit: 568035b01cfb107af8d2e4bd2fb9aea22cf5b868
+-- 
+2.37.1
+
