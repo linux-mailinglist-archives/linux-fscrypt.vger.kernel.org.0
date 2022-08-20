@@ -2,57 +2,56 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 527A059AA1E
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 20 Aug 2022 02:37:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAC5F59AA47
+	for <lists+linux-fscrypt@lfdr.de>; Sat, 20 Aug 2022 02:56:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245318AbiHTAeN (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 19 Aug 2022 20:34:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39026 "EHLO
+        id S245663AbiHTAuj (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 19 Aug 2022 20:50:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245489AbiHTAd4 (ORCPT
+        with ESMTP id S236835AbiHTAui (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 19 Aug 2022 20:33:56 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F8ED13E33;
-        Fri, 19 Aug 2022 17:33:39 -0700 (PDT)
+        Fri, 19 Aug 2022 20:50:38 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADACC1022BC;
+        Fri, 19 Aug 2022 17:50:37 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2CD9E61900;
-        Sat, 20 Aug 2022 00:33:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46A39C433D7;
-        Sat, 20 Aug 2022 00:33:38 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 356ED618FF;
+        Sat, 20 Aug 2022 00:50:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51F8AC433C1;
+        Sat, 20 Aug 2022 00:50:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660955618;
-        bh=2UioO3jIqUCggDOliY/3dPwIKxowKS7N1pNMvwgRRJY=;
+        s=k20201202; t=1660956636;
+        bh=U0F0zSPNKxuAY6JOls6jvQa4zk4uPZ2rC67A6ackKBE=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p7YXCiqntWaRVlaJVs0qsv0/0okcSkkBv5tX156c0hQa69FiHuFAOuyU2H14/uhPh
-         qkFkQqxM4QZW8Uk24/T8GgmF1hsH9T7n23yOG11yBTTC78vlPfWfsuoSmR6p/47Zwd
-         S7rQFXLxLwXMyC84969EnRkhQDcVdOTnKURgs1tJrEqikdWe3N0un1XrVFCRdz704n
-         Ievfd5LYGzKFanXasRnR0PNi5+gnbYVmn2sZlUsswTIJIYEs4ag4Vyn/LqgZa4kkcK
-         eAom2kY4OTnmNb9mf0PNZqubwgxSrHGt6gCL1UeiAtkbhFzyiP5LLMH88dZk/owdi9
-         YbUQ3xISxHF3Q==
-Date:   Fri, 19 Aug 2022 17:33:36 -0700
+        b=ME/DzJnEsxK2YAl9iK6ao7UeCItu3b1qrVgFrl0XQ/mQrtocWYNjCfX0l6xdSBsuH
+         Hq5L8CfZGP0vos/Au1tZUXs00oaV1xGtPaZWQMtAfhVSGZTz4V3ZjXwVvj54bUbL9a
+         DfqDHffqHpoO3zUR3qNWg9Btp+l9/nQiGwHx1DASERd08lu8QcT1fbjtlSzD/c5sFk
+         7nT5MGhxT4CbY8Q0BAUhSC+VsKgbQEhuvQHggMcZM5Pd1bj7l8jFRwikxoyRJiB/3a
+         lXHypQ+nUctz66s69PGdaWA2YfHqdRJ9sJ3yRD8hKlcOUxQXBHf734Wm5QLYp2jR+R
+         yzTb8d5Sx49xw==
+Date:   Fri, 19 Aug 2022 17:50:34 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Keith Busch <kbusch@kernel.org>
-Subject: Re: [PATCH v4 6/9] f2fs: don't allow DIO reads but not DIO writes
-Message-ID: <YwAr4MKgnjljdXiA@sol.localdomain>
-References: <20220722071228.146690-1-ebiggers@kernel.org>
- <20220722071228.146690-7-ebiggers@kernel.org>
- <YtyoF89iOg8gs7hj@google.com>
- <Yt7dCcG0ns85QqJe@sol.localdomain>
- <YuXyKh8Zvr56rR4R@google.com>
- <YvrrEcw4E+rpDLwM@sol.localdomain>
- <YwAlbsorBsshkxfU@google.com>
+To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-fscrypt@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH 05/21] fscrypt: add new encryption policy for btrfs.
+Message-ID: <YwAv2qyXKH1NiJsQ@sol.localdomain>
+References: <cover.1660744500.git.sweettea-kernel@dorminy.me>
+ <66fcd64620c0c0711bbe80aa85e92f04d539bd83.1660744500.git.sweettea-kernel@dorminy.me>
+ <89d9ff01-c405-ec25-736a-bfba4c03e72c@dorminy.me>
+ <Yv64LMFQjs081n3Z@sol.localdomain>
+ <80a2e21a-0835-6a7e-d8b6-9c1ca4ae157c@dorminy.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YwAlbsorBsshkxfU@google.com>
+In-Reply-To: <80a2e21a-0835-6a7e-d8b6-9c1ca4ae157c@dorminy.me>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -63,79 +62,61 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Aug 19, 2022 at 05:06:06PM -0700, Jaegeuk Kim wrote:
-> On 08/15, Eric Biggers wrote:
-> > On Sat, Jul 30, 2022 at 08:08:26PM -0700, Jaegeuk Kim wrote:
-> > > On 07/25, Eric Biggers wrote:
-> > > > On Sat, Jul 23, 2022 at 07:01:59PM -0700, Jaegeuk Kim wrote:
-> > > > > On 07/22, Eric Biggers wrote:
-> > > > > > From: Eric Biggers <ebiggers@google.com>
-> > > > > > 
-> > > > > > Currently, if an f2fs filesystem is mounted with the mode=lfs and
-> > > > > > io_bits mount options, DIO reads are allowed but DIO writes are not.
-> > > > > > Allowing DIO reads but not DIO writes is an unusual restriction, which
-> > > > > > is likely to be surprising to applications, namely any application that
-> > > > > > both reads and writes from a file (using O_DIRECT).  This behavior is
-> > > > > > also incompatible with the proposed STATX_DIOALIGN extension to statx.
-> > > > > > Given this, let's drop the support for DIO reads in this configuration.
-> > > > > 
-> > > > > IIRC, we allowed DIO reads since applications complained a lower performance.
-> > > > > So, I'm afraid this change will make another confusion to users. Could
-> > > > > you please apply the new bahavior only for STATX_DIOALIGN?
-> > > > > 
+On Thu, Aug 18, 2022 at 08:22:53PM -0400, Sweet Tea Dorminy wrote:
+> 
+> 
+> On 8/18/22 18:07, Eric Biggers wrote:
+> > On Wed, Aug 17, 2022 at 11:54:56AM -0400, Sweet Tea Dorminy wrote:
+> > > 
+> > > 
+> > > On 8/17/22 10:49, Sweet Tea Dorminy wrote:
+> > > > Encryption for btrfs must be extent-based, rather than fscrypt's
+> > > > inode-based IV generation policies.  In particular, btrfs can have
+> > > > multiple inodes referencing a single block of data, and moves logical
+> > > > data blocks to different physical locations on disk; these two features
+> > > > mean inode or physical-location-based IV generation policies will not
+> > > > work for btrfs. Instead, btrfs can store an IV per extent, generated by
+> > > > fscrypt and iterated per block within the extent, and provide that IV to
+> > > > fscrypt for encryption/decryption.
 > > > > 
-> > > > Well, the issue is that the proposed STATX_DIOALIGN fields cannot represent this
-> > > > weird case where DIO reads are allowed but not DIO writes.  So the question is
-> > > > whether this case actually matters, in which case we should make STATX_DIOALIGN
-> > > > distinguish between DIO reads and DIO writes, or whether it's some odd edge case
-> > > > that doesn't really matter, in which case we could just fix it or make
-> > > > STATX_DIOALIGN report that DIO is unsupported.  I was hoping that you had some
-> > > > insight here.  What sort of applications want DIO reads but not DIO writes?
-> > > > Is this common at all?
+> > > > Plumbing filesystem internals into fscrypt for IV generation would be
+> > > > ungainly and fragile. Thus, this change adds a new policy, IV_FROM_FS,
+> > > > and a new operation function pointer, get_fs_derived_iv.  btrfs will
+> > > > require this policy to be used, and implements get_fs_derived_iv by
+> > > > getting the IV stored with the relevant file extent and iterating the IV
+> > > > to the appropriate block number. Thus, each individual block has its own
+> > > > IV, but all blocks within a file extent have iterated IVs according to
+> > > > their block number, similarly to the IV_INO_LBLK* policy iterating IVs
+> > > > for a given inode by lblk number.
+> > > > 
+> > > > The IV buffer passed to get_fs_derived_iv() is pre-populated with the
+> > > > inode contexts' nonce, as not all data to be encrypted is associated
+> > > > with a file extent: for btrfs, this is used for filename encryption.
+> > > > 
+> > > > Filesystems implementing this policy are expected to be incompatible
+> > > > with existing IV generation policies, so if the function pointer is set,
+> > > > only dummy or IV_FROM_FS policies are permitted. If there is a
+> > > > filesystem which allows other policies as well as IV_FROM_FS, it may be
+> > > > better to expose the policy to filesystems, so they can determine
+> > > > whether any given policy is compatible with their operation.
+> > > > 
+> > > > Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+> > > > ---
 > > > 
-> > > I think there's no specific application to use the LFS mode at this
-> > > moment, but I'd like to allow DIO read for zoned device which will be
-> > > used for Android devices.
-> > > 
+> > > I realized after sending that this doesn't have Documentation/ updates for
+> > > the new policy, still; apologies, and it remains on my queue.
 > > 
-> > So if the zoned device feature becomes widely adopted, then STATX_DIOALIGN will
-> > be useless on all Android devices?  That sounds undesirable. 
+> > It looks like you also didn't address my feedback about IV_FROM_FS at
+> > https://lore.kernel.org/linux-fscrypt/YuBAiRg9K8IrlCqV@gmail.com ?
 > 
-> Do you have a plan to adopt STATX_DIOALIGN in android?
+> Apologies; I must not have grasped what you were requesting fully. Should I
+> change the name from IV_FROM_FS to IV_PER_EXTENT?
 
-Nothing specific, but statx() is among the system calls that are supported by
-Android's libc and that apps are allowed to use.  So STATX_DIOALIGN would become
-available as well.  I'd prefer if it actually worked properly if apps, or
-Android system components, do actually try to use it (or need to use it)...
-
-> > What we need to do is make a decision about whether this means we should build
-> > in a stx_dio_direction field (indicating no support / readonly support /
-> > writeonly support / readwrite support) into the API from the beginning.  If we
-> > don't do that, then I don't think we could simply add such a field later, as the
-> > statx_dio_*_align fields will have already been assigned their meaning.  I think
-> > we'd instead have to "duplicate" the API, with STATX_DIOROALIGN and
-> > statx_dio_ro_*_align fields.  That seems uglier than building a directional
-> > indicator into the API from the beginning.  On the other hand, requiring all
-> > programs to check stx_dio_direction would add complexity to using the API.
-> > 
-> > Any thoughts on this?
-> 
-> I haven't seen the details of the implementation tho, why not supporting it
-> only if filesystem has the same DIO RW policy?
-
-As I've mentioned, we could of course make STATX_DIOALIGN report that DIO is
-unsupported when the DIO support is read-only.
-
-The thing that confuses me based on the responses so far is that there seem to
-be two camps of people: (1) people who really want STATX_DIOALIGN, and who don't
-think that read-only DIO support should exist so they don't want STATX_DIOALIGN
-to support it; and (2) people who feel that read-only DIO support is perfectly
-reasonable and useful, and who don't care whether STATX_DIOALIGN supports it
-because they don't care about STATX_DIOALIGN in the first place.
-
-While both camps seem to agree that STATX_DIOALIGN shouldn't support read-only
-DIO, it is for totally contradictory reasons, so it's not very convincing.  We
-should ensure that we have rock-solid reasoning before committing to a new UAPI
-that will have to be permanently supported...
+Yes, though IV_RAND_PER_EXTENT would probably be even better.  I am asking for a
+proper name that expresses how the cryptography works in your scheme...  And for
+a slightly different way of thinking about your scheme in general, where the way
+the cryptography works is a first class citizen of what your new flag means,
+rather than some abstract fs-specific thing that you are trying to hide from the
+UAPI and the fs/crypto/ library.
 
 - Eric
