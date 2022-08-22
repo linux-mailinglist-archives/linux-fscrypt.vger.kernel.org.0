@@ -2,125 +2,90 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B53059BFD3
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 22 Aug 2022 14:55:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50E8E59C635
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 22 Aug 2022 20:28:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232958AbiHVMzS (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 22 Aug 2022 08:55:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33608 "EHLO
+        id S237272AbiHVS1a (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 22 Aug 2022 14:27:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232195AbiHVMzQ (ORCPT
+        with ESMTP id S236362AbiHVS1X (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 22 Aug 2022 08:55:16 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B543DF04;
-        Mon, 22 Aug 2022 05:55:15 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Mon, 22 Aug 2022 14:27:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D294C481F8;
+        Mon, 22 Aug 2022 11:27:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id DE8471FFF2;
-        Mon, 22 Aug 2022 12:55:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1661172913;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4SzcUY4wM0IXoQYYr0JNf2r1R0fFfPlNFUy34e5If4s=;
-        b=0eF+FdzKTdIZYIRmNlgikotnAvs5WjAaJTS0+VI4Lgfnwfts78NgYmqXtZFyLW8n2irnaz
-        LusDtaiD7hi4BM0+KbcvNlzcL9G0IcEy4H8XHeSMOKkD3VqhVt9s/W1EAFTxrSP1neufWt
-        6pTQ0bCKIJpgHTZZkZzUrPDvQu5BD9k=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1661172913;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4SzcUY4wM0IXoQYYr0JNf2r1R0fFfPlNFUy34e5If4s=;
-        b=Ptz/Y/YBe66zfDODfdurNrRJN9xTupzRtUn6Oty7OeI6oIUs7AKsqahu1qVr4NA48kFUXU
-        HJwz8oWJ2cZErAAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AF13E1332D;
-        Mon, 22 Aug 2022 12:55:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 5kB1KbF8A2PcVAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 22 Aug 2022 12:55:13 +0000
-Date:   Mon, 22 Aug 2022 14:50:00 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Boris Burkov <boris@bur.io>
-Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH v4] btrfs: send: add support for fs-verity
-Message-ID: <20220822125000.GU13489@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Boris Burkov <boris@bur.io>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        linux-fscrypt@vger.kernel.org
-References: <0561e8a33f991fa15053054b7b089d176fde6523.1660596577.git.boris@bur.io>
- <20220818173254.GN13489@twin.jikos.cz>
- <Yv6JvbDZDL/5/7Y6@zen>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 61230612CA;
+        Mon, 22 Aug 2022 18:27:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F3CBC433D6;
+        Mon, 22 Aug 2022 18:27:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1661192841;
+        bh=Gh6irQCwtsKJ6eFKCfceqRMjx+rmz6M385gr7IrGoEk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=huOKrEA5mAlbzWgfvLn+VqRshn8OpPAHYhDTxEDynERxlmvcaSI3WtGM1asCy+ca3
+         z3TbWV2YoqflNyuA5fCnQGXkNhfvFB5CK0HLqSqQWbu0VfxJAoTnRzNJfs+tJaFELc
+         PXlG3bqP/YWzlUMyq0UMO4r7l778/b7RwdYEqIxxNftqqCNf44mU9reP/VLBiQncfk
+         tvCLkZHFQFrMQZqQuqsffn0Q/fYb8+fDBcfVCUFsGYUGQXZEb6RBy5BBI44dJ32SX7
+         VAXKH4EI3h5wanmVvEV1wIRcnuL0HZes0VDiLp7TgaBcGF7/zDfWrl+poZ6EyUOvng
+         85wGjO2B7Qi+w==
+Date:   Mon, 22 Aug 2022 11:27:19 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-f2fs-devel@lists.sourceforge.net,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH v2 0/2] ext4, f2fs: stop using PG_error for fscrypt and
+ fsverity
+Message-ID: <YwPKh9fWUJLnSEF/@sol.localdomain>
+References: <20220815235052.86545-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Yv6JvbDZDL/5/7Y6@zen>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20220815235052.86545-1-ebiggers@kernel.org>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, Aug 18, 2022 at 11:49:33AM -0700, Boris Burkov wrote:
-> On Thu, Aug 18, 2022 at 07:32:54PM +0200, David Sterba wrote:
-> > On Mon, Aug 15, 2022 at 01:54:28PM -0700, Boris Burkov wrote:
-> > > Preserve the fs-verity status of a btrfs file across send/recv.
-> > > 
-> > > There is no facility for installing the Merkle tree contents directly on
-> > > the receiving filesystem, so we package up the parameters used to enable
-> > > verity found in the verity descriptor. This gives the receive side
-> > > enough information to properly enable verity again. Note that this means
-> > > that receive will have to re-compute the whole Merkle tree, similar to
-> > > how compression worked before encoded_write.
-> > > 
-> > > Since the file becomes read-only after verity is enabled, it is
-> > > important that verity is added to the send stream after any file writes.
-> > > Therefore, when we process a verity item, merely note that it happened,
-> > > then actually create the command in the send stream during
-> > > 'finish_inode_if_needed'.
-> > > 
-> > > This also creates V3 of the send stream format, without any format
-> > > changes besides adding the new commands and attributes.
-> > > 
-> > > Signed-off-by: Boris Burkov <boris@bur.io>
-> > 
-> > As for the merge target, a realistic one seems to be 6.2, we have too
-> > many pending patches everywhere else. There's a todo list for v3 that
-> > I'd really like to get done.
-> > 
-> > To be able to test things incrementally until then we can add v3 support
-> > under debug config.
+On Mon, Aug 15, 2022 at 04:50:50PM -0700, Eric Biggers wrote:
+> This series changes ext4 and f2fs to stop using PG_error to track
+> decryption and verity errors.  This is a step towards freeing up
+> PG_error for other uses, as discussed at
+> https://lore.kernel.org/linux-fsdevel/Yn10Iz1mJX1Mu1rv@casper.infradead.org
 > 
-> That all sounds good and reasonable to me. Would you like me to re-send
-> with gating V3 behind debug, or will you do it as part of taking it?
+> Note: due to the interdependencies with fs/crypto/ and fs/verity/,
+> I couldn't split this up into separate patches for each filesystem.
+> I'd appreciate Acks from the ext4 and f2fs maintainers so that I can
+> take these patches.  Otherwise I'm not sure how to move them forward.
+> 
+> Changed v1 => v2:
+>    - Rebased onto v6.0-rc1 and resolved conflicts in f2fs.
+> 
+> Eric Biggers (2):
+>   fscrypt: stop using PG_error to track error status
+>   fsverity: stop using PG_error to track error status
+> 
+>  fs/crypto/bio.c         | 16 +++++++----
+>  fs/ext4/readpage.c      | 16 +++++------
+>  fs/f2fs/compress.c      | 64 ++++++++++++++++++++---------------------
+>  fs/f2fs/data.c          | 64 +++++++++++++++++++++++------------------
+>  fs/verity/verify.c      | 12 ++++----
+>  include/linux/fscrypt.h |  5 ++--
+>  6 files changed, 93 insertions(+), 84 deletions(-)
+> 
+> 
+> base-commit: 568035b01cfb107af8d2e4bd2fb9aea22cf5b868
 
-Please send a separate patch for that.
+I'd appreciate review from the f2fs folks on this series, as that's where the
+most complex changes are.
 
-> Also, this just popped in my head, but could we acheive what we want
-> with the "--proto" feature of the send CLI, and having a notion of a
-> provisional version that is not yet hardened and properly named/fixed
-> for future compatibility? For extra fanciness, we can do sub-versions
-> or hashes of the commands or something. Maybe proto=(u64)-1 means
-> experimental.
-
-This could be usefor for some cases but I think not for the protocol,
-the version is linear and we want to batch the changes into one
-version. Othewise it creates dependency and configuration
-complications, and users don't always listen to the "this is still
-experimental" should it be meant to be outside of the debug build.
+- Eric
