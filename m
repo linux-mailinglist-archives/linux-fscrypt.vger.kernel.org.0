@@ -2,104 +2,105 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 879BA5A5364
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 29 Aug 2022 19:43:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B7075AA004
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  1 Sep 2022 21:33:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229937AbiH2RnJ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 29 Aug 2022 13:43:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46146 "EHLO
+        id S234043AbiIATdP (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 1 Sep 2022 15:33:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbiH2RnI (ORCPT
+        with ESMTP id S234042AbiIATdO (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 29 Aug 2022 13:43:08 -0400
+        Thu, 1 Sep 2022 15:33:14 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E420B99B69;
-        Mon, 29 Aug 2022 10:43:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D43A38982F;
+        Thu,  1 Sep 2022 12:33:13 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 806C76130F;
-        Mon, 29 Aug 2022 17:43:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9874AC433C1;
-        Mon, 29 Aug 2022 17:43:06 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 70ECA61DEF;
+        Thu,  1 Sep 2022 19:33:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0971C433D6;
+        Thu,  1 Sep 2022 19:33:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661794986;
-        bh=cxPPEBu+h0eaOoH6XNEDFwMgVRSEBxa1GviI21BIVfs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=C7UlN/rxD1A07hajY7oNwvf4lBdkN65KxQB1PgDkV11i2ewgJZBMX2GpgYHrDAsTy
-         Oln4C1jZ/ElA2r8VlroJ3K03byLr/6Am5E58SrcKgBrWqbzl70Gns18A6A38kusjJv
-         6TxtKkFiWv2KEifYCjR7FYeB3c+69CN7AwLymixPQ/MDrVmUKfE7Aij5o89rj+NRG9
-         Si3LhZdBnIymBkFvxm/nm/0b6yK3L+URLZaYy/jBTOo8RtodYDoOC3yFMeWb11eTac
-         wu3UH/FJDlPjhCmTOCt/B8QvlZq5enC/ZWKX/3pvfn9OVCww54CR/COe0N8aRbvF/P
-         LI7nY9FXequHw==
-Date:   Mon, 29 Aug 2022 10:43:04 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Keith Busch <kbusch@kernel.org>
-Subject: Re: [PATCH v5 7/8] f2fs: support STATX_DIOALIGN
-Message-ID: <Ywz6qH51lzdYy717@google.com>
-References: <20220827065851.135710-1-ebiggers@kernel.org>
- <20220827065851.135710-8-ebiggers@kernel.org>
+        s=k20201202; t=1662060792;
+        bh=Pl43GYt6Xsc/ANMGGsY4FRqWrbIBaTw6SVq8MHkVlFs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ZlWrYLUtM87oJ66958+byIVSwRs09ENVP/W42o9oocn7HaYiu/XKLb8X6wcrXrlVy
+         nv/MTQpOkpOWC/2y6gyhxXTE3it53EuluzxehIX2libyt1KBRpauiHEAkBpwZawOvw
+         vrCoZ2lwJQ5UJvD50/ysEQIxUsdYQRqrBitNcXv0dbb7NKmZnkAHTjsbxzdCX1AUdu
+         ylgeC81ZRHuDK0HbZcFCPl4qIE9hpF8PVhOu2KI0qeSjrXgSnmh9a5YehgcLpvP4CZ
+         /1rF0hYQ5b/e/ZhHFAzoss4RgKZM5vbyPh8+NBBVBrqUCrO7pJv6BVP/XeUlFihoUb
+         j/GFuNHHOFbZg==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        Christoph Hellwig <hch@lst.de>
+Subject: [PATCH v4 0/3] fscrypt: rework keyring and stop using request_queue
+Date:   Thu,  1 Sep 2022 12:32:05 -0700
+Message-Id: <20220901193208.138056-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220827065851.135710-8-ebiggers@kernel.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,SUSPICIOUS_RECIPS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On 08/26, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> Add support for STATX_DIOALIGN to f2fs, so that direct I/O alignment
-> restrictions are exposed to userspace in a generic way.
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
+Patch 1 of this series reworks the fscrypt filesystem-level keyring to
+not use the keyrings subsystem as part of its internal implementation
+(except for ->mk_users, which remains unchanged for now).  This fixes
+several issues, described in the patch itself.  This is also a
+prerequisite for eliminating the direct use of struct request_queue from
+filesystem code, as discussed at
+https://lore.kernel.org/linux-fscrypt/20220721125929.1866403-1-hch@lst.de/T/#u
 
-Acked-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Patches 2-3 eliminate the direct uses of struct request_queue from
+fs/crypto/ that don't require block layer changes.  (The remaining uses
+will be eliminated later by changing some of the blk-crypto functions.)
 
-> ---
->  fs/f2fs/file.c | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
-> 
-> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> index 8e11311db21060..79177050732803 100644
-> --- a/fs/f2fs/file.c
-> +++ b/fs/f2fs/file.c
-> @@ -847,6 +847,24 @@ int f2fs_getattr(struct user_namespace *mnt_userns, const struct path *path,
->  		stat->btime.tv_nsec = fi->i_crtime.tv_nsec;
->  	}
->  
-> +	/*
-> +	 * Return the DIO alignment restrictions if requested.  We only return
-> +	 * this information when requested, since on encrypted files it might
-> +	 * take a fair bit of work to get if the file wasn't opened recently.
-> +	 *
-> +	 * f2fs sometimes supports DIO reads but not DIO writes.  STATX_DIOALIGN
-> +	 * cannot represent that, so in that case we report no DIO support.
-> +	 */
-> +	if ((request_mask & STATX_DIOALIGN) && S_ISREG(inode->i_mode)) {
-> +		unsigned int bsize = i_blocksize(inode);
-> +
-> +		stat->result_mask |= STATX_DIOALIGN;
-> +		if (!f2fs_force_buffered_io(inode, WRITE)) {
-> +			stat->dio_mem_align = bsize;
-> +			stat->dio_offset_align = bsize;
-> +		}
-> +	}
-> +
->  	flags = fi->i_flags;
->  	if (flags & F2FS_COMPR_FL)
->  		stat->attributes |= STATX_ATTR_COMPRESSED;
-> -- 
-> 2.37.2
+Changed in v4:
+    - Restored a NULL check in fscrypt_destroy_inline_crypt_key() that
+      I had accidentally dropped.
+    - Tweaked patches 2 and 3 slightly so that patch 2 no longer makes
+      as many changes that patch 3 then undoes.
+
+Changed in v3:
+    - Added patch "fscrypt: work on block_devices instead of request_queues"
+
+Changed in v2:
+    - Don't compare uninitialized bytes of struct fscrypt_key_specifier
+    - Don't use refcount_dec_and_lock() unnecessarily
+    - Other minor cleanups
+
+Christoph Hellwig (1):
+  fscrypt: work on block_devices instead of request_queues
+
+Eric Biggers (2):
+  fscrypt: stop using keyrings subsystem for fscrypt_master_key
+  fscrypt: stop holding extra request_queue references
+
+ fs/crypto/fscrypt_private.h |  74 ++++--
+ fs/crypto/hooks.c           |  10 +-
+ fs/crypto/inline_crypt.c    | 147 ++++++-----
+ fs/crypto/keyring.c         | 495 +++++++++++++++++++-----------------
+ fs/crypto/keysetup.c        |  89 +++----
+ fs/crypto/keysetup_v1.c     |   4 +-
+ fs/crypto/policy.c          |   8 +-
+ fs/f2fs/super.c             |  24 +-
+ fs/super.c                  |   2 +-
+ include/linux/fs.h          |   2 +-
+ include/linux/fscrypt.h     |  25 +-
+ 11 files changed, 462 insertions(+), 418 deletions(-)
+
+
+base-commit: 1c23f9e627a7b412978b4e852793c5e3c3efc555
+-- 
+2.37.2
+
