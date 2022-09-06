@@ -2,42 +2,44 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDE295ADC64
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  6 Sep 2022 02:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E9135ADC6A
+	for <lists+linux-fscrypt@lfdr.de>; Tue,  6 Sep 2022 02:35:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232858AbiIFAbu (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 5 Sep 2022 20:31:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35158 "EHLO
+        id S231527AbiIFAfl (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 5 Sep 2022 20:35:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbiIFAbt (ORCPT
+        with ESMTP id S229575AbiIFAfk (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 5 Sep 2022 20:31:49 -0400
+        Mon, 5 Sep 2022 20:35:40 -0400
 Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EBF4696D8;
-        Mon,  5 Sep 2022 17:31:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7860D696D5;
+        Mon,  5 Sep 2022 17:35:39 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id B55B8810F2;
-        Mon,  5 Sep 2022 20:31:47 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id C79A1803C8;
+        Mon,  5 Sep 2022 20:35:38 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1662424308; bh=V5PQwc8u0Mn0cLciaO5gApyu1uad4sIaHUoZEyNoQtA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Wbkuz+XLhbL//r48S4m/lbFQfjbnn3ITw84y6cYOyfVtpm6KsnOIcuYB5Pw6pbYyx
-         qB/qxjyYW00UoEvdc4kYoUo1MQ9SsEArI1nrx6IYPQjbr5MnVhgELltRyMkUnksmK1
-         x9TL2x2ofWchOLwcdcZDcAcK+o67TGI8o9U/QKuT/BKCOLKF3lDYM4ACnEwvg/b870
-         nBGhzf0neBQ5v1DIJUVgmuFVdM0Ohi1qy++YKSc3lZ/IZ1vf9hhrVq15lJbMxTnSjA
-         BN+tEVYoCo6gWk5TqHYDQqcD8CPmuxoAZ0qrUPXvyV/LsgY+W9Tse0AXWV4pxCgT+O
-         Ifwb7BBPhxGuw==
+        t=1662424539; bh=Epfovn1mynjXjzj56E3I1c5tDr9vlNsDHfjnuTcQ2cI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=WigjglVPs36qjHY+z5+YmLXixKq+zspVWSlHcx3k+jAMXkmKYJPfhXAuMBhjTSV6N
+         WMneGWkaMPSFrnBbtlNGY+SLsC1wpFOKHlMV7tWqsiBAxLIjUCd4bxxehOYFsv9TV7
+         rxupOlId3X/TimGkxvaUP/6VYzLpJBY1nvgSVPqvTvvzwoH764c5aSnq1TW+r86pNQ
+         lyGPjIKkH6saId3y/T8nKXB4xxldgQVi8Rjq8jnlAHFAvcgO97wvF/xWm0crFxbeYT
+         T9HFsrP8VskzWz1ejo4pXXqxC4qd1M9oAMob3N7JVFLMbK+yfYV24qQmNitAuQBSfY
+         XKOymXHiJTBkA==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-To:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-fscrypt@vger.kernel.org,
         linux-btrfs@vger.kernel.org, kernel-team@fb.com
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH 2/2] fstests: fscrypt: update tests of encryption contents for btrfs
-Date:   Mon,  5 Sep 2022 20:31:38 -0400
-Message-Id: <b213c5daf3db1e5cf2a2e56becef9f052c5bd4f0.1662417905.git.sweettea-kernel@dorminy.me>
-In-Reply-To: <cover.1662417905.git.sweettea-kernel@dorminy.me>
-References: <cover.1662417905.git.sweettea-kernel@dorminy.me>
+Subject: [PATCH v2 00/20] btrfs: add fscrypt integration
+Date:   Mon,  5 Sep 2022 20:35:15 -0400
+Message-Id: <cover.1662420176.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -49,395 +51,138 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-As btrfs uses extent-based encryption, tests and tools for verifying
-content encryption need updates. This change updates the tool with an
-option to explicitly specify IV; updates the test functions to extract
-per-extent IVs, assuming there is only one extent per inode; and updates
-the test functions to use btrfs's dump-tree as necessary to extract
-information. It also splits apart the two Adiantum tests to test direct
-and non-direct key policies separately, as btrfs is incompatible with
-non-direct key policies.
+This is a changeset adding encryption to btrfs.
 
-It is somewhat fragile to assume that the contents always fit within one
-extent, but no test yet uses large enough files for this to be an issue.
+Last October, Omar Sandoval sent out a design document for having fscrypt
+integration with btrfs [1]. In summary, it proposes btrfs storing its
+own encryption IVs on a per-file-extent basis. fscrypt usually encrypts
+files using an IV derived from per-inode information; this would prevent
+snapshotting or reflinking or data relocation for btrfs. We have
+refined this into a fscrypt extent context object, opaque to the
+filesystem, which fscrypt uses to generate an IV associated with each
+block in an extent. Thus, all the inodes sharing a particular
+key and file extent may decrypt the extent.
 
-Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
----
- common/encrypt           | 80 +++++++++++++++++++++++++++++++++++-----
- src/fscrypt-crypt-util.c | 18 ++++++++-
- tests/generic/550        |  2 -
- tests/generic/550.out    |  5 ---
- tests/generic/584        |  2 -
- tests/generic/584.out    |  5 ---
- tests/generic/720        | 26 +++++++++++++
- tests/generic/720.out    |  6 +++
- tests/generic/721        | 26 +++++++++++++
- tests/generic/721.out    |  6 +++
- 10 files changed, 152 insertions(+), 24 deletions(-)
- create mode 100755 tests/generic/720
- create mode 100644 tests/generic/720.out
- create mode 100755 tests/generic/721
- create mode 100644 tests/generic/721.out
+This series implements this integration for the simple
+case, non-compressed data extents. Followup changes will allow
+encryption of compressed extents, inline extents, and verity items, and
+will add tests around subvolume encryption. This series should provide
+encryption for the simplest cases, but this series should not be used in
+production, as there are likely bugs.
+ 
+Preliminary btrfs-progs changes are available at [2]; fstests changes
+are available at [3].
 
-diff --git a/common/encrypt b/common/encrypt
-index c2e3e6f6..46b24fd8 100644
---- a/common/encrypt
-+++ b/common/encrypt
-@@ -573,6 +573,41 @@ _get_encryption_nonce()
- 	esac
- }
- 
-+# Retrieve the encryption IV of the first file extent in an inode as a hex
-+# string.  The IV was randomly generated by the filesystem, in the case of
-+# btrfs, and isn't exposed directly to userspace.  But it can be read using
-+# the filesystem's debugging tools.
-+_get_extent_iv()
-+{
-+	local device=$1
-+	local inode=$2
-+
-+	case $FSTYP in
-+	btrfs)
-+		# btrfs prints the file extents (for simple unshared
-+		# inodes) like:
-+		#         item 21 key ($inode EXTENT_DATA 0) itemoff 2534 itemsize 69
-+		#                generation 7 type 1 (regular)
-+                #		 extent data disk byte 5304320 nr 1048576
-+                #		 extent data offset 0 nr 1048576 ram 1048576
-+                #		 extent compression 0 (none)
-+                #		 extent encryption 133 (1, 33: context 0177d05501da7c23920f9ca00872f0bbc3)
-+                # The first character of the context is the version; the rest
-+                # are the IV.
-+
-+		#
-+		$BTRFS_UTIL_PROG inspect-internal dump-tree $device | \
-+			grep -A 5 "key ($inode EXTENT_DATA 0)" | \
-+			awk '/ context [[:xdigit:]]+)/ {
-+				match($0, /context ([[:xdigit:]]+)\)/,a);
-+				print substr(a[1], 3, length(a[1]) - 1);
-+			}'
-+		;;
-+	*)
-+		_fail "_get_extent_iv() isn't implemented on $FSTYP" ;;
-+	esac
-+}
-+
- # Require support for _get_encryption_nonce()
- _require_get_encryption_nonce_support()
- {
-@@ -607,6 +642,19 @@ _get_ciphertext_filename()
- 	local dir_inode=$3
- 
- 	case $FSTYP in
-+	btrfs)
-+		# Extract the filename from the inode_ref object, similar to:
-+		# item 24 key (259 INODE_REF 257) itemoff 14826 itemsize 26
-+		# 	index 3 namelen 16 name: J\xf7\x15tD\x8eL\xae/\x98\x9f\x09\xc1\xb6\x09>
-+		#
-+		$BTRFS_UTIL_PROG inspect-internal dump-tree $device | \
-+			grep -A 1 "key ($inode INODE_REF " | tail -n 1 | \
-+			perl -ne '
-+				s/.*?name: //;
-+				chomp;
-+				s/\\x([[:xdigit:]]{2})/chr hex $1/eg;
-+				print;'
-+		;;
- 	ext4)
- 		# Extract the filename from the debugfs output line like:
- 		#
-@@ -661,6 +709,10 @@ _require_get_ciphertext_filename_support()
- {
- 	echo "Checking for _get_ciphertext_filename() support for $FSTYP" >> $seqres.full
- 	case $FSTYP in
-+	btrfs)
-+		# Verify that we have BTRFS_UTIL_PROG
-+		_require_btrfs_command inspect-internal dump-tree
-+		;;
- 	ext4)
- 		# Verify that the "ls -l -r" debugfs command is supported and
- 		# that it hex-encodes non-ASCII characters, rather than using an
-@@ -744,7 +796,7 @@ _do_verify_ciphertext_for_encryption_policy()
- 	local raw_key_hex=$6
- 	local crypt_contents_cmd="$here/src/fscrypt-crypt-util $7"
- 	local crypt_filename_cmd="$here/src/fscrypt-crypt-util $8"
--
-+	local use_iv=$9
- 	local blocksize=$(_get_block_size $SCRATCH_MNT)
- 	local test_contents_files=()
- 	local test_filenames_files=()
-@@ -798,18 +850,24 @@ _do_verify_ciphertext_for_encryption_policy()
- 
- 	echo "Verifying encrypted file contents" >> $seqres.full
- 	for f in "${test_contents_files[@]}"; do
-+		local iv_arg=""
- 		read -r src inode blocklist <<< "$f"
- 		nonce=$(_get_encryption_nonce $SCRATCH_DEV $inode)
- 		_dump_ciphertext_blocks $SCRATCH_DEV $blocklist > $tmp.actual_contents
-+		if [ -n "$use_iv" ]; then
-+			local iv_hex=$(_get_extent_iv $SCRATCH_DEV $inode)
-+			iv_arg=" --iv=$iv_hex"
-+		fi
-+			
- 		$crypt_contents_cmd $contents_encryption_mode $raw_key_hex \
- 			--file-nonce=$nonce --block-size=$blocksize \
--			--inode-number=$inode < $src > $tmp.expected_contents
-+			--inode-number=$inode $iv_arg < $src > $tmp.expected_contents
- 		if ! cmp $tmp.expected_contents $tmp.actual_contents; then
- 			_fail "Expected encrypted contents != actual encrypted contents.  File: $f"
- 		fi
- 		$crypt_contents_cmd $contents_encryption_mode $raw_key_hex \
- 			--decrypt --file-nonce=$nonce --block-size=$blocksize \
--			--inode-number=$inode \
-+			--inode-number=$inode $iv_arg \
- 			< $tmp.actual_contents > $tmp.decrypted_contents
- 		if ! cmp $src $tmp.decrypted_contents; then
- 			_fail "Contents decryption sanity check failed.  File: $f"
-@@ -894,6 +952,7 @@ _verify_ciphertext_for_encryption_policy()
- 	local crypt_util_contents_args=""
- 	local crypt_util_filename_args=""
- 	local expected_identifier
-+	local use_iv=""
- 
- 	shift 2
- 	for opt; do
-@@ -927,14 +986,16 @@ _verify_ciphertext_for_encryption_policy()
- 	crypt_util_contents_args+=" --mode-num=$contents_mode_num"
- 	crypt_util_filename_args+=" --mode-num=$filenames_mode_num"
- 
-+	if [ "$FSTYP" == "btrfs" ]; then
-+		if (( policy_flags == 0 )); then
-+			_notrun "Btrfs does not accept default policies"
-+		fi	
-+		use_iv=1
-+	fi
-+
- 	if (( policy_version > 1 )); then
- 		set_encpolicy_args+=" -v 2"
- 		crypt_util_args+=" --kdf=HKDF-SHA512"
--		if [ "$FSTYP" = "btrfs" ]; then
--			if (( policy_flags == 0 )); then
--				_notrun "Btrfs does not accept default policies"
--			fi	
--		fi
- 		if (( policy_flags & FSCRYPT_POLICY_FLAG_DIRECT_KEY )); then
- 			crypt_util_args+=" --direct-key"
- 		elif (( policy_flags & FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64 )); then
-@@ -1026,7 +1087,8 @@ EOF
- 		"$keyspec" \
- 		"$raw_key_hex" \
- 		"$crypt_util_contents_args" \
--		"$crypt_util_filename_args"
-+		"$crypt_util_filename_args" \
-+		"$use_iv"
- }
- 
- # Replace no-key filenames in the given directory with "NOKEY_NAME".
-diff --git a/src/fscrypt-crypt-util.c b/src/fscrypt-crypt-util.c
-index ffb9534d..93b8a36f 100644
---- a/src/fscrypt-crypt-util.c
-+++ b/src/fscrypt-crypt-util.c
-@@ -76,6 +76,8 @@ static void usage(FILE *fp)
- "  --inode-number=INUM         The file's inode number.  Required for\n"
- "                                --iv-ino-lblk-32 and --iv-ino-lblk-64;\n"
- "                                otherwise is unused.\n"
-+"  --iv=IV                     For extent-based encryption filesystems, the\n"
-+"                                starting IV for the file\n"
- "  --iv-ino-lblk-32            Similar to --iv-ino-lblk-64, but selects the\n"
- "                                32-bit variant.\n"
- "  --iv-ino-lblk-64            Use the format where the IVs include the inode\n"
-@@ -1794,6 +1796,8 @@ struct key_and_iv_params {
- 	u8 file_nonce[FILE_NONCE_SIZE];
- 	bool file_nonce_specified;
- 	bool direct_key;
-+	u8 iv[MAX_IV_SIZE];
-+	bool iv_set;
- 	bool iv_ino_lblk_64;
- 	bool iv_ino_lblk_32;
- 	u64 block_number;
-@@ -1901,7 +1905,9 @@ static void generate_iv(const struct key_and_iv_params *params,
- 			union fscrypt_iv *iv)
- {
- 	memset(iv, 0, sizeof(*iv));
--	if (params->direct_key) {
-+	if (params->iv_set) {
-+		memcpy(iv->bytes, params->iv, MAX_IV_SIZE);
-+	} else if (params->direct_key) {
- 		if (!params->file_nonce_specified)
- 			die("--direct-key requires --file-nonce");
- 		iv->block_number = cpu_to_le64(params->block_number);
-@@ -1987,6 +1993,7 @@ enum {
- 	OPT_FS_UUID,
- 	OPT_HELP,
- 	OPT_INODE_NUMBER,
-+	OPT_IV,
- 	OPT_IV_INO_LBLK_32,
- 	OPT_IV_INO_LBLK_64,
- 	OPT_KDF,
-@@ -2004,6 +2011,7 @@ static const struct option longopts[] = {
- 	{ "fs-uuid",         required_argument, NULL, OPT_FS_UUID },
- 	{ "help",            no_argument,       NULL, OPT_HELP },
- 	{ "inode-number",    required_argument, NULL, OPT_INODE_NUMBER },
-+	{ "iv",              required_argument, NULL, OPT_IV },
- 	{ "iv-ino-lblk-32",  no_argument,       NULL, OPT_IV_INO_LBLK_32 },
- 	{ "iv-ino-lblk-64",  no_argument,       NULL, OPT_IV_INO_LBLK_64 },
- 	{ "kdf",             required_argument, NULL, OPT_KDF },
-@@ -2082,6 +2090,14 @@ int main(int argc, char *argv[])
- 			if (params.inode_number <= 0 || *tmp || errno)
- 				die("Invalid inode number: %s", optarg);
- 			break;
-+		case OPT_IV:
-+			int iv_len = hex2bin(optarg, params.iv, MAX_IV_SIZE);
-+			if ((iv_len != AES_BLOCK_SIZE) &&
-+			    (iv_len != ADIANTUM_IV_SIZE))
-+				die("Invalid iv length: %d (must be %u or %u)",
-+				    iv_len, AES_BLOCK_SIZE, ADIANTUM_IV_SIZE);
-+			params.iv_set = true;
-+			break;
- 		case OPT_IV_INO_LBLK_32:
- 			params.iv_ino_lblk_32 = true;
- 			break;
-diff --git a/tests/generic/550 b/tests/generic/550
-index aa792089..1c350090 100755
---- a/tests/generic/550
-+++ b/tests/generic/550
-@@ -17,9 +17,7 @@ _begin_fstest auto quick encrypt
- # real QA test starts here
- _supported_fs generic
- 
--# Test both with and without the DIRECT_KEY flag.
- _verify_ciphertext_for_encryption_policy Adiantum Adiantum
--_verify_ciphertext_for_encryption_policy Adiantum Adiantum direct
- 
- # success, all done
- status=0
-diff --git a/tests/generic/550.out b/tests/generic/550.out
-index 4cec7570..418fa0b1 100644
---- a/tests/generic/550.out
-+++ b/tests/generic/550.out
-@@ -3,8 +3,3 @@ QA output created by 550
- Verifying ciphertext with parameters:
- 	contents_encryption_mode: Adiantum
- 	filenames_encryption_mode: Adiantum
--
--Verifying ciphertext with parameters:
--	contents_encryption_mode: Adiantum
--	filenames_encryption_mode: Adiantum
--	options: direct
-diff --git a/tests/generic/584 b/tests/generic/584
-index adafec6a..ec03908b 100755
---- a/tests/generic/584
-+++ b/tests/generic/584
-@@ -19,9 +19,7 @@ _begin_fstest auto quick encrypt
- # real QA test starts here
- _supported_fs generic
- 
--# Test both with and without the DIRECT_KEY flag.
- _verify_ciphertext_for_encryption_policy Adiantum Adiantum v2
--_verify_ciphertext_for_encryption_policy Adiantum Adiantum v2 direct
- 
- # success, all done
- status=0
-diff --git a/tests/generic/584.out b/tests/generic/584.out
-index 946c5f0a..2a5fc053 100644
---- a/tests/generic/584.out
-+++ b/tests/generic/584.out
-@@ -4,8 +4,3 @@ Verifying ciphertext with parameters:
- 	contents_encryption_mode: Adiantum
- 	filenames_encryption_mode: Adiantum
- 	options: v2
--
--Verifying ciphertext with parameters:
--	contents_encryption_mode: Adiantum
--	filenames_encryption_mode: Adiantum
--	options: v2 direct
-diff --git a/tests/generic/720 b/tests/generic/720
-new file mode 100755
-index 00000000..5072d3ab
---- /dev/null
-+++ b/tests/generic/720
-@@ -0,0 +1,26 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright 2019 Google LLC
-+#
-+# FS QA Test No. 720
-+#
-+# Verify ciphertext for v2 encryption policies that use Adiantum to encrypt file
-+# contents and file names.
-+#
-+# This is the same as generic/584, except using direct policy 
-+#
-+. ./common/preamble
-+_begin_fstest auto quick encrypt
-+
-+# Import common functions.
-+. ./common/filter
-+. ./common/encrypt
-+
-+# real QA test starts here
-+_supported_fs generic
-+
-+_verify_ciphertext_for_encryption_policy Adiantum Adiantum v2 direct
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/generic/720.out b/tests/generic/720.out
-new file mode 100644
-index 00000000..0b0d82f8
---- /dev/null
-+++ b/tests/generic/720.out
-@@ -0,0 +1,6 @@
-+QA output created by 720
-+
-+Verifying ciphertext with parameters:
-+	contents_encryption_mode: Adiantum
-+	filenames_encryption_mode: Adiantum
-+	options: v2 direct
-diff --git a/tests/generic/721 b/tests/generic/721
-new file mode 100755
-index 00000000..98f2e6f9
---- /dev/null
-+++ b/tests/generic/721
-@@ -0,0 +1,26 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright 2019 Google LLC
-+#
-+# FS QA Test No. 550
-+#
-+# Verify ciphertext for v1 encryption policies that use Adiantum to encrypt file
-+# contents and file names.
-+# This is the same as generic/550, except with direct keys.
-+#
-+. ./common/preamble
-+_begin_fstest auto quick encrypt
-+
-+# Import common functions.
-+. ./common/filter
-+. ./common/encrypt
-+
-+# real QA test starts here
-+_supported_fs generic
-+
-+_verify_ciphertext_for_encryption_policy Adiantum Adiantum direct
-+
-+# success, all done
-+status=0
-+exit
-+
-diff --git a/tests/generic/721.out b/tests/generic/721.out
-new file mode 100644
-index 00000000..018c4666
---- /dev/null
-+++ b/tests/generic/721.out
-@@ -0,0 +1,6 @@
-+QA output created by 721
-+
-+Verifying ciphertext with parameters:
-+	contents_encryption_mode: Adiantum
-+	filenames_encryption_mode: Adiantum
-+	options: direct
+[1]
+https://lore.kernel.org/linux-btrfs/YXGyq+buM79A1S0L@relinquished.localdomain/
+
+Changelog:
+
+v2:
+ - Amended the fscrypt side to generically add extent contexts,
+   hopefully as per Eric Biggers' past comments. IVs are now entirely
+   abstracted within an extent context, and there is no longer a new
+   encryption policy, as DIRECT_KEY sufficiently encapsulates the
+   needs of extent-based encryption. Documented its usage in btrfs
+   briefly in the documentation. 
+ - Adjusted the btrfs side to deal in opaque extent contexts. Improved
+   optimization to skip storing inode contexts if they are the same as
+   the inode's root item's inode context.
+ - Combined 'add fscrypt operation table to superblock' into 'start
+   using fscrypt hooks'.
+ - https://lore.kernel.org/linux-btrfs/cover.1662420176.git.sweettea-kernel@dorminy.me
+ - progs: https://lore.kernel.org/linux-btrfs/cover.1662417859.git.sweettea-kernel@dorminy.me
+ - tests: https://lore.kernel.org/linux-btrfs/cover.1662417905.git.sweettea-kernel@dorminy.me
+
+v1:
+ - Recombined the fscrypt changes back into this patchset.
+ - Fixed several races and incorrectly ordered operations.
+ - Improved IV retrieval to correctly distinguish between
+   filename/symlink encryption and encryption of block 0 of a file.
+ - https://lore.kernel.org/linux-btrfs/cover.1660744500.git.sweettea-kernel@dorminy.me
+ - progs: https://lore.kernel.org/linux-btrfs/cover.1660729916.git.sweettea-kernel@dorminy.me
+ - tests: https://lore.kernel.org/linux-btrfs/cover.1660729861.git.sweettea-kernel@dorminy.me
+
+RFC v2: 
+ - Fixed all warnings and known incorrectnesses.
+ - Split fscrypt changes into their own patchset:
+    https://lore.kernel.org/linux-fscrypt/cover.1658623235.git.sweettea-kernel@dorminy.me
+ - Combined and reordered changes so that enabling fscrypt is the last change.
+ - Removed unnecessary factoring.
+ - Split a cleanup change off.
+ - https://lore.kernel.org/linux-btrfs/cover.1658623319.git.sweettea-kernel@dorminy.me 
+
+RFC v1:
+ - https://lore.kernel.org/linux-btrfs/cover.1657707686.git.sweettea-kernel@dorminy.me
+
+Omar Sandoval (14):
+  fscrypt: expose fscrypt_nokey_name
+  fscrypt: add flag allowing partially-encrypted directories
+  fscrypt: add fscrypt_have_same_policy() to check inode compatibility
+  btrfs: store directory's encryption state
+  btrfs: factor a fscrypt_name matching method
+  btrfs: disable various operations on encrypted inodes
+  btrfs: start using fscrypt hooks.
+  btrfs: add fscrypt_context items.
+  btrfs: translate btrfs encryption flags and encrypted inode flag.
+  btrfs: Add new FEATURE_INCOMPAT_FSCRYPT feature flag.
+  btrfs: reuse encrypted filename hash when possible.
+  btrfs: adapt directory read and lookup to potentially encrypted
+    filenames
+  btrfs: encrypt normal file extent data if appropriate
+  btrfs: implement fscrypt ioctls
+
+Sweet Tea Dorminy (6):
+  fscrypt: allow fscrypt_generate_iv() to distinguish filenames
+  fscrypt: add extent-based encryption
+  fscrypt: document btrfs' fscrypt quirks.
+  btrfs: use fscrypt_names instead of name/len everywhere.
+  btrfs: setup fscrypt_names from dentrys using helper
+  btrfs: store a fscrypt extent context per normal file extent
+
+ Documentation/filesystems/fscrypt.rst |  62 ++-
+ fs/btrfs/Makefile                     |   1 +
+ fs/btrfs/btrfs_inode.h                |   3 +
+ fs/btrfs/ctree.h                      | 119 ++++--
+ fs/btrfs/delayed-inode.c              |  48 ++-
+ fs/btrfs/delayed-inode.h              |   9 +-
+ fs/btrfs/dir-item.c                   | 119 +++---
+ fs/btrfs/extent_io.c                  |  93 ++++-
+ fs/btrfs/extent_io.h                  |   2 +
+ fs/btrfs/extent_map.h                 |   4 +
+ fs/btrfs/file-item.c                  |  22 +-
+ fs/btrfs/file.c                       |  11 +-
+ fs/btrfs/fscrypt.c                    | 244 +++++++++++
+ fs/btrfs/fscrypt.h                    |  49 +++
+ fs/btrfs/inode-item.c                 |  84 ++--
+ fs/btrfs/inode-item.h                 |  14 +-
+ fs/btrfs/inode.c                      | 581 +++++++++++++++++++-------
+ fs/btrfs/ioctl.c                      |  80 +++-
+ fs/btrfs/ordered-data.c               |   9 +-
+ fs/btrfs/ordered-data.h               |   4 +-
+ fs/btrfs/print-tree.c                 |   4 +-
+ fs/btrfs/props.c                      |  11 +-
+ fs/btrfs/reflink.c                    |   8 +
+ fs/btrfs/root-tree.c                  |  20 +-
+ fs/btrfs/send.c                       | 141 ++++---
+ fs/btrfs/super.c                      |   8 +-
+ fs/btrfs/transaction.c                |  43 +-
+ fs/btrfs/tree-checker.c               |  56 ++-
+ fs/btrfs/tree-log.c                   | 237 ++++++-----
+ fs/btrfs/tree-log.h                   |   4 +-
+ fs/btrfs/xattr.c                      |  21 +-
+ fs/crypto/crypto.c                    |  24 +-
+ fs/crypto/fname.c                     |  60 +--
+ fs/crypto/fscrypt_private.h           |  26 +-
+ fs/crypto/inline_crypt.c              |  29 +-
+ fs/crypto/policy.c                    | 103 +++++
+ include/linux/fscrypt.h               |  81 ++++
+ include/uapi/linux/btrfs.h            |   1 +
+ include/uapi/linux/btrfs_tree.h       |  26 ++
+ 39 files changed, 1881 insertions(+), 580 deletions(-)
+ create mode 100644 fs/btrfs/fscrypt.c
+ create mode 100644 fs/btrfs/fscrypt.h
+
 -- 
 2.35.1
 
