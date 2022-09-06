@@ -2,51 +2,51 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E96FF5AF7A5
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  7 Sep 2022 00:08:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 501575AF809
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  7 Sep 2022 00:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbiIFWI4 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 6 Sep 2022 18:08:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55826 "EHLO
+        id S229929AbiIFWfz (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 6 Sep 2022 18:35:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbiIFWIz (ORCPT
+        with ESMTP id S229564AbiIFWfy (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 6 Sep 2022 18:08:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A25D087690;
-        Tue,  6 Sep 2022 15:08:54 -0700 (PDT)
+        Tue, 6 Sep 2022 18:35:54 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 435E192F7F;
+        Tue,  6 Sep 2022 15:35:52 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3580E616FE;
-        Tue,  6 Sep 2022 22:08:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 433FFC433C1;
-        Tue,  6 Sep 2022 22:08:53 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 3B4B8B81AAA;
+        Tue,  6 Sep 2022 22:35:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 922F9C433D6;
+        Tue,  6 Sep 2022 22:35:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662502133;
-        bh=uyaghLFUj0ZUpYv1BfsnZYUsPz1vG7taUX0PRzOUbWM=;
+        s=k20201202; t=1662503749;
+        bh=SrziL2ksriZvzaRiyin3M4bqxu4CfVpH4zWoap9kL4c=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V38ZoxcxLYyfWiUeHT6Fl+831Rgi6pJi6COWb6dgkYbZBhuGgqt1X+ndhxdRu8NcH
-         PhQMZPmU2h0D39SdC2RSKkt1HyFT8NdUl89oV6Ixn9pI17mj7ER4d2Hc9huXWeCbNq
-         i+3i8uYL5SnvLWF9WFqcnE99gSR2YmtDv75VhV5qGNsNOxhiapoN8pvJ9ncdsdAIX4
-         bvVdcog5eFVzlkDnJf3hJMHUE9BSTikEfHZbG5nhBuv+yjnoIy7446EGgl9bQEN5w4
-         6CQIL+JCmEpSFleBZP0kvFhoiQ63H/GuEzJnaKlanPcBDK9nzEN0FReaF0ufHZbnRW
-         3HmhWtJtQr0HQ==
-Date:   Tue, 6 Sep 2022 15:08:51 -0700
+        b=f3Xi9HKyhdaIoYXrOPcoww0jrVmOxKyr3FrKBmZ5lKp2YlaUEuCwjJQKAp6dUACuY
+         vdvqLewk3pVml+5MLj41B8Z6EK8eL1b8qfmQS9rehckwM5NyRAdXhi36dfak1qA4sj
+         hq22t70napGek+yn9yZxiRu5EodtVKrU2HyyA2teGU6z1yn4LTd5d98J9U2jKj2Qpp
+         SPW8CUamqnLxWwMDRBv7XjpbXVg6Qh8LtH4EGlLNsmnWOwuZDXebfGIvqryMbW3S3C
+         5/1kVvEs8IocFaQtQJl2A5gT5yLxRSB974DvbhijpOzIXP7NBE34ru8eUBWmE8mVlg
+         7bCf7tkovWBeQ==
+Date:   Tue, 6 Sep 2022 15:35:47 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Keith Busch <kbusch@kernel.org>
-Subject: Re: [PATCH v5 0/8] make statx() return DIO alignment information
-Message-ID: <YxfE8zjqkT6Zn+Vn@quark>
-References: <20220827065851.135710-1-ebiggers@kernel.org>
+To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-fscrypt@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v2 00/20] btrfs: add fscrypt integration
+Message-ID: <YxfLQzL9BYnxwaXQ@quark>
+References: <cover.1662420176.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220827065851.135710-1-ebiggers@kernel.org>
+In-Reply-To: <cover.1662420176.git.sweettea-kernel@dorminy.me>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -57,13 +57,9 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Aug 26, 2022 at 11:58:43PM -0700, Eric Biggers wrote:
-> This patchset makes the statx() system call return direct I/O (DIO)
-> alignment information.  This allows userspace to easily determine
-> whether a file supports DIO, and if so with what alignment restrictions.
+On Mon, Sep 05, 2022 at 08:35:15PM -0400, Sweet Tea Dorminy wrote:
+> This is a changeset adding encryption to btrfs.
 
-Al, any thoughts on this patchset, and do you plan to apply it for 6.1?  Ideally
-this would go through the VFS tree.  If not, I suppose I'll need to have it
-added to linux-next and send the pull request myself.
+What git tree and commit does this apply to?
 
 - Eric
