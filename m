@@ -2,40 +2,40 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF7325ADC66
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  6 Sep 2022 02:32:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDE295ADC64
+	for <lists+linux-fscrypt@lfdr.de>; Tue,  6 Sep 2022 02:32:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229619AbiIFAbs (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 5 Sep 2022 20:31:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35120 "EHLO
+        id S232858AbiIFAbu (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 5 Sep 2022 20:31:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbiIFAbr (ORCPT
+        with ESMTP id S229575AbiIFAbt (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 5 Sep 2022 20:31:47 -0400
-Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AF6A66127;
-        Mon,  5 Sep 2022 17:31:45 -0700 (PDT)
+        Mon, 5 Sep 2022 20:31:49 -0400
+Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EBF4696D8;
+        Mon,  5 Sep 2022 17:31:48 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id E5D4E810AC;
-        Mon,  5 Sep 2022 20:31:44 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id B55B8810F2;
+        Mon,  5 Sep 2022 20:31:47 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1662424305; bh=9U4xKXLbSj8KtQILBLmVjaE26LAV7YU9EmuSsGFmI0s=;
+        t=1662424308; bh=V5PQwc8u0Mn0cLciaO5gApyu1uad4sIaHUoZEyNoQtA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pL2QDmMlgpgGMzw8f6HtKtGJ6GJFfz2QbxYi3Vm8ESKtCss70SJRjEYAkDrn5eber
-         LYgmmhV2zuUbge0umRDHZQKFcYXUoOuxqyo5beosZ37YloeWMBo6A2UdVl1ichwWHE
-         /br8GumZEunVN8mzP+GBrsnm5/fF3foUrSbhNM9TuFyKkKHZW/jupwP1F1YsxFO4uo
-         g6MsAx0J5AM3kVqP1UjnttrZ5+F1/V4dxtIFCsNaCgGu7EQJAxJ66p7imEj7FWOpSl
-         EUiybJmEKkaxwtuvQWJO0pcY6jsaOZCC3tjdDCi9cU2HiQFr91yn50Fy52OXpSlAH3
-         Z+C/0VF7tKXtQ==
+        b=Wbkuz+XLhbL//r48S4m/lbFQfjbnn3ITw84y6cYOyfVtpm6KsnOIcuYB5Pw6pbYyx
+         qB/qxjyYW00UoEvdc4kYoUo1MQ9SsEArI1nrx6IYPQjbr5MnVhgELltRyMkUnksmK1
+         x9TL2x2ofWchOLwcdcZDcAcK+o67TGI8o9U/QKuT/BKCOLKF3lDYM4ACnEwvg/b870
+         nBGhzf0neBQ5v1DIJUVgmuFVdM0Ohi1qy++YKSc3lZ/IZ1vf9hhrVq15lJbMxTnSjA
+         BN+tEVYoCo6gWk5TqHYDQqcD8CPmuxoAZ0qrUPXvyV/LsgY+W9Tse0AXWV4pxCgT+O
+         Ifwb7BBPhxGuw==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         linux-btrfs@vger.kernel.org, kernel-team@fb.com
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH 1/2] fstests: fscrypt: enable btrfs testing.
-Date:   Mon,  5 Sep 2022 20:31:37 -0400
-Message-Id: <0152f016b3dd71b6fe152f71b05bb9517a2e748c.1662417905.git.sweettea-kernel@dorminy.me>
+Subject: [PATCH 2/2] fstests: fscrypt: update tests of encryption contents for btrfs
+Date:   Mon,  5 Sep 2022 20:31:38 -0400
+Message-Id: <b213c5daf3db1e5cf2a2e56becef9f052c5bd4f0.1662417905.git.sweettea-kernel@dorminy.me>
 In-Reply-To: <cover.1662417905.git.sweettea-kernel@dorminy.me>
 References: <cover.1662417905.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
@@ -49,202 +49,323 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-btrfs' fscrypt integration has more stringent requirements than other
-filesystems using fscrypt: the default policy is not permitted.
+As btrfs uses extent-based encryption, tests and tools for verifying
+content encryption need updates. This change updates the tool with an
+option to explicitly specify IV; updates the test functions to extract
+per-extent IVs, assuming there is only one extent per inode; and updates
+the test functions to use btrfs's dump-tree as necessary to extract
+information. It also splits apart the two Adiantum tests to test direct
+and non-direct key policies separately, as btrfs is incompatible with
+non-direct key policies.
 
-To make many pass, this adds several common pieces:
-- _set_encpolicy tries to automatically use a direct-key Adiantum policy
-  for btrfs, if none is set.
-- for many tests using a default policy, a filter is applied to make
-  default policy for most FS's, or Adiantum for btrfs, work.
-- _scratch_mkfs_sized_encrypted can deal with btrfs
-
-These pieces are used in tests to make most generic tests work with
-btrfs, and a new test is added resembling generic/395 to account for
-btrfs' directory policy.
+It is somewhat fragile to assume that the contents always fit within one
+extent, but no test yet uses large enough files for this to be an issue.
 
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 ---
- common/encrypt        | 72 +++++++++++++++++++++++++++++++++++-
- common/verity         |  2 +-
- tests/btrfs/298       | 85 +++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/298.out   | 47 ++++++++++++++++++++++++
- tests/generic/395     | 10 +++--
- tests/generic/395.out | 18 ++++-----
- tests/generic/435     | 10 ++++-
- tests/generic/576     |  3 +-
- tests/generic/576.out |  6 +--
- tests/generic/580     |  5 ++-
- tests/generic/580.out | 18 ++++-----
- tests/generic/581     |  4 +-
- tests/generic/581.out | 12 +++---
- 13 files changed, 252 insertions(+), 40 deletions(-)
- create mode 100755 tests/btrfs/298
- create mode 100644 tests/btrfs/298.out
+ common/encrypt           | 80 +++++++++++++++++++++++++++++++++++-----
+ src/fscrypt-crypt-util.c | 18 ++++++++-
+ tests/generic/550        |  2 -
+ tests/generic/550.out    |  5 ---
+ tests/generic/584        |  2 -
+ tests/generic/584.out    |  5 ---
+ tests/generic/720        | 26 +++++++++++++
+ tests/generic/720.out    |  6 +++
+ tests/generic/721        | 26 +++++++++++++
+ tests/generic/721.out    |  6 +++
+ 10 files changed, 152 insertions(+), 24 deletions(-)
+ create mode 100755 tests/generic/720
+ create mode 100644 tests/generic/720.out
+ create mode 100755 tests/generic/721
+ create mode 100644 tests/generic/721.out
 
 diff --git a/common/encrypt b/common/encrypt
-index 8f3c46f6..c2e3e6f6 100644
+index c2e3e6f6..46b24fd8 100644
 --- a/common/encrypt
 +++ b/common/encrypt
-@@ -102,7 +102,7 @@ _require_encryption_policy_support()
- 		_scratch_unmount
- 		_scratch_mkfs_stable_inodes_encrypted &>> $seqres.full
- 		_scratch_mount
--	fi
-+	fi;
- 
- 	mkdir $dir
- 	if (( policy_version > 1 )); then
-@@ -146,7 +146,7 @@ _require_encryption_policy_support()
- _scratch_mkfs_encrypted()
- {
- 	case $FSTYP in
--	ext4|f2fs)
-+	btrfs|ext4|f2fs)
- 		_scratch_mkfs -O encrypt
- 		;;
- 	ubifs)
-@@ -165,6 +165,9 @@ _scratch_mkfs_sized_encrypted()
- 	ext4|f2fs)
- 		MKFS_OPTIONS="$MKFS_OPTIONS -O encrypt" _scratch_mkfs_sized $*
- 		;;
-+	btrfs)
-+		_scratch_mkfs_sized $*
-+		;;
- 	*)
- 		_notrun "Filesystem $FSTYP not supported in _scratch_mkfs_sized_encrypted"
- 		;;
-@@ -356,6 +359,18 @@ _set_encpolicy()
- {
- 	local dir=$1
- 	shift
-+	if [ "$FSTYP" = "btrfs" ]; then
-+		# Append DIRECT_KEY flag, and set mode to Adiantum, if not set.
-+		if ! [[ "$*" =~ -f ]]; then
-+		        set -- "$* -f ${FSCRYPT_POLICY_FLAG_DIRECT_KEY}"
-+		fi
-+		if ! [[ "$*" =~ -c ]]; then
-+		        set -- "$* -c ${FSCRYPT_MODE_ADIANTUM}"
-+		fi
-+		if ! [[ "$*" =~ -n ]]; then
-+		        set -- "$* -n ${FSCRYPT_MODE_ADIANTUM}"
-+		fi
-+	fi
- 
- 	$XFS_IO_PROG -c "set_encpolicy $*" "$dir"
+@@ -573,6 +573,41 @@ _get_encryption_nonce()
+ 	esac
  }
-@@ -364,6 +379,18 @@ _user_do_set_encpolicy()
- {
- 	local dir=$1
- 	shift
-+       	if [ "$FSTYP" = "btrfs" ]; then
-+		# Append DIRECT_KEY flag, and set mode to Adiantum, if not set.
-+		if ! [[ "$*" =~ -f ]]; then
-+		        set -- "$* -f ${FSCRYPT_POLICY_FLAG_DIRECT_KEY}"
-+		fi
-+		if ! [[ "$*" =~ -c ]]; then
-+		        set -- "$* -c ${FSCRYPT_MODE_ADIANTUM}"
-+		fi
-+		if ! [[ "$*" =~ -n ]]; then
-+		        set -- "$* -n ${FSCRYPT_MODE_ADIANTUM}"
-+		fi
-+	fi
  
- 	_user_do "$XFS_IO_PROG -c \"set_encpolicy $*\" \"$dir\""
- }
-@@ -491,6 +518,18 @@ _get_encryption_nonce()
- 	local inode=$2
- 
- 	case $FSTYP in
++# Retrieve the encryption IV of the first file extent in an inode as a hex
++# string.  The IV was randomly generated by the filesystem, in the case of
++# btrfs, and isn't exposed directly to userspace.  But it can be read using
++# the filesystem's debugging tools.
++_get_extent_iv()
++{
++	local device=$1
++	local inode=$2
++
++	case $FSTYP in
 +	btrfs)
-+		# btrfs prints the fscrypt_context like:
-+		#
-+		# item 18 key (258 FSCRYPT_CTXT_ITEM 0) itemoff 15218 itemsize 40
-+		#	value: 0201042000000000000000000000000000000000000000007907c9718128b82caebfa42e881b0163
++		# btrfs prints the file extents (for simple unshared
++		# inodes) like:
++		#         item 21 key ($inode EXTENT_DATA 0) itemoff 2534 itemsize 69
++		#                generation 7 type 1 (regular)
++                #		 extent data disk byte 5304320 nr 1048576
++                #		 extent data offset 0 nr 1048576 ram 1048576
++                #		 extent compression 0 (none)
++                #		 extent encryption 133 (1, 33: context 0177d05501da7c23920f9ca00872f0bbc3)
++                # The first character of the context is the version; the rest
++                # are the IV.
++
 +		#
 +		$BTRFS_UTIL_PROG inspect-internal dump-tree $device | \
-+			grep -A 1 "key ($inode FSCRYPT_CTXT_ITEM 0)" | \
-+			awk '/value: [[:xdigit:]]+$/ {
-+				print substr($0, length($0) - 31, 32);
++			grep -A 5 "key ($inode EXTENT_DATA 0)" | \
++			awk '/ context [[:xdigit:]]+)/ {
++				match($0, /context ([[:xdigit:]]+)\)/,a);
++				print substr(a[1], 3, length(a[1]) - 1);
 +			}'
 +		;;
- 	ext4)
- 		# Use debugfs to dump the special xattr named "c", which is the
- 		# file's fscrypt_context.  This produces a line like:
-@@ -539,6 +578,9 @@ _require_get_encryption_nonce_support()
++	*)
++		_fail "_get_extent_iv() isn't implemented on $FSTYP" ;;
++	esac
++}
++
+ # Require support for _get_encryption_nonce()
+ _require_get_encryption_nonce_support()
  {
- 	echo "Checking for _get_encryption_nonce() support for $FSTYP" >> $seqres.full
+@@ -607,6 +642,19 @@ _get_ciphertext_filename()
+ 	local dir_inode=$3
+ 
  	case $FSTYP in
 +	btrfs)
-+		_require_command "$BTRFS_UTIL_PROG" btrfs
++		# Extract the filename from the inode_ref object, similar to:
++		# item 24 key (259 INODE_REF 257) itemoff 14826 itemsize 26
++		# 	index 3 namelen 16 name: J\xf7\x15tD\x8eL\xae/\x98\x9f\x09\xc1\xb6\x09>
++		#
++		$BTRFS_UTIL_PROG inspect-internal dump-tree $device | \
++			grep -A 1 "key ($inode INODE_REF " | tail -n 1 | \
++			perl -ne '
++				s/.*?name: //;
++				chomp;
++				s/\\x([[:xdigit:]]{2})/chr hex $1/eg;
++				print;'
 +		;;
  	ext4)
- 		_require_command "$DEBUGFS_PROG" debugfs
- 		;;
-@@ -888,6 +930,11 @@ _verify_ciphertext_for_encryption_policy()
+ 		# Extract the filename from the debugfs output line like:
+ 		#
+@@ -661,6 +709,10 @@ _require_get_ciphertext_filename_support()
+ {
+ 	echo "Checking for _get_ciphertext_filename() support for $FSTYP" >> $seqres.full
+ 	case $FSTYP in
++	btrfs)
++		# Verify that we have BTRFS_UTIL_PROG
++		_require_btrfs_command inspect-internal dump-tree
++		;;
+ 	ext4)
+ 		# Verify that the "ls -l -r" debugfs command is supported and
+ 		# that it hex-encodes non-ASCII characters, rather than using an
+@@ -744,7 +796,7 @@ _do_verify_ciphertext_for_encryption_policy()
+ 	local raw_key_hex=$6
+ 	local crypt_contents_cmd="$here/src/fscrypt-crypt-util $7"
+ 	local crypt_filename_cmd="$here/src/fscrypt-crypt-util $8"
+-
++	local use_iv=$9
+ 	local blocksize=$(_get_block_size $SCRATCH_MNT)
+ 	local test_contents_files=()
+ 	local test_filenames_files=()
+@@ -798,18 +850,24 @@ _do_verify_ciphertext_for_encryption_policy()
+ 
+ 	echo "Verifying encrypted file contents" >> $seqres.full
+ 	for f in "${test_contents_files[@]}"; do
++		local iv_arg=""
+ 		read -r src inode blocklist <<< "$f"
+ 		nonce=$(_get_encryption_nonce $SCRATCH_DEV $inode)
+ 		_dump_ciphertext_blocks $SCRATCH_DEV $blocklist > $tmp.actual_contents
++		if [ -n "$use_iv" ]; then
++			local iv_hex=$(_get_extent_iv $SCRATCH_DEV $inode)
++			iv_arg=" --iv=$iv_hex"
++		fi
++			
+ 		$crypt_contents_cmd $contents_encryption_mode $raw_key_hex \
+ 			--file-nonce=$nonce --block-size=$blocksize \
+-			--inode-number=$inode < $src > $tmp.expected_contents
++			--inode-number=$inode $iv_arg < $src > $tmp.expected_contents
+ 		if ! cmp $tmp.expected_contents $tmp.actual_contents; then
+ 			_fail "Expected encrypted contents != actual encrypted contents.  File: $f"
+ 		fi
+ 		$crypt_contents_cmd $contents_encryption_mode $raw_key_hex \
+ 			--decrypt --file-nonce=$nonce --block-size=$blocksize \
+-			--inode-number=$inode \
++			--inode-number=$inode $iv_arg \
+ 			< $tmp.actual_contents > $tmp.decrypted_contents
+ 		if ! cmp $src $tmp.decrypted_contents; then
+ 			_fail "Contents decryption sanity check failed.  File: $f"
+@@ -894,6 +952,7 @@ _verify_ciphertext_for_encryption_policy()
+ 	local crypt_util_contents_args=""
+ 	local crypt_util_filename_args=""
+ 	local expected_identifier
++	local use_iv=""
+ 
+ 	shift 2
+ 	for opt; do
+@@ -927,14 +986,16 @@ _verify_ciphertext_for_encryption_policy()
+ 	crypt_util_contents_args+=" --mode-num=$contents_mode_num"
+ 	crypt_util_filename_args+=" --mode-num=$filenames_mode_num"
+ 
++	if [ "$FSTYP" == "btrfs" ]; then
++		if (( policy_flags == 0 )); then
++			_notrun "Btrfs does not accept default policies"
++		fi	
++		use_iv=1
++	fi
++
  	if (( policy_version > 1 )); then
  		set_encpolicy_args+=" -v 2"
  		crypt_util_args+=" --kdf=HKDF-SHA512"
-+		if [ "$FSTYP" = "btrfs" ]; then
-+			if (( policy_flags == 0 )); then
-+				_notrun "Btrfs does not accept default policies"
-+			fi	
-+		fi
+-		if [ "$FSTYP" = "btrfs" ]; then
+-			if (( policy_flags == 0 )); then
+-				_notrun "Btrfs does not accept default policies"
+-			fi	
+-		fi
  		if (( policy_flags & FSCRYPT_POLICY_FLAG_DIRECT_KEY )); then
  			crypt_util_args+=" --direct-key"
  		elif (( policy_flags & FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64 )); then
-@@ -1001,3 +1048,24 @@ _filter_nokey_filenames()
- 	# of characters that have ever been used in such names.
- 	sed "s|${dir}${dir:+/}[A-Za-z0-9+,_-]\+|${dir}${dir:+/}NOKEY_NAME|g"
+@@ -1026,7 +1087,8 @@ EOF
+ 		"$keyspec" \
+ 		"$raw_key_hex" \
+ 		"$crypt_util_contents_args" \
+-		"$crypt_util_filename_args"
++		"$crypt_util_filename_args" \
++		"$use_iv"
  }
-+
-+# Replace the default encryption mode for a filesystem with "DEFAULT".
-+_filter_default_encryption_mode()
-+{
-+	CONTENTS_PREFIX="Contents encryption mode:"
-+	DEFAULT_CONTENTS_MODE="1 (AES-256-XTS)"
-+	FILENAME_PREFIX="Filenames encryption mode:"
-+	DEFAULT_FILENAME_MODE="4 (AES-256-CTS)"
-+	DEFAULT_FLAGS="Flags: 0x02"
-+	
-+	if [ "$FSTYP" = "btrfs" ]; then
-+		DEFAULT_CONTENTS_MODE="9 (Adiantum)"
-+		DEFAULT_FILENAME_MODE="9 (Adiantum)"
-+		DEFAULT_FLAGS="Flags: 0x04"
-+	fi
-+
-+	sed "s/$CONTENTS_PREFIX $DEFAULT_CONTENTS_MODE/$CONTENTS_PREFIX DEFAULT/" | \
-+	sed "s/$FILENAME_PREFIX $DEFAULT_FILENAME_MODE/$FILENAME_PREFIX DEFAULT/" | \
-+	sed "s/$DEFAULT_FLAGS/Flags: DEFAULT/"
-+}
-+
-diff --git a/common/verity b/common/verity
-index cb7fa333..82a4ff90 100644
---- a/common/verity
-+++ b/common/verity
-@@ -178,7 +178,7 @@ _scratch_mkfs_verity()
- _scratch_mkfs_encrypted_verity()
+ 
+ # Replace no-key filenames in the given directory with "NOKEY_NAME".
+diff --git a/src/fscrypt-crypt-util.c b/src/fscrypt-crypt-util.c
+index ffb9534d..93b8a36f 100644
+--- a/src/fscrypt-crypt-util.c
++++ b/src/fscrypt-crypt-util.c
+@@ -76,6 +76,8 @@ static void usage(FILE *fp)
+ "  --inode-number=INUM         The file's inode number.  Required for\n"
+ "                                --iv-ino-lblk-32 and --iv-ino-lblk-64;\n"
+ "                                otherwise is unused.\n"
++"  --iv=IV                     For extent-based encryption filesystems, the\n"
++"                                starting IV for the file\n"
+ "  --iv-ino-lblk-32            Similar to --iv-ino-lblk-64, but selects the\n"
+ "                                32-bit variant.\n"
+ "  --iv-ino-lblk-64            Use the format where the IVs include the inode\n"
+@@ -1794,6 +1796,8 @@ struct key_and_iv_params {
+ 	u8 file_nonce[FILE_NONCE_SIZE];
+ 	bool file_nonce_specified;
+ 	bool direct_key;
++	u8 iv[MAX_IV_SIZE];
++	bool iv_set;
+ 	bool iv_ino_lblk_64;
+ 	bool iv_ino_lblk_32;
+ 	u64 block_number;
+@@ -1901,7 +1905,9 @@ static void generate_iv(const struct key_and_iv_params *params,
+ 			union fscrypt_iv *iv)
  {
- 	case $FSTYP in
--	ext4)
-+	ext4|btrfs)
- 		_scratch_mkfs -O encrypt,verity
- 		;;
- 	f2fs)
-diff --git a/tests/btrfs/298 b/tests/btrfs/298
+ 	memset(iv, 0, sizeof(*iv));
+-	if (params->direct_key) {
++	if (params->iv_set) {
++		memcpy(iv->bytes, params->iv, MAX_IV_SIZE);
++	} else if (params->direct_key) {
+ 		if (!params->file_nonce_specified)
+ 			die("--direct-key requires --file-nonce");
+ 		iv->block_number = cpu_to_le64(params->block_number);
+@@ -1987,6 +1993,7 @@ enum {
+ 	OPT_FS_UUID,
+ 	OPT_HELP,
+ 	OPT_INODE_NUMBER,
++	OPT_IV,
+ 	OPT_IV_INO_LBLK_32,
+ 	OPT_IV_INO_LBLK_64,
+ 	OPT_KDF,
+@@ -2004,6 +2011,7 @@ static const struct option longopts[] = {
+ 	{ "fs-uuid",         required_argument, NULL, OPT_FS_UUID },
+ 	{ "help",            no_argument,       NULL, OPT_HELP },
+ 	{ "inode-number",    required_argument, NULL, OPT_INODE_NUMBER },
++	{ "iv",              required_argument, NULL, OPT_IV },
+ 	{ "iv-ino-lblk-32",  no_argument,       NULL, OPT_IV_INO_LBLK_32 },
+ 	{ "iv-ino-lblk-64",  no_argument,       NULL, OPT_IV_INO_LBLK_64 },
+ 	{ "kdf",             required_argument, NULL, OPT_KDF },
+@@ -2082,6 +2090,14 @@ int main(int argc, char *argv[])
+ 			if (params.inode_number <= 0 || *tmp || errno)
+ 				die("Invalid inode number: %s", optarg);
+ 			break;
++		case OPT_IV:
++			int iv_len = hex2bin(optarg, params.iv, MAX_IV_SIZE);
++			if ((iv_len != AES_BLOCK_SIZE) &&
++			    (iv_len != ADIANTUM_IV_SIZE))
++				die("Invalid iv length: %d (must be %u or %u)",
++				    iv_len, AES_BLOCK_SIZE, ADIANTUM_IV_SIZE);
++			params.iv_set = true;
++			break;
+ 		case OPT_IV_INO_LBLK_32:
+ 			params.iv_ino_lblk_32 = true;
+ 			break;
+diff --git a/tests/generic/550 b/tests/generic/550
+index aa792089..1c350090 100755
+--- a/tests/generic/550
++++ b/tests/generic/550
+@@ -17,9 +17,7 @@ _begin_fstest auto quick encrypt
+ # real QA test starts here
+ _supported_fs generic
+ 
+-# Test both with and without the DIRECT_KEY flag.
+ _verify_ciphertext_for_encryption_policy Adiantum Adiantum
+-_verify_ciphertext_for_encryption_policy Adiantum Adiantum direct
+ 
+ # success, all done
+ status=0
+diff --git a/tests/generic/550.out b/tests/generic/550.out
+index 4cec7570..418fa0b1 100644
+--- a/tests/generic/550.out
++++ b/tests/generic/550.out
+@@ -3,8 +3,3 @@ QA output created by 550
+ Verifying ciphertext with parameters:
+ 	contents_encryption_mode: Adiantum
+ 	filenames_encryption_mode: Adiantum
+-
+-Verifying ciphertext with parameters:
+-	contents_encryption_mode: Adiantum
+-	filenames_encryption_mode: Adiantum
+-	options: direct
+diff --git a/tests/generic/584 b/tests/generic/584
+index adafec6a..ec03908b 100755
+--- a/tests/generic/584
++++ b/tests/generic/584
+@@ -19,9 +19,7 @@ _begin_fstest auto quick encrypt
+ # real QA test starts here
+ _supported_fs generic
+ 
+-# Test both with and without the DIRECT_KEY flag.
+ _verify_ciphertext_for_encryption_policy Adiantum Adiantum v2
+-_verify_ciphertext_for_encryption_policy Adiantum Adiantum v2 direct
+ 
+ # success, all done
+ status=0
+diff --git a/tests/generic/584.out b/tests/generic/584.out
+index 946c5f0a..2a5fc053 100644
+--- a/tests/generic/584.out
++++ b/tests/generic/584.out
+@@ -4,8 +4,3 @@ Verifying ciphertext with parameters:
+ 	contents_encryption_mode: Adiantum
+ 	filenames_encryption_mode: Adiantum
+ 	options: v2
+-
+-Verifying ciphertext with parameters:
+-	contents_encryption_mode: Adiantum
+-	filenames_encryption_mode: Adiantum
+-	options: v2 direct
+diff --git a/tests/generic/720 b/tests/generic/720
 new file mode 100755
-index 00000000..ff97fd87
+index 00000000..5072d3ab
 --- /dev/null
-+++ b/tests/btrfs/298
-@@ -0,0 +1,85 @@
++++ b/tests/generic/720
+@@ -0,0 +1,26 @@
 +#! /bin/bash
 +# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2016 Google, Inc.  All Rights Reserved.
++# Copyright 2019 Google LLC
 +#
-+# FS QA Test No. 298
++# FS QA Test No. 720
 +#
-+# Test setting and getting encryption policies. Like generic/395, but allows
-+# setting encryption policy on a nonempty directory.
++# Verify ciphertext for v2 encryption policies that use Adiantum to encrypt file
++# contents and file names.
++#
++# This is the same as generic/584, except using direct policy 
 +#
 +. ./common/preamble
 +_begin_fstest auto quick encrypt
@@ -255,365 +376,68 @@ index 00000000..ff97fd87
 +
 +# real QA test starts here
 +_supported_fs generic
-+_require_scratch_encryption
-+_require_xfs_io_command "get_encpolicy"
-+_require_user
 +
-+_scratch_mkfs_encrypted &>> $seqres.full
-+_scratch_mount
-+
-+# Should be able to set an encryption policy on an empty directory
-+empty_dir=$SCRATCH_MNT/empty_dir
-+echo -e "\n*** Setting encryption policy on empty directory ***"
-+mkdir $empty_dir
-+_get_encpolicy $empty_dir |& _filter_scratch
-+_set_encpolicy $empty_dir 0000111122223333
-+_get_encpolicy $empty_dir | _filter_scratch | _filter_default_encryption_mode
-+
-+# Should be able to set the same policy again, but not a different one.
-+echo -e "\n*** Setting encryption policy again ***"
-+_set_encpolicy $empty_dir 0000111122223333
-+_get_encpolicy $empty_dir | _filter_scratch | _filter_default_encryption_mode
-+_set_encpolicy $empty_dir 4444555566667777 |& _filter_scratch
-+_get_encpolicy $empty_dir | _filter_scratch | _filter_default_encryption_mode
-+
-+# Should be able to set an encryption policy on a nonempty directory
-+nonempty_dir=$SCRATCH_MNT/nonempty_dir
-+echo -e "\n*** Setting encryption policy on nonempty directory ***"
-+mkdir $nonempty_dir
-+touch $nonempty_dir/file
-+_set_encpolicy $nonempty_dir | _filter_scratch
-+_get_encpolicy $nonempty_dir | _filter_scratch
-+
-+# Should *not* be able to set an encryption policy on a nondirectory file, even
-+# an empty one.  Regression test for 002ced4be642: "fscrypto: only allow setting
-+# encryption policy on directories".
-+nondirectory=$SCRATCH_MNT/nondirectory
-+echo -e "\n*** Setting encryption policy on nondirectory ***"
-+touch $nondirectory
-+_set_encpolicy $nondirectory |& _filter_scratch
-+_get_encpolicy $nondirectory |& _filter_scratch
-+
-+# Should *not* be able to set an encryption policy on another user's directory.
-+# Regression test for 163ae1c6ad62: "fscrypto: add authorization check for
-+# setting encryption policy".
-+unauthorized_dir=$SCRATCH_MNT/unauthorized_dir
-+echo -e "\n*** Setting encryption policy on another user's directory ***"
-+mkdir $unauthorized_dir
-+_user_do_set_encpolicy $unauthorized_dir |& _filter_scratch
-+_get_encpolicy $unauthorized_dir |& _filter_scratch
-+
-+# Should *not* be able to set an encryption policy on a directory on a
-+# filesystem mounted readonly.  Regression test for ba63f23d69a3: "fscrypto:
-+# require write access to mount to set encryption policy".  Test both a regular
-+# readonly filesystem and a readonly bind mount of a read-write filesystem.
-+echo -e "\n*** Setting encryption policy on readonly filesystem ***"
-+mkdir $SCRATCH_MNT/ro_dir $SCRATCH_MNT/ro_bind_mnt
-+_scratch_remount ro
-+_set_encpolicy $SCRATCH_MNT/ro_dir |& _filter_scratch
-+_get_encpolicy $SCRATCH_MNT/ro_dir |& _filter_scratch
-+_scratch_remount rw
-+mount --bind $SCRATCH_MNT $SCRATCH_MNT/ro_bind_mnt
-+mount -o remount,ro,bind $SCRATCH_MNT/ro_bind_mnt
-+_set_encpolicy $SCRATCH_MNT/ro_bind_mnt/ro_dir |& _filter_scratch
-+_get_encpolicy $SCRATCH_MNT/ro_bind_mnt/ro_dir |& _filter_scratch
-+umount $SCRATCH_MNT/ro_bind_mnt
++_verify_ciphertext_for_encryption_policy Adiantum Adiantum v2 direct
 +
 +# success, all done
 +status=0
 +exit
-diff --git a/tests/btrfs/298.out b/tests/btrfs/298.out
+diff --git a/tests/generic/720.out b/tests/generic/720.out
 new file mode 100644
-index 00000000..5e311d3c
+index 00000000..0b0d82f8
 --- /dev/null
-+++ b/tests/btrfs/298.out
-@@ -0,0 +1,47 @@
-+QA output created by 298
++++ b/tests/generic/720.out
+@@ -0,0 +1,6 @@
++QA output created by 720
 +
-+*** Setting encryption policy on empty directory ***
-+SCRATCH_MNT/empty_dir: failed to get encryption policy: No data available
-+Encryption policy for SCRATCH_MNT/empty_dir:
-+	Policy version: 0
-+	Master key descriptor: 0000111122223333
-+	Contents encryption mode: DEFAULT
-+	Filenames encryption mode: DEFAULT
-+	Flags: DEFAULT
++Verifying ciphertext with parameters:
++	contents_encryption_mode: Adiantum
++	filenames_encryption_mode: Adiantum
++	options: v2 direct
+diff --git a/tests/generic/721 b/tests/generic/721
+new file mode 100755
+index 00000000..98f2e6f9
+--- /dev/null
++++ b/tests/generic/721
+@@ -0,0 +1,26 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright 2019 Google LLC
++#
++# FS QA Test No. 550
++#
++# Verify ciphertext for v1 encryption policies that use Adiantum to encrypt file
++# contents and file names.
++# This is the same as generic/550, except with direct keys.
++#
++. ./common/preamble
++_begin_fstest auto quick encrypt
 +
-+*** Setting encryption policy again ***
-+Encryption policy for SCRATCH_MNT/empty_dir:
-+	Policy version: 0
-+	Master key descriptor: 0000111122223333
-+	Contents encryption mode: DEFAULT
-+	Filenames encryption mode: DEFAULT
-+	Flags: DEFAULT
-+SCRATCH_MNT/empty_dir: failed to set encryption policy: File exists
-+Encryption policy for SCRATCH_MNT/empty_dir:
-+	Policy version: 0
-+	Master key descriptor: 0000111122223333
-+	Contents encryption mode: DEFAULT
-+	Filenames encryption mode: DEFAULT
-+	Flags: DEFAULT
++# Import common functions.
++. ./common/filter
++. ./common/encrypt
 +
-+*** Setting encryption policy on nonempty directory ***
-+Encryption policy for SCRATCH_MNT/nonempty_dir:
-+	Policy version: 0
-+	Master key descriptor: 0000000000000000
-+	Contents encryption mode: 9 (Adiantum)
-+	Filenames encryption mode: 9 (Adiantum)
-+	Flags: 0x04
++# real QA test starts here
++_supported_fs generic
 +
-+*** Setting encryption policy on nondirectory ***
-+SCRATCH_MNT/nondirectory: failed to set encryption policy: Not a directory
-+SCRATCH_MNT/nondirectory: failed to get encryption policy: No data available
++_verify_ciphertext_for_encryption_policy Adiantum Adiantum direct
 +
-+*** Setting encryption policy on another user's directory ***
-+Permission denied
-+SCRATCH_MNT/unauthorized_dir: failed to get encryption policy: No data available
++# success, all done
++status=0
++exit
 +
-+*** Setting encryption policy on readonly filesystem ***
-+SCRATCH_MNT/ro_dir: failed to set encryption policy: Read-only file system
-+SCRATCH_MNT/ro_dir: failed to get encryption policy: No data available
-+SCRATCH_MNT/ro_bind_mnt/ro_dir: failed to set encryption policy: Read-only file system
-+SCRATCH_MNT/ro_bind_mnt/ro_dir: failed to get encryption policy: No data available
-diff --git a/tests/generic/395 b/tests/generic/395
-index ab2ad612..d08544dc 100755
---- a/tests/generic/395
-+++ b/tests/generic/395
-@@ -22,20 +22,24 @@ _require_user
- _scratch_mkfs_encrypted &>> $seqres.full
- _scratch_mount
- 
-+if [ "$FSTYP" = "btrfs" ]; then
-+	_notrun "Btrfs has a different non-empty directory policy"
-+fi
+diff --git a/tests/generic/721.out b/tests/generic/721.out
+new file mode 100644
+index 00000000..018c4666
+--- /dev/null
++++ b/tests/generic/721.out
+@@ -0,0 +1,6 @@
++QA output created by 721
 +
- # Should be able to set an encryption policy on an empty directory
- empty_dir=$SCRATCH_MNT/empty_dir
- echo -e "\n*** Setting encryption policy on empty directory ***"
- mkdir $empty_dir
- _get_encpolicy $empty_dir |& _filter_scratch
- _set_encpolicy $empty_dir 0000111122223333
--_get_encpolicy $empty_dir | _filter_scratch
-+_get_encpolicy $empty_dir | _filter_scratch | _filter_default_encryption_mode
- 
- # Should be able to set the same policy again, but not a different one.
- echo -e "\n*** Setting encryption policy again ***"
- _set_encpolicy $empty_dir 0000111122223333
--_get_encpolicy $empty_dir | _filter_scratch
-+_get_encpolicy $empty_dir | _filter_scratch | _filter_default_encryption_mode
- _set_encpolicy $empty_dir 4444555566667777 |& _filter_scratch
--_get_encpolicy $empty_dir | _filter_scratch
-+_get_encpolicy $empty_dir | _filter_scratch | _filter_default_encryption_mode
- 
- # Should *not* be able to set an encryption policy on a nonempty directory
- nonempty_dir=$SCRATCH_MNT/nonempty_dir
-diff --git a/tests/generic/395.out b/tests/generic/395.out
-index 2c55d7a9..541cab50 100644
---- a/tests/generic/395.out
-+++ b/tests/generic/395.out
-@@ -5,24 +5,24 @@ SCRATCH_MNT/empty_dir: failed to get encryption policy: No data available
- Encryption policy for SCRATCH_MNT/empty_dir:
- 	Policy version: 0
- 	Master key descriptor: 0000111122223333
--	Contents encryption mode: 1 (AES-256-XTS)
--	Filenames encryption mode: 4 (AES-256-CTS)
--	Flags: 0x02
-+	Contents encryption mode: DEFAULT
-+	Filenames encryption mode: DEFAULT
-+	Flags: DEFAULT
- 
- *** Setting encryption policy again ***
- Encryption policy for SCRATCH_MNT/empty_dir:
- 	Policy version: 0
- 	Master key descriptor: 0000111122223333
--	Contents encryption mode: 1 (AES-256-XTS)
--	Filenames encryption mode: 4 (AES-256-CTS)
--	Flags: 0x02
-+	Contents encryption mode: DEFAULT
-+	Filenames encryption mode: DEFAULT
-+	Flags: DEFAULT
- SCRATCH_MNT/empty_dir: failed to set encryption policy: File exists
- Encryption policy for SCRATCH_MNT/empty_dir:
- 	Policy version: 0
- 	Master key descriptor: 0000111122223333
--	Contents encryption mode: 1 (AES-256-XTS)
--	Filenames encryption mode: 4 (AES-256-CTS)
--	Flags: 0x02
-+	Contents encryption mode: DEFAULT
-+	Filenames encryption mode: DEFAULT
-+	Flags: DEFAULT
- 
- *** Setting encryption policy on nonempty directory ***
- SCRATCH_MNT/nonempty_dir: failed to set encryption policy: Directory not empty
-diff --git a/tests/generic/435 b/tests/generic/435
-index bb1cbb62..374e2a29 100755
---- a/tests/generic/435
-+++ b/tests/generic/435
-@@ -27,6 +27,13 @@ _supported_fs generic
- _require_scratch_encryption
- _require_command "$KEYCTL_PROG" keyctl
- 
-+# -f 0x2: zero-pad to 16-byte boundary (i.e. encryption block boundary)
-+FLAGS_NEEDED=0x2
-+if [ "$FSTYP" = "btrfs" ]; then
-+	# btrfs must use a direct key policy
-+	FLAGS_NEEDED=0x6
-+fi
-+
- # set up an encrypted directory
- 
- _init_session_keyring
-@@ -34,8 +41,7 @@ _scratch_mkfs_encrypted &>> $seqres.full
- _scratch_mount
- mkdir $SCRATCH_MNT/edir
- keydesc=$(_generate_session_encryption_key)
--# -f 0x2: zero-pad to 16-byte boundary (i.e. encryption block boundary)
--_set_encpolicy $SCRATCH_MNT/edir $keydesc -f 0x2
-+_set_encpolicy $SCRATCH_MNT/edir $keydesc -f $FLAGS_NEEDED
- 
- # Create files with long names (> 32 bytes, long enough to trigger the use of
- # "digested" names) in the encrypted directory.
-diff --git a/tests/generic/576 b/tests/generic/576
-index c8862de2..fbd72f8c 100755
---- a/tests/generic/576
-+++ b/tests/generic/576
-@@ -51,7 +51,8 @@ cp $fsv_orig_file $fsv_file
- _fsv_enable $fsv_file
- echo
- $XFS_IO_PROG -r -c "get_encpolicy" $fsv_file | _filter_scratch \
--	| sed 's/Master key descriptor:.*/Master key descriptor: 0000000000000000/'
-+	| sed 's/Master key descriptor:.*/Master key descriptor: 0000000000000000/' \
-+	| _filter_default_encryption_mode
- echo
- 
- # Verify that the file contents are as expected.  This should be going through
-diff --git a/tests/generic/576.out b/tests/generic/576.out
-index cd8527b9..3d875b62 100644
---- a/tests/generic/576.out
-+++ b/tests/generic/576.out
-@@ -3,9 +3,9 @@ QA output created by 576
- Encryption policy for SCRATCH_MNT/edir/file.fsv:
- 	Policy version: 0
- 	Master key descriptor: 0000000000000000
--	Contents encryption mode: 1 (AES-256-XTS)
--	Filenames encryption mode: 4 (AES-256-CTS)
--	Flags: 0x02
-+	Contents encryption mode: DEFAULT
-+	Filenames encryption mode: DEFAULT
-+	Flags: DEFAULT
- 
- Files matched
- Files matched
-diff --git a/tests/generic/580 b/tests/generic/580
-index 73f32ff9..8faa0dc2 100755
---- a/tests/generic/580
-+++ b/tests/generic/580
-@@ -39,10 +39,11 @@ test_with_policy_version()
- 	echo "# Setting v$vers encryption policy"
- 	_set_encpolicy $dir $keyspec
- 	echo "# Getting v$vers encryption policy"
--	_get_encpolicy $dir | _filter_scratch
-+	_get_encpolicy $dir | _filter_scratch | _filter_default_encryption_mode
- 	if (( vers == 1 )); then
- 		echo "# Getting v1 encryption policy using old ioctl"
--		_get_encpolicy $dir -1 | _filter_scratch
-+		_get_encpolicy $dir -1 | _filter_scratch | \
-+			_filter_default_encryption_mode
- 	fi
- 	echo "# Trying to create file without key added yet"
- 	$XFS_IO_PROG -f $dir/file |& _filter_scratch
-diff --git a/tests/generic/580.out b/tests/generic/580.out
-index 989d4514..0c930827 100644
---- a/tests/generic/580.out
-+++ b/tests/generic/580.out
-@@ -5,16 +5,16 @@ QA output created by 580
- Encryption policy for SCRATCH_MNT/dir:
- 	Policy version: 0
- 	Master key descriptor: 0000111122223333
--	Contents encryption mode: 1 (AES-256-XTS)
--	Filenames encryption mode: 4 (AES-256-CTS)
--	Flags: 0x02
-+	Contents encryption mode: DEFAULT
-+	Filenames encryption mode: DEFAULT
-+	Flags: DEFAULT
- # Getting v1 encryption policy using old ioctl
- Encryption policy for SCRATCH_MNT/dir:
- 	Policy version: 0
- 	Master key descriptor: 0000111122223333
--	Contents encryption mode: 1 (AES-256-XTS)
--	Filenames encryption mode: 4 (AES-256-CTS)
--	Flags: 0x02
-+	Contents encryption mode: DEFAULT
-+	Filenames encryption mode: DEFAULT
-+	Flags: DEFAULT
- # Trying to create file without key added yet
- SCRATCH_MNT/dir/file: Required key not available
- # Getting encryption key status
-@@ -52,9 +52,9 @@ cat: SCRATCH_MNT/dir/file: No such file or directory
- Encryption policy for SCRATCH_MNT/dir:
- 	Policy version: 2
- 	Master key identifier: 69b2f6edeee720cce0577937eb8a6751
--	Contents encryption mode: 1 (AES-256-XTS)
--	Filenames encryption mode: 4 (AES-256-CTS)
--	Flags: 0x02
-+	Contents encryption mode: DEFAULT
-+	Filenames encryption mode: DEFAULT
-+	Flags: DEFAULT
- # Trying to create file without key added yet
- SCRATCH_MNT/dir/file: Required key not available
- # Getting encryption key status
-diff --git a/tests/generic/581 b/tests/generic/581
-index cabc7e1c..b2659b66 100755
---- a/tests/generic/581
-+++ b/tests/generic/581
-@@ -52,7 +52,7 @@ echo "# Setting v1 policy as regular user (should succeed)"
- _user_do_set_encpolicy $dir $keydesc
- 
- echo "# Getting v1 policy as regular user (should succeed)"
--_user_do_get_encpolicy $dir | _filter_scratch
-+_user_do_get_encpolicy $dir | _filter_scratch | _filter_default_encryption_mode
- 
- echo "# Adding v1 policy key as regular user (should fail with EACCES)"
- _user_do_add_enckey $SCRATCH_MNT "$raw_key" -d $keydesc
-@@ -71,7 +71,7 @@ echo "# Setting v2 policy as regular user with key added (should succeed)"
- _user_do_set_encpolicy $dir $keyid
- 
- echo "# Getting v2 policy as regular user (should succeed)"
--_user_do_get_encpolicy $dir | _filter_scratch
-+_user_do_get_encpolicy $dir | _filter_scratch | _filter_default_encryption_mode
- 
- echo "# Creating encrypted file as regular user (should succeed)"
- _user_do "echo contents > $dir/file"
-diff --git a/tests/generic/581.out b/tests/generic/581.out
-index b3f7d889..544f7579 100644
---- a/tests/generic/581.out
-+++ b/tests/generic/581.out
-@@ -5,9 +5,9 @@ QA output created by 581
- Encryption policy for SCRATCH_MNT/dir:
- 	Policy version: 0
- 	Master key descriptor: 0000111122223333
--	Contents encryption mode: 1 (AES-256-XTS)
--	Filenames encryption mode: 4 (AES-256-CTS)
--	Flags: 0x02
-+	Contents encryption mode: DEFAULT
-+	Filenames encryption mode: DEFAULT
-+	Flags: DEFAULT
- # Adding v1 policy key as regular user (should fail with EACCES)
- Permission denied
- 
-@@ -20,9 +20,9 @@ Added encryption key with identifier 69b2f6edeee720cce0577937eb8a6751
- Encryption policy for SCRATCH_MNT/dir:
- 	Policy version: 2
- 	Master key identifier: 69b2f6edeee720cce0577937eb8a6751
--	Contents encryption mode: 1 (AES-256-XTS)
--	Filenames encryption mode: 4 (AES-256-CTS)
--	Flags: 0x02
-+	Contents encryption mode: DEFAULT
-+	Filenames encryption mode: DEFAULT
-+	Flags: DEFAULT
- # Creating encrypted file as regular user (should succeed)
- # Removing v2 policy key as regular user (should succeed)
- Removed encryption key with identifier 69b2f6edeee720cce0577937eb8a6751
++Verifying ciphertext with parameters:
++	contents_encryption_mode: Adiantum
++	filenames_encryption_mode: Adiantum
++	options: direct
 -- 
 2.35.1
 
