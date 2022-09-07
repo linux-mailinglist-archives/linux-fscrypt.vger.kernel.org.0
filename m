@@ -2,114 +2,115 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D104D5B06FC
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  7 Sep 2022 16:33:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF9085B0D67
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  7 Sep 2022 21:43:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229831AbiIGOdp (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 7 Sep 2022 10:33:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44178 "EHLO
+        id S229523AbiIGTng (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 7 Sep 2022 15:43:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229891AbiIGOdQ (ORCPT
+        with ESMTP id S229480AbiIGTnf (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 7 Sep 2022 10:33:16 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C17B7B533E
-        for <linux-fscrypt@vger.kernel.org>; Wed,  7 Sep 2022 07:32:46 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id s11so19988512edd.13
-        for <linux-fscrypt@vger.kernel.org>; Wed, 07 Sep 2022 07:32:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date;
-        bh=UTPjlhWN0j/3cl0uibj9IdU3K9tIHCNTd74bAPWV+BQ=;
-        b=mqK4Urm6SI0LL0fIUpNglz2SbMFsznWTf0PUQzqjeQH/Bx12DkdTnBbzDZaQ4NR5iF
-         EQ7O7aO6doj8u/y3juxRvQfrpZ+4GxqWxP8xLHHcNMflWyA+nbVtyNaPRhtr9ofPoPwP
-         8B+OpsMdCo4QTDhmgZx918/MwMfvch/o8zTMSvXvdQRmqiXAGAGG0BMKFEwgydJ+Wh2g
-         mACuo7ixacFf2kfjc0mw39zk8rxwdiQKq9VKx4zvYpa6O1ByXXOPP+qBaWEXo7gAHnwA
-         FAVlPjIOEE2/ttEfWJe2qBCmRSUgsg0XQyoATWJy8k712P//auvk1V/Dh46aKaKpfIy+
-         X5Hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=UTPjlhWN0j/3cl0uibj9IdU3K9tIHCNTd74bAPWV+BQ=;
-        b=Xiu4H01+Lhznu9bL+qGW4mxwywriAJplZ+bdsEeP4JEb3awHo7JJXUJ7MXsGrTzFwk
-         p6MF8FYX7i3ljQVxyv/yq5qn750yrM6Uf2SQLqYiEl3bu3NmGzGXDKxoBWy2a3RKlb8j
-         thqqFE9zzFTpnKBHKMjgc3MAQbA+rW1F8dz3bezOJx73wiiFRxUgAjA7P7ShInD0gvhX
-         Df6ZXaemGl6PaLa3+7UCdtv9tkJTBQFVuYJ2Q5ZgZq2u7SniS+yRAK8oMq2r/rtcaaQe
-         H+e7mGFC82ZKG9SO9k7vBGa+l0MPeXtreAve9qzOId34t7G474YTCWaSzvJ7AgcBH7oR
-         pZ2Q==
-X-Gm-Message-State: ACgBeo2WRnPdJlNa2aL4SceixRCCvQ9pjolfjmGEcYq2yupLyfnFmNjR
-        2taqrM5N14nc61wXZGeB2FzLZghwZzVkCVyB4TY=
-X-Google-Smtp-Source: AA6agR4rVWBPLpn6GXYzkUIV6dVS5ftgYaJRvLA5IUNE2znvSte/lik1W2yhM2ubbwRHIY2/TUDyhZrg0vh1fMG2v9I=
-X-Received: by 2002:a05:6402:510c:b0:43e:305c:a4d1 with SMTP id
- m12-20020a056402510c00b0043e305ca4d1mr3247713edd.35.1662561165041; Wed, 07
- Sep 2022 07:32:45 -0700 (PDT)
+        Wed, 7 Sep 2022 15:43:35 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02D1BA74C5;
+        Wed,  7 Sep 2022 12:43:34 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id A4F10340C4;
+        Wed,  7 Sep 2022 19:43:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1662579812;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EP/1Vlbw0S1UBbwYHHOBOq3U6vSqqSVRO1eynQXcM9Q=;
+        b=SvBHqO4oiak30Dq/lfM86S04N9lNz5H5ZVcz+XsX/WtChTmE9TDnPuGl+c2U/I3G510YR3
+        Go+Z7mq9P1enXyAxZtVXOTh7gWPI4HYtPWYJ+BneGDe7kpkcM3dco1pF6iwgJoK2oRvTLQ
+        xLryoAxt52B6i3fxCCONA5GDWDECQSM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1662579812;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EP/1Vlbw0S1UBbwYHHOBOq3U6vSqqSVRO1eynQXcM9Q=;
+        b=Yal7LMJlsecELjsUeQ/qh3i+LOuItLuPmH/IBuY4D5o2W7Ii+s606bQJZglIiZZsCOJh+S
+        Si+v5GAKHp/CB4Dg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6740713A66;
+        Wed,  7 Sep 2022 19:43:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 9I1TGGT0GGOHNAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 07 Sep 2022 19:43:32 +0000
+Date:   Wed, 7 Sep 2022 21:38:09 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-fscrypt@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v2 00/20] btrfs: add fscrypt integration
+Message-ID: <20220907193809.GH32411@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1662420176.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
-Received: by 2002:a54:3fc4:0:0:0:0:0 with HTTP; Wed, 7 Sep 2022 07:32:44 -0700 (PDT)
-Reply-To: lumar.casey@outlook.com
-From:   LUMAR CASEY <miriankushrat@gmail.com>
-Date:   Wed, 7 Sep 2022 16:32:44 +0200
-Message-ID: <CAO4StN0TpPxKN5zH_svRaRqGX4qmv4BYo2qpgmikVSdFaMxdLg@mail.gmail.com>
-Subject: ATTENTION/PROPOSAL
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=6.8 required=5.0 tests=ADVANCE_FEE_4_NEW_MONEY,
-        BAYES_50,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,LOTS_OF_MONEY,MONEY_FREEMAIL_REPTO,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNDISC_FREEM,UNDISC_MONEY,UPPERCASE_75_100 autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:544 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [miriankushrat[at]gmail.com]
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  0.0 UPPERCASE_75_100 message body is 75-100% uppercase
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        *  3.1 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-        *  2.0 MONEY_FREEMAIL_REPTO Lots of money from someone using free
-        *      email?
-        *  0.2 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-        *  0.0 ADVANCE_FEE_4_NEW_MONEY Advance Fee fraud and lots of money
-X-Spam-Level: ******
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1662420176.git.sweettea-kernel@dorminy.me>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-ATTENTION
+On Mon, Sep 05, 2022 at 08:35:15PM -0400, Sweet Tea Dorminy wrote:
+> This is a changeset adding encryption to btrfs.
+> 
+> Last October, Omar Sandoval sent out a design document for having fscrypt
+> integration with btrfs [1]. In summary, it proposes btrfs storing its
+> own encryption IVs on a per-file-extent basis. fscrypt usually encrypts
+> files using an IV derived from per-inode information; this would prevent
+> snapshotting or reflinking or data relocation for btrfs. We have
+> refined this into a fscrypt extent context object, opaque to the
+> filesystem, which fscrypt uses to generate an IV associated with each
+> block in an extent. Thus, all the inodes sharing a particular
+> key and file extent may decrypt the extent.
+> 
+> This series implements this integration for the simple
+> case, non-compressed data extents. Followup changes will allow
+> encryption of compressed extents, inline extents, and verity items, and
+> will add tests around subvolume encryption. This series should provide
+> encryption for the simplest cases, but this series should not be used in
+> production, as there are likely bugs.
+>  
+> Preliminary btrfs-progs changes are available at [2]; fstests changes
+> are available at [3].
 
-BUSINESS PARTNER,
+I did a quick pass to check if there's anything that could be merged to
+6.1 as preparatory, the fname is a candidate but I've also seen random
+coding style issues that I'd like to get fixed first.
 
-I AM LUMAR CASEY WORKING WITH AN INSURANCE FINANCIAL INSTITUTE, WITH
-MY POSITION AND PRIVILEGES I WAS ABLE TO SOURCE OUT AN OVER DUE
-PAYMENT OF 12.8 MILLION POUNDS THAT IS NOW SECURED WITH A SHIPPING
-DIPLOMATIC OUTLET.
+One thing I've noticed is that the incompat bit is only defined but not
+used anywhere. Any functional change should be guarded behind it, and
+once the implementation is complete the enabling part is in a separate
+patch.
 
-I AM SEEKING YOUR PARTNERSHIP TO RECEIVE THIS CONSIGNMENT AS AS MY
-PARTNER TO INVEST THIS FUND INTO A PROSPEROUS INVESTMENT VENTURE IN
-YOUR COUNTRY.
+Regarding the build config options, I assume that the fscrypt support is
+optional, so it should build with and without the option. I'm not sure
+I've see enough ifdefs for that. For such features there should be a
+line in btrfs_print_mod_info, like we have eg. for verity.
 
-I AWAIT YOUR REPLY TO ENABLE US PROCEED WITH THIS BUSINESS PARTNERSHIP TOGETHER.
-
-REGARDS,
-
-LUMAR CASEY
+I'll post other comments under the patches.
