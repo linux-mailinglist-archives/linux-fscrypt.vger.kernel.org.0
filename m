@@ -2,136 +2,90 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67DD55B0F42
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  7 Sep 2022 23:38:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D15805B0F45
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  7 Sep 2022 23:39:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229925AbiIGVi5 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 7 Sep 2022 17:38:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47356 "EHLO
+        id S230090AbiIGVjH (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 7 Sep 2022 17:39:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229956AbiIGVi4 (ORCPT
+        with ESMTP id S229477AbiIGVjG (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 7 Sep 2022 17:38:56 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D08E6C2EAE;
-        Wed,  7 Sep 2022 14:38:55 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Wed, 7 Sep 2022 17:39:06 -0400
+Received: from box.fidei.email (box.fidei.email [71.19.144.250])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13C68B7EFB;
+        Wed,  7 Sep 2022 14:39:05 -0700 (PDT)
+Received: from authenticated-user (box.fidei.email [71.19.144.250])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 7FABC341C1;
-        Wed,  7 Sep 2022 21:38:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1662586734;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=THuvsEX6UOHMKMNKwub0IrugBP6wvRAwbiWDVHnCrDM=;
-        b=0lI6ZXVEqcP9QzS2vmJ5T+zGRVit5Ko5jI+KQ855mhHwgbc6Qy2TUtpao5zQp9wrdGCrLq
-        gS2r6DY1WV+z2Wwr9q7OzZqTLRtCXtro81Ygg0adi/MTC7zizItA4K9XgxkxRLblLjNRME
-        NZ1A0Mx+W94SXxbxi8IiSu0COMOBug8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1662586734;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=THuvsEX6UOHMKMNKwub0IrugBP6wvRAwbiWDVHnCrDM=;
-        b=goX4lfIuI8ZQ/ALBw8ubdcTv+tp5oSXhzXI83Ez0KwCk1WMs4J56p2PznWfx9Ru1f9Hohb
-        Ttgm17xRuwdtjtDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 31F3C13A66;
-        Wed,  7 Sep 2022 21:38:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id jm5tC24PGWNFVQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 07 Sep 2022 21:38:54 +0000
-Date:   Wed, 7 Sep 2022 23:33:31 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+        by box.fidei.email (Postfix) with ESMTPSA id C62E1803EF;
+        Wed,  7 Sep 2022 17:39:04 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
+        t=1662586744; bh=scXC3vBL6EzVJa+BcD5DJ4xup57i/rOj2t6GeJw+1Ds=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=giR3/rD2emxfSGUIjERjhcG2fwkpjzkQ1t+Kz3kf1Gg6Z4cH/sCdvwliIE2ASIgK+
+         YC1bhnqn/7S45MbA8YtY2gk2RqtgRRd6G71xlydFu88tLnn0LX1uuylzJ37XtPDHmE
+         6GK2CvQBIDxQ2+rxoVvQxhDo+iBO/hA5LKVBKmUIFjAws3lwOHtWoFzDfcq+Od1Jh2
+         kHtOLxILuppZyKZRvhhN1gs1fGMEM5wgsgyyy5p1risJjIJQzA1PIOSnqznu+8wPkB
+         n8WdrIe0AHXWaFXiVtL0hceFYaDlnMZZBxxVJ8zA7lM5twyxY4AUGDp4xym146qHqJ
+         esOfubSVMx5EA==
+MIME-Version: 1.0
+Date:   Wed, 07 Sep 2022 17:39:04 -0400
+From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+To:     dsterba@suse.cz
 Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
         Eric Biggers <ebiggers@kernel.org>, Chris Mason <clm@fb.com>,
         Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>, linux-fscrypt@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        Omar Sandoval <osandov@osandov.com>
-Subject: Re: [PATCH v2 20/20] btrfs: implement fscrypt ioctls
-Message-ID: <20220907213330.GO32411@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v2 15/20] btrfs: store a fscrypt extent context per normal
+ file extent
+In-Reply-To: <20220907211053.GM32411@twin.jikos.cz>
 References: <cover.1662420176.git.sweettea-kernel@dorminy.me>
- <e7dd2cb0f4eef391566e1e60f05136244a288693.1662420177.git.sweettea-kernel@dorminy.me>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e7dd2cb0f4eef391566e1e60f05136244a288693.1662420177.git.sweettea-kernel@dorminy.me>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+ <460baa45489be139b48e7b152852bda919363b4c.1662420176.git.sweettea-kernel@dorminy.me>
+ <20220907211053.GM32411@twin.jikos.cz>
+Message-ID: <0b06375915f5ef9529682e2d71dce6bd@dorminy.me>
+X-Sender: sweettea-kernel@dorminy.me
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Sep 05, 2022 at 08:35:35PM -0400, Sweet Tea Dorminy wrote:
-> From: Omar Sandoval <osandov@osandov.com>
-> 
-> These ioctls allow encryption to be set up.
-> 
-> Signed-off-by: Omar Sandoval <osandov@osandov.com>
-> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-> ---
->  fs/btrfs/ioctl.c | 28 ++++++++++++++++++++++++++++
->  1 file changed, 28 insertions(+)
-> 
-> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> index 708e514aca25..ea1c14b26206 100644
-> --- a/fs/btrfs/ioctl.c
-> +++ b/fs/btrfs/ioctl.c
-> @@ -5457,6 +5457,34 @@ long btrfs_ioctl(struct file *file, unsigned int
->  		return btrfs_ioctl_get_fslabel(fs_info, argp);
->  	case FS_IOC_SETFSLABEL:
->  		return btrfs_ioctl_set_fslabel(file, argp);
-> +	case FS_IOC_SET_ENCRYPTION_POLICY: {
-> +		if (!IS_ENABLED(CONFIG_FS_ENCRYPTION))
-> +			return -EOPNOTSUPP;
-> +		if (sb_rdonly(fs_info->sb))
-> +			return -EROFS;
-> +		/*
-> +		 *  If we crash before we commit, nothing encrypted could have
-> +		 * been written so it doesn't matter whether the encrypted
-> +		 * state persists.
-> +		 */
-> +		btrfs_set_fs_incompat(fs_info, FSCRYPT);
-> +		return fscrypt_ioctl_set_policy(file, (const void __user *)arg);
-> +	}
-> +	case FS_IOC_GET_ENCRYPTION_POLICY:
-> +		return fscrypt_ioctl_get_policy(file, (void __user *)arg);
-> +	case FS_IOC_GET_ENCRYPTION_POLICY_EX:
-> +		return fscrypt_ioctl_get_policy_ex(file, (void __user *)arg);
-> +	case FS_IOC_ADD_ENCRYPTION_KEY:
-> +		return fscrypt_ioctl_add_key(file, (void __user *)arg);
-> +	case FS_IOC_REMOVE_ENCRYPTION_KEY:
-> +		return fscrypt_ioctl_remove_key(file, (void __user *)arg);
-> +	case FS_IOC_REMOVE_ENCRYPTION_KEY_ALL_USERS:
-> +		return fscrypt_ioctl_remove_key_all_users(file,
-> +							  (void __user *)arg);
-> +	case FS_IOC_GET_ENCRYPTION_KEY_STATUS:
-> +		return fscrypt_ioctl_get_key_status(file, (void __user *)arg);
-> +	case FS_IOC_GET_ENCRYPTION_NONCE:
-> +		return fscrypt_ioctl_get_nonce(file, (void __user *)arg);
 
-I've looked what ext4 does for the ioctls and there's a check before
-each case if the feature is supported, do we need something like that as
-well?
+> FSCRYPT_EXTENT_CONTEXT_MAX_SIZE is 33 and btrfs_fscrypt_extent_context
+> is part of extent_map, that's quite common object. Random sample from 
+> my
+> desktop right now is around 800k objects so this is noticeable. Needs a
+> second look.
+> 
+>> +
+>>  extern const struct fscrypt_operations btrfs_fscrypt_ops;
+>>  #endif /* BTRFS_FSCRYPT_H */
+>> --- a/fs/btrfs/ordered-data.h
+>> +++ b/fs/btrfs/ordered-data.h
+>> @@ -99,6 +99,7 @@ struct btrfs_ordered_extent {
+>>  	u64 disk_bytenr;
+>>  	u64 disk_num_bytes;
+>>  	u64 offset;
+>> +	struct btrfs_fscrypt_extent_context fscrypt_context;
+> 
+> And another embedded btrfs_fscrypt_extent_context, that can also get a
+> lot of slab objects.
 
->  	case FITRIM:
->  		return btrfs_ioctl_fitrim(fs_info, argp);
->  	case BTRFS_IOC_SNAP_CREATE:
-> -- 
-> 2.35.1
+I could certainly define fscrypt_extent_context's as a separate btree 
+object type, and/or have them be separately allocated and just have a 
+pointer in the various structures to keep track of them. I didn't have a 
+separate object for them since its only a 17 or 33 byte object (at 
+present) on a per-btrfs_file_extent basis, but maybe that would be 
+better?
+
+I could also #ifdef CONFIG_FS_ENCRYPTION the member in each structure, 
+if that would help over and beyond either of the previous things.
