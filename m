@@ -2,54 +2,54 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE4D5B0D9F
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  7 Sep 2022 22:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8450E5B0DC5
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  7 Sep 2022 22:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229938AbiIGUAL (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 7 Sep 2022 16:00:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60510 "EHLO
+        id S229445AbiIGUJl (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 7 Sep 2022 16:09:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229982AbiIGT75 (ORCPT
+        with ESMTP id S229477AbiIGUJk (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 7 Sep 2022 15:59:57 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7F9C2981B
-        for <linux-fscrypt@vger.kernel.org>; Wed,  7 Sep 2022 12:59:55 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id c2so15666410plo.3
-        for <linux-fscrypt@vger.kernel.org>; Wed, 07 Sep 2022 12:59:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20210112.gappssmtp.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date;
-        bh=Eb8WB/DJWxxPSuvWAK4Z4tebfxzVH+ZIa8KVMkM6K94=;
-        b=SQ6zQsnTMT8PGNqc1MSsO27cpv8q35vsGt0DMRaliIafT4dxQy7shjUAl9YO8lPaGB
-         QW5Ak4gX/dBig+P5rY7+F0AVa9Bqq9RmXDxc3gO0s8E4MGEWLMAp3aTz3Mn070wb01PY
-         BI+/1TlnB5DGCNY3b1IAnU67Mk7p/tLsp0Oz386sig0M2XD/t2Dqc3FwT/HCP2LoPJtq
-         WTcoMV/KCKCjaTYcZMDhpxCb0fIA1Lv3HUeIgXq8fLcQO7TX66Cw5B2Mmd/xgyxndTCM
-         wgu7onKbf5G9uxCHClQVvuRVq/XTdGZGvZNdBCzWzaVuNzDvF9qfzjNktgzlfM9iiwZd
-         u+mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=Eb8WB/DJWxxPSuvWAK4Z4tebfxzVH+ZIa8KVMkM6K94=;
-        b=YWUs0ea/GaORyZX5CxRYp75/yN/HDm8qlQ99kegMR7/KdNdRK9fE9ooOcycpFmQmjQ
-         kLQWsPMk8TwO0Ldm/M46tTJnoB928dD3GlrIvEGKK0W+4TmS8Ehkz5wF+oXHq1xHElLQ
-         YfIqnYbVs/5Z8IApzgU6zaidt0nLLW8Moeb4KI4LV2ia/6bk38+vxtIGLlRCbgcnNXi2
-         OcLsRDNDJkit4GRVf4SGndH+n8ZfXJPgMjWt4gQ94KLPTQega2P95GV+T9Sw6MgP83HR
-         dQp9XBvelqcQbMh8Bu9GjIfH83Drv17kJMdozl0U+zUuvZibwR/2hTrBjcRK1Vi3JplV
-         iyig==
-X-Gm-Message-State: ACgBeo224qwx817lRE5DwuRJPgXeBnlbt0KlQ1MtWlHNMn6MRScrFPU2
-        gXiWOsTDo4MQ/4WkLsq6ggywkw==
-X-Google-Smtp-Source: AA6agR6i9q4YW5TIa519fGuZSqLWjI2qqN8OdEVdJudbHUROM44nB/W3NeIgqooQZr+LMGmO4U1IJw==
-X-Received: by 2002:a17:90b:1e47:b0:200:b9b4:ba1e with SMTP id pi7-20020a17090b1e4700b00200b9b4ba1emr168629pjb.172.1662580795302;
-        Wed, 07 Sep 2022 12:59:55 -0700 (PDT)
-Received: from relinquished.localdomain ([2620:10d:c090:400::5:52ee])
-        by smtp.gmail.com with ESMTPSA id f18-20020a170902ab9200b001750792f20asm12693015plr.238.2022.09.07.12.59.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Sep 2022 12:59:54 -0700 (PDT)
-Date:   Wed, 7 Sep 2022 12:59:52 -0700
-From:   Omar Sandoval <osandov@osandov.com>
+        Wed, 7 Sep 2022 16:09:40 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C7CBDF4B;
+        Wed,  7 Sep 2022 13:09:37 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id E77A52078D;
+        Wed,  7 Sep 2022 20:09:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1662581375;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EgB7BkrIr3736Ez1yx7slg7kuAdT7bIsetRYj0Zrcb0=;
+        b=k+01TYRiR1s9Tbq71ty+Ri7yukbBM/SHXI1NGhxQcqSDSgZnSCmJ68o/iLafdpEg+spSoy
+        dOvpVzYZdycPqqkclqDnf7UZdtd6hV8TBzD/fy0AOnuPgBRSUf3vkI5ZejumD5QB/lqgU9
+        RnpK3LhUw/u5ClWKHwUUkCOlCxwjNoE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1662581375;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EgB7BkrIr3736Ez1yx7slg7kuAdT7bIsetRYj0Zrcb0=;
+        b=ZB9nQJ8uod5cIf3fgU7gTjv4fjeLEKFIqHpWpBl1NF15bn3/q48QRMaKHaTUOpcQd0TCtw
+        1N+PW/VXoK+BCoAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A390713486;
+        Wed,  7 Sep 2022 20:09:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id SLkHJ3/6GGOAPAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 07 Sep 2022 20:09:35 +0000
+Date:   Wed, 7 Sep 2022 22:04:12 +0200
+From:   David Sterba <dsterba@suse.cz>
 To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
@@ -57,70 +57,137 @@ Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
         Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>, linux-fscrypt@vger.kernel.org,
         linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v2 05/20] fscrypt: add extent-based encryption
-Message-ID: <Yxj4OAvgNj8bMN15@relinquished.localdomain>
+Subject: Re: [PATCH v2 08/20] btrfs: use fscrypt_names instead of name/len
+ everywhere.
+Message-ID: <20220907200412.GI32411@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
 References: <cover.1662420176.git.sweettea-kernel@dorminy.me>
- <48d09d4905d0c6e5e72d37535eb852487f1bd9cb.1662420176.git.sweettea-kernel@dorminy.me>
+ <2b32b14368c67eb8591ccc4b0cf9d19358dfae23.1662420176.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <48d09d4905d0c6e5e72d37535eb852487f1bd9cb.1662420176.git.sweettea-kernel@dorminy.me>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <2b32b14368c67eb8591ccc4b0cf9d19358dfae23.1662420176.git.sweettea-kernel@dorminy.me>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_SOFTFAIL,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Sep 05, 2022 at 08:35:20PM -0400, Sweet Tea Dorminy wrote:
-> Some filesystems need to encrypt data based on extents, rather than on
-> inodes, due to features incompatible with inode-based encryption. For
-> instance, btrfs can have multiple inodes referencing a single block of
-> data, and moves logical data blocks to different physical locations on
-> disk in the background; these two features mean inode or
-> physical-location-based policies will not work for btrfs.
+On Mon, Sep 05, 2022 at 08:35:23PM -0400, Sweet Tea Dorminy wrote:
+> For encryption, the plaintext filenames provided by the VFS will need to
+> be translated to ciphertext filenames on disk. Fscrypt provides a struct
+> to encapsulate a potentially encrypted filename, struct fscrypt_name.
+> This change converts every (name, len) pair to be a struct fscrypt_name,
+> statically initialized, for ease of review and uniformity.
 
-I really like how this abstracts away the encryption details from the
-filesystem.
+Is there some clear boundary where the name needs to be encoded or
+decoded? I don't think we should use fscrypt_name in so many functions,
+namely internal helpers that really only care about the plain name +
+length. Such widespread use fscrypt structure would make it hard to
+synchronize with the user space sources.
 
-> This change introduces fscrypt_extent_context objects, in analogy to
-> existing context objects based on inodes. For a filesystem which uses
-> extents,
+What we could do to ease the integragtion with the fscrypt name is to
+use the qstr structure, ie. something that's easily convertible to the
+fscrypt_name::usr_fname.
 
-This makes it sounds like all filesystems that store allocations as
-extents should define these, but ext4 (for example) uses extents but is
-fine with inode-based encryption policies. Perhaps this can say
-something like "A filesytem can opt into the extent-based encryption
-policy by defining new hooks that manage a new fscrypt_extent_context."
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -21,11 +21,13 @@
+>  #include <linux/pagemap.h>
+>  #include <linux/btrfs.h>
+>  #include <linux/btrfs_tree.h>
+> +#include <linux/fscrypt.h>
+>  #include <linux/workqueue.h>
+>  #include <linux/security.h>
+>  #include <linux/sizes.h>
+>  #include <linux/dynamic_debug.h>
+>  #include <linux/refcount.h>
+> +#include <linux/crc32.h>
+>  #include <linux/crc32c.h>
+>  #include <linux/iomap.h>
+>  #include "extent-io-tree.h"
+> @@ -2803,18 +2805,19 @@ static inline void btrfs_crc32c_final(u32 crc, u8 *result)
+>  	put_unaligned_le32(~crc, result);
+>  }
+>  
+> -static inline u64 btrfs_name_hash(const char *name, int len)
+> +static inline u64 btrfs_name_hash(const struct fscrypt_name *name)
+>  {
+> -       return crc32c((u32)~1, name, len);
+> +	return crc32c((u32)~1, fname_name(name), fname_len(name));
 
-> a new hook provides a new fscrypt_extent_context. During file
-> content encryption/decryption, the existing fscrypt_context object
-> provides key information, while the new fscrypt_extent_context provides
-> IV information. For filename encryption, the existing IV generation
-> methods are still used, since filenames are not stored in extents.
-> 
-> As individually keyed inodes prevent sharing of extents, such policies
-> are forbidden for filesystems with extent-based encryption.
+This for example is a primitive helper that just hashes the correct
+bytes and does not need to know anything about whether it's encrypted or
+not. That should be set up higher in the call chain.
 
-This ends up forcing Btrfs to use Adiantum. However, I imagine that most
-users would prefer to use AES if their CPU has AES instructions. From
-what I understand, it should still be possible to use the AES encryption
-modes with extent contexts, correct? We just need to decide how to make
-that work with the encryption policy flags. I see a couple of options:
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -3863,11 +3863,19 @@ static noinline int acls_after_inode_item(struct extent_buffer *leaf,
+>  	static u64 xattr_default = 0;
+>  	int scanned = 0;
+>  
+> +	struct fscrypt_name name_access = {
+> +		.disk_name = FSTR_INIT(XATTR_NAME_POSIX_ACL_ACCESS,
+> +				       strlen(XATTR_NAME_POSIX_ACL_ACCESS))
+> +	};
+> +
+> +	struct fscrypt_name name_default = {
+> +		.disk_name = FSTR_INIT(XATTR_NAME_POSIX_ACL_DEFAULT,
+> +				       strlen(XATTR_NAME_POSIX_ACL_DEFAULT))
+> +	};
+> +
+>  	if (!xattr_access) {
+> -		xattr_access = btrfs_name_hash(XATTR_NAME_POSIX_ACL_ACCESS,
+> -					strlen(XATTR_NAME_POSIX_ACL_ACCESS));
+> -		xattr_default = btrfs_name_hash(XATTR_NAME_POSIX_ACL_DEFAULT,
+> -					strlen(XATTR_NAME_POSIX_ACL_DEFAULT));
+> +		xattr_access = btrfs_name_hash(&name_access);
+> +		xattr_default = btrfs_name_hash(&name_default);
 
-1. We add a specific FSCRYPT_POLICY_FLAG_EXTENT_BASED or something like
-   that which the user must specify for filesystems requiring
-   extent-based encryption.
-2. The "default" mode (i.e., none of DIRECT_KEY, IV_INO_LBLK_64, nor
-   IV_INO_LBLK_32 are specified) automatically opts into extent-based
-   encryption for filesystems requiring it.
+And here it needs extra structure just to pass plain strings.
 
-Either way, we should probably still disallow IV_INO_LBLK_64 and
-IV_INO_LBLK_32 since neither of those make sense with per-extent IVs.
+> +			   __func__, fname_name(&fname), btrfs_ino(BTRFS_I(dir)),
+>  			   location->objectid, location->type, location->offset);
+>  	}
+>  	if (!ret)
+> @@ -6243,6 +6258,14 @@ int btrfs_new_inode_prepare(struct btrfs_new_inode_args *args,
+>  	if (ret)
+>  		return ret;
+>  
+> +	if (!args->orphan) {
+> +		char *name = (char *) args->dentry->d_name.name;
+> +		int name_len = args->dentry->d_name.len;
 
-I'd love to hear what Eric would prefer here.
+Please put a newline between declaration and statement block.
 
-Thanks,
-Omar
+> +		args->fname = (struct fscrypt_name) {
+> +			.disk_name = FSTR_INIT(name, name_len),
+> +		};
+
+Please don't use this construct to intialize compounds, we don't use it
+anywhere. There are more examples for other structures too.
+
+> +	}
+> +
+>  	/* 1 to add inode item */
+>  	*trans_num_items = 1;
+>  	/* 1 to add compression property */
+> --- a/fs/btrfs/transaction.c
+> +++ b/fs/btrfs/transaction.c
+> @@ -1596,8 +1596,9 @@ static int qgroup_account_snapshot(struct btrfs_trans_handle *trans,
+>   * happens, we should return the error number. If the error which just affect
+>   * the creation of the pending snapshots, just return 0.
+>   */
+> -static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
+> -				   struct btrfs_pending_snapshot *pending)
+> +static noinline int
+> +create_pending_snapshot(struct btrfs_trans_handle *trans,
+> +			struct btrfs_pending_snapshot *pending)
+
+Please keep the specifiers and type on the same line as the function
+name, the parameters can slightly overfrlow the 80 char limit if it
+avoids a line break, otherwise the patameters go on the next line.
