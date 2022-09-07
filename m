@@ -2,53 +2,53 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 615445B0E79
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  7 Sep 2022 22:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97A7E5B0F01
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  7 Sep 2022 23:16:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229777AbiIGUsv (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 7 Sep 2022 16:48:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53756 "EHLO
+        id S229711AbiIGVQV (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 7 Sep 2022 17:16:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230089AbiIGUsu (ORCPT
+        with ESMTP id S229502AbiIGVQT (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 7 Sep 2022 16:48:50 -0400
+        Wed, 7 Sep 2022 17:16:19 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F421BD4DF;
-        Wed,  7 Sep 2022 13:48:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D92418B38;
+        Wed,  7 Sep 2022 14:16:18 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 22E9C3414D;
-        Wed,  7 Sep 2022 20:48:48 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id CA7923416F;
+        Wed,  7 Sep 2022 21:16:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1662583728;
+        t=1662585376;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=aHEaEAKRwavSIAayvx0qqQofw6QcD+TRdd1lvOvf8YU=;
-        b=FVnkne86xfID/0+i1hIuy+dNcwKj0xYnctIuP6NFtX8sxG7cfEgHxWv94qsDfc14Z0fgJy
-        m+YvB5jG5FxReCGFMRawHCNzJ8dWRIWzdyUErUAhHSuG0ACpjSgrR2mlMURimWAs1jEcwN
-        MCi8AWNvoSyLIFS2acIpW/Y5z4IUTss=
+        bh=7CMsU1GQnU3lq/he5KDB4Tg9Cv/BOe0FtaA8szJgAT0=;
+        b=c0Bp/Od+P8Ze69Rb/i2wVmp71wkaRaDVvQpkQld2DSyt2k4GkclzM77q7IaI8Xxti/5meW
+        fNWtgKXSA1Z943eacIB5fkoZ2Aqij9NSh0pmFt6tHo5URHSSxVMtnrg+KDLQGMSKDgHyYB
+        0NAcvG0GqUE7ehDNHQr9Lee3f8GeSNo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1662583728;
+        s=susede2_ed25519; t=1662585376;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=aHEaEAKRwavSIAayvx0qqQofw6QcD+TRdd1lvOvf8YU=;
-        b=RFcP9qd28jHX1q1CbtShGmJtOqbNkYzRoikyUdDeNv4qCKIMf29rE/1hCdEWGNSlcKv8Ca
-        u1G4jr18f3q9tgBw==
+        bh=7CMsU1GQnU3lq/he5KDB4Tg9Cv/BOe0FtaA8szJgAT0=;
+        b=UJnMu036+/ZQFwiYONz6emNAW9l6F+xC8seLoPvPiNv6zWoGl5FdrM0/y7r7NU+bKhQev2
+        8WnAlW0yN9WyK2AQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CBB2A13486;
-        Wed,  7 Sep 2022 20:48:47 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 84B1F13A66;
+        Wed,  7 Sep 2022 21:16:16 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id LmLJMK8DGWPKRwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 07 Sep 2022 20:48:47 +0000
-Date:   Wed, 7 Sep 2022 22:43:24 +0200
+        id cJR0HyAKGWNvTwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 07 Sep 2022 21:16:16 +0000
+Date:   Wed, 7 Sep 2022 23:10:53 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
@@ -56,17 +56,17 @@ Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
         Eric Biggers <ebiggers@kernel.org>, Chris Mason <clm@fb.com>,
         Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>, linux-fscrypt@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        Omar Sandoval <osandov@osandov.com>
-Subject: Re: [PATCH v2 13/20] btrfs: add fscrypt_context items.
-Message-ID: <20220907204324.GL32411@twin.jikos.cz>
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v2 15/20] btrfs: store a fscrypt extent context per
+ normal file extent
+Message-ID: <20220907211053.GM32411@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 References: <cover.1662420176.git.sweettea-kernel@dorminy.me>
- <827a00815cb4a9a91ff3977d71f40ff765728f04.1662420176.git.sweettea-kernel@dorminy.me>
+ <460baa45489be139b48e7b152852bda919363b4c.1662420176.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <827a00815cb4a9a91ff3977d71f40ff765728f04.1662420176.git.sweettea-kernel@dorminy.me>
+In-Reply-To: <460baa45489be139b48e7b152852bda919363b4c.1662420176.git.sweettea-kernel@dorminy.me>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -78,182 +78,151 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Sep 05, 2022 at 08:35:28PM -0400, Sweet Tea Dorminy wrote:
-> +static int btrfs_fscrypt_get_context(struct inode *inode, void *ctx, size_t len)
+On Mon, Sep 05, 2022 at 08:35:30PM -0400, Sweet Tea Dorminy wrote:
+> In order to encrypt data, each file extent must have its own persistent
+> fscrypt_extent_context, which is then provided to fscrypt upon request.
+> This is only needed for encrypted extents and is of variable size on
+> disk, so file extents must additionally keep track of their actual
+> length.
+> 
+> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+> ---
+>  fs/btrfs/ctree.h                | 30 +++++++++++
+>  fs/btrfs/extent_map.h           |  4 ++
+>  fs/btrfs/file-item.c            | 13 +++++
+>  fs/btrfs/file.c                 |  4 +-
+>  fs/btrfs/fscrypt.c              | 21 ++++++++
+>  fs/btrfs/fscrypt.h              | 23 +++++++++
+>  fs/btrfs/inode.c                | 89 +++++++++++++++++++++++++--------
+>  fs/btrfs/ordered-data.c         |  9 +++-
+>  fs/btrfs/ordered-data.h         |  4 +-
+>  fs/btrfs/reflink.c              |  1 +
+>  fs/btrfs/tree-checker.c         | 36 ++++++++++---
+>  fs/btrfs/tree-log.c             | 11 +++-
+>  include/uapi/linux/btrfs_tree.h |  9 ++++
+>  13 files changed, 220 insertions(+), 34 deletions(-)
+> 
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index f0a16c32110d..38927a867028 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -37,6 +37,7 @@
+>  #include "async-thread.h"
+>  #include "block-rsv.h"
+>  #include "locking.h"
+> +#include "fscrypt.h"
+>  
+>  struct btrfs_trans_handle;
+>  struct btrfs_transaction;
+> @@ -1437,6 +1438,7 @@ struct btrfs_replace_extent_info {
+>  	u64 file_offset;
+>  	/* Pointer to a file extent item of type regular or prealloc. */
+>  	char *extent_buf;
+> +	u32 extent_buf_size;
+
+Please add a comment
+
+>  	/*
+>  	 * Set to true when attempting to replace a file range with a new extent
+>  	 * described by this structure, set to false when attempting to clone an
+> @@ -2659,6 +2661,16 @@ BTRFS_SETGET_STACK_FUNCS(stack_file_extent_disk_num_bytes,
+>  			 struct btrfs_file_extent_item, disk_num_bytes, 64);
+>  BTRFS_SETGET_STACK_FUNCS(stack_file_extent_compression,
+>  			 struct btrfs_file_extent_item, compression, 8);
+> +BTRFS_SETGET_STACK_FUNCS(stack_file_extent_encryption,
+> +			 struct btrfs_file_extent_item, encryption, 8);
+> +
+> +static inline u8
+> +btrfs_stack_file_extent_encryption_ctxsize(struct btrfs_file_extent_item *e)
+
+type name(...) on the same line
+
 > +{
-> +	struct btrfs_root *root = BTRFS_I(inode)->root;
-> +	struct inode *put_inode = NULL;
-> +	struct btrfs_key key;
-> +	struct btrfs_path *path;
-> +	struct extent_buffer *leaf;
-> +	unsigned long ptr;
-> +	int ret;
-> +
-> +	if (btrfs_root_flags(&root->root_item) & BTRFS_ROOT_SUBVOL_FSCRYPT) {
-> +		inode = btrfs_iget(inode->i_sb, BTRFS_FIRST_FREE_OBJECTID,
-> +				   root);
-> +		if (IS_ERR(inode))
-> +			return PTR_ERR(inode);
-> +		put_inode = inode;
-> +	}
-> +
-> +	path = btrfs_alloc_path();
-> +	if (!path)
-> +		return -ENOMEM;
-> +
-> +	key = (struct btrfs_key) {
-> +		.objectid = btrfs_ino(BTRFS_I(inode)),
-> +		.type = BTRFS_FSCRYPT_CTXT_ITEM_KEY,
-> +		.offset = 0,
-> +	};
+> +	u8 ctxsize;
+> +	btrfs_unpack_encryption(e->encryption, NULL, &ctxsize);
+> +	return ctxsize;
+> +}
+>  
+>  static inline unsigned long
+>  btrfs_file_extent_inline_start(const struct btrfs_file_extent_item *e)
+> --- a/fs/btrfs/fscrypt.h
+> +++ b/fs/btrfs/fscrypt.h
+> @@ -5,6 +5,14 @@
+>  
+>  #include <linux/fscrypt.h>
+>  
+> +#define BTRFS_ENCRYPTION_POLICY_MASK 0x03
+> +#define BTRFS_ENCRYPTION_CTXSIZE_MASK 0xfc
 
-Please use the following for key initialization.
+Where do the numbers come from?
 
-	key.objectid = ...;
-	key.type = ...;
-	key.offset = ...;
+> +
+> +struct btrfs_fscrypt_extent_context {
+> +	u8 buffer[FSCRYPT_EXTENT_CONTEXT_MAX_SIZE];
 
-> +static int btrfs_fscrypt_set_context(struct inode *inode, const void *ctx,
-> +				     size_t len, void *fs_data)
+FSCRYPT_EXTENT_CONTEXT_MAX_SIZE is 33 and btrfs_fscrypt_extent_context
+is part of extent_map, that's quite common object. Random sample from my
+desktop right now is around 800k objects so this is noticeable. Needs a
+second look.
+
+> +	size_t len;
+> +};
+> +
+>  #ifdef CONFIG_FS_ENCRYPTION
+>  bool btrfs_fscrypt_match_name(const struct fscrypt_name *fname,
+>  			      struct extent_buffer *leaf,
+> @@ -22,5 +30,20 @@ static bool btrfs_fscrypt_match_name(const struct fscrypt_name *fname,
+>  }
+>  #endif
+>  
+> +static inline void btrfs_unpack_encryption(u8 encryption,
+> +					   u8 *policy,
+> +					   u8 *ctxsize)
 > +{
-> +	struct btrfs_root *root = BTRFS_I(inode)->root;
-> +	struct btrfs_trans_handle *trans;
-> +	int is_subvolume = inode->i_ino == BTRFS_FIRST_FREE_OBJECTID;
-> +	int ret;
-> +	struct btrfs_path *path;
-> +	struct btrfs_key key = {
-> +		.objectid = btrfs_ino(BTRFS_I(inode)),
-> +		.type = BTRFS_FSCRYPT_CTXT_ITEM_KEY,
-> +		.offset = 0,
-> +	};
-
-This kind of initialization in the declaration block is ok, possibly
-with only the simple initializers like btrfs_ino or normal constants.
-
-> +	if (btrfs_root_flags(&root->root_item) & BTRFS_ROOT_SUBVOL_FSCRYPT) {
-> +		bool same_policy;
-> +		struct inode *root_inode = NULL;
-
-Newlines between declrataions and statements
-
-> +		root_inode = btrfs_iget(inode->i_sb, BTRFS_FIRST_FREE_OBJECTID,
-> +				   root);
-> +		if (IS_ERR(inode))
-> +			return PTR_ERR(inode);
-> +		same_policy = fscrypt_have_same_policy(inode, root_inode);
-> +		iput(root_inode);
-> +		if (same_policy)
-> +			return 0;
-> +	}
-> +
-> +	if (fs_data) {
-> +		/*
-> +		 * We are setting the context as part of an existing
-> +		 * transaction. This happens when we are inheriting the context
-> +		 * for a new inode.
-> +		 */
-> +		trans = fs_data;
-> +	} else {
-> +		/*
-> +		 * 1 for the inode item
-> +		 * 1 for the fscrypt item
-> +		 * 1 for the root item if the inode is a subvolume
-> +		 */
-> +		trans = btrfs_start_transaction(root, 2 + is_subvolume);
-> +		if (IS_ERR(trans))
-> +			return PTR_ERR(trans);
-> +	}
-> +
-> +	path = btrfs_alloc_path();
-> +	if (!path)
-> +		return -ENOMEM;
-> +	ret = btrfs_search_slot(trans, BTRFS_I(inode)->root, &key, path, 0, 1);
-> +	if (ret == 0) {
-> +		struct extent_buffer *leaf = path->nodes[0];
-> +		unsigned long ptr = btrfs_item_ptr_offset(leaf, path->slots[0]);
-
-Newlines between declrataions and statements, you'll find the rest
-
-> +		len = min_t(size_t, len, btrfs_item_size(leaf, path->slots[0]));
-> +		write_extent_buffer(leaf, ctx, ptr, len);
-> +		btrfs_mark_buffer_dirty(leaf);
-> +		btrfs_free_path(path);
-> +		goto out;
-> +	} else if (ret < 0) {
-> +		goto out;
-> +	}
-> +	btrfs_free_path(path);
-> +
-> +	ret = btrfs_insert_item(trans, BTRFS_I(inode)->root, &key, (void *) ctx, len);
-> +	if (ret)
-> +		goto out;
-> +
-> +	BTRFS_I(inode)->flags |= BTRFS_INODE_FSCRYPT_CONTEXT;
-> +	btrfs_sync_inode_flags_to_i_flags(inode);
-> +	inode_inc_iversion(inode);
-> +	inode->i_ctime = current_time(inode);
-> +	ret = btrfs_update_inode(trans, root, BTRFS_I(inode));
-> +	if (ret)
-> +		goto out;
-> +
-> +	/*
-> +	 * For new subvolumes, the root item is already initialized with
-> +	 * the BTRFS_ROOT_SUBVOL_FSCRYPT flag.
-> +	 */
-> +	if (!fs_data && is_subvolume) {
-> +		u64 root_flags = btrfs_root_flags(&root->root_item);
-> +
-> +		btrfs_set_root_flags(&root->root_item,
-> +				     root_flags |
-> +				     BTRFS_ROOT_SUBVOL_FSCRYPT);
-> +		ret = btrfs_update_root(trans, root->fs_info->tree_root,
-> +					&root->root_key,
-> +					&root->root_item);
-> +	}
-> +out:
-> +	if (fs_data)
-> +		return ret;
-> +
-> +	if (ret)
-> +		btrfs_abort_transaction(trans, ret);
-> +	else
-> +		btrfs_end_transaction(trans);
-> +	return ret;
+> +	if (policy)
+> +		*policy = encryption & BTRFS_ENCRYPTION_POLICY_MASK;
+> +	if (ctxsize)
+> +		*ctxsize = (encryption & BTRFS_ENCRYPTION_CTXSIZE_MASK) >> 2;
 > +}
 > +
-> +	if (args->encrypt)
-> +		(*trans_num_items)++; /* 1 to add fscrypt item */
+> +static inline u8 btrfs_pack_encryption(u8 policy, u8 ctxsize)
+> +{
+> +	return policy | (ctxsize << 2);
 
-Please put the comment on a separate line, like it's on the lines below.
+What does 2 mean? It should be some symbolic define with explanation as
+it's defining on-disk format.
 
->  	if (args->orphan) {
->  		/* 1 to add orphan item */
->  		(*trans_num_items)++;
-> @@ -787,6 +788,13 @@ static int create_snapshot(struct btrfs_root *root, struct inode *dir,
->  		return -ETXTBSY;
->  	}
->  
-> +	if ((btrfs_root_flags(&root->root_item) & BTRFS_ROOT_SUBVOL_FSCRYPT) &&
-> +	    !IS_ENCRYPTED(dir)) {
-> +		btrfs_warn(fs_info,
-> +			   "cannot snapshot encrypted volume to unencrypted destination");
-
-Do we want to print that to the log? There are several EXDEV causes,
-only another one prints a message and I think it should not.
-
-> +		return -EXDEV;
-> +	}
+> +}
 > +
->  	pending_snapshot = kzalloc(sizeof(*pending_snapshot), GFP_KERNEL);
->  	if (!pending_snapshot)
->  		return -ENOMEM;
+>  extern const struct fscrypt_operations btrfs_fscrypt_ops;
+>  #endif /* BTRFS_FSCRYPT_H */
+> --- a/fs/btrfs/ordered-data.h
+> +++ b/fs/btrfs/ordered-data.h
+> @@ -99,6 +99,7 @@ struct btrfs_ordered_extent {
+>  	u64 disk_bytenr;
+>  	u64 disk_num_bytes;
+>  	u64 offset;
+> +	struct btrfs_fscrypt_extent_context fscrypt_context;
+
+And another embedded btrfs_fscrypt_extent_context, that can also get a
+lot of slab objects.
+
+>  	/* number of bytes that still need writing */
+>  	u64 bytes_left;
 > --- a/include/uapi/linux/btrfs_tree.h
 > +++ b/include/uapi/linux/btrfs_tree.h
-> @@ -144,6 +144,8 @@
->  #define BTRFS_VERITY_DESC_ITEM_KEY	36
->  #define BTRFS_VERITY_MERKLE_ITEM_KEY	37
->  
-> +#define BTRFS_FSCRYPT_CTXT_ITEM_KEY	41
+> @@ -820,6 +820,10 @@ struct btrfs_file_extent_item {
+>  	 * but not for stat.
+>  	 */
+>  	__u8 compression;
+> +	/*
+> +	 * This field contains 4 bits of encryption type in the lower bits,
+> +	 * 4 bits of ivsize in the upper bits. The unencrypted value is 0.
 
-The context is per inode, so OK the key is needed and the number is
-leaving enough space in case we'd need to add more.
+Is there some rationale for this format? Can the encryption bytes be
+used only for the type and the other_encoding for the IV?
+
+> +	 */
+>  	__u8 encryption;
+>  	__le16 other_encoding; /* spare for later use */
+>  
