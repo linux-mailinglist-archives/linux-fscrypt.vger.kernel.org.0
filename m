@@ -2,52 +2,65 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A22D25F48D3
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  4 Oct 2022 19:44:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 567EC5F4CF2
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  5 Oct 2022 02:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229797AbiJDRoU (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 4 Oct 2022 13:44:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52332 "EHLO
+        id S229550AbiJEANp (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 4 Oct 2022 20:13:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbiJDRoQ (ORCPT
+        with ESMTP id S229516AbiJEANl (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 4 Oct 2022 13:44:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 878D657887;
-        Tue,  4 Oct 2022 10:44:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 24F6E614ED;
-        Tue,  4 Oct 2022 17:44:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39833C433C1;
-        Tue,  4 Oct 2022 17:44:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664905454;
-        bh=Rte1HvtfgvFRVjI9vmQSmn8KC1YqoQCVVzKzmhIF2f8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=TXoomx0Fwgy3RlDGeKpNyJvQKJXILM0zhFXPxPg0RxBKHgGPZLtzxY9O8ROE7lIo1
-         S6oXgY/E1bP+73sU9RMOO0BCkm+WUGpaXZgeoozXSkMqPJVBG2G+cfL1lXx4rP1MWx
-         iDklhkM0ofevngD3ygTIu3fQDaNt1wk95jKbntv8AoBAE3T78h0Ye0GbXizhIFwM/c
-         l4NZ6B/vRH++0uutSiyEWPZLYnLcvPOziMdVgQ5RNsqV4NsP8XGw0Qxv+Zdl/2m8ht
-         TJ/m1byfhSfKmoWqIj1g6HydyWV31REWXwDD8zCXYmZh48HljZ7H7C9IRiw1kZGixU
-         h+1fTlkD57ACA==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-man@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
-        "Darrick J. Wong" <djwong@kernel.org>
-Subject: [man-pages PATCH v3] statx.2, open.2: document STATX_DIOALIGN
-Date:   Tue,  4 Oct 2022 10:43:07 -0700
-Message-Id: <20221004174307.6022-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.37.3
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,SUSPICIOUS_RECIPS autolearn=ham
+        Tue, 4 Oct 2022 20:13:41 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2760032A94
+        for <linux-fscrypt@vger.kernel.org>; Tue,  4 Oct 2022 17:13:34 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id y5-20020a25bb85000000b006af8f244604so14509084ybg.7
+        for <linux-fscrypt@vger.kernel.org>; Tue, 04 Oct 2022 17:13:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date;
+        bh=ALlsjTVmbFyHzlceNb3zXq0xbc4i58mJkMbiPt8Nklg=;
+        b=WXsW31CKjwyBzaVilJ2DnAeTlCI+vDf2ypDdUDNBvs+jgXLQStreLyIFlIIELEsBrU
+         OdNeDpnaugvcltOyqkbpjbDhXBw53GM6T8XjSsmSl/4WxTRZ2CXiCwaxFOIN0J2COD0o
+         7fofUJcp/f/ibUvXMs75ijky51J70fLUynG4a1zHNPtZ3gw6FswYvHiZRxxRXZc9RuZd
+         UVW7GS/uFKH5FeUWZDzk3olBA6kAkR70QLY3UMXJcyiJnsPUDjHy0bg7VdKwQU6sS7PY
+         1Lb5+FSv/X3GW9r7HwNI2BIWoWRIVs3ILHNxFpAxCxa5XySSR2xaS1wY9fDLz58qdUkF
+         ZCzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date;
+        bh=ALlsjTVmbFyHzlceNb3zXq0xbc4i58mJkMbiPt8Nklg=;
+        b=a5i64jyT5FyzbRtBE5O1mu3puECvuxdAM8DDDTsbdEK6jyQgS726l7a0OPYlTnT+6D
+         DhDfJquDLgj2yx+uej8ZlPSMUUczp4kEa/sfDtKfYVQLJAG7c6FxbcAIiVYjU05R1mpX
+         e54cfxuVJobQ8XAKnhNQ7XIpnbf+bDJpaRvEa78Cpbk1fcW3AOtXFD1/RQNz9PfclGhq
+         kxt0X1ofoIjdiL7d2zdiaolCAII0VrogFVb+uEz0UE4u1ThAf96tpjMzB4G3DH/e2c4z
+         Nsuz+yUfaQC7ANEI2AH42rncBII9LSVP9zeJg3Xbc3xzonqHGBfkv6QNWCSlZsksTu1Q
+         FRvg==
+X-Gm-Message-State: ACrzQf2Fm3pCagZiT7pWNbEjSqVXtDhaeYFJTYoL6oynBkVpSuQklnCq
+        GyN2AF+WnZyb4SE1oNiUy+QJ3O3rJNY=
+X-Google-Smtp-Source: AMsMyM52vg4YK8/fSwfK04NxkWNQzncvTu04WP5OlBYW1o0xmWzW9ukoUY3J3XNF6KUOVJ0nwa7BTRCu+Ho=
+X-Received: from yuzhao.bld.corp.google.com ([2620:15c:183:200:d76c:54ee:23e5:ee12])
+ (user=yuzhao job=sendgmr) by 2002:a25:790d:0:b0:670:6032:b1df with SMTP id
+ u13-20020a25790d000000b006706032b1dfmr27235358ybc.629.1664928813418; Tue, 04
+ Oct 2022 17:13:33 -0700 (PDT)
+Date:   Tue,  4 Oct 2022 18:13:26 -0600
+Message-Id: <20221005001326.157644-1-yuzhao@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.38.0.rc1.362.ged0d419d3c-goog
+Subject: [PATCH] fscrypt: fix lockdep warning
+From:   Yu Zhao <yuzhao@google.com>
+To:     "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yu Zhao <yuzhao@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,143 +68,77 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+fscrypt_initialize() shouldn't allocate memory without GFP_NOFS.
 
-Document the STATX_DIOALIGN support for statx()
-(https://git.kernel.org/linus/725737e7c21d2d25).
+The problem seems to go back to 2015
+commit 57e5055b0a5e ("f2fs crypto: add f2fs encryption facilities")
+but I have never heard of any complaints, hence not CC'ing stable.
 
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-Signed-off-by: Eric Biggers <ebiggers@google.com>
+  ======================================================
+  WARNING: possible circular locking dependency detected
+  6.0.0-lockdep #1 Not tainted
+  ------------------------------------------------------
+  kswapd0/77 is trying to acquire lock:
+  71ffff808b254a18 (jbd2_handle){++++}-{0:0}, at: start_this_handle+0x76c/0x8dc
+
+  but task is already holding lock:
+  ffffffea26533310 (fs_reclaim){+.+.}-{0:0}, at: 0x1
+
+  which lock already depends on the new lock.
+
+  <snipped>
+
+  other info that might help us debug this:
+
+  Chain exists of:
+    jbd2_handle --> fscrypt_init_mutex --> fs_reclaim
+
+   Possible unsafe locking scenario:
+
+         CPU0                    CPU1
+         ----                    ----
+    lock(fs_reclaim);
+                                 lock(fscrypt_init_mutex);
+                                 lock(fs_reclaim);
+    lock(jbd2_handle);
+
+   *** DEADLOCK ***
+
+  3 locks held by kswapd0/77:
+   #0: ffffffea26533310 (fs_reclaim){+.+.}-{0:0}, at: 0x1
+   #1: ffffffea26529220 (shrinker_rwsem){++++}-{3:3}, at: shrink_slab+0x54/0x464
+   #2: 6dffff808abe90e8 (&type->s_umount_key#47){++++}-{3:3}, at: trylock_super+0x2c/0x8c
+
+  <snipped>
+
+Signed-off-by: Yu Zhao <yuzhao@google.com>
 ---
+ fs/crypto/crypto.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-I'm resending this now that support for STATX_DIOALIGN has been merged
-upstream.
-
-v3: updated mentions of Linux version, fixed some punctuation, and added
-    a Reviewed-by
-
-v2: rebased onto man-pages master branch, mentioned xfs, and updated
-    link to patchset
-
- man2/open.2  | 43 ++++++++++++++++++++++++++++++++-----------
- man2/statx.2 | 29 +++++++++++++++++++++++++++++
- 2 files changed, 61 insertions(+), 11 deletions(-)
-
-diff --git a/man2/open.2 b/man2/open.2
-index deba7e4ea..b8617e0d2 100644
---- a/man2/open.2
-+++ b/man2/open.2
-@@ -1732,21 +1732,42 @@ of user-space buffers and the file offset of I/Os.
- In Linux alignment
- restrictions vary by filesystem and kernel version and might be
- absent entirely.
--However there is currently no filesystem\-independent
--interface for an application to discover these restrictions for a given
--file or filesystem.
--Some filesystems provide their own interfaces
--for doing so, for example the
-+The handling of misaligned
-+.B O_DIRECT
-+I/Os also varies; they can either fail with
-+.B EINVAL
-+or fall back to buffered I/O.
-+.PP
-+Since Linux 6.1,
-+.B O_DIRECT
-+support and alignment restrictions for a file can be queried using
-+.BR statx (2),
-+using the
-+.B STATX_DIOALIGN
-+flag.
-+Support for
-+.B STATX_DIOALIGN
-+varies by filesystem; see
-+.BR statx (2).
-+.PP
-+Some filesystems provide their own interfaces for querying
-+.B O_DIRECT
-+alignment restrictions, for example the
- .B XFS_IOC_DIOINFO
- operation in
- .BR xfsctl (3).
-+.B STATX_DIOALIGN
-+should be used instead when it is available.
- .PP
--Under Linux 2.4, transfer sizes, the alignment of the user buffer,
--and the file offset must all be multiples of the logical block size
--of the filesystem.
--Since Linux 2.6.0, alignment to the logical block size of the
--underlying storage (typically 512 bytes) suffices.
--The logical block size can be determined using the
-+If none of the above is available, then direct I/O support and alignment
-+restrictions can only be assumed from known characteristics of the filesystem,
-+the individual file, the underlying storage device(s), and the kernel version.
-+In Linux 2.4, most block device based filesystems require that the file offset
-+and the length and memory address of all I/O segments be multiples of the
-+filesystem block size (typically 4096 bytes).
-+In Linux 2.6.0, this was relaxed to the logical block size of the block device
-+(typically 512 bytes).
-+A block device's logical block size can be determined using the
- .BR ioctl (2)
- .B BLKSSZGET
- operation or from the shell using the command:
-diff --git a/man2/statx.2 b/man2/statx.2
-index 0d1b4591f..50397057d 100644
---- a/man2/statx.2
-+++ b/man2/statx.2
-@@ -61,7 +61,12 @@ struct statx {
-        containing the filesystem where the file resides */
-     __u32 stx_dev_major;   /* Major ID */
-     __u32 stx_dev_minor;   /* Minor ID */
-+
-     __u64 stx_mnt_id;      /* Mount ID */
-+
-+    /* Direct I/O alignment restrictions */
-+    __u32 stx_dio_mem_align;
-+    __u32 stx_dio_offset_align;
- };
- .EE
- .in
-@@ -247,6 +252,8 @@ STATX_BTIME	Want stx_btime
- STATX_ALL	The same as STATX_BASIC_STATS | STATX_BTIME.
- 	It is deprecated and should not be used.
- STATX_MNT_ID	Want stx_mnt_id (since Linux 5.8)
-+STATX_DIOALIGN	Want stx_dio_mem_align and stx_dio_offset_align
-+	(since Linux 6.1; support varies by filesystem)
- .TE
- .in
- .PP
-@@ -407,6 +414,28 @@ This is the same number reported by
- .BR name_to_handle_at (2)
- and corresponds to the number in the first field in one of the records in
- .IR /proc/self/mountinfo .
-+.TP
-+.I stx_dio_mem_align
-+The alignment (in bytes) required for user memory buffers for direct I/O
-+.BR "" ( O_DIRECT )
-+on this file, or 0 if direct I/O is not supported on this file.
-+.IP
-+.B STATX_DIOALIGN
-+.IR "" ( stx_dio_mem_align
-+and
-+.IR stx_dio_offset_align )
-+is supported on block devices since Linux 6.1.
-+The support on regular files varies by filesystem; it is supported by ext4,
-+f2fs, and xfs since Linux 6.1.
-+.TP
-+.I stx_dio_offset_align
-+The alignment (in bytes) required for file offsets and I/O segment lengths for
-+direct I/O
-+.BR "" ( O_DIRECT )
-+on this file, or 0 if direct I/O is not supported on this file.
-+This will only be nonzero if
-+.I stx_dio_mem_align
-+is nonzero, and vice versa.
- .PP
- For further information on the above fields, see
- .BR inode (7).
-
-base-commit: bc28d289e5066fc626df260bafc249846a0f6ae6
+diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
+index e78be66bbf01..e10fc30142a6 100644
+--- a/fs/crypto/crypto.c
++++ b/fs/crypto/crypto.c
+@@ -316,6 +316,7 @@ EXPORT_SYMBOL(fscrypt_decrypt_block_inplace);
+ int fscrypt_initialize(unsigned int cop_flags)
+ {
+ 	int err = 0;
++	unsigned int flags;
+ 
+ 	/* No need to allocate a bounce page pool if this FS won't use it. */
+ 	if (cop_flags & FS_CFLG_OWN_PAGES)
+@@ -326,8 +327,10 @@ int fscrypt_initialize(unsigned int cop_flags)
+ 		goto out_unlock;
+ 
+ 	err = -ENOMEM;
++	flags = memalloc_nofs_save();
+ 	fscrypt_bounce_page_pool =
+ 		mempool_create_page_pool(num_prealloc_crypto_pages, 0);
++	memalloc_nofs_restore(flags);
+ 	if (!fscrypt_bounce_page_pool)
+ 		goto out_unlock;
+ 
 -- 
-2.37.3
+2.38.0.rc1.362.ged0d419d3c-goog
 
