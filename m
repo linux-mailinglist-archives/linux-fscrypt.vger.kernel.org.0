@@ -2,265 +2,136 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A24B9606690
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 20 Oct 2022 19:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C1636069E3
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 20 Oct 2022 22:52:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229920AbiJTQ7u (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 20 Oct 2022 12:59:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48888 "EHLO
+        id S229519AbiJTUwI (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 20 Oct 2022 16:52:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230004AbiJTQ7s (ORCPT
+        with ESMTP id S229596AbiJTUwH (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 20 Oct 2022 12:59:48 -0400
-Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDC01264A8;
-        Thu, 20 Oct 2022 09:59:42 -0700 (PDT)
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id DA771811CE;
-        Thu, 20 Oct 2022 12:59:40 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1666285181; bh=XjHIit3RHS2zmoqs0CeqPbUbgyQZhK+rhKn07fPTG28=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lD+SxB8/JmvZTqtCtJqBeL3iffoSQNmY7/4+GQssc8UVstwrOnWgctR+x0Q1WUwQP
-         6+MjbaT8oPjQcFLtQIokvxqh+uKnaq76a4cL8O70dx3hNYqIntlzjH7FHMDxNPnFD8
-         eeYtfP1KCIVRCICyI0NP0baD57HNnoURTtmmItRyl1oHpSTdnxPFnZGhtQoGHEULvi
-         dHou4eCs45BYu4acASKXt9c6eVfzMJNyM1At/K7o5MEwJtuzAkCemaCrdw0skR6RPv
-         IwSJ4GQZVYITsGdTxriw6e/X4cWBtLAk9bUEaXcPmBDAzO/xBk3CVYZPOtRrszNLSM
-         I7RBI6xb0r+Qw==
-From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Thu, 20 Oct 2022 16:52:07 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6BB71956DC
+        for <linux-fscrypt@vger.kernel.org>; Thu, 20 Oct 2022 13:52:04 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id f8so788088qkg.3
+        for <linux-fscrypt@vger.kernel.org>; Thu, 20 Oct 2022 13:52:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=av5V+WheLiDAHJF0b7an8Md+TjzU0+zz397YBrxXlTw=;
+        b=r70rtr5AXbl5b5tLDkIscd9pbipR2zArcKNoNdm9+LO7KIZrhAZB6d1kyvY8i3lwPh
+         +knJacn53H+wZUKZ11KqtEIs7zx/N+j47PabYVLcO8gLdgc4hJeZPfVAtthUHjjEgcWD
+         IJPG440FZ+u0xtBUwGDW0KwDf0DJZHXiYqYQgH7ZS50v5xM847gFWvzysqrOdo0CndEa
+         KJ3ZwaM+itilkRN/9WMtGMuGOpjbBj6XeSNvHb9ve2oEE0W11TLLIyVzjsvV4QfQnP2I
+         VkBQoZ43M7fHNj8HW1NyJl5ZGbudSap/6ExijTmdxMHNE5//8/N99JEEAorASXvP6JXr
+         DGsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=av5V+WheLiDAHJF0b7an8Md+TjzU0+zz397YBrxXlTw=;
+        b=NW8fi7xB3BT2YqxG2/b/OdFbrzUXorl19wEB8h63bWu68+Zaro8ywfFMxwOUImgeLp
+         jIRa4XDsQ2be77bigzhFUQp8qRtxWULEgwKLM2K6+BmgvJoQuhNaOl35XmsdK+BWgmF+
+         mzJ4O8ZSDJ4hE1geqrUcrelZc68+vH2g9JohplrM23YE+LnbPUSE5G1AC09Ob4gNKJ0H
+         PN1GD01Gw4KVjITYf+qKy7vG5WET/jQtPy5hpTBRPPaYYDPHt6K/a4pCX/A9kE7H4a98
+         AK+kH/BqymNei1/96rBC/fDmk1uxSp3lU6+56B15lAZOPCN96qW85ewJqxRq5uOFL7Z9
+         5AVg==
+X-Gm-Message-State: ACrzQf0eLE2ZqTqPCPQt8Thw6E2cAgXHPruoq3OU4s7qS11CSe3S1aKo
+        eZDR3+0TbihntrWmit/R+99m1fLWm/8D0w==
+X-Google-Smtp-Source: AMsMyM6Tx1YV8cs3l45QaFzSAhH9VLgpVxHNyIFBlYpPZ24uuSy8/81D5UDFaOu5Ej8xxaWdKw2UEg==
+X-Received: by 2002:a05:620a:e8c:b0:6ee:7820:fa2a with SMTP id w12-20020a05620a0e8c00b006ee7820fa2amr10962914qkm.624.1666299123654;
+        Thu, 20 Oct 2022 13:52:03 -0700 (PDT)
+Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
+        by smtp.gmail.com with ESMTPSA id r2-20020ae9d602000000b006ceb933a9fesm7889783qkk.81.2022.10.20.13.52.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Oct 2022 13:52:03 -0700 (PDT)
+Date:   Thu, 20 Oct 2022 16:52:01 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
         Eric Biggers <ebiggers@kernel.org>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>, linux-fscrypt@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, kernel-team@meta.com
-Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH v3 22/22] btrfs: encrypt verity items
-Date:   Thu, 20 Oct 2022 12:58:41 -0400
-Message-Id: <cbf8af76b1d15f6ee42241025526b7ce4c8e9366.1666281277.git.sweettea-kernel@dorminy.me>
-In-Reply-To: <cover.1666281276.git.sweettea-kernel@dorminy.me>
+        linux-btrfs@vger.kernel.org, kernel-team@meta.com,
+        Omar Sandoval <osandov@osandov.com>
+Subject: Re: [PATCH v3 02/22] fscrypt: add fscrypt_have_same_policy() to
+ check inode compatibility
+Message-ID: <Y1G08XNhCr9o1ANi@localhost.localdomain>
 References: <cover.1666281276.git.sweettea-kernel@dorminy.me>
+ <48538f6e8b733d4e273510491a40a162545a7300.1666281277.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <48538f6e8b733d4e273510491a40a162545a7300.1666281277.git.sweettea-kernel@dorminy.me>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Verity items are deemed to have sensitive information about the file
-contents, so verity items for a encrypted file should be encrypted. This
-change uses the fscrypt inplace encryption helper to do so, which should
-be similar to what is used for inline extents.
+On Thu, Oct 20, 2022 at 12:58:21PM -0400, Sweet Tea Dorminy wrote:
+> From: Omar Sandoval <osandov@osandov.com>
+> 
+> Btrfs will need to check whether inode policies are identical for
+> various purposes: if two inodes want to share an extent, they must have
+> the same policy, including key identifier; symlinks must not span the
+> encrypted/unencrypted border; and certain encryption policies will allow
+> btrfs to store one fscrypt_context for multiple objects. Therefore, add
+> a function which allows checking the encryption policies of two inodes
+> to ensure they are identical.
+> 
+> Signed-off-by: Omar Sandoval <osandov@osandov.com>
+> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+> ---
+>  fs/crypto/policy.c      | 26 ++++++++++++++++++++++++++
+>  include/linux/fscrypt.h |  7 +++++++
+>  2 files changed, 33 insertions(+)
+> 
+> diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
+> index 46757c3052ef..b7c4820a8001 100644
+> --- a/fs/crypto/policy.c
+> +++ b/fs/crypto/policy.c
+> @@ -415,6 +415,32 @@ static int fscrypt_get_policy(struct inode *inode, union fscrypt_policy *policy)
+>  	return fscrypt_policy_from_context(policy, &ctx, ret);
+>  }
+>  
+> +/**
+> + * fscrypt_have_same_policy() - check whether two inodes have the same policy
+> + * @inode1: the first inode
+> + * @inode2: the second inode
+> + *
+> + * Return: %true if they are definitely equal, else %false
+> + */
+> +int fscrypt_have_same_policy(struct inode *inode1, struct inode *inode2)
+> +{
+> +	union fscrypt_policy policy1, policy2;
+> +	int err;
+> +
+> +	if (!IS_ENCRYPTED(inode1) && !IS_ENCRYPTED(inode2))
+> +		return true;
+> +	else if (!IS_ENCRYPTED(inode1) || !IS_ENCRYPTED(inode2))
+> +		return false;
+> +	err = fscrypt_get_policy(inode1, &policy1);
+> +	if (err)
+> +		return false;
+> +	err = fscrypt_get_policy(inode2, &policy2);
+> +	if (err)
+> +		return false;
+> +	return fscrypt_policies_equal(&policy1, &policy2);
 
-This change has two related holes. Currently, this reuses the fscrypt
-extent context from the data in the file for encryption: if there are
-not yet any extents for the file when verity is enabled thereon, there
-is no fscrypt extent context yet and encryption fails. Additionally,
-IVs shouldn't be reused. I think the best solution here is to somehow
-pack the 33-byte fscrypt extent contexts into the 16 bytes reserved for
-encryption in verity items, and use that in some in-memory-only extent
-maps set up to cover the file indexes after the actual data.
+You're returning bools here, you should maket his return bool instead of int.
+Also you could just do
 
-But maybe a better solution is to move fscrypt extent contexts into
-their own items with offsets past the end of the file, and then there's
-no risk of in-memory-only extent maps accidentally making it to disk or
-confusing some other part of the system.
+if (fscrypt_get_policy())
+	return false;
 
-Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
----
- fs/btrfs/verity.c | 112 +++++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 97 insertions(+), 15 deletions(-)
+Thanks,
 
-diff --git a/fs/btrfs/verity.c b/fs/btrfs/verity.c
-index ee00e33c309e..0903aab276c6 100644
---- a/fs/btrfs/verity.c
-+++ b/fs/btrfs/verity.c
-@@ -8,6 +8,7 @@
- #include <linux/security.h>
- #include <linux/posix_acl_xattr.h>
- #include <linux/iversion.h>
-+#include <linux/fscrypt.h>
- #include <linux/fsverity.h>
- #include <linux/sched/mm.h>
- #include "ctree.h"
-@@ -218,14 +219,52 @@ static int write_key_bytes(struct btrfs_inode *inode, u8 key_type, u64 offset,
- 	struct btrfs_key key;
- 	unsigned long copy_bytes;
- 	unsigned long src_offset = 0;
--	void *data;
-+	void *data_pos;
- 	int ret = 0;
-+#ifdef CONFIG_FS_ENCRYPTION
-+	struct page *ciphertext_page = NULL;
-+	char *ciphertext_buf;
-+
-+	if (IS_ENCRYPTED(&inode->vfs_inode)) {
-+		ciphertext_page = alloc_page(GFP_NOFS);
-+		if (!ciphertext_page)
-+			return -ENOMEM;
-+		ciphertext_buf = kmap_local_page(ciphertext_page);
-+	}
-+#endif /* CONFIG_FS_ENCRYPTION */
- 
- 	path = btrfs_alloc_path();
- 	if (!path)
- 		return -ENOMEM;
- 
- 	while (len > 0) {
-+		const char *data = src + src_offset;
-+		/*
-+		 * Insert 2K at a time mostly to be friendly for smaller leaf
-+		 * size filesystems
-+		 */
-+		copy_bytes = min_t(u64, len, 2048);
-+
-+#ifdef CONFIG_FS_ENCRYPTION
-+		if (ciphertext_page) {
-+			struct btrfs_fs_info *fs_info = inode->root->fs_info;
-+			u64 lblk_num = offset >> fs_info->sectorsize_bits;
-+
-+			memset(ciphertext_buf, 0, PAGE_SIZE);
-+			memcpy(ciphertext_buf, data, copy_bytes);
-+			copy_bytes = ALIGN(copy_bytes,
-+					   FSCRYPT_CONTENTS_ALIGNMENT);
-+			ret = fscrypt_encrypt_block_inplace(&inode->vfs_inode,
-+							    ciphertext_page,
-+							    copy_bytes, 0,
-+							    lblk_num,
-+							    GFP_NOFS);
-+			if (ret)
-+				break;
-+			data = ciphertext_buf;
-+		}
-+#endif /* CONFIG_FS_ENCRYPTION */
-+
- 		/* 1 for the new item being inserted */
- 		trans = btrfs_start_transaction(root, 1);
- 		if (IS_ERR(trans)) {
-@@ -237,12 +276,6 @@ static int write_key_bytes(struct btrfs_inode *inode, u8 key_type, u64 offset,
- 		key.type = key_type;
- 		key.offset = offset;
- 
--		/*
--		 * Insert 2K at a time mostly to be friendly for smaller leaf
--		 * size filesystems
--		 */
--		copy_bytes = min_t(u64, len, 2048);
--
- 		ret = btrfs_insert_empty_item(trans, root, path, &key, copy_bytes);
- 		if (ret) {
- 			btrfs_end_transaction(trans);
-@@ -251,18 +284,23 @@ static int write_key_bytes(struct btrfs_inode *inode, u8 key_type, u64 offset,
- 
- 		leaf = path->nodes[0];
- 
--		data = btrfs_item_ptr(leaf, path->slots[0], void);
--		write_extent_buffer(leaf, src + src_offset,
--				    (unsigned long)data, copy_bytes);
-+		data_pos = btrfs_item_ptr(leaf, path->slots[0], void);
-+		write_extent_buffer(leaf, data,
-+				    (unsigned long)data_pos, copy_bytes);
- 		offset += copy_bytes;
- 		src_offset += copy_bytes;
--		len -= copy_bytes;
-+		len -= min_t(u64, copy_bytes, len);
- 
- 		btrfs_release_path(path);
- 		btrfs_end_transaction(trans);
- 	}
- 
- 	btrfs_free_path(path);
-+	if (ciphertext_page) {
-+		kunmap_local(ciphertext_buf);
-+		__free_page(ciphertext_page);
-+	}
-+
- 	return ret;
- }
- 
-@@ -304,6 +342,17 @@ static int read_key_bytes(struct btrfs_inode *inode, u8 key_type, u64 offset,
- 	void *data;
- 	char *kaddr = dest;
- 	int ret;
-+#ifdef CONFIG_FS_ENCRYPTION
-+	char *ciphertext_buf;
-+	struct page *ciphertext_page = NULL;
-+
-+	if (dest && IS_ENCRYPTED(&inode->vfs_inode)) {
-+		ciphertext_page = alloc_page(GFP_NOFS);
-+		if (!ciphertext_page)
-+			return -ENOMEM;
-+		ciphertext_buf = kmap_local_page(ciphertext_page);
-+	}
-+#endif /* CONFIG_FS_ENCRYPTION */
- 
- 	path = btrfs_alloc_path();
- 	if (!path)
-@@ -365,14 +414,41 @@ static int read_key_bytes(struct btrfs_inode *inode, u8 key_type, u64 offset,
- 		/* Offset from the start of item for copying */
- 		copy_offset = offset - key.offset;
- 
-+		data = btrfs_item_ptr(leaf, path->slots[0], void);
- 		if (dest) {
-+#ifdef CONFIG_FS_ENCRYPTION
-+			if (ciphertext_page) {
-+				struct btrfs_fs_info *fs_info =
-+					inode->root->fs_info;
-+				u64 lblk_num = offset >> fs_info->sectorsize_bits;
-+
-+				read_extent_buffer(leaf, ciphertext_buf,
-+						   (unsigned long)data + copy_offset,
-+						   item_end - offset);
-+				ret = fscrypt_decrypt_block_inplace(&inode->vfs_inode,
-+								    ciphertext_page,
-+								    item_end - offset, 0,
-+								    lblk_num);
-+				if (ret)
-+					break;
-+			}
-+#endif /* CONFIG_FS_ENCRYPTION */
-+
- 			if (dest_page)
- 				kaddr = kmap_local_page(dest_page);
- 
--			data = btrfs_item_ptr(leaf, path->slots[0], void);
--			read_extent_buffer(leaf, kaddr + dest_offset,
--					   (unsigned long)data + copy_offset,
--					   copy_bytes);
-+			if (IS_ENABLED(CONFIG_FS_ENCRYPTION) &&
-+			    IS_ENCRYPTED(&inode->vfs_inode)) {
-+#ifdef CONFIG_FS_ENCRYPTION
-+				memcpy(kaddr + dest_offset,
-+				       ciphertext_buf + copy_offset,
-+				       copy_bytes);
-+#endif /* CONFIG_FS_ENCRYPTION */
-+			} else {
-+				read_extent_buffer(leaf, kaddr + dest_offset,
-+						   (unsigned long)data + copy_offset,
-+						   copy_bytes);
-+			}
- 
- 			if (dest_page)
- 				kunmap_local(kaddr);
-@@ -399,6 +475,12 @@ static int read_key_bytes(struct btrfs_inode *inode, u8 key_type, u64 offset,
- 		}
- 	}
- out:
-+#ifdef CONFIG_FS_ENCRYPTION
-+	if (ciphertext_page) {
-+		kunmap_local(ciphertext_buf);
-+		__free_page(ciphertext_page);
-+	}
-+#endif /* CONFIG_FS_ENCRYPTION */
- 	btrfs_free_path(path);
- 	if (!ret)
- 		ret = copied;
--- 
-2.35.1
-
+Josef
