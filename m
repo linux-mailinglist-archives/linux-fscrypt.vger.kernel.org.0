@@ -2,130 +2,106 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C83C6613A6C
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 31 Oct 2022 16:43:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA619615BDC
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  2 Nov 2022 06:34:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231913AbiJaPnO (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 31 Oct 2022 11:43:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49598 "EHLO
+        id S229493AbiKBFek (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 2 Nov 2022 01:34:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231696AbiJaPnN (ORCPT
+        with ESMTP id S229487AbiKBFej (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 31 Oct 2022 11:43:13 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A0DF647E;
-        Mon, 31 Oct 2022 08:43:13 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Wed, 2 Nov 2022 01:34:39 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D5E1154;
+        Tue,  1 Nov 2022 22:34:38 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id ED8B0338D0;
-        Mon, 31 Oct 2022 15:43:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1667230991;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ix9Bo9uEbCIdVgnFN29TRHNvddRhh0o/NHtghNevVwU=;
-        b=ayobSNdfhBzCiOoROqdUmhNXvknFgxGU42wSMVy/F4SOr2Nc68OT/WnzYiNfkq8/Yub1TT
-        ikN52jEecaAc/1au03GRJPMa+cnSyPLOMnCr2eVoSsrYJSCIH4iQXpFI2dvdYdeJD9362x
-        g8oxBoysiL7eF2fsIQ+LII6RzDwAkPo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1667230991;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ix9Bo9uEbCIdVgnFN29TRHNvddRhh0o/NHtghNevVwU=;
-        b=dDeHkF7VmAF+HMgF7uGUQEGD2MEdZjj8lzlZJuUf56g37ty4lkcUHjOCQI3YYi9k5HPKUi
-        4M9yXPiKbonfgKDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A7E7913AAD;
-        Mon, 31 Oct 2022 15:43:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id cVccKA/tX2OkJAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 31 Oct 2022 15:43:11 +0000
-Date:   Mon, 31 Oct 2022 16:42:54 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-fscrypt@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH v4 08/21] btrfs: setup qstrings from dentrys using
- fscrypt helper
-Message-ID: <20221031154254.GC5824@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1666651724.git.sweettea-kernel@dorminy.me>
- <0bc4b89f82d49a12a2d33777824afde9dac80985.1666651724.git.sweettea-kernel@dorminy.me>
- <CAL3q7H7_0FmVwP32P6vJsrRb6rdVze=OLV7jHBucpnc7NfGP1w@mail.gmail.com>
+        by ams.source.kernel.org (Postfix) with ESMTPS id 9AD56B81F95;
+        Wed,  2 Nov 2022 05:34:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AAF0C433C1;
+        Wed,  2 Nov 2022 05:34:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1667367276;
+        bh=9BZw2j7gde3uJiIaOBImAvzx2MwQSpOziphx0uVUk3o=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DQ38/mCYDwXIagRZfiVNCcZGXnw0cXNC0FWQxofIg4YIrCVk8+O52kl2uYNxpRpEu
+         DvT3V0vlTdQJaXqC2O36GZddiVSyrpSn+ik+PUm10HUJbQV85qjYBoV1Q/UFLdQNOE
+         HWBN65tr1G2Q/Of22/52mGhTFyrCgrfhM5JryFWz753JJJWifHpvoeMncbtlf1Ps9+
+         EN9nCdCt7Ql/h9ERlJSKQy3VI4niK455IC7xMjHWVoDA/0/DNLswHycSyrVgzApt88
+         waUllWAo6WY1UcB4XBjOgVTEMhlFJZZdCEVpGYOFP/pNFYQhUOtN+l8djo7uB5byNF
+         RMeElC/0J5HRA==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-ext4@vger.kernel.org
+Cc:     linux-fscrypt@vger.kernel.org, stable@vger.kernel.org,
+        syzbot+ba9dac45bc76c490b7c3@syzkaller.appspotmail.com
+Subject: [PATCH] ext4: don't allow journal inode to have encrypt flag
+Date:   Tue,  1 Nov 2022 22:33:12 -0700
+Message-Id: <20221102053312.189962-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL3q7H7_0FmVwP32P6vJsrRb6rdVze=OLV7jHBucpnc7NfGP1w@mail.gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-8.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, Oct 25, 2022 at 02:14:49PM +0100, Filipe Manana wrote:
-> On Tue, Oct 25, 2022 at 2:29 AM Sweet Tea Dorminy
-> <sweettea-kernel@dorminy.me> wrote:
-> > @@ -5523,7 +5560,7 @@ void btrfs_evict_inode(struct inode *inode)
-> >
-> >  /*
-> >   * Return the key found in the dir entry in the location pointer, fill @type
-> > - * with BTRFS_FT_*, and return 0.
-> > + * with BTRFS_FT_*, and return 0. Used only for lookups, not removals.
-> 
-> This is a bit confusing. What removals?
-> Isn't it clear the function is used only for lookups?
+From: Eric Biggers <ebiggers@google.com>
 
-Agreed, update removed.
+Mounting a filesystem whose journal inode has the encrypt flag causes a
+NULL dereference in fscrypt_limit_io_blocks() when the 'inlinecrypt'
+mount option is used.
 
-> 
-> >   *
-> >   * If no dir entries were found, returns -ENOENT.
-> >   * If found a corrupted location in dir entry, returns -EUCLEAN.
-> > @@ -5531,18 +5568,27 @@ void btrfs_evict_inode(struct inode *inode)
+The problem is that when jbd2_journal_init_inode() calls bmap(), it
+eventually finds its way into ext4_iomap_begin(), which calls
+fscrypt_limit_io_blocks().  fscrypt_limit_io_blocks() requires that if
+the inode is encrypted, then its encryption key must already be set up.
+That's not the case here, since the journal inode is never "opened" like
+a normal file would be.  Hence the crash.
 
-> > @@ -1630,9 +1633,23 @@ static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
-> >         ASSERT(pending->root_item);
-> >         new_root_item = pending->root_item;
-> >
-> > +       /*
-> > +        * Since this is during btrfs_commit_transaction() and more items
-> > +        * joining the transaction at this point would be bad, use NOFS
-> > +        * allocations so that no new writes are kicked off.
-> > +        */
-> 
-> This comment makes no sense to me.
-> 
-> The reason we have to use NOFS it's because when a memory allocation
-> triggers reclaim it may recurse into the filesystem and
-> trigger transaction start/join/attach, which would result in a
-> deadlock (see below why exactly).
-> 
-> The "more items joining the transaction at this point would be bad"
-> makes no sense because it's simply not possible.
-> At this point the transaction is in the state
-> TRANS_STATE_COMMIT_DOING, so no one can join it and use it for further
-> modifying the fs - anyone trying to start a new transaction, join or
-> attach this one will block until the transaction state
-> becomes >= TRANS_STATE_UNBLOCKED and after that it will have to start
-> a new transaction (can't reuse the former).
+A reproducer is:
 
-I've updated the commit so it says why whe need the NOFS protection
-similar to what we have elsewhere. There's one GFP_KERNEL allocation in
-fscrypt_setup_filename so the protection is needed.
+    mkfs.ext4 -F /dev/vdb
+    debugfs -w /dev/vdb -R "set_inode_field <8> flags 0x80808"
+    mount /dev/vdb /mnt -o inlinecrypt
+
+To fix this, make ext4 consider journal inodes with the encrypt flag to
+be invalid.  (Note, maybe other flags should be rejected on the journal
+inode too.  For now, this is just the minimal fix for the above issue.)
+
+I've marked this as fixing the commit that introduced the call to
+fscrypt_limit_io_blocks(), since that's what made an actual crash start
+being possible.  But this fix could be applied to any version of ext4
+that supports the encrypt feature.
+
+Reported-by: syzbot+ba9dac45bc76c490b7c3@syzkaller.appspotmail.com
+Fixes: 38ea50daa7a4 ("ext4: support direct I/O with fscrypt using blk-crypto")
+Cc: stable@vger.kernel.org
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ fs/ext4/super.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 7950904fbf04f..2274f730b87e5 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -5723,7 +5723,7 @@ static struct inode *ext4_get_journal_inode(struct super_block *sb,
+ 
+ 	ext4_debug("Journal inode found at %p: %lld bytes\n",
+ 		  journal_inode, journal_inode->i_size);
+-	if (!S_ISREG(journal_inode->i_mode)) {
++	if (!S_ISREG(journal_inode->i_mode) || IS_ENCRYPTED(journal_inode)) {
+ 		ext4_msg(sb, KERN_ERR, "invalid journal inode");
+ 		iput(journal_inode);
+ 		return NULL;
+
+base-commit: 8f71a2b3f435f29b787537d1abedaa7d8ebe6647
+-- 
+2.38.1
+
