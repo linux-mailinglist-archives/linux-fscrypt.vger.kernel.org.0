@@ -2,33 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11205616214
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  2 Nov 2022 12:53:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A589616217
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  2 Nov 2022 12:54:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230169AbiKBLxO (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 2 Nov 2022 07:53:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48728 "EHLO
+        id S230187AbiKBLxQ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 2 Nov 2022 07:53:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230159AbiKBLxN (ORCPT
+        with ESMTP id S230159AbiKBLxP (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 2 Nov 2022 07:53:13 -0400
+        Wed, 2 Nov 2022 07:53:15 -0400
 Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A89728725;
-        Wed,  2 Nov 2022 04:53:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 297FE28714;
+        Wed,  2 Nov 2022 04:53:14 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id BD16681460;
-        Wed,  2 Nov 2022 07:53:11 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id 989F68146E;
+        Wed,  2 Nov 2022 07:53:13 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1667389992; bh=nFCZ139WVEVoQUXUAAJJhyGBvQMLzp162SW26J98GEk=;
+        t=1667389993; bh=ikGo+VvZ8X13dvcigfL01v7Xa1i4xUOngR+ezlUxGAo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RfFbVmLuWhU3RGw2d8NddbaxTLCaBbnI03r0WGOBybfSm2C4hP9bICaZ9YuA5+fCZ
-         8KU4updYIh9NK679hG46IeVnCcLp7BbfDi5/1BkiD7S6Hu2X9iXB6Uy/FdriZjo3Gf
-         UtKuJNwun90IzKeosF4jO1go+Bt+UMF7jgYRDuzX+w7y0cXLHSn/iaaNkjDA/zw003
-         hUV9I55pFrwQrQTrNMuJRZMAfo9jySAHkWV5XlOTdfJiuSJD35SV6EGaoKz2SVKxbn
-         zBA5Jtmx1nlS4OuGsU2Td3KGxiBVOUSPe35Q8IHZpH/jVVdnVnFVXWYS1lTOoCwUbX
-         IEbsM2VylbHAA==
+        b=dBKuGEIhHJ3DSqyy9WBF/ZkHB9PPd/fznxQOabOcP33e9+84ZdTgymVtDaKZdGhes
+         6z/U5jYorIF7hhmTvtjXWrtBWM/X9JeSvdQ1295i1/wQkVzpUEB9D6Esfl0n3bJinX
+         TnYJFqhkfPLB5BhEXAH7VG7qK8sgjdSOrdiC5Qdxawnrqr6C4zpMs6V26E9WFlYRJv
+         5vsMkxYeyEc75ZcPhcNMwVut8lPj6wJSERdJC87ElUeTgAJhqsOld3N30+bnMeNkim
+         02zM8tVvbm7I09lpg20/H0H2AIQOks2Ljl7OW/Gj3DNLBZuyQFVY4srRs9p6IdC0Qu
+         9LTHPV/W7asBw==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     "Theodore Y. Ts'o" <tytso@mit.edu>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
@@ -38,9 +38,9 @@ To:     "Theodore Y. Ts'o" <tytso@mit.edu>,
         linux-btrfs@vger.kernel.org, kernel-team@meta.com
 Cc:     Omar Sandoval <osandov@osandov.com>,
         Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH v5 01/18] fscrypt: expose fscrypt_nokey_name
-Date:   Wed,  2 Nov 2022 07:52:50 -0400
-Message-Id: <714aa9149e19c4a826866236992e265fa29f57c6.1667389115.git.sweettea-kernel@dorminy.me>
+Subject: [PATCH v5 02/18] fscrypt: add fscrypt_have_same_policy() to check inode compatibility
+Date:   Wed,  2 Nov 2022 07:52:51 -0400
+Message-Id: <0c9c616c46ae86e51d153316d55918eac74b83ad.1667389115.git.sweettea-kernel@dorminy.me>
 In-Reply-To: <cover.1667389115.git.sweettea-kernel@dorminy.me>
 References: <cover.1667389115.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
@@ -56,135 +56,93 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Omar Sandoval <osandov@osandov.com>
 
-btrfs stores its data structures, including filenames in directories, in
-its own buffer implementation, struct extent_buffer, composed of
-several non-contiguous pages. We could copy filenames into a
-temporary buffer and use fscrypt_match_name() against that buffer, such
-extensive memcpying would be expensive. Instead, exposing
-fscrypt_nokey_name as in this change allows btrfs to recapitulate
-fscrypt_match_name() using methods on struct extent_buffer instead of
-dealing with a raw byte array.
+Btrfs will need to check whether inode policies are identical for
+various purposes: if two inodes want to share an extent, they must have
+the same policy, including key identifier; symlinks must not span the
+encrypted/unencrypted border; and certain encryption policies will allow
+btrfs to store one fscrypt_context for multiple objects. Therefore, add
+a function which allows checking the encryption policies of two inodes
+to ensure they are identical.
 
 Signed-off-by: Omar Sandoval <osandov@osandov.com>
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/crypto/fname.c       | 39 +--------------------------------------
- include/linux/fscrypt.h | 37 +++++++++++++++++++++++++++++++++++++
- 2 files changed, 38 insertions(+), 38 deletions(-)
+ fs/crypto/policy.c      | 35 +++++++++++++++++++++++++++++++++++
+ include/linux/fscrypt.h |  8 ++++++++
+ 2 files changed, 43 insertions(+)
 
-diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
-index 12bd61d20f69..6c092a1533f7 100644
---- a/fs/crypto/fname.c
-+++ b/fs/crypto/fname.c
-@@ -14,7 +14,6 @@
- #include <linux/namei.h>
- #include <linux/scatterlist.h>
- #include <crypto/hash.h>
--#include <crypto/sha2.h>
- #include <crypto/skcipher.h>
- #include "fscrypt_private.h"
+diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
+index 46757c3052ef..715870d4e530 100644
+--- a/fs/crypto/policy.c
++++ b/fs/crypto/policy.c
+@@ -415,6 +415,41 @@ static int fscrypt_get_policy(struct inode *inode, union fscrypt_policy *policy)
+ 	return fscrypt_policy_from_context(policy, &ctx, ret);
+ }
  
-@@ -26,43 +25,7 @@
- #define FSCRYPT_FNAME_MIN_MSG_LEN 16
- 
- /*
-- * struct fscrypt_nokey_name - identifier for directory entry when key is absent
-- *
-- * When userspace lists an encrypted directory without access to the key, the
-- * filesystem must present a unique "no-key name" for each filename that allows
-- * it to find the directory entry again if requested.  Naively, that would just
-- * mean using the ciphertext filenames.  However, since the ciphertext filenames
-- * can contain illegal characters ('\0' and '/'), they must be encoded in some
-- * way.  We use base64url.  But that can cause names to exceed NAME_MAX (255
-- * bytes), so we also need to use a strong hash to abbreviate long names.
-- *
-- * The filesystem may also need another kind of hash, the "dirhash", to quickly
-- * find the directory entry.  Since filesystems normally compute the dirhash
-- * over the on-disk filename (i.e. the ciphertext), it's not computable from
-- * no-key names that abbreviate the ciphertext using the strong hash to fit in
-- * NAME_MAX.  It's also not computable if it's a keyed hash taken over the
-- * plaintext (but it may still be available in the on-disk directory entry);
-- * casefolded directories use this type of dirhash.  At least in these cases,
-- * each no-key name must include the name's dirhash too.
-- *
-- * To meet all these requirements, we base64url-encode the following
-- * variable-length structure.  It contains the dirhash, or 0's if the filesystem
-- * didn't provide one; up to 149 bytes of the ciphertext name; and for
-- * ciphertexts longer than 149 bytes, also the SHA-256 of the remaining bytes.
-- *
-- * This ensures that each no-key name contains everything needed to find the
-- * directory entry again, contains only legal characters, doesn't exceed
-- * NAME_MAX, is unambiguous unless there's a SHA-256 collision, and that we only
-- * take the performance hit of SHA-256 on very long filenames (which are rare).
-- */
--struct fscrypt_nokey_name {
--	u32 dirhash[2];
--	u8 bytes[149];
--	u8 sha256[SHA256_DIGEST_SIZE];
--}; /* 189 bytes => 252 bytes base64url-encoded, which is <= NAME_MAX (255) */
--
--/*
-- * Decoded size of max-size no-key name, i.e. a name that was abbreviated using
-+ * Decoded size of max-size nokey name, i.e. a name that was abbreviated using
-  * the strong hash and thus includes the 'sha256' field.  This isn't simply
-  * sizeof(struct fscrypt_nokey_name), as the padding at the end isn't included.
-  */
++/**
++ * fscrypt_have_same_policy() - check whether two inodes have the same policy
++ * @inode1: the first inode
++ * @inode2: the second inode
++ * @same_ptr: a pointer to return whether they are the same
++ *
++ * Return: 0 or an error code.
++ */
++int fscrypt_have_same_policy(struct inode *inode1, struct inode *inode2,
++			     bool *same_ptr)
++{
++	union fscrypt_policy policy1, policy2;
++	int err;
++
++	if (!IS_ENCRYPTED(inode1) && !IS_ENCRYPTED(inode2)) {
++		*same_ptr = true;
++		return 0;
++	}
++	if (!IS_ENCRYPTED(inode1) || !IS_ENCRYPTED(inode2)) {
++		*same_ptr = false;
++		return 0;
++	}
++
++	err = fscrypt_get_policy(inode1, &policy1);
++	if (err)
++		return err;
++	err = fscrypt_get_policy(inode2, &policy2);
++	if (err)
++		return err;
++
++	*same_ptr = fscrypt_policies_equal(&policy1, &policy2);
++	return 0;
++}
++EXPORT_SYMBOL(fscrypt_have_same_policy);
++
+ static int set_encryption_policy(struct inode *inode,
+ 				 const union fscrypt_policy *policy)
+ {
 diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index 4f5f8a651213..7661db0b5bec 100644
+index 7661db0b5bec..0069f92ee3da 100644
 --- a/include/linux/fscrypt.h
 +++ b/include/linux/fscrypt.h
-@@ -16,6 +16,7 @@
- #include <linux/fs.h>
- #include <linux/mm.h>
- #include <linux/slab.h>
-+#include <crypto/sha2.h>
- #include <uapi/linux/fscrypt.h>
+@@ -313,6 +313,8 @@ static inline struct page *fscrypt_pagecache_page(struct page *bounce_page)
+ void fscrypt_free_bounce_page(struct page *bounce_page);
  
- /*
-@@ -54,6 +55,42 @@ struct fscrypt_name {
- #define fname_name(p)		((p)->disk_name.name)
- #define fname_len(p)		((p)->disk_name.len)
+ /* policy.c */
++int fscrypt_have_same_policy(struct inode *inode1, struct inode *inode2,
++			     bool *same_ptr);
+ int fscrypt_ioctl_set_policy(struct file *filp, const void __user *arg);
+ int fscrypt_ioctl_get_policy(struct file *filp, void __user *arg);
+ int fscrypt_ioctl_get_policy_ex(struct file *filp, void __user *arg);
+@@ -490,6 +492,12 @@ static inline void fscrypt_free_bounce_page(struct page *bounce_page)
+ }
  
-+/*
-+ * struct fscrypt_nokey_name - identifier for directory entry when key is absent
-+ *
-+ * When userspace lists an encrypted directory without access to the key, the
-+ * filesystem must present a unique "no-key name" for each filename that allows
-+ * it to find the directory entry again if requested.  Naively, that would just
-+ * mean using the ciphertext filenames.  However, since the ciphertext filenames
-+ * can contain illegal characters ('\0' and '/'), they must be encoded in some
-+ * way.  We use base64url.  But that can cause names to exceed NAME_MAX (255
-+ * bytes), so we also need to use a strong hash to abbreviate long names.
-+ *
-+ * The filesystem may also need another kind of hash, the "dirhash", to quickly
-+ * find the directory entry.  Since filesystems normally compute the dirhash
-+ * over the on-disk filename (i.e. the ciphertext), it's not computable from
-+ * no-key names that abbreviate the ciphertext using the strong hash to fit in
-+ * NAME_MAX.  It's also not computable if it's a keyed hash taken over the
-+ * plaintext (but it may still be available in the on-disk directory entry);
-+ * casefolded directories use this type of dirhash.  At least in these cases,
-+ * each no-key name must include the name's dirhash too.
-+ *
-+ * To meet all these requirements, we base64url-encode the following
-+ * variable-length structure.  It contains the dirhash, or 0's if the filesystem
-+ * didn't provide one; up to 149 bytes of the ciphertext name; and for
-+ * ciphertexts longer than 149 bytes, also the SHA-256 of the remaining bytes.
-+ *
-+ * This ensures that each no-key name contains everything needed to find the
-+ * directory entry again, contains only legal characters, doesn't exceed
-+ * NAME_MAX, is unambiguous unless there's a SHA-256 collision, and that we only
-+ * take the performance hit of SHA-256 on very long filenames (which are rare).
-+ */
-+struct fscrypt_nokey_name {
-+	u32 dirhash[2];
-+	u8 bytes[149];
-+	u8 sha256[SHA256_DIGEST_SIZE];
-+}; /* 189 bytes => 252 bytes base64url-encoded, which is <= NAME_MAX (255) */
+ /* policy.c */
++static inline int fscrypt_have_same_policy(struct inode *inode1,
++					   struct inode *inode2)
++{
++	return 1;
++}
 +
- /* Maximum value for the third parameter of fscrypt_operations.set_context(). */
- #define FSCRYPT_SET_CONTEXT_MAX_SIZE	40
- 
+ static inline int fscrypt_ioctl_set_policy(struct file *filp,
+ 					   const void __user *arg)
+ {
 -- 
 2.37.3
 
