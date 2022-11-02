@@ -2,178 +2,164 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A44F616F33
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  2 Nov 2022 21:55:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57777617041
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  2 Nov 2022 23:06:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229975AbiKBUzN (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 2 Nov 2022 16:55:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44846 "EHLO
+        id S230460AbiKBWGu (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 2 Nov 2022 18:06:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231362AbiKBUzM (ORCPT
+        with ESMTP id S229681AbiKBWGt (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 2 Nov 2022 16:55:12 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57508A46E
-        for <linux-fscrypt@vger.kernel.org>; Wed,  2 Nov 2022 13:55:09 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id d13-20020a17090a3b0d00b00213519dfe4aso3006733pjc.2
-        for <linux-fscrypt@vger.kernel.org>; Wed, 02 Nov 2022 13:55:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20210112.gappssmtp.com; s=20210112;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/8ADIFndQOnIrALBDqQjN84YmHUMrBD46NGumZr+MnE=;
-        b=XoPJ2Fn/YZqbR/iF40bP5tvj2ZBXyM/0KhvCULrGjMso0dL0Eh+M9G040gWnFCi6P4
-         ZgDH89GjSsB4Q+y7X85PH+xE0X1tjQIX5INr/jzGBgc9O6D5YolznmHxwLomDqn23ZIO
-         z0ZX+NBUeWHQ2CXTPflL5nHTid8amzuOZM9LjCpf9epQxTszX0x4s/JkBFmkgDBLydEU
-         yLdkA9h/N80PJw90Xw+t2kkzjP165lB4acANSbMFbZgnd9ZncUG0rIgSLjtGvli1by5z
-         4Ftlnqc10LsZgmWBNa4rppDzGq/3ikYT8NFwVnEfHCWHqP0nFiH/Woh4z3LP37tjSfzF
-         pWuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/8ADIFndQOnIrALBDqQjN84YmHUMrBD46NGumZr+MnE=;
-        b=yzjVETjwZcRKBKzkXqjIfBHTpFev71rKzuDMaH+YO8gbA878ETaXjRFljZUAtctN6V
-         byulU5ku+d8kQCY5LcU/hsqoi3+XO3itlEsv55NOvadibyW7iYGrSyOrqSJayO8413so
-         lepPSNm7sdvPNG+Wt2d0yhkQ8MD2BFdONU6roLeJBf/CrcKuVpuk66C8b2I2HLioS6fN
-         wOTVnKFgwsI/S8qMc+qdjphmRj8gJ8oK5xSQU95tBd36Y2WBfAGrNwv1SuJwNm8eOIdj
-         rN2YzcnFW23mdUv+R0SVvhz06QLgSjtzY2Z9YUfAh4RadUcrnx2l7/zfWHGsxY4TS9tU
-         0wgQ==
-X-Gm-Message-State: ACrzQf3ncuOfWg2Ge7xYM8PvO2UG3IZMtbFieVWLnsa36VNhM3U696I5
-        Uy5o4YMLHofk0MGqxapiDujBzg==
-X-Google-Smtp-Source: AMsMyM7eGSg+xKaY5ZBjDQLMIA0JXMa9OOywmTtfcsm8AWzpW0Z3Il/osMMJwtjbPfaRCX7bx0Pocg==
-X-Received: by 2002:a17:902:d70e:b0:178:2d9d:ba7b with SMTP id w14-20020a170902d70e00b001782d9dba7bmr26455002ply.90.1667422508786;
-        Wed, 02 Nov 2022 13:55:08 -0700 (PDT)
-Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id f1-20020a170902f38100b00176ab6a0d5fsm8770542ple.54.2022.11.02.13.55.07
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 02 Nov 2022 13:55:07 -0700 (PDT)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <B8D39676-D175-4AC9-B74B-95D4AAF03A9A@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_F738C8B4-8AF1-4535-832F-B00CDB8CD548";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [e2fsprogs PATCH] e2fsck: don't allow journal inode to have
- encrypt flag
-Date:   Wed, 2 Nov 2022 14:55:05 -0600
-In-Reply-To: <20221102053554.190282-1-ebiggers@kernel.org>
-Cc:     linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org
-To:     Eric Biggers <ebiggers@kernel.org>
-References: <20221102053554.190282-1-ebiggers@kernel.org>
-X-Mailer: Apple Mail (2.3273)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 2 Nov 2022 18:06:49 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1152065C7;
+        Wed,  2 Nov 2022 15:06:48 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id C5C96B82511;
+        Wed,  2 Nov 2022 22:06:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F222C433C1;
+        Wed,  2 Nov 2022 22:06:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1667426805;
+        bh=dzmvHm1VBFlX5yeoYPk9Me1Xe6QcnRkG9Ag0n4N0WNc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=KGKnbFELeHz8McMI47VGks19zIEnqA+ePNCi8YsZ7fq+JR/MF8mLluIUdBC0qdBjG
+         q/2D1BxqtG2u2HNZkZ27fNuIsUao5VRb5uvcRgbTa5GCVfUtEgufLa3COWH5AnM86v
+         xdg0uSXCYieSxw/8lP/XGSrFy0/oRw7DRysrSrD5F0s4ciS5TzB9EbfQGTJOauiIW6
+         heBYFGvph9Hsg6YKF5Xb3LExQmk4gZM2fiyZxQpSwOBD27AeyI2c+zmiDMZETz+q97
+         5X3FModMmzsMlWguXH6ZypRV4/GMsaBFLla/Q1HilslMtfy+u1LW/Bi2h5t03dLVvJ
+         Es1SQVyRmXTCA==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-ext4@vger.kernel.org
+Cc:     linux-fscrypt@vger.kernel.org
+Subject: [e2fsprogs PATCH v2] e2fsck: don't allow journal inode to have encrypt flag
+Date:   Wed,  2 Nov 2022 15:05:51 -0700
+Message-Id: <20221102220551.3940-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.38.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
+From: Eric Biggers <ebiggers@google.com>
 
---Apple-Mail=_F738C8B4-8AF1-4535-832F-B00CDB8CD548
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+Since the kernel is being fixed to consider journal inodes with the
+'encrypt' flag set to be invalid, also update e2fsck accordingly.
 
-On Nov 1, 2022, at 11:35 PM, Eric Biggers <ebiggers@kernel.org> wrote:
->=20
-> From: Eric Biggers <ebiggers@google.com>
->=20
-> Since the kernel is being fixed to consider journal inodes with the
-> 'encrypt' flag set to be invalid, also update e2fsck accordingly.
->=20
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
-> e2fsck/journal.c                   |   3 ++-
-> tests/f_badjour_encrypted/expect.1 |  30 +++++++++++++++++++++++++++++
-> tests/f_badjour_encrypted/expect.2 |   7 +++++++
-> tests/f_badjour_encrypted/image.gz | Bin 0 -> 2637 bytes
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
 
-Good to have a test case for this.
+v2: generate the test filesystem image dynamically.
 
-In the past Ted has asked that new test cases are generated via mke2fs
-and debugfs in "f_XXX/script" file rather than a binary image, if =
-possible.
-That avoids saving a binary blob in Git, and also makes it much more
-clear in the future what is done to the filesystem to corrupt it, rather
-than having to reverse engineer this from the bits on disk.
+ e2fsck/journal.c                   |  3 ++-
+ tests/f_badjour_encrypted/expect.1 | 30 ++++++++++++++++++++++++++++++
+ tests/f_badjour_encrypted/expect.2 |  7 +++++++
+ tests/f_badjour_encrypted/name     |  1 +
+ tests/f_badjour_encrypted/script   | 11 +++++++++++
+ 5 files changed, 51 insertions(+), 1 deletion(-)
+ create mode 100644 tests/f_badjour_encrypted/expect.1
+ create mode 100644 tests/f_badjour_encrypted/expect.2
+ create mode 100644 tests/f_badjour_encrypted/name
+ create mode 100644 tests/f_badjour_encrypted/script
 
-Something like tests/f_dup4/script is a good example of this.  You may
-be able to use something as simple as the following:
+diff --git a/e2fsck/journal.c b/e2fsck/journal.c
+index d802c5e9..343e48ba 100644
+--- a/e2fsck/journal.c
++++ b/e2fsck/journal.c
+@@ -1039,7 +1039,8 @@ static errcode_t e2fsck_get_journal(e2fsck_t ctx, journal_t **ret_journal)
+ 			tried_backup_jnl++;
+ 		}
+ 		if (!j_inode->i_ext2.i_links_count ||
+-		    !LINUX_S_ISREG(j_inode->i_ext2.i_mode)) {
++		    !LINUX_S_ISREG(j_inode->i_ext2.i_mode) ||
++		    (j_inode->i_ext2.i_flags & EXT4_ENCRYPT_FL)) {
+ 			retval = EXT2_ET_NO_JOURNAL;
+ 			goto try_backup_journal;
+ 		}
+diff --git a/tests/f_badjour_encrypted/expect.1 b/tests/f_badjour_encrypted/expect.1
+new file mode 100644
+index 00000000..0b13b9eb
+--- /dev/null
++++ b/tests/f_badjour_encrypted/expect.1
+@@ -0,0 +1,30 @@
++Superblock has an invalid journal (inode 8).
++Clear? yes
++
++*** journal has been deleted ***
++
++Pass 1: Checking inodes, blocks, and sizes
++Journal inode is not in use, but contains data.  Clear? yes
++
++Pass 2: Checking directory structure
++Pass 3: Checking directory connectivity
++Pass 4: Checking reference counts
++Pass 5: Checking group summary information
++Block bitmap differences:  -(24--25) -(27--41) -(107--1113)
++Fix? yes
++
++Free blocks count wrong for group #0 (934, counted=1958).
++Fix? yes
++
++Free blocks count wrong (934, counted=1958).
++Fix? yes
++
++Recreate journal? yes
++
++Creating journal (1024 blocks):  Done.
++
++*** journal has been regenerated ***
++
++test_filesys: ***** FILE SYSTEM WAS MODIFIED *****
++test_filesys: 11/256 files (0.0% non-contiguous), 1114/2048 blocks
++Exit status is 1
+diff --git a/tests/f_badjour_encrypted/expect.2 b/tests/f_badjour_encrypted/expect.2
+new file mode 100644
+index 00000000..76934be2
+--- /dev/null
++++ b/tests/f_badjour_encrypted/expect.2
+@@ -0,0 +1,7 @@
++Pass 1: Checking inodes, blocks, and sizes
++Pass 2: Checking directory structure
++Pass 3: Checking directory connectivity
++Pass 4: Checking reference counts
++Pass 5: Checking group summary information
++test_filesys: 11/256 files (9.1% non-contiguous), 1114/2048 blocks
++Exit status is 0
+diff --git a/tests/f_badjour_encrypted/name b/tests/f_badjour_encrypted/name
+new file mode 100644
+index 00000000..e8f4c04f
+--- /dev/null
++++ b/tests/f_badjour_encrypted/name
+@@ -0,0 +1 @@
++journal inode has encrypt flag
+diff --git a/tests/f_badjour_encrypted/script b/tests/f_badjour_encrypted/script
+new file mode 100644
+index 00000000..e6778f1d
+--- /dev/null
++++ b/tests/f_badjour_encrypted/script
+@@ -0,0 +1,11 @@
++if ! test -x $DEBUGFS_EXE; then
++	echo "$test_name: $test_description: skipped (no debugfs)"
++	return 0
++fi
++
++touch $TMPFILE
++$MKE2FS -t ext4 -b 1024 $TMPFILE 2M
++$DEBUGFS -w -R 'set_inode_field <8> flags 0x80800' $TMPFILE
++
++SKIP_GUNZIP="true"
++. $cmd_dir/run_e2fsck
 
-    touch $TMPFILE
-    $MKE2FS -t ext4 -b 1024 -J size=3D4 ... $TMPFILE 16384
-    $DEBUGFS -w -R 'set_inode_field <8> flags 0x800' $TMPFILE
-    . $cmd_dir/run_e2fsck
+base-commit: aad34909b6648579f42dade5af5b46821aa4d845
+-- 
+2.38.1
 
-It might be more involved, depending on how the journal was corrupted.
-For complex debugfs changes, it is better to use a "here" document to
-perform multiple commands than running debugfs multiple times.
-
-The script is also much more compact than the binary image, and =
-tolerates
-changes a lot better as well.
-
-Cheers, Andreas
-
-> diff --git a/tests/f_badjour_encrypted/image.gz =
-b/tests/f_badjour_encrypted/image.gz
-> new file mode 100644
-> index =
-0000000000000000000000000000000000000000..660496ea5bba9b5589e6ce522feb998a=
-56ab946a
-> GIT binary patch
-> literal 2637
-> zcmb2|=3D3oE;CgwMHnR%A}ly$iH+hCjen-$w~Z}VkIC+6NxyCc!NYR5sNh}+xBbE4nR
-> zN&o!s6aW5(lcp<{UH`qxzUS4ptP5pfA=3D=3Dwwf8L3{|MOkc?r&esd8Bgo#^iqA5gFQC
-> z<@R-dVr@lCdHkR5{rAnDhwlG>jraZU^QHBbXJlmsKi|6fW!ukpZ~6bfSpUB2;pTmx
-> zj{M*I=3D+61|wWkw4%t_n+w)pIx)GIr3+pcz<UH*C1)vHaf+5&5L-JN;=3DTiBLGj=3DQD!=
-
-> zvwYR3oA+2BEcm`&zU2O)tkADJdjH<PwxLjZ&!1oZHNUt0v)ga`;{kvAnl~H3enld#
-> z$+@%1mc~a}A54fin`clHvi0Skf*&i~udaD@=3Di-@%?sorPp11i^EC2t^@q3p&nP$X3
-> zzi$!s_i3c{*ZQX!$^Q>{-utf_{{O+ORnhK@!q@)4KVSKq`3wIq_AmS|<S*DSsCW3^
-> z@Q?8?^DlP4J^%iH{<8evDyi)kD?Tqg`0VhxvhA|(9o0n`65ek4mi5+?8xj$4$636y
-> z`F^c@U-jvQi=3DWK?|9-~qcRR0El+UlfvVnKm_Je1l*?MoM1?axIu;=3DxksEaRLt^f1+
-> zcI>}%!KM17_pFRy`>QV2pCx6B<9`)>o$;~a`cLx=3D*Y;<@Z|{cwUm;riQQi9d{>A@(
-> z&c6T7uKx1sm(kDuuPD6Dvs!ev|MSq*t68t|F8)>W`}uD3t6l#pUM)HIKYZ_&&TqRj
-> zWsCn;=3D6#)UcWr%}?)}rh(#y8)a4!C~Kik#*_w$dx|Fgp#PX@#7>W*1KzH66-US2JE
-> z^-NZn>F!y<XV*Rp{k)o$kqqNTwTy<qXb9jBf%d~z-yS%C)HqDo|5YJ89>4NY+0hUf
-> k4S}H$0uFBvZUnjWfI|K2%r`6YXzOOCSzdj93=3D9ek0BUk;ZvX%Q
-
-
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_F738C8B4-8AF1-4535-832F-B00CDB8CD548
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmNi2SkACgkQcqXauRfM
-H+D6Ag//WGQEg7Rk/DpzwGYxVQbpNdy7mrvDN5zPPJZG0ZyJNoh/TKhRaOc/00jX
-oAAfQv49V7hF76Hwr+uyD163w/xV8Aa6Grswlqdq0t1XyklfJOVFmTpIVfIb3dLg
-cvuyHNedx8KPHmxgs/ztv1MU4q59w9/G6LXWOiWltQC3rI1gjhCYfd9YnqxRtMZb
-nwssdswyPuOyI419qYco7t1e4Fmdgp23bd1hX+WyUDSLiagQajts7xMEn0iWOj1k
-Pkuv3MupcniYwcftM0nQQARzK0c3XetwVmFS1cwdxD1lq0c9wjTlkig1lpQCvFYR
-s+ka/HMojr29ch9K0OY4PWv2wU2M4PvlkxwYLlgIPkeY388Sh8VZTWbeGEc0ZJcB
-TQQdsDlsm2L4EsCSiTTsap/0H1/i5uIoL0u53VizFu808cM1eb1TQrU3yBh8EQN6
-LY2JRM6IDFlmG8PQUWt75UYev9KsSGSANWru4Dl4DPX0MX5JIcDSBfFKaR4ZSXOE
-IOqj+KOGPyRorVyFnEmEZ1Gb4kcE0qhkCWCjrAZXM+bhRMXjBwQV5cOL4liOP56k
-ChB7uNZ/VgBWruq//1c6w0P0BLaDrxXx+G6mP5nYH7DnLl/hFCqj4GMqJtp4/uMI
-F+inn+281xDTv2ZL6Zkp56vMy3thO8PKf/h/aj7gVT3ciq4caHM=
-=DuZ8
------END PGP SIGNATURE-----
-
---Apple-Mail=_F738C8B4-8AF1-4535-832F-B00CDB8CD548--
