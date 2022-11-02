@@ -2,68 +2,60 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB30E6170D5
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  2 Nov 2022 23:48:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CED0F6171A6
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  3 Nov 2022 00:19:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230520AbiKBWse (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 2 Nov 2022 18:48:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44898 "EHLO
+        id S229516AbiKBXTO (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 2 Nov 2022 19:19:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230460AbiKBWsd (ORCPT
+        with ESMTP id S229875AbiKBXTM (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 2 Nov 2022 18:48:33 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 199DEE81
-        for <linux-fscrypt@vger.kernel.org>; Wed,  2 Nov 2022 15:48:32 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id q1so97440pgl.11
-        for <linux-fscrypt@vger.kernel.org>; Wed, 02 Nov 2022 15:48:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20210112.gappssmtp.com; s=20210112;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=cj171yfmYzsHSXMPz8MM+aTcukwosxuCRyTSCspjm7A=;
-        b=GDavR2PKjclwaPcPgDus/pHDswU0YvdDE3GCccZSg3K+vWok990di8sHqeyu4rOxRl
-         OtndDMqDlaj3iEuPOhbFJ1kHk8hOG9Fn1RgvE3L6Cb8jEWTctPM3UpOnb0aeSzDhIHWH
-         x3RxcQbADtVh9ghhFMUkufRB/krMz79QBBaWiEeItTDdDGSglQLqxln3PWr4QA1JZUrc
-         ARgFWCg9pX+BxmJB52L9HITfBbI4Nlfuplz5ryjTGIBzcXbEzBOaslncu6mCBGk8ZcFN
-         QlR5LJzX4qYujyxZozH9asMRkkBnmndccMvLxeRIcTND/xhIaIaDmiTmYNfFr3mCzZHr
-         KoLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cj171yfmYzsHSXMPz8MM+aTcukwosxuCRyTSCspjm7A=;
-        b=3js3IocWPSItwpIS9OzN+QLpjfzd5lVdi10iqK/R04ytGooCYUM31sci4QFjW1C+02
-         LzTeuv66nGfkrbKPfIVhZn9gmJRBWHWdjO7VVQkirB76u0ee5wtN65O5E+5UVqEA0kAF
-         2zXutYR/E/uZ6ITJsQt+/kxhdHLrVZ4oGDy1WDxXayfSSV9qX6C9kPVCkQTuGUFjDJzi
-         1gDKN2FKA5SYQndAnWPgQBRSecfJdQPAWR8ebAqM5BFUznkrD8x1UprO4ViCjtg1NebM
-         5ywJVVwdZsoyjcUOy20z+EMpYGIQOxASRFT5b0iKbiC9MdgpMhsFs+1TXOoN9IpMrcHZ
-         DpfA==
-X-Gm-Message-State: ACrzQf3ax91ODZJ1BybZUqA6yM04wOu8KpKSb2PyRvrtF371PXEVUAtO
-        V31/y1RObJaOKkj4C8YBKbg5CR3Mm6oF2Ip3
-X-Google-Smtp-Source: AMsMyM53HCGUgkyCoxkxdNRiNURlfSxGnzz6hEF/FRMov3WHMgN9jcKZgJgCGSBcrzW7wAUTlEiOgQ==
-X-Received: by 2002:a65:644a:0:b0:470:f04:5b67 with SMTP id s10-20020a65644a000000b004700f045b67mr3617221pgv.586.1667429311502;
-        Wed, 02 Nov 2022 15:48:31 -0700 (PDT)
-Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id n126-20020a622784000000b00562ef28aac6sm8906682pfn.185.2022.11.02.15.48.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 02 Nov 2022 15:48:30 -0700 (PDT)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <41A87324-A905-48A6-93F4-1DCA709B5FAF@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_AEB4824A-F0CA-4C11-9F0B-2946649E9988";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [e2fsprogs PATCH v2] e2fsck: don't allow journal inode to have
- encrypt flag
-Date:   Wed, 2 Nov 2022 16:48:27 -0600
-In-Reply-To: <20221102220551.3940-1-ebiggers@kernel.org>
-Cc:     linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org
-To:     Eric Biggers <ebiggers@kernel.org>
-References: <20221102220551.3940-1-ebiggers@kernel.org>
-X-Mailer: Apple Mail (2.3273)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Wed, 2 Nov 2022 19:19:12 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 305DDF6E;
+        Wed,  2 Nov 2022 16:19:09 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D2FACB823C1;
+        Wed,  2 Nov 2022 23:19:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D248C433D6;
+        Wed,  2 Nov 2022 23:19:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1667431146;
+        bh=HupAuevPbecozuXcQzHBcqC7vZmHybBz2TUHcNzWFSQ=;
+        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+        b=PWgSFY447bxe7G/5f6cRhi+ot9S7DMiwug6QTMZa7uI0x0trihSeKdywlWF9mYTAj
+         HrdNOJ7AYt3sMRej1IAVswWrvxzfWwTKrn+dpD+YlNXhR60lbQDqAk5gzoxoOIecee
+         DMjdSb5OwWuBjfnZJz90P9GtfM2gKw+Km6i0EdKEgSg/njX55j0oWe8/a0t8xZ2CFu
+         z6F7XhpWxh2SaBtm7PBnZw32KzDUVO0DibvQq7IE5r5mKFNEneFi36xoPbeLIVWD1H
+         XorPHlhowG7BC0iJSg/8QaBk6vY5YNK4LQszSVj9MjZ7y4BJ1zeitjIFDPmLA0YBg2
+         zqV7F/UjSCxeA==
+Message-ID: <536944df-a0ae-1dd8-148f-510b476e1347@kernel.org>
+Date:   Thu, 3 Nov 2022 07:19:03 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.1
+Subject: Re: [f2fs-dev] f2fs_empty_dir() can be extremely slow on malicious
+ disk images
+Content-Language: en-US
+From:   Chao Yu <chao@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net
+Cc:     Wei Chen <harperchen1110@gmail.com>, linux-fscrypt@vger.kernel.org,
+        tytso@mit.edu, linux-kernel@vger.kernel.org
+References: <CAO4mrfc3sbZVj3QOdAVFqrZp+mEuPQTtQCQsQy-07W_BEFqZ2Q@mail.gmail.com>
+ <CAO4mrfexzxeYwAkvWGfg=tEiczUWarO6y68KFD9EG9qZtGejng@mail.gmail.com>
+ <Y2ILlpqFQVO9fH8B@sol.localdomain>
+ <6f1d5006-95fb-cc63-4cb0-65de23cc4c27@kernel.org>
+In-Reply-To: <6f1d5006-95fb-cc63-4cb0-65de23cc4c27@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,170 +63,150 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
+On 2022/11/2 23:12, Chao Yu wrote:
+> On 2022/11/2 14:17, Eric Biggers wrote:
+>> [+f2fs list and maintainers]
+> 
+> Thanks for the forwarding.
+> 
+>> [changed subject from "INFO: task hung in fscrypt_ioctl_set_policy"]
+>>
+>> On Mon, Oct 31, 2022 at 10:18:02PM +0800, Wei Chen wrote:
+>>> Dear Linux developers,
+>>>
+>>> Here is the link to the reproducers.
+>>>
+>>> C reproducer: https://drive.google.com/file/d/1mduYsYuoOKemH3qkvpDQwnAHAaaLUp0Y/view?usp=share_link
+>>> Syz reproducer:
+>>> https://drive.google.com/file/d/1mu-_w7dy_562vWRlQvTRbcBjG4_G7b2L/view?usp=share_link
+>>>
+>>> The bug persists in the latest commit, v5.15.76 (4f5365f77018). I hope
+>>> it is helpful to you.
+>>>
+>>> [ 1782.137186][   T30] INFO: task a.out:6910 blocked for more than 143 seconds.
+>>> [ 1782.139217][   T30]       Not tainted 5.15.76 #5
+>>> [ 1782.140388][   T30] "echo 0 >
+>>> /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+>>> [ 1782.142524][   T30] task:a.out           state:D stack:14296 pid:
+>>> 6910 ppid:  6532 flags:0x00004004
+>>> [ 1782.144799][   T30] Call Trace:
+>>> [ 1782.145623][   T30]  <TASK>
+>>> [ 1782.146316][   T30]  __schedule+0x3e8/0x1850
+>>> [ 1782.152029][   T30]  ? mark_held_locks+0x49/0x70
+>>> [ 1782.153533][   T30]  ? mark_held_locks+0x10/0x70
+>>> [ 1782.154759][   T30]  ? __down_write_common.part.14+0x31f/0x7b0
+>>> [ 1782.156159][   T30]  schedule+0x4e/0xe0
+>>> [ 1782.158314][   T30]  __down_write_common.part.14+0x324/0x7b0
+>>> [ 1782.159704][   T30]  ? fscrypt_ioctl_set_policy+0xe0/0x200
+>>> [ 1782.161050][   T30]  fscrypt_ioctl_set_policy+0xe0/0x200
+>>> [ 1782.162330][   T30]  __f2fs_ioctl+0x9d6/0x45e0
+>>> [ 1782.163417][   T30]  f2fs_ioctl+0x64/0x240
+>>> [ 1782.164404][   T30]  ? __f2fs_ioctl+0x45e0/0x45e0
+>>> [ 1782.165554][   T30]  __x64_sys_ioctl+0xb6/0x100
+>>> [ 1782.166662][   T30]  do_syscall_64+0x34/0xb0
+>>> [ 1782.169947][   T30]  entry_SYSCALL_64_after_hwframe+0x61/0xcb
+>>
+>> Well, the quality of this bug report has a lot to be desired (not on upstream
+>> kernel, reproducer is full of totally irrelevant stuff, not sent to the mailing
+>> list of the filesystem whose disk image is being fuzzed, etc.).  But what is
+>> going on is that f2fs_empty_dir() doesn't consider the case of a directory with
+>> an extremely large i_size on a malicious disk image.
+>>
+>> Specifically, the reproducer mounts an f2fs image with a directory that has an
+>> i_size of 14814520042850357248, then calls FS_IOC_SET_ENCRYPTION_POLICY on it.
+>> That results in a call to f2fs_empty_dir() to check whether the directory is
+>> empty.  f2fs_empty_dir() then iterates through all 3616826182336513 blocks the
+>> directory allegedly contains to check whether any contain anything.  i_rwsem is
+>> held during this, so anything else that tries to take it will hang.
+>>
+>> I'll look into this more if needed, but Jaegeuk and Chao, do you happen to have
+>> any ideas for how f2fs_empty_dir() should be fixed?  Is there an easy way to
+>> just iterate through the blocks that are actually allocated?
+> 
 
---Apple-Mail=_AEB4824A-F0CA-4C11-9F0B-2946649E9988
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+Sorry, I mean:
 
-On Nov 2, 2022, at 4:05 PM, Eric Biggers <ebiggers@kernel.org> wrote:
->=20
-> From: Eric Biggers <ebiggers@google.com>
->=20
-> Since the kernel is being fixed to consider journal inodes with the
-> 'encrypt' flag set to be invalid, also update e2fsck accordingly.
->=20
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
+ From 07f662ca6bd2a0991961ea42932ce90f19e74624 Mon Sep 17 00:00:00 2001
+From: Chao Yu <chao@kernel.org>
+Date: Wed, 2 Nov 2022 12:02:08 +0800
+Subject: [RFC v2] f2fs: speed up f2fs_empty_dir()
 
-Looks good.
+Signed-off-by: Chao Yu <chao@kernel.org>
+---
+  fs/f2fs/dir.c | 48 ++++++++++++++++++++++++++++--------------------
+  1 file changed, 28 insertions(+), 20 deletions(-)
 
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
+index 21960a899b6a..569f7304e3e6 100644
+--- a/fs/f2fs/dir.c
++++ b/fs/f2fs/dir.c
+@@ -956,38 +956,46 @@ void f2fs_delete_entry(struct f2fs_dir_entry *dentry, struct page *page,
 
-> ---
->=20
-> v2: generate the test filesystem image dynamically.
->=20
-> e2fsck/journal.c                   |  3 ++-
-> tests/f_badjour_encrypted/expect.1 | 30 ++++++++++++++++++++++++++++++
-> tests/f_badjour_encrypted/expect.2 |  7 +++++++
-> tests/f_badjour_encrypted/name     |  1 +
-> tests/f_badjour_encrypted/script   | 11 +++++++++++
-> 5 files changed, 51 insertions(+), 1 deletion(-)
-> create mode 100644 tests/f_badjour_encrypted/expect.1
-> create mode 100644 tests/f_badjour_encrypted/expect.2
-> create mode 100644 tests/f_badjour_encrypted/name
-> create mode 100644 tests/f_badjour_encrypted/script
->=20
-> diff --git a/e2fsck/journal.c b/e2fsck/journal.c
-> index d802c5e9..343e48ba 100644
-> --- a/e2fsck/journal.c
-> +++ b/e2fsck/journal.c
-> @@ -1039,7 +1039,8 @@ static errcode_t e2fsck_get_journal(e2fsck_t =
-ctx, journal_t **ret_journal)
-> 			tried_backup_jnl++;
-> 		}
-> 		if (!j_inode->i_ext2.i_links_count ||
-> -		    !LINUX_S_ISREG(j_inode->i_ext2.i_mode)) {
-> +		    !LINUX_S_ISREG(j_inode->i_ext2.i_mode) ||
-> +		    (j_inode->i_ext2.i_flags & EXT4_ENCRYPT_FL)) {
-> 			retval =3D EXT2_ET_NO_JOURNAL;
-> 			goto try_backup_journal;
-> 		}
-> diff --git a/tests/f_badjour_encrypted/expect.1 =
-b/tests/f_badjour_encrypted/expect.1
-> new file mode 100644
-> index 00000000..0b13b9eb
-> --- /dev/null
-> +++ b/tests/f_badjour_encrypted/expect.1
-> @@ -0,0 +1,30 @@
-> +Superblock has an invalid journal (inode 8).
-> +Clear? yes
-> +
-> +*** journal has been deleted ***
-> +
-> +Pass 1: Checking inodes, blocks, and sizes
-> +Journal inode is not in use, but contains data.  Clear? yes
-> +
-> +Pass 2: Checking directory structure
-> +Pass 3: Checking directory connectivity
-> +Pass 4: Checking reference counts
-> +Pass 5: Checking group summary information
-> +Block bitmap differences:  -(24--25) -(27--41) -(107--1113)
-> +Fix? yes
-> +
-> +Free blocks count wrong for group #0 (934, counted=3D1958).
-> +Fix? yes
-> +
-> +Free blocks count wrong (934, counted=3D1958).
-> +Fix? yes
-> +
-> +Recreate journal? yes
-> +
-> +Creating journal (1024 blocks):  Done.
-> +
-> +*** journal has been regenerated ***
-> +
-> +test_filesys: ***** FILE SYSTEM WAS MODIFIED *****
-> +test_filesys: 11/256 files (0.0% non-contiguous), 1114/2048 blocks
-> +Exit status is 1
-> diff --git a/tests/f_badjour_encrypted/expect.2 =
-b/tests/f_badjour_encrypted/expect.2
-> new file mode 100644
-> index 00000000..76934be2
-> --- /dev/null
-> +++ b/tests/f_badjour_encrypted/expect.2
-> @@ -0,0 +1,7 @@
-> +Pass 1: Checking inodes, blocks, and sizes
-> +Pass 2: Checking directory structure
-> +Pass 3: Checking directory connectivity
-> +Pass 4: Checking reference counts
-> +Pass 5: Checking group summary information
-> +test_filesys: 11/256 files (9.1% non-contiguous), 1114/2048 blocks
-> +Exit status is 0
-> diff --git a/tests/f_badjour_encrypted/name =
-b/tests/f_badjour_encrypted/name
-> new file mode 100644
-> index 00000000..e8f4c04f
-> --- /dev/null
-> +++ b/tests/f_badjour_encrypted/name
-> @@ -0,0 +1 @@
-> +journal inode has encrypt flag
-> diff --git a/tests/f_badjour_encrypted/script =
-b/tests/f_badjour_encrypted/script
-> new file mode 100644
-> index 00000000..e6778f1d
-> --- /dev/null
-> +++ b/tests/f_badjour_encrypted/script
-> @@ -0,0 +1,11 @@
-> +if ! test -x $DEBUGFS_EXE; then
-> +	echo "$test_name: $test_description: skipped (no debugfs)"
-> +	return 0
-> +fi
-> +
-> +touch $TMPFILE
-> +$MKE2FS -t ext4 -b 1024 $TMPFILE 2M
-> +$DEBUGFS -w -R 'set_inode_field <8> flags 0x80800' $TMPFILE
-> +
-> +SKIP_GUNZIP=3D"true"
-> +. $cmd_dir/run_e2fsck
->=20
-> base-commit: aad34909b6648579f42dade5af5b46821aa4d845
-> --
-> 2.38.1
->=20
+  bool f2fs_empty_dir(struct inode *dir)
+  {
+-	unsigned long bidx;
+  	struct page *dentry_page;
+  	unsigned int bit_pos;
+  	struct f2fs_dentry_block *dentry_blk;
+-	unsigned long nblock = dir_blocks(dir);
++	pgoff_t index;
 
+  	if (f2fs_has_inline_dentry(dir))
+  		return f2fs_empty_inline_dir(dir);
 
-Cheers, Andreas
+-	for (bidx = 0; bidx < nblock; bidx++) {
+-		dentry_page = f2fs_get_lock_data_page(dir, bidx, false);
+-		if (IS_ERR(dentry_page)) {
+-			if (PTR_ERR(dentry_page) == -ENOENT)
+-				continue;
+-			else
+-				return false;
+-		}
++	dentry_page = f2fs_get_lock_data_page(dir, 0, false);
++	if (IS_ERR(dentry_page)) {
++		if (PTR_ERR(dentry_page) == -ENOENT)
++			return true;
++		return false;
++	}
 
+-		dentry_blk = page_address(dentry_page);
+-		if (bidx == 0)
+-			bit_pos = 2;
+-		else
+-			bit_pos = 0;
+-		bit_pos = find_next_bit_le(&dentry_blk->dentry_bitmap,
+-						NR_DENTRY_IN_BLOCK,
+-						bit_pos);
++	dentry_blk = page_address(dentry_page);
++	bit_pos = find_next_bit_le(&dentry_blk->dentry_bitmap,
++						NR_DENTRY_IN_BLOCK, 2);
++	f2fs_put_page(dentry_page, 1);
++	
++	if (bit_pos < NR_DENTRY_IN_BLOCK)
++		return false;
 
+-		f2fs_put_page(dentry_page, 1);
++	for (index = 1; index < dir_blocks(dir);) {
++		struct dnode_of_data dn;
++		int err;
 
+-		if (bit_pos < NR_DENTRY_IN_BLOCK)
++		set_new_dnode(&dn, dir, NULL, NULL, 0);
++		err = f2fs_get_dnode_of_data(&dn, index, LOOKUP_NODE);
++		if (err && err != -ENOENT) {
+  			return false;
++		} else if (err == -ENOENT) {
++			index = f2fs_get_next_page_offset(&dn, index);
++			continue;
++		}
++		f2fs_put_dnode(&dn);
++
++		return false;
+  	}
++
+  	return true;
+  }
 
+-- 
+2.36.1
 
-
---Apple-Mail=_AEB4824A-F0CA-4C11-9F0B-2946649E9988
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmNi87wACgkQcqXauRfM
-H+BMqQ/8CvUUDekSO4V1Hk3uMLri/tmSxwkFST3cvdwscpN0ffuMVomfjxpkpu6A
-9fdL+vqSM7Z+U1ZCf7A4HE221mQS2BNnqGfOcfJ5oWy/2mZlvp7yRUVWdYhT3iMA
-NIipg4aFDQ2wH86fAY33D3RDWB5glkh78b23W4GqlFJSBVQNAdqd6M4zj31pUkca
-V5Axm3LwVqWy9WofWo3MiBA6dSxIKB9G1k8xCWAzFwjNLDlZPdJCisq6iAbkYHQB
-LFMHq9ZaQdU2SSZFnagwgL2X2dKo4i+9lqDgXvEY/rmvE0OjCmnonFoDUXN1+dOp
-/CLAWCe+p2vxjQ3VfSlEy4TqMUGaduZYQvdS/k2CQtTV+oX+Cnt1m2du3O1/ujRW
-qzlgzfg8SMc7bgy8EQCcQ3kjdykFSEdlhBVDsoH0ce06C3WJvWog3IDIIdW773SD
-zr29YXQp6XTYtgde+dwRkSQAn+t9blBRsr1loAbS80WZYeE1vauIOWwPuTR+e/sg
-EGmX2E09XpVRXx0JQ/XuumRRqVnWCHEK1c/+Qz4+mHBBXjYmdYiLQ/G6rctemGTF
-jxRiQtsSEBJrid14AXeRnU2v+C9eIZHRWgw9i6xhJKESKfus4lbLomh/gws026ii
-wjXH3QGd2ngP+Yls/fXezbO0rfU2orATgkWNxmafmR2wLzpA3aI=
-=sAK+
------END PGP SIGNATURE-----
-
---Apple-Mail=_AEB4824A-F0CA-4C11-9F0B-2946649E9988--
