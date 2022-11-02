@@ -2,33 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA603616222
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  2 Nov 2022 12:54:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85D5C616224
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  2 Nov 2022 12:54:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbiKBLxa (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 2 Nov 2022 07:53:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48940 "EHLO
+        id S230364AbiKBLxb (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 2 Nov 2022 07:53:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230290AbiKBLxX (ORCPT
+        with ESMTP id S230362AbiKBLxX (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
         Wed, 2 Nov 2022 07:53:23 -0400
 Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 519631128;
-        Wed,  2 Nov 2022 04:53:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6583215FE5;
+        Wed,  2 Nov 2022 04:53:23 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id ED81181472;
-        Wed,  2 Nov 2022 07:53:20 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id A837181462;
+        Wed,  2 Nov 2022 07:53:22 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1667390001; bh=jE2leRa5ZMbP3asOwLPiuZHq7U+RHYnAn/YhcDunJ/k=;
+        t=1667390003; bh=aqjICWMWEkFmnf+NXI0OdrOT/6k2CqAp2kYwI+bnz44=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=htuquujX46HzwHuhqMOrMKbzpvC/5SPDtyUi9GONUUN7ob4ICrfF8ypConvwiX6dD
-         Smf1bAAOsOj87Kmo8eww57Ytyora5aR7cc1O35b9YGK8JcFv+bInEfHh90UF1U2tWP
-         5qnPL0WKcn0Vu5g6sNKSN/FwYYdROmEvxzhOxQJOy2ASRvTDEnnODJ4l13YBehbbFs
-         LxSwwkdISoju6E8lfCZ0brFY8e7bOnFS7JZvOslt/BJM0l1/0xDrzPQpJCUefPqHJ+
-         8pZMwkGhUF9NMipZUItpu6jKhhmk8mtrGN3Cq1fwPvUF//K2NsPNeGhTmvxBSgdLJy
-         8dEK2WjIj6cFQ==
+        b=UwtHqNYnoCQKcrJiO+e8VVEjtR0TtMXDmD5oOwI4WjRWqTR2P3APxVfVuvrM7e7IE
+         jBEumuSy5QjPxyKtsIiglnKecu1x7nZ2GwavKguAbPj9M9noIcbpGF2xP0whhQcAsn
+         H6hnl9hfPIHAzBGPQxLuuUqpRPJchLExoDgneEWpZQKlYfzkpv+NcZdrsHQReJua1m
+         WTxAe0l9z+v37NBHnzrgCtMUc+xyo0k7R1ttwd+VbN7jRDtS2btk+dj7fnz+tM5hNB
+         A3qhs8llJBA8seC0pqEcxF/l66c2pMZrJymJ2awtaAYJBR6biqWr88NdJJgAB0510F
+         IstGgH3QttAEg==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     "Theodore Y. Ts'o" <tytso@mit.edu>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
@@ -36,10 +36,11 @@ To:     "Theodore Y. Ts'o" <tytso@mit.edu>,
         Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>, linux-fscrypt@vger.kernel.org,
         linux-btrfs@vger.kernel.org, kernel-team@meta.com
-Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH v5 06/18] fscrypt: document btrfs' fscrypt quirks.
-Date:   Wed,  2 Nov 2022 07:52:55 -0400
-Message-Id: <fdc8fca52a9903662b275fecfc2d90a0b25509bb.1667389115.git.sweettea-kernel@dorminy.me>
+Cc:     Omar Sandoval <osandov@osandov.com>,
+        Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Subject: [PATCH v5 07/18] btrfs: disable various operations on encrypted inodes
+Date:   Wed,  2 Nov 2022 07:52:56 -0400
+Message-Id: <56e36fb5b9530c96adcde5b3b91289bffddd89fd.1667389115.git.sweettea-kernel@dorminy.me>
 In-Reply-To: <cover.1667389115.git.sweettea-kernel@dorminy.me>
 References: <cover.1667389115.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
@@ -53,81 +54,102 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-As btrfs has a couple of quirks in its encryption compared to other
-filesystems, they should be documented like ext4's quirks. Additionally,
-extent-based contents encryption, being wholly new, deserves its own
-section to compare against inode-based contents encryption.
+From: Omar Sandoval <osandov@osandov.com>
 
+Initially, only normal data extents, using the normal (non-direct) IO
+path, will be encrypted. This change forbids various other bits:
+- allows reflinking only if both inodes have the same encryption status
+- disables compressing encrypted inodes
+- disables direct IO on encrypted inodes
+- disable inline data on encrypted inodes
+
+Signed-off-by: Omar Sandoval <osandov@osandov.com>
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 ---
- Documentation/filesystems/fscrypt.rst | 31 +++++++++++++++++++++------
- 1 file changed, 25 insertions(+), 6 deletions(-)
+ fs/btrfs/btrfs_inode.h |  3 +++
+ fs/btrfs/file.c        |  4 ++--
+ fs/btrfs/inode.c       |  3 ++-
+ fs/btrfs/reflink.c     | 10 ++++++++++
+ 4 files changed, 17 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
-index 5ba5817c17c2..d551635865c3 100644
---- a/Documentation/filesystems/fscrypt.rst
-+++ b/Documentation/filesystems/fscrypt.rst
-@@ -31,7 +31,7 @@ However, except for filenames, fscrypt does not encrypt filesystem
- metadata.
- 
- Unlike eCryptfs, which is a stacked filesystem, fscrypt is integrated
--directly into supported filesystems --- currently ext4, F2FS, and
-+directly into supported filesystems --- currently btrfs, ext4, F2FS, and
- UBIFS.  This allows encrypted files to be read and written without
- caching both the decrypted and encrypted pages in the pagecache,
- thereby nearly halving the memory used and bringing it in line with
-@@ -280,6 +280,11 @@ included in the IV.  Moreover:
-   key derived using the KDF.  Users may use the same master key for
-   other v2 encryption policies.
- 
-+For filesystems with extent-based content encryption (e.g. btrfs),
-+this is the only choice. Data shared among multiple inodes must share
-+the exact same key, therefore necessitating inodes using the same key
-+for contents encryption.
+diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
+index d21c30bf7053..5b94609f138d 100644
+--- a/fs/btrfs/btrfs_inode.h
++++ b/fs/btrfs/btrfs_inode.h
+@@ -385,6 +385,9 @@ static inline bool btrfs_inode_in_log(struct btrfs_inode *inode, u64 generation)
+  */
+ static inline bool btrfs_inode_can_compress(const struct btrfs_inode *inode)
+ {
++	if (IS_ENCRYPTED(&inode->vfs_inode))
++		return false;
 +
- IV_INO_LBLK_64 policies
- -----------------------
+ 	if (inode->flags & BTRFS_INODE_NODATACOW ||
+ 	    inode->flags & BTRFS_INODE_NODATASUM)
+ 		return false;
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index b7855f794ba6..1724ec898f40 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -1491,7 +1491,7 @@ static ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
+ 		goto relock;
+ 	}
  
-@@ -374,12 +379,12 @@ to individual filesystems.  However, authenticated encryption (AE)
- modes are not currently supported because of the difficulty of dealing
- with ciphertext expansion.
+-	if (check_direct_IO(fs_info, from, pos)) {
++	if (IS_ENCRYPTED(inode) || check_direct_IO(fs_info, from, pos)) {
+ 		btrfs_inode_unlock(inode, ilock_flags);
+ 		goto buffered;
+ 	}
+@@ -3737,7 +3737,7 @@ static ssize_t btrfs_direct_read(struct kiocb *iocb, struct iov_iter *to)
+ 	ssize_t read = 0;
+ 	ssize_t ret;
  
--Contents encryption
---------------------
-+Inode-based contents encryption
-+-------------------------------
+-	if (fsverity_active(inode))
++	if (IS_ENCRYPTED(inode) || fsverity_active(inode))
+ 		return 0;
  
--For file contents, each filesystem block is encrypted independently.
--Starting from Linux kernel 5.5, encryption of filesystems with block
--size less than system's page size is supported.
-+For most filesystems, each filesystem block within each file is
-+encrypted independently.  Starting from Linux kernel 5.5, encryption of
-+filesystems with block size less than system's page size is supported.
+ 	if (check_direct_read(btrfs_sb(inode->i_sb), to, iocb->ki_pos))
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 255959574724..972a49796bb9 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -445,7 +445,8 @@ static noinline int cow_file_range_inline(struct btrfs_inode *inode, u64 size,
+ 	 * compressed) data fits in a leaf and the configured maximum inline
+ 	 * size.
+ 	 */
+-	if (size < i_size_read(&inode->vfs_inode) ||
++	if (IS_ENCRYPTED(&inode->vfs_inode) ||
++	    size < i_size_read(&inode->vfs_inode) ||
+ 	    size > fs_info->sectorsize ||
+ 	    data_len > BTRFS_MAX_INLINE_DATA_SIZE(fs_info) ||
+ 	    data_len > fs_info->max_inline)
+diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
+index 9d728107536e..579dbf057ffa 100644
+--- a/fs/btrfs/reflink.c
++++ b/fs/btrfs/reflink.c
+@@ -801,6 +801,7 @@ static int btrfs_remap_file_range_prep(struct file *file_in, loff_t pos_in,
+ 	u64 bs = BTRFS_I(inode_out)->root->fs_info->sb->s_blocksize;
+ 	u64 wb_len;
+ 	int ret;
++	bool same;
  
- Each block's IV is set to the logical block number within the file as
- a little endian number, except that:
-@@ -403,6 +408,20 @@ Note that because file logical block numbers are included in the IVs,
- filesystems must enforce that blocks are never shifted around within
- encrypted files, e.g. via "collapse range" or "insert range".
+ 	if (!(remap_flags & REMAP_FILE_DEDUP)) {
+ 		struct btrfs_root *root_out = BTRFS_I(inode_out)->root;
+@@ -811,6 +812,15 @@ static int btrfs_remap_file_range_prep(struct file *file_in, loff_t pos_in,
+ 		ASSERT(inode_in->i_sb == inode_out->i_sb);
+ 	}
  
-+Extent-based contents encryption
-+--------------------------------
++	/*
++	 * Can only reflink encrypted files if both files are encrypted.
++	 */
++	ret = fscrypt_have_same_policy(inode_in, inode_out, &same);
++	if (ret)
++		return ret;
++	if (!same)
++		return -EINVAL;
 +
-+For certain filesystems (currently only btrfs), data is encrypted on a
-+per-extent basis. Each filesystem block in a data extent is encrypted
-+independently. Multiple files may refer to the extent, as long as they
-+all share the same key.  The filesystem may relocate the extent on disk,
-+as long as the encrypted data within the extent retains its offset
-+within the data extent.
-+
-+Each extent stores a nonce; each block within the extent has an IV
-+based on this nonce and the logical block number within the extent as a
-+little endian number.
-+
- Filenames encryption
- --------------------
- 
+ 	/* Don't make the dst file partly checksummed */
+ 	if ((BTRFS_I(inode_in)->flags & BTRFS_INODE_NODATASUM) !=
+ 	    (BTRFS_I(inode_out)->flags & BTRFS_INODE_NODATASUM)) {
 -- 
 2.37.3
 
