@@ -2,48 +2,51 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92ACD61915F
-	for <lists+linux-fscrypt@lfdr.de>; Fri,  4 Nov 2022 07:48:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 296126191C6
+	for <lists+linux-fscrypt@lfdr.de>; Fri,  4 Nov 2022 08:23:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231714AbiKDGsm (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 4 Nov 2022 02:48:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36492 "EHLO
+        id S231493AbiKDHXN (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 4 Nov 2022 03:23:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231620AbiKDGr6 (ORCPT
+        with ESMTP id S231490AbiKDHXM (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 4 Nov 2022 02:47:58 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72E552AC7A;
-        Thu,  3 Nov 2022 23:47:57 -0700 (PDT)
+        Fri, 4 Nov 2022 03:23:12 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD346DF51;
+        Fri,  4 Nov 2022 00:23:11 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0DC8E620D0;
-        Fri,  4 Nov 2022 06:47:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 529DCC43144;
-        Fri,  4 Nov 2022 06:47:56 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 710C5B82B41;
+        Fri,  4 Nov 2022 07:23:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4D54C433D6;
+        Fri,  4 Nov 2022 07:23:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667544476;
-        bh=BW8pVW5BVjfri4dyrTipKKy3ENTLbXJCjfFUziVKoPQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KOKxjCHfUBTHC9fh8Qa1nx13Ias+7z1bv9fl4lPbqoRwASpiBrvMd18Y1c0eZf0Mo
-         6JO43WWBXVY9oh18y56ctkMOZzuffv8N8iBlZAeNNSqErTY2HKQgbEgz3s8I2ZnuAj
-         NGQvD2PCi5voCn8FAWYAxmW5elQXq/LD4KS/MdpMRTcbEm8q9Rl+ts+5KVBetPEM2r
-         /FmwV3HnGN5LfZ8Ty2CAPzvl18ChgOa/TzhL0UP54wHY/3+uoYBYgOAmuLB5IHrWTL
-         OHU5KQPrV8DbzvoYwZIJfLKawTSh+pI57n4VtXZ0CmskUg/kPNw29YVM4OtUYN//k1
-         IvDdRo0TvLmCw==
+        s=k20201202; t=1667546589;
+        bh=eSuuH9/oUtk/WtNsMhQHynTS3lzvAy6kg0GggGpltfQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Skak6zHOpyfHS3AN62zTx4FcXcyFdQVkTaEs5VPTldbAve0m9Vp40ff1uGgmWSGEK
+         H75OOWMCOHZp5G/WrdinbPjch72hLdY+5pheETQrLz84gDN/uyTDfdeaz5u/A1Wvpj
+         kCfkFj51eyrbfJlqmjwkGA6ZTti0BgBGCx4z0Hdu40wqYa4w1I+PdcNJrYlqXKW/PU
+         yXDIaSNm/+SOMLhkjLD53P9dLoqrYO2ViFGIAX4rJnP8k7nyoHiEJ12JmHb+mKWq3X
+         ZoWtD4oiU3k1zZlvGMxtmhK2wlv1hmsBi7nxpVvVS6cpHuMdG2FThAVTxsI+64QyTg
+         q3h4MYrSdJwyA==
+Date:   Fri, 4 Nov 2022 00:23:07 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     fstests@vger.kernel.org
-Cc:     Andrey Albershteyn <aalbersh@redhat.com>,
-        linux-fscrypt@vger.kernel.org
-Subject: [xfstests PATCH 3/3] tests: fix some tests for systems with fs.verity.require_signatures=1
-Date:   Thu,  3 Nov 2022 23:47:42 -0700
-Message-Id: <20221104064742.167326-4-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20221104064742.167326-1-ebiggers@kernel.org>
-References: <20221104064742.167326-1-ebiggers@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Mike Snitzer <snitzer@kernel.org>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, dm-devel@redhat.com,
+        linux-block@vger.kernel.org, linux-fscrypt@vger.kernel.org
+Subject: Re: [PATCH 2/2] blk-crypto: add a blk_crypto_cfg_supported helper
+Message-ID: <Y2S927PXuEYM7xwJ@sol.localdomain>
+References: <20221104054621.628369-1-hch@lst.de>
+ <20221104054621.628369-3-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221104054621.628369-3-hch@lst.de>
 X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -53,113 +56,62 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On Fri, Nov 04, 2022 at 06:46:21AM +0100, Christoph Hellwig wrote:
+> Add a blk_crypto_cfg_supported helper that wraps
+> __blk_crypto_cfg_supported to retreive the crypto_profile from the
+> request queue.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  block/blk-crypto-profile.c         |  7 +++++++
+>  block/blk-crypto.c                 | 13 ++++---------
+>  fs/crypto/inline_crypt.c           |  4 +---
+>  include/linux/blk-crypto-profile.h |  2 ++
+>  4 files changed, 14 insertions(+), 12 deletions(-)
+> 
+> diff --git a/block/blk-crypto-profile.c b/block/blk-crypto-profile.c
+> index 96c511967386d..e8a0a3457fa29 100644
+> --- a/block/blk-crypto-profile.c
+> +++ b/block/blk-crypto-profile.c
+> @@ -353,6 +353,13 @@ bool __blk_crypto_cfg_supported(struct blk_crypto_profile *profile,
+>  	return true;
+>  }
+>  
+> +bool blk_crypto_cfg_supported(struct block_device *bdev,
+> +			      const struct blk_crypto_config *cfg)
+> +{
+> +	return __blk_crypto_cfg_supported(bdev_get_queue(bdev)->crypto_profile,
+> +					  cfg);
+> +}
 
-Some of the newer verity tests don't work properly on systems where
-fs.verity.require_signatures is enabled, either because they forget to
-disable it at the beginning of the test, or they forget to re-enable it
-afterwards, or both.  Fix this.
+I think this part is too confusing, because there's already a function
+blk_crypto_config_supported() which does something slightly different.
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- tests/btrfs/290   | 9 +++++++++
- tests/btrfs/291   | 2 ++
- tests/generic/624 | 8 ++++++++
- tests/generic/692 | 8 ++++++++
- 4 files changed, 27 insertions(+)
+How about calling this blk_crypto_config_supported_natively() instead?  It's
+kind of long, but it's much clearer.
 
-diff --git a/tests/btrfs/290 b/tests/btrfs/290
-index b7254c5e..06a58f47 100755
---- a/tests/btrfs/290
-+++ b/tests/btrfs/290
-@@ -15,6 +15,14 @@ _begin_fstest auto quick verity
- . ./common/filter
- . ./common/verity
- 
-+# Override the default cleanup function.
-+_cleanup()
-+{
-+	cd /
-+	_restore_fsverity_signatures
-+	rm -f $tmp.*
-+}
-+
- # real QA test starts here
- _supported_fs btrfs
- _require_scratch_verity
-@@ -24,6 +32,7 @@ _require_xfs_io_command "falloc"
- _require_xfs_io_command "pread"
- _require_xfs_io_command "pwrite"
- _require_btrfs_corrupt_block
-+_disable_fsverity_signatures
- 
- get_ino() {
- 	local file=$1
-diff --git a/tests/btrfs/291 b/tests/btrfs/291
-index bbdd183d..c5947133 100755
---- a/tests/btrfs/291
-+++ b/tests/btrfs/291
-@@ -23,6 +23,7 @@ _cleanup()
- 	rm -f $img
- 	$LVM_PROG vgremove -f -y $vgname >>$seqres.full 2>&1
- 	losetup -d $loop_dev >>$seqres.full 2>&1
-+	_restore_fsverity_signatures
- }
- 
- # Import common functions.
-@@ -43,6 +44,7 @@ _require_command $LVM_PROG lvm
- _require_scratch_verity
- _require_btrfs_command inspect-internal dump-tree
- _require_test_program "log-writes/replay-log"
-+_disable_fsverity_signatures
- 
- sync_loop() {
- 	i=$1
-diff --git a/tests/generic/624 b/tests/generic/624
-index 89fbf256..7c447289 100755
---- a/tests/generic/624
-+++ b/tests/generic/624
-@@ -10,6 +10,14 @@
- . ./common/preamble
- _begin_fstest auto quick verity
- 
-+# Override the default cleanup function.
-+_cleanup()
-+{
-+	cd /
-+	_restore_fsverity_signatures
-+	rm -f $tmp.*
-+}
-+
- . ./common/filter
- . ./common/verity
- 
-diff --git a/tests/generic/692 b/tests/generic/692
-index 0bb1fd33..d6da734b 100644
---- a/tests/generic/692
-+++ b/tests/generic/692
-@@ -15,6 +15,13 @@
- . ./common/preamble
- _begin_fstest auto quick verity
- 
-+# Override the default cleanup function.
-+_cleanup()
-+{
-+	cd /
-+	_restore_fsverity_signatures
-+	rm -f $tmp.*
-+}
- 
- # Import common functions.
- . ./common/filter
-@@ -26,6 +33,7 @@ _require_test
- _require_math
- _require_scratch_verity
- _require_fsverity_max_file_size_limit
-+_disable_fsverity_signatures
- 
- _scratch_mkfs_verity &>> $seqres.full
- _scratch_mount
--- 
-2.38.1
+Also, it should be defined in blk-crypto.c, next to
+blk_crypto_config_supported(), and not in blk-crypto-profile.c.
+(And declared in blk-crypto.h, not blk-crypto-profile.h.)
 
+This would also make it so that fs/crypto/inline_crypt.c could go back to
+including blk-crypto.h instead of blk-crypto-profile.h.  blk-crypto.h is
+supposed to be the interface to upper layers, not blk-crypto-profile.h.
+
+So, something like this:
+
+	bool blk_crypto_config_supported(struct block_device *bdev,
+					 const struct blk_crypto_config *cfg)
+	{
+		return IS_ENABLED(CONFIG_BLK_INLINE_ENCRYPTION_FALLBACK) ||
+		       blk_crypto_config_supported_natively(bdev, cfg);
+	}
+
+	bool blk_crypto_config_supported_natively(struct block_device *bdev,
+						  const struct blk_crypto_config *cfg)
+	{
+		return __blk_crypto_cfg_supported(bdev_get_queue(bdev)->crypto_profile,
+						  cfg);
+	}
+
+- Eric
