@@ -2,75 +2,86 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D86961DA6D
-	for <lists+linux-fscrypt@lfdr.de>; Sat,  5 Nov 2022 13:43:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAA1061E70B
+	for <lists+linux-fscrypt@lfdr.de>; Sun,  6 Nov 2022 23:52:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229555AbiKEMny (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sat, 5 Nov 2022 08:43:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43454 "EHLO
+        id S230207AbiKFWwi (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sun, 6 Nov 2022 17:52:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbiKEMnx (ORCPT
+        with ESMTP id S230214AbiKFWwh (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sat, 5 Nov 2022 08:43:53 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E240233A4
-        for <linux-fscrypt@vger.kernel.org>; Sat,  5 Nov 2022 05:43:52 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id x2so11175787edd.2
-        for <linux-fscrypt@vger.kernel.org>; Sat, 05 Nov 2022 05:43:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=c8XA1N0uaxkLO/wKHErNWHaSuu64k5Pjb5u9dmcZrOc=;
-        b=mPMWJSv9+I/YyfOX/KhSq6QJxEVF9czxBjlZfOBHyBNprqZzbXMAaGfMuCUz15WUgd
-         P8+TrngI9Rc3ViQGUSuldljbiqwUWen18O0hqt/Ie0OeGmALridq11sGaHqFDDc4lalJ
-         acwKewZa0Z+JmHCFhOB1EPm3VoCXqyskBeWh+qI8WdUTyGDi2ZRZxfd09WAIYwZTAuE6
-         D6FM36pRhxYi0ioJBBk7CWNeJYL6Gz2n7XR51nKKfVaOUPERzSe8HFAiowZB91Qmwfcs
-         4SUmlVM/PGDPqE9RxpsHH7kHCVf7N827dpoIMP0fu4UEVHZDK4bGxZoR2Xec1mMJWH/r
-         0h6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=c8XA1N0uaxkLO/wKHErNWHaSuu64k5Pjb5u9dmcZrOc=;
-        b=VaE0ZeLrnPuIEX+odzP77dahbu5km9N+dtCkxKCJt3nbR7z475qjqVo1rXQh8AfcHi
-         sLITJ9kc6zS3E1JpUdnhSQUQLX4AVVN5srvL3TLcxRdeJPjQct7JJ/wo5V6whORXeS0O
-         q+IgJ/XJ2gyOBrpqsywqnvWVxOXkJLzeR/7cfucs9tybSaB7kdjDzvf+31gyyKsRkf9p
-         KpTJYU5XUOVdfTK/xSY0ARF7gdO3wMGf2ssu4iE8CRMU3bupyp73KJcW5OYkwWaE4JLn
-         9fS6KKFPb1T3rcQQtMNpfoBNU1oyEXI0zYwRbgPvPccznrJ/TcoT7Ln71UFbtcaby6T1
-         R6Fw==
-X-Gm-Message-State: ACrzQf0T38YVJ49WhGNcXJVUACl2/C25oSeVOk4D/DEr3nCj4sXn+YxC
-        ToSCmQem2+QB0VL4lESeNWnDWBTfRbumEb0GB1I=
-X-Google-Smtp-Source: AMsMyM6+i/60GLAa/SmSMCVLMrWq6VlVwX7X2L0dN+kFhjV6izdhKjpdEAZB1JmiGGgnIYpSeGh29lOxg8cgnriAXMM=
-X-Received: by 2002:aa7:c504:0:b0:461:122b:882b with SMTP id
- o4-20020aa7c504000000b00461122b882bmr41194609edq.14.1667652230661; Sat, 05
- Nov 2022 05:43:50 -0700 (PDT)
+        Sun, 6 Nov 2022 17:52:37 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 772F81005E;
+        Sun,  6 Nov 2022 14:52:36 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 29BCAB80D42;
+        Sun,  6 Nov 2022 22:52:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90AEAC433D6;
+        Sun,  6 Nov 2022 22:52:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1667775153;
+        bh=5co5XEYnUIjBEHcTDXg4FnklrEFDaO2M2XUSJYBofYk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=N97gUcaXbS9QGKdoJhW+xzcO3TJWPSUkyfRaa59RYe0aH85R9I0Dfg3hZCVxWSCRO
+         rl8Ylr+TbnkeetPpe4kY2oTdHGUPJE2dp3LkldFvmJ7oGi6vRIaXMzR0HeAHTxICMV
+         q1ajk7w5bRF+bs1igHHaeWkFHSAHfaDMv2wWBNszcEtKOOhCpOV7CU/3jXWPfpzDTX
+         LRhEvCnyNKIrKyrHV4voecIrdxWkPAVku1SExg3/Ulx9nJ7Q8lt5+tV4OrpsFu1Ptl
+         pZqwIEphTRc9U8Kgb5bPJloaVv5ITwB7quzTixlCQoT8dhApKAM2DLhyt83aoL3ts8
+         x1tUIzna1kCzA==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-ext4@vger.kernel.org
+Cc:     linux-fscrypt@vger.kernel.org,
+        Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Subject: [PATCH 0/7] ext4 fast-commit fixes
+Date:   Sun,  6 Nov 2022 14:48:34 -0800
+Message-Id: <20221106224841.279231-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-Received: by 2002:a05:7208:33:b0:5c:ee07:e4f3 with HTTP; Sat, 5 Nov 2022
- 05:43:49 -0700 (PDT)
-Reply-To: stefanopessia755@hotmail.com
-From:   Stefano Pessina <francisnzioka80@gmail.com>
-Date:   Sat, 5 Nov 2022 15:43:49 +0300
-Message-ID: <CAL5scYq=1B=-RX8Eh9M9tf4CevQNnnh7JZ63=g4o=AHLN+9dbg@mail.gmail.com>
-Subject: Geldspende
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=4.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
---=20
-Die Summe von 500.000,00 =E2=82=AC wurde Ihnen von STEFANO PESSINA gespende=
-t.
-Bitte kontaktieren Sie uns f=C3=BCr weitere Informationen =C3=BCber
-stefanopessia755@hotmail.com
+From: Eric Biggers <ebiggers@kernel.org
+
+This series fixes several bugs in the fast-commit feature.
+
+Patch 6 may be the most controversial patch of this series, since it
+would make old kernels unable to replay fast-commit journals created by
+new kernels.  I'd appreciate any thoughts on whether that's okay.  I can
+drop that patch if needed.
+
+I've tested that this series doesn't introduce any regressions with
+'gce-xfstests -c ext4/fast_commit -g auto'.  Note that ext4/039,
+ext4/053, and generic/475 fail both before and after.
+
+Eric Biggers (7):
+  ext4: disable fast-commit of encrypted dir operations
+  ext4: don't set up encryption key during jbd2 transaction
+  ext4: fix leaking uninitialized memory in fast-commit journal
+  ext4: add missing validation of fast-commit record lengths
+  ext4: fix unaligned memory access in ext4_fc_reserve_space()
+  ext4: fix off-by-one errors in fast-commit block filling
+  ext4: simplify fast-commit CRC calculation
+
+ fs/ext4/ext4.h              |   4 +-
+ fs/ext4/fast_commit.c       | 203 ++++++++++++++++++------------------
+ fs/ext4/fast_commit.h       |   3 +-
+ fs/ext4/namei.c             |  44 ++++----
+ include/trace/events/ext4.h |   7 +-
+ 5 files changed, 132 insertions(+), 129 deletions(-)
+
+
+base-commit: 089d1c31224e6b266ece3ee555a3ea2c9acbe5c2
+-- 
+2.38.1
+
