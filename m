@@ -2,49 +2,52 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D01F61FD47
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  7 Nov 2022 19:20:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44AFA61FF5E
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  7 Nov 2022 21:16:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232711AbiKGSUL (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 7 Nov 2022 13:20:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33972 "EHLO
+        id S232461AbiKGUQ0 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 7 Nov 2022 15:16:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233082AbiKGSTo (ORCPT
+        with ESMTP id S232108AbiKGUQZ (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 7 Nov 2022 13:19:44 -0500
+        Mon, 7 Nov 2022 15:16:25 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B811D33B;
-        Mon,  7 Nov 2022 10:19:25 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57F6219024;
+        Mon,  7 Nov 2022 12:16:25 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E6F6461222;
-        Mon,  7 Nov 2022 18:19:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 238AEC433D6;
-        Mon,  7 Nov 2022 18:19:24 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E562D612E3;
+        Mon,  7 Nov 2022 20:16:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F37EBC433C1;
+        Mon,  7 Nov 2022 20:16:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667845164;
-        bh=wLbrU0DRRdx4w58LlSRl76Dc06HHfli1tgQtQg9pkQ4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=evLUl6/VPoeNP8AiBPRupPhjgwGRi0tkfqweFWCbY4dCxpunFqK3yHB9u+LE3xbB1
-         nG22uXdpzobJNXxstOFBMn6rImhY8PbzXEPBNPmwBxaTugEquONzgn7JKPvEXYWSe5
-         J7D6nJfqtG+BNB+brf11no4ltAOAo8xiK5fvowjZeAooKbNwFu5rmUYTJ2IWQ7TK/Z
-         /Ay2/Bqf+jePpifFrvuyjSUmyh2tsFcv8zrGCZAONJFMctPWNTl2q5ICExW+Vo7Q9B
-         lTmhjRUiPpDR6XGdk2Q0i9bDNjSNqGefgsLm94rxIVuBIHXvVoAo3VUzBBFPKidERo
-         xoTtab/cMxs9w==
+        s=k20201202; t=1667852184;
+        bh=sqbQzGFBxWgN0I891jJiwQLt04aCFVqUHKmVQGRkM0s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PkWAbphQt4O3o2q5HgZU0Sq5a+yfqvxm/UMbackXW9aOTqbhIk2aUWfxwJJtxeJmS
+         6W3HlMvsgRjomWURjbI0SI3CxrUT3YL8a1RghIETOUDE9Mq8LEocMID4cX4tz4sbc8
+         9nGRoIrCdx+AsfjhqJESsNt2ylMbA0GvpxrRurQlJWcgA8r12cFL4NuGqCG/ZhwGXg
+         YSnqsJLz/V/7TtrUkQLw6aoVAfsD5BCnGOCGRkQqwAQA1Ub9wdZU1sgDixcE2Zpjsi
+         IWjCGlu54j1opOpsD1PZLzo9NmaoavDbUJg/x8GPBzkih8wwsrlYqYHzyH8MlQ638L
+         ZKdXpwOVS3fpQ==
+Date:   Mon, 7 Nov 2022 12:16:22 -0800
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     stable@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-fscrypt@vger.kernel.org,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Jintao Yin <nicememory@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH 5.10] ext4,f2fs: fix readahead of verity data
-Date:   Mon,  7 Nov 2022 10:18:55 -0800
-Message-Id: <20221107181855.62545-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.38.1
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Mike Snitzer <snitzer@kernel.org>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, dm-devel@redhat.com,
+        linux-block@vger.kernel.org, linux-fscrypt@vger.kernel.org
+Subject: Re: [PATCH 1/3] blk-crypto: don't use struct request_queue for
+ public interfaces
+Message-ID: <Y2lnloNN5wovDBMF@sol.localdomain>
+References: <20221107144229.1547370-1-hch@lst.de>
+ <20221107144229.1547370-2-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221107144229.1547370-2-hch@lst.de>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -54,66 +57,65 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+On Mon, Nov 07, 2022 at 03:42:27PM +0100, Christoph Hellwig wrote:
+> diff --git a/block/blk-crypto.c b/block/blk-crypto.c
+> index a496aaef85ba4..0e0c2fc56c428 100644
+> --- a/block/blk-crypto.c
+> +++ b/block/blk-crypto.c
+> @@ -357,17 +357,18 @@ int blk_crypto_init_key(struct blk_crypto_key *blk_key, const u8 *raw_key,
+>   * request queue it's submitted to supports inline crypto, or the
+>   * blk-crypto-fallback is enabled and supports the cfg).
+>   */
 
-commit 4fa0e3ff217f775cb58d2d6d51820ec519243fb9 upstream.
+Replace "request queue" with block_device in the above comment?
 
-The recent change of page_cache_ra_unbounded() arguments was buggy in the
-two callers, causing us to readahead the wrong pages.  Move the definition
-of ractl down to after the index is set correctly.  This affected
-performance on configurations that use fs-verity.
+> -bool blk_crypto_config_supported(struct request_queue *q,
+> +bool blk_crypto_config_supported(struct block_device *bdev,
+>  				 const struct blk_crypto_config *cfg)
+>  {
+>  	return IS_ENABLED(CONFIG_BLK_INLINE_ENCRYPTION_FALLBACK) ||
+> -	       __blk_crypto_cfg_supported(q->crypto_profile, cfg);
+> +	       __blk_crypto_cfg_supported(bdev_get_queue(bdev)->crypto_profile,
+> +	       				  cfg);
+>  }
 
-Link: https://lkml.kernel.org/r/20221012193419.1453558-1-willy@infradead.org
-Fixes: 73bb49da50cd ("mm/readahead: make page_cache_ra_unbounded take a readahead_control")
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Reported-by: Jintao Yin <nicememory@gmail.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/ext4/verity.c | 3 ++-
- fs/f2fs/verity.c | 3 ++-
- 2 files changed, 4 insertions(+), 2 deletions(-)
+There's a whitespace error here:
 
-diff --git a/fs/ext4/verity.c b/fs/ext4/verity.c
-index 00e3cbde472e4..35be8e7ec2a04 100644
---- a/fs/ext4/verity.c
-+++ b/fs/ext4/verity.c
-@@ -370,13 +370,14 @@ static struct page *ext4_read_merkle_tree_page(struct inode *inode,
- 					       pgoff_t index,
- 					       unsigned long num_ra_pages)
- {
--	DEFINE_READAHEAD(ractl, NULL, inode->i_mapping, index);
- 	struct page *page;
- 
- 	index += ext4_verity_metadata_pos(inode) >> PAGE_SHIFT;
- 
- 	page = find_get_page_flags(inode->i_mapping, index, FGP_ACCESSED);
- 	if (!page || !PageUptodate(page)) {
-+		DEFINE_READAHEAD(ractl, NULL, inode->i_mapping, index);
-+
- 		if (page)
- 			put_page(page);
- 		else if (num_ra_pages > 1)
-diff --git a/fs/f2fs/verity.c b/fs/f2fs/verity.c
-index 15ba36926fad7..cff94d095d0fe 100644
---- a/fs/f2fs/verity.c
-+++ b/fs/f2fs/verity.c
-@@ -261,13 +261,14 @@ static struct page *f2fs_read_merkle_tree_page(struct inode *inode,
- 					       pgoff_t index,
- 					       unsigned long num_ra_pages)
- {
--	DEFINE_READAHEAD(ractl, NULL, inode->i_mapping, index);
- 	struct page *page;
- 
- 	index += f2fs_verity_metadata_pos(inode) >> PAGE_SHIFT;
- 
- 	page = find_get_page_flags(inode->i_mapping, index, FGP_ACCESSED);
- 	if (!page || !PageUptodate(page)) {
-+		DEFINE_READAHEAD(ractl, NULL, inode->i_mapping, index);
-+
- 		if (page)
- 			put_page(page);
- 		else if (num_ra_pages > 1)
--- 
-2.38.1
+$ checkpatch 0001-blk-crypto-don-t-use-struct-request_queue-for-public.patch
+ERROR: code indent should use tabs where possible
+#87: FILE: block/blk-crypto.c:365:
++^I       ^I^I^I^I  cfg);$
 
+WARNING: please, no space before tabs
+#87: FILE: block/blk-crypto.c:365:
++^I       ^I^I^I^I  cfg);$
+
+> -int blk_crypto_evict_key(struct request_queue *q,
+> +int blk_crypto_evict_key(struct block_device *bdev,
+>                          const struct blk_crypto_key *key)
+>  {
+> +	struct request_queue *q = bdev_get_queue(bdev);
+> +
+>	if (__blk_crypto_cfg_supported(q->crypto_profile, &key->crypto_cfg))
+>		return __blk_crypto_evict_key(q->crypto_profile, key);
+>
+>	/*
+>        * If the request_queue didn't support the key, then blk-crypto-fallback
+>        * may have been used, so try to evict the key from blk-crypto-fallback.
+>        */
+>	return blk_crypto_fallback_evict_key(key);
+
+Likewise, s/request_queue/block_device/ in the above comment.
+
+> diff --git a/include/linux/blk-crypto.h b/include/linux/blk-crypto.h
+> index 69b24fe92cbf1..b314e2febcaf5 100644
+> --- a/include/linux/blk-crypto.h
+> +++ b/include/linux/blk-crypto.h
+[...]
+>
+> struct request;
+> struct request_queue;
+
+These forward declarations are no longer needed and can be removed.
+
+- Eric
