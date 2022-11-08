@@ -2,101 +2,106 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8911061FF7B
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  7 Nov 2022 21:24:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24DF1620E74
+	for <lists+linux-fscrypt@lfdr.de>; Tue,  8 Nov 2022 12:18:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232910AbiKGUYD (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 7 Nov 2022 15:24:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57120 "EHLO
+        id S233979AbiKHLSm (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 8 Nov 2022 06:18:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231906AbiKGUYB (ORCPT
+        with ESMTP id S233850AbiKHLSj (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 7 Nov 2022 15:24:01 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 871E962CD;
-        Mon,  7 Nov 2022 12:24:00 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 45BA8B81698;
-        Mon,  7 Nov 2022 20:23:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2FEEC433C1;
-        Mon,  7 Nov 2022 20:23:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667852637;
-        bh=3hSQMyHzzb1qvEGKfCW2d+14fPlyf1oF9apNDHd9a1U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=C4bA668PDuYNLHpT22WxpZWlUkjohVmfdUJKoKC28CfkxY/BPvvT4OPsVovgRW7y8
-         oMMd96lkYqHujvvXlb5hmTcSH1a8cuS4gzmf6WiYrgATsH5gTza99a2++FoxZVeXkI
-         /Au1IrzluTGkW+j6VIqKsnGaINKul4ni9vRgyYvwRRT5RuV//AH3Qi4/4Gh6pPj0t4
-         MJmOBW9b2t5f6PX/wKY+UZ6wPIevhwmIyPyh3HqeYKR2yKknk69kiqBeNdgi7VwL3c
-         vZAVwx2U6gOdkQliB7xwCaQbTdpazi9ZUI9iJGNsBaZ2qxD7YDhZ/nFFL99fwuQqyy
-         8GRq3ox0vBCDg==
-Date:   Mon, 7 Nov 2022 12:23:56 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, Mike Snitzer <snitzer@kernel.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH 3/3] blk-crypto: move __blk_crypto_cfg_supported to
- blk-crypto-internal.h
-Message-ID: <Y2lpXPD2jlumpNfr@sol.localdomain>
-References: <20221107144229.1547370-1-hch@lst.de>
- <20221107144229.1547370-4-hch@lst.de>
+        Tue, 8 Nov 2022 06:18:39 -0500
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40EE5E004
+        for <linux-fscrypt@vger.kernel.org>; Tue,  8 Nov 2022 03:18:38 -0800 (PST)
+Received: by mail-io1-xd29.google.com with SMTP id d123so11160759iof.7
+        for <linux-fscrypt@vger.kernel.org>; Tue, 08 Nov 2022 03:18:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=o1oIX0Lu3jFWZXVxNPQntM2Fj3qbMNn8z1UsbYrWkRo=;
+        b=IZj/YP6ZesRfJVOORnCRHdTNx230PLw1QMwGeCuUIkzl0uuo0/wao0dxTvMm3Q4ESE
+         VqQlkaR0+elrZdY1r4w2XVZHzkhgtthK5OaF/HwyNK1baWy6FzLTbnkj2OwBEeRnjSbF
+         MNy0BgiFIaLatL+6IpaJqbjnAzY3dnh37jk3DMpoGD8TkGsLiJdtAglXdfA7CH8a5HC0
+         NkucNnNwMOn7LtDzDoZsaze9MiZFpmne7Qx9HcbmQ+ylYJ0tiyK0Wwt4QoISIMPnPRCy
+         fzIPsAnsM6jO3gluisxSK2BjCUW4zjEPfOhAWEm160ScrucrO8Ho8M0EwbbbpZggClPd
+         4xog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=o1oIX0Lu3jFWZXVxNPQntM2Fj3qbMNn8z1UsbYrWkRo=;
+        b=UUh12o6CJeOgNs65eAJI2mmvSWgZYCa0PJ5V10sBFKdb0psSA/QEaMGSr7qmEIv8Ti
+         V17cvXc0psftqVzlUdvj5h734iV8AK2elPZ/5wZfCQMBZ6usaxJA0SdSN2s+UH+vVBTR
+         rP7wLLnaFV2TCR5cW/Yxe0SgEAOYgOQ9QImw6nMN2c+hIpC/I3qrSezKbARLYzF1YfMU
+         ce74HPIaKBZhG2/szC9knw6PxaxP2pYer2589muD6FzU5VPt93u2AaTIgdmCH3voztOX
+         qouQWCTHh6HcUZ/9BRIJabZijBPGtMPY/Wib/lBqIGawziBZtR+kdvJAwZrqvu86d6rK
+         mXUA==
+X-Gm-Message-State: ACrzQf1Cqn4vtjlTTcr85Tf45cxfVA7WQ7dFU296nhnJQr5d8m53sAkW
+        oPtjDt3S+WG++9XIq5GWnkcwHec4Pz2a22M+c24=
+X-Google-Smtp-Source: AMsMyM5Vs/WNPC1zsON0sIvK9PLnW5Nmmg9xW8h8XjSM0RjAGR/ePWNBNsCbV5I81jHMP3HRAvFRyjH9UU+5PJEEZUE=
+X-Received: by 2002:a05:6602:13c8:b0:669:c3de:776f with SMTP id
+ o8-20020a05660213c800b00669c3de776fmr31194379iov.124.1667906317661; Tue, 08
+ Nov 2022 03:18:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221107144229.1547370-4-hch@lst.de>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a05:6638:38a9:b0:375:4a9b:180d with HTTP; Tue, 8 Nov 2022
+ 03:18:37 -0800 (PST)
+Reply-To: mrinvest1010@gmail.com
+From:   "K. A. Mr. Kairi" <ctocik1@gmail.com>
+Date:   Tue, 8 Nov 2022 03:18:37 -0800
+Message-ID: <CAKfr4JWDjSHVGmqJn8S4S0izNjosxkyb9=MhcnQMfOunFjs1OQ@mail.gmail.com>
+Subject: Re: My Response..
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=5.0 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:d29 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5001]
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [mrinvest1010[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [ctocik1[at]gmail.com]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [ctocik1[at]gmail.com]
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        *  2.9 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Nov 07, 2022 at 03:42:29PM +0100, Christoph Hellwig wrote:
-> __blk_crypto_cfg_supported is only used internally by the blk-crypto
-> code now, so move it out of the public header.
+-- 
+Dear
 
-"public header" is ambiguous here.  blk-crypto.h is the "public header" for
-upper layers, but blk-crypto-profile.h is the "public header" for drivers.
-Maybe write "blk-crypto-profile.h, which is included by drivers".
+How are you with your family, I have a serious client, whom will be
+interested to invest in your country, I got your Details through the
+Investment Network and world Global Business directory.
 
-> diff --git a/block/blk-crypto-internal.h b/block/blk-crypto-internal.h
-> index e6818ffaddbf8..c587b3e1886c9 100644
-> --- a/block/blk-crypto-internal.h
-> +++ b/block/blk-crypto-internal.h
-> @@ -19,6 +19,9 @@ struct blk_crypto_mode {
->  
->  extern const struct blk_crypto_mode blk_crypto_modes[];
->  
-> +bool __blk_crypto_cfg_supported(struct blk_crypto_profile *profile,
-> +				const struct blk_crypto_config *cfg);
-> +
->  #ifdef CONFIG_BLK_INLINE_ENCRYPTION
+Let me know, If you are interested for more details.....
 
-It should go in the '#ifdef CONFIG_BLK_INLINE_ENCRYPTION' section.
-
-> diff --git a/include/linux/blk-crypto-profile.h b/include/linux/blk-crypto-profile.h
-> index bbab65bd54288..e990ec9b32aa4 100644
-> --- a/include/linux/blk-crypto-profile.h
-> +++ b/include/linux/blk-crypto-profile.h
-> @@ -144,9 +144,6 @@ blk_status_t blk_crypto_get_keyslot(struct blk_crypto_profile *profile,
->  
->  void blk_crypto_put_keyslot(struct blk_crypto_keyslot *slot);
->  
-> -bool __blk_crypto_cfg_supported(struct blk_crypto_profile *profile,
-> -				const struct blk_crypto_config *cfg);
-> -
->  int __blk_crypto_evict_key(struct blk_crypto_profile *profile,
->  			   const struct blk_crypto_key *key);
-
-Otherwise I guess this patch is fine.  The exact same argument would also apply
-to blk_crypto_get_keyslot(), blk_crypto_put_keyslot(), and
-__blk_crypto_evict_key(), though.  It might be worth handling them all in one
-patch.
-
-- Eric
+Regards,
+Andrew
