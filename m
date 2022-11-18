@@ -2,69 +2,61 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59A9C62ED23
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 18 Nov 2022 06:19:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D54762F586
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 18 Nov 2022 14:06:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240683AbiKRFTs (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 18 Nov 2022 00:19:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49498 "EHLO
+        id S241961AbiKRNGy (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 18 Nov 2022 08:06:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240580AbiKRFTr (ORCPT
+        with ESMTP id S241936AbiKRNGw (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 18 Nov 2022 00:19:47 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EC056E561;
-        Thu, 17 Nov 2022 21:19:46 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id m14so3588531pji.0;
-        Thu, 17 Nov 2022 21:19:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:date:message-id:subject:mime-version:content-transfer-encoding
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=vcIuQcLCsjnhf/p1ZLkRf0dV0hj0p3rtvP+Km7ohZPk=;
-        b=NCnguB2tMVp++4PdGsvAVu/CFkIDb5K7XdPl+FXdgXQ3dyhlu5aACP3FOeC8Lodnkj
-         VrhUZDDuLc3In5spyOuJRbPKQPSrFG6XWkMUx0V3oVD37yC7yOYKgxxNAcHB0JmWQRf5
-         WGDpDs+Y+g6iIOCxvO630CYN0kdNL+rjF37D5vnbC8wGkRkEL592q+zNtETdlaPmXVqu
-         LPt1fiyK/PHFbsNVtya671UdEnRkF5l22xSrs+KdwOOdl/oCpSJj/DsR7cskxOFNEgrl
-         +4nA7nznIuyQJA+jOE5SX/7lVFuSnqUZKR4RDqaqWRPrNMe9fPVH9/gGy3qg5pTuhcdi
-         rCiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:date:message-id:subject:mime-version:content-transfer-encoding
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vcIuQcLCsjnhf/p1ZLkRf0dV0hj0p3rtvP+Km7ohZPk=;
-        b=it40hiYyP/zZ9ym1rAuiseBwi6ruRSBjhPNkGTOcSOFHUL0y3vOjBwXAsgdZm9ysJp
-         6BRvF8xnWz+Bl+fZwz3GXjUTuG6eSac3SJUTg/zRv49hQzOmLh4Vy3VFR2dXict6wq9n
-         DKXGw/BObb68XdGmR7oB4v2gCZH/fIrk4mWOU6+/1kdzC8rGTkDmIgvTw+92GK+w3TLn
-         xEqxzDWHkWCxeQObD4C0dwWA7IgOVKWPXqVOZSiG6Rz0z9MvU+9hd7sblBSlYnuWZFWh
-         fcODlY2bzd3dq2nbvPFXLe4u5Y9JLL6rQk3TTKk30VFBrndaCQtLinJAIJ0TOVvJIvU9
-         /RgA==
-X-Gm-Message-State: ANoB5pnRlr1Ht09HzH5Y/w2LpNHWeysjq1CdPDLwU3MKJqFXFVlYHn7W
-        hQ9fyI63f+m//cUWI5Z71gk=
-X-Google-Smtp-Source: AA0mqf7qgaXHWqhBXtVgEUPTJ4k7xN1n2fC6NGm8mmPNSXvBEuindVJw9xJrAvNjk6PcFFzGPaQKIA==
-X-Received: by 2002:a17:902:edcd:b0:186:c3b2:56d1 with SMTP id q13-20020a170902edcd00b00186c3b256d1mr6031620plk.15.1668748786076;
-        Thu, 17 Nov 2022 21:19:46 -0800 (PST)
-Received: from smtpclient.apple ([198.11.178.15])
-        by smtp.gmail.com with ESMTPSA id t15-20020a1709027fcf00b00186a8085382sm1220711plb.43.2022.11.17.21.19.42
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 17 Nov 2022 21:19:45 -0800 (PST)
-From:   Gmail <liuj97@gmail.com>
-Content-Type: text/plain;
-        charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3696.120.41.1.1\))
-Subject: Feature proposal: support file content integrity verification based
- on fs-verity
-Message-Id: <D3AF9D1E-12E1-434F-AEA4-5892E8BC66AB@gmail.com>
-Date:   Fri, 18 Nov 2022 13:19:38 +0800
-To:     Eric Biggers <ebiggers@google.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, linux-fsdevel@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, fuse-devel@lists.sourceforge.net
-X-Mailer: Apple Mail (2.3696.120.41.1.1)
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Fri, 18 Nov 2022 08:06:52 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4679B78186
+        for <linux-fscrypt@vger.kernel.org>; Fri, 18 Nov 2022 05:05:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1668776755;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MkbPf8lANvr8MINxjwyWmUuJ/1c5U1P0oOc0E961cnI=;
+        b=QLMLbsCDtjv+UmSanhoJKTm3a7FXPYd45GvZFvKvtz/gu0VoWLOzdsTK1TuStZGHt2uiV3
+        FmAYdvlo2thoAWXe1kK1kB8oNdJ3WsC/osfx2VYUnps0S6hxwsGlHAkLB4c33QD9qy0Q6v
+        6IaXxpyQIyVV/XrAUnyex8BGKstZLfQ=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-127-pvkcvqwVOpuRJvz_nLHg3w-1; Fri, 18 Nov 2022 08:05:51 -0500
+X-MC-Unique: pvkcvqwVOpuRJvz_nLHg3w-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B9B9385A59D;
+        Fri, 18 Nov 2022 13:05:50 +0000 (UTC)
+Received: from localhost (unknown [10.39.208.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 760CB2028CE4;
+        Fri, 18 Nov 2022 13:05:50 +0000 (UTC)
+Date:   Fri, 18 Nov 2022 14:05:46 +0100
+From:   Niels de Vos <ndevos@redhat.com>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xiubo Li <xiubli@redhat.com>,
+        Marcel Lauhoff <marcel.lauhoff@suse.com>
+Subject: Re: [RFC 0/4] fs: provide per-filesystem options to disable fscrypt
+Message-ID: <Y3eC1tEoUGdgBP9i@ndevos-x1>
+References: <20221110141225.2308856-1-ndevos@redhat.com>
+ <Y20a/akbY8Wcy3qg@mit.edu>
+ <Y20rDl45vSmdEo3N@ndevos-x1>
+ <Y20/ynxvIqOyRbxK@mit.edu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y20/ynxvIqOyRbxK@mit.edu>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,42 +64,50 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hello fuse-devel,
+On Thu, Nov 10, 2022 at 01:15:38PM -0500, Theodore Ts'o wrote:
+> On Thu, Nov 10, 2022 at 05:47:10PM +0100, Niels de Vos wrote:
+> > And, there actually are options like CONFIG_EXT4_FS_POSIX_ACL and
+> > CONFIG_EXT4_FS_SECURITY. Because these exist already, I did not expect
+> > too much concerns with proposing a CONFIG_EXT4_FS_ENCRYPTION...
+> 
+> Actually, I was thinking of getting rid of them, as we've already
+> gotten rid of EXT4_FS_POSIX_ACL....
+> 
+> > Thanks for adding some history about this. I understand that extra
+> > options are needed while creating/tuning the filesystems. Preventing
+> > users from setting the right options in a filesystem is not easy, even
+> > if tools from a distribution do not offer setting the options. Disks can
+> > be portable, or network-attached, and have options enabled that an other
+> > distributions kernel does not (want to) support.
+> 
+> Sure, but as I said, there are **tons** of file system features that
+> have not and/or still are not supported for distros, but for which we
+> don't have kernel config knobs.  This includes ext4's bigalloc and
+> inline data, btrfs's dedup and reflink support, xfs online fsck, etc.,
+> etc., etc.  Heck, ext4 is only supported up to a certain size by Red
+> Hat, and we don't have a Kernel config so that the kernel will
+> absolutely refuse to mount an ext4 file system larger than The
+> Officially Supported RHEL Capacity Limit for Ext4.  So what makes
+> fscrypt different from all of these other unsupported file system
+> features?
+> 
+> There are plenty of times when I've had to explain to customers why,
+> sure they could build their own kernels for RHEL 4 (back in the day
+> when I worked for Big Blue and had to talk to lots of enterprise
+> customers), but if they did, Red Hat support would refuse to give them
+> the time of day if they called asking for help.  We didn't set up use
+> digitally signed kernels with trusted boot so that a IBM server would
+> refuse to boot anything other than An Officially Signed RHEL
+> Kernel...
+> 
+> What makes fscrypt different that we think we need to enforce this
+> using technical means, other than a simple, "this feature is not
+> supported"?
 
-The fs-verity framework provides file content integrity verification =
-services for filesystems. Currently ext4/btrfs/f2fs has enabled support =
-for fs-verity. Here I would like to propose implementing FUSE file =
-content integrity verification based on fs-verity.
+Thanks again for the added details. What you are explaining makes sense,
+and I am not sure if there is an other good reason why splitting out
+fscrypt support per filesystem would be required. I'm checking with the
+folks that suggested doing this, and see where we go from there.
 
-Our current main use case is to support integrity verification for =
-confidential containers using virtio-fs. With the new integrity =
-verification feature, we can ensure that files from virtio-fs are =
-trusted and fs-verity root digests are available for remote attestation. =
-The integrity verification feature can also be used to support other =
-FUSE based solutions.
-
-Fs-verity supports generating and verifying file content hash values. =
-For the sake of simplicity, we may only support hash value verification =
-of file content in the first stage, and enable support for hash value =
-generation in the later stage.
-
-The following FUSE protocol changes are therefore proposed to support =
-fs-verity:
-1) add flag =E2=80=9CFUSE_FS_VERITY=E2=80=9D to negotiate fs-verity =
-support=20
-2) add flag =E2=80=9CFUSE_ATTR_FSVERITY=E2=80=9D for fuse servers to =
-mark that inodes have associated fs-verity meta data.=20
-3) add op =E2=80=9CFUSE_FSVERITY=E2=80=9D to get/set fs-verity =
-descriptor and hash values.
-
-The FUSE protocol does not specify how fuse servers store fs-verity =
-metadata. The fuse server can store fs-verity metadata in its own ways.
-
-I did a quick prototype and the changes seems moderate, about 250 lines =
-of code changes.
-
-Would love to hear about your feedback:)
-
-Thanks,
-Gerry
+Niels
 
