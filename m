@@ -2,47 +2,69 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E773B62D152
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 17 Nov 2022 03:58:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59A9C62ED23
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 18 Nov 2022 06:19:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239017AbiKQC6c (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 16 Nov 2022 21:58:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39348 "EHLO
+        id S240683AbiKRFTs (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 18 Nov 2022 00:19:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234469AbiKQC6b (ORCPT
+        with ESMTP id S240580AbiKRFTr (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 16 Nov 2022 21:58:31 -0500
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40E50DF44;
-        Wed, 16 Nov 2022 18:58:28 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0VV-9OtK_1668653902;
-Received: from 30.240.99.252(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0VV-9OtK_1668653902)
-          by smtp.aliyun-inc.com;
-          Thu, 17 Nov 2022 10:58:24 +0800
-Message-ID: <bed9b29d-72c1-8724-64df-1a9ef2a4aa94@linux.alibaba.com>
-Date:   Thu, 17 Nov 2022 10:58:22 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.13.1
-Subject: Re: [PATCH 2/2] fscrypt: Add SM4 XTS/CTS symmetric algorithm support
-Content-Language: en-US
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     "Theodore Y. Ts o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
-        linux-fscrypt@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-crypto@vger.kernel.org
-References: <20221116082416.98977-1-tianjia.zhang@linux.alibaba.com>
- <20221116082416.98977-3-tianjia.zhang@linux.alibaba.com>
- <Y3UdKwtHE+SrERka@sol.localdomain>
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-In-Reply-To: <Y3UdKwtHE+SrERka@sol.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+        Fri, 18 Nov 2022 00:19:47 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EC056E561;
+        Thu, 17 Nov 2022 21:19:46 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id m14so3588531pji.0;
+        Thu, 17 Nov 2022 21:19:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:date:message-id:subject:mime-version:content-transfer-encoding
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vcIuQcLCsjnhf/p1ZLkRf0dV0hj0p3rtvP+Km7ohZPk=;
+        b=NCnguB2tMVp++4PdGsvAVu/CFkIDb5K7XdPl+FXdgXQ3dyhlu5aACP3FOeC8Lodnkj
+         VrhUZDDuLc3In5spyOuJRbPKQPSrFG6XWkMUx0V3oVD37yC7yOYKgxxNAcHB0JmWQRf5
+         WGDpDs+Y+g6iIOCxvO630CYN0kdNL+rjF37D5vnbC8wGkRkEL592q+zNtETdlaPmXVqu
+         LPt1fiyK/PHFbsNVtya671UdEnRkF5l22xSrs+KdwOOdl/oCpSJj/DsR7cskxOFNEgrl
+         +4nA7nznIuyQJA+jOE5SX/7lVFuSnqUZKR4RDqaqWRPrNMe9fPVH9/gGy3qg5pTuhcdi
+         rCiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:date:message-id:subject:mime-version:content-transfer-encoding
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vcIuQcLCsjnhf/p1ZLkRf0dV0hj0p3rtvP+Km7ohZPk=;
+        b=it40hiYyP/zZ9ym1rAuiseBwi6ruRSBjhPNkGTOcSOFHUL0y3vOjBwXAsgdZm9ysJp
+         6BRvF8xnWz+Bl+fZwz3GXjUTuG6eSac3SJUTg/zRv49hQzOmLh4Vy3VFR2dXict6wq9n
+         DKXGw/BObb68XdGmR7oB4v2gCZH/fIrk4mWOU6+/1kdzC8rGTkDmIgvTw+92GK+w3TLn
+         xEqxzDWHkWCxeQObD4C0dwWA7IgOVKWPXqVOZSiG6Rz0z9MvU+9hd7sblBSlYnuWZFWh
+         fcODlY2bzd3dq2nbvPFXLe4u5Y9JLL6rQk3TTKk30VFBrndaCQtLinJAIJ0TOVvJIvU9
+         /RgA==
+X-Gm-Message-State: ANoB5pnRlr1Ht09HzH5Y/w2LpNHWeysjq1CdPDLwU3MKJqFXFVlYHn7W
+        hQ9fyI63f+m//cUWI5Z71gk=
+X-Google-Smtp-Source: AA0mqf7qgaXHWqhBXtVgEUPTJ4k7xN1n2fC6NGm8mmPNSXvBEuindVJw9xJrAvNjk6PcFFzGPaQKIA==
+X-Received: by 2002:a17:902:edcd:b0:186:c3b2:56d1 with SMTP id q13-20020a170902edcd00b00186c3b256d1mr6031620plk.15.1668748786076;
+        Thu, 17 Nov 2022 21:19:46 -0800 (PST)
+Received: from smtpclient.apple ([198.11.178.15])
+        by smtp.gmail.com with ESMTPSA id t15-20020a1709027fcf00b00186a8085382sm1220711plb.43.2022.11.17.21.19.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 17 Nov 2022 21:19:45 -0800 (PST)
+From:   Gmail <liuj97@gmail.com>
+Content-Type: text/plain;
+        charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3696.120.41.1.1\))
+Subject: Feature proposal: support file content integrity verification based
+ on fs-verity
+Message-Id: <D3AF9D1E-12E1-434F-AEA4-5892E8BC66AB@gmail.com>
+Date:   Fri, 18 Nov 2022 13:19:38 +0800
+To:     Eric Biggers <ebiggers@google.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, linux-fsdevel@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, fuse-devel@lists.sourceforge.net
+X-Mailer: Apple Mail (2.3696.120.41.1.1)
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,123 +72,42 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hi Eric,
+Hello fuse-devel,
 
-On 11/17/22 1:26 AM, Eric Biggers wrote:
-> On Wed, Nov 16, 2022 at 04:24:16PM +0800, Tianjia Zhang wrote:
->> SM4 is a symmetric algorithm widely used in China
-> 
-> So?
-> 
-> What is the use case for adding this to fscrypt specifically?
-> 
-> Just because an algorithm is widely used doesn't necessarily mean it is useful
-> or appropriate to support with fscrypt.
-> 
+The fs-verity framework provides file content integrity verification =
+services for filesystems. Currently ext4/btrfs/f2fs has enabled support =
+for fs-verity. Here I would like to propose implementing FUSE file =
+content integrity verification based on fs-verity.
 
-We want to provide our users with the ability to encrypt disks and files
-using SM4-XTS, the ability to sign SM2/3, and the ability to use
-SM4-GCM/CCM with TLS (of course this belongs to other parts), quite a
-few users need these features.
+Our current main use case is to support integrity verification for =
+confidential containers using virtio-fs. With the new integrity =
+verification feature, we can ensure that files from virtio-fs are =
+trusted and fs-verity root digests are available for remote attestation. =
+The integrity verification feature can also be used to support other =
+FUSE based solutions.
 
->> , this patch enables
->> to use SM4-XTS mode to encrypt file content, and use SM4-CBC-CTS to
->> encrypt filename.
->>
->> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
->> ---
->>   Documentation/filesystems/fscrypt.rst |  1 +
->>   fs/crypto/fscrypt_private.h           |  2 +-
->>   fs/crypto/keysetup.c                  | 15 +++++++++++++++
->>   fs/crypto/policy.c                    |  4 ++++
->>   include/uapi/linux/fscrypt.h          |  4 +++-
->>   5 files changed, 24 insertions(+), 2 deletions(-)
->>
->> diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
->> index 5ba5817c17c2..af27e7b2c74f 100644
->> --- a/Documentation/filesystems/fscrypt.rst
->> +++ b/Documentation/filesystems/fscrypt.rst
->> @@ -336,6 +336,7 @@ Currently, the following pairs of encryption modes are supported:
->>   
->>   - AES-256-XTS for contents and AES-256-CTS-CBC for filenames
->>   - AES-128-CBC for contents and AES-128-CTS-CBC for filenames
->> +- SM4-XTS for contents and SM4-CTS-CBC for filenames
->>   - Adiantum for both contents and filenames
->>   - AES-256-XTS for contents and AES-256-HCTR2 for filenames (v2 policies only)
->>   
->> diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
->> index d5f68a0c5d15..e79a701de028 100644
->> --- a/fs/crypto/fscrypt_private.h
->> +++ b/fs/crypto/fscrypt_private.h
->> @@ -31,7 +31,7 @@
->>   #define FSCRYPT_CONTEXT_V2	2
->>   
->>   /* Keep this in sync with include/uapi/linux/fscrypt.h */
->> -#define FSCRYPT_MODE_MAX	FSCRYPT_MODE_AES_256_HCTR2
->> +#define FSCRYPT_MODE_MAX	FSCRYPT_MODE_SM4_CTS
->>   
->>   struct fscrypt_context_v1 {
->>   	u8 version; /* FSCRYPT_CONTEXT_V1 */
->> diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
->> index f7407071a952..c0a3f882f5a4 100644
->> --- a/fs/crypto/keysetup.c
->> +++ b/fs/crypto/keysetup.c
->> @@ -59,6 +59,21 @@ struct fscrypt_mode fscrypt_modes[] = {
->>   		.security_strength = 32,
->>   		.ivsize = 32,
->>   	},
->> +	[FSCRYPT_MODE_SM4_XTS] = {
->> +		.friendly_name = "SM4-XTS",
->> +		.cipher_str = "xts(sm4)",
->> +		.keysize = 32,
->> +		.security_strength = 16,
->> +		.ivsize = 16,
->> +		.blk_crypto_mode = BLK_ENCRYPTION_MODE_SM4_XTS,
->> +	},
->> +	[FSCRYPT_MODE_SM4_CTS] = {
->> +		.friendly_name = "SM4-CTS",
->> +		.cipher_str = "cts(cbc(sm4))",
->> +		.keysize = 16,
->> +		.security_strength = 16,
->> +		.ivsize = 16,
->> +	},
->>   };
->>   
->>   static DEFINE_MUTEX(fscrypt_mode_key_setup_mutex);
->> diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
->> index 46757c3052ef..4881fd3af6ee 100644
->> --- a/fs/crypto/policy.c
->> +++ b/fs/crypto/policy.c
->> @@ -75,6 +75,10 @@ static bool fscrypt_valid_enc_modes_v1(u32 contents_mode, u32 filenames_mode)
->>   	    filenames_mode == FSCRYPT_MODE_ADIANTUM)
->>   		return true;
->>   
->> +	if (contents_mode == FSCRYPT_MODE_SM4_XTS &&
->> +	    filenames_mode == FSCRYPT_MODE_SM4_CTS)
->> +		return true;
->> +
->>   	return false;
->>   }
->>   
->> diff --git a/include/uapi/linux/fscrypt.h b/include/uapi/linux/fscrypt.h
->> index a756b29afcc2..34d791bd162c 100644
->> --- a/include/uapi/linux/fscrypt.h
->> +++ b/include/uapi/linux/fscrypt.h
->> @@ -28,7 +28,9 @@
->>   #define FSCRYPT_MODE_AES_128_CTS		6
->>   #define FSCRYPT_MODE_ADIANTUM			9
->>   #define FSCRYPT_MODE_AES_256_HCTR2		10
->> -/* If adding a mode number > 10, update FSCRYPT_MODE_MAX in fscrypt_private.h */
->> +#define FSCRYPT_MODE_SM4_XTS			11
->> +#define FSCRYPT_MODE_SM4_CTS			12
->> +/* If adding a mode number > 12, update FSCRYPT_MODE_MAX in fscrypt_private.h */
-> 
-> This might be a good time to reclaim some of the unused mode numbers.  Maybe 7-8
-> which were very briefly used for Speck128/256.  (Irony not lost?)
-> 
+Fs-verity supports generating and verifying file content hash values. =
+For the sake of simplicity, we may only support hash value verification =
+of file content in the first stage, and enable support for hash value =
+generation in the later stage.
 
-This looks awesome, I'll reclaim the gaps in the next version if
-possible.
+The following FUSE protocol changes are therefore proposed to support =
+fs-verity:
+1) add flag =E2=80=9CFUSE_FS_VERITY=E2=80=9D to negotiate fs-verity =
+support=20
+2) add flag =E2=80=9CFUSE_ATTR_FSVERITY=E2=80=9D for fuse servers to =
+mark that inodes have associated fs-verity meta data.=20
+3) add op =E2=80=9CFUSE_FSVERITY=E2=80=9D to get/set fs-verity =
+descriptor and hash values.
 
-Cheers,
-Tianjia
+The FUSE protocol does not specify how fuse servers store fs-verity =
+metadata. The fuse server can store fs-verity metadata in its own ways.
+
+I did a quick prototype and the changes seems moderate, about 250 lines =
+of code changes.
+
+Would love to hear about your feedback:)
+
+Thanks,
+Gerry
+
