@@ -2,62 +2,59 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7D3162F5AE
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 18 Nov 2022 14:15:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDC2D62F5ED
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 18 Nov 2022 14:27:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241423AbiKRNPD (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 18 Nov 2022 08:15:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39974 "EHLO
+        id S231534AbiKRN1A (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 18 Nov 2022 08:27:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241312AbiKRNPC (ORCPT
+        with ESMTP id S241550AbiKRN0u (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 18 Nov 2022 08:15:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A52B043874
-        for <linux-fscrypt@vger.kernel.org>; Fri, 18 Nov 2022 05:14:04 -0800 (PST)
+        Fri, 18 Nov 2022 08:26:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5B385A39
+        for <linux-fscrypt@vger.kernel.org>; Fri, 18 Nov 2022 05:25:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1668777243;
+        s=mimecast20190719; t=1668777948;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=DwgnOjsBwuRm3KvaCsNzS6B7/KxJyL7ZVpx0OHwNOwA=;
-        b=hLBPgBtU+jYsDvxoa6EKdMRNn4TixzLQyo5grqqQ3aklsHighCSj2zPW9a2ecjRFq1jiZR
-        Qis+Am8sKnXMWs4ucsLMjljiiAkc/O4g5X5ttXN1o0yafQaWPv1mRbTReBj7+NUA14kjXU
-        tNDiAi/CLmURp81x3S/YG3wbu4Imauo=
+        bh=9ypVqQDovsotVHlRyYzXKwNPuqQJ+h49uCV3eLEnwSg=;
+        b=cS89cym8ufGlVZ4FdUFabECyFtXXra/btCVLhRkbp+L0OcTbQ7G0o+vxx9c1KH5PFYLb6a
+        /TVpPm+z5oSc+minQ0H65WXjK5dYprXo9hTTe3PJqGHBcq85MJ10i/AGwsFar50axiIDrb
+        5XN2s6ms/fCJP/BVPlwTaFcJmgETYes=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-154-gGjGeDE0NEeha0WFuDPt1Q-1; Fri, 18 Nov 2022 08:14:02 -0500
-X-MC-Unique: gGjGeDE0NEeha0WFuDPt1Q-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+ us-mta-445-sT1BHtADPDOxk9C1G4xGzA-1; Fri, 18 Nov 2022 08:25:45 -0500
+X-MC-Unique: sT1BHtADPDOxk9C1G4xGzA-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AD4F1811E75;
-        Fri, 18 Nov 2022 13:14:01 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 094B7101A528;
+        Fri, 18 Nov 2022 13:25:45 +0000 (UTC)
 Received: from localhost (unknown [10.39.208.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 65BF640C83EC;
-        Fri, 18 Nov 2022 13:14:01 +0000 (UTC)
-Date:   Fri, 18 Nov 2022 14:13:58 +0100
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A77374B3FCE;
+        Fri, 18 Nov 2022 13:25:44 +0000 (UTC)
+Date:   Fri, 18 Nov 2022 14:25:41 +0100
 From:   Niels de Vos <ndevos@redhat.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Theodore Ts'o <tytso@mit.edu>, linux-fscrypt@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xiubo Li <xiubli@redhat.com>,
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xiubo Li <xiubli@redhat.com>,
         Marcel Lauhoff <marcel.lauhoff@suse.com>
 Subject: Re: [RFC 0/4] fs: provide per-filesystem options to disable fscrypt
-Message-ID: <Y3eFFrhT3b0yoti9@ndevos-x1>
+Message-ID: <Y3eH1XOGlXUKCiMZ@ndevos-x1>
 References: <20221110141225.2308856-1-ndevos@redhat.com>
- <Y20a/akbY8Wcy3qg@mit.edu>
- <Y20rDl45vSmdEo3N@ndevos-x1>
- <Y3HZ/To8z76vBqYo@infradead.org>
+ <Y3RGs5dONBt+GAxN@sol.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y3HZ/To8z76vBqYo@infradead.org>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+In-Reply-To: <Y3RGs5dONBt+GAxN@sol.localdomain>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,35 +62,72 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Sun, Nov 13, 2022 at 10:02:37PM -0800, Christoph Hellwig wrote:
-> On Thu, Nov 10, 2022 at 05:47:10PM +0100, Niels de Vos wrote:
-> > And, there actually are options like CONFIG_EXT4_FS_POSIX_ACL and
-> > CONFIG_EXT4_FS_SECURITY. Because these exist already, I did not expect
-> > too much concerns with proposing a CONFIG_EXT4_FS_ENCRYPTION...
+On Tue, Nov 15, 2022 at 06:10:59PM -0800, Eric Biggers wrote:
+> On Thu, Nov 10, 2022 at 03:12:21PM +0100, Niels de Vos wrote:
+> > While more filesystems are getting support for fscrypt, it is useful to
+> > be able to disable fscrypt for a selection of filesystems, while
+> > enabling it for others.
+> > 
+> > The new USE_FS_ENCRYPTION define gets picked up in
+> > include/linux/fscrypt.h. This allows filesystems to choose to use the
+> > empty function definitions, or the functional ones when fscrypt is to be
+> > used with the filesystem.
+> > 
+> > Using USE_FS_ENCRYPTION is a relatively clean approach, and requires
+> > minimal changes to the filesystems supporting fscrypt. This RFC is
+> > mostly for checking the acceptance of this solution, or if an other
+> > direction is preferred.
+> > 
+> > ---
+> > 
+> > Niels de Vos (4):
+> >   fscrypt: introduce USE_FS_ENCRYPTION
+> >   fs: make fscrypt support an ext4 config option
+> >   fs: make fscrypt support a f2fs config option
+> >   fs: make fscrypt support a UBIFS config option
 > 
-> ext4 is a little weird there as most file systems don't do that.
-> So I think these should go away for ext4 as well.
-
-Yeah, I understand that there is a preference for reducing the number of
-Kconfig options for filesystems. That indeed would make it a little
-easier for users, so I am supportive of that as well.
-
-> > Note that even with the additional options, enabling only
-> > CONFIG_FS_ENCRYPTION causes all the filesystems that support fscrypt to
-> > have it enabled. For users there is no change, except that they now have
-> > an option to disable fscrypt support per filesystem.
+> So as others have pointed out, it doesn't seem worth the complexity to do this.
 > 
-> But why would you do that anyay?
+> For a bit of historical context, before Linux v5.1, we did have per-filesystem
+> options for this: CONFIG_EXT4_ENCRYPTION, CONFIG_F2FS_FS_ENCRYPTION, and
+> CONFIG_UBIFS_FS_ENCRYPTION.  If you enabled one of these, it selected
+> CONFIG_FS_ENCRYPTION to get the code in fs/crypto/.  CONFIG_FS_ENCRYPTION was a
+> tristate, so the code in fs/crypto/ could be built as a loadable module if it
+> was only needed by filesystems that were loadable modules themselves.
+> 
+> Having fs/crypto/ possibly be a loadable module was problematic, though, because
+> it made it impossible to call into fs/crypto/ from built-in code such as
+> fs/buffer.c, fs/ioctl.c, fs/libfs.c, fs/super.c, fs/iomap/direct-io.c, etc.  So
+> that's why we made CONFIG_FS_ENCRYPTION into a bool.  At the same time, we
+> decided to simplify the kconfig options by removing the per-filesystem options
+> so that it worked like CONFIG_QUOTA, CONFIG_FS_DAX, CONFIG_FS_POSIX_ACL, etc.
+> 
+> I suppose we *could* have *just* changed CONFIG_FS_ENCRYPTION to a bool to solve
+> the first problem, and kept the per-filesystem options.  I think that wouldn't
+> have made a lot of sense, though, for the reasons that Ted has already covered.
 
-An other mail in this thread contains a description about that. It is
-more about being able to provide a kernel build that is fully tested,
-and enabling more options (or being unable to disable features)
-increases the testing efforts that are needed.
+Yes, it seems that there is a move to reduce the Kconfig options and
+(re)adding per-filesystem encryption support would be counterproductive.
 
-However, as Ted pointed out, there are other features that can not be
-disabled or limited per filesystem, so there will always be a gap in
-what can practically be tested.
+> A further point, beyond what Ted has already covered, is that
+> non-filesystem-specific code can't honor filesystem-specific options.  So e.g.
+> if you had a filesystem with encryption disabled by kconfig, that then called
+> into fs/iomap/direct-io.c to process an I/O request, it could potentially still
+> call into fs/crypto/ to enable encryption on that I/O request, since
+> fs/iomap/direct-io.c would think that encryption support is enabled.
+> 
+> Granted, that *should* never actually happen, because this would only make a
+> difference on encrypted files, and the filesystem shouldn't have allowed an
+> encrypted file to be opened if it doesn't have encryption support enabled.  But
+> it does seem a bit odd, given that it would go against the goal of compiling out
+> all encryption code for a filesystem.
 
-Thanks,
+Ah, yes, indeed! The boundaries between the options would be less clear,
+and potential changes to shared functions under fs/ could have incorrect
+assumptions about CONFIG_FS_ENCRYPTION. Even if this is not the case
+now, optimizations/enhancements in the future might be more complicated
+because of this.
+
+Thanks for the additional details! Have a good weekend,
 Niels
 
