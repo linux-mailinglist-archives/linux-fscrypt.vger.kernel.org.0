@@ -2,132 +2,85 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC2D62F5ED
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 18 Nov 2022 14:27:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 687A0632AE9
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 21 Nov 2022 18:27:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231534AbiKRN1A (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 18 Nov 2022 08:27:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47162 "EHLO
+        id S229653AbiKUR1A (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 21 Nov 2022 12:27:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241550AbiKRN0u (ORCPT
+        with ESMTP id S229966AbiKUR04 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 18 Nov 2022 08:26:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5B385A39
-        for <linux-fscrypt@vger.kernel.org>; Fri, 18 Nov 2022 05:25:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1668777948;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9ypVqQDovsotVHlRyYzXKwNPuqQJ+h49uCV3eLEnwSg=;
-        b=cS89cym8ufGlVZ4FdUFabECyFtXXra/btCVLhRkbp+L0OcTbQ7G0o+vxx9c1KH5PFYLb6a
-        /TVpPm+z5oSc+minQ0H65WXjK5dYprXo9hTTe3PJqGHBcq85MJ10i/AGwsFar50axiIDrb
-        5XN2s6ms/fCJP/BVPlwTaFcJmgETYes=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-445-sT1BHtADPDOxk9C1G4xGzA-1; Fri, 18 Nov 2022 08:25:45 -0500
-X-MC-Unique: sT1BHtADPDOxk9C1G4xGzA-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Mon, 21 Nov 2022 12:26:56 -0500
+Received: from box.fidei.email (box.fidei.email [71.19.144.250])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E996CB9CC;
+        Mon, 21 Nov 2022 09:26:55 -0800 (PST)
+Received: from authenticated-user (box.fidei.email [71.19.144.250])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 094B7101A528;
-        Fri, 18 Nov 2022 13:25:45 +0000 (UTC)
-Received: from localhost (unknown [10.39.208.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A77374B3FCE;
-        Fri, 18 Nov 2022 13:25:44 +0000 (UTC)
-Date:   Fri, 18 Nov 2022 14:25:41 +0100
-From:   Niels de Vos <ndevos@redhat.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xiubo Li <xiubli@redhat.com>,
-        Marcel Lauhoff <marcel.lauhoff@suse.com>
-Subject: Re: [RFC 0/4] fs: provide per-filesystem options to disable fscrypt
-Message-ID: <Y3eH1XOGlXUKCiMZ@ndevos-x1>
-References: <20221110141225.2308856-1-ndevos@redhat.com>
- <Y3RGs5dONBt+GAxN@sol.localdomain>
+        by box.fidei.email (Postfix) with ESMTPSA id 9D827825BD;
+        Mon, 21 Nov 2022 12:26:53 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
+        t=1669051614; bh=hjT9+VScwwtAvmermh5LJ21WaXYQ1R24NV6Ef++5l7w=;
+        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+        b=sMPiEYRbUPg2zG6zaCENViYBcgQilN/jsxHDIhNDE/5zrIIOVUNzELZCCRVNbT/c4
+         QhOMtoYNMqQ+zz6GYI33ovaWCfin+ktxPdYR3h7vlVJNsmuDNpLD9aG+PmFxmQqB50
+         0eK/839ZCJFUKQEN1gkHxktmPhRtmQxHLzjBrS7mL2ngY2R0txkawkRAotnSzHxq8D
+         zIkKAdccYxz9ceH9d3xx8HXWFSxZ0CvqHz3+MAGqdYPpSWBkxkgTX4GQyTjRuJnN/j
+         PFSqKDZG392f9JyuuDpwXZ43hkNDsyXw3mZAyiMLIKkmVxfCBEOlIM7zTUw7AArorN
+         05rkhat7FO55g==
+Message-ID: <55686ed2-b182-3478-37aa-237e306be6e1@dorminy.me>
+Date:   Mon, 21 Nov 2022 12:26:51 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y3RGs5dONBt+GAxN@sol.localdomain>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v5 00/18] btrfs: add fscrypt integration
+From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+To:     Paul Crowley <paulcrowley@google.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-fscrypt@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, kernel-team@meta.com,
+        Omar Sandoval <osandov@osandov.com>, Chris Mason <clm@fb.com>
+References: <cover.1667389115.git.sweettea-kernel@dorminy.me>
+ <CA+_SqcAFMXjW6V2u1NZzGwBe4na4m_FBspgP0Z6Q0oTvT+QJVQ@mail.gmail.com>
+ <81e3763c-2c02-2c9f-aece-32aa575abbca@dorminy.me>
+Content-Language: en-US
+In-Reply-To: <81e3763c-2c02-2c9f-aece-32aa575abbca@dorminy.me>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, Nov 15, 2022 at 06:10:59PM -0800, Eric Biggers wrote:
-> On Thu, Nov 10, 2022 at 03:12:21PM +0100, Niels de Vos wrote:
-> > While more filesystems are getting support for fscrypt, it is useful to
-> > be able to disable fscrypt for a selection of filesystems, while
-> > enabling it for others.
-> > 
-> > The new USE_FS_ENCRYPTION define gets picked up in
-> > include/linux/fscrypt.h. This allows filesystems to choose to use the
-> > empty function definitions, or the functional ones when fscrypt is to be
-> > used with the filesystem.
-> > 
-> > Using USE_FS_ENCRYPTION is a relatively clean approach, and requires
-> > minimal changes to the filesystems supporting fscrypt. This RFC is
-> > mostly for checking the acceptance of this solution, or if an other
-> > direction is preferred.
-> > 
-> > ---
-> > 
-> > Niels de Vos (4):
-> >   fscrypt: introduce USE_FS_ENCRYPTION
-> >   fs: make fscrypt support an ext4 config option
-> >   fs: make fscrypt support a f2fs config option
-> >   fs: make fscrypt support a UBIFS config option
-> 
-> So as others have pointed out, it doesn't seem worth the complexity to do this.
-> 
-> For a bit of historical context, before Linux v5.1, we did have per-filesystem
-> options for this: CONFIG_EXT4_ENCRYPTION, CONFIG_F2FS_FS_ENCRYPTION, and
-> CONFIG_UBIFS_FS_ENCRYPTION.  If you enabled one of these, it selected
-> CONFIG_FS_ENCRYPTION to get the code in fs/crypto/.  CONFIG_FS_ENCRYPTION was a
-> tristate, so the code in fs/crypto/ could be built as a loadable module if it
-> was only needed by filesystems that were loadable modules themselves.
-> 
-> Having fs/crypto/ possibly be a loadable module was problematic, though, because
-> it made it impossible to call into fs/crypto/ from built-in code such as
-> fs/buffer.c, fs/ioctl.c, fs/libfs.c, fs/super.c, fs/iomap/direct-io.c, etc.  So
-> that's why we made CONFIG_FS_ENCRYPTION into a bool.  At the same time, we
-> decided to simplify the kconfig options by removing the per-filesystem options
-> so that it worked like CONFIG_QUOTA, CONFIG_FS_DAX, CONFIG_FS_POSIX_ACL, etc.
-> 
-> I suppose we *could* have *just* changed CONFIG_FS_ENCRYPTION to a bool to solve
-> the first problem, and kept the per-filesystem options.  I think that wouldn't
-> have made a lot of sense, though, for the reasons that Ted has already covered.
+I appreciate the conversation happening on the doc; thank ya'll for 
+reading and commenting.
 
-Yes, it seems that there is a move to reduce the Kconfig options and
-(re)adding per-filesystem encryption support would be counterproductive.
+Would it be worth having a meeting on Zoom or the like this week to 
+discuss the way forward for getting encryption for btrfs, be that one of 
+the extent-based encryption variations or AEAD?
 
-> A further point, beyond what Ted has already covered, is that
-> non-filesystem-specific code can't honor filesystem-specific options.  So e.g.
-> if you had a filesystem with encryption disabled by kconfig, that then called
-> into fs/iomap/direct-io.c to process an I/O request, it could potentially still
-> call into fs/crypto/ to enable encryption on that I/O request, since
-> fs/iomap/direct-io.c would think that encryption support is enabled.
+Thanks!
+
+Sweet Tea
+
+On 11/16/22 15:19, Sweet Tea Dorminy wrote:
 > 
-> Granted, that *should* never actually happen, because this would only make a
-> difference on encrypted files, and the filesystem shouldn't have allowed an
-> encrypted file to be opened if it doesn't have encryption support enabled.  But
-> it does seem a bit odd, given that it would go against the goal of compiling out
-> all encryption code for a filesystem.
-
-Ah, yes, indeed! The boundaries between the options would be less clear,
-and potential changes to shared functions under fs/ could have incorrect
-assumptions about CONFIG_FS_ENCRYPTION. Even if this is not the case
-now, optimizations/enhancements in the future might be more complicated
-because of this.
-
-Thanks for the additional details! Have a good weekend,
-Niels
-
+> 
+> On 11/3/22 15:22, Paul Crowley wrote:
+>> Thank you for creating this! I'm told the design document [1] no
+>> longer reflects the current proposal in these patches. If that's so I
+>> think it's worth bringing the design document up to date so we can
+>> review the cryptography. Thanks!
+>>
+>> [1] 
+>> https://docs.google.com/document/d/1iNnrqyZqJ2I5nfWKt7cd1T9xwU0iHhjhk9ALQW3XuII/edit
+> 
+> I apologize for the delay; I realized when this thread was bumped just 
+> now that my attempt to share the updated doc didn't seem to make it to 
+> the mailing list.
+> 
+> https://docs.google.com/document/d/1janjxewlewtVPqctkWOjSa7OhCgB8Gdx7iDaCDQQNZA/edit?usp=sharing is an update of the design document that hopefully is what you're requesting.
