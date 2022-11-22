@@ -2,127 +2,71 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C798B6335AC
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 22 Nov 2022 08:06:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D7E7634476
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 22 Nov 2022 20:23:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232297AbiKVHGr (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 22 Nov 2022 02:06:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59530 "EHLO
+        id S233443AbiKVTW6 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 22 Nov 2022 14:22:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231583AbiKVHGp (ORCPT
+        with ESMTP id S234716AbiKVTW6 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 22 Nov 2022 02:06:45 -0500
-Received: from out199-6.us.a.mail.aliyun.com (out199-6.us.a.mail.aliyun.com [47.90.199.6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4887F2A97E;
-        Mon, 21 Nov 2022 23:06:42 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0VVR3yub_1669100796;
-Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0VVR3yub_1669100796)
-          by smtp.aliyun-inc.com;
-          Tue, 22 Nov 2022 15:06:37 +0800
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-To:     "Theodore Y. Ts o" <tytso@mit.edu>,
+        Tue, 22 Nov 2022 14:22:58 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5525CE12;
+        Tue, 22 Nov 2022 11:22:57 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 419B7B81D50;
+        Tue, 22 Nov 2022 19:22:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9177BC433C1;
+        Tue, 22 Nov 2022 19:22:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1669144974;
+        bh=Nd2SSpX2rnlORZIuluFSyUmIIouCQL/zDa4vN299e4E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GKVDKeWRBnacfdNcZLokrwElYe4jvGQbxsQh6kyyDkSFllijnHydQhaBmNaHeQJ7Y
+         bTMQU8GPNnMcWnjL9KwMShGAnxkAZs9zAyGKWEGnJqdTMB9PM2S/U03A+S9tIF95yc
+         EBcrcd0NzWG3KOwQNIH97dxyqqIb/F0wWvx2xblEWrKRvXKOD+/JO+HlfQCZhU9UnE
+         L/oHVpRp++M6DClMKF+/tPdg3IwjBB8KaPfju8bePj8YYc0hcQ3gqIv17g516fkmb7
+         hvLqLXpc6kvu3V09n+TIzbqIuala1T/vjmSnVR5fih7B7Rd20xe7St7pUSVdwwmPCZ
+         fi7K81DyYHCTg==
+Date:   Tue, 22 Nov 2022 11:22:52 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Cc:     "Theodore Y. Ts o" <tytso@mit.edu>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>,
         Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
         Ard Biesheuvel <ardb@kernel.org>,
         linux-fscrypt@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
-Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Subject: [PATCH v2 2/2] fscrypt: Add SM4 XTS/CTS symmetric algorithm support
-Date:   Tue, 22 Nov 2022 15:06:32 +0800
-Message-Id: <20221122070632.21910-3-tianjia.zhang@linux.alibaba.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
-In-Reply-To: <20221122070632.21910-1-tianjia.zhang@linux.alibaba.com>
+Subject: Re: [PATCH v2 2/2] fscrypt: Add SM4 XTS/CTS symmetric algorithm
+ support
+Message-ID: <Y30hjJq1Vwl4k1dJ@sol.localdomain>
 References: <20221122070632.21910-1-tianjia.zhang@linux.alibaba.com>
+ <20221122070632.21910-3-tianjia.zhang@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221122070632.21910-3-tianjia.zhang@linux.alibaba.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-SM4 is a symmetric algorithm widely used in China, this patch enables
-to use SM4-XTS mode to encrypt file content, and use SM4-CBC-CTS to
-encrypt filename.
+On Tue, Nov 22, 2022 at 03:06:32PM +0800, Tianjia Zhang wrote:
+> SM4 is a symmetric algorithm widely used in China, this patch enables
+> to use SM4-XTS mode to encrypt file content, and use SM4-CBC-CTS to
+> encrypt filename.
+> 
+> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
----
- Documentation/filesystems/fscrypt.rst |  1 +
- fs/crypto/keysetup.c                  | 15 +++++++++++++++
- fs/crypto/policy.c                    |  4 ++++
- include/uapi/linux/fscrypt.h          |  2 ++
- 4 files changed, 22 insertions(+)
+There is still no explanation here about why you believe this algorithm is
+useful to support in fscrypt.
 
-diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
-index 5ba5817c17c2..af27e7b2c74f 100644
---- a/Documentation/filesystems/fscrypt.rst
-+++ b/Documentation/filesystems/fscrypt.rst
-@@ -336,6 +336,7 @@ Currently, the following pairs of encryption modes are supported:
- 
- - AES-256-XTS for contents and AES-256-CTS-CBC for filenames
- - AES-128-CBC for contents and AES-128-CTS-CBC for filenames
-+- SM4-XTS for contents and SM4-CTS-CBC for filenames
- - Adiantum for both contents and filenames
- - AES-256-XTS for contents and AES-256-HCTR2 for filenames (v2 policies only)
- 
-diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index f7407071a952..24e55c95abc3 100644
---- a/fs/crypto/keysetup.c
-+++ b/fs/crypto/keysetup.c
-@@ -44,6 +44,21 @@ struct fscrypt_mode fscrypt_modes[] = {
- 		.security_strength = 16,
- 		.ivsize = 16,
- 	},
-+	[FSCRYPT_MODE_SM4_XTS] = {
-+		.friendly_name = "SM4-XTS",
-+		.cipher_str = "xts(sm4)",
-+		.keysize = 32,
-+		.security_strength = 16,
-+		.ivsize = 16,
-+		.blk_crypto_mode = BLK_ENCRYPTION_MODE_SM4_XTS,
-+	},
-+	[FSCRYPT_MODE_SM4_CTS] = {
-+		.friendly_name = "SM4-CTS",
-+		.cipher_str = "cts(cbc(sm4))",
-+		.keysize = 16,
-+		.security_strength = 16,
-+		.ivsize = 16,
-+	},
- 	[FSCRYPT_MODE_ADIANTUM] = {
- 		.friendly_name = "Adiantum",
- 		.cipher_str = "adiantum(xchacha12,aes)",
-diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
-index 46757c3052ef..8e69bc0c35cd 100644
---- a/fs/crypto/policy.c
-+++ b/fs/crypto/policy.c
-@@ -71,6 +71,10 @@ static bool fscrypt_valid_enc_modes_v1(u32 contents_mode, u32 filenames_mode)
- 	    filenames_mode == FSCRYPT_MODE_AES_128_CTS)
- 		return true;
- 
-+	if (contents_mode == FSCRYPT_MODE_SM4_XTS &&
-+	    filenames_mode == FSCRYPT_MODE_SM4_CTS)
-+		return true;
-+
- 	if (contents_mode == FSCRYPT_MODE_ADIANTUM &&
- 	    filenames_mode == FSCRYPT_MODE_ADIANTUM)
- 		return true;
-diff --git a/include/uapi/linux/fscrypt.h b/include/uapi/linux/fscrypt.h
-index a756b29afcc2..47dbd1994bfe 100644
---- a/include/uapi/linux/fscrypt.h
-+++ b/include/uapi/linux/fscrypt.h
-@@ -26,6 +26,8 @@
- #define FSCRYPT_MODE_AES_256_CTS		4
- #define FSCRYPT_MODE_AES_128_CBC		5
- #define FSCRYPT_MODE_AES_128_CTS		6
-+#define FSCRYPT_MODE_SM4_XTS			7
-+#define FSCRYPT_MODE_SM4_CTS			8
- #define FSCRYPT_MODE_ADIANTUM			9
- #define FSCRYPT_MODE_AES_256_HCTR2		10
- /* If adding a mode number > 10, update FSCRYPT_MODE_MAX in fscrypt_private.h */
--- 
-2.24.3 (Apple Git-128)
-
+- Eric
