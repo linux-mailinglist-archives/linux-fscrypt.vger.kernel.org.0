@@ -2,44 +2,53 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7651263534C
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 23 Nov 2022 09:54:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F14B636CFF
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 23 Nov 2022 23:19:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229563AbiKWIxB (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 23 Nov 2022 03:53:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56536 "EHLO
+        id S229471AbiKWWTf (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 23 Nov 2022 17:19:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236071AbiKWIw5 (ORCPT
+        with ESMTP id S229379AbiKWWTe (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 23 Nov 2022 03:52:57 -0500
-X-Greylist: delayed 436 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 23 Nov 2022 00:52:51 PST
-Received: from mail.gluegivebiz.com (mail.gluegivebiz.com [94.177.230.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FE8D53ECD
-        for <linux-fscrypt@vger.kernel.org>; Wed, 23 Nov 2022 00:52:50 -0800 (PST)
-Received: by mail.gluegivebiz.com (Postfix, from userid 1001)
-        id 48F1C82750; Wed, 23 Nov 2022 08:45:31 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gluegivebiz.com;
-        s=mail; t=1669193133;
-        bh=suFMqso2eT9nGxcKUkouP21Cya6vlSHiaK8ebgNdeQQ=;
-        h=Date:From:To:Subject:From;
-        b=IJgsHokbPfTMb/CiRxVRtIKjfsIVf2y8HnoIUjrTbpi3VHGCL9Ol0cPDTDs2dX1vh
-         Joddmh8sp23d/fgA7Z9ss5QzgzdGMhilRUrq/DIYHc1rxdGf48NN24LUqkuY03T1O3
-         t6BPa1gA1DWsc+tECZrGuYsW8uZl1MaVV+r7jerxzfn5d0mYcQhzG2GOVEQOzv5k6/
-         25SPi/I39qdw7c879kcd4ThswhqBu3LeEOQuDsnbGuouiR/bdwuk9gs+xPgKEQ2asm
-         nUh8zU8mGypYdCYhX5MsP5rOIsE/6pROfORm8o0abqyGX5SmODzj4PxG4BgL57AAjv
-         c0wsHdREJZlZQ==
-Received: by mail.gluegivebiz.com for <linux-fscrypt@vger.kernel.org>; Wed, 23 Nov 2022 08:45:30 GMT
-Message-ID: <20221123074500-0.1.e.m3v.0.rb7l4llkc6@gluegivebiz.com>
-Date:   Wed, 23 Nov 2022 08:45:30 GMT
-From:   "Gaston Perrot" <gaston.perrot@gluegivebiz.com>
-To:     <linux-fscrypt@vger.kernel.org>
-Subject: Silikonmischungen
-X-Mailer: mail.gluegivebiz.com
+        Wed, 23 Nov 2022 17:19:34 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72629114B87;
+        Wed, 23 Nov 2022 14:19:33 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 1B8C7B82543;
+        Wed, 23 Nov 2022 22:19:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88EDFC433D6;
+        Wed, 23 Nov 2022 22:19:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1669241970;
+        bh=ZZiwh5s9GrphvhQmAD0il03WldxNsbh9fhgz97VZw4s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cfWEMTHSzfV7pNdYK4NSlbwYxT08YbQL83lw1ZZe2T2w9m6gFY0Z33+VuOEcLDz0L
+         4DLMAlY7uhO1W/eb3OvFQ2l34uind+Oyc+zx56bOJHbzr5lkF7GWd+z9V7FAa6Hiti
+         8h+AS0qKCRGcg8cFz+nGlgLWx1hcWOaZDWKe/Bok/8kgFiwiWwIHMpWva7Eaurf0yc
+         inxjU41zPrNJLB8SOv58ttgUH4Wrfc9aTH0xSfVsdL+yeGs2dcPwn6LaaiDtdcKsk8
+         XAKo1Nvn9KtnhNAIv4HS6U/I9dWxpozPYWEc1JH+9LD9VTDhNWY+aZjLRkMczKQUqW
+         obOmJADBUyqfQ==
+Date:   Wed, 23 Nov 2022 22:19:29 +0000
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [PATCH v3] fsverity: stop using PG_error to track error status
+Message-ID: <Y36ccbZq9gsnbmWw@gmail.com>
+References: <20221028175807.55495-1-ebiggers@kernel.org>
+ <Y2y0cspSZG5dt6c+@sol.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_FMBLA_NEWDOM28,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y2y0cspSZG5dt6c+@sol.localdomain>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -47,23 +56,37 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Good morning,
+On Thu, Nov 10, 2022 at 12:21:06AM -0800, Eric Biggers wrote:
+> On Fri, Oct 28, 2022 at 10:58:07AM -0700, Eric Biggers wrote:
+> > From: Eric Biggers <ebiggers@google.com>
+> > 
+> > As a step towards freeing the PG_error flag for other uses, change ext4
+> > and f2fs to stop using PG_error to track verity errors.  Instead, if a
+> > verity error occurs, just mark the whole bio as failed.  The coarser
+> > granularity isn't really a problem since it isn't any worse than what
+> > the block layer provides, and errors from a multi-page readahead aren't
+> > reported to applications unless a single-page read fails too.
+> > 
+> > f2fs supports compression, which makes the f2fs changes a bit more
+> > complicated than desired, but the basic premise still works.
+> > 
+> > Signed-off-by: Eric Biggers <ebiggers@google.com>
+> > ---
+> > 
+> > In v3, I made a small simplification to the f2fs changes.  I'm also only
+> > sending the fsverity patch now, since the fscrypt one is now upstream.  
+> > 
+> >  fs/ext4/readpage.c |  8 ++----
+> >  fs/f2fs/compress.c | 64 ++++++++++++++++++++++------------------------
+> >  fs/f2fs/data.c     | 48 +++++++++++++++++++---------------
+> >  fs/verity/verify.c | 12 ++++-----
+> >  4 files changed, 67 insertions(+), 65 deletions(-)
+> 
+> I've applied this to the fsverity tree for 6.2.
+> 
+> Reviews would be greatly appreciated, of course.
+> 
 
-do you need intermediates for processing, plastics (e.g. rubber) or silic=
-one mixtures?
+Jaegeuk and Chao, can I get a review or ack from one of you?
 
-We provide a wide range of silicone rubbers with various properties, sili=
-cone mixtures from renowned manufacturers such as Wacker, Elastosil LR an=
-d dyes, stabilizers, primers and anti-adhesive additives.
-
-We also produce technical silicone compounds with increased resistance to=
- oils, resistant to high temperatures and water vapor, conductive and man=
-y more.
-
-We provide fast order fulfillment, timely deliveries and cost optimizatio=
-n.
-
-Can I introduce what we can offer you?
-
-
-Gaston Perrot
+- Eric
