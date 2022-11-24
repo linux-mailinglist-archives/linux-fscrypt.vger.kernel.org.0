@@ -2,102 +2,71 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33A28636FBE
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 24 Nov 2022 02:22:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6319A637339
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 24 Nov 2022 08:59:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbiKXBWk (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 23 Nov 2022 20:22:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53904 "EHLO
+        id S229693AbiKXH76 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 24 Nov 2022 02:59:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229911AbiKXBWj (ORCPT
+        with ESMTP id S229487AbiKXH7z (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 23 Nov 2022 20:22:39 -0500
-Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCF863B6;
-        Wed, 23 Nov 2022 17:22:35 -0800 (PST)
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 1D6468113C;
-        Wed, 23 Nov 2022 20:22:31 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1669252953; bh=e5+Kz0offVYjfTdxHxRxQIsU/8g83AfXqzC8JSA/ZHo=;
-        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-        b=MeCEPKpV7DeGAKi/iRuB5ff3DWjWDBD/L2CgkXQ03wy/EMGojetlWhytM3dcEKZF9
-         OS1GfZscBrk59EzCyqkM/WGeSSh5Yzp3AT7QCdHaTG6PhQBOLeQOhpSRs71dwZNyAB
-         PYC8A9IcK89o0NqxmVj17wbvfgECWGB8RwZDZfc3EuJkS0Sq08p4hPsm78lmt44sdG
-         +gaxQ+n/yj83Vif/ZS5NkrfMFUM3i64ibkke/Eu89WhM7UDo6rONkak+5+1Te3TD+u
-         FX2xHXdGmnz0RNz361PH2PPNQUl7e6Gjaef1nCA7xnitextHljQyPBeTIh/w7OLjKJ
-         L1q+UWQ9DTmeg==
-Message-ID: <4857f0df-dae0-178e-85e3-307197701d34@dorminy.me>
-Date:   Wed, 23 Nov 2022 20:22:30 -0500
+        Thu, 24 Nov 2022 02:59:55 -0500
+Received: from out30-54.freemail.mail.aliyun.com (out30-54.freemail.mail.aliyun.com [115.124.30.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD39DC6611;
+        Wed, 23 Nov 2022 23:59:48 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R241e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0VVa7Khj_1669276784;
+Received: from 30.25.224.158(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0VVa7Khj_1669276784)
+          by smtp.aliyun-inc.com;
+          Thu, 24 Nov 2022 15:59:45 +0800
+Message-ID: <0d47da05-9818-e6ed-c778-b1ad90688125@linux.alibaba.com>
+Date:   Thu, 24 Nov 2022 15:59:43 +0800
 MIME-Version: 1.0
-Subject: Re: [PATCH v5 00/18] btrfs: add fscrypt integration
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.13.1
+Subject: Re: [PATCH v2 2/2] fscrypt: Add SM4 XTS/CTS symmetric algorithm
+ support
 Content-Language: en-US
-From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-To:     Paul Crowley <paulcrowley@google.com>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-fscrypt@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, kernel-team@meta.com,
-        Omar Sandoval <osandov@osandov.com>, Chris Mason <clm@fb.com>
-References: <cover.1667389115.git.sweettea-kernel@dorminy.me>
- <CA+_SqcAFMXjW6V2u1NZzGwBe4na4m_FBspgP0Z6Q0oTvT+QJVQ@mail.gmail.com>
- <81e3763c-2c02-2c9f-aece-32aa575abbca@dorminy.me>
- <55686ed2-b182-3478-37aa-237e306be6e1@dorminy.me>
-In-Reply-To: <55686ed2-b182-3478-37aa-237e306be6e1@dorminy.me>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     "Theodore Y. Ts o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        linux-fscrypt@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
+References: <20221122070632.21910-1-tianjia.zhang@linux.alibaba.com>
+ <20221122070632.21910-3-tianjia.zhang@linux.alibaba.com>
+ <Y30hjJq1Vwl4k1dJ@sol.localdomain>
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+In-Reply-To: <Y30hjJq1Vwl4k1dJ@sol.localdomain>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-We had a very productive meeting and have greatly changed the design: we 
-now plan to implement authenticated encryption, and have per-extent keys 
-instead of per-extent nonces, which will greatly improve the 
-cryptographic characteristics over this version. Many thanks for the 
-discussion, both in the meeting and on the document.
+Hi Eric,
 
-The document has been updated to hopefully reflect the discussion we 
-had; further comments are always appreciated. 
-https://docs.google.com/document/d/1janjxewlewtVPqctkWOjSa7OhCgB8Gdx7iDaCDQQNZA/edit?usp=sharing 
-
-
-I look forward to working on implementing the new design; thanks to all!
-
-Sweet Tea
-
-On 11/21/22 12:26, Sweet Tea Dorminy wrote:
-> I appreciate the conversation happening on the doc; thank ya'll for 
-> reading and commenting.
-> 
-> Would it be worth having a meeting on Zoom or the like this week to 
-> discuss the way forward for getting encryption for btrfs, be that one of 
-> the extent-based encryption variations or AEAD?
-> 
-> Thanks!
-> 
-> Sweet Tea
-> 
-> On 11/16/22 15:19, Sweet Tea Dorminy wrote:
+On 11/23/22 3:22 AM, Eric Biggers wrote:
+> On Tue, Nov 22, 2022 at 03:06:32PM +0800, Tianjia Zhang wrote:
+>> SM4 is a symmetric algorithm widely used in China, this patch enables
+>> to use SM4-XTS mode to encrypt file content, and use SM4-CBC-CTS to
+>> encrypt filename.
 >>
->>
->> On 11/3/22 15:22, Paul Crowley wrote:
->>> Thank you for creating this! I'm told the design document [1] no
->>> longer reflects the current proposal in these patches. If that's so I
->>> think it's worth bringing the design document up to date so we can
->>> review the cryptography. Thanks!
->>>
->>> [1] 
->>> https://docs.google.com/document/d/1iNnrqyZqJ2I5nfWKt7cd1T9xwU0iHhjhk9ALQW3XuII/edit
->>
->> I apologize for the delay; I realized when this thread was bumped just 
->> now that my attempt to share the updated doc didn't seem to make it to 
->> the mailing list.
->>
->> https://docs.google.com/document/d/1janjxewlewtVPqctkWOjSa7OhCgB8Gdx7iDaCDQQNZA/edit?usp=sharing is an update of the design document that hopefully is what you're requesting.
+>> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+> 
+> There is still no explanation here about why you believe this algorithm is
+> useful to support in fscrypt.
+> 
+> - Eric
+
+Sorry, I will send a new version of patch to add these information.
+
+Best regards,
+Tianjia
