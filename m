@@ -2,91 +2,102 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F14B636CFF
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 23 Nov 2022 23:19:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33A28636FBE
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 24 Nov 2022 02:22:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229471AbiKWWTf (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 23 Nov 2022 17:19:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53852 "EHLO
+        id S229904AbiKXBWk (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 23 Nov 2022 20:22:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbiKWWTe (ORCPT
+        with ESMTP id S229911AbiKXBWj (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 23 Nov 2022 17:19:34 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72629114B87;
-        Wed, 23 Nov 2022 14:19:33 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Wed, 23 Nov 2022 20:22:39 -0500
+Received: from box.fidei.email (box.fidei.email [71.19.144.250])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCF863B6;
+        Wed, 23 Nov 2022 17:22:35 -0800 (PST)
+Received: from authenticated-user (box.fidei.email [71.19.144.250])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 1B8C7B82543;
-        Wed, 23 Nov 2022 22:19:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88EDFC433D6;
-        Wed, 23 Nov 2022 22:19:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669241970;
-        bh=ZZiwh5s9GrphvhQmAD0il03WldxNsbh9fhgz97VZw4s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cfWEMTHSzfV7pNdYK4NSlbwYxT08YbQL83lw1ZZe2T2w9m6gFY0Z33+VuOEcLDz0L
-         4DLMAlY7uhO1W/eb3OvFQ2l34uind+Oyc+zx56bOJHbzr5lkF7GWd+z9V7FAa6Hiti
-         8h+AS0qKCRGcg8cFz+nGlgLWx1hcWOaZDWKe/Bok/8kgFiwiWwIHMpWva7Eaurf0yc
-         inxjU41zPrNJLB8SOv58ttgUH4Wrfc9aTH0xSfVsdL+yeGs2dcPwn6LaaiDtdcKsk8
-         XAKo1Nvn9KtnhNAIv4HS6U/I9dWxpozPYWEc1JH+9LD9VTDhNWY+aZjLRkMczKQUqW
-         obOmJADBUyqfQ==
-Date:   Wed, 23 Nov 2022 22:19:29 +0000
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH v3] fsverity: stop using PG_error to track error status
-Message-ID: <Y36ccbZq9gsnbmWw@gmail.com>
-References: <20221028175807.55495-1-ebiggers@kernel.org>
- <Y2y0cspSZG5dt6c+@sol.localdomain>
+        by box.fidei.email (Postfix) with ESMTPSA id 1D6468113C;
+        Wed, 23 Nov 2022 20:22:31 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
+        t=1669252953; bh=e5+Kz0offVYjfTdxHxRxQIsU/8g83AfXqzC8JSA/ZHo=;
+        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+        b=MeCEPKpV7DeGAKi/iRuB5ff3DWjWDBD/L2CgkXQ03wy/EMGojetlWhytM3dcEKZF9
+         OS1GfZscBrk59EzCyqkM/WGeSSh5Yzp3AT7QCdHaTG6PhQBOLeQOhpSRs71dwZNyAB
+         PYC8A9IcK89o0NqxmVj17wbvfgECWGB8RwZDZfc3EuJkS0Sq08p4hPsm78lmt44sdG
+         +gaxQ+n/yj83Vif/ZS5NkrfMFUM3i64ibkke/Eu89WhM7UDo6rONkak+5+1Te3TD+u
+         FX2xHXdGmnz0RNz361PH2PPNQUl7e6Gjaef1nCA7xnitextHljQyPBeTIh/w7OLjKJ
+         L1q+UWQ9DTmeg==
+Message-ID: <4857f0df-dae0-178e-85e3-307197701d34@dorminy.me>
+Date:   Wed, 23 Nov 2022 20:22:30 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y2y0cspSZG5dt6c+@sol.localdomain>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v5 00/18] btrfs: add fscrypt integration
+Content-Language: en-US
+From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+To:     Paul Crowley <paulcrowley@google.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-fscrypt@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, kernel-team@meta.com,
+        Omar Sandoval <osandov@osandov.com>, Chris Mason <clm@fb.com>
+References: <cover.1667389115.git.sweettea-kernel@dorminy.me>
+ <CA+_SqcAFMXjW6V2u1NZzGwBe4na4m_FBspgP0Z6Q0oTvT+QJVQ@mail.gmail.com>
+ <81e3763c-2c02-2c9f-aece-32aa575abbca@dorminy.me>
+ <55686ed2-b182-3478-37aa-237e306be6e1@dorminy.me>
+In-Reply-To: <55686ed2-b182-3478-37aa-237e306be6e1@dorminy.me>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, Nov 10, 2022 at 12:21:06AM -0800, Eric Biggers wrote:
-> On Fri, Oct 28, 2022 at 10:58:07AM -0700, Eric Biggers wrote:
-> > From: Eric Biggers <ebiggers@google.com>
-> > 
-> > As a step towards freeing the PG_error flag for other uses, change ext4
-> > and f2fs to stop using PG_error to track verity errors.  Instead, if a
-> > verity error occurs, just mark the whole bio as failed.  The coarser
-> > granularity isn't really a problem since it isn't any worse than what
-> > the block layer provides, and errors from a multi-page readahead aren't
-> > reported to applications unless a single-page read fails too.
-> > 
-> > f2fs supports compression, which makes the f2fs changes a bit more
-> > complicated than desired, but the basic premise still works.
-> > 
-> > Signed-off-by: Eric Biggers <ebiggers@google.com>
-> > ---
-> > 
-> > In v3, I made a small simplification to the f2fs changes.  I'm also only
-> > sending the fsverity patch now, since the fscrypt one is now upstream.  
-> > 
-> >  fs/ext4/readpage.c |  8 ++----
-> >  fs/f2fs/compress.c | 64 ++++++++++++++++++++++------------------------
-> >  fs/f2fs/data.c     | 48 +++++++++++++++++++---------------
-> >  fs/verity/verify.c | 12 ++++-----
-> >  4 files changed, 67 insertions(+), 65 deletions(-)
-> 
-> I've applied this to the fsverity tree for 6.2.
-> 
-> Reviews would be greatly appreciated, of course.
-> 
+We had a very productive meeting and have greatly changed the design: we 
+now plan to implement authenticated encryption, and have per-extent keys 
+instead of per-extent nonces, which will greatly improve the 
+cryptographic characteristics over this version. Many thanks for the 
+discussion, both in the meeting and on the document.
 
-Jaegeuk and Chao, can I get a review or ack from one of you?
+The document has been updated to hopefully reflect the discussion we 
+had; further comments are always appreciated. 
+https://docs.google.com/document/d/1janjxewlewtVPqctkWOjSa7OhCgB8Gdx7iDaCDQQNZA/edit?usp=sharing 
 
-- Eric
+
+I look forward to working on implementing the new design; thanks to all!
+
+Sweet Tea
+
+On 11/21/22 12:26, Sweet Tea Dorminy wrote:
+> I appreciate the conversation happening on the doc; thank ya'll for 
+> reading and commenting.
+> 
+> Would it be worth having a meeting on Zoom or the like this week to 
+> discuss the way forward for getting encryption for btrfs, be that one of 
+> the extent-based encryption variations or AEAD?
+> 
+> Thanks!
+> 
+> Sweet Tea
+> 
+> On 11/16/22 15:19, Sweet Tea Dorminy wrote:
+>>
+>>
+>> On 11/3/22 15:22, Paul Crowley wrote:
+>>> Thank you for creating this! I'm told the design document [1] no
+>>> longer reflects the current proposal in these patches. If that's so I
+>>> think it's worth bringing the design document up to date so we can
+>>> review the cryptography. Thanks!
+>>>
+>>> [1] 
+>>> https://docs.google.com/document/d/1iNnrqyZqJ2I5nfWKt7cd1T9xwU0iHhjhk9ALQW3XuII/edit
+>>
+>> I apologize for the delay; I realized when this thread was bumped just 
+>> now that my attempt to share the updated doc didn't seem to make it to 
+>> the mailing list.
+>>
+>> https://docs.google.com/document/d/1janjxewlewtVPqctkWOjSa7OhCgB8Gdx7iDaCDQQNZA/edit?usp=sharing is an update of the design document that hopefully is what you're requesting.
