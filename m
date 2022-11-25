@@ -2,71 +2,113 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6319A637339
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 24 Nov 2022 08:59:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37F50638299
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 25 Nov 2022 04:06:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229693AbiKXH76 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 24 Nov 2022 02:59:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48740 "EHLO
+        id S229642AbiKYDGz (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 24 Nov 2022 22:06:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbiKXH7z (ORCPT
+        with ESMTP id S229529AbiKYDGy (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 24 Nov 2022 02:59:55 -0500
-Received: from out30-54.freemail.mail.aliyun.com (out30-54.freemail.mail.aliyun.com [115.124.30.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD39DC6611;
-        Wed, 23 Nov 2022 23:59:48 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R241e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0VVa7Khj_1669276784;
-Received: from 30.25.224.158(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0VVa7Khj_1669276784)
-          by smtp.aliyun-inc.com;
-          Thu, 24 Nov 2022 15:59:45 +0800
-Message-ID: <0d47da05-9818-e6ed-c778-b1ad90688125@linux.alibaba.com>
-Date:   Thu, 24 Nov 2022 15:59:43 +0800
+        Thu, 24 Nov 2022 22:06:54 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 020802AC52;
+        Thu, 24 Nov 2022 19:06:49 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8D1DF6228D;
+        Fri, 25 Nov 2022 03:06:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E788C433C1;
+        Fri, 25 Nov 2022 03:06:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1669345607;
+        bh=llHY7MD0O4KbESr1IfNXkVxCsoqrf0x1miTbM2if/kA=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=uf+swNBqVug8dnkjGi6j5UuJv+OHqO452APhypTnl+OgAgmoG1eNJj6PQA/nx740l
+         bDRO8mPlFQlAEgMrIqonf3SYk+ebcgd0HVpmilOxa/FlykLTL0CuA0cf529MnNZHUT
+         F1QJC/Uf4LKJc+9GglTGXmqc3eiqAGc5adZ41SgUuAsFwFCy11GLEYIn82xSFNA2V2
+         ODOPItWvuSlW0Z7vytudtYwqRgmAulY9ack9BPMsctSVjPoTgGEbzTM/YAtmDbvWa8
+         w7nKZDg0sqSaH0MXwR35X0YjMZu8w4Er9mbgv0Ftws+wNn+rIk2koBy+iXUdCkbS87
+         zYTcQc0QtymHg==
+Message-ID: <4b0a548a-5b04-24a6-944d-348d15605dd2@kernel.org>
+Date:   Fri, 25 Nov 2022 11:06:43 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.13.1
-Subject: Re: [PATCH v2 2/2] fscrypt: Add SM4 XTS/CTS symmetric algorithm
- support
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: [PATCH v3] fsverity: stop using PG_error to track error status
 Content-Language: en-US
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     "Theodore Y. Ts o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        linux-fscrypt@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
-References: <20221122070632.21910-1-tianjia.zhang@linux.alibaba.com>
- <20221122070632.21910-3-tianjia.zhang@linux.alibaba.com>
- <Y30hjJq1Vwl4k1dJ@sol.localdomain>
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-In-Reply-To: <Y30hjJq1Vwl4k1dJ@sol.localdomain>
+To:     Eric Biggers <ebiggers@kernel.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-f2fs-devel@lists.sourceforge.net
+References: <20221028175807.55495-1-ebiggers@kernel.org>
+ <Y2y0cspSZG5dt6c+@sol.localdomain> <Y36ccbZq9gsnbmWw@gmail.com>
+From:   Chao Yu <chao@kernel.org>
+In-Reply-To: <Y36ccbZq9gsnbmWw@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
+On 2022/11/24 6:19, Eric Biggers wrote:
+> On Thu, Nov 10, 2022 at 12:21:06AM -0800, Eric Biggers wrote:
+>> On Fri, Oct 28, 2022 at 10:58:07AM -0700, Eric Biggers wrote:
+>>> From: Eric Biggers <ebiggers@google.com>
+>>>
+>>> As a step towards freeing the PG_error flag for other uses, change ext4
+>>> and f2fs to stop using PG_error to track verity errors.  Instead, if a
+>>> verity error occurs, just mark the whole bio as failed.  The coarser
+>>> granularity isn't really a problem since it isn't any worse than what
+>>> the block layer provides, and errors from a multi-page readahead aren't
+>>> reported to applications unless a single-page read fails too.
+>>>
+>>> f2fs supports compression, which makes the f2fs changes a bit more
+>>> complicated than desired, but the basic premise still works.
+>>>
+>>> Signed-off-by: Eric Biggers <ebiggers@google.com>
+>>> ---
+>>>
+>>> In v3, I made a small simplification to the f2fs changes.  I'm also only
+>>> sending the fsverity patch now, since the fscrypt one is now upstream.
+>>>
+>>>   fs/ext4/readpage.c |  8 ++----
+>>>   fs/f2fs/compress.c | 64 ++++++++++++++++++++++------------------------
+>>>   fs/f2fs/data.c     | 48 +++++++++++++++++++---------------
+
 Hi Eric,
 
-On 11/23/22 3:22 AM, Eric Biggers wrote:
-> On Tue, Nov 22, 2022 at 03:06:32PM +0800, Tianjia Zhang wrote:
->> SM4 is a symmetric algorithm widely used in China, this patch enables
->> to use SM4-XTS mode to encrypt file content, and use SM4-CBC-CTS to
->> encrypt filename.
+Result of "grep PageError fs/f2fs/* -n"
+
+...
+fs/f2fs/gc.c:1364:      ClearPageError(page);
+fs/f2fs/inline.c:177:   ClearPageError(page);
+fs/f2fs/node.c:1649:    ClearPageError(page);
+fs/f2fs/node.c:2078:            if (TestClearPageError(page))
+fs/f2fs/segment.c:3406: ClearPageError(page);
+
+Any plan to remove above PG_error flag operations? Maybe in a separated patch?
+
+Thanks,
+
+>>>   fs/verity/verify.c | 12 ++++-----
+>>>   4 files changed, 67 insertions(+), 65 deletions(-)
 >>
->> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+>> I've applied this to the fsverity tree for 6.2.
+>>
+>> Reviews would be greatly appreciated, of course.
+>>
 > 
-> There is still no explanation here about why you believe this algorithm is
-> useful to support in fscrypt.
+> Jaegeuk and Chao, can I get a review or ack from one of you?
 > 
 > - Eric
-
-Sorry, I will send a new version of patch to add these information.
-
-Best regards,
-Tianjia
