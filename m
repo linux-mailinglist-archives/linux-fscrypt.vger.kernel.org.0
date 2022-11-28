@@ -2,77 +2,85 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8841D63903D
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 25 Nov 2022 20:22:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4124863A201
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 28 Nov 2022 08:35:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229610AbiKYTWG (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 25 Nov 2022 14:22:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46398 "EHLO
+        id S229885AbiK1Hfq (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 28 Nov 2022 02:35:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbiKYTWG (ORCPT
+        with ESMTP id S229713AbiK1Hfp (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 25 Nov 2022 14:22:06 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D4342CDC5;
-        Fri, 25 Nov 2022 11:22:05 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3861E60C1F;
-        Fri, 25 Nov 2022 19:22:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B799C433D6;
-        Fri, 25 Nov 2022 19:22:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669404124;
-        bh=KrOiWwXDrPvGkEAn2LB7RpjRNfGbTiRZkWJjSt4RC8I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CPFBZj5sInDrrO6haYS/sTWeJTkias4f/BcMHkF1L6JEUbgV5mWsbFMpvn5uMpF6f
-         TJCnD0bXT/sY56bIRES8+yrqZ7+UoL9yb8CJa2JSsowup80KWFEOqutG4GkoQFi9If
-         ZEWKNQXRszfPq618gUgsErEv5+XY2kLZ4HsJF3A+zNWT2okwAN0bcZpqrRHfV9qPHy
-         Co2V1+1DiFXVqtvUbb1JHb2+iynCjzRL8m0Z2GezOg6bI6V0vatPT9INxGT7m6Kx3Q
-         e+B8UyDMRIR64AAzx61Pn2wdwiXD3/DwB88uMsGNkfZ684U+NuNKNA++dHr8Gjki4J
-         kNXPahX58Lx1Q==
-Date:   Fri, 25 Nov 2022 11:22:02 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Chao Yu <chao@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH v3] fsverity: stop using PG_error to track error status
-Message-ID: <Y4EV2rNfdNWfzF9+@sol.localdomain>
-References: <20221028175807.55495-1-ebiggers@kernel.org>
- <6bce9afb-2561-7937-caea-8aadaa5a21cd@kernel.org>
+        Mon, 28 Nov 2022 02:35:45 -0500
+Received: from out30-57.freemail.mail.aliyun.com (out30-57.freemail.mail.aliyun.com [115.124.30.57])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEC4B12AAF;
+        Sun, 27 Nov 2022 23:35:43 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0VVpnSmS_1669620938;
+Received: from 30.27.90.133(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0VVpnSmS_1669620938)
+          by smtp.aliyun-inc.com;
+          Mon, 28 Nov 2022 15:35:39 +0800
+Message-ID: <e0461754-39c4-a9e1-6ca1-381659e4a2d7@linux.alibaba.com>
+Date:   Mon, 28 Nov 2022 15:35:37 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6bce9afb-2561-7937-caea-8aadaa5a21cd@kernel.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.13.1
+Subject: Re: [PATCH v3 2/2] fscrypt: Add SM4 XTS/CTS symmetric algorithm
+ support
+Content-Language: en-US
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     "Theodore Y. Ts o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        linux-fscrypt@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
+References: <20221125121630.87793-1-tianjia.zhang@linux.alibaba.com>
+ <20221125121630.87793-3-tianjia.zhang@linux.alibaba.com>
+ <Y4EIR+n8aKutuLo0@sol.localdomain>
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+In-Reply-To: <Y4EIR+n8aKutuLo0@sol.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-10.2 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Nov 25, 2022 at 11:36:14AM +0800, Chao Yu wrote:
-> On 2022/10/29 1:58, Eric Biggers wrote:
-> > @@ -116,43 +116,51 @@ struct bio_post_read_ctx {
-> >   	struct f2fs_sb_info *sbi;
-> >   	struct work_struct work;
-> >   	unsigned int enabled_steps;
-> > +	bool decompression_attempted;
+Hi Eric,
+
+On 11/26/22 2:24 AM, Eric Biggers wrote:
+> On Fri, Nov 25, 2022 at 08:16:30PM +0800, Tianjia Zhang wrote:
+>> diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
+>> index 46757c3052ef..8e69bc0c35cd 100644
+>> --- a/fs/crypto/policy.c
+>> +++ b/fs/crypto/policy.c
+>> @@ -71,6 +71,10 @@ static bool fscrypt_valid_enc_modes_v1(u32 contents_mode, u32 filenames_mode)
+>>   	    filenames_mode == FSCRYPT_MODE_AES_128_CTS)
+>>   		return true;
+>>   
+>> +	if (contents_mode == FSCRYPT_MODE_SM4_XTS &&
+>> +	    filenames_mode == FSCRYPT_MODE_SM4_CTS)
+>> +		return true;
+>> +
+>>   	if (contents_mode == FSCRYPT_MODE_ADIANTUM &&
+>>   	    filenames_mode == FSCRYPT_MODE_ADIANTUM)
+>>   		return true;
 > 
-> How about adding some comments for decompression_attempted? Otherwise it
-> looks good to me.
+> Sorry, one more thing I didn't notice before.  Since this is a new feature,
+> please only allow it in fscrypt_valid_enc_modes_v2(), not in
+> fscrypt_valid_enc_modes_v1().  That's what we did for AES-256-XTS +
+> AES-256-HCTR2 recently.  There should be no need to add new features to
+> v1 encryption policies, which have been deprecated for several years.
 > 
+> - Eric
 
-I added the following:
+Thanks for reminder, it makes sense to only support the new algorithm in
+v2 policy, which I will do this.
 
-	/*
- 	 * decompression_attempted keeps track of whether
- 	 * f2fs_end_read_compressed_page() has been called on the pages in the
- 	 * bio that belong to a compressed cluster yet.
- 	 */
-
-- Eric
+BR,
+Tianjia
