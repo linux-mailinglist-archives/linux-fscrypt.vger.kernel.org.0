@@ -2,85 +2,65 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4124863A201
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 28 Nov 2022 08:35:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B72C263A263
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 28 Nov 2022 08:59:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229885AbiK1Hfq (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 28 Nov 2022 02:35:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40798 "EHLO
+        id S229894AbiK1H7w (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 28 Nov 2022 02:59:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229713AbiK1Hfp (ORCPT
+        with ESMTP id S229794AbiK1H7v (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 28 Nov 2022 02:35:45 -0500
-Received: from out30-57.freemail.mail.aliyun.com (out30-57.freemail.mail.aliyun.com [115.124.30.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEC4B12AAF;
-        Sun, 27 Nov 2022 23:35:43 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0VVpnSmS_1669620938;
-Received: from 30.27.90.133(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0VVpnSmS_1669620938)
-          by smtp.aliyun-inc.com;
-          Mon, 28 Nov 2022 15:35:39 +0800
-Message-ID: <e0461754-39c4-a9e1-6ca1-381659e4a2d7@linux.alibaba.com>
-Date:   Mon, 28 Nov 2022 15:35:37 +0800
+        Mon, 28 Nov 2022 02:59:51 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91B2F64E9;
+        Sun, 27 Nov 2022 23:59:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=3Gs3PsmZkhDAzjVqppYL2tAQScK434JhB2ghF4jK5i0=; b=RmBMn98/uMdV2WyumP8p/2uRXw
+        GDVnOelK//TT9h6VYONjr+EyXDH85AMma9OxGuAsqMWW2lOrw0cH6Il14Q6Gj4ECBxEEGWiB7DdfC
+        qPZVJ8j9xzTR3h2tIJtAUzatG8Gn5DJElr275FyIK/drQjRxg5P38/9CipKShd/GWoRdLPlXJOkTo
+        dOCYwV86CW7b8Gp9fR3Ox4TP0vR36LO8+RowNlq03xhk9RZUfbbirx+1ORfGR6AeAIhJZ20+L5eaO
+        yKAK+WRgBVtq5lQZsBwabCGORqwDzD0mqOUwQ0YHldWqguwUjUAEr7O008sRyJ3ClLph8brhr7vm9
+        RS2/GjYw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ozZ3E-00HX0W-32; Mon, 28 Nov 2022 07:59:40 +0000
+Date:   Sun, 27 Nov 2022 23:59:40 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Cc:     Paul Crowley <paulcrowley@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-fscrypt@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, kernel-team@meta.com,
+        Omar Sandoval <osandov@osandov.com>, Chris Mason <clm@fb.com>
+Subject: Re: [PATCH v5 00/18] btrfs: add fscrypt integration
+Message-ID: <Y4RqbKSdxQ5owg0h@infradead.org>
+References: <cover.1667389115.git.sweettea-kernel@dorminy.me>
+ <CA+_SqcAFMXjW6V2u1NZzGwBe4na4m_FBspgP0Z6Q0oTvT+QJVQ@mail.gmail.com>
+ <81e3763c-2c02-2c9f-aece-32aa575abbca@dorminy.me>
+ <55686ed2-b182-3478-37aa-237e306be6e1@dorminy.me>
+ <4857f0df-dae0-178e-85e3-307197701d34@dorminy.me>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.13.1
-Subject: Re: [PATCH v3 2/2] fscrypt: Add SM4 XTS/CTS symmetric algorithm
- support
-Content-Language: en-US
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     "Theodore Y. Ts o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        linux-fscrypt@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
-References: <20221125121630.87793-1-tianjia.zhang@linux.alibaba.com>
- <20221125121630.87793-3-tianjia.zhang@linux.alibaba.com>
- <Y4EIR+n8aKutuLo0@sol.localdomain>
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-In-Reply-To: <Y4EIR+n8aKutuLo0@sol.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-10.2 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4857f0df-dae0-178e-85e3-307197701d34@dorminy.me>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hi Eric,
+On Wed, Nov 23, 2022 at 08:22:30PM -0500, Sweet Tea Dorminy wrote:
+> The document has been updated to hopefully reflect the discussion we had;
+> further comments are always appreciated. https://docs.google.com/document/d/1janjxewlewtVPqctkWOjSa7OhCgB8Gdx7iDaCDQQNZA/edit?usp=sharing
 
-On 11/26/22 2:24 AM, Eric Biggers wrote:
-> On Fri, Nov 25, 2022 at 08:16:30PM +0800, Tianjia Zhang wrote:
->> diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
->> index 46757c3052ef..8e69bc0c35cd 100644
->> --- a/fs/crypto/policy.c
->> +++ b/fs/crypto/policy.c
->> @@ -71,6 +71,10 @@ static bool fscrypt_valid_enc_modes_v1(u32 contents_mode, u32 filenames_mode)
->>   	    filenames_mode == FSCRYPT_MODE_AES_128_CTS)
->>   		return true;
->>   
->> +	if (contents_mode == FSCRYPT_MODE_SM4_XTS &&
->> +	    filenames_mode == FSCRYPT_MODE_SM4_CTS)
->> +		return true;
->> +
->>   	if (contents_mode == FSCRYPT_MODE_ADIANTUM &&
->>   	    filenames_mode == FSCRYPT_MODE_ADIANTUM)
->>   		return true;
-> 
-> Sorry, one more thing I didn't notice before.  Since this is a new feature,
-> please only allow it in fscrypt_valid_enc_modes_v2(), not in
-> fscrypt_valid_enc_modes_v1().  That's what we did for AES-256-XTS +
-> AES-256-HCTR2 recently.  There should be no need to add new features to
-> v1 encryption policies, which have been deprecated for several years.
-> 
-> - Eric
-
-Thanks for reminder, it makes sense to only support the new algorithm in
-v2 policy, which I will do this.
-
-BR,
-Tianjia
+How is this going to work with hardware encryption offload?  I think
+the number of keys for UFS and eMMC inline encryption, but Eric may
+correct me.
