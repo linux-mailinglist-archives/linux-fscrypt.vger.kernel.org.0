@@ -2,394 +2,134 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2311D63B210
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 28 Nov 2022 20:19:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFDAC63B34B
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 28 Nov 2022 21:35:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233015AbiK1TTB (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 28 Nov 2022 14:19:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44450 "EHLO
+        id S233160AbiK1UfA (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 28 Nov 2022 15:35:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233550AbiK1TSd (ORCPT
+        with ESMTP id S233103AbiK1Ue7 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 28 Nov 2022 14:18:33 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD602BB31;
-        Mon, 28 Nov 2022 11:18:24 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D7C17B80FC9;
-        Mon, 28 Nov 2022 19:18:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A1FAC433C1;
-        Mon, 28 Nov 2022 19:18:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669663101;
-        bh=cSNJcLEebvWXEYQhjrIKZD9HkMS/dzw+itu/l77AXjg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qEcWuUNdDza2ZBlsLEWZldNX193IZe2aFS0DmXQ2RhlCwfQdEcPqa+qpluTb5boBo
-         xTxkpe2TDdiAo46/ETob0JZjebaOTMTQC8UnmncaPdCOH7A4C5SHcn/L1nUE4yGMDX
-         pOhAz7qrNojOmh2lZWQFOf8n7ZlywTcNaoo5Z/9w2yZTvF6wPsjQjH2wbbgWM3PpBB
-         OJ0xgPe7HYj7zT6S/y/q6ONYqNbcI81nQg5jzNvCRa57OZzd2H4BMLYIZyPpZshIal
-         saSImZy/xuWnG1d2Iy5HIzhQpQIz7unmTBJjKnEqBSiImXoIxB6UlId0vLvja7Xu0C
-         PoCjvFfyb9v0g==
-Date:   Mon, 28 Nov 2022 11:18:19 -0800
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        Matthew Wilcox <willy@infradead.org>, Chao Yu <chao@kernel.org>
-Subject: Re: [PATCH v4] fsverity: stop using PG_error to track error status
-Message-ID: <Y4UJewp0sbHZ2z9Q@google.com>
-References: <20221125190642.12787-1-ebiggers@kernel.org>
+        Mon, 28 Nov 2022 15:34:59 -0500
+Received: from mail-oa1-x2b.google.com (mail-oa1-x2b.google.com [IPv6:2001:4860:4864:20::2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A33F2B25D
+        for <linux-fscrypt@vger.kernel.org>; Mon, 28 Nov 2022 12:34:58 -0800 (PST)
+Received: by mail-oa1-x2b.google.com with SMTP id 586e51a60fabf-14286d5ebc3so14523778fac.3
+        for <linux-fscrypt@vger.kernel.org>; Mon, 28 Nov 2022 12:34:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=3kUD8/TTfav9EbeDIQ8ZZwVrosW/5Hgcdhi9BGeQU7g=;
+        b=DN5OkkPDNLCxaFN2UuIezo27EMhAgaGg71EDTG24jCFvcjJ+UEWcw9yRaV6X+xTdEV
+         /enMA14Sr9jDM4Q9owZOzFRmr4+fdIuC6gZN32yU6Fs56Omfv/xkQHlPL16vlkVyg1RM
+         jJ7/i7hx/8PkDid/qAaFWqBNbJg2n0OAwL5TS/nRSZb/YGsXcrTfpYD6MPYYHqOp3GmQ
+         g1rKlsNtb6AeHlDnEV2stYocc+V8tspFVKJpFZFuxy9lQpp6/3bsWnSPaMQO3Vcoindl
+         u8unXiepGZRYgWTNwXh10W36lqXqP0RfWOq095Yz//bUa2+g9xsAdPTZRYUyA0x2mCmu
+         HN0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3kUD8/TTfav9EbeDIQ8ZZwVrosW/5Hgcdhi9BGeQU7g=;
+        b=GDGTTnXOP/nL6GXFpWWI67IRskiur4k6HoVW9cZF5iY7LoATLgc2iEPhFUMhVf20wY
+         wRCC3OM/wx7rdxG2jCdGwyovuB4oIiimHCX2moLKtxVZdimJlXbOW2lTHVprbqa2Gvrr
+         5WhRDJiduoakkD4RMMN+p7M1ve59d1wt61ygfSx3cn1pxdyt0HV1sM8z7O4pThPrN/7B
+         4FNJluG7UMqehWhgIVSSE/68mZiN1+DoevHdJAvNVckV7hsWSAKwiAIDWQIVubJFheyp
+         mCpylAhLmZJHAYR2y3fTS6f+KiiqgF0eBuCd02es+IJ1xxPh5kg6wKQQCMNurtOaLaaf
+         6fFQ==
+X-Gm-Message-State: ANoB5pnYII7GGaCxIrr+N4jEVhQVvq3Q8deuVhw85Mfu7bNdizKsomvK
+        kOTZCr1IT7bc/qaa4mORqMZcO4qGGlT+W5N4kR6qdA==
+X-Google-Smtp-Source: AA0mqf48wepdwdD988cC95590SQarOxOx/PbasQOurlJ3euIpsTj9iqEtW5r/l/Vj/yv5wdjBujhapZxq9RkOKG4VtA=
+X-Received: by 2002:a05:6870:430a:b0:13d:5167:43e3 with SMTP id
+ w10-20020a056870430a00b0013d516743e3mr20549124oah.257.1669667696999; Mon, 28
+ Nov 2022 12:34:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221125190642.12787-1-ebiggers@kernel.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1667389115.git.sweettea-kernel@dorminy.me>
+ <CA+_SqcAFMXjW6V2u1NZzGwBe4na4m_FBspgP0Z6Q0oTvT+QJVQ@mail.gmail.com>
+ <81e3763c-2c02-2c9f-aece-32aa575abbca@dorminy.me> <55686ed2-b182-3478-37aa-237e306be6e1@dorminy.me>
+ <4857f0df-dae0-178e-85e3-307197701d34@dorminy.me> <Y4RqbKSdxQ5owg0h@infradead.org>
+In-Reply-To: <Y4RqbKSdxQ5owg0h@infradead.org>
+From:   Paul Crowley <paulcrowley@google.com>
+Date:   Mon, 28 Nov 2022 12:34:46 -0800
+Message-ID: <CA+_SqcCFepKXXJWhF=d4pcEpMZ5XFO6j9buc+aHKpX9sP2+_KA@mail.gmail.com>
+Subject: Re: [PATCH v5 00/18] btrfs: add fscrypt integration
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-fscrypt@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, kernel-team@meta.com,
+        Omar Sandoval <osandov@osandov.com>, Chris Mason <clm@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On 11/25, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> As a step towards freeing the PG_error flag for other uses, change ext4
-> and f2fs to stop using PG_error to track verity errors.  Instead, if a
-> verity error occurs, just mark the whole bio as failed.  The coarser
-> granularity isn't really a problem since it isn't any worse than what
-> the block layer provides, and errors from a multi-page readahead aren't
-> reported to applications unless a single-page read fails too.
-> 
-> f2fs supports compression, which makes the f2fs changes a bit more
-> complicated than desired, but the basic premise still works.
-> 
-> Note: there are still a few uses of PageError in f2fs, but they are on
-> the write path, so they are unrelated and this patch doesn't touch them.
-> 
-> Reviewed-by: Chao Yu <chao@kernel.org>
+The kind of inline encryption hardware we see on Android devices tends
+to have these limitations:
 
-Acked-by: Jaegeuk Kim <jaegeuk@kernel.org>
+- as you indicate, loading keys can incur latency, so if many keys are
+in use at once it can slow things down
+- it's limited to using AES-XTS
+- on UFS devices, the IV (transmitted in the DUN) must be zero in the
+64 high bits
+- consecutive blocks in the same operation use consecutive IVs
+- there's no easy way to gather a checksum or MAC over the on-disk
+ciphertext short of re-reading after writing
 
-Thanks,
+Android works around this with IV_INO_LBLK_64 policies, but these only
+work well on the relatively small storage devices we use on Android.
+In particular the IV limitation is very serious:
 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
-> 
-> v4: Added a comment for decompression_attempted, added a paragraph to
->     the commit message, and added Chao's Reviewed-by.
-> 
-> v3: made a small simplification to the f2fs changes.  Also dropped the
->     fscrypt patch since it is upstream now.
-> 
->  fs/ext4/readpage.c |  8 ++----
->  fs/f2fs/compress.c | 64 ++++++++++++++++++++++------------------------
->  fs/f2fs/data.c     | 53 +++++++++++++++++++++++---------------
->  fs/verity/verify.c | 12 ++++-----
->  4 files changed, 72 insertions(+), 65 deletions(-)
-> 
-> diff --git a/fs/ext4/readpage.c b/fs/ext4/readpage.c
-> index 3d21eae267fca..e604ea4e102b7 100644
-> --- a/fs/ext4/readpage.c
-> +++ b/fs/ext4/readpage.c
-> @@ -75,14 +75,10 @@ static void __read_end_io(struct bio *bio)
->  	bio_for_each_segment_all(bv, bio, iter_all) {
->  		page = bv->bv_page;
->  
-> -		/* PG_error was set if verity failed. */
-> -		if (bio->bi_status || PageError(page)) {
-> +		if (bio->bi_status)
->  			ClearPageUptodate(page);
-> -			/* will re-read again later */
-> -			ClearPageError(page);
-> -		} else {
-> +		else
->  			SetPageUptodate(page);
-> -		}
->  		unlock_page(page);
->  	}
->  	if (bio->bi_private)
-> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-> index d315c2de136f2..2b7a5cc4ed662 100644
-> --- a/fs/f2fs/compress.c
-> +++ b/fs/f2fs/compress.c
-> @@ -1711,50 +1711,27 @@ static void f2fs_put_dic(struct decompress_io_ctx *dic, bool in_task)
->  	}
->  }
->  
-> -/*
-> - * Update and unlock the cluster's pagecache pages, and release the reference to
-> - * the decompress_io_ctx that was being held for I/O completion.
-> - */
-> -static void __f2fs_decompress_end_io(struct decompress_io_ctx *dic, bool failed,
-> -				bool in_task)
-> +static void f2fs_verify_cluster(struct work_struct *work)
->  {
-> +	struct decompress_io_ctx *dic =
-> +		container_of(work, struct decompress_io_ctx, verity_work);
->  	int i;
->  
-> +	/* Verify, update, and unlock the decompressed pages. */
->  	for (i = 0; i < dic->cluster_size; i++) {
->  		struct page *rpage = dic->rpages[i];
->  
->  		if (!rpage)
->  			continue;
->  
-> -		/* PG_error was set if verity failed. */
-> -		if (failed || PageError(rpage)) {
-> -			ClearPageUptodate(rpage);
-> -			/* will re-read again later */
-> -			ClearPageError(rpage);
-> -		} else {
-> +		if (fsverity_verify_page(rpage))
->  			SetPageUptodate(rpage);
-> -		}
-> +		else
-> +			ClearPageUptodate(rpage);
->  		unlock_page(rpage);
->  	}
->  
-> -	f2fs_put_dic(dic, in_task);
-> -}
-> -
-> -static void f2fs_verify_cluster(struct work_struct *work)
-> -{
-> -	struct decompress_io_ctx *dic =
-> -		container_of(work, struct decompress_io_ctx, verity_work);
-> -	int i;
-> -
-> -	/* Verify the cluster's decompressed pages with fs-verity. */
-> -	for (i = 0; i < dic->cluster_size; i++) {
-> -		struct page *rpage = dic->rpages[i];
-> -
-> -		if (rpage && !fsverity_verify_page(rpage))
-> -			SetPageError(rpage);
-> -	}
-> -
-> -	__f2fs_decompress_end_io(dic, false, true);
-> +	f2fs_put_dic(dic, true);
->  }
->  
->  /*
-> @@ -1764,6 +1741,8 @@ static void f2fs_verify_cluster(struct work_struct *work)
->  void f2fs_decompress_end_io(struct decompress_io_ctx *dic, bool failed,
->  				bool in_task)
->  {
-> +	int i;
-> +
->  	if (!failed && dic->need_verity) {
->  		/*
->  		 * Note that to avoid deadlocks, the verity work can't be done
-> @@ -1773,9 +1752,28 @@ void f2fs_decompress_end_io(struct decompress_io_ctx *dic, bool failed,
->  		 */
->  		INIT_WORK(&dic->verity_work, f2fs_verify_cluster);
->  		fsverity_enqueue_verify_work(&dic->verity_work);
-> -	} else {
-> -		__f2fs_decompress_end_io(dic, failed, in_task);
-> +		return;
-> +	}
-> +
-> +	/* Update and unlock the cluster's pagecache pages. */
-> +	for (i = 0; i < dic->cluster_size; i++) {
-> +		struct page *rpage = dic->rpages[i];
-> +
-> +		if (!rpage)
-> +			continue;
-> +
-> +		if (failed)
-> +			ClearPageUptodate(rpage);
-> +		else
-> +			SetPageUptodate(rpage);
-> +		unlock_page(rpage);
->  	}
-> +
-> +	/*
-> +	 * Release the reference to the decompress_io_ctx that was being held
-> +	 * for I/O completion.
-> +	 */
-> +	f2fs_put_dic(dic, in_task);
->  }
->  
->  /*
-> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> index a71e818cd67b4..1ae8da259d6c5 100644
-> --- a/fs/f2fs/data.c
-> +++ b/fs/f2fs/data.c
-> @@ -116,43 +116,56 @@ struct bio_post_read_ctx {
->  	struct f2fs_sb_info *sbi;
->  	struct work_struct work;
->  	unsigned int enabled_steps;
-> +	/*
-> +	 * decompression_attempted keeps track of whether
-> +	 * f2fs_end_read_compressed_page() has been called on the pages in the
-> +	 * bio that belong to a compressed cluster yet.
-> +	 */
-> +	bool decompression_attempted;
->  	block_t fs_blkaddr;
->  };
->  
-> +/*
-> + * Update and unlock a bio's pages, and free the bio.
-> + *
-> + * This marks pages up-to-date only if there was no error in the bio (I/O error,
-> + * decryption error, or verity error), as indicated by bio->bi_status.
-> + *
-> + * "Compressed pages" (pagecache pages backed by a compressed cluster on-disk)
-> + * aren't marked up-to-date here, as decompression is done on a per-compression-
-> + * cluster basis rather than a per-bio basis.  Instead, we only must do two
-> + * things for each compressed page here: call f2fs_end_read_compressed_page()
-> + * with failed=true if an error occurred before it would have normally gotten
-> + * called (i.e., I/O error or decryption error, but *not* verity error), and
-> + * release the bio's reference to the decompress_io_ctx of the page's cluster.
-> + */
->  static void f2fs_finish_read_bio(struct bio *bio, bool in_task)
->  {
->  	struct bio_vec *bv;
->  	struct bvec_iter_all iter_all;
-> +	struct bio_post_read_ctx *ctx = bio->bi_private;
->  
-> -	/*
-> -	 * Update and unlock the bio's pagecache pages, and put the
-> -	 * decompression context for any compressed pages.
-> -	 */
->  	bio_for_each_segment_all(bv, bio, iter_all) {
->  		struct page *page = bv->bv_page;
->  
->  		if (f2fs_is_compressed_page(page)) {
-> -			if (bio->bi_status)
-> +			if (!ctx->decompression_attempted)
->  				f2fs_end_read_compressed_page(page, true, 0,
->  							in_task);
->  			f2fs_put_page_dic(page, in_task);
->  			continue;
->  		}
->  
-> -		/* PG_error was set if verity failed. */
-> -		if (bio->bi_status || PageError(page)) {
-> +		if (bio->bi_status)
->  			ClearPageUptodate(page);
-> -			/* will re-read again later */
-> -			ClearPageError(page);
-> -		} else {
-> +		else
->  			SetPageUptodate(page);
-> -		}
->  		dec_page_count(F2FS_P_SB(page), __read_io_type(page));
->  		unlock_page(page);
->  	}
->  
-> -	if (bio->bi_private)
-> -		mempool_free(bio->bi_private, bio_post_read_ctx_pool);
-> +	if (ctx)
-> +		mempool_free(ctx, bio_post_read_ctx_pool);
->  	bio_put(bio);
->  }
->  
-> @@ -185,8 +198,10 @@ static void f2fs_verify_bio(struct work_struct *work)
->  			struct page *page = bv->bv_page;
->  
->  			if (!f2fs_is_compressed_page(page) &&
-> -			    !fsverity_verify_page(page))
-> -				SetPageError(page);
-> +			    !fsverity_verify_page(page)) {
-> +				bio->bi_status = BLK_STS_IOERR;
-> +				break;
-> +			}
->  		}
->  	} else {
->  		fsverity_verify_bio(bio);
-> @@ -245,6 +260,8 @@ static void f2fs_handle_step_decompress(struct bio_post_read_ctx *ctx,
->  		blkaddr++;
->  	}
->  
-> +	ctx->decompression_attempted = true;
-> +
->  	/*
->  	 * Optimization: if all the bio's pages are compressed, then scheduling
->  	 * the per-bio verity work is unnecessary, as verity will be fully
-> @@ -1062,6 +1079,7 @@ static struct bio *f2fs_grab_read_bio(struct inode *inode, block_t blkaddr,
->  		ctx->sbi = sbi;
->  		ctx->enabled_steps = post_read_steps;
->  		ctx->fs_blkaddr = blkaddr;
-> +		ctx->decompression_attempted = false;
->  		bio->bi_private = ctx;
->  	}
->  	iostat_alloc_and_bind_ctx(sbi, bio, ctx);
-> @@ -1089,7 +1107,6 @@ static int f2fs_submit_page_read(struct inode *inode, struct page *page,
->  		bio_put(bio);
->  		return -EFAULT;
->  	}
-> -	ClearPageError(page);
->  	inc_page_count(sbi, F2FS_RD_DATA);
->  	f2fs_update_iostat(sbi, NULL, FS_DATA_READ_IO, F2FS_BLKSIZE);
->  	__submit_bio(sbi, bio, DATA);
-> @@ -2141,7 +2158,6 @@ static int f2fs_read_single_page(struct inode *inode, struct page *page,
->  	inc_page_count(F2FS_I_SB(inode), F2FS_RD_DATA);
->  	f2fs_update_iostat(F2FS_I_SB(inode), NULL, FS_DATA_READ_IO,
->  							F2FS_BLKSIZE);
-> -	ClearPageError(page);
->  	*last_block_in_bio = block_nr;
->  	goto out;
->  out:
-> @@ -2289,7 +2305,6 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
->  
->  		inc_page_count(sbi, F2FS_RD_DATA);
->  		f2fs_update_iostat(sbi, inode, FS_DATA_READ_IO, F2FS_BLKSIZE);
-> -		ClearPageError(page);
->  		*last_block_in_bio = blkaddr;
->  	}
->  
-> @@ -2306,7 +2321,6 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
->  	for (i = 0; i < cc->cluster_size; i++) {
->  		if (cc->rpages[i]) {
->  			ClearPageUptodate(cc->rpages[i]);
-> -			ClearPageError(cc->rpages[i]);
->  			unlock_page(cc->rpages[i]);
->  		}
->  	}
-> @@ -2403,7 +2417,6 @@ static int f2fs_mpage_readpages(struct inode *inode,
->  #ifdef CONFIG_F2FS_FS_COMPRESSION
->  set_error_page:
->  #endif
-> -			SetPageError(page);
->  			zero_user_segment(page, 0, PAGE_SIZE);
->  			unlock_page(page);
->  		}
-> diff --git a/fs/verity/verify.c b/fs/verity/verify.c
-> index bde8c9b7d25f6..961ba248021f9 100644
-> --- a/fs/verity/verify.c
-> +++ b/fs/verity/verify.c
-> @@ -200,9 +200,8 @@ EXPORT_SYMBOL_GPL(fsverity_verify_page);
->   * @bio: the bio to verify
->   *
->   * Verify a set of pages that have just been read from a verity file.  The pages
-> - * must be pagecache pages that are still locked and not yet uptodate.  Pages
-> - * that fail verification are set to the Error state.  Verification is skipped
-> - * for pages already in the Error state, e.g. due to fscrypt decryption failure.
-> + * must be pagecache pages that are still locked and not yet uptodate.  If a
-> + * page fails verification, then bio->bi_status is set to an error status.
->   *
->   * This is a helper function for use by the ->readahead() method of filesystems
->   * that issue bios to read data directly into the page cache.  Filesystems that
-> @@ -244,9 +243,10 @@ void fsverity_verify_bio(struct bio *bio)
->  		unsigned long level0_ra_pages =
->  			min(max_ra_pages, params->level0_blocks - level0_index);
->  
-> -		if (!PageError(page) &&
-> -		    !verify_page(inode, vi, req, page, level0_ra_pages))
-> -			SetPageError(page);
-> +		if (!verify_page(inode, vi, req, page, level0_ra_pages)) {
-> +			bio->bi_status = BLK_STS_IOERR;
-> +			break;
-> +		}
->  	}
->  
->  	fsverity_free_hash_request(params->hash_alg, req);
-> 
-> base-commit: f0c4d9fc9cc9462659728d168387191387e903cc
-> -- 
-> 2.38.1
+- inode numbers must be four bytes
+- they must never change (so ext4 filesystem resizing is disabled)
+- files cannot be more than 2^32 blocks
+
+Things are worse on eMMC devices.
+
+Even without this IV limitation, the security proofs for most AES
+modes of operation start to look shaky as you approach the "birthday
+bound" of encrypting 2^68 bytes with the same key. If your attack
+model always assumes a point-in-time attack then you only have to
+worry if you use a single key to encrypt a multi-exabyte storage
+device; btrfs is designed to scale to such devices and more. If your
+attack model includes an attacker who repeatedly gets access to the
+storage device across time, then writing multiple exabytes with the
+same key can be a problem even if some of those are overwritten. This
+leads us to prefer per-extent AES keys (derived from a root key) if
+possible. It's a shame AES doesn't have a 256-bit blocksize.
+
+The way btrfs works also gives us some opportunities to do things a
+little better. In general disk encryption has to make sacrifices to
+deal with the limitation that IVs must be reused and there's no room
+for a MAC. But because btrfs writes in whole extents, with fresh
+metadata and checksum on each write, it becomes possible to use a
+fresh IV and MAC for every new write. This opens up the possibility of
+using an AEAD mode like AES-GCM. This combination gives us the
+strongest proofs of security even against very generous attack models.
+
+Our recommendation: btrfs should first build the ideal thing first
+since it will have reasonable performance for most users, then later
+design alternatives that make a few compromises for performance where
+there is demand.
+
+
+On Sun, 27 Nov 2022 at 23:59, Christoph Hellwig <hch@infradead.org> wrote:
+>
+> On Wed, Nov 23, 2022 at 08:22:30PM -0500, Sweet Tea Dorminy wrote:
+> > The document has been updated to hopefully reflect the discussion we had;
+> > further comments are always appreciated. https://docs.google.com/document/d/1janjxewlewtVPqctkWOjSa7OhCgB8Gdx7iDaCDQQNZA/edit?usp=sharing
+>
+> How is this going to work with hardware encryption offload?  I think
+> the number of keys for UFS and eMMC inline encryption, but Eric may
+> correct me.
