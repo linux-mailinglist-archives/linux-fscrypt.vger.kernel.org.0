@@ -2,61 +2,62 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A11063A96B
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 28 Nov 2022 14:27:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3529163A99E
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 28 Nov 2022 14:34:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231205AbiK1N1V (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 28 Nov 2022 08:27:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52946 "EHLO
+        id S230364AbiK1NeF (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 28 Nov 2022 08:34:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230247AbiK1N1U (ORCPT
+        with ESMTP id S229936AbiK1NeE (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 28 Nov 2022 08:27:20 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6913D63CE;
-        Mon, 28 Nov 2022 05:27:20 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id x13-20020a17090a46cd00b00218f611b6e9so10143327pjg.1;
-        Mon, 28 Nov 2022 05:27:20 -0800 (PST)
+        Mon, 28 Nov 2022 08:34:04 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D146E113A;
+        Mon, 28 Nov 2022 05:34:03 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id o1so5922170pfp.12;
+        Mon, 28 Nov 2022 05:34:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=2vb+1bLPVb5hfsxkqEVzykK6ocW2O4D2G72jVhvRYEA=;
-        b=mMb6EGxy3dJgY4UHWRr8qZRri14boj7PoJL9Z4wdous2HPmdydQsttpT8j+/bTWIGT
-         mqZHDpU5J0pRW72gOI+L4tVDKVq/8eV3pd3HKc1drdMWAteMzBJAoPv503g3U6WH/y5q
-         8qXYxSsANnwIUr1k8rs9f74iZfJhzVUqeQg5VnJsVy58ESfFqQc0I/scjouJWYXDtsON
-         aKUMcAI/Ughmm0BSjJfuJ7KEhOHH6ki2gB/bIlyERq5uXFn7YO5ML18lluOFRdA3i8Jn
-         82lcTj9HVND7alL9ZJkmM3CDxeAcKuIVF4XW9NucUrg/wzSohWu6uLRob9h7YH5IV91v
-         Q77g==
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fto765p2zc65D0Me5bUsSOT+sydzo0/9GtopK7Y3Iug=;
+        b=WMcoldEw3inHiCLwHGneCrYXX7erWCJKeivRVeB4LCxWbjBox7BP5i2eEbJiQ0zI14
+         o2iGB0qSEd7CRfCT1zmWBPm2LUJQbKNG/V8gV4fkop7owpQuxm6qpJI8SzqkO5069+wS
+         WGqA+GUon7kCwrqfRWeXSUWGcoHlrFfjXWO1x/Se5KSe8vj5OESHgQDX/yx6EHOY4ply
+         V2bDbeEgR1ngU3N1rS5B3Eq3wbIwB5CXPd01/o7f1ovwCVmWdWud5/6M+9kQ2WxS0vkS
+         IfwYSy+F7ivMDhTobSMyOoQqiQxQLyQO9bnjZGlQD2Y2Fp7S2IR/AnYPf7gLtlPnfB4X
+         brRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2vb+1bLPVb5hfsxkqEVzykK6ocW2O4D2G72jVhvRYEA=;
-        b=elAVLzDlIqM9NciYQaaUgfVeuJykFNPZMGcOOPvfyB5P8YDkTpOtMT62DtlWUjiyUk
-         ZZJFnAxAxM5poNZe2Wr9QdQdyjxc+uX/OgNA0iKzQfN0vabI4l/ZBfHRVd6W+Ds1VSy3
-         QiMBEiWDEYzq+Tj73JHKt/TsumcwDRmnujOcChh+8y7yOSqbZaoPwjAAU7ZN4tSYOSsB
-         8mC68Xrv5XDlvV59VCDGXH48ITZqMN+0lDjd12L9ZWnIshNKxQmFagLzUttYiaI6ik2Q
-         b+gDGE/PU+xaAePOx0w8chTx57EEzNtN++4l0PXCBlNJ6I5duxI5Yi37U2OVYhe8x8P5
-         IvLA==
-X-Gm-Message-State: ANoB5pleVtm/4zjAZ5jSJsVX1I+94nVFheb3rTHXUkH8tux6q8rPWvdG
-        8T4dtCObQGNDUA5yqunTMfA=
-X-Google-Smtp-Source: AA0mqf4yAdWIx9CNloBV4uqDw6hFxOCLHtgOUNWxsE+XC8R+wuoLFUtAMlaENLJmo+WRUTudWogsDw==
-X-Received: by 2002:a17:902:708a:b0:189:7372:1451 with SMTP id z10-20020a170902708a00b0018973721451mr12229858plk.122.1669642039923;
-        Mon, 28 Nov 2022 05:27:19 -0800 (PST)
+        bh=fto765p2zc65D0Me5bUsSOT+sydzo0/9GtopK7Y3Iug=;
+        b=I78W/XyoH/k6Fclf+KxsAVeZtIxh0ozVwTfTpMnKqGhtgh+D54Pkf762p6M/MeMj12
+         1wjxPQ9mJVrtuI1LAep53/OP3CZfFhLEM3fypMC4JXlla2uEmss01Z3BZ+DY2k4c0pog
+         WYl2b7kR7QiC2Pwcg+x5p+e6awPJKmAnl/6Rs1m/e6HMHoaMhEWNUaWQr5i07zI1DNqW
+         96+JZzt8ZUI/RgkRDmf/8hwrfxHhk5Y0jygeAYy+dovY1FbQpw9tafRdRJ2abzrzdacs
+         0Ce6CzeU2/4atFz0Yb0gPAXU9v8dx+ZGB3Vz31UvOtG5izWem33ogf0Di7qACRlY8Se7
+         Wd3g==
+X-Gm-Message-State: ANoB5plUZV5H51Jv5QNp83UU7tZ/rvDkUrXA2GJbRxdok2FDFSR5ze3T
+        knZspRgP5NAvgV4GshthCR4=
+X-Google-Smtp-Source: AA0mqf5LUIz+jBK0rb3drNCtOVI9TXMUtAoSZIcsUXDWSM7g3ZXZSpzNVQwOUgdAerR9td2SkNJWEw==
+X-Received: by 2002:a63:548:0:b0:477:b4f4:84c with SMTP id 69-20020a630548000000b00477b4f4084cmr23557786pgf.24.1669642443326;
+        Mon, 28 Nov 2022 05:34:03 -0800 (PST)
 Received: from [192.168.43.80] (subs02-180-214-232-72.three.co.id. [180.214.232.72])
-        by smtp.gmail.com with ESMTPSA id v2-20020a626102000000b005609d3d3008sm8261580pfb.171.2022.11.28.05.27.15
+        by smtp.gmail.com with ESMTPSA id ij13-20020a170902ab4d00b001769e6d4fafsm8867977plb.57.2022.11.28.05.33.59
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Nov 2022 05:27:19 -0800 (PST)
-Message-ID: <42624542-6ccb-26a5-db98-d7944972246e@gmail.com>
-Date:   Mon, 28 Nov 2022 20:26:38 +0700
+        Mon, 28 Nov 2022 05:34:02 -0800 (PST)
+Message-ID: <1a5e57be-ccff-f281-6e06-be5e59db1d05@gmail.com>
+Date:   Mon, 28 Nov 2022 20:33:54 +0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.5.0
-Subject: Re: [PATCH v3 1/2] blk-crypto: Add support for SM4-XTS blk crypto
- mode
+Subject: Re: [PATCH v3 2/2] fscrypt: Add SM4 XTS/CTS symmetric algorithm
+ support
+Content-Language: en-US
 To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
         Eric Biggers <ebiggers@kernel.org>,
         "Theodore Y. Ts o" <tytso@mit.edu>,
@@ -66,10 +67,9 @@ To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
         linux-fscrypt@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
 References: <20221125121630.87793-1-tianjia.zhang@linux.alibaba.com>
- <20221125121630.87793-2-tianjia.zhang@linux.alibaba.com>
-Content-Language: en-US
+ <20221125121630.87793-3-tianjia.zhang@linux.alibaba.com>
 From:   Bagas Sanjaya <bagasdotme@gmail.com>
-In-Reply-To: <20221125121630.87793-2-tianjia.zhang@linux.alibaba.com>
+In-Reply-To: <20221125121630.87793-3-tianjia.zhang@linux.alibaba.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -83,28 +83,25 @@ List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 On 11/25/22 19:16, Tianjia Zhang wrote:
-> SM4 is a symmetric algorithm widely used in China, and SM4-XTS is also
-> used to encrypt length-preserving data, these algoritms are mandatory
-> in many scenarios. This patch enables the use of SM4-XTS algorithm in
-> block inline encryption, and provides support for fscrypt.
+> SM4 is a symmetric algorithm widely used in China, and is even mandatory
+> in many scenarios. We need to provide these users with the ability to
+> encrypt files or disks using SM4-XTS, and many other algorithms that use
+> SM2/3/4 algorithms or their combined algorithm scenarios, these features
+> are demanded by many users, this patch enables to use SM4-XTS mode to
+> encrypt file content, and use SM4-CBC-CTS to encrypt filename.
 > 
 
-Please reformulate the patch description in imperative mood instead.
-Also, take care of wording and punctuation - commas should not be
-used for continuing distinct sentences/clauses where separating them
-by a full stop is more appropriate.
-
-That is, the description should be:
+Similar reply as [1]. That is, better say:
 
 ```
-SM4 is a symmetric cipher algorithm widely used in China. The SM4-XTS
-variant is used to encrypt length-preserving data.
-
-Enable the algorithm in block inline encryption, as well as enable
-fscrypt support.
+Add support for XTS and CTS mode variant of SM4 algorithm, in similar
+fashion to SM2 and SM3. The former is used to encrypt file contents, while
+the latter (SM4-CBC-CTS) is used to encrypt filenames. 
 ```
 
 Thanks.
+
+[1]: https://lore.kernel.org/linux-doc/42624542-6ccb-26a5-db98-d7944972246e@gmail.com/
 
 -- 
 An old man doll... just what I always wanted! - Clara
