@@ -2,107 +2,106 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3529163A99E
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 28 Nov 2022 14:34:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1174D63B18C
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 28 Nov 2022 19:44:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230364AbiK1NeF (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 28 Nov 2022 08:34:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59386 "EHLO
+        id S232030AbiK1Sov (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 28 Nov 2022 13:44:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229936AbiK1NeE (ORCPT
+        with ESMTP id S231743AbiK1Sou (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 28 Nov 2022 08:34:04 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D146E113A;
-        Mon, 28 Nov 2022 05:34:03 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id o1so5922170pfp.12;
-        Mon, 28 Nov 2022 05:34:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fto765p2zc65D0Me5bUsSOT+sydzo0/9GtopK7Y3Iug=;
-        b=WMcoldEw3inHiCLwHGneCrYXX7erWCJKeivRVeB4LCxWbjBox7BP5i2eEbJiQ0zI14
-         o2iGB0qSEd7CRfCT1zmWBPm2LUJQbKNG/V8gV4fkop7owpQuxm6qpJI8SzqkO5069+wS
-         WGqA+GUon7kCwrqfRWeXSUWGcoHlrFfjXWO1x/Se5KSe8vj5OESHgQDX/yx6EHOY4ply
-         V2bDbeEgR1ngU3N1rS5B3Eq3wbIwB5CXPd01/o7f1ovwCVmWdWud5/6M+9kQ2WxS0vkS
-         IfwYSy+F7ivMDhTobSMyOoQqiQxQLyQO9bnjZGlQD2Y2Fp7S2IR/AnYPf7gLtlPnfB4X
-         brRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fto765p2zc65D0Me5bUsSOT+sydzo0/9GtopK7Y3Iug=;
-        b=I78W/XyoH/k6Fclf+KxsAVeZtIxh0ozVwTfTpMnKqGhtgh+D54Pkf762p6M/MeMj12
-         1wjxPQ9mJVrtuI1LAep53/OP3CZfFhLEM3fypMC4JXlla2uEmss01Z3BZ+DY2k4c0pog
-         WYl2b7kR7QiC2Pwcg+x5p+e6awPJKmAnl/6Rs1m/e6HMHoaMhEWNUaWQr5i07zI1DNqW
-         96+JZzt8ZUI/RgkRDmf/8hwrfxHhk5Y0jygeAYy+dovY1FbQpw9tafRdRJ2abzrzdacs
-         0Ce6CzeU2/4atFz0Yb0gPAXU9v8dx+ZGB3Vz31UvOtG5izWem33ogf0Di7qACRlY8Se7
-         Wd3g==
-X-Gm-Message-State: ANoB5plUZV5H51Jv5QNp83UU7tZ/rvDkUrXA2GJbRxdok2FDFSR5ze3T
-        knZspRgP5NAvgV4GshthCR4=
-X-Google-Smtp-Source: AA0mqf5LUIz+jBK0rb3drNCtOVI9TXMUtAoSZIcsUXDWSM7g3ZXZSpzNVQwOUgdAerR9td2SkNJWEw==
-X-Received: by 2002:a63:548:0:b0:477:b4f4:84c with SMTP id 69-20020a630548000000b00477b4f4084cmr23557786pgf.24.1669642443326;
-        Mon, 28 Nov 2022 05:34:03 -0800 (PST)
-Received: from [192.168.43.80] (subs02-180-214-232-72.three.co.id. [180.214.232.72])
-        by smtp.gmail.com with ESMTPSA id ij13-20020a170902ab4d00b001769e6d4fafsm8867977plb.57.2022.11.28.05.33.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Nov 2022 05:34:02 -0800 (PST)
-Message-ID: <1a5e57be-ccff-f281-6e06-be5e59db1d05@gmail.com>
-Date:   Mon, 28 Nov 2022 20:33:54 +0700
+        Mon, 28 Nov 2022 13:44:50 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DB1ED132;
+        Mon, 28 Nov 2022 10:44:49 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id BCCBAB80E9E;
+        Mon, 28 Nov 2022 18:44:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 606EBC433C1;
+        Mon, 28 Nov 2022 18:44:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1669661086;
+        bh=G51+0qBa8uFG2fCGIrC9eOsWrvLMH5foF69kYPIeOV4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=a802eFOx4Qg7inDSdvH/fydqzvE9cWptdtPYQWrZJ2AoTsnPI/X4e4j84RWkh9hKq
+         pge/ULKBx1g4dpARd6yCtuocnCpiCJL/h755rmhclp2cL1JWo1ZUeZDIMKzv2wu7wD
+         VSqqjwe7v6XJWH59wE4iFCgeAOM1DnIIYBF5ptjQ2s/DZIdfiV0GzcuF443bG23hWl
+         G0U23zBWjnw9NANzaXOFP1hmnUtWgDo2LYsPenxY7AzwG4Io2PWOK1rG3JMwbfBgqc
+         woGIAIauM7dYoJWHYuc47NmCulVO2SqYgSTBj+EfZapR/Nw1a5Khr1oGhxbEvovg3R
+         +hX/JeCQkyCug==
+Date:   Mon, 28 Nov 2022 18:44:32 +0000
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
+        Paul Crowley <paulcrowley@google.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-fscrypt@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, kernel-team@meta.com,
+        Omar Sandoval <osandov@osandov.com>, Chris Mason <clm@fb.com>
+Subject: Re: [PATCH v5 00/18] btrfs: add fscrypt integration
+Message-ID: <Y4UBkNoCgLyUhyvH@gmail.com>
+References: <cover.1667389115.git.sweettea-kernel@dorminy.me>
+ <CA+_SqcAFMXjW6V2u1NZzGwBe4na4m_FBspgP0Z6Q0oTvT+QJVQ@mail.gmail.com>
+ <81e3763c-2c02-2c9f-aece-32aa575abbca@dorminy.me>
+ <55686ed2-b182-3478-37aa-237e306be6e1@dorminy.me>
+ <4857f0df-dae0-178e-85e3-307197701d34@dorminy.me>
+ <Y4RqbKSdxQ5owg0h@infradead.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [PATCH v3 2/2] fscrypt: Add SM4 XTS/CTS symmetric algorithm
- support
-Content-Language: en-US
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Theodore Y. Ts o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        linux-fscrypt@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
-References: <20221125121630.87793-1-tianjia.zhang@linux.alibaba.com>
- <20221125121630.87793-3-tianjia.zhang@linux.alibaba.com>
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-In-Reply-To: <20221125121630.87793-3-tianjia.zhang@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y4RqbKSdxQ5owg0h@infradead.org>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On 11/25/22 19:16, Tianjia Zhang wrote:
-> SM4 is a symmetric algorithm widely used in China, and is even mandatory
-> in many scenarios. We need to provide these users with the ability to
-> encrypt files or disks using SM4-XTS, and many other algorithms that use
-> SM2/3/4 algorithms or their combined algorithm scenarios, these features
-> are demanded by many users, this patch enables to use SM4-XTS mode to
-> encrypt file content, and use SM4-CBC-CTS to encrypt filename.
+On Sun, Nov 27, 2022 at 11:59:40PM -0800, Christoph Hellwig wrote:
+> On Wed, Nov 23, 2022 at 08:22:30PM -0500, Sweet Tea Dorminy wrote:
+> > The document has been updated to hopefully reflect the discussion we had;
+> > further comments are always appreciated. https://docs.google.com/document/d/1janjxewlewtVPqctkWOjSa7OhCgB8Gdx7iDaCDQQNZA/edit?usp=sharing
 > 
+> How is this going to work with hardware encryption offload?  I think
+> the number of keys for UFS and eMMC inline encryption, but Eric may
+> correct me.
 
-Similar reply as [1]. That is, better say:
+First, traditional crypto accelerators via the crypto API will work in any case.
+I think your question is specifically about inline encryption
+(https://www.kernel.org/doc/html/latest/block/inline-encryption.html).
 
-```
-Add support for XTS and CTS mode variant of SM4 algorithm, in similar
-fashion to SM2 and SM3. The former is used to encrypt file contents, while
-the latter (SM4-CBC-CTS) is used to encrypt filenames. 
-```
+To use inline encryption hardware, consecutive blocks must use consecutive IVs,
+and the nonzero part of the IVs needs to fit within the hardware's DUN size.
+That's 64 bits for the UFS standard, and 32 bits for the eMMC standard.
 
-Thanks.
+fscrypt's "default" setting of per-file keys satisfies both of those
+requirements.  That means the current proposal for btrfs does too, since it's
+the same as that "default" setting -- just with extents instead of files.
+(For eMMC, extents would have to be limited to 2^32 blocks.)
 
-[1]: https://lore.kernel.org/linux-doc/42624542-6ccb-26a5-db98-d7944972246e@gmail.com/
+The other consideration, which seems to be what you're asking about, is a
+performance one: how well this performs on hardware where switching keys is very
+expensive.  The answer is not very well.  Of course, that's the answer for
+per-file keys too.  Note that this is an issue for some inline encryption
+hardware (e.g. Qualcomm ICE), but not others (e.g. Exynos FMP, Mediatek UFS).
 
--- 
-An old man doll... just what I always wanted! - Clara
+The way this problem is "solved" in ext4 and f2fs is by also providing the (less
+than cryptographically ideal) settings IV_INO_LBLK_64 and IV_INO_LBLK_32.  Those
+squeeze the inode number *and* file offset into a 64-bit or 32-bit IV, so that
+per-file keys aren't needed.
 
+There's a natural mapping of the IV_INO_LBLK_* settings onto extent-based
+encryption.  A 32-bit extent number would just be used instead of an inode
+number.  Or, if a 32-bit extent number is infeasible, an extent nonce of any
+length hashed with a secret key could be used instead.
+
+So yes, it would be possible to provide settings that optimize for hardware like
+Qualcomm ICE, as ext4 and f2fs do with IV_INO_LBLK_*.  However, it makes sense
+to leave that for later until if/when someone actually has a use case for it.
+
+- Eric
