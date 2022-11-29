@@ -2,134 +2,111 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFDAC63B34B
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 28 Nov 2022 21:35:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA36063B68F
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 29 Nov 2022 01:23:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233160AbiK1UfA (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 28 Nov 2022 15:35:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44686 "EHLO
+        id S234445AbiK2AX5 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 28 Nov 2022 19:23:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233103AbiK1Ue7 (ORCPT
+        with ESMTP id S234890AbiK2AXw (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 28 Nov 2022 15:34:59 -0500
-Received: from mail-oa1-x2b.google.com (mail-oa1-x2b.google.com [IPv6:2001:4860:4864:20::2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A33F2B25D
-        for <linux-fscrypt@vger.kernel.org>; Mon, 28 Nov 2022 12:34:58 -0800 (PST)
-Received: by mail-oa1-x2b.google.com with SMTP id 586e51a60fabf-14286d5ebc3so14523778fac.3
-        for <linux-fscrypt@vger.kernel.org>; Mon, 28 Nov 2022 12:34:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=3kUD8/TTfav9EbeDIQ8ZZwVrosW/5Hgcdhi9BGeQU7g=;
-        b=DN5OkkPDNLCxaFN2UuIezo27EMhAgaGg71EDTG24jCFvcjJ+UEWcw9yRaV6X+xTdEV
-         /enMA14Sr9jDM4Q9owZOzFRmr4+fdIuC6gZN32yU6Fs56Omfv/xkQHlPL16vlkVyg1RM
-         jJ7/i7hx/8PkDid/qAaFWqBNbJg2n0OAwL5TS/nRSZb/YGsXcrTfpYD6MPYYHqOp3GmQ
-         g1rKlsNtb6AeHlDnEV2stYocc+V8tspFVKJpFZFuxy9lQpp6/3bsWnSPaMQO3Vcoindl
-         u8unXiepGZRYgWTNwXh10W36lqXqP0RfWOq095Yz//bUa2+g9xsAdPTZRYUyA0x2mCmu
-         HN0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3kUD8/TTfav9EbeDIQ8ZZwVrosW/5Hgcdhi9BGeQU7g=;
-        b=GDGTTnXOP/nL6GXFpWWI67IRskiur4k6HoVW9cZF5iY7LoATLgc2iEPhFUMhVf20wY
-         wRCC3OM/wx7rdxG2jCdGwyovuB4oIiimHCX2moLKtxVZdimJlXbOW2lTHVprbqa2Gvrr
-         5WhRDJiduoakkD4RMMN+p7M1ve59d1wt61ygfSx3cn1pxdyt0HV1sM8z7O4pThPrN/7B
-         4FNJluG7UMqehWhgIVSSE/68mZiN1+DoevHdJAvNVckV7hsWSAKwiAIDWQIVubJFheyp
-         mCpylAhLmZJHAYR2y3fTS6f+KiiqgF0eBuCd02es+IJ1xxPh5kg6wKQQCMNurtOaLaaf
-         6fFQ==
-X-Gm-Message-State: ANoB5pnYII7GGaCxIrr+N4jEVhQVvq3Q8deuVhw85Mfu7bNdizKsomvK
-        kOTZCr1IT7bc/qaa4mORqMZcO4qGGlT+W5N4kR6qdA==
-X-Google-Smtp-Source: AA0mqf48wepdwdD988cC95590SQarOxOx/PbasQOurlJ3euIpsTj9iqEtW5r/l/Vj/yv5wdjBujhapZxq9RkOKG4VtA=
-X-Received: by 2002:a05:6870:430a:b0:13d:5167:43e3 with SMTP id
- w10-20020a056870430a00b0013d516743e3mr20549124oah.257.1669667696999; Mon, 28
- Nov 2022 12:34:56 -0800 (PST)
+        Mon, 28 Nov 2022 19:23:52 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57A3B3FB88;
+        Mon, 28 Nov 2022 16:23:39 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E68A961510;
+        Tue, 29 Nov 2022 00:23:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42345C433D6;
+        Tue, 29 Nov 2022 00:23:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1669681418;
+        bh=WT6nVeES1yqoAXl+M03ESuOIpXyux92DU+gbpELzevM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HwZQCxO3vgMpJIGGdJOMiDwoxisiOEbpKX+O3rHu84PomXNbDMTho94bC5BUieY97
+         vRVQQkSunS1XUbs/BX6U3LQbrmeo3FAQEPPBlHd+SeBZG/rYF3IuEyqUmSjFnc+vmz
+         HM3/gDi2JSJQZObAyQx74Xs5ltXMKhAEuwioF+YmF2raffNKQg5n7Pw8cxjhQPEOPy
+         gxMxetgPKv0qqwiVGe1yZq2eqigkNcZQJl4hV0cvydVBncobtOGSl40xLgSerOBgU3
+         0uG1s9rRPPcO4t1fug1LUeD1Xg0wKSmfzad6ePOnLF0aGwyjeR+99UK2nTD0z5E0Sq
+         YGqqIUluzyioA==
+Date:   Tue, 29 Nov 2022 00:23:36 +0000
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-ext4@vger.kernel.org
+Cc:     linux-fscrypt@vger.kernel.org, stable@vger.kernel.org,
+        syzbot+ba9dac45bc76c490b7c3@syzkaller.appspotmail.com
+Subject: Re: [PATCH] ext4: don't allow journal inode to have encrypt flag
+Message-ID: <Y4VRCIk4JQyH+utN@gmail.com>
+References: <20221102053312.189962-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-References: <cover.1667389115.git.sweettea-kernel@dorminy.me>
- <CA+_SqcAFMXjW6V2u1NZzGwBe4na4m_FBspgP0Z6Q0oTvT+QJVQ@mail.gmail.com>
- <81e3763c-2c02-2c9f-aece-32aa575abbca@dorminy.me> <55686ed2-b182-3478-37aa-237e306be6e1@dorminy.me>
- <4857f0df-dae0-178e-85e3-307197701d34@dorminy.me> <Y4RqbKSdxQ5owg0h@infradead.org>
-In-Reply-To: <Y4RqbKSdxQ5owg0h@infradead.org>
-From:   Paul Crowley <paulcrowley@google.com>
-Date:   Mon, 28 Nov 2022 12:34:46 -0800
-Message-ID: <CA+_SqcCFepKXXJWhF=d4pcEpMZ5XFO6j9buc+aHKpX9sP2+_KA@mail.gmail.com>
-Subject: Re: [PATCH v5 00/18] btrfs: add fscrypt integration
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-fscrypt@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, kernel-team@meta.com,
-        Omar Sandoval <osandov@osandov.com>, Chris Mason <clm@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221102053312.189962-1-ebiggers@kernel.org>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-The kind of inline encryption hardware we see on Android devices tends
-to have these limitations:
+On Tue, Nov 01, 2022 at 10:33:12PM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> Mounting a filesystem whose journal inode has the encrypt flag causes a
+> NULL dereference in fscrypt_limit_io_blocks() when the 'inlinecrypt'
+> mount option is used.
+> 
+> The problem is that when jbd2_journal_init_inode() calls bmap(), it
+> eventually finds its way into ext4_iomap_begin(), which calls
+> fscrypt_limit_io_blocks().  fscrypt_limit_io_blocks() requires that if
+> the inode is encrypted, then its encryption key must already be set up.
+> That's not the case here, since the journal inode is never "opened" like
+> a normal file would be.  Hence the crash.
+> 
+> A reproducer is:
+> 
+>     mkfs.ext4 -F /dev/vdb
+>     debugfs -w /dev/vdb -R "set_inode_field <8> flags 0x80808"
+>     mount /dev/vdb /mnt -o inlinecrypt
+> 
+> To fix this, make ext4 consider journal inodes with the encrypt flag to
+> be invalid.  (Note, maybe other flags should be rejected on the journal
+> inode too.  For now, this is just the minimal fix for the above issue.)
+> 
+> I've marked this as fixing the commit that introduced the call to
+> fscrypt_limit_io_blocks(), since that's what made an actual crash start
+> being possible.  But this fix could be applied to any version of ext4
+> that supports the encrypt feature.
+> 
+> Reported-by: syzbot+ba9dac45bc76c490b7c3@syzkaller.appspotmail.com
+> Fixes: 38ea50daa7a4 ("ext4: support direct I/O with fscrypt using blk-crypto")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+>  fs/ext4/super.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 7950904fbf04f..2274f730b87e5 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -5723,7 +5723,7 @@ static struct inode *ext4_get_journal_inode(struct super_block *sb,
+>  
+>  	ext4_debug("Journal inode found at %p: %lld bytes\n",
+>  		  journal_inode, journal_inode->i_size);
+> -	if (!S_ISREG(journal_inode->i_mode)) {
+> +	if (!S_ISREG(journal_inode->i_mode) || IS_ENCRYPTED(journal_inode)) {
+>  		ext4_msg(sb, KERN_ERR, "invalid journal inode");
+>  		iput(journal_inode);
+>  		return NULL;
+> 
+> base-commit: 8f71a2b3f435f29b787537d1abedaa7d8ebe6647
+> -- 
 
-- as you indicate, loading keys can incur latency, so if many keys are
-in use at once it can slow things down
-- it's limited to using AES-XTS
-- on UFS devices, the IV (transmitted in the DUN) must be zero in the
-64 high bits
-- consecutive blocks in the same operation use consecutive IVs
-- there's no easy way to gather a checksum or MAC over the on-disk
-ciphertext short of re-reading after writing
+Ping.
 
-Android works around this with IV_INO_LBLK_64 policies, but these only
-work well on the relatively small storage devices we use on Android.
-In particular the IV limitation is very serious:
-
-- inode numbers must be four bytes
-- they must never change (so ext4 filesystem resizing is disabled)
-- files cannot be more than 2^32 blocks
-
-Things are worse on eMMC devices.
-
-Even without this IV limitation, the security proofs for most AES
-modes of operation start to look shaky as you approach the "birthday
-bound" of encrypting 2^68 bytes with the same key. If your attack
-model always assumes a point-in-time attack then you only have to
-worry if you use a single key to encrypt a multi-exabyte storage
-device; btrfs is designed to scale to such devices and more. If your
-attack model includes an attacker who repeatedly gets access to the
-storage device across time, then writing multiple exabytes with the
-same key can be a problem even if some of those are overwritten. This
-leads us to prefer per-extent AES keys (derived from a root key) if
-possible. It's a shame AES doesn't have a 256-bit blocksize.
-
-The way btrfs works also gives us some opportunities to do things a
-little better. In general disk encryption has to make sacrifices to
-deal with the limitation that IVs must be reused and there's no room
-for a MAC. But because btrfs writes in whole extents, with fresh
-metadata and checksum on each write, it becomes possible to use a
-fresh IV and MAC for every new write. This opens up the possibility of
-using an AEAD mode like AES-GCM. This combination gives us the
-strongest proofs of security even against very generous attack models.
-
-Our recommendation: btrfs should first build the ideal thing first
-since it will have reasonable performance for most users, then later
-design alternatives that make a few compromises for performance where
-there is demand.
-
-
-On Sun, 27 Nov 2022 at 23:59, Christoph Hellwig <hch@infradead.org> wrote:
->
-> On Wed, Nov 23, 2022 at 08:22:30PM -0500, Sweet Tea Dorminy wrote:
-> > The document has been updated to hopefully reflect the discussion we had;
-> > further comments are always appreciated. https://docs.google.com/document/d/1janjxewlewtVPqctkWOjSa7OhCgB8Gdx7iDaCDQQNZA/edit?usp=sharing
->
-> How is this going to work with hardware encryption offload?  I think
-> the number of keys for UFS and eMMC inline encryption, but Eric may
-> correct me.
+- Eric
