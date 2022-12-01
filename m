@@ -2,83 +2,76 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D391963F0CA
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  1 Dec 2022 13:46:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6918E63F0F4
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  1 Dec 2022 13:58:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbiLAMqK (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 1 Dec 2022 07:46:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58048 "EHLO
+        id S231235AbiLAM62 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 1 Dec 2022 07:58:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230040AbiLAMqJ (ORCPT
+        with ESMTP id S229843AbiLAM62 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 1 Dec 2022 07:46:09 -0500
-Received: from out30-7.freemail.mail.aliyun.com (out30-7.freemail.mail.aliyun.com [115.124.30.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA30684DFA;
-        Thu,  1 Dec 2022 04:46:03 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0VW8qGyf_1669898759;
-Received: from 30.32.116.214(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0VW8qGyf_1669898759)
+        Thu, 1 Dec 2022 07:58:28 -0500
+Received: from out30-57.freemail.mail.aliyun.com (out30-57.freemail.mail.aliyun.com [115.124.30.57])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8875E578ED;
+        Thu,  1 Dec 2022 04:58:25 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0VW8xlPK_1669899500;
+Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0VW8xlPK_1669899500)
           by smtp.aliyun-inc.com;
-          Thu, 01 Dec 2022 20:46:01 +0800
-Message-ID: <fc2c7a50-6330-b9d5-6f50-0c6e2ccfb680@linux.alibaba.com>
-Date:   Thu, 1 Dec 2022 20:45:58 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.13.1
-Subject: Re: [PATCH v3 2/2] fscrypt: Add SM4 XTS/CTS symmetric algorithm
- support
-Content-Language: en-US
-To:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
+          Thu, 01 Dec 2022 20:58:21 +0800
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+To:     Eric Biggers <ebiggers@kernel.org>,
         "Theodore Y. Ts o" <tytso@mit.edu>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
         Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
         Ard Biesheuvel <ardb@kernel.org>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
         linux-fscrypt@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
-References: <20221125121630.87793-1-tianjia.zhang@linux.alibaba.com>
- <20221125121630.87793-3-tianjia.zhang@linux.alibaba.com>
- <1a5e57be-ccff-f281-6e06-be5e59db1d05@gmail.com>
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-In-Reply-To: <1a5e57be-ccff-f281-6e06-be5e59db1d05@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-10.2 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Subject: [PATCH v4 0/2] Add SM4 XTS symmetric algorithm for blk-crypto and fscrypt
+Date:   Thu,  1 Dec 2022 20:58:17 +0800
+Message-Id: <20221201125819.36932-1-tianjia.zhang@linux.alibaba.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hi Bagas,
+SM4 is widely used in China's data encryption software and hardware.
+these algoritms are mandatory in many scenarios. This serial of
+patches enables the SM4-XTS algorithm in blk-crypto and enables the
+SM4-XTS/CTS algorithm in fscrypt to encrypt file content and filename.
 
-On 11/28/22 9:33 PM, Bagas Sanjaya wrote:
-> On 11/25/22 19:16, Tianjia Zhang wrote:
->> SM4 is a symmetric algorithm widely used in China, and is even mandatory
->> in many scenarios. We need to provide these users with the ability to
->> encrypt files or disks using SM4-XTS, and many other algorithms that use
->> SM2/3/4 algorithms or their combined algorithm scenarios, these features
->> are demanded by many users, this patch enables to use SM4-XTS mode to
->> encrypt file content, and use SM4-CBC-CTS to encrypt filename.
->>
-> 
-> Similar reply as [1]. That is, better say:
-> 
-> ```
-> Add support for XTS and CTS mode variant of SM4 algorithm, in similar
-> fashion to SM2 and SM3. The former is used to encrypt file contents, while
-> the latter (SM4-CBC-CTS) is used to encrypt filenames.
-> ```
-> 
-> Thanks.
-> 
-> [1]: https://lore.kernel.org/linux-doc/42624542-6ccb-26a5-db98-d7944972246e@gmail.com/
-> 
+v4 changes:
+  - only allow the SM4 XTS/CTS algorithm in policy v2 for fscrypt
+  - update git commit message
 
-Thanks for your reply, it is very valuable for me, I will update it in
-the next patch.
+v3 change:
+  - update git commit message
 
-Cheers,
-Tianjia
+v2 change:
+  - As Eric said, the new FSCRYPT_MODE is defined for the unused numbers 7 and 8
+
+Tianjia Zhang (2):
+  blk-crypto: Add support for SM4-XTS blk crypto mode
+  fscrypt: Add SM4 XTS/CTS symmetric algorithm support
+
+ Documentation/filesystems/fscrypt.rst |  1 +
+ block/blk-crypto.c                    |  6 ++++++
+ fs/crypto/keysetup.c                  | 15 +++++++++++++++
+ fs/crypto/policy.c                    |  5 +++++
+ include/linux/blk-crypto.h            |  1 +
+ include/uapi/linux/fscrypt.h          |  2 ++
+ 6 files changed, 30 insertions(+)
+
+-- 
+2.24.3 (Apple Git-128)
+
