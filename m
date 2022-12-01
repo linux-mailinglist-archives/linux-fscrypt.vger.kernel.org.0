@@ -2,54 +2,75 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63FBC63EA0E
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  1 Dec 2022 07:59:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEEE163ECEF
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  1 Dec 2022 10:51:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229848AbiLAG7F (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 1 Dec 2022 01:59:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53446 "EHLO
+        id S230094AbiLAJvm (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 1 Dec 2022 04:51:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbiLAG7D (ORCPT
+        with ESMTP id S230097AbiLAJvh (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 1 Dec 2022 01:59:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C913FBB4
-        for <linux-fscrypt@vger.kernel.org>; Wed, 30 Nov 2022 22:58:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1669877888;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=vQSeo5WRJUG0Y0WkiQ/AFBMQlfNS5mfy/wwYdfC0c2o=;
-        b=VIF8mjau7RhJY0Q9SodIZkG7BY7SvgiRPkSzgKBeeKRqodZhS601gZKfazzjFCizcRR6SS
-        uMYfxqdgT96+wkHvX9MzdFboSCdVBwX4CIcpzq+fvdnejqkQWn+kwz1D7+0XVjN7ufezsC
-        ssVdEvnINsydUZzH8GR8JE7BnX+hrAU=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-435-tk6vhfkeNtqGRPrDHrX08w-1; Thu, 01 Dec 2022 01:58:06 -0500
-X-MC-Unique: tk6vhfkeNtqGRPrDHrX08w-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2F2E13C01D90;
-        Thu,  1 Dec 2022 06:58:06 +0000 (UTC)
-Received: from lxbceph1.gsslab.pek2.redhat.com (unknown [10.72.47.117])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 96F412028CE4;
-        Thu,  1 Dec 2022 06:58:03 +0000 (UTC)
-From:   xiubli@redhat.com
-To:     idryomov@gmail.com, ceph-devel@vger.kernel.org
-Cc:     jlayton@kernel.org, khiremat@redhat.com,
-        linux-fscrypt@vger.kernel.org, Xiubo Li <xiubli@redhat.com>
-Subject: [PATCH] ceph: make sure all the files successfully put before unmounting
-Date:   Thu,  1 Dec 2022 14:58:00 +0800
-Message-Id: <20221201065800.18149-1-xiubli@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        Thu, 1 Dec 2022 04:51:37 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 719AF8DBDA;
+        Thu,  1 Dec 2022 01:51:35 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id u15-20020a17090a3fcf00b002191825cf02so1477410pjm.2;
+        Thu, 01 Dec 2022 01:51:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OrJSojTV6RrHvze89O/IlMBMa/Wl5GG63Kf9bSkTTUE=;
+        b=fOopXHu4NEpn37RqMn1jStq5Gn/RKWx0+/DZ+HXdJdbS/fT3D1u3x0nWUfxcRYviYp
+         Lv50JneAQoW8gwypybV9oR1LsWcMGOC/plxtnnTQCy1mTFxnglY82LdDPSzUNVgfaFdR
+         NutgLUJg3pQxqSdoZB9+sTd+UM3Ro3iIFFD1SdGvxDJATNmZNivMRsx/G9iwjyZW61AM
+         bZyVqOmfHmFrij3Ypi+n0CQnlk75l+nrr9+4Se2Xj+o9oYmvMLeFzS+pzSfdN/e5s6T3
+         c5iizWDYanYOarl3tlk+ndB07LbTVAFg8wNPF24q8gtLS8XEirGoWg1Ru8rko+FULX0U
+         U2mQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OrJSojTV6RrHvze89O/IlMBMa/Wl5GG63Kf9bSkTTUE=;
+        b=Mnnua+ZvJaPyAnE/5HBXTagYYzTtF88NzLJsVHsPYhkgcw6lmSc1meOyMJNucRhbIn
+         XaUjmatQWI23m19SpL835FDVZeTYalf2l+ihPBszsKPFz29ArsbCZC8L107IiUpPh5Ly
+         Y7tXC4z2/DtF/9LBYSmXv8QaWqSAktOGYH+hLm4QOVOP7NgWQwDlrMuYOlZZ5qa07ZTh
+         ye9GKJQZPY0Fdxfb4mdabocHGtRLnn36qQSXpBxCT9v9F1XD7YZpOguS8agk/IiqNdpc
+         yRas2TmR9fC92Q2xS03b1b3G6DVz3JSzoZzMvpAKLMeWLvvxJHkaELOZLKUaO2OMcFxG
+         oyMA==
+X-Gm-Message-State: ANoB5pkpJdxOtUKrJSWOB7ef4qVU+3sNWcBwhhCphNm87D35114ym/3P
+        pR3l5GWnsrd5crgBmi9wA3s=
+X-Google-Smtp-Source: AA0mqf5pJvpyquWJcf0MKPRDWHxvP2lDQaG60lOW1NTaRKr/Lnk3n0MX7XmbcQchM7EQsslPHIGKWw==
+X-Received: by 2002:a17:902:8c8e:b0:179:f6ed:2ca8 with SMTP id t14-20020a1709028c8e00b00179f6ed2ca8mr46559844plo.14.1669888294917;
+        Thu, 01 Dec 2022 01:51:34 -0800 (PST)
+Received: from smtpclient.apple ([47.88.5.130])
+        by smtp.gmail.com with ESMTPSA id q100-20020a17090a17ed00b002196b5a0efesm2022625pja.47.2022.12.01.01.51.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 01 Dec 2022 01:51:34 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3696.120.41.1.1\))
+Subject: Re: Feature proposal: support file content integrity verification
+ based on fs-verity
+From:   Gerry Liu <liuj97@gmail.com>
+In-Reply-To: <CAFCauYOuVrSFmeckMi+2xteCcuuCfsuNtdMB0spo2afcGOxSeg@mail.gmail.com>
+Date:   Thu, 1 Dec 2022 17:51:24 +0800
+Cc:     Eric Biggers <ebiggers@google.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, linux-fsdevel@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, fuse-devel@lists.sourceforge.net
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <8242669C-B41F-4310-A244-973D9793E652@gmail.com>
+References: <D3AF9D1E-12E1-434F-AEA4-5892E8BC66AB@gmail.com>
+ <CAFCauYOuVrSFmeckMi+2xteCcuuCfsuNtdMB0spo2afcGOxSeg@mail.gmail.com>
+To:     Victor Hsieh <victorhsieh@google.com>
+X-Mailer: Apple Mail (2.3696.120.41.1.1)
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,77 +78,79 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Xiubo Li <xiubli@redhat.com>
 
-When close a file it will be deferred to call the fput(), which
-will hold the inode's i_count. And when unmounting the mountpoint
-the evict_inodes() may skip evicting some inodes.
 
-If encrypt is enabled the kernel generate a warning when removing
-the encrypt keys when the skipped inodes still hold the keyring:
+> 2022=E5=B9=B411=E6=9C=8829=E6=97=A5 08:44=EF=BC=8CVictor Hsieh =
+<victorhsieh@google.com> =E5=86=99=E9=81=93=EF=BC=9A
+>=20
+> On Thu, Nov 17, 2022 at 9:19 PM Gmail <liuj97@gmail.com> wrote:
+>>=20
+>> Hello fuse-devel,
+>>=20
+>> The fs-verity framework provides file content integrity verification =
+services for filesystems. Currently ext4/btrfs/f2fs has enabled support =
+for fs-verity. Here I would like to propose implementing FUSE file =
+content integrity verification based on fs-verity.
+>>=20
+>> Our current main use case is to support integrity verification for =
+confidential containers using virtio-fs. With the new integrity =
+verification feature, we can ensure that files from virtio-fs are =
+trusted and fs-verity root digests are available for remote attestation. =
+The integrity verification feature can also be used to support other =
+FUSE based solutions.
+> I'd argue FUSE isn't the right layer for supporting fs-verity
+> verification.  The verification can happen in the read path of
+> virtio-fs (or any FUSE-based filesystem).  In fact, Android is already
+> doing this in "authfs" fully in userspace.
+Hi Victor,
+Thanks for your comments:)
 
-WARNING: CPU: 4 PID: 168846 at fs/crypto/keyring.c:242 fscrypt_destroy_keyring+0x7e/0xd0
-CPU: 4 PID: 168846 Comm: umount Tainted: G S  6.1.0-rc5-ceph-g72ead199864c #1
-Hardware name: Supermicro SYS-5018R-WR/X10SRW-F, BIOS 2.0 12/17/2015
-RIP: 0010:fscrypt_destroy_keyring+0x7e/0xd0
-RSP: 0018:ffffc9000b277e28 EFLAGS: 00010202
-RAX: 0000000000000002 RBX: ffff88810d52ac00 RCX: ffff88810b56aa00
-RDX: 0000000080000000 RSI: ffffffff822f3a09 RDI: ffff888108f59000
-RBP: ffff8881d394fb88 R08: 0000000000000028 R09: 0000000000000000
-R10: 0000000000000001 R11: 11ff4fe6834fcd91 R12: ffff8881d394fc40
-R13: ffff888108f59000 R14: ffff8881d394f800 R15: 0000000000000000
-FS:  00007fd83f6f1080(0000) GS:ffff88885fd00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f918d417000 CR3: 000000017f89a005 CR4: 00000000003706e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
-<TASK>
-generic_shutdown_super+0x47/0x120
-kill_anon_super+0x14/0x30
-ceph_kill_sb+0x36/0x90 [ceph]
-deactivate_locked_super+0x29/0x60
-cleanup_mnt+0xb8/0x140
-task_work_run+0x67/0xb0
-exit_to_user_mode_prepare+0x23d/0x240
-syscall_exit_to_user_mode+0x25/0x60
-do_syscall_64+0x40/0x80
-entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fd83dc39e9b
+There=E2=80=99s a trust boundary problem here. There are two possible =
+ways to verify data integrity:
+1) verify data integrity in fuse kernel driver
+2) verify data integrity in fuse server.
 
-URL: https://tracker.ceph.com/issues/58126
-Signed-off-by: Xiubo Li <xiubli@redhat.com>
----
- fs/ceph/super.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+For hardware TEE(Trusted Execution Environment) based confidential =
+vm/container with virtio-fs, the fuse server running on the host side is =
+outside of trust domain, and the fuse driver is inside of trust domain. =
+It is therefore recommended to verify data integrity in the fuse driver. =
+The same situation may exist for fuse device based fuse server. The =
+application trusts kernel but doesn=E2=80=99t trust the fuse server.
 
-diff --git a/fs/ceph/super.c b/fs/ceph/super.c
-index 3db6f95768a3..1f46db92e81f 100644
---- a/fs/ceph/super.c
-+++ b/fs/ceph/super.c
-@@ -9,6 +9,7 @@
- #include <linux/in6.h>
- #include <linux/module.h>
- #include <linux/mount.h>
-+#include <linux/file.h>
- #include <linux/fs_context.h>
- #include <linux/fs_parser.h>
- #include <linux/sched.h>
-@@ -1477,6 +1478,14 @@ static void ceph_kill_sb(struct super_block *s)
- 	ceph_mdsc_pre_umount(fsc->mdsc);
- 	flush_fs_workqueues(fsc);
- 
-+	/*
-+	 * If the encrypt is enabled we need to make sure the delayed
-+	 * fput to finish, which will make sure all the inodes will
-+	 * be evicted before removing the encrypt keys.
-+	 */
-+	if (s->s_master_keys)
-+		flush_delayed_fput();
-+
- 	kill_anon_super(s);
- 
- 	fsc->client->extra_mon_dispatch = NULL;
--- 
-2.31.1
+Thanks,
+Gerry =20
+
+>=20
+> Although FUSE lacks the support of "unrestricted" ioctl, which makes
+> it impossible for the filesystem to receive the fs-verity ioctls.
+> Same to statx.  I think that's where we'd need a change in FUSE
+> protocol.
+>=20
+>>=20
+>> Fs-verity supports generating and verifying file content hash values. =
+For the sake of simplicity, we may only support hash value verification =
+of file content in the first stage, and enable support for hash value =
+generation in the later stage.
+>>=20
+>> The following FUSE protocol changes are therefore proposed to support =
+fs-verity:
+>> 1) add flag =E2=80=9CFUSE_FS_VERITY=E2=80=9D to negotiate fs-verity =
+support
+>> 2) add flag =E2=80=9CFUSE_ATTR_FSVERITY=E2=80=9D for fuse servers to =
+mark that inodes have associated fs-verity meta data.
+>> 3) add op =E2=80=9CFUSE_FSVERITY=E2=80=9D to get/set fs-verity =
+descriptor and hash values.
+>=20
+>>=20
+>> The FUSE protocol does not specify how fuse servers store fs-verity =
+metadata. The fuse server can store fs-verity metadata in its own ways.
+>>=20
+>> I did a quick prototype and the changes seems moderate, about 250 =
+lines of code changes.
+>>=20
+>> Would love to hear about your feedback:)
+>>=20
+>> Thanks,
+>> Gerry
+>>=20
 
