@@ -2,81 +2,79 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE60D640662
-	for <lists+linux-fscrypt@lfdr.de>; Fri,  2 Dec 2022 13:08:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1FC9642DAC
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  5 Dec 2022 17:50:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232750AbiLBMI0 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 2 Dec 2022 07:08:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58628 "EHLO
+        id S233062AbiLEQu2 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 5 Dec 2022 11:50:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233079AbiLBMIW (ORCPT
+        with ESMTP id S232438AbiLEQtv (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 2 Dec 2022 07:08:22 -0500
-Received: from out30-42.freemail.mail.aliyun.com (out30-42.freemail.mail.aliyun.com [115.124.30.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4AD52FC02;
-        Fri,  2 Dec 2022 04:08:20 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R811e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0VWE9zAq_1669982897;
-Received: from 30.32.112.227(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0VWE9zAq_1669982897)
-          by smtp.aliyun-inc.com;
-          Fri, 02 Dec 2022 20:08:18 +0800
-Message-ID: <65e77226-7ba7-5f72-0197-ea4f4fcd774a@linux.alibaba.com>
-Date:   Fri, 2 Dec 2022 20:08:16 +0800
+        Mon, 5 Dec 2022 11:49:51 -0500
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCF76E59
+        for <linux-fscrypt@vger.kernel.org>; Mon,  5 Dec 2022 08:49:05 -0800 (PST)
+Received: by mail-yb1-xb42.google.com with SMTP id 7so15193421ybp.13
+        for <linux-fscrypt@vger.kernel.org>; Mon, 05 Dec 2022 08:49:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=O4WPtqOs6pYDke8VCfpzwsIX+8zN33o8tLS2XMy/lFU=;
+        b=EvWmzEra/azIE+dhpMGnktmqmSoesb8PSCiM/05QKkVO5anMKEbRHSG7nojCSOyYWk
+         9IDI1UgS5rC+uB5j5uOW4no2X6seMos8u1Uby8q6RKzl1vCALcAn7vpiT6rpclAi8Jt0
+         gPKoEl0xikkT9S+7dg4LTBa5X4VHIsnKU2e6OrEO/j4h9xN1NPllzu29Dg0k3gFH+bOt
+         HMDW+rYw/YqhqvZ6y4oXgIeqTNVodnF9zHtiwgFo2Y0tEc6ReoK23o3+Epe6dWg/8ai1
+         Z4r7fWQ42rAk0Fys+lVH3VBvE+2FTvVvceopyfVxKS8DxJV3KaRTE9M5zTY24mYt1gIO
+         /rEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=O4WPtqOs6pYDke8VCfpzwsIX+8zN33o8tLS2XMy/lFU=;
+        b=5EbXdufKQUVAzgeD60z+WM49AcET3Ad7EvmeiKpjgCyDoCiGVF3BB+XhSei4msg7eh
+         dMJH73HlOiG8+mwFORkMpKjYIX567rr+oDHQWGjKgje59tJKfKm2mSk++LD3GcwcQif/
+         4Q/MKeF64N7Vdllnw47l8U/Ip+ZLw5UCJCtXUSQh0rWSjXkuTVWMpWRqKuZXNk0++XEH
+         JeJ3uceGJ6q7zwvAEjf9RaIwQ3TiHTjKN1MLQHDAtZfzTRLt22y/QX5j+d1GPoKfNeQ+
+         J+m4GoAgA28sXpwR/kObW+QQ88bIvwb7EUUqLgFpbCXoUkq/0EZfApbH4TjEQH2J+RUg
+         aYyA==
+X-Gm-Message-State: ANoB5plvGQ5YVBVqkWv7LAONGuRu8rFyHRTEv16T+yN9UVRnKMqj1h+H
+        xcNn8cmiH4Ec3B2VSshbO+qZBjY4GcQN+8THR3pvq95lMtx+mA==
+X-Google-Smtp-Source: AA0mqf6rJpockmAlPLGWb5IdXxyZXi5oeB/VlA7nQtTh5mH5GBjbP93nFRUHbmrw3A3v2AKvxeLYo6EVgAyGoUC2980=
+X-Received: by 2002:a05:6830:61ce:b0:66b:e4e2:8d25 with SMTP id
+ cc14-20020a05683061ce00b0066be4e28d25mr41635604otb.152.1670258933537; Mon, 05
+ Dec 2022 08:48:53 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.13.1
-Subject: Re: [PATCH] fscrypt: add additional documentation for SM4 support
-Content-Language: en-US
-To:     Eric Biggers <ebiggers@kernel.org>, linux-fscrypt@vger.kernel.org
-Cc:     linux-doc@vger.kernel.org
-References: <20221201191452.6557-1-ebiggers@kernel.org>
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-In-Reply-To: <20221201191452.6557-1-ebiggers@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-10.2 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a05:6358:7211:b0:dd:1fa2:ef73 with HTTP; Mon, 5 Dec 2022
+ 08:48:53 -0800 (PST)
+Reply-To: plml47@hotmail.com
+From:   Philip Manul <lometogo1999@gmail.com>
+Date:   Mon, 5 Dec 2022 08:48:53 -0800
+Message-ID: <CAFtqZGFXDNDSmyfAW1goTwuOjaKBWi=RMxR7avPMnWxdOUFKOg@mail.gmail.com>
+Subject: REP:
+To:     in <in@proposal.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=2.1 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hi Eric,
-
-On 12/2/22 3:14 AM, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> Add a paragraph about SM4, like there is for the other modes.
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
->   Documentation/filesystems/fscrypt.rst | 6 ++++++
->   1 file changed, 6 insertions(+)
-> 
-> diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
-> index c0784ec055530..ef183387da208 100644
-> --- a/Documentation/filesystems/fscrypt.rst
-> +++ b/Documentation/filesystems/fscrypt.rst
-> @@ -370,6 +370,12 @@ CONFIG_CRYPTO_HCTR2 must be enabled.  Also, fast implementations of XCTR and
->   POLYVAL should be enabled, e.g. CRYPTO_POLYVAL_ARM64_CE and
->   CRYPTO_AES_ARM64_CE_BLK for ARM64.
->   
-> +SM4 is a Chinese block cipher that is an alternative to AES.  It has
-> +not seen as much security review as AES, and it only has a 128-bit key
-> +size.  It may be useful in cases where its use is mandated.
-> +Otherwise, it should not be used.  For SM4 support to be available, it
-> +also needs to be enabled in the kernel crypto API.
-> +
-
-Looks good to me, this description is appropriate.
-
-Reviewed-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-
-Thanks,
-Tianjia
-
->   New encryption modes can be added relatively easily, without changes
->   to individual filesystems.  However, authenticated encryption (AE)
->   modes are not currently supported because of the difficulty of dealing
+--=20
+Guten tag,
+Mein Name ist Philip Manul. Ich bin von Beruf Rechtsanwalt. Ich habe
+einen verstorbenen Kunden, der zuf=C3=A4llig denselben Namen mit Ihnen
+teilt. Ich habe alle Papierdokumente in meinem Besitz. Ihr Verwandter,
+mein verstorbener Kunde, hat hier in meinem Land einen nicht
+beanspruchten Fonds zur=C3=BCckgelassen. Ich warte auf Ihre Antwort zum
+Verfahren.
+Philip Manul.
