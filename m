@@ -2,43 +2,45 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E512E649304
-	for <lists+linux-fscrypt@lfdr.de>; Sun, 11 Dec 2022 08:08:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC763649305
+	for <lists+linux-fscrypt@lfdr.de>; Sun, 11 Dec 2022 08:08:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230169AbiLKHH7 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sun, 11 Dec 2022 02:07:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42600 "EHLO
+        id S230133AbiLKHIA (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sun, 11 Dec 2022 02:08:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230133AbiLKHHy (ORCPT
+        with ESMTP id S230138AbiLKHHy (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
         Sun, 11 Dec 2022 02:07:54 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A8EABE30;
-        Sat, 10 Dec 2022 23:07:48 -0800 (PST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F04BFB48C;
+        Sat, 10 Dec 2022 23:07:47 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 464B1B80954;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 38CBEB80945;
         Sun, 11 Dec 2022 07:07:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A9B8C433EF;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3445C433D2;
         Sun, 11 Dec 2022 07:07:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1670742464;
-        bh=0PlfufLRdt0TiFkVc3hJh+Gbl/yW5nD7nXQiauHI8Hw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=OZwYvK9/618gEChCFsudGCykW9DS9tQklTfiJcGAwnNZncdMO5iyoNSv28XNmKQ1w
-         mHwYiVy0nkyPqisbOHIi4vGeg7vpsKJtJJsFCu1jPG7Ddc7tbjtADLpZOjuOAyqK2J
-         E2OzTp3kOb8DtLSEUW+JVaQfwPkx48Pfem9B48L65YBjWgCZyP11gnLbmFacMwqLWT
-         YpdEYbdo6H/2/uyuEtyWOcTcP5Z6RBdGbnM7Oq3fZFW3o0gDfaHwbTB203DqMKalHW
-         ekLfMjANgWIvReoVKETBPIHh4TB2kmpL6OcDC0C/OxRaOEegk6r554FC0k7DuuvRzc
-         NHJnbe38Qcmfw==
+        bh=RSlfrXXjhLYM9CdWMJaXYvN1wwoVOb0jnL6OewsqvWw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=P7v65V5VDfP6v1k3W80Yhb89hRy933STa450H0kl5kYytdoX82J+jACnDLBdHXXQn
+         bF+SuI41phhoGcn0o/1wbolbYERSlX1Rz61b3z0ewOaQLxVkyxuRuoVLLY2wopLbSm
+         FMDRNjKP4DvDDMjHlY1DoeLC992cxiZKup5rQ4of7CnXSNJmIDUSN2AfD8bw2nm1VV
+         PSa80tk9NzuL7LPYy8D+S+ioftgTIhspCXHwiOENn80PpRN5tpYxK1jzSaHwtR17M8
+         CwK/pt07d/yaDs7rqLYvBUqXwxzWVqINxusy8F4wDSxw+IqM5yAwq0pZgVzL+eCzT9
+         SzVohrz3SvxfA==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     fstests@vger.kernel.org
 Cc:     linux-fscrypt@vger.kernel.org
-Subject: [PATCH 00/10] xfstests: update verity tests for non-4K block and page size
-Date:   Sat, 10 Dec 2022 23:06:53 -0800
-Message-Id: <20221211070704.341481-1-ebiggers@kernel.org>
+Subject: [PATCH 01/10] common/verity: add and use _fsv_can_enable()
+Date:   Sat, 10 Dec 2022 23:06:54 -0800
+Message-Id: <20221211070704.341481-2-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.38.1
+In-Reply-To: <20221211070704.341481-1-ebiggers@kernel.org>
+References: <20221211070704.341481-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -50,47 +52,86 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-This series updates the verity xfstests to eliminate implicit
-assumptions that 'merkle_tree_block_size == fs_block_size == page_size
-== 4096', and to provide some test coverage for cases where
-merkle_tree_block_size differs from fs_block_size and/or page_size.  It
-doesn't add any new test scripts, but it does update some of the
-existing test scripts to test multiple block sizes.
+From: Eric Biggers <ebiggers@google.com>
 
-This goes along with my kernel patch series
-"fsverity: support for non-4K pages"
-(https://lore.kernel.org/linux-fsdevel/20221028224539.171818-1-ebiggers@kernel.org/T/#u).
-However, it's not necessary to wait for that kernel patch series to be
-applied before applying this xfstests patch series.
+Replace _fsv_have_hash_algorithm() with a more general function
+_fsv_can_enable() which checks whether 'fsverity enable' with the given
+parameters works.  For now it is just used with --hash-alg or with no
+parameters, but soon it will be used with --block-size too.
 
-Eric Biggers (10):
-  common/verity: add and use _fsv_can_enable()
-  common/verity: set FSV_BLOCK_SIZE to an appropriate value
-  common/verity: use FSV_BLOCK_SIZE by default
-  common/verity: add _filter_fsverity_digest()
-  generic/572: support non-4K Merkle tree block size
-  generic/573: support non-4K Merkle tree block size
-  generic/577: support non-4K Merkle tree block size
-  generic/574: test multiple Merkle tree block sizes
-  generic/624: test multiple Merkle tree block sizes
-  generic/575: test 1K Merkle tree block size
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ common/verity     | 17 ++++++-----------
+ tests/generic/575 |  2 +-
+ tests/generic/577 |  2 +-
+ 3 files changed, 8 insertions(+), 13 deletions(-)
 
- common/verity         |  84 +++++++++++++++-----
- tests/generic/572     |  21 ++---
- tests/generic/572.out |  10 +--
- tests/generic/573     |   8 +-
- tests/generic/574     | 174 ++++++++++++++++++++++++++----------------
- tests/generic/574.out |  83 ++------------------
- tests/generic/575     |  58 +++++++++-----
- tests/generic/575.out |   8 +-
- tests/generic/577     |  24 +++---
- tests/generic/577.out |  10 +--
- tests/generic/624     | 119 ++++++++++++++++++++---------
- tests/generic/624.out |  15 ++--
- 12 files changed, 346 insertions(+), 268 deletions(-)
-
-
-base-commit: 41f2bbdec5faa5d6522e86e63c1f30473a99dbfe
+diff --git a/common/verity b/common/verity
+index f98dcb07..1a53a7ea 100644
+--- a/common/verity
++++ b/common/verity
+@@ -42,13 +42,7 @@ _require_scratch_verity()
+ 	# The filesystem may have fs-verity enabled but not actually usable by
+ 	# default.  E.g., ext4 only supports verity on extent-based files, so it
+ 	# doesn't work on ext3-style filesystems.  So, try actually using it.
+-	echo foo > $SCRATCH_MNT/tmpfile
+-	_disable_fsverity_signatures
+-	_fsv_enable $SCRATCH_MNT/tmpfile
+-	local status=$?
+-	_restore_prev_fsverity_signatures
+-	rm -f $SCRATCH_MNT/tmpfile
+-	if (( $status != 0 )); then
++	if ! _fsv_can_enable $SCRATCH_MNT/tmpfile; then
+ 		_notrun "$FSTYP verity isn't usable by default with these mkfs options"
+ 	fi
+ 
+@@ -256,15 +250,16 @@ _fsv_create_enable_file()
+ 	_fsv_enable "$file" "$@"
+ }
+ 
+-_fsv_have_hash_algorithm()
++_fsv_can_enable()
+ {
+-	local hash_alg=$1
+-	local test_file=$2
++	local test_file=$1
++	shift
++	local params=("$@")
+ 
+ 	_disable_fsverity_signatures
+ 	rm -f $test_file
+ 	head -c 4096 /dev/zero > $test_file
+-	_fsv_enable --hash-alg=$hash_alg $test_file &>> $seqres.full
++	_fsv_enable $test_file "${params[@]}" &>> $seqres.full
+ 	local status=$?
+ 	_restore_prev_fsverity_signatures
+ 	rm -f $test_file
+diff --git a/tests/generic/575 b/tests/generic/575
+index ffa6b61d..0ece8826 100755
+--- a/tests/generic/575
++++ b/tests/generic/575
+@@ -71,7 +71,7 @@ test_alg()
+ 
+ 	_fsv_scratch_begin_subtest "Check for expected measurement values ($alg)"
+ 
+-	if ! _fsv_have_hash_algorithm $alg $fsv_file; then
++	if ! _fsv_can_enable $fsv_file --hash-alg=$alg; then
+ 		if [ "$alg" = sha256 ]; then
+ 			_fail "Something is wrong - sha256 hash should always be available"
+ 		fi
+diff --git a/tests/generic/577 b/tests/generic/577
+index 5f7e0573..85d680df 100755
+--- a/tests/generic/577
++++ b/tests/generic/577
+@@ -112,7 +112,7 @@ _fsv_enable $fsv_file --signature=$sigfile.salted --salt=abcd
+ cmp $fsv_file $fsv_orig_file
+ 
+ echo -e "\n# Testing non-default hash algorithm"
+-if _fsv_have_hash_algorithm sha512 $fsv_file; then
++if _fsv_can_enable $fsv_file --hash-alg=sha512; then
+ 	reset_fsv_file
+ 	_fsv_sign $fsv_orig_file $sigfile.sha512 --key=$keyfile \
+ 		--cert=$certfile --hash-alg=sha512 > /dev/null
 -- 
 2.38.1
 
