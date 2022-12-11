@@ -2,42 +2,42 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBDE2649301
-	for <lists+linux-fscrypt@lfdr.de>; Sun, 11 Dec 2022 08:07:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF48649303
+	for <lists+linux-fscrypt@lfdr.de>; Sun, 11 Dec 2022 08:08:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230163AbiLKHH6 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sun, 11 Dec 2022 02:07:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42590 "EHLO
+        id S230036AbiLKHH7 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sun, 11 Dec 2022 02:07:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230025AbiLKHHx (ORCPT
+        with ESMTP id S230118AbiLKHHy (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sun, 11 Dec 2022 02:07:53 -0500
+        Sun, 11 Dec 2022 02:07:54 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94244320;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F49C5F76;
         Sat, 10 Dec 2022 23:07:47 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9239B60C95;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EBF0E60DBE;
         Sun, 11 Dec 2022 07:07:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5AC3C433F1;
-        Sun, 11 Dec 2022 07:07:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 292E2C43398;
+        Sun, 11 Dec 2022 07:07:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1670742466;
-        bh=5XdxmPbQ5uD8EQjNq6Wlsk6Jo13qeKOFtp/IbedmcHU=;
+        bh=I4KycfrJoluDh3XxkUca9i14tk/eHh0ttbMMC9iWP/s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cOdqFCDvbeOW6R31uQpU9YRltjGSunNsiKpchFE6NrxA/O3AH7viudKFUlCcjbL1k
-         tuSaIxvNWsJXdLQdz4Cc320c4YBnIhyhSed2XesPgAjkLOqQQWz934OtvUyeFwh5op
-         RxOxiUDoTCTFZazmrwXpQ0Nw11IhfUco/UXtpvo2siVA3Ok05VctSvXScsJqK0h/ma
-         EyDkeLsSL5myQDZmAXJQONaQvpU5oTW5YzrsomocW266f3F6K9gQ32vGoTKbSFrJAE
-         0fXy+z01TXnNIEDy8rfsttJO7hmZfA+RO4VqLGM1GIaWXUnZW0s2RSxpjEPiZ8Jsyv
-         a30d/ShnRQcDQ==
+        b=QPACzPIivRbHhcZrLNNr3YlOXBjtFNaoVp9zzgzNrNWYRjie86XEdxH93NAkUHFEp
+         4EOzCGF6SAUST5LKSZ0Wah2sXzYJXKskUUeY6SaJZIEOOaeNStsDtcUnTJRc+/CNPE
+         DmyLHm2yxOEPIwcEA73wbZJk/Ca5B8HorWG0Es62RncUZyTkJLbyE4qub3NRMqSS/H
+         E6Ae5+/cUzFHr6eL1WAKXFti38YS4EblGOmgey4sz1eEIeaaHv6Wh4QjJ3w41cxtKi
+         5Gm4FDfJwwEo3K3l6AIlM/AP7+PUIGIl68/0z3SeM1DPSqvv5UcGbPiJy82cgnWItR
+         VxTR2vHcSt7Jg==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     fstests@vger.kernel.org
 Cc:     linux-fscrypt@vger.kernel.org
-Subject: [PATCH 06/10] generic/573: support non-4K Merkle tree block size
-Date:   Sat, 10 Dec 2022 23:06:59 -0800
-Message-Id: <20221211070704.341481-7-ebiggers@kernel.org>
+Subject: [PATCH 07/10] generic/577: support non-4K Merkle tree block size
+Date:   Sat, 10 Dec 2022 23:07:00 -0800
+Message-Id: <20221211070704.341481-8-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221211070704.341481-1-ebiggers@kernel.org>
 References: <20221211070704.341481-1-ebiggers@kernel.org>
@@ -54,46 +54,110 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Update generic/573 to not implicitly assume that the Merkle tree block
+Update generic/577 to not implicitly assume that the Merkle tree block
 size being used is 4096 bytes.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- tests/generic/573 | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ tests/generic/577     | 22 ++++++++++++----------
+ tests/generic/577.out | 10 +++++-----
+ 2 files changed, 17 insertions(+), 15 deletions(-)
 
-diff --git a/tests/generic/573 b/tests/generic/573
-index 63c0aef5..ca0f27f9 100755
---- a/tests/generic/573
-+++ b/tests/generic/573
-@@ -36,23 +36,23 @@ fsv_file=$SCRATCH_MNT/file.fsv
- _fsv_scratch_begin_subtest "FS_IOC_ENABLE_VERITY doesn't require root"
- echo foo > $fsv_file
- chmod 666 $fsv_file
--_user_do "$FSVERITY_PROG enable $fsv_file"
-+_user_do "$FSVERITY_PROG enable --block-size=$FSV_BLOCK_SIZE $fsv_file"
+diff --git a/tests/generic/577 b/tests/generic/577
+index 85d680df..bbbfdb0a 100755
+--- a/tests/generic/577
++++ b/tests/generic/577
+@@ -38,6 +38,11 @@ sigfile=$tmp.sig
+ otherfile=$SCRATCH_MNT/otherfile
+ othersigfile=$tmp.othersig
  
- _fsv_scratch_begin_subtest "FS_IOC_ENABLE_VERITY requires write access"
- echo foo > $fsv_file >> $seqres.full
- chmod 444 $fsv_file
--_user_do "$FSVERITY_PROG enable $fsv_file" |& _filter_scratch
-+_user_do "$FSVERITY_PROG enable --block-size=$FSV_BLOCK_SIZE $fsv_file" |& _filter_scratch
++sign()
++{
++	_fsv_sign "$@" | _filter_scratch | _filter_fsverity_digest
++}
++
+ # Setup
  
- _fsv_scratch_begin_subtest "FS_IOC_ENABLE_VERITY requires !append-only"
- echo foo > $fsv_file >> $seqres.full
- $CHATTR_PROG +a $fsv_file
--$FSVERITY_PROG enable $fsv_file |& _filter_scratch
-+_fsv_enable $fsv_file |& _filter_scratch
- $CHATTR_PROG -a $fsv_file
+ echo -e "\n# Generating certificates and private keys"
+@@ -57,14 +62,13 @@ _enable_fsverity_signatures
+ echo -e "\n# Generating file and signing it for fs-verity"
+ head -c 100000 /dev/zero > $fsv_orig_file
+ for suffix in '' '.2'; do
+-	_fsv_sign $fsv_orig_file $sigfile$suffix --key=$keyfile$suffix \
+-		--cert=$certfile$suffix | _filter_scratch
++	sign $fsv_orig_file $sigfile$suffix --key=$keyfile$suffix \
++		--cert=$certfile$suffix
+ done
  
- _fsv_scratch_begin_subtest "FS_IOC_ENABLE_VERITY requires !immutable"
- echo foo > $fsv_file >> $seqres.full
- $CHATTR_PROG +i $fsv_file
--$FSVERITY_PROG enable $fsv_file |& _filter_scratch
-+_fsv_enable $fsv_file |& _filter_scratch
- $CHATTR_PROG -i $fsv_file
+ echo -e "\n# Signing a different file for fs-verity"
+ head -c 100000 /dev/zero | tr '\0' 'X' > $otherfile
+-_fsv_sign $otherfile $othersigfile --key=$keyfile --cert=$certfile \
+-	| _filter_scratch
++sign $otherfile $othersigfile --key=$keyfile --cert=$certfile
  
- _fsv_scratch_begin_subtest "FS_IOC_MEASURE_VERITY doesn't require root"
+ # Actual tests
+ 
+@@ -106,16 +110,15 @@ _fsv_enable $fsv_file --signature=$tmp.malformed_sig |& _filter_scratch
+ 
+ echo -e "\n# Testing salt"
+ reset_fsv_file
+-_fsv_sign $fsv_orig_file $sigfile.salted --key=$keyfile --cert=$certfile \
+-	--salt=abcd | _filter_scratch
++sign $fsv_orig_file $sigfile.salted --key=$keyfile --cert=$certfile --salt=abcd
+ _fsv_enable $fsv_file --signature=$sigfile.salted --salt=abcd
+ cmp $fsv_file $fsv_orig_file
+ 
+ echo -e "\n# Testing non-default hash algorithm"
+ if _fsv_can_enable $fsv_file --hash-alg=sha512; then
+ 	reset_fsv_file
+-	_fsv_sign $fsv_orig_file $sigfile.sha512 --key=$keyfile \
+-		--cert=$certfile --hash-alg=sha512 > /dev/null
++	sign $fsv_orig_file $sigfile.sha512 --key=$keyfile --cert=$certfile \
++		--hash-alg=sha512 > /dev/null
+ 	_fsv_enable $fsv_file --signature=$sigfile.sha512 --hash-alg=sha512
+ 	cmp $fsv_file $fsv_orig_file
+ fi
+@@ -123,8 +126,7 @@ fi
+ echo -e "\n# Testing empty file"
+ rm -f $fsv_file
+ echo -n > $fsv_file
+-_fsv_sign $fsv_file $sigfile.emptyfile --key=$keyfile --cert=$certfile | \
+-		_filter_scratch
++sign $fsv_file $sigfile.emptyfile --key=$keyfile --cert=$certfile
+ _fsv_enable $fsv_file --signature=$sigfile.emptyfile
+ 
+ # success, all done
+diff --git a/tests/generic/577.out b/tests/generic/577.out
+index 0ca417c4..4f360d57 100644
+--- a/tests/generic/577.out
++++ b/tests/generic/577.out
+@@ -9,11 +9,11 @@ QA output created by 577
+ # Enabling fs.verity.require_signatures
+ 
+ # Generating file and signing it for fs-verity
+-Signed file 'SCRATCH_MNT/file' (sha256:ecabbfca4efd69a721be824965da10d27900b109549f96687b35a4d91d810dac)
+-Signed file 'SCRATCH_MNT/file' (sha256:ecabbfca4efd69a721be824965da10d27900b109549f96687b35a4d91d810dac)
++Signed file 'SCRATCH_MNT/file' (sha256:<digest>)
++Signed file 'SCRATCH_MNT/file' (sha256:<digest>)
+ 
+ # Signing a different file for fs-verity
+-Signed file 'SCRATCH_MNT/otherfile' (sha256:b2a419c5a8c767a78c6275d6729794bf51e52ddf8713e31d12a93d61d961f49f)
++Signed file 'SCRATCH_MNT/otherfile' (sha256:<digest>)
+ 
+ # Enabling verity with valid signature (should succeed)
+ 
+@@ -33,9 +33,9 @@ ERROR: FS_IOC_ENABLE_VERITY failed on 'SCRATCH_MNT/file.fsv': Key was rejected b
+ ERROR: FS_IOC_ENABLE_VERITY failed on 'SCRATCH_MNT/file.fsv': Bad message
+ 
+ # Testing salt
+-Signed file 'SCRATCH_MNT/file' (sha256:1cb173bcd199133eb80e9ea4f0f741001b9e73227aa8812685156f2bc8ff45f5)
++Signed file 'SCRATCH_MNT/file' (sha256:<digest>)
+ 
+ # Testing non-default hash algorithm
+ 
+ # Testing empty file
+-Signed file 'SCRATCH_MNT/file.fsv' (sha256:3d248ca542a24fc62d1c43b916eae5016878e2533c88238480b26128a1f1af95)
++Signed file 'SCRATCH_MNT/file.fsv' (sha256:<digest>)
 -- 
 2.38.1
 
