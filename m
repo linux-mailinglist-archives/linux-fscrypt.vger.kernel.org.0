@@ -2,43 +2,43 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65E8864D282
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 14 Dec 2022 23:45:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C2D464D27E
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 14 Dec 2022 23:45:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229604AbiLNWps (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 14 Dec 2022 17:45:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229592AbiLNWpq (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
+        id S229575AbiLNWpq (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
         Wed, 14 Dec 2022 17:45:46 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64F8A25D4;
-        Wed, 14 Dec 2022 14:45:44 -0800 (PST)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229484AbiLNWpn (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 14 Dec 2022 17:45:43 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19A72FCED;
+        Wed, 14 Dec 2022 14:45:43 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 14DE2B81A45;
-        Wed, 14 Dec 2022 22:45:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9331AC433F0;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A1B6661C3C;
+        Wed, 14 Dec 2022 22:45:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E012AC433D2;
         Wed, 14 Dec 2022 22:45:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671057941;
-        bh=uJ3FO4tiueVTb/4lrSOqyDlwjeWDWqy+a4fT7SmmDcs=;
+        s=k20201202; t=1671057942;
+        bh=s8dg1vvBSOe1uFDb6X0c7Lo1qJtF6A37tS92++ok0e0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C0QbxiKYE2VOxgX/uB7OvsCcHekCwBxYw2+DygusA8QIW/Quxt8Sawkvfo9So92Wj
-         mjwygoQ2CFNs9P6CmgHk/tVl+ql2dSMbauBMdaAScm4f6KWZgeoWkweCOQGhMKhbqX
-         3k7Xy5GcgXcmkNtcKsbSDkNOzSK3XXnsz1gjrM8Z5VFoVvaxhpTxejOCJY/1i2yFci
-         eF3GpIKe7EAvDJq1hWb/td9LMQxR5YRfLmjCBdXQL3XOOQcGyez3hIv9Hmkk9Qcswn
-         BxQvfLOScLeHlnKv4MPCW/egRGUiIAei68p7yH4P5nrWUOsjxEnLojV0nDm308RKYn
-         NCDecNzthjJjQ==
+        b=XtUriyDzkRFPg4njwQjjGG6jpMpkutiINigs/Wv2bMtLBVzTvcSX4F5DkYlXNiZOt
+         zLA9iiJCMQ3dst+01fJVh6ksPbvnjoWW5M6UXO2N5jNXTZQB2Wb2dC12IRz+7yv0yf
+         AywvCVZfvh/7oc0LOlOccnongCuLUyuDFOp/joMg6Yo9JnskD4c6R9CtRAIdUtb79e
+         291m10yspAAJpN2MO+vco+K2vsZBOX/bmAIDYE9shLc5qmXFi4PSEfZ2HUeyS5Y0On
+         5VGX6RdU1ac8VCy/Lm+g1FHyrRbL4CBEVPNT7GdB2vjS0VkzmVcAohXGzFklXzqf1K
+         vLLQDWD25QVPA==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-fscrypt@vger.kernel.org
 Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
         linux-btrfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: [PATCH 2/4] fsverity: optimize fsverity_prepare_setattr() on non-verity files
-Date:   Wed, 14 Dec 2022 14:43:02 -0800
-Message-Id: <20221214224304.145712-3-ebiggers@kernel.org>
+Subject: [PATCH 3/4] fsverity: optimize fsverity_cleanup_inode() on non-verity files
+Date:   Wed, 14 Dec 2022 14:43:03 -0800
+Message-Id: <20221214224304.145712-4-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221214224304.145712-1-ebiggers@kernel.org>
 References: <20221214224304.145712-1-ebiggers@kernel.org>
@@ -56,100 +56,67 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Make fsverity_prepare_setattr() an inline function that does the
-IS_VERITY() check, then (if needed) calls __fsverity_prepare_setattr()
-to do the real work.  This reduces the overhead on non-verity files.
+Make fsverity_cleanup_inode() an inline function that checks for
+non-NULL ->i_verity_info, then (if needed) calls
+__fsverity_cleanup_inode() to do the real work.  This reduces the
+overhead on non-verity files.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/verity/open.c         | 16 +++-------------
- include/linux/fsverity.h | 26 ++++++++++++++++++++++----
- 2 files changed, 25 insertions(+), 17 deletions(-)
+ fs/verity/open.c         | 10 ++--------
+ include/linux/fsverity.h | 14 +++++++++++++-
+ 2 files changed, 15 insertions(+), 9 deletions(-)
 
 diff --git a/fs/verity/open.c b/fs/verity/open.c
-index 673d6db9abdf..e1e531d5e09a 100644
+index e1e531d5e09a..c723a62841db 100644
 --- a/fs/verity/open.c
 +++ b/fs/verity/open.c
-@@ -337,26 +337,16 @@ int __fsverity_file_open(struct inode *inode, struct file *filp)
+@@ -348,18 +348,12 @@ int __fsverity_prepare_setattr(struct dentry *dentry, struct iattr *attr)
  }
- EXPORT_SYMBOL_GPL(__fsverity_file_open);
+ EXPORT_SYMBOL_GPL(__fsverity_prepare_setattr);
  
 -/**
-- * fsverity_prepare_setattr() - prepare to change a verity inode's attributes
-- * @dentry: dentry through which the inode is being changed
-- * @attr: attributes to change
+- * fsverity_cleanup_inode() - free the inode's verity info, if present
+- * @inode: an inode being evicted
 - *
-- * Verity files are immutable, so deny truncates.  This isn't covered by the
-- * open-time check because sys_truncate() takes a path, not a file descriptor.
-- *
-- * Return: 0 on success, -errno on failure
+- * Filesystems must call this on inode eviction to free ->i_verity_info.
 - */
--int fsverity_prepare_setattr(struct dentry *dentry, struct iattr *attr)
-+int __fsverity_prepare_setattr(struct dentry *dentry, struct iattr *attr)
+-void fsverity_cleanup_inode(struct inode *inode)
++void __fsverity_cleanup_inode(struct inode *inode)
  {
--	if (IS_VERITY(d_inode(dentry)) && (attr->ia_valid & ATTR_SIZE)) {
-+	if (attr->ia_valid & ATTR_SIZE) {
- 		pr_debug("Denying truncate of verity file (ino %lu)\n",
- 			 d_inode(dentry)->i_ino);
- 		return -EPERM;
- 	}
- 	return 0;
+ 	fsverity_free_info(inode->i_verity_info);
+ 	inode->i_verity_info = NULL;
  }
--EXPORT_SYMBOL_GPL(fsverity_prepare_setattr);
-+EXPORT_SYMBOL_GPL(__fsverity_prepare_setattr);
+-EXPORT_SYMBOL_GPL(fsverity_cleanup_inode);
++EXPORT_SYMBOL_GPL(__fsverity_cleanup_inode);
  
- /**
-  * fsverity_cleanup_inode() - free the inode's verity info, if present
+ int __init fsverity_init_info_cache(void)
+ {
 diff --git a/include/linux/fsverity.h b/include/linux/fsverity.h
-index 326bf2e2b903..84b498fff7ec 100644
+index 84b498fff7ec..203f4962c54a 100644
 --- a/include/linux/fsverity.h
 +++ b/include/linux/fsverity.h
-@@ -149,7 +149,7 @@ int fsverity_get_digest(struct inode *inode,
- /* open.c */
+@@ -150,7 +150,19 @@ int fsverity_get_digest(struct inode *inode,
  
  int __fsverity_file_open(struct inode *inode, struct file *filp);
--int fsverity_prepare_setattr(struct dentry *dentry, struct iattr *attr);
-+int __fsverity_prepare_setattr(struct dentry *dentry, struct iattr *attr);
- void fsverity_cleanup_inode(struct inode *inode);
+ int __fsverity_prepare_setattr(struct dentry *dentry, struct iattr *attr);
+-void fsverity_cleanup_inode(struct inode *inode);
++void __fsverity_cleanup_inode(struct inode *inode);
++
++/**
++ * fsverity_cleanup_inode() - free the inode's verity info, if present
++ * @inode: an inode being evicted
++ *
++ * Filesystems must call this on inode eviction to free ->i_verity_info.
++ */
++static inline void fsverity_cleanup_inode(struct inode *inode)
++{
++	if (inode->i_verity_info)
++		__fsverity_cleanup_inode(inode);
++}
  
  /* read_metadata.c */
-@@ -198,10 +198,10 @@ static inline int __fsverity_file_open(struct inode *inode, struct file *filp)
- 	return -EOPNOTSUPP;
- }
  
--static inline int fsverity_prepare_setattr(struct dentry *dentry,
--					   struct iattr *attr)
-+static inline int __fsverity_prepare_setattr(struct dentry *dentry,
-+					     struct iattr *attr)
- {
--	return IS_VERITY(d_inode(dentry)) ? -EOPNOTSUPP : 0;
-+	return -EOPNOTSUPP;
- }
- 
- static inline void fsverity_cleanup_inode(struct inode *inode)
-@@ -274,4 +274,22 @@ static inline int fsverity_file_open(struct inode *inode, struct file *filp)
- 	return 0;
- }
- 
-+/**
-+ * fsverity_prepare_setattr() - prepare to change a verity inode's attributes
-+ * @dentry: dentry through which the inode is being changed
-+ * @attr: attributes to change
-+ *
-+ * Verity files are immutable, so deny truncates.  This isn't covered by the
-+ * open-time check because sys_truncate() takes a path, not a file descriptor.
-+ *
-+ * Return: 0 on success, -errno on failure
-+ */
-+static inline int fsverity_prepare_setattr(struct dentry *dentry,
-+					   struct iattr *attr)
-+{
-+	if (IS_VERITY(d_inode(dentry)))
-+		return __fsverity_prepare_setattr(dentry, attr);
-+	return 0;
-+}
-+
- #endif	/* _LINUX_FSVERITY_H */
 -- 
 2.38.1
 
