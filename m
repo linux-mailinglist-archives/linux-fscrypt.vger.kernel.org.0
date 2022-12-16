@@ -2,54 +2,52 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7EC164F2DC
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 16 Dec 2022 22:02:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A577764F2EF
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 16 Dec 2022 22:06:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231820AbiLPVCo (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 16 Dec 2022 16:02:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47840 "EHLO
+        id S231298AbiLPVGz (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 16 Dec 2022 16:06:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229627AbiLPVCn (ORCPT
+        with ESMTP id S230171AbiLPVGy (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 16 Dec 2022 16:02:43 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02D646B200;
-        Fri, 16 Dec 2022 13:02:42 -0800 (PST)
+        Fri, 16 Dec 2022 16:06:54 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5143DEFE;
+        Fri, 16 Dec 2022 13:06:53 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8C9E762224;
-        Fri, 16 Dec 2022 21:02:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AED6BC433D2;
-        Fri, 16 Dec 2022 21:02:41 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 442316221A;
+        Fri, 16 Dec 2022 21:06:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7663AC433EF;
+        Fri, 16 Dec 2022 21:06:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671224562;
-        bh=fN6m4VVYYGNJr/6EwOlSmEnRz+a52skh6EEXOuEbYAA=;
+        s=k20201202; t=1671224812;
+        bh=vQnEle8DIQDINZxnB4NynE9ZPfDylYmC1JKlkPCWync=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eVyOzd9RrBpCgJg75WD8MZcN/gi1IB8OPt6rX3Zzx/yYmmEZwjchzPb24tjMuIeni
-         tlZOy5hepolDqmDwN6RI+l8mWiFqaPi+Y0qYbu3Q95I138XpgZS7NgV1Y734GmMRpJ
-         6AyhmJWUsG06S8e+wtyFB8A4Ijq5pNRljDUveS6IUa8zxWE5mPZGQZnj9Exg2cco8G
-         3hcmfwjE3i+1omxMkMOAIUvoht8D1qUIVtvyLeIJ0/EZMjwtfewRJm3XX9iD4e0Bfa
-         3PQ+ku7tCHI5lo+ymT7FpDUKq20Tuj/nz67h0MWrqm6YecfgC0y/of5Z25PWvm5f9i
-         PZPdc7K0z+qmQ==
-Date:   Fri, 16 Dec 2022 13:02:39 -0800
+        b=Lw67mAqbYQewRYaBRK79ZyXVfd7uicKtXjRTP7rWqlPFcx4p8r4qJm9WleLTc/9m8
+         Afj57BHi1WUzfLH1Lxo5o91LOvRYNBobnEZZHw7J/c+GvYDJnjRDjMo7mUYDk7HnXS
+         tPkiXE1SPXm7AgxVv+GWXCBAG7Zv6vbDwyoxDVymffwBbRQ/rsolhHDCiduVlPkofI
+         a3sYKxMNkEgQKmD2ZYkz8a4CCAZPS1R2r7S87MvDJPi1tQjgQXU84dDlFFcrtqbn7h
+         /+JMg29kiV0wbYgBTSmTnFbvcrbK/radR1MK9d8dLg0WF8h1Y9DKtrmx7etugfndQ7
+         gGg/dbKobgxKQ==
+Date:   Fri, 16 Dec 2022 13:06:50 -0800
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Fan Wu <wufan@linux.microsoft.com>
-Cc:     Luca Boccassi <bluca@debian.org>, linux-fscrypt@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+To:     Luca Boccassi <bluca@debian.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
         linux-btrfs@vger.kernel.org, linux-integrity@vger.kernel.org,
-        Jes Sorensen <jsorensen@meta.com>,
-        Victor Hsieh <victorhsieh@google.com>
-Subject: Re: [PATCH] fsverity: mark builtin signatures as deprecated
-Message-ID: <Y5zc74DPqamqs+rH@sol.localdomain>
-References: <20221208033548.122704-1-ebiggers@kernel.org>
- <eea9b4dc9314da2de39b4181a4dac59fda8b0754.camel@debian.org>
- <Y5JPRW+9dt28JpZ7@sol.localdomain>
- <20221209221719.GA3055@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+        stable@vger.kernel.org
+Subject: Re: [PATCH] fsverity: don't check builtin signatures when
+ require_signatures=0
+Message-ID: <Y5zd6ucBc20CV7Le@sol.localdomain>
+References: <20221208033523.122642-1-ebiggers@kernel.org>
+ <CAMw=ZnQUmeOWQkMM9Kn5iYaT4dyDQ3j1K=dUgk9jFNcHPxxHrg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221209221719.GA3055@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+In-Reply-To: <CAMw=ZnQUmeOWQkMM9Kn5iYaT4dyDQ3j1K=dUgk9jFNcHPxxHrg@mail.gmail.com>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -59,18 +57,33 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Dec 09, 2022 at 02:17:19PM -0800, Fan Wu wrote:
-> We have also noticed many use cases for the fs-verity build-in signatures. Proposals
-> exist to use them[1]. Package managers were updated to use them[2]. We are
-> successfully using them in production. Therefore we prefer to keep the existing
-> build-in signatures.
+On Thu, Dec 08, 2022 at 08:42:56PM +0000, Luca Boccassi wrote:
+> On Thu, 8 Dec 2022 at 03:35, Eric Biggers <ebiggers@kernel.org> wrote:
+> >
+> > From: Eric Biggers <ebiggers@google.com>
+> >
+> > An issue that arises when migrating from builtin signatures to userspace
+> > signatures is that existing files that have builtin signatures cannot be
+> > opened unless either CONFIG_FS_VERITY_BUILTIN_SIGNATURES is disabled or
+> > the signing certificate is left in the .fs-verity keyring.
+> >
+> > Since builtin signatures provide no security benefit when
+> > fs.verity.require_signatures=0 anyway, let's just skip the signature
+> > verification in this case.
+> >
+> > Fixes: 432434c9f8e1 ("fs-verity: support builtin file signatures")
+> > Cc: <stable@vger.kernel.org> # v5.4+
+> > Signed-off-by: Eric Biggers <ebiggers@google.com>
+> > ---
+> >  fs/verity/signature.c | 18 ++++++++++++++++--
+> >  1 file changed, 16 insertions(+), 2 deletions(-)
 > 
-> [1]https://fedoraproject.org/wiki/Changes/FsVerityRPM#Enable_fs-verity_in_RPM
-> [2]https://github.com/rpm-software-management/rpm/issues/1121
+> Acked-by: Luca Boccassi <bluca@debian.org>
 
-Aren't those the same project?  I already mentioned in the commit message that
-it was rejected from Fedora and seems to have been abandoned.  So it seems to be
-something that didn't actually work out.  Let me know if you know of anything to
-the contrary...
+So if I can't apply
+https://lore.kernel.org/linux-fscrypt/20221208033548.122704-1-ebiggers@kernel.org
+("fsverity: mark builtin signatures as deprecated") due to IPE, wouldn't I not
+be able to apply this patch either?  Surely IPE isn't depending on
+fs.verity.require_signatures=1, given that it enforces the policy itself?
 
 - Eric
