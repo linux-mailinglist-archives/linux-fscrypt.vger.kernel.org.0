@@ -2,106 +2,122 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1555164F6EC
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 17 Dec 2022 03:06:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E0A164F76F
+	for <lists+linux-fscrypt@lfdr.de>; Sat, 17 Dec 2022 04:53:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229480AbiLQCGT (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 16 Dec 2022 21:06:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41078 "EHLO
+        id S229950AbiLQDxO (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 16 Dec 2022 22:53:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230076AbiLQCGR (ORCPT
+        with ESMTP id S229948AbiLQDxM (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 16 Dec 2022 21:06:17 -0500
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE69410073;
-        Fri, 16 Dec 2022 18:06:16 -0800 (PST)
-Received: by mail-qt1-f175.google.com with SMTP id g7so4227046qts.1;
-        Fri, 16 Dec 2022 18:06:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZKc6CEuQzPI93BCDJ+XZTxYCZmLQ7juv1HMMaSYki58=;
-        b=DVfYOLBn8HZAISjW1goeKXgobVNs0oC6WDP9AT4P/+dbdMrLK0payuarSgePDlSg+4
-         8HScN1+I74ha7xavA1IKQKvgxKKpIGYg+D6nRXAJCQ/S0mrzxxbRtEVVndsB5cWe4JC3
-         oxKzuw2YBNn7sh+Z2zUDPoIeuDkmwlUmelq7cWstr1MrpD2WDFMd0w07eZx6sVWYNmeg
-         oDwJQmx1OXnzrBrmV5AfTjIurNrKexJc2LtufPcGeuLE73UcAW/J31xrRVfj8PbRYSm9
-         JYbAbonP5mON2aLxzyhLfdQJXPpkS/hzjEUrYOf+5510JVQ0R3ghgSLkl2o1jk1knu+m
-         CFYQ==
-X-Gm-Message-State: ANoB5pmbbhe0hRpqsr2K5+p81eacFMxUdGlAla5/770fyBCEk1lO0m8V
-        tC25wSEpwJQ9PWPdT3WMNnOq0KUD477jkw==
-X-Google-Smtp-Source: AA0mqf4rXy848Ygy5vtZRG6Ebev54YNctwJPnNvrFcHN8DVf3xCvxM4gu5VtZyW8WyPAfXMtFzOOfQ==
-X-Received: by 2002:ac8:7ef2:0:b0:3a8:20e:2bb with SMTP id r18-20020ac87ef2000000b003a8020e02bbmr41297785qtc.6.1671242775900;
-        Fri, 16 Dec 2022 18:06:15 -0800 (PST)
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com. [209.85.219.181])
-        by smtp.gmail.com with ESMTPSA id h5-20020ac87145000000b003a69225c2cdsm2284945qtp.56.2022.12.16.18.06.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Dec 2022 18:06:15 -0800 (PST)
-Received: by mail-yb1-f181.google.com with SMTP id d128so4244927ybf.10;
-        Fri, 16 Dec 2022 18:06:15 -0800 (PST)
-X-Received: by 2002:a25:bac8:0:b0:6d8:186:aac8 with SMTP id
- a8-20020a25bac8000000b006d80186aac8mr88282764ybk.23.1671242775020; Fri, 16
- Dec 2022 18:06:15 -0800 (PST)
-MIME-Version: 1.0
-References: <20221208033523.122642-1-ebiggers@kernel.org> <CAMw=ZnQUmeOWQkMM9Kn5iYaT4dyDQ3j1K=dUgk9jFNcHPxxHrg@mail.gmail.com>
- <Y5zd6ucBc20CV7Le@sol.localdomain>
-In-Reply-To: <Y5zd6ucBc20CV7Le@sol.localdomain>
-From:   Luca Boccassi <bluca@debian.org>
-Date:   Sat, 17 Dec 2022 02:06:04 +0000
-X-Gmail-Original-Message-ID: <CAMw=ZnS5mXpQYtGHEK7-Q-VEojhooXiQVsGPT3e8NCW8uxnWyA@mail.gmail.com>
-Message-ID: <CAMw=ZnS5mXpQYtGHEK7-Q-VEojhooXiQVsGPT3e8NCW8uxnWyA@mail.gmail.com>
-Subject: Re: [PATCH] fsverity: don't check builtin signatures when require_signatures=0
-To:     Eric Biggers <ebiggers@kernel.org>
+        Fri, 16 Dec 2022 22:53:12 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E40C6C723;
+        Fri, 16 Dec 2022 19:53:11 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B60D56231A;
+        Sat, 17 Dec 2022 03:53:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE2F8C433EF;
+        Sat, 17 Dec 2022 03:53:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1671249190;
+        bh=tvtSBxOjRjr8AD1Nit2OYvq2xfn8/939ipq48vK7DLA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OQ2qyig1Ro+5frbEspzt9RXufwAwYshGg5d/dnepFr7yiNB6dz+tgePcHbW3H1RT7
+         8d6i52uzaJJyvYaWAVgr19fW4UdciX/9S1s+C6SNHKoGAXFV0QFHu8bwtVAcClSo8p
+         kOV6h2wVMqvmCis34nqkPTeRqwqxPC+GsoBhuGquiUVVdiDW6Z/m5tDHT/+79HUzsV
+         pjzmUlxnremRXcnNzaH3wrqw2Hi2D++kss1HCA8m3PNijYr8JELSHf54b1fzz00O9s
+         DZ8XBgSOtMmMoBQ+jkerirWRfZ1IxljS3goEfWl9Dz2gXH15Y5aTcWjR4a40EKqkwF
+         mENXqYKlr8Vag==
+Date:   Fri, 16 Dec 2022 19:53:07 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Luca Boccassi <bluca@debian.org>
 Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
         linux-f2fs-devel@lists.sourceforge.net,
         linux-btrfs@vger.kernel.org, linux-integrity@vger.kernel.org,
         stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Subject: Re: [PATCH] fsverity: don't check builtin signatures when
+ require_signatures=0
+Message-ID: <Y509I/WlKJWwRhM2@sol.localdomain>
+References: <20221208033523.122642-1-ebiggers@kernel.org>
+ <CAMw=ZnQUmeOWQkMM9Kn5iYaT4dyDQ3j1K=dUgk9jFNcHPxxHrg@mail.gmail.com>
+ <Y5zd6ucBc20CV7Le@sol.localdomain>
+ <CAMw=ZnS5mXpQYtGHEK7-Q-VEojhooXiQVsGPT3e8NCW8uxnWyA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMw=ZnS5mXpQYtGHEK7-Q-VEojhooXiQVsGPT3e8NCW8uxnWyA@mail.gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, 16 Dec 2022 at 21:06, Eric Biggers <ebiggers@kernel.org> wrote:
->
-> On Thu, Dec 08, 2022 at 08:42:56PM +0000, Luca Boccassi wrote:
-> > On Thu, 8 Dec 2022 at 03:35, Eric Biggers <ebiggers@kernel.org> wrote:
-> > >
-> > > From: Eric Biggers <ebiggers@google.com>
-> > >
-> > > An issue that arises when migrating from builtin signatures to userspace
-> > > signatures is that existing files that have builtin signatures cannot be
-> > > opened unless either CONFIG_FS_VERITY_BUILTIN_SIGNATURES is disabled or
-> > > the signing certificate is left in the .fs-verity keyring.
-> > >
-> > > Since builtin signatures provide no security benefit when
-> > > fs.verity.require_signatures=0 anyway, let's just skip the signature
-> > > verification in this case.
-> > >
-> > > Fixes: 432434c9f8e1 ("fs-verity: support builtin file signatures")
-> > > Cc: <stable@vger.kernel.org> # v5.4+
-> > > Signed-off-by: Eric Biggers <ebiggers@google.com>
-> > > ---
-> > >  fs/verity/signature.c | 18 ++++++++++++++++--
-> > >  1 file changed, 16 insertions(+), 2 deletions(-)
+On Sat, Dec 17, 2022 at 02:06:04AM +0000, Luca Boccassi wrote:
+> On Fri, 16 Dec 2022 at 21:06, Eric Biggers <ebiggers@kernel.org> wrote:
 > >
-> > Acked-by: Luca Boccassi <bluca@debian.org>
->
-> So if I can't apply
-> https://lore.kernel.org/linux-fscrypt/20221208033548.122704-1-ebiggers@kernel.org
-> ("fsverity: mark builtin signatures as deprecated") due to IPE, wouldn't I not
-> be able to apply this patch either?  Surely IPE isn't depending on
-> fs.verity.require_signatures=1, given that it enforces the policy itself?
+> > On Thu, Dec 08, 2022 at 08:42:56PM +0000, Luca Boccassi wrote:
+> > > On Thu, 8 Dec 2022 at 03:35, Eric Biggers <ebiggers@kernel.org> wrote:
+> > > >
+> > > > From: Eric Biggers <ebiggers@google.com>
+> > > >
+> > > > An issue that arises when migrating from builtin signatures to userspace
+> > > > signatures is that existing files that have builtin signatures cannot be
+> > > > opened unless either CONFIG_FS_VERITY_BUILTIN_SIGNATURES is disabled or
+> > > > the signing certificate is left in the .fs-verity keyring.
+> > > >
+> > > > Since builtin signatures provide no security benefit when
+> > > > fs.verity.require_signatures=0 anyway, let's just skip the signature
+> > > > verification in this case.
+> > > >
+> > > > Fixes: 432434c9f8e1 ("fs-verity: support builtin file signatures")
+> > > > Cc: <stable@vger.kernel.org> # v5.4+
+> > > > Signed-off-by: Eric Biggers <ebiggers@google.com>
+> > > > ---
+> > > >  fs/verity/signature.c | 18 ++++++++++++++++--
+> > > >  1 file changed, 16 insertions(+), 2 deletions(-)
+> > >
+> > > Acked-by: Luca Boccassi <bluca@debian.org>
+> >
+> > So if I can't apply
+> > https://lore.kernel.org/linux-fscrypt/20221208033548.122704-1-ebiggers@kernel.org
+> > ("fsverity: mark builtin signatures as deprecated") due to IPE, wouldn't I not
+> > be able to apply this patch either?  Surely IPE isn't depending on
+> > fs.verity.require_signatures=1, given that it enforces the policy itself?
+> 
+> I'm not sure what you mean? Skipping verification when this syscfg is
+> disabled makes sense to me, as you noted it doesn't serve any purpose
+> in that case.
 
-I'm not sure what you mean? Skipping verification when this syscfg is
-disabled makes sense to me, as you noted it doesn't serve any purpose
-in that case.
+Currently, fsverity builtin signatures are only useful if
+fs.verity.require_signatures is set to 1 *and* userspace actually checks that
+files have fsverity enabled.  However, IPE would change that if it actually gets
+merged upstream, at least based on the version that was most recently sent out.
+It would introduce a use of fsverity builtin signatures directly in the kernel
+(https://lore.kernel.org/r/1654714889-26728-14-git-send-email-deven.desai@linux.microsoft.com
+and
+https://lore.kernel.org/r/1654714889-26728-15-git-send-email-deven.desai@linux.microsoft.com).
 
-Kind regards,
-Luca Boccassi
+IIUC, the IPE patches add code that checks whether a file has a fsverity builtin
+signature, and if so it assumes that it was verified by fs/verity/ and creates a
+*boolean* file property "fsverity_signature" for IPE to operate on.
+
+Since the IPE patches check for the presence of a builtin signature directly,
+instead of indirectly by checking whether the inode has fsverity enabled at all,
+there would be no need for the fs.verity.require_signatures setting with IPE.
+
+The IPE patches do assume that the signature, if present, always gets verified
+by fs/verity/.  That's what this patch would break.
+
+Of course, for upstream I shouldn't care about breaking out-of-tree code.  So I
+could apply this anyway.  But I'd at least like to be consistent.  If "fsverity:
+mark builtin signatures as deprecated" isn't going to be applied because of IPE,
+then I'd think this patch shouldn't be applied either, for the same reason...
+
+- Eric
