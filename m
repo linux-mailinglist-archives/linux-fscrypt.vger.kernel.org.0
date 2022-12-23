@@ -2,79 +2,99 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77425654562
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 22 Dec 2022 17:51:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6674654A60
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 23 Dec 2022 02:11:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230260AbiLVQvy (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 22 Dec 2022 11:51:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54586 "EHLO
+        id S236017AbiLWBLK (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 22 Dec 2022 20:11:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229704AbiLVQvx (ORCPT
+        with ESMTP id S235762AbiLWBKc (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 22 Dec 2022 11:51:53 -0500
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F6F52A510
-        for <linux-fscrypt@vger.kernel.org>; Thu, 22 Dec 2022 08:51:52 -0800 (PST)
-Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 2BMGpOt9009971
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Dec 2022 11:51:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1671727886; bh=8VQE476fItcQEyvNi8YKNC8SHTVYFOvKq/RWJ11ZYc4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=Y1HUp4TlkjWs/IvOpsjLbqbpZe+niMvbTyQFgq18Rn7JlP6ObL6lD9ZL5Xnb/S0ue
-         7iHqTFmahQYKRygUKPKZDG8lqTJ8ZzzJIfFiovx5n6ShIphokTD5AF1yJhNOU8A8O2
-         hyU19A5xaWaML2UA+BXAGFCY3f51984ew9C5fSNV8mrd9gB2NefJn6U/o338pQKl16
-         bWZ/t/Sf4bjjkjzOCuuRpEy4IFbCPX2c+X/kAQAFZW9JzTBbaQhIiLnUcUTH6208gg
-         7unZOMQnyuw8bTiHMGjyn04+lWpvvkSCvQzOVH/QpmmM3Q4olO1oAhAP6SHieRES+t
-         JdB6A/aagyooQ==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id C831615C39F2; Thu, 22 Dec 2022 11:51:23 -0500 (EST)
-Date:   Thu, 22 Dec 2022 11:51:23 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: Separate mailing list (and git and patchwork) for fsverity?
-Message-ID: <Y6SLC9DG1s/4NhPL@mit.edu>
-References: <Y5jRbLEJh3S46Jer@sol.localdomain>
- <Y6ObULdVm2UN5kw1@sol.localdomain>
+        Thu, 22 Dec 2022 20:10:32 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CFC513F88;
+        Thu, 22 Dec 2022 17:07:03 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C5B5E61DE4;
+        Fri, 23 Dec 2022 01:07:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 203E3C433EF;
+        Fri, 23 Dec 2022 01:07:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1671757622;
+        bh=mp3Ywc3hFlsa10jDAZztnFnG/LxmUuk54TK4Fi6BRQE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=GigQKr6OQBLRgpIXX+E2QDFv6lIPVkU/oNg8c1DBdiZDmEquojjNYzXjRAr3Xa9Jy
+         1tED8IGEeCX/9usYeWSm0yxE6HtgGzxxLCVq/Jo5vMgoL2awMgvNCQMmjdGviVL1S3
+         lqzzy1mj4y+VFfrK8x8CXPSsHDbqq13gXNNSO9/4isol2tQDS80H1RRpTahawEZ/hr
+         b/EeGK5XYqxBpthXDEnuyGyIkYxm73/EA7Twkm1TfSYlEjbYuaOHcu407YseHfZmJO
+         HRl56b5jzL2zgiooUPSnFVQVgOWosTjgPl6Bs5GmSpf3SMvrNlKjFT0V1iH+vRp3FO
+         knqqNHncbDCgQ==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     fstests@vger.kernel.org
+Cc:     linux-fscrypt@vger.kernel.org
+Subject: [PATCH v2 00/10] xfstests: update verity tests for non-4K block and page size
+Date:   Thu, 22 Dec 2022 17:05:44 -0800
+Message-Id: <20221223010554.281679-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y6ObULdVm2UN5kw1@sol.localdomain>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,SUSPICIOUS_RECIPS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, Dec 21, 2022 at 03:48:32PM -0800, Eric Biggers wrote:
-> > What would people say about having a separate mailing list, git repo, and
-> > patchwork project for fsverity?  So the fsverity entry would look like:
-> > 
-> > FSVERITY: READ-ONLY FILE-BASED AUTHENTICITY PROTECTION
-> > [...]
-> > L:      linux-fsverity@vger.kernel.org
-> > Q:      https://patchwork.kernel.org/project/linux-fsverity/list/
-> > T:      git git://git.kernel.org/pub/scm/fs/fsverity/fsverity.git
-> > [...]
+This series updates the verity xfstests to eliminate implicit
+assumptions that 'merkle_tree_block_size == fs_block_size == page_size
+== 4096', and to provide some test coverage for cases where
+merkle_tree_block_size differs from fs_block_size and/or page_size.  It
+doesn't add any new test scripts, but it does update some of the
+existing test scripts to test multiple block sizes.
 
-This makes sense to me.  I wonder if we should use the new
-https://lists.linux.dev mailing list hosting service with a mailing
-list name fsverity@lsts.linux.dev?
+This goes along with my kernel patch series
+"fsverity: support for non-4K pages"
+(https://lore.kernel.org/linux-fsdevel/20221028224539.171818-1-ebiggers@kernel.org/T/#u).
+However, it's not necessary to wait for that kernel patch series to be
+applied before applying this xfstests patch series.
 
-The thinking was that we would eventually migrate lists from vger to
-the new list infrastructure, so it might make sense to just use it for
-a new list.  All mailing lists lists.linux.dev are archived on
-lore.kernel.org, so other than the e-mail address and using something
-a bit more modern than Majordomo for list management, it's mostly the
-same.
+Changed since v1:
+  - Adjusted the output of generic/574, generic/575, and generic/624
+    slightly to avoid confusion.
 
-						- Ted
+Eric Biggers (10):
+  common/verity: add and use _fsv_can_enable()
+  common/verity: set FSV_BLOCK_SIZE to an appropriate value
+  common/verity: use FSV_BLOCK_SIZE by default
+  common/verity: add _filter_fsverity_digest()
+  generic/572: support non-4K Merkle tree block size
+  generic/573: support non-4K Merkle tree block size
+  generic/577: support non-4K Merkle tree block size
+  generic/574: test multiple Merkle tree block sizes
+  generic/624: test multiple Merkle tree block sizes
+  generic/575: test 1K Merkle tree block size
+
+ common/verity         |  84 +++++++++++++++-----
+ tests/generic/572     |  21 ++---
+ tests/generic/572.out |  10 +--
+ tests/generic/573     |   8 +-
+ tests/generic/574     | 177 ++++++++++++++++++++++++++----------------
+ tests/generic/574.out |  83 ++------------------
+ tests/generic/575     |  57 ++++++++++----
+ tests/generic/575.out |   8 +-
+ tests/generic/577     |  24 +++---
+ tests/generic/577.out |  10 +--
+ tests/generic/624     | 119 ++++++++++++++++++++--------
+ tests/generic/624.out |  15 ++--
+ 12 files changed, 348 insertions(+), 268 deletions(-)
+
+
+base-commit: e263104046712af5fb5dcc7d289ac3fa5f14b764
+-- 
+2.39.0
+
