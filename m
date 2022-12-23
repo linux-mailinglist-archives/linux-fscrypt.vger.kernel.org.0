@@ -2,209 +2,146 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEE35654A66
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 23 Dec 2022 02:11:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FAEE65543D
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 23 Dec 2022 21:37:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235899AbiLWBLP (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 22 Dec 2022 20:11:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41960 "EHLO
+        id S233187AbiLWUg7 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 23 Dec 2022 15:36:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235814AbiLWBKe (ORCPT
+        with ESMTP id S232555AbiLWUg6 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 22 Dec 2022 20:10:34 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F1AA21892;
-        Thu, 22 Dec 2022 17:07:05 -0800 (PST)
+        Fri, 23 Dec 2022 15:36:58 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15F581D307;
+        Fri, 23 Dec 2022 12:36:56 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C00C161DEB;
-        Fri, 23 Dec 2022 01:07:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D5BFC433D2;
-        Fri, 23 Dec 2022 01:07:04 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 95C8861D28;
+        Fri, 23 Dec 2022 20:36:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1111C433D2;
+        Fri, 23 Dec 2022 20:36:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671757624;
-        bh=tIPvRhAmReZn3hp2NtjbmMf8RfX8t29yRSGPvkg6vzE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bJXk4BzkQ+5Gxve9xlOiZ7ptByqm4FiSEvQIb38mMWTLDpb44fMI5OmRCjSaUPRkx
-         94Af+sNw9VNAESyIlT/ccy2iDmfHco+1Q4/CQbuI28y5f48KGMjoMAIHq52Ch/oh80
-         9hygYHZNPOeIOBHAqr2RjBOUpHYBByrKyCknrQ9d9djyh3zu5bD9uaN5vVhSU+JHjn
-         MVC3gA7YYJ1FsrRQjqgj4MW2JzbFuCbdh8QI3O1+6Vn6bXGn8Y3xLH6eCFeW4mhsHW
-         4BNWtSZCSEFhNSxPiRaELwBRLHdG0CtBKPHB1l+lRFhHaGU2B6oGwzBSUUmmx/UbdP
-         wKr+vUjKiJxYg==
+        s=k20201202; t=1671827816;
+        bh=kuHoLDiwzIWt/yosaiuNbL76iPgmKQeB3oMrh4p5xhg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=B7Cu5MHwFXyHpkWZYORJe5npw6Jrf1ax1VKcHSg3IFIcJDzGR9a97Ncit2dNZPAIn
+         zchceSAsxgUW9LWZwY+Qs21W42THfLhyb73HWKYCQMD6C3nyrNmv03p6rEqIKff2vX
+         rGocAZ5zYfyRKsGNeRx5kmBn6OpsxJaxvfI0pqee3hx1HNdZXebmxhO1m0ANxY9Osp
+         w/RSqDNgQw3oGnoM8VKaM1pEOZnyb0VQUtFSgmrbPXZ4DFlh6cLeHnmzpgqJ0IJS7e
+         oHfsWT1U3jch+XCx3vCHk3VC1pQueY3KEUpgWxfGU6DxWmkttz2NYAqCwQeIyJzmL0
+         RCxP/GM9U3Qmg==
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     fstests@vger.kernel.org
-Cc:     linux-fscrypt@vger.kernel.org
-Subject: [PATCH v2 10/10] generic/575: test 1K Merkle tree block size
-Date:   Thu, 22 Dec 2022 17:05:54 -0800
-Message-Id: <20221223010554.281679-11-ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-btrfs@vger.kernel.org, linux-xfs@vger.kernel.org,
+        Andrey Albershteyn <aalbersh@redhat.com>
+Subject: [PATCH v2 00/11] fsverity: support for non-4K pages
+Date:   Fri, 23 Dec 2022 12:36:27 -0800
+Message-Id: <20221223203638.41293-1-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20221223010554.281679-1-ebiggers@kernel.org>
-References: <20221223010554.281679-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,SUSPICIOUS_RECIPS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+[This patchset applies to mainline + some fsverity cleanups I sent out
+ recently.  You can get everything from tag "fsverity-non4k-v2" of
+ https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git ]
 
-In addition to 4K, test 1K Merkle tree blocks.  Also always run this
-test, regardless of FSV_BLOCK_SIZE, but allow skipping tests of
-parameters that are unsupported, unless they are the default.
+Currently, filesystems (ext4, f2fs, and btrfs) only support fsverity
+when the Merkle tree block size, filesystem block size, and page size
+are all the same.  In practice that means 4K, since increasing the page
+size, e.g. to 16K, forces the Merkle tree block size and filesystem
+block size to be increased accordingly.  That can be impractical; for
+one, users want the same file signatures to work on all systems.
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- tests/generic/575     | 57 +++++++++++++++++++++++++++++++------------
- tests/generic/575.out |  8 ++++--
- 2 files changed, 47 insertions(+), 18 deletions(-)
+Therefore, this patchset reduces the coupling between these sizes.
 
-diff --git a/tests/generic/575 b/tests/generic/575
-index 0ece8826..344fd2b9 100755
---- a/tests/generic/575
-+++ b/tests/generic/575
-@@ -4,7 +4,7 @@
- #
- # FS QA Test generic/575
- #
--# Test that fs-verity is using the correct measurement values.  This test
-+# Test that fs-verity is using the correct file digest values.  This test
- # verifies that fs-verity is doing its Merkle tree-based hashing correctly,
- # i.e. that it hasn't been broken by a change.
- #
-@@ -26,9 +26,6 @@ _cleanup()
- # real QA test starts here
- _supported_fs generic
- _require_scratch_verity
--if [ $FSV_BLOCK_SIZE != 4096 ]; then
--	_notrun "4096-byte verity block size not supported on this platform"
--fi
- _disable_fsverity_signatures
- 
- _scratch_mkfs_verity &>> $seqres.full
-@@ -36,24 +33,42 @@ _scratch_mount
- fsv_orig_file=$SCRATCH_MNT/file
- fsv_file=$SCRATCH_MNT/file.fsv
- 
-+# Try multiple hash algorithms.
- algs=(sha256 sha512)
- 
-+# Try multiple Merkle tree block sizes.
-+block_sizes=(1024 4096)
-+
- # Try files with 0, 1, and multiple Merkle tree levels.
- file_sizes=(0 4096 65536 65536 100000000)
- 
- # Try both unsalted and salted, and check that empty salt is the same as no salt
- salts=('' '' '' '--salt=' '--salt=f3c93fa6fb828c0e1587e5714ecf6f56')
- 
--# The expected file measurements are here rather than in the expected output
--# file because not all hash algorithms may be available.
--sha256_vals=(
-+# The expected file digests are here rather than in the expected output file
-+# because the kernel might not support all hash algorithms and block sizes.
-+sha256_vals_bsize1024=(
-+sha256:f2cca36b9b1b7f07814e4284b10121809133e7cb9c4528c8f6846e85fc624ffa
-+sha256:ea08590a4fe9c3d6c9dafe0eedacd9dffff8f24e24f1865ee3af132a495ab087
-+sha256:527496288d703686e31092f5cca7e1306b2467f00b247ad01056ee5ec35a4bb9
-+sha256:527496288d703686e31092f5cca7e1306b2467f00b247ad01056ee5ec35a4bb9
-+sha256:087818b23312acb15dff9ff6e2b4f601406d08bb36013542444cc15248f47016
-+)
-+sha256_vals_bsize4096=(
- sha256:3d248ca542a24fc62d1c43b916eae5016878e2533c88238480b26128a1f1af95
- sha256:babc284ee4ffe7f449377fbf6692715b43aec7bc39c094a95878904d34bac97e
- sha256:011e3f2b1dc89b75d78cddcc2a1b85cd8a64b2883e5f20f277ae4c0617e0404f
- sha256:011e3f2b1dc89b75d78cddcc2a1b85cd8a64b2883e5f20f277ae4c0617e0404f
- sha256:9d33cab743468fcbe4edab91a275b30dd543c12dd5e6ce6f2f737f66a1558f06
- )
--sha512_vals=(
-+sha512_vals_bsize1024=(
-+sha512:8451664f25b2ad3f24391280e0c5681cb843389c180baa719f8fdfb063f5ddfa2d1c4433e55e2b6fbb3ba6aa2df8a4f41bf56cb7e0a3b617b6919a42c80f034c
-+sha512:ab3c6444ab377bbe54c604c26cad241b146d85dc29727703a0d8134f70a8172fb3fa67d171355106b69cc0a9e7e9debb335f9461b3aba44093914867f7c73233
-+sha512:e6a11353c24dd7b4603cb8ffa50a7041dbea7382d4698474ccbc2d8b34f3a83d8bf16df25c64ed31ee27213a8a3cbd001fb1ccde46384c23b81305c2393c1046
-+sha512:e6a11353c24dd7b4603cb8ffa50a7041dbea7382d4698474ccbc2d8b34f3a83d8bf16df25c64ed31ee27213a8a3cbd001fb1ccde46384c23b81305c2393c1046
-+sha512:517d573bd50d5f3787f5766c2ac60c7af854b0901b69757b4ef8dd70aa6b30fcc10d81629ce923bdd062a01c20fad0f063a081a2f3b0814ac06547b26bedc0d9
-+)
-+sha512_vals_bsize4096=(
- sha512:ccf9e5aea1c2a64efa2f2354a6024b90dffde6bbc017825045dce374474e13d10adb9dadcc6ca8e17a3c075fbd31336e8f266ae6fa93a6c3bed66f9e784e5abf
- sha512:928922686c4caf32175f5236a7f964e9925d10a74dc6d8344a8bd08b23c228ff5792573987d7895f628f39c4f4ebe39a7367d7aeb16aaa0cd324ac1d53664e61
- sha512:eab7224ce374a0a4babcb2db25e24836247f38b87806ad9be9e5ba4daac2f5b814fc0cbdfd9f1f8499b3c9a6c1b38fe08974cce49883ab4ccd04462fd2f9507f
-@@ -61,20 +76,27 @@ sha512:eab7224ce374a0a4babcb2db25e24836247f38b87806ad9be9e5ba4daac2f5b814fc0cbdf
- sha512:f7083a38644880d25539488313e9e5b41a4d431a0e383945129ad2c36e3c1d0f28928a424641bb1363c12b6e770578102566acea73baf1ce8ee15336f5ba2446
- )
- 
--test_alg()
-+test_alg_with_block_size()
- {
- 	local alg=$1
--	local -n vals=${alg}_vals
-+	local block_size=$2
-+	local -n vals=${alg}_vals_bsize${block_size}
- 	local i
- 	local file_size
- 	local expected actual salt_arg
- 
--	_fsv_scratch_begin_subtest "Check for expected measurement values ($alg)"
-+	_fsv_scratch_begin_subtest "Testing alg=$alg, block_size=$block_size if supported"
- 
--	if ! _fsv_can_enable $fsv_file --hash-alg=$alg; then
--		if [ "$alg" = sha256 ]; then
--			_fail "Something is wrong - sha256 hash should always be available"
-+	if ! _fsv_can_enable $fsv_file --hash-alg=$alg --block-size=$block_size
-+	then
-+		# Since this is after _require_scratch_verity, sha256 with
-+		# FSV_BLOCK_SIZE must be supported.
-+		if [ "$alg" = "sha256" -a "$block_size" = "$FSV_BLOCK_SIZE" ]
-+		then
-+			_fail "Failed to enable verity with default params"
- 		fi
-+		# This combination of parameters is unsupported; skip it.
-+		echo "alg=$alg, block_size=$block_size is unsupported" >> $seqres.full
- 		return 0
- 	fi
- 
-@@ -85,7 +107,8 @@ test_alg()
- 
- 		head -c $file_size /dev/zero > $fsv_orig_file
- 		cp $fsv_orig_file $fsv_file
--		_fsv_enable --hash-alg=$alg $salt_arg $fsv_file
-+		_fsv_enable $fsv_file --hash-alg=$alg --block-size=$block_size \
-+			$salt_arg
- 		actual=$(_fsv_measure $fsv_file)
- 		if [ "$actual" != "$expected" ]; then
- 			echo "Mismatch: expected $expected, kernel calculated $actual (file_size=$file_size)"
-@@ -96,7 +119,9 @@ test_alg()
- }
- 
- for alg in ${algs[@]}; do
--	test_alg $alg
-+	for block_size in ${block_sizes[@]}; do
-+		test_alg_with_block_size $alg $block_size
-+	done
- done
- 
- # success, all done
-diff --git a/tests/generic/575.out b/tests/generic/575.out
-index 77bec43e..5ad70773 100644
---- a/tests/generic/575.out
-+++ b/tests/generic/575.out
-@@ -1,5 +1,9 @@
- QA output created by 575
- 
--# Check for expected measurement values (sha256)
-+# Testing alg=sha256, block_size=1024 if supported
- 
--# Check for expected measurement values (sha512)
-+# Testing alg=sha256, block_size=4096 if supported
-+
-+# Testing alg=sha512, block_size=1024 if supported
-+
-+# Testing alg=sha512, block_size=4096 if supported
+First, patches 1-4 are cleanups.
+
+Second, patches 5-9 allow the Merkle tree block size to be less than the
+page size or filesystem block size, provided that it's not larger than
+either one.  This involves, among other things, changing the way that
+fs/verity/verify.c tracks which hash blocks have been verified.
+
+Finally, patches 10-11 make ext4 support fsverity when the filesystem
+block size is less than the page size.  Note, f2fs doesn't need similar
+changes because f2fs always assumes that the filesystem block size and
+page size are the same anyway.  I haven't looked into btrfs yet.
+
+I've tested this patchset using the "verity" group of tests in xfstests
+with the following xfstests patchset applied:
+"[PATCH v2 00/10] xfstests: update verity tests for non-4K block and page size"
+(https://lore.kernel.org/fstests/20221223010554.281679-1-ebiggers@kernel.org/T/#u)
+
+Note: on the thread "[RFC PATCH 00/11] fs-verity support for XFS"
+(https://lore.kernel.org/linux-xfs/20221213172935.680971-1-aalbersh@redhat.com/T/#u)
+there have been many requests for other things to support, including:
+
+  * folios in the pagecache
+  * alternative Merkle tree caching methods
+  * direct I/O
+  * merkle_tree_block_size > page_size
+  * extremely large files, using a reclaimable bitmap
+
+We shouldn't try to boil the ocean, though, so to keep the scope of this
+patchset manageable I haven't changed it significantly from v1.  This
+patchset does bring us closer to many of the above, just not all the way
+there.  I'd like to follow up this patchset with a change to support
+folios, which should be straightforward.  Next, we can do a change to
+generalize the Merkle tree interface to allow XFS to use an alternative
+caching method, as that sounds like the highest priority item for XFS.
+
+Anyway, the changelog is:
+
+Changed in v2:
+   - Rebased onto the recent fsverity cleanups.
+   - Split some parts of the big "support verification" patch into
+     separate patches.
+   - Passed the data_pos to verify_data_block() instead of computing it
+     using page->index, to make it ready for folio and DIO support.
+   - Eliminated some unnecessary arithmetic in verify_data_block().
+   - Changed the log_* fields in merkle_tree_params to u8.
+   - Restored PageLocked and !PageUptodate checks for pagecache pages.
+   - Eliminated the change to fsverity_hash_buffer().
+   - Other small cleanups
+
+Eric Biggers (11):
+  fsverity: use unsigned long for level_start
+  fsverity: simplify Merkle tree readahead size calculation
+  fsverity: store log2(digest_size) precomputed
+  fsverity: use EFBIG for file too large to enable verity
+  fsverity: replace fsverity_hash_page() with fsverity_hash_block()
+  fsverity: support verification with tree block size < PAGE_SIZE
+  fsverity: support enabling with tree block size < PAGE_SIZE
+  ext4: simplify ext4_readpage_limit()
+  f2fs: simplify f2fs_readpage_limit()
+  fs/buffer.c: support fsverity in block_read_full_folio()
+  ext4: allow verity with fs block size < PAGE_SIZE
+
+ Documentation/filesystems/fsverity.rst |  76 +++---
+ fs/buffer.c                            |  67 ++++-
+ fs/ext4/readpage.c                     |   3 +-
+ fs/ext4/super.c                        |   5 -
+ fs/f2fs/data.c                         |   3 +-
+ fs/verity/enable.c                     | 260 ++++++++++----------
+ fs/verity/fsverity_private.h           |  20 +-
+ fs/verity/hash_algs.c                  |  24 +-
+ fs/verity/open.c                       |  98 ++++++--
+ fs/verity/verify.c                     | 325 +++++++++++++++++--------
+ include/linux/fsverity.h               |  14 +-
+ 11 files changed, 565 insertions(+), 330 deletions(-)
+
 -- 
 2.39.0
 
