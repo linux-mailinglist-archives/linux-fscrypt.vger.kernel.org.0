@@ -2,42 +2,42 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02EBF659337
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 30 Dec 2022 00:35:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE9F5659332
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 30 Dec 2022 00:35:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234253AbiL2XfK (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 29 Dec 2022 18:35:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44232 "EHLO
+        id S234266AbiL2XfJ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 29 Dec 2022 18:35:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234247AbiL2XfH (ORCPT
+        with ESMTP id S229650AbiL2XfG (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 29 Dec 2022 18:35:07 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9448217586;
-        Thu, 29 Dec 2022 15:35:06 -0800 (PST)
+        Thu, 29 Dec 2022 18:35:06 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27ACE17402;
+        Thu, 29 Dec 2022 15:35:05 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 3E0F8B81A8C;
-        Thu, 29 Dec 2022 23:35:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD36EC433F2;
-        Thu, 29 Dec 2022 23:35:03 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B6BE56199D;
+        Thu, 29 Dec 2022 23:35:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10A8FC43392;
+        Thu, 29 Dec 2022 23:35:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672356903;
-        bh=+DKfl9iH28Z2EnjFnI28ZOJlv9OShzFbDQIQpAjLgXQ=;
+        s=k20201202; t=1672356904;
+        bh=t4YxnTq55XKnzA6QkU3drS25kE9/QRlSDE3NErRiWn0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OqcPbArPzicCviBgJERkF9DCfXa8M0TEJc7+znb8/iJUD44TgWiIgbHMydJ+FbTwy
-         KzHhy2OakPr17Tv3G3IjGn4NY2osrJUZYg2ZHU0Bn88M5MpjhRM7NsOvvIi+qxor8t
-         nv1Hl5606UFQvX9lH616Tzv3odgEQk8sqyJSPy69e3x/l9vgFZa0nOeFJxbi0A7Llr
-         WVAPP6sm4Kw8sq8cfs4LjrQsUyBLg8fcVpbbuWE0vzlYc83UstGX/OazdxCYbUqHeZ
-         D75vAmGwo9obICur8OGYceXE/kuXxBoQPXPh70jOjG/jPV2vcjJLwW9ov7gEBr3X6X
-         UGoLPv/DoP5Kw==
+        b=uYPCFyp+boAasoOzgydoZbUP/9fMffDFUAFc1hgvDujeZttzCCf4Z+58orKsOrdEg
+         ZryK3UG1dPqhACf+Ebi/PofTxk/9k6x+fHS7IaFGfPmquxUPTOozuRO9T65ikUqMoQ
+         wfhfivkZIv/IxrAaAjdl+e6pKl0edbNkCJPTWVsxAvDOV0sCNI03i9eumLP6CAOkIS
+         Za5gI0t6Z6ls4utrPVmekcKxdLRexBuBu7jdOG1FmZZhqEFzJxlGfpXL3i+CN5alKP
+         NsqD8efkNt17/wnjJOLoKq1tYG9gzBL9Wv09bTOaaQFcGVRryxNxOF6BhACNUZWTrW
+         lRbrGw6LGI7Lg==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     fstests@vger.kernel.org
 Cc:     linux-fscrypt@vger.kernel.org
-Subject: [PATCH v3 04/10] common/verity: add _filter_fsverity_digest()
-Date:   Thu, 29 Dec 2022 15:32:16 -0800
-Message-Id: <20221229233222.119630-5-ebiggers@kernel.org>
+Subject: [PATCH v3 05/10] generic/572: support non-4K Merkle tree block size
+Date:   Thu, 29 Dec 2022 15:32:17 -0800
+Message-Id: <20221229233222.119630-6-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <20221229233222.119630-1-ebiggers@kernel.org>
 References: <20221229233222.119630-1-ebiggers@kernel.org>
@@ -54,31 +54,122 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Add a filter that replaces fs-verity digests with a fixed string.  This
-is needed because the fs-verity digests that some tests print are going
-to start depending on the default Merkle tree block size.
+Update generic/572 to not implicitly assume that the Merkle tree block
+size being used is 4096 bytes.  Also remove an unused function.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- common/verity | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ tests/generic/572     | 21 ++++++---------------
+ tests/generic/572.out | 10 +++-------
+ 2 files changed, 9 insertions(+), 22 deletions(-)
 
-diff --git a/common/verity b/common/verity
-index 1c706b80..b88e839b 100644
---- a/common/verity
-+++ b/common/verity
-@@ -406,3 +406,11 @@ _require_fsverity_max_file_size_limit()
- 		;;
- 	esac
+diff --git a/tests/generic/572 b/tests/generic/572
+index cded9ac6..d8071a34 100755
+--- a/tests/generic/572
++++ b/tests/generic/572
+@@ -9,7 +9,7 @@
+ # - conditions for enabling verity
+ # - verity files have correct contents and size
+ # - can't change contents of verity files, but can change metadata
+-# - can retrieve a verity file's measurement via FS_IOC_MEASURE_VERITY
++# - can retrieve a verity file's digest via FS_IOC_MEASURE_VERITY
+ #
+ . ./common/preamble
+ _begin_fstest auto quick verity
+@@ -48,15 +48,6 @@ verify_data_readable()
+ 	md5sum $file > /dev/null
  }
-+
-+# Replace fs-verity digests, as formatted by the 'fsverity' tool, with <digest>.
-+# This function can be used by tests where fs-verity digests depend on the
-+# default Merkle tree block size (FSV_BLOCK_SIZE).
-+_filter_fsverity_digest()
-+{
-+	sed -E 's/\b(sha(256|512)):[a-f0-9]{64,}\b/\1:<digest>/'
-+}
+ 
+-verify_data_unreadable()
+-{
+-	local file=$1
+-
+-	# try both reading just the first data block, and reading until EOF
+-	head -c $FSV_BLOCK_SIZE $file 2>&1 >/dev/null | filter_output
+-	md5sum $file |& filter_output
+-}
+-
+ _fsv_scratch_begin_subtest "Enabling verity on file with verity already enabled fails with EEXIST"
+ _fsv_create_enable_file $fsv_file
+ echo "(trying again)"
+@@ -94,7 +85,7 @@ verify_data_readable $fsv_file
+ _fsv_scratch_begin_subtest "Enabling verity can be interrupted"
+ dd if=/dev/zero of=$fsv_file bs=1 count=0 seek=$((1 << 34)) status=none
+ start_time=$(date +%s)
+-$FSVERITY_PROG enable $fsv_file &
++$FSVERITY_PROG enable --block-size=$FSV_BLOCK_SIZE $fsv_file &
+ sleep 0.5
+ kill %1
+ wait
+@@ -106,7 +97,7 @@ fi
+ _fsv_scratch_begin_subtest "Enabling verity on file with verity already being enabled fails with EBUSY"
+ dd if=/dev/zero of=$fsv_file bs=1 count=0 seek=$((1 << 34)) status=none
+ start_time=$(date +%s)
+-$FSVERITY_PROG enable $fsv_file &
++$FSVERITY_PROG enable --block-size=$FSV_BLOCK_SIZE $fsv_file &
+ sleep 0.5
+ _fsv_enable $fsv_file |& filter_output
+ kill %1
+@@ -129,7 +120,7 @@ verify_data_readable $fsv_file
+ 
+ _fsv_scratch_begin_subtest "verity file can be measured"
+ _fsv_create_enable_file $fsv_file >> $seqres.full
+-_fsv_measure $fsv_file
++_fsv_measure $fsv_file | _filter_fsverity_digest
+ 
+ _fsv_scratch_begin_subtest "verity file can be renamed"
+ _fsv_create_enable_file $fsv_file
+@@ -170,8 +161,8 @@ verify_data_readable $fsv_file
+ 
+ # Test files <= 1 block in size.  These are a bit of a special case since there
+ # are no hash blocks; the root hash is calculated directly over the data block.
++_fsv_scratch_begin_subtest "verity on small files"
+ for size in 1 $((FSV_BLOCK_SIZE - 1)) $FSV_BLOCK_SIZE; do
+-	_fsv_scratch_begin_subtest "verity on $size-byte file"
+ 	head -c $size /dev/urandom > $fsv_orig_file
+ 	cp $fsv_orig_file $fsv_file
+ 	_fsv_enable $fsv_file
+@@ -179,7 +170,7 @@ for size in 1 $((FSV_BLOCK_SIZE - 1)) $FSV_BLOCK_SIZE; do
+ 	rm -f $fsv_file
+ done
+ 
+-_fsv_scratch_begin_subtest "verity on 100M file (multiple levels in hash tree)"
++_fsv_scratch_begin_subtest "verity on 100MB file (multiple levels in hash tree)"
+ head -c 100000000 /dev/urandom > $fsv_orig_file
+ cp $fsv_orig_file $fsv_file
+ _fsv_enable $fsv_file
+diff --git a/tests/generic/572.out b/tests/generic/572.out
+index ad381629..d703835b 100644
+--- a/tests/generic/572.out
++++ b/tests/generic/572.out
+@@ -39,7 +39,7 @@ bash: SCRATCH_MNT/file.fsv: Operation not permitted
+ # verity file can be read
+ 
+ # verity file can be measured
+-sha256:be54121da3877f8852c65136d731784f134c4dd9d95071502e80d7be9f99b263
++sha256:<digest>
+ 
+ # verity file can be renamed
+ 
+@@ -58,16 +58,12 @@ sha256:be54121da3877f8852c65136d731784f134c4dd9d95071502e80d7be9f99b263
+ # Trying to measure non-verity file fails with ENODATA
+ ERROR: FS_IOC_MEASURE_VERITY failed on 'SCRATCH_MNT/file.fsv': No data available
+ 
+-# verity on 1-byte file
++# verity on small files
+ Files matched
+-
+-# verity on 4095-byte file
+ Files matched
+-
+-# verity on 4096-byte file
+ Files matched
+ 
+-# verity on 100M file (multiple levels in hash tree)
++# verity on 100MB file (multiple levels in hash tree)
+ Files matched
+ 
+ # verity on sparse file
 -- 
 2.39.0
 
