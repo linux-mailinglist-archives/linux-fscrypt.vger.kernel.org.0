@@ -2,152 +2,102 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3DCD658F13
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 29 Dec 2022 17:33:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77AF8659330
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 30 Dec 2022 00:35:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233434AbiL2QdM (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 29 Dec 2022 11:33:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60726 "EHLO
+        id S234187AbiL2XfF (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 29 Dec 2022 18:35:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230022AbiL2QdL (ORCPT
+        with ESMTP id S229650AbiL2XfF (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 29 Dec 2022 11:33:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5C6411A2B
-        for <linux-fscrypt@vger.kernel.org>; Thu, 29 Dec 2022 08:32:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1672331543;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qIrbQx5F/1RxpR2diUjM6XVDss325lOf5CffCy3YMeY=;
-        b=ZBuiqsOPic9Gz9+XjRFMkq9b4fU8lncQWS6k7ReoEq7u8vMoeyW9HOr5uR0cHOQWbUruD4
-        5HfVwCvmAvPgSyeiA94YWmhNInfeIHBon/GuT5svAPfmOSW1rypAGfTLi6qhM190ib9dop
-        vT9+8HYI1Q4d4IUMvt0xsOdnR7iVCKw=
-Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
- [209.85.210.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-322-CHbSlsXxMAeqqTwy6bAFsg-1; Thu, 29 Dec 2022 11:32:22 -0500
-X-MC-Unique: CHbSlsXxMAeqqTwy6bAFsg-1
-Received: by mail-pf1-f198.google.com with SMTP id n22-20020a62e516000000b005817b3a197aso3254473pff.14
-        for <linux-fscrypt@vger.kernel.org>; Thu, 29 Dec 2022 08:32:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qIrbQx5F/1RxpR2diUjM6XVDss325lOf5CffCy3YMeY=;
-        b=wgd8lARhoQEh0ERf74/rfNqUjzpetyPAhkaWZ59r7WU3e4EYs+RzgONkiEzD3UmCH3
-         W3F2R5NhxiCLCEa3KtVQfzTXj/NznY+wxVa36Fb0tIKrl5a/B6YkiDydaxNZaWrNM0t7
-         +JebnmdZCHnllQcOw/D5DMWzP3aSOHtR3Y40EwQ2eP3kU3WOCzaEpHFnnLxVdRe2Lzxi
-         NSmK9tY//ljO+p/wtOs5rrsEMQuUI3g0Ul2n1u+PEq3v8W/dVFR9RD/SaZTTnl7Q9MU0
-         p3VSOePh4HLrWH3Gzr6W7PvDdrXRLEASoKPKP0CtbnMwQ/EMrktXwz9TPGh+e3U33F5d
-         hf5w==
-X-Gm-Message-State: AFqh2krF9RfNQae5dxNMVXqgfis1HiodlMkt2D/lcLPi9sTQCpqo090I
-        mUlxMtzveqmqXtHCDQBXIShPy1I0F6C/gRLlkPQZVvO9/CvpYt78Cb80l94TeuHSSo+IAJulPnk
-        XVn4b2gXvDfx4JUCPaAtCFhUxZw==
-X-Received: by 2002:a17:902:9b90:b0:192:8cd1:5e79 with SMTP id y16-20020a1709029b9000b001928cd15e79mr9924947plp.41.1672331541055;
-        Thu, 29 Dec 2022 08:32:21 -0800 (PST)
-X-Google-Smtp-Source: AMrXdXsi6SEMhZp8y+IUR/NN9RdPeWOGqJFicBfVRJ8QotxARHFLlJiTpBDsjgLLJdNElFEEDTNT1w==
-X-Received: by 2002:a17:902:9b90:b0:192:8cd1:5e79 with SMTP id y16-20020a1709029b9000b001928cd15e79mr9924921plp.41.1672331540632;
-        Thu, 29 Dec 2022 08:32:20 -0800 (PST)
-Received: from zlang-mailbox ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id n13-20020a170903404d00b00189ec622d23sm13217146pla.100.2022.12.29.08.32.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Dec 2022 08:32:20 -0800 (PST)
-Date:   Fri, 30 Dec 2022 00:32:15 +0800
-From:   Zorro Lang <zlang@redhat.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH v2 08/10] generic/574: test multiple Merkle tree block
- sizes
-Message-ID: <20221229163215.zpwgul6faq2rhpay@zlang-mailbox>
-References: <20221223010554.281679-1-ebiggers@kernel.org>
- <20221223010554.281679-9-ebiggers@kernel.org>
- <20221225124600.faouh6a7suhq2wuu@zlang-mailbox>
- <Y6kvXs33MmxVovNO@sol.localdomain>
+        Thu, 29 Dec 2022 18:35:05 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B1AC167CE;
+        Thu, 29 Dec 2022 15:35:04 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 96FE76198E;
+        Thu, 29 Dec 2022 23:35:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2DDCC433EF;
+        Thu, 29 Dec 2022 23:35:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1672356903;
+        bh=THjtJ8q6i0Z5+bcbU0FCCq+HLhNtYnnJ43O6xBuqoD4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=OalXhWmAZLKcybYW0xj8hMsfrz+eQmG8gBRtl6CAC033K0AW7YH5QbEzYP+kTbyST
+         P5WFHZn1wQLoVjXg5yZ8cVHH4lvzrIxnVV2YrNeipgfYyt8s53QC9y7ifXgiliKnJw
+         AiIyhZMUv1oS+/JfWk4DJ2gVOxtQ/IFp9KQxlLfmKYQ4KAm0L2eOeNkJzAajBbRV4e
+         j/LttB8SlUQaFj0IQuyj/9Q2oHN05C/aPuwsXwgpfddeZjCsenulXK5iRbTadNfNi3
+         SvXQx0R75ZSVDbnoOgDC0yKp8KR5u6dmTs03W4jQFhFCfyhlZ1YZXnextC32gPJIta
+         2oH6nMUKjLUnw==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     fstests@vger.kernel.org
+Cc:     linux-fscrypt@vger.kernel.org
+Subject: [PATCH v3 00/10] xfstests: update verity tests for non-4K block and page size
+Date:   Thu, 29 Dec 2022 15:32:12 -0800
+Message-Id: <20221229233222.119630-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y6kvXs33MmxVovNO@sol.localdomain>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Sun, Dec 25, 2022 at 09:21:34PM -0800, Eric Biggers wrote:
-> On Sun, Dec 25, 2022 at 08:46:00PM +0800, Zorro Lang wrote:
-> > > +	# Reading the full file via mmap should fail.
-> > >  	bash -c "trap '' SIGBUS; $XFS_IO_PROG -r $fsv_file \
-> > >  		-c 'mmap -r 0 $page_aligned_eof' \
-> > > -		-c 'mread 0 $file_len'" |& filter_sigbus
-> > > +		-c 'mread 0 $file_len'" >/dev/null 2>$tmp.out
-> > > +	if ! grep -q 'Bus error' $tmp.out; then
-> > > +		echo "Didn't see SIGBUS when reading file via mmap"
-> > 
-> > Hmm... will sigbus error really be output to stderr? From a testing, the
-> > generic/574 fails as:
-> > 
-> > # ./check -s simpledev generic/574
-> > SECTION       -- simpledev
-> > FSTYP         -- ext4
-> > PLATFORM      -- Linux/x86_64 xx-xxxxxx-xxx 6.1.0-rc3 #5 SMP PREEMPT_DYNAMIC Tue Nov  1 01:08:52 CST 2022
-> > MKFS_OPTIONS  -- -F /dev/sdb
-> > MOUNT_OPTIONS -- -o acl,user_xattr -o context=system_u:object_r:root_t:s0 /dev/sdb /mnt/scratch
-> > 
-> > generic/574       - output mismatch (see /root/git/xfstests/results//simpledev/generic/574.out.bad)
-> >     --- tests/generic/574.out   2022-12-25 20:02:41.609104749 +0800
-> >     +++ /root/git/xfstests/results//simpledev/generic/574.out.bad       2022-12-25 20:21:57.430719504 +0800
-> >     @@ -1,6 +1,32 @@
-> >      QA output created by 574
-> >      
-> >      # Testing block_size=FSV_BLOCK_SIZE
-> >     +/root/git/xfstests/tests/generic/574: line 69: 1949533 Bus error               (core dumped) bash -c "trap '' SIGBUS; $XFS_IO_PROG -r $fsv_file            -c 'mmap -r 0 $page_aligned_eof'               -c 'mread 0 $file_len'" > /dev/null 2> $tmp.out
-> >     +Didn't see SIGBUS when reading file via mmap
-> 
-> This test passes for me both before and after this patch series.
-> 
-> Both before and after, the way this is supposed to work is that in:
-> 
-> 	bash -c "trap '' SIGBUS; command_that_exits_with_sigbus"
-> 
-> ... bash should print "Bus error" to stderr due to
-> 'command_that_exits_with_sigbus'.  That "Bus error" is then redirected.  Before
-> it was redirected to a pipeline; after it is redirected to a file.
-> 
-> I think what's happening is that the version of bash your system has is not
-> forking before exec'ing 'command_that_exits_with_sigbus'.  As a result, "Bus
-> error" is printed by the *parent* bash process instead, skipping any redirection
-> in the shell script.
-> 
-> Apparently skipping fork is a real thing in bash, and different versions of bash
-> have had subtly different conditions for enabling it.  So this seems plausible.
-> 
-> Adding an extra command after 'command_that_exits_with_sigbus' should fix this:
-> 
-> 	bash -c "trap '' SIGBUS; command_that_exits_with_sigbus; true"
+This series updates the verity xfstests to eliminate implicit
+assumptions that 'merkle_tree_block_size == fs_block_size == page_size
+== 4096', and to provide some test coverage for cases where
+merkle_tree_block_size differs from fs_block_size and/or page_size.  It
+doesn't add any new test scripts, but it does update some of the
+existing test scripts to test multiple block sizes.
 
-Thanks for this explanation, I think you're right!
+This goes along with my kernel patch series
+"fsverity: support for non-4K pages"
+(https://lore.kernel.org/linux-fsdevel/20221223203638.41293-1-ebiggers@kernel.org/T/#u).
+However, it's not necessary to wait for that kernel patch series to be
+applied before applying this xfstests patch series.
 
-I'm not sure if it's a bug of bash. If it's not a bug, I think we can do this
-change (add a true) to avoid that failure. If it's a bug, hmmm..., I think we'd
-better to avoid that failure too, due to we don't test for bash :-/
+Changed in v3:
+  - Fixed generic/574 failure with some bash versions.
 
-How about your resend this single patch (by version 2.1), to fix this problem.
-Other patches looks good to me, I'd like to merge this patchset this weekend.
+Changed in v2:
+  - Adjusted the output of generic/574, generic/575, and generic/624
+    slightly to avoid confusion.
 
-Thanks,
-Zorro
+Eric Biggers (10):
+  common/verity: add and use _fsv_can_enable()
+  common/verity: set FSV_BLOCK_SIZE to an appropriate value
+  common/verity: use FSV_BLOCK_SIZE by default
+  common/verity: add _filter_fsverity_digest()
+  generic/572: support non-4K Merkle tree block size
+  generic/573: support non-4K Merkle tree block size
+  generic/577: support non-4K Merkle tree block size
+  generic/574: test multiple Merkle tree block sizes
+  generic/624: test multiple Merkle tree block sizes
+  generic/575: test 1K Merkle tree block size
 
-> 
-> The joy of working with a shell scripting system where everyone has different
-> versions of everything installed...
-> 
-> - Eric
-> 
+ common/verity         |  84 ++++++++++++----
+ tests/generic/572     |  21 ++--
+ tests/generic/572.out |  10 +-
+ tests/generic/573     |   8 +-
+ tests/generic/574     | 219 +++++++++++++++++++++++++-----------------
+ tests/generic/574.out |  83 +---------------
+ tests/generic/575     |  57 ++++++++---
+ tests/generic/575.out |   8 +-
+ tests/generic/577     |  24 ++---
+ tests/generic/577.out |  10 +-
+ tests/generic/624     | 119 ++++++++++++++++-------
+ tests/generic/624.out |  15 +--
+ 12 files changed, 370 insertions(+), 288 deletions(-)
+
+
+base-commit: 3dc46f477b39d732e1841e6f5a180759cee3e8ce
+-- 
+2.39.0
 
