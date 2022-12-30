@@ -2,186 +2,188 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9025565950F
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 30 Dec 2022 06:45:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22603659C65
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 30 Dec 2022 22:13:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229617AbiL3FpJ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 30 Dec 2022 00:45:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54826 "EHLO
+        id S235438AbiL3VNz (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 30 Dec 2022 16:13:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbiL3FpI (ORCPT
+        with ESMTP id S229519AbiL3VNy (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 30 Dec 2022 00:45:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF2B4164AE
-        for <linux-fscrypt@vger.kernel.org>; Thu, 29 Dec 2022 21:44:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1672379060;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5QANIqQaUJhASIgbMI+XkO113Zld6lw9QYz8izkwtzE=;
-        b=IvKRvcyR/CvJ4WOmjLFDHesLGJ9n1KlxqfBpnts0Y+QqOs61iJPPc53smrwGGZ/pSpVbeR
-        zr/BLKBW35TGVprEktPJIam7wlUzg2oJTESffwH3BUv9I8kBp513OxPDcx/oeW/2npSNOb
-        fBp7IxBFO1xSN5BGxwtXpepMaeJ2RDk=
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
- [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-439-Ih9maITXO6-yAEhm0tjyAw-1; Fri, 30 Dec 2022 00:44:19 -0500
-X-MC-Unique: Ih9maITXO6-yAEhm0tjyAw-1
-Received: by mail-pf1-f200.google.com with SMTP id t16-20020aa79390000000b0057fd4bf27fbso10245853pfe.4
-        for <linux-fscrypt@vger.kernel.org>; Thu, 29 Dec 2022 21:44:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-language:content-transfer-encoding:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5QANIqQaUJhASIgbMI+XkO113Zld6lw9QYz8izkwtzE=;
-        b=ACr2cbp4xDcs8NRZnmZTSHpUT/YiDTtCM5F99Cz3z3vdvTq87gLkaciDKy1xui3ZGH
-         9F6dAthxGGS6HuIlH02BJdM8rUAqwRSsrTvne+MI6NX9ZGR29fOUOEOrKztt5LqHwgpP
-         H/71CCV4ZISINfS2OAJuqFuKC2vU8Mf8U58iEYOjCJHVjvNULXHKmt8KrjnHLnDUvJCQ
-         l3eEMhS8BJRCBflRB/ml2DJBBxj8oNiHGuJei0kbQ5Ceu2IQetwK0NgB0czTuR5vF/E6
-         6R12IcgbulSxl4/xSkR/mtplTzET36J5q1rPmQ63GGkV7qw1VV5bQCZVSZU1aRyu99N4
-         n/mQ==
-X-Gm-Message-State: AFqh2kqsroFvmjjkIlOMd5SMsLFeR7rkfOWdxI9ufP/oBsJMaINJvgjr
-        66EqItXikZ7SCaA/40seKbaaKes0D9e9JhkPZ7R2Vd9GofmUYPHH5xIm4/O2Ddbq0H4T7V0yDlS
-        DMI5zuMqm93fJcWgohpyJxBkL61yo0z7uad4wnk4b1q1PtucbYtI/3fBYJPbFHaiNSOVFcDazaY
-        M=
-X-Received: by 2002:a05:6300:8184:b0:b0:3e0f:508d with SMTP id bt4-20020a056300818400b000b03e0f508dmr37649287pzc.55.1672379057849;
-        Thu, 29 Dec 2022 21:44:17 -0800 (PST)
-X-Google-Smtp-Source: AMrXdXvvlWizGl4YUhQNCQyx8rZjX2VrRmSTpp2qe9uPP+8+Ash7c5zJHBBIm0VC/od4MTv5cT+C2g==
-X-Received: by 2002:a05:6300:8184:b0:b0:3e0f:508d with SMTP id bt4-20020a056300818400b000b03e0f508dmr37649269pzc.55.1672379057488;
-        Thu, 29 Dec 2022 21:44:17 -0800 (PST)
-Received: from [10.72.13.122] ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id k10-20020a634b4a000000b00478b2d5d148sm11857847pgl.5.2022.12.29.21.44.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Dec 2022 21:44:17 -0800 (PST)
-Subject: Re: [PATCH] ceph: make sure all the files successfully put before
- unmounting
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     idryomov@gmail.com, ceph-devel@vger.kernel.org, jlayton@kernel.org,
-        khiremat@redhat.com, linux-fscrypt@vger.kernel.org
-References: <20221201065800.18149-1-xiubli@redhat.com>
- <Y4j+Ccqzi6JxWchv@sol.localdomain> <Y4kYN8FPeq6NDe5i@gmail.com>
- <b30e579d-6919-d35b-aaa5-b71129a32810@redhat.com>
- <Y4l8vDmKIpypc8I3@sol.localdomain>
- <c0925b4f-ef5f-31fc-1bd0-05fa097b6b34@redhat.com>
- <Y64oe9c9U1+Y98yt@sol.localdomain>
-From:   Xiubo Li <xiubli@redhat.com>
-Message-ID: <8443166a-7182-7777-a489-14b5dab20bd5@redhat.com>
-Date:   Fri, 30 Dec 2022 13:44:11 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Fri, 30 Dec 2022 16:13:54 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3CBF1C40D;
+        Fri, 30 Dec 2022 13:13:52 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 849AC61C1A;
+        Fri, 30 Dec 2022 21:13:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81276C433D2;
+        Fri, 30 Dec 2022 21:13:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1672434831;
+        bh=K8Be9B7MZ1FBqjy0IqxfebJV0CPskx6ZPtnR4uccYco=;
+        h=Date:From:To:Subject:References:In-Reply-To:From;
+        b=EA2Yrb54u88yl5wFtp/iGxl7jW+s4otHjUiIw49mC4zYu7GO1K8HJf1fI1py+rymR
+         jkFv5NkA7lxpZlLjOqrRZguDwLvcGF3voyHEpIKaITsnjxBx/VFm6hZunH8velDZzn
+         88EtFQyIztL9gF8/Y8TahDpqU9vFYeLAH9I4MT1oJ+QAYjkCiydBfoM4NBh63JP+/I
+         SBB/T5qRWGXRu33scOJ7cHHEnSitj4WiLFB/pj9gdH6VowQ0HczyWgRMMtI6OTC23Q
+         O1+XoaQAmdq81Jw8rPdgE/tnFVA8Ksv9xpqSEcsIE3OxH3hHxPJnEE/M8386Zo68rt
+         a8BaF2I7lUWyg==
+Date:   Fri, 30 Dec 2022 13:13:49 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jingbo Xu <jefflexu@linux.alibaba.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Liu Jiang <gerry@linux.alibaba.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Xin Yin <yinxin.x@bytedance.com>,
+        Liu Bo <bo.liu@linux.alibaba.com>, Gao Xiang <xiang@kernel.org>
+Subject: Re: [RFC] fs-verity and encryption for EROFS
+Message-ID: <Y69UjZP4dNYdbXW0@sol.localdomain>
+References: <Y6KqpGscDV6u5AfQ@B-P7TQMD6M-0146.local>
+ <Y6PN8vpE0xbppmpB@B-P7TQMD6M-0146.local>
 MIME-Version: 1.0
-In-Reply-To: <Y64oe9c9U1+Y98yt@sol.localdomain>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y6PN8vpE0xbppmpB@B-P7TQMD6M-0146.local>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hi Eric,
+Hi Gao,
 
-Happy New Year!
+On Thu, Dec 22, 2022 at 11:24:34AM +0800, Gao Xiang wrote:
+> ( + more lists )
+> 
+> On Wed, Dec 21, 2022 at 02:41:40PM +0800, Gao Xiang wrote:
+> > Hi folks,
+> > 
+> > (As Eric suggested, I post it on list now..)
+> > 
+> > In order to outline what we could do next to benefit various image-based
+> > distribution use cases (especially for signed+verified images and
+> > confidential computing), I'd like to discuss two potential new
+> > features for EROFS: verification and encryption.
+> > 
+> > - Verification
+> > 
+> > As we're known that currently dm-verity is mainly used for read-only
+> > devices to keep the image integrity.  However, if we consider an
+> > image-based system with lots of shared blobs (no matter they are
+> > device-based or file-based).  IMHO, it'd be better to have an in-band
+> > (rather than a device-mapper out-of-band) approach to verify such blobs.
+> > 
+> > In particular, currently in container image use cases, an EROFS image
+> > can consist of
+> > 
+> >   - one meta blob for metadata and filesystem tree;
+> > 
+> >   - several data-shared blobs with chunk-based de-duplicated data (in
+> >     layers to form the incremental update way; or some other ways like
+> >     one file-one blob)
+> > 
+> > Currently data blobs can be varied from (typically) dozen blobs to (in
+> > principle) 2^16 - 1 blobs.  dm-verity setup is much hard to cover such
+> > usage but that distribution form is more and more common with the
+> > revolution of containerization.
+> > 
+> > Also since we have EROFS over fscache infrastructure, file-based
+> > distribution makes dm-verity almost impossible as well. Generally we
+> > could enable underlayfs fs-verity I think, but considering on-demand
+> > lazy pulling from remote, such data may be incomplete before data is
+> > fully downloaded. (I think that is also almost like what Google did
+> > fs-verity for incfs.)  In addition, IMO it's not good if we rely on
+> > features of a random underlay fs with generated tree from random
+> > hashing algorithm and no original signing (by image creator).
+> 
+> random hashing algorithm, underlay block sizes, (maybe) new underlay
+> layout and no original signing, which impacts reproduction.
+> 
+> > 
+> > My preliminary thought for EROFS on verification is to have blob-based
+> > (or device-based) merkle trees but makes such image integrity
+> > self-contained so that Android, embedded, system rootfs, and container
+> > use cases can all benefit from it.. 
+> > 
+> > Also as a self-containerd verfication approaches as the other Linux
+> > filesystems, it makes bootloaders and individual EROFS image unpacker
+> > to support/check image integrity and signing easily...
+> > 
+> > It seems the current fs-verity codebase can almost be well-fitted for
+> > this with some minor modification.  If possible, we could go further
+> > in this way.
 
-Yeah, it's a ceph side bug and I have sent a patch to fix it [1].
+More details and background information would be really appreciated here.  I
+thought that EROFS is a simple block-device based filesystem.  It sounds like
+that's fundamentally changed.  How does it work now?
 
-When unmounting and just before closing the sessions the cephfs server 
-still could send cap message to kceph and it will hold the inodes. So 
-the unmount will skip them.
+Part of the issue is that crazy proposals involving fsverity are a dime a dozen;
+recent examples are
+https://lore.kernel.org/r/20211112124411.1948809-6-roberto.sassu@huawei.com
+https://lore.kernel.org/r/D3AF9D1E-12E1-434F-AEA4-5892E8BC66AB@gmail.com and
+https://lore.kernel.org/r/cover.1669631086.git.alexl@redhat.com.
+It's hard to know which ones to pay attention to, and they tend to just go away
+on their own anyway.
 
-IMO it still makes sense to improve the vfs code because I hit a crash 
-after this happening but just one time.
+You haven't provided enough details for me to properly understand your proposal,
+but to me it sounds similar to the Composefs proposal
+(https://lore.kernel.org/r/cover.1669631086.git.alexl@redhat.com).  That
+proposal made some amount of sense, and it came with documentation and code.
+IIUC, in Composefs (a) all filesystem metadata is trusted and provided at mount
+time, and (b) all file contents are untrusted and are retrieved from external
+backing files.  So to authenticate a file's contents, the filesystem metadata
+just needs to include a cryptographic hash of that file's contents, and the
+filesystem just needs to compare the actual hash to that expected hash.  Of
+course, one way to implement that is to use fsverity file digests and to enforce
+that the backing file has fsverity enabled with the correct digest.
 
-[1] 
-https://patchwork.kernel.org/project/ceph-devel/patch/20221221093031.132792-1-xiubli@redhat.com/
+It sounds like what you are proposing in EROFS is similar, but differs in that
+you want block-level data deduplication as well.  That presumably means that
+EROFS will represent file contents as a list of deduplicated data blocks, each
+of which is fairly small and not randomly accessible.
 
-Thanks
+In that case a Merkle tree over each block would not make sense.  There should
+just be a standard cryptographic hash for each block.
 
-- Xiubo
+So I don't see how fsverity would be relevant at all.
 
+Does that sound right to you?
 
-On 30/12/2022 07:53, Eric Biggers wrote:
-> Hi Xiubo,
->
-> On Fri, Dec 02, 2022 at 03:04:58PM +0800, Xiubo Li wrote:
->> On 02/12/2022 12:19, Eric Biggers wrote:
->>> On Fri, Dec 02, 2022 at 09:49:49AM +0800, Xiubo Li wrote:
->>>> On 02/12/2022 05:10, Eric Biggers wrote:
->>>>> On Thu, Dec 01, 2022 at 11:18:33AM -0800, Eric Biggers wrote:
->>>>>> On Thu, Dec 01, 2022 at 02:58:00PM +0800, xiubli@redhat.com wrote:
->>>>>>> From: Xiubo Li <xiubli@redhat.com>
->>>>>>>
->>>>>>> When close a file it will be deferred to call the fput(), which
->>>>>>> will hold the inode's i_count. And when unmounting the mountpoint
->>>>>>> the evict_inodes() may skip evicting some inodes.
->>>>>>>
->>>>>>> If encrypt is enabled the kernel generate a warning when removing
->>>>>>> the encrypt keys when the skipped inodes still hold the keyring:
->>>>>> This does not make sense.  Unmounting is only possible once all the files on the
->>>>>> filesystem have been closed.
->>>>>>
->>>>> Specifically, __fput() puts the reference to the dentry (and thus the inode)
->>>>> *before* it puts the reference to the mount.  And an unmount cannot be done
->>>>> while the mount still has references.  So there should not be any issue here.
->>>> Eric,
->>>>
->>>> When I unmounting I can see the following logs, which I added a debug log in
->>>> the evcit_inodes():
->>>>
->>>> diff --git a/fs/inode.c b/fs/inode.c
->>>> index b608528efd3a..f6e69b778d9c 100644
->>>> --- a/fs/inode.c
->>>> +++ b/fs/inode.c
->>>> @@ -716,8 +716,11 @@ void evict_inodes(struct super_block *sb)
->>>>    again:
->>>>           spin_lock(&sb->s_inode_list_lock);
->>>>           list_for_each_entry_safe(inode, next, &sb->s_inodes, i_sb_list) {
->>>> -               if (atomic_read(&inode->i_count))
->>>> +               if (atomic_read(&inode->i_count)) {
->>>> +                       printk("evict_inodes inode %p, i_count = %d, was
->>>> skipped!\n",
->>>> +                              inode, atomic_read(&inode->i_count));
->>>>                           continue;
->>>> +               }
->>>>
->>>>                   spin_lock(&inode->i_lock);
->>>>                   if (inode->i_state & (I_NEW | I_FREEING | I_WILL_FREE)) {
->>>>
->>>> The logs:
->>>>
->>>> <4>[   95.977395] evict_inodes inode 00000000f90aab7b, i_count = 1, was
->>>> skipped!
->>>>
->>>> Any reason could cause this ? Since the inode couldn't be evicted in time
->>>> and then when removing the master keys it will print this warning.
->>>>
->>> It is expected for evict_inodes() to see some inodes with nonzero refcount, but
->>> they should only be filesystem internal inodes.  For example, with ext4 this
->>> happens with the journal inode.
->>>
->>> However, filesystem internal inodes cannot be encrypted, so they are irrelevant
->>> here.
->>>
->>> I'd guess that CephFS has a bug where it is leaking a reference to a user inode
->>> somewhere.
->> I also added some debug logs to tracker all the inodes in ceph, and all the
->> requests has been finished.
->>
->> I will debug it more to see whether it's leaking a reference here.
->>
->> Thanks Eric.
->>
-> Any progress on tracking this down?
->
-> - Eric
->
+> > - Encryption
+> > 
+> > I also have some rough preliminary thought for EROFS encryption.
+> > (Although that is not quite in details as verification.)  Currently we
+> > have full-disk encryption and file-based encryption, However, in order
+> > to do finer data sharing between encrypted data (it seems hard to do
+> > finer data de-duplication with file-based encryption), we could also
+> > consider modified convergence encryption, especially for image-based
+> > offline data.
+> > 
+> > In order to prevent dictionary attack, the key itself may not directly be
+> > derived from its data hashing, but we could assign some random key
+> > relating to specific data as an encrypted chunk and find a way to share
+> > these keys and data in a trusted domain.
+> > 
+> > The similar thought was also shown in the presentation of AWS Lambda
+> > sparse filesystem, although they don't show much internal details:
+> > https://youtu.be/FTwsMYXWGB0
+> > 
+> > Anyway, for encryption, it's just a preliminary thought but we're happy
+> > to have a better encryption solution for data sharing for confidential
+> > container images... 
 
+How would this compare to the old-school approach (commonly used by backup
+software) of just encrypting the deduplicated data blocks with the user's key?
+That leaks information about the plaintext, but it's usually considered an
+acceptable tradeoff.
+
+- Eric
