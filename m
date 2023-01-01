@@ -2,254 +2,123 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8C1265A0C0
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 31 Dec 2022 02:38:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08B1E65A901
+	for <lists+linux-fscrypt@lfdr.de>; Sun,  1 Jan 2023 06:13:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236115AbiLaBiZ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 30 Dec 2022 20:38:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47340 "EHLO
+        id S231286AbjAAFN4 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sun, 1 Jan 2023 00:13:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236114AbiLaBiY (ORCPT
+        with ESMTP id S229725AbjAAFNr (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 30 Dec 2022 20:38:24 -0500
-Received: from out30-57.freemail.mail.aliyun.com (out30-57.freemail.mail.aliyun.com [115.124.30.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D805513DD9;
-        Fri, 30 Dec 2022 17:38:21 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0VYQNytd_1672450697;
-Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0VYQNytd_1672450697)
-          by smtp.aliyun-inc.com;
-          Sat, 31 Dec 2022 09:38:19 +0800
-Date:   Sat, 31 Dec 2022 09:38:16 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jingbo Xu <jefflexu@linux.alibaba.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Liu Jiang <gerry@linux.alibaba.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Xin Yin <yinxin.x@bytedance.com>,
-        Liu Bo <bo.liu@linux.alibaba.com>, Gao Xiang <xiang@kernel.org>
-Subject: Re: [RFC] fs-verity and encryption for EROFS
-Message-ID: <Y6+SiIouNjFu4Cql@B-P7TQMD6M-0146.local>
-Mail-Followup-To: Eric Biggers <ebiggers@kernel.org>,
-        linux-fscrypt@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jingbo Xu <jefflexu@linux.alibaba.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Liu Jiang <gerry@linux.alibaba.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Xin Yin <yinxin.x@bytedance.com>, Liu Bo <bo.liu@linux.alibaba.com>,
-        Gao Xiang <xiang@kernel.org>
-References: <Y6KqpGscDV6u5AfQ@B-P7TQMD6M-0146.local>
- <Y6PN8vpE0xbppmpB@B-P7TQMD6M-0146.local>
- <Y69UjZP4dNYdbXW0@sol.localdomain>
+        Sun, 1 Jan 2023 00:13:47 -0500
+Received: from box.fidei.email (box.fidei.email [71.19.144.250])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CCAF63DB
+        for <linux-fscrypt@vger.kernel.org>; Sat, 31 Dec 2022 21:13:47 -0800 (PST)
+Received: from authenticated-user (box.fidei.email [71.19.144.250])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by box.fidei.email (Postfix) with ESMTPSA id 0EAA1825A0;
+        Sun,  1 Jan 2023 00:06:28 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
+        t=1672549589; bh=7Z0n+lFZJ0cQ7ScJPY/gXwd/cu6vONFHiuY46IxiCoA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Ve7ufvq+vx8kNLpPUHV76N3CMSYABmdBf4ts7dfqjR4aCEX9PzMfE8CLJUiqB9cov
+         mPa8n76IbESQ5OXjpADTAekIsfd3A6VVvRvauCb4C/zAp64wmIxWuR0mKwxYQudzVI
+         zwijm4xB/7cMRAGa9swyMNNVkFc0HUZW3IMWsEcA1kbSa3BW8KhWQDHA3NjvqYqL6y
+         Fnw+Ds7Jfc1hwZcsQqdGDvhTjPTrj1nftSCvBAoiPHp42zLzPVQ4kNP2rBepI2zFr4
+         bwyH9nBKYEAq058hDBBemW9TGojyJlGU/D3R/m5HRVxbgfYG/B1OgjJixh1ywsLY56
+         MWOgZAMm+5mSg==
+From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+To:     linux-fscrypt@vger.kernel.org, ebiggers@kernel.org,
+        paulcrowley@google.com, linux-btrfs@vger.kernel.org,
+        kernel-team@meta.com
+Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Subject: [RFC PATCH 00/17] fscrypt: add per-extent encryption keys
+Date:   Sun,  1 Jan 2023 00:06:04 -0500
+Message-Id: <cover.1672547582.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <Y69UjZP4dNYdbXW0@sol.localdomain>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hi Eric,
+Last month, after a discussion of using fscrypt in btrfs, several
+potential areas for expansion of fscrypt functionality were identified:
+specifically, per-extent keys, authenticated encryption, and 'rekeying'
+a directory tree [1]. These additions will permit btrfs to have better
+cryptographic characteristics than previous attempts at expanding btrfs
+to use fscrypt.
 
-On Fri, Dec 30, 2022 at 01:13:49PM -0800, Eric Biggers wrote:
-> Hi Gao,
-> 
-> On Thu, Dec 22, 2022 at 11:24:34AM +0800, Gao Xiang wrote:
-> > ( + more lists )
-> > 
-> > On Wed, Dec 21, 2022 at 02:41:40PM +0800, Gao Xiang wrote:
-> > > Hi folks,
-> > > 
-> > > (As Eric suggested, I post it on list now..)
-> > > 
-> > > In order to outline what we could do next to benefit various image-based
-> > > distribution use cases (especially for signed+verified images and
-> > > confidential computing), I'd like to discuss two potential new
-> > > features for EROFS: verification and encryption.
-> > > 
-> > > - Verification
-> > > 
-> > > As we're known that currently dm-verity is mainly used for read-only
-> > > devices to keep the image integrity.  However, if we consider an
-> > > image-based system with lots of shared blobs (no matter they are
-> > > device-based or file-based).  IMHO, it'd be better to have an in-band
-> > > (rather than a device-mapper out-of-band) approach to verify such blobs.
-> > > 
-> > > In particular, currently in container image use cases, an EROFS image
-> > > can consist of
-> > > 
-> > >   - one meta blob for metadata and filesystem tree;
-> > > 
-> > >   - several data-shared blobs with chunk-based de-duplicated data (in
-> > >     layers to form the incremental update way; or some other ways like
-> > >     one file-one blob)
-> > > 
-> > > Currently data blobs can be varied from (typically) dozen blobs to (in
-> > > principle) 2^16 - 1 blobs.  dm-verity setup is much hard to cover such
-> > > usage but that distribution form is more and more common with the
-> > > revolution of containerization.
-> > > 
-> > > Also since we have EROFS over fscache infrastructure, file-based
-> > > distribution makes dm-verity almost impossible as well. Generally we
-> > > could enable underlayfs fs-verity I think, but considering on-demand
-> > > lazy pulling from remote, such data may be incomplete before data is
-> > > fully downloaded. (I think that is also almost like what Google did
-> > > fs-verity for incfs.)  In addition, IMO it's not good if we rely on
-> > > features of a random underlay fs with generated tree from random
-> > > hashing algorithm and no original signing (by image creator).
-> > 
-> > random hashing algorithm, underlay block sizes, (maybe) new underlay
-> > layout and no original signing, which impacts reproduction.
-> > 
-> > > 
-> > > My preliminary thought for EROFS on verification is to have blob-based
-> > > (or device-based) merkle trees but makes such image integrity
-> > > self-contained so that Android, embedded, system rootfs, and container
-> > > use cases can all benefit from it.. 
-> > > 
-> > > Also as a self-containerd verfication approaches as the other Linux
-> > > filesystems, it makes bootloaders and individual EROFS image unpacker
-> > > to support/check image integrity and signing easily...
-> > > 
-> > > It seems the current fs-verity codebase can almost be well-fitted for
-> > > this with some minor modification.  If possible, we could go further
-> > > in this way.
-> 
-> More details and background information would be really appreciated here.  I
-> thought that EROFS is a simple block-device based filesystem.  It sounds like
-> that's fundamentally changed.  How does it work now?
+This attempts to implement the first of these, per-extent keys (in
+analogy to the current per-inode keys) in fscrypt. For a filesystem
+using per-extent keys, the idea is that each regular file inode is
+linked to its parent directory's fscrypt_info, while each extent in
+the filesystem -- opaque to fscrypt -- stores a fscrypt_info providing
+the key for the data in that extent. For non-regular files, the inode
+has its own fscrypt_info as in current ("inode-based") fscrypt.  
 
-Thanks for your reply!
+IV generation methods using logical block numbers use the logical block
+number within the extent, and for IV generation methods using inode
+numbers, such filesystems may optionally implement a method providing an
+equivalent on a per-extent basis. 
 
-First, EROFS is still a block-based filesystem, which means the basic I/O unit
-is still a block.  However, EROFS's backing data can currently be either from
+Known limitations: change 12 ("fscrypt: notify per-extent infos if
+master key vanishes") does not sufficiently argue that there cannot be a
+race between freeing a master key and using it for some pending extent IO.
+Change 16 ("fscrypt: disable inline encryption for extent-based
+encryption") merely disables inline encryption, when it should implement
+generating appropriate inline encryption info for extent infos.
 
- a) block device;
+This has not been thoroughly tested against a btrfs implementation of
+the interfaces -- I've thrown out everything here and tried something
+new several times, and while I think this interface is a decent one, I
+would like to get input on it in parallel with finishing the btrfs side
+of this part, and the other elements of the design mentioned in [1]
 
- b) cachefiles with blobs which is localed on a backing filesystem;
+[1] https://docs.google.com/document/d/1janjxewlewtVPqctkWOjSa7OhCgB8Gdx7iDaCDQQNZA/edit?usp=sharing
 
-Since Linux 5.16, EROFS has a multiple-device feature, which means it
-can be mounted with a primary device (with file metadata) and many
-secondary shared devices (with data).   Such shared devices can be
-worked as shared files if the backend is cachefiles since 5.19.
+*** BLURB HERE ***
 
-Each EROFS file can refer to data from such share devices (or files)
-with Chunk-based files. More details are shown in EROFS documentation
-Chunk-based files [1] and my talk on Open Source Europe 2022 [2] in
-September for the whole stuff.
+Sweet Tea Dorminy (17):
+  fscrypt: factor accessing inode->i_crypt_info
+  fscrypt: separate getting info for a specific block
+  fscrypt: adjust effective lblks based on extents
+  fscrypt: factor out fscrypt_set_inode_info()
+  fscrypt: use parent dir's info for extent-based encryption.
+  fscrypt: add a super_block pointer to fscrypt_info
+  fscrypt: update comments about inodes to include extents
+  fscrypt: rename mk->mk_decrypted_inodes*
+  fscrypt: make fscrypt_setup_encryption_info generic for extents
+  fscrypt: let fscrypt_infos be owned by an extent
+  fscrypt: update all the *per_file_* function names
+  fscrypt: notify per-extent infos if master key vanishes
+  fscrypt: use an optional ino equivalent for per-extent infos
+  fscrypt: add creation/usage/freeing of per-extent infos
+  fscrypt: allow load/save of extent contexts
+  fscrypt: disable inline encryption for extent-based encryption
+  fscrypt: update documentation to mention per-extent keys.
 
-[1] https://docs.kernel.org/filesystems/erofs.html
-[2] https://static.sched.com/hosted_files/osseu2022/59/Introduction%20to%20Nydus%20Image%20Service%20on%20In-kernel%20EROFS.pdf
+ Documentation/filesystems/fscrypt.rst |  38 +++-
+ fs/crypto/crypto.c                    |  17 +-
+ fs/crypto/fname.c                     |   9 +-
+ fs/crypto/fscrypt_private.h           | 174 +++++++++++++----
+ fs/crypto/hooks.c                     |   2 +-
+ fs/crypto/inline_crypt.c              |  42 ++--
+ fs/crypto/keyring.c                   |  67 ++++---
+ fs/crypto/keysetup.c                  | 263 ++++++++++++++++++++------
+ fs/crypto/keysetup_v1.c               |  24 +--
+ fs/crypto/policy.c                    |  28 ++-
+ include/linux/fscrypt.h               |  76 ++++++++
+ 11 files changed, 580 insertions(+), 160 deletions(-)
 
-> 
-> Part of the issue is that crazy proposals involving fsverity are a dime a dozen;
-> recent examples are
-> https://lore.kernel.org/r/20211112124411.1948809-6-roberto.sassu@huawei.com
-> https://lore.kernel.org/r/D3AF9D1E-12E1-434F-AEA4-5892E8BC66AB@gmail.com and
-> https://lore.kernel.org/r/cover.1669631086.git.alexl@redhat.com.
-> It's hard to know which ones to pay attention to, and they tend to just go away
-> on their own anyway.
-> 
-> You haven't provided enough details for me to properly understand your proposal,
-> but to me it sounds similar to the Composefs proposal
-> (https://lore.kernel.org/r/cover.1669631086.git.alexl@redhat.com).  That
 
-Yes, I think upstream EROFS now is quite similar to Composefs.  If you think each 
-EROFS device as an external blob that needs to be verified with a markle tree.
-I think Composefs makes no difference to upstream EROFS now.
+base-commit: b7af0635c87ff78d6bd523298ab7471f9ffd3ce5
+-- 
+2.38.1
 
-> proposal made some amount of sense, and it came with documentation and code.
-> IIUC, in Composefs (a) all filesystem metadata is trusted and provided at mount
-> time, and (b) all file contents are untrusted and are retrieved from external
-> backing files.  So to authenticate a file's contents, the filesystem metadata
-> just needs to include a cryptographic hash of that file's contents, and the
-> filesystem just needs to compare the actual hash to that expected hash.  Of
-
-My proposal here is to add fsverity markle tree for each EROFS device,
-since its data is already deduplicated so we don't need to care about
-deduplication.
-
-In the primary device, we add fsverity digests to each other devices
-(recorded in the device table), so that each other device markle tree
-root hash can be verified.  And the primary device digest can be passed
-by mount option or other ways (for example signing.)
-
-> course, one way to implement that is to use fsverity file digests and to enforce
-> that the backing file has fsverity enabled with the correct digest.
-> 
-> It sounds like what you are proposing in EROFS is similar, but differs in that
-> you want block-level data deduplication as well.  That presumably means that
-> EROFS will represent file contents as a list of deduplicated data blocks, each
-> of which is fairly small and not randomly accessible.
-> 
-> In that case a Merkle tree over each block would not make sense.  There should
-> just be a standard cryptographic hash for each block.
-
-Nope, see my reply above...  We don't need to verify each EROFS file
-with markle tree but to verify each EROFS device (or blobs) with markle
-tree.
-
-> 
-> So I don't see how fsverity would be relevant at all.
-> 
-> Does that sound right to you?
-
-Hopefully I explained enough...
-
-> 
-> > > - Encryption
-> > > 
-> > > I also have some rough preliminary thought for EROFS encryption.
-> > > (Although that is not quite in details as verification.)  Currently we
-> > > have full-disk encryption and file-based encryption, However, in order
-> > > to do finer data sharing between encrypted data (it seems hard to do
-> > > finer data de-duplication with file-based encryption), we could also
-> > > consider modified convergence encryption, especially for image-based
-> > > offline data.
-> > > 
-> > > In order to prevent dictionary attack, the key itself may not directly be
-> > > derived from its data hashing, but we could assign some random key
-> > > relating to specific data as an encrypted chunk and find a way to share
-> > > these keys and data in a trusted domain.
-> > > 
-> > > The similar thought was also shown in the presentation of AWS Lambda
-> > > sparse filesystem, although they don't show much internal details:
-> > > https://youtu.be/FTwsMYXWGB0
-> > > 
-> > > Anyway, for encryption, it's just a preliminary thought but we're happy
-> > > to have a better encryption solution for data sharing for confidential
-> > > container images... 
-> 
-> How would this compare to the old-school approach (commonly used by backup
-> software) of just encrypting the deduplicated data blocks with the user's key?
-
-Since currently each EROFS container image consist of
-a) one device for metadata
-b) several shared devices for data
-
-We'd like to share b) as much as possible, so we need to derive
-separated keys for b) instead of encrypting the whole image a) and b)
-with a single key.
-
-In that way, data cannot be shared between different images...
-
-> That leaks information about the plaintext, but it's usually considered an
-
-If the key is not directly derived from its key hashing, I assume it
-will not leak information?
-
-Thanks,
-Gao Xiang
-
-> acceptable tradeoff.
-> 
-> - Eric
