@@ -2,41 +2,41 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B02D365A900
-	for <lists+linux-fscrypt@lfdr.de>; Sun,  1 Jan 2023 06:13:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C8EF65A905
+	for <lists+linux-fscrypt@lfdr.de>; Sun,  1 Jan 2023 06:13:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229703AbjAAFNz (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sun, 1 Jan 2023 00:13:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50862 "EHLO
+        id S232200AbjAAFN6 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sun, 1 Jan 2023 00:13:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232274AbjAAFNs (ORCPT
+        with ESMTP id S232452AbjAAFNt (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sun, 1 Jan 2023 00:13:48 -0500
-Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C745663E3
+        Sun, 1 Jan 2023 00:13:49 -0500
+Received: from box.fidei.email (box.fidei.email [71.19.144.250])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 063976411
         for <linux-fscrypt@vger.kernel.org>; Sat, 31 Dec 2022 21:13:47 -0800 (PST)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 286A082634;
-        Sun,  1 Jan 2023 00:06:37 -0500 (EST)
+        by box.fidei.email (Postfix) with ESMTPSA id F3D288261F;
+        Sun,  1 Jan 2023 00:06:38 -0500 (EST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1672549597; bh=Cjs7qIoema7Ub8xzcx1e2WzqdwoTIiR4o58nP15fEEE=;
+        t=1672549599; bh=BK2x5JjPz2d/0HlcZ+8yzxCScpwOk36OlzpYONoG0DI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MHShNtu7TCZXL4t0PajRcdozfNL56jqTolrDeHM06KiaNyvGOa1eI7pzQOe3Vumv1
-         ocTSygXmLbPAK9E6Fsqq1wtaT5tG+mMdb6GHjeMyKytooz4Xvo/9HONkqGTVzIp3bw
-         Yud/Y+3whiyYAG55iHtK9CuhZ5l6P7Fm6KnqR7BoYFZLR4zaqpyIPK0S2cBR4uuIu1
-         rPlmwPbWo0xJ3QpCKC30I5imz1U5xWFb9AEz/MQTgiaWvN7JqBQ/Vwc7jpbkVFplOx
-         L6tSTz9D/WsUgHGC3AOssGbAHN/r8/BUlONw3WCGw0d5TmjvuotG78B1Lp2akMg9hi
-         vE3oOFMcLrgng==
+        b=vS87mZIMAShTDrjR2xqGIL0SCNrvS1G6oE/nQp+vFRr7u0ENVI/SEqAWbrGnl2RQp
+         cJNiaZGvrUT/d8bFiWCGyiXx2mc6yu1kUgPyw3EdkDAdUuBP+BkEmY/lV1raoWWG8u
+         f4rOFyHiDC331id+1Y3/wDI0M6W0HM9SRrX9fDh0JmyyI280ou0EqcgmpyXObCRNaF
+         cC12yWFVYRRnNap6WjW7fX/9ybaqqF9tRkuohZm2d4jE9ysIRPjKNiuKyS7xz4j+yS
+         vPnASvibitHAP86lEZ8EvaSLrVPIwqnryaWRBmg7KyZDV2SYALZCaeSJ6YBeRNabkC
+         dngzRVDSbMluQ==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     linux-fscrypt@vger.kernel.org, ebiggers@kernel.org,
         paulcrowley@google.com, linux-btrfs@vger.kernel.org,
         kernel-team@meta.com
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [RFC PATCH 04/17] fscrypt: factor out fscrypt_set_inode_info()
-Date:   Sun,  1 Jan 2023 00:06:08 -0500
-Message-Id: <fba20d354834b5b9f20c284b577381e5147692a0.1672547582.git.sweettea-kernel@dorminy.me>
+Subject: [RFC PATCH 05/17] fscrypt: use parent dir's info for extent-based encryption.
+Date:   Sun,  1 Jan 2023 00:06:09 -0500
+Message-Id: <d145985930958d2c15955438af7468276547d2d3.1672547582.git.sweettea-kernel@dorminy.me>
 In-Reply-To: <cover.1672547582.git.sweettea-kernel@dorminy.me>
 References: <cover.1672547582.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
@@ -50,113 +50,104 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-As this function needs to be called in several different places to
-short-circuit creating a new fscrypt_info for extent-based encryption,
-it makes sense to pull it into its own function for easy calling.
+For regular files in filesystems using extent-based encryption, the
+corresponding inode does
+not need a fscrypt_info structure of its own as for inode-based fscrypt, as they will not be
+encrypting anything using it. Any new extents written to the inode will
+use a per-extent info structure derived from the inode's parent
+directory's info structure. However, it is convenient to cache that
+parent directory's info structure in the inode; it makes it easy to
+check whether the parents' info exists, so that we don't have to get and
+put a reference to the parent inode every time we want to get the inode
+info. So do that.
 
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 ---
- fs/crypto/keysetup.c | 60 +++++++++++++++++++++++++++-----------------
- 1 file changed, 37 insertions(+), 23 deletions(-)
+ fs/crypto/fscrypt_private.h | 18 ++++++++++++++++++
+ fs/crypto/keysetup.c        | 27 ++++++++++++++++++++++++++-
+ 2 files changed, 44 insertions(+), 1 deletion(-)
 
-diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index 87f28d666602..4d7ff8244c55 100644
---- a/fs/crypto/keysetup.c
-+++ b/fs/crypto/keysetup.c
-@@ -515,6 +515,38 @@ static void put_crypt_info(struct fscrypt_info *ci)
- 	kmem_cache_free(fscrypt_info_cachep, ci);
- }
+diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+index 2df28c6fe558..e4c9c483114f 100644
+--- a/fs/crypto/fscrypt_private.h
++++ b/fs/crypto/fscrypt_private.h
+@@ -262,6 +262,24 @@ typedef enum {
+ 	FS_ENCRYPT,
+ } fscrypt_direction_t;
  
-+static bool fscrypt_set_inode_info(struct inode *inode,
-+				   struct fscrypt_info *ci,
-+				   struct fscrypt_master_key *mk)
++/**
++ * fscrypt_uses_extent_encryption() -- whether an inode uses per-extent
++ *                                     encryption
++ *
++ * @param inode	 the inode in question
++ *
++ * Return: true if the inode uses per-extent encryption infos, false otherwise
++ */
++static inline bool fscrypt_uses_extent_encryption(const struct inode *inode)
 +{
-+	if (ci == NULL) {
-+		inode->i_crypt_info = NULL;
-+		return true;
-+	}
-+
-+	/*
-+	 * For existing inodes, multiple tasks may race to set ->i_crypt_info.
-+	 * So use cmpxchg_release().  This pairs with the smp_load_acquire() in
-+	 * fscrypt_get_info().  I.e., here we publish ->i_crypt_info with a
-+	 * RELEASE barrier so that other tasks can ACQUIRE it.
-+	 */
-+	if (cmpxchg_release(&inode->i_crypt_info, NULL, ci) != NULL)
++	// Non-regular files don't have extents
++	if (!S_ISREG(inode->i_mode))
 +		return false;
 +
-+	/*
-+	 * We won the race and set ->i_crypt_info to our crypt_info.
-+	 * Now link it into the master key's inode list.
-+	 */
-+	if (mk) {
-+		ci->ci_master_key = mk;
-+		refcount_inc(&mk->mk_active_refs);
-+		spin_lock(&mk->mk_decrypted_inodes_lock);
-+		list_add(&ci->ci_master_key_link, &mk->mk_decrypted_inodes);
-+		spin_unlock(&mk->mk_decrypted_inodes_lock);
-+	}
-+	return true;
++	// No filesystem currently uses per-extent infos
++	return false;
 +}
 +
- static int
- fscrypt_setup_encryption_info(struct inode *inode,
- 			      const union fscrypt_policy *policy,
-@@ -525,6 +557,7 @@ fscrypt_setup_encryption_info(struct inode *inode,
- 	struct fscrypt_mode *mode;
- 	struct fscrypt_master_key *mk = NULL;
- 	int res;
-+	bool set_succeeded;
+ /**
+  * fscrypt_get_inode_info() - get the fscrypt_info for a particular inode
+  *
+diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
+index 4d7ff8244c55..52244e0dd1e4 100644
+--- a/fs/crypto/keysetup.c
++++ b/fs/crypto/keysetup.c
+@@ -622,6 +622,22 @@ int fscrypt_get_encryption_info(struct inode *inode, bool allow_unsupported)
+ 	if (fscrypt_has_encryption_key(inode))
+ 		return 0;
  
- 	res = fscrypt_initialize(inode->i_sb->s_cop->flags);
- 	if (res)
-@@ -550,34 +583,15 @@ fscrypt_setup_encryption_info(struct inode *inode,
- 	if (res)
- 		goto out;
++	if (fscrypt_uses_extent_encryption(inode)) {
++		struct dentry *dentry = d_find_any_alias(inode);
++		struct dentry *parent_dentry = dget_parent(dentry);
++		struct inode *dir = parent_dentry->d_inode;
++		struct fscrypt_info *dir_info = fscrypt_get_inode_info(dir);
++		struct fscrypt_master_key *mk = NULL;
++
++		if (dir_info)
++			mk = dir_info->ci_master_key;
++
++		fscrypt_set_inode_info(inode, dir_info, mk);
++		dput(parent_dentry);
++		dput(dentry);
++		return 0;
++	}
++
+ 	res = inode->i_sb->s_cop->get_context(inode, &ctx, sizeof(ctx));
+ 	if (res < 0) {
+ 		if (res == -ERANGE && allow_unsupported)
+@@ -704,6 +720,14 @@ int fscrypt_prepare_new_inode(struct inode *dir, struct inode *inode,
  
--	/*
--	 * For existing inodes, multiple tasks may race to set ->i_crypt_info.
--	 * So use cmpxchg_release().  This pairs with the smp_load_acquire() in
--	 * fscrypt_get_info().  I.e., here we publish ->i_crypt_info with a
--	 * RELEASE barrier so that other tasks can ACQUIRE it.
--	 */
--	if (cmpxchg_release(&inode->i_crypt_info, NULL, crypt_info) == NULL) {
--		/*
--		 * We won the race and set ->i_crypt_info to our crypt_info.
--		 * Now link it into the master key's inode list.
--		 */
--		if (mk) {
--			crypt_info->ci_master_key = mk;
--			refcount_inc(&mk->mk_active_refs);
--			spin_lock(&mk->mk_decrypted_inodes_lock);
--			list_add(&crypt_info->ci_master_key_link,
--				 &mk->mk_decrypted_inodes);
--			spin_unlock(&mk->mk_decrypted_inodes_lock);
--		}
--		crypt_info = NULL;
--	}
-+	set_succeeded = fscrypt_set_inode_info(inode, crypt_info, mk);
- 	res = 0;
- out:
- 	if (mk) {
- 		up_read(&mk->mk_sem);
- 		fscrypt_put_master_key(mk);
- 	}
--	put_crypt_info(crypt_info);
-+	if (!set_succeeded)
-+		put_crypt_info(crypt_info);
- 	return res;
- }
+ 	*encrypt_ret = true;
  
-@@ -707,7 +721,7 @@ EXPORT_SYMBOL_GPL(fscrypt_prepare_new_inode);
++	if (fscrypt_uses_extent_encryption(inode)) {
++		struct fscrypt_info *dir_info = fscrypt_get_inode_info(dir);
++
++		fscrypt_set_inode_info(inode, dir_info,
++				       dir_info->ci_master_key);
++		return 0;
++	}
++
+ 	get_random_bytes(nonce, FSCRYPT_FILE_NONCE_SIZE);
+ 	return fscrypt_setup_encryption_info(inode, policy, nonce,
+ 					     IS_CASEFOLDED(dir) &&
+@@ -720,7 +744,8 @@ EXPORT_SYMBOL_GPL(fscrypt_prepare_new_inode);
+  */
  void fscrypt_put_encryption_info(struct inode *inode)
  {
- 	put_crypt_info(fscrypt_get_inode_info(inode));
--	inode->i_crypt_info = NULL;
-+	fscrypt_set_inode_info(inode, NULL, NULL);
+-	put_crypt_info(fscrypt_get_inode_info(inode));
++	if (!fscrypt_uses_extent_encryption(inode))
++		put_crypt_info(fscrypt_get_inode_info(inode));
+ 	fscrypt_set_inode_info(inode, NULL, NULL);
  }
  EXPORT_SYMBOL(fscrypt_put_encryption_info);
- 
 -- 
 2.38.1
 
