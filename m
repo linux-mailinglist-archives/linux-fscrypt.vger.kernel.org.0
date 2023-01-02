@@ -2,49 +2,49 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CD8B65B74B
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  2 Jan 2023 22:00:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EC6465B771
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  2 Jan 2023 22:47:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231139AbjABVAb (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 2 Jan 2023 16:00:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57892 "EHLO
+        id S231805AbjABVrH (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 2 Jan 2023 16:47:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230080AbjABVAa (ORCPT
+        with ESMTP id S229964AbjABVrH (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 2 Jan 2023 16:00:30 -0500
+        Mon, 2 Jan 2023 16:47:07 -0500
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2232F7672;
-        Mon,  2 Jan 2023 13:00:27 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6E6FDCA;
+        Mon,  2 Jan 2023 13:47:04 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id A300CB80DE8;
-        Mon,  2 Jan 2023 21:00:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0029FC433D2;
-        Mon,  2 Jan 2023 21:00:23 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 4D0CEB80D75;
+        Mon,  2 Jan 2023 21:47:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8C30C433EF;
+        Mon,  2 Jan 2023 21:47:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672693224;
-        bh=l0htPdzn+vacqu1ADpy0Gu3qwhsPxvEkXdpUpWPagWI=;
+        s=k20201202; t=1672696021;
+        bh=PSXKk4PVKyh1BroEW4gko8wVuvq5tiMkNwz5i6FzOTU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Tylh0jj1ofjy5WDcqAbA1NRwUpJTXBmNkx09M6AjO8ADE1hT4y4sqegiDO5rEAXAh
-         +XU0l0Q9bpXjOi3fg/Bs9MRPh29wLZuE/CEJVOfgdmcVT4meqzKLc98uM9DWyGS7C0
-         Rv2XR9FdGcDQ+gLWliBClrSSyyjd5p6mX9NqjPAZi1U1k+WxK8G+4s22dCQ1l96QsI
-         bKHmyH0maaBD8lLU7nsk+O3mFBdAkeujL9N8aY/wh4+jawVJGVczJGpJeeScdioOEP
-         j4ePjUSZTK31opXzUnlxIEfJfAKeUMku0qchI0wDTlCYJ50SBTh6GXsPMBdaXheW+P
-         4l/f+cfeoOhVw==
-Date:   Mon, 2 Jan 2023 13:00:22 -0800
+        b=eIXTCiGNvgI3mb9k6ylRcIXcRBadSjLU72Vb3QkB/+ogrXvTu1N/rBIa3JIQBQCwn
+         KkibC3fZh29vCmQU8VXh9NHilGypLaiQhv91jmGoto8u/ELSqeOSI6LKqMTPDCQQPh
+         B2pS2pXUAFy61qbt8P0vOhpFkHMJ8NX41LF0hAUFMgu/H2LdzRr/xLvMVehrY9/Gpd
+         LT4hLUIpqGq4KpXTG71e8wY348BOOzcN/lpEm0cMnq88SMTKN9rUKPLocxq8FSSl+4
+         cd8E8Na3xG0JzqIviA4J26ocXy01uIpjN+Ie0e90m/6mPK/tFfV8P8hf/NGhx9nMlV
+         c40vMNKk9dMUA==
+Date:   Mon, 2 Jan 2023 13:47:00 -0800
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 Cc:     linux-fscrypt@vger.kernel.org, paulcrowley@google.com,
         linux-btrfs@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [RFC PATCH 01/17] fscrypt: factor accessing inode->i_crypt_info
-Message-ID: <Y7NF5jVPjecs58+Q@sol.localdomain>
+Subject: Re: [RFC PATCH 15/17] fscrypt: allow load/save of extent contexts
+Message-ID: <Y7NQ1CvPyJiGRe00@sol.localdomain>
 References: <cover.1672547582.git.sweettea-kernel@dorminy.me>
- <1d69320524e31f4f0ece20ba3c0d2b8244228f4f.1672547582.git.sweettea-kernel@dorminy.me>
+ <fd5c7a78de125737abe447370fe37f9fe90155d6.1672547582.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1d69320524e31f4f0ece20ba3c0d2b8244228f4f.1672547582.git.sweettea-kernel@dorminy.me>
+In-Reply-To: <fd5c7a78de125737abe447370fe37f9fe90155d6.1672547582.git.sweettea-kernel@dorminy.me>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -54,48 +54,92 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Sun, Jan 01, 2023 at 12:06:05AM -0500, Sweet Tea Dorminy wrote:
-> Currently, inode->i_crypt_info is accessed directly in many places;
-> the initial setting occurs in one place, via cmpxchg_release, and
-> the initial access is abstracted into fscrypt_get_info() which uses
-> smp_load_acquire(), but there are many direct accesses. While many of
-> them follow calls to fscrypt_get_info() on the same thread, verifying
-> this is not always trivial.
-> 
-> For instance, fscrypt_crypt_block() does not obviously follow a call to
-> fscrypt_get_info() on the same cpu; if some other mechanism does not
-> ensure a memory barrier, it is conceivable that a filesystem could call
-> fscrypt_crypt_block() on a cpu which had an old (NULL) i_crypt_info
-> cached. Even if the cpu does READ_ONCE(i_crypt_info), I believe it's
-> theoretically possible for it to see the old NULL value, since this
-> could be happening on a cpu which did not do the smp_load_acquire().  (I
-> may be misunderstanding, but memory-barriers.txt says that only the cpus
-> involved in an acquire/release chain are guaranteed to see the correct
-> order of operations, which seems to imply that a cpu which does not do
-> an acquire may be able to see a memory value from before the release.)
-> 
-> For safety, then, and so each site doesn't need to be individually
-> evaluated, this change factors all accesses of i_crypt_info to go
-> through fscrypt_get_info(), ensuring every access uses acquire and is
-> thus paired against an appropriate release.
-> 
-> (The same treatment is not necessary for setting i_crypt_info; the
-> only unprotected setting is during inode cleanup, which is inevitably
-> followed by freeing the inode; there are no uses past the unprotected
-> setting possible.)
+On Sun, Jan 01, 2023 at 12:06:19AM -0500, Sweet Tea Dorminy wrote:
+> The other half of using per-extent infos is saving and loading them from
+> disk.
 > 
 > Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+> ---
+>  fs/crypto/keysetup.c    | 50 +++++++++++++++++++++++++++++++++++++++++
+>  fs/crypto/policy.c      | 20 +++++++++++++++++
+>  include/linux/fscrypt.h | 17 ++++++++++++++
+>  3 files changed, 87 insertions(+)
+> 
+> diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
+> index 136156487e8f..82439fb73dd9 100644
+> --- a/fs/crypto/keysetup.c
+> +++ b/fs/crypto/keysetup.c
+> @@ -799,6 +799,56 @@ void fscrypt_free_extent_info(struct fscrypt_info **info_ptr)
+>  }
+>  EXPORT_SYMBOL_GPL(fscrypt_free_extent_info);
+>  
+> +/**
+> + * fscrypt_load_extent_info() - set up a preexisting extent's fscrypt_info
+> + * @inode: the inode to which the extent belongs. Must be encrypted.
+> + * @buf: a buffer containing the extent's stored context
+> + * @len: the length of the @ctx buffer
+> + * @info_ptr: a pointer to return the extent's fscrypt_info into. Should be
+> + *	      a pointer to a member of the extent struct, as it will be passed
+> + *	      back to the filesystem if key removal demands removal of the
+> + *	      info from the extent
+> + *
+> + * This is not %GFP_NOFS safe, so the caller is expected to call
+> + * memalloc_nofs_save/restore() if appropriate.
+> + *
+> + * Return: 0 if successful, or -errno if it fails.
+> + */
+> +int fscrypt_load_extent_info(struct inode *inode, void *buf, size_t len,
+> +			     struct fscrypt_info **info_ptr)
+> +{
 
-This patch is not necessary.  The rules for accessing ->i_crypt_info are
-actually pretty simple: when it's unknown whether ->i_crypt_info has been set,
-then it's necessary to use fscrypt_get_info() and check whether the resulting
-pointer is NULL or not (or use fscrypt_has_encryption_key() which does both).
-That's because another thread could set it concurrently.
+When is the filesystem going to call fscrypt_load_extent_info()?
 
-In contrast, when it *is* known that ->i_crypt_info has been set, then that can
-only be because fscrypt_has_encryption_key() was already executed on the same
-thread, or because an operation that ensured the key is set up already happened.
-For example, when doing I/O to a file, it's guaranteed that the file has been
-opened.  In either case, direct access is fine.
+My concern (which we've discussed, but probably I didn't explain clearly enough)
+is that the two "naive" solutions don't really work:
+
+Option 1: Set up during the I/O to the extent.  I think this is not feasible
+because the full fscrypt_setup_encryption_info() is not safe to do doing I/O.
+For example, it allocates memory under GFP_KERNEL, and it uses
+crypto_alloc_skcipher() which can involve loading kernel modules.
+
+Option 2: Set up for *all* extents when the file is opened.  I expect that this
+would not be feasible either, since a file can have a huge number of extents.
+
+This patchset seems to be assuming one of those options.  (It's not clear
+whether it's Option 1 or Option 2, since the caller of
+fscrypt_load_extent_info() is not included in the patchset.)
+
+That leaves the option I suggested, which probably I didn't explain clearly
+enough: split up key setup so that part can be done when opening the file, and
+part can be done during I/O.  Specifically, when opening the file, preallocate
+some number of crypto_skcipher objects.  This would be limited to a fixed
+number, like 128, even if the file has thousands of extents.  Then, when doing
+I/O to an extent, temporarily take a crypto_skcipher from the cache, derive the
+extent's key using fscrypt_hkdf_expand(), and set it in the crypto_skcipher
+using crypto_skcipher_setkey().
+
+That way, during I/O only fscrypt_hkdf_expand() and crypto_skcipher_setkey()
+would be needed.  Those are fairly safe to call during I/O, in contrast to
+crypto_alloc_skcipher() which is really problematic to call during I/O.
+
+Of course, it will still be somewhat expensive to derive and set a key.  So it
+might also make sense to maintain a map that maps (master key, extent nonce,
+encryption mode) to the corresponding cached crypto_skcipher, if any, so that an
+already-prepared one can be used when possible.
+
+By the way, blk-crypto-fallback (block/blk-crypto-fallback.c) does something
+similar, as it had to solve a similar problem.  The way it was solved is to
+require that blk_crypto_fallback_start_using_mode() be called to preallocate the
+crypto_skcipher objects for a given encryption mode.
+
+You actually could just use blk-crypto-fallback to do the en/decryption for you,
+if you wanted to.  I.e., you could use the blk-crypto API for en/decryption,
+instead of going directly through crypto_skcipher.  (Note that currently
+blk-crypto is opt-in via the "inlinecrypt" mount option; it's not used by
+default.  But it doesn't *have* to be that way; it could just be always used.
+It would be necessary to ensure that CONFIG_BLK_INLINE_ENCRYPTION_FALLBACK gets
+selected.)  That would save having to reimplement the caching of crypto_skcipher
+objects.  However, key derivation would still need to be done at the filesystem
+level, so it probably would still make sense to cache derived keys.
 
 - Eric
