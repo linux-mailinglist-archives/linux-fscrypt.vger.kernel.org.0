@@ -2,43 +2,43 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A104666500
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 11 Jan 2023 21:48:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40087666530
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 11 Jan 2023 22:01:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230047AbjAKUsw (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 11 Jan 2023 15:48:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53544 "EHLO
+        id S235596AbjAKVBV (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 11 Jan 2023 16:01:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjAKUsv (ORCPT
+        with ESMTP id S233974AbjAKVAb (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 11 Jan 2023 15:48:51 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D26D05FF8;
-        Wed, 11 Jan 2023 12:48:48 -0800 (PST)
+        Wed, 11 Jan 2023 16:00:31 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1CBE40861;
+        Wed, 11 Jan 2023 12:59:37 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6B36C61E53;
-        Wed, 11 Jan 2023 20:48:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF39EC433EF;
-        Wed, 11 Jan 2023 20:48:47 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 321D261E4F;
+        Wed, 11 Jan 2023 20:59:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 822DCC433EF;
+        Wed, 11 Jan 2023 20:59:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673470127;
-        bh=HzsRQDLfFJisGLIvMqbnFWr06oooTi1mp0LWzSJqKEE=;
+        s=k20201202; t=1673470776;
+        bh=0zkTP55KIClv92hX4OsUuEDw/NYX/94+Tt1opN6rSAA=;
         h=From:To:Cc:Subject:Date:From;
-        b=K2UO6+TFqKzTTio+chMxCyja8QqE3Mr2PTwbJfLvBYXiQltWFHfx3cdbrXlTii5na
-         f68CvFomlhYRO4iu75kg7/YDtk/n7lE8NBmsJXlm4uKY4UcSVUbrxxQuOcMMymCw/J
-         UrjSn3Z4Uth6aHXFJbDPhyRXK2guCqy5kDqyJwEuF2qje9khBEevkzVXVOKikwNOwL
-         YdOGFcXvvscQKVvMLlSS/wvrHtcWN6yLLFQtfeiHqUkzAt62FJmf2T+Shj0dlfDmbf
-         omMdD4KtntdzM0RIc28LAIfKgROdoYssadikI4i51EY63gPWrGasLPONN2IhXYO43a
-         3OFKVXmnw92QQ==
+        b=JgGiTBk9Mi017yFtd4GcEzjvwiLH5YckesrpLprDPYBixHvzJSkmWuNBFC9SSXh1E
+         kSSFKWgOxy6Ejww0yMI5HCcVwMt4SU3gv300tx3MUYncQ28PqaFg77OCy1cobJBorB
+         waFpY/B9GqeQEIIPsCM3n9qa2wnvl/8Qv90ySoL6QclE5T5u8saYCh28NGiUJtYhkI
+         ma97MsqKelc0R/KSDiHcxFNKYI2DRCqy+wAaaXC+5uHo8fpRJ5mXMps6Ku/IPOVuHX
+         NGYF70RbfClmmRU2n11gombWSSHfi6g1M6xBdcK+LxeyT33WWX5GZ+8Jrbp20IrQ0v
+         ZfzQusgU41/1w==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     fstests@vger.kernel.org
 Cc:     linux-fscrypt@vger.kernel.org,
         Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Subject: [PATCH v2] generic/692: generalize the test for non-4K Merkle tree block sizes
-Date:   Wed, 11 Jan 2023 12:47:39 -0800
-Message-Id: <20230111204739.77828-1-ebiggers@kernel.org>
+Subject: [PATCH v3] generic/692: generalize the test for non-4K Merkle tree block sizes
+Date:   Wed, 11 Jan 2023 12:58:28 -0800
+Message-Id: <20230111205828.88310-1-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -62,6 +62,7 @@ Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 Co-developed-by: Eric Biggers <ebiggers@google.com>
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
+v3: hashes_per_block, not hash_per_block
 v2: Cleaned up the original patch from Ojaswin:
     - Explained the calculations as they are done.
     - Considered 11 levels instead of 8, to account for 1K blocks
@@ -75,7 +76,7 @@ v2: Cleaned up the original patch from Ojaswin:
  1 file changed, 25 insertions(+), 12 deletions(-)
 
 diff --git a/tests/generic/692 b/tests/generic/692
-index d6da734b..90832b16 100755
+index d6da734b..95f6ec04 100755
 --- a/tests/generic/692
 +++ b/tests/generic/692
 @@ -51,18 +51,31 @@ _fsv_enable $fsv_file |& _filter_scratch
@@ -99,14 +100,14 @@ index d6da734b..90832b16 100755
 +
 +bs=$FSV_BLOCK_SIZE
 +hash_size=32   # SHA-256
-+hash_per_block=$(echo "scale=30; $bs/($hash_size)" | $BC -q)
++hashes_per_block=$(echo "scale=30; $bs/$hash_size" | $BC -q)
 +
 +# Compute the proportion of the original file size that the non-leaf levels of
-+# the Merkle tree take up.  Ignoring padding, this is 1/${hashes_per_block}^2 +
-+# 1/${hashes_per_block}^3 + 1/${hashes_per_block}^4 + ...  Compute it using the
++# the Merkle tree take up.  Ignoring padding, this is 1/($hashes_per_block^2) +
++# 1/($hashes_per_block^3) + 1/($hashes_per_block^4) + ...  Compute it using the
 +# formula for the sum of a geometric series: \sum_{k=0}^{\infty} ar^k = a/(1-r).
-+a=$(echo "scale=30; 1/($hash_per_block^2)" | $BC -q)
-+r=$(echo "scale=30; 1/$hash_per_block" | $BC -q)
++a=$(echo "scale=30; 1/($hashes_per_block^2)" | $BC -q)
++r=$(echo "scale=30; 1/$hashes_per_block" | $BC -q)
 +nonleaves_relative_size=$(echo "scale=30; $a/(1-$r)" | $BC -q)
 +
 +# Compute the original file size where the leaf level L0 starts at $max_sz.
