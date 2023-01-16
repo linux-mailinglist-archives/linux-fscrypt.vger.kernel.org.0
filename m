@@ -2,78 +2,89 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7677668BD5
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 13 Jan 2023 06:53:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B729566D32D
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 17 Jan 2023 00:33:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235477AbjAMFxE (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 13 Jan 2023 00:53:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45896 "EHLO
+        id S234317AbjAPXdl (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 16 Jan 2023 18:33:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233405AbjAMFv7 (ORCPT
+        with ESMTP id S235482AbjAPXdU (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 13 Jan 2023 00:51:59 -0500
-X-Greylist: delayed 345 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 12 Jan 2023 21:51:46 PST
-Received: from mp-relay-02.fibernetics.ca (mp-relay-02.fibernetics.ca [208.85.217.137])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24221216;
-        Thu, 12 Jan 2023 21:51:46 -0800 (PST)
-Received: from mailpool-fe-01.fibernetics.ca (mailpool-fe-01.fibernetics.ca [208.85.217.144])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Mon, 16 Jan 2023 18:33:20 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 565C02ED72;
+        Mon, 16 Jan 2023 15:25:09 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mp-relay-02.fibernetics.ca (Postfix) with ESMTPS id 1738270E5B;
-        Fri, 13 Jan 2023 05:46:00 +0000 (UTC)
-Received: from localhost (mailpool-mx-01.fibernetics.ca [208.85.217.140])
-        by mailpool-fe-01.fibernetics.ca (Postfix) with ESMTP id CFE0826892;
-        Fri, 13 Jan 2023 05:45:59 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at 
-X-Spam-Score: 3.651
-X-Spam-Level: ******
-X-Spam-Status: Yes, score=6.3 required=5.0 tests=BAYES_99,
-        FREEMAIL_FORGED_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,SPF_HELO_NONE,
-        SPF_PASS,SUBJ_ALL_CAPS autolearn=no autolearn_force=no version=3.4.6
-Received: from mailpool-fe-01.fibernetics.ca ([208.85.217.144])
-        by localhost (mail-mx-01.fibernetics.ca [208.85.217.140]) (amavisd-new, port 10024)
-        with ESMTP id 5nKEStyxmCAA; Fri, 13 Jan 2023 05:45:59 +0000 (UTC)
-Received: from localhost (unknown [208.85.220.72])
-        by mail.ca.inter.net (Postfix) with ESMTP id 2C31E2688E;
-        Fri, 13 Jan 2023 05:45:58 +0000 (UTC)
-Received: from reverse.rain.network (reverse.rain.network [197.184.176.8])
- by webmail.ca.inter.net (Horde Framework) with HTTP; Fri, 13 Jan 2023
- 00:45:57 -0500
-Message-ID: <20230113004557.1776655zih3sj09h@webmail.ca.inter.net>
-Date:   Fri, 13 Jan 2023 00:45:57 -0500
-From:   INFO <boothg@istar.ca>
-Reply-to: s.g0392440821@gmail.com
-To:     undisclosed-recipients:;
-Subject: IST DIESE E-MAIL AKTIV?
+        by ams.source.kernel.org (Postfix) with ESMTPS id DF32EB81104;
+        Mon, 16 Jan 2023 23:25:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51E75C433D2;
+        Mon, 16 Jan 2023 23:25:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1673911506;
+        bh=ojZWPHS+IIMGuPGnsOHsgYoO/oDNhc0Uw7ZucK6fAJY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=kDD+2LFrJFCh3ePeNzs/Ts07X6vxXzYMyoJjykhG5iXLBNj68HmB+m7WG96biPCBp
+         kLBEWy3QjKnNO42SCANr2y+x79f6wSTo2BRebmeUGelYS5kQuV0vd+jLnObLfBudAl
+         IPWdrYrTQzI7JOnFYVI/vBtJT8dzcVQVu1Nnj7MP0IRFxHYqCpfY/Hbqu9nA3QH8ky
+         VIWIbPdJlje6MR2YvjEPU5itLKEQj+ZXK9jpD6MPrlKvHlBZuPOvHuzGO9ISqMtver
+         vPJ788IVDsfNEyjVN2CYos8IRjKwIWDy24swBdTxaEFJkYrkRcdCckrifqlqPb/NT/
+         uHIKJBysLZNzg==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     fsverity@lists.linux.dev
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-btrfs@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH] MAINTAINERS: update fsverity git repo, list, and patchwork
+Date:   Mon, 16 Jan 2023 15:22:57 -0800
+Message-Id: <20230116232257.64377-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=ISO-8859-1;
- DelSp="Yes";
- format="flowed"
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-User-Agent: Internet Messaging Program (IMP) H3 (4.3.7)
-X-Originating-User-Info: boothg@istar.ca 208.85.219.96
-X-Spam-Report: *  3.5 BAYES_99 BODY: Bayes spam probability is 99 to 100%
-        *      [score: 0.9984]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [s.g0392440821[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.5 SUBJ_ALL_CAPS Subject is all capitals
-        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,SUSPICIOUS_RECIPS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
+From: Eric Biggers <ebiggers@google.com>
 
+We're moving fsverity development to use its own git repo, mailing list,
+and patchwork project, instead of reusing the fscrypt ones.  Update the
+MAINTAINERS file accordingly.
 
-Sehr geehrter E-Mail-Begünstigter, Sie wurden für eine Spende in Höhe  
-von 3.500.000,00 ? ausgewählt. Wenden Sie sich an diese  
-E-Mail-Adresse: s.g0392440821@gmail.com, um weitere Informationen zum  
-Erhalt Ihrer Spende zu erhalten. Vielen Dank
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ MAINTAINERS | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 42fc47c6edfd7..936cbdbc60eb1 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -8520,10 +8520,10 @@ F:	include/linux/fsnotify*.h
+ FSVERITY: READ-ONLY FILE-BASED AUTHENTICITY PROTECTION
+ M:	Eric Biggers <ebiggers@kernel.org>
+ M:	Theodore Y. Ts'o <tytso@mit.edu>
+-L:	linux-fscrypt@vger.kernel.org
++L:	fsverity@lists.linux.dev
+ S:	Supported
+-Q:	https://patchwork.kernel.org/project/linux-fscrypt/list/
+-T:	git git://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git fsverity
++Q:	https://patchwork.kernel.org/project/fsverity/list/
++T:	git https://git.kernel.org/pub/scm/fs/fsverity/linux.git
+ F:	Documentation/filesystems/fsverity.rst
+ F:	fs/verity/
+ F:	include/linux/fsverity.h
+
+base-commit: 5dc4c995db9eb45f6373a956eb1f69460e69e6d4
+-- 
+2.39.0
 
