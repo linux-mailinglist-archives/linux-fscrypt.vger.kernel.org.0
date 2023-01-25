@@ -2,52 +2,45 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60C9F67B90D
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 25 Jan 2023 19:12:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96BD167BB8A
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 25 Jan 2023 21:01:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235552AbjAYSMh (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 25 Jan 2023 13:12:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45556 "EHLO
+        id S235264AbjAYUBk (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 25 Jan 2023 15:01:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235130AbjAYSMg (ORCPT
+        with ESMTP id S236093AbjAYUBi (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 25 Jan 2023 13:12:36 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DBB346090;
-        Wed, 25 Jan 2023 10:12:35 -0800 (PST)
+        Wed, 25 Jan 2023 15:01:38 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8FE12A984
+        for <linux-fscrypt@vger.kernel.org>; Wed, 25 Jan 2023 12:01:34 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 22855B81B6B;
-        Wed, 25 Jan 2023 18:12:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C292C433EF;
-        Wed, 25 Jan 2023 18:12:32 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 411EA61592
+        for <linux-fscrypt@vger.kernel.org>; Wed, 25 Jan 2023 20:01:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EA8FC433D2;
+        Wed, 25 Jan 2023 20:01:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674670352;
-        bh=F0+KwPG8MCwYAmQMNO2Dkfq1GxfcBnu7RqgtyJ5Rt1s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qdnzSCN8CDjbnB796I3wpMFxkId5shNmhXbKyYOTDqY86+dTy/nu/EMGDMVL9D1TW
-         8bPogFWHZK4MDvcy4NWmESfgiL7cXbpG6hpKGGxgyRCPbZ12KU5tyllY/lpkwY9mKH
-         0oQTr76F0wuO7KuePnGDRALqu3RTN780VmT2c5EyWYr+uF86UKNdbqzJzZbOrOGcfY
-         kvxsViMdoDDOV1NVXgxjQ7bv8DkPiGdUzC+nLkLdxZBd+5Fzds7YQNadrOCXTcHKMH
-         VJHCi+Nyjgn8xNfOPFNLpNQ0xaVLiH/h5y0WOfk1YHU/YB624gXfRDY7u0XITSCDco
-         YLgP4Qn9zaRaw==
-Date:   Wed, 25 Jan 2023 10:12:30 -0800
+        s=k20201202; t=1674676893;
+        bh=myWWWUfa+USomgtlLWQAPpShELYL1rULYUvY5Mx89Cc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=WgjBl4WwC9YLr9aiIUp58Y+c8r+2FAXfKH6a283SNCDQTNPev/0UeB5iMi083Ck/K
+         /SP8Yd760bV4nGkQ8QnU6q2xqgMGZMu/yXTEYebm3dblnHdVAENW8vkMhOmNOznnty
+         VlxwnGmIQTTvwSgKzK0BsSV0C2/MET38m4mG2xqmp/+zMi7VX9Be1lc8fSeiuP2Na9
+         eRVKoYGuGLj9ur8agX6AnzVatD+Uccl3R+9GMxMNK9VzjiDmmUPOQGTcHyr4+KFSp9
+         p/m+0mPALcXgMk9dpWbZLR8X8Kb1qlW4q5aSPTuvQWDJ1HcHT32k/ol4PG99g8Cf4N
+         nKx+qEjz7saAg==
+Date:   Wed, 25 Jan 2023 12:01:31 -0800
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Andrey Albershteyn <aalbersh@redhat.com>
-Cc:     linux-fscrypt@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, Dave Chinner <david@fromorbit.com>,
-        linux-btrfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH 4/4] fsverity: pass pos and size to
- ->write_merkle_tree_block
-Message-ID: <Y9FxDqhdLe5RJ9Iq@sol.localdomain>
-References: <20221214224304.145712-1-ebiggers@kernel.org>
- <20221214224304.145712-5-ebiggers@kernel.org>
- <20230125122227.lgwp2t5tdzten3dk@aalbersh.remote.csb>
+To:     fsverity@lists.linux.dev
+Cc:     linux-fscrypt@vger.kernel.org
+Subject: [ANNOUNCE] Moving the fsverity-utils git repo
+Message-ID: <Y9GKm+hcm70myZkr@sol.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230125122227.lgwp2t5tdzten3dk@aalbersh.remote.csb>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -57,45 +50,20 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-[Added back Cc's.  Please use Reply-All instead of Reply!]
+Hi,
 
-On Wed, Jan 25, 2023 at 01:22:27PM +0100, Andrey Albershteyn wrote:
-> On Wed, Dec 14, 2022 at 02:43:04PM -0800, Eric Biggers wrote:
-> > From: Eric Biggers <ebiggers@google.com>
-> > 
-> > fsverity_operations::write_merkle_tree_block is passed the index of the
-> > block to write and the log base 2 of the block size.  However, all
-> > implementations of it use these parameters only to calculate the
-> > position and the size of the block, in bytes.
-> > 
-> > Therefore, make ->write_merkle_tree_block take 'pos' and 'size'
-> > parameters instead of 'index' and 'log_blocksize'.
-> 
-> Hi Eric,
-> 
-> Thanks for the quick responses with changes to fs-verity!
-> 
-> With this patch shouldn't the read_merkle_tree_block() also change
-> to [pos, size] args? I see that ext4 uses index to read the page at
-> that index + file size. But I suppose that when Merkle tree block
-> size will vary (e.g. 8k) it will require position + size.
+I'm moving the fsverity-utils git repo from the following path:
 
-Not yet.  It's actually read_merkle_tree_page(), not read_merkle_tree_block().
-The callees want a page index, and pages always have size PAGE_SIZE.  So the
-current function prototype is appropriate for the current design.
+	https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/fsverity-utils.git
 
-> In XFS as we store the page under the xattr with "pos" as a name
-> we also need a "pos" while reading the page. So, currently XFS can
-> use index << log2(PAGE_SHIFT) or will need to get also log_blocksize
-> from descriptor.
+to the following path:
 
-But you definitely need to think about what changes should be made to allow XFS
-to do the Merkle tree caching the way the other XFS developers want it to do.
-There will be significantly more to that than potentially changing a function
-prototype.  There's been some discussion of this on the "fs-verity support for
-XFS" thread, but there's not a detailed proposal yet.
+	https://git.kernel.org/pub/scm/fs/fsverity/fsverity-utils.git
 
-Note: you should store Merkle tree blocks in the xattrs instead of "pages", so
-that the on-disk format isn't tied to the page size.
+This way, it's now owned by the "FSVerity FS Group" and isn't just in my
+personal directory.  It's also now alongside the linux.git used for the kernel.
+
+I'll keep the old repo around for a short time while I try to update the link in
+a few places I know are using it.
 
 - Eric
