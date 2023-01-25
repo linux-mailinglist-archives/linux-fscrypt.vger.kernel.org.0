@@ -2,114 +2,100 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D99CD67A9B3
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 25 Jan 2023 05:48:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60C9F67B90D
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 25 Jan 2023 19:12:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233674AbjAYEs1 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 24 Jan 2023 23:48:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42464 "EHLO
+        id S235552AbjAYSMh (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 25 Jan 2023 13:12:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbjAYEs0 (ORCPT
+        with ESMTP id S235130AbjAYSMg (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 24 Jan 2023 23:48:26 -0500
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C34041B52;
-        Tue, 24 Jan 2023 20:48:24 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Wed, 25 Jan 2023 13:12:36 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DBB346090;
+        Wed, 25 Jan 2023 10:12:35 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4P1rv75Q5Hz4xwq;
-        Wed, 25 Jan 2023 15:48:19 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1674622100;
-        bh=YpBIUAJ0Y+tnPxd3Pdf0j6P5IFQtiaMQ9t/s0VbiGtE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=kZ4YBYcw22qPnUY+ZfSjDDnrdTFq8RkDu8AKnT5Clo3ewa65Dtg+/d+nzgPeI3bOW
-         7N8r66OyfbpvPmedTRDhuPVB2w1/PZ1XuvPplV449Dk7nSPk8G0mW/vuRevkU3akDK
-         iQUcNIWRm9lYuQwryAYnWxfvj39PNjqpQFZQWHqgJWuX1nIvna3YV5HdL3PqhcXJ4p
-         9guGzwW+b3zARKyXtZ7cqQxWhi0RHdAcC65kwqlrSxzPZGssXeaMt4A0EyHK6WemJQ
-         x5JOV9CHnP+3yYiPu+LULqnPIQEMet+k/yQ/GVHq+BJgH+v8mxvyVnygunlRe6NGde
-         H2nusPAYle6JQ==
-Date:   Wed, 25 Jan 2023 15:48:18 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-next@vger.kernel.org, "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-fscrypt@vger.kernel.org, fsverity@lists.linux.dev
-Subject: Re: Please update fscrypt and fsverity branches in linux-next
-Message-ID: <20230125154818.671047ae@canb.auug.org.au>
-In-Reply-To: <Y9BRoE/SIg1aUh+P@sol.localdomain>
-References: <Y9BRoE/SIg1aUh+P@sol.localdomain>
+        by ams.source.kernel.org (Postfix) with ESMTPS id 22855B81B6B;
+        Wed, 25 Jan 2023 18:12:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C292C433EF;
+        Wed, 25 Jan 2023 18:12:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1674670352;
+        bh=F0+KwPG8MCwYAmQMNO2Dkfq1GxfcBnu7RqgtyJ5Rt1s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qdnzSCN8CDjbnB796I3wpMFxkId5shNmhXbKyYOTDqY86+dTy/nu/EMGDMVL9D1TW
+         8bPogFWHZK4MDvcy4NWmESfgiL7cXbpG6hpKGGxgyRCPbZ12KU5tyllY/lpkwY9mKH
+         0oQTr76F0wuO7KuePnGDRALqu3RTN780VmT2c5EyWYr+uF86UKNdbqzJzZbOrOGcfY
+         kvxsViMdoDDOV1NVXgxjQ7bv8DkPiGdUzC+nLkLdxZBd+5Fzds7YQNadrOCXTcHKMH
+         VJHCi+Nyjgn8xNfOPFNLpNQ0xaVLiH/h5y0WOfk1YHU/YB624gXfRDY7u0XITSCDco
+         YLgP4Qn9zaRaw==
+Date:   Wed, 25 Jan 2023 10:12:30 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Andrey Albershteyn <aalbersh@redhat.com>
+Cc:     linux-fscrypt@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, Dave Chinner <david@fromorbit.com>,
+        linux-btrfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [PATCH 4/4] fsverity: pass pos and size to
+ ->write_merkle_tree_block
+Message-ID: <Y9FxDqhdLe5RJ9Iq@sol.localdomain>
+References: <20221214224304.145712-1-ebiggers@kernel.org>
+ <20221214224304.145712-5-ebiggers@kernel.org>
+ <20230125122227.lgwp2t5tdzten3dk@aalbersh.remote.csb>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/9VMgMlTY9ztCyui7_93KTsw";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230125122227.lgwp2t5tdzten3dk@aalbersh.remote.csb>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
---Sig_/9VMgMlTY9ztCyui7_93KTsw
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+[Added back Cc's.  Please use Reply-All instead of Reply!]
 
-Hi Eric,
+On Wed, Jan 25, 2023 at 01:22:27PM +0100, Andrey Albershteyn wrote:
+> On Wed, Dec 14, 2022 at 02:43:04PM -0800, Eric Biggers wrote:
+> > From: Eric Biggers <ebiggers@google.com>
+> > 
+> > fsverity_operations::write_merkle_tree_block is passed the index of the
+> > block to write and the log base 2 of the block size.  However, all
+> > implementations of it use these parameters only to calculate the
+> > position and the size of the block, in bytes.
+> > 
+> > Therefore, make ->write_merkle_tree_block take 'pos' and 'size'
+> > parameters instead of 'index' and 'log_blocksize'.
+> 
+> Hi Eric,
+> 
+> Thanks for the quick responses with changes to fs-verity!
+> 
+> With this patch shouldn't the read_merkle_tree_block() also change
+> to [pos, size] args? I see that ext4 uses index to read the page at
+> that index + file size. But I suppose that when Merkle tree block
+> size will vary (e.g. 8k) it will require position + size.
 
-On Tue, 24 Jan 2023 13:46:08 -0800 Eric Biggers <ebiggers@kernel.org> wrote:
->=20
-> I've moved the fscrypt and fsverity development branches to split them up
-> properly and make it clear what each branch is for.  Therefore, can you p=
-lease
-> remove the following branches from linux-next:
->=20
-> 	Repo:      git://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git
-> 	Branches:  master, for-stable, and fsverity
->=20
-> And please add the following branches to linux-next:
->=20
-> 	Repo:      https://git.kernel.org/pub/scm/fs/fscrypt/linux.git
-> 	Branches:  for-next and for-current
->=20
-> 	Repo:      https://git.kernel.org/pub/scm/fs/fsverity/linux.git
-> 	Branches:  for-next and for-current
->=20
-> Also please ensure the contacts match the corresponding MAINTAINERS file
-> entries.  For fscrypt that is:
->=20
-> 	M:      Eric Biggers <ebiggers@kernel.org>
-> 	M:      Theodore Y. Ts'o <tytso@mit.edu>
-> 	M:      Jaegeuk Kim <jaegeuk@kernel.org>
->=20
-> and for fsverity that is:
->=20
-> 	M:      Eric Biggers <ebiggers@kernel.org>
-> 	M:      Theodore Y. Ts'o <tytso@mit.edu>
+Not yet.  It's actually read_merkle_tree_page(), not read_merkle_tree_block().
+The callees want a page index, and pages always have size PAGE_SIZE.  So the
+current function prototype is appropriate for the current design.
 
-All done.  They will be included on Friday (as I am not doing a tree
-tomorrow).
+> In XFS as we store the page under the xattr with "pos" as a name
+> we also need a "pos" while reading the page. So, currently XFS can
+> use index << log2(PAGE_SHIFT) or will need to get also log_blocksize
+> from descriptor.
 
---=20
-Cheers,
-Stephen Rothwell
+But you definitely need to think about what changes should be made to allow XFS
+to do the Merkle tree caching the way the other XFS developers want it to do.
+There will be significantly more to that than potentially changing a function
+prototype.  There's been some discussion of this on the "fs-verity support for
+XFS" thread, but there's not a detailed proposal yet.
 
---Sig_/9VMgMlTY9ztCyui7_93KTsw
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Note: you should store Merkle tree blocks in the xattrs instead of "pages", so
+that the on-disk format isn't tied to the page size.
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmPQtJIACgkQAVBC80lX
-0Gyl5gf/R6kmBxXL99RET1pi0t/OKiFdd6HxteBx1beZ3OuIFr8ih49NjQ28N6hV
-ZkZSatwKfrniPlTYREyCugQsenWviXikHD2QLmEab3tgxvUYERzxzr+FoxicFCKH
-P1QXYJvf4tvWXfuKEU6fcAtfo1E5WW1iVGyUTk8758YuLeDCC6V70l/5xY1EMTqX
-NvGQNM+bZPmWGu7+UaRHQCfjtcVdKIpzs83Qo7mVZ3JScIHhG+sG8oNYPBeUQc3j
-63AasEVPOqI4qw4QbIJXn/jiUBBvo/2JPkP67w7oDKwikzCcFe6gGQFzfdBuIVS6
-F7vX32XEVrf9Zmfruq8mog0eBC5Aww==
-=2D2C
------END PGP SIGNATURE-----
-
---Sig_/9VMgMlTY9ztCyui7_93KTsw--
+- Eric
