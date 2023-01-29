@@ -2,79 +2,90 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4143767F25A
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 28 Jan 2023 00:41:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA11167FED7
+	for <lists+linux-fscrypt@lfdr.de>; Sun, 29 Jan 2023 13:19:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229657AbjA0Xlh (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 27 Jan 2023 18:41:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43522 "EHLO
+        id S231182AbjA2MTE (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sun, 29 Jan 2023 07:19:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229619AbjA0Xlg (ORCPT
+        with ESMTP id S229519AbjA2MTE (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 27 Jan 2023 18:41:36 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D0E39BA2;
-        Fri, 27 Jan 2023 15:41:35 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 764A761DDA;
-        Fri, 27 Jan 2023 23:41:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEB59C433D2;
-        Fri, 27 Jan 2023 23:41:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674862894;
-        bh=RbVGajs8rZXEWNrRSlxeJ7fwrlT9Dgw5+K1Rp9h+h4M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ro+uKYmshrZ8CiYOEUAYY+duHGCJ0qckwiDm1l0S0dMwYcfdRcg9uLSmWl2zzshrZ
-         /xlSJuqHQJHoyuE3IgYYpKnOwBlalhEYnKrZd5O+eOUVRHc746CM/v1e8hNcZrCIHw
-         P5iuONiKJWREQlOVJ+Mm4cNELWfZciPyxY1M/4QMvi0w0ZABMGqUkrodi8S0pC04O7
-         PT77P+wibsw5OrEW8d3FiqD6mTBL/Qtzw1eYsMR2JNO0jb3S8MBD97YCfRRYlnW+yO
-         c2SIYT8jv8t9T19zLvzZQAnBm8+rzAWG3agEz3pNIpeQp9vxLkTeoFbJVQxBhQODBe
-         na7wKnbhPOaKg==
-Date:   Fri, 27 Jan 2023 15:41:23 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] fscrypt: support decrypting data from large folios
-Message-ID: <Y9RhIwSzUE0/tbo/@sol.localdomain>
-References: <20230127224202.355629-1-ebiggers@kernel.org>
- <Y9RfZaGoQ07UkD6w@casper.infradead.org>
+        Sun, 29 Jan 2023 07:19:04 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE2B19F04;
+        Sun, 29 Jan 2023 04:18:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=HThgw7sl6uJJTesezO0n2kqBMrE2goYpe6c6Ta3USks=; b=EefxzS7qsdrMJ33t6t/RxOs1cF
+        FV582ZbD9kbJF1oWPtMVHZZ7x8wivZHz9NBnafc9EQr/0K2vJQU+Z0x7LqcsLDBKk+e5XE+FULm5m
+        ysdDb9I5zBGFpLdZHmgIt+D1JbL8vXQ0/lI3Tmd9NiWQBASUfqnjCFIWJWcvte7Q1yxLxVnbgjD3C
+        hT9MxPZMQLKwITnYkbVY2WgKQpbC0tP1yhBCGCK2cTygOA/QbYOvtLUxyRApWKYorNRdIKmxUUiJe
+        epIgGDbsjR/AiXpV3k+fDCKBFtiSlyugH1dyoHv4LUIeXcSMxiWoQEEh8gcw1SD/cLJRSC0C8yszK
+        p5EULVgg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pM6e5-009QuN-2U; Sun, 29 Jan 2023 12:18:53 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>,
+        linux-fscrypt@vger.kernel.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, stable@vger.kernel.org
+Subject: [PATCH] fscrypt: Copy the memcg information to the ciphertext page
+Date:   Sun, 29 Jan 2023 12:18:51 +0000
+Message-Id: <20230129121851.2248378-1-willy@infradead.org>
+X-Mailer: git-send-email 2.37.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y9RfZaGoQ07UkD6w@casper.infradead.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Jan 27, 2023 at 11:33:57PM +0000, Matthew Wilcox wrote:
-> On Fri, Jan 27, 2023 at 02:42:02PM -0800, Eric Biggers wrote:
-> > +++ b/fs/buffer.c
-> > @@ -307,8 +307,8 @@ static void decrypt_bh(struct work_struct *work)
-> >  	struct buffer_head *bh = ctx->bh;
-> >  	int err;
-> >  
-> > -	err = fscrypt_decrypt_pagecache_blocks(bh->b_page, bh->b_size,
-> > -					       bh_offset(bh));
-> > +	err = fscrypt_decrypt_pagecache_blocks(page_folio(bh->b_page),
-> > +					       bh->b_size, bh_offset(bh));
-> 
-> FYI, Andrew's been carrying "buffer: add b_folio as an alias of b_page"
-> in his tree since mid-December.  buffer_heads always point to the
-> head page, aka folio.
-> 
-> This all looks good to me.
-> 
-> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Both f2fs and ext4 end up passing the ciphertext page to
+wbc_account_cgroup_owner().  At the moment, the ciphertext page appears
+to belong to no cgroup, so it is accounted to the root_mem_cgroup instead
+of whatever cgroup the original page was in.
 
-Indeed, but it's not upstream yet, so I decided to use page_folio() for now to
-avoid a cross-tree dependency.
+It's hard to say how far back this is a bug.  The crypto code shared
+between ext4 & f2fs was created in May 2015 with commit 0b81d0779072,
+but neither filesystem did anything with memcg_data before then.  memcg
+writeback accounting was added to ext4 in July 2015 in commit 001e4a8775f6
+and it wasn't added to f2fs until January 2018 (commit 578c647879f7).
 
-- Eric
+I'm going with the ext4 commit since this is the first commit where
+there was a difference in behaviour between encrypted and unencrypted
+filesystems.
+
+Fixes: 001e4a8775f6 ("ext4: implement cgroup writeback support")
+Cc: stable@vger.kernel.org
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+---
+ fs/crypto/crypto.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
+index e78be66bbf01..a4e76f96f291 100644
+--- a/fs/crypto/crypto.c
++++ b/fs/crypto/crypto.c
+@@ -205,6 +205,9 @@ struct page *fscrypt_encrypt_pagecache_blocks(struct page *page,
+ 	}
+ 	SetPagePrivate(ciphertext_page);
+ 	set_page_private(ciphertext_page, (unsigned long)page);
++#ifdef CONFIG_MEMCG
++	ciphertext_page->memcg_data = page->memcg_data;
++#endif
+ 	return ciphertext_page;
+ }
+ EXPORT_SYMBOL(fscrypt_encrypt_pagecache_blocks);
+-- 
+2.35.1
+
