@@ -2,27 +2,28 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B8A2682F2B
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 31 Jan 2023 15:23:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CFC06831D6
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 31 Jan 2023 16:50:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231964AbjAaOXw (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 31 Jan 2023 09:23:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56440 "EHLO
+        id S233468AbjAaPug (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 31 Jan 2023 10:50:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231977AbjAaOXj (ORCPT
+        with ESMTP id S233462AbjAaPuf (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 31 Jan 2023 09:23:39 -0500
-Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 523FE449D;
-        Tue, 31 Jan 2023 06:22:54 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.18.147.227])
-        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4P5n9y73cQz9xFGR;
-        Tue, 31 Jan 2023 22:14:46 +0800 (CST)
+        Tue, 31 Jan 2023 10:50:35 -0500
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD1DC25287;
+        Tue, 31 Jan 2023 07:50:31 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.18.147.229])
+        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4P5q710dNZz9xGYd;
+        Tue, 31 Jan 2023 23:42:21 +0800 (CST)
 Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwDnawcWJNlj10HhAA--.11161S2;
-        Tue, 31 Jan 2023 15:22:28 +0100 (CET)
-Message-ID: <033335b26f6becdc3dc0325ef926efd94fcc4dda.camel@huaweicloud.com>
-Subject: Re: [RFC PATCH v9 00/16] Integrity Policy Enforcement LSM (IPE)
+        by APP2 (Coremail) with SMTP id GxC2BwDnvGOiONljTIjfAA--.49040S2;
+        Tue, 31 Jan 2023 16:50:07 +0100 (CET)
+Message-ID: <061df661004a06ef1e8790d48157c7ba4ecfc009.camel@huaweicloud.com>
+Subject: Re: [RFC PATCH v9 03/16] ipe: add evaluation loop and introduce
+ 'boot_verified' as a trust provider
 From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
 To:     Fan Wu <wufan@linux.microsoft.com>, corbet@lwn.net,
         zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com,
@@ -33,34 +34,36 @@ Cc:     linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
         linux-security-module@vger.kernel.org,
         linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
         dm-devel@redhat.com, linux-audit@redhat.com,
-        roberto.sassu@huawei.com, linux-kernel@vger.kernel.org
-Date:   Tue, 31 Jan 2023 15:22:05 +0100
-In-Reply-To: <1675119451-23180-1-git-send-email-wufan@linux.microsoft.com>
+        roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
+        Deven Bowers <deven.desai@linux.microsoft.com>
+Date:   Tue, 31 Jan 2023 16:49:44 +0100
+In-Reply-To: <1675119451-23180-4-git-send-email-wufan@linux.microsoft.com>
 References: <1675119451-23180-1-git-send-email-wufan@linux.microsoft.com>
+         <1675119451-23180-4-git-send-email-wufan@linux.microsoft.com>
 Content-Type: text/plain; charset="UTF-8"
 User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LxC2BwDnawcWJNlj10HhAA--.11161S2
-X-Coremail-Antispam: 1UD129KBjvAXoWfAr13Zw43ZrW8Kw15try5Arb_yoW8tr4Uuo
-        Wxu3ya9F4qqry3AFs5uFsrCrZxuasYgr4kXr4Yq34UGFnIqa4DK3y8Aa18WF1SgFW5Gr13
-        G34IvayrZr47tFn3n29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: GxC2BwDnvGOiONljTIjfAA--.49040S2
+X-Coremail-Antispam: 1UD129KBjvAXoW3CFy7WrWkKr1UCF1UJF4xJFb_yoW8GFykto
+        WfXa13uF4xtry3CrWj9a17AFW7Wa9Ygw4kJFZ0qrZrJFn2v34UKw1kAa1UXF45uF1rJr15
+        K3s7ZayrZF45t3Z5n29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
         AaLaJ3UjIYCTnIWjp_UUUY17kC6x804xWl14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK
         8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4
         AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF
         7I0E14v26r4j6F4UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I
         0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8C
-        rVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4
+        rVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4
         IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY
         0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I
         0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAI
         cVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcV
         CF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2
-        jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjxUFKZXUUUUU
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAOBF1jj4RZzQACsr
+        jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjxU7OJ5UUUUU
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAOBF1jj4hYgAABsr
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -68,560 +71,483 @@ List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 On Mon, 2023-01-30 at 14:57 -0800, Fan Wu wrote:
-> Overview:
-> ---------
-> 
-> IPE is a Linux Security Module which takes a complimentary approach to
-> access control. Whereas existing mandatory access control mechanisms
-> base their decisions on labels and paths, IPE instead determines
-> whether or not an operation should be allowed based on immutable
-> security properties of the system component the operation is being
-> performed on.
-> 
-> IPE itself does not mandate how the security property should be
-> evaluated, but relies on an extensible set of external property providers
-> to evaluate the component. IPE makes its decision based on reference
-> values for the selected properties, specified in the IPE policy.
-> 
-> The reference values represent the value that the policy writer and the
-> local system administrator (based on the policy signature) trust for the
-> system to accomplish the desired tasks.
-> 
-> One such provider is for example dm-verity, which is able to represent
-> the integrity property of a partition (its immutable state) with a digest.
-> 
-> IPE is compiled under CONFIG_SECURITY_IPE.
-> 
-> Use Cases
-> ---------
-> 
-> IPE works best in fixed-function devices: Devices in which their purpose
-> is clearly defined and not supposed to be changed (e.g. network firewall
-> device in a data center, an IoT device, etcetera), where all software and
-> configuration is built and provisioned by the system owner.
-> 
-> IPE is a long-way off for use in general-purpose computing: the Linux
-> community as a whole tends to follow a decentralized trust model,
-> known as the web of trust, which IPE has no support for as of  yet.
-> There are exceptions, such as the case where a Linux distribution
-> vendor trusts only their own keys, where IPE can successfully be used
-> to enforce the trust requirement.
-> 
-> Additionally, while most packages are signed today, the files inside
-> the packages (for instance, the executables), tend to be unsigned. This
-> makes it difficult to utilize IPE in systems where a package manager is
-> expected to be functional, without major changes to the package manager
-> and ecosystem behind it.
-> 
-> DIGLIM[1] is a system that when combined with IPE, could be used to
-> enable general purpose computing scenarios.
-> 
-> Policy:
-> -------
-> 
-> IPE policy is a plain-text policy composed of multiple statements
-> over several lines. There is one required line, at the top of the
-> policy, indicating the policy name, and the policy version, for
-> instance:
-> 
->   policy_name=Ex_Policy policy_version=0.0.0
-> 
-> The policy version indicates the current version of the policy. This is
-> used to prevent roll-back of policy to potentially insecure previous
-> versions of the policy.
-> 
-> The next portion of IPE policy, are rules. Rules are formed by key=value
-> pairs, known as properties. IPE rules require two keys: "action", which
-> determines what IPE does when it encounters a match against the policy
-> and "op", which determines when that rule should be evaluated.
-> 
-> Thus, a minimal rule is:
-> 
->   op=EXECUTE action=ALLOW
-> 
-> This example rule will allow any execution. A rule is required to have the
-> "op" property as the first token of a rule, and the "action" as the last
-> token of the rule. 
-> 
-> Additional properties are used to restrict attributes about the files being
-> evaluated. These properties are intended to be deterministic attributes
-> that are resident in the kernel. 
-> 
-> For example:
-> 
->   op=EXECUTE dmverity_signature=FALSE action=DENY
-> 
-> This rule with property dmverity_signature will deny any file not from
-> a signed dmverity volume to be executed. 
-> 
-> All available properties for IPE described in the documentation patch of
-> this series.
-> 
-> Rules are evaluated top-to-bottom. As a result, any revocation rules,
-> or denies should be placed early in the file to ensure that these rules
-> are evaluated before a rule with "action=ALLOW" is hit.
-> 
-> Any unknown syntax in IPE policy will result in a fatal error to parse
-> the policy. 
-> 
-> Additionally, a DEFAULT operation must be set for all understood
-> operations within IPE. For policies to remain completely forwards
-> compatible, it is recommended that users add a "DEFAULT action=ALLOW"
-> and override the defaults on a per-operation basis.
-> 
-> For more information about the policy syntax, see the kernel
-> documentation page.
-> 
-> Early Usermode Protection:
-> --------------------------
-> 
-> IPE can be provided with a policy at startup to load and enforce.
-> This is intended to be a minimal policy to get the system to a state
-> where userspace is setup and ready to receive commands, at which
-> point a policy can be deployed via securityfs. This "boot policy" can be
-> specified via the config, SECURITY_IPE_BOOT_POLICY, which accepts a path
-> to a plain-text version of the IPE policy to apply. This policy will be
-> compiled into the kernel. If not specified, IPE will be disabled until a
-> policy is deployed and activated through the method above.
-> 
-> Policy Examples:
-> ----------------
-> 
-> Allow all:
-> 
->   policy_name=Allow_All policy_version=0.0.0
->   DEFAULT action=ALLOW
-> 
-> Allow only initial superblock:
-> 
->   policy_name=Allow_All_Initial_SB policy_version=0.0.0
->   DEFAULT action=DENY
-> 
->   op=EXECUTE boot_verified=TRUE action=ALLOW
-> 
-> Allow any signed dm-verity volume and the initial superblock:
-> 
->   policy_name=AllowSignedAndInitial policy_version=0.0.0
->   DEFAULT action=DENY
-> 
->   op=EXECUTE boot_verified=TRUE action=ALLOW
->   op=EXECUTE dmverity_signature=TRUE action=ALLOW
-> 
-> Prohibit execution from a specific dm-verity volume, while allowing
-> all signed volumes and the initial superblock:
-> 
->   policy_name=ProhibitSingleVolume policy_version=0.0.0
->   DEFAULT action=DENY
-> 
->   op=EXECUTE dmverity_roothash=sha256:401fcec5944823ae12f62726e8184407a5fa9599783f030dec146938 action=DENY
->   op=EXECUTE boot_verified=TRUE action=ALLOW
->   op=EXECUTE dmverity_signature=TRUE action=ALLOW
-> 
-> Allow only a specific dm-verity volume:
-> 
->   policy_name=AllowSpecific policy_version=0.0.0
->   DEFAULT action=DENY
-> 
->   op=EXECUTE dmverity_roothash=sha256:401fcec5944823ae12f62726e8184407a5fa9599783f030dec146938 action=ALLOW
-> 
-> Allow any signed fs-verity file
-> 
->   policy_name="AllowSignedFSVerity" policy_version=0.0.0
->   DEFAULT action=DENY
-> 
->   op=EXECUTE fsverity_signature=TRUE action=ALLOW
-> 
-> Deny a specific fs-verity file:
-> 
->   policy_name="ProhibitSpecificFSVF" policy_version=0.0.0
->   DEFAULT action=DENY
-> 
->   op=EXECUTE fsverity_digest=sha256:fd88f2b8824e197f850bf4c5109bea5cf0ee38104f710843bb72da796ba5af9e action=DENY
->   op=EXECUTE boot_verified=TRUE action=ALLOW
->   op=EXECUTE dmverity_signature=TRUE action=ALLOW
-> 
-> Deploying Policies:
-> -------------------
-> 
-> First sign a plain text policy, with a certificate that is present in
-> the SYSTEM_TRUSTED_KEYRING of your test machine. Through openssl, the
-> signing can be done via:
-> 
->   openssl smime -sign -in "$MY_POLICY" -signer "$MY_CERTIFICATE" \
->     -inkey "$MY_PRIVATE_KEY" -outform der -noattr -nodetach \
->     -out "$MY_POLICY.p7s"
-> 
-> Then, simply cat the file into the IPE's "new_policy" securityfs node:
-> 
->   cat "$MY_POLICY.p7s" > /sys/kernel/security/ipe/new_policy
-> 
-> The policy should now be present under the policies/ subdirectory, under
-> its "policy_name" attribute.
-> 
-> The policy is now present in the kernel and can be marked as active,
-> via the securityfs node:
-> 
->   echo 1 > "/sys/kernel/security/ipe/$MY_POLICY_NAME/active"
-> 
-> This will now mark the policy as active and the system will be enforcing
-> $MY_POLICY_NAME.
-> 
-> There is one requirement when marking a policy as active, the policy_version
-> attribute must either increase, or remain the same as the currently running
-> policy.
-> 
-> Policies can be updated via:
-> 
->   cat "$MY_UPDATED_POLICY.p7s" > \
->     "/sys/kernel/security/ipe/policies/$MY_POLICY_NAME/update"
-> 
-> Additionally, policies can be deleted via the "delete" securityfs
-> node. Simply write "1" to the corresponding node in the policy folder:
-> 
->   echo 1 > "/sys/kernel/security/ipe/policies/$MY_POLICY_NAME/delete"
-> 
-> There is only one requirement to delete policies, the policy being
-> deleted must not be the active policy.
-> 
-> NOTE: Any securityfs write to IPE's nodes will require CAP_MAC_ADMIN.
-> 
-> Integrations:
-> -------------
-> 
-> This patch series adds support for fsverity via digest and signature
-> (fsverity_signature and fsverity_digest), dm-verity by digest and
-> signature (dmverity_signature and dmverity_roothash), and trust for
-> the initramfs (boot_verified).
-> 
-> Please see the documentation patch for more information about the
-> integrations available.
-> 
-> Testing:
-> --------
-> 
-> KUnit Tests are available. Recommended kunitconfig:
-> 
->     CONFIG_KUNIT=y
->     CONFIG_SECURITY=y
->     CONFIG_SECURITYFS=y
->     CONFIG_PKCS7_MESSAGE_PARSER=y
->     CONFIG_SYSTEM_DATA_VERIFICATION=y
->     CONFIG_FS_VERITY=y
->     CONFIG_FS_VERITY_BUILTIN_SIGNATURES=y
->     CONFIG_BLOCK=y
->     CONFIG_MD=y
->     CONFIG_BLK_DEV_DM=y
->     CONFIG_DM_VERITY=y
->     CONFIG_DM_VERITY_VERIFY_ROOTHASH_SIG=y
->     CONFIG_NET=y
->     CONFIG_AUDIT=y
->     CONFIG_AUDITSYSCALL=y
-> 
->     CONFIG_SECURITY_IPE=y
->     CONFIG_IPE_PROP_DM_VERITY=y
->     CONFIG_IPE_PROP_FS_VERITY=y
->     CONFIG_SECURITY_IPE_KUNIT_TEST=y
-> 
-> Simply run:
-> 
->     make ARCH=um mrproper
->     ./tools/testing/kunit/kunit.py run --kunitconfig <path/to/config>
-> 
-> And the tests will execute and report the result. For more indepth testing,
-> it will require you to create and mount a dm-verity volume or fs-verity
-> enabled file.
-> 
-> Documentation:
-> --------------
-> 
-> There is both documentation available on github at
-> https://microsoft.github.io/ipe, and Documentation in this patch series,
-> to be added in-tree.
-> 
-> Known Gaps:
-> -----------
-> 
-> IPE has two known gaps:
-> 
-> 1. IPE cannot verify the integrity of anonymous executable memory, such as
->   the trampolines created by gcc closures and libffi (<3.4.2), or JIT'd code.
->   Unfortunately, as this is dynamically generated code, there is no way
->   for IPE to ensure the integrity of this code to form a trust basis. In all
->   cases, the return result for these operations will be whatever the admin
->   configures the DEFAULT action for "EXECUTE".
+> From: Deven Bowers <deven.desai@linux.microsoft.com>
+> 
+> IPE must have a centralized function to evaluate incoming callers
+> against IPE's policy. This iteration of the policy against the rules
+> for that specific caller is known as the evaluation loop.
 
-I think it would be useful to handle special cases, for example you
-could allow a process that created a file with memfd to use it, at the
-condition that nobody else writes it.
+Not sure if you check the properties at every access.
 
-This would be required during the boot, otherwise services could fail
-to start (depending on the policy).
+From my previous comments (also for previous versions of the patches)
+you could evaluate the property once, by calling the respective
+functions in the other subsystems.
 
-> 2. IPE cannot verify the integrity of interpreted languages' programs when
->   these scripts invoked via ``<interpreter> <file>``. This is because the
->   way interpreters execute these files, the scripts themselves are not
->   evaluated as executable code through one of IPE's hooks. Interpreters
->   can be enlightened to the usage of IPE by trying to mmap a file into
->   executable memory (+X), after opening the file and responding to the
->   error code appropriately. This also applies to included files, or high
->   value files, such as configuration files of critical system components.
+Then, you reserve space in the security blob for inodes and superblocks
+to cache the decision. The format could be a policy sequence number, to
+ensure that the cache is valid only for the current policy, and a bit
+for every hook you enforce.
 
-Ok, it is a well known issue. Hopefully, it will be fixed soon.
+Also, currently you rely on the fact that the properties you defined
+are immutable and the immutability is guaranteed by the other
+subsystems, so no write can occur.
+
+But if you remove this limitation, the immutability is not guaranteed
+anymore by the other subsystems (for example if a file is in an ext4
+filesystem), the LSM needs to take extra care to ensure that the
+properties are still verified. This would be required for example if
+IPE is used in conjuction with DIGLIM.
+
+In my opinion, IPE value would increase if the generic enforcement
+mechanism is property-agnostic.
 
 Roberto
 
-> Appendix:
-> ---------
+> In addition, IPE is designed to provide system level trust guarantees,
+> this usually implies that trust starts from bootup with a hardware root
+> of trust, which validates the bootloader. After this, the bootloader
+> verifies the kernel and the initramfs.
 > 
-> A. IPE Github Repository: https://github.com/microsoft/ipe
-> B. IPE Users' Guide: Documentation/admin-guide/LSM/ipe.rst
+> As there's no currently supported integrity method for initramfs, and
+> it's typically already verified by the bootloader, introduce a property
+> that causes the first superblock to have an execution to be "pinned",
+> which is typically initramfs.
 > 
-> References:
-> -----------
+> Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
+> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
 > 
-> 1: https://lore.kernel.org/bpf/4d6932e96d774227b42721d9f645ba51@huawei.com/T/
-> 
-> FAQ:
-> ----
-> 
-> Q: What is the difference between IMA and IPE?
-> 
-> A: See the documentation patch for more on this topic.
-> 
-> Previous Postings
-> -----------------
-> 
-> v1: https://lore.kernel.org/all/20200406181045.1024164-1-deven.desai@linux.microsoft.com/
-> v2: https://lore.kernel.org/all/20200406221439.1469862-1-deven.desai@linux.microsoft.com/
-> v3: https://lore.kernel.org/all/20200415162550.2324-1-deven.desai@linux.microsoft.com/
-> v4: https://lore.kernel.org/all/20200717230941.1190744-1-deven.desai@linux.microsoft.com/
-> v5: https://lore.kernel.org/all/20200728213614.586312-1-deven.desai@linux.microsoft.com/
-> v6: https://lore.kernel.org/all/20200730003113.2561644-1-deven.desai@linux.microsoft.com/
-> v7: https://lore.kernel.org/all/1634151995-16266-1-git-send-email-deven.desai@linux.microsoft.com/
-> v8: https://lore.kernel.org/all/1654714889-26728-1-git-send-email-deven.desai@linux.microsoft.com/
-> 
-> Changelog:
-> ----------
-> 
+> ---
 > v2:
->   Split the second patch of the previous series into two.
->   Minor corrections in the cover-letter and documentation
->   comments regarding CAP_MAC_ADMIN checks in IPE.
+>   + Split evaluation loop, access control hooks,
+>     and evaluation loop from policy parser and userspace
+>     interface to pass mailing list character limit
 > 
 > v3:
->   Address various comments by Jann Horn. Highlights:
->     Switch various audit allocators to GFP_KERNEL.
->     Utilize rcu_access_pointer() in various locations.
->     Strip out the caching system for properties
->     Strip comments from headers
->     Move functions around in patches
->     Remove kernel command line parameters
->     Reconcile the race condition on the delete node for policy by
->       expanding the policy critical section.
-> 
->   Address a few comments by Jonathan Corbet around the documentation
->     pages for IPE.
-> 
->   Fix an issue with the initialization of IPE policy with a "-0"
->     version, caused by not initializing the hlist entries before
->     freeing.
+>   + Move ipe_load_properties to patch 04.
+>   + Remove useless 0-initializations
+>   + Prefix extern variables with ipe_
+>   + Remove kernel module parameters, as these are
+>     exposed through sysctls.
+>   + Add more prose to the IPE base config option
+>     help text.
+>   + Use GFP_KERNEL for audit_log_start.
+>   + Remove unnecessary caching system.
+>   + Remove comments from headers
+>   + Use rcu_access_pointer for rcu-pointer null check
+>   + Remove usage of reqprot; use prot only.
+>   + Move policy load and activation audit event to 03/12
 > 
 > v4:
->   Address a concern around IPE's behavior with unknown syntax.
->     Specifically, make any unknown syntax a fatal error instead of a
->     warning, as suggested by Mickaël Salaün.
->   Introduce a new securityfs node, $securityfs/ipe/property_config,
->     which provides a listing of what properties are enabled by the
->     kernel and their versions. This allows usermode to predict what
->     policies should be allowed.
->   Strip some comments from c files that I missed.
->   Clarify some documentation comments around 'boot_verified'.
->     While this currently does not functionally change the property
->     itself, the distinction is important when IPE can enforce verified
->     reads. Additionally, 'KERNEL_READ' was omitted from the documentation.
->     This has been corrected.
->   Change SecurityFS and SHA1 to a reverse dependency.
->   Update the cover-letter with the updated behavior of unknown syntax.
->   Remove all sysctls, making an equivalent function in securityfs.
->   Rework the active/delete mechanism to be a node under the policy in
->     $securityfs/ipe/policies.
->   The kernel command line parameters ipe.enforce and ipe.success_audit
->     have returned as this functionality is no longer exposed through
->     sysfs.
+>   + Remove sysctls in favor of securityfs nodes
+>   + Re-add kernel module parameters, as these are now
+>     exposed through securityfs.
+>   + Refactor property audit loop to a separate function.
 > 
 > v5:
->   Correct some grammatical errors reported by Randy Dunlap.
->   Fix some warnings reported by kernel test bot.
->   Change convention around security_bdev_setsecurity. -ENOSYS
->     is now expected if an LSM does not implement a particular @name,
->     as suggested by Casey Schaufler.
->   Minor string corrections related to the move from sysfs to securityfs
->   Correct a spelling of an #ifdef for the permissive argument.
->   Add the kernel parameters re-added to the documentation.
->   Fix a minor bug where the mode being audited on permissive switch
->     was the original mode, not the mode being swapped to.
->   Cleanup doc comments, fix some whitespace alignment issues.
+>   + fix minor grammatical errors
+>   + do not group rule by curly-brace in audit record,
+>     reconstruct the exact rule.
 > 
 > v6:
->   Change if statement condition in security_bdev_setsecurity to be
->     more concise, as suggested by Casey Schaufler and Al Viro
->   Drop the 6th patch in the series, "dm-verity move signature check..."
->     due to numerous issues, and it ultimately providing no real value.
->   Fix the patch tree - the previous iteration appears to have been in a
->     torn state (patches 8+9 were merged). This has since been corrected.
+>   + No changes
 > 
 > v7:
->   * Reword cover letter to more accurate convey IPE's purpose
->     and latest updates.
->   * Refactor series to:
->       1. Support a context structure, enabling:
->           1. Easier Testing via KUNIT
->           2. A better architecture for future designs
->       2. Make parser code cleaner
->   * Move patch 01/12 to [14/16] of the series
->   * Split up patch 02/12 into four parts:
->       1. context creation [01/16]
->       2. audit [07/16]
->       3. evaluation loop [03/16]
->       4. access control hooks [05/16]
->       5. permissive mode [08/16]
->   * Split up patch 03/12 into two parts:
->       1. parser [02/16]
->       2. userspace interface [04/16]
->   * Reword and refactor patch 04/12 to [09/16]
->   * Squash patch 05/12, 07/12, 09/12 to [10/16]
->   * Squash patch 08/12, 10/12 to [11/16]
->   * Change audit records to MAC region (14XX) from Integrity region (18XX)
->   * Add FSVerity Support
->   * Interface changes:
->       1. "raw" was renamed to "pkcs7" and made read only
->       2. "raw"'s write functionality (update a policy) moved to "update"
->       3. introduced "version", "policy_name" nodes.
->       4. "content" renamed to "policy"
->       5. The boot policy can now be updated like any other policy.
->   * Add additional developer-level documentation
->   * Update admin-guide docs to reflect changes.
->   * Kunit tests
->   * Dropped CONFIG_SECURITY_IPE_PERMISSIVE_SWITCH - functionality can
->     easily come later with a small patch.
->   * Use partition0 for block_device for dm-verity patch
+>   + Further split lsm creation into a separate commit from the
+>     evaluation loop and audit system, for easier review.
+> 
+>   + Propogating changes to support the new ipe_context structure in the
+>     evaluation loop.
 > 
 > v8:
->   * Add changelog information to individual commits
->   * A large number of changes to the audit patch.
->   * split fs/ & security/ changes to two separate patches.
->   * split block/, security/ & drivers/md/ changes to separate patches.
->   * Add some historical context to what lead to the creation of IPE
->     in the documentation patch.
->   * Cover-letter changes suggested by Roberto Sassu.
+>   + Remove ipe_hook enumeration; hooks can be correlated via syscall
+>     record.
 > 
 > v9:
->   * Rewrite IPE parser to use kernel match_table parser.
->   * Adapt existing IPE properties to the new parser.
->   * Remove ipe_context, quote policy syntax, kernel_read for simplicity.
->   * Add new function in the security file system to delete IPE policy.
->   * Make IPE audit builtin and change several audit formats.
->   * Make boot_verified property builtin
-> 
-> Deven Bowers (13):
->   security: add ipe lsm
->   ipe: add policy parser
->   ipe: add evaluation loop and introduce 'boot_verified' as a trust
->     provider
->   ipe: add userspace interface
->   ipe: add LSM hooks on execution and kernel read
->   uapi|audit|ipe: add ipe auditing support
->   ipe: add permissive toggle
->   block|security: add LSM blob to block_device
->   dm-verity: consume root hash digest and signature data via LSM hook
->   ipe: add support for dm-verity as a trust provider
->   scripts: add boot policy generation program
->   ipe: kunit test for parser
->   documentation: add ipe documentation
-> 
-> Fan Wu (3):
->   security: add new securityfs delete function
->   fsverity: consume builtin signature via LSM hook
->   ipe: enable support for fs-verity as a trust provider
-> 
->  Documentation/admin-guide/LSM/index.rst       |   1 +
->  Documentation/admin-guide/LSM/ipe.rst         | 729 ++++++++++++++++++
->  .../admin-guide/kernel-parameters.txt         |  12 +
->  Documentation/security/index.rst              |   1 +
->  Documentation/security/ipe.rst                | 436 +++++++++++
->  MAINTAINERS                                   |   8 +
->  block/bdev.c                                  |   7 +
->  drivers/md/dm-verity-target.c                 |  25 +-
->  drivers/md/dm-verity-verify-sig.c             |  16 +-
->  drivers/md/dm-verity-verify-sig.h             |  10 +-
->  fs/verity/fsverity_private.h                  |   2 +-
->  fs/verity/open.c                              |  13 +-
->  fs/verity/signature.c                         |   1 +
->  include/linux/blk_types.h                     |   3 +
->  include/linux/dm-verity.h                     |  19 +
->  include/linux/fsverity.h                      |   2 +
->  include/linux/lsm_hook_defs.h                 |   5 +
->  include/linux/lsm_hooks.h                     |  12 +
->  include/linux/security.h                      |  23 +
->  include/uapi/linux/audit.h                    |   1 +
->  scripts/Makefile                              |   1 +
->  scripts/ipe/Makefile                          |   2 +
->  scripts/ipe/polgen/.gitignore                 |   1 +
->  scripts/ipe/polgen/Makefile                   |   6 +
->  scripts/ipe/polgen/polgen.c                   | 145 ++++
->  security/Kconfig                              |  11 +-
->  security/Makefile                             |   1 +
->  security/inode.c                              |  25 +
->  security/ipe/.gitignore                       |   1 +
->  security/ipe/Kconfig                          |  75 ++
->  security/ipe/Makefile                         |  32 +
->  security/ipe/audit.c                          | 279 +++++++
->  security/ipe/audit.h                          |  19 +
->  security/ipe/digest.c                         | 144 ++++
->  security/ipe/digest.h                         |  26 +
->  security/ipe/eval.c                           | 424 ++++++++++
->  security/ipe/eval.h                           |  60 ++
->  security/ipe/fs.c                             | 242 ++++++
->  security/ipe/fs.h                             |  17 +
->  security/ipe/hooks.c                          | 275 +++++++
->  security/ipe/hooks.h                          |  42 +
->  security/ipe/ipe.c                            |  97 +++
->  security/ipe/ipe.h                            |  22 +
->  security/ipe/policy.c                         | 259 +++++++
->  security/ipe/policy.h                         |  93 +++
->  security/ipe/policy_fs.c                      | 459 +++++++++++
->  security/ipe/policy_parser.c                  | 545 +++++++++++++
->  security/ipe/policy_parser.h                  |  11 +
->  security/ipe/policy_tests.c                   | 294 +++++++
->  security/security.c                           |  70 ++
->  50 files changed, 4988 insertions(+), 16 deletions(-)
->  create mode 100644 Documentation/admin-guide/LSM/ipe.rst
->  create mode 100644 Documentation/security/ipe.rst
->  create mode 100644 include/linux/dm-verity.h
->  create mode 100644 scripts/ipe/Makefile
->  create mode 100644 scripts/ipe/polgen/.gitignore
->  create mode 100644 scripts/ipe/polgen/Makefile
->  create mode 100644 scripts/ipe/polgen/polgen.c
->  create mode 100644 security/ipe/.gitignore
->  create mode 100644 security/ipe/Kconfig
->  create mode 100644 security/ipe/Makefile
->  create mode 100644 security/ipe/audit.c
->  create mode 100644 security/ipe/audit.h
->  create mode 100644 security/ipe/digest.c
->  create mode 100644 security/ipe/digest.h
+>   + Remove ipe_context related code and simplify the evaluation loop.
+>   + Merge the evaluation loop commit with the boot_verified commit.
+> ---
+>  security/ipe/Makefile        |   1 +
+>  security/ipe/eval.c          | 180 +++++++++++++++++++++++++++++++++++
+>  security/ipe/eval.h          |  28 ++++++
+>  security/ipe/hooks.c         |  25 +++++
+>  security/ipe/hooks.h         |  14 +++
+>  security/ipe/ipe.c           |   1 +
+>  security/ipe/policy.c        |  20 ++++
+>  security/ipe/policy.h        |   3 +
+>  security/ipe/policy_parser.c |   8 +-
+>  9 files changed, 279 insertions(+), 1 deletion(-)
 >  create mode 100644 security/ipe/eval.c
 >  create mode 100644 security/ipe/eval.h
->  create mode 100644 security/ipe/fs.c
->  create mode 100644 security/ipe/fs.h
 >  create mode 100644 security/ipe/hooks.c
 >  create mode 100644 security/ipe/hooks.h
->  create mode 100644 security/ipe/ipe.c
->  create mode 100644 security/ipe/ipe.h
->  create mode 100644 security/ipe/policy.c
->  create mode 100644 security/ipe/policy.h
->  create mode 100644 security/ipe/policy_fs.c
->  create mode 100644 security/ipe/policy_parser.c
->  create mode 100644 security/ipe/policy_parser.h
->  create mode 100644 security/ipe/policy_tests.c
 > 
+> diff --git a/security/ipe/Makefile b/security/ipe/Makefile
+> index 16bbe80991f1..d7f2870d7c09 100644
+> --- a/security/ipe/Makefile
+> +++ b/security/ipe/Makefile
+> @@ -6,6 +6,7 @@
+>  #
+>  
+>  obj-$(CONFIG_SECURITY_IPE) += \
+> +	eval.o \
+>  	hooks.o \
+>  	ipe.o \
+>  	policy.o \
+> diff --git a/security/ipe/eval.c b/security/ipe/eval.c
+> new file mode 100644
+> index 000000000000..48b5104a3463
+> --- /dev/null
+> +++ b/security/ipe/eval.c
+> @@ -0,0 +1,180 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) Microsoft Corporation. All rights reserved.
+> + */
+> +
+> +#include "ipe.h"
+> +#include "eval.h"
+> +#include "hooks.h"
+> +#include "policy.h"
+> +
+> +#include <linux/fs.h>
+> +#include <linux/types.h>
+> +#include <linux/slab.h>
+> +#include <linux/file.h>
+> +#include <linux/sched.h>
+> +#include <linux/rcupdate.h>
+> +#include <linux/spinlock.h>
+> +
+> +struct ipe_policy __rcu *ipe_active_policy;
+> +
+> +static struct super_block *pinned_sb;
+> +static DEFINE_SPINLOCK(pin_lock);
+> +#define FILE_SUPERBLOCK(f) ((f)->f_path.mnt->mnt_sb)
+> +
+> +/**
+> + * pin_sb - Pin the underlying superblock of @f, marking it as trusted.
+> + * @f: Supplies a file structure to source the super_block from.
+> + */
+> +static void pin_sb(const struct file *f)
+> +{
+> +	if (!f)
+> +		return;
+> +	spin_lock(&pin_lock);
+> +	if (pinned_sb)
+> +		goto out;
+> +	pinned_sb = FILE_SUPERBLOCK(f);
+> +out:
+> +	spin_unlock(&pin_lock);
+> +}
+> +
+> +/**
+> + * from_pinned - Determine whether @f is source from the pinned super_block.
+> + * @f: Supplies a file structure to check against the pinned super_block.
+> + *
+> + * Return:
+> + * * true	- @f is sourced from the pinned super_block
+> + * * false	- @f is not sourced from the pinned super_block
+> + */
+> +static bool from_pinned(const struct file *f)
+> +{
+> +	bool rv;
+> +
+> +	if (!f)
+> +		return false;
+> +	spin_lock(&pin_lock);
+> +	rv = !IS_ERR_OR_NULL(pinned_sb) && pinned_sb == FILE_SUPERBLOCK(f);
+> +	spin_unlock(&pin_lock);
+> +	return rv;
+> +}
+> +
+> +/**
+> + * build_eval_ctx - Build an evaluation context.
+> + * @ctx: Supplies a pointer to the context to be populdated.
+> + * @file: Supplies a pointer to the file to associated with the evaluation.
+> + * @op: Supplies the IPE policy operation associated with the evaluation.
+> + */
+> +void build_eval_ctx(struct ipe_eval_ctx *ctx,
+> +		    const struct file *file,
+> +		    enum ipe_op_type op)
+> +{
+> +	ctx->file = file;
+> +	ctx->op = op;
+> +	ctx->from_init_sb = from_pinned(file);
+> +}
+> +
+> +/**
+> + * evaluate_property - Analyze @ctx against a property.
+> + * @ctx: Supplies a pointer to the context to be evaluated.
+> + * @p: Supplies a pointer to the property to be evaluated.
+> + *
+> + * Return:
+> + * * true	- The current @ctx match the @p
+> + * * false	- The current @ctx doesn't match the @p
+> + */
+> +static bool evaluate_property(const struct ipe_eval_ctx *const ctx,
+> +			      struct ipe_prop *p)
+> +{
+> +	bool eval = false;
+> +
+> +	switch (p->type) {
+> +	case ipe_prop_boot_verified_false:
+> +		eval = !ctx->from_init_sb;
+> +		break;
+> +	case ipe_prop_boot_verified_true:
+> +		eval = ctx->from_init_sb;
+> +		break;
+> +	default:
+> +		eval = false;
+> +	}
+> +
+> +	return eval;
+> +}
+> +
+> +/**
+> + * ipe_evaluate_event - Analyze @ctx against the current active policy.
+> + * @ctx: Supplies a pointer to the context to be evaluated.
+> + *
+> + * This is the loop where all policy evaluation happens against IPE policy.
+> + *
+> + * Return:
+> + * * 0		- OK
+> + * * -EACCES	- @ctx did not pass evaluation.
+> + * * !0		- Error
+> + */
+> +int ipe_evaluate_event(const struct ipe_eval_ctx *const ctx)
+> +{
+> +	int rc = 0;
+> +	bool match = false;
+> +	enum ipe_action_type action;
+> +	struct ipe_policy *pol = NULL;
+> +	const struct ipe_rule *rule = NULL;
+> +	const struct ipe_op_table *rules = NULL;
+> +	struct ipe_prop *prop = NULL;
+> +
+> +	if (ctx->op == ipe_op_exec)
+> +		pin_sb(ctx->file);
+> +
+> +	pol = ipe_get_policy_rcu(ipe_active_policy);
+> +	if (!pol)
+> +		goto out;
+> +
+> +	if (ctx->op == ipe_op_max) {
+> +		action = pol->parsed->global_default_action;
+> +		goto eval;
+> +	}
+> +
+> +	rules = &pol->parsed->rules[ctx->op];
+> +
+> +	list_for_each_entry(rule, &rules->rules, next) {
+> +		match = true;
+> +
+> +		list_for_each_entry(prop, &rule->props, next)
+> +			match = match && evaluate_property(ctx, prop);
+> +
+> +		if (match)
+> +			break;
+> +	}
+> +
+> +	if (match)
+> +		action = rule->action;
+> +	else if (rules->default_action != ipe_action_max)
+> +		action = rules->default_action;
+> +	else
+> +		action = pol->parsed->global_default_action;
+> +
+> +eval:
+> +	if (action == ipe_action_deny)
+> +		rc = -EACCES;
+> +
+> +out:
+> +	return rc;
+> +}
+> +
+> +/**
+> + * ipe_invalidate_pinned_sb - invalidte the ipe pinned super_block.
+> + * @mnt_sb: super_block to check against the pinned super_block.
+> + *
+> + * This function is called a super_block like the initramfs's is freed,
+> + * if the super_block is currently pinned by ipe it will be invalided,
+> + * so ipe won't consider the block device is boot verified afterward.
+> + */
+> +void ipe_invalidate_pinned_sb(const struct super_block *mnt_sb)
+> +{
+> +	spin_lock(&pin_lock);
+> +
+> +	if (!IS_ERR_OR_NULL(pinned_sb) && mnt_sb == pinned_sb)
+> +		pinned_sb = ERR_PTR(-EIO);
+> +
+> +	spin_unlock(&pin_lock);
+> +}
+> diff --git a/security/ipe/eval.h b/security/ipe/eval.h
+> new file mode 100644
+> index 000000000000..887797438b9b
+> --- /dev/null
+> +++ b/security/ipe/eval.h
+> @@ -0,0 +1,28 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) Microsoft Corporation. All rights reserved.
+> + */
+> +
+> +#ifndef IPE_EVAL_H
+> +#define IPE_EVAL_H
+> +
+> +#include <linux/file.h>
+> +#include <linux/types.h>
+> +
+> +#include "hooks.h"
+> +#include "policy.h"
+> +
+> +extern struct ipe_policy __rcu *ipe_active_policy;
+> +
+> +struct ipe_eval_ctx {
+> +	enum ipe_op_type op;
+> +
+> +	const struct file *file;
+> +	bool from_init_sb;
+> +};
+> +
+> +void build_eval_ctx(struct ipe_eval_ctx *ctx, const struct file *file, enum ipe_op_type op);
+> +int ipe_evaluate_event(const struct ipe_eval_ctx *const ctx);
+> +void ipe_invalidate_pinned_sb(const struct super_block *mnt_sb);
+> +
+> +#endif /* IPE_EVAL_H */
+> diff --git a/security/ipe/hooks.c b/security/ipe/hooks.c
+> new file mode 100644
+> index 000000000000..335b773c7ae1
+> --- /dev/null
+> +++ b/security/ipe/hooks.c
+> @@ -0,0 +1,25 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) Microsoft Corporation. All rights reserved.
+> + */
+> +
+> +#include "ipe.h"
+> +#include "hooks.h"
+> +#include "eval.h"
+> +
+> +#include <linux/fs.h>
+> +#include <linux/types.h>
+> +#include <linux/binfmts.h>
+> +#include <linux/mman.h>
+> +
+> +/**
+> + * ipe_sb_free_security - ipe security hook function for super_block.
+> + * @mnt_sb: Supplies a pointer to a super_block is about to be freed.
+> + *
+> + * IPE does not have any structures with mnt_sb, but uses this hook to
+> + * invalidate a pinned super_block.
+> + */
+> +void ipe_sb_free_security(struct super_block *mnt_sb)
+> +{
+> +	ipe_invalidate_pinned_sb(mnt_sb);
+> +}
+> diff --git a/security/ipe/hooks.h b/security/ipe/hooks.h
+> new file mode 100644
+> index 000000000000..30fe455389bf
+> --- /dev/null
+> +++ b/security/ipe/hooks.h
+> @@ -0,0 +1,14 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) Microsoft Corporation. All rights reserved.
+> + */
+> +#ifndef IPE_HOOKS_H
+> +#define IPE_HOOKS_H
+> +
+> +#include <linux/fs.h>
+> +#include <linux/binfmts.h>
+> +#include <linux/security.h>
+> +
+> +void ipe_sb_free_security(struct super_block *mnt_sb);
+> +
+> +#endif /* IPE_HOOKS_H */
+> diff --git a/security/ipe/ipe.c b/security/ipe/ipe.c
+> index 9ed3bf4dcc04..551c6d90ac11 100644
+> --- a/security/ipe/ipe.c
+> +++ b/security/ipe/ipe.c
+> @@ -9,6 +9,7 @@ static struct lsm_blob_sizes ipe_blobs __lsm_ro_after_init = {
+>  };
+>  
+>  static struct security_hook_list ipe_hooks[] __lsm_ro_after_init = {
+> +	LSM_HOOK_INIT(sb_free_security, ipe_sb_free_security),
+>  };
+>  
+>  /**
+> diff --git a/security/ipe/policy.c b/security/ipe/policy.c
+> index e446f4b84152..772d876b1087 100644
+> --- a/security/ipe/policy.c
+> +++ b/security/ipe/policy.c
+> @@ -97,3 +97,23 @@ struct ipe_policy *ipe_new_policy(const char *text, size_t textlen,
+>  err:
+>  	return ERR_PTR(rc);
+>  }
+> +
+> +/**
+> + * ipe_get_policy_rcu - Dereference a rcu-protected policy pointer.
+> + *
+> + * @p: rcu-protected pointer to a policy.
+> + *
+> + * Not safe to call on IS_ERR.
+> + *
+> + * Return: the value of @p
+> + */
+> +struct ipe_policy *ipe_get_policy_rcu(struct ipe_policy __rcu *p)
+> +{
+> +	struct ipe_policy *rv = NULL;
+> +
+> +	rcu_read_lock();
+> +	rv = rcu_dereference(p);
+> +	rcu_read_unlock();
+> +
+> +	return rv;
+> +}
+> diff --git a/security/ipe/policy.h b/security/ipe/policy.h
+> index 6af2d9a811ec..967d816cd5cd 100644
+> --- a/security/ipe/policy.h
+> +++ b/security/ipe/policy.h
+> @@ -26,6 +26,8 @@ enum ipe_action_type {
+>  };
+>  
+>  enum ipe_prop_type {
+> +	ipe_prop_boot_verified_false,
+> +	ipe_prop_boot_verified_true,
+>  	ipe_prop_max
+>  };
+>  
+> @@ -73,5 +75,6 @@ struct ipe_policy {
+>  struct ipe_policy *ipe_new_policy(const char *text, size_t textlen,
+>  				  const char *pkcs7, size_t pkcs7len);
+>  void ipe_free_policy(struct ipe_policy *pol);
+> +struct ipe_policy *ipe_get_policy_rcu(struct ipe_policy __rcu *p);
+>  
+>  #endif /* IPE_POLICY_H */
+> diff --git a/security/ipe/policy_parser.c b/security/ipe/policy_parser.c
+> index c7ba0e865366..7efafc482e46 100644
+> --- a/security/ipe/policy_parser.c
+> +++ b/security/ipe/policy_parser.c
+> @@ -265,7 +265,9 @@ static enum ipe_action_type parse_action(char *t)
+>  }
+>  
+>  static const match_table_t property_tokens = {
+> -	{ipe_prop_max,					NULL}
+> +	{ipe_prop_boot_verified_false,	"boot_verified=FALSE"},
+> +	{ipe_prop_boot_verified_true,	"boot_verified=TRUE"},
+> +	{ipe_prop_max,			NULL}
+>  };
+>  
+>  /**
+> @@ -295,6 +297,10 @@ int parse_property(char *t, struct ipe_rule *r)
+>  	token = match_token(t, property_tokens, args);
+>  
+>  	switch (token) {
+> +	case ipe_prop_boot_verified_false:
+> +	case ipe_prop_boot_verified_true:
+> +		p->type = token;
+> +		break;
+>  	case ipe_prop_max:
+>  	default:
+>  		rc = -EBADMSG;
 
