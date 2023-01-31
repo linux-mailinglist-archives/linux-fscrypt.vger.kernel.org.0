@@ -2,121 +2,73 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C27CE6838A0
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 31 Jan 2023 22:28:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0D0F683A2C
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  1 Feb 2023 00:01:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232206AbjAaV1x (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 31 Jan 2023 16:27:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50976 "EHLO
+        id S231890AbjAaXBC (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 31 Jan 2023 18:01:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232214AbjAaV1t (ORCPT
+        with ESMTP id S229637AbjAaXBC (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 31 Jan 2023 16:27:49 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB0725618F;
-        Tue, 31 Jan 2023 13:27:46 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id 78so11035266pgb.8;
-        Tue, 31 Jan 2023 13:27:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AzK7zbHqMHdeBmanV3yZyUjocxSjOS0P2zK4GlPV5fg=;
-        b=D6wvD2En7fL/J4jxZGOIQBNq1r2srmO4HOmSSPNUtrliYfnfu+LBoGk5BxIcMiuq2I
-         +zwJ+mRwxgYtBtoDsGT1p7nE5JifYqFUf8hP1sgEtkOKyHfWhW4umWi9ewBl4h6lpann
-         1FKRMTut+C+QYs/Mg9T/XGdMWHxAvc4vm7coGsd3WvOgoQt73PDTLpV3MfO+X+lC2HD/
-         QNpAi6vLbe5SEo1NIxJIxqYOYG4hgDKEIE7e8sbyQhb8Yes6j5hPRgz/GjUPNoMDssZL
-         IfTNvheB70L2NHCzBcWcOzJp3YlrWN80ciuNtnhhN2fCo38Ky5KInmRB9oeQm46P5CX+
-         WVnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AzK7zbHqMHdeBmanV3yZyUjocxSjOS0P2zK4GlPV5fg=;
-        b=6YN+Wct8BdUN/kT/tPaAhOxv0QX3gGAPiyGCpIXh0VS2nANxzdChcTdyHeEL7AoI8k
-         B1pmLVfHVlIx/VHBopABxBSjinwofhX5Tne0P4DOnLlR9FHZ2EGE584s2wlAhvWs/JoO
-         vDMi7plbtRR8se3VgzQ+4nZsKO5YeWJVI137PqkdUuNRS4292df026XnBCci7pNVoXvE
-         9bCq/mJZ/QOUAEAOqW0HpN5H6yVhiA4Lt96VIa/eEsdi3t7MvcNuH+q9da03pNtYcOCp
-         CfRSPdZQ9Tsfc2q3mJDdEzXyiqLfeShghq2R8t6j9MBRjHJFfFirWPa5bJCGLbkXaDSR
-         glLA==
-X-Gm-Message-State: AO0yUKU8ZF9dr9W733ACgh7KdsDFgLjCsYpxU37Zt7ID71+3Si/py76l
-        7Z5K4K99sEKpbkriHVwvLjY=
-X-Google-Smtp-Source: AK7set+AB9728U0/MEi1UBcwr36wg/R1RBbFv281U6594rkVfdnrCQy9OnZENcOw/xOdf9mhMZ4riA==
-X-Received: by 2002:a62:7b0e:0:b0:593:a131:3692 with SMTP id w14-20020a627b0e000000b00593a1313692mr4489pfc.13.1675200466095;
-        Tue, 31 Jan 2023 13:27:46 -0800 (PST)
-Received: from localhost ([2620:10d:c090:400::5:1ad6])
-        by smtp.gmail.com with ESMTPSA id j14-20020a62e90e000000b00590684f016bsm9913968pfh.137.2023.01.31.13.27.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Jan 2023 13:27:45 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 31 Jan 2023 11:27:44 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        stable@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH] fscrypt: Copy the memcg information to the ciphertext
- page
-Message-ID: <Y9mH0PCcZoGPryXw@slm.duckdns.org>
-References: <20230129121851.2248378-1-willy@infradead.org>
- <Y9a2m8uvmXmCVYvE@sol.localdomain>
- <Y9bkoasmAmtQ2nSV@casper.infradead.org>
+        Tue, 31 Jan 2023 18:01:02 -0500
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5DAD64ED23;
+        Tue, 31 Jan 2023 15:01:01 -0800 (PST)
+Received: by linux.microsoft.com (Postfix, from userid 1052)
+        id 02B2720E1A45; Tue, 31 Jan 2023 15:01:01 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 02B2720E1A45
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1675206061;
+        bh=j1VoMU02KeLtjY8TDWq+rO4UuOvmlBPIER8JkQji2a8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TggEBO122eJ2C7kl74c+1SFcSJF6DkRp8p/6zKNdTJSzcQvm+ox90trpwmt9MaD16
+         IA13KrKuItDN//TlUQ6WNwy6rn8jpm1/6q1u1qz9vJZwJ7lTGIAYRz9qZ0H2E4RIfZ
+         vL2gNFuJd9e7cGHa1n52ljy9XW5xv9jEo/adSYpU=
+Date:   Tue, 31 Jan 2023 15:01:00 -0800
+From:   Fan Wu <wufan@linux.microsoft.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
+        serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org,
+        axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org,
+        eparis@redhat.com, paul@paul-moore.com, linux-doc@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
+        dm-devel@redhat.com, linux-audit@redhat.com,
+        roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
+        Deven Bowers <deven.desai@linux.microsoft.com>
+Subject: Re: [RFC PATCH v9 09/16] block|security: add LSM blob to block_device
+Message-ID: <20230131230100.GA30104@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1675119451-23180-1-git-send-email-wufan@linux.microsoft.com>
+ <1675119451-23180-10-git-send-email-wufan@linux.microsoft.com>
+ <Y9jXJ8FrmAnzob7w@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y9bkoasmAmtQ2nSV@casper.infradead.org>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <Y9jXJ8FrmAnzob7w@infradead.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hello,
-
-On Sun, Jan 29, 2023 at 09:26:57PM +0000, Matthew Wilcox wrote:
-> > > diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
-> > > index e78be66bbf01..a4e76f96f291 100644
-> > > --- a/fs/crypto/crypto.c
-> > > +++ b/fs/crypto/crypto.c
-> > > @@ -205,6 +205,9 @@ struct page *fscrypt_encrypt_pagecache_blocks(struct page *page,
-> > >  	}
-> > >  	SetPagePrivate(ciphertext_page);
-> > >  	set_page_private(ciphertext_page, (unsigned long)page);
-> > > +#ifdef CONFIG_MEMCG
-> > > +	ciphertext_page->memcg_data = page->memcg_data;
-> > > +#endif
-> > >  	return ciphertext_page;
-> > >  }
+On Tue, Jan 31, 2023 at 12:53:59AM -0800, Christoph Hellwig wrote:
+> On Mon, Jan 30, 2023 at 02:57:24PM -0800, Fan Wu wrote:
+> > From: Deven Bowers <deven.desai@linux.microsoft.com>
 > > 
-> > Nothing outside mm/ and include/linux/memcontrol.h does anything with memcg_data
-> > directly.  Are you sure this is the right thing to do here?
+> > block_device structures can have valuable security properties,
+> > based on how they are created, and what subsystem manages them.
 > 
-> Nope ;-)  Happy to hear from people who know more about cgroups than I
-> do.  Adding some more ccs.
-> 
-> > Also, this patch causes the following:
-> 
-> Oops.  Clearly memcg_data needs to be set to NULL before we free it.
+> That's a lot of cloudy talk but no real explanation.
 
-These can usually be handled by explicitly associating the bio's to the
-desired cgroups using one of bio_associate_blkg*() or
-bio_clone_blkg_association(). It is possible to go through memcg ownership
-too using set_active_memcg() so that the page is owned by the target cgroup;
-however, the page ownership doesn't directly map to IO ownership as the
-relationship depends on the type of the page (e.g. IO ownership for
-pagecache writeback is determined per-inode, not per-page). If the in-flight
-pages are limited, it probably is better to set bio association directly.
+Sorry for being too general here. Currently the only use target of this hook is dm-verity. We use the newly added security hook to save the dm-verity roothash and signature to the new bdev security blob during the bdev creation time, so LSMs can leverage this information to protect the system. 
 
-Thanks.
+I will add this example in the next version.
 
--- 
-tejun
+-Fan
