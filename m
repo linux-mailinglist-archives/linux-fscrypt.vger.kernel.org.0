@@ -2,32 +2,30 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 530D368723C
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  2 Feb 2023 01:19:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAC50687736
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  2 Feb 2023 09:22:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229882AbjBBAT0 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 1 Feb 2023 19:19:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39216 "EHLO
+        id S231821AbjBBIWS (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 2 Feb 2023 03:22:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjBBATZ (ORCPT
+        with ESMTP id S231665AbjBBIWR (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 1 Feb 2023 19:19:25 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AD52A6D5E1;
-        Wed,  1 Feb 2023 16:19:24 -0800 (PST)
-Received: by linux.microsoft.com (Postfix, from userid 1052)
-        id 6706120B7102; Wed,  1 Feb 2023 16:19:24 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 6706120B7102
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1675297164;
-        bh=4Dh1wm0+1J+7ggoI5S+eoWDvn+A0VT5pfhAZ4EHzjXY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jEeNLiLmjX64OuGsdTuBuNsk8WTsg1yq+Hv0Iy9ep5bGfVIoT/wb5fD2FoTH8XSRv
-         t7lmikGDu11HkkiNRAq/XW11kbtTpiFiugDEDhWnOEY7U0iR2hP94Fz+xH4mD/jg2d
-         d7uEQbmHKzS1D0fSpNdu4lNHgre4JmmAYNHb9xoM=
-Date:   Wed, 1 Feb 2023 16:19:24 -0800
-From:   Fan Wu <wufan@linux.microsoft.com>
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
+        Thu, 2 Feb 2023 03:22:17 -0500
+Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B0DE834BB;
+        Thu,  2 Feb 2023 00:22:13 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.18.147.229])
+        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4P6s4b6HpTz9xFrR;
+        Thu,  2 Feb 2023 16:13:51 +0800 (CST)
+Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
+        by APP2 (Coremail) with SMTP id GxC2BwBHE1qQcttjhtrmAA--.14473S2;
+        Thu, 02 Feb 2023 09:21:48 +0100 (CET)
+Message-ID: <903062f7b2e2709ae0e4416545ffadd91c132676.camel@huaweicloud.com>
+Subject: Re: [RFC PATCH v9 10/16] dm-verity: consume root hash digest and
+ signature data via LSM hook
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     Fan Wu <wufan@linux.microsoft.com>
 Cc:     corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
         serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org,
         axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org,
@@ -38,51 +36,71 @@ Cc:     corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
         dm-devel@redhat.com, linux-audit@redhat.com,
         roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
         Deven Bowers <deven.desai@linux.microsoft.com>
-Subject: Re: [RFC PATCH v9 16/16] documentation: add ipe documentation
-Message-ID: <20230202001924.GD9075@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+Date:   Thu, 02 Feb 2023 09:21:24 +0100
+In-Reply-To: <20230201232639.GB9075@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 References: <1675119451-23180-1-git-send-email-wufan@linux.microsoft.com>
- <1675119451-23180-17-git-send-email-wufan@linux.microsoft.com>
- <Y9iSP+RxY+1/o7PQ@debian.me>
+         <1675119451-23180-11-git-send-email-wufan@linux.microsoft.com>
+         <4f029a41d80d883d9b4729cbc85211955c9efe8e.camel@huaweicloud.com>
+         <20230201232639.GB9075@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y9iSP+RxY+1/o7PQ@debian.me>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: GxC2BwBHE1qQcttjhtrmAA--.14473S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kw4ftFW5tw1fXF4DKr4xtFb_yoW8JF4xpF
+        1UWayYgrn5KasrGrnaya1fArWIkrWYv343Xr15Xw18CF98ur1IvF1FkFW5Za9F9r95C3WF
+        vFW0qa47Zwn8A3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UZ18PUUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAQBF1jj4huJgABsl
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, Jan 31, 2023 at 10:59:59AM +0700, Bagas Sanjaya wrote:
-> On Mon, Jan 30, 2023 at 02:57:31PM -0800, Fan Wu wrote:
-> 
-> What about wordings below instead?
+On Wed, 2023-02-01 at 15:26 -0800, Fan Wu wrote:
+> On Tue, Jan 31, 2023 at 02:22:01PM +0100, Roberto Sassu wrote:
+> > On Mon, 2023-01-30 at 14:57 -0800, Fan Wu wrote:
+> > > From: Deven Bowers <deven.desai@linux.microsoft.com>
+> > > 
+> > > dm-verity provides a strong guarantee of a block device's integrity. As
+> > > a generic way to check the integrity of a block device, it provides
+> > > those integrity guarantees to its higher layers, including the filesystem
+> > > level.
+> > 
+> > I think you could reuse most of is_trusted_verity_target(), in
+> > particular dm_verity_get_root_digest().
+> > 
+> > And probably, the previous patch is not necessary.
+> > 
+> > Roberto
+> > 
+> Thanks for the info. This function seems could be used to get the roothash
+> but for saving the signature we still need the hook function in the previous
+> patch.
 
-Thanks for the review!
->  
-> -IPE policy supports comments. The character '#' will function as a
-> -comment, ignoring all characters to the right of '#' until the newline.
-> +IPE policy supports comments. Any line which is prefixed with ``#`` will
-> +be ignored.
-This one is actually incorrect. The '#' can also appear at the end of a rule.
-So it is not only prefixed to a line.
+Uhm, look at the LoadPin case. It does not need to temporarily store
+the root digest in a security blob. It evaluates it directly.
 
-Other than this part, everything looks great, I will take them in the next
-version.
+Well, ok, dm_verity_loadpin_is_bdev_trusted() looks for trusted digests
+in the dm_verity_loadpin_trusted_root_digests list. So, something
+equivalent needs to be made for IPE (or you just get the digest).
+However, I find not introducing new hooks and evaluating the
+information directly more efficient.
 
--Fan
-
->  
->  -----------
-> 
-> Thanks.
-> 
-> -- 
-> An old man doll... just what I always wanted! - Clara
-
+Roberto
 
