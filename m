@@ -2,138 +2,135 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 572A4687BD2
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  2 Feb 2023 12:12:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A896688904
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  2 Feb 2023 22:30:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230156AbjBBLMd (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 2 Feb 2023 06:12:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42800 "EHLO
+        id S229554AbjBBVat (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 2 Feb 2023 16:30:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231737AbjBBLM2 (ORCPT
+        with ESMTP id S231819AbjBBVas (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 2 Feb 2023 06:12:28 -0500
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5D4879634;
-        Thu,  2 Feb 2023 03:12:24 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.18.147.227])
-        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4P6wLH1s6Xz9xHw6;
-        Thu,  2 Feb 2023 18:40:55 +0800 (CST)
-Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
-        by APP2 (Coremail) with SMTP id GxC2BwBnNl3+lNtjGVTnAA--.14834S2;
-        Thu, 02 Feb 2023 11:48:42 +0100 (CET)
-Message-ID: <7dc9963c563d0b55bb35109be012e355eef13882.camel@huaweicloud.com>
-Subject: Re: [RFC PATCH v9 00/16] Integrity Policy Enforcement LSM (IPE)
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     Fan Wu <wufan@linux.microsoft.com>
-Cc:     corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
-        serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org,
-        axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org,
-        eparis@redhat.com, paul@paul-moore.com, linux-doc@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
-        dm-devel@redhat.com, linux-audit@redhat.com,
-        roberto.sassu@huawei.com, linux-kernel@vger.kernel.org
-Date:   Thu, 02 Feb 2023 11:48:18 +0100
-In-Reply-To: <20230201004852.GB30104@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1675119451-23180-1-git-send-email-wufan@linux.microsoft.com>
-         <033335b26f6becdc3dc0325ef926efd94fcc4dda.camel@huaweicloud.com>
-         <20230201004852.GB30104@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        Thu, 2 Feb 2023 16:30:48 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AA262712;
+        Thu,  2 Feb 2023 13:30:45 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id n13so3236702plf.11;
+        Thu, 02 Feb 2023 13:30:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Nrz3TSmcgrSpTyZCmW79h4FBugW4tEaSs53yJ16o+LY=;
+        b=EEWpC85Vt6Nu9fYfzP562UwxgqEfKGDl+Svi44sV6+yCnSHoJaS5NtrLqfIY5P3Mta
+         xzu7914vju2do7ooaEpdLyCJFOPe1YtRoXLOhvrSWoTw/XqN+Pakt0t7I1nsWreEZgif
+         5L0/iFVQnExE645NHL6Nz6upvotE/mY94j1kjr/To9E80Yzxuac8JGv6w05Iy0Ozx1ev
+         iNwrsUJ12hpCriwk28MItcJtsvVib34zGVBLKQT6dQl3MXbsHw19dJrjarP+3DErMzVN
+         sTvfSBLMm1JhY4jnyRwr/iiGBO9Kn0TJMrDkTUrkeEhH5Q+LkJ3Oy/Xl7fsQhIpbbylX
+         /0cw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Nrz3TSmcgrSpTyZCmW79h4FBugW4tEaSs53yJ16o+LY=;
+        b=LD8fkexDwUmJE68ye5+2evTj7U2wkGQ1pBYfUJcbWhbrVW+tsw/LiexDrMu0BKej/f
+         eyWqKL5xt36Z739xKjmUXubGCbscqomrsFaCFE/mNB3R7+QWR/ezh6n6dmGM1SKTS133
+         TLBkZTGEdcRSj6aqrwbxhmz+o35k39rOa98c0K08/8WZYSvz6IsYu38LsqF/XXDMxWaY
+         HaD8nBTPFo6nX927u1Tx43uxlOVkLs8hMmKxDae2yq/YRN2vKQLPV9ky99SR1rWpJ7DZ
+         /0B0btP2i1aC24DeeKT7Y3KwTUnNfBIefXlGqR5CCYIXIvsXbq5b/+8dfIkYueVRuMGY
+         JUBw==
+X-Gm-Message-State: AO0yUKXa00USBlFYB1sPK2cGHPJpM4rYCE+rqvJPBrWuXr5CW+gbY+tI
+        02NW+Fe51LePUCFcxPPFAkfkE10i5tg=
+X-Google-Smtp-Source: AK7set8xILWDeKLdsoPmaeC+WBsqixXUKuHo6IuDnFV/HVdfnKuGG0DTdtoKhq33sbxB8mVxSURO+Q==
+X-Received: by 2002:a17:903:30c9:b0:191:24d1:8af6 with SMTP id s9-20020a17090330c900b0019124d18af6mr6517030plc.42.1675373444647;
+        Thu, 02 Feb 2023 13:30:44 -0800 (PST)
+Received: from localhost ([2620:10d:c090:400::5:48a9])
+        by smtp.gmail.com with ESMTPSA id a21-20020a170902b59500b00186748fe6ccsm118158pls.214.2023.02.02.13.30.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Feb 2023 13:30:44 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 2 Feb 2023 11:30:42 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        stable@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH] fscrypt: Copy the memcg information to the ciphertext
+ page
+Message-ID: <Y9wrglzrfzTiCjh8@slm.duckdns.org>
+References: <20230129121851.2248378-1-willy@infradead.org>
+ <Y9a2m8uvmXmCVYvE@sol.localdomain>
+ <Y9bkoasmAmtQ2nSV@casper.infradead.org>
+ <Y9mH0PCcZoGPryXw@slm.duckdns.org>
+ <Y9oHQ6MfRbfwmFyK@sol.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: GxC2BwBnNl3+lNtjGVTnAA--.14834S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxGw4rWw4DXFWxCryUCF1xXwb_yoW5CFW8pF
-        WagayYkr1DKFs2yw1vy3WSqayYv395Ja1UJr98tryUAa15ur1UZF43Ka4Y93W7ur1kZ34Y
-        vF42vr9rAF1UCaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
-        6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFDGOUUUUU
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAQBF1jj4RztQAEsh
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y9oHQ6MfRbfwmFyK@sol.localdomain>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, 2023-01-31 at 16:48 -0800, Fan Wu wrote:
-> On Tue, Jan 31, 2023 at 03:22:05PM +0100, Roberto Sassu wrote:
-> > On Mon, 2023-01-30 at 14:57 -0800, Fan Wu wrote:
-> > > IPE has two known gaps:
-> > > 
-> > > 1. IPE cannot verify the integrity of anonymous executable memory, such as
-> > >   the trampolines created by gcc closures and libffi (<3.4.2), or JIT'd code.
-> > >   Unfortunately, as this is dynamically generated code, there is no way
-> > >   for IPE to ensure the integrity of this code to form a trust basis. In all
-> > >   cases, the return result for these operations will be whatever the admin
-> > >   configures the DEFAULT action for "EXECUTE".
-> > 
-> > I think it would be useful to handle special cases, for example you
-> > could allow a process that created a file with memfd to use it, at the
-> > condition that nobody else writes it.
-> > 
-> > This would be required during the boot, otherwise services could fail
-> > to start (depending on the policy).
-> > 
-> Thanks for the suggestion. I agree with your opinion and I think supporting
-> memfd is possible but restricting read/write needs more hooks. We would like
-> to avoid adding more complexity to this initial posting as necessary. 
-> We will consider this as a future work and will post follow-on patches
-> in the future.
+Hello,
 
-Ok, maybe it is necessary to specify better the scope of IPE, why the
-current implementation can be considered as complete.
-
-If we say, IPE can only allow/deny operations on system components with
-immutable security properties, clearly memfd as a component cannot
-fullfill this goal due to the non-immutability. This would apply to any
-component allowing modifications.
-
-How to address this? What is the immutable property then?
-
-In the case of memfd, intuitively, a useful property for integrity
-could be for example that the content can be accessed/modified by only
-one process. No other (possibly malicious) processes can tamper with
-that file.
-
-So, it is true, to make this property immutable more hooks are needed.
-But should it be something that IPE does? Or it should be done by an
-external component (another LSM) that does the enforcement and reports
-to IPE that the property is true? Theoretically (with a proper policy),
-existing LSMs could be used for that purpose too.
-
-I would say more the second, it should not be IPE job, so that IPE can
-exclusively focus on evaluating properties, not making sure that the
-properties are immutable.
-
-Roberto
-
-> -Fan
+On Tue, Jan 31, 2023 at 10:31:31PM -0800, Eric Biggers wrote:
+> > These can usually be handled by explicitly associating the bio's to the
+> > desired cgroups using one of bio_associate_blkg*() or
+> > bio_clone_blkg_association().
 > 
-> > > 2. IPE cannot verify the integrity of interpreted languages' programs when
-> > >   these scripts invoked via ``<interpreter> <file>``. This is because the
-> > >   way interpreters execute these files, the scripts themselves are not
-> > >   evaluated as executable code through one of IPE's hooks. Interpreters
-> > >   can be enlightened to the usage of IPE by trying to mmap a file into
-> > >   executable memory (+X), after opening the file and responding to the
-> > >   error code appropriately. This also applies to included files, or high
-> > >   value files, such as configuration files of critical system components.
-> > 
-> > Ok, it is a well known issue. Hopefully, it will be fixed soon.
-> > 
-> > Roberto
-> > 
+> Here that already happens in wbc_init_bio(), called from io_submit_init_bio() in
+> fs/ext4/page-io.c.
 
+Yeah, without bouncing, that's usually how writeback IOs are associated with
+their cgroups.
+
+> > It is possible to go through memcg ownership
+> > too using set_active_memcg() so that the page is owned by the target cgroup;
+> > however, the page ownership doesn't directly map to IO ownership as the
+> > relationship depends on the type of the page (e.g. IO ownership for
+> > pagecache writeback is determined per-inode, not per-page). If the in-flight
+> > pages are limited, it probably is better to set bio association directly.
+> 
+> ext4 also calls wbc_account_cgroup_owner() for each pagecache page that's
+> written out.  It seems this is for a different purpose -- it looks like the
+> fs-writeback code is trying to figure out which cgroup "owns" the inode based on
+> which cgroup "owns" most of the pagecache pages?
+
+Yeah, there's a difference between how memory and IO track cgroup ownership.
+Memory ownership is per-page but IO ownership is per-inode. This is because
+splitting writeback IOs of the same inode can perform really badly, so we
+try to find the majority dirty page owner cgroup of a given inode and
+associate the whole inode to that cgroup.
+
+So, something like md / dm, which gets a bio from filesystem and then
+bounces it to another bio, would use either bio_clone_blkg_association() to
+copy the association of the original bio (which probably is set through
+wbc_init_bio()) or determine the cgroup the bio should belong to somehow and
+set it explicitly with bio_associate_blkg(). However, here, as the
+filesystem is the one bouncing I guess it can be simpler.
+
+> The bug we're discussing here is that when ext4 writes out a pagecache page in
+> an encrypted file, it first encrypts the data into a bounce page, then passes
+> the bounce page (which don't have a memcg) to wbc_account_cgroup_owner().  Maybe
+> the proper fix is to just pass the pagecache page to wbc_account_cgroup_owner()
+> instead?  See below for ext4 (a separate patch would be needed for f2fs):
+
+Yeah, this makes sense to me and is the right thing to do no matter what.
+wbc_account_cgroup_owner() should be fed the origin page so that the IO can
+be blamed on the owner of that page.
+
+Thanks.
+
+-- 
+tejun
