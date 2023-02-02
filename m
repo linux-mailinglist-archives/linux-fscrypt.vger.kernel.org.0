@@ -2,32 +2,32 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56D4168720C
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  2 Feb 2023 00:50:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 530D368723C
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  2 Feb 2023 01:19:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230054AbjBAXuf (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 1 Feb 2023 18:50:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32960 "EHLO
+        id S229882AbjBBAT0 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 1 Feb 2023 19:19:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229630AbjBAXue (ORCPT
+        with ESMTP id S229451AbjBBATZ (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 1 Feb 2023 18:50:34 -0500
+        Wed, 1 Feb 2023 19:19:25 -0500
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 13B3566019;
-        Wed,  1 Feb 2023 15:50:32 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AD52A6D5E1;
+        Wed,  1 Feb 2023 16:19:24 -0800 (PST)
 Received: by linux.microsoft.com (Postfix, from userid 1052)
-        id BDF7320B74F7; Wed,  1 Feb 2023 15:50:31 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com BDF7320B74F7
+        id 6706120B7102; Wed,  1 Feb 2023 16:19:24 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 6706120B7102
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1675295431;
-        bh=6yV0Cqoz9tn6IGL+ncMwaFz1B8gSu5804ZHGEFQr3s8=;
+        s=default; t=1675297164;
+        bh=4Dh1wm0+1J+7ggoI5S+eoWDvn+A0VT5pfhAZ4EHzjXY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=S+HHLvneBOs983jxPXwKxG8Ph2gbl7utcF2Ufz7EqEkyzRxi0uNZ2Uhi2TPlunsH7
-         1ieS+micucycavE6sDwdVEvun7q+gYVslSwV+HeWCv03Dt8ExY773zBQ3H5YxsIWJw
-         7P7Hi30gEWl27nR9L6yS+TK4iPeuqcoOsLLO0oLU=
-Date:   Wed, 1 Feb 2023 15:50:31 -0800
+        b=jEeNLiLmjX64OuGsdTuBuNsk8WTsg1yq+Hv0Iy9ep5bGfVIoT/wb5fD2FoTH8XSRv
+         t7lmikGDu11HkkiNRAq/XW11kbtTpiFiugDEDhWnOEY7U0iR2hP94Fz+xH4mD/jg2d
+         d7uEQbmHKzS1D0fSpNdu4lNHgre4JmmAYNHb9xoM=
+Date:   Wed, 1 Feb 2023 16:19:24 -0800
 From:   Fan Wu <wufan@linux.microsoft.com>
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
 Cc:     corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
         serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org,
         axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org,
@@ -38,16 +38,15 @@ Cc:     corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
         dm-devel@redhat.com, linux-audit@redhat.com,
         roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
         Deven Bowers <deven.desai@linux.microsoft.com>
-Subject: Re: [RFC PATCH v9 13/16] ipe: enable support for fs-verity as a
- trust provider
-Message-ID: <20230201235031.GC9075@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+Subject: Re: [RFC PATCH v9 16/16] documentation: add ipe documentation
+Message-ID: <20230202001924.GD9075@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 References: <1675119451-23180-1-git-send-email-wufan@linux.microsoft.com>
- <1675119451-23180-14-git-send-email-wufan@linux.microsoft.com>
- <d62907da62b5e0b25c9d7bd4b3119a3d1827bd29.camel@huaweicloud.com>
+ <1675119451-23180-17-git-send-email-wufan@linux.microsoft.com>
+ <Y9iSP+RxY+1/o7PQ@debian.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d62907da62b5e0b25c9d7bd4b3119a3d1827bd29.camel@huaweicloud.com>
+In-Reply-To: <Y9iSP+RxY+1/o7PQ@debian.me>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
@@ -59,66 +58,31 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, Jan 31, 2023 at 03:00:08PM +0100, Roberto Sassu wrote:
-> On Mon, 2023-01-30 at 14:57 -0800, Fan Wu wrote:
-> > +/**
-> > + * evaluate_fsv_sig_false - Analyze @ctx against a fsv sig false property.
-> > + * @ctx: Supplies a pointer to the context being evaluated.
-> > + * @p: Supplies a pointer to the property being evaluated.
-> > + *
-> > + * Return:
-> > + * * true	- The current @ctx match the @p
-> > + * * false	- The current @ctx doesn't match the @p
-> > + */
-> > +static bool evaluate_fsv_sig_false(const struct ipe_eval_ctx *const ctx,
-> > +				   struct ipe_prop *p)
-> > +{
-> > +	return !ctx->ino ||
-> > +	       !IS_VERITY(ctx->ino) ||
-> > +	       !ctx->ipe_inode ||
-> > +	       !ctx->ipe_inode->fs_verity_signed;
-> > +}
-> > +
-> > +/**
-> > + * evaluate_fsv_sig_true - Analyze @ctx against a fsv sig true property.
-> > + * @ctx: Supplies a pointer to the context being evaluated.
-> > + * @p: Supplies a pointer to the property being evaluated.
-> > + *
-> > + * Return:
-> > + * * true - The current @ctx match the @p
-> > + * * false - The current @ctx doesn't match the @p
-> > + */
-> > +static bool evaluate_fsv_sig_true(const struct ipe_eval_ctx *const ctx,
-> > +				  struct ipe_prop *p)
-> > +{
-> > +	return ctx->ino &&
-> > +	       IS_VERITY(ctx->ino) &&
-> > +	       ctx->ipe_inode &&
-> > +	       ctx->ipe_inode->fs_verity_signed;
-> > +}
+On Tue, Jan 31, 2023 at 10:59:59AM +0700, Bagas Sanjaya wrote:
+> On Mon, Jan 30, 2023 at 02:57:31PM -0800, Fan Wu wrote:
 > 
-> Isn't better to just define one function and prepend a ! in
-> evaluate_property()?
-Yes that's a better way to do it, I will take this idea.
+> What about wordings below instead?
 
-> 
-> Not sure about the usefulness of the fsverity_signature= property as it
-> is. I would at minimum allow to specify which keyring signatures are
-> verified against, and ensure that the keyring has a restriction.
-> 
-> And maybe I would call fsverity_verify_signature() directly, after
-> extending it to pass the desired keyring.
-> 
-Thanks for the suggestion.
-For the initial version we only have the fsverity_signature property
-to enable the policy can make decision based on the existence of the
-signature. In the future we plan to add more properties to leverage
-the remaining signature information so we can have the restrictions
-you mentioned.
+Thanks for the review!
+>  
+> -IPE policy supports comments. The character '#' will function as a
+> -comment, ignoring all characters to the right of '#' until the newline.
+> +IPE policy supports comments. Any line which is prefixed with ``#`` will
+> +be ignored.
+This one is actually incorrect. The '#' can also appear at the end of a rule.
+So it is not only prefixed to a line.
+
+Other than this part, everything looks great, I will take them in the next
+version.
 
 -Fan
 
-> I would also split this patch in two, one for fsverity_digest= and one
-> for fsverity_signature=.
+>  
+>  -----------
 > 
-> Roberto
+> Thanks.
+> 
+> -- 
+> An old man doll... just what I always wanted! - Clara
+
+
