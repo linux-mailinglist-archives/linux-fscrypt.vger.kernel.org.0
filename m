@@ -2,135 +2,119 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A896688904
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  2 Feb 2023 22:30:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AB91688C23
+	for <lists+linux-fscrypt@lfdr.de>; Fri,  3 Feb 2023 01:56:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229554AbjBBVat (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 2 Feb 2023 16:30:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39522 "EHLO
+        id S232102AbjBCA4X (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 2 Feb 2023 19:56:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231819AbjBBVas (ORCPT
+        with ESMTP id S230021AbjBCA4W (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 2 Feb 2023 16:30:48 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AA262712;
-        Thu,  2 Feb 2023 13:30:45 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id n13so3236702plf.11;
-        Thu, 02 Feb 2023 13:30:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Nrz3TSmcgrSpTyZCmW79h4FBugW4tEaSs53yJ16o+LY=;
-        b=EEWpC85Vt6Nu9fYfzP562UwxgqEfKGDl+Svi44sV6+yCnSHoJaS5NtrLqfIY5P3Mta
-         xzu7914vju2do7ooaEpdLyCJFOPe1YtRoXLOhvrSWoTw/XqN+Pakt0t7I1nsWreEZgif
-         5L0/iFVQnExE645NHL6Nz6upvotE/mY94j1kjr/To9E80Yzxuac8JGv6w05Iy0Ozx1ev
-         iNwrsUJ12hpCriwk28MItcJtsvVib34zGVBLKQT6dQl3MXbsHw19dJrjarP+3DErMzVN
-         sTvfSBLMm1JhY4jnyRwr/iiGBO9Kn0TJMrDkTUrkeEhH5Q+LkJ3Oy/Xl7fsQhIpbbylX
-         /0cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Nrz3TSmcgrSpTyZCmW79h4FBugW4tEaSs53yJ16o+LY=;
-        b=LD8fkexDwUmJE68ye5+2evTj7U2wkGQ1pBYfUJcbWhbrVW+tsw/LiexDrMu0BKej/f
-         eyWqKL5xt36Z739xKjmUXubGCbscqomrsFaCFE/mNB3R7+QWR/ezh6n6dmGM1SKTS133
-         TLBkZTGEdcRSj6aqrwbxhmz+o35k39rOa98c0K08/8WZYSvz6IsYu38LsqF/XXDMxWaY
-         HaD8nBTPFo6nX927u1Tx43uxlOVkLs8hMmKxDae2yq/YRN2vKQLPV9ky99SR1rWpJ7DZ
-         /0B0btP2i1aC24DeeKT7Y3KwTUnNfBIefXlGqR5CCYIXIvsXbq5b/+8dfIkYueVRuMGY
-         JUBw==
-X-Gm-Message-State: AO0yUKXa00USBlFYB1sPK2cGHPJpM4rYCE+rqvJPBrWuXr5CW+gbY+tI
-        02NW+Fe51LePUCFcxPPFAkfkE10i5tg=
-X-Google-Smtp-Source: AK7set8xILWDeKLdsoPmaeC+WBsqixXUKuHo6IuDnFV/HVdfnKuGG0DTdtoKhq33sbxB8mVxSURO+Q==
-X-Received: by 2002:a17:903:30c9:b0:191:24d1:8af6 with SMTP id s9-20020a17090330c900b0019124d18af6mr6517030plc.42.1675373444647;
-        Thu, 02 Feb 2023 13:30:44 -0800 (PST)
-Received: from localhost ([2620:10d:c090:400::5:48a9])
-        by smtp.gmail.com with ESMTPSA id a21-20020a170902b59500b00186748fe6ccsm118158pls.214.2023.02.02.13.30.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Feb 2023 13:30:44 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 2 Feb 2023 11:30:42 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        stable@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH] fscrypt: Copy the memcg information to the ciphertext
- page
-Message-ID: <Y9wrglzrfzTiCjh8@slm.duckdns.org>
-References: <20230129121851.2248378-1-willy@infradead.org>
- <Y9a2m8uvmXmCVYvE@sol.localdomain>
- <Y9bkoasmAmtQ2nSV@casper.infradead.org>
- <Y9mH0PCcZoGPryXw@slm.duckdns.org>
- <Y9oHQ6MfRbfwmFyK@sol.localdomain>
+        Thu, 2 Feb 2023 19:56:22 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2DAB6602B;
+        Thu,  2 Feb 2023 16:56:21 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 916C4B828E3;
+        Fri,  3 Feb 2023 00:56:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CC02C433EF;
+        Fri,  3 Feb 2023 00:56:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1675385779;
+        bh=KKty1jXeM2baCto4GRCXVHlUIStHIIdXC20p04DvIxA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=uxHJQYlzJSp/wLQ7ixz5DdCAqK+ysRvV58HrFewbe3BLCqRZJJY9YcsJAyyJQzaZM
+         tRKnB1EimvL5b8LlhNxURXA5OyvcPd1ZlI6TxFcyJncqKpBOiuXfSmB3Cziq1SSuX9
+         9ynl5FkZex2Lz11leDosqdX3jUklwVYsFS3aPYURpoeyLrVkzC/m+BjO6JiqGTijpS
+         kO5ZfM9Fi5T5Xe5WxNGqXY1o/UQhOZ+/B+YVGruSHVQ+xZlBhBeKutXUM9dUDI4sxP
+         87q3m8Qu5HSWEiY3oPPQU/++C8UhbP+uDfiVemCTzdMt/Wz9avv2jl3k/LY1GoAnvv
+         9cewnIqdDFLmw==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-ext4@vger.kernel.org
+Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>,
+        Tejun Heo <tj@kernel.org>, stable@vger.kernel.org
+Subject: [PATCH] ext4: fix cgroup writeback accounting with fs-layer encryption
+Date:   Thu,  2 Feb 2023 16:55:03 -0800
+Message-Id: <20230203005503.141557-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y9oHQ6MfRbfwmFyK@sol.localdomain>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hello,
+From: Eric Biggers <ebiggers@google.com>
 
-On Tue, Jan 31, 2023 at 10:31:31PM -0800, Eric Biggers wrote:
-> > These can usually be handled by explicitly associating the bio's to the
-> > desired cgroups using one of bio_associate_blkg*() or
-> > bio_clone_blkg_association().
-> 
-> Here that already happens in wbc_init_bio(), called from io_submit_init_bio() in
-> fs/ext4/page-io.c.
+When writing a page from an encrypted file that is using
+filesystem-layer encryption (not inline encryption), ext4 encrypts the
+pagecache page into a bounce page, then writes the bounce page.
 
-Yeah, without bouncing, that's usually how writeback IOs are associated with
-their cgroups.
+It also passes the bounce page to wbc_account_cgroup_owner().  That's
+incorrect, because the bounce page is a newly allocated temporary page
+that doesn't have the memory cgroup of the original pagecache page.
+This makes wbc_account_cgroup_owner() not account the I/O to the owner
+of the pagecache page as it should.
 
-> > It is possible to go through memcg ownership
-> > too using set_active_memcg() so that the page is owned by the target cgroup;
-> > however, the page ownership doesn't directly map to IO ownership as the
-> > relationship depends on the type of the page (e.g. IO ownership for
-> > pagecache writeback is determined per-inode, not per-page). If the in-flight
-> > pages are limited, it probably is better to set bio association directly.
-> 
-> ext4 also calls wbc_account_cgroup_owner() for each pagecache page that's
-> written out.  It seems this is for a different purpose -- it looks like the
-> fs-writeback code is trying to figure out which cgroup "owns" the inode based on
-> which cgroup "owns" most of the pagecache pages?
+Fix this by always passing the pagecache page to
+wbc_account_cgroup_owner().
 
-Yeah, there's a difference between how memory and IO track cgroup ownership.
-Memory ownership is per-page but IO ownership is per-inode. This is because
-splitting writeback IOs of the same inode can perform really badly, so we
-try to find the majority dirty page owner cgroup of a given inode and
-associate the whole inode to that cgroup.
+Fixes: 001e4a8775f6 ("ext4: implement cgroup writeback support")
+Cc: stable@vger.kernel.org
+Reported-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ fs/ext4/page-io.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-So, something like md / dm, which gets a bio from filesystem and then
-bounces it to another bio, would use either bio_clone_blkg_association() to
-copy the association of the original bio (which probably is set through
-wbc_init_bio()) or determine the cgroup the bio should belong to somehow and
-set it explicitly with bio_associate_blkg(). However, here, as the
-filesystem is the one bouncing I guess it can be simpler.
+diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c
+index beaec6d81074a..1e4db96a04e63 100644
+--- a/fs/ext4/page-io.c
++++ b/fs/ext4/page-io.c
+@@ -409,7 +409,8 @@ static void io_submit_init_bio(struct ext4_io_submit *io,
+ 
+ static void io_submit_add_bh(struct ext4_io_submit *io,
+ 			     struct inode *inode,
+-			     struct page *page,
++			     struct page *pagecache_page,
++			     struct page *bounce_page,
+ 			     struct buffer_head *bh)
+ {
+ 	int ret;
+@@ -421,10 +422,11 @@ static void io_submit_add_bh(struct ext4_io_submit *io,
+ 	}
+ 	if (io->io_bio == NULL)
+ 		io_submit_init_bio(io, bh);
+-	ret = bio_add_page(io->io_bio, page, bh->b_size, bh_offset(bh));
++	ret = bio_add_page(io->io_bio, bounce_page ?: pagecache_page,
++			   bh->b_size, bh_offset(bh));
+ 	if (ret != bh->b_size)
+ 		goto submit_and_retry;
+-	wbc_account_cgroup_owner(io->io_wbc, page, bh->b_size);
++	wbc_account_cgroup_owner(io->io_wbc, pagecache_page, bh->b_size);
+ 	io->io_next_block++;
+ }
+ 
+@@ -561,8 +563,7 @@ int ext4_bio_write_page(struct ext4_io_submit *io,
+ 	do {
+ 		if (!buffer_async_write(bh))
+ 			continue;
+-		io_submit_add_bh(io, inode,
+-				 bounce_page ? bounce_page : page, bh);
++		io_submit_add_bh(io, inode, page, bounce_page, bh);
+ 	} while ((bh = bh->b_this_page) != head);
+ unlock:
+ 	unlock_page(page);
 
-> The bug we're discussing here is that when ext4 writes out a pagecache page in
-> an encrypted file, it first encrypts the data into a bounce page, then passes
-> the bounce page (which don't have a memcg) to wbc_account_cgroup_owner().  Maybe
-> the proper fix is to just pass the pagecache page to wbc_account_cgroup_owner()
-> instead?  See below for ext4 (a separate patch would be needed for f2fs):
-
-Yeah, this makes sense to me and is the right thing to do no matter what.
-wbc_account_cgroup_owner() should be fed the origin page so that the IO can
-be blamed on the owner of that page.
-
-Thanks.
-
+base-commit: 6d796c50f84ca79f1722bb131799e5a5710c4700
 -- 
-tejun
+2.39.1
+
