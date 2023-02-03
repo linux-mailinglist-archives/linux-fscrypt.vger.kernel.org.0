@@ -2,81 +2,86 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34B76688C3B
-	for <lists+linux-fscrypt@lfdr.de>; Fri,  3 Feb 2023 02:07:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0E9A6892D3
+	for <lists+linux-fscrypt@lfdr.de>; Fri,  3 Feb 2023 09:55:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232402AbjBCBHb (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 2 Feb 2023 20:07:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45382 "EHLO
+        id S232431AbjBCIyl (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 3 Feb 2023 03:54:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232142AbjBCBHa (ORCPT
+        with ESMTP id S230230AbjBCIya (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 2 Feb 2023 20:07:30 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 474E7470AE;
-        Thu,  2 Feb 2023 17:07:29 -0800 (PST)
+        Fri, 3 Feb 2023 03:54:30 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBBBA81B2D;
+        Fri,  3 Feb 2023 00:54:24 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id F332DB828EC;
-        Fri,  3 Feb 2023 01:07:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5044BC433D2;
-        Fri,  3 Feb 2023 01:07:26 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 8B145B829B8;
+        Fri,  3 Feb 2023 08:54:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C004FC433D2;
+        Fri,  3 Feb 2023 08:54:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675386446;
-        bh=fz7m0oNp3+iBydgkgnlasJNzPQcxkPq6HJHHFp/eDmU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rOPBW7zi68EwVAEdF7hysr6oZSetdbFyWDQ38pu9afuQOyIaPfIj+GPMbinOGVKwF
-         jOpH9BpW+bFA8vk7Oz4cWWpqnAqwPG7tuOwazTT8kOuxLoXmnkIa0biz8NiC8WUZfa
-         NKuoTC94VJ+yKXU7LXEvM8Irk+XI3Mjv332MA4lkEK0Hqeyk7CSKdtUDdl/kqRWCGQ
-         MbybtQGZhULhNZV0MFyzvrt8AOHC1Ggpkq2BaXFEA0/oNk8H6zxXUFJ64hcx5eS5OC
-         MDxra6w/3V4tQGiLhEIhmdYs8ky9b8YHTMa4Rzj2vL9clXunI18/XZsl6ugnW/lVbd
-         KSk8JF2n/4nFw==
-Date:   Thu, 2 Feb 2023 17:07:24 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        stable@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH] fscrypt: Copy the memcg information to the ciphertext
- page
-Message-ID: <Y9xeTDOmMZ75G6cq@sol.localdomain>
-References: <20230129121851.2248378-1-willy@infradead.org>
- <Y9a2m8uvmXmCVYvE@sol.localdomain>
- <Y9bkoasmAmtQ2nSV@casper.infradead.org>
- <Y9mH0PCcZoGPryXw@slm.duckdns.org>
- <Y9oHQ6MfRbfwmFyK@sol.localdomain>
- <Y9wrglzrfzTiCjh8@slm.duckdns.org>
+        s=k20201202; t=1675414462;
+        bh=0yDJWQOQrDVoHAkzXh1bFCfdWy5BLzDh6Q/DxQqYtJI=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=JUYZsVb4DY9iyCM6VC7cnMotPN8f8s1wNOKVVJJxHA/iqZdJpqHdHQjv+f3cVKYlS
+         S6iRtZG7TQwtks+XOsyMtGzMHwqEcG89+CROhWJeFtmMlecv5Uv1RhvX3exkN5Z6Ph
+         dl71+8NJHB/wz5t66sxk7jAzhFElvCbPgLQuSLo4/ZkkZAFn8Acb3JHIEGuYCi4QvK
+         YCnhQc54C2kxOm/kcORTEzXeMZP9SzrdvLaSJZHE2QlVSf2RbsJVXGnFq8vPgnX4tn
+         xfmoHgczP5bBar0Fk3O9V27b3mHCT3fLXf85JuNyxaCh4C4S3QDp2I6zArWAdHXrRD
+         fjew5sHqAShKw==
+Message-ID: <4a818d7e-bddd-f44c-d115-a7e81301983a@kernel.org>
+Date:   Fri, 3 Feb 2023 16:54:18 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y9wrglzrfzTiCjh8@slm.duckdns.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [f2fs-dev] [PATCH] f2fs: fix cgroup writeback accounting with
+ fs-layer encryption
+Content-Language: en-US
+To:     Eric Biggers <ebiggers@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net
+Cc:     stable@vger.kernel.org, Tejun Heo <tj@kernel.org>,
+        linux-fscrypt@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org
+References: <20230203010239.216421-1-ebiggers@kernel.org>
+From:   Chao Yu <chao@kernel.org>
+In-Reply-To: <20230203010239.216421-1-ebiggers@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, Feb 02, 2023 at 11:30:42AM -1000, Tejun Heo wrote:
-> > The bug we're discussing here is that when ext4 writes out a pagecache page in
-> > an encrypted file, it first encrypts the data into a bounce page, then passes
-> > the bounce page (which don't have a memcg) to wbc_account_cgroup_owner().  Maybe
-> > the proper fix is to just pass the pagecache page to wbc_account_cgroup_owner()
-> > instead?  See below for ext4 (a separate patch would be needed for f2fs):
+On 2023/2/3 9:02, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> Yeah, this makes sense to me and is the right thing to do no matter what.
-> wbc_account_cgroup_owner() should be fed the origin page so that the IO can
-> be blamed on the owner of that page.
+> When writing a page from an encrypted file that is using
+> filesystem-layer encryption (not inline encryption), f2fs encrypts the
+> pagecache page into a bounce page, then writes the bounce page.
+> 
+> It also passes the bounce page to wbc_account_cgroup_owner().  That's
+> incorrect, because the bounce page is a newly allocated temporary page
+> that doesn't have the memory cgroup of the original pagecache page.
+> This makes wbc_account_cgroup_owner() not account the I/O to the owner
+> of the pagecache page as it should.
+> 
+> Fix this by always passing the pagecache page to
+> wbc_account_cgroup_owner().
+> 
+> Fixes: 578c647879f7 ("f2fs: implement cgroup writeback support")
+> Cc: stable@vger.kernel.org
+> Reported-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-Thanks.  These patches fix this for ext4 and f2fs:
+Reviewed-by: Chao Yu <chao@kernel.org>
 
-    * https://lore.kernel.org/r/20230203005503.141557-1-ebiggers@kernel.org
-    * https://lore.kernel.org/r/20230203010239.216421-1-ebiggers@kernel.org
-
-- Eric
+Thanks,
