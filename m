@@ -2,30 +2,30 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCB3868E4D6
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  8 Feb 2023 01:16:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 687B868E4F7
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  8 Feb 2023 01:31:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229582AbjBHAQp (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 7 Feb 2023 19:16:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49220 "EHLO
+        id S229818AbjBHAbG (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 7 Feb 2023 19:31:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjBHAQp (ORCPT
+        with ESMTP id S229563AbjBHAbF (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 7 Feb 2023 19:16:45 -0500
+        Tue, 7 Feb 2023 19:31:05 -0500
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1FA0330281;
-        Tue,  7 Feb 2023 16:16:44 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2CFC93AAC;
+        Tue,  7 Feb 2023 16:31:04 -0800 (PST)
 Received: by linux.microsoft.com (Postfix, from userid 1052)
-        id 9851420C7E3C; Tue,  7 Feb 2023 16:16:43 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9851420C7E3C
+        id 91E3120C7E38; Tue,  7 Feb 2023 16:31:03 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 91E3120C7E38
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1675815403;
-        bh=AZ+uoZUPPCrz5A3pE0qCEGIImkcUUqU1a5A+4MPDhOM=;
+        s=default; t=1675816263;
+        bh=LeJteH6AJ9Cbyv23AKIZT9Zr5jPTl5CR5NBjrB7jEH0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HD6TakUTp+1ygsVn+yvO4lLksnYvK4/2liMIsQ1EhCDExaWVjFN4k2qVIYy0mjsg/
-         W6SFhrCbMPxRNzeYqrneD1Ds4w00mBphmn6Nn+MlbbBsrnxOeVAzZUpoQfosVX8aJM
-         PucybJQWryxPKwd9QDwzy0wbblP1xFcRKYTMKCrA=
-Date:   Tue, 7 Feb 2023 16:16:43 -0800
+        b=bs+VMgppVphlNRwXazqjLvcderqyiIoxWf+J92+m0ALQDuvgh/o/nhk1BNWcBQsPh
+         gz0C3u2HuwTEnY5P1iqMjO1CzkD/+HiRK+CfRh+GX6szjyKALHkQS/5Vqjg1EHw7/2
+         kMQ7Bn9LNIzaQRwZ/K5EZ4sZYQKeFDqpGmC9IVrc=
+Date:   Tue, 7 Feb 2023 16:31:03 -0800
 From:   Fan Wu <wufan@linux.microsoft.com>
 To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
 Cc:     corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
@@ -36,20 +36,17 @@ Cc:     corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
         linux-security-module@vger.kernel.org,
         linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
         dm-devel@redhat.com, linux-audit@redhat.com,
-        roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
-        Deven Bowers <deven.desai@linux.microsoft.com>
-Subject: Re: [RFC PATCH v9 13/16] ipe: enable support for fs-verity as a
- trust provider
-Message-ID: <20230208001643.GB5107@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+        roberto.sassu@huawei.com, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v9 00/16] Integrity Policy Enforcement LSM (IPE)
+Message-ID: <20230208003103.GC5107@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 References: <1675119451-23180-1-git-send-email-wufan@linux.microsoft.com>
- <1675119451-23180-14-git-send-email-wufan@linux.microsoft.com>
- <d62907da62b5e0b25c9d7bd4b3119a3d1827bd29.camel@huaweicloud.com>
- <20230201235031.GC9075@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <6ddfa7344d01b21a93d3909af9dac0ae5e2a79ee.camel@huaweicloud.com>
+ <033335b26f6becdc3dc0325ef926efd94fcc4dda.camel@huaweicloud.com>
+ <20230201004852.GB30104@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <7dc9963c563d0b55bb35109be012e355eef13882.camel@huaweicloud.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6ddfa7344d01b21a93d3909af9dac0ae5e2a79ee.camel@huaweicloud.com>
+In-Reply-To: <7dc9963c563d0b55bb35109be012e355eef13882.camel@huaweicloud.com>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
@@ -61,85 +58,66 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, Feb 02, 2023 at 10:51:56AM +0100, Roberto Sassu wrote:
-> On Wed, 2023-02-01 at 15:50 -0800, Fan Wu wrote:
-> > On Tue, Jan 31, 2023 at 03:00:08PM +0100, Roberto Sassu wrote:
+On Thu, Feb 02, 2023 at 11:48:18AM +0100, Roberto Sassu wrote:
+> On Tue, 2023-01-31 at 16:48 -0800, Fan Wu wrote:
+> > On Tue, Jan 31, 2023 at 03:22:05PM +0100, Roberto Sassu wrote:
 > > > On Mon, 2023-01-30 at 14:57 -0800, Fan Wu wrote:
-> > > > +/**
-> > > > + * evaluate_fsv_sig_false - Analyze @ctx against a fsv sig false property.
-> > > > + * @ctx: Supplies a pointer to the context being evaluated.
-> > > > + * @p: Supplies a pointer to the property being evaluated.
-> > > > + *
-> > > > + * Return:
-> > > > + * * true	- The current @ctx match the @p
-> > > > + * * false	- The current @ctx doesn't match the @p
-> > > > + */
-> > > > +static bool evaluate_fsv_sig_false(const struct ipe_eval_ctx *const ctx,
-> > > > +				   struct ipe_prop *p)
-> > > > +{
-> > > > +	return !ctx->ino ||
-> > > > +	       !IS_VERITY(ctx->ino) ||
-> > > > +	       !ctx->ipe_inode ||
-> > > > +	       !ctx->ipe_inode->fs_verity_signed;
-> > > > +}
-> > > > +
-> > > > +/**
-> > > > + * evaluate_fsv_sig_true - Analyze @ctx against a fsv sig true property.
-> > > > + * @ctx: Supplies a pointer to the context being evaluated.
-> > > > + * @p: Supplies a pointer to the property being evaluated.
-> > > > + *
-> > > > + * Return:
-> > > > + * * true - The current @ctx match the @p
-> > > > + * * false - The current @ctx doesn't match the @p
-> > > > + */
-> > > > +static bool evaluate_fsv_sig_true(const struct ipe_eval_ctx *const ctx,
-> > > > +				  struct ipe_prop *p)
-> > > > +{
-> > > > +	return ctx->ino &&
-> > > > +	       IS_VERITY(ctx->ino) &&
-> > > > +	       ctx->ipe_inode &&
-> > > > +	       ctx->ipe_inode->fs_verity_signed;
-> > > > +}
+> > > > IPE has two known gaps:
+> > > > 
+> > > > 1. IPE cannot verify the integrity of anonymous executable memory, such as
+> > > >   the trampolines created by gcc closures and libffi (<3.4.2), or JIT'd code.
+> > > >   Unfortunately, as this is dynamically generated code, there is no way
+> > > >   for IPE to ensure the integrity of this code to form a trust basis. In all
+> > > >   cases, the return result for these operations will be whatever the admin
+> > > >   configures the DEFAULT action for "EXECUTE".
 > > > 
-> > > Isn't better to just define one function and prepend a ! in
-> > > evaluate_property()?
-> > Yes that's a better way to do it, I will take this idea.
-> > 
-> > > Not sure about the usefulness of the fsverity_signature= property as it
-> > > is. I would at minimum allow to specify which keyring signatures are
-> > > verified against, and ensure that the keyring has a restriction.
+> > > I think it would be useful to handle special cases, for example you
+> > > could allow a process that created a file with memfd to use it, at the
+> > > condition that nobody else writes it.
 > > > 
-> > > And maybe I would call fsverity_verify_signature() directly, after
-> > > extending it to pass the desired keyring.
+> > > This would be required during the boot, otherwise services could fail
+> > > to start (depending on the policy).
 > > > 
-> > Thanks for the suggestion.
-> > For the initial version we only have the fsverity_signature property
-> > to enable the policy can make decision based on the existence of the
-> > signature. In the future we plan to add more properties to leverage
-> > the remaining signature information so we can have the restrictions
-> > you mentioned.
+> > Thanks for the suggestion. I agree with your opinion and I think supporting
+> > memfd is possible but restricting read/write needs more hooks. We would like
+> > to avoid adding more complexity to this initial posting as necessary. 
+> > We will consider this as a future work and will post follow-on patches
+> > in the future.
 > 
-> Uhm, these boolean properties feel like something is missing. In my
-> opinion, one cannot accept just any signature, but should be able to
-> specify the approved signers.
+> Ok, maybe it is necessary to specify better the scope of IPE, why the
+> current implementation can be considered as complete.
+> 
+> If we say, IPE can only allow/deny operations on system components with
+> immutable security properties, clearly memfd as a component cannot
+> fullfill this goal due to the non-immutability. This would apply to any
+> component allowing modifications.
+> 
+> How to address this? What is the immutable property then?
+> 
+> In the case of memfd, intuitively, a useful property for integrity
+> could be for example that the content can be accessed/modified by only
+> one process. No other (possibly malicious) processes can tamper with
+> that file.
+> 
+> So, it is true, to make this property immutable more hooks are needed.
+> But should it be something that IPE does? Or it should be done by an
+> external component (another LSM) that does the enforcement and reports
+> to IPE that the property is true? Theoretically (with a proper policy),
+> existing LSMs could be used for that purpose too.
+> 
+> I would say more the second, it should not be IPE job, so that IPE can
+> exclusively focus on evaluating properties, not making sure that the
+> properties are immutable.
 > 
 > Roberto
 > 
-It does not accept any signature. For fsverity, the signature must be signed
-by a key in the fsverity_keyring and similarly for dmverity the signature
-must be signed by a key in the kernel builtin trusted keys or secondary keyring.
-Therefore, the root of trust here is the system configured keyrings. 
+I think the issue here is not about the scope of IPE but the use cases
+of IPE. 
 
-The Boolean properties dmverity_signature and fsverity_signature are used
-to differentiate the existence of signature because the signature is optional.
-In a =TRUE case of these two properties, we know the digests are signed
-by a key we can trust. And in a =FALSE case we know the file is from a unsigned
-dmverity or fsverity, we could use a stricter policy to deny them. 
+We use IPE on fixed-function devices, which are completely locked down.
+In our system, IPE denies all anonymous memory execution so memfd will
+not work on our system.
 
-I agree that having the ability to restrict signers is better, but the feedback
-from the last version was asking us to keep the initial version as simple
-as possible. We definitely want to add more properties, but we will invest
-more time in them once the initial version is accepted. 
+Therefore, to make memfd useable with IPE we must add more properties.
 
 -Fan
-
