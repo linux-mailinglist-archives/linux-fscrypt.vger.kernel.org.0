@@ -2,281 +2,189 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DA0A691FF9
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 10 Feb 2023 14:44:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 704CE69288C
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 10 Feb 2023 21:43:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231934AbjBJNof (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 10 Feb 2023 08:44:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60060 "EHLO
+        id S233284AbjBJUnO (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 10 Feb 2023 15:43:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231890AbjBJNoe (ORCPT
+        with ESMTP id S232935AbjBJUnN (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 10 Feb 2023 08:44:34 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E00173963;
-        Fri, 10 Feb 2023 05:44:29 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id j25so5120086wrc.4;
-        Fri, 10 Feb 2023 05:44:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Pc5pcVCa1LtRQH5wWNer+/cZf3S6touB5+PwKxQUc8s=;
-        b=AR/Dnrmo/3GSnoOieuReB0XDrYiTcNjT82xP0xVhHj6GMfhTzW5qEJyr8tCpN/NgJd
-         OJkYgio9ADm9yDzX4Jh7SLCwDAjnhwLkZ0ogzhJzS1tGGLJQf8YbEVxHcxhr+89LMr9e
-         xssj6t409Ta0Aw7sAgk8SJm1ZSWBk1Dz5h1IUvgeyPCE1LiF2/s35iu43eAUjk4ViB4c
-         tvTV83B8WWF/p09uWPwlGy/JW8PycilCmZB6EbIYog0TZOr0cQ/gMS8KnZLeKXd7IKJX
-         kQDBg/61S9Vypfjf6g1b/F07zaYgj2RuuDucjD60kPZDwaaMR4VBAoTZBcPca3N1sAVK
-         E+DA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Pc5pcVCa1LtRQH5wWNer+/cZf3S6touB5+PwKxQUc8s=;
-        b=joN36pt/S4iexu4qV+R+7DGUvULKC/zOlSfIzzyCtQdwt9xcIRnXkv3Q1m8BsBSjVN
-         oXcL3TnbFsUcVvUqdjLT3q01n7DBDELu6lVQ2rTC1c0R4eHxX/J5qvHoOOQkbmKMBJ/e
-         s/bHLj/hmqaL8C4sixy1iJDRX3sMMNdfaYIZ7Wv14OMOCMMc76zNpfCbjmrHKx38JdFF
-         WrxG5QXfAywNkkO4tzEbtjsBziughlY5RwsU1EOYpgpT1//lgqOmJj0GAF00eNz2GBpj
-         WiELusPjYoFPPTpBiVD+oY1q4Ova5/lC2ccjAgfLMgf+eFaFcR6coDNYTLzyvQX3wPoA
-         dFag==
-X-Gm-Message-State: AO0yUKXd0zyufODRP6nT9QDuDmsEx9mRXCenOWTtw6px4Z3i85RlqLTg
-        J1kuIi921PRIQX0lU2yLjgk=
-X-Google-Smtp-Source: AK7set/Bl/CA2BJ1BE9cS8txjbMCUARkUwTecxnXIqR3YKC1e9TEuHugWfIiOCrSseBigpFbP9R6HQ==
-X-Received: by 2002:adf:fe86:0:b0:2bf:ac3f:a9da with SMTP id l6-20020adffe86000000b002bfac3fa9damr14317874wrr.7.1676036667630;
-        Fri, 10 Feb 2023 05:44:27 -0800 (PST)
-Received: from [192.168.2.100] (pop.92-184-112-173.mobile.abo.orange.fr. [92.184.112.173])
-        by smtp.gmail.com with ESMTPSA id q5-20020adff785000000b002c3e89039casm3682544wrp.12.2023.02.10.05.44.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Feb 2023 05:44:26 -0800 (PST)
-Message-ID: <0eaf08a8-ddec-5158-ab2b-ae7e3e1bab9b@gmail.com>
-Date:   Fri, 10 Feb 2023 14:44:22 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.7.2
+        Fri, 10 Feb 2023 15:43:13 -0500
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0309970705
+        for <linux-fscrypt@vger.kernel.org>; Fri, 10 Feb 2023 12:43:11 -0800 (PST)
+Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 31AKguqB016352
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Feb 2023 15:42:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1676061778; bh=pdTppfBFbu942mayOz5ovqBKLYyjLl+xg3ENsgaZyAc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=GUUyc8wRKs/V5GBvzJ5p2NX5/KKjt4ybnyWOZJrIadSFzQPd91yS5hql4QOpEHXy+
+         K8hQMkSpOsy2/8BucH35Ob+AQ8t3AHdl2ftpK2bNZQq92zbZESq5K4z7fltsyj2ZyI
+         aTPonDLDK5zoBwKT8UniDuE8kBTz96AJn2HZhuK8RYCyMzfRGTnFHYeZdCuQLyl3NR
+         SNjCxFS6jbINL5PmOS2uIU2bQOw804vCOg4RWkHiQncuCvbt8HRzxavNDoJ9Lgn8BW
+         W9667OBJt+wev8dUiyJ2/7bdEzu6SpXixivcp3klpWsuYvYXiITooyX+tmt2rYYpmp
+         JFJumg2/SUghA==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id BCE0315C340F; Fri, 10 Feb 2023 15:42:56 -0500 (EST)
+Date:   Fri, 10 Feb 2023 15:42:56 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Sebastien Buisson <sbuisson.work@gmail.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>, linux-fscrypt@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
 Subject: Re: Backup/restore of fscrypt files and directories
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org
+Message-ID: <Y+asUDeRFGpig+wG@mit.edu>
 References: <03a87391-1b19-de2d-5c18-581c1d0c47ca@gmail.com>
  <Y+P3wumJK/znOKgl@gmail.com>
-From:   Sebastien Buisson <sbuisson.work@gmail.com>
-In-Reply-To: <Y+P3wumJK/znOKgl@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+ <0eaf08a8-ddec-5158-ab2b-ae7e3e1bab9b@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0eaf08a8-ddec-5158-ab2b-ae7e3e1bab9b@gmail.com>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hi Eric,
+On Fri, Feb 10, 2023 at 02:44:22PM +0100, Sebastien Buisson wrote:
+> As for symlinks, you are right I need to dig further. I think at least the
+> security.encdata xattr would need an additional field to hold the ciphertext
+> symlink target.
 
-Thanks for your feedback.
+So I'd caution you against the concept of using the security.encdata
+xattr.  In propose, it's being used in two different ways.  The first
+way is as a system call / ioctl like way, and that's something which
+is very much frowned upon, at least by many in the Kernel community.
+The red flag here is when you say that the xattr isn't actually stored
+on disk, but rather is created on the fly when the xattr is fetched.
+If you need to fetch information from the kernel that's not stored as
+part of the on-disk format, then use an ioctl or a system call.  Don't
+try to turn the xattr interface into a system call / ioctl extension
+like thing.
 
-Le 08/02/2023 à 20:28, Eric Biggers a écrit :
-> Hi Sebastien,
->
-> On Wed, Feb 08, 2023 at 01:09:50PM +0100, Sebastien Buisson wrote:
->> I am planning to implement backup and restore for fscrypt files and
->> directories and propose the following design, and would welcome feedback on
->> this approach.
-> Thanks for looking into this.  Before getting too far into the details of your
-> proposal, are you aware of the previous threads about this?  Specifically:
->
-> "backup/restore of fscrypt files"
-> (https://lore.kernel.org/linux-fscrypt/D1AD7D55-94D6-4C19-96B4-BAD0FD33CF49@dilger.ca/T/#u)
->
-> And the discussion that happened as part of
-> "[PATCH RERESEND v9 0/9] fs: interface for directly reading/writing compressed data"
-> (https://lore.kernel.org/linux-fsdevel/CAHk-=wh74eFxL0f_HSLUEsD1OQfFNH9ccYVgCXNoV1098VCV6Q@mail.gmail.com
-> and its responses).
+The other way you're using the encdata is that you're presuming that
+this is how you'd store the information in the tar format.  And how we
+fetch information from the kernel, and how it is stored as an exchange
+format, should be decoupled as much as possible.
 
-I knew about the first one, but had not stumbled accross the discussion 
-that happened in the compression related thread, thanks.
+In the case of a tar archive, the symlink target is normally stored in
+the data block of the tar archive.  In the case where the symlink is
+encrypted, why should that change?  We aren't storing the encrypted
+data in a different location, such as the encdata xattr; why should
+that be different in the case of the symlink target?
 
-> Both times before, it was brought up that the hardest part is backing up and
-> restoring the filenames, including symlinks.  I don't think your proposal really
-> addresses that.  Your proposal has a single filename in the security.encdata
-> xattr.  But actually, a file can have many names.  Also, a file can have an
-> encrypted name without being encrypted itself; that's the case for device node,
-> socket, and FIFO files.  Also, symlinks have their target encrypted.
+Now, how you *fetch* the encrypted symlink target might be different,
+such as how we fetch the contents of an unencrypted data file (via the
+read system call) and how we fetch an unencrypted symlink target (via
+the readlink system call) are different.
 
-That is correct. The value of the enc_name field is the ciphertext name 
-of the current dentry. Like with regular files, my impression was that 
-tar (or the backup utility) would handle the hard links properly. 
-According to you, what would make a difference between regular files and 
-encrypted files regarding restore or hard links?
+> > A description of the use cases of this feature would also be helpful.
+> > Historically, people have said they needed this feature when they really didn't.
+> 
+> There is really a need for backup/restore at the file system level. For
+> instance, in case of storage failure, we would want to restore files to a
+> newly formatted device, in a finner granularity that cannot be achieved with
+> a backup/restore at the device level, or because that would allow changing
+> formatting options. Also, it particularly makes sense to have per-directory
+> backups, as the block devices are getting larger and larger.
+> 
+> The ability to backup and restore encrypted files is interesting in annother
+> use case: moving files between file systems and systems without the need to
+> decrypt then re-encrypt.
 
-As for symlinks, you are right I need to dig further. I think at least 
-the security.encdata xattr would need an additional field to hold the 
-ciphertext symlink target.
+The use case of being able to restore files without needing to decrypt
+and re-encrypt is quite different from the use case where you want to
+be able to backup the files without needing encryption keys present,
+but the encryption keys *are* needed at restore time is quite
+different --- and the latter is quite a bit easier.
 
-> I think that your proposal, in general, needs more detail about how *restores*
-> will work, since that's going to be much harder than backups.  It's not hard to
-> get the filesystem to give you more information; it's much harder to make
-> changes to a filesystem while keeping everything self-consistent!
->
-> A description of the use cases of this feature would also be helpful.
-> Historically, people have said they needed this feature when they really didn't.
+For example, some of encryption modes which use the inode number as
+part of the IV, could be handled if keys are needed at restore time;
+but it would be quite a bit harder, if not impossible, if you want to
+be able restore the ecrypted files without doing a decrypt/re-encrypt
+pass.
 
-There is really a need for backup/restore at the file system level. For 
-instance, in case of storage failure, we would want to restore files to 
-a newly formatted device, in a finner granularity that cannot be 
-achieved with a backup/restore at the device level, or because that 
-would allow changing formatting options. Also, it particularly makes 
-sense to have per-directory backups, as the block devices are getting 
-larger and larger.
+Can you give more details about why you are interested in implementing
+this?  Does your company have a more specific business justification
+for wanting to invest in this work?  If so, can you say more about it?
 
-The ability to backup and restore encrypted files is interesting in 
-annother use case: moving files between file systems and systems without 
-the need to decrypt then re-encrypt.
+The reason why I ask is because very often fscrypt gets used in
+integrated solutions, where the encryption/decryption engine is done
+in-line between the general purpose CPU and the storage device.  In
+some cases, the users' encryption keys might be stored in a something
+like ARM TrustZone or in some other specialized trusted key manager
+where even the kernel running in the general purpose hardware won't
+have access to *any* of the keys.  It's for that reason that we have
+some of these alternate modes where the inode number is used as part
+of the IV, as opposed to the more traditional scheme where the user's
+key is used to derive a file-specific subkey.
 
->> The third challenge is to get access to the encryption context of files and
->> directories. By design, fscrypt does not expose this information, internally
->> stored as an extended attribute but with no associated handler.
-> Actually, FS_IOC_GET_ENCRYPTION_POLICY_EX and FS_IOC_GET_ENCRYPTION_NONCE
-> together give you all the information stored in the encryption context.
->
->> In order to address this need for backup/restore of encrypted files, we
->> propose to make use of a special extended attribute named security.encdata,
->> containing:
->> - encoding method used for binary data. Assume name can be up to 255 chars.
->> - clear text file data length in bytes (set to 0 for dirs).
-> st_size already gives the plaintext file length, even while the encryption key
-> is not present.
+One of the original use cases for fscrypt was for Android and ChromeOS
+devices.  And for those devices the state tends to be synchronized
+across multiple devices, including web browsers.  So the state ends up
+getting saved, unencrypted, in an application specific format, so you
+can recover very quickly with no data loss, even if the device gets
+lost or destroyed[1]. 
 
-Exactly, and that would prevent normal utilities from reading raw 
-encrypted content up to the end of the encryption block (if access 
-without the key was granted).
+[1] https://www.youtube.com/watch?v=lm-Vnx58UYo
 
->> - encryption context. 40 bytes for v2 encryption context.
->> - encrypted name. 256 bytes max.
->>
->> To improve portability if we need to change the on-disk format in the
->> future, and to make the archived data useful over a longer timeframe, the
->> content of the security.encdata xattr is expressed as ASCII text with a
->> "key: value" YAML format. As encryption context and encrypted file name are
->> binary, they need to be encoded.
->> So the content of the security.encdata xattr would be something like:
->>
->>    { encoding: base64url, size: 3012, enc_ctx: YWJjZGVmZ2hpamtsbW
->>    5vcHFyc3R1dnd4eXphYmNkZWZnaGlqa2xtbg, enc_name: ZmlsZXdpdGh2ZX
->>    J5bG9uZ25hbWVmaWxld2l0aHZlcnlsb25nbmFtZWZpbGV3aXRodmVyeWxvbmdu
->>    YW1lZmlsZXdpdGg }
->>
->> Because base64 encoding has a 33% overhead, this gives us a maximum xattr
->> size of approximately 800 characters.
->> This extended attribute would not be shown when listing xattrs, only exposed
->> when fetched explicitly, and unmodified tools would not be able to access
->> the encrypted files in any case. It would not be stored on disk, only
->> computed when fetched.
-> An xattr containing multiple key-value pairs is quite strange, since xattrs
-> themselves are key-value pairs.  This could just be multiple xattrs.
->
-> Did you choose this design because you intend for this to be treated as an
-> opaque blob that userspace must not interpret at all?
+It was for this reason that ultimately, we decided that there really
+wasn't a need to back up the data in an encrypted form, since for the
+use case that our company was interested in addressing, well over 90%
+of the state was of necesity already being backed up in an unencrypted
+format.  So it was easier to just backup remaining bits of state, and
+if we need decrypt, then re-encrypt in a key which is derived from the
+user's login password before it is sent up to the cloud server.
 
-This format is chosen to be readable and potentially modified if 
-implementation of backup/restore of encrypted files evolves in the 
-future. As you mention, some of the information returned in the 
-security.encdata xattr can be retrieved by other means. But the idea to 
-have a single xattr that holds all the information is to ease 
-implementation in the backup/restore tools. For them, the backup 
-operation would just consist in fetching the security.encdata xattr if 
-dealing with an encrypted file. So from that standpoint, the content of 
-the xattr is not supposed to be interpreted by the backup/restore tools. 
-However, having a readable multi key-value pair format increases 
-portability and makes it possible for other tools to convert to a newer 
-format if the need arises in the future.
+You may be trying to solve the problem in the most general way
+possible, but sometimes that's not the best solution, especially once
+time to market and cost/complexity of implementation is taken into
+account.  As Linus Torvalds stated earlier today, when talking about
+splice(2) vs sendfile(2):
 
->> File and file system backups often use the tar utility either directly or
->> under the covers. We propose to modify the tar utility to make it
->> "encryption aware", but the same relatively small changes could be done with
->> other common backup utilities like cpio as needed. When detecting ext4
->> encrypted files, tar would need to explicitly fetch the security.encdata
->> extended attribute, and store it along with the backup file. Fetching this
->> extended attribute would internally trigger in ext4 a mechanism responsible
->> for gathering the required information. Because we must not make any clear
->> text copy of encrypted files, the encryption key must not be present.
-> Why can't the encryption key be present during backup?  Surely some people are
-> going to want to back up encrypted files consistently in ciphertext form,
-> regardless of whether the key happens to be present or not at the particular
-> time the backup is being done?  Consider e.g. a bunch of user home directories
-> which are regularly being locked and unlocked, and the system administrator is
-> taking backups of everything.
-That is a very good question. Of course we do not want to make clear 
-text copies of encrypted files, but you are right that we should also 
-support making a ciphertext backup while the key is present. I guess 
-this is achievable thanks to a specific flag to open() or preadv2() as 
-mentioned below.
->> Tar
->> would also need to use a special flag that would allow reading raw data
->> without the encryption key. Such a flag could be named O_FILE_ENC, and would
->> need to be coupled with O_DIRECT so that the page cache does not see this
->> raw data. O_FILE_ENC could take the value of (O_NOCTTY | O_NDELAY) as they
->> are unlikely to be used in practice and are not harmful if used incorrectly.
-> Maybe call this O_CIPHERTEXT?  Also note that a new RWF_* flag to preadv2,
-> instead of a new O_* flag to open(), has been suggested before.
->
->> The name of the backed-up file would be the encoded+digested form returned
->> by fscrypt.
-> Does this have a meaning, since the actual name would be stored separately?
-But the backed-up file needs to have a name right? Given that the 
-encoded+digested form returned by fscrypt is unique for the directory, I 
-thought it would be fine to use. Can you think of another name to give 
-to backed-up files?
->> The tar utility would be used to extract a previously created tarball
->> containing encrypted files. When restoring the security.encdata extended
->> attribute, instead of storing the xattr as-is on disk, this would internally
->> trigger in ext4 a mechanism responsible for extracting the required
->> information, and storing them accordingly. Tar would also need to specify
->> the O_FILE_ENC | O_DIRECT flags to write raw data without the encryption
->> key.
->>
->> To create a valid encrypted file with proper encryption context and
->> encrypted name, we can implement a mechanism where the file is first created
->> with O_TMPFILE in the encrypted directory to avoid triggering the encryption
->> context check before setting the security.encdata xattr, and then atomically
->> linking it to the namespace with the correct encrypted name.
-> How exactly does the link to the correct name happen?  What if there's more than
-> one name?  What about restoring non-regular files?
+   "... this is also very much an example of how "generic" may be
+   something that is revered in computer science, but is often a
+   *horrible* thing in reality....
 
-So the restore tool first creates the file with O_TMPFILE in the 
-encrypted directory, and writes its ciphertext content (with a special 
-flag mentioned above). Then the tool sets the security.encdata xattr. 
-Internally fscrypt uses the value of the enc_ctx field to set the .c 
-xattr on the file, and the size field to set the plaintext file length. 
-The value of the enc_name field is stored temporarily by fscrypt in a 
-dedicated xattr such as "ciphertextname". Then the tool calls linkat() 
-on the file. Internally, seeing the special flag and the presence of the 
-"ciphertextname" xattr, fscrypt uses this value as the new name.
+   Special cases are often much simpler and easier, and sometimes the
+   special cases are all you actually want." [2]
 
-The purpose of this is to impose the provided encryption context and 
-encrypted name, instead of having new ones generated at file creation.
+[2] https://lore.kernel.org/all/CAHk-=wip9xx367bfCV8xaF9Oaw4DZ6edF9Ojv10XoxJ-iUBwhA@mail.gmail.com/
 
-In the case of hard links, I do not know how tar for instance handles 
-this for normal files. Do you have any ideas?
+> In the case of hard links, I do not know how tar for instance handles this
+> for normal files. Do you have any ideas?
 
+   "Tar stores hardlinks in the tarball by storing the first file (of
+   a group of hardlinked files); the subsequent hard links to it are
+   indicated by a special record. When untarring, encountering this
+   record causes tar to create a hard link in the destination
+   filesystem." [3]
+
+[3] https://forums.whirlpool.net.au/archive/2787890
+
+Why are you assuming that tar is the best format to use for storing
+encrypted files?  It's going to require special extensions to the tar
+format, which means it won't necessarily be interoperable across
+different tar implementations.  (For example, the hard link support is
+specific to GNU tar.)
+
+Does your requirements (and this is why a more detailed explanation of
+your use case would be helpful) require supporting hard links?  If it
+doesn't and you don't mind storing N copies of the file in the tar
+archive file, and not restoring the hard links when the tar file is
+unpacked, then life is much simpler.  Which is why it's important to
+be very clear about use cases and requirements before trying to design
+a solution.
 
 Cheers,
 
-Sebastien.
-
-
->> The security.encdata extended attribute contains the encryption context of
->> the file or directory. This has a 16-byte nonce (per-file random value) that
->> is used along with the master key to derive the per-file key thanks to a KDF
->> function. But the master key is not stored in ext4, so it is not backed up
->> as part of the scenario described above, which makes the backup of the raw
->> encrypted files safe.
-> Side note: the backup/restore support will need to be disabled on files that use
-> FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64 or FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32, since
-> those files are tied to the filesystem they are on.
->
-> - Eric
+					- Ted
