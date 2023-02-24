@@ -2,51 +2,45 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99DE869FD37
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 22 Feb 2023 21:53:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D811B6A2502
+	for <lists+linux-fscrypt@lfdr.de>; Sat, 25 Feb 2023 00:25:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229461AbjBVUxs (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 22 Feb 2023 15:53:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56850 "EHLO
+        id S229535AbjBXXZa (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 24 Feb 2023 18:25:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjBVUxs (ORCPT
+        with ESMTP id S229505AbjBXXZ3 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 22 Feb 2023 15:53:48 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE33C28854;
-        Wed, 22 Feb 2023 12:53:47 -0800 (PST)
+        Fri, 24 Feb 2023 18:25:29 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7D0D60131;
+        Fri, 24 Feb 2023 15:25:26 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 337AE61589;
-        Wed, 22 Feb 2023 20:53:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E1C1C433D2;
-        Wed, 22 Feb 2023 20:53:46 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 860EDB81D4F;
+        Fri, 24 Feb 2023 23:25:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C22CC433D2;
+        Fri, 24 Feb 2023 23:25:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677099226;
-        bh=XaAZIgojzeiPE66ft9Kwkm92/HpTmj5+HTNQ0AOo27w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gx01ffIENhTjEH+tCoh68AnktWvgW+xHzoEXLOtiA0gzRHTgWV9ict/8VkIvfHt4m
-         rQFsYPJvu0/lshLOqsAi+vWt2goQna5UaM+g9du+8reCclDR7TktgwxZwMm5uHj/Kp
-         nXXrt4uR4bvg6TnSKanMb8eLX5kg82nQnaQxKhxSMXfKiY7JwP8PW0hONTKzHwhyZB
-         BRZpmsFM8SjPIW85zXZUzjfK5+CbXHC1aw5BgVg79H+dviWwvmDjgnwbE/gESZ6khF
-         jzwUR7SR/qSpU0MxizQM80y82f+RCjH4gTWUrOSYLkvaSYWZt5qK0ZGwAjflzSPA6r
-         Fs4+mHm4lcEMA==
-Date:   Wed, 22 Feb 2023 20:53:45 +0000
+        s=k20201202; t=1677281124;
+        bh=drqct7NTRbGBzinQt7YUftXFzfZue0EPo/09in97zP4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DgRHwvPLsxlsEmHlRvHUgCPXJ1J6Azz8mg4s0WxMvdd7OMw+GooliWN3894U9aWlW
+         2hnuFpwENmde+0T/gu2fu+YpUFeQDDRR9C1v5FhvtS29onNHM81g1K5cjwTmMLWGNK
+         r3YfDJtGKM4URIUB0AjrGWcc/dDfA76sq/Qj3WS2aTAaX6Z/BlymRc2US2FAlwkLW0
+         fiQguZq0iDhUZ21vCaJyz7V+kNnP3193vhW94qgkFDV9w6hiFyZRGnid5BliEU62No
+         pChTAmm4NK1RgggCvgIzD3xFjyQ97fYhAdxP5IL/WEUCFv6t1eR9zGTOGfMXN5c6HN
+         XdSu8uIXY3q2A==
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Cc:     Neal Gompa <ngompa13@gmail.com>, linux-fscrypt@vger.kernel.org,
-        paulcrowley@google.com, linux-btrfs@vger.kernel.org,
-        kernel-team@meta.com
-Subject: Re: [RFC PATCH 00/17] fscrypt: add per-extent encryption keys
-Message-ID: <Y/aA2RIFbe++LBSs@gmail.com>
-References: <cover.1672547582.git.sweettea-kernel@dorminy.me>
- <CAEg-Je-tcpu0u2TekzjrtQ4x0PQtV_1A300WxAiTVswjKbJjYw@mail.gmail.com>
- <6f17b268-6f6a-93dc-e6e0-ac0d982a72e0@dorminy.me>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
+Subject: [PATCH] fs/buffer.c: use b_folio for fscrypt work
+Date:   Fri, 24 Feb 2023 15:25:03 -0800
+Message-Id: <20230224232503.98372-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6f17b268-6f6a-93dc-e6e0-ac0d982a72e0@dorminy.me>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -56,18 +50,31 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, Feb 22, 2023 at 09:13:47AM -0500, Sweet Tea Dorminy wrote:
-> > 
-> > I'm surprised that this submission generated no discussion across a
-> > timeframe of over a month. Is this normal for RFC patch sets?
-> 
-> Eric pointed out some issues with patches 1 and 15 on 1/2. I've been on
-> parental leave and have been busier with new little one than expected, and
-> haven't sent out a new version yet. But I'm back to work in a week and this
-> is my primary priority.
+From: Eric Biggers <ebiggers@google.com>
 
-IMO, most of the patchset will change as a result of addressing my feedback.  So
-I haven't had much motivation to review the current version in detail.  I'm
-looking forward to the next version; I'm glad you're still working on it!
+Use b_folio now that it exists.  This removes an unnecessary call to
+compound_head().  No actual change in behavior.
 
-- Eric
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ fs/buffer.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/buffer.c b/fs/buffer.c
+index 034bece27163..d759b105c1e7 100644
+--- a/fs/buffer.c
++++ b/fs/buffer.c
+@@ -330,8 +330,8 @@ static void decrypt_bh(struct work_struct *work)
+ 	struct buffer_head *bh = ctx->bh;
+ 	int err;
+ 
+-	err = fscrypt_decrypt_pagecache_blocks(page_folio(bh->b_page),
+-					       bh->b_size, bh_offset(bh));
++	err = fscrypt_decrypt_pagecache_blocks(bh->b_folio, bh->b_size,
++					       bh_offset(bh));
+ 	if (err == 0 && need_fsverity(bh)) {
+ 		/*
+ 		 * We use different work queues for decryption and for verity
+-- 
+2.39.2
+
