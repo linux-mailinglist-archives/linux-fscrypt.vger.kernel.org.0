@@ -2,146 +2,270 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4B626A8916
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  2 Mar 2023 20:08:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FE736A8BCE
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  2 Mar 2023 23:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229790AbjCBTI0 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 2 Mar 2023 14:08:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59656 "EHLO
+        id S230074AbjCBW2s (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 2 Mar 2023 17:28:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229818AbjCBTIT (ORCPT
+        with ESMTP id S230063AbjCBW2r (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 2 Mar 2023 14:08:19 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1EF44ECA
-        for <linux-fscrypt@vger.kernel.org>; Thu,  2 Mar 2023 11:08:15 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id qa18-20020a17090b4fd200b0023750b675f5so3792703pjb.3
-        for <linux-fscrypt@vger.kernel.org>; Thu, 02 Mar 2023 11:08:15 -0800 (PST)
+        Thu, 2 Mar 2023 17:28:47 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 904964691
+        for <linux-fscrypt@vger.kernel.org>; Thu,  2 Mar 2023 14:28:45 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id j19-20020a05600c191300b003eb3e1eb0caso2822814wmq.1
+        for <linux-fscrypt@vger.kernel.org>; Thu, 02 Mar 2023 14:28:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1677784095;
+        d=google.com; s=20210112; t=1677796124;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Vdu6kOAJ1Ups+aUuKMhdxW9mbKAGnc9mpfEPZtQ5oYc=;
-        b=QCBxot5UEe92USFtl63SUB/c1YdLVxScPQJ1P4QKkUVllAOjkExvExOlk22Y+cAPLp
-         7weEoPvxZ0D+WDb8BBKIVp9dG4Qk6OQkdh8kKA3dGVcxvksE7MJCCR2RE4qhTXvYfGvU
-         jgj/tDTwkb4LQQic+6FFlgFTo6sCZEIGs5slvhlNdP2IW3PkjwzxqzAKtaNvhqrh1ARk
-         Fk945S48pTjqSBexPAR6DDMtcXU3MwN4FBw5DjJSxESA4tj2RXONXJlXtInGbuPs/1lK
-         6Em3Vjg2pr05lfKVnhLnuoPez7jPU4XUgCaO4BKItyg6p/BwZcZW+iA8dgGN98E+y8bW
-         DE3Q==
+        bh=4Vj3n17J4UgdgxdunAMrzoJFevXXkcwx5YlIl5ZnJ9Y=;
+        b=hPeceQkjhxoONPAmn50T52d0isnq2oM5FHnMniCmafyx09keh8bwHTtc0DXPSf9ND0
+         Enw4Z3Re3sZ71ajskh1HeAblgir/N44DTLJWJoVScXmhPG8NARglRsl4XBlpNxwV65fF
+         dVZ/MNpcPVC5knCRr9A4XGlioKzxTv+P9q8KqxQq/0wnvJ9aynvSV38VsnVSvqlPvVVZ
+         b6Iz/221kK3a13zLCdKMZ92qwUycU19azHksH2x47ijbdzDRRuiDwY8tMEWQu0GX1NH3
+         uVr1aJan8+nHfYnHfS32sdqMQIsNSWRl7ClyWulY3YnaVfqyFH/dzmFwUhrjWt14Rp4S
+         fq9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677784095;
+        d=1e100.net; s=20210112; t=1677796124;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Vdu6kOAJ1Ups+aUuKMhdxW9mbKAGnc9mpfEPZtQ5oYc=;
-        b=e/HssTLa99Wz0im9r0OvrOY7UsjwiW+dJ89G51XZMG7vwVujLBhlCi6lE8gHErUOXj
-         haOLJDu2r5ZikUymtmqgxBVEjvoz3MAjxh44/WzU9Ohiw6ylGCEvz4Rm5HwlQtmVTQ4a
-         mQmLWoIShLkLLAcfqb7BgOecTOQ+uFdbow1TvhHXqhWKJQ4c7G3R1Dp9F7iE0E1h+Td1
-         Ij1NeFNwKrEWTgLAIaY8I+BRhzaSy9tpg557DdxlUQxGN4ETx05qfrvaumfWttxM797j
-         kNxZd6hhXoHsUPUl7ooL6/eDAfQuyPg9rTtRUN34iJmq5I3kntfX6q2mPjm/kdzZJMu4
-         pGXg==
-X-Gm-Message-State: AO0yUKXWM2GWW6rlSsa9E9kSrjY3uRPO49cE5xD4HLGkZ6sjPiZMcGH0
-        i8pOVh5yJEhql5LYwKmZjlHF6aWcZ5vDLVHUxytC
-X-Google-Smtp-Source: AK7set9s3MxX+z1dx88uX1Fs1h5mTCDHnH5bToYcnqr8ZticQMwTWq2upjnKLw2DFG5CIW3NG3MUdlWUtltns+RDwxc=
-X-Received: by 2002:a17:903:1d1:b0:19c:cb32:bfef with SMTP id
- e17-20020a17090301d100b0019ccb32bfefmr4510758plh.3.1677784095231; Thu, 02 Mar
- 2023 11:08:15 -0800 (PST)
+        bh=4Vj3n17J4UgdgxdunAMrzoJFevXXkcwx5YlIl5ZnJ9Y=;
+        b=a45XZ4cN3uPUb1WcfW6GMeWQUm2uL1ByTZ/xKQszf3c5eXWa8IUle6FkGaM5eAJGDV
+         V4bNOVsVFJ0WPkIBe3K8T21JsJ6mMCk4k9d7jZTjaqDayelya7Y9L9xdSNJr2qN08JYt
+         JiB5z7rs+r9M6noonH9S/pNB2+jQ0DJQ1L/dnc6p7nuWlVjd0GWiNeCx0I5LURbDmOz4
+         Ovht4bf3wmQgA6xnXf1NGvz5k5oqxAlJ6Ih4VP9RRVcfs9MvnRfzsqPoXxG/askCBDIx
+         a4c0hDwCTVvN49nmXIG/N18PqI7k7fIDRTllxAuYq61oy94d1/ZuhmhBX+LLYbG9bg0t
+         aX4A==
+X-Gm-Message-State: AO0yUKXFosqbWJzc5Bw0AJkX5LRxQluzZjl2KGWG/rQy68CWo8ZjiHCV
+        pHLyqsoy1H6SzvyK0plVvzxic9WAlIBYh1A2QH+XHr+aazAM1c68Nrc=
+X-Google-Smtp-Source: AK7set9AK8tEjRaK45N3D28GJWdddaSrpNHG9WlN2hjy/6tNB9GLpHORVy0vGU9zd0OeZjGlYT8zF2XeiVpozat2OeA=
+X-Received: by 2002:a05:600c:1f06:b0:3eb:5a1e:d52c with SMTP id
+ bd6-20020a05600c1f0600b003eb5a1ed52cmr2111323wmb.2.1677796123880; Thu, 02 Mar
+ 2023 14:28:43 -0800 (PST)
 MIME-Version: 1.0
-References: <1675119451-23180-1-git-send-email-wufan@linux.microsoft.com> <1675119451-23180-12-git-send-email-wufan@linux.microsoft.com>
-In-Reply-To: <1675119451-23180-12-git-send-email-wufan@linux.microsoft.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 2 Mar 2023 14:08:04 -0500
-Message-ID: <CAHC9VhRdm_xpXNQvSVO2hkx2js=_zzo2DiQ6PvEjAEet4OjxNw@mail.gmail.com>
-Subject: Re: [RFC PATCH v9 11/16] ipe: add support for dm-verity as a trust provider
-To:     Fan Wu <wufan@linux.microsoft.com>
-Cc:     corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
-        serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org,
-        axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org,
-        eparis@redhat.com, linux-doc@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
-        dm-devel@redhat.com, linux-audit@redhat.com,
-        roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
-        Deven Bowers <deven.desai@linux.microsoft.com>
+References: <20230226203816.207449-1-ebiggers@kernel.org>
+In-Reply-To: <20230226203816.207449-1-ebiggers@kernel.org>
+From:   Nathan Huckleberry <nhuck@google.com>
+Date:   Thu, 2 Mar 2023 14:28:00 -0800
+Message-ID: <CAJkfWY4UOmizG=gm4+Zob7PhwMcmDe7mEviTb-hULT7ByCuqew@mail.gmail.com>
+Subject: Re: [PATCH] blk-crypto: make blk_crypto_evict_key() always try to evict
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        linux-fscrypt@vger.kernel.org, stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Jan 30, 2023 at 5:58=E2=80=AFPM Fan Wu <wufan@linux.microsoft.com> =
-wrote:
->
-> From: Deven Bowers <deven.desai@linux.microsoft.com>
->
-> Allows author of IPE policy to indicate trust for a singular dm-verity
-> volume, identified by roothash, through "dmverity_roothash" and all
-> signed dm-verity volumes, through "dmverity_signature".
->
-> Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
-> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
+Hey Eric,
 
-...
+On Sun, Feb 26, 2023 at 12:43=E2=80=AFPM Eric Biggers <ebiggers@kernel.org>=
+ wrote:
+>
+> From: Eric Biggers <ebiggers@google.com>
+>
+> Once all I/O using a blk_crypto_key has completed, filesystems can call
+> blk_crypto_evict_key().  However, the block layer doesn't call
+> blk_crypto_put_keyslot() until the request is being cleaned up, which
+> happens after upper layers have been told (via bio_endio()) the I/O has
+> completed.  This causes a race condition where blk_crypto_evict_key()
+> can see 'slot_refs > 0' without there being an actual bug.
+>
+> This makes __blk_crypto_evict_key() hit the
+> 'WARN_ON_ONCE(atomic_read(&slot->slot_refs) !=3D 0)' and return without
+> doing anything, eventually causing a use-after-free in
+> blk_crypto_reprogram_all_keys().  (This is a very rare bug and has only
+> been seen when per-file keys are being used with fscrypt.)
+>
+> There are two options to fix this: either release the keyslot in
+> blk_update_request() just before bio_endio() is called on the request's
+> last bio, or just make __blk_crypto_evict_key() ignore slot_refs.  Let's
+> go with the latter solution for now, since it avoids adding overhead to
+> the loop in blk_update_request().  (It does have the disadvantage that
+> hypothetical bugs where a key is evicted while still in-use become
+> harder to detect.  But so far there haven't been any such bugs anyway.)
 
+I disagree with the proposal to ignore the race condition in
+blk_crypto_evict_key(). As you said, ignoring the error could lead to
+undetected bugs in the future. Instead, I think we should focus on
+fixing the function ordering so that blk_crypto_put_keyslot() is
+called before blk_crypto_evict_key().
+
+I think the overhead is a necessary trade-off to ensure correctness.
+
+Thanks,
+Huck
+
+>
+> A related issue with __blk_crypto_evict_key() is that ->keyslot_evict
+> failing would cause the same use-after-free as well.  Fix this by always
+> removing the key from the keyslot management structures.
+>
+> Update the function documentation to properly document the semantics.
+>
+> Fixes: 1b2628397058 ("block: Keyslot Manager for Inline Encryption")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 > ---
->  security/ipe/Kconfig         |  20 +++++
->  security/ipe/Makefile        |   2 +
->  security/ipe/audit.c         |  24 ++++++
->  security/ipe/digest.c        | 144 +++++++++++++++++++++++++++++++++++
->  security/ipe/digest.h        |  26 +++++++
->  security/ipe/eval.c          | 103 +++++++++++++++++++++++++
->  security/ipe/eval.h          |  13 ++++
->  security/ipe/hooks.c         |  51 +++++++++++++
->  security/ipe/hooks.h         |   8 ++
->  security/ipe/ipe.c           |  15 ++++
->  security/ipe/ipe.h           |   4 +
->  security/ipe/policy.h        |   3 +
->  security/ipe/policy_parser.c |  16 ++++
->  13 files changed, 429 insertions(+)
->  create mode 100644 security/ipe/digest.c
->  create mode 100644 security/ipe/digest.h
+>  block/blk-crypto-profile.c | 52 +++++++++++++++-----------------------
+>  block/blk-crypto.c         | 24 +++++++++++-------
+>  2 files changed, 36 insertions(+), 40 deletions(-)
 >
-> diff --git a/security/ipe/Kconfig b/security/ipe/Kconfig
-> index ac4d558e69d5..16e835ce61b0 100644
-> --- a/security/ipe/Kconfig
-> +++ b/security/ipe/Kconfig
-> @@ -15,3 +15,23 @@ menuconfig SECURITY_IPE
->           admins to reconfigure trust requirements on the fly.
+> diff --git a/block/blk-crypto-profile.c b/block/blk-crypto-profile.c
+> index 0307fb0d95d3..29b4148cc50d 100644
+> --- a/block/blk-crypto-profile.c
+> +++ b/block/blk-crypto-profile.c
+> @@ -354,22 +354,11 @@ bool __blk_crypto_cfg_supported(struct blk_crypto_p=
+rofile *profile,
+>         return true;
+>  }
 >
->           If unsure, answer N.
-> +
-> +if SECURITY_IPE
-> +menu "IPE Trust Providers"
-> +
-> +config IPE_PROP_DM_VERITY
-> +       bool "Enable support for dm-verity volumes"
-> +       depends on DM_VERITY && DM_VERITY_VERIFY_ROOTHASH_SIG
-> +       default Y
-> +       help
-> +         This option enables the properties 'dmverity_signature' and
-> +         'dmverity_roothash' in IPE policy. These properties evaluates
-> +         to TRUE when a file is evaluated against a dm-verity volume
-> +         that was mounted with a signed root-hash or the volume's
-> +         root hash matches the supplied value in the policy.
-> +
-> +         If unsure, answer Y.
-
-If you had both IPE and dm-verity enabled in your kernel build, is
-there ever a case where you wouldn't want IPE_PROP_DM_VERITY?  I
-suspect you can just have IPE and dm-verity select IPE_PROP_DM_VERITY
-and not bother the user/admin with the additional Kconfig knob.
-
-> +endmenu
-> +
-> +endif
-
---
-paul-moore.com
+> -/**
+> - * __blk_crypto_evict_key() - Evict a key from a device.
+> - * @profile: the crypto profile of the device
+> - * @key: the key to evict.  It must not still be used in any I/O.
+> - *
+> - * If the device has keyslots, this finds the keyslot (if any) that cont=
+ains the
+> - * specified key and calls the driver's keyslot_evict function to evict =
+it.
+> - *
+> - * Otherwise, this just calls the driver's keyslot_evict function if it =
+is
+> - * implemented, passing just the key (without any particular keyslot).  =
+This
+> - * allows layered devices to evict the key from their underlying devices=
+.
+> - *
+> - * Context: Process context. Takes and releases profile->lock.
+> - * Return: 0 on success or if there's no keyslot with the specified key,=
+ -EBUSY
+> - *        if the keyslot is still in use, or another -errno value on oth=
+er
+> - *        error.
+> +/*
+> + * This is an internal function that evicts a key from an inline encrypt=
+ion
+> + * device that can be either a real device or the blk-crypto-fallback "d=
+evice".
+> + * It is used only for blk_crypto_evict_key().  For details on what this=
+ does,
+> + * see the documentation for blk_crypto_evict_key().
+>   */
+>  int __blk_crypto_evict_key(struct blk_crypto_profile *profile,
+>                            const struct blk_crypto_key *key)
+> @@ -389,22 +378,23 @@ int __blk_crypto_evict_key(struct blk_crypto_profil=
+e *profile,
+>
+>         blk_crypto_hw_enter(profile);
+>         slot =3D blk_crypto_find_keyslot(profile, key);
+> -       if (!slot)
+> -               goto out_unlock;
+> -
+> -       if (WARN_ON_ONCE(atomic_read(&slot->slot_refs) !=3D 0)) {
+> -               err =3D -EBUSY;
+> -               goto out_unlock;
+> +       if (slot) {
+> +               /*
+> +                * Note: it is a bug if the key is still in use by I/O he=
+re.
+> +                * But 'slot_refs > 0' can't be used to detect such bugs =
+here,
+> +                * since the keyslot isn't released until after upper lay=
+ers
+> +                * have already been told the I/O is complete.
+> +                */
+> +               err =3D profile->ll_ops.keyslot_evict(
+> +                               profile, key, blk_crypto_keyslot_index(sl=
+ot));
+> +               /*
+> +                * Even on ->keyslot_evict failure, we must remove the
+> +                * blk_crypto_key from the keyslot management structures,=
+ since
+> +                * the caller is allowed to free it regardless.
+> +                */
+> +               hlist_del(&slot->hash_node);
+> +               slot->key =3D NULL;
+>         }
+> -       err =3D profile->ll_ops.keyslot_evict(profile, key,
+> -                                           blk_crypto_keyslot_index(slot=
+));
+> -       if (err)
+> -               goto out_unlock;
+> -
+> -       hlist_del(&slot->hash_node);
+> -       slot->key =3D NULL;
+> -       err =3D 0;
+> -out_unlock:
+>         blk_crypto_hw_exit(profile);
+>         return err;
+>  }
+> diff --git a/block/blk-crypto.c b/block/blk-crypto.c
+> index 45378586151f..3dcbe578beb2 100644
+> --- a/block/blk-crypto.c
+> +++ b/block/blk-crypto.c
+> @@ -399,17 +399,23 @@ int blk_crypto_start_using_key(struct block_device =
+*bdev,
+>  }
+>
+>  /**
+> - * blk_crypto_evict_key() - Evict a key from any inline encryption hardw=
+are
+> - *                         it may have been programmed into
+> - * @bdev: The block_device who's associated inline encryption hardware t=
+his key
+> - *     might have been programmed into
+> - * @key: The key to evict
+> + * blk_crypto_evict_key() - Evict a blk_crypto_key from a block_device
+> + * @bdev: a block_device on which I/O using the key may have been done
+> + * @key: the key to evict
+>   *
+> - * Upper layers (filesystems) must call this function to ensure that a k=
+ey is
+> - * evicted from any hardware that it might have been programmed into.  T=
+he key
+> - * must not be in use by any in-flight IO when this function is called.
+> + * For a given block_device, this function removes the given blk_crypto_=
+key from
+> + * the keyslot management structures and evicts it from any underlying h=
+ardware
+> + * or fallback keyslot(s) it may have been programmed into.
+>   *
+> - * Return: 0 on success or if the key wasn't in any keyslot; -errno on e=
+rror.
+> + * Upper layers must call this before freeing the blk_crypto_key.  It mu=
+st be
+> + * called for every block_device the key may have been used on.  The key=
+ must no
+> + * longer be in use by any I/O when this function is called.
+> + *
+> + * Context: May sleep.
+> + * Return: 0 on success or if the key wasn't in any keyslot; -errno if t=
+he key
+> + *        failed to be evicted from a hardware keyslot.  Even in the -er=
+rno
+> + *        case, the key is removed from the keyslot management structure=
+s and
+> + *        the caller is allowed (and expected) to free the blk_crypto_ke=
+y.
+>   */
+>  int blk_crypto_evict_key(struct block_device *bdev,
+>                          const struct blk_crypto_key *key)
+>
+> base-commit: 489fa31ea873282b41046d412ec741f93946fc2d
+> --
+> 2.39.2
+>
