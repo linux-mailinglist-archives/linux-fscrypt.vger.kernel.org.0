@@ -2,52 +2,77 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3616A73F2
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  1 Mar 2023 20:02:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3885A6A7987
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  2 Mar 2023 03:33:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229696AbjCATCs (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 1 Mar 2023 14:02:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41812 "EHLO
+        id S229708AbjCBCdg (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 1 Mar 2023 21:33:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229651AbjCATCq (ORCPT
+        with ESMTP id S229561AbjCBCdg (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 1 Mar 2023 14:02:46 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E033497CE;
-        Wed,  1 Mar 2023 11:02:45 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 009E0CE1DED;
-        Wed,  1 Mar 2023 19:02:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16AAEC433D2;
-        Wed,  1 Mar 2023 19:02:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677697362;
-        bh=avy+R5ETeyQpbqcg7PcpMnPq76z3pQZJwJ1DmPY39xg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SQ+/Eb4Uy3c8s3cmt+E/31fydZrvRCInfPkQ5N8Q6Utop3W9Z411wHaGwneRCc0oH
-         nFGX2a4huLC4W6u0bPb4h83+Pu5sHzIUPe0zMGO7VUObNsZwemM3gQtGvdOLw662Vq
-         n/0I6L+pDEAotASMy1TkzFMDOTtKCd0fjAUQzM+T3DWV+g15MVeXp4za1e5EWO5q3G
-         jww3jXLGQB9tb9hfYbolY4+FIH+pfwWe2VZy0rKdsoQYaI2KWBBg3if8KPoFCR39vM
-         cisrlVGiQRuuYnRVzJaNYLDIUa32RN3cNPmItQ1rxtBerVay+0XzD1ohvZi6NrUxwO
-         3JG5CQAAbKdNg==
-Date:   Wed, 1 Mar 2023 19:02:30 +0000
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     syzbot <syzbot+3a3b5221ffafba7d5204@syzkaller.appspotmail.com>
-Cc:     jaegeuk@kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Subject: Re: [syzbot] [fscrypt?] possible deadlock in fscrypt_initialize (2)
-Message-ID: <Y/+hRpwYSk4FT/oG@gmail.com>
-References: <0000000000002f1a6205f5d8096b@google.com>
+        Wed, 1 Mar 2023 21:33:36 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A7591A952
+        for <linux-fscrypt@vger.kernel.org>; Wed,  1 Mar 2023 18:33:31 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id u5so12707390plq.7
+        for <linux-fscrypt@vger.kernel.org>; Wed, 01 Mar 2023 18:33:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1677724410;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b0lZNoVt9lJ6J8uwaJdMmpDSpbdScMq/0KTuhIjVkUQ=;
+        b=LBK+rKiKoXKZ/dbsn6xOP1h/1DdhUKpftUh9e+mkGx24Ct1QSUdx91ynl9oxmsdOmu
+         AY8rWlxThr7PyU90SvB4UXjE6M5VHvjWx4KfK9GsYGkN3hLA/9NX+ZGRYO521cn5HoV/
+         L4jLAkDTaJkUj2nKsaBy/Az+XIjOhnJpuKJKZ477nIPry0z8rgcjlZ2QsKxicDEtQVKp
+         qFpzchl85bH4lVPP54ms7k/a61sS9zFQWXTwWJRVD0naVRlEs9F3Hyi4XBBHf5kj6brb
+         ssow4TEkTpN1pS5sL1n+r5CheMH8kPZkPSRkwSE7afnWqqvApSlU63NoKvUKbd68prZj
+         EoXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1677724410;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=b0lZNoVt9lJ6J8uwaJdMmpDSpbdScMq/0KTuhIjVkUQ=;
+        b=jR97tz8eI0GNXrYhs1hU7F0XPmqvVmsNIvKYIX+JLT/P5RJ0FPGBJeNvmjfjpkl8vO
+         AZpBvtR0A6R0QOMmUjE7HkP++XSaPqp7EpV6J8kFLGdYFZFabE/YnrUODe9KSpyoqhOl
+         SvO8aRgAD2AvBvLd4rFAtGaGSMTNI6ZwTPdDCXIu2ueDy+L9n3cUMsKnopnxTWL5bxz9
+         55P65SDVH+EAnqFUddxDlR6YgLQETVtOIzP5gYJwHIRtSg8H6mTv2gFQzZYqJJa4Ra8c
+         k021csht7/c8Y6uPdZBHG5Fta9KLGwQOlM0GktFZuFftpFQhMGd7NmLa97/n4cHZ14KN
+         ce1g==
+X-Gm-Message-State: AO0yUKWiYjwi+fJBSvFEiKTOdUI20e61FZrZOCQmHZspS5uUIU1Z9fiO
+        BqsKmVjj+t6+rvKB1E53X7CtsN97eyymDDjsSaE3
+X-Google-Smtp-Source: AK7set+xzLCM6twBgJCibMqi0G3TLp91UnzEQU5FoUMwEXykcRoWlNU/HbsG/K6w+XprDCA87nJQJ5CJfxasDk2ZryU=
+X-Received: by 2002:a17:903:2782:b0:19b:373:94ad with SMTP id
+ jw2-20020a170903278200b0019b037394admr3206594plb.3.1677724410550; Wed, 01 Mar
+ 2023 18:33:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0000000000002f1a6205f5d8096b@google.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+References: <1675119451-23180-1-git-send-email-wufan@linux.microsoft.com>
+ <1675119451-23180-4-git-send-email-wufan@linux.microsoft.com>
+ <061df661004a06ef1e8790d48157c7ba4ecfc009.camel@huaweicloud.com> <20230210232154.GA17962@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+In-Reply-To: <20230210232154.GA17962@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 1 Mar 2023 21:33:19 -0500
+Message-ID: <CAHC9VhShcgFtdxxoFX9x+QOM3Qb7xWa-AJuJGrHgaK_N8nKtzQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v9 03/16] ipe: add evaluation loop and introduce
+ 'boot_verified' as a trust provider
+To:     Fan Wu <wufan@linux.microsoft.com>
+Cc:     Roberto Sassu <roberto.sassu@huaweicloud.com>, corbet@lwn.net,
+        zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com,
+        tytso@mit.edu, ebiggers@kernel.org, axboe@kernel.dk,
+        agk@redhat.com, snitzer@kernel.org, eparis@redhat.com,
+        linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
+        dm-devel@redhat.com, linux-audit@redhat.com,
+        roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
+        Deven Bowers <deven.desai@linux.microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,38 +80,37 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, Mar 01, 2023 at 07:04:59AM -0800, syzbot wrote:
-> -> #1 (fs_reclaim){+.+.}-{0:0}:
->        __fs_reclaim_acquire mm/page_alloc.c:4716 [inline]
->        fs_reclaim_acquire+0x11d/0x160 mm/page_alloc.c:4730
->        might_alloc include/linux/sched/mm.h:271 [inline]
->        slab_pre_alloc_hook mm/slab.h:728 [inline]
->        slab_alloc_node mm/slub.c:3434 [inline]
->        __kmem_cache_alloc_node+0x41/0x330 mm/slub.c:3491
->        kmalloc_node_trace+0x21/0x60 mm/slab_common.c:1074
->        kmalloc_node include/linux/slab.h:606 [inline]
->        kzalloc_node include/linux/slab.h:731 [inline]
->        mempool_create_node mm/mempool.c:272 [inline]
->        mempool_create+0x52/0xc0 mm/mempool.c:261
->        mempool_create_page_pool include/linux/mempool.h:112 [inline]
->        fscrypt_initialize+0x8a/0xa0 fs/crypto/crypto.c:332
->        fscrypt_setup_encryption_info+0xef/0xeb0 fs/crypto/keysetup.c:563
->        fscrypt_get_encryption_info+0x375/0x450 fs/crypto/keysetup.c:668
->        fscrypt_setup_filename+0x23c/0xec0 fs/crypto/fname.c:458
->        ext4_fname_setup_filename+0x8c/0x110 fs/ext4/crypto.c:28
->        ext4_find_entry+0x8c/0x140 fs/ext4/namei.c:1725
->        ext4_rename+0x51d/0x26d0 fs/ext4/namei.c:3829
->        ext4_rename2+0x1c7/0x270 fs/ext4/namei.c:4193
->        vfs_rename+0xef6/0x17a0 fs/namei.c:4772
->        do_renameat2+0xb62/0xc90 fs/namei.c:4923
->        __do_sys_renameat2 fs/namei.c:4956 [inline]
->        __se_sys_renameat2 fs/namei.c:4953 [inline]
->        __ia32_sys_renameat2+0xe8/0x120 fs/namei.c:4953
->        do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
->        __do_fast_syscall_32+0x65/0xf0 arch/x86/entry/common.c:178
->        do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
->        entry_SYSENTER_compat_after_hwframe+0x70/0x82
+On Fri, Feb 10, 2023 at 6:21=E2=80=AFPM Fan Wu <wufan@linux.microsoft.com> =
+wrote:
+> On Tue, Jan 31, 2023 at 04:49:44PM +0100, Roberto Sassu wrote:
+> > On Mon, 2023-01-30 at 14:57 -0800, Fan Wu wrote:
+> > > From: Deven Bowers <deven.desai@linux.microsoft.com>
+> > >
+> > > IPE must have a centralized function to evaluate incoming callers
+> > > against IPE's policy. This iteration of the policy against the rules
+> > > for that specific caller is known as the evaluation loop.
+> >
+> > Not sure if you check the properties at every access.
+> >
+> > >From my previous comments (also for previous versions of the patches)
+> > you could evaluate the property once, by calling the respective
+> > functions in the other subsystems.
+> >
+> > Then, you reserve space in the security blob for inodes and superblocks
+> > to cache the decision. The format could be a policy sequence number, to
+> > ensure that the cache is valid only for the current policy, and a bit
+> > for every hook you enforce.
+>
+> Thanks for raising this idea. I agree that if the property evaluation
+> leads to a performance issue, it will be better to cache the evaluation
+> result. But for this version, all the property evaluations are simple,
+> so it is just as fast as accessing a cache. Also, for the initial
+> version we prefer to keep the patch as minimal as possible.
 
-#syz dup: possible deadlock in start_this_handle (4)
+FWIW, I think that is the right decision.  Keeping the initial
+submission relatively small and focused has a lot of advantages when
+it comes both to review and prematurely optimizing things that might
+not need optimization.
 
-- Eric
+--=20
+paul-moore.com
