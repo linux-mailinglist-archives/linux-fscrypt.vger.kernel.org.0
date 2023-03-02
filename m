@@ -2,59 +2,58 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47EA16A88E7
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  2 Mar 2023 20:04:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 072DB6A88EF
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  2 Mar 2023 20:05:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229748AbjCBTEX (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 2 Mar 2023 14:04:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53882 "EHLO
+        id S229732AbjCBTFQ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 2 Mar 2023 14:05:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229723AbjCBTEQ (ORCPT
+        with ESMTP id S229626AbjCBTFP (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 2 Mar 2023 14:04:16 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFAD7F96C
-        for <linux-fscrypt@vger.kernel.org>; Thu,  2 Mar 2023 11:03:44 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id y15-20020a17090aa40f00b00237ad8ee3a0so9026pjp.2
-        for <linux-fscrypt@vger.kernel.org>; Thu, 02 Mar 2023 11:03:44 -0800 (PST)
+        Thu, 2 Mar 2023 14:05:15 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E11755053
+        for <linux-fscrypt@vger.kernel.org>; Thu,  2 Mar 2023 11:04:54 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id h11-20020a17090a2ecb00b00237c740335cso3764846pjs.3
+        for <linux-fscrypt@vger.kernel.org>; Thu, 02 Mar 2023 11:04:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1677783803;
+        d=paul-moore.com; s=google; t=1677783893;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FssevT39iJZR1q32L9Ldyz9vD4a6RNVi8ykMS5L1yW0=;
-        b=MZq6OPOVyRu1sSz4WecTPIjyC2a7Pf/CbfdJd+Jl6gExGNfwpTa818dup+aGHyLMiR
-         UUe1eW16dk6t7yL654sU7zEwyma092q9031/s11yhSm0Md1SEsRS96Rx4XPTF8B9npTm
-         RkxXLlJdqmy4EHHD6vSgmhiK4gDGJipI28K3LP03wayEYpaNJPRX8f93TpnKfVAr64Ud
-         P/SbiMUHiMN2Y10C6mv7j9xghChgGhgZgHXUHYtTA+VlnC+6fiSAeZLC02+MFHfH/IcN
-         QZyHrCg+Ja8jrKIunVYNGQaqItFYq4pIKSQG6I3sX2Yl1lbWhhcU51ONnoWVYF3fvbcj
-         rtNQ==
+        bh=LRVimYCKhvDiUDPfm5kwf3o6VQDi4G7m6HXxXYMXUFM=;
+        b=ft/viqzCkTLwW6EhkDpC3VazoKVAkUJYltQAAdCTwnd9bafcpSMDaQPKSVafTdr0WW
+         hnhUPhxUelD0fxHuGH3j9xRL8OQBTgTg8OTQaBDbqxqZpMqWtW8NEuCYFSGQirO02J63
+         h0Pq0R1AnqVBRt19s3QVGSiWWXQFKWPD1MmrDXV/KH6wIBUNFVAWd8GO4F1s3esSSJ97
+         tjlnWdZmE45usWwpu86183HKv10lKSOdXVYU07Dpovrnld5ZrlsQI1q6wK3U2HtZhNtO
+         B8sj/nGKL2Kdp+mFWaFq7Z6Po3kHhxKlyNaDlJO4Q3raImBfrjgsOCDZR0mTnjsGUIBm
+         oSPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677783803;
+        d=1e100.net; s=20210112; t=1677783893;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FssevT39iJZR1q32L9Ldyz9vD4a6RNVi8ykMS5L1yW0=;
-        b=t8UpO/I3zXMFR2twZhJUInA/9e+cxmwUU7VccZxScFpUWvUVYPqRXKxZf075UVS2bD
-         xeCscqieDWS7rOB6bwMyhULUyCSUOzFIfqL2GlNXEYXdM5inrGRdbYuYVoHPj35AVtjJ
-         W/7bmq4zh4cj1/tSf5+JRvsmk3OklqyEK5oRr19M1lYYFE/vgi9HFYgYaSPD4V4td+Ms
-         vBuW5VxAGzePS8TTAT3EOeY36zYm3Ab+dQzQRTwSThKVj1FmwARu1HMBdM9Ebi1Cwesy
-         XMvaZEN9krEY5zTN5APQSQwCKxz1eHwLBGDhYclGh1ttmurul27iI3q3HK8di0jEmAIA
-         R3dQ==
-X-Gm-Message-State: AO0yUKXUiHxhHRclIVwqF7zhq8yoSYp9gfPgytE5XytsH4vS1hNtF1yC
-        noY2xhq6W/SATVelbdYyee1pd5QymiNtevlxIsdz
-X-Google-Smtp-Source: AK7set+3/GrjQmGEOIf5XN+oR/tJPrT7DH51D3Ab0edP4F+WhT/BThkJbqjsZYFOdsjV/WC6bwO0qzp+XudiOKcSgMg=
-X-Received: by 2002:a17:90b:3798:b0:237:7edd:2e08 with SMTP id
- mz24-20020a17090b379800b002377edd2e08mr4456582pjb.0.1677783802723; Thu, 02
- Mar 2023 11:03:22 -0800 (PST)
+        bh=LRVimYCKhvDiUDPfm5kwf3o6VQDi4G7m6HXxXYMXUFM=;
+        b=BVOKxE/CmcpjMwEwEYvtzi8z1R13hs0q5QmOhI9iEpVXvfcNPoNtjxgwk2+TO8Z60/
+         CNcFRRiW76SjNZjZoVErqnrC9RWMBg1Dv0adYp/JTrgLV4rY4emoahS+INA5uDnJTZ9J
+         Fr1DPMvT/4B3wJN44OziZ+jHCv/f7lzY5cBG6sAqw+S8ud/KlvqXkzalXHZhqEQd/x02
+         Drj0c+BpH5OzF2HcdbE0ifVi2GN9oJlHjeUfKKK77PBfhEKPl6U8wEc/buFrbJBFZDl0
+         e5whT559MTklo4/fQlR8YG1iN4fnk1FjojfJDfeje2H6If9ayeSn16e6B1lNio30+KWY
+         /XCw==
+X-Gm-Message-State: AO0yUKWVjU2JWRWJM46xXTfy9yRHyRb5LYWQ/gLe8NbCMiWI8fVS3knT
+        Rbjt7EhsDGhQO8BTocxfGx7RO2FaniNXYmShWfbm
+X-Google-Smtp-Source: AK7set8jr8w++GEdWwicBErVrQxXYcvRZv+4pkR2mJOP8drvGUq4551NSSMlqb/wqBBEjbF+WJsHq3GFxyqHmReivT0=
+X-Received: by 2002:a17:902:f7d1:b0:19a:f9d9:28d4 with SMTP id
+ h17-20020a170902f7d100b0019af9d928d4mr4094339plw.3.1677783893526; Thu, 02 Mar
+ 2023 11:04:53 -0800 (PST)
 MIME-Version: 1.0
-References: <1675119451-23180-1-git-send-email-wufan@linux.microsoft.com> <1675119451-23180-4-git-send-email-wufan@linux.microsoft.com>
-In-Reply-To: <1675119451-23180-4-git-send-email-wufan@linux.microsoft.com>
+References: <1675119451-23180-1-git-send-email-wufan@linux.microsoft.com> <1675119451-23180-6-git-send-email-wufan@linux.microsoft.com>
+In-Reply-To: <1675119451-23180-6-git-send-email-wufan@linux.microsoft.com>
 From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 2 Mar 2023 14:03:11 -0500
-Message-ID: <CAHC9VhS_EbT7ze4oSHwHfus91VWQfdgGagf=5O7_h+XJ2o79PA@mail.gmail.com>
-Subject: Re: [RFC PATCH v9 03/16] ipe: add evaluation loop and introduce
- 'boot_verified' as a trust provider
+Date:   Thu, 2 Mar 2023 14:04:42 -0500
+Message-ID: <CAHC9VhRa+NwKzLfQBmHfMgUp6_d5soQG7JBq-Vn=MUeUAt4tuQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v9 05/16] ipe: add userspace interface
 To:     Fan Wu <wufan@linux.microsoft.com>
 Cc:     corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
         serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org,
@@ -70,8 +69,7 @@ Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -83,19 +81,10 @@ wrote:
 >
 > From: Deven Bowers <deven.desai@linux.microsoft.com>
 >
-> IPE must have a centralized function to evaluate incoming callers
-> against IPE's policy. This iteration of the policy against the rules
-> for that specific caller is known as the evaluation loop.
->
-> In addition, IPE is designed to provide system level trust guarantees,
-> this usually implies that trust starts from bootup with a hardware root
-> of trust, which validates the bootloader. After this, the bootloader
-> verifies the kernel and the initramfs.
->
-> As there's no currently supported integrity method for initramfs, and
-> it's typically already verified by the bootloader, introduce a property
-> that causes the first superblock to have an execution to be "pinned",
-> which is typically initramfs.
+> As is typical with LSMs, IPE uses securityfs as its interface with
+> userspace. for a complete list of the interfaces and the respective
+> inputs/outputs, please see the documentation under
+> admin-guide/LSM/ipe.rst
 >
 > Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
 > Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
@@ -103,455 +92,200 @@ wrote:
 ...
 
 > ---
->  security/ipe/Makefile        |   1 +
->  security/ipe/eval.c          | 180 +++++++++++++++++++++++++++++++++++
->  security/ipe/eval.h          |  28 ++++++
->  security/ipe/hooks.c         |  25 +++++
->  security/ipe/hooks.h         |  14 +++
->  security/ipe/ipe.c           |   1 +
->  security/ipe/policy.c        |  20 ++++
->  security/ipe/policy.h        |   3 +
->  security/ipe/policy_parser.c |   8 +-
->  9 files changed, 279 insertions(+), 1 deletion(-)
->  create mode 100644 security/ipe/eval.c
->  create mode 100644 security/ipe/eval.h
->  create mode 100644 security/ipe/hooks.c
->  create mode 100644 security/ipe/hooks.h
+>  security/ipe/Makefile    |   2 +
+>  security/ipe/fs.c        | 101 +++++++++
+>  security/ipe/fs.h        |  17 ++
+>  security/ipe/ipe.c       |   3 +
+>  security/ipe/ipe.h       |   2 +
+>  security/ipe/policy.c    | 135 ++++++++++++
+>  security/ipe/policy.h    |   7 +
+>  security/ipe/policy_fs.c | 459 +++++++++++++++++++++++++++++++++++++++
+>  8 files changed, 726 insertions(+)
+>  create mode 100644 security/ipe/fs.c
+>  create mode 100644 security/ipe/fs.h
+>  create mode 100644 security/ipe/policy_fs.c
+
+...
+
+> diff --git a/security/ipe/policy.c b/security/ipe/policy.c
+> index 772d876b1087..a5e9c6e5691b 100644
+> --- a/security/ipe/policy.c
+> +++ b/security/ipe/policy.c
+> @@ -4,12 +4,39 @@
+>   */
 >
-> diff --git a/security/ipe/Makefile b/security/ipe/Makefile
-> index 16bbe80991f1..d7f2870d7c09 100644
-> --- a/security/ipe/Makefile
-> +++ b/security/ipe/Makefile
-> @@ -6,6 +6,7 @@
->  #
->
->  obj-$(CONFIG_SECURITY_IPE) +=3D \
-> +       eval.o \
->         hooks.o \
->         ipe.o \
->         policy.o \
-> diff --git a/security/ipe/eval.c b/security/ipe/eval.c
-> new file mode 100644
-> index 000000000000..48b5104a3463
-> --- /dev/null
-> +++ b/security/ipe/eval.c
-> @@ -0,0 +1,180 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) Microsoft Corporation. All rights reserved.
-> + */
-> +
-> +#include "ipe.h"
+>  #include "ipe.h"
 > +#include "eval.h"
-> +#include "hooks.h"
-> +#include "policy.h"
-> +
-> +#include <linux/fs.h>
-> +#include <linux/types.h>
-> +#include <linux/slab.h>
-> +#include <linux/file.h>
-> +#include <linux/sched.h>
-> +#include <linux/rcupdate.h>
-> +#include <linux/spinlock.h>
-> +
-> +struct ipe_policy __rcu *ipe_active_policy;
-> +
-> +static struct super_block *pinned_sb;
-> +static DEFINE_SPINLOCK(pin_lock);
-> +#define FILE_SUPERBLOCK(f) ((f)->f_path.mnt->mnt_sb)
+> +#include "fs.h"
+>  #include "policy.h"
+>  #include "policy_parser.h"
+>  #include "digest.h"
+>
+>  #include <linux/verification.h>
+>
+> +/* lock for synchronizing writers across ipe policy */
+> +DEFINE_SPINLOCK(ipe_policy_lock);
 > +
 > +/**
-> + * pin_sb - Pin the underlying superblock of @f, marking it as trusted.
-> + * @f: Supplies a file structure to source the super_block from.
+> + * ver_to_u64 - Convert an internal ipe_policy_version to a u64.
+> + * @p: Policy to extract the version from.
+> + *
+> + * Bits (LSB is index 0):
+> + *     [48,32] -> Major
+> + *     [32,16] -> Minor
+> + *     [16, 0] -> Revision
+> + *
+> + * Return: u64 version of the embedded version structure.
 > + */
-> +static void pin_sb(const struct file *f)
+> +static inline u64 ver_to_u64(const struct ipe_policy *const p)
 > +{
-> +       if (!f)
-> +               return;
-> +       spin_lock(&pin_lock);
-> +       if (pinned_sb)
-> +               goto out;
-> +       pinned_sb =3D FILE_SUPERBLOCK(f);
-> +out:
-> +       spin_unlock(&pin_lock);
+> +       u64 r =3D 0;
+
+No need to set @r to 0 since you set it to the version immediately below.
+
+> +       r =3D (((u64)p->parsed->version.major) << 32)
+> +         | (((u64)p->parsed->version.minor) << 16)
+> +         | ((u64)(p->parsed->version.rev));
+> +
+> +       return r;
 > +}
-
-Since you don't actually use @f, just the super_block, you might
-consider passing the super_block as the parameter and not the
-associated file.
-
-I'd probably also flip the if-then to avoid the 'goto', for example:
-
-  static void pin_sb(const struct super_block *sb)
-  {
-    if (!sb)
-      return;
-    spin_lock(&pin_lock);
-    if (!pinned_sb)
-      pinned_sb =3D sb;
-    spin_unlock(&pin_lock);
-  }
-
-Also, do we need to worry about the initramfs' being unmounted and the
-super_block going away?
-
+> +
+>  /**
+>   * ipe_free_policy - Deallocate a given IPE policy.
+>   * @p: Supplies the policy to free.
+> @@ -21,6 +48,7 @@ void ipe_free_policy(struct ipe_policy *p)
+>         if (IS_ERR_OR_NULL(p))
+>                 return;
+>
+> +       ipe_del_policyfs_node(p);
+>         free_parsed_policy(p->parsed);
+>         if (!p->pkcs7)
+>                 kfree(p->text);
+> @@ -39,6 +67,70 @@ static int set_pkcs7_data(void *ctx, const void *data,=
+ size_t len,
+>         return 0;
+>  }
+>
 > +/**
-> + * from_pinned - Determine whether @f is source from the pinned super_bl=
-ock.
-> + * @f: Supplies a file structure to check against the pinned super_block=
-.
+> + * ipe_update_policy - parse a new policy and replace @old with it.
+> + * @addr: Supplies a pointer to the i_private for saving policy.
+> + * @text: Supplies a pointer to the plain text policy.
+> + * @textlen: Supplies the length of @text.
+> + * @pkcs7: Supplies a pointer to a buffer containing a pkcs7 message.
+> + * @pkcs7len: Supplies the length of @pkcs7len.
+> + *
+> + * @text/@textlen is mutually exclusive with @pkcs7/@pkcs7len - see
+> + * ipe_new_policy.
 > + *
 > + * Return:
-> + * * true      - @f is sourced from the pinned super_block
-> + * * false     - @f is not sourced from the pinned super_block
+> + * * !IS_ERR   - OK
+> + * * -ENOENT   - Policy doesn't exist
+> + * * -EINVAL   - New policy is invalid
 > + */
-> +static bool from_pinned(const struct file *f)
-> +{
-> +       bool rv;
-> +
-> +       if (!f)
-> +               return false;
-> +       spin_lock(&pin_lock);
-> +       rv =3D !IS_ERR_OR_NULL(pinned_sb) && pinned_sb =3D=3D FILE_SUPERB=
-LOCK(f);
-> +       spin_unlock(&pin_lock);
-> +       return rv;
-> +}
-> +
-> +/**
-> + * build_eval_ctx - Build an evaluation context.
-> + * @ctx: Supplies a pointer to the context to be populdated.
-> + * @file: Supplies a pointer to the file to associated with the evaluati=
-on.
-> + * @op: Supplies the IPE policy operation associated with the evaluation=
-.
-> + */
-> +void build_eval_ctx(struct ipe_eval_ctx *ctx,
-> +                   const struct file *file,
-> +                   enum ipe_op_type op)
-> +{
-> +       ctx->file =3D file;
-> +       ctx->op =3D op;
-> +       ctx->from_init_sb =3D from_pinned(file);
-> +}
-
-I was a little concerned about the spinlock around the pinned
-superblock being a potential issue so I was checking the callers of
-`build_eval_ctx()` and realized there are no callers in this patch ...
-?  Maybe it makes sense for `build_eval_ctx()` to be in this patch but
-it seems a little odd.
-
-> +/**
-> + * evaluate_property - Analyze @ctx against a property.
-> + * @ctx: Supplies a pointer to the context to be evaluated.
-> + * @p: Supplies a pointer to the property to be evaluated.
-> + *
-> + * Return:
-> + * * true      - The current @ctx match the @p
-> + * * false     - The current @ctx doesn't match the @p
-> + */
-> +static bool evaluate_property(const struct ipe_eval_ctx *const ctx,
-> +                             struct ipe_prop *p)
-> +{
-> +       bool eval =3D false;
-> +
-> +       switch (p->type) {
-> +       case ipe_prop_boot_verified_false:
-> +               eval =3D !ctx->from_init_sb;
-> +               break;
-> +       case ipe_prop_boot_verified_true:
-> +               eval =3D ctx->from_init_sb;
-> +               break;
-> +       default:
-> +               eval =3D false;
-
-You don't need to set @eval to false both when it is declared or in
-the 'default' case.
-
-Honestly, you don't need @eval at all, you can simply replace all of
-the @eval assignment statements with return statements.
-
-> +       }
-> +
-> +       return eval;
-> +}
-> +
-> +/**
-> + * ipe_evaluate_event - Analyze @ctx against the current active policy.
-> + * @ctx: Supplies a pointer to the context to be evaluated.
-> + *
-> + * This is the loop where all policy evaluation happens against IPE poli=
-cy.
-> + *
-> + * Return:
-> + * * 0         - OK
-> + * * -EACCES   - @ctx did not pass evaluation.
-> + * * !0                - Error
-> + */
-> +int ipe_evaluate_event(const struct ipe_eval_ctx *const ctx)
+> +struct ipe_policy *ipe_update_policy(struct ipe_policy __rcu **addr,
+> +                                    const char *text, size_t textlen,
+> +                                    const char *pkcs7, size_t pkcs7len)
 > +{
 > +       int rc =3D 0;
-> +       bool match =3D false;
-> +       enum ipe_action_type action;
-> +       struct ipe_policy *pol =3D NULL;
-> +       const struct ipe_rule *rule =3D NULL;
-> +       const struct ipe_op_table *rules =3D NULL;
-> +       struct ipe_prop *prop =3D NULL;
+> +       struct ipe_policy *old, *new;
 > +
-> +       if (ctx->op =3D=3D ipe_op_exec)
-> +               pin_sb(ctx->file);
+> +       old =3D ipe_get_policy_rcu(*addr);
+> +       if (!old) {
+> +               rc =3D -ENOENT;
+> +               goto err;
+> +       }
+> +
+> +       new =3D ipe_new_policy(text, textlen, pkcs7, pkcs7len);
+> +       if (IS_ERR(new)) {
+> +               rc =3D PTR_ERR(new);
+> +               goto err;
+> +       }
+> +
+> +       if (strcmp(new->parsed->name, old->parsed->name)) {
+> +               rc =3D -EINVAL;
+> +               goto err;
+> +       }
+> +
+> +       if (ver_to_u64(old) > ver_to_u64(new)) {
+> +               rc =3D -EINVAL;
+> +               goto err;
+> +       }
+> +
+> +       if (ipe_is_policy_active(old)) {
 
-If I understand things correctly, the initramfs is determined by the
-first process to be executed?  I think that's reasonable, but I'm
-beginning to wonder if that pinned super_block spinlock is going to be
-a problem, especially for something that is written once (twice if you
-consider the ERR_PTR(-EIO) on umount), yet read for each IPE policy
-evaluation.
+I don't understand the is-active check, you want to make @new the new
+active policy regardless, right?  Could this is-active check ever be
+false?
 
-I'm okay if you want to keep this as a spinlock for now, but this
-seems like a good candidate for RCU, and the change would be trivial
-since it is a single pointer.
-
-> +       pol =3D ipe_get_policy_rcu(ipe_active_policy);
-
-I don't think you can safely drop the RCU lock and leave the RCU
-critical section while you are still using @ipe_active_policy.  I
-think the right thing to do is to get rid of `ipe_get_policy_rcu()`
-and simply place from here on down in `ipe_evaluate_event()` in a RCU
-critical section.  Doing so would ensure that @ipe_active_policy could
-not be free'd/replaced from underneath you while evaluating an event.
-
-> +       if (!pol)
+> +               spin_lock(&ipe_policy_lock);
+> +               rcu_assign_pointer(ipe_active_policy, new);
+> +               spin_unlock(&ipe_policy_lock);
+> +               synchronize_rcu();
+> +       }
+> +
+> +       rcu_assign_pointer(*addr, new);
+> +
+> +       swap(new->policyfs, old->policyfs);
+> +       ipe_free_policy(old);
+> +
+> +       goto out;
+> +err:
+> +       ipe_free_policy(new);
+> +out:
+> +       return (rc < 0) ? ERR_PTR(rc) : new;
+> +}
+> +
+>  /**
+>   * ipe_new_policy - Allocate and parse an ipe_policy structure.
+>   *
+> @@ -117,3 +209,46 @@ struct ipe_policy *ipe_get_policy_rcu(struct ipe_pol=
+icy __rcu *p)
+>
+>         return rv;
+>  }
+> +
+> +/**
+> + * ipe_set_active_pol - Make @p the active policy.
+> + * @p: Supplies a pointer to the policy to make active.
+> + */
+> +int ipe_set_active_pol(const struct ipe_policy *p)
+> +{
+> +       int rc =3D 0;
+> +       struct ipe_policy *ap =3D NULL;
+> +
+> +       ap =3D ipe_get_policy_rcu(ipe_active_policy);
+> +       if (ap && ver_to_u64(ap) > ver_to_u64(p)) {
+> +               rc =3D -EINVAL;
 > +               goto out;
-> +
-> +       if (ctx->op =3D=3D ipe_op_max) {
-> +               action =3D pol->parsed->global_default_action;
-> +               goto eval;
 > +       }
 > +
-> +       rules =3D &pol->parsed->rules[ctx->op];
-> +
-> +       list_for_each_entry(rule, &rules->rules, next) {
-> +               match =3D true;
-> +
-> +               list_for_each_entry(prop, &rule->props, next)
-> +                       match =3D match && evaluate_property(ctx, prop);
-> +
-> +               if (match)
-> +                       break;
-> +       }
-> +
-> +       if (match)
-> +               action =3D rule->action;
-> +       else if (rules->default_action !=3D ipe_action_max)
-> +               action =3D rules->default_action;
-> +       else
-> +               action =3D pol->parsed->global_default_action;
-> +
-> +eval:
-> +       if (action =3D=3D ipe_action_deny)
-> +               rc =3D -EACCES;
+> +       spin_lock(&ipe_policy_lock);
+> +       rcu_assign_pointer(ipe_active_policy, p);
+> +       spin_unlock(&ipe_policy_lock);
+> +       synchronize_rcu();
 > +
 > +out:
 > +       return rc;
 > +}
 > +
 > +/**
-> + * ipe_invalidate_pinned_sb - invalidte the ipe pinned super_block.
-> + * @mnt_sb: super_block to check against the pinned super_block.
+> + * ipe_is_policy_active - Determine wehther @p is the active policy.
+> + * @p: Supplies a pointer to the policy to check.
 > + *
-> + * This function is called a super_block like the initramfs's is freed,
-> + * if the super_block is currently pinned by ipe it will be invalided,
-> + * so ipe won't consider the block device is boot verified afterward.
+> + * Return:
+> + * * true      - @p is the active policy
+> + * * false     - @p is not the active policy
 > + */
-> +void ipe_invalidate_pinned_sb(const struct super_block *mnt_sb)
+> +bool ipe_is_policy_active(const struct ipe_policy *p)
 > +{
-> +       spin_lock(&pin_lock);
-> +
-> +       if (!IS_ERR_OR_NULL(pinned_sb) && mnt_sb =3D=3D pinned_sb)
-> +               pinned_sb =3D ERR_PTR(-EIO);
-
-I think you only need to check if @pinned_sb is equal to @mnt_sb,
-that's all that really matters here.
-
-> +       spin_unlock(&pin_lock);
-> +}
-> diff --git a/security/ipe/eval.h b/security/ipe/eval.h
-> new file mode 100644
-> index 000000000000..887797438b9b
-> --- /dev/null
-> +++ b/security/ipe/eval.h
-> @@ -0,0 +1,28 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (C) Microsoft Corporation. All rights reserved.
-> + */
-> +
-> +#ifndef IPE_EVAL_H
-> +#define IPE_EVAL_H
-> +
-> +#include <linux/file.h>
-> +#include <linux/types.h>
-> +
-> +#include "hooks.h"
-> +#include "policy.h"
-> +
-> +extern struct ipe_policy __rcu *ipe_active_policy;
-> +
-> +struct ipe_eval_ctx {
-> +       enum ipe_op_type op;
-> +
-> +       const struct file *file;
-> +       bool from_init_sb;
-> +};
-> +
-> +void build_eval_ctx(struct ipe_eval_ctx *ctx, const struct file *file, e=
-num ipe_op_type op);
-> +int ipe_evaluate_event(const struct ipe_eval_ctx *const ctx);
-> +void ipe_invalidate_pinned_sb(const struct super_block *mnt_sb);
-> +
-> +#endif /* IPE_EVAL_H */
-> diff --git a/security/ipe/hooks.c b/security/ipe/hooks.c
-> new file mode 100644
-> index 000000000000..335b773c7ae1
-> --- /dev/null
-> +++ b/security/ipe/hooks.c
-> @@ -0,0 +1,25 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) Microsoft Corporation. All rights reserved.
-> + */
-> +
-> +#include "ipe.h"
-> +#include "hooks.h"
-> +#include "eval.h"
-> +
-> +#include <linux/fs.h>
-> +#include <linux/types.h>
-> +#include <linux/binfmts.h>
-> +#include <linux/mman.h>
-> +
-> +/**
-> + * ipe_sb_free_security - ipe security hook function for super_block.
-> + * @mnt_sb: Supplies a pointer to a super_block is about to be freed.
-> + *
-> + * IPE does not have any structures with mnt_sb, but uses this hook to
-> + * invalidate a pinned super_block.
-> + */
-> +void ipe_sb_free_security(struct super_block *mnt_sb)
-> +{
-> +       ipe_invalidate_pinned_sb(mnt_sb);
-> +}
-> diff --git a/security/ipe/hooks.h b/security/ipe/hooks.h
-> new file mode 100644
-> index 000000000000..30fe455389bf
-> --- /dev/null
-> +++ b/security/ipe/hooks.h
-> @@ -0,0 +1,14 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (C) Microsoft Corporation. All rights reserved.
-> + */
-> +#ifndef IPE_HOOKS_H
-> +#define IPE_HOOKS_H
-> +
-> +#include <linux/fs.h>
-> +#include <linux/binfmts.h>
-> +#include <linux/security.h>
-> +
-> +void ipe_sb_free_security(struct super_block *mnt_sb);
-> +
-> +#endif /* IPE_HOOKS_H */
-> diff --git a/security/ipe/ipe.c b/security/ipe/ipe.c
-> index 9ed3bf4dcc04..551c6d90ac11 100644
-> --- a/security/ipe/ipe.c
-> +++ b/security/ipe/ipe.c
-> @@ -9,6 +9,7 @@ static struct lsm_blob_sizes ipe_blobs __lsm_ro_after_ini=
-t =3D {
->  };
->
->  static struct security_hook_list ipe_hooks[] __lsm_ro_after_init =3D {
-> +       LSM_HOOK_INIT(sb_free_security, ipe_sb_free_security),
->  };
->
->  /**
-> diff --git a/security/ipe/policy.c b/security/ipe/policy.c
-> index e446f4b84152..772d876b1087 100644
-> --- a/security/ipe/policy.c
-> +++ b/security/ipe/policy.c
-> @@ -97,3 +97,23 @@ struct ipe_policy *ipe_new_policy(const char *text, si=
-ze_t textlen,
->  err:
->         return ERR_PTR(rc);
->  }
-> +
-> +/**
-> + * ipe_get_policy_rcu - Dereference a rcu-protected policy pointer.
-> + *
-> + * @p: rcu-protected pointer to a policy.
-> + *
-> + * Not safe to call on IS_ERR.
-> + *
-> + * Return: the value of @p
-> + */
-> +struct ipe_policy *ipe_get_policy_rcu(struct ipe_policy __rcu *p)
-> +{
-> +       struct ipe_policy *rv =3D NULL;
+> +       bool rv;
 > +
 > +       rcu_read_lock();
-> +       rv =3D rcu_dereference(p);
+> +       rv =3D rcu_access_pointer(ipe_active_policy) =3D=3D p;
 > +       rcu_read_unlock();
 > +
 > +       return rv;
 > +}
-> diff --git a/security/ipe/policy.h b/security/ipe/policy.h
-> index 6af2d9a811ec..967d816cd5cd 100644
-> --- a/security/ipe/policy.h
-> +++ b/security/ipe/policy.h
-> @@ -26,6 +26,8 @@ enum ipe_action_type {
->  };
->
->  enum ipe_prop_type {
-> +       ipe_prop_boot_verified_false,
-> +       ipe_prop_boot_verified_true,
->         ipe_prop_max
->  };
->
-> @@ -73,5 +75,6 @@ struct ipe_policy {
->  struct ipe_policy *ipe_new_policy(const char *text, size_t textlen,
->                                   const char *pkcs7, size_t pkcs7len);
->  void ipe_free_policy(struct ipe_policy *pol);
-> +struct ipe_policy *ipe_get_policy_rcu(struct ipe_policy __rcu *p);
->
->  #endif /* IPE_POLICY_H */
-> diff --git a/security/ipe/policy_parser.c b/security/ipe/policy_parser.c
-> index c7ba0e865366..7efafc482e46 100644
-> --- a/security/ipe/policy_parser.c
-> +++ b/security/ipe/policy_parser.c
-> @@ -265,7 +265,9 @@ static enum ipe_action_type parse_action(char *t)
->  }
->
->  static const match_table_t property_tokens =3D {
-> -       {ipe_prop_max,                                  NULL}
-> +       {ipe_prop_boot_verified_false,  "boot_verified=3DFALSE"},
-> +       {ipe_prop_boot_verified_true,   "boot_verified=3DTRUE"},
-> +       {ipe_prop_max,                  NULL}
->  };
->
->  /**
-> @@ -295,6 +297,10 @@ int parse_property(char *t, struct ipe_rule *r)
->         token =3D match_token(t, property_tokens, args);
->
->         switch (token) {
-> +       case ipe_prop_boot_verified_false:
-> +       case ipe_prop_boot_verified_true:
-> +               p->type =3D token;
-> +               break;
->         case ipe_prop_max:
->         default:
->                 rc =3D -EBADMSG;
-> --
-> 2.39.0
 
 --
 paul-moore.com
