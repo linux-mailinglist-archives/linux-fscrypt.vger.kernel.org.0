@@ -2,51 +2,46 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D7B86A8C00
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  2 Mar 2023 23:36:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F4F86A91A2
+	for <lists+linux-fscrypt@lfdr.de>; Fri,  3 Mar 2023 08:23:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230173AbjCBWg5 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 2 Mar 2023 17:36:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55440 "EHLO
+        id S229725AbjCCHXb (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 3 Mar 2023 02:23:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229709AbjCBWg4 (ORCPT
+        with ESMTP id S229706AbjCCHXa (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 2 Mar 2023 17:36:56 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE9E6515C1;
-        Thu,  2 Mar 2023 14:36:55 -0800 (PST)
+        Fri, 3 Mar 2023 02:23:30 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F3301352D;
+        Thu,  2 Mar 2023 23:23:29 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id A5017B811EF;
-        Thu,  2 Mar 2023 22:36:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B045C433EF;
-        Thu,  2 Mar 2023 22:36:53 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 09C306176B;
+        Fri,  3 Mar 2023 07:23:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4785EC433D2;
+        Fri,  3 Mar 2023 07:23:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677796613;
-        bh=m39fw1icTY50SWFvnYJ2LWIZxM09EX3LTqdVMzccAdk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Tm1135vaGcDI0GiEbWxiC7/BjErlIrT9mosKbqG4MttFGOA0bb2OWNs8dJ17GCqQt
-         +yV7KWr53UK79I0eC61uw4AODlL4IMlH8DNjRW5SGQAbZfekAxtl/EUUtk595hcYq4
-         ARQLt2emSWnSDhUJmkGc8dOqf1yJe0p+4Tl055xrfgUi0d0VjZR9V0d8SfaBfQLgNd
-         DLXvXLE9XgSN2g1sRe1ck2EghWOLycZDTVY8FCVbsHbtXukuFwuITfthmGOEWWkDnl
-         oQlbISr6/A8DY/TZIisQpQ+SmrSB6jB/xgAjmtUGDLNazd+LnsvDrk4kPlm1PbY13a
-         +jND3XZHNQ5vw==
-Date:   Thu, 2 Mar 2023 22:36:51 +0000
+        s=k20201202; t=1677828208;
+        bh=H0vgaS3qOJJopQo5ihGBje3nOX8FoYe6iwbI5I5QK/I=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Ka5VvvopH4WuH4cUTg9PmDffE8YF3jAyVNvGnhNF9HV1YwKkaXvrBTK5vhIVxeL7S
+         /D+bToOAH3NDxj7LOgR+EXIA1XoB43RvZDwNBgi/w7ysKpNeL+Bed2l868I9MaQrR8
+         9/aWUjNctoAdDzmj0fzBDjhydtvnlGwTqT0eHBX7MOhny3yeLmhScRr4UF7TacUp3Z
+         V4reXT70bB3R7/6hdqj+ClyCK5dLf+YFRkZOaEO51WMVMP8SLjqny/syzMS+aIhxBP
+         yOdnEa7/k28X+74d6v9i6hhK7zUJIlgGgHPqp/NPqFOr8UtZxLlKRmrvjD3whR9dck
+         nuIw+4h9H2Tyw==
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Nathan Huckleberry <nhuck@google.com>
-Cc:     linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        linux-fscrypt@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] blk-crypto: make blk_crypto_evict_key() always try to
- evict
-Message-ID: <ZAElA0k4Q/Pb7xNT@gmail.com>
-References: <20230226203816.207449-1-ebiggers@kernel.org>
- <CAJkfWY4UOmizG=gm4+Zob7PhwMcmDe7mEviTb-hULT7ByCuqew@mail.gmail.com>
+To:     linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
+Cc:     linux-fscrypt@vger.kernel.org,
+        Nathan Huckleberry <nhuck@google.com>
+Subject: [PATCH 0/3] Fix blk-crypto keyslot race condition
+Date:   Thu,  2 Mar 2023 23:19:56 -0800
+Message-Id: <20230303071959.144604-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJkfWY4UOmizG=gm4+Zob7PhwMcmDe7mEviTb-hULT7ByCuqew@mail.gmail.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -56,45 +51,27 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, Mar 02, 2023 at 02:28:00PM -0800, Nathan Huckleberry wrote:
-> Hey Eric,
-> 
-> On Sun, Feb 26, 2023 at 12:43 PM Eric Biggers <ebiggers@kernel.org> wrote:
-> >
-> > From: Eric Biggers <ebiggers@google.com>
-> >
-> > Once all I/O using a blk_crypto_key has completed, filesystems can call
-> > blk_crypto_evict_key().  However, the block layer doesn't call
-> > blk_crypto_put_keyslot() until the request is being cleaned up, which
-> > happens after upper layers have been told (via bio_endio()) the I/O has
-> > completed.  This causes a race condition where blk_crypto_evict_key()
-> > can see 'slot_refs > 0' without there being an actual bug.
-> >
-> > This makes __blk_crypto_evict_key() hit the
-> > 'WARN_ON_ONCE(atomic_read(&slot->slot_refs) != 0)' and return without
-> > doing anything, eventually causing a use-after-free in
-> > blk_crypto_reprogram_all_keys().  (This is a very rare bug and has only
-> > been seen when per-file keys are being used with fscrypt.)
-> >
-> > There are two options to fix this: either release the keyslot in
-> > blk_update_request() just before bio_endio() is called on the request's
-> > last bio, or just make __blk_crypto_evict_key() ignore slot_refs.  Let's
-> > go with the latter solution for now, since it avoids adding overhead to
-> > the loop in blk_update_request().  (It does have the disadvantage that
-> > hypothetical bugs where a key is evicted while still in-use become
-> > harder to detect.  But so far there haven't been any such bugs anyway.)
-> 
-> I disagree with the proposal to ignore the race condition in
-> blk_crypto_evict_key(). As you said, ignoring the error could lead to
-> undetected bugs in the future. Instead, I think we should focus on
-> fixing the function ordering so that blk_crypto_put_keyslot() is
-> called before blk_crypto_evict_key().
-> 
-> I think the overhead is a necessary trade-off to ensure correctness.
-> 
-> Thanks,
+This series fixes a race condition in blk-crypto keyslot management and
+makes some related cleanups.  It replaces
+"[PATCH] blk-crypto: make blk_crypto_evict_key() always try to evict"
+(https://lore.kernel.org/r/20230226203816.207449-1-ebiggers@kernel.org),
+which was a simpler fix but didn't fix the keyslot reference counting to
+work as expected.
 
-Sure, I'm concerned about pushback on adding something to blk_update_request()
-that's not critical, but I'll send out that patch for consideration too.
+Eric Biggers (3):
+  blk-mq: release crypto keyslot before reporting I/O complete
+  blk-crypto: make blk_crypto_evict_key() more robust
+  blk-crypto: remove blk_crypto_insert_cloned_request()
 
-- Eric
+ Documentation/block/inline-encryption.rst |  3 +-
+ block/blk-crypto-internal.h               | 28 +++++--------
+ block/blk-crypto-profile.c                | 50 +++++++++--------------
+ block/blk-crypto.c                        | 47 +++++++++++----------
+ block/blk-mq.c                            | 17 +++++++-
+ 5 files changed, 71 insertions(+), 74 deletions(-)
+
+
+base-commit: 2eb29d59ddf02e39774abfb60b2030b0b7e27c1f
+-- 
+2.39.2
+
