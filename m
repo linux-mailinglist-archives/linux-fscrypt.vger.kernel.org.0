@@ -2,43 +2,43 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1D456B122D
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  8 Mar 2023 20:39:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AD9A6B1229
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  8 Mar 2023 20:39:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229954AbjCHTjm (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 8 Mar 2023 14:39:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229707AbjCHTjk (ORCPT
-        <rfc822;linux-fscrypt@vger.kernel.org>);
+        id S229729AbjCHTjk (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
         Wed, 8 Mar 2023 14:39:40 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C8C838A9;
-        Wed,  8 Mar 2023 11:39:39 -0800 (PST)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229580AbjCHTjj (ORCPT
+        <rfc822;linux-fscrypt@vger.kernel.org>);
+        Wed, 8 Mar 2023 14:39:39 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 093AB7D091;
+        Wed,  8 Mar 2023 11:39:37 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 69FE6B81269;
-        Wed,  8 Mar 2023 19:39:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCEF5C4339C;
-        Wed,  8 Mar 2023 19:39:36 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7A5C361939;
+        Wed,  8 Mar 2023 19:39:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CC25C433A0;
+        Wed,  8 Mar 2023 19:39:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1678304377;
-        bh=vEKYcc/LTBd9qDV4oAD0WbQzxrfB47Q4z7AN/AsRbpY=;
+        bh=jUFFwIrjwlkdx2u75JjBew7+G5pN2IhZ8ExoTUl0X5o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RIDAcnzmSNMdM77xUUJI93gQ+oCUgHyITXqF1NGtAayyh0/1I6FQwiXIEYDjA1Ob6
-         B8KIq7GS4CMFxLhsIYkeao9xHWM5vZ4of9CbhICNIj5P+rQQVWW9GwPHpMyNji5TO7
-         MyWbLw/QdzwsxT72NNx/WFJZkyVMb3IPo+DWToYpvMTPno9TvbWrmU+6xFbQUAZgnZ
-         iwMZse34Nlaez7z1vBXHbm/rJidsX7h6XqncKDUYf8MsicCVy6DZXySTs8Dh5SpY/s
-         f94/Bg2zvjE8YJYmITG6wGTyNwwyHdeaIUOdyh7yfRDraCngbZ3wbvQ5pEIXATaWGc
-         MyeExzdwtiGZw==
+        b=gk17Dxws07+M1VsKyVxeKzfhatrISPPml9Ha1FomdjF03NnY60rQ4WDwbmBE8j0az
+         IRr/CEb8wexZ+rRaF9josTKFvBPh4hbbU+Lp4mDzCtdSKJM0PaXmwGGVkFO2EUTOZe
+         O6G3Qk/WMfEnJcXLyBR4f01d3x7a8tCiuMLYgPlZrVbHfan5yOQTdPpZkZQD64elA9
+         utcFMDkNcz40H46FVoft9WWtuGs+GBkgijIMk5I8oWsD0VZuY79IQHujWPV5xvihJP
+         gQSEsQDJVPLHfJpp2D5l/jsy1/HMMxdsHMaSR9wt1JNURrAlm8DsNBPbKLlr+jVvYi
+         +jYpK7uRSac4g==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
 Cc:     linux-fscrypt@vger.kernel.org,
         Nathan Huckleberry <nhuck@google.com>
-Subject: [PATCH v2 3/4] blk-crypto: remove blk_crypto_insert_cloned_request()
-Date:   Wed,  8 Mar 2023 11:36:44 -0800
-Message-Id: <20230308193645.114069-4-ebiggers@kernel.org>
+Subject: [PATCH v2 4/4] blk-crypto: drop the NULL check from blk_crypto_put_keyslot()
+Date:   Wed,  8 Mar 2023 11:36:45 -0800
+Message-Id: <20230308193645.114069-5-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230308193645.114069-1-ebiggers@kernel.org>
 References: <20230308193645.114069-1-ebiggers@kernel.org>
@@ -55,69 +55,59 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-blk_crypto_insert_cloned_request() is the same as
-blk_crypto_rq_get_keyslot(), so just use that directly.
+Now that all callers of blk_crypto_put_keyslot() check for NULL before
+calling it, there is no need for blk_crypto_put_keyslot() to do the NULL
+check itself.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- Documentation/block/inline-encryption.rst |  3 +--
- block/blk-crypto-internal.h               | 15 ---------------
- block/blk-mq.c                            |  2 +-
- 3 files changed, 2 insertions(+), 18 deletions(-)
+ block/blk-crypto-profile.c | 14 ++++----------
+ 1 file changed, 4 insertions(+), 10 deletions(-)
 
-diff --git a/Documentation/block/inline-encryption.rst b/Documentation/block/inline-encryption.rst
-index f9bf18ea6509..90b733422ed4 100644
---- a/Documentation/block/inline-encryption.rst
-+++ b/Documentation/block/inline-encryption.rst
-@@ -270,8 +270,7 @@ Request queue based layered devices like dm-rq that wish to support inline
- encryption need to create their own blk_crypto_profile for their request_queue,
- and expose whatever functionality they choose. When a layered device wants to
- pass a clone of that request to another request_queue, blk-crypto will
--initialize and prepare the clone as necessary; see
--``blk_crypto_insert_cloned_request()``.
-+initialize and prepare the clone as necessary.
- 
- Interaction between inline encryption and blk integrity
- =======================================================
-diff --git a/block/blk-crypto-internal.h b/block/blk-crypto-internal.h
-index 4f1de2495f0c..93a141979694 100644
---- a/block/blk-crypto-internal.h
-+++ b/block/blk-crypto-internal.h
-@@ -205,21 +205,6 @@ static inline int blk_crypto_rq_bio_prep(struct request *rq, struct bio *bio,
- 	return 0;
- }
- 
--/**
-- * blk_crypto_insert_cloned_request - Prepare a cloned request to be inserted
-- *				      into a request queue.
-- * @rq: the request being queued
+diff --git a/block/blk-crypto-profile.c b/block/blk-crypto-profile.c
+index 1b20ead59f39..6c16edfa0dee 100644
+--- a/block/blk-crypto-profile.c
++++ b/block/blk-crypto-profile.c
+@@ -227,14 +227,13 @@ EXPORT_SYMBOL_GPL(blk_crypto_keyslot_index);
+  * @profile: the crypto profile of the device the key will be used on
+  * @key: the key that will be used
+  * @slot_ptr: If a keyslot is allocated, an opaque pointer to the keyslot struct
+- *	      will be stored here; otherwise NULL will be stored here.
++ *	      will be stored here.  blk_crypto_put_keyslot() must be called
++ *	      later to release it.  Otherwise, NULL will be stored here.
+  *
+  * If the device has keyslots, this gets a keyslot that's been programmed with
+  * the specified key.  If the key is already in a slot, this reuses it;
+  * otherwise this waits for a slot to become idle and programs the key into it.
+  *
+- * This must be paired with a call to blk_crypto_put_keyslot().
 - *
-- * Return: BLK_STS_OK on success, nonzero on error.
-- */
--static inline blk_status_t blk_crypto_insert_cloned_request(struct request *rq)
--{
+  * Context: Process context. Takes and releases profile->lock.
+  * Return: BLK_STS_OK on success, meaning that either a keyslot was allocated or
+  *	   one wasn't needed; or a blk_status_t error on failure.
+@@ -312,20 +311,15 @@ blk_status_t blk_crypto_get_keyslot(struct blk_crypto_profile *profile,
+ 
+ /**
+  * blk_crypto_put_keyslot() - Release a reference to a keyslot
+- * @slot: The keyslot to release the reference of (may be NULL).
++ * @slot: The keyslot to release the reference of
+  *
+  * Context: Any context.
+  */
+ void blk_crypto_put_keyslot(struct blk_crypto_keyslot *slot)
+ {
+-	struct blk_crypto_profile *profile;
++	struct blk_crypto_profile *profile = slot->profile;
+ 	unsigned long flags;
+ 
+-	if (!slot)
+-		return;
 -
--	if (blk_crypto_rq_is_encrypted(rq))
--		return blk_crypto_rq_get_keyslot(rq);
--	return BLK_STS_OK;
--}
+-	profile = slot->profile;
 -
- #ifdef CONFIG_BLK_INLINE_ENCRYPTION_FALLBACK
- 
- int blk_crypto_fallback_start_using_mode(enum blk_crypto_mode_num mode_num);
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 49825538d932..5e819de2f5e7 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -3049,7 +3049,7 @@ blk_status_t blk_insert_cloned_request(struct request *rq)
- 	if (q->disk && should_fail_request(q->disk->part0, blk_rq_bytes(rq)))
- 		return BLK_STS_IOERR;
- 
--	if (blk_crypto_insert_cloned_request(rq))
-+	if (blk_crypto_rq_get_keyslot(rq))
- 		return BLK_STS_IOERR;
- 
- 	blk_account_io_start(rq);
+ 	if (atomic_dec_and_lock_irqsave(&slot->slot_refs,
+ 					&profile->idle_slots_lock, flags)) {
+ 		list_add_tail(&slot->idle_slot_node, &profile->idle_slots);
 -- 
 2.39.2
 
