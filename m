@@ -2,87 +2,79 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 565686AF63D
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  7 Mar 2023 20:58:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60CC46AFDEA
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  8 Mar 2023 05:34:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231893AbjCGT6I (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 7 Mar 2023 14:58:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59942 "EHLO
+        id S229840AbjCHEeG (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 7 Mar 2023 23:34:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230143AbjCGT5y (ORCPT
+        with ESMTP id S229816AbjCHEdv (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 7 Mar 2023 14:57:54 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 303142410C;
-        Tue,  7 Mar 2023 11:52:25 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id DBD69B81A06;
-        Tue,  7 Mar 2023 19:52:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44528C433EF;
-        Tue,  7 Mar 2023 19:52:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678218742;
-        bh=XP/qsX8uwl7Bw0/AezCySOo0sb5RpBnrubSVkmp5lrA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=du+67PQxlUSBJ2VJTyCr+QrQdEIZOGF3Tb3xPm6EVMIi5r1hcVjAcOzPeykM9v9Kx
-         jMeh/knWNmBSYov9n6Z51g5qI2ugah389u+orSAN65CEaaOTrxaxXEs/7s7Xf3kEiN
-         2vKRsE737JKGbTc/NfwyK4Bjno+u9aYGpT2PLplu2PLvGixrGDgzybLhFtaj4ImYPK
-         EZ3/3ZrLKLPbHNopIN5w0tKo6jrMp9MtVLx1yRXAFtesILg5LSRnC7l0OjhpNF9tux
-         0VetgiN7utR1bNUU0pjA98Bvx/Gb2KoO0rIyt8MfBKCXGgC72nSQZdNfYNHtnDMNm1
-         5P/HVcx8JpUGg==
-Date:   Tue, 7 Mar 2023 11:52:20 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>
-Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>,
-        Tejun Heo <tj@kernel.org>, stable@vger.kernel.org
-Subject: Re: [PATCH] ext4: fix cgroup writeback accounting with fs-layer
- encryption
-Message-ID: <ZAeV9Bl5gnmbjh/F@sol.localdomain>
+        Tue, 7 Mar 2023 23:33:51 -0500
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A9BF23C5A
+        for <linux-fscrypt@vger.kernel.org>; Tue,  7 Mar 2023 20:33:50 -0800 (PST)
+Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 3284XTvr021510
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 7 Mar 2023 23:33:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1678250011; bh=5pMWU6jII+CDzJ3zfBYzkUuOg2Vxa1wRZCqfVcF9NJw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=fQhdRuF0Ca9IEXfQKd+n1CWjT4/CljpFoikCFVl7AO2kkLJZ1QrGEPJcagh7ta2rY
+         BGXxUedt75uaQKW7xU1cgPnuBe//MVsbHRA6aCnxEuj6oWspQ7Z91SvYoXoqIpbliP
+         hMhV7kimgU4zNhgCardZfP3GqqqajPTIRl8j0b2pfjDWL38Ye2Kl8FAzgS4Xc5ImWD
+         OUMXf52s2nH5CtbxDuU+VwC5StYHrIWm9lLlRnsPvWemVDXhTNlIagqLz5YSZthj4X
+         Ru2u5eR7BMIj+DqlkfW+7Fpm47kjVB9Eo3HseBZnt6KVmCZYKTwjCBbGDoOmC8fzNP
+         FbaBkJ14wWcVg==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id CF9E715C3444; Tue,  7 Mar 2023 23:33:29 -0500 (EST)
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     linux-ext4@vger.kernel.org, Eric Biggers <ebiggers@kernel.org>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-fscrypt@vger.kernel.org,
+        stable@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Tejun Heo <tj@kernel.org>, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH] ext4: fix cgroup writeback accounting with fs-layer encryption
+Date:   Tue,  7 Mar 2023 23:33:22 -0500
+Message-Id: <167824999281.2129363.12204207098890359786.b4-ty@mit.edu>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <20230203005503.141557-1-ebiggers@kernel.org>
 References: <20230203005503.141557-1-ebiggers@kernel.org>
- <Y91QNz+U/MGs9cPc@slm.duckdns.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y91QNz+U/MGs9cPc@slm.duckdns.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Feb 03, 2023 at 08:19:35AM -1000, Tejun Heo wrote:
-> On Thu, Feb 02, 2023 at 04:55:03PM -0800, Eric Biggers wrote:
-> > From: Eric Biggers <ebiggers@google.com>
-> > 
-> > When writing a page from an encrypted file that is using
-> > filesystem-layer encryption (not inline encryption), ext4 encrypts the
-> > pagecache page into a bounce page, then writes the bounce page.
-> > 
-> > It also passes the bounce page to wbc_account_cgroup_owner().  That's
-> > incorrect, because the bounce page is a newly allocated temporary page
-> > that doesn't have the memory cgroup of the original pagecache page.
-> > This makes wbc_account_cgroup_owner() not account the I/O to the owner
-> > of the pagecache page as it should.
-> > 
-> > Fix this by always passing the pagecache page to
-> > wbc_account_cgroup_owner().
-> > 
-> > Fixes: 001e4a8775f6 ("ext4: implement cgroup writeback support")
-> > Cc: stable@vger.kernel.org
-> > Reported-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> > Signed-off-by: Eric Biggers <ebiggers@google.com>
+On Thu, 2 Feb 2023 16:55:03 -0800, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> Acked-by: Tejun Heo <tj@kernel.org>
+> When writing a page from an encrypted file that is using
+> filesystem-layer encryption (not inline encryption), ext4 encrypts the
+> pagecache page into a bounce page, then writes the bounce page.
 > 
-> Thanks.
+> It also passes the bounce page to wbc_account_cgroup_owner().  That's
+> incorrect, because the bounce page is a newly allocated temporary page
+> that doesn't have the memory cgroup of the original pagecache page.
+> This makes wbc_account_cgroup_owner() not account the I/O to the owner
+> of the pagecache page as it should.
+> 
+> [...]
 
-This patch hasn't been applied yet.  Ted, I was hoping you would take it through
-the ext4 tree.  Can you do so when you have a chance?
+Applied, thanks!
 
-- Eric
+[1/1] ext4: fix cgroup writeback accounting with fs-layer encryption
+      commit: ffec85d53d0f39ee4680a2cf0795255e000e1feb
+
+Best regards,
+-- 
+Theodore Ts'o <tytso@mit.edu>
