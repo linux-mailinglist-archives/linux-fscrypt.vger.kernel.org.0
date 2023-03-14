@@ -2,90 +2,160 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E65466B84A5
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 13 Mar 2023 23:17:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 484826B871F
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 14 Mar 2023 01:41:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229784AbjCMWRw (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 13 Mar 2023 18:17:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56692 "EHLO
+        id S229978AbjCNAl5 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 13 Mar 2023 20:41:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjCMWRw (ORCPT
+        with ESMTP id S229807AbjCNAl5 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 13 Mar 2023 18:17:52 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BBAD8C822;
-        Mon, 13 Mar 2023 15:17:51 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 988A5614F1;
-        Mon, 13 Mar 2023 22:17:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3EE5C433EF;
-        Mon, 13 Mar 2023 22:17:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678745870;
-        bh=INaHVbl7ixdOi1NsOn+7HYfFqqNPUGFYQtn80pPPDKM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lE/NADRFUTKbkwWVHMD+KKs4k9J+dIrxKta06me0F/R2gzq8UK3j5fVIP789xIt31
-         aHzMy3KqQgrkw39E1lZ3z1wJdh/1M4SLMRMgw5cHC0cPq6vMCkYVrvSFyv237XvJbz
-         C81mfqgbYoJp/Z3oiP1Y4q6Q/20Ki9TBPH5I1oJiv6md00RW5gvxUhSXjC+TnbjZHH
-         elq2sLypxZfiwpuwye3y4ik61DU+p+HBbMkbjMdBnn9539L1nGIQFq/0MfTvzAtrZ/
-         jr/uBFkYBoErAJeAzH6k6Mmp2VkgQBMCnaI/1WFCpqXP+kku6ihzwklCM4warNfkSd
-         Wdj/jMDYTbTQw==
-Date:   Mon, 13 Mar 2023 15:17:48 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     syzbot <syzbot+93e495f6a4f748827c88@syzkaller.appspotmail.com>
-Cc:     jaegeuk@kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Subject: Re: [syzbot] [fscrypt?] WARNING in fscrypt_destroy_keyring
-Message-ID: <ZA+hDI+bIx2H7QYz@sol.localdomain>
-References: <00000000000044651705f6ca1e30@google.com>
+        Mon, 13 Mar 2023 20:41:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 868AD8316B
+        for <linux-fscrypt@vger.kernel.org>; Mon, 13 Mar 2023 17:40:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1678754338;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TACuEVUrpVGXTKr6EQlyJHtwWOffnTkzlOP52YnEJ9Q=;
+        b=fBfZSaF7msr9rrMwXHlM6bJ886hZCxkrEjh1o1GCqGvdfrJexIQp2WdKdmKGAeSZB0Ulwg
+        Y9jB1xp38ATz1GSpWN43qJX9fc+4mqyGR7iEtkjRlmw49J9UztWo0oFISSdpwuoRpME6A3
+        kXmjaDcZF44bVe/FwdoTzCny4cveaGs=
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
+ [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-480-N0hruRtgPlGnNc1YLLe-9A-1; Mon, 13 Mar 2023 20:38:57 -0400
+X-MC-Unique: N0hruRtgPlGnNc1YLLe-9A-1
+Received: by mail-pl1-f199.google.com with SMTP id l1-20020a170903244100b001a0468b4afcso2569495pls.12
+        for <linux-fscrypt@vger.kernel.org>; Mon, 13 Mar 2023 17:38:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678754336;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TACuEVUrpVGXTKr6EQlyJHtwWOffnTkzlOP52YnEJ9Q=;
+        b=TRsG2aY0WJmq73uKjQQNaympK8nRPR1joyL8VJpVV3JxOlIkhRKgcpyE7b82AF4CYd
+         dCm2+kMrQmq6uOo+4tjkzbdhJWpW9h7JFaFh6pD5wVvyBTxlwE0glJYJcqdHV2QdJrAt
+         nbSLL95L0cWY6CjTL5pXg1t/4RHVR0rzMnKJ2Jhktr17zZQAVsoi+l0qmru6QRay3xsf
+         BlAGwhRLkobC8kchTlUmXZfdHMSLFBOWd0Ne+SKlEn7+ujQAqdMhCoAnpQ4EyRokN29e
+         AobGo8OSt/N7fwH4KhsKOSWrZTHJwGonMFlS9MRggqMKYI9QyqTxOQ7A/jVLmYhpJAgy
+         uSYg==
+X-Gm-Message-State: AO0yUKW5STlVgnK88S6uGXni/ytgWDd1OQmWe1b5TLklmb1yEOcP3/yr
+        hnRVnHQpPeDxCprBEcIrn1ZuWmYFuNRhysb4Vr5zKDrys1gH9BnbcQFY4zxRlaiYa+46huCy5fG
+        CRlQ6g/kiFpGaMcVRFcjxa/d+DA==
+X-Received: by 2002:a05:6a20:258c:b0:cc:24de:4d6d with SMTP id k12-20020a056a20258c00b000cc24de4d6dmr36702650pzd.4.1678754336410;
+        Mon, 13 Mar 2023 17:38:56 -0700 (PDT)
+X-Google-Smtp-Source: AK7set9K+B8tzulqAPV8mv2hXEb5R62MQmg30WDjLsaks6kCiaul6YikY8Z+atOv0CNqRJUSEzKycQ==
+X-Received: by 2002:a05:6a20:258c:b0:cc:24de:4d6d with SMTP id k12-20020a056a20258c00b000cc24de4d6dmr36702628pzd.4.1678754336077;
+        Mon, 13 Mar 2023 17:38:56 -0700 (PDT)
+Received: from [10.72.12.147] ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id s14-20020a65644e000000b0050362744b63sm285320pgv.90.2023.03.13.17.38.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Mar 2023 17:38:55 -0700 (PDT)
+Message-ID: <8aa61954-b6c4-d9b5-bb81-c03ca3631e3b@redhat.com>
+Date:   Tue, 14 Mar 2023 08:38:49 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <00000000000044651705f6ca1e30@google.com>
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: [PATCH 2/2] ceph: switch atomic open to use new fscrypt helper
+Content-Language: en-US
+To:     =?UTF-8?Q?Lu=c3=ads_Henriques?= <lhenriques@suse.de>,
+        Eric Biggers <ebiggers@kernel.org>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        linux-fscrypt@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230313123310.13040-1-lhenriques@suse.de>
+ <20230313123310.13040-3-lhenriques@suse.de>
+ <ZA9nPXNpBX0U5joC@sol.localdomain> <87cz5cv6h2.fsf@suse.de>
+From:   Xiubo Li <xiubli@redhat.com>
+In-Reply-To: <87cz5cv6h2.fsf@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Mar 13, 2023 at 08:53:55AM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    fe15c26ee26e Linux 6.3-rc1
-> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-> console output: https://syzkaller.appspot.com/x/log.txt?x=14e2d88ac80000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=7573cbcd881a88c9
-> dashboard link: https://syzkaller.appspot.com/bug?extid=93e495f6a4f748827c88
-> compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
-> userspace arch: arm64
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16171188c80000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15ac08dac80000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/89d41abd07bd/disk-fe15c26e.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/fa75f5030ade/vmlinux-fe15c26e.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/590d0f5903ee/Image-fe15c26e.gz.xz
-> mounted in repro: https://storage.googleapis.com/syzbot-assets/bf3b409baf10/mount_0.gz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+93e495f6a4f748827c88@syzkaller.appspotmail.com
-> 
-> EXT4-fs (loop0): mounted filesystem 76b65be2-f6da-4727-8c75-0525a5b65a09 without journal. Quota mode: writeback.
-> fscrypt: AES-256-CTS-CBC using implementation "cts-cbc-aes-ce"
-> ------------[ cut here ]------------
-> WARNING: CPU: 1 PID: 5945 at fs/crypto/keyring.c:237 fscrypt_destroy_keyring+0x164/0x240 fs/crypto/keyring.c:237
 
-Very impressive find by syzbot!  fscrypt_destroy_keyring() needs to be called
-after security_sb_delete(), not before.  Fix is
-https://lore.kernel.org/linux-fscrypt/20230313221231.272498-2-ebiggers@kernel.org
+On 14/03/2023 02:42, Luís Henriques wrote:
+> Eric Biggers <ebiggers@kernel.org> writes:
+>
+>> On Mon, Mar 13, 2023 at 12:33:10PM +0000, Luís Henriques wrote:
+>>> Switch ceph atomic open to use fscrypt_prepare_atomic_open().  This fixes
+>>> a bug where a dentry is incorrectly set with DCACHE_NOKEY_NAME when 'dir'
+>>> has been evicted but the key is still available (for example, where there's
+>>> a drop_caches).
+>>>
+>>> Signed-off-by: Luís Henriques <lhenriques@suse.de>
+>>> ---
+>>>   fs/ceph/file.c | 8 +++-----
+>>>   1 file changed, 3 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/fs/ceph/file.c b/fs/ceph/file.c
+>>> index dee3b445f415..5ad57cc4c13b 100644
+>>> --- a/fs/ceph/file.c
+>>> +++ b/fs/ceph/file.c
+>>> @@ -795,11 +795,9 @@ int ceph_atomic_open(struct inode *dir, struct dentry *dentry,
+>>>   	ihold(dir);
+>>>   	if (IS_ENCRYPTED(dir)) {
+>>>   		set_bit(CEPH_MDS_R_FSCRYPT_FILE, &req->r_req_flags);
+>>> -		if (!fscrypt_has_encryption_key(dir)) {
+>>> -			spin_lock(&dentry->d_lock);
+>>> -			dentry->d_flags |= DCACHE_NOKEY_NAME;
+>>> -			spin_unlock(&dentry->d_lock);
+>>> -		}
+>>> +		err = fscrypt_prepare_atomic_open(dir, dentry);
+>>> +		if (err)
+>>> +			goto out_req;
+>> Note that this patch does not apply to upstream or even to linux-next.
+> True, I should have mentioned that in the cover-letter.  This patch should
+> be applied against the 'testing' branch in https://github.com/ceph/ceph-client,
+> which is where the ceph fscrypt currently lives.
+>
+>> I'd be glad to take patch 1 through the fscrypt tree for 6.4.  But I'm wondering
+>> what the current plans are for getting ceph's fscrypt support upstream?
+> As far as I know, the current plan is to try to merge the ceph code during
+> the next merge window for 6.4 (but Xiubo and Ilya may correct me if I'm
+> wrong).  Also, regarding who picks which patch, I'm fine with you picking
+> the first one.  But I'll let the ceph maintainers say what they think,
+> because it may be easier for them to keep both patches together due to the
+> testing infrastructure being used.
+>
+> Anyway, I'll send out a new rev tomorrow taking your comments into
+> account.  Thanks, Eric!
 
-- Eric
+Eric, Luis,
+
+It will be fine if Eric could merge patch 1 into the fscrypt tree. Then 
+I will merge the patch 1 into the ceph-client's testing by tagging as 
+[DO NOT MERGE] to run our tests.
+
+And locally we are still running the test, and there have several fixes 
+followed and need more time to review.
+
+Thanks
+
+- Xiubo
+
+> Cheers,
+
+-- 
+Best Regards,
+
+Xiubo Li (李秀波)
+
+Email: xiubli@redhat.com/xiubli@ibm.com
+Slack: @Xiubo Li
+
