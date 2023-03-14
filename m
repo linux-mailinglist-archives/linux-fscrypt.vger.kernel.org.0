@@ -2,77 +2,152 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02AF96B8EBD
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 14 Mar 2023 10:29:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2FB16B8F82
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 14 Mar 2023 11:16:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230160AbjCNJ2l (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 14 Mar 2023 05:28:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46576 "EHLO
+        id S230178AbjCNKQa (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 14 Mar 2023 06:16:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230094AbjCNJ2h (ORCPT
+        with ESMTP id S230312AbjCNKQX (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 14 Mar 2023 05:28:37 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97C0B9AA0A;
-        Tue, 14 Mar 2023 02:28:36 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Tue, 14 Mar 2023 06:16:23 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 637A21910A;
+        Tue, 14 Mar 2023 03:15:31 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 42E57B8169E;
-        Tue, 14 Mar 2023 09:28:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 541C3C433D2;
-        Tue, 14 Mar 2023 09:28:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678786114;
-        bh=+y+PFZkCMafTCp1MlMbYHe/bAWt9i0iX1AntFEuCFrM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hBpekMWNmWJz0SQJle/kgkEso9oXcZ5cowr1XU6aK+OJkTcK0e9BuQMchHwOkphYV
-         ByaAVlxXZfvw7VR9s1jSKZMAW2D9b5QFXtK6f/UvTPUc7C7o4y8ZUDdXmsqhC/Pv1c
-         5kk8utcsdbwmn7Px9/oL+9JRiLHRIfKT6duHwK6XtZWQuWqzf5dYVCPfEmqOGWmaDO
-         aljLWrVHKMY36QFMBZfurk+ycuD71DZhvVXcyEqfNf99OlXKlnl/hUXnui6uCVBox4
-         XWO118CHPv7f+yISza8MUz7b7TnP1Ff77P7SVaI6+syAERkhLD3PiSKXAsFhVb7zlE
-         CM9bT/VQ5ofaQ==
-Date:   Tue, 14 Mar 2023 10:28:29 +0100
-From:   Christian Brauner <brauner@kernel.org>
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 6ED071F893;
+        Tue, 14 Mar 2023 10:15:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1678788912; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QJ2tWgbaj1kPFs+SKfFXIBRjqWuylcoIvykgClDHkKQ=;
+        b=f5Wl30HJz9caS+i7Rjnuo7Hd9cZ1zlkdrJ7zDkJpYyiME1trwCYWd9JYuqpH1v2nJR12Ae
+        QJSz0UxXGR16Rn4CDNS7W3WEtF8EmHgifRZcfVReWYMu46Jk8IOlkjkGRmxgOsc459ezIX
+        qPipelgnOp5K2YFBkjRZ6inTpUjTDZw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1678788912;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QJ2tWgbaj1kPFs+SKfFXIBRjqWuylcoIvykgClDHkKQ=;
+        b=CvUAsxSmG5Q5PNoxXxAzchHHgNQuijdyx5Sbm61RUDsaEfIFl8Rml++1HJeZ+x66FFrEP9
+        dbwsObbSJdBUBbCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D5F5F13A26;
+        Tue, 14 Mar 2023 10:15:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id OP8GMS9JEGRDBwAAMHmgww
+        (envelope-from <lhenriques@suse.de>); Tue, 14 Mar 2023 10:15:11 +0000
+Received: from localhost (brahms.olymp [local])
+        by brahms.olymp (OpenSMTPD) with ESMTPA id 48a9b60e;
+        Tue, 14 Mar 2023 10:15:11 +0000 (UTC)
+From:   =?utf-8?Q?Lu=C3=ADs_Henriques?= <lhenriques@suse.de>
 To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, stable@vger.kernel.org,
-        syzbot+93e495f6a4f748827c88@syzkaller.appspotmail.com
-Subject: Re: [PATCH 1/3] fscrypt: destroy keyring after security_sb_delete()
-Message-ID: <20230314092829.l2sx7vck2amiq74a@wittgenstein>
-References: <20230313221231.272498-1-ebiggers@kernel.org>
- <20230313221231.272498-2-ebiggers@kernel.org>
+Cc:     Xiubo Li <xiubli@redhat.com>, Jeff Layton <jlayton@kernel.org>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        linux-fscrypt@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] fscrypt: new helper function -
+ fscrypt_prepare_atomic_open()
+References: <20230313123310.13040-1-lhenriques@suse.de>
+        <20230313123310.13040-2-lhenriques@suse.de>
+        <ZA9mwPUg7H/fq0L8@sol.localdomain>
+Date:   Tue, 14 Mar 2023 10:15:11 +0000
+In-Reply-To: <ZA9mwPUg7H/fq0L8@sol.localdomain> (Eric Biggers's message of
+        "Mon, 13 Mar 2023 11:09:04 -0700")
+Message-ID: <87zg8ftz9s.fsf@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230313221231.272498-2-ebiggers@kernel.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Mar 13, 2023 at 03:12:29PM -0700, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> fscrypt_destroy_keyring() must be called after all potentially-encrypted
-> inodes were evicted; otherwise it cannot safely destroy the keyring.
-> Since inodes that are in-use by the Landlock LSM don't get evicted until
-> security_sb_delete(), this means that fscrypt_destroy_keyring() must be
-> called *after* security_sb_delete().
-> 
-> This fixes a WARN_ON followed by a NULL dereference, only possible if
-> Landlock was being used on encrypted files.
-> 
-> Fixes: d7e7b9af104c ("fscrypt: stop using keyrings subsystem for fscrypt_master_key")
-> Cc: stable@vger.kernel.org
-> Reported-by: syzbot+93e495f6a4f748827c88@syzkaller.appspotmail.com
-> Link: https://lore.kernel.org/r/00000000000044651705f6ca1e30@google.com
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
+Eric Biggers <ebiggers@kernel.org> writes:
 
-Looks good,
-Reviewed-by: Christian Brauner <brauner@kernel.org>
+> On Mon, Mar 13, 2023 at 12:33:09PM +0000, Lu=C3=ADs Henriques wrote:
+>> + * The regular open path will use fscrypt_file_open for that, but in the
+>> + * atomic open a different approach is required.
+>
+> This should actually be fscrypt_prepare_lookup, not fscrypt_file_open, ri=
+ght?
+
+Ups, I missed this comment.
+
+I was comparing the regular open() with the atomic_open() paths.  I think
+I really mean fscrypt_file_open() because that's where the encryption info
+is (or may be) set by calling fscrypt_require_key().  atomic_open needs
+something similar, but combined with a lookup.
+
+Maybe I can rephrase it to:
+
+  The reason for getting the encryption info before checking if the
+  directory has the encryption key is because the key may be available but
+  the encryption info isn't yet set (maybe due to a drop_caches).  The
+  regular open path will call fscrypt_file_open which uses function
+  fscrypt_require_key for setting the encryption info if needed.  The
+  atomic open needs to do something similar.
+
+Cheers,
+--=20
+Lu=C3=ADs
+
+>> +int fscrypt_prepare_atomic_open(struct inode *dir, struct dentry *dentr=
+y)
+>> +{
+>> +	int err;
+>> +
+>> +	if (!IS_ENCRYPTED(dir))
+>> +		return 0;
+>> +
+>> +	err =3D fscrypt_get_encryption_info(dir, true);
+>> +	if (!err && !fscrypt_has_encryption_key(dir)) {
+>> +		spin_lock(&dentry->d_lock);
+>> +		dentry->d_flags |=3D DCACHE_NOKEY_NAME;
+>> +		spin_unlock(&dentry->d_lock);
+>> +	}
+>> +
+>> +	return err;
+>> +}
+>> +EXPORT_SYMBOL_GPL(fscrypt_prepare_atomic_open);
+> [...]
+>> +static inline int fscrypt_prepare_atomic_open(struct inode *dir,
+>> +					      struct dentry *dentry)
+>> +{
+>> +	return -EOPNOTSUPP;
+>> +}
+>
+> This has different behavior on unencrypted directories depending on wheth=
+er
+> CONFIG_FS_ENCRYPTION is enabled or not.  That's bad.
+>
+> In patch 2, the caller you are introducing has already checked IS_ENCRYPT=
+ED().
+>
+> Also, your kerneldoc comment for fscrypt_prepare_atomic_open() says it is=
+ for
+> *encrypted* directories.
+>
+> So IMO, just remove the IS_ENCRYPTED() check from the CONFIG_FS_ENCRYPTION
+> version of fscrypt_prepare_atomic_open().
+>
+> - Eric
+
