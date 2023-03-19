@@ -2,68 +2,66 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F666BF5F4
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 18 Mar 2023 00:05:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C4076C0479
+	for <lists+linux-fscrypt@lfdr.de>; Sun, 19 Mar 2023 20:39:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229629AbjCQXF1 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 17 Mar 2023 19:05:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40748 "EHLO
+        id S229738AbjCSTjh (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sun, 19 Mar 2023 15:39:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbjCQXFW (ORCPT
+        with ESMTP id S229774AbjCSTja (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 17 Mar 2023 19:05:22 -0400
-Received: from sragenkab.go.id (mail.sragenkab.go.id [103.172.109.4])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 02375149BB
-        for <linux-fscrypt@vger.kernel.org>; Fri, 17 Mar 2023 16:05:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=sragenkab.go.id;
-         h=mime-version:content-type:content-transfer-encoding:date:from
-        :to:subject:reply-to:message-id; q=dns/txt; s=dkim1; bh=QGcIAmD5
-        O/Y9qXzDV8MxyimbsW3+rMaQ/kz75GzBHbk=; b=E3ukPsBefySv/fnqmfplKl4i
-        5gcBy4etBr9qmFUpY4V0Git7FxDDxg07aqkzH4Mhtxqj22pM+Jq2SBU19FzcWAXc
-        +4nzET4Y6qd6tr9klqtMx+aRcFVIG+nH/pUgCbMaXC52O7GJv0I46M5TgOM66riu
-        RaS7JpifOaP0wSRTgDXPLdKbDpEh7jKgY4qDzFgxsA0eVo8CGI0t0vOq4lq63oUW
-        iS+rQtCWZOSzhBHDeEp5SZdUuL6V7jCD4+GnUUazp0ss0WE6feeIxgZFs8kGaFyD
-        +jnLbxBaFDXBwwjj4eR3br7dwfXewrhFrkDeGYsb6/v8EYTaE/t+lgiAnkYDHg==
-Received: (qmail 61346 invoked from network); 15 Mar 2023 02:00:44 -0000
-Received: from localhost (HELO mail2.sragenkab.go.id) (127.0.0.1)
-  by localhost with SMTP; 15 Mar 2023 02:00:44 -0000
+        Sun, 19 Mar 2023 15:39:30 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AC2D12CE3;
+        Sun, 19 Mar 2023 12:39:06 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id C71CFB80C76;
+        Sun, 19 Mar 2023 19:39:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E2B7C433D2;
+        Sun, 19 Mar 2023 19:39:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1679254743;
+        bh=FWkHjNQ1cL40j5SackGi2ME0bHDKXNYoN1O5VYU9u78=;
+        h=From:To:Cc:Subject:Date:From;
+        b=b01MGHU5HnquASvJUxCqQ0vQT7m1M7ZeM4766iksSJtfAqCF3QhkXPleU/N/yTg2G
+         fJ81y/d/ET8GLq41hYLTk6vuXZ1K1FGhyvl5XNI0WhuNNE2xdW1FJ0M1keuf1uN9P2
+         yBTo3CYWn2MKXCu//cTG+mGP995HKLx2bWhWafQXqqkreeQd4gThvA0Av9xVsMwNGz
+         sxcm95djiLlMiyi7E719zxymsxuaOMbjXuHxS7huUWMXHV5yRIAKLlh5PHRJlg4Ldi
+         BBmBWl9+8s5wNIqhHxYREGzmIVMCqiGtY+BKQ3+8F30gzsxL+fIR3YTrSlF+Yvk31c
+         f8BXwITuPXlWw==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     fstests@vger.kernel.org
+Cc:     linux-fscrypt@vger.kernel.org
+Subject: [PATCH 0/3] xfstests: make fscrypt-crypt-util self-tests work with OpenSSL 3.0
+Date:   Sun, 19 Mar 2023 12:38:44 -0700
+Message-Id: <20230319193847.106872-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 14 Mar 2023 19:00:44 -0700
-From:   Ibrahim Tafa <jurnalsukowati@sragenkab.go.id>
-To:     undisclosed-recipients:;
-Subject: <LOAN OPPORTUNITY AT LOW-INTEREST RATE>
-Reply-To: <ibrahimtafa@abienceinvestmentsfze.com>
-Mail-Reply-To: <ibrahimtafa@abienceinvestmentsfze.com>
-Message-ID: <3f10a4fd4d4c4586a41723ad182a21d3@sragenkab.go.id>
-X-Sender: jurnalsukowati@sragenkab.go.id
-User-Agent: Roundcube Webmail/0.8.1
-X-Spam-Status: No, score=3.1 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_PASS,SUBJ_ALL_CAPS,UNDISC_MONEY,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: ***
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
+This series makes the algorithm self-tests in fscrypt-crypt-util (which
+are not compiled by default) work with OpenSSL 3.0.  Previously they
+only worked with OpenSSL 1.1.
 
+Eric Biggers (3):
+  fscrypt-crypt-util: fix HKDF self-test with latest OpenSSL
+  fscrypt-crypt-util: use OpenSSL EVP API for AES self-tests
+  fscrypt-crypt-util: fix XTS self-test with latest OpenSSL
+
+ src/fscrypt-crypt-util.c | 46 ++++++++++++++++++++++++++++++++--------
+ 1 file changed, 37 insertions(+), 9 deletions(-)
 
 -- 
-Greetings,
-   I am contacting you based on the Investment/Loan opportunity for 
-companies in need of financing a project/business, We have developed a 
-new method of financing that doesn't take long to receive financing from 
-our clients.
-    If you are looking for funds to finance your project/Business or if 
-you are willing to work as our agent in your country to find clients in 
-need of financing and earn commissions, then get back to me for more 
-details.
+2.40.0
 
-Regards,
-Ibrahim Tafa
-ABIENCE INVESTMENT GROUP FZE, United Arab Emirates
