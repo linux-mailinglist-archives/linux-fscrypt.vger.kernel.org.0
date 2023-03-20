@@ -2,51 +2,50 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDDB86C1B98
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 20 Mar 2023 17:28:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C5326C2335
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 20 Mar 2023 21:56:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231760AbjCTQ2o (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 20 Mar 2023 12:28:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44632 "EHLO
+        id S230115AbjCTU4a (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 20 Mar 2023 16:56:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231732AbjCTQ21 (ORCPT
+        with ESMTP id S230138AbjCTU41 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 20 Mar 2023 12:28:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3754E38018;
-        Mon, 20 Mar 2023 09:20:23 -0700 (PDT)
+        Mon, 20 Mar 2023 16:56:27 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDF7846A2;
+        Mon, 20 Mar 2023 13:56:21 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 118D66164F;
-        Mon, 20 Mar 2023 16:20:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E4D3C433A0;
-        Mon, 20 Mar 2023 16:20:19 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E685161812;
+        Mon, 20 Mar 2023 20:56:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E15DCC4339B;
+        Mon, 20 Mar 2023 20:56:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679329219;
-        bh=uD7tFlYygnM0Nz8LoRx1yUEH6hOCdKID6ZBO8i8zs7w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nhAo+bxibffdU/UNSx7HZlk0+AlV2UrXEuUcKStEiGZb+Q49Ulnihyjy+ktm25zjR
-         WLn335cwsaBc/PWaXrQeEnw6nNfatNfKvGibGi6/pjYG2CXQ9eiWOWgA5NN0370yom
-         8N9nEhN910PMoyez/LIqX1QV5C5AmLf1NMHKTp61rAAZgh4JuzAWSgkSoXTpPWeLoa
-         2OK+Uguqi82GIowRbEZFLOPWuPQuK3tAUmyglvdf8TUKqBIMN9uGSx+pL0x6QfpH5d
-         WSVFnYXnyN10TZynOv98IfEcaESU364ReSQdXqTqDPReREQlgI+DkjqMLFbkIl8ms5
-         5CPmjbkuuU0vw==
-Date:   Mon, 20 Mar 2023 16:20:17 +0000
+        s=k20201202; t=1679345779;
+        bh=TIisIt10fTBip8aXju7/P4H6FODyu04/HbhhX49wO9c=;
+        h=Date:From:To:Cc:Subject:From;
+        b=U5f18BUkAyOeemq+22V7ydwhU6CkvKYt0o8epjIrF0czmcfDjiO6l/qH1Dyj1kzrG
+         QUAI3mZzKD1ahZyJY/KWPlbSVe81sqXAgnCpIfAz7MtASKADACYryCU8cSEgZecc9j
+         zlehdT5gmVpt7G0PLyEOhsCKfSvds1PuNphhyQR+qmiQ7CLu2Sr4pjgROgcYXoVIs3
+         j7wG3QUllgK7yn6mDxn7RRzvw4shjIilMNewkePzbuVLGayq9mmz8FotoZES+8VJBZ
+         prpx8rnFWGiQOwqVeiOBeP6SSJ8xPJJ0C48++C7IVdHdUPzetM8UTP6LNoz6iPVulj
+         CkKA5jzVtGvrQ==
+Date:   Mon, 20 Mar 2023 13:56:17 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Zorro Lang <zlang@redhat.com>
-Cc:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH 0/3] xfstests: make fscrypt-crypt-util self-tests work
- with OpenSSL 3.0
-Message-ID: <ZBiHwYDLPk5gBWec@gmail.com>
-References: <20230319193847.106872-1-ebiggers@kernel.org>
- <20230320140350.w4gg32a4f2kpv62s@zlang-mailbox>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [GIT PULL] fscrypt fix for v6.3-rc4
+Message-ID: <20230320205617.GA1434@sol.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230320140350.w4gg32a4f2kpv62s@zlang-mailbox>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,11 +53,30 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Mar 20, 2023 at 10:03:50PM +0800, Zorro Lang wrote:
-> Just one tiny review point, I'd like to keep using same comment format, especially
-> in same source file. As src/fscrypt-crypt-util.c generally use "/* ... */", so
-> I'll change your "//..." to "/* ... */" when I merge it, if you don't mind.
+The following changes since commit fe15c26ee26efa11741a7b632e9f23b01aca4cc6:
 
-Yes that's fine.
+  Linux 6.3-rc1 (2023-03-05 14:52:03 -0800)
 
-- Eric
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/fs/fscrypt/linux.git tags/fscrypt-for-linus
+
+for you to fetch changes up to 4bcf6f827a79c59806c695dc280e763c5b6a6813:
+
+  fscrypt: check for NULL keyring in fscrypt_put_master_key_activeref() (2023-03-18 21:08:03 -0700)
+
+----------------------------------------------------------------
+
+Fix a bug where when a filesystem was being unmounted, the fscrypt
+keyring was destroyed before inodes have been released by the Landlock
+LSM.  This bug was found by syzbot.
+
+----------------------------------------------------------------
+Eric Biggers (3):
+      fscrypt: destroy keyring after security_sb_delete()
+      fscrypt: improve fscrypt_destroy_keyring() documentation
+      fscrypt: check for NULL keyring in fscrypt_put_master_key_activeref()
+
+ fs/crypto/keyring.c | 23 +++++++++++++----------
+ fs/super.c          | 15 ++++++++++++---
+ 2 files changed, 25 insertions(+), 13 deletions(-)
