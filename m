@@ -2,107 +2,163 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 758E96C144C
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 20 Mar 2023 15:05:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25A686C1456
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 20 Mar 2023 15:07:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231804AbjCTOFO (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 20 Mar 2023 10:05:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56878 "EHLO
+        id S231433AbjCTOHQ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 20 Mar 2023 10:07:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231516AbjCTOEu (ORCPT
+        with ESMTP id S231417AbjCTOHP (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 20 Mar 2023 10:04:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E27435AC
-        for <linux-fscrypt@vger.kernel.org>; Mon, 20 Mar 2023 07:04:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1679321043;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Mon, 20 Mar 2023 10:07:15 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DB591043A;
+        Mon, 20 Mar 2023 07:07:14 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 50C4521AD5;
+        Mon, 20 Mar 2023 14:07:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1679321233; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=/PSB6Nsz7o8LHZj2T/kpSDL6QgnL3s1fRiM33zhd6LU=;
-        b=gz+CZQ7dDhL0vN/dImW9kwcJRBgNTYWBv56hLYG2qWVAifZ0P0ug7eQKZ+VvfdIZtPACZ9
-        IjUj5B5vu4FBqwQXLw6RtFHIXbJFYv3QsVt8jO7bkjpP0hsd2dBKrB5pJEcWrvyVmo66t9
-        /HygvyRQID2WZzJJGjekbCorIgzQil8=
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
- [209.85.215.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-636-13WpOOuyMcmQMmme1Lv5Cw-1; Mon, 20 Mar 2023 10:04:01 -0400
-X-MC-Unique: 13WpOOuyMcmQMmme1Lv5Cw-1
-Received: by mail-pg1-f200.google.com with SMTP id t76-20020a635f4f000000b0050bea7a0577so2635231pgb.12
-        for <linux-fscrypt@vger.kernel.org>; Mon, 20 Mar 2023 07:03:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679321036;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/PSB6Nsz7o8LHZj2T/kpSDL6QgnL3s1fRiM33zhd6LU=;
-        b=cOV2BviIKhvsSR+OW5BPnOQ5licuBlQihRdSFwFfxRP6hSHXvAwsD5oIph1nd4yf/6
-         nnDUQR1PbmeDE4racQOUIP+qNWNDbiVVpL58rlmMNKEzLXNUfgoh9/QJ66QNCce0D0l2
-         yczzJbuY9tPfnMqYa8T0TGExAuM9u0WDYqW8iHuGOeO1PbNUkuTptbQ5ZugnvJ72KNCG
-         qvAzm2rCLNmVAdac7wh1gn7YOOZznFg0VZqhC7/iR6NzmIgiWKKY2zZmtytPDmgAZ4Pr
-         tcOXBCh965n3jIzmxDrdWcNPWmPwpZwFj5btJ6e9S2udsdnL6MU9SKUfTavWe21e/bfL
-         9Pvg==
-X-Gm-Message-State: AO0yUKVVpVvBxNwMahzuzCnrsL3A5OiaiNMfM3tA8xMf2fmLOhKf5lWe
-        vtpi1+mtaJh8ZxJtG0KgZ80fC+eWkXnqbN1OGNkY51dUf8jAm245MrteSSyHHRhDkzJHQqF5K87
-        k9FQmO2kkoxXjN6kBOulY/T+/8g==
-X-Received: by 2002:a05:6a21:78a0:b0:cc:d891:b2b1 with SMTP id bf32-20020a056a2178a000b000ccd891b2b1mr24225877pzc.35.1679321035890;
-        Mon, 20 Mar 2023 07:03:55 -0700 (PDT)
-X-Google-Smtp-Source: AK7set/7e8M6ZokI1Ye9mDyLHcYZBN4Vsk5V84q+FdXMxIosct0x/PnqqcGN5j8bnunPzRCguDt7sQ==
-X-Received: by 2002:a05:6a21:78a0:b0:cc:d891:b2b1 with SMTP id bf32-20020a056a2178a000b000ccd891b2b1mr24225840pzc.35.1679321035455;
-        Mon, 20 Mar 2023 07:03:55 -0700 (PDT)
-Received: from zlang-mailbox ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id i20-20020aa79094000000b005abbfa874d9sm5946971pfa.88.2023.03.20.07.03.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Mar 2023 07:03:54 -0700 (PDT)
-Date:   Mon, 20 Mar 2023 22:03:50 +0800
-From:   Zorro Lang <zlang@redhat.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH 0/3] xfstests: make fscrypt-crypt-util self-tests work
- with OpenSSL 3.0
-Message-ID: <20230320140350.w4gg32a4f2kpv62s@zlang-mailbox>
-References: <20230319193847.106872-1-ebiggers@kernel.org>
+        bh=Yo1ljBh40qQ38I7yL67r8GgZpmVGkTyCyvYo1Klawvg=;
+        b=gR30Tzc5M9vXNhyEAWGCYnexklKeLqzCLnNVhaQReCr/JHWJZBZuM4DXKq4zlS4igtjSNv
+        uBFSYBYrVNwXejkUBZg4Pq11nia2TqEKwDQsj5yfS5dW+i6GgYUqGNRpKDxtAjnTJn+zO+
+        q73LV5ZvLVqsUe2XIdbpvqpVu4TtnUU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1679321233;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Yo1ljBh40qQ38I7yL67r8GgZpmVGkTyCyvYo1Klawvg=;
+        b=9KuzEM+WEuNP7Vy/Mkhq7JBgi8U4cSO7u10W/ngmR6YhNf8EZGHw2zx6f4EbIjrnqZ6cpG
+        K3bdRR/bNEOPdFCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B2A0213416;
+        Mon, 20 Mar 2023 14:07:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id YF0OKJBoGGSKFwAAMHmgww
+        (envelope-from <lhenriques@suse.de>); Mon, 20 Mar 2023 14:07:12 +0000
+Received: from localhost (brahms.olymp [local])
+        by brahms.olymp (OpenSMTPD) with ESMTPA id 03fb36ae;
+        Mon, 20 Mar 2023 14:07:10 +0000 (UTC)
+From:   =?utf-8?Q?Lu=C3=ADs_Henriques?= <lhenriques@suse.de>
+To:     Xiubo Li <xiubli@redhat.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        linux-fscrypt@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/3] ceph: fscrypt: fix atomic open bug for encrypted
+ directories
+References: <20230316181413.26916-1-lhenriques@suse.de>
+        <568da52f-18a6-5f96-cd51-5b07dedefb2d@redhat.com>
+Date:   Mon, 20 Mar 2023 14:07:10 +0000
+In-Reply-To: <568da52f-18a6-5f96-cd51-5b07dedefb2d@redhat.com> (Xiubo Li's
+        message of "Mon, 20 Mar 2023 09:06:50 +0800")
+Message-ID: <871qljv7n5.fsf@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230319193847.106872-1-ebiggers@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Sun, Mar 19, 2023 at 12:38:44PM -0700, Eric Biggers wrote:
-> This series makes the algorithm self-tests in fscrypt-crypt-util (which
-> are not compiled by default) work with OpenSSL 3.0.  Previously they
-> only worked with OpenSSL 1.1.
-> 
-> Eric Biggers (3):
->   fscrypt-crypt-util: fix HKDF self-test with latest OpenSSL
->   fscrypt-crypt-util: use OpenSSL EVP API for AES self-tests
->   fscrypt-crypt-util: fix XTS self-test with latest OpenSSL
-> 
->  src/fscrypt-crypt-util.c | 46 ++++++++++++++++++++++++++++++++--------
->  1 file changed, 37 insertions(+), 9 deletions(-)
-> 
-> -- 
+Xiubo Li <xiubli@redhat.com> writes:
 
-I'm not familiar with fscrypt changes, but from the commit log of 3 patches,
-this patchset looks good to me. If there's not more review points from
-linux-fscrypt@, I'll merge this patchset.
+> On 17/03/2023 02:14, Lu=C3=ADs Henriques wrote:
+>> Hi!
+>>
+>> I started seeing fstest generic/123 failing in ceph fscrypt, when runnin=
+g it
+>> with 'test_dummy_encryption'.  This test is quite simple:
+>>
+>> 1. Creates a directory with write permissions for root only
+>> 2. Writes into a file in that directory
+>> 3. Uses 'su' to try to modify that file as a different user, and
+>>     gets -EPERM
+>>
+>> All the test steps succeed, but the test fails to cleanup: 'rm -rf <dir>'
+>> will fail with -ENOTEMPTY.  'strace' shows that calling unlinkat() to re=
+move
+>> the file got a -ENOENT and then -ENOTEMPTY for the directory.
+>>
+>> This is because 'su' does a drop_caches ('su (874): drop_caches: 2' in
+>> dmesg), and ceph's atomic open will do:
+>>
+>> 	if (IS_ENCRYPTED(dir)) {
+>> 		set_bit(CEPH_MDS_R_FSCRYPT_FILE, &req->r_req_flags);
+>> 		if (!fscrypt_has_encryption_key(dir)) {
+>> 			spin_lock(&dentry->d_lock);
+>> 			dentry->d_flags |=3D DCACHE_NOKEY_NAME;
+>> 			spin_unlock(&dentry->d_lock);
+>> 		}
+>> 	}
+>>
+>> Although 'dir' has the encryption key available, fscrypt_has_encryption_=
+key()
+>> will return 'false' because fscrypt info isn't yet set after the cache
+>> cleanup.
+>>
+>> The first patch will add a new helper for the atomic_open that will force
+>> the fscrypt info to be loaded into an inode that has been evicted recent=
+ly
+>> but for which the key is still available.
+>>
+>> The second patch switches ceph atomic_open to use the new fscrypt helper.
+>>
+>> Cheers,
+>> --
+>> Lu=C3=ADs
+>>
+>> Changes since v2:
+>> - Make helper more generic and to be used both in lookup and atomic open
+>>    operations
+>> - Modify ceph_lookup (patch 0002) and ceph_atomic_open (patch 0003) to u=
+se
+>>    the new helper
+>>
+>> Changes since v1:
+>> - Dropped IS_ENCRYPTED() from helper function because kerneldoc says
+>>    already that it applies to encrypted directories and, most importantl=
+y,
+>>    because it would introduce a different behaviour for
+>>    CONFIG_FS_ENCRYPTION and !CONFIG_FS_ENCRYPTION.
+>> - Rephrased helper kerneldoc
+>>
+>> Changes since initial RFC (after Eric's review):
+>> - Added kerneldoc comments to the new fscrypt helper
+>> - Dropped '__' from helper name (now fscrypt_prepare_atomic_open())
+>> - Added IS_ENCRYPTED() check in helper
+>> - DCACHE_NOKEY_NAME is not set if fscrypt_get_encryption_info() returns =
+an
+>>    error
+>> - Fixed helper for !CONFIG_FS_ENCRYPTION (now defined 'static inline')
+>
+> This series looks good to me.
+>
+> And I have run the test locally and worked well.
 
-Just one tiny review point, I'd like to keep using same comment format, especially
-in same source file. As src/fscrypt-crypt-util.c generally use "/* ... */", so
-I'll change your "//..." to "/* ... */" when I merge it, if you don't mind.
+Awesome, thanks a lot Xiubo.  I've been testing it locally as well and I
+haven't observed any breakage either.
 
-Thanks,
-Zorro
-
-> 2.40.0
-> 
-
+Cheers,
+--=20
+Lu=C3=ADs
