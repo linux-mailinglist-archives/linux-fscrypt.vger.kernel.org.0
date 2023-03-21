@@ -2,118 +2,76 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE8BD6C2763
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 21 Mar 2023 02:23:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BF666C27B3
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 21 Mar 2023 03:03:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229612AbjCUBW7 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 20 Mar 2023 21:22:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51750 "EHLO
+        id S229561AbjCUCDh (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 20 Mar 2023 22:03:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjCUBW7 (ORCPT
+        with ESMTP id S229483AbjCUCDf (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 20 Mar 2023 21:22:59 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11766CC24
-        for <linux-fscrypt@vger.kernel.org>; Mon, 20 Mar 2023 18:22:28 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BAFE3618CD
-        for <linux-fscrypt@vger.kernel.org>; Tue, 21 Mar 2023 01:21:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B59FC433D2;
-        Tue, 21 Mar 2023 01:21:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679361695;
-        bh=0tIux3ZYzc+EuRP80bD46ng0la9wLEyKCU2G86naTAE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hVfhSxgcJlWeBtX86TNqjsNa3NaBf10bNMibvV0JVwy63wM0KUlpyNY+q49bhC848
-         AElooO8T58Cofio+OunDxfssAQVjyYdLsHLUvb1JJM6jfz1a3kVTNDzTrqQQz/PzUk
-         XwVHxoaNGGvnmj0ibj2sMZa4uriLOfsFHXOEp2FU3VwjNR6Rg2RQwwTIr4/KcWn4J3
-         hO/zem2Szurso4O21gODnyZD6BEZeGGKgjvBBGdDfUhoAL9iz1qcR2THXHSOpaCBJr
-         1u53m9S8xAtI/LFzP3ZK+aW59iqz4fJebqzu7fF2kDQZQCpZ8oret/a3BR5Im2WfH2
-         96O6AtgS/k1iw==
-Date:   Tue, 21 Mar 2023 01:21:23 +0000
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Xiubo Li <xiubli@redhat.com>
-Cc:     Luis Henriques <lhenriques@suse.de>, linux-fscrypt@vger.kernel.org
-Subject: Re: Is there any userland implementations of fscrypt
-Message-ID: <ZBkGk+utJGHbgfj/@gmail.com>
-References: <ffa49a00-4b3f-eeb3-6db8-11509fd08c9b@redhat.com>
- <20230320211908.GC1434@sol.localdomain>
- <4a910d6c-3642-6df1-8600-c6ae587a4282@redhat.com>
+        Mon, 20 Mar 2023 22:03:35 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF969F96D
+        for <linux-fscrypt@vger.kernel.org>; Mon, 20 Mar 2023 19:03:32 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 32L23D4S017789
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Mar 2023 22:03:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1679364195; bh=1++IKRnqZ+BH2bM0eGHWtNbecEk8GgRIA8+jEij3mzM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=jYHIUJj5Nxaj3F8dekW6ywk+SvD8er7agnGjI9VKHDxL0C3uFSGGUuEOlVGIfTOvE
+         WY6BohWTcaw2OgL9PVRHJm+DbVfhrvf/Te1PQ6W04mgvgUu/1MYxGSEBA54rkG2YgY
+         4OREog7fyMLtMLzv7GELovYZm1rZp/9pn4oEOatZWRvbaAJq600GLiT96DE4Wne0CB
+         g+pMdMJw/RdypxImFlqNmYIp8BoR8hFSuy9psdAcKD56FdL+Q8abj9/98tFQncZRKk
+         Mv/CRcEtDoR3/+TJbUrkots9gtDyunBWcuZF43Jd25Y0ML2fmp2rIftMQmscymcFwC
+         v6KihMmhYzxNQ==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 6D1AE15C4279; Mon, 20 Mar 2023 22:03:13 -0400 (EDT)
+Date:   Mon, 20 Mar 2023 22:03:13 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: Re: [GIT PULL] fscrypt fix for v6.3-rc4
+Message-ID: <20230321020313.GA108653@mit.edu>
+References: <20230320205617.GA1434@sol.localdomain>
+ <CAHk-=whefxRGyNGzCzG6BVeM=5vnvgb-XhSeFJVxJyAxAF8XRA@mail.gmail.com>
+ <20230320225934.GB21979@sol.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4a910d6c-3642-6df1-8600-c6ae587a4282@redhat.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230320225934.GB21979@sol.localdomain>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, Mar 21, 2023 at 09:03:02AM +0800, Xiubo Li wrote:
-> On 21/03/2023 05:19, Eric Biggers wrote:
-> > [+Cc linux-fscrypt]
-> > 
-> > On Mon, Mar 20, 2023 at 06:49:29PM +0800, Xiubo Li wrote:
-> > > Hi Eric,
-> > > 
-> > > BTW, I am planing to support the fscrypt in userspace ceph client. Is there
-> > > any userland implementation of fscrypt ? If no then what should I use
-> > > instead ?
-> > > 
-> > I assume that you mean userspace code that encrypts files the same way the
-> > kernel does?
+On Mon, Mar 20, 2023 at 03:59:34PM -0700, Eric Biggers wrote:
 > 
-> Yeah, a library just likes the fs/crypto/ in kernel space.
-> 
-> I found the libkcapi, Linux Kernel Crypto API User Space Interface
-> Library(http://www.chronox.de/libkcapi.html)  seems exposing the APIs from
-> crypto/ not the fs/crypto/.
+> Yes, I agree that most of the WARN_ONs should be WARN_ON_ONCEs.  I think I've
+> been assuming that WARN_ON is significantly more lightweight than WARN_ON_ONCE.
+> But that doesn't seem to be the case, especially since commit 19d436268dde
+> ("debug: Add _ONCE() logic to report_bug()").
 
-Much of fs/crypto/ is tightly coupled to how the Linux kernel implements
-filesystems, so I'm not sure what you are expecting exactly!  The actual
-cryptography can definitely be replicated in userspace, though.
+Another option is WARN_RATELIMITED.
 
-> > There's some code in xfstests that reproduces all the fscrypt encryption for
-> > testing purposes
-> > (https://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git/tree/src/fscrypt-crypt-util.c?h=for-next).
-> > It does *not* use production-quality implementations of the algorithms, though.
-> > It just has minimal implementations for testing without depending on OpenSSL.
-> 
-> This is performed in software.
-> 
-> > Similar testing code can also be found in Android's vts_kernel_encryption_test
-> > (https://android.googlesource.com/platform/test/vts-testcase/kernel/+/refs/heads/master/encryption).
-> > It uses BoringSSL for the algorithms when possible, but unlike the xfstest it
-> > does not test filenames encryption.
-> 
-> This too.
+As an unrelated side-note, one of the things I've been working on in
+some of the ext4 code paths when I've been moving BUG_ON's to
+WARN_RATELIMITED is to think about what might be needed to debug a
+problem, and sometimes it can be helpful to use a printf string to
+provide more context than just a WARN_ON.
 
-So you are looking for something that is *not* performed in software?  What do
-you mean by that, exactly?  Are you looking to use an off-CPU hardware crypto
-accelerator?  The Linux kernel exposes those to userspace through AF_ALG.
-Though, it's worth noting that that style of crypto acceleration has fallen a
-bit out of favor these days, as modern CPUs have crypto instructions built-in.
+Cheers,
 
-> > There's also some code in mkfs.ubifs in mtd-utils
-> > (http://git.infradead.org/mtd-utils.git) that supports creating encrypted files.
-> > However, it's outdated since it only supports policy version 1.
-> > 
-> > Which algorithms do you need to support?  The HKDF-SHA512 + AES-256-XTS +
-> > AES-256-CTS combo shouldn't be hard to support if your program can depend on
-> > OpenSSL (1.1.0 or later).
-> 
-> Yeah, ceph has already depended on the OpenSSL.
-> 
-> I think the OpenSSL will be the best choice for now.
-
-That seems like the right choice.  Note that that is "software" too, but I think
-that's what you want!
-
-- Eric
+						- Ted
