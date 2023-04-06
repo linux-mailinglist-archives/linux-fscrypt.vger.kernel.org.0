@@ -2,143 +2,91 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 481746D9F94
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  6 Apr 2023 20:13:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 543BA6DA0F4
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  6 Apr 2023 21:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230098AbjDFSNs (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 6 Apr 2023 14:13:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59714 "EHLO
+        id S240145AbjDFTUK (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 6 Apr 2023 15:20:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240033AbjDFSNX (ORCPT
+        with ESMTP id S238771AbjDFTUJ (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 6 Apr 2023 14:13:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0496083F6
-        for <linux-fscrypt@vger.kernel.org>; Thu,  6 Apr 2023 11:13:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 867B560E17
-        for <linux-fscrypt@vger.kernel.org>; Thu,  6 Apr 2023 18:13:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1A9BC433EF
-        for <linux-fscrypt@vger.kernel.org>; Thu,  6 Apr 2023 18:13:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680804801;
-        bh=2teUQ8h65toPOZ3e0V5ChDgazwKYCdaN9Lw8AuHGGR8=;
-        h=From:To:Subject:Date:From;
-        b=NQexWqnvFQ1RLUA9ji4Pyx4MrBm54yBG3X5BCQ6klj4rrnrJuerzwBxY5Q0p3qoPO
-         UGSqMwSfQjCzPVVOgyRYVBD7nAceI324ujIQ/tFvoxVYOSTJbbYjDAV9eAjob5LTTo
-         TZ4Y/vF70neF5na5HJ5gWgthMT4VLR4YTU3UBcHabDHg3jgNUa9fftciZxq1Js/y4e
-         nGGgeF8uhwxRZRVVEnSmX6wDvpVEw5jUKi5KAEh/DZi5O4bZaKRXp/icSSXFO5Rss1
-         aNOK31egqqgQK93SXBMPGVHp7EefwKdsudmm9nTEtaNgKhxZRdtfM5b1okCovFCMW0
-         MmC72au5clWBg==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Subject: [PATCH] fscrypt: optimize fscrypt_initialize()
-Date:   Thu,  6 Apr 2023 11:12:45 -0700
-Message-Id: <20230406181245.36091-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.40.0
+        Thu, 6 Apr 2023 15:20:09 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8E9552D43;
+        Thu,  6 Apr 2023 12:20:08 -0700 (PDT)
+Received: by linux.microsoft.com (Postfix, from userid 1052)
+        id EE920210DF13; Thu,  6 Apr 2023 12:20:07 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com EE920210DF13
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1680808807;
+        bh=g2HfS/ZMTKQZRzpItrngBvXapTBkgpdLZhq7xEnI4H8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gT19rQ5YUGAjAckjJCB/pAvlv7LMSA7W2eJCCUnDZLw6nymQQ7XKfe9na6VR9qCQe
+         RTvhfiah+2SlCPK5wxIPIxi0dokTS2UAYdsPK9FZLDtRX+yqU7L0Q1iyPsSI+ylHdJ
+         URlbou6GsI3R9TIJ2NKzT1KZK69XElJ/QWudJfqQ=
+Date:   Thu, 6 Apr 2023 12:20:07 -0700
+From:   Fan Wu <wufan@linux.microsoft.com>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
+        serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org,
+        axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org,
+        eparis@redhat.com, linux-doc@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
+        dm-devel@redhat.com, linux-audit@redhat.com,
+        roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
+        Deven Bowers <deven.desai@linux.microsoft.com>
+Subject: Re: [RFC PATCH v9 01/16] security: add ipe lsm
+Message-ID: <20230406192007.GA19196@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1675119451-23180-1-git-send-email-wufan@linux.microsoft.com>
+ <1675119451-23180-2-git-send-email-wufan@linux.microsoft.com>
+ <CAHC9VhTtXC=HMUF8uak-29E__xLN2Kh_znn0xdRbm-GkgqBNiA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHC9VhTtXC=HMUF8uak-29E__xLN2Kh_znn0xdRbm-GkgqBNiA@mail.gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-17.9 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On Thu, Mar 02, 2023 at 02:00:48PM -0500, Paul Moore wrote:
+> On Mon, Jan 30, 2023 at 5:58???PM Fan Wu <wufan@linux.microsoft.com> wrote:
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index 8a5c25c20d00..5e27e84763cc 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -10273,6 +10273,11 @@ T:     git git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git
+> >  F:     security/integrity/ima/
+> >  F:     security/integrity/
+> >
+> > +INTEGRITY POLICY ENFORCEMENT (IPE)
+> > +M:     Fan Wu <wufan@linux.microsoft.com>
+> > +S:     Supported
+> > +F:     security/ipe/
+> 
+> You should probably add a mailing list (L:) and source tree URL (T:)
+> to the IPE entry.  You can use the LSM mailing list to start if you
+> like, there are several LSMs that do that today, e.g. Smack, Landlock,
+> etc.  As far as the source tree is concerned, probably the easiest
+> option is a simple GitHub repo, but there are plenty of other choices
+> too.
+> 
+> Both the mailing list and the source URLs can always be updated in the
+> future so don't worry too much about being stuck with either long
+> term.
+> 
+> --
+> paul-moore.com
 
-fscrypt_initialize() is a "one-time init" function that is called
-whenever the key is set up for any inode on any filesystem.  Make it
-implement "one-time init" more efficiently by not taking a global mutex
-in the "already initialized case" and doing fewer pointer dereferences.
+We do have a github repo, I will add that link in the next version.
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/crypto/crypto.c          | 19 ++++++++++++-------
- fs/crypto/fscrypt_private.h |  2 +-
- fs/crypto/keysetup.c        |  2 +-
- 3 files changed, 14 insertions(+), 9 deletions(-)
-
-diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
-index bf642479269a5..6a837e4b80dcb 100644
---- a/fs/crypto/crypto.c
-+++ b/fs/crypto/crypto.c
-@@ -308,19 +308,24 @@ EXPORT_SYMBOL(fscrypt_decrypt_block_inplace);
- 
- /**
-  * fscrypt_initialize() - allocate major buffers for fs encryption.
-- * @cop_flags:  fscrypt operations flags
-+ * @sb: the filesystem superblock
-  *
-  * We only call this when we start accessing encrypted files, since it
-  * results in memory getting allocated that wouldn't otherwise be used.
-  *
-  * Return: 0 on success; -errno on failure
-  */
--int fscrypt_initialize(unsigned int cop_flags)
-+int fscrypt_initialize(struct super_block *sb)
- {
- 	int err = 0;
-+	mempool_t *pool;
-+
-+	/* pairs with smp_store_release() below */
-+	if (likely(smp_load_acquire(&fscrypt_bounce_page_pool)))
-+		return 0;
- 
- 	/* No need to allocate a bounce page pool if this FS won't use it. */
--	if (cop_flags & FS_CFLG_OWN_PAGES)
-+	if (sb->s_cop->flags & FS_CFLG_OWN_PAGES)
- 		return 0;
- 
- 	mutex_lock(&fscrypt_init_mutex);
-@@ -328,11 +333,11 @@ int fscrypt_initialize(unsigned int cop_flags)
- 		goto out_unlock;
- 
- 	err = -ENOMEM;
--	fscrypt_bounce_page_pool =
--		mempool_create_page_pool(num_prealloc_crypto_pages, 0);
--	if (!fscrypt_bounce_page_pool)
-+	pool = mempool_create_page_pool(num_prealloc_crypto_pages, 0);
-+	if (!pool)
- 		goto out_unlock;
--
-+	/* pairs with smp_load_acquire() above */
-+	smp_store_release(&fscrypt_bounce_page_pool, pool);
- 	err = 0;
- out_unlock:
- 	mutex_unlock(&fscrypt_init_mutex);
-diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-index 05310aa741fd6..7ab5a7b7eef8c 100644
---- a/fs/crypto/fscrypt_private.h
-+++ b/fs/crypto/fscrypt_private.h
-@@ -264,7 +264,7 @@ typedef enum {
- 
- /* crypto.c */
- extern struct kmem_cache *fscrypt_info_cachep;
--int fscrypt_initialize(unsigned int cop_flags);
-+int fscrypt_initialize(struct super_block *sb);
- int fscrypt_crypt_block(const struct inode *inode, fscrypt_direction_t rw,
- 			u64 lblk_num, struct page *src_page,
- 			struct page *dest_page, unsigned int len,
-diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index 84cdae3063280..361f41ef46c78 100644
---- a/fs/crypto/keysetup.c
-+++ b/fs/crypto/keysetup.c
-@@ -560,7 +560,7 @@ fscrypt_setup_encryption_info(struct inode *inode,
- 	struct fscrypt_master_key *mk = NULL;
- 	int res;
- 
--	res = fscrypt_initialize(inode->i_sb->s_cop->flags);
-+	res = fscrypt_initialize(inode->i_sb);
- 	if (res)
- 		return res;
- 
-
-base-commit: 41b2ad80fdcaafd42fce173cb95847d0cd8614c2
--- 
-2.40.0
-
+-Fan
