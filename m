@@ -2,287 +2,554 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EE916DC5BC
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 10 Apr 2023 12:26:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC8A6DCB34
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 10 Apr 2023 20:53:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229717AbjDJK06 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 10 Apr 2023 06:26:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34472 "EHLO
+        id S229685AbjDJSxk (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 10 Apr 2023 14:53:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229706AbjDJK0y (ORCPT
+        with ESMTP id S229574AbjDJSxj (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 10 Apr 2023 06:26:54 -0400
-Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 841252D55
-        for <linux-fscrypt@vger.kernel.org>; Mon, 10 Apr 2023 03:26:52 -0700 (PDT)
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id DB4928064C;
-        Mon, 10 Apr 2023 06:16:58 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1681121819; bh=zPytnI5w1Dm6mI8xuoYOVg3YESk3cLqrpGxHE/74AM4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U5qTWAX5s3ffuOFNaW34va7xGWex2ZOtx9C0oYuNJAUcHZdshfU9jaamp3JeOXTZ1
-         rRsaBcQnCtNoIfWiv+PP9fQrBX526Pkcv/go/ThnOBGrDUmM0f466RVmPVCnUIRZ7U
-         wdW6yIYAWHjG8v761UDGuW4V7Lb4zK+9aedAsZTUDaOvoSRlzp/dcu1IdSKyoCxJLh
-         2FjfPDzeTxrwA97LfQEi5KNwk1QsLNLu820Bx+2XI9bqStCkHF+roW0ClQR5SX67Oj
-         HIwxLMbJVru36W96EQPdj7JzofFLA5NiQer6ZcUt1qZTlkmkT4mzvu17jeRsZBw1/d
-         8HYCu4pslfvhA==
-From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-To:     ebiggers@kernel.org, tytso@mit.edu, jaegeuk@kernel.org,
-        linux-fscrypt@vger.kernel.org, kernel-team@meta.com
-Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH v1 10/10] fscrypt: split key alloc and preparation
-Date:   Mon, 10 Apr 2023 06:16:31 -0400
-Message-Id: <c5b1a8571f89f46ce91893958467e17edb85dbfd.1681116740.git.sweettea-kernel@dorminy.me>
-In-Reply-To: <cover.1681116739.git.sweettea-kernel@dorminy.me>
-References: <cover.1681116739.git.sweettea-kernel@dorminy.me>
+        Mon, 10 Apr 2023 14:53:39 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 39980E4;
+        Mon, 10 Apr 2023 11:53:35 -0700 (PDT)
+Received: by linux.microsoft.com (Postfix, from userid 1052)
+        id 99EB92174E2A; Mon, 10 Apr 2023 11:53:34 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 99EB92174E2A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1681152814;
+        bh=6k4RqFSClh1JCnvAAxRswlmchYa0DJUjXyAdfc2QE8w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KHDLnhB8SnkcU0ENyT4L8IqUsgr7Nl9Dy7xsbX5ee2cKmrHXRLo1D3b+au7r6WT9d
+         FnSyoMEwf4y2vM/6gHR1e/R20YqVwo4bbJefzizzKS1bgHLMaBMzT0f3GWYTEqKfmx
+         GaTfDWdahgG3vccJbhUB48ivfSr/HzjtOVn9Nmso=
+Date:   Mon, 10 Apr 2023 11:53:34 -0700
+From:   Fan Wu <wufan@linux.microsoft.com>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
+        serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org,
+        axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org,
+        eparis@redhat.com, linux-doc@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
+        dm-devel@redhat.com, linux-audit@redhat.com,
+        roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
+        Deven Bowers <deven.desai@linux.microsoft.com>
+Subject: Re: [RFC PATCH v9 03/16] ipe: add evaluation loop and introduce
+ 'boot_verified' as a trust provider
+Message-ID: <20230410185334.GA18827@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1675119451-23180-1-git-send-email-wufan@linux.microsoft.com>
+ <1675119451-23180-4-git-send-email-wufan@linux.microsoft.com>
+ <CAHC9VhS_EbT7ze4oSHwHfus91VWQfdgGagf=5O7_h+XJ2o79PA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHC9VhS_EbT7ze4oSHwHfus91VWQfdgGagf=5O7_h+XJ2o79PA@mail.gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-17.9 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-For extent-based encryption, we plan to use pooled prepared keys, since
-it's unsafe to allocate a new crypto_skcipher when performing IO. This
-will require being able to set up a pre-allocated prepared key, while
-the current code requires allocating and setting up simultaneously.
+On Thu, Mar 02, 2023 at 02:03:11PM -0500, Paul Moore wrote:
+> On Mon, Jan 30, 2023 at 5:58???PM Fan Wu <wufan@linux.microsoft.com> wrote:
+> >
+> > From: Deven Bowers <deven.desai@linux.microsoft.com>
+> >
+> > IPE must have a centralized function to evaluate incoming callers
+> > against IPE's policy. This iteration of the policy against the rules
+> > for that specific caller is known as the evaluation loop.
+> >
+> > In addition, IPE is designed to provide system level trust guarantees,
+> > this usually implies that trust starts from bootup with a hardware root
+> > of trust, which validates the bootloader. After this, the bootloader
+> > verifies the kernel and the initramfs.
+> >
+> > As there's no currently supported integrity method for initramfs, and
+> > it's typically already verified by the bootloader, introduce a property
+> > that causes the first superblock to have an execution to be "pinned",
+> > which is typically initramfs.
+> >
+> > Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
+> > Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
+> 
+> ...
+> 
+> > ---
+> >  security/ipe/Makefile        |   1 +
+> >  security/ipe/eval.c          | 180 +++++++++++++++++++++++++++++++++++
+> >  security/ipe/eval.h          |  28 ++++++
+> >  security/ipe/hooks.c         |  25 +++++
+> >  security/ipe/hooks.h         |  14 +++
+> >  security/ipe/ipe.c           |   1 +
+> >  security/ipe/policy.c        |  20 ++++
+> >  security/ipe/policy.h        |   3 +
+> >  security/ipe/policy_parser.c |   8 +-
+> >  9 files changed, 279 insertions(+), 1 deletion(-)
+> >  create mode 100644 security/ipe/eval.c
+> >  create mode 100644 security/ipe/eval.h
+> >  create mode 100644 security/ipe/hooks.c
+> >  create mode 100644 security/ipe/hooks.h
+> >
+> > diff --git a/security/ipe/Makefile b/security/ipe/Makefile
+> > index 16bbe80991f1..d7f2870d7c09 100644
+> > --- a/security/ipe/Makefile
+> > +++ b/security/ipe/Makefile
+> > @@ -6,6 +6,7 @@
+> >  #
+> >
+> >  obj-$(CONFIG_SECURITY_IPE) += \
+> > +       eval.o \
+> >         hooks.o \
+> >         ipe.o \
+> >         policy.o \
+> > diff --git a/security/ipe/eval.c b/security/ipe/eval.c
+> > new file mode 100644
+> > index 000000000000..48b5104a3463
+> > --- /dev/null
+> > +++ b/security/ipe/eval.c
+> > @@ -0,0 +1,180 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Copyright (C) Microsoft Corporation. All rights reserved.
+> > + */
+> > +
+> > +#include "ipe.h"
+> > +#include "eval.h"
+> > +#include "hooks.h"
+> > +#include "policy.h"
+> > +
+> > +#include <linux/fs.h>
+> > +#include <linux/types.h>
+> > +#include <linux/slab.h>
+> > +#include <linux/file.h>
+> > +#include <linux/sched.h>
+> > +#include <linux/rcupdate.h>
+> > +#include <linux/spinlock.h>
+> > +
+> > +struct ipe_policy __rcu *ipe_active_policy;
+> > +
+> > +static struct super_block *pinned_sb;
+> > +static DEFINE_SPINLOCK(pin_lock);
+> > +#define FILE_SUPERBLOCK(f) ((f)->f_path.mnt->mnt_sb)
+> > +
+> > +/**
+> > + * pin_sb - Pin the underlying superblock of @f, marking it as trusted.
+> > + * @f: Supplies a file structure to source the super_block from.
+> > + */
+> > +static void pin_sb(const struct file *f)
+> > +{
+> > +       if (!f)
+> > +               return;
+> > +       spin_lock(&pin_lock);
+> > +       if (pinned_sb)
+> > +               goto out;
+> > +       pinned_sb = FILE_SUPERBLOCK(f);
+> > +out:
+> > +       spin_unlock(&pin_lock);
+> > +}
+> 
+> Since you don't actually use @f, just the super_block, you might
+> consider passing the super_block as the parameter and not the
+> associated file.
+> 
+> I'd probably also flip the if-then to avoid the 'goto', for example:
+> 
+>   static void pin_sb(const struct super_block *sb)
+>   {
+>     if (!sb)
+>       return;
+>     spin_lock(&pin_lock);
+>     if (!pinned_sb)
+>       pinned_sb = sb;
+>     spin_unlock(&pin_lock);
+>   }
+> 
 
-This pulls apart fscrypt_allocate_skcipher() to only allocate; pulls
-allocation out of fscrypt_prepare_inline_crypt_key(); creates a new
-function fscrypt_allocate_key_member() that allocates the appropriate
-member of a prepared key; and reflects these changes throughout.
+Sure, I can change the code accordingly. 
 
-Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
----
- fs/crypto/fscrypt_private.h | 14 +++++++++++
- fs/crypto/inline_crypt.c    | 20 ++++++++++------
- fs/crypto/keysetup.c        | 47 ++++++++++++++++++++++++++-----------
- fs/crypto/keysetup_v1.c     |  4 ++++
- 4 files changed, 64 insertions(+), 21 deletions(-)
+> Also, do we need to worry about the initramfs' being unmounted and the
+> super_block going away?
+> 
 
-diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-index 7253cdb5e4d8..97323b1e71e7 100644
---- a/fs/crypto/fscrypt_private.h
-+++ b/fs/crypto/fscrypt_private.h
-@@ -358,6 +358,9 @@ fscrypt_using_inline_encryption(const struct fscrypt_info *ci)
- 	return ci->ci_inlinecrypt;
- }
- 
-+int fscrypt_allocate_inline_crypt_key(struct fscrypt_prepared_key *prep_key,
-+				      const struct fscrypt_info *ci);
-+
- int fscrypt_prepare_inline_crypt_key(struct fscrypt_prepared_key *prep_key,
- 				     const u8 *raw_key,
- 				     const struct fscrypt_info *ci);
-@@ -400,6 +403,14 @@ fscrypt_using_inline_encryption(const struct fscrypt_info *ci)
- 	return false;
- }
- 
-+static inline int
-+fscrypt_allocate_inline_crypt_key(struct fscrypt_prepared_key *prep_key,
-+				  const struct fscrypt_info *ci)
-+{
-+	WARN_ON(1);
-+	return -EOPNOTSUPP;
-+}
-+
- static inline int
- fscrypt_prepare_inline_crypt_key(struct fscrypt_prepared_key *prep_key,
- 				 const u8 *raw_key,
-@@ -616,6 +627,9 @@ struct fscrypt_mode {
- 
- extern struct fscrypt_mode fscrypt_modes[];
- 
-+int fscrypt_allocate_key_member(struct fscrypt_prepared_key *prep_key,
-+				const struct fscrypt_info *ci);
-+
- int fscrypt_prepare_key(struct fscrypt_prepared_key *prep_key,
- 			const u8 *raw_key, const struct fscrypt_info *ci);
- 
-diff --git a/fs/crypto/inline_crypt.c b/fs/crypto/inline_crypt.c
-index ce952dedba77..7b3b96b8a916 100644
---- a/fs/crypto/inline_crypt.c
-+++ b/fs/crypto/inline_crypt.c
-@@ -157,16 +157,12 @@ int fscrypt_prepare_inline_crypt_key(struct fscrypt_prepared_key *prep_key,
- 	const struct inode *inode = ci->ci_inode;
- 	struct super_block *sb = inode->i_sb;
- 	enum blk_crypto_mode_num crypto_mode = ci->ci_mode->blk_crypto_mode;
--	struct blk_crypto_key *blk_key;
-+	struct blk_crypto_key *blk_key = prep_key->blk_key;
- 	struct block_device **devs;
- 	unsigned int num_devs;
- 	unsigned int i;
- 	int err;
- 
--	blk_key = kmalloc(sizeof(*blk_key), GFP_KERNEL);
--	if (!blk_key)
--		return -ENOMEM;
--
- 	err = blk_crypto_init_key(blk_key, raw_key, crypto_mode,
- 				  fscrypt_get_dun_bytes(ci), sb->s_blocksize);
- 	if (err) {
-@@ -190,8 +186,6 @@ int fscrypt_prepare_inline_crypt_key(struct fscrypt_prepared_key *prep_key,
- 		fscrypt_err(inode, "error %d starting to use blk-crypto", err);
- 		goto fail;
- 	}
--
--	prep_key->blk_key = blk_key;
- 	return 0;
- 
- fail:
-@@ -199,6 +193,18 @@ int fscrypt_prepare_inline_crypt_key(struct fscrypt_prepared_key *prep_key,
- 	return err;
- }
- 
-+int fscrypt_allocate_inline_crypt_key(struct fscrypt_prepared_key *prep_key,
-+				     const struct fscrypt_info *ci)
-+{
-+	struct blk_crypto_key *blk_key = kmalloc(sizeof(*blk_key), GFP_KERNEL);
-+
-+	if (!blk_key)
-+		return -ENOMEM;
-+
-+	prep_key->blk_key = blk_key;
-+	return 0;
-+}
-+
- void fscrypt_destroy_inline_crypt_key(struct super_block *sb,
- 				      struct fscrypt_prepared_key *prep_key)
- {
-diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index 6efac89d49ec..7fc7dc632b3e 100644
---- a/fs/crypto/keysetup.c
-+++ b/fs/crypto/keysetup.c
-@@ -100,9 +100,9 @@ select_encryption_mode(const union fscrypt_policy *policy,
- 	return ERR_PTR(-EINVAL);
- }
- 
--/* Create a symmetric cipher object for the given encryption mode and key */
-+/* Create a symmetric cipher object for the given encryption mode */
- static struct crypto_skcipher *
--fscrypt_allocate_skcipher(struct fscrypt_mode *mode, const u8 *raw_key,
-+fscrypt_allocate_skcipher(struct fscrypt_mode *mode,
- 			  const struct inode *inode)
- {
- 	struct crypto_skcipher *tfm;
-@@ -135,10 +135,6 @@ fscrypt_allocate_skcipher(struct fscrypt_mode *mode, const u8 *raw_key,
- 		goto err_free_tfm;
- 	}
- 	crypto_skcipher_set_flags(tfm, CRYPTO_TFM_REQ_FORBID_WEAK_KEYS);
--	err = crypto_skcipher_setkey(tfm, raw_key, mode->keysize);
--	if (err)
--		goto err_free_tfm;
--
- 	return tfm;
- 
- err_free_tfm:
-@@ -146,11 +142,28 @@ fscrypt_allocate_skcipher(struct fscrypt_mode *mode, const u8 *raw_key,
- 	return ERR_PTR(err);
- }
- 
-+/* Allocate the relevant encryption member for the prepared key */
-+int fscrypt_allocate_key_member(struct fscrypt_prepared_key *prep_key,
-+				const struct fscrypt_info *ci)
-+{
-+	struct crypto_skcipher *tfm;
-+
-+	if (fscrypt_using_inline_encryption(ci))
-+		return fscrypt_allocate_inline_crypt_key(prep_key, ci);
-+
-+	tfm = fscrypt_allocate_skcipher(ci->ci_mode, ci->ci_inode);
-+	if (IS_ERR(tfm))
-+		return PTR_ERR(tfm);
-+	prep_key->tfm = tfm;
-+	return 0;
-+}
-+
- /*
-  * Prepare the crypto transform object or blk-crypto key in @prep_key, given the
-  * raw key, encryption mode (@ci->ci_mode), flag indicating which encryption
-  * implementation (fs-layer or blk-crypto) will be used (@ci->ci_inlinecrypt),
-- * and IV generation method (@ci->ci_policy.flags).
-+ * and IV generation method (@ci->ci_policy.flags). The relevant member must
-+ * already be allocated and set in @prep_key.
-  */
- int fscrypt_prepare_key(struct fscrypt_prepared_key *prep_key,
- 			const u8 *raw_key, const struct fscrypt_info *ci)
-@@ -162,14 +175,10 @@ int fscrypt_prepare_key(struct fscrypt_prepared_key *prep_key,
- 	if (inlinecrypt) {
- 		err = fscrypt_prepare_inline_crypt_key(prep_key, raw_key, ci);
- 	} else {
--		struct crypto_skcipher *tfm;
-+		err = crypto_skcipher_setkey(prep_key->tfm, raw_key,
-+					     ci->ci_mode->keysize);
- 
--		tfm = fscrypt_allocate_skcipher(ci->ci_mode, raw_key, ci->ci_inode);
--		if (IS_ERR(tfm))
--			return PTR_ERR(tfm);
--		}
- 
--		prep_key->tfm = tfm;
- 	}
- 
- 	/*
-@@ -186,7 +195,7 @@ int fscrypt_prepare_key(struct fscrypt_prepared_key *prep_key,
- 	 */
- 	smp_store_release(&prep_key->prepared_members,
- 			  prep_key->prepared_members | prepared_member);
--	return 0;
-+	return err;
- }
- 
- /* Destroy a crypto transform object and/or blk-crypto key. */
-@@ -201,11 +210,17 @@ void fscrypt_destroy_prepared_key(struct super_block *sb,
- /* Given a per-file encryption key, set up the file's crypto transform object */
- int fscrypt_set_per_file_enc_key(struct fscrypt_info *ci, const u8 *raw_key)
- {
-+	int err;
-+
- 	ci->ci_enc_key = kzalloc(sizeof(*ci->ci_enc_key), GFP_KERNEL);
- 	if (!ci->ci_enc_key)
- 		return -ENOMEM;
- 
- 	ci->ci_enc_key->type = FSCRYPT_KEY_PER_INFO;
-+	err = fscrypt_allocate_key_member(ci->ci_enc_key, ci);
-+	if (err)
-+		return err;
-+
- 	return fscrypt_prepare_key(ci->ci_enc_key, raw_key, ci);
- }
- 
-@@ -290,6 +305,10 @@ static int setup_new_mode_prepared_key(struct fscrypt_master_key *mk,
- 	if (fscrypt_is_key_prepared(prep_key, ci))
- 		goto out_unlock;
- 
-+	err = fscrypt_allocate_key_member(prep_key, ci);
-+	if (err)
-+		goto out_unlock;
-+
- 	BUILD_BUG_ON(sizeof(mode_num) != 1);
- 	BUILD_BUG_ON(sizeof(sb->s_uuid) != 16);
- 	BUILD_BUG_ON(sizeof(hkdf_info) != 17);
-diff --git a/fs/crypto/keysetup_v1.c b/fs/crypto/keysetup_v1.c
-index 1e785cedead0..760efa8eeb3a 100644
---- a/fs/crypto/keysetup_v1.c
-+++ b/fs/crypto/keysetup_v1.c
-@@ -239,6 +239,10 @@ fscrypt_get_direct_key(const struct fscrypt_info *ci, const u8 *raw_key)
- 	refcount_set(&dk->dk_refcount, 1);
- 	dk->dk_mode = ci->ci_mode;
- 	dk->dk_key.type = FSCRYPT_KEY_DIRECT_V1;
-+	err = fscrypt_allocate_key_member(&dk->dk_key, ci);
-+	if (err)
-+		goto err_free_dk;
-+
- 	err = fscrypt_prepare_key(&dk->dk_key, raw_key, ci);
- 	if (err)
- 		goto err_free_dk;
--- 
-2.40.0
+If initramfs is being unmounted, the boot_verified property will never be TRUE,
+which is an expected behavior. In an actual use case, we can leverage this
+property to only enable files in initramfs during the booting stage, and later switch
+to another policy without the boot_verified property after unmounting the initramfs.
+This approach helps keep the allowed set of files minimum at each stage.
 
+> > +/**
+> > + * from_pinned - Determine whether @f is source from the pinned super_block.
+> > + * @f: Supplies a file structure to check against the pinned super_block.
+> > + *
+> > + * Return:
+> > + * * true      - @f is sourced from the pinned super_block
+> > + * * false     - @f is not sourced from the pinned super_block
+> > + */
+> > +static bool from_pinned(const struct file *f)
+> > +{
+> > +       bool rv;
+> > +
+> > +       if (!f)
+> > +               return false;
+> > +       spin_lock(&pin_lock);
+> > +       rv = !IS_ERR_OR_NULL(pinned_sb) && pinned_sb == FILE_SUPERBLOCK(f);
+> > +       spin_unlock(&pin_lock);
+> > +       return rv;
+> > +}
+> > +
+> > +/**
+> > + * build_eval_ctx - Build an evaluation context.
+> > + * @ctx: Supplies a pointer to the context to be populdated.
+> > + * @file: Supplies a pointer to the file to associated with the evaluation.
+> > + * @op: Supplies the IPE policy operation associated with the evaluation.
+> > + */
+> > +void build_eval_ctx(struct ipe_eval_ctx *ctx,
+> > +                   const struct file *file,
+> > +                   enum ipe_op_type op)
+> > +{
+> > +       ctx->file = file;
+> > +       ctx->op = op;
+> > +       ctx->from_init_sb = from_pinned(file);
+> > +}
+> 
+> I was a little concerned about the spinlock around the pinned
+> superblock being a potential issue so I was checking the callers of
+> `build_eval_ctx()` and realized there are no callers in this patch ...
+> ?  Maybe it makes sense for `build_eval_ctx()` to be in this patch but
+> it seems a little odd.
+> 
+
+I can try to move this function to a later patch.
+
+> > +/**
+> > + * evaluate_property - Analyze @ctx against a property.
+> > + * @ctx: Supplies a pointer to the context to be evaluated.
+> > + * @p: Supplies a pointer to the property to be evaluated.
+> > + *
+> > + * Return:
+> > + * * true      - The current @ctx match the @p
+> > + * * false     - The current @ctx doesn't match the @p
+> > + */
+> > +static bool evaluate_property(const struct ipe_eval_ctx *const ctx,
+> > +                             struct ipe_prop *p)
+> > +{
+> > +       bool eval = false;
+> > +
+> > +       switch (p->type) {
+> > +       case ipe_prop_boot_verified_false:
+> > +               eval = !ctx->from_init_sb;
+> > +               break;
+> > +       case ipe_prop_boot_verified_true:
+> > +               eval = ctx->from_init_sb;
+> > +               break;
+> > +       default:
+> > +               eval = false;
+> 
+> You don't need to set @eval to false both when it is declared or in
+> the 'default' case.
+> 
+> Honestly, you don't need @eval at all, you can simply replace all of
+> the @eval assignment statements with return statements.
+> 
+
+Yep, this makes sense to me, I will replace them with returns.
+
+> > +       }
+> > +
+> > +       return eval;
+> > +}
+> > +
+> > +/**
+> > + * ipe_evaluate_event - Analyze @ctx against the current active policy.
+> > + * @ctx: Supplies a pointer to the context to be evaluated.
+> > + *
+> > + * This is the loop where all policy evaluation happens against IPE policy.
+> > + *
+> > + * Return:
+> > + * * 0         - OK
+> > + * * -EACCES   - @ctx did not pass evaluation.
+> > + * * !0                - Error
+> > + */
+> > +int ipe_evaluate_event(const struct ipe_eval_ctx *const ctx)
+> > +{
+> > +       int rc = 0;
+> > +       bool match = false;
+> > +       enum ipe_action_type action;
+> > +       struct ipe_policy *pol = NULL;
+> > +       const struct ipe_rule *rule = NULL;
+> > +       const struct ipe_op_table *rules = NULL;
+> > +       struct ipe_prop *prop = NULL;
+> > +
+> > +       if (ctx->op == ipe_op_exec)
+> > +               pin_sb(ctx->file);
+> 
+> If I understand things correctly, the initramfs is determined by the
+> first process to be executed?  I think that's reasonable, but I'm
+> beginning to wonder if that pinned super_block spinlock is going to be
+> a problem, especially for something that is written once (twice if you
+> consider the ERR_PTR(-EIO) on umount), yet read for each IPE policy
+> evaluation.
+> 
+> I'm okay if you want to keep this as a spinlock for now, but this
+> seems like a good candidate for RCU, and the change would be trivial
+> since it is a single pointer.
+> 
+
+I agree switching to RCU will be better, I will change this part.
+
+> > +       pol = ipe_get_policy_rcu(ipe_active_policy);
+> 
+> I don't think you can safely drop the RCU lock and leave the RCU
+> critical section while you are still using @ipe_active_policy.  I
+> think the right thing to do is to get rid of `ipe_get_policy_rcu()`
+> and simply place from here on down in `ipe_evaluate_event()` in a RCU
+> critical section.  Doing so would ensure that @ipe_active_policy could
+> not be free'd/replaced from underneath you while evaluating an event.
+> 
+
+Yes After reading the RCU documentation, I realized that we were mistaken.
+I will place the entire eval function into the critical section instead.
+
+> > +       if (!pol)
+> > +               goto out;
+> > +
+> > +       if (ctx->op == ipe_op_max) {
+> > +               action = pol->parsed->global_default_action;
+> > +               goto eval;
+> > +       }
+> > +
+> > +       rules = &pol->parsed->rules[ctx->op];
+> > +
+> > +       list_for_each_entry(rule, &rules->rules, next) {
+> > +               match = true;
+> > +
+> > +               list_for_each_entry(prop, &rule->props, next)
+> > +                       match = match && evaluate_property(ctx, prop);
+> > +
+> > +               if (match)
+> > +                       break;
+> > +       }
+> > +
+> > +       if (match)
+> > +               action = rule->action;
+> > +       else if (rules->default_action != ipe_action_max)
+> > +               action = rules->default_action;
+> > +       else
+> > +               action = pol->parsed->global_default_action;
+> > +
+> > +eval:
+> > +       if (action == ipe_action_deny)
+> > +               rc = -EACCES;
+> > +
+> > +out:
+> > +       return rc;
+> > +}
+> > +
+> > +/**
+> > + * ipe_invalidate_pinned_sb - invalidte the ipe pinned super_block.
+> > + * @mnt_sb: super_block to check against the pinned super_block.
+> > + *
+> > + * This function is called a super_block like the initramfs's is freed,
+> > + * if the super_block is currently pinned by ipe it will be invalided,
+> > + * so ipe won't consider the block device is boot verified afterward.
+> > + */
+> > +void ipe_invalidate_pinned_sb(const struct super_block *mnt_sb)
+> > +{
+> > +       spin_lock(&pin_lock);
+> > +
+> > +       if (!IS_ERR_OR_NULL(pinned_sb) && mnt_sb == pinned_sb)
+> > +               pinned_sb = ERR_PTR(-EIO);
+> 
+> I think you only need to check if @pinned_sb is equal to @mnt_sb,
+> that's all that really matters here.
+> 
+
+Agree, will remove the unnecessary part.
+
+> > +       spin_unlock(&pin_lock);
+> > +}
+> > diff --git a/security/ipe/eval.h b/security/ipe/eval.h
+> > new file mode 100644
+> > index 000000000000..887797438b9b
+> > --- /dev/null
+> > +++ b/security/ipe/eval.h
+> > @@ -0,0 +1,28 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +/*
+> > + * Copyright (C) Microsoft Corporation. All rights reserved.
+> > + */
+> > +
+> > +#ifndef IPE_EVAL_H
+> > +#define IPE_EVAL_H
+> > +
+> > +#include <linux/file.h>
+> > +#include <linux/types.h>
+> > +
+> > +#include "hooks.h"
+> > +#include "policy.h"
+> > +
+> > +extern struct ipe_policy __rcu *ipe_active_policy;
+> > +
+> > +struct ipe_eval_ctx {
+> > +       enum ipe_op_type op;
+> > +
+> > +       const struct file *file;
+> > +       bool from_init_sb;
+> > +};
+> > +
+> > +void build_eval_ctx(struct ipe_eval_ctx *ctx, const struct file *file, enum ipe_op_type op);
+> > +int ipe_evaluate_event(const struct ipe_eval_ctx *const ctx);
+> > +void ipe_invalidate_pinned_sb(const struct super_block *mnt_sb);
+> > +
+> > +#endif /* IPE_EVAL_H */
+> > diff --git a/security/ipe/hooks.c b/security/ipe/hooks.c
+> > new file mode 100644
+> > index 000000000000..335b773c7ae1
+> > --- /dev/null
+> > +++ b/security/ipe/hooks.c
+> > @@ -0,0 +1,25 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Copyright (C) Microsoft Corporation. All rights reserved.
+> > + */
+> > +
+> > +#include "ipe.h"
+> > +#include "hooks.h"
+> > +#include "eval.h"
+> > +
+> > +#include <linux/fs.h>
+> > +#include <linux/types.h>
+> > +#include <linux/binfmts.h>
+> > +#include <linux/mman.h>
+> > +
+> > +/**
+> > + * ipe_sb_free_security - ipe security hook function for super_block.
+> > + * @mnt_sb: Supplies a pointer to a super_block is about to be freed.
+> > + *
+> > + * IPE does not have any structures with mnt_sb, but uses this hook to
+> > + * invalidate a pinned super_block.
+> > + */
+> > +void ipe_sb_free_security(struct super_block *mnt_sb)
+> > +{
+> > +       ipe_invalidate_pinned_sb(mnt_sb);
+> > +}
+> > diff --git a/security/ipe/hooks.h b/security/ipe/hooks.h
+> > new file mode 100644
+> > index 000000000000..30fe455389bf
+> > --- /dev/null
+> > +++ b/security/ipe/hooks.h
+> > @@ -0,0 +1,14 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +/*
+> > + * Copyright (C) Microsoft Corporation. All rights reserved.
+> > + */
+> > +#ifndef IPE_HOOKS_H
+> > +#define IPE_HOOKS_H
+> > +
+> > +#include <linux/fs.h>
+> > +#include <linux/binfmts.h>
+> > +#include <linux/security.h>
+> > +
+> > +void ipe_sb_free_security(struct super_block *mnt_sb);
+> > +
+> > +#endif /* IPE_HOOKS_H */
+> > diff --git a/security/ipe/ipe.c b/security/ipe/ipe.c
+> > index 9ed3bf4dcc04..551c6d90ac11 100644
+> > --- a/security/ipe/ipe.c
+> > +++ b/security/ipe/ipe.c
+> > @@ -9,6 +9,7 @@ static struct lsm_blob_sizes ipe_blobs __lsm_ro_after_init = {
+> >  };
+> >
+> >  static struct security_hook_list ipe_hooks[] __lsm_ro_after_init = {
+> > +       LSM_HOOK_INIT(sb_free_security, ipe_sb_free_security),
+> >  };
+> >
+> >  /**
+> > diff --git a/security/ipe/policy.c b/security/ipe/policy.c
+> > index e446f4b84152..772d876b1087 100644
+> > --- a/security/ipe/policy.c
+> > +++ b/security/ipe/policy.c
+> > @@ -97,3 +97,23 @@ struct ipe_policy *ipe_new_policy(const char *text, size_t textlen,
+> >  err:
+> >         return ERR_PTR(rc);
+> >  }
+> > +
+> > +/**
+> > + * ipe_get_policy_rcu - Dereference a rcu-protected policy pointer.
+> > + *
+> > + * @p: rcu-protected pointer to a policy.
+> > + *
+> > + * Not safe to call on IS_ERR.
+> > + *
+> > + * Return: the value of @p
+> > + */
+> > +struct ipe_policy *ipe_get_policy_rcu(struct ipe_policy __rcu *p)
+> > +{
+> > +       struct ipe_policy *rv = NULL;
+> > +
+> > +       rcu_read_lock();
+> > +       rv = rcu_dereference(p);
+> > +       rcu_read_unlock();
+> > +
+> > +       return rv;
+> > +}
+> > diff --git a/security/ipe/policy.h b/security/ipe/policy.h
+> > index 6af2d9a811ec..967d816cd5cd 100644
+> > --- a/security/ipe/policy.h
+> > +++ b/security/ipe/policy.h
+> > @@ -26,6 +26,8 @@ enum ipe_action_type {
+> >  };
+> >
+> >  enum ipe_prop_type {
+> > +       ipe_prop_boot_verified_false,
+> > +       ipe_prop_boot_verified_true,
+> >         ipe_prop_max
+> >  };
+> >
+> > @@ -73,5 +75,6 @@ struct ipe_policy {
+> >  struct ipe_policy *ipe_new_policy(const char *text, size_t textlen,
+> >                                   const char *pkcs7, size_t pkcs7len);
+> >  void ipe_free_policy(struct ipe_policy *pol);
+> > +struct ipe_policy *ipe_get_policy_rcu(struct ipe_policy __rcu *p);
+> >
+> >  #endif /* IPE_POLICY_H */
+> > diff --git a/security/ipe/policy_parser.c b/security/ipe/policy_parser.c
+> > index c7ba0e865366..7efafc482e46 100644
+> > --- a/security/ipe/policy_parser.c
+> > +++ b/security/ipe/policy_parser.c
+> > @@ -265,7 +265,9 @@ static enum ipe_action_type parse_action(char *t)
+> >  }
+> >
+> >  static const match_table_t property_tokens = {
+> > -       {ipe_prop_max,                                  NULL}
+> > +       {ipe_prop_boot_verified_false,  "boot_verified=FALSE"},
+> > +       {ipe_prop_boot_verified_true,   "boot_verified=TRUE"},
+> > +       {ipe_prop_max,                  NULL}
+> >  };
+> >
+> >  /**
+> > @@ -295,6 +297,10 @@ int parse_property(char *t, struct ipe_rule *r)
+> >         token = match_token(t, property_tokens, args);
+> >
+> >         switch (token) {
+> > +       case ipe_prop_boot_verified_false:
+> > +       case ipe_prop_boot_verified_true:
+> > +               p->type = token;
+> > +               break;
+> >         case ipe_prop_max:
+> >         default:
+> >                 rc = -EBADMSG;
+> > --
+> > 2.39.0
+> 
+> --
+> paul-moore.com
