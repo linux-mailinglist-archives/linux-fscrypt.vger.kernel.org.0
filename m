@@ -2,42 +2,44 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B8346DCBB0
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 10 Apr 2023 21:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD68C6DCBB1
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 10 Apr 2023 21:40:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229693AbjDJTkS (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 10 Apr 2023 15:40:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33370 "EHLO
+        id S229688AbjDJTkY (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 10 Apr 2023 15:40:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjDJTkR (ORCPT
+        with ESMTP id S229485AbjDJTkX (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 10 Apr 2023 15:40:17 -0400
-Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 292DC1BD9
-        for <linux-fscrypt@vger.kernel.org>; Mon, 10 Apr 2023 12:40:16 -0700 (PDT)
+        Mon, 10 Apr 2023 15:40:23 -0400
+Received: from box.fidei.email (box.fidei.email [71.19.144.250])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A00EC10D7
+        for <linux-fscrypt@vger.kernel.org>; Mon, 10 Apr 2023 12:40:22 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 68E898023A;
-        Mon, 10 Apr 2023 15:40:15 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id D7BF88023A;
+        Mon, 10 Apr 2023 15:40:21 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1681155615; bh=yVyMZB8dbfQ8pyLrHRN3tDUUdFY/eRH5fpoJqp9J+S8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=GxRdo4j6J4veCsyO7okblrp1D7sFquCJsn6yJJ2Y5f3ZDt+uI0dwBhWF1Yq9kwZIS
-         P2hISLoVGzBX4iT629Otzbk2GeeG3VW/A0UevYJwyQFNGdw7kawQDVDOHdj//w0wE5
-         zb75ayY6orDgWRCmtShKsv1Ttw5gL+1G2YHW1EOxz73Wf6Ik9J6ZoOiRZlY+8wUbPk
-         JBkqLo2Z4K/c2XkDHzrFOie2pBqOC0pIsBb5rJZF3cUYrW4e7Rzi24rT/KNkCoRmFh
-         zKGZHbvNvFevZ3pVvVjQ5DDEF31EIy+WIGyy3+c5BzK72ZoJFgeyCh0+BdNJlirmum
-         SFkq7HLg/SA5w==
+        t=1681155622; bh=ICxqBiWWNIPjhSuPacp2YUBjYU78VvV6ho2HQWm0wWs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=YuDA7DZML2GdHVNha88qeSkvqxA+VqKKH9HD+nvDctL+aUheOSGti2UpTMH8lH3s9
+         iyIWMnPydke36+I7KyURlrqa7kZioAF49e55lmsru2H/slAlfEvgyvQx4wKIiO+ZEL
+         RL9Ot3f1U/yqRsi/ehZr5J8P33pupBaz9G6LGQvALO7G503Dv0jzjDxsBUcLJ7b9VG
+         zNYyrSFhtFUjXT+v6Sh77+4vH9mB/HbCdjJNzi7zd0DXr5OyFhyewW7oB4xr/4t5zV
+         +qLh+V78AA4wDpeSZT/i6Pki0HYg/kbK1Yr+1q/teRsVz/P++hutP7w400u5w94/8R
+         unBzHNk93XnjQ==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     Eric Biggers <ebiggers@kernel.org>,
         "Theodore Y. Ts'o" <tytso@mit.edu>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
         linux-fscrypt@vger.kernel.org, kernel-team@meta.com
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH v2 00/11] fscrypt: rearrangements preliminary to extent encryption
-Date:   Mon, 10 Apr 2023 15:39:53 -0400
-Message-Id: <cover.1681155143.git.sweettea-kernel@dorminy.me>
+Subject: [PATCH v2 01/11] fscrypt: move inline crypt decision to info setup.
+Date:   Mon, 10 Apr 2023 15:39:54 -0400
+Message-Id: <ccdc0954569bd439492e26912616247751ee6cde.1681155143.git.sweettea-kernel@dorminy.me>
+In-Reply-To: <cover.1681155143.git.sweettea-kernel@dorminy.me>
+References: <cover.1681155143.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
@@ -49,50 +51,47 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-As per [1], extent-based encryption needs to split allocating and
-preparing crypto_skciphers, since extent infos will be loaded at IO time
-and crypto_skciphers cannot be allocated at IO time. 
+setup_file_encryption_key() is doing a lot of things at the moment --
+setting the crypt_info's inline encryption bit, finding and locking a
+master key, and calling the functions to get the appropriate prepared
+key for this info. Since setting the inline encryption bit has nothing
+to do with finding the master key, it's easy and hopefully clearer to
+select the encryption implementation in fscrypt_setup_encryption_info(),
+the main fscrypt_info setup function, instead of in
+setup_file_encryption_key() which will long-term only deal in setting
+up the prepared key for the info.
 
-This changeset undertakes to split the existing code to clearly
-distinguish preparation and allocation of fscrypt_prepared_keys,
-wrapping crypto_skciphers. Elegance of code is in the eye of the
-beholder, but I've tried a decent variety of arrangements here and this
-seems like the clearest result to me; happy to adjust as desired, and
-more changesets coming soon, this just seemed like the clearest cutoff
-point for preliminaries without being pure refactoring.
+Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+---
+ fs/crypto/keysetup.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Patchset should apply cleanly to fscrypt/for-next (as per base-commit
-below), and pass ext4/f2fs tests (kvm-xfstests is not currently
-succesfully setting up ubifs volumes for me).
-
-[1] https://lore.kernel.org/linux-btrfs/Y7NQ1CvPyJiGRe00@sol.localdomain/ 
-
-Changes from v1:
-Included change 1, erroneously dropped, and generated patches using --base.
-
-Sweet Tea Dorminy (11):
-  fscrypt: move inline crypt decision to info setup.
-  fscrypt: split and rename setup_file_encryption_key()
-  fscrypt: split and rename setup_per_mode_enc_key()
-  fscrypt: move dirhash key setup away from IO key setup
-  fscrypt: reduce special-casing of IV_INO_LBLK_32
-  fscrypt: make infos have a pointer to prepared keys
-  fscrypt: move all the shared mode key setup deeper
-  fscrypt: make ci->ci_direct_key a bool not a pointer
-  fscrypt: make prepared keys record their type.
-  fscrypt: explicitly track prepared parts of key
-  fscrypt: split key alloc and preparation
-
- fs/crypto/crypto.c          |   2 +-
- fs/crypto/fname.c           |   4 +-
- fs/crypto/fscrypt_private.h |  73 +++++--
- fs/crypto/inline_crypt.c    |  30 +--
- fs/crypto/keysetup.c        | 387 ++++++++++++++++++++++++------------
- fs/crypto/keysetup_v1.c     |  13 +-
- 6 files changed, 340 insertions(+), 169 deletions(-)
-
-
-base-commit: 83e57e47906ce0e99bd61c70fae514e69960d274
+diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
+index 361f41ef46c7..b89c32ad19fb 100644
+--- a/fs/crypto/keysetup.c
++++ b/fs/crypto/keysetup.c
+@@ -443,10 +443,6 @@ static int setup_file_encryption_key(struct fscrypt_info *ci,
+ 	struct fscrypt_master_key *mk;
+ 	int err;
+ 
+-	err = fscrypt_select_encryption_impl(ci);
+-	if (err)
+-		return err;
+-
+ 	err = fscrypt_policy_to_key_spec(&ci->ci_policy, &mk_spec);
+ 	if (err)
+ 		return err;
+@@ -580,6 +576,10 @@ fscrypt_setup_encryption_info(struct inode *inode,
+ 	WARN_ON_ONCE(mode->ivsize > FSCRYPT_MAX_IV_SIZE);
+ 	crypt_info->ci_mode = mode;
+ 
++	res = fscrypt_select_encryption_impl(crypt_info);
++	if (res)
++		goto out;
++
+ 	res = setup_file_encryption_key(crypt_info, need_dirhash_key, &mk);
+ 	if (res)
+ 		goto out;
 -- 
 2.40.0
 
