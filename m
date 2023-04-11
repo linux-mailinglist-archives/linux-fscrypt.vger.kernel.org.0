@@ -2,68 +2,66 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 179A26DE7C5
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 12 Apr 2023 01:08:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 565236DE7FA
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 12 Apr 2023 01:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229484AbjDKXIM (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 11 Apr 2023 19:08:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52474 "EHLO
+        id S229661AbjDKXWK (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 11 Apr 2023 19:22:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjDKXIL (ORCPT
+        with ESMTP id S229508AbjDKXWF (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 11 Apr 2023 19:08:11 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 979BD173D
-        for <linux-fscrypt@vger.kernel.org>; Tue, 11 Apr 2023 16:08:09 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id h198so16452359ybg.12
-        for <linux-fscrypt@vger.kernel.org>; Tue, 11 Apr 2023 16:08:09 -0700 (PDT)
+        Tue, 11 Apr 2023 19:22:05 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F73330C7
+        for <linux-fscrypt@vger.kernel.org>; Tue, 11 Apr 2023 16:22:04 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id e127so9966000ybf.8
+        for <linux-fscrypt@vger.kernel.org>; Tue, 11 Apr 2023 16:22:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1681254489; x=1683846489;
+        d=paul-moore.com; s=google; t=1681255323; x=1683847323;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=eIyxfCRdtVW6DZEqESNyM82Zcjpw6q1yxE2SLi7Q/10=;
-        b=XXnbf3ZXHmVyyAWosjbgtLtVe0obVxWMHT6ER5WKVjE2//n1kQT1vqGfH+itDlXM2k
-         2fneTH+5x2uocctQ6SccdU559tW16dOAzYZt4SUNr3SQZoWWsatyRHmcKNDLHGZiFZX1
-         ngNGr73HAG/JBY+0W9DmkWkoC+3V3vgClv7PS81c7UdnCx+3aMFz1Ishp4aKe2GcG+9q
-         +3SRRyJSTGsRHSMejxxYLambtKEVZffeY9ZCgEkqByHxjKnrI4D7N/WlEOpBuqUt0lI4
-         YOvKnY4/lPDxTBJnhmllQ0VSpmZ1AJLwV7aGqPZH7Infu2EyjgWnt0Qsp4/uyydvAv+I
-         TYrg==
+        bh=mjieG96zBNQQG2PDV49OxJZ6+3G2K7bw1ZbVf6U1lzk=;
+        b=JBJa4Zkia5CL2Y2OupdXMM4PasK18pInJvMWdC+fcjeXMUtF7Az9LU/h0gwzthGF+x
+         QFe+EM5gj0HfuwGanmiaXQwO3fOP8a4btCGAetQJYVHjOzucbpsePzuKkG8TR93btov3
+         ejiAzOSugxLP10TJ9faOUK77CIu/bvXaG3edhovV1FmhkPF7ahaMosgu3K9FFeA+6IjP
+         qeh/0RVlrXKpAWpHVnAzwGCVyfYKB4mFnhjuGQJsrwBkOB5Jy3rtKOUgPR1BJr7DIua1
+         Fk/CkDcSU3fo0g3DUTmWuoTiaScyOwO7RNznY6OmT+Asa5k3Dvwtdp4bTuSz6pIhq7XJ
+         tChQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1681254489; x=1683846489;
+        d=1e100.net; s=20210112; t=1681255323; x=1683847323;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=eIyxfCRdtVW6DZEqESNyM82Zcjpw6q1yxE2SLi7Q/10=;
-        b=j5K073g5edQ7PA3j+R4TG4RO0A5Hd5G5MYCDyghOHnlFYKzkNRhsuFK74wL7GuZGJS
-         EB17FVq6LZMZHEosod3yJiOstxG8O7Ei17MUybj0hhQeDrCb7nIps9e69S+GTLhaZA95
-         cy4p3WcTumnf4SjWmuhqCQh0Wt3p2LM45XaTmjoMc3+XVqxaB0EMLWtuXE/EA2+XPWU2
-         Pr6KbnSzAuRTUG8rPDRy6KKAN6EC4Lc+pmY0Tq7uZ6tr3x3ayyowc6pLDlIdW2An2Mpj
-         YSaP2UDQnDxSuewBylwlO8qV5dZ8BcteRK/w+c64UNNXWc/MksbijTN36CAE5PsBXjnS
-         BOww==
-X-Gm-Message-State: AAQBX9cl6t5SFkKJ+dzFvJNBU74BL+H9wGS9s6dKN775AJfGIuaRMMz1
-        pgijhmruNmoZAztIg5tD2S1Huzz/7yfBzvHdtyVM
-X-Google-Smtp-Source: AKy350YGpKFShus1wXg4P7JDpOEQwCA2ZUIAFxOOzluNG03DhrMlLa19ZC7t5ZHiN0J6rZ9Xc6wbx1W+NEq2mwRq1zY=
-X-Received: by 2002:a25:d702:0:b0:b68:7a4a:5258 with SMTP id
- o2-20020a25d702000000b00b687a4a5258mr377571ybg.3.1681254488697; Tue, 11 Apr
- 2023 16:08:08 -0700 (PDT)
+        bh=mjieG96zBNQQG2PDV49OxJZ6+3G2K7bw1ZbVf6U1lzk=;
+        b=pWPIUe1DLJMU7wliqB4uMDKi1xCWMMRXOvWPNhzIDADl4AH4n5v8aEujPOGdl2ExK2
+         QykqZ9i9TZmJxWMj+qA/Gom33FlmyParMJ2W9TPVQlDUofe6ediHyeZSNVooWwD1Nbq6
+         BWPITv50zHVpMuDXFBCPHa+2nwedlKv8meCpelJu3NRQfJaXnmJQsGrQINL+8wkt+3d7
+         xkgTPvD0uFDUgTi7gU1pnZ1Jbh9SM5oy4mvuumKyhHS2eDX8b/WNHkTvC4ax2GGYKxZe
+         L5QxlMC5090NgK3Iu05TebZEef5nffHiaP0ejLzOVcNuPlHPaMDI7/qVVqJyrWvBojg2
+         hLng==
+X-Gm-Message-State: AAQBX9dMz4xjCKbGOMeeDjdaGnlNS9ygxP5fK5tIdNhRBzw7gnfjqDSP
+        B2twdpSQq8a5RR9ttrNqphQvfN2Fml9bq+3mYS+Y
+X-Google-Smtp-Source: AKy350Y8Rhd9rHz1qCSxaAF3gL9UQq1FI0yq/mFrHh6N2pKJ6DGoHbpLYYEOHTWZcax61zY11aqLEAa5SLJ9oKG9DsM=
+X-Received: by 2002:a25:cace:0:b0:b8f:2f68:93b0 with SMTP id
+ a197-20020a25cace000000b00b8f2f6893b0mr1197248ybg.3.1681255323520; Tue, 11
+ Apr 2023 16:22:03 -0700 (PDT)
 MIME-Version: 1.0
 References: <1675119451-23180-1-git-send-email-wufan@linux.microsoft.com>
  <1675119451-23180-8-git-send-email-wufan@linux.microsoft.com>
  <3723852.kQq0lBPeGt@x2> <CAHC9VhRqMrTuvVtwzJoK2U=6O1QuaQ8ceA6+qm=6ib0TOUEeSw@mail.gmail.com>
- <20230316225340.GB22567@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-In-Reply-To: <20230316225340.GB22567@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+In-Reply-To: <CAHC9VhRqMrTuvVtwzJoK2U=6O1QuaQ8ceA6+qm=6ib0TOUEeSw@mail.gmail.com>
 From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 11 Apr 2023 19:07:57 -0400
-Message-ID: <CAHC9VhQxxrDnzJmUitMid3fk-VwNRU3NWoqjpj1=rhrtpoE=7w@mail.gmail.com>
+Date:   Tue, 11 Apr 2023 19:21:52 -0400
+Message-ID: <CAHC9VhSt1TzpkqGKGXy-4RDBqSQ5+1D9D2JwN1Rw-5G=b=uy3g@mail.gmail.com>
 Subject: Re: [RFC PATCH v9 07/16] uapi|audit|ipe: add ipe auditing support
-To:     Fan Wu <wufan@linux.microsoft.com>
-Cc:     Steve Grubb <sgrubb@redhat.com>, corbet@lwn.net,
-        zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com,
-        tytso@mit.edu, ebiggers@kernel.org, axboe@kernel.dk,
-        agk@redhat.com, snitzer@kernel.org, eparis@redhat.com,
-        linux-audit@redhat.com, dm-devel@redhat.com,
-        linux-doc@vger.kernel.org,
+To:     Steve Grubb <sgrubb@redhat.com>, linux-audit@redhat.com
+Cc:     corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
+        serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org,
+        axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org,
+        eparis@redhat.com, Fan Wu <wufan@linux.microsoft.com>,
+        dm-devel@redhat.com, linux-doc@vger.kernel.org,
         Deven Bowers <deven.desai@linux.microsoft.com>,
         roberto.sassu@huawei.com, linux-security-module@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
@@ -79,95 +77,62 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, Mar 16, 2023 at 6:53=E2=80=AFPM Fan Wu <wufan@linux.microsoft.com> =
+On Thu, Mar 2, 2023 at 2:05=E2=80=AFPM Paul Moore <paul@paul-moore.com> wro=
+te:
+> On Tue, Jan 31, 2023 at 12:11=E2=80=AFPM Steve Grubb <sgrubb@redhat.com> =
 wrote:
-> On Thu, Mar 02, 2023 at 02:05:33PM -0500, Paul Moore wrote:
-> > On Tue, Jan 31, 2023 at 12:11???PM Steve Grubb <sgrubb@redhat.com> wrot=
-e:
-> > >
-> > > Hello,
-> > >
-> > > On Monday, January 30, 2023 5:57:22 PM EST Fan Wu wrote:
-> > > > From: Deven Bowers <deven.desai@linux.microsoft.com>
-> > > >
-> > > > Users of IPE require a way to identify when and why an operation fa=
-ils,
-> > > > allowing them to both respond to violations of policy and be notifi=
-ed
-> > > > of potentially malicious actions on their systens with respect to I=
-PE
-> > > > itself.
-> > > >
-> > > > The new 1420 audit, AUDIT_IPE_ACCESS indicates the result of a poli=
-cy
-> > > > evaulation of a resource. The other two events, AUDIT_MAC_POLICY_LO=
-AD,
-> > > > and AUDIT_MAC_CONFIG_CHANGE represent a new policy was loaded into =
-the
-> > > > kernel and the currently active policy changed, respectively.
-> > >
-> > > Typically when you reuse an existing record type, it is expected to m=
-aintain
-> > > the same fields in the same order. Also, it is expect that fields tha=
-t are
-> > > common across diferent records have the same meaning. To aid in this,=
- we have
-> > > a field dictionary here:
-> > >
-> > > https://github.com/linux-audit/audit-documentation/blob/main/specs/fi=
-elds/
-> > > field-dictionary.csv
-> > >
-> > > For example, dev is expected to be 2 hex numbers separated by a colon=
- which
-> > > are the device major and minor numbers. But down a couple lines from =
-here, we
-> > > find dev=3D"tmpfs". But isn't that a filesystem type?
+> > On Monday, January 30, 2023 5:57:22 PM EST Fan Wu wrote:
+
+...
+
+> > >   audit: MAC_POLICY_LOAD policy_name=3D"dmverity_roothash"
+> > >     policy_version=3D0.0.0 sha256=3DDC67AC19E05894EFB3170A8E55DE52979=
+4E248C2
+> > >     auid=3D4294967295 ses=3D4294967295 lsm=3Dipe res=3D1
 > >
-> > What Steve said.
-> >
-> > I'll also add an administrative note, we just moved upstream Linux
-> > audit development to a new mailing list, audit@vger.kernel.org, please
-> > use that in future patch submissions.  As a positive, it's a fully
-> > open list so you won't run into moderation delays/notifications/etc.
-> >
-> Thanks for the info, I will update the address.
+> > The MAC_POLICY_LOAD record type simply states the lsm that had it's pol=
+icy
+> > loaded. There isn't name, version, and hash information. I'd prefer to =
+see
+> > all users of this record type decide if it should be extended because t=
+hey
+> > also have that information available to record.
 >
-> > > > This patch also adds support for success auditing, allowing users t=
-o
-> > > > identify how a resource passed policy. It is recommended to use thi=
-s
-> > > > option with caution, as it is quite noisy.
-> > > >
-> > > > This patch adds the following audit records:
-> > > >
-> > > >   audit: AUDIT1420 path=3D"/tmp/tmpwxmam366/deny/bin/hello" dev=3D"=
-tmpfs"
-> > > >     ino=3D72 rule=3D"DEFAULT op=3DEXECUTE action=3DDENY"
-> > >
-> > > Do we really need to log the whole rule?
-> >
-> > Fan, would it be reasonable to list the properties which caused the
-> > access denial?  That seems like it might be more helpful than the
-> > specific rule, or am I missing something?
+> Not all LSMs which load policy have that information; as an example,
+> SELinux doesn't have the concept of a policy name or version.  The
+> SELinux policy version you might see in the kernel sources refers to
+> the policy format version and has no bearing on the actual policy
+> content beyond that dictated by the format.
 >
-> Audit the whole rule can let the user find the reason of a policy decisio=
-n.
-> We need the whole rule because an allow/block is not caused by a specific
-> property, but the combination of all property conditions in a rule.
+> If additional information is required by IPE, perhaps an auxiliary IPE
+> policy load record could be created with those additional fields.
 
-Okay, that's a reasonable argument for logging the rule along with the
-decision.  I think it helps that the IPE policy rules are not
-particularly long.
+The issue of policy load audit records came up in an offline
+discussion with Fan today and I think it's worth talking about this a
+bit more to reach some consensus.
 
-> We could also add a verbose switch such that we only audit
-> the whole rule when a user turned the verbose switch on.
+Currently only SELinux generates MAC_POLICY_LOAD records, and it
+contains all of the information that is present in the IPE example
+above with the exception of the 'policy_name', 'policy_version', and
+the policy digest.  I personally don't have a problem extending the
+MAC_POLICY_LOAD record with these fields, and leaving them unused/"?"
+in the SELinux generated records.  It's possible we may even want to
+use the policy digest field at some point, as it would be nice to be
+able to have some policy "key" within SELinux that could be used to
+help identify the loaded policy.
 
-I'm not sure that's necessary, and honestly it might be annoying as we
-would still need to output a 'rule=3D"?"' field in the audit record as
-it is considered good practice to not have fields magically appear and
-disappear from the record format.  However, if there are concerns
-about record sizes, that could be a potential mitigation.
+The only catch is that we may want to find a better field name than
+just 'sha256', in the context of the MAC_POLICY_LOAD record it seems
+easily understood, but in the larger context of a full audit stream it
+might be too ambiguous.  We would also need to decide if we wanted to
+encode the digest algorithm in the field name, the field value, or
+have it as a separate field.  I might lean towards encoding it in the
+field value like this:
+
+  policy_digest=3Dsha256:XXXXX
+
+... however that is something that would need some discussion from the
+other folks on the To/CC line.
 
 --=20
 paul-moore.com
