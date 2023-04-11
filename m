@@ -2,60 +2,61 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AE346DE47F
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 11 Apr 2023 21:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B3BC6DE5C3
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 11 Apr 2023 22:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229583AbjDKTNo (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 11 Apr 2023 15:13:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54326 "EHLO
+        id S229501AbjDKUc5 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 11 Apr 2023 16:32:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbjDKTNm (ORCPT
+        with ESMTP id S229504AbjDKUc4 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 11 Apr 2023 15:13:42 -0400
-Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D5C146AA
-        for <linux-fscrypt@vger.kernel.org>; Tue, 11 Apr 2023 12:13:38 -0700 (PDT)
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-54f6a796bd0so62091917b3.12
-        for <linux-fscrypt@vger.kernel.org>; Tue, 11 Apr 2023 12:13:38 -0700 (PDT)
+        Tue, 11 Apr 2023 16:32:56 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A73BD44B8
+        for <linux-fscrypt@vger.kernel.org>; Tue, 11 Apr 2023 13:32:53 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id bv15so7803263ybb.1
+        for <linux-fscrypt@vger.kernel.org>; Tue, 11 Apr 2023 13:32:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1681240417; x=1683832417;
+        d=paul-moore.com; s=google; t=1681245173; x=1683837173;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ZyhAcQmoHbAJmyI6qNybDWX+d0nq9TvXS/75WN8UzuA=;
-        b=S2f+5gKCSSzDOMOS6mIOicl0bR1GjNPjs24KWw1ZqU8L7QMlPQQKweyrpx5vW1RjKJ
-         5C38HUdsLCTBSys6gc60xF1N+O6daogXQypFY+aquyajA0zIHayA7/np0IYE7V0ZR5+a
-         /o7LaS9b5UhjtAIy1W81O6uUXzYpim0EndlWb+spMWkfdCb/H3gLY6I0J64z2Rz0fxC4
-         2Y9gbJ32KP6PeX1M/X5Cm1TfxUBa4YbdGtJiZypDJyIv+sjJpbeQJhWqfdJX638mi0VU
-         ua2nLslyeNXA3wus84B/BahgSozqvbNONWUP+NQxRKQwiJFyeDl0ursSU+XFZKPSwzmq
-         T5zw==
+        bh=ikdi+6xxj2kvpls/7KRBOAg0lIkRgRoVXw8KwuRi4Nc=;
+        b=IQ9zZGCNRzZwfZFuGDrY6qwE9SFscSfIixOwnA4rFQL16vvokxAcya+cMNiEJWF/lB
+         jfUjEDfBjxQmhe/m3jewm7jJLjeF+tKcqSL03+AbqWymsVlf8EEP00s1SU0cxksL0zEq
+         aELwAeeUCgGgh9NbZTSKlmYtsFMknlxQ5vc+LAgXie28umXXh7hhlP0K8oGds+yB5mEO
+         vnwwKYtfeLTL9Ggt6AoI0LCSpTdf8MtVDWfJHa7h5gd+mCjLpYJP73Z+fFhKTpm6ehpS
+         eULjph7vC73UZBatpFNnwz8A7xfnzCLiAhRTkuk93Tn1z4Nwff5SzQw+maLC17p1NBra
+         luBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1681240417; x=1683832417;
+        d=1e100.net; s=20210112; t=1681245173; x=1683837173;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ZyhAcQmoHbAJmyI6qNybDWX+d0nq9TvXS/75WN8UzuA=;
-        b=Ou+W5+zmW2dDNrKBnBZEPK4a4oV3AanIsH+mZfN/1oztDdMJ6WDZ/HiekkIxP4Qbab
-         q/fdfI5GKc52iTWNY7hmhq3v7yTbAGmLqWy9pzmuzAA+fU7Ic9MG7MGtIl5R61KiUDjP
-         mh6EYGmWdX4kJq9rE/FJu1XfUnov+sBCq180k843qY7N1wi6Yty5hbJov9wC2ACTaAiB
-         eHOZa8l/quElA2ynbIVf5TOvSHx0EW4SJiNOmUOl+lnLX90e+pTLbSI0bR2s+tgIDjEZ
-         oqHYgrX1GxTTAcqPjay7mSk5XfMXmLpDZ7TZWxC/9STA2mwHT6k60tvrqSIdRZN/Qh1L
-         aY1g==
-X-Gm-Message-State: AAQBX9eQHuS2feSO/3u9SrhTIwaxW0gS2sVNCBImCn6OtXgjSBLQCuaI
-        ZghFZb1bN6YL4ABH0bXLRf34BPbofWzoWw6wMMsp
-X-Google-Smtp-Source: AKy350azG2i8uc9BAHp/wk8VSvxtJ0aqfSk9gTsrxDzJOGJbd8PZzFADbtv5hxGRkczUVNGtVCqIHdlrFObziFErZeI=
-X-Received: by 2002:a81:a904:0:b0:54f:2b65:a865 with SMTP id
- g4-20020a81a904000000b0054f2b65a865mr4260299ywh.8.1681240417154; Tue, 11 Apr
- 2023 12:13:37 -0700 (PDT)
+        bh=ikdi+6xxj2kvpls/7KRBOAg0lIkRgRoVXw8KwuRi4Nc=;
+        b=Rq9Afd+BgbcLbrqq2CNSI/FMZ8l2Z+B4iPIH+OFUR+8BDFCYX/oPuYUeYgGpp2DK88
+         ih85WylYxBLNYDtBNMmebxQPajoRDIv9HL6ExZ4pWppreSL5qgVAFD56phbKtgTIITgE
+         QU345WfCeXwB8UYpXIFTdHCB0BIRkn/L9vDy3BXWDchGSGu3GAtTRmAUBAuPGd9t1AUg
+         n9YHxdfLKBlDQ71dZ8Nu3T8W8H1iPAi8445y7wxcAyap/ENOCETHYvtn16xWGiYoygvp
+         nhFSJY9o5mxMVNoyBtvr3i7LaiJkmnYH7ShatsT4Xgoi8j0AR3ElbdNzid8CJF/OTzvQ
+         H56A==
+X-Gm-Message-State: AAQBX9eJ72ZkJNA3REwrTddrHkEV9dnM7cfS+MNZa8/edNyZxFcEiwDW
+        DyBMHjrXkU+BOovbGi6fIitgOAHJX+t5chbIHO2N
+X-Google-Smtp-Source: AKy350a8DI+fttqPGYGrYWlw3sZUgpf5kan6JSrYFZNA0OIQFLQ5A+goWX5p08tzzrk48yMapO6qwBhOBzk9Q/ypItw=
+X-Received: by 2002:a25:d702:0:b0:b68:7a4a:5258 with SMTP id
+ o2-20020a25d702000000b00b687a4a5258mr101812ybg.3.1681245172701; Tue, 11 Apr
+ 2023 13:32:52 -0700 (PDT)
 MIME-Version: 1.0
 References: <1675119451-23180-1-git-send-email-wufan@linux.microsoft.com>
- <1675119451-23180-3-git-send-email-wufan@linux.microsoft.com>
- <CAHC9VhRguGeb8=oNVFebshL_2LLZ4hf0qO97YBVm8OObLsLNTw@mail.gmail.com> <20230406200055.GB19196@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-In-Reply-To: <20230406200055.GB19196@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <1675119451-23180-4-git-send-email-wufan@linux.microsoft.com>
+ <CAHC9VhS_EbT7ze4oSHwHfus91VWQfdgGagf=5O7_h+XJ2o79PA@mail.gmail.com> <20230410185334.GA18827@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+In-Reply-To: <20230410185334.GA18827@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 11 Apr 2023 15:13:26 -0400
-Message-ID: <CAHC9VhTkEHvoSFu8h=tuGJAjPhohj7ABPi+XXVg4j5MesCbtxw@mail.gmail.com>
-Subject: Re: [RFC PATCH v9 02/16] ipe: add policy parser
+Date:   Tue, 11 Apr 2023 16:32:41 -0400
+Message-ID: <CAHC9VhTRpDK74iL6A6wt2=--5LmrC7pHZY_BLnHDdfqboA2i1A@mail.gmail.com>
+Subject: Re: [RFC PATCH v9 03/16] ipe: add evaluation loop and introduce
+ 'boot_verified' as a trust provider
 To:     Fan Wu <wufan@linux.microsoft.com>
 Cc:     corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
         serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org,
@@ -69,33 +70,39 @@ Cc:     corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
         Deven Bowers <deven.desai@linux.microsoft.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Thu, Apr 6, 2023 at 4:00=E2=80=AFPM Fan Wu <wufan@linux.microsoft.com> w=
-rote:
-> On Thu, Mar 02, 2023 at 02:02:32PM -0500, Paul Moore wrote:
+On Mon, Apr 10, 2023 at 2:53=E2=80=AFPM Fan Wu <wufan@linux.microsoft.com> =
+wrote:
+> On Thu, Mar 02, 2023 at 02:03:11PM -0500, Paul Moore wrote:
 > > On Mon, Jan 30, 2023 at 5:58???PM Fan Wu <wufan@linux.microsoft.com> wr=
 ote:
 > > >
 > > > From: Deven Bowers <deven.desai@linux.microsoft.com>
 > > >
-> > > IPE's interpretation of the what the user trusts is accomplished thro=
-ugh
-> > > its policy. IPE's design is to not provide support for a single trust
-> > > provider, but to support multiple providers to enable the end-user to
-> > > choose the best one to seek their needs.
+> > > IPE must have a centralized function to evaluate incoming callers
+> > > against IPE's policy. This iteration of the policy against the rules
+> > > for that specific caller is known as the evaluation loop.
 > > >
-> > > This requires the policy to be rather flexible and modular so that
-> > > integrity providers, like fs-verity, dm-verity, dm-integrity, or
-> > > some other system, can plug into the policy with minimal code changes=
-.
+> > > In addition, IPE is designed to provide system level trust guarantees=
+,
+> > > this usually implies that trust starts from bootup with a hardware ro=
+ot
+> > > of trust, which validates the bootloader. After this, the bootloader
+> > > verifies the kernel and the initramfs.
+> > >
+> > > As there's no currently supported integrity method for initramfs, and
+> > > it's typically already verified by the bootloader, introduce a proper=
+ty
+> > > that causes the first superblock to have an execution to be "pinned",
+> > > which is typically initramfs.
 > > >
 > > > Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
 > > > Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
@@ -103,98 +110,110 @@ ugh
 > > ...
 > >
 > > > ---
-> > >  security/ipe/Makefile        |   2 +
-> > >  security/ipe/policy.c        |  99 +++++++
-> > >  security/ipe/policy.h        |  77 ++++++
-> > >  security/ipe/policy_parser.c | 515 +++++++++++++++++++++++++++++++++=
+> > >  security/ipe/Makefile        |   1 +
+> > >  security/ipe/eval.c          | 180 +++++++++++++++++++++++++++++++++=
 ++
-> > >  security/ipe/policy_parser.h |  11 +
-> > >  5 files changed, 704 insertions(+)
-> > >  create mode 100644 security/ipe/policy.c
-> > >  create mode 100644 security/ipe/policy.h
-> > >  create mode 100644 security/ipe/policy_parser.c
-> > >  create mode 100644 security/ipe/policy_parser.h
+> > >  security/ipe/eval.h          |  28 ++++++
+> > >  security/ipe/hooks.c         |  25 +++++
+> > >  security/ipe/hooks.h         |  14 +++
+> > >  security/ipe/ipe.c           |   1 +
+> > >  security/ipe/policy.c        |  20 ++++
+> > >  security/ipe/policy.h        |   3 +
+> > >  security/ipe/policy_parser.c |   8 +-
+> > >  9 files changed, 279 insertions(+), 1 deletion(-)
+> > >  create mode 100644 security/ipe/eval.c
+> > >  create mode 100644 security/ipe/eval.h
+> > >  create mode 100644 security/ipe/hooks.c
+> > >  create mode 100644 security/ipe/hooks.h
 
 ...
 
-> > > diff --git a/security/ipe/policy_parser.c b/security/ipe/policy_parse=
-r.c
+> > > diff --git a/security/ipe/eval.c b/security/ipe/eval.c
 > > > new file mode 100644
-> > > index 000000000000..c7ba0e865366
+> > > index 000000000000..48b5104a3463
 > > > --- /dev/null
-> > > +++ b/security/ipe/policy_parser.c
-> > > @@ -0,0 +1,515 @@
+> > > +++ b/security/ipe/eval.c
+> > > @@ -0,0 +1,180 @@
 > > > +// SPDX-License-Identifier: GPL-2.0
 > > > +/*
 > > > + * Copyright (C) Microsoft Corporation. All rights reserved.
 > > > + */
 > > > +
+> > > +#include "ipe.h"
+> > > +#include "eval.h"
+> > > +#include "hooks.h"
 > > > +#include "policy.h"
-> > > +#include "policy_parser.h"
-> > > +#include "digest.h"
 > > > +
-> > > +#include <linux/parser.h>
+> > > +#include <linux/fs.h>
+> > > +#include <linux/types.h>
+> > > +#include <linux/slab.h>
+> > > +#include <linux/file.h>
+> > > +#include <linux/sched.h>
+> > > +#include <linux/rcupdate.h>
+> > > +#include <linux/spinlock.h>
 > > > +
-> > > +#define START_COMMENT  '#'
+> > > +struct ipe_policy __rcu *ipe_active_policy;
+> > > +
+> > > +static struct super_block *pinned_sb;
+> > > +static DEFINE_SPINLOCK(pin_lock);
+> > > +#define FILE_SUPERBLOCK(f) ((f)->f_path.mnt->mnt_sb)
 > > > +
 > > > +/**
-> > > + * new_parsed_policy - Allocate and initialize a parsed policy.
-> > > + *
-> > > + * Return:
-> > > + * * !IS_ERR   - OK
-> > > + * * -ENOMEM   - Out of memory
+> > > + * pin_sb - Pin the underlying superblock of @f, marking it as trust=
+ed.
+> > > + * @f: Supplies a file structure to source the super_block from.
 > > > + */
-> > > +static struct ipe_parsed_policy *new_parsed_policy(void)
+> > > +static void pin_sb(const struct file *f)
 > > > +{
-> > > +       size_t i =3D 0;
-> > > +       struct ipe_parsed_policy *p =3D NULL;
-> > > +       struct ipe_op_table *t =3D NULL;
-> > > +
-> > > +       p =3D kzalloc(sizeof(*p), GFP_KERNEL);
-> > > +       if (!p)
-> > > +               return ERR_PTR(-ENOMEM);
-> > > +
-> > > +       p->global_default_action =3D ipe_action_max;
+> > > +       if (!f)
+> > > +               return;
+> > > +       spin_lock(&pin_lock);
+> > > +       if (pinned_sb)
+> > > +               goto out;
+> > > +       pinned_sb =3D FILE_SUPERBLOCK(f);
+> > > +out:
+> > > +       spin_unlock(&pin_lock);
+> > > +}
 > >
-> > I'm assuming you're using the "ipe_action_max" as an intentional bogus
-> > placeholder value here, yes?  If that is the case, have you considered
-> > creating an "invalid" enum with an explicit zero value to save you
-> > this additional assignment (you are already using kzalloc())?  For
-> > example:
+> > Since you don't actually use @f, just the super_block, you might
+> > consider passing the super_block as the parameter and not the
+> > associated file.
 > >
-> >   enum ipe_op_type {
-> >     IPE_OP_INVALID =3D 0,
-> >     IPE_OP_EXEC,
-> >     ...
-> >     IPE_OP_MAX,
-> >   };
+> > I'd probably also flip the if-then to avoid the 'goto', for example:
 > >
-> >   enum ipe_action_type {
-> >     IPE_ACTION_INVALID =3D 0,
-> >     IPE_ACTION_ALLOW,
-> >     ...
-> >     IPE_ACTION_MAX,
-> >   };
+> >   static void pin_sb(const struct super_block *sb)
+> >   {
+> >     if (!sb)
+> >       return;
+> >     spin_lock(&pin_lock);
+> >     if (!pinned_sb)
+> >       pinned_sb =3D sb;
+> >     spin_unlock(&pin_lock);
+> >   }
 > >
 >
-> Yes, IPE_ACTION_MAX is kind of the INVALID value we are using here.
+> Sure, I can change the code accordingly.
 >
-> But I think we might be adding unnecessary complexity by using the
-> IPE_OP_INVLIAD enum here. Currently, we are using IPE_OP_MAX to
-> represent the number of operations we have, and we have allocated
-> an IPE_OP_MAX-sized array to store linked lists that link all rules
-> for each operation. If we were to add IPE_OP_INVLIAD to the enum
-> definition, then IPE_OP_MAX-1 would become the number of operations,
-> and we would need to change the index used to access the linked list
-> array.
+> > Also, do we need to worry about the initramfs' being unmounted and the
+> > super_block going away?
+>
+> If initramfs is being unmounted, the boot_verified property will never be=
+ TRUE,
+> which is an expected behavior. In an actual use case, we can leverage thi=
+s
+> property to only enable files in initramfs during the booting stage, and =
+later switch
+> to another policy without the boot_verified property after unmounting the=
+ initramfs.
+> This approach helps keep the allowed set of files minimum at each stage.
 
-Gotcha.  Thanks for the explanation, that hadn't occurred to me while
-I was reviewing the code.
+I think I was worried about not catching when the fs was unmounted and
+the superblock disappeared, but you've got a hook defined for that so
+it should be okay.  I'm not sure what I was thinking here, sorry for
+the noise ...
 
-Another option would be to create a macro to help reinforce that the
-"max" value is being used as an "invalid" value, for example:
-
-#define IPE_OP_INVALID IPE_OP_MAX
+Regardless of the source of my confusion, your policy/boot_verified
+description all sounds good to me.
 
 --=20
 paul-moore.com
