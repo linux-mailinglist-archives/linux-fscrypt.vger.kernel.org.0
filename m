@@ -2,53 +2,53 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 137ED6DD027
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 11 Apr 2023 05:24:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7E836DD02E
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 11 Apr 2023 05:29:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229800AbjDKDYe (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 10 Apr 2023 23:24:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60434 "EHLO
+        id S229849AbjDKD3k (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 10 Apr 2023 23:29:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229722AbjDKDYc (ORCPT
+        with ESMTP id S229800AbjDKD3j (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 10 Apr 2023 23:24:32 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66D3B1BC1
-        for <linux-fscrypt@vger.kernel.org>; Mon, 10 Apr 2023 20:24:31 -0700 (PDT)
+        Mon, 10 Apr 2023 23:29:39 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69554172B
+        for <linux-fscrypt@vger.kernel.org>; Mon, 10 Apr 2023 20:29:38 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id ED4D561ACA
-        for <linux-fscrypt@vger.kernel.org>; Tue, 11 Apr 2023 03:24:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20E8AC433EF;
-        Tue, 11 Apr 2023 03:24:30 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 04DA7620D1
+        for <linux-fscrypt@vger.kernel.org>; Tue, 11 Apr 2023 03:29:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FBE1C4339B;
+        Tue, 11 Apr 2023 03:29:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1681183470;
-        bh=RJmNRGBrs1Af0IGCAiXWDmPWm/AThvRIGUSZDKG7qx4=;
+        s=k20201202; t=1681183777;
+        bh=9wLR8N0YB7SHs8hISHrIIwB+fxbde0laI6coSPeVPUU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rWEGVz4uLEAkQ9NfLA5XkPqEbhDOX9iXg17Z9dSPgHbejx+ymXcQtyDCiGoKFXdpk
-         W4WHThCgjoONnPwDzZqoCDWs+Jlhb9U6PMOz5lQF365QNCBVyuCN0+Gy8mLsNUjdAp
-         tiMn2oGIerXe1mShVpQgMYtBYmxdY9s1S9wEctpM+PtcJYzOdqNeLaIcVL1bxtQG9w
-         FfwKnJ2rZNLNQFIWTuahzq10072g4RcnVkGFW9vlI+dfb44ASpemIKn31aqWH0WsAf
-         pWDALLeyfRXCZwA5xBusHqjDnEfP3O/m1jVF0XYh5iuvzgplnLgBm0Fuq2euySNLJn
-         7fKtt5a2hoQ2w==
-Date:   Mon, 10 Apr 2023 20:24:28 -0700
+        b=qY9wkQ+O/7JyWABepXYgbNUoz4nJtKjrI5HvE2nZz/g6nSXSirQRrceb6EBYIKRSo
+         2fpWdD4jvne2ewg/2gKxLFOiHG+K2kWJwwZLoreirOWTVusE5RItBJ212s6twKWkoe
+         UN7l6EBGt3ssr5mTec7gIDV7QguL9RLL/zL8xCpBdpvl5h43ZwckSs23Jnt4Le8hoV
+         qnpx+EzwaRdlfzYg/mO9BkV6rrhGKiUh7IiGpaOVIKspjcWdcmOFzKAAICFiv81P5X
+         U3QvaND8K/6mX7A6CdoHOliBjVeWmqX6lyNCtS3+6aNAZ8istmxDoIE28ABeyRD2Aj
+         nqXmwfrnZpImg==
+Date:   Mon, 10 Apr 2023 20:29:35 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
         linux-fscrypt@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH v2 02/11] fscrypt: split and rename
- setup_file_encryption_key()
-Message-ID: <20230411032428.GB47625@sol.localdomain>
+Subject: Re: [PATCH v2 03/11] fscrypt: split and rename
+ setup_per_mode_enc_key()
+Message-ID: <20230411032935.GC47625@sol.localdomain>
 References: <cover.1681155143.git.sweettea-kernel@dorminy.me>
- <81adddca05362d0f4401dbc114f6ac7ad1f56645.1681155143.git.sweettea-kernel@dorminy.me>
+ <4f2bbef32f245f3c6b7e75f68c90faa1c3c096f1.1681155143.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <81adddca05362d0f4401dbc114f6ac7ad1f56645.1681155143.git.sweettea-kernel@dorminy.me>
-X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
+In-Reply-To: <4f2bbef32f245f3c6b7e75f68c90faa1c3c096f1.1681155143.git.sweettea-kernel@dorminy.me>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,47 +56,52 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Apr 10, 2023 at 03:39:55PM -0400, Sweet Tea Dorminy wrote:
->  /*
-> - * Find the master key, then set up the inode's actual encryption key.
-> + * Find and lock the master key.
->   *
->   * If the master key is found in the filesystem-level keyring, then it is
->   * returned in *mk_ret with its semaphore read-locked.  This is needed to ensure
-> @@ -434,9 +471,8 @@ static bool fscrypt_valid_master_key_size(const struct fscrypt_master_key *mk,
->   * multiple tasks may race to create an fscrypt_info for the same inode), and to
->   * synchronize the master key being removed with a new inode starting to use it.
->   */
-> -static int setup_file_encryption_key(struct fscrypt_info *ci,
-> -				     bool need_dirhash_key,
-> -				     struct fscrypt_master_key **mk_ret)
-> +static int find_and_lock_master_key(const struct fscrypt_info *ci,
-> +				    struct fscrypt_master_key **mk_ret)
->  {
->  	struct super_block *sb = ci->ci_inode->i_sb;
->  	struct fscrypt_key_specifier mk_spec;
-> @@ -466,17 +502,13 @@ static int setup_file_encryption_key(struct fscrypt_info *ci,
->  			mk = fscrypt_find_master_key(sb, &mk_spec);
->  		}
->  	}
+On Mon, Apr 10, 2023 at 03:39:56PM -0400, Sweet Tea Dorminy wrote:
+> @@ -231,14 +221,39 @@ static int setup_per_mode_enc_key(struct fscrypt_info *ci,
+>  	memzero_explicit(mode_key, mode->keysize);
+>  	if (err)
+>  		goto out_unlock;
+> -done_unlock:
+> -	ci->ci_enc_key = *prep_key;
+> -	err = 0;
 > +
->  	if (unlikely(!mk)) {
->  		if (ci->ci_policy.version != FSCRYPT_POLICY_V1)
->  			return -ENOKEY;
->  
-> -		/*
-> -		 * As a legacy fallback for v1 policies, search for the key in
-> -		 * the current task's subscribed keyrings too.  Don't move this
-> -		 * to before the search of ->s_master_keys, since users
-> -		 * shouldn't be able to override filesystem-level keys.
-> -		 */
-> -		return fscrypt_setup_v1_file_key_via_subscribed_keyrings(ci);
-> +		*mk_ret = NULL;
-> +		return 0;
+>  out_unlock:
 
-While this change may be a benefit overall, it does split the code that handles
-the legacy case of "v1 policy using process-subscribed keyrings" into two
-places.  That makes it a little more difficult to understand.  I think a comment
-would be helpful here, at least?
+The 'if (err)' block above is no longer needed.
+
+> +static int find_mode_prepared_key(struct fscrypt_info *ci,
+> +				  struct fscrypt_master_key *mk,
+> +				  struct fscrypt_prepared_key *keys,
+> +				  u8 hkdf_context, bool include_fs_uuid)
+> +{
+> +	struct fscrypt_mode *mode = ci->ci_mode;
+> +	const u8 mode_num = mode - fscrypt_modes;
+> +	struct fscrypt_prepared_key *prep_key;
+> +	int err;
+> +
+> +	if (WARN_ON_ONCE(mode_num > FSCRYPT_MODE_MAX))
+> +		return -EINVAL;
+> +
+> +	prep_key = &keys[mode_num];
+> +	if (fscrypt_is_key_prepared(prep_key, ci)) {
+> +		ci->ci_enc_key = *prep_key;
+> +		return 0;
+> +	}
+> +	err = setup_new_mode_prepared_key(mk, prep_key, ci, hkdf_context,
+> +					  include_fs_uuid);
+> +	if (err)
+> +		return err;
+> +
+> +	ci->ci_enc_key = *prep_key;
+> +	return 0;
+> +}
+
+It actually should be find_or_create_mode_prepared_key(), right?  It's confusing
+to have a function that just says "find" actually create the thing it is looking
+for.
+
+But, with how long these function names would get, maybe we should just stick
+with setup_mode_prepared_key()?  Note that it has the same semantics (find or
+create) as fscrypt_setup_ino_hash_key(), which this patchset doesn't change.
 
 - Eric
