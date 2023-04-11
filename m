@@ -2,51 +2,51 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AD306DD08A
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 11 Apr 2023 05:56:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A1E6DD08E
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 11 Apr 2023 05:57:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229523AbjDKD4J (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 10 Apr 2023 23:56:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52856 "EHLO
+        id S229711AbjDKD5Q (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 10 Apr 2023 23:57:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229864AbjDKD4I (ORCPT
+        with ESMTP id S229701AbjDKD5O (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 10 Apr 2023 23:56:08 -0400
+        Mon, 10 Apr 2023 23:57:14 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C2CD2118
-        for <linux-fscrypt@vger.kernel.org>; Mon, 10 Apr 2023 20:56:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCA3F26BE
+        for <linux-fscrypt@vger.kernel.org>; Mon, 10 Apr 2023 20:57:13 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 28F31619F4
-        for <linux-fscrypt@vger.kernel.org>; Tue, 11 Apr 2023 03:56:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63CA0C433EF;
-        Tue, 11 Apr 2023 03:56:06 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 48A57619F4
+        for <linux-fscrypt@vger.kernel.org>; Tue, 11 Apr 2023 03:57:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F0C5C433EF;
+        Tue, 11 Apr 2023 03:57:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1681185366;
-        bh=ecWHF70rXwrETEUTjPyHD1P2ivDz65wXH/nbSUVkHuw=;
+        s=k20201202; t=1681185432;
+        bh=Z0J68mqWXqHJ5n94z30OImLo29S482T43fwuGODKhFQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qTwGp16dEV9CsDzo7vyYSdgu8RXE8ctZClpYCaMaxetj315E3QsIKQnDQ9FnfHCRj
-         M0ipBH5jRD9KNmVJQ+MzyzQGymMPQarMM8vSt8LRTDmCzWuSX0f1twJx7Ixa+x8wPo
-         ly9hf61nn6x0JHLX86wguBiNI8KQsjFw2maFILv6bOtQWfD9hrE9f+781mlrzwcmo2
-         jiWaFQ9JS/Lj2DiERAlOhy1aGNazfLG7SdX6R5U6WsJHd6mJnhcArkmOapzmIlybbT
-         4wUxyWW1YL+ny6n+iJhOxaBDB9qHL4y5xfOzsyDhPy2faKfSniAoaFOw+7p5/4xuzG
-         MrR9Hi9GRmcYg==
-Date:   Mon, 10 Apr 2023 20:56:04 -0700
+        b=hcgtvp2FHhu2w2VZe8rr+BHDiaxc8VWZ3P8J+FqdEFsvxT8hzmKbHGsMolT08r4hg
+         svw1byZ89+VSkOH0GpAnaSfq3Rk+ZPr7vVadpSlCHmTH+7kw8SVhy9kRLVZytfrJK0
+         261CIjHMeqg76GZwgveWjpa/ouc1PqpBw+D7eJCi7ePiBJ0m+4kq4nnaCd0ZtmUPOj
+         7oJbonUJWs1d80609cYfgCYFToTpj0YuShGo6fW9wUBe0uNM052fCLxulWWwZxT2zW
+         oyGDrjDl4ohBkISAq06BxNeQxXlurkrH33p71cIsgAMQv3ymrjEm5dcT+lPryjG4F4
+         H5ZgkxGJjilpQ==
+Date:   Mon, 10 Apr 2023 20:57:10 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
         linux-fscrypt@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH v2 07/11] fscrypt: move all the shared mode key setup
- deeper
-Message-ID: <20230411035604.GG47625@sol.localdomain>
+Subject: Re: [PATCH v2 08/11] fscrypt: make ci->ci_direct_key a bool not a
+ pointer
+Message-ID: <20230411035710.GH47625@sol.localdomain>
 References: <cover.1681155143.git.sweettea-kernel@dorminy.me>
- <07509950e40e37344aac535a07d8176f680a7e18.1681155143.git.sweettea-kernel@dorminy.me>
+ <ae5cc986b52b950ee81d613093310a52be3972d9.1681155143.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <07509950e40e37344aac535a07d8176f680a7e18.1681155143.git.sweettea-kernel@dorminy.me>
+In-Reply-To: <ae5cc986b52b950ee81d613093310a52be3972d9.1681155143.git.sweettea-kernel@dorminy.me>
 X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
@@ -56,48 +56,38 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Apr 10, 2023 at 03:40:00PM -0400, Sweet Tea Dorminy wrote:
-> +static const u8 FSCRYPT_POLICY_FLAGS_KEY_MASK =
-> +	(FSCRYPT_POLICY_FLAG_DIRECT_KEY
-> +	 | FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64
-> +	 | FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32);
+On Mon, Apr 10, 2023 at 03:40:01PM -0400, Sweet Tea Dorminy wrote:
+> The ci_direct_key field is only used for v1 direct key policies,
+> recording the direct key that needs to have its refcount reduced when
+> the crypt_info is freed. However, now that crypt_info->ci_enc_key is a
+> pointer to the authoritative prepared key -- embedded in the direct key,
+> in this case, we no longer need to keep a full pointer to the direct key
+> -- we can use container_of() to go from the prepared key to its
+> surrounding direct key. Thus we can make ci_direct_key a bool instead of
+> a pointer, saving a few bytes.
+> 
+> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+> ---
+>  fs/crypto/fscrypt_private.h | 7 +++----
+>  fs/crypto/keysetup.c        | 2 +-
+>  fs/crypto/keysetup_v1.c     | 7 +++++--
+>  3 files changed, 9 insertions(+), 7 deletions(-)
+> 
+> diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+> index 5011737b60b3..b575fb58a506 100644
+> --- a/fs/crypto/fscrypt_private.h
+> +++ b/fs/crypto/fscrypt_private.h
+> @@ -234,10 +234,9 @@ struct fscrypt_info {
+>  	struct list_head ci_master_key_link;
+>  
+>  	/*
+> -	 * If non-NULL, then encryption is done using the master key directly
+> -	 * and ci_enc_key will equal ci_direct_key->dk_key.
+> +	 * If true, then encryption is done using the master key directly.
+>  	 */
+> -	struct fscrypt_direct_key *ci_direct_key;
+> +	bool ci_direct_key;
 
-A comment describing the meaning of the above constant would be helpful.
-
-> +static size_t fill_hkdf_info(const struct fscrypt_info *ci, u8 *hkdf_info)
-
-Maybe call this fill_hkdf_info_for_mode_key() to avoid ambiguity with other uses
-of HKDF?  Also, maybe add an explicit array size to hkdf_info?  E.g.
-hkdf_info[MAX_MODE_KEY_HKDF_INFO_SIZE]
-
-> +static u8 hkdf_context_for_policy(const union fscrypt_policy *policy)
-> +{
-> +	switch (fscrypt_policy_flags(policy) & FSCRYPT_POLICY_FLAGS_KEY_MASK) {
-> +		case FSCRYPT_POLICY_FLAG_DIRECT_KEY:
-> +			return HKDF_CONTEXT_DIRECT_KEY;
-> +		case FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64:
-> +			return HKDF_CONTEXT_IV_INO_LBLK_64_KEY;
-> +		case FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32:
-> +			return HKDF_CONTEXT_IV_INO_LBLK_32_KEY;
-> +		default:
-> +			return 0;
-> +	}
-> +}
-
-There's an extra level of indentation above.
-
-Also, more importantly, since fill_hkdf_info() checks the policy flags anyway,
-maybe just handle the HKDF context bytes directly in there?  E.g.:
-
-	if (ci->ci_policy.v2.flags & FSCRYPT_POLICY_FLAG_DIRECT_KEY) {
-		hkdf_info[0] = HKDF_CONTEXT_DIRECT_KEY;
-		return 1;
-	}
-	if (ci->ci_policy.v2.flags & FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32)
-		hkdf_info[0] = HKDF_CONTEXT_IV_INO_LBLK_32_KEY;
-	else
-		hkdf_info[0] = HKDF_CONTEXT_IV_INO_LBLK_64_KEY;
-	memcpy(&hkdf_info[1], &sb->s_uuid, sizeof(sb->s_uuid));
-	return 1 + sizeof(sb->s_uuid);
+This just gets deleted by the next patch.  Should they be folded together?
 
 - Eric
