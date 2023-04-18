@@ -2,42 +2,42 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8F2C6E6A7C
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 18 Apr 2023 19:05:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 105506E6A7D
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 18 Apr 2023 19:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232277AbjDRRFJ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 18 Apr 2023 13:05:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48406 "EHLO
+        id S232137AbjDRRFL (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 18 Apr 2023 13:05:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230445AbjDRRFI (ORCPT
+        with ESMTP id S230257AbjDRRFK (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 18 Apr 2023 13:05:08 -0400
-Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03C011719
-        for <linux-fscrypt@vger.kernel.org>; Tue, 18 Apr 2023 10:05:07 -0700 (PDT)
+        Tue, 18 Apr 2023 13:05:10 -0400
+Received: from box.fidei.email (box.fidei.email [71.19.144.250])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 768901719
+        for <linux-fscrypt@vger.kernel.org>; Tue, 18 Apr 2023 10:05:09 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 348828023D;
-        Tue, 18 Apr 2023 13:05:07 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id C080780349;
+        Tue, 18 Apr 2023 13:05:08 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1681837507; bh=DP5hlVvNjw2JROMJ6s6bshEcbxvK3Nx2/UIgbRvXRGk=;
+        t=1681837509; bh=Odb8uB/9CJfwZKBREH3PMv47B2f4ylD2kdvW9fudEpY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vPH5aeFJ58RltTuRH9zBm+ERNqoW8WC4NNqmD2rIqwWQWCi4UV+d4CJhQfGebCupz
-         S2v29m5XqGT43l+FGKUhR55U13N+vJ1T/OqNISv3yAZgh7OCqnstYVncei5aO7zw8i
-         sDyw7lyynMXNNl5kM59rg/n82uelgrh9ZSkF7r//ros+radoLpPgKAIQrussj2QbHb
-         pmCIzRhYk/fy3W4PiAUDagzk+o5tECgQvjJ94cNWA2WCr1hXsQAxh5rjhtJ7GpL/lm
-         dl1XCDjadrTNICHJTnY2wOmvDjRwmIBKIu0Nw/6ZjMBFFaeUEHH+P7HX2uXo1NOVWK
-         S/3kWlui7gZow==
+        b=sxSyZ1iiSGcxnQ1RAxagPl2HyUoFXrB7ywDmw9IRlSpTMzLsTxJbTCqu177fn/uRa
+         BrA1TwHzSuj1eOYFRrW6zvxCz44B6N0Iz8Ryk0PRZQN89NPO+St08umz5KH+nikcrP
+         wP1EWcugPq5ZzfjXiwBzS4yXErpvzkysnNSyDQlrGwOYcmeB/E7ww/XYucQCn/1hvf
+         DUQjXsrMlr8Y9WLeutmG6ruwPrLN78i99A1ri+sJ2HJ5RMYv7vKNOzfoYxr6IRZUKn
+         7zFe8r+WGy5NVJkXDwEHuMakc1H2MBQyn5fFT4LqgV5SxS1MFFwN7ELmFV5HHyVtEr
+         26Ch9Hw7fFbPw==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     Eric Biggers <ebiggers@kernel.org>,
         "Theodore Y. Ts'o" <tytso@mit.edu>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
         linux-fscrypt@vger.kernel.org, kernel-team@meta.com
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH 11/11] fscrypt: factor helper for locking master key
-Date:   Tue, 18 Apr 2023 13:04:36 -0400
-Message-Id: <0624b444f5a952f27b9de209f28ce3c3387e2f35.1681837291.git.sweettea-kernel@dorminy.me>
+Subject: [PATCH v3 00/11] fscrypt: rearrangements preliminary to extent encryption
+Date:   Tue, 18 Apr 2023 13:04:37 -0400
+Message-Id: <cover.1681837335.git.sweettea-kernel@dorminy.me>
 In-Reply-To: <1edeb5c4936667b6493b50776cd1cbf5e4cf2fdd.1681837291.git.sweettea-kernel@dorminy.me>
 References: <1edeb5c4936667b6493b50776cd1cbf5e4cf2fdd.1681837291.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
@@ -52,53 +52,55 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-When keys are prepared at the point of use, using a pooled prepared key,
-we'll need to lock and check the existence of the master key secret in
-multiple places. So go on and factor out the helper.
+As per [1], extent-based encryption needs to split allocating and
+preparing crypto_skciphers, since extent infos will be loaded at IO time
+and crypto_skciphers cannot be allocated at IO time. 
 
-Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
----
- fs/crypto/keysetup.c | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+This changeset undertakes to split the existing code to clearly
+distinguish preparation and allocation of fscrypt_prepared_keys,
+wrapping crypto_skciphers. Elegance of code is in the eye of the
+beholder, but I've tried a decent variety of arrangements here and this
+seems like the clearest result to me; happy to adjust as desired, and
+more changesets coming soon, this just seemed like the clearest cutoff
+point for preliminaries without being pure refactoring.
 
-diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index 55c416df6a71..9cd60e09b0c5 100644
---- a/fs/crypto/keysetup.c
-+++ b/fs/crypto/keysetup.c
-@@ -106,6 +106,17 @@ select_encryption_mode(const union fscrypt_policy *policy,
- 	return ERR_PTR(-EINVAL);
- }
- 
-+static int lock_master_key(struct fscrypt_master_key *mk)
-+{
-+	down_read(&mk->mk_sem);
-+
-+	/* Has the secret been removed (via FS_IOC_REMOVE_ENCRYPTION_KEY)? */
-+	if (!is_master_key_secret_present(&mk->mk_secret))
-+		return -ENOKEY;
-+
-+	return 0;
-+}
-+
- /*
-  * Prepare the crypto transform object or blk-crypto key in @prep_key, given the
-  * raw key, encryption mode (@ci->ci_mode), flag indicating which encryption
-@@ -569,13 +580,10 @@ static int find_and_lock_master_key(const struct fscrypt_info *ci,
- 		*mk_ret = NULL;
- 		return 0;
- 	}
--	down_read(&mk->mk_sem);
- 
--	/* Has the secret been removed (via FS_IOC_REMOVE_ENCRYPTION_KEY)? */
--	if (!is_master_key_secret_present(&mk->mk_secret)) {
--		err = -ENOKEY;
-+	err = lock_master_key(mk);
-+	if (err)
- 		goto out_release_key;
--	}
- 
- 	if (!fscrypt_valid_master_key_size(mk, ci)) {
- 		err = -ENOKEY;
+Patchset should apply cleanly to fscrypt/for-next (as per base-commit
+below), and pass ext4/f2fs tests (kvm-xfstests is not currently
+succesfully setting up ubifs volumes for me).
+
+[1] https://lore.kernel.org/linux-btrfs/Y7NQ1CvPyJiGRe00@sol.localdomain/ 
+
+Changes from v2:
+Combined the two changes affecting ci->ci_direct_key.
+Combined last two changes in v2 and rearranged to lock for every check
+of mode keys.
+Addressed hopefully all style comments.
+Added another change, a tiny helper.
+
+Changes from v1:
+Included change 1, erroneously dropped, and generated patches using --base.
+
+Sweet Tea Dorminy (11):
+  fscrypt: move inline crypt decision to info setup.
+  fscrypt: split and rename setup_file_encryption_key()
+  fscrypt: split setup_per_mode_enc_key()
+  fscrypt: move dirhash key setup away from IO key setup
+  fscrypt: reduce special-casing of IV_INO_LBLK_32
+  fscrypt: make infos have a pointer to prepared keys
+  fscrypt: move all the shared mode key setup deeper
+  fscrypt: make prepared keys record their type.
+  fscrypt: lock every time a info needs a mode key
+  fscrypt: split key alloc and preparation
+  fscrypt: factor helper for locking master key
+
+ fs/crypto/crypto.c          |   2 +-
+ fs/crypto/fname.c           |   4 +-
+ fs/crypto/fscrypt_private.h |  67 ++++--
+ fs/crypto/inline_crypt.c    |  29 +--
+ fs/crypto/keysetup.c        | 454 +++++++++++++++++++++++-------------
+ fs/crypto/keysetup_v1.c     |  15 +-
+ 6 files changed, 362 insertions(+), 209 deletions(-)
+
 -- 
 2.40.0
 
