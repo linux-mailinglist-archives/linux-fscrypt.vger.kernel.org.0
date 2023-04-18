@@ -2,42 +2,42 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDA286E6A84
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 18 Apr 2023 19:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 068416E6A85
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 18 Apr 2023 19:05:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232476AbjDRRFk (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 18 Apr 2023 13:05:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48784 "EHLO
+        id S230445AbjDRRFl (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 18 Apr 2023 13:05:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232332AbjDRRFc (ORCPT
+        with ESMTP id S231895AbjDRRFg (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 18 Apr 2023 13:05:32 -0400
+        Tue, 18 Apr 2023 13:05:36 -0400
 Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD05D76A2
-        for <linux-fscrypt@vger.kernel.org>; Tue, 18 Apr 2023 10:05:20 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A417A6A6A
+        for <linux-fscrypt@vger.kernel.org>; Tue, 18 Apr 2023 10:05:22 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 51CB280621;
-        Tue, 18 Apr 2023 13:05:20 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id F2F5C8262C;
+        Tue, 18 Apr 2023 13:05:21 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1681837520; bh=33ed9ClBOkkr11rR1vDp7/GirCV3YEO/b3SkvUAtpao=;
+        t=1681837522; bh=broh0GYoLsGSEpMN2iEkC5oE1sb0NKn1szSVE/oMCKs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SbXILwctvJSelebmekoRysg0oZZNl/eT0EZKj4/wJbc+NsUHPIK9OFWrEwP1NSzgF
-         UGtsS2K9609xcDC8x34YfNnteac+mfNNHfHkji+tTm9a4+oZhU/fRMj/GbweUo2SJh
-         pZIJmA1W85n/6eWTQcTCXPT8IQqmgVI6NfAPEmmCxOPfSfgBiHz8zZ5tDj7cw44Xf8
-         e3A3xY+S1lvTCRGlkQtbiFxFb/LY6OGp6/LRjP+z1MfwhVM7uwxlywFRNgD9jWiRmN
-         gjI0JWnhp7fuPMys4lTo5hxH+9BJ9lbjQZ6mbfwkFpP92VTDdeI3ZRm3wIY2v606x1
-         4s/wdj5hE6C6A==
+        b=A6ISa4Vvo/tvZWVZLE18tqYeZcfBdTmaIUZ6HmznL6yjAuDWlNm7BZfERhqpWC4Qs
+         Ws4myL9B8eBJ39XG5PGqqrHvj33Gxvf5HW8Glgr1EONIHtzEMHfqVeoFefRtRVXaTc
+         /zjV+SPJLrtwCRn2KcmUSwu/CwIN6ID38k0ptfC5MA4oM1snREudqv4JjEFWjXrjA9
+         XVnBX+ojtLQgty9tIFKyhL4Fb2OrGYz19PzrWfp48TiKeLNtkpfZxV4YFoWaxrunH8
+         m+B1oQE1NXVnVHpP63oTGbMmxbm13xs+l8eFZO3w6+0PivrRJRVm0zX1GU0p0sE5c1
+         rF2K/A8NVp6mw==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     Eric Biggers <ebiggers@kernel.org>,
         "Theodore Y. Ts'o" <tytso@mit.edu>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
         linux-fscrypt@vger.kernel.org, kernel-team@meta.com
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH v3 07/11] fscrypt: move all the shared mode key setup deeper
-Date:   Tue, 18 Apr 2023 13:04:44 -0400
-Message-Id: <3d6999b3ea53cbedfd5a74c26c7c8deb9011f70f.1681837335.git.sweettea-kernel@dorminy.me>
+Subject: [PATCH v3 08/11] fscrypt: make prepared keys record their type.
+Date:   Tue, 18 Apr 2023 13:04:45 -0400
+Message-Id: <a41f91206ccca08294b7a7ba9ad5009b577ed3b6.1681837335.git.sweettea-kernel@dorminy.me>
 In-Reply-To: <cover.1681837335.git.sweettea-kernel@dorminy.me>
 References: <cover.1681837335.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
@@ -52,221 +52,183 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Currently, fscrypt_setup_v2_file_key() has a set of ifs which encode
-various information about how to set up a new mode key if necessary for
-a shared-key policy (DIRECT or IV_INO_LBLK_*). This is somewhat awkward
--- this information is only needed at the point that we need to setup a
-new key, which is not the common case; the setup details are recorded as
-function parameters relatively far from where they're actually used; and
-at the point we use the parameters, we can derive the information
-equally well.
+Right now fscrypt_infos have two fields dedicated solely to recording
+what type of prepared key the info has: whether it solely owns the
+prepared key, or has borrowed it from a master key, or from a direct
+key.
 
-So this moves mode and policy checking as deep into the callstack as
-possible. mk_prepared_key_for_mode_policy() deals with the array lookup
-within a master key. And fill_hkdf_info_for mode_key() deals with
-filling in the hkdf info as necessary for a particular policy. These
-seem a little clearer in broad strokes, emphasizing the similarities
-between the policies, but it does spread out the information on how the
-key is derived for a particular policy more.
+The ci_direct_key field is only used for v1 direct key policies,
+recording the direct key that needs to have its refcount reduced when
+the crypt_info is freed. However, now that crypt_info->ci_enc_key is a
+pointer to the authoritative prepared key -- embedded in the direct key,
+in this case, we no longer need to keep a full pointer to the direct key
+-- we can use container_of() to go from the prepared key to its
+surrounding direct key.
+
+The key ownership information doesn't change during the lifetime of a
+prepared key.  Since at worst there's a prepared key per info, and at
+best many infos share a single prepared key, it can be slightly more
+efficient to store this ownership info in the prepared key instead of in
+the fscrypt_info. Especially since we can squash both fields down into
+a single enum. This will also make it easy to record that a prepared key
+is part of the pooled prepared keys when extent-based encryption is
+used.
 
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 ---
- fs/crypto/keysetup.c | 131 +++++++++++++++++++++++++++++--------------
- 1 file changed, 88 insertions(+), 43 deletions(-)
+ fs/crypto/fscrypt_private.h | 31 +++++++++++++++++++++++--------
+ fs/crypto/keysetup.c        | 19 ++++++++++++-------
+ fs/crypto/keysetup_v1.c     |  7 +++++--
+ 3 files changed, 40 insertions(+), 17 deletions(-)
 
+diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+index 5011737b60b3..e726a1fb9f7e 100644
+--- a/fs/crypto/fscrypt_private.h
++++ b/fs/crypto/fscrypt_private.h
+@@ -174,18 +174,39 @@ struct fscrypt_symlink_data {
+ 	char encrypted_path[1];
+ } __packed;
+ 
++/**
++ * enum fscrypt_prepared_key_type - records a prepared key's ownership
++ *
++ * @FSCRYPT_KEY_PER_INFO: this prepared key is allocated for a specific info
++ *		          and is never shared.
++ * @FSCRYPT_KEY_DIRECT_V1: this prepared key is embedded in a fscrypt_direct_key
++ *		           used in v1 direct key policies.
++ * @FSCRYPT_KEY_MASTER_KEY: this prepared key is a per-mode and policy key,
++ *			    part of a fscrypt_master_key, shared between all
++ *			    users of this master key having this mode and
++ *			    policy.
++ */
++enum fscrypt_prepared_key_type {
++	FSCRYPT_KEY_PER_INFO = 1,
++	FSCRYPT_KEY_DIRECT_V1,
++	FSCRYPT_KEY_MASTER_KEY,
++} __packed;
++
+ /**
+  * struct fscrypt_prepared_key - a key prepared for actual encryption/decryption
+  * @tfm: crypto API transform object
+  * @blk_key: key for blk-crypto
++ * @type: records the ownership type of the prepared key
+  *
+- * Normally only one of the fields will be non-NULL.
++ * Normally only one of @tfm and @blk_key will be non-NULL, although it is
++ * possible if @type is FSCRYPT_KEY_MASTER_KEY.
+  */
+ struct fscrypt_prepared_key {
+ 	struct crypto_skcipher *tfm;
+ #ifdef CONFIG_FS_ENCRYPTION_INLINE_CRYPT
+ 	struct blk_crypto_key *blk_key;
+ #endif
++	enum fscrypt_prepared_key_type type;
+ };
+ 
+ /*
+@@ -233,12 +254,6 @@ struct fscrypt_info {
+ 	 */
+ 	struct list_head ci_master_key_link;
+ 
+-	/*
+-	 * If non-NULL, then encryption is done using the master key directly
+-	 * and ci_enc_key will equal ci_direct_key->dk_key.
+-	 */
+-	struct fscrypt_direct_key *ci_direct_key;
+-
+ 	/*
+ 	 * This inode's hash key for filenames.  This is a 128-bit SipHash-2-4
+ 	 * key.  This is only set for directories that use a keyed dirhash over
+@@ -641,7 +656,7 @@ static inline int fscrypt_require_key(struct inode *inode)
+ 
+ /* keysetup_v1.c */
+ 
+-void fscrypt_put_direct_key(struct fscrypt_direct_key *dk);
++void fscrypt_put_direct_key(struct fscrypt_prepared_key *prep_key);
+ 
+ int fscrypt_setup_v1_file_key(struct fscrypt_info *ci,
+ 			      const u8 *raw_master_key);
 diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index 7f729ff25c38..74c0b2b0db63 100644
+index 74c0b2b0db63..3c5ab1349247 100644
 --- a/fs/crypto/keysetup.c
 +++ b/fs/crypto/keysetup.c
-@@ -13,6 +13,17 @@
+@@ -191,11 +191,11 @@ void fscrypt_destroy_prepared_key(struct super_block *sb,
+ /* Given a per-file encryption key, set up the file's crypto transform object */
+ int fscrypt_set_per_file_enc_key(struct fscrypt_info *ci, const u8 *raw_key)
+ {
+-	ci->ci_owns_key = true;
+ 	ci->ci_enc_key = kzalloc(sizeof(*ci->ci_enc_key), GFP_KERNEL);
+ 	if (!ci->ci_enc_key)
+ 		return -ENOMEM;
  
- #include "fscrypt_private.h"
- 
-+#define MAX_MODE_KEY_HKDF_INFO_SIZE 17
-+
-+/*
-+ * Constant defining the various policy flags which require a non-default key
-+ * policy.
-+ */
-+#define FSCRYPT_POLICY_FLAGS_KEY_MASK		\
-+	(FSCRYPT_POLICY_FLAG_DIRECT_KEY		\
-+	 | FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64	\
-+	 | FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32)
-+
- struct fscrypt_mode fscrypt_modes[] = {
- 	[FSCRYPT_MODE_AES_256_XTS] = {
- 		.friendly_name = "AES-256-XTS",
-@@ -188,20 +199,83 @@ int fscrypt_set_per_file_enc_key(struct fscrypt_info *ci, const u8 *raw_key)
++	ci->ci_enc_key->type = FSCRYPT_KEY_PER_INFO;
  	return fscrypt_prepare_key(ci->ci_enc_key, raw_key, ci);
  }
  
-+static struct fscrypt_prepared_key *
-+mk_prepared_key_for_mode_policy(struct fscrypt_master_key *mk,
-+				union fscrypt_policy *policy,
-+				struct fscrypt_mode *mode)
-+{
-+	const u8 mode_num = mode - fscrypt_modes;
-+
-+	switch (policy->v2.flags & FSCRYPT_POLICY_FLAGS_KEY_MASK) {
-+	case FSCRYPT_POLICY_FLAG_DIRECT_KEY:
-+		return &mk->mk_direct_keys[mode_num];
-+	case FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64:
-+		return &mk->mk_iv_ino_lblk_64_keys[mode_num];
-+	case FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32:
-+		return &mk->mk_iv_ino_lblk_32_keys[mode_num];
-+	default:
-+		return ERR_PTR(-EINVAL);
-+	}
-+}
-+
-+static size_t
-+fill_hkdf_info_for_mode_key(const struct fscrypt_info *ci,
-+			    u8 hkdf_info[MAX_MODE_KEY_HKDF_INFO_SIZE])
-+{
-+	const u8 mode_num = ci->ci_mode - fscrypt_modes;
-+	const struct super_block *sb = ci->ci_inode->i_sb;
-+	u8 hkdf_infolen = 0;
-+
-+	hkdf_info[hkdf_infolen++] = mode_num;
-+	if (!(ci->ci_policy.v2.flags & FSCRYPT_POLICY_FLAG_DIRECT_KEY)) {
-+		memcpy(&hkdf_info[hkdf_infolen], &sb->s_uuid,
-+				sizeof(sb->s_uuid));
-+		hkdf_infolen += sizeof(sb->s_uuid);
-+	}
-+	return hkdf_infolen;
-+}
-+
- static int setup_new_mode_prepared_key(struct fscrypt_master_key *mk,
- 				       struct fscrypt_prepared_key *prep_key,
--				       const struct fscrypt_info *ci,
--				       u8 hkdf_context, bool include_fs_uuid)
-+				       const struct fscrypt_info *ci)
- {
- 	const struct inode *inode = ci->ci_inode;
- 	const struct super_block *sb = inode->i_sb;
-+	unsigned int policy_flags = fscrypt_policy_flags(&ci->ci_policy);
- 	struct fscrypt_mode *mode = ci->ci_mode;
- 	const u8 mode_num = mode - fscrypt_modes;
- 	u8 mode_key[FSCRYPT_MAX_KEY_SIZE];
- 	u8 hkdf_info[sizeof(mode_num) + sizeof(sb->s_uuid)];
- 	unsigned int hkdf_infolen = 0;
-+	u8 hkdf_context = 0;
- 	int err;
- 
-+	switch (policy_flags & FSCRYPT_POLICY_FLAGS_KEY_MASK) {
-+	case FSCRYPT_POLICY_FLAG_DIRECT_KEY:
-+		hkdf_context = HKDF_CONTEXT_DIRECT_KEY;
-+		break;
-+	case FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64:
-+		hkdf_context = HKDF_CONTEXT_IV_INO_LBLK_64_KEY;
-+		break;
-+	case FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32:
-+		hkdf_context = HKDF_CONTEXT_IV_INO_LBLK_32_KEY;
-+		break;
-+	}
-+
-+	/*
-+	 * For DIRECT_KEY policies: instead of deriving per-file encryption
-+	 * keys, the per-file nonce will be included in all the IVs.  But
-+	 * unlike v1 policies, for v2 policies in this case we don't encrypt
-+	 * with the master key directly but rather derive a per-mode encryption
-+	 * key.  This ensures that the master key is consistently used only for
-+	 * HKDF, avoiding key reuse issues.
-+	 *
-+	 * For IV_INO_LBLK policies: encryption keys are derived from
-+	 * (master_key, mode_num, filesystem_uuid), and inode number is
-+	 * included in the IVs.  This format is optimized for use with inline
-+	 * encryption hardware compliant with the UFS standard.
-+	 */
-+
- 	mutex_lock(&fscrypt_mode_key_setup_mutex);
- 
- 	if (fscrypt_is_key_prepared(prep_key, ci))
-@@ -209,13 +283,9 @@ static int setup_new_mode_prepared_key(struct fscrypt_master_key *mk,
- 
- 	BUILD_BUG_ON(sizeof(mode_num) != 1);
- 	BUILD_BUG_ON(sizeof(sb->s_uuid) != 16);
--	BUILD_BUG_ON(sizeof(hkdf_info) != 17);
--	hkdf_info[hkdf_infolen++] = mode_num;
--	if (include_fs_uuid) {
--		memcpy(&hkdf_info[hkdf_infolen], &sb->s_uuid,
--		       sizeof(sb->s_uuid));
--		hkdf_infolen += sizeof(sb->s_uuid);
--	}
-+	BUILD_BUG_ON(sizeof(hkdf_info) != MAX_MODE_KEY_HKDF_INFO_SIZE);
-+	hkdf_infolen = fill_hkdf_info_for_mode_key(ci, hkdf_info);
-+
- 	err = fscrypt_hkdf_expand(&mk->mk_secret.hkdf,
- 				  hkdf_context, hkdf_info, hkdf_infolen,
+@@ -291,6 +291,7 @@ static int setup_new_mode_prepared_key(struct fscrypt_master_key *mk,
  				  mode_key, mode->keysize);
-@@ -229,10 +299,8 @@ static int setup_new_mode_prepared_key(struct fscrypt_master_key *mk,
- 	return err;
+ 	if (err)
+ 		goto out_unlock;
++	prep_key->type = FSCRYPT_KEY_MASTER_KEY;
+ 	err = fscrypt_prepare_key(prep_key, mode_key, ci);
+ 	memzero_explicit(mode_key, mode->keysize);
+ 
+@@ -584,12 +585,16 @@ static void put_crypt_info(struct fscrypt_info *ci)
+ 	if (!ci)
+ 		return;
+ 
+-	if (ci->ci_direct_key)
+-		fscrypt_put_direct_key(ci->ci_direct_key);
+-	else if (ci->ci_owns_key) {
+-		fscrypt_destroy_prepared_key(ci->ci_inode->i_sb,
+-					     ci->ci_enc_key);
+-		kfree_sensitive(ci->ci_enc_key);
++	if (ci->ci_enc_key) {
++		enum fscrypt_prepared_key_type type = ci->ci_enc_key->type;
++
++		if (type == FSCRYPT_KEY_DIRECT_V1)
++			fscrypt_put_direct_key(ci->ci_enc_key);
++		if (type == FSCRYPT_KEY_PER_INFO) {
++			fscrypt_destroy_prepared_key(ci->ci_inode->i_sb,
++						     ci->ci_enc_key);
++			kfree_sensitive(ci->ci_enc_key);
++		}
+ 	}
+ 
+ 	mk = ci->ci_master_key;
+diff --git a/fs/crypto/keysetup_v1.c b/fs/crypto/keysetup_v1.c
+index e1d761e8067f..1e785cedead0 100644
+--- a/fs/crypto/keysetup_v1.c
++++ b/fs/crypto/keysetup_v1.c
+@@ -160,8 +160,11 @@ static void free_direct_key(struct fscrypt_direct_key *dk)
+ 	}
  }
  
--static int find_mode_prepared_key(struct fscrypt_info *ci,
--				  struct fscrypt_master_key *mk,
--				  struct fscrypt_prepared_key *keys,
--				  u8 hkdf_context, bool include_fs_uuid)
-+static int setup_mode_prepared_key(struct fscrypt_info *ci,
-+				  struct fscrypt_master_key *mk)
+-void fscrypt_put_direct_key(struct fscrypt_direct_key *dk)
++void fscrypt_put_direct_key(struct fscrypt_prepared_key *prep_key)
  {
- 	struct fscrypt_mode *mode = ci->ci_mode;
- 	const u8 mode_num = mode - fscrypt_modes;
-@@ -242,13 +310,15 @@ static int find_mode_prepared_key(struct fscrypt_info *ci,
- 	if (WARN_ON_ONCE(mode_num > FSCRYPT_MODE_MAX))
- 		return -EINVAL;
- 
--	prep_key = &keys[mode_num];
-+	prep_key = mk_prepared_key_for_mode_policy(mk, &ci->ci_policy, mode);
-+	if (IS_ERR(prep_key))
-+		return PTR_ERR(prep_key);
++	struct fscrypt_direct_key *dk =
++		container_of(prep_key, struct fscrypt_direct_key, dk_key);
 +
- 	if (fscrypt_is_key_prepared(prep_key, ci)) {
- 		ci->ci_enc_key = prep_key;
- 		return 0;
- 	}
--	err = setup_new_mode_prepared_key(mk, prep_key, ci, hkdf_context,
--					  include_fs_uuid);
-+	err = setup_new_mode_prepared_key(mk, prep_key, ci);
+ 	if (!refcount_dec_and_lock(&dk->dk_refcount, &fscrypt_direct_keys_lock))
+ 		return;
+ 	hash_del(&dk->dk_node);
+@@ -235,6 +238,7 @@ fscrypt_get_direct_key(const struct fscrypt_info *ci, const u8 *raw_key)
+ 	dk->dk_sb = ci->ci_inode->i_sb;
+ 	refcount_set(&dk->dk_refcount, 1);
+ 	dk->dk_mode = ci->ci_mode;
++	dk->dk_key.type = FSCRYPT_KEY_DIRECT_V1;
+ 	err = fscrypt_prepare_key(&dk->dk_key, raw_key, ci);
  	if (err)
- 		return err;
- 
-@@ -337,33 +407,8 @@ static int fscrypt_setup_v2_file_key(struct fscrypt_info *ci,
- {
- 	int err;
- 
--	if (ci->ci_policy.v2.flags & FSCRYPT_POLICY_FLAG_DIRECT_KEY) {
--		/*
--		 * DIRECT_KEY: instead of deriving per-file encryption keys, the
--		 * per-file nonce will be included in all the IVs.  But unlike
--		 * v1 policies, for v2 policies in this case we don't encrypt
--		 * with the master key directly but rather derive a per-mode
--		 * encryption key.  This ensures that the master key is
--		 * consistently used only for HKDF, avoiding key reuse issues.
--		 */
--		err = find_mode_prepared_key(ci, mk, mk->mk_direct_keys,
--					     HKDF_CONTEXT_DIRECT_KEY, false);
--	} else if (ci->ci_policy.v2.flags &
--		   FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64) {
--		/*
--		 * IV_INO_LBLK_64: encryption keys are derived from (master_key,
--		 * mode_num, filesystem_uuid), and inode number is included in
--		 * the IVs.  This format is optimized for use with inline
--		 * encryption hardware compliant with the UFS standard.
--		 */
--		err = find_mode_prepared_key(ci, mk, mk->mk_iv_ino_lblk_64_keys,
--					     HKDF_CONTEXT_IV_INO_LBLK_64_KEY,
--					     true);
--	} else if (ci->ci_policy.v2.flags &
--		   FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32) {
--		err = find_mode_prepared_key(ci, mk, mk->mk_iv_ino_lblk_32_keys,
--					     HKDF_CONTEXT_IV_INO_LBLK_32_KEY,
--					     true);
-+	if (ci->ci_policy.v2.flags & FSCRYPT_POLICY_FLAGS_KEY_MASK) {
-+		err = setup_mode_prepared_key(ci, mk);
- 	} else {
- 		u8 derived_key[FSCRYPT_MAX_KEY_SIZE];
- 
+ 		goto err_free_dk;
+@@ -258,7 +262,6 @@ static int setup_v1_file_key_direct(struct fscrypt_info *ci,
+ 	dk = fscrypt_get_direct_key(ci, raw_master_key);
+ 	if (IS_ERR(dk))
+ 		return PTR_ERR(dk);
+-	ci->ci_direct_key = dk;
+ 	ci->ci_enc_key = &dk->dk_key;
+ 	return 0;
+ }
 -- 
 2.40.0
 
