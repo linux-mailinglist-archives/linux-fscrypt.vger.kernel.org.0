@@ -2,42 +2,42 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BDBF6E712C
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 19 Apr 2023 04:42:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3B226E712D
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 19 Apr 2023 04:42:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231200AbjDSCmb (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 18 Apr 2023 22:42:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56248 "EHLO
+        id S231464AbjDSCmd (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 18 Apr 2023 22:42:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229867AbjDSCma (ORCPT
+        with ESMTP id S229867AbjDSCmc (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 18 Apr 2023 22:42:30 -0400
+        Tue, 18 Apr 2023 22:42:32 -0400
 Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A94E3619B
-        for <linux-fscrypt@vger.kernel.org>; Tue, 18 Apr 2023 19:42:28 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7946658E
+        for <linux-fscrypt@vger.kernel.org>; Tue, 18 Apr 2023 19:42:30 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 10EF480546;
-        Tue, 18 Apr 2023 22:42:27 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id C5D5F80530;
+        Tue, 18 Apr 2023 22:42:29 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1681872148; bh=VKJi9NRErSIhRXxpg5LvzxbdnB6T7+0eLcLcYk7Cmcs=;
+        t=1681872150; bh=Cp0xXopDD+XJKz9rNS1FCkH0sHqNmuYJe9ZrIk4JWkE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NOkUzoeoHbZHkdvjk2Te09fCnDV01rkTjVZowZTVo895m+qX+cACtf0PhzIAG9gIP
-         J9dwIlVnHFfrn41utw8qhZm+t8oIxnqOGkZANvX+wS4sylUVEZuNO+mI6OciNWE88w
-         pUNbJKfDjXbyf9jeUP0QztCAdQRkmG5v5Xkzu8xLJ4zdMwfWG/U+QDI4wQsiya9vKV
-         QMl/jYqkqJx1HrU9geem0zCydOJbMnwCwFc3Vw4zzPz1lXWA5asYjfcpbEdUAqcYjZ
-         vRhrdytVjetapbxUH5SfeG+0J4RUS6OK6aTPULo5KTArr3JGYKv5w5nsJ1Lmf+i69R
-         9KSoSNVbtnF5w==
+        b=ubYgP+qr9IFa05yqLAHuAcDzLOjuEcW/jA/fGQfeEXOwydEBVpKVIITEKihNGzmoz
+         ozX4as+IuS3sfq0KKAeEIb7rN6wj4MezGlFHWSsNOZmzIn91vuWS/YO19GEIEvtn9j
+         ROH8KFz5ev/CxUZKMZTVrXor0q1v523B0vu1pq2zGYSg2zeEWOrUPNqrUE+iZjcFNv
+         6iJFvILcDLxFwUo62e+rwo1VnxfIjM5UNrx21JMrPQnDak3hd/ay2OUOrNOe6v52rE
+         YI/LTd4XdOs8Di4wsA7ArwhupIKaEnqJUC0xaVm2Ygx1zfKhYPLA+BCoMQsZPmjSei
+         MKRpIUiaXL8IA==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     Eric Biggers <ebiggers@kernel.org>,
         "Theodore Y. Ts'o" <tytso@mit.edu>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
         linux-fscrypt@vger.kernel.org, kernel-team@meta.com
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH v1 3/7] fscrypt: add pooling of pooled prepared keys.
-Date:   Tue, 18 Apr 2023 22:42:12 -0400
-Message-Id: <f1b6d90f37ff8f3e1b1e3c51c288759d62e539a3.1681871298.git.sweettea-kernel@dorminy.me>
+Subject: [PATCH v1 4/7] fscrypt: add pooled prepared key locking around use
+Date:   Tue, 18 Apr 2023 22:42:13 -0400
+Message-Id: <5dcbbc23cd327b0700a316dff411ff38e539d808.1681871298.git.sweettea-kernel@dorminy.me>
 In-Reply-To: <cover.1681871298.git.sweettea-kernel@dorminy.me>
 References: <cover.1681871298.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
@@ -52,425 +52,341 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-This change adds the actual infrastructure to set up prepared key pools.
-It sets up one key pool per mode per master key, starting out with one
-prepared key each. However, it continues to allocate a new prepared key
-at each new relevant info creation, which is added to the relevant pool
-and then immediately pulled back out for the info.
+So far the prepared key pools have no provision for running out of
+prepared keys. However, it is necessary to add some mechanism to request
+some infos free their pooled prepared key in response to pool pressure,
+and in order to do that, we must add a per-pooled-prepared-key facility
+to mark the critical region where the info can't tolerate losing its
+prepared key.
+
+Thus, add locking to infos using pooled keys around the time when the
+key is actually in use. This doesn't actually add stealing a prepared
+key from an existing info, but prepares to do so.
 
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 ---
- fs/crypto/fscrypt_private.h |  17 +++
- fs/crypto/keyring.c         |   7 +
- fs/crypto/keysetup.c        | 273 +++++++++++++++++++++++++-----------
- 3 files changed, 217 insertions(+), 80 deletions(-)
+ fs/crypto/crypto.c          |  24 +++--
+ fs/crypto/fscrypt_private.h |   1 +
+ fs/crypto/keysetup.c        | 173 ++++++++++++++++++++++++++++--------
+ 3 files changed, 153 insertions(+), 45 deletions(-)
 
-diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-index 143dc039bb03..86a5a7dbd3be 100644
---- a/fs/crypto/fscrypt_private.h
-+++ b/fs/crypto/fscrypt_private.h
-@@ -456,6 +456,19 @@ struct fscrypt_master_key_secret {
+diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
+index 91ef520a9961..6b1b0953e7cc 100644
+--- a/fs/crypto/crypto.c
++++ b/fs/crypto/crypto.c
+@@ -113,16 +113,22 @@ int fscrypt_crypt_block(const struct inode *inode, fscrypt_direction_t rw,
  
- } __randomize_layout;
+ 	if (IS_ERR(tfm))
+ 		return PTR_ERR(tfm);
+-	if (WARN_ON_ONCE(len <= 0))
+-		return -EINVAL;
+-	if (WARN_ON_ONCE(len % FSCRYPT_CONTENTS_ALIGNMENT != 0))
+-		return -EINVAL;
  
-+/*
-+ * fscrypt_key_pool - a management structure which handles a number of opaque
-+ * fscrypt_pooled_prepared_keys (in keysetup.c).
-+ */
-+struct fscrypt_key_pool {
-+	/* Mutex protecting all the fields here */
-+	struct mutex mutex;
-+	/* A list of active keys */
-+	struct list_head active_keys;
-+	/* Inactive keys available for use */
-+	struct list_head free_keys;
-+};
++	if (WARN_ON_ONCE(len <= 0)) {
++		res = -EINVAL;
++		goto unlock;
++	}
++	if (WARN_ON_ONCE(len % FSCRYPT_CONTENTS_ALIGNMENT != 0)) {
++		res = -EINVAL;
++		goto unlock;
++	}
+ 	fscrypt_generate_iv(&iv, lblk_num, ci);
+ 
+ 	req = skcipher_request_alloc(tfm, gfp_flags);
+-	if (!req)
+-		return -ENOMEM;
++	if (!req) {
++		res = -ENOMEM;
++		goto unlock;
++	}
+ 
+ 	skcipher_request_set_callback(
+ 		req, CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
+@@ -141,9 +147,11 @@ int fscrypt_crypt_block(const struct inode *inode, fscrypt_direction_t rw,
+ 	if (res) {
+ 		fscrypt_err(inode, "%scryption failed for block %llu: %d",
+ 			    (rw == FS_DECRYPT ? "De" : "En"), lblk_num, res);
+-		return res;
+ 	}
+-	return 0;
 +
- /*
-  * fscrypt_master_key - an in-use master key
-  *
-@@ -545,6 +558,7 @@ struct fscrypt_master_key {
- 	struct fscrypt_prepared_key mk_direct_keys[FSCRYPT_MODE_MAX + 1];
- 	struct fscrypt_prepared_key mk_iv_ino_lblk_64_keys[FSCRYPT_MODE_MAX + 1];
- 	struct fscrypt_prepared_key mk_iv_ino_lblk_32_keys[FSCRYPT_MODE_MAX + 1];
-+	struct fscrypt_key_pool mk_key_pools[FSCRYPT_MODE_MAX + 1];
- 
- 	/* Hash key for inode numbers.  Initialized only when needed. */
- 	siphash_key_t		mk_ino_hash_key;
-@@ -624,6 +638,9 @@ struct fscrypt_mode {
- 
- extern struct fscrypt_mode fscrypt_modes[];
- 
-+void fscrypt_init_key_pool(struct fscrypt_key_pool *pool, size_t mode_num);
-+void fscrypt_destroy_key_pool(struct fscrypt_key_pool *pool);
-+
- struct crypto_skcipher *fscrypt_get_contents_tfm(struct fscrypt_info *ci);
- 
- int fscrypt_allocate_key_member(struct fscrypt_prepared_key *prep_key,
-diff --git a/fs/crypto/keyring.c b/fs/crypto/keyring.c
-index 7cbb1fd872ac..a24cbf901faf 100644
---- a/fs/crypto/keyring.c
-+++ b/fs/crypto/keyring.c
-@@ -76,6 +76,10 @@ void fscrypt_put_master_key(struct fscrypt_master_key *mk)
- 	WARN_ON_ONCE(refcount_read(&mk->mk_active_refs) != 0);
- 	key_put(mk->mk_users);
- 	mk->mk_users = NULL;
-+
-+	for (int i = 0; i <= FSCRYPT_MODE_MAX; i++)
-+		fscrypt_destroy_key_pool(&mk->mk_key_pools[i]);
-+
- 	call_rcu(&mk->mk_rcu_head, fscrypt_free_master_key);
++unlock:
++	fscrypt_unlock_key_if_pooled(ci);
++	return res;
  }
  
-@@ -429,6 +433,9 @@ static int add_new_master_key(struct super_block *sb,
- 	INIT_LIST_HEAD(&mk->mk_decrypted_inodes);
- 	spin_lock_init(&mk->mk_decrypted_inodes_lock);
+ /**
+diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+index 86a5a7dbd3be..2737545ce4a6 100644
+--- a/fs/crypto/fscrypt_private.h
++++ b/fs/crypto/fscrypt_private.h
+@@ -642,6 +642,7 @@ void fscrypt_init_key_pool(struct fscrypt_key_pool *pool, size_t mode_num);
+ void fscrypt_destroy_key_pool(struct fscrypt_key_pool *pool);
  
-+	for (size_t i = 0; i <= FSCRYPT_MODE_MAX; i++)
-+		fscrypt_init_key_pool(&mk->mk_key_pools[i], i);
-+
- 	if (mk_spec->type == FSCRYPT_KEY_SPEC_TYPE_IDENTIFIER) {
- 		err = allocate_master_key_users_keyring(mk);
- 		if (err)
+ struct crypto_skcipher *fscrypt_get_contents_tfm(struct fscrypt_info *ci);
++void fscrypt_unlock_key_if_pooled(struct fscrypt_info *ci);
+ 
+ int fscrypt_allocate_key_member(struct fscrypt_prepared_key *prep_key,
+ 				const struct fscrypt_info *ci);
 diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index c179a478020a..6e9f02620f18 100644
+index 6e9f02620f18..aed60280ad32 100644
 --- a/fs/crypto/keysetup.c
 +++ b/fs/crypto/keysetup.c
-@@ -90,7 +90,13 @@ struct fscrypt_mode fscrypt_modes[] = {
- static DEFINE_MUTEX(fscrypt_mode_key_setup_mutex);
- 
- struct fscrypt_pooled_prepared_key {
-+	/*
-+	 * Must be held when the prep key is in use or the key is being
-+	 * returned.
-+	 */
-+	struct mutex mutex;
+@@ -97,6 +97,8 @@ struct fscrypt_pooled_prepared_key {
+ 	struct mutex mutex;
  	struct fscrypt_prepared_key prep_key;
-+	struct list_head pool_link;
+ 	struct list_head pool_link;
++	/* NULL when it's in the pool. */
++	struct fscrypt_info *owner;
  };
  
  /* Forward declaration so that all the prepared key handling can stay together */
-@@ -125,69 +131,6 @@ static int lock_master_key(struct fscrypt_master_key *mk)
+@@ -188,12 +190,96 @@ fscrypt_using_pooled_prepared_key(const struct fscrypt_info *ci)
+ 	return false;
+ }
+ 
+-static void fscrypt_return_key_to_pool(struct fscrypt_key_pool *pool,
+-				       struct fscrypt_pooled_prepared_key *key)
++static struct fscrypt_info *
++get_pooled_key_owner(struct fscrypt_pooled_prepared_key *key)
+ {
+-	mutex_lock(&pool->mutex);
++	/*
++	 * Pairs with the smp_store_release() in fscrypt_get_key_from_pool()
++	 * and __fscrypt_return_key_to_pool() below. The owner is
++	 * potentially unstable unless the key's lock is taken.
++	 */
++	return smp_load_acquire(&key->owner);
++}
++
++/*
++ * Lock the prepared key currently in ci->ci_enc_key, if it hasn't been stolen
++ * for the use of some other ci. Once this function succeeds, the prepared
++ * key cannot be stolen by another ci until fscrypt_unlock_key_if_pooled() is
++ * called.
++ *
++ * Returns 0 if the lock was successful, -ESTALE if the pooled key is now owned
++ * by some other ci (and ci->ci_enc_key is reset to NULL)
++ */
++static int fscrypt_lock_pooled_key(struct fscrypt_info *ci)
++{
++	struct fscrypt_pooled_prepared_key *pooled_key =
++		container_of(ci->ci_enc_key, struct fscrypt_pooled_prepared_key,
++			     prep_key);
++
++	/* Peek to see if someone's definitely stolen the pooled key */
++	if (get_pooled_key_owner(pooled_key) != ci)
++		goto stolen;
++
++	/*
++	 * Try to grab the lock. If we don't immediately succeed, some other
++	 * ci has stolen the key.
++	 */
++	if (!mutex_trylock(&pooled_key->mutex))
++		goto stolen;
++
++	/* We got the lock! Make sure we're still the owner. */
++	if (get_pooled_key_owner(pooled_key) != ci) {
++		mutex_unlock(&pooled_key->mutex);
++		goto stolen;
++	}
++
++	return 0;
++
++stolen:
++	ci->ci_enc_key = NULL;
++	return -ESTALE;
++}
++
++void fscrypt_unlock_key_if_pooled(struct fscrypt_info *ci)
++{
++	struct fscrypt_pooled_prepared_key *pooled_key;
++
++	if (!fscrypt_using_pooled_prepared_key(ci))
++		return;
++
++	pooled_key = container_of(ci->ci_enc_key,
++				  struct fscrypt_pooled_prepared_key,
++				  prep_key);
++
++	mutex_unlock(&pooled_key->mutex);
++}
++
++static void __fscrypt_return_key_to_pool(struct fscrypt_key_pool *pool,
++					 struct fscrypt_pooled_prepared_key *key)
++{
++	/* Pairs with the acquire in get_pooled_key_owner() */
++	smp_store_release(&key->owner, NULL);
+ 	list_move(&key->pool_link, &pool->free_keys);
+ 	mutex_unlock(&pool->mutex);
++	mutex_unlock(&key->mutex);
++}
++
++static void fscrypt_return_key_to_pool(struct fscrypt_info *ci)
++{
++	struct fscrypt_pooled_prepared_key *pooled_key;
++	const u8 mode_num = ci->ci_mode - fscrypt_modes;
++	struct fscrypt_master_key *mk = ci->ci_master_key;
++
++	mutex_lock(&pool->mutex);
++	/* Try to lock the key. If we don't, it's already been stolen. */
++	if (fscrypt_lock_pooled_key(ci) != 0)
++		return;
++
++	pooled_key = container_of(ci->ci_enc_key,
++				  struct fscrypt_pooled_prepared_key,
++				  prep_key);
++
++	__fscrypt_return_key_to_pool(&mk->mk_key_pools[mode_num], pooled_key);
+ }
+ 
+ static int fscrypt_allocate_new_pooled_key(struct fscrypt_key_pool *pool,
+@@ -216,29 +302,34 @@ static int fscrypt_allocate_new_pooled_key(struct fscrypt_key_pool *pool,
+ 	pooled_key->prep_key.type = FSCRYPT_KEY_POOLED;
+ 	mutex_init(&pooled_key->mutex);
+ 	INIT_LIST_HEAD(&pooled_key->pool_link);
+-	fscrypt_return_key_to_pool(pool, pooled_key);
++	mutex_lock(&pooled_key->mutex);
++	__fscrypt_return_key_to_pool(pool, pooled_key);
  	return 0;
  }
  
--static inline bool
--fscrypt_using_pooled_prepared_key(const struct fscrypt_info *ci)
--{
--	if (ci->ci_policy.version != FSCRYPT_POLICY_V2)
--		return false;
--	if (ci->ci_policy.v2.flags & FSCRYPT_POLICY_FLAGS_KEY_MASK)
--		return false;
--	if (fscrypt_using_inline_encryption(ci))
--		return false;
--
--	if (!S_ISREG(ci->ci_inode->i_mode))
--		return false;
--	return false;
--}
--
--/*
-- * Prepare the crypto transform object or blk-crypto key in @prep_key, given the
-- * raw key, encryption mode (@ci->ci_mode), flag indicating which encryption
-- * implementation (fs-layer or blk-crypto) will be used (@ci->ci_inlinecrypt),
-- * and IV generation method (@ci->ci_policy.flags). The relevant member must
-- * already be allocated and set in @prep_key.
-- */
--int fscrypt_prepare_key(struct fscrypt_prepared_key *prep_key,
--			const u8 *raw_key, const struct fscrypt_info *ci)
--{
--	int err;
--	bool inlinecrypt = fscrypt_using_inline_encryption(ci);
--
--	if (inlinecrypt) {
--		err = fscrypt_prepare_inline_crypt_key(prep_key, raw_key, ci);
--	} else {
--		err = crypto_skcipher_setkey(prep_key->tfm, raw_key,
--					     ci->ci_mode->keysize);
--	}
--
--	return err;
--}
--
--struct crypto_skcipher *fscrypt_get_contents_tfm(struct fscrypt_info *ci)
--{
--	int err;
--	struct fscrypt_master_key *mk = ci->ci_master_key;
--	unsigned int allocflags;
--
--	if (!fscrypt_using_pooled_prepared_key(ci))
--		return ci->ci_enc_key->tfm;
--
--	err = lock_master_key(mk);
--	if (err) {
--		up_read(&mk->mk_sem);
--		return ERR_PTR(err);
--	}
--
--	allocflags = memalloc_nofs_save();
--	err = fscrypt_setup_v2_file_key(ci, mk);
--	up_read(&mk->mk_sem);
--	memalloc_nofs_restore(allocflags);
--	if (err)
--		return ERR_PTR(err);
--
--	return ci->ci_enc_key->tfm;
--}
--
- /* Create a symmetric cipher object for the given encryption mode */
- static struct crypto_skcipher *
- fscrypt_allocate_skcipher(struct fscrypt_mode *mode,
-@@ -230,6 +173,173 @@ fscrypt_allocate_skcipher(struct fscrypt_mode *mode,
- 	return ERR_PTR(err);
+ /*
+  * Gets a key out of the free list, and locks it for use.
+  */
+-static struct fscrypt_pooled_prepared_key *
+-fscrypt_get_key_from_pool(struct fscrypt_key_pool *pool)
++static int fscrypt_get_key_from_pool(struct fscrypt_key_pool *pool,
++				     struct fscrypt_info *ci)
+ {
+ 	struct fscrypt_pooled_prepared_key *key;
+ 
+ 	mutex_lock(&pool->mutex);
+ 	if (WARN_ON_ONCE(list_empty(&pool->free_keys))) {
+ 		mutex_unlock(&pool->mutex);
+-		return ERR_PTR(-EBUSY);
++		return -EBUSY;
+ 	}
+ 	key = list_first_entry(&pool->free_keys,
+ 			       struct fscrypt_pooled_prepared_key, pool_link);
+ 
++	/* Pairs with the acquire in get_pooled_key_owner() */
++	smp_store_release(&key->owner, ci);
++	ci->ci_enc_key = &key->prep_key;
+ 	list_move(&key->pool_link, &pool->active_keys);
++
+ 	mutex_unlock(&pool->mutex);
+-	return key;
++	return 0;
  }
  
-+static inline bool
-+fscrypt_using_pooled_prepared_key(const struct fscrypt_info *ci)
-+{
-+	if (ci->ci_policy.version != FSCRYPT_POLICY_V2)
-+		return false;
-+	if (ci->ci_policy.v2.flags & FSCRYPT_POLICY_FLAGS_KEY_MASK)
-+		return false;
-+	if (fscrypt_using_inline_encryption(ci))
-+		return false;
+ /*
+@@ -317,12 +408,22 @@ struct crypto_skcipher *fscrypt_get_contents_tfm(struct fscrypt_info *ci)
+ 	int err;
+ 	struct fscrypt_master_key *mk = ci->ci_master_key;
+ 	unsigned int allocflags;
++	const u8 mode_num = ci->ci_mode - fscrypt_modes;
++	struct fscrypt_key_pool *pool = &mk->mk_key_pools[mode_num];
+ 
+ 	if (!fscrypt_using_pooled_prepared_key(ci))
+ 		return ci->ci_enc_key->tfm;
+ 
+-	if (ci->ci_enc_key)
+-		return ci->ci_enc_key->tfm;
++	/* do we need to set it up? */
++	if (!ci->ci_enc_key)
++		goto lock_for_new_key;
 +
-+	if (!S_ISREG(ci->ci_inode->i_mode))
-+		return false;
-+	return false;
-+}
++	if (fscrypt_lock_pooled_key(ci) != 0)
++		goto lock_for_new_key;
 +
-+static void fscrypt_return_key_to_pool(struct fscrypt_key_pool *pool,
-+				       struct fscrypt_pooled_prepared_key *key)
-+{
-+	mutex_lock(&pool->mutex);
-+	list_move(&key->pool_link, &pool->free_keys);
-+	mutex_unlock(&pool->mutex);
-+}
++	return ci->ci_enc_key->tfm;
 +
-+static int fscrypt_allocate_new_pooled_key(struct fscrypt_key_pool *pool,
-+					   struct fscrypt_mode *mode)
-+{
-+	struct fscrypt_pooled_prepared_key *pooled_key;
-+	struct crypto_skcipher *tfm;
-+
-+	pooled_key = kzalloc(sizeof(*pooled_key), GFP_KERNEL);
-+	if (!pooled_key)
-+		return -ENOMEM;
-+
-+	tfm = fscrypt_allocate_skcipher(mode, NULL);
-+	if (IS_ERR(tfm)) {
-+		kfree(pooled_key);
-+		return PTR_ERR(tfm);
-+	}
-+
-+	pooled_key->prep_key.tfm = tfm;
-+	pooled_key->prep_key.type = FSCRYPT_KEY_POOLED;
-+	mutex_init(&pooled_key->mutex);
-+	INIT_LIST_HEAD(&pooled_key->pool_link);
-+	fscrypt_return_key_to_pool(pool, pooled_key);
-+	return 0;
-+}
-+
-+/*
-+ * Gets a key out of the free list, and locks it for use.
-+ */
-+static struct fscrypt_pooled_prepared_key *
-+fscrypt_get_key_from_pool(struct fscrypt_key_pool *pool)
-+{
-+	struct fscrypt_pooled_prepared_key *key;
-+
-+	mutex_lock(&pool->mutex);
-+	if (WARN_ON_ONCE(list_empty(&pool->free_keys))) {
-+		mutex_unlock(&pool->mutex);
-+		return ERR_PTR(-EBUSY);
-+	}
-+	key = list_first_entry(&pool->free_keys,
-+			       struct fscrypt_pooled_prepared_key, pool_link);
-+
-+	list_move(&key->pool_link, &pool->active_keys);
-+	mutex_unlock(&pool->mutex);
-+	return key;
-+}
-+
-+/*
-+ * Do initial setup for a particular key pool, allocated as part of an array
-+ */
-+void fscrypt_init_key_pool(struct fscrypt_key_pool *pool, size_t modenum)
-+{
-+	struct fscrypt_mode *mode = &fscrypt_modes[modenum];
-+
-+	mutex_init(&pool->mutex);
-+	INIT_LIST_HEAD(&pool->active_keys);
-+	INIT_LIST_HEAD(&pool->free_keys);
-+
-+	/*
-+	 * Always try to allocate one pooled key in
-+	 * case we never have another opportunity. But if it doesn't succeed,
-+	 * it's fine, we just need to never use the pool.
-+	 */
-+	fscrypt_allocate_new_pooled_key(pool, mode);
-+}
-+
-+/*
-+ * Destroy a particular key pool, allocated as part
-+ * of an array, freeing all prepared keys within.
-+ */
-+void fscrypt_destroy_key_pool(struct fscrypt_key_pool *pool)
-+{
-+	struct fscrypt_pooled_prepared_key *tmp;
-+
-+	mutex_lock(&pool->mutex);
-+	WARN_ON_ONCE(!list_empty(&pool->active_keys));
-+	while (!list_empty(&pool->active_keys)) {
-+		tmp = list_first_entry(&pool->active_keys,
-+				       struct fscrypt_pooled_prepared_key,
-+				       pool_link);
-+		fscrypt_destroy_prepared_key(NULL, &tmp->prep_key);
-+		list_del_init(&tmp->pool_link);
-+		kfree(tmp);
-+	}
-+	while (!list_empty(&pool->free_keys)) {
-+		tmp = list_first_entry(&pool->free_keys,
-+				       struct fscrypt_pooled_prepared_key,
-+				       pool_link);
-+		fscrypt_destroy_prepared_key(NULL, &tmp->prep_key);
-+		list_del_init(&tmp->pool_link);
-+		kfree(tmp);
-+	}
-+	mutex_unlock(&pool->mutex);
-+}
-+
-+/*
-+ * Prepare the crypto transform object or blk-crypto key in @prep_key, given the
-+ * raw key, encryption mode (@ci->ci_mode), flag indicating which encryption
-+ * implementation (fs-layer or blk-crypto) will be used (@ci->ci_inlinecrypt),
-+ * and IV generation method (@ci->ci_policy.flags). The relevant member must
-+ * already be allocated and set in @prep_key.
-+ */
-+int fscrypt_prepare_key(struct fscrypt_prepared_key *prep_key,
-+			const u8 *raw_key, const struct fscrypt_info *ci)
-+{
-+	int err;
-+	bool inlinecrypt = fscrypt_using_inline_encryption(ci);
-+
-+	if (inlinecrypt) {
-+		err = fscrypt_prepare_inline_crypt_key(prep_key, raw_key, ci);
-+	} else {
-+		err = crypto_skcipher_setkey(prep_key->tfm, raw_key,
-+					     ci->ci_mode->keysize);
-+	}
-+
-+	return err;
-+}
-+
-+struct crypto_skcipher *fscrypt_get_contents_tfm(struct fscrypt_info *ci)
-+{
-+	int err;
-+	struct fscrypt_master_key *mk = ci->ci_master_key;
-+	unsigned int allocflags;
-+
-+	if (!fscrypt_using_pooled_prepared_key(ci))
-+		return ci->ci_enc_key->tfm;
-+
-+	if (ci->ci_enc_key)
-+		return ci->ci_enc_key->tfm;
-+
-+	err = lock_master_key(mk);
++lock_for_new_key:
+ 
+ 	err = lock_master_key(mk);
+ 	if (err) {
+@@ -330,6 +431,17 @@ struct crypto_skcipher *fscrypt_get_contents_tfm(struct fscrypt_info *ci)
+ 		return ERR_PTR(err);
+ 	}
+ 
++setup_new_key:
++	err = fscrypt_get_key_from_pool(pool, ci);
 +	if (err) {
 +		up_read(&mk->mk_sem);
 +		return ERR_PTR(err);
 +	}
 +
-+	allocflags = memalloc_nofs_save();
-+	err = fscrypt_setup_v2_file_key(ci, mk);
-+	up_read(&mk->mk_sem);
-+	memalloc_nofs_restore(allocflags);
-+	if (err)
-+		return ERR_PTR(err);
++	/* Make sure nobody stole our fresh key already */
++	if (fscrypt_lock_pooled_key(ci) != 0)
++		goto setup_new_key;
 +
-+	return ci->ci_enc_key->tfm;
-+}
-+
- /* Allocate the relevant encryption member for the prepared key */
- int fscrypt_allocate_key_member(struct fscrypt_prepared_key *prep_key,
- 				const struct fscrypt_info *ci)
-@@ -262,23 +372,19 @@ int fscrypt_set_per_file_enc_key(struct fscrypt_info *ci, const u8 *raw_key)
+ 	allocflags = memalloc_nofs_save();
+ 	err = fscrypt_setup_v2_file_key(ci, mk);
+ 	up_read(&mk->mk_sem);
+@@ -371,20 +483,6 @@ int fscrypt_set_per_file_enc_key(struct fscrypt_info *ci, const u8 *raw_key)
+ 	int err;
  
  	if (fscrypt_using_pooled_prepared_key(ci)) {
- 		struct fscrypt_pooled_prepared_key *pooled_key;
-+		struct fscrypt_master_key *mk = ci->ci_master_key;
-+		const u8 mode_num = ci->ci_mode - fscrypt_modes;
-+		struct fscrypt_key_pool *pool = &mk->mk_key_pools[mode_num];
- 
--		if (ci->ci_enc_key)
--			return fscrypt_prepare_key(ci->ci_enc_key, raw_key, ci);
+-		struct fscrypt_pooled_prepared_key *pooled_key;
+-		struct fscrypt_master_key *mk = ci->ci_master_key;
+-		const u8 mode_num = ci->ci_mode - fscrypt_modes;
+-		struct fscrypt_key_pool *pool = &mk->mk_key_pools[mode_num];
 -
--		pooled_key = kzalloc(sizeof(*pooled_key), GFP_KERNEL);
--		if (!pooled_key)
--			return -ENOMEM;
+-		err = fscrypt_allocate_new_pooled_key(pool, ci->ci_mode);
+-		if (err)
+-			return err;
 -
--		err = fscrypt_allocate_key_member(&pooled_key->prep_key, ci);
--		if (err) {
--			kfree(pooled_key);
-+		err = fscrypt_allocate_new_pooled_key(pool, ci->ci_mode);
-+		if (err)
- 			return err;
--		}
- 
--		pooled_key->prep_key.type = FSCRYPT_KEY_POOLED;
-+		pooled_key = fscrypt_get_key_from_pool(pool);
-+		if (IS_ERR(pooled_key))
-+			return PTR_ERR(pooled_key);
-+
- 		ci->ci_enc_key = &pooled_key->prep_key;
--		return 0;
+-		pooled_key = fscrypt_get_key_from_pool(pool);
+-		if (IS_ERR(pooled_key))
+-			return PTR_ERR(pooled_key);
+-
+-		ci->ci_enc_key = &pooled_key->prep_key;
  	} else {
  		ci->ci_enc_key = kzalloc(sizeof(*ci->ci_enc_key), GFP_KERNEL);
  		if (!ci->ci_enc_key)
-@@ -527,6 +633,10 @@ static int fscrypt_setup_file_key(struct fscrypt_info *ci,
- {
- 	int err;
- 
-+	if (fscrypt_using_pooled_prepared_key(ci)) {
-+		return 0;
-+	}
-+
- 	if (!mk) {
- 		if (ci->ci_policy.version != FSCRYPT_POLICY_V1)
- 			return -ENOKEY;
-@@ -674,6 +784,8 @@ static void put_crypt_info(struct fscrypt_info *ci)
- 	if (!ci)
- 		return;
- 
-+	mk = ci->ci_master_key;
-+
- 	if (ci->ci_enc_key) {
- 		enum fscrypt_prepared_key_type type = ci->ci_enc_key->type;
- 
-@@ -686,18 +798,19 @@ static void put_crypt_info(struct fscrypt_info *ci)
+@@ -797,16 +895,7 @@ static void put_crypt_info(struct fscrypt_info *ci)
+ 			kfree_sensitive(ci->ci_enc_key);
  		}
  		if (type == FSCRYPT_KEY_POOLED) {
- 			struct fscrypt_pooled_prepared_key *pooled_key;
-+			const u8 mode_num = ci->ci_mode - fscrypt_modes;
- 
- 			pooled_key = container_of(ci->ci_enc_key,
- 						  struct fscrypt_pooled_prepared_key,
- 						  prep_key);
- 
--			fscrypt_destroy_prepared_key(ci->ci_inode->i_sb,
--						     ci->ci_enc_key);
--			kfree_sensitive(pooled_key);
-+			fscrypt_return_key_to_pool(&mk->mk_key_pools[mode_num],
-+						   pooled_key);
-+			ci->ci_enc_key = NULL;
+-			struct fscrypt_pooled_prepared_key *pooled_key;
+-			const u8 mode_num = ci->ci_mode - fscrypt_modes;
+-
+-			pooled_key = container_of(ci->ci_enc_key,
+-						  struct fscrypt_pooled_prepared_key,
+-						  prep_key);
+-
+-			fscrypt_return_key_to_pool(&mk->mk_key_pools[mode_num],
+-						   pooled_key);
+-			ci->ci_enc_key = NULL;
++			fscrypt_return_key_to_pool(ci);
  		}
  	}
  
--	mk = ci->ci_master_key;
+@@ -866,9 +955,19 @@ fscrypt_setup_encryption_info(struct inode *inode,
+ 	if (res)
+ 		goto out;
+ 
+-	res = fscrypt_setup_file_key(crypt_info, mk);
+-	if (res)
+-		goto out;
++	if (!fscrypt_using_pooled_prepared_key(crypt_info)) {
++		res = fscrypt_setup_file_key(crypt_info, mk);
++		if (res)
++			goto out;
++	} else {
++		const u8 mode_num = mode - fscrypt_modes;
++		struct fscrypt_key_pool *pool = &mk->mk_key_pools[mode_num];
 +
- 	if (mk) {
- 		/*
- 		 * Remove this inode from the list of inodes that were unlocked
++		res = fscrypt_allocate_new_pooled_key(pool, mode);
++		if (res)
++			return res;
++	}
++
+ 
+ 	/*
+ 	 * Derive a secret dirhash key for directories that need it. It
 -- 
 2.40.0
 
