@@ -2,50 +2,53 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8C326FD6F0
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 10 May 2023 08:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F5DD702507
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 15 May 2023 08:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229721AbjEJGYZ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 10 May 2023 02:24:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35168 "EHLO
+        id S234024AbjEOGkw (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 15 May 2023 02:40:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbjEJGYY (ORCPT
+        with ESMTP id S233887AbjEOGkw (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 10 May 2023 02:24:24 -0400
+        Mon, 15 May 2023 02:40:52 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8705D49D0
-        for <linux-fscrypt@vger.kernel.org>; Tue,  9 May 2023 23:23:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B5D0E54
+        for <linux-fscrypt@vger.kernel.org>; Sun, 14 May 2023 23:40:50 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 306EC63847
-        for <linux-fscrypt@vger.kernel.org>; Wed, 10 May 2023 06:23:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51FF4C433EF;
-        Wed, 10 May 2023 06:23:39 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2E5A3612EC
+        for <linux-fscrypt@vger.kernel.org>; Mon, 15 May 2023 06:40:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6143BC433D2;
+        Mon, 15 May 2023 06:40:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1683699819;
-        bh=hBO4jHlUXNONGKxTf6ICbdnfNzd8YEWX6q6eIUsVCT4=;
+        s=k20201202; t=1684132849;
+        bh=QdiHnysBKSnSgt0hoFvVmfmRKgIfAcyJA3bFCEmz7T0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R9e45P+oVlyFbjo87bg/jBlys9HDjQKRVEDDMUYCqXp7qGW5H6Eaunkgj3+u/aWok
-         gmX4PfvbyZtojUY/PMyY18W0CX0zezKGxzsFiJ70P8IHTN+28CrFhT7JMjm9HH9KY3
-         FAmWMhdFjFy37MoFoYVE+RMyoIW1bkEOlhK04ICbEJTH8kGI/Ud064SCFnZTAzFRqt
-         G0iU5dKmLFVwWru2eL8FSNCSI4hHlzCUIHwi272dSfGPvW9EePTlIx4E8e3xK90X7/
-         GNAl6/SeUoBu/gMzXiIGQPJuzEuLSETsxrt/yj6yGG2u6m8DrlJbhFhlOOn+6mHR/u
-         fEsJiT/SDgM+A==
-Date:   Tue, 9 May 2023 23:23:37 -0700
+        b=QFwQcBKKy3hYZU2tpPTXeyfWnQixGKodymzPk8s80NNzXxHJy6nWOWIKax+lRZ7Sf
+         Bw344nMYKhyzPLY3SdDycap0qUvXhb5qu3Eu6FzDt+QbBsVdp5iXqhzedBVn9PWJDV
+         fVMTrCPVzl84CJgh9NTN99DqmvexmV7+dU0x4UexDkbLEvfqDVsay59pcDaebn29sk
+         orNjGf/Lo9mURm7y4IF8T1OkeerX0V8+0iEKxFm5nkaGfalT4orGCSxt8P1HZ0qTDt
+         T5ULLJF3NDuO2lB1I+BoS94qQAyltqYSVB4xj+ThK4LsIYFaEGAZH/E5hxwNNLWnmZ
+         Ex+U2cHoGifCA==
+Date:   Sun, 14 May 2023 23:40:47 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Paul Gover <pmw.gover@yahoo.co.uk>
-Cc:     Jaegeuk Kim <jaegeuk@kernel.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, linux-fscrypt@vger.kernel.org
-Subject: Re: fscrypt - Bug or Feature - mv file from encrypted to
- nonencrypted folder?
-Message-ID: <20230510062337.GB1851@quark.localdomain>
-References: <3234925.aeNJFYEL58.ref@hp>
- <3234925.aeNJFYEL58@hp>
+To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-fscrypt@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH v1 0/7] fscrypt: add pooled prepared keys facility
+Message-ID: <20230515064047.GC15871@sol.localdomain>
+References: <cover.1681871298.git.sweettea-kernel@dorminy.me>
+ <20230502034736.GA1131@sol.localdomain>
+ <e7ee1491-e67c-6461-8825-6f39bf723c86@dorminy.me>
+ <ZFWFzUE6r30yVPB+@gmail.com>
+ <6f860e67-c998-0066-5f04-bc394164c5ba@dorminy.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3234925.aeNJFYEL58@hp>
+In-Reply-To: <6f860e67-c998-0066-5f04-bc394164c5ba@dorminy.me>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -56,68 +59,89 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hi Paul,
+Hi Sweet Tea,
 
-On Tue, May 09, 2023 at 03:26:34PM +0100, Paul Gover wrote:
-> Apologies if this should be raised as an issue in git, or if it's been 
-> discussed already (if so, I couldn't find it - I did try).
+On Fri, May 05, 2023 at 08:35:53PM -0400, Sweet Tea Dorminy wrote:
 > 
-> Moving a file (mv) from an encrypted folder to a non-encrypted folder exhibits 
-> surprising behaviour.  The moved file is readable if the owner of the 
-> encrypted folder is signed in.  If not, you get a useless error message.
 > 
-> In my case, filesystem F2FS, "packager"'s home directory is encrypted using 
-> fscrypt and unlocked with the login password for "packager" as per fscrypt 
-> documentation.
+> On 5/5/23 18:40, Eric Biggers wrote:
+> > On Fri, May 05, 2023 at 08:15:44AM -0400, Sweet Tea Dorminy wrote:
+> > > 
+> > > > As I mentioned earlier
+> > > > (https://lore.kernel.org/r/Y7NQ1CvPyJiGRe00@sol.localdomain),
+> > > > blk-crypto-fallback actually already solved the problem of caching
+> > > > crypto_skcipher objects for I/O.  And, it's possible for a filesystem to *only*
+> > > > support blk-crypto, not filesystem-layer contents encryption.  You'd just need
+> > > > to put btrfs encryption behind a new kconfig option that is automatically
+> > > > selected by CONFIG_FS_ENCRYPTION_INLINE_CRYPT && CONFIG_BLK_ENCRYPTION_FALLBACK.
+> > > > 
+> > > > (BTW, I'm thinking of simplifying the kconfig options by removing
+> > > > CONFIG_FS_ENCRYPTION_INLINE_CRYPT.  Then, the blk-crypto code in fs/crypto/ will
+> > > > be built if CONFIG_FS_ENCRYPTION && CONFIG_BLK_INLINE_ENCRYPTION.)
+> > > > 
+> > > > Indeed, filesystem-layer contents encryption is a bit redundant these days now
+> > > > that blk-crypto-fallback exists.  I'm even tempted to make ext4 and f2fs support
+> > > > blk-crypto only someday.  That was sort of the original plan, actually...
+> > > > 
+> > > > So, I'm wondering if you've considered going the blk-crypto-fallback route?
+> > > 
+> > > I did, and gave it a shot, but ran into problems because as far as I can
+> > > tell it requires having a bio to crypt. For verity data and inline extents,
+> > > there's no obvious bio, and even if we tried to construct a bio pointing at
+> > > the relevant data, it's not necessarily sector- sized or aligned. I couldn't
+> > > figure out a good way to make it work, but maybe it's better to special-case
+> > > those or there's something I'm not seeing.
+> > 
+> > ext4 and f2fs just don't use inline data on encrypted files.  I.e. when an encrypted file is
+> > created, it always uses non-inline data.  Is that an option for btrfs?
 > 
-> The path to and including /usr/local/bin is not encrypted - only various home 
-> directories.
+> It's not impossible (though it's been viewed as a fair deficiency in last
+> year's changesets), but it's not the only user of data needing encryption
+> stored inline instead of separately:
+> > 
+> > For the verity metadata, how are you thinking of encrypting it, exactly?  Verity metadata is
+> > immutable once written, so surely it avoids many of the issues you are dealing with for extents?  It
+> > should just need one key, and that key could be set up at file open time.  So I don't think it will
+> > need the key pool at all?
 > 
-> I have ~packager/test.file containing a line of text.
-> Signed in as packager:
-> 	cp test.file /usr/local/bin/test.file.copied
-> 	mv test.file /usr/local/bin/test.file.moved
-> Logged in on another tty as "paul", while packager is still logged in,
-> I can cat both files in /usr/local/bin and see the text as expected.
-> When packager logs out, however,
-> "cat /usr/local/bin/test.file.copied"  produces the expected text.
-> "cat /usr/local/bin/tes.file.moved"   produces
-> 	"cat: test.file.moved: Required key not available"
-> Sadly, it does not explain which key is required!
+> Yes, it should be able to use whatever the interface is for extent
+> encryption, whether that uses pooled keys or something else. However, btrfs
+> stores verity data in 2k chunks in the tree, similar to inline data, so it
+> has the same difficulties.
 > 
-> This is on kernel 6.3.1, compiled with Clang and LTO=thin, on a Gentoo system, 
-> but I'd hope that was irrelevant.
+> (I realized after sending that we also want to encrypt xattrs, which are
+> similarly stored as items in the tree instead of blocks on disk.)
 > 
-> I see similar issues have already been discussed, for example:
-> //lore.kernel.org/linux-fscrypt/20201031183551.202400-1-ebiggers@kernel.org/#r
-> "fscrypt: return -EXDEV for incompatible rename or link into encrypted dir".
+> We could have separate pools for inline and non-inline prepared keys (or not
+> pool inline keys at all?)
 > 
-> //github.com/google/fscrypt/issues/124
-> "Document mv behavior when using filesystem encryption" ought to cover the 
-> case, but doesn't warn of the potential for confusion.
-> 
-> My own thoughts on this: (a) I should have used "install" to copy the program 
-> in question into /usr/local/bin! but (b) the current situation is very 
-> confusing.  I ran a test with "ln", and note that trying to create a hard link 
-> in an encrypted directory to a file in an unencrypted one:
-> "link foo /usr/local/bin/target" fails with "Invalid cross-device link".
-> This seems to be desirable behaviour for the case of:
-> "mv foo /usr/local/bin", or alternatively treat it like a cross-device move, 
-> and instead do a copy.
 
-This is working as intended.  Unencrypted directories are allowed to contain
-encrypted files.  It's only the other way around -- unencrypted files in
-encrypted directories -- that is not allowed.  So, renaming an encrypted file
-into an unencrypted directory succeeds.
+To clarify my suggestion, blk-crypto could be used for file contents
+en/decryption at the same time that filesystem-layer crypto is used for verity
+metadata en/decryption.  blk-crypto and filesystem-layer crypto don't need to be
+mutually exclusive, even on the same file.
 
-I can understand how this can seem unexpected, but unencrypted directories do
-need to be able to contain encrypted directories, after all; otherwise nothing
-could ever be encrypted in the first place.  The current behavior then results
-just from not treating directories specially, and just doing exactly what the
-user asked to do -- rename the given file.
+Also, I'm glad that you're interested in xattr encryption, but unfortunately
+it's a tough problem, and all the other filesystems that implement fscrypt have
+left it out.  You have enough other things to worry about, so I think leaving
+xattr encryption out for now is the right call.  Similarly, the other
+filesystems that implement fscrypt have left out encryption of inline data,
+instead opting to disable inline data on encrypted files.
 
-As for the "Required key not available" error message not telling you which key
-is meant, that's simply because the kernel only reports integer error codes
-(ENOKEY in this case).  We can't do anything about that.
+Anyway, the main reason I'm sending this email is actually that I wanted to
+mention another possible solution to the per-extent key problem that I just
+became aware of.  In v6.4-rc1, the crypto API added a new function
+crypto_clone_tfm() which allocates a new tfm object, given an existing one.
+Unlike crypto_alloc_tfm(), crypto_clone_tfm() doesn't take any locks.  See:
+https://lore.kernel.org/linux-crypto/ZDefxOq6Ax0JeTRH@gondor.apana.org.au/T/#u
+
+For now, only shash and ahash tfms can be cloned.  However, it looks like
+support for cloning skcipher tfms could be added.
+
+With "cloning" skcipher tfms, there could just be a crypto_skcipher per extent,
+allocated on the I/O path.  That would solve the problem we've been trying to
+solve, without having to bring in the complexity of "pooled prepared keys".
+
+I think we should go either with that or with the blk-crypto-fallback solution.
 
 - Eric
