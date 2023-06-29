@@ -2,33 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A257741D1C
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 29 Jun 2023 02:35:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10CAD741D1E
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 29 Jun 2023 02:35:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231465AbjF2Afx (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        id S230449AbjF2Afx (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
         Wed, 28 Jun 2023 20:35:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58662 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231416AbjF2Afq (ORCPT
+        with ESMTP id S231447AbjF2Aft (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 28 Jun 2023 20:35:46 -0400
-Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B3E91FC2;
-        Wed, 28 Jun 2023 17:35:45 -0700 (PDT)
+        Wed, 28 Jun 2023 20:35:49 -0400
+Received: from box.fidei.email (box.fidei.email [71.19.144.250])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E64262728;
+        Wed, 28 Jun 2023 17:35:47 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 483058079C;
-        Wed, 28 Jun 2023 20:35:45 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id 3F3AC8030E;
+        Wed, 28 Jun 2023 20:35:47 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1687998945; bh=16K2VR1hogQ5kSXxv4RPsXnkIImMxPuMMjd09hGZsdc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=UY4L0tpx9REOAIwVszM9thn1GVdbdZGzGTzz/h31MNt1FtUAdTHGUOofdoaOHNbzr
-         kWCe7RjJ0gVWBXQquY3YZS6p7Fcei45HYqt06jFJJTWW7/fm4cc1hibSVFE3eB4cur
-         TzCK9waiJPlxmE82YXZVU5w0U6ZTtXdxEZoYsV2oXVqJny5q6u+BDLtvsunonNZcvY
-         LHA7IE+owkj07Pou/YA798rkTPNniZy+IVpHoTxo4FhnZUtLbPmiG5VEQVLHE1v1DJ
-         7dVdPfZDkupswFQ7lbw+TLNLUwNLBSvBXBt9TWJzF0BSZoZB9RHOb1S+8CJ4oc9Jq9
-         MrtY76/cN/B/g==
+        t=1687998947; bh=mS8xcbyfJ2L+bJJYin0TxhoCv7CCnF7NZeAWVfGmOqw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=WWltYi1FfNjf/ZCGmuELIxDthB2YhneXl44dzR4QmVcCWB/CXRq8vPf/bcuhDFdP8
+         pwFi3qhJ0OOOgRDMxGT7aiQhWnjnii6wefF+wqgXYqS1rwpkQ0R+bwnwB0ajcCffL8
+         mQXj2m2j58Rq67BBkLlvoPKZJFnARBHYrVyOiYwzNXzZasPARzGM0zUTF4agINmktw
+         wzPbfclehwHmQWqpFyTzaNmM8FCKIiqKU2S1Bq1GC+YHHD3CY/4aGQM0VaRlejcaBs
+         KBrTYmR6AQzH8lNLUUoDmdkV+6MjAmXDHnc2yRAyQJ1ydOb+zBkAdEHut6+ouJ7Cq3
+         S9tKfDBea1B3g==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
@@ -36,116 +36,101 @@ To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         "Theodore Y. Ts'o" <tytso@mit.edu>,
         Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@meta.com,
         linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org
-Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH v1 00/17] btrfs: add encryption feature
-Date:   Wed, 28 Jun 2023 20:35:23 -0400
-Message-Id: <cover.1687988380.git.sweettea-kernel@dorminy.me>
+Cc:     Omar Sandoval <osandov@osandov.com>,
+        Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Subject: [PATCH v1 01/17] btrfs: disable various operations on encrypted inodes
+Date:   Wed, 28 Jun 2023 20:35:24 -0400
+Message-Id: <e7785ffe237e581a7ba7e45d2724fca4d8fa1470.1687988380.git.sweettea-kernel@dorminy.me>
+In-Reply-To: <cover.1687988380.git.sweettea-kernel@dorminy.me>
+References: <cover.1687988380.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SBL_CSS,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-This is a changeset adding encryption to btrfs. It is not complete; it
-does not support inline data or verity or authenticated encryption. It
-is primarily intended as a proof that the fscrypt extent encryption
-changeset it builds on work. 
+From: Omar Sandoval <osandov@osandov.com>
 
-As per the design doc refined in the fall of last year [1], btrfs
-encryption has several steps: first, adding extent encryption to fscrypt
-and then btrfs; second, adding authenticated encryption support to the
-block layer, fscrypt, and then btrfs; and later adding potentially the
-ability to change the key used by a directory (either for all data or
-just newly written data) and/or allowing use of inline extents and
-verity items in combination with encryption and/or enabling send/receive
-of encrypted volumes. As such, this change is only the first step and is
-unsafe.
+Initially, only normal data extents, using the normal (non-direct) IO
+path, will be encrypted. This change forbids various other bits:
+- allows reflinking only if both inodes have the same encryption status
+- disables direct IO on encrypted inodes
+- disable inline data on encrypted inodes
 
-This change does not pass a couple of encryption xfstests, because of
-different properties of extent encryption. It hasn't been tested with
-direct IO or RAID. Because currently extent encryption always uses inline
-encryption (i.e. IO-block-only) for data encryption, it does not support
-encryption of inline extents; similarly, since btrfs stores verity items
-in the tree instead of in inline encryptable blocks on disk as other
-filesystems do, btrfs cannot currently encrypt verity items. Finally,
-this is insecure; the checksums are calculated on the unencrypted data
-and stored unencrypted, which is a potential information leak. (This
-will be addressed by authenticated encryption).
+Signed-off-by: Omar Sandoval <osandov@osandov.com>
+Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+---
+ fs/btrfs/file.c    | 4 ++--
+ fs/btrfs/inode.c   | 3 ++-
+ fs/btrfs/reflink.c | 7 +++++++
+ 3 files changed, 11 insertions(+), 3 deletions(-)
 
-This changeset is built on two prior changesets to fscrypt: [2] and [3]
-and should have no effect on unencrypted usage.
-
-[1] https://docs.google.com/document/d/1janjxewlewtVPqctkWOjSa7OhCgB8Gdx7iDaCDQQNZA/edit?usp=sharing
-[2]
-https://lore.kernel.org/linux-fscrypt/cover.1687988119.git.sweettea-kernel@dorminy.me/
-[3]
-https://lore.kernel.org/linux-fscrypt/cover.1687988246.git.sweettea-kernel@dorminy.me
-
-Omar Sandoval (7):
-  btrfs: disable various operations on encrypted inodes
-  fscrypt: expose fscrypt_nokey_name
-  btrfs: start using fscrypt hooks
-  btrfs: add inode encryption contexts
-  btrfs: add new FEATURE_INCOMPAT_ENCRYPT flag
-  btrfs: adapt readdir for encrypted and nokey names
-  btrfs: implement fscrypt ioctls
-
-Sweet Tea Dorminy (10):
-  btrfs: disable verity on encrypted inodes
-  btrfs: use correct name hash for nokey names
-  btrfs: add encryption to CONFIG_BTRFS_DEBUG
-  btrfs: add get_devices hook for fscrypt
-  btrfs: turn on inlinecrypt mount option for encrypt
-  btrfs: turn on the encryption ioctls
-  btrfs: create and free extent fscrypt_infos
-  btrfs: start tracking extent encryption context info
-  btrfs: explicitly track file extent length and encryption
-  btrfs: save and load fscrypt extent contexts
-
- fs/btrfs/Kconfig                |   2 +-
- fs/btrfs/Makefile               |   1 +
- fs/btrfs/accessors.h            |  31 +++
- fs/btrfs/btrfs_inode.h          |   3 +-
- fs/btrfs/ctree.h                |   2 +
- fs/btrfs/delayed-inode.c        |  30 ++-
- fs/btrfs/delayed-inode.h        |   4 +-
- fs/btrfs/dir-item.c             |  81 ++++++--
- fs/btrfs/dir-item.h             |  13 +-
- fs/btrfs/extent_io.c            |  49 +++++
- fs/btrfs/extent_io.h            |   3 +
- fs/btrfs/extent_map.c           |   9 +
- fs/btrfs/extent_map.h           |   3 +
- fs/btrfs/file-item.c            |  29 +++
- fs/btrfs/file.c                 |  11 +-
- fs/btrfs/fs.h                   |   7 +-
- fs/btrfs/fscrypt.c              | 236 ++++++++++++++++++++++
- fs/btrfs/fscrypt.h              |  61 ++++++
- fs/btrfs/inode.c                | 333 +++++++++++++++++++++++++-------
- fs/btrfs/ioctl.c                |  42 +++-
- fs/btrfs/reflink.c              |   8 +
- fs/btrfs/root-tree.c            |   8 +-
- fs/btrfs/root-tree.h            |   2 +-
- fs/btrfs/super.c                |  17 ++
- fs/btrfs/tree-checker.c         |  37 +++-
- fs/btrfs/tree-log.c             |  28 ++-
- fs/btrfs/verity.c               |   3 +
- fs/crypto/fname.c               |  39 +---
- include/linux/fscrypt.h         |  37 ++++
- include/uapi/linux/btrfs.h      |   1 +
- include/uapi/linux/btrfs_tree.h |  20 ++
- 31 files changed, 1004 insertions(+), 146 deletions(-)
- create mode 100644 fs/btrfs/fscrypt.c
- create mode 100644 fs/btrfs/fscrypt.h
-
-
-base-commit: 212cb3d0b8f4abf657671f05dbe0b3d9d858211d
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 392bc7d512a0..354962a7dd72 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -1502,7 +1502,7 @@ static ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
+ 		goto relock;
+ 	}
+ 
+-	if (check_direct_IO(fs_info, from, pos)) {
++	if (IS_ENCRYPTED(inode) || check_direct_IO(fs_info, from, pos)) {
+ 		btrfs_inode_unlock(BTRFS_I(inode), ilock_flags);
+ 		goto buffered;
+ 	}
+@@ -3741,7 +3741,7 @@ static ssize_t btrfs_direct_read(struct kiocb *iocb, struct iov_iter *to)
+ 	ssize_t read = 0;
+ 	ssize_t ret;
+ 
+-	if (fsverity_active(inode))
++	if (IS_ENCRYPTED(inode) || fsverity_active(inode))
+ 		return 0;
+ 
+ 	if (check_direct_read(btrfs_sb(inode->i_sb), to, iocb->ki_pos))
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index dbbb67293e34..48eadc4f187f 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -630,7 +630,8 @@ static noinline int cow_file_range_inline(struct btrfs_inode *inode, u64 size,
+ 	 * compressed) data fits in a leaf and the configured maximum inline
+ 	 * size.
+ 	 */
+-	if (size < i_size_read(&inode->vfs_inode) ||
++	if (IS_ENCRYPTED(&inode->vfs_inode) ||
++	    size < i_size_read(&inode->vfs_inode) ||
+ 	    size > fs_info->sectorsize ||
+ 	    data_len > BTRFS_MAX_INLINE_DATA_SIZE(fs_info) ||
+ 	    data_len > fs_info->max_inline)
+diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
+index 0474bbe39da7..ad722f495c9b 100644
+--- a/fs/btrfs/reflink.c
++++ b/fs/btrfs/reflink.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ 
+ #include <linux/blkdev.h>
++#include <linux/fscrypt.h>
+ #include <linux/iversion.h>
+ #include "ctree.h"
+ #include "fs.h"
+@@ -811,6 +812,12 @@ static int btrfs_remap_file_range_prep(struct file *file_in, loff_t pos_in,
+ 		ASSERT(inode_in->i_sb == inode_out->i_sb);
+ 	}
+ 
++	/*
++	 * Can only reflink encrypted files if both files are encrypted.
++	 */
++	if (IS_ENCRYPTED(inode_in) != IS_ENCRYPTED(inode_out))
++		return -EINVAL;
++
+ 	/* Don't make the dst file partly checksummed */
+ 	if ((BTRFS_I(inode_in)->flags & BTRFS_INODE_NODATASUM) !=
+ 	    (BTRFS_I(inode_out)->flags & BTRFS_INODE_NODATASUM)) {
 -- 
 2.40.1
 
