@@ -2,33 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ACC9741D09
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 29 Jun 2023 02:35:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B276C741D04
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 29 Jun 2023 02:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231319AbjF2Aew (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 28 Jun 2023 20:34:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58396 "EHLO
+        id S231179AbjF2Aex (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 28 Jun 2023 20:34:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231285AbjF2Aev (ORCPT
+        with ESMTP id S231169AbjF2Aew (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 28 Jun 2023 20:34:51 -0400
+        Wed, 28 Jun 2023 20:34:52 -0400
 Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10B96210E;
-        Wed, 28 Jun 2023 17:34:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D34F1FC2;
+        Wed, 28 Jun 2023 17:34:51 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 7976180727;
-        Wed, 28 Jun 2023 20:34:49 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id 12DD080B08;
+        Wed, 28 Jun 2023 20:34:50 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1687998889; bh=yk12HUPAnXYWMby3ezkN2KaffBIK1o/8QvPuAZitzlw=;
+        t=1687998891; bh=yT+T/CU256NsOeG+y9Jts+NtvBICj/npbIOSdxl6kVI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=heSTIYk5rLoH22R0RVEANLxdeRVuym+6D3a35QxYgV/9WjMfsommtO90WUu9+pLV/
-         pKLF9fZG3UOM1sYaLSqn2R23E/nZVmI3YRAPOhEwYOPp4aXnlnJAiqGTzNzKI4gkN+
-         VRv7I84Q9jSI5Jqmv4Nk8fKHtr/XyTy7JEDdGglO4qeK/6gqIuhVad4OA+6UZBPIUt
-         PzUcyXEguYuFm5UmvstQVTVfAoBfxeGOj4kflNZKOOW4y2JjOOIyhyAc+3TAopudcY
-         QmguTS6OEBh2+5cTcSk9uIVZFECHOIUkwKGhIiUYIA4zQlIq5e2C1hNczq0IHJSM1B
-         1z+FdI4waOG4A==
+        b=EzZT/dw1aegN2l+yDpghXsX0Lm1disa882zzEVZ/YPd20ClKQczWAI+z/YpupcCc/
+         q8KcW8EoPCtiIaoeCOzPb3aVf3tzuJXjKOlCotEvvs9bXrwIWSqD+cygN9aGNdabTt
+         np1pf8DgLblSOiJzDNgxQmmfObI503Ijtu599k5If8/mzvOK93eNkQ4X8auiFfJ1F/
+         trL8zUR5EGjEcBgeUFiLNsP4Iy0dkPWfTKACsEhvDrjl+HhdhV0rFxO1aiMr2WZOyR
+         hv2UTw2W3/PAn/Jv4PIviSEHZX+bt4AX/OSM1j/unf9aIR6MgtBuV/3oEFK+X2oAzF
+         DMNbdgclplL4w==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
@@ -37,9 +37,9 @@ To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@meta.com,
         linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH v1 10/12] fscrypt: allow load/save of extent contexts
-Date:   Wed, 28 Jun 2023 20:29:40 -0400
-Message-Id: <812beca69e0f3a9f96b0d079b79f5f7f1f442a29.1687988246.git.sweettea-kernel@dorminy.me>
+Subject: [PATCH v1 11/12] fscrypt: save session key credentials for extent infos
+Date:   Wed, 28 Jun 2023 20:29:41 -0400
+Message-Id: <0c8d98959d1498611452be66fe5704773ac860d1.1687988246.git.sweettea-kernel@dorminy.me>
 In-Reply-To: <cover.1687988246.git.sweettea-kernel@dorminy.me>
 References: <cover.1687988246.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
@@ -53,164 +53,98 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-The other half of using per-extent infos is saving and loading them from
-disk.
+For v1 encryption policies using per-session keys, the thread which
+opens the inode and therefore initializes the encryption info is part of
+the session, so it can get the key from the session keyring. However,
+for extent encryption, the extent infos are likely loaded from a
+different thread, which does not have access to the session keyring.
+This change saves the credentials of the inode opening thread and reuses
+those credentials temporarily when dealing with extent infos, allowing
+finding the encryption key correctly.
+
+v1 encryption policies using per-session keys should probably not exist
+for new usages such as extent encryption, but this makes more tests
+work without change; maybe the right answer is to disallow v1 session
+keys plus extent encryption and deal with editing tests to not use v1
+session encryption so much.
 
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 ---
- fs/crypto/keysetup.c    | 50 ++++++++++++++++++++++++++++++++++++++++-
- fs/crypto/policy.c      | 20 +++++++++++++++++
- include/linux/fscrypt.h | 17 ++++++++++++++
- 3 files changed, 86 insertions(+), 1 deletion(-)
+ fs/crypto/fscrypt_private.h |  8 ++++++++
+ fs/crypto/keysetup.c        | 13 +++++++++++++
+ fs/crypto/keysetup_v1.c     |  1 +
+ 3 files changed, 22 insertions(+)
 
+diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+index 5eafa50a3298..5c7649717aac 100644
+--- a/fs/crypto/fscrypt_private.h
++++ b/fs/crypto/fscrypt_private.h
+@@ -231,6 +231,14 @@ struct fscrypt_info {
+ 	 */
+ 	bool ci_inlinecrypt;
+ #endif
++	/* Credential struct from the thread which created this info. This is
++	 * only used in v1 session keyrings with extent encryption; it allows
++	 * the thread creating extents for an inode to join the session
++	 * keyring temporarily, since otherwise the thread is usually part of
++	 * kernel writeback and therefore unrelated to the thread with the
++	 * right session key.
++	 */
++	struct cred *ci_session_creds;
+ 
+ 	/*
+ 	 * Encryption mode used for this inode.  It corresponds to either the
 diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index 0efa2800b50d..50fa8955ae2c 100644
+index 50fa8955ae2c..cfe0f93919fe 100644
 --- a/fs/crypto/keysetup.c
 +++ b/fs/crypto/keysetup.c
-@@ -819,7 +819,6 @@ int fscrypt_get_encryption_info(struct inode *inode, bool allow_unsupported)
- 					    IS_CASEFOLDED(inode) &&
- 					    S_ISDIR(inode->i_mode),
- 					    NULL);
--
- 	if (res == -ENOPKG && allow_unsupported) /* Algorithm unavailable? */
- 		res = 0;
- 	if (res == -ENOKEY)
-@@ -943,6 +942,55 @@ void fscrypt_free_extent_info(struct fscrypt_info **info_ptr)
+@@ -617,6 +617,8 @@ static void put_crypt_info(struct fscrypt_info *ci)
+ 		spin_unlock(&mk->mk_decrypted_inodes_lock);
+ 		fscrypt_put_master_key_activeref(ci->ci_sb, mk);
+ 	}
++	if (ci->ci_session_creds)
++		abort_creds(ci->ci_session_creds);
+ 	memzero_explicit(ci, sizeof(*ci));
+ 	kmem_cache_free(fscrypt_info_cachep, ci);
  }
- EXPORT_SYMBOL_GPL(fscrypt_free_extent_info);
+@@ -633,6 +635,7 @@ fscrypt_setup_encryption_info(struct inode *inode,
+ 	struct fscrypt_master_key *mk = NULL;
+ 	int res;
+ 	bool info_for_extent = !!info_ptr;
++	const struct cred *creds = NULL;
  
-+/**
-+ * fscrypt_load_extent_info() - set up a preexisting extent's fscrypt_info
-+ * @inode: the inode to which the extent belongs. Must be encrypted.
-+ * @buf: a buffer containing the extent's stored context
-+ * @len: the length of the @ctx buffer
-+ * @info_ptr: a pointer to return the extent's fscrypt_info into. Should be
-+ *	      a pointer to a member of the extent struct, as it will be passed
-+ *	      back to the filesystem if key removal demands removal of the
-+ *	      info from the extent
-+ *
-+ * This is not %GFP_NOFS safe, so the caller is expected to call
-+ * memalloc_nofs_save/restore() if appropriate.
-+ *
-+ * Return: 0 if successful, or -errno if it fails.
-+ */
-+int fscrypt_load_extent_info(struct inode *inode, void *buf, size_t len,
-+			     struct fscrypt_info **info_ptr)
-+{
-+	int res;
-+	union fscrypt_context ctx;
-+	union fscrypt_policy policy;
-+
-+	if (!fscrypt_has_encryption_key(inode))
-+		return -EINVAL;
-+
-+	memcpy(&ctx, buf, len);
-+
-+	res = fscrypt_policy_from_context(&policy, &ctx, len);
-+	if (res) {
-+		fscrypt_warn(inode,
-+			     "Unrecognized or corrupt encryption context");
-+		return res;
-+	}
-+
-+	if (!fscrypt_supported_policy(&policy, inode))
-+		return -EINVAL;
-+
-+	res = fscrypt_setup_encryption_info(inode, &policy,
-+					    fscrypt_context_nonce(&ctx),
-+					    IS_CASEFOLDED(inode) &&
-+					    S_ISDIR(inode->i_mode),
-+					    info_ptr);
-+
-+	if (res == -ENOPKG) /* Algorithm unavailable? */
-+		res = 0;
-+	return res;
-+}
-+EXPORT_SYMBOL_GPL(fscrypt_load_extent_info);
-+
- /**
-  * fscrypt_put_encryption_info() - free most of an inode's fscrypt data
-  * @inode: an inode being evicted
-diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
-index f4456ecb3f87..9ecb01e49d33 100644
---- a/fs/crypto/policy.c
-+++ b/fs/crypto/policy.c
-@@ -762,6 +762,26 @@ int fscrypt_set_context(struct inode *inode, void *fs_data)
- }
- EXPORT_SYMBOL_GPL(fscrypt_set_context);
+ 	if (!info_ptr)
+ 		info_ptr = &inode->i_crypt_info;
+@@ -677,7 +680,17 @@ fscrypt_setup_encryption_info(struct inode *inode,
+ 	if (res)
+ 		goto out;
  
-+/**
-+ * fscrypt_set_extent_context() - Set the fscrypt context for an extent
-+ * @ci: info from which to fetch policy and nonce
-+ * @ctx: where context should be written
-+ * @len: the size of ctx
-+ *
-+ * Given an fscrypt_info belonging to an extent (generated via
-+ * fscrypt_prepare_new_extent()), generate a new context and write it to @ctx.
-+ * len is checked to be at least FSCRYPT_SET_CONTEXT_MAX_SIZE bytes.
-+ *
-+ * Return: size of the resulting context or a negative error code.
-+ */
-+int fscrypt_set_extent_context(struct fscrypt_info *ci, void *ctx, size_t len)
-+{
-+	if (len < FSCRYPT_SET_CONTEXT_MAX_SIZE)
-+		return -EINVAL;
-+	return fscrypt_new_context(ctx, &ci->ci_policy, ci->ci_nonce);
-+}
-+EXPORT_SYMBOL_GPL(fscrypt_set_extent_context);
++	if (info_for_extent && inode->i_crypt_info->ci_session_creds)
++		 creds = override_creds(inode->i_crypt_info->ci_session_creds);
++		/*
++		 * The inode this is being created for is using a session key,
++		 * so we have to join this thread to that session temporarily
++		 * in order to be able to find the right key...
++		 */
 +
- /**
-  * fscrypt_parse_test_dummy_encryption() - parse the test_dummy_encryption mount option
-  * @param: the mount option
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index 1965b900f62f..9c7255b48f1d 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -334,6 +334,8 @@ int fscrypt_ioctl_get_nonce(struct file *filp, void __user *arg);
- int fscrypt_has_permitted_context(struct inode *parent, struct inode *child);
- int fscrypt_context_for_new_inode(void *ctx, struct inode *inode);
- int fscrypt_set_context(struct inode *inode, void *fs_data);
-+int fscrypt_set_extent_context(struct fscrypt_info *info, void *ctx,
-+			       size_t len);
+ 	res = fscrypt_setup_file_key(crypt_info, mk);
++	if (creds)
++		revert_creds(creds);
+ 	if (res)
+ 		goto out;
  
- struct fscrypt_dummy_policy {
- 	const union fscrypt_policy *policy;
-@@ -374,6 +376,8 @@ int fscrypt_drop_inode(struct inode *inode);
- int fscrypt_prepare_new_extent(struct inode *inode,
- 			       struct fscrypt_info **info_ptr);
- void fscrypt_free_extent_info(struct fscrypt_info **info_ptr);
-+int fscrypt_load_extent_info(struct inode *inode, void *buf, size_t len,
-+			     struct fscrypt_info **info_ptr);
+diff --git a/fs/crypto/keysetup_v1.c b/fs/crypto/keysetup_v1.c
+index 41d317f08aeb..4f2be2377dfa 100644
+--- a/fs/crypto/keysetup_v1.c
++++ b/fs/crypto/keysetup_v1.c
+@@ -318,6 +318,7 @@ int fscrypt_setup_v1_file_key_via_subscribed_keyrings(struct fscrypt_info *ci)
+ 		return PTR_ERR(key);
  
- /* fname.c */
- int fscrypt_fname_encrypt(const struct inode *inode, const struct qstr *iname,
-@@ -550,6 +554,12 @@ static inline int fscrypt_set_context(struct inode *inode, void *fs_data)
- 	return -EOPNOTSUPP;
- }
- 
-+static inline int fscrypt_set_extent_context(struct fscrypt_info *info,
-+					     void *ctx, size_t len)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
- struct fscrypt_dummy_policy {
- };
- 
-@@ -648,6 +658,13 @@ static inline void fscrypt_free_extent_info(struct fscrypt_info **info_ptr)
- {
- }
- 
-+static inline int fscrypt_load_extent_info(struct inode *inode, void *buf,
-+					   size_t len,
-+					   struct fscrypt_info **info_ptr)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
-  /* fname.c */
- static inline int fscrypt_setup_filename(struct inode *dir,
- 					 const struct qstr *iname,
+ 	err = fscrypt_setup_v1_file_key(ci, payload->raw);
++	ci->ci_session_creds = prepare_creds();
+ 	up_read(&key->sem);
+ 	key_put(key);
+ 	return err;
 -- 
 2.40.1
 
