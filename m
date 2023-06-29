@@ -2,33 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA30741CF7
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 29 Jun 2023 02:34:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0D24741CFA
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 29 Jun 2023 02:34:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230468AbjF2Aei (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 28 Jun 2023 20:34:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58298 "EHLO
+        id S231140AbjF2Ael (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 28 Jun 2023 20:34:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230470AbjF2Aeh (ORCPT
+        with ESMTP id S230311AbjF2Aej (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 28 Jun 2023 20:34:37 -0400
+        Wed, 28 Jun 2023 20:34:39 -0400
 Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C0141FC2;
-        Wed, 28 Jun 2023 17:34:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0DC11FC2;
+        Wed, 28 Jun 2023 17:34:38 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 8CC6A80727;
-        Wed, 28 Jun 2023 20:34:35 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id 1E1EF80B08;
+        Wed, 28 Jun 2023 20:34:37 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1687998876; bh=GTvEkAuIgIHlz1mowy9K8wgGxzF1JtGO6jkIJDJvyiw=;
+        t=1687998878; bh=5QOeWXF39VG4eTOdkVZEzpQcyOFLzHDC+snBZKaf5vo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gqEx57zPGiW++2SK+uayzJ/OG9EjAcAPiLheinVkQlQULi4tlZbi++GGIiHuPN22y
-         /niAiS/Tj170fuhCzE083Spd592pOm3pB8QKnNSHrDKaCSPgXohaA+JH3wZlrKy0Jv
-         hH/v/jlIPbOTSR6MKscHJvE5H4xMzmSD3VYpJrdEyzbFlwgFlEgtPwrRDoKaX9VjQ6
-         58/t1V/+Vud1ykr0eOZB/dmfXSRmwsyF5stk5oMhEOjSo5ipEc/mYczpeh+fHBpqWa
-         hSZDegOV9TlcOqoRwh8IHT5dwAJn+pQslAG/sP5D2zy5Z/6ywQlaJMyu4DzAfOFvwk
-         QFENU+Mac7B/A==
+        b=Qz3y1jbr7rfKdbz22l4cCQWgjmgFBX0CjK2Wx+TiPKLUQwM5Kz8gAUVznKEN0Guej
+         8qlWr1yoaVcPGhfJ6lOWx2F5G6SnmYj57OYQdAJh9RpmUQCkMZgL01augb2o/3nuw7
+         g1KCNZppaQ1YHacRPDo9FMb2eGzxLA0Wgmm1P/D18dkS/n12jfpsZRtdhsNZz/v2/f
+         /VVpwGkTJIDPGFh+jv1UQjpLUFlZNMokvrvrNljMttqmffeOaqr7RIGYsKfse541sM
+         Av137LjSOtpZEuJ7hEaEGxsGL+KCEOxczPFxGRKDJiDNN23ISw0XCD6lQgjEQQ0f+1
+         rYYbuz+Ad/qvw==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
@@ -37,9 +37,9 @@ To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@meta.com,
         linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH v1 04/12] fscrypt: add a super_block pointer to fscrypt_info
-Date:   Wed, 28 Jun 2023 20:29:34 -0400
-Message-Id: <b448740180ea2ac1c39060d727cbd8a69866087b.1687988246.git.sweettea-kernel@dorminy.me>
+Subject: [PATCH v1 05/12] fscrypt: setup leaf inodes for extent encryption
+Date:   Wed, 28 Jun 2023 20:29:35 -0400
+Message-Id: <703b51d9bd9897ddb0b290e24a1260647c96eb6f.1687988246.git.sweettea-kernel@dorminy.me>
 In-Reply-To: <cover.1687988246.git.sweettea-kernel@dorminy.me>
 References: <cover.1687988246.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
@@ -53,127 +53,114 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-When fscrypt_infos are attached to extents instead of inodes, we can't
-go through the inode to get at the filesystems's superblock. Therefore,
-add a dedicated superblock pointer to fscrypt_info to keep track of it.
+For extent-based encryption, leaf/regular file inodes are special: it's
+useful to set their i_crypt_info field so that it's easy to inherit
+their encryption policy for a new extent, but they never need to do any
+encyption themselves. Additionally, since encryption can only be set up
+on a directory, not a single file, their encryption policy can always
+duplicate their parent inode's policy.
 
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 ---
- fs/crypto/fscrypt_private.h |  3 +++
- fs/crypto/inline_crypt.c    |  4 ++--
- fs/crypto/keysetup.c        | 10 +++++-----
- fs/crypto/keysetup_v1.c     |  6 +++---
- 4 files changed, 13 insertions(+), 10 deletions(-)
+ fs/crypto/fscrypt_private.h | 17 +++++++++++++
+ fs/crypto/keysetup.c        | 49 ++++++++++++++++++++++++++-----------
+ 2 files changed, 52 insertions(+), 14 deletions(-)
 
 diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-index 4d1e67bc1e62..c04454c289fd 100644
+index c04454c289fd..260635e8b558 100644
 --- a/fs/crypto/fscrypt_private.h
 +++ b/fs/crypto/fscrypt_private.h
-@@ -241,6 +241,9 @@ struct fscrypt_info {
- 	/* Back-pointer to the inode */
- 	struct inode *ci_inode;
+@@ -308,6 +308,23 @@ fscrypt_get_lblk_info(const struct inode *inode, u64 lblk, u64 *offset,
+ 	return inode->i_crypt_info;
+ }
  
-+	/* The superblock of the filesystem to which this info pertains */
-+	struct super_block *ci_sb;
++/**
++ * fscrypt_uses_extent_encryption() -- whether an inode uses per-extent
++ *				       encryption
++ *
++ * @inode: the inode in question
++ *
++ * Return: true if the inode uses per-extent fscrypt_infos, false otherwise
++ */
++static inline bool fscrypt_uses_extent_encryption(const struct inode *inode)
++{
++	// Non-regular files don't have extents
++	if (!S_ISREG(inode->i_mode))
++		return false;
 +
- 	/*
- 	 * The master key with which this inode was unlocked (decrypted).  This
- 	 * will be NULL if the master key was found in a process-subscribed
-diff --git a/fs/crypto/inline_crypt.c b/fs/crypto/inline_crypt.c
-index 689ab342ae34..f1a610a0f6bf 100644
---- a/fs/crypto/inline_crypt.c
-+++ b/fs/crypto/inline_crypt.c
-@@ -41,7 +41,7 @@ static struct block_device **fscrypt_get_devices(struct super_block *sb,
++	// No filesystems currently use per-extent infos
++	return false;
++}
  
- static unsigned int fscrypt_get_dun_bytes(const struct fscrypt_info *ci)
- {
--	struct super_block *sb = ci->ci_inode->i_sb;
-+	struct super_block *sb = ci->ci_sb;
- 	unsigned int flags = fscrypt_policy_flags(&ci->ci_policy);
- 	int ino_bits = 64, lblk_bits = 64;
- 
-@@ -155,7 +155,7 @@ int fscrypt_prepare_inline_crypt_key(struct fscrypt_prepared_key *prep_key,
- 				     const struct fscrypt_info *ci)
- {
- 	const struct inode *inode = ci->ci_inode;
--	struct super_block *sb = inode->i_sb;
-+	struct super_block *sb = ci->ci_sb;
- 	enum blk_crypto_mode_num crypto_mode = ci->ci_mode->blk_crypto_mode;
- 	struct blk_crypto_key *blk_key;
- 	struct block_device **devs;
+ /* crypto.c */
+ extern struct kmem_cache *fscrypt_info_cachep;
 diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index 6cbb42a8a537..67a5749a9543 100644
+index 67a5749a9543..d79a42a54906 100644
 --- a/fs/crypto/keysetup.c
 +++ b/fs/crypto/keysetup.c
-@@ -250,8 +250,7 @@ static int setup_new_mode_prepared_key(struct fscrypt_master_key *mk,
- 				       struct fscrypt_prepared_key *prep_key,
- 				       const struct fscrypt_info *ci)
+@@ -747,27 +747,48 @@ fscrypt_setup_encryption_info(struct inode *inode,
+ int fscrypt_get_encryption_info(struct inode *inode, bool allow_unsupported)
  {
--	const struct inode *inode = ci->ci_inode;
--	const struct super_block *sb = inode->i_sb;
-+	const struct super_block *sb = ci->ci_sb;
- 	unsigned int policy_flags = fscrypt_policy_flags(&ci->ci_policy);
- 	struct fscrypt_mode *mode = ci->ci_mode;
- 	const u8 mode_num = mode - fscrypt_modes;
-@@ -525,7 +524,7 @@ static bool fscrypt_valid_master_key_size(const struct fscrypt_master_key *mk,
- static int find_and_lock_master_key(const struct fscrypt_info *ci,
- 				    struct fscrypt_master_key **mk_ret)
- {
--	struct super_block *sb = ci->ci_inode->i_sb;
-+	struct super_block *sb = ci->ci_sb;
- 	struct fscrypt_key_specifier mk_spec;
- 	struct fscrypt_master_key *mk;
- 	int err;
-@@ -599,7 +598,7 @@ static void put_crypt_info(struct fscrypt_info *ci)
- 		if (type == FSCRYPT_KEY_DIRECT_V1)
- 			fscrypt_put_direct_key(ci->ci_enc_key);
- 		if (type == FSCRYPT_KEY_PER_INFO) {
--			fscrypt_destroy_prepared_key(ci->ci_inode->i_sb,
-+			fscrypt_destroy_prepared_key(ci->ci_sb,
- 						     ci->ci_enc_key);
- 			kfree_sensitive(ci->ci_enc_key);
- 		}
-@@ -616,7 +615,7 @@ static void put_crypt_info(struct fscrypt_info *ci)
- 		spin_lock(&mk->mk_decrypted_inodes_lock);
- 		list_del(&ci->ci_master_key_link);
- 		spin_unlock(&mk->mk_decrypted_inodes_lock);
--		fscrypt_put_master_key_activeref(ci->ci_inode->i_sb, mk);
-+		fscrypt_put_master_key_activeref(ci->ci_sb, mk);
- 	}
- 	memzero_explicit(ci, sizeof(*ci));
- 	kmem_cache_free(fscrypt_info_cachep, ci);
-@@ -642,6 +641,7 @@ fscrypt_setup_encryption_info(struct inode *inode,
- 		return -ENOMEM;
+ 	int res;
+-	union fscrypt_context ctx;
++	union fscrypt_context ctx = { 0 };
+ 	union fscrypt_policy policy;
  
- 	crypt_info->ci_inode = inode;
-+	crypt_info->ci_sb = inode->i_sb;
- 	crypt_info->ci_policy = *policy;
- 	memcpy(crypt_info->ci_nonce, nonce, FSCRYPT_FILE_NONCE_SIZE);
+ 	if (fscrypt_has_encryption_key(inode))
+ 		return 0;
  
-diff --git a/fs/crypto/keysetup_v1.c b/fs/crypto/keysetup_v1.c
-index 1e785cedead0..41d317f08aeb 100644
---- a/fs/crypto/keysetup_v1.c
-+++ b/fs/crypto/keysetup_v1.c
-@@ -235,7 +235,7 @@ fscrypt_get_direct_key(const struct fscrypt_info *ci, const u8 *raw_key)
- 	dk = kzalloc(sizeof(*dk), GFP_KERNEL);
- 	if (!dk)
- 		return ERR_PTR(-ENOMEM);
--	dk->dk_sb = ci->ci_inode->i_sb;
-+	dk->dk_sb = ci->ci_sb;
- 	refcount_set(&dk->dk_refcount, 1);
- 	dk->dk_mode = ci->ci_mode;
- 	dk->dk_key.type = FSCRYPT_KEY_DIRECT_V1;
-@@ -309,8 +309,8 @@ int fscrypt_setup_v1_file_key_via_subscribed_keyrings(struct fscrypt_info *ci)
- 	key = find_and_lock_process_key(FSCRYPT_KEY_DESC_PREFIX,
- 					ci->ci_policy.v1.master_key_descriptor,
- 					ci->ci_mode->keysize, &payload);
--	if (key == ERR_PTR(-ENOKEY) && ci->ci_inode->i_sb->s_cop->key_prefix) {
--		key = find_and_lock_process_key(ci->ci_inode->i_sb->s_cop->key_prefix,
-+	if (key == ERR_PTR(-ENOKEY) && ci->ci_sb->s_cop->key_prefix) {
-+		key = find_and_lock_process_key(ci->ci_sb->s_cop->key_prefix,
- 						ci->ci_policy.v1.master_key_descriptor,
- 						ci->ci_mode->keysize, &payload);
+-	res = inode->i_sb->s_cop->get_context(inode, &ctx, sizeof(ctx));
+-	if (res < 0) {
+-		if (res == -ERANGE && allow_unsupported)
+-			return 0;
+-		fscrypt_warn(inode, "Error %d getting encryption context", res);
+-		return res;
+-	}
++	if (fscrypt_uses_extent_encryption(inode)) {
++		/*
++		 * Nothing will be encrypted with this info, so we can borrow
++		 * the parent (dir) inode's policy and use a zero nonce.
++		 */
++		struct dentry *dentry = d_find_any_alias(inode);
++		struct dentry *parent_dentry = dget_parent(dentry);
++		struct inode *dir = parent_dentry->d_inode;
++		bool found = false;
+ 
+-	res = fscrypt_policy_from_context(&policy, &ctx, res);
+-	if (res) {
+-		if (allow_unsupported)
++		if (dir->i_crypt_info) {
++			found = true;
++			policy = dir->i_crypt_info->ci_policy;
++			nonce = dir->i_crypt_info->ci_nonce;
++		}
++		dput(parent_dentry);
++		dput(dentry);
++		if (!found)
+ 			return 0;
+-		fscrypt_warn(inode,
+-			     "Unrecognized or corrupt encryption context");
+-		return res;
++	} else {
++		res = inode->i_sb->s_cop->get_context(inode, &ctx, sizeof(ctx));
++		if (res < 0) {
++			if (res == -ERANGE && allow_unsupported)
++				return 0;
++			fscrypt_warn(inode, "Error %d getting encryption context", res);
++			return res;
++		}
++
++		res = fscrypt_policy_from_context(&policy, &ctx, res);
++		if (res) {
++			if (allow_unsupported)
++				return 0;
++			fscrypt_warn(inode,
++				     "Unrecognized or corrupt encryption context");
++			return res;
++		}
  	}
+ 
+ 	if (!fscrypt_supported_policy(&policy, inode)) {
 -- 
 2.40.1
 
