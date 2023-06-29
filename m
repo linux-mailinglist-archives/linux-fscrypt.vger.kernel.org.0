@@ -2,33 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DA1A741CF4
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 29 Jun 2023 02:34:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BFDD741CF6
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 29 Jun 2023 02:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229624AbjF2Aed (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 28 Jun 2023 20:34:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58276 "EHLO
+        id S230456AbjF2Aef (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 28 Jun 2023 20:34:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230311AbjF2Aec (ORCPT
+        with ESMTP id S230311AbjF2Aee (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 28 Jun 2023 20:34:32 -0400
+        Wed, 28 Jun 2023 20:34:34 -0400
 Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 389D51FC2;
-        Wed, 28 Jun 2023 17:34:31 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C14A01FC2;
+        Wed, 28 Jun 2023 17:34:33 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 7AE8180727;
-        Wed, 28 Jun 2023 20:34:30 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id 0267A80B0C;
+        Wed, 28 Jun 2023 20:34:32 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1687998871; bh=yVWm7KLlu7NKE61m0sljinnH3SFPEiIbkY1fo9BhNoc=;
+        t=1687998873; bh=BIdg34OLmPUpDpRKC4NmZKILUZwUGsXTWhefVvmTUSw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Wvgbg9EPF87+81vT7Co1GPGbGwrFb8Z5oam7INRolGlQurdn5+qxhzqec7+DBWHOo
-         7vAYCyFxrW+gdyluQRahudCbH0TDE5UnBKS1ajrWMRMPdA2GVRWKmhpVktLZNOUqtM
-         5Iva/NKF6IyMn4iFuEanIvZCgGA1I8F4m2c5YVpcv74gl6Kf920MIUaNv08vT/UpNX
-         9HpI2p187AvLpmAbB6NKKsbAmIcfh/BncENTxtI1NNbh51Q6fJempfxOvhI8rnRiFZ
-         aumBGzDn0xY5tCIa+zCRrISdybeaoO2epA80SVTXLuQP+5p+hcRxe3jrXLP0Zww6y6
-         G7vAV9EOBmVXg==
+        b=HbtL6dGLz/QYHDq9vfZbTKj3vH1lcqnvCeyLrfF1i1FGFjydG+K0hZ7yy6ZfmzXYY
+         2YW22OBYvsDQCeEBchs+afaSZWT7Ivu/qz7CXJTS2u9VR83p1wHEFjWvPol0MPjqsc
+         8FXy57z8v4UYIjYd/oQcTRwR0V2LQAgRPZIQgNFAq7qP8KuTey9N8VkO52qg2ZFbdc
+         P6+UXZla/pw/FcCuK7XsZiB7Y6rPOAcKDjDRG+b3W0Oj2Op5Way2//GREvrpjiNzzM
+         0Ik4Pyb8fR5FBxg4Y9fNighQOqDzm2I6vuKtjYqN4wlwFK4oM5WC56U0CnVZQEnsDA
+         3JHITfWjOfkmg==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
@@ -37,9 +37,9 @@ To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@meta.com,
         linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH v1 02/12] fscrypt: factor getting info for a specific block
-Date:   Wed, 28 Jun 2023 20:29:32 -0400
-Message-Id: <f5a15e07385f97ccfb5798d93844c536ed0de1a2.1687988246.git.sweettea-kernel@dorminy.me>
+Subject: [PATCH v1 03/12] fscrypt: adjust effective lblks based on extents
+Date:   Wed, 28 Jun 2023 20:29:33 -0400
+Message-Id: <fa9b75d8de555036fe20a97e7da2649f575d34a7.1687988246.git.sweettea-kernel@dorminy.me>
 In-Reply-To: <cover.1687988246.git.sweettea-kernel@dorminy.me>
 References: <cover.1687988246.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
@@ -55,125 +55,113 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-For filesystems using extent-based encryption, the content of each
-extent will be encrypted with a different fscrypt_info for each extent.
-Meanwhile, directories and symlinks will continue to use the
-fscrypt_info for the inode. Therefore, merely grabbing
-inode->i_crypt_info will be insufficient; the caller must specifically
-request the inode info or the info for a specific block.
+If a filesystem uses extent-based encryption, then the offset within a
+file is not a constant which can be used for calculating an IV.
+For instance, the same extent could be blocks 0-8 in one file, and
+blocks 100-108 in another file. Instead, the block offset within the
+extent must be used instead.
 
-Add fscrypt_get_lblk_info() to get info for a specific block, and update
-all relevant callsites.
+Update all uses of logical block offset within the file to use logical
+block offset within the extent, if applicable.
 
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 ---
- fs/crypto/crypto.c          |  3 ++-
- fs/crypto/fscrypt_private.h | 29 +++++++++++++++++++++++++++++
- fs/crypto/inline_crypt.c    | 10 ++++++----
- 3 files changed, 37 insertions(+), 5 deletions(-)
+ fs/crypto/crypto.c       |  3 ++-
+ fs/crypto/inline_crypt.c | 22 ++++++++++++++++------
+ 2 files changed, 18 insertions(+), 7 deletions(-)
 
 diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
-index 9f3bda18c797..1b7e375b1c6b 100644
+index 1b7e375b1c6b..d75f1b3f5795 100644
 --- a/fs/crypto/crypto.c
 +++ b/fs/crypto/crypto.c
-@@ -107,7 +107,8 @@ int fscrypt_crypt_block(const struct inode *inode, fscrypt_direction_t rw,
+@@ -107,8 +107,9 @@ int fscrypt_crypt_block(const struct inode *inode, fscrypt_direction_t rw,
  	struct skcipher_request *req = NULL;
  	DECLARE_CRYPTO_WAIT(wait);
  	struct scatterlist dst, src;
--	struct fscrypt_info *ci = inode->i_crypt_info;
-+	struct fscrypt_info *ci =
-+		fscrypt_get_lblk_info(inode, lblk_num, NULL, NULL);
++	u64 ci_offset = 0;
+ 	struct fscrypt_info *ci =
+-		fscrypt_get_lblk_info(inode, lblk_num, NULL, NULL);
++		fscrypt_get_lblk_info(inode, lblk_num, &ci_offset, NULL);
  	struct crypto_skcipher *tfm = ci->ci_enc_key->tfm;
  	int res = 0;
  
-diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-index e726a1fb9f7e..4d1e67bc1e62 100644
---- a/fs/crypto/fscrypt_private.h
-+++ b/fs/crypto/fscrypt_private.h
-@@ -277,6 +277,35 @@ typedef enum {
- 	FS_ENCRYPT,
- } fscrypt_direction_t;
- 
-+/**
-+ * fscrypt_get_lblk_info() - get the fscrypt_info to crypt a particular block
-+ *
-+ * @inode:      the inode to which the block belongs
-+ * @lblk:       the offset of the block within the file which the inode
-+ *              references
-+ * @offset:     a pointer to return the offset of the block from the first block
-+ *              that the info covers. For inode-based encryption, this will
-+ *              always be @lblk; for extent-based encryption, this will be in
-+ *              the range [0, lblk]. Can be NULL
-+ * @extent_len: a pointer to return the minimum number of lblks starting at
-+ *              this offset which also belong to the same fscrypt_info. Can be
-+ *              NULL
-+ *
-+ * Return: the appropriate fscrypt_info if there is one, else NULL.
-+ */
-+static inline struct fscrypt_info *
-+fscrypt_get_lblk_info(const struct inode *inode, u64 lblk, u64 *offset,
-+		      u64 *extent_len)
-+{
-+	if (offset)
-+		*offset = lblk;
-+	if (extent_len)
-+		*extent_len = U64_MAX;
-+
-+	return inode->i_crypt_info;
-+}
-+
-+
- /* crypto.c */
- extern struct kmem_cache *fscrypt_info_cachep;
- int fscrypt_initialize(struct super_block *sb);
 diff --git a/fs/crypto/inline_crypt.c b/fs/crypto/inline_crypt.c
-index 2063f7941ce6..885a2ec3d711 100644
+index 885a2ec3d711..689ab342ae34 100644
 --- a/fs/crypto/inline_crypt.c
 +++ b/fs/crypto/inline_crypt.c
-@@ -270,7 +270,7 @@ void fscrypt_set_bio_crypt_ctx(struct bio *bio, const struct inode *inode,
+@@ -267,12 +267,15 @@ void fscrypt_set_bio_crypt_ctx(struct bio *bio, const struct inode *inode,
+ {
+ 	const struct fscrypt_info *ci;
+ 	u64 dun[BLK_CRYPTO_DUN_ARRAY_SIZE];
++	u64 ci_offset = 0;
  
  	if (!fscrypt_inode_uses_inline_crypto(inode))
  		return;
--	ci = inode->i_crypt_info;
-+	ci = fscrypt_get_lblk_info(inode, first_lblk, NULL, NULL);
+-	ci = fscrypt_get_lblk_info(inode, first_lblk, NULL, NULL);
++	ci = fscrypt_get_lblk_info(inode, first_lblk, &ci_offset, NULL);
++	if (!ci)
++		return;
  
- 	fscrypt_generate_dun(ci, first_lblk, dun);
+-	fscrypt_generate_dun(ci, first_lblk, dun);
++	fscrypt_generate_dun(ci, ci_offset, dun);
  	bio_crypt_set_ctx(bio, ci->ci_enc_key->blk_key, dun, gfp_mask);
-@@ -349,21 +349,23 @@ bool fscrypt_mergeable_bio(struct bio *bio, const struct inode *inode,
- {
+ }
+ EXPORT_SYMBOL_GPL(fscrypt_set_bio_crypt_ctx);
+@@ -350,13 +353,14 @@ bool fscrypt_mergeable_bio(struct bio *bio, const struct inode *inode,
  	const struct bio_crypt_ctx *bc = bio->bi_crypt_context;
  	u64 next_dun[BLK_CRYPTO_DUN_ARRAY_SIZE];
-+	struct fscrypt_info *ci;
+ 	struct fscrypt_info *ci;
++	u64 ci_offset = 0;
  
  	if (!!bc != fscrypt_inode_uses_inline_crypto(inode))
  		return false;
  	if (!bc)
  		return true;
  
-+	ci = fscrypt_get_lblk_info(inode, next_lblk, NULL, NULL);
+-	ci = fscrypt_get_lblk_info(inode, next_lblk, NULL, NULL);
++	ci = fscrypt_get_lblk_info(inode, next_lblk, &ci_offset, NULL);
  	/*
  	 * Comparing the key pointers is good enough, as all I/O for each key
  	 * uses the same pointer.  I.e., there's currently no need to support
- 	 * merging requests where the keys are the same but the pointers differ.
- 	 */
--	if (bc->bc_key != inode->i_crypt_info->ci_enc_key->blk_key)
-+	if (bc->bc_key != ci->ci_enc_key->blk_key)
+@@ -365,7 +369,7 @@ bool fscrypt_mergeable_bio(struct bio *bio, const struct inode *inode,
+ 	if (bc->bc_key != ci->ci_enc_key->blk_key)
  		return false;
  
--	fscrypt_generate_dun(inode->i_crypt_info, next_lblk, next_dun);
-+	fscrypt_generate_dun(ci, next_lblk, next_dun);
+-	fscrypt_generate_dun(ci, next_lblk, next_dun);
++	fscrypt_generate_dun(ci, ci_offset, next_dun);
  	return bio_crypt_dun_is_contiguous(bc, bio->bi_iter.bi_size, next_dun);
  }
  EXPORT_SYMBOL_GPL(fscrypt_mergeable_bio);
-@@ -465,7 +467,7 @@ u64 fscrypt_limit_io_blocks(const struct inode *inode, u64 lblk, u64 nr_blocks)
+@@ -460,6 +464,8 @@ u64 fscrypt_limit_io_blocks(const struct inode *inode, u64 lblk, u64 nr_blocks)
+ {
+ 	const struct fscrypt_info *ci;
+ 	u32 dun;
++	u64 ci_offset = 0;
++	u64 extent_len = 0;
+ 
+ 	if (!fscrypt_inode_uses_inline_crypto(inode))
+ 		return nr_blocks;
+@@ -467,14 +473,18 @@ u64 fscrypt_limit_io_blocks(const struct inode *inode, u64 lblk, u64 nr_blocks)
  	if (nr_blocks <= 1)
  		return nr_blocks;
  
--	ci = inode->i_crypt_info;
-+	ci = fscrypt_get_lblk_info(inode, lblk, NULL, NULL);
+-	ci = fscrypt_get_lblk_info(inode, lblk, NULL, NULL);
++	ci = fscrypt_get_lblk_info(inode, lblk, &ci_offset, &extent_len);
++
++	/* Spanning an extent boundary will change the DUN */
++	nr_blocks = min_t(u64, nr_blocks, extent_len);
++
  	if (!(fscrypt_policy_flags(&ci->ci_policy) &
  	      FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32))
  		return nr_blocks;
+ 
+ 	/* With IV_INO_LBLK_32, the DUN can wrap around from U32_MAX to 0. */
+ 
+-	dun = ci->ci_hashed_ino + lblk;
++	dun = ci->ci_hashed_ino + ci_offset;
+ 
+ 	return min_t(u64, nr_blocks, (u64)U32_MAX + 1 - dun);
+ }
 -- 
 2.40.1
 
