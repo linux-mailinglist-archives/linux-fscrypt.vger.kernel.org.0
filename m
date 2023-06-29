@@ -2,97 +2,83 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75992743042
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 30 Jun 2023 00:17:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D717743043
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 30 Jun 2023 00:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230410AbjF2WRl (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 29 Jun 2023 18:17:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38332 "EHLO
+        id S231593AbjF2WRn (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 29 Jun 2023 18:17:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbjF2WRh (ORCPT
+        with ESMTP id S231546AbjF2WRj (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 29 Jun 2023 18:17:37 -0400
-Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 467A630F1;
-        Thu, 29 Jun 2023 15:17:37 -0700 (PDT)
+        Thu, 29 Jun 2023 18:17:39 -0400
+Received: from box.fidei.email (box.fidei.email [71.19.144.250])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF7E92707;
+        Thu, 29 Jun 2023 15:17:38 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 85C7080778;
-        Thu, 29 Jun 2023 18:17:36 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id 4858980845;
+        Thu, 29 Jun 2023 18:17:38 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1688077057; bh=i0KcUcAyrGMIC1rkAvJHWWPwsKlFh9C7E3KShPZecpQ=;
+        t=1688077058; bh=Glc1SgrRxVy/DWhD2BYtb2GOsC9vCs2yRmXOeAyo0vc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FmKY/PEVkr8Lggi8AWIn5/LeqkL7CmYkv/qtytB645XYxd279Ow1Pr0ejCMk/Nr2x
-         CMHkVuqCIgdlC3C3lEwYfxpJG9lOnfPJkT8WtT/S83m9qDwbQejl97T/US/UNhoXZu
-         oZApUSt5cvQIujFC1ALCmOqDaie6pF79TWvAfDFFACuk5VgOxD4M1Xi7lNYk3k3QQH
-         XReu0Hw7hinuv1nN3fSVOXs6ivwUFohzdvYAoGysgGpXwsaBhtyICM95NEsAHtuW7k
-         GiybeQBSGMY9QheNzgGlNCMbNPIvUYFB4ocOPB4+imA7s4gGbEHS8UQANqWBRTY41z
-         zgyaLsVPypm2Q==
+        b=cj7HBJkkM+s4x6SPaSzMhtnCp95yaZa5mLrhItfZjeLx7m42d3mNpgnY9ZsmhIaIi
+         kUECWxeXBM+lixPEXiNCtqt+5s6Pg3KNMMC65q257zNB4JYgD4kDEOqDDtwjKttv44
+         8NlY1ZshIy/vUH4MnA7/6Qf+E6iPcrpWem7OHO71bzioai1gkD7QC4ck/j5bSS/Rn0
+         f6lSnNtvpwkrJSozgLYHc4jFAlowdl3HGXqEUpYaVRWEE1VyIkH2YIo011lNKpdjUf
+         MoHdz7CMvMacnCyxxYaz+eAbatmySR8XWcL3aty6nil9A45DqNVE/fkoggNB2Hhhjx
+         02R4DDHtLhHxA==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
         kernel-team@meta.com, ebiggers@google.com, anand.jain@oracle.com,
         fdmanana@suse.com, linux-fscrypt@vger.kernel.org,
         fsverity@lists.linux.dev, zlang@kernel.org
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [RFC PATCH 3/8] common/encrypt: add btrfs to get_ciphertext_filename
-Date:   Thu, 29 Jun 2023 18:17:18 -0400
-Message-Id: <023efcfc72f3ebe66ed66513529c207334ab9eea.1688076612.git.sweettea-kernel@dorminy.me>
+Subject: [RFC PATCH 4/8] common/encrypt: enable making a encrypted btrfs filesystem
+Date:   Thu, 29 Jun 2023 18:17:19 -0400
+Message-Id: <ade755dbe4a98c52acaa88fcf9799c7c9976d7ca.1688076612.git.sweettea-kernel@dorminy.me>
 In-Reply-To: <cover.1688076612.git.sweettea-kernel@dorminy.me>
 References: <cover.1688076612.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SBL_CSS,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Add the relevant call to get an encrypted filename from btrfs.
-
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 ---
- common/encrypt | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ common/encrypt | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/common/encrypt b/common/encrypt
-index fc1c8cc7..2c1925da 100644
+index 2c1925da..1372af66 100644
 --- a/common/encrypt
 +++ b/common/encrypt
-@@ -618,6 +618,19 @@ _get_ciphertext_filename()
- 	local dir_inode=$3
- 
- 	case $FSTYP in
-+	btrfs)
-+		# Extract the filename from the inode_ref object, similar to:
-+		# item 24 key (259 INODE_REF 257) itemoff 14826 itemsize 26
-+		# 	index 3 namelen 16 name: J\xf7\x15tD\x8eL\xae/\x98\x9f\x09\xc1\xb6\x09>
-+		#
-+		$BTRFS_UTIL_PROG inspect-internal dump-tree $device | \
-+			grep -A 1 "key ($inode INODE_REF " | tail -n 1 | \
-+			perl -ne '
-+				s/.*?name: //;
-+				chomp;
-+				s/\\x([[:xdigit:]]{2})/chr hex $1/eg;
-+				print;'
-+		;;
- 	ext4)
- 		# Extract the filename from the debugfs output line like:
- 		#
-@@ -715,6 +728,9 @@ _require_get_ciphertext_filename_support()
- 			_notrun "dump.f2fs (f2fs-tools) is too old; doesn't support showing unambiguous on-disk filenames"
- 		fi
+@@ -153,6 +153,9 @@ _scratch_mkfs_encrypted()
+ 		# erase the UBI volume; reformated automatically on next mount
+ 		$UBIUPDATEVOL_PROG ${SCRATCH_DEV} -t
  		;;
 +	btrfs)
-+		_require_command "$BTRFS_UTIL_PROG" btrfs
++		_scratch_mkfs
++		;;
+ 	ceph)
+ 		_scratch_cleanup_files
+ 		;;
+@@ -168,6 +171,9 @@ _scratch_mkfs_sized_encrypted()
+ 	ext4|f2fs)
+ 		MKFS_OPTIONS="$MKFS_OPTIONS -O encrypt" _scratch_mkfs_sized $*
+ 		;;
++	btrfs)
++		_scratch_mkfs_sized $*
 +		;;
  	*)
- 		_notrun "_get_ciphertext_filename() isn't implemented on $FSTYP"
+ 		_notrun "Filesystem $FSTYP not supported in _scratch_mkfs_sized_encrypted"
  		;;
 -- 
 2.40.1
