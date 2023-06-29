@@ -2,245 +2,106 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31052741E76
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 29 Jun 2023 04:45:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA9F97423A9
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 29 Jun 2023 12:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229647AbjF2CpP (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 28 Jun 2023 22:45:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59546 "EHLO
+        id S232308AbjF2KEW (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 29 Jun 2023 06:04:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229794AbjF2CpP (ORCPT
+        with ESMTP id S231395AbjF2KDW (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 28 Jun 2023 22:45:15 -0400
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65EBA107;
-        Wed, 28 Jun 2023 19:45:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1688006713; x=1719542713;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Sz3uHkV84E6YZD5QJn6+OgayMM+VzvSDNs3af7bLUJo=;
-  b=n/QyZYeF7QPy6YQjPqqfu//KHarjjD+h9M/TYFR8O9m4KyIFGSkK+Y7u
-   9Iy4hF8qfdTvs22cN4KhoPwu9grbSGAC3kLDq8kaHkYm1z+zPFBCGrF+a
-   pKpaU7MhbURR/waZ0egWt3Fcqlr8CM9hv39CLC8LKOpBmWHSFdTezv7sT
-   1ObyT6tEqCmznzT59PDeOJ1Eki5Vz9J0qzJ1qqNo7msyAVavJ+93Ok/HS
-   vP7mqBjN4QdK+S2HSBTe7T4ASz7VQUBkjUjLH7usigqieX7iykKP6EDuy
-   5ZbJSRi5yiM1yfNhVqKgIPUVG6UDBmI8LrHAVNI5iUWDNg7L6O5AmbsTd
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10755"; a="351806333"
-X-IronPort-AV: E=Sophos;i="6.01,167,1684825200"; 
-   d="scan'208";a="351806333"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2023 19:45:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10755"; a="787232211"
-X-IronPort-AV: E=Sophos;i="6.01,167,1684825200"; 
-   d="scan'208";a="787232211"
-Received: from lkp-server01.sh.intel.com (HELO 783282924a45) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 28 Jun 2023 19:45:06 -0700
-Received: from kbuild by 783282924a45 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qEheb-000DiD-03;
-        Thu, 29 Jun 2023 02:45:05 +0000
-Date:   Thu, 29 Jun 2023 10:44:21 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
-        Chris Mason <chris.mason@fusionio.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@meta.com,
-        linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: Re: [PATCH v4 3/8] fscrypt: split setup_per_mode_enc_key()
-Message-ID: <202306291013.yc7R9Rb7-lkp@intel.com>
-References: <0ba2cb228aa367aea1442b8f1433f229040fe8dd.1687988119.git.sweettea-kernel@dorminy.me>
+        Thu, 29 Jun 2023 06:03:22 -0400
+Received: from mail.nsr.re.kr (unknown [210.104.33.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 290BCA2;
+        Thu, 29 Jun 2023 03:01:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; s=LIY0OQ3MUMW6182UNI14; d=nsr.re.kr; t=1688032763; c=relaxed/relaxed; h=content-type:date:from:message-id:mime-version:subject:to; bh=Zafm6bhK5+g2pK+OZH6WFKiywi+VCeOoYHGecdFYKnw=; b=aEKRcS33y5MRO4r7i3L8Qk9RgJ4CNG5NED3OSgsQG7NhpbA8b16V2nb9+1gzJ16punKh6SG8mWIzGpqza8YsZb2WBFSC/3ak9OSutv/7g57MGn/DsuuJTAxYOXNPfH1rYSc0jlaQ7l3xh3MtMytZIAen9PlXWq9b5ndf34A3rowFBo+UqMdceMZBhjn4qnpybwFOTMGegYu8fke65tNFB6z7jFZ8cPNB34ETxsuuzBayOVLhT5xwIn+2x/Pr/50vkPEp0LtvnxZWMK8RO4JcMdr3NigSCTmi9N3JrP5DWzP/4/GLNPVrAFjLMIrG/QlWkwDXTngXq/2azBVQtMGnQw==
+Received: from 210.104.33.70 (nsr.re.kr)
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128 bits))
+        by mail.nsr.re.kr with SMTP; Thu, 29 Jun 2023 18:59:08 +0900
+Received: from 192.168.155.188 ([192.168.155.188])
+          by mail.nsr.re.kr (Crinity Message Backbone-7.0.1) with SMTP ID 209;
+          Thu, 29 Jun 2023 19:01:14 +0900 (KST)
+From:   Dongsoo Lee <letrhee@nsr.re.kr>
+To:     'Eric Biggers' <ebiggers@kernel.org>
+Cc:     'Herbert Xu' <herbert@gondor.apana.org.au>,
+        "'David S. Miller'" <davem@davemloft.net>,
+        'Jens Axboe' <axboe@kernel.dk>,
+        "'Theodore Y. Ts'o'" <tytso@mit.edu>,
+        'Jaegeuk Kim' <jaegeuk@kernel.org>,
+        linux-crypto@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230626084703.907331-1-letrhee@nsr.re.kr> <20230626084703.907331-5-letrhee@nsr.re.kr> <20230628063830.GA7920@sol.localdomain>
+In-Reply-To: <20230628063830.GA7920@sol.localdomain>
+Subject: RE: [PATCH v3 4/4] fscrypt: Add LEA-256-XTS, LEA-256-CTS support
+Date:   Thu, 29 Jun 2023 19:01:11 +0900
+Message-ID: <000901d9aa70$a228c420$e67a4c60$@nsr.re.kr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0ba2cb228aa367aea1442b8f1433f229040fe8dd.1687988119.git.sweettea-kernel@dorminy.me>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: ko
+Thread-Index: AQHHxDRlmstc7qqNSJFY4M8BkkyX4gFqzZG4AcdR3rmvq8ZzIA==
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNPARSEABLE_RELAY autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hi Sweet,
+On Tue, Jun 27, 2023 at 23:38:30 -0700, Eric Biggers wrote:
+>On Mon, Jun 26, 2023 at 05:47:03PM +0900, Dongsoo Lee wrote:
+>> when SIMD instructions are available, it performs even faster.
+>
+>This will only be true once there is actually an applicable implementation
+of
+>LEA-XTS and LEA-CTS using SIMD instructions included in the kernel.
+>
+>Perhaps it is your plan to go through and accelerate LEA-XTS and LEA-CTS
+for the
+>common CPU architectures.  However, it is not included in this patchset
+yet, so
+>it should not be claimed in the documentation yet.
+>
+>> Particularly, it outperforms AES when the dedicated crypto
+>> +instructions for AES are unavailable, regardless of the presence of SIMD
+>> +instructions. However, it is not recommended to use LEA unless there is
+>> +a clear reason (such as the absence of dedicated crypto instructions for
+>> +AES or a mandatory requirement) to do so. Also, to enable LEA support,
+>> +it needs to be enabled in the kernel crypto API.
+>
+>I think I'd prefer that you omit the mention of the "absence of dedicated
+crypto
+>instructions" use case for now.  fscrypt already supports another algorithm
+that
+>fulfills exactly that use case (Adiantum), and that algorithm already has
+>optimized implementations for arm32, arm64, and x86_64.  LEA does not have
+that
+>yet.  So it does not really bring anything new to the table.  I'm also
+unsure it
+>would be appropriate to recommend a "lightweight" cipher at this point...
+>
+>That would leave "mandatory requirement" as the rationale, at least for
+now,
+>similar to SM4.
+>
+>- Eric
 
-kernel test robot noticed the following build warnings:
+As you might expect, we are working on a SIMD implementation of LEA in a
+general-purpose CPU environment. However, since no such implementation has
+been submitted yet, we agree that it's right to leave it out for now.
 
-[auto build test WARNING on 00bc86ea26ac88043f48916c273afc9fbb40c73f]
+In the next version, we would like to change the description to the
+following:
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Sweet-Tea-Dorminy/fscrypt-move-inline-crypt-decision-to-info-setup/20230629-083929
-base:   00bc86ea26ac88043f48916c273afc9fbb40c73f
-patch link:    https://lore.kernel.org/r/0ba2cb228aa367aea1442b8f1433f229040fe8dd.1687988119.git.sweettea-kernel%40dorminy.me
-patch subject: [PATCH v4 3/8] fscrypt: split setup_per_mode_enc_key()
-config: um-randconfig-r014-20230628 (https://download.01.org/0day-ci/archive/20230629/202306291013.yc7R9Rb7-lkp@intel.com/config)
-compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
-reproduce: (https://download.01.org/0day-ci/archive/20230629/202306291013.yc7R9Rb7-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202306291013.yc7R9Rb7-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from fs/crypto/keysetup.c:14:
-   In file included from fs/crypto/fscrypt_private.h:17:
-   In file included from include/linux/blk-crypto.h:72:
-   In file included from include/linux/blk_types.h:10:
-   In file included from include/linux/bvec.h:10:
-   In file included from include/linux/highmem.h:12:
-   In file included from include/linux/hardirq.h:11:
-   In file included from arch/um/include/asm/hardirq.h:5:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/um/include/asm/io.h:24:
-   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __raw_readb(PCI_IOBASE + addr);
-                             ~~~~~~~~~~ ^
-   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
-                                                           ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
-   #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
-                                                     ^
-   In file included from fs/crypto/keysetup.c:14:
-   In file included from fs/crypto/fscrypt_private.h:17:
-   In file included from include/linux/blk-crypto.h:72:
-   In file included from include/linux/blk_types.h:10:
-   In file included from include/linux/bvec.h:10:
-   In file included from include/linux/highmem.h:12:
-   In file included from include/linux/hardirq.h:11:
-   In file included from arch/um/include/asm/hardirq.h:5:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/um/include/asm/io.h:24:
-   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
-                                                           ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
-   #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
-                                                     ^
-   In file included from fs/crypto/keysetup.c:14:
-   In file included from fs/crypto/fscrypt_private.h:17:
-   In file included from include/linux/blk-crypto.h:72:
-   In file included from include/linux/blk_types.h:10:
-   In file included from include/linux/bvec.h:10:
-   In file included from include/linux/highmem.h:12:
-   In file included from include/linux/hardirq.h:11:
-   In file included from arch/um/include/asm/hardirq.h:5:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/um/include/asm/io.h:24:
-   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writeb(value, PCI_IOBASE + addr);
-                               ~~~~~~~~~~ ^
-   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
-                                                         ~~~~~~~~~~ ^
-   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
-                                                         ~~~~~~~~~~ ^
-   include/asm-generic/io.h:692:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           readsb(PCI_IOBASE + addr, buffer, count);
-                  ~~~~~~~~~~ ^
-   include/asm-generic/io.h:700:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           readsw(PCI_IOBASE + addr, buffer, count);
-                  ~~~~~~~~~~ ^
-   include/asm-generic/io.h:708:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           readsl(PCI_IOBASE + addr, buffer, count);
-                  ~~~~~~~~~~ ^
-   include/asm-generic/io.h:717:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           writesb(PCI_IOBASE + addr, buffer, count);
-                   ~~~~~~~~~~ ^
-   include/asm-generic/io.h:726:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           writesw(PCI_IOBASE + addr, buffer, count);
-                   ~~~~~~~~~~ ^
-   include/asm-generic/io.h:735:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           writesl(PCI_IOBASE + addr, buffer, count);
-                   ~~~~~~~~~~ ^
->> fs/crypto/keysetup.c:203:2: warning: variable 'err' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
-           if (fscrypt_is_key_prepared(prep_key, ci))
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler.h:55:28: note: expanded from macro 'if'
-   #define if(cond, ...) if ( __trace_if_var( !!(cond , ## __VA_ARGS__) ) )
-                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler.h:57:30: note: expanded from macro '__trace_if_var'
-   #define __trace_if_var(cond) (__builtin_constant_p(cond) ? (cond) : __trace_if_value(cond))
-                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   fs/crypto/keysetup.c:225:9: note: uninitialized use occurs here
-           return err;
-                  ^~~
-   fs/crypto/keysetup.c:203:2: note: remove the 'if' if its condition is always false
-           if (fscrypt_is_key_prepared(prep_key, ci))
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler.h:55:23: note: expanded from macro 'if'
-   #define if(cond, ...) if ( __trace_if_var( !!(cond , ## __VA_ARGS__) ) )
-                         ^
-   fs/crypto/keysetup.c:199:9: note: initialize the variable 'err' to silence this warning
-           int err;
-                  ^
-                   = 0
-   13 warnings generated.
-
-
-vim +203 fs/crypto/keysetup.c
-
-8094c3ceb21ad93 fs/crypto/keyinfo.c  Eric Biggers      2019-01-06  186  
-7b4d2231643f5a9 fs/crypto/keysetup.c Sweet Tea Dorminy 2023-06-28  187  static int setup_new_mode_prepared_key(struct fscrypt_master_key *mk,
-7b4d2231643f5a9 fs/crypto/keysetup.c Sweet Tea Dorminy 2023-06-28  188  				       struct fscrypt_prepared_key *prep_key,
-7b4d2231643f5a9 fs/crypto/keysetup.c Sweet Tea Dorminy 2023-06-28  189  				       const struct fscrypt_info *ci,
-b103fb7653fff09 fs/crypto/keysetup.c Eric Biggers      2019-10-24  190  				       u8 hkdf_context, bool include_fs_uuid)
-5dae460c2292dbb fs/crypto/keysetup.c Eric Biggers      2019-08-04  191  {
-b103fb7653fff09 fs/crypto/keysetup.c Eric Biggers      2019-10-24  192  	const struct inode *inode = ci->ci_inode;
-b103fb7653fff09 fs/crypto/keysetup.c Eric Biggers      2019-10-24  193  	const struct super_block *sb = inode->i_sb;
-5dae460c2292dbb fs/crypto/keysetup.c Eric Biggers      2019-08-04  194  	struct fscrypt_mode *mode = ci->ci_mode;
-85af90e57ce9697 fs/crypto/keysetup.c Eric Biggers      2019-12-09  195  	const u8 mode_num = mode - fscrypt_modes;
-5dae460c2292dbb fs/crypto/keysetup.c Eric Biggers      2019-08-04  196  	u8 mode_key[FSCRYPT_MAX_KEY_SIZE];
-b103fb7653fff09 fs/crypto/keysetup.c Eric Biggers      2019-10-24  197  	u8 hkdf_info[sizeof(mode_num) + sizeof(sb->s_uuid)];
-b103fb7653fff09 fs/crypto/keysetup.c Eric Biggers      2019-10-24  198  	unsigned int hkdf_infolen = 0;
-5dae460c2292dbb fs/crypto/keysetup.c Eric Biggers      2019-08-04  199  	int err;
-5dae460c2292dbb fs/crypto/keysetup.c Eric Biggers      2019-08-04  200  
-e3b1078bedd323d fs/crypto/keysetup.c Eric Biggers      2020-05-15  201  	mutex_lock(&fscrypt_mode_key_setup_mutex);
-e3b1078bedd323d fs/crypto/keysetup.c Eric Biggers      2020-05-15  202  
-5fee36095cda45d fs/crypto/keysetup.c Satya Tangirala   2020-07-02 @203  	if (fscrypt_is_key_prepared(prep_key, ci))
-7b4d2231643f5a9 fs/crypto/keysetup.c Sweet Tea Dorminy 2023-06-28  204  		goto out_unlock;
-5dae460c2292dbb fs/crypto/keysetup.c Eric Biggers      2019-08-04  205  
-5dae460c2292dbb fs/crypto/keysetup.c Eric Biggers      2019-08-04  206  	BUILD_BUG_ON(sizeof(mode_num) != 1);
-b103fb7653fff09 fs/crypto/keysetup.c Eric Biggers      2019-10-24  207  	BUILD_BUG_ON(sizeof(sb->s_uuid) != 16);
-b103fb7653fff09 fs/crypto/keysetup.c Eric Biggers      2019-10-24  208  	BUILD_BUG_ON(sizeof(hkdf_info) != 17);
-b103fb7653fff09 fs/crypto/keysetup.c Eric Biggers      2019-10-24  209  	hkdf_info[hkdf_infolen++] = mode_num;
-b103fb7653fff09 fs/crypto/keysetup.c Eric Biggers      2019-10-24  210  	if (include_fs_uuid) {
-b103fb7653fff09 fs/crypto/keysetup.c Eric Biggers      2019-10-24  211  		memcpy(&hkdf_info[hkdf_infolen], &sb->s_uuid,
-b103fb7653fff09 fs/crypto/keysetup.c Eric Biggers      2019-10-24  212  		       sizeof(sb->s_uuid));
-b103fb7653fff09 fs/crypto/keysetup.c Eric Biggers      2019-10-24  213  		hkdf_infolen += sizeof(sb->s_uuid);
-b103fb7653fff09 fs/crypto/keysetup.c Eric Biggers      2019-10-24  214  	}
-5dae460c2292dbb fs/crypto/keysetup.c Eric Biggers      2019-08-04  215  	err = fscrypt_hkdf_expand(&mk->mk_secret.hkdf,
-b103fb7653fff09 fs/crypto/keysetup.c Eric Biggers      2019-10-24  216  				  hkdf_context, hkdf_info, hkdf_infolen,
-5dae460c2292dbb fs/crypto/keysetup.c Eric Biggers      2019-08-04  217  				  mode_key, mode->keysize);
-5dae460c2292dbb fs/crypto/keysetup.c Eric Biggers      2019-08-04  218  	if (err)
-e3b1078bedd323d fs/crypto/keysetup.c Eric Biggers      2020-05-15  219  		goto out_unlock;
-5fee36095cda45d fs/crypto/keysetup.c Satya Tangirala   2020-07-02  220  	err = fscrypt_prepare_key(prep_key, mode_key, ci);
-5dae460c2292dbb fs/crypto/keysetup.c Eric Biggers      2019-08-04  221  	memzero_explicit(mode_key, mode->keysize);
-7b4d2231643f5a9 fs/crypto/keysetup.c Sweet Tea Dorminy 2023-06-28  222  
-e3b1078bedd323d fs/crypto/keysetup.c Eric Biggers      2020-05-15  223  out_unlock:
-e3b1078bedd323d fs/crypto/keysetup.c Eric Biggers      2020-05-15  224  	mutex_unlock(&fscrypt_mode_key_setup_mutex);
-e3b1078bedd323d fs/crypto/keysetup.c Eric Biggers      2020-05-15  225  	return err;
-5dae460c2292dbb fs/crypto/keysetup.c Eric Biggers      2019-08-04  226  }
-5dae460c2292dbb fs/crypto/keysetup.c Eric Biggers      2019-08-04  227  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+LEA is a South Korean 128-bit block cipher (with 128/192/256-bit keys)
+included in the ISO/IEC 29192-2:2019 standard (Information security -
+Lightweight cryptography - Part 2: Block ciphers). If dedicated cipher
+instructions are available, or other options with performance benefits
+are available, using LEA is likely not a suitable choice. Therefore,
+it is not recommended to use LEA-256-XTS unless there is a clear reason
+to do so, such as if there is a mandate. Also, to enable LEA support,
+it needs to be enabled in the kernel crypto API.
