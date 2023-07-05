@@ -2,39 +2,39 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08C9E7489C8
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  5 Jul 2023 19:01:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02B81748E20
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  5 Jul 2023 21:41:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231654AbjGERBD (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 5 Jul 2023 13:01:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35276 "EHLO
+        id S232276AbjGETla (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 5 Jul 2023 15:41:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230260AbjGERBD (ORCPT
+        with ESMTP id S234341AbjGETlT (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 5 Jul 2023 13:01:03 -0400
-Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11E0410F7;
-        Wed,  5 Jul 2023 10:01:01 -0700 (PDT)
+        Wed, 5 Jul 2023 15:41:19 -0400
+Received: from box.fidei.email (box.fidei.email [71.19.144.250])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF5FB1722;
+        Wed,  5 Jul 2023 12:41:16 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 8C9FF8360F;
-        Wed,  5 Jul 2023 13:00:58 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id 1BFA08039F;
+        Wed,  5 Jul 2023 15:41:15 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1688576460; bh=lBXFkMhEVvPhHNKR/KJoWQ6+31Bh4WdU5NQjrrqppcc=;
+        t=1688586075; bh=caUDnwHuDB8gtDIIzW7Yulu7aWZkLMYtLW5jisJNwVs=;
         h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=RLY0duUPSqYIeRDqvpgYHKVL7vLKnwKTbgK32DhR4D+5b/jAkISDy4zA/I4AhZoU5
-         z5vPIKiKmpAZqUgqPaGzXDtpF/hS8CbwcMMoffOSksRwjW+asyxEcm7AdtpyEoS74J
-         brBfZepcMUau8huPY8lnkQzXPCgyjd+jm5YF3BG/6oEA9O18E/U9ozU48z18hwbdmh
-         vR2hzp4RusVGdSuPvDTrjEe0mNxbH2MMMWA6c73V4kk0Ua4LJ+uFzon+ORlbsiYpcz
-         +fSfhPx//SXDuvSC+/wcQt6ma3VRZD3xr5zA9eUUmJ2RaR7sq5EZOlr+PYq/gmxHU0
-         mTvnq/NlTPaAA==
-Message-ID: <8711baa8-0a8c-934e-8880-e1c611a6b350@dorminy.me>
-Date:   Wed, 5 Jul 2023 13:00:56 -0400
+        b=hacZ1SerRcqQFESQksTcFHQ2zlVtR/Gl7X/BrRetvzx51YPZAeTBNbDOMVcxXaxRT
+         Yot0zSoOCAjZoJlEpCuq1xqzSbPQ31jl8M63+Jf6GpSeAPi2SFGA2q48/hzS1geL1R
+         VPO0QW5Mcvwf6IywnNNarg4lz5X/vrX03E7I97yDTLtYdWMX7tfmbNwd2q+PhjcQAV
+         RVUW5VyF1tspXtHP1MdOfHivV44aYYSV7etmJwlEaz2QTOGxfOP1CU5VMiSXwmJAyg
+         Vdy/hbRwD99Kv5zg7qDgxZvNrRNfPjgLzMORoYbhk1TgLpd5VCmK9jGBYgoJdmYxRi
+         7Y1QTgw3XPzWw==
+Message-ID: <248eac32-96cc-eb2e-85da-422a8d75a376@dorminy.me>
+Date:   Wed, 5 Jul 2023 15:41:13 -0400
 MIME-Version: 1.0
 Subject: Re: [PATCH v1 00/12] fscrypt: add extent encryption
 Content-Language: en-US
-To:     Eric Biggers <ebiggers@kernel.org>, Neal Gompa <ngompa13@gmail.com>
+To:     Eric Biggers <ebiggers@kernel.org>
 Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
         "Theodore Y. Ts'o" <tytso@mit.edu>,
@@ -46,18 +46,14 @@ References: <cover.1687988246.git.sweettea-kernel@dorminy.me>
  <20230703181745.GA1194@sol.localdomain>
  <6a7d0d4a-9c79-e47d-7968-e508c266407d@dorminy.me>
  <20230704002854.GA860@sol.localdomain>
- <9c589884-d033-f277-58bf-735ba9120f14@dorminy.me>
- <CAEg-Je_zGBAgPLgpnjWbRwGLXNSpmor-mokZyMT6iSfF2121QQ@mail.gmail.com>
- <20230705162808.GA2003@sol.localdomain>
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-In-Reply-To: <20230705162808.GA2003@sol.localdomain>
+In-Reply-To: <20230704002854.GA860@sol.localdomain>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SBL_CSS,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: *
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -65,27 +61,74 @@ List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 
->> I like creating containers directly based on my host system for
->> development and destructive purposes. It saves space and is incredibly
->> useful.
+>>
+>> Here's a shot at elaboration of usecase more:
+>>
+>> On various machines, we currently have a btrfs filesystem containing various
+>> volumes/snapshots containing starting states for containers. The snapshots
+>> are generated by common snapshot images built centrally. The machines, as
+>> the scheduler requests, start and stop containers on those volumes.
+>>
+>> We want to be able to start a container on a snapshot/volume such that every
+>> write to the relevant snapshot/volume is using a per-container key, but we
+>> don't care about reads of the starting snapshot image being encrypted since
+>> the starting snapshot image is widely shared. When the container is stopped,
+>> no future different container (or human or host program) knows its key. This
+>> limits the data which could be lost to a malicious service/human on the host
+>> to only the volumes containing currently running containers.
+>>
+>> Some other folks envision having a base image encrypted with some per-vendor
+>> key. Then the machine is rekeyed with a per-machine key in perhaps the TPM
+>> to use for updates and logfiles. When a user is created, a snapshot of a
+>> base homedir forms the base of their user subvolume/directory, which is then
+>> rekeyed with a per-user key. When the user logs in, systemd-homedir or the
+>> like could load their per-user key for their user subvolume/directory.
+>>
+>> Since we don't care about encrypting the common image, we initially
+>> envisioned unencrypted snapshot images where we then turn on encryption and
+>> have mixed unenc/enc data. The other usecase, though, really needs key
+>> change so that everything's encrypted. And the argument that mixed unenc/enc
+>> data is not safe was compelling.
+>>
+>> Hope that helps?
 > 
-> A solution for that already exists.  It's called btrfs snapshots.  Which you
-> probably already know, since it's probably what you're using :-)
+> Maybe a dumb question: why aren't you just using overlayfs?  It's already
+> possible to use overlayfs with an fscrypt-encrypted upperdir and workdir.  When
+> creating a new container you can create a new directory and assign it an fscrypt
+> policy (with a per-container or per-user key or whatever that container wants),
+> and create two subdirectories 'upperdir' and 'workdir' in it.  Then just mount
+> an overlayfs with that upperdir and workdir, and lowerdir referring to the
+> starting rootfs.  Then use that overlayfs as the rootfs as the container.
 > 
-> Using overlayfs would simply mean that each container consists of an upper and
-> lower directory instead of a single directory.  Either or both could still be
-> btrfs subvolumes.  They could even be on the same subvolume.
+> Wouldn't that solve your use case exactly?  Is there a reason you really want to
+> create the container directly from a btrfs snapshot instead?
 
-This isn't a full response, still researching details of our setup and 
-whether overlayfs could work for us. But in re this particular usecase:
+After talking it over, nested containers/subvols don't work easily with 
+this scheme. Right now, one can make arbitrarily nested subvols inside 
+of subvols, so e.g. a container which only sees /subvol can make subvol 
+/subvol/nested without elevated permissions, and a container which only 
+sees /subvol/nested could make yet another nested subvol 
+/subvol/nested/foo/nested2, ad infinitum. There aren't afaik limits on 
+the recursive depth of subvols or containers, or limits on how close 
+they are in the directory tree.
 
-as I understand it, the lower layer for overlayfs is immutable. So if 
-you set up a container/VM image in this way with overlayfs, you end up 
-not being able to reclaim space from the original image, if e.g. you 
-uninstall or upgrade a package present in the original.
+This isn't purely theoretical; I learned today there are a couple of 
+workloads internally which run in a long-lived container on a subvol, 
+and spin up a bunch of short-lived containers on shortlived subvols 
+inside the long-lived container/subvol.
 
-This wastes disk space, and, if you want to migrate that subvol over to 
-another machine/disk via btrfs send/receive, wastes network/CPU. 
-Hopefully not a lot -- hopefully your container image is mostly 
-immutable -- but for long-lived VMs like I usually use personally it 
-could be basically the whole VM image wasted.
+I don't think the overlayfs scheme works with this. From the point of 
+view of the container overlayfs would be presenting a wholly encrypted 
+filesystem (which is what we want). But from the container, even if we 
+plumbed through making a new subvol within, it'd be hard to create a new 
+overlayfs upper directory with a new key for a nested container, if dirs 
+had to have the same key as their parent dir unless that's unencrypted. 
+We'd need to allow the parent container to escape into an unencrypted 
+directory to make a new encrypted upperdir for the nested container, 
+which would defeat having the container only able to write to encrypted 
+locations. I can't come up with a way to make the overlayfs scheme work 
+with this, but maybe I don't know overlayfs well enough.
+
+A decidedly intriguing idea! Thanks
+
+Sweet Tea
