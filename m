@@ -2,186 +2,193 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EFB374BA12
-	for <lists+linux-fscrypt@lfdr.de>; Sat,  8 Jul 2023 01:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9438074BC01
+	for <lists+linux-fscrypt@lfdr.de>; Sat,  8 Jul 2023 07:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229642AbjGGXhQ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 7 Jul 2023 19:37:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42438 "EHLO
+        id S232915AbjGHFhA (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sat, 8 Jul 2023 01:37:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjGGXhP (ORCPT
+        with ESMTP id S232903AbjGHFg6 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 7 Jul 2023 19:37:15 -0400
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCB3A210B;
-        Fri,  7 Jul 2023 16:37:14 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 53AC75C0092;
-        Fri,  7 Jul 2023 19:37:14 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Fri, 07 Jul 2023 19:37:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-        :content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1688773034; x=1688859434; bh=QF
-        KkZ42Oa0NCInHkVTSfJ7m2sKCTgrV9e/fb7epwRDE=; b=SY12sPDICkuBHYMNoi
-        RTTNO67APMrsD8pWiyrfjBzaBDzGoVoRUDiIdCwd7TrziOyGBFDvlvO9AkSZ1nLT
-        SA3EMdQ5R72dkfTAYOpwHaJ3XX6nJkwFYrQzKiNRFqmIqxpXZLglK8Y38R+u0wsB
-        uWr0nM29m09wxb91qXPnSqEnR6lrDxQOFkXLKJj831Yq98MNmMxBcL9ed+FxxJKv
-        XM13DtH+9ap2tjQJvHBrW9a6I4heCR/Tv6FBddF+H+BwuNIl1qshmrCbBUODtXr3
-        whpCOTqzylHxAEcX82MN6a1oyb8VFhUH7qzTLkakDKGvJovdIrItouuONZ0G6iO8
-        aU4g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1688773034; x=1688859434; bh=QFKkZ42Oa0NCI
-        nHkVTSfJ7m2sKCTgrV9e/fb7epwRDE=; b=Y+kPQCKJWa5Xgo+DeVO6QO43CqVn9
-        EDvdATyAe8eO36OIgctUp10nDQxh+Z+At1824Qy6XFtDyeqK0fQqYeWBGG1zraAt
-        81D8g272vwQMKRn3V+tbTMCVI+gDSkmVRjn3VC5qIPbLwO8J7gU4sQoyeV2D3IPb
-        S2ps3yxExBuWZMWFJ4+qk2ISgpUvWTYuBUQxTXsfaWr/W1pySFsl2Grpq7JL3Liq
-        KAY8puNOohZ6zcZn4++3UVXPUJgU03fV+AKQDtuCTFZ5qSq/3yYBqJ6SqxrDvGgA
-        /3lvnTo6W+RzkexGY3xMMq6068s7wMXsh6EuXuBrbIVvHoFlCMfjjpJig==
-X-ME-Sender: <xms:qqGoZI9hz1wCQWdMK_OecxugsRiBRGds8KnUylbqxNXrGv1mGT0JlQ>
-    <xme:qqGoZAsgvQ_bG_ShSWKTnDY34yn86u3R28l3sqC4fcP7rS52_gwpBsM80VSYMmYwt
-    COZAuOO7959S3pXWnw>
-X-ME-Received: <xmr:qqGoZODe1Kk26K--3AhC_rfLKfyGxyNAfoDjHCPrvxeVsglEpFcIITL07Z-ZhaP7TzKixoQjrWjKBY0pMUwhnOvX61s>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrvddvgddvhecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhs
-    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepke
-    dvkeffjeellefhveehvdejudfhjedthfdvveeiieeiudfguefgtdejgfefleejnecuvehl
-    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessg
-    hurhdrihho
-X-ME-Proxy: <xmx:qqGoZIeRQ4ugkfyFCt56x03xBBuKOKGbQOCceTxMwu4G15q5GzfOeA>
-    <xmx:qqGoZNMEPHc9xxM68ccwK5VbsJLJX6mmknmva_mv5ZO6qUxz0FPh6Q>
-    <xmx:qqGoZCk8Tp5e6uGBBhQGnIZs5579mESg17XoGURJDtUE8_s87AC3ow>
-    <xmx:qqGoZAoijJEeq0829sI6dXQj0cKHE4mwmvymcd-V6DaNDkRHE5HHfQ>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 7 Jul 2023 19:37:13 -0400 (EDT)
-Date:   Fri, 7 Jul 2023 16:36:05 -0700
-From:   Boris Burkov <boris@bur.io>
-To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@meta.com,
-        linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        Omar Sandoval <osandov@osandov.com>
-Subject: Re: [PATCH v1 01/17] btrfs: disable various operations on encrypted
- inodes
-Message-ID: <20230707233605.GB2579580@zen>
-References: <cover.1687988380.git.sweettea-kernel@dorminy.me>
- <e7785ffe237e581a7ba7e45d2724fca4d8fa1470.1687988380.git.sweettea-kernel@dorminy.me>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e7785ffe237e581a7ba7e45d2724fca4d8fa1470.1687988380.git.sweettea-kernel@dorminy.me>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Sat, 8 Jul 2023 01:36:58 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BC6E1FF6
+        for <linux-fscrypt@vger.kernel.org>; Fri,  7 Jul 2023 22:36:56 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id af79cd13be357-767b6d6bb87so83724085a.2
+        for <linux-fscrypt@vger.kernel.org>; Fri, 07 Jul 2023 22:36:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1688794615; x=1691386615;
+        h=in-reply-to:references:subject:cc:to:from:message-id:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=/6X+3H1ljfy7IjsbLjk8teqFst7rLlyJv0xIACsaZ2M=;
+        b=YTtOX0w+o9n/CPVzXDv1lowkOGTsW9kVS4l1u0GlN+P4+Pe6TRMgaq+o7QEeDp1B1f
+         7vM6U77MpQ9uceQKGo0/a+NnWjsimwHU6ohZpZeFLkemHDBGS0frgwzmdlyfUOOBAbxU
+         ET+4I+z7GIBzMBcsWS/933I401edCFOFcHQNgUzaGht1OEi7TIAKdIBtTQz9Kzgb2tiU
+         tw5cc4FxstdLt4ipYhJ9ZMkYCPe29jz+lLQa4scUKCUFk/nlfJ+gnP1h7/hQnqFLSwvv
+         /cA8qPKZNBaudKaHEGn+LQXo3rJzTpV5iLzFhKIQjljhwcsODwxFNmwiIbD6qae1PQVx
+         1cdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688794615; x=1691386615;
+        h=in-reply-to:references:subject:cc:to:from:message-id:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/6X+3H1ljfy7IjsbLjk8teqFst7rLlyJv0xIACsaZ2M=;
+        b=fBITK0OYlBZpx3FllE2S1gGU66YTQoufOSiSwXfKwvfaMewDKzvBJ2k+JbfnDK1dEY
+         MYMgmv+VU9c93VFcuBOoToi2GkcAAx+CwM72DadKoszep4u/YddvYU2Au8SpVfydWs4S
+         8HJShu1Gwsv7vh1c5Zlo+5wl1Ky5lB0Vo4karyWGm/UmxP65U+eycG+K8FdfLmQ/1TIf
+         D6yT0bBvONrTGAMZkJHiKcrK/7etHGNGnVp03uHmc+RPbn+GwQmLsSFbeHNuD98kOTT6
+         qIC97lg1oa0fbVUvIHBnOBPJpCJVJQTk6/XzQ/TBbbRiyiOePcQV2//yImN/Cpu5WhFo
+         mJ+A==
+X-Gm-Message-State: ABy/qLbZxj/DiVXS6n82WSN0zrXUk0dkmKlP1Arv5Q89cys7BMBho/yg
+        MpMgttLewiBcbZAmBzqqu6Iy
+X-Google-Smtp-Source: APBJJlG+a1EKnj+jvMEDInNdvc1r1W/hz+0/12Nwm+mpbZz0DyPSVNjr9MqOf37m7Bq8n/2COLAfQA==
+X-Received: by 2002:a05:620a:4051:b0:767:923:48d8 with SMTP id i17-20020a05620a405100b00767092348d8mr6721872qko.27.1688794615250;
+        Fri, 07 Jul 2023 22:36:55 -0700 (PDT)
+Received: from localhost ([70.22.175.108])
+        by smtp.gmail.com with ESMTPSA id c11-20020ae9e20b000000b0075cebaa1540sm2479491qkc.58.2023.07.07.22.36.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Jul 2023 22:36:54 -0700 (PDT)
+Date:   Sat, 08 Jul 2023 01:36:54 -0400
+Message-ID: <b460c0317dfbd5b4668015e104ea3e92.paul@paul-moore.com>
+From:   Paul Moore <paul@paul-moore.com>
+To:     Fan Wu <wufan@linux.microsoft.com>, corbet@lwn.net,
+        zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com,
+        tytso@mit.edu, ebiggers@kernel.org, axboe@kernel.dk,
+        agk@redhat.com, snitzer@kernel.org, eparis@redhat.com
+Cc:     linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
+        dm-devel@redhat.com, audit@vger.kernel.org,
+        roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
+        Deven Bowers <deven.desai@linux.microsoft.com>,
+        Fan Wu <wufan@linux.microsoft.com>
+Subject: Re: [PATCH RFC v10 1/17] security: add ipe lsm
+References: <1687986571-16823-2-git-send-email-wufan@linux.microsoft.com>
+In-Reply-To: <1687986571-16823-2-git-send-email-wufan@linux.microsoft.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, Jun 28, 2023 at 08:35:24PM -0400, Sweet Tea Dorminy wrote:
-> From: Omar Sandoval <osandov@osandov.com>
+On Jun 28, 2023 Fan Wu <wufan@linux.microsoft.com> wrote:
 > 
-> Initially, only normal data extents, using the normal (non-direct) IO
-> path, will be encrypted. This change forbids various other bits:
-> - allows reflinking only if both inodes have the same encryption status
-> - disables direct IO on encrypted inodes
-> - disable inline data on encrypted inodes
+> Integrity Policy Enforcement (IPE) is an LSM that provides an
+> complimentary approach to Mandatory Access Control than existing LSMs
+> today.
 > 
-> Signed-off-by: Omar Sandoval <osandov@osandov.com>
-> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+> Existing LSMs have centered around the concept of access to a resource
+> should be controlled by the current user's credentials. IPE's approach,
+> is that access to a resource should be controlled by the system's trust
+> of a current resource.
+> 
+> The basis of this approach is defining a global policy to specify which
+> resource can be trusted.
+> 
+> Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
+> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
 > ---
->  fs/btrfs/file.c    | 4 ++--
->  fs/btrfs/inode.c   | 3 ++-
->  fs/btrfs/reflink.c | 7 +++++++
->  3 files changed, 11 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> index 392bc7d512a0..354962a7dd72 100644
-> --- a/fs/btrfs/file.c
-> +++ b/fs/btrfs/file.c
-> @@ -1502,7 +1502,7 @@ static ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
->  		goto relock;
->  	}
->  
-> -	if (check_direct_IO(fs_info, from, pos)) {
-> +	if (IS_ENCRYPTED(inode) || check_direct_IO(fs_info, from, pos)) {
->  		btrfs_inode_unlock(BTRFS_I(inode), ilock_flags);
->  		goto buffered;
->  	}
-> @@ -3741,7 +3741,7 @@ static ssize_t btrfs_direct_read(struct kiocb *iocb, struct iov_iter *to)
->  	ssize_t read = 0;
->  	ssize_t ret;
->  
-> -	if (fsverity_active(inode))
-> +	if (IS_ENCRYPTED(inode) || fsverity_active(inode))
+>  MAINTAINERS           |  7 +++++++
+>  security/Kconfig      | 11 ++++++-----
+>  security/Makefile     |  1 +
+>  security/ipe/Kconfig  | 17 +++++++++++++++++
+>  security/ipe/Makefile | 10 ++++++++++
+>  security/ipe/ipe.c    | 37 +++++++++++++++++++++++++++++++++++++
+>  security/ipe/ipe.h    | 16 ++++++++++++++++
+>  7 files changed, 94 insertions(+), 5 deletions(-)
+>  create mode 100644 security/ipe/Kconfig
+>  create mode 100644 security/ipe/Makefile
+>  create mode 100644 security/ipe/ipe.c
+>  create mode 100644 security/ipe/ipe.h
 
-What's different about fscrypt vs fsverity that makes the inode flag a
-good check for encryption while verity relies on the presence of the
-extra context metadata?
+...
 
-Is the enable model not subject to the same race where S_VERITY gets set
-ahead of actually storing the verity info/item?
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index a82795114ad4..ad00887d38ea 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -10278,6 +10278,13 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git
+>  F:	security/integrity/
+>  F:	security/integrity/ima/
+>  
+> +INTEGRITY POLICY ENFORCEMENT (IPE)
+> +M:	Fan Wu <wufan@linux.microsoft.com>
+> +L:	linux-security-module@vger.kernel.org
+> +S:	Supported
+> +T:	git git://github.com/microsoft/ipe.git
 
-I think it's fine for these "skip" cases, but I imagine if we have cases
-of "I want a fully ready encrypted file" the verity-style check could be
-better?
+Using the raw git protocol doesn't seem to work with GH, I think you
+need to refernce the git/https URL:
 
->  		return 0;
->  
->  	if (check_direct_read(btrfs_sb(inode->i_sb), to, iocb->ki_pos))
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index dbbb67293e34..48eadc4f187f 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -630,7 +630,8 @@ static noinline int cow_file_range_inline(struct btrfs_inode *inode, u64 size,
->  	 * compressed) data fits in a leaf and the configured maximum inline
->  	 * size.
->  	 */
-> -	if (size < i_size_read(&inode->vfs_inode) ||
-> +	if (IS_ENCRYPTED(&inode->vfs_inode) ||
-> +	    size < i_size_read(&inode->vfs_inode) ||
->  	    size > fs_info->sectorsize ||
->  	    data_len > BTRFS_MAX_INLINE_DATA_SIZE(fs_info) ||
->  	    data_len > fs_info->max_inline)
-> diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
-> index 0474bbe39da7..ad722f495c9b 100644
-> --- a/fs/btrfs/reflink.c
-> +++ b/fs/btrfs/reflink.c
-> @@ -1,6 +1,7 @@
->  // SPDX-License-Identifier: GPL-2.0
->  
->  #include <linux/blkdev.h>
-> +#include <linux/fscrypt.h>
->  #include <linux/iversion.h>
->  #include "ctree.h"
->  #include "fs.h"
-> @@ -811,6 +812,12 @@ static int btrfs_remap_file_range_prep(struct file *file_in, loff_t pos_in,
->  		ASSERT(inode_in->i_sb == inode_out->i_sb);
->  	}
->  
-> +	/*
-> +	 * Can only reflink encrypted files if both files are encrypted.
-> +	 */
-> +	if (IS_ENCRYPTED(inode_in) != IS_ENCRYPTED(inode_out))
-> +		return -EINVAL;
+ https://github.com/microsoft/ipe.git
+
+> +F:	security/ipe/
 > +
->  	/* Don't make the dst file partly checksummed */
->  	if ((BTRFS_I(inode_in)->flags & BTRFS_INODE_NODATASUM) !=
->  	    (BTRFS_I(inode_out)->flags & BTRFS_INODE_NODATASUM)) {
-> -- 
-> 2.40.1
-> 
+>  INTEL 810/815 FRAMEBUFFER DRIVER
+>  M:	Antonino Daplas <adaplas@gmail.com>
+>  L:	linux-fbdev@vger.kernel.org
+> diff --git a/security/Kconfig b/security/Kconfig
+> index 97abeb9b9a19..daa4626ea99c 100644
+> --- a/security/Kconfig
+> +++ b/security/Kconfig
+> @@ -202,6 +202,7 @@ source "security/yama/Kconfig"
+>  source "security/safesetid/Kconfig"
+>  source "security/lockdown/Kconfig"
+>  source "security/landlock/Kconfig"
+> +source "security/ipe/Kconfig"
+>  
+>  source "security/integrity/Kconfig"
+>  
+> @@ -241,11 +242,11 @@ endchoice
+>  
+>  config LSM
+>  	string "Ordered list of enabled LSMs"
+> -	default "landlock,lockdown,yama,loadpin,safesetid,smack,selinux,tomoyo,apparmor,bpf" if DEFAULT_SECURITY_SMACK
+> -	default "landlock,lockdown,yama,loadpin,safesetid,apparmor,selinux,smack,tomoyo,bpf" if DEFAULT_SECURITY_APPARMOR
+> -	default "landlock,lockdown,yama,loadpin,safesetid,tomoyo,bpf" if DEFAULT_SECURITY_TOMOYO
+> -	default "landlock,lockdown,yama,loadpin,safesetid,bpf" if DEFAULT_SECURITY_DAC
+> -	default "landlock,lockdown,yama,loadpin,safesetid,selinux,smack,tomoyo,apparmor,bpf"
+> +	default "landlock,lockdown,yama,loadpin,safesetid,smack,selinux,tomoyo,apparmor,bpf,ipe" if DEFAULT_SECURITY_SMACK
+> +	default "landlock,lockdown,yama,loadpin,safesetid,apparmor,selinux,smack,tomoyo,bpf,ipe" if DEFAULT_SECURITY_APPARMOR
+> +	default "landlock,lockdown,yama,loadpin,safesetid,tomoyo,bpf,ipe" if DEFAULT_SECURITY_TOMOYO
+> +	default "landlock,lockdown,yama,loadpin,safesetid,bpf,ipe" if DEFAULT_SECURITY_DAC
+> +	default "landlock,lockdown,yama,loadpin,safesetid,selinux,smack,tomoyo,apparmor,bpf,ipe"
+
+Generally speaking the BPF LSM should be the last entry in the LSM
+list to help prevent issues caused by a BPF LSM returning an improper
+error and shortcutting a LSM after it.
+
+>  	help
+>  	  A comma-separated list of LSMs, in initialization order.
+>  	  Any LSMs left off this list, except for those with order
+
+...
+
+> diff --git a/security/ipe/Makefile b/security/ipe/Makefile
+> new file mode 100644
+> index 000000000000..571648579991
+> --- /dev/null
+> +++ b/security/ipe/Makefile
+> @@ -0,0 +1,10 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +#
+> +# Copyright (C) Microsoft Corporation. All rights reserved.
+> +#
+> +# Makefile for building the IPE module as part of the kernel tree.
+> +#
+> +
+> +obj-$(CONFIG_SECURITY_IPE) += \
+> +	hooks.o \
+> +	ipe.o \
+
+It doesn't look like security/ipe/hook.c is included in this patch.
+
+It is important to ensure that each patch compiles after it is
+applied.
+
+--
+paul-moore.com
