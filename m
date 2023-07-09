@@ -2,33 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1DEF74C784
-	for <lists+linux-fscrypt@lfdr.de>; Sun,  9 Jul 2023 20:53:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC4374C785
+	for <lists+linux-fscrypt@lfdr.de>; Sun,  9 Jul 2023 20:53:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229564AbjGISxa (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        id S229624AbjGISxa (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
         Sun, 9 Jul 2023 14:53:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57556 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229865AbjGISxT (ORCPT
+        with ESMTP id S229648AbjGISxV (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sun, 9 Jul 2023 14:53:19 -0400
+        Sun, 9 Jul 2023 14:53:21 -0400
 Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BE33126;
-        Sun,  9 Jul 2023 11:53:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3976410C;
+        Sun,  9 Jul 2023 11:53:20 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id C817680AEE;
-        Sun,  9 Jul 2023 14:53:17 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id 9E5BA80B04;
+        Sun,  9 Jul 2023 14:53:19 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1688928798; bh=zpbsNmNWpCCseiP3oLkRBDQESuU4ORz8TCsKQNmW/kg=;
+        t=1688928800; bh=XorauFcYszE4NtmB+tgCalkvH3zKdP0cFzAea5tR7hA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pKRJFe80JvE99lqxp/aeFNGrlokhxMifiCSuHOWw+MnNMJE6GaHvYAgtax10XG0Xw
-         g8eZJBGkIZuip0V9OIburXzEFIHwXzIYfzZ/pp00ttpXb5FcEtNe4kYoyeJzURGit0
-         ZaL2DxLEqDAwh3hu+Qam6FPOCLlsZ81R9oIS4DbFkD3GFLM+aIGvlsu+xo3Dtv5hZ/
-         9ni0ztdl7Rdeqn7mvboDlTqa6oQlcq30Q46DnrXdpXLeTiZT8e1RVRl8jjx2YeTNAf
-         TGm/V1nGs3QQ+41jGB6JbLeVRBCKZcfee0e3CUK2bRzoVfEmBR6pp2m/QVOdUds7gm
-         k5f+aKZ7wCEug==
+        b=UjrUgzmAOBvcNyVuNB/dZLDnZu8PhBmjJKtXUuZn6ICEN8ILVDHjXSLE1nyGIsOXi
+         0hgHUHioIQR74yas869hjnBxciuFGxsoaJHBI/fCx8A3M7IcG258yAkU0NhwNFpmA2
+         0G7WpkVSjazBe9bEULuw1CGZgNq6i+NEi6urtT1Zpqj6KRdvfLBzHETm5zPlqFg7eA
+         JcUlXPRHrawsqX9kQY6cl0hf9uoBar+qLwP3ap6fRqGT99YSYZDwKLRWrStxPaax2D
+         npDFf6I3TO1mTPDpWLoqsFjFWQ01rVQaQZ8aBy6HOz4NN/rTMup5R+4CyFLkFF1ZGr
+         2Wfe9RyoB95ig==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     "Theodore Y. Ts'o" <tytso@mit.edu>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
@@ -37,9 +37,9 @@ To:     "Theodore Y. Ts'o" <tytso@mit.edu>,
         David Sterba <dsterba@suse.com>, linux-fscrypt@vger.kernel.org,
         linux-btrfs@vger.kernel.org, kernel-team@meta.com
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH v5 2/8] fscrypt: split and rename setup_file_encryption_key()
-Date:   Sun,  9 Jul 2023 14:53:02 -0400
-Message-Id: <5f3575d9ac610dae879ec7545e1940ac0b953099.1688927423.git.sweettea-kernel@dorminy.me>
+Subject: [PATCH v5 3/8] fscrypt: split setup_per_mode_enc_key()
+Date:   Sun,  9 Jul 2023 14:53:03 -0400
+Message-Id: <6e759d93fbc1b7aab538d1ad6eb231def7b4ec8a.1688927423.git.sweettea-kernel@dorminy.me>
 In-Reply-To: <cover.1688927423.git.sweettea-kernel@dorminy.me>
 References: <cover.1688927423.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
@@ -55,150 +55,133 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-At present, setup_file_encryption_key() does several things: it finds
-and locks the master key, and then calls into the appropriate functions
-to setup the prepared key for the fscrypt_info. The code is clearer to
-follow if these functions are divided.
-
-Thus, move calling the appropriate file key setup function into a new
-fscrypt_setup_file_key() function. After the file key setup functions
-are moved, the remaining function can take a const fscrypt_info, and is
-renamed find_and_lock_master_key() to precisely describe its action.
+At present, setup_per_mode_enc_key() tries to find, within an array of
+mode keys in the master key, an already prepared key, and if it doesn't
+find a pre-prepared key, sets up a new one. This caching is not super
+clear, at least to me, and splitting this function makes it clearer.
 
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 ---
- fs/crypto/keysetup.c | 77 ++++++++++++++++++++++++++++++--------------
- 1 file changed, 52 insertions(+), 25 deletions(-)
+ fs/crypto/keysetup.c | 61 +++++++++++++++++++++++++++-----------------
+ 1 file changed, 37 insertions(+), 24 deletions(-)
 
 diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index b89c32ad19fb..727d473b6b03 100644
+index 727d473b6b03..06deac6f4487 100644
 --- a/fs/crypto/keysetup.c
 +++ b/fs/crypto/keysetup.c
-@@ -386,6 +386,43 @@ static int fscrypt_setup_v2_file_key(struct fscrypt_info *ci,
- 	return 0;
+@@ -184,34 +184,24 @@ int fscrypt_set_per_file_enc_key(struct fscrypt_info *ci, const u8 *raw_key)
+ 	return fscrypt_prepare_key(&ci->ci_enc_key, raw_key, ci);
  }
  
-+/*
-+ * Find or create the appropriate prepared key for an info.
-+ */
-+static int fscrypt_setup_file_key(struct fscrypt_info *ci,
+-static int setup_per_mode_enc_key(struct fscrypt_info *ci,
+-				  struct fscrypt_master_key *mk,
+-				  struct fscrypt_prepared_key *keys,
+-				  u8 hkdf_context, bool include_fs_uuid)
++static int setup_new_mode_prepared_key(struct fscrypt_master_key *mk,
++				       struct fscrypt_prepared_key *prep_key,
++				       const struct fscrypt_info *ci,
++				       u8 hkdf_context, bool include_fs_uuid)
+ {
+ 	const struct inode *inode = ci->ci_inode;
+ 	const struct super_block *sb = inode->i_sb;
+ 	struct fscrypt_mode *mode = ci->ci_mode;
+ 	const u8 mode_num = mode - fscrypt_modes;
+-	struct fscrypt_prepared_key *prep_key;
+ 	u8 mode_key[FSCRYPT_MAX_KEY_SIZE];
+ 	u8 hkdf_info[sizeof(mode_num) + sizeof(sb->s_uuid)];
+ 	unsigned int hkdf_infolen = 0;
+-	int err;
+-
+-	if (WARN_ON_ONCE(mode_num > FSCRYPT_MODE_MAX))
+-		return -EINVAL;
+-
+-	prep_key = &keys[mode_num];
+-	if (fscrypt_is_key_prepared(prep_key, ci)) {
+-		ci->ci_enc_key = *prep_key;
+-		return 0;
+-	}
++	int err = 0;
+ 
+ 	mutex_lock(&fscrypt_mode_key_setup_mutex);
+ 
+ 	if (fscrypt_is_key_prepared(prep_key, ci))
+-		goto done_unlock;
++		goto out_unlock;
+ 
+ 	BUILD_BUG_ON(sizeof(mode_num) != 1);
+ 	BUILD_BUG_ON(sizeof(sb->s_uuid) != 16);
+@@ -229,16 +219,39 @@ static int setup_per_mode_enc_key(struct fscrypt_info *ci,
+ 		goto out_unlock;
+ 	err = fscrypt_prepare_key(prep_key, mode_key, ci);
+ 	memzero_explicit(mode_key, mode->keysize);
+-	if (err)
+-		goto out_unlock;
+-done_unlock:
+-	ci->ci_enc_key = *prep_key;
+-	err = 0;
++
+ out_unlock:
+ 	mutex_unlock(&fscrypt_mode_key_setup_mutex);
+ 	return err;
+ }
+ 
++static int find_mode_prepared_key(struct fscrypt_info *ci,
 +				  struct fscrypt_master_key *mk,
-+				  bool need_dirhash_key)
++				  struct fscrypt_prepared_key *keys,
++				  u8 hkdf_context, bool include_fs_uuid)
 +{
++	struct fscrypt_mode *mode = ci->ci_mode;
++	const u8 mode_num = mode - fscrypt_modes;
++	struct fscrypt_prepared_key *prep_key;
 +	int err;
 +
-+	if (!mk) {
-+		if (ci->ci_policy.version != FSCRYPT_POLICY_V1)
-+			return -ENOKEY;
++	if (WARN_ON_ONCE(mode_num > FSCRYPT_MODE_MAX))
++		return -EINVAL;
 +
-+		/*
-+		 * As a legacy fallback for v1 policies, search for the key in
-+		 * the current task's subscribed keyrings too.  Don't move this
-+		 * to before the search of ->s_master_keys, since users
-+		 * shouldn't be able to override filesystem-level keys.
-+		 */
-+		return fscrypt_setup_v1_file_key_via_subscribed_keyrings(ci);
++	prep_key = &keys[mode_num];
++	if (fscrypt_is_key_prepared(prep_key, ci)) {
++		ci->ci_enc_key = *prep_key;
++		return 0;
 +	}
++	err = setup_new_mode_prepared_key(mk, prep_key, ci, hkdf_context,
++					  include_fs_uuid);
++	if (err)
++		return err;
 +
-+	switch (ci->ci_policy.version) {
-+	case FSCRYPT_POLICY_V1:
-+		err = fscrypt_setup_v1_file_key(ci, mk->mk_secret.raw);
-+		break;
-+	case FSCRYPT_POLICY_V2:
-+		err = fscrypt_setup_v2_file_key(ci, mk, need_dirhash_key);
-+		break;
-+	default:
-+		WARN_ON_ONCE(1);
-+		err = -EINVAL;
-+		break;
-+	}
-+	return err;
++	ci->ci_enc_key = *prep_key;
++	return 0;
 +}
 +
  /*
-  * Check whether the size of the given master key (@mk) is appropriate for the
-  * encryption settings which a particular file will use (@ci).
-@@ -426,7 +463,7 @@ static bool fscrypt_valid_master_key_size(const struct fscrypt_master_key *mk,
- }
- 
- /*
-- * Find the master key, then set up the inode's actual encryption key.
-+ * Find and lock the master key.
-  *
-  * If the master key is found in the filesystem-level keyring, then it is
-  * returned in *mk_ret with its semaphore read-locked.  This is needed to ensure
-@@ -434,9 +471,8 @@ static bool fscrypt_valid_master_key_size(const struct fscrypt_master_key *mk,
-  * multiple tasks may race to create an fscrypt_info for the same inode), and to
-  * synchronize the master key being removed with a new inode starting to use it.
-  */
--static int setup_file_encryption_key(struct fscrypt_info *ci,
--				     bool need_dirhash_key,
--				     struct fscrypt_master_key **mk_ret)
-+static int find_and_lock_master_key(const struct fscrypt_info *ci,
-+				    struct fscrypt_master_key **mk_ret)
+  * Derive a SipHash key from the given fscrypt master key and the given
+  * application-specific information string.
+@@ -294,7 +307,7 @@ static int fscrypt_setup_iv_ino_lblk_32_key(struct fscrypt_info *ci,
  {
- 	struct super_block *sb = ci->ci_inode->i_sb;
- 	struct fscrypt_key_specifier mk_spec;
-@@ -466,17 +502,19 @@ static int setup_file_encryption_key(struct fscrypt_info *ci,
- 			mk = fscrypt_find_master_key(sb, &mk_spec);
- 		}
- 	}
-+
- 	if (unlikely(!mk)) {
- 		if (ci->ci_policy.version != FSCRYPT_POLICY_V1)
- 			return -ENOKEY;
+ 	int err;
  
- 		/*
--		 * As a legacy fallback for v1 policies, search for the key in
--		 * the current task's subscribed keyrings too.  Don't move this
--		 * to before the search of ->s_master_keys, since users
--		 * shouldn't be able to override filesystem-level keys.
-+		 * This might be the case of a v1 policy using a process
-+		 * subscribed keyring to get the key, so there may not be
-+		 * a relevant master key.
+-	err = setup_per_mode_enc_key(ci, mk, mk->mk_iv_ino_lblk_32_keys,
++	err = find_mode_prepared_key(ci, mk, mk->mk_iv_ino_lblk_32_keys,
+ 				     HKDF_CONTEXT_IV_INO_LBLK_32_KEY, true);
+ 	if (err)
+ 		return err;
+@@ -344,7 +357,7 @@ static int fscrypt_setup_v2_file_key(struct fscrypt_info *ci,
+ 		 * encryption key.  This ensures that the master key is
+ 		 * consistently used only for HKDF, avoiding key reuse issues.
  		 */
--		return fscrypt_setup_v1_file_key_via_subscribed_keyrings(ci);
-+
-+		*mk_ret = NULL;
-+		return 0;
- 	}
- 	down_read(&mk->mk_sem);
- 
-@@ -491,21 +529,6 @@ static int setup_file_encryption_key(struct fscrypt_info *ci,
- 		goto out_release_key;
- 	}
- 
--	switch (ci->ci_policy.version) {
--	case FSCRYPT_POLICY_V1:
--		err = fscrypt_setup_v1_file_key(ci, mk->mk_secret.raw);
--		break;
--	case FSCRYPT_POLICY_V2:
--		err = fscrypt_setup_v2_file_key(ci, mk, need_dirhash_key);
--		break;
--	default:
--		WARN_ON_ONCE(1);
--		err = -EINVAL;
--		break;
--	}
--	if (err)
--		goto out_release_key;
--
- 	*mk_ret = mk;
- 	return 0;
- 
-@@ -580,7 +603,11 @@ fscrypt_setup_encryption_info(struct inode *inode,
- 	if (res)
- 		goto out;
- 
--	res = setup_file_encryption_key(crypt_info, need_dirhash_key, &mk);
-+	res = find_and_lock_master_key(crypt_info, &mk);
-+	if (res)
-+		goto out;
-+
-+	res = fscrypt_setup_file_key(crypt_info, mk, need_dirhash_key);
- 	if (res)
- 		goto out;
- 
+-		err = setup_per_mode_enc_key(ci, mk, mk->mk_direct_keys,
++		err = find_mode_prepared_key(ci, mk, mk->mk_direct_keys,
+ 					     HKDF_CONTEXT_DIRECT_KEY, false);
+ 	} else if (ci->ci_policy.v2.flags &
+ 		   FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64) {
+@@ -354,7 +367,7 @@ static int fscrypt_setup_v2_file_key(struct fscrypt_info *ci,
+ 		 * the IVs.  This format is optimized for use with inline
+ 		 * encryption hardware compliant with the UFS standard.
+ 		 */
+-		err = setup_per_mode_enc_key(ci, mk, mk->mk_iv_ino_lblk_64_keys,
++		err = find_mode_prepared_key(ci, mk, mk->mk_iv_ino_lblk_64_keys,
+ 					     HKDF_CONTEXT_IV_INO_LBLK_64_KEY,
+ 					     true);
+ 	} else if (ci->ci_policy.v2.flags &
 -- 
 2.40.1
 
