@@ -2,52 +2,50 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79C8174FDED
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 12 Jul 2023 05:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02E49752DF6
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 14 Jul 2023 01:31:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231867AbjGLDng (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 11 Jul 2023 23:43:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42428 "EHLO
+        id S233496AbjGMXbi (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 13 Jul 2023 19:31:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231753AbjGLDna (ORCPT
+        with ESMTP id S230138AbjGMXbh (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 11 Jul 2023 23:43:30 -0400
+        Thu, 13 Jul 2023 19:31:37 -0400
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 75246198B;
-        Tue, 11 Jul 2023 20:43:20 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 33A85269D;
+        Thu, 13 Jul 2023 16:31:36 -0700 (PDT)
 Received: by linux.microsoft.com (Postfix, from userid 1052)
-        id D850A21C4255; Tue, 11 Jul 2023 20:43:19 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D850A21C4255
+        id 4D4A221C450A; Thu, 13 Jul 2023 16:31:35 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4D4A221C450A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1689133399;
-        bh=AQSDwVr//PWnanNDVqJOKnFjTzDXsVxMzaz8VzfLX9U=;
+        s=default; t=1689291095;
+        bh=RL+a/gvtQRcDwaoV7SYgH/JAWrvPiZ941LY3UGXpd+s=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gd86CwrooCUzTzLtcrbfpPja1MDbDSHeRi2drRdRHQKEr7+MeHUdPmo1OYofl8LO5
-         /BxTBXcBx+61KNVGQwmn84+RCmceckkYRqDvUCBubBwyfYCe0o4LvKZoEff8AP92wV
-         PLwJXBucI4r1Hv+6Ky15fLjo3Ox/F0xK3pPqj7RM=
-Date:   Tue, 11 Jul 2023 20:43:19 -0700
+        b=KnYf/qNYjVOfMXTsuhjiVAi4/SyVcO2iNL0wLlN1dLTqlrob5wrXmz1m+a0qZM0MT
+         t1JoTcoUoCdw5aRtjHPovyWUh1ZFSfHvvpl2zDoOL8IICpVDDaO+6JDWvHhfipi9EC
+         ADhDruEL1rxlB+wtAxBRlZYV+bOMMQvIc9TihJKo=
+Date:   Thu, 13 Jul 2023 16:31:35 -0700
 From:   Fan Wu <wufan@linux.microsoft.com>
-To:     Mike Snitzer <snitzer@kernel.org>
+To:     Paul Moore <paul@paul-moore.com>
 Cc:     corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
         serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org,
-        axboe@kernel.dk, agk@redhat.com, eparis@redhat.com,
-        paul@paul-moore.com, linux-doc@vger.kernel.org,
+        axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org,
+        eparis@redhat.com, linux-doc@vger.kernel.org,
         linux-integrity@vger.kernel.org,
         linux-security-module@vger.kernel.org,
         linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
         dm-devel@redhat.com, audit@vger.kernel.org,
         roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
         Deven Bowers <deven.desai@linux.microsoft.com>
-Subject: Re: [RFC PATCH v10 11/17] dm-verity: consume root hash digest and
- signature data via LSM hook
-Message-ID: <20230712034319.GA17642@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1687986571-16823-1-git-send-email-wufan@linux.microsoft.com>
- <1687986571-16823-12-git-send-email-wufan@linux.microsoft.com>
- <ZKgm+ffQbdDTxrg9@redhat.com>
+Subject: Re: [PATCH RFC v10 1/17] security: add ipe lsm
+Message-ID: <20230713233135.GA11480@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1687986571-16823-2-git-send-email-wufan@linux.microsoft.com>
+ <ffd5c67f4a9bf45df0ce95a8fe0932a3.paul@paul-moore.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZKgm+ffQbdDTxrg9@redhat.com>
+In-Reply-To: <ffd5c67f4a9bf45df0ce95a8fe0932a3.paul@paul-moore.com>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
@@ -59,133 +57,129 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Jul 07, 2023 at 10:53:45AM -0400, Mike Snitzer wrote:
-Thanks for the review!
-
-> On Wed, Jun 28 2023 at  5:09P -0400,
-> Fan Wu <wufan@linux.microsoft.com> wrote:
-> 
-> > From: Deven Bowers <deven.desai@linux.microsoft.com>
+On Sat, Jul 08, 2023 at 12:22:59AM -0400, Paul Moore wrote:
+> On Jun 28, 2023 Fan Wu <wufan@linux.microsoft.com> wrote:
 > > 
-> > dm-verity provides a strong guarantee of a block device's integrity. As
-> > a generic way to check the integrity of a block device, it provides
-> > those integrity guarantees to its higher layers, including the filesystem
-> > level.
+> > Integrity Policy Enforcement (IPE) is an LSM that provides an
+> > complimentary approach to Mandatory Access Control than existing LSMs
+> > today.
 > > 
-> > An LSM that control access to a resource on the system based on the
-> > available integrity claims can use this transitive property of
-> > dm-verity, by querying the underlying block_device of a particular
-> > file.
+> > Existing LSMs have centered around the concept of access to a resource
+> > should be controlled by the current user's credentials. IPE's approach,
+> > is that access to a resource should be controlled by the system's trust
+> > of a current resource.
 > > 
-> > The digest and signature information need to be stored in the block
-> > device to fulfill the next requirement of authorization via LSM policy.
-> > This will enable the LSM to perform revocation of devices that are still
-> > mounted, prohibiting execution of files that are no longer authorized
-> > by the LSM in question.
-> > 
-> > This patch added two security hook calls in dm-verity to save the
-> > dm-verity roothash and the roothash signature to LSM blobs.
+> > The basis of this approach is defining a global policy to specify which
+> > resource can be trusted.
 > > 
 > > Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
 > > Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
 > > ---
-...
-> > diff --git a/drivers/md/dm-verity-verify-sig.c b/drivers/md/dm-verity-verify-sig.c
-> > index 4836508ea50c..33165dd7470f 100644
-> > --- a/drivers/md/dm-verity-verify-sig.c
-> > +++ b/drivers/md/dm-verity-verify-sig.c
-> > @@ -9,6 +9,9 @@
-> >  #include <linux/verification.h>
-> >  #include <keys/user-type.h>
-> >  #include <linux/module.h>
-> > +#include <linux/security.h>
-> > +#include <linux/dm-verity.h>
-> > +#include "dm-core.h"
+> >  MAINTAINERS           |  7 +++++++
+> >  security/Kconfig      | 11 ++++++-----
+> >  security/Makefile     |  1 +
+> >  security/ipe/Kconfig  | 17 +++++++++++++++++
+> >  security/ipe/Makefile | 10 ++++++++++
+> >  security/ipe/ipe.c    | 37 +++++++++++++++++++++++++++++++++++++
+> >  security/ipe/ipe.h    | 16 ++++++++++++++++
+> >  7 files changed, 94 insertions(+), 5 deletions(-)
+> >  create mode 100644 security/ipe/Kconfig
+> >  create mode 100644 security/ipe/Makefile
+> >  create mode 100644 security/ipe/ipe.c
+> >  create mode 100644 security/ipe/ipe.h
 > 
-> Why are you including dm-core.h here?
-This is used to get the complete definition of struct mapped_device to extract
-the struct block_device from it.
-
+> ...
 > 
-> >  #include "dm-verity.h"
-> >  #include "dm-verity-verify-sig.h"
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index a82795114ad4..ad00887d38ea 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -10278,6 +10278,13 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git
+> >  F:	security/integrity/
+> >  F:	security/integrity/ima/
 > >  
-> > @@ -97,14 +100,17 @@ int verity_verify_sig_parse_opt_args(struct dm_arg_set *as,
-> >   * verify_verify_roothash - Verify the root hash of the verity hash device
-> >   *			     using builtin trusted keys.
-> >   *
-> > + * @bdev: block_device representing the device-mapper created block device.
-> > + *	  Used by the security hook, to set information about the block_device.
-> >   * @root_hash: For verity, the roothash/data to be verified.
-> >   * @root_hash_len: Size of the roothash/data to be verified.
-> >   * @sig_data: The trusted signature that verifies the roothash/data.
-> >   * @sig_len: Size of the signature.
-> >   *
-> >   */
-> > -int verity_verify_root_hash(const void *root_hash, size_t root_hash_len,
-> > -			    const void *sig_data, size_t sig_len)
-> > +int verity_verify_root_hash(struct block_device *bdev, const void *root_hash,
-> > +			    size_t root_hash_len, const void *sig_data,
-> > +			    size_t sig_len)
-> >  {
-> >  	int ret;
+> > +INTEGRITY POLICY ENFORCEMENT (IPE)
+> > +M:	Fan Wu <wufan@linux.microsoft.com>
+> > +L:	linux-security-module@vger.kernel.org
+> > +S:	Supported
+> > +T:	git git://github.com/microsoft/ipe.git
+> 
+> Using the raw git protocol doesn't seem to work with GH, I think you
+> need to refernce the git/https URL:
+> 
+>  https://github.com/microsoft/ipe.git
+> 
+Sure I can change it.
+
+> > +F:	security/ipe/
+> > +
+> >  INTEL 810/815 FRAMEBUFFER DRIVER
+> >  M:	Antonino Daplas <adaplas@gmail.com>
+> >  L:	linux-fbdev@vger.kernel.org
+> > diff --git a/security/Kconfig b/security/Kconfig
+> > index 97abeb9b9a19..daa4626ea99c 100644
+> > --- a/security/Kconfig
+> > +++ b/security/Kconfig
+> > @@ -202,6 +202,7 @@ source "security/yama/Kconfig"
+> >  source "security/safesetid/Kconfig"
+> >  source "security/lockdown/Kconfig"
+> >  source "security/landlock/Kconfig"
+> > +source "security/ipe/Kconfig"
 > >  
-> > @@ -126,8 +132,12 @@ int verity_verify_root_hash(const void *root_hash, size_t root_hash_len,
-> >  				NULL,
-> >  #endif
-> >  				VERIFYING_UNSPECIFIED_SIGNATURE, NULL, NULL);
-> > +	if (ret)
-> > +		return ret;
+> >  source "security/integrity/Kconfig"
 > >  
-> > -	return ret;
-> > +	return security_bdev_setsecurity(bdev,
-> > +					 DM_VERITY_SIGNATURE_SEC_NAME,
-> > +					 sig_data, sig_len);
-> >  }
+> > @@ -241,11 +242,11 @@ endchoice
 > >  
-> >  void verity_verify_sig_opts_cleanup(struct dm_verity_sig_opts *sig_opts)
+> >  config LSM
+> >  	string "Ordered list of enabled LSMs"
+> > -	default "landlock,lockdown,yama,loadpin,safesetid,smack,selinux,tomoyo,apparmor,bpf" if DEFAULT_SECURITY_SMACK
+> > -	default "landlock,lockdown,yama,loadpin,safesetid,apparmor,selinux,smack,tomoyo,bpf" if DEFAULT_SECURITY_APPARMOR
+> > -	default "landlock,lockdown,yama,loadpin,safesetid,tomoyo,bpf" if DEFAULT_SECURITY_TOMOYO
+> > -	default "landlock,lockdown,yama,loadpin,safesetid,bpf" if DEFAULT_SECURITY_DAC
+> > -	default "landlock,lockdown,yama,loadpin,safesetid,selinux,smack,tomoyo,apparmor,bpf"
+> > +	default "landlock,lockdown,yama,loadpin,safesetid,smack,selinux,tomoyo,apparmor,bpf,ipe" if DEFAULT_SECURITY_SMACK
+> > +	default "landlock,lockdown,yama,loadpin,safesetid,apparmor,selinux,smack,tomoyo,bpf,ipe" if DEFAULT_SECURITY_APPARMOR
+> > +	default "landlock,lockdown,yama,loadpin,safesetid,tomoyo,bpf,ipe" if DEFAULT_SECURITY_TOMOYO
+> > +	default "landlock,lockdown,yama,loadpin,safesetid,bpf,ipe" if DEFAULT_SECURITY_DAC
+> > +	default "landlock,lockdown,yama,loadpin,safesetid,selinux,smack,tomoyo,apparmor,bpf,ipe"
 > 
-> Both of your calls to security_bdev_setsecurity() to set your blobs in
-> the bdev are suspect because you're doing so from the verity_ctr().
-> The mapped_device has 2 dm_table slots (active and inactive).  The
-> verity_ctr() becomes part of the inactive slot, there is an extra step
-> to bind the inactive table to the active table.
+> Generally speaking the BPF LSM should be the last entry in the LSM
+> list to help prevent issues caused by a BPF LSM returning an improper
+> error and shortcutting a LSM after it.
 > 
-> This leads to you changing the blobs in the global bdev _before_ the
-> table is actually active.  It is possible that the inactive table will
-> simply be removed and the DM verity device put back in service;
-> leaving your blob(s) in the bdev inconsistent.
+Thanks for the insight, I will update this part.
+
+> >  	help
+> >  	  A comma-separated list of LSMs, in initialization order.
+> >  	  Any LSMs left off this list, except for those with order
 > 
-> This issue has parallels to how we need to defer changing the global
-> queue_limits associated with a request_queue until _after_ all table
-> loading is settled and then the update is done just before resuming
-> the DM device (mapped_device) -- see dm_table_set_restrictions().
+> ...
 > 
-> Unfortunately, this feels like it may require a new hook in the
-> target_type struct (e.g. ->finalize())
+> > diff --git a/security/ipe/Makefile b/security/ipe/Makefile
+> > new file mode 100644
+> > index 000000000000..571648579991
+> > --- /dev/null
+> > +++ b/security/ipe/Makefile
+> > @@ -0,0 +1,10 @@
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +#
+> > +# Copyright (C) Microsoft Corporation. All rights reserved.
+> > +#
+> > +# Makefile for building the IPE module as part of the kernel tree.
+> > +#
+> > +
+> > +obj-$(CONFIG_SECURITY_IPE) += \
+> > +	hooks.o \
+> > +	ipe.o \
 > 
-> Mike
-Thanks for pointing out this issue. We were calling security_bdev_setsecurity()
-because the roothash signature data is only available in verity_ctr()
-and it is discarded after verity_ctr() finishes.
-After digging deeper into the table_load, I realized that we were indeed
-wrong here.
+> It doesn't look like security/ipe/hook.c is included in this patch.
+> 
+> It is important to ensure that each patch compiles after it is
+> applied.
+Sorry this was accidentally added during a rebase, I will try to avoid such a mistake in the future.
 
-Based on my understanding of your suggestion, it seems that the correct
-approach would be to save the roothash signature into the struct dm_target
-and then invoke security_bdev_setsecurity() before activating
-the inactive table in the __bind function (where dm_table_set_restrictions is called).
+-Fan
 
-To facilitate this process, it seems appropriate to introduce a new hook
-called finalize() within the struct target_type. This hook would enable
-targets to define tasks that need to be completed before activating
-a new table.
-
-In our specific case, we would add a finalize hook to the dm-verity module,
-allowing us to call security_bdev_setsecurity() and associate the roothash
-information in the struct dm_target with the struct block_device of
-the struct mapped_device. Is this correct?
-
-Thanks,
-- Fan
-
+> 
+> --
+> paul-moore.com
