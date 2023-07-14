@@ -2,156 +2,229 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04CAB75426B
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 14 Jul 2023 20:16:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 373817543BB
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 14 Jul 2023 22:28:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235553AbjGNSQR (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 14 Jul 2023 14:16:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35970 "EHLO
+        id S235928AbjGNU2s (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 14 Jul 2023 16:28:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236403AbjGNSQO (ORCPT
+        with ESMTP id S235472AbjGNU2r (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 14 Jul 2023 14:16:14 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78E9C173F
-        for <linux-fscrypt@vger.kernel.org>; Fri, 14 Jul 2023 11:16:13 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id 46e09a7af769-6b73c2b6dcfso1478139a34.2
-        for <linux-fscrypt@vger.kernel.org>; Fri, 14 Jul 2023 11:16:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1689358573; x=1691950573;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Sd6bFmgytpFgRSYJA+uE0lCqoVsMdgxQuCSuSk1ecmY=;
-        b=zco8UvuGput+Md5p9zIqDtkaB7jkaDUQGSd0DHETB+Q2ElzqJ2DzPNalVNUjiIEeQg
-         PbTCGuE2VHI+IbmjZFf4v1MRrj0Ulc4SglXCMVn67+VsLrdJbc+dRADJLg92tVzjSbLv
-         qes+eGo4VDS6thOf5gD+eItCk4cATgluHB44WxGNwDXD3vcYrfQAixM/jWOYIA2jUBzP
-         RWpS8VV5vcX6qAdnlmRXT2aPBm6Grzx7pll9rfLkNG5I5+Syw2SX7NTtRw+xdM0UmL78
-         Bd4JsCYY3RF1rETgG6Zm6Pu84VihfXJ7tSaxW6AdZ60I0dc2KAn4tSX/HTjtkd4lMq6j
-         E43A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689358573; x=1691950573;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Sd6bFmgytpFgRSYJA+uE0lCqoVsMdgxQuCSuSk1ecmY=;
-        b=Dn9lF4BnU/Dcza963TM7Wxxscyfgs0gVAv5qgJpqkkRTjMqnCceQc1g21TL5gYuwcf
-         osnftdgyP4EWELXikufqG0WD5HL4cVmTwbS8KWMC8upE6F+IeBuG1eDK0Mw/G9fJbJ8U
-         r9YDqTvQ11K7MoTfup+sxTu4izalgeNIaGLuKNahrjgbqrOMFlmANN4gX8eLxI72eR3T
-         00ISuBhtyL/eCe7UzVIGhg4uegHG5udkizql6aM4U7Mnzd1irwAwDVo/teza7FxvogLF
-         ia35ts9KwzvBxoZd/kkcJARew67QMDF4dgylzZTYU7xAbGMJ+i1u2FKo6vxKZJjdCqRu
-         UAHw==
-X-Gm-Message-State: ABy/qLa0VtzZj7Ms1C99+UB+/eJunb3bOZ0i7GFRJSJvLn9YfcyxN3Ul
-        +xzNa3gKBA/zHmaH7c91htLxpg==
-X-Google-Smtp-Source: APBJJlHI82uGd3rgWXvp8jtm7XJKPLalTiaHwSmkE/YIwmb/w8wzPFK0slRAATx+Uh1sEtXlC9JSEQ==
-X-Received: by 2002:a05:6870:5ba3:b0:1b0:81eb:ac9e with SMTP id em35-20020a0568705ba300b001b081ebac9emr5382169oab.20.1689358572556;
-        Fri, 14 Jul 2023 11:16:12 -0700 (PDT)
-Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id y66-20020a0def45000000b00565d056a74bsm2450042ywe.139.2023.07.14.11.16.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 11:16:12 -0700 (PDT)
-Date:   Fri, 14 Jul 2023 14:16:11 -0400
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>, linux-fscrypt@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH v2 05/14] fscrypt: setup leaf inodes for extent encryption
-Message-ID: <20230714181611.GB510453@perftesting>
-References: <cover.1688927487.git.sweettea-kernel@dorminy.me>
- <9a4890026719e5d6dc16ee9338f309f3fa452d16.1688927487.git.sweettea-kernel@dorminy.me>
+        Fri, 14 Jul 2023 16:28:47 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D57831995;
+        Fri, 14 Jul 2023 13:28:45 -0700 (PDT)
+Received: by linux.microsoft.com (Postfix, from userid 1052)
+        id 353B820ABD64; Fri, 14 Jul 2023 13:28:45 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 353B820ABD64
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1689366525;
+        bh=P3inuFi0gMXqoY/7xlKkhztUrimCDUfNFGSqCXwgTfw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Y9xCGTHAMzWx55C7H1MErPQE+n5ghx5PbMvaBnwI0vs8CCBaJ5VU9tOOqs/Jg36+p
+         wycIU9OWZ8tR0M5Yitid06KA4Yk3IPi5PSM32luz0EIsXBdKDL1X3jGYf4zsWPrIvt
+         JpNuiSLgROZLx0DdvUXKjEhBMKE7PX/6muWF71q4=
+Date:   Fri, 14 Jul 2023 13:28:45 -0700
+From:   Fan Wu <wufan@linux.microsoft.com>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
+        serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org,
+        axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org,
+        eparis@redhat.com, linux-doc@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
+        dm-devel@redhat.com, audit@vger.kernel.org,
+        roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
+        Deven Bowers <deven.desai@linux.microsoft.com>
+Subject: Re: [PATCH RFC v10 3/17] ipe: add evaluation loop
+Message-ID: <20230714202845.GB15267@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1687986571-16823-4-git-send-email-wufan@linux.microsoft.com>
+ <309cfd62a474a7e93be6a0886a3d5aa8.paul@paul-moore.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9a4890026719e5d6dc16ee9338f309f3fa452d16.1688927487.git.sweettea-kernel@dorminy.me>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <309cfd62a474a7e93be6a0886a3d5aa8.paul@paul-moore.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Sun, Jul 09, 2023 at 02:53:38PM -0400, Sweet Tea Dorminy wrote:
-> For extent-based encryption, leaf/regular file inodes are special: it's
-> useful to set their i_crypt_info field so that it's easy to inherit
-> their encryption policy for a new extent, but they never need to do any
-> encyption themselves. Additionally, since encryption can only be set up
-> on a directory, not a single file, their encryption policy can always
-> duplicate their parent inode's policy.
+On Sat, Jul 08, 2023 at 12:23:01AM -0400, Paul Moore wrote:
+> On Jun 28, 2023 Fan Wu <wufan@linux.microsoft.com> wrote:
+> > 
+> > IPE must have a centralized function to evaluate incoming callers
+> > against IPE's policy. This iteration of the policy for against the rules
+> > for that specific caller is known as the evaluation loop.
 > 
-> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-> ---
->  fs/crypto/fscrypt_private.h | 17 +++++++++++++
->  fs/crypto/keysetup.c        | 49 ++++++++++++++++++++++++++-----------
->  2 files changed, 52 insertions(+), 14 deletions(-)
+> Can you rewrite that second sentence, it reads a bit awkward and I'm
+> unclear as to the meaning.
 > 
-> diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-> index c04454c289fd..260635e8b558 100644
-> --- a/fs/crypto/fscrypt_private.h
-> +++ b/fs/crypto/fscrypt_private.h
-> @@ -308,6 +308,23 @@ fscrypt_get_lblk_info(const struct inode *inode, u64 lblk, u64 *offset,
->  	return inode->i_crypt_info;
->  }
->  
-> +/**
-> + * fscrypt_uses_extent_encryption() -- whether an inode uses per-extent
-> + *				       encryption
-> + *
-> + * @inode: the inode in question
-> + *
-> + * Return: true if the inode uses per-extent fscrypt_infos, false otherwise
-> + */
-> +static inline bool fscrypt_uses_extent_encryption(const struct inode *inode)
-> +{
-> +	// Non-regular files don't have extents
-> +	if (!S_ISREG(inode->i_mode))
-> +		return false;
-> +
-> +	// No filesystems currently use per-extent infos
-> +	return false;
+Sure, it is indeed not clear, I might rewrite the whole message in the next version.
 
-Wrong comment format.
+> > Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
+> > Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
+> > ---
+> >  security/ipe/Makefile |  1 +
+> >  security/ipe/eval.c   | 94 +++++++++++++++++++++++++++++++++++++++++++
+> >  security/ipe/eval.h   | 25 ++++++++++++
+> >  3 files changed, 120 insertions(+)
+> >  create mode 100644 security/ipe/eval.c
+> >  create mode 100644 security/ipe/eval.h
+> 
+> ...
+> 
+> > diff --git a/security/ipe/eval.c b/security/ipe/eval.c
+> > new file mode 100644
+> > index 000000000000..59144b2ecdda
+> > --- /dev/null
+> > +++ b/security/ipe/eval.c
+> > @@ -0,0 +1,94 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Copyright (C) Microsoft Corporation. All rights reserved.
+> > + */
+> > +
+> > +#include <linux/fs.h>
+> > +#include <linux/types.h>
+> > +#include <linux/slab.h>
+> > +#include <linux/file.h>
+> > +#include <linux/sched.h>
+> > +#include <linux/rcupdate.h>
+> > +
+> > +#include "ipe.h"
+> > +#include "eval.h"
+> > +#include "hooks.h"
+> 
+> There is no "hooks.h" at this point in the patchset.
+> 
+> In order for 'git bisect' to remain useful (and it can be a very handy
+> tool), we need to ensure that each point in the patchset compiles
+> cleanly.
+> 
+Sorry for the mistake here, I will avoid this kind of problems in the future.
 
-> +}
->  
->  /* crypto.c */
->  extern struct kmem_cache *fscrypt_info_cachep;
-> diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-> index c5f68cf65a6f..7469b2d8ac87 100644
-> --- a/fs/crypto/keysetup.c
-> +++ b/fs/crypto/keysetup.c
-> @@ -747,27 +747,48 @@ fscrypt_setup_encryption_info(struct inode *inode,
->  int fscrypt_get_encryption_info(struct inode *inode, bool allow_unsupported)
->  {
->  	int res;
-> -	union fscrypt_context ctx;
-> +	union fscrypt_context ctx = { 0 };
->  	union fscrypt_policy policy;
->  
->  	if (fscrypt_has_encryption_key(inode))
->  		return 0;
->  
-> -	res = inode->i_sb->s_cop->get_context(inode, &ctx, sizeof(ctx));
-> -	if (res < 0) {
-> -		if (res == -ERANGE && allow_unsupported)
-> -			return 0;
-> -		fscrypt_warn(inode, "Error %d getting encryption context", res);
-> -		return res;
-> -	}
-> +	if (fscrypt_uses_extent_encryption(inode)) {
-> +		/*
-> +		 * Nothing will be encrypted with this info, so we can borrow
-> +		 * the parent (dir) inode's policy and use a zero nonce.
-> +		 */
-> +		struct dentry *dentry = d_find_any_alias(inode);
-> +		struct dentry *parent_dentry = dget_parent(dentry);
-> +		struct inode *dir = parent_dentry->d_inode;
-> +		bool found = false;
->  
+> > +#include "policy.h"
+> > +
+> > +struct ipe_policy __rcu *ipe_active_policy;
+> > +
+> > +/**
+> > + * evaluate_property - Analyze @ctx against a property.
+> > + * @ctx: Supplies a pointer to the context to be evaluated.
+> > + * @p: Supplies a pointer to the property to be evaluated.
+> > + *
+> > + * Return:
+> > + * * true	- The current @ctx match the @p
+> > + * * false	- The current @ctx doesn't match the @p
+> > + */
+> > +static bool evaluate_property(const struct ipe_eval_ctx *const ctx,
+> > +			      struct ipe_prop *p)
+> > +{
+> > +	return false;
+> > +}
+> > +
+> > +/**
+> > + * ipe_evaluate_event - Analyze @ctx against the current active policy.
+> > + * @ctx: Supplies a pointer to the context to be evaluated.
+> > + *
+> > + * This is the loop where all policy evaluation happens against IPE policy.
+> > + *
+> > + * Return:
+> > + * * 0		- OK
+> > + * * -EACCES	- @ctx did not pass evaluation.
+> > + * * !0		- Error
+> > + */
+> > +int ipe_evaluate_event(const struct ipe_eval_ctx *const ctx)
+> > +{
+> > +	int rc = 0;
+> > +	bool match = false;
+> > +	enum ipe_action_type action;
+> > +	struct ipe_policy *pol = NULL;
+> > +	const struct ipe_rule *rule = NULL;
+> > +	const struct ipe_op_table *rules = NULL;
+> > +	struct ipe_prop *prop = NULL;
+> > +
+> > +	rcu_read_lock();
+> > +
+> > +	pol = rcu_dereference(ipe_active_policy);
+> > +	if (!pol) {
+> > +		rcu_read_unlock();
+> > +		return 0;
+> > +	}
+> > +
+> > +	if (ctx->op == __IPE_OP_INVALID) {
+> > +		action = pol->parsed->global_default_action;
+> > +		goto eval;
+> 
+> It looks like you are missing a rcu_read_unlock() in this case.
+> 
+Thanks for pointing that out. I will add the unlock. 
+> Also, given how simplistic the evaluation is in this case, why not
+> just do it here, saving the assignment, jump, etc.?
+> 
+>   if (ctx->op == INVALID) {
+>     rcu_read_unlock()
+>     if (global_action == DENY)
+>       return -EACCES;
+>     return 0;
+>   }
+> 
+The jump is actually for auditing the decision in the next patch, while
+it does make more sense to not jump when the auditing is not introduced. 
+I will make the return here then switch to jump in the auditing patch.
 
-Can this be extracted to a helper to keep this function cleaner?  Thanks,
+> > +	}
+> > +
+> > +	rules = &pol->parsed->rules[ctx->op];
+> > +
+> > +	list_for_each_entry(rule, &rules->rules, next) {
+> > +		match = true;
+> > +
+> > +		list_for_each_entry(prop, &rule->props, next)
+> > +			match = match && evaluate_property(ctx, prop);
+> 
+> Why not break from this loop once evaluate_property() returns false?
+> 
+Yes we can break when one property evals to false, thanks for the advice.
 
-Josef
+> > +
+> > +		if (match)
+> > +			break;
+> > +	}
+> > +
+> > +	if (match)
+> > +		action = rule->action;
+> > +	else if (rules->default_action != __IPE_ACTION_INVALID)
+> > +		action = rules->default_action;
+> > +	else
+> > +		action = pol->parsed->global_default_action;
+> > +
+> > +	rcu_read_unlock();
+> > +eval:
+> > +	if (action == __IPE_ACTION_DENY)
+> > +		rc = -EACCES;
+> > +
+> > +	return rc;
+> 
+> This can just be 'return 0;' right?
+> 
+For this patch, if we just return on error, then yes the end of the function
+could just return 0. But when auditing(audit rc) and permissive switch(overwrite rc)
+are introduced then return on error might not be the clean way. So I kept
+the rc variable in this patch. I can change the style in this patch then
+switch to use rc when auditing and permissive switch are introduced.
+
+-Fan
+
+> > +}
+> 
+> --
+> paul-moore.com
