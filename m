@@ -2,302 +2,149 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B009B755A54
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 17 Jul 2023 05:53:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 161E0756666
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 17 Jul 2023 16:32:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230435AbjGQDx3 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sun, 16 Jul 2023 23:53:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48878 "EHLO
+        id S232085AbjGQOcB (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 17 Jul 2023 10:32:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230522AbjGQDxV (ORCPT
+        with ESMTP id S231719AbjGQObz (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sun, 16 Jul 2023 23:53:21 -0400
-Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 326CE1A7;
-        Sun, 16 Jul 2023 20:53:20 -0700 (PDT)
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 7416E83426;
-        Sun, 16 Jul 2023 23:53:19 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1689566000; bh=Ra/VwcX29mXpJjeRPIf0NVaUG1yw9v4z41shgCkIjio=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s5EffDc7vIrYEqHWLZ6Ljnf03hcSHh7OBDtM+2ht6vZQaJv9gMLmLqbETUaJxfv1g
-         VKOk5ylrfUE263qr9oOlA53IzWlz7UAaRj2Mjb1v9r530jIS7vDFnMin74WB4ghGgg
-         HIc01mDIng9WBh6UpS8nIGVJpLRkBZb+jbAPWesmV5NPCuZrzEQypF2pIz1yyuV84s
-         793qK8fnA973V2mpLNfZTK0IE5oy3Fg5Z07ipKBW/xiLdKfIH+nwk7gFkEgV17UVuD
-         y4I1K8m5p4bfYEI73w0sqSrUKByoi3oGDdvUDaPa00bEDH/1mndM2fqT6WW/6JEDZ1
-         KsqJiPE2UMNyg==
-From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Mon, 17 Jul 2023 10:31:55 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3580E52
+        for <linux-fscrypt@vger.kernel.org>; Mon, 17 Jul 2023 07:31:39 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id af79cd13be357-7659db6339eso193061385a.1
+        for <linux-fscrypt@vger.kernel.org>; Mon, 17 Jul 2023 07:31:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1689604298; x=1692196298;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=dGWMUDxSQOjpHSgIRh8kQLLol2Vu+O8ZewckuFC3Jfs=;
+        b=R4BWQIZQs66wIIH0o2cGXlx3r4TiXwMoUj8H9peotVvJiNDcvptFP7eEt6O3oL2F3R
+         Wx9yQ/l2eHR2Gj67wrGN/9ZhepzXR/U54PBJyajHddNSxmPhoWJF74XRoebhikBJsmp5
+         G3yWXHfz2wigxBmRJMPUl0G5IxV34it/OFtjJTTTO0DkhCsFLXE6n6aPPLUceSCDIjrW
+         3xO9xO9fyfxzbzvdLG+Pf2aVluYGdyPkq08iYkUgkG/gMfEG+ezg/J6UmjxuHUD92Woa
+         WGzpnxBvs80GhT5/c0OroSHKc/Wp74njeFMSco9bFmJwur4G3sZC+uBRYM2uHwHYZRkt
+         aBTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689604298; x=1692196298;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dGWMUDxSQOjpHSgIRh8kQLLol2Vu+O8ZewckuFC3Jfs=;
+        b=ReaXBj1l0RAyPW58foPVvVHcZMv/gK6FXcwYkjlzIP8dafsm++SX3DvDpN3R7GDj+w
+         W4or8L5fL7ozJZIDCIDQxVTAITICNIsoviiqHuk/2CBZGEmtvHZ+wAchGcpAk5DzTG7C
+         sELgythb+vgS3d2c4kJYfD9W2CH5C3ziEk2OGaGvm1E/+iCEb0Y5SNwk1fOFxtiS2FWq
+         gtnNj76KAhdgb6xIIzD9SkQpQ6BFIx1GyEMfTCiXWXTO9tFQGBMwtZ7boJk16Csuo/T1
+         qZKWuh5VWonmb8KhDcgs1Toz8RjhcGYA4aXQLSz3HMcxnP9zuAN2BWrQC3KIfTjzm2z1
+         6c5Q==
+X-Gm-Message-State: ABy/qLaWJJnKFbWpF+ZbDNXrU7G1nLcXmR58Fpdykh8fBlPqcG18tF/r
+        tGdyqN7i5vKvfho/Yo9Un3gehhiTW+TWDKFssRdn0g==
+X-Google-Smtp-Source: APBJJlGj3mK26kZuYA8XDlflMI5fvQ1xO2FYadwQtcENLoWSZke+Dc/P425Ou4RtNbH6GU92oRf0Jw==
+X-Received: by 2002:a05:620a:1724:b0:767:f176:cf4a with SMTP id az36-20020a05620a172400b00767f176cf4amr12378172qkb.5.1689604298528;
+        Mon, 17 Jul 2023 07:31:38 -0700 (PDT)
+Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id f22-20020ae9ea16000000b00767177a5bebsm6085108qkg.56.2023.07.17.07.31.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jul 2023 07:31:38 -0700 (PDT)
+Date:   Mon, 17 Jul 2023 10:31:37 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
         Eric Biggers <ebiggers@kernel.org>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>, linux-fscrypt@vger.kernel.org,
         linux-btrfs@vger.kernel.org, kernel-team@meta.com
-Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH v2 17/17] btrfs: save and load fscrypt extent contexts
-Date:   Sun, 16 Jul 2023 23:52:48 -0400
-Message-Id: <d3849d039673b6583291c29c5d36140357e1f1dc.1689564024.git.sweettea-kernel@dorminy.me>
-In-Reply-To: <cover.1689564024.git.sweettea-kernel@dorminy.me>
-References: <cover.1689564024.git.sweettea-kernel@dorminy.me>
+Subject: Re: [PATCH v2 13/14] fscrypt: save session key credentials for
+ extent infos
+Message-ID: <20230717143137.GB691303@perftesting>
+References: <cover.1688927487.git.sweettea-kernel@dorminy.me>
+ <7ad2677a3c27039167e95bfe67c75336b540fd17.1688927487.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7ad2677a3c27039167e95bfe67c75336b540fd17.1688927487.git.sweettea-kernel@dorminy.me>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-This change actually saves and loads the extent contexts created and
-freed by the last change.
+On Sun, Jul 09, 2023 at 02:53:46PM -0400, Sweet Tea Dorminy wrote:
+> For v1 encryption policies using per-session keys, the thread which
+> opens the inode and therefore initializes the encryption info is part of
+> the session, so it can get the key from the session keyring. However,
+> for extent encryption, the extent infos are likely loaded from a
+> different thread, which does not have access to the session keyring.
+> This change saves the credentials of the inode opening thread and reuses
+> those credentials temporarily when dealing with extent infos, allowing
+> finding the encryption key correctly.
+> 
+> v1 encryption policies using per-session keys should probably not exist
+> for new usages such as extent encryption, but this makes more tests
+> work without change; maybe the right answer is to disallow v1 session
+> keys plus extent encryption and deal with editing tests to not use v1
+> session encryption so much.
+> 
+> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+> ---
+>  fs/crypto/fscrypt_private.h |  8 ++++++++
+>  fs/crypto/keysetup.c        | 14 ++++++++++++++
+>  fs/crypto/keysetup_v1.c     |  1 +
+>  3 files changed, 23 insertions(+)
+> 
+> diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+> index 6e6020f7746c..a1c484511ba3 100644
+> --- a/fs/crypto/fscrypt_private.h
+> +++ b/fs/crypto/fscrypt_private.h
+> @@ -231,6 +231,14 @@ struct fscrypt_info {
+>  	 */
+>  	bool ci_inlinecrypt;
+>  #endif
+> +	/* Credential struct from the thread which created this info. This is
+> +	 * only used in v1 session keyrings with extent encryption; it allows
+> +	 * the thread creating extents for an inode to join the session
+> +	 * keyring temporarily, since otherwise the thread is usually part of
+> +	 * kernel writeback and therefore unrelated to the thread with the
+> +	 * right session key.
+> +	 */
+> +	struct cred *ci_session_creds;
+>  
+>  	/*
+>  	 * Encryption mode used for this inode.  It corresponds to either the
+> diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
+> index 3b80e7061039..9c56ef8d2eb6 100644
+> --- a/fs/crypto/keysetup.c
+> +++ b/fs/crypto/keysetup.c
+> @@ -646,6 +646,8 @@ static void put_crypt_info(struct fscrypt_info *ci)
+>  
+>  		fscrypt_put_master_key_activeref(ci->ci_sb, mk);
+>  	}
+> +	if (ci->ci_session_creds)
+> +		abort_creds(ci->ci_session_creds);
+>  	memzero_explicit(ci, sizeof(*ci));
+>  	kmem_cache_free(fscrypt_info_cachep, ci);
+>  }
+> @@ -662,6 +664,7 @@ fscrypt_setup_encryption_info(struct inode *inode,
+>  	struct fscrypt_master_key *mk = NULL;
+>  	int res;
+>  	bool info_for_extent = !!info_ptr;
+> +	const struct cred *creds = NULL;
+>  
+>  	if (!info_ptr)
+>  		info_ptr = &inode->i_crypt_info;
+> @@ -705,7 +708,18 @@ fscrypt_setup_encryption_info(struct inode *inode,
+>  	if (res)
+>  		goto out;
+>  
+> +	if (info_for_extent && inode->i_crypt_info->ci_session_creds) {
+> +		 creds = override_creds(inode->i_crypt_info->ci_session_creds);
 
-Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
----
- fs/btrfs/file-item.c            | 21 ++++++++++++++++
- fs/btrfs/fscrypt.c              | 36 +++++++++++++++++++++++++++
- fs/btrfs/fscrypt.h              |  6 +++++
- fs/btrfs/inode.c                | 44 ++++++++++++++++++++++++++++++---
- fs/btrfs/tree-log.c             | 24 ++++++++++++++++--
- include/uapi/linux/btrfs_tree.h |  5 ++++
- 6 files changed, 130 insertions(+), 6 deletions(-)
+Whitespace.  Thanks,
 
-diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-index 8095fc2e7ca1..ccc2d12faba3 100644
---- a/fs/btrfs/file-item.c
-+++ b/fs/btrfs/file-item.c
-@@ -1302,6 +1302,27 @@ void btrfs_extent_item_to_extent_map(struct btrfs_inode *inode,
- 
- 		ctxsize = btrfs_file_extent_ctxsize_from_item(leaf, path);
- 		ASSERT(ctxsize == btrfs_file_extent_encryption_ctxsize(leaf, fi));
-+
-+#ifdef CONFIG_FS_ENCRYPTION
-+		if (ctxsize) {
-+			u8 context[FSCRYPT_SET_CONTEXT_MAX_SIZE];
-+			int res;
-+			unsigned int nofs_flag;
-+
-+			read_extent_buffer(leaf, context,
-+					   (unsigned long)fi->fscrypt_context,
-+					   ctxsize);
-+			nofs_flag = memalloc_nofs_save();
-+			res = fscrypt_load_extent_info(&inode->vfs_inode,
-+						       context, ctxsize,
-+						       &em->fscrypt_info);
-+			memalloc_nofs_restore(nofs_flag);
-+			if (res)
-+				btrfs_err(fs_info,
-+					  "Unable to load fscrypt info: %d",
-+					   res);
-+		}
-+#endif /* CONFIG_FS_ENCRYPTION */
- 	} else if (type == BTRFS_FILE_EXTENT_INLINE) {
- 		em->block_start = EXTENT_MAP_INLINE;
- 		em->start = extent_start;
-diff --git a/fs/btrfs/fscrypt.c b/fs/btrfs/fscrypt.c
-index 6875108f4363..30dab7d06589 100644
---- a/fs/btrfs/fscrypt.c
-+++ b/fs/btrfs/fscrypt.c
-@@ -166,6 +166,41 @@ static bool btrfs_fscrypt_empty_dir(struct inode *inode)
- 	return inode->i_size == BTRFS_EMPTY_DIR_SIZE;
- }
- 
-+int btrfs_fscrypt_get_extent_info(const struct inode *inode,
-+				  u64 lblk_num,
-+				  struct fscrypt_info **info_ptr,
-+				  u64 *extent_offset,
-+				  u64 *extent_length)
-+{
-+	u64 offset = lblk_num << inode->i_blkbits;
-+	struct extent_map *em;
-+
-+	/* Since IO must be in progress on this extent, this must succeed */
-+	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset, PAGE_SIZE);
-+	if (!em)
-+		return -EINVAL;
-+
-+	if (em->block_start == EXTENT_MAP_HOLE) {
-+		btrfs_info(BTRFS_I(inode)->root->fs_info,
-+			   "extent context requested for block %llu of inode %lu without an extent",
-+			   lblk_num, inode->i_ino);
-+		free_extent_map(em);
-+		return -ENOENT;
-+	}
-+
-+	*info_ptr = em->fscrypt_info;
-+
-+	if (extent_offset)
-+		*extent_offset
-+			 = (offset - em->start) >> inode->i_blkbits;
-+
-+	if (extent_length)
-+		*extent_length = em->len >> inode->i_blkbits;
-+
-+	free_extent_map(em);
-+	return 0;
-+}
-+
- static struct block_device **btrfs_fscrypt_get_devices(struct super_block *sb,
- 						       unsigned int *num_devs)
- {
-@@ -206,6 +241,7 @@ const struct fscrypt_operations btrfs_fscrypt_ops = {
- 	.get_context = btrfs_fscrypt_get_context,
- 	.set_context = btrfs_fscrypt_set_context,
- 	.empty_dir = btrfs_fscrypt_empty_dir,
-+	.get_extent_info = btrfs_fscrypt_get_extent_info,
- 	.get_devices = btrfs_fscrypt_get_devices,
- 	.key_prefix = "btrfs:"
- };
-diff --git a/fs/btrfs/fscrypt.h b/fs/btrfs/fscrypt.h
-index 2d405d54cbc7..1cab721a64e5 100644
---- a/fs/btrfs/fscrypt.h
-+++ b/fs/btrfs/fscrypt.h
-@@ -50,6 +50,12 @@ static inline bool btrfs_fscrypt_match_name(struct fscrypt_name *fname,
- }
- #endif /* CONFIG_FS_ENCRYPTION */
- 
-+int btrfs_fscrypt_get_extent_info(const struct inode *inode,
-+				  u64 lblk_num,
-+				  struct fscrypt_info **info_ptr,
-+				  u64 *extent_offset,
-+				  u64 *extent_length);
-+
- extern const struct fscrypt_operations btrfs_fscrypt_ops;
- 
- #endif /* BTRFS_FSCRYPT_H */
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 83098779dad2..92a193785a21 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -3036,17 +3036,46 @@ static int insert_reserved_file_extent(struct btrfs_trans_handle *trans,
- 	u64 num_bytes = btrfs_stack_file_extent_num_bytes(stack_fi);
- 	u64 ram_bytes = btrfs_stack_file_extent_ram_bytes(stack_fi);
- 	struct btrfs_drop_extents_args drop_args = { 0 };
--	size_t fscrypt_context_size =
--		btrfs_stack_file_extent_encryption(stack_fi) ?
--			FSCRYPT_SET_CONTEXT_MAX_SIZE : 0;
-+	size_t fscrypt_context_size = 0;
-+#ifdef CONFIG_FS_ENCRYPTION
-+	u8 context[FSCRYPT_SET_CONTEXT_MAX_SIZE];
-+#endif /* CONFIG_FS_ENCRYPTION */
-+
- 	int ret;
- 
- 	path = btrfs_alloc_path();
- 	if (!path)
- 		return -ENOMEM;
- 
-+#ifdef CONFIG_FS_ENCRYPTION
-+	if (IS_ENCRYPTED(&inode->vfs_inode)) {
-+		u8 encryption;
-+		struct fscrypt_info *fscrypt_info;
-+		u64 lblk_num = file_pos >> root->fs_info->sectorsize_bits;
-+
-+		ret = btrfs_fscrypt_get_extent_info(&inode->vfs_inode,
-+						    lblk_num, &fscrypt_info,
-+						    NULL, NULL);
-+		if (ret) {
-+			btrfs_err(root->fs_info, "No fscrypt context found");
-+			goto out;
-+		}
-+
-+		fscrypt_context_size =
-+			fscrypt_set_extent_context(fscrypt_info, context,
-+						   FSCRYPT_SET_CONTEXT_MAX_SIZE);
-+		if (fscrypt_context_size < 0) {
-+			ret = fscrypt_context_size;
-+			goto out;
-+		}
-+		encryption = btrfs_pack_encryption(BTRFS_ENCRYPTION_FSCRYPT,
-+						   fscrypt_context_size);
-+		btrfs_set_stack_file_extent_encryption(stack_fi, encryption);
-+	}
-+#endif /* CONFIG_FS_ENCRYPTION */
-+
- 	/*
--	 * we may be replacing one extent in the tree with another.
-+	 * We may be replacing one extent in the tree with another.
- 	 * The new extent is pinned in the extent map, and we don't want
- 	 * to drop it from the cache until it is completely in the btree.
- 	 *
-@@ -3079,6 +3108,13 @@ static int insert_reserved_file_extent(struct btrfs_trans_handle *trans,
- 			btrfs_item_ptr_offset(leaf, path->slots[0]),
- 			sizeof(struct btrfs_file_extent_item));
- 
-+#ifdef CONFIG_FS_ENCRYPTION
-+	write_extent_buffer(leaf, context,
-+			    btrfs_item_ptr_offset(leaf, path->slots[0]) +
-+			    sizeof(struct btrfs_file_extent_item),
-+			    fscrypt_context_size);
-+#endif /* CONFIG_FS_ENCRYPTION */
-+
- 	btrfs_mark_buffer_dirty(leaf);
- 	btrfs_release_path(path);
- 
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 82c91097672b..f0ad281170c5 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -4634,8 +4634,22 @@ static int log_one_extent(struct btrfs_trans_handle *trans,
- 	u64 extent_offset = em->start - em->orig_start;
- 	u64 block_len;
- 	int ret;
--	u8 encryption = btrfs_pack_encryption(IS_ENCRYPTED(&inode->vfs_inode) ?
--					      BTRFS_ENCRYPTION_FSCRYPT : 0, 0);
-+	u8 encryption = 0;
-+	size_t fscrypt_context_size = 0;
-+#ifdef CONFIG_FS_ENCRYPTION
-+	u8 context[FSCRYPT_SET_CONTEXT_MAX_SIZE];
-+
-+	if (em->fscrypt_info) {
-+		fscrypt_context_size =
-+			fscrypt_set_extent_context(em->fscrypt_info, context,
-+						   FSCRYPT_SET_CONTEXT_MAX_SIZE);
-+		if (fscrypt_context_size < 0)
-+			return fscrypt_context_size;
-+
-+		encryption = btrfs_pack_encryption(BTRFS_ENCRYPTION_FSCRYPT,
-+						   fscrypt_context_size);
-+	}
-+#endif /* CONFIG_FS_ENCRYPTION */
- 
- 	btrfs_set_stack_file_extent_generation(&fi, trans->transid);
- 	if (test_bit(EXTENT_FLAG_PREALLOC, &em->flags))
-@@ -4697,6 +4711,12 @@ static int log_one_extent(struct btrfs_trans_handle *trans,
- 	write_extent_buffer(leaf, &fi,
- 			    btrfs_item_ptr_offset(leaf, path->slots[0]),
- 			    sizeof(fi));
-+#ifdef CONFIG_FS_ENCRYPTION
-+	write_extent_buffer(leaf, context,
-+			    btrfs_item_ptr_offset(leaf, path->slots[0]) +
-+			    sizeof(fi), fscrypt_context_size);
-+#endif /* CONFIG_FS_ENCRYPTION */
-+
- 	btrfs_mark_buffer_dirty(leaf);
- 
- 	btrfs_release_path(path);
-diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
-index ea4903cfd926..efe44db8210a 100644
---- a/include/uapi/linux/btrfs_tree.h
-+++ b/include/uapi/linux/btrfs_tree.h
-@@ -1080,6 +1080,11 @@ struct btrfs_file_extent_item {
- 	 * always reflects the size uncompressed and without encoding.
- 	 */
- 	__le64 num_bytes;
-+	/*
-+	 * fscrypt extent encryption context. Only present if extent is
-+	 * encrypted (as per the encryption field).
-+	 */
-+	__u8 fscrypt_context[0];
- 
- } __attribute__ ((__packed__));
- 
--- 
-2.40.1
-
+Josef
