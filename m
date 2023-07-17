@@ -2,55 +2,57 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19A677546B2
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 15 Jul 2023 06:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48E2575591D
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 17 Jul 2023 03:42:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229745AbjGOEAb (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sat, 15 Jul 2023 00:00:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41550 "EHLO
+        id S229585AbjGQBm1 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sun, 16 Jul 2023 21:42:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbjGOEAa (ORCPT
+        with ESMTP id S229461AbjGQBm1 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sat, 15 Jul 2023 00:00:30 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 891473588;
-        Fri, 14 Jul 2023 21:00:29 -0700 (PDT)
-Received: by linux.microsoft.com (Postfix, from userid 1052)
-        id 1139721C4693; Fri, 14 Jul 2023 21:00:29 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1139721C4693
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1689393629;
-        bh=T+rS0NBXQ8rmZa6Pv6GYhkR4sFygUmWyBqsbSsfgTyA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cDoM/dayOIqXlO5WYELh4VdXzsOuz+zQzAmUzPjeRkz74duW+/HbrgjuR4td7uHih
-         PVSGFalEqGe64dK1ZYcaRiC6fsORYlkGjN4De35/Ao89rB7a04pqDfuE6QFAViLyWy
-         hli//fs1rJYxaYI1i1Q0crJXB84OXHw+TuLF/L9s=
-Date:   Fri, 14 Jul 2023 21:00:29 -0700
-From:   Fan Wu <wufan@linux.microsoft.com>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
-        serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org,
-        axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org,
-        eparis@redhat.com, linux-doc@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
-        dm-devel@redhat.com, audit@vger.kernel.org,
-        roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
-        Deven Bowers <deven.desai@linux.microsoft.com>
-Subject: Re: [PATCH RFC v10 9/17] ipe: add permissive toggle
-Message-ID: <20230715040029.GH15267@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1687986571-16823-10-git-send-email-wufan@linux.microsoft.com>
- <85af33c02638ebb501b40fd0f3785b12.paul@paul-moore.com>
+        Sun, 16 Jul 2023 21:42:27 -0400
+Received: from box.fidei.email (box.fidei.email [71.19.144.250])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B3C6E51;
+        Sun, 16 Jul 2023 18:42:25 -0700 (PDT)
+Received: from authenticated-user (box.fidei.email [71.19.144.250])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        (No client certificate requested)
+        by box.fidei.email (Postfix) with ESMTPSA id 7908D804CB;
+        Sun, 16 Jul 2023 21:42:23 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
+        t=1689558144; bh=vJq5ZhwUBeOSNlMSsLevD9EVTog/fiaowZSFUc7n2yM=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=vfuX81JhWQbet++hY84ZyHqNeCEFGrCjB7x7UbCn9v2/zXmdL4kSEjRyOUgrtsliu
+         i/wfX9gz2ghaZVNh/gP/Kyc8jpnzqQA8eSPFIXb3sznGJFlQEiUNYMaRZH/Ybxwi85
+         HHnbfPt9d5w2QnPV6NwVWebKjirTaWm4lo+e75HgdUu7MhwhGZDXFahTd+hjSCu1cj
+         HqJb59weyHL1tNvs6AYMuLGtqFpcyikqFr9TYNgrEYgDsioV5gNiVljUuHHYR1/zXP
+         U7CZ5xYbzMRAKp2eZsdlCBOOpM5XbBjO7Skydurfvfxesa74xrRskyaSh73dfJhqs2
+         ZRBfvlonZqEIw==
+Message-ID: <b6deef30-0dc5-929c-3dd6-f3016cd58c48@dorminy.me>
+Date:   Sun, 16 Jul 2023 21:42:22 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <85af33c02638ebb501b40fd0f3785b12.paul@paul-moore.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Subject: Re: [PATCH v1 01/17] btrfs: disable various operations on encrypted
+ inodes
+Content-Language: en-US
+To:     Boris Burkov <boris@bur.io>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@meta.com,
+        linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        Omar Sandoval <osandov@osandov.com>
+References: <cover.1687988380.git.sweettea-kernel@dorminy.me>
+ <e7785ffe237e581a7ba7e45d2724fca4d8fa1470.1687988380.git.sweettea-kernel@dorminy.me>
+ <20230707233605.GB2579580@zen>
+From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+In-Reply-To: <20230707233605.GB2579580@zen>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,93 +60,56 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Sat, Jul 08, 2023 at 12:23:06AM -0400, Paul Moore wrote:
-> On Jun 28, 2023 Fan Wu <wufan@linux.microsoft.com> wrote:
-> > 
-> > IPE, like SELinux, supports a permissive mode. This mode allows policy
-> > authors to test and evaluate IPE policy without it effecting their
-> > programs. When the mode is changed, a 1404 AUDIT_MAC_STATUS
-> > be reported.
-> > 
-> > This patch adds the following audit records:
-> > 
-> >     audit: MAC_STATUS enforcing=0 old_enforcing=1 auid=4294967295
-> >       ses=4294967295 enabled=1 old-enabled=1 lsm=ipe res=1
-> >     audit: MAC_STATUS enforcing=1 old_enforcing=0 auid=4294967295
-> >       ses=4294967295 enabled=1 old-enabled=1 lsm=ipe res=1
-> > 
-> > The audit record only emit when the value from the user input is
-> > different from the current enforce value.
-> > 
-> > Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
-> > Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
-> > ---
-> >  security/ipe/audit.c | 22 ++++++++++++++
-> >  security/ipe/audit.h |  1 +
-> >  security/ipe/eval.c  |  9 ++++++
-> >  security/ipe/eval.h  |  1 +
-> >  security/ipe/fs.c    | 69 ++++++++++++++++++++++++++++++++++++++++++++
-> >  5 files changed, 102 insertions(+)
-> 
-> ...
-> 
-> > diff --git a/security/ipe/fs.c b/security/ipe/fs.c
-> > index 6bd2aa84831b..1761d39e4d04 100644
-> > --- a/security/ipe/fs.c
-> > +++ b/security/ipe/fs.c
-> > @@ -16,6 +16,7 @@ static struct dentry *np __ro_after_init;
-> >  static struct dentry *root __ro_after_init;
-> >  struct dentry *policy_root __ro_after_init;
-> >  static struct dentry *audit_node __ro_after_init;
-> > +static struct dentry *enforce_node __ro_after_init;
-> >  
-> >  /**
-> >   * setaudit - Write handler for the securityfs node, "ipe/success_audit"
-> > @@ -68,6 +69,61 @@ static ssize_t getaudit(struct file *f, char __user *data,
-> >  	return simple_read_from_buffer(data, len, offset, result, 1);
-> >  }
-> >  
-> > +/**
-> > + * setenforce - Write handler for the securityfs node, "ipe/enforce"
-> > + * @f: Supplies a file structure representing the securityfs node.
-> > + * @data: Supplies a buffer passed to the write syscall.
-> > + * @len: Supplies the length of @data.
-> > + * @offset: unused.
-> > + *
-> > + * Return:
-> > + * * >0	- Success, Length of buffer written
-> > + * * <0	- Error
-> > + */
-> > +static ssize_t setenforce(struct file *f, const char __user *data,
-> > +			  size_t len, loff_t *offset)
-> > +{
-> > +	int rc = 0;
-> > +	bool new_value, old_value;
-> > +
-> > +	if (!file_ns_capable(f, &init_user_ns, CAP_MAC_ADMIN))
-> > +		return -EPERM;
-> > +
-> > +	old_value = READ_ONCE(enforce);
-> > +	new_value = old_value;
-> 
-> Why set @new_value equal to @old_value here?
-> 
-Sorry this mistake is the same as the one for audit switch. 
-kstrtobool_from_user will return error if new_value is not set,
-I will remove the above line.
 
--Fan
-> > +	rc = kstrtobool_from_user(data, len, &new_value);
-> > +	if (rc)
-> > +		return rc;
-> > +
-> > +	if (new_value != old_value) {
-> > +		ipe_audit_enforce(new_value, old_value);
-> > +		WRITE_ONCE(enforce, new_value);
-> > +	}
-> > +
-> > +	return len;
-> > +}
+
+On 7/7/23 19:36, Boris Burkov wrote:
+> On Wed, Jun 28, 2023 at 08:35:24PM -0400, Sweet Tea Dorminy wrote:
+>> From: Omar Sandoval <osandov@osandov.com>
+>>
+>> Initially, only normal data extents, using the normal (non-direct) IO
+>> path, will be encrypted. This change forbids various other bits:
+>> - allows reflinking only if both inodes have the same encryption status
+>> - disables direct IO on encrypted inodes
+>> - disable inline data on encrypted inodes
+>>
+>> Signed-off-by: Omar Sandoval <osandov@osandov.com>
+>> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+>> ---
+>>   fs/btrfs/file.c    | 4 ++--
+>>   fs/btrfs/inode.c   | 3 ++-
+>>   fs/btrfs/reflink.c | 7 +++++++
+>>   3 files changed, 11 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+>> index 392bc7d512a0..354962a7dd72 100644
+>> --- a/fs/btrfs/file.c
+>> +++ b/fs/btrfs/file.c
+>> @@ -1502,7 +1502,7 @@ static ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
+>>   		goto relock;
+>>   	}
+>>   
+>> -	if (check_direct_IO(fs_info, from, pos)) {
+>> +	if (IS_ENCRYPTED(inode) || check_direct_IO(fs_info, from, pos)) {
+>>   		btrfs_inode_unlock(BTRFS_I(inode), ilock_flags);
+>>   		goto buffered;
+>>   	}
+>> @@ -3741,7 +3741,7 @@ static ssize_t btrfs_direct_read(struct kiocb *iocb, struct iov_iter *to)
+>>   	ssize_t read = 0;
+>>   	ssize_t ret;
+>>   
+>> -	if (fsverity_active(inode))
+>> +	if (IS_ENCRYPTED(inode) || fsverity_active(inode))
 > 
-> --
-> paul-moore.com
+> What's different about fscrypt vs fsverity that makes the inode flag a
+> good check for encryption while verity relies on the presence of the
+> extra context metadata?
+> 
+> Is the enable model not subject to the same race where S_VERITY gets set
+> ahead of actually storing the verity info/item?
+> 
+> I think it's fine for these "skip" cases, but I imagine if we have cases
+> of "I want a fully ready encrypted file" the verity-style check could be
+> better?
+> 
+Clear solution: enable direct encrypted IO :). I've removed this check 
+altogether, thanks for the note.
