@@ -2,82 +2,56 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4533759CC3
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 19 Jul 2023 19:48:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3004F75A48E
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 20 Jul 2023 04:55:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229990AbjGSRsn (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 19 Jul 2023 13:48:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37500 "EHLO
+        id S229720AbjGTCzq (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 19 Jul 2023 22:55:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbjGSRsn (ORCPT
+        with ESMTP id S229551AbjGTCzp (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 19 Jul 2023 13:48:43 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E25AE1BF6;
-        Wed, 19 Jul 2023 10:48:41 -0700 (PDT)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36JHKwsd016118;
-        Wed, 19 Jul 2023 17:48:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=qmfK0acunX87SRjr5i+zJqpgvPTCAPosGAy5Rg+8G2A=;
- b=PBuFrEv8hwRkL9TqRBwRkJbK0LVgEiW1ZbIxcvTQPoPi7i+5A5C2oPuxF/xBFBHPitnE
- Qjyl7ZW1CG125IDwG0JO86hz++ObYtABjtLq+mlEBmOfVgdl0fEJESDKFg8U/oKXAwIc
- nwOFMAEXOH+O1G5xxVQfo0hdVPrwreMNJU8P3NTz39bmdcnbvAL/QQxTwx5Mp/zsmA+3
- 6VqWaBv0xfm7kq4YZXapYftcoaTiPh9VEZwFaJlxYS48T540yr2+TSDUrq7+jHTu/Ve4
- 1nc3HOlzEBEpPRlPuAi1+L9G+W+rbkf9VftekGQq8GIRJn4jAi6I1Plp1/nIxxlY+0Fp IA== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rxg3v8pvk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 Jul 2023 17:48:38 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36JHmb0f019294
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 Jul 2023 17:48:37 GMT
-Received: from [10.110.1.206] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 19 Jul
- 2023 10:48:36 -0700
-Message-ID: <62207b82-92c1-e666-67e4-420a112c281f@quicinc.com>
-Date:   Wed, 19 Jul 2023 10:48:36 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH v2 07/10] qcom_scm: scm call for create, prepare and
- import keys
-Content-Language: en-US
-To:     Gaurav Kashyap <quic_gaurkash@quicinc.com>,
-        <linux-scsi@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <ebiggers@google.com>
-CC:     <linux-mmc@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-fscrypt@vger.kernel.org>, <omprsing@qti.qualcomm.com>,
-        <quic_psodagud@quicinc.com>, <avmenon@quicinc.com>,
-        <abel.vesa@linaro.org>, <quic_spuppala@quicinc.com>
+        Wed, 19 Jul 2023 22:55:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 786A6172A;
+        Wed, 19 Jul 2023 19:55:44 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0D22360ED0;
+        Thu, 20 Jul 2023 02:55:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1722EC433C8;
+        Thu, 20 Jul 2023 02:55:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689821743;
+        bh=o/YV+k4xqo8X8+NVHObuTllSS7QCYEY/VdOiYZmmdSw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=s4OPQ7U/Ojvxhh6WRwAonmOOoe4/WMAmN+KaT/qJ9vss9Y7CSmkKStaVe2DEDXQHf
+         DY+KAAakCNpwRmdi6k2pWSE4fJXvN9QVPQU/WJ+01TlVQvNsEoNfUh0wiSgVI+sV0S
+         vzQ7YfVU8S4+HRoSKeW64EbOiMFIUKafWbSbq9ZQ4e69WRSN+a5ByoKRJqilk1V0nI
+         8KAI/K7Qumy6EuH8gKtY1Nhsmfw/Fxlh3vMJcYAo2iI9pKv+l3kNXW82Ro6+Fu+521
+         O9mZaqwlVcsgZLNoym1sHni6nv5uN6dQT+Ce7Oh0TGM7+cFYPxP4ZiMa6DG7JAfXW1
+         8WbYbQtmqpLKw==
+Date:   Wed, 19 Jul 2023 19:55:41 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Gaurav Kashyap <quic_gaurkash@quicinc.com>
+Cc:     linux-scsi@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, omprsing@qti.qualcomm.com,
+        quic_psodagud@quicinc.com, avmenon@quicinc.com,
+        abel.vesa@linaro.org, quic_spuppala@quicinc.com
+Subject: Re: [PATCH v2 00/10] Hardware wrapped key support for qcom ice and
+ ufs
+Message-ID: <20230720025541.GA2607@sol.localdomain>
 References: <20230719170423.220033-1-quic_gaurkash@quicinc.com>
- <20230719170423.220033-8-quic_gaurkash@quicinc.com>
-From:   Trilok Soni <quic_tsoni@quicinc.com>
-In-Reply-To: <20230719170423.220033-8-quic_gaurkash@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: UgsBkGTjh5i6zOiE0cC31J2HwV-7ii2c
-X-Proofpoint-ORIG-GUID: UgsBkGTjh5i6zOiE0cC31J2HwV-7ii2c
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-19_12,2023-07-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- malwarescore=0 spamscore=0 bulkscore=0 adultscore=0 mlxscore=0
- suspectscore=0 clxscore=1011 lowpriorityscore=0 priorityscore=1501
- mlxlogscore=939 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2306200000 definitions=main-2307190160
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230719170423.220033-1-quic_gaurkash@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,187 +59,88 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On 7/19/2023 10:04 AM, Gaurav Kashyap wrote:
-> Storage encryption has two IOCTLs for creating, importing
-> and preparing keys for encryption. For wrapped keys, these
-> IOCTLs need to interface with the secure environment, which
-> require these SCM calls.
-> 
-> generate_key: This is used to generate and return a longterm
->                wrapped key. Trustzone achieves this by generating
-> 	      a key and then wrapping it using hwkm, returning
-> 	      a wrapped keyblob.
-> import_key:   The functionality is similar to generate, but here,
->                a raw key is imported into hwkm and a longterm wrapped
-> 	      keyblob is returned.
-> prepare_key:  The longterm wrapped key from import or generate
->                is made further secure by rewrapping it with a per-boot
-> 	      ephemeral wrapped key before installing it to the linux
-> 	      kernel for programming to ICE.
-> 
-> Signed-off-by: Gaurav Kashyap <quic_gaurkash@quicinc.com>
-> ---
->   drivers/firmware/qcom_scm.c            | 222 +++++++++++++++++++++++++
->   drivers/firmware/qcom_scm.h            |   3 +
->   include/linux/firmware/qcom/qcom_scm.h |  10 ++
->   3 files changed, 235 insertions(+)
-> 
-> diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
-> index 51062d5c7f7b..44dd1857747b 100644
-> --- a/drivers/firmware/qcom_scm.c
-> +++ b/drivers/firmware/qcom_scm.c
-> @@ -1210,6 +1210,228 @@ int qcom_scm_derive_sw_secret(const u8 *wrapped_key, u32 wrapped_key_size,
->   }
->   EXPORT_SYMBOL(qcom_scm_derive_sw_secret);
->   
-> +/**
-> + * qcom_scm_generate_ice_key() - Generate a wrapped key for encryption.
-> + * @longterm_wrapped_key: the wrapped key returned after key generation
-> + * @longterm_wrapped_key_size: size of the wrapped key to be returned.
-> + *
-> + * Qualcomm wrapped keys need to be generated in a trusted environment.
-> + * A generate key  IOCTL call is used to achieve this. These are longterm
-> + * in nature as they need to be generated and wrapped only once per
-> + * requirement.
-> + *
-> + * This SCM calls adds support for the generate key IOCTL to interface
-> + * with the secure environment to generate and return a wrapped key..
-> + *
-> + * Return: 0 on success; -errno on failure.
-> + */
-> +int qcom_scm_generate_ice_key(u8 *longterm_wrapped_key,
-> +			    u32 longterm_wrapped_key_size)
-> +{
-> +	struct qcom_scm_desc desc = {
-> +		.svc = QCOM_SCM_SVC_ES,
-> +		.cmd =  QCOM_SCM_ES_GENERATE_ICE_KEY,
-> +		.arginfo = QCOM_SCM_ARGS(2, QCOM_SCM_RW,
-> +					 QCOM_SCM_VAL),
-> +		.args[1] = longterm_wrapped_key_size,
-> +		.owner = ARM_SMCCC_OWNER_SIP,
-> +	};
-> +
-> +	void *longterm_wrapped_keybuf;
-> +	dma_addr_t longterm_wrapped_key_phys;
-> +	int ret;
-> +
-> +	/*
-> +	 * Like qcom_scm_ice_set_key(), we use dma_alloc_coherent() to properly
-> +	 * get a physical address, while guaranteeing that we can zeroize the
-> +	 * key material later using memzero_explicit().
-> +	 *
-> +	 */
-> +	longterm_wrapped_keybuf = dma_alloc_coherent(__scm->dev,
-> +				  longterm_wrapped_key_size,
-> +				  &longterm_wrapped_key_phys, GFP_KERNEL);
-> +	if (!longterm_wrapped_keybuf)
-> +		return -ENOMEM;
-> +
-> +	desc.args[0] = longterm_wrapped_key_phys;
-> +
-> +	ret = qcom_scm_call(__scm->dev, &desc, NULL);
-> +	memcpy(longterm_wrapped_key, longterm_wrapped_keybuf,
-> +	       longterm_wrapped_key_size);
-> +
-> +	memzero_explicit(longterm_wrapped_keybuf, longterm_wrapped_key_size);
-> +	dma_free_coherent(__scm->dev, longterm_wrapped_key_size,
-> +			  longterm_wrapped_keybuf, longterm_wrapped_key_phys);
-> +
-> +	if (!ret)
-> +		return longterm_wrapped_key_size;
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(qcom_scm_generate_ice_key);
-> +
-> +/**
-> + * qcom_scm_prepare_ice_key() - Get per boot ephemeral wrapped key
-> + * @longterm_wrapped_key: the wrapped key
-> + * @longterm_wrapped_key_size: size of the wrapped key
-> + * @ephemeral_wrapped_key: ephemeral wrapped key to be returned
-> + * @ephemeral_wrapped_key_size: size of the ephemeral wrapped key
-> + *
-> + * Qualcomm wrapped keys (longterm keys) are rewrapped with a per-boot
-> + * ephemeral key for added protection. These are ephemeral in nature as
-> + * they are valid only for that boot. A create key IOCTL is used to
-> + * achieve this. These are the keys that are installed into the kernel
-> + * to be then unwrapped and programmed into ICE.
-> + *
-> + * This SCM call adds support for the create key IOCTL to interface
-> + * with the secure environment to rewrap the wrapped key with an
-> + * ephemeral wrapping key.
-> + *
-> + * Return: 0 on success; -errno on failure.
-> + */
-> +int qcom_scm_prepare_ice_key(const u8 *longterm_wrapped_key,
-> +			     u32 longterm_wrapped_key_size,
-> +			     u8 *ephemeral_wrapped_key,
-> +			     u32 ephemeral_wrapped_key_size)
-> +{
-> +	struct qcom_scm_desc desc = {
-> +		.svc = QCOM_SCM_SVC_ES,
-> +		.cmd =  QCOM_SCM_ES_PREPARE_ICE_KEY,
-> +		.arginfo = QCOM_SCM_ARGS(4, QCOM_SCM_RO,
-> +					 QCOM_SCM_VAL, QCOM_SCM_RW,
-> +					 QCOM_SCM_VAL),
-> +		.args[1] = longterm_wrapped_key_size,
-> +		.args[3] = ephemeral_wrapped_key_size,
-> +		.owner = ARM_SMCCC_OWNER_SIP,
-> +	};
-> +
-> +	void *longterm_wrapped_keybuf, *ephemeral_wrapped_keybuf;
-> +	dma_addr_t longterm_wrapped_key_phys, ephemeral_wrapped_key_phys;
-> +	int ret;
-> +
-> +	/*
-> +	 * Like qcom_scm_ice_set_key(), we use dma_alloc_coherent() to properly
-> +	 * get a physical address, while guaranteeing that we can zeroize the
-> +	 * key material later using memzero_explicit().
-> +	 *
-> +	 */
-> +	longterm_wrapped_keybuf = dma_alloc_coherent(__scm->dev,
-> +				  longterm_wrapped_key_size,
-> +				  &longterm_wrapped_key_phys, GFP_KERNEL);
-> +	if (!longterm_wrapped_keybuf)
-> +		return -ENOMEM;
-> +	ephemeral_wrapped_keybuf = dma_alloc_coherent(__scm->dev,
-> +				   ephemeral_wrapped_key_size,
-> +				   &ephemeral_wrapped_key_phys, GFP_KERNEL);
-> +	if (!ephemeral_wrapped_keybuf) {
-> +		ret = -ENOMEM;
-> +		goto bail_keybuf;
-> +	}
-> +
-> +	memcpy(longterm_wrapped_keybuf, longterm_wrapped_key,
-> +	       longterm_wrapped_key_size);
-> +	desc.args[0] = longterm_wrapped_key_phys;
-> +	desc.args[2] = ephemeral_wrapped_key_phys;
-> +
-> +	ret = qcom_scm_call(__scm->dev, &desc, NULL);
-> +	if (!ret)
-> +		memcpy(ephemeral_wrapped_key, ephemeral_wrapped_keybuf,
-> +		       ephemeral_wrapped_key_size);
-> +
-> +	memzero_explicit(ephemeral_wrapped_keybuf, ephemeral_wrapped_key_size);
-> +	dma_free_coherent(__scm->dev, ephemeral_wrapped_key_size,
-> +			  ephemeral_wrapped_keybuf,
-> +			  ephemeral_wrapped_key_phys);
-> +
-> +bail_keybuf:
-> +	memzero_explicit(longterm_wrapped_keybuf, longterm_wrapped_key_size);
-> +	dma_free_coherent(__scm->dev, longterm_wrapped_key_size,
-> +			  longterm_wrapped_keybuf, longterm_wrapped_key_phys);
-> +
-> +	if (!ret)
-> +		return ephemeral_wrapped_key_size;
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(qcom_scm_prepare_ice_key);
+Hi Gaurav,
 
-EXPORT_SYMBOL_GPL everywhere please. I understand that other places in 
-this file uses EXPORT_SYMBOL but new additions can be _GPL. I will see 
-if someone from my team can covert other symbols to _GPL as well in this 
-file.
+On Wed, Jul 19, 2023 at 10:04:14AM -0700, Gaurav Kashyap wrote:
+> These patches add support to Qualcomm ICE (Inline Crypto Enginr) for hardware
+> wrapped keys using Qualcomm Hardware Key Manager (HWKM) and are made on top
+> of a rebased version  Eric Bigger's set of changes to support wrapped keys in
+> fscrypt and block below:
+> https://git.kernel.org/pub/scm/fs/fscrypt/linux.git/log/?h=wrapped-keys-v7
+> (The rebased patches are not uploaded here)
+> 
+> Ref v1 here:
+> https://lore.kernel.org/linux-scsi/20211206225725.77512-1-quic_gaurkash@quicinc.com/
+> 
+> Explanation and use of hardware-wrapped-keys can be found here:
+> Documentation/block/inline-encryption.rst
+> 
+> This patch is organized as follows:
+> 
+> Patch 1 - Prepares ICE and storage layers (UFS and EMMC) to pass around wrapped keys.
+> Patch 2 - Adds a new SCM api to support deriving software secret when wrapped keys are used
+> Patch 3-4 - Adds support for wrapped keys in the ICE driver. This includes adding HWKM support
+> Patch 5-6 - Adds support for wrapped keys in UFS
+> Patch 7-10 - Supports generate, prepare and import functionality in ICE and UFS
+> 
+> NOTE: MMC will have similar changes to UFS and will be uploaded in a different patchset
+>       Patch 3, 4, 8, 10 will have MMC equivalents.
+> 
+> Testing:
+> Test platform: SM8550 MTP
+> Engineering trustzone image is required to test this feature only
+> for SM8550. For SM8650 onwards, all trustzone changes to support this
+> will be part of the released images.
+> The engineering changes primarily contain hooks to generate, import and
+> prepare keys for HW wrapped disk encryption.
+> 
+> The changes were tested by mounting initramfs and running the fscryptctl
+> tool (Ref: https://github.com/ebiggers/fscryptctl/tree/wip-wrapped-keys) to
+> generate and prepare keys, as well as to set policies on folders, which
+> consequently invokes disk encryption flows through UFS.
+> 
+> Gaurav Kashyap (10):
+>   ice, ufs, mmc: use blk_crypto_key for program_key
+>   qcom_scm: scm call for deriving a software secret
+>   soc: qcom: ice: add hwkm support in ice
+>   soc: qcom: ice: support for hardware wrapped keys
+>   ufs: core: support wrapped keys in ufs core
+>   ufs: host: wrapped keys support in ufs qcom
+>   qcom_scm: scm call for create, prepare and import keys
+>   ufs: core: add support for generate, import and prepare keys
+>   soc: qcom: support for generate, import and prepare key
+>   ufs: host: support for generate, import and prepare key
+> 
+>  drivers/firmware/qcom_scm.c            | 292 +++++++++++++++++++++++
+>  drivers/firmware/qcom_scm.h            |   4 +
+>  drivers/mmc/host/cqhci-crypto.c        |   7 +-
+>  drivers/mmc/host/cqhci.h               |   2 +
+>  drivers/mmc/host/sdhci-msm.c           |   6 +-
+>  drivers/soc/qcom/ice.c                 | 309 +++++++++++++++++++++++--
+>  drivers/ufs/core/ufshcd-crypto.c       |  92 +++++++-
+>  drivers/ufs/host/ufs-qcom.c            |  63 ++++-
+>  include/linux/firmware/qcom/qcom_scm.h |  13 ++
+>  include/soc/qcom/ice.h                 |  18 +-
+>  include/ufs/ufshcd.h                   |  25 ++
+>  11 files changed, 797 insertions(+), 34 deletions(-)
 
----Trilok Soni
+
+Thank you for continuing to work on this!
+
+According to your cover letter, this feature requires a custom TrustZone image
+to work on SM8550.  Will that image be made available outside Qualcomm?
+
+Also according to your cover letter, this feature will work on SM8650 out of the
+box.  That's great to hear.  However, SM8650 does not appear to be publicly
+available yet or have any upstream kernel support.  Do you know approximately
+when a SM8650 development board will become available to the general public?
+
+Also, can you please make available a git branch somewhere that contains your
+patchset?  It sounds like this depends on
+https://git.kernel.org/pub/scm/fs/fscrypt/linux.git/log/?h=wrapped-keys-v7, but
+actually a version of it that you've rebased, which I don't have access to.
+Without being able to apply your patchset, I can't properly review it.
+
+Thanks!
+
+- Eric
