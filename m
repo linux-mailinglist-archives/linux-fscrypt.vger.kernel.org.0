@@ -2,33 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C80F7743CD
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  8 Aug 2023 20:10:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 332507743D3
+	for <lists+linux-fscrypt@lfdr.de>; Tue,  8 Aug 2023 20:10:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235302AbjHHSKi (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 8 Aug 2023 14:10:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37908 "EHLO
+        id S235264AbjHHSKk (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 8 Aug 2023 14:10:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232697AbjHHSKD (ORCPT
+        with ESMTP id S235336AbjHHSKF (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:10:03 -0400
+        Tue, 8 Aug 2023 14:10:05 -0400
 Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5FC4676B5;
-        Tue,  8 Aug 2023 10:12:47 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 449F4696BF;
+        Tue,  8 Aug 2023 10:12:48 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 3C6BF83449;
-        Tue,  8 Aug 2023 13:12:47 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id 9250583440;
+        Tue,  8 Aug 2023 13:12:48 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1691514767; bh=ebsvTR61Puad/NrpYHY1xisxcbD4m06UmAR4mNB5pZc=;
+        t=1691514768; bh=a+43fN8N9kk58gaXoYpi7X/1eJimrrwBfXdzKUoLG/M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R95KFicPSI7r3X7/Tcp1eoAheTI7g+sr8WXb1OQAvuyL7yglocwj0EyaSSriSnU7t
-         itl2evR66V7YJaNeiivDltLfgO7w2OHpSbH1zOK/8PNZ2qJ6lFoE6bbhodzWGy/u0y
-         3IYBE+YWEEUQ+Zva52UHG3luJaXMMMQEXxtHRrMMjO1AKD/RFPDJF0epGuWSIuNk9c
-         vPVRbYl88kQy4ZgvH7ELex7QQkvJbVaX+e+wXHEFVNWPEQOUFTqFp32q9Z9CfHOtXS
-         rV08paeMgQaOGuEKytLqjnzv6y9nlGOB/msJVF837aNAiILcXettWFb8x/f+EAU7Oq
-         i3aNACNZyHDYA==
+        b=dh1AQn3cabQf5EOG2D5Q0vU8bGOwV/FeMJHF/BaXVO8TNvFRzigFwZQyqdUbwPyZf
+         k1e0NMRC3IK0yrzGU1Od9Jck4f9IO12JnFv9qwosAsRsfnKzs2VyduAqbEh4Fq3+8x
+         HrJUixwTE5KU3qMzb+6PlXi4iqEFr0euBjrqwOdCK/+aEB3wgIv5gwZHaX7ddm0yEp
+         atYdTXktAv9/DlU9k4ard3QNJP4uzNgnYtHB9kWPMqsvo6uEbpMxFLIrj9cSVPjoYF
+         bYuWvf/+/B0w1dq9/qMPbzpacHUEkPVxOZdJEl3KPZ8xAuBsnWi4HeHJh89pGFBxwi
+         blc8MY9XagJzw==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
@@ -37,9 +37,9 @@ To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         Eric Biggers <ebiggers@kernel.org>
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH v3 15/17] btrfs: start tracking extent encryption context info
-Date:   Tue,  8 Aug 2023 13:12:17 -0400
-Message-ID: <f37e7aab6ca74639a20242be10ce0864bf96cf9c.1691510179.git.sweettea-kernel@dorminy.me>
+Subject: [PATCH v3 16/17] btrfs: explicitly track file extent length and encryption
+Date:   Tue,  8 Aug 2023 13:12:18 -0400
+Message-ID: <13ee63623ae96a6d2da7b19b779a3d324a76eaf6.1691510179.git.sweettea-kernel@dorminy.me>
 In-Reply-To: <cover.1691510179.git.sweettea-kernel@dorminy.me>
 References: <cover.1691510179.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
@@ -54,282 +54,145 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-This puts the long-preserved 1-byte encryption field to work, storing
-whether the extent is encrypted.
-Since there is no way for a btrfs inode to be encrypted right now, we
-set context length to be 0 in all locations.
-
-This also adds the new encryption_context member to the end of the
-file_extent item, which will begin with a length of the fscrypt context
-following it; and an accessor for the context size. This allows checking
-that the context size matches the item size.
-
-It could be possible to pack the size and the encryption type into the
-u8 encryption field, but this allows more flexibility in the future.
+With the advent of storing fscrypt contexts with each encrypted extent,
+extents will have a variable length depending on encryption status.
 
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 ---
- fs/btrfs/accessors.h            |  3 ++-
- fs/btrfs/file-item.c            |  5 +++++
- fs/btrfs/fscrypt.h              | 21 +++++++++++++++++++
- fs/btrfs/inode.c                | 25 ++++++++++++++++++----
- fs/btrfs/tree-checker.c         | 37 ++++++++++++++++++++++++++-------
- fs/btrfs/tree-log.c             |  2 ++
- include/uapi/linux/btrfs_tree.h | 12 ++++++++++-
- 7 files changed, 91 insertions(+), 14 deletions(-)
+ fs/btrfs/ctree.h    | 2 ++
+ fs/btrfs/file.c     | 4 ++--
+ fs/btrfs/inode.c    | 9 +++++++--
+ fs/btrfs/reflink.c  | 1 +
+ fs/btrfs/tree-log.c | 8 +++++---
+ 5 files changed, 17 insertions(+), 7 deletions(-)
 
-diff --git a/fs/btrfs/accessors.h b/fs/btrfs/accessors.h
-index 8cfc8214109c..93b11d5e21a9 100644
---- a/fs/btrfs/accessors.h
-+++ b/fs/btrfs/accessors.h
-@@ -935,7 +935,8 @@ BTRFS_SETGET_STACK_FUNCS(stack_file_extent_disk_num_bytes,
- 			 struct btrfs_file_extent_item, disk_num_bytes, 64);
- BTRFS_SETGET_STACK_FUNCS(stack_file_extent_compression,
- 			 struct btrfs_file_extent_item, compression, 8);
--
-+BTRFS_SETGET_STACK_FUNCS(stack_file_extent_encryption,
-+			 struct btrfs_file_extent_item, encryption, 8);
- 
- BTRFS_SETGET_FUNCS(file_extent_type, struct btrfs_file_extent_item, type, 8);
- BTRFS_SETGET_FUNCS(file_extent_disk_bytenr, struct btrfs_file_extent_item,
-diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-index 696bf695d8eb..f83f7020ed89 100644
---- a/fs/btrfs/file-item.c
-+++ b/fs/btrfs/file-item.c
-@@ -18,6 +18,7 @@
- #include "print-tree.h"
- #include "compression.h"
- #include "fs.h"
-+#include "fscrypt.h"
- #include "accessors.h"
- #include "file-item.h"
- #include "super.h"
-@@ -1272,6 +1273,7 @@ void btrfs_extent_item_to_extent_map(struct btrfs_inode *inode,
- 	em->generation = btrfs_file_extent_generation(leaf, fi);
- 	if (type == BTRFS_FILE_EXTENT_REG ||
- 	    type == BTRFS_FILE_EXTENT_PREALLOC) {
-+		u8 ctxsize;
- 		em->start = extent_start;
- 		em->len = extent_end - extent_start;
- 		em->orig_start = extent_start -
-@@ -1294,6 +1296,9 @@ void btrfs_extent_item_to_extent_map(struct btrfs_inode *inode,
- 			if (type == BTRFS_FILE_EXTENT_PREALLOC)
- 				set_bit(EXTENT_FLAG_PREALLOC, &em->flags);
- 		}
-+
-+		ctxsize = btrfs_file_extent_ctxsize_from_item(leaf, path);
-+		ASSERT(ctxsize == btrfs_file_extent_encryption_ctxsize(leaf, fi));
- 	} else if (type == BTRFS_FILE_EXTENT_INLINE) {
- 		em->block_start = EXTENT_MAP_INLINE;
- 		em->start = extent_start;
-diff --git a/fs/btrfs/fscrypt.h b/fs/btrfs/fscrypt.h
-index a489bb54b3b1..26627df9d5f9 100644
---- a/fs/btrfs/fscrypt.h
-+++ b/fs/btrfs/fscrypt.h
-@@ -4,10 +4,31 @@
- #define BTRFS_FSCRYPT_H
- 
- #include <linux/fscrypt.h>
-+#include "accessors.h"
- #include "extent_io.h"
- 
- #include "fs.h"
- 
-+static inline u32
-+btrfs_file_extent_encryption_ctxsize(const struct extent_buffer *eb,
-+				     struct btrfs_file_extent_item *e)
-+{
-+	if (!btrfs_file_extent_encryption(eb, e))
-+		return 0;
-+
-+	return btrfs_get_32(eb, e, offsetof(struct btrfs_file_extent_item,
-+					    encryption_context));
-+}
-+
-+static inline u8
-+btrfs_file_extent_ctxsize_from_item(const struct extent_buffer *leaf,
-+				    const struct btrfs_path *path)
-+{
-+	return (btrfs_item_size(leaf, path->slots[0]) -
-+		sizeof(struct btrfs_file_extent_item));
-+}
-+
-+
- #ifdef CONFIG_FS_ENCRYPTION
- int btrfs_fscrypt_get_disk_name(struct extent_buffer *leaf,
- 				struct btrfs_dir_item *di,
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index f2d2b313bde5..b1afcfc62f75 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -364,6 +364,8 @@ struct btrfs_replace_extent_info {
+ 	u64 file_offset;
+ 	/* Pointer to a file extent item of type regular or prealloc. */
+ 	char *extent_buf;
++	/* The length of @extent_buf */
++	u32 extent_buf_size;
+ 	/*
+ 	 * Set to true when attempting to replace a file range with a new extent
+ 	 * described by this structure, set to false when attempting to clone an
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 73038908876a..4988c9317234 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -2246,14 +2246,14 @@ static int btrfs_insert_replace_extent(struct btrfs_trans_handle *trans,
+ 	key.type = BTRFS_EXTENT_DATA_KEY;
+ 	key.offset = extent_info->file_offset;
+ 	ret = btrfs_insert_empty_item(trans, root, path, &key,
+-				      sizeof(struct btrfs_file_extent_item));
++				      extent_info->extent_buf_size);
+ 	if (ret)
+ 		return ret;
+ 	leaf = path->nodes[0];
+ 	slot = path->slots[0];
+ 	write_extent_buffer(leaf, extent_info->extent_buf,
+ 			    btrfs_item_ptr_offset(leaf, slot),
+-			    sizeof(struct btrfs_file_extent_item));
++			    extent_info->extent_buf_size);
+ 	extent = btrfs_item_ptr(leaf, slot, struct btrfs_file_extent_item);
+ 	ASSERT(btrfs_file_extent_type(leaf, extent) != BTRFS_FILE_EXTENT_INLINE);
+ 	btrfs_set_file_extent_offset(leaf, extent, extent_info->data_offset);
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 7726957284c1..ed0579577263 100644
+index ed0579577263..de6778fe65c8 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -3000,7 +3000,7 @@ static int insert_ordered_extent_file_extent(struct btrfs_trans_handle *trans,
- 	btrfs_set_stack_file_extent_num_bytes(&stack_fi, num_bytes);
- 	btrfs_set_stack_file_extent_ram_bytes(&stack_fi, ram_bytes);
- 	btrfs_set_stack_file_extent_compression(&stack_fi, oe->compress_type);
--	/* Encryption and other encoding is reserved and all 0 */
-+	/* Other encoding is reserved and always 0 */
+@@ -2885,6 +2885,9 @@ static int insert_reserved_file_extent(struct btrfs_trans_handle *trans,
+ 	u64 num_bytes = btrfs_stack_file_extent_num_bytes(stack_fi);
+ 	u64 ram_bytes = btrfs_stack_file_extent_ram_bytes(stack_fi);
+ 	struct btrfs_drop_extents_args drop_args = { 0 };
++	size_t fscrypt_context_size =
++		btrfs_stack_file_extent_encryption(stack_fi) ?
++			FSCRYPT_SET_CONTEXT_MAX_SIZE : 0;
+ 	int ret;
  
- 	/*
- 	 * For delalloc, when completing an ordered extent we update the inode's
-@@ -6929,8 +6929,23 @@ struct extent_map *btrfs_get_extent(struct btrfs_inode *inode,
+ 	path = btrfs_alloc_path();
+@@ -2904,7 +2907,7 @@ static int insert_reserved_file_extent(struct btrfs_trans_handle *trans,
+ 	drop_args.start = file_pos;
+ 	drop_args.end = file_pos + num_bytes;
+ 	drop_args.replace_extent = true;
+-	drop_args.extent_item_size = sizeof(*stack_fi);
++	drop_args.extent_item_size = sizeof(*stack_fi) + fscrypt_context_size;
+ 	ret = btrfs_drop_extents(trans, root, inode, &drop_args);
+ 	if (ret)
+ 		goto out;
+@@ -2915,7 +2918,7 @@ static int insert_reserved_file_extent(struct btrfs_trans_handle *trans,
+ 		ins.type = BTRFS_EXTENT_DATA_KEY;
  
- 	btrfs_extent_item_to_extent_map(inode, path, item, em);
- 
--	if (extent_type == BTRFS_FILE_EXTENT_REG ||
--	    extent_type == BTRFS_FILE_EXTENT_PREALLOC) {
-+	if (extent_type == BTRFS_FILE_EXTENT_REG) {
-+		u8 item_ctxsize = btrfs_file_extent_ctxsize_from_item(leaf, path);
-+		u8 encryption = btrfs_file_extent_encryption(leaf, item);
-+		u32 ctxsize = btrfs_file_extent_encryption_ctxsize(leaf, item);
-+
-+
-+		if (encryption == BTRFS_ENCRYPTION_FSCRYPT) {
-+			if (ctxsize != item_ctxsize) {
-+				btrfs_crit(fs_info,
-+					"invalid encryption context size for inode %llu: itemsize %d item %d",
-+					btrfs_ino(inode), ctxsize, item_ctxsize);
-+				ret = -EUCLEAN;
-+				goto out;
-+			}
-+		}
-+		goto insert;
-+	} else if (extent_type == BTRFS_FILE_EXTENT_PREALLOC) {
- 		goto insert;
- 	} else if (extent_type == BTRFS_FILE_EXTENT_INLINE) {
- 		/*
-@@ -9623,7 +9638,9 @@ static struct btrfs_trans_handle *insert_prealloc_file_extent(
- 	btrfs_set_stack_file_extent_num_bytes(&stack_fi, len);
- 	btrfs_set_stack_file_extent_ram_bytes(&stack_fi, len);
- 	btrfs_set_stack_file_extent_compression(&stack_fi, BTRFS_COMPRESS_NONE);
--	/* Encryption and other encoding is reserved and all 0 */
-+	btrfs_set_stack_file_extent_encryption(&stack_fi,
-+					       BTRFS_ENCRYPTION_NONE);
-+	/* Other encoding is reserved and always 0 */
- 
- 	qgroup_released = btrfs_qgroup_release_data(inode, file_offset, len);
- 	if (qgroup_released < 0)
-diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-index 038dfa8f1788..7f0fa170f3de 100644
---- a/fs/btrfs/tree-checker.c
-+++ b/fs/btrfs/tree-checker.c
-@@ -26,6 +26,7 @@
- #include "volumes.h"
- #include "misc.h"
- #include "fs.h"
-+#include "fscrypt.h"
- #include "accessors.h"
- #include "file-item.h"
- #include "inode-item.h"
-@@ -208,6 +209,7 @@ static int check_extent_data_item(struct extent_buffer *leaf,
- 	u32 sectorsize = fs_info->sectorsize;
- 	u32 item_size = btrfs_item_size(leaf, slot);
- 	u64 extent_end;
-+	u8 policy;
- 
- 	if (unlikely(!IS_ALIGNED(key->offset, sectorsize))) {
- 		file_extent_err(leaf, slot,
-@@ -259,10 +261,11 @@ static int check_extent_data_item(struct extent_buffer *leaf,
- 			BTRFS_NR_COMPRESS_TYPES - 1);
- 		return -EUCLEAN;
+ 		ret = btrfs_insert_empty_item(trans, root, path, &ins,
+-					      sizeof(*stack_fi));
++					      sizeof(*stack_fi) + fscrypt_context_size);
+ 		if (ret)
+ 			goto out;
  	}
--	if (unlikely(btrfs_file_extent_encryption(leaf, fi))) {
-+	policy = btrfs_file_extent_encryption(leaf, fi);
-+	if (unlikely(policy >= BTRFS_NR_ENCRYPTION_TYPES)) {
- 		file_extent_err(leaf, slot,
--			"invalid encryption for file extent, have %u expect 0",
--			btrfs_file_extent_encryption(leaf, fi));
-+			"invalid encryption for file extent, have %u expect range [0, %u]",
-+			policy, BTRFS_NR_ENCRYPTION_TYPES - 1);
- 		return -EUCLEAN;
- 	}
- 	if (btrfs_file_extent_type(leaf, fi) == BTRFS_FILE_EXTENT_INLINE) {
-@@ -291,12 +294,30 @@ static int check_extent_data_item(struct extent_buffer *leaf,
- 		return 0;
- 	}
+@@ -9629,6 +9632,7 @@ static struct btrfs_trans_handle *insert_prealloc_file_extent(
+ 	u64 len = ins->offset;
+ 	int qgroup_released;
+ 	int ret;
++	size_t fscrypt_context_size = 0;
  
--	/* Regular or preallocated extent has fixed item size */
--	if (unlikely(item_size != sizeof(*fi))) {
--		file_extent_err(leaf, slot,
-+	if (policy == BTRFS_ENCRYPTION_FSCRYPT) {
-+		u8 ctxsize = btrfs_file_extent_encryption_ctxsize(leaf, fi);
-+
-+		if (unlikely(item_size != sizeof(*fi) + ctxsize)) {
-+			file_extent_err(leaf, slot,
-+	"invalid item size for encrypted file extent, have %u expect = %zu + context of size %u",
-+					item_size, sizeof(*fi), ctxsize);
-+			return -EUCLEAN;
-+		}
-+		/* Only regular extents should be encrypted. */
-+		if (btrfs_file_extent_type(leaf, fi) != BTRFS_FILE_EXTENT_REG) {
-+			file_extent_err(leaf, slot,
-+		"invalid type for encrypted file extent, have %u expect %u",
-+					btrfs_file_extent_type(leaf, fi),
-+					BTRFS_FILE_EXTENT_REG);
-+			return -EUCLEAN;
-+		}
-+	} else {
-+		if (unlikely(item_size != sizeof(*fi))) {
-+			file_extent_err(leaf, slot,
- 	"invalid item size for reg/prealloc file extent, have %u expect %zu",
--			item_size, sizeof(*fi));
--		return -EUCLEAN;
-+					item_size, sizeof(*fi));
-+			return -EUCLEAN;
-+		}
- 	}
- 	if (unlikely(CHECK_FE_ALIGNED(leaf, slot, fi, ram_bytes, sectorsize) ||
- 		     CHECK_FE_ALIGNED(leaf, slot, fi, disk_bytenr, sectorsize) ||
+ 	memset(&stack_fi, 0, sizeof(stack_fi));
+ 
+@@ -9661,6 +9665,7 @@ static struct btrfs_trans_handle *insert_prealloc_file_extent(
+ 	extent_info.data_len = len;
+ 	extent_info.file_offset = file_offset;
+ 	extent_info.extent_buf = (char *)&stack_fi;
++	extent_info.extent_buf_size = sizeof(stack_fi) + fscrypt_context_size;
+ 	extent_info.is_new_extent = true;
+ 	extent_info.update_times = true;
+ 	extent_info.qgroup_reserved = qgroup_released;
+diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
+index ad722f495c9b..9f3b5748f39b 100644
+--- a/fs/btrfs/reflink.c
++++ b/fs/btrfs/reflink.c
+@@ -502,6 +502,7 @@ static int btrfs_clone(struct inode *src, struct inode *inode,
+ 			clone_info.data_len = datal;
+ 			clone_info.file_offset = new_key.offset;
+ 			clone_info.extent_buf = buf;
++			clone_info.extent_buf_size = size;
+ 			clone_info.is_new_extent = false;
+ 			clone_info.update_times = !no_time_update;
+ 			ret = btrfs_replace_file_extents(BTRFS_I(inode), path,
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 3bf746668e07..9c73ae09f0a1 100644
+index 9c73ae09f0a1..49001bf8a0b2 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -4634,6 +4634,7 @@ static int log_one_extent(struct btrfs_trans_handle *trans,
+@@ -4634,7 +4634,9 @@ static int log_one_extent(struct btrfs_trans_handle *trans,
  	u64 extent_offset = em->start - em->orig_start;
  	u64 block_len;
  	int ret;
-+	u8 encryption = 0;
+-	u8 encryption = 0;
++	size_t fscrypt_context_size = 0;
++	u8 encryption = IS_ENCRYPTED(&inode->vfs_inode) ?
++				BTRFS_ENCRYPTION_FSCRYPT : 0;
  
  	btrfs_set_stack_file_extent_generation(&fi, trans->transid);
  	if (test_bit(EXTENT_FLAG_PREALLOC, &em->flags))
-@@ -4655,6 +4656,7 @@ static int log_one_extent(struct btrfs_trans_handle *trans,
- 	btrfs_set_stack_file_extent_num_bytes(&fi, em->len);
- 	btrfs_set_stack_file_extent_ram_bytes(&fi, em->ram_bytes);
- 	btrfs_set_stack_file_extent_compression(&fi, em->compress_type);
-+	btrfs_set_stack_file_extent_encryption(&fi, encryption);
+@@ -4676,7 +4678,7 @@ static int log_one_extent(struct btrfs_trans_handle *trans,
+ 		drop_args.start = em->start;
+ 		drop_args.end = em->start + em->len;
+ 		drop_args.replace_extent = true;
+-		drop_args.extent_item_size = sizeof(fi);
++		drop_args.extent_item_size = sizeof(fi) + fscrypt_context_size;
+ 		ret = btrfs_drop_extents(trans, log, inode, &drop_args);
+ 		if (ret)
+ 			return ret;
+@@ -4688,7 +4690,7 @@ static int log_one_extent(struct btrfs_trans_handle *trans,
+ 		key.offset = em->start;
  
- 	ret = log_extent_csums(trans, inode, log, em, ctx);
- 	if (ret)
-diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
-index 029af0aeb65d..62b95ceee735 100644
---- a/include/uapi/linux/btrfs_tree.h
-+++ b/include/uapi/linux/btrfs_tree.h
-@@ -1048,8 +1048,14 @@ struct btrfs_file_extent_item {
- 	 * but not for stat.
- 	 */
- 	__u8 compression;
-+
-+	/*
-+	 * Type of encryption in use. Unencrypted value is 0.
-+	 */
- 	__u8 encryption;
--	__le16 other_encoding; /* spare for later use */
-+
-+	/* spare for later use */
-+	__le16 other_encoding;
- 
- 	/* are we inline data or a real extent? */
- 	__u8 type;
-@@ -1075,6 +1081,10 @@ struct btrfs_file_extent_item {
- 	 * always reflects the size uncompressed and without encoding.
- 	 */
- 	__le64 num_bytes;
-+	/*
-+	 * the encryption context, if any
-+	 */
-+	__u8 encryption_context[0];
- 
- } __attribute__ ((__packed__));
- 
+ 		ret = btrfs_insert_empty_item(trans, log, path, &key,
+-					      sizeof(fi));
++					      sizeof(fi) + fscrypt_context_size);
+ 		if (ret)
+ 			return ret;
+ 	}
 -- 
 2.41.0
 
