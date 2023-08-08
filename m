@@ -2,33 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD06577439A
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  8 Aug 2023 20:08:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8683F77439C
+	for <lists+linux-fscrypt@lfdr.de>; Tue,  8 Aug 2023 20:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234885AbjHHSIH (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 8 Aug 2023 14:08:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41538 "EHLO
+        id S235233AbjHHSII (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 8 Aug 2023 14:08:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235139AbjHHSH3 (ORCPT
+        with ESMTP id S232793AbjHHSHb (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:07:29 -0400
+        Tue, 8 Aug 2023 14:07:31 -0400
 Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF509634BF;
-        Tue,  8 Aug 2023 10:08:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27561A79F;
+        Tue,  8 Aug 2023 10:08:43 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 4B3DE83541;
-        Tue,  8 Aug 2023 13:08:41 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id AAD3083542;
+        Tue,  8 Aug 2023 13:08:42 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1691514521; bh=g0eXmZcoXvxtrVNAt/UKWZ1mLGPNmRYMaDnrl33ag0o=;
-        h=From:To:Cc:Subject:Date:From;
-        b=RxoklI+gUJ9F0/XMjT53dwRnaIVPriV+naexFdDujX7kZwhnCofZJYtEw2M7jrd7d
-         kshvhJYUgO7ucWmRXfCW/qFOYL0jzumsVLyZyCfy2awOmalhfWe1Y4r8e9hYKAK3RQ
-         qipRnhdQG4MzMohKWXl/Rl3UspJT89omJtCyVcFjuOhT7F5tJIAThZCsiTKNMTbCey
-         4bOMRsVkbIthcjuey5yeV0Xu7HQzmgJIa4YXA2RjYYhhaRpOJZsLJJSG67IwrPu8Hv
-         PMBxhdlwWVYzPcarIQ8/Yes/u4F+AkyYQG9s9rZTe6Vq0u/ZT/jJ9ttqZB3KLx6hzf
-         rPdFY0ra5aXNw==
+        t=1691514522; bh=EpXn3+Jbg9QKzxgKqdj40m8q6/qRVvmn6DMf3mB1H6M=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=SlBcPQozXmlyllCwjaKAuBH4FEgYdsv3LWrftDWC75PKg7esjTRKMinZtmpIYqKHU
+         adjzybnJzXDBysonXM3x5RG/iqitMXGEhcl6TpswsuL3A7DOlwVDrcErunSri032MH
+         76yldCK0iQI7MFlI0tYI71Pci4y3SuH2jxYzaDjbOX57Pu6/JPxFJdUyl3aGGF0jy0
+         bl6gyUdiwOJ0R5mJOQZL6KvayinHTtWyOF82e3MGbhV8RPJXrZE9P8jkE6PjrlLBNm
+         nUlbqENTn5cdPe/bRzuW8uh4yUliGxre2t0YsEUoeJ8Q+Gra5svbdDV+RvA+Cqsd7f
+         TN6BalfJhoSJg==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
@@ -37,9 +37,11 @@ To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         Eric Biggers <ebiggers@kernel.org>
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH v3 00/16] fscrypt: add extent encryption
-Date:   Tue,  8 Aug 2023 13:08:17 -0400
-Message-ID: <cover.1691505882.git.sweettea-kernel@dorminy.me>
+Subject: [PATCH v3 01/16] fscrypt: factor helper for locking master key
+Date:   Tue,  8 Aug 2023 13:08:18 -0400
+Message-ID: <5b791b93e0697db89c8a02df633f7be97f5ba58c.1691505882.git.sweettea-kernel@dorminy.me>
+In-Reply-To: <cover.1691505882.git.sweettea-kernel@dorminy.me>
+References: <cover.1691505882.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -52,84 +54,54 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-This changeset adds extent-based data encryption to fscrypt.
-Some filesystems need to encrypt data based on extents, rather than on
-inodes, due to features incompatible with inode-based encryption. For
-instance, btrfs can have multiple inodes referencing a single block of
-data, and moves logical data blocks to different physical locations on
-disk in the background. 
+When we are making extent infos, we'll need to lock the master key in
+more places, so go on and factor out a helper.
 
-As per discussion last year in [1] and later in [2], we would like to
-allow the use of fscrypt with btrfs, with authenticated encryption. This
-is the first step of that work, adding extent-based encryption to
-fscrypt; authenticated encryption is the next step. Extent-based
-encryption should be usable by other filesystems which wish to support
-snapshotting or background data rearrangement also, but btrfs is the
-first user. 
+Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+---
+ fs/crypto/keysetup.c | 20 ++++++++++++++------
+ 1 file changed, 14 insertions(+), 6 deletions(-)
 
-This changeset requires extent encryption to use inlinecrypt, as
-discussed previously. 
-
-This applies atop [3], which itself is based on kdave/misc-next. It
-passes encryption fstests with suitable changes to btrfs-progs.
-
-Changelog:
-v3:
- - Added four additional changes:
-   - soft-deleting keys that extent infos might later need to use, so
-     the behavior of an open file after key removal matches inode-based
-     fscrypt.
-   - a set of changes to allow asynchronous info freeing for extents,
-     necessary due to locking constraints in btrfs.
-
-v2: 
- - https://lore.kernel.org/linux-fscrypt/cover.1688927487.git.sweettea-kernel@dorminy.me/T/#t
-
-
-[1] https://docs.google.com/document/d/1janjxewlewtVPqctkWOjSa7OhCgB8Gdx7iDaCDQQNZA/edit?usp=sharing
-[2] https://lore.kernel.org/linux-fscrypt/80496cfe-161d-fb0d-8230-93818b966b1b@dorminy.me/T/#t
-[3] https://lore.kernel.org/linux-fscrypt/cover.1691505830.git.sweettea-kernel@dorminy.me/
-
-Sweet Tea Dorminy (16):
-  fscrypt: factor helper for locking master key
-  fscrypt: factor getting info for a specific block
-  fscrypt: adjust effective lblks based on extents
-  fscrypt: add a super_block pointer to fscrypt_info
-  fscrypt: setup leaf inodes for extent encryption
-  fscrypt: allow infos to be owned by extents
-  fscrypt: use an optional ino equivalent for per-extent infos
-  fscrypt: move function call warning of busy inodes
-  fscrypt: revamp key removal for extent encryption
-  fscrypt: add creation/usage/freeing of per-extent infos
-  fscrypt: allow load/save of extent contexts
-  fscrypt: save session key credentials for extent infos
-  fscrypt: allow multiple extents to reference one info
-  fscrypt: cache list of inlinecrypt devices
-  fscrypt: allow asynchronous info freeing
-  fscrypt: update documentation for per-extent keys
-
- Documentation/filesystems/fscrypt.rst |  43 +++-
- fs/crypto/crypto.c                    |   6 +-
- fs/crypto/fscrypt_private.h           | 158 +++++++++++-
- fs/crypto/inline_crypt.c              |  49 ++--
- fs/crypto/keyring.c                   |  78 +++---
- fs/crypto/keysetup.c                  | 336 ++++++++++++++++++++++----
- fs/crypto/keysetup_v1.c               |  10 +-
- fs/crypto/policy.c                    |  20 ++
- include/linux/fscrypt.h               |  67 +++++
- 9 files changed, 654 insertions(+), 113 deletions(-)
-
-
-base-commit: 54d2161835d828a9663f548f61d1d9c3d3482122
-prerequisite-patch-id: 2f1424d04bb5a76abf0ecf2c9cd8426d300078ae
-prerequisite-patch-id: ab342a72cf967dadfb8bec1320c5906fd3c6800f
-prerequisite-patch-id: ced2a9dab36539f55c14cd74a28950087c475ff2
-prerequisite-patch-id: d4f1a64c994c2fa0d2d4cab83f9ddff52f0622e9
-prerequisite-patch-id: 1af0fc98277159b31c26bc5751663efc0d322d75
-prerequisite-patch-id: 3b21b62208587486cf9b31618f7c3bc875362f1a
-prerequisite-patch-id: c43d693f5b7c498a876d9ffcfc49c11a8ca93d80
-prerequisite-patch-id: f120bde1cf47fbef1d9f8fd09cdcccc1408c3ff4
-prerequisite-patch-id: c6a1f087d4a67b928b9c6af04e00310bfa74ace1
+diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
+index a19650f954e2..c3d3da5da449 100644
+--- a/fs/crypto/keysetup.c
++++ b/fs/crypto/keysetup.c
+@@ -106,7 +106,18 @@ select_encryption_mode(const union fscrypt_policy *policy,
+ 	return ERR_PTR(-EINVAL);
+ }
+ 
+-/* Create a symmetric cipher object for the given encryption mode and key */
++static int lock_master_key(struct fscrypt_master_key *mk)
++{
++	down_read(&mk->mk_sem);
++
++	/* Has the secret been removed (via FS_IOC_REMOVE_ENCRYPTION_KEY)? */
++	if (!is_master_key_secret_present(&mk->mk_secret))
++		return -ENOKEY;
++
++	return 0;
++}
++
++/* Create a symmetric cipher object for the given encryption mode */
+ static struct crypto_skcipher *
+ fscrypt_allocate_skcipher(struct fscrypt_mode *mode, const u8 *raw_key,
+ 			  const struct inode *inode)
+@@ -556,13 +567,10 @@ static int find_and_lock_master_key(const struct fscrypt_info *ci,
+ 		*mk_ret = NULL;
+ 		return 0;
+ 	}
+-	down_read(&mk->mk_sem);
+ 
+-	/* Has the secret been removed (via FS_IOC_REMOVE_ENCRYPTION_KEY)? */
+-	if (!is_master_key_secret_present(&mk->mk_secret)) {
+-		err = -ENOKEY;
++	err = lock_master_key(mk);
++	if (err)
+ 		goto out_release_key;
+-	}
+ 
+ 	if (!fscrypt_valid_master_key_size(mk, ci)) {
+ 		err = -ENOKEY;
 -- 
 2.41.0
 
