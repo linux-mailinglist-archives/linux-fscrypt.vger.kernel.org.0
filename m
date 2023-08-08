@@ -2,33 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 159A17743D9
+	by mail.lfdr.de (Postfix) with ESMTP id A82517743DB
 	for <lists+linux-fscrypt@lfdr.de>; Tue,  8 Aug 2023 20:11:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235391AbjHHSK5 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 8 Aug 2023 14:10:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59310 "EHLO
+        id S234352AbjHHSK6 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 8 Aug 2023 14:10:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234321AbjHHSK2 (ORCPT
+        with ESMTP id S235291AbjHHSK3 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:10:28 -0400
-Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8FF51B065;
-        Tue,  8 Aug 2023 10:12:41 -0700 (PDT)
+        Tue, 8 Aug 2023 14:10:29 -0400
+Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3871B1B068;
+        Tue,  8 Aug 2023 10:12:43 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 7528583442;
-        Tue,  8 Aug 2023 13:12:41 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id CA9DB83440;
+        Tue,  8 Aug 2023 13:12:42 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1691514761; bh=rWirf37iqZkz5t+gTTLXe5NpdCjOHBl1ebtWn28/poY=;
+        t=1691514763; bh=zOKNZbAfiK+odlXUuWM8XxSwVUpiOYgsRZM26vBnM0o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H/G/J2WlsNju2isdv2I72IEHomsxz1ozmFiP2I066GUdAyVzePy/5FlGtqeO3D8lq
-         ViiT3t2ZyNtwP6gJHQClzHTzGsS1/A0jEtF25lQ3sUqImCJrkGCo93ePnKwDD83iwk
-         gL86tFRyq0Fle9hbnR+DY3rODDd1K7fOCTyJSg2xE6NeLxbEWwraG6j/weuhOz+/n1
-         L7rrriPccLRyZHhH/GwurNBjrs7pd/4CAHDyWjEvb14b+fn6ZbxLPKBazOoTDmhM8F
-         zDxhONZTCPVo3vwQCVbdPRVJDaDa6BiCMzlGkE7pAohygMUJwuvMiQYHsK+n+jBCyb
-         XEEqBlJ0czp1g==
+        b=uZDtWdk08CozyHJ09AUWJoLb8cMGOpA7JVPlSIWtQ3gGCaW+cbBMcoqihlF1rHLAh
+         +cFSL+Fw9dCqfNeLe37FlGZe7Jsk9rdiMGRaDopV43583IMDvmWRjJnEcRt5Qfi+xd
+         4ABD0IYBVoyRNBJQiIBszWmfiflkOCFTc3rdOh067wEQbrLSj+Yhz+slt5C13gGoQu
+         XwTODoOHVxmWv78gA0tVm4DJbMVSBkjbma17WyhnUCdtJJWmoPp1kC/tsS6ghEJfT1
+         n4ZD1VEMn30jep1hyA+9qhpy+9Jzwl/jwdfRD/BqlEnB6ZWRFx/PAO1Dg+asObBXWI
+         eQ1ZccbsumDHg==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
@@ -37,91 +37,72 @@ To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         Eric Biggers <ebiggers@kernel.org>
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH v3 11/17] btrfs: add get_devices hook for fscrypt
-Date:   Tue,  8 Aug 2023 13:12:13 -0400
-Message-ID: <c985780df51bcc4394a695c087f0b18861f28ae9.1691510179.git.sweettea-kernel@dorminy.me>
+Subject: [PATCH v3 12/17] btrfs: turn on inlinecrypt mount option for encrypt
+Date:   Tue,  8 Aug 2023 13:12:14 -0400
+Message-ID: <c6e584da3cedef803cf994381c95c52080d17685.1691510179.git.sweettea-kernel@dorminy.me>
 In-Reply-To: <cover.1691510179.git.sweettea-kernel@dorminy.me>
 References: <cover.1691510179.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        RCVD_IN_SBL_CSS,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Since extent encryption requires inline encryption, even though we
-expect to use the inlinecrypt software fallback most of the time, we
-need to enumerate all the devices in use by btrfs.
+fscrypt's extent encryption requires the use of inline encryption or the
+software fallback that the block layer provides; it is rather
+complicated to allow software encryption with extent encryption due to
+the timing of memory allocations. Thus, if btrfs has ever had a
+encrypted file, or when encryption is enabled on a directory, update the
+mount flags to include inlinecrypt.
 
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 ---
- fs/btrfs/fscrypt.c | 37 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
+ fs/btrfs/ioctl.c |  3 +++
+ fs/btrfs/super.c | 10 ++++++++++
+ 2 files changed, 13 insertions(+)
 
-diff --git a/fs/btrfs/fscrypt.c b/fs/btrfs/fscrypt.c
-index bdd58415f93c..499073376110 100644
---- a/fs/btrfs/fscrypt.c
-+++ b/fs/btrfs/fscrypt.c
-@@ -11,7 +11,9 @@
- #include "ioctl.h"
- #include "messages.h"
- #include "root-tree.h"
-+#include "super.h"
- #include "transaction.h"
-+#include "volumes.h"
- #include "xattr.h"
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 91ad59519900..42525a8119ee 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -4574,6 +4574,9 @@ long btrfs_ioctl(struct file *file, unsigned int
+ 		 * state persists.
+ 		 */
+ 		btrfs_set_fs_incompat(fs_info, ENCRYPT);
++		if (!(inode->i_sb->s_flags & SB_INLINECRYPT)) {
++			inode->i_sb->s_flags |= SB_INLINECRYPT;
++		}
+ 		return fscrypt_ioctl_set_policy(file, (const void __user *)arg);
+ 	}
+ 	case FS_IOC_GET_ENCRYPTION_POLICY:
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 0cc9c2909f64..1e9a93c6750a 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -1165,6 +1165,16 @@ static int btrfs_fill_super(struct super_block *sb,
+ 		return err;
+ 	}
  
- /*
-@@ -179,9 +181,44 @@ static bool btrfs_fscrypt_empty_dir(struct inode *inode)
- 	return inode->i_size == BTRFS_EMPTY_DIR_SIZE;
- }
- 
-+static struct block_device **btrfs_fscrypt_get_devices(struct super_block *sb,
-+						       unsigned int *num_devs)
-+{
-+	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
-+	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
-+	int nr_devices = fs_devices->open_devices;
-+	struct block_device **devs;
-+	struct btrfs_device *device;
-+	int i = 0;
-+
-+	devs = kmalloc_array(nr_devices, sizeof(*devs), GFP_NOFS | GFP_NOWAIT);
-+	if (!devs)
-+		return ERR_PTR(-ENOMEM);
-+
-+	rcu_read_lock();
-+	list_for_each_entry_rcu(device, &fs_devices->devices, dev_list) {
-+		if (!test_bit(BTRFS_DEV_STATE_IN_FS_METADATA,
-+						&device->dev_state) ||
-+		    !device->bdev ||
-+		    test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state))
-+			continue;
-+
-+		devs[i++] = device->bdev;
-+
-+		if (i >= nr_devices)
-+			break;
-+
++	if (btrfs_fs_incompat(fs_info, ENCRYPT)) {
++		if (IS_ENABLED(CONFIG_FS_ENCRYPTION_INLINE_CRYPT)) {
++			sb->s_flags |= SB_INLINECRYPT;
++		} else {
++			btrfs_err(fs_info, "encryption not supported");
++			err = -EINVAL;
++			goto fail_close;
++		}
 +	}
-+	rcu_read_unlock();
 +
-+	*num_devs = i;
-+	return devs;
-+}
-+
- const struct fscrypt_operations btrfs_fscrypt_ops = {
- 	.get_context = btrfs_fscrypt_get_context,
- 	.set_context = btrfs_fscrypt_set_context,
- 	.empty_dir = btrfs_fscrypt_empty_dir,
-+	.get_devices = btrfs_fscrypt_get_devices,
- 	.key_prefix = "btrfs:"
- };
+ 	inode = btrfs_iget(sb, BTRFS_FIRST_FREE_OBJECTID, fs_info->fs_root);
+ 	if (IS_ERR(inode)) {
+ 		err = PTR_ERR(inode);
 -- 
 2.41.0
 
