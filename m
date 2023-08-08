@@ -2,42 +2,42 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2AE6774438
+	by mail.lfdr.de (Postfix) with ESMTP id D8353774439
 	for <lists+linux-fscrypt@lfdr.de>; Tue,  8 Aug 2023 20:16:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235480AbjHHSQO (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 8 Aug 2023 14:16:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38156 "EHLO
+        id S232808AbjHHSQR (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 8 Aug 2023 14:16:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233327AbjHHSPy (ORCPT
+        with ESMTP id S232978AbjHHSPy (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
         Tue, 8 Aug 2023 14:15:54 -0400
 Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 208DF72B8;
-        Tue,  8 Aug 2023 10:22:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DCFA35AA;
+        Tue,  8 Aug 2023 10:22:15 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id B1571809E9;
-        Tue,  8 Aug 2023 13:22:13 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id 1542F83548;
+        Tue,  8 Aug 2023 13:22:15 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1691515333; bh=726Inc6P68BCi0kM+SUSni3m2wN66ATgsTZpdV1YXhA=;
+        t=1691515335; bh=k80BosUuOf3+UJm9EFkXHB69AfR7v14eADYsDzCRrm8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w2iw0OWh+nUjaKDkhWMKMEaHCUJawApxUAUe/nrDey15oXBcy2yG3RjrFIwfIKt8F
-         pFSpf/AT+avhEWMfnWOmaYswBMTJDEJs18SbdCMKua579tjYZf2FrFFmYYMVHkWVnk
-         Bm1zBhLLx8XlN2lS/V76bO4jUujZTnjpbHYepR13pzH35WA2C/iY4EI0r68FJbV+I8
-         88/poEu/zzBw6nh7rV/UpCJslz70ATeq1Z++e3i3UUWlBZD9ykSXWoLyGoYOWAxlB9
-         gAfxCQHl0feLgtOS5vLV0DsvIzfjz6ICKtvVs87/Zqh04CHZ3CluUSMEKWn3hL4x9a
-         LGzme54L6kTsQ==
+        b=ehjjsu3wu1rmbMIsG8YnYBgeZrV5ixD8xbUyncG5Ux1jx2ZVVq5OpekqEcHmbqtPE
+         RsROO5EZclETdFRvSgxUyKu9/YEM5mwY6E1pfA5yfsfr//lIKcofAI5hGn2RXOIrUE
+         DgEGAmstfmbkgy7t2ae8akFhm+0P3yE1C/HRVvOitL3YfrAhWhzBRI7mdlcpoSJH4M
+         MyZ/1I3AQ1TpghdvWyzIvBanGvwcbnyfJ0Ixmj5cfYJ2Dc2/C/pK4uadaOSAFSsxJB
+         AljBYxqlJrMzoarmJM9bXIecmQ34GfJmoqqeX19XHAi7MxwSUSyP1ahqZYrsNyOwgn
+         G71014MWyEG0w==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
         kernel-team@meta.com, ebiggers@google.com, anand.jain@oracle.com,
         fdmanana@suse.com, linux-fscrypt@vger.kernel.org,
         fsverity@lists.linux.dev, zlang@kernel.org
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [RFC PATCH v3 4/9] common/encrypt: enable making a encrypted btrfs filesystem
-Date:   Tue,  8 Aug 2023 13:21:23 -0400
-Message-ID: <810d879650dd3bd8da1df2e4611d55adaf670ae4.1691530000.git.sweettea-kernel@dorminy.me>
+Subject: [RFC PATCH v3 5/9] generic/613: write some actual data for btrfs
+Date:   Tue,  8 Aug 2023 13:21:24 -0400
+Message-ID: <200c306794a620f1ff7db0dddf304ec5997e4456.1691530000.git.sweettea-kernel@dorminy.me>
 In-Reply-To: <cover.1691530000.git.sweettea-kernel@dorminy.me>
 References: <cover.1691530000.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
@@ -52,35 +52,39 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
+Currently, the test touches a file and assumes that that is sufficient
+to generate a new nonce to test for that file. However, btrfs doesn't
+store an encryption context for a leaf inode, and doesn't store an
+encryption context for data within a leaf inode until data is actually
+written. Thus, merely touching the file on btrfs doesn't actually
+generate a testable nonce.
+
+Instead, write a trivial bit of data to each file, which provokes btrfs
+to generate a encryption context for the data and thus a testable nonce.
+
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 ---
- common/encrypt | 6 ++++++
- 1 file changed, 6 insertions(+)
+ tests/generic/613 | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/common/encrypt b/common/encrypt
-index 2c1925da..1372af66 100644
---- a/common/encrypt
-+++ b/common/encrypt
-@@ -153,6 +153,9 @@ _scratch_mkfs_encrypted()
- 		# erase the UBI volume; reformated automatically on next mount
- 		$UBIUPDATEVOL_PROG ${SCRATCH_DEV} -t
- 		;;
-+	btrfs)
-+		_scratch_mkfs
-+		;;
- 	ceph)
- 		_scratch_cleanup_files
- 		;;
-@@ -168,6 +171,9 @@ _scratch_mkfs_sized_encrypted()
- 	ext4|f2fs)
- 		MKFS_OPTIONS="$MKFS_OPTIONS -O encrypt" _scratch_mkfs_sized $*
- 		;;
-+	btrfs)
-+		_scratch_mkfs_sized $*
-+		;;
- 	*)
- 		_notrun "Filesystem $FSTYP not supported in _scratch_mkfs_sized_encrypted"
- 		;;
+diff --git a/tests/generic/613 b/tests/generic/613
+index 279b1bfb..11f28c74 100755
+--- a/tests/generic/613
++++ b/tests/generic/613
+@@ -53,11 +53,11 @@ for i in {1..50}; do
+ done
+ for i in {1..50}; do
+ 	file=$SCRATCH_MNT/v1_policy_dir_1/$i
+-	touch $file
++	echo "0" > $file
+ 	inodes+=("$(stat -c %i $file)")
+ 
+ 	file=$SCRATCH_MNT/v2_policy_dir_1/$i
+-	touch $file
++	echo "0" > $file
+ 	inodes+=("$(stat -c %i $file)")
+ done
+ _scratch_unmount
 -- 
 2.41.0
 
