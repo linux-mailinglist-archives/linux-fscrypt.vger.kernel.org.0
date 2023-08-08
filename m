@@ -2,33 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED8CC774622
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  8 Aug 2023 20:53:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD06577439A
+	for <lists+linux-fscrypt@lfdr.de>; Tue,  8 Aug 2023 20:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231395AbjHHSx5 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 8 Aug 2023 14:53:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56026 "EHLO
+        id S234885AbjHHSIH (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 8 Aug 2023 14:08:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231354AbjHHSxi (ORCPT
+        with ESMTP id S235139AbjHHSH3 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:53:38 -0400
-Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 189AE5FDC2;
-        Tue,  8 Aug 2023 10:08:28 -0700 (PDT)
+        Tue, 8 Aug 2023 14:07:29 -0400
+Received: from box.fidei.email (box.fidei.email [71.19.144.250])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF509634BF;
+        Tue,  8 Aug 2023 10:08:41 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 9F66183533;
-        Tue,  8 Aug 2023 13:08:27 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id 4B3DE83541;
+        Tue,  8 Aug 2023 13:08:41 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1691514507; bh=00y/3vVJG+zulZ5j0qomwBwj0hM9Ucvwq7H2Bzn4niw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZlYo6r2Sad3YVQFkp5bpVzks59EFOuYZdqrTx1JSck66n1JWf7E3DC+0pVjwp/27C
-         DwGxyyhvNqOndzcoBCCE0wv4cjPFa3+yws1+gk5zppWgIoX7zfNWqUCwOorquJjsbS
-         2ntkd6RanBdwJ6fY8C8eKfOg8+gtxVOJNZiRoPx1fZa8ggaAHsMsa9N5WUtwZp+eCS
-         bgTczNzGa8cAZDbtUMfBinwfugUlGMhFWymVyIo0ojM/yxJ+kKXg9h19S9HWOMyka/
-         ayiIaIguhHg1kIn+nsEHipxFjA7w9hpDnOCiMcuzpMMV3HbtT1TDJZ+X0GN57jjwUQ
-         dZY7fEhk5Msrw==
+        t=1691514521; bh=g0eXmZcoXvxtrVNAt/UKWZ1mLGPNmRYMaDnrl33ag0o=;
+        h=From:To:Cc:Subject:Date:From;
+        b=RxoklI+gUJ9F0/XMjT53dwRnaIVPriV+naexFdDujX7kZwhnCofZJYtEw2M7jrd7d
+         kshvhJYUgO7ucWmRXfCW/qFOYL0jzumsVLyZyCfy2awOmalhfWe1Y4r8e9hYKAK3RQ
+         qipRnhdQG4MzMohKWXl/Rl3UspJT89omJtCyVcFjuOhT7F5tJIAThZCsiTKNMTbCey
+         4bOMRsVkbIthcjuey5yeV0Xu7HQzmgJIa4YXA2RjYYhhaRpOJZsLJJSG67IwrPu8Hv
+         PMBxhdlwWVYzPcarIQ8/Yes/u4F+AkyYQG9s9rZTe6Vq0u/ZT/jJ9ttqZB3KLx6hzf
+         rPdFY0ra5aXNw==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
@@ -37,201 +37,99 @@ To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         Eric Biggers <ebiggers@kernel.org>
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH v6 8/8] fscrypt: make prepared keys record their type
-Date:   Tue,  8 Aug 2023 13:08:08 -0400
-Message-ID: <64c47243cea5a8eca15538b51f88c0a6d53799cf.1691505830.git.sweettea-kernel@dorminy.me>
-In-Reply-To: <cover.1691505830.git.sweettea-kernel@dorminy.me>
-References: <cover.1691505830.git.sweettea-kernel@dorminy.me>
+Subject: [PATCH v3 00/16] fscrypt: add extent encryption
+Date:   Tue,  8 Aug 2023 13:08:17 -0400
+Message-ID: <cover.1691505882.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: *
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Right now fscrypt_infos have two fields dedicated solely to recording
-what type of prepared key the info has: whether it solely owns the
-prepared key, or has borrowed it from a master key, or from a direct
-key.
+This changeset adds extent-based data encryption to fscrypt.
+Some filesystems need to encrypt data based on extents, rather than on
+inodes, due to features incompatible with inode-based encryption. For
+instance, btrfs can have multiple inodes referencing a single block of
+data, and moves logical data blocks to different physical locations on
+disk in the background. 
 
-The ci_direct_key field is only used for v1 direct key policies,
-recording the direct key that needs to have its refcount reduced when
-the crypt_info is freed. However, now that crypt_info->ci_enc_key is a
-pointer to the authoritative prepared key -- embedded in the direct key,
-in this case, we no longer need to keep a full pointer to the direct key
--- we can use container_of() to go from the prepared key to its
-surrounding direct key.
+As per discussion last year in [1] and later in [2], we would like to
+allow the use of fscrypt with btrfs, with authenticated encryption. This
+is the first step of that work, adding extent-based encryption to
+fscrypt; authenticated encryption is the next step. Extent-based
+encryption should be usable by other filesystems which wish to support
+snapshotting or background data rearrangement also, but btrfs is the
+first user. 
 
-The key ownership information doesn't change during the lifetime of a
-prepared key.  Since at worst there's a prepared key per info, and at
-best many infos share a single prepared key, it can be slightly more
-efficient to store this ownership info in the prepared key instead of in
-the fscrypt_info, especially since we can squash both fields down into
-a single enum.
+This changeset requires extent encryption to use inlinecrypt, as
+discussed previously. 
 
-Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
----
- fs/crypto/fscrypt_private.h | 31 +++++++++++++++++++++++--------
- fs/crypto/keysetup.c        | 21 +++++++++++++--------
- fs/crypto/keysetup_v1.c     |  7 +++++--
- 3 files changed, 41 insertions(+), 18 deletions(-)
+This applies atop [3], which itself is based on kdave/misc-next. It
+passes encryption fstests with suitable changes to btrfs-progs.
 
-diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-index 20b8ea1e3518..e2acd8894ea7 100644
---- a/fs/crypto/fscrypt_private.h
-+++ b/fs/crypto/fscrypt_private.h
-@@ -174,18 +174,39 @@ struct fscrypt_symlink_data {
- 	char encrypted_path[];
- } __packed;
- 
-+/**
-+ * enum fscrypt_prepared_key_type - records a prepared key's ownership
-+ *
-+ * @FSCRYPT_KEY_PER_INFO: this prepared key is allocated for a specific info
-+ *		          and is never shared.
-+ * @FSCRYPT_KEY_DIRECT_V1: this prepared key is embedded in a fscrypt_direct_key
-+ *		           used in v1 direct key policies.
-+ * @FSCRYPT_KEY_MASTER_KEY: this prepared key is a per-mode and policy key,
-+ *			    part of a fscrypt_master_key, shared between all
-+ *			    users of this master key having this mode and
-+ *			    policy.
-+ */
-+enum fscrypt_prepared_key_type {
-+	FSCRYPT_KEY_PER_INFO = 1,
-+	FSCRYPT_KEY_DIRECT_V1,
-+	FSCRYPT_KEY_MASTER_KEY,
-+} __packed;
-+
- /**
-  * struct fscrypt_prepared_key - a key prepared for actual encryption/decryption
-  * @tfm: crypto API transform object
-  * @blk_key: key for blk-crypto
-+ * @type: records the ownership type of the prepared key
-  *
-- * Normally only one of the fields will be non-NULL.
-+ * Normally only one of @tfm and @blk_key will be non-NULL, although it is
-+ * possible if @type is FSCRYPT_KEY_MASTER_KEY.
-  */
- struct fscrypt_prepared_key {
- 	struct crypto_skcipher *tfm;
- #ifdef CONFIG_FS_ENCRYPTION_INLINE_CRYPT
- 	struct blk_crypto_key *blk_key;
- #endif
-+	enum fscrypt_prepared_key_type type;
- };
- 
- /*
-@@ -233,12 +254,6 @@ struct fscrypt_info {
- 	 */
- 	struct list_head ci_master_key_link;
- 
--	/*
--	 * If non-NULL, then encryption is done using the master key directly
--	 * and ci_enc_key will equal ci_direct_key->dk_key.
--	 */
--	struct fscrypt_direct_key *ci_direct_key;
--
- 	/*
- 	 * This inode's hash key for filenames.  This is a 128-bit SipHash-2-4
- 	 * key.  This is only set for directories that use a keyed dirhash over
-@@ -641,7 +656,7 @@ static inline int fscrypt_require_key(struct inode *inode)
- 
- /* keysetup_v1.c */
- 
--void fscrypt_put_direct_key(struct fscrypt_direct_key *dk);
-+void fscrypt_put_direct_key(struct fscrypt_prepared_key *prep_key);
- 
- int fscrypt_setup_v1_file_key(struct fscrypt_info *ci,
- 			      const u8 *raw_master_key);
-diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index 4f04999ecfd1..a19650f954e2 100644
---- a/fs/crypto/keysetup.c
-+++ b/fs/crypto/keysetup.c
-@@ -191,11 +191,11 @@ void fscrypt_destroy_prepared_key(struct super_block *sb,
- /* Given a per-file encryption key, set up the file's crypto transform object */
- int fscrypt_set_per_file_enc_key(struct fscrypt_info *ci, const u8 *raw_key)
- {
--	ci->ci_owns_key = true;
- 	ci->ci_enc_key = kzalloc(sizeof(*ci->ci_enc_key), GFP_KERNEL);
- 	if (!ci->ci_enc_key)
- 		return -ENOMEM;
- 
-+	ci->ci_enc_key->type = FSCRYPT_KEY_PER_INFO;
- 	return fscrypt_prepare_key(ci->ci_enc_key, raw_key, ci);
- }
- 
-@@ -290,7 +290,8 @@ static int setup_new_mode_prepared_key(struct fscrypt_master_key *mk,
- 				  hkdf_context, hkdf_info, hkdf_infolen,
- 				  mode_key, mode->keysize);
- 	if (err)
--		goto out_unlock;
-+		return err;
-+	prep_key->type = FSCRYPT_KEY_MASTER_KEY;
- 	err = fscrypt_prepare_key(prep_key, mode_key, ci);
- 	memzero_explicit(mode_key, mode->keysize);
- 
-@@ -584,12 +585,16 @@ static void put_crypt_info(struct fscrypt_info *ci)
- 	if (!ci)
- 		return;
- 
--	if (ci->ci_direct_key)
--		fscrypt_put_direct_key(ci->ci_direct_key);
--	else if (ci->ci_owns_key) {
--		fscrypt_destroy_prepared_key(ci->ci_inode->i_sb,
--					     ci->ci_enc_key);
--		kfree_sensitive(ci->ci_enc_key);
-+	if (ci->ci_enc_key) {
-+		enum fscrypt_prepared_key_type type = ci->ci_enc_key->type;
-+
-+		if (type == FSCRYPT_KEY_DIRECT_V1)
-+			fscrypt_put_direct_key(ci->ci_enc_key);
-+		if (type == FSCRYPT_KEY_PER_INFO) {
-+			fscrypt_destroy_prepared_key(ci->ci_inode->i_sb,
-+						     ci->ci_enc_key);
-+			kfree_sensitive(ci->ci_enc_key);
-+		}
- 	}
- 
- 	mk = ci->ci_master_key;
-diff --git a/fs/crypto/keysetup_v1.c b/fs/crypto/keysetup_v1.c
-index e1d761e8067f..1e785cedead0 100644
---- a/fs/crypto/keysetup_v1.c
-+++ b/fs/crypto/keysetup_v1.c
-@@ -160,8 +160,11 @@ static void free_direct_key(struct fscrypt_direct_key *dk)
- 	}
- }
- 
--void fscrypt_put_direct_key(struct fscrypt_direct_key *dk)
-+void fscrypt_put_direct_key(struct fscrypt_prepared_key *prep_key)
- {
-+	struct fscrypt_direct_key *dk =
-+		container_of(prep_key, struct fscrypt_direct_key, dk_key);
-+
- 	if (!refcount_dec_and_lock(&dk->dk_refcount, &fscrypt_direct_keys_lock))
- 		return;
- 	hash_del(&dk->dk_node);
-@@ -235,6 +238,7 @@ fscrypt_get_direct_key(const struct fscrypt_info *ci, const u8 *raw_key)
- 	dk->dk_sb = ci->ci_inode->i_sb;
- 	refcount_set(&dk->dk_refcount, 1);
- 	dk->dk_mode = ci->ci_mode;
-+	dk->dk_key.type = FSCRYPT_KEY_DIRECT_V1;
- 	err = fscrypt_prepare_key(&dk->dk_key, raw_key, ci);
- 	if (err)
- 		goto err_free_dk;
-@@ -258,7 +262,6 @@ static int setup_v1_file_key_direct(struct fscrypt_info *ci,
- 	dk = fscrypt_get_direct_key(ci, raw_master_key);
- 	if (IS_ERR(dk))
- 		return PTR_ERR(dk);
--	ci->ci_direct_key = dk;
- 	ci->ci_enc_key = &dk->dk_key;
- 	return 0;
- }
+Changelog:
+v3:
+ - Added four additional changes:
+   - soft-deleting keys that extent infos might later need to use, so
+     the behavior of an open file after key removal matches inode-based
+     fscrypt.
+   - a set of changes to allow asynchronous info freeing for extents,
+     necessary due to locking constraints in btrfs.
+
+v2: 
+ - https://lore.kernel.org/linux-fscrypt/cover.1688927487.git.sweettea-kernel@dorminy.me/T/#t
+
+
+[1] https://docs.google.com/document/d/1janjxewlewtVPqctkWOjSa7OhCgB8Gdx7iDaCDQQNZA/edit?usp=sharing
+[2] https://lore.kernel.org/linux-fscrypt/80496cfe-161d-fb0d-8230-93818b966b1b@dorminy.me/T/#t
+[3] https://lore.kernel.org/linux-fscrypt/cover.1691505830.git.sweettea-kernel@dorminy.me/
+
+Sweet Tea Dorminy (16):
+  fscrypt: factor helper for locking master key
+  fscrypt: factor getting info for a specific block
+  fscrypt: adjust effective lblks based on extents
+  fscrypt: add a super_block pointer to fscrypt_info
+  fscrypt: setup leaf inodes for extent encryption
+  fscrypt: allow infos to be owned by extents
+  fscrypt: use an optional ino equivalent for per-extent infos
+  fscrypt: move function call warning of busy inodes
+  fscrypt: revamp key removal for extent encryption
+  fscrypt: add creation/usage/freeing of per-extent infos
+  fscrypt: allow load/save of extent contexts
+  fscrypt: save session key credentials for extent infos
+  fscrypt: allow multiple extents to reference one info
+  fscrypt: cache list of inlinecrypt devices
+  fscrypt: allow asynchronous info freeing
+  fscrypt: update documentation for per-extent keys
+
+ Documentation/filesystems/fscrypt.rst |  43 +++-
+ fs/crypto/crypto.c                    |   6 +-
+ fs/crypto/fscrypt_private.h           | 158 +++++++++++-
+ fs/crypto/inline_crypt.c              |  49 ++--
+ fs/crypto/keyring.c                   |  78 +++---
+ fs/crypto/keysetup.c                  | 336 ++++++++++++++++++++++----
+ fs/crypto/keysetup_v1.c               |  10 +-
+ fs/crypto/policy.c                    |  20 ++
+ include/linux/fscrypt.h               |  67 +++++
+ 9 files changed, 654 insertions(+), 113 deletions(-)
+
+
+base-commit: 54d2161835d828a9663f548f61d1d9c3d3482122
+prerequisite-patch-id: 2f1424d04bb5a76abf0ecf2c9cd8426d300078ae
+prerequisite-patch-id: ab342a72cf967dadfb8bec1320c5906fd3c6800f
+prerequisite-patch-id: ced2a9dab36539f55c14cd74a28950087c475ff2
+prerequisite-patch-id: d4f1a64c994c2fa0d2d4cab83f9ddff52f0622e9
+prerequisite-patch-id: 1af0fc98277159b31c26bc5751663efc0d322d75
+prerequisite-patch-id: 3b21b62208587486cf9b31618f7c3bc875362f1a
+prerequisite-patch-id: c43d693f5b7c498a876d9ffcfc49c11a8ca93d80
+prerequisite-patch-id: f120bde1cf47fbef1d9f8fd09cdcccc1408c3ff4
+prerequisite-patch-id: c6a1f087d4a67b928b9c6af04e00310bfa74ace1
 -- 
 2.41.0
 
