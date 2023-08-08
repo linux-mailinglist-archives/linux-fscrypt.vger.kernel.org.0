@@ -2,108 +2,175 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FFFA77442E
+	by mail.lfdr.de (Postfix) with ESMTP id A3EEB774430
 	for <lists+linux-fscrypt@lfdr.de>; Tue,  8 Aug 2023 20:16:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235525AbjHHSQK (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        id S235527AbjHHSQK (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
         Tue, 8 Aug 2023 14:16:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47258 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235426AbjHHSPs (ORCPT
+        with ESMTP id S232898AbjHHSPu (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:15:48 -0400
-Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 794D31F401;
-        Tue,  8 Aug 2023 10:22:08 -0700 (PDT)
+        Tue, 8 Aug 2023 14:15:50 -0400
+Received: from box.fidei.email (box.fidei.email [71.19.144.250])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB3111F403;
+        Tue,  8 Aug 2023 10:22:09 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id C48E280281;
-        Tue,  8 Aug 2023 13:22:07 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id 6879580348;
+        Tue,  8 Aug 2023 13:22:09 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1691515328; bh=olh/IabzO6GOzB5svMvsvjY1MrZsZZeekcwwHyDB70k=;
-        h=From:To:Cc:Subject:Date:From;
-        b=BSltcF9jF2SvLKHRet0WJH2GHukmTiqhy5mEkq151kEgjxjwxFo2phn4M6IVKGsul
-         npniGxv1PfIN9OXOMmLOtsdk2k3Pr09z3qA/y286BtOzOBGym9WYVFbaWuDmFV7K4d
-         wkbjsoaFjUtLxqsLs9xk6NSJ3lPpT5AFLCPRx5HpwhpNridgxUa2MANZ5oXmfABnAg
-         sooT5v4nzQ8Z654XeLkqoAIK7YxpjEF5hIlfT/V1iNJb4LXNjfuVs9GeLLW1NWWyQL
-         QWK2PKriTrI2/DsmuWlsmvII7Axe15JvsMuV1tgQ0LhhJbf4nwI6OtWQs7K7XCobMm
-         tBnh+V7ySvKfg==
+        t=1691515329; bh=jXkp4ZPZvCh0Pbc4dU9uaq/gyB6pGGUOl6VW41U89Is=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=OZAXatfEZ/bHHP67WagSKsMa0U4wFZU3Y6hQfXQMYe9wrG+tiZKPv6ZwVAC2EUlWh
+         uhck8x6pf+OjypBa8lu9d9cPUFAu7oEbKTlfyrl0wJ9VHHDwmVc2gNlSYrH109/BkT
+         +lb37aJJ/30PGUrH3Av0jMsevnq25fozs1GD7a7xjjIPbpowUINjWWvOPjvAh2PYop
+         mvKqoiaUtvP006pNiFw1ePQ1x8LBE5M1RJVUVLLKGbBHV/SbGOlvDKAEK4QjCMIhfd
+         Zu77aoeuqirst6P+u1hQx8kWqTUH86g7YTMeXSvPUTaUidrtpu3OgFbUuTR0Fse1u4
+         1XyzNRuNEEtSg==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
         kernel-team@meta.com, ebiggers@google.com, anand.jain@oracle.com,
         fdmanana@suse.com, linux-fscrypt@vger.kernel.org,
         fsverity@lists.linux.dev, zlang@kernel.org
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [RFC PATCH v3 0/9] fstests: add btrfs encryption testing
-Date:   Tue,  8 Aug 2023 13:21:19 -0400
-Message-ID: <cover.1691530000.git.sweettea-kernel@dorminy.me>
+Subject: [RFC PATCH v3 1/9] common/encrypt: separate data and inode nonces
+Date:   Tue,  8 Aug 2023 13:21:20 -0400
+Message-ID: <6528bfda204dffd19aba07ff98f07ae6fd45792e.1691530000.git.sweettea-kernel@dorminy.me>
+In-Reply-To: <cover.1691530000.git.sweettea-kernel@dorminy.me>
+References: <cover.1691530000.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: *
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-This is a preliminary fstests side of the btrfs encryption feature. This
-requires the latest related progs and kernel changesets.
+btrfs will have different inode and data nonces, so we need to be
+specific about which nonce each use needs. For now, there is no
+difference in the two functions.
 
-Marked as RFC because they're not ready to merge until all its
-dependencies finish landing; this is primarily to demonstrate that
-extent encryption, between fscrypt and btrfs, does not significantly
-change user-visible behavior.
+Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+---
+ common/encrypt    | 33 ++++++++++++++++++++++++++-------
+ tests/f2fs/002    |  2 +-
+ tests/generic/613 |  4 ++--
+ 3 files changed, 29 insertions(+), 10 deletions(-)
 
-Changelog:
-
-RFC v3:
-- add test of snapshotting encrypted subvol
-- updated f2fs/002 to match edits to common/encrypt, thanks Anand.
-
-RFC v2:
-- https://lore.kernel.org/linux-btrfs/cover.1688929294.git.sweettea-kernel@dorminy.me/
-- Reverted changes to generic/580 and generic/595 to match the new
-  'soft-delete' behavior introduced in v2 of kernel patchset
-  "fscrypt: add extent encryption". (change 6)
-- Removed extraneous syncs/drop_caches and added copyright to new test
-  (change 8), as per Filipe's comments.
-
-RFC v1:
-- https://lore.kernel.org/linux-btrfs/cover.1688076612.git.sweettea-kernel@dorminy.me/T/#t
-
-Sweet Tea Dorminy (9):
-  common/encrypt: separate data and inode nonces
-  common/encrypt: add btrfs to get_encryption_*nonce
-  common/encrypt: add btrfs to get_ciphertext_filename
-  common/encrypt: enable making a encrypted btrfs filesystem
-  generic/613: write some actual data for btrfs
-  tests: adjust generic/429 for extent encryption
-  common/verity: explicitly don't allow btrfs encryption
-  btrfs: add simple test of reflink of encrypted data
-  btrfs: test snapshotting encrypted subvol
-
- common/encrypt      |  86 +++++++++++++++++++++++++++++++---
- common/verity       |   4 ++
- tests/btrfs/613     |  59 +++++++++++++++++++++++
- tests/btrfs/613.out |  13 ++++++
- tests/btrfs/614     |  76 ++++++++++++++++++++++++++++++
- tests/btrfs/614.out | 111 ++++++++++++++++++++++++++++++++++++++++++++
- tests/f2fs/002      |   2 +-
- tests/generic/429   |   6 +++
- tests/generic/613   |  12 +++--
- 9 files changed, 357 insertions(+), 12 deletions(-)
- create mode 100755 tests/btrfs/613
- create mode 100644 tests/btrfs/613.out
- create mode 100755 tests/btrfs/614
- create mode 100644 tests/btrfs/614.out
-
-
-base-commit: 8de535c53887bb49adae74a1b2e83e77d7e8457d
+diff --git a/common/encrypt b/common/encrypt
+index 1a77e23b..04b6e5ac 100644
+--- a/common/encrypt
++++ b/common/encrypt
+@@ -488,7 +488,7 @@ _add_fscrypt_provisioning_key()
+ # Retrieve the encryption nonce of the given inode as a hex string.  The nonce
+ # was randomly generated by the filesystem and isn't exposed directly to
+ # userspace.  But it can be read using the filesystem's debugging tools.
+-_get_encryption_nonce()
++_get_encryption_file_nonce()
+ {
+ 	local device=$1
+ 	local inode=$2
+@@ -532,15 +532,34 @@ _get_encryption_nonce()
+ 			}'
+ 		;;
+ 	*)
+-		_fail "_get_encryption_nonce() isn't implemented on $FSTYP"
++		_fail "_get_encryption_file_nonce() isn't implemented on $FSTYP"
+ 		;;
+ 	esac
+ }
+ 
+-# Require support for _get_encryption_nonce()
++# Retrieve the encryption nonce used to encrypt the data of the given inode as
++# a hex string.  The nonce was randomly generated by the filesystem and isn't
++# exposed directly to userspace.  But it can be read using the filesystem's
++# debugging tools.
++_get_encryption_data_nonce()
++{
++	local device=$1
++	local inode=$2
++
++	case $FSTYP in
++	ext4|f2fs)
++		_get_encryption_file_nonce $device $inode
++		;;
++	*)
++		_fail "_get_encryption_data_nonce() isn't implemented on $FSTYP"
++		;;
++	esac
++}
++
++# Require support for _get_encryption_*nonce()
+ _require_get_encryption_nonce_support()
+ {
+-	echo "Checking for _get_encryption_nonce() support for $FSTYP" >> $seqres.full
++	echo "Checking for _get_encryption_*nonce() support for $FSTYP" >> $seqres.full
+ 	case $FSTYP in
+ 	ext4)
+ 		_require_command "$DEBUGFS_PROG" debugfs
+@@ -554,7 +573,7 @@ _require_get_encryption_nonce_support()
+ 		# the test fail in that case, as it was an f2fs-tools bug...
+ 		;;
+ 	*)
+-		_notrun "_get_encryption_nonce() isn't implemented on $FSTYP"
++		_notrun "_get_encryption_*nonce() isn't implemented on $FSTYP"
+ 		;;
+ 	esac
+ }
+@@ -760,7 +779,7 @@ _do_verify_ciphertext_for_encryption_policy()
+ 	echo "Verifying encrypted file contents" >> $seqres.full
+ 	for f in "${test_contents_files[@]}"; do
+ 		read -r src inode blocklist <<< "$f"
+-		nonce=$(_get_encryption_nonce $SCRATCH_DEV $inode)
++		nonce=$(_get_encryption_data_nonce $SCRATCH_DEV $inode)
+ 		_dump_ciphertext_blocks $SCRATCH_DEV $blocklist > $tmp.actual_contents
+ 		$crypt_contents_cmd $contents_encryption_mode $raw_key_hex \
+ 			--file-nonce=$nonce --block-size=$blocksize \
+@@ -780,7 +799,7 @@ _do_verify_ciphertext_for_encryption_policy()
+ 	echo "Verifying encrypted file names" >> $seqres.full
+ 	for f in "${test_filenames_files[@]}"; do
+ 		read -r name inode dir_inode padding <<< "$f"
+-		nonce=$(_get_encryption_nonce $SCRATCH_DEV $dir_inode)
++		nonce=$(_get_encryption_file_nonce $SCRATCH_DEV $dir_inode)
+ 		_get_ciphertext_filename $SCRATCH_DEV $inode $dir_inode \
+ 			> $tmp.actual_name
+ 		echo -n "$name" | \
+diff --git a/tests/f2fs/002 b/tests/f2fs/002
+index 8235d88a..a51ddf22 100755
+--- a/tests/f2fs/002
++++ b/tests/f2fs/002
+@@ -129,7 +129,7 @@ blocklist=$(_get_ciphertext_block_list $file)
+ _scratch_unmount
+ 
+ echo -e "\n# Getting file's encryption nonce"
+-nonce=$(_get_encryption_nonce $SCRATCH_DEV $inode)
++nonce=$(_get_encryption_data_nonce $SCRATCH_DEV $inode)
+ 
+ echo -e "\n# Dumping the file's raw data"
+ _dump_ciphertext_blocks $SCRATCH_DEV $blocklist > $tmp.raw
+diff --git a/tests/generic/613 b/tests/generic/613
+index 4cf5ccc6..47c60e9c 100755
+--- a/tests/generic/613
++++ b/tests/generic/613
+@@ -68,10 +68,10 @@ echo -e "\n# Getting encryption nonces from inodes"
+ echo -n > $tmp.nonces_hex
+ echo -n > $tmp.nonces_bin
+ for inode in "${inodes[@]}"; do
+-	nonce=$(_get_encryption_nonce $SCRATCH_DEV $inode)
++	nonce=$(_get_encryption_data_nonce $SCRATCH_DEV $inode)
+ 	if (( ${#nonce} != 32 )) || [ -n "$(echo "$nonce" | tr -d 0-9a-fA-F)" ]
+ 	then
+-		_fail "Expected nonce to be 16 bytes (32 hex characters), but got \"$nonce\""
++		_fail "Expected nonce for inode $inode to be 16 bytes (32 hex characters), but got \"$nonce\""
+ 	fi
+ 	echo $nonce >> $tmp.nonces_hex
+ 	echo -ne "$(echo $nonce | sed 's/[0-9a-fA-F]\{2\}/\\x\0/g')" \
 -- 
 2.41.0
 
