@@ -2,130 +2,132 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14D62774A0E
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  8 Aug 2023 22:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66E16774E81
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  9 Aug 2023 00:45:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231481AbjHHUOj (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 8 Aug 2023 16:14:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45562 "EHLO
+        id S230155AbjHHWpF (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 8 Aug 2023 18:45:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231172AbjHHUO2 (ORCPT
+        with ESMTP id S229526AbjHHWpF (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 8 Aug 2023 16:14:28 -0400
-Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB78BD7C4;
-        Tue,  8 Aug 2023 11:46:29 -0700 (PDT)
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 5BD3580C15;
-        Tue,  8 Aug 2023 14:46:28 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1691520389; bh=zboWyX3LOqJT54iC6p239R9WSjBQ9u2mjNYR6izqaxw=;
-        h=Date:Subject:To:References:From:In-Reply-To:From;
-        b=YTboS0nEd5b0R7WsONge72lwyMWoG8E8DpBn0OTG5htDaLIGa5AAjcXkNKqmpGG3v
-         YPvTCUxG76My5eWBV1d703zsOBLQzsnoogNlDEquv8PieKLeVRafS5/BlSnAFe6aW6
-         RndnupZ2+KnMm1rMO+jVQBjA3y+4ILRv6bVAdJhO4E/++L5YH3pWMIM5375LveK+A4
-         QQOU2NvxIehNSDsQZ1Qm8QbHsZOJeOwd2K7qb8Xd0s122taP0HiC9e0hvyliVLag+l
-         V9xYRwmz9l34rKHfpOMcbnvNZTvKypUefmoMcqGUqmvAyPVdoXzncKskNmvouaeOG8
-         wI/RwM93PXvgQ==
-Message-ID: <1b838929-f349-559c-5f69-560c635c1d24@dorminy.me>
-Date:   Tue, 8 Aug 2023 14:46:27 -0400
+        Tue, 8 Aug 2023 18:45:05 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 46A97100;
+        Tue,  8 Aug 2023 15:45:04 -0700 (PDT)
+Received: by linux.microsoft.com (Postfix, from userid 1052)
+        id ACC3A20FC0D2; Tue,  8 Aug 2023 15:45:03 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com ACC3A20FC0D2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1691534703;
+        bh=sVCat3a1M7KHdlESd70oA1x2KXrxJ+56GtFSeTDlhcM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IKGEzYVtmP2d5RXQGvuDn1I/QZ4sOzZi4K/A2GFZ2iulDRvmRtjOIZiRVuMKczceS
+         0CiDLnNBQ2LUBMhDJBdn1PQPlunEfC8CXQzTGInv/hBg/Ilpo2DmC4rg8xJgCfKGlU
+         /LGb9xCJTxmrboncvvC5Grxc+B/9dleXOZ5FNzVQ=
+Date:   Tue, 8 Aug 2023 15:45:03 -0700
+From:   Fan Wu <wufan@linux.microsoft.com>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Mike Snitzer <snitzer@kernel.org>, corbet@lwn.net,
+        zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com,
+        tytso@mit.edu, ebiggers@kernel.org, axboe@kernel.dk,
+        agk@redhat.com, eparis@redhat.com, linux-doc@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
+        dm-devel@redhat.com, audit@vger.kernel.org,
+        roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
+        Deven Bowers <deven.desai@linux.microsoft.com>
+Subject: Re: [RFC PATCH v10 11/17] dm-verity: consume root hash digest and
+ signature data via LSM hook
+Message-ID: <20230808224503.GA20095@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1687986571-16823-1-git-send-email-wufan@linux.microsoft.com>
+ <1687986571-16823-12-git-send-email-wufan@linux.microsoft.com>
+ <ZKgm+ffQbdDTxrg9@redhat.com>
+ <20230712034319.GA17642@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <CAHC9VhQFxqcfgR0acgdiXKP9LT1KLgGjZd-QHs6O1dEex31HEQ@mail.gmail.com>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH v3 9/9] btrfs: test snapshotting encrypted subvol
-Content-Language: en-US
-To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
-        kernel-team@meta.com, ebiggers@google.com, anand.jain@oracle.com,
-        fdmanana@suse.com, linux-fscrypt@vger.kernel.org,
-        fsverity@lists.linux.dev, zlang@kernel.org
-References: <cover.1691530000.git.sweettea-kernel@dorminy.me>
- <400435f749f54e07a23e8e3c67bb717646747cc4.1691530000.git.sweettea-kernel@dorminy.me>
-From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-In-Reply-To: <400435f749f54e07a23e8e3c67bb717646747cc4.1691530000.git.sweettea-kernel@dorminy.me>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHC9VhQFxqcfgR0acgdiXKP9LT1KLgGjZd-QHs6O1dEex31HEQ@mail.gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
+On Tue, Jul 25, 2023 at 04:43:48PM -0400, Paul Moore wrote:
+> On Tue, Jul 11, 2023 at 11:43???PM Fan Wu <wufan@linux.microsoft.com> wrote:
+> > On Fri, Jul 07, 2023 at 10:53:45AM -0400, Mike Snitzer wrote:
+> 
+> ...
+> 
+> > > Both of your calls to security_bdev_setsecurity() to set your blobs in
+> > > the bdev are suspect because you're doing so from the verity_ctr().
+> > > The mapped_device has 2 dm_table slots (active and inactive).  The
+> > > verity_ctr() becomes part of the inactive slot, there is an extra step
+> > > to bind the inactive table to the active table.
+> > >
+> > > This leads to you changing the blobs in the global bdev _before_ the
+> > > table is actually active.  It is possible that the inactive table will
+> > > simply be removed and the DM verity device put back in service;
+> > > leaving your blob(s) in the bdev inconsistent.
+> > >
+> > > This issue has parallels to how we need to defer changing the global
+> > > queue_limits associated with a request_queue until _after_ all table
+> > > loading is settled and then the update is done just before resuming
+> > > the DM device (mapped_device) -- see dm_table_set_restrictions().
+> > >
+> > > Unfortunately, this feels like it may require a new hook in the
+> > > target_type struct (e.g. ->finalize())
+> >
+> > Thanks for pointing out this issue. We were calling security_bdev_setsecurity()
+> > because the roothash signature data is only available in verity_ctr()
+> > and it is discarded after verity_ctr() finishes.
+> > After digging deeper into the table_load, I realized that we were indeed
+> > wrong here.
+> >
+> > Based on my understanding of your suggestion, it seems that the correct
+> > approach would be to save the roothash signature into the struct dm_target
+> 
+Sorry for the delay in responding. It took me a while to test out the design idea
+suggested by Mike.
 
+The current implementation is indeed incorrect. However, I've been able to develop
+a working prototype that addresses the problem identified in the existing implementation.
+I still need some additional time to fine-tune and clean up the prototype.
 
-On 8/8/23 13:21, Sweet Tea Dorminy wrote:
-> Make sure that snapshots of encrypted data are readable and writeable.
+My goal is to have everything ready and send it out next month.
+
+> Would you be doing this with a LSM hook, or would this live in the
+> device mapper layer?
 > 
-> Test deliberately high-numbered to not conflict.
+In my implemention, it is a new hook in the device mapper layer. 
+The hook is triggered just before activating an inactive table of a mapped device.
+So in our case, we use the hook to attached the dm-verity's roothash metadata
+to the block_device struct of mapped device.
+
+> > and then invoke security_bdev_setsecurity() before activating
+> > the inactive table in the __bind function (where dm_table_set_restrictions is called).
+> >
+> > To facilitate this process, it seems appropriate to introduce a new hook
+> > called finalize() within the struct target_type. This hook would enable
+> > targets to define tasks that need to be completed before activating
+> > a new table.
+> >
+> > In our specific case, we would add a finalize hook to the dm-verity module,
+> > allowing us to call security_bdev_setsecurity() and associate the roothash
+> > information in the struct dm_target with the struct block_device of
+> > the struct mapped_device. Is this correct?
 > 
-> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-> ---
->   tests/btrfs/614     |  76 ++++++++++++++++++++++++++++++
->   tests/btrfs/614.out | 111 ++++++++++++++++++++++++++++++++++++++++++++
->   2 files changed, 187 insertions(+)
->   create mode 100755 tests/btrfs/614
->   create mode 100644 tests/btrfs/614.out
-> 
-> diff --git a/tests/btrfs/614 b/tests/btrfs/614
-> new file mode 100755
-> index 00000000..87dd27f9
-> --- /dev/null
-> +++ b/tests/btrfs/614
-> @@ -0,0 +1,76 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2023 Meta Platforms, Inc.  All Rights Reserved.
-> +#
-> +# FS QA Test 614
-> +#
-> +# Try taking a snapshot of an encrypted subvolume. Make sure the snapshot is
-> +# still readable. Rewrite part of the subvol with the same data; make sure it's
-> +# still readable.
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto encrypt
-> +
-> +# Import common functions.
-> +. ./common/encrypt
-> +. ./common/filter
-> +
-> +# real QA test starts here
-> +_supported_fs btrfs
-> +
-> +_require_test
-> +_require_scratch
-> +_require_scratch_encryption -v 2
-> +_require_command "$KEYCTL_PROG" keyctl
-> +
-> +_scratch_mkfs_encrypted &>> $seqres.full
-> +_scratch_mount
-> +
-> +udir=$SCRATCH_MNT/reference
-> +dir=$SCRATCH_MNT/subvol
-> +dir2=$SCRATCH_MNT/subvol2
-> +$BTRFS_UTIL_PROG subvolume create $dir >> $seqres.full
-> +mkdir $udir
-> +
-> +_set_encpolicy $dir $TEST_KEY_IDENTIFIER
-> +_add_enckey $SCRATCH_MNT "$TEST_RAW_KEY"
-> +
-> +# get files with lots of extents by using backwards writes.
-> +for j in `seq 0 50`; do
-> +	for i in `seq 20 -1 1`; do
-> +		$XFS_IO_PROG -f -d -c "pwrite $(($i * 4096)) 4096" \
-> +		$dir/foo-$j >> $seqres.full | _filter_xfs_io
-> +		$XFS_IO_PROG -f -d -c "pwrite $(($i * 4096)) 4096" \
-> +		$udir/foo-$j >> $seqres.full | _filter_xfs_io
-> +	done
-> +done
-> +
-> +$BTRFS_UTIL_PROG subvolume snapshot $dir $dir2 | _filter_scratch
-> +
-> +_scratch_remount
-> +_add_enckey $SCRATCH_MNT "$TEST_RAW_KEY"
-> +sleep 30
-Just noticed this sleep, will remove it in the next version.
+> Where would the finalize() hook be called?
+
+It is in the __bind function in drivers/md/dm.c, calling just before 
+rcu_assign_pointer(md->map, (void *)t) which activates the inactive table.
+
+-Fan
