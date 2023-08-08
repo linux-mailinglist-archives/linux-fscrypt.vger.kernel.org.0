@@ -2,33 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2ECC7743AA
+	by mail.lfdr.de (Postfix) with ESMTP id 89ED07743A9
 	for <lists+linux-fscrypt@lfdr.de>; Tue,  8 Aug 2023 20:08:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235287AbjHHSIS (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        id S235282AbjHHSIS (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
         Tue, 8 Aug 2023 14:08:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41628 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234666AbjHHSHv (ORCPT
+        with ESMTP id S235284AbjHHSHw (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:07:51 -0400
+        Tue, 8 Aug 2023 14:07:52 -0400
 Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1327D15C79C;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1357015C79D;
         Tue,  8 Aug 2023 10:08:52 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 269A283541;
-        Tue,  8 Aug 2023 13:08:51 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id 7D4C48354B;
+        Tue,  8 Aug 2023 13:08:52 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1691514531; bh=3CMnpmL0Kr6obvHQbD6FakWQ2Z0IBBiXI6JhTNhzBqI=;
+        t=1691514532; bh=xrjfPasFbA6CG7iZqMar52Dj4MLDOfsgZokr8j3aMYw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E9aDoeE8+nCbA0TVEfa/v7WEWisrhA0lYU0ZIpLOaiLdkRN75YqN0mjMSms9aimjN
-         JGxwcp+/G3Uz/em/jUgj/XBqC74vzB8fMuSOpuy/jK53RyxzTgGt5alCnYt5zvTePc
-         hhZ4pFrvCPahMRv1rQeUNhCJPp82gQKl/O6vIx9W1bQcftyEGLqJJzxTnMUOvZmbGr
-         yBXoK5Nw+Y8fs9F3faK9NQPZBl9srjoPO5dKTpkWVSc9+BY0CDSTOJrskeLPMDoKBf
-         PqoOQMroL+QhfbTfylKDVqfnuSY+df+jvRcnXRXO/PTDGuUge9gJ414Heq2LDszow9
-         V2GaZPg6P2Qxg==
+        b=OvjcCO/AYRNf05nzYP7Ecc+fUiTXnbVZC42y0MBcxQByjA9HLZuxhaFxiG+4XYbRG
+         +WlRRfpiDU7nx3RSeoCoNePDycqAswEFsJnVYihWunb9jrDwvwfX/KCHgZZVkHYN0X
+         wTtEAHBDKZ+cVx71bVOkjzlshIRMzMZbb+hOy+tZ3pkkh5d6VkOIUGoJh5DHoL1EAt
+         v21IhDurSrXojZ8Qql9IDO3U0zE069+0QvqHPv2CSyiO8Y5w5E0RQugcEuyyqD6pAU
+         EnlEdQcA01Le54aJ4NanLK4CG4O9d+gtScKvIIy/DzEn94YNMVaypV1uZi7ayme/O3
+         daMFyHS6FHJgA==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
@@ -37,9 +37,9 @@ To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         Eric Biggers <ebiggers@kernel.org>
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH v3 07/16] fscrypt: use an optional ino equivalent for per-extent infos
-Date:   Tue,  8 Aug 2023 13:08:24 -0400
-Message-ID: <8c40d7b6897875be8f908ca4aabf280c2f15b8d4.1691505882.git.sweettea-kernel@dorminy.me>
+Subject: [PATCH v3 08/16] fscrypt: move function call warning of busy inodes
+Date:   Tue,  8 Aug 2023 13:08:25 -0400
+Message-ID: <2e0b78a61f26eb7c3f17df759fa5bd2513f886ea.1691505882.git.sweettea-kernel@dorminy.me>
 In-Reply-To: <cover.1691505882.git.sweettea-kernel@dorminy.me>
 References: <cover.1691505882.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
@@ -55,117 +55,75 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Since per-extent infos are not tied to inodes, an ino-based policy
-cannot access the inode's i_ino to get the necessary information.
-Instead, this adds an optional fscrypt_operation pointer to get the ino
-equivalent for an extent, adds a wrapper to get the ino for an info, and
-uses this wrapper everywhere where the ci's inode's i_ino is currently
-accessed.
+Extent encryption will want to attempt to evict inodes, and not warn of
+busy ones, before removing the key instead of after as it is at present.
+Therefore pull the call for check_for_busy_inodes() out of
+try_to_lock_encrypted_files() into its only callsite.
 
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 ---
- fs/crypto/fscrypt_private.h | 18 ++++++++++++++++++
- fs/crypto/keyring.c         |  8 ++++----
- fs/crypto/keysetup.c        |  6 +++---
- include/linux/fscrypt.h     |  9 +++++++++
- 4 files changed, 34 insertions(+), 7 deletions(-)
+ fs/crypto/keyring.c | 25 ++++++++++++-------------
+ 1 file changed, 12 insertions(+), 13 deletions(-)
 
-diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-index 1244797cd8a9..4fe79b774f1f 100644
---- a/fs/crypto/fscrypt_private.h
-+++ b/fs/crypto/fscrypt_private.h
-@@ -332,6 +332,24 @@ static inline bool fscrypt_uses_extent_encryption(const struct inode *inode)
- 	return false;
- }
- 
-+/**
-+ * fscrypt_get_info_ino() - get the ino or ino equivalent for an info
-+ *
-+ * @ci: the fscrypt_info in question
-+ *
-+ * Return: For inode-based encryption, this will return the info's inode's ino.
-+ * For extent-based encryption, this will return the extent's ino equivalent
-+ * or 0 if it is not implemented.
-+ */
-+static inline u64 fscrypt_get_info_ino(const struct fscrypt_info *ci)
-+{
-+	if (ci->ci_inode)
-+		return ci->ci_inode->i_ino;
-+	if (!ci->ci_sb->s_cop->get_extent_ino_equivalent)
-+		return 0;
-+	return ci->ci_sb->s_cop->get_extent_ino_equivalent(ci->ci_info_ptr);
-+}
-+
- /* crypto.c */
- extern struct kmem_cache *fscrypt_info_cachep;
- int fscrypt_initialize(struct super_block *sb);
 diff --git a/fs/crypto/keyring.c b/fs/crypto/keyring.c
-index 7cbb1fd872ac..53e37b8a822c 100644
+index 53e37b8a822c..9d00cadb19ee 100644
 --- a/fs/crypto/keyring.c
 +++ b/fs/crypto/keyring.c
-@@ -914,12 +914,12 @@ static int check_for_busy_inodes(struct super_block *sb,
- 	}
- 
- 	{
--		/* select an example file to show for debugging purposes */
--		struct inode *inode =
-+		/* select an example info to show for debugging purposes */
-+		struct fscrypt_info *ci =
- 			list_first_entry(&mk->mk_decrypted_inodes,
- 					 struct fscrypt_info,
--					 ci_master_key_link)->ci_inode;
--		ino = inode->i_ino;
-+					 ci_master_key_link);
-+		ino = fscrypt_get_info_ino(ci);
- 	}
- 	spin_unlock(&mk->mk_decrypted_inodes_lock);
- 
-diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index c72f9015ed35..32e62cc57708 100644
---- a/fs/crypto/keysetup.c
-+++ b/fs/crypto/keysetup.c
-@@ -380,10 +380,10 @@ int fscrypt_derive_dirhash_key(struct fscrypt_info *ci,
- void fscrypt_hash_inode_number(struct fscrypt_info *ci,
- 			       const struct fscrypt_master_key *mk)
+@@ -938,8 +938,7 @@ static int check_for_busy_inodes(struct super_block *sb,
+ static int try_to_lock_encrypted_files(struct super_block *sb,
+ 				       struct fscrypt_master_key *mk)
  {
--	WARN_ON_ONCE(ci->ci_inode->i_ino == 0);
-+	WARN_ON_ONCE(fscrypt_get_info_ino(ci) == 0);
- 	WARN_ON_ONCE(!mk->mk_ino_hash_key_initialized);
+-	int err1;
+-	int err2;
++	int err;
  
--	ci->ci_hashed_ino = (u32)siphash_1u64(ci->ci_inode->i_ino,
-+	ci->ci_hashed_ino = (u32)siphash_1u64(fscrypt_get_info_ino(ci),
- 					      &mk->mk_ino_hash_key);
+ 	/*
+ 	 * An inode can't be evicted while it is dirty or has dirty pages.
+@@ -951,7 +950,7 @@ static int try_to_lock_encrypted_files(struct super_block *sb,
+ 	 * already call sync_filesystem() via sys_syncfs() or sys_sync().
+ 	 */
+ 	down_read(&sb->s_umount);
+-	err1 = sync_filesystem(sb);
++	err = sync_filesystem(sb);
+ 	up_read(&sb->s_umount);
+ 	/* If a sync error occurs, still try to evict as much as possible. */
+ 
+@@ -963,16 +962,7 @@ static int try_to_lock_encrypted_files(struct super_block *sb,
+ 	 */
+ 	evict_dentries_for_decrypted_inodes(mk);
+ 
+-	/*
+-	 * evict_dentries_for_decrypted_inodes() already iput() each inode in
+-	 * the list; any inodes for which that dropped the last reference will
+-	 * have been evicted due to fscrypt_drop_inode() detecting the key
+-	 * removal and telling the VFS to evict the inode.  So to finish, we
+-	 * just need to check whether any inodes couldn't be evicted.
+-	 */
+-	err2 = check_for_busy_inodes(sb, mk);
+-
+-	return err1 ?: err2;
++	return err;
  }
  
-@@ -705,7 +705,7 @@ fscrypt_setup_encryption_info(struct inode *inode,
- 		if (res)
- 			goto out;
+ /*
+@@ -1064,8 +1054,17 @@ static int do_remove_key(struct file *filp, void __user *_uarg, bool all_users)
+ 	up_write(&mk->mk_sem);
  
--		if (inode->i_ino)
-+		if (fscrypt_get_info_ino(crypt_info))
- 			fscrypt_hash_inode_number(crypt_info, mk);
- 	}
- 
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index c895b12737a1..2a64e7a71a53 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -160,6 +160,15 @@ struct fscrypt_operations {
- 	void (*get_ino_and_lblk_bits)(struct super_block *sb,
- 				      int *ino_bits_ret, int *lblk_bits_ret);
- 
-+	/*
-+	 * Get the inode number equivalent for filesystems using per-extent
-+	 * encryption keys.
-+	 *
-+	 * This function only needs to be implemented if support for one of the
-+	 * FSCRYPT_POLICY_FLAG_IV_INO_* flags is needed.
-+	 */
-+	u64 (*get_extent_ino_equivalent)(struct fscrypt_info **info_ptr);
-+
- 	/*
- 	 * Return an array of pointers to the block devices to which the
- 	 * filesystem may write encrypted file contents, NULL if the filesystem
+ 	if (inodes_remain) {
++		int err2;
+ 		/* Some inodes still reference this key; try to evict them. */
+ 		err = try_to_lock_encrypted_files(sb, mk);
++		/* We already tried to iput() each inode referencing this key
++		 * which would cause the inode to be evicted if that was the
++		 * last reference (since fscrypt_drop_inode() would see the
++		 * key removal). So the only remaining inodes referencing this
++		 * key are still busy and couldn't be evicted; check for them.
++		 */
++		err2 = check_for_busy_inodes(sb, mk);
++		err = err ?: err2;
+ 		if (err == -EBUSY) {
+ 			status_flags |=
+ 				FSCRYPT_KEY_REMOVAL_STATUS_FLAG_FILES_BUSY;
 -- 
 2.41.0
 
