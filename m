@@ -2,33 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A82517743DB
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  8 Aug 2023 20:11:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 560687743C9
+	for <lists+linux-fscrypt@lfdr.de>; Tue,  8 Aug 2023 20:10:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234352AbjHHSK6 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 8 Aug 2023 14:10:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59338 "EHLO
+        id S235295AbjHHSKd (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 8 Aug 2023 14:10:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235291AbjHHSK3 (ORCPT
+        with ESMTP id S234628AbjHHSJ6 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:10:29 -0400
+        Tue, 8 Aug 2023 14:09:58 -0400
 Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3871B1B068;
-        Tue,  8 Aug 2023 10:12:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C40A51B073;
+        Tue,  8 Aug 2023 10:12:44 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id CA9DB83440;
-        Tue,  8 Aug 2023 13:12:42 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id 430F783441;
+        Tue,  8 Aug 2023 13:12:44 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1691514763; bh=zOKNZbAfiK+odlXUuWM8XxSwVUpiOYgsRZM26vBnM0o=;
+        t=1691514764; bh=qpXAcm4K7bOAkjEWFWEcnGwbfn1r/rAuBu2to8Bk8DQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uZDtWdk08CozyHJ09AUWJoLb8cMGOpA7JVPlSIWtQ3gGCaW+cbBMcoqihlF1rHLAh
-         +cFSL+Fw9dCqfNeLe37FlGZe7Jsk9rdiMGRaDopV43583IMDvmWRjJnEcRt5Qfi+xd
-         4ABD0IYBVoyRNBJQiIBszWmfiflkOCFTc3rdOh067wEQbrLSj+Yhz+slt5C13gGoQu
-         XwTODoOHVxmWv78gA0tVm4DJbMVSBkjbma17WyhnUCdtJJWmoPp1kC/tsS6ghEJfT1
-         n4ZD1VEMn30jep1hyA+9qhpy+9Jzwl/jwdfRD/BqlEnB6ZWRFx/PAO1Dg+asObBXWI
-         eQ1ZccbsumDHg==
+        b=jmhGNiDLrSlDWTuDGJaz7ylBl/8CLgG+ppSIjuIpkAv61va8nlmkd8166rAUJTKIy
+         Rk7Oms8SxIE3BBIZGohoMxedWVY+omAA8tTr/nZnPOmuzBVTUPl/pyZyG0babBi+wk
+         J+QM3ydu7IIcWbfjP2irQ32fjolI/3fuCdyA+5Uzp+K+pdIz9Uqj5mUBAxfJvEOz7V
+         o90Oif7SYGd90nVihhasIr5Xp4L3oCWx7APfaRqOQko/5hRw0dQ3dEn2OgBa0/+fNp
+         Sw5pBMlpJdC4g+V6DKeZD4c1524+tBRDXOVj8hWaR1L/da/kokx8ZUT/YoSJqTEWhj
+         bYiys6l+XqXdQ==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
@@ -37,9 +37,9 @@ To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         Eric Biggers <ebiggers@kernel.org>
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH v3 12/17] btrfs: turn on inlinecrypt mount option for encrypt
-Date:   Tue,  8 Aug 2023 13:12:14 -0400
-Message-ID: <c6e584da3cedef803cf994381c95c52080d17685.1691510179.git.sweettea-kernel@dorminy.me>
+Subject: [PATCH v3 13/17] btrfs: turn on the encryption ioctls
+Date:   Tue,  8 Aug 2023 13:12:15 -0400
+Message-ID: <dd1d86a0d37a64d47263136ee57aae4e7afe8a4c.1691510179.git.sweettea-kernel@dorminy.me>
 In-Reply-To: <cover.1691510179.git.sweettea-kernel@dorminy.me>
 References: <cover.1691510179.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
@@ -55,54 +55,46 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-fscrypt's extent encryption requires the use of inline encryption or the
-software fallback that the block layer provides; it is rather
-complicated to allow software encryption with extent encryption due to
-the timing of memory allocations. Thus, if btrfs has ever had a
-encrypted file, or when encryption is enabled on a directory, update the
-mount flags to include inlinecrypt.
+This allows the use of encryption with btrfs. Since the extent
+encryption interfaces are not currently defined, this is using the
+normal inode encryption, and that is not the long-term plan. But it
+allows verifying by test that the steps for inode encryption are correct
+and pass fstests.
 
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 ---
- fs/btrfs/ioctl.c |  3 +++
- fs/btrfs/super.c | 10 ++++++++++
- 2 files changed, 13 insertions(+)
+ fs/btrfs/extent_io.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 91ad59519900..42525a8119ee 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -4574,6 +4574,9 @@ long btrfs_ioctl(struct file *file, unsigned int
- 		 * state persists.
- 		 */
- 		btrfs_set_fs_incompat(fs_info, ENCRYPT);
-+		if (!(inode->i_sb->s_flags & SB_INLINECRYPT)) {
-+			inode->i_sb->s_flags |= SB_INLINECRYPT;
-+		}
- 		return fscrypt_ioctl_set_policy(file, (const void __user *)arg);
- 	}
- 	case FS_IOC_GET_ENCRYPTION_POLICY:
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 0cc9c2909f64..1e9a93c6750a 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -1165,6 +1165,16 @@ static int btrfs_fill_super(struct super_block *sb,
- 		return err;
- 	}
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 4de42b7ce796..2e13bb615fa6 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -715,6 +715,14 @@ static bool btrfs_bio_is_contig(struct btrfs_bio_ctrl *bio_ctrl,
+ 	struct bio_vec *bvec = bio_last_bvec_all(bio);
+ 	const sector_t sector = disk_bytenr >> SECTOR_SHIFT;
  
-+	if (btrfs_fs_incompat(fs_info, ENCRYPT)) {
-+		if (IS_ENABLED(CONFIG_FS_ENCRYPTION_INLINE_CRYPT)) {
-+			sb->s_flags |= SB_INLINECRYPT;
-+		} else {
-+			btrfs_err(fs_info, "encryption not supported");
-+			err = -EINVAL;
-+			goto fail_close;
-+		}
++	if (IS_ENABLED(CONFIG_FS_ENCRYPTION)) {
++		struct inode *inode = page->mapping->host;
++		u64 lblk = (page_offset(page) + pg_offset) / inode->i_sb->s_blocksize;
++
++		if (!fscrypt_mergeable_bio(bio, inode, lblk))
++			return false;
 +	}
 +
- 	inode = btrfs_iget(sb, BTRFS_FIRST_FREE_OBJECTID, fs_info->fs_root);
- 	if (IS_ERR(inode)) {
- 		err = PTR_ERR(inode);
+ 	if (bio_ctrl->compress_type != BTRFS_COMPRESS_NONE) {
+ 		/*
+ 		 * For compression, all IO should have its logical bytenr set
+@@ -753,6 +761,9 @@ static void alloc_new_bio(struct btrfs_inode *inode,
+ 	bbio->file_offset = file_offset;
+ 	bio_ctrl->bbio = bbio;
+ 	bio_ctrl->len_to_oe_boundary = U32_MAX;
++	fscrypt_set_bio_crypt_ctx(&bbio->bio, &inode->vfs_inode,
++				  file_offset >> fs_info->sectorsize_bits,
++				  GFP_NOIO);
+ 
+ 	/* Limit data write bios to the ordered boundary. */
+ 	if (bio_ctrl->wbc) {
 -- 
 2.41.0
 
