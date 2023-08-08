@@ -2,33 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E5BB77464C
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  8 Aug 2023 20:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 323C7774659
+	for <lists+linux-fscrypt@lfdr.de>; Tue,  8 Aug 2023 20:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233517AbjHHSyu (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 8 Aug 2023 14:54:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54290 "EHLO
+        id S229553AbjHHSzP (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 8 Aug 2023 14:55:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231582AbjHHSyb (ORCPT
+        with ESMTP id S232883AbjHHSyq (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:54:31 -0400
-Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C23041B046;
-        Tue,  8 Aug 2023 10:12:37 -0700 (PDT)
+        Tue, 8 Aug 2023 14:54:46 -0400
+Received: from box.fidei.email (box.fidei.email [71.19.144.250])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38FD41B057;
+        Tue,  8 Aug 2023 10:12:39 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 568118343D;
-        Tue,  8 Aug 2023 13:12:37 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id BC32A83441;
+        Tue,  8 Aug 2023 13:12:38 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1691514757; bh=vZtFoQKKsLfpwHLBX9gD6fBDzJ/9AqqYRAOFzdVkosE=;
+        t=1691514759; bh=a6xP0jJSWbHcthsubcHuP76jkFDSkrf84bFyrS2PycI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uG811T2FMO1JW4X+P10AWUFIXCj+pjs0SkzPJyJIJJCwkIr6THA3lIHzg/ca51l1y
-         SpEzSWSjVBvdRT9gEKr3u8qGj54sVCu2HMX1eR0Ffvj6SXizjKIE8hYjOC+oXw5Cet
-         TZY4rMxs0lWO2VuQLx0UhyRTvl5npdMVnLhKwuX8iOIq7/E8WNIYOOpB6N3k73/68b
-         lPRTNEA7Yhplh3X2Fjzd8XEqs5ZguMuBtGWfJata1UDrse7BnTpBrPGuA8ZX9VSLNi
-         5gYR6Os9x4kB1MCq8Cb5cJFHtUhFJwr8ZjR65zCTY+QrMI563xfyNS9SgRxO3VcI1X
-         4jA61lIKnngfQ==
+        b=k4MASSa6kgIIgCCAtm7FtQP1c5FYWko50nAA838AHiHR+0yimESWkUSHYmaRv/lQ8
+         +96mEUgLFCxH1W931euRikDOzesE9tD+WIcMX87rzsLf64BkEtrUBx8C0193GK8G3y
+         xMWQVA8oG1kdGdY40dfTqZuEJf/vYrOJxTG4Wa0wpttLThDaJR1JoxzQOoqh064zOQ
+         vC/3rGAHJRiP8R3pFbPplURiz5yfHL2v2qCTDqqzwRBp3UxswTNb2qiLeaXjha5EAR
+         OnRaPNhBobOxq7TWZQqkvR3pVPjwGs+QqLZNJml+YaYqJDSKbSIhR4b0tbZHZEE2Xa
+         33HlTFOeu+9Eg==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
@@ -36,177 +36,86 @@ To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@meta.com,
         linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         Eric Biggers <ebiggers@kernel.org>
-Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH v3 08/17] btrfs: handle nokey names.
-Date:   Tue,  8 Aug 2023 13:12:10 -0400
-Message-ID: <adfd6682729107364481959f2ee4850c276ce211.1691510179.git.sweettea-kernel@dorminy.me>
+Cc:     Omar Sandoval <osandov@osandov.com>,
+        Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Subject: [PATCH v3 09/17] btrfs: implement fscrypt ioctls
+Date:   Tue,  8 Aug 2023 13:12:11 -0400
+Message-ID: <f9437a837be4709fc2e6ddf7e275a4c1e2b71c13.1691510179.git.sweettea-kernel@dorminy.me>
 In-Reply-To: <cover.1691510179.git.sweettea-kernel@dorminy.me>
 References: <cover.1691510179.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_PASS,SPF_PASS,T_FILL_THIS_FORM_SHORT,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-For encrypted or unencrypted names, we calculate the offset for the dir
-item by hashing the name for the dir item. However, this doesn't work
-for a long nokey name, where we do not have the complete ciphertext.
-Instead, fscrypt stores the filesystem-provided hash in the nokey name,
-and we can extract it from the fscrypt_name structure in such a case.
+From: Omar Sandoval <osandov@osandov.com>
 
-Additionally, for nokey names, if we find the nokey name on disk we can
-update the fscrypt_name with the disk name, so add that to searching for
-diritems.
+These ioctls allow encryption to actually be used.
 
+The set_encryption_policy ioctl is the thing which actually turns on
+encryption, and therefore sets the ENCRYPT flag in the superblock. This
+prevents the filesystem from being loaded on older kernels.
+
+fscrypt provides CONFIG_FS_ENCRYPTION-disabled versions of all these
+functions which just return -EOPNOTSUPP, so the ioctls don't need to be
+compiled out if CONFIG_FS_ENCRYPTION isn't enabled.
+
+We could instead gate this ioctl on the superblock having the flag set,
+if we wanted to require mkfs with the encrypt flag in order to have a
+filesystem with any encryption.
+
+Signed-off-by: Omar Sandoval <osandov@osandov.com>
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 ---
- fs/btrfs/dir-item.c | 37 +++++++++++++++++++++++++++++++++++--
- fs/btrfs/fscrypt.c  | 27 +++++++++++++++++++++++++++
- fs/btrfs/fscrypt.h  | 11 +++++++++++
- 3 files changed, 73 insertions(+), 2 deletions(-)
+ fs/btrfs/ioctl.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-diff --git a/fs/btrfs/dir-item.c b/fs/btrfs/dir-item.c
-index da95ae411d72..ee7dad888f53 100644
---- a/fs/btrfs/dir-item.c
-+++ b/fs/btrfs/dir-item.c
-@@ -231,6 +231,28 @@ struct btrfs_dir_item *btrfs_lookup_dir_item(struct btrfs_trans_handle *trans,
- 	return di;
- }
- 
-+/*
-+ * If appropriate, populate the disk name for a fscrypt_name looked up without
-+ * a key.
-+ *
-+ * @path:	The path to the extent buffer in which the name was found.
-+ * @di:		The dir item corresponding.
-+ * @fname:	The fscrypt_name to perhaps populate.
-+ *
-+ * Returns: 0 if the name is already populated or the dir item doesn't exist
-+ * or the name was successfully populated, else an error code.
-+ */
-+static int ensure_disk_name_from_dir_item(struct btrfs_path *path,
-+					  struct btrfs_dir_item *di,
-+					  struct fscrypt_name *name)
-+{
-+	if (name->disk_name.name || !di)
-+		return 0;
-+
-+	return btrfs_fscrypt_get_disk_name(path->nodes[0], di,
-+					   &name->disk_name);
-+}
-+
- /*
-  * Lookup for a directory item by fscrypt_name.
-  *
-@@ -257,8 +279,12 @@ struct btrfs_dir_item *btrfs_lookup_dir_item_fname(struct btrfs_trans_handle *tr
- 
- 	key.objectid = dir;
- 	key.type = BTRFS_DIR_ITEM_KEY;
--	key.offset = btrfs_name_hash(name->disk_name.name, name->disk_name.len);
--	/* XXX get the right hash for no-key names */
-+
-+	if (!name->disk_name.name)
-+		key.offset = name->hash | ((u64)name->minor_hash << 32);
-+	else
-+		key.offset = btrfs_name_hash(name->disk_name.name,
-+					     name->disk_name.len);
- 
- 	ret = btrfs_search_slot(trans, root, &key, path, mod, -mod);
- 	if (ret == 0)
-@@ -266,6 +292,8 @@ struct btrfs_dir_item *btrfs_lookup_dir_item_fname(struct btrfs_trans_handle *tr
- 
- 	if (ret == -ENOENT || (di && IS_ERR(di) && PTR_ERR(di) == -ENOENT))
- 		return NULL;
-+	if (ret == 0)
-+		ret = ensure_disk_name_from_dir_item(path, di, name);
- 	if (ret < 0)
- 		di = ERR_PTR(ret);
- 
-@@ -382,7 +410,12 @@ btrfs_search_dir_index_item(struct btrfs_root *root, struct btrfs_path *path,
- 	btrfs_for_each_slot(root, &key, &key, path, ret) {
- 		if (key.objectid != dirid || key.type != BTRFS_DIR_INDEX_KEY)
- 			break;
-+
- 		di = btrfs_match_dir_item_fname(root->fs_info, path, name);
-+		if (di)
-+			ret = ensure_disk_name_from_dir_item(path, di, name);
-+		if (ret)
-+			break;
- 		if (di)
- 			return di;
- 	}
-diff --git a/fs/btrfs/fscrypt.c b/fs/btrfs/fscrypt.c
-index fcd926907f82..bdd58415f93c 100644
---- a/fs/btrfs/fscrypt.c
-+++ b/fs/btrfs/fscrypt.c
-@@ -14,6 +14,33 @@
- #include "transaction.h"
- #include "xattr.h"
- 
-+/*
-+ * From a given location in a leaf, read a name into a qstr (usually a
-+ * fscrypt_name's disk_name), allocating the required buffer. Used for
-+ * nokey names.
-+ */
-+int btrfs_fscrypt_get_disk_name(struct extent_buffer *leaf,
-+				struct btrfs_dir_item *dir_item,
-+				struct fscrypt_str *name)
-+{
-+	unsigned long de_name_len = btrfs_dir_name_len(leaf, dir_item);
-+	unsigned long de_name = (unsigned long)(dir_item + 1);
-+	/*
-+	 * For no-key names, we use this opportunity to find the disk
-+	 * name, so future searches don't need to deal with nokey names
-+	 * and we know what the encrypted size is.
-+	 */
-+	name->name = kmalloc(de_name_len, GFP_NOFS);
-+
-+	if (!name->name)
-+		return -ENOMEM;
-+
-+	read_extent_buffer(leaf, name->name, de_name, de_name_len);
-+
-+	name->len = de_name_len;
-+	return 0;
-+}
-+
- /*
-  * This function is extremely similar to fscrypt_match_name() but uses an
-  * extent_buffer.
-diff --git a/fs/btrfs/fscrypt.h b/fs/btrfs/fscrypt.h
-index 1647bbbcd609..c08fd52c99b4 100644
---- a/fs/btrfs/fscrypt.h
-+++ b/fs/btrfs/fscrypt.h
-@@ -9,11 +9,22 @@
- #include "fs.h"
- 
- #ifdef CONFIG_FS_ENCRYPTION
-+int btrfs_fscrypt_get_disk_name(struct extent_buffer *leaf,
-+				struct btrfs_dir_item *di,
-+				struct fscrypt_str *qstr);
-+
- bool btrfs_fscrypt_match_name(struct fscrypt_name *fname,
- 			      struct extent_buffer *leaf,
- 			      unsigned long de_name, u32 de_name_len);
- 
- #else
-+static inline int btrfs_fscrypt_get_disk_name(struct extent_buffer *leaf,
-+					      struct btrfs_dir_item *di,
-+					      struct fscrypt_str *qstr)
-+{
-+	return 0;
-+}
-+
- static inline bool btrfs_fscrypt_match_name(struct fscrypt_name *fname,
- 					    struct extent_buffer *leaf,
- 					    unsigned long de_name,
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 05984e5448b4..03ea92218749 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -4562,6 +4562,34 @@ long btrfs_ioctl(struct file *file, unsigned int
+ 		return btrfs_ioctl_get_fslabel(fs_info, argp);
+ 	case FS_IOC_SETFSLABEL:
+ 		return btrfs_ioctl_set_fslabel(file, argp);
++	case FS_IOC_SET_ENCRYPTION_POLICY: {
++		if (!IS_ENABLED(CONFIG_FS_ENCRYPTION))
++			return -EOPNOTSUPP;
++		if (sb_rdonly(fs_info->sb))
++			return -EROFS;
++		/*
++		 *  If we crash before we commit, nothing encrypted could have
++		 * been written so it doesn't matter whether the encrypted
++		 * state persists.
++		 */
++		btrfs_set_fs_incompat(fs_info, ENCRYPT);
++		return fscrypt_ioctl_set_policy(file, (const void __user *)arg);
++	}
++	case FS_IOC_GET_ENCRYPTION_POLICY:
++		return fscrypt_ioctl_get_policy(file, (void __user *)arg);
++	case FS_IOC_GET_ENCRYPTION_POLICY_EX:
++		return fscrypt_ioctl_get_policy_ex(file, (void __user *)arg);
++	case FS_IOC_ADD_ENCRYPTION_KEY:
++		return fscrypt_ioctl_add_key(file, (void __user *)arg);
++	case FS_IOC_REMOVE_ENCRYPTION_KEY:
++		return fscrypt_ioctl_remove_key(file, (void __user *)arg);
++	case FS_IOC_REMOVE_ENCRYPTION_KEY_ALL_USERS:
++		return fscrypt_ioctl_remove_key_all_users(file,
++							  (void __user *)arg);
++	case FS_IOC_GET_ENCRYPTION_KEY_STATUS:
++		return fscrypt_ioctl_get_key_status(file, (void __user *)arg);
++	case FS_IOC_GET_ENCRYPTION_NONCE:
++		return fscrypt_ioctl_get_nonce(file, (void __user *)arg);
+ 	case FITRIM:
+ 		return btrfs_ioctl_fitrim(fs_info, argp);
+ 	case BTRFS_IOC_SNAP_CREATE:
 -- 
 2.41.0
 
