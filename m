@@ -2,52 +2,60 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9494C776F47
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 10 Aug 2023 06:55:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 865A9776FA1
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 10 Aug 2023 07:36:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229788AbjHJEzZ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 10 Aug 2023 00:55:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45240 "EHLO
+        id S233087AbjHJFgq (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 10 Aug 2023 01:36:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229981AbjHJEzX (ORCPT
+        with ESMTP id S233083AbjHJFgp (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 10 Aug 2023 00:55:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 985D52115;
-        Wed,  9 Aug 2023 21:55:23 -0700 (PDT)
+        Thu, 10 Aug 2023 01:36:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88D2F10C3;
+        Wed,  9 Aug 2023 22:36:45 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3846863FC9;
-        Thu, 10 Aug 2023 04:55:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C568C433C8;
-        Thu, 10 Aug 2023 04:55:22 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 209A763A11;
+        Thu, 10 Aug 2023 05:36:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EA7DC433C8;
+        Thu, 10 Aug 2023 05:36:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691643322;
-        bh=Vx2owTG4NGz+TwNKdwXeytUvxkYln70M0w0M15r7KPY=;
+        s=k20201202; t=1691645804;
+        bh=tcSjhntVhHGs4LILxZjnhlkjuBObmtnak8S0wqOrdng=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=am+Gv6pZ27t0iMcQf/hH+7uTBAE0Rn6q9rVtsmKBJg+TsD8fgtQUhJfN3cGeCrtOQ
-         +RCFm7tjqSX52lzEydiMLa9d6NxptLRjl6FNZDHTF9aDhVcXWsSCDMG6eRZFQ6yzH8
-         ch5QlkW6Vg4JqJdVZ6z/CYMMMYtnSf5hz3K7ahoh9LM+7WvlhjHwUObxLGeWji+TnX
-         5pml2WinPzFR0I+hWwOTE5Dm8acyC57XHRng9WiRU+bR/Ttw4TuRY0t7YDLtCxoDNm
-         B4g3Pvy1iVEJRRCTXhpIEGyPHdBo4m5LRHca3EH/UhEeaU18KCqaLSKOaA0Ukex6O1
-         Gkvb09mfKNPww==
-Date:   Wed, 9 Aug 2023 21:55:20 -0700
+        b=n+H6NfEg855xY5gp8DtQ7B5dL3rY7g+XYwU0/nEtnsIUlfwPpKioE3NIAq1blAI9F
+         YTXFxZ3MbxJ157LL0FcQpT/PpV9mghO5vMZRcu76xRzgcapu6hc1nApVNHysdivVpa
+         rJRtKebueZEUxXZXlbpuEy+4DQaYCrHs8KL27l8Pnpc2kpQwwEMeF/IvLtBwGdbKB7
+         V0giFR0eFAiCffz4u1LptdHNLFuNO8H22Y0L8jFuZkiv+HAL+zcKAHFgkeBZkklN6y
+         TdU3uYYefWJVYEe1jo912z1K+BnN8pVtNjupDDiHKX5djgd39y6A/VxW1zOM9AL/6B
+         RT6jWJT9AUwmA==
+Date:   Wed, 9 Aug 2023 22:36:42 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@meta.com,
-        linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH v3 00/16] fscrypt: add extent encryption
-Message-ID: <20230810045520.GA923@sol.localdomain>
-References: <cover.1691505882.git.sweettea-kernel@dorminy.me>
+To:     "Gaurav Kashyap (QUIC)" <quic_gaurkash@quicinc.com>
+Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
+        Om Prakash Singh <omprsing@qti.qualcomm.com>,
+        "Prasad Sodagudi (QUIC)" <quic_psodagud@quicinc.com>,
+        "Arun Menon (SSG)" <avmenon@quicinc.com>,
+        "abel.vesa@linaro.org" <abel.vesa@linaro.org>,
+        "Seshu Madhavi Puppala (QUIC)" <quic_spuppala@quicinc.com>
+Subject: Re: [PATCH v2 00/10] Hardware wrapped key support for qcom ice and
+ ufs
+Message-ID: <20230810053642.GD923@sol.localdomain>
+References: <20230719170423.220033-1-quic_gaurkash@quicinc.com>
+ <20230720025541.GA2607@sol.localdomain>
+ <ca11701e403f48b6839b26c47a1b537f@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1691505882.git.sweettea-kernel@dorminy.me>
+In-Reply-To: <ca11701e403f48b6839b26c47a1b537f@quicinc.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -58,15 +66,21 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 01:08:17PM -0400, Sweet Tea Dorminy wrote:
-> This applies atop [3], which itself is based on kdave/misc-next. It
-> passes encryption fstests with suitable changes to btrfs-progs.
+On Tue, Aug 01, 2023 at 05:31:59PM +0000, Gaurav Kashyap (QUIC) wrote:
+> 
+> According to your cover letter, this feature requires a custom TrustZone image to work on SM8550.  Will that image be made available outside Qualcomm?
+> --> Unfortunately, I don't think there is a way to do that. You can still request for one through our customer engineering team like before.
 
-Where can I find kdave/misc-next?  The only mention of "kdave" in MAINTAINERS is
-the following under BTRFS FILE SYSTEM:
+I think it's already been shown that that is not a workable approach.
 
-T:      git git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git
+> Also, can you please make available a git branch somewhere that contains your patchset?  It sounds like this depends on https://git.kernel.org/pub/scm/fs/fscrypt/linux.git/log/?h=wrapped-keys-v7, but actually a version of it that you've rebased, which I don't have access to.
+> Without being able to apply your patchset, I can't properly review it.
+> --> As for the fscrypt patches,
+>       I have not changed much functionally from the v7 patch, just merge conflicts.
+>       I will update this thread once I figure out a git location.
+> 
 
-But that repo doesn't contain a misc-next branch.
+Any update on this?  Most kernel developers just create a GitHub repo if they
+don't have kernel.org access.
 
 - Eric
