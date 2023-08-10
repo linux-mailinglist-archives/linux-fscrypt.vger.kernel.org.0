@@ -2,38 +2,38 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F203E7770E2
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 10 Aug 2023 09:03:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C786777122
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 10 Aug 2023 09:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230420AbjHJHD3 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 10 Aug 2023 03:03:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53304 "EHLO
+        id S230304AbjHJHTJ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 10 Aug 2023 03:19:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230273AbjHJHD1 (ORCPT
+        with ESMTP id S229934AbjHJHTJ (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 10 Aug 2023 03:03:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 496DBE2;
-        Thu, 10 Aug 2023 00:03:26 -0700 (PDT)
+        Thu, 10 Aug 2023 03:19:09 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F2FC10C;
+        Thu, 10 Aug 2023 00:19:09 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CF6B5650BA;
-        Thu, 10 Aug 2023 07:03:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E37ECC433C8;
-        Thu, 10 Aug 2023 07:03:24 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 949C764F23;
+        Thu, 10 Aug 2023 07:19:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A83C7C433C8;
+        Thu, 10 Aug 2023 07:19:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691651005;
-        bh=pZxb/6VLfcuUvO/OXvqqCBsbjJHdwOL21q/dkiRgUIQ=;
+        s=k20201202; t=1691651948;
+        bh=b8Myjv7EUeYaB0THCTW/6EaRif4JFFlb8kxQgdY9FoA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cTYSDMSgHU1dNyJDVQBxf6eHq1LoYQd/Am08fhTUFRgC21qD9l4yhfcWP98d2TqHc
-         guFody0lZhkOWn90TdQdfSeskf2kHIRP+fUCS9JUATYeomop6Q2E70jg4XIkbWB15f
-         6C1zVXMlTo+sDtNa3dJ3CgUUd0yRge0DQQdV7FL4llbt7+rR7fPDVHlX7biqnRc5h0
-         pne3QUKePoC6tZUWdET10Zu614XiAh9ANtmWy8gbF+2Ut3k15TpWbgc68byTGwQFN4
-         6RMyug8IW3WaXmfRM0VJa42Q8bYpVxRdMfBjPsyOiJr943dnlv8LXW7TenrYMYqj4c
-         aMR/ZxS9zvCGg==
-Date:   Thu, 10 Aug 2023 00:03:23 -0700
+        b=jPj5/eO+PoK0F5nz2LM6LzERa0OfTt+oN05/8sfpAGTpK3YZcKsxbKpef9HJa3vv8
+         IUjCsmANLq1S5NerWIFhaVHLeEZTdNEmXCaSmQ7vdi6xVoTrv8Ql1ZeMND72mzj13C
+         sTcYrU4tppM7ixU0J5tBCRsyGF5RI/AcjaohxI3/+Pb1YPGoB9sGcG2ehvHvAysG9l
+         +el8EtJyPgEsUihC53uf6RaoY2CG3rmdhhkKZQgI+aDRoJoXijJN5eiGkFx+dPlUJq
+         1dg3ac8374QoI8sUbYa+F3ueu11Qm3ncgZ+M7EfBupcOKvhotyQ9WkjNtH27Em0McW
+         SQBAUe1I5ky3A==
+Date:   Thu, 10 Aug 2023 00:19:05 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
@@ -41,14 +41,14 @@ Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         "Theodore Y . Ts'o" <tytso@mit.edu>,
         Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@meta.com,
         linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH v6 6/8] fscrypt: move all the shared mode key setup deeper
-Message-ID: <20230810070323.GH923@sol.localdomain>
+Subject: Re: [PATCH v6 8/8] fscrypt: make prepared keys record their type
+Message-ID: <20230810071905.GI923@sol.localdomain>
 References: <cover.1691505830.git.sweettea-kernel@dorminy.me>
- <953985195b4cce824ed64ee68827558544e93dcc.1691505830.git.sweettea-kernel@dorminy.me>
+ <64c47243cea5a8eca15538b51f88c0a6d53799cf.1691505830.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <953985195b4cce824ed64ee68827558544e93dcc.1691505830.git.sweettea-kernel@dorminy.me>
+In-Reply-To: <64c47243cea5a8eca15538b51f88c0a6d53799cf.1691505830.git.sweettea-kernel@dorminy.me>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -59,35 +59,39 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 01:08:06PM -0400, Sweet Tea Dorminy wrote:
-> Currently, fscrypt_setup_v2_file_key() has a set of ifs which encode
-> various information about how to set up a new mode key if necessary for
-> a shared-key policy (DIRECT or IV_INO_LBLK_*). This is somewhat awkward
-> -- this information is only needed at the point that we need to setup a
-> new key, which is not the common case; the setup details are recorded as
-> function parameters relatively far from where they're actually used; and
-> at the point we use the parameters, we can derive the information
-> equally well.
-> 
-> So this moves mode and policy checking as deep into the callstack as
-> possible. mk_prepared_key_for_mode_policy() deals with the array lookup
-> within a master key. And fill_hkdf_info_for mode_key() deals with
-> filling in the hkdf info as necessary for a particular policy. These
-> seem a little clearer in broad strokes, emphasizing the similarities
-> between the policies, but it does spread out the information on how the
-> key is derived for a particular policy more.
-> 
-> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-> ---
->  fs/crypto/keysetup.c | 131 +++++++++++++++++++++++++++++--------------
->  1 file changed, 88 insertions(+), 43 deletions(-)
+On Tue, Aug 08, 2023 at 01:08:08PM -0400, Sweet Tea Dorminy wrote:
+> +/**
+> + * enum fscrypt_prepared_key_type - records a prepared key's ownership
+> + *
+> + * @FSCRYPT_KEY_PER_INFO: this prepared key is allocated for a specific info
+> + *		          and is never shared.
+> + * @FSCRYPT_KEY_DIRECT_V1: this prepared key is embedded in a fscrypt_direct_key
+> + *		           used in v1 direct key policies.
+> + * @FSCRYPT_KEY_MASTER_KEY: this prepared key is a per-mode and policy key,
+> + *			    part of a fscrypt_master_key, shared between all
+> + *			    users of this master key having this mode and
+> + *			    policy.
+> + */
+> +enum fscrypt_prepared_key_type {
+> +	FSCRYPT_KEY_PER_INFO = 1,
+> +	FSCRYPT_KEY_DIRECT_V1,
+> +	FSCRYPT_KEY_MASTER_KEY,
+> +} __packed;
 
-Looking at this again, I think this patch makes things worse, not better.  The
-diffstat is significantly positive, and it splits the handling of each policy
-type into several more places, which makes it harder to understand how each one
-works.  Also problematic is how the new code makes it look like HKDF context 0
-is potentially used, which could confuse people trying to review the crypto.
+FSCRYPT_KEY_MASTER_KEY seems misnamed, since it's not for master keys.  It's for
+what the code elsewhere calls a per-mode key.  So maybe FSCRYPT_KEY_PER_MODE?
 
-Do any of your later patches depend on this patch?
+I think your intent was for the name to reflect the struct that the
+fscrypt_prepared_key is embedded in.  I don't think that's obvious as-is.  If
+you want to name it that way, it should be made super clear, like this:
+
+    enum fscrypt_prepared_key_owner {
+            FSCRYPT_KEY_OWNED_BY_INFO = 1,
+            FSCRYPT_KEY_OWNED_BY_DIRECT_V1,
+            FSCRYPT_KEY_OWNED_BY_MASTER_KEY,
+    };
+
+But, I think I'm leaning towards your proposal with
+s/FSCRYPT_KEY_MASTER_KEY/FSCRYPT_KEY_PER_MODE/.
 
 - Eric
