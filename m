@@ -2,77 +2,110 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61ED37838ED
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 22 Aug 2023 06:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D717C784F87
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 23 Aug 2023 06:10:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232506AbjHVEx5 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 22 Aug 2023 00:53:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44600 "EHLO
+        id S231131AbjHWEKJ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 23 Aug 2023 00:10:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232067AbjHVEx4 (ORCPT
+        with ESMTP id S229477AbjHWEKI (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 22 Aug 2023 00:53:56 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93B1F18B;
-        Mon, 21 Aug 2023 21:53:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 26E586320D;
-        Tue, 22 Aug 2023 04:53:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C1E7C433C7;
-        Tue, 22 Aug 2023 04:53:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692680034;
-        bh=JbeP199iE1PeA5nZ2TaeZmrgj5NV3RzN82APW6nImDA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sKL0tD7iRZ0MkDNt1X/V6rp2royaC2a/4T7fNRnrWD9NelVu5FDoxeeR/DefCFcAy
-         iBd2gWNzEXW2eAe2EviRTrHqeYtfW6x61trdcBwDDlVVKZzIuQ3vY3rJkJwFBcZaxD
-         nqETuGGonh5g6T4KTYvoYcMqQ+SUkuwUTelAxZkEmMl3VXxVl3FEXFk6A3E1JPUgWy
-         GXLQglKVetZPae0RPpQtdyGLQg7vpYJtT6kiXjBaGt845lUsiWblW0MoH05OGmGlAe
-         lN8lQec6KOtV1vqQDBN3MN769xFtpFtrYQLTYY7k6MJYlQvNSeOYc9QZ1qNmQwlJNf
-         5KFLJrD9c57aA==
-Date:   Mon, 21 Aug 2023 21:53:52 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Dongsoo Lee <letrhee@nsr.re.kr>
-Cc:     'Herbert Xu' <herbert@gondor.apana.org.au>,
-        "'David S. Miller'" <davem@davemloft.net>,
-        'Jens Axboe' <axboe@kernel.dk>,
-        "'Theodore Y. Ts'o'" <tytso@mit.edu>,
-        'Jaegeuk Kim' <jaegeuk@kernel.org>,
-        linux-crypto@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 0/4] crypto: LEA block cipher implementation
-Message-ID: <20230822045352.GB1661@sol.localdomain>
-References: <20230630050323.984216-1-letrhee@nsr.re.kr>
- <000001d9d3b8$bca8e9d0$35fabd70$@nsr.re.kr>
+        Wed, 23 Aug 2023 00:10:08 -0400
+Received: from symantec4.comsats.net.pk (symantec4.comsats.net.pk [203.124.41.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEBA9E46
+        for <linux-fscrypt@vger.kernel.org>; Tue, 22 Aug 2023 21:10:02 -0700 (PDT)
+X-AuditID: cb7c291e-055ff70000002aeb-2e-64e571b24581
+Received: from iesco.comsatshosting.com (iesco.comsatshosting.com [210.56.28.11])
+        (using TLS with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        by symantec4.comsats.net.pk (Symantec Messaging Gateway) with SMTP id 2D.F5.10987.2B175E46; Wed, 23 Aug 2023 07:40:50 +0500 (PKT)
+DomainKey-Signature: a=rsa-sha1; c=nofws; q=dns;
+        d=iesco.com.pk; s=default;
+        h=received:content-type:mime-version:content-transfer-encoding
+          :content-description:subject:to:from:date:reply-to;
+        b=SvrCivhlgbo9ZW/J828FnGMkxlScOnBJtE0y7WV3BxJ4ERTnlHaSQ/BIjeC+qzZ+2
+          QpDRs0tKggfHW6f+feRfTe3WWaAUOPqpZXvv+XeoQaByyXdehHbhV9K9bokQno6d5
+          nkNoyinw7Z3bVh/mac/0s682PxZtUIrf7448bz6e0=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=iesco.com.pk; s=default;
+        h=reply-to:date:from:to:subject:content-description
+          :content-transfer-encoding:mime-version:content-type;
+        bh=GMzYzcyTxDsE6wX/XHG6MHqAdAiHrhqbmmLQ/TZ1QnQ=;
+        b=YaWyye4eR+/vep/vYRzZb9JITKBRWWNAM0WNWpFrDWCh+snXbjjs07ZXXW+5823hM
+          9Z0GHSJUNud1Jg5T+sttnO35myFJpGwS4Un0EU2FjaOgFc0Hf3SpJVogsr940CLn5
+          7IZfeTN4Jy6ZCK6P6tXPUsEkH6OdSEXwmRibwTmII=
+Received: from [94.156.6.90] (UnknownHost [94.156.6.90]) by iesco.comsatshosting.com with SMTP;
+   Wed, 23 Aug 2023 04:31:00 +0500
+Message-ID: <2D.F5.10987.2B175E46@symantec4.comsats.net.pk>
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000001d9d3b8$bca8e9d0$35fabd70$@nsr.re.kr>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Re; Interest,
+To:     linux-fscrypt@vger.kernel.org
+From:   "Chen Yun" <pso.chairmanbod@iesco.com.pk>
+Date:   Tue, 22 Aug 2023 16:31:14 -0700
+Reply-To: chnyne@gmail.com
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrLLMWRmVeSWpSXmKPExsVyyUKGW3dT4dMUgzdTpCxezfvG4sDo8XmT
+        XABjFJdNSmpOZllqkb5dAlfGknUXWAp2M1e09S9iaWB8zNTFyMkhIWAiMe3Ne/YuRi4OIYE9
+        TBKfLuxkA3FYBFYzSzSe/McO4TxklnjZ8YANoqyZUWL29tWMIP28AtYSXZ++sYHYzAJ6Ejem
+        TmGDiAtKnJz5hAUiri2xbOFr5i5GDiBbTeJrVwlIWFhATOLTtGXsILaIgKLEk8f7wEayCehL
+        rPjaDGazCKhKrNtwE8wWEpCS2HhlPdsERv5ZSLbNQrJtFpJtsxC2LWBkWcUoUVyZmwgMtmQT
+        veT83OLEkmK9vNQSvYLsTYzAQDxdoym3g3HppcRDjAIcjEo8vD/XPUkRYk0sA+o6xCjBwawk
+        wiv9/WGKEG9KYmVValF+fFFpTmrxIUZpDhYlcV5boWfJQgLpiSWp2ampBalFMFkmDk6pBsab
+        C7inOwjtNJy+XSzD+PXRtVvZRDtuORaduXboic4CLtHF70++iXVPW8+3eLHB6gqzX+q2Hb9W
+        flJL9NbWr758VPj/lQ0FqySNCmJ2N/96ZNZ15v6dFVZaTLf2KMvv+j79GMPDpwuq3r9IVZIo
+        k20w7ndWZ7bkbdiYe5m3wW/xS43kyav3uOorsRRnJBpqMRcVJwIA88CbQEACAAA=
+X-Spam-Status: Yes, score=5.5 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_REPLYTO,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_SBL,RCVD_IN_SBL_CSS,SPF_PASS,
+        T_SPF_HELO_TEMPERROR,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Report: * -0.7 RCVD_IN_DNSWL_LOW RBL: Sender listed at https://www.dnswl.org/,
+        *       low trust
+        *      [203.124.41.30 listed in list.dnswl.org]
+        *  3.3 RCVD_IN_SBL_CSS RBL: Received via a relay in Spamhaus SBL-CSS
+        *      [94.156.6.90 listed in zen.spamhaus.org]
+        *  0.1 RCVD_IN_SBL RBL: Received via a relay in Spamhaus SBL
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 URIBL_BLOCKED ADMINISTRATOR NOTICE: The query to URIBL was
+        *      blocked.  See
+        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
+        *      for more information.
+        *      [URIs: iesco.com.pk]
+        *  0.0 T_SPF_HELO_TEMPERROR SPF: test of HELO record failed
+        *      (temperror)
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 07:50:37AM +0900, Dongsoo Lee wrote:
-> Hello.
-> 
-> Is there any further progress on the patch we submitted and the additional fscrypt documentation? 
-> 
-> https://lore.kernel.org/linux-fscrypt/20230630064811.22569-1-ebiggers@kernel.org/T/#u.
-> 
-> If the LEA cipher is accepted, we would like to add a SIMD implementation for it.
+Re; Interest,
 
-I already applied 'fscrypt: improve the "Encryption modes and usage" section'
-(https://lore.kernel.org/r/20230630064811.22569-2-ebiggers@kernel.org) for 6.6.
+I am interested in discussing the Investment proposal as I explained
+in my previous mail. May you let me know your interest and the
+possibility of a cooperation aimed for mutual interest.
 
-I don't object to the fscrypt support for LEA, but I'm not going to apply it
-until the crypto API support is accepted.
+Looking forward to your mail for further discussion.
 
-- Eric
+Regards
+
+------
+Chen Yun - Chairman of CREC
+China Railway Engineering Corporation - CRECG
+China Railway Plaza, No.69 Fuxing Road, Haidian District, Beijing, P.R.
+China
+
