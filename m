@@ -2,48 +2,67 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06C5678903F
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 25 Aug 2023 23:15:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BE3578905B
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 25 Aug 2023 23:25:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231213AbjHYVO2 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 25 Aug 2023 17:14:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40630 "EHLO
+        id S231303AbjHYVY0 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 25 Aug 2023 17:24:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbjHYVN6 (ORCPT
+        with ESMTP id S231378AbjHYVYV (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 25 Aug 2023 17:13:58 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F4AD211E;
-        Fri, 25 Aug 2023 14:13:56 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0D28A62FFA;
-        Fri, 25 Aug 2023 21:13:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B0ECC433C7;
-        Fri, 25 Aug 2023 21:13:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692998035;
-        bh=uiXkyRVOSV4tA0Dr9xfhgTNwejV2oZiBsqM/hZn5yPg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UgSWvtl49FkDkaRYO3r0z4VzYK/yDU2hQmm5FUy/saN2DaYbzz5vuhxj+oTpq/YEz
-         6iPySb9lNptNeguxiheMPfLw58USp34CyI6yLgGfRUu28v0iNMZb16krVHW1DR7eer
-         X7/UJR9hvVw1WO8f9x3khDGmYa5/plHR8kM491NKMqEuNO4Pw9iZDNRrB6DqgVa63r
-         +IjWV8he6N0kCyEWrQbC5VfgXNT058QGjrBf2pO6OG6y8NaLAaMZTNAT4pmMeyQyKD
-         eh10XcSY2us9pZi/URLX1z5VvUzlXT9gvz7Jlc/CvSoA1f7ssDARtN21vNHvUsEQko
-         AuIIYRR5eP06A==
-Date:   Fri, 25 Aug 2023 14:13:52 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
+        Fri, 25 Aug 2023 17:24:21 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFBD62126;
+        Fri, 25 Aug 2023 14:24:19 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-4ffa01fc987so2832285e87.1;
+        Fri, 25 Aug 2023 14:24:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692998658; x=1693603458;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uAvdxGRJNm0KAatLMLcV87iYXC997rK/9oVNl8An31I=;
+        b=EdMzk7VFFK7sU2Y8cOGJylYOBJtZc6DglyLy7WW2MlfE7KVNX9+kVA627Mjg2S1nuv
+         /++QYreB9pzooxNgrPmLz0D4qTr4xfyetYa8o7FCBLpxku1BVIcc3G2f56qVKM5eX6vM
+         OkVV40XTUyIuUNc71aE1XrLbt/Sm/1aXm/RN9AOW4ErRuPrioYpCwPfrDdmiYf9Ho15s
+         DrhF8dNYjVUBZljEv4qDjIspMdNS4ZkeuV2SAd+hnzBVQ9lisOmwCHZPmNuq+xsM0ES9
+         DEVQr9aSC3pkPkhcP/nrEweep1kIndWvUkb8BSX8vIewgHwIroDsnlNkugvCz9lx2WmJ
+         vMtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692998658; x=1693603458;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uAvdxGRJNm0KAatLMLcV87iYXC997rK/9oVNl8An31I=;
+        b=ZqJIBSwN9flWPhIp/MrxZZ4DfivzmuGxv97/+gBCZIFY4HRPAqsI8dbk/xU/D+lh/c
+         eFZMojh6vjG4hOcFePs41IEZhbnt7VQZCQvu9W9k7Dn+W3Zsg+nuXxY4GrpPkZjg5Pky
+         CkOiT/FEa49rfmahdmL320uDu9rK+ColzxbT5NF8S9HMWAf82jvRtb7s5pZ8LKqMJY33
+         ILyvqkUaPf9mTvCCKzD245puxEnmHTtLFrFMszd6ljU8OGfJNzH3KboIXhxmJlEe6K9f
+         ta0kjk/7L/XE88IYv5u+lUUMMRJl9mch1YQsPlfVdoX7QV5RwdXQDZSuhlJt6o4Ss+5n
+         b6/Q==
+X-Gm-Message-State: AOJu0YzRbZXUPTdrmtB1XQHYRYBOIruM3pDYejujdFpxREQxrgztz7NK
+        ttnPyMwXDZjInI5ajQPoHhRg6W+LGKokVAHd7bA=
+X-Google-Smtp-Source: AGHT+IHEqh8MOurQUl5UbtkJsmWLglp5EXFvNEKnNoXqGh9kjzmi4K5f8CCnMUOsiOKpYf8vQe8dZwJgtyakodQk8aE=
+X-Received: by 2002:a05:6512:ba7:b0:500:8676:aa7f with SMTP id
+ b39-20020a0565120ba700b005008676aa7fmr5726857lfv.23.1692998657716; Fri, 25
+ Aug 2023 14:24:17 -0700 (PDT)
+MIME-Version: 1.0
+References: <ZOXf3JTIqhRLbn5j@gondor.apana.org.au> <E1qYl9u-006vE6-L2@formenos.hmeau.com>
+In-Reply-To: <E1qYl9u-006vE6-L2@formenos.hmeau.com>
+From:   Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date:   Fri, 25 Aug 2023 14:23:00 -0700
+Message-ID: <CABBYNZKM+pHzU7_6x4_25mZ5nb-hAJWahVZh6oac+G8=9Q07Hg@mail.gmail.com>
+Subject: Re: [PATCH 3/12] Bluetooth: Do not include crypto/algapi.h
 To:     Herbert Xu <herbert@gondor.apana.org.au>
 Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>,
         "Theodore Y. Ts'o" <tytso@mit.edu>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
         linux-fscrypt@vger.kernel.org, Richard Weinberger <richard@nod.at>,
         linux-mtd@lists.infradead.org,
         Marcel Holtmann <marcel@holtmann.org>,
         Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
         linux-bluetooth@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
         Xiubo Li <xiubli@redhat.com>, Jeff Layton <jlayton@kernel.org>,
         ceph-devel@vger.kernel.org,
@@ -59,48 +78,51 @@ Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
         linux-integrity@vger.kernel.org,
         "Jason A. Donenfeld" <Jason@zx2c4.com>,
         Ayush Sawal <ayush.sawal@chelsio.com>
-Subject: Re: [PATCH 1/12] fscrypt: Do not include crypto/algapi.h
-Message-ID: <20230825211352.GB1366@sol.localdomain>
-References: <ZOXf3JTIqhRLbn5j@gondor.apana.org.au>
- <E1qYl9q-006vDd-FJ@formenos.hmeau.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <E1qYl9q-006vDd-FJ@formenos.hmeau.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 06:32:15PM +0800, Herbert Xu wrote:
+Hi Herbert,
+
+On Wed, Aug 23, 2023 at 3:32=E2=80=AFAM Herbert Xu <herbert@gondor.apana.or=
+g.au> wrote:
+>
 > The header file crypto/algapi.h is for internal use only.  Use the
 > header file crypto/utils.h instead.
-> 
+>
 > Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 > ---
-> 
->  fs/crypto/keysetup_v1.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/crypto/keysetup_v1.c b/fs/crypto/keysetup_v1.c
-> index 75dabd9b27f9..d698ecb9ad44 100644
-> --- a/fs/crypto/keysetup_v1.c
-> +++ b/fs/crypto/keysetup_v1.c
-> @@ -20,8 +20,8 @@
->   *    managed alongside the master keys in the filesystem-level keyring)
->   */
->  
-> -#include <crypto/algapi.h>
->  #include <crypto/skcipher.h>
-> +#include <crypto/utils.h>
->  #include <keys/user-type.h>
->  #include <linux/hashtable.h>
+>
+>  net/bluetooth/smp.c |    3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/net/bluetooth/smp.c b/net/bluetooth/smp.c
+> index f1a9fc0012f0..5f2f97de295e 100644
+> --- a/net/bluetooth/smp.c
+> +++ b/net/bluetooth/smp.c
+> @@ -22,11 +22,10 @@
+>
+>  #include <linux/debugfs.h>
 >  #include <linux/scatterlist.h>
+> -#include <linux/crypto.h>
+>  #include <crypto/aes.h>
+> -#include <crypto/algapi.h>
+>  #include <crypto/hash.h>
+>  #include <crypto/kpp.h>
+> +#include <crypto/utils.h>
+>
+>  #include <net/bluetooth/bluetooth.h>
+>  #include <net/bluetooth/hci_core.h>
 
-Acked-by: Eric Biggers <ebiggers@google.com>
+Acked-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 
-- Eric
+--=20
+Luiz Augusto von Dentz
