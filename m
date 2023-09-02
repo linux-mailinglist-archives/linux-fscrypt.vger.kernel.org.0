@@ -2,33 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08708790560
+	by mail.lfdr.de (Postfix) with ESMTP id BC3E7790562
 	for <lists+linux-fscrypt@lfdr.de>; Sat,  2 Sep 2023 07:55:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351004AbjIBFzu (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sat, 2 Sep 2023 01:55:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41056 "EHLO
+        id S1351560AbjIBFzw (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sat, 2 Sep 2023 01:55:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231132AbjIBFzu (ORCPT
+        with ESMTP id S231132AbjIBFzv (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sat, 2 Sep 2023 01:55:50 -0400
+        Sat, 2 Sep 2023 01:55:51 -0400
 Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78BF110F4;
-        Fri,  1 Sep 2023 22:55:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA47610F5;
+        Fri,  1 Sep 2023 22:55:46 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 7AE0C803B3;
-        Sat,  2 Sep 2023 01:55:43 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id E801F803B8;
+        Sat,  2 Sep 2023 01:55:45 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1693634144; bh=jmk3hEB6MciszwJ2eSIqgFJ53fIIrcClxaz3AiLEGAg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=oST7Z+KXRR43V9HV/CItyT+dNBdW16TBvu+Jty0kPEBwReKOpXLRbXm7jqt+Img7l
-         Vs3wtr01cyx94Il6pMoNRCs/JmIMiIccTI7LsH1OOHqwdzZQI3BwNLFV/rmfEQmmM2
-         Rjh68mPM4Obm591ELSxiTPps9XOGsVIy/K0k9oAtPOn4hBKM8SfGcrG/TT5SSlQDfK
-         2nbzLMLivAko26JY0kKEznL15op4sU3Vyv0MSggcc6cRS1YYs679QeS/8NPi/XuqKd
-         WGPomxNog6GnXL83u5i9Oz8+plJcI9mQh3nbegjeF3fkw+M1nqYTI9yQPX00YMynwZ
-         6EPwRhyPz06IQ==
+        t=1693634146; bh=kxcFIEA+Tz7C5XSXfEIV9jwTiWVBlr8UrdIiPo4CwNM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=u6URqt6LxmS6/sFtcmFMkwTXguzyuzsyA2Ntaf+SZEygOWe5UkHDHpGNvYZvx064M
+         oo6QPoLcnO3WCuu9hadAA3ehzwmE50rPjUgV3HHSHZRzlOMD6YAK6FP3DCU2JgnR5b
+         gwJfM2zHmHPP0n/EwJ68c3S+m1PKGGd8xW1dsqPzJ6nvCWZeWV4p811ZDLdUsCzY5g
+         y/gdLHjKEWGbJqAXxzoADRiItr3bsaTFKzWH6eZjFVlL/PoEfkw24CG6l2gBkWOLGn
+         1BHLTohN3b/plTqArm4gAE76TwmzXhUzh0yt4LY3TCZrFoZNq1VM1UGOfb4yfsQ/e5
+         i9v+d3ADSvA2g==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
@@ -37,9 +37,11 @@ To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         ebiggers@kernel.org, ngompa13@gmail.com
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [RFC PATCH 00/13] fscrypt: add extent encryption
-Date:   Sat,  2 Sep 2023 01:54:18 -0400
-Message-ID: <cover.1693630890.git.sweettea-kernel@dorminy.me>
+Subject: [RFC PATCH 01/13] fscrypt: factor getting info for a specific block
+Date:   Sat,  2 Sep 2023 01:54:19 -0400
+Message-ID: <3f70553c0c8fe344aaa5e9b6c54c0267c26d2d7b.1693630890.git.sweettea-kernel@dorminy.me>
+In-Reply-To: <cover.1693630890.git.sweettea-kernel@dorminy.me>
+References: <cover.1693630890.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -51,82 +53,125 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-This is a replacement for the former changeset (previously v3). This
-doesn't reflect all the smaller feedback on v3: it's an attempt to address
-the major points of giving extents and inodes different objects, and to
-clearly define lightweight and heavyweight extent contexts. Currently,
-with minor changes to the btrfs patchset building on it, it passes
-tests.
+For filesystems using extent-based encryption, the content of each
+extent will be encrypted with a different fscrypt_info for each extent.
+Meanwhile, directories and symlinks will continue to use the
+fscrypt_info for the inode. Therefore, merely grabbing
+inode->i_crypt_info will be insufficient; the caller must specifically
+request the inode info or the info for a specific block.
 
-Hopefully I understood the proposed alternate design and this is indeed
-more elegant, reviewable, and maintainable. 
+Add fscrypt_get_lblk_info() to get info for a specific block, and update
+all relevant callsites.
 
-This applies atop [3], which itself is based on kdave/misc-next.
+Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+---
+ fs/crypto/crypto.c          |  3 ++-
+ fs/crypto/fscrypt_private.h | 29 +++++++++++++++++++++++++++++
+ fs/crypto/inline_crypt.c    | 10 ++++++----
+ 3 files changed, 37 insertions(+), 5 deletions(-)
 
-Changelog:
-RFC:
- - Split fscrypt_info into a general fscrypt_common_info, an
-   inode-specific fscrypt_info, and an extent-specific
-   fscrypt_extent_info. All external interfaces use either an inode or
-   extent specific structure; most internal functions handle the common
-   structure.
- - Tried to fix up more places to refer to infos instead of inodes and
-   files.
- - Changed to use lightweight extent contexts containing just a nonce,
-   and then a following change to do heavyweight extent contexts
-   identical to inode contexts, so they're easily comparable.
- - Dropped factoring lock_master_key() and adding super block pointer to
-   fscrypt_info changes, as they didn't seem necessary.
- - Temporarily dropped optimization where leaf inodes with extents don't
-   have on-disk fscrypt_contexts. It's a convenient optimization and
-   affects btrfs disk format, but it's not very big and not strictly
-   needed to check whether the new structural arrangement is better.
-
-v3:
- - Added four additional changes:
-   - soft-deleting keys that extent infos might later need to use, so
-     the behavior of an open file after key removal matches inode-based
-     fscrypt.
-   - a set of changes to allow asynchronous info freeing for extents,
-     necessary due to locking constraints in btrfs.
- - https://lore.kernel.org/linux-fscrypt/cover.1691505882.git.sweettea-kernel@dorminy.me/
-
-v2: 
- - https://lore.kernel.org/linux-fscrypt/cover.1688927487.git.sweettea-kernel@dorminy.me/T/#t
-
-
-[3] https://lore.kernel.org/linux-fscrypt/cover.1691505830.git.sweettea-kernel@dorminy.me/
-
-Sweet Tea Dorminy (13):
-  fscrypt: factor getting info for a specific block
-  fscrypt: adjust effective lblks based on extents
-  fscrypt: move function call warning of busy inodes
-  fscrypt: split fscrypt_info into general and inode specific parts
-  fscrypt: add creation/usage/freeing of per-extent infos
-  fscrypt: allow load/save of extent contexts
-  fscrypt: store full fscrypt_contexts for each extent
-  fscrypt: save session key credentials for extent infos
-  fscrypt: revamp key removal for extent encryption
-  fscrypt: allow multiple extents to reference one info
-  fscrypt: cache list of inlinecrypt devices
-  fscrypt: allow asynchronous info freeing
-  fscrypt: update documentation for per-extent keys
-
- Documentation/filesystems/fscrypt.rst |  43 ++-
- fs/crypto/crypto.c                    |  48 ++-
- fs/crypto/fname.c                     |  13 +-
- fs/crypto/fscrypt_private.h           | 245 +++++++++---
- fs/crypto/hooks.c                     |   6 +-
- fs/crypto/inline_crypt.c              |  93 +++--
- fs/crypto/keyring.c                   | 110 +++---
- fs/crypto/keysetup.c                  | 530 ++++++++++++++++++++------
- fs/crypto/keysetup_v1.c               |  77 ++--
- fs/crypto/policy.c                    |  34 +-
- include/linux/fscrypt.h               |  60 +++
- 11 files changed, 919 insertions(+), 340 deletions(-)
-
-
-base-commit: 764e1420e0806a3536b53b4c52c1b08ae8425f7e
+diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
+index 9f3bda18c797..1b7e375b1c6b 100644
+--- a/fs/crypto/crypto.c
++++ b/fs/crypto/crypto.c
+@@ -107,7 +107,8 @@ int fscrypt_crypt_block(const struct inode *inode, fscrypt_direction_t rw,
+ 	struct skcipher_request *req = NULL;
+ 	DECLARE_CRYPTO_WAIT(wait);
+ 	struct scatterlist dst, src;
+-	struct fscrypt_info *ci = inode->i_crypt_info;
++	struct fscrypt_info *ci =
++		fscrypt_get_lblk_info(inode, lblk_num, NULL, NULL);
+ 	struct crypto_skcipher *tfm = ci->ci_enc_key->tfm;
+ 	int res = 0;
+ 
+diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+index e2acd8894ea7..8a1fd1d33cfc 100644
+--- a/fs/crypto/fscrypt_private.h
++++ b/fs/crypto/fscrypt_private.h
+@@ -277,6 +277,35 @@ typedef enum {
+ 	FS_ENCRYPT,
+ } fscrypt_direction_t;
+ 
++/**
++ * fscrypt_get_lblk_info() - get the fscrypt_info to crypt a particular block
++ *
++ * @inode:      the inode to which the block belongs
++ * @lblk:       the offset of the block within the file which the inode
++ *              references
++ * @offset:     a pointer to return the offset of the block from the first block
++ *              that the info covers. For inode-based encryption, this will
++ *              always be @lblk; for extent-based encryption, this will be in
++ *              the range [0, lblk]. Can be NULL
++ * @extent_len: a pointer to return the minimum number of lblks starting at
++ *              this offset which also belong to the same fscrypt_info. Can be
++ *              NULL
++ *
++ * Return: the appropriate fscrypt_info if there is one, else NULL.
++ */
++static inline struct fscrypt_info *
++fscrypt_get_lblk_info(const struct inode *inode, u64 lblk, u64 *offset,
++		      u64 *extent_len)
++{
++	if (offset)
++		*offset = lblk;
++	if (extent_len)
++		*extent_len = U64_MAX;
++
++	return inode->i_crypt_info;
++}
++
++
+ /* crypto.c */
+ extern struct kmem_cache *fscrypt_info_cachep;
+ int fscrypt_initialize(struct super_block *sb);
+diff --git a/fs/crypto/inline_crypt.c b/fs/crypto/inline_crypt.c
+index 2063f7941ce6..885a2ec3d711 100644
+--- a/fs/crypto/inline_crypt.c
++++ b/fs/crypto/inline_crypt.c
+@@ -270,7 +270,7 @@ void fscrypt_set_bio_crypt_ctx(struct bio *bio, const struct inode *inode,
+ 
+ 	if (!fscrypt_inode_uses_inline_crypto(inode))
+ 		return;
+-	ci = inode->i_crypt_info;
++	ci = fscrypt_get_lblk_info(inode, first_lblk, NULL, NULL);
+ 
+ 	fscrypt_generate_dun(ci, first_lblk, dun);
+ 	bio_crypt_set_ctx(bio, ci->ci_enc_key->blk_key, dun, gfp_mask);
+@@ -349,21 +349,23 @@ bool fscrypt_mergeable_bio(struct bio *bio, const struct inode *inode,
+ {
+ 	const struct bio_crypt_ctx *bc = bio->bi_crypt_context;
+ 	u64 next_dun[BLK_CRYPTO_DUN_ARRAY_SIZE];
++	struct fscrypt_info *ci;
+ 
+ 	if (!!bc != fscrypt_inode_uses_inline_crypto(inode))
+ 		return false;
+ 	if (!bc)
+ 		return true;
+ 
++	ci = fscrypt_get_lblk_info(inode, next_lblk, NULL, NULL);
+ 	/*
+ 	 * Comparing the key pointers is good enough, as all I/O for each key
+ 	 * uses the same pointer.  I.e., there's currently no need to support
+ 	 * merging requests where the keys are the same but the pointers differ.
+ 	 */
+-	if (bc->bc_key != inode->i_crypt_info->ci_enc_key->blk_key)
++	if (bc->bc_key != ci->ci_enc_key->blk_key)
+ 		return false;
+ 
+-	fscrypt_generate_dun(inode->i_crypt_info, next_lblk, next_dun);
++	fscrypt_generate_dun(ci, next_lblk, next_dun);
+ 	return bio_crypt_dun_is_contiguous(bc, bio->bi_iter.bi_size, next_dun);
+ }
+ EXPORT_SYMBOL_GPL(fscrypt_mergeable_bio);
+@@ -465,7 +467,7 @@ u64 fscrypt_limit_io_blocks(const struct inode *inode, u64 lblk, u64 nr_blocks)
+ 	if (nr_blocks <= 1)
+ 		return nr_blocks;
+ 
+-	ci = inode->i_crypt_info;
++	ci = fscrypt_get_lblk_info(inode, lblk, NULL, NULL);
+ 	if (!(fscrypt_policy_flags(&ci->ci_policy) &
+ 	      FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32))
+ 		return nr_blocks;
 -- 
 2.41.0
 
