@@ -2,33 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CB0C790578
-	for <lists+linux-fscrypt@lfdr.de>; Sat,  2 Sep 2023 07:57:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B930C79056B
+	for <lists+linux-fscrypt@lfdr.de>; Sat,  2 Sep 2023 07:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351622AbjIBF4G (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sat, 2 Sep 2023 01:56:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48832 "EHLO
+        id S1351624AbjIBF4I (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sat, 2 Sep 2023 01:56:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343615AbjIBF4F (ORCPT
+        with ESMTP id S1343615AbjIBF4I (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sat, 2 Sep 2023 01:56:05 -0400
-Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD1810F4;
-        Fri,  1 Sep 2023 22:56:03 -0700 (PDT)
+        Sat, 2 Sep 2023 01:56:08 -0400
+Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF2610F6;
+        Fri,  1 Sep 2023 22:56:05 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 7C1AA803B8;
-        Sat,  2 Sep 2023 01:56:02 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id 97D2B803B3;
+        Sat,  2 Sep 2023 01:56:04 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1693634162; bh=pNWZ9FSgIarpGMwNEZ5zwQ/hDUlwdOXDex/Vx8GeIk8=;
+        t=1693634165; bh=sjWPfktkz8U2Au2Wkmak2i4sH8J6VID8oPHMkxQ2yGI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pllgTrlUtxSzjTR/8jAxq225mCXG+YcwEhheJ8z2zdiFPYLnOym3cPce7KJxqqiXy
-         3Uq/vNKO3M97fAuytDP1+KLIWtEGnMr3rc4p1yuDhnqXcbG+dKDXgkb102r4nt5JxU
-         WtkkXw6FFRNGWZRBic7MnJ3SuAdxwhDlX8eNyrlr60qZYV7U4Lu9u4fszr1ynzg0Kv
-         6VRCqceDfmyQyu8bX6ExdbFMlBDe+iqNYzkKU3o6IFj0N6Jz2liI9Xne5KbmyGMMAy
-         eJpnFq5Crzh620R+WhlH//yNkRHVolw+1ZHsz0MpEKDOgNfgHGohNxViTi6pdb+dEa
-         fVJy9hCdJ7riw==
+        b=nvst1U6FgIWYDBkxUlcrZlYIIVsihu2GkWqBIb4O++VEX8mc9erQJ261K9garY3AI
+         pX8L3DfOmlC2+ztsuvgvogOmxASUfhlBbb5oK2OTJOgn/Nr937h0mH0nmeJMWdyGtg
+         0p/m/OK+LT7UO/0Ofy7PzyOuVpfnLz+ugN+B+2RfF9n0Yx3lAHpjzy2EX2888v2BJT
+         kf9icbC4BTVbZLM8B5t9KN2y32hRR84LD2IvfqkDlhZjS5UqZFwIL9VLShYYPmc7Np
+         8uO+GJlCSPUxoS2r4LwviPj0vO4hGQae3fd4FG/a03l7a6lm7H3uGjQxln6HdJMYKb
+         JD1l9Lbioc/xg==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
@@ -37,9 +37,9 @@ To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         ebiggers@kernel.org, ngompa13@gmail.com
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [RFC PATCH 07/13] fscrypt: store full fscrypt_contexts for each extent
-Date:   Sat,  2 Sep 2023 01:54:25 -0400
-Message-ID: <e0263ab5998ddf723b78ed56a545490e482c29b9.1693630890.git.sweettea-kernel@dorminy.me>
+Subject: [RFC PATCH 08/13] fscrypt: save session key credentials for extent infos
+Date:   Sat,  2 Sep 2023 01:54:26 -0400
+Message-ID: <fd61bc691a89a48a5cf8ae5417c607d3d945d198.1693630890.git.sweettea-kernel@dorminy.me>
 In-Reply-To: <cover.1693630890.git.sweettea-kernel@dorminy.me>
 References: <cover.1693630890.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
@@ -53,98 +53,99 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-For contrast purposes, this patch contains the entirety of the changes
-necessary to switch between lightweight and heavyweight extents. This
-patch could be dropped, or rolled into the former change, without
-changing anything else.
+For v1 encryption policies using per-session keys, the thread which
+opens the inode and therefore initializes the encryption info is part of
+the session, so it can get the key from the session keyring. However,
+for extent encryption, the extent infos are likely loaded from a
+different thread, which does not have access to the session keyring.
+This change saves the credentials of the inode opening thread and reuses
+those credentials temporarily when dealing with extent infos, allowing
+finding the encryption key correctly.
 
-Lightweight extents relying on their parent inode's context for
-key and policy information do take up less disk space. Additionally,
-they guarantee that if inode open succeeds, then all extents will be
-readable and writeable, matching the current inode-based fscrypt
-behavior.
-
-However, heavyweight extents permit greater flexibility for future
-extensions:
-
-- Any form of changing the key for a non-empty directory's
-  future writes requires that extents have some sort of policy in
-  addition to the nonce, which is essentially the contents of the full
-  fscrypt_context.
-  - This could be approximated using overlayfs writing to a new
-    encrypted directory, but this would waste space used by overwritten
-    data and makes it very difficult to have nested subvolumes each with
-    their own key, so it's very preferable to support this natively in
-    btrfs.
-
-- Scrub (verifying checksums) currently iterates over extents,
-without interacting with inodes; in an authenticated encryption world,
-scrub verifying authentication tags would need to iterate over inodes (a
-large departure from the present) or need heavyweight extents storing
-the necessary key information.
+v1 encryption policies using per-session keys should probably not exist
+for new usages such as extent encryption, but this makes more tests
+work without change; maybe the right answer is to disallow v1 session
+keys plus extent encryption and deal with editing tests to not use v1
+session encryption so much.
 
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 ---
- fs/crypto/keysetup.c | 20 ++++++++++----------
- fs/crypto/policy.c   |  5 ++---
- 2 files changed, 12 insertions(+), 13 deletions(-)
+ fs/crypto/fscrypt_private.h |  9 +++++++++
+ fs/crypto/keysetup.c        | 19 +++++++++++++++++++
+ 2 files changed, 28 insertions(+)
 
+diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+index 9320428f8915..fe48b61a524b 100644
+--- a/fs/crypto/fscrypt_private.h
++++ b/fs/crypto/fscrypt_private.h
+@@ -284,6 +284,15 @@ struct fscrypt_common_info {
+ struct fscrypt_info {
+ 	struct fscrypt_common_info info;
+ 
++	/* Credential struct from the thread which created this info. This is
++	 * only used in v1 session keyrings with extent encryption; it allows
++	 * the thread creating extents for an inode to join the session
++	 * keyring temporarily, since otherwise the thread is usually part of
++	 * kernel writeback and therefore unrelated to the thread with the
++	 * right session key.
++	 */
++	struct cred *ci_session_creds;
++
+ 	/*
+ 	 * This inode's hash key for filenames.  This is a 128-bit SipHash-2-4
+ 	 * key.  This is only set for directories that use a keyed dirhash over
 diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index 90143377cc61..4146b1380cb5 100644
+index 4146b1380cb5..5e944ec4e36f 100644
 --- a/fs/crypto/keysetup.c
 +++ b/fs/crypto/keysetup.c
-@@ -1061,25 +1061,25 @@ int fscrypt_load_extent_info(struct inode *inode, void *buf, size_t len,
- {
- 	int res;
- 	union fscrypt_context ctx;
--	const union fscrypt_policy *policy;
-+	union fscrypt_policy policy;
+@@ -619,6 +619,9 @@ static void put_crypt_inode_info(struct fscrypt_info *ci)
+ 	free_prepared_key(&ci->info);
+ 	remove_info_from_mk_decrypted_list(&ci->info);
  
- 	if (!fscrypt_has_encryption_key(inode))
- 		return -EINVAL;
- 
--	if (len != FSCRYPT_FILE_NONCE_SIZE) {
-+	memcpy(&ctx, buf, len);
++	if (ci->ci_session_creds)
++		abort_creds(ci->ci_session_creds);
 +
-+	res = fscrypt_policy_from_context(&policy, &ctx, len);
-+	if (res) {
- 		fscrypt_warn(inode,
- 			     "Unrecognized or corrupt encryption context");
--		return -EINVAL;
-+		return res;
- 	}
- 
--	policy = fscrypt_policy_to_inherit(inode);
--	if (policy == NULL)
--		return 0;
--	if (IS_ERR(policy))
--		return PTR_ERR(policy);
-+	if (!fscrypt_supported_policy(&policy, inode))
-+		return -EINVAL;
- 
--	return fscrypt_setup_extent_info(inode, policy, buf,
--					 info_ptr);
-+	return fscrypt_setup_extent_info(inode, &policy,
-+					 fscrypt_context_nonce(&ctx), info_ptr);
+ 	memzero_explicit(ci, sizeof(*ci));
+ 	kmem_cache_free(fscrypt_inode_info_cachep, ci);
  }
- EXPORT_SYMBOL_GPL(fscrypt_load_extent_info);
+@@ -727,6 +730,9 @@ fscrypt_setup_encryption_info(struct inode *inode,
+ 	if (res)
+ 		goto out;
  
-diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
-index cfbe83aee847..314bb6e97cec 100644
---- a/fs/crypto/policy.c
-+++ b/fs/crypto/policy.c
-@@ -778,10 +778,9 @@ EXPORT_SYMBOL_GPL(fscrypt_set_context);
- int fscrypt_set_extent_context(struct fscrypt_extent_info *ci, void *ctx,
- 			       size_t len)
- {
--	if (len < FSCRYPT_EXTENT_CONTEXT_MAX_SIZE)
-+	if (len < FSCRYPT_SET_CONTEXT_MAX_SIZE)
- 		return -EINVAL;
--	memcpy(ctx, ci->info.ci_nonce, FSCRYPT_FILE_NONCE_SIZE);
--	return FSCRYPT_FILE_NONCE_SIZE;
-+	return fscrypt_new_context(ctx, &ci->info.ci_policy, ci->info.ci_nonce);
- }
- EXPORT_SYMBOL_GPL(fscrypt_set_extent_context);
++	if (!mk)
++		crypt_inode_info->ci_session_creds = prepare_creds();
++
+ 	/*
+ 	 * Derive a secret dirhash key for directories that need it. It
+ 	 * should be impossible to set flags such that a v1 policy sets
+@@ -979,6 +985,7 @@ fscrypt_setup_extent_info(struct inode *inode,
+ 	struct fscrypt_extent_info *crypt_extent_info;
+ 	struct fscrypt_common_info *crypt_info;
+ 	struct fscrypt_master_key *mk = NULL;
++	const struct cred *creds = NULL;
+ 	int res;
+ 
+ 	crypt_extent_info = kmem_cache_zalloc(fscrypt_extent_info_cachep,
+@@ -987,8 +994,20 @@ fscrypt_setup_extent_info(struct inode *inode,
+ 		return -ENOMEM;
+ 	crypt_info = &crypt_extent_info->info;
+ 
++	if (inode->i_crypt_info->ci_session_creds) {
++		/*
++		 * The inode this is being created for is using a session key,
++		 * so we have to join this thread to that session temporarily
++		 * in order to be able to find the right key...
++		 */
++		creds = override_creds(inode->i_crypt_info->ci_session_creds);
++	}
++
+ 	res = fscrypt_setup_common_info(crypt_info, inode, policy, nonce,
+ 					CI_EXTENT, &mk);
++	if (creds)
++		revert_creds(creds);
++
+ 	if (res)
+ 		goto out;
  
 -- 
 2.41.0
