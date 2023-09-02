@@ -2,33 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06BD479057C
-	for <lists+linux-fscrypt@lfdr.de>; Sat,  2 Sep 2023 07:57:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9524790579
+	for <lists+linux-fscrypt@lfdr.de>; Sat,  2 Sep 2023 07:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351612AbjIBF4B (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sat, 2 Sep 2023 01:56:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32958 "EHLO
+        id S1351617AbjIBF4E (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sat, 2 Sep 2023 01:56:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230215AbjIBF4B (ORCPT
+        with ESMTP id S1343615AbjIBF4E (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sat, 2 Sep 2023 01:56:01 -0400
+        Sat, 2 Sep 2023 01:56:04 -0400
 Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFD8E10F5;
-        Fri,  1 Sep 2023 22:55:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A4AF10F4;
+        Fri,  1 Sep 2023 22:56:00 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 5206E803B8;
-        Sat,  2 Sep 2023 01:55:57 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id 727D3803B3;
+        Sat,  2 Sep 2023 01:56:00 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1693634157; bh=fiVfVaVeSO8+LySxAwlXQQui2JcU6Eza8j+LxYs3Nmk=;
+        t=1693634160; bh=KGmOigNZmiCYiYlflwG54i9oGQLZG48bRqPKe2ArkoA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Sad7seUUZDFSagU6zNxRvOfHcLYcFTFtetX1d5k4LkRk9Br4FlEdH8UjjUKClaQQV
-         tzblnBeRBNdJRtAX+z8gv7sBGm05e9Ag+QsrlAqfrOipIdjryuLlTQc+s2LdWcElbx
-         4FBDjhoQOTI18U9G4noc4BkAspiqXqoNwiuJWavrbWVwLsHWX0h8Y7Lz1yaes8qBFz
-         5R86mnv3h52SQELApB03aVOtC2LFPMj9Pi9e21F2Lk3rtxu8gCL5RAJRgX3l2sHMIT
-         A9Z6He4NVfZi0mEutvvlYHpCkou8Mo8tsdf39OtTgmLIzUuaGhni+o1DWd/aSbMWfz
-         wADXuNc2T9gnw==
+        b=YZ3boiZGzT0M9TFS1Jt360WK3yXhhnHy7KsRIWwtq8ozd+gFTMsVukkezahguV+55
+         2IRRcW6W4wxj3MleYDUmJh9OPk5GSEtzFuJhDLqFdFLcu0+vdWvciknYsQjM3kGD1F
+         6f6HrUaYj1RIvpYB98Hf21I9ycGcd3FnSjUwPOkUrhDyvPrJZIQeFf6TFk0WbsYC9t
+         i4lHAfB/VnzP/2HAXloOTuPJh9/D25DIIacvktFZQp5v1AqIrtlC01xuPfMdlxWIP8
+         oVBO37zMksniUO85CJboQH2SA0T1l/cHjdSsXJBklKAVaGDjcDssdtfEOgS8euMDqC
+         gxJsYbaZ0LWHw==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
@@ -37,9 +37,9 @@ To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         ebiggers@kernel.org, ngompa13@gmail.com
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [RFC PATCH 05/13] fscrypt: add creation/usage/freeing of per-extent infos
-Date:   Sat,  2 Sep 2023 01:54:23 -0400
-Message-ID: <7045a2f0f411494e53b6ef1f995bd0e4cfc73f17.1693630890.git.sweettea-kernel@dorminy.me>
+Subject: [RFC PATCH 06/13] fscrypt: allow load/save of extent contexts
+Date:   Sat,  2 Sep 2023 01:54:24 -0400
+Message-ID: <d8c497e023266d2a28810658d6e3f86863aaa14f.1693630890.git.sweettea-kernel@dorminy.me>
 In-Reply-To: <cover.1693630890.git.sweettea-kernel@dorminy.me>
 References: <cover.1693630890.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
@@ -53,268 +53,55 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-This change adds the superblock function pointer to get the info
-corresponding to a specific block in an inode for a filesystem using
-per-extent infos. It allows creating a info for a new extent and freeing
-that info, and uses the extent's info if appropriate in encrypting
-blocks of data.
+The other half of using per-extent infos is saving and loading them from
+disk.
 
-It also makes sure that the return value of fscrypt_get_lblk_info() is
-non-NULL before using it, since there's no longer a mechanical guarantee
-that we'll never call fscrypt_get_lblk_info() without having the
-relevant info loaded. We *oughtn't*, but we're not explicitly checking
-that it's loaded before these points.
-
-This change does not deal with saving and loading an extent's info, but
-introduces the mechanics necessary therefore.
+This is the one change which cares about whether a lightweight or
+heavyweight extent context is stored on disk. This implements the
+lightweight version.
 
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 ---
- fs/crypto/crypto.c          | 14 +++++-
- fs/crypto/fscrypt_private.h | 53 ++++++++++++++++++--
- fs/crypto/inline_crypt.c    |  5 ++
- fs/crypto/keysetup.c        | 97 +++++++++++++++++++++++++++++++++++++
- include/linux/fscrypt.h     | 41 ++++++++++++++++
- 5 files changed, 204 insertions(+), 6 deletions(-)
+ fs/crypto/keysetup.c    | 39 +++++++++++++++++++++++++++++++++++++++
+ fs/crypto/policy.c      | 22 ++++++++++++++++++++++
+ include/linux/fscrypt.h | 19 +++++++++++++++++++
+ 3 files changed, 80 insertions(+)
 
-diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
-index d5c9326a1919..5a93c30e6b86 100644
---- a/fs/crypto/crypto.c
-+++ b/fs/crypto/crypto.c
-@@ -40,6 +40,7 @@ static struct workqueue_struct *fscrypt_read_workqueue;
- static DEFINE_MUTEX(fscrypt_init_mutex);
- 
- struct kmem_cache *fscrypt_inode_info_cachep;
-+struct kmem_cache *fscrypt_extent_info_cachep;
- 
- void fscrypt_enqueue_decrypt_work(struct work_struct *work)
- {
-@@ -113,6 +114,8 @@ int fscrypt_crypt_block(const struct inode *inode, fscrypt_direction_t rw,
- 	struct crypto_skcipher *tfm = cci->ci_enc_key->tfm;
- 	int res = 0;
- 
-+	if (WARN_ON_ONCE(!cci))
-+		return -EINVAL;
- 	if (WARN_ON_ONCE(len <= 0))
- 		return -EINVAL;
- 	if (WARN_ON_ONCE(len % FSCRYPT_CONTENTS_ALIGNMENT != 0))
-@@ -397,13 +400,20 @@ static int __init fscrypt_init(void)
- 	if (!fscrypt_inode_info_cachep)
- 		goto fail_free_queue;
- 
-+	fscrypt_extent_info_cachep = KMEM_CACHE(fscrypt_extent_info,
-+						SLAB_RECLAIM_ACCOUNT);
-+	if (!fscrypt_extent_info_cachep)
-+		goto fail_free_inode_info;
-+
- 	err = fscrypt_init_keyring();
- 	if (err)
--		goto fail_free_info;
-+		goto fail_free_extent_info;
- 
- 	return 0;
- 
--fail_free_info:
-+fail_free_extent_info:
-+	kmem_cache_destroy(fscrypt_extent_info_cachep);
-+fail_free_inode_info:
- 	kmem_cache_destroy(fscrypt_inode_info_cachep);
- fail_free_queue:
- 	destroy_workqueue(fscrypt_read_workqueue);
-diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-index cc1a61ade2a4..9320428f8915 100644
---- a/fs/crypto/fscrypt_private.h
-+++ b/fs/crypto/fscrypt_private.h
-@@ -294,13 +294,47 @@ struct fscrypt_info {
- };
- 
- /*
-+ * fscrypt_extent_info - the "encryption key" for an extent
-  */
-+struct fscrypt_extent_info {
-+	struct fscrypt_common_info info;
-+};
- 
- typedef enum {
- 	FS_DECRYPT = 0,
- 	FS_ENCRYPT,
- } fscrypt_direction_t;
- 
-+/**
-+ * fscrypt_fs_uses_extent_encryption() -- whether a filesystem uses extent
-+ *					  encryption
-+ *
-+ * @sb: the superblock of the relevant filesystem
-+ *
-+ * Return: true if the fs uses extent encryption, else false
-+ */
-+static inline bool
-+fscrypt_fs_uses_extent_encryption(const struct super_block *sb)
-+{
-+	return !!sb->s_cop->get_extent_info;
-+}
-+
-+/**
-+ * fscrypt_uses_extent_encryption() -- whether an inode uses extent encryption
-+ *
-+ * @inode: the inode in question
-+ *
-+ * Return: true if the inode uses extent encryption, else false
-+ */
-+static inline bool fscrypt_uses_extent_encryption(const struct inode *inode)
-+{
-+	/* Non-regular files don't have extents. */
-+	if (!S_ISREG(inode->i_mode))
-+		return false;
-+
-+	return fscrypt_fs_uses_extent_encryption(inode->i_sb);
-+}
-+
- /**
-  * fscrypt_get_lblk_info() - get the fscrypt_common_info to crypt a particular
-  *			     block
-@@ -313,15 +347,26 @@ typedef enum {
-  *              always be @lblk; for extent-based encryption, this will be in
-  *              the range [0, lblk]. Can be NULL
-  * @extent_len: a pointer to return the minimum number of lblks starting at
-- *              this offset which also belong to the same fscrypt_info. Can be
-- *              NULL
-+ *              this offset which also belong to the same fscrypt_common_info.
-+ *              Can be NULL
-  *
-- * Return: the appropriate fscrypt_info if there is one, else NULL.
-+ * Return: the appropriate fscrypt_common_info if there is one, else NULL.
-  */
- static inline struct fscrypt_common_info *
- fscrypt_get_lblk_info(const struct inode *inode, u64 lblk, u64 *offset,
- 		      u64 *extent_len)
- {
-+	if (fscrypt_uses_extent_encryption(inode)) {
-+		struct fscrypt_extent_info *cei;
-+		int res;
-+
-+		res = inode->i_sb->s_cop->get_extent_info(inode, lblk, &cei,
-+							  offset, extent_len);
-+		if (res == 0)
-+			return &cei->info;
-+		return NULL;
-+	}
-+
- 	if (offset)
- 		*offset = lblk;
- 	if (extent_len)
-@@ -330,9 +375,9 @@ fscrypt_get_lblk_info(const struct inode *inode, u64 lblk, u64 *offset,
- 	return &inode->i_crypt_info->info;
- }
- 
--
- /* crypto.c */
- extern struct kmem_cache *fscrypt_inode_info_cachep;
-+extern struct kmem_cache *fscrypt_extent_info_cachep;
- int fscrypt_initialize(struct super_block *sb);
- int fscrypt_crypt_block(const struct inode *inode, fscrypt_direction_t rw,
- 			u64 lblk_num, struct page *src_page,
-diff --git a/fs/crypto/inline_crypt.c b/fs/crypto/inline_crypt.c
-index 09ec82b8a98a..f0229234249c 100644
---- a/fs/crypto/inline_crypt.c
-+++ b/fs/crypto/inline_crypt.c
-@@ -272,6 +272,8 @@ void fscrypt_set_bio_crypt_ctx(struct bio *bio, const struct inode *inode,
- 	if (!fscrypt_inode_uses_inline_crypto(inode))
- 		return;
- 	cci = fscrypt_get_lblk_info(inode, first_lblk, &ci_offset, NULL);
-+	if (!cci)
-+		return;
- 
- 	fscrypt_generate_dun(cci, ci_offset, dun);
- 	bio_crypt_set_ctx(bio, cci->ci_enc_key->blk_key, dun, gfp_mask);
-@@ -359,6 +361,9 @@ bool fscrypt_mergeable_bio(struct bio *bio, const struct inode *inode,
- 		return true;
- 
- 	cci = fscrypt_get_lblk_info(inode, next_lblk, &ci_offset, NULL);
-+	if (!cci)
-+		return false;
-+
- 	/*
- 	 * Comparing the key pointers is good enough, as all I/O for each key
- 	 * uses the same pointer.  I.e., there's currently no need to support
 diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index ae250e432dcd..c9c16acf4c9b 100644
+index c9c16acf4c9b..90143377cc61 100644
 --- a/fs/crypto/keysetup.c
 +++ b/fs/crypto/keysetup.c
-@@ -957,3 +957,100 @@ int fscrypt_drop_inode(struct inode *inode)
- 	return !is_master_key_secret_present(&ci->info.ci_master_key->mk_secret);
+@@ -1044,6 +1044,45 @@ int fscrypt_prepare_new_extent(struct inode *inode,
  }
- EXPORT_SYMBOL_GPL(fscrypt_drop_inode);
-+
-+static void put_crypt_extent_info(struct fscrypt_extent_info *ci)
-+{
-+	if (!ci)
-+		return;
-+
-+	free_prepared_key(&ci->info);
-+	remove_info_from_mk_decrypted_list(&ci->info);
-+
-+	memzero_explicit(ci, sizeof(*ci));
-+	kmem_cache_free(fscrypt_extent_info_cachep, ci);
-+}
-+
-+static int
-+fscrypt_setup_extent_info(struct inode *inode,
-+			  const union fscrypt_policy *policy,
-+			  const u8 nonce[FSCRYPT_FILE_NONCE_SIZE],
-+			  struct fscrypt_extent_info **info_ptr)
-+{
-+	struct fscrypt_extent_info *crypt_extent_info;
-+	struct fscrypt_common_info *crypt_info;
-+	struct fscrypt_master_key *mk = NULL;
-+	int res;
-+
-+	crypt_extent_info = kmem_cache_zalloc(fscrypt_extent_info_cachep,
-+					      GFP_KERNEL);
-+	if (!crypt_extent_info)
-+		return -ENOMEM;
-+	crypt_info = &crypt_extent_info->info;
-+
-+	res = fscrypt_setup_common_info(crypt_info, inode, policy, nonce,
-+					CI_EXTENT, &mk);
-+	if (res)
-+		goto out;
-+
-+	*info_ptr = crypt_extent_info;
-+	add_info_to_mk_decrypted_list(crypt_info, mk);
-+
-+	crypt_extent_info = NULL;
-+	res = 0;
-+out:
-+	if (mk) {
-+		up_read(&mk->mk_sem);
-+		fscrypt_put_master_key(mk);
-+	}
-+	put_crypt_extent_info(crypt_extent_info);
-+	return res;
-+}
-+
+ EXPORT_SYMBOL_GPL(fscrypt_prepare_new_extent);
+ 
 +/**
-+ * fscrypt_prepare_new_extent() - set up the fscrypt_extent_info for a new extent
-+ * @inode: the inode to which the extent belongs
++ * fscrypt_load_extent_info() - load a preexisting extent's fscrypt_extent_info
++ * @inode: the inode to which the extent belongs. Must be encrypted.
++ * @buf: a buffer containing the extent's stored context
++ * @len: the length of the @ctx buffer
 + * @info_ptr: a pointer to return the extent's fscrypt_extent_info into
-+ * *
-+ * If the extent is part of an encrypted inode, set up a fscrypt_extent_info in
-+ * preparation for encrypting data.
 + *
-+ * This isn't %GFP_NOFS-safe.
++ * This is not %GFP_NOFS safe, so the caller is expected to call
++ * memalloc_nofs_save/restore() if appropriate.
 + *
-+ * This doesn't persist the new extent's encryption context.  That still needs to
-+ * be done later by calling fscrypt_set_extent_context().
-+ *
-+ * Return: 0 on success, -ENOKEY if the encryption key is missing, or another
-+ *	   -errno code
++ * Return: 0 if successful, or -errno if it fails.
 + */
-+int fscrypt_prepare_new_extent(struct inode *inode,
-+			       struct fscrypt_extent_info **info_ptr)
++int fscrypt_load_extent_info(struct inode *inode, void *buf, size_t len,
++			     struct fscrypt_extent_info **info_ptr)
 +{
++	int res;
++	union fscrypt_context ctx;
 +	const union fscrypt_policy *policy;
-+	u8 nonce[FSCRYPT_FILE_NONCE_SIZE];
++
++	if (!fscrypt_has_encryption_key(inode))
++		return -EINVAL;
++
++	if (len != FSCRYPT_FILE_NONCE_SIZE) {
++		fscrypt_warn(inode,
++			     "Unrecognized or corrupt encryption context");
++		return -EINVAL;
++	}
 +
 +	policy = fscrypt_policy_to_inherit(inode);
 +	if (policy == NULL)
@@ -322,94 +109,100 @@ index ae250e432dcd..c9c16acf4c9b 100644
 +	if (IS_ERR(policy))
 +		return PTR_ERR(policy);
 +
-+	/* Only regular files can have extents.  */
-+	if (WARN_ON_ONCE(!S_ISREG(inode->i_mode)))
-+		return -EINVAL;
-+
-+	get_random_bytes(nonce, FSCRYPT_FILE_NONCE_SIZE);
-+	return fscrypt_setup_extent_info(inode, policy, nonce,
++	return fscrypt_setup_extent_info(inode, policy, buf,
 +					 info_ptr);
 +}
-+EXPORT_SYMBOL_GPL(fscrypt_prepare_new_extent);
++EXPORT_SYMBOL_GPL(fscrypt_load_extent_info);
 +
+ /**
+  * fscrypt_free_extent_info() - free an extent's fscrypt_extent_info
+  * @info_ptr: a pointer containing the extent's fscrypt_extent_info pointer.
+diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
+index ceb648669832..cfbe83aee847 100644
+--- a/fs/crypto/policy.c
++++ b/fs/crypto/policy.c
+@@ -763,6 +763,28 @@ int fscrypt_set_context(struct inode *inode, void *fs_data)
+ }
+ EXPORT_SYMBOL_GPL(fscrypt_set_context);
+ 
 +/**
-+ * fscrypt_free_extent_info() - free an extent's fscrypt_extent_info
-+ * @info_ptr: a pointer containing the extent's fscrypt_extent_info pointer.
++ * fscrypt_set_extent_context() - Set the fscrypt extent context for an extent
++ * @ci: info from which to fetch policy and nonce
++ * @ctx: where context should be written
++ * @len: the size of ctx
++ *
++ * Given an fscrypt_extent_info belonging to an extent (generated via
++ * fscrypt_prepare_new_extent()), generate a new context and write it to @ctx.
++ * len is checked to be at least FSCRYPT_EXTENT_CONTEXT_MAX_SIZE bytes.
++ *
++ * Return: size of the resulting context or a negative error code.
 + */
-+void fscrypt_free_extent_info(struct fscrypt_extent_info **info_ptr)
++int fscrypt_set_extent_context(struct fscrypt_extent_info *ci, void *ctx,
++			       size_t len)
 +{
-+	put_crypt_extent_info(*info_ptr);
-+	*info_ptr = NULL;
++	if (len < FSCRYPT_EXTENT_CONTEXT_MAX_SIZE)
++		return -EINVAL;
++	memcpy(ctx, ci->info.ci_nonce, FSCRYPT_FILE_NONCE_SIZE);
++	return FSCRYPT_FILE_NONCE_SIZE;
 +}
-+EXPORT_SYMBOL_GPL(fscrypt_free_extent_info);
++EXPORT_SYMBOL_GPL(fscrypt_set_extent_context);
++
+ /**
+  * fscrypt_parse_test_dummy_encryption() - parse the test_dummy_encryption mount option
+  * @param: the mount option
 diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index c895b12737a1..cc5de5ec888c 100644
+index cc5de5ec888c..b57fc5645076 100644
 --- a/include/linux/fscrypt.h
 +++ b/include/linux/fscrypt.h
-@@ -32,6 +32,7 @@
+@@ -57,6 +57,7 @@ struct fscrypt_name {
  
- union fscrypt_policy;
- struct fscrypt_info;
-+struct fscrypt_extent_info;
- struct fs_parameter;
- struct seq_file;
+ /* Maximum value for the third parameter of fscrypt_operations.set_context(). */
+ #define FSCRYPT_SET_CONTEXT_MAX_SIZE	40
++#define FSCRYPT_EXTENT_CONTEXT_MAX_SIZE	16
  
-@@ -113,6 +114,29 @@ struct fscrypt_operations {
- 	int (*set_context)(struct inode *inode, const void *ctx, size_t len,
- 			   void *fs_data);
+ #ifdef CONFIG_FS_ENCRYPTION
  
-+	/*
-+	 * Get the fscrypt_info for the given inode at the given block, for
-+	 * extent-based encryption only.
-+	 *
-+	 * @inode: the inode in question
-+	 * @lblk: the logical block number in question
-+	 * @ci: a pointer to return the fscrypt_extent_info
-+	 * @offset: a pointer to return the offset of @lblk into the extent,
-+	 *          in blocks (may be NULL)
-+	 * @extent_len: a pointer to return the number of blocks in this extent
-+	 *              starting at this point (may be NULL)
-+	 *
-+	 * May cause the filesystem to allocate memory, which the filesystem
-+	 * must do with %GFP_NOFS, including calls into fscrypt to create or
-+	 * load an fscrypt_info.
-+	 *
-+	 * Return: 0 if an extent is found with an info, -ENODATA if the key is
-+	 *         unavailable, or another -errno.
-+	 */
-+	int (*get_extent_info)(const struct inode *inode, u64 lblk,
-+			       struct fscrypt_extent_info **ci, u64 *offset,
-+			       u64 *extent_len);
+@@ -317,6 +318,8 @@ int fscrypt_ioctl_get_nonce(struct file *filp, void __user *arg);
+ int fscrypt_has_permitted_context(struct inode *parent, struct inode *child);
+ int fscrypt_context_for_new_inode(void *ctx, struct inode *inode);
+ int fscrypt_set_context(struct inode *inode, void *fs_data);
++int fscrypt_set_extent_context(struct fscrypt_extent_info *info, void *ctx,
++			       size_t len);
+ 
+ struct fscrypt_dummy_policy {
+ 	const union fscrypt_policy *policy;
+@@ -357,6 +360,9 @@ int fscrypt_drop_inode(struct inode *inode);
+ int fscrypt_prepare_new_extent(struct inode *inode,
+ 			       struct fscrypt_extent_info **info_ptr);
+ void fscrypt_free_extent_info(struct fscrypt_extent_info **info_ptr);
++int fscrypt_load_extent_info(struct inode *inode, void *buf, size_t len,
++			     struct fscrypt_extent_info **info_ptr);
 +
- 	/*
- 	 * Get the dummy fscrypt policy in use on the filesystem (if any).
- 	 *
-@@ -330,6 +354,10 @@ void fscrypt_put_encryption_info(struct inode *inode);
- void fscrypt_free_inode(struct inode *inode);
- int fscrypt_drop_inode(struct inode *inode);
  
-+int fscrypt_prepare_new_extent(struct inode *inode,
-+			       struct fscrypt_extent_info **info_ptr);
-+void fscrypt_free_extent_info(struct fscrypt_extent_info **info_ptr);
-+
  /* fname.c */
  int fscrypt_fname_encrypt(const struct inode *inode, const struct qstr *iname,
- 			  u8 *out, unsigned int olen);
-@@ -591,6 +619,19 @@ static inline int fscrypt_drop_inode(struct inode *inode)
- 	return 0;
+@@ -533,6 +539,12 @@ static inline int fscrypt_set_context(struct inode *inode, void *fs_data)
+ 	return -EOPNOTSUPP;
  }
  
-+static inline int
-+fscrypt_prepare_new_extent(struct inode *inode,
-+			   struct fscrypt_extent_info **info_ptr)
++static inline int fscrypt_set_extent_context(struct fscrypt_info *info,
++					     void *ctx, size_t len)
 +{
-+	if (IS_ENCRYPTED(inode))
-+		return -EOPNOTSUPP;
-+	return 0;
++	return -EOPNOTSUPP;
 +}
 +
-+static inline void fscrypt_free_extent_info(struct fscrypt_extent_info **info_ptr)
+ struct fscrypt_dummy_policy {
+ };
+ 
+@@ -632,6 +644,13 @@ static inline void fscrypt_free_extent_info(struct fscrypt_extent_info **info_pt
+ {
+ }
+ 
++static inline int fscrypt_load_extent_info(struct inode *inode, void *buf,
++					   size_t len,
++					   struct fscrypt_info **info_ptr)
 +{
++	return -EOPNOTSUPP;
 +}
 +
   /* fname.c */
