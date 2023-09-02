@@ -2,33 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3946F790570
-	for <lists+linux-fscrypt@lfdr.de>; Sat,  2 Sep 2023 07:57:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50185790577
+	for <lists+linux-fscrypt@lfdr.de>; Sat,  2 Sep 2023 07:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351630AbjIBF4N (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sat, 2 Sep 2023 01:56:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41880 "EHLO
+        id S1351632AbjIBF4P (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sat, 2 Sep 2023 01:56:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236195AbjIBF4M (ORCPT
+        with ESMTP id S229566AbjIBF4O (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sat, 2 Sep 2023 01:56:12 -0400
-Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9038F10F4;
-        Fri,  1 Sep 2023 22:56:09 -0700 (PDT)
+        Sat, 2 Sep 2023 01:56:14 -0400
+Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD0E510F4;
+        Fri,  1 Sep 2023 22:56:11 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id BC5C5803B3;
-        Sat,  2 Sep 2023 01:56:08 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id 071B7803B8;
+        Sat,  2 Sep 2023 01:56:10 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1693634169; bh=4enh47oqQtM1rvRngoxnIU28aYTtdxzrlpSxtwxTslU=;
+        t=1693634171; bh=9CCHaKZC9yydBhLDgrT5+iVaEc3tpYmiIVZSh+piTxU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N4rbM3c56HkL7S2O0KF2bSJzJsctRFU/Gw19CvWZgm63Iahwa+ddzKIBBKCzBW6a8
-         aHaBod9P21LhDqZlyRroI8woDMdiuXoS84Y0Ho5jdjmG88rNxi3+x5LrzoyOm19qg6
-         egCqdidV1sr2HRUdvwz4SqixdhidAzwf2QHQ0D4TR1rmQAUbbV5K9IAAnHONYEjuEA
-         csakQxBm6RuuwD6VkZU+cQhXVga/sNhfunsvpK40anxJomzmX293MlUcd+nd4ouwiS
-         t8UGa4FP4WvU1LPx0CozMMFN8FiKtnE24jfTpJt/vbq9zplqF6Sno9ng+n+DiRQwAw
-         fiWqTLQYw7gWg==
+        b=jCV0T54qQx7jVei/inQrTPBC0JEmuTOYXk6t0BBtP3xXzwirjcijNszvQb0fV9fjr
+         goxXOmO4OwThCW+Xy3oFdEaRokE5Dat++6N+DiIgn4vMg4zyz2UBwNcRdt6H8FESTS
+         xSR0MRxWHMsBEGDJLGI9PUzfCqGmAV2ZqH/gQ75mcWP0AEI6WSN8/8kJYLu0GfR/8G
+         BtBjh340dPJGv0m/4q4TdDhrzywLZV9iu5p19f6K0lfYKIZp8dXTJ1le19InVVKkaf
+         WbcgLu1cIrptKsNqQqcCgHBD6YLf5WnGQcUkQcyyf2Q1Sxd32cshhVGjRDAxevTWLY
+         GL9RPm8fYwPOA==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
@@ -37,9 +37,9 @@ To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         ebiggers@kernel.org, ngompa13@gmail.com
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [RFC PATCH 10/13] fscrypt: allow multiple extents to reference one info
-Date:   Sat,  2 Sep 2023 01:54:28 -0400
-Message-ID: <1a4861d291e08233a0f16b482af562d4fcb2caf1.1693630890.git.sweettea-kernel@dorminy.me>
+Subject: [RFC PATCH 11/13] fscrypt: cache list of inlinecrypt devices
+Date:   Sat,  2 Sep 2023 01:54:29 -0400
+Message-ID: <26e6ff03299df2a5c8f3d8727f36bfe8f15b686d.1693630890.git.sweettea-kernel@dorminy.me>
 In-Reply-To: <cover.1693630890.git.sweettea-kernel@dorminy.me>
 References: <cover.1693630890.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
@@ -53,91 +53,118 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-btrfs occasionally splits in-memory extents while holding a mutex. This
-means we can't just copy the info, since setting up a new inlinecrypt
-key requires taking a semaphore. Thus adding a mechanism to split
-extents and merely take a new reference on the info is necessary.
+btrfs sometimes frees extents while holding a mutex, which makes it
+impossible to free an inlinecrypt prepared key since that requires
+taking a semaphore. Therefore, we will need to offload prepared key
+freeing into an asynchronous process (rcu is insufficient since that can
+run in softirq context which is also incompatible with taking a
+semaphore). In order to avoid use-after-free on the filesystem
+superblock for keys being freed during shutdown, we need to cache the
+list of devices that the key has been loaded into, so that we can later
+remove it without reference to the superblock.
 
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 ---
- fs/crypto/fscrypt_private.h |  5 +++++
- fs/crypto/keysetup.c        | 19 ++++++++++++++++++-
- include/linux/fscrypt.h     |  2 +-
- 3 files changed, 24 insertions(+), 2 deletions(-)
+ fs/crypto/fscrypt_private.h | 13 +++++++++++--
+ fs/crypto/inline_crypt.c    | 20 +++++++++-----------
+ fs/crypto/keysetup.c        |  2 +-
+ 3 files changed, 21 insertions(+), 14 deletions(-)
 
 diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-index dd7740105264..cf1eb7fe546f 100644
+index cf1eb7fe546f..30459e219fc3 100644
 --- a/fs/crypto/fscrypt_private.h
 +++ b/fs/crypto/fscrypt_private.h
-@@ -307,6 +307,11 @@ struct fscrypt_info {
-  */
- struct fscrypt_extent_info {
- 	struct fscrypt_common_info info;
+@@ -206,6 +206,16 @@ struct fscrypt_prepared_key {
+ 	struct crypto_skcipher *tfm;
+ #ifdef CONFIG_FS_ENCRYPTION_INLINE_CRYPT
+ 	struct blk_crypto_key *blk_key;
 +
-+	/* Reference count. Normally 1, unless a extent info is shared by
-+	 * several virtual extents.
++	/*
++	 * The list of devices that have this block key.
 +	 */
-+	refcount_t refs;
- };
- 
- typedef enum {
-diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index 34d4df4acb19..f0f70b888bd8 100644
---- a/fs/crypto/keysetup.c
-+++ b/fs/crypto/keysetup.c
-@@ -919,6 +919,21 @@ int fscrypt_prepare_new_inode(struct inode *dir, struct inode *inode,
- }
- EXPORT_SYMBOL_GPL(fscrypt_prepare_new_inode);
- 
-+/**
-+ * fscrypt_get_extent_info_ref() - mark a second extent using the same info
-+ * @info: the info to be used by another extent
-+ *
-+ * Sometimes, an existing extent must be split into multiple extents in memory.
-+ * In such a case, this function allows multiple extents to use the same extent
-+ * info without allocating or taking any lock, which is necessary in certain IO
-+ * paths.
-+ */
-+void fscrypt_get_extent_info_ref(struct fscrypt_extent_info *info)
-+{
-+	if (info)
-+		refcount_inc(&info->refs);
-+}
++	struct block_device **devices;
 +
- /**
-  * fscrypt_put_encryption_info() - free most of an inode's fscrypt data
-  * @inode: an inode being evicted
-@@ -997,7 +1012,7 @@ EXPORT_SYMBOL_GPL(fscrypt_drop_inode);
++	/*
++	 * The number of devices in @ci_devices.
++	 */
++	size_t device_count;
+ #endif
+ 	enum fscrypt_prepared_key_type type;
+ };
+@@ -472,8 +482,7 @@ int fscrypt_prepare_inline_crypt_key(struct fscrypt_prepared_key *prep_key,
+ 				     const u8 *raw_key,
+ 				     const struct fscrypt_common_info *ci);
  
- static void put_crypt_extent_info(struct fscrypt_extent_info *ci)
+-void fscrypt_destroy_inline_crypt_key(struct super_block *sb,
+-				      struct fscrypt_prepared_key *prep_key);
++void fscrypt_destroy_inline_crypt_key(struct fscrypt_prepared_key *prep_key);
+ 
+ /*
+  * Check whether the crypto transform or blk-crypto key has been allocated in
+diff --git a/fs/crypto/inline_crypt.c b/fs/crypto/inline_crypt.c
+index f0229234249c..19ebdef8508b 100644
+--- a/fs/crypto/inline_crypt.c
++++ b/fs/crypto/inline_crypt.c
+@@ -185,12 +185,15 @@ int fscrypt_prepare_inline_crypt_key(struct fscrypt_prepared_key *prep_key,
+ 		if (err)
+ 			break;
+ 	}
+-	kfree(devs);
++
+ 	if (err) {
+ 		fscrypt_err(inode, "error %d starting to use blk-crypto", err);
+ 		goto fail;
+ 	}
+ 
++	prep_key->devices = devs;
++	prep_key->device_count = num_devs;
++
+ 	/*
+ 	 * Pairs with the smp_load_acquire() in fscrypt_is_key_prepared().
+ 	 * I.e., here we publish ->blk_key with a RELEASE barrier so that
+@@ -205,24 +208,19 @@ int fscrypt_prepare_inline_crypt_key(struct fscrypt_prepared_key *prep_key,
+ 	return err;
+ }
+ 
+-void fscrypt_destroy_inline_crypt_key(struct super_block *sb,
+-				      struct fscrypt_prepared_key *prep_key)
++void fscrypt_destroy_inline_crypt_key(struct fscrypt_prepared_key *prep_key)
  {
--	if (!ci)
-+	if (!ci || !refcount_dec_and_test(&ci->refs))
+ 	struct blk_crypto_key *blk_key = prep_key->blk_key;
+-	struct block_device **devs;
+-	unsigned int num_devs;
+ 	unsigned int i;
+ 
+ 	if (!blk_key)
  		return;
  
- 	free_prepared_key(&ci->info);
-@@ -1042,6 +1057,8 @@ fscrypt_setup_extent_info(struct inode *inode,
- 	if (res)
- 		goto out;
- 
-+	refcount_set(&crypt_extent_info->refs, 1);
+ 	/* Evict the key from all the filesystem's block devices. */
+-	devs = fscrypt_get_devices(sb, &num_devs);
+-	if (!IS_ERR(devs)) {
+-		for (i = 0; i < num_devs; i++)
+-			blk_crypto_evict_key(devs[i], blk_key);
+-		kfree(devs);
+-	}
++	for (i = 0; i < prep_key->device_count; i++)
++		blk_crypto_evict_key(prep_key->devices[i], blk_key);
 +
- 	*info_ptr = crypt_extent_info;
- 	add_info_to_mk_decrypted_list(crypt_info, mk);
++	kfree(prep_key->devices);
+ 	kfree_sensitive(blk_key);
+ }
  
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index b57fc5645076..577f9e0a6e97 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -362,7 +362,7 @@ int fscrypt_prepare_new_extent(struct inode *inode,
- void fscrypt_free_extent_info(struct fscrypt_extent_info **info_ptr);
- int fscrypt_load_extent_info(struct inode *inode, void *buf, size_t len,
- 			     struct fscrypt_extent_info **info_ptr);
--
-+void fscrypt_get_extent_info_ref(struct fscrypt_extent_info *info);
+diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
+index f0f70b888bd8..4ea9b68363d5 100644
+--- a/fs/crypto/keysetup.c
++++ b/fs/crypto/keysetup.c
+@@ -184,7 +184,7 @@ void fscrypt_destroy_prepared_key(struct super_block *sb,
+ 				  struct fscrypt_prepared_key *prep_key)
+ {
+ 	crypto_free_skcipher(prep_key->tfm);
+-	fscrypt_destroy_inline_crypt_key(sb, prep_key);
++	fscrypt_destroy_inline_crypt_key(prep_key);
+ 	memzero_explicit(prep_key, sizeof(*prep_key));
+ }
  
- /* fname.c */
- int fscrypt_fname_encrypt(const struct inode *inode, const struct qstr *iname,
 -- 
 2.41.0
 
