@@ -2,33 +2,33 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9524790579
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB0C790578
 	for <lists+linux-fscrypt@lfdr.de>; Sat,  2 Sep 2023 07:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351617AbjIBF4E (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Sat, 2 Sep 2023 01:56:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48820 "EHLO
+        id S1351622AbjIBF4G (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sat, 2 Sep 2023 01:56:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343615AbjIBF4E (ORCPT
+        with ESMTP id S1343615AbjIBF4F (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Sat, 2 Sep 2023 01:56:04 -0400
+        Sat, 2 Sep 2023 01:56:05 -0400
 Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A4AF10F4;
-        Fri,  1 Sep 2023 22:56:00 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD1810F4;
+        Fri,  1 Sep 2023 22:56:03 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 727D3803B3;
-        Sat,  2 Sep 2023 01:56:00 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id 7C1AA803B8;
+        Sat,  2 Sep 2023 01:56:02 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1693634160; bh=KGmOigNZmiCYiYlflwG54i9oGQLZG48bRqPKe2ArkoA=;
+        t=1693634162; bh=pNWZ9FSgIarpGMwNEZ5zwQ/hDUlwdOXDex/Vx8GeIk8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YZ3boiZGzT0M9TFS1Jt360WK3yXhhnHy7KsRIWwtq8ozd+gFTMsVukkezahguV+55
-         2IRRcW6W4wxj3MleYDUmJh9OPk5GSEtzFuJhDLqFdFLcu0+vdWvciknYsQjM3kGD1F
-         6f6HrUaYj1RIvpYB98Hf21I9ycGcd3FnSjUwPOkUrhDyvPrJZIQeFf6TFk0WbsYC9t
-         i4lHAfB/VnzP/2HAXloOTuPJh9/D25DIIacvktFZQp5v1AqIrtlC01xuPfMdlxWIP8
-         oVBO37zMksniUO85CJboQH2SA0T1l/cHjdSsXJBklKAVaGDjcDssdtfEOgS8euMDqC
-         gxJsYbaZ0LWHw==
+        b=pllgTrlUtxSzjTR/8jAxq225mCXG+YcwEhheJ8z2zdiFPYLnOym3cPce7KJxqqiXy
+         3Uq/vNKO3M97fAuytDP1+KLIWtEGnMr3rc4p1yuDhnqXcbG+dKDXgkb102r4nt5JxU
+         WtkkXw6FFRNGWZRBic7MnJ3SuAdxwhDlX8eNyrlr60qZYV7U4Lu9u4fszr1ynzg0Kv
+         6VRCqceDfmyQyu8bX6ExdbFMlBDe+iqNYzkKU3o6IFj0N6Jz2liI9Xne5KbmyGMMAy
+         eJpnFq5Crzh620R+WhlH//yNkRHVolw+1ZHsz0MpEKDOgNfgHGohNxViTi6pdb+dEa
+         fVJy9hCdJ7riw==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
@@ -37,9 +37,9 @@ To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         ebiggers@kernel.org, ngompa13@gmail.com
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [RFC PATCH 06/13] fscrypt: allow load/save of extent contexts
-Date:   Sat,  2 Sep 2023 01:54:24 -0400
-Message-ID: <d8c497e023266d2a28810658d6e3f86863aaa14f.1693630890.git.sweettea-kernel@dorminy.me>
+Subject: [RFC PATCH 07/13] fscrypt: store full fscrypt_contexts for each extent
+Date:   Sat,  2 Sep 2023 01:54:25 -0400
+Message-ID: <e0263ab5998ddf723b78ed56a545490e482c29b9.1693630890.git.sweettea-kernel@dorminy.me>
 In-Reply-To: <cover.1693630890.git.sweettea-kernel@dorminy.me>
 References: <cover.1693630890.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
@@ -53,161 +53,99 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-The other half of using per-extent infos is saving and loading them from
-disk.
+For contrast purposes, this patch contains the entirety of the changes
+necessary to switch between lightweight and heavyweight extents. This
+patch could be dropped, or rolled into the former change, without
+changing anything else.
 
-This is the one change which cares about whether a lightweight or
-heavyweight extent context is stored on disk. This implements the
-lightweight version.
+Lightweight extents relying on their parent inode's context for
+key and policy information do take up less disk space. Additionally,
+they guarantee that if inode open succeeds, then all extents will be
+readable and writeable, matching the current inode-based fscrypt
+behavior.
+
+However, heavyweight extents permit greater flexibility for future
+extensions:
+
+- Any form of changing the key for a non-empty directory's
+  future writes requires that extents have some sort of policy in
+  addition to the nonce, which is essentially the contents of the full
+  fscrypt_context.
+  - This could be approximated using overlayfs writing to a new
+    encrypted directory, but this would waste space used by overwritten
+    data and makes it very difficult to have nested subvolumes each with
+    their own key, so it's very preferable to support this natively in
+    btrfs.
+
+- Scrub (verifying checksums) currently iterates over extents,
+without interacting with inodes; in an authenticated encryption world,
+scrub verifying authentication tags would need to iterate over inodes (a
+large departure from the present) or need heavyweight extents storing
+the necessary key information.
 
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 ---
- fs/crypto/keysetup.c    | 39 +++++++++++++++++++++++++++++++++++++++
- fs/crypto/policy.c      | 22 ++++++++++++++++++++++
- include/linux/fscrypt.h | 19 +++++++++++++++++++
- 3 files changed, 80 insertions(+)
+ fs/crypto/keysetup.c | 20 ++++++++++----------
+ fs/crypto/policy.c   |  5 ++---
+ 2 files changed, 12 insertions(+), 13 deletions(-)
 
 diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index c9c16acf4c9b..90143377cc61 100644
+index 90143377cc61..4146b1380cb5 100644
 --- a/fs/crypto/keysetup.c
 +++ b/fs/crypto/keysetup.c
-@@ -1044,6 +1044,45 @@ int fscrypt_prepare_new_extent(struct inode *inode,
- }
- EXPORT_SYMBOL_GPL(fscrypt_prepare_new_extent);
+@@ -1061,25 +1061,25 @@ int fscrypt_load_extent_info(struct inode *inode, void *buf, size_t len,
+ {
+ 	int res;
+ 	union fscrypt_context ctx;
+-	const union fscrypt_policy *policy;
++	union fscrypt_policy policy;
  
-+/**
-+ * fscrypt_load_extent_info() - load a preexisting extent's fscrypt_extent_info
-+ * @inode: the inode to which the extent belongs. Must be encrypted.
-+ * @buf: a buffer containing the extent's stored context
-+ * @len: the length of the @ctx buffer
-+ * @info_ptr: a pointer to return the extent's fscrypt_extent_info into
-+ *
-+ * This is not %GFP_NOFS safe, so the caller is expected to call
-+ * memalloc_nofs_save/restore() if appropriate.
-+ *
-+ * Return: 0 if successful, or -errno if it fails.
-+ */
-+int fscrypt_load_extent_info(struct inode *inode, void *buf, size_t len,
-+			     struct fscrypt_extent_info **info_ptr)
-+{
-+	int res;
-+	union fscrypt_context ctx;
-+	const union fscrypt_policy *policy;
+ 	if (!fscrypt_has_encryption_key(inode))
+ 		return -EINVAL;
+ 
+-	if (len != FSCRYPT_FILE_NONCE_SIZE) {
++	memcpy(&ctx, buf, len);
 +
-+	if (!fscrypt_has_encryption_key(inode))
++	res = fscrypt_policy_from_context(&policy, &ctx, len);
++	if (res) {
+ 		fscrypt_warn(inode,
+ 			     "Unrecognized or corrupt encryption context");
+-		return -EINVAL;
++		return res;
+ 	}
+ 
+-	policy = fscrypt_policy_to_inherit(inode);
+-	if (policy == NULL)
+-		return 0;
+-	if (IS_ERR(policy))
+-		return PTR_ERR(policy);
++	if (!fscrypt_supported_policy(&policy, inode))
 +		return -EINVAL;
-+
-+	if (len != FSCRYPT_FILE_NONCE_SIZE) {
-+		fscrypt_warn(inode,
-+			     "Unrecognized or corrupt encryption context");
-+		return -EINVAL;
-+	}
-+
-+	policy = fscrypt_policy_to_inherit(inode);
-+	if (policy == NULL)
-+		return 0;
-+	if (IS_ERR(policy))
-+		return PTR_ERR(policy);
-+
-+	return fscrypt_setup_extent_info(inode, policy, buf,
-+					 info_ptr);
-+}
-+EXPORT_SYMBOL_GPL(fscrypt_load_extent_info);
-+
- /**
-  * fscrypt_free_extent_info() - free an extent's fscrypt_extent_info
-  * @info_ptr: a pointer containing the extent's fscrypt_extent_info pointer.
+ 
+-	return fscrypt_setup_extent_info(inode, policy, buf,
+-					 info_ptr);
++	return fscrypt_setup_extent_info(inode, &policy,
++					 fscrypt_context_nonce(&ctx), info_ptr);
+ }
+ EXPORT_SYMBOL_GPL(fscrypt_load_extent_info);
+ 
 diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
-index ceb648669832..cfbe83aee847 100644
+index cfbe83aee847..314bb6e97cec 100644
 --- a/fs/crypto/policy.c
 +++ b/fs/crypto/policy.c
-@@ -763,6 +763,28 @@ int fscrypt_set_context(struct inode *inode, void *fs_data)
- }
- EXPORT_SYMBOL_GPL(fscrypt_set_context);
- 
-+/**
-+ * fscrypt_set_extent_context() - Set the fscrypt extent context for an extent
-+ * @ci: info from which to fetch policy and nonce
-+ * @ctx: where context should be written
-+ * @len: the size of ctx
-+ *
-+ * Given an fscrypt_extent_info belonging to an extent (generated via
-+ * fscrypt_prepare_new_extent()), generate a new context and write it to @ctx.
-+ * len is checked to be at least FSCRYPT_EXTENT_CONTEXT_MAX_SIZE bytes.
-+ *
-+ * Return: size of the resulting context or a negative error code.
-+ */
-+int fscrypt_set_extent_context(struct fscrypt_extent_info *ci, void *ctx,
-+			       size_t len)
-+{
-+	if (len < FSCRYPT_EXTENT_CONTEXT_MAX_SIZE)
-+		return -EINVAL;
-+	memcpy(ctx, ci->info.ci_nonce, FSCRYPT_FILE_NONCE_SIZE);
-+	return FSCRYPT_FILE_NONCE_SIZE;
-+}
-+EXPORT_SYMBOL_GPL(fscrypt_set_extent_context);
-+
- /**
-  * fscrypt_parse_test_dummy_encryption() - parse the test_dummy_encryption mount option
-  * @param: the mount option
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index cc5de5ec888c..b57fc5645076 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -57,6 +57,7 @@ struct fscrypt_name {
- 
- /* Maximum value for the third parameter of fscrypt_operations.set_context(). */
- #define FSCRYPT_SET_CONTEXT_MAX_SIZE	40
-+#define FSCRYPT_EXTENT_CONTEXT_MAX_SIZE	16
- 
- #ifdef CONFIG_FS_ENCRYPTION
- 
-@@ -317,6 +318,8 @@ int fscrypt_ioctl_get_nonce(struct file *filp, void __user *arg);
- int fscrypt_has_permitted_context(struct inode *parent, struct inode *child);
- int fscrypt_context_for_new_inode(void *ctx, struct inode *inode);
- int fscrypt_set_context(struct inode *inode, void *fs_data);
-+int fscrypt_set_extent_context(struct fscrypt_extent_info *info, void *ctx,
-+			       size_t len);
- 
- struct fscrypt_dummy_policy {
- 	const union fscrypt_policy *policy;
-@@ -357,6 +360,9 @@ int fscrypt_drop_inode(struct inode *inode);
- int fscrypt_prepare_new_extent(struct inode *inode,
- 			       struct fscrypt_extent_info **info_ptr);
- void fscrypt_free_extent_info(struct fscrypt_extent_info **info_ptr);
-+int fscrypt_load_extent_info(struct inode *inode, void *buf, size_t len,
-+			     struct fscrypt_extent_info **info_ptr);
-+
- 
- /* fname.c */
- int fscrypt_fname_encrypt(const struct inode *inode, const struct qstr *iname,
-@@ -533,6 +539,12 @@ static inline int fscrypt_set_context(struct inode *inode, void *fs_data)
- 	return -EOPNOTSUPP;
- }
- 
-+static inline int fscrypt_set_extent_context(struct fscrypt_info *info,
-+					     void *ctx, size_t len)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
- struct fscrypt_dummy_policy {
- };
- 
-@@ -632,6 +644,13 @@ static inline void fscrypt_free_extent_info(struct fscrypt_extent_info **info_pt
+@@ -778,10 +778,9 @@ EXPORT_SYMBOL_GPL(fscrypt_set_context);
+ int fscrypt_set_extent_context(struct fscrypt_extent_info *ci, void *ctx,
+ 			       size_t len)
  {
+-	if (len < FSCRYPT_EXTENT_CONTEXT_MAX_SIZE)
++	if (len < FSCRYPT_SET_CONTEXT_MAX_SIZE)
+ 		return -EINVAL;
+-	memcpy(ctx, ci->info.ci_nonce, FSCRYPT_FILE_NONCE_SIZE);
+-	return FSCRYPT_FILE_NONCE_SIZE;
++	return fscrypt_new_context(ctx, &ci->info.ci_policy, ci->info.ci_nonce);
  }
+ EXPORT_SYMBOL_GPL(fscrypt_set_extent_context);
  
-+static inline int fscrypt_load_extent_info(struct inode *inode, void *buf,
-+					   size_t len,
-+					   struct fscrypt_info **info_ptr)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
-  /* fname.c */
- static inline int fscrypt_setup_filename(struct inode *dir,
- 					 const struct qstr *iname,
 -- 
 2.41.0
 
