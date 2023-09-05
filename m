@@ -2,143 +2,118 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 046FA7924B8
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  5 Sep 2023 18:00:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41730792CDD
+	for <lists+linux-fscrypt@lfdr.de>; Tue,  5 Sep 2023 19:57:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232554AbjIEP7d (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 5 Sep 2023 11:59:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56954 "EHLO
+        id S237412AbjIER5H (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 5 Sep 2023 13:57:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354009AbjIEJLb (ORCPT
+        with ESMTP id S233846AbjIER44 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 5 Sep 2023 05:11:31 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 686F0D8;
-        Tue,  5 Sep 2023 02:11:26 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 264EC1F74D;
-        Tue,  5 Sep 2023 09:11:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1693905085; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=v79WjEoDs9F3Vjum42PGJ2z1rLJctnjtDsFsxwG5ncw=;
-        b=YwCV9ly9uMbP4j/3wlPUUVRkCgsnK1naBjvvJPu4QBUMKwCOEgjaPZlqrvgy603pTk8hlk
-        coK14ruzlL73hUQUgNmR88ZDkdIXjiAjCM/edY46kkdfypsGJxiuvkBtZdL3eOQkf8SC3X
-        f4wfQ5CTl9QdaSASXxJ0rYZo7QGOAQE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1693905085;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=v79WjEoDs9F3Vjum42PGJ2z1rLJctnjtDsFsxwG5ncw=;
-        b=BoCEOx9hi3vLZ2Hors/zNhmhQX/Iy59H63pmpDIj9rxrwzvt9S6IElLpLmEQ/zEDcOiCow
-        XDcu+G2NGV120lAg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 18D8013499;
-        Tue,  5 Sep 2023 09:11:25 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id hQf6Bb3w9mR7JgAAMHmgww
-        (envelope-from <jack@suse.cz>); Tue, 05 Sep 2023 09:11:25 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id A6B15A0776; Tue,  5 Sep 2023 11:11:24 +0200 (CEST)
-Date:   Tue, 5 Sep 2023 11:11:24 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Jan Kara <jack@suse.com>, linux-fscrypt@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, stable@vger.kernel.org
-Subject: Re: [PATCH] quota: explicitly forbid quota files from being encrypted
-Message-ID: <20230905091124.giawwm3tu6fm2buq@quack3>
-References: <20230905003227.326998-1-ebiggers@kernel.org>
+        Tue, 5 Sep 2023 13:56:56 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B161812E4B
+        for <linux-fscrypt@vger.kernel.org>; Tue,  5 Sep 2023 10:51:03 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id e9e14a558f8ab-34ca1bcb48fso8673485ab.2
+        for <linux-fscrypt@vger.kernel.org>; Tue, 05 Sep 2023 10:51:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1693936204; x=1694541004; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xhVyYyhnkV6xf8sOqK4YgIYEfgThVB5ep8tTtgcxT/o=;
+        b=1p4BjvF/IabXntaJtJRBBLHr7pekxyjyNs7i1djYCBBHOWqnApvzQPDMrrdlgovXSE
+         hql2+qrU99kL1P3HBUXAzXdN7AZfEmy592g+S05ha9aYcc4ijuZxWpCntr3DoeSuYMUX
+         PXFLgVdQAw4VxprYZlCelpA2hf/RUJoAaqMtQWNlWbqAPHYE7F7p5da3/860jEzbNHke
+         Vi4BLyKcl0SxY/sfyBn8zZaOqM6Nkl/Z8vzvCJukrG2RV6xUdPp/FSvc9jFYdsIwCmIX
+         1qVRmn/QK2mAwztZd4aRoA6qzULL+jGqvVKzNFjY1bh3oLQ3vg729ySl+x9yVce1U2sy
+         IyYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693936204; x=1694541004;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xhVyYyhnkV6xf8sOqK4YgIYEfgThVB5ep8tTtgcxT/o=;
+        b=J1wbop6+zBVvV4FEuK/Y/qk0fo9zGm1/DEg2M06rasNktxv/o5m9uP7IXB2l7a7Nzl
+         qkF2EgatSF8yS9Wx3nb9lSxetg1folfIdAAqpTtNbTdJCxAdPnBbMSfylL4T7l3wT3Ck
+         Bbtr4M2B+9+haxTnIWUxSXCT5gJchDeyV8aNVfWpXDwCiObiKd7AJ7LUgwEXQVCSZpkZ
+         wzCn5QZn/i9VfwzxpgFKGnt11J22HE0Rgc+hEgqw1+bF0wAlgNnSgw/o7Wm4lGlQWwnq
+         kBnM8q1I+qCh+AhP4w0dcY2JLolOE75AtHcEhCkYjxYR08K4s0Ri33zyD+9zq1BOVOSE
+         Tryw==
+X-Gm-Message-State: AOJu0YzMCWtkWHt+y0yPX7bt6kU22rIkAzsCd9Q8hOzZQLQFPTujEoKQ
+        PACMJqQcP08he14Zrt1XdjCodhtBgMsBlSV2AAg=
+X-Google-Smtp-Source: AGHT+IHoC+f41O5N5PptqoeyvPhwdxGzWHM/2723fFAW8BRKe0D9fUW6UrRfh2NpNAWsqupuLcJzEg==
+X-Received: by 2002:ac8:5c04:0:b0:410:a39d:767e with SMTP id i4-20020ac85c04000000b00410a39d767emr17819928qti.25.1693935200372;
+        Tue, 05 Sep 2023 10:33:20 -0700 (PDT)
+Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id f2-20020a05620a12e200b0076ef7810f27sm4202383qkl.58.2023.09.05.10.33.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Sep 2023 10:33:20 -0700 (PDT)
+Date:   Tue, 5 Sep 2023 13:33:19 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Cc:     Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@meta.com,
+        linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        ebiggers@kernel.org, ngompa13@gmail.com
+Subject: Re: [RFC PATCH 00/13] fscrypt: add extent encryption
+Message-ID: <20230905173319.GA1222577@perftesting>
+References: <cover.1693630890.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230905003227.326998-1-ebiggers@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <cover.1693630890.git.sweettea-kernel@dorminy.me>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon 04-09-23 17:32:27, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
+On Sat, Sep 02, 2023 at 01:54:18AM -0400, Sweet Tea Dorminy wrote:
+> This is a replacement for the former changeset (previously v3). This
+> doesn't reflect all the smaller feedback on v3: it's an attempt to address
+> the major points of giving extents and inodes different objects, and to
+> clearly define lightweight and heavyweight extent contexts. Currently,
+> with minor changes to the btrfs patchset building on it, it passes
+> tests.
 > 
-> Since commit d7e7b9af104c ("fscrypt: stop using keyrings subsystem for
-> fscrypt_master_key"), xfstest generic/270 causes a WARNING when run on
-> f2fs with test_dummy_encryption in the mount options:
+> Hopefully I understood the proposed alternate design and this is indeed
+> more elegant, reviewable, and maintainable. 
 > 
-> $ kvm-xfstests -c f2fs/encrypt generic/270
-> [...]
-> WARNING: CPU: 1 PID: 2453 at fs/crypto/keyring.c:240 fscrypt_destroy_keyring+0x1f5/0x260
+> This applies atop [3], which itself is based on kdave/misc-next.
 > 
-> The cause of the WARNING is that not all encrypted inodes have been
-> evicted before fscrypt_destroy_keyring() is called, which violates an
-> assumption.  This happens because the test uses an external quota file,
-> which gets automatically encrypted due to test_dummy_encryption.
-> 
-> Encryption of quota files has never really been supported.  On ext4,
-> ext4_quota_read() does not decrypt the data, so encrypted quota files
-> are always considered invalid on ext4.  On f2fs, f2fs_quota_read() uses
-> the pagecache, so trying to use an encrypted quota file gets farther,
-> resulting in the issue described above being possible.  But this was
-> never intended to be possible, and there is no use case for it.
-> 
-> Therefore, make the quota support layer explicitly reject using
-> IS_ENCRYPTED inodes when quotaon is attempted.
-> 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> Changelog:
+> RFC:
+>  - Split fscrypt_info into a general fscrypt_common_info, an
+>    inode-specific fscrypt_info, and an extent-specific
+>    fscrypt_extent_info. All external interfaces use either an inode or
+>    extent specific structure; most internal functions handle the common
+>    structure.
+>  - Tried to fix up more places to refer to infos instead of inodes and
+>    files.
+>  - Changed to use lightweight extent contexts containing just a nonce,
+>    and then a following change to do heavyweight extent contexts
+>    identical to inode contexts, so they're easily comparable.
+>  - Dropped factoring lock_master_key() and adding super block pointer to
+>    fscrypt_info changes, as they didn't seem necessary.
+>  - Temporarily dropped optimization where leaf inodes with extents don't
+>    have on-disk fscrypt_contexts. It's a convenient optimization and
+>    affects btrfs disk format, but it's not very big and not strictly
+>    needed to check whether the new structural arrangement is better.
 
-Looks good. I'll queue this patch into my tree and send it to Linus for
-RC2.
+I've gone through this, does seem a bit cleaner, and the uses of ->ci_type are
+limited to the soft deletion part, so the overlapping thing that Eric was
+worried about seems to be very contained.
 
-								Honza
+Eric, I asked Sweet Tea to do a rough run at this to see if this was more in
+your liking, I specifically told him to get it down and get it out so apologies
+for the rough edges.  What I'm looking for is wether or not this is an
+acceptable approach, and if there's any other big changes you want to see.  If
+this looks good then Sweet Tea can clean it up and we can hopefully start making
+progress on the other things.  Thanks,
 
-> ---
->  fs/quota/dquot.c | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
-> index 9e72bfe8bbad9..7e268cd2727cc 100644
-> --- a/fs/quota/dquot.c
-> +++ b/fs/quota/dquot.c
-> @@ -2339,6 +2339,20 @@ static int vfs_setup_quota_inode(struct inode *inode, int type)
->  	if (sb_has_quota_loaded(sb, type))
->  		return -EBUSY;
->  
-> +	/*
-> +	 * Quota files should never be encrypted.  They should be thought of as
-> +	 * filesystem metadata, not user data.  New-style internal quota files
-> +	 * cannot be encrypted by users anyway, but old-style external quota
-> +	 * files could potentially be incorrectly created in an encrypted
-> +	 * directory, hence this explicit check.  Some reasons why encrypted
-> +	 * quota files don't work include: (1) some filesystems that support
-> +	 * encryption don't handle it in their quota_read and quota_write, and
-> +	 * (2) cleaning up encrypted quota files at unmount would need special
-> +	 * consideration, as quota files are cleaned up later than user files.
-> +	 */
-> +	if (IS_ENCRYPTED(inode))
-> +		return -EINVAL;
-> +
->  	dqopt->files[type] = igrab(inode);
->  	if (!dqopt->files[type])
->  		return -EIO;
-> 
-> base-commit: 708283abf896dd4853e673cc8cba70acaf9bf4ea
-> -- 
-> 2.42.0
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Josef
