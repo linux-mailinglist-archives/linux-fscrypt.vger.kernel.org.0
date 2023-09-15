@@ -2,127 +2,153 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 837077A1441
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 15 Sep 2023 05:17:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15E6C7A166A
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 15 Sep 2023 08:48:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231681AbjIODRn (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Thu, 14 Sep 2023 23:17:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41894 "EHLO
+        id S232141AbjIOGss (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Fri, 15 Sep 2023 02:48:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230497AbjIODRm (ORCPT
+        with ESMTP id S232406AbjIOGsr (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Thu, 14 Sep 2023 23:17:42 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 725CC1FC8;
-        Thu, 14 Sep 2023 20:17:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694747858; x=1726283858;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=MaDiuZtp6V5mUHTfROEW8D4uVOrgIeTR86RAYSCnNeY=;
-  b=Ci3sDpLJCXsjk84hp8UvZVPOed/wUUrAhq+JE2nAHYc9ANcNmU+sqMWW
-   MkQJoU0yzWHDHFnr4Hp1B0v9Zc7boOrB5WxvbTYQ3Pvh+MyqYfrmcym3v
-   XDpk0Oj2DuX+vAZ4EZ6rhkcrjnpJZgOTsiZdUeUvw29cCsdMhT/KdV5E5
-   TLu29RtZ2Y6LCfqifXMPNfLxf9qBXFZHnv2Tpq1g1PZ+8M32aanZDIdSo
-   2HbzEelVIEl7lRpxtZRBQ8B76uKFIygMNFdvc9e3rN89SBmbBBZ942+Jn
-   /2DHsU7dohm9l9wf/iq7f1aul3jqntwkuzND4MbTJYzLwCQuunQIgzEcW
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="378059564"
-X-IronPort-AV: E=Sophos;i="6.02,147,1688454000"; 
-   d="scan'208";a="378059564"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 20:17:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="744799511"
-X-IronPort-AV: E=Sophos;i="6.02,147,1688454000"; 
-   d="scan'208";a="744799511"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 14 Sep 2023 20:17:35 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qgzKm-0002N7-2z;
-        Fri, 15 Sep 2023 03:17:32 +0000
-Date:   Fri, 15 Sep 2023 11:17:08 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, clm@fb.com, ebiggers@kernel.org,
-        ngompa13@gmail.com, sweettea-kernel@dorminy.me,
+        Fri, 15 Sep 2023 02:48:47 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40E972D4D;
+        Thu, 14 Sep 2023 23:48:19 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0856C433C8;
+        Fri, 15 Sep 2023 06:48:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694760498;
+        bh=lWztj3r9iypypdZ0FREOy5ynsNzq+ID/Wk+Vqrw7u/4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mifHp2kZRjEKP82mQzk/H+QmCWmvZ7wZ7i7LzTRJHdLfm5AEDgpjSU6RyWXYzIEat
+         G5v3oOYaMUmvKuH4A3mJQNH/ShyoDCJCHliEIg0hwjQKVcz/iRhU4aRSKWCIi1P1rd
+         cGHfupi9b7R2/hhJkPY/SAv8f7dNQJGldAYaoEsbgfvXn/u6hVqlKiUo9L5i/gHcsU
+         EIAgc+r7k8uEGPBc8MoB74ddtVuoS8pHVD6pIGfvi9H+q/cuN9DmycCfjXmyQSXqci
+         xBQ8et/sqDSHIZDpUV51eCIwQ/4bxMycridxtSdr/yQpeKuRbb5hqsqtLLOhdxy13q
+         PveCxHE0vqJmg==
+Date:   Thu, 14 Sep 2023 23:48:16 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        clm@fb.com, ngompa13@gmail.com, sweettea-kernel@dorminy.me,
         kernel-team@meta.com
-Cc:     oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH 2/4] fscrypt: add per-extent encryption support
-Message-ID: <202309151147.DmtmoJbq-lkp@intel.com>
-References: <29b2303463c3b4978d17a6a257e7a8aa3da23de4.1694738282.git.josef@toxicpanda.com>
+Subject: Re: [RFC PATCH 0/4] fscrypt: add support for per-extent encryption
+Message-ID: <20230915064816.GA2090@sol.localdomain>
+References: <cover.1694738282.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <29b2303463c3b4978d17a6a257e7a8aa3da23de4.1694738282.git.josef@toxicpanda.com>
+In-Reply-To: <cover.1694738282.git.josef@toxicpanda.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Hi Josef,
+On Thu, Sep 14, 2023 at 08:47:41PM -0400, Josef Bacik wrote:
+> Hello,
+> 
+> This is meant as a replacement for the last set of patches Sweet Tea sent [1].
+> This is an attempt to find a different path forward.  Strip down everything to
+> the basics.  Essentially all we appear to need is a nonce, and then we can use
+> the inode context to derive per-extent keys.
+> 
+> I'm sending this as an RFC to see if this is a better direction to try and make
+> some headway on this project.  The btrfs side doesn't change too much, the code
+> just needs to be adjusted to use the new helpers for the extent contexts.  I
+> have this work mostly complete, but I'm afraid I won't have it ready for another
+> day or two and I want to get feedback on this ASAP before I burn too much time
+> on it.
+> 
+> Additionally there is a callback I've put in the inline block crypto stuff that
+> we need in order to handle the checksumming.  I made my best guess here as to
+> what would be the easiest and simplest way to acheive what we need, but I'm open
+> to suggestions here.
+> 
+> The other note is I've disabled all of the policy variations other than default
+> v2 policies if you enable extent encryption.  This is for simplicity sake.  We
+> could probably make most of it work, but reflink is basically impossible for v1
+> with direct key, and is problematic for the lblk related options.  It appears
+> this is fine, as those other modes are for specific use cases and the vast
+> majority of normal users are encouraged to use normal v2 policies anyway.
+> 
+> This stripped down version gives us most of what we want, we can reflink between
+> different inodes that have the same policy.  We lose the ability to mix
+> differently encrypted extents in the same inode, but this is an acceptable
+> limitation for now.
+> 
+> This has only been compile tested, and as I've said I haven't wired it
+> completely up into btrfs yet.  But this is based on a rough wire up and appears
+> to give us everything we need.  The btrfs portion of Sweet Teas patches are
+> basically untouched except where we use these helpers to deal with the extent
+> contexts.  Thanks,
+> 
+> Josef
+> 
+> [1] https://lore.kernel.org/linux-fscrypt/cover.1693630890.git.sweettea-kernel@dorminy.me/
+> 
+> Josef Bacik (4):
+>   fscrypt: rename fscrypt_info => fscrypt_inode_info
+>   fscrypt: add per-extent encryption support
+>   fscrypt: disable all but standard v2 policies for extent encryption
+>   blk-crypto: add a process bio callback
+> 
+>  block/blk-crypto-fallback.c |  18 ++++
+>  block/blk-crypto-profile.c  |   2 +
+>  block/blk-crypto.c          |   6 +-
+>  fs/crypto/crypto.c          |  23 +++--
+>  fs/crypto/fname.c           |   6 +-
+>  fs/crypto/fscrypt_private.h |  78 ++++++++++++----
+>  fs/crypto/hooks.c           |   2 +-
+>  fs/crypto/inline_crypt.c    |  50 +++++++++--
+>  fs/crypto/keyring.c         |   4 +-
+>  fs/crypto/keysetup.c        | 174 ++++++++++++++++++++++++++++++++----
+>  fs/crypto/keysetup_v1.c     |  14 +--
+>  fs/crypto/policy.c          |  45 ++++++++--
+>  include/linux/blk-crypto.h  |   9 +-
+>  include/linux/fs.h          |   4 +-
+>  include/linux/fscrypt.h     |  41 ++++++++-
+>  15 files changed, 400 insertions(+), 76 deletions(-)
 
-kernel test robot noticed the following build warnings:
+Thanks Josef!  At a high level this looks good to me.  It's much simpler.  I
+guess my main question is "what is missing" (besides the obvious things like
+updating the documentation and polishing code comments).  I see you got rid of a
+lot of the complexity in Sweet Tea's patchset, which is great as I think a lot
+of it was unnecessary as I've mentioned.  But maybe something got overlooked?
+I'm mainly wondering about the patches like "fscrypt: allow asynchronous info
+freeing" that were a bit puzzling but have now gone away.
 
-[auto build test WARNING on axboe-block/for-next]
-[also build test WARNING on linus/master v6.6-rc1 next-20230914]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Not supporting v1 encryption policies is the right call, I think.  xfstests will
+need to be updated to not assume that v1 is always supported, but that's
+something I've been thinking about doing anyway.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Josef-Bacik/fscrypt-rename-fscrypt_info-fscrypt_inode_info/20230915-085013
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git for-next
-patch link:    https://lore.kernel.org/r/29b2303463c3b4978d17a6a257e7a8aa3da23de4.1694738282.git.josef%40toxicpanda.com
-patch subject: [PATCH 2/4] fscrypt: add per-extent encryption support
-config: parisc-allyesconfig (https://download.01.org/0day-ci/archive/20230915/202309151147.DmtmoJbq-lkp@intel.com/config)
-compiler: hppa-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230915/202309151147.DmtmoJbq-lkp@intel.com/reproduce)
+The patch that adds support for checksumming the on-disk data is new.  I see why
+it's needed.  I suppose that's just been overlooked until now?  It's definitely
+correct that you need to checksum the ciphertext, not the plaintext.  Otherwise
+the checksums leak information about the plaintext.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309151147.DmtmoJbq-lkp@intel.com/
+Did you consider the idea I mentioned at the end of
+https://lore.kernel.org/r/20230907055233.GB37146@sol.localdomain where we store
+a full fscrypt_context per extent, but for now validate that it matches the
+inode's context (minus the nonce) and only support that case?
 
-All warnings (new ones prefixed by >>):
+I guess the reasons to do that would be (1) futureproofing, (2) error checking
+to catch any bugs where an extent might be accessed inconsistently, and (3)
+making extents "standalone" so that they can be decrypted by anything that
+iterates through the extents only (e.g. btrfs scrub as mentioned by Sweet Tea;
+though, how will scrub even have access to the encryption keys?).  I don't have
+a great sense of how strong these reasons actually are, so any thoughts would be
+appreciated.  If just the nonce is really all that's needed, then that's fine
+too.  The point is, the part I was concerned about wasn't really whether the key
+identifier and encryption settings get stored per extent, but rather whether we
+actually support the case where these differ from the inode's.
 
-   fs/crypto/keysetup.c: In function 'fscrypt_load_extent_info':
->> fs/crypto/keysetup.c:904:40: warning: argument to 'sizeof' in 'memcpy' call is the same expression as the source; did you mean to provide an explicit length? [-Wsizeof-pointer-memaccess]
-     904 |         memcpy(&extent_ctx, ctx, sizeof(ctx));
-         |                                        ^
+(And by "the inode" I really mean "the inode that owns the extent cache entry
+the extent is being accessed through".  It's the case that when an extent is
+shared by multiple inodes, it gets a cache entry for each one, right?)
 
-
-vim +904 fs/crypto/keysetup.c
-
-   881	
-   882	/**
-   883	 * fscrypt_load_extent_info() - create an fscrypt_extent_info from the context
-   884	 * @inode: the inode
-   885	 * @ctx: the context buffer
-   886	 * @ctx_size: the size of the context buffer
-   887	 *
-   888	 * Create the file_extent_info and derive the key based on the
-   889	 * fscrypt_extent_context buffer that is probided.
-   890	 *
-   891	 * Return: The newly allocated fscrypt_extent_info on success, -EOPNOTSUPP if
-   892	 *	   we're not encrypted, or another -errno code
-   893	 */
-   894	struct fscrypt_extent_info *fscrypt_load_extent_info(struct inode *inode,
-   895							     u8 *ctx, size_t ctx_size)
-   896	{
-   897		struct fscrypt_extent_context extent_ctx;
-   898	
-   899		if (!fscrypt_inode_uses_inline_crypto(inode))
-   900			return ERR_PTR(-EOPNOTSUPP);
-   901		if (ctx_size < sizeof(extent_ctx))
-   902			return ERR_PTR(-EINVAL);
-   903	
- > 904		memcpy(&extent_ctx, ctx, sizeof(ctx));
-   905		return setup_extent_info(inode, extent_ctx.nonce);
-   906	}
-   907	EXPORT_SYMBOL(fscrypt_load_extent_info);
-   908	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+- Eric
