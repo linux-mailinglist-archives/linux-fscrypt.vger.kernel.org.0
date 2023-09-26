@@ -2,231 +2,139 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 955EA7AF240
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 26 Sep 2023 20:04:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE6C47AF22F
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 26 Sep 2023 20:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235475AbjIZSDj (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 26 Sep 2023 14:03:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55268 "EHLO
+        id S235477AbjIZSDk (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 26 Sep 2023 14:03:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235451AbjIZSDi (ORCPT
+        with ESMTP id S235469AbjIZSDi (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
         Tue, 26 Sep 2023 14:03:38 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56D2D11F
-        for <linux-fscrypt@vger.kernel.org>; Tue, 26 Sep 2023 11:03:30 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id af79cd13be357-7741c5bac51so464092085a.1
-        for <linux-fscrypt@vger.kernel.org>; Tue, 26 Sep 2023 11:03:30 -0700 (PDT)
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C9FF126
+        for <linux-fscrypt@vger.kernel.org>; Tue, 26 Sep 2023 11:03:31 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-773ac11de71so587830485a.2
+        for <linux-fscrypt@vger.kernel.org>; Tue, 26 Sep 2023 11:03:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1695751409; x=1696356209; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1695751410; x=1696356210; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TmXdaeI9xeYx0BBBrgcCT3hL6DULvaaya1NKFl2gOGI=;
-        b=csRuL6/ie428vpSapLOzr+l0UYLQlXakH3ZxA9deziGbpNwS7DWSrEHjwnPEiHHQ2y
-         sjvg0SP5f5i071bT9Yc7T4LEFUOEua77LlneovAhpKujYFQQt47jIwEOFS0BKFbLaPaG
-         m/heSHxmLQD86b0YNtv/TXN3+zl95JdziebJmtIEhbC+u3ekzq9rKbYTvx406f01vUuj
-         gq3X0pjl+5jYLhnDOAx2Vj89EvpRMGurtAtl98vvsVMoyW6RUU+oha9+DqtNNhvNO6OE
-         1fRvC0YQSyxZcNzhbmPDE8ziR1plRQvtVrn3HEjO+MJGIJZ8SacohWpkjjlGizC4tfmN
-         ATnw==
+        bh=NtWGC2dr4Dt18NXh3XbNn734FYbuI4TsF3KP5ThfnrU=;
+        b=FuTaIINx90YcGXaXRierRNtlcwjW13mASR3wXUdskSmcRdPy0sVdyjjeFKQ9CUW0Mp
+         dz+qPj5+Z4aW/A32YYGD/X9nBjM2TPHo4rMmZLu4ubEXCh+5tyydxDfhQe6D36lPLAIU
+         /1QTuLIG3dC02pnbHsVSzQiIxGDJlx9ixGS8e2vGUDO+L62AuFQ6rJJJ/CBjG62BEGO7
+         XI1Tf+g/4q9WVdJMyWIIZEKO8nuNM5leAnLOkMWsVAwJQao+p3hSqtbQPPYrUmIbNmLy
+         gj33eUf/xWdoNDXQVQUO2f3IFHvjEkL39UjfW4c+KsndbGS+Ge7h6bJJ96Ca45vk7cYa
+         lrwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695751409; x=1696356209;
+        d=1e100.net; s=20230601; t=1695751410; x=1696356210;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TmXdaeI9xeYx0BBBrgcCT3hL6DULvaaya1NKFl2gOGI=;
-        b=IJC0/necehMt563BDIYzivGIu05ck2EeAoHWDlSLSuT+Jtnj/IjvKtsZwiO+Ri6OYs
-         k3iRuyUyPynzZllWgvErD6HPZ0pTKBofpq5HE7FF4vA/K4cWzfbHvqm+Ie/kVoBY+XuU
-         w/QDXAG09UgOU/VRk8IdbY/SZ8aASqKInqk1Z/d7jjEo76th+5GZONiieSNElYobH+zo
-         dZ/XvbtHg4cix1ZX0j3hVp05LgxLmZPpeTbqCAUgS30v2nm+3bsJrw5ZoGxrODqzxzRs
-         X0J96Mm/kiahqLfvsRP5mElXG/MWzl2Bz026H6AJ3P4N9vw9fBFU7uxv7LYKL22CVcP1
-         gCYw==
-X-Gm-Message-State: AOJu0YwvTWE6wY53E/LobPq2MPKNrgYSPb/MsXn1WzkgcxCxnCMprLN3
-        TpCQ+qjUfIVLH+Ai0QyQGOF2udUlYt6SmnyY3JpWRA==
-X-Google-Smtp-Source: AGHT+IH1VMMScr8itd/IGkf3v0WELyvvY4Zwh7Pl69hBp/W0isHpKhJUjVz+ZrvF1jBH1iF3em4LZw==
-X-Received: by 2002:a05:620a:a1e:b0:774:20bb:2473 with SMTP id i30-20020a05620a0a1e00b0077420bb2473mr8947961qka.25.1695751409393;
-        Tue, 26 Sep 2023 11:03:29 -0700 (PDT)
+        bh=NtWGC2dr4Dt18NXh3XbNn734FYbuI4TsF3KP5ThfnrU=;
+        b=PnBgodDuosPNRu8eISNh1qiI2ZBpVomsSUp7wShfeFPFZDsg+drh04C7EJrLlhUXom
+         LFQFOeYl5evgrM6dJTCZAGzGLlbYonQnTegl44DXzOeDkpnznWvjyfMLKF5frtQrEEmE
+         7pvAT899bl67LUhh5yIbEqwgOg9Uni2qwwwdXgHbGU5/hiB+5FQsSHh9KvS6wXYPUt9c
+         ORM9cgKC6dmlc1vvG42UVnBK4Vow/ojykRCBKeP0F78Q5UAy8EkCs/uZJiyxJHw18sg+
+         6tSFKkZ649WIMEhM30rvjjMegCIL/T0jaakFwbJhybVZ5aWDQ2fFBgFIdSXs6XlFBeOG
+         T9EQ==
+X-Gm-Message-State: AOJu0Yzip51EwevL/qQAefd2qeMJ7VQ6OfZFMh0+E3FlzgjvUlSquvsI
+        kiFqP5n1JOB5AML9v7mjohOC2+2jxc/ENf8gBVQ/CQ==
+X-Google-Smtp-Source: AGHT+IHMhr0lo610U2KNalLhILcJvuImx6f7yCcB+LJfP81hTll4FSKpP9VQXOcxOrV2NSVp2yLC5g==
+X-Received: by 2002:a05:620a:751:b0:76c:b8b0:769d with SMTP id i17-20020a05620a075100b0076cb8b0769dmr10085224qki.39.1695751410676;
+        Tue, 26 Sep 2023 11:03:30 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id cx18-20020a05620a51d200b007742c2ad7dfsm2497732qkb.73.2023.09.26.11.03.28
+        by smtp.gmail.com with ESMTPSA id i17-20020ae9ee11000000b00767d8e12ce3sm4917933qkg.49.2023.09.26.11.03.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 11:03:29 -0700 (PDT)
+        Tue, 26 Sep 2023 11:03:30 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
         ebiggers@kernel.org, linux-fscrypt@vger.kernel.org,
         ngompa13@gmail.com
-Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH 14/35] btrfs: handle nokey names.
-Date:   Tue, 26 Sep 2023 14:01:40 -0400
-Message-ID: <705b288d259f0fde3949334250378c620ab84953.1695750478.git.josef@toxicpanda.com>
+Cc:     Omar Sandoval <osandov@osandov.com>,
+        Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Subject: [PATCH 15/35] btrfs: implement fscrypt ioctls
+Date:   Tue, 26 Sep 2023 14:01:41 -0400
+Message-ID: <9faf5ac92793fa1459aded3c23076c667f404f29.1695750478.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1695750478.git.josef@toxicpanda.com>
 References: <cover.1695750478.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_FILL_THIS_FORM_SHORT autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+From: Omar Sandoval <osandov@osandov.com>
 
-For encrypted or unencrypted names, we calculate the offset for the dir
-item by hashing the name for the dir item. However, this doesn't work
-for a long nokey name, where we do not have the complete ciphertext.
-Instead, fscrypt stores the filesystem-provided hash in the nokey name,
-and we can extract it from the fscrypt_name structure in such a case.
+These ioctls allow encryption to actually be used.
 
-Additionally, for nokey names, if we find the nokey name on disk we can
-update the fscrypt_name with the disk name, so add that to searching for
-diritems.
+The set_encryption_policy ioctl is the thing which actually turns on
+encryption, and therefore sets the ENCRYPT flag in the superblock. This
+prevents the filesystem from being loaded on older kernels.
 
+fscrypt provides CONFIG_FS_ENCRYPTION-disabled versions of all these
+functions which just return -EOPNOTSUPP, so the ioctls don't need to be
+compiled out if CONFIG_FS_ENCRYPTION isn't enabled.
+
+We could instead gate this ioctl on the superblock having the flag set,
+if we wanted to require mkfs with the encrypt flag in order to have a
+filesystem with any encryption.
+
+Signed-off-by: Omar Sandoval <osandov@osandov.com>
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/dir-item.c | 37 +++++++++++++++++++++++++++++++++++--
- fs/btrfs/fscrypt.c  | 27 +++++++++++++++++++++++++++
- fs/btrfs/fscrypt.h  | 11 +++++++++++
- 3 files changed, 73 insertions(+), 2 deletions(-)
+ fs/btrfs/ioctl.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-diff --git a/fs/btrfs/dir-item.c b/fs/btrfs/dir-item.c
-index a64cfddff7f0..897fb5477369 100644
---- a/fs/btrfs/dir-item.c
-+++ b/fs/btrfs/dir-item.c
-@@ -231,6 +231,28 @@ struct btrfs_dir_item *btrfs_lookup_dir_item(struct btrfs_trans_handle *trans,
- 	return di;
- }
- 
-+/*
-+ * If appropriate, populate the disk name for a fscrypt_name looked up without
-+ * a key.
-+ *
-+ * @path:	The path to the extent buffer in which the name was found.
-+ * @di:		The dir item corresponding.
-+ * @fname:	The fscrypt_name to perhaps populate.
-+ *
-+ * Returns: 0 if the name is already populated or the dir item doesn't exist
-+ * or the name was successfully populated, else an error code.
-+ */
-+static int ensure_disk_name_from_dir_item(struct btrfs_path *path,
-+					  struct btrfs_dir_item *di,
-+					  struct fscrypt_name *name)
-+{
-+	if (name->disk_name.name || !di)
-+		return 0;
-+
-+	return btrfs_fscrypt_get_disk_name(path->nodes[0], di,
-+					   &name->disk_name);
-+}
-+
- /*
-  * Lookup for a directory item by fscrypt_name.
-  *
-@@ -257,8 +279,12 @@ struct btrfs_dir_item *btrfs_lookup_dir_item_fname(struct btrfs_trans_handle *tr
- 
- 	key.objectid = dir;
- 	key.type = BTRFS_DIR_ITEM_KEY;
--	key.offset = btrfs_name_hash(name->disk_name.name, name->disk_name.len);
--	/* XXX get the right hash for no-key names */
-+
-+	if (!name->disk_name.name)
-+		key.offset = name->hash | ((u64)name->minor_hash << 32);
-+	else
-+		key.offset = btrfs_name_hash(name->disk_name.name,
-+					     name->disk_name.len);
- 
- 	ret = btrfs_search_slot(trans, root, &key, path, mod, -mod);
- 	if (ret == 0)
-@@ -266,6 +292,8 @@ struct btrfs_dir_item *btrfs_lookup_dir_item_fname(struct btrfs_trans_handle *tr
- 
- 	if (ret == -ENOENT || (di && IS_ERR(di) && PTR_ERR(di) == -ENOENT))
- 		return NULL;
-+	if (ret == 0)
-+		ret = ensure_disk_name_from_dir_item(path, di, name);
- 	if (ret < 0)
- 		di = ERR_PTR(ret);
- 
-@@ -382,7 +410,12 @@ btrfs_search_dir_index_item(struct btrfs_root *root, struct btrfs_path *path,
- 	btrfs_for_each_slot(root, &key, &key, path, ret) {
- 		if (key.objectid != dirid || key.type != BTRFS_DIR_INDEX_KEY)
- 			break;
-+
- 		di = btrfs_match_dir_item_fname(root->fs_info, path, name);
-+		if (di)
-+			ret = ensure_disk_name_from_dir_item(path, di, name);
-+		if (ret)
-+			break;
- 		if (di)
- 			return di;
- 	}
-diff --git a/fs/btrfs/fscrypt.c b/fs/btrfs/fscrypt.c
-index 588966f0414f..254e48005aec 100644
---- a/fs/btrfs/fscrypt.c
-+++ b/fs/btrfs/fscrypt.c
-@@ -14,6 +14,33 @@
- #include "transaction.h"
- #include "xattr.h"
- 
-+/*
-+ * From a given location in a leaf, read a name into a qstr (usually a
-+ * fscrypt_name's disk_name), allocating the required buffer. Used for
-+ * nokey names.
-+ */
-+int btrfs_fscrypt_get_disk_name(struct extent_buffer *leaf,
-+				struct btrfs_dir_item *dir_item,
-+				struct fscrypt_str *name)
-+{
-+	unsigned long de_name_len = btrfs_dir_name_len(leaf, dir_item);
-+	unsigned long de_name = (unsigned long)(dir_item + 1);
-+	/*
-+	 * For no-key names, we use this opportunity to find the disk
-+	 * name, so future searches don't need to deal with nokey names
-+	 * and we know what the encrypted size is.
-+	 */
-+	name->name = kmalloc(de_name_len, GFP_NOFS);
-+
-+	if (!name->name)
-+		return -ENOMEM;
-+
-+	read_extent_buffer(leaf, name->name, de_name, de_name_len);
-+
-+	name->len = de_name_len;
-+	return 0;
-+}
-+
- /*
-  * This function is extremely similar to fscrypt_match_name() but uses an
-  * extent_buffer.
-diff --git a/fs/btrfs/fscrypt.h b/fs/btrfs/fscrypt.h
-index 1647bbbcd609..c08fd52c99b4 100644
---- a/fs/btrfs/fscrypt.h
-+++ b/fs/btrfs/fscrypt.h
-@@ -9,11 +9,22 @@
- #include "fs.h"
- 
- #ifdef CONFIG_FS_ENCRYPTION
-+int btrfs_fscrypt_get_disk_name(struct extent_buffer *leaf,
-+				struct btrfs_dir_item *di,
-+				struct fscrypt_str *qstr);
-+
- bool btrfs_fscrypt_match_name(struct fscrypt_name *fname,
- 			      struct extent_buffer *leaf,
- 			      unsigned long de_name, u32 de_name_len);
- 
- #else
-+static inline int btrfs_fscrypt_get_disk_name(struct extent_buffer *leaf,
-+					      struct btrfs_dir_item *di,
-+					      struct fscrypt_str *qstr)
-+{
-+	return 0;
-+}
-+
- static inline bool btrfs_fscrypt_match_name(struct fscrypt_name *fname,
- 					    struct extent_buffer *leaf,
- 					    unsigned long de_name,
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index ae674c823d14..ddc2d2c7fc7f 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -4587,6 +4587,34 @@ long btrfs_ioctl(struct file *file, unsigned int
+ 		return btrfs_ioctl_get_fslabel(fs_info, argp);
+ 	case FS_IOC_SETFSLABEL:
+ 		return btrfs_ioctl_set_fslabel(file, argp);
++	case FS_IOC_SET_ENCRYPTION_POLICY: {
++		if (!IS_ENABLED(CONFIG_FS_ENCRYPTION))
++			return -EOPNOTSUPP;
++		if (sb_rdonly(fs_info->sb))
++			return -EROFS;
++		/*
++		 *  If we crash before we commit, nothing encrypted could have
++		 * been written so it doesn't matter whether the encrypted
++		 * state persists.
++		 */
++		btrfs_set_fs_incompat(fs_info, ENCRYPT);
++		return fscrypt_ioctl_set_policy(file, (const void __user *)arg);
++	}
++	case FS_IOC_GET_ENCRYPTION_POLICY:
++		return fscrypt_ioctl_get_policy(file, (void __user *)arg);
++	case FS_IOC_GET_ENCRYPTION_POLICY_EX:
++		return fscrypt_ioctl_get_policy_ex(file, (void __user *)arg);
++	case FS_IOC_ADD_ENCRYPTION_KEY:
++		return fscrypt_ioctl_add_key(file, (void __user *)arg);
++	case FS_IOC_REMOVE_ENCRYPTION_KEY:
++		return fscrypt_ioctl_remove_key(file, (void __user *)arg);
++	case FS_IOC_REMOVE_ENCRYPTION_KEY_ALL_USERS:
++		return fscrypt_ioctl_remove_key_all_users(file,
++							  (void __user *)arg);
++	case FS_IOC_GET_ENCRYPTION_KEY_STATUS:
++		return fscrypt_ioctl_get_key_status(file, (void __user *)arg);
++	case FS_IOC_GET_ENCRYPTION_NONCE:
++		return fscrypt_ioctl_get_nonce(file, (void __user *)arg);
+ 	case FITRIM:
+ 		return btrfs_ioctl_fitrim(fs_info, argp);
+ 	case BTRFS_IOC_SNAP_CREATE:
 -- 
 2.41.0
 
