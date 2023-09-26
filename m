@@ -2,68 +2,68 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 395E67AF259
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 26 Sep 2023 20:04:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3FCD7AF25D
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 26 Sep 2023 20:04:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235535AbjIZSEB (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 26 Sep 2023 14:04:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57954 "EHLO
+        id S235516AbjIZSEC (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 26 Sep 2023 14:04:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235526AbjIZSEA (ORCPT
+        with ESMTP id S235532AbjIZSEB (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 26 Sep 2023 14:04:00 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A694E124
-        for <linux-fscrypt@vger.kernel.org>; Tue, 26 Sep 2023 11:03:52 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-41814760ae1so34332251cf.1
-        for <linux-fscrypt@vger.kernel.org>; Tue, 26 Sep 2023 11:03:52 -0700 (PDT)
+        Tue, 26 Sep 2023 14:04:01 -0400
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBDD0192
+        for <linux-fscrypt@vger.kernel.org>; Tue, 26 Sep 2023 11:03:53 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id 6a1803df08f44-658967a5334so54866346d6.0
+        for <linux-fscrypt@vger.kernel.org>; Tue, 26 Sep 2023 11:03:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1695751432; x=1696356232; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1695751433; x=1696356233; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=X6Ati+EqeLVccyZuz2RaSUk3+ioP3QFcOhWT02y0KiE=;
-        b=3WAbG2vDA8H7dKaf19YaKMFPBc6e4tXuTFZj7/UA+5f3NlcdQe8dC2NLfZvc3mEh+o
-         JLKOfh3DD4i2ZU3DrZABCwrGz9OPhhbvGl49SD1tw2/vkO84jQQB4O+FES6+7U2isZqa
-         m0mWP0Ex/iT8APCe6sjk4mSOUid9VRxWQ82R+kWc42L7GvN92HPhRi47xiUcNm04W2qx
-         mVeKQhhGzYrxYLiuS7sDwzYKNjBEzWDEtekLzWnaExW/8FXFeFnyZFZfPF9QsVkPhy6S
-         7m1kJ9VRJhQvvstkpDOVCvHeI/mMp9W/pxsTIAhUoMCyFsJ5fVA8oEQ/Nu4+oev8ZTE1
-         1RUA==
+        bh=Edbq5tgXOIRcyTqEQ3s+ivFN/ofXmWB8jAzJZRGyEco=;
+        b=S3A6RtZWCH9RAqJBsQ94bM9Ezz6+UlK4DSWCv2DQ4H4scIo+RFRevU4hlENp8Y5L9/
+         mW9uF2g/5/9F5noxb0cGNPjoL0kMRLXHvFDESoV1nAzNHttt2ThWlzCqh/x8BOPEV2PM
+         GVpiynledX8WxoYu+YLXrVJ76bZMm3YUFL6TSWE//5U2fFtzSVd70BakUaf1b2L+cDrX
+         /G9K1GdcSM9QF+SyS8XdEx3tTtITWBC8p/AnU+tzNQKHKSIG+nYViTaS5r5crYpPda3l
+         tTd0fGBC5skfe8GWHQWd9D/gglimrp8l1oE+VgO9v1XBOhkUZRI1eoTQKyPwJDhzafWo
+         SnuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695751432; x=1696356232;
+        d=1e100.net; s=20230601; t=1695751433; x=1696356233;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=X6Ati+EqeLVccyZuz2RaSUk3+ioP3QFcOhWT02y0KiE=;
-        b=jiOsllj91PYvD9Y29GqMZmdcQPNvNHLzW17Xb/PbgKXNQnMTtM5ezypRy9ZN+TzLcu
-         Ft1uY+HeODZFmogJI2eHKAyuZGKfvQzlrg1HVL5I27Sf2wdX44IK86vPutQK5BPbuzUF
-         xhpr0fj7AMyX5sh1GBUOGMN1lep2ZERLDppDRzdBfBwtE5Y+5fKLWUHMCMeoqS3vJZdW
-         be5bC5DcPtoD4D9u7x2fGGx2Ac1pkU0sv0l9MNwcpbPuxdW4mwZIo/qZLYlyRDfjZsqU
-         rtdGiJ+P5xf/TLm10EKLfgVHz/g6Xol44S5wul3/zhwLmXBqRrnotYSNa6sI4QEjWB95
-         i0TA==
-X-Gm-Message-State: AOJu0YwJgA3WSU20JdcBFxjgia3BBnvbRy2YbmWLvMhgWe12JkRUkdHB
-        bdIkzKWnGZ2y5eGpzVrbXh0vBQ==
-X-Google-Smtp-Source: AGHT+IHxHPofgTlk9TRSv29aYPre8S3krhnfYT4B//B01U8HprHN27b3ssd+/qdfng7V63uUJuuUyw==
-X-Received: by 2002:a05:622a:5215:b0:418:11de:ce1 with SMTP id dq21-20020a05622a521500b0041811de0ce1mr7415059qtb.24.1695751431704;
-        Tue, 26 Sep 2023 11:03:51 -0700 (PDT)
+        bh=Edbq5tgXOIRcyTqEQ3s+ivFN/ofXmWB8jAzJZRGyEco=;
+        b=jSjErp+lDhQaGdWUGThd8yVCgoonu/TrdvdHCCHKn18omqjVE3JhDU1ChvruojtA+O
+         LMDL2fnBhiTgE502lzEKXQPDn5kp1kp7fdRv++sKTArUnX8evfEdLqnV3YM1IxqEVOXA
+         BeT7m6WoGDjZLFLx1zusqyeU0YGxojdcx4qYytrE1UorIs2/1iUc4AVp4zQZSp3gV1Zb
+         swz1lGoHIT1C00pe6ohGFa68v+kkOdihX0vub7WPkENytoAdhz0fp0Ked0z2O2uLIPZF
+         468hMg/dg3PvFaISZvhWXlBG7HhVu2ZKIbIrnMhh9VaU1MOnmmPZBAEW5lsxw+UB4HZn
+         5H9A==
+X-Gm-Message-State: AOJu0YzTvgq1yoznWbLoK7mzWKQntOKftuX/BozgamoX5OMHDKujmgLH
+        iZUfssXaL5TunzH8E1jQA9oWbQ==
+X-Google-Smtp-Source: AGHT+IHDrHahEEBgahtYUOMFgx+xXjeJpicmNK5aAUPE19vkE8UYrdymV6HCUUQUXhctdptuIwZAcw==
+X-Received: by 2002:a0c:ec89:0:b0:656:3352:831e with SMTP id u9-20020a0cec89000000b006563352831emr11007859qvo.31.1695751432745;
+        Tue, 26 Sep 2023 11:03:52 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id c1-20020ac84e01000000b00403ad6ec2e8sm2417849qtw.26.2023.09.26.11.03.51
+        by smtp.gmail.com with ESMTPSA id q7-20020a0cf5c7000000b00656506a1881sm5305554qvm.74.2023.09.26.11.03.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 11:03:51 -0700 (PDT)
+        Tue, 26 Sep 2023 11:03:52 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
         ebiggers@kernel.org, linux-fscrypt@vger.kernel.org,
         ngompa13@gmail.com
-Subject: [PATCH 34/35] btrfs: add orig_logical to btrfs_bio
-Date:   Tue, 26 Sep 2023 14:02:00 -0400
-Message-ID: <949cdb4e3ecfaf623716a7ceb76e46a203051311.1695750478.git.josef@toxicpanda.com>
+Subject: [PATCH 35/35] btrfs: implement process_bio cb for fscrypt
+Date:   Tue, 26 Sep 2023 14:02:01 -0400
+Message-ID: <a26514814b4d2a54ff2317369365dc2bf1c280dc.1695750478.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1695750478.git.josef@toxicpanda.com>
 References: <cover.1695750478.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,79 +71,154 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-When checksumming the encrypted bio on writes we need to know which
-logical address this checksum is for.  At the point where we get the
-encrypted bio the bi_sector is the physical location on the target disk,
-so we need to save the original logical offset in the btrfs_bio.  Then
-we can use this when csum'ing the bio instead of the
-bio->iter.bi_sector.
+We are going to be checksumming the encrypted data, so we have to
+implement the ->process_bio fscrypt callback.  This will provide us with
+the original bio and the encrypted bio to do work on.  For WRITE's this
+will happen after the encrypted bio has been encrypted.  For READ's this
+will happen after the read has completed and before the decryption step
+is done.
+
+For write's this is straightforward, we can just pass in the encrypted
+bio to btrfs_csum_one_bio and then the csums will be added to the bbio
+as normal.
+
+For read's this is relatively straightforward, but requires some care.
+We assume (because that's how it works currently) that the encrypted bio
+match the original bio, this is important because we save the iter of
+the bio before we submit.  If this changes in the future we'll need a
+hook to give us the bi_iter of the decryption bio before it's submitted.
+We check the csums before decryption.  If it doesn't match we simply
+error out and we let the normal path handle the repair work.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/bio.c       | 9 +++++++++
- fs/btrfs/bio.h       | 3 +++
- fs/btrfs/file-item.c | 2 +-
- 3 files changed, 13 insertions(+), 1 deletion(-)
+ fs/btrfs/bio.c     | 34 +++++++++++++++++++++++++++++++++-
+ fs/btrfs/bio.h     |  3 +++
+ fs/btrfs/fscrypt.c | 19 +++++++++++++++++++
+ 3 files changed, 55 insertions(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
-index 90e4d4709fa3..7d6931e53beb 100644
+index 7d6931e53beb..27ebf6373c8f 100644
 --- a/fs/btrfs/bio.c
 +++ b/fs/btrfs/bio.c
-@@ -96,6 +96,7 @@ static struct btrfs_bio *btrfs_split_bio(struct btrfs_fs_info *fs_info,
- 	if (bbio_has_ordered_extent(bbio)) {
- 		refcount_inc(&orig_bbio->ordered->refs);
- 		bbio->ordered = orig_bbio->ordered;
-+		orig_bbio->orig_logical += map_length;
- 	}
- 	atomic_inc(&orig_bbio->pending_ios);
- 	return bbio;
-@@ -674,6 +675,14 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
- 		goto fail;
- 	}
+@@ -280,6 +280,34 @@ static struct btrfs_failed_bio *repair_one_sector(struct btrfs_bio *failed_bbio,
+ 	return fbio;
+ }
  
-+	/*
-+	 * For fscrypt writes we will get the encrypted bio after we've remapped
-+	 * our bio to the physical disk location, so we need to save the
-+	 * original bytenr so we know what we're checksumming.
-+	 */
-+	if (bio_op(bio) == REQ_OP_WRITE && is_data_bbio(bbio))
-+		bbio->orig_logical = logical;
++blk_status_t btrfs_check_encrypted_read_bio(struct btrfs_bio *bbio,
++					    struct bio *enc_bio)
++{
++	struct btrfs_inode *inode = bbio->inode;
++	struct btrfs_fs_info *fs_info = inode->root->fs_info;
++	u32 sectorsize = fs_info->sectorsize;
++	struct bvec_iter iter = bbio->saved_iter;
++	struct btrfs_device *dev = bbio->bio.bi_private;
++	u32 offset = 0;
 +
- 	map_length = min(map_length, length);
- 	if (use_append)
- 		map_length = min(map_length, fs_info->max_zone_append_size);
++	/*
++	 * We have to use a copy of iter in case there's an error,
++	 * btrfs_check_read_bio will handle submitting the repair bios.
++	 */
++	while (iter.bi_size) {
++		struct bio_vec bv = bio_iter_iovec(enc_bio, iter);
++
++		bv.bv_len = min(bv.bv_len, sectorsize);
++		if (!btrfs_data_csum_ok(bbio, dev, offset, &bv))
++			return BLK_STS_IOERR;
++		bio_advance_iter_single(enc_bio, &iter, sectorsize);
++		offset += sectorsize;
++	}
++
++	bbio->csum_done = true;
++	return BLK_STS_OK;
++}
++
+ static void btrfs_check_read_bio(struct btrfs_bio *bbio, struct btrfs_device *dev)
+ {
+ 	struct btrfs_inode *inode = bbio->inode;
+@@ -305,6 +333,10 @@ static void btrfs_check_read_bio(struct btrfs_bio *bbio, struct btrfs_device *de
+ 	/* Clear the I/O error. A failed repair will reset it. */
+ 	bbio->bio.bi_status = BLK_STS_OK;
+ 
++	/* This was an encrypted bio and we've already done the csum check. */
++	if (status == BLK_STS_OK && bbio->csum_done)
++		goto out;
++
+ 	while (iter->bi_size) {
+ 		struct bio_vec bv = bio_iter_iovec(&bbio->bio, *iter);
+ 
+@@ -315,7 +347,7 @@ static void btrfs_check_read_bio(struct btrfs_bio *bbio, struct btrfs_device *de
+ 		bio_advance_iter_single(&bbio->bio, iter, sectorsize);
+ 		offset += sectorsize;
+ 	}
+-
++out:
+ 	if (bbio->csum != bbio->csum_inline)
+ 		kfree(bbio->csum);
+ 
 diff --git a/fs/btrfs/bio.h b/fs/btrfs/bio.h
-index ca79decee060..5d3f53dcd6d5 100644
+index 5d3f53dcd6d5..393ef32f5321 100644
 --- a/fs/btrfs/bio.h
 +++ b/fs/btrfs/bio.h
-@@ -54,11 +54,14 @@ struct btrfs_bio {
- 		 * - pointer to the checksums for this bio
- 		 * - original physical address from the allocator
- 		 *   (for zone append only)
-+		 * - original logical address, used for checksumming fscrypt
-+		 *   bios.
- 		 */
+@@ -45,6 +45,7 @@ struct btrfs_bio {
  		struct {
- 			struct btrfs_ordered_extent *ordered;
- 			struct btrfs_ordered_sum *sums;
- 			u64 orig_physical;
-+			u64 orig_logical;
+ 			u8 *csum;
+ 			u8 csum_inline[BTRFS_BIO_INLINE_CSUM_SIZE];
++			bool csum_done;
+ 			struct bvec_iter saved_iter;
  		};
  
- 		/* For metadata reads: parentness verification. */
-diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-index d925d6d98bf4..26e3bc602655 100644
---- a/fs/btrfs/file-item.c
-+++ b/fs/btrfs/file-item.c
-@@ -756,7 +756,7 @@ blk_status_t btrfs_csum_one_bio(struct btrfs_bio *bbio, struct bio *bio)
- 	sums->len = bio->bi_iter.bi_size;
- 	INIT_LIST_HEAD(&sums->list);
+@@ -110,5 +111,7 @@ void btrfs_submit_repair_write(struct btrfs_bio *bbio, int mirror_num, bool dev_
+ int btrfs_repair_io_failure(struct btrfs_fs_info *fs_info, u64 ino, u64 start,
+ 			    u64 length, u64 logical, struct page *page,
+ 			    unsigned int pg_offset, int mirror_num);
++blk_status_t btrfs_check_encrypted_read_bio(struct btrfs_bio *bbio,
++					    struct bio *enc_bio);
  
--	sums->logical = bio->bi_iter.bi_sector << SECTOR_SHIFT;
-+	sums->logical = bbio->orig_logical;
- 	index = 0;
+ #endif
+diff --git a/fs/btrfs/fscrypt.c b/fs/btrfs/fscrypt.c
+index 1c690fcd0693..b2dfc26221e7 100644
+--- a/fs/btrfs/fscrypt.c
++++ b/fs/btrfs/fscrypt.c
+@@ -15,6 +15,7 @@
+ #include "transaction.h"
+ #include "volumes.h"
+ #include "xattr.h"
++#include "file-item.h"
  
- 	shash->tfm = fs_info->csum_shash;
+ /*
+  * From a given location in a leaf, read a name into a qstr (usually a
+@@ -214,6 +215,23 @@ static struct block_device **btrfs_fscrypt_get_devices(struct super_block *sb,
+ 	return devs;
+ }
+ 
++static blk_status_t btrfs_process_encrypted_bio(struct bio *orig_bio,
++						struct bio *enc_bio)
++{
++	struct btrfs_bio *bbio = btrfs_bio(orig_bio);
++
++	if (bio_op(orig_bio) == REQ_OP_READ) {
++		/*
++		 * We have ->saved_iter based on the orig_bio, so if the block
++		 * layer changes we need to notice this asap so we can update
++		 * our code to handle the new world order.
++		 */
++		ASSERT(orig_bio == enc_bio);
++		return btrfs_check_encrypted_read_bio(bbio, enc_bio);
++	}
++	return btrfs_csum_one_bio(bbio, enc_bio);
++}
++
+ int btrfs_fscrypt_load_extent_info(struct btrfs_inode *inode,
+ 				   struct extent_map *em,
+ 				   struct btrfs_fscrypt_ctx *ctx)
+@@ -303,5 +321,6 @@ const struct fscrypt_operations btrfs_fscrypt_ops = {
+ 	.set_context = btrfs_fscrypt_set_context,
+ 	.empty_dir = btrfs_fscrypt_empty_dir,
+ 	.get_devices = btrfs_fscrypt_get_devices,
++	.process_bio = btrfs_process_encrypted_bio,
+ 	.key_prefix = "btrfs:"
+ };
 -- 
 2.41.0
 
