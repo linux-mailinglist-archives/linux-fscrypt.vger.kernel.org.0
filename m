@@ -2,70 +2,70 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A7C07AF24D
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 26 Sep 2023 20:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E551B7AF221
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 26 Sep 2023 20:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235485AbjIZSDn (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 26 Sep 2023 14:03:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33674 "EHLO
+        id S235493AbjIZSDp (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 26 Sep 2023 14:03:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235482AbjIZSDm (ORCPT
+        with ESMTP id S235476AbjIZSDo (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 26 Sep 2023 14:03:42 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C414FC
-        for <linux-fscrypt@vger.kernel.org>; Tue, 26 Sep 2023 11:03:36 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id af79cd13be357-77432add7caso287768985a.2
-        for <linux-fscrypt@vger.kernel.org>; Tue, 26 Sep 2023 11:03:36 -0700 (PDT)
+        Tue, 26 Sep 2023 14:03:44 -0400
+Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E095124
+        for <linux-fscrypt@vger.kernel.org>; Tue, 26 Sep 2023 11:03:37 -0700 (PDT)
+Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-5a1f00b75aaso5282997b3.2
+        for <linux-fscrypt@vger.kernel.org>; Tue, 26 Sep 2023 11:03:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1695751415; x=1696356215; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1695751416; x=1696356216; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=w8WS35cLh6qwSpXHQaQofYAl31yNr6wevnopqXm/zJU=;
-        b=KPxVnay9LNLGFNcDprER6uvHl9N5+5pMvqH4BCBbyPT2cMJqp0SaZuuKYRYgu/xq3v
-         9K8XUfN4HUHnTc6Zaty0duSxjOskoZpp/ExZINJNBsP1JlPO/9/ZyjLtmwpY/5OPGVmd
-         kLXn94jV1OF3ELPm5SqPgkTP1r6QT5VWwrPtviVjMjZo+zOU4GLcZWqvzrwBREBW7aD7
-         WXaZD7MDaUNq+Li8FMcms5yk0B8g0TJQEgEs8RqWmZHZFLzjkW47tDnpX9jRht44VXzi
-         7OpuLPcW17Zve55WktOA8uKLqY3AzdboOLbzgEyq4lI90gw7DyJ57P1D8v9zyYhM4w8a
-         ej1w==
+        bh=XrbBTlq6SUEE2oe2Hsm17SMa27dUAmVsqmKO5cSW0nI=;
+        b=cVcekEtcu3osW0EkmlVnfIsJerVPkJv+q2CryBeQ7Yz332XpViXCIzV2jVq2pRWqUR
+         Db5rPhLWmg5Lg3+ncYZW0zThEbsBbvcsGLVYLtLwQnkmFecjTLKXO2Laj8Oa8o5WU9FR
+         UNXrXltINjcPpWhSl3UNP9KhmJvy24fWAAKJ8fKApzV1blrAd4gvrsErDvj4DNcoHWml
+         wQjfxwPRzdE+v7wIQwOQ9yPdEMJ0cSHyoh7U+N5mGVbPx0mLH48hBnspJaYt4wXaVd5O
+         VZtHogCDwYbq3LRmJ8ZYQkYxPapWcy40KgxWAVDjSypv84LHRDXTpG6CmWyRVpAAr5pK
+         3MhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695751415; x=1696356215;
+        d=1e100.net; s=20230601; t=1695751416; x=1696356216;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=w8WS35cLh6qwSpXHQaQofYAl31yNr6wevnopqXm/zJU=;
-        b=BAXpgQ8mvnS3jfZv99tJN7DEPXw7nK9bYN/hBLzu8wNZq6jB2lzCAJ1CtsYaPS1jDO
-         R+u/zc8WrUhaLwTuaMFs+bRTPRHfNyn/3YH9IlYGj0ukSBO5rT2BlYba19xNOLQ60qan
-         Mf2pjpiDusOmqa3uiZ85um6OxvWHX6714FYzU9qjOXs7qvpNqfDx36ru5Ijc241JWMcZ
-         WnLMWH7NR/t+4Gn3FPQsXjmog8mH8aaq/fmvyf8FbqbbqqYu29nm+GERczRwXDmk8MYF
-         Bu81V7j4VG0owLJ47LkPA/w+fc7A8I/+zRJ9en4bugI0459JPybDPKFLeysnCZXvodFv
-         Ivyw==
-X-Gm-Message-State: AOJu0YxuOtXYck0OmdTXgDl6qySk1hGK7NRyQjKTa+NYzOXIHqfYMR3y
-        NVKLvf1SEgSd97jb5OEz4bQ2rA==
-X-Google-Smtp-Source: AGHT+IFq0+UjXQqxQTELcq/6vffor5tzyIqIwNieYH/OAfGp/n/hGfspIQeg2WD2vGjrplarzJH5UA==
-X-Received: by 2002:a05:620a:4629:b0:773:bdb3:1318 with SMTP id br41-20020a05620a462900b00773bdb31318mr10395401qkb.15.1695751415046;
-        Tue, 26 Sep 2023 11:03:35 -0700 (PDT)
+        bh=XrbBTlq6SUEE2oe2Hsm17SMa27dUAmVsqmKO5cSW0nI=;
+        b=aaCAIVuiw/iI8hep70H4mAnN3yInCkvd9IqB2wEze0wovRAy89qkiSCqXDjmLprPuq
+         R512pdIiXOevVVDPMNJwr2LY0RPcv1rR2LLZhsdAC40netYBKS03aBKnDuAmPAxeW5JF
+         Yp7GZ04leUbJ4CSjGAQ3xyCRWMfXoBxBOVyxgNXvaFXg61VFbjyEa4J+UXIKPhfvcphm
+         oYz7ny8eXEljvO/i5cz6/+w0Mah78pFCU9co4zEwa/OzTG8hMWiyPnovAdob3hqbFr1A
+         GxRoo5JoXWjBY4PuWHhZEC8riICRoe3AbBRPme8getRYHUVck33d2Ri5Nm0up18zkWbE
+         fjJA==
+X-Gm-Message-State: AOJu0Yy/NDxPvExldxPn7ApTTzl/gRrv9AjQegrdXcW/ufqtDB1vvsF4
+        ufCS8YdOMQ4aSX7gvShTZTcYOA==
+X-Google-Smtp-Source: AGHT+IGq4cwIQizmr1i34EBsuDl/BhdizoBqq/+aVOodsyyyccHlPmrF0VYCfaBwxCEGXTo03/8w5A==
+X-Received: by 2002:a0d:ff06:0:b0:599:da80:e1e6 with SMTP id p6-20020a0dff06000000b00599da80e1e6mr11433800ywf.34.1695751416085;
+        Tue, 26 Sep 2023 11:03:36 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id c7-20020a05620a164700b0076d08d5f93asm4920623qko.60.2023.09.26.11.03.34
+        by smtp.gmail.com with ESMTPSA id r16-20020a0ccc10000000b0065b151d5d12sm1732425qvk.126.2023.09.26.11.03.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 11:03:34 -0700 (PDT)
+        Tue, 26 Sep 2023 11:03:35 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
         ebiggers@kernel.org, linux-fscrypt@vger.kernel.org,
         ngompa13@gmail.com
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH 19/35] btrfs: set file extent encryption excplicitly
-Date:   Tue, 26 Sep 2023 14:01:45 -0400
-Message-ID: <2c6e10642b211a7a6fb20234273a7c627c5c0b44.1695750478.git.josef@toxicpanda.com>
+Subject: [PATCH 20/35] btrfs: add fscrypt_info and encryption_type to extent_map
+Date:   Tue, 26 Sep 2023 14:01:46 -0400
+Message-ID: <b4ba109f1477cc03487e3ef693a0641e5b6e8260.1695750478.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1695750478.git.josef@toxicpanda.com>
 References: <cover.1695750478.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -74,126 +74,152 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 
-This puts the long-preserved 1-byte encryption field to work, storing
-whether the extent is encrypted.  Update the tree-checker to allow for
-the encryption bit to be set to our valid types.
+Each extent_map will end up with a pointer to its associated
+fscrypt_info if any, which should have the same lifetime as the
+extent_map. We are also going to need to track the encryption_type for
+the file extent items.  Add the fscrypt_info to the extent_map, and the
+subsequent code for transferring it in the split and merge cases, as
+well as the code necessary to free them.  A future patch will add the
+code to load them as appropriate.
 
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/accessors.h            | 2 ++
- fs/btrfs/inode.c                | 8 ++++++--
- fs/btrfs/tree-checker.c         | 8 +++++---
- fs/btrfs/tree-log.c             | 2 ++
- include/uapi/linux/btrfs_tree.h | 8 +++++++-
- 5 files changed, 22 insertions(+), 6 deletions(-)
+ fs/btrfs/extent_map.c | 32 +++++++++++++++++++++++++++++---
+ fs/btrfs/extent_map.h |  2 ++
+ fs/btrfs/file-item.c  |  1 +
+ fs/btrfs/inode.c      |  1 +
+ 4 files changed, 33 insertions(+), 3 deletions(-)
 
-diff --git a/fs/btrfs/accessors.h b/fs/btrfs/accessors.h
-index b780d9087490..5627f13a3d3e 100644
---- a/fs/btrfs/accessors.h
-+++ b/fs/btrfs/accessors.h
-@@ -951,6 +951,8 @@ BTRFS_SETGET_STACK_FUNCS(stack_file_extent_disk_num_bytes,
- 			 struct btrfs_file_extent_item, disk_num_bytes, 64);
- BTRFS_SETGET_STACK_FUNCS(stack_file_extent_compression,
- 			 struct btrfs_file_extent_item, compression, 8);
-+BTRFS_SETGET_STACK_FUNCS(stack_file_extent_encryption,
-+			 struct btrfs_file_extent_item, encryption, 8);
+diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
+index af5ff6b10865..8c8023388758 100644
+--- a/fs/btrfs/extent_map.c
++++ b/fs/btrfs/extent_map.c
+@@ -61,6 +61,7 @@ struct extent_map *alloc_extent_map(void)
  
+ static void __free_extent_map(struct extent_map *em)
+ {
++	fscrypt_put_extent_info(em->fscrypt_info);
+ 	if (test_bit(EXTENT_FLAG_FS_MAPPING, &em->flags))
+ 		kfree(em->map_lookup);
+ 	kmem_cache_free(extent_map_cache, em);
+@@ -103,12 +104,24 @@ void free_extent_map_safe(struct extent_map_tree *tree,
+ 	if (!em)
+ 		return;
  
- BTRFS_SETGET_FUNCS(file_extent_type, struct btrfs_file_extent_item, type, 8);
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index ccbaeea68e2e..db053b392d26 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -2993,7 +2993,9 @@ static int insert_ordered_extent_file_extent(struct btrfs_trans_handle *trans,
- 	btrfs_set_stack_file_extent_num_bytes(&stack_fi, num_bytes);
- 	btrfs_set_stack_file_extent_ram_bytes(&stack_fi, ram_bytes);
- 	btrfs_set_stack_file_extent_compression(&stack_fi, oe->compress_type);
--	/* Encryption and other encoding is reserved and all 0 */
-+	btrfs_set_stack_file_extent_encryption(&stack_fi,
-+					       BTRFS_ENCRYPTION_NONE);
-+	/* Other encoding is reserved and always 0 */
- 
- 	/*
- 	 * For delalloc, when completing an ordered extent we update the inode's
-@@ -9640,7 +9642,9 @@ static struct btrfs_trans_handle *insert_prealloc_file_extent(
- 	btrfs_set_stack_file_extent_num_bytes(&stack_fi, len);
- 	btrfs_set_stack_file_extent_ram_bytes(&stack_fi, len);
- 	btrfs_set_stack_file_extent_compression(&stack_fi, BTRFS_COMPRESS_NONE);
--	/* Encryption and other encoding is reserved and all 0 */
-+	btrfs_set_stack_file_extent_encryption(&stack_fi,
-+					       BTRFS_ENCRYPTION_NONE);
-+	/* Other encoding is reserved and always 0 */
- 
- 	qgroup_released = btrfs_qgroup_release_data(inode, file_offset, len);
- 	if (qgroup_released < 0)
-diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-index 1f2c389b0bfa..c2afdf65c2bf 100644
---- a/fs/btrfs/tree-checker.c
-+++ b/fs/btrfs/tree-checker.c
-@@ -210,6 +210,7 @@ static int check_extent_data_item(struct extent_buffer *leaf,
- 	u32 sectorsize = fs_info->sectorsize;
- 	u32 item_size = btrfs_item_size(leaf, slot);
- 	u64 extent_end;
-+	u8 policy;
- 
- 	if (unlikely(!IS_ALIGNED(key->offset, sectorsize))) {
- 		file_extent_err(leaf, slot,
-@@ -261,10 +262,11 @@ static int check_extent_data_item(struct extent_buffer *leaf,
- 			BTRFS_NR_COMPRESS_TYPES - 1);
- 		return -EUCLEAN;
- 	}
--	if (unlikely(btrfs_file_extent_encryption(leaf, fi))) {
-+	policy = btrfs_file_extent_encryption(leaf, fi);
-+	if (unlikely(policy >= BTRFS_NR_ENCRYPTION_TYPES)) {
- 		file_extent_err(leaf, slot,
--			"invalid encryption for file extent, have %u expect 0",
--			btrfs_file_extent_encryption(leaf, fi));
-+			"invalid encryption for file extent, have %u expect range [0, %u]",
-+			policy, BTRFS_NR_ENCRYPTION_TYPES - 1);
- 		return -EUCLEAN;
- 	}
- 	if (btrfs_file_extent_type(leaf, fi) == BTRFS_FILE_EXTENT_INLINE) {
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index cc262305f4c5..f6f45a0f1b1e 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -4630,6 +4630,7 @@ static int log_one_extent(struct btrfs_trans_handle *trans,
- 	u64 extent_offset = em->start - em->orig_start;
- 	u64 block_len;
- 	int ret;
-+	u8 encryption = BTRFS_ENCRYPTION_NONE;
- 
- 	btrfs_set_stack_file_extent_generation(&fi, trans->transid);
- 	if (test_bit(EXTENT_FLAG_PREALLOC, &em->flags))
-@@ -4651,6 +4652,7 @@ static int log_one_extent(struct btrfs_trans_handle *trans,
- 	btrfs_set_stack_file_extent_num_bytes(&fi, em->len);
- 	btrfs_set_stack_file_extent_ram_bytes(&fi, em->ram_bytes);
- 	btrfs_set_stack_file_extent_compression(&fi, em->compress_type);
-+	btrfs_set_stack_file_extent_encryption(&fi, encryption);
- 
- 	ret = log_extent_csums(trans, inode, log, em, ctx);
- 	if (ret)
-diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
-index 50c9e01a3cb4..dee650f0082c 100644
---- a/include/uapi/linux/btrfs_tree.h
-+++ b/include/uapi/linux/btrfs_tree.h
-@@ -1095,8 +1095,14 @@ struct btrfs_file_extent_item {
- 	 * but not for stat.
- 	 */
- 	__u8 compression;
+-	if (refcount_dec_and_test(&em->refs)) {
+-		WARN_ON(extent_map_in_tree(em));
+-		WARN_ON(!list_empty(&em->list));
++	if (!refcount_dec_and_test(&em->refs))
++		return;
++
++	WARN_ON(extent_map_in_tree(em));
++	WARN_ON(!list_empty(&em->list));
 +
 +	/*
-+	 * Type of encryption in use. Unencrypted value is 0.
++	 * We could take a lock freeing the fscrypt_info, so add this to the
++	 * list of freed_extents to be freed later.
 +	 */
- 	__u8 encryption;
--	__le16 other_encoding; /* spare for later use */
++	if (em->fscrypt_info) {
+ 		list_add_tail(&em->free_list, &tree->freed_extents);
+ 		set_bit(EXTENT_MAP_TREE_PENDING_FREES, &tree->flags);
++		return;
+ 	}
 +
-+	/* spare for later use */
-+	__le16 other_encoding;
++	/* Nothing scary here, just free the object. */
++	__free_extent_map(em);
+ }
  
- 	/* are we inline data or a real extent? */
- 	__u8 type;
+ /*
+@@ -274,6 +287,12 @@ static int mergable_maps(struct extent_map *prev, struct extent_map *next)
+ 	if (!list_empty(&prev->list) || !list_empty(&next->list))
+ 		return 0;
+ 
++	/*
++	 * Don't merge adjacent encrypted maps.
++	 */
++	if (prev->fscrypt_info || next->fscrypt_info)
++		return 0;
++
+ 	ASSERT(next->block_start != EXTENT_MAP_DELALLOC &&
+ 	       prev->block_start != EXTENT_MAP_DELALLOC);
+ 
+@@ -884,6 +903,8 @@ void btrfs_drop_extent_map_range(struct btrfs_inode *inode, u64 start, u64 end,
+ 			split->generation = gen;
+ 			split->flags = flags;
+ 			split->compress_type = em->compress_type;
++			split->fscrypt_info =
++				fscrypt_get_extent_info(em->fscrypt_info);
+ 			replace_extent_mapping(em_tree, em, split, modified);
+ 			free_extent_map(split);
+ 			split = split2;
+@@ -925,6 +946,8 @@ void btrfs_drop_extent_map_range(struct btrfs_inode *inode, u64 start, u64 end,
+ 				split->orig_block_len = 0;
+ 			}
+ 
++			split->fscrypt_info =
++				fscrypt_get_extent_info(em->fscrypt_info);
+ 			if (extent_map_in_tree(em)) {
+ 				replace_extent_mapping(em_tree, em, split,
+ 						       modified);
+@@ -1087,6 +1110,7 @@ int split_extent_map(struct btrfs_inode *inode, u64 start, u64 len, u64 pre,
+ 	split_pre->flags = flags;
+ 	split_pre->compress_type = em->compress_type;
+ 	split_pre->generation = em->generation;
++	split_pre->fscrypt_info = fscrypt_get_extent_info(em->fscrypt_info);
+ 
+ 	replace_extent_mapping(em_tree, em, split_pre, 1);
+ 
+@@ -1106,6 +1130,8 @@ int split_extent_map(struct btrfs_inode *inode, u64 start, u64 len, u64 pre,
+ 	split_mid->flags = flags;
+ 	split_mid->compress_type = em->compress_type;
+ 	split_mid->generation = em->generation;
++	split_mid->fscrypt_info = fscrypt_get_extent_info(em->fscrypt_info);
++
+ 	add_extent_mapping(em_tree, split_mid, 1);
+ 
+ 	/* Once for us */
+diff --git a/fs/btrfs/extent_map.h b/fs/btrfs/extent_map.h
+index 2093720271ea..2d618e61ceb5 100644
+--- a/fs/btrfs/extent_map.h
++++ b/fs/btrfs/extent_map.h
+@@ -50,10 +50,12 @@ struct extent_map {
+ 	 */
+ 	u64 generation;
+ 	unsigned long flags;
++	struct fscrypt_extent_info *fscrypt_info;
+ 	/* Used for chunk mappings, flag EXTENT_FLAG_FS_MAPPING must be set */
+ 	struct map_lookup *map_lookup;
+ 	refcount_t refs;
+ 	unsigned int compress_type;
++	unsigned int encryption_type;
+ 	struct list_head list;
+ 	struct list_head free_list;
+ };
+diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+index 45cae356e89b..26f35c1baedc 100644
+--- a/fs/btrfs/file-item.c
++++ b/fs/btrfs/file-item.c
+@@ -1305,6 +1305,7 @@ void btrfs_extent_item_to_extent_map(struct btrfs_inode *inode,
+ 			if (type == BTRFS_FILE_EXTENT_PREALLOC)
+ 				set_bit(EXTENT_FLAG_PREALLOC, &em->flags);
+ 		}
++		em->encryption_type = btrfs_file_extent_encryption(leaf, fi);
+ 	} else if (type == BTRFS_FILE_EXTENT_INLINE) {
+ 		em->block_start = EXTENT_MAP_INLINE;
+ 		em->start = extent_start;
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index db053b392d26..d26062b67211 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -7350,6 +7350,7 @@ static struct extent_map *create_io_em(struct btrfs_inode *inode, u64 start,
+ 		set_bit(EXTENT_FLAG_COMPRESSED, &em->flags);
+ 		em->compress_type = compress_type;
+ 	}
++	em->encryption_type = BTRFS_ENCRYPTION_NONE;
+ 
+ 	ret = btrfs_replace_extent_map_range(inode, em, true);
+ 	if (ret) {
 -- 
 2.41.0
 
