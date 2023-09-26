@@ -2,62 +2,61 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E551B7AF221
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 26 Sep 2023 20:03:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3EE57AF255
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 26 Sep 2023 20:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235493AbjIZSDp (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 26 Sep 2023 14:03:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33704 "EHLO
+        id S235491AbjIZSDq (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 26 Sep 2023 14:03:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235476AbjIZSDo (ORCPT
+        with ESMTP id S235501AbjIZSDp (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 26 Sep 2023 14:03:44 -0400
-Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E095124
-        for <linux-fscrypt@vger.kernel.org>; Tue, 26 Sep 2023 11:03:37 -0700 (PDT)
-Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-5a1f00b75aaso5282997b3.2
-        for <linux-fscrypt@vger.kernel.org>; Tue, 26 Sep 2023 11:03:37 -0700 (PDT)
+        Tue, 26 Sep 2023 14:03:45 -0400
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A422199
+        for <linux-fscrypt@vger.kernel.org>; Tue, 26 Sep 2023 11:03:38 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id 6a1803df08f44-65b02e42399so32142136d6.3
+        for <linux-fscrypt@vger.kernel.org>; Tue, 26 Sep 2023 11:03:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1695751416; x=1696356216; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1695751417; x=1696356217; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XrbBTlq6SUEE2oe2Hsm17SMa27dUAmVsqmKO5cSW0nI=;
-        b=cVcekEtcu3osW0EkmlVnfIsJerVPkJv+q2CryBeQ7Yz332XpViXCIzV2jVq2pRWqUR
-         Db5rPhLWmg5Lg3+ncYZW0zThEbsBbvcsGLVYLtLwQnkmFecjTLKXO2Laj8Oa8o5WU9FR
-         UNXrXltINjcPpWhSl3UNP9KhmJvy24fWAAKJ8fKApzV1blrAd4gvrsErDvj4DNcoHWml
-         wQjfxwPRzdE+v7wIQwOQ9yPdEMJ0cSHyoh7U+N5mGVbPx0mLH48hBnspJaYt4wXaVd5O
-         VZtHogCDwYbq3LRmJ8ZYQkYxPapWcy40KgxWAVDjSypv84LHRDXTpG6CmWyRVpAAr5pK
-         3MhA==
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aMVZOqD5qMhAARWUPM9bumwM6QRjAQ+JBEENF8lhuIs=;
+        b=eBx6fdTxUa1Q+Vmi6yML2Ohg7PDzxfwCO8K689z0nsYBP2GFUMO3qLGJVHjLphW0ro
+         pL7tKN+E+7bN25kXHNNcTdQiK6VVgZQkWArkoxtzZZzi2pO9+6r2tcnRoPHm5gDP+TmU
+         QxKTjx0b5IGf7ReeXG+k6eZrmxkFVptBMcmM4A3H26Q+eN2gpQirJqEOuPcMAnHokJpI
+         W5R0NoTRY33wlHWbdFfGpLZNkRLeaUgy4ZmulJ7TzBWQQV8sEf+icoFrPmxgZNvRTpdL
+         vx89+8BlQkkdyVCRerwkD8/kM9wh/CPPHL5xP0m0OazwZa3dQePrF2oYGfAb9rSzH1Qj
+         QHRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695751416; x=1696356216;
+        d=1e100.net; s=20230601; t=1695751417; x=1696356217;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XrbBTlq6SUEE2oe2Hsm17SMa27dUAmVsqmKO5cSW0nI=;
-        b=aaCAIVuiw/iI8hep70H4mAnN3yInCkvd9IqB2wEze0wovRAy89qkiSCqXDjmLprPuq
-         R512pdIiXOevVVDPMNJwr2LY0RPcv1rR2LLZhsdAC40netYBKS03aBKnDuAmPAxeW5JF
-         Yp7GZ04leUbJ4CSjGAQ3xyCRWMfXoBxBOVyxgNXvaFXg61VFbjyEa4J+UXIKPhfvcphm
-         oYz7ny8eXEljvO/i5cz6/+w0Mah78pFCU9co4zEwa/OzTG8hMWiyPnovAdob3hqbFr1A
-         GxRoo5JoXWjBY4PuWHhZEC8riICRoe3AbBRPme8getRYHUVck33d2Ri5Nm0up18zkWbE
-         fjJA==
-X-Gm-Message-State: AOJu0Yy/NDxPvExldxPn7ApTTzl/gRrv9AjQegrdXcW/ufqtDB1vvsF4
-        ufCS8YdOMQ4aSX7gvShTZTcYOA==
-X-Google-Smtp-Source: AGHT+IGq4cwIQizmr1i34EBsuDl/BhdizoBqq/+aVOodsyyyccHlPmrF0VYCfaBwxCEGXTo03/8w5A==
-X-Received: by 2002:a0d:ff06:0:b0:599:da80:e1e6 with SMTP id p6-20020a0dff06000000b00599da80e1e6mr11433800ywf.34.1695751416085;
-        Tue, 26 Sep 2023 11:03:36 -0700 (PDT)
+        bh=aMVZOqD5qMhAARWUPM9bumwM6QRjAQ+JBEENF8lhuIs=;
+        b=QJIV2pEkTe6AbVmucqtGyglBHSb5kDcVAswrVPtlGe6fpzngYP6Kudv8trdTxg8Zqe
+         Q2hDggjVqKaY9LpvcGZU+kTo8eHZ0frQCoGDxg51nP6DtnhWezZcA0j/nlVi2JMCvcRP
+         aWPALuHvJJ4VbthOoGSm6uRpkGVoi2oVugRVgPd288iTqXF96j7PtVglmtKJdUT3i/7A
+         4h/GFhFrtKcz2lWT3qxibuS+PXup+9dbN9gRDmlo9c0xofPt1h4ipqGsyaS2eMVqwH9B
+         fPrzn7ONUBdWXYyidkfmluEKFfYRmPV41hcGGZhW/JvqbtbiuzEAtd49n4AS+9jP02iP
+         P6+A==
+X-Gm-Message-State: AOJu0YyEo3EpYuVVEB+n6vTAf1zATdxB2f5HQqhUETwoXEEkW+u42KnU
+        MZzZqNL6fysIDf/mUZBq7I21scITx9IOY7a+xhpaYg==
+X-Google-Smtp-Source: AGHT+IGkbl+aPJ9BFcngOs3WUasdj0u/1uUNnx3vaBJ9ZrmuA25de+95BHcI3QUOql1n+cL9d7ZTnQ==
+X-Received: by 2002:a05:6214:5191:b0:656:de90:3135 with SMTP id kl17-20020a056214519100b00656de903135mr14335917qvb.7.1695751417304;
+        Tue, 26 Sep 2023 11:03:37 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id r16-20020a0ccc10000000b0065b151d5d12sm1732425qvk.126.2023.09.26.11.03.35
+        by smtp.gmail.com with ESMTPSA id c2-20020a05620a134200b007743360b3fasm1872163qkl.34.2023.09.26.11.03.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 11:03:35 -0700 (PDT)
+        Tue, 26 Sep 2023 11:03:37 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
         ebiggers@kernel.org, linux-fscrypt@vger.kernel.org,
         ngompa13@gmail.com
-Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH 20/35] btrfs: add fscrypt_info and encryption_type to extent_map
-Date:   Tue, 26 Sep 2023 14:01:46 -0400
-Message-ID: <b4ba109f1477cc03487e3ef693a0641e5b6e8260.1695750478.git.josef@toxicpanda.com>
+Subject: [PATCH 21/35] btrfs: add fscrypt_info and encryption_type to ordered_extent
+Date:   Tue, 26 Sep 2023 14:01:47 -0400
+Message-ID: <47feb58788c2adb906a6df4c7994058a4e7d2d75.1695750478.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1695750478.git.josef@toxicpanda.com>
 References: <cover.1695750478.git.josef@toxicpanda.com>
@@ -72,154 +71,60 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+We're going to need these to update the file extent items once the
+writes are complete.  Add them and add the pieces necessary to assign
+them and free everything.
 
-Each extent_map will end up with a pointer to its associated
-fscrypt_info if any, which should have the same lifetime as the
-extent_map. We are also going to need to track the encryption_type for
-the file extent items.  Add the fscrypt_info to the extent_map, and the
-subsequent code for transferring it in the split and merge cases, as
-well as the code necessary to free them.  A future patch will add the
-code to load them as appropriate.
-
-Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/extent_map.c | 32 +++++++++++++++++++++++++++++---
- fs/btrfs/extent_map.h |  2 ++
- fs/btrfs/file-item.c  |  1 +
- fs/btrfs/inode.c      |  1 +
- 4 files changed, 33 insertions(+), 3 deletions(-)
+ fs/btrfs/ordered-data.c | 2 ++
+ fs/btrfs/ordered-data.h | 6 ++++++
+ 2 files changed, 8 insertions(+)
 
-diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-index af5ff6b10865..8c8023388758 100644
---- a/fs/btrfs/extent_map.c
-+++ b/fs/btrfs/extent_map.c
-@@ -61,6 +61,7 @@ struct extent_map *alloc_extent_map(void)
- 
- static void __free_extent_map(struct extent_map *em)
- {
-+	fscrypt_put_extent_info(em->fscrypt_info);
- 	if (test_bit(EXTENT_FLAG_FS_MAPPING, &em->flags))
- 		kfree(em->map_lookup);
- 	kmem_cache_free(extent_map_cache, em);
-@@ -103,12 +104,24 @@ void free_extent_map_safe(struct extent_map_tree *tree,
- 	if (!em)
- 		return;
- 
--	if (refcount_dec_and_test(&em->refs)) {
--		WARN_ON(extent_map_in_tree(em));
--		WARN_ON(!list_empty(&em->list));
-+	if (!refcount_dec_and_test(&em->refs))
-+		return;
-+
-+	WARN_ON(extent_map_in_tree(em));
-+	WARN_ON(!list_empty(&em->list));
-+
-+	/*
-+	 * We could take a lock freeing the fscrypt_info, so add this to the
-+	 * list of freed_extents to be freed later.
-+	 */
-+	if (em->fscrypt_info) {
- 		list_add_tail(&em->free_list, &tree->freed_extents);
- 		set_bit(EXTENT_MAP_TREE_PENDING_FREES, &tree->flags);
-+		return;
- 	}
-+
-+	/* Nothing scary here, just free the object. */
-+	__free_extent_map(em);
- }
- 
- /*
-@@ -274,6 +287,12 @@ static int mergable_maps(struct extent_map *prev, struct extent_map *next)
- 	if (!list_empty(&prev->list) || !list_empty(&next->list))
- 		return 0;
- 
-+	/*
-+	 * Don't merge adjacent encrypted maps.
-+	 */
-+	if (prev->fscrypt_info || next->fscrypt_info)
-+		return 0;
-+
- 	ASSERT(next->block_start != EXTENT_MAP_DELALLOC &&
- 	       prev->block_start != EXTENT_MAP_DELALLOC);
- 
-@@ -884,6 +903,8 @@ void btrfs_drop_extent_map_range(struct btrfs_inode *inode, u64 start, u64 end,
- 			split->generation = gen;
- 			split->flags = flags;
- 			split->compress_type = em->compress_type;
-+			split->fscrypt_info =
-+				fscrypt_get_extent_info(em->fscrypt_info);
- 			replace_extent_mapping(em_tree, em, split, modified);
- 			free_extent_map(split);
- 			split = split2;
-@@ -925,6 +946,8 @@ void btrfs_drop_extent_map_range(struct btrfs_inode *inode, u64 start, u64 end,
- 				split->orig_block_len = 0;
- 			}
- 
-+			split->fscrypt_info =
-+				fscrypt_get_extent_info(em->fscrypt_info);
- 			if (extent_map_in_tree(em)) {
- 				replace_extent_mapping(em_tree, em, split,
- 						       modified);
-@@ -1087,6 +1110,7 @@ int split_extent_map(struct btrfs_inode *inode, u64 start, u64 len, u64 pre,
- 	split_pre->flags = flags;
- 	split_pre->compress_type = em->compress_type;
- 	split_pre->generation = em->generation;
-+	split_pre->fscrypt_info = fscrypt_get_extent_info(em->fscrypt_info);
- 
- 	replace_extent_mapping(em_tree, em, split_pre, 1);
- 
-@@ -1106,6 +1130,8 @@ int split_extent_map(struct btrfs_inode *inode, u64 start, u64 len, u64 pre,
- 	split_mid->flags = flags;
- 	split_mid->compress_type = em->compress_type;
- 	split_mid->generation = em->generation;
-+	split_mid->fscrypt_info = fscrypt_get_extent_info(em->fscrypt_info);
-+
- 	add_extent_mapping(em_tree, split_mid, 1);
- 
- 	/* Once for us */
-diff --git a/fs/btrfs/extent_map.h b/fs/btrfs/extent_map.h
-index 2093720271ea..2d618e61ceb5 100644
---- a/fs/btrfs/extent_map.h
-+++ b/fs/btrfs/extent_map.h
-@@ -50,10 +50,12 @@ struct extent_map {
- 	 */
- 	u64 generation;
- 	unsigned long flags;
-+	struct fscrypt_extent_info *fscrypt_info;
- 	/* Used for chunk mappings, flag EXTENT_FLAG_FS_MAPPING must be set */
- 	struct map_lookup *map_lookup;
- 	refcount_t refs;
- 	unsigned int compress_type;
-+	unsigned int encryption_type;
- 	struct list_head list;
- 	struct list_head free_list;
- };
-diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-index 45cae356e89b..26f35c1baedc 100644
---- a/fs/btrfs/file-item.c
-+++ b/fs/btrfs/file-item.c
-@@ -1305,6 +1305,7 @@ void btrfs_extent_item_to_extent_map(struct btrfs_inode *inode,
- 			if (type == BTRFS_FILE_EXTENT_PREALLOC)
- 				set_bit(EXTENT_FLAG_PREALLOC, &em->flags);
+diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+index b133ea0bc459..d33a780d9893 100644
+--- a/fs/btrfs/ordered-data.c
++++ b/fs/btrfs/ordered-data.c
+@@ -182,6 +182,7 @@ static struct btrfs_ordered_extent *alloc_ordered_extent(
+ 	entry->bytes_left = num_bytes;
+ 	entry->inode = igrab(&inode->vfs_inode);
+ 	entry->compress_type = compress_type;
++	entry->encryption_type = BTRFS_ENCRYPTION_NONE;
+ 	entry->truncated_len = (u64)-1;
+ 	entry->qgroup_rsv = ret;
+ 	entry->flags = flags;
+@@ -568,6 +569,7 @@ void btrfs_put_ordered_extent(struct btrfs_ordered_extent *entry)
+ 			list_del(&sum->list);
+ 			kvfree(sum);
  		}
-+		em->encryption_type = btrfs_file_extent_encryption(leaf, fi);
- 	} else if (type == BTRFS_FILE_EXTENT_INLINE) {
- 		em->block_start = EXTENT_MAP_INLINE;
- 		em->start = extent_start;
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index db053b392d26..d26062b67211 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -7350,6 +7350,7 @@ static struct extent_map *create_io_em(struct btrfs_inode *inode, u64 start,
- 		set_bit(EXTENT_FLAG_COMPRESSED, &em->flags);
- 		em->compress_type = compress_type;
++		fscrypt_put_extent_info(entry->fscrypt_info);
+ 		kmem_cache_free(btrfs_ordered_extent_cache, entry);
  	}
-+	em->encryption_type = BTRFS_ENCRYPTION_NONE;
+ }
+diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
+index 1c51ac57e5df..607814876f1f 100644
+--- a/fs/btrfs/ordered-data.h
++++ b/fs/btrfs/ordered-data.h
+@@ -122,6 +122,9 @@ struct btrfs_ordered_extent {
+ 	/* compression algorithm */
+ 	int compress_type;
  
- 	ret = btrfs_replace_extent_map_range(inode, em, true);
- 	if (ret) {
++	/* encryption mode */
++	int encryption_type;
++
+ 	/* Qgroup reserved space */
+ 	int qgroup_rsv;
+ 
+@@ -131,6 +134,9 @@ struct btrfs_ordered_extent {
+ 	/* the inode we belong to */
+ 	struct inode *inode;
+ 
++	/* the fscrypt_info for this extent, if necessary */
++	struct fscrypt_extent_info *fscrypt_info;
++
+ 	/* list of checksums for insertion when the extent io is done */
+ 	struct list_head list;
+ 
 -- 
 2.41.0
 
