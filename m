@@ -2,29 +2,29 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6CEC7B9771
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  5 Oct 2023 00:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89FD57B9761
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  5 Oct 2023 00:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237177AbjJDWKN (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 4 Oct 2023 18:10:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36282 "EHLO
+        id S239398AbjJDWKo (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 4 Oct 2023 18:10:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233516AbjJDWJ5 (ORCPT
+        with ESMTP id S233563AbjJDWJ5 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
         Wed, 4 Oct 2023 18:09:57 -0400
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 80E98DC;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 811D3E4;
         Wed,  4 Oct 2023 15:09:54 -0700 (PDT)
 Received: by linux.microsoft.com (Postfix, from userid 1052)
-        id C517A20B74D6; Wed,  4 Oct 2023 15:09:50 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C517A20B74D6
+        id D315F20B74D8; Wed,  4 Oct 2023 15:09:50 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D315F20B74D8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
         s=default; t=1696457390;
-        bh=cW99n8OXkptGYBwo2lvuMipxJldHT9R48ujQFfMBHAE=;
+        bh=eJS+kBKHSIzGbwwv49yX5DCUKZVKLPE/A7wfEDIcA9E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HlbE3xQQD91xPZObjg/CgUE2QU0zJNs+fz69nDWpG2Pro/oeWXN/aaXplO/MMdwnC
-         flp9VyW+sc5xtgwh7Sv8472Td4ThXyh32Q2LzLtm/FCK7mFyD2as88RP80K0dMVIxo
-         bet1LExMUHKfFUO1fcNWYtbZGl7LrIidZ5H9/AcQ=
+        b=kivRmiQvs0LNuyzLsMCEEVEdqNtf6L5xl16co++lbJNojj2N7CnDAjy+8HfjVqa3s
+         DI8XBOrh8ocu5/dAKmmJnSU0tv9SUOOLCgLQQKevgS84tyQYx8ciXVaHBv2Q7ijzXh
+         hX5dxUtiY48KK7vGUG+7aj/jEn3ihq7B4AgdN2lw=
 From:   Fan Wu <wufan@linux.microsoft.com>
 To:     corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
         serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org,
@@ -36,9 +36,9 @@ Cc:     linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
         dm-devel@redhat.com, audit@vger.kernel.org,
         roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
         Fan Wu <wufan@linux.microsoft.com>
-Subject: [RFC PATCH v11 11/19] dm verity: set DM_TARGET_SINGLETON feature flag
-Date:   Wed,  4 Oct 2023 15:09:38 -0700
-Message-Id: <1696457386-3010-12-git-send-email-wufan@linux.microsoft.com>
+Subject: [RFC PATCH v11 12/19] dm: add finalize hook to target_type
+Date:   Wed,  4 Oct 2023 15:09:39 -0700
+Message-Id: <1696457386-3010-13-git-send-email-wufan@linux.microsoft.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1696457386-3010-1-git-send-email-wufan@linux.microsoft.com>
 References: <1696457386-3010-1-git-send-email-wufan@linux.microsoft.com>
@@ -52,12 +52,13 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-The device-mapper has a flag to mark targets as singleton, which is a
-required flag for immutable targets. Without this flag, multiple
-dm-verity targets can be added to a mapped device, which has no
-practical use cases and will let dm_table_get_immutable_target return
-NULL. This patch adds the missing flag, restricting only one
-dm-verity target per mapped device.
+This patch adds a target finalize hook.
+
+The hook is triggered just before activating an inactive table of a
+mapped device. If it returns an error the __bind get cancelled.
+
+The dm-verity target will use this hook to attach the dm-verity's
+roothash metadata to the block_device struct of the mapped device.
 
 Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
 
@@ -65,22 +66,58 @@ Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
 v1-v10:
   + Not present
 ---
- drivers/md/dm-verity-target.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/md/dm.c               | 12 ++++++++++++
+ include/linux/device-mapper.h |  7 +++++++
+ 2 files changed, 19 insertions(+)
 
-diff --git a/drivers/md/dm-verity-target.c b/drivers/md/dm-verity-target.c
-index 26adcfea0302..80673b66c194 100644
---- a/drivers/md/dm-verity-target.c
-+++ b/drivers/md/dm-verity-target.c
-@@ -1503,7 +1503,7 @@ int dm_verity_get_root_digest(struct dm_target *ti, u8 **root_digest, unsigned i
+diff --git a/drivers/md/dm.c b/drivers/md/dm.c
+index 64a1f306c96c..3be9cc35306d 100644
+--- a/drivers/md/dm.c
++++ b/drivers/md/dm.c
+@@ -2239,6 +2239,18 @@ static struct dm_table *__bind(struct mapped_device *md, struct dm_table *t,
+ 		goto out;
+ 	}
  
- static struct target_type verity_target = {
- 	.name		= "verity",
--	.features	= DM_TARGET_IMMUTABLE,
-+	.features	= DM_TARGET_SINGLETON | DM_TARGET_IMMUTABLE,
- 	.version	= {1, 9, 0},
- 	.module		= THIS_MODULE,
- 	.ctr		= verity_ctr,
++	for (unsigned int i = 0; i < t->num_targets; i++) {
++		struct dm_target *ti = dm_table_get_target(t, i);
++
++		if (ti->type->finalize) {
++			ret = ti->type->finalize(ti);
++			if (ret) {
++				old_map = ERR_PTR(ret);
++				goto out;
++			}
++		}
++	}
++
+ 	old_map = rcu_dereference_protected(md->map, lockdep_is_held(&md->suspend_lock));
+ 	rcu_assign_pointer(md->map, (void *)t);
+ 	md->immutable_target_type = dm_table_get_immutable_target_type(t);
+diff --git a/include/linux/device-mapper.h b/include/linux/device-mapper.h
+index 69d0435c7ebb..4040e84a8ec7 100644
+--- a/include/linux/device-mapper.h
++++ b/include/linux/device-mapper.h
+@@ -160,6 +160,12 @@ typedef int (*dm_dax_zero_page_range_fn)(struct dm_target *ti, pgoff_t pgoff,
+  */
+ typedef size_t (*dm_dax_recovery_write_fn)(struct dm_target *ti, pgoff_t pgoff,
+ 		void *addr, size_t bytes, struct iov_iter *i);
++/*
++ * Returns:
++ *  < 0 : error
++ *  = 0 : success
++ */
++typedef int (*dm_finalize_fn) (struct dm_target *target);
+ 
+ void dm_error(const char *message);
+ 
+@@ -209,6 +215,7 @@ struct target_type {
+ 	dm_dax_direct_access_fn direct_access;
+ 	dm_dax_zero_page_range_fn dax_zero_page_range;
+ 	dm_dax_recovery_write_fn dax_recovery_write;
++	dm_finalize_fn finalize;
+ 
+ 	/* For internal device-mapper use. */
+ 	struct list_head list;
 -- 
 2.25.1
 
