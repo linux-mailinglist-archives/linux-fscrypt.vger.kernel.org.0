@@ -2,29 +2,29 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C23E37B977F
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  5 Oct 2023 00:21:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB9237B97AF
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  5 Oct 2023 00:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237687AbjJDWKZ (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 4 Oct 2023 18:10:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41806 "EHLO
+        id S237066AbjJDWKK (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Wed, 4 Oct 2023 18:10:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234620AbjJDWJ7 (ORCPT
+        with ESMTP id S235063AbjJDWKA (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 4 Oct 2023 18:09:59 -0400
+        Wed, 4 Oct 2023 18:10:00 -0400
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B8D16C6;
-        Wed,  4 Oct 2023 15:09:54 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 873E2102;
+        Wed,  4 Oct 2023 15:09:55 -0700 (PDT)
 Received: by linux.microsoft.com (Postfix, from userid 1052)
-        id 19FFF20B74C5; Wed,  4 Oct 2023 15:09:50 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 19FFF20B74C5
+        id 2889120B74E1; Wed,  4 Oct 2023 15:09:50 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2889120B74E1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
         s=default; t=1696457391;
-        bh=zr/qFfPorqLH5kXpbQRWIcZcDMFhmmGcI4hb2oDIlIY=;
+        bh=cKSSmS5MjvhxWnrfdrxEcrTWZRLjAMoJm7+XqI4yjHc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X47TSP9K285calevsNnDtmuDqMEkjn9E4PLBY8GeZRfRGYFSlk7kXN8Cm440ryxaf
-         ivHhHY7HQ6AmjOumWU1kvDt8yTdYcz0X7eMwsr5A74/erUqql5erMDwz01sh1JRCBr
-         EyvMTEKyxRt9/U6MtIbkmSkhg95ANMHEaGaucLy8=
+        b=VOurqwe8QyNFRVtjJMxg+ddxC2R4di2tBIxG2z13QowNwXQlsq4RF4zvjeGSGEeOv
+         TQOxnr047e000yieSkgiYjuGrwMwkgSdsGhl2vLCOasu+hCNMchK2KSZa1jizOKola
+         NmtRRC7sUWEZhNlpgb9yvmcFjy8JZJxUrzrd9zNk=
 From:   Fan Wu <wufan@linux.microsoft.com>
 To:     corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
         serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org,
@@ -35,17 +35,17 @@ Cc:     linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
         linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
         dm-devel@redhat.com, audit@vger.kernel.org,
         roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
-        Fan Wu <wufan@linux.microsoft.com>,
-        Deven Bowers <deven.desai@linux.microsoft.com>
-Subject: [RFC PATCH v11 16/19] ipe: enable support for fs-verity as a trust provider
-Date:   Wed,  4 Oct 2023 15:09:43 -0700
-Message-Id: <1696457386-3010-17-git-send-email-wufan@linux.microsoft.com>
+        Deven Bowers <deven.desai@linux.microsoft.com>,
+        Fan Wu <wufan@linux.microsoft.com>
+Subject: [RFC PATCH v11 17/19] scripts: add boot policy generation program
+Date:   Wed,  4 Oct 2023 15:09:44 -0700
+Message-Id: <1696457386-3010-18-git-send-email-wufan@linux.microsoft.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1696457386-3010-1-git-send-email-wufan@linux.microsoft.com>
 References: <1696457386-3010-1-git-send-email-wufan@linux.microsoft.com>
 X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,SPF_HELO_PASS,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,473 +53,386 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-Enable IPE policy authors to indicate trust for a singular fsverity
-file, identified by the digest information, through "fsverity_digest"
-and all files using fsverity's builtin signatures via
-"fsverity_signature".
+From: Deven Bowers <deven.desai@linux.microsoft.com>
 
-This enables file-level integrity claims to be expressed in IPE,
-allowing individual files to be authorized, giving some flexibility
-for policy authors. Such file-level claims are important to be expressed
-for enforcing the integrity of packages, as well as address some of the
-scalability issues in a sole dm-verity based solution (# of loop back
-devices, etc).
-
-This solution cannot be done in userspace as the minimum threat that
-IPE should mitigate is an attacker downloads malicious payload with
-all required dependencies. These dependencies can lack the userspace
-check, bypassing the protection entirely. A similar attack succeeds if
-the userspace component is replaced with a version that does not
-perform the check. As a result, this can only be done in the common
-entry point - the kernel.
+Enables an IPE policy to be enforced from kernel start, enabling access
+control based on trust from kernel startup. This is accomplished by
+transforming an IPE policy indicated by CONFIG_IPE_BOOT_POLICY into a
+c-string literal that is parsed at kernel startup as an unsigned policy.
 
 Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
 Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
 ---
-v1-v6:
-  + Not present
+v2:
+  + No Changes
+
+v3:
+  + No Changes
+
+v4:
+  + No Changes
+
+v5:
+  + No Changes
+
+v6:
+  + No Changes
 
 v7:
-  Introduced
+  + Move from 01/11 to 14/16
+  + Don't return errno directly.
+  + Make output of script more user-friendly
+  + Add escaping for tab and '?'
+  + Mark argv pointer const
+  + Invert return code check in the boot policy parsing code path.
 
 v8:
-  * Undo squash of 08/12, 10/12 - separating drivers/md/ from security/
-  * Use common-audit function for fsverity_signature.
-  + Change fsverity implementation to use fsverity_get_digest
-  + prevent unnecessary copy of fs-verity signature data, instead
-    just check for presence of signature data.
-  + Remove free_inode_security hook, as the digest is now acquired
-    at runtime instead of via LSM blob.
+  + No significant changes.
 
 v9:
-  + Adapt to the new parser
+  + No changes
 
 v10:
-  + Update the fsverity get digest call
+  + Update the init part code for rcu changes in the eval loop patch
 
 v11:
-  + No changes
+  + Fix code style issues
 ---
- security/ipe/Kconfig         |  13 +++++
- security/ipe/audit.c         |  23 ++++++++
- security/ipe/eval.c          | 110 +++++++++++++++++++++++++++++++++++
- security/ipe/eval.h          |  10 ++++
- security/ipe/hooks.c         |  30 ++++++++++
- security/ipe/hooks.h         |   7 +++
- security/ipe/ipe.c           |  13 +++++
- security/ipe/ipe.h           |   3 +
- security/ipe/policy.h        |   3 +
- security/ipe/policy_parser.c |   8 +++
- 10 files changed, 220 insertions(+)
+ MAINTAINERS                   |   1 +
+ scripts/Makefile              |   1 +
+ scripts/ipe/Makefile          |   2 +
+ scripts/ipe/polgen/.gitignore |   1 +
+ scripts/ipe/polgen/Makefile   |   6 ++
+ scripts/ipe/polgen/polgen.c   | 145 ++++++++++++++++++++++++++++++++++
+ security/ipe/.gitignore       |   1 +
+ security/ipe/Kconfig          |  10 +++
+ security/ipe/Makefile         |  11 +++
+ security/ipe/fs.c             |   8 ++
+ security/ipe/ipe.c            |  12 +++
+ 11 files changed, 198 insertions(+)
+ create mode 100644 scripts/ipe/Makefile
+ create mode 100644 scripts/ipe/polgen/.gitignore
+ create mode 100644 scripts/ipe/polgen/Makefile
+ create mode 100644 scripts/ipe/polgen/polgen.c
+ create mode 100644 security/ipe/.gitignore
 
-diff --git a/security/ipe/Kconfig b/security/ipe/Kconfig
-index 7afb1ce0cb99..9dd5c4769d79 100644
---- a/security/ipe/Kconfig
-+++ b/security/ipe/Kconfig
-@@ -30,6 +30,19 @@ config IPE_PROP_DM_VERITY
- 	  that was mounted with a signed root-hash or the volume's
- 	  root hash matches the supplied value in the policy.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index b898f2f8f9c4..18b1aeea6306 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -10394,6 +10394,7 @@ M:	Fan Wu <wufan@linux.microsoft.com>
+ L:	linux-security-module@vger.kernel.org
+ S:	Supported
+ T:	git https://github.com/microsoft/ipe.git
++F:	scripts/ipe/
+ F:	security/ipe/
  
-+	  If unsure, answer Y.
+ INTEL 810/815 FRAMEBUFFER DRIVER
+diff --git a/scripts/Makefile b/scripts/Makefile
+index 576cf64be667..1dbaf3a49aef 100644
+--- a/scripts/Makefile
++++ b/scripts/Makefile
+@@ -50,6 +50,7 @@ targets += module.lds
+ subdir-$(CONFIG_GCC_PLUGINS) += gcc-plugins
+ subdir-$(CONFIG_MODVERSIONS) += genksyms
+ subdir-$(CONFIG_SECURITY_SELINUX) += selinux
++subdir-$(CONFIG_SECURITY_IPE) += ipe
+ 
+ # Let clean descend into subdirs
+ subdir-	+= basic dtc gdb kconfig mod
+diff --git a/scripts/ipe/Makefile b/scripts/ipe/Makefile
+new file mode 100644
+index 000000000000..e87553fbb8d6
+--- /dev/null
++++ b/scripts/ipe/Makefile
+@@ -0,0 +1,2 @@
++# SPDX-License-Identifier: GPL-2.0-only
++subdir-y := polgen
+diff --git a/scripts/ipe/polgen/.gitignore b/scripts/ipe/polgen/.gitignore
+new file mode 100644
+index 000000000000..80f32f25d200
+--- /dev/null
++++ b/scripts/ipe/polgen/.gitignore
+@@ -0,0 +1 @@
++polgen
+diff --git a/scripts/ipe/polgen/Makefile b/scripts/ipe/polgen/Makefile
+new file mode 100644
+index 000000000000..066060c22b4a
+--- /dev/null
++++ b/scripts/ipe/polgen/Makefile
+@@ -0,0 +1,6 @@
++# SPDX-License-Identifier: GPL-2.0
++hostprogs-always-y	:= polgen
++HOST_EXTRACFLAGS += \
++	-I$(srctree)/include \
++	-I$(srctree)/include/uapi \
 +
-+config IPE_PROP_FS_VERITY
-+	bool "Enable property for fs-verity files"
-+	depends on FS_VERITY && FS_VERITY_BUILTIN_SIGNATURES
-+	help
-+	  This option enables the usage of properties "fsverity_signature"
-+	  and "fsverity_digest". These properties evaluates to TRUE when
-+	  a file is fsverity enabled and with a signed digest or its
-+	  diegst matches the supplied value in the policy.
-+
-+	  if unsure, answer Y.
-+
- endmenu
- 
- endif
-diff --git a/security/ipe/audit.c b/security/ipe/audit.c
-index b5c58655ac74..e3a8552a76a4 100644
---- a/security/ipe/audit.c
-+++ b/security/ipe/audit.c
-@@ -46,6 +46,11 @@ static const char *const audit_prop_names[__IPE_PROP_MAX] = {
- 	"dmverity_signature=FALSE",
- 	"dmverity_signature=TRUE",
- #endif /* CONFIG_IPE_PROP_DM_VERITY */
-+#ifdef CONFIG_IPE_PROP_FS_VERITY
-+	"fsverity_digest=",
-+	"fsverity_signature=FALSE",
-+	"fsverity_signature=TRUE"
-+#endif /* CONFIG_IPE_PROP_FS_VERITY */
- };
- 
- #ifdef CONFIG_IPE_PROP_DM_VERITY
-@@ -64,6 +69,22 @@ static void audit_dmv_roothash(struct audit_buffer *ab, const void *rh)
- }
- #endif /* CONFIG_IPE_PROP_DM_VERITY */
- 
-+#ifdef CONFIG_IPE_PROP_FS_VERITY
-+/**
-+ * audit_fsv_digest - audit a digest of a fsverity file.
-+ * @ab: Supplies a pointer to the audit_buffer to append to.
-+ * @d: Supplies a pointer to the digest structure.
+diff --git a/scripts/ipe/polgen/polgen.c b/scripts/ipe/polgen/polgen.c
+new file mode 100644
+index 000000000000..40b6fe07f47b
+--- /dev/null
++++ b/scripts/ipe/polgen/polgen.c
+@@ -0,0 +1,145 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) Microsoft Corporation. All rights reserved.
 + */
-+static void audit_fsv_digest(struct audit_buffer *ab, const void *d)
-+{
-+	ipe_digest_audit(ab, d);
-+}
-+#else
-+static void audit_fsv_digest(struct audit_buffer *ab, const void *d)
-+{
-+}
-+#endif /* CONFIG_IPE_PROP_DM_VERITY */
 +
- /**
-  * audit_rule - audit an IPE policy rule approximation.
-  * @ab: Supplies a pointer to the audit_buffer to append to.
-@@ -79,6 +100,8 @@ static void audit_rule(struct audit_buffer *ab, const struct ipe_rule *r)
- 		audit_log_format(ab, "%s", audit_prop_names[ptr->type]);
- 		if (ptr->type == IPE_PROP_DMV_ROOTHASH)
- 			audit_dmv_roothash(ab, ptr->value);
-+		if (ptr->type == IPE_PROP_FSV_DIGEST)
-+			audit_fsv_digest(ab, ptr->value);
- 
- 		audit_log_format(ab, " ");
- 	}
-diff --git a/security/ipe/eval.c b/security/ipe/eval.c
-index 82ad48d7aa3d..f0194b0ca2ff 100644
---- a/security/ipe/eval.c
-+++ b/security/ipe/eval.c
-@@ -11,6 +11,7 @@
- #include <linux/rcupdate.h>
- #include <linux/spinlock.h>
- #include <linux/moduleparam.h>
-+#include <linux/fsverity.h>
- 
- #include "ipe.h"
- #include "eval.h"
-@@ -78,6 +79,23 @@ static void build_ipe_bdev_ctx(struct ipe_eval_ctx *ctx, const struct inode *con
- }
- #endif /* CONFIG_IPE_PROP_DM_VERITY */
- 
-+#ifdef CONFIG_IPE_PROP_FS_VERITY
-+/**
-+ * build_ipe_inode_ctx - Build inode fields of an evaluation context.
-+ * @ctx: Supplies a pointer to the context to be populdated.
-+ * @ino: Supplies the inode struct of the file triggered IPE event.
-+ */
-+static void build_ipe_inode_ctx(struct ipe_eval_ctx *ctx, const struct inode *const ino)
-+{
-+	ctx->ino = ino;
-+	ctx->ipe_inode = ipe_inode(ctx->ino);
-+}
-+#else
-+static void build_ipe_inode_ctx(struct ipe_eval_ctx *ctx, const struct inode *const ino)
-+{
-+}
-+#endif /* CONFIG_IPE_PROP_FS_VERITY */
++#include <stdlib.h>
++#include <stddef.h>
++#include <stdio.h>
++#include <unistd.h>
++#include <errno.h>
 +
- /**
-  * build_eval_ctx - Build an evaluation context.
-  * @ctx: Supplies a pointer to the context to be populdated.
-@@ -100,6 +118,7 @@ void build_eval_ctx(struct ipe_eval_ctx *ctx,
- 		ctx->from_init_sb = from_pinned(FILE_SUPERBLOCK(file));
- 		ino = d_real_inode(file->f_path.dentry);
- 		build_ipe_bdev_ctx(ctx, ino);
-+		build_ipe_inode_ctx(ctx, ino);
- 	}
- }
- 
-@@ -172,6 +191,91 @@ static bool evaluate_dmv_sig_true(const struct ipe_eval_ctx *const ctx,
- }
- #endif /* CONFIG_IPE_PROP_DM_VERITY */
- 
-+#ifdef CONFIG_IPE_PROP_FS_VERITY
-+/**
-+ * evaluate_fsv_digest - Analyze @ctx against a fsv digest property.
-+ * @ctx: Supplies a pointer to the context being evaluated.
-+ * @p: Supplies a pointer to the property being evaluated.
-+ *
-+ * Return:
-+ * * true	- The current @ctx match the @p
-+ * * false	- The current @ctx doesn't match the @p
-+ */
-+static bool evaluate_fsv_digest(const struct ipe_eval_ctx *const ctx,
-+				struct ipe_prop *p)
++static void usage(const char *const name)
 +{
-+	enum hash_algo alg;
-+	u8 digest[FS_VERITY_MAX_DIGEST_SIZE];
-+
-+	if (!ctx->ino)
-+		return false;
-+	if (!fsverity_get_digest((struct inode *)ctx->ino,
-+				 digest,
-+				 NULL,
-+				 &alg))
-+		return false;
-+
-+	return ipe_digest_eval(p->value,
-+			       digest,
-+			       hash_digest_size[alg],
-+			       hash_algo_name[alg]);
++	printf("Usage: %s OutputFile (PolicyFile)\n", name);
++	exit(EINVAL);
 +}
 +
-+/**
-+ * evaluate_fsv_sig_false - Analyze @ctx against a fsv sig false property.
-+ * @ctx: Supplies a pointer to the context being evaluated.
-+ * @p: Supplies a pointer to the property being evaluated.
-+ *
-+ * Return:
-+ * * true	- The current @ctx match the @p
-+ * * false	- The current @ctx doesn't match the @p
-+ */
-+static bool evaluate_fsv_sig_false(const struct ipe_eval_ctx *const ctx,
-+				   struct ipe_prop *p)
++static int policy_to_buffer(const char *pathname, char **buffer, size_t *size)
 +{
-+	return !ctx->ino ||
-+	       !IS_VERITY(ctx->ino) ||
-+	       !ctx->ipe_inode ||
-+	       !ctx->ipe_inode->fs_verity_signed;
++	int rc = 0;
++	FILE *fd;
++	char *lbuf;
++	size_t fsize;
++	size_t read;
++
++	fd = fopen(pathname, "r");
++	if (!fd) {
++		rc = errno;
++		goto out;
++	}
++
++	fseek(fd, 0, SEEK_END);
++	fsize = ftell(fd);
++	rewind(fd);
++
++	lbuf = malloc(fsize);
++	if (!lbuf) {
++		rc = ENOMEM;
++		goto out_close;
++	}
++
++	read = fread((void *)lbuf, sizeof(*lbuf), fsize, fd);
++	if (read != fsize) {
++		rc = -1;
++		goto out_free;
++	}
++
++	*buffer = lbuf;
++	*size = fsize;
++	fclose(fd);
++
++	return rc;
++
++out_free:
++	free(lbuf);
++out_close:
++	fclose(fd);
++out:
++	return rc;
 +}
 +
-+/**
-+ * evaluate_fsv_sig_true - Analyze @ctx against a fsv sig true property.
-+ * @ctx: Supplies a pointer to the context being evaluated.
-+ * @p: Supplies a pointer to the property being evaluated.
-+ *
-+ * Return:
-+ * * true - The current @ctx match the @p
-+ * * false - The current @ctx doesn't match the @p
-+ */
-+static bool evaluate_fsv_sig_true(const struct ipe_eval_ctx *const ctx,
-+				  struct ipe_prop *p)
++static int write_boot_policy(const char *pathname, const char *buf, size_t size)
 +{
-+	return ctx->ino &&
-+	       IS_VERITY(ctx->ino) &&
-+	       ctx->ipe_inode &&
-+	       ctx->ipe_inode->fs_verity_signed;
-+}
-+#else
-+static bool evaluate_fsv_digest(const struct ipe_eval_ctx *const ctx,
-+				struct ipe_prop *p)
-+{
-+	return false;
-+}
++	int rc = 0;
++	FILE *fd;
++	size_t i;
 +
-+static bool evaluate_fsv_sig_false(const struct ipe_eval_ctx *const ctx,
-+				   struct ipe_prop *p)
-+{
-+	return false;
-+}
++	fd = fopen(pathname, "w");
++	if (!fd) {
++		rc = errno;
++		goto err;
++	}
 +
-+static bool evaluate_fsv_sig_true(const struct ipe_eval_ctx *const ctx,
-+				  struct ipe_prop *p)
-+{
-+	return false;
-+}
-+#endif /* CONFIG_IPE_PROP_FS_VERITY */
++	fprintf(fd, "/* This file is automatically generated.");
++	fprintf(fd, " Do not edit. */\n");
++	fprintf(fd, "#include <linux/stddef.h>\n");
++	fprintf(fd, "\nextern const char *const ipe_boot_policy;\n\n");
++	fprintf(fd, "const char *const ipe_boot_policy =\n");
 +
- /**
-  * evaluate_property - Analyze @ctx against a property.
-  * @ctx: Supplies a pointer to the context to be evaluated.
-@@ -195,6 +299,12 @@ static bool evaluate_property(const struct ipe_eval_ctx *const ctx,
- 		return evaluate_dmv_sig_false(ctx, p);
- 	case IPE_PROP_DMV_SIG_TRUE:
- 		return evaluate_dmv_sig_true(ctx, p);
-+	case IPE_PROP_FSV_DIGEST:
-+		return evaluate_fsv_digest(ctx, p);
-+	case IPE_PROP_FSV_SIG_FALSE:
-+		return evaluate_fsv_sig_false(ctx, p);
-+	case IPE_PROP_FSV_SIG_TRUE:
-+		return evaluate_fsv_sig_true(ctx, p);
- 	default:
- 		return false;
- 	}
-diff --git a/security/ipe/eval.h b/security/ipe/eval.h
-index e575e94804a4..7f5b64c30ffe 100644
---- a/security/ipe/eval.h
-+++ b/security/ipe/eval.h
-@@ -27,6 +27,12 @@ struct ipe_bdev {
- };
- #endif /* CONFIG_IPE_PROP_DM_VERITY */
- 
-+#ifdef CONFIG_IPE_PROP_FS_VERITY
-+struct ipe_inode {
-+	bool fs_verity_signed;
-+};
-+#endif /* CONFIG_IPE_PROP_FS_VERITY */
-+
- struct ipe_eval_ctx {
- 	enum ipe_op_type op;
- 
-@@ -35,6 +41,10 @@ struct ipe_eval_ctx {
- #ifdef CONFIG_IPE_PROP_DM_VERITY
- 	const struct ipe_bdev *ipe_bdev;
- #endif /* CONFIG_IPE_PROP_DM_VERITY */
-+#ifdef CONFIG_IPE_PROP_FS_VERITY
-+	const struct inode *ino;
-+	const struct ipe_inode *ipe_inode;
-+#endif /* CONFIG_IPE_PROP_FS_VERITY */
- };
- 
- enum ipe_match {
-diff --git a/security/ipe/hooks.c b/security/ipe/hooks.c
-index 8b8031e66f36..1897d76354d7 100644
---- a/security/ipe/hooks.c
-+++ b/security/ipe/hooks.c
-@@ -244,3 +244,33 @@ int ipe_bdev_setsecurity(struct block_device *bdev, const char *key,
- 	return -EOPNOTSUPP;
- }
- #endif /* CONFIG_IPE_PROP_DM_VERITY */
-+
-+#ifdef CONFIG_IPE_PROP_FS_VERITY
-+/**
-+ * ipe_inode_setsecurity - Sets fields of a inode security blob from @key.
-+ * @inode: The inode to source the security blob from.
-+ * @name: The name representing the information to be stored.
-+ * @value: The value to be stored.
-+ * @size: The size of @value.
-+ * @flags: unused
-+ *
-+ * Saves fsverity signature & digest into inode security blob
-+ *
-+ * Return:
-+ * * 0	- OK
-+ * * !0	- Error
-+ */
-+int ipe_inode_setsecurity(struct inode *inode, const char *name,
-+			  const void *value, size_t size,
-+			  int flags)
-+{
-+	struct ipe_inode *inode_sec = ipe_inode(inode);
-+
-+	if (!strcmp(name, FS_VERITY_INODE_SEC_NAME)) {
-+		inode_sec->fs_verity_signed = size > 0 && value;
++	if (!buf || size == 0) {
++		fprintf(fd, "\tNULL;\n");
++		fclose(fd);
 +		return 0;
 +	}
 +
-+	return -EOPNOTSUPP;
-+}
-+#endif /* CONFIG_CONFIG_IPE_PROP_FS_VERITY */
-diff --git a/security/ipe/hooks.h b/security/ipe/hooks.h
-index d8ccb3728813..687d6b9fa869 100644
---- a/security/ipe/hooks.h
-+++ b/security/ipe/hooks.h
-@@ -9,6 +9,7 @@
- #include <linux/binfmts.h>
- #include <linux/security.h>
- #include <linux/blk_types.h>
-+#include <linux/fsverity.h>
- 
- int ipe_bprm_check_security(struct linux_binprm *bprm);
- 
-@@ -32,4 +33,10 @@ int ipe_bdev_setsecurity(struct block_device *bdev, const char *key,
- 			 const void *value, size_t len);
- #endif /* CONFIG_IPE_PROP_DM_VERITY */
- 
-+#ifdef CONFIG_IPE_PROP_FS_VERITY
-+int ipe_inode_setsecurity(struct inode *inode, const char *name,
-+			  const void *value, size_t size,
-+			  int flags);
-+#endif /* CONFIG_IPE_PROP_FS_VERITY */
++	fprintf(fd, "\t\"");
 +
- #endif /* _IPE_HOOKS_H */
++	for (i = 0; i < size; ++i) {
++		switch (buf[i]) {
++		case '"':
++			fprintf(fd, "\\\"");
++			break;
++		case '\'':
++			fprintf(fd, "'");
++			break;
++		case '\n':
++			fprintf(fd, "\\n\"\n\t\"");
++			break;
++		case '\\':
++			fprintf(fd, "\\\\");
++			break;
++		case '\t':
++			fprintf(fd, "\\t");
++			break;
++		case '\?':
++			fprintf(fd, "\\?");
++			break;
++		default:
++			fprintf(fd, "%c", buf[i]);
++		}
++	}
++	fprintf(fd, "\";\n");
++	fclose(fd);
++
++	return 0;
++
++err:
++	if (fd)
++		fclose(fd);
++	return rc;
++}
++
++int main(int argc, const char *const argv[])
++{
++	int rc = 0;
++	size_t len = 0;
++	char *policy = NULL;
++
++	if (argc < 2)
++		usage(argv[0]);
++
++	if (argc > 2) {
++		rc = policy_to_buffer(argv[2], &policy, &len);
++		if (rc != 0)
++			goto cleanup;
++	}
++
++	rc = write_boot_policy(argv[1], policy, len);
++cleanup:
++	if (policy)
++		free(policy);
++	if (rc != 0)
++		perror("An error occurred during policy conversion: ");
++	return rc;
++}
+diff --git a/security/ipe/.gitignore b/security/ipe/.gitignore
+new file mode 100644
+index 000000000000..eca22ad5ed22
+--- /dev/null
++++ b/security/ipe/.gitignore
+@@ -0,0 +1 @@
++boot-policy.c
+\ No newline at end of file
+diff --git a/security/ipe/Kconfig b/security/ipe/Kconfig
+index 9dd5c4769d79..a6c5d48dd0a3 100644
+--- a/security/ipe/Kconfig
++++ b/security/ipe/Kconfig
+@@ -18,6 +18,16 @@ menuconfig SECURITY_IPE
+ 	  If unsure, answer N.
+ 
+ if SECURITY_IPE
++config IPE_BOOT_POLICY
++	string "Integrity policy to apply on system startup"
++	help
++	  This option specifies a filepath to a IPE policy that is compiled
++	  into the kernel. This policy will be enforced until a policy update
++	  is deployed via the $securityfs/ipe/policies/$policy_name/active
++	  interface.
++
++	  If unsure, leave blank.
++
+ menu "IPE Trust Providers"
+ 
+ config IPE_PROP_DM_VERITY
+diff --git a/security/ipe/Makefile b/security/ipe/Makefile
+index 66de53687d11..ce23101b66ba 100644
+--- a/security/ipe/Makefile
++++ b/security/ipe/Makefile
+@@ -5,7 +5,16 @@
+ # Makefile for building the IPE module as part of the kernel tree.
+ #
+ 
++quiet_cmd_polgen = IPE_POL $(2)
++      cmd_polgen = scripts/ipe/polgen/polgen security/ipe/boot-policy.c $(2)
++
++targets += boot-policy.c
++
++$(obj)/boot-policy.c: scripts/ipe/polgen/polgen $(CONFIG_IPE_BOOT_POLICY) FORCE
++	$(call if_changed,polgen,$(CONFIG_IPE_BOOT_POLICY))
++
+ obj-$(CONFIG_SECURITY_IPE) += \
++	boot-policy.o \
+ 	digest.o \
+ 	eval.o \
+ 	hooks.o \
+@@ -15,3 +24,5 @@ obj-$(CONFIG_SECURITY_IPE) += \
+ 	policy_fs.o \
+ 	policy_parser.o \
+ 	audit.o \
++
++clean-files := boot-policy.c \
+diff --git a/security/ipe/fs.c b/security/ipe/fs.c
+index 0a1838432bd0..58584c5f3ee4 100644
+--- a/security/ipe/fs.c
++++ b/security/ipe/fs.c
+@@ -190,6 +190,7 @@ static const struct file_operations enforce_fops = {
+ static int __init ipe_init_securityfs(void)
+ {
+ 	int rc = 0;
++	struct ipe_policy *ap;
+ 
+ 	if (!ipe_enabled)
+ 		return -EOPNOTSUPP;
+@@ -220,6 +221,13 @@ static int __init ipe_init_securityfs(void)
+ 		goto err;
+ 	}
+ 
++	ap = rcu_access_pointer(ipe_active_policy);
++	if (ap) {
++		rc = ipe_new_policyfs_node(ap);
++		if (rc)
++			goto err;
++	}
++
+ 	np = securityfs_create_file("new_policy", 0200, root, NULL, &np_fops);
+ 	if (IS_ERR(np)) {
+ 		rc = PTR_ERR(np);
 diff --git a/security/ipe/ipe.c b/security/ipe/ipe.c
-index c7e8af554d35..e789f1db6f66 100644
+index e789f1db6f66..3d672dd57b32 100644
 --- a/security/ipe/ipe.c
 +++ b/security/ipe/ipe.c
-@@ -13,6 +13,9 @@ static struct lsm_blob_sizes ipe_blobs __ro_after_init = {
- #ifdef CONFIG_IPE_PROP_DM_VERITY
- 	.lbs_bdev = sizeof(struct ipe_bdev),
- #endif /* CONFIG_IPE_PROP_DM_VERITY */
-+#ifdef CONFIG_IPE_PROP_FS_VERITY
-+	.lbs_inode = sizeof(struct ipe_inode),
-+#endif /* CONFIG_IPE_PROP_FS_VERITY */
- };
+@@ -7,6 +7,7 @@
+ #include "hooks.h"
+ #include "eval.h"
  
- #ifdef CONFIG_IPE_PROP_DM_VERITY
-@@ -22,6 +25,13 @@ struct ipe_bdev *ipe_bdev(struct block_device *b)
- }
- #endif /* CONFIG_IPE_PROP_DM_VERITY */
++extern const char *const ipe_boot_policy;
+ bool ipe_enabled;
  
-+#ifdef CONFIG_IPE_PROP_FS_VERITY
-+struct ipe_inode *ipe_inode(const struct inode *inode)
-+{
-+	return inode->i_security + ipe_blobs.lbs_inode;
-+}
-+#endif /* CONFIG_IPE_PROP_FS_VERITY */
+ static struct lsm_blob_sizes ipe_blobs __ro_after_init = {
+@@ -60,9 +61,20 @@ static struct security_hook_list ipe_hooks[] __ro_after_init = {
+  */
+ static int __init ipe_init(void)
+ {
++	struct ipe_policy *p = NULL;
 +
- static struct security_hook_list ipe_hooks[] __ro_after_init = {
- 	LSM_HOOK_INIT(bprm_check_security, ipe_bprm_check_security),
- 	LSM_HOOK_INIT(mmap_file, ipe_mmap_file),
-@@ -33,6 +43,9 @@ static struct security_hook_list ipe_hooks[] __ro_after_init = {
- 	LSM_HOOK_INIT(bdev_free_security, ipe_bdev_free_security),
- 	LSM_HOOK_INIT(bdev_setsecurity, ipe_bdev_setsecurity),
- #endif
-+#ifdef CONFIG_IPE_PROP_FS_VERITY
-+	LSM_HOOK_INIT(inode_setsecurity, ipe_inode_setsecurity),
-+#endif /* CONFIG_IPE_PROP_FS_VERITY */
- };
+ 	security_add_hooks(ipe_hooks, ARRAY_SIZE(ipe_hooks), "ipe");
+ 	ipe_enabled = true;
  
- /**
-diff --git a/security/ipe/ipe.h b/security/ipe/ipe.h
-index 4e8d1a440c4b..d32f99350503 100644
---- a/security/ipe/ipe.h
-+++ b/security/ipe/ipe.h
-@@ -18,5 +18,8 @@ extern bool ipe_enabled;
- #ifdef CONFIG_IPE_PROP_DM_VERITY
- struct ipe_bdev *ipe_bdev(struct block_device *b);
- #endif /* CONFIG_IPE_PROP_DM_VERITY */
-+#ifdef CONFIG_IPE_PROP_FS_VERITY
-+struct ipe_inode *ipe_inode(const struct inode *inode);
-+#endif /* CONFIG_IPE_PROP_FS_VERITY */
++	if (ipe_boot_policy) {
++		p = ipe_new_policy(ipe_boot_policy, strlen(ipe_boot_policy),
++				   NULL, 0);
++		if (IS_ERR(p))
++			return PTR_ERR(p);
++
++		rcu_assign_pointer(ipe_active_policy, p);
++	}
++
+ 	return 0;
+ }
  
- #endif /* _IPE_H */
-diff --git a/security/ipe/policy.h b/security/ipe/policy.h
-index 13e5c40e9204..51a7c21bb8ad 100644
---- a/security/ipe/policy.h
-+++ b/security/ipe/policy.h
-@@ -36,6 +36,9 @@ enum ipe_prop_type {
- 	IPE_PROP_DMV_ROOTHASH,
- 	IPE_PROP_DMV_SIG_FALSE,
- 	IPE_PROP_DMV_SIG_TRUE,
-+	IPE_PROP_FSV_DIGEST,
-+	IPE_PROP_FSV_SIG_FALSE,
-+	IPE_PROP_FSV_SIG_TRUE,
- 	__IPE_PROP_MAX
- };
- 
-diff --git a/security/ipe/policy_parser.c b/security/ipe/policy_parser.c
-index 3acb1d681f65..aacc0c4cf9df 100644
---- a/security/ipe/policy_parser.c
-+++ b/security/ipe/policy_parser.c
-@@ -275,6 +275,11 @@ static const match_table_t property_tokens = {
- 	{IPE_PROP_DMV_SIG_FALSE,	"dmverity_signature=FALSE"},
- 	{IPE_PROP_DMV_SIG_TRUE,		"dmverity_signature=TRUE"},
- #endif /* CONFIG_IPE_PROP_DM_VERITY */
-+#ifdef CONFIG_IPE_PROP_FS_VERITY
-+	{IPE_PROP_FSV_DIGEST,		"fsverity_digest=%s"},
-+	{IPE_PROP_FSV_SIG_FALSE,	"fsverity_signature=FALSE"},
-+	{IPE_PROP_FSV_SIG_TRUE,		"fsverity_signature=TRUE"},
-+#endif /* CONFIG_IPE_PROP_FS_VERITY */
- 	{IPE_PROP_INVALID,		NULL}
- };
- 
-@@ -304,6 +309,7 @@ static int parse_property(char *t, struct ipe_rule *r)
- 
- 	switch (token) {
- 	case IPE_PROP_DMV_ROOTHASH:
-+	case IPE_PROP_FSV_DIGEST:
- 		dup = match_strdup(&args[0]);
- 		if (!dup) {
- 			rc = -ENOMEM;
-@@ -317,6 +323,8 @@ static int parse_property(char *t, struct ipe_rule *r)
- 	case IPE_PROP_BOOT_VERIFIED_TRUE:
- 	case IPE_PROP_DMV_SIG_FALSE:
- 	case IPE_PROP_DMV_SIG_TRUE:
-+	case IPE_PROP_FSV_SIG_FALSE:
-+	case IPE_PROP_FSV_SIG_TRUE:
- 		p->type = token;
- 		break;
- 	default:
 -- 
 2.25.1
 
