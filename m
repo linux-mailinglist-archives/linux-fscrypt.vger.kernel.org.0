@@ -2,69 +2,69 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE82B7C4120
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 10 Oct 2023 22:26:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EFA57C4129
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 10 Oct 2023 22:26:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231596AbjJJU0e (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 10 Oct 2023 16:26:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36390 "EHLO
+        id S231208AbjJJU0n (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 10 Oct 2023 16:26:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234480AbjJJU0a (ORCPT
+        with ESMTP id S234528AbjJJU0a (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
         Tue, 10 Oct 2023 16:26:30 -0400
-Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BEBFED
+Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EDD3F4
         for <linux-fscrypt@vger.kernel.org>; Tue, 10 Oct 2023 13:26:25 -0700 (PDT)
-Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-5a7d9d357faso3761087b3.0
+Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-59f82ad1e09so76629717b3.0
         for <linux-fscrypt@vger.kernel.org>; Tue, 10 Oct 2023 13:26:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1696969584; x=1697574384; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1696969585; x=1697574385; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=M2VMrA1lI9Q4ecQ5bc5FJJXlOR+SulDDfBaPoTgzRVE=;
-        b=qHBR6KTb5/EJuFj244Q9gGY7llosCXyLMr2HggcN28lQ3AiDdEmQBmvamMx0L9EWab
-         Q22kpdWE66SlTK4XB3BSpR4VJ+ZSK8o+M5eBt3CkUiUkBSCl++aKLcjXKn0V27HfOtEi
-         64iW+31QJBmLQU2rMTzlCG6SReVYQE6euKGQX8i2eY3Q761eOhNIb0cBq7cq8XnkSNny
-         wY+0XYkR4jBKc3v1PbzhvG3ALHj4SMKMlAIYEWEKxi/9Vt99dZEH5v1/lFrxDKIBFQnh
-         7INt3Di28T44YPz6KtnjlD9Z2UuRWa+vAp3s7Q3w81wRl4FrhVG32moGy6uUqsrzmdhQ
-         X/Ug==
+        bh=WjlHOtrmj3j+aDuwQDOJPd6FNzCtXK4lP83KMVMNQ78=;
+        b=NuOA82EblV9VoFsJrz8LU/0QooeSrjOEKcAvBaH+20hPlXvuQXGOOuhO748m0ZbyaE
+         I/K6amYHbwigIgU/ypBQIEBPWM4V36xdl1hhAQ2b1ghgm8hqFHHrmMsPIUsTETQcnwB+
+         GohYUuW5A9rViUk3Bs3trcZP5sC4VNt6QAgITFo6OZ5VnCG4vXNej7/IzZz/o54vWBbO
+         4Mbd1DILvGkZvYE0CC/heXzLj6dEPRXSV6ee3RnpmlsI5WWbFG4KVCUMsnWZIRBQAXdR
+         NyJfskiDl3cc0LlHQJr2EtUyjacObWv7A6Konjotprp5/SxiBu2BQfGPVXRKBwKLOwNE
+         fohA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696969584; x=1697574384;
+        d=1e100.net; s=20230601; t=1696969585; x=1697574385;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=M2VMrA1lI9Q4ecQ5bc5FJJXlOR+SulDDfBaPoTgzRVE=;
-        b=aMJ7K+8M4GzKSvsWUZwwqW8C7M01+EwgjO5IWt38NDZEaE5flqwYW/PCvV4C5D1y+M
-         h06q5gj3bYDwxvp1zhKY6BEum20OakarurDDnroQYBo10fI3jKvyVYHkOi8AWDbvnxMj
-         at7ftBFjHKfmHfWjM+azvwmns7lfaOvlNMyXAmwcHdAgWFya5tXOnBa9bs4WOJLakxOa
-         oMBPi5IbrC8T3H/EaUZaqsn0mM5+hE1YNHRobv2zMRNRuvT0MUr0GLgXZ5dM9qOoftsj
-         HdcTut8NmyWRRKWl6OaNmVT/lDbXzsmKo7WvKnFUARAiUr7zeKsVWFiNez9oZjulTOmv
-         gPkA==
-X-Gm-Message-State: AOJu0YyrOYtj+SiyNRISG5kdwL7rKDfEgty1eAcCtwlLCyzg9x7h2wCV
-        cRGOyvqNP1viQTDe66T18ZLETED4tYgKZX26/L1TMQ==
-X-Google-Smtp-Source: AGHT+IG+BJZqKItphUjRYVNLo/YE1loYz+1+fzWvZ+O4HVoM+QGspAsPD6MkeRRtOJichHcdzorz5g==
-X-Received: by 2002:a0d:ef43:0:b0:595:be7:a38 with SMTP id y64-20020a0def43000000b005950be70a38mr20627894ywe.49.1696969584182;
-        Tue, 10 Oct 2023 13:26:24 -0700 (PDT)
+        bh=WjlHOtrmj3j+aDuwQDOJPd6FNzCtXK4lP83KMVMNQ78=;
+        b=BhwBPhkHa2pybpbJhWXU9WItXqTx9lJpwoWnVeDFZpCY6KN9F4LJ8FkfhNAeqmT7dQ
+         69jYpMCM+hbM90rBHMcbEJ0X4HL7PaT/HT/pQzBNpY2F0ubQO74+RrQA/wEodVkwqfmP
+         JWA9QBCzfsbvAwNFzSzcp1VQ0t6aQEdzZI3NctjdPKLKS4qseuG+4AWVCIZaylaVf55w
+         ldlU6qagt/HaxeqyirJdgODUlacVv0KhQxXu/jBIx+N9id5x68+wyGr3xJR7DFKe1Ea2
+         lZDVPyAW3WHs4cRr+t0XyVNvNGp+/v/6bWoqvqcUtjUlNxKy9xThrjvS69KD0/LPFqqO
+         Mezw==
+X-Gm-Message-State: AOJu0YyHKQrZ9SS/2d6e6TpGtteN+DyjaEwYg/AEOaHuDfqY8VOGJbu8
+        pkSMbflE1Tvfj+TIBJn1JZnbp3DA8qnD2mwBItt8BA==
+X-Google-Smtp-Source: AGHT+IFYUeWvqGAdezAeV0PC8Dt/mEZnTIfBKHtUm1+6ewgo2L71xr6Nj3WRQlnyyO/HOQuYGigcZQ==
+X-Received: by 2002:a81:8782:0:b0:577:51cd:1b4a with SMTP id x124-20020a818782000000b0057751cd1b4amr21451628ywf.41.1696969585060;
+        Tue, 10 Oct 2023 13:26:25 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id i84-20020a819157000000b005a7bfec6c34sm701856ywg.46.2023.10.10.13.26.23
+        by smtp.gmail.com with ESMTPSA id m12-20020a819e0c000000b00594fff48796sm4588587ywj.75.2023.10.10.13.26.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 13:26:23 -0700 (PDT)
+        Tue, 10 Oct 2023 13:26:24 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         linux-btrfs@vger.kernel.org
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH 06/12] btrfs: add simple test of reflink of encrypted data
-Date:   Tue, 10 Oct 2023 16:25:59 -0400
-Message-ID: <723b5972c3d2d917acc23bf65eb3a5e5feba5ecc.1696969376.git.josef@toxicpanda.com>
+Subject: [PATCH 07/12] btrfs: test snapshotting encrypted subvol
+Date:   Tue, 10 Oct 2023 16:26:00 -0400
+Message-ID: <9a17afb133849c2321bb98c07c48cff2aaf1d87a.1696969376.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1696969376.git.josef@toxicpanda.com>
 References: <cover.1696969376.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        UPPERCASE_75_100 autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -73,30 +73,33 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 
-Make sure that we succeed at reflinking encrypted data.
+Make sure that snapshots of encrypted data are readable and writeable.
 
-Test deliberately numbered with a high number so it won't conflict with
-tests between now and merge.
+Test deliberately high-numbered to not conflict.
+
+Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 ---
- tests/btrfs/613     | 59 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/613.out | 13 ++++++++++
- 2 files changed, 72 insertions(+)
- create mode 100755 tests/btrfs/613
- create mode 100644 tests/btrfs/613.out
+ tests/btrfs/614     |  76 ++++++++++++++++++++++++++++++
+ tests/btrfs/614.out | 111 ++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 187 insertions(+)
+ create mode 100755 tests/btrfs/614
+ create mode 100644 tests/btrfs/614.out
 
-diff --git a/tests/btrfs/613 b/tests/btrfs/613
+diff --git a/tests/btrfs/614 b/tests/btrfs/614
 new file mode 100755
-index 00000000..0288016e
+index 00000000..87dd27f9
 --- /dev/null
-+++ b/tests/btrfs/613
-@@ -0,0 +1,59 @@
++++ b/tests/btrfs/614
+@@ -0,0 +1,76 @@
 +#! /bin/bash
 +# SPDX-License-Identifier: GPL-2.0
 +# Copyright (c) 2023 Meta Platforms, Inc.  All Rights Reserved.
 +#
-+# FS QA Test 613
++# FS QA Test 614
 +#
-+# Check if reflinking one encrypted file on btrfs succeeds.
++# Try taking a snapshot of an encrypted subvolume. Make sure the snapshot is
++# still readable. Rewrite part of the subvol with the same data; make sure it's
++# still readable.
 +#
 +. ./common/preamble
 +_begin_fstest auto encrypt
@@ -104,70 +107,183 @@ index 00000000..0288016e
 +# Import common functions.
 +. ./common/encrypt
 +. ./common/filter
-+. ./common/reflink
 +
 +# real QA test starts here
-+
-+# Modify as appropriate.
 +_supported_fs btrfs
 +
 +_require_test
 +_require_scratch
-+_require_cp_reflink
 +_require_scratch_encryption -v 2
 +_require_command "$KEYCTL_PROG" keyctl
 +
 +_scratch_mkfs_encrypted &>> $seqres.full
 +_scratch_mount
 +
-+dir=$SCRATCH_MNT/dir
-+mkdir $dir
++udir=$SCRATCH_MNT/reference
++dir=$SCRATCH_MNT/subvol
++dir2=$SCRATCH_MNT/subvol2
++$BTRFS_UTIL_PROG subvolume create $dir >> $seqres.full
++mkdir $udir
++
 +_set_encpolicy $dir $TEST_KEY_IDENTIFIER
 +_add_enckey $SCRATCH_MNT "$TEST_RAW_KEY"
-+echo "Creating and reflinking a file"
-+$XFS_IO_PROG -t -f -c "pwrite 0 33k" $dir/test > /dev/null
-+cp --reflink=always $dir/test $dir/test2
 +
-+echo "Can't reflink encrypted and unencrypted"
-+cp --reflink=always $dir/test $SCRATCH_MNT/fail |& _filter_scratch
++# get files with lots of extents by using backwards writes.
++for j in `seq 0 50`; do
++	for i in `seq 20 -1 1`; do
++		$XFS_IO_PROG -f -d -c "pwrite $(($i * 4096)) 4096" \
++		$dir/foo-$j >> $seqres.full | _filter_xfs_io
++		$XFS_IO_PROG -f -d -c "pwrite $(($i * 4096)) 4096" \
++		$udir/foo-$j >> $seqres.full | _filter_xfs_io
++	done
++done
 +
-+echo "Diffing the file and its copy"
-+diff $dir/test $dir/test2
++$BTRFS_UTIL_PROG subvolume snapshot $dir $dir2 | _filter_scratch
 +
-+echo "Verifying the files are reflinked"
-+_verify_reflink $dir/test $dir/test2
-+
-+echo "Diffing the files after remount"
-+_scratch_cycle_mount
++_scratch_remount
 +_add_enckey $SCRATCH_MNT "$TEST_RAW_KEY"
-+diff $dir/test $dir/test2
++sleep 30
++echo "Diffing $dir and $dir2"
++diff $dir $dir2
 +
-+echo "Diffing the files after key remove"
++echo "Rewriting $dir2 partly"
++# rewrite half of each file in the snapshot
++for j in `seq 0 50`; do
++	for i in `seq 10 -1 1`; do
++		$XFS_IO_PROG -f -d -c "pwrite $(($i * 4096)) 4096" \
++		$dir2/foo-$j >> $seqres.full | _filter_xfs_io
++	done
++done
++
++echo "Diffing $dir and $dir2"
++diff $dir $dir2
++
++echo "Dropping key and diffing"
 +_rm_enckey $SCRATCH_MNT $TEST_KEY_IDENTIFIER
-+diff $dir/test $dir/test2 |& _filter_scratch
++diff $dir $dir2 |& _filter_scratch | _filter_nokey_filenames
++
++$BTRFS_UTIL_PROG subvolume delete $dir > /dev/null 2>&1
 +
 +# success, all done
 +status=0
 +exit
-diff --git a/tests/btrfs/613.out b/tests/btrfs/613.out
+diff --git a/tests/btrfs/614.out b/tests/btrfs/614.out
 new file mode 100644
-index 00000000..4895d6dd
+index 00000000..390807e8
 --- /dev/null
-+++ b/tests/btrfs/613.out
-@@ -0,0 +1,13 @@
-+QA output created by 613
++++ b/tests/btrfs/614.out
+@@ -0,0 +1,111 @@
++QA output created by 614
 +Added encryption key with identifier 69b2f6edeee720cce0577937eb8a6751
-+Creating and reflinking a file
-+Can't reflink encrypted and unencrypted
-+cp: failed to clone 'SCRATCH_MNT/fail' from 'SCRATCH_MNT/dir/test': Invalid argument
-+Diffing the file and its copy
-+Verifying the files are reflinked
-+Diffing the files after remount
++Create a snapshot of 'SCRATCH_MNT/subvol' in 'SCRATCH_MNT/subvol2'
 +Added encryption key with identifier 69b2f6edeee720cce0577937eb8a6751
-+Diffing the files after key remove
++Diffing /mnt/scratch/subvol and /mnt/scratch/subvol2
++Rewriting /mnt/scratch/subvol2 partly
++Diffing /mnt/scratch/subvol and /mnt/scratch/subvol2
++Dropping key and diffing
 +Removed encryption key with identifier 69b2f6edeee720cce0577937eb8a6751
-+diff: SCRATCH_MNT/dir/test: No such file or directory
-+diff: SCRATCH_MNT/dir/test2: No such file or directory
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
++NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
 -- 
 2.41.0
 
