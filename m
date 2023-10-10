@@ -2,61 +2,61 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E09C7C411B
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 10 Oct 2023 22:26:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29E267C411F
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 10 Oct 2023 22:26:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234473AbjJJU03 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 10 Oct 2023 16:26:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36464 "EHLO
+        id S234365AbjJJU0b (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 10 Oct 2023 16:26:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231596AbjJJU0Y (ORCPT
+        with ESMTP id S234393AbjJJU0Z (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 10 Oct 2023 16:26:24 -0400
-Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46ED9DA
-        for <linux-fscrypt@vger.kernel.org>; Tue, 10 Oct 2023 13:26:21 -0700 (PDT)
-Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-5a7ac4c3666so22724587b3.3
-        for <linux-fscrypt@vger.kernel.org>; Tue, 10 Oct 2023 13:26:21 -0700 (PDT)
+        Tue, 10 Oct 2023 16:26:25 -0400
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46E23D3
+        for <linux-fscrypt@vger.kernel.org>; Tue, 10 Oct 2023 13:26:22 -0700 (PDT)
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-5a7c7262d5eso10976547b3.1
+        for <linux-fscrypt@vger.kernel.org>; Tue, 10 Oct 2023 13:26:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1696969580; x=1697574380; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1696969581; x=1697574381; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OFwcUtvU3gU5AGXiF/CPujJ+TekA/xyF9zqxriLoMwM=;
-        b=gRQAywef0j79nEmibOimvJGCzSWw6Z5UsPLv3u0VpLoOgzrC/IbFEKbTxIgChb6vpj
-         lpEUoZcgsE9U6h+a8oJCem/mFWo80th9o0icWOoNFUYB8jPIi9PxNrKNJ0/OypFvj1ir
-         319DWod/C8ATKL/diOCnIdtVjapJYZgXg2U+7ZbhsRB9oicVJW0alOM2nzrvG0ATS5Zn
-         ym2/jiSHrSrR7nt6TtoZb3PMmT8rHSe/UGb9Q7/ThV2CZzYTyuKba2b8pGZrzIEWUJnr
-         U9vtfjeTJxck/6pEA+VVr3alba6n+OFoEEUKNhZQHI7FolqPJvVJS+wX3tC4JxhhiVGo
-         sRzg==
+        bh=jEBkTHJ3Zcu/2KG+vVGPEkATD7sMt03VYNJu8yvTP9M=;
+        b=SN3aOlddxcqgvMSGkQYM9YW3biqn9ZY2bGhhhSwZHovLYv3+H7VLvPrtEXVA+73MyZ
+         j+N0RB1qVFxXODgeGnO9GoA79kWnrQqX//uc6CZ/MXuilIOVwRvVUIE6RDyzcKjN+WF6
+         RyfB1SoUG6FkEPtVtSJ1cLdRpH5DoB54aNZkM82HZCvzEJoS9pvQH8jvs0DjhxZrcjvT
+         xks8pRcEaIWfV9EomLx5+eSZYz13vaagV9MY4xgdvFpzCJV1ei5oL4+euF9BlacA2BFi
+         qr4JyIWgEtlJ/zjB8ec9NjI8MzYQrkLQ9zRGNdYBa3g7qMWgFyqDPBnvjpojxDbcy2GT
+         yqlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696969580; x=1697574380;
+        d=1e100.net; s=20230601; t=1696969581; x=1697574381;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OFwcUtvU3gU5AGXiF/CPujJ+TekA/xyF9zqxriLoMwM=;
-        b=hmcPt+p5C7B2uz/ZyJNMZCkWkj1uBDgEQEDiPCd/mmKj4/BQhr/60bJJekeSZ9g/qg
-         nulQbSAyZcQqjZ/0Ri+/u0IyaUVkU6ac2w5fizJZ4U2pBs1AyiUlrNNKvyXjPqI+U1KD
-         OWWsvUZyND8BGFWC+WyGFGdzM4gzoK69Zko5LnSRWpqr5OI3jPbEeZuy1VhE+a4R5yxy
-         sfwKCOkY2aZpUHYqO8XFljz+s79CZlRPNHD/uy+pgtzEXzyCMMv28ShIPpvLXTP75ZWn
-         XznPBjGqSudfzXD3AlFlSCMHCqBgFlELlN3zv+77XJCz/oNQaJtXrojO/MjdRWrrVULi
-         bCWg==
-X-Gm-Message-State: AOJu0Yw2iIJ9IkjA1e/q+Oo6D5xgpFK56sdrNIQjfNa/FveAsT/Xf84C
-        ETk0dofLSnWEPIhNAWoFY482Qw==
-X-Google-Smtp-Source: AGHT+IFQoMBF9uhCT0asEEgYDb3P3Co+GNRB/75Q1mdnz6O01l+cwEoqFE71PBDrmralI/v8iQ9RpQ==
-X-Received: by 2002:a81:8104:0:b0:59b:bacb:a84f with SMTP id r4-20020a818104000000b0059bbacba84fmr20903470ywf.47.1696969580433;
-        Tue, 10 Oct 2023 13:26:20 -0700 (PDT)
+        bh=jEBkTHJ3Zcu/2KG+vVGPEkATD7sMt03VYNJu8yvTP9M=;
+        b=nDRpTbDsMw+6ZCjHhU2wxcXHS/Tc/LF/jOIidML3k6eA8eb2F7fY3lo0nqtyOJ7xHU
+         /uFSzOgOTGykIHgCFN+sm9w6+itWmjJmemx25BJpBI6qlHwJNcMrRFCijkFkrIuhhrGs
+         fWMuKi/1ffFfYtR8gZ6Wmmvs21URyONNRu2fv4h/M3dBtQViaZGxzdxvDrFnushnT2+C
+         tFFF2TYWAdD4rYPPGtFEw5zKw2r6b+Fuu2H/I9ZDOJXSL830imAZ7jyMe4VJC2xCttwq
+         L45/QGeKVk9DK3Ug2cLFWgjBTSbSD71n48juzouKhqlzJg5HAKukjvMqVjTuYEvgMt95
+         xu1A==
+X-Gm-Message-State: AOJu0YyC6PSZ48F2bWtExrAwVhUuBu3JH4xJNVujtbWyaN8YwhAWmm6/
+        rh7MQafQIGuc/DK2hse8L2JwDNgaqAmnhCmIY/XNnw==
+X-Google-Smtp-Source: AGHT+IEDJXaz8Iqj0J5QGmoE8YAQkrqbJnp7d+TIBuszlRdRr5jTsnA0UfmfaKbLhaXI1gnZsLNkDg==
+X-Received: by 2002:a81:48cc:0:b0:5a7:baac:7b34 with SMTP id v195-20020a8148cc000000b005a7baac7b34mr3793507ywa.28.1696969581386;
+        Tue, 10 Oct 2023 13:26:21 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id x9-20020a814a09000000b00589b653b7adsm4691229ywa.136.2023.10.10.13.26.20
+        by smtp.gmail.com with ESMTPSA id x9-20020a814a09000000b00589b653b7adsm4691241ywa.136.2023.10.10.13.26.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 13:26:20 -0700 (PDT)
+        Tue, 10 Oct 2023 13:26:21 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         linux-btrfs@vger.kernel.org
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH 02/12] common/encrypt: add btrfs to get_encryption_*nonce
-Date:   Tue, 10 Oct 2023 16:25:55 -0400
-Message-ID: <f751b02bf76ffb24a126016c089dbf04d2e80823.1696969376.git.josef@toxicpanda.com>
+Subject: [PATCH 03/12] common/encrypt: add btrfs to get_ciphertext_filename
+Date:   Tue, 10 Oct 2023 16:25:56 -0400
+Message-ID: <b568ed0fa6b5a94c38dc1a08d07f4e289bf9d75f.1696969376.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1696969376.git.josef@toxicpanda.com>
 References: <cover.1696969376.git.josef@toxicpanda.com>
@@ -73,72 +73,46 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 
-Add the modes of getting the encryption nonces, either inode or extent,
-to the various get_encryption_nonce functions. For now, no encrypt test
-makes a file with more than one extent, so we can just grab the first
-extent's nonce for the data nonce; when we write a bigger file test,
-we'll need to change that.
+Add the relevant call to get an encrypted filename from btrfs.
 
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 ---
- common/encrypt | 31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+ common/encrypt | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
 diff --git a/common/encrypt b/common/encrypt
-index 04b6e5ac..fc1c8cc7 100644
+index fc1c8cc7..2c1925da 100644
 --- a/common/encrypt
 +++ b/common/encrypt
-@@ -531,6 +531,17 @@ _get_encryption_file_nonce()
- 				found = 0;
- 			}'
- 		;;
+@@ -618,6 +618,19 @@ _get_ciphertext_filename()
+ 	local dir_inode=$3
+ 
+ 	case $FSTYP in
 +	btrfs)
-+		# Retrieve the fscrypt context for an inode as a hex string.
-+		# btrfs prints these like:
-+		#        item 14 key ($inode FSCRYPT_CTXT_ITEM 0) itemoff 15491 itemsize 40
-+		#                value: 02010400000000008fabf3dd745d41856e812458cd765bf0140f41d62853f4c0351837daff4dcc8f
-+
++		# Extract the filename from the inode_ref object, similar to:
++		# item 24 key (259 INODE_REF 257) itemoff 14826 itemsize 26
++		# 	index 3 namelen 16 name: J\xf7\x15tD\x8eL\xae/\x98\x9f\x09\xc1\xb6\x09>
++		#
 +		$BTRFS_UTIL_PROG inspect-internal dump-tree $device | \
-+			grep -A 1 "key ($inode FSCRYPT_CTXT_ITEM 0)" | \
-+			grep --only-matching 'value: [[:xdigit:]]\+' | \
-+			tr -d ' \n' | tail -c 32
++			grep -A 1 "key ($inode INODE_REF " | tail -n 1 | \
++			perl -ne '
++				s/.*?name: //;
++				chomp;
++				s/\\x([[:xdigit:]]{2})/chr hex $1/eg;
++				print;'
 +		;;
- 	*)
- 		_fail "_get_encryption_file_nonce() isn't implemented on $FSTYP"
- 		;;
-@@ -550,6 +561,23 @@ _get_encryption_data_nonce()
- 	ext4|f2fs)
- 		_get_encryption_file_nonce $device $inode
- 		;;
-+	btrfs)
-+		# Retrieve the encryption IV of the first file extent in an inode as a hex
-+		# string. btrfs prints the file extents (for simple unshared
-+		# inodes) like:
-+		#         item 21 key ($inode EXTENT_DATA 0) itemoff 2534 itemsize 69
-+		#                generation 7 type 1 (regular)
-+                #		 extent data disk byte 5304320 nr 1048576
-+                #		 extent data offset 0 nr 1048576 ram 1048576
-+                #		 extent compression 0 (none)
-+                #		 extent encryption 161 ((1, 40: context 0201040200000000116a77667261d7422a4b1ed8c427e685edb7a0d370d0c9d40030333033333330))
-+
-+
-+		$BTRFS_UTIL_PROG inspect-internal dump-tree $device | \
-+			grep -A 5 "key ($inode EXTENT_DATA 0)" | \
-+			grep --only-matching 'context [[:xdigit:]]\+' | \
-+			tr -d ' \n' | tail -c 32
-+		;;
- 	*)
- 		_fail "_get_encryption_data_nonce() isn't implemented on $FSTYP"
- 		;;
-@@ -572,6 +600,9 @@ _require_get_encryption_nonce_support()
- 		# Otherwise the xattr is incorrectly parsed as v1.  But just let
- 		# the test fail in that case, as it was an f2fs-tools bug...
+ 	ext4)
+ 		# Extract the filename from the debugfs output line like:
+ 		#
+@@ -715,6 +728,9 @@ _require_get_ciphertext_filename_support()
+ 			_notrun "dump.f2fs (f2fs-tools) is too old; doesn't support showing unambiguous on-disk filenames"
+ 		fi
  		;;
 +	btrfs)
 +		_require_command "$BTRFS_UTIL_PROG" btrfs
 +		;;
  	*)
- 		_notrun "_get_encryption_*nonce() isn't implemented on $FSTYP"
+ 		_notrun "_get_ciphertext_filename() isn't implemented on $FSTYP"
  		;;
 -- 
 2.41.0
