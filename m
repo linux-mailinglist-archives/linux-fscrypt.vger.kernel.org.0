@@ -2,140 +2,190 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29F367C4127
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 10 Oct 2023 22:26:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1AE47C4169
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 10 Oct 2023 22:41:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234685AbjJJU0j (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 10 Oct 2023 16:26:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36450 "EHLO
+        id S234279AbjJJUlH (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 10 Oct 2023 16:41:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234510AbjJJU0g (ORCPT
+        with ESMTP id S231208AbjJJUlG (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 10 Oct 2023 16:26:36 -0400
-Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACEC0AC
-        for <linux-fscrypt@vger.kernel.org>; Tue, 10 Oct 2023 13:26:31 -0700 (PDT)
-Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5a7dafb659cso2272117b3.0
-        for <linux-fscrypt@vger.kernel.org>; Tue, 10 Oct 2023 13:26:31 -0700 (PDT)
+        Tue, 10 Oct 2023 16:41:06 -0400
+Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09BF3A4
+        for <linux-fscrypt@vger.kernel.org>; Tue, 10 Oct 2023 13:41:04 -0700 (PDT)
+Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5a7be88e9ccso14560317b3.2
+        for <linux-fscrypt@vger.kernel.org>; Tue, 10 Oct 2023 13:41:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1696969591; x=1697574391; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TYV6W3/su+yQdVC08/W92yX/IiZTkZ+W2IG1K67YFEE=;
-        b=CPK4WauFk1tak6CV4zolZKCy2JoVv3UUf4yWBpQfTiBhaILnk+HeLUugwYR8nYSbVI
-         7CeUnXcXyOt4UiHr9lmuNXveqR/1ixvdEdQ3cFbkkf0UuNyp/izAqT/UB/NPkFOcIguz
-         8vILIO+nbjucFHTxOfZsG/25fd6saUXsSvFJck9uYp8GK4UaT6wm0XkTXIM+J38m4ViR
-         Pbz4H7jfOFBQRuklnOGR7MxR9R5F031vYM1wUTPJgRETZxJHXEZ/N1kole5je1IB9mmA
-         db3L87VU5hmk2mnxVBae68d1mJwCPMb73kRE76k9oJdJPZsbogxg7G90Tdssfhg+KIef
-         XOBQ==
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1696970464; x=1697575264; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=aSLAHv4ovY92dSVytiyYNj1arXZjJNGuUbk0RVfgU/Q=;
+        b=v//mmXOU/e3JAkIvtAOtW02PMu6D985voR7Ofdh2kdo1Q/8pSn9wPmZ7WGiYW+wUng
+         koWeoKQu34Pr5q0qDPN5R8EZ+UaG+3dIO0l4IVLwhi/G4hmhUhmchWRyvY7JcjiDFJnL
+         ywukN05AojwxW2u6TKduWvVFtEgOPNLCcvsNe0t3rpBiZXntyxBmmTzfZr1IWEGXBLp+
+         P5GLASqXfGeXS2pFqefYPey4P1Ha095Ooft7qBDZUFys+3UeJNC2/qQch9rtqEZ7NJAD
+         b2oClOrjkXnncSrO4NYiGuHlLoaNG+LYKZkjp3VIw4KkQiUWKpsEJJ3u+ap2db+n31wj
+         ycrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696969591; x=1697574391;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TYV6W3/su+yQdVC08/W92yX/IiZTkZ+W2IG1K67YFEE=;
-        b=OIjaD30QUbxk68QEY/zQ4S1XWfNkv1fRg7fCfvhwgJSr0HLINrUkbmLtB5J02kOfdP
-         CCUh6EtdQJuDk1YkLB1Egi8tu6lPrOvJ0N6JDursV6LdlA7S9q/vOL+C2wEy1lyPNZWO
-         NHwacJPZg2rZuQ3b+9u09admqy8uirLuOeWGAZE50S21W/dx6wCtslggRa77cZ8YAnoA
-         RJ9hBqOCWJY89addI+zoN4I5yD9BcsKg8F5UbkNOXHcXCmIhz29y54E7E965gDj5zTRo
-         MIVDqU/EM6L9u/mONHD1jnDtYyAfzqPHDXkBKRCWEWLb4REy75cLZ9fOXa1mZ/vWC9gN
-         b/Jg==
-X-Gm-Message-State: AOJu0Yzz/2OsQpGVxx0CJfWtpUwBqywqQ233aIthmHGnNZayeZPWcMw3
-        vlTOvdsuwBfNr3PKCpp/Ik5SEkX9YpSOAaRuqZ/gjg==
-X-Google-Smtp-Source: AGHT+IGvgRhnxM8rs8Q4ccehZoHcRELzxu4LMU2pLr32V5AjQW8wniDsc5M8y0GOBrzOZ5UXLUl+cw==
-X-Received: by 2002:a0d:ea90:0:b0:5a1:db12:d782 with SMTP id t138-20020a0dea90000000b005a1db12d782mr19988174ywe.44.1696969590781;
-        Tue, 10 Oct 2023 13:26:30 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696970464; x=1697575264;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=aSLAHv4ovY92dSVytiyYNj1arXZjJNGuUbk0RVfgU/Q=;
+        b=QRSAyMhwhb+RQZtv8+rX4dLyHI9h4dPv3UtT7VwqpQdGkGZHvaPqIBPQhzLrUTVfrw
+         IQWX1vzq66cm0cmY76tcG24sGyTsrXyLPjJQIlV4d99iFR5sgNL1uSf+z0u2jNYBo2ps
+         fta1gWALF0D2Pi/po049SyZgaKvOok3+YLCSoQRmgOrSsDQ+4W79lpWdka3PCRxkTYMc
+         vkE77Nop9EkIKBV5Y5xyzPpyghI+DIWGTu0FWNuhx8tpDtFpNuxpxid9/tMdYsRqZe0N
+         3SJff6b6r+Dg0944egWgfGXQMlCMIdeh8w8l9ui2HRj8Pb3NI91IaOthodQtTtWEA9oM
+         SJdg==
+X-Gm-Message-State: AOJu0YwNlwDOvjaiGHXaaG0lidXtJre+5bAlRDG5PTRKgdAA27cERQth
+        6x4AWbXXO3PNh5bImMFOCReIVryYwjuHsbV+5pn/hw==
+X-Google-Smtp-Source: AGHT+IHIW8d1IdN87vrDs5Le/UR/xYniotTN/kKZjEgqzFr1DTyHEyekL4hyeaU39/91tAHyBJZoZA==
+X-Received: by 2002:a0d:fdc7:0:b0:58e:a9d3:bf98 with SMTP id n190-20020a0dfdc7000000b0058ea9d3bf98mr19144616ywf.27.1696970463882;
+        Tue, 10 Oct 2023 13:41:03 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id c4-20020a81df04000000b0059b1e1b6e5dsm4581610ywn.91.2023.10.10.13.26.30
+        by smtp.gmail.com with ESMTPSA id d139-20020a0ddb91000000b005a2202905casm4675182ywe.43.2023.10.10.13.41.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 13:26:30 -0700 (PDT)
+        Tue, 10 Oct 2023 13:41:03 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
-To:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+To:     linux-fscrypt@vger.kernel.org, ebiggers@kernel.org,
         linux-btrfs@vger.kernel.org
-Subject: [PATCH 12/12] fstest: add a fsstress+fscrypt test
-Date:   Tue, 10 Oct 2023 16:26:05 -0400
-Message-ID: <936037a6c2bcf5553145862c5358e175621983b0.1696969376.git.josef@toxicpanda.com>
+Subject: [PATCH v2 00/36] btrfs: add fscrypt support
+Date:   Tue, 10 Oct 2023 16:40:15 -0400
+Message-ID: <cover.1696970227.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.41.0
-In-Reply-To: <cover.1696969376.git.josef@toxicpanda.com>
-References: <cover.1696969376.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-I noticed we don't run fsstress with fscrypt in any of our tests, and
-this was helpful in uncovering a couple of symlink related corner cases
-for the btrfs support work.  Add a basic test that creates a encrypted
-directory and runs fsstress in that directory.
+Hello,
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- tests/generic/736     | 38 ++++++++++++++++++++++++++++++++++++++
- tests/generic/736.out |  3 +++
- 2 files changed, 41 insertions(+)
- create mode 100644 tests/generic/736
- create mode 100644 tests/generic/736.out
+This is the next version of the fscrypt support.  It is based on a combination
+of Sterba's for-next branch and the fscrypt for-next branch.  The fscrypt stuff
+should apply cleanly to the fscrypt for-next, but it won't apply cleanly to our
+btrfs for-next branch.  I did this in case Eric wants to go ahead and merge the
+fscrypt side, then we can figure out what to do on the btrfs side.
 
-diff --git a/tests/generic/736 b/tests/generic/736
-new file mode 100644
-index 00000000..0ef37d7e
---- /dev/null
-+++ b/tests/generic/736
-@@ -0,0 +1,38 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright 2023 Meta
-+#
-+# FS QA Test No. generic/5736
-+#
-+# Run fscrypt on an encrypted directory
-+#
-+
-+. ./common/preamble
-+_begin_fstest auto quick encrypt
-+echo
-+
-+# Import common functions.
-+. ./common/filter
-+. ./common/encrypt
-+
-+# real QA test starts here
-+_supported_fs generic
-+_require_scratch_encryption -v 2
-+
-+_scratch_mkfs_encrypted &>> $seqres.full
-+_scratch_mount
-+
-+dir=$SCRATCH_MNT/dir
-+mkdir $dir
-+
-+_set_encpolicy $dir $TEST_KEY_IDENTIFIER
-+_add_enckey $SCRATCH_MNT "$TEST_RAW_KEY"
-+
-+args=$(_scale_fsstress_args -p 4 -n 10000 -p 2 $FSSTRESS_AVOID -d $dir)
-+echo "Run fsstress $args" >>$seqres.full
-+
-+$FSSTRESS_PROG $args >> $seqres.full
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/generic/736.out b/tests/generic/736.out
-new file mode 100644
-index 00000000..022754df
---- /dev/null
-+++ b/tests/generic/736.out
-@@ -0,0 +1,3 @@
-+QA output created by 736
-+
-+Added encryption key with identifier 69b2f6edeee720cce0577937eb8a6751
+v1 was posted here
+
+https://lore.kernel.org/linux-btrfs/cover.1695750478.git.josef@toxicpanda.com/
+
+v1->v2:
+- Dropped the rename patch as it's in the fscrypt tree.
+- Implemented the soft delete master key idea in a different way that's
+  hopefully more straightforward and easier to understand.
+- A small fixup related to master keys being removed.
+
+This has been tested with the updated fstests, everything appears to be working
+well.  Thanks,
+
+Josef
+
+Josef Bacik (21):
+  fscrypt: use a flag to indicate that the master key is being evicted
+  fscrypt: don't wipe mk secret until the last active user is gone
+  fscrypt: add per-extent encryption support
+  fscrypt: disable all but standard v2 policies for extent encryption
+  blk-crypto: add a process bio callback
+  fscrypt: add documentation about extent encryption
+  btrfs: add infrastructure for safe em freeing
+  btrfs: add fscrypt_info and encryption_type to ordered_extent
+  btrfs: plumb through setting the fscrypt_info for ordered extents
+  btrfs: populate the ordered_extent with the fscrypt context
+  btrfs: keep track of fscrypt info and orig_start for dio reads
+  btrfs: add an optional encryption context to the end of file extents
+  btrfs: pass through fscrypt_extent_info to the file extent helpers
+  btrfs: pass the fscrypt_info through the replace extent infrastructure
+  btrfs: implement the fscrypt extent encryption hooks
+  btrfs: setup fscrypt_extent_info for new extents
+  btrfs: populate ordered_extent with the orig offset
+  btrfs: set the bio fscrypt context when applicable
+  btrfs: add a bio argument to btrfs_csum_one_bio
+  btrfs: add orig_logical to btrfs_bio
+  btrfs: implement process_bio cb for fscrypt
+
+Omar Sandoval (7):
+  fscrypt: expose fscrypt_nokey_name
+  btrfs: disable various operations on encrypted inodes
+  btrfs: start using fscrypt hooks
+  btrfs: add inode encryption contexts
+  btrfs: add new FEATURE_INCOMPAT_ENCRYPT flag
+  btrfs: adapt readdir for encrypted and nokey names
+  btrfs: implement fscrypt ioctls
+
+Sweet Tea Dorminy (8):
+  btrfs: disable verity on encrypted inodes
+  btrfs: handle nokey names.
+  btrfs: add encryption to CONFIG_BTRFS_DEBUG
+  btrfs: add get_devices hook for fscrypt
+  btrfs: turn on inlinecrypt mount option for encrypt
+  btrfs: set file extent encryption excplicitly
+  btrfs: add fscrypt_info and encryption_type to extent_map
+  btrfs: explicitly track file extent length for replace and drop
+
+ Documentation/filesystems/fscrypt.rst |  36 ++
+ block/blk-crypto-fallback.c           |  28 ++
+ block/blk-crypto-profile.c            |   2 +
+ block/blk-crypto.c                    |   6 +-
+ fs/btrfs/Makefile                     |   1 +
+ fs/btrfs/accessors.h                  |  50 +++
+ fs/btrfs/bio.c                        |  45 ++-
+ fs/btrfs/bio.h                        |   6 +
+ fs/btrfs/btrfs_inode.h                |   3 +-
+ fs/btrfs/compression.c                |   6 +
+ fs/btrfs/ctree.h                      |   4 +
+ fs/btrfs/defrag.c                     |  10 +-
+ fs/btrfs/delayed-inode.c              |  29 +-
+ fs/btrfs/delayed-inode.h              |   6 +-
+ fs/btrfs/dir-item.c                   | 108 +++++-
+ fs/btrfs/dir-item.h                   |  11 +-
+ fs/btrfs/extent_io.c                  |  81 ++++-
+ fs/btrfs/extent_io.h                  |   3 +
+ fs/btrfs/extent_map.c                 | 106 +++++-
+ fs/btrfs/extent_map.h                 |  12 +
+ fs/btrfs/file-item.c                  |  17 +-
+ fs/btrfs/file-item.h                  |   7 +-
+ fs/btrfs/file.c                       |  16 +-
+ fs/btrfs/fs.h                         |   3 +-
+ fs/btrfs/fscrypt.c                    | 326 ++++++++++++++++++
+ fs/btrfs/fscrypt.h                    |  95 +++++
+ fs/btrfs/inode.c                      | 476 ++++++++++++++++++++------
+ fs/btrfs/ioctl.c                      |  41 ++-
+ fs/btrfs/ordered-data.c               |  26 +-
+ fs/btrfs/ordered-data.h               |  21 +-
+ fs/btrfs/reflink.c                    |   8 +
+ fs/btrfs/root-tree.c                  |   8 +-
+ fs/btrfs/root-tree.h                  |   2 +-
+ fs/btrfs/super.c                      |  17 +
+ fs/btrfs/sysfs.c                      |   6 +
+ fs/btrfs/tree-checker.c               |  66 +++-
+ fs/btrfs/tree-log.c                   |  26 +-
+ fs/btrfs/verity.c                     |   3 +
+ fs/crypto/crypto.c                    |  10 +-
+ fs/crypto/fname.c                     |  39 +--
+ fs/crypto/fscrypt_private.h           |  61 +++-
+ fs/crypto/hooks.c                     |   2 +-
+ fs/crypto/inline_crypt.c              |  87 ++++-
+ fs/crypto/keyring.c                   |  23 +-
+ fs/crypto/keysetup.c                  | 159 ++++++++-
+ fs/crypto/policy.c                    |  59 ++++
+ include/linux/blk-crypto-profile.h    |   7 +
+ include/linux/blk-crypto.h            |   9 +-
+ include/linux/fscrypt.h               | 122 +++++++
+ include/uapi/linux/btrfs.h            |   1 +
+ include/uapi/linux/btrfs_tree.h       |  35 +-
+ 51 files changed, 2095 insertions(+), 236 deletions(-)
+ create mode 100644 fs/btrfs/fscrypt.c
+ create mode 100644 fs/btrfs/fscrypt.h
+
 -- 
 2.41.0
 
