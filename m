@@ -2,69 +2,69 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29E267C411F
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 10 Oct 2023 22:26:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F7FA7C411D
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 10 Oct 2023 22:26:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234365AbjJJU0b (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 10 Oct 2023 16:26:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36448 "EHLO
+        id S234393AbjJJU0c (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 10 Oct 2023 16:26:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234393AbjJJU0Z (ORCPT
+        with ESMTP id S229555AbjJJU01 (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 10 Oct 2023 16:26:25 -0400
-Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46E23D3
-        for <linux-fscrypt@vger.kernel.org>; Tue, 10 Oct 2023 13:26:22 -0700 (PDT)
-Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-5a7c7262d5eso10976547b3.1
-        for <linux-fscrypt@vger.kernel.org>; Tue, 10 Oct 2023 13:26:22 -0700 (PDT)
+        Tue, 10 Oct 2023 16:26:27 -0400
+Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 308A7E3
+        for <linux-fscrypt@vger.kernel.org>; Tue, 10 Oct 2023 13:26:23 -0700 (PDT)
+Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-5a7be88e9ccso14394467b3.2
+        for <linux-fscrypt@vger.kernel.org>; Tue, 10 Oct 2023 13:26:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1696969581; x=1697574381; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1696969582; x=1697574382; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=jEBkTHJ3Zcu/2KG+vVGPEkATD7sMt03VYNJu8yvTP9M=;
-        b=SN3aOlddxcqgvMSGkQYM9YW3biqn9ZY2bGhhhSwZHovLYv3+H7VLvPrtEXVA+73MyZ
-         j+N0RB1qVFxXODgeGnO9GoA79kWnrQqX//uc6CZ/MXuilIOVwRvVUIE6RDyzcKjN+WF6
-         RyfB1SoUG6FkEPtVtSJ1cLdRpH5DoB54aNZkM82HZCvzEJoS9pvQH8jvs0DjhxZrcjvT
-         xks8pRcEaIWfV9EomLx5+eSZYz13vaagV9MY4xgdvFpzCJV1ei5oL4+euF9BlacA2BFi
-         qr4JyIWgEtlJ/zjB8ec9NjI8MzYQrkLQ9zRGNdYBa3g7qMWgFyqDPBnvjpojxDbcy2GT
-         yqlQ==
+        bh=Dmh9xGr/as1MpprJlAG4JgvOSIGD6BUQHl774+RzFu4=;
+        b=bqjaX0mDqOCfQ1W1b3N+mkOPqhm8/pBhtr9xLJyNucFnGT2tG7iTjcf5kSupZXDamu
+         vw3hESjVK7NQH1jE1NnFNDRdhPG2iegWL0bJD/oWL5Wq/VCXjPQdPqLl5JGm5mPvv2og
+         fDV7wDVYzH/Ddd9XfsKp1OmbI861xO0ehO0X5V9Br39P759MDZoKZuREBTYuJ2MifcsZ
+         OwjnkC4XA/aCLnWc4NJdRCWk01WqugNsuU8T/R7s6tf0fMS1ry360bwP6IIF2IJu/N3o
+         UmzVv39xEl9Tu7RhaHnDC3iecFtW5kYrtxNoBnEUQjheuiOPI9F1aCnZzHJEB/b0gm1M
+         qZIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696969581; x=1697574381;
+        d=1e100.net; s=20230601; t=1696969582; x=1697574382;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=jEBkTHJ3Zcu/2KG+vVGPEkATD7sMt03VYNJu8yvTP9M=;
-        b=nDRpTbDsMw+6ZCjHhU2wxcXHS/Tc/LF/jOIidML3k6eA8eb2F7fY3lo0nqtyOJ7xHU
-         /uFSzOgOTGykIHgCFN+sm9w6+itWmjJmemx25BJpBI6qlHwJNcMrRFCijkFkrIuhhrGs
-         fWMuKi/1ffFfYtR8gZ6Wmmvs21URyONNRu2fv4h/M3dBtQViaZGxzdxvDrFnushnT2+C
-         tFFF2TYWAdD4rYPPGtFEw5zKw2r6b+Fuu2H/I9ZDOJXSL830imAZ7jyMe4VJC2xCttwq
-         L45/QGeKVk9DK3Ug2cLFWgjBTSbSD71n48juzouKhqlzJg5HAKukjvMqVjTuYEvgMt95
-         xu1A==
-X-Gm-Message-State: AOJu0YyC6PSZ48F2bWtExrAwVhUuBu3JH4xJNVujtbWyaN8YwhAWmm6/
-        rh7MQafQIGuc/DK2hse8L2JwDNgaqAmnhCmIY/XNnw==
-X-Google-Smtp-Source: AGHT+IEDJXaz8Iqj0J5QGmoE8YAQkrqbJnp7d+TIBuszlRdRr5jTsnA0UfmfaKbLhaXI1gnZsLNkDg==
-X-Received: by 2002:a81:48cc:0:b0:5a7:baac:7b34 with SMTP id v195-20020a8148cc000000b005a7baac7b34mr3793507ywa.28.1696969581386;
-        Tue, 10 Oct 2023 13:26:21 -0700 (PDT)
+        bh=Dmh9xGr/as1MpprJlAG4JgvOSIGD6BUQHl774+RzFu4=;
+        b=krdj4jZhFFwn9jAqRvOuq6+OOJCmHijueKIZdaMB0dCXIthLVR445R9goPwPnQI1SQ
+         GfDvvmgZ2QITwtHd9/XQmz+JsoGr4QFz2azjOT9bcCX1YuyijKIklcSrTtQmSMTX+GQ+
+         zuEI6BkRP2s4h/DqtYT/npDkjKLIk3emGLN8BQ0bfgPggXJV+GSAi2WBAOMsKw1i+MNE
+         AZoZ5Kzsw6A2tIrySkhk75ly6k+Pi2Bb+40+UJjKm5riGqK/ZzpWruAeLAItHYQDf2uS
+         MRlBJGfRa9JlDBuxkvNaG6CXN0LPIokdlYWoQl7J2gIOt/k8M6LuYSKmVeMdOzuAqxZg
+         KviQ==
+X-Gm-Message-State: AOJu0YyGLee0rGS7eeS8m69bCnk/+KmtCHSTx+Anym8OYZfNjicJTNq9
+        QLOTLAEa0Isnh0qA72nmXsoXwl0fOONbdRIgD6n3Lg==
+X-Google-Smtp-Source: AGHT+IHHPc4cVCv0X5UjY6ZEhh73TopZ6jV5VXaR1PRAmJHmMIp+SqJlnKd+kKUVvokDPp15rDCEYQ==
+X-Received: by 2002:a0d:e841:0:b0:5a7:d986:a9bb with SMTP id r62-20020a0de841000000b005a7d986a9bbmr873545ywe.3.1696969582283;
+        Tue, 10 Oct 2023 13:26:22 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id x9-20020a814a09000000b00589b653b7adsm4691241ywa.136.2023.10.10.13.26.20
+        by smtp.gmail.com with ESMTPSA id d187-20020a0df4c4000000b0059af121d0b8sm4694342ywf.52.2023.10.10.13.26.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 13:26:21 -0700 (PDT)
+        Tue, 10 Oct 2023 13:26:22 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         linux-btrfs@vger.kernel.org
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH 03/12] common/encrypt: add btrfs to get_ciphertext_filename
-Date:   Tue, 10 Oct 2023 16:25:56 -0400
-Message-ID: <b568ed0fa6b5a94c38dc1a08d07f4e289bf9d75f.1696969376.git.josef@toxicpanda.com>
+Subject: [PATCH 04/12] common/encrypt: enable making a encrypted btrfs filesystem
+Date:   Tue, 10 Oct 2023 16:25:57 -0400
+Message-ID: <905514b9fa178c51afde27c4eff456079e010750.1696969376.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1696969376.git.josef@toxicpanda.com>
 References: <cover.1696969376.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -73,46 +73,34 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 
-Add the relevant call to get an encrypted filename from btrfs.
-
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 ---
- common/encrypt | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ common/encrypt | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/common/encrypt b/common/encrypt
-index fc1c8cc7..2c1925da 100644
+index 2c1925da..1372af66 100644
 --- a/common/encrypt
 +++ b/common/encrypt
-@@ -618,6 +618,19 @@ _get_ciphertext_filename()
- 	local dir_inode=$3
- 
- 	case $FSTYP in
-+	btrfs)
-+		# Extract the filename from the inode_ref object, similar to:
-+		# item 24 key (259 INODE_REF 257) itemoff 14826 itemsize 26
-+		# 	index 3 namelen 16 name: J\xf7\x15tD\x8eL\xae/\x98\x9f\x09\xc1\xb6\x09>
-+		#
-+		$BTRFS_UTIL_PROG inspect-internal dump-tree $device | \
-+			grep -A 1 "key ($inode INODE_REF " | tail -n 1 | \
-+			perl -ne '
-+				s/.*?name: //;
-+				chomp;
-+				s/\\x([[:xdigit:]]{2})/chr hex $1/eg;
-+				print;'
-+		;;
- 	ext4)
- 		# Extract the filename from the debugfs output line like:
- 		#
-@@ -715,6 +728,9 @@ _require_get_ciphertext_filename_support()
- 			_notrun "dump.f2fs (f2fs-tools) is too old; doesn't support showing unambiguous on-disk filenames"
- 		fi
+@@ -153,6 +153,9 @@ _scratch_mkfs_encrypted()
+ 		# erase the UBI volume; reformated automatically on next mount
+ 		$UBIUPDATEVOL_PROG ${SCRATCH_DEV} -t
  		;;
 +	btrfs)
-+		_require_command "$BTRFS_UTIL_PROG" btrfs
++		_scratch_mkfs
++		;;
+ 	ceph)
+ 		_scratch_cleanup_files
+ 		;;
+@@ -168,6 +171,9 @@ _scratch_mkfs_sized_encrypted()
+ 	ext4|f2fs)
+ 		MKFS_OPTIONS="$MKFS_OPTIONS -O encrypt" _scratch_mkfs_sized $*
+ 		;;
++	btrfs)
++		_scratch_mkfs_sized $*
 +		;;
  	*)
- 		_notrun "_get_ciphertext_filename() isn't implemented on $FSTYP"
+ 		_notrun "Filesystem $FSTYP not supported in _scratch_mkfs_sized_encrypted"
  		;;
 -- 
 2.41.0
