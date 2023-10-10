@@ -2,62 +2,62 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F85C7C4184
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 10 Oct 2023 22:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C04187C4183
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 10 Oct 2023 22:41:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234442AbjJJUlY (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 10 Oct 2023 16:41:24 -0400
+        id S234630AbjJJUl1 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 10 Oct 2023 16:41:27 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234488AbjJJUlU (ORCPT
+        with ESMTP id S1343768AbjJJUlV (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 10 Oct 2023 16:41:20 -0400
-Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C689CC
-        for <linux-fscrypt@vger.kernel.org>; Tue, 10 Oct 2023 13:41:17 -0700 (PDT)
-Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-5a7ab31fb8bso22351917b3.1
-        for <linux-fscrypt@vger.kernel.org>; Tue, 10 Oct 2023 13:41:17 -0700 (PDT)
+        Tue, 10 Oct 2023 16:41:21 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAC34AF
+        for <linux-fscrypt@vger.kernel.org>; Tue, 10 Oct 2023 13:41:18 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id 3f1490d57ef6-d84d883c1b6so246268276.0
+        for <linux-fscrypt@vger.kernel.org>; Tue, 10 Oct 2023 13:41:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1696970476; x=1697575276; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1696970477; x=1697575277; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LWBLB7/SL6mg27umr/DaJRM9A5t8J/exWvm1C6z+lX4=;
-        b=a7dinp+pH4YrPdYCyzd5PGGwvUqHAwtyBOSnEXNj4EZ2zDNIrdQw6vEbiWzfhpuqbU
-         /7723cLzH8dbVWfXaVNJeksc2/t4ESYPY0B6cBjdiovhdeG9uUNsWo9ff4t+Np9V6Oz7
-         cQzWRsYlMRxu4J+PRdUfT/syiBnjxl04sJAUOOIM5ZBJdvtbQvYnZb6sijfvCqtM9TjS
-         HdOhBEM26o8pAUtidNfEcJOBgCcTBdY7XSL/rzmTRbK2cJvZGUIcIDnaEjQPSfUITbFA
-         yUQ9aeMNconbbrixdngOgiN46Z95SiFlqrwarjIVT6lfmMetpJF8pbWA+3RovGvQ7JMH
-         nSAA==
+        bh=SUVuCMhgLp9ZG1FCOJMjkYEGr1CrEBEZ7HiAZ8GmnT4=;
+        b=KOSpINjMt8VtZYzpKiKfwt2ZYFAxOpe2jWSPot3ynzn3VKCHNOdTNveu7IfuAMnqC1
+         fKkwYouMMiD8boMBgn5we3LJrx22z79ZigVW1GTS5s8+eczO6CnM04kNupE+FfekyVvL
+         LNd8AVpdYSx6ssBpi4quBX8VU9uoNrCa/MFyo+ak+eRjGlGaMgu+VdSWR5iLmfT8F2LH
+         AxOBIsejY1lCRWYWrXmiTb6q+j0LNDEgyf+R0lRgdV/yoTRwEMQj6SaR0+XSoXbDLvFE
+         5ulDWOWRg97uAPtXPbRpNqqORF5UqbrF+Cr6BoKDAeBdtjJTTsGk5HECLKde40Zgmr0x
+         cdCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696970476; x=1697575276;
+        d=1e100.net; s=20230601; t=1696970477; x=1697575277;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LWBLB7/SL6mg27umr/DaJRM9A5t8J/exWvm1C6z+lX4=;
-        b=OACm+ZODWnN4Bcf6dQNlFCu+/kvlXkpGdOUYMzwXjGOCkQYnPLgDPIZDwM210vwSgm
-         WrRWZ7eee1QvcIgG1iFes/r0aJkgDeiSwpmeyC6a9Ai7YIXlcgPrFLsxapJ8SDGl1kfH
-         UFNgEKA1caIuB7wY6x5WF0v4iGYO+Ghbd0IXWZXNlQ+D5xALVsPHFraM9h68VO9EKxiy
-         qvuaKHgNRWFDbkbn+9vAVbeOc+q7Ef+hIlSMaikKpLpks1pIt1wmKwavp+j0AObuKhil
-         4r8mR2CWM0WLi4q+JxnPBehZpajyD7MTNzQ6Qe6i0ptNuADiqvjFtC/ISR5s7NMQCEPp
-         Xxdw==
-X-Gm-Message-State: AOJu0YzBZO7tZOaQEi8+cMu2ZPBKngxawDdEVHEnYbbiaSTx4N6gAlUO
-        pFIS/YX3oOGOyuR2XMJt0FqGfrP2WTaFNHJZavrd0g==
-X-Google-Smtp-Source: AGHT+IHb3Kr69Mm+5lWsQJAVRtKaeAjxkqvsiFnq7vGez3v5E6/xySKWQHL/Dhl6qEKkXk9mddhKRg==
-X-Received: by 2002:a81:6dca:0:b0:5a7:ba09:52c7 with SMTP id i193-20020a816dca000000b005a7ba0952c7mr4089896ywc.11.1696970476529;
-        Tue, 10 Oct 2023 13:41:16 -0700 (PDT)
+        bh=SUVuCMhgLp9ZG1FCOJMjkYEGr1CrEBEZ7HiAZ8GmnT4=;
+        b=MjJI2VshSx2msiNNr4b9gOUdyIUtqjg0nmuHGLvcjKVGwysGJBiPZv2GPE8BET7JNU
+         hK8CrIBd8qxEAH3O5pnhPxvtLNPjaNSbC1VB5INFNeccE5NZ0hzLW1Eu5ShleS9ykhRG
+         wUGb+UMGOyYuGQ7i+hPERyPrFI3gY+iu5rHQYNpp1gdyzOg+ta0TEHAwGY+FvWcqEO2Z
+         fD+rclBH6xOLCiDKtRQ4UAVnUPAa1rbC0v2I6D2VGrjRvEl19J4V0U7zMeF6rRtyisYh
+         MlbwIInuTrp8RFGm8ApBosalPo8wzJv9EAft5VjbaUtcaF/T8QpvnMr47NMqCvuPMO/k
+         uvKQ==
+X-Gm-Message-State: AOJu0YwSEgoK9OlvTYm4vYRKYQ6OZPyEPFVw3oNKe/P+FFFvLSMSdJih
+        yF/+ynjEooycqb+7C9Ui4l4P+LtmzMiLnOngWa83dQ==
+X-Google-Smtp-Source: AGHT+IE89btaHf6z2ZMQE2ILWZRDm5s3O/k1UVn5Kq4F0TibN8tlNSZJsKyYxZR2oLNbBY9fO+GTjw==
+X-Received: by 2002:a25:8503:0:b0:d9a:4cc0:a90c with SMTP id w3-20020a258503000000b00d9a4cc0a90cmr2718555ybk.15.1696970477649;
+        Tue, 10 Oct 2023 13:41:17 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id n75-20020a0dcb4e000000b005a1d51ce1aasm4662902ywd.25.2023.10.10.13.41.16
+        by smtp.gmail.com with ESMTPSA id c201-20020a25c0d2000000b00d9a4aad7f40sm881827ybf.24.2023.10.10.13.41.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 13:41:16 -0700 (PDT)
+        Tue, 10 Oct 2023 13:41:17 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-fscrypt@vger.kernel.org, ebiggers@kernel.org,
         linux-btrfs@vger.kernel.org
 Cc:     Omar Sandoval <osandov@osandov.com>,
         Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH v2 11/36] btrfs: start using fscrypt hooks
-Date:   Tue, 10 Oct 2023 16:40:26 -0400
-Message-ID: <a814b0d1fb3c33d937c159ca80050f3ed05e4333.1696970227.git.josef@toxicpanda.com>
+Subject: [PATCH v2 12/36] btrfs: add inode encryption contexts
+Date:   Tue, 10 Oct 2023 16:40:27 -0400
+Message-ID: <2aa2bc594a95829503338d7345c41bae2030bfd3.1696970227.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1696970227.git.josef@toxicpanda.com>
 References: <cover.1696970227.git.josef@toxicpanda.com>
@@ -74,344 +74,303 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 From: Omar Sandoval <osandov@osandov.com>
 
-In order to appropriately encrypt, create, open, rename, and various
-symlink operations must call fscrypt hooks. These determine whether the
-inode should be encrypted and do other preparatory actions. The
-superblock must have fscrypt operations registered, so implement the
-minimal set also, and introduce the new fscrypt.[ch] files to hold the
-fscrypt-specific functionality.
+In order to store encryption information for directories, symlinks,
+etc., fscrypt stores a context item with each encrypted non-regular
+inode. fscrypt provides an arbitrary blob for the filesystem to store,
+and it does not clearly fit into an existing structure, so this goes in
+a new item type.
 
 Signed-off-by: Omar Sandoval <osandov@osandov.com>
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/Makefile      |   1 +
- fs/btrfs/btrfs_inode.h |   1 +
- fs/btrfs/file.c        |   3 ++
- fs/btrfs/fscrypt.c     |   7 +++
- fs/btrfs/fscrypt.h     |  10 ++++
- fs/btrfs/inode.c       | 110 ++++++++++++++++++++++++++++++++++-------
- fs/btrfs/super.c       |   2 +
- 7 files changed, 116 insertions(+), 18 deletions(-)
- create mode 100644 fs/btrfs/fscrypt.c
- create mode 100644 fs/btrfs/fscrypt.h
+ fs/btrfs/fscrypt.c              | 117 ++++++++++++++++++++++++++++++++
+ fs/btrfs/fscrypt.h              |   2 +
+ fs/btrfs/inode.c                |  19 ++++++
+ fs/btrfs/ioctl.c                |   8 ++-
+ include/uapi/linux/btrfs_tree.h |  10 +++
+ 5 files changed, 154 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/Makefile b/fs/btrfs/Makefile
-index 525af975f61c..6e51d054c17a 100644
---- a/fs/btrfs/Makefile
-+++ b/fs/btrfs/Makefile
-@@ -39,6 +39,7 @@ btrfs-$(CONFIG_BTRFS_FS_POSIX_ACL) += acl.o
- btrfs-$(CONFIG_BTRFS_FS_REF_VERIFY) += ref-verify.o
- btrfs-$(CONFIG_BLK_DEV_ZONED) += zoned.o
- btrfs-$(CONFIG_FS_VERITY) += verity.o
-+btrfs-$(CONFIG_FS_ENCRYPTION) += fscrypt.o
- 
- btrfs-$(CONFIG_BTRFS_FS_RUN_SANITY_TESTS) += tests/free-space-tests.o \
- 	tests/extent-buffer-tests.o tests/btrfs-tests.o \
-diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-index bebb5921b922..052072373078 100644
---- a/fs/btrfs/btrfs_inode.h
-+++ b/fs/btrfs/btrfs_inode.h
-@@ -455,6 +455,7 @@ struct btrfs_new_inode_args {
- 	struct posix_acl *default_acl;
- 	struct posix_acl *acl;
- 	struct fscrypt_name fname;
-+	bool encrypt;
- };
- 
- int btrfs_new_inode_prepare(struct btrfs_new_inode_args *args,
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 92419cb8508a..26905b77c7e8 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -3709,6 +3709,9 @@ static int btrfs_file_open(struct inode *inode, struct file *filp)
- 
- 	filp->f_mode |= FMODE_NOWAIT | FMODE_BUF_RASYNC | FMODE_BUF_WASYNC |
- 		        FMODE_CAN_ODIRECT;
-+	ret = fscrypt_file_open(inode, filp);
-+	if (ret)
-+		return ret;
- 
- 	ret = fsverity_file_open(inode, filp);
- 	if (ret)
 diff --git a/fs/btrfs/fscrypt.c b/fs/btrfs/fscrypt.c
-new file mode 100644
-index 000000000000..48ab99dfe48d
---- /dev/null
+index 48ab99dfe48d..0e4011d6b1cd 100644
+--- a/fs/btrfs/fscrypt.c
 +++ b/fs/btrfs/fscrypt.c
-@@ -0,0 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0
+@@ -1,7 +1,124 @@
+ // SPDX-License-Identifier: GPL-2.0
+ 
++#include <linux/iversion.h>
+ #include "ctree.h"
++#include "accessors.h"
++#include "btrfs_inode.h"
++#include "disk-io.h"
++#include "fs.h"
+ #include "fscrypt.h"
++#include "ioctl.h"
++#include "messages.h"
++#include "transaction.h"
++#include "xattr.h"
 +
-+#include "ctree.h"
-+#include "fscrypt.h"
-+
-+const struct fscrypt_operations btrfs_fscrypt_ops = {
-+};
-diff --git a/fs/btrfs/fscrypt.h b/fs/btrfs/fscrypt.h
-new file mode 100644
-index 000000000000..7f4e6888bd43
---- /dev/null
-+++ b/fs/btrfs/fscrypt.h
-@@ -0,0 +1,10 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#ifndef BTRFS_FSCRYPT_H
-+#define BTRFS_FSCRYPT_H
-+
-+#include <linux/fscrypt.h>
-+
-+extern const struct fscrypt_operations btrfs_fscrypt_ops;
-+
-+#endif /* BTRFS_FSCRYPT_H */
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 4806ff34224a..b92da4a4ed21 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -5053,6 +5053,10 @@ static int btrfs_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
- 	if (err)
- 		return err;
- 
-+	err = fscrypt_prepare_setattr(dentry, attr);
-+	if (err)
-+		return err;
-+
- 	if (S_ISREG(inode->i_mode) && (attr->ia_valid & ATTR_SIZE)) {
- 		err = btrfs_setsize(inode, attr);
- 		if (err)
-@@ -5207,11 +5211,8 @@ void btrfs_evict_inode(struct inode *inode)
- 
- 	trace_btrfs_inode_evict(inode);
- 
--	if (!root) {
--		fsverity_cleanup_inode(inode);
--		clear_inode(inode);
--		return;
--	}
-+	if (!root)
-+		goto cleanup;
- 
- 	evict_inode_truncate_pages(inode);
- 
-@@ -5311,6 +5312,9 @@ void btrfs_evict_inode(struct inode *inode)
- 	 * to retry these periodically in the future.
- 	 */
- 	btrfs_remove_delayed_node(BTRFS_I(inode));
-+
-+cleanup:
-+	fscrypt_put_encryption_info(inode);
- 	fsverity_cleanup_inode(inode);
- 	clear_inode(inode);
- }
-@@ -6096,6 +6100,12 @@ int btrfs_new_inode_prepare(struct btrfs_new_inode_args *args,
- 		return ret;
- 	}
- 
-+	ret = fscrypt_prepare_new_inode(dir, inode, &args->encrypt);
-+	if (ret) {
-+		fscrypt_free_filename(&args->fname);
-+		return ret;
-+	}
-+
- 	/* 1 to add inode item */
- 	*trans_num_items = 1;
- 	/* 1 to add compression property */
-@@ -6569,9 +6579,13 @@ static int btrfs_link(struct dentry *old_dentry, struct inode *dir,
- 	if (inode->i_nlink >= BTRFS_LINK_MAX)
- 		return -EMLINK;
- 
-+	err = fscrypt_prepare_link(old_dentry, dir, dentry);
-+	if (err)
-+		return err;
-+
- 	err = fscrypt_setup_filename(dir, &dentry->d_name, 0, &fname);
- 	if (err)
--		goto fail;
-+		return err;
- 
- 	err = btrfs_set_inode_index(BTRFS_I(dir), &index);
- 	if (err)
-@@ -8519,6 +8533,7 @@ void btrfs_test_destroy_inode(struct inode *inode)
- 
- void btrfs_free_inode(struct inode *inode)
- {
-+	fscrypt_free_inode(inode);
- 	kmem_cache_free(btrfs_inode_cachep, BTRFS_I(inode));
- }
- 
-@@ -8589,8 +8604,7 @@ int btrfs_drop_inode(struct inode *inode)
- 	/* the snap/subvol tree is on deleting */
- 	if (btrfs_root_refs(&root->root_item) == 0)
- 		return 1;
--	else
--		return generic_drop_inode(inode);
-+	return generic_drop_inode(inode) || fscrypt_drop_inode(inode);
- }
- 
- static void init_once(void *foo)
-@@ -9170,6 +9184,11 @@ static int btrfs_rename2(struct mnt_idmap *idmap, struct inode *old_dir,
- 	if (flags & ~(RENAME_NOREPLACE | RENAME_EXCHANGE | RENAME_WHITEOUT))
- 		return -EINVAL;
- 
-+	ret = fscrypt_prepare_rename(old_dir, old_dentry, new_dir, new_dentry,
-+				     flags);
-+	if (ret)
-+		return ret;
-+
- 	if (flags & RENAME_EXCHANGE)
- 		ret = btrfs_rename_exchange(old_dir, old_dentry, new_dir,
- 					    new_dentry);
-@@ -9384,15 +9403,31 @@ static int btrfs_symlink(struct mnt_idmap *idmap, struct inode *dir,
- 	};
- 	unsigned int trans_num_items;
- 	int err;
--	int name_len;
- 	int datasize;
- 	unsigned long ptr;
- 	struct btrfs_file_extent_item *ei;
- 	struct extent_buffer *leaf;
-+	struct fscrypt_str disk_link;
-+	size_t max_len;
-+	u32 name_len = strlen(symname);
- 
--	name_len = strlen(symname);
--	if (name_len > BTRFS_MAX_INLINE_DATA_SIZE(fs_info))
--		return -ENAMETOOLONG;
-+	/*
-+	 * BTRFS_MAX_INLINE_DATA_SIZE() isn't actually telling the truth, we
-+	 * actually limit inline data extents to
-+	 * min(BTRFS_MAX_INLINE_DATA_SIZE(), sectorsize), so adjust max_len
-+	 * given this wonderful bit of inconsistency.
-+	 */
-+	max_len = min_t(size_t, BTRFS_MAX_INLINE_DATA_SIZE(fs_info),
-+			fs_info->sectorsize);
-+
-+	/*
-+	 * fscrypt sets disk_link.len to be len + 1, including a NUL terminator, but we
-+	 * don't store that '\0' character.
-+	 */
-+	err = fscrypt_prepare_symlink(dir, symname, name_len, max_len + 1,
-+				      &disk_link);
-+	if (err)
-+		return err;
- 
- 	inode = new_inode(dir->i_sb);
- 	if (!inode)
-@@ -9401,8 +9436,8 @@ static int btrfs_symlink(struct mnt_idmap *idmap, struct inode *dir,
- 	inode->i_op = &btrfs_symlink_inode_operations;
- 	inode_nohighmem(inode);
- 	inode->i_mapping->a_ops = &btrfs_aops;
--	btrfs_i_size_write(BTRFS_I(inode), name_len);
--	inode_set_bytes(inode, name_len);
-+	btrfs_i_size_write(BTRFS_I(inode), disk_link.len - 1);
-+	inode_set_bytes(inode, disk_link.len - 1);
- 
- 	new_inode_args.inode = inode;
- 	err = btrfs_new_inode_prepare(&new_inode_args, &trans_num_items);
-@@ -9429,10 +9464,23 @@ static int btrfs_symlink(struct mnt_idmap *idmap, struct inode *dir,
- 		inode = NULL;
- 		goto out;
- 	}
-+
-+	if (IS_ENCRYPTED(inode)) {
-+		err = fscrypt_encrypt_symlink(inode, symname, name_len,
-+					      &disk_link);
-+		if (err) {
-+			btrfs_abort_transaction(trans, err);
-+			btrfs_free_path(path);
-+			discard_new_inode(inode);
-+			inode = NULL;
-+			goto out;
-+		}
-+	}
-+
- 	key.objectid = btrfs_ino(BTRFS_I(inode));
- 	key.offset = 0;
- 	key.type = BTRFS_EXTENT_DATA_KEY;
--	datasize = btrfs_file_extent_calc_inline_size(name_len);
-+	datasize = btrfs_file_extent_calc_inline_size(disk_link.len - 1);
- 	err = btrfs_insert_empty_item(trans, root, path, &key,
- 				      datasize);
- 	if (err) {
-@@ -9451,10 +9499,10 @@ static int btrfs_symlink(struct mnt_idmap *idmap, struct inode *dir,
- 	btrfs_set_file_extent_encryption(leaf, ei, 0);
- 	btrfs_set_file_extent_compression(leaf, ei, 0);
- 	btrfs_set_file_extent_other_encoding(leaf, ei, 0);
--	btrfs_set_file_extent_ram_bytes(leaf, ei, name_len);
-+	btrfs_set_file_extent_ram_bytes(leaf, ei, disk_link.len - 1);
- 
- 	ptr = btrfs_file_extent_inline_start(ei);
--	write_extent_buffer(leaf, symname, ptr, name_len);
-+	write_extent_buffer(leaf, disk_link.name, ptr, disk_link.len - 1);
- 	btrfs_mark_buffer_dirty(trans, leaf);
- 	btrfs_free_path(path);
- 
-@@ -9471,6 +9519,29 @@ static int btrfs_symlink(struct mnt_idmap *idmap, struct inode *dir,
- 	return err;
- }
- 
-+static const char *btrfs_get_link(struct dentry *dentry, struct inode *inode,
-+				  struct delayed_call *done)
++static int btrfs_fscrypt_get_context(struct inode *inode, void *ctx, size_t len)
 +{
-+	struct page *cpage;
-+	const char *paddr;
-+	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
++	struct btrfs_key key = {
++		.objectid = btrfs_ino(BTRFS_I(inode)),
++		.type = BTRFS_FSCRYPT_CTX_ITEM_KEY,
++		.offset = 0,
++	};
++	struct btrfs_path *path;
++	struct extent_buffer *leaf;
++	unsigned long ptr;
++	int ret;
 +
-+	if (!IS_ENCRYPTED(inode))
-+		return page_get_link(dentry, inode, done);
 +
-+	if (!dentry)
-+		return ERR_PTR(-ECHILD);
++	path = btrfs_alloc_path();
++	if (!path)
++		return -ENOMEM;
 +
-+	cpage = read_mapping_page(inode->i_mapping, 0, NULL);
-+	if (IS_ERR(cpage))
-+		return ERR_CAST(cpage);
++	ret = btrfs_search_slot(NULL, BTRFS_I(inode)->root, &key, path, 0, 0);
++	if (ret) {
++		len = -ENOENT;
++		goto out;
++	}
 +
-+	paddr = fscrypt_get_symlink(inode, page_address(cpage),
-+				    BTRFS_MAX_INLINE_DATA_SIZE(fs_info), done);
-+	put_page(cpage);
-+	return paddr;
++	leaf = path->nodes[0];
++	ptr = btrfs_item_ptr_offset(leaf, path->slots[0]);
++	/* fscrypt provides max context length, but it could be less */
++	len = min_t(size_t, len, btrfs_item_size(leaf, path->slots[0]));
++	read_extent_buffer(leaf, ctx, ptr, len);
++
++out:
++	btrfs_free_path(path);
++	return len;
 +}
 +
- static struct btrfs_trans_handle *insert_prealloc_file_extent(
- 				       struct btrfs_trans_handle *trans_in,
- 				       struct btrfs_inode *inode,
-@@ -10949,7 +11020,7 @@ static const struct inode_operations btrfs_special_inode_operations = {
- 	.update_time	= btrfs_update_time,
- };
- static const struct inode_operations btrfs_symlink_inode_operations = {
--	.get_link	= page_get_link,
-+	.get_link	= btrfs_get_link,
- 	.getattr	= btrfs_getattr,
- 	.setattr	= btrfs_setattr,
- 	.permission	= btrfs_permission,
-@@ -10959,4 +11030,7 @@ static const struct inode_operations btrfs_symlink_inode_operations = {
++static int btrfs_fscrypt_set_context(struct inode *inode, const void *ctx,
++				     size_t len, void *fs_data)
++{
++	struct btrfs_trans_handle *trans = fs_data;
++	struct btrfs_key key = {
++		.objectid = btrfs_ino(BTRFS_I(inode)),
++		.type = BTRFS_FSCRYPT_CTX_ITEM_KEY,
++		.offset = 0,
++	};
++	struct btrfs_path *path = NULL;
++	struct extent_buffer *leaf;
++	unsigned long ptr;
++	int ret;
++
++	if (!trans)
++		trans = btrfs_start_transaction(BTRFS_I(inode)->root, 2);
++	if (IS_ERR(trans))
++		return PTR_ERR(trans);
++
++	path = btrfs_alloc_path();
++	if (!path) {
++		ret = -ENOMEM;
++		goto out_err;
++	}
++
++	ret = btrfs_search_slot(trans, BTRFS_I(inode)->root, &key, path, 0, 1);
++	if (ret < 0)
++		goto out_err;
++
++	if (ret > 0) {
++		btrfs_release_path(path);
++		ret = btrfs_insert_empty_item(trans, BTRFS_I(inode)->root, path, &key, len);
++		if (ret)
++			goto out_err;
++	}
++
++	leaf = path->nodes[0];
++	ptr = btrfs_item_ptr_offset(leaf, path->slots[0]);
++
++	len = min_t(size_t, len, btrfs_item_size(leaf, path->slots[0]));
++	write_extent_buffer(leaf, ctx, ptr, len);
++	btrfs_mark_buffer_dirty(trans, leaf);
++	btrfs_release_path(path);
++
++	if (fs_data)
++		return ret;
++
++	BTRFS_I(inode)->flags |= BTRFS_INODE_ENCRYPT;
++	btrfs_sync_inode_flags_to_i_flags(inode);
++	inode_inc_iversion(inode);
++	inode_set_ctime_current(inode);
++	ret = btrfs_update_inode(trans, BTRFS_I(inode));
++	if (ret)
++		goto out_abort;
++	btrfs_free_path(path);
++	btrfs_end_transaction(trans);
++	return 0;
++out_abort:
++	btrfs_abort_transaction(trans, ret);
++out_err:
++	if (!fs_data)
++		btrfs_end_transaction(trans);
++	btrfs_free_path(path);
++	return ret;
++}
++
++static bool btrfs_fscrypt_empty_dir(struct inode *inode)
++{
++	return inode->i_size == BTRFS_EMPTY_DIR_SIZE;
++}
  
- const struct dentry_operations btrfs_dentry_operations = {
- 	.d_delete	= btrfs_dentry_delete,
-+#ifdef CONFIG_FS_ENCRYPTION
-+	.d_revalidate	= fscrypt_d_revalidate,
-+#endif
+ const struct fscrypt_operations btrfs_fscrypt_ops = {
++	.get_context = btrfs_fscrypt_get_context,
++	.set_context = btrfs_fscrypt_set_context,
++	.empty_dir = btrfs_fscrypt_empty_dir,
  };
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 08761a5c9cc3..0d88f871ba09 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -49,6 +49,7 @@
- #include "tests/btrfs-tests.h"
- #include "block-group.h"
- #include "discard.h"
+diff --git a/fs/btrfs/fscrypt.h b/fs/btrfs/fscrypt.h
+index 7f4e6888bd43..80adb7e56826 100644
+--- a/fs/btrfs/fscrypt.h
++++ b/fs/btrfs/fscrypt.h
+@@ -5,6 +5,8 @@
+ 
+ #include <linux/fscrypt.h>
+ 
++#include "fs.h"
++
+ extern const struct fscrypt_operations btrfs_fscrypt_ops;
+ 
+ #endif /* BTRFS_FSCRYPT_H */
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index b92da4a4ed21..a316128b3069 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -62,6 +62,7 @@
+ #include "defrag.h"
+ #include "dir-item.h"
+ #include "file-item.h"
 +#include "fscrypt.h"
- #include "qgroup.h"
- #include "raid56.h"
- #include "fs.h"
-@@ -1103,6 +1104,7 @@ static int btrfs_fill_super(struct super_block *sb,
- 	sb->s_vop = &btrfs_verityops;
+ #include "uuid-tree.h"
+ #include "ioctl.h"
+ #include "file.h"
+@@ -6087,6 +6088,9 @@ int btrfs_new_inode_prepare(struct btrfs_new_inode_args *args,
+ 	struct inode *inode = args->inode;
+ 	int ret;
+ 
++	if (fscrypt_is_nokey_name(args->dentry))
++		return -ENOKEY;
++
+ 	if (!args->orphan) {
+ 		ret = fscrypt_setup_filename(dir, &args->dentry->d_name, 0,
+ 					     &args->fname);
+@@ -6122,6 +6126,9 @@ int btrfs_new_inode_prepare(struct btrfs_new_inode_args *args,
+ 	if (dir->i_security)
+ 		(*trans_num_items)++;
  #endif
- 	sb->s_xattr = btrfs_xattr_handlers;
-+	fscrypt_set_ops(sb, &btrfs_fscrypt_ops);
- 	sb->s_time_gran = 1;
- #ifdef CONFIG_BTRFS_FS_POSIX_ACL
- 	sb->s_flags |= SB_POSIXACL;
++	/* 1 to add fscrypt item */
++	if (args->encrypt)
++		(*trans_num_items)++;
+ 	if (args->orphan) {
+ 		/* 1 to add orphan item */
+ 		(*trans_num_items)++;
+@@ -6299,6 +6306,11 @@ int btrfs_create_new_inode(struct btrfs_trans_handle *trans,
+ 	inode->i_atime = inode->i_mtime;
+ 	BTRFS_I(inode)->i_otime = inode->i_mtime;
+ 
++	if (args->encrypt) {
++		BTRFS_I(inode)->flags |= BTRFS_INODE_ENCRYPT;
++		btrfs_sync_inode_flags_to_i_flags(inode);
++	}
++
+ 	/*
+ 	 * We're going to fill the inode item now, so at this point the inode
+ 	 * must be fully initialized.
+@@ -6373,6 +6385,13 @@ int btrfs_create_new_inode(struct btrfs_trans_handle *trans,
+ 			goto discard;
+ 		}
+ 	}
++	if (args->encrypt) {
++		ret = fscrypt_set_context(inode, trans);
++		if (ret) {
++			btrfs_abort_transaction(trans, ret);
++			goto discard;
++		}
++	}
+ 
+ 	inode_tree_add(BTRFS_I(inode));
+ 
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 89cd212735ea..1f1506280619 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -156,6 +156,8 @@ static unsigned int btrfs_inode_flags_to_fsflags(struct btrfs_inode *binode)
+ 		iflags |= FS_DIRSYNC_FL;
+ 	if (flags & BTRFS_INODE_NODATACOW)
+ 		iflags |= FS_NOCOW_FL;
++	if (flags & BTRFS_INODE_ENCRYPT)
++		iflags |= FS_ENCRYPT_FL;
+ 	if (ro_flags & BTRFS_INODE_RO_VERITY)
+ 		iflags |= FS_VERITY_FL;
+ 
+@@ -185,12 +187,14 @@ void btrfs_sync_inode_flags_to_i_flags(struct inode *inode)
+ 		new_fl |= S_NOATIME;
+ 	if (binode->flags & BTRFS_INODE_DIRSYNC)
+ 		new_fl |= S_DIRSYNC;
++	if (binode->flags & BTRFS_INODE_ENCRYPT)
++		new_fl |= S_ENCRYPTED;
+ 	if (binode->ro_flags & BTRFS_INODE_RO_VERITY)
+ 		new_fl |= S_VERITY;
+ 
+ 	set_mask_bits(&inode->i_flags,
+ 		      S_SYNC | S_APPEND | S_IMMUTABLE | S_NOATIME | S_DIRSYNC |
+-		      S_VERITY, new_fl);
++		      S_VERITY | S_ENCRYPTED, new_fl);
+ }
+ 
+ /*
+@@ -203,7 +207,7 @@ static int check_fsflags(unsigned int old_flags, unsigned int flags)
+ 		      FS_NOATIME_FL | FS_NODUMP_FL | \
+ 		      FS_SYNC_FL | FS_DIRSYNC_FL | \
+ 		      FS_NOCOMP_FL | FS_COMPR_FL |
+-		      FS_NOCOW_FL))
++		      FS_NOCOW_FL | FS_ENCRYPT_FL))
+ 		return -EOPNOTSUPP;
+ 
+ 	/* COMPR and NOCOMP on new/old are valid */
+diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
+index c25fc9614594..ef796a3cf387 100644
+--- a/include/uapi/linux/btrfs_tree.h
++++ b/include/uapi/linux/btrfs_tree.h
+@@ -164,6 +164,8 @@
+ #define BTRFS_VERITY_DESC_ITEM_KEY	36
+ #define BTRFS_VERITY_MERKLE_ITEM_KEY	37
+ 
++#define BTRFS_FSCRYPT_CTX_ITEM_KEY	41
++
+ #define BTRFS_ORPHAN_ITEM_KEY		48
+ /* reserve 2-15 close to the inode for later flexibility */
+ 
+@@ -416,6 +418,7 @@ static inline __u8 btrfs_dir_flags_to_ftype(__u8 flags)
+ #define BTRFS_INODE_NOATIME		(1U << 9)
+ #define BTRFS_INODE_DIRSYNC		(1U << 10)
+ #define BTRFS_INODE_COMPRESS		(1U << 11)
++#define BTRFS_INODE_ENCRYPT	(1U << 12)
+ 
+ #define BTRFS_INODE_ROOT_ITEM_INIT	(1U << 31)
+ 
+@@ -432,6 +435,7 @@ static inline __u8 btrfs_dir_flags_to_ftype(__u8 flags)
+ 	 BTRFS_INODE_NOATIME |						\
+ 	 BTRFS_INODE_DIRSYNC |						\
+ 	 BTRFS_INODE_COMPRESS |						\
++	 BTRFS_INODE_ENCRYPT |						\
+ 	 BTRFS_INODE_ROOT_ITEM_INIT)
+ 
+ #define BTRFS_INODE_RO_VERITY		(1U << 0)
+@@ -1061,6 +1065,12 @@ enum {
+ 	BTRFS_NR_FILE_EXTENT_TYPES = 3,
+ };
+ 
++enum {
++	BTRFS_ENCRYPTION_NONE,
++	BTRFS_ENCRYPTION_FSCRYPT,
++	BTRFS_NR_ENCRYPTION_TYPES,
++};
++
+ struct btrfs_file_extent_item {
+ 	/*
+ 	 * transaction id that created this extent
 -- 
 2.41.0
 
