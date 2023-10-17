@@ -2,43 +2,45 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BBC07CB9E5
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 17 Oct 2023 07:13:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E3407CB9EB
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 17 Oct 2023 07:20:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229666AbjJQFNS (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Tue, 17 Oct 2023 01:13:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32998 "EHLO
+        id S233862AbjJQFUh (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Tue, 17 Oct 2023 01:20:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjJQFNS (ORCPT
+        with ESMTP id S229452AbjJQFUg (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Tue, 17 Oct 2023 01:13:18 -0400
+        Tue, 17 Oct 2023 01:20:36 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86B7EA2;
-        Mon, 16 Oct 2023 22:13:16 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E842FC433C7;
-        Tue, 17 Oct 2023 05:13:15 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65951A2;
+        Mon, 16 Oct 2023 22:20:35 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB774C433C7;
+        Tue, 17 Oct 2023 05:20:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697519596;
-        bh=yqdF+dupVrwQkn0deXrx10YlGJAxKNIEgnY0AOt1qhc=;
+        s=k20201202; t=1697520035;
+        bh=EN8UTTtNUR9NGvJgHNEIP2VQzznAFZZ16jnJFPy09Xw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ecNeu6IAUqfOrYBb2oBbCuWNapCenBrhe/h1x7yHDk3Ees9sJxriatWj30gGQLXeX
-         s6cSHIwpIMOqyJoJ4MHK33AdBgiayBHoY44Kk2PcCg6+mEJEr1DNDBmxrMwiMxwAPI
-         OsKVu1JuCVbFLMwvfejv7C+WmucVWvPIjoikhSyXUurd6ViQ4J1PJSWpsNYQVevL4X
-         B0NCg2JjqppwE6dORA5L3/NrOYAN1vClppH0xhDIlNXp7xvrzoLYKAu3M+3lYSGcKr
-         435lOxyNgqanFcLJhUNo+duq/qmaT8zetD8Ou+wmmEsoDwR5N5EfJ/G2bGcjbJuPHm
-         Y7iks3pkQMIhA==
-Date:   Mon, 16 Oct 2023 22:13:13 -0700
+        b=rkew1ESvq+SpaJvC7VUG27cP/dpfeMOefWyylOS+wXeSTITqhuhwe+D1mT73xh/mL
+         0cqLO0885YILbTFRcQUo8n12nsBVQwDS7g6JfggW3HFkXqJgdGgV9CZxhCbKJ2sHxn
+         +wWab0SRazuac3x9l8rswPTWGIQnIfBSNgiGrcT8SbqgfSYDUO8eJZh4qw5tZbO7IV
+         1ZpioaQR0hYtz2fgh22IHcww53zghTKvjB1qHqL6CeMkniNdExaKXuxwdCPL3IMqfz
+         AKkDN+JqmI8w1EPmXtvv2LXioJrsVZdK6X7X6VB07fX2JxI4enKH7LX+dL+jKvVNdH
+         z93GTh2/9HR2w==
+Date:   Mon, 16 Oct 2023 22:20:33 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-fscrypt@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] fscrypt: track master key presence separately from secret
-Message-ID: <20231017051313.GD1907@sol.localdomain>
-References: <20231015061055.62673-1-ebiggers@kernel.org>
- <20231016182337.GA2339326@perftesting>
+Cc:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-btrfs@vger.kernel.org,
+        Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Subject: Re: [PATCH 01/12] common/encrypt: separate data and inode nonces
+Message-ID: <20231017052033.GE1907@sol.localdomain>
+References: <cover.1696969376.git.josef@toxicpanda.com>
+ <d5a7bbf5027095a1177c0da42c26aa72aba84064.1696969376.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231016182337.GA2339326@perftesting>
+In-Reply-To: <d5a7bbf5027095a1177c0da42c26aa72aba84064.1696969376.git.josef@toxicpanda.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -49,46 +51,67 @@ Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 02:23:37PM -0400, Josef Bacik wrote:
-> On Sat, Oct 14, 2023 at 11:10:55PM -0700, Eric Biggers wrote:
-> > From: Eric Biggers <ebiggers@google.com>
-> > 
-> > Master keys can be in one of three states: present, incompletely
-> > removed, and absent (as per FSCRYPT_KEY_STATUS_* used in the UAPI).
-> > Currently, the way that "present" is distinguished from "incompletely
-> > removed" internally is by whether ->mk_secret exists or not.
-> > 
-> > With extent-based encryption, it will be necessary to allow per-extent
-> > keys to be derived while the master key is incompletely removed, so that
-> > I/O on open files will reliably continue working after removal of the
-> > key has been initiated.  (We could allow I/O to sometimes fail in that
-> > case, but that seems problematic for reasons such as writes getting
-> > silently thrown away and diverging from the existing fscrypt semantics.)
-> > Therefore, when the filesystem is using extent-based encryption,
-> > ->mk_secret can't be wiped when the key becomes incompletely removed.
-> > 
-> > As a prerequisite for doing that, this patch makes the "present" state
-> > be tracked using a new field, ->mk_present.  No behavior is changed yet.
-> > 
-> > The basic idea here is borrowed from Josef Bacik's patch
-> > "fscrypt: use a flag to indicate that the master key is being evicted"
-> > (https://lore.kernel.org/r/e86c16dddc049ff065f877d793ad773e4c6bfad9.1696970227.git.josef@toxicpanda.com).
-> > I reimplemented it using a "present" bool instead of an "evicted" flag,
-> > fixed a couple bugs, and tried to update everything to be consistent.
-> > 
-> > Note: I considered adding a ->mk_status field instead, holding one of
-> > FSCRYPT_KEY_STATUS_*.  At first that seemed nice, but it ended up being
-> > more complex (despite simplifying FS_IOC_GET_ENCRYPTION_KEY_STATUS),
-> > since it would have introduced redundancy and had weird locking rules.
-> > 
-> > Signed-off-by: Eric Biggers <ebiggers@google.com>
+On Tue, Oct 10, 2023 at 04:25:54PM -0400, Josef Bacik wrote:
+> From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 > 
-> Based my fscrypt patches ontop of this one, ran tests with both btrfs and ext4
-> with it applied, in addition to my normal review stuff.  You can add
+> btrfs will have different inode and data nonces, so we need to be
+> specific about which nonce each use needs. For now, there is no
+> difference in the two functions.
 > 
-> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+> ---
+>  common/encrypt    | 33 ++++++++++++++++++++++++++-------
+>  tests/f2fs/002    |  2 +-
+>  tests/generic/613 |  4 ++--
+>  3 files changed, 29 insertions(+), 10 deletions(-)
 > 
+> diff --git a/common/encrypt b/common/encrypt
+> index 1a77e23b..04b6e5ac 100644
+> --- a/common/encrypt
+> +++ b/common/encrypt
+> @@ -488,7 +488,7 @@ _add_fscrypt_provisioning_key()
+>  # Retrieve the encryption nonce of the given inode as a hex string.  The nonce
+>  # was randomly generated by the filesystem and isn't exposed directly to
+>  # userspace.  But it can be read using the filesystem's debugging tools.
+> -_get_encryption_nonce()
+> +_get_encryption_file_nonce()
+>  {
+>  	local device=$1
+>  	local inode=$2
+> @@ -532,15 +532,34 @@ _get_encryption_nonce()
+>  			}'
+>  		;;
+>  	*)
+> -		_fail "_get_encryption_nonce() isn't implemented on $FSTYP"
+> +		_fail "_get_encryption_file_nonce() isn't implemented on $FSTYP"
+>  		;;
+>  	esac
+>  }
+>  
+> -# Require support for _get_encryption_nonce()
+> +# Retrieve the encryption nonce used to encrypt the data of the given inode as
+> +# a hex string.  The nonce was randomly generated by the filesystem and isn't
+> +# exposed directly to userspace.  But it can be read using the filesystem's
+> +# debugging tools.
+> +_get_encryption_data_nonce()
+> +{
+> +	local device=$1
+> +	local inode=$2
+> +
+> +	case $FSTYP in
+> +	ext4|f2fs)
+> +		_get_encryption_file_nonce $device $inode
+> +		;;
+> +	*)
+> +		_fail "_get_encryption_data_nonce() isn't implemented on $FSTYP"
+> +		;;
+> +	esac
+> +}
 
-Thanks.  I went ahead and applied this patch to the fscrypt tree.
+Shouldn't this be _get_encryption_extent_nonce(), taking the offset of the
+extent as a parameter?
+
+Also I think it would sound better as _get_extent_encryption_nonce(), and
+likewise _get_file_encryption_nonce().
 
 - Eric
