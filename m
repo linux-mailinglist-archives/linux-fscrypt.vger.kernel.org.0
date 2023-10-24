@@ -2,54 +2,54 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D089A7D466E
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 24 Oct 2023 05:53:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A62EB7D4675
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 24 Oct 2023 05:53:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233341AbjJXDxq (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Mon, 23 Oct 2023 23:53:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51672 "EHLO
+        id S232251AbjJXDxt (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Mon, 23 Oct 2023 23:53:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232226AbjJXDws (ORCPT
+        with ESMTP id S232448AbjJXDxD (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Mon, 23 Oct 2023 23:52:48 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A4021705
-        for <linux-fscrypt@vger.kernel.org>; Mon, 23 Oct 2023 20:52:35 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-778925998cbso270056285a.0
-        for <linux-fscrypt@vger.kernel.org>; Mon, 23 Oct 2023 20:52:35 -0700 (PDT)
+        Mon, 23 Oct 2023 23:53:03 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 136E310F4
+        for <linux-fscrypt@vger.kernel.org>; Mon, 23 Oct 2023 20:52:36 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id af79cd13be357-7788fb06997so282735385a.0
+        for <linux-fscrypt@vger.kernel.org>; Mon, 23 Oct 2023 20:52:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1698119554; x=1698724354; darn=vger.kernel.org;
+        d=paul-moore.com; s=google; t=1698119555; x=1698724355; darn=vger.kernel.org;
         h=in-reply-to:references:subject:cc:to:from:message-id:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=SJeWgPJnFP9SHHxUPbKsetSyEOFGY5VrSBabMhJS80Q=;
-        b=KbMUBQMSOcaTYRAPp57HT97WBcJpv085FPhzTuONCktGCFLEeNrp1Oj5EH4t1FUOg9
-         2JLJSgP1Elq9HtEUyIzCkrxZEQP9oanHoI9Exl5JGeQaIUqujCSkqujvtOc9XE0s5BDn
-         soI+khKShmTYAk7PwvQqtrAVvCoDquHrSD/El9o5n6dnp/CcSHM8f+RLfDheSMeKCxxY
-         V4ZdZqYjT0oSW63WGkXVOwQjBGwNrzPoKtrMk7m98c3JwGFrjh3lDjoOmLFx2Gq5tUQ+
-         Z2MAKPPRyoAjBGikCTttGdsKoCydwH9mfo49z7AM8By/xsh+XhyTVOmPJrpWL7d076s5
-         H3ww==
+        bh=55ZRJ15k5rlJjmFui052IxveaRjJKA9VJGl0uzNotB8=;
+        b=NOsjfUsiwJ6iZkl1CzbXPwvgzAEyZ3ahiAQdcJtdRzTg1KxCLIflQ32IHGJXELMhe5
+         XYZf6o62nBC47jGKfMuZhXz0tFU239x9gsK2mBXcfdav0bjk+8I5c+GYS1hYNieD0Cz+
+         zpatyfzG0HJIRkkMc+BJAPtiG0N+2G1oWAnQ33ujxNuvs5QGupUEirFdGtFE7zJA5nwa
+         fxgjJsU9y5d9HAAcnGSWHyjdv4A2FAqwC+h5Hz2z7gIG80oeDnprAdkDTZpl1pgEufGj
+         cjObeC16eeFfiC6/mXIaWl1BUmjoVswgU5kOFiAANUcwpw2JSTd5cEGjqU1IXitMBtVS
+         tNEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698119554; x=1698724354;
+        d=1e100.net; s=20230601; t=1698119555; x=1698724355;
         h=in-reply-to:references:subject:cc:to:from:message-id:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SJeWgPJnFP9SHHxUPbKsetSyEOFGY5VrSBabMhJS80Q=;
-        b=DE6H2qOfCm31E/Oy+fK0g+6CJWia/vNxbQrmQM2TAVrDvFbQgylRuAeSxpr0Voy5Rl
-         BK5t6ysFMiX4sRE1qYKmKzUwFPnO0MTdGbPB6mN4UdqX2tettjyxGcxXipELp15i7mWW
-         AjjvxGCEYYe3rWVW8WVujZyMFiylgsAGKbdlOrjd/iu6MwPVezs7atBlSMMHYzHv35bo
-         QMUsEbJH3tdsq3vYjeEb+D0kfgd10zzeNNP8q8vVGdV5SWaWfaK0qD3irK/DW0uUhDSM
-         q0T2IUWRmjzL00YoUfZeHLKFA7X3jIK14qhyCzxJQOaViPAJYbk3QiQl75O/jToxEK1R
-         e7AA==
-X-Gm-Message-State: AOJu0Yz53IFvvW4rDjDpXvsLR8MsMwOR8GH9ohG9RvFJT9/l9OWI7ZI2
-        EEVZaPw4laT1toot1KoHwxYs
-X-Google-Smtp-Source: AGHT+IH2nCw7lcCJOC1jGaMBVsqfLXNVaAdsff3fbIwOETvTCI7/MGjJFVZyviKRDzofuJU8klNdDQ==
-X-Received: by 2002:a05:620a:2907:b0:778:b78b:3338 with SMTP id m7-20020a05620a290700b00778b78b3338mr7760648qkp.10.1698119554427;
-        Mon, 23 Oct 2023 20:52:34 -0700 (PDT)
+        bh=55ZRJ15k5rlJjmFui052IxveaRjJKA9VJGl0uzNotB8=;
+        b=BzComi/GO1y7bMeyesVhj3jFdsE56yaXZ35xcfWyHzdV3US1Fev9vt69iRpVeY+PT1
+         NF9y2lvCasiy4d/1p8Vk98xWcDzQqK4Y6uewaZ0cQTE38co7MwG2GZ4SDPhteolIsaXH
+         xYdWXm1a8l+jbH9cidP0cE+USzMhKujEbTXwGHUzJYQy5bt1vhKXUcTOv65ngNTsmf1p
+         m3y8WanbDh65E+v/zG1YBwQHdGrKumCOlZ8xZ5JOPFjzwr5yM8J8kLW5q6kEHNtkDl6t
+         mYFznVjqQDn6N3S95zhh7mNmgrfMoSoMoAjenMo7dBPxKWkwFgSV4Ts05/EHzh9n2j2d
+         cMEA==
+X-Gm-Message-State: AOJu0YxkzeqLYyuTIHiG/6epJdXkAg80CDYo51eFmnerY9Hn/mpY17as
+        YszGkdJGd7kX6XhzsNHxp8S5
+X-Google-Smtp-Source: AGHT+IFhehT5SBIN3u4k21hQKcqd9tt3cVRe5RSL6o1ZuOBt7dfMcEzUGFp3iEoi8dzbbuQJKBLFmg==
+X-Received: by 2002:a05:6214:626:b0:66d:5dec:6099 with SMTP id a6-20020a056214062600b0066d5dec6099mr11383093qvx.41.1698119555528;
+        Mon, 23 Oct 2023 20:52:35 -0700 (PDT)
 Received: from localhost ([70.22.175.108])
-        by smtp.gmail.com with ESMTPSA id i6-20020a05620a404600b007742c6823a3sm3143889qko.108.2023.10.23.20.52.33
+        by smtp.gmail.com with ESMTPSA id ee3-20020a0562140a4300b0065b260eafd9sm3357598qvb.87.2023.10.23.20.52.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 20:52:33 -0700 (PDT)
-Date:   Mon, 23 Oct 2023 23:52:33 -0400
-Message-ID: <6efb7a80ba0eb3e02b3ae7a5c0a210f3.paul@paul-moore.com>
+        Mon, 23 Oct 2023 20:52:34 -0700 (PDT)
+Date:   Mon, 23 Oct 2023 23:52:34 -0400
+Message-ID: <c2a88a9292a6ce1e301ec2244657f385.paul@paul-moore.com>
 From:   Paul Moore <paul@paul-moore.com>
 To:     Fan Wu <wufan@linux.microsoft.com>, corbet@lwn.net,
         zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com,
@@ -62,9 +62,9 @@ Cc:     linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
         roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
         Fan Wu <wufan@linux.microsoft.com>,
         Deven Bowers <deven.desai@linux.microsoft.com>
-Subject: Re: [PATCH RFC v11 15/19] fsverity: consume builtin signature via LSM  hook
-References: <1696457386-3010-16-git-send-email-wufan@linux.microsoft.com>
-In-Reply-To: <1696457386-3010-16-git-send-email-wufan@linux.microsoft.com>
+Subject: Re: [PATCH RFC v11 16/19] ipe: enable support for fs-verity as a trust  provider
+References: <1696457386-3010-17-git-send-email-wufan@linux.microsoft.com>
+In-Reply-To: <1696457386-3010-17-git-send-email-wufan@linux.microsoft.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
         autolearn=unavailable autolearn_force=no version=3.4.6
@@ -76,25 +76,25 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 
 On Oct  4, 2023 Fan Wu <wufan@linux.microsoft.com> wrote:
 > 
-> fsverity represents a mechanism to support both integrity and
-> authenticity protection of a file, supporting both signed and unsigned
-> digests.
+> Enable IPE policy authors to indicate trust for a singular fsverity
+> file, identified by the digest information, through "fsverity_digest"
+> and all files using fsverity's builtin signatures via
+> "fsverity_signature".
 > 
-> An LSM which controls access to a resource based on authenticity and
-> integrity of said resource, can then use this data to make an informed
-> decision on the authorization (provided by the LSM's policy) of said
-> claim.
+> This enables file-level integrity claims to be expressed in IPE,
+> allowing individual files to be authorized, giving some flexibility
+> for policy authors. Such file-level claims are important to be expressed
+> for enforcing the integrity of packages, as well as address some of the
+> scalability issues in a sole dm-verity based solution (# of loop back
+> devices, etc).
 > 
-> This effectively allows the extension of a policy enforcement layer in
-> LSM for fsverity, allowing for more granular control of how a
-> particular authenticity claim can be used. For example, "all (built-in)
-> signed fsverity files should be allowed to execute, but only these
-> hashes are allowed to be loaded as kernel modules".
-> 
-> This enforcement must be done in kernel space, as a userspace only
-> solution would fail a simple litmus test: Download a self-contained
-> malicious binary that never touches the userspace stack. This
-> binary would still be able to execute.
+> This solution cannot be done in userspace as the minimum threat that
+> IPE should mitigate is an attacker downloads malicious payload with
+> all required dependencies. These dependencies can lack the userspace
+> check, bypassing the protection entirely. A similar attack succeeds if
+> the userspace component is replaced with a version that does not
+> perform the check. As a result, this can only be done in the common
+> entry point - the kernel.
 > 
 > Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
 > Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
@@ -106,117 +106,129 @@ On Oct  4, 2023 Fan Wu <wufan@linux.microsoft.com> wrote:
 >   Introduced
 > 
 > v8:
->   + Split fs/verity/ changes and security/ changes into separate patches
->   + Change signature of fsverity_create_info to accept non-const inode
->   + Change signature of fsverity_verify_signature to accept non-const inode
->   + Don't cast-away const from inode.
->   + Digest functionality dropped in favor of:
->     ("fs-verity: define a function to return the integrity protected
->       file digest")
->   + Reworded commit description and title to match changes.
->   + Fix a bug wherein no LSM implements the particular fsverity @name
->     (or LSM is disabled), and returns -EOPNOTSUPP, causing errors.
+>   * Undo squash of 08/12, 10/12 - separating drivers/md/ from security/
+>   * Use common-audit function for fsverity_signature.
+>   + Change fsverity implementation to use fsverity_get_digest
+>   + prevent unnecessary copy of fs-verity signature data, instead
+>     just check for presence of signature data.
+>   + Remove free_inode_security hook, as the digest is now acquired
+>     at runtime instead of via LSM blob.
 > 
 > v9:
->   + No changes
+>   + Adapt to the new parser
 > 
 > v10:
->   + Rename the signature blob key
->   + Cleanup redundant code
->   + Make the hook call depends on CONFIG_FS_VERITY_BUILTIN_SIGNATURES
+>   + Update the fsverity get digest call
 > 
 > v11:
 >   + No changes
 > ---
->  fs/verity/fsverity_private.h |  2 +-
->  fs/verity/open.c             | 26 +++++++++++++++++++++++++-
->  include/linux/fsverity.h     |  2 ++
->  3 files changed, 28 insertions(+), 2 deletions(-)
+>  security/ipe/Kconfig         |  13 +++++
+>  security/ipe/audit.c         |  23 ++++++++
+>  security/ipe/eval.c          | 110 +++++++++++++++++++++++++++++++++++
+>  security/ipe/eval.h          |  10 ++++
+>  security/ipe/hooks.c         |  30 ++++++++++
+>  security/ipe/hooks.h         |   7 +++
+>  security/ipe/ipe.c           |  13 +++++
+>  security/ipe/ipe.h           |   3 +
+>  security/ipe/policy.h        |   3 +
+>  security/ipe/policy_parser.c |   8 +++
+>  10 files changed, 220 insertions(+)
 
-We need an ACK from some VFS folks on this.
+...
 
-> diff --git a/fs/verity/fsverity_private.h b/fs/verity/fsverity_private.h
-> index d071a6e32581..4a82716e852f 100644
-> --- a/fs/verity/fsverity_private.h
-> +++ b/fs/verity/fsverity_private.h
-> @@ -108,7 +108,7 @@ int fsverity_init_merkle_tree_params(struct merkle_tree_params *params,
->  				     unsigned int log_blocksize,
->  				     const u8 *salt, size_t salt_size);
->  
-> -struct fsverity_info *fsverity_create_info(const struct inode *inode,
-> +struct fsverity_info *fsverity_create_info(struct inode *inode,
->  					   struct fsverity_descriptor *desc);
->  
->  void fsverity_set_info(struct inode *inode, struct fsverity_info *vi);
-> diff --git a/fs/verity/open.c b/fs/verity/open.c
-> index 6c31a871b84b..5b48e2c39086 100644
-> --- a/fs/verity/open.c
-> +++ b/fs/verity/open.c
-> @@ -8,6 +8,7 @@
->  #include "fsverity_private.h"
->  
->  #include <linux/mm.h>
-> +#include <linux/security.h>
->  #include <linux/slab.h>
->  
->  static struct kmem_cache *fsverity_info_cachep;
-> @@ -172,12 +173,28 @@ static int compute_file_digest(const struct fsverity_hash_alg *hash_alg,
->  	return err;
->  }
->  
-> +#ifdef CONFIG_FS_VERITY_BUILTIN_SIGNATURES
-> +static int fsverity_inode_setsecurity(struct inode *inode,
-> +				      struct fsverity_descriptor *desc)
-> +{
-> +	return security_inode_setsecurity(inode, FS_VERITY_INODE_SEC_NAME,
-> +					  desc->signature,
-> +					  le32_to_cpu(desc->sig_size), 0);
-> +}
-> +#else
-> +static inline int fsverity_inode_setsecurity(struct inode *inode,
-> +					     struct fsverity_descriptor *desc)
-> +{
-> +	return 0;
-> +}
-> +#endif /* CONFIG_IPE_PROP_FS_VERITY*/
-> +
->  /*
->   * Create a new fsverity_info from the given fsverity_descriptor (with optional
->   * appended builtin signature), and check the signature if present.  The
->   * fsverity_descriptor must have already undergone basic validation.
->   */
-> -struct fsverity_info *fsverity_create_info(const struct inode *inode,
-> +struct fsverity_info *fsverity_create_info(struct inode *inode,
->  					   struct fsverity_descriptor *desc)
->  {
->  	struct fsverity_info *vi;
-> @@ -242,6 +259,13 @@ struct fsverity_info *fsverity_create_info(const struct inode *inode,
->  		spin_lock_init(&vi->hash_page_init_lock);
+> diff --git a/security/ipe/audit.c b/security/ipe/audit.c
+> index b5c58655ac74..e3a8552a76a4 100644
+> --- a/security/ipe/audit.c
+> +++ b/security/ipe/audit.c
+> @@ -79,6 +100,8 @@ static void audit_rule(struct audit_buffer *ab, const struct ipe_rule *r)
+>  		audit_log_format(ab, "%s", audit_prop_names[ptr->type]);
+>  		if (ptr->type == IPE_PROP_DMV_ROOTHASH)
+>  			audit_dmv_roothash(ab, ptr->value);
+> +		if (ptr->type == IPE_PROP_FSV_DIGEST)
+> +			audit_fsv_digest(ab, ptr->value);
+
+My comments on audit_dmv_roothash() also apply here.
+
+>  		audit_log_format(ab, " ");
 >  	}
->  
-> +	err = fsverity_inode_setsecurity(inode, desc);
-> +	if (err == -EOPNOTSUPP)
-> +		err = 0;
-> +
-> +	if (err)
-> +		goto fail;
-> +
->  	return vi;
->  
->  fail:
-> diff --git a/include/linux/fsverity.h b/include/linux/fsverity.h
-> index 1eb7eae580be..9666721baf15 100644
-> --- a/include/linux/fsverity.h
-> +++ b/include/linux/fsverity.h
-> @@ -319,4 +319,6 @@ static inline int fsverity_prepare_setattr(struct dentry *dentry,
->  	return 0;
+> diff --git a/security/ipe/eval.c b/security/ipe/eval.c
+> index 82ad48d7aa3d..f0194b0ca2ff 100644
+> --- a/security/ipe/eval.c
+> +++ b/security/ipe/eval.c
+> @@ -172,6 +191,91 @@ static bool evaluate_dmv_sig_true(const struct ipe_eval_ctx *const ctx,
 >  }
+>  #endif /* CONFIG_IPE_PROP_DM_VERITY */
 >  
-> +#define FS_VERITY_INODE_SEC_NAME "fsverity.builtin-sig"
+> +#ifdef CONFIG_IPE_PROP_FS_VERITY
+> +/**
+> + * evaluate_fsv_digest - Analyze @ctx against a fsv digest property.
+> + * @ctx: Supplies a pointer to the context being evaluated.
+> + * @p: Supplies a pointer to the property being evaluated.
+> + *
+> + * Return:
+> + * * true	- The current @ctx match the @p
+> + * * false	- The current @ctx doesn't match the @p
+> + */
+> +static bool evaluate_fsv_digest(const struct ipe_eval_ctx *const ctx,
+> +				struct ipe_prop *p)
+> +{
+> +	enum hash_algo alg;
+> +	u8 digest[FS_VERITY_MAX_DIGEST_SIZE];
 > +
->  #endif	/* _LINUX_FSVERITY_H */
-> -- 
-> 2.25.1
+> +	if (!ctx->ino)
+> +		return false;
+> +	if (!fsverity_get_digest((struct inode *)ctx->ino,
+> +				 digest,
+> +				 NULL,
+> +				 &alg))
+> +		return false;
+> +
+> +	return ipe_digest_eval(p->value,
+> +			       digest,
+> +			       hash_digest_size[alg],
+> +			       hash_algo_name[alg]);
+> +}
+> +
+> +/**
+> + * evaluate_fsv_sig_false - Analyze @ctx against a fsv sig false property.
+> + * @ctx: Supplies a pointer to the context being evaluated.
+> + * @p: Supplies a pointer to the property being evaluated.
+> + *
+> + * Return:
+> + * * true	- The current @ctx match the @p
+> + * * false	- The current @ctx doesn't match the @p
+> + */
+> +static bool evaluate_fsv_sig_false(const struct ipe_eval_ctx *const ctx,
+> +				   struct ipe_prop *p)
+> +{
+> +	return !ctx->ino ||
+> +	       !IS_VERITY(ctx->ino) ||
+> +	       !ctx->ipe_inode ||
+> +	       !ctx->ipe_inode->fs_verity_signed;
+> +}
+> +
+> +/**
+> + * evaluate_fsv_sig_true - Analyze @ctx against a fsv sig true property.
+> + * @ctx: Supplies a pointer to the context being evaluated.
+> + * @p: Supplies a pointer to the property being evaluated.
+> + *
+> + * Return:
+> + * * true - The current @ctx match the @p
+> + * * false - The current @ctx doesn't match the @p
+> + */
+> +static bool evaluate_fsv_sig_true(const struct ipe_eval_ctx *const ctx,
+> +				  struct ipe_prop *p)
+> +{
+> +	return ctx->ino &&
+> +	       IS_VERITY(ctx->ino) &&
+> +	       ctx->ipe_inode &&
+> +	       ctx->ipe_inode->fs_verity_signed;
+> +}
+
+See my previous comments about the false/true functions.
+
+> +#else
 
 --
 paul-moore.com
