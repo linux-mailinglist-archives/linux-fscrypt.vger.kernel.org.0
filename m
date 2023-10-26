@@ -2,36 +2,36 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 949CF7D7919
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 26 Oct 2023 02:15:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A5197D8A66
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 26 Oct 2023 23:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230021AbjJZAP3 (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Wed, 25 Oct 2023 20:15:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53974 "EHLO
+        id S232210AbjJZVdu (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Thu, 26 Oct 2023 17:33:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbjJZAP2 (ORCPT
+        with ESMTP id S230271AbjJZVdt (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Wed, 25 Oct 2023 20:15:28 -0400
+        Thu, 26 Oct 2023 17:33:49 -0400
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AE5F410E;
-        Wed, 25 Oct 2023 17:15:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4BE03129;
+        Thu, 26 Oct 2023 14:33:47 -0700 (PDT)
 Received: from [10.137.106.151] (unknown [131.107.159.23])
-        by linux.microsoft.com (Postfix) with ESMTPSA id DC7A120B74C0;
-        Wed, 25 Oct 2023 17:15:25 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com DC7A120B74C0
+        by linux.microsoft.com (Postfix) with ESMTPSA id 81AF920B74C0;
+        Thu, 26 Oct 2023 14:33:46 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 81AF920B74C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1698279326;
-        bh=Ayg5mamt8HCVNY+t4GHPswTJfJb2ciVUg3Q8qdqL6WE=;
+        s=default; t=1698356026;
+        bh=4XTXNRGs6EFGxu4uzbSZ7r9fKh4mK0LSSScI1Qs6AQY=;
         h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=ovNPjhYAJE3PiwQsqnWOT8BVxfey4Ku6txfhhlOv+IbofSxRoW2I/UfuChbVmptfZ
-         OoqUvAEgfqDQMX460M6f1L4bM/7ro6HymGSEFoD4BIoEM+SpVEJLLY/mlmG8bdt1Cy
-         XGfyJLNcmoePkK24YClYdoBvr20aQVIi2uz0YWJo=
-Message-ID: <84f25e00-3a3a-419f-baea-50d64a1d5575@linux.microsoft.com>
-Date:   Wed, 25 Oct 2023 17:15:25 -0700
+        b=lkHsle7iI2VQ1AX+NaZr+9OMmFu99wmEtzfgnr6EJZqK4JVp9txEyJ3iZLIi3Yqiu
+         atrmGJ/tt2zKVKq49LWpN05TsSkmG4Wfj5PgbwOkVV+gYOnVpzAz7Pyi+j5RPLfU0o
+         BiQVRpCRe8GC+EKvTHzEo1DAKQ4XP+Zkut822rHM=
+Message-ID: <616a6fd7-47b1-4b46-af23-46f9b1a3eedf@linux.microsoft.com>
+Date:   Thu, 26 Oct 2023 14:33:46 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v11 3/19] ipe: add evaluation loop
-Content-Language: en-US
+Subject: Re: [PATCH RFC v11 5/19] ipe: introduce 'boot_verified' as a trust
+ provider
 To:     Paul Moore <paul@paul-moore.com>, corbet@lwn.net,
         zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com,
         tytso@mit.edu, ebiggers@kernel.org, axboe@kernel.dk,
@@ -42,10 +42,11 @@ Cc:     linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
         dm-devel@redhat.com, audit@vger.kernel.org,
         roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
         Deven Bowers <deven.desai@linux.microsoft.com>
-References: <1696457386-3010-4-git-send-email-wufan@linux.microsoft.com>
- <aa226bdcba26d74304f6c10c290db840.paul@paul-moore.com>
+References: <1696457386-3010-6-git-send-email-wufan@linux.microsoft.com>
+ <c53599e9d278fc55be30e3bac9411328.paul@paul-moore.com>
+Content-Language: en-US
 From:   Fan Wu <wufan@linux.microsoft.com>
-In-Reply-To: <aa226bdcba26d74304f6c10c290db840.paul@paul-moore.com>
+In-Reply-To: <c53599e9d278fc55be30e3bac9411328.paul@paul-moore.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -63,138 +64,104 @@ X-Mailing-List: linux-fscrypt@vger.kernel.org
 On 10/23/2023 8:52 PM, Paul Moore wrote:
 > On Oct  4, 2023 Fan Wu <wufan@linux.microsoft.com> wrote:
 >>
->> IPE must have a centralized function to evaluate incoming callers
->> against IPE's policy. This iteration of the policy for against the rules
->> for that specific caller is known as the evaluation loop.
+>> IPE is designed to provide system level trust guarantees, this usually
+>> implies that trust starts from bootup with a hardware root of trust,
+>> which validates the bootloader. After this, the bootloader verifies the
+>> kernel and the initramfs.
+>>
+>> As there's no currently supported integrity method for initramfs, and
+>> it's typically already verified by the bootloader, introduce a property
+>> that causes the first superblock to have an execution to be "pinned",
+>> which is typically initramfs.
+>>
+>> When the "pinned" device is unmounted, it will be "unpinned" and
+>> `boot_verified` property will always evaluate to false afterward.
+>>
+>> We use a pointer with a spin_lock to "pin" the device instead of rcu
+>> because rcu synchronization may sleep, which is not allowed when
+>> unmounting a device.
 >>
 >> Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
 >> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
 ...
 >> ---
->>   security/ipe/Makefile |  1 +
->>   security/ipe/eval.c   | 96 +++++++++++++++++++++++++++++++++++++++++++
->>   security/ipe/eval.h   | 24 +++++++++++
->>   3 files changed, 121 insertions(+)
->>   create mode 100644 security/ipe/eval.c
->>   create mode 100644 security/ipe/eval.h
-> 
-> ...
-> 
+>>   security/ipe/eval.c          | 72 +++++++++++++++++++++++++++++++++++-
+>>   security/ipe/eval.h          |  2 +
+>>   security/ipe/hooks.c         | 12 ++++++
+>>   security/ipe/hooks.h         |  2 +
+>>   security/ipe/ipe.c           |  1 +
+>>   security/ipe/policy.h        |  2 +
+>>   security/ipe/policy_parser.c | 35 +++++++++++++++++-
+>>   7 files changed, 124 insertions(+), 2 deletions(-)
+>>
 >> diff --git a/security/ipe/eval.c b/security/ipe/eval.c
->> new file mode 100644
->> index 000000000000..5533c359bbeb
->> --- /dev/null
+>> index 8a8bcc5c7d7f..bdac4abc0ddb 100644
+>> --- a/security/ipe/eval.c
 >> +++ b/security/ipe/eval.c
->> @@ -0,0 +1,96 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Copyright (C) Microsoft Corporation. All rights reserved.
->> + */
->> +
->> +#include <linux/fs.h>
->> +#include <linux/types.h>
->> +#include <linux/slab.h>
->> +#include <linux/file.h>
->> +#include <linux/sched.h>
->> +#include <linux/rcupdate.h>
->> +
->> +#include "ipe.h"
->> +#include "eval.h"
->> +#include "policy.h"
->> +
->> +struct ipe_policy __rcu *ipe_active_policy;
+>> @@ -9,6 +9,7 @@
+>>   #include <linux/file.h>
+>>   #include <linux/sched.h>
+>>   #include <linux/rcupdate.h>
+>> +#include <linux/spinlock.h>
+>>   
+>>   #include "ipe.h"
+>>   #include "eval.h"
+>> @@ -16,6 +17,44 @@
+>>   
+>>   struct ipe_policy __rcu *ipe_active_policy;
+>>   
+>> +static const struct super_block *pinned_sb;
+>> +static DEFINE_SPINLOCK(pin_lock);
+>> +#define FILE_SUPERBLOCK(f) ((f)->f_path.mnt->mnt_sb)
 >> +
 >> +/**
->> + * evaluate_property - Analyze @ctx against a property.
->> + * @ctx: Supplies a pointer to the context to be evaluated.
->> + * @p: Supplies a pointer to the property to be evaluated.
->> + *
->> + * Return:
->> + * * true	- The current @ctx match the @p
->> + * * false	- The current @ctx doesn't match the @p
+>> + * pin_sb - Pin the underlying superblock of @f, marking it as trusted.
+>> + * @sb: Supplies a super_block structure to be pinned.
 >> + */
->> +static bool evaluate_property(const struct ipe_eval_ctx *const ctx,
->> +			      struct ipe_prop *p)
+>> +static void pin_sb(const struct super_block *sb)
 >> +{
->> +	return false;
+>> +	if (!sb)
+>> +		return;
+>> +	spin_lock(&pin_lock);
+>> +	if (!pinned_sb)
+>> +		pinned_sb = sb;
+>> +	spin_unlock(&pin_lock);
 >> +}
 >> +
 >> +/**
->> + * ipe_evaluate_event - Analyze @ctx against the current active policy.
->> + * @ctx: Supplies a pointer to the context to be evaluated.
->> + *
->> + * This is the loop where all policy evaluation happens against IPE policy.
+>> + * from_pinned - Determine whether @sb is the pinned super_block.
+>> + * @sb: Supplies a super_block to check against the pinned super_block.
 >> + *
 >> + * Return:
->> + * * 0		- OK
->> + * * -EACCES	- @ctx did not pass evaluation.
->> + * * !0		- Error
+>> + * * true	- @sb is the pinned super_block
+>> + * * false	- @sb is not the pinned super_block
 >> + */
->> +int ipe_evaluate_event(const struct ipe_eval_ctx *const ctx)
+>> +static bool from_pinned(const struct super_block *sb)
 >> +{
->> +	bool match = false;
->> +	enum ipe_action_type action;
->> +	struct ipe_policy *pol = NULL;
->> +	const struct ipe_rule *rule = NULL;
->> +	const struct ipe_op_table *rules = NULL;
->> +	struct ipe_prop *prop = NULL;
+>> +	bool rv;
 >> +
->> +	rcu_read_lock();
->> +
->> +	pol = rcu_dereference(ipe_active_policy);
->> +	if (!pol) {
->> +		rcu_read_unlock();
->> +		return 0;
->> +	}
->> +
->> +	if (ctx->op == IPE_OP_INVALID) {
->> +		rcu_read_unlock();
->> +		if (pol->parsed->global_default_action == IPE_ACTION_DENY)
->> +			return -EACCES;
+>> +	if (!sb)
+>> +		return false;
+>> +	spin_lock(&pin_lock);
+>> +	rv = !IS_ERR_OR_NULL(pinned_sb) && pinned_sb == sb;
+>> +	spin_unlock(&pin_lock);
 > 
-> Assuming that the RCU lock protects @pol, shouldn't it be held until
-> after the global_default_action comparison?
+> It's okay for an initial version, but I still think you need to get
+> away from this spinlock in from_pinned() as quickly as possible.
+> Maybe I'm wrong, but this looks like a major source of lock contention.
 > 
-Yes for this part the unlock should be moved after the comparison. 
-Thanks for spotting this.
-
->> +		return 0;
->> +	}
->> +
->> +	rules = &pol->parsed->rules[ctx->op];
->> +
->> +	list_for_each_entry(rule, &rules->rules, next) {
->> +		match = true;
->> +
->> +		list_for_each_entry(prop, &rule->props, next) {
->> +			match = match && evaluate_property(ctx, prop);
+> I understand the issue around RCU and the potential for matching on
+> a reused buffer/address, but if you modified IPE to have its own LSM
+> security blob in super_block::security you could mark the superblock
+> when it was mounted and do a lockless lookup here in from_pinned().
 > 
-> The @match variable will always be true on the right side above, or am
-> I missing something?
-> 
-Yes the "match &&" are completely unnecessary. I will remove them.
+Thank you for the suggestion. After some testing, I discovered that 
+switching to RCU to pin the super block and using a security blob to 
+mark a pinned super block works. This approach do avoid many spinlock 
+operations. I'll incorporate these changes in the next version of the patch.
 
 -Fan
->> +			if (!match)
->> +				break;
->> +		}
->> +
->> +		if (match)
->> +			break;
->> +	}
->> +
->> +	if (match)
->> +		action = rule->action;
->> +	else if (rules->default_action != IPE_ACTION_INVALID)
->> +		action = rules->default_action;
->> +	else
->> +		action = pol->parsed->global_default_action;
->> +
->> +	rcu_read_unlock();
->> +	if (action == IPE_ACTION_DENY)
->> +		return -EACCES;
->> +
->> +	return 0;
+>> +	return rv;
 >> +}
 > 
 > --
