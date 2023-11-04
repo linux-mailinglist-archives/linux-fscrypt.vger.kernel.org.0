@@ -2,213 +2,174 @@ Return-Path: <linux-fscrypt-owner@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E825B7E0B2D
-	for <lists+linux-fscrypt@lfdr.de>; Fri,  3 Nov 2023 23:32:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6786E7E1131
+	for <lists+linux-fscrypt@lfdr.de>; Sat,  4 Nov 2023 22:17:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233906AbjKCWaX (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
-        Fri, 3 Nov 2023 18:30:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44230 "EHLO
+        id S230284AbjKDVRM (ORCPT <rfc822;lists+linux-fscrypt@lfdr.de>);
+        Sat, 4 Nov 2023 17:17:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230343AbjKCWaW (ORCPT
+        with ESMTP id S230174AbjKDVRM (ORCPT
         <rfc822;linux-fscrypt@vger.kernel.org>);
-        Fri, 3 Nov 2023 18:30:22 -0400
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 028F9D64
-        for <linux-fscrypt@vger.kernel.org>; Fri,  3 Nov 2023 15:30:18 -0700 (PDT)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5a7b3d33663so31011347b3.3
-        for <linux-fscrypt@vger.kernel.org>; Fri, 03 Nov 2023 15:30:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1699050617; x=1699655417; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OOhQ+4ppHia6X5vZEThJt6hjspNBijG8E4l1rtJpvmc=;
-        b=Fb+t+TGVFWJo9Lt7NqbDpiCp5KTiTLq3qWK2F8FUuNtUM5WTuaxGb0+z1NVnqotvW1
-         2qZn6RS+Srkmk93yyT+/Ms2J3a7yxlyceX7Ft6kBLCx2jcS7lEJy9zgxUQXVHzj4blHS
-         fyr7qxkrJU2HwS9ru50vk3tZdpJzSWKa2JEcflHAIVzuA7GESxwEJtB/bI3b70A9QUXa
-         doEEoLqOl5hoHhMwCKdm/XfcW/zcTZPHZcjWSio+N81QNCrj++ZcVtYVoo53MGlrHnkn
-         WkerntN/joI4lYf51rws1n6PycdZxbZwUR8MePbvYxSxCedAqTx+o/U0M0YpVs5udBPf
-         IO1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699050617; x=1699655417;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OOhQ+4ppHia6X5vZEThJt6hjspNBijG8E4l1rtJpvmc=;
-        b=MWOGJLSAoiHQGb24kqhet5N/xkxxkIxklW7qxsUUSZbezC0fTpa5/UnV7RMDZpUUdI
-         F5gJykFdNHZbE/nDJKR6A5x83PvEW1lfsjoAEnQER+eeQW+iRBAvJvLeW98XIJ9mEaq4
-         1Vu7bdDbgStQX44PGCizPIhc3L2RNhrc3CcV8YAhO+eutiReAitTK5AELHG0evLN3BI/
-         NWPLtQ9u12rIjXyRR0HZrOuhJ4iKP/apKZ/p0zSh9JXjPDz825i0YWhGJ3ZlVGH6MvPD
-         G4AYZHnEj5RDwxm5xcWye+i5Qsa1cMqV7asNNI/l3g73JBAEoyIAB5ceVH5QtZ+1varU
-         1Ggg==
-X-Gm-Message-State: AOJu0YzvREWTF/kwtRNFjb2no8kaKwjqfFbooAbG8xv/sNQ149PRSsdM
-        uTzwtaHYufgzOaj2o0GfsDDieYUhxQrNYDSCJ0DR
-X-Google-Smtp-Source: AGHT+IGnpRgvInClOyTeRts44EfuCsVIf/oEzDvkRyvT0ioHtkFzmAn/jixwPJXsOyu5FJvaQ36V6EmrXY08ildtF/Y=
-X-Received: by 2002:a25:8590:0:b0:da0:cf4b:c504 with SMTP id
- x16-20020a258590000000b00da0cf4bc504mr23753840ybk.8.1699050616923; Fri, 03
- Nov 2023 15:30:16 -0700 (PDT)
+        Sat, 4 Nov 2023 17:17:12 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25A50DE;
+        Sat,  4 Nov 2023 14:17:09 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9ED8AC433C7;
+        Sat,  4 Nov 2023 21:17:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699132627;
+        bh=bNs3feLdLchTR60ZWx2xRIgocIhuI3oRhzAlktlTm5E=;
+        h=From:To:Cc:Subject:Date:From;
+        b=FbDfwXTl1fvcfclbvnXEU7w/sSr9csunAypkyraQ5MFLcAKSwzMDV2ffZTgJBZGdl
+         2cO/f6sfyxzNM0ZjIeopxTzoOq7rTvMXQrh01qu07ZXVO7A2fKxJx8fP9WWJ7Zy3CR
+         d6Ifuwm0ImgFnvlRKE036mbq4wwMkZE+o3Tt4ZdZBVQ0IYCivPZnrFKKriOmgv9o1I
+         U9ElMPIETtU0kjPIe56bzKjTA1uVHDagyb9/s8DSF7fWhhc7WHFxFzJRBp6R0ctJ9F
+         prC352OiOZGVdjJ8JWH/LD0IsYceg8l4qW0tDHw+S2pZhtiaAvOiMQOC2WaT2k76CQ
+         PC1WMmBYYLHXw==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-block@vger.kernel.org, linux-fscrypt@vger.kernel.org
+Cc:     kernel-team@android.com, Israel Rukshin <israelr@nvidia.com>,
+        Gaurav Kashyap <quic_gaurkash@quicinc.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Peter Griffin <peter.griffin@linaro.org>,
+        Daniil Lunev <dlunev@chromium.org>
+Subject: [RFC PATCH v8 0/4] Support for hardware-wrapped inline encryption keys
+Date:   Sat,  4 Nov 2023 14:12:55 -0700
+Message-ID: <20231104211259.17448-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-References: <1696457386-3010-6-git-send-email-wufan@linux.microsoft.com>
- <c53599e9d278fc55be30e3bac9411328.paul@paul-moore.com> <616a6fd7-47b1-4b46-af23-46f9b1a3eedf@linux.microsoft.com>
- <CAHC9VhScdtqJeUTTUQVk4D70tTLz4TgU_aRTMRnHa0OARyubaw@mail.gmail.com>
- <c40cd6a6-5c32-4e72-8831-f87ee0a09324@linux.microsoft.com> <CAHC9VhR9scT7V7dvN5zhAYdExORB9arWaR7Gbix1AUtAMDPHcg@mail.gmail.com>
-In-Reply-To: <CAHC9VhR9scT7V7dvN5zhAYdExORB9arWaR7Gbix1AUtAMDPHcg@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Fri, 3 Nov 2023 18:30:16 -0400
-Message-ID: <CAHC9VhQLbgvg6syOB2_GYFK+zpWbyx6zrDoM1aBnA18u_Qjj4g@mail.gmail.com>
-Subject: Re: [PATCH RFC v11 5/19] ipe: introduce 'boot_verified' as a trust provider
-To:     Fan Wu <wufan@linux.microsoft.com>
-Cc:     corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
-        serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org,
-        axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org,
-        eparis@redhat.com, linux-doc@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
-        dm-devel@redhat.com, audit@vger.kernel.org,
-        roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
-        Deven Bowers <deven.desai@linux.microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-fscrypt.vger.kernel.org>
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 
-On Fri, Nov 3, 2023 at 6:15=E2=80=AFPM Paul Moore <paul@paul-moore.com> wro=
-te:
-> On Thu, Nov 2, 2023 at 6:46=E2=80=AFPM Fan Wu <wufan@linux.microsoft.com>=
- wrote:
-> > On 10/26/2023 3:12 PM, Paul Moore wrote:
-> > > On Thu, Oct 26, 2023 at 5:33=E2=80=AFPM Fan Wu <wufan@linux.microsoft=
-.com> wrote:
-> > >> On 10/23/2023 8:52 PM, Paul Moore wrote:
-> > >>> On Oct  4, 2023 Fan Wu <wufan@linux.microsoft.com> wrote:
-> > >>>>
-> > >>>> IPE is designed to provide system level trust guarantees, this usu=
-ally
-> > >>>> implies that trust starts from bootup with a hardware root of trus=
-t,
-> > >>>> which validates the bootloader. After this, the bootloader verifie=
-s the
-> > >>>> kernel and the initramfs.
-> > >>>>
-> > >>>> As there's no currently supported integrity method for initramfs, =
-and
-> > >>>> it's typically already verified by the bootloader, introduce a pro=
-perty
-> > >>>> that causes the first superblock to have an execution to be "pinne=
-d",
-> > >>>> which is typically initramfs.
-> > >>>>
-> > >>>> When the "pinned" device is unmounted, it will be "unpinned" and
-> > >>>> `boot_verified` property will always evaluate to false afterward.
-> > >>>>
-> > >>>> We use a pointer with a spin_lock to "pin" the device instead of r=
-cu
-> > >>>> because rcu synchronization may sleep, which is not allowed when
-> > >>>> unmounting a device.
-> > >>>>
-> > >>>> Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
-> > >>>> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
-> > >> ...
-> > >>>> ---
-> > >>>>    security/ipe/eval.c          | 72 +++++++++++++++++++++++++++++=
-++++++-
-> > >>>>    security/ipe/eval.h          |  2 +
-> > >>>>    security/ipe/hooks.c         | 12 ++++++
-> > >>>>    security/ipe/hooks.h         |  2 +
-> > >>>>    security/ipe/ipe.c           |  1 +
-> > >>>>    security/ipe/policy.h        |  2 +
-> > >>>>    security/ipe/policy_parser.c | 35 +++++++++++++++++-
-> > >>>>    7 files changed, 124 insertions(+), 2 deletions(-)
->
-> ...
->
-> > >>>> +/**
-> > >>>> + * from_pinned - Determine whether @sb is the pinned super_block.
-> > >>>> + * @sb: Supplies a super_block to check against the pinned super_=
-block.
-> > >>>> + *
-> > >>>> + * Return:
-> > >>>> + * * true   - @sb is the pinned super_block
-> > >>>> + * * false  - @sb is not the pinned super_block
-> > >>>> + */
-> > >>>> +static bool from_pinned(const struct super_block *sb)
-> > >>>> +{
-> > >>>> +    bool rv;
-> > >>>> +
-> > >>>> +    if (!sb)
-> > >>>> +            return false;
-> > >>>> +    spin_lock(&pin_lock);
-> > >>>> +    rv =3D !IS_ERR_OR_NULL(pinned_sb) && pinned_sb =3D=3D sb;
-> > >>>> +    spin_unlock(&pin_lock);
-> > >>>
-> > >>> It's okay for an initial version, but I still think you need to get
-> > >>> away from this spinlock in from_pinned() as quickly as possible.
-> > >>> Maybe I'm wrong, but this looks like a major source of lock content=
-ion.
-> > >>>
-> > >>> I understand the issue around RCU and the potential for matching on
-> > >>> a reused buffer/address, but if you modified IPE to have its own LS=
-M
-> > >>> security blob in super_block::security you could mark the superbloc=
-k
-> > >>> when it was mounted and do a lockless lookup here in from_pinned().
-> > >>
-> > >> Thank you for the suggestion. After some testing, I discovered that
-> > >> switching to RCU to pin the super block and using a security blob to
-> > >> mark a pinned super block works. This approach do avoid many spinloc=
-k
-> > >> operations. I'll incorporate these changes in the next version of th=
-e patch.
-> > >
-> > > I probably wasn't as clear as I should have been, I was thinking of
-> > > doing away with the @pinned_sb global variable entirely, as well as
-> > > its associated lock problems and simply marking the initramfs/initrd
-> > > superblock when it was mounted.  I will admit that I haven't fully
-> > > thought about all the implementation details, but I think you could
-> > > leverage the security_sb_mount() hook to set a flag in IPE's
-> > > superblock metadata when the initramfs was mounted.
-> >
-> > I wasn't able to find a way to let LSM pin initramfs/initrd during moun=
-t
-> > time ...
->
-> I haven't had to look at the kernel init code in a while, and I don't
-> recall ever looking at the initramfs code, but I spent some time
-> digging through the code and I wonder if it would be possible to mark
-> the initramfs superblock in wait_for_initramfs() via a new LSM hook
-> using @current->fs->root.mnt->mnt_sb?  Although I'm not completely
-> sure that it's populated.  Have you already looked at an approach like
-> this?
+[ This patchset is based on mainline commit aea6bf908d730b01 ]
 
-Thinking about this more, the current IPE approach of treating the
-first file access as being present in the initramfs is not correct
-(one could build a system without an initramfs).  I think we need to
-do something like the above where the initramfs is explicitly marked
-in the initramfs code.
+This RFC patchset adds the block and fscrypt support for
+hardware-wrapped inline encryption keys, a security feature supported by
+Qualcomm and Google SoCs that has already been used by Android for
+several years (with some slight differences, but same overall design).
 
-> > But I think we could replace the global variable with a flag
-> > variable ipe_sb_state so we could use atomic operation to only mark one
-> > drive as pinned without any lock. The code will be like:
-> >
-> > static void pin_sb(const struct super_block *sb)
-> > {
-> >         if (!sb)
-> >                 return;
-> >
-> >         if (!test_and_set_bit_lock(IPE_SB_PINNED, &ipe_sb_state)) {
-> >                 ipe_sb(sb)->pinned =3D true;
-> >         }
-> > }
-> >
-> > Would this sound better?
+I last sent this patchset in December 2022
+(https://lore.kernel.org/r/20221216203636.81491-1-ebiggers@kernel.org).
+This feature continues to be blocked on the lack of upstream-ready
+development platform(s) for this feature.  However, it looks like at
+least one of sm8650 and gs101 will get there soon, and *maybe* even is
+there already (when I have a chance, I need to try out those SoCs with
+the very latest upstream and pending-upstream patches).  So things are
+looking more optimistic now.  Several months ago Gaurav Kashyap also
+updated his patchset for the sm8650 support for this feature
+(https://lore.kernel.org/r/20230719170423.220033-1-quic_gaurkash@quicinc.com).
+Therefore, so that people have something fresh to work on, I've rebased
+and am resending this block+fscrypt support patchset.  Note that this is
+a prerequisite for any platform specific patchsets, e.g. the sm8650 one.
 
---=20
-paul-moore.com
+This feature is described in full detail in the included Documentation
+changes.  But to summarize, hardware-wrapped keys are inline encryption
+keys that are wrapped (encrypted) by a key internal to the hardware so
+that they can only be unwrapped (decrypted) by the hardware.  Initially
+keys are wrapped with a permanent hardware key, but during actual use
+they are re-wrapped with a per-boot ephemeral key for improved security.
+The hardware supports importing keys as well as generating keys itself.
+
+This feature protects encryption keys from read-only compromises of
+kernel memory, such as that which can occur during a cold boot attack.
+It does this without limiting the number of keys that can be used, as
+would be the case with solutions that didn't use key wrapping.
+
+This differs from the existing support for hardware-wrapped keys in the
+kernel crypto API (which also goes by names such as "hardware-bound
+keys", depending on the driver) in the same way that the crypto API
+differs from blk-crypto: the crypto API is for general crypto
+operations, whereas blk-crypto is for inline storage encryption.
+
+Changes in v8:
+    - Rebased onto latest mainline (v6.6-14263-gaea6bf908d73).
+    - Removed checks for HW-wrapped keys compatibility between block
+      devices in multi-block-device filesystems, as these were
+      incompatible with device-mapper.  Doing this validation, which is
+      not needed for current HW, would require a more comphensive design
+
+Changes in v7:
+    - Rebased onto latest mainline.
+    - Fixed a bug in fscrypt_prepare_inline_crypt_key().
+    - Other cleanups.
+
+Changes in v6:
+    - Downgraded the patchset back to RFC status.
+    - Exposed the supported key types in sysfs.
+    - Shortened some field names, e.g. longterm_wrapped_key => lt_key.
+    - Avoided adding a new use of struct request_queue by fs/crypto/.
+    - Moved the blk-crypto ioctls to a new blk-crypto UAPI header file
+      and fixed their numbering.
+    - Other cleanups.
+
+Changes in v5:
+    - Dropped the RFC tag, now that these patches are actually testable.
+    - Split the BLKCRYPTOCREATEKEY ioctl into BLKCRYPTOIMPORTKEY and
+      BLKCRYPTOGENERATEKEY.  (I'm thinking that these operations are
+      distinct enough that two separate ioctls would be best.)
+    - Added some warning messages in fscrypt_derive_sw_secret().
+    - Rebased onto v5.17-rc6.
+
+Changes in v4:
+    - Rebased onto v5.16-rc1 and dropped a few bits that were upstreamed.
+    - Updated cover letter to link to Gaurav's UFS driver patchset.
+
+Changes in v3:
+    - Dropped some fscrypt cleanups that were applied.
+    - Rebased on top of the latest linux-block and fscrypt branches.
+    - Minor cleanups.
+
+Changes in v2:
+    - Added new ioctls for creating and preparing hardware-wrapped keys.
+    - Rebased onto my patchset which renames blk_keyslot_manager to
+      blk_crypto_profile.
+
+Eric Biggers (4):
+  blk-crypto: add basic hardware-wrapped key support
+  blk-crypto: show supported key types in sysfs
+  blk-crypto: add ioctls to create and prepare hardware-wrapped keys
+  fscrypt: add support for hardware-wrapped keys
+
+ Documentation/ABI/stable/sysfs-block          |  18 ++
+ Documentation/block/inline-encryption.rst     | 245 +++++++++++++++++-
+ Documentation/filesystems/fscrypt.rst         | 154 +++++++++--
+ .../userspace-api/ioctl/ioctl-number.rst      |   4 +-
+ block/blk-crypto-fallback.c                   |   5 +-
+ block/blk-crypto-internal.h                   |  10 +
+ block/blk-crypto-profile.c                    | 103 ++++++++
+ block/blk-crypto-sysfs.c                      |  35 +++
+ block/blk-crypto.c                            | 194 +++++++++++++-
+ block/ioctl.c                                 |   5 +
+ drivers/md/dm-table.c                         |   1 +
+ drivers/mmc/host/cqhci-crypto.c               |   2 +
+ drivers/ufs/core/ufshcd-crypto.c              |   1 +
+ fs/crypto/fscrypt_private.h                   |  71 ++++-
+ fs/crypto/hkdf.c                              |   4 +-
+ fs/crypto/inline_crypt.c                      |  44 +++-
+ fs/crypto/keyring.c                           | 122 ++++++---
+ fs/crypto/keysetup.c                          |  54 +++-
+ fs/crypto/keysetup_v1.c                       |   5 +-
+ fs/crypto/policy.c                            |  11 +-
+ include/linux/blk-crypto-profile.h            |  73 ++++++
+ include/linux/blk-crypto.h                    |  75 +++++-
+ include/uapi/linux/blk-crypto.h               |  44 ++++
+ include/uapi/linux/fs.h                       |   6 +-
+ include/uapi/linux/fscrypt.h                  |   7 +-
+ 25 files changed, 1193 insertions(+), 100 deletions(-)
+ create mode 100644 include/uapi/linux/blk-crypto.h
+
+
+base-commit: aea6bf908d730b01bd264a8821159db9463c111c
+-- 
+2.42.0
+
