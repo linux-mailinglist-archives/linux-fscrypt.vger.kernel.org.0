@@ -1,39 +1,39 @@
-Return-Path: <linux-fscrypt+bounces-26-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-27-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80B947F42DC
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 22 Nov 2023 10:53:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 687547F42EE
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 22 Nov 2023 10:55:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B21241C20864
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 22 Nov 2023 09:53:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A3561C20A35
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 22 Nov 2023 09:55:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12257584F5;
-	Wed, 22 Nov 2023 09:53:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BD2C25548;
+	Wed, 22 Nov 2023 09:55:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hYCC8VS2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NSVtC1aS"
 X-Original-To: linux-fscrypt@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6A811C2B1;
-	Wed, 22 Nov 2023 09:53:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11C32C433C9;
-	Wed, 22 Nov 2023 09:53:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A5D95B216;
+	Wed, 22 Nov 2023 09:55:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40808C433C8;
+	Wed, 22 Nov 2023 09:55:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1700646792;
-	bh=mhumkheBD35RQHMrgpMEPnFJrlXDHufqaBwB+qfy/40=;
+	s=k20201202; t=1700646948;
+	bh=xQ2l0OO8hQnRjP0JrxXmCo6kVTd11TmtxonALnUORfU=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=hYCC8VS2FKMmTfS917Xx6BMgYmPnr+FyurJudNbHnrUOSnbqvenmY6ZbiFi/KyZN9
-	 uNUNSQSnUQSGtxre8Opynkl+LWiE/fPSUesZZsypkRXhDgq7eyeaX8qNsI4rXitiec
-	 v2i4V0udTy+uVH1xN0Tysw+8q8Ai4Buyo4BKPU4w6Ml7mGz+tqKp9fkm5MKSEQVjSX
-	 ZFpc2ciLj3iTsjCvakVpqRZSFf4codJIloPLvuRM7wERFL+YQcAkdl5GoOm73mO3c+
-	 GCIw05rGRlE5imeEBjlMxEpmVycb7B+wvuh7H4BOAy6E/ensLI3VK09+wKYrQFVcHe
-	 Y5tnyoRjGbRMA==
-Message-ID: <416b349c-384e-42e8-ac1e-480b236cc210@kernel.org>
-Date: Wed, 22 Nov 2023 10:53:03 +0100
+	b=NSVtC1aS7RdZ1PpWbty75WnMOZe2xEvCjVjdeZc+k9bvItpIvzZ0Dpdrub8Fo/Rv2
+	 TJ1Itnjm4dR6qXcaY1s1wrXmsXiNKh25Bdkur6Yclg8DG+r0L+omUndG0qCJmzKBNd
+	 wyNvkeT2C+Q/AHIK0+ukhsxtbnQYL6flMyYF+fqLPS1WgnnDwASUVXOq7WwR1b1YDM
+	 OSZyfTVf+jo33Ucq4VWN0jjq9KF+4eenH6dpUgY08FVY1PZfZj1PPCUs2Tb9FFce01
+	 xmaKxpVh12f1aTdu+fr1/Nqkzi+Xxs9M2Ct4qvjNYcFMO3HGrY+bxqK16xIaKGW5Fm
+	 FHzPqVbuqiHbg==
+Message-ID: <808e5f24-0366-4071-bf97-93611d4ced08@kernel.org>
+Date: Wed, 22 Nov 2023 10:55:40 +0100
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
@@ -41,8 +41,8 @@ List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 12/12] dt-bindings: crypto: ice: document the hwkm
- property
+Subject: Re: [PATCH v3 00/12] Hardware wrapped key support for qcom ice and
+ ufs
 Content-Language: en-US
 To: Gaurav Kashyap <quic_gaurkash@quicinc.com>, linux-scsi@vger.kernel.org,
  linux-arm-msm@vger.kernel.org, ebiggers@google.com,
@@ -52,7 +52,6 @@ Cc: linux-mmc@vger.kernel.org, linux-block@vger.kernel.org,
  quic_psodagud@quicinc.com, abel.vesa@linaro.org, quic_spuppala@quicinc.com,
  kernel@quicinc.com
 References: <20231122053817.3401748-1-quic_gaurkash@quicinc.com>
- <20231122053817.3401748-13-quic_gaurkash@quicinc.com>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -97,30 +96,33 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20231122053817.3401748-13-quic_gaurkash@quicinc.com>
+In-Reply-To: <20231122053817.3401748-1-quic_gaurkash@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 22/11/2023 06:38, Gaurav Kashyap wrote:
-> Add documentation for the ice-use-hwkm property in
-> qcom ice.
-> 
-> Signed-off-by: Gaurav Kashyap <quic_gaurkash@quicinc.com>
+>   ice, ufs, mmc: use blk_crypto_key for program_key
+>   qcom_scm: scm call for deriving a software secret
+>   soc: qcom: ice: add hwkm support in ice
+>   soc: qcom: ice: support for hardware wrapped keys
+>   ufs: core: support wrapped keys in ufs core
+>   ufs: host: wrapped keys support in ufs qcom
+>   qcom_scm: scm call for create, prepare and import keys
+>   ufs: core: add support for generate, import and prepare keys
+>   soc: qcom: support for generate, import and prepare key
+>   ufs: host: support for generate, import and prepare key
+>   arm64: dts: qcom: sm8650: add hwkm support to ufs ice
 
-Another day, another same comments:
-https://lore.kernel.org/all/6e435e84-fea9-4f74-8977-d589cbc31ded@kernel.org/
+This is close to a spaghetti patchset. ICE, UFS, MMC, then followed up
+by SoC patches, then UFS, then firmware, then UFS, then again SoC and we
+are back at UFS.
 
-Please use scripts/get_maintainers.pl to get a list of necessary people
-and lists to CC. It might happen, that command when run on an older
-kernel, gives you outdated entries. Therefore please be sure you base
-your patches on recent Linux kernel.
+Crazy dependencies... or you collected unrelated patches into one
+patchset making the merge strategy tricky.
 
-You missed at least devicetree list (maybe more), so this won't be
-tested by automated tooling. Performing review on untested code might be
-a waste of time, thus I will skip this patch entirely till you follow
-the process allowing the patch to be tested.
+>   dt-bindings: crypto: ice: document the hwkm property
 
-Please kindly resend and include all necessary To/Cc entries.
+Bindings come before users.
 
 Best regards,
 Krzysztof
