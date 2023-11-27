@@ -1,46 +1,47 @@
-Return-Path: <linux-fscrypt+bounces-37-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-38-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69CED7FACC3
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 27 Nov 2023 22:45:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 078207FAD30
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 27 Nov 2023 23:16:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0A0C8B21322
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 27 Nov 2023 21:45:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F45B1C209E5
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 27 Nov 2023 22:16:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E834E46534;
-	Mon, 27 Nov 2023 21:45:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64137487A6;
+	Mon, 27 Nov 2023 22:16:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kUiXEgIZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W7/5u7od"
 X-Original-To: linux-fscrypt@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C75672F51;
-	Mon, 27 Nov 2023 21:45:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFD74C433C8;
-	Mon, 27 Nov 2023 21:45:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 416A146543;
+	Mon, 27 Nov 2023 22:16:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 698ABC433C7;
+	Mon, 27 Nov 2023 22:16:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701121525;
-	bh=v18PiaiEjKMB6O0c6WVfzv26Yhzu0ATLF8LUD+Mc3eI=;
+	s=k20201202; t=1701123367;
+	bh=KbzJsoazLxCd2BbBFJe0yrPuXWbbj41CPsXDmVkbnlI=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kUiXEgIZH34RrmOEyeP6RGujMJu1FHOUstkRzYXxApzFDUnkeKf4LzA/n499QsxbG
-	 cW/3bwe8V4W2gzsWsoiPy38lRufiN3hW+kmvsxVcDYXUfJpdwczBzdDZDHnL4lNKXA
-	 rRHzLImKsp0g1gpmQKNET2tzFOqGcW3wopfp5stWp3KZEAMfac/O0cKEMcbFXFKPrz
-	 TODq1qrteXLD39/AyVSikaReJwkGo0gyKU6ee4kgOnB8heguGQLX7Q7KcYRfoyPLB9
-	 2HzbPiRBIkPg8B2XOuAusNYtEHVgTkK18R1iYh4BBpDk/pjJnCzbKB9XhI5pgWikTU
-	 kktxjuSJNjocA==
-Date: Mon, 27 Nov 2023 13:45:22 -0800
+	b=W7/5u7odSgDcr2BZlmpNy1S21R3etVUBzXNDTaHq4Dk2PTruYFrXj0A2hW1KAk71o
+	 edP+r0uMmfj1SgZEYaOWDiUoQHgBstwrK6FVcab3oBYGpjIy/4B/STG1uMLLWcxyjl
+	 evZ24DVTpGyPSivLlskhsN+5QpXLPX80OM60qy+2gW8vWLSDzqiXGVdYh3qBKjxba2
+	 hnvT4qOGhzErqNg5+8CoK6Z2peD6BkNQM84GsSZBkNfI3hOWfIvsXxmu9DpXiiEvSB
+	 XshUMntkc0rk4ouzy0J+Z0k99QL3H/0Ly/U6vHXezlIczWrfs9YXRYzrNP88N5b9jZ
+	 tGS9nsOHBr5xg==
+Date: Mon, 27 Nov 2023 14:16:05 -0800
 From: Eric Biggers <ebiggers@kernel.org>
-To: syzbot <syzbot+3a3b5221ffafba7d5204@syzkaller.appspotmail.com>
+To: syzbot <syzbot+9d04b061c581795e18ce@syzkaller.appspotmail.com>
 Cc: jaegeuk@kernel.org, linux-fscrypt@vger.kernel.org,
 	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
 	syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Subject: Re: [syzbot] [fscrypt?] possible deadlock in fscrypt_initialize (2)
-Message-ID: <20231127214522.GA1463@sol.localdomain>
-References: <0000000000002f1a6205f5d8096b@google.com>
+Subject: Re: [syzbot] [fscrypt?] possible deadlock in
+ find_and_lock_process_key
+Message-ID: <20231127221605.GB1463@sol.localdomain>
+References: <0000000000002aa189060b147268@google.com>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
@@ -49,35 +50,29 @@ List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0000000000002f1a6205f5d8096b@google.com>
+In-Reply-To: <0000000000002aa189060b147268@google.com>
 
-On Wed, Mar 01, 2023 at 07:04:59AM -0800, syzbot wrote:
-> -> #0 (fscrypt_init_mutex){+.+.}-{3:3}:
->        check_prev_add kernel/locking/lockdep.c:3098 [inline]
->        check_prevs_add kernel/locking/lockdep.c:3217 [inline]
->        validate_chain kernel/locking/lockdep.c:3832 [inline]
->        __lock_acquire+0x2ec7/0x5d40 kernel/locking/lockdep.c:5056
->        lock_acquire kernel/locking/lockdep.c:5669 [inline]
->        lock_acquire+0x1e3/0x670 kernel/locking/lockdep.c:5634
->        __mutex_lock_common kernel/locking/mutex.c:603 [inline]
->        __mutex_lock+0x12f/0x1350 kernel/locking/mutex.c:747
->        fscrypt_initialize+0x40/0xa0 fs/crypto/crypto.c:326
->        fscrypt_setup_encryption_info+0xef/0xeb0 fs/crypto/keysetup.c:563
->        fscrypt_get_encryption_info+0x375/0x450 fs/crypto/keysetup.c:668
->        fscrypt_setup_filename+0x23c/0xec0 fs/crypto/fname.c:458
->        ext4_fname_setup_filename+0x8c/0x110 fs/ext4/crypto.c:28
->        ext4_add_entry+0x3aa/0xe30 fs/ext4/namei.c:2380
->        ext4_rename+0x19ff/0x26d0 fs/ext4/namei.c:3911
->        ext4_rename2+0x1c7/0x270 fs/ext4/namei.c:4193
->        vfs_rename+0xef6/0x17a0 fs/namei.c:4772
->        do_renameat2+0xb62/0xc90 fs/namei.c:4923
->        __do_sys_renameat2 fs/namei.c:4956 [inline]
->        __se_sys_renameat2 fs/namei.c:4953 [inline]
->        __ia32_sys_renameat2+0xe8/0x120 fs/namei.c:4953
->        do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
->        __do_fast_syscall_32+0x65/0xf0 arch/x86/entry/common.c:178
->        do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
->        entry_SYSENTER_compat_after_hwframe+0x70/0x82
+On Sun, Nov 26, 2023 at 12:58:22PM -0800, syzbot wrote:
+> -> #3 (&type->lock_class#5){++++}-{3:3}:
+>        down_read+0x9a/0x330 kernel/locking/rwsem.c:1526
+>        find_and_lock_process_key+0x97/0x390 fs/crypto/keysetup_v1.c:112
+>        fscrypt_setup_v1_file_key_via_subscribed_keyrings+0x115/0x2d0 fs/crypto/keysetup_v1.c:310
+>        setup_file_encryption_key fs/crypto/keysetup.c:485 [inline]
+>        fscrypt_setup_encryption_info+0xb69/0x1080 fs/crypto/keysetup.c:590
+>        fscrypt_get_encryption_info+0x3d1/0x4b0 fs/crypto/keysetup.c:675
+>        fscrypt_setup_filename+0x238/0xd80 fs/crypto/fname.c:458
+>        ext4_fname_setup_filename+0xa3/0x250 fs/ext4/crypto.c:28
+>        ext4_add_entry+0x32b/0xe40 fs/ext4/namei.c:2403
+>        ext4_rename+0x165e/0x2880 fs/ext4/namei.c:3932
+>        ext4_rename2+0x1bc/0x270 fs/ext4/namei.c:4212
+>        vfs_rename+0x13e0/0x1c30 fs/namei.c:4844
+>        do_renameat2+0xc3c/0xdc0 fs/namei.c:4996
+>        __do_sys_renameat fs/namei.c:5036 [inline]
+>        __se_sys_renameat fs/namei.c:5033 [inline]
+>        __x64_sys_renameat+0xc6/0x100 fs/namei.c:5033
+>        do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+>        do_syscall_64+0x40/0x110 arch/x86/entry/common.c:82
+>        entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
 #syz dup: possible deadlock in start_this_handle (4)
 
