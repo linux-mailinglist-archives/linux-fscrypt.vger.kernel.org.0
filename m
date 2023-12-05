@@ -1,244 +1,267 @@
-Return-Path: <linux-fscrypt+bounces-42-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-48-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4161803C50
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  4 Dec 2023 19:07:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 735E78043C0
+	for <lists+linux-fscrypt@lfdr.de>; Tue,  5 Dec 2023 02:06:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5DE07B20A9A
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  4 Dec 2023 18:07:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DE4E2B20BA5
+	for <lists+linux-fscrypt@lfdr.de>; Tue,  5 Dec 2023 01:06:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA9F52EB18;
-	Mon,  4 Dec 2023 18:07:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Sbzk/cJa"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 541A1137E;
+	Tue,  5 Dec 2023 01:06:30 +0000 (UTC)
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 816DD129;
-	Mon,  4 Dec 2023 10:07:10 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-6ce46470647so821732b3a.1;
-        Mon, 04 Dec 2023 10:07:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701713230; x=1702318030; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vnKGL9rVmaXJ0k7UQTGGb8qgGBw3yaFYXulmlj0ClVk=;
-        b=Sbzk/cJarJS+HKABhyq9ZXjIKHReZXRZD2BmG6K1tjWjkQP6qWn2M1Hej+A0irmaku
-         MiQQibihKqnyE5TVi9uvaP+TQXi4717965Cj5SWoxsFXT08rL/dq7gcQha9HMJ+iJ6E4
-         BVSsykoGX1GtN128YVvHFOLoVXyY9pSvbwxF1qFD/Yff8eCGgX7GFA1jKFa07niVVpY4
-         d9OCXuF3WhLpOcz+yEjCxARi6Zebpvmf8U8x8xjf+1Jj/H4bG5JnvtbOkN1l+9J9gmEl
-         oiEG7ELXzD08vZaeO7QyUcVFM2Rqj1v3KKn+P22m3559f6bBVfzqLvxbIyP1mZuhfgJK
-         shBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701713230; x=1702318030;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vnKGL9rVmaXJ0k7UQTGGb8qgGBw3yaFYXulmlj0ClVk=;
-        b=AYyMCAiofwW1w8/LKfRAUteUMOKs3IGWzjKZ81HOLm4Qog7YCel+I5tMBELYkYd3Ic
-         C4T4qpkFlGZeeXP+bncCihQfhjeGD3TsJFVqGBXi/XIjoPO4B2kA2Qlk2CwoPwhDujan
-         +NNUBj2hdZwzJF+J3y4w2hEVmDWduaQnATolFiBBR9nrKzAorPwLhVN5eBryUxtqzHrX
-         V+Fk7vGMXsTDRx7WiPSB9OD38PTNnbefsY008s69lgAXGCZSuKzQm1is49s8RxAW7uOj
-         fmc91cbZIRseHKFcBH1ZvFv+pbAs/b98BwWxq9xVaO3s3RAhfCBsGBSyGFZhNwjbcZOo
-         v/lw==
-X-Gm-Message-State: AOJu0YygE6uwIjeYYcpP+0PeLWzLwNjgGit6simtM/p2Q2tE1GHwtNrK
-	68fyZnN9/CqU4w30ZC6sDjE=
-X-Google-Smtp-Source: AGHT+IGDIGeeBa7UWPj4E4w2SIGHBjZgGz8oxGqwAWzNb+KD7mpnEvIno4bt3NIHORxil3wMtNwC4w==
-X-Received: by 2002:a05:6a20:1448:b0:18c:374c:6e64 with SMTP id a8-20020a056a20144800b0018c374c6e64mr27716780pzi.36.1701713229690;
-        Mon, 04 Dec 2023 10:07:09 -0800 (PST)
-Received: from localhost ([2620:10d:c090:400::4:27ef])
-        by smtp.gmail.com with ESMTPSA id u2-20020a056a00158200b006cdd507ca2esm7943470pfk.167.2023.12.04.10.07.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 10:07:09 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Mon, 4 Dec 2023 08:07:07 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Naohiro Aota <Naohiro.Aota@wdc.com>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-	"ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
-	"cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-	"coreteam@netfilter.org" <coreteam@netfilter.org>,
-	"dm-devel@lists.linux.dev" <dm-devel@lists.linux.dev>,
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"gfs2@lists.linux.dev" <gfs2@lists.linux.dev>,
-	"intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>,
-	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-	"linux-cachefs@redhat.com" <linux-cachefs@redhat.com>,
-	"linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
-	"linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-	"linux-erofs@lists.ozlabs.org" <linux-erofs@lists.ozlabs.org>,
-	"linux-f2fs-devel@lists.sourceforge.net" <linux-f2fs-devel@lists.sourceforge.net>,
-	"linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
-	"linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-	"linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-	"linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-	"linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-	"linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
-	"linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-	"linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-	"linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-	"nbd@other.debian.org" <nbd@other.debian.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"ntb@lists.linux.dev" <ntb@lists.linux.dev>,
-	"open-iscsi@googlegroups.com" <open-iscsi@googlegroups.com>,
-	"oss-drivers@corigine.com" <oss-drivers@corigine.com>,
-	"platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>,
-	"samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
-	"target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
-	"virtualization@lists.linux.dev" <virtualization@lists.linux.dev>,
-	"wireguard@lists.zx2c4.com" <wireguard@lists.zx2c4.com>
-Subject: Re: Performance drop due to alloc_workqueue() misuse and recent
- change
-Message-ID: <ZW4VS3Z0auYCjg-W@slm.duckdns.org>
-References: <dbu6wiwu3sdhmhikb2w6lns7b27gbobfavhjj57kwi2quafgwl@htjcc5oikcr3>
+Received: from mail.nsr.re.kr (unknown [210.104.33.65])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A60FE102
+	for <linux-fscrypt@vger.kernel.org>; Mon,  4 Dec 2023 17:06:23 -0800 (PST)
+Received: from 210.104.33.70 (nsr.re.kr)
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128 bits))
+	by mail.nsr.re.kr with SMTP; Tue, 05 Dec 2023 10:03:54 +0900
+X-Sender: letrehee@nsr.re.kr
+Received: from 192.168.155.188 ([192.168.155.188])
+          by mail.nsr.re.kr (Crinity Message Backbone-7.0.1) with SMTP ID 438;
+          Tue, 5 Dec 2023 10:03:49 +0900 (KST)
+From: Dongsoo Lee <letrehee@nsr.re.kr>
+To: Herbert Xu <herbert@gondor.apana.org.au>, 
+	"David S. Miller" <davem@davemloft.net>, 
+	Jens Axboe <axboe@kernel.dk>, Eric Biggers <ebiggers@kernel.org>, 
+	"Theodore Y. Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>
+Cc: linux-crypto@vger.kernel.org, linux-block@vger.kernel.org, 
+	linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Dongsoo Lee <letrhee@nsr.re.kr>
+Subject: [PATCH v6 0/5] crypto: LEA block cipher implementation
+Date: Tue,  5 Dec 2023 01:03:24 +0000
+Message-Id: <20231205010329.21996-1-letrehee@nsr.re.kr>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dbu6wiwu3sdhmhikb2w6lns7b27gbobfavhjj57kwi2quafgwl@htjcc5oikcr3>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hello,
+From: Dongsoo Lee <letrhee@nsr.re.kr>
 
-On Mon, Dec 04, 2023 at 04:03:47PM +0000, Naohiro Aota wrote:
-> Recently, commit 636b927eba5b ("workqueue: Make unbound workqueues to use
-> per-cpu pool_workqueues") changed WQ_UNBOUND workqueue's behavior. It
-> changed the meaning of alloc_workqueue()'s max_active from an upper limit
-> imposed per NUMA node to a limit per CPU. As a result, massive number of
-> workers can be running at the same time, especially if the workqueue user
-> thinks the max_active is a global limit.
-> 
-> Actually, it is already written it is per-CPU limit in the documentation
-> before the commit. However, several callers seem to misuse max_active,
-> maybe thinking it is a global limit. It is an unexpected behavior change
-> for them.
+This submission contains a generic C implementation of the LEA cipher and test vectors for it. It also includes modifications to use the LEA in fscrypt.
 
-Right, and the behavior has been like that for a very long time and there
-was no other way to achieve reasonable level of concurrency, so the current
-situation is expected.
+The LEA algorithm is a lightweight block cipher that processes data blocks of 128-bits and has three different key lengths, each with a different number of rounds:
 
-> For example, these callers set max_active = num_online_cpus(), which is a
-> suspicious limit applying to per-CPU. This config means we can have nr_cpu
-> * nr_cpu active tasks working at the same time.
+- LEA-128: 128-bit key, 24 rounds,
+- LEA-192: 192-bit key, 28 rounds, and
+- LEA-256: 256-bit key, 32 rounds.
 
-Yeah, that sounds like a good indicator.
+The round function of LEA consists of 32-bit ARX (modular Addition, bitwise Rotation, and bitwise XOR) operations. See [2, 5, 7] for details.
 
-> fs/f2fs/data.c: sbi->post_read_wq = alloc_workqueue("f2fs_post_read_wq",
-> fs/f2fs/data.c-                                          WQ_UNBOUND | WQ_HIGHPRI,
-> fs/f2fs/data.c-                                          num_online_cpus());
-> 
-> fs/crypto/crypto.c:     fscrypt_read_workqueue = alloc_workqueue("fscrypt_read_queue",
-> fs/crypto/crypto.c-                                              WQ_UNBOUND | WQ_HIGHPRI,
-> fs/crypto/crypto.c-                                              num_online_cpus());
-> 
-> fs/verity/verify.c:     fsverity_read_workqueue = alloc_workqueue("fsverity_read_queue",
-> fs/verity/verify.c-                                               WQ_HIGHPRI,
-> fs/verity/verify.c-                                               num_online_cpus());
-> 
-> drivers/crypto/hisilicon/qm.c:  qm->wq = alloc_workqueue("%s", WQ_HIGHPRI | WQ_MEM_RECLAIM |
-> drivers/crypto/hisilicon/qm.c-                           WQ_UNBOUND, num_online_cpus(),
-> drivers/crypto/hisilicon/qm.c-                           pci_name(qm->pdev));
-> 
-> block/blk-crypto-fallback.c:    blk_crypto_wq = alloc_workqueue("blk_crypto_wq",
-> block/blk-crypto-fallback.c-                                    WQ_UNBOUND | WQ_HIGHPRI |
-> block/blk-crypto-fallback.c-                                    WQ_MEM_RECLAIM, num_online_cpus());
-> 
-> drivers/md/dm-crypt.c:          cc->crypt_queue = alloc_workqueue("kcryptd/%s",
-> drivers/md/dm-crypt.c-                                            WQ_CPU_INTENSIVE | WQ_MEM_RECLAIM | WQ_UNBOUND,
-> drivers/md/dm-crypt.c-                                            num_online_cpus(), devname);
+LEA is a Korean national standard block cipher, described in "KS X 3246"[1] and is also included in the international standard, "ISO/IEC 29192-2:2019 standard"[2].
 
-Most of these work items are CPU bound but not completley so. e.g.
-kcrypt_crypt_write_continue() does wait_for_completion(), so setting
-max_active to 1 likely isn't what they want either. They mostly want some
-reasonable system-wide concurrency limit w.r.t. the CPU count while keeping
-some level of flexibility in terms of task placement.
+It is one of the approved block ciphers for the current Korean Cryptographic Module Validation Program (KCMVP).
 
-The previous max_active wasn't great for this because its meaning changed
-depending on the number of nodes. Now, the meaning doesn't change but it's
-not really useful for the above purpose. It's only useful for avoiding
-melting the system completely.
+At the time of submission, no successful attack on full-round LEA is known. As is typical for iterated block ciphers, reduced-round variants have been attacked. The best published attacks on LEA in the standard attack model (CPA/CCA with unknown key) are boomerang attacks and differential linear attacks. The security margin to the whole rounds ratio is greater than 29% against various existing cryptanalytic techniques for block ciphers. [3]
 
-One way to go about it is to declare that concurrency level management for
-unbound workqueue is on users but that seems not ideal given many use cases
-would want it anyway.
+We expect that the first application of the patch would be the disk encryption on the Gooroom platform ('Gooroom' is a Korean word, meaning 'cloud') [4]. The Gooroom platform is a government-driven Debian-based Linux distribution in South Korea. In Korea, there are many crypto companies that want to bundle Linux into their products and sell them. They create their own Gooroom platforms by modifying the original Gooroom platform for their services. (Of course, the Gooroom platform is not mandatory, and companies wishing to use Linux are free to choose an appropriate distribution.) BTW, in Korea, many crypto companies want to use LEA, because LEA is one of the block ciphers of the KCMVP, a validation program for commercial crypto S/W to be delivered to the Korean government.
 
-Let me think it over but I think the right way to go about it is going the
-other direction - ie. making max_active apply to the whole system regardless
-of the number of nodes / ccx's / whatever.
+Currently, the Gooroom platform uses AES-XTS for disk encryption. The main reason for submitting this patch is to make disk encryption with LEA (e.g. LEA-XTS) available on there. If this submission is accepted, LEA can be used without any additional modifications in dm-crypt, a module that provides disk encryption functionality within the kernel.
 
-> Furthermore, the change affects performance in a certain case.
-> 
-> Btrfs creates several WQ_UNBOUND workqueues with a default max_active =
-> min(NRCPUS + 2, 8). As my machine has 96 CPUs with NUMA disabled, this
-> max_active config allows running over 700 active works. Before the commit,
-> it is limited to 8 if NUMA is disabled or limited to 16 if NUMA nodes is 2.
-> 
-> I reverted the workqueue code back to before the commit, and I ran the
-> following fio command on RAID0 btrfs on 6 SSDs.
-> 
-> fio --group_reporting --eta=always --eta-interval=30s --eta-newline=30s \
->     --rw=write --fallocate=none \
->     --direct=1 --ioengine=libaio --iodepth=32 \
->     --filesize=100G \
->     --blocksize=64k \
->     --time_based --runtime=300s \
->     --end_fsync=1 \
->     --directory=${MNT} \
->     --name=writer --numjobs=32
-> 
-> By changing workqueue's max_active, the result varies.
-> 
-> - wq max_active=8   (intended limit by btrfs?)
->   WRITE: bw=2495MiB/s (2616MB/s), 2495MiB/s-2495MiB/s (2616MB/s-2616MB/s), io=753GiB (808GB), run=308953-308953msec
-> - wq max_active=16  (actual limit on 2 NUMA nodes setup)
->   WRITE: bw=1736MiB/s (1820MB/s), 1736MiB/s-1736MiB/s (1820MB/s-1820MB/s), io=670GiB (720GB), run=395532-395532msec
-> - wq max_active=768 (simulating current limit)
->   WRITE: bw=1276MiB/s (1338MB/s), 1276MiB/s-1276MiB/s (1338MB/s-1338MB/s), io=375GiB (403GB), run=300984-300984msec
-> 
-> The current performance is slower than the previous limit (max_active=16)
-> by 27%, or it is 50% slower than the intended limit.  The performance drop
-> might be due to contention of the btrfs-endio-write works. There are over
-> 700 kworker instances were created and 100 works are on the 'D' state
-> competing for a lock.
-> 
-> More specifically, I tested the same workload on the commit.
-> 
-> - At commit 636b927eba5b ("workqueue: Make unbound workqueues to use per-cpu pool_workqueues")
->   WRITE: bw=1191MiB/s (1249MB/s), 1191MiB/s-1191MiB/s (1249MB/s-1249MB/s), io=350GiB (376GB), run=300714-300714msec
-> - At the previous commit = 4cbfd3de73 ("workqueue: Call wq_update_unbound_numa() on all CPUs in NUMA node on CPU hotplug")
->   WRITE: bw=1747MiB/s (1832MB/s), 1747MiB/s-1747MiB/s (1832MB/s-1832MB/s), io=748GiB (803GB), run=438134-438134msec
-> 
-> So, it is -31.8% performance down with the commit.
-> 
-> In summary, we misuse max_active, considering it is a global limit. And,
-> the recent commit introduced a huge performance drop in some cases.  We
-> need to review alloc_workqueue() usage to check if its max_active setting
-> is proper or not.
+This patch also includes a modification to enable LEA for use in fscrypt, another data-at-rest encryption method available within the kernel, and a modification to blk-crypto-fallback to enable the "inlinecrypt" mount option in fscrypt.
 
-Thanks a lot for the report. I think it's a lot more reasonable to assume
-that max_active is global for unbound workqueues. The current workqueue
-behavior is not very intuitive or useful. I'll try to find something more
-reasonable. Thanks for the report and analysis. Much appreciated.
+The Linux Crypto API already has another Korean block cipher, ARIA, also one of the block ciphers of the KCVMP. However, LEA is more widely used than ARIA in industry nowadays, because LEA is one of the lightweight cryptography standard of ISO/IEC [2] and performs well on low-end devices that support 32-bit operations. So we think they are complementary to each other.
 
-Thanks.
+In general, it's obvious that the hardware-accelerated AES is the best performer. However, there exist not only environments where the hardware-accelerated AES is not supported, but also situations where AES is not preferred for various reasons. In these cases, if someone wants to encrypt using a block cipher, LEA could be an alternative.
+
+This submission includes a SIMD implementation for the x86-64 platform. The LEA cipher consists of 32-bit integer addition, rotation, and XOR operations, allowing for 4 blocks (XMM), 8 blocks (YMM), and 16 blocks (ZMM) of parallelism depending on the size of the registers. In addition, AVX2 and AVX-512F have more instructions to increase parallel encryption performance, which can be implemented differently even though they use the same registers. Therefore, lea-x86_64 selects the appropriate implementation in one glue code at module initialization. If additional SIMD instructions are added in the future, such as AVX10, this can be handled as well.
+
+Below are the speedtest performed with the tcrypt module for AES, LEA, ARIA, and Adiantum on three different platforms (AMD Ryzen 9 5950X, Intel(R) Core(TM) i5-12600K, and Intel(R) Xeon(R) Gold 6254).
+
+(4,096-byte block enc/decryption results in the tcrypt speedtest. Unit: cycles)
+
+- AMD Ryzen 9 5950X (Virtual Machine)
+  - aesni        ecb 128-bit key:  1,956 /   1,892
+  - aesni        ecb 256-bit key:  2,086 /   2,098
+  - lea-x86_64   ecb 128-bit key:  5,647 /   6,133
+  - lea-x86_64   ecb 256-bit key:  6,702 /   7,444
+  - aria-avx2    ecb 128-bit key:  8,316 /   8,153
+  - aria-avx2    ecb 256-bit key: 10,539 /  10,550
+
+  - aesni        cbc 128-bit key:  7,758 /   1,830
+  - aesni        cbc 256-bit key: 10,660 /   2,071
+  - lea-x86_64   cbc 128-bit key: 22,501 /   6,283
+  - lea-x86_64   cbc 256-bit key: 28,125 /   7,592
+
+  - aesni        ctr 128-bit key:  1,514 /   1,505
+  - aesni        ctr 256-bit key:  1,884 /   1,867
+  - lea-x86_64   ctr 128-bit key:  5,804 /   5,792
+  - lea-x86_64   ctr 256-bit key:  6,958 /   6,951
+  - aria-avx2    ctr 128-bit key:  8,819 /   8,736
+  - aria-avx2    ctr 256-bit key: 11,101 /  10,636
+
+  - adiantum(xchacha12-simd,...):  8,390 /   8,427
+  - adiantum(xchacha20-simd,...):  9,698 /   9,732
+
+  - aesni        xts 256-bit key:  2,177 /   2,165
+  - aesni        xts 512-bit key:  2,589 /   2,527
+  - lea-x86_64   xts 256-bit key:  6,488 /   6,745
+  - lea-x86_64   xts 512-bit key:  7,484 /   8,083
+
+  - aes-generic  ecb 128-bit key: 35,768 /  36,329
+  - aes-generic  ecb 256-bit key: 35,785 /  35,237
+  - lea-generic  ecb 128-bit key: 30,719 /  38,092
+  - lea-generic  ecb 256-bit key: 35,373 /  46,941
+  - aria-generic ecb 128-bit key:186,660 / 188,674
+  - aria-generic ecb 256-bit key:247,919 / 245,527
+
+- Intel(R) Core(TM) i5-12600K (microcode 0x15, AVX-512F Enabled)
+  - aesni        ecb 128-bit key:  1,436 /   1,441
+  - aesni        ecb 256-bit key:  1,984 /   1,987
+  - lea-x86_64   ecb 128-bit key:  5,318 /   5,916
+  - lea-x86_64   ecb 256-bit key:  6,209 /   7,071
+  - aria-avx512  ecb 128-bit key:  4,786 /   4,799
+  - aria-avx512  ecb 256-bit key:  5,988 /   5,989
+
+  - aesni        cbc 128-bit key:  8,741 /   1,467
+  - aesni        cbc 256-bit key: 11,803 /   1,995
+  - lea-x86_64   cbc 128-bit key: 31,070 /   6,063
+  - lea-x86_64   cbc 256-bit key: 39,117 /   7,173
+
+  - aesni        ctr 128-bit key:  2,120 /   2,112
+  - aesni        ctr 256-bit key:  2,588 /   2,595
+  - lea-x86_64   ctr 128-bit key:  4,438 /   4,397
+  - lea-x86_64   ctr 256-bit key:  5,217 /   5,196
+  - aria-avx512  ctr 128-bit key:  6,270 /   6,272
+  - aria-avx512  ctr 256-bit key:  7,469 /   7,473
+
+  - adiantum(xchacha12-simd,...):  7,526 /   7,453
+  - adiantum(xchacha20-simd,...):  8,983 /   8,892
+
+  - aesni        xts 256-bit key:  2,234 /   2,241
+  - aesni        xts 512-bit key:  2,525 /   2,538
+  - lea-x86_64   xts 256-bit key:  6,687 /   7,333
+  - lea-x86_64   xts 512-bit key:  7,626 /   8,457
+
+  - aes-generic  ecb 128-bit key: 34,399 /  34,765
+  - aes-generic  ecb 256-bit key: 48,568 /  49,245
+  - lea-generic  ecb 128-bit key: 23,576 /  36,230
+  - lea-generic  ecb 256-bit key: 31,715 /  50,461
+  - aria-generic ecb 128-bit key:108,227 / 108,135
+  - aria-generic ecb 256-bit key:146,669 / 145,993
+
+- Intel(R) Xeon(R) Gold 6254 (Virtual Machine)
+  - aesni        ecb 128-bit key:  3,390 /   3,396
+  - aesni        ecb 256-bit key:  4,533 /   4,549
+  - lea-x86_64   ecb 128-bit key:  5,500 /   6,594
+  - lea-x86_64   ecb 256-bit key:  6,506 /   7,467
+  - aria-avx2    ecb 128-bit key: 14,109 /  13,573
+  - aria-avx2    ecb 256-bit key: 17,605 /  16,955
+
+  - aesni        cbc 128-bit key: 12,559 /   3,544
+  - aesni        cbc 256-bit key: 17,150 /   4,681
+  - lea-x86_64   cbc 128-bit key: 33,471 /   5,900
+  - lea-x86_64   cbc 256-bit key: 41,024 /   6,948
+
+  - aesni        ctr 128-bit key:  3,099 /   3,095
+  - aesni        ctr 256-bit key:  4,126 /   4,124
+  - lea-x86_64   ctr 128-bit key:  5,054 /   4,909
+  - lea-x86_64   ctr 256-bit key:  5,795 /   5,797
+  - aria-avx2    ctr 128-bit key: 13,439 /  13,017
+  - aria-avx2    ctr 256-bit key: 17,325 /  16,731
+
+  - adiantum(xchacha12-simd,...):  9,064 /   9,006
+  - adiantum(xchacha20-simd,...): 10,702 /  10,628
+
+  - aesni        xts 256-bit key:  3,886 /   3,857
+  - aesni        xts 512-bit key:  4,949 /   5,008
+  - lea-x86_64   xts 256-bit key:  6,457 /   7,409
+  - lea-x86_64   xts 512-bit key:  7,438 /   8,510
+
+  - aes-generic  ecb 128-bit key: 49,438 /  48,803
+  - aes-generic  ecb 256-bit key: 72,348 /  73,804
+  - lea-generic  ecb 128-bit key: 30,300 /  45,072
+  - lea-generic  ecb 256-bit key: 39,054 /  60,472
+  - aria-generic ecb 128-bit key:189,850 / 175,073
+  - aria-generic ecb 256-bit key:243,704 / 228,347
+
+If this submission is accepted, future submissions may include an LEA implementation for aarch64 and an implementation with masks for AVX-512F.
+
+Although the designers of LEA did not provide test vectors in their paper [5], the ISO/IEC standard [2] and the KS standard [1] do. Furthermore, the Block Cipher LEA Specification("블록암호 LEA 규격서", written in Korean) document on the LEA introduction page [6] and the Wikipedia article on LEA [7] show the same test vectors as in the standards.
+
+The test vectors for ECB, CBC, CTR, and GCM modes included in the testmgr module are taken from the KCMVP Cryptographic Algorithm Verification Criteria V3.0("KCMVP 검증대상 암호알고리즘 검증기준 V3.0", written in Korean) [8]. Test vectors for the XTS mode were generated by ourselves, and we crosschecked them using Crypto++ [9] and testmgr on Linux.
+
+The implementation was tested with kernel module tcrypt.ko and passed the selftest using the above-mentioned test vectors. It also has been tested with CONFIG_CRYPTO_MANAGER_EXTRA_TESTS. The fscrypt patch was tested using a modified tool by forking https://github.com/google/fscrypt.
+
+The AVX2 and AVX-512F implementations were tested on the device that performed the speedtest, while the SSE2 implementation was tested using QEMU's x86-64 binary emulation.
+
+[1] KS X 3246, 128-bit block cipher LEA.
+[2] ISO/IEC 29192-2:2019, Information security — Lightweight cryptography — Part 2: Block ciphers.
+[3] Yi, Chen, et al. "Differential-Linear Approximation Semi-Unconstrained Searching and Partition Tree: Application to LEA and Speck", Asiacrypt 2023. (eprint 2023/1414)
+[4] https://github.com/gooroom https://www.gooroom.kr/
+[5] Hong, Deukjo, et al. "LEA: A 128-bit block cipher for fast encryption on common processors.", WISA 2013.
+[6] https://seed.kisa.or.kr/kisa/algorithm/EgovLeaInfo.do
+[7] https://en.wikipedia.org/wiki/LEA_(cipher)
+[8] https://seed.kisa.or.kr/kisa/kcmvp/EgovVerification.do
+[9] https://www.cryptopp.com/
+
+Changelog:
+v6:
+- Resended due to missing subsystem and incorrect title
+  - The patch is unchanged from v5.
+v5:
+- Added SSE2/AVX2/AVX-512F implementation
+  - Single glue code to determine proper SIMD acceleration
+- Adjusted ordering within structures to align with 16-byte boundaries.
+- Added more test vectors.
+  - Increased the maximum test-vector length to evaluate 16-block parallelism.
+  - Added the CBC-CTS test vector.
+v4:
+- Removed documentation to describe LEAs in fscrypt.
+v3:
+- Added implementations to enable LEA in fscrypt and blk-crypt.
+v2:
+- Reimplemented the Generic C implementation as a Loop version.
+  - The decryption code was adapted from an optimized implementation by Eric Biggers.
+    https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git/commit/?h=old/wip-lea&id=1d1cbba14380f8a1abc76baf939b9e51de047fb6
+- Removed AVX2 SIMD implementation.
+- Added comments for functions.
+- Improved the description in Kconfig.
+- Added test vectors from the standard documentation.
+
+Dongsoo Lee (5):
+  crypto: LEA block cipher implementation
+  crypto: add LEA testmgr tests
+  blk-crypto: Add LEA-256-XTS blk-crypto support
+  fscrypt: Add LEA-256-XTS, LEA-256-CTS support
+  crypto: LEA block cipher x86_64 optimization
+
+ arch/x86/crypto/Kconfig            |   29 +
+ arch/x86/crypto/Makefile           |    3 +
+ arch/x86/crypto/lea-x86_64-asm.S   | 2272 +++++++++++++++++++++
+ arch/x86/crypto/lea-x86_64-glue.c  |  820 ++++++++
+ block/blk-crypto.c                 |    6 +
+ crypto/Kconfig                     |   18 +
+ crypto/Makefile                    |    1 +
+ crypto/lea_generic.c               |  410 ++++
+ crypto/tcrypt.c                    |   97 +
+ crypto/testmgr.c                   |   38 +
+ crypto/testmgr.h                   | 3022 ++++++++++++++++++++++++++++
+ fs/crypto/fscrypt_private.h        |    2 +-
+ fs/crypto/keysetup.c               |   15 +
+ fs/crypto/policy.c                 |    4 +
+ include/crypto/lea.h               |   44 +
+ include/linux/blk-crypto.h         |    1 +
+ include/uapi/linux/fscrypt.h       |    4 +-
+ tools/include/uapi/linux/fscrypt.h |    4 +-
+ 18 files changed, 6787 insertions(+), 3 deletions(-)
+ create mode 100644 arch/x86/crypto/lea-x86_64-asm.S
+ create mode 100644 arch/x86/crypto/lea-x86_64-glue.c
+ create mode 100644 crypto/lea_generic.c
+ create mode 100644 include/crypto/lea.h
 
 -- 
-tejun
+2.40.1
 
