@@ -1,38 +1,38 @@
-Return-Path: <linux-fscrypt+bounces-57-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-58-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E05CF809A8E
-	for <lists+linux-fscrypt@lfdr.de>; Fri,  8 Dec 2023 04:37:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04153809A9E
+	for <lists+linux-fscrypt@lfdr.de>; Fri,  8 Dec 2023 04:44:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4CA1CB20D79
-	for <lists+linux-fscrypt@lfdr.de>; Fri,  8 Dec 2023 03:37:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 99BC71F212E0
+	for <lists+linux-fscrypt@lfdr.de>; Fri,  8 Dec 2023 03:44:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4921E3FDB;
-	Fri,  8 Dec 2023 03:37:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F954442E;
+	Fri,  8 Dec 2023 03:44:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="caxNvew2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cF1x/k43"
 X-Original-To: linux-fscrypt@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 141CD3C23;
-	Fri,  8 Dec 2023 03:37:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C5E3C433C8;
-	Fri,  8 Dec 2023 03:37:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B30A3C23;
+	Fri,  8 Dec 2023 03:44:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0A82C433C7;
+	Fri,  8 Dec 2023 03:44:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702006652;
-	bh=kpAT+d4+IhcmASzgjNp1OSaMudov7UxgDV5u+BY/y3U=;
+	s=k20201202; t=1702007072;
+	bh=dku30mhDTDb4o+DAwxMGgJ1Qt5skSX0FrRwVkVwTJN4=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=caxNvew2IdSOrs/FGsmMdQoYOMBwyGA/uAYvzDVLClSbSYennFI0u18Zv2NnaisaM
-	 lw58W4RYJiCOI4HQ1Fl1W7X+thV2yFFK3ilnDGuisCkYQ8J1LgSS2aqQXKrbkKh4ad
-	 l2ZFznIKVhTp+rk5LBaFIgH/vMjrJBH/FXEyvcFWUTXWCC8sf9A1e0aN8l2CFX8l6s
-	 v4lucc0DOiJelPJDtiqz5mI3Rzv3EfEGYojM2KX/1ajJXEBm/aW1TtrBITLBCNlKB/
-	 VeWZmP3Vd8i2KiFeOJA6fencKWolBacRODXD1InPdNmIaA9mksoDy0R8pjW5U/0WTP
-	 1brKjlfCNBdRA==
-Date: Thu, 7 Dec 2023 19:42:07 -0800
+	b=cF1x/k43lEYU9H2QaFoxJ/HXFoA9olvQHgvzZ+t7mIqjdNnPgTUPDrBIQU7bFRUT5
+	 /RDpaTgrjAvoo2jec8GnxTMFjE9ZK1EDSzgvXJ9Vpts3SJoBTV4Sz+0Umitac1/39w
+	 YNUF0zD/AHgQdcutaDVWtMIfHhs4Fopaq8gjRUE2jHPiu5lcghKL7pDcdDS3pd95vV
+	 9HkqGi2sk8iwkfiAicwXqbZfk2qyYjiVV4RvfsU7icv6l/2KPfQ7ltIXcrAHbKFcle
+	 +murZ2M0wPMbefMi1Omei2s5wmrmBJtIxsMHNpR0haxOSXAHyTUmupgrv9Sq0ZnWxV
+	 5wYjn3L3X/Y4A==
+Date: Thu, 7 Dec 2023 19:49:07 -0800
 From: Bjorn Andersson <andersson@kernel.org>
 To: Gaurav Kashyap <quic_gaurkash@quicinc.com>
 Cc: linux-scsi@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
@@ -40,10 +40,11 @@ Cc: linux-scsi@vger.kernel.org, linux-arm-msm@vger.kernel.org,
 	linux-mmc@vger.kernel.org, linux-block@vger.kernel.org, linux-fscrypt@vger.kernel.org, 
 	omprsing@qti.qualcomm.com, quic_psodagud@quicinc.com, abel.vesa@linaro.org, 
 	quic_spuppala@quicinc.com, kernel@quicinc.com
-Subject: Re: [PATCH v3 05/12] ufs: core: support wrapped keys in ufs core
-Message-ID: <d7g5i3rdlpfx2pl37xwa6xwa55w2pi4o7bgkhixr53mgjhl6hx@vunwcrg5th3f>
+Subject: Re: [PATCH v3 08/12] ufs: core: add support for generate, import and
+ prepare keys
+Message-ID: <2pxw646bkcqyycrdey3ucw3xcbzxzfp4h6njetol5phf25da3y@7jpqkghdpjno>
 References: <20231122053817.3401748-1-quic_gaurkash@quicinc.com>
- <20231122053817.3401748-6-quic_gaurkash@quicinc.com>
+ <20231122053817.3401748-9-quic_gaurkash@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
@@ -52,20 +53,24 @@ List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231122053817.3401748-6-quic_gaurkash@quicinc.com>
+In-Reply-To: <20231122053817.3401748-9-quic_gaurkash@quicinc.com>
 
-On Tue, Nov 21, 2023 at 09:38:10PM -0800, Gaurav Kashyap wrote:
-> 1. Add a new quirk in UFS when wrapped keys are supported. Since
->    wrapped keys are not part of the UFS spec, treat it as a
->    supported quirk.
-> 2. Add derive_sw_secret crypto profile op implementation in ufshcd
->    crypto.
+On Tue, Nov 21, 2023 at 09:38:13PM -0800, Gaurav Kashyap wrote:
+> This patch contains two changes in UFS for wrapped keys.
 
-Please read:
+The code in this patch isn't two different changes, it just add the new
+variant_ops and tie these to the blk crypto ops. That is one logical
+change.
 
-https://docs.kernel.org/process/submitting-patches.html#separate-your-changes
-https://docs.kernel.org/process/submitting-patches.html#describe-your-changes
+> 1. Implements the blk_crypto_profile ops for generate, import
+>    and prepare key apis.
+> 2. Defines UFS vops for generate, import and prepare keys so
+>    that vendors can hook into them.
 
-Thank you,
+Please describe why this code is needed. Something like "Key management
+is vendor specific, so add new variant ops and tie these to the block
+crypto ops"...
+
+Thanks,
 Bjorn
 
