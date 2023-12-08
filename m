@@ -1,48 +1,49 @@
-Return-Path: <linux-fscrypt+bounces-56-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-57-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D2E2806813
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  6 Dec 2023 08:16:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E05CF809A8E
+	for <lists+linux-fscrypt@lfdr.de>; Fri,  8 Dec 2023 04:37:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D64AA1F215B0
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  6 Dec 2023 07:16:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4CA1CB20D79
+	for <lists+linux-fscrypt@lfdr.de>; Fri,  8 Dec 2023 03:37:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1FC615487;
-	Wed,  6 Dec 2023 07:16:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4921E3FDB;
+	Fri,  8 Dec 2023 03:37:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Cpl4A3X/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="caxNvew2"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E28135;
-	Tue,  5 Dec 2023 23:16:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=ep680p/3l1ZjuRd2qyeZxJ3FOs3BAzN7xme9C4tkHF4=; b=Cpl4A3X/GTusI70ItO3TesmVmy
-	dCPUZCv+hIHaPz4MFMjKp4WRmWRPbZUCAU4Yhkv2SqiG5Ib01nl+4pdNdn6rYWGnQsLQhgA6keIvN
-	WZOWridpWx77cXn6KW3Czgef5e40FaDdU1U9aKqouwjMosWyVdmh+cH5eOD/5ZZylUukkJ4XSIMKd
-	vVaPLensBpRS4ex+XuPAlPwWiCq2CshUV6iNXjznHdCacwaJOHgZEiiquKfv10GKG+dVXFAxTWOzv
-	UpD8g5lVRJRTqFEteT4rjykZez4sYN+Fb7e4cDfJQkTOE284GhNrRsTN6Hq+hiURe9jQGVV8We6Jt
-	TS+pt5Ww==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rAm93-009HJ8-33;
-	Wed, 06 Dec 2023 07:16:33 +0000
-Date: Tue, 5 Dec 2023 23:16:33 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: Christoph Hellwig <hch@infradead.org>, linux-fscrypt@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	Josef Bacik <josef@toxicpanda.com>
-Subject: Re: [PATCH] fscrypt: move the call to fscrypt_destroy_keyring() into
- ->put_super()
-Message-ID: <ZXAf0WUbCccBn5QM@infradead.org>
-References: <20231206001325.13676-1-ebiggers@kernel.org>
- <ZXAW1BREPtCSUz4W@infradead.org>
- <20231206064430.GA41771@sol.localdomain>
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 141CD3C23;
+	Fri,  8 Dec 2023 03:37:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C5E3C433C8;
+	Fri,  8 Dec 2023 03:37:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702006652;
+	bh=kpAT+d4+IhcmASzgjNp1OSaMudov7UxgDV5u+BY/y3U=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=caxNvew2IdSOrs/FGsmMdQoYOMBwyGA/uAYvzDVLClSbSYennFI0u18Zv2NnaisaM
+	 lw58W4RYJiCOI4HQ1Fl1W7X+thV2yFFK3ilnDGuisCkYQ8J1LgSS2aqQXKrbkKh4ad
+	 l2ZFznIKVhTp+rk5LBaFIgH/vMjrJBH/FXEyvcFWUTXWCC8sf9A1e0aN8l2CFX8l6s
+	 v4lucc0DOiJelPJDtiqz5mI3Rzv3EfEGYojM2KX/1ajJXEBm/aW1TtrBITLBCNlKB/
+	 VeWZmP3Vd8i2KiFeOJA6fencKWolBacRODXD1InPdNmIaA9mksoDy0R8pjW5U/0WTP
+	 1brKjlfCNBdRA==
+Date: Thu, 7 Dec 2023 19:42:07 -0800
+From: Bjorn Andersson <andersson@kernel.org>
+To: Gaurav Kashyap <quic_gaurkash@quicinc.com>
+Cc: linux-scsi@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+	ebiggers@google.com, neil.armstrong@linaro.org, srinivas.kandagatla@linaro.org, 
+	linux-mmc@vger.kernel.org, linux-block@vger.kernel.org, linux-fscrypt@vger.kernel.org, 
+	omprsing@qti.qualcomm.com, quic_psodagud@quicinc.com, abel.vesa@linaro.org, 
+	quic_spuppala@quicinc.com, kernel@quicinc.com
+Subject: Re: [PATCH v3 05/12] ufs: core: support wrapped keys in ufs core
+Message-ID: <d7g5i3rdlpfx2pl37xwa6xwa55w2pi4o7bgkhixr53mgjhl6hx@vunwcrg5th3f>
+References: <20231122053817.3401748-1-quic_gaurkash@quicinc.com>
+ <20231122053817.3401748-6-quic_gaurkash@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
@@ -51,20 +52,20 @@ List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231206064430.GA41771@sol.localdomain>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20231122053817.3401748-6-quic_gaurkash@quicinc.com>
 
-On Tue, Dec 05, 2023 at 10:44:30PM -0800, Eric Biggers wrote:
-> There are lots of filesystems that free their ->s_fs_info in ->put_super().  Are
-> they all wrong?
+On Tue, Nov 21, 2023 at 09:38:10PM -0800, Gaurav Kashyap wrote:
+> 1. Add a new quirk in UFS when wrapped keys are supported. Since
+>    wrapped keys are not part of the UFS spec, treat it as a
+>    supported quirk.
+> 2. Add derive_sw_secret crypto profile op implementation in ufshcd
+>    crypto.
 
-Wrong is the wrong word :)
+Please read:
 
-For simple file systems that either don't use block devices, or just
-the main one set up by the super.c code using ->put_super is perfectly
-fine.  Once a file system does something complicated like setting up
-their own block devices, or trying to reuse super blocks using custom
-rules it basically has to free ->s_fs_info  in it's own ->kill_sb
-handler.  This whole area is a bit messy unfortunately.
+https://docs.kernel.org/process/submitting-patches.html#separate-your-changes
+https://docs.kernel.org/process/submitting-patches.html#describe-your-changes
 
+Thank you,
+Bjorn
 
