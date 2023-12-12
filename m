@@ -1,47 +1,47 @@
-Return-Path: <linux-fscrypt+bounces-76-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-77-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC70580E308
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 12 Dec 2023 04:53:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CED080E31D
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 12 Dec 2023 04:59:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C472B219B8
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 12 Dec 2023 03:53:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E72B0B217C8
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 12 Dec 2023 03:58:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50593BE60;
-	Tue, 12 Dec 2023 03:53:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92271C139;
+	Tue, 12 Dec 2023 03:58:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b="THMSaCZ/"
+	dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b="Nw5/KJFO"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EBD08E;
-	Mon, 11 Dec 2023 19:53:38 -0800 (PST)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BC2w9TG000755;
-	Tue, 12 Dec 2023 03:53:33 GMT
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D745AAC;
+	Mon, 11 Dec 2023 19:58:48 -0800 (PST)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BC2epNa004271;
+	Tue, 12 Dec 2023 03:58:46 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
 	from:to:cc:subject:date:message-id:references:in-reply-to
 	:content-type:content-transfer-encoding:mime-version; s=
-	qcppdkim1; bh=TcOKV1nKrWe7dTHgOTkOP0ky8SCIHbUtqbkpiwBVNec=; b=TH
-	MSaCZ/IC9Xh697DnsbQvXvmRPRqcvwEA2+03evzCJeLu0B97KRuIGlNx1LddUxNU
-	j9p6Tyt3FvxALkeHGFeJTLs9/ZOQy5u7Qfq8NG1Lb0UuEyanXkXbs8FXWDd03+p8
-	+bc55zePvQTdtXF9+E2BQAmcni+n8zlxmSMpb/n/f+6QTAezZ0dedHqQzUhpbHtD
-	EXLPF0te3pzrhoJih3dtDOkJbynZ/BiM76fzlu1aQxupAfGctmtCcAi5aElabyyu
-	E3slAj5F23BjHc2OqLIQbt0Xg4jZbtrzQBU+7lWNDChHvstidpyZMFYUGIET3ce7
-	ofZJzIdEsVlnLRxS+JHQ==
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ux20esxcv-1
+	qcppdkim1; bh=aXR8+KjQeTvZYxECadlvgP/PnixNypRyqUSXrwO4R6w=; b=Nw
+	5/KJFOeKRHzk07Q7r5NX1yZyvr18G87V8OMhVV+8X2wt3xwNUdqZEB5PPdRssnPr
+	G0Mr9LMm7jtgc7wGL9xX4YLeLicAkssfLRHlMxhlP3PKgTdxHE/qheG8R1lqJKtu
+	wz+m48CEy8eqZninCeY8QZX0uRYrvd3bbFZpWGRj0bEU1IG5LEFlRdCzHQaEzE93
+	a2L0JXVZM1NjDMSR6U1+3/93wp8g1Yeawt7pFGCC4b/jCnMYJTwIVV4RvQxIicnS
+	qC3ckn26zYG03f/MudmqYewjg/v/s8/qQ9ZXwyj/Gq9uhuLMnivP33pEX2Nj9hd0
+	hbIY9iIy8EKgwr+kDv4w==
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2100.outbound.protection.outlook.com [104.47.55.100])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ux25u1x4b-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 12 Dec 2023 03:53:33 +0000 (GMT)
+	Tue, 12 Dec 2023 03:58:46 +0000 (GMT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hb/ieZ5dOSLTGeY2Q372KoRuJuNo9mF2ZHAbT2IbutgyAQKpa/77jrUtmSSCWIWEins9ql8Ev+0Y8e2O8fJb8aBtb8GXVfF9mQmA0fm+QuDbK/gopJctjQrsOus34wmWly8/076nvd04by/Hi6atfFxGp/rJglKY5tt+9+lZMbAnj3TBRZNsHBbuxTsbhlvtebx3pWGIJPA4mxY/uuJ9pijptGZDy0ZBZDGcr+pmon044fG/KQPut6acTrGenAyeAFXJsa/uZeEbXjyRSZ+HO2Y1GiP2qqYnMZ4aC8dgA1SepcFPwLCOVIlE98rFGuaWfcdEFGitu2zFUdr2G/hPIQ==
+ b=gkG9V6004PCpHcjXhxe8s9ac1seNj2HYxnzg8Fn5nsMIkL/OP1gzC9xHZNUijr6a2NExl6qxuuk1mkr969uu7zFdmGmThYGirCJ5bFzYcs3X6rkqYJ3iSwhInP6tGwIuCUAEa6D3gfHmErujZ9Ra6nr1C3GIT7Na5+XmBQRcU2knV8zIWWnYwbdDlbc+vNLmf0kbAyVrwx6mPQgPrJainrjAoZmCSnMapAdOzBx9MUG67pF+K6bD+g+EQ7aHx9zTwEcVgcQqcOg3GNMlYLQoZl17c27OJjM7N1sXOZlS9EyzWqtx8UAtkeZEIKERfWiTJgp3VBSfWYJjt6qHIFsIog==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TcOKV1nKrWe7dTHgOTkOP0ky8SCIHbUtqbkpiwBVNec=;
- b=EHXYzSmyp6No0gc1uS2BQ3TFr/0X15v24hGpZW4p+V9JwEu2QZu7Oke+t0w52Zf0kzxiD7Wy3iSyo3fm9QCo8kp0nRDvHU4uTyYNzXYsoledXLNUlvYqiV0LTvCbZIdidiBK7S7nag6/XicUW1g4UPK2EMSk92SPFe1AIi/sZI0qwRIFZHDnoVS4K1Aeozau48Gx6Bck3PA+/ryi+quLE092Q2ML965m5bfbqxh3xYdaYDkCHFsGboPtC926FgYUGL5UIkAWhWD7flAIaXeut0/BYriTPv675jHMRnocu3IkGxgCoa4gVBUkAzUXW8hqlszl3/s7paFk8D4IdrFWgA==
+ bh=aXR8+KjQeTvZYxECadlvgP/PnixNypRyqUSXrwO4R6w=;
+ b=CUbYTLfHXahnJ478YV59wwLVes7LX8SFtYcqU3FfQf1Q2j0KI8aY1ZDwhsHPYeAolEbexxewVYtzXt+tEoLXVVQWHBg2kQ24EcmeKWj6+FabSh9xO4kq9+YBVjWDF+EhKGdnmILMHiV48Rnq7U7ldzewXY7w0k1CuxClUx8d3xBNrrX42ycXN3OHg8Mnx6vgVDDrIqWNUcv+aZqp7TuG3YeYiPeNHbk+1nfm5L9fbZVjgo9Z8Mzr0TjitWU4bLPUN4iELAnkylecQhKldF+jTwMw5aUPnIjAOMmvrD+urzBaeKfOeC1MLh7C07PtO1AzVau2/ZfnTyd2YKROOIFfcw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=qti.qualcomm.com; dmarc=pass action=none
  header.from=qti.qualcomm.com; dkim=pass header.d=qti.qualcomm.com; arc=none
@@ -49,30 +49,27 @@ Received: from BYAPR02MB4071.namprd02.prod.outlook.com (2603:10b6:a02:fc::23)
  by SN7PR02MB9404.namprd02.prod.outlook.com (2603:10b6:806:329::7) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.28; Tue, 12 Dec
- 2023 03:53:29 +0000
+ 2023 03:58:41 +0000
 Received: from BYAPR02MB4071.namprd02.prod.outlook.com
  ([fe80::f807:ae10:1c6e:bb20]) by BYAPR02MB4071.namprd02.prod.outlook.com
  ([fe80::f807:ae10:1c6e:bb20%4]) with mapi id 15.20.7068.031; Tue, 12 Dec 2023
- 03:53:28 +0000
+ 03:58:41 +0000
 From: Gaurav Kashyap <gaurkash@qti.qualcomm.com>
-To: Bjorn Andersson <andersson@kernel.org>,
-        "Gaurav Kashyap (QUIC)"
-	<quic_gaurkash@quicinc.com>
-CC: "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+To: "Om Prakash Singh (QUIC)" <quic_omprsing@quicinc.com>,
+        "Gaurav Kashyap
+ (QUIC)" <quic_gaurkash@quicinc.com>,
+        "linux-scsi@vger.kernel.org"
+	<linux-scsi@vger.kernel.org>,
+        "linux-arm-msm@vger.kernel.org"
+	<linux-arm-msm@vger.kernel.org>,
         "ebiggers@google.com" <ebiggers@google.com>,
-        "neil.armstrong@linaro.org"
-	<neil.armstrong@linaro.org>,
-        "srinivas.kandagatla@linaro.org"
-	<srinivas.kandagatla@linaro.org>,
-        "linux-mmc@vger.kernel.org"
-	<linux-mmc@vger.kernel.org>,
-        "linux-block@vger.kernel.org"
-	<linux-block@vger.kernel.org>,
-        "linux-fscrypt@vger.kernel.org"
-	<linux-fscrypt@vger.kernel.org>,
-        Om Prakash Singh
-	<omprsing@qti.qualcomm.com>,
+        "neil.armstrong@linaro.org" <neil.armstrong@linaro.org>,
+        "srinivas.kandagatla@linaro.org" <srinivas.kandagatla@linaro.org>
+CC: "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
+        Om Prakash
+ Singh <omprsing@qti.qualcomm.com>,
         "Prasad Sodagudi (QUIC)"
 	<quic_psodagud@quicinc.com>,
         "abel.vesa@linaro.org" <abel.vesa@linaro.org>,
@@ -81,60 +78,69 @@ CC: "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
 	<kernel@quicinc.com>
 Subject: RE: [PATCH v3 03/12] soc: qcom: ice: add hwkm support in ice
 Thread-Topic: [PATCH v3 03/12] soc: qcom: ice: add hwkm support in ice
-Thread-Index: AQHaHQaGEg6dgOyltkmox7SDIUO7TbCe3ykAgAZAmOA=
-Date: Tue, 12 Dec 2023 03:53:28 +0000
+Thread-Index: AQHaHQaGEg6dgOyltkmox7SDIUO7TbCe/saAgAXRVrA=
+Date: Tue, 12 Dec 2023 03:58:41 +0000
 Message-ID: 
- <BYAPR02MB4071DEB386C1C28B09B8278EE28EA@BYAPR02MB4071.namprd02.prod.outlook.com>
+ <BYAPR02MB4071E5227676C605474F1E53E28EA@BYAPR02MB4071.namprd02.prod.outlook.com>
 References: <20231122053817.3401748-1-quic_gaurkash@quicinc.com>
  <20231122053817.3401748-4-quic_gaurkash@quicinc.com>
- <up5gjtun7a2hfwvz47422xjxwt2mhxtn6m4yal5jxa4aneqn3m@7msl7k23hjhb>
-In-Reply-To: <up5gjtun7a2hfwvz47422xjxwt2mhxtn6m4yal5jxa4aneqn3m@7msl7k23hjhb>
+ <4ce492fe-f0a6-41cf-8d8f-f088c4f6d59e@quicinc.com>
+In-Reply-To: <4ce492fe-f0a6-41cf-8d8f-f088c4f6d59e@quicinc.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
 x-ms-publictraffictype: Email
 x-ms-traffictypediagnostic: BYAPR02MB4071:EE_|SN7PR02MB9404:EE_
-x-ms-office365-filtering-correlation-id: 836fcd64-e7e2-48cc-7516-08dbfac5e663
+x-ms-office365-filtering-correlation-id: 3feb9882-0e2c-4e26-337a-08dbfac6a0fd
 x-ld-processed: 98e9ba89-e1a1-4e38-9007-8bdabc25de1d,ExtAddr
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
 x-microsoft-antispam-message-info: 
- qpLLCNvKdek4f77fLTHAoepotP0B1nbYAbEA4CPvYfp4jNPe/2ic+GpmGUyokidqUZ+vpDRskQl6dQ2jKtdnzAD+gw66XGRN4zTYjafGfo8HDV346Cq4umtm1v8PG6/R3O0jE+mUgfVZGVcIRWxsVUML6/i/lktQLZq7y39tfpMMcPYe5yAhlqRhjexiwMEaT2tf5ZUvtWd8Xn6iKtb9fESvdSWZmPQSViZpN2d1dhC2UCy3rK1+zN2MKGekuYgziflgVQIHb6oEc6arrlTZahjvm/ABIqjm481HgOkEn/K7xF8EQ6N+wNdtlrR+Q/XsyA37wtuREzS174osC4aXWWysO6/G3AiOLwkzIMADGvIheXpfEtLwVSiuo0BnXXFcqESYRTvLQFewXd3vPWzAQlfJKF7+ojOuM41HmZH/QMKKhi968uu67/oatq5PQ0RX8Tr5GMaajkvusVmaV8wuBR8t/iOI7zjrlCOVoj4Jb7qsgtVOgQMIk67vjeA8aEmN+28k4t0Pa4AibUvyW9vBppsm1QLv+DMGGQ17FjpQUBW6VEcApYFGWkk4dYtFIRPwZjDG0FHk/crQTfA2qGw4gTs77Gi4Sv1G93iitEqTtUROeK143TQ8BSX0IsurdsVk
+ 1p/+zqBkPqj1q5koEf+Ct24T0aSo4NH1gNX8SSybjV793zxm/IEEgEw51PsX4ZXpPdqTOxd5WOwlHWncXC+hQ+g1UUF5RcsHFU7AUz2l9HU/1ZGvYv9FEB41x/3rVJfo9JEKsy0GhIUS4nEm5pFyrbhLhyENilkjoJ1nbOqdoB2W7sO0+rrqyq8fYmnX+LzuXvsqA3lFvlOCYe2ZqJ5E5S4fgXma8GYmGA3AgdNrwWKFmX4vPwwqzTWaen4BGDhfG2Ru36jqGlRUGysvsNRdpXTYhiQmi2uckpVB8jlwgj2GiTJtSO6HRFKXFeRvsFf4DucjoJTap/74r7DhycofAltxI88tn2+LmXlAHZafEdAaJ0hkXsfqFPnSKkFmggphRn5/7VW1fR3Pj3GctDjQA6vmC99jwJhrV0zUYOhndwzk295laabaBV4EMyJtOcqwGu9DzxfMFvZQEj1AvhPevzVSgFEs5EcNQ4/tLjr7QR8qJxk0VhNkn2/sQFrW32xSctCxWvb2ZvUoeKbrP6WLnl4ezxYbQ+TSxSScdWyMebK4whnUTz9APtC24s0p1bIF3ejdmjt32b4AXV6CxZbr3/ftPNrrfvkvajvDNauYsDi+lp+gq4SV/1xWTi9M+2Oh4nNCXPqYG34JpUiVnjD+HEBUDE6kjHc7NGI88CTSXPE=
 x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR02MB4071.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(396003)(136003)(376002)(346002)(230922051799003)(186009)(1800799012)(451199024)(64100799003)(30864003)(7416002)(5660300002)(66899024)(83380400001)(41300700001)(122000001)(38100700002)(2906002)(66476007)(38070700009)(478600001)(316002)(54906003)(64756008)(9686003)(66556008)(66446008)(66946007)(110136005)(76116006)(33656002)(7696005)(55016003)(71200400001)(6506007)(52536014)(4326008)(26005)(86362001)(8676002)(8936002)(107886003);DIR:OUT;SFP:1102;
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR02MB4071.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(396003)(136003)(376002)(346002)(230173577357003)(230273577357003)(230922051799003)(186009)(1800799012)(451199024)(64100799003)(30864003)(5660300002)(83380400001)(41300700001)(122000001)(38100700002)(2906002)(66476007)(38070700009)(478600001)(316002)(54906003)(64756008)(9686003)(66556008)(66446008)(66946007)(110136005)(76116006)(33656002)(7696005)(53546011)(55016003)(71200400001)(6506007)(52536014)(4326008)(26005)(86362001)(8676002)(8936002)(107886003);DIR:OUT;SFP:1102;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
 x-ms-exchange-antispam-messagedata-0: 
- =?us-ascii?Q?NUNS1d6RN/TstDgO8dXo5TxezvgjXZuSEGU3sHoSwAIpZKQUE8max1r1y2AG?=
- =?us-ascii?Q?vbfLF9ZT5QbiOhM8P3JIsJdgOIbh+X+cTTPPKswHMCYTHDLpZ2BBx/+F14Jn?=
- =?us-ascii?Q?hnjS3QUoBoHXZVLAVWh5bQPTWW0wx9DggBzAJj+aA/eRl+BFR2h8bVYzIr9v?=
- =?us-ascii?Q?jLp/93JHsob2wa1mYukXbg+EKs4aJnGb8iylVfycEeIkXsnE77hTvsjaogi2?=
- =?us-ascii?Q?gWVZNFgafcdHEbbKTMNJAex+MqVXIarnzXSIXPodj9N8djjMJyDOjE8qHnkG?=
- =?us-ascii?Q?0HRbwm4TZkxFt21qnu2V/vQ5CczSJptvqeJB1LMIBkwEOnCff4xb0QqzU8jK?=
- =?us-ascii?Q?0dWvkLwicq6NO5JG1oFUQCL0NY8odU9NOrJyc2ZiN77WSNRobwjAvzsXDytv?=
- =?us-ascii?Q?jNAJ98SnMj1XqbGvtEczQaTuslmKUpfeeFzApFfRjcfIHfXtfH/eXv8Mhrzu?=
- =?us-ascii?Q?dLI03eeiGiVosuBP/1u9NN5TMOxlQ4H45KcUVZam35pQfPQcbB4m9hLFTU2X?=
- =?us-ascii?Q?6sXgTtlu6vt419lX8GWZxjTslERZQVnuRivOVCGsXStQkp9gizULHTbLdbaN?=
- =?us-ascii?Q?12E6EpkX1W7croqIYQGRkBXAcIGyo8joipZrF8yhHT+gJY+OuwSl/dLRFWtd?=
- =?us-ascii?Q?krehlic/qJipRra28TjQlLG7E6epoOuND+Kei7JKUaXEUyEd5J2sxSJ0hM35?=
- =?us-ascii?Q?VURgq1Jjy1vsW+U1ffxD7ERfKoE4ba+wGCAwMj1qKZDWSD7PyuZaRTVlBVvu?=
- =?us-ascii?Q?uvhPaHE+ov6lywQkmT77YvTIzfXnBvwE4RS7Jxdvqk5UFVFyNG8dZC4S4VZu?=
- =?us-ascii?Q?ioVvZOr0kZztjIyLBVTrMg/6nWzJURGDPoCGiTraM+5MDSVphdCoYQFleMQT?=
- =?us-ascii?Q?CvD4JBeKdlbil5ZPCp/S3kPIm2QoY8qDouQoNAi+Dq+iFsRBMsp/a+o/3531?=
- =?us-ascii?Q?mwZc62zHg41CkudaggXY0Wc331G/8JT7mYKroloVnX0i3j9ZgXJ0G+cZWZPs?=
- =?us-ascii?Q?hA2e1MRvf2+6cEODtg/72OtdugHCq1Ku0zG8RTN6T07mBTDHg7iCaaRvBSyS?=
- =?us-ascii?Q?f/9Qov7L+ZhRZ9tstsDHCyAGJvMla2aljZnLUkPQ7tF0DYRevaoZD+TKk57q?=
- =?us-ascii?Q?3dtkuy3RGyWc3JWRJvxZCPC3we7sSEKSgJ1GKAP2C7NgpqHi9i6Z9ncZCeaE?=
- =?us-ascii?Q?ZqU165x76IfTv5g1zJ+y/1Pc046V2INYHSaDHBcW/D1a+7PAUulBXEZoLAF4?=
- =?us-ascii?Q?eGXM9CqwSkWxIvKCMO2d0/OLhfm6bqRHze9jX32kyJRGQsr12m+kSq6ecUgL?=
- =?us-ascii?Q?LULJI9QG/OZTrd2oNreie49UU7XCp2Z6fhHkzJfxFWkWJau2u4zdgwIWN+1a?=
- =?us-ascii?Q?duaKvFHVBaTvro+DxiWSVwrs0jTpYgvgorNX/LVJNaA84dkgwjgJEpqndWg4?=
- =?us-ascii?Q?kkdn1tTIPscAHd/I5mdxKSLxy9IRwH3256FY8iQwO8nD4L8Igrl2aVWT+UCH?=
- =?us-ascii?Q?8GicmfWYqk/blocLDdHJy1ZMgl9/crtzUCFS8WkCzQrHYyqPCNVh+D/ev18w?=
- =?us-ascii?Q?pnG63TSLp4tF6qt/oBAyAkQnb4Zo1UlV9yMtPvCz?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ =?utf-8?B?SnAyWjByVWZqYURpMTBxZGpUMEx5MmVmQUhSZU5XQmlOUnN3aDlTWlRkUyt1?=
+ =?utf-8?B?Q283SU1SMExQaklXUlBib0t2OG5QR3NOb3NYL0cyWGVWNU0wdU1CWFRuU1Ir?=
+ =?utf-8?B?cmdSYnBNcFA1WjVta09weE1ucmZacnFGTzJjU1RCdFRyRklOL0hNQmY3emJ0?=
+ =?utf-8?B?NVpSTVdybHM4SHNWVzNjYlJ6WlVoUGFRZ3JxT2ErY3RXRUV4U0g0ZUtjWTF1?=
+ =?utf-8?B?WE1sY0tRZjdMZnJ0RC9lYnczck1ubWpNUndyekt1WklHNjVuYmw5bk02L1px?=
+ =?utf-8?B?d09HS1IyblBLZnN3b1U4V2JzTCtSQmV1N1krcnphU1Jsb2dpOFladGZUSDZ3?=
+ =?utf-8?B?VUphaGdlTlJWc0E0MmtCRno5WVNrc0ZXN1JiMTFkem9KaEN3WEJ4bGlwVDd3?=
+ =?utf-8?B?MXVzZUxYOEo3RWxrSndNdU0yYUNLcmM2OVZGSTBBVkV2dVdVS2xBcVI2NENr?=
+ =?utf-8?B?REJUNHpNY3M1V3VFNDlvRUlyOEl2Y2VMbHZJbEpwZVc0SEZJT2VmVXc1M003?=
+ =?utf-8?B?eG15YzNXWWdZaWdOa1IzdFd0UTdwTXR1MnY3a0VUSDk5U0t4TXVvdUFjVmdm?=
+ =?utf-8?B?dVR4SVBIYlFnczdoRUN5VUowYWhRa0ZtVW8zWnRTOXFwZVY5eVJWaUMzdkdK?=
+ =?utf-8?B?MXRzOE9QZG91M3RCMTNsMTlLL1pienN2b3NRalV4UWd5b1dHYlA4NUlhTjF2?=
+ =?utf-8?B?QTBDUU41ODNEMUtNMjVRTmpVQ0xLbndZWWNvRHM5bWFNWDk2V3dwRTNITXNv?=
+ =?utf-8?B?Y0ZFU1lta0tPRzZZNk15Sm9NdWJybWlWRWpDQ3R1aTRnU0p1VEphMjhoVmgx?=
+ =?utf-8?B?dGovVzd6bmZmUmdTM1BjY1NNS3ZVSnZMVlViVS8xM3hXNjhPKy9YbGdpVm5l?=
+ =?utf-8?B?SlV2VndZc0VNdmxjSFAvRURzMVhrWmtmZkJQdlpVMEhnWU4rZnMwd2hDRytX?=
+ =?utf-8?B?TEJIMnBTVll3UGlQMExsUFQwN2JqSlhsNHBzMXFGbHVMTnNKTnRIQzdLWTVu?=
+ =?utf-8?B?dXRlRVphUE9lYnkvY2I1NnZxdlNWOTdkZm9JNlJualFlUkZyajMyY3FGQlly?=
+ =?utf-8?B?bEcwdWdrVmdQTi9OZnJrVVJBVkVIMWJGc1RPczRvOXRlNHpwUk40TVpBTGJN?=
+ =?utf-8?B?ejBDSlVlajBxSkplWERCc2ZUQ0huTEdIWGJzM0J0YThzc0szL2s2TU44d1Zv?=
+ =?utf-8?B?MlFFRUpWS0VvSWxmeXkrclljOU5sd2QzaTl6R3A1Unoxck90Y1hXMVBBcm1T?=
+ =?utf-8?B?MVd3Y2lLRXVOcGJXR3pLVENjUGJIdkdpalJlZzNra2c3M2RlUGlhbmtKbnlU?=
+ =?utf-8?B?YXZIOUhmRm96ZnRUdDJmWTRzbGVNZHBhamJueDdWbDVUVk5DcWJmUU4xdVZZ?=
+ =?utf-8?B?MDdvcmZtaU1xS1NDbHVvQWlrL0thWWNOTlNldnlHcmh0ZDVKNVh6Z2J5NWZp?=
+ =?utf-8?B?U0hLVHVKelhIU2swZXJSMVZXZDhBNXY4K1hxUUcySm1HY1dRUWhYZDFVZDdT?=
+ =?utf-8?B?RW1aOW5MZ3BJMlEwMjZId2VndDRJQjJvdTUxZGsyQlFadmpaY0JmT2dpMnVV?=
+ =?utf-8?B?Y1RSQW9JU1ZJaVVyV1JKUXNMdlljWExXZkRnQ0NUQ0NJMFhHZ2ZIRnk1clJq?=
+ =?utf-8?B?R0FuQ0IxNGV6bExKUTMxRGpOc2FVM2pEYW9hc2IwVDB4SytzNFdUSE9EWHNB?=
+ =?utf-8?B?LzhLdk1yY3N5SVBsK2NqU21HM2pOYWpObFlYa28wQU1NVEZSMUdJMDYrR2VY?=
+ =?utf-8?B?SGhKQ3ZRRVZHd2hBUVoxZWNIU1oxZG9qOHNTUUdKb1Rwb0NTeDNRNGt4SEhJ?=
+ =?utf-8?B?ekxhVUk3eElVUVhHbmQyNmEzQWovb0o0dnZ1TkNRTCt3UHJaanA5N2ZMNWl5?=
+ =?utf-8?B?NEZvUUtrQmRGNHhzbmlWZ3Z6Sy82VTB3VnZXYUFGSDQwYmFQN3NsWVllT3o0?=
+ =?utf-8?B?Z21CeEZ4UUVjeWNoUDErdUVUMmFaRHdQcUwzM0dqR3RXTVlLTzRyRS9GdlA2?=
+ =?utf-8?B?cjd3bFVrK1pxVVB0MFVXZHZhM1o4elUvK3RndFFuN0JCS0YwdTJpWGppSG1p?=
+ =?utf-8?B?RGxSVGp4ck5FcmF0UEdNemhaSWtqeVpUTkZTTDBha3pITmV6SFRJT0U1U2FO?=
+ =?utf-8?Q?7epglDaTSS5KUCWnACm7IWlrZ?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
@@ -143,353 +149,219 @@ List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	w7kz/UZrBb5daP9As6DdjCO7YrQ55gKNJpebRqpH+aDDM9qqlu32e6MU7DNni4eTOTsTfH21AYuINCn1Zs6xU+MKHDxefNuSFv580rVB+MtVy3rzsh8/uHaWaFkPMxjNPDWLc/qexcZ3PBAcAKmSUQx4LeS0uOepMvMFEXJz774AxH5tpRQftGfhptwO2mJheie8YvLyaRvJ4dAY5GB4QCujPqhM5ObpZTAHYnL6lN0xn+IlmPiCD+gvtLhWbbzb/oz0Mygda7hnkZ9dCLXCr4vqvwlzFiHoc4KX/7DYHeHcTTD1SfgXWybjTjMy7NpxXuhuAMSlvELmWp49oBCiNYCo8xX9df3Ej+JGE2hb//V5EuUupyP16Gvx7jLoxwxZzsF6Q8/8QmJyEfk2x43z6Ip1ar/iMGEoy6QyJMG+SPvg1KjkcijSrqQYdDSKIQN9sagsOBUggqlH7vHkmmJkDnVeKL0hgQMXehezF7V8roC+dKR1OfZcXSkK8hIz5fQeiwuKghFjdTreA8T0D6d+IMHc/Q+Fc84/IPboed9C1x8AA9VnQoWgZgG9FdA/G37IZUvIh/d45BemOxNINiGb75dMGqQpwA47HSc6FwFq79rRPvGKXpYHwcNBfZKr1jph2doTLXSamYiAkyC3zhu50hgQIXTB6gdBg8ySeDUU2XYUHsaU5XHIIsXy+FMfl1SZbEdqFyJH+yiq+un4HYlxOftamYmE2Jnahlp8H9asnH9fovI7bU8W0H+SUnIHXjNoUnrSAtKn+vMD4PYfj6zU4QqWDOfJfyotM8xOr4qmYHvfwcljq6VYtt4gofbbvm95totKXD3gpTg0HYJhBaq2oTOaKrLuttKGv+9vnvJwqcbYirA4U37veIX9F1ykoLB+
+	W1OihdOJim/HCVf2ZuJuV2fo2fgaCjX0KyUGXmGJZNYNZBSLTelx2MCZto+/2sHx99j9mlv0uY076Ptdmbf8vH/NhfCHG5ZrYvxXczuFsH5kI8SbPUZULNbvNT98B9Qm5mnq8o9Qpzg5QY9yPmGJJyjyFljXNiFfhvdE+jJf86d+SWa7tY/iNwKpWRp2p5TCmojfLrfAv+kJRt2VvRFeDN8NtVRgH7mTMFw14aOqleNo18pSzshLm/tH7tk9DXuXjdbZ7qJ/goR39lG9cpDdYzOV+kkx11MqYYNU0k06vSI9fkCQCL20eJ/9R0Df0RFWLGnj2y6+FCZxqJvUPFOPIJ/9/5+Zerz5YrsiOC75wTwavV5Fhl+SmT9fPzbSGfN/B8xJod39CQFQ/8vY0l649L9crgkm0vUUPe8lkioWRp4PWxwMZYU/rU6X1uTEJaVaifFAwMfe8TxDSn1CK9IDBw4moPrenbyTg74t8FJL5Bs5+6vFd8s5QrExetR0Y1rfWFDDx408tiC1W0Ri3pdft1itLiigZ1LdwS79E8G6U+oiIW9jIvwLjJcuwou5ndX7RA48KI/pemfO1hT691Fkjw+kNkERBlO9/3Se7bCuzHCLDssyEJISa2KL/FeXSmH9N6gtekrqWQi8mYRBA9a5vbdytua/Oqo3b9a7C0AOTYrtBdJYRZdDE4NZcL0DrkwaJRKDAR35AKeMQMfj7gavUWPXIvfeDAVNZi5gvwu7WyB7t2Qkyj7I8jNiigK/sOe8Pk4vWix3LI04ZlR9t401ULh8JgJLuKD24rW0uxvBdaoKX35mJiRhV+JSsAhcZ+wvk0L9WHsvL6CG64wPRMEjkA==
 X-OriginatorOrg: qti.qualcomm.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR02MB4071.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 836fcd64-e7e2-48cc-7516-08dbfac5e663
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Dec 2023 03:53:28.3768
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3feb9882-0e2c-4e26-337a-08dbfac6a0fd
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Dec 2023 03:58:41.3894
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 98e9ba89-e1a1-4e38-9007-8bdabc25de1d
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Zgevk4D1R4LlTlS2njE1xg/WkD7EOs3euk2Dv1w7rlRiskm7cNlw4Amq5t/Lop3nwOYBxaCr66jiSh0LkPG9XiU7BGxZkWBGng+Gb7ygHRg=
+X-MS-Exchange-CrossTenant-userprincipalname: X1kFO50l3XunV+EVgWZjLkNJnrsicYfqIVzeb2ywBOQCtmUIzNa04Ikw0zbQZacsR2UMceMlv/kz8HckDyolWX+L7uNnKYFVd/lZMchpIAA=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR02MB9404
-X-Proofpoint-GUID: 9mYc_px6nxA_o7s_DXk7puwVolAiQuAp
-X-Proofpoint-ORIG-GUID: 9mYc_px6nxA_o7s_DXk7puwVolAiQuAp
+X-Proofpoint-ORIG-GUID: weGPa1EzidweBSkOrKpaoGURtnF-ynTd
+X-Proofpoint-GUID: weGPa1EzidweBSkOrKpaoGURtnF-ynTd
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
- mlxscore=0 mlxlogscore=999 spamscore=0 lowpriorityscore=0 bulkscore=0
- clxscore=1011 suspectscore=0 priorityscore=1501 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312120029
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 spamscore=0
+ mlxscore=0 bulkscore=0 lowpriorityscore=0 phishscore=0 impostorscore=0
+ malwarescore=0 suspectscore=0 adultscore=0 priorityscore=1501
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312120030
 
-Hello Bjorn,
-
-On 12/07/2023, Bjorn Andersson wrote:
-> On Tue, Nov 21, 2023 at 09:38:08PM -0800, Gaurav Kashyap wrote:
-> > Qualcomm's ICE (Inline Crypto Engine) contains a proprietary key
-> > management hardware called Hardware Key Manager (HWKM).
-> > This patch integrates HWKM support in ICE when it is available. HWKM
-> > primarily provides hardware wrapped key support where the ICE
-> > (storage) keys are not available in software and protected in
-> > hardware.
-> >
-> > Signed-off-by: Gaurav Kashyap <quic_gaurkash@quicinc.com>
-> > ---
-> >  drivers/soc/qcom/ice.c | 133
-> ++++++++++++++++++++++++++++++++++++++++-
-> >  include/soc/qcom/ice.h |   1 +
-> >  2 files changed, 133 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/soc/qcom/ice.c b/drivers/soc/qcom/ice.c index
-> > 6f941d32fffb..adf9cab848fa 100644
-> > --- a/drivers/soc/qcom/ice.c
-> > +++ b/drivers/soc/qcom/ice.c
-> > @@ -26,6 +26,19 @@
-> >  #define QCOM_ICE_REG_FUSE_SETTING            0x0010
-> >  #define QCOM_ICE_REG_BIST_STATUS             0x0070
-> >  #define QCOM_ICE_REG_ADVANCED_CONTROL                0x1000
-> > +#define QCOM_ICE_REG_CONTROL                 0x0
-> > +/* QCOM ICE HWKM registers */
-> > +#define QCOM_ICE_REG_HWKM_TZ_KM_CTL                  0x1000
-> > +#define QCOM_ICE_REG_HWKM_TZ_KM_STATUS                       0x1004
-> > +#define QCOM_ICE_REG_HWKM_BANK0_BANKN_IRQ_STATUS     0x2008
-> > +#define QCOM_ICE_REG_HWKM_BANK0_BBAC_0                       0x5000
-> > +#define QCOM_ICE_REG_HWKM_BANK0_BBAC_1                       0x5004
-> > +#define QCOM_ICE_REG_HWKM_BANK0_BBAC_2                       0x5008
-> > +#define QCOM_ICE_REG_HWKM_BANK0_BBAC_3                       0x500C
-> > +#define QCOM_ICE_REG_HWKM_BANK0_BBAC_4                       0x5010
-> > +
-> > +#define QCOM_ICE_HWKM_BIST_DONE_V1_VAL               0x11
-> > +#define QCOM_ICE_HWKM_BIST_DONE_V2_VAL               0x287
-> >
-> >  /* BIST ("built-in self-test") status flags */
-> >  #define QCOM_ICE_BIST_STATUS_MASK            GENMASK(31, 28)
-> > @@ -34,6 +47,9 @@
-> >  #define QCOM_ICE_FORCE_HW_KEY0_SETTING_MASK  0x2  #define
-> > QCOM_ICE_FORCE_HW_KEY1_SETTING_MASK  0x4
-> >
-> > +#define QCOM_ICE_HWKM_REG_OFFSET     0x8000
-> > +#define HWKM_OFFSET(reg)             ((reg) +
-> QCOM_ICE_HWKM_REG_OFFSET)
-> > +
-> >  #define qcom_ice_writel(engine, val, reg)    \
-> >       writel((val), (engine)->base + (reg))
-> >
-> > @@ -46,6 +62,9 @@ struct qcom_ice {
-> >       struct device_link *link;
-> >
-> >       struct clk *core_clk;
-> > +     u8 hwkm_version;
-> > +     bool use_hwkm;
-> > +     bool hwkm_init_complete;
-> >  };
-> >
-> >  static bool qcom_ice_check_supported(struct qcom_ice *ice) @@ -63,8
-> > +82,26 @@ static bool qcom_ice_check_supported(struct qcom_ice *ice)
-> >               return false;
-> >       }
-> >
-> > +     if (major >=3D 4 || (major =3D=3D 3 && minor =3D=3D 2 && step >=
-=3D 1))
-> > +             ice->hwkm_version =3D 2;
-> > +     else if (major =3D=3D 3 && minor =3D=3D 2)
-> > +             ice->hwkm_version =3D 1;
-> > +     else
-> > +             ice->hwkm_version =3D 0;
-> > +
-> > +     if (ice->hwkm_version =3D=3D 0)
-> > +             ice->use_hwkm =3D false;
-> > +
-> >       dev_info(dev, "Found QC Inline Crypto Engine (ICE) v%d.%d.%d\n",
-> >                major, minor, step);
-> > +     if (!ice->hwkm_version)
-> > +             dev_info(dev, "QC ICE HWKM (Hardware Key Manager) not
-> > + supported");
->=20
-> So for a version < 3.2.0, we will dev_info() three times, one stating the
-> version found, one stating that HWKM is not supported, and then below one
-> saying that HWKM is not used.
->=20
-> > +     else
-> > +             dev_info(dev, "QC ICE HWKM (Hardware Key Manager) version=
- =3D
-> %d",
-> > +                      ice->hwkm_version);
->=20
-> And for version >=3D 3.2.0 we will dev_info() two times.
->=20
->=20
-> To the vast majority of readers of the kernel log none of these info-prin=
-ts are
-> useful - it's just spam.
->=20
-> I'd prefer that it was turned into dev_dbg(), which those who want to kno=
-w
-> (e.g. during bringup) can enable. But that's a separate change, please st=
-art by
-> consolidating your information into a single line printed in the log.
-
-Noted for next patch.
-
->=20
-> > +
-> > +     if (!ice->use_hwkm)
-> > +             dev_info(dev, "QC ICE HWKM (Hardware Key Manager) not
-> > + used");
-> >
-> >       /* If fuses are blown, ICE might not work in the standard way. */
-> >       regval =3D qcom_ice_readl(ice, QCOM_ICE_REG_FUSE_SETTING); @@
-> > -113,10 +150,14 @@ static void qcom_ice_optimization_enable(struct
-> qcom_ice *ice)
-> >   * fails, so we needn't do it in software too, and (c) properly testin=
-g
-> >   * storage encryption requires testing the full storage stack anyway,
-> >   * and not relying on hardware-level self-tests.
-> > + *
-> > + * However, we still care about if HWKM BIST failed (when supported)
-> > + as
-> > + * important functionality would fail later, so disable hwkm on failur=
-e.
-> >   */
-> >  static int qcom_ice_wait_bist_status(struct qcom_ice *ice)  {
-> >       u32 regval;
-> > +     u32 bist_done_val;
->=20
-> The "val" suffix indicates that this would be a "value", but it's actuall=
-y a
-> register offset. "bist_done_reg" would be better.
->=20
-
-Noted for next patch.
-
-> >       int err;
-> >
-> >       err =3D readl_poll_timeout(ice->base + QCOM_ICE_REG_BIST_STATUS,
-> > @@ -125,15 +166,95 @@ static int qcom_ice_wait_bist_status(struct
-> qcom_ice *ice)
-> >       if (err)
-> >               dev_err(ice->dev, "Timed out waiting for ICE self-test
-> > to complete\n");
-> >
-> > +     if (ice->use_hwkm) {
-> > +             bist_done_val =3D (ice->hwkm_version =3D=3D 1) ?
-> > +                              QCOM_ICE_HWKM_BIST_DONE_V1_VAL :
-> > +                              QCOM_ICE_HWKM_BIST_DONE_V2_VAL;
-> > +             if (qcom_ice_readl(ice,
-> > +
-> HWKM_OFFSET(QCOM_ICE_REG_HWKM_TZ_KM_STATUS)) !=3D
-> > +                                bist_done_val) {
-> > +                     dev_warn(ice->dev, "HWKM BIST error\n");
->=20
-> Sounds like a error to me, wouldn't dev_err() be suitable?
->=20
-
-Yes, noted for next patch.
-
-> > +                     ice->use_hwkm =3D false;
-> > +             }
-> > +     }
-> >       return err;
-> >  }
-> >
-> > +static void qcom_ice_enable_standard_mode(struct qcom_ice *ice) {
-> > +     u32 val =3D 0;
-> > +
-> > +     if (!ice->use_hwkm)
-> > +             return;
-> > +
-> > +     /*
-> > +      * When ICE is in standard (hwkm) mode, it supports HW wrapped
-> > +      * keys, and when it is in legacy mode, it only supports standard
-> > +      * (non HW wrapped) keys.
-> > +      *
-> > +      * Put ICE in standard mode, ICE defaults to legacy mode.
-> > +      * Legacy mode - ICE HWKM slave not supported.
-> > +      * Standard mode - ICE HWKM slave supported.
-> > +      *
-> > +      * Depending on the version of HWKM, it is controlled by differen=
-t
-> > +      * registers in ICE.
-> > +      */
-> > +     if (ice->hwkm_version >=3D 2) {
-> > +             val =3D qcom_ice_readl(ice, QCOM_ICE_REG_CONTROL);
-> > +             val =3D val & 0xFFFFFFFE;
-> > +             qcom_ice_writel(ice, val, QCOM_ICE_REG_CONTROL);
-> > +     } else {
-> > +             qcom_ice_writel(ice, 0x7,
-> > +                             HWKM_OFFSET(QCOM_ICE_REG_HWKM_TZ_KM_CTL))=
-;
-> > +     }
-> > +}
-> > +
-> > +static void qcom_ice_hwkm_init(struct qcom_ice *ice) {
-> > +     if (!ice->use_hwkm)
-> > +             return;
-> > +
-> > +     /* Disable CRC checks. This HWKM feature is not used. */
-> > +     qcom_ice_writel(ice, 0x6,
-> > +                     HWKM_OFFSET(QCOM_ICE_REG_HWKM_TZ_KM_CTL));
-> > +
-> > +     /*
-> > +      * Give register bank of the HWKM slave access to read and modify
-> > +      * the keyslots in ICE HWKM slave. Without this, trustzone will n=
-ot
-> > +      * be able to program keys into ICE.
-> > +      */
-> > +     qcom_ice_writel(ice, 0xFFFFFFFF,
-> > +                     HWKM_OFFSET(QCOM_ICE_REG_HWKM_BANK0_BBAC_0));
->=20
-> This line is 86 characters long if left unwrapped. You're allowed to go o=
-ver 80
-> characters if it makes the code more readable, so please do so for these =
-and
-> below.
->=20
-
-Noted for next patch.
-
-> > +     qcom_ice_writel(ice, 0xFFFFFFFF,
-> > +                     HWKM_OFFSET(QCOM_ICE_REG_HWKM_BANK0_BBAC_1));
-> > +     qcom_ice_writel(ice, 0xFFFFFFFF,
-> > +                     HWKM_OFFSET(QCOM_ICE_REG_HWKM_BANK0_BBAC_2));
-> > +     qcom_ice_writel(ice, 0xFFFFFFFF,
-> > +                     HWKM_OFFSET(QCOM_ICE_REG_HWKM_BANK0_BBAC_3));
-> > +     qcom_ice_writel(ice, 0xFFFFFFFF,
-> > +                     HWKM_OFFSET(QCOM_ICE_REG_HWKM_BANK0_BBAC_4));
-> > +
-> > +     /* Clear HWKM response FIFO before doing anything */
-> > +     qcom_ice_writel(ice, 0x8,
-> > +
-> >
-> +HWKM_OFFSET(QCOM_ICE_REG_HWKM_BANK0_BANKN_IRQ_STATUS));
-> > +}
-> > +
-> >  int qcom_ice_enable(struct qcom_ice *ice)  {
-> > +     int err;
-> > +
-> >       qcom_ice_low_power_mode_enable(ice);
-> >       qcom_ice_optimization_enable(ice);
-> >
-> > -     return qcom_ice_wait_bist_status(ice);
-> > +     qcom_ice_enable_standard_mode(ice);
-> > +
-> > +     err =3D qcom_ice_wait_bist_status(ice);
-> > +     if (err)
-> > +             return err;
-> > +
-> > +     qcom_ice_hwkm_init(ice);
-> > +
-> > +     return err;
-> >  }
-> >  EXPORT_SYMBOL_GPL(qcom_ice_enable);
-> >
-> > @@ -149,6 +270,8 @@ int qcom_ice_resume(struct qcom_ice *ice)
-> >               return err;
-> >       }
-> >
-> > +     qcom_ice_enable_standard_mode(ice);
-> > +     qcom_ice_hwkm_init(ice);
-> >       return qcom_ice_wait_bist_status(ice);  }
-> > EXPORT_SYMBOL_GPL(qcom_ice_resume);
-> > @@ -205,6 +328,12 @@ int qcom_ice_evict_key(struct qcom_ice *ice, int
-> > slot)  }  EXPORT_SYMBOL_GPL(qcom_ice_evict_key);
-> >
-> > +bool qcom_ice_hwkm_supported(struct qcom_ice *ice) {
-> > +     return ice->use_hwkm;
-> > +}
-> > +EXPORT_SYMBOL_GPL(qcom_ice_hwkm_supported);
-> > +
-> >  static struct qcom_ice *qcom_ice_create(struct device *dev,
-> >                                       void __iomem *base)  { @@ -239,6
-> > +368,8 @@ static struct qcom_ice *qcom_ice_create(struct device *dev,
-> >               engine->core_clk =3D devm_clk_get_enabled(dev, NULL);
-> >       if (IS_ERR(engine->core_clk))
-> >               return ERR_CAST(engine->core_clk);
-> > +     engine->use_hwkm =3D of_property_read_bool(dev->of_node,
-> > +                                              "qcom,ice-use-hwkm");
->=20
-> Under what circumstances would we, with version >=3D 3.2, not specify thi=
-s
-> flag?
->=20
-> Thanks,
-> Bjorn
->=20
-
-For 3.2.0 versions and above where all the Trustzone support is not present=
- for wrapped keys,=20
-using Qualcomm ICE means using standard (non-wrapped) keys. This cannot wor=
-k in conjunction
-with "HWKM mode" being enabled, and ICE needs to be in "Legacy Mode".  HWKM=
- mode is
-basically a bunch of register initializations.
-
-Ideally, there should not be any SoC supporting HWKM which does not have al=
-l the support, with
-a pure hardware version based decision. But unfortunately, we need an expli=
-cit switch to=20
-support the above scenario.
-
-> >
-> >       if (!qcom_ice_check_supported(engine))
-> >               return ERR_PTR(-EOPNOTSUPP); diff --git
-> > a/include/soc/qcom/ice.h b/include/soc/qcom/ice.h index
-> > 9dd835dba2a7..1f52e82e3e1c 100644
-> > --- a/include/soc/qcom/ice.h
-> > +++ b/include/soc/qcom/ice.h
-> > @@ -34,5 +34,6 @@ int qcom_ice_program_key(struct qcom_ice *ice,
-> >                        const struct blk_crypto_key *bkey,
-> >                        u8 data_unit_size, int slot);  int
-> > qcom_ice_evict_key(struct qcom_ice *ice, int slot);
-> > +bool qcom_ice_hwkm_supported(struct qcom_ice *ice);
-> >  struct qcom_ice *of_qcom_ice_get(struct device *dev);  #endif /*
-> > __QCOM_ICE_H__ */
-> > --
-> > 2.25.1
-> >
-> >
+SGVsbG8gT20NCg0KT24gMTIvMDcvMjAyMywgT20gUHJha2FzaCBTaW5naCB3cm90ZToNCj4gT24g
+MTEvMjIvMjAyMyAxMTowOCBBTSwgR2F1cmF2IEthc2h5YXAgd3JvdGU6DQo+ID4gUXVhbGNvbW0n
+cyBJQ0UgKElubGluZSBDcnlwdG8gRW5naW5lKSBjb250YWlucyBhIHByb3ByaWV0YXJ5IGtleQ0K
+PiA+IG1hbmFnZW1lbnQgaGFyZHdhcmUgY2FsbGVkIEhhcmR3YXJlIEtleSBNYW5hZ2VyIChIV0tN
+KS4NCj4gPiBUaGlzIHBhdGNoIGludGVncmF0ZXMgSFdLTSBzdXBwb3J0IGluIElDRSB3aGVuIGl0
+IGlzIGF2YWlsYWJsZS4gSFdLTQ0KPiA+IHByaW1hcmlseSBwcm92aWRlcyBoYXJkd2FyZSB3cmFw
+cGVkIGtleSBzdXBwb3J0IHdoZXJlIHRoZSBJQ0UNCj4gPiAoc3RvcmFnZSkga2V5cyBhcmUgbm90
+IGF2YWlsYWJsZSBpbiBzb2Z0d2FyZSBhbmQgcHJvdGVjdGVkIGluDQo+ID4gaGFyZHdhcmUuDQo+
+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBHYXVyYXYgS2FzaHlhcCA8cXVpY19nYXVya2FzaEBxdWlj
+aW5jLmNvbT4NCj4gPiAtLS0NCj4gPiAgIGRyaXZlcnMvc29jL3Fjb20vaWNlLmMgfCAxMzMNCj4g
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0NCj4gPiAgIGluY2x1ZGUv
+c29jL3Fjb20vaWNlLmggfCAgIDEgKw0KPiA+ICAgMiBmaWxlcyBjaGFuZ2VkLCAxMzMgaW5zZXJ0
+aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvc29j
+L3Fjb20vaWNlLmMgYi9kcml2ZXJzL3NvYy9xY29tL2ljZS5jIGluZGV4DQo+ID4gNmY5NDFkMzJm
+ZmZiLi5hZGY5Y2FiODQ4ZmEgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9zb2MvcWNvbS9pY2Uu
+Yw0KPiA+ICsrKyBiL2RyaXZlcnMvc29jL3Fjb20vaWNlLmMNCj4gPiBAQCAtMjYsNiArMjYsMTkg
+QEANCj4gPiAgICNkZWZpbmUgUUNPTV9JQ0VfUkVHX0ZVU0VfU0VUVElORwkJMHgwMDEwDQo+ID4g
+ICAjZGVmaW5lIFFDT01fSUNFX1JFR19CSVNUX1NUQVRVUwkJMHgwMDcwDQo+ID4gICAjZGVmaW5l
+IFFDT01fSUNFX1JFR19BRFZBTkNFRF9DT05UUk9MCQkweDEwMDANCj4gPiArI2RlZmluZSBRQ09N
+X0lDRV9SRUdfQ09OVFJPTAkJCTB4MA0KPiA+ICsvKiBRQ09NIElDRSBIV0tNIHJlZ2lzdGVycyAq
+Lw0KPiA+ICsjZGVmaW5lIFFDT01fSUNFX1JFR19IV0tNX1RaX0tNX0NUTA0KPiAJMHgxMDAwDQo+
+ID4gKyNkZWZpbmUgUUNPTV9JQ0VfUkVHX0hXS01fVFpfS01fU1RBVFVTDQo+IAkweDEwMDQNCj4g
+PiArI2RlZmluZSBRQ09NX0lDRV9SRUdfSFdLTV9CQU5LMF9CQU5LTl9JUlFfU1RBVFVTDQo+IAkw
+eDIwMDgNCj4gPiArI2RlZmluZSBRQ09NX0lDRV9SRUdfSFdLTV9CQU5LMF9CQkFDXzANCj4gCTB4
+NTAwMA0KPiA+ICsjZGVmaW5lIFFDT01fSUNFX1JFR19IV0tNX0JBTkswX0JCQUNfMQ0KPiAJMHg1
+MDA0DQo+ID4gKyNkZWZpbmUgUUNPTV9JQ0VfUkVHX0hXS01fQkFOSzBfQkJBQ18yDQo+IAkweDUw
+MDgNCj4gPiArI2RlZmluZSBRQ09NX0lDRV9SRUdfSFdLTV9CQU5LMF9CQkFDXzMNCj4gCTB4NTAw
+Qw0KPiA+ICsjZGVmaW5lIFFDT01fSUNFX1JFR19IV0tNX0JBTkswX0JCQUNfNA0KPiAJMHg1MDEw
+DQo+ID4gKw0KPiA+ICsjZGVmaW5lIFFDT01fSUNFX0hXS01fQklTVF9ET05FX1YxX1ZBTAkJMHgx
+MQ0KPiA+ICsjZGVmaW5lIFFDT01fSUNFX0hXS01fQklTVF9ET05FX1YyX1ZBTAkJMHgyODcNCj4g
+Pg0KPiA+ICAgLyogQklTVCAoImJ1aWx0LWluIHNlbGYtdGVzdCIpIHN0YXR1cyBmbGFncyAqLw0K
+PiA+ICAgI2RlZmluZSBRQ09NX0lDRV9CSVNUX1NUQVRVU19NQVNLCQlHRU5NQVNLKDMxLCAyOCkN
+Cj4gPiBAQCAtMzQsNiArNDcsOSBAQA0KPiA+ICAgI2RlZmluZSBRQ09NX0lDRV9GT1JDRV9IV19L
+RVkwX1NFVFRJTkdfTUFTSwkweDINCj4gPiAgICNkZWZpbmUgUUNPTV9JQ0VfRk9SQ0VfSFdfS0VZ
+MV9TRVRUSU5HX01BU0sJMHg0DQo+ID4NCj4gPiArI2RlZmluZSBRQ09NX0lDRV9IV0tNX1JFR19P
+RkZTRVQJMHg4MDAwDQo+ID4gKyNkZWZpbmUgSFdLTV9PRkZTRVQocmVnKQkJKChyZWcpICsNCj4g
+UUNPTV9JQ0VfSFdLTV9SRUdfT0ZGU0VUKQ0KPiA+ICsNCj4gPiAgICNkZWZpbmUgcWNvbV9pY2Vf
+d3JpdGVsKGVuZ2luZSwgdmFsLCByZWcpCVwNCj4gPiAgIAl3cml0ZWwoKHZhbCksIChlbmdpbmUp
+LT5iYXNlICsgKHJlZykpDQo+ID4NCj4gPiBAQCAtNDYsNiArNjIsOSBAQCBzdHJ1Y3QgcWNvbV9p
+Y2Ugew0KPiA+ICAgCXN0cnVjdCBkZXZpY2VfbGluayAqbGluazsNCj4gPg0KPiA+ICAgCXN0cnVj
+dCBjbGsgKmNvcmVfY2xrOw0KPiA+ICsJdTggaHdrbV92ZXJzaW9uOw0KPiA+ICsJYm9vbCB1c2Vf
+aHdrbTsNCj4gDQo+IHdlIGNhbiByZWx5IG9uIGh3a21fdmVyc2lvbiBhbG9uZSB0byBkZXRlcm1p
+bmUgaWYgaHdrbSBzdXBwb3J0IGlzDQo+IGF2YWlsYWJsZSBvciBub3QuDQo+IGlmIGh3a21fdmVy
+c2lvbiA9IDAgKGRlZmF1bHQpIGNvbnNpZGVyIGh3a20gaXMgbm90IGVuYWJsZWQNCj4gDQoNClRo
+ZSByZWFzb24gdGhpcyBpcyBiZWluZyBhZGRlZCBpcyB0byBzdXBwb3J0IHN0YW5kYXJkIGtleXMg
+b24gY2hpcHNldHMgd2hpY2ggY29udGFpbiBhIEhXS00gdmVyc2lvbiwgYnV0DQpkb2VzIG5vdCBo
+YXZlIHRoZSBjYXBhYmlsaXR5IGluIFRydXN0em9uZSAoZm9yIGV4YW1wbGUpIHRvIGNvbXBsZXRl
+bHkgdXNlIHdyYXBwZWQga2V5cy4NClVzaW5nIGEgSFdLTSBEVFNJIGVudHJ5IHdpbGwgbGV0IHlv
+dSBleHBsaWNpdGx5IGVuYWJsZS9kaXNhYmxlIHdyYXBwZWQga2V5IChvciBod2ttKSBzdXBwb3J0
+Lg0KDQpJbiBnZW5lcmFsIHRvbywgSSB0aGluayBpdCBpcyBnb29kIHRvIGFsbG93IHN1cHBvcnQg
+Zm9yIGJvdGggc3RhbmRhcmQgYW5kIHdyYXBwZWQga2V5cy4NCg0KPiA+ICsJYm9vbCBod2ttX2lu
+aXRfY29tcGxldGU7DQo+ID4gICB9Ow0KPiA+DQo+ID4gICBzdGF0aWMgYm9vbCBxY29tX2ljZV9j
+aGVja19zdXBwb3J0ZWQoc3RydWN0IHFjb21faWNlICppY2UpIEBAIC02Myw4DQo+ID4gKzgyLDI2
+IEBAIHN0YXRpYyBib29sIHFjb21faWNlX2NoZWNrX3N1cHBvcnRlZChzdHJ1Y3QgcWNvbV9pY2Ug
+KmljZSkNCj4gPiAgIAkJcmV0dXJuIGZhbHNlOw0KPiA+ICAgCX0NCj4gPg0KPiA+ICsJaWYgKG1h
+am9yID49IDQgfHwgKG1ham9yID09IDMgJiYgbWlub3IgPT0gMiAmJiBzdGVwID49IDEpKQ0KPiA+
+ICsJCWljZS0+aHdrbV92ZXJzaW9uID0gMjsNCj4gPiArCWVsc2UgaWYgKG1ham9yID09IDMgJiYg
+bWlub3IgPT0gMikNCj4gPiArCQlpY2UtPmh3a21fdmVyc2lvbiA9IDE7DQo+ID4gKwllbHNlDQo+
+ID4gKwkJaWNlLT5od2ttX3ZlcnNpb24gPSAwOw0KPiA+ICsNCj4gPiArCWlmIChpY2UtPmh3a21f
+dmVyc2lvbiA9PSAwKQ0KPiA+ICsJCWljZS0+dXNlX2h3a20gPSBmYWxzZTsNCj4gPiArDQo+IGh3
+a20gdmVyc2lvbiBzaG91bGQgcGFzcyBmcm9tIGRldmljZS10cmVlIHByb3BlcnR5IGluc3RlYWQg
+b2YgY3VycmVudA0KPiBjb21wbGV4IGxvZ2ljLiBUaGlzIHdpbGwgYmUgaGVscGZ1bCBpbiBzdXBw
+b3J0IGZ1dHVyZSBod2ttIHZlcnNpb24gYWxzby4NCj4gaWNlLT5od2ttX3ZlcnNpb24gPT0gMCwg
+Y29uZGl0aW9uIGNhbiBiZSB1c2UgZm9yIGRldGVybWluaW5nIGlmIGh3a20gaXMNCj4gZW5hYmxl
+ZCBvciBub3QuDQo+IA0KDQpTaG91bGRuJ3QgdGhlIGhhcmR3YXJlIHZlcnNpb24gYmUgcmVhZCBm
+cm9tIHRoZSBoYXJkd2FyZT8NCg0KPiA+ICAgCWRldl9pbmZvKGRldiwgIkZvdW5kIFFDIElubGlu
+ZSBDcnlwdG8gRW5naW5lIChJQ0UpIHYlZC4lZC4lZFxuIiwNCj4gPiAgIAkJIG1ham9yLCBtaW5v
+ciwgc3RlcCk7DQo+ID4gKwlpZiAoIWljZS0+aHdrbV92ZXJzaW9uKQ0KPiA+ICsJCWRldl9pbmZv
+KGRldiwgIlFDIElDRSBIV0tNIChIYXJkd2FyZSBLZXkgTWFuYWdlcikgbm90DQo+IHN1cHBvcnRl
+ZCIpOw0KPiA+ICsJZWxzZQ0KPiA+ICsJCWRldl9pbmZvKGRldiwgIlFDIElDRSBIV0tNIChIYXJk
+d2FyZSBLZXkgTWFuYWdlcikNCj4gdmVyc2lvbiA9ICVkIiwNCj4gPiArCQkJIGljZS0+aHdrbV92
+ZXJzaW9uKTsNCj4gPiArDQo+ID4gKwlpZiAoIWljZS0+dXNlX2h3a20pDQo+ID4gKwkJZGV2X2lu
+Zm8oZGV2LCAiUUMgSUNFIEhXS00gKEhhcmR3YXJlIEtleSBNYW5hZ2VyKSBub3QNCj4gdXNlZCIp
+Ow0KPiA+DQo+ID4gICAJLyogSWYgZnVzZXMgYXJlIGJsb3duLCBJQ0UgbWlnaHQgbm90IHdvcmsg
+aW4gdGhlIHN0YW5kYXJkIHdheS4gKi8NCj4gPiAgIAlyZWd2YWwgPSBxY29tX2ljZV9yZWFkbChp
+Y2UsIFFDT01fSUNFX1JFR19GVVNFX1NFVFRJTkcpOw0KPiA+IEBAIC0xMTMsMTAgKzE1MCwxNCBA
+QCBzdGF0aWMgdm9pZCBxY29tX2ljZV9vcHRpbWl6YXRpb25fZW5hYmxlKHN0cnVjdA0KPiBxY29t
+X2ljZSAqaWNlKQ0KPiA+ICAgICogZmFpbHMsIHNvIHdlIG5lZWRuJ3QgZG8gaXQgaW4gc29mdHdh
+cmUgdG9vLCBhbmQgKGMpIHByb3Blcmx5IHRlc3RpbmcNCj4gPiAgICAqIHN0b3JhZ2UgZW5jcnlw
+dGlvbiByZXF1aXJlcyB0ZXN0aW5nIHRoZSBmdWxsIHN0b3JhZ2Ugc3RhY2sgYW55d2F5LA0KPiA+
+ICAgICogYW5kIG5vdCByZWx5aW5nIG9uIGhhcmR3YXJlLWxldmVsIHNlbGYtdGVzdHMuDQo+ID4g
+KyAqDQo+ID4gKyAqIEhvd2V2ZXIsIHdlIHN0aWxsIGNhcmUgYWJvdXQgaWYgSFdLTSBCSVNUIGZh
+aWxlZCAod2hlbiBzdXBwb3J0ZWQpIGFzDQo+ID4gKyAqIGltcG9ydGFudCBmdW5jdGlvbmFsaXR5
+IHdvdWxkIGZhaWwgbGF0ZXIsIHNvIGRpc2FibGUgaHdrbSBvbiBmYWlsdXJlLg0KPiA+ICAgICov
+DQo+ID4gICBzdGF0aWMgaW50IHFjb21faWNlX3dhaXRfYmlzdF9zdGF0dXMoc3RydWN0IHFjb21f
+aWNlICppY2UpDQo+ID4gICB7DQo+ID4gICAJdTMyIHJlZ3ZhbDsNCj4gPiArCXUzMiBiaXN0X2Rv
+bmVfdmFsOw0KPiA+ICAgCWludCBlcnI7DQo+ID4NCj4gPiAgIAllcnIgPSByZWFkbF9wb2xsX3Rp
+bWVvdXQoaWNlLT5iYXNlICsgUUNPTV9JQ0VfUkVHX0JJU1RfU1RBVFVTLA0KPiA+IEBAIC0xMjUs
+MTUgKzE2Niw5NSBAQCBzdGF0aWMgaW50IHFjb21faWNlX3dhaXRfYmlzdF9zdGF0dXMoc3RydWN0
+DQo+IHFjb21faWNlICppY2UpDQo+ID4gICAJaWYgKGVycikNCj4gPiAgIAkJZGV2X2VycihpY2Ut
+PmRldiwgIlRpbWVkIG91dCB3YWl0aW5nIGZvciBJQ0Ugc2VsZi10ZXN0IHRvDQo+IGNvbXBsZXRl
+XG4iKTsNCj4gPg0KPiA+ICsJaWYgKGljZS0+dXNlX2h3a20pIHsNCj4gPiArCQliaXN0X2RvbmVf
+dmFsID0gKGljZS0+aHdrbV92ZXJzaW9uID09IDEpID8NCj4gPiArCQkJCSBRQ09NX0lDRV9IV0tN
+X0JJU1RfRE9ORV9WMV9WQUwgOg0KPiA+ICsJCQkJIFFDT01fSUNFX0hXS01fQklTVF9ET05FX1Yy
+X1ZBTDsNCj4gPiArCQlpZiAocWNvbV9pY2VfcmVhZGwoaWNlLA0KPiA+ICsNCj4gSFdLTV9PRkZT
+RVQoUUNPTV9JQ0VfUkVHX0hXS01fVFpfS01fU1RBVFVTKSkgIT0NCj4gPiArCQkJCSAgIGJpc3Rf
+ZG9uZV92YWwpIHsNCj4gPiArCQkJZGV2X3dhcm4oaWNlLT5kZXYsICJIV0tNIEJJU1QgZXJyb3Jc
+biIpOw0KPiA+ICsJCQlpY2UtPnVzZV9od2ttID0gZmFsc2U7DQo+IGVycm9yIGlzIG5vdCBwYXNz
+ZWQgdG8gY2FsbGVyLiBpZiBIV0tNIGlzIGVuYWJsZWQsIGFuZCBCSVNUIGZhaWxlZCwgSUNFDQo+
+IGluaXQgYWxzbyBzaG91bGQgYmUgY29uc2lkZXJlZCBoYXMgZmFpbHVyZS4NCj4gDQo+IEFueSBy
+ZWFzb24gY29uc2lkZXJpbmcgaXQgYXMgd2FybmluZyBvbmx5ID8NCg0KTm90ZWQgZm9yIHRoZSBu
+ZXh0IHBhdGNoLg0KDQo+ID4gKwkJfQ0KPiA+ICsJfQ0KPiA+ICAgCXJldHVybiBlcnI7DQo+ID4g
+ICB9DQo+ID4NCj4gPiArc3RhdGljIHZvaWQgcWNvbV9pY2VfZW5hYmxlX3N0YW5kYXJkX21vZGUo
+c3RydWN0IHFjb21faWNlICppY2UpDQo+ID4gK3sNCj4gPiArCXUzMiB2YWwgPSAwOw0KPiA+ICsN
+Cj4gPiArCWlmICghaWNlLT51c2VfaHdrbSkNCj4gPiArCQlyZXR1cm47DQo+ID4gKw0KPiA+ICsJ
+LyoNCj4gPiArCSAqIFdoZW4gSUNFIGlzIGluIHN0YW5kYXJkIChod2ttKSBtb2RlLCBpdCBzdXBw
+b3J0cyBIVyB3cmFwcGVkDQo+ID4gKwkgKiBrZXlzLCBhbmQgd2hlbiBpdCBpcyBpbiBsZWdhY3kg
+bW9kZSwgaXQgb25seSBzdXBwb3J0cyBzdGFuZGFyZA0KPiA+ICsJICogKG5vbiBIVyB3cmFwcGVk
+KSBrZXlzLg0KPiA+ICsJICoNCj4gPiArCSAqIFB1dCBJQ0UgaW4gc3RhbmRhcmQgbW9kZSwgSUNF
+IGRlZmF1bHRzIHRvIGxlZ2FjeSBtb2RlLg0KPiA+ICsJICogTGVnYWN5IG1vZGUgLSBJQ0UgSFdL
+TSBzbGF2ZSBub3Qgc3VwcG9ydGVkLg0KPiA+ICsJICogU3RhbmRhcmQgbW9kZSAtIElDRSBIV0tN
+IHNsYXZlIHN1cHBvcnRlZC4NCj4gPiArCSAqDQo+ID4gKwkgKiBEZXBlbmRpbmcgb24gdGhlIHZl
+cnNpb24gb2YgSFdLTSwgaXQgaXMgY29udHJvbGxlZCBieSBkaWZmZXJlbnQNCj4gPiArCSAqIHJl
+Z2lzdGVycyBpbiBJQ0UuDQo+ID4gKwkgKi8NCj4gPiArCWlmIChpY2UtPmh3a21fdmVyc2lvbiA+
+PSAyKSB7DQo+IA0KPiBod2ttX3ZlcnNpb24gdmVyc2lvbiA+PSAyIGlzIG5vdCBleGlzdC4gVGhp
+cyBwcm9ncmFtbWluZyBpbnN0cnVjdGlvbiBtYXkNCj4gY3JlYXRlIHByb2JsZW0gaW4gZnV0dXJl
+Lg0KPiANCg0KV2UgY3VycmVudGx5IHVzZSBIV0tNIHZlcnNpb24gMiBvbiBTTTg2NTAuDQpJZiB5
+b3UgYXJlIHNwZWNpZnlpbmcgb25seSB2ZXJzaW9ucyBncmVhdGVyIHRoYW4gMiwNCkF0IGJlc3Qs
+IHdlIHdvbid0IG5lZWQgYW55IGNoYW5nZXMgdG8gc3VwcG9ydCBsZXQncyBzYXkgYSB2ZXJzaW9u
+IDMNCkF0IHdvcnN0LCBjaGFuZ2VzIG5lZWQgdG8gYmUgbWFkZSB0byBzdXBwb3J0IHZlcnNpb24g
+c3BlY2lmaWMgY2hhbmdlcywNCndoaWNoIHdlIHdvdWxkIGhhdmUgaGFkIHRvIG1ha2UgYW55d2F5
+Lg0KDQo+ID4gKwkJdmFsID0gcWNvbV9pY2VfcmVhZGwoaWNlLCBRQ09NX0lDRV9SRUdfQ09OVFJP
+TCk7DQo+ID4gKwkJdmFsID0gdmFsICYgMHhGRkZGRkZGRTsNCj4gPiArCQlxY29tX2ljZV93cml0
+ZWwoaWNlLCB2YWwsIFFDT01fSUNFX1JFR19DT05UUk9MKTsNCj4gPiArCX0gZWxzZSB7DQo+ID4g
+KwkJcWNvbV9pY2Vfd3JpdGVsKGljZSwgMHg3LA0KPiB2b2lkIHVzaW5nIGNvbnN0YW50IHZhbHVl
+IGxpa2UgIjB4NyIgaW4gY29kZSB1c2UgI2RlZmluZSB3aXRoIG1lYW5pbmdmdWwNCj4gbmFtZSB0
+aGF0IGNhbiBpbmRpY2F0ZSB3aGF0IG9wZXJhdGlvbiBpcyBiZWluZyBwZXJmb3JtZWQuDQo+IFRo
+aXMgY29tbWVudCBpcyBhcHBsaWNhYmxlIGZvciBtYW55IHBsYWNlcy4NCg0KSSBhZ3JlZSwgbm90
+ZWQgZm9yIHRoZSBuZXh0IHBhdGNoLg0KDQo+ID4gKw0KPiAJSFdLTV9PRkZTRVQoUUNPTV9JQ0Vf
+UkVHX0hXS01fVFpfS01fQ1RMKSk7DQo+ID4gKwl9DQo+ID4gK30NCj4gPiArDQo+ID4gK3N0YXRp
+YyB2b2lkIHFjb21faWNlX2h3a21faW5pdChzdHJ1Y3QgcWNvbV9pY2UgKmljZSkNCj4gPiArew0K
+PiA+ICsJaWYgKCFpY2UtPnVzZV9od2ttKQ0KPiA+ICsJCXJldHVybjsNCj4gPiArDQo+ID4gKwkv
+KiBEaXNhYmxlIENSQyBjaGVja3MuIFRoaXMgSFdLTSBmZWF0dXJlIGlzIG5vdCB1c2VkLiAqLw0K
+PiA+ICsJcWNvbV9pY2Vfd3JpdGVsKGljZSwgMHg2LA0KPiA+ICsNCj4gCUhXS01fT0ZGU0VUKFFD
+T01fSUNFX1JFR19IV0tNX1RaX0tNX0NUTCkpOw0KPiA+ICsNCj4gPiArCS8qDQo+ID4gKwkgKiBH
+aXZlIHJlZ2lzdGVyIGJhbmsgb2YgdGhlIEhXS00gc2xhdmUgYWNjZXNzIHRvIHJlYWQgYW5kIG1v
+ZGlmeQ0KPiA+ICsJICogdGhlIGtleXNsb3RzIGluIElDRSBIV0tNIHNsYXZlLiBXaXRob3V0IHRo
+aXMsIHRydXN0em9uZSB3aWxsIG5vdA0KPiA+ICsJICogYmUgYWJsZSB0byBwcm9ncmFtIGtleXMg
+aW50byBJQ0UuDQo+ID4gKwkgKi8NCj4gPiArCXFjb21faWNlX3dyaXRlbChpY2UsIDB4RkZGRkZG
+RkYsDQo+ID4gKw0KPiAJSFdLTV9PRkZTRVQoUUNPTV9JQ0VfUkVHX0hXS01fQkFOSzBfQkJBQ18w
+KSk7DQo+ID4gKwlxY29tX2ljZV93cml0ZWwoaWNlLCAweEZGRkZGRkZGLA0KPiA+ICsNCj4gCUhX
+S01fT0ZGU0VUKFFDT01fSUNFX1JFR19IV0tNX0JBTkswX0JCQUNfMSkpOw0KPiA+ICsJcWNvbV9p
+Y2Vfd3JpdGVsKGljZSwgMHhGRkZGRkZGRiwNCj4gPiArDQo+IAlIV0tNX09GRlNFVChRQ09NX0lD
+RV9SRUdfSFdLTV9CQU5LMF9CQkFDXzIpKTsNCj4gPiArCXFjb21faWNlX3dyaXRlbChpY2UsIDB4
+RkZGRkZGRkYsDQo+ID4gKw0KPiAJSFdLTV9PRkZTRVQoUUNPTV9JQ0VfUkVHX0hXS01fQkFOSzBf
+QkJBQ18zKSk7DQo+ID4gKwlxY29tX2ljZV93cml0ZWwoaWNlLCAweEZGRkZGRkZGLA0KPiA+ICsN
+Cj4gCUhXS01fT0ZGU0VUKFFDT01fSUNFX1JFR19IV0tNX0JBTkswX0JCQUNfNCkpOw0KPiA+ICsN
+Cj4gPiArCS8qIENsZWFyIEhXS00gcmVzcG9uc2UgRklGTyBiZWZvcmUgZG9pbmcgYW55dGhpbmcg
+Ki8NCj4gPiArCXFjb21faWNlX3dyaXRlbChpY2UsIDB4OCwNCj4gPiArDQo+IAlIV0tNX09GRlNF
+VChRQ09NX0lDRV9SRUdfSFdLTV9CQU5LMF9CQU5LTl9JUlFfU1RBDQo+IFRVUykpOw0KPiA+ICt9
+DQo+ID4gKw0KPiA+ICAgaW50IHFjb21faWNlX2VuYWJsZShzdHJ1Y3QgcWNvbV9pY2UgKmljZSkN
+Cj4gPiAgIHsNCj4gPiArCWludCBlcnI7DQo+ID4gKw0KPiA+ICAgCXFjb21faWNlX2xvd19wb3dl
+cl9tb2RlX2VuYWJsZShpY2UpOw0KPiA+ICAgCXFjb21faWNlX29wdGltaXphdGlvbl9lbmFibGUo
+aWNlKTsNCj4gPg0KPiA+IC0JcmV0dXJuIHFjb21faWNlX3dhaXRfYmlzdF9zdGF0dXMoaWNlKTsN
+Cj4gPiArCXFjb21faWNlX2VuYWJsZV9zdGFuZGFyZF9tb2RlKGljZSk7DQo+ID4gKw0KPiA+ICsJ
+ZXJyID0gcWNvbV9pY2Vfd2FpdF9iaXN0X3N0YXR1cyhpY2UpOw0KPiA+ICsJaWYgKGVycikNCj4g
+PiArCQlyZXR1cm4gZXJyOw0KPiA+ICsNCj4gPiArCXFjb21faWNlX2h3a21faW5pdChpY2UpOw0K
+PiBuZXcgY29kZSBhZGRlZCBpbiB0aGlzIHNlY3Rpb24gaXMgb25seSBhcHBsaWNhdGlvbiB3aGVu
+IGh3a20gaXMgZW5hYmxlZC4NCj4gaWYgKCFpY2UtPmh3a21fdmVyc2lvbikgew0KPiAJcWNvbV9p
+Y2VfZW5hYmxlX3N0YW5kYXJkX21vZGUoaWNlKTsNCj4gCXFjb21faWNlX2h3a21faW5pdChpY2Up
+Ow0KPiB9DQoNCkl0IGlzIGFscmVhZHkgZ2F0ZWQgd2l0aGluIHRoZSBuZXcgQVBJcw0KDQo+ID4g
+Kw0KPiA+ICsJcmV0dXJuIGVycjsNCj4gPiAgIH0NCj4gPiAgIEVYUE9SVF9TWU1CT0xfR1BMKHFj
+b21faWNlX2VuYWJsZSk7DQo+ID4NCj4gPiBAQCAtMTQ5LDYgKzI3MCw4IEBAIGludCBxY29tX2lj
+ZV9yZXN1bWUoc3RydWN0IHFjb21faWNlICppY2UpDQo+ID4gICAJCXJldHVybiBlcnI7DQo+ID4g
+ICAJfQ0KPiA+DQo+ID4gKwlxY29tX2ljZV9lbmFibGVfc3RhbmRhcmRfbW9kZShpY2UpOw0KPiA+
+ICsJcWNvbV9pY2VfaHdrbV9pbml0KGljZSk7DQo+ID4gICAJcmV0dXJuIHFjb21faWNlX3dhaXRf
+YmlzdF9zdGF0dXMoaWNlKTsNCj4gPiAgIH0NCj4gPiAgIEVYUE9SVF9TWU1CT0xfR1BMKHFjb21f
+aWNlX3Jlc3VtZSk7DQo+ID4gQEAgLTIwNSw2ICszMjgsMTIgQEAgaW50IHFjb21faWNlX2V2aWN0
+X2tleShzdHJ1Y3QgcWNvbV9pY2UgKmljZSwgaW50DQo+IHNsb3QpDQo+ID4gICB9DQo+ID4gICBF
+WFBPUlRfU1lNQk9MX0dQTChxY29tX2ljZV9ldmljdF9rZXkpOw0KPiA+DQo+ID4gK2Jvb2wgcWNv
+bV9pY2VfaHdrbV9zdXBwb3J0ZWQoc3RydWN0IHFjb21faWNlICppY2UpDQo+ID4gK3sNCj4gPiAr
+CXJldHVybiBpY2UtPnVzZV9od2ttOw0KPiA+ICt9DQo+ID4gK0VYUE9SVF9TWU1CT0xfR1BMKHFj
+b21faWNlX2h3a21fc3VwcG9ydGVkKTsNCj4gPiArDQo+ID4gICBzdGF0aWMgc3RydWN0IHFjb21f
+aWNlICpxY29tX2ljZV9jcmVhdGUoc3RydWN0IGRldmljZSAqZGV2LA0KPiA+ICAgCQkJCQl2b2lk
+IF9faW9tZW0gKmJhc2UpDQo+ID4gICB7DQo+ID4gQEAgLTIzOSw2ICszNjgsOCBAQCBzdGF0aWMg
+c3RydWN0IHFjb21faWNlICpxY29tX2ljZV9jcmVhdGUoc3RydWN0DQo+IGRldmljZSAqZGV2LA0K
+PiA+ICAgCQllbmdpbmUtPmNvcmVfY2xrID0gZGV2bV9jbGtfZ2V0X2VuYWJsZWQoZGV2LCBOVUxM
+KTsNCj4gPiAgIAlpZiAoSVNfRVJSKGVuZ2luZS0+Y29yZV9jbGspKQ0KPiA+ICAgCQlyZXR1cm4g
+RVJSX0NBU1QoZW5naW5lLT5jb3JlX2Nsayk7DQo+ID4gKwllbmdpbmUtPnVzZV9od2ttID0gb2Zf
+cHJvcGVydHlfcmVhZF9ib29sKGRldi0+b2Zfbm9kZSwNCj4gPiArCQkJCQkJICJxY29tLGljZS11
+c2UtaHdrbSIpOw0KPiA+DQo+ID4gICAJaWYgKCFxY29tX2ljZV9jaGVja19zdXBwb3J0ZWQoZW5n
+aW5lKSkNCj4gPiAgIAkJcmV0dXJuIEVSUl9QVFIoLUVPUE5PVFNVUFApOw0KPiA+IGRpZmYgLS1n
+aXQgYS9pbmNsdWRlL3NvYy9xY29tL2ljZS5oIGIvaW5jbHVkZS9zb2MvcWNvbS9pY2UuaA0KPiA+
+IGluZGV4IDlkZDgzNWRiYTJhNy4uMWY1MmU4MmUzZTFjIDEwMDY0NA0KPiA+IC0tLSBhL2luY2x1
+ZGUvc29jL3Fjb20vaWNlLmgNCj4gPiArKysgYi9pbmNsdWRlL3NvYy9xY29tL2ljZS5oDQo+ID4g
+QEAgLTM0LDUgKzM0LDYgQEAgaW50IHFjb21faWNlX3Byb2dyYW1fa2V5KHN0cnVjdCBxY29tX2lj
+ZSAqaWNlLA0KPiA+ICAgCQkJIGNvbnN0IHN0cnVjdCBibGtfY3J5cHRvX2tleSAqYmtleSwNCj4g
+PiAgIAkJCSB1OCBkYXRhX3VuaXRfc2l6ZSwgaW50IHNsb3QpOw0KPiA+ICAgaW50IHFjb21faWNl
+X2V2aWN0X2tleShzdHJ1Y3QgcWNvbV9pY2UgKmljZSwgaW50IHNsb3QpOw0KPiA+ICtib29sIHFj
+b21faWNlX2h3a21fc3VwcG9ydGVkKHN0cnVjdCBxY29tX2ljZSAqaWNlKTsNCj4gPiAgIHN0cnVj
+dCBxY29tX2ljZSAqb2ZfcWNvbV9pY2VfZ2V0KHN0cnVjdCBkZXZpY2UgKmRldik7DQo+ID4gICAj
+ZW5kaWYgLyogX19RQ09NX0lDRV9IX18gKi8NCg==
 
