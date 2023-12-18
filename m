@@ -1,128 +1,74 @@
-Return-Path: <linux-fscrypt+bounces-91-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-92-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 126B78159EC
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 16 Dec 2023 15:52:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1606081676C
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 18 Dec 2023 08:33:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C1B71C2152A
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 16 Dec 2023 14:52:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD24EB210E9
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 18 Dec 2023 07:33:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7847230343;
-	Sat, 16 Dec 2023 14:52:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="GsCGD0YJ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4177B8473;
+	Mon, 18 Dec 2023 07:33:30 +0000 (UTC)
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.nsr.re.kr (unknown [210.104.33.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED6833033C
-	for <linux-fscrypt@vger.kernel.org>; Sat, 16 Dec 2023 14:52:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-5cd81e76164so14549867b3.1
-        for <linux-fscrypt@vger.kernel.org>; Sat, 16 Dec 2023 06:52:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1702738327; x=1703343127; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=oA7sme/wc8753vvLvAf7lyhPDObfPHeWsrUyMBHufRA=;
-        b=GsCGD0YJXo7MF5W8yRlotCs0epdFjq7wsJSiqyRpH9Ek/o+ztdTmsI6qe8EI6IYgkP
-         KaNZ3XKdT6s6nOyWILXFFqiWYZJdFN/kBe+UOdK64SK82YLDYi6JEsUx/vAcRhhTAyv6
-         CNLf/jhl1zU8oXQZhERzyUCxr8OG/UPUUGcyec4CDFVFIaQuq+Iw165kDy3Y7p91nOCQ
-         8s5G49wSTedhlWLh/xZnzFUPG48VaW5AT5tqN6/1KHgUoNqrRsSwmkIUq214TANcBCUO
-         Us+3TsR075DG1vezSFvb9KLYXy9pJLejLYcRcqiPUc/d+SBYzW3+2eJvL2RwxAQC2tOa
-         hPJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702738327; x=1703343127;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oA7sme/wc8753vvLvAf7lyhPDObfPHeWsrUyMBHufRA=;
-        b=V+OxYwxPQ6gNIgTnT1rtc391sQ/9Dtk31ifTTk+K7kOrYjaCO16itTmKn4+1wWGogs
-         AuEUcrA44CLLONXYIf3k+g5ypZSlHbaMb8uePkTMPpRCoTX9mWdgaLRgnDtSWsxsSTDW
-         Eqc50k7SKnpFYP2nJQJDfmb7Uqz367WTlPOcaUt7f+KZsPWfIVgYLP55vwU7hA+Qi9SI
-         OyJil4qBrD4iLIiVSm2jJeF2BCSO5DS6cYFmvLhZTNt/F7z6FvhhYSCYM1AebRNfiHrd
-         BtBP27bJX4McaMKuGQvaPZ1oIsvsca7p6TnO9L/dGxluyXwCidvp19esYSHyePB0VLcb
-         jEUA==
-X-Gm-Message-State: AOJu0YwRlVp21ViZ+d7qrKNSGwxpWK6l55zcC+bc9k9+utf41J7N5m6N
-	3YG5S/lgYOrVNAANHrmYdscPug==
-X-Google-Smtp-Source: AGHT+IHWGNP6VHnf5q0ZRFEjeJKxW9r1newfiPTngMIN/hqAeqSoGGRlOnrewaj3tKDeCu4fOTF1QA==
-X-Received: by 2002:a81:df01:0:b0:5d7:1940:dd62 with SMTP id c1-20020a81df01000000b005d71940dd62mr12001424ywn.56.1702738327012;
-        Sat, 16 Dec 2023 06:52:07 -0800 (PST)
-Received: from localhost (076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id j14-20020a81920e000000b005d951c0084esm2134721ywg.21.2023.12.16.06.52.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Dec 2023 06:52:06 -0800 (PST)
-Date: Sat, 16 Dec 2023 09:52:05 -0500
-From: Josef Bacik <josef@toxicpanda.com>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Eric Biggers <ebiggers@kernel.org>,
-	Christian Brauner <brauner@kernel.org>,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-btrfs@vger.kernel.org
-Subject: Re: [f2fs-dev] [PATCH 1/3] btrfs: call btrfs_close_devices from
- ->kill_sb
-Message-ID: <20231216145205.GA1023996@perftesting>
-References: <20231213040018.73803-1-ebiggers@kernel.org>
- <20231213040018.73803-2-ebiggers@kernel.org>
- <20231213084123.GA6184@lst.de>
- <20231215214550.GB883762@perftesting>
- <20231216041221.GA8850@lst.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4540179EE;
+	Mon, 18 Dec 2023 07:33:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nsr.re.kr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nsr.re.kr
+Received: from 210.104.33.70 (nsr.re.kr)
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128 bits))
+	by mail.nsr.re.kr with SMTP; Mon, 18 Dec 2023 16:33:09 +0900
+X-Sender: letrhee@nsr.re.kr
+Received: from 192.168.155.188 ([192.168.155.188])
+          by mail.nsr.re.kr (Crinity Message Backbone-7.0.1) with SMTP ID 291;
+          Mon, 18 Dec 2023 16:33:05 +0900 (KST)
+From: Dongsoo Lee <letrhee@nsr.re.kr>
+To: 'Herbert Xu' <herbert@gondor.apana.org.au>, 
+	"'David S. Miller'" <davem@davemloft.net>, 
+	'Jens Axboe' <axboe@kernel.dk>, 'Eric Biggers' <ebiggers@kernel.org>, 
+	"'Theodore Y. Ts'o'" <tytso@mit.edu>, 
+	'Jaegeuk Kim' <jaegeuk@kernel.org>, 
+	'Thomas Gleixner' <tglx@linutronix.de>, 
+	'Ingo Molnar' <mingo@redhat.com>, 'Borislav Petkov' <bp@alien8.de>, 
+	'Dave Hansen' <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"'H. Peter Anvin'" <hpa@zytor.com>, 
+	'Dongsoo Lee' <letrhee@nsr.re.kr>
+Cc: linux-crypto@vger.kernel.org, linux-block@vger.kernel.org, 
+	linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231205010329.21996-1-letrehee@nsr.re.kr>
+In-Reply-To: <20231205010329.21996-1-letrehee@nsr.re.kr>
+Subject: RE: [PATCH v6 0/5] crypto: LEA block cipher implementation
+Date: Mon, 18 Dec 2023 16:33:01 +0900
+Message-ID: <004701da3184$6e090560$4a1b1020$@nsr.re.kr>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231216041221.GA8850@lst.de>
+Content-Type: text/plain;
+	charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQKQdsWb5UD+xQlqqHr8cbxlcEv/nK9CGvZQ
+Content-Language: ko
 
-On Sat, Dec 16, 2023 at 05:12:21AM +0100, Christoph Hellwig wrote:
-> On Fri, Dec 15, 2023 at 04:45:50PM -0500, Josef Bacik wrote:
-> > I ran it through, you broke a test that isn't upstream yet to test the old mount
-> > api double mount thing that I have a test for
-> > 
-> > https://github.com/btrfs/fstests/commit/2796723e77adb0f9da1059acf13fc402467f7ac4
-> > 
-> > In this case we end up leaking a reference on the fs_devices.  If you add this
-> > fixup to "btrfs: call btrfs_close_devices from ->kill_sb" it fixes that failure.
-> > I'm re-running with that fixup applied, but I assume the rest is fine.  Thanks,
-> 
-> Is "this fixup" referring to a patch that was supposed to be attached
-> but is't? :)
+(Resend mail because of an error)
+Hello,
 
-Sorry, vacation brain, here you go.
+I'm checking in on the status of the patch submitted to the Linux kernel =
+group. I understand the review process takes time, and we appreciate =
+your team's efforts.
 
-Josef
+While awaiting review, is there anything specific we can do to enhance =
+the patch's acceptance chances? Your guidance would be greatly =
+appreciated.
 
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index f93fe2e5e378..2dfa2274b193 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -1950,10 +1950,20 @@ static int btrfs_get_tree_super(struct fs_context *fc)
-  */
- static struct vfsmount *btrfs_reconfigure_for_mount(struct fs_context *fc)
- {
-+	struct btrfs_fs_info *fs_info = fc->s_fs_info;
- 	struct vfsmount *mnt;
- 	int ret;
- 	const bool ro2rw = !(fc->sb_flags & SB_RDONLY);
- 
-+	/*
-+	 * We got a reference to our fs_devices, so we need to close it here to
-+	 * make sure we don't leak our reference on the fs_devices.
-+	 */
-+	if (fs_info->fs_devices) {
-+		btrfs_close_devices(fs_info->fs_devices);
-+		fs_info->fs_devices = NULL;
-+	}
-+
- 	/*
- 	 * We got an EBUSY because our SB_RDONLY flag didn't match the existing
- 	 * super block, so invert our setting here and retry the mount so we
+Thank you,
+Dongsoo Lee
 
