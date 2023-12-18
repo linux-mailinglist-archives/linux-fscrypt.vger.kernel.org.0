@@ -1,74 +1,71 @@
-Return-Path: <linux-fscrypt+bounces-92-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-93-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1606081676C
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 18 Dec 2023 08:33:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 979CD81690C
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 18 Dec 2023 10:02:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD24EB210E9
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 18 Dec 2023 07:33:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C93D21C20976
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 18 Dec 2023 09:02:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4177B8473;
-	Mon, 18 Dec 2023 07:33:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00BA1125A5;
+	Mon, 18 Dec 2023 09:02:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=globalbiznest.com header.i=@globalbiznest.com header.b="SDPcpGSB"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from mail.nsr.re.kr (unknown [210.104.33.65])
+Received: from mail.globalbiznest.com (mail.globalbiznest.com [80.211.237.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4540179EE;
-	Mon, 18 Dec 2023 07:33:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nsr.re.kr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nsr.re.kr
-Received: from 210.104.33.70 (nsr.re.kr)
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128 bits))
-	by mail.nsr.re.kr with SMTP; Mon, 18 Dec 2023 16:33:09 +0900
-X-Sender: letrhee@nsr.re.kr
-Received: from 192.168.155.188 ([192.168.155.188])
-          by mail.nsr.re.kr (Crinity Message Backbone-7.0.1) with SMTP ID 291;
-          Mon, 18 Dec 2023 16:33:05 +0900 (KST)
-From: Dongsoo Lee <letrhee@nsr.re.kr>
-To: 'Herbert Xu' <herbert@gondor.apana.org.au>, 
-	"'David S. Miller'" <davem@davemloft.net>, 
-	'Jens Axboe' <axboe@kernel.dk>, 'Eric Biggers' <ebiggers@kernel.org>, 
-	"'Theodore Y. Ts'o'" <tytso@mit.edu>, 
-	'Jaegeuk Kim' <jaegeuk@kernel.org>, 
-	'Thomas Gleixner' <tglx@linutronix.de>, 
-	'Ingo Molnar' <mingo@redhat.com>, 'Borislav Petkov' <bp@alien8.de>, 
-	'Dave Hansen' <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"'H. Peter Anvin'" <hpa@zytor.com>, 
-	'Dongsoo Lee' <letrhee@nsr.re.kr>
-Cc: linux-crypto@vger.kernel.org, linux-block@vger.kernel.org, 
-	linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231205010329.21996-1-letrehee@nsr.re.kr>
-In-Reply-To: <20231205010329.21996-1-letrehee@nsr.re.kr>
-Subject: RE: [PATCH v6 0/5] crypto: LEA block cipher implementation
-Date: Mon, 18 Dec 2023 16:33:01 +0900
-Message-ID: <004701da3184$6e090560$4a1b1020$@nsr.re.kr>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB1EE125A1
+	for <linux-fscrypt@vger.kernel.org>; Mon, 18 Dec 2023 09:01:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=globalbiznest.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=globalbiznest.com
+Received: by mail.globalbiznest.com (Postfix, from userid 1002)
+	id 4C01382813; Mon, 18 Dec 2023 09:56:06 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=globalbiznest.com;
+	s=mail; t=1702889772;
+	bh=sELFzMEAEtMc6k71F0Olsc1qiLFzeB2u9b+5pA7tltg=;
+	h=Date:From:To:Subject:From;
+	b=SDPcpGSBb5B825tGe/jdphI+Bshlvqm5u1sebyIYLjQobAVkH7HNeSIPBIUEvUHOP
+	 O0H8OIxnTjffii2NAYLkwZDgbiVlwWxoxVxUXLdZ3dT/YDE6TW0tCqh87pARCv1/43
+	 pGEz39pi9+0R7KsCM9mFw3/rPCb8Axp1FwrswT4g1yyjlpsVCgCypDCbj0+HVaFbUc
+	 i9E7HC/r1Ic8/dxn/R6QSJ0fmnrLoGVnbGHboBGmd9t/EcUuaIcPpTdEsDtI0pdIGB
+	 /L+5EJFj8zRxk4prmuUgmQIrxjXpos606dkh7mTr1yd0xq1oGjQEc1Myz8e7nRqZ56
+	 v/aMhZfXMFM5A==
+Received: by mail.globalbiznest.com for <linux-fscrypt@vger.kernel.org>; Mon, 18 Dec 2023 08:56:02 GMT
+Message-ID: <20231218084500-0.1.8.7al.0.g4von2kqo5@globalbiznest.com>
+Date: Mon, 18 Dec 2023 08:56:02 GMT
+From: "Eric Risch" <eric.risch@globalbiznest.com>
+To: <linux-fscrypt@vger.kernel.org>
+Subject: Question about CNC
+X-Mailer: mail.globalbiznest.com
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="UTF-8"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQKQdsWb5UD+xQlqqHr8cbxlcEv/nK9CGvZQ
-Content-Language: ko
 
-(Resend mail because of an error)
-Hello,
+Hi,
 
-I'm checking in on the status of the patch submitted to the Linux kernel =
-group. I understand the review process takes time, and we appreciate =
-your team's efforts.
+Does your company need machining details?
 
-While awaiting review, is there anything specific we can do to enhance =
-the patch's acceptance chances? Your guidance would be greatly =
-appreciated.
+As a company with many years of experience on the market, we are able to =
+provide competitive terms of cooperation, timely execution of orders, as =
+well as details and components with high geometric accuracy and strength =
+properties.
 
-Thank you,
-Dongsoo Lee
+I can also offer welding, cutting and assembly based on the assembly of m=
+achine components and the prefabrication of electrical switchboards.
+
+Let me know if you are interested in a short conversation regarding the o=
+rder.
+
+
+Best regards
+Eric Risch
 
