@@ -1,47 +1,49 @@
-Return-Path: <linux-fscrypt+bounces-98-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-99-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 866B681D4E3
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 23 Dec 2023 16:36:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CAB381EC2D
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 27 Dec 2023 05:47:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E0A328324C
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 23 Dec 2023 15:36:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C8C81F22C8C
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 27 Dec 2023 04:47:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40BBADF5C;
-	Sat, 23 Dec 2023 15:36:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 209D23C30;
+	Wed, 27 Dec 2023 04:47:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NsOv68yv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lA9HuoFz"
 X-Original-To: linux-fscrypt@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 272B3DF43
-	for <linux-fscrypt@vger.kernel.org>; Sat, 23 Dec 2023 15:36:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FDA3C433C7;
-	Sat, 23 Dec 2023 15:36:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE7953C24;
+	Wed, 27 Dec 2023 04:47:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EE51C433C9;
+	Wed, 27 Dec 2023 04:47:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703345790;
-	bh=Ho1EszqwI0wE1B1/PMEe80cbefmCuK5iTTKpuBzHd0I=;
+	s=k20201202; t=1703652426;
+	bh=Bya6H8l4ZYjrp08ewGs9e/R44BsH5FpR2joYGBAIj2g=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NsOv68yv+cb3ou8kcwnUxC8c0MA2UhlsYmJxQdQa7xEJLYP/aTWReGaXvlfYHyTFA
-	 GMbpoTp5Hdmv2X43KDuzCFFeYpgaX7VocsElUwZwdD355df38wsWpAQtQBbJdjrt7+
-	 T4fXwNWYOnNkAEhc1hhTRBvQycFlvHS09VDi8DCSpeyB8aQbnH/X4o/QKxeWoh7d86
-	 1R+5AKjE7RrCj7hrK0VELBSv9MnLWVffjmEmZjxlbAZeeSyT/K/ZzJrN/yboOpsvhz
-	 +0+ktFxWt/iz1PH2fCvs+iWjL8zmDpj/Jf5vmGkzZ50LY0JDNLky6GepnoxRV46Tu4
-	 o1uDUr2dFeMSw==
-Date: Sat, 23 Dec 2023 09:36:25 -0600
+	b=lA9HuoFzlqbivy/PM58EG3aEtqKIuHa65hFvtoODtMxrOA7U/bkz0MX46x0REde94
+	 lmwKoFVFN4WIi1Hvd6EHfbOgX7RmY9rfh/oIVfsrwrcN3tHqyO419OfZEBq3zPLQAN
+	 E068JGv+6TDeSJKkdyQ8eLt53+ATJ1InaASpgNnvJjL24pCITGFXJzJhfx77epL4go
+	 s7LDN854oVq3Fd+U3KTq0k5aefS7py+p1AbzDzneUBiIqtD5m0lA7Bq0flRYsegAX0
+	 ncXHI4pvnfKOs8ICKq5/utgWQWyt0q4zsU1AORTAgBySeWbyyycB3SXHLjq4qtcE4v
+	 8ItCUp6ZUPrug==
+Date: Tue, 26 Dec 2023 22:47:01 -0600
 From: Eric Biggers <ebiggers@kernel.org>
-To: Zhihao Cheng <chengzhihao1@huawei.com>
-Cc: richard@nod.at, terrelln@fb.com, linux-fscrypt@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2 2/2] ubifs: ubifs_symlink: Fix memleak of
- inode->i_link in error path
-Message-ID: <20231223153625.GC901@quark.localdomain>
-References: <20231222085446.781838-1-chengzhihao1@huawei.com>
- <20231222085446.781838-3-chengzhihao1@huawei.com>
+To: linux-fsdevel@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
+	Chao Yu <chao@kernel.org>
+Cc: linux-fscrypt@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	Josef Bacik <josef@toxicpanda.com>, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 2/3] f2fs: move release of block devices to after
+ kill_block_super()
+Message-ID: <20231227044701.GC4240@quark.localdomain>
+References: <20231213040018.73803-1-ebiggers@kernel.org>
+ <20231213040018.73803-3-ebiggers@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
@@ -50,57 +52,25 @@ List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231222085446.781838-3-chengzhihao1@huawei.com>
+In-Reply-To: <20231213040018.73803-3-ebiggers@kernel.org>
 
-On Fri, Dec 22, 2023 at 04:54:46PM +0800, Zhihao Cheng wrote:
-> For error handling path in ubifs_symlink(), inode will be marked as
-> bad first, then iput() is invoked. If inode->i_link is initialized by
-> fscrypt_encrypt_symlink() in encryption scenario, inode->i_link won't
-> be freed by callchain ubifs_free_inode -> fscrypt_free_inode in error
-> handling path, because make_bad_inode() has changed 'inode->i_mode' as
-> 'S_IFREG'.
-> Following kmemleak is easy to be reproduced by injecting error in
-> ubifs_jnl_update() when doing symlink in encryption scenario:
->  unreferenced object 0xffff888103da3d98 (size 8):
->   comm "ln", pid 1692, jiffies 4294914701 (age 12.045s)
->   backtrace:
->    kmemdup+0x32/0x70
->    __fscrypt_encrypt_symlink+0xed/0x1c0
->    ubifs_symlink+0x210/0x300 [ubifs]
->    vfs_symlink+0x216/0x360
->    do_symlinkat+0x11a/0x190
->    do_syscall_64+0x3b/0xe0
-> There are two ways fixing it:
->  1. Remove make_bad_inode() in error handling path. We can do that
->     because ubifs_evict_inode() will do same processes for good
->     symlink inode and bad symlink inode, for inode->i_nlink checking
->     is before is_bad_inode().
->  2. Free inode->i_link before marking inode bad.
-> Method 2 is picked, it has less influence, personally, I think.
+On Tue, Dec 12, 2023 at 08:00:17PM -0800, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> Cc: stable@vger.kernel.org
-> Fixes: 2c58d548f570 ("fscrypt: cache decrypted symlink target in ->i_link")
-> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-> Suggested-by: Eric Biggers <ebiggers@kernel.org>
+> Call destroy_device_list() and free the f2fs_sb_info from
+> kill_f2fs_super(), after the call to kill_block_super().  This is
+> necessary to order it after the call to fscrypt_destroy_keyring() once
+> generic_shutdown_super() starts calling fscrypt_destroy_keyring() just
+> after calling ->put_super.  This is because fscrypt_destroy_keyring()
+> may call into f2fs_get_devices() via the fscrypt_operations.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 > ---
->  fs/ubifs/dir.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-> index 3b13c648d490..e413a9cf8ee3 100644
-> --- a/fs/ubifs/dir.c
-> +++ b/fs/ubifs/dir.c
-> @@ -1234,6 +1234,8 @@ static int ubifs_symlink(struct mnt_idmap *idmap, struct inode *dir,
->  	dir_ui->ui_size = dir->i_size;
->  	mutex_unlock(&dir_ui->ui_mutex);
->  out_inode:
-> +	/* Free inode->i_link before inode is marked as bad. */
-> +	fscrypt_free_inode(inode);
->  	make_bad_inode(inode);
->  	iput(inode);
->  out_fname:
+>  fs/f2fs/super.c | 12 +++++++-----
+>  1 file changed, 7 insertions(+), 5 deletions(-)
 
-Reviewed-by: Eric Biggers <ebiggers@google.com>
+Jaegeuk and Chao, when you have a chance can you review or ack this?  I'm
+thinking of taking patches 2-3 of this series through the fscrypt tree for 6.8.
 
 - Eric
 
