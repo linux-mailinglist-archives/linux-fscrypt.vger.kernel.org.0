@@ -1,120 +1,72 @@
-Return-Path: <linux-fscrypt+bounces-104-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-105-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C1F281F0CF
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 27 Dec 2023 18:17:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAEE881F38A
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 28 Dec 2023 02:09:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F3691C219DB
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 27 Dec 2023 17:17:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0BA3C1C214A9
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 28 Dec 2023 01:09:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0746C4655F;
-	Wed, 27 Dec 2023 17:17:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00432ED8;
+	Thu, 28 Dec 2023 01:09:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="umWhZju6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I5va7tQ8"
 X-Original-To: linux-fscrypt@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBDF44654B;
-	Wed, 27 Dec 2023 17:17:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1888C433C8;
-	Wed, 27 Dec 2023 17:17:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC6E1EA9;
+	Thu, 28 Dec 2023 01:09:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A166EC433C8;
+	Thu, 28 Dec 2023 01:09:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703697445;
-	bh=oMd6cyuWC44jmJeHw6DO++liI/GMxog3sPxf3VWV6yo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=umWhZju6J+3h2OeKVr6EpIyoI+lVYboEc5FBxoXG4nRMbDK2you3mgrHLbSLEGqEx
-	 v5TJbAoOB5GsKdKsAs40VXE5LeOGcMqaY4qKOCUUQQXPYU53vBXrmAbHxJVCG0adZN
-	 DL9T3H0YrsbhOTJlEH56Ew8WYkw2bRJ75TVcAE3g3Ljsl78Qw5Fw2cytlDEG8ycd/3
-	 1TnhDrSuooc04NdQ1UDs3PcJplG97mdxu2/g13mI7dmJDf3wnUMK1ajm192QvtSYeb
-	 LeQ2eCmipmcpzmW268aLMreocA1PWHKf2x0I8TvjMuEs9tL1jusH1flupng/oa8eer
-	 nHSPVZLe7Y2Hg==
-From: Eric Biggers <ebiggers@kernel.org>
-To: linux-fscrypt@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	Josef Bacik <josef@toxicpanda.com>,
-	Christoph Hellwig <hch@lst.de>,
-	Neal Gompa <neal@gompa.dev>
-Subject: [PATCH v2 2/2] fs: move fscrypt keyring destruction to after ->put_super
-Date: Wed, 27 Dec 2023 11:14:29 -0600
-Message-ID: <20231227171429.9223-3-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231227171429.9223-1-ebiggers@kernel.org>
-References: <20231227171429.9223-1-ebiggers@kernel.org>
+	s=k20201202; t=1703725774;
+	bh=VwYCv6gGPQ/YYWxYxWflWCiB/el4SBogmDzpvdiEhUA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=I5va7tQ8MTVS+c7ooSC2tg96OtVZYUxvtVGElOdTMeSxywXvk1j79HPZZ9JkI1BjX
+	 ylX7ra8UbxT0INljhybm6o24XgjCBukv7UfGitluAoPLDA0xrlgzZEmgCcZfKa1eRz
+	 PD/A2WdS9ro00mPmD8spoFdQnsVvpyRaupvLmeaGh+toAYlRUAXvAB7GmAdxOM9qya
+	 SkQz2vzdBrkbTU2UwfVPoS8qr9ext0gtrYhwUbUI86Wf0nelk1FBSF32bqYe2yfbAK
+	 nrh8Ou9OjNJOFl9acbT+eRy3Lrws3DpGCSUTDnPkKDsFWhn3jwtRM+wFeN9ImOKMFR
+	 T9jG00cu55QrQ==
+Message-ID: <f1def3f6-e93d-46f0-b074-b459b6255b84@kernel.org>
+Date: Thu, 28 Dec 2023 09:09:29 +0800
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [f2fs-dev] [PATCH v2 1/2] f2fs: move release of block devices to
+ after kill_block_super()
+Content-Language: en-US
+To: Eric Biggers <ebiggers@kernel.org>, linux-fscrypt@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+ Josef Bacik <josef@toxicpanda.com>, linux-f2fs-devel@lists.sourceforge.net
+References: <20231227171429.9223-1-ebiggers@kernel.org>
+ <20231227171429.9223-2-ebiggers@kernel.org>
+From: Chao Yu <chao@kernel.org>
+In-Reply-To: <20231227171429.9223-2-ebiggers@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Josef Bacik <josef@toxicpanda.com>
+On 2023/12/28 1:14, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> Call destroy_device_list() and free the f2fs_sb_info from
+> kill_f2fs_super(), after the call to kill_block_super().  This is
+> necessary to order it after the call to fscrypt_destroy_keyring() once
+> generic_shutdown_super() starts calling fscrypt_destroy_keyring() just
+> after calling ->put_super.  This is because fscrypt_destroy_keyring()
+> may call into f2fs_get_devices() via the fscrypt_operations.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-btrfs has a variety of asynchronous things we do with inodes that can
-potentially last until ->put_super, when we shut everything down and
-clean up all of our async work.  Due to this we need to move
-fscrypt_destroy_keyring() to after ->put_super, otherwise we get
-warnings about still having active references on the master key.
+Reviewed-by: Chao Yu <chao@kernel.org>
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Neal Gompa <neal@gompa.dev>
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/super.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/fs/super.c b/fs/super.c
-index 076392396e724..faf7d248145d2 100644
---- a/fs/super.c
-+++ b/fs/super.c
-@@ -674,34 +674,34 @@ void generic_shutdown_super(struct super_block *sb)
- 		/* Evict all inodes with zero refcount. */
- 		evict_inodes(sb);
- 
- 		/*
- 		 * Clean up and evict any inodes that still have references due
- 		 * to fsnotify or the security policy.
- 		 */
- 		fsnotify_sb_delete(sb);
- 		security_sb_delete(sb);
- 
--		/*
--		 * Now that all potentially-encrypted inodes have been evicted,
--		 * the fscrypt keyring can be destroyed.
--		 */
--		fscrypt_destroy_keyring(sb);
--
- 		if (sb->s_dio_done_wq) {
- 			destroy_workqueue(sb->s_dio_done_wq);
- 			sb->s_dio_done_wq = NULL;
- 		}
- 
- 		if (sop->put_super)
- 			sop->put_super(sb);
- 
-+		/*
-+		 * Now that all potentially-encrypted inodes have been evicted,
-+		 * the fscrypt keyring can be destroyed.
-+		 */
-+		fscrypt_destroy_keyring(sb);
-+
- 		if (CHECK_DATA_CORRUPTION(!list_empty(&sb->s_inodes),
- 				"VFS: Busy inodes after unmount of %s (%s)",
- 				sb->s_id, sb->s_type->name)) {
- 			/*
- 			 * Adding a proper bailout path here would be hard, but
- 			 * we can at least make it more likely that a later
- 			 * iput_final() or such crashes cleanly.
- 			 */
- 			struct inode *inode;
- 
--- 
-2.43.0
-
+Thanks,
 
