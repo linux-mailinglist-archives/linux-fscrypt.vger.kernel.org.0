@@ -1,71 +1,68 @@
-Return-Path: <linux-fscrypt+bounces-111-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-112-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16EC682A26B
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 10 Jan 2024 21:39:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75B6682A6AE
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 11 Jan 2024 04:54:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7EB128CCE9
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 10 Jan 2024 20:39:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F0671C21F87
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 11 Jan 2024 03:54:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87B8650249;
-	Wed, 10 Jan 2024 20:38:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EA1310F3;
+	Thu, 11 Jan 2024 03:54:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uapCWLku"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N00HjlJa"
 X-Original-To: linux-fscrypt@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C4094F603;
-	Wed, 10 Jan 2024 20:38:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 341DEC433C7;
-	Wed, 10 Jan 2024 20:38:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E17D110E1;
+	Thu, 11 Jan 2024 03:54:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BBC5C433F1;
+	Thu, 11 Jan 2024 03:54:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704919122;
-	bh=VoBIQapusZ4NUreEbntc7ZhvKgj4PwK6SluWX86qojE=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=uapCWLkuRiRIyJGZsklMx2/2UUGdGsMtU2ypjC3vDi6dvXJasgC8G8bKPaF5qVXAM
-	 uTRiFw7jFYoyg6fLfvbVCiH6i3L2CuXpNAopX/euGweA15sfiW+pDfzVGOa+tjivuQ
-	 ErOb7d99SL39QlL/xNUyy+8zeJENVXiLkAYYLVYHZJqFghL0WG5lQSYIB/V6YTolvd
-	 bZejodSaIgdAcgkJpTKlEZ8PTpbE06ZfX0taBUuOco2z7P0YHOGfB/pPswmQOlHDRd
-	 iTwAmZLE1mBgXmE/5Xn+m9T4AF7x4ZtyzwxnCUIZ6I7rvVfZt9Gn1O1BSjhwdqPcp7
-	 yqHQn8WaL1Spw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 19644D8C96F;
-	Wed, 10 Jan 2024 20:38:42 +0000 (UTC)
-Subject: Re: [GIT PULL] fscrypt updates for 6.8
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20240108224811.GA94550@sol.localdomain>
-References: <20240108224811.GA94550@sol.localdomain>
-X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20240108224811.GA94550@sol.localdomain>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/fs/fscrypt/linux.git tags/fscrypt-for-linus
-X-PR-Tracked-Commit-Id: 2a0e85719892a1d63f8f287563e2c1778a77879e
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 17b9e388c619ea4f1eae97833cdcadfbfe041650
-Message-Id: <170491912209.22036.13299280209691198905.pr-tracker-bot@kernel.org>
-Date: Wed, 10 Jan 2024 20:38:42 +0000
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, ceph-devel@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>
+	s=k20201202; t=1704945286;
+	bh=72ivCjl5dJtBmZbh/NqHldmjpyUkgHUjTtMsl2+EJXQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=N00HjlJaqIIpwtxvgkzp1hc0w21pAr2mfxFbAOOBJ4+tUE+wv3INEvh2zAPy147Hu
+	 fYLnEsF1lSJPmdtwP3v6F7IBCAINb6p6T/gGpzSHcmna9TsDGPNe+ZVMFJozQivHHD
+	 esEWMTYeAi0AI/S1x70TE1XwuljaYHVxXBM6zGjouG1P2JlP+S00vYnrlk/XQ3dfnX
+	 N2GOjDKVdmSwl8tcm7SkIc0dyAM9czqe7MOoCQUVoGy2O/yn/nllKYM8BODCivrapH
+	 d5QdAU7Zk0GWZGCtJq3bI1yMK9KTPQ9zvfItD4jvkMrPJVbh5klhgI+cGNFp5JpYxo
+	 D2UerbxU2uc2Q==
+Date: Wed, 10 Jan 2024 19:54:44 -0800
+From: Eric Biggers <ebiggers@kernel.org>
+To: Zorro Lang <zlang@kernel.org>
+Cc: fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+	Daniel Rosenberg <drosen@google.com>
+Subject: Re: [PATCH v2 0/4] xfstests: test custom crypto data unit size
+Message-ID: <20240111035444.GA3453@sol.localdomain>
+References: <20231121223909.4617-1-ebiggers@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231121223909.4617-1-ebiggers@kernel.org>
 
-The pull request you sent on Mon, 8 Jan 2024 14:48:11 -0800:
+On Tue, Nov 21, 2023 at 02:39:05PM -0800, Eric Biggers wrote:
+> This series adds a test that verifies the on-disk format of encrypted
+> files that use a crypto data unit size that differs from the filesystem
+> block size.  This tests the functionality that was introduced in Linux
+> 6.7 by kernel commit 5b1188847180 ("fscrypt: support crypto data unit
+> size less than filesystem block size").
 
-> https://git.kernel.org/pub/scm/fs/fscrypt/linux.git tags/fscrypt-for-linus
+Hi Zorro, can you consider applying this series?  It's been out for review for
+3 months, so I don't think reviews are going to come in.  The prerequisite
+xfsprogs patch is already present on the for-next branch of xfsprogs.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/17b9e388c619ea4f1eae97833cdcadfbfe041650
+Thanks!
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+- Eric
 
