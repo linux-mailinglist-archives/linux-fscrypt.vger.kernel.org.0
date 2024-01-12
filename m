@@ -1,32 +1,32 @@
-Return-Path: <linux-fscrypt+bounces-113-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-114-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE68382B984
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 12 Jan 2024 03:29:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E8AB482B989
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 12 Jan 2024 03:30:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 403D81F24BAF
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 12 Jan 2024 02:29:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 37A2F1F24D70
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 12 Jan 2024 02:30:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 551C64A21;
-	Fri, 12 Jan 2024 02:29:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 521BD11C8D;
+	Fri, 12 Jan 2024 02:29:54 +0000 (UTC)
 X-Original-To: linux-fscrypt@vger.kernel.org
 Received: from mail.nsr.re.kr (unknown [210.104.33.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEC1E4A14;
-	Fri, 12 Jan 2024 02:29:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26F8B10783;
+	Fri, 12 Jan 2024 02:29:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nsr.re.kr
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nsr.re.kr
 Received: from 210.104.33.70 (nsr.re.kr)
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128 bits))
-	by mail.nsr.re.kr with SMTP; Fri, 12 Jan 2024 11:29:09 +0900
+	by mail.nsr.re.kr with SMTP; Fri, 12 Jan 2024 11:29:34 +0900
 X-Sender: letrhee@nsr.re.kr
 Received: from 192.168.155.188 ([192.168.155.188])
           by mail.nsr.re.kr (Crinity Message Backbone-7.0.1) with SMTP ID 155;
-          Fri, 12 Jan 2024 11:29:04 +0900 (KST)
+          Fri, 12 Jan 2024 11:29:29 +0900 (KST)
 From: Dongsoo Lee <letrhee@nsr.re.kr>
 To: Herbert Xu <herbert@gondor.apana.org.au>, 
 	"David S. Miller" <davem@davemloft.net>, 
@@ -39,10 +39,12 @@ To: Herbert Xu <herbert@gondor.apana.org.au>,
 Cc: linux-crypto@vger.kernel.org, linux-block@vger.kernel.org, 
 	linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org, 
 	Dongsoo Lee <letrhee@nsr.re.kr>
-Subject: [PATCH v6 RESEND 0/5] crypto: LEA block cipher implementation
-Date: Fri, 12 Jan 2024 02:28:54 +0000
-Message-Id: <20240112022859.2384-1-letrhee@nsr.re.kr>
+Subject: [PATCH v6 RESEND 1/5] crypto: LEA block cipher implementation
+Date: Fri, 12 Jan 2024 02:28:55 +0000
+Message-Id: <20240112022859.2384-2-letrhee@nsr.re.kr>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20240112022859.2384-1-letrhee@nsr.re.kr>
+References: <20240112022859.2384-1-letrhee@nsr.re.kr>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
@@ -52,218 +54,542 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-This submission contains a generic C implementation of the LEA cipher and test vectors for it. It also includes modifications to use the LEA in fscrypt.
+LEA is a 128-bit block cipher developed by South Korea.
 
-The LEA algorithm is a lightweight block cipher that processes data blocks of 128-bits and has three different key lengths, each with a different number of rounds:
+LEA is a Korean national standard (KS X 3246) and included in the
+ISO/IEC 29192-2:2019 standard (Information security - Lightweight
+cryptography - Part 2: Block ciphers).
+
+The LEA algorithm is a symmetric key cipher that processes data blocks
+of 128-bits and has three different key lengths, each with a different
+number of rounds:
 
 - LEA-128: 128-bit key, 24 rounds,
 - LEA-192: 192-bit key, 28 rounds, and
 - LEA-256: 256-bit key, 32 rounds.
 
-The round function of LEA consists of 32-bit ARX (modular Addition, bitwise Rotation, and bitwise XOR) operations. See [2, 5, 7] for details.
+The round function of LEA consists of 32-bit ARX(modular Addition,
+bitwise Rotation, and bitwise XOR) operations.
 
-LEA is a Korean national standard block cipher, described in "KS X 3246"[1] and is also included in the international standard, "ISO/IEC 29192-2:2019 standard"[2].
+- https://seed.kisa.or.kr/kisa/algorithm/EgovLeaInfo.do
 
-It is one of the approved block ciphers for the current Korean Cryptographic Module Validation Program (KCMVP).
-
-At the time of submission, no successful attack on full-round LEA is known. As is typical for iterated block ciphers, reduced-round variants have been attacked. The best published attacks on LEA in the standard attack model (CPA/CCA with unknown key) are boomerang attacks and differential linear attacks. The security margin to the whole rounds ratio is greater than 29% against various existing cryptanalytic techniques for block ciphers. [3]
-
-We expect that the first application of the patch would be the disk encryption on the Gooroom platform ('Gooroom' is a Korean word, meaning 'cloud') [4]. The Gooroom platform is a government-driven Debian-based Linux distribution in South Korea. In Korea, there are many crypto companies that want to bundle Linux into their products and sell them. They create their own Gooroom platforms by modifying the original Gooroom platform for their services. (Of course, the Gooroom platform is not mandatory, and companies wishing to use Linux are free to choose an appropriate distribution.) BTW, in Korea, many crypto companies want to use LEA, because LEA is one of the block ciphers of the KCMVP, a validation program for commercial crypto S/W to be delivered to the Korean government.
-
-Currently, the Gooroom platform uses AES-XTS for disk encryption. The main reason for submitting this patch is to make disk encryption with LEA (e.g. LEA-XTS) available on there. If this submission is accepted, LEA can be used without any additional modifications in dm-crypt, a module that provides disk encryption functionality within the kernel.
-
-This patch also includes a modification to enable LEA for use in fscrypt, another data-at-rest encryption method available within the kernel, and a modification to blk-crypto-fallback to enable the "inlinecrypt" mount option in fscrypt.
-
-The Linux Crypto API already has another Korean block cipher, ARIA, also one of the block ciphers of the KCVMP. However, LEA is more widely used than ARIA in industry nowadays, because LEA is one of the lightweight cryptography standard of ISO/IEC [2] and performs well on low-end devices that support 32-bit operations. So we think they are complementary to each other.
-
-In general, it's obvious that the hardware-accelerated AES is the best performer. However, there exist not only environments where the hardware-accelerated AES is not supported, but also situations where AES is not preferred for various reasons. In these cases, if someone wants to encrypt using a block cipher, LEA could be an alternative.
-
-This submission includes a SIMD implementation for the x86-64 platform. The LEA cipher consists of 32-bit integer addition, rotation, and XOR operations, allowing for 4 blocks (XMM), 8 blocks (YMM), and 16 blocks (ZMM) of parallelism depending on the size of the registers. In addition, AVX2 and AVX-512F have more instructions to increase parallel encryption performance, which can be implemented differently even though they use the same registers. Therefore, lea-x86_64 selects the appropriate implementation in one glue code at module initialization. If additional SIMD instructions are added in the future, such as AVX10, this can be handled as well.
-
-Below are the speedtest performed with the tcrypt module for AES, LEA, ARIA, and Adiantum on three different platforms (AMD Ryzen 9 5950X, Intel(R) Core(TM) i5-12600K, and Intel(R) Xeon(R) Gold 6254).
-
-(4,096-byte block enc/decryption results in the tcrypt speedtest. Unit: cycles)
-
-- AMD Ryzen 9 5950X (Virtual Machine)
-  - aesni        ecb 128-bit key:  1,956 /   1,892
-  - aesni        ecb 256-bit key:  2,086 /   2,098
-  - lea-x86_64   ecb 128-bit key:  5,647 /   6,133
-  - lea-x86_64   ecb 256-bit key:  6,702 /   7,444
-  - aria-avx2    ecb 128-bit key:  8,316 /   8,153
-  - aria-avx2    ecb 256-bit key: 10,539 /  10,550
-
-  - aesni        cbc 128-bit key:  7,758 /   1,830
-  - aesni        cbc 256-bit key: 10,660 /   2,071
-  - lea-x86_64   cbc 128-bit key: 22,501 /   6,283
-  - lea-x86_64   cbc 256-bit key: 28,125 /   7,592
-
-  - aesni        ctr 128-bit key:  1,514 /   1,505
-  - aesni        ctr 256-bit key:  1,884 /   1,867
-  - lea-x86_64   ctr 128-bit key:  5,804 /   5,792
-  - lea-x86_64   ctr 256-bit key:  6,958 /   6,951
-  - aria-avx2    ctr 128-bit key:  8,819 /   8,736
-  - aria-avx2    ctr 256-bit key: 11,101 /  10,636
-
-  - adiantum(xchacha12-simd,...):  8,390 /   8,427
-  - adiantum(xchacha20-simd,...):  9,698 /   9,732
-
-  - aesni        xts 256-bit key:  2,177 /   2,165
-  - aesni        xts 512-bit key:  2,589 /   2,527
-  - lea-x86_64   xts 256-bit key:  6,488 /   6,745
-  - lea-x86_64   xts 512-bit key:  7,484 /   8,083
-
-  - aes-generic  ecb 128-bit key: 35,768 /  36,329
-  - aes-generic  ecb 256-bit key: 35,785 /  35,237
-  - lea-generic  ecb 128-bit key: 30,719 /  38,092
-  - lea-generic  ecb 256-bit key: 35,373 /  46,941
-  - aria-generic ecb 128-bit key:186,660 / 188,674
-  - aria-generic ecb 256-bit key:247,919 / 245,527
-
-- Intel(R) Core(TM) i5-12600K (microcode 0x15, AVX-512F Enabled)
-  - aesni        ecb 128-bit key:  1,436 /   1,441
-  - aesni        ecb 256-bit key:  1,984 /   1,987
-  - lea-x86_64   ecb 128-bit key:  5,318 /   5,916
-  - lea-x86_64   ecb 256-bit key:  6,209 /   7,071
-  - aria-avx512  ecb 128-bit key:  4,786 /   4,799
-  - aria-avx512  ecb 256-bit key:  5,988 /   5,989
-
-  - aesni        cbc 128-bit key:  8,741 /   1,467
-  - aesni        cbc 256-bit key: 11,803 /   1,995
-  - lea-x86_64   cbc 128-bit key: 31,070 /   6,063
-  - lea-x86_64   cbc 256-bit key: 39,117 /   7,173
-
-  - aesni        ctr 128-bit key:  2,120 /   2,112
-  - aesni        ctr 256-bit key:  2,588 /   2,595
-  - lea-x86_64   ctr 128-bit key:  4,438 /   4,397
-  - lea-x86_64   ctr 256-bit key:  5,217 /   5,196
-  - aria-avx512  ctr 128-bit key:  6,270 /   6,272
-  - aria-avx512  ctr 256-bit key:  7,469 /   7,473
-
-  - adiantum(xchacha12-simd,...):  7,526 /   7,453
-  - adiantum(xchacha20-simd,...):  8,983 /   8,892
-
-  - aesni        xts 256-bit key:  2,234 /   2,241
-  - aesni        xts 512-bit key:  2,525 /   2,538
-  - lea-x86_64   xts 256-bit key:  6,687 /   7,333
-  - lea-x86_64   xts 512-bit key:  7,626 /   8,457
-
-  - aes-generic  ecb 128-bit key: 34,399 /  34,765
-  - aes-generic  ecb 256-bit key: 48,568 /  49,245
-  - lea-generic  ecb 128-bit key: 23,576 /  36,230
-  - lea-generic  ecb 256-bit key: 31,715 /  50,461
-  - aria-generic ecb 128-bit key:108,227 / 108,135
-  - aria-generic ecb 256-bit key:146,669 / 145,993
-
-- Intel(R) Xeon(R) Gold 6254 (Virtual Machine)
-  - aesni        ecb 128-bit key:  3,390 /   3,396
-  - aesni        ecb 256-bit key:  4,533 /   4,549
-  - lea-x86_64   ecb 128-bit key:  5,500 /   6,594
-  - lea-x86_64   ecb 256-bit key:  6,506 /   7,467
-  - aria-avx2    ecb 128-bit key: 14,109 /  13,573
-  - aria-avx2    ecb 256-bit key: 17,605 /  16,955
-
-  - aesni        cbc 128-bit key: 12,559 /   3,544
-  - aesni        cbc 256-bit key: 17,150 /   4,681
-  - lea-x86_64   cbc 128-bit key: 33,471 /   5,900
-  - lea-x86_64   cbc 256-bit key: 41,024 /   6,948
-
-  - aesni        ctr 128-bit key:  3,099 /   3,095
-  - aesni        ctr 256-bit key:  4,126 /   4,124
-  - lea-x86_64   ctr 128-bit key:  5,054 /   4,909
-  - lea-x86_64   ctr 256-bit key:  5,795 /   5,797
-  - aria-avx2    ctr 128-bit key: 13,439 /  13,017
-  - aria-avx2    ctr 256-bit key: 17,325 /  16,731
-
-  - adiantum(xchacha12-simd,...):  9,064 /   9,006
-  - adiantum(xchacha20-simd,...): 10,702 /  10,628
-
-  - aesni        xts 256-bit key:  3,886 /   3,857
-  - aesni        xts 512-bit key:  4,949 /   5,008
-  - lea-x86_64   xts 256-bit key:  6,457 /   7,409
-  - lea-x86_64   xts 512-bit key:  7,438 /   8,510
-
-  - aes-generic  ecb 128-bit key: 49,438 /  48,803
-  - aes-generic  ecb 256-bit key: 72,348 /  73,804
-  - lea-generic  ecb 128-bit key: 30,300 /  45,072
-  - lea-generic  ecb 256-bit key: 39,054 /  60,472
-  - aria-generic ecb 128-bit key:189,850 / 175,073
-  - aria-generic ecb 256-bit key:243,704 / 228,347
-
-If this submission is accepted, future submissions may include an LEA implementation for aarch64 and an implementation with masks for AVX-512F.
-
-Although the designers of LEA did not provide test vectors in their paper [5], the ISO/IEC standard [2] and the KS standard [1] do. Furthermore, the Block Cipher LEA Specification("블록암호 LEA 규격서", written in Korean) document on the LEA introduction page [6] and the Wikipedia article on LEA [7] show the same test vectors as in the standards.
-
-The test vectors for ECB, CBC, CTR, and GCM modes included in the testmgr module are taken from the KCMVP Cryptographic Algorithm Verification Criteria V3.0("KCMVP 검증대상 암호알고리즘 검증기준 V3.0", written in Korean) [8]. Test vectors for the XTS mode were generated by ourselves, and we crosschecked them using Crypto++ [9] and testmgr on Linux.
-
-The implementation was tested with kernel module tcrypt.ko and passed the selftest using the above-mentioned test vectors. It also has been tested with CONFIG_CRYPTO_MANAGER_EXTRA_TESTS. The fscrypt patch was tested using a modified tool by forking https://github.com/google/fscrypt.
-
-The AVX2 and AVX-512F implementations were tested on the device that performed the speedtest, while the SSE2 implementation was tested using QEMU's x86-64 binary emulation.
-
-[1] KS X 3246, 128-bit block cipher LEA.
-[2] ISO/IEC 29192-2:2019, Information security — Lightweight cryptography — Part 2: Block ciphers.
-[3] Yi, Chen, et al. "Differential-Linear Approximation Semi-Unconstrained Searching and Partition Tree: Application to LEA and Speck", Asiacrypt 2023. (eprint 2023/1414)
-[4] https://github.com/gooroom https://www.gooroom.kr/
-[5] Hong, Deukjo, et al. "LEA: A 128-bit block cipher for fast encryption on common processors.", WISA 2013.
-[6] https://seed.kisa.or.kr/kisa/algorithm/EgovLeaInfo.do
-[7] https://en.wikipedia.org/wiki/LEA_(cipher)
-[8] https://seed.kisa.or.kr/kisa/kcmvp/EgovVerification.do
-[9] https://www.cryptopp.com/
-
-Changelog:
-v6:
-- Resended due to missing subsystem and incorrect title
-  - The patch is unchanged from v5.
-v5:
-- Added SSE2/AVX2/AVX-512F implementation
-  - Single glue code to determine proper SIMD acceleration
-- Adjusted ordering within structures to align with 16-byte boundaries.
-- Added more test vectors.
-  - Increased the maximum test-vector length to evaluate 16-block parallelism.
-  - Added the CBC-CTS test vector.
-v4:
-- Removed documentation to describe LEAs in fscrypt.
-v3:
-- Added implementations to enable LEA in fscrypt and blk-crypt.
-v2:
-- Reimplemented the Generic C implementation as a Loop version.
-  - The decryption code was adapted from an optimized implementation by Eric Biggers.
-    https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git/commit/?h=old/wip-lea&id=1d1cbba14380f8a1abc76baf939b9e51de047fb6
-- Removed AVX2 SIMD implementation.
-- Added comments for functions.
-- Improved the description in Kconfig.
-- Added test vectors from the standard documentation.
-
-Dongsoo Lee (5):
-  crypto: LEA block cipher implementation
-  crypto: add LEA testmgr tests
-  blk-crypto: Add LEA-256-XTS blk-crypto support
-  fscrypt: Add LEA-256-XTS, LEA-256-CTS support
-  crypto: LEA block cipher x86_64 optimization
-
- arch/x86/crypto/Kconfig            |   29 +
- arch/x86/crypto/Makefile           |    3 +
- arch/x86/crypto/lea-x86_64-asm.S   | 2272 +++++++++++++++++++++
- arch/x86/crypto/lea-x86_64-glue.c  |  820 ++++++++
- block/blk-crypto.c                 |    6 +
- crypto/Kconfig                     |   18 +
- crypto/Makefile                    |    1 +
- crypto/lea_generic.c               |  410 ++++
- crypto/tcrypt.c                    |   97 +
- crypto/testmgr.c                   |   38 +
- crypto/testmgr.h                   | 3022 ++++++++++++++++++++++++++++
- fs/crypto/fscrypt_private.h        |    2 +-
- fs/crypto/keysetup.c               |   15 +
- fs/crypto/policy.c                 |    4 +
- include/crypto/lea.h               |   44 +
- include/linux/blk-crypto.h         |    1 +
- include/uapi/linux/fscrypt.h       |    4 +-
- tools/include/uapi/linux/fscrypt.h |    4 +-
- 18 files changed, 6787 insertions(+), 3 deletions(-)
- create mode 100644 arch/x86/crypto/lea-x86_64-asm.S
- create mode 100644 arch/x86/crypto/lea-x86_64-glue.c
+Signed-off-by: Dongsoo Lee <letrhee@nsr.re.kr>
+---
+ crypto/Kconfig       |  18 ++
+ crypto/Makefile      |   1 +
+ crypto/lea_generic.c | 410 +++++++++++++++++++++++++++++++++++++++++++
+ include/crypto/lea.h |  44 +++++
+ 4 files changed, 473 insertions(+)
  create mode 100644 crypto/lea_generic.c
  create mode 100644 include/crypto/lea.h
 
+diff --git a/crypto/Kconfig b/crypto/Kconfig
+index 70661f58ee41..83649a03baf7 100644
+--- a/crypto/Kconfig
++++ b/crypto/Kconfig
+@@ -494,6 +494,24 @@ config CRYPTO_KHAZAD
+ 	  See https://web.archive.org/web/20171011071731/http://www.larc.usp.br/~pbarreto/KhazadPage.html
+ 	  for further information.
+ 
++config CRYPTO_LEA
++	tristate "LEA"
++	select CRYPTO_ALGAPI
++	help
++	  LEA is a 128-bit lightweight block cipher developed by South Korea.
++
++	  LEA is the a Korean standard (KS X 3246) and is included in the
++	  ISO/IEC 29192-2:2019 standard (Information security - Lightweight
++	  cryptography - Part 2: Block ciphers).
++
++	  It consists of 32-bit integer addition, rotation, and XOR, which can
++	  be performed effectively on CPUs that support 32-bit operations.
++
++	  It supports 128-bit, 192-bit, and 256-bit keys.
++
++	  See:
++	  https://seed.kisa.or.kr/kisa/algorithm/EgovLeaInfo.do
++
+ config CRYPTO_SEED
+ 	tristate "SEED"
+ 	depends on CRYPTO_USER_API_ENABLE_OBSOLETE
+diff --git a/crypto/Makefile b/crypto/Makefile
+index 5ac6876f935a..6b6ab104ec82 100644
+--- a/crypto/Makefile
++++ b/crypto/Makefile
+@@ -154,6 +154,7 @@ obj-$(CONFIG_CRYPTO_KHAZAD) += khazad.o
+ obj-$(CONFIG_CRYPTO_ANUBIS) += anubis.o
+ obj-$(CONFIG_CRYPTO_SEED) += seed.o
+ obj-$(CONFIG_CRYPTO_ARIA) += aria_generic.o
++obj-$(CONFIG_CRYPTO_LEA) += lea_generic.o
+ obj-$(CONFIG_CRYPTO_CHACHA20) += chacha_generic.o
+ obj-$(CONFIG_CRYPTO_POLY1305) += poly1305_generic.o
+ obj-$(CONFIG_CRYPTO_DEFLATE) += deflate.o
+diff --git a/crypto/lea_generic.c b/crypto/lea_generic.c
+new file mode 100644
+index 000000000000..792db01a39e0
+--- /dev/null
++++ b/crypto/lea_generic.c
+@@ -0,0 +1,410 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Cryptographic API.
++ *
++ * The LEA Cipher Algorithm
++ *
++ * LEA is a 128-bit block cipher developed by South Korea.
++ *
++ * LEA is a Korean national standard (KS X 3246) and included in the ISO/IEC
++ * 29192-2:2019 standard (Information security - Lightweight cryptography -
++ * Part 2: Block ciphers).
++ *
++ * Copyright (c) 2023 National Security Research.
++ * Author: Dongsoo Lee <letrhee@nsr.re.kr>
++ */
++
++#include <asm/unaligned.h>
++#include <linux/module.h>
++#include <crypto/algapi.h>
++#include <crypto/lea.h>
++
++/*
++ * The eight 32-bit constant values δ[8] are used in the key schedule algorithm.
++ * They are the first 256-bits of the fractional part of
++ * sqrt(766965) = sqrt("LEA")
++ * The actual constant is additionally left-rotated from δ, which is to make the
++ * key schedule more compact.
++ * This constant can be calculated in Python as follows:
++ *
++ * from decimal import *
++ * rotl32 = lambda v, i: ((v << i) ^ (v >> (32 - i))) & 0xffffffff
++ * getcontext().prec = 87 # >= 32 * (8 + 1) / math.log(10, 2)
++ *
++ * LEA_ord = int(''.join([str(ord(ch)) for ch in "LEA"])) #766965
++ * sqrt_seq = Decimal(LEA_ord).sqrt()
++ *
++ * for i in range(8):
++ *   sqrt_seq = (sqrt_seq % 1) * (2 ** 32)
++ *   delta = int(sqrt_seq) #δ[i]
++ *   lea_const = rotl32(delta, i) #actual constant
++ *   print(hex(lea_const))
++ */
++static const u32 lea_constants[8] = {
++	0xc3efe9db, 0x88c4d604, 0xe789f229, 0xc6f98763,
++	0x15ea49e7, 0xf0bb4158, 0x13bc8ab8, 0xe204abf2,
++};
++
++#define LEA_SET_RK1(V, CV, ROT1, ROT2) (V = rol32(V + rol32(CV, ROT1), ROT2))
++
++#define LEA_SET_RK6(V0, V1, V2, V3, V4, V5, CV_ARR, ROT0, CV_IDX) \
++	do {                                                      \
++		const u32 CV_I = CV_ARR[CV_IDX];                  \
++		CV_ARR[CV_IDX] = rol32(CV_I, ROT0);               \
++		LEA_SET_RK1(V0, CV_I, 0, 1);                      \
++		LEA_SET_RK1(V1, CV_I, 1, 3);                      \
++		LEA_SET_RK1(V2, CV_I, 2, 6);                      \
++		LEA_SET_RK1(V3, CV_I, 3, 11);                     \
++		LEA_SET_RK1(V4, CV_I, 4, 13);                     \
++		LEA_SET_RK1(V5, CV_I, 5, 17);                     \
++	} while (0)
++
++#define STORE_RND_KEY6(RK, V0, V1, V2, V3, V4, V5, WAY) \
++	do {                                            \
++		RK[0] = V0;                             \
++		RK[1] = V1;                             \
++		RK[2] = V2;                             \
++		RK[3] = V3;                             \
++		RK[4] = V4;                             \
++		RK[5] = V5;                             \
++		RK += WAY * LEA_ROUND_KEY_WIDTH;        \
++	} while (0)
++
++/**
++ * LEA-128 can encrypt with four 32-bit integers as a round key. But in order to
++ * incorporate it with the encryption function for LEA-192 and LEA-256, one
++ * round key consists of six 32-bit integers.
++ */
++static void lea128_set_key(struct crypto_lea_ctx *key, const u8 *in_key)
++{
++	u32 x0 = get_unaligned_le32(&in_key[4 * 0]);
++	u32 x1 = get_unaligned_le32(&in_key[4 * 1]);
++	u32 x2 = get_unaligned_le32(&in_key[4 * 2]);
++	u32 x4 = get_unaligned_le32(&in_key[4 * 3]);
++
++	u32 *rk_enc = key->rk_enc;
++	u32 *rk_dec =
++		key->rk_dec + (LEA128_ROUND_CNT - 1) * LEA_ROUND_KEY_WIDTH;
++	u32 cv[4];
++	u32 rnd;
++
++	memcpy(cv, lea_constants, sizeof(cv));
++	key->round = LEA128_ROUND_CNT;
++
++	for (rnd = 0; rnd < LEA128_ROUND_CNT; ++rnd) {
++		const u32 offset = rnd % 4;
++		const u32 cv_i = cv[offset];
++
++		cv[offset] = rol32(cv_i, 4);
++		LEA_SET_RK1(x0, cv_i, 0, 1);
++		LEA_SET_RK1(x1, cv_i, 1, 3);
++		LEA_SET_RK1(x2, cv_i, 2, 6);
++		LEA_SET_RK1(x4, cv_i, 3, 11);
++
++		STORE_RND_KEY6(rk_enc, x0, x1, x2, x1, x4, x1, 1);
++		STORE_RND_KEY6(rk_dec, x0, x1, x2 ^ x1, x1, x4 ^ x1, x1, -1);
++	}
++}
++
++/**
++ * The key schedule for LEA-192 can be represented as follows,
++ * regarding the round key as an array of 32-bit integers.
++ *
++ * T[0:6] = K[0:6]
++ * for i in range(28):
++ *   T[0] = rotl32(T[0] + rotl32(delta[i % 6], i + 0), 1)
++ *   T[1] = rotl32(T[1] + rotl32(delta[i % 6], i + 1), 3)
++ *   T[2] = rotl32(T[2] + rotl32(delta[i % 6], i + 2), 6)
++ *   T[3] = rotl32(T[3] + rotl32(delta[i % 6], i + 3), 11)
++ *   T[4] = rotl32(T[4] + rotl32(delta[i % 6], i + 4), 13)
++ *   T[5] = rotl32(T[5] + rotl32(delta[i % 6], i + 5), 17)
++ *   RK[i*6:(i+1)*6] = T
++ *
++ * The key schedules of the LEA-128 and LEA-256 can be understood as variations
++ * of this calculation.
++ * The constants have already been left-rotated, so rotl32 of delta is
++ * simplified in each iteration.
++ */
++static void lea192_set_key(struct crypto_lea_ctx *key, const u8 *in_key)
++{
++	u32 x0 = get_unaligned_le32(&in_key[4 * 0]);
++	u32 x1 = get_unaligned_le32(&in_key[4 * 1]);
++	u32 x2 = get_unaligned_le32(&in_key[4 * 2]);
++	u32 x3 = get_unaligned_le32(&in_key[4 * 3]);
++	u32 x4 = get_unaligned_le32(&in_key[4 * 4]);
++	u32 x5 = get_unaligned_le32(&in_key[4 * 5]);
++
++	u32 *rk_enc = key->rk_enc;
++	u32 *rk_dec =
++		key->rk_dec + (LEA192_ROUND_CNT - 1) * LEA_ROUND_KEY_WIDTH;
++	u32 cv[6];
++	u32 rnd;
++
++	memcpy(cv, lea_constants, sizeof(cv));
++	key->round = LEA192_ROUND_CNT;
++
++	for (rnd = 0; rnd < LEA192_ROUND_CNT; ++rnd) {
++		const u32 offset = rnd % 6;
++
++		LEA_SET_RK6(x0, x1, x2, x3, x4, x5, cv, 6, offset);
++		STORE_RND_KEY6(rk_enc, x0, x1, x2, x3, x4, x5, 1);
++		STORE_RND_KEY6(rk_dec, x0, x1, x2 ^ x1, x3, x4 ^ x3, x5, -1);
++	}
++}
++
++/**
++ * In the LEA-256, the encryption key is eight 32-bit integers, which does not
++ * match LEA's round key width of 6. Therefore, partial loop unrolling is used
++ * to compute 4 round keys per loop.
++ */
++static void lea256_set_key(struct crypto_lea_ctx *key, const u8 *in_key)
++{
++	u32 x0 = get_unaligned_le32(&in_key[4 * 0]);
++	u32 x1 = get_unaligned_le32(&in_key[4 * 1]);
++	u32 x2 = get_unaligned_le32(&in_key[4 * 2]);
++	u32 x3 = get_unaligned_le32(&in_key[4 * 3]);
++	u32 x4 = get_unaligned_le32(&in_key[4 * 4]);
++	u32 x5 = get_unaligned_le32(&in_key[4 * 5]);
++	u32 x6 = get_unaligned_le32(&in_key[4 * 6]);
++	u32 x7 = get_unaligned_le32(&in_key[4 * 7]);
++
++	u32 *rk_enc = key->rk_enc;
++	u32 *rk_dec =
++		key->rk_dec + (LEA256_ROUND_CNT - 1) * LEA_ROUND_KEY_WIDTH;
++	u32 cv[8];
++	u32 rnd;
++
++	memcpy(cv, lea_constants, sizeof(cv));
++	key->round = LEA256_ROUND_CNT;
++
++	for (rnd = 0; rnd < LEA256_ROUND_CNT; rnd += 4) {
++		u32 offset = rnd % 8;
++
++		LEA_SET_RK6(x0, x1, x2, x3, x4, x5, cv, 8, offset);
++		STORE_RND_KEY6(rk_enc, x0, x1, x2, x3, x4, x5, 1);
++		STORE_RND_KEY6(rk_dec, x0, x1, x2 ^ x1, x3, x4 ^ x3, x5, -1);
++
++		++offset;
++		LEA_SET_RK6(x6, x7, x0, x1, x2, x3, cv, 8, offset);
++		STORE_RND_KEY6(rk_enc, x6, x7, x0, x1, x2, x3, 1);
++		STORE_RND_KEY6(rk_dec, x6, x7, x0 ^ x7, x1, x2 ^ x1, x3, -1);
++
++		++offset;
++		LEA_SET_RK6(x4, x5, x6, x7, x0, x1, cv, 8, offset);
++		STORE_RND_KEY6(rk_enc, x4, x5, x6, x7, x0, x1, 1);
++		STORE_RND_KEY6(rk_dec, x4, x5, x6 ^ x5, x7, x0 ^ x7, x1, -1);
++
++		++offset;
++		LEA_SET_RK6(x2, x3, x4, x5, x6, x7, cv, 8, offset);
++		STORE_RND_KEY6(rk_enc, x2, x3, x4, x5, x6, x7, 1);
++		STORE_RND_KEY6(rk_dec, x2, x3, x4 ^ x3, x5, x6 ^ x5, x7, -1);
++	}
++}
++
++int lea_set_key(struct crypto_lea_ctx *key, const u8 *in_key, u32 key_len)
++{
++	switch (key_len) {
++	case 16:
++		lea128_set_key(key, in_key);
++		return 0;
++	case 24:
++		lea192_set_key(key, in_key);
++		return 0;
++	case 32:
++		lea256_set_key(key, in_key);
++		return 0;
++	}
++
++	return -EINVAL;
++}
++EXPORT_SYMBOL_GPL(lea_set_key);
++
++/**
++ * The encryption round function can be represented as follows
++ *
++ * next_v3 = v0
++ * next_v2 = rotr32((v2 ^ RK[4]) + (v3 ^ RK[5]), 3);
++ * next_v1 = rotr32((v1 ^ RK[2]) + (v2 ^ RK[3]), 5);
++ * next_v0 = rotl32((v0 ^ RK[0]) + (v1 ^ RK[1]), 9);
++ *
++ * It is possible to avoid shuffling by partial unrolling, which unrolls 4
++ * rounds in a loop.
++ */
++#define LEA_ENC_RND(V0, V1, V2, V3, RK)                     \
++	do {                                                \
++		V3 = ror32((V2 ^ RK[4]) + (V3 ^ RK[5]), 3); \
++		V2 = ror32((V1 ^ RK[2]) + (V2 ^ RK[3]), 5); \
++		V1 = rol32((V0 ^ RK[0]) + (V1 ^ RK[1]), 9); \
++		RK += LEA_ROUND_KEY_WIDTH;                  \
++	} while (0)
++
++void lea_encrypt(const struct crypto_lea_ctx *key, u8 *out, const u8 *in)
++{
++	u32 x0 = get_unaligned_le32(&in[4 * 0]);
++	u32 x1 = get_unaligned_le32(&in[4 * 1]);
++	u32 x2 = get_unaligned_le32(&in[4 * 2]);
++	u32 x3 = get_unaligned_le32(&in[4 * 3]);
++
++	const u32 *rk = key->rk_enc;
++	const u32 *rk_tail = rk + LEA_ROUND_KEY_WIDTH * key->round;
++
++	while (rk < rk_tail) {
++		LEA_ENC_RND(x0, x1, x2, x3, rk);
++		LEA_ENC_RND(x1, x2, x3, x0, rk);
++		LEA_ENC_RND(x2, x3, x0, x1, rk);
++		LEA_ENC_RND(x3, x0, x1, x2, rk);
++	}
++
++	put_unaligned_le32(x0, &out[4 * 0]);
++	put_unaligned_le32(x1, &out[4 * 1]);
++	put_unaligned_le32(x2, &out[4 * 2]);
++	put_unaligned_le32(x3, &out[4 * 3]);
++}
++EXPORT_SYMBOL_GPL(lea_encrypt);
++
++/**
++ * The decryption round function for LEA is the inverse of encryption,
++ * so it can be represented as follows
++ *
++ * next_v0 = v3
++ * next_v1 = (rotr32(v0, 9) - (next_v0 ^ RK[0])) ^ RK[1];
++ * next_v2 = (rotl32(v1, 5) - (next_v1 ^ RK[2])) ^ RK[3];
++ * next_v3 = (rotl32(v2, 3) - (next_v2 ^ RK[4])) ^ RK[5];
++ *
++ * However, in the above expression, all previous steps must be computed to
++ * calculate next_v3.
++ * If the process is unpacked, the computation would look like this
++ *
++ * next_v0 = v3
++ * next_v1 = (rotr32(v0, 9) - (v3 ^ RK[0])) ^ RK[1];
++ * next_v2 = (rotl32(v1, 5) - ((rotr32(v0, 9) - (v3 ^ RK[0])) ^ RK[1] ^ RK[2]))
++ *           ^ RK[3];
++ * next_v3 = (rotl32(v2, 3) - ((rotl32(v1, 5)
++ *           - ((rotr32(v0, 9) - (v3 ^ RK[0])) ^ RK[1] ^ RK[2]))
++ *           ^ RK[3] ^ RK[4])) ^ RK[5];
++ *
++ * Letting (rotr32(v0, 9) - (v3 ^ RK[0])) be the intermediate value,
++ * it would look like
++ *
++ * next_v0 = v3
++ * tmp_v1  = (rotr32(v0, 9) - (v3 ^ RK[0]))
++ * next_v1 = tmp_v1 ^ RK[1];
++ * next_v2 = (rotl32(v1, 5) - (tmp_v1 ^ RK[1] ^ RK[2])) ^ RK[3];
++ * next_v3 = (rotl32(v2, 3) - ((rotl32(V1, 5) - (tmp_v1 ^ RK[1] ^ RK[2]))
++ *           ^ RK[3] ^ RK[4])) ^ RK[5];
++ *
++ * Similarly, letting (rotl32(v1, 5) - (tmp_v1 ^ RK[1] ^ RK[2])) be the
++ * intermediate value, it would look like this
++ *
++ * next_v0 = v3
++ * tmp_v1  = (rotr32(v0, 9) - (v3 ^ RK[0]))
++ * next_v1 = tmp_v1 ^ RK[1];
++ * tmp_v2  = (rotl32(v1, 5) - (tmp_v1 ^ RK[1] ^ RK[2]))
++ * next_v2 = tmp_v2 ^ RK[3];
++ * next_v3 = (rotl32(v2, 3) - (tmp_v2 ^ RK[3] ^ RK[4])) ^ RK[5];
++ *
++ * To reduce the operation of XORing RK twice to once, try using
++ * RKdec[0] = RK[0], RKdec[1] = RK[1], RKdec[2] = RK[1] ^ RK[2]
++ * RKdec[3] = RK[3], RKdec[4] = RK[3] ^ RK[4], RKdec[5] = RK[5]
++ *
++ * then the code can be rewritten as follows
++ *
++ * next_v0 = v3
++ * tmp_v1  = (rotr32(v0, 9) - (v3 ^ RKdec[0]));
++ * next_v1 = tmp_v1 ^ RKdec[1];
++ * tmp_v2  = (rotl32(v1, 5) - (tmp_v1 ^ RKdec[2]);
++ * next_v2 = tmp_v2 ^ RKdec[3];
++ * next_v3 = (rotl32(v2, 3) - (tmp_v2 ^ RKdec[4]) ^ RKdec[5];
++ *
++ * There is no difference in the number of operations, but there is two less
++ * data-dependent step, some operations can be performed simultaneously in the
++ * out-of-order processor.
++ */
++#define LEA_DEC_RND(V0, V1, V2, V3, TMP, RK)                 \
++	do {                                                 \
++		TMP = (ror32(V0, 9) - (V3 ^ RK[0]));         \
++		V0 = TMP ^ RK[1];                            \
++		TMP = (rol32(V1, 5) - (TMP ^ RK[2]));        \
++		V1 = TMP ^ RK[3];                            \
++		V2 = (rol32(V2, 3) - (TMP ^ RK[4])) ^ RK[5]; \
++		RK += LEA_ROUND_KEY_WIDTH;                   \
++	} while (0)
++
++void lea_decrypt(const struct crypto_lea_ctx *key, u8 *out, const u8 *in)
++{
++	const u32 *rk = key->rk_dec;
++	const u32 *rk_tail = rk + LEA_ROUND_KEY_WIDTH * key->round;
++
++	u32 x0 = get_unaligned_le32(&in[4 * 0]);
++	u32 x1 = get_unaligned_le32(&in[4 * 1]);
++	u32 x2 = get_unaligned_le32(&in[4 * 2]);
++	u32 x3 = get_unaligned_le32(&in[4 * 3]);
++	u32 tmp;
++
++	while (rk < rk_tail) {
++		LEA_DEC_RND(x0, x1, x2, x3, tmp, rk);
++		LEA_DEC_RND(x3, x0, x1, x2, tmp, rk);
++		LEA_DEC_RND(x2, x3, x0, x1, tmp, rk);
++		LEA_DEC_RND(x1, x2, x3, x0, tmp, rk);
++	};
++
++	put_unaligned_le32(x0, &out[4 * 0]);
++	put_unaligned_le32(x1, &out[4 * 1]);
++	put_unaligned_le32(x2, &out[4 * 2]);
++	put_unaligned_le32(x3, &out[4 * 3]);
++}
++EXPORT_SYMBOL_GPL(lea_decrypt);
++
++static int crypto_lea_set_key(struct crypto_tfm *tfm, const u8 *in_key,
++			      u32 key_len)
++{
++	return lea_set_key(crypto_tfm_ctx(tfm), in_key, key_len);
++}
++
++static void crypto_lea_encrypt(struct crypto_tfm *tfm, u8 *out, const u8 *in)
++{
++	const struct crypto_lea_ctx *key = crypto_tfm_ctx(tfm);
++
++	lea_encrypt(key, out, in);
++}
++
++static void crypto_lea_decrypt(struct crypto_tfm *tfm, u8 *out, const u8 *in)
++{
++	const struct crypto_lea_ctx *key = crypto_tfm_ctx(tfm);
++
++	lea_decrypt(key, out, in);
++}
++
++static struct crypto_alg lea_alg = {
++	.cra_name = "lea",
++	.cra_driver_name = "lea-generic",
++	.cra_priority = 100,
++	.cra_flags = CRYPTO_ALG_TYPE_CIPHER,
++	.cra_blocksize = LEA_BLOCK_SIZE,
++	.cra_ctxsize = sizeof(struct crypto_lea_ctx),
++	.cra_module = THIS_MODULE,
++	.cra_u = { .cipher = { .cia_min_keysize = LEA_MIN_KEY_SIZE,
++			       .cia_max_keysize = LEA_MAX_KEY_SIZE,
++			       .cia_setkey = crypto_lea_set_key,
++			       .cia_encrypt = crypto_lea_encrypt,
++			       .cia_decrypt = crypto_lea_decrypt } }
++};
++
++static int crypto_lea_init(void)
++{
++	return crypto_register_alg(&lea_alg);
++}
++
++static void crypto_lea_exit(void)
++{
++	crypto_unregister_alg(&lea_alg);
++}
++
++module_init(crypto_lea_init);
++module_exit(crypto_lea_exit);
++
++MODULE_DESCRIPTION("LEA Cipher Algorithm");
++MODULE_AUTHOR("Dongsoo Lee <letrhee@nsr.re.kr>");
++MODULE_LICENSE("GPL");
++MODULE_ALIAS_CRYPTO("lea");
++MODULE_ALIAS_CRYPTO("lea-generic");
+diff --git a/include/crypto/lea.h b/include/crypto/lea.h
+new file mode 100644
+index 000000000000..ce134fa98908
+--- /dev/null
++++ b/include/crypto/lea.h
+@@ -0,0 +1,44 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++/*
++ * Cryptographic API.
++ *
++ * The LEA Cipher Algorithm
++ *
++ * LEA is a 128-bit block cipher developed by South Korea.
++ *
++ * LEA is a Korean national standard (KS X 3246) and included in the ISO/IEC
++ * 29192-2:2019 standard (Information security - Lightweight cryptography -
++ * Part 2: Block ciphers).
++ *
++ * Copyright (c) 2023 National Security Research.
++ * Author: Dongsoo Lee <letrhee@nsr.re.kr>
++ */
++
++#ifndef _CRYPTO_LEA_H
++#define _CRYPTO_LEA_H
++
++#include <linux/types.h>
++
++#define LEA_MIN_KEY_SIZE 16
++#define LEA_MAX_KEY_SIZE 32
++#define LEA_BLOCK_SIZE 16
++#define LEA_ROUND_KEY_WIDTH 6
++
++#define LEA128_ROUND_CNT 24
++#define LEA192_ROUND_CNT 28
++#define LEA256_ROUND_CNT 32
++
++#define LEA_MAX_KEYLENGTH_U32 (LEA256_ROUND_CNT * LEA_ROUND_KEY_WIDTH)
++#define LEA_MAX_KEYLENGTH (LEA_MAX_KEYLENGTH_U32 * sizeof(u32))
++
++struct crypto_lea_ctx {
++	u32 rk_enc[LEA_MAX_KEYLENGTH_U32];
++	u32 rk_dec[LEA_MAX_KEYLENGTH_U32];
++	u32 round;
++};
++
++int lea_set_key(struct crypto_lea_ctx *key, const u8 *in_key, u32 key_len);
++void lea_encrypt(const struct crypto_lea_ctx *key, u8 *out, const u8 *in);
++void lea_decrypt(const struct crypto_lea_ctx *key, u8 *out, const u8 *in);
++
++#endif
 -- 
 2.40.1
 
