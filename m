@@ -1,83 +1,77 @@
-Return-Path: <linux-fscrypt+bounces-127-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-128-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEC9982CA45
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 13 Jan 2024 07:38:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDBEB82CE08
+	for <lists+linux-fscrypt@lfdr.de>; Sat, 13 Jan 2024 18:56:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46B7E283359
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 13 Jan 2024 06:38:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 193F2B220AC
+	for <lists+linux-fscrypt@lfdr.de>; Sat, 13 Jan 2024 17:56:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E7A418046;
-	Sat, 13 Jan 2024 06:38:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 737515672;
+	Sat, 13 Jan 2024 17:56:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q2Nmofdo"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 270E4168BA
-	for <linux-fscrypt@vger.kernel.org>; Sat, 13 Jan 2024 06:38:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7bef5e512b6so333169839f.2
-        for <linux-fscrypt@vger.kernel.org>; Fri, 12 Jan 2024 22:38:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705127884; x=1705732684;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=C/sGOHyENyQ7i0bMTzfDcnKoPl21TmOJ32DC/X68Sl4=;
-        b=GRa6k11lEoiOE/UcmZbGrPTK/xgLJRpUK07dh3u9NLf6Z4UXTmIid/pkck4ZQDS9C9
-         RNvHPJpsym0UhQ+cbMMGKGi3q3y8lwvnP8Ot9K3oalcnMkk/Ot9paBuE9glfaO0RA0Aa
-         HWdKH3FvjEVhoP/mc8F7/JvhMt/NNyid4NRiM+BoisH3xJjxpM45oCL4tjpa6HCh/+7L
-         zQqOIJN8OUW0T+V9FLc0SN1/OJ+0o+WG8GXHYtSPS9k5P5Sp8nnTDqDuetRqWegclGXv
-         sskcvu8TjY+dgH9pPyNjuxdBxSuM6EXY7ZiKjTAB98iLRCcWZWNLfW57qQxtB+No3zMv
-         y26A==
-X-Gm-Message-State: AOJu0YwWeeWDdXrC1Xe/FBEQMHVo7WQU4MQBHUUdXxEVqFtzqxR8UMcM
-	NyTRFo6TUfdM1tQ6ieOlwTabxsYr4lhb3DmN7H06jsOXSGad
-X-Google-Smtp-Source: AGHT+IGNM+FdG1AbyUYcw6kxC9URY0S3T+KJqSYkHLA8+jx0v5cOSRLiGSC4NszsTS++2Ts56IlniAXgBLCjDqqD3qjYpWr6CSAN
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 501B25663;
+	Sat, 13 Jan 2024 17:56:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86EC2C433C7;
+	Sat, 13 Jan 2024 17:56:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705168566;
+	bh=o0ViNHP3TScYhkELwvt+eygKREygV0KbiPNAvWpOviQ=;
+	h=Date:From:To:Cc:Subject:From;
+	b=q2NmofdohcSTZOCOVDonGkIyNmHLoKklk1ors4PoNFjlPxXY1x088uCM2B6W0+Aqd
+	 qkUH2lBLb+iF/I0rrtpZb7Xiuc6pNOR1OOeWqeu6JVFcW3oJ0rZx/gGcbd8OF9OxnC
+	 FWCD8p6w9rCHMRB0TZb34l6v/lDf3YFch6jYPTTw0l8d4UEojN1IFw0A9HEGveuykE
+	 /iWaPuyfcHC8+dDPC0rBdqsiHIzajh+CQ+S1QiUlvPl/jMDQy7NYn3ceHjuR5jlRgf
+	 nMrei7rO+3gM4273h6cMImSuAFS0yRKOIjwi/Q16LRSarHrjryT3Cwgw/xCuAzsziC
+	 0hizZK5hOKlhg==
+Date: Sat, 13 Jan 2024 09:56:04 -0800
+From: Eric Biggers <ebiggers@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-f2fs-devel@lists.sourceforge.net,
+	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+	linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] fscrypt fix for 6.8-rc1
+Message-ID: <20240113175604.GA1409@sol.localdomain>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:130a:b0:46d:1c7:3b12 with SMTP id
- r10-20020a056638130a00b0046d01c73b12mr146543jad.5.1705127884248; Fri, 12 Jan
- 2024 22:38:04 -0800 (PST)
-Date: Fri, 12 Jan 2024 22:38:04 -0800
-In-Reply-To: <0000000000006cb174060ec34502@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d65af9060ece0537@google.com>
-Subject: Re: [syzbot] [f2fs?] KASAN: slab-use-after-free Read in kill_f2fs_super
-From: syzbot <syzbot+8f477ac014ff5b32d81f@syzkaller.appspotmail.com>
-To: chao@kernel.org, ebiggers@google.com, ebiggers@kernel.org, 
-	hdanton@sina.com, jaegeuk@kernel.org, linux-f2fs-devel@lists.sourceforge.net, 
-	linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-syzbot has bisected this issue to:
+The following changes since commit 38814330fedd778edffcabe0c8cb462ee365782e:
 
-commit 275dca4630c165edea9abe27113766bc1173f878
-Author: Eric Biggers <ebiggers@google.com>
-Date:   Wed Dec 27 17:14:28 2023 +0000
+  Merge tag 'devicetree-for-6.8' of git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux (2024-01-12 15:05:30 -0800)
 
-    f2fs: move release of block devices to after kill_block_super()
+are available in the Git repository at:
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16071613e80000
-start commit:   70d201a40823 Merge tag 'f2fs-for-6.8-rc1' of git://git.ker..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=15071613e80000
-console output: https://syzkaller.appspot.com/x/log.txt?x=11071613e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4607bc15d1c4bb90
-dashboard link: https://syzkaller.appspot.com/bug?extid=8f477ac014ff5b32d81f
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=112b660be80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14c1df5de80000
+  https://git.kernel.org/pub/scm/fs/fscrypt/linux.git tags/fscrypt-for-linus
 
-Reported-by: syzbot+8f477ac014ff5b32d81f@syzkaller.appspotmail.com
-Fixes: 275dca4630c1 ("f2fs: move release of block devices to after kill_block_super()")
+for you to fetch changes up to c919330dd57835970b37676d377de3eaaea2c1e9:
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+  f2fs: fix double free of f2fs_sb_info (2024-01-12 18:55:09 -0800)
+
+----------------------------------------------------------------
+
+Fix a bug in my change to how f2fs frees its superblock info (which was
+part of changing the timing of fscrypt keyring destruction).
+
+----------------------------------------------------------------
+Eric Biggers (1):
+      f2fs: fix double free of f2fs_sb_info
+
+ fs/f2fs/super.c | 1 +
+ 1 file changed, 1 insertion(+)
+
 
