@@ -1,43 +1,43 @@
-Return-Path: <linux-fscrypt+bounces-153-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-152-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0A0784302C
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 30 Jan 2024 23:39:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D44FE843011
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 30 Jan 2024 23:39:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E50F81C25104
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 30 Jan 2024 22:39:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 637071F25415
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 30 Jan 2024 22:39:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F254580C16;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFA0A80C0C;
 	Tue, 30 Jan 2024 22:37:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="qUa0pet3"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="HwQz8m51"
 X-Original-To: linux-fscrypt@vger.kernel.org
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEBAF1272C7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DCE07D41F;
 	Tue, 30 Jan 2024 22:37:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706654251; cv=none; b=nVF7avbTvtJRkK/o7iM1i7Jz4gDYEeYXeCsPLPco2S0b4UubKrJAH+NIQyxTHxdjF9+Ney1wWkn7lSu7YAHZv+oWcfCQgb7I2WPMTNzCUwrPbDbR84E0CMJXbuQ5qgsvmOi4zZhGXnizWHMqmUejliIWAXsbIKkwokZSor9wu3w=
+	t=1706654252; cv=none; b=Ivf6IR9oI3nCucxth37WbJ7BTu6Cph4K3M8m3KyCHemtiZ0HIpzdB889+xBJ9aq/pEpsfQF++StpE2q3O8D7+sKXfdP9hOj4msDgBEICq4ZMulvXxKQeDDtobIr+wuLDCKZJat3sy3XJpFT1iskvKSzg72h+GuTx74JtNbkTYoA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706654251; c=relaxed/simple;
-	bh=nvTQAYe6ClKLywYsFl60TChrGrXR4TmMYD5qbQ5OSto=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=e78eIBgEEisia2INo76L58A14gNTWh29b98OTRMz3eaHgUm5l/Mx+5zgk1a5AC0RnbtgHtsnbkF8hZcB40j3TStDwg8AGzVcqzz4VIFo9e2zQl1z3+1XP+Zigj3tv/xvi1HxmCGRRKRGUDDNk4R4hdc9RSo4cQmwTllmNq27nxw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=qUa0pet3; arc=none smtp.client-ip=13.77.154.182
+	s=arc-20240116; t=1706654252; c=relaxed/simple;
+	bh=iT1KE0Ber/6/6xYXhtNC2NRRcYoRPWagE46A+SjtQHw=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=POjdpUt9UF4L1JV0s0cA0IlgYC5HgXW3aFYqmaijr677ifiMxazNiEkplIds5/nRwrkrOwOjLrXxNEnaVCRi2NuoXUOC0uA7/qlJp0aSJ/Y4yBhZBAmRjajzSTb7blWEPyWUxiZgut0fiEv4sKln3j49NeU+oc5hamD4zM966wU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=HwQz8m51; arc=none smtp.client-ip=13.77.154.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
 Received: by linux.microsoft.com (Postfix, from userid 1052)
-	id 5D7D920B200D; Tue, 30 Jan 2024 14:37:22 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5D7D920B200D
+	id 6D84820B200F; Tue, 30 Jan 2024 14:37:22 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 6D84820B200F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
 	s=default; t=1706654242;
-	bh=n1T7fFPVsrxosq+Gy/4MwsLRi5hZV/83J4GqC56xZlM=;
+	bh=8xlQ5oHIkxQXTVT6bg92x3J+LqqlL3QMakxMR27fHWU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qUa0pet3z8lirYCbYybqJSCvQXrdvYOPWEMP/nSvzWZHa5q9zypzx5kfMrFvO4fOw
-	 qBxlhXnLCeuXiFDg331cO71b7nn18sHsBJz9Apu3dOairzUXB7peX3GCYOHKYmByUM
-	 ad6f7MQaCTGwqXMFN4mZ+jm7m/L8zNPtOBYblCk0=
+	b=HwQz8m51c9m17BN2ljZcn6qCciDH3slKmBbvL5mJK8W8tqUOc8LdVHy8GHkqIzLkp
+	 Q2aG7Tjp4OLhLqYIs8599xYbwiLBiIo3oOYzmnPUys0rvWsQHaQ309I0Jwctv+eeZ2
+	 fmGiQGpBi4W1le/8FhSnpJG4GoYdjo28B4vUNdLA=
 From: Fan Wu <wufan@linux.microsoft.com>
 To: corbet@lwn.net,
 	zohar@linux.ibm.com,
@@ -60,9 +60,9 @@ Cc: linux-doc@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Deven Bowers <deven.desai@linux.microsoft.com>,
 	Fan Wu <wufan@linux.microsoft.com>
-Subject: [RFC PATCH v12 08/20] ipe: add userspace interface
-Date: Tue, 30 Jan 2024 14:36:56 -0800
-Message-Id: <1706654228-17180-9-git-send-email-wufan@linux.microsoft.com>
+Subject: [RFC PATCH v12 09/20] uapi|audit|ipe: add ipe auditing support
+Date: Tue, 30 Jan 2024 14:36:57 -0800
+Message-Id: <1706654228-17180-10-git-send-email-wufan@linux.microsoft.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1706654228-17180-1-git-send-email-wufan@linux.microsoft.com>
 References: <1706654228-17180-1-git-send-email-wufan@linux.microsoft.com>
@@ -74,10 +74,117 @@ List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 
 From: Deven Bowers <deven.desai@linux.microsoft.com>
 
-As is typical with LSMs, IPE uses securityfs as its interface with
-userspace. for a complete list of the interfaces and the respective
-inputs/outputs, please see the documentation under
-admin-guide/LSM/ipe.rst
+Users of IPE require a way to identify when and why an operation fails,
+allowing them to both respond to violations of policy and be notified
+of potentially malicious actions on their systems with respect to IPE
+itself.
+
+This patch introduces 3 new audit events.
+
+AUDIT_IPE_ACCESS(1420) indicates the result of an IPE policy evaluation
+of a resource.
+AUDIT_IPE_CONFIG_CHANGE(1421) indicates the current active IPE policy
+has been changed to another loaded policy.
+AUDIT_IPE_POLICY_LOAD(1422) indicates a new IPE policy has been loaded
+into the kernel.
+
+This patch also adds support for success auditing, allowing users to
+identify why an allow decision was made for a resource. However, it is
+recommended to use this option with caution, as it is quite noisy.
+
+Here are some examples of the new audit record types:
+
+AUDIT_IPE_ACCESS(1420):
+
+    audit: AUDIT1420 ipe_op=EXECUTE ipe_hook=BPRM_CHECK enforcing=1
+      pid=297 comm="sh" path="/root/vol/bin/hello" dev="tmpfs"
+      ino=3897 rule="op=EXECUTE boot_verified=TRUE action=ALLOW"
+
+    audit: AUDIT1420 ipe_op=EXECUTE ipe_hook=BPRM_CHECK enforcing=1
+      pid=299 comm="sh" path="/mnt/ipe/bin/hello" dev="dm-0"
+      ino=2 rule="DEFAULT action=DENY"
+
+    audit: AUDIT1420 ipe_op=EXECUTE ipe_hook=BPRM_CHECK enforcing=1
+     pid=300 path="/tmp/tmpdp2h1lub/deny/bin/hello" dev="tmpfs"
+      ino=131 rule="DEFAULT action=DENY"
+
+The above three records were generated when the active IPE policy only
+allows binaries from the initramfs to run. The three identical `hello`
+binary were placed at different locations, only the first hello from
+the rootfs(initramfs) was allowed.
+
+Field ipe_op followed by the IPE operation name associated with the log.
+
+Field ipe_hook followed by the name of the LSM hook that triggered the IPE
+event.
+
+Field enforcing followed by the enforcement state of IPE. (it will be
+introduced in the next commit)
+
+Field pid followed by the pid of the process that triggered the IPE
+event.
+
+Field comm followed by the command line program name of the process that
+triggered the IPE event.
+
+Field path followed by the file's path name.
+
+Field dev followed by the device name as found in /dev where the file is
+from.
+Note that for device mappers it will use the name `dm-X` instead of
+the name in /dev/mapper.
+For a file in a temp file system, which is not from a device, it will use
+`tmpfs` for the field.
+The implementation of this part is following another existing use case
+LSM_AUDIT_DATA_INODE in security/lsm_audit.c
+
+Field ino followed by the file's inode number.
+
+Field rule followed by the IPE rule made the access decision. The whole
+rule must be audited because the decision is based on the combination of
+all property conditions in the rule.
+
+Along with the syscall audit event, user can know why a blocked
+happened. For example:
+
+    audit: AUDIT1420 ipe_op=EXECUTE ipe_hook=BPRM_CHECK enforcing=1
+      pid=2138 comm="bash" path="/mnt/ipe/bin/hello" dev="dm-0"
+      ino=2 rule="DEFAULT action=DENY"
+    audit[1956]: SYSCALL arch=c000003e syscall=59
+      success=no exit=-13 a0=556790138df0 a1=556790135390 a2=5567901338b0
+      a3=ab2a41a67f4f1f4e items=1 ppid=147 pid=1956 auid=4294967295 uid=0
+      gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts0
+      ses=4294967295 comm="bash" exe="/usr/bin/bash" key=(null)
+
+The above two records showed bash used execve to run "hello" and got
+blocked by IPE. Note that the IPE records are always prior to a SYSCALL
+record.
+
+AUDIT_IPE_CONFIG_CHANGE(1421):
+
+    audit: AUDIT1421
+      old_active_pol_name="Allow_All" old_active_pol_version=0.0.0
+      old_policy_digest=sha256:E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649
+      new_active_pol_name="boot_verified" new_active_pol_version=0.0.0
+      new_policy_digest=sha256:820EEA5B40CA42B51F68962354BA083122A20BB846F
+      auid=4294967295 ses=4294967295 lsm=ipe res=1
+
+The above record showed the current IPE active policy switch from
+`Allow_All` to `boot_verified` along with the version and the hash
+digest of the two policies. Note IPE can only have one policy active
+at a time, all access decision evaluation is based on the current active
+policy.
+The normal procedure to deploy a policy is loading the policy to deploy
+into the kernel first, then switch the active policy to it.
+
+AUDIT_IPE_POLICY_LOAD(1422):
+
+    audit: AUDIT1422 policy_name="boot_verified" policy_version=0.0.0
+      policy_digest=sha256:820EEA5B40CA42B51F68962354BA083122A20BB846F2676
+      auid=4294967295 ses=4294967295 lsm=ipe res=1
+
+The above record showed a new policy has been loaded into the kernel
+with the policy name, policy version and policy hash.
 
 Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
 Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
@@ -89,655 +196,573 @@ v2:
     interface to pass mailing list character limit
 
 v3:
-  + Move policy load and activation audit event to 03/12
-  + Fix a potential panic when a policy failed to load.
-  + use pr_warn for a failure to parse instead of an
-    audit record
-  + Remove comments from headers
-  + Add lockdep assertions to ipe_update_active_policy and
-    ipe_activate_policy
-  + Fix up warnings with checkpatch --strict
-  + Use file_ns_capable for CAP_MAC_ADMIN for securityfs
-    nodes.
-  + Use memdup_user instead of kzalloc+simple_write_to_buffer.
-  + Remove strict_parse command line parameter, as it is added
-    by the sysctl command line.
+  + Move ipe_load_properties to patch 04.
+  + Remove useless 0-initializations
   + Prefix extern variables with ipe_
+  + Remove kernel module parameters, as these are
+    exposed through sysctls.
+  + Add more prose to the IPE base config option
+    help text.
+  + Use GFP_KERNEL for audit_log_start.
+  + Remove unnecessary caching system.
+  + Remove comments from headers
+  + Use rcu_access_pointer for rcu-pointer null check
+  + Remove usage of reqprot; use prot only.
+  + Move policy load and activation audit event to 03/12
 
 v4:
-  + Remove securityfs to reverse-dependency
-  + Add SHA1 reverse dependency.
-  + Add versioning scheme for IPE properties, and associated
-    interface to query the versioning scheme.
-  + Cause a parser to always return an error on unknown syntax.
-  + Remove strict_parse option
-  + Change active_policy interface from sysctl, to securityfs,
-    and change scheme.
+  + Remove sysctls in favor of securityfs nodes
+  + Re-add kernel module parameters, as these are now
+    exposed through securityfs.
+  + Refactor property audit loop to a separate function.
 
 v5:
-  + Cause an error if a default action is not defined for each
-    operation.
-  + Minor function renames
+  + fix minor grammatical errors
+  + do not group rule by curly-brace in audit record,
+    reconstruct the exact rule.
 
 v6:
   + No changes
 
 v7:
-  + Propagating changes to support the new ipe_context structure in the
-    evaluation loop.
-
-  + Further split the parser and userspace interface changes into
-    separate commits.
-
-  + "raw" was renamed to "pkcs7" and made read only
-  + "raw"'s write functionality (update a policy) moved to "update"
-  + introduced "version", "policy_name" nodes.
-  + "content" renamed to "policy"
-  + changes to allow the compiled-in policy to be treated
-    identical to deployed-after-the-fact policies.
+  + Further split lsm creation, the audit system, the evaluation loop,
+    and access control hooks into separate patches.
+  + Further split audit system patch into two separate patches; one
+    for include/uapi, and the usage of the new defines.
+  + Split out the permissive functionality into another separate patch,
+    for easier review.
+  + Correct misuse of audit_log_n_untrusted string to audit_log_format
+  + Use get_task_comm instead of comm directly.
+  + Quote certain audit values
+  + Remove unnecessary help text on choice options - these were
+    previously indented at the wrong level
+  + Correct a stale string constant (ctx_ns_enforce to ctx_enforce)
 
 v8:
-  + Prevent securityfs initialization if the LSM is disabled
+
+  + Change dependency for CONFIG_AUDIT to CONFIG_AUDITSYSCALL
+  + Drop ctx_* prefix
+  + Reuse, where appropriate, the audit fields from the field
+    dictionary. This transforms:
+      ctx_pathname  -> path
+      ctx_ino       -> ino
+      ctx_dev       -> dev
+
+  + Add audit records and event examples to commit description.
+  + Remove new_audit_ctx, replace with audit_log_start. All data that
+    would provided by new_audit_ctx is already present in the syscall
+    audit record, that is always emitted on these actions. The audit
+    records should be correlated as such.
+  + Change audit types:
+    + AUDIT_TRUST_RESULT                -> AUDIT_IPE_ACCESS
+      +  This prevents overloading of the AVC type.
+    + AUDIT_TRUST_POLICY_ACTIVATE       -> AUDIT_MAC_CONFIG_CHANGE
+    + AUDIT_TRUST_POLICY_LOAD           -> AUDIT_MAC_POLICY_LOAD
+      + There were no significant difference in meaning between
+        these types.
+
+  + Remove enforcing parameter passed from the context structure
+    for AUDIT_IPE_ACCESS.
+    +  This field can be inferred from the SYSCALL audit event,
+       based on the success field.
+
+  + Remove all fields already captured in the syscall record. "hook",
+    an IPE specific field, can be determined via the syscall field in
+    the syscall record itself, so it has been removed.
+      + ino, path, and dev in IPE's record refer to the subject of the
+        syscall, while the syscall record refers to the calling process.
+
+  + remove IPE prefix from policy load/policy activation events
+  + fix a bug wherein a policy change audit record was not fired when
+    updating a policy
 
 v9:
-  + Switch to securityfs_recursive_remove for policy folder deletion
+  + Merge the AUDIT_IPE_ACCESS definition with the audit support commit
+  + Change the audit format of policy load and switch
+  + Remove the ipe audit kernel switch
 
 v10:
-  + Simplify and correct concurrency
-  + Fix typos
+  + Create AUDIT_IPE_CONFIG_CHANGE and AUDIT_IPE_POLICY_LOAD
+  + Change field names per upstream feedback
 
 v11:
-  + Correct code comments
+  + Fix style issues
 
 v12:
-  + Correct locking and remove redundant code
+  + Add ipe_op, ipe_hook, and enforcing fields to AUDIT_IPE_ACCESS
 ---
- security/ipe/Makefile    |   2 +
- security/ipe/fs.c        | 101 +++++++++
- security/ipe/fs.h        |  16 ++
- security/ipe/ipe.c       |   3 +
- security/ipe/ipe.h       |   2 +
- security/ipe/policy.c    | 123 ++++++++++
- security/ipe/policy.h    |   9 +
- security/ipe/policy_fs.c | 469 +++++++++++++++++++++++++++++++++++++++
- 8 files changed, 725 insertions(+)
- create mode 100644 security/ipe/fs.c
- create mode 100644 security/ipe/fs.h
- create mode 100644 security/ipe/policy_fs.c
+ include/uapi/linux/audit.h |   3 +
+ security/ipe/Kconfig       |   2 +-
+ security/ipe/Makefile      |   1 +
+ security/ipe/audit.c       | 212 +++++++++++++++++++++++++++++++++++++
+ security/ipe/audit.h       |  18 ++++
+ security/ipe/eval.c        |  44 ++++++--
+ security/ipe/eval.h        |  13 ++-
+ security/ipe/fs.c          |  70 ++++++++++++
+ security/ipe/hooks.c       |  10 +-
+ security/ipe/hooks.h       |  11 ++
+ security/ipe/policy.c      |   5 +
+ 11 files changed, 372 insertions(+), 17 deletions(-)
+ create mode 100644 security/ipe/audit.c
+ create mode 100644 security/ipe/audit.h
 
+diff --git a/include/uapi/linux/audit.h b/include/uapi/linux/audit.h
+index d676ed2b246e..75e21a135483 100644
+--- a/include/uapi/linux/audit.h
++++ b/include/uapi/linux/audit.h
+@@ -143,6 +143,9 @@
+ #define AUDIT_MAC_UNLBL_STCDEL	1417	/* NetLabel: del a static label */
+ #define AUDIT_MAC_CALIPSO_ADD	1418	/* NetLabel: add CALIPSO DOI entry */
+ #define AUDIT_MAC_CALIPSO_DEL	1419	/* NetLabel: del CALIPSO DOI entry */
++#define AUDIT_IPE_ACCESS	1420	/* IPE denial or grant */
++#define AUDIT_IPE_CONFIG_CHANGE	1421	/* IPE config change */
++#define AUDIT_IPE_POLICY_LOAD	1422	/* IPE policy load */
+ 
+ #define AUDIT_FIRST_KERN_ANOM_MSG   1700
+ #define AUDIT_LAST_KERN_ANOM_MSG    1799
+diff --git a/security/ipe/Kconfig b/security/ipe/Kconfig
+index e4875fb04883..ac4d558e69d5 100644
+--- a/security/ipe/Kconfig
++++ b/security/ipe/Kconfig
+@@ -5,7 +5,7 @@
+ 
+ menuconfig SECURITY_IPE
+ 	bool "Integrity Policy Enforcement (IPE)"
+-	depends on SECURITY && SECURITYFS
++	depends on SECURITY && SECURITYFS && AUDIT && AUDITSYSCALL
+ 	select PKCS7_MESSAGE_PARSER
+ 	select SYSTEM_DATA_VERIFICATION
+ 	help
 diff --git a/security/ipe/Makefile b/security/ipe/Makefile
-index d7f2870d7c09..cfbed03a8885 100644
+index cfbed03a8885..2279eaa3cea3 100644
 --- a/security/ipe/Makefile
 +++ b/security/ipe/Makefile
-@@ -8,6 +8,8 @@
- obj-$(CONFIG_SECURITY_IPE) += \
- 	eval.o \
- 	hooks.o \
-+	fs.o \
- 	ipe.o \
+@@ -13,3 +13,4 @@ obj-$(CONFIG_SECURITY_IPE) += \
  	policy.o \
-+	policy_fs.o \
+ 	policy_fs.o \
  	policy_parser.o \
-diff --git a/security/ipe/fs.c b/security/ipe/fs.c
++	audit.o \
+diff --git a/security/ipe/audit.c b/security/ipe/audit.c
 new file mode 100644
-index 000000000000..4949296caeb5
+index 000000000000..79b7af25085c
 --- /dev/null
-+++ b/security/ipe/fs.c
-@@ -0,0 +1,101 @@
++++ b/security/ipe/audit.c
+@@ -0,0 +1,212 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * Copyright (C) Microsoft Corporation. All rights reserved.
 + */
 +
-+#include <linux/dcache.h>
-+#include <linux/security.h>
++#include <linux/slab.h>
++#include <linux/audit.h>
++#include <linux/types.h>
++#include <crypto/hash.h>
 +
 +#include "ipe.h"
-+#include "fs.h"
++#include "eval.h"
++#include "hooks.h"
 +#include "policy.h"
++#include "audit.h"
 +
-+static struct dentry *np __ro_after_init;
-+static struct dentry *root __ro_after_init;
-+struct dentry *policy_root __ro_after_init;
++#define ACTSTR(x) ((x) == IPE_ACTION_ALLOW ? "ALLOW" : "DENY")
 +
-+/**
-+ * new_policy - Write handler for the securityfs node, "ipe/new_policy".
-+ * @f: Supplies a file structure representing the securityfs node.
-+ * @data: Supplies a buffer passed to the write syscall.
-+ * @len: Supplies the length of @data.
-+ * @offset: unused.
-+ *
-+ * Return:
-+ * * >0	- Success, Length of buffer written
-+ * * <0	- Error
-+ */
-+static ssize_t new_policy(struct file *f, const char __user *data,
-+			  size_t len, loff_t *offset)
-+{
-+	int rc = 0;
-+	char *copy = NULL;
-+	struct ipe_policy *p = NULL;
++#define IPE_AUDIT_HASH_ALG "sha256"
 +
-+	if (!file_ns_capable(f, &init_user_ns, CAP_MAC_ADMIN))
-+		return -EPERM;
++#define AUDIT_POLICY_LOAD_FMT "policy_name=\"%s\" policy_version=%hu.%hu.%hu "\
++			      "policy_digest=" IPE_AUDIT_HASH_ALG ":"
++#define AUDIT_OLD_ACTIVE_POLICY_FMT "old_active_pol_name=\"%s\" "\
++				    "old_active_pol_version=%hu.%hu.%hu "\
++				    "old_policy_digest=" IPE_AUDIT_HASH_ALG ":"
++#define AUDIT_NEW_ACTIVE_POLICY_FMT "new_active_pol_name=\"%s\" "\
++				    "new_active_pol_version=%hu.%hu.%hu "\
++				    "new_policy_digest=" IPE_AUDIT_HASH_ALG ":"
 +
-+	copy = memdup_user_nul(data, len);
-+	if (IS_ERR(copy))
-+		return PTR_ERR(copy);
++static const char *const audit_op_names[__IPE_OP_MAX + 1] = {
++	"EXECUTE",
++	"FIRMWARE",
++	"KMODULE",
++	"KEXEC_IMAGE",
++	"KEXEC_INITRAMFS",
++	"POLICY",
++	"X509_CERT",
++	"UNKNOWN",
++};
 +
-+	p = ipe_new_policy(NULL, 0, copy, len);
-+	if (IS_ERR(p)) {
-+		rc = PTR_ERR(p);
-+		goto out;
-+	}
++static const char *const audit_hook_names[__IPE_HOOK_MAX] = {
++	"BPRM_CHECK",
++	"MMAP",
++	"MPROTECT",
++	"KERNEL_READ",
++	"KERNEL_LOAD",
++};
 +
-+	rc = ipe_new_policyfs_node(p);
-+
-+out:
-+	if (rc < 0)
-+		ipe_free_policy(p);
-+	kfree(copy);
-+	return (rc < 0) ? rc : len;
-+}
-+
-+static const struct file_operations np_fops = {
-+	.write = new_policy,
++static const char *const audit_prop_names[__IPE_PROP_MAX] = {
++#ifdef CONFIG_BLK_DEV_INITRD
++	"boot_verified=FALSE",
++	"boot_verified=TRUE",
++#endif /* CONFIG_BLK_DEV_INITRD */
 +};
 +
 +/**
-+ * ipe_init_securityfs - Initialize IPE's securityfs tree at fsinit.
-+ *
-+ * Return:
-+ * * !0	- Error
-+ * * 0	- OK
++ * audit_rule - audit an IPE policy rule approximation.
++ * @ab: Supplies a pointer to the audit_buffer to append to.
++ * @r: Supplies a pointer to the ipe_rule to approximate a string form for.
 + */
-+static int __init ipe_init_securityfs(void)
++static void audit_rule(struct audit_buffer *ab, const struct ipe_rule *r)
 +{
-+	int rc = 0;
++	const struct ipe_prop *ptr;
 +
-+	if (!ipe_enabled)
-+		return -EOPNOTSUPP;
++	audit_log_format(ab, " rule=\"%s ", audit_op_names[r->op]);
 +
-+	root = securityfs_create_dir("ipe", NULL);
-+	if (IS_ERR(root)) {
-+		rc = PTR_ERR(root);
-+		goto err;
-+	}
++	list_for_each_entry(ptr, &r->props, next)
++		audit_log_format(ab, "%s ", audit_prop_names[ptr->type]);
 +
-+	policy_root = securityfs_create_dir("policies", root);
-+	if (IS_ERR(policy_root)) {
-+		rc = PTR_ERR(policy_root);
-+		goto err;
-+	}
-+
-+	np = securityfs_create_file("new_policy", 0200, root, NULL, &np_fops);
-+	if (IS_ERR(np)) {
-+		rc = PTR_ERR(np);
-+		goto err;
-+	}
-+
-+	return 0;
-+err:
-+	securityfs_remove(np);
-+	securityfs_remove(policy_root);
-+	securityfs_remove(root);
-+	return rc;
++	audit_log_format(ab, "action=%s\"", ACTSTR(r->action));
 +}
 +
-+fs_initcall(ipe_init_securityfs);
-diff --git a/security/ipe/fs.h b/security/ipe/fs.h
++/**
++ * ipe_audit_match - audit a match for IPE policy.
++ * @ctx: Supplies a pointer to the evaluation context that was used in the
++ *	 evaluation.
++ * @match_type: Supplies the scope of the match: rule, operation default,
++ *		global default.
++ * @act: Supplies the IPE's evaluation decision, deny or allow.
++ * @r: Supplies a pointer to the rule that was matched, if possible.
++ */
++void ipe_audit_match(const struct ipe_eval_ctx *const ctx,
++		     enum ipe_match match_type,
++		     enum ipe_action_type act, const struct ipe_rule *const r)
++{
++	struct inode *inode;
++	struct audit_buffer *ab;
++	const char *op = audit_op_names[ctx->op];
++	char comm[sizeof(current->comm)];
++
++	if (act != IPE_ACTION_DENY && !READ_ONCE(success_audit))
++		return;
++
++	ab = audit_log_start(audit_context(), GFP_KERNEL, AUDIT_IPE_ACCESS);
++	if (!ab)
++		return;
++
++	audit_log_format(ab, "ipe_op=%s ipe_hook=%s pid=%d comm=",
++			 op, audit_hook_names[ctx->hook],
++			 task_tgid_nr(current));
++	audit_log_untrustedstring(ab, get_task_comm(comm, current));
++
++	if (ctx->file) {
++		audit_log_d_path(ab, " path=", &ctx->file->f_path);
++		inode = file_inode(ctx->file);
++		if (inode) {
++			audit_log_format(ab, " dev=");
++			audit_log_untrustedstring(ab, inode->i_sb->s_id);
++			audit_log_format(ab, " ino=%lu", inode->i_ino);
++		}
++	}
++
++	if (match_type == IPE_MATCH_RULE)
++		audit_rule(ab, r);
++	else if (match_type == IPE_MATCH_TABLE)
++		audit_log_format(ab, " rule=\"DEFAULT op=%s action=%s\"", op,
++				 ACTSTR(act));
++	else
++		audit_log_format(ab, " rule=\"DEFAULT action=%s\"",
++				 ACTSTR(act));
++
++	audit_log_end(ab);
++}
++
++/**
++ * audit_policy - Audit a policy's name, version and thumbprint to @ab.
++ * @ab: Supplies a pointer to the audit buffer to append to.
++ * @audit_format: Supplies a pointer to the audit format string
++ * @p: Supplies a pointer to the policy to audit.
++ */
++static void audit_policy(struct audit_buffer *ab,
++			 const char *audit_format,
++			 const struct ipe_policy *const p)
++{
++	u8 *digest = NULL;
++	struct crypto_shash *tfm;
++	SHASH_DESC_ON_STACK(desc, tfm);
++
++	tfm = crypto_alloc_shash(IPE_AUDIT_HASH_ALG, 0, 0);
++	if (IS_ERR(tfm))
++		return;
++
++	desc->tfm = tfm;
++
++	digest = kzalloc(crypto_shash_digestsize(tfm), GFP_KERNEL);
++	if (!digest)
++		goto out;
++
++	if (crypto_shash_init(desc))
++		goto out;
++
++	if (crypto_shash_update(desc, p->pkcs7, p->pkcs7len))
++		goto out;
++
++	if (crypto_shash_final(desc, digest))
++		goto out;
++
++	audit_log_format(ab, audit_format, p->parsed->name,
++			 p->parsed->version.major, p->parsed->version.minor,
++			 p->parsed->version.rev);
++	audit_log_n_hex(ab, digest, crypto_shash_digestsize(tfm));
++
++out:
++	kfree(digest);
++	crypto_free_shash(tfm);
++}
++
++/**
++ * ipe_audit_policy_activation - Audit a policy being made the active policy.
++ * @op: Supplies a pointer to the previously activated policy to audit.
++ * @np: Supplies a pointer to the newly activated policy to audit.
++ */
++void ipe_audit_policy_activation(const struct ipe_policy *const op,
++				 const struct ipe_policy *const np)
++{
++	struct audit_buffer *ab;
++
++	ab = audit_log_start(audit_context(), GFP_KERNEL,
++			     AUDIT_IPE_CONFIG_CHANGE);
++	if (!ab)
++		return;
++
++	audit_policy(ab, AUDIT_OLD_ACTIVE_POLICY_FMT, op);
++	audit_log_format(ab, " ");
++	audit_policy(ab, AUDIT_NEW_ACTIVE_POLICY_FMT, np);
++	audit_log_format(ab, " auid=%u ses=%u lsm=ipe res=1",
++			 from_kuid(&init_user_ns, audit_get_loginuid(current)),
++			 audit_get_sessionid(current));
++
++	audit_log_end(ab);
++}
++
++/**
++ * ipe_audit_policy_load - Audit a policy being loaded into the kernel.
++ * @p: Supplies a pointer to the policy to audit.
++ */
++void ipe_audit_policy_load(const struct ipe_policy *const p)
++{
++	struct audit_buffer *ab;
++
++	ab = audit_log_start(audit_context(), GFP_KERNEL,
++			     AUDIT_IPE_POLICY_LOAD);
++	if (!ab)
++		return;
++
++	audit_policy(ab, AUDIT_POLICY_LOAD_FMT, p);
++	audit_log_format(ab, " auid=%u ses=%u lsm=ipe res=1",
++			 from_kuid(&init_user_ns, audit_get_loginuid(current)),
++			 audit_get_sessionid(current));
++
++	audit_log_end(ab);
++}
+diff --git a/security/ipe/audit.h b/security/ipe/audit.h
 new file mode 100644
-index 000000000000..c1fc0ca4ae93
+index 000000000000..0ff5a06808de
 --- /dev/null
-+++ b/security/ipe/fs.h
-@@ -0,0 +1,16 @@
++++ b/security/ipe/audit.h
+@@ -0,0 +1,18 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
 + * Copyright (C) Microsoft Corporation. All rights reserved.
 + */
 +
-+#ifndef _IPE_FS_H
-+#define _IPE_FS_H
++#ifndef _IPE_AUDIT_H
++#define _IPE_AUDIT_H
 +
 +#include "policy.h"
 +
-+extern struct dentry *policy_root __ro_after_init;
++void ipe_audit_match(const struct ipe_eval_ctx *const ctx,
++		     enum ipe_match match_type,
++		     enum ipe_action_type act, const struct ipe_rule *const r);
++void ipe_audit_policy_load(const struct ipe_policy *const p);
++void ipe_audit_policy_activation(const struct ipe_policy *const op,
++				 const struct ipe_policy *const np);
 +
-+int ipe_new_policyfs_node(struct ipe_policy *p);
-+void ipe_del_policyfs_node(struct ipe_policy *p);
-+
-+#endif /* _IPE_FS_H */
-diff --git a/security/ipe/ipe.c b/security/ipe/ipe.c
-index ed3acf6174d8..034ee8cd6802 100644
---- a/security/ipe/ipe.c
-+++ b/security/ipe/ipe.c
-@@ -8,6 +8,8 @@
- #include "eval.h"
- #include "hooks.h"
- 
-+bool ipe_enabled;
-+
- static struct lsm_blob_sizes ipe_blobs __ro_after_init = {
- #ifdef CONFIG_BLK_DEV_INITRD
- 	.lbs_superblock = sizeof(struct ipe_sb),
-@@ -50,6 +52,7 @@ static struct security_hook_list ipe_hooks[] __ro_after_init = {
- static int __init ipe_init(void)
- {
- 	security_add_hooks(ipe_hooks, ARRAY_SIZE(ipe_hooks), &ipe_lsmid);
-+	ipe_enabled = true;
- 
- 	return 0;
- }
-diff --git a/security/ipe/ipe.h b/security/ipe/ipe.h
-index f1e7c3222b6d..1862c710dab8 100644
---- a/security/ipe/ipe.h
-+++ b/security/ipe/ipe.h
-@@ -16,4 +16,6 @@
- struct ipe_sb *ipe_sb(const struct super_block *sb);
- #endif /* CONFIG_BLK_DEV_INITRD */
- 
-+extern bool ipe_enabled;
-+
- #endif /* _IPE_H */
-diff --git a/security/ipe/policy.c b/security/ipe/policy.c
-index f22a576a6d68..61fea3e38e11 100644
---- a/security/ipe/policy.c
-+++ b/security/ipe/policy.c
-@@ -7,9 +7,36 @@
- #include <linux/verification.h>
++#endif /* _IPE_AUDIT_H */
+diff --git a/security/ipe/eval.c b/security/ipe/eval.c
+index 546bbc52a071..85cccc3d0bdf 100644
+--- a/security/ipe/eval.c
++++ b/security/ipe/eval.c
+@@ -9,12 +9,15 @@
+ #include <linux/file.h>
+ #include <linux/sched.h>
+ #include <linux/rcupdate.h>
++#include <linux/moduleparam.h>
  
  #include "ipe.h"
-+#include "eval.h"
-+#include "fs.h"
+ #include "eval.h"
  #include "policy.h"
- #include "policy_parser.h"
++#include "audit.h"
  
-+/* lock for synchronizing writers across ipe policy */
-+DEFINE_MUTEX(ipe_policy_lock);
-+
-+/**
-+ * ver_to_u64 - Convert an internal ipe_policy_version to a u64.
-+ * @p: Policy to extract the version from.
-+ *
-+ * Bits (LSB is index 0):
-+ *	[48,32] -> Major
-+ *	[32,16] -> Minor
-+ *	[16, 0] -> Revision
-+ *
-+ * Return: u64 version of the embedded version structure.
-+ */
-+static inline u64 ver_to_u64(const struct ipe_policy *const p)
-+{
-+	u64 r;
-+
-+	r = (((u64)p->parsed->version.major) << 32)
-+	  | (((u64)p->parsed->version.minor) << 16)
-+	  | ((u64)(p->parsed->version.rev));
-+
-+	return r;
-+}
-+
- /**
-  * ipe_free_policy - Deallocate a given IPE policy.
-  * @p: Supplies the policy to free.
-@@ -21,6 +48,7 @@ void ipe_free_policy(struct ipe_policy *p)
- 	if (IS_ERR_OR_NULL(p))
- 		return;
+ struct ipe_policy __rcu *ipe_active_policy;
++bool success_audit;
  
-+	ipe_del_policyfs_node(p);
- 	free_parsed_policy(p->parsed);
- 	/*
- 	 * p->text is allocated only when p->pkcs7 is not NULL
-@@ -43,6 +71,68 @@ static int set_pkcs7_data(void *ctx, const void *data, size_t len,
+ #define FILE_SUPERBLOCK(f) ((f)->f_path.mnt->mnt_sb)
+ 
+@@ -39,13 +42,16 @@ static void build_ipe_sb_ctx(struct ipe_eval_ctx *ctx, const struct file *const
+  * @ctx: Supplies a pointer to the context to be populated.
+  * @file: Supplies a pointer to the file to associated with the evaluation.
+  * @op: Supplies the IPE policy operation associated with the evaluation.
++ * @hook: Supplies the LSM hook associated with the evaluation.
+  */
+ void build_eval_ctx(struct ipe_eval_ctx *ctx,
+ 		    const struct file *file,
+-		    enum ipe_op_type op)
++		    enum ipe_op_type op,
++		    enum ipe_hook_type hook)
+ {
+ 	ctx->file = file;
+ 	ctx->op = op;
++	ctx->hook = hook;
+ 
+ 	if (file)
+ 		build_ipe_sb_ctx(ctx, file);
+@@ -126,6 +132,7 @@ int ipe_evaluate_event(const struct ipe_eval_ctx *const ctx)
+ {
+ 	bool match = false;
+ 	enum ipe_action_type action;
++	enum ipe_match match_type;
+ 	struct ipe_policy *pol = NULL;
+ 	const struct ipe_rule *rule = NULL;
+ 	const struct ipe_op_table *rules = NULL;
+@@ -140,14 +147,15 @@ int ipe_evaluate_event(const struct ipe_eval_ctx *const ctx)
+ 	}
+ 
+ 	if (ctx->op == IPE_OP_INVALID) {
+-		if (pol->parsed->global_default_action == IPE_ACTION_DENY) {
+-			rcu_read_unlock();
+-			return -EACCES;
+-		}
+-		if (pol->parsed->global_default_action == IPE_ACTION_INVALID)
++		if (pol->parsed->global_default_action == IPE_ACTION_INVALID) {
+ 			WARN(1, "no default rule set for unknown op, ALLOW it");
++			action = IPE_ACTION_ALLOW;
++		} else {
++			action = pol->parsed->global_default_action;
++		}
+ 		rcu_read_unlock();
+-		return 0;
++		match_type = IPE_MATCH_GLOBAL;
++		goto eval;
+ 	}
+ 
+ 	rules = &pol->parsed->rules[ctx->op];
+@@ -165,16 +173,32 @@ int ipe_evaluate_event(const struct ipe_eval_ctx *const ctx)
+ 			break;
+ 	}
+ 
+-	if (match)
++	if (match) {
+ 		action = rule->action;
+-	else if (rules->default_action != IPE_ACTION_INVALID)
++		match_type = IPE_MATCH_RULE;
++	} else if (rules->default_action != IPE_ACTION_INVALID) {
+ 		action = rules->default_action;
+-	else
++		match_type = IPE_MATCH_TABLE;
++	} else {
+ 		action = pol->parsed->global_default_action;
++		match_type = IPE_MATCH_GLOBAL;
++	}
+ 
+ 	rcu_read_unlock();
++eval:
++	ipe_audit_match(ctx, match_type, action, rule);
++
+ 	if (action == IPE_ACTION_DENY)
+ 		return -EACCES;
+ 
  	return 0;
  }
- 
-+/**
-+ * ipe_update_policy - parse a new policy and replace old with it.
-+ * @root: Supplies a pointer to the securityfs inode saved the policy.
-+ * @text: Supplies a pointer to the plain text policy.
-+ * @textlen: Supplies the length of @text.
-+ * @pkcs7: Supplies a pointer to a buffer containing a pkcs7 message.
-+ * @pkcs7len: Supplies the length of @pkcs7len.
-+ *
-+ * @text/@textlen is mutually exclusive with @pkcs7/@pkcs7len - see
-+ * ipe_new_policy.
-+ *
-+ * Context: Requires root->i_rwsem to be held.
-+ * Return:
-+ * * !IS_ERR	- The existing policy saved in the inode before update
-+ * * -ENOENT	- Policy doesn't exist
-+ * * -EINVAL	- New policy is invalid
-+ */
-+struct ipe_policy *ipe_update_policy(struct inode *root,
-+				     const char *text, size_t textlen,
-+				     const char *pkcs7, size_t pkcs7len)
-+{
-+	int rc = 0;
-+	struct ipe_policy *old, *ap, *new = NULL;
 +
-+	old = (struct ipe_policy *)root->i_private;
-+	if (!old)
-+		return ERR_PTR(-ENOENT);
++/* Set the right module name */
++#ifdef KBUILD_MODNAME
++#undef KBUILD_MODNAME
++#define KBUILD_MODNAME "ipe"
++#endif
 +
-+	new = ipe_new_policy(text, textlen, pkcs7, pkcs7len);
-+	if (IS_ERR(new))
-+		return new;
-+
-+	if (strcmp(new->parsed->name, old->parsed->name)) {
-+		rc = -EINVAL;
-+		goto err;
-+	}
-+
-+	if (ver_to_u64(old) > ver_to_u64(new)) {
-+		rc = -EINVAL;
-+		goto err;
-+	}
-+
-+	root->i_private = new;
-+	swap(new->policyfs, old->policyfs);
-+
-+	mutex_lock(&ipe_policy_lock);
-+	ap = rcu_dereference_protected(ipe_active_policy,
-+				       lockdep_is_held(&ipe_policy_lock));
-+	if (old == ap) {
-+		rcu_assign_pointer(ipe_active_policy, new);
-+		mutex_unlock(&ipe_policy_lock);
-+		synchronize_rcu();
-+	} else {
-+		mutex_unlock(&ipe_policy_lock);
-+	}
-+
-+	return old;
-+err:
-+	ipe_free_policy(new);
-+	return ERR_PTR(rc);
-+}
-+
- /**
-  * ipe_new_policy - Allocate and parse an ipe_policy structure.
-  *
-@@ -99,3 +189,36 @@ struct ipe_policy *ipe_new_policy(const char *text, size_t textlen,
- 	ipe_free_policy(new);
- 	return ERR_PTR(rc);
- }
-+
-+/**
-+ * ipe_set_active_pol - Make @p the active policy.
-+ * @p: Supplies a pointer to the policy to make active.
-+ *
-+ * Context: Requires root->i_rwsem, which i_private has the policy, to be held.
-+ * Return:
-+ * * !IS_ERR	- Success
-+ * * -EINVAL	- New active policy version is invalid
-+ */
-+int ipe_set_active_pol(const struct ipe_policy *p)
-+{
-+	struct ipe_policy *ap = NULL;
-+
-+	mutex_lock(&ipe_policy_lock);
-+
-+	ap = rcu_dereference_protected(ipe_active_policy,
-+				       lockdep_is_held(&ipe_policy_lock));
-+	if (ap == p) {
-+		mutex_unlock(&ipe_policy_lock);
-+		return 0;
-+	}
-+	if (ap && ver_to_u64(ap) > ver_to_u64(p)) {
-+		mutex_unlock(&ipe_policy_lock);
-+		return -EINVAL;
-+	}
-+
-+	rcu_assign_pointer(ipe_active_policy, p);
-+	mutex_unlock(&ipe_policy_lock);
-+	synchronize_rcu();
-+
-+	return 0;
-+}
-diff --git a/security/ipe/policy.h b/security/ipe/policy.h
-index fb48024bb63e..060ffdbc62d6 100644
---- a/security/ipe/policy.h
-+++ b/security/ipe/policy.h
-@@ -7,6 +7,7 @@
- 
- #include <linux/list.h>
++module_param(success_audit, bool, 0400);
++MODULE_PARM_DESC(success_audit, "Start IPE with success auditing enabled");
+diff --git a/security/ipe/eval.h b/security/ipe/eval.h
+index 7d79fdb63bbf..0be9aadec9f8 100644
+--- a/security/ipe/eval.h
++++ b/security/ipe/eval.h
+@@ -10,10 +10,12 @@
  #include <linux/types.h>
-+#include <linux/fs.h>
  
- enum ipe_op_type {
- 	IPE_OP_EXEC = 0,
-@@ -76,10 +77,18 @@ struct ipe_policy {
- 	size_t textlen;
+ #include "policy.h"
++#include "hooks.h"
  
- 	struct ipe_parsed_policy *parsed;
-+
-+	struct dentry *policyfs;
+ #define IPE_EVAL_CTX_INIT ((struct ipe_eval_ctx){ 0 })
+ 
+ extern struct ipe_policy __rcu *ipe_active_policy;
++extern bool success_audit;
+ 
+ #ifdef CONFIG_BLK_DEV_INITRD
+ struct ipe_sb {
+@@ -23,6 +25,7 @@ struct ipe_sb {
+ 
+ struct ipe_eval_ctx {
+ 	enum ipe_op_type op;
++	enum ipe_hook_type hook;
+ 
+ 	const struct file *file;
+ #ifdef CONFIG_BLK_DEV_INITRD
+@@ -30,7 +33,15 @@ struct ipe_eval_ctx {
+ #endif /* CONFIG_BLK_DEV_INITRD */
  };
  
- struct ipe_policy *ipe_new_policy(const char *text, size_t textlen,
- 				  const char *pkcs7, size_t pkcs7len);
- void ipe_free_policy(struct ipe_policy *pol);
-+struct ipe_policy *ipe_update_policy(struct inode *root,
-+				     const char *text,
-+				     size_t textlen, const char *pkcs7,
-+				     size_t pkcs7len);
-+int ipe_set_active_pol(const struct ipe_policy *p);
-+extern struct mutex ipe_policy_lock;
+-void build_eval_ctx(struct ipe_eval_ctx *ctx, const struct file *file, enum ipe_op_type op);
++enum ipe_match {
++	IPE_MATCH_RULE = 0,
++	IPE_MATCH_TABLE,
++	IPE_MATCH_GLOBAL,
++	__IPE_MATCH_MAX
++};
++
++void build_eval_ctx(struct ipe_eval_ctx *ctx, const struct file *file,
++		    enum ipe_op_type op, enum ipe_hook_type hook);
+ int ipe_evaluate_event(const struct ipe_eval_ctx *const ctx);
  
- #endif /* _IPE_POLICY_H */
-diff --git a/security/ipe/policy_fs.c b/security/ipe/policy_fs.c
-new file mode 100644
-index 000000000000..abdf1ad843e0
---- /dev/null
-+++ b/security/ipe/policy_fs.c
-@@ -0,0 +1,469 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) Microsoft Corporation. All rights reserved.
-+ */
-+#include <linux/fs.h>
-+#include <linux/namei.h>
-+#include <linux/types.h>
-+#include <linux/dcache.h>
-+#include <linux/security.h>
-+
-+#include "ipe.h"
-+#include "policy.h"
+ #endif /* _IPE_EVAL_H */
+diff --git a/security/ipe/fs.c b/security/ipe/fs.c
+index 4949296caeb5..95407997cf0c 100644
+--- a/security/ipe/fs.c
++++ b/security/ipe/fs.c
+@@ -8,11 +8,64 @@
+ 
+ #include "ipe.h"
+ #include "fs.h"
 +#include "eval.h"
-+#include "fs.h"
-+
-+#define MAX_VERSION_SIZE ARRAY_SIZE("65535.65535.65535")
-+
-+/**
-+ * ipefs_file - defines a file in securityfs.
-+ */
-+struct ipefs_file {
-+	const char *name;
-+	umode_t access;
-+	const struct file_operations *fops;
-+};
+ #include "policy.h"
++#include "audit.h"
+ 
+ static struct dentry *np __ro_after_init;
+ static struct dentry *root __ro_after_init;
+ struct dentry *policy_root __ro_after_init;
++static struct dentry *audit_node __ro_after_init;
 +
 +/**
-+ * read_pkcs7 - Read handler for "ipe/policies/$name/pkcs7".
++ * setaudit - Write handler for the securityfs node, "ipe/success_audit"
 + * @f: Supplies a file structure representing the securityfs node.
 + * @data: Supplies a buffer passed to the write syscall.
 + * @len: Supplies the length of @data.
 + * @offset: unused.
 + *
-+ * @data will be populated with the pkcs7 blob representing the policy
-+ * on success. If the policy is unsigned (like the boot policy), this
-+ * will return -ENOENT.
-+ *
 + * Return:
 + * * >0	- Success, Length of buffer written
 + * * <0	- Error
 + */
-+static ssize_t read_pkcs7(struct file *f, char __user *data,
-+			  size_t len, loff_t *offset)
++static ssize_t setaudit(struct file *f, const char __user *data,
++			size_t len, loff_t *offset)
 +{
 +	int rc = 0;
-+	struct inode *root = NULL;
-+	const struct ipe_policy *p = NULL;
-+
-+	root = d_inode(f->f_path.dentry->d_parent);
-+
-+	inode_lock_shared(root);
-+	p = (struct ipe_policy *)root->i_private;
-+	if (!p) {
-+		rc = -ENOENT;
-+		goto out;
-+	}
-+
-+	if (!p->pkcs7) {
-+		rc = -ENOENT;
-+		goto out;
-+	}
-+
-+	rc = simple_read_from_buffer(data, len, offset, p->pkcs7, p->pkcs7len);
-+
-+out:
-+	inode_unlock_shared(root);
-+
-+	return rc;
-+}
-+
-+/**
-+ * read_policy - Read handler for "ipe/policies/$name/policy".
-+ * @f: Supplies a file structure representing the securityfs node.
-+ * @data: Supplies a buffer passed to the write syscall.
-+ * @len: Supplies the length of @data.
-+ * @offset: unused.
-+ *
-+ * @data will be populated with the plain-text version of the policy
-+ * on success.
-+ *
-+ * Return:
-+ * * >0	- Success, Length of buffer written
-+ * * <0	- Error
-+ */
-+static ssize_t read_policy(struct file *f, char __user *data,
-+			   size_t len, loff_t *offset)
-+{
-+	int rc = 0;
-+	struct inode *root = NULL;
-+	const struct ipe_policy *p = NULL;
-+
-+	root = d_inode(f->f_path.dentry->d_parent);
-+
-+	inode_lock_shared(root);
-+	p = (struct ipe_policy *)root->i_private;
-+	if (!p) {
-+		rc = -ENOENT;
-+		goto out;
-+	}
-+
-+	rc = simple_read_from_buffer(data, len, offset, p->text, p->textlen);
-+
-+out:
-+	inode_unlock_shared(root);
-+
-+	return rc;
-+}
-+
-+/**
-+ * read_name: Read handler for "ipe/policies/$name/name".
-+ * @f: Supplies a file structure representing the securityfs node.
-+ * @data: Supplies a buffer passed to the write syscall.
-+ * @len: Supplies the length of @data.
-+ * @offset: unused.
-+ *
-+ * @data will be populated with the policy_name attribute on success.
-+ *
-+ * Return:
-+ * * >0	- Success, Length of buffer written
-+ * * <0	- Error
-+ */
-+static ssize_t read_name(struct file *f, char __user *data,
-+			 size_t len, loff_t *offset)
-+{
-+	int rc = 0;
-+	struct inode *root = NULL;
-+	const struct ipe_policy *p = NULL;
-+
-+	root = d_inode(f->f_path.dentry->d_parent);
-+
-+	inode_lock_shared(root);
-+	p = (struct ipe_policy *)root->i_private;
-+	if (!p) {
-+		rc = -ENOENT;
-+		goto out;
-+	}
-+
-+	rc = simple_read_from_buffer(data, len, offset, p->parsed->name,
-+				     strlen(p->parsed->name));
-+
-+out:
-+	inode_unlock_shared(root);
-+
-+	return rc;
-+}
-+
-+/**
-+ * read_version - Read handler for "ipe/policies/$name/version".
-+ * @f: Supplies a file structure representing the securityfs node.
-+ * @data: Supplies a buffer passed to the write syscall.
-+ * @len: Supplies the length of @data.
-+ * @offset: unused.
-+ *
-+ * @data will be populated with the version string on success.
-+ *
-+ * Return:
-+ * * >0	- Success, Length of buffer written
-+ * * <0	- Error
-+ */
-+static ssize_t read_version(struct file *f, char __user *data,
-+			    size_t len, loff_t *offset)
-+{
-+	ssize_t rc = 0;
-+	size_t strsize = 0;
-+	struct inode *root = NULL;
-+	const struct ipe_policy *p = NULL;
-+	char buffer[MAX_VERSION_SIZE] = { 0 };
-+
-+	root = d_inode(f->f_path.dentry->d_parent);
-+
-+	inode_lock_shared(root);
-+	p = (struct ipe_policy *)root->i_private;
-+	if (!p) {
-+		rc = -ENOENT;
-+		goto out;
-+	}
-+
-+	strsize = scnprintf(buffer, ARRAY_SIZE(buffer), "%hu.%hu.%hu",
-+			    p->parsed->version.major, p->parsed->version.minor,
-+			    p->parsed->version.rev);
-+
-+	rc = simple_read_from_buffer(data, len, offset, buffer, strsize);
-+
-+out:
-+	inode_unlock_shared(root);
-+
-+	return rc;
-+}
-+
-+/**
-+ * setactive - Write handler for "ipe/policies/$name/active".
-+ * @f: Supplies a file structure representing the securityfs node.
-+ * @data: Supplies a buffer passed to the write syscall.
-+ * @len: Supplies the length of @data.
-+ * @offset: unused.
-+ *
-+ * Return:
-+ * * >0	- Success, Length of buffer written
-+ * * <0	- Error
-+ */
-+static ssize_t setactive(struct file *f, const char __user *data,
-+			 size_t len, loff_t *offset)
-+{
-+	int rc = 0;
-+	bool value = false;
-+	struct inode *root = NULL;
-+	const struct ipe_policy *p = NULL;
++	bool value;
 +
 +	if (!file_ns_capable(f, &init_user_ns, CAP_MAC_ADMIN))
 +		return -EPERM;
@@ -746,260 +771,186 @@ index 000000000000..abdf1ad843e0
 +	if (rc)
 +		return rc;
 +
-+	if (!value)
-+		return -EINVAL;
-+
-+	root = d_inode(f->f_path.dentry->d_parent);
-+	inode_lock(root);
-+
-+	p = (struct ipe_policy *)root->i_private;
-+	if (!p) {
-+		rc = -ENOENT;
-+		goto out;
-+	}
-+
-+	rc = ipe_set_active_pol(p);
-+
-+out:
-+	inode_unlock(root);
-+	return (rc < 0) ? rc : len;
-+}
-+
-+/**
-+ * getactive - Read handler for "ipe/policies/$name/active".
-+ * @f: Supplies a file structure representing the securityfs node.
-+ * @data: Supplies a buffer passed to the write syscall.
-+ * @len: Supplies the length of @data.
-+ * @offset: unused.
-+ *
-+ * @data will be populated with the 1 or 0 depending on if the
-+ * corresponding policy is active.
-+ *
-+ * Return:
-+ * * >0	- Success, Length of buffer written
-+ * * <0	- Error
-+ */
-+static ssize_t getactive(struct file *f, char __user *data,
-+			 size_t len, loff_t *offset)
-+{
-+	int rc = 0;
-+	const char *str;
-+	struct inode *root = NULL;
-+	const struct ipe_policy *p = NULL;
-+
-+	root = d_inode(f->f_path.dentry->d_parent);
-+
-+	inode_lock_shared(root);
-+	p = (struct ipe_policy *)root->i_private;
-+	if (!p) {
-+		inode_unlock_shared(root);
-+		return -ENOENT;
-+	}
-+	inode_unlock_shared(root);
-+
-+	str = (p == rcu_access_pointer(ipe_active_policy)) ? "1" : "0";
-+	rc = simple_read_from_buffer(data, len, offset, str, 1);
-+
-+	return rc;
-+}
-+
-+/**
-+ * update_policy - Write handler for "ipe/policies/$name/update".
-+ * @f: Supplies a file structure representing the securityfs node.
-+ * @data: Supplies a buffer passed to the write syscall.
-+ * @len: Supplies the length of @data.
-+ * @offset: unused.
-+ *
-+ * On success this updates the policy represented by $name,
-+ * in-place.
-+ *
-+ * Return:
-+ * * >0	- Success, Length of buffer written
-+ * * <0	- Error
-+ */
-+static ssize_t update_policy(struct file *f, const char __user *data,
-+			     size_t len, loff_t *offset)
-+{
-+	char *copy = NULL;
-+	struct inode *root = NULL;
-+	struct ipe_policy *old = NULL;
-+
-+	if (!file_ns_capable(f, &init_user_ns, CAP_MAC_ADMIN))
-+		return -EPERM;
-+
-+	copy = memdup_user(data, len);
-+	if (IS_ERR(copy))
-+		return PTR_ERR(copy);
-+
-+	root = d_inode(f->f_path.dentry->d_parent);
-+	inode_lock(root);
-+	old = ipe_update_policy(root, NULL, 0, copy, len);
-+	inode_unlock(root);
-+
-+	kfree(copy);
-+	if (IS_ERR(old))
-+		return PTR_ERR(old);
-+	ipe_free_policy(old);
++	WRITE_ONCE(success_audit, value);
 +
 +	return len;
 +}
 +
 +/**
-+ * delete_policy - write handler for  "ipe/policies/$name/delete".
++ * getaudit - Read handler for the securityfs node, "ipe/success_audit"
 + * @f: Supplies a file structure representing the securityfs node.
-+ * @data: Supplies a buffer passed to the write syscall.
++ * @data: Supplies a buffer passed to the read syscall.
 + * @len: Supplies the length of @data.
 + * @offset: unused.
-+ *
-+ * On success this deletes the policy represented by $name.
 + *
 + * Return:
 + * * >0	- Success, Length of buffer written
 + * * <0	- Error
 + */
-+static ssize_t delete_policy(struct file *f, const char __user *data,
-+			     size_t len, loff_t *offset)
++static ssize_t getaudit(struct file *f, char __user *data,
++			size_t len, loff_t *offset)
 +{
-+	int rc = 0;
-+	bool value = false;
-+	struct inode *root = NULL;
-+	struct ipe_policy *p = NULL;
-+	struct ipe_policy *ap = NULL;
++	const char *result;
 +
-+	if (!file_ns_capable(f, &init_user_ns, CAP_MAC_ADMIN))
-+		return -EPERM;
++	result = ((READ_ONCE(success_audit)) ? "1" : "0");
 +
-+	rc = kstrtobool_from_user(data, len, &value);
++	return simple_read_from_buffer(data, len, offset, result, 1);
++}
+ 
+ /**
+  * new_policy - Write handler for the securityfs node, "ipe/new_policy".
+@@ -46,6 +99,10 @@ static ssize_t new_policy(struct file *f, const char __user *data,
+ 	}
+ 
+ 	rc = ipe_new_policyfs_node(p);
 +	if (rc)
-+		return rc;
++		goto out;
 +
-+	if (!value)
-+		return -EINVAL;
++	ipe_audit_policy_load(p);
+ 
+ out:
+ 	if (rc < 0)
+@@ -58,6 +115,11 @@ static const struct file_operations np_fops = {
+ 	.write = new_policy,
+ };
+ 
++static const struct file_operations audit_fops = {
++	.write = setaudit,
++	.read = getaudit,
++};
 +
-+	root = d_inode(f->f_path.dentry->d_parent);
-+	inode_lock(root);
-+	p = (struct ipe_policy *)root->i_private;
-+	if (!p) {
-+		inode_unlock(root);
-+		return -ENOENT;
+ /**
+  * ipe_init_securityfs - Initialize IPE's securityfs tree at fsinit.
+  *
+@@ -78,6 +140,13 @@ static int __init ipe_init_securityfs(void)
+ 		goto err;
+ 	}
+ 
++	audit_node = securityfs_create_file("success_audit", 0600, root,
++					    NULL, &audit_fops);
++	if (IS_ERR(audit_node)) {
++		rc = PTR_ERR(audit_node);
++		goto err;
 +	}
 +
-+	mutex_lock(&ipe_policy_lock);
-+	ap = rcu_dereference_protected(ipe_active_policy,
-+				       lockdep_is_held(&ipe_policy_lock));
-+	if (p == ap) {
-+		mutex_unlock(&ipe_policy_lock);
-+		inode_unlock(root);
-+		return -EPERM;
-+	}
-+	mutex_unlock(&ipe_policy_lock);
-+
-+	root->i_private = NULL;
-+	inode_unlock(root);
-+
-+	ipe_free_policy(p);
-+	return len;
-+}
-+
-+static const struct file_operations content_fops = {
-+	.read = read_policy,
+ 	policy_root = securityfs_create_dir("policies", root);
+ 	if (IS_ERR(policy_root)) {
+ 		rc = PTR_ERR(policy_root);
+@@ -94,6 +163,7 @@ static int __init ipe_init_securityfs(void)
+ err:
+ 	securityfs_remove(np);
+ 	securityfs_remove(policy_root);
++	securityfs_remove(audit_node);
+ 	securityfs_remove(root);
+ 	return rc;
+ }
+diff --git a/security/ipe/hooks.c b/security/ipe/hooks.c
+index 8ee105bf7bad..ab762865a671 100644
+--- a/security/ipe/hooks.c
++++ b/security/ipe/hooks.c
+@@ -28,7 +28,7 @@ int ipe_bprm_check_security(struct linux_binprm *bprm)
+ {
+ 	struct ipe_eval_ctx ctx = IPE_EVAL_CTX_INIT;
+ 
+-	build_eval_ctx(&ctx, bprm->file, IPE_OP_EXEC);
++	build_eval_ctx(&ctx, bprm->file, IPE_OP_EXEC, IPE_HOOK_BPRM_CHECK);
+ 	return ipe_evaluate_event(&ctx);
+ }
+ 
+@@ -53,7 +53,7 @@ int ipe_mmap_file(struct file *f, unsigned long reqprot __always_unused,
+ 	struct ipe_eval_ctx ctx = IPE_EVAL_CTX_INIT;
+ 
+ 	if (prot & PROT_EXEC) {
+-		build_eval_ctx(&ctx, f, IPE_OP_EXEC);
++		build_eval_ctx(&ctx, f, IPE_OP_EXEC, IPE_HOOK_MMAP);
+ 		return ipe_evaluate_event(&ctx);
+ 	}
+ 
+@@ -85,7 +85,7 @@ int ipe_file_mprotect(struct vm_area_struct *vma,
+ 		return 0;
+ 
+ 	if (prot & PROT_EXEC) {
+-		build_eval_ctx(&ctx, vma->vm_file, IPE_OP_EXEC);
++		build_eval_ctx(&ctx, vma->vm_file, IPE_OP_EXEC, IPE_HOOK_MPROTECT);
+ 		return ipe_evaluate_event(&ctx);
+ 	}
+ 
+@@ -135,7 +135,7 @@ int ipe_kernel_read_file(struct file *file, enum kernel_read_file_id id,
+ 		WARN(1, "no rule setup for kernel_read_file enum %d", id);
+ 	}
+ 
+-	build_eval_ctx(&ctx, file, op);
++	build_eval_ctx(&ctx, file, op, IPE_HOOK_KERNEL_READ);
+ 	return ipe_evaluate_event(&ctx);
+ }
+ 
+@@ -179,7 +179,7 @@ int ipe_kernel_load_data(enum kernel_load_data_id id, bool contents)
+ 		WARN(1, "no rule setup for kernel_load_data enum %d", id);
+ 	}
+ 
+-	build_eval_ctx(&ctx, NULL, op);
++	build_eval_ctx(&ctx, NULL, op, IPE_HOOK_KERNEL_LOAD);
+ 	return ipe_evaluate_event(&ctx);
+ }
+ 
+diff --git a/security/ipe/hooks.h b/security/ipe/hooks.h
+index 3b1bb0a6e89c..55fc0e35c13d 100644
+--- a/security/ipe/hooks.h
++++ b/security/ipe/hooks.h
+@@ -9,6 +9,17 @@
+ #include <linux/binfmts.h>
+ #include <linux/security.h>
+ 
++enum ipe_hook_type {
++	IPE_HOOK_BPRM_CHECK = 0,
++	IPE_HOOK_MMAP,
++	IPE_HOOK_MPROTECT,
++	IPE_HOOK_KERNEL_READ,
++	IPE_HOOK_KERNEL_LOAD,
++	__IPE_HOOK_MAX
 +};
 +
-+static const struct file_operations pkcs7_fops = {
-+	.read = read_pkcs7,
-+};
++#define IPE_HOOK_INVALID __IPE_HOOK_MAX
 +
-+static const struct file_operations name_fops = {
-+	.read = read_name,
-+};
+ int ipe_bprm_check_security(struct linux_binprm *bprm);
+ 
+ int ipe_mmap_file(struct file *f, unsigned long reqprot, unsigned long prot,
+diff --git a/security/ipe/policy.c b/security/ipe/policy.c
+index 61fea3e38e11..a5e5173a6c46 100644
+--- a/security/ipe/policy.c
++++ b/security/ipe/policy.c
+@@ -11,6 +11,7 @@
+ #include "fs.h"
+ #include "policy.h"
+ #include "policy_parser.h"
++#include "audit.h"
+ 
+ /* lock for synchronizing writers across ipe policy */
+ DEFINE_MUTEX(ipe_policy_lock);
+@@ -115,6 +116,7 @@ struct ipe_policy *ipe_update_policy(struct inode *root,
+ 
+ 	root->i_private = new;
+ 	swap(new->policyfs, old->policyfs);
++	ipe_audit_policy_load(new);
+ 
+ 	mutex_lock(&ipe_policy_lock);
+ 	ap = rcu_dereference_protected(ipe_active_policy,
+@@ -123,6 +125,7 @@ struct ipe_policy *ipe_update_policy(struct inode *root,
+ 		rcu_assign_pointer(ipe_active_policy, new);
+ 		mutex_unlock(&ipe_policy_lock);
+ 		synchronize_rcu();
++		ipe_audit_policy_activation(old, new);
+ 	} else {
+ 		mutex_unlock(&ipe_policy_lock);
+ 	}
+@@ -220,5 +223,7 @@ int ipe_set_active_pol(const struct ipe_policy *p)
+ 	mutex_unlock(&ipe_policy_lock);
+ 	synchronize_rcu();
+ 
++	ipe_audit_policy_activation(ap, p);
 +
-+static const struct file_operations ver_fops = {
-+	.read = read_version,
-+};
-+
-+static const struct file_operations active_fops = {
-+	.write = setactive,
-+	.read = getactive,
-+};
-+
-+static const struct file_operations update_fops = {
-+	.write = update_policy,
-+};
-+
-+static const struct file_operations delete_fops = {
-+	.write = delete_policy,
-+};
-+
-+/**
-+ * policy_subdir - files under a policy subdirectory
-+ */
-+static const struct ipefs_file policy_subdir[] = {
-+	{ "pkcs7", 0444, &pkcs7_fops },
-+	{ "policy", 0444, &content_fops },
-+	{ "name", 0444, &name_fops },
-+	{ "version", 0444, &ver_fops },
-+	{ "active", 0600, &active_fops },
-+	{ "update", 0200, &update_fops },
-+	{ "delete", 0200, &delete_fops },
-+};
-+
-+/**
-+ * ipe_del_policyfs_node - Delete a securityfs entry for @p.
-+ * @p: Supplies a pointer to the policy to delete a securityfs entry for.
-+ */
-+void ipe_del_policyfs_node(struct ipe_policy *p)
-+{
-+	securityfs_recursive_remove(p->policyfs);
-+	p->policyfs = NULL;
-+}
-+
-+/**
-+ * ipe_new_policyfs_node - Create a securityfs entry for @p.
-+ * @p: Supplies a pointer to the policy to create a securityfs entry for.
-+ *
-+ * Return:
-+ * * 0	- OK
-+ * * !0	- Error
-+ */
-+int ipe_new_policyfs_node(struct ipe_policy *p)
-+{
-+	int rc = 0;
-+	size_t i = 0;
-+	struct dentry *d = NULL;
-+	struct dentry *policyfs = NULL;
-+	struct inode *root = NULL;
-+	const struct ipefs_file *f = NULL;
-+
-+	if (p->policyfs)
-+		return 0;
-+
-+	policyfs = securityfs_create_dir(p->parsed->name, policy_root);
-+	if (IS_ERR(policyfs))
-+		return PTR_ERR(policyfs);
-+
-+	root = d_inode(policyfs);
-+
-+	for (i = 0; i < ARRAY_SIZE(policy_subdir); ++i) {
-+		f = &policy_subdir[i];
-+
-+		d = securityfs_create_file(f->name, f->access, policyfs,
-+					   NULL, f->fops);
-+		if (IS_ERR(d)) {
-+			rc = PTR_ERR(d);
-+			goto err;
-+		}
-+	}
-+
-+	inode_lock(root);
-+	p->policyfs = policyfs;
-+	root->i_private = p;
-+	inode_unlock(root);
-+
-+	return 0;
-+err:
-+	securityfs_recursive_remove(policyfs);
-+	return rc;
-+}
+ 	return 0;
+ }
 -- 
 2.43.0
 
