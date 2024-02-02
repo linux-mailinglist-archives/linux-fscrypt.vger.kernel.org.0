@@ -1,133 +1,133 @@
-Return-Path: <linux-fscrypt+bounces-162-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-163-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A58B844F46
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  1 Feb 2024 03:59:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1141847912
+	for <lists+linux-fscrypt@lfdr.de>; Fri,  2 Feb 2024 20:06:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F40F8B25C57
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  1 Feb 2024 02:59:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1EEC296CFD
+	for <lists+linux-fscrypt@lfdr.de>; Fri,  2 Feb 2024 19:06:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F1063A1AB;
-	Thu,  1 Feb 2024 02:59:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JDkzbTij"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6163C12C7EE;
+	Fri,  2 Feb 2024 18:52:01 +0000 (UTC)
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 124B53A1B4
-	for <linux-fscrypt@vger.kernel.org>; Thu,  1 Feb 2024 02:59:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA023126F26
+	for <linux-fscrypt@vger.kernel.org>; Fri,  2 Feb 2024 18:51:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706756388; cv=none; b=Sr0+rSsk2nQOqxEVx+B/fysmU/DmIHLuAXRGlLbKH08RdY7tkIGVYsYMLcrHaqHr/f38/WQoz4yCPp4OTlT/2fO/T2S77VJJw7gTeeHhUhrP/ALFoR75JexZhoJS2AAmIquY6hOoVjkGvDS/gUV7TkYSggwLtk2UsAoRnrViI/Q=
+	t=1706899921; cv=none; b=Zq4nRLYeaASiK7M+REbUnZGipAo/S3KeAMA9ApSL3RU0cRuw9rsFf5IlBoowraD1UIaBBSyBMTQYPMMa54vlaa08bdKXdxmVT6Fm0DPYVfdtl+LBhQHL75aQ7a1bNowDHfKduqfG6VqF1Jo5c7hUXRny+Z36PAdEf+pHO51u0B0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706756388; c=relaxed/simple;
-	bh=5gKmwqTiX//bw8dcuurwVdti6uUWSqDtZl+dcrFZ1I4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=L5dApNhO3dW5b7srVNv0NxKfzcoQ8UyXT/w8b4nFPCYaQNznIWgOIsF05yVUxNvR2NABZZsDtU+l1Xok/4eMdSz0yLcAQV6NwdfUZ1O/ijDqmCXhUuUeIFyQdsfD3EbKezCnQQyCq79J+p1zI3/H8eQ4JNqTPo3332UnEscnksw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JDkzbTij; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+	s=arc-20240116; t=1706899921; c=relaxed/simple;
+	bh=AW0oiHNRWLwkj7DtXqlQs47sAiZxxTl/D0PavmFNNso=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GvARSToDZaV6xr1xntEvnVGeGzjyLzphJIfKtfqW7quhjtEgKlU7gqb3X6D6MbR0vXphY6vBV42PYlWyNC18KSHwTUgWDYunJgkcWqxwYj8Jg+QrkVyBTS5A4RQVy1L8Q5BIXDgL7Lepszc20CaPAq3Yw5ma+AJMMBqPtCCc50A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=redhat.com; arc=none smtp.client-ip=209.85.128.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706756384;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0K09n4KM4GfA4ieYr3u7htlPmiCBvQiYCmB4ilutQSI=;
-	b=JDkzbTijMGR1Tpwh4grFA5TIzH2nQuYbHUQjCXd4+muHBp2OdTsACmo1VJCfKwFS4hCH+j
-	tjhJFBIbzPRUVBOEgOMqiKO5xccSacbCthR1ogVtBpZxj4LECQUKR2aNIs1PYQYyOpxw9u
-	M0dAEgk0b6DF55dKxJkm8Tu6ehRjW8g=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-216-I1hYocdEMyebAnH2DDDQig-1; Wed, 31 Jan 2024 21:59:42 -0500
-X-MC-Unique: I1hYocdEMyebAnH2DDDQig-1
-Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-292bc8b6b7cso391636a91.2
-        for <linux-fscrypt@vger.kernel.org>; Wed, 31 Jan 2024 18:59:41 -0800 (PST)
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-6041779e75eso25487557b3.3
+        for <linux-fscrypt@vger.kernel.org>; Fri, 02 Feb 2024 10:51:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706756381; x=1707361181;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0K09n4KM4GfA4ieYr3u7htlPmiCBvQiYCmB4ilutQSI=;
-        b=ppHhv2QMMS0Mxkg0EYrLlfGBRRzUEFTUhi8LxBrJLeX97XoQyopBQMn7N4EVsgFXIO
-         jnQP9a8GzzIFcVuLgBRyhpq+ERWVZ7pRNKHMCMw3LY0HMtMTXpYbliMDXgMwKmxZKkpL
-         CMD+QkHtbEHy7egbzJ0XUxS90iTUkAYhHIKq1OOVmyW7F2XvYEgnRdUW31eL5ycNZs4S
-         uqBxH0AizeRvcLKJPl/Rc6RsS7yEUYKUXc1N3O7NeEHLGHcXE8FsQYc7HFGHopQY9DMx
-         7B0rgMf/BffVllpmtIHq3SFbLBLlH4hmNF4AIaOWkXB5o/My5WSJW74wcuKlhetIMpR7
-         i6hg==
-X-Gm-Message-State: AOJu0YxK0pf3zgyuNaqxkiJ0o4LVZbxDQnUYirOuIJJKDx5NBmPJ+rIq
-	JNhHZ1OVyvwMw4sAa/T+Gj0ZnQfEd3ihcA0ALfgp00Lb1YzP+ymo3g9Mu6vHEBJ/2zzOUjvvpZz
-	b83w8f9N9IwB1GOOgVEiP33IZH0QgOaPi1LLHk3M+g/rPyIv1I+ZSDt6nJxpMK9g=
-X-Received: by 2002:a17:90a:ce18:b0:294:7038:777d with SMTP id f24-20020a17090ace1800b002947038777dmr3901977pju.13.1706756381070;
-        Wed, 31 Jan 2024 18:59:41 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF0ZQ2E5GxhjYagXcM2WpAQ5CV3eNZ5+T0wmWcpW9bT04Oir0NC6ttw5pobxxz+SLpJhTJo0Q==
-X-Received: by 2002:a17:90a:ce18:b0:294:7038:777d with SMTP id f24-20020a17090ace1800b002947038777dmr3901969pju.13.1706756380799;
-        Wed, 31 Jan 2024 18:59:40 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVsjvS8L1o8MG8eurFUAa7zDMjUJgz7DPAVdr13C1+E7gDNRiJUiMRYodfSCKOiaKxZOxE2VZtzSnPzmXvRWCQ2VUGoeu++Ovg8wbdO/9vvgRQDc1tkd1CYI6sYttHd/336382BGsRYwjCIaCII8i/GcCsvSKaYKPXw+HLH869NJx6RTmpLkDQt3Ktfjim/OnmkAOQsbDk8KFRYy43G5MrZgajVitt3fqRzTC5hn2s21grwSOR/vz9yaZzHilnZPEn3XTIDswmDHsA4MVUpdQG81c8CH3jOjJ5KzL7RBg==
-Received: from [10.72.113.26] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id v6-20020a17090a088600b00295be790dfesm2225567pjc.17.2024.01.31.18.59.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Jan 2024 18:59:40 -0800 (PST)
-Message-ID: <2fccdb02-3b66-40b9-a0d7-a79fe7c5580a@redhat.com>
-Date: Thu, 1 Feb 2024 10:59:35 +0800
+        d=1e100.net; s=20230601; t=1706899917; x=1707504717;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ph1IYkDrzTvpiJ6XKsi8PGQTmUGSqWuwAi9y4521vtI=;
+        b=tkXs0UINYA6YfyLYpvkvJ00RtzKJr8dh6gB/KMdBK8Kp+tZ3Kxg7K/gPjpEs2sJ+NF
+         Jtcum/MhA08054hG3wUD8FbfGGvSlDcwHJJZAgc7BwFQF+OYG8h+qZJvfrbZYUFHBQZ0
+         K1Np8VxLrD/Ww87RmoXRpa5lxu4e7FJdqwSytTtjWR9dDB6/+oMPxauSPJL9840CAmLt
+         9Lcct6/UMtP1cIDQn7NhL62HSqQaV2RSc4KzxctZHqbAOPN/e5M24rQ0JuoJIGObBxz8
+         /+0m65mghGVLdksegh/Kr6GABgtlVmwjlXT16PpkiKdMNQlH5i4Tx5ZKW9HSxKy7tzrv
+         uhEg==
+X-Gm-Message-State: AOJu0YyGdFiFpBKMBgB1ESUMOuIqyHkCmzDNI6tIjokc4pGP1WVNnNE7
+	40pP2Vgc8xWrm+b6BJ4AZITjLUPnulkMzfBpklApvYjBf0WF0oHGr+3jC75sRA==
+X-Google-Smtp-Source: AGHT+IHzSoy9sIqCe1trQy3sTBHypeAjU5TzDYa4rgE3LRbYzokk0H0wQROhLE8FkkUDyWBrdMh9UA==
+X-Received: by 2002:a81:ac67:0:b0:5ff:76c5:f638 with SMTP id z39-20020a81ac67000000b005ff76c5f638mr3220501ywj.21.1706899917047;
+        Fri, 02 Feb 2024 10:51:57 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCU5x0xesXnhPy9m+vbgtSeOvE2jww0i9Tjwtxsc+mWeiLpLHghmb3RgoPY4YlidsLDnh9x3De8P3Dt9d1SJ7zGdzjLP/BsqZYFGfpX1puybWRRjrAAqPrg6Ktc8pax+N869iCi2gOcJbZZaWcQSktZSCeyT40FCSqnrcPP3UwjwDlVFLZoMx8qVs2n3M7YiWUkTgPNrsW2NRUz+4Zo6ugS/86mC8XQAAWeTDT30JbBuV1XpdNX6nasJOGugz/oIEXSbcc560klHxu8kvj/237+hpVYVAeZAK9DwJZWTY0Tjhca9jtDd8n/nQxV302xWv0NqEu1BA4vMtf6AnIObINSGPRgeKt4GPfSHZxE4BMcZr6ONdXo9a2X1LVp17xYh7WlvWMXkIoRv7dYsAL3mW1QhG7rG1PVX33RFouQqbcgRQGIZ3FOUR0iO+rJU1ytJnDXNxfAEgAJfYvyWTd/N/s5vToYaZSWrWvg8t0HVG3/vcmIwTys+Rw7VuwvRAkdhSN2dhSyqk54dvFfYaKBoy2VbmNiA9bbraj9ohjRfLOxXqCPhCU7j6S9XCfmrOZOScFaQLApOiuY/h1xNV0lnsal7Tv+3
+Received: from localhost (pool-68-160-141-91.bstnma.fios.verizon.net. [68.160.141.91])
+        by smtp.gmail.com with ESMTPSA id gd19-20020a05622a5c1300b0042992b06012sm1080669qtb.2.2024.02.02.10.51.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Feb 2024 10:51:56 -0800 (PST)
+Date: Fri, 2 Feb 2024 13:51:55 -0500
+From: Mike Snitzer <snitzer@kernel.org>
+To: Fan Wu <wufan@linux.microsoft.com>
+Cc: corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
+	serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org,
+	axboe@kernel.dk, agk@redhat.com, eparis@redhat.com,
+	paul@paul-moore.com, linux-doc@vger.kernel.org,
+	linux-integrity@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
+	dm-devel@lists.linux.dev, audit@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v12 12/20] dm verity: set DM_TARGET_SINGLETON feature
+ flag
+Message-ID: <Zb05y2cl3T9rxRJZ@redhat.com>
+References: <1706654228-17180-1-git-send-email-wufan@linux.microsoft.com>
+ <1706654228-17180-13-git-send-email-wufan@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] fscrypt: to make sure the inode->i_blkbits is
- correctly set
-Content-Language: en-US
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: linux-fscrypt@vger.kernel.org, tytso@mit.edu, jaegeuk@kernel.org,
- linux-kernel@vger.kernel.org, idryomov@gmail.com,
- ceph-devel@vger.kernel.org, jlayton@kernel.org, vshankar@redhat.com,
- mchangir@redhat.com
-References: <20240201003525.1788594-1-xiubli@redhat.com>
- <20240201024828.GA1526@sol.localdomain>
-From: Xiubo Li <xiubli@redhat.com>
-In-Reply-To: <20240201024828.GA1526@sol.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1706654228-17180-13-git-send-email-wufan@linux.microsoft.com>
 
+On Tue, Jan 30 2024 at  5:37P -0500,
+Fan Wu <wufan@linux.microsoft.com> wrote:
 
-On 2/1/24 10:48, Eric Biggers wrote:
-> On Thu, Feb 01, 2024 at 08:35:25AM +0800, xiubli@redhat.com wrote:
->> From: Xiubo Li <xiubli@redhat.com>
->>
->> The inode->i_blkbits should be already set before calling
->> fscrypt_get_encryption_info() and it will use this to setup the
->> ci_data_unit_bits later.
->>
->> URL: https://tracker.ceph.com/issues/64035
->> Signed-off-by: Xiubo Li <xiubli@redhat.com>
-> Thanks, applied.  I adjusted the commit message to make it clear what the patch
-> actually does:
->
-> commit 5befc19caec93f0088595b4d28baf10658c27a0f
-> Author: Xiubo Li <xiubli@redhat.com>
-> Date:   Thu Feb 1 08:35:25 2024 +0800
->
->      fscrypt: explicitly require that inode->i_blkbits be set
->
->      Document that fscrypt_prepare_new_inode() requires inode->i_blkbits to
->      be set, and make it WARN if it's not.  This would have made the CephFS
->      bug https://tracker.ceph.com/issues/64035 a bit easier to debug.
->
->      Signed-off-by: Xiubo Li <xiubli@redhat.com>
->      Link: https://lore.kernel.org/r/20240201003525.1788594-1-xiubli@redhat.com
->      Signed-off-by: Eric Biggers <ebiggers@google.com>
->
-Ack, thanks Eric.
+> The device-mapper has a flag to mark targets as singleton, which is a
+> required flag for immutable targets. Without this flag, multiple
+> dm-verity targets can be added to a mapped device, which has no
+> practical use cases and will let dm_table_get_immutable_target return
+> NULL. This patch adds the missing flag, restricting only one
+> dm-verity target per mapped device.
+> 
+> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
+> 
+> ---
+> v1-v10:
+>   + Not present
+> 
+> v11:
+>   + Introduced
+> 
+> v12:
+>   + No changes
+> ---
+>  drivers/md/dm-verity-target.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/md/dm-verity-target.c b/drivers/md/dm-verity-target.c
+> index 14e58ae70521..66a850c02be4 100644
+> --- a/drivers/md/dm-verity-target.c
+> +++ b/drivers/md/dm-verity-target.c
+> @@ -1507,7 +1507,7 @@ int dm_verity_get_root_digest(struct dm_target *ti, u8 **root_digest, unsigned i
+>  
+>  static struct target_type verity_target = {
+>  	.name		= "verity",
+> -	.features	= DM_TARGET_IMMUTABLE,
+> +	.features	= DM_TARGET_SINGLETON | DM_TARGET_IMMUTABLE,
+>  	.version	= {1, 9, 0},
+>  	.module		= THIS_MODULE,
+>  	.ctr		= verity_ctr,
+> -- 
+> 2.43.0
+> 
+> 
 
-- Xiubo
+It is true this change will cause dm_table_get_immutable_target() to
+not return NULL, but: I'm curious how that is meaningful in the
+context of dm-verity? (given the only caller of
+dm_table_get_immutable_target() is request-based DM code in DM core.)
 
-
+Thanks,
+Mike
 
