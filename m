@@ -1,218 +1,171 @@
-Return-Path: <linux-fscrypt+bounces-171-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-172-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBAB0848947
-	for <lists+linux-fscrypt@lfdr.de>; Sat,  3 Feb 2024 23:26:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4111F84A887
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  5 Feb 2024 23:05:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 93CB2284873
-	for <lists+linux-fscrypt@lfdr.de>; Sat,  3 Feb 2024 22:26:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D31551F2CC82
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  5 Feb 2024 22:05:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A47165EE8B;
-	Sat,  3 Feb 2024 22:25:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01FB94D5B0;
+	Mon,  5 Feb 2024 21:18:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="J/uH5NKt"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="W8TAC/No"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65A1017C76
-	for <linux-fscrypt@vger.kernel.org>; Sat,  3 Feb 2024 22:25:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.45
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EDC01AB807;
+	Mon,  5 Feb 2024 21:18:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706999120; cv=none; b=A4LUg7QnTGw1wMBn3qJGa01787mi82ipX/gXpMZnb5fpurJkjuBcGRCn/bO+Kgs65xufMHUWZY1cmiv+NK8Nef7PpHMe6gcLLTaUjBpSxe3bBnMz39LZGeto3AjOvWUjdZIwzYweIX/0HSg3kgSTQ+KE0bwqOEkbzQCd11yoshU=
+	t=1707167885; cv=none; b=NXr3hwdCHpzIW+fj6a1pQ1myxallHAiuK7AYuVvi0Gk2kXxaQPCdC7QzLCTDiFKhMDHUn91kctFgJCpTL2BH4Hi3U6yOz7uU/EFk7976CtlYEol28YuNCmHiGbjdTDXquPCVS/uUIN7qwaxmM++GMl3PIy/+eym2oj0x1P+Dzu8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706999120; c=relaxed/simple;
-	bh=SfIYK1su40Btbzwh9h/WPttvVQMpLhlqw0vBaWGjdhM=;
-	h=Date:Message-ID:MIME-Version:Content-Type:Content-Disposition:
-	 From:To:Cc:Subject:References:In-Reply-To; b=OQt6uBJmYfrqv+2uVYZ9Ajk4XRpH+3L/HEh9AvG3sCWF6m8vcqPnw7RotkSMd96J+Gv8p4IBZjSyohPVXhbwgxy81r/U7sXXfwTk0qfwlelUUbhkNK7UOyBcVWoJmxRV2XZAQAp6HldujUfXt1HTQ6XkcacdhqBf/C+UU9yjXro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=J/uH5NKt; arc=none smtp.client-ip=209.85.219.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-68c444f9272so16538016d6.3
-        for <linux-fscrypt@vger.kernel.org>; Sat, 03 Feb 2024 14:25:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1706999115; x=1707603915; darn=vger.kernel.org;
-        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
-         :content-disposition:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=eYMBgL8MVRc+c8Obik/r6XMkhyTvtmEMtGv6GQz3E8M=;
-        b=J/uH5NKt6e8BtJe+WzEKhJtKx0JwSMzdUT2qgVJMYAe9ULoNn8HtagAZDriTrETaSk
-         yFhO5z+rdza1UElV6MzsQaM/dVXNBddjPclQHpmeTQYwOv+e/uVF2qV1A7AG/Ns/ncGk
-         YvXNKTvF2Ox08/AmTd4RGR28Qhf7eU6ICQanjTiG+EzzE6eraAgBGMyEDPw5vgWB6z0K
-         IaNqyTFieWPm5GbE6SOj5Eby/eCtfcLNX0XJNL7QLO1uq7VLvAUIj0kj6r+1D5MO07kH
-         yoalB0h+4y3D4E6FwS5w5hw+23nx/uC6LqtJefUiaU2tfD4U8DRhWnSHc6eG7rDQmrsW
-         +1eA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706999115; x=1707603915;
-        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
-         :content-disposition:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=eYMBgL8MVRc+c8Obik/r6XMkhyTvtmEMtGv6GQz3E8M=;
-        b=FOs7QJMozq2x0gdNTi1qGLmc72NuwE1UwRIuU0CVD5f9OZnnQ7QSs3iV7r6W/yMq2m
-         W8Bvwp7ROcPtXyPOEqCLC6siPH6ERb+49D9IB+ABM5E4Ridr1DPunfVK61hFT3eF/Qta
-         8dXX0aqp4PSAOP/+3d8U9gZTtGY7cJkK1cDI2fg8j7ERGP3a3jOiG62p/HQjHL7jWeUM
-         WHp7WezVr5qrE+ky/u02OUklBJtsw2WSMIPqLL2IIshUo7w47Ec2M/K7gbhoA+9mrJYs
-         3vRE7kz5cDUvsBww4+KbsxtRxu9IcE0dfq4C36ndHsonMON3uITKUWU+Cn6azolyzVll
-         BKkw==
-X-Gm-Message-State: AOJu0YwRljABcjunhWEO27gKvmRtkB3HmEQUV7qDCExu98lV8o6xJ+Ks
-	ifgAJCLYFjvpNk44LK4NiUVJn09QD6AuFZORj/wcZSfHulj6P0FgXTN5sCx1rA==
-X-Google-Smtp-Source: AGHT+IFonCheK9ok4vSWJlZhijrFa0a0OwwetL207sTElMhHj+g0ohLs2URRe9XQtpkgkwCWh7FbGQ==
-X-Received: by 2002:ad4:4ea1:0:b0:68c:92cb:31d1 with SMTP id ed1-20020ad44ea1000000b0068c92cb31d1mr3563850qvb.22.1706999115350;
-        Sat, 03 Feb 2024 14:25:15 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVeTtSs7m2zq+X4vVccPH0Lh0uJFawcGHKNxhIksdLH3uIcDXBjnU7CFZiYLkws0aqU9yqs6KO/2dF1WPwe2mbE/wIR2jKgeYsdvQi4Cgh5cFbpr2u0pHh1j58dsGoxmrtS2VKy1TQhsd6MdZr+m0otcAq69IGsJncSYNzGlDj9ZarrbPqTmvGQzB5ttBfL9Ek9JteSJYEzdhm9NHXzIve6Lbu9X3oHaaxVEVMG9utY7OFCe1bBV2NcNtCrM53YTVBPkfW1guTVLmXV+O/Ih1o8LXBK8GWk4ltLYvN2K5aEgItmvB6FAEBYmn8CkIdY1pipwUSx6J3E5DB+NjVK++DJMplUINL2OdXHKM4sK0yZLj/OatW/uGk4ubWqf01+KC2pRcUlLF8uuaILJ2AUB8Cq+ar1NAExM2V2ydZ+XVPaBc1CDcWSv2y0JvX1mZLpReRfzWMx9tgBB+E3ScOyb439LZGVLJSksqIrns9bU1VYIb8MWW8TxRRYgQ0XHoq1bBqW9B+UrEXYzDwM2QV5R+9HQDTxYl8GbPSOj59Ps6o5YUnEpd3OqqVFIh03bXVpcDgihZ3LJSXzj830Oj5popwCoaGM24jW07UMSEaIWKdR4wJLx1gTnt2T
-Received: from localhost ([70.22.175.108])
-        by smtp.gmail.com with ESMTPSA id pc5-20020a056214488500b0068c968c3b33sm637500qvb.20.2024.02.03.14.25.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Feb 2024 14:25:14 -0800 (PST)
-Date: Sat, 03 Feb 2024 17:25:14 -0500
-Message-ID: <f57cb0772ff39a00ec578e178e1b8c38@paul-moore.com>
+	s=arc-20240116; t=1707167885; c=relaxed/simple;
+	bh=/Enu6bwQmdx49axHA/1lmJJgKYU6G8zyTZPbq9OH+ck=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CH7Uxpf3Cez8k7ZdIDuPUiiMg1kLZg5cecEHRLfRZ7OEIDG4p/8d5BYOvoOxnO9ebiuiBCez4yzN0H7+C9rP2x9koyqw/0Iz5sRxCbwgnXPwMryetGmJ1XlScJNKjJx/WDTPlDZTPff+sbwZ7Xn7w5VdP6NWOFKbwJOqid+IFX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=W8TAC/No; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from [10.137.106.151] (unknown [131.107.8.87])
+	by linux.microsoft.com (Postfix) with ESMTPSA id B65FB20B2000;
+	Mon,  5 Feb 2024 13:18:03 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B65FB20B2000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1707167883;
+	bh=H595nLqKN1iU7O92UiJT9PEuwtk7Rd1yCbWBC1ZA8Dk=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=W8TAC/No1VdGRZqMNpbRyarbJ0N1ksbo6q9VDwms6JAikfNWLiPh8pBpJItN4CS23
+	 IfusA0S7VmJXlzwz6fInL7nOKKj4xPLnLwKrHbC0DxeKFY9uDlKLJYrmJTNL3IsRxQ
+	 NhwWoikC1Q5N62rvYtOFqHGPmfxebEyKNmpVRN1s=
+Message-ID: <13daca32-ee3f-46f5-a6ca-66bb02726e5c@linux.microsoft.com>
+Date: Mon, 5 Feb 2024 13:18:03 -0800
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 
-Content-Type: text/plain; charset=utf-8 
-Content-Disposition: inline 
-Content-Transfer-Encoding: 8bit
-From: Paul Moore <paul@paul-moore.com>
-To: Fan Wu <wufan@linux.microsoft.com>, corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org, axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org, eparis@redhat.com
-Cc: linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org, linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org, dm-devel@lists.linux.dev, audit@vger.kernel.org, linux-kernel@vger.kernel.org, Fan Wu <wufan@linux.microsoft.com>, Deven Bowers <deven.desai@linux.microsoft.com>
-Subject: Re: [PATCH RFC v12 17/20] ipe: enable support for fs-verity as a trust  provider
-References: <1706654228-17180-18-git-send-email-wufan@linux.microsoft.com>
-In-Reply-To: <1706654228-17180-18-git-send-email-wufan@linux.microsoft.com>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC v12 5/20] initramfs|security: Add security hook to
+ initramfs unpack
+To: Paul Moore <paul@paul-moore.com>, corbet@lwn.net, zohar@linux.ibm.com,
+ jmorris@namei.org, serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org,
+ axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org, eparis@redhat.com
+Cc: linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
+ linux-security-module@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+ linux-block@vger.kernel.org, dm-devel@lists.linux.dev,
+ audit@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1706654228-17180-6-git-send-email-wufan@linux.microsoft.com>
+ <b9ca171301d5abeb78922dd79d65136a@paul-moore.com>
+Content-Language: en-US
+From: Fan Wu <wufan@linux.microsoft.com>
+In-Reply-To: <b9ca171301d5abeb78922dd79d65136a@paul-moore.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Jan 30, 2024 Fan Wu <wufan@linux.microsoft.com> wrote:
-> 
-> Enable IPE policy authors to indicate trust for a singular fsverity
-> file, identified by the digest information, through "fsverity_digest"
-> and all files using fsverity's builtin signatures via
-> "fsverity_signature".
-> 
-> This enables file-level integrity claims to be expressed in IPE,
-> allowing individual files to be authorized, giving some flexibility
-> for policy authors. Such file-level claims are important to be expressed
-> for enforcing the integrity of packages, as well as address some of the
-> scalability issues in a sole dm-verity based solution (# of loop back
-> devices, etc).
-> 
-> This solution cannot be done in userspace as the minimum threat that
-> IPE should mitigate is an attacker downloads malicious payload with
-> all required dependencies. These dependencies can lack the userspace
-> check, bypassing the protection entirely. A similar attack succeeds if
-> the userspace component is replaced with a version that does not
-> perform the check. As a result, this can only be done in the common
-> entry point - the kernel.
-> 
-> Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
-> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
-> ---
-> v1-v6:
->   + Not present
-> 
-> v7:
->   Introduced
-> 
-> v8:
->   * Undo squash of 08/12, 10/12 - separating drivers/md/ from security/
->   * Use common-audit function for fsverity_signature.
->   + Change fsverity implementation to use fsverity_get_digest
->   + prevent unnecessary copy of fs-verity signature data, instead
->     just check for presence of signature data.
->   + Remove free_inode_security hook, as the digest is now acquired
->     at runtime instead of via LSM blob.
-> 
-> v9:
->   + Adapt to the new parser
-> 
-> v10:
->   + Update the fsverity get digest call
-> 
-> v11:
->   + No changes
-> 
-> v12:
->   + Fix audit format
->   + Simplify property evaluation
-> ---
->  security/ipe/Kconfig         |  13 +++++
->  security/ipe/audit.c         |  25 ++++++++
->  security/ipe/eval.c          | 108 ++++++++++++++++++++++++++++++++++-
->  security/ipe/eval.h          |  10 ++++
->  security/ipe/hooks.c         |  30 ++++++++++
->  security/ipe/hooks.h         |   7 +++
->  security/ipe/ipe.c           |  13 +++++
->  security/ipe/ipe.h           |   3 +
->  security/ipe/policy.h        |   3 +
->  security/ipe/policy_parser.c |   8 +++
->  10 files changed, 219 insertions(+), 1 deletion(-)
-> 
-> diff --git a/security/ipe/Kconfig b/security/ipe/Kconfig
-> index 7afb1ce0cb99..9dd5c4769d79 100644
-> --- a/security/ipe/Kconfig
-> +++ b/security/ipe/Kconfig
-> @@ -30,6 +30,19 @@ config IPE_PROP_DM_VERITY
->  	  that was mounted with a signed root-hash or the volume's
->  	  root hash matches the supplied value in the policy.
->  
-> +	  If unsure, answer Y.
-> +
-> +config IPE_PROP_FS_VERITY
-> +	bool "Enable property for fs-verity files"
-> +	depends on FS_VERITY && FS_VERITY_BUILTIN_SIGNATURES
-> +	help
-> +	  This option enables the usage of properties "fsverity_signature"
-> +	  and "fsverity_digest". These properties evaluates to TRUE when
-> +	  a file is fsverity enabled and with a signed digest or its
-> +	  diegst matches the supplied value in the policy.
-> +
-> +	  if unsure, answer Y.
-> +
->  endmenu
->  
->  endif
-> diff --git a/security/ipe/audit.c b/security/ipe/audit.c
-> index a4ad8e888df0..7e3372be3214 100644
-> --- a/security/ipe/audit.c
-> +++ b/security/ipe/audit.c
-> @@ -60,6 +60,11 @@ static const char *const audit_prop_names[__IPE_PROP_MAX] = {
->  	"dmverity_signature=FALSE",
->  	"dmverity_signature=TRUE",
->  #endif /* CONFIG_IPE_PROP_DM_VERITY */
-> +#ifdef CONFIG_IPE_PROP_FS_VERITY
-> +	"fsverity_digest=",
-> +	"fsverity_signature=FALSE",
-> +	"fsverity_signature=TRUE",
-> +#endif /* CONFIG_IPE_PROP_FS_VERITY */
->  };
->  
->  #ifdef CONFIG_IPE_PROP_DM_VERITY
-> @@ -79,6 +84,23 @@ static void audit_dmv_roothash(struct audit_buffer *ab, const void *rh)
->  }
->  #endif /* CONFIG_IPE_PROP_DM_VERITY */
->  
-> +#ifdef CONFIG_IPE_PROP_FS_VERITY
-> +/**
-> + * audit_fsv_digest - audit a digest of a fsverity file.
-> + * @ab: Supplies a pointer to the audit_buffer to append to.
-> + * @d: Supplies a pointer to the digest structure.
-> + */
-> +static void audit_fsv_digest(struct audit_buffer *ab, const void *d)
-> +{
-> +	audit_log_format(ab, "%s", audit_prop_names[IPE_PROP_FSV_DIGEST]);
-> +	ipe_digest_audit(ab, d);
-> +}
-> +#else
-> +static void audit_fsv_digest(struct audit_buffer *ab, const void *d)
-> +{
-> +}
-> +#endif /* CONFIG_IPE_PROP_FS_VERITY */
 
-The related dm-verify comments also apply here.
 
---
-paul-moore.com
+On 2/3/2024 2:25 PM, Paul Moore wrote:
+> On Jan 30, 2024 Fan Wu <wufan@linux.microsoft.com> wrote:
+>>
+>> This patch introduces a new hook to notify security system that the
+>> content of initramfs has been unpacked into the rootfs.
+>>
+>> Upon receiving this notification, the security system can activate
+>> a policy to allow only files that originated from the initramfs to
+>> execute or load into kernel during the early stages of booting.
+>>
+>> This approach is crucial for minimizing the attack surface by
+>> ensuring that only trusted files from the initramfs are operational
+>> in the critical boot phase.
+>>
+>> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
+>> ---
+>> v1-v11:
+>>    + Not present
+>>
+>> v12:
+>>    + Introduced
+>> ---
+>>   include/linux/lsm_hook_defs.h |  4 ++++
+>>   include/linux/security.h      | 10 ++++++++++
+>>   init/initramfs.c              |  3 +++
+>>   security/security.c           | 12 ++++++++++++
+>>   4 files changed, 29 insertions(+)
+>>
+>> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+>> index 185924c56378..b247388786a9 100644
+>> --- a/include/linux/lsm_hook_defs.h
+>> +++ b/include/linux/lsm_hook_defs.h
+>> @@ -425,3 +425,7 @@ LSM_HOOK(int, 0, uring_override_creds, const struct cred *new)
+>>   LSM_HOOK(int, 0, uring_sqpoll, void)
+>>   LSM_HOOK(int, 0, uring_cmd, struct io_uring_cmd *ioucmd)
+>>   #endif /* CONFIG_IO_URING */
+>> +
+>> +#ifdef CONFIG_BLK_DEV_INITRD
+>> +LSM_HOOK(void, LSM_RET_VOID, unpack_initramfs_security, void)
+>> +#endif /* CONFIG_BLK_DEV_INITRD */
+> 
+> Let's just call it "unpack_initramfs", the "_security" part is somewhat
+> implied since we are talking about a LSM hook ;)
+> 
+>> diff --git a/init/initramfs.c b/init/initramfs.c
+>> index 76deb48c38cb..075a5794cde5 100644
+>> --- a/init/initramfs.c
+>> +++ b/init/initramfs.c
+>> @@ -18,6 +18,7 @@
+>>   #include <linux/init_syscalls.h>
+>>   #include <linux/task_work.h>
+>>   #include <linux/umh.h>
+>> +#include <linux/security.h>
+>>   
+>>   static __initdata bool csum_present;
+>>   static __initdata u32 io_csum;
+>> @@ -720,6 +721,8 @@ static void __init do_populate_rootfs(void *unused, async_cookie_t cookie)
+>>   #endif
+>>   	}
+>>   
+>> +	security_unpack_initramfs();
+> 
+> Given the caller, what do you think of changing the hook name to
+> "security_initramfs_populated()"?  I think this not only matches up
+> better with the caller, "do_populate_rootfs()", but since in using the
+> past tense we help indicate that this hook happens *after* the rootfs
+> is populated with the initramfs data.
+> 
+
+Yeah, I agree this sounds better. I will update this part.
+
+-Fan
+>>   done:
+>>   	/*
+>>   	 * If the initrd region is overlapped with crashkernel reserved region,
+>> diff --git a/security/security.c b/security/security.c
+>> index ddf2e69cf8f2..2a527d4c69bc 100644
+>> --- a/security/security.c
+>> +++ b/security/security.c
+>> @@ -5581,3 +5581,15 @@ int security_uring_cmd(struct io_uring_cmd *ioucmd)
+>>   	return call_int_hook(uring_cmd, 0, ioucmd);
+>>   }
+>>   #endif /* CONFIG_IO_URING */
+>> +
+>> +#ifdef CONFIG_BLK_DEV_INITRD
+>> +/**
+>> + * security_unpack_initramfs() - Notify LSM that initramfs has been loaded
+>> + *
+>> + * Tells the LSM the initramfs has been unpacked into the rootfs.
+>> + */
+>> +void security_unpack_initramfs(void)
+>> +{
+>> +	call_void_hook(unpack_initramfs_security);
+>> +}
+>> +#endif /* CONFIG_BLK_DEV_INITRD */
+>> -- 
+>> 2.43.0
+> 
+> --
+> paul-moore.com
 
