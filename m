@@ -1,312 +1,301 @@
-Return-Path: <linux-fscrypt+bounces-213-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-214-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE0C486F15B
-	for <lists+linux-fscrypt@lfdr.de>; Sat,  2 Mar 2024 17:37:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B1C386F36F
+	for <lists+linux-fscrypt@lfdr.de>; Sun,  3 Mar 2024 03:54:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B2D61F22031
-	for <lists+linux-fscrypt@lfdr.de>; Sat,  2 Mar 2024 16:37:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 77F291C20DCE
+	for <lists+linux-fscrypt@lfdr.de>; Sun,  3 Mar 2024 02:54:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E25A22EF3;
-	Sat,  2 Mar 2024 16:37:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EED5233E5;
+	Sun,  3 Mar 2024 02:54:19 +0000 (UTC)
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6DDE1EB3C
-	for <linux-fscrypt@vger.kernel.org>; Sat,  2 Mar 2024 16:37:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09AFE29AF
+	for <linux-fscrypt@vger.kernel.org>; Sun,  3 Mar 2024 02:54:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709397445; cv=none; b=VbO+QlLYKlYTJesFnrCeHPE6RXn+lOLcAlbgzuM6C+sJddS8DMz2HMYpqyfEOacL+K2iMN/58P/lpwgwRGBy703vWq2xyM9ik5dO3QgSaG6FOo7/jIHuPKggof+j8czGLgkiWHs2FqCcFDQ29fKfXzrLTp+EmJcBWCGbM0whWwA=
+	t=1709434459; cv=none; b=asDTyCCrFrdsGCuxg7gqVsyGDlH0OwuOZI+qGsBhHXaBu7TQvKNGPOOVHR8Euguq3rNxC/nZLCm4G+DVMyH89VadIFSpOkLCgoYyah/XwyYE94is+pZHRvD/bfBQfoB7Eu/z9xZU+rM+q9oauAboQsKWnfFq/2eeXC9/d3dwII8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709397445; c=relaxed/simple;
-	bh=9IC3fMEoEfXo3NNBOsCfC/33CDE0noCZBrsTmZNyk4k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=L6DsKwe52AmBH8VzZV48EbnUHF07ZHzmAzTpP/mIsrsRE4fFUvgldp4TTCxtS5WfLdiTOB/ee/T0jMM1/gcmP1VWuLExs+/ZgIOQPcrxZomsCs67GzITGtaChWKdCX4GPbwsHN6ovVxq+LZT/+0puzFOh7jZOtMAzfesTXMIXg8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=redhat.com; arc=none smtp.client-ip=209.85.219.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-69012259657so13964706d6.0
-        for <linux-fscrypt@vger.kernel.org>; Sat, 02 Mar 2024 08:37:22 -0800 (PST)
+	s=arc-20240116; t=1709434459; c=relaxed/simple;
+	bh=FwrnCITE8BGr/MdGehUpv3w6mcg362NzIGJeqGZQqQo=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=QGyfbWlXbqGDV3dPDB+B13PvwW0SSeYUn0fsLbEo8ihxOJhiXrcI4/r2G9qPzQ8ih4mpYXBTAzbwMBWC/a7uCVei7n3vUrM67argoIzJ9zwVubS5ygkt7gugzoOKhe6L1KT574YIsiuRIP6T+aNNTfOnNswFi963wq6zgKdBZfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3657abf644fso38278215ab.3
+        for <linux-fscrypt@vger.kernel.org>; Sat, 02 Mar 2024 18:54:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709397441; x=1710002241;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1bU93HGrxoKEjIsJ9NGLvb4RDQbkWY7Y2iFs9PS//8I=;
-        b=MALEGVTCRE4cCTVCnQm+G2Uj1HK1LNybSugDGoenThXDhuhnM9easIkOflNYfJIj0K
-         7PBaF/oYoZsiMomJ6Z8Ds1drISzIK4EbaPMAjvrbzL4k53692xrntt5toVrFCWXsTCyf
-         3UfkolglfvfTYIZUxkG48ZsQCvlh0+DbbmDv3FMY1H9JsJwYz7fsaNi7+u0aSFIOfw39
-         rp8ZntJw/Y7bAWIrDrrhJ/nsfcw3C97ZXbR1r9qy/4w0P2WGV8aosUIMqgSE9+AZQGB9
-         WadysBWFzOr6OcXKeciziq5FBTsCLWuPt4Kvznq6OGNcG0FSKspt3fudvWIoYpcuXtwF
-         ujNw==
-X-Forwarded-Encrypted: i=1; AJvYcCWOMU/7b/SW2OyQQEySwGImFap8VpVegTwaazjUUmgPHls7UnfJHqYEtkxNN0kjzF443sNDs2PZT19e/UpZF1apWu92IJu+fHIAhbzKSA==
-X-Gm-Message-State: AOJu0YwYC1BVsniZLgtLMjvXq2yVkl9m3i/nojRAZu739H95hSQd6YGN
-	FkGmwVK1iteoZMoT8bH/t/nPqnGitFpCYrnzZJ3C0s8Re7Nc2kGFizE/iWLcag==
-X-Google-Smtp-Source: AGHT+IGWfJd4hsp4cquzrMgFaq/8ztZK/NQH0jQErvnt6KcdvzJSodCboJ3PnepuNNUxb0g3iW3fHA==
-X-Received: by 2002:a0c:f885:0:b0:690:4916:4de9 with SMTP id u5-20020a0cf885000000b0069049164de9mr4614368qvn.34.1709397441567;
-        Sat, 02 Mar 2024 08:37:21 -0800 (PST)
-Received: from localhost (pool-68-160-141-91.bstnma.fios.verizon.net. [68.160.141.91])
-        by smtp.gmail.com with ESMTPSA id ks30-20020a056214311e00b0068ffde5efb0sm3123189qvb.49.2024.03.02.08.37.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Mar 2024 08:37:21 -0800 (PST)
-Date: Sat, 2 Mar 2024 11:37:20 -0500
-From: Mike Snitzer <snitzer@kernel.org>
-To: Fan Wu <wufan@linux.microsoft.com>
-Cc: corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
-	serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org,
-	axboe@kernel.dk, agk@redhat.com, eparis@redhat.com,
-	paul@paul-moore.com, linux-doc@vger.kernel.org,
-	linux-integrity@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
-	dm-devel@lists.linux.dev, audit@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Deven Bowers <deven.desai@linux.microsoft.com>
-Subject: Re: [RFC PATCH v13 14/20] dm verity: consume root hash digest and
- signature data via LSM hook
-Message-ID: <ZeNVwBkbw2HlMRfa@redhat.com>
-References: <1709168102-7677-1-git-send-email-wufan@linux.microsoft.com>
- <1709168102-7677-15-git-send-email-wufan@linux.microsoft.com>
+        d=1e100.net; s=20230601; t=1709434457; x=1710039257;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kz8I53N5f5EgUZa+//307lJaWy+VlbE0qgGaxMVUTm8=;
+        b=WtJJ3hoAOYH7IelYyhlPtGNpWdqDyp1TKW2FVSUNeV1vdy7SF0/Ad0QvH4/Hj1/KwZ
+         HdHMP2M6cUPLaGzZg1lY7SIyZt18GOJaaoxqww3b/K7rLHGkWYZ4v1BG36RqTpgEQkaw
+         NupPzWnwpsnTLYrJNMlGl6A2cI57YvOE39dFx5rmZNAk4Y3IGFX2fQGaK610yXX6qCBP
+         XGbshfbFa4KVIqgr/typBshs+yJ/omn7+Xh8f3KoWqTARsIqcukTUErAOxraH6fozoF2
+         djHGUBG57ef4Ez1vGLkbdsTpK8/7cdol48DwTZqnB+EQaI09dKDim84XbnWqOnLmGtwV
+         B+/Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXi7cj+IwBC4VlGQtBTJ0lEiMbRyqK6tN16CvXNRQyjhB0CW148Kfz+bVD91QWSdf5yRagJJbC0tgooqJM2gV1uHpfcBMawv/iwq13njw==
+X-Gm-Message-State: AOJu0YwEeHr0I2MYubU9o+IbniuJmKDJQAZyFViJiXr2sCSxgac2dAsB
+	tcEWi/By7vjFMdwigESfcc/c/vwHVXoV78z9lb5kWfyiC19tCLTwNf6Ke6pxhT49/7ggvf0grIm
+	wmzmK5HP8f2tdEXJmBLm9vo9OeRuNj02ZFTvpUuwhPT84J6OGbffFlgE=
+X-Google-Smtp-Source: AGHT+IEbO/g+8ISYHt1uvX/Gb9QZ8yjt3dRKjqrDY0iyCSqMaBhdzPJdphEZd+zqMuYitR3OYB36QRtbEAz+EUt1k1GFjDwLnvVU
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1709168102-7677-15-git-send-email-wufan@linux.microsoft.com>
+X-Received: by 2002:a05:6e02:1c8e:b0:365:c659:58f3 with SMTP id
+ w14-20020a056e021c8e00b00365c65958f3mr380219ill.6.1709434457227; Sat, 02 Mar
+ 2024 18:54:17 -0800 (PST)
+Date: Sat, 02 Mar 2024 18:54:17 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000970da80612b8b99d@google.com>
+Subject: [syzbot] [fscrypt?] possible deadlock in fscrypt_setup_encryption_info
+From: syzbot <syzbot+8d26c0204f49ec0b3ed0@syzkaller.appspotmail.com>
+To: ebiggers@kernel.org, jaegeuk@kernel.org, linux-fscrypt@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Feb 28 2024 at  7:54P -0500,
-Fan Wu <wufan@linux.microsoft.com> wrote:
+Hello,
 
-> From: Deven Bowers <deven.desai@linux.microsoft.com>
-> 
-> dm-verity provides a strong guarantee of a block device's integrity. As
-> a generic way to check the integrity of a block device, it provides
-> those integrity guarantees to its higher layers, including the filesystem
-> level.
-> 
-> An LSM that control access to a resource on the system based on the
-> available integrity claims can use this transitive property of
-> dm-verity, by querying the underlying block_device of a particular
-> file.
-> 
-> The digest and signature information need to be stored in the block
-> device to fulfill the next requirement of authorization via LSM policy.
-> This will enable the LSM to perform revocation of devices that are still
-> mounted, prohibiting execution of files that are no longer authorized
-> by the LSM in question.
-> 
-> This patch added two security hook calls in dm-verity to save the
-> dm-verity roothash and the roothash signature to the block device's
-> LSM blobs. The hook calls are depended on CONFIG_IPE_PROP_DM_VERITY,
-> which will be introduced in the next commit.
-> 
-> Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
-> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
-> ---
-> v2:
->   + No Changes
-> 
-> v3:
->   + No changes
-> 
-> v4:
->   + No changes
-> 
-> v5:
->   + No changes
-> 
-> v6:
->   + Fix an improper cleanup that can result in
->     a leak
-> 
-> v7:
->   + Squash patch 08/12, 10/12 to [11/16]
->   + Use part0 for block_device, to retrieve the block_device, when
->     calling security_bdev_setsecurity
-> 
-> v8:
->   + Undo squash of 08/12, 10/12 - separating drivers/md/ from
->     security/ & block/
->   + Use common-audit function for dmverity_signature.
->   + Change implementation for storing the dm-verity digest to use the
->     newly introduced dm_verity_digest structure introduced in patch
->     14/20.
->   + Create new structure, dm_verity_digest, containing digest algorithm,
->     size, and digest itself to pass to the LSM layer. V7 was missing the
->     algorithm.
->   + Create an associated public header containing this new structure and
->     the key values for the LSM hook, specific to dm-verity.
->   + Additional information added to commit, discussing the layering of
->     the changes and how the information passed will be used.
-> 
-> v9:
->   + No changes
-> 
-> v10:
->   + No changes
-> 
-> v11:
->   + Add an optional field to save signature
->   + Move the security hook call to the new finalize hook
-> 
-> v12:
->   + No changes
-> 
-> v13:
->   + No changes
-> ---
->  drivers/md/dm-verity-target.c | 71 +++++++++++++++++++++++++++++++++++
->  drivers/md/dm-verity.h        |  6 +++
->  include/linux/dm-verity.h     | 19 ++++++++++
->  3 files changed, 96 insertions(+)
->  create mode 100644 include/linux/dm-verity.h
-> 
-> diff --git a/drivers/md/dm-verity-target.c b/drivers/md/dm-verity-target.c
-> index a99ef30e45ca..e7bc6afae708 100644
-> --- a/drivers/md/dm-verity-target.c
-> +++ b/drivers/md/dm-verity-target.c
-> @@ -13,6 +13,7 @@
->   * access behavior.
->   */
->  
-> +#include "dm-core.h"
->  #include "dm-verity.h"
->  #include "dm-verity-fec.h"
->  #include "dm-verity-verify-sig.h"
+syzbot found the following issue on:
 
-Why are you including dm-core.h? (DM targets really shouldn't need it).
+HEAD commit:    cf1182944c7c Merge tag 'lsm-pr-20240227' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=136f0f4a180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=be0288b26c967205
+dashboard link: https://syzkaller.appspot.com/bug?extid=8d26c0204f49ec0b3ed0
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
 
-And from that header:
+Unfortunately, I don't have any reproducer for this issue yet.
 
-/*
- * DM core internal structures used directly by dm.c, dm-rq.c and dm-table.c.
- * DM targets must _not_ deference a mapped_device or dm_table to directly
- * access their members!
- */
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-cf118294.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/2ca1f7923b9b/vmlinux-cf118294.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/6070ed6e6026/bzImage-cf118294.xz
 
-> @@ -22,6 +23,9 @@
->  #include <linux/scatterlist.h>
->  #include <linux/string.h>
->  #include <linux/jump_label.h>
-> +#include <linux/security.h>
-> +#include <linux/dm-verity.h>
-> +#include <crypto/hash_info.h>
->  
->  #define DM_MSG_PREFIX			"verity"
->  
-> @@ -990,6 +994,17 @@ static void verity_io_hints(struct dm_target *ti, struct queue_limits *limits)
->  	blk_limits_io_min(limits, limits->logical_block_size);
->  }
->  
-> +#ifdef CONFIG_IPE_PROP_DM_VERITY
-> +static void verity_free_sig(struct dm_verity *v)
-> +{
-> +	kfree(v->root_digest_sig);
-> +}
-> +#else
-> +static inline void verity_free_sig(struct dm_verity *v)
-> +{
-> +}
-> +#endif /* CONFIG_IPE_PROP_DM_VERITY */
-> +
->  static void verity_dtr(struct dm_target *ti)
->  {
->  	struct dm_verity *v = ti->private;
-> @@ -1008,6 +1023,7 @@ static void verity_dtr(struct dm_target *ti)
->  	kfree(v->salt);
->  	kfree(v->root_digest);
->  	kfree(v->zero_digest);
-> +	verity_free_sig(v);
->  
->  	if (v->tfm)
->  		crypto_free_ahash(v->tfm);
-> @@ -1199,6 +1215,25 @@ static int verity_parse_opt_args(struct dm_arg_set *as, struct dm_verity *v,
->  	return r;
->  }
->  
-> +#ifdef CONFIG_IPE_PROP_DM_VERITY
-> +static int verity_init_sig(struct dm_verity *v, const void *sig,
-> +			   size_t sig_size)
-> +{
-> +	v->sig_size = sig_size;
-> +	v->root_digest_sig = kmalloc(v->sig_size, GFP_KERNEL);
-> +	if (!v->root_digest)
-> +		return -ENOMEM;
-> +
-> +	return 0;
-> +}
-> +#else
-> +static inline int verity_init_sig(struct dm_verity *v, const void *sig,
-> +				  size_t sig_size)
-> +{
-> +	return 0;
-> +}
-> +#endif /* CONFIG_IPE_PROP_DM_VERITY */
-> +
->  /*
->   * Target parameters:
->   *	<version>	The current format is version 1.
-> @@ -1407,6 +1442,13 @@ static int verity_ctr(struct dm_target *ti, unsigned int argc, char **argv)
->  		ti->error = "Root hash verification failed";
->  		goto bad;
->  	}
-> +
-> +	r = verity_init_sig(v, verify_args.sig, verify_args.sig_size);
-> +	if (r < 0) {
-> +		ti->error = "Cannot allocate root digest signature";
-> +		goto bad;
-> +	}
-> +
->  	v->hash_per_block_bits =
->  		__fls((1 << v->hash_dev_block_bits) / v->digest_size);
->  
-> @@ -1557,6 +1599,32 @@ int dm_verity_get_root_digest(struct dm_target *ti, u8 **root_digest, unsigned i
->  	return 0;
->  }
->  
-> +#ifdef CONFIG_IPE_PROP_DM_VERITY
-> +static int verity_finalize(struct dm_target *ti)
-> +{
-> +	struct block_device *bdev;
-> +	struct dm_verity_digest root_digest;
-> +	struct dm_verity *v;
-> +	int r;
-> +
-> +	v = ti->private;
-> +	bdev = dm_table_get_md(ti->table)->disk->part0;
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+8d26c0204f49ec0b3ed0@syzkaller.appspotmail.com
 
-Must be for dereferencing mapped_device struct here ^
+======================================================
+WARNING: possible circular locking dependency detected
+6.8.0-rc6-syzkaller-00021-gcf1182944c7c #0 Not tainted
+------------------------------------------------------
+syz-executor.0/30319 is trying to acquire lock:
+ffff8880569c4080 (&mk->mk_sem){++++}-{3:3}, at: setup_file_encryption_key fs/crypto/keysetup.c:487 [inline]
+ffff8880569c4080 (&mk->mk_sem){++++}-{3:3}, at: fscrypt_setup_encryption_info+0x5da/0x1080 fs/crypto/keysetup.c:590
 
-Please remove the dm-core.h include and use this instead:
+but task is already holding lock:
+ffff888024868950 (jbd2_handle){++++}-{0:0}, at: start_this_handle+0x10dd/0x15e0 fs/jbd2/transaction.c:463
 
-struct gendisk *disk = dm_disk(dm_table_get_md(ti->table));
+which lock already depends on the new lock.
 
-Mike
 
-> +	root_digest.digest = v->root_digest;
-> +	root_digest.digest_len = v->digest_size;
-> +	root_digest.alg = v->alg_name;
-> +
-> +	r = security_bdev_setsecurity(bdev, DM_VERITY_ROOTHASH_SEC_NAME, &root_digest,
-> +				      sizeof(root_digest));
-> +	if (r)
-> +		return r;
-> +
-> +	return security_bdev_setsecurity(bdev,
-> +					 DM_VERITY_SIGNATURE_SEC_NAME,
-> +					 v->root_digest_sig,
-> +					 v->sig_size);
-> +}
-> +#endif /* CONFIG_IPE_PROP_DM_VERITY */
-> +
->  static struct target_type verity_target = {
->  	.name		= "verity",
->  	.features	= DM_TARGET_SINGLETON | DM_TARGET_IMMUTABLE,
+the existing dependency chain (in reverse order) is:
+
+-> #3 (jbd2_handle){++++}-{0:0}:
+       start_this_handle+0x1103/0x15e0 fs/jbd2/transaction.c:463
+       jbd2__journal_start+0x395/0x850 fs/jbd2/transaction.c:520
+       __ext4_journal_start_sb+0x347/0x5e0 fs/ext4/ext4_jbd2.c:112
+       ext4_sample_last_mounted fs/ext4/file.c:837 [inline]
+       ext4_file_open+0x636/0xc80 fs/ext4/file.c:866
+       do_dentry_open+0x8da/0x18c0 fs/open.c:953
+       do_open fs/namei.c:3645 [inline]
+       path_openat+0x1e00/0x29a0 fs/namei.c:3802
+       do_filp_open+0x1de/0x440 fs/namei.c:3829
+       do_sys_openat2+0x17a/0x1e0 fs/open.c:1404
+       do_sys_open fs/open.c:1419 [inline]
+       __do_sys_openat fs/open.c:1435 [inline]
+       __se_sys_openat fs/open.c:1430 [inline]
+       __x64_sys_openat+0x175/0x210 fs/open.c:1430
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xd5/0x270 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x6f/0x77
+
+-> #2 (sb_internal){.+.+}-{0:0}:
+       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+       __sb_start_write include/linux/fs.h:1641 [inline]
+       sb_start_intwrite include/linux/fs.h:1824 [inline]
+       ext4_evict_inode+0xe5f/0x1a40 fs/ext4/inode.c:212
+       evict+0x2ed/0x6c0 fs/inode.c:665
+       iput_final fs/inode.c:1739 [inline]
+       iput.part.0+0x563/0x7b0 fs/inode.c:1765
+       iput+0x5c/0x80 fs/inode.c:1755
+       dentry_unlink_inode+0x295/0x440 fs/dcache.c:400
+       __dentry_kill+0x1d0/0x600 fs/dcache.c:603
+       shrink_kill fs/dcache.c:1048 [inline]
+       shrink_dentry_list+0x140/0x5d0 fs/dcache.c:1075
+       prune_dcache_sb+0xeb/0x150 fs/dcache.c:1156
+       super_cache_scan+0x32a/0x550 fs/super.c:221
+       do_shrink_slab+0x426/0x1120 mm/shrinker.c:435
+       shrink_slab_memcg mm/shrinker.c:548 [inline]
+       shrink_slab+0xa87/0x1310 mm/shrinker.c:626
+       shrink_one+0x493/0x7b0 mm/vmscan.c:4767
+       shrink_many mm/vmscan.c:4828 [inline]
+       lru_gen_shrink_node mm/vmscan.c:4929 [inline]
+       shrink_node+0x214d/0x3750 mm/vmscan.c:5888
+       kswapd_shrink_node mm/vmscan.c:6693 [inline]
+       balance_pgdat+0x9d2/0x1a90 mm/vmscan.c:6883
+       kswapd+0x5be/0xc00 mm/vmscan.c:7143
+       kthread+0x2c6/0x3b0 kernel/kthread.c:388
+       ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+       ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:243
+
+-> #1 (fs_reclaim){+.+.}-{0:0}:
+       __fs_reclaim_acquire mm/page_alloc.c:3692 [inline]
+       fs_reclaim_acquire+0x104/0x150 mm/page_alloc.c:3706
+       might_alloc include/linux/sched/mm.h:303 [inline]
+       slab_pre_alloc_hook mm/slub.c:3761 [inline]
+       slab_alloc_node mm/slub.c:3842 [inline]
+       __do_kmalloc_node mm/slub.c:3980 [inline]
+       __kmalloc_node+0xb8/0x470 mm/slub.c:3988
+       kmalloc_node include/linux/slab.h:610 [inline]
+       kzalloc_node include/linux/slab.h:722 [inline]
+       crypto_alloc_tfmmem.isra.0+0x38/0x110 crypto/api.c:496
+       crypto_create_tfm_node+0x83/0x320 crypto/api.c:516
+       crypto_alloc_tfm_node+0x102/0x260 crypto/api.c:623
+       fscrypt_allocate_skcipher fs/crypto/keysetup.c:106 [inline]
+       fscrypt_prepare_key+0x92/0x410 fs/crypto/keysetup.c:158
+       fscrypt_set_per_file_enc_key fs/crypto/keysetup.c:185 [inline]
+       fscrypt_setup_v2_file_key+0x3fb/0x5f0 fs/crypto/keysetup.c:374
+       setup_file_encryption_key fs/crypto/keysetup.c:505 [inline]
+       fscrypt_setup_encryption_info+0xdf1/0x1080 fs/crypto/keysetup.c:590
+       fscrypt_get_encryption_info+0x3d7/0x4b0 fs/crypto/keysetup.c:675
+       fscrypt_setup_filename+0x238/0xd80 fs/crypto/fname.c:458
+       __fscrypt_prepare_lookup+0x2c/0xf0 fs/crypto/hooks.c:100
+       fscrypt_prepare_lookup include/linux/fscrypt.h:979 [inline]
+       ext4_fname_prepare_lookup+0x1e0/0x350 fs/ext4/crypto.c:48
+       ext4_lookup_entry fs/ext4/namei.c:1764 [inline]
+       ext4_lookup+0x14b/0x740 fs/ext4/namei.c:1839
+       lookup_one_qstr_excl+0x11d/0x190 fs/namei.c:1608
+       filename_create+0x1ed/0x530 fs/namei.c:3896
+       do_mkdirat+0xab/0x3a0 fs/namei.c:4141
+       __do_sys_mkdirat fs/namei.c:4164 [inline]
+       __se_sys_mkdirat fs/namei.c:4162 [inline]
+       __x64_sys_mkdirat+0x115/0x170 fs/namei.c:4162
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xd5/0x270 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x6f/0x77
+
+-> #0 (&mk->mk_sem){++++}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:3134 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+       validate_chain kernel/locking/lockdep.c:3869 [inline]
+       __lock_acquire+0x244f/0x3b40 kernel/locking/lockdep.c:5137
+       lock_acquire kernel/locking/lockdep.c:5754 [inline]
+       lock_acquire+0x1ae/0x520 kernel/locking/lockdep.c:5719
+       down_read+0x9a/0x330 kernel/locking/rwsem.c:1526
+       setup_file_encryption_key fs/crypto/keysetup.c:487 [inline]
+       fscrypt_setup_encryption_info+0x5da/0x1080 fs/crypto/keysetup.c:590
+       fscrypt_get_encryption_info+0x3d7/0x4b0 fs/crypto/keysetup.c:675
+       fscrypt_setup_filename+0x238/0xd80 fs/crypto/fname.c:458
+       ext4_fname_setup_filename+0xa3/0x260 fs/ext4/crypto.c:28
+       ext4_add_entry+0x2e3/0xdf0 fs/ext4/namei.c:2401
+       __ext4_link+0x40b/0x570 fs/ext4/namei.c:3474
+       ext4_link+0x1fb/0x2a0 fs/ext4/namei.c:3515
+       vfs_link+0x841/0xdf0 fs/namei.c:4608
+       do_linkat+0x553/0x600 fs/namei.c:4679
+       __do_sys_linkat fs/namei.c:4707 [inline]
+       __se_sys_linkat fs/namei.c:4704 [inline]
+       __x64_sys_linkat+0xf3/0x140 fs/namei.c:4704
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xd5/0x270 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x6f/0x77
+
+other info that might help us debug this:
+
+Chain exists of:
+  &mk->mk_sem --> sb_internal --> jbd2_handle
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  rlock(jbd2_handle);
+                               lock(sb_internal);
+                               lock(jbd2_handle);
+  rlock(&mk->mk_sem);
+
+ *** DEADLOCK ***
+
+4 locks held by syz-executor.0/30319:
+ #0: ffff88802486c420 (sb_writers#5){.+.+}-{0:0}, at: filename_create+0x10d/0x530 fs/namei.c:3888
+ #1: ffff88802f4ff200 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:839 [inline]
+ #1: ffff88802f4ff200 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: filename_create+0x1c2/0x530 fs/namei.c:3895
+ #2: ffff88802f408e00 (&sb->s_type->i_mutex_key#7){++++}-{3:3}, at: inode_lock include/linux/fs.h:804 [inline]
+ #2: ffff88802f408e00 (&sb->s_type->i_mutex_key#7){++++}-{3:3}, at: vfs_link+0x655/0xdf0 fs/namei.c:4599
+ #3: ffff888024868950 (jbd2_handle){++++}-{0:0}, at: start_this_handle+0x10dd/0x15e0 fs/jbd2/transaction.c:463
+
+stack backtrace:
+CPU: 2 PID: 30319 Comm: syz-executor.0 Not tainted 6.8.0-rc6-syzkaller-00021-gcf1182944c7c #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ check_noncircular+0x31b/0x400 kernel/locking/lockdep.c:2187
+ check_prev_add kernel/locking/lockdep.c:3134 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+ validate_chain kernel/locking/lockdep.c:3869 [inline]
+ __lock_acquire+0x244f/0x3b40 kernel/locking/lockdep.c:5137
+ lock_acquire kernel/locking/lockdep.c:5754 [inline]
+ lock_acquire+0x1ae/0x520 kernel/locking/lockdep.c:5719
+ down_read+0x9a/0x330 kernel/locking/rwsem.c:1526
+ setup_file_encryption_key fs/crypto/keysetup.c:487 [inline]
+ fscrypt_setup_encryption_info+0x5da/0x1080 fs/crypto/keysetup.c:590
+ fscrypt_get_encryption_info+0x3d7/0x4b0 fs/crypto/keysetup.c:675
+ fscrypt_setup_filename+0x238/0xd80 fs/crypto/fname.c:458
+ ext4_fname_setup_filename+0xa3/0x260 fs/ext4/crypto.c:28
+ ext4_add_entry+0x2e3/0xdf0 fs/ext4/namei.c:2401
+ __ext4_link+0x40b/0x570 fs/ext4/namei.c:3474
+ ext4_link+0x1fb/0x2a0 fs/ext4/namei.c:3515
+ vfs_link+0x841/0xdf0 fs/namei.c:4608
+ do_linkat+0x553/0x600 fs/namei.c:4679
+ __do_sys_linkat fs/namei.c:4707 [inline]
+ __se_sys_linkat fs/namei.c:4704 [inline]
+ __x64_sys_linkat+0xf3/0x140 fs/namei.c:4704
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xd5/0x270 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x6f/0x77
+RIP: 0033:0x7f626787dda9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f62685710c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000109
+RAX: ffffffffffffffda RBX: 00007f62679abf80 RCX: 00007f626787dda9
+RDX: 0000000000000006 RSI: 00000000200003c0 RDI: 0000000000000003
+RBP: 00007f62678ca47a R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000200004c0 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f62679abf80 R15: 00007ffcf764da78
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
