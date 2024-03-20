@@ -1,93 +1,120 @@
-Return-Path: <linux-fscrypt+bounces-255-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-256-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E066987B6FF
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 14 Mar 2024 05:00:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB717881983
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 20 Mar 2024 23:37:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 17B7A1C2135B
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 14 Mar 2024 04:00:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6224283AD4
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 20 Mar 2024 22:37:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C8F4C13B;
-	Thu, 14 Mar 2024 04:00:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EE9836B01;
+	Wed, 20 Mar 2024 22:37:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bugs.debian.org header.i=@bugs.debian.org header.b="WTRFixv5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NKKdmOaD"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from buxtehude.debian.org (buxtehude.debian.org [209.87.16.39])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95442C129
-	for <linux-fscrypt@vger.kernel.org>; Thu, 14 Mar 2024 04:00:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.87.16.39
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 145542209F;
+	Wed, 20 Mar 2024 22:37:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710388838; cv=none; b=aPdHRCHaPqvfXP3gGIbcYuGqyP7JFISWBKJieTsdUenF1+tvOjv1jJV8mCB7J5IbL/oOiVfpQExgpgBZVeUKq8C1AiNUEy7ZDGCoPsuLpZTk5iliozk6hchHBxnD0MDlIY5rpQiOs40xaBw7AkZnkPSnNUjtKCkkdYtZwuvnWrs=
+	t=1710974258; cv=none; b=smI27q62pi6wzsFqFGenI3QlaJuxtfWyeF14g7OVYvW+FMPTp3ZTuRg8C5XbFH76bnQHAcOPQaMHPwLJ+gSP3aOs5x7fHF3oPQ8g5Tgy/u0jYuR/7M2QnewmGFKthBMBla+2aVNb0RXY2OM2B0PV2Qpzswfjt6qLBWOCfspD8uo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710388838; c=relaxed/simple;
-	bh=Hxnb+7r6FOD5UJhB6BXPqkFvFxpWLQUU4xbBSd37m4E=;
-	h=Content-Disposition:MIME-Version:Content-Type:From:To:Subject:
-	 Message-ID:References:Date; b=ZnJeT3rVLmjKXGWVC5PbH5tmu/51kEVso0L6RboU1Q9qk8QzKEH5uSuLZF263tKz8szZZAHqRR2uTrZkje2JeXU8pZu0ulIpZ9Ot9GxcXmBm107UQQJOKPAreCiu+wK4/I+UnFPPR8F6GXm7F2pxt7zwmieoO7D2JhzBbjt0x7w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bugs.debian.org; spf=none smtp.mailfrom=buxtehude.debian.org; dkim=pass (2048-bit key) header.d=bugs.debian.org header.i=@bugs.debian.org header.b=WTRFixv5; arc=none smtp.client-ip=209.87.16.39
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bugs.debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=buxtehude.debian.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=bugs.debian.org; s=smtpauto.buxtehude; h=Date:Reply-To:References:
-	Message-ID:Subject:To:From:Content-Type:MIME-Version:
-	Content-Transfer-Encoding:Cc:Content-ID:Content-Description:In-Reply-To;
-	bh=Hxnb+7r6FOD5UJhB6BXPqkFvFxpWLQUU4xbBSd37m4E=; b=WTRFixv520XhfC236HQXZwyvWd
-	EJV2FJypxck+5qoU+nOk5UqghscvCnu3ZwC/DndkpcbVFiP1J3dVG0nREpFffb2gW0SxGi/GW4mpr
-	KNCKN/upa0L5Uq/CXH0yR6ya8Dt+o6tn0T2+2l2PhPft80v1pRA+uNiKt/HwLd7WzTAcxDJHM3Xwf
-	QhabmEBXzdhKTx7WciVAarT/9Bam/ndqhALehwFw+HQwOIBapJ6ZRM6nn2LHjwGjHRSYlWZ7dy7jQ
-	m0Z0pqwdFiTVc04Su6MNeotLobSIFwuYqu2xetT1Av3odWyrmpICOumqhqXWzaV1NUzXwrKG9VX4C
-	C+5bTB3g==;
-Received: from debbugs by buxtehude.debian.org with local (Exim 4.94.2)
-	(envelope-from <debbugs@buxtehude.debian.org>)
-	id 1rkbq4-009NcN-5n; Thu, 14 Mar 2024 03:33:04 +0000
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1710974258; c=relaxed/simple;
+	bh=w+QN99fwvWSY3V2zBhacw4ulWGhs5g3W4vq3L8RlKpM=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=A9/8ovvx9qW5gPV/8BiYeOIKZ6RZhE0JZrmuB+iz95SJ3EqpMcEfPNOjXvndXFmPLOx1ddSJ/k+4HitlNg/oFPggy6uaz5VErZ0xuUinPZ9s7n0Ngpt7q6FHoW1C2b9+XsNVNo4TwNuQ4ZdSgpn9+02dAWv13q2VZ875AcaveVE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NKKdmOaD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8847FC433F1;
+	Wed, 20 Mar 2024 22:37:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710974257;
+	bh=w+QN99fwvWSY3V2zBhacw4ulWGhs5g3W4vq3L8RlKpM=;
+	h=Date:From:To:Subject:References:In-Reply-To:From;
+	b=NKKdmOaD18byQHhskxFA04Zz14nEsrmTYXVWqbCl/k5/mlvroJfirPryKjaexsyFu
+	 81tIEyf5FKRpyKE5uzxsCzRmUSEYdmb2Z3t8wdKqbJOrWqoB8VTKPxgt41dB7PlDL9
+	 3kqZdI6zXnM7ZNgJtqSHQpNMYxQmO675clBRkexnlXNMXO7PSZaXQ+lHTZyDNyrMYp
+	 FSdD8B5yGtnOYro5yz+dwG1oP1zMTAHdNTVGdH8cZ4GVWJHxpfGtjkfXhGisg3I1bu
+	 PRM70coRtj9N0dqlHTC58TN0XA7n2bUCqzbMZIU0pHRk+Gpf6YFPqNlJlDTZf9akph
+	 CP2pyQzktrrZg==
+Date: Wed, 20 Mar 2024 15:37:36 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: 1066832@bugs.debian.org, 1066832-submitter@bugs.debian.org,
+	linux-fscrypt@vger.kernel.org, fsverity@lists.linux.dev
+Subject: Re: Debian #1066832: [fsverity-utils] hard Build-Depends on
+ unportable package pandoc
+Message-ID: <20240320223736.GA2310@sol.localdomain>
+References: <Pine.BSM.4.64L.2403140237160.10945@herc.mirbsd.org>
+ <Pine.BSM.4.64L.2403140311320.10945@herc.mirbsd.org>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mailer: MIME-tools 5.509 (Entity 5.509)
 Content-Type: text/plain; charset=utf-8
-X-Loop: owner@bugs.debian.org
-From: "Debian Bug Tracking System" <owner@bugs.debian.org>
-To: 1066832@bugs.debian.org, 1066832-submitter@bugs.debian.org,
- linux-fscrypt@vger.kernel.org
-Subject: Bug#1066832: Info received (Debian #1066832: [fsverity-utils]
- hard Build-Depends on unportable package pandoc)
-Message-ID: <handler.1066832.B1066832.17103869452234129.ackinfo@bugs.debian.org>
-References: <Pine.BSM.4.64L.2403140311320.10945@herc.mirbsd.org>
-X-Debian-PR-Message: ack-info 1066832
-X-Debian-PR-Package: src:fsverity-utils
-X-Debian-PR-Source: fsverity-utils
-Reply-To: 1066832@bugs.debian.org
-Date: Thu, 14 Mar 2024 03:33:04 +0000
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Pine.BSM.4.64L.2403140311320.10945@herc.mirbsd.org>
 
-Thank you for the additional information you have supplied regarding
-this Bug report.
+[Added the correct mailing list, fsverity@lists.linux.dev]
 
-This is an automatically generated reply to let you know your message
-has been received.
+On Thu, Mar 14, 2024 at 03:20:07AM +0000, Thorsten Glaser wrote:
+> Dixi quod…
+> 
+> >Please split the package so that the part that requires pandoc is
+> >done in an arch:all build. Normally, pandoc is needed only for
+> >documentation, which is often easy enough to split off in a -doc
+> >binary package, which can then move to B-D-Indep and be built on
+> >amd64 or whatever hosts.
+> 
+> Looking at this in some detail, this is *only* ONE manual page.
+> Splitting into a separate package for one file will not go over
+> well with ftpmaster.
+> 
+> Dear upstream, please consider keeping the manpage in something
+> else, like mdoc. I would be willing to convert the manpage to
+> semantic, readable mdoc for you, even.
+> 
+> (fsverity-utils is a Build-Depends of rpm, some subpackages of
+> which are necessary to build other software even in Debian.)
+> 
+> If upstream is not willing, we could:
+> 
+> • do this as local patch (effort updating it every time)
+> 
+> • hack a script that converts man/fsverity.1.md to mdoc;
+>   this doesn’t need to be a full converter, it needs to
+>   just be good enough to convert this one page (effort
+>   one-time, but probably not much if at all when updating)
+> 
+> • as package maintainer, run the pandoc conversion script
+>   and put the result into debian/fsverity.1 and install
+>   from there and stop B-D’ing on pandoc (needs some, but
+>   not much, manual effort on each update, and the package
+>   maintainer to have a clean sid system on which to do that)
+> 
+> • install a dummy manpage (that maybe summarises the options
+>   and points the reader to
+>   https://manpages.debian.org/unstable/fsverity/fsverity.1.en.html
+>   for the full page) on architectures without pandoc (needs
+>   a bit of initial hacking, and to keep a whitelist of arches
+>   with pandoc up-to-date)
+> 
+> bye,
+> //mirabilos
 
-Your message is being forwarded to the package maintainers and other
-interested parties for their attention; they will reply in due course.
+I'm not sure how reasonable this request is (surely the rpm package should not
+be depending on the fsverity manual page...), but to eliminate the reliance on
+pandoc I've gone ahead and replaced the markdown file fsverity.1.md with a
+native Linux man page fsverity.1.  So, it no longer needs any conversion before
+installing it.
 
-Your message has been sent to the package maintainer(s):
- Romain Perier <romain.perier@gmail.com>
+I did not choose mdoc, as I'm not familiar with it and it seems to be a BSD-ism.
 
-If you wish to submit further information on this problem, please
-send it to 1066832@bugs.debian.org.
-
-Please do not send mail to owner@bugs.debian.org unless you wish
-to report a problem with the Bug-tracking system.
-
---=20
-1066832: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=3D1066832
-Debian Bug Tracking System
-Contact owner@bugs.debian.org with problems
+- Eric
 
