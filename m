@@ -1,81 +1,81 @@
-Return-Path: <linux-fscrypt+bounces-272-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-273-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68FD58B08C2
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 24 Apr 2024 13:55:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 394C18B08C6
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 24 Apr 2024 13:55:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84799B236B1
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 24 Apr 2024 11:55:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E63CF2883B0
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 24 Apr 2024 11:55:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 037E815A49E;
-	Wed, 24 Apr 2024 11:55:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33E1C15AAD6;
+	Wed, 24 Apr 2024 11:55:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KYqRr83H"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KxzELcN2"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A1EC15A4B4
-	for <linux-fscrypt@vger.kernel.org>; Wed, 24 Apr 2024 11:55:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B192A15AAB1
+	for <linux-fscrypt@vger.kernel.org>; Wed, 24 Apr 2024 11:55:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713959727; cv=none; b=Lz4FNCIu61Ln08pvRC0tr4FnaxsjOTt9CQWpPcou1CpyA/WRgC69W9xhIZ4SpMJkDrXSTpMmiZ9dPQgI1fo4I4P0uvM4ZzOZ8KQDPXyyOJNw06LeOTHOV0nkJn2lglPfT9J78YvNHfhx/JoJBRLkkMgGPFtrtFK+8lJi1VYPHpk=
+	t=1713959740; cv=none; b=MVvNFMcmMMhQXhqhkoACh7In5QENIs0WK8n1tD/8Jk65MIBzmfIveYaQKKaffyxv9NaN5ykNU4wz+JKe0qotO7bqLEliR9a8peSr11+tWNKbBk/pzJoMHLNFkg3KoPiG+FE50ZvmRDaN946ql832AoleOh04DQMucKWGTfRxZiY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713959727; c=relaxed/simple;
-	bh=8K5zhx6yDCvJm1l41BT/kCYCU/emBpn32GX9Yy3CM9I=;
+	s=arc-20240116; t=1713959740; c=relaxed/simple;
+	bh=x0ulmsdl5RuhYqdg6GD1eT7t+LIW/ozJ7a/1sk7ZCXQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ema90lAH5uyWYn53d/6TzP9rFCaLSu6TXys8uD3iDhMztyDQyiTQpvCFtNnEEY5zu1Aw/uf1vFx/aBUMkEqaeF5w3Y1q+tf8GHF3s53GcMKhvM64QDZ8+4X2976Uot/cWFxOhoMbHdvXvMC0RYWgMtNQyj3RRHGdJ3cIJuUtngQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KYqRr83H; arc=none smtp.client-ip=170.10.133.124
+	 In-Reply-To:Content-Type; b=LNtCk3fDdG8F63uwv5bFu5wTXFNHGn73QxrJx+opxLTDIkMZuDMOM6y94Az89ZYYBb76qU2a5s+WaDGj1seBUe2TT/fLN19QJU+kOkOiS5CSGaQp7ovKie99EnaZywjZuBkGe32WNwHiPYHMA6pXKgnHnJ9/RBkCAgUhF/1/0wY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KxzELcN2; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713959725;
+	s=mimecast20190719; t=1713959737;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=9zT0IFJDVsNKakGu1Yx/bEyqtl1wWoC8Kg4VpGAhahg=;
-	b=KYqRr83HABtkncSHwuQVf1dpNgXD2OnaVkzV8Ifun3mkE6xN9u67XPd3lbooIPIybCqXAz
-	EB1UknnNYq7LkaXHNAZZO53al8OZTvnq3rEtZPWKXGHfGX5RRZN7+yy43GtnYijt+dudAO
-	EGtefxRGzCDW2fnMjySuqNoktTUNM2E=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=shY7D2Xkj39HblvBkB6u0hIcRZjO+25LFPaiz5EXkkE=;
+	b=KxzELcN2+Xt4+A/BfU8QJkc5TumJq8wtgeRYD+VuudSi3Nwb0aLBSkwcfJpODlXItCdr/a
+	w0wg/tvs7VHt00R82CIrhZj4VHBK3Wvv6fVUzDTL34B7cKSJRIhFvfbho+GOBXIAlxJJBI
+	TySnKeYoUtKsLS729yJ4d1VuF83oli4=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-646-n3XcQs7HOo2r56pRPHxOZA-1; Wed, 24 Apr 2024 07:55:24 -0400
-X-MC-Unique: n3XcQs7HOo2r56pRPHxOZA-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-418f8271081so27814725e9.3
-        for <linux-fscrypt@vger.kernel.org>; Wed, 24 Apr 2024 04:55:24 -0700 (PDT)
+ us-mta-153-p_Xaf-A1PziAq2p72aIzDg-1; Wed, 24 Apr 2024 07:55:35 -0400
+X-MC-Unique: p_Xaf-A1PziAq2p72aIzDg-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-3477835b2f7so3937499f8f.0
+        for <linux-fscrypt@vger.kernel.org>; Wed, 24 Apr 2024 04:55:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713959723; x=1714564523;
+        d=1e100.net; s=20230601; t=1713959734; x=1714564534;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9zT0IFJDVsNKakGu1Yx/bEyqtl1wWoC8Kg4VpGAhahg=;
-        b=hc2PfaT7NoMYghvYmZ6GaZgGxTeDh0ZquUVQQK0e3oJnfjtaFlHvWYZt843BbiKQh/
-         e5yisOaYPnoo2UZ8ca3W+I6AKf65hdI6dDE+4NAV7dl+rGH2L2td/BJy8w7ffotP6slY
-         /K9OhvRP2MmB/CXyibHvCSYunp/XeIZkAukhSMeKPeTABDqKCxGOQASJfOp7utyZ5ORD
-         fgn/5kRiVHJXGC0EvvX7An7vsquyJx+DUrhu0zx7QkGvfSXt6KSFXnHHNolHzOXqow1l
-         xY9NBXhaudOrfFioJfOwJ7Wji05FukJvDLRqJnKeOtaHlle4IM20c3QylGepXlUni3m+
-         R22w==
-X-Forwarded-Encrypted: i=1; AJvYcCWzU3/NDp2a3pbofMNDiaRu9GXl//HKSqwO9xEGvbmOdk0pE2aY+jcxxYr4+OSfBN13/11hhiVS8dPUA9sbQhkgVXEDSW9aJQB70A6B2w==
-X-Gm-Message-State: AOJu0Yw3L+v9Ieaf032IlpBJ8leJcfMquZG9PGxXycSp+XOxsc03hK+o
-	tTJxQL7xieJ1ujGO/RdxOAW90GOy++bhiFpkts3PFeo4XKVmLhZU4H1Dfp+MaSC/M5rr2jIAFdG
-	HyNq650LEjHucZ6aZNFONdUzebY8imV9lBAbG3ukbzbo1uLBeol9N9gHylxKFXMU=
-X-Received: by 2002:a05:600c:511c:b0:41a:3369:6179 with SMTP id o28-20020a05600c511c00b0041a33696179mr2289443wms.26.1713959723169;
-        Wed, 24 Apr 2024 04:55:23 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFXZl+JvrX7Y7hTJQvM6mjeENPIODbxA04L5q02+eXTh0mx7u7TnzM1+bHZyOFXAJ6wYhbXtQ==
-X-Received: by 2002:a05:600c:511c:b0:41a:3369:6179 with SMTP id o28-20020a05600c511c00b0041a33696179mr2289427wms.26.1713959722844;
-        Wed, 24 Apr 2024 04:55:22 -0700 (PDT)
+        bh=shY7D2Xkj39HblvBkB6u0hIcRZjO+25LFPaiz5EXkkE=;
+        b=W8fxosGvxbH42ETeWxYvB6z1VTn2BHaPluvsBr3PkSlUtZiUeXmTk/XKN9K6xtovPE
+         WJ/7E6SJ2x4tiFO3LgcHUvTaQens1jHuGn4O/zUNunMSphiVCTRA7jh6YNm+/c7OYCfX
+         5C4Uwus1MsMOAZ3EK54p93c5DOXYl45ayvuskGpc0RltiwJ0njxYWJ6uTGdgzGu6J2Am
+         5YwYZXML5RzRoB2kJGLcTZQJM0FE9IH808nXy/UFucdhE5E9k2CQTxbd5NAubopzEFYj
+         CiinxwNd+njweMk5MEMPmZyZx3WE3rbUZsgSaF4IbLAH9UDU3ReX/43wu/Yye4fqJfEH
+         TrxQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW0n4Zpl1qIFkc1MDhky0XdzWnVctSaYKQxHTpdfZ4Dh/0/9iKhns0+H7OxPUneBxXyzXzxVhI+jeLF+204E6Erl5yxNtX3Eb6/INB7+Q==
+X-Gm-Message-State: AOJu0YymXGNr1IcH477aVh+gIwT0201Ehx3guYeO79g5ON1R89LlNodY
+	qwsYLGSGUoxGHcmw6C3dmvBUKtF52yBU23LEaC57PsK81iF5jYEr7H3WPDqqaSdbGR39X+OCUuy
+	8wmALh5+dUST3iirUobQbeh+MPGaRdoAUVRO7tw+qs7TW4p4eQM2QYt564Zz3QyI=
+X-Received: by 2002:adf:f404:0:b0:343:a6fc:b2e8 with SMTP id g4-20020adff404000000b00343a6fcb2e8mr1528178wro.26.1713959734280;
+        Wed, 24 Apr 2024 04:55:34 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHra7RXL6CvmI80rpOQzWmziqfED09Pw5xpeVTp+VRYu0eXdYaseI+50tOqQTeJA45mfepL4Q==
+X-Received: by 2002:adf:f404:0:b0:343:a6fc:b2e8 with SMTP id g4-20020adff404000000b00343a6fcb2e8mr1528165wro.26.1713959733807;
+        Wed, 24 Apr 2024 04:55:33 -0700 (PDT)
 Received: from ?IPV6:2003:cb:c70d:1f00:7a4e:8f21:98db:baef? (p200300cbc70d1f007a4e8f2198dbbaef.dip0.t-ipconnect.de. [2003:cb:c70d:1f00:7a4e:8f21:98db:baef])
-        by smtp.gmail.com with ESMTPSA id iv20-20020a05600c549400b00418e4cc9de7sm23283826wmb.7.2024.04.24.04.55.22
+        by smtp.gmail.com with ESMTPSA id t14-20020adff60e000000b0034599eca6c9sm16971570wrp.41.2024.04.24.04.55.33
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Apr 2024 04:55:22 -0700 (PDT)
-Message-ID: <e1ac21f7-06df-4c24-bbf2-c49e72328db1@redhat.com>
-Date: Wed, 24 Apr 2024 13:55:21 +0200
+        Wed, 24 Apr 2024 04:55:33 -0700 (PDT)
+Message-ID: <7c52ae2a-8f72-4c3c-b4b3-24b50bdb5486@redhat.com>
+Date: Wed, 24 Apr 2024 13:55:32 +0200
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
@@ -83,14 +83,13 @@ List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/6] userfault; Expand folio use in
- mfill_atomic_install_pte()
+Subject: Re: [PATCH 6/6] mm: Remove page_mapping()
 To: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
  Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
 Cc: linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
  linux-f2fs-devel@lists.sourceforge.net
 References: <20240423225552.4113447-1-willy@infradead.org>
- <20240423225552.4113447-6-willy@infradead.org>
+ <20240423225552.4113447-7-willy@infradead.org>
 Content-Language: en-US
 From: David Hildenbrand <david@redhat.com>
 Autocrypt: addr=david@redhat.com; keydata=
@@ -138,16 +137,48 @@ Autocrypt: addr=david@redhat.com; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat
-In-Reply-To: <20240423225552.4113447-6-willy@infradead.org>
+In-Reply-To: <20240423225552.4113447-7-willy@infradead.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 On 24.04.24 00:55, Matthew Wilcox (Oracle) wrote:
-> Call page_folio() a little earlier so we can use folio_mapping()
-> instead of page_mapping(), saving a call to compound_head().
+> All callers are now converted, delete this compatibility wrapper.
 > 
 > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 > ---
+>   include/linux/pagemap.h | 1 -
+>   mm/folio-compat.c       | 6 ------
+>   2 files changed, 7 deletions(-)
+> 
+> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+> index b6f14e9a2d98..941f7ed714b9 100644
+> --- a/include/linux/pagemap.h
+> +++ b/include/linux/pagemap.h
+> @@ -399,7 +399,6 @@ static inline void filemap_nr_thps_dec(struct address_space *mapping)
+>   #endif
+>   }
+>   
+> -struct address_space *page_mapping(struct page *);
+>   struct address_space *folio_mapping(struct folio *);
+>   struct address_space *swapcache_mapping(struct folio *);
+>   
+> diff --git a/mm/folio-compat.c b/mm/folio-compat.c
+> index f31e0ce65b11..f05906006b3c 100644
+> --- a/mm/folio-compat.c
+> +++ b/mm/folio-compat.c
+> @@ -10,12 +10,6 @@
+>   #include <linux/swap.h>
+>   #include "internal.h"
+>   
+> -struct address_space *page_mapping(struct page *page)
+> -{
+> -	return folio_mapping(page_folio(page));
+> -}
+> -EXPORT_SYMBOL(page_mapping);
+> -
+>   void unlock_page(struct page *page)
+>   {
+>   	return folio_unlock(page_folio(page));
 
 Reviewed-by: David Hildenbrand <david@redhat.com>
 
