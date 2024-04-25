@@ -1,88 +1,113 @@
-Return-Path: <linux-fscrypt+bounces-275-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-276-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E7AC8B1797
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 25 Apr 2024 01:59:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4DAA8B1ADB
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 25 Apr 2024 08:22:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 561ED1C22843
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 24 Apr 2024 23:59:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85A1E1F23299
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 25 Apr 2024 06:22:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7530116F824;
-	Wed, 24 Apr 2024 23:59:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="igcTIqHM"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4E123D549;
+	Thu, 25 Apr 2024 06:22:04 +0000 (UTC)
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C7A816F292;
-	Wed, 24 Apr 2024 23:59:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14CF127473;
+	Thu, 25 Apr 2024 06:22:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714003151; cv=none; b=grgIH9P98q6ou/mS3sCXCNN/Sg7BLtUyem7b6i2ocGOl3KYUZyfANLlkyvVgPMsbkr146z5H0xf6CBmKpl8V3cu7GHiqHCVyQCMhBIsWnsDTCt16vmMm4jeMoV2cscNpz7NxQdcCP0Rb6dCrVcN9GndMzeer52m/yNsA5+EgaA0=
+	t=1714026124; cv=none; b=bo+rJdZNKIaZka8q8Xbtqx4/vzMNSeW3K8eDL/+foBA8UC4COSMC68UTtgZj19dhghijXXTNnbID0y+5CUqtmffdiy0r8E+KZO1ZLXZhYpUoUNJGqvndH2RFPoDkfmoyRNsQqvhratAwgaHvdr5ca+E5dwAiHbNNtdpVrXCSDOI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714003151; c=relaxed/simple;
-	bh=/VuQ2TZ3I7By7nnlfH/Yl/asFP7aAx0YS12Cg+NH+ys=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=j4G5K8mvR/hNvHHdqux/VlTO3r2eNjr72LNyvvOP5DcuUSyOXUQ2Dak+1bl/K3AGyWQwYkdOZd1jVkFV9F1L4MgAI/FzSPBY3OxS+6sdc88GF33Qtv/QEEzPZj4wgbEk3TydHcr6RRbJO69L5g2acpOeaTWGcuxXT8G1/dtQhBM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=igcTIqHM; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=vNG9QqElHBsq1h44jED4ysNt8/35kOzYfpgTExkMc2E=; b=igcTIqHM0RfUK1MeyaDix1TNP0
-	ZwowTxoD2j9tUNWIzPpqEVnl0G0D8+fvjPtAQC8fzyCq1Pv1/maLu8N4Safh1O9uOrq1zcuQBGKmX
-	qYCETvKlaZI+4P5NYWghu05eTa/CAO+ol1z2xNzWYc5Yg03deYfxaLzB7xQpU+DIPecm9S5Xj/lvJ
-	zsPSyLcgVJ2SdZ/S4gA69JKH/dVLPaKvuf5Dnweg3281KfEc3BbXBLDUwAIAoiQ3vXnF1WfpMmCiN
-	lRJqCz8/9lC2FTBiBDf+VWYofEBq7JK2luLR8SxZh3UpR+tEDhXVYXxW7mKm4/IHYvuTM+z6JcU0F
-	UAjQCT0g==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rzmVz-00000001wNo-0OuB;
-	Wed, 24 Apr 2024 23:59:04 +0000
-Date: Thu, 25 Apr 2024 00:59:02 +0100
-From: Matthew Wilcox <willy@infradead.org>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH 6/6] mm: Remove page_mapping()
-Message-ID: <ZimcxvN1fyYfpRVl@casper.infradead.org>
+	s=arc-20240116; t=1714026124; c=relaxed/simple;
+	bh=imaC7eO5xlYNPnUVBT7HZoIIKrPLl4rRi7nQZ9RsLxQ=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=aXPFoKZ85q3Qzt6IegUBnpi41Q/w6bn++gcSEVlH9JIaGKFAawDIYKVmi6jDPfXSF2BWNEnr/rDqeZjgan31ad1AWZ0Nsw77j5sjm+VRtGESwDPVPMIa7yLzUJLdTic/IAK4t+yrd30+aDiHBNtKC/75wDy+gWtq537WztB+a6w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4VQ5KD4qPVz1R9NF;
+	Thu, 25 Apr 2024 14:18:56 +0800 (CST)
+Received: from canpemm500002.china.huawei.com (unknown [7.192.104.244])
+	by mail.maildlp.com (Postfix) with ESMTPS id 273C01402E0;
+	Thu, 25 Apr 2024 14:21:59 +0800 (CST)
+Received: from [10.173.135.154] (10.173.135.154) by
+ canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 25 Apr 2024 14:21:58 +0800
+Subject: Re: [PATCH 3/6] memory-failure: Remove calls to page_mapping()
+To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+CC: <linux-fsdevel@vger.kernel.org>, <linux-fscrypt@vger.kernel.org>,
+	<linux-f2fs-devel@lists.sourceforge.net>, Andrew Morton
+	<akpm@linux-foundation.org>, <linux-mm@kvack.org>
 References: <20240423225552.4113447-1-willy@infradead.org>
- <20240423225552.4113447-7-willy@infradead.org>
- <7c52ae2a-8f72-4c3c-b4b3-24b50bdb5486@redhat.com>
- <20240424163423.ad6e23a984deb731e2de497c@linux-foundation.org>
+ <20240423225552.4113447-4-willy@infradead.org>
+From: Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <82a80acf-7d2e-b207-07bb-2584ef874352@huawei.com>
+Date: Thu, 25 Apr 2024 14:21:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240424163423.ad6e23a984deb731e2de497c@linux-foundation.org>
+In-Reply-To: <20240423225552.4113447-4-willy@infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ canpemm500002.china.huawei.com (7.192.104.244)
 
-On Wed, Apr 24, 2024 at 04:34:23PM -0700, Andrew Morton wrote:
-> For some reason,
+On 2024/4/24 6:55, Matthew Wilcox (Oracle) wrote:
+> This is mostly just inlining page_mapping() into the two callers.
 > 
-> mm/hugetlb.c: In function 'hugetlb_page_mapping_lock_write':
-> mm/hugetlb.c:2164:41: error: implicit declaration of function 'page_mapping'; did you mean 'page_mapped'? [-Werror=implicit-function-declaration]
->  2164 |         struct address_space *mapping = page_mapping(hpage);
->       |                                         ^~~~~~~~~~~~
->       |                                         page_mapped
-> mm/hugetlb.c:2164:41: error: initialization of 'struct address_space *' from 'int' makes pointer from integer without a cast [-Werror=int-conversion]
-> 
-> 
-> I'll disable "mm: Remove page_mapping()" pending review of the below,
-> please.
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-Looks pretty similar to
-https://lore.kernel.org/linux-mm/20240412193510.2356957-7-willy@infradead.org/
+Acked-by: Miaohe Lin <linmiaohe@huawei.com>
+Thanks.
+.
 
-Sorry, I thought you'd picked up that series; I think it's fully
-reviewed by now?
+> ---
+>  mm/memory-failure.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+> index e065dd9be21e..62aa3db17854 100644
+> --- a/mm/memory-failure.c
+> +++ b/mm/memory-failure.c
+> @@ -216,6 +216,7 @@ EXPORT_SYMBOL_GPL(hwpoison_filter_flags_value);
+>  
+>  static int hwpoison_filter_dev(struct page *p)
+>  {
+> +	struct folio *folio = page_folio(p);
+>  	struct address_space *mapping;
+>  	dev_t dev;
+>  
+> @@ -223,7 +224,7 @@ static int hwpoison_filter_dev(struct page *p)
+>  	    hwpoison_filter_dev_minor == ~0U)
+>  		return 0;
+>  
+> -	mapping = page_mapping(p);
+> +	mapping = folio_mapping(folio);
+>  	if (mapping == NULL || mapping->host == NULL)
+>  		return -EINVAL;
+>  
+> @@ -1090,7 +1091,8 @@ static int me_pagecache_clean(struct page_state *ps, struct page *p)
+>   */
+>  static int me_pagecache_dirty(struct page_state *ps, struct page *p)
+>  {
+> -	struct address_space *mapping = page_mapping(p);
+> +	struct folio *folio = page_folio(p);
+> +	struct address_space *mapping = folio_mapping(folio);
+>  
+>  	/* TBD: print more information about the file. */
+>  	if (mapping) {
+> 
+
 
