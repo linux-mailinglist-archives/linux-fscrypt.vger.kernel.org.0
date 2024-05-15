@@ -1,84 +1,79 @@
-Return-Path: <linux-fscrypt+bounces-282-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-283-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0E248C59F3
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 14 May 2024 18:55:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 083018C5E71
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 15 May 2024 02:53:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E2A61C21561
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 14 May 2024 16:55:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9FE351F22511
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 15 May 2024 00:53:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8782F158213;
-	Tue, 14 May 2024 16:55:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D9B3182DA;
+	Wed, 15 May 2024 00:53:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="on5xZ+uQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XWXTAoc3"
 X-Original-To: linux-fscrypt@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5913F12E7F;
-	Tue, 14 May 2024 16:55:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E748414F78;
+	Wed, 15 May 2024 00:53:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715705734; cv=none; b=Hzuet8yC6uv1bWyPOz6rxVSmHavKZw/D6l7Sb3MaxDTKc3PspyYGkTcrzF0WJG2NRZuQlBLlpjI4MHU1cVBNeQv2w5gM/Dh3TAa8+dvGzyPzrrI6bzeOciZFVe2HsBFFvhD4GM2wwtMaYXqXCCNbjkNEQHyv7gQ7dr8zsf+jVIY=
+	t=1715734396; cv=none; b=RGpLFYzz5zi2NyS4aftr43vVj+i3SgsMlIXgRTUxkaucmX8Vy1MLtgjodCI6o/yktEij5UDtRr/HJl7G//AzY+sNTDPe2Dlf8GfCvAL4BptYNsfM4iZGqTnIjExymI42p7zcKNqsjA7OAyXwQMI0PUgX1Z+viJ9nHD0+4hCeSfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715705734; c=relaxed/simple;
-	bh=RcCpHcBXxFFCTloM2Ewr/gwuvTCPh3AICe59zua+0yM=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=AgdJbiNfspXGHGfDyGGPygDrSCx9B2FcEXzXo0xX7PJJiLpvFjXO5d/sXGqp6OUJ/Pt8URjbI/fhPXnRFI+kzTPMXqfRJwTM93TVIErSUdhO9sViuOi34DUx+r+nNE28QqcW+aJ9zoU9fm9cJv/4+Fq6r2qWjb7ipyu5PIdsRxM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=on5xZ+uQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2B20C2BD11;
-	Tue, 14 May 2024 16:55:33 +0000 (UTC)
+	s=arc-20240116; t=1715734396; c=relaxed/simple;
+	bh=G1/fcp9CcgD+8mTJO4TXV0MDZRtOnMzwSgnfShcptVA=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=ArIcy8OoIFSiPp3PTifQazt1mkpfxogaMZRlQwyoA+kzwqygGq8YoqRjf4n2gBUZXLm/xPGHqi5u5LfMYXC+IptQIKoawzmtLSWrC0KKRlkHGpAGAmDpMUOprGjMQCTUpk8qTtba1YIlp3K/FrVtDPnb0z5hYNbTFhKymt1yMoU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XWXTAoc3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C4092C4AF07;
+	Wed, 15 May 2024 00:53:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715705733;
-	bh=RcCpHcBXxFFCTloM2Ewr/gwuvTCPh3AICe59zua+0yM=;
-	h=Date:From:To:Cc:Subject:From;
-	b=on5xZ+uQdPApwyrZw+Nu0eiwRaACjMWnf6He/ipOh8FLu7qwEbcXFJsmlXJISu+5u
-	 MQUbw12AAuG0ph4V+fx7GSQAkXay3Kz1ede9Vz63bTD2B4fljnyJO1eA5ek76vY0M5
-	 MqBlLoqxWHWHtzAJjo9oh6hnJebUg+u4mW79vc1d/9QuY/eDniBYolA5WWK/4epizO
-	 Fe7QkUpfXzR8xj1q8L1MKEmCaLluqrBtWEc3xAYHF2DPfuPW1KubMU1TD9H7a6is6l
-	 viEBA7gkvk6gYktXgEbBmdoNTyjOaZrc88yo4Jb2jJzjeh+4Xpp0ghr4v0GMxu91RP
-	 M04KWqlx6lBxA==
-Date: Tue, 14 May 2024 09:55:32 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-	Jaegeuk Kim <jaegeuk@kernel.org>, Mateusz Guzik <mjguzik@gmail.com>
-Subject: [GIT PULL] fscrypt update for 6.10
-Message-ID: <20240514165532.GA2965@sol.localdomain>
+	s=k20201202; t=1715734395;
+	bh=G1/fcp9CcgD+8mTJO4TXV0MDZRtOnMzwSgnfShcptVA=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=XWXTAoc319SWzYTp5pIuzvEWGhyeESj+UcX2v026v0vFjV6BWE4yo1XWMBdBfvQUo
+	 RuiHVVTG0oX4d5rrcVgLWuYSgCvpra1b9FXNcg/tFQ2TbXAbC7BTmF9OdxGVV0aHT6
+	 PIms+QLLmyebtdbxY/f9IafcdJFALQRfmuSaAydl+V09oKg2ALxn9HNFgBCr/eR6lP
+	 ULMnhyAEz13XQkOBn4ovYYUQcWL7yZ9E95Lt0jx5lxE19/W4A85oi+RNxOcK0mA8fc
+	 vmvauEkF53MFDKjwLlnFOVN6TW63kS9gP6ims1oZ3B7on/HSRZwWDihU0nUT3TkkAy
+	 x6FpYNPyCJqqg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BA576C433A2;
+	Wed, 15 May 2024 00:53:15 +0000 (UTC)
+Subject: Re: [GIT PULL] fscrypt update for 6.10
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20240514165532.GA2965@sol.localdomain>
+References: <20240514165532.GA2965@sol.localdomain>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20240514165532.GA2965@sol.localdomain>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/fs/fscrypt/linux.git tags/fscrypt-for-linus
+X-PR-Tracked-Commit-Id: 7f016edaa0f385da0c37eee1ebb64c7f6929c533
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: fc883e7a500fcded49e5d295737c7af6ba9fe7b9
+Message-Id: <171573439575.24206.9425665902357369776.pr-tracker-bot@kernel.org>
+Date: Wed, 15 May 2024 00:53:15 +0000
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>, Mateusz Guzik <mjguzik@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-The following changes since commit dd5a440a31fae6e459c0d6271dddd62825505361:
+The pull request you sent on Tue, 14 May 2024 09:55:32 -0700:
 
-  Linux 6.9-rc7 (2024-05-05 14:06:01 -0700)
+> https://git.kernel.org/pub/scm/fs/fscrypt/linux.git tags/fscrypt-for-linus
 
-are available in the Git repository at:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/fc883e7a500fcded49e5d295737c7af6ba9fe7b9
 
-  https://git.kernel.org/pub/scm/fs/fscrypt/linux.git tags/fscrypt-for-linus
+Thank you!
 
-for you to fetch changes up to 7f016edaa0f385da0c37eee1ebb64c7f6929c533:
-
-  fscrypt: try to avoid refing parent dentry in fscrypt_file_open (2024-05-08 10:28:58 -0700)
-
-----------------------------------------------------------------
-
-Improve the performance of opening unencrypted files on filesystems that
-support fscrypt.
-
-----------------------------------------------------------------
-Mateusz Guzik (1):
-      fscrypt: try to avoid refing parent dentry in fscrypt_file_open
-
- fs/crypto/hooks.c | 32 ++++++++++++++++++++++++++------
- 1 file changed, 26 insertions(+), 6 deletions(-)
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
