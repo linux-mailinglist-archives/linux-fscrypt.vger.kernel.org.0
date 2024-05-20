@@ -1,79 +1,106 @@
-Return-Path: <linux-fscrypt+bounces-283-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-284-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 083018C5E71
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 15 May 2024 02:53:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E3588CA3B9
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 20 May 2024 23:16:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9FE351F22511
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 15 May 2024 00:53:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0ECF11F21E52
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 20 May 2024 21:16:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D9B3182DA;
-	Wed, 15 May 2024 00:53:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27309137C2D;
+	Mon, 20 May 2024 21:16:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XWXTAoc3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="knDp39cv"
 X-Original-To: linux-fscrypt@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E748414F78;
-	Wed, 15 May 2024 00:53:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2B8E134DE;
+	Mon, 20 May 2024 21:16:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715734396; cv=none; b=RGpLFYzz5zi2NyS4aftr43vVj+i3SgsMlIXgRTUxkaucmX8Vy1MLtgjodCI6o/yktEij5UDtRr/HJl7G//AzY+sNTDPe2Dlf8GfCvAL4BptYNsfM4iZGqTnIjExymI42p7zcKNqsjA7OAyXwQMI0PUgX1Z+viJ9nHD0+4hCeSfY=
+	t=1716239807; cv=none; b=XW8giz8da01eSOvqVoBO0lfMuZLDg5BDOg/UgS+hW7a8wgjP0D5muZQKmS1rcHFxWvYdPzvfrERYJ5g7q8EChQASM6XWVdfgLvFU59pAvePd9BN1LX4XKFGkH8e79LAKkQTWVahy9B/LdLahtsXjEAliz1gWiBoJxUVzMWC4pH0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715734396; c=relaxed/simple;
-	bh=G1/fcp9CcgD+8mTJO4TXV0MDZRtOnMzwSgnfShcptVA=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=ArIcy8OoIFSiPp3PTifQazt1mkpfxogaMZRlQwyoA+kzwqygGq8YoqRjf4n2gBUZXLm/xPGHqi5u5LfMYXC+IptQIKoawzmtLSWrC0KKRlkHGpAGAmDpMUOprGjMQCTUpk8qTtba1YIlp3K/FrVtDPnb0z5hYNbTFhKymt1yMoU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XWXTAoc3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C4092C4AF07;
-	Wed, 15 May 2024 00:53:15 +0000 (UTC)
+	s=arc-20240116; t=1716239807; c=relaxed/simple;
+	bh=i9sMlbAULR6WBF7z4CvLAk2CNyoAXyInKoTd0w7BUmk=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=E1Co/qTVZaGXohbTugSkMGfEnEalNlPmOiboBaUpto1aksnujkwfT5+ZQ/ApfF+brXWF+JdN3N1j3poGWYIia/7Y0lgfqUJfSn6EvYZ5wBulSp9DtYm5r1HVm4cAFe3Wbh33qcBFBtrUZLXix/CM+9Y1YR7njf6ln7wg1eN+I9w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=knDp39cv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 8F517C4AF07;
+	Mon, 20 May 2024 21:16:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715734395;
-	bh=G1/fcp9CcgD+8mTJO4TXV0MDZRtOnMzwSgnfShcptVA=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=XWXTAoc319SWzYTp5pIuzvEWGhyeESj+UcX2v026v0vFjV6BWE4yo1XWMBdBfvQUo
-	 RuiHVVTG0oX4d5rrcVgLWuYSgCvpra1b9FXNcg/tFQ2TbXAbC7BTmF9OdxGVV0aHT6
-	 PIms+QLLmyebtdbxY/f9IafcdJFALQRfmuSaAydl+V09oKg2ALxn9HNFgBCr/eR6lP
-	 ULMnhyAEz13XQkOBn4ovYYUQcWL7yZ9E95Lt0jx5lxE19/W4A85oi+RNxOcK0mA8fc
-	 vmvauEkF53MFDKjwLlnFOVN6TW63kS9gP6ims1oZ3B7on/HSRZwWDihU0nUT3TkkAy
-	 x6FpYNPyCJqqg==
+	s=k20201202; t=1716239806;
+	bh=i9sMlbAULR6WBF7z4CvLAk2CNyoAXyInKoTd0w7BUmk=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=knDp39cvfVtNAXHezWhCM2eUf8BF+yeBlQ27p5MN1ouM25k8cRbl7CPtWowq3ww4X
+	 nCgtBThuJ6nsRcl7N/Ix0bgqZCNS5UB60rAb80aOlEiPV+hniLsvW1i2wkWH1XrWRx
+	 qaOYqcSczgiQHXJST7+YRg8FNDZY4fXKK5cSOuc/ZiRyyDf6MpkY88iGc9aWPGgS7C
+	 3HWgaB3ZkjK5H4K/QwUipmTgGdki2EV37S4vF9Gf2CmidKke/xAHViFsVm1Q6Ny5Wy
+	 FdPiRAyVvIWy6xOrDEM6n/GshsfyOAmdZPgnUT4pnAaV1UhLkYl7/XHeWb2Umnce6w
+	 q09zjmqukjnng==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BA576C433A2;
-	Wed, 15 May 2024 00:53:15 +0000 (UTC)
-Subject: Re: [GIT PULL] fscrypt update for 6.10
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20240514165532.GA2965@sol.localdomain>
-References: <20240514165532.GA2965@sol.localdomain>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20240514165532.GA2965@sol.localdomain>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/fs/fscrypt/linux.git tags/fscrypt-for-linus
-X-PR-Tracked-Commit-Id: 7f016edaa0f385da0c37eee1ebb64c7f6929c533
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: fc883e7a500fcded49e5d295737c7af6ba9fe7b9
-Message-Id: <171573439575.24206.9425665902357369776.pr-tracker-bot@kernel.org>
-Date: Wed, 15 May 2024 00:53:15 +0000
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>, Mateusz Guzik <mjguzik@gmail.com>
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7750FC43332;
+	Mon, 20 May 2024 21:16:46 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [f2fs-dev] [PATCH 0/6] Remove page_mapping()
+From: patchwork-bot+f2fs@kernel.org
+Message-Id: 
+ <171623980648.27511.9576243592130521184.git-patchwork-notify@kernel.org>
+Date: Mon, 20 May 2024 21:16:46 +0000
+References: <20240423225552.4113447-1-willy@infradead.org>
+In-Reply-To: <20240423225552.4113447-1-willy@infradead.org>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: akpm@linux-foundation.org, linux-mm@kvack.org,
+ linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net
 
-The pull request you sent on Tue, 14 May 2024 09:55:32 -0700:
+Hello:
 
-> https://git.kernel.org/pub/scm/fs/fscrypt/linux.git tags/fscrypt-for-linus
+This series was applied to jaegeuk/f2fs.git (dev)
+by Andrew Morton <akpm@linux-foundation.org>:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/fc883e7a500fcded49e5d295737c7af6ba9fe7b9
+On Tue, 23 Apr 2024 23:55:31 +0100 you wrote:
+> There are only a few users left.  Convert them all to either call
+> folio_mapping() or just use folio->mapping directly.
+> 
+> Matthew Wilcox (Oracle) (6):
+>   fscrypt: Convert bh_get_inode_and_lblk_num to use a folio
+>   f2fs: Convert f2fs_clear_page_cache_dirty_tag to use a folio
+>   memory-failure: Remove calls to page_mapping()
+>   migrate: Expand the use of folio in __migrate_device_pages()
+>   userfault; Expand folio use in mfill_atomic_install_pte()
+>   mm: Remove page_mapping()
+> 
+> [...]
 
-Thank you!
+Here is the summary with links:
+  - [f2fs-dev,1/6] fscrypt: Convert bh_get_inode_and_lblk_num to use a folio
+    https://git.kernel.org/jaegeuk/f2fs/c/262f014dd7de
+  - [f2fs-dev,2/6] f2fs: Convert f2fs_clear_page_cache_dirty_tag to use a folio
+    https://git.kernel.org/jaegeuk/f2fs/c/196ad49cd626
+  - [f2fs-dev,3/6] memory-failure: Remove calls to page_mapping()
+    https://git.kernel.org/jaegeuk/f2fs/c/89f5c54b2281
+  - [f2fs-dev,4/6] migrate: Expand the use of folio in __migrate_device_pages()
+    https://git.kernel.org/jaegeuk/f2fs/c/e18a9faf06c2
+  - [f2fs-dev,5/6] userfault; Expand folio use in mfill_atomic_install_pte()
+    https://git.kernel.org/jaegeuk/f2fs/c/a568b4126b20
+  - [f2fs-dev,6/6] mm: Remove page_mapping()
+    (no matching commit)
 
+You are awesome, thank you!
 -- 
 Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
