@@ -1,196 +1,143 @@
-Return-Path: <linux-fscrypt+bounces-325-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-326-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1C3691F023
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  2 Jul 2024 09:29:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E11F0924B5B
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  3 Jul 2024 00:15:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84F30286C77
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  2 Jul 2024 07:29:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B2181F23463
+	for <lists+linux-fscrypt@lfdr.de>; Tue,  2 Jul 2024 22:15:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08A5913D8BA;
-	Tue,  2 Jul 2024 07:28:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4910C191F61;
+	Tue,  2 Jul 2024 22:06:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NrFXqIFB"
+	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="U2GuGzV7"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from 008.lax.mailroute.net (008.lax.mailroute.net [199.89.1.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0CDD133987;
-	Tue,  2 Jul 2024 07:28:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 851B26A342;
+	Tue,  2 Jul 2024 22:06:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719905333; cv=none; b=bewXNPBcowgUTQkRJ9E/EUA1J9qMoDUeWUth+NIlfGV50NoiPG5TqrQtbIlgbhsFwXEhBQkNlU40KcedzoH493sXTsY6JVLNedEO4gl2xxHTFtsY1bjcUJO6Yg4321DQAGlcRLefzv4lkyVq7a7HOBG+1nFV2146QWJWjLkZWUw=
+	t=1719957977; cv=none; b=I+QvWXmW5Y6siUsKMLbuI5Xh6b7J/O+nQvdrW8BDyEHck3hYDMaEzx2cIc9Oi2otP9XVlm2NzpBd8gYUg8/3knlJ0YOlAimdSEEcDkrSlXvRKl9Nak4P4K22sK5/crsbjwm7NiseDinaR5aK862Ogy7hVk5C6Y3yYL8E7XZvwMw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719905333; c=relaxed/simple;
-	bh=fe1WusoWTQnTd1P5u/jAG7TOsY/59WcKkHZBjncyvbQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OJV5mjx/vj5F2/SeCM/+FwyUXLPwbZHSp8oqj7G+VsPNz54gfN7EIY8qMY02hCS+g/u7uVhMb8QiY1yRKxzhTiQeJWl2TosCMl0u7W++DwFkAOm2KnJV7O0MlUm8p15PaZFNmySppoN6tbmTfVTGH2QcHZfXqjKFfoHUHYnaC/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NrFXqIFB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33004C32781;
-	Tue,  2 Jul 2024 07:28:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719905333;
-	bh=fe1WusoWTQnTd1P5u/jAG7TOsY/59WcKkHZBjncyvbQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NrFXqIFBLL042fXbIeBQbLphGByU3q3r7cg8DM7DBTCsK62x+zDDRNvB96UN8REsc
-	 57BVckTTKnGVT1AvbeXENdEYh+cORKtDO/jV+70yXZui+EF/4CLipPxoG3Spgeq2V2
-	 miTVE1zz1Wb8vjOVvRsOlKu/H3KHcBH2VY8JmFYCtbcrzp/NHqAXboFaaA2g8wVjCC
-	 eZmCGRrXkWN60bflkdVybFEHyqHmidfrRIKjIOh64c3ngfYKdopdgCqQPKNBKiTYQU
-	 v7ECx9ORbQTWyD5rtzDTksj8Rt2xHRaTyMTKESsZ/DqJzFiUzfDjGY2mtXS+0EBpzG
-	 CI40mA+eaM3zQ==
-Date: Tue, 2 Jul 2024 00:28:51 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: Sam Protsenko <semen.protsenko@linaro.org>
-Cc: linux-scsi@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-	linux-fscrypt@vger.kernel.org,
-	Alim Akhtar <alim.akhtar@samsung.com>,
-	Avri Altman <avri.altman@wdc.com>,
-	Bart Van Assche <bvanassche@acm.org>,
-	"Martin K . Petersen" <martin.petersen@oracle.com>,
-	Peter Griffin <peter.griffin@linaro.org>,
-	=?iso-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>,
-	William McVicker <willmcvicker@google.com>
-Subject: Re: [PATCH 6/6] scsi: ufs: exynos: Add support for Flash Memory
- Protector (FMP)
-Message-ID: <20240702072851.GB121190@sol.localdomain>
-References: <20240611223419.239466-1-ebiggers@kernel.org>
- <20240611223419.239466-7-ebiggers@kernel.org>
- <CAPLW+4kPAi+13C7t34XWW9ciAoYUebj5nz_EQY+RKhsT2ZpHnQ@mail.gmail.com>
+	s=arc-20240116; t=1719957977; c=relaxed/simple;
+	bh=yoMDGGwqTVXI17wNYQaDCOxxPTHrbhvRwcACZIYsh6o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CzGDhlroWW8klMG4IEXFjbGZ2bCxkKYtlhXeXN+lRvIBldj5jqXowX0zcqcMyVKQbX6hFBycqQUtCjaLsXR7EJ026oJnjMSMg9CigeVLOs3mQONsqpm47FGm9o3XjXnSRtDchpfGtWkx2XjH+as+mMkN9Hp0J+0LLiKH/5wAAnE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=U2GuGzV7; arc=none smtp.client-ip=199.89.1.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
+Received: from localhost (localhost [127.0.0.1])
+	by 008.lax.mailroute.net (Postfix) with ESMTP id 4WDH6t6vNjz6CmR07;
+	Tue,  2 Jul 2024 22:06:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
+	content-transfer-encoding:content-type:content-type:in-reply-to
+	:from:from:content-language:references:subject:subject
+	:user-agent:mime-version:date:date:message-id:received:received;
+	 s=mr01; t=1719957969; x=1722549970; bh=53t/1vaV5VWoDO4McN2tJQwG
+	rleSCJWNTeOAz3dTpvQ=; b=U2GuGzV7ph5Uhf5iOniPYc3AnB6b4HupvSMX/r7F
+	ecf6TyvDtMXcC5qOwe6UOird18nb9rQiNisOMgYfWtP2+93fRKVdfH2wAI8iuqvS
+	Lbh8pqbK/YEzpG6oL223IB8JgnU0QJw+BRYugu2M4iAi3M826+bs6eqhcn4tB5VY
+	oyn7jO+as2hFNYfULz6miH9RVa5MbLNZt8hmoO3XuEoUyYFk86wG03YUTq7OQU89
+	L7zSHQoFUcdToLsPnIQ+HiluPB+L0N9j513N+A9RoR9wUIOc50viOk1olD04TVVp
+	A1tQadu/fEcBdNNW59P3LwE2/MlsiCPj5grplPA8HztmGw==
+X-Virus-Scanned: by MailRoute
+Received: from 008.lax.mailroute.net ([127.0.0.1])
+ by localhost (008.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
+ id RvjfZ_96gQmZ; Tue,  2 Jul 2024 22:06:09 +0000 (UTC)
+Received: from [100.96.154.26] (unknown [104.132.0.90])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: bvanassche@acm.org)
+	by 008.lax.mailroute.net (Postfix) with ESMTPSA id 4WDH6m5zTyz6Cnv3Q;
+	Tue,  2 Jul 2024 22:06:08 +0000 (UTC)
+Message-ID: <97452445-2db8-4c78-a410-ec8b34e56148@acm.org>
+Date: Tue, 2 Jul 2024 15:06:08 -0700
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPLW+4kPAi+13C7t34XWW9ciAoYUebj5nz_EQY+RKhsT2ZpHnQ@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 6/6] scsi: ufs: exynos: Add support for Flash Memory
+ Protector (FMP)
+To: Eric Biggers <ebiggers@kernel.org>, linux-scsi@vger.kernel.org
+Cc: linux-samsung-soc@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+ Alim Akhtar <alim.akhtar@samsung.com>, Avri Altman <avri.altman@wdc.com>,
+ "Martin K . Petersen" <martin.petersen@oracle.com>,
+ Peter Griffin <peter.griffin@linaro.org>,
+ =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>,
+ William McVicker <willmcvicker@google.com>
+References: <20240702072510.248272-1-ebiggers@kernel.org>
+ <20240702072510.248272-7-ebiggers@kernel.org>
+Content-Language: en-US
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20240702072510.248272-7-ebiggers@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Jun 14, 2024 at 06:00:57PM -0500, Sam Protsenko wrote:
-> On Tue, Jun 11, 2024 at 5:36 PM Eric Biggers <ebiggers@kernel.org> wrote:
-> >
-> > From: Eric Biggers <ebiggers@google.com>
-> >
-> > Add support for Flash Memory Protector (FMP), which is the inline
-> > encryption hardware on Exynos and Exynos-based SoCs.
-> >
-> > Specifically, add support for the "traditional FMP mode" that works on
-> > many Exynos-based SoCs including gs101.  This is the mode that uses
-> > "software keys" and is compatible with the upstream kernel's existing
-> > inline encryption framework in the block and filesystem layers.  I plan
-> > to add support for the wrapped key support on gs101 at a later time.
-> >
-> > Tested on gs101 (specifically Pixel 6) by running the 'encrypt' group of
-> > xfstests on a filesystem mounted with the 'inlinecrypt' mount option.
-> >
-> > Signed-off-by: Eric Biggers <ebiggers@google.com>
-> > ---
-> >  drivers/ufs/host/ufs-exynos.c | 219 +++++++++++++++++++++++++++++++++-
-> >  1 file changed, 218 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/ufs/host/ufs-exynos.c b/drivers/ufs/host/ufs-exynos.c
-> > index 88d125d1ee3c..969c4eedbe2d 100644
-> > --- a/drivers/ufs/host/ufs-exynos.c
-> > +++ b/drivers/ufs/host/ufs-exynos.c
-> > @@ -6,10 +6,13 @@
-> >   * Author: Seungwon Jeon  <essuuj@gmail.com>
-> >   * Author: Alim Akhtar <alim.akhtar@samsung.com>
-> >   *
-> >   */
-> >
-> > +#include <asm/unaligned.h>
-> > +#include <crypto/aes.h>
-> > +#include <linux/arm-smccc.h>
-> >  #include <linux/clk.h>
-> >  #include <linux/delay.h>
-> >  #include <linux/module.h>
-> >  #include <linux/of.h>
-> >  #include <linux/of_address.h>
-> > @@ -1149,10 +1152,221 @@ static inline void exynos_ufs_priv_init(struct ufs_hba *hba,
-> >                 ufs->rx_sel_idx = 0;
-> >         hba->priv = (void *)ufs;
-> >         hba->quirks = ufs->drv_data->quirks;
-> >  }
-> >
-> > +#ifdef CONFIG_SCSI_UFS_CRYPTO
-> > +
-> > +/*
-> > + * Support for Flash Memory Protector (FMP), which is the inline encryption
-> > + * hardware on Exynos and Exynos-based SoCs.  The interface to this hardware is
-> > + * not compatible with the standard UFS crypto.  It requires that encryption be
-> > + * configured in the PRDT using a nonstandard extension.
-> > + */
-> > +
-> > +enum fmp_crypto_algo_mode {
-> > +       FMP_BYPASS_MODE = 0,
-> > +       FMP_ALGO_MODE_AES_CBC = 1,
-> > +       FMP_ALGO_MODE_AES_XTS = 2,
-> > +};
-> > +enum fmp_crypto_key_length {
-> > +       FMP_KEYLEN_256BIT = 1,
-> > +};
-> > +#define FMP_DATA_UNIT_SIZE     SZ_4K
-> > +
-> > +/* This is the nonstandard format of PRDT entries when FMP is enabled. */
-> > +struct fmp_sg_entry {
-> > +
-> > +       /*
-> > +        * This is the standard PRDT entry, but with nonstandard bitfields in
-> > +        * the high bits of the 'size' field, i.e. the last 32-bit word.  When
-> > +        * these nonstandard bitfields are zero, the data segment won't be
-> > +        * encrypted or decrypted.  Otherwise they specify the algorithm and key
-> > +        * length with which the data segment will be encrypted or decrypted.
-> > +        */
+On 7/2/24 12:25 AM, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> Minor suggestion: create a kernel-doc comment for the structure and
-> pull all fields documentation there.
+> Add support for Flash Memory Protector (FMP), which is the inline
+> encryption hardware on Exynos and Exynos-based SoCs.
 > 
-> > +       struct ufshcd_sg_entry base;
-> > +
-> > +       /* The initialization vector (IV) with all bytes reversed */
-> > +       __be64 file_iv[2];
-> > +
-> > +       /*
-> > +        * The key with all bytes reversed.  For XTS, the two halves of the key
-> > +        * are given separately and are byte-reversed separately.
-> > +        */
-> > +       __be64 file_enckey[4];
-> > +       __be64 file_twkey[4];
-> > +
-> > +       /* Unused */
-> > +       __be64 disk_iv[2];
-> > +       __be64 reserved[2];
-> > +};
-> > +
-> > +#define SMC_CMD_FMP_SECURITY           0xC2001810
-> > +#define SMC_CMD_SMU                    0xC2001850
-> > +#define SMC_CMD_FMP_SMU_RESUME         0xC2001860
+> Specifically, add support for the "traditional FMP mode" that works on
+> many Exynos-based SoCs including gs101.  This is the mode that uses
+> "software keys" and is compatible with the upstream kernel's existing
+> inline encryption framework in the block and filesystem layers.  I plan
+> to add support for the wrapped key support on gs101 at a later time.
 > 
-> Suggest to use ARM_SMCCC_CALL_VAL() macro to define above values.
+> Tested on gs101 (specifically Pixel 6) by running the 'encrypt' group of
+> xfstests on a filesystem mounted with the 'inlinecrypt' mount option.
 > 
-> > +#define SMU_EMBEDDED                   0
-> > +#define SMU_INIT                       0
-> > +#define CFG_DESCTYPE_3                 3
-> > +
-> > +static inline long exynos_smc(unsigned long cmd, unsigned long arg0,
-> > +                             unsigned long arg1, unsigned long arg2)
-> > +{
-> > +       struct arm_smccc_res res;
-> > +
-> > +       arm_smccc_smc(cmd, arg0, arg1, arg2, 0, 0, 0, 0, &res);
-> > +       return res.a0;
-> > +}
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+>   drivers/ufs/host/ufs-exynos.c | 228 +++++++++++++++++++++++++++++++++-
+>   1 file changed, 222 insertions(+), 6 deletions(-)
 > 
-> This wrapper looks like it was borrowed from the downstream Samsung
-> code. Not sure if it brings any value nowadays. Maybe it would be
-> clearer to just use arm_smccc_smc() directly and remove this wrapper?
-> 
+> diff --git a/drivers/ufs/host/ufs-exynos.c b/drivers/ufs/host/ufs-exynos.c
+> index 88d125d1ee3c..dd545ef7c361 100644
+> --- a/drivers/ufs/host/ufs-exynos.c
+> +++ b/drivers/ufs/host/ufs-exynos.c
+> @@ -6,10 +6,13 @@
+>    * Author: Seungwon Jeon  <essuuj@gmail.com>
+>    * Author: Alim Akhtar <alim.akhtar@samsung.com>
+>    *
+>    */
+>   
+> +#include <asm/unaligned.h>
+> +#include <crypto/aes.h>
+> +#include <linux/arm-smccc.h>
+>   #include <linux/clk.h>
+>   #include <linux/delay.h>
+>   #include <linux/module.h>
+>   #include <linux/of.h>
+>   #include <linux/of_address.h>
+> @@ -23,16 +26,18 @@
+>   #include <ufs/ufshci.h>
+>   #include <ufs/unipro.h>
+>   
+>   #include "ufs-exynos.h"
+>   
+> +#define DATA_UNIT_SIZE		4096
+> +#define LOG2_DATA_UNIT_SIZE	12
 
-All done in v2.  Thanks.
+If this series has to be reposted, please consider changing "12" into
+"ilog2(DATA_UNIT_SIZE)". I think that the ilog2() macro generates a
+constant expression if its argument is a constant.
 
-- Eric
+In case it wouldn't be clear, I'm fine with this patch with or without
+that change.
+
+Thanks,
+
+Bart.
+
 
