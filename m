@@ -1,46 +1,46 @@
-Return-Path: <linux-fscrypt+bounces-338-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-339-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDBF892ACB5
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  9 Jul 2024 01:55:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A087492ACBA
+	for <lists+linux-fscrypt@lfdr.de>; Tue,  9 Jul 2024 01:55:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79020282AE5
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  8 Jul 2024 23:55:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D319B1C216DC
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  8 Jul 2024 23:55:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04D6815359A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B534715382F;
 	Mon,  8 Jul 2024 23:55:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vt4BR5tU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Pd/HR0lF"
 X-Original-To: linux-fscrypt@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCAD3153567;
-	Mon,  8 Jul 2024 23:55:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C557153824;
+	Mon,  8 Jul 2024 23:55:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720482935; cv=none; b=rAbf1xTfdlpYtKeRb2gF7yvrneIjK/na5fFn9ldciyQSMA2g5kwxEIWsun0nz66B8/QajxVHGnQ+Losyscvrw7+JCEOCtHPq4CLuaEVDSSvJZ+skHngRlmJT5SJNysU/dWIvV0fAq5Z0gpKV3kj7yGZ0pVv6559dTbU6BczoFNE=
+	t=1720482936; cv=none; b=bnkYnX9SG4TCKRnekuMEhFCUofHOW86BG0o4ehDGnGdn8DeL06ftHVOVXB5DRAYrbjqEC+Hb/CKGiHVIzMTMydV/XIR+hjieWgcesOB6K+Z1z7wlLS363bF51ALbp4Pr8/Cqwxbbdm0DQdk+4c2LVFqbbGf02GxOBfhRf9EzJmE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720482935; c=relaxed/simple;
-	bh=dDCEMtiEd1ETccjZ1d+UHqbSUKfoBV882EVsY8bVJcg=;
+	s=arc-20240116; t=1720482936; c=relaxed/simple;
+	bh=gtwZfwrWX7QVlTTO6ZcXKsCa7LORXzdHB8PDjB63zmQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YtTHNTZjbAAy8KtoioQKnQfd+lxFwsaQh5Dzh0hEtr9QzXTn2ALUi53WLUaf1nQVPvDnJTuXXJrQazTl1Fic7IxGYDdGCZ28m/ZNpDqf00rw64WTwJ4UiMktHmz7zE3DtM/ZwTgH71Udj1gAWQwWqnt3ZId7WAGw0voiCmOFpU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vt4BR5tU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 697D2C4AF0D;
+	 MIME-Version; b=nwVb/16mzPchwx5C57csDphfuZX+I0Ad2SQDRM/HrOXxq5WiSXvSMM380QFRChJq0+E88fTfR6gLPI3Vick2FM+PbDgtW59ceEi3a0aWVDNIhp/K0iMt6bzEyooF654Pj+B+5XT5n4K9fIbF0TD06AzYWIXGuvBF0QbmE79pX7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Pd/HR0lF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2209C3277B;
 	Mon,  8 Jul 2024 23:55:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720482935;
-	bh=dDCEMtiEd1ETccjZ1d+UHqbSUKfoBV882EVsY8bVJcg=;
+	s=k20201202; t=1720482936;
+	bh=gtwZfwrWX7QVlTTO6ZcXKsCa7LORXzdHB8PDjB63zmQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Vt4BR5tUomvsnksPL9Fp/T73UBjtMVZIhMox8bUPrXWFALSn1RcuWVGytQHRMbnjE
-	 FCddr3koUBSXsC2q/gOZ/PwxTdwfcRBynM9O+ujRy+RFpui+RkslnClas7kdZ1abT0
-	 sM0PAtysRSgApOGfeyRc3IBMDRkWy35bdOw9vqj2Q6wMYPLPleCsp4JYEzswVwOT6W
-	 hFLgYrVVEXIWvq+/LX99p1HmAIcPpkd9wp/kysuGxus0teQ3eD3lx0g8vER4p9lI+9
-	 X9tAK4jpcT6zOQgwgzRv6IzkE6JwYs3K1ExuNbUrVLyBUPlCSFUBQiy1eSU7Nr9Jxp
-	 wVdHajTULHeGw==
+	b=Pd/HR0lFw78JXz16HC/0qqFRhpbwXmyLfOoQnvy6BQFVVsmvGwHrEE/vj3+dzUVeC
+	 V8qE6em5jm3CElWGjSnsfjbYc0FGlVR6mnkqUnbXmiUh0WoGd8Bvo7sNNELpzHuWi0
+	 hOXUdHCW49OGO4mTRCLNkCxufKBTKhGXiJwInT3zGCBNge7bX14hV2IKEyOVv6sIQ/
+	 bOpS9NBJwgFiKiUNVm/WYtGg2Hr0BEBZtqjirEtn/Kn8bfAvUfKXunA/yWryzD6YDu
+	 wwK65/3PVxR4tKXvBYRMXJStEH6vfDnB4mvjXzvsVLmVevCTSzj3A1R1QCZpeYKxyo
+	 SqFOgaYPT1+0w==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-scsi@vger.kernel.org
 Cc: linux-samsung-soc@vger.kernel.org,
@@ -52,9 +52,9 @@ Cc: linux-samsung-soc@vger.kernel.org,
 	Peter Griffin <peter.griffin@linaro.org>,
 	=?UTF-8?q?Andr=C3=A9=20Draszik?= <andre.draszik@linaro.org>,
 	William McVicker <willmcvicker@google.com>
-Subject: [PATCH v3 2/6] scsi: ufs: core: fold ufshcd_clear_keyslot() into its caller
-Date: Mon,  8 Jul 2024 16:53:26 -0700
-Message-ID: <20240708235330.103590-3-ebiggers@kernel.org>
+Subject: [PATCH v3 3/6] scsi: ufs: core: Add UFSHCD_QUIRK_BROKEN_CRYPTO_ENABLE
+Date: Mon,  8 Jul 2024 16:53:27 -0700
+Message-ID: <20240708235330.103590-4-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20240708235330.103590-1-ebiggers@kernel.org>
 References: <20240708235330.103590-1-ebiggers@kernel.org>
@@ -68,56 +68,70 @@ Content-Transfer-Encoding: 8bit
 
 From: Eric Biggers <ebiggers@google.com>
 
-Fold ufshcd_clear_keyslot() into its only remaining caller.
+Add UFSHCD_QUIRK_BROKEN_CRYPTO_ENABLE which tells the UFS core to not
+use the crypto enable bit defined by the UFS specification.  This is
+needed to support inline encryption on the "Exynos" UFS controller.
 
 Reviewed-by: Bart Van Assche <bvanassche@acm.org>
 Reviewed-by: Peter Griffin <peter.griffin@linaro.org>
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- drivers/ufs/core/ufshcd-crypto.c | 16 +++++-----------
- 1 file changed, 5 insertions(+), 11 deletions(-)
+ drivers/ufs/core/ufshcd-crypto.c | 8 ++++++++
+ include/ufs/ufshcd.h             | 7 +++++++
+ 2 files changed, 15 insertions(+)
 
 diff --git a/drivers/ufs/core/ufshcd-crypto.c b/drivers/ufs/core/ufshcd-crypto.c
-index debc925ae439..b4980fd91cee 100644
+index b4980fd91cee..a714dad82cd1 100644
 --- a/drivers/ufs/core/ufshcd-crypto.c
 +++ b/drivers/ufs/core/ufshcd-crypto.c
-@@ -93,31 +93,25 @@ static int ufshcd_crypto_keyslot_program(struct blk_crypto_profile *profile,
- 
- 	memzero_explicit(&cfg, sizeof(cfg));
- 	return err;
- }
- 
--static int ufshcd_clear_keyslot(struct ufs_hba *hba, int slot)
-+static int ufshcd_crypto_keyslot_evict(struct blk_crypto_profile *profile,
-+				       const struct blk_crypto_key *key,
-+				       unsigned int slot)
- {
-+	struct ufs_hba *hba =
-+		container_of(profile, struct ufs_hba, crypto_profile);
- 	/*
- 	 * Clear the crypto cfg on the device. Clearing CFGE
- 	 * might not be sufficient, so just clear the entire cfg.
- 	 */
+@@ -108,17 +108,25 @@ static int ufshcd_crypto_keyslot_evict(struct blk_crypto_profile *profile,
  	union ufs_crypto_cfg_entry cfg = {};
  
  	return ufshcd_program_key(hba, &cfg, slot);
  }
  
--static int ufshcd_crypto_keyslot_evict(struct blk_crypto_profile *profile,
--				       const struct blk_crypto_key *key,
--				       unsigned int slot)
--{
--	struct ufs_hba *hba =
--		container_of(profile, struct ufs_hba, crypto_profile);
--
--	return ufshcd_clear_keyslot(hba, slot);
--}
--
++/*
++ * Reprogram the keyslots if needed, and return true if CRYPTO_GENERAL_ENABLE
++ * should be used in the host controller initialization sequence.
++ */
  bool ufshcd_crypto_enable(struct ufs_hba *hba)
  {
  	if (!(hba->caps & UFSHCD_CAP_CRYPTO))
  		return false;
  
+ 	/* Reset might clear all keys, so reprogram all the keys. */
+ 	blk_crypto_reprogram_all_keys(&hba->crypto_profile);
++
++	if (hba->quirks & UFSHCD_QUIRK_BROKEN_CRYPTO_ENABLE)
++		return false;
++
+ 	return true;
+ }
+ 
+ static const struct blk_crypto_ll_ops ufshcd_crypto_ops = {
+ 	.keyslot_program	= ufshcd_crypto_keyslot_program,
+diff --git a/include/ufs/ufshcd.h b/include/ufs/ufshcd.h
+index b354a7eee478..4b7ad23a4420 100644
+--- a/include/ufs/ufshcd.h
++++ b/include/ufs/ufshcd.h
+@@ -650,10 +650,17 @@ enum ufshcd_quirks {
+ 	 * nonstandard way and/or needs to override blk_crypto_ll_ops.  If
+ 	 * enabled, the standard code won't initialize the blk_crypto_profile;
+ 	 * ufs_hba_variant_ops::init() must do it instead.
+ 	 */
+ 	UFSHCD_QUIRK_CUSTOM_CRYPTO_PROFILE		= 1 << 22,
++
++	/*
++	 * This quirk needs to be enabled if the host controller supports inline
++	 * encryption but does not support the CRYPTO_GENERAL_ENABLE bit, i.e.
++	 * host controller initialization fails if that bit is set.
++	 */
++	UFSHCD_QUIRK_BROKEN_CRYPTO_ENABLE		= 1 << 23,
+ };
+ 
+ enum ufshcd_caps {
+ 	/* Allow dynamic clk gating */
+ 	UFSHCD_CAP_CLK_GATING				= 1 << 0,
 -- 
 2.45.2
 
