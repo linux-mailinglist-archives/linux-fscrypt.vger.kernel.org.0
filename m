@@ -1,109 +1,122 @@
-Return-Path: <linux-fscrypt+bounces-333-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-334-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2ECB92A002
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  8 Jul 2024 12:18:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E804D92AA89
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  8 Jul 2024 22:26:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0BCDB1C20CF3
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  8 Jul 2024 10:18:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D46F1F22562
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  8 Jul 2024 20:26:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CFC5482DE;
-	Mon,  8 Jul 2024 10:18:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E23114D6F9;
+	Mon,  8 Jul 2024 20:26:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="k3VcjDjA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ULGuEKof"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C34D34CD8
-	for <linux-fscrypt@vger.kernel.org>; Mon,  8 Jul 2024 10:18:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7210714D444;
+	Mon,  8 Jul 2024 20:26:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720433925; cv=none; b=KuhbRLH1bmg5py6748QTc6pqTHrRt0QwRjNjf0ng8PbZOUynuM+E1Bj8FzyitMcfZ0yT4nDOVzohhCiB87e76/ukCgUYpeiKlc74ZsmzyDHjeEN9GBxrPPxcHv7FehYHsWl8xClJR9EJoQIB38l7UwkU6twsZuZFB6Rq27njnEE=
+	t=1720470392; cv=none; b=dxUKo8L0+r9QSfVxO92q8/mHbbfek340FRzPF1RTwS+P1svgf73pssC/0HHcKaFP7JdoJFPp/VPiVH1eNpzKf9VP5QqEjmxMydRANxTpIwLKPhcp4QbLnoUpY1vCG66znCgqDVaYxyIfouqyJ0nnntm58B0KU7m88V3YCavfPMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720433925; c=relaxed/simple;
-	bh=vEGAapFRjI501MYswUKdFdLhmHF/1NB+R8R2PfH1hLE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NB/WPX8t9xyYv06dChjJiPqeqP7cNJqmLl++SzG1gMnlnm5/nbpc5wWLJz3wufrMLgAWuK+91CJl7bO4XFPviI+tmNWDr/WqkloHJkfs6J993hnAOxSXF8TYrN+K35veg8DqSb8XZm/4rkXayocggcl6rO1dIkJwNV69ug1/ags=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=k3VcjDjA; arc=none smtp.client-ip=209.85.167.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3d925e50f33so1118551b6e.2
-        for <linux-fscrypt@vger.kernel.org>; Mon, 08 Jul 2024 03:18:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1720433923; x=1721038723; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=C05iwDI122P+LyKKeS9yPk8Jmk0qt5vE9oNXx72X8Dk=;
-        b=k3VcjDjAU3UcQoIV0HO0OVTPggUkwDzN1kTO7lc8dfKXlwaTYbaHBBLit+32WOfrOp
-         ANGa6irislsm4sZWnSs0i3/WBHv1BhUFcCoIH2qH5kFyhnhd1klBYqViUxr0jLKn3wdo
-         mvc3jXSBY1hSWJCN7Bytd1q5L1gRXjs2f8mCgAD2iS0tqE6kKIIywGu9BHNzhMscKJxI
-         WQGKaKiica6YFMbmNFHHPXwuJyN/CkFM4u5eK9MsfmL0ZF63Ynpwl6VXrv786aN/Qe7P
-         zbEZc1KODUyCkQSpdqRjFBXcaVIm3ju6Y991tmbA2HchtIN7qv3e5U1wdhSqIc2Xrejt
-         Jrrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720433923; x=1721038723;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=C05iwDI122P+LyKKeS9yPk8Jmk0qt5vE9oNXx72X8Dk=;
-        b=rfhDZx2/JZyF0zBk2MplNVrsrnZpc9qNrpftiRH5SG6t5IqsHKt4VoIAYnVi8NwJio
-         +WhhOD41mWQ8QdoPgU6yd9IUmCAw4sksC/+7MT/R05A2LbdG7eerZk83Z3o12bDJWC3V
-         cBWJPM+WP09IwxVNIH4OYXXpKZm/sOZAlRoH6vKhJUIy5WGPrnIEYfq3lUcSM6XgDdFN
-         C7NqOHfk+AfgxmMSOGDMT11kWqZQ77xNegYPgSSvOC/p1Cao58yJlkzYXNagvVFroeou
-         Xr6cMZfW7K9g2QKv3YcOYpH/DgYKrB9lgIEHKh/khbRw9NRGXD4sViPVYgI23WiK/lg1
-         kovg==
-X-Forwarded-Encrypted: i=1; AJvYcCWBI1YZOrROKN+VbZOohytPqHwDjf956FL4o9JIXgYhIpI6orcN4PXyOLhwAoJU9Uoq8yG/3mKMgRykRDiHkPEMTeUc0+siwWhjVLYNKw==
-X-Gm-Message-State: AOJu0YyrH6cQinxcV7vuEcxvxQPwToSs8XYZdKiWp2pIO8r1DB8QKjMe
-	IJqEqMqbSqh7Ht5boGm9J52fj44yofcJFjFHwT4iBR/0+3GrMTT/jt6aYCbgrNq8CyioZLx4noM
-	oYPTsDuTzZN28ENQfVBsavzkxRBPuuoh9S186Ag==
-X-Google-Smtp-Source: AGHT+IHnExyWB3RdFty63aa+Ml5nM5CwhGI0pyjKmeyRRliSl5t4o2vh3/Hq8s1DvYqWwZ68mL5LA5GE7W8C78uPIjs=
-X-Received: by 2002:a05:6808:10d1:b0:3d9:2ac4:5d63 with SMTP id
- 5614622812f47-3d92ac46007mr6215261b6e.25.1720433923157; Mon, 08 Jul 2024
- 03:18:43 -0700 (PDT)
+	s=arc-20240116; t=1720470392; c=relaxed/simple;
+	bh=+6YheFz+kLx2rM0m2RczYow7VkKXHg66pCP5r1wwAr4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=b42KYHg8Ncl0WtrZYzqQaV7TZ6qYE30ImvfNMfCpE/KX4jUKwt5D3KltzhIPxYwcyh0BlqCvKhwv/T5sJI0P8C4C78vPJtVNVg/snrPDfGTgXaRbQlcVPG3bJJo67yLTE+1ctL0q7vr9ztVymuZ2moH9fHgb29GbT89ljMGuIGg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ULGuEKof; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0495DC3277B;
+	Mon,  8 Jul 2024 20:26:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1720470392;
+	bh=+6YheFz+kLx2rM0m2RczYow7VkKXHg66pCP5r1wwAr4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ULGuEKofNcRRrB8NkgVnDyYWfv0JlNkXpd5cSpFi1/vEWRSy3i5Jd7n2TwKy1rc/z
+	 zS+/CoWw1W4P+u/QHCsrr/MQkE/gzgjWTg8PyQq7l0bzi07FJ9sdaxRs5IEAkmtk9V
+	 If3160+E9b/QJLEOxgZwpfpS8Vl4k+k5YhNkJRj5gGf1k85l/FF8YVTZMAp8IwC3cB
+	 +F84i5wdyG98B56+jxS3GLqHdVSg5STwouHAE4rShUXxmG04w8HX3mN/4FTjkRtiAb
+	 OQ+Psu/SUo+aNjJFjarLGJwhPsZ4o4j4ZbHIWN/zdwdX4z81YfUC5vnTGFDq4K53c8
+	 OtNJM1cWBCgBg==
+Date: Mon, 8 Jul 2024 13:26:30 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Peter Griffin <peter.griffin@linaro.org>
+Cc: linux-scsi@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+	linux-fscrypt@vger.kernel.org,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Avri Altman <avri.altman@wdc.com>,
+	Bart Van Assche <bvanassche@acm.org>,
+	"Martin K . Petersen" <martin.petersen@oracle.com>,
+	=?iso-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>,
+	William McVicker <willmcvicker@google.com>
+Subject: Re: [PATCH v2 6/6] scsi: ufs: exynos: Add support for Flash Memory
+ Protector (FMP)
+Message-ID: <20240708202630.GA47857@sol.localdomain>
+References: <20240702072510.248272-1-ebiggers@kernel.org>
+ <20240702072510.248272-7-ebiggers@kernel.org>
+ <CADrjBPoWVq-eu4Wa6_hrkk067tnZGC82UCJDyjSRGoG254w6vg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240702072510.248272-1-ebiggers@kernel.org> <20240702072510.248272-2-ebiggers@kernel.org>
-In-Reply-To: <20240702072510.248272-2-ebiggers@kernel.org>
-From: Peter Griffin <peter.griffin@linaro.org>
-Date: Mon, 8 Jul 2024 11:18:32 +0100
-Message-ID: <CADrjBPoSQTni8a8Ok_kYZWb_Q2FKX2suZkH5xYS2rVLALGAR=g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/6] scsi: ufs: core: Add UFSHCD_QUIRK_CUSTOM_CRYPTO_PROFILE
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: linux-scsi@vger.kernel.org, linux-samsung-soc@vger.kernel.org, 
-	linux-fscrypt@vger.kernel.org, Alim Akhtar <alim.akhtar@samsung.com>, 
-	Avri Altman <avri.altman@wdc.com>, Bart Van Assche <bvanassche@acm.org>, 
-	"Martin K . Petersen" <martin.petersen@oracle.com>, =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>, 
-	William McVicker <willmcvicker@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CADrjBPoWVq-eu4Wa6_hrkk067tnZGC82UCJDyjSRGoG254w6vg@mail.gmail.com>
 
-Hi Eric,
+Hi Peter,
 
-On Tue, 2 Jul 2024 at 08:28, Eric Biggers <ebiggers@kernel.org> wrote:
->
-> From: Eric Biggers <ebiggers@google.com>
->
-> Add UFSHCD_QUIRK_CUSTOM_CRYPTO_PROFILE which lets UFS host drivers
-> initialize the blk_crypto_profile themselves rather than have it be
-> initialized by ufshcd-core according to the UFSHCI standard.  This is
-> needed to support inline encryption on the "Exynos" UFS controller which
-> has a nonstandard interface.
->
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
+On Thu, Jul 04, 2024 at 02:26:05PM +0100, Peter Griffin wrote:
+> Do you know how these FMP registers (FMPSECURITY0 etc) relate to the
+> UFSPR* registers set in the existing exynos_ufs_config_smu()? The
+> UFS_LINK spec talks about UFSPR(FMP), so I had assumed the FMP support
+> would be writing these same registers but via SMC call.
+> 
+> I think by the looks of things
+> 
+> #define UFSPRSECURITY 0x010
+> #define UFSPSBEGIN0 0x200
+> #define UFSPSEND0 0x204
+> #define UFSPSLUN0 0x208
+> #define UFSPSCTRL0 0x20C
+> 
+> relates to the following registers in gs101 spec
+> 
+> FMPSECURITY0 0x0010
+> FMPSBEGIN0 0x2000
+> FMPSEND0 0x2004
+> FMPSLUN0 0x2008
+> FMPSCTRL0 0x200C
+> 
+> And the SMC calls your calling set those same registers as
+> exynos_ufs_config_smu() function. Although it is hard to be certain as
+> I don't have access to the firmware code. Certainly the comment below
+> about FMPSECURITY0 implies that :)
+> 
+> With that in mind I think exynos_ufs_fmp_init() function in this patch
+> needs to be better integrated with the EXYNOS_UFS_OPT_UFSPR_SECURE
+> flag and the existing exynos_ufs_config_smu() function that is
+> currently just disabling decryption on platforms where it can access
+> the UFSPR(FMP) regs via mmio.
 
-Reviewed-by:  Peter Griffin <peter.griffin@linaro.org>
+I think that is all correct.  For some reason, on gs101 the FMP registers are
+not accessible by the "normal world", and SMC calls need to be used instead.
+The sequences of SMC calls originated from Samsung's Linux driver code for FMP.
+So I know they are the magic incantations that are needed, but I don't have
+access to the source code or documentation for them.  It does seem clear that
+one of the things they must do is write the needed values to the FMP registers.
 
-[..]
+I'd hope that these same SMC calls also work on Exynos-based SoCs that do make
+the FMP registers accessible to the "normal world", and therefore they can just
+be used on all Exynos-based SoCs and ufs-exynos won't need two different code
+paths.  But I don't have a way to confirm this myself.  Until someone is able to
+confirm this, I think we need to make the FMP support depend on
+EXYNOS_UFS_OPT_UFSPR_SECURE so that it doesn't conflict with
+exynos_ufs_config_smu() which runs when !EXYNOS_UFS_OPT_UFSPR_SECURE.
 
-regards,
-
-Peter
+- Eric
 
