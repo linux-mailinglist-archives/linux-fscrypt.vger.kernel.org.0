@@ -1,69 +1,100 @@
-Return-Path: <linux-fscrypt+bounces-356-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-357-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44FB1938316
-	for <lists+linux-fscrypt@lfdr.de>; Sun, 21 Jul 2024 00:57:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F92E9385CE
+	for <lists+linux-fscrypt@lfdr.de>; Sun, 21 Jul 2024 20:39:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1C0E281646
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 20 Jul 2024 22:57:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02EE9280FFA
+	for <lists+linux-fscrypt@lfdr.de>; Sun, 21 Jul 2024 18:39:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F3398287D;
-	Sat, 20 Jul 2024 22:56:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A7901667CD;
+	Sun, 21 Jul 2024 18:39:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=nabro.co.uk header.i=@nabro.co.uk header.b="OrnoTuTd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rb/F/fxK"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from mta.nabro.co.uk (mta.nabro.co.uk [129.151.68.73])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CF331E481;
-	Sat, 20 Jul 2024 22:56:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.151.68.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C82629AF;
+	Sun, 21 Jul 2024 18:39:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721516219; cv=none; b=G2vhmrOTE8mZe5gIaHWnVkW9f2VAlo7UzODjeYMecDa5Q9RS9bcOfmmq077fYH9bV6jooCYbwfP73O3F73SjnN6UmBEwLdPhqeAobhCIvj4PqI13+kq6Vfg6+HusVxYePlDG52/83P3x0crZU3e2s0x3zKajSNyCQPEklPdATQo=
+	t=1721587179; cv=none; b=tlxj5dOfk79AwclyACENqD7hWJZF32c3F5nFHclb9M7pRhLD685yPaGUWYjRP8I/U4UgEnxaNxs+Q6zX1ZQKRFP8vCV3HxJu7oE9cJd6mIWsGqLFeX6PewcxqbFii63VMpeftbUpzxh1peaQEwwxBFe+cT15RpFW4b+6NywK99w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721516219; c=relaxed/simple;
-	bh=KxHb4jUADVJR2G5hU7XpCHBLJlWyNDDYLVXGgnFfK1o=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=dtLX2JATB+C5OhEZ3nwG8C8lsdUDd+oaCieq2qLvANDDvFdsbCNLAdaF5xtpSW6d823tON/ZSI9usiPdXczVA8DW8EI25xmyl7SB1/rJmAVv/mCFffpk5zFq37bieheGjF6QWa4igFoOgtdtyxtSZnQOIyG5susXEudVviuLsWI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=nabro.co.uk; spf=pass smtp.mailfrom=nabro.co.uk; dkim=pass (2048-bit key) header.d=nabro.co.uk header.i=@nabro.co.uk header.b=OrnoTuTd; arc=none smtp.client-ip=129.151.68.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=nabro.co.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nabro.co.uk
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id E992ABE76C;
-	Sat, 20 Jul 2024 23:48:40 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nabro.co.uk; s=dkim;
-	t=1721515724; h=from:subject:date:message-id:to:mime-version:content-type:
-	 content-transfer-encoding:content-language;
-	bh=lQBaP/4wldq/gHw3XMPV0yLWz7ojZ+zCf2VWGk1FQSw=;
-	b=OrnoTuTdpoAw7P/vPlfNnwnq0ixtnF7Pt/ElflwlxPCGnl5L4b/Nq7H25Hn8lSTPqrbE+6
-	4Ow8IMQUsfzHORQr6AsLEO1YqxmH6QwxYPphVzTdYm1sztwFekZFyNELi2zyd0LMxQ85RM
-	TNquhf9ks47TSkLfq3HpYViPysEc8nX8Q9B9Txnod5210/698dDGTjDUjin0vfzRbl/s6M
-	ffvPSVEalBiE0dWGlPZk8Uj+ZvYrvfoNZQPnCealDk4XDe6pbHt1/L5j/lpqissNoY5uYA
-	FsDZ0hkkHizU1q8620K+xKjoEg80BwSB2yUnfrxfoYyfXeaBpZnW5gtXjAG/Og==
-Message-ID: <94c6f4ac-193f-4fd4-8e6c-b0324a19c5a6@nabro.co.uk>
-Date: Sat, 20 Jul 2024 23:48:41 +0100
+	s=arc-20240116; t=1721587179; c=relaxed/simple;
+	bh=AgVYzcqSthU3IfcGkK+WHU67vqvwlxreaFp0UMGnL3s=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jdmQSRQRfK6Oytt62JMVy4sbFq5jQVIJFMl06P3Ix+dGm34osAgHk+QJW9BDurPJLOqQQb10ldogE3ABqEe9ekM8PjgpvSxy7I7GzXNjGvlP2eIi1xLifXTLq4hltS/W6igGZUK6pqb5UxgPGLcb+vB14aGJhtOTF5mo15ykcD4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rb/F/fxK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F077C116B1;
+	Sun, 21 Jul 2024 18:39:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721587178;
+	bh=AgVYzcqSthU3IfcGkK+WHU67vqvwlxreaFp0UMGnL3s=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Rb/F/fxKDNUd3AsChSWPanpUHCSUOBZZFxoyum40o/Z253XKPYa39MV+Z1ePD6c6V
+	 RmwL7NQYZlIz7O7yuRHYn4tOlh1FpBa1jcYCmnpSN62Mc/pgap6R8YuCkwBi+GxMSQ
+	 ijToz47fmtQbe+VTT6wnJOpXC5u5d0ex0zo4c5/X9suulAweqduzF1JgPk/DJZVGbf
+	 ZklOJnORn4JjqmK9YvFYDg84MC9heH2GPgileLHainKsgqf5aWovav6ul9eEd+IGJc
+	 e6/9rYQgt1IQ5YmHjHleH+0O9QKhqzkYmbRv6JvWacFr/s0JY9IlxfuzntbATFubVn
+	 qOMxS8F9z756A==
+From: Eric Biggers <ebiggers@kernel.org>
+To: linux-scsi@vger.kernel.org
+Cc: linux-samsung-soc@vger.kernel.org,
+	linux-fscrypt@vger.kernel.org,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Avri Altman <avri.altman@wdc.com>,
+	Bart Van Assche <bvanassche@acm.org>,
+	"Martin K . Petersen" <martin.petersen@oracle.com>,
+	Peter Griffin <peter.griffin@linaro.org>,
+	=?UTF-8?q?Andr=C3=A9=20Draszik?= <andre.draszik@linaro.org>,
+	William McVicker <willmcvicker@google.com>
+Subject: [PATCH] scsi: ufs: exynos: Don't resume FMP when crypto support disabled
+Date: Sun, 21 Jul 2024 11:38:40 -0700
+Message-ID: <20240721183840.209284-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-GB
-To: ceph-devel@vger.kernel.org, linux-fscrypt@vger.kernel.org
-From: Fmaster <fmaster@nabro.co.uk>
-Subject: Possible kernel bug: Ubuntu Kernel linux-image-6.5.0-44-generic
- appears to have issues with fscrypt running on CephFS backend.
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Transfer-Encoding: 8bit
 
-More detail reported on Launchpad: 
-https://bugs.launchpad.net/ubuntu/+source/linux-signed-hwe-6.5/+bug/2073679
+From: Eric Biggers <ebiggers@google.com>
 
-No idea on the cause sadly.
+If exynos_ufs_fmp_init() did not enable FMP support, then
+exynos_ufs_fmp_resume() should not execute the FMP-related SMC calls.
 
-Ty!
+Fixes: c96499fcb403 ("scsi: ufs: exynos: Add support for Flash Memory Protector (FMP)")
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ drivers/ufs/host/ufs-exynos.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/ufs/host/ufs-exynos.c b/drivers/ufs/host/ufs-exynos.c
+index 16ad3528d80b..9ec318ef52bf 100644
+--- a/drivers/ufs/host/ufs-exynos.c
++++ b/drivers/ufs/host/ufs-exynos.c
+@@ -1291,10 +1291,13 @@ static void exynos_ufs_fmp_init(struct ufs_hba *hba, struct exynos_ufs *ufs)
+ 
+ static void exynos_ufs_fmp_resume(struct ufs_hba *hba)
+ {
+ 	struct arm_smccc_res res;
+ 
++	if (!(hba->caps & UFSHCD_CAP_CRYPTO))
++		return;
++
+ 	arm_smccc_smc(SMC_CMD_FMP_SECURITY, 0, SMU_EMBEDDED, CFG_DESCTYPE_3,
+ 		      0, 0, 0, 0, &res);
+ 	if (res.a0)
+ 		dev_err(hba->dev,
+ 			"SMC_CMD_FMP_SECURITY failed on resume: %ld\n", res.a0);
+
+base-commit: 2c9b3512402ed192d1f43f4531fb5da947e72bd0
+-- 
+2.45.2
 
 
