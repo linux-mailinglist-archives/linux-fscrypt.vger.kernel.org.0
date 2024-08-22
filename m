@@ -1,100 +1,93 @@
-Return-Path: <linux-fscrypt+bounces-364-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-365-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B9EF93BD60
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 25 Jul 2024 09:52:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EA6B95B937
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 22 Aug 2024 17:01:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0E722B2084A
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 25 Jul 2024 07:51:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7CDC91C211E1
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 22 Aug 2024 15:01:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B75E171E64;
-	Thu, 25 Jul 2024 07:51:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2A1218EAB;
+	Thu, 22 Aug 2024 15:01:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F4IrGD6o"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="OprhzNuL"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F34272746C;
-	Thu, 25 Jul 2024 07:51:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E3DE1CC179
+	for <linux-fscrypt@vger.kernel.org>; Thu, 22 Aug 2024 15:01:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721893916; cv=none; b=gjIbR7hYYtL9rtt/tLL+4orPKnb0LB3qrXoMZq47qVzMpqzJGqaAI4eXsotT5xo7L1L0eWHo5BhT5wQaHWO7gx2SQVgqMPEfoiIKrBD1/zSw93GK8fpmUdQS8FVb1qYqH4Rdfi/MsMFDE7royq8waJucP3qeL+A3I7UIjb0J0UQ=
+	t=1724338871; cv=none; b=kin0pLm4nKoTfHuczHaPqYBV4zQThBVdXt5fzV29fPbEyoAK3A9BwJmDpkN2bGsqMjpVLqFuVVtDWSDdxpFdQ7JP0bLjngjMNmBkxj3qHpa1vGLYqq3jnt26eXr2MJMXh523I5CR1Gv/9sfJl/zpA7e93yRW3DXVVhvd4vZXmuM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721893916; c=relaxed/simple;
-	bh=wPMGUC0y/HMlSqSLaesKVHMHhjLlTuGqdZbSFVzzcIY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LB1KOJBwONpk2xasXqP1ktAZHTdnWMJk53Uc8OVo5WiyNEqGObXWDg/w5qRuSn5I2M94qDjHrrZS78CuieWt8RaD++AEKVuSogcVW/UFIoDZWkiYjHpwEMx2LALU5GdL2zX6a/xmvMHy373eIK/5cnSnR3l32rptYF2k7vW+w+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F4IrGD6o; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AFA2C32786;
-	Thu, 25 Jul 2024 07:51:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721893915;
-	bh=wPMGUC0y/HMlSqSLaesKVHMHhjLlTuGqdZbSFVzzcIY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=F4IrGD6ohbM8uQhHzUQWEng1h7ZBBptlUkAmSgw6NY/5GLfhUytkMitrN94kNnEgZ
-	 hx3IfZe7TlbyPNf/9XhpO1CNfceLtIJcY5574Oopzw9muV/r6mdAgMTpIfWzxJdwIK
-	 K1N5oePLg0VMer1FdktDdgbwUAg6pOrngr7gawdHOUuHKNUQXIX7VMr7PSM/cKak39
-	 ox5lDiVvZHPg8WSKFeeqQENJnW2nzc6INaij/GF+d5Pl2ji8DN3ScPRQXuO3u8e/vz
-	 q/1WWSn8cb4lSL7fYJ7u8I4X+aB1+VIbShrLDw0KqIr9JFTaN51YHjhey5CdVGta63
-	 KL5AV/gi95qpg==
-Date: Thu, 25 Jul 2024 00:51:53 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: Yuvaraj Ranganathan <yrangana@qti.qualcomm.com>
-Cc: "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: Software encryption at fscrypt causing the filesystem access
- unresponsive
-Message-ID: <20240725075153.GA160096@sol.localdomain>
-References: <PH0PR02MB731916ECDB6C613665863B6CFFAA2@PH0PR02MB7319.namprd02.prod.outlook.com>
+	s=arc-20240116; t=1724338871; c=relaxed/simple;
+	bh=znHPXVQUQaPGu7v7UYm34EibjsqpZB+F71eqdtueIH4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Saq5TFrVEv+v5vdipaENn1I0lrs8/FAC15JcBVryOAwa7Hh9AYJZ1S8Rdi90Sh8sHQHaLjAZb09/sG1TuVwvcF04HtMfM7keixCAwgSmsi2ITvhUF1/z0HJxpYxGiV6FX9LJa8sgXw9aPBaUBD+/Yyj6AIzEZ+Oj1Jah7pQYDLA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=OprhzNuL; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-112-67.bstnma.fios.verizon.net [173.48.112.67])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 47MF0Mmd022375
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 22 Aug 2024 11:00:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1724338827; bh=t18gtYxklKYa0rJY7RSL7YSQJKA9/wN+2NyFSJPFoxU=;
+	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
+	b=OprhzNuLBbXTcYcn91CAIAUjb4Jb/s0CqItLgL4SGj9Ufifjv4uCF0IbqpYCi05+C
+	 KkCTLf3guoR2t2mHnMaUVUMiFojToxTCYZ65Zs45I/82H5fkd8gKGlu8REJwrFzieJ
+	 Cv9hu9kLyoIyePGgJrIp/GOyv0fq7j5qvDD/EKZ5FGaiIteqNouU1N6xyFlD8P34W/
+	 WCTEjOJ1L4eMx1LIGuW4ufDhHA+JwhICT5V1CQfrnhZ1grXSrJ7B0XzK5CDJqnFyYm
+	 MkjqtJrnY2zWZ42jUX76TcwkpU6bdZUeDg7qUochXApMvMiLpVZAJl5iapEoyqmeUz
+	 tDbe7L2wX706g==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id E0B3115C02C2; Thu, 22 Aug 2024 11:00:21 -0400 (EDT)
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: krisman@suse.de, Lizhi Xu <lizhi.xu@windriver.com>
+Cc: "Theodore Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca,
+        coreteam@netfilter.org, davem@davemloft.net, ebiggers@kernel.org,
+        fw@strlen.de, jaegeuk@kernel.org, kadlec@netfilter.org,
+        kuba@kernel.org, linux-ext4@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lkp@intel.com, llvm@lists.linux.dev, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, oe-kbuild-all@lists.linux.dev,
+        pablo@netfilter.org,
+        syzbot+340581ba9dceb7e06fb3@syzkaller.appspotmail.com,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH V6] fs/ext4: Filesystem without casefold feature cannot be mounted with spihash
+Date: Thu, 22 Aug 2024 11:00:11 -0400
+Message-ID: <172433877724.370733.16770771071139702263.b4-ty@mit.edu>
+X-Mailer: git-send-email 2.45.2
+In-Reply-To: <20240605012335.44086-1-lizhi.xu@windriver.com>
+References: <87le3kle87.fsf@mailhost.krisman.be> <20240605012335.44086-1-lizhi.xu@windriver.com>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PH0PR02MB731916ECDB6C613665863B6CFFAA2@PH0PR02MB7319.namprd02.prod.outlook.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jul 24, 2024 at 02:21:26PM +0000, Yuvaraj Ranganathan wrote:
-> [ 1694.987674] INFO: task kworker/u16:3:2154 blocked for more than 120 seconds.
-> [ 1694.995628]       Tainted: G        W  O       6.6.33-debug #1
-> [ 1695.002335] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> [ 1695.011094] task:kworker/u16:3   state:D stack:0     pid:2154  ppid:2      flags:0x00000208
-> [ 1695.011097] Workqueue: writeback wb_workfn (flush-8:0)
-> [ 1695.011101] Call trace:
-> [ 1695.011102]  __switch_to+0xf0/0x16c
-> [ 1695.011104]  __schedule+0x334/0x980
-> [ 1695.011105]  schedule+0x5c/0xf8
-> [ 1695.011107]  schedule_timeout+0x19c/0x1c0
-> [ 1695.011110]  wait_for_completion+0x78/0x188
-> [ 1695.011111]  fscrypt_crypt_block+0x218/0x25c
-> [ 1695.011114]  fscrypt_encrypt_pagecache_blocks+0x104/0x1b4
-> [ 1695.011117]  ext4_bio_write_folio+0x534/0x7a8
-> [ 1695.011119]  mpage_submit_folio+0x70/0x98
-> [ 1695.011120]  mpage_map_and_submit_buffers+0x158/0x2c8
-> [ 1695.011122]  ext4_do_writepages+0x788/0xbfc
-> [ 1695.011124]  ext4_writepages+0x7c/0xfc
 
-I think this is the important part.  It's showing that the call into the crypto
-API to actually encrypt the data is hanging.
+On Wed, 05 Jun 2024 09:23:35 +0800, Lizhi Xu wrote:
+> When mounting the ext4 filesystem, if the default hash version is set to
+> DX_HASH_SIPHASH but the casefold feature is not set, exit the mounting.
+> 
+> 
 
-What I suspect is that you are *not* actually using software encryption, but
-rather a buggy driver for an off-CPU crypto accelerator.  This would happen if
-your driver registers itself with the crypto API with a higher priority than the
-software algorithm you intended to use.
+Applied, thanks!
 
-To check what driver is being used, you can either check for a kernel log
-message that looks like 'fscrypt: AES-256-XTS using implementation
-"xts-aes-ce"', or check /proc/crypto for which xts(aes) algorithm has the
-highest priority.
+[1/1] fs/ext4: Filesystem without casefold feature cannot be mounted with spihash
+      commit: 985b67cd86392310d9e9326de941c22fc9340eec
 
-Which driver are you using, and is it upstream?
-
-- Eric
+Best regards,
+-- 
+Theodore Ts'o <tytso@mit.edu>
 
