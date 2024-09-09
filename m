@@ -1,36 +1,48 @@
-Return-Path: <linux-fscrypt+bounces-439-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-440-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 686B8971866
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  9 Sep 2024 13:41:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 071C39718B0
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  9 Sep 2024 13:52:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 256F4284E2D
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  9 Sep 2024 11:41:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D5FF1C21C07
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  9 Sep 2024 11:52:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F8951B5EC8;
-	Mon,  9 Sep 2024 11:40:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1FBC1B81B4;
+	Mon,  9 Sep 2024 11:51:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KDX195re"
 X-Original-To: linux-fscrypt@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E52841B5EA9;
-	Mon,  9 Sep 2024 11:40:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A35CB1B6525;
+	Mon,  9 Sep 2024 11:51:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725882056; cv=none; b=nAcawmbgm7Pk1n+iIBigB5AUNqjcoRxyY51GaIc6Uoails5Jt1bCreVuHfHgmS84KMquY0dAjFdyWMhF0PY3rkExzz+wHWon9KdARmCV/Is+0IC70oqFh6IMQ3fVdiiGU1BB1aKPG5ESso5nQpGQ8ywecSc6XLkTYFG8ONTyQpQ=
+	t=1725882707; cv=none; b=vEkYDnVifbrlJFbFQZ3PaHbo/28viZ2VSvC1gpgfGqCvsjQaI7Q3EhrELd5Yx8kN8kYLXyxJ34XIjJGhfa6rTHT6D/1nX5GL2w/CtiGqMw/FqOJjEmIKnINDzi6iSpqTN+i1b7Ar8nK4zIh5F6cdcpzYeNpeJtQi2QhVzY5z2G8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725882056; c=relaxed/simple;
-	bh=vg9YjjHmNzbRmFUZcNaHHDoCIEh4knOY2NV9RZ3gN1A=;
+	s=arc-20240116; t=1725882707; c=relaxed/simple;
+	bh=0JyaXQcVV7hV6+TsoSX2pVLz4WSNcsP5lbx3ypUfRNY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oJkM9Po4uc7WwWHKKMZueY8I63XW/y2z21Z6usW/MHexhO8CGi55zKT/ZGgRH1Zrlk5sXBFZZ39pvk3LWc/ccsutP1WBj1dl/qSp69cuFe89WveC+Hq61Z6fbIsJumQp6NJXxIVLRYBcIC8owVsxRTNXcK0795NUtvFvK0UGsYI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4EF98C4CEC5;
-	Mon,  9 Sep 2024 11:40:53 +0000 (UTC)
-Message-ID: <63c1a3b4-9427-446c-9a68-ae022b7b96ae@xs4all.nl>
-Date: Mon, 9 Sep 2024 13:40:51 +0200
+	 In-Reply-To:Content-Type; b=QxN7GDkbeXhxYJddC2LU7A2X58mncQB30ZEtkaPkWIHkW3WpWaBif7/Tv6/JC9uzV3K++BAfdV3XlftxzJ90tmZK81kYjH35JNxQtNwdKwQaYOoiNMaDbhMUc1T1ZnoTsZXkqtaSUNUZzpbcaKcsjOlhm/C/xAFAWDU1Zt2h1RQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KDX195re; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54DBEC4CEC7;
+	Mon,  9 Sep 2024 11:51:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1725882706;
+	bh=0JyaXQcVV7hV6+TsoSX2pVLz4WSNcsP5lbx3ypUfRNY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=KDX195re/Wb8hzBE3AWZJzabPkZjsDHLVwHFV0SCsWdSvZr8I2P7USdXFqva9tP9Y
+	 ukl8bMwjb1RQgdwX1h8f5jCiB7Gl6T+yd7oR3iUcsnjaIR0Z4drxbMybUJO954lZTy
+	 NiyiUeAVKW5bG3A9BE/0+X2hlsloMBfpMREn4TK+4OcFXji4mBrky8LZbBp0qsxh6I
+	 ecrhqKiN2qd3shH3eqmj97oR8JOWtnv16BPizbTJ73Qom+N94JsxSvNsEJKpD5jiLV
+	 p/WtDVZEEGCwezhB9sJ7GKRJf0pks9SdEtDG/LhkffmbzxqP7nby/WGd40bl1l5sI5
+	 BufwvRr/w0RCA==
+Message-ID: <88e20936-0400-47a3-8909-24e3609e714e@kernel.org>
+Date: Mon, 9 Sep 2024 13:51:33 +0200
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
@@ -38,55 +50,86 @@ List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RESEND v2 05/19] media: vivid: Include <linux/prandom.h>
- in vivid-vid-cap.c
-To: Uros Bizjak <ubizjak@gmail.com>, x86@kernel.org,
- linux-crypto@vger.kernel.org, intel-gfx@lists.freedesktop.org,
- dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-fscrypt@vger.kernel.org,
- linux-scsi@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
- linux-kernel@vger.kernel.org
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-References: <20240909075641.258968-1-ubizjak@gmail.com>
- <20240909075641.258968-6-ubizjak@gmail.com>
-Content-Language: en-US, nl
-From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20240909075641.258968-6-ubizjak@gmail.com>
+Subject: Re: [PATCH v6 10/17] soc: qcom: ice: add support for hardware wrapped
+ keys
+To: Bartosz Golaszewski <brgl@bgdev.pl>, Jens Axboe <axboe@kernel.dk>,
+ Jonathan Corbet <corbet@lwn.net>, Alasdair Kergon <agk@redhat.com>,
+ Mike Snitzer <snitzer@kernel.org>, Mikulas Patocka <mpatocka@redhat.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Asutosh Das <quic_asutoshd@quicinc.com>,
+ Ritesh Harjani <ritesh.list@gmail.com>, Ulf Hansson
+ <ulf.hansson@linaro.org>, Alim Akhtar <alim.akhtar@samsung.com>,
+ Avri Altman <avri.altman@wdc.com>, Bart Van Assche <bvanassche@acm.org>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Eric Biggers <ebiggers@kernel.org>, "Theodore Y. Ts'o" <tytso@mit.edu>,
+ Jaegeuk Kim <jaegeuk@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konradybcio@kernel.org>,
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Gaurav Kashyap <quic_gaurkash@quicinc.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>
+Cc: linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev,
+ linux-mmc@vger.kernel.org, linux-scsi@vger.kernel.org,
+ linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org,
+ Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+ Om Prakash Singh <quic_omprsing@quicinc.com>
+References: <20240906-wrapped-keys-v6-0-d59e61bc0cb4@linaro.org>
+ <20240906-wrapped-keys-v6-10-d59e61bc0cb4@linaro.org>
+Content-Language: en-US
+From: Konrad Dybcio <konradybcio@kernel.org>
+In-Reply-To: <20240906-wrapped-keys-v6-10-d59e61bc0cb4@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 09/09/2024 09:53, Uros Bizjak wrote:
-> Substitute the inclusion of <linux/random.h> header with
-> <linux/prandom.h> to allow the removal of legacy inclusion
-> of <linux/prandom.h> from <linux/random.h>.
+On 6.09.2024 8:07 PM, Bartosz Golaszewski wrote:
+> From: Gaurav Kashyap <quic_gaurkash@quicinc.com>
 > 
-> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-
-Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-
-Regards,
-
-	Hans
-
-> Cc: Hans Verkuil <hverkuil@xs4all.nl>
-> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> Cc: linux-media@vger.kernel.org
+> Now that HWKM support has been added to ICE, extend the ICE driver to
+> support hardware wrapped keys programming coming in from the storage
+> controllers (UFS and eMMC). This is similar to raw keys where the call is
+> forwarded to Trustzone, however we also need to clear and re-enable
+> CFGE before and after programming the key.
+> 
+> Derive software secret support is also added by forwarding the call to
+> the corresponding SCM API.
+> 
+> Tested-by: Neil Armstrong <neil.armstrong@linaro.org>
+> Reviewed-by: Om Prakash Singh <quic_omprsing@quicinc.com>
+> Signed-off-by: Gaurav Kashyap <quic_gaurkash@quicinc.com>
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > ---
->  drivers/media/test-drivers/vivid/vivid-vid-cap.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/media/test-drivers/vivid/vivid-vid-cap.c b/drivers/media/test-drivers/vivid/vivid-vid-cap.c
-> index 69620e0a35a0..184460eb356e 100644
-> --- a/drivers/media/test-drivers/vivid/vivid-vid-cap.c
-> +++ b/drivers/media/test-drivers/vivid/vivid-vid-cap.c
-> @@ -10,6 +10,7 @@
->  #include <linux/sched.h>
->  #include <linux/vmalloc.h>
->  #include <linux/videodev2.h>
-> +#include <linux/prandom.h>
->  #include <linux/v4l2-dv-timings.h>
->  #include <media/v4l2-common.h>
->  #include <media/v4l2-event.h>
 
+[...]
+
+
+> +static int qcom_ice_program_wrapped_key(struct qcom_ice *ice,
+> +					const struct blk_crypto_key *key,
+> +					u8 data_unit_size, int slot)
+> +{
+> +	union crypto_cfg cfg;
+> +	int hwkm_slot;
+> +	int err;
+> +
+> +	hwkm_slot = translate_hwkm_slot(ice, slot);
+> +
+> +	memset(&cfg, 0, sizeof(cfg));
+
+union crypto_cfg cfg = { 0 };
+
+?
+
+> +	cfg.dusize = data_unit_size;
+> +	cfg.capidx = QCOM_SCM_ICE_CIPHER_AES_256_XTS;
+> +	cfg.cfge = 0x80;
+
+Or just partially initialize it at declaration time?
+
+Also, what's 0x80?
+
+Konrad
 
