@@ -1,136 +1,112 @@
-Return-Path: <linux-fscrypt+bounces-441-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-442-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 262E19718C6
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  9 Sep 2024 13:56:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 061A0971A44
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  9 Sep 2024 15:03:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC55F1F22DBE
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  9 Sep 2024 11:56:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3018E1C221BB
+	for <lists+linux-fscrypt@lfdr.de>; Mon,  9 Sep 2024 13:03:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C775D1B5EDA;
-	Mon,  9 Sep 2024 11:56:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2455E1B9B29;
+	Mon,  9 Sep 2024 13:02:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bhHzZQ7n"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="GYOxmlB6"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CD2E13BAF1;
-	Mon,  9 Sep 2024 11:56:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 175041B86F3
+	for <linux-fscrypt@vger.kernel.org>; Mon,  9 Sep 2024 13:02:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725882983; cv=none; b=dbPZW1xjenvgofKT8nolDMas8Ipyv0JevhQmo/y8ojnnLeRRdAXzCwRmO4qPOsEx3S348rGodbb+aYlz1SfdJVxa9++ZAlQIw7+VrHi1YkFo4rIxdlDEMOKPLfjcnPbEn7lLrMAFut0UrD4/KxitYz5u0xrRGPlvJEJdTio0OCw=
+	t=1725886976; cv=none; b=E+oUMl7gpRew35YJRIm83FN3bAUePHQBM7ZCqnsXm8lThi8kTDHqQiMhXRJIoeaeI1PSS8U22fcAKIOrspBVjNHpWyzCnldP7AI7qar372Skaz1HV2M5qFvwPqMoNfnzHdT9HGHAulmwCEEMW00b7Vn8YmuJcJEFI3XfAGyPSGQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725882983; c=relaxed/simple;
-	bh=/YtRu2MORuw03OqntPGRgVqgK255CA2LiMaiIADwXrk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UA1F3fDpM6mGTSYs8+SJjrlTzro/O3if+mFyFnEorj2uFOZdxkvT+l1Hdbbdrjq9Ztl1ShRFavsWk363T8B0+/DV670wZq2A3X7lJ1BkYa9L5dyUCKaWMd2Ton37vBGlY7f+zDgy2pUYb0Ala2CenUng2cIxV4erMNUnNsNf6io=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bhHzZQ7n; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAF93C4CEC5;
-	Mon,  9 Sep 2024 11:56:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725882983;
-	bh=/YtRu2MORuw03OqntPGRgVqgK255CA2LiMaiIADwXrk=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=bhHzZQ7n7PMR2BNbizOYSxL+P4Zy5IkWjJpzjaiNOE1d+Id4GRkgYxIX2MGfzgt6g
-	 48a53xifmqGRExB/4QwUBAy86hBjnHe+VL9RW6fLIJjIPGM5doT7wWYsq/aTQn485F
-	 007XJGBf3SsAHsDESrFeo2UjYBX+vXAkocffLiKGQLcZTMiWItkSLVVpPAXUnlwka7
-	 s+ET6l0Ls0+jcDCsd9txQ5ii3Qir13AWZ1183IQXF9Dz1U2ySN+zRNIHd8SV+a8vYJ
-	 sV3rj/7D0++1O4uBmTRetLtwCfBOlWys5ApTCypm/5Wgve6bSNXEUb3QEsWA9Cfs6J
-	 xVefcKeJVyzzQ==
-Message-ID: <85cb5092-fbc9-4fa7-99ca-e9b26c7a61b6@kernel.org>
-Date: Mon, 9 Sep 2024 13:56:11 +0200
+	s=arc-20240116; t=1725886976; c=relaxed/simple;
+	bh=T3YX5/Lpd4lYkt45t/7q4cjSITWugSsonc6UgJRAfvs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CiMdx2TklBQezCsSzYq+rZeBEMaqJh0CfrDJMfhm5UC9jLCcNTY9y6ypYikYmpLj5eJ0fNAv/CCSU0qWWQtuwYlVgYSOeiVxt9j2h8CbbIDuajPlyx0onDCWvtrkLAIhkuV+hcKYa5a16FAUK6Z5H+iSFml1bwk3HlbLHkE/gz0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=GYOxmlB6; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a8d2daa2262so174441466b.1
+        for <linux-fscrypt@vger.kernel.org>; Mon, 09 Sep 2024 06:02:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1725886971; x=1726491771; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7mMqU87htuX/vKBzsNQkDBJ4RpNR7Zr8uFLI9xAQvGQ=;
+        b=GYOxmlB6cqxQooQnEt7X++w7jM/eK/CATiRIFTlUeVsvxT9Ux4sbdQFL2Yj3y9IIxs
+         1/hT/mWfLkUwjQW8l2PNx5z/9dOebysSNFmr2JJncBXgRbJQhZb4hNCn3LQWhoQK3uLw
+         MV1gOuwILIxvf+50GlQ3QALoWEgbLslRE+2Q64nHbx49SQ6N0NLiheIo0yVonh7UYmeT
+         6SMAMkpaiXDARG4w8d4qLxh+oSDXZAPEZQh9Oct2MBiOFq71aPVkh8y/npv7+MtEzih2
+         Awjsn9QaZNnSNtTZ7wnelsK2bB36E55nfpNa4W8U2xHredMXRNYHtN1ZsSdL2br2YUGd
+         URtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725886971; x=1726491771;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7mMqU87htuX/vKBzsNQkDBJ4RpNR7Zr8uFLI9xAQvGQ=;
+        b=Awwzv6OmNXbQ3Al4kDb0PU2CpAmKVYxIAG9TxXetTtAO9CHTEeRFVhoXC2UQC7vFQU
+         KP3rhINU2Tdp6a/rFtT0bgyZD/CHlEv8rwTSkhpgI85PYpPBwXIn3lJKXM+mXylHxUbk
+         ZYQcXsbs03wmKYhbfWOeVRjvfKMdQeXf2iUJNCf0YdFPZDs6kYxfOsvM4ruQrzxeEsO4
+         w7s9oGfBGjs4E8izTB/Npf8l7gl6dFIYWY2Ha4VHHA8cfVmg4n4XmiHfkelgK+9YNHEc
+         cLQmYdJQO/zs49UIyRcrBWnvX0GnF7JjDetXDZ/4H4mbOGJenOfn5qUVrb633FCWGAs4
+         LjVw==
+X-Forwarded-Encrypted: i=1; AJvYcCVrTgAoPq8/S6erwEDAVSHmptka9MuDIHOQGTSDbLJG/96eS6GmZH/pOqA6Cm0lph4gU/Rk65YK88Db4tUB@vger.kernel.org
+X-Gm-Message-State: AOJu0YygMnw9aiQgTJlNSSbinJJ01lDI548WG4CWbh6kIqF4KhGL1v0P
+	ogPQT540fjVHwGJAuP4mXZzFTsCj3jIe4yuNL02yx1x7lijGe/DYcKzdx/Qt9U8=
+X-Google-Smtp-Source: AGHT+IGBCWEcHjOnjDa3tv0OU9sQsIWi0rYKMo1x8pgZwqnvO0g9WWezq8axRIpo3yitGDVIG7HaOA==
+X-Received: by 2002:a17:907:368a:b0:a86:8953:e1fe with SMTP id a640c23a62f3a-a8a8884be2cmr906103366b.47.1725886971281;
+        Mon, 09 Sep 2024 06:02:51 -0700 (PDT)
+Received: from pathway.suse.cz ([176.114.240.50])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a8d25d54abbsm337715666b.203.2024.09.09.06.02.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Sep 2024 06:02:51 -0700 (PDT)
+Date: Mon, 9 Sep 2024 15:02:49 +0200
+From: Petr Mladek <pmladek@suse.com>
+To: Uros Bizjak <ubizjak@gmail.com>
+Cc: x86@kernel.org, linux-crypto@vger.kernel.org,
+	intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-fscrypt@vger.kernel.org, linux-scsi@vger.kernel.org,
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH RESEND v2 16/19] lib/test_scanf: Include
+ <linux/prandom.h> instead of <linux/random.h>
+Message-ID: <Zt7x-dJF6RzEByBO@pathway.suse.cz>
+References: <20240909075641.258968-1-ubizjak@gmail.com>
+ <20240909075641.258968-17-ubizjak@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 16/17] ufs: host: add a callback for deriving software
- secrets and use it
-To: Bartosz Golaszewski <brgl@bgdev.pl>, Jens Axboe <axboe@kernel.dk>,
- Jonathan Corbet <corbet@lwn.net>, Alasdair Kergon <agk@redhat.com>,
- Mike Snitzer <snitzer@kernel.org>, Mikulas Patocka <mpatocka@redhat.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Asutosh Das <quic_asutoshd@quicinc.com>,
- Ritesh Harjani <ritesh.list@gmail.com>, Ulf Hansson
- <ulf.hansson@linaro.org>, Alim Akhtar <alim.akhtar@samsung.com>,
- Avri Altman <avri.altman@wdc.com>, Bart Van Assche <bvanassche@acm.org>,
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- Eric Biggers <ebiggers@kernel.org>, "Theodore Y. Ts'o" <tytso@mit.edu>,
- Jaegeuk Kim <jaegeuk@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konradybcio@kernel.org>,
- Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Gaurav Kashyap <quic_gaurkash@quicinc.com>,
- Neil Armstrong <neil.armstrong@linaro.org>
-Cc: linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev,
- linux-mmc@vger.kernel.org, linux-scsi@vger.kernel.org,
- linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-arm-msm@vger.kernel.org,
- Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-References: <20240906-wrapped-keys-v6-0-d59e61bc0cb4@linaro.org>
- <20240906-wrapped-keys-v6-16-d59e61bc0cb4@linaro.org>
-Content-Language: en-US
-From: Konrad Dybcio <konradybcio@kernel.org>
-In-Reply-To: <20240906-wrapped-keys-v6-16-d59e61bc0cb4@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240909075641.258968-17-ubizjak@gmail.com>
 
-On 6.09.2024 8:07 PM, Bartosz Golaszewski wrote:
-> From: Gaurav Kashyap <quic_gaurkash@quicinc.com>
+On Mon 2024-09-09 09:53:59, Uros Bizjak wrote:
+> Substitute the inclusion of <linux/random.h> header with
+> <linux/prandom.h> to allow the removal of legacy inclusion
+> of <linux/prandom.h> from <linux/random.h>.
 > 
-> Add a new UFS core callback for deriving software secrets from hardware
-> wrapped keys and implement it in QCom UFS.
-> 
-> Tested-by: Neil Armstrong <neil.armstrong@linaro.org>
-> Signed-off-by: Gaurav Kashyap <quic_gaurkash@quicinc.com>
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> ---
->  drivers/ufs/host/ufs-qcom.c | 15 +++++++++++++++
->  include/ufs/ufshcd.h        |  1 +
->  2 files changed, 16 insertions(+)
-> 
-> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-> index 366fd62a951f..77fb5e66e4be 100644
-> --- a/drivers/ufs/host/ufs-qcom.c
-> +++ b/drivers/ufs/host/ufs-qcom.c
-> @@ -182,9 +182,23 @@ static int ufs_qcom_ice_program_key(struct ufs_hba *hba,
->  		return qcom_ice_evict_key(host->ice, slot);
->  }
->  
-> +/*
-> + * Derive a software secret from a hardware wrapped key. The key is unwrapped in
-> + * hardware from trustzone and a software key/secret is then derived from it.
-> + */
-> +static int ufs_qcom_ice_derive_sw_secret(struct ufs_hba *hba, const u8 wkey[],
-> +					 unsigned int wkey_size,
-> +					 u8 sw_secret[BLK_CRYPTO_SW_SECRET_SIZE])
-> +{
-> +	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-> +
-> +	return qcom_ice_derive_sw_secret(host->ice, wkey, wkey_size, sw_secret);
-> +}
+> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
 
-There's platforms with multiple UFS hosts (e.g. 8280 has one with the
-intention to be used for an onboard flash and one for a UFS card (they're
-like microSD except they're UFS and not MMC).. We need to handle that
-somehow too.
+I have just acked v1 and missed that there already is v2.
+Just for record:
 
-My uneducated guess would be that the encryption infra is there for the
-primary host only and that it would be the one assumed by SCM calls.
+Acked-by: Petr Mladek <pmladek@suse.com>
 
-I thiiiink it should be enough not to add a `qcom,ice` property in the
-DT for the secondary slot, but please somebody else take another look
-here
-
-Konrad
+Best Regards,
+Petr
 
