@@ -1,168 +1,305 @@
-Return-Path: <linux-fscrypt+bounces-445-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-446-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DEA6972636
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 10 Sep 2024 02:38:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BD77972664
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 10 Sep 2024 02:51:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE1A31F248FB
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 10 Sep 2024 00:38:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08ACD285D81
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 10 Sep 2024 00:51:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2C9426AEA;
-	Tue, 10 Sep 2024 00:37:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E27F6F099;
+	Tue, 10 Sep 2024 00:51:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="ZKwT+fr4"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="ehxsuuz1"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B87DF4EB;
-	Tue, 10 Sep 2024 00:37:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 456696CDC8;
+	Tue, 10 Sep 2024 00:51:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725928677; cv=none; b=roBtr6YVMxxBHugMO7V01Nj0qpD8GIGjcynrr7zTEnPomHlqCJawXU7+dFPxc+dWJa6MzNykBa9CAnjxlH0Hua4ZS/XKv4hCpGFV+rHT1Zh/zxpRL0Zy579gKQWxkL7Fdf1lasqRNA2RnfG0Abj54G7j/CMkbdCt3osTyV71WEM=
+	t=1725929510; cv=none; b=jJuSeK1w0jyJAdkU9N8TGF/8C+W9LiaTHNu79MSVmhW9dmy2v4xCgA3xI2rsKAa32DfCZV3GW6ReLOwmw8rm9m4EtbA02qPRGcHwWjAhnnh9vgOyKR1jhFdJdm7vD9QyDII+eoyEQKk2tMglYzgZ4fdpIRbEiQDr/sMieLPq5Ls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725928677; c=relaxed/simple;
-	bh=jr5zVGRGboL5XtozuVLN38ByT/dg4+14+mi3ttijOhM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IynONVi+VOwrI3/gTULrbtV3ITfxXPKwt8SH9fjxBcCU9wekCYDu8OFfhQdxn4sqzNTd6wnWuZcyKegnqQkwXm8wDG+IQhmVuqIgJzXiv2N0FFUD6Qo6RYjMARTMErkgADVWFpAys88AA4J3W+hHrlScP790oCFP2qgAx9Qnam0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=ZKwT+fr4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51DC3C4CEC5;
-	Tue, 10 Sep 2024 00:37:50 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="ZKwT+fr4"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-	t=1725928668;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OQLtanPdpI6IiO92yLD4QK+WpMduqZbfYjfvTA4Wjlg=;
-	b=ZKwT+fr48l6iq8LtejYrRYTAB9HVjSoYl2w9SIS8taTr8eJGaMN+UnDXFn2Y+3WPqB/R/F
-	rRaSffSolaALbBnXYJobLzN3VpV4Ezx51BMaa/1NhCLY3oqj42i7Mx1nH5OoYZ9G42zSuF
-	N4doRAUS+Xs6qZlnbpNizLgjSg5FNi8=
-Received: 
-	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 9dac766c (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-	Tue, 10 Sep 2024 00:37:47 +0000 (UTC)
-Date: Tue, 10 Sep 2024 02:37:38 +0200
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-To: Uros Bizjak <ubizjak@gmail.com>
-Cc: x86@kernel.org, linux-crypto@vger.kernel.org,
-	intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-fscrypt@vger.kernel.org, linux-scsi@vger.kernel.org,
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Jani Nikula <jani.nikula@linux.intel.com>,
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Tvrtko Ursulin <tursulin@ursulin.net>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Hans Verkuil <hverkuil@xs4all.nl>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Eric Biggers <ebiggers@kernel.org>,
-	"Theodore Y. Ts'o" <tytso@mit.edu>,
-	Jaegeuk Kim <jaegeuk@kernel.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Hannes Reinecke <hare@suse.de>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Brendan Higgins <brendan.higgins@linux.dev>,
-	David Gow <davidgow@google.com>, Rae Moar <rmoar@google.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jiri Pirko <jiri@resnulli.us>, Petr Mladek <pmladek@suse.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Stephen Hemminger <stephen@networkplumber.org>,
-	Jamal Hadi Salim <jhs@mojatatu.com>,
-	Cong Wang <xiyou.wangcong@gmail.com>,
-	Kent Overstreet <kent.overstreet@linux.dev>
-Subject: Re: [PATCH RESEND v2 00/19] random: Resolve circular include
- dependency and include <linux/percpu.h>
-Message-ID: <Zt-U0opo2EW8LSRJ@zx2c4.com>
-References: <20240909075641.258968-1-ubizjak@gmail.com>
- <Zt8a6_RwLG2pEnZ6@zx2c4.com>
- <CAFULd4ak3n1x0tGrqiNoxvDBRw6AWgchfBO_k4aKps34DomPvA@mail.gmail.com>
+	s=arc-20240116; t=1725929510; c=relaxed/simple;
+	bh=Csud0RlnT8anqQHc+ZyO/EriLFaA42PrHHzw0yHBLTE=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=GONtSH0YG2CwszQwm3u9+PvnG8M1fhE4BGEBxmBygpYDrIjY7WYgatq+O3LsB9LX99ok5hiAurN3nxAg7gelqluz9ByYlTEnVuTb/RhwY89vBUk1wvOFaRnGJXDNOpu+9rfUmqN3rRCjYUiEXHNW47h4ocimRaZusiMiypYuV1A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=ehxsuuz1; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 489DRRc4020315;
+	Tue, 10 Sep 2024 00:51:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	4oKJPKyj6ZvcvxK2qU5p0TjHabQ19gP7gUp081B6C18=; b=ehxsuuz1bDpMQpPF
+	zRBpvPc8/fYHOhEz2iEXiboyDzIOmSfCRQe265TkDmzZ458PjP0T8p4KJzSIzZ5e
+	Pt+X+CwKhskaGHVs7TUCZvsepOW7HNvpegUJjORRI7xlx8QYX2Zz3RPnZ4cbcQdW
+	qAfW3yEaSJ2rUPc7Dg6s1lx3MMm7XOSiniWUt/Pf79LMY6btPTM2cI/2q1AKlt1d
+	tepVi0hjlgsdFMRXDlC4HnrgHOUYFvBsNPu4rt1isv+wvyLh+ve6wxbmKv8RTHrP
+	CqCi8wTqU+WFPwoqtCnq8g9A+7YdWZd2LkYjNFa5anstKG541NYP71MUMrsS3Xhn
+	xlAXXg==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 41he5duhdb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 10 Sep 2024 00:51:20 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 48A0pJGp011420
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 10 Sep 2024 00:51:19 GMT
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Mon, 9 Sep 2024 17:51:19 -0700
+Received: from nalasex01a.na.qualcomm.com ([fe80::d989:a8e3:9d0f:9869]) by
+ nalasex01a.na.qualcomm.com ([fe80::d989:a8e3:9d0f:9869%4]) with mapi id
+ 15.02.1544.009; Mon, 9 Sep 2024 17:51:19 -0700
+From: "Gaurav Kashyap (QUIC)" <quic_gaurkash@quicinc.com>
+To: "dmitry.baryshkov@linaro.org" <dmitry.baryshkov@linaro.org>,
+        "Neil
+ Armstrong" <neil.armstrong@linaro.org>
+CC: Bartosz Golaszewski <brgl@bgdev.pl>, Jens Axboe <axboe@kernel.dk>,
+        Jonathan Corbet <corbet@lwn.net>, Alasdair Kergon <agk@redhat.com>,
+        "Mike
+ Snitzer" <snitzer@kernel.org>,
+        Mikulas Patocka <mpatocka@redhat.com>,
+        "Adrian
+ Hunter" <adrian.hunter@intel.com>,
+        Asutosh Das <quic_asutoshd@quicinc.com>,
+        Ritesh Harjani <ritesh.list@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "James E.J. Bottomley"
+	<James.Bottomley@hansenpartnership.com>,
+        "Martin K. Petersen"
+	<martin.petersen@oracle.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Theodore
+ Y. Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>,
+        Alexander Viro
+	<viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>, Jan Kara
+	<jack@suse.cz>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konradybcio@kernel.org>,
+        "manivannan.sadhasivam@linaro.org"
+	<manivannan.sadhasivam@linaro.org>,
+        "Gaurav Kashyap (QUIC)"
+	<quic_gaurkash@quicinc.com>,
+        "linux-block@vger.kernel.org"
+	<linux-block@vger.kernel.org>,
+        "linux-doc@vger.kernel.org"
+	<linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>,
+        "dm-devel@lists.linux.dev"
+	<dm-devel@lists.linux.dev>,
+        "linux-mmc@vger.kernel.org"
+	<linux-mmc@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org"
+	<linux-scsi@vger.kernel.org>,
+        "linux-fscrypt@vger.kernel.org"
+	<linux-fscrypt@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org"
+	<linux-fsdevel@vger.kernel.org>,
+        "linux-arm-msm@vger.kernel.org"
+	<linux-arm-msm@vger.kernel.org>,
+        bartosz.golaszewski
+	<bartosz.golaszewski@linaro.org>
+Subject: RE: [PATCH v6 09/17] soc: qcom: ice: add HWKM support to the ICE
+ driver
+Thread-Topic: [PATCH v6 09/17] soc: qcom: ice: add HWKM support to the ICE
+ driver
+Thread-Index: AQHbAIeyLfp38xTz0EaUtiNODewOx7JLxo0AgAPangCAAAy4AIAA/Xzw
+Date: Tue, 10 Sep 2024 00:51:18 +0000
+Message-ID: <98cc8d71d5d9476297a54774c382030d@quicinc.com>
+References: <20240906-wrapped-keys-v6-0-d59e61bc0cb4@linaro.org>
+ <20240906-wrapped-keys-v6-9-d59e61bc0cb4@linaro.org>
+ <7uoq72bpiqmo2olwpnudpv3gtcowpnd6jrifff34ubmfpijgc6@k6rmnalu5z4o>
+ <66953e65-2468-43b8-9ccf-54671613c4ab@linaro.org>
+ <ivibs6qqxhbikaevys3iga7s73xq6dzq3u43gwjri3lozkrblx@jxlmwe5wiq7e>
+In-Reply-To: <ivibs6qqxhbikaevys3iga7s73xq6dzq3u43gwjri3lozkrblx@jxlmwe5wiq7e>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAFULd4ak3n1x0tGrqiNoxvDBRw6AWgchfBO_k4aKps34DomPvA@mail.gmail.com>
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: QH7Gmo-QPx85xU5L5kGW3w4npqSQk_1K
+X-Proofpoint-GUID: QH7Gmo-QPx85xU5L5kGW3w4npqSQk_1K
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
+ definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1011
+ priorityscore=1501 suspectscore=0 lowpriorityscore=0 impostorscore=0
+ malwarescore=0 mlxscore=0 phishscore=0 bulkscore=0 adultscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2408220000 definitions=main-2409100004
 
-Hi Uros,
+Hello Dmitry and Neil
 
-On Mon, Sep 09, 2024 at 09:30:06PM +0200, Uros Bizjak wrote:
-> Besides GCC, clang can define various named address space via
-> address_space attribute:
-> 
-> --cut here--
-> #define __as(N) __attribute__((address_space(N)))
-> 
-> void *foo(void __as(1) *x) { return x; }         // error
-> 
-> void *bar(void __as(1) *x) { return (void *)x; } // fine
-> --cut here--
-> 
-> When compiling this, the compiler returns:
-> 
-> clang-as.c:3:37: error: returning '__as(1) void *' from a function
-> with result type 'void *' changes address space of pointer
+On Monday, September 9, 2024 2:44 AM PDT, Dmitry Baryshkov wrote:
+> On Mon, Sep 09, 2024 at 10:58:30AM GMT, Neil Armstrong wrote:
+> > On 07/09/2024 00:07, Dmitry Baryshkov wrote:
+> > > On Fri, Sep 06, 2024 at 08:07:12PM GMT, Bartosz Golaszewski wrote:
+> > > > From: Gaurav Kashyap <quic_gaurkash@quicinc.com>
+> > > >
+> > > > Qualcomm's ICE (Inline Crypto Engine) contains a proprietary key
+> > > > management hardware called Hardware Key Manager (HWKM). Add
+> HWKM
+> > > > support to the ICE driver if it is available on the platform. HWKM
+> > > > primarily provides hardware wrapped key support where the ICE
+> > > > (storage) keys are not available in software and instead protected =
+in
+> hardware.
+> > > >
+> > > > When HWKM software support is not fully available (from
+> > > > Trustzone), there can be a scenario where the ICE hardware
+> > > > supports HWKM, but it cannot be used for wrapped keys. In this
+> > > > case, raw keys have to be used without using the HWKM. We query
+> > > > the TZ at run-time to find out whether wrapped keys support is
+> available.
+> > > >
+> > > > Tested-by: Neil Armstrong <neil.armstrong@linaro.org>
+> > > > Signed-off-by: Gaurav Kashyap <quic_gaurkash@quicinc.com>
+> > > > Signed-off-by: Bartosz Golaszewski
+> > > > <bartosz.golaszewski@linaro.org>
+> > > > ---
+> > > >   drivers/soc/qcom/ice.c | 152
+> +++++++++++++++++++++++++++++++++++++++++++++++--
+> > > >   include/soc/qcom/ice.h |   1 +
+> > > >   2 files changed, 149 insertions(+), 4 deletions(-)
+> > > >
+> > > >   int qcom_ice_enable(struct qcom_ice *ice)
+> > > >   {
+> > > > + int err;
+> > > > +
+> > > >           qcom_ice_low_power_mode_enable(ice);
+> > > >           qcom_ice_optimization_enable(ice);
+> > > > - return qcom_ice_wait_bist_status(ice);
+> > > > + if (ice->use_hwkm)
+> > > > +         qcom_ice_enable_standard_mode(ice);
+> > > > +
+> > > > + err =3D qcom_ice_wait_bist_status(ice); if (err)
+> > > > +         return err;
+> > > > +
+> > > > + if (ice->use_hwkm)
+> > > > +         qcom_ice_hwkm_init(ice);
+> > > > +
+> > > > + return err;
+> > > >   }
+> > > >   EXPORT_SYMBOL_GPL(qcom_ice_enable);
+> > > > @@ -150,6 +282,10 @@ int qcom_ice_resume(struct qcom_ice *ice)
+> > > >                   return err;
+> > > >           }
+> > > > + if (ice->use_hwkm) {
+> > > > +         qcom_ice_enable_standard_mode(ice);
+> > > > +         qcom_ice_hwkm_init(ice); }
+> > > >           return qcom_ice_wait_bist_status(ice);
+> > > >   }
+> > > >   EXPORT_SYMBOL_GPL(qcom_ice_resume);
+> > > > @@ -157,6 +293,7 @@ EXPORT_SYMBOL_GPL(qcom_ice_resume);
+> > > >   int qcom_ice_suspend(struct qcom_ice *ice)
+> > > >   {
+> > > >           clk_disable_unprepare(ice->core_clk);
+> > > > + ice->hwkm_init_complete =3D false;
+> > > >           return 0;
+> > > >   }
+> > > > @@ -206,6 +343,12 @@ int qcom_ice_evict_key(struct qcom_ice *ice,
+> int slot)
+> > > >   }
+> > > >   EXPORT_SYMBOL_GPL(qcom_ice_evict_key);
+> > > > +bool qcom_ice_hwkm_supported(struct qcom_ice *ice) {  return
+> > > > +ice->use_hwkm; }
+> EXPORT_SYMBOL_GPL(qcom_ice_hwkm_supported);
+> > > > +
+> > > >   static struct qcom_ice *qcom_ice_create(struct device *dev,
+> > > >                                           void __iomem *base)
+> > > >   {
+> > > > @@ -240,6 +383,7 @@ static struct qcom_ice *qcom_ice_create(struct
+> device *dev,
+> > > >                   engine->core_clk =3D devm_clk_get_enabled(dev, NU=
+LL);
+> > > >           if (IS_ERR(engine->core_clk))
+> > > >                   return ERR_CAST(engine->core_clk);
+> > > > + engine->use_hwkm =3D qcom_scm_has_wrapped_key_support();
+> > >
+> > > This still makes the decision on whether to use HW-wrapped keys on
+> > > behalf of a user. I suppose this is incorrect. The user must be able
+> > > to use raw keys even if HW-wrapped keys are available on the
+> > > platform. One of the examples for such use-cases is if a user
+> > > prefers to be able to recover stored information in case of a device
+> > > failure (such recovery will be impossible if SoC is damaged and HW-
+> wrapped keys are used).
+> >
+> > Isn't that already the case ? the BLK_CRYPTO_KEY_TYPE_HW_WRAPPED
+> size
+> > is here to select HW-wrapped key, otherwise the ol' raw key is passed.
+> > Just look the next patch.
+> >
+> > Or did I miss something ?
+>=20
+> That's a good question. If use_hwkm is set, ICE gets programmed to use
+> hwkm (see qcom_ice_hwkm_init() call above). I'm not sure if it is expecte=
+d
+> to work properly if after such a call we pass raw key.
+>=20
 
-Super cool. Looking forward to having it all wired up and the bugs we'll
-find with it. 
+Once ICE has moved to a HWKM mode, the firmware key programming currently d=
+oes not support raw keys.
+This support is being added for the next Qualcomm chipset in Trustzone to s=
+upport both at he same time, but that will take another year or two to hit =
+the market.
+Until that time, due to TZ (firmware) limitations , the driver can only sup=
+port one or the other.
 
-> I think that the best approach is to target this patchset for linux
-> 6.13 via random.git tree. I will prepare a v3 after 6.12rc1, so when
-> committed to random.git, the patchset will be able to spend some time
-> in linux-next. This way, there will be plenty of time for CI robots to
-> do additional checks also for some less popular targets (although
-> individual patches are dead simple, removing these kinds of "legacy"
-> includes can be tricky), and I will also be able to collect Acked-by:s
-> in the meantime.
-> 
-> While the patchset is an improvement by itself, its inclusion is not
-> time sensitive. The follow up percpu named address checking
-> functionality requires a very recent feature (__typeof_unqual__
-> keyword), which is only supported in recent compilers (gcc-14 and
-> clang-20). Besides compiler support, sparse doesn't know about
-> __typeof_unqual__, resulting in broken type tracing and hundreds of
-> sparse errors with C=1 due to unknown keyword.
-> 
-> So, I think we are not in a hurry and can take the slow and safe path.
+We also cannot keep moving ICE modes, due to the HWKM enablement being a on=
+e-time configurable value at boot.
 
-Okay, sure, that sounds good to me. I'll keep my eyes open for v3
-in a few weeks then.
+> >
+> > Neil
+> >
+> > >
+> > > >           if (!qcom_ice_check_supported(engine))
+> > > >                   return ERR_PTR(-EOPNOTSUPP); diff --git
+> > > > a/include/soc/qcom/ice.h b/include/soc/qcom/ice.h index
+> > > > 9dd835dba2a7..1f52e82e3e1c 100644
+> > > > --- a/include/soc/qcom/ice.h
+> > > > +++ b/include/soc/qcom/ice.h
+> > > > @@ -34,5 +34,6 @@ int qcom_ice_program_key(struct qcom_ice *ice,
+> > > >                            const struct blk_crypto_key *bkey,
+> > > >                            u8 data_unit_size, int slot);
+> > > >   int qcom_ice_evict_key(struct qcom_ice *ice, int slot);
+> > > > +bool qcom_ice_hwkm_supported(struct qcom_ice *ice);
+> > > >   struct qcom_ice *of_qcom_ice_get(struct device *dev);
+> > > >   #endif /* __QCOM_ICE_H__ */
+> > > >
+> > > > --
+> > > > 2.43.0
+> > > >
+> > >
+> >
+>=20
+> --
+> With best wishes
+> Dmitry
 
-Jason
+Regards,
+Gaurav
 
