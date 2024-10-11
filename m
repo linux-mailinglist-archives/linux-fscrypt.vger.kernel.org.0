@@ -1,76 +1,76 @@
-Return-Path: <linux-fscrypt+bounces-493-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-494-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 843C799ABF2
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 11 Oct 2024 20:58:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C0CC99AC0A
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 11 Oct 2024 20:59:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF9E41F25DA8
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 11 Oct 2024 18:58:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DAF61C23CDB
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 11 Oct 2024 18:59:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F4F71E133D;
-	Fri, 11 Oct 2024 18:54:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74E191D0BB0;
+	Fri, 11 Oct 2024 18:54:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="FuVVJ4gn"
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="tzk9zX6N"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 219BD1D0F54
-	for <linux-fscrypt@vger.kernel.org>; Fri, 11 Oct 2024 18:54:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C147E1D0175
+	for <linux-fscrypt@vger.kernel.org>; Fri, 11 Oct 2024 18:54:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728672892; cv=none; b=MQ43Mg1GEzZIH8/OOP42xw3FnrkPztYF9XR7nx43yZZ/ahFgtnSnAKilNx8nCbyZFjilnRSev1XJMuBaONaweGquFq/f/K4xG5j/VeQBOHlCu2KS6Fn1FmTO1QMqrAxjzgJD5KcDkmsWPiI72LfoA34o5folFOWGgNu+C2DyA/E=
+	t=1728672897; cv=none; b=GPlgnbKGoT98A+GRpj6U0WXnrH2RKr+0CQSwQtOOGGIl/KCF1G/63O82A78dXzzG/dTAUcm+a2ZMz3DgcgUeHfXSSmQTr6MeXOkKc+5lWQ6PS9Y66jpgRPhkESaEgu/3tL0NhMUL+h04v5O6cxUuFNw9Q1bkvCn0BE42ALwtt+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728672892; c=relaxed/simple;
-	bh=NTpnGYJWRKUfD2+EdtJmRcavDBWB/vbpL4lKlrJIiuI=;
+	s=arc-20240116; t=1728672897; c=relaxed/simple;
+	bh=Fp9wq3ZtQFq/uTh7cxPI+ZLTbg5uSwhh859jzCiLJj8=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=ZJMqHBjEbz5zkFxcKVT6aoRujtCzbI/aIxiK7duHAZ5UzOdeIT3QNBdDxQdBV5N5htfcMiIjGiQdxPqhlGdBW54GNxljqgD18cM1q68P1nolkhPjpXk0tDkEWDZsUhqgshKtTyXf021syCKg2UHE6DFAo11opf6t4MZs8uBzh5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=FuVVJ4gn; arc=none smtp.client-ip=209.85.221.48
+	 In-Reply-To:To:Cc; b=IcD4XS7KjvteK8kU0w31B3heSOAYOabzhJYct7DceHWI2JbNvLeUNZwZjcbW3/8U1bVhsX4btu0+JH71cR1Yzc53HQnc35Hzlkd/O5r/m+shvzkCXU/FCfYgBfjSSMbG6WE0EBknOQEeil8kNe7PpWrM0r9wRBvR0xRbXvibttE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=tzk9zX6N; arc=none smtp.client-ip=209.85.128.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-37d55f0cf85so724803f8f.3
-        for <linux-fscrypt@vger.kernel.org>; Fri, 11 Oct 2024 11:54:45 -0700 (PDT)
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4311bb9d4beso11892845e9.3
+        for <linux-fscrypt@vger.kernel.org>; Fri, 11 Oct 2024 11:54:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1728672881; x=1729277681; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1728672883; x=1729277683; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=QvGNvxvKM8eiH1ZuQL0JBic8eLP1K1xp7NCDrQaUBYs=;
-        b=FuVVJ4gnPKq5xTqYItIXn8PImt5plWOvk+oynyYHUz/A4qhI9U8oAKL8gmyotcZhuY
-         6Qovssg3HWwLbO0JzCiz/JkV/SdntkAo2AntUa0yZhY1WHCyU99Gi7D/60DyswtzWCpv
-         nP8glFOxzCn81vXgU4ysSZMl0ktvIB68UpN10+0NSZ1mKVGHK+Aq4JvwyhEzfX3UUSf3
-         4bk8iyw41aGWZJgRdJSEv6DL+QsGz05y6TXU9XOLYFXbiAmfTLPfHxCN5dEH6nBcTmOn
-         iPOoH4RXL5tGy4moEUIEPPed2fEnqP666l8E89ZDtAF95GsPX52y8lHGvX/x+FwA5pEz
-         ASrA==
+        bh=QZb5eGhW+yHrp6LLSYxnRM6nvxA+fWqJwJ3y6fvQXrQ=;
+        b=tzk9zX6NSPVU6r7ATUucD3N3cgfnO1KnHDKyNP2Zz5EelUxHTKFBy7OFBoDAWlfOcB
+         0CC8JTrItY9lXu3/9Ssbs2sQfccMluSK953wpPIr3RyIMo2DnhGGDEjGisNzwFSzgnW4
+         FAOoS1khMDe+l7HSd6xUhw9YQCQq0VSzWWE+dFLUhol30XXS9BGUazU6NT5zbgB2RDTn
+         JcV8ocE3nuk1x8FWKK2fHtJVO5Cks63NLFsGZ0cVVZg0I9ZuH02DN9W6qeQ4nbq1UgGJ
+         6o6foMhmLkpRAK/z3T29ecEPHRL4XhH1/deQlKOueZNGNbqR82W7hNcViPAnkzv2mcS8
+         VeDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728672881; x=1729277681;
+        d=1e100.net; s=20230601; t=1728672883; x=1729277683;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QvGNvxvKM8eiH1ZuQL0JBic8eLP1K1xp7NCDrQaUBYs=;
-        b=r6TjTePw+PNizOF42rRwty+R5ZECcM+J/pi+GVuXza95NxwQ7rVLuLEuwun6VqP7me
-         aoCPCGy5hflThTNIf1hQPIBH1ReNEIyESIRI65npVZZFEtskMDLdAnr4NGOozmjPBgo1
-         XJGjqm9mtM6ZEAqb9nZoGKWV5HjnkcSaVFQc6x75U031c8jW4BRTv6AYsMY7p6dSPzKm
-         twOvsblYYGbGY8pzhvMQWvstDO54UPqnIJtd2k0WtSFccLBdIGDrzHtxU+eWx6PDJF4p
-         H/o18LNT7jr8/O8xf8FjvlaGZ1NzvwLqAkTXOTAA9ly979Lq95/g5pu8Z2S//Rv/DFue
-         2GDA==
-X-Forwarded-Encrypted: i=1; AJvYcCXpmyKQ27NHvj6E4K+0PpYlp2nAD4wucYypiGYR4iKo7ce32JgydnLxhuC5UQcJ5+KVGiDwis3jon5kj+Re@vger.kernel.org
-X-Gm-Message-State: AOJu0YxLBsjRVN6dOUMzHeqKDtMWjzZ+BE6nd1W+2PL4fw++uKH32S+E
-	MfYsq67DS++v63PQnBEefjqBuwoH6uiZJ8zKbiFq7VZ1y6DILF71PqUHL4h9e+Q=
-X-Google-Smtp-Source: AGHT+IFBiRHpA/2anQVcoQGSuXpNm6xFEP3FrWrt3y5o67BcMn10hdldcHKEx3xYiIax2LY/pbI/Mw==
-X-Received: by 2002:a5d:6e43:0:b0:37c:cee0:96e6 with SMTP id ffacd0b85a97d-37d551fc08dmr3069018f8f.27.1728672881110;
-        Fri, 11 Oct 2024 11:54:41 -0700 (PDT)
+        bh=QZb5eGhW+yHrp6LLSYxnRM6nvxA+fWqJwJ3y6fvQXrQ=;
+        b=Le2ITPqictapTng/qNwI9DYycsohi6lccXDtgrrLY9QqaCMfQhIsaum4Ve12XMpFfb
+         bISUA6LS6M6SlB1Ha/ISrGRZQdeon352eOLpNnrWhKMsEug9Irohj6u+RItfTUEUAB+f
+         UkXjOuKv6Nd5HLJDXqGFc2ddwzwVxaLmJVlW8CNJ9sTjYpK5h9cNFEQHTwlUW9BnDnNn
+         CjKUPgpbAdyfwTmUpxhdBD4mjXi5liKIWYvKROG+0fn0IN5pSpxZaTBaQC+a7s2vWFaI
+         ilZUTbdYYfGS8viwryo7WSbK/mXoWRGTKrEFEsF2FkhyTgGB7Dh0t1QhxWx18epqEqVq
+         kMWQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWpC49PQHok1lUNsynF2CufdTWmDgTBiIa9yQRBKDxJtdczB1loGrjGg7BCyHJzsz3cniFA2txg+6d2R4s/@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx2c3fk7wL9+rQ2Fm84qfDq12pQfdU3ARQ5DkhhfFPwZrEk3bYr
+	yNjXlR+9/nvjSxgwptbMgIAep5IplpB05pc6KX3/eDehTJr3F8zI0mWlqLijMLY=
+X-Google-Smtp-Source: AGHT+IG7xhf7VJhXkSusSN8cCIhf+djvKxcuAo7wK7GAstrIFO0o2ioqU4M4R6an0um1UPLgxIsvHg==
+X-Received: by 2002:a05:600c:3496:b0:42c:b22e:fbfa with SMTP id 5b1f17b1804b1-431255e765amr3588755e9.21.1728672882885;
+        Fri, 11 Oct 2024 11:54:42 -0700 (PDT)
 Received: from [127.0.1.1] ([2a01:cb1d:dc:7e00:68b8:bef:b7eb:538f])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37d4b79fe7csm4559161f8f.70.2024.10.11.11.54.39
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37d4b79fe7csm4559161f8f.70.2024.10.11.11.54.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Oct 2024 11:54:40 -0700 (PDT)
+        Fri, 11 Oct 2024 11:54:42 -0700 (PDT)
 From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Fri, 11 Oct 2024 20:54:08 +0200
-Subject: [PATCH v7 09/17] soc: qcom: ice: add HWKM support to the ICE
- driver
+Date: Fri, 11 Oct 2024 20:54:09 +0200
+Subject: [PATCH v7 10/17] soc: qcom: ice: add support for hardware wrapped
+ keys
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
@@ -79,7 +79,7 @@ List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20241011-wrapped-keys-v7-9-e3f7a752059b@linaro.org>
+Message-Id: <20241011-wrapped-keys-v7-10-e3f7a752059b@linaro.org>
 References: <20241011-wrapped-keys-v7-0-e3f7a752059b@linaro.org>
 In-Reply-To: <20241011-wrapped-keys-v7-0-e3f7a752059b@linaro.org>
 To: Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>, 
@@ -106,295 +106,272 @@ Cc: linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
  linux-mmc@vger.kernel.org, linux-scsi@vger.kernel.org, 
  linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
  linux-arm-msm@vger.kernel.org, 
- Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+ Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, 
+ Om Prakash Singh <quic_omprsing@quicinc.com>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=9572;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=8347;
  i=bartosz.golaszewski@linaro.org; h=from:subject:message-id;
- bh=JLFG06y2/CVmmFjvX7qoJO0lgzWocHfOpOak0flGkYo=;
- b=owEBbQKS/ZANAwAKARGnLqAUcddyAcsmYgBnCXRfZrb1iPof5VSEAFaweN9V67nZlKlXvIT5l
- mb4JDKqcEGJAjMEAAEKAB0WIQQWnetsC8PEYBPSx58Rpy6gFHHXcgUCZwl0XwAKCRARpy6gFHHX
- ckF+D/4/aOLiX8hPp2gLDvruhIs8jUH+HhEzOeWHciDZ6eSVZMCq0pQYnVJTFWSkPTBHtqj92tb
- E2pXCORkPeaSWPxllo4Culhn4ZnQ7sqCBSj4H/KMh4nncMpqzhJYa9PyW+N12WKn+MKQt2tJr7A
- 82psPAxjevYV+zwxyrXCQcZhTXjpA8V3IsfAi3SHqaPgL4NDf/zwoH1nUUXJgUi8FHPGjeNnPVE
- RMOMw6NmN2NTQ7wrvt8BVfEe1M0uleVziiOgoukqij5YIQUg4iXhBGp7B/D/jbhb4PFjBOrgQwf
- bn2o83MhS8JlEUBpGanjcZ7VXWWXj4aMbpIwYZDMmE3JsE6LqiSdMnECzW6eZX9rGfKZm6OO+Cg
- AKh+WuKeSFQh8S9AEzLwiksVTXWF813eCEoGwc7jeBKWb9n/5jXRx4o7A1SDyn8/k2kSufs9CAz
- TzpseGhUktFPXr9q97H6/w82YFabqXwCMUYmNJlU2CaoXQ7CzsuZGv3yMD3N4dPYkZJSmGfQvTv
- JqY9C+vIKmPrOrecRDaXOpVHHA6nAmcu4Qovy8jZHoNVSH4mcY2RTjcU+V6zVY7fmySoSkjeI+B
- AXisxiWsMgirLiDHzowjtzSIMBZeZ+Ei9kWQ7AUR8vHzxF8T3imurZ90C1oZmb/uhV9BhK1sr40
- z23KO6zQN05LMLg==
+ bh=1qrZ+cI8tCGtiGLI4tYrHaGnHNxmtAVnemK62xuanzo=;
+ b=owEBbQKS/ZANAwAKARGnLqAUcddyAcsmYgBnCXRfRzTuHD9UxyEoGwdhXyBCEF/vefyrxSG7V
+ ntJsPD6Q2iJAjMEAAEKAB0WIQQWnetsC8PEYBPSx58Rpy6gFHHXcgUCZwl0XwAKCRARpy6gFHHX
+ craxEACeRmozUjrwNqtCwCc2kUwXVXkMpUP3Uy+OjRbyrqlZXgHwc+jmmVkrS+zksyOJ1WeiGEw
+ 9xEUT9voluHz1PHlED1zfcuvZD6hrZEh56JaIt94DS2nKs1w2MzUI4n9zpxaOh3P2xIYDvLuKyi
+ 2DHdqEFS/IE0E8k7KHrtbl2UbCv2UOdL+BgG0JvT7TkS1ysJZAFwirLksjTW5Msv0InabRE/Gg1
+ t8VgD4A0FICjtIExaJOPIwIEH/5mFU7dLKCaGB6eiyoFcuvk8Bfx1aUfev+Udj+yoOJh+TIOYhG
+ pnvis4ijUXYSJF3dWt2NfBa7uT2/TsCBCNbLB25QbuDIFvrTSV0G3kq6TlAIkFAMr8P41xo94O4
+ FnM95G/RXEopT+ZdvSOuXOo2iwRv0vQlzorwfrQNZ01XOzBQ5P9T7LZg+wNT562GYauaW43HIyf
+ Px9qNpkDoirb7nlxQu04yQJJrgtkxg3fjAt7tD2STijsrd9aJTAnQBjTfnyRXdiWBtSrbpuSdGE
+ QUxInv48Vp25ZXZTNe2fATYMxxHzC1+VL7jUDjYWMPRPlV/+zzq9E3XkvB+PYAd6Ngdt+WT9a6R
+ PxiYYDhFS3XDtmLi2aL89BuDAaucQhkhqMa0hKXlu+pd2mQus+kMYJVpjTfLWDhBIQPezc7GZ+X
+ KjwqhygmH1U4riQ==
 X-Developer-Key: i=bartosz.golaszewski@linaro.org; a=openpgp;
  fpr=169DEB6C0BC3C46013D2C79F11A72EA01471D772
 
 From: Gaurav Kashyap <quic_gaurkash@quicinc.com>
 
-Qualcomm's ICE (Inline Crypto Engine) contains a proprietary key
-management hardware called Hardware Key Manager (HWKM). Add HWKM support
-to the ICE driver if it is available on the platform. HWKM primarily
-provides hardware wrapped key support where the ICE (storage) keys are
-not available in software and instead protected in hardware.
+Now that HWKM support has been added to ICE, extend the ICE driver to
+support hardware wrapped keys programming coming in from the storage
+controllers (UFS and eMMC). This is similar to raw keys where the call is
+forwarded to Trustzone, however we also need to clear and re-enable
+CFGE before and after programming the key.
 
-When HWKM software support is not fully available (from Trustzone), there
-can be a scenario where the ICE hardware supports HWKM, but it cannot be
-used for wrapped keys. In this case, raw keys have to be used without
-using the HWKM. We query the TZ at run-time to find out whether wrapped
-keys support is available.
+Derive software secret support is also added by forwarding the call to
+the corresponding SCM API.
+
+Wrapped keys are only used if the new module parameter is set AND the
+architecture supports HWKM.
 
 Tested-by: Neil Armstrong <neil.armstrong@linaro.org>
+Reviewed-by: Om Prakash Singh <quic_omprsing@quicinc.com>
 Signed-off-by: Gaurav Kashyap <quic_gaurkash@quicinc.com>
 Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 ---
- drivers/soc/qcom/ice.c | 152 +++++++++++++++++++++++++++++++++++++++++++++++--
- include/soc/qcom/ice.h |   1 +
- 2 files changed, 149 insertions(+), 4 deletions(-)
+ drivers/soc/qcom/ice.c | 128 ++++++++++++++++++++++++++++++++++++++++++++-----
+ include/soc/qcom/ice.h |   4 ++
+ 2 files changed, 121 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/soc/qcom/ice.c b/drivers/soc/qcom/ice.c
-index 4393262a1bf2..667d993694ac 100644
+index 667d993694ac..1f22453ab332 100644
 --- a/drivers/soc/qcom/ice.c
 +++ b/drivers/soc/qcom/ice.c
-@@ -27,6 +27,40 @@
- #define QCOM_ICE_REG_FUSE_SETTING		0x0010
+@@ -28,6 +28,8 @@
  #define QCOM_ICE_REG_BIST_STATUS		0x0070
  #define QCOM_ICE_REG_ADVANCED_CONTROL		0x1000
-+#define QCOM_ICE_REG_CONTROL			0x0
-+/* QCOM ICE HWKM registers */
-+#define QCOM_ICE_REG_HWKM_TZ_KM_CTL			0x1000
-+#define QCOM_ICE_REG_HWKM_TZ_KM_STATUS			0x1004
-+#define QCOM_ICE_REG_HWKM_BANK0_BANKN_IRQ_STATUS	0x2008
-+#define QCOM_ICE_REG_HWKM_BANK0_BBAC_0			0x5000
-+#define QCOM_ICE_REG_HWKM_BANK0_BBAC_1			0x5004
-+#define QCOM_ICE_REG_HWKM_BANK0_BBAC_2			0x5008
-+#define QCOM_ICE_REG_HWKM_BANK0_BBAC_3			0x500C
-+#define QCOM_ICE_REG_HWKM_BANK0_BBAC_4			0x5010
+ #define QCOM_ICE_REG_CONTROL			0x0
++#define QCOM_ICE_LUT_KEYS_CRYPTOCFG_R16		0x4040
 +
-+/* QCOM ICE HWKM reg vals */
-+#define QCOM_ICE_HWKM_BIST_DONE_V1		BIT(16)
-+#define QCOM_ICE_HWKM_BIST_DONE_V2		BIT(9)
-+#define QCOM_ICE_HWKM_BIST_DONE(ver)		QCOM_ICE_HWKM_BIST_DONE_V##ver
-+
-+#define QCOM_ICE_HWKM_CRYPTO_BIST_DONE_V1		BIT(14)
-+#define QCOM_ICE_HWKM_CRYPTO_BIST_DONE_V2		BIT(7)
-+#define QCOM_ICE_HWKM_CRYPTO_BIST_DONE(v)		QCOM_ICE_HWKM_CRYPTO_BIST_DONE_V##v
-+
-+#define QCOM_ICE_HWKM_BOOT_CMD_LIST1_DONE		BIT(2)
-+#define QCOM_ICE_HWKM_BOOT_CMD_LIST0_DONE		BIT(1)
-+#define QCOM_ICE_HWKM_KT_CLEAR_DONE			BIT(0)
-+
-+#define QCOM_ICE_HWKM_BIST_VAL(v)	(QCOM_ICE_HWKM_BIST_DONE(v) |		\
-+					QCOM_ICE_HWKM_CRYPTO_BIST_DONE(v) |	\
-+					QCOM_ICE_HWKM_BOOT_CMD_LIST1_DONE |	\
-+					QCOM_ICE_HWKM_BOOT_CMD_LIST0_DONE |	\
-+					QCOM_ICE_HWKM_KT_CLEAR_DONE)
-+
-+#define QCOM_ICE_HWKM_V1_STANDARD_MODE_VAL	(BIT(0) | BIT(1) | BIT(2))
-+#define QCOM_ICE_HWKM_V2_STANDARD_MODE_MASK	GENMASK(31, 1)
-+#define QCOM_ICE_HWKM_DISABLE_CRC_CHECKS_VAL	(BIT(1) | BIT(2))
-+#define QCOM_ICE_HWKM_RSP_FIFO_CLEAR_VAL	BIT(3)
+ /* QCOM ICE HWKM registers */
+ #define QCOM_ICE_REG_HWKM_TZ_KM_CTL			0x1000
+ #define QCOM_ICE_REG_HWKM_TZ_KM_STATUS			0x1004
+@@ -62,6 +64,8 @@
+ #define QCOM_ICE_HWKM_DISABLE_CRC_CHECKS_VAL	(BIT(1) | BIT(2))
+ #define QCOM_ICE_HWKM_RSP_FIFO_CLEAR_VAL	BIT(3)
  
++#define QCOM_ICE_HWKM_CFG_ENABLE_VAL		BIT(7)
++
  /* BIST ("built-in self-test") status flags */
  #define QCOM_ICE_BIST_STATUS_MASK		GENMASK(31, 28)
-@@ -35,6 +69,9 @@
+ 
+@@ -69,6 +73,8 @@
  #define QCOM_ICE_FORCE_HW_KEY0_SETTING_MASK	0x2
  #define QCOM_ICE_FORCE_HW_KEY1_SETTING_MASK	0x4
  
-+#define QCOM_ICE_HWKM_REG_OFFSET	0x8000
-+#define HWKM_OFFSET(reg)		((reg) + QCOM_ICE_HWKM_REG_OFFSET)
++#define QCOM_ICE_LUT_KEYS_CRYPTOCFG_OFFSET	0x80
 +
- #define qcom_ice_writel(engine, val, reg)	\
- 	writel((val), (engine)->base + (reg))
+ #define QCOM_ICE_HWKM_REG_OFFSET	0x8000
+ #define HWKM_OFFSET(reg)		((reg) + QCOM_ICE_HWKM_REG_OFFSET)
  
-@@ -47,6 +84,9 @@ struct qcom_ice {
- 	struct device_link *link;
+@@ -78,6 +84,15 @@
+ #define qcom_ice_readl(engine, reg)	\
+ 	readl((engine)->base + (reg))
  
- 	struct clk *core_clk;
-+	u8 hwkm_version;
-+	bool use_hwkm;
-+	bool hwkm_init_complete;
++#define QCOM_ICE_LUT_CRYPTOCFG_SLOT_OFFSET(slot) \
++	(QCOM_ICE_LUT_KEYS_CRYPTOCFG_R16 + \
++	 QCOM_ICE_LUT_KEYS_CRYPTOCFG_OFFSET * slot)
++
++static bool ufs_qcom_use_wrapped_keys;
++module_param_named(use_wrapped_keys, ufs_qcom_use_wrapped_keys, bool, 0660);
++MODULE_PARM_DESC(use_wrapped_keys,
++"Use HWKM for wrapped keys support if available on the platform");
++
+ struct qcom_ice {
+ 	struct device *dev;
+ 	void __iomem *base;
+@@ -89,6 +104,16 @@ struct qcom_ice {
+ 	bool hwkm_init_complete;
  };
  
++union crypto_cfg {
++	__le32 regval;
++	struct {
++		u8 dusize;
++		u8 capidx;
++		u8 reserved;
++		u8 cfge;
++	};
++};
++
  static bool qcom_ice_check_supported(struct qcom_ice *ice)
-@@ -64,8 +104,21 @@ static bool qcom_ice_check_supported(struct qcom_ice *ice)
- 		return false;
- 	}
- 
--	dev_info(dev, "Found QC Inline Crypto Engine (ICE) v%d.%d.%d\n",
--		 major, minor, step);
-+	if (major >= 4 || (major == 3 && minor == 2 && step >= 1))
-+		ice->hwkm_version = 2;
-+	else if (major == 3 && minor == 2)
-+		ice->hwkm_version = 1;
-+	else
-+		ice->hwkm_version = 0;
-+
-+	if (ice->hwkm_version == 0)
-+		ice->use_hwkm = false;
-+
-+	dev_info(dev, "Found QC Inline Crypto Engine (ICE) v%d.%d.%d, HWKM v%d\n",
-+		 major, minor, step, ice->hwkm_version);
-+
-+	if (!ice->use_hwkm)
-+		dev_info(dev, "QC ICE HWKM (Hardware Key Manager) not used/supported");
- 
- 	/* If fuses are blown, ICE might not work in the standard way. */
- 	regval = qcom_ice_readl(ice, QCOM_ICE_REG_FUSE_SETTING);
-@@ -114,27 +167,106 @@ static void qcom_ice_optimization_enable(struct qcom_ice *ice)
-  * fails, so we needn't do it in software too, and (c) properly testing
-  * storage encryption requires testing the full storage stack anyway,
-  * and not relying on hardware-level self-tests.
-+ *
-+ * However, we still care about if HWKM BIST failed (when supported) as
-+ * important functionality would fail later, so disable hwkm on failure.
-  */
- static int qcom_ice_wait_bist_status(struct qcom_ice *ice)
  {
- 	u32 regval;
-+	u32 bist_done_val;
- 	int err;
- 
- 	err = readl_poll_timeout(ice->base + QCOM_ICE_REG_BIST_STATUS,
- 				 regval, !(regval & QCOM_ICE_BIST_STATUS_MASK),
- 				 50, 5000);
--	if (err)
-+	if (err) {
- 		dev_err(ice->dev, "Timed out waiting for ICE self-test to complete\n");
-+		return err;
-+	}
- 
-+	if (ice->use_hwkm) {
-+		bist_done_val = ice->hwkm_version == 1 ?
-+				QCOM_ICE_HWKM_BIST_VAL(1) :
-+				QCOM_ICE_HWKM_BIST_VAL(2);
-+		if (qcom_ice_readl(ice,
-+				   HWKM_OFFSET(QCOM_ICE_REG_HWKM_TZ_KM_STATUS)) !=
-+				   bist_done_val) {
-+			dev_err(ice->dev, "HWKM BIST error\n");
-+			ice->use_hwkm = false;
-+			err = -ENODEV;
-+		}
-+	}
- 	return err;
+ 	u32 regval = qcom_ice_readl(ice, QCOM_ICE_REG_VERSION);
+@@ -299,6 +324,46 @@ int qcom_ice_suspend(struct qcom_ice *ice)
  }
+ EXPORT_SYMBOL_GPL(qcom_ice_suspend);
  
-+static void qcom_ice_enable_standard_mode(struct qcom_ice *ice)
++/*
++ * For v1 the ICE slot will be calculated in the trustzone.
++ */
++static int translate_hwkm_slot(struct qcom_ice *ice, int slot)
 +{
-+	u32 val = 0;
-+
-+	/*
-+	 * When ICE is in standard (hwkm) mode, it supports HW wrapped
-+	 * keys, and when it is in legacy mode, it only supports standard
-+	 * (non HW wrapped) keys.
-+	 *
-+	 * Put ICE in standard mode, ICE defaults to legacy mode.
-+	 * Legacy mode - ICE HWKM slave not supported.
-+	 * Standard mode - ICE HWKM slave supported.
-+	 *
-+	 * Depending on the version of HWKM, it is controlled by different
-+	 * registers in ICE.
-+	 */
-+	if (ice->hwkm_version >= 2) {
-+		val = qcom_ice_readl(ice, QCOM_ICE_REG_CONTROL);
-+		val = val & QCOM_ICE_HWKM_V2_STANDARD_MODE_MASK;
-+		qcom_ice_writel(ice, val, QCOM_ICE_REG_CONTROL);
-+	} else {
-+		qcom_ice_writel(ice, QCOM_ICE_HWKM_V1_STANDARD_MODE_VAL,
-+				HWKM_OFFSET(QCOM_ICE_REG_HWKM_TZ_KM_CTL));
-+	}
++	return (ice->hwkm_version == 1) ? slot : (slot * 2);
 +}
 +
-+static void qcom_ice_hwkm_init(struct qcom_ice *ice)
++static int qcom_ice_program_wrapped_key(struct qcom_ice *ice,
++					const struct blk_crypto_key *key,
++					u8 data_unit_size, int slot)
 +{
-+	/* Disable CRC checks. This HWKM feature is not used. */
-+	qcom_ice_writel(ice, QCOM_ICE_HWKM_DISABLE_CRC_CHECKS_VAL,
-+			HWKM_OFFSET(QCOM_ICE_REG_HWKM_TZ_KM_CTL));
-+
-+	/*
-+	 * Give register bank of the HWKM slave access to read and modify
-+	 * the keyslots in ICE HWKM slave. Without this, trustzone will not
-+	 * be able to program keys into ICE.
-+	 */
-+	qcom_ice_writel(ice, GENMASK(31, 0), HWKM_OFFSET(QCOM_ICE_REG_HWKM_BANK0_BBAC_0));
-+	qcom_ice_writel(ice, GENMASK(31, 0), HWKM_OFFSET(QCOM_ICE_REG_HWKM_BANK0_BBAC_1));
-+	qcom_ice_writel(ice, GENMASK(31, 0), HWKM_OFFSET(QCOM_ICE_REG_HWKM_BANK0_BBAC_2));
-+	qcom_ice_writel(ice, GENMASK(31, 0), HWKM_OFFSET(QCOM_ICE_REG_HWKM_BANK0_BBAC_3));
-+	qcom_ice_writel(ice, GENMASK(31, 0), HWKM_OFFSET(QCOM_ICE_REG_HWKM_BANK0_BBAC_4));
-+
-+	/* Clear HWKM response FIFO before doing anything */
-+	qcom_ice_writel(ice, QCOM_ICE_HWKM_RSP_FIFO_CLEAR_VAL,
-+			HWKM_OFFSET(QCOM_ICE_REG_HWKM_BANK0_BANKN_IRQ_STATUS));
-+	ice->hwkm_init_complete = true;
-+}
-+
- int qcom_ice_enable(struct qcom_ice *ice)
- {
++	union crypto_cfg cfg = {
++		.dusize = data_unit_size,
++		.capidx = QCOM_SCM_ICE_CIPHER_AES_256_XTS,
++		.cfge = QCOM_ICE_HWKM_CFG_ENABLE_VAL,
++	};
++	int hwkm_slot;
 +	int err;
 +
- 	qcom_ice_low_power_mode_enable(ice);
- 	qcom_ice_optimization_enable(ice);
- 
--	return qcom_ice_wait_bist_status(ice);
-+	if (ice->use_hwkm)
-+		qcom_ice_enable_standard_mode(ice);
++	hwkm_slot = translate_hwkm_slot(ice, slot);
 +
-+	err = qcom_ice_wait_bist_status(ice);
-+	if (err)
++	/* Clear CFGE */
++	qcom_ice_writel(ice, 0x0, QCOM_ICE_LUT_CRYPTOCFG_SLOT_OFFSET(slot));
++
++	/* Call trustzone to program the wrapped key using hwkm */
++	err = qcom_scm_ice_set_key(hwkm_slot, key->raw, key->size,
++				   QCOM_SCM_ICE_CIPHER_AES_256_XTS, data_unit_size);
++	if (err) {
++		pr_err("%s:SCM call Error: 0x%x slot %d\n", __func__, err,
++		       slot);
 +		return err;
++	}
 +
-+	if (ice->use_hwkm)
-+		qcom_ice_hwkm_init(ice);
++	/* Enable CFGE after programming key */
++	qcom_ice_writel(ice, cfg.regval, QCOM_ICE_LUT_CRYPTOCFG_SLOT_OFFSET(slot));
 +
 +	return err;
- }
- EXPORT_SYMBOL_GPL(qcom_ice_enable);
++}
++
+ int qcom_ice_program_key(struct qcom_ice *ice,
+ 			 u8 algorithm_id, u8 key_size,
+ 			 const struct blk_crypto_key *bkey,
+@@ -314,24 +379,40 @@ int qcom_ice_program_key(struct qcom_ice *ice,
  
-@@ -150,6 +282,10 @@ int qcom_ice_resume(struct qcom_ice *ice)
- 		return err;
+ 	/* Only AES-256-XTS has been tested so far. */
+ 	if (algorithm_id != QCOM_ICE_CRYPTO_ALG_AES_XTS ||
+-	    key_size != QCOM_ICE_CRYPTO_KEY_SIZE_256) {
++	    (key_size != QCOM_ICE_CRYPTO_KEY_SIZE_256 &&
++	    key_size != QCOM_ICE_CRYPTO_KEY_SIZE_WRAPPED)) {
+ 		dev_err_ratelimited(dev,
+ 				    "Unhandled crypto capability; algorithm_id=%d, key_size=%d\n",
+ 				    algorithm_id, key_size);
+ 		return -EINVAL;
  	}
  
-+	if (ice->use_hwkm) {
-+		qcom_ice_enable_standard_mode(ice);
-+		qcom_ice_hwkm_init(ice);
-+	}
- 	return qcom_ice_wait_bist_status(ice);
- }
- EXPORT_SYMBOL_GPL(qcom_ice_resume);
-@@ -157,6 +293,7 @@ EXPORT_SYMBOL_GPL(qcom_ice_resume);
- int qcom_ice_suspend(struct qcom_ice *ice)
- {
- 	clk_disable_unprepare(ice->core_clk);
-+	ice->hwkm_init_complete = false;
+-	memcpy(key.bytes, bkey->raw, AES_256_XTS_KEY_SIZE);
++	if (ufs_qcom_use_wrapped_keys &&
++	    (bkey->crypto_cfg.key_type == BLK_CRYPTO_KEY_TYPE_HW_WRAPPED)) {
++		/* It is expected that HWKM init has completed before programming wrapped keys */
++		if (!ice->use_hwkm || !ice->hwkm_init_complete) {
++			dev_err_ratelimited(dev, "HWKM not currently used or initialized\n");
++			return -EINVAL;
++		}
++		err = qcom_ice_program_wrapped_key(ice, bkey, data_unit_size,
++						   slot);
++	} else {
++		if (bkey->size != QCOM_ICE_CRYPTO_KEY_SIZE_256)
++			dev_err_ratelimited(dev,
++					    "Incorrect key size; bkey->size=%d\n",
++					    algorithm_id);
++		return -EINVAL;
++		memcpy(key.bytes, bkey->raw, AES_256_XTS_KEY_SIZE);
  
- 	return 0;
+-	/* The SCM call requires that the key words are encoded in big endian */
+-	for (i = 0; i < ARRAY_SIZE(key.words); i++)
+-		__cpu_to_be32s(&key.words[i]);
++		/* The SCM call requires that the key words are encoded in big endian */
++		for (i = 0; i < ARRAY_SIZE(key.words); i++)
++			__cpu_to_be32s(&key.words[i]);
+ 
+-	err = qcom_scm_ice_set_key(slot, key.bytes, AES_256_XTS_KEY_SIZE,
+-				   QCOM_SCM_ICE_CIPHER_AES_256_XTS,
+-				   data_unit_size);
+-
+-	memzero_explicit(&key, sizeof(key));
++		err = qcom_scm_ice_set_key(slot, key.bytes, AES_256_XTS_KEY_SIZE,
++					   QCOM_SCM_ICE_CIPHER_AES_256_XTS,
++					   data_unit_size);
++		memzero_explicit(&key, sizeof(key));
++	}
+ 
+ 	return err;
  }
-@@ -206,6 +343,12 @@ int qcom_ice_evict_key(struct qcom_ice *ice, int slot)
+@@ -339,7 +420,23 @@ EXPORT_SYMBOL_GPL(qcom_ice_program_key);
+ 
+ int qcom_ice_evict_key(struct qcom_ice *ice, int slot)
+ {
+-	return qcom_scm_ice_invalidate_key(slot);
++	int hwkm_slot = slot;
++
++	if (ice->use_hwkm) {
++		hwkm_slot = translate_hwkm_slot(ice, slot);
++
++		/*
++		 * Ignore calls to evict key when HWKM is supported and hwkm
++		 * init is not yet done. This is to avoid the clearing all
++		 * slots call during a storage reset when ICE is still in
++		 * legacy mode. HWKM slave in ICE takes care of zeroing out
++		 * the keytable on reset.
++		 */
++		if (!ice->hwkm_init_complete)
++			return 0;
++	}
++
++	return qcom_scm_ice_invalidate_key(hwkm_slot);
  }
  EXPORT_SYMBOL_GPL(qcom_ice_evict_key);
  
-+bool qcom_ice_hwkm_supported(struct qcom_ice *ice)
+@@ -349,6 +446,15 @@ bool qcom_ice_hwkm_supported(struct qcom_ice *ice)
+ }
+ EXPORT_SYMBOL_GPL(qcom_ice_hwkm_supported);
+ 
++int qcom_ice_derive_sw_secret(struct qcom_ice *ice, const u8 wkey[],
++			      unsigned int wkey_size,
++			      u8 sw_secret[BLK_CRYPTO_SW_SECRET_SIZE])
 +{
-+	return ice->use_hwkm;
++	return qcom_scm_derive_sw_secret(wkey, wkey_size,
++					 sw_secret, BLK_CRYPTO_SW_SECRET_SIZE);
 +}
-+EXPORT_SYMBOL_GPL(qcom_ice_hwkm_supported);
++EXPORT_SYMBOL_GPL(qcom_ice_derive_sw_secret);
 +
  static struct qcom_ice *qcom_ice_create(struct device *dev,
  					void __iomem *base)
  {
-@@ -240,6 +383,7 @@ static struct qcom_ice *qcom_ice_create(struct device *dev,
- 		engine->core_clk = devm_clk_get_enabled(dev, NULL);
- 	if (IS_ERR(engine->core_clk))
- 		return ERR_CAST(engine->core_clk);
-+	engine->use_hwkm = qcom_scm_has_wrapped_key_support();
- 
- 	if (!qcom_ice_check_supported(engine))
- 		return ERR_PTR(-EOPNOTSUPP);
 diff --git a/include/soc/qcom/ice.h b/include/soc/qcom/ice.h
-index 9dd835dba2a7..1f52e82e3e1c 100644
+index 1f52e82e3e1c..dabe0d3a1fd0 100644
 --- a/include/soc/qcom/ice.h
 +++ b/include/soc/qcom/ice.h
-@@ -34,5 +34,6 @@ int qcom_ice_program_key(struct qcom_ice *ice,
- 			 const struct blk_crypto_key *bkey,
+@@ -17,6 +17,7 @@ enum qcom_ice_crypto_key_size {
+ 	QCOM_ICE_CRYPTO_KEY_SIZE_192		= 0x2,
+ 	QCOM_ICE_CRYPTO_KEY_SIZE_256		= 0x3,
+ 	QCOM_ICE_CRYPTO_KEY_SIZE_512		= 0x4,
++	QCOM_ICE_CRYPTO_KEY_SIZE_WRAPPED	= 0x5,
+ };
+ 
+ enum qcom_ice_crypto_alg {
+@@ -35,5 +36,8 @@ int qcom_ice_program_key(struct qcom_ice *ice,
  			 u8 data_unit_size, int slot);
  int qcom_ice_evict_key(struct qcom_ice *ice, int slot);
-+bool qcom_ice_hwkm_supported(struct qcom_ice *ice);
+ bool qcom_ice_hwkm_supported(struct qcom_ice *ice);
++int qcom_ice_derive_sw_secret(struct qcom_ice *ice, const u8 wkey[],
++			      unsigned int wkey_size,
++			      u8 sw_secret[BLK_CRYPTO_SW_SECRET_SIZE]);
  struct qcom_ice *of_qcom_ice_get(struct device *dev);
  #endif /* __QCOM_ICE_H__ */
 
