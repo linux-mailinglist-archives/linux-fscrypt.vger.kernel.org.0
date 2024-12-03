@@ -1,143 +1,137 @@
-Return-Path: <linux-fscrypt+bounces-530-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-531-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3BB69E0B27
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  2 Dec 2024 19:36:51 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 538EC9E21A7
+	for <lists+linux-fscrypt@lfdr.de>; Tue,  3 Dec 2024 16:16:09 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7D802813E4
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  2 Dec 2024 18:36:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 203D3167ECF
+	for <lists+linux-fscrypt@lfdr.de>; Tue,  3 Dec 2024 15:12:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B87F1DE2A7;
-	Mon,  2 Dec 2024 18:36:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83AD11F892F;
+	Tue,  3 Dec 2024 15:09:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mDXFsGp6"
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="LAia4PpJ"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BD2D70805;
-	Mon,  2 Dec 2024 18:36:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C53831F76D5
+	for <linux-fscrypt@vger.kernel.org>; Tue,  3 Dec 2024 15:09:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733164606; cv=none; b=S2PZSqjnv6Ql4keBSjm6fQyRZJ7uzuK6XPFZe1gDs73GI8DTjYczVxkgaaiYGdZwKXi2AGRMxtfaLRvNjwjYjS/d2Qfd9QVo+19+2Qmy6uEmLx4IOYIrj4IugEWXkfgeTi1Oie4W8FxO9DvEic3bgX5NHXH0P69Plx1iaeZhVOM=
+	t=1733238569; cv=none; b=fO3LyalTiuB54lfPDG3IKdjyqn+Vko5ZsTbWGA52Ibju/hN50btCY8rIxjmZb6ekBZNbxXyYOSGag2nPjmw1c2dRvsJsll8SjP4qx3D2aGWoYwZwzKdz1CDslbV7C1gnmN7DfuQ5trgmxwoHBMJUqN81QTR2tobj247ETJ++uWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733164606; c=relaxed/simple;
-	bh=SV0a41+RDhocvfEPEyv80/bq/ZSJlaeMPldbjOpf4GA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a9HJhF4+GIFOjAsVV1EJcYU9Ffk7plVU51R6VUy+X1Z17p5U/q+2XGyHxIF0TJwhP5drNuOsccN6SO1nrX3gJNKG5J67m7oEC5mdgkH37HVLY9H2SMvCO+iNa5MjCfZ7UpWP6vlk6dsTB5EDgnAXK8dsmw/DbHef3XelyzH2wM0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mDXFsGp6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98048C4CED2;
-	Mon,  2 Dec 2024 18:36:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733164605;
-	bh=SV0a41+RDhocvfEPEyv80/bq/ZSJlaeMPldbjOpf4GA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mDXFsGp6SVShBJ3Ui0hgJsz5amcbCq/I/bbNbZ2kUyQfWOw2ZS5q9ExO9fJelmJDV
-	 JoTW7+mVoW8JQm4aPfX9GffJUvsXf9CKpTJVs952AAHPXkRtNMzStQxAzUh/Zv0IAM
-	 0fAcJug/ASl+Poqji32qvlgh2ELNQMPdZwK3F2r+xv/iG/DXptEJg9zeHdsn/Jb+Iz
-	 0ftJTTXMZjBNyUB0xZcMDq65RoPvWTKPBxqqHxCCvmsG4BmH9jMW9szDkcIz+t9UOi
-	 mrIcG+VFSZqEP8KKocQ42uPkXDpb8JEBmQ5qSM4KpHB9tjvuVuaI9zpuuXloq4bRbo
-	 YzTBzB4DMLNQw==
-Date: Mon, 2 Dec 2024 10:36:43 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
-	Alasdair Kergon <agk@redhat.com>, Mike Snitzer <snitzer@kernel.org>,
-	Mikulas Patocka <mpatocka@redhat.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Asutosh Das <quic_asutoshd@quicinc.com>,
-	Ritesh Harjani <ritesh.list@gmail.com>,
-	Ulf Hansson <ulf.hansson@linaro.org>,
-	Alim Akhtar <alim.akhtar@samsung.com>,
-	Avri Altman <avri.altman@wdc.com>,
-	Bart Van Assche <bvanassche@acm.org>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Gaurav Kashyap <quic_gaurkash@quicinc.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	"Theodore Y. Ts'o" <tytso@mit.edu>,
-	Jaegeuk Kim <jaegeuk@kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konradybcio@kernel.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev,
-	linux-mmc@vger.kernel.org, linux-scsi@vger.kernel.org,
-	linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-	Om Prakash Singh <quic_omprsing@quicinc.com>
-Subject: Re: [PATCH RESEND v7 00/17] Hardware wrapped key support for QCom
- ICE and UFS core
-Message-ID: <20241202183643.GB2037@sol.localdomain>
-References: <20241202-wrapped-keys-v7-0-67c3ca3f3282@linaro.org>
+	s=arc-20240116; t=1733238569; c=relaxed/simple;
+	bh=ptJpUzd/BhAIeWpF97J96wy/fzTMEo/QGYZYJybeNNQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=eIodZ3+FV7ikDNaoLsTQMgqGndNsFQ5sa9YkfKamFohED2RNjoUowhVgEr9moZJWbpnKWuuK1J1dX7YwpfQlp3REYuXdnOnzgMZ8yZ2+kElxuziqbmnMDB39gromuY5GTFdn7T2U7IXVKdgHXZzovxPSaSYh5yw3s9Evni20zl8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=LAia4PpJ; arc=none smtp.client-ip=209.85.167.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-3ea369fdb0cso3298292b6e.3
+        for <linux-fscrypt@vger.kernel.org>; Tue, 03 Dec 2024 07:09:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1733238566; x=1733843366; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ii6/Eam+Rd1w/XN536sPdorZmSq0gN6Qv3+oQutPo10=;
+        b=LAia4PpJP2JnNrSS7Ew62eOvhwSKt3vQu9i7e90gsbvhRigAw6QAz0imLnYMfczm5V
+         2js3TxBTO6Pkw+ADPGDcANglO35y4ohkV/lYSowWrJbhhY06w9egBCIQ2mW5Y8mBNiVl
+         sWEc6tNVjdDmIgkF6NAt/G84skUE0a+prK4zkgW42arkftHiPQzL8DIsqwTu2cdqBBh4
+         GN1s4Oi0avDlK0w48OBhoEuxs23XoTT2jI3Ni3Q+du8v72IvrGeCsB/P0Ll68IbcYZiJ
+         GrA9xTjD8O1JYuy9hVH5EDj34z0ayO9nH8G+ZQd0ur8xAsWmnTMDdypXvrkAFr7K09ff
+         Iiyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733238566; x=1733843366;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ii6/Eam+Rd1w/XN536sPdorZmSq0gN6Qv3+oQutPo10=;
+        b=Bkqc2rX7TCUlp5dj8RL2TCdG2qz7ttDbYh7MDFip/j5emehYZ52mJH4yynwWB+jIVF
+         8OTN9fYsrXFzNnH2fvMqMlGNqcE49biLl0ha7XbtqMTTGkH803OZAu+wLP8Jhg7wqmKT
+         b7Kjo7U38OPoXDx8/bLnSIc8r+MXGT5hfZK1xoKr16GD1ehXUIoMm3XOaeG1RvGOJmyU
+         vWBZMCZcQ3SLjgRseEwNfuXbEf0KN8guOZtvVwlKE9GNCa9z/4G4W5Xw8sQjbmHhluBT
+         xGX+laNHI9tdcQ2Aax/gyLQ8qT8cU2kGjFzDkh4qMx+tC9YzY4jb8dTWIO7zs1r3ShS8
+         awRw==
+X-Forwarded-Encrypted: i=1; AJvYcCWY12FneUuDmyKZMv1ndxSYA013MbBco7pj18IzAqzT27q8oPA9YPCphRyru3uJb176/57tFxp3Hx3yNYZp@vger.kernel.org
+X-Gm-Message-State: AOJu0YzfvnduHSuy6BF0KbH2lsizepgkD+inYSuK1PjgnJlIoxHiuyVd
+	wfj3ATHcaFia21+KU+HrnuDB+KYipdx4X+hr35T2HhjCPDFYuYPZ7u3YwBTX0iI=
+X-Gm-Gg: ASbGncudbD8IEfscTeoKepqjY02s0nHHgKuCir4aMKM2NUOFJrBsX8Q1+kYjF1LrMGZ
+	vuGJ4Hht8cptEUELx2vELiTJsXc3TwAZCRGj+V4t/1IaXcKykfyalNDdizndiUQsYCNCvzGuSgP
+	J3pb20mFCRAm1SG4cUTZIOzABHczUGhAfFPqPl5X19JM6vOVLyhBKW3mxLkBH2Bqc5XvkbkstMO
+	Dl+NQSVsXJx0wv+2Rx2OumBMAkf6Ursli56AIVm4L1TKwso
+X-Google-Smtp-Source: AGHT+IHdP/r0VTOfmHgK6zsgpRftwhI0VmkZTrKusX1MqvGl6wn141rPYAXz2iiNvED/ZdfolUyPmA==
+X-Received: by 2002:a05:6808:3843:b0:3e8:1f5d:b7f8 with SMTP id 5614622812f47-3eae4edadc4mr3237519b6e.1.1733238565720;
+        Tue, 03 Dec 2024 07:09:25 -0800 (PST)
+Received: from [172.20.2.46] ([130.250.255.163])
+        by smtp.gmail.com with ESMTPSA id 5614622812f47-3ea8609f140sm2829517b6e.19.2024.12.03.07.09.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Dec 2024 07:09:24 -0800 (PST)
+Message-ID: <c3407d1c-6c5c-42ee-b446-ccbab1643a62@kernel.dk>
+Date: Tue, 3 Dec 2024 08:09:21 -0700
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241202-wrapped-keys-v7-0-67c3ca3f3282@linaro.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RESEND v7 00/17] Hardware wrapped key support for QCom ICE
+ and UFS core
+To: Eric Biggers <ebiggers@kernel.org>, Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Jonathan Corbet <corbet@lwn.net>, Alasdair Kergon <agk@redhat.com>,
+ Mike Snitzer <snitzer@kernel.org>, Mikulas Patocka <mpatocka@redhat.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Asutosh Das <quic_asutoshd@quicinc.com>,
+ Ritesh Harjani <ritesh.list@gmail.com>, Ulf Hansson
+ <ulf.hansson@linaro.org>, Alim Akhtar <alim.akhtar@samsung.com>,
+ Avri Altman <avri.altman@wdc.com>, Bart Van Assche <bvanassche@acm.org>,
+ "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+ Gaurav Kashyap <quic_gaurkash@quicinc.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ "Theodore Y. Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konradybcio@kernel.org>,
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+ linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev,
+ linux-mmc@vger.kernel.org, linux-scsi@vger.kernel.org,
+ linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org,
+ Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+ Om Prakash Singh <quic_omprsing@quicinc.com>
+References: <20241202-wrapped-keys-v7-0-67c3ca3f3282@linaro.org>
+ <20241202183643.GB2037@sol.localdomain>
+Content-Language: en-US
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20241202183643.GB2037@sol.localdomain>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Dec 02, 2024 at 01:02:16PM +0100, Bartosz Golaszewski wrote:
-> The previous iteration[1] has been on the list for many weeks without
-> receiving any comments - neither positive nor negative. If there are no
-> objections - could we start discussing how to make these patches go
-> upstream for v6.14?
+On 12/2/24 11:36 AM, Eric Biggers wrote:
+> On Mon, Dec 02, 2024 at 01:02:16PM +0100, Bartosz Golaszewski wrote:
+>> The previous iteration[1] has been on the list for many weeks without
+>> receiving any comments - neither positive nor negative. If there are no
+>> objections - could we start discussing how to make these patches go
+>> upstream for v6.14?
+> 
+> The way to do it will be for the block patches to be taken through the block
+> tree first.  That will unblock the rest, which can be taken through their
+> respective trees in subsequent cycles.
 
-The way to do it will be for the block patches to be taken through the block
-tree first.  That will unblock the rest, which can be taken through their
-respective trees in subsequent cycles.
+I can queue up patches 1..3 in a separate branch that we can both use,
+and that can get pulled into for-6.14/block as well. Didn't want to do
+that before the rest of them are ready. IOW, if it's going to be bound
+for 6.14, let me know, and I'll setup the branch with the patches.
 
-I'm really hoping to be able to test these patches with upstream myself, which
-I'm not able to do yet.  I'll try to leave some review comments on the parts not
-authored by me the mean time.  Anyway, thanks for continuing to work on this.
-
-> Tested on sm8650-qrd.
-> 
-> How to test:
-> 
-> Use the wip-wrapped-keys branch from https://github.com/ebiggers/fscryptctl
-> to build a custom fscryptctl that supports generating wrapped keys.
-> 
-> Enable the following config options:
-> CONFIG_BLK_INLINE_ENCRYPTION=y
-> CONFIG_QCOM_INLINE_CRYPTO_ENGINE=m
-> CONFIG_FS_ENCRYPTION_INLINE_CRYPT=y
-> CONFIG_SCSI_UFS_CRYPTO=y
-> 
-> $ mkfs.ext4 -F -O encrypt,stable_inodes /dev/disk/by-partlabel/userdata
-> $ mount /dev/disk/by-partlabel/userdata -o inlinecrypt /mnt
-> $ fscryptctl generate_hw_wrapped_key /dev/disk/by-partlabel/userdata > /mnt/key.longterm
-> $ fscryptctl prepare_hw_wrapped_key /dev/disk/by-partlabel/userdata < /mnt/key.longterm > /tmp/key.ephemeral
-> $ KEYID=$(fscryptctl add_key --hw-wrapped-key < /tmp/key.ephemeral /mnt)
-> $ rm -rf /mnt/dir
-> $ mkdir /mnt/dir
-> $ fscryptctl set_policy --hw-wrapped-key --iv-ino-lblk-64 "$KEYID" /mnt/dir
-> $ dmesg > /mnt/dir/test.txt
-> $ sync
-> 
-> Reboot the board
-> 
-> $ mount /dev/disk/by-partlabel/userdata -o inlinecrypt /mnt
-> $ ls /mnt/dir
-> $ fscryptctl prepare_hw_wrapped_key /dev/disk/by-partlabel/userdata < /mnt/key.longterm > /tmp/key.ephemeral
-> $ KEYID=$(fscryptctl add_key --hw-wrapped-key < /tmp/key.ephemeral /mnt)
-> $ fscryptctl set_policy --hw-wrapped-key --iv-ino-lblk-64 "$KEYID" /mnt/dir
-> $ cat /mnt/dir/test.txt # File should now be decrypted
-
-That doesn't verify that the encryption is being done correctly, which is the
-most important thing to test.  For that we'll need to resurrect the following
-patchset for xfstests:
-https://lore.kernel.org/fstests/20220228074722.77008-1-ebiggers@kernel.org/
-
-- Eric
+-- 
+Jens Axboe
 
