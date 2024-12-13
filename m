@@ -1,46 +1,46 @@
-Return-Path: <linux-fscrypt+bounces-555-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-556-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 540439F0386
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 13 Dec 2024 05:20:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CE489F038B
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 13 Dec 2024 05:20:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F137283A2B
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 13 Dec 2024 04:20:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DCD6F284BAA
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 13 Dec 2024 04:20:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E657C18732A;
-	Fri, 13 Dec 2024 04:20:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BFD2189BA2;
+	Fri, 13 Dec 2024 04:20:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TRiimf/F"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SeNmXOMP"
 X-Original-To: linux-fscrypt@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0883188704;
-	Fri, 13 Dec 2024 04:20:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55701189528;
+	Fri, 13 Dec 2024 04:20:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734063623; cv=none; b=NQeg1+5/FpxEmBQMhsVwKxUg5OJtdbFQO5cjkErjRzbZp8nC1ip0isnAsSyIqus7XsIe3NI8HkmHKhVX8FhvvxF8daOQ7HcHOidd3mLSdz/d4Q//awYf2WE9ooDe7ZK7Dhx+rIAxmxAwXO6syPgv/eIw0awawJM5vNQM5lISAsM=
+	t=1734063624; cv=none; b=JtrdEyqfdClxryURa6H44KZFtZS0qdIlihVe72p/EgoGekky73j0wAJNkml5yh5QLIZSaKNpM5bjTY9yQVSRxRlNnfwCdrNP3Nfy32NmJGcxw9Tmqkv0oyDEaQlyRYqIuKoVYFDC3iK8It35T4zYhx+KFtlrrgdTNEUorq0b5dE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734063623; c=relaxed/simple;
-	bh=TKrz7gfLUKWQhnXE/Ix3m6ODh2E5Y+Lpg0g9lnlAGcc=;
+	s=arc-20240116; t=1734063624; c=relaxed/simple;
+	bh=pbBX38LppzeThXEP+qC3ypedVPluXHmsd11elwK2D6U=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=joWbOKGyMzUxnW11/Jru2FoeM4mHp1qqUzp+Z0c4rcw6k6VFlWGloeZTEHacAYhKTnCUlAhwlXsPT5G6uyay820g53revxAF9pFequrd/yd5jjUGWdAttrBMLqs5U+8fXHLki/DVqso7N5Oyv+fZyr8u2ZNyB7fzu5oH79aw9eA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TRiimf/F; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98EC1C4AF0B;
-	Fri, 13 Dec 2024 04:20:22 +0000 (UTC)
+	 MIME-Version; b=kDOQmBvIyWc91QxhkU+FKhQcYbq+MHzfjITN+HXm4IHB/JedPUvwFA1/Ny3ddb7VQ86SrS2lSge0SlQPJmo4XzeO6Q069ISejJBL23WQ4FAQGlzmpL6BqLoOS4KJRgVwTPG4t2l9oMWq/bl5z+nLIXGDxUAYerzOYCDBj0RNY74=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SeNmXOMP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 573D1C4CED1;
+	Fri, 13 Dec 2024 04:20:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1734063623;
-	bh=TKrz7gfLUKWQhnXE/Ix3m6ODh2E5Y+Lpg0g9lnlAGcc=;
+	bh=pbBX38LppzeThXEP+qC3ypedVPluXHmsd11elwK2D6U=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=TRiimf/F1becCkNpqdGde7rE/Xjtv6JhKClx4HawYi6i2tPF6XJoYzg1cNpWmvvNg
-	 1DDSDtr1sODaYZkKA6ATz1ve99wtE1THj36W6mz2+ZKlGuKxu2ebvU8alklh2UzZtw
-	 /SE5UdfLkao/WdEcQArMfvmr05hbh/hd1QYDG7kugTF7nD3xr6ovfM3lstSYTFClYR
-	 mYjFcxdNjOBt/1VHCwwssqc0D9SYyWu7UYUW7j9b1BpxlVfC7VDImpx5ApkToYHRxp
-	 nSSjGPgkNtzYFOHWFd1DGMHlC1aSLMfo1l+kp5s8bNKrR3EaipR6mKOe0BZYL2UIT7
-	 2qpq/6/tyngIQ==
+	b=SeNmXOMPsKtD9lOfKNQ9awLddyqgBTqrhCChGdaJh+in/BWTasPzMy3J1KVam/WZ3
+	 vtjiU6zUXkZy8pUfOSclkj2pc9c1C/XMNRRY1G5YHnD2k+ulwY3CweqNg70nYpyVcG
+	 TYrpWfCb03CV9CWUanzBJ0LT0XZio9IfMfTrVZQ7VNgSNQi7Vpy59WaLPKtUduPaOw
+	 TVKE73R5iqW8Ivl/0YAZ+5jZ5wToDB1ZJP3R7sPYyGvYXmOUu//6xmAZsWkOROD9sy
+	 j3su8t+PQftxwhihhJ5Xo8Q3FYUbYzKA0uF1VJFAeyFMFJOQzkIOH76M6ys/A7zjxR
+	 /LTi+R76SIrYA==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-block@vger.kernel.org,
 	linux-fscrypt@vger.kernel.org,
@@ -60,11 +60,10 @@ Cc: Adrian Hunter <adrian.hunter@intel.com>,
 	Konrad Dybcio <konradybcio@kernel.org>,
 	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
 	"Martin K . Petersen" <martin.petersen@oracle.com>,
-	Ulf Hansson <ulf.hansson@linaro.org>,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH v10 03/15] ufs: qcom: convert to use UFSHCD_QUIRK_CUSTOM_CRYPTO_PROFILE
-Date: Thu, 12 Dec 2024 20:19:46 -0800
-Message-ID: <20241213041958.202565-4-ebiggers@kernel.org>
+	Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH v10 04/15] ufs: crypto: remove ufs_hba_variant_ops::program_key
+Date: Thu, 12 Dec 2024 20:19:47 -0800
+Message-ID: <20241213041958.202565-5-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20241213041958.202565-1-ebiggers@kernel.org>
 References: <20241213041958.202565-1-ebiggers@kernel.org>
@@ -78,190 +77,135 @@ Content-Transfer-Encoding: 8bit
 
 From: Eric Biggers <ebiggers@google.com>
 
-By default the UFS core is responsible for initializing the
-blk_crypto_profile, but Qualcomm platforms have their own way of
-programming and evicting crypto keys.  So currently
-ufs_hba_variant_ops::program_key is used to redirect control flow from
-ufshcd_program_key().  This has worked until now, but it's a bit of a
-hack, given that the key (and algorithm ID etc.) ends up being converted
-from blk_crypto_key => ufs_crypto_cfg_entry => SCM call parameters,
-where the intermediate ufs_crypto_cfg_entry step is unnecessary.  Taking
-a similar approach with the upcoming wrapped key support, the
-implementation of which is similarly platform-specific, would require
-adding four new methods to ufs_hba_variant_ops, changing program_key to
-take the struct blk_crypto_key, and adding a new UFSHCD_CAP_* flag to
-indicate support for wrapped keys.
+There are no longer any implementations of
+ufs_hba_variant_ops::program_key, so remove it.
 
-This patch takes a different approach.  It changes ufs-qcom to use the
-existing UFSHCD_QUIRK_CUSTOM_CRYPTO_PROFILE which was recently added for
-ufs-exynos.  This allows it to override the full blk_crypto_profile,
-eliminating the need for the existing ufs_hba_variant_ops::program_key
-and the hooks that would have been needed for wrapped key support.  It
-does require a bit of duplicated code to read the crypto capability
-registers, but it's worth the simplification in design with ufs-qcom and
-ufs-exynos now using the same method to customize the crypto profile,
-and it makes it much easier to add wrapped key support.
+As a result, ufshcd_program_key() no longer can return an error, so also
+clean it up to return void.
 
-Tested-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org> # sm8650
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- drivers/ufs/host/ufs-qcom.c | 91 +++++++++++++++++++++++++++++--------
- 1 file changed, 72 insertions(+), 19 deletions(-)
+ drivers/ufs/core/ufshcd-crypto.c | 20 ++++++--------------
+ include/ufs/ufshcd.h             |  3 ---
+ 2 files changed, 6 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-index e33ae71245dd..de37d5933ca9 100644
---- a/drivers/ufs/host/ufs-qcom.c
-+++ b/drivers/ufs/host/ufs-qcom.c
-@@ -110,15 +110,22 @@ static inline void ufs_qcom_ice_enable(struct ufs_qcom_host *host)
+diff --git a/drivers/ufs/core/ufshcd-crypto.c b/drivers/ufs/core/ufshcd-crypto.c
+index 0cb425ef618e..694ff7578fc1 100644
+--- a/drivers/ufs/core/ufshcd-crypto.c
++++ b/drivers/ufs/core/ufshcd-crypto.c
+@@ -15,24 +15,18 @@ static const struct ufs_crypto_alg_entry {
+ 		.ufs_alg = UFS_CRYPTO_ALG_AES_XTS,
+ 		.ufs_key_size = UFS_CRYPTO_KEY_SIZE_256,
+ 	},
+ };
+ 
+-static int ufshcd_program_key(struct ufs_hba *hba,
+-			      const union ufs_crypto_cfg_entry *cfg, int slot)
++static void ufshcd_program_key(struct ufs_hba *hba,
++			       const union ufs_crypto_cfg_entry *cfg, int slot)
  {
- 	if (host->hba->caps & UFSHCD_CAP_CRYPTO)
- 		qcom_ice_enable(host->ice);
- }
+ 	int i;
+ 	u32 slot_offset = hba->crypto_cfg_register + slot * sizeof(*cfg);
+-	int err = 0;
  
-+static const struct blk_crypto_ll_ops ufs_qcom_crypto_ops; /* forward decl */
-+
- static int ufs_qcom_ice_init(struct ufs_qcom_host *host)
- {
- 	struct ufs_hba *hba = host->hba;
-+	struct blk_crypto_profile *profile = &hba->crypto_profile;
- 	struct device *dev = hba->dev;
- 	struct qcom_ice *ice;
-+	union ufs_crypto_capabilities caps;
-+	union ufs_crypto_cap_entry cap;
-+	int err;
-+	int i;
+ 	ufshcd_hold(hba);
  
- 	ice = of_qcom_ice_get(dev);
- 	if (ice == ERR_PTR(-EOPNOTSUPP)) {
- 		dev_warn(dev, "Disabling inline encryption support\n");
- 		ice = NULL;
-@@ -126,12 +133,42 @@ static int ufs_qcom_ice_init(struct ufs_qcom_host *host)
- 
- 	if (IS_ERR_OR_NULL(ice))
- 		return PTR_ERR_OR_ZERO(ice);
- 
- 	host->ice = ice;
--	hba->caps |= UFSHCD_CAP_CRYPTO;
- 
-+	/* Initialize the blk_crypto_profile */
-+
-+	caps.reg_val = cpu_to_le32(ufshcd_readl(hba, REG_UFS_CCAP));
-+
-+	/* The number of keyslots supported is (CFGC+1) */
-+	err = devm_blk_crypto_profile_init(dev, profile, caps.config_count + 1);
-+	if (err)
-+		return err;
-+
-+	profile->ll_ops = ufs_qcom_crypto_ops;
-+	profile->max_dun_bytes_supported = 8;
-+	profile->dev = dev;
-+
-+	/*
-+	 * Currently this driver only supports AES-256-XTS.  All known versions
-+	 * of ICE support it, but to be safe make sure it is really declared in
-+	 * the crypto capability registers.  The crypto capability registers
-+	 * also give the supported data unit size(s).
-+	 */
-+	for (i = 0; i < caps.num_crypto_cap; i++) {
-+		cap.reg_val = cpu_to_le32(ufshcd_readl(hba,
-+						       REG_UFS_CRYPTOCAP +
-+						       i * sizeof(__le32)));
-+		if (cap.algorithm_id == UFS_CRYPTO_ALG_AES_XTS &&
-+		    cap.key_size == UFS_CRYPTO_KEY_SIZE_256)
-+			profile->modes_supported[BLK_ENCRYPTION_MODE_AES_256_XTS] |=
-+				cap.sdus_mask * 512;
-+	}
-+
-+	hba->caps |= UFSHCD_CAP_CRYPTO;
-+	hba->quirks |= UFSHCD_QUIRK_CUSTOM_CRYPTO_PROFILE;
- 	return 0;
- }
- 
- static inline int ufs_qcom_ice_resume(struct ufs_qcom_host *host)
- {
-@@ -147,36 +184,53 @@ static inline int ufs_qcom_ice_suspend(struct ufs_qcom_host *host)
- 		return qcom_ice_suspend(host->ice);
- 
- 	return 0;
- }
- 
--static int ufs_qcom_ice_program_key(struct ufs_hba *hba,
--				    const union ufs_crypto_cfg_entry *cfg,
--				    int slot)
-+static int ufs_qcom_ice_keyslot_program(struct blk_crypto_profile *profile,
-+					const struct blk_crypto_key *key,
-+					unsigned int slot)
- {
-+	struct ufs_hba *hba = ufs_hba_from_crypto_profile(profile);
- 	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
--	union ufs_crypto_cap_entry cap;
+-	if (hba->vops && hba->vops->program_key) {
+-		err = hba->vops->program_key(hba, cfg, slot);
+-		goto out;
+-	}
 -
--	if (!(cfg->config_enable & UFS_CRYPTO_CONFIGURATION_ENABLE))
--		return qcom_ice_evict_key(host->ice, slot);
-+	int err;
- 
- 	/* Only AES-256-XTS has been tested so far. */
--	cap = hba->crypto_cap_array[cfg->crypto_cap_idx];
--	if (cap.algorithm_id != UFS_CRYPTO_ALG_AES_XTS ||
--	    cap.key_size != UFS_CRYPTO_KEY_SIZE_256)
-+	if (key->crypto_cfg.crypto_mode != BLK_ENCRYPTION_MODE_AES_256_XTS)
- 		return -EOPNOTSUPP;
- 
--	return qcom_ice_program_key(host->ice,
--				    QCOM_ICE_CRYPTO_ALG_AES_XTS,
--				    QCOM_ICE_CRYPTO_KEY_SIZE_256,
--				    cfg->crypto_key,
--				    cfg->data_unit_size, slot);
-+	ufshcd_hold(hba);
-+	err = qcom_ice_program_key(host->ice,
-+				   QCOM_ICE_CRYPTO_ALG_AES_XTS,
-+				   QCOM_ICE_CRYPTO_KEY_SIZE_256,
-+				   key->raw,
-+				   key->crypto_cfg.data_unit_size / 512,
-+				   slot);
-+	ufshcd_release(hba);
-+	return err;
+ 	/* Ensure that CFGE is cleared before programming the key */
+ 	ufshcd_writel(hba, 0, slot_offset + 16 * sizeof(cfg->reg_val[0]));
+ 	for (i = 0; i < 16; i++) {
+ 		ufshcd_writel(hba, le32_to_cpu(cfg->reg_val[i]),
+ 			      slot_offset + i * sizeof(cfg->reg_val[0]));
+@@ -41,13 +35,11 @@ static int ufshcd_program_key(struct ufs_hba *hba,
+ 	ufshcd_writel(hba, le32_to_cpu(cfg->reg_val[17]),
+ 		      slot_offset + 17 * sizeof(cfg->reg_val[0]));
+ 	/* Dword 16 must be written last */
+ 	ufshcd_writel(hba, le32_to_cpu(cfg->reg_val[16]),
+ 		      slot_offset + 16 * sizeof(cfg->reg_val[0]));
+-out:
+ 	ufshcd_release(hba);
+-	return err;
  }
  
--#else
-+static int ufs_qcom_ice_keyslot_evict(struct blk_crypto_profile *profile,
-+				      const struct blk_crypto_key *key,
-+				      unsigned int slot)
-+{
-+	struct ufs_hba *hba = ufs_hba_from_crypto_profile(profile);
-+	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-+	int err;
-+
-+	ufshcd_hold(hba);
-+	err = qcom_ice_evict_key(host->ice, slot);
-+	ufshcd_release(hba);
-+	return err;
-+}
+ static int ufshcd_crypto_keyslot_program(struct blk_crypto_profile *profile,
+ 					 const struct blk_crypto_key *key,
+ 					 unsigned int slot)
+@@ -58,11 +50,10 @@ static int ufshcd_crypto_keyslot_program(struct blk_crypto_profile *profile,
+ 			&ufs_crypto_algs[key->crypto_cfg.crypto_mode];
+ 	u8 data_unit_mask = key->crypto_cfg.data_unit_size / 512;
+ 	int i;
+ 	int cap_idx = -1;
+ 	union ufs_crypto_cfg_entry cfg = {};
+-	int err;
  
--#define ufs_qcom_ice_program_key NULL
-+static const struct blk_crypto_ll_ops ufs_qcom_crypto_ops = {
-+	.keyslot_program	= ufs_qcom_ice_keyslot_program,
-+	.keyslot_evict		= ufs_qcom_ice_keyslot_evict,
-+};
-+
-+#else
+ 	BUILD_BUG_ON(UFS_CRYPTO_KEY_SIZE_INVALID != 0);
+ 	for (i = 0; i < hba->crypto_capabilities.num_crypto_cap; i++) {
+ 		if (ccap_array[i].algorithm_id == alg->ufs_alg &&
+ 		    ccap_array[i].key_size == alg->ufs_key_size &&
+@@ -86,14 +77,14 @@ static int ufshcd_crypto_keyslot_program(struct blk_crypto_profile *profile,
+ 		       key->raw + key->size/2, key->size/2);
+ 	} else {
+ 		memcpy(cfg.crypto_key, key->raw, key->size);
+ 	}
  
- static inline void ufs_qcom_ice_enable(struct ufs_qcom_host *host)
- {
+-	err = ufshcd_program_key(hba, &cfg, slot);
++	ufshcd_program_key(hba, &cfg, slot);
+ 
+ 	memzero_explicit(&cfg, sizeof(cfg));
+-	return err;
++	return 0;
  }
  
-@@ -1820,11 +1874,10 @@ static const struct ufs_hba_variant_ops ufs_hba_qcom_vops = {
- 	.suspend		= ufs_qcom_suspend,
- 	.resume			= ufs_qcom_resume,
- 	.dbg_register_dump	= ufs_qcom_dump_dbg_regs,
- 	.device_reset		= ufs_qcom_device_reset,
- 	.config_scaling_param = ufs_qcom_config_scaling_param,
--	.program_key		= ufs_qcom_ice_program_key,
- 	.reinit_notify		= ufs_qcom_reinit_notify,
- 	.mcq_config_resource	= ufs_qcom_mcq_config_resource,
- 	.get_hba_mac		= ufs_qcom_get_hba_mac,
- 	.op_runtime_config	= ufs_qcom_op_runtime_config,
- 	.get_outstanding_cqs	= ufs_qcom_get_outstanding_cqs,
+ static int ufshcd_crypto_keyslot_evict(struct blk_crypto_profile *profile,
+ 				       const struct blk_crypto_key *key,
+ 				       unsigned int slot)
+@@ -103,11 +94,12 @@ static int ufshcd_crypto_keyslot_evict(struct blk_crypto_profile *profile,
+ 	 * Clear the crypto cfg on the device. Clearing CFGE
+ 	 * might not be sufficient, so just clear the entire cfg.
+ 	 */
+ 	union ufs_crypto_cfg_entry cfg = {};
+ 
+-	return ufshcd_program_key(hba, &cfg, slot);
++	ufshcd_program_key(hba, &cfg, slot);
++	return 0;
+ }
+ 
+ /*
+  * Reprogram the keyslots if needed, and return true if CRYPTO_GENERAL_ENABLE
+  * should be used in the host controller initialization sequence.
+diff --git a/include/ufs/ufshcd.h b/include/ufs/ufshcd.h
+index 55b81996b6e1..2606561053f4 100644
+--- a/include/ufs/ufshcd.h
++++ b/include/ufs/ufshcd.h
+@@ -324,11 +324,10 @@ struct ufs_pwr_mode_info {
+  * @resume: called during host controller PM callback
+  * @dbg_register_dump: used to dump controller debug information
+  * @phy_initialization: used to initialize phys
+  * @device_reset: called to issue a reset pulse on the UFS device
+  * @config_scaling_param: called to configure clock scaling parameters
+- * @program_key: program or evict an inline encryption key
+  * @fill_crypto_prdt: initialize crypto-related fields in the PRDT
+  * @event_notify: called to notify important events
+  * @reinit_notify: called to notify reinit of UFSHCD during max gear switch
+  * @mcq_config_resource: called to configure MCQ platform resources
+  * @get_hba_mac: reports maximum number of outstanding commands supported by
+@@ -372,12 +371,10 @@ struct ufs_hba_variant_ops {
+ 	int	(*phy_initialization)(struct ufs_hba *);
+ 	int	(*device_reset)(struct ufs_hba *hba);
+ 	void	(*config_scaling_param)(struct ufs_hba *hba,
+ 				struct devfreq_dev_profile *profile,
+ 				struct devfreq_simple_ondemand_data *data);
+-	int	(*program_key)(struct ufs_hba *hba,
+-			       const union ufs_crypto_cfg_entry *cfg, int slot);
+ 	int	(*fill_crypto_prdt)(struct ufs_hba *hba,
+ 				    const struct bio_crypt_ctx *crypt_ctx,
+ 				    void *prdt, unsigned int num_segments);
+ 	void	(*event_notify)(struct ufs_hba *hba,
+ 				enum ufs_event_type evt, void *data);
 -- 
 2.47.1
 
