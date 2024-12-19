@@ -1,170 +1,159 @@
-Return-Path: <linux-fscrypt+bounces-571-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-573-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D8539F0439
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 13 Dec 2024 06:29:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDC7E9F7C9C
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 19 Dec 2024 14:49:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8152161E1A
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 13 Dec 2024 05:28:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F25F51890947
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 19 Dec 2024 13:49:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B0A6188A0C;
-	Fri, 13 Dec 2024 05:28:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81FA8225404;
+	Thu, 19 Dec 2024 13:48:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="agsu2Sev"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="REjNZR6B"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6B7918893C;
-	Fri, 13 Dec 2024 05:28:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7294E223C7F
+	for <linux-fscrypt@vger.kernel.org>; Thu, 19 Dec 2024 13:48:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734067736; cv=none; b=JKezI1sb6oJ+agxJHHL/s5Wifm6IpKU6oiEMHxNI9ISLWo9FGSV/NGrdNK8IMJiu3c8ZC+HAlgYZiDpD7UlowyhJktFWtAaZHKqxCmz61Z7LWzWwby8hqqEI284NWXidF4a1fvjUeQGy+CkNpN8aeYG8luWsTy0PCoJODs3k+98=
+	t=1734616125; cv=none; b=m3e/agW97ZxJtKbZS+no0j6x91T4m4uGrmFdYJOj/F65yv6bY/gkXr32ArKj64PR5vpM0o1G8qSOYEez++tubxrLJbYEamDjnkNc3IkzcY4TO6BGX6EgAJopy2gNLVnv1SlVr6Xek7vZmCU5FRIsbuuRP61T437wItBPhX8MfNM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734067736; c=relaxed/simple;
-	bh=LMj6vrPETXA4uFxujgB3lvJ+v75BVZ8LjhTWGIMzEX4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ApUqPy3TuYVv8ITJolQB33sthh42yuJ8QNifCipcBsMRvZXar9R7n3F9YQd8KhfZj3gq1BG7kb0vEQDLde686DnpGBIHvudqVUn5cKjmCqzyJ8U00cHx0gJiP2GMRo+hd14FR5Qkjhv/gROksL7aKiejsCrgsF/povHojGWvMes=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=agsu2Sev; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76266C4CED1;
-	Fri, 13 Dec 2024 05:28:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1734067736;
-	bh=LMj6vrPETXA4uFxujgB3lvJ+v75BVZ8LjhTWGIMzEX4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=agsu2SevZPOqZATvUxhRUeJ/daRcx+vLXJNsk6if3W4IlhzhEmKyK/P5VmP5plBj3
-	 4G0Z5Rkp786TXT3P3IkozY3BOIyrrL4Ia5bHeF29cQddmHm7L0kt4qLniMGs4xVV6f
-	 3YIib6/yGBiNhSPY3bZ/nTI19hvAJDxatMhk1lFpuqJxCC+RIYJG3qBxOjtck9HUET
-	 TEV9Zq5+SocxgPHxmlSWzDDR3neqDNBT2Fp1qiG5YYQX4MPRjjGeNioRRW6WG8Xrxn
-	 4yx434wjpjB09qeOEgdj4SssZxrImpPOqieztfdthuOaDyc+0aohbvUUmEE72HZiiT
-	 hvcFyvJAsi0TA==
-From: Eric Biggers <ebiggers@kernel.org>
-To: fstests@vger.kernel.org
-Cc: linux-fscrypt@vger.kernel.org,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Gaurav Kashyap <quic_gaurkash@quicinc.com>
-Subject: [PATCH v2 3/3] generic: verify ciphertext with hardware-wrapped keys
-Date: Thu, 12 Dec 2024 21:28:39 -0800
-Message-ID: <20241213052840.314921-4-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20241213052840.314921-1-ebiggers@kernel.org>
-References: <20241213052840.314921-1-ebiggers@kernel.org>
+	s=arc-20240116; t=1734616125; c=relaxed/simple;
+	bh=XO81+Jcc5NmcuuvImCT+riJpdk47c6EberFwhgQPnN0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lvuzcEOUrzEwDnYnwtdyoKzGcjSowwRE22VJlMwyYu2cFT5DHkd4kJovxiaKuPyIJ/yoOYnOqbU76ovHPgEcBk8EvkrNxCTntKgrRWke9tpatl8rzQ5eh1CFDu6ZZYbWKvZaFterxmQeIMExeSb1gmOiPKMGpj0wEoRllY/u44Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=REjNZR6B; arc=none smtp.client-ip=209.85.128.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-6ef4b6719d1so6746467b3.2
+        for <linux-fscrypt@vger.kernel.org>; Thu, 19 Dec 2024 05:48:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1734616121; x=1735220921; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=In5HoeH7y9Mw3MBgtXCixaUYWromv5oJ1tBlMI+S7Q8=;
+        b=REjNZR6BGRCN2DgSdk0QfEuduSImCWkihNMRBtywBWw0e70c4Eu9aDUJoa6smjlXwl
+         jYZzloAdbI/oQOZsCcHamifcT5NCOCSnxdiwa2tcd97T9gXxmSNyQosX1qRxXVl6y+90
+         A9RXitzUlLTnSaZT+1N3GxXLFS54mERtWLwb2KxCzpM2+SeL2BAkaCRMs4TVe6vAnE3j
+         2A28PScdKwRgqJUIc/rl0NVzLKdHZnFnqO+SteJwoxPfXkX5SpD9bqH1LJupzevO65X2
+         mwlPi6bwdPd0sqRzcZAG9VkHVEcqJ6SACvdkXDmRLs72VudubIc/L6WNlHRKtUIsBBGP
+         KSNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734616121; x=1735220921;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=In5HoeH7y9Mw3MBgtXCixaUYWromv5oJ1tBlMI+S7Q8=;
+        b=C3+oOSl1WrlmAtVov8wvS/pUhBYaJQxlE3yjFQQpe2SgUBWvX9kpvbNpkd+mS2Ux+l
+         Y5wPED/GgGU57T2UPmzC4OcANaA9mm7mULyGpRvAXpzwaaxiQIPgaauyH7Tno4OPr9FW
+         Q8pKEPT85t3DeLfefMd8dtmEqvPVBoaqOCgaJf+A0yz6CB3+Ja24Pjid7ObLXyRzS/fo
+         FkPZ46nqpqJ/nIp01m7xK0hZPfbxJ4/PzroX7HBtfeLaPzlsCY8lKSqIaEI757PiD1Ci
+         zVjyJb6JwfxiTlaVcTRVTZzu8hfJYSzWXIO6AB8oExBy1EEWMQyL8Sw3uQehDGIYh+sw
+         GzCA==
+X-Forwarded-Encrypted: i=1; AJvYcCVveahnoqUP8JvXV6Y9eKmokPH+vxRptQ8C3ZeMHjxmZnJs2ed7+W0Zw4QlAol0bsrQSzB1av96dbppUcHR@vger.kernel.org
+X-Gm-Message-State: AOJu0YxJ+HWDXBWOrQhLoyXWaeO6AqLKik6SgMrQEHd6F5iFZPLs1V6a
+	qBIUbP03KoIS927uH8AneVOU5k2NhkxlPam7HpG8M9a7iKwkdh/gwrdKXOqZGR+kRh4UlhZoNkF
+	OJl2VpIc12x0VvYMVPZdGblf0MOfLteIhhepGQQ==
+X-Gm-Gg: ASbGnctDTS2dqJiR7AJd9E8xtVza8GpC3wNvCbsHOpI8JP35gB0lIZkF9bXWoMS2yYU
+	YEmEW2nE+yCOnXmV5mOit1UmOXyQgttuCiihydeA=
+X-Google-Smtp-Source: AGHT+IHAgTWL75NXrM2GBK4SDn0t2shp+CeG7oHDnfNd5GjPl4y15Kf6WPYgbK4lJLVly6G4hcWHSkGBI5QdeqgJhdo=
+X-Received: by 2002:a05:690c:708b:b0:6ef:94db:b208 with SMTP id
+ 00721157ae682-6f3d263a814mr55382397b3.24.1734616121516; Thu, 19 Dec 2024
+ 05:48:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20241213041958.202565-1-ebiggers@kernel.org> <20241213041958.202565-6-ebiggers@kernel.org>
+In-Reply-To: <20241213041958.202565-6-ebiggers@kernel.org>
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Date: Thu, 19 Dec 2024 14:48:05 +0100
+Message-ID: <CAPDyKFp01751khZ7xKC0QFtsoqxVifTH4im6_2yq4heurdONRw@mail.gmail.com>
+Subject: Re: [PATCH v10 05/15] mmc: sdhci-msm: fix crypto key eviction
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: linux-block@vger.kernel.org, linux-fscrypt@vger.kernel.org, 
+	linux-mmc@vger.kernel.org, linux-scsi@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, Bartosz Golaszewski <brgl@bgdev.pl>, 
+	Gaurav Kashyap <quic_gaurkash@quicinc.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Alim Akhtar <alim.akhtar@samsung.com>, Avri Altman <avri.altman@wdc.com>, 
+	Bart Van Assche <bvanassche@acm.org>, Bjorn Andersson <andersson@kernel.org>, 
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+	"James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>, Jens Axboe <axboe@kernel.dk>, 
+	Konrad Dybcio <konradybcio@kernel.org>, 
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
+	"Martin K . Petersen" <martin.petersen@oracle.com>, stable@vger.kernel.org, 
+	Abel Vesa <abel.vesa@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 
-From: Eric Biggers <ebiggers@google.com>
+On Fri, 13 Dec 2024 at 05:20, Eric Biggers <ebiggers@kernel.org> wrote:
+>
+> From: Eric Biggers <ebiggers@google.com>
+>
+> Commit c7eed31e235c ("mmc: sdhci-msm: Switch to the new ICE API")
+> introduced an incorrect check of the algorithm ID into the key eviction
+> path, and thus qcom_ice_evict_key() is no longer ever called.  Fix it.
+>
+> Fixes: c7eed31e235c ("mmc: sdhci-msm: Switch to the new ICE API")
+> Cc: stable@vger.kernel.org
+> Cc: Abel Vesa <abel.vesa@linaro.org>
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-Add two tests which verify that encrypted files are encrypted correctly
-when a hardware-wrapped inline encryption key is used.  The two tests
-are identical except that one uses FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64
-and the other uses FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32.  These cover both
-of the settings where hardware-wrapped keys may be used.
+Applied for fixes, thanks!
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- tests/generic/900     | 24 ++++++++++++++++++++++++
- tests/generic/900.out |  6 ++++++
- tests/generic/901     | 24 ++++++++++++++++++++++++
- tests/generic/901.out |  6 ++++++
- 4 files changed, 60 insertions(+)
- create mode 100755 tests/generic/900
- create mode 100644 tests/generic/900.out
- create mode 100755 tests/generic/901
- create mode 100644 tests/generic/901.out
+Kind regards
+Uffe
 
-diff --git a/tests/generic/900 b/tests/generic/900
-new file mode 100755
-index 00000000..8da8007e
---- /dev/null
-+++ b/tests/generic/900
-@@ -0,0 +1,24 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright 2024 Google LLC
-+#
-+# FS QA Test No. 900
-+#
-+# Verify the ciphertext for encryption policies that use a hardware-wrapped
-+# inline encryption key, the IV_INO_LBLK_64 flag, and AES-256-XTS.
-+#
-+. ./common/preamble
-+_begin_fstest auto quick encrypt
-+
-+. ./common/filter
-+. ./common/encrypt
-+
-+# Hardware-wrapped keys require the inlinecrypt mount option.
-+_require_scratch_inlinecrypt
-+export MOUNT_OPTIONS="$MOUNT_OPTIONS -o inlinecrypt"
-+
-+_verify_ciphertext_for_encryption_policy AES-256-XTS AES-256-CTS-CBC \
-+	v2 iv_ino_lblk_64 hw_wrapped_key
-+
-+status=0
-+exit
-diff --git a/tests/generic/900.out b/tests/generic/900.out
-new file mode 100644
-index 00000000..9edc012c
---- /dev/null
-+++ b/tests/generic/900.out
-@@ -0,0 +1,6 @@
-+QA output created by 900
-+
-+Verifying ciphertext with parameters:
-+	contents_encryption_mode: AES-256-XTS
-+	filenames_encryption_mode: AES-256-CTS-CBC
-+	options: v2 iv_ino_lblk_64 hw_wrapped_key
-diff --git a/tests/generic/901 b/tests/generic/901
-new file mode 100755
-index 00000000..bfc63bde
---- /dev/null
-+++ b/tests/generic/901
-@@ -0,0 +1,24 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright 2024 Google LLC
-+#
-+# FS QA Test No. 901
-+#
-+# Verify the ciphertext for encryption policies that use a hardware-wrapped
-+# inline encryption key, the IV_INO_LBLK_32 flag, and AES-256-XTS.
-+#
-+. ./common/preamble
-+_begin_fstest auto quick encrypt
-+
-+. ./common/filter
-+. ./common/encrypt
-+
-+# Hardware-wrapped keys require the inlinecrypt mount option.
-+_require_scratch_inlinecrypt
-+export MOUNT_OPTIONS="$MOUNT_OPTIONS -o inlinecrypt"
-+
-+_verify_ciphertext_for_encryption_policy AES-256-XTS AES-256-CTS-CBC \
-+	v2 iv_ino_lblk_32 hw_wrapped_key
-+
-+status=0
-+exit
-diff --git a/tests/generic/901.out b/tests/generic/901.out
-new file mode 100644
-index 00000000..2f928465
---- /dev/null
-+++ b/tests/generic/901.out
-@@ -0,0 +1,6 @@
-+QA output created by 901
-+
-+Verifying ciphertext with parameters:
-+	contents_encryption_mode: AES-256-XTS
-+	filenames_encryption_mode: AES-256-CTS-CBC
-+	options: v2 iv_ino_lblk_32 hw_wrapped_key
--- 
-2.47.1
 
+> ---
+>  drivers/mmc/host/sdhci-msm.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
+> index e00208535bd1..319f0ebbe652 100644
+> --- a/drivers/mmc/host/sdhci-msm.c
+> +++ b/drivers/mmc/host/sdhci-msm.c
+> @@ -1865,24 +1865,24 @@ static int sdhci_msm_program_key(struct cqhci_host *cq_host,
+>         struct sdhci_host *host = mmc_priv(cq_host->mmc);
+>         struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+>         struct sdhci_msm_host *msm_host = sdhci_pltfm_priv(pltfm_host);
+>         union cqhci_crypto_cap_entry cap;
+>
+> +       if (!(cfg->config_enable & CQHCI_CRYPTO_CONFIGURATION_ENABLE))
+> +               return qcom_ice_evict_key(msm_host->ice, slot);
+> +
+>         /* Only AES-256-XTS has been tested so far. */
+>         cap = cq_host->crypto_cap_array[cfg->crypto_cap_idx];
+>         if (cap.algorithm_id != CQHCI_CRYPTO_ALG_AES_XTS ||
+>                 cap.key_size != CQHCI_CRYPTO_KEY_SIZE_256)
+>                 return -EINVAL;
+>
+> -       if (cfg->config_enable & CQHCI_CRYPTO_CONFIGURATION_ENABLE)
+> -               return qcom_ice_program_key(msm_host->ice,
+> -                                           QCOM_ICE_CRYPTO_ALG_AES_XTS,
+> -                                           QCOM_ICE_CRYPTO_KEY_SIZE_256,
+> -                                           cfg->crypto_key,
+> -                                           cfg->data_unit_size, slot);
+> -       else
+> -               return qcom_ice_evict_key(msm_host->ice, slot);
+> +       return qcom_ice_program_key(msm_host->ice,
+> +                                   QCOM_ICE_CRYPTO_ALG_AES_XTS,
+> +                                   QCOM_ICE_CRYPTO_KEY_SIZE_256,
+> +                                   cfg->crypto_key,
+> +                                   cfg->data_unit_size, slot);
+>  }
+>
+>  #else /* CONFIG_MMC_CRYPTO */
+>
+>  static inline int sdhci_msm_ice_init(struct sdhci_msm_host *msm_host,
+> --
+> 2.47.1
+>
 
