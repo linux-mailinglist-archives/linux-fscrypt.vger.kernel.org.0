@@ -1,128 +1,119 @@
-Return-Path: <linux-fscrypt+bounces-607-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-608-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33AE3A30272
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 11 Feb 2025 05:07:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4587AA30559
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 11 Feb 2025 09:12:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 359EF7A320B
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 11 Feb 2025 04:06:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7411B7A2283
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 11 Feb 2025 08:11:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1319E1D5ADC;
-	Tue, 11 Feb 2025 04:06:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35AF61EE7A5;
+	Tue, 11 Feb 2025 08:12:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FfFJqdtH"
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="Srii4Zhw"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70F0A8615A
-	for <linux-fscrypt@vger.kernel.org>; Tue, 11 Feb 2025 04:06:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8609D1EE7B9
+	for <linux-fscrypt@vger.kernel.org>; Tue, 11 Feb 2025 08:12:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739246817; cv=none; b=t1vxttyt2FRwyRT/4Fh509jm0oRKZCDvrsyBVmKdKEGfaKQKgh8/7NQ4UuKoPP7NPf8jiCoPQu8fqRt/vIiaEToNB+P8F1ZPoY1TaxrOw/UwtR+3q9VV/daInG1+6OKtOOwwt8ciD9BietkmHaH0GB0WIyIkaAiNGy1MCvGr7Qc=
+	t=1739261547; cv=none; b=MJ8oUlVLC5PGKGMhoRV7+g+jDBbJDC0TZhfQunvAXrmgvwk7WM1ZPSx49EKX7fVpApHnzqkdXN9xeeVGNXyR0jPHm0DL21NwEPmhfsqIcymnMk4DV8kaYYYOIrtFedULSlomv41gg51giPglMeOUKa5q1iNgYCRuKOFbJYLj2DA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739246817; c=relaxed/simple;
-	bh=SFwBpriK6aKH76/suGo9jiL8C38OSxxV9ZD2Dh2uFn4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E9v58FMxeFmxtFPPyMQa/zlrnSUZRfjziHo1wASHTu7O/cLSGBH1Rcan7vQnfCwdMoxJPsoDDoJdpOGmviBjZoKLoND2ys/K8D/oIZNjFzU0MuRxrlMt0ugtVO7GmDMiVP812QRTrgV1WWS/q86LBDPXTstgi2o3QXqJlFCHF8M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FfFJqdtH; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1739246813;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=i8K2ET0rMMayMt4C4OL5IaPRn+ANOFbJuWCLFSQnXZM=;
-	b=FfFJqdtHqZBf9r7vrp6fNALfuNtR304q2hcEJu6at1xQkzmxLio4oPK9jNYJfh/qI+qcpZ
-	1K7i6IkAwTUxrys9JBUfjf2nZbqNwZ4cdYUoAZqbO31ttpaKTxbbldXdRjng4Z+sJbE+p2
-	Y5Vg3nmWIW8AI4tsygLlE+5z8qqMxe0=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-418-9FI_ojZdMBez2FgfDiQQPg-1; Mon, 10 Feb 2025 23:06:50 -0500
-X-MC-Unique: 9FI_ojZdMBez2FgfDiQQPg-1
-X-Mimecast-MFC-AGG-ID: 9FI_ojZdMBez2FgfDiQQPg
-Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-2fa57c42965so4982510a91.1
-        for <linux-fscrypt@vger.kernel.org>; Mon, 10 Feb 2025 20:06:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739246808; x=1739851608;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+	s=arc-20240116; t=1739261547; c=relaxed/simple;
+	bh=hDZF76s0+s3nQKWmMd335G35ca1BnoygOxqTHvKFjnU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sMufQUnZP5wm685F0POzrNN38lADVB0L9GXaaWh0cb9nTwrDm5pRY3Fvh0VTrB2M1Cz43jAZLwLaXAaDfWqEMeZXm/F9ohiUAbMspaXRx8C8Z2D3sx/yOPwZIJ92iXwBwsg1cCrcyrVSSH0boRNU++wpS4sorHU9i5kyUyEipzI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=Srii4Zhw; arc=none smtp.client-ip=209.85.208.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-308ee953553so19207631fa.0
+        for <linux-fscrypt@vger.kernel.org>; Tue, 11 Feb 2025 00:12:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1739261542; x=1739866342; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=i8K2ET0rMMayMt4C4OL5IaPRn+ANOFbJuWCLFSQnXZM=;
-        b=OJTof6+GhSihTIxG2dBhZtyUJISzJzNZ9NiitXeXGC61yswEibZM7m7NctjpUFF+Gl
-         8SoEr4W4IkLQ1F8Kx5szCPaJkcJoNKGxfEaC8zCjzF2rnjhoTyY6TWolpZ2zHBrHDZeK
-         xEVwretPTBw+rx5sSv7s6L4wGcUYLaD2Mt+oz93GR8+Y338VzQZ/hLCm4EmPIbuXc9Zb
-         eigeZM+prhN41duTiJhMngmckJaqEN3E5p1cAzX9uFT/jLNl0MMUmDP7JZmSERIhBVUs
-         SyqYmkPo6m6V1/KRbCdwg2lMBmWkdVMYDCzOjriBKilboG9mRJEWGzHjrHCzHBNk2f7b
-         I0fg==
-X-Forwarded-Encrypted: i=1; AJvYcCXPW5wtHDbWN9+nSW9F5qiWwY1ewjVUeJXTQLYMw+RX0aP7XRJ53JpvIDnV3xUe/9f0q3AoRxqyfTwWjkoA@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywe/zWE2/sT+S1xMf9R4fcFwtkQ4rvbZvaAChkyEStb8AaMtnvS
-	ZS+jKi+oH9Mq9Jgbo0NrnZLrNjY/EhVO5UAo7L7kFImxn7u/DW7tEK6c4dwzU7AcKx6pjVjXexX
-	9Ry4SHcoKo5YtJhXfTtWuzN9G0HTdyt8ZdxAzCp8xNLyJRrhyzbxjULvpBjmRKvcVlReruLvkJw
-	==
-X-Gm-Gg: ASbGnctEVsgRkRn6v6dq4xfBZvqbSyDcGhnZXawcjxz77S+Y9wdpyT8+oaT0TIH+hzV
-	LOYU2Zou8oj8ZV1Csb2HDUHAzPzvqMoyQ6BBFPvyZMU55wi5ihch7gJiGRBFrDnx4TRzrGh8XmE
-	qTOnmw1seMTTlUpdLnHjbeOsBfMRyQe/JJZ+Zb8DJ6BV18PIgfYNYXpLg+j2op5vXC1twjy9Am9
-	usatWC5Q0FCjDBPlJ92F07D+5YV4WX8rZ+nmX2qAY0EHe1FLRvuCQcfXxbPEC73GbAfKnrlZ77v
-	6OadBxN2fYvBnksjyLGGlC0zt274UUpjLom44oI8OMDU9A==
-X-Received: by 2002:a05:6a21:3a8d:b0:1e1:e2d9:3f31 with SMTP id adf61e73a8af0-1ee03a3d164mr26182863637.16.1739246808098;
-        Mon, 10 Feb 2025 20:06:48 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFXY4fefQ+Fei+tDRglsHR2l5WFDIfLtSWy/49QLIRJBvM1w1MvRypx1wNj+S5LzmwEgxFCxg==
-X-Received: by 2002:a05:6a21:3a8d:b0:1e1:e2d9:3f31 with SMTP id adf61e73a8af0-1ee03a3d164mr26182844637.16.1739246807809;
-        Mon, 10 Feb 2025 20:06:47 -0800 (PST)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73048bf1421sm8603567b3a.101.2025.02.10.20.06.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Feb 2025 20:06:47 -0800 (PST)
-Date: Tue, 11 Feb 2025 12:06:43 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: fstests@vger.kernel.org, Zorro Lang <zlang@kernel.org>,
-	linux-fscrypt@vger.kernel.org, Bartosz Golaszewski <brgl@bgdev.pl>,
-	Gaurav Kashyap <quic_gaurkash@quicinc.com>
-Subject: Re: [xfstests PATCH] fscrypt-crypt-util: fix KDF contexts for SM8650
-Message-ID: <20250211040643.jjpssyx6n76rwxfb@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <20250118072336.605023-1-ebiggers@kernel.org>
- <20250210204039.GB348261@sol.localdomain>
+        bh=LZBPv6QOC9HyqG83lsiP8B3hCPsDW+zwfD1sc16aqzQ=;
+        b=Srii4ZhwIpcHAV/jIHfFPmKfWk/E0t2DcWQ5xr3tqSSXwPf0gzdKhZ7P/9NfRSbNqh
+         HNlcWekNIUwhrD5OBkeu5rnRkVPia6JIhzIJag2lx5/N9KNM0ZNp2308kS+guuYQxDZD
+         zC5O2OaiysN+F9WW/VBtPFCNWPLptJel+mYVXpc7MkAQe0S+wdk/q7MV5mmatdLmWi/1
+         mARSweym3rzCGN3ZFZ3002Mc8YKQ86J8SdkogDjk4G6vK838i3rpwJ0+JM2gxAJJ4HwR
+         l16WxqA/jh5S8JnV20UxPB8C0HZmRwhZKMs44P/2T3UKxcWEyRHR/ZCyV+WehMWV9XWo
+         ToEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739261542; x=1739866342;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LZBPv6QOC9HyqG83lsiP8B3hCPsDW+zwfD1sc16aqzQ=;
+        b=jJ5PbjVtUjie0tU9hv6CQVVrPohO4RdKJYo6rDnCi8PNGNP3k9J+9nla5QCtSNAhPB
+         sKN18Dq74lBZfHc/j8KU0QlWddXlqdTmtP50QNPmLaC+aCqLQsOX8alJN6wOjiIbY+Pd
+         Q94/iGXQ7GUKMb83cEDcKKudPHaOM/zn9VmQyiGj8NfxKERPYhMNQC+8V2MdqH//drg6
+         SLSEOg/7+euMwipFjED2jv8BprDWZiaBBgkT343nxh8Q80VMRBUk5rRSGdB9XP3UyKLz
+         PrD00Oq7oxGb7gf2kbkpzae+seIsdOZwMFpu2U/b2RnxJ0IuwDVrtjXVaGTwsYFxpy/i
+         fQQQ==
+X-Gm-Message-State: AOJu0Yzvt50V3OVHwJ3HYQxF2Dp0xzTRLREH1KrIsOHJnBiriqYXxgd4
+	WcwhfTnuAeM+MFOF+agHoiGNxxWyciQnSNsMP0Gl1siPzi8iTH0ACPcQc2OmPPO/eZ4outyv8Tj
+	8D94TfNgtU9WcrK8CWd4/WG/OwJcRbZXyPtouBA==
+X-Gm-Gg: ASbGncvSS2Gi8JuQjy2gS2sMlCAxdIk9831jnmEK8pRACtpPQ8ePELseRy9/lag4g/m
+	YGDdImDNd7hYAUwpux1dERCVvYwLabb9zAAY+dCGsc5E5w+/BWlw345kq2G8bUqjb81QWZMHy0m
+	XljZZR3joeiM0UPn5jK7PomheWqfM=
+X-Google-Smtp-Source: AGHT+IHsnSGZUFQMOoiXCGeHwOhkS4uzUDRmLLENwo/njPODTJnW3qTKSrQ7Ha1UrP2LHvzY0dNeNgevSz0lHNMxLPY=
+X-Received: by 2002:a2e:bea4:0:b0:308:fd11:76eb with SMTP id
+ 38308e7fff4ca-308fd1179e6mr4836001fa.19.1739261542476; Tue, 11 Feb 2025
+ 00:12:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250210204039.GB348261@sol.localdomain>
+References: <20250210202336.349924-1-ebiggers@kernel.org>
+In-Reply-To: <20250210202336.349924-1-ebiggers@kernel.org>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Tue, 11 Feb 2025 09:12:11 +0100
+X-Gm-Features: AWEUYZkUIVqXHClndXAUtENhhMz-NcIhEeDU_e0vb-Z-ySUsEFA2hwDxIAg98Qo
+Message-ID: <CAMRc=Md0fsB7Yfx9Au1pXi+7Y_5DQf2z430c9R+tyS9e60-y5w@mail.gmail.com>
+Subject: Re: [PATCH v12 0/4] Driver and fscrypt support for HW-wrapped inline
+ encryption keys
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: linux-fscrypt@vger.kernel.org, linux-scsi@vger.kernel.org, 
+	linux-block@vger.kernel.org, linux-mmc@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Gaurav Kashyap <quic_gaurkash@quicinc.com>, Bjorn Andersson <andersson@kernel.org>, 
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Jens Axboe <axboe@kernel.dk>, 
+	Konrad Dybcio <konradybcio@kernel.org>, 
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 10, 2025 at 12:40:39PM -0800, Eric Biggers wrote:
-> On Fri, Jan 17, 2025 at 11:23:36PM -0800, Eric Biggers wrote:
-> > From: Eric Biggers <ebiggers@google.com>
-> > 
-> > Update the KDF contexts to match those actually used on SM8650.  This
-> > turns out to be needed for the hardware-wrapped key tests generic/368
-> > and generic/369 to pass on the SM8650 HDK (now that I have one to
-> > actually test it).  Apparently the contexts changed between the
-> > prototype version I tested a couple years ago and the final version.
-> > 
-> > Signed-off-by: Eric Biggers <ebiggers@google.com>
-> > ---
-> >  src/fscrypt-crypt-util.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> Ping.  Zorro, could you apply this please?  Thanks!
+On Mon, Feb 10, 2025 at 9:25=E2=80=AFPM Eric Biggers <ebiggers@kernel.org> =
+wrote:
+>
+> This patchset is based on linux-block/for-next and is also available at:
+>
+>     git fetch https://git.kernel.org/pub/scm/fs/fscrypt/linux.git wrapped=
+-keys-v12
+>
+> Now that the block layer support for hardware-wrapped inline encryption
+> keys has been applied for 6.15
+> (https://lore.kernel.org/r/173920649542.40307.8847368467858129326.b4-ty@k=
+ernel.dk),
+> this series refreshes the remaining patches.  They add the support for
+> hardware-wrapped inline encryption keys to the Qualcomm ICE and UFS
+> drivers and to fscrypt.  All tested on SM8650 with xfstests.
+>
+> TBD whether these will land in 6.15 too, or wait until 6.16 when the
+> block patches that patches 2-4 depend on will have landed.
+>
 
-Sure Eric. I don't have a hardware to give it a test, but other cases which
-use fscrypt-crypt-util test passed. And I trust you much on this change, so
+Could Jens provide an immutable branch with these patches? I don't
+think there's a reason to delay it for another 3 months TBH.
 
-Reviewed-by: Zorro Lang <zlang@redhat.com>
-
-> 
-> - Eric
-> 
-
+Bartosz
 
