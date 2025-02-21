@@ -1,61 +1,59 @@
-Return-Path: <linux-fscrypt+bounces-618-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-619-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85B62A40292
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 21 Feb 2025 23:23:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 571FBA402EE
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 21 Feb 2025 23:42:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D89017D43A
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 21 Feb 2025 22:23:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA69A3B6E96
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 21 Feb 2025 22:41:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AA7B204F70;
-	Fri, 21 Feb 2025 22:22:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4983A2054EC;
+	Fri, 21 Feb 2025 22:41:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="rsV8JbKX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tSASlA+r"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1267518DB0B;
-	Fri, 21 Feb 2025 22:22:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F551202F87;
+	Fri, 21 Feb 2025 22:41:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740176579; cv=none; b=XHrBi152JZ3/avSvoQdWJWb8Wa7wsKG/V5gsXPn2w3yELTkKntjjC1GTxyPr3Bi+qJM4uveo7RQOAeQptzm7uQuMErwrO/N2Z+NiUvCbSsbrRo/ZMVyVckZBIwu5o+a3c1xWfOazNVzieRajmT0BVL0myUImAPXKArESxe6oJys=
+	t=1740177716; cv=none; b=KHeP/xXljhIscULzUKQORreoMas3UChYFD9GkaPMIBX2gYCrOAFvJyURrl/oE7gIiSRUXlM5R1amEZ0tXaRBXLgPj3GYLFG4qOuyZHKCNaj8mYFddI/98e3+3aaVaFkAnbQH5O1oyB4QV5+vUbEt8ZaIvtl+Xl/A2ABy1S7Id/A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740176579; c=relaxed/simple;
-	bh=vogGsnv55uPHQgIuM9YQyIS0OwRHfzJwGgMrTYh8490=;
+	s=arc-20240116; t=1740177716; c=relaxed/simple;
+	bh=KCTcOEy7m7DtImxnNfyb914bSpZJiCOKd+nlU77fLRI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iGBx8RLf3Iw/gf6ki/ErjoLwtNcIu9oAGKEgXLN6v4KPSjSmGpi472o3DxwSUYX2zlo6u4DYRV0tp1egDFbXZ5X41/dRv622dMgvQHOSaciudvWi9/sxrwhqM+1ifc7Ppt6azB1UkPthRG+qP7hchHSA9kXrOS71EVudQf7BNcs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=rsV8JbKX; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=cu0ycN1zgsGIJYg8IwODAFYvM5bJa0u25BKaWpdZrnQ=; b=rsV8JbKX3LPPcSem3IAxG+eyov
-	XJxV1PedtChSkPNzc1hTQQ8KtAMbW005NVRipAMYC0Hmvs/sqk5DL+UJoVM7WUrJkJett7zApeZkA
-	5ToKYvpzpsL9O1KV9eEleYazpxbehiIC8vZTwkt8fdAsMSLYLDXq2tAb2aLBBnHE9G0/iQAvYXHPc
-	f2Cg89oTeSpXCaE++rxmRexAFBlTzSam8K9QJaxjMK61Tfa4t5Qn96S4Juhk9pEfN8SqD8HPRkwx4
-	0uPrXsTfHL17koZE8le5IDlzc4Xsf94ft0zbzWBpNU7y04YqdZsOjjjP0to1E3Ei+kfHF0gkNWmnD
-	gj2675GQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1tlbQ6-0000000FIt0-0zq3;
-	Fri, 21 Feb 2025 22:22:54 +0000
-Date: Fri, 21 Feb 2025 22:22:54 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Eric Biggers <ebiggers@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=JeAZmvM74SuZWiaUEiqWBN1YcFBQtuaRuCLuHrL6MGk4k7Pi4yShkAToh0r6s5P0P0Ec+JEq8HeExVTMmwaBF/IZMScfvXhvXSx5gy/YY09MYfU8HpiDDuVo747ErPocwCT3SwsBnekBS1pdjxufBx8m62UwyuxjbY+XsQUUow0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tSASlA+r; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7340DC4CED6;
+	Fri, 21 Feb 2025 22:41:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1740177715;
+	bh=KCTcOEy7m7DtImxnNfyb914bSpZJiCOKd+nlU77fLRI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=tSASlA+rgnHeUCFrNJ62Qtu2Xa5M37QjAqMdXfh5yyAL/THN/swr05FEAnN0JyOsJ
+	 z7dXifTlx/gDWuyLuU+TjL1e+5eyyrbewDaJAbJrIkKjQCquG+2XrBI9R4tyxwBVkV
+	 lPc1Zm3r06MWghFIs9UINwp7nJ06F5UiplFysvUAwqm0ZGQZiatkwR0wyWohPS1pcW
+	 olurebQ2OMIjwuo2jPr70rsoE2UVskiAA6qk4j6AMRvPozETPQm3JpnQGkYgZh9Jtb
+	 KrKszdYujRMhmDfBOpB5iDaaainl6Vpl+1baKkl+sZ6cuG6I48+KVR7yAP21kRThm2
+	 f2iI7/nB4fGyg==
+Date: Fri, 21 Feb 2025 14:41:53 -0800
+From: Eric Biggers <ebiggers@kernel.org>
+To: Matthew Wilcox <willy@infradead.org>
 Cc: "Theodore Y . Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>,
 	linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org
 Subject: Re: [PATCH] fscrypt: Change fscrypt_encrypt_pagecache_blocks() to
  take a folio
-Message-ID: <Z7j8vuxjI9E64iw4@casper.infradead.org>
+Message-ID: <20250221224153.GA41579@quark.localdomain>
 References: <20250221051004.2951759-1-willy@infradead.org>
  <20250221051607.GA1259@sol.localdomain>
  <Z7gQjS34D_Xg_uVo@casper.infradead.org>
  <20250221210938.GB3790599@google.com>
+ <Z7j8vuxjI9E64iw4@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
@@ -64,38 +62,51 @@ List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250221210938.GB3790599@google.com>
+In-Reply-To: <Z7j8vuxjI9E64iw4@casper.infradead.org>
 
-On Fri, Feb 21, 2025 at 09:09:38PM +0000, Eric Biggers wrote:
-> > Yup, I haven't figured out how to do large folio support, so any
-> > filesystem using fscrypt can't support large folios for now.  I'm
-> > working on "separate folio and page" at the moment rather than "enable
-> > large folios everywhere".  
+On Fri, Feb 21, 2025 at 10:22:54PM +0000, Matthew Wilcox wrote:
+> On Fri, Feb 21, 2025 at 09:09:38PM +0000, Eric Biggers wrote:
+> > > Yup, I haven't figured out how to do large folio support, so any
+> > > filesystem using fscrypt can't support large folios for now.  I'm
+> > > working on "separate folio and page" at the moment rather than "enable
+> > > large folios everywhere".  
+> > 
+> > It might be a good idea to make the limitation to small folios clear in the
+> > function's kerneldoc and/or in a WARN_ON_ONCE().
 > 
-> It might be a good idea to make the limitation to small folios clear in the
-> function's kerneldoc and/or in a WARN_ON_ONCE().
-
-I can add a VM_BUG_ON like the other
-this-is-not-yet-ready-for-large-folios tests.
-
-> > Maybe someone else will figure out how to
-> > support large folios in fscrypt and I won't have to ;-)
+> I can add a VM_BUG_ON like the other
+> this-is-not-yet-ready-for-large-folios tests.
 > 
-> Decryption is easy and already done, but encryption is harder.  We have to
-> encrypt into bounce pages, since we can't overwrite the plaintext in the page
-> cache.  And when encrypting a large folio, I don't think we can rely on being
-> able to allocate a large bounce folio of the same size; it may just not be
-> available at the time.  So we'd still need bounce pages, and the filesystem
-> would have to keep track of potentially multiple bounce pages per folio.
+> > > Maybe someone else will figure out how to
+> > > support large folios in fscrypt and I won't have to ;-)
+> > 
+> > Decryption is easy and already done, but encryption is harder.  We have to
+> > encrypt into bounce pages, since we can't overwrite the plaintext in the page
+> > cache.  And when encrypting a large folio, I don't think we can rely on being
+> > able to allocate a large bounce folio of the same size; it may just not be
+> > available at the time.  So we'd still need bounce pages, and the filesystem
+> > would have to keep track of potentially multiple bounce pages per folio.
+> > 
+> > However, this is all specific to the original fs-layer file contents encryption
+> > path.  The newer inline crypto one should just work, even without hardware
+> > support since block/blk-crypto-fallback.c would be used.  (blk-crypto-fallback
+> > operates at the bio level, handles en/decryption, and manages bounce pages
+> > itself.)  It actually might be time to remove the fs-layer file contents
+> > encryption path and just support the inline crypto one.
 > 
-> However, this is all specific to the original fs-layer file contents encryption
-> path.  The newer inline crypto one should just work, even without hardware
-> support since block/blk-crypto-fallback.c would be used.  (blk-crypto-fallback
-> operates at the bio level, handles en/decryption, and manages bounce pages
-> itself.)  It actually might be time to remove the fs-layer file contents
-> encryption path and just support the inline crypto one.
+> That should be fine for f2fs and ext4, but ceph might be unhappy since
+> it doesn't use bios.  Would we need an analagous function for network
+> filesystems?
 
-That should be fine for f2fs and ext4, but ceph might be unhappy since
-it doesn't use bios.  Would we need an analagous function for network
-filesystems?
+Oof, I forgot about ceph again.  Something similar applies to ubifs (it's not
+block based), but ubifs uses its own bounce buffers, so it never calls
+fscrypt_encrypt_pagecache_blocks().  ceph does call it, though.  So yes, while
+moving to "block based filesystems will always use inline crypto" would simplify
+some of fs/crypto/ and allow block-based filesystems to use large folios on
+encrypted files, ceph would need a different solution.  I think it still has to
+involve encrypting the folio's data into a list of bounce pages, keeping track
+of them during the write, and freeing them at the end of the write.  So we'd
+have to look at what is the easiest way to do that in the ceph case.
+
+- Eric
 
