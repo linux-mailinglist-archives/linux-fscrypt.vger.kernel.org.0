@@ -1,121 +1,94 @@
-Return-Path: <linux-fscrypt+bounces-627-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-628-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69CCBA4FA2D
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  5 Mar 2025 10:34:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48934A4FE1B
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  5 Mar 2025 12:57:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF1843A970B
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  5 Mar 2025 09:33:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C90E170B76
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  5 Mar 2025 11:57:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C4E41C84D7;
-	Wed,  5 Mar 2025 09:34:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E079F233737;
+	Wed,  5 Mar 2025 11:57:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KKTub0uv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OLxteMQ1"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94858204859
-	for <linux-fscrypt@vger.kernel.org>; Wed,  5 Mar 2025 09:34:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7AC6241662;
+	Wed,  5 Mar 2025 11:57:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741167244; cv=none; b=eyBOmZrJY6Fs4BxauKZrps+lMoHsjwBmLEsrGK6xA4On+2Gv2zbmZOhJr58i8SVL+2MG5cSSSg6CogshV2cqQu+0uIoMjNUjNnprsjUhnGOYX6M+4pJSBFHYMSCes+x1NWS+UVj3enl3R9ZHNHDvCYU81/JtzR9msGiNm62Eyio=
+	t=1741175859; cv=none; b=DYivf8zSLTKU9sN3dbwjSntiyo2ak8gICMqltVFfBm7joc8CqY6i6zcE8DU6p36Hd0c43ivk+eVQPwXuRPwBpqJrlfOZn5w+PeaDyhwnagxEmRBeJeyEeh9jcFYyq8QKNfzJLkC2nZAz3DINddn+vfpKdRNG/Y8nRdxRSh6YTQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741167244; c=relaxed/simple;
-	bh=L0AVZyspqDFndAdjg41HMPg3gZ/8rwatGh9EIkQ94p4=;
-	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
-	 Content-Type:Date:Message-ID; b=ETIokQCNTfIbHGTgIY1wmRHHwbxhnI6dcXNKOkY5pdi0/I6/fLb+8iW3FsqA+A7viTPlC1GjLshjM+bkT9VIrZeJF41PupqeM/TGWMmZ4r76sTTGofeMNHQg3f5moGhSLguHGOrWfjoYeDSiQs4ifYE25RFU0JPtDbLIu+i/RSA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KKTub0uv; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1741167241;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Is3lm+EMgLSmZ5dlkslbusgfnXkzG7ZEELUtVKrYZwk=;
-	b=KKTub0uvBlnnh89LAbQr/4pHkRXcu8luq8AnyNVRmaSPhNimcAb1Kbf8WP9wOuzUTYu8HN
-	2CqakB7hwKro/z5M5W9FSlgYl/7DSXyfdqb8aubQf2dxcQvCr9h+oYgjhChIob8U2sSz0A
-	F5GzVNEACilPhhiqGBSzDgqX1RnlPBE=
-Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-647-LDYQevm7NHKHQCpZQRvj7w-1; Wed,
- 05 Mar 2025 04:33:43 -0500
-X-MC-Unique: LDYQevm7NHKHQCpZQRvj7w-1
-X-Mimecast-MFC-AGG-ID: LDYQevm7NHKHQCpZQRvj7w_1741167221
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 9C48D18001D8;
-	Wed,  5 Mar 2025 09:33:40 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.44.32.200])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id DF1F03000708;
-	Wed,  5 Mar 2025 09:33:37 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <20250305022353.GB20133@sol.localdomain>
-References: <20250305022353.GB20133@sol.localdomain> <3324492.1740742954@warthog.procyon.org.uk>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: dhowells@redhat.com, afs3-standardization@openafs.org,
-    jaltman@auristor.com, openafs-devel@openafs.org,
-    linux-afs@lists.infradead.org, linux-fscrypt@vger.kernel.org
-Subject: Re: RFE: Support for client-side content encryption in AFS
+	s=arc-20240116; t=1741175859; c=relaxed/simple;
+	bh=6SMrw8mQYRbSDmty+HMAtUSaCsG84lTRIG3k/Nq5pZE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=RqFn/nv8C/qucjHhtxfn6dsR5QCqpKoQLcqnWtWImb+8mhHwKWbwkAXHaQ+/qx61QGoXv5+ilen1e7G7HlD+B/j6JhthBLubGbeffNzeypdTzYdB2PhJ9/W+zArVKeb7uVOMbdih7GFaCQ1dtIeIcRc2g0PTG4Ru8x3GJZRisk0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OLxteMQ1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 580A6C4CEEA;
+	Wed,  5 Mar 2025 11:57:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1741175859;
+	bh=6SMrw8mQYRbSDmty+HMAtUSaCsG84lTRIG3k/Nq5pZE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=OLxteMQ1n11bFUfYE0YMySuc8KmFM2qjaYVjSRd0SRQ57rbuCjAVLrXzzWuuLY0fh
+	 UpCea0RmE97CYh548pbv8AE+Hy34rS440xg9FohFcUBseNaJzZn4xmHNYHe4QweW1U
+	 BAel386013R96cYjvKI9jJsudXvIRfwZ0kn+rCtlanaXL7AEDUteACXdXP3vA0kIMS
+	 nig5RK5Q4433wvgvlm2o9iCYthD+nApB9B2qZujl309cgyhIZLPoAoUmQ1NaLZg5Fh
+	 A1r9nTlgHowx1pbWCvnTmfQfEd02hSIl6LdKNhTg5L7sRyS43fi8NkYdLHB00wPxYo
+	 LA9w80pH/RFNQ==
+From: Christian Brauner <brauner@kernel.org>
+To: Eric Biggers <ebiggers@kernel.org>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc: Christian Brauner <brauner@kernel.org>,
+	"Theodore Y. Ts'o" <tytso@mit.edu>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	linux-fscrypt@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2] fscrypt: Change fscrypt_encrypt_pagecache_blocks() to take a folio
+Date: Wed,  5 Mar 2025 12:57:31 +0100
+Message-ID: <20250305-parkhaus-erstversorgung-8568be8fcc6d@brauner>
+X-Mailer: git-send-email 2.47.2
+In-Reply-To: <20250304170224.523141-1-willy@infradead.org>
+References: <20250304170224.523141-1-willy@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <4114837.1741167216.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date: Wed, 05 Mar 2025 09:33:36 +0000
-Message-ID: <4114838.1741167216@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1093; i=brauner@kernel.org; h=from:subject:message-id; bh=6SMrw8mQYRbSDmty+HMAtUSaCsG84lTRIG3k/Nq5pZE=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaSfsNHTubxe/GBjeaiM+3uP8K/G7v8FDmyuO9sy9UnX4 StP106b3VHKwiDGxSArpsji0G4SLrecp2KzUaYGzBxWJpAhDFycAjARnhpGhotWFk+sky7O+VOx t/btnxZxr0MS51WzLjPs7nrc+fD6NyGGfyabPrNuOOu1uPjeM9XtaVKPVDmnde6QetaUV7xAY1t PCi8A
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 
-Eric Biggers <ebiggers@kernel.org> wrote:
+On Tue, 04 Mar 2025 17:02:23 +0000, Matthew Wilcox (Oracle) wrote:
+> ext4 and ceph already have a folio to pass; f2fs needs to be properly
+> converted but this will do for now.  This removes a reference
+> to page->index and page->mapping as well as removing a call to
+> compound_head().
+> 
+> 
 
-> First, CephFS already supports fscrypt.  Have you looked at how it works=
- and
-> solves some of these issues?
+Applied to the vfs-6.15.ceph branch of the vfs/vfs.git tree.
+Patches in the vfs-6.15.ceph branch should appear in linux-next soon.
 
-Yes.  I've been looking into it very deeply:
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
 
-https://web.git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/=
-log/?h=3Dceph-iter
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
 
-I'm not sure which issues you're referring to specifically that you think =
-ceph
-might have a usable solution, but note that Ceph has the ability to store
-extra data, such as the "sparse map" that AFS doesn't have, unfortunately.
-It's not easy to extend AFS because the volume transfer protocol/backup
-protocol would need to change.
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
 
-And with regard to filename encryption, the traditional AFS directory form=
-at
-has a limit on the maximum directory size, so increasing the size of filen=
-ames
-by a third would be a problem.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs-6.15.ceph
 
-> Second, per-block keys would be really inefficient and are unnecessary. =
- The
-> way that fscrypt works is that the keys are (usually) per-file, and with=
-in
-> each file each block has a different IV (initialization vector).  That i=
-s
-> sufficient to make each block be encrypted differently.
-
-Okay.  Sounds good.
-
-David
-
+[1/1] fscrypt: Change fscrypt_encrypt_pagecache_blocks() to take a folio
+      https://git.kernel.org/vfs/vfs/c/59b59a943177
 
