@@ -1,188 +1,178 @@
-Return-Path: <linux-fscrypt+bounces-640-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-641-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C612A7C6A7
-	for <lists+linux-fscrypt@lfdr.de>; Sat,  5 Apr 2025 01:17:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5FBAA7C736
+	for <lists+linux-fscrypt@lfdr.de>; Sat,  5 Apr 2025 03:17:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B25CF3BBC67
-	for <lists+linux-fscrypt@lfdr.de>; Fri,  4 Apr 2025 23:16:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A464517BF04
+	for <lists+linux-fscrypt@lfdr.de>; Sat,  5 Apr 2025 01:17:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 564A922173D;
-	Fri,  4 Apr 2025 23:16:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD947125B2;
+	Sat,  5 Apr 2025 01:17:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fbna1okn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YRnurKuH"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 127BE221729;
-	Fri,  4 Apr 2025 23:16:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1155F2E62C1;
+	Sat,  5 Apr 2025 01:17:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743808592; cv=none; b=U/Dbu2G3GT5v7EmiR2Pj71ynURoGYL/wvPSYQZhK+ebzZ80R4Qha85ra/Oh+Uy7SL1YfugU1uM2n/1KPYNCWu/xB61RtnNZSuVUsdE4J3pK2xmj/hiyUfVY7jG5N/iKKWp6fcKdJfLPaFvsWjYz4nVzhQyPXc21B9DF6rtlOa+Q=
+	t=1743815848; cv=none; b=Sc8gzpWqGIh2GS44P+bmhBD5J/psYQwr1jz92yZbcmmnpAzHY4TIA2mTTH0+slwtKLeVykYubqD4PJUwmjbmKcxxdkgkNKA9Z3okfAVKGfApwo82BOLVjxXzuQep/xMofsjOckYNx8FdO/VJuafemIGBlJ/v7VPxTxt5tNkqJqo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743808592; c=relaxed/simple;
-	bh=pLcNof6JbapOHK594mGu5j5X53Jvg5ctd3e5BUNyfVo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jwzt1YgSLTB1qW3KQDWUKVUlbM8k/a5ts5CnsX39lvxIX8pqhXamuWgzx/ASQUV9bVU0aIre9+JhYNPEg8YJyYzQGuZWZjXk4tZlphyYJd4q1q57aO8UeItywyNuvYyhDE/giw+HKjXky7kYfXUGZDl2dnjA0uX8jofY9+2Zr68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fbna1okn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26F98C4CEF2;
-	Fri,  4 Apr 2025 23:16:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1743808591;
-	bh=pLcNof6JbapOHK594mGu5j5X53Jvg5ctd3e5BUNyfVo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fbna1oknD/ZvI3sOJ9ta/LdvxqmsuirwvEnENV50pL1QcyK7da3vftEpZj6/Cxgb4
-	 q1k77iXUU72vUtTLAksT9nyhStbjPVq03hV/lrtcnUoP0WoMKGQBh80iUGQiCR1pvQ
-	 HdzMCvMXYkygICv20K3WhoQcK8WSd+0OGhPZKZNzJn/EnPrWDNRd9W1nCu8raxlSq2
-	 xm3K7T3cb0x+sq6VaKm7tRVu+zOFWZ0HaWjD9HJDyVGh/yLgC7oLEpdNzmJJThGwm/
-	 It7aOt1YqU8wEfxfseXbChNlUT38umNQhrthUzYD9SIuk/LyzsvALf5rS65hGjfgRO
-	 lAlf2IH9X6Lfg==
-From: Eric Biggers <ebiggers@kernel.org>
-To: linux-scsi@vger.kernel.org
-Cc: linux-block@vger.kernel.org,
-	linux-mmc@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-fscrypt@vger.kernel.org,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Gaurav Kashyap <quic_gaurkash@quicinc.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>,
-	Jens Axboe <axboe@kernel.dk>,
-	Konrad Dybcio <konradybcio@kernel.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH v13 3/3] ufs: qcom: add support for wrapped keys
-Date: Fri,  4 Apr 2025 16:15:32 -0700
-Message-ID: <20250404231533.174419-4-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250404231533.174419-1-ebiggers@kernel.org>
-References: <20250404231533.174419-1-ebiggers@kernel.org>
+	s=arc-20240116; t=1743815848; c=relaxed/simple;
+	bh=f3i7y9qJZMSTYCRTNPf2EJF6SHSdbXnOdImAqF1W99g=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=KwPRGuLq/r+uRRcMvlsTrxmbpue912LVugJGBSjOPteHARpxK9tWjQv5yEweZEvtSe8MIHzH7gzFDjanseh9fQjpegP717+rSbRtzZOBNFSI31ZgZNlDPIIndWyY+wRdeBt0BR32l7XrDg101n5CzI8Fu7VyRomrYH8+S8UsRRk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YRnurKuH; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2243803b776so37806955ad.0;
+        Fri, 04 Apr 2025 18:17:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1743815846; x=1744420646; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language:subject
+         :references:cc:to:user-agent:mime-version:date:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NRiuL4Sy1s+c/lXgB3vFyCUJTB29r4cpXB4vQmrcmqI=;
+        b=YRnurKuH0qf8QZ1KCUwm5y0Za2vb8zsJBV5R9jIeOPcHdOS2Y1x2cC9u18+sOLLm3V
+         Vgao4vJjL7NF1PUiRYzGDDwSvbsJr4iEgNRAvvUwKQQFPg4FDRGXPwf9vwatDsYut9RP
+         r2RgB7tx8Pm3ecjNlusVzcWtgXYg2tisennGcVuDQt64BV4jGjFT8ebw3CJ6k7/fTscF
+         5p0rHmXQd3P0JUGdGGtvjjYZeeALHHVJoHFSa8Xdpy+8IULCU2KrSfJp6fPSLbhmaYRd
+         Pr9jo7SrBt3qoQ24Bf4Oi48YcL6Lu5sXehSxcZmBDNkR7kRLSt2c+dow5tDaUrr/TFNg
+         bZLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1743815846; x=1744420646;
+        h=content-transfer-encoding:in-reply-to:from:content-language:subject
+         :references:cc:to:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NRiuL4Sy1s+c/lXgB3vFyCUJTB29r4cpXB4vQmrcmqI=;
+        b=JHLrp3NVp/SMPJ1GTJaDcfNB78Xr9OvSse6kWADJGEKlTf+RjJA4Fkah4epIGQigGH
+         juqh0LlakK+D162kGm6hXKSfssMM2WiN7E9f85+2WcGqghwhZOlmBUGpE5FkozdTA16G
+         qALNOwgIk0ImH9vVPCXQ75LvqAhnBwwOpnC+Ob8J7+VIA/r0KXSB7EzwBczecF9l5wSi
+         0vmu/KbwAK/u78Vi8gm84GIsrn6ACreBXE/a9J/YeA5fTkEJj9mGawIz+yvzy62ZqP3t
+         /82nn5WLqy+h2roZoTvsAlzFq/TLSW1RrwrwRJJAyF6e1OFAM8RMNvRwlP2lOg9JOo8r
+         6OwA==
+X-Forwarded-Encrypted: i=1; AJvYcCUWlDFizJ72L4JaLpGMGIXwPVkkry0CxprxOxHRciM+kbDmneQ/BvwS/4Z9t6b6hHswwZsZIhEUcr66SQ9s@vger.kernel.org, AJvYcCV5YymNw437k3DF6kKFAwfK3U2exxJWUISpUaX+DQIMatGKsTnW7b51mOoli9iXf8Jm6BVqH9MY483MU/YGLg==@vger.kernel.org, AJvYcCV73uF6MlopNrW2+1X8virrsE1CN1EbJ82LQ3FfZSkFJ+ek2Ms0nesputnSByKTAhpkx+yT0XK/@vger.kernel.org, AJvYcCVMi0tnSlpsyUu9NCHb33HIHlEWwl25WXGtTP0H5l19Gh81q5ug1vd/CfdjApdJoCuSvRjAiSm7Zw4tAssV6DBY@vger.kernel.org, AJvYcCVNCQVqTlSFPXisH9bZc4eTOctWFTgsksSkc3GHeu/NuKsr3Qzkgwi2Te2fYJKcQ5BaPZ+1wgdVWCLw@vger.kernel.org, AJvYcCWhZFY9l4lNdSkHoLCWyE3EuOFxfqkiLQah38cNgKePAtSELcneThA51vDR3UHagmV8RSQZaQfCGSc=@vger.kernel.org, AJvYcCWlrI/JSZ/JuzS25BJBuyhHkRldgpr04/5qaY/YnqEBG1YHrboHaYDpqGjpmTgrNJP3ChrkytKYAEs=@vger.kernel.org, AJvYcCX6Ssa8979EneFfYhtaAKodjajDjHOfsHL5SXVQjWL+Wpt/AirlpUm/5S9S3MkohbdN32hAInPZsS3k@vger.kernel.org, AJvYcCXGOZOkI9lE0ylnkW0ktt7aPVyh/RRvJqqZibl8nWD0+nU5bBc4/Jn50bSdtN32AQibAfnZmQxuLyTG/XU=@vger.kernel.org, AJvYcCXMMuu1sTDouy7+bUG/G9YWJANt
+ U5x7ZyVtgwZpr347i2TCa6jfm7ldLE32U0FxTgjN+pO4rSUPcf7Iew0=@vger.kernel.org, AJvYcCXRKSALrXbi3YbfbNZTUz7Ps+pdGKDPFa5OCJciAmpTHN3Su5BptmzAObQG6GDmH08H2h7+Q9Vhm0vp@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxr3CPhGm8W4iDr6QTqTstL9azX+Uw+8RfXnyLamw8fGI/bUBtC
+	YUmaEC7MECJEamEdzBjCIxA++D9v2aQD7VB7huqGNe63OUgohkpK
+X-Gm-Gg: ASbGnct0KFiIGSMKavchuzIRbJohlzYkeVSZP914WZK+mCplAHw3Yoy/mlyvKfJsgye
+	Cf2C4Bs4B2WNfX6Cnqvwo6zR1/QValY51yjC3Sg3KrsJ58GwlOJzW/5y8SJriFsdgnVnqMhZTL3
+	PTfsq25FUzSCX9ZzIUin0Z/QwIKZ3lenAGyKYxGF/KBrKjNd3IE6uZ5ynP5BeCriY4Rg7VxjH83
+	Hrf1ArhW4TpfLkSJ8AO9YujF7wAVjYscCfZCHxq0g+OX/Tb+mTI6RlVEfoyj7fLQyv+dVJwn5K5
+	wI9ck+8z03mRtxCCet1nvTA97oh58E89BEywJeZaMHosMno2zLF53pJHEiS2coOqaWJ1h5ZeqXQ
+	4LekjcPW+js7527c=
+X-Google-Smtp-Source: AGHT+IGrKFiapGLIEGHnSEZIAujUvj6ZJLSj064m/nFeE0wcOjOeNVFt0u8EmZ8qnV5tFeQau4dR7A==
+X-Received: by 2002:a17:903:3c6b:b0:224:24d3:6103 with SMTP id d9443c01a7336-22a955734f5mr25800795ad.35.1743815846125;
+        Fri, 04 Apr 2025 18:17:26 -0700 (PDT)
+Received: from [10.0.2.15] (KD106167137155.ppp-bb.dion.ne.jp. [106.167.137.155])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-229785b352esm39374225ad.18.2025.04.04.18.17.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Apr 2025 18:17:25 -0700 (PDT)
+Message-ID: <811c4103-08b1-4288-9a15-bd9795bc59f4@gmail.com>
+Date: Sat, 5 Apr 2025 10:17:16 +0900
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+To: nfraprado@collabora.com
+Cc: James.Bottomley@HansenPartnership.com, akpm@linux-foundation.org,
+ anton.ivanov@cambridgegreys.com, corbet@lwn.net, davem@davemloft.net,
+ dmaengine@vger.kernel.org, ebiggers@kernel.org, edumazet@google.com,
+ horms@kernel.org, jaegeuk@kernel.org, jarkko@kernel.org, jic23@kernel.org,
+ johannes@sipsolutions.net, kernel@collabora.com, keyrings@vger.kernel.org,
+ kuba@kernel.org, lars@metafoo.de, linux-doc@vger.kernel.org,
+ linux-fscrypt@vger.kernel.org, linux-iio@vger.kernel.org,
+ linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-mm@kvack.org,
+ linux-sound@vger.kernel.org, linux-um@lists.infradead.org,
+ maxime.chevallier@bootlin.com, mchehab@kernel.org, netdev@vger.kernel.org,
+ pabeni@redhat.com, perex@perex.cz, richard@nod.at, tiwai@suse.com,
+ tytso@mit.edu, vkoul@kernel.org, workflows@vger.kernel.org,
+ zohar@linux.ibm.com, Akira Yokosawa <akiyks@gmail.com>
+References: <20250404-doc-paths-unliteral-v1-1-74718785444e@collabora.com>
+Subject: Re: [PATCH] docs: Remove literal markup from Documentation/ paths
+Content-Language: en-US
+From: Akira Yokosawa <akiyks@gmail.com>
+In-Reply-To: <20250404-doc-paths-unliteral-v1-1-74718785444e@collabora.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Eric Biggers <ebiggers@google.com>
+Hi,
 
-Wire up the wrapped key support for ufs-qcom by implementing the needed
-methods in struct blk_crypto_ll_ops and setting the appropriate flag in
-blk_crypto_profile::key_types_supported.
+Nícolas F. R. A. Prado wrote:
+> Given that the automarkup Sphinx plugin cross-references
+> "Documentation/*.rst" strings in the text to the corresponding
+> documents, surrounding those strings with the literal markup (``) not
+> only adds unnecessary markup in the source files, but actually prevents
+> the automatic cross-referencing to happen (as it doesn't happen in
+> literal blocks).
+> 
+> Remove all the occurrences of the literal markup in
+> "Documentation/*.rst" paths, except when the actual source file is being
+> referred. Also change the surrounding text when needed so it reads well
+> both in the source and the web page (eg. 'see file Doc...' -> 'see
+> Doc...').
+> 
+> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+> ---
+[...]
 
-For more information about this feature and how to use it, refer to
-the sections about hardware-wrapped keys in
-Documentation/block/inline-encryption.rst and
-Documentation/filesystems/fscrypt.rst.
+>  Documentation/process/submit-checklist.rst                | 7 ++++---
 
-Based on patches by Gaurav Kashyap <quic_gaurkash@quicinc.com>.
-Reworked to use the custom crypto profile support.
+I have updated ja_JP translation of this recently.
 
-Acked-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Tested-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org> # sm8650
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- drivers/ufs/host/ufs-qcom.c | 51 ++++++++++++++++++++++++++++++++-----
- 1 file changed, 45 insertions(+), 6 deletions(-)
+> diff --git a/Documentation/process/submit-checklist.rst b/Documentation/process/submit-checklist.rst
+> index beb7f94279fdb6a1d9b4aa86b2bea031f140732b..3ae31c5af2cb5c374658c1fb7125e70bf36e911c 100644
+> --- a/Documentation/process/submit-checklist.rst
+> +++ b/Documentation/process/submit-checklist.rst
+> @@ -30,7 +30,8 @@ Review Kconfig changes
+>  
+>  1) Any new or modified ``CONFIG`` options do not muck up the config menu and
+>     default to off unless they meet the exception criteria documented in
+> -   ``Documentation/kbuild/kconfig-language.rst`` Menu attributes: default value.
+> +   Documentation/kbuild/kconfig-language.rst, under "Menu attributes", "default
+> +   value".
 
-diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-index 85040861ddc6e..46cca52aa6f11 100644
---- a/drivers/ufs/host/ufs-qcom.c
-+++ b/drivers/ufs/host/ufs-qcom.c
-@@ -154,15 +154,10 @@ static int ufs_qcom_ice_init(struct ufs_qcom_host *host)
- 	}
- 
- 	if (IS_ERR_OR_NULL(ice))
- 		return PTR_ERR_OR_ZERO(ice);
- 
--	if (qcom_ice_get_supported_key_type(ice) != BLK_CRYPTO_KEY_TYPE_RAW) {
--		dev_warn(dev, "Wrapped keys not supported. Disabling inline encryption support.\n");
--		return 0;
--	}
--
- 	host->ice = ice;
- 
- 	/* Initialize the blk_crypto_profile */
- 
- 	caps.reg_val = cpu_to_le32(ufshcd_readl(hba, REG_UFS_CCAP));
-@@ -172,11 +167,11 @@ static int ufs_qcom_ice_init(struct ufs_qcom_host *host)
- 	if (err)
- 		return err;
- 
- 	profile->ll_ops = ufs_qcom_crypto_ops;
- 	profile->max_dun_bytes_supported = 8;
--	profile->key_types_supported = BLK_CRYPTO_KEY_TYPE_RAW;
-+	profile->key_types_supported = qcom_ice_get_supported_key_type(ice);
- 	profile->dev = dev;
- 
- 	/*
- 	 * Currently this driver only supports AES-256-XTS.  All known versions
- 	 * of ICE support it, but to be safe make sure it is really declared in
-@@ -240,13 +235,57 @@ static int ufs_qcom_ice_keyslot_evict(struct blk_crypto_profile *profile,
- 	err = qcom_ice_evict_key(host->ice, slot);
- 	ufshcd_release(hba);
- 	return err;
- }
- 
-+static int ufs_qcom_ice_derive_sw_secret(struct blk_crypto_profile *profile,
-+					 const u8 *eph_key, size_t eph_key_size,
-+					 u8 sw_secret[BLK_CRYPTO_SW_SECRET_SIZE])
-+{
-+	struct ufs_hba *hba = ufs_hba_from_crypto_profile(profile);
-+	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-+
-+	return qcom_ice_derive_sw_secret(host->ice, eph_key, eph_key_size,
-+					 sw_secret);
-+}
-+
-+static int ufs_qcom_ice_import_key(struct blk_crypto_profile *profile,
-+				   const u8 *raw_key, size_t raw_key_size,
-+				   u8 lt_key[BLK_CRYPTO_MAX_HW_WRAPPED_KEY_SIZE])
-+{
-+	struct ufs_hba *hba = ufs_hba_from_crypto_profile(profile);
-+	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-+
-+	return qcom_ice_import_key(host->ice, raw_key, raw_key_size, lt_key);
-+}
-+
-+static int ufs_qcom_ice_generate_key(struct blk_crypto_profile *profile,
-+				     u8 lt_key[BLK_CRYPTO_MAX_HW_WRAPPED_KEY_SIZE])
-+{
-+	struct ufs_hba *hba = ufs_hba_from_crypto_profile(profile);
-+	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-+
-+	return qcom_ice_generate_key(host->ice, lt_key);
-+}
-+
-+static int ufs_qcom_ice_prepare_key(struct blk_crypto_profile *profile,
-+				    const u8 *lt_key, size_t lt_key_size,
-+				    u8 eph_key[BLK_CRYPTO_MAX_HW_WRAPPED_KEY_SIZE])
-+{
-+	struct ufs_hba *hba = ufs_hba_from_crypto_profile(profile);
-+	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-+
-+	return qcom_ice_prepare_key(host->ice, lt_key, lt_key_size, eph_key);
-+}
-+
- static const struct blk_crypto_ll_ops ufs_qcom_crypto_ops = {
- 	.keyslot_program	= ufs_qcom_ice_keyslot_program,
- 	.keyslot_evict		= ufs_qcom_ice_keyslot_evict,
-+	.derive_sw_secret	= ufs_qcom_ice_derive_sw_secret,
-+	.import_key		= ufs_qcom_ice_import_key,
-+	.generate_key		= ufs_qcom_ice_generate_key,
-+	.prepare_key		= ufs_qcom_ice_prepare_key,
- };
- 
- #else
- 
- static inline void ufs_qcom_ice_enable(struct ufs_qcom_host *host)
--- 
-2.49.0
+I have made the same change in the translation, but failed to submit a patch...
+
+>  
+>  2) All new ``Kconfig`` options have help text.
+>  
+> @@ -47,7 +48,7 @@ Provide documentation
+>  2) All new ``/proc`` entries are documented under ``Documentation/``
+>  
+>  3) All new kernel boot parameters are documented in
+> -   ``Documentation/admin-guide/kernel-parameters.rst``.
+> +   Documentation/admin-guide/kernel-parameters.rst.
+
+Hmm, this item is asking "Have you documented the new params in that
+particular file?", so I don't think this change should be made.
+
+>  
+>  4) All new module parameters are documented with ``MODULE_PARM_DESC()``
+>  
+> @@ -58,7 +59,7 @@ Provide documentation
+>     linux-api@vger.kernel.org.
+>  
+>  6) If any ioctl's are added by the patch, then also update
+> -   ``Documentation/userspace-api/ioctl/ioctl-number.rst``.
+> +   Documentation/userspace-api/ioctl/ioctl-number.rst.
+
+Ditto.
+
+        Thanks, Akira
+
+>  
+>  Check your code with tools
+>  ==========================
 
 
