@@ -1,106 +1,104 @@
-Return-Path: <linux-fscrypt+bounces-658-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-659-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69293AACC06
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  6 May 2025 19:14:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4726AC378E
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 26 May 2025 03:12:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 816771C40D4A
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  6 May 2025 17:14:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 953E13B37C2
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 26 May 2025 01:11:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69B30284B20;
-	Tue,  6 May 2025 17:14:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BA7572607;
+	Mon, 26 May 2025 01:12:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HfPzR2Jq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SBqZdmJ/"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B35C72836AB
-	for <linux-fscrypt@vger.kernel.org>; Tue,  6 May 2025 17:14:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58FEC35972;
+	Mon, 26 May 2025 01:12:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746551668; cv=none; b=t0jViIr8AzUvu0wjnWmT+8GBf6IHsO50MvHSKETe9pCtYPPaMqpxdjYCxLs7wXL9s4vllNvZD109NPc8WR0QlgsJy2QCnoJBJJuwKYoEycRZnLOT9oHQ0OcVqQG1tnGKPM+5//L3uACJWxaAK9qzzr9n0sWFd63AYL0zOiekWF8=
+	t=1748221934; cv=none; b=LzF0/5HTmVLArdk8t1vlzn+KAvhlAEcRjtU4CLUGRZWzSEHD6flCSR24qmxGiPjsRADVCzC9EQN4uA0rA36HQx9ynNCtrFZvpdQFS0aUCVcXgHFQKNFjf64sMSaXFi7g0ZeitVkgQvGhPIRHBPQxvtU8CF6TkPOt0qe2T/wkT30=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746551668; c=relaxed/simple;
-	bh=YJlIiL2as+FQzRYLAmfyUw6lBk0apgvBss0amf+RMTg=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=ToxLoFRU3vHaRHCnkJ0AEivWpeVEQfVVzQZJqQrW+wiPuYaNTXqNOVwlJUhucrBFLwJPCvtzXh50+Pv4cAf5B1/Iio1MgTIByrlLmNl4zUv4kYyo7pT4i3+vM1fQoSvVIl2tlt+3Mixn/96N8IYWlALgBDPbaS/lmLjyYWxqBNo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HfPzR2Jq; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1746551665;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SDuv8z2Zer1kzmJsg6JfkCgHosBhI0/BOFDH4XiwtSw=;
-	b=HfPzR2Jq8siNuSL8fZXFwIMKr6N6UTFm/f76cFU9vtObYjlX6Eh8Iv/8qioR/bg7KNouqZ
-	lGnTfn/1/QLV9p+Z9h/b3V4gof+t3K76b+Oo7m83560hfDsJUpeI5I4w6ZMCm/38U+Xh+Q
-	WKsCDvt7ScBJ1ypxHItziUYQk9rGU74=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-248-hZeuOhmVOcCR-ecxitQPig-1; Tue,
- 06 May 2025 13:14:17 -0400
-X-MC-Unique: hZeuOhmVOcCR-ecxitQPig-1
-X-Mimecast-MFC-AGG-ID: hZeuOhmVOcCR-ecxitQPig_1746551654
-Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id BCD0C1800ECA;
-	Tue,  6 May 2025 17:14:13 +0000 (UTC)
-Received: from [10.22.80.45] (unknown [10.22.80.45])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 03A30195608F;
-	Tue,  6 May 2025 17:14:10 +0000 (UTC)
-Date: Tue, 6 May 2025 19:14:06 +0200 (CEST)
-From: Mikulas Patocka <mpatocka@redhat.com>
-To: Eric Biggers <ebiggers@kernel.org>
-cc: dm-devel@lists.linux.dev, Alasdair Kergon <agk@redhat.com>, 
-    Mike Snitzer <snitzer@kernel.org>, linux-block@vger.kernel.org, 
-    linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org, 
-    Bartosz Golaszewski <brgl@bgdev.pl>, 
-    Gaurav Kashyap <quic_gaurkash@quicinc.com>
-Subject: Re: [PATCH v2 2/2] dm: pass through operations on wrapped inline
- crypto keys
-In-Reply-To: <20250505211428.GA10047@google.com>
-Message-ID: <3a0ef010-ec08-de32-134f-80286a3960c9@redhat.com>
-References: <20250501212320.8281-1-ebiggers@kernel.org> <20250501212320.8281-3-ebiggers@kernel.org> <af9771ce-5e88-02d1-3595-fd18a6f2eb28@redhat.com> <20250505170336.GA197153@sol> <5ca7e728-96ed-4419-6689-f36081b7e2da@redhat.com>
- <20250505211428.GA10047@google.com>
+	s=arc-20240116; t=1748221934; c=relaxed/simple;
+	bh=Hdf+EjjTXZohy7wvzsrbiXVv91he59uK5ObP7uvDCFk=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=oTrvDnOmYXt7FXJGdM+xwBGRTtMTMcyjOLobjJ4eGMctQ5IRtzTGudsjbeh5WaRZPwdaKJosedAFynqjmVuAH6VMKEkMhmnnHQqxcy62m+cNNdQ9IKL7Q5E9+LtW8T75BRvR+tTp1UMLqB+lnqYLDBazvniRpf2+LO5aH2gmc3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SBqZdmJ/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CAE8C4CEEA;
+	Mon, 26 May 2025 01:12:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1748221933;
+	bh=Hdf+EjjTXZohy7wvzsrbiXVv91he59uK5ObP7uvDCFk=;
+	h=Date:From:To:Cc:Subject:From;
+	b=SBqZdmJ/v5YNWL0MNAgOodpQ2MPdxMHNJh21PffomPOdBJBGshC4LaqDUttDtg+Nc
+	 rqmN8p4KcWg7TelM/WUzeRiJ2LunogRlcyMsBf/cZabuk5QS4SdL/H6YhaMb4CbNqp
+	 sHo9Gs16plVIVnKnzJIuk/51Ik81S7c+uX52VWLkYkSYS0YRB76AwZRcQFXlJj01Rq
+	 EvhH8DTaDknnbQ/AYw8pUJg9txdtqkljBXDzxcalfkriV3T43aeOn//DPCo0H9y0Ub
+	 m+A1TFazvRqku8RhSKOp/Wt8wiYOpmzouI6lt/mqNWqYwDbta28a6Xs8ybB+BFXR/6
+	 0/sFt6PAX/s7w==
+Date: Sun, 25 May 2025 18:11:59 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+	linux-kernel@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+	Jaegeuk Kim <jaegeuk@kernel.org>, Theodore Ts'o <tytso@mit.edu>
+Subject: [GIT PULL] fscrypt update for 6.16
+Message-ID: <20250526011159.GA23241@sol>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+The following changes since commit 0af2f6be1b4281385b618cb86ad946eded089ac8:
 
+  Linux 6.15-rc1 (2025-04-06 13:11:33 -0700)
 
-On Mon, 5 May 2025, Eric Biggers wrote:
+are available in the Git repository at:
 
-> We have to forward derive_sw_secret anyway, since that's invoked by the
-> filesystem, not by the ioctls.
-> 
-> The other operations are for the ioctls, but I don't see a reason to make things
-> harder for userspace by forcing userspace to implement logic like:
-> 
->     if (is_dm(blkdev))
->         blkdev = underlying_device(blkdev)
->     ioctl(blkdev)
-> 
-> The device-mapper block device has a blk-crypto profile that declares wrapped
-> key support.  We should just make the ioctls work on that block device, so that
-> upper layers don't need to care whether it's device-mapper or native.
-> 
-> - Eric
+  https://git.kernel.org/pub/scm/fs/fscrypt/linux.git tags/fscrypt-for-linus
 
-OK, I accepted both patches for the next merge window.
+for you to fetch changes up to c07d3aede2b26830ee63f64d8326f6a87dee3a6d:
 
-Mikulas
+  fscrypt: add support for hardware-wrapped keys (2025-04-08 19:32:11 -0700)
 
+----------------------------------------------------------------
+
+Add support for "hardware-wrapped inline encryption keys" to fscrypt.
+When enabled on supported platforms, this feature protects file contents
+keys from certain attacks, such as cold boot attacks.
+
+This feature uses the block layer support for wrapped keys which was
+merged in 6.15.  Wrapped key support has existed out-of-tree in Android
+for a long time, and it's finally ready for upstream now that there is a
+platform on which it works end-to-end with upstream.  Specifically,
+it works on the Qualcomm SM8650 HDK, using the Qualcomm ICE (Inline
+Crypto Engine) and HWKM (Hardware Key Manager).  The corresponding
+driver support is included in the SCSI tree for 6.16.  Validation for
+this feature includes two new tests that were already merged into
+xfstests (generic/368 and generic/369).
+
+----------------------------------------------------------------
+Eric Biggers (1):
+      fscrypt: add support for hardware-wrapped keys
+
+ Documentation/filesystems/fscrypt.rst | 187 +++++++++++++++++++++++++++-------
+ fs/crypto/fscrypt_private.h           |  75 ++++++++++++--
+ fs/crypto/hkdf.c                      |   4 +-
+ fs/crypto/inline_crypt.c              |  44 ++++++--
+ fs/crypto/keyring.c                   | 132 +++++++++++++++++-------
+ fs/crypto/keysetup.c                  |  63 ++++++++++--
+ fs/crypto/keysetup_v1.c               |   4 +-
+ include/uapi/linux/fscrypt.h          |   6 +-
+ 8 files changed, 410 insertions(+), 105 deletions(-)
 
