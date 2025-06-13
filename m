@@ -1,156 +1,112 @@
-Return-Path: <linux-fscrypt+bounces-667-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-668-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86CFCAD803E
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 13 Jun 2025 03:24:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3AEDAD862F
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 13 Jun 2025 11:02:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 060503A6DE7
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 13 Jun 2025 01:23:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A4167166AC1
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 13 Jun 2025 09:02:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE8FD1A23AD;
-	Fri, 13 Jun 2025 01:24:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEC9F239E8B;
+	Fri, 13 Jun 2025 09:02:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sopL9OVG"
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="TJC+HIwQ"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB9A572636;
-	Fri, 13 Jun 2025 01:24:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F5572DA751;
+	Fri, 13 Jun 2025 09:02:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.207.212.93
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749777841; cv=none; b=U1Runc3y8i8mp62AZIMIjfJYAE16vImdaPFawYPMOeQ+rqrIlv+WVYYTvW7F9KL6JI+6TcyLE3WAHYO+/paExGgfgA/EQGGOP3ETAAMQZDnxe+HEQMDdV8+BOmqahhwjCi59UafrBQ7oi+I/SS37xu8mgBKHaI4Dm1bRTPqlOqs=
+	t=1749805362; cv=none; b=l6JbK8Y/Ll3SKku9coQu2ZHVm9FpsmtJcpQ7h/W2EnfNDnBZczZWc3e7uMUZz5uvTbd1Yc9UVT8yFElAw3QxDZJzBhcZUI7LcpirpCA9ystFF67JlpjVnA1AGhd6jURz1SpOf9y9soes4hkTFkFyUEGsqTaJ5QQm4wTLBYdxJQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749777841; c=relaxed/simple;
-	bh=d5rHizoOE6yeSiQobFd52hpxfVk2+AkiKtye4xkZZNQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mpwcVB8zufKDpRNDoDXfUC6y6crnuQHpNOjxTu2YXtwGE90mX924g12vEPr+KtvUWUOQay0yBU7caYQNu5A7JxW1OUhFO9Y5GTDlymZRJwF9mlD8Mhy70hRpv5rxOvFTncZ7lWq5yWFu1BmMesjpMhgDivgeF+55+yMElTCRcoI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sopL9OVG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB4CEC4CEEA;
-	Fri, 13 Jun 2025 01:23:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749777840;
-	bh=d5rHizoOE6yeSiQobFd52hpxfVk2+AkiKtye4xkZZNQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sopL9OVGaKkYBLoQ9K0Gx3mNqKCtmF6HeqAxRPeMFvJLOQNPGNCCbdfRxS2LlfLqu
-	 C3Drs4Qu4cFQG2+79qNVN/2U+Mp5r2Ku8fHrvgJywco1pbYG6PtA3ImiR1O4x08klz
-	 xDAF1Jfb3fKbHGBJ+46TYP3cVpNrl19/EEmKclh0GQCX86o255XF08PT4Rd7b6JjMQ
-	 0pZk7pLaqF1Q6YqyMWUL0yY5F1li1Q6ACzRmSrSgpQrt8hIvANSSWWinXiguz6euWJ
-	 eocxM+zUeCV/S4k5Ycq56kPx+45/tXS3yhtnvX35hipDpMVHslTEwlPdsTCo0NKkoz
-	 V/KcVAfBqnyXg==
-Date: Fri, 13 Jun 2025 01:23:57 +0000
-From: Eric Biggers <ebiggers@kernel.org>
-To: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Cc: Simon Richter <Simon.Richter@hogyros.de>, linux-fscrypt@vger.kernel.org,
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org, linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net, ceph-devel@vger.kernel.org
-Subject: Re: [PATCH] fscrypt: don't use hardware offload Crypto API drivers
-Message-ID: <20250613012357.GA3603104@google.com>
-References: <20250611205859.80819-1-ebiggers@kernel.org>
- <7f63be76-289b-4a99-b802-afd72e0512b8@hogyros.de>
- <20250612005914.GA546455@google.com>
- <20250612062521.GA1838@sol>
- <aEqU0iU1tBrLEYUq@gcabiddu-mobl.ger.corp.intel.com>
- <20250612155743.GA3529549@google.com>
+	s=arc-20240116; t=1749805362; c=relaxed/simple;
+	bh=Iu6PP0aeFHgxr8x/QF4l4Q7vhV0Xw+zRs3mVruxMCto=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=V5SPWcpiIzSYIqzhJJNwQN8bI4b8ve0jZEiHQb4oWd11ZTLexX49ownCDmQVufK234e6dJzdfxG4kaxLy8aJsYh//mMZ1Cj0maMKozGMemAgYZ9bOwiB9NiznwBdbe2fVKvreXu668q7Py8hPVI8+GBCOq8n4V/dR9huDCr359I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=TJC+HIwQ; arc=none smtp.client-ip=91.207.212.93
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 55D7x6wD001805;
+	Fri, 13 Jun 2025 11:02:24 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=selector1; bh=
+	dhCZHLOoz/DA9KLk72kzXl6//47HjrLiscmsJROqQU4=; b=TJC+HIwQFnR8RuRE
+	wppUKNBTKL3/NwpFH9nE0ngb/rqF9Lu/ileLRgMIYn9UyLjZyEKItkKvekDrpNco
+	CH2Ar921nY18Xdl/0P13yXdoS1ZBzpkgQY+25liPF5pVzK8R6E9CTtow/QLDHGU6
+	yPdG0oZwXpqhwfLaDOymuGleYwO6An1dIpbs9rOSkv8i7GQoffy8c3UWJ+uMlfvM
+	tauK1RzCWrm/luM7ZBmnYOHOabBLRh89Nw6WHyd9Vc/fcI6/JJ5bdV1tgLduLKaj
+	fzoB7FPeV6Etip+hdlvBfqPA2PiZJrvr7H+x16QQsMmf1UpyJFlDeSmTAZ3RplPw
+	qdJ18Q==
+Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 474ajaktns-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 13 Jun 2025 11:02:23 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 8DF594005E;
+	Fri, 13 Jun 2025 11:01:37 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node3.st.com [10.75.129.71])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id DA3C7B9447F;
+	Fri, 13 Jun 2025 11:01:04 +0200 (CEST)
+Received: from [10.48.86.103] (10.48.86.103) by SHFDAG1NODE3.st.com
+ (10.75.129.71) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Fri, 13 Jun
+ 2025 11:01:04 +0200
+Message-ID: <8f4c2f36-71af-4c84-bcee-2554cea991d0@foss.st.com>
+Date: Fri, 13 Jun 2025 11:01:03 +0200
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250612155743.GA3529549@google.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] fscrypt: don't use hardware offload Crypto API drivers
+To: Eric Biggers <ebiggers@kernel.org>, <linux-fscrypt@vger.kernel.org>
+CC: <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mtd@lists.infradead.org>, <linux-ext4@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>, <ceph-devel@vger.kernel.org>
+References: <20250611205859.80819-1-ebiggers@kernel.org>
+Content-Language: en-US
+From: Maxime MERE <maxime.mere@foss.st.com>
+In-Reply-To: <20250611205859.80819-1-ebiggers@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE3.st.com
+ (10.75.129.71)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-06-12_10,2025-06-12_02,2025-03-28_01
 
-On Thu, Jun 12, 2025 at 03:57:43PM +0000, Eric Biggers wrote:
-> On Thu, Jun 12, 2025 at 09:50:26AM +0100, Giovanni Cabiddu wrote:
-> > On Wed, Jun 11, 2025 at 11:25:21PM -0700, Eric Biggers wrote:
-> > 
-> > ...
-> > 
-> > > FWIW, here's what happens if you try to use the Intel QAT driver with dm-crypt:
-> > > https://lore.kernel.org/r/CACsaVZ+mt3CfdXV0_yJh7d50tRcGcRZ12j3n6-hoX2cz3+njsg@mail.gmail.com/
-> > 
-> > /s/happens/happened/
-> > 
-> > ... and it got fixed
-> > https://lore.kernel.org/all/20220506082327.21605-1-giovanni.cabiddu@intel.com/
-> 
-> But it reached users in the first place, including stable kernels.  And
-> apparently the issues were going on for years and were known to the authors of
-> the driver
-> (https://lore.kernel.org/linux-crypto/91fe9f87-54d7-4140-4d1a-eac8e2081a7c@gmail.com/).
-> 
-> We simply don't have issues like this with the AES-NI or VAES XTS code.
-> 
-> And separately, QAT was reported to be much slower than AES-NI for synchronous use
-> (https://lore.kernel.org/linux-crypto/0171515-7267-624-5a22-238af829698f@redhat.com/)
-> 
-> Later, I added VAES accelerated AES-XTS code which is over twice as fast as
-> AES-NI on the latest Intel CPUs, so that likely widened the gap even more.
-> 
-> Yet, the QAT driver registers its "xts(aes)" implementation with priority 4001,
-> compared to priority 800 for the VAES accelerated one.  So the QAT one is the
-> one that will be used by fscrypt!
-> 
-> That seems like a major issue even just from a performance perspective.
-> 
-> I expect this patch will significantly improve fscrypt performance on Intel
-> servers that have QAT.
+Hello,
 
-I was curious, so I actually ran a benchmark on an Intel Emerald Rapids server.
-Specifically, I used a kernel module that repeatedly en/decrypted 4096-byte
-messages with AES-XTS using crypto_skcipher_en/decrypt().  That's basically what
-fscrypt's file contents encryption does, but here I just measured the raw crypto
-performance.  I tested both xts-aes-vaes-avx512 and qat_aes_xts.  For both, the
-difference between encryption and decryption was within the margin of error, so
-I'll give just one number for each.
+On 6/11/25 22:58, Eric Biggers wrote:
+> To protect users from these buggy and seemingly unhelpful drivers that I
+> have no way of testing, let's make fscrypt not use them.  Unfortunately
+> there is no direct support for doing so in the Crypto API, but we can
+> achieve something very close to it by disallowing algorithms that have
+> ASYNC, ALLOCATES_MEMORY, or KERN_DRIVER_ONLY set.
 
-Results:
+I agree that software drivers are more efficient and less prone to bugs 
+than hardware drivers. However, I would like to highlight the fact that 
+certain ST products (the STM32MP2x series) have features that allow the 
+loading of a secret key via an internal bus from a Secure OS to the CRYP 
+peripheral (usable by the kernel). This enables cryptographic operations 
+to be delegated to the non-secure side (the kernel) without exposing the 
+key.
 
-    xts-aes-vaes-avx512: 16171 MB/s
-    qat_aes_xts: 289 MB/s
+If fscrypt no longer supports hardware drivers, then this type of 
+functionality could not be used, which I find unfortunate because it is 
+something that might interest users.
 
-So, QAT is 55 times slower than the VAES-optimized software code!
 
-It's even slower than the generic C code:
-     
-    xts(ecb(aes-generic)): 305 MB/s
+cheers,
 
-Now, it could be argued that this is user error -- I "should" have created lots
-of asynchronous crypto requests for 4K blocks, submitted them all at once, and
-waited for them to complete.  Thus allowing parallel processing by QAT.
-
-But, that's simply not what fscrypt does.  And even if it did, it could only
-plausibly help for large bios.  Short bios, for which latency is really
-important, would continue to be massively regressed by using QAT for them.
-
-Even for large bios, it would have to get over 55 times faster to be worth it,
-which seems (very?) tenuous.
-
-Also, as is known from dm-crypt which does do async processing, the code that's
-needed to do it is quite complex and error-prone.
-
-In any case, async processing would be a theoretical future improvement.  It's
-simply not what fscrypt does today, or has ever done.
-
-I also found that, even though I built the QAT driver as a loadable module, it
-was loaded automatically on the system and prioritized itself over the VAES-
-accelerated AES-XTS.  Thus, it would be what fscrypt uses on Intel servers where
-the QAT driver is enabled in kconfig, even just as 'm'.
-
-Even disregarding the historical data corruption issues with QAT, I think this
-makes it *very* clear that the QAT driver is harmful to fscrypt users.
-
-And I've seen similar results with the Qualcomm crypto engine
-(https://lore.kernel.org/r/20241203180553.16893-1-ebiggers@kernel.org/).
-So this isn't even unique to this particular accelerator either.
-
-This has gone on for long enough.
-
-- Eric
+Maxime
 
