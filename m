@@ -1,50 +1,57 @@
-Return-Path: <linux-fscrypt+bounces-671-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-672-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2D9AADA02D
-	for <lists+linux-fscrypt@lfdr.de>; Sun, 15 Jun 2025 00:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F3EAADA109
+	for <lists+linux-fscrypt@lfdr.de>; Sun, 15 Jun 2025 06:53:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 169E57A3D96
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 14 Jun 2025 22:12:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2E0E17A433D
+	for <lists+linux-fscrypt@lfdr.de>; Sun, 15 Jun 2025 04:52:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53D12200B9F;
-	Sat, 14 Jun 2025 22:13:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F9151FCCF8;
+	Sun, 15 Jun 2025 04:53:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hVxZjtbr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ho4jYYIK"
 X-Original-To: linux-fscrypt@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2513B1FFC5E
-	for <linux-fscrypt@vger.kernel.org>; Sat, 14 Jun 2025 22:13:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 270B41BC3F;
+	Sun, 15 Jun 2025 04:53:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749939220; cv=none; b=AqodDZoyXfsitu1LbpTjitamTzriqzJXFLzKUu1KvgKxfunWn1DVQwZLtNGg9g4jaAVsmyCf/BIsEzyG+aIepVfSjHl13m6Tb79ehVu6Xr348Wwcqr9bklEfYilU9+47Z5mdhLdyWUZMOaXYkFIxgDuis/z1y0VpQCdCm4zNo8Q=
+	t=1749963226; cv=none; b=P9fC6RKlZ6sgvT+5vmgc+pPweoe9ME9oIKjZXprGqKm/vlyF1j2AknBF7mEE/LO/nsnHG2lTVYm9MkUZS+4Bl24qDnd7PSyarEiCQGQ/bRXyeYvK42jUXkN/SkOKOQ39Hkgcg40l1c3sKNhObuXcx+jp0bXvldXDoXCZDTU04ZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749939220; c=relaxed/simple;
-	bh=seUdFKqyM7+CWJNhmFM8iE/TotIbPF7dgo9ebkgMxGs=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=mqz77Jh/pvSzvMW/0fZuYq0RvrdCYd02weEVTsqDSApRDntexkS+3saX+Y0J5Hx/quk2YC/qO/Ah3jCWmMf49LP0aoYagbO1FhI6rj4G9eS3g/wUtCErX5dQRfXzQe60P+O9FzmqCyXMwTte41hPHaAq9Xdenl9Dm3zLnfUV+2w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hVxZjtbr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71CAFC4CEEB
-	for <linux-fscrypt@vger.kernel.org>; Sat, 14 Jun 2025 22:13:37 +0000 (UTC)
+	s=arc-20240116; t=1749963226; c=relaxed/simple;
+	bh=jKskpqcoXOguF1H1TjZ0pWmBZVDnOT0/xNqcoD0cSAE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Cop3fA0Y+VmkDss/3wxik55bKeBb8btHH/9XKnr48c0Ck0d+935PoyeOiRkdJHqwqDHT1YTH2on5ZpOnpZzwPD7/sh/u7nEGrCk0RW/6xM6W7z5LuT6J2/c4UetT9i0PXF3QYTb2CBcfG6mgpGXwtgoxsw8ftpN9yzEMvtNftDI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ho4jYYIK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 560C4C4CEE3;
+	Sun, 15 Jun 2025 04:53:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749939217;
-	bh=seUdFKqyM7+CWJNhmFM8iE/TotIbPF7dgo9ebkgMxGs=;
-	h=From:To:Subject:Date:From;
-	b=hVxZjtbr0lk7uYW6G7GQTBdWo2rl6jCRmafnZIJtrbh3/jNSZ9PCcC4upUYIo741C
-	 n98fnaDFq6zqRsgEw+2njOwRHipzWPfwoKsHWAb9Uc8mB2f8r9XWGMH/Up0rYGMrWL
-	 OY1dU3p4jL/VhQqzhn978ZsiPRUHjhC9IQMxaxRvWX+3lh/l5q8lnQiLz85ZAzBD2o
-	 XHwcFuvyFO1+mQLXjbACbgFi1oQq6Vefg4mHCMC3uzvT0RSkk1ZzARTVilahERxepV
-	 +P7u9aOqxadf5fj2fD0DcnwEob3O55EolCXx8TxkWo2+LUZg7vnX+twS4K2FTOzk9G
-	 rnXUQ9FuMNk5A==
+	s=k20201202; t=1749963225;
+	bh=jKskpqcoXOguF1H1TjZ0pWmBZVDnOT0/xNqcoD0cSAE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Ho4jYYIKxZ5jOqawvrhaEPBhEZPCrM8ChRozSncyaAqNV+riPwKkyanQnMEwAdbVm
+	 /XRV6xyzV0raa/vd5Vhy6VpZ8GrTZtwKLpy7aNs7hKsQojtsMYvTe4DMgacX8pDInr
+	 a0nfAZcxldXCif58iYfsInWiFqV6glddb5yOs9caUGyMCurbwn84kg4SOsvfVqmUGB
+	 Wo3qxBpEPl9p0JEvf41ii0/lxxoogeSXHuFEhDZ2/SG3fUxUxujR9c7exo5bBPUZzE
+	 GPlWpZSiPtJDcT+Br/m9zwgcOyyBKtPXd8G/lx6adWU0CoQnHdvVGNZu/NSTRtgW+q
+	 /J7vgLI1jS06A==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-fscrypt@vger.kernel.org
-Subject: [PATCH] fscrypt: explicitly include <linux/export.h>
-Date: Sat, 14 Jun 2025 15:13:01 -0700
-Message-ID: <20250614221301.100803-1-ebiggers@kernel.org>
+Cc: linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	ceph-devel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: [PATCH v2] fscrypt: don't use problematic non-inline crypto accelerators
+Date: Sat, 14 Jun 2025 21:51:45 -0700
+Message-ID: <20250615045145.224567-1-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
@@ -56,215 +63,180 @@ Content-Transfer-Encoding: 8bit
 
 From: Eric Biggers <ebiggers@google.com>
 
-Fix build warnings with W=1 that started appearing after
-commit a934a57a42f6 ("scripts/misc-check: check missing #include
-<linux/export.h> when W=1").
+Make fscrypt no longer use Crypto API drivers for non-inline crypto
+accelerators, even when the Crypto API prioritizes them over CPU-based
+code (which unfortunately it often does).  These drivers tend to be
+really problematic, especially for fscrypt's synchronous workload.
 
-While at it, also sort the include lists alphabetically.
+Specifically, exclude drivers that have CRYPTO_ALG_KERN_DRIVER_ONLY or
+CRYPTO_ALG_ALLOCATES_MEMORY set.  (Later, CRYPTO_ALG_ASYNC should be
+excluded too.  That's omitted for now to keep this commit backportable,
+since until recently some CPU-based code had CRYPTO_ALG_ASYNC set.)
 
+There are two major issues with these drivers: bugs and performance.
+
+First, these drivers tend to be buggy.  They're fundamentally much more
+error-prone and harder to test than the CPU-based code, and they often
+don't get tested before kernel releases.  Released drivers have
+en/decrypted data incorrectly.  These bugs cause real issues for fscrypt
+users who often didn't even want to use these drivers, for example:
+
+- https://github.com/google/fscryptctl/issues/32
+- https://github.com/google/fscryptctl/issues/9
+- https://lore.kernel.org/r/PH0PR02MB731916ECDB6C613665863B6CFFAA2@PH0PR02MB7319.namprd02.prod.outlook.com
+
+These drivers have also caused issues for dm-crypt users, including data
+corruption and deadlocks.  Since Linux v5.10, dm-crypt has disabled most
+of these drivers by excluding CRYPTO_ALG_ALLOCATES_MEMORY.
+
+Second, the CPU-based crypto tends to be faster, often *much* faster.
+This may seem counterintuitive, but benchmarks clearly show it.  There's
+a *lot* of overhead associated with going to a hardware driver, off the
+CPU, and back again.  Measuring synchronous AES-256-XTS encryption of
+4096-byte messages (fscrypt's workload) on two platforms with non-inline
+crypto accelerators that I have access to:
+
+  Intel Emerald Rapids server:
+
+     xts-aes-vaes-avx512:  16171 MB/s  [CPU-based, Vector AES]
+     xts(ecb(aes-generic)):  305 MB/s  [CPU-based, generic C code]
+     qat_aes_xts:            289 MB/s  [Offload, Intel QuickAssist]
+
+  Qualcomm SM8650 HDK:
+
+     xts-aes-ce:            4301 MB/s  [CPU-based, ARMv8 Crypto Extensions]
+     xts(ecb(aes-generic)):  265 MB/s  [CPU-based, generic C code]
+     xts-aes-qce:             73 MB/s  [Offload, Qualcomm Crypto Engine]
+
+So, using the "accelerators" is over 50 times slower than just using the
+CPU.  Not only that, it's even slower than the generic C code, which
+suggests that even on platforms whose CPUs lack AES instructions the
+performance benefit of any accelerator would be marginal at best.
+
+The usefulness of the accelerators could be improved with a different
+software architecture that allows blocks to be efficiently en/decrypted
+in parallel.  But fscrypt does not do that today, and even the async
+support in the Crypto API isn't really all that efficient.  And even if
+the accelerator was used perfectly efficiently, it seems unlikely to
+help on small I/O requests, for which latency is really important.
+
+As of this writing, the Crypto API prioritizes qat_aes_xts over
+xts-aes-vaes-avx512.  Therefore, this commit greatly improves fscrypt
+performance on Intel servers that have QAT and the QAT driver enabled.
+qat_aes_xts is going to be deprioritized in the Crypto API (like I did
+for xts-aes-qce recently too).  But as this seems to be a common pattern
+with all the "accelerators", fscrypt should just disable all of them.
+
+An argument that has been given in favor of non-inline crypto
+accelerators is that they can protect keys in hardware.  But fscrypt
+does not take advantage of that, so it is irrelevant.  (Also, it would
+be quite difficult for fscrypt to do that.)
+
+Note that fscrypt does support inline encryption engines, using raw or
+hardware-wrapped keys.  These actually do work well and are widely used.
+These do not use the "Crypto API" and are unaffected by this commit.
+
+Fixes: b30ab0e03407 ("ext4 crypto: add ext4 encryption facilities")
+Cc: stable@vger.kernel.org
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
 
-This patch applies to v6.16-rc1 and is targeting fscrypt/for-next.
+Changed in v2:
+- Improved commit message and comment
+- Dropped CRYPTO_ALG_ASYNC from the mask, to make this patch
+  backport-friendly
+- Added Fixes and Cc stable
 
- fs/crypto/bio.c          | 6 ++++--
- fs/crypto/crypto.c       | 8 +++++---
- fs/crypto/fname.c        | 6 ++++--
- fs/crypto/hkdf.c         | 2 +-
- fs/crypto/hooks.c        | 2 ++
- fs/crypto/inline_crypt.c | 1 +
- fs/crypto/keyring.c      | 5 +++--
- fs/crypto/keysetup.c     | 1 +
- fs/crypto/policy.c       | 4 +++-
- 9 files changed, 24 insertions(+), 11 deletions(-)
+ fs/crypto/fscrypt_private.h | 16 ++++++++++++++++
+ fs/crypto/hkdf.c            |  2 +-
+ fs/crypto/keysetup.c        |  3 ++-
+ fs/crypto/keysetup_v1.c     |  3 ++-
+ 4 files changed, 21 insertions(+), 3 deletions(-)
 
-diff --git a/fs/crypto/bio.c b/fs/crypto/bio.c
-index 0ad8c30b8fa50..13ad2dd771b64 100644
---- a/fs/crypto/bio.c
-+++ b/fs/crypto/bio.c
-@@ -5,14 +5,16 @@
-  *
-  * Copyright (C) 2015, Google, Inc.
-  * Copyright (C) 2015, Motorola Mobility
+diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+index c1d92074b65c5..0e95c7a095d49 100644
+--- a/fs/crypto/fscrypt_private.h
++++ b/fs/crypto/fscrypt_private.h
+@@ -43,10 +43,26 @@
+  * hardware-wrapped keys has made it misleading as it's only for raw keys.
+  * Don't use it in kernel code; use one of the above constants instead.
   */
+ #undef FSCRYPT_MAX_KEY_SIZE
  
--#include <linux/pagemap.h>
--#include <linux/module.h>
- #include <linux/bio.h>
-+#include <linux/export.h>
-+#include <linux/module.h>
- #include <linux/namei.h>
-+#include <linux/pagemap.h>
++/*
++ * This mask is passed as the third argument to the crypto_alloc_*() functions
++ * to prevent fscrypt from using the Crypto API drivers for non-inline crypto
++ * accelerators.  Those drivers have been problematic for fscrypt.  fscrypt
++ * users have reported hangs and even incorrect en/decryption with these
++ * drivers.  Since going to the driver, off CPU, and back again is really slow,
++ * such drivers can be over 50 times slower than the CPU-based code for
++ * fscrypt's synchronous workload.  Even on platforms that lack AES instructions
++ * on the CPU, any performance benefit is likely to be marginal at best.
++ *
++ * Note that fscrypt also supports inline encryption engines.  Those don't use
++ * the Crypto API and work much better than non-inline accelerators.
++ */
++#define FSCRYPT_CRYPTOAPI_MASK \
++	(CRYPTO_ALG_ALLOCATES_MEMORY | CRYPTO_ALG_KERN_DRIVER_ONLY)
 +
- #include "fscrypt_private.h"
+ #define FSCRYPT_CONTEXT_V1	1
+ #define FSCRYPT_CONTEXT_V2	2
  
- /**
-  * fscrypt_decrypt_bio() - decrypt the contents of a bio
-  * @bio: the bio to decrypt
-diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
-index b74b5937e695c..ddf6991d46da2 100644
---- a/fs/crypto/crypto.c
-+++ b/fs/crypto/crypto.c
-@@ -18,16 +18,18 @@
-  *
-  * The usage of AES-XTS should conform to recommendations in NIST
-  * Special Publication 800-38E and IEEE P1619/D16.
-  */
- 
--#include <linux/pagemap.h>
-+#include <crypto/skcipher.h>
-+#include <linux/export.h>
- #include <linux/mempool.h>
- #include <linux/module.h>
--#include <linux/scatterlist.h>
-+#include <linux/pagemap.h>
- #include <linux/ratelimit.h>
--#include <crypto/skcipher.h>
-+#include <linux/scatterlist.h>
-+
- #include "fscrypt_private.h"
- 
- static unsigned int num_prealloc_crypto_pages = 32;
- 
- module_param(num_prealloc_crypto_pages, uint, 0444);
-diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
-index 010f9c0a4c2f1..fb01dde0f2e55 100644
---- a/fs/crypto/fname.c
-+++ b/fs/crypto/fname.c
-@@ -9,15 +9,17 @@
-  * Modified by Jaegeuk Kim, 2015.
-  *
-  * This has not yet undergone a rigorous security audit.
-  */
- 
--#include <linux/namei.h>
--#include <linux/scatterlist.h>
- #include <crypto/hash.h>
- #include <crypto/sha2.h>
- #include <crypto/skcipher.h>
-+#include <linux/export.h>
-+#include <linux/namei.h>
-+#include <linux/scatterlist.h>
-+
- #include "fscrypt_private.h"
- 
- /*
-  * The minimum message length (input and output length), in bytes, for all
-  * filenames encryption modes.  Filenames shorter than this will be zero-padded
+ /* Keep this in sync with include/uapi/linux/fscrypt.h */
+ #define FSCRYPT_MODE_MAX	FSCRYPT_MODE_AES_256_HCTR2
 diff --git a/fs/crypto/hkdf.c b/fs/crypto/hkdf.c
-index 0f3028adc9c72..5c095c8aa3b5a 100644
+index 0f3028adc9c72..5b9c21cfe2b45 100644
 --- a/fs/crypto/hkdf.c
 +++ b/fs/crypto/hkdf.c
-@@ -6,12 +6,12 @@
-  *
-  * Copyright 2019 Google LLC
-  */
+@@ -56,11 +56,11 @@ int fscrypt_init_hkdf(struct fscrypt_hkdf *hkdf, const u8 *master_key,
+ 	struct crypto_shash *hmac_tfm;
+ 	static const u8 default_salt[HKDF_HASHLEN];
+ 	u8 prk[HKDF_HASHLEN];
+ 	int err;
  
- #include <crypto/hash.h>
--#include <crypto/sha2.h>
- #include <crypto/hkdf.h>
-+#include <crypto/sha2.h>
- 
- #include "fscrypt_private.h"
- 
- /*
-  * HKDF supports any unkeyed cryptographic hash algorithm, but fscrypt uses
-diff --git a/fs/crypto/hooks.c b/fs/crypto/hooks.c
-index d8d5049b8fe1f..e0b32ac841f76 100644
---- a/fs/crypto/hooks.c
-+++ b/fs/crypto/hooks.c
-@@ -3,10 +3,12 @@
-  * fs/crypto/hooks.c
-  *
-  * Encryption hooks for higher-level filesystem operations.
-  */
- 
-+#include <linux/export.h>
-+
- #include "fscrypt_private.h"
- 
- /**
-  * fscrypt_file_open() - prepare to open a possibly-encrypted regular file
-  * @inode: the inode being opened
-diff --git a/fs/crypto/inline_crypt.c b/fs/crypto/inline_crypt.c
-index 1d008c440cb69..caaff809765b2 100644
---- a/fs/crypto/inline_crypt.c
-+++ b/fs/crypto/inline_crypt.c
-@@ -13,10 +13,11 @@
-  */
- 
- #include <linux/blk-crypto.h>
- #include <linux/blkdev.h>
- #include <linux/buffer_head.h>
-+#include <linux/export.h>
- #include <linux/sched/mm.h>
- #include <linux/slab.h>
- #include <linux/uio.h>
- 
- #include "fscrypt_private.h"
-diff --git a/fs/crypto/keyring.c b/fs/crypto/keyring.c
-index ace369f130683..7557f6a88b8f3 100644
---- a/fs/crypto/keyring.c
-+++ b/fs/crypto/keyring.c
-@@ -16,16 +16,17 @@
-  *
-  * See the "User API" section of Documentation/filesystems/fscrypt.rst for more
-  * information about these ioctls.
-  */
- 
--#include <linux/unaligned.h>
- #include <crypto/skcipher.h>
-+#include <linux/export.h>
- #include <linux/key-type.h>
--#include <linux/random.h>
- #include <linux/once.h>
-+#include <linux/random.h>
- #include <linux/seq_file.h>
-+#include <linux/unaligned.h>
- 
- #include "fscrypt_private.h"
- 
- /* The master encryption keys for a filesystem (->s_master_keys) */
- struct fscrypt_keyring {
+-	hmac_tfm = crypto_alloc_shash(HKDF_HMAC_ALG, 0, 0);
++	hmac_tfm = crypto_alloc_shash(HKDF_HMAC_ALG, 0, FSCRYPT_CRYPTOAPI_MASK);
+ 	if (IS_ERR(hmac_tfm)) {
+ 		fscrypt_err(NULL, "Error allocating " HKDF_HMAC_ALG ": %ld",
+ 			    PTR_ERR(hmac_tfm));
+ 		return PTR_ERR(hmac_tfm);
+ 	}
 diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index 0d71843af9469..a67e20d126c9b 100644
+index 0d71843af9469..d8113a7196979 100644
 --- a/fs/crypto/keysetup.c
 +++ b/fs/crypto/keysetup.c
-@@ -7,10 +7,11 @@
-  * Originally written by Michael Halcrow, Ildar Muslukhov, and Uday Savagaonkar.
-  * Heavily modified since then.
-  */
+@@ -101,11 +101,12 @@ fscrypt_allocate_skcipher(struct fscrypt_mode *mode, const u8 *raw_key,
+ 			  const struct inode *inode)
+ {
+ 	struct crypto_skcipher *tfm;
+ 	int err;
  
- #include <crypto/skcipher.h>
-+#include <linux/export.h>
- #include <linux/random.h>
+-	tfm = crypto_alloc_skcipher(mode->cipher_str, 0, 0);
++	tfm = crypto_alloc_skcipher(mode->cipher_str, 0,
++				    FSCRYPT_CRYPTOAPI_MASK);
+ 	if (IS_ERR(tfm)) {
+ 		if (PTR_ERR(tfm) == -ENOENT) {
+ 			fscrypt_warn(inode,
+ 				     "Missing crypto API support for %s (API name: \"%s\")",
+ 				     mode->friendly_name, mode->cipher_str);
+diff --git a/fs/crypto/keysetup_v1.c b/fs/crypto/keysetup_v1.c
+index b70521c55132b..158ceae8a5bce 100644
+--- a/fs/crypto/keysetup_v1.c
++++ b/fs/crypto/keysetup_v1.c
+@@ -50,11 +50,12 @@ static int derive_key_aes(const u8 *master_key,
+ {
+ 	int res = 0;
+ 	struct skcipher_request *req = NULL;
+ 	DECLARE_CRYPTO_WAIT(wait);
+ 	struct scatterlist src_sg, dst_sg;
+-	struct crypto_skcipher *tfm = crypto_alloc_skcipher("ecb(aes)", 0, 0);
++	struct crypto_skcipher *tfm =
++		crypto_alloc_skcipher("ecb(aes)", 0, FSCRYPT_CRYPTOAPI_MASK);
  
- #include "fscrypt_private.h"
- 
- struct fscrypt_mode fscrypt_modes[] = {
-diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
-index 701259991277e..6ad30ae07c065 100644
---- a/fs/crypto/policy.c
-+++ b/fs/crypto/policy.c
-@@ -8,15 +8,17 @@
-  * Originally written by Michael Halcrow, 2015.
-  * Modified by Jaegeuk Kim, 2015.
-  * Modified by Eric Biggers, 2019 for v2 policy support.
-  */
- 
-+#include <linux/export.h>
- #include <linux/fs_context.h>
-+#include <linux/mount.h>
- #include <linux/random.h>
- #include <linux/seq_file.h>
- #include <linux/string.h>
--#include <linux/mount.h>
-+
- #include "fscrypt_private.h"
- 
- /**
-  * fscrypt_policies_equal() - check whether two encryption policies are the same
-  * @policy1: the first policy
+ 	if (IS_ERR(tfm)) {
+ 		res = PTR_ERR(tfm);
+ 		tfm = NULL;
+ 		goto out;
 
 base-commit: 19272b37aa4f83ca52bdf9c16d5d81bdd1354494
 -- 
