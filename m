@@ -1,77 +1,97 @@
-Return-Path: <linux-fscrypt+bounces-673-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-674-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EACAADBFD5
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 17 Jun 2025 05:25:58 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CAF1AE0E0C
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 19 Jun 2025 21:32:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98A243B471C
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 17 Jun 2025 03:25:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF5847A1AAF
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 19 Jun 2025 19:31:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC3AA194A65;
-	Tue, 17 Jun 2025 03:25:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E639730E83E;
+	Thu, 19 Jun 2025 19:32:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VKOIvpCG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EZ/KQB6f"
 X-Original-To: linux-fscrypt@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A76D6143C61
-	for <linux-fscrypt@vger.kernel.org>; Tue, 17 Jun 2025 03:25:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C183330E82B
+	for <linux-fscrypt@vger.kernel.org>; Thu, 19 Jun 2025 19:32:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750130755; cv=none; b=vAHA6LGdt1BT5D7QyzkzQzdnWPzKhveNoyGlOmBfTEZJ8yZj/ReKbSEtlR8zocVxX9qj5bLJn5sA7p1API04OrEECmeTI+nuXU9IaQCBA9lPVFjgHKwQ7eNcaJn8/1jo8cGj0hxPmWwQK1BVb/H0355zLI8ZxrHxoCtOdJf2aT4=
+	t=1750361554; cv=none; b=HO2ans2XDp2JnU197GwudmuMZ5MDJq6a+kPTutAwsf9jD2AibvP0pLdvL3bKzbXGgUyqPGihLfye38RLPLag7+JCJ2MXxT4htWOVXsgw4Z7zSMFzVxhH4cMF+nAelkjXz2jOaFMJ6dMZp53K8IeQAO6gfdxnOVvMRCX0HPyC4S0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750130755; c=relaxed/simple;
-	bh=n7GUS/C4C+uqwt/whTfcDFpi79egd2Un4QOqhOT8CX4=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XhbuzUTnzCyfeCkvGCeXJpeooeqWCgBEWnRPGDa8hoGtwr30gW7N53EPOXMbNSxSz4RxsYMhmP+yBb00iIOHBOvzyDZef6dwl12r5YLcCfMsR036ALTv/zZwEUMFrBFQTmepQ/tjDkZ66b4OgjLUI1UBrNBNkBp8YhSd6Vz1oTg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VKOIvpCG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E32FC4CEEA
-	for <linux-fscrypt@vger.kernel.org>; Tue, 17 Jun 2025 03:25:55 +0000 (UTC)
+	s=arc-20240116; t=1750361554; c=relaxed/simple;
+	bh=ZD6pPs7Oet5E4cXNVHbncT/yNS0lXqmv6p4pqwP9XrQ=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=AdU1xYHNJMjaqQQJDHmE+rpmPmRNYgyJMytWeq3fEb9xA9SEVpgijSC0XcimrzKrndfBtKL1J01j9lxCK+eiCf1TbI6EfszmMfJRe2Ah42mVr++1moBlnSvouNPQhnSJKaw2hUa0OgEBS1GZL1pCin17UjDIMyYBENK+N8/5yjk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EZ/KQB6f; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53F95C4CEEA
+	for <linux-fscrypt@vger.kernel.org>; Thu, 19 Jun 2025 19:32:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750130755;
-	bh=n7GUS/C4C+uqwt/whTfcDFpi79egd2Un4QOqhOT8CX4=;
-	h=Date:From:To:Subject:References:In-Reply-To:From;
-	b=VKOIvpCGiXRDx9h5HA5nV/82FxJ6+EG29ZQlhS/lZDVnU3GnIsUAXtWNinuZez48g
-	 UcZnFt7telC6Qvw6WNbatbparo903tvRbp0pgtThZtfMsqSGmPpCAx7+TbbWASg0gQ
-	 wWTsoIHaHtPBGcU+Vrx3jr5ARSpmgbfGCyqsNbdHhUmVWZDfxnUCBWa/vYkYaa7nFB
-	 z4/IluUadL3uNCiL1/ZLb4vQCImctHKIr+XFZzqKcGAx+hF3/dd59ocfT4ulKcrlXg
-	 FhKAzGg4u2+Hxn1PJwFjttVeoiKUZY0TIVEC5QuoeCSe87sV56UitXns5E2SpH/W1L
-	 j4SgegNzJUSjw==
-Date: Mon, 16 Jun 2025 20:25:25 -0700
+	s=k20201202; t=1750361554;
+	bh=ZD6pPs7Oet5E4cXNVHbncT/yNS0lXqmv6p4pqwP9XrQ=;
+	h=From:To:Subject:Date:From;
+	b=EZ/KQB6fLrGj4YAIoIW9dpiV/7FL5ufVl1cLIM8JzEtH4l5peguYpgSR7ukofjsrC
+	 h65SpPeDmB1dKtHk/XAZiWb2h2+xisQEFtE3aMVNOJJBAePQ7gWw7EXohd8OpiYJM+
+	 xI61NDubPNLvz77EdbBPNWLgpfCmlVMtFyiltqfyIaxBXQsvsbyHKYh54OOOZYLLnf
+	 aB46XKT+Jf5ZKI1tmA8aj/jlz/xs2kYxrqY6Fmtgtl+zpxgbiQxAZZUj3lKlEay7EN
+	 nvc1cwoTYZVlp3QUx/+iyESTknT4eRP2S4to7Syj3HxJZErGr9fbG1h7eA0P8bJDB5
+	 CE/c1BYUF6w5A==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH] fscrypt: explicitly include <linux/export.h>
-Message-ID: <20250617032525.GB8289@sol>
-References: <20250614221301.100803-1-ebiggers@kernel.org>
+Subject: [PATCH] fscrypt: drop obsolete recommendation to enable optimized SHA-512
+Date: Thu, 19 Jun 2025 12:31:49 -0700
+Message-ID: <20250619193149.138315-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.50.0
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250614221301.100803-1-ebiggers@kernel.org>
+Content-Transfer-Encoding: 8bit
 
-On Sat, Jun 14, 2025 at 03:13:01PM -0700, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> Fix build warnings with W=1 that started appearing after
-> commit a934a57a42f6 ("scripts/misc-check: check missing #include
-> <linux/export.h> when W=1").
-> 
-> While at it, also sort the include lists alphabetically.
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
-> 
-> This patch applies to v6.16-rc1 and is targeting fscrypt/for-next.
+From: Eric Biggers <ebiggers@google.com>
 
-Applied to https://git.kernel.org/pub/scm/fs/fscrypt/linux.git/log/?h=for-next
+Since the crypto kconfig options are being fixed to enable optimized
+SHA-512 automatically
+(https://lore.kernel.org/linux-crypto/20250616014019.415791-1-ebiggers@kernel.org/),
+it is no longer necessary to give a recommendation to enable it.
 
-- Eric
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ Documentation/filesystems/fscrypt.rst | 8 --------
+ 1 file changed, 8 deletions(-)
+
+diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
+index 29e84d125e024..f63791641c1d9 100644
+--- a/Documentation/filesystems/fscrypt.rst
++++ b/Documentation/filesystems/fscrypt.rst
+@@ -466,18 +466,10 @@ API, but the filenames mode still does.
+         - CONFIG_CRYPTO_ESSIV
+         - CONFIG_CRYPTO_SHA256 or another SHA-256 implementation
+     - Recommended:
+         - AES-CBC acceleration
+ 
+-fscrypt also uses HMAC-SHA512 for key derivation, so enabling SHA-512
+-acceleration is recommended:
+-
+-- SHA-512
+-    - Recommended:
+-        - arm64: CONFIG_CRYPTO_SHA512_ARM64_CE
+-        - x86: CONFIG_CRYPTO_SHA512_SSSE3
+-
+ Contents encryption
+ -------------------
+ 
+ For contents encryption, each file's contents is divided into "data
+ units".  Each data unit is encrypted independently.  The IV for each
+
+base-commit: 19272b37aa4f83ca52bdf9c16d5d81bdd1354494
+-- 
+2.50.0
+
 
