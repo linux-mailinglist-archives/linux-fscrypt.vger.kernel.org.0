@@ -1,97 +1,131 @@
-Return-Path: <linux-fscrypt+bounces-674-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-675-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CAF1AE0E0C
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 19 Jun 2025 21:32:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C12E2AE7722
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 25 Jun 2025 08:34:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF5847A1AAF
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 19 Jun 2025 19:31:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A0421BC0F11
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 25 Jun 2025 06:34:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E639730E83E;
-	Thu, 19 Jun 2025 19:32:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF0551DE4E1;
+	Wed, 25 Jun 2025 06:33:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EZ/KQB6f"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bgakoUfA"
 X-Original-To: linux-fscrypt@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C183330E82B
-	for <linux-fscrypt@vger.kernel.org>; Thu, 19 Jun 2025 19:32:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 839C718A6C4;
+	Wed, 25 Jun 2025 06:33:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750361554; cv=none; b=HO2ans2XDp2JnU197GwudmuMZ5MDJq6a+kPTutAwsf9jD2AibvP0pLdvL3bKzbXGgUyqPGihLfye38RLPLag7+JCJ2MXxT4htWOVXsgw4Z7zSMFzVxhH4cMF+nAelkjXz2jOaFMJ6dMZp53K8IeQAO6gfdxnOVvMRCX0HPyC4S0=
+	t=1750833207; cv=none; b=q0Mtvqg49RjpPKy1CdxWbcdX9NfASH7u8UH4hkzttNpRqH1NpytXWJ37LyN9BePeb2N+XJ2Kgwq28Fc1plGTKaZfLLkt9RTNDJElQq0q8GaUDO6XKA3jrYgakE/lSMV8kXAN8JKiVTUQl1u+fkK4Fmue0p51KQQaK/ihAEpRz9w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750361554; c=relaxed/simple;
-	bh=ZD6pPs7Oet5E4cXNVHbncT/yNS0lXqmv6p4pqwP9XrQ=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=AdU1xYHNJMjaqQQJDHmE+rpmPmRNYgyJMytWeq3fEb9xA9SEVpgijSC0XcimrzKrndfBtKL1J01j9lxCK+eiCf1TbI6EfszmMfJRe2Ah42mVr++1moBlnSvouNPQhnSJKaw2hUa0OgEBS1GZL1pCin17UjDIMyYBENK+N8/5yjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EZ/KQB6f; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53F95C4CEEA
-	for <linux-fscrypt@vger.kernel.org>; Thu, 19 Jun 2025 19:32:34 +0000 (UTC)
+	s=arc-20240116; t=1750833207; c=relaxed/simple;
+	bh=KvBZdCVe3bjcds3toNzSaotNrJRp/h1SfSaoHVQtlow=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TrXVgB4LgvkYBGSgSYUjJp/+4VJK5bEka0fU3lDXN8fMWcLIyhiN45JWFTwI+Is1TCVmXmcg/DwaokWmNkiRaQ8mCAylvk3vKgxgzyjdzKisS0se4DCq9U2ujylgThLVk7jA+G6iVvkswxPYKgA4TnLC2I4e2Wq3vnP3BZWv/7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bgakoUfA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7B4DC4CEEA;
+	Wed, 25 Jun 2025 06:33:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750361554;
-	bh=ZD6pPs7Oet5E4cXNVHbncT/yNS0lXqmv6p4pqwP9XrQ=;
-	h=From:To:Subject:Date:From;
-	b=EZ/KQB6fLrGj4YAIoIW9dpiV/7FL5ufVl1cLIM8JzEtH4l5peguYpgSR7ukofjsrC
-	 h65SpPeDmB1dKtHk/XAZiWb2h2+xisQEFtE3aMVNOJJBAePQ7gWw7EXohd8OpiYJM+
-	 xI61NDubPNLvz77EdbBPNWLgpfCmlVMtFyiltqfyIaxBXQsvsbyHKYh54OOOZYLLnf
-	 aB46XKT+Jf5ZKI1tmA8aj/jlz/xs2kYxrqY6Fmtgtl+zpxgbiQxAZZUj3lKlEay7EN
-	 nvc1cwoTYZVlp3QUx/+iyESTknT4eRP2S4to7Syj3HxJZErGr9fbG1h7eA0P8bJDB5
-	 CE/c1BYUF6w5A==
+	s=k20201202; t=1750833207;
+	bh=KvBZdCVe3bjcds3toNzSaotNrJRp/h1SfSaoHVQtlow=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bgakoUfAtI3aZ6TL8fY22KKltCf5IxNhnzJ2oiyuuI/GEIHZVXnwJ10tWdkSvPitL
+	 /7bgjo9d0xQe1/8gpM9TBWDxFi/Ea0rEL81mSYagOjUKrHIXs7lqZdbBqzmHFzyv8u
+	 ZWO+dWfZgHmJ/TMTmP0277ODQYtrlhMqpajvswJ8zCCo09C9Bj7uSHR7SGVz+9SwGl
+	 KSwIFk6u+iudkaHqeTJb2dbajWY0742z1b6HWGCzoj5/myPz3cCTRLT7guhEKxa1Ue
+	 qWBczEoXOLdeLmUv9Qp8JOrF2q6gevGPPGRKDXQ/LfFR2ZmiDmtFXt9weQocqTrCp1
+	 Hz6xQ9sygvLRQ==
+Date: Tue, 24 Jun 2025 23:32:52 -0700
 From: Eric Biggers <ebiggers@kernel.org>
-To: linux-fscrypt@vger.kernel.org
-Subject: [PATCH] fscrypt: drop obsolete recommendation to enable optimized SHA-512
-Date: Thu, 19 Jun 2025 12:31:49 -0700
-Message-ID: <20250619193149.138315-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.50.0
+To: Simon Richter <Simon.Richter@hogyros.de>
+Cc: linux-fscrypt@vger.kernel.org, linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+	ceph-devel@vger.kernel.org
+Subject: Re: [PATCH] fscrypt: don't use hardware offload Crypto API drivers
+Message-ID: <20250625063252.GD8962@sol>
+References: <20250611205859.80819-1-ebiggers@kernel.org>
+ <7f63be76-289b-4a99-b802-afd72e0512b8@hogyros.de>
+ <20250612005914.GA546455@google.com>
+ <20250612062521.GA1838@sol>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250612062521.GA1838@sol>
 
-From: Eric Biggers <ebiggers@google.com>
+On Wed, Jun 11, 2025 at 11:25:21PM -0700, Eric Biggers wrote:
+> On Thu, Jun 12, 2025 at 12:59:14AM +0000, Eric Biggers wrote:
+> > On Thu, Jun 12, 2025 at 09:21:26AM +0900, Simon Richter wrote:
+> > > Hi,
+> > > 
+> > > On 6/12/25 05:58, Eric Biggers wrote:
+> > > 
+> > > > But
+> > > > otherwise this style of hardware offload is basically obsolete and has
+> > > > been superseded by hardware-accelerated crypto instructions directly on
+> > > > the CPU as well as inline storage encryption (UFS/eMMC).
+> > > 
+> > > For desktop, yes, but embedded still has quite a few of these, for example
+> > > the STM32 crypto offload engine
+> 
+> By the way, I noticed you specifically mentioned STM32.  I'm not sure if you
+> looked at the links I had in my commit message, but one of them
+> (https://github.com/google/fscryptctl/issues/32) was actually for the STM32
+> driver being broken and returning the wrong results, which broke filename
+> encryption.  The user fixed the issue by disabling the STM32 driver, and they
+> seemed okay with that.
+> 
+> That doesn't sound like something useful, IMO.  It sounds more like something
+> actively harmful to users.
+> 
+> Here's another one I forgot to mention:
+> https://github.com/google/fscryptctl/issues/9
+> 
+> I get blamed for these issues, because it's fscrypt that breaks.
 
-Since the crypto kconfig options are being fixed to enable optimized
-SHA-512 automatically
-(https://lore.kernel.org/linux-crypto/20250616014019.415791-1-ebiggers@kernel.org/),
-it is no longer necessary to give a recommendation to enable it.
+Since two people were pushing the STM32 crypto engine in this thread:
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- Documentation/filesystems/fscrypt.rst | 8 --------
- 1 file changed, 8 deletions(-)
+I measured decryption throughput on 4 KiB messages on an STM32MP157F-DK2.  This
+is an embedded evaluation board that includes an STM32 crypto engine and has an
+800 MHz Cortex-A7 processor.  Cortex-A7 doesn't have AES instructions:
 
-diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
-index 29e84d125e024..f63791641c1d9 100644
---- a/Documentation/filesystems/fscrypt.rst
-+++ b/Documentation/filesystems/fscrypt.rst
-@@ -466,18 +466,10 @@ API, but the filenames mode still does.
-         - CONFIG_CRYPTO_ESSIV
-         - CONFIG_CRYPTO_SHA256 or another SHA-256 implementation
-     - Recommended:
-         - AES-CBC acceleration
- 
--fscrypt also uses HMAC-SHA512 for key derivation, so enabling SHA-512
--acceleration is recommended:
--
--- SHA-512
--    - Recommended:
--        - arm64: CONFIG_CRYPTO_SHA512_ARM64_CE
--        - x86: CONFIG_CRYPTO_SHA512_SSSE3
--
- Contents encryption
- -------------------
- 
- For contents encryption, each file's contents is divided into "data
- units".  Each data unit is encrypted independently.  The IV for each
+    AES-128-CBC-ESSIV:
+        essiv(stm32-cbc-aes,sha256-arm):
+            3.1 MB/s
+        essiv(cbc-aes-neonbs,sha256-arm): 
+            15.5 MB/s
 
-base-commit: 19272b37aa4f83ca52bdf9c16d5d81bdd1354494
--- 
-2.50.0
+    AES-256-XTS:
+        xts(stm32-ecb-aes):
+            3.1 MB/s
+        xts-aes-neonbs:
+            11.0 MB/s
+            
+    Adiantum:
+        adiantum(xchacha12-arm,aes-arm,nhpoly1305-neon):
+            53.1 MB/s
 
+That was the synchronous throughput.  However, submitting multiple requests
+asynchronously (which again, fscrypt doesn't actually do) barely helps.
+Apparently the STM32 crypto engine has only one hardware queue.
+
+I already strongly suspected that these non-inline crypto engines aren't worth
+using.  But I didn't realize they are quite this bad.  Even with AES on a
+Cortex-A7 CPU that lacks AES instructions, the CPU is much faster!
+
+But of course Adiantum is even faster, as it was specifically designed for CPUs
+that don't have AES instructions.
+
+- Eric
 
