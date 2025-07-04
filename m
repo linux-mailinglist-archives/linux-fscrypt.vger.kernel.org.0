@@ -1,77 +1,80 @@
-Return-Path: <linux-fscrypt+bounces-683-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-684-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B662AF6A45
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  3 Jul 2025 08:28:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62721AF86C4
+	for <lists+linux-fscrypt@lfdr.de>; Fri,  4 Jul 2025 06:30:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23AF63BB3B5
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  3 Jul 2025 06:28:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D2DE816E6CE
+	for <lists+linux-fscrypt@lfdr.de>; Fri,  4 Jul 2025 04:29:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89D80291C1A;
-	Thu,  3 Jul 2025 06:28:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 994CB1EF375;
+	Fri,  4 Jul 2025 04:24:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="yPQ8Hje4"
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="in8sYwCZ"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from out162-62-58-216.mail.qq.com (out162-62-58-216.mail.qq.com [162.62.58.216])
+Received: from xmbghk7.mail.qq.com (xmbghk7.mail.qq.com [43.163.128.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0504934CF5;
-	Thu,  3 Jul 2025 06:28:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.58.216
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 210D51F03D5;
+	Fri,  4 Jul 2025 04:24:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.163.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751524107; cv=none; b=eOiDnEc9+NsM3R2V+H/6bcS51/B64k7M4LBEf4evgafS2VzodvhvVIzqV4FGYicy7waneDgLhsKP987oheAuY2VqWM1JrTS4YyTI7HTDgTKVx9puWAeMUNgW4llegXHQJdzTUSXCWdgjiCY2xsL/Czc+Nw+5zJwvj7VTUiU0kgE=
+	t=1751603093; cv=none; b=TgyASH/kVHj9JSNQ28ue43mQE6C0t0KlLc4r7oX7kuMm7ynnFy2+K7UjPBVJW2dl+a6A8ypZpjwVNZCSJU9EMtuMPnWJvQM5Zcb8aVwk054Ps2JvJA3R19thck8+luAhmE412dLMeIRcXuVqn68sBVQ44yB00Buanvtp7/8NDj8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751524107; c=relaxed/simple;
-	bh=k2fQ15blhXnokoZCixT/LqKBpaoOPiZz7TLHKu3xLxE=;
-	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=XiSIWW1AAav4UrZUcrrz7Me8iIJ+RU3eKxDqcywDsU+M0vg9FVCpm/SUW+ahTI8ZN8Lc9v7bFKV1jUSsMStlwKm9dtG0cH63jzIF6pNef4wIFJMgV7pIY6bUDgGcRlKQ/xnuH8rLN2kQYG155cagzDm815KuomSV8QnbRltxKiU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=yPQ8Hje4; arc=none smtp.client-ip=162.62.58.216
+	s=arc-20240116; t=1751603093; c=relaxed/simple;
+	bh=i9caz6yz/k0aha4xAwtlSBZ8FnbLb9IR1W5kvZkLDnk=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=OUGNs7ugL1ua/GmBn2Nw+pdnVQRB+OAZcA/SbapweTPOYiwIafGcQwepvRVwa8VJUgsxgfP1dbRB+UrafJl2YRPBv3Z7WNPhtpY67WrmwPic51s0MQeJgNr+/RqNml2zLtC9pdhD3bTFR7qfDebdhlhBil1bYH1mThWTkETUEqw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=in8sYwCZ; arc=none smtp.client-ip=43.163.128.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1751523797;
-	bh=nE5o0ZqeNH5gAh0+GhcCOmyyvJ/oaeaGfaV8MIneIgk=;
-	h=From:To:Cc:Subject:Date;
-	b=yPQ8Hje4K5Rz2pz7rPuUdFaKpeGnsnW6ZKqh6DJvGKFxwFZm86d3AJ4b2l0DhxhDQ
-	 xTh8ehxF1h5X/0e9HdKrM+NHRuq2eFX/CUllhDEMbl2TXWH7VEXLfgykgRFqG1R9no
-	 NNs9jdKyKoo7nExLuWVG2jxYhKKEu2fu5SUDbl/s=
-Received: from meizu-Precision-3660.meizu.com ([14.21.33.154])
-	by newxmesmtplogicsvrsza28-0.qq.com (NewEsmtp) with SMTP
-	id 5CF33025; Thu, 03 Jul 2025 14:23:15 +0800
-X-QQ-mid: xmsmtpt1751523795tikroen7m
-Message-ID: <tencent_D06DEE8D71295798F385BCC52FACAE96A207@qq.com>
-X-QQ-XMAILINFO: MMwjR1C73eIs3QfeLzO2lVtLnj7bWfRMm+8Iu0tVq8lBrc+Mi/7zpRftqsC4Ri
-	 1fRium/jka+geMb5PIdCC69ZnQ0NMT4kzyQJS3hg7IplUlc81FMbJS+cojkr6C2Bk2EtsnGI/vxY
-	 krvAPKvVhdo8+UIq5J/kc4penx/O/3ZFBGt8Xk+r2R780k/b2a6akT2+3wOyfR8xkVUTeEwyGfv6
-	 DnuMPJxxLbYQkg56ZPmptat9fdKz7rmhFGP+PylC71fwSfNVdIKTyNTA/84RLkCu68EwjBve5imp
-	 CwN37vk6C9KwXmy4xH64r48lPIbDAQRRwQRmvIkX3RyXP3NrGiM6hcawzxfqQllVnMttX+cU8r+Z
-	 erOjQ50Ae/17BLE269goMX5zA9GN7v8NWPV3mnVHsg76xnBj6Vrm7RveJLAuivF4unib933y2x40
-	 rB28NWy2cWWJRPCFgEwY7yzIM8F9cZ5+8Gmm+xYWhnH375TutQ/wG9L2idy1EEW1p1XmYGFAMjXR
-	 DoHEU9Nnfb0vBnFAO5rg3twDSvki62rA16hEc4QjVDZ8H6rDCnzEbQL4ZzxXAj0ClXLX8tFPVXRn
-	 QRVLxxHNSvYOGbbNvy+CMbLOTHV7jYAxc+DlsmdfkFKbvcC+bPdJ77VblOuKc8jPaOR2tic/bwGZ
-	 JhqiodUEP4DvymwKvF+QXzv8J6XgbbXZ/ISO3AbgG3RDVgmK3GlRT9uJf+TC2qtOqPIOI/p9bA7w
-	 UE78ZWNVzIq72TT4+LkEqfZLoZ3DTZbuyL+pUwTQ8eO0PnYXUOq7rUBUp4lv4Y3p49viJEacU8LY
-	 oqiudUAlYvszwWMeYusMXnb7oU1vEbfnUWJ8Lri0uLKF7+nbHd0B5CIK40aLV5RPndm2h8Gf5TOH
-	 2SrEYqwJE2qriBBq83IEk+4gbK0ZEiIl14kPPydDYxb6V5a7zVQaxJeIQflilCzPtWj2DQesS4OA
-	 kSyilN/9oF6//2nJ6ydnbepamIQa4+zhKi9apeIb+QAdrMW0nKsUQ3Af85K62FzgAz00pBTZeI/c
-	 e3Zg+eSAF117X1/pPuzkRsGqxGdfAi8NQhV9fRRg==
-X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
+	s=s201512; t=1751602780;
+	bh=d8G3ursgmpgGAC/Br6jukg9RoUoOyYy7C+7W30RrUm4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=in8sYwCZQFU6bE5QtvFi4Kv2MPiwrdSq8EXM1wS+mofFSdapCMZwb0FQKL97RGak2
+	 IZ9YIJ1ghqphWXD71mWDEIOjzMFOGUBWq0ItTnVYjCCmVQxHWSmCxf/WS31gr08FpG
+	 Ou6V7UIUQrGiyhTZepBQAs+bo0fgdsrm8awteNCM=
+Received: from meizu-Precision-3660.meizu.com ([14.21.33.153])
+	by newxmesmtplogicsvrsza36-0.qq.com (NewEsmtp) with SMTP
+	id 35B3D4E2; Fri, 04 Jul 2025 12:13:27 +0800
+X-QQ-mid: xmsmtpt1751602407twnhm2552
+Message-ID: <tencent_583C288FFF6BA70BAF0880FB7A5CCAB5EA05@qq.com>
+X-QQ-XMAILINFO: OQhZ3T0tjf0aLXs2QmI1IVU7O0NPyLtLJqRRO7hxSTqGWk14G6UCzNOm3dcD+S
+	 e//JSJMcGsMlb2UZN74vBykxLMchwL8oq9Xng1a0avozdF166wybEdjQ87lYOPFMOn1a0ySVwGbZ
+	 aQhY6UjeGlLPpJpZINaTQiHAOyRcK7ORKvO0h+NHbcq0wRHVQB+BRvO1UUSVTk3fi1vXOzhhbbpk
+	 UhMDYvnLPc0Kyotk85k7N/PJERtJzFi+UQjyrLIUx1LZGkddeLJdnLLUzuO1yAQ8elfbjHXN4kii
+	 gV58Qd1e5s0xG5yXjLlbOV6Z1fjQ+XQBiP/zMxpEqnbyHspTUnKIc8o+w8YyvptskVzrM+9wlu9r
+	 4Jat8Mev+ZZcuYvroK+5ZKJZLG7N677kJ5vnk7w5IDb2f8ZOzVC0Xih+VYph8/VXIoBXWqfEpEpm
+	 3wSrKQ+XauHS5VNriBjPUY8sSHaUP7P9ftPtYkhXQhcGmcirF+ivKQnG/BST7JaMAi5ZnqKwGIId
+	 NyqToambFjfLWaUNUfoyHRraEnPhHCpPbqkofnlOqJLEK2togm0PU9oxsFDs4EZ7PzJyZ8/IsN1t
+	 UmwXPTpj2Yx+tBSEH3XREDolMoHUDZBWVmEh7+pXhMwYM+LkyY4OZV6jIxiYEpcNPkxarVzeku6f
+	 NMYya+dpijxZRhBfYQKQq1JfSqGqdAzAI4ejuAZdqfyaDKSwpzhUfkZ70L+oCsfL+itDmsdQHvJw
+	 YzUZdZcG0Uqfo19pr83bmULuDUxIu80NUIQ4pZNfqkTg70zbO7XvBF4GSyS8+eEA/pgXc0LeNpfK
+	 +3nJX6I859noUYcukuGENvxeM3oNSaQ/G/IeHf49XVDNtaKgS5knp1f6VHxKLRjMxTyjOqGqnLTg
+	 H6WHrmF9fwmsgM9HyFwvr4n8E5XI63igGFGDfEaGqe1gy1DoG+Wv2k9PxcVxMayZuXkh/a+MY087
+	 vxluIXJbQxie5LEioJW2/bU52fQEMY9lfxunQo0j9uy79aXT0QWd40EfG9qYAZRDtyfRZwMWoLow
+	 tXPuVs/4ynH8khU9L+GKKBmRmbdpo=
+X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
 From: Yuwen Chen <ywen.chen@foxmail.com>
-To: ebiggers@kernel.org,
-	tytso@mit.edu,
+To: ywen.chen@foxmail.com
+Cc: davem@davemloft.net,
+	ebiggers@kernel.org,
 	herbert@gondor.apana.org.au,
-	davem@davemloft.net,
-	jaegeuk@kernel.org
-Cc: linux-fscrypt@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
+	jaegeuk@kernel.org,
 	linux-crypto@vger.kernel.org,
-	Yuwen Chen <ywen.chen@foxmail.com>
-Subject: [PATCH] fscrypt: improve filename encryption and decryption performance
-Date: Thu,  3 Jul 2025 14:19:01 +0800
-X-OQ-MSGID: <20250703061901.3662034-1-ywen.chen@foxmail.com>
+	linux-fscrypt@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	tytso@mit.edu
+Subject: [PATCH v2] fscrypt: improve filename encryption and decryption performance
+Date: Fri,  4 Jul 2025 12:13:22 +0800
+X-OQ-MSGID: <20250704041322.339758-1-ywen.chen@foxmail.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <tencent_D06DEE8D71295798F385BCC52FACAE96A207@qq.com>
+References: <tencent_D06DEE8D71295798F385BCC52FACAE96A207@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
@@ -86,25 +89,59 @@ Since filenames are generally short, the frequent invocation of
 memory allocation and release operations by these two functions
 will lead to very poor performance.
 
+Use the following program to conduct a file-creation test in
+the private program directory(/data/media/0/Android/data/*)
+of Android.
+
+int main(int argc, char **argv)
+{
+    size_t fcnt = 0;
+    char path[PATH_MAX];
+    char buf[4096] = {0};
+    int i, fd;
+
+    if (argc < 2)
+        return - EINVAL;
+
+    fcnt = atoi(argv[1]);
+    for (i = 0; i < fcnt; i++) {
+        snprintf(path, sizeof(path), "./%d", i);
+        fd = open(path, O_RDWR | O_CREAT, 0600);
+        if (fd < 0)
+            return - 1;
+        write(fd, buf, sizeof(buf));
+        close(fd);
+    }
+    return 0;
+}
+
+The test platform is Snapdragon 8s Gen4, with a kernel version
+of v6.6 and a userdebug version.
+
+Before this submission was merged, when creating 2000 files,
+the performance test results are as follows:
+$ time /data/file_creater 2000
+0m14.83s real     0m00.00s user     0m14.30s system
+0m15.61s real     0m00.00s user     0m15.04s system
+0m14.72s real     0m00.01s user     0m14.18s system
+
+After this submission was merged, the performance is as follows:
+$ time /data/file_creater 2000
+0m07.64s real     0m00.00s user     0m07.37s system
+0m07.66s real     0m00.00s user     0m07.40s system
+0m08.67s real     0m00.01s user     0m08.35s system
+
 Signed-off-by: Yuwen Chen <ywen.chen@foxmail.com>
 ---
- fs/crypto/fname.c         | 11 +++--------
+ fs/crypto/fname.c         | 22 ++++++++++++++--------
  include/crypto/skcipher.h |  9 +++++++++
- 2 files changed, 12 insertions(+), 8 deletions(-)
+ 2 files changed, 23 insertions(+), 8 deletions(-)
 
 diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
-index 010f9c0a4c2f1..a3cc30ff3586b 100644
+index 010f9c0a4c2f1..168b2a88fa23b 100644
 --- a/fs/crypto/fname.c
 +++ b/fs/crypto/fname.c
-@@ -77,6 +77,7 @@ static inline bool fscrypt_is_dot_dotdot(const struct qstr *str)
- 	return is_dot_dotdot(str->name, str->len);
- }
- 
-+#define MAX_SKCIPHER_REQSIZE (384)
- /**
-  * fscrypt_fname_encrypt() - encrypt a filename
-  * @inode: inode of the parent directory (for regular filenames)
-@@ -92,10 +93,10 @@ static inline bool fscrypt_is_dot_dotdot(const struct qstr *str)
+@@ -92,14 +92,20 @@ static inline bool fscrypt_is_dot_dotdot(const struct qstr *str)
  int fscrypt_fname_encrypt(const struct inode *inode, const struct qstr *iname,
  			  u8 *out, unsigned int olen)
  {
@@ -116,7 +153,17 @@ index 010f9c0a4c2f1..a3cc30ff3586b 100644
  	union fscrypt_iv iv;
  	struct scatterlist sg;
  	int res;
-@@ -124,7 +125,6 @@ int fscrypt_fname_encrypt(const struct inode *inode, const struct qstr *iname,
+ 
++	/*
++	 * When the size of the statically - allocated skcipher_request
++	 * structure is insufficient, remind us to make modifications.
++	 */
++	BUG_ON(MAX_SKCIPHER_REQSIZE < crypto_skcipher_reqsize(tfm));
++
+ 	/*
+ 	 * Copy the filename to the output buffer for encrypting in-place and
+ 	 * pad it with the needed number of NUL bytes.
+@@ -124,7 +130,6 @@ int fscrypt_fname_encrypt(const struct inode *inode, const struct qstr *iname,
  
  	/* Do the encryption */
  	res = crypto_wait_req(crypto_skcipher_encrypt(req), &wait);
@@ -124,7 +171,7 @@ index 010f9c0a4c2f1..a3cc30ff3586b 100644
  	if (res < 0) {
  		fscrypt_err(inode, "Filename encryption failed: %d", res);
  		return res;
-@@ -148,18 +148,14 @@ static int fname_decrypt(const struct inode *inode,
+@@ -148,18 +153,20 @@ static int fname_decrypt(const struct inode *inode,
  			 const struct fscrypt_str *iname,
  			 struct fscrypt_str *oname)
  {
@@ -141,10 +188,16 @@ index 010f9c0a4c2f1..a3cc30ff3586b 100644
 -	req = skcipher_request_alloc(tfm, GFP_NOFS);
 -	if (!req)
 -		return -ENOMEM;
++	/*
++	 * When the size of the statically - allocated skcipher_request
++	 * structure is insufficient, remind us to make modifications.
++	 */
++	BUG_ON(MAX_SKCIPHER_REQSIZE < crypto_skcipher_reqsize(tfm));
++
  	skcipher_request_set_callback(req,
  		CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
  		crypto_req_done, &wait);
-@@ -172,7 +168,6 @@ static int fname_decrypt(const struct inode *inode,
+@@ -172,7 +179,6 @@ static int fname_decrypt(const struct inode *inode,
  	sg_init_one(&dst_sg, oname->name, oname->len);
  	skcipher_request_set_crypt(req, &src_sg, &dst_sg, iname->len, &iv);
  	res = crypto_wait_req(crypto_skcipher_decrypt(req), &wait);
@@ -153,14 +206,21 @@ index 010f9c0a4c2f1..a3cc30ff3586b 100644
  		fscrypt_err(inode, "Filename decryption failed: %d", res);
  		return res;
 diff --git a/include/crypto/skcipher.h b/include/crypto/skcipher.h
-index 9e5853464345b..ff2c5ac9252ff 100644
+index 9e5853464345b..77e74a038c36e 100644
 --- a/include/crypto/skcipher.h
 +++ b/include/crypto/skcipher.h
-@@ -226,6 +226,15 @@ struct lskcipher_alg {
+@@ -213,6 +213,7 @@ struct lskcipher_alg {
+ };
+ 
+ #define MAX_SYNC_SKCIPHER_REQSIZE      384
++#define MAX_SKCIPHER_REQSIZE	       384
+ /*
+  * This performs a type-check against the "_tfm" argument to make sure
+  * all users have the correct skcipher tfm for doing on-stack requests.
+@@ -226,6 +227,14 @@ struct lskcipher_alg {
  			crypto_sync_skcipher_tfm((_tfm)), \
  		 (void *)__##name##_desc)
  
-+
 +#define SKCIPHER_REQUEST_ON_STACK(name, _tfm, reqsize) \
 +	char __##name##_desc[sizeof(struct skcipher_request) + reqsize \
 +		] CRYPTO_MINALIGN_ATTR; \
