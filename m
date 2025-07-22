@@ -1,47 +1,47 @@
-Return-Path: <linux-fscrypt+bounces-734-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-735-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36D36B0E482
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 22 Jul 2025 22:02:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B928B0E48A
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 22 Jul 2025 22:08:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1ABAB1C27A3D
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 22 Jul 2025 20:02:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38E936C0565
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 22 Jul 2025 20:07:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A9E127E7F0;
-	Tue, 22 Jul 2025 20:02:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1598227FD5B;
+	Tue, 22 Jul 2025 20:08:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UrtvkEUQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nLKeV47y"
 X-Original-To: linux-fscrypt@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D7F017C224;
-	Tue, 22 Jul 2025 20:02:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D500623B61D;
+	Tue, 22 Jul 2025 20:07:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753214549; cv=none; b=HhZVUF+is4Fwwihdmgw74tpOvSrE78+n/+RRItHmZjwfygpy55RrZDRnwik7didL+81sc2HvqCaNyV39DSnKHXe+WVLiSg/AWLITCx0b02/w/qKngK13xiXp5me0sTefANhHIG9x7cMVs+x69QGfhEjeNvqj4XKsjQLtNvcEx6Q=
+	t=1753214880; cv=none; b=uKmsLpGMOySBuFCNzx/EI4J7ZyLBze7lWu01IevcoS+nthvxr48HmG2ceyLmH9vV+8f3QjJESIO3pH7sGYhFvnYTadQf4xbHvNX2NOWjw9IbcoSwrfiU6knRTlYF5bhfk0cU/7elRG+KMHDIPQGQ4GoZD1U01X72rse4i0RsfUg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753214549; c=relaxed/simple;
-	bh=Gsf06oo3Wz1/0XIO6ehWnj+pHlSzYRRg0BlkxiLzl+I=;
+	s=arc-20240116; t=1753214880; c=relaxed/simple;
+	bh=iaEEa49vrl691HjN7Mt89qt9cDri84fXV8lAJ8/mQ/w=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hiyzhLwKJe4OaGXDa7qQKEDl90pCgr9KxK/7nVPmJNUFk+Q2rF4tLvnJhLaTaeW0QhN8wUPtkX2NU0aS48kts8tPPeqDygXyU/OOwpdxf6wSFzuEdkGzrxrkAsFW0yXnmbWzzkrtNaXZQHpIkatC876zgbe0Es3o3MJhdzofsA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UrtvkEUQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F14CDC4CEEB;
-	Tue, 22 Jul 2025 20:02:27 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=T60mQE771W7MlmaChJlg3cMXKbpj6k2de1MdjF9+PRbHdhnXPwd4kmMqGmcKO9JnpxB3n34M1U+3TJ37QryqTqJLKKEO4+4fJ52zNRG++KVggO+alCanFDN3TnyV1To6MqjbgyGJUuO9pna7obc8EaQqjGhZbeAUNohzemW6fmI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nLKeV47y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90ABCC4CEEB;
+	Tue, 22 Jul 2025 20:07:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753214548;
-	bh=Gsf06oo3Wz1/0XIO6ehWnj+pHlSzYRRg0BlkxiLzl+I=;
+	s=k20201202; t=1753214879;
+	bh=iaEEa49vrl691HjN7Mt89qt9cDri84fXV8lAJ8/mQ/w=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UrtvkEUQOslkCpi6ftZJMf0cTDi81Ok63l0uy5Lgso6U5KDgmphjOUbSu3XBDFx1z
-	 3oIQBIfNuf189fNc/ojDUhEJyRg0q/9CJncaVU+EUiZFEZ2uOXNFYvjar7z4FM7CTo
-	 hn1cbcwQif2orZvTOQu0t7guf35018S0GCGuClX9d0FAnraXyyCZlmMMnANczcsLAC
-	 LYt3rtJ0knKp25pYLKlLejbHgI6Cqgzgo66u7BN8av6m/Fs/ZbO2DZxUj9ikFI1B62
-	 1Hrkdc2xEwfNg8pYROreEl2qrvLb9mq/Iuv9RhXVqTW3RKrAOO+qV6HSes9K3s7CVW
-	 wzNEng8xQ3ODA==
-Date: Tue, 22 Jul 2025 13:02:25 -0700
+	b=nLKeV47ybBUHxDGr94Z30Tik1RRK1I7EOTKcDHBiiNHYOQze1ZEF0iHsZaVyDCrTc
+	 GSKNqKoPGk+ME7Rnx+o4DADjUrIMKChSOwjmvJ6B6JTmMHFdrTnHVKPtRVKp3i6FTT
+	 B8IfJsh2oASeUNUvoFau1BEDYeIdE/+SX6R4sFquGtxgDDtYmmyD6YRAFa5bTa/5dI
+	 BXQgTiutLNmn68vDYJe/zbIysG/9YV9fhLVX9SdMQD3Nod4KQm6b82jyhgzleKtXuE
+	 E5vFCKCG663q670tJyQ1UUIr6ucK6uFsOHYfmhfIyFVvnesev39j607FHf0dhDpiX9
+	 q1PRQDkDY68/w==
+Date: Tue, 22 Jul 2025 13:07:51 -0700
 From: Eric Biggers <ebiggers@kernel.org>
 To: Christian Brauner <brauner@kernel.org>
 Cc: Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.com>,
@@ -49,10 +49,10 @@ Cc: Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.com>,
 	Josef Bacik <josef@toxicpanda.com>,
 	"Theodore Y. Ts'o" <tytso@mit.edu>, linux-fsdevel@vger.kernel.org,
 	linux-fscrypt@vger.kernel.org, fsverity@lists.linux.dev
-Subject: Re: [PATCH v3 01/13] fs: add fscrypt offset
-Message-ID: <20250722200225.GA111676@quark>
+Subject: Re: [PATCH v3 03/13] ext4: move fscrypt to filesystem inode
+Message-ID: <20250722200751.GB111676@quark>
 References: <20250722-work-inode-fscrypt-v3-0-bdc1033420a0@kernel.org>
- <20250722-work-inode-fscrypt-v3-1-bdc1033420a0@kernel.org>
+ <20250722-work-inode-fscrypt-v3-3-bdc1033420a0@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
@@ -61,41 +61,30 @@ List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250722-work-inode-fscrypt-v3-1-bdc1033420a0@kernel.org>
+In-Reply-To: <20250722-work-inode-fscrypt-v3-3-bdc1033420a0@kernel.org>
 
-On Tue, Jul 22, 2025 at 09:27:19PM +0200, Christian Brauner wrote:
-> Store the offset of the fscrypt data pointer from struct inode in struct
-> super_operations. Both are embedded in the filesystem's private inode.
-> 
-> This will allow us to drop the fscrypt data pointer from struct inode
-> itself and move it into the filesystem's inode.
-> 
-> Signed-off-by: Christian Brauner <brauner@kernel.org>
-> ---
->  include/linux/fs.h | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index 96c7925a6551..991089969e71 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -2332,6 +2332,7 @@ enum freeze_holder {
->  };
+On Tue, Jul 22, 2025 at 09:27:21PM +0200, Christian Brauner wrote:
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 18373de980f2..f27d57aea316 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -1197,6 +1197,10 @@ struct ext4_inode_info {
+>  	__u32 i_csum_seed;
 >  
->  struct super_operations {
-> +	ptrdiff_t i_fscrypt;
->     	struct inode *(*alloc_inode)(struct super_block *sb);
->  	void (*destroy_inode)(struct inode *);
->  	void (*free_inode)(struct inode *);
+>  	kprojid_t i_projid;
+> +
+> +#ifdef CONFIG_FS_ENCRYPTION
+> +	struct fscrypt_inode_info	*i_fscrypt_info;
+> +#endif
 
-If using inode_operations was ruled out, so we have to go through the
-super_block to get to an operations struct anyway, wouldn't it make more
-sense to use fscrypt_operations and fsverity_operations?  They are
-accessible as inode->i_sb->s_cop and inode->i_sb->s_vop.  Same number of
-dereferences as getting to inode->i_sb->s_op.
+Did you consider keeping the name as i_crypt_info instead of changing it
+to i_fscrypt_info?  The rationale for i_crypt_info in the first place is
+that it's filesystem code, so fs is implied.
 
-For the naming, how about fscrypt_operations::inode_info_offs and
-fsverity_operations::inode_info_offs?
+I see you also had to replace i_crypt_info with i_fscrypt_info in a
+bunch of comments.  It might make more sense to rephrase those to not
+refer to the exact field name.  E.g. instead of "Set up
+->i_fscrypt_info", we could write "Set up the inode's fscrypt info".
 
 - Eric
 
