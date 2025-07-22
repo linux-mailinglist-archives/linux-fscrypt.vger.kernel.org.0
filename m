@@ -1,47 +1,47 @@
-Return-Path: <linux-fscrypt+bounces-735-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-736-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B928B0E48A
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 22 Jul 2025 22:08:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B88B0B0E4A1
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 22 Jul 2025 22:14:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38E936C0565
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 22 Jul 2025 20:07:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EBD791C87A78
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 22 Jul 2025 20:14:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1598227FD5B;
-	Tue, 22 Jul 2025 20:08:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80271285411;
+	Tue, 22 Jul 2025 20:14:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nLKeV47y"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eK/UBjpi"
 X-Original-To: linux-fscrypt@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D500623B61D;
-	Tue, 22 Jul 2025 20:07:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50CC2284674;
+	Tue, 22 Jul 2025 20:14:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753214880; cv=none; b=uKmsLpGMOySBuFCNzx/EI4J7ZyLBze7lWu01IevcoS+nthvxr48HmG2ceyLmH9vV+8f3QjJESIO3pH7sGYhFvnYTadQf4xbHvNX2NOWjw9IbcoSwrfiU6knRTlYF5bhfk0cU/7elRG+KMHDIPQGQ4GoZD1U01X72rse4i0RsfUg=
+	t=1753215253; cv=none; b=GvqCOIS7WQJdXitf4YxNbJPFSBvYF0kGb6jZYmcoAC65MiN5vXiLc4TRX3IjWkfJTB0qx8FgdirIU9aBsMEcanIC0JmyWPY2VP3x72vflUIu7SZkfty2RdoaqCAAHJqLqekBmfm0BMPUw1wsJzJgxnTSWvaSSwS04MX/KUxvoTY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753214880; c=relaxed/simple;
-	bh=iaEEa49vrl691HjN7Mt89qt9cDri84fXV8lAJ8/mQ/w=;
+	s=arc-20240116; t=1753215253; c=relaxed/simple;
+	bh=tSl90GWDRVxHX+Fky0oJ1AnLu55k0xD9cyX4ItH/dCo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=T60mQE771W7MlmaChJlg3cMXKbpj6k2de1MdjF9+PRbHdhnXPwd4kmMqGmcKO9JnpxB3n34M1U+3TJ37QryqTqJLKKEO4+4fJ52zNRG++KVggO+alCanFDN3TnyV1To6MqjbgyGJUuO9pna7obc8EaQqjGhZbeAUNohzemW6fmI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nLKeV47y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90ABCC4CEEB;
-	Tue, 22 Jul 2025 20:07:58 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=G9tl57tTsznpmV9Zv1CIePfTY/fg9rJirPFIknDLtzgEs3cye7hNN4z1O4ONC9ynoyoaypgnp/SIHEkAEAtgIJ69PVVJo8GrhwY9SNe4oICIklzyiiHOHuzNz5/TCLvfMBgqBmLRqeRh9nHA74ogHEsmKoW1Q7LyBHYGnqH/BVo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eK/UBjpi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB9FEC4CEEB;
+	Tue, 22 Jul 2025 20:14:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753214879;
-	bh=iaEEa49vrl691HjN7Mt89qt9cDri84fXV8lAJ8/mQ/w=;
+	s=k20201202; t=1753215252;
+	bh=tSl90GWDRVxHX+Fky0oJ1AnLu55k0xD9cyX4ItH/dCo=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nLKeV47ybBUHxDGr94Z30Tik1RRK1I7EOTKcDHBiiNHYOQze1ZEF0iHsZaVyDCrTc
-	 GSKNqKoPGk+ME7Rnx+o4DADjUrIMKChSOwjmvJ6B6JTmMHFdrTnHVKPtRVKp3i6FTT
-	 B8IfJsh2oASeUNUvoFau1BEDYeIdE/+SX6R4sFquGtxgDDtYmmyD6YRAFa5bTa/5dI
-	 BXQgTiutLNmn68vDYJe/zbIysG/9YV9fhLVX9SdMQD3Nod4KQm6b82jyhgzleKtXuE
-	 E5vFCKCG663q670tJyQ1UUIr6ucK6uFsOHYfmhfIyFVvnesev39j607FHf0dhDpiX9
-	 q1PRQDkDY68/w==
-Date: Tue, 22 Jul 2025 13:07:51 -0700
+	b=eK/UBjpieVawmQfSTj7Trvp4/LZjfrvGDbL6+Uby38H/HbiVi8MMEYpSJzjHokoPI
+	 TiuMZkDfpYbUcfiMSJx1Z1Om+jPzpTJXnMKnXWAhhH25qslZDqeHjTTgEdoihWuW3h
+	 kIlAGNf5ryY4/ZiYQ86N91vixyYZr24Up9XRZVj33/dGTpLZZneDWPKD2Ry4ARV4Fz
+	 yugZVAMiQESmuTKiF6P/y7d7nUaNdgHLQvflLt6gibNLaYZKveqWInUugJnaZg+Edu
+	 RGHykCucgFmJsu3QGg5zZXYb/95ZKs/cdUm91qb3RCIsTf6VJDiVdHbTTVxMs5R0R0
+	 bbtsl8fSW91WA==
+Date: Tue, 22 Jul 2025 13:14:06 -0700
 From: Eric Biggers <ebiggers@kernel.org>
 To: Christian Brauner <brauner@kernel.org>
 Cc: Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.com>,
@@ -49,10 +49,10 @@ Cc: Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.com>,
 	Josef Bacik <josef@toxicpanda.com>,
 	"Theodore Y. Ts'o" <tytso@mit.edu>, linux-fsdevel@vger.kernel.org,
 	linux-fscrypt@vger.kernel.org, fsverity@lists.linux.dev
-Subject: Re: [PATCH v3 03/13] ext4: move fscrypt to filesystem inode
-Message-ID: <20250722200751.GB111676@quark>
+Subject: Re: [PATCH v3 06/13] ceph: move fscrypt to filesystem inode
+Message-ID: <20250722201406.GC111676@quark>
 References: <20250722-work-inode-fscrypt-v3-0-bdc1033420a0@kernel.org>
- <20250722-work-inode-fscrypt-v3-3-bdc1033420a0@kernel.org>
+ <20250722-work-inode-fscrypt-v3-6-bdc1033420a0@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
@@ -61,30 +61,59 @@ List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250722-work-inode-fscrypt-v3-3-bdc1033420a0@kernel.org>
+In-Reply-To: <20250722-work-inode-fscrypt-v3-6-bdc1033420a0@kernel.org>
 
-On Tue, Jul 22, 2025 at 09:27:21PM +0200, Christian Brauner wrote:
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 18373de980f2..f27d57aea316 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -1197,6 +1197,10 @@ struct ext4_inode_info {
->  	__u32 i_csum_seed;
+On Tue, Jul 22, 2025 at 09:27:24PM +0200, Christian Brauner wrote:
+> Move fscrypt data pointer into the filesystem's private inode and record
+> the offset from the embedded struct inode.
+> 
+> This will allow us to drop the fscrypt data pointer from struct inode
+> itself and move it into the filesystem's inode.
+> 
+> Signed-off-by: Christian Brauner <brauner@kernel.org>
+> ---
+>  fs/ceph/super.c       | 4 ++++
+>  include/linux/netfs.h | 6 ++++++
+>  2 files changed, 10 insertions(+)
+> 
+> diff --git a/fs/ceph/super.c b/fs/ceph/super.c
+> index 2b8438d8a324..540b32e746de 100644
+> --- a/fs/ceph/super.c
+> +++ b/fs/ceph/super.c
+> @@ -1039,6 +1039,10 @@ void ceph_umount_begin(struct super_block *sb)
+>  }
 >  
->  	kprojid_t i_projid;
-> +
+>  static const struct super_operations ceph_super_ops = {
 > +#ifdef CONFIG_FS_ENCRYPTION
-> +	struct fscrypt_inode_info	*i_fscrypt_info;
+> +	.i_fscrypt = offsetof(struct ceph_inode_info, netfs.i_fscrypt_info) -
+> +		     offsetof(struct ceph_inode_info, netfs.inode),
+> +#endif
+>  	.alloc_inode	= ceph_alloc_inode,
+>  	.free_inode	= ceph_free_inode,
+>  	.write_inode    = ceph_write_inode,
+> diff --git a/include/linux/netfs.h b/include/linux/netfs.h
+> index 065c17385e53..fda1321da861 100644
+> --- a/include/linux/netfs.h
+> +++ b/include/linux/netfs.h
+> @@ -57,6 +57,9 @@ typedef void (*netfs_io_terminated_t)(void *priv, ssize_t transferred_or_error);
+>   */
+>  struct netfs_inode {
+>  	struct inode		inode;		/* The VFS inode */
+> +#ifdef CONFIG_FS_ENCRYPTION
+> +	struct fscrypt_inode_info *i_fscrypt_info;
+> +#endif
+>  	const struct netfs_request_ops *ops;
+>  #if IS_ENABLED(CONFIG_FSCACHE)
+>  	struct fscache_cookie	*cache;
+> @@ -503,6 +506,9 @@ static inline void netfs_inode_init(struct netfs_inode *ctx,
+>  		ctx->zero_point = ctx->remote_i_size;
+>  		mapping_set_release_always(ctx->inode.i_mapping);
+>  	}
+> +#ifdef CONFIG_FS_ENCRYPTION
+> +	ctx->i_fscrypt_info = NULL;
 > +#endif
 
-Did you consider keeping the name as i_crypt_info instead of changing it
-to i_fscrypt_info?  The rationale for i_crypt_info in the first place is
-that it's filesystem code, so fs is implied.
-
-I see you also had to replace i_crypt_info with i_fscrypt_info in a
-bunch of comments.  It might make more sense to rephrase those to not
-refer to the exact field name.  E.g. instead of "Set up
-->i_fscrypt_info", we could write "Set up the inode's fscrypt info".
+Why netfs_inode instead of ceph_inode_info?
 
 - Eric
 
