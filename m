@@ -1,58 +1,62 @@
-Return-Path: <linux-fscrypt+bounces-738-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-739-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE647B0E4F0
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 22 Jul 2025 22:25:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A304B0E954
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 23 Jul 2025 05:49:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B248A1887828
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 22 Jul 2025 20:25:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C5D4189A1EC
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 23 Jul 2025 03:49:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A7D628507F;
-	Tue, 22 Jul 2025 20:25:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11BA319E7E2;
+	Wed, 23 Jul 2025 03:49:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J07hDbA0"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="kX7Rwi8+"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C2121F1302;
-	Tue, 22 Jul 2025 20:25:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C00E2AE72;
+	Wed, 23 Jul 2025 03:49:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753215934; cv=none; b=MwkIZfJAfV93CkfJSdJYqfi/CoZP2DHxaEq/uedkjqcdHlPmBEcO/SDMfcfVfSN/xDlEahEuUEikihnyjO/vtDkM7YtZER16jWBIbOtrijp+S/ltxU8Yu9FqoJIJLYEfDBk4skqUPB3OyHGdMMIZD0MQV+7znd/pb9sfJZ+v0B4=
+	t=1753242551; cv=none; b=sSaYGIu1hz64cqGLl/SB7F4gdbLBaYsLLssdkSph5uNnE/uQMdLHHIxAq6OVOqnGKsOXTUwbdNrWqu9mGmpavq7h++9E8xh/NXWR465mgmDHGEVijWOdfIdAS8TQb5IQNb7aDnQfE4VvkE6+Qwqp5scFK6S+EV2B6ls0AM/3NZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753215934; c=relaxed/simple;
-	bh=TIf3NsdmEk/yrK4CMZgSPuLtTPbuV8WEvW9XXtuvd2I=;
+	s=arc-20240116; t=1753242551; c=relaxed/simple;
+	bh=uP8pg53IOW1x+mnBF9LVUJmo/Px1+Dd9C0NDn8AHZ68=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=J2ioNAlH8Gr0z8flAXqbKY4PqsfPo0izfN148xb2txUobqQhmQkKs664psi4NbzY0XWEgjtYiKobrdHGw3rErhKQAJHQi5+hmb6DWpOTZvDAnMGxLbnk1NWbC8atwX8fHrCzEghFBmBfIc36QtbbSMPRX/efIJEB1PPCn0fZeNE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J07hDbA0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72A05C4CEEB;
-	Tue, 22 Jul 2025 20:25:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753215934;
-	bh=TIf3NsdmEk/yrK4CMZgSPuLtTPbuV8WEvW9XXtuvd2I=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=J07hDbA0mJhMgihS7BNUeZANNqUufoft2y/uQjLxb5qWwYrp/W4K0Y4ZBkrmVT4Hl
-	 yX3HrnPOKvVj0LXN/zIX1CJyQ1YDHegm5h+PL1tzYVofhD4VoY5+RRCsceiRnBOqtc
-	 WG9xr6qJdXbaAuF6VJVJ79cZIPE44T6DKNBa7FE90fwj+remAhqADqJ0CPhfcCIxXJ
-	 rPZFkkhTWOSafYOEnGHn/Awi22WPTvTSZCKFRfUGvkTc642+7yOoNXrQIH0DYrHXaZ
-	 AoOLoKc2Cn3SVq2PpL11c0FEdObx4VhwW3T0N9LkXeMCmVbUSrN51i+CivgmcrqyXE
-	 EcEIA8t/RiXLA==
-Date: Tue, 22 Jul 2025 13:25:31 -0700
-From: Eric Biggers <ebiggers@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=nA4n+qrhCtuYbNMWJ7fvLbTg8mG7wn+ml9svBevANd8PRPKcfqxYLxrhnrkFf3P/En3gTOw/ySNT23VjAysKSzjWImATag5RLOi2pBvMJMeT2oo9037ixhpVCPKlHMI3j+Cd+wuCymbeQ3/l32I8vfqLsBCIUnX5koMExsVckeA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=kX7Rwi8+; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=Q5RU45U8nmhOn3JoGvW7gjfJN0+I6bGK6xzj0rg2pJ0=; b=kX7Rwi8+cQFEyz9f+GGinQ4tZ5
+	S3+nzms96Xhf+Rj5eyPkV/AB0/sWrurrZBvB88KSFRWmrySGuaCtobAVkoLQbFz5rC9sZO11BqpQd
+	eN8/gjN1xkKvRLWu2Sg8A1urBbdtQcIZcPOkAPsrS8vOZAjIxqV2Vb510f37JJ/wXRiUUWFz/eSC+
+	DRG2WfYwRk+il38T5HUW7vZQ11rkjHpwnq2Lg0esX7NYhs90x8pFP336pI6WhkqvGXtYHPt065wfO
+	iIyJb2KbuskmNX679BdLbjUzpDmpQlHVihmIcV6FMV3L+Tv0EFfGj14GSVwhBcfPd7+yAcVFgzkak
+	AtdjFKuw==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1ueQTW-00000005d95-1zeb;
+	Wed, 23 Jul 2025 03:49:02 +0000
+Date: Wed, 23 Jul 2025 04:49:02 +0100
+From: Al Viro <viro@zeniv.linux.org.uk>
 To: Christian Brauner <brauner@kernel.org>
 Cc: Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.com>,
 	Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
 	Josef Bacik <josef@toxicpanda.com>,
+	Eric Biggers <ebiggers@kernel.org>,
 	"Theodore Y. Ts'o" <tytso@mit.edu>, linux-fsdevel@vger.kernel.org,
 	linux-fscrypt@vger.kernel.org, fsverity@lists.linux.dev
-Subject: Re: [PATCH v3 09/13] fs/verity: use accessors
-Message-ID: <20250722202531.GE111676@quark>
+Subject: Re: [PATCH v3 01/13] fs: add fscrypt offset
+Message-ID: <20250723034902.GN2580412@ZenIV>
 References: <20250722-work-inode-fscrypt-v3-0-bdc1033420a0@kernel.org>
- <20250722-work-inode-fscrypt-v3-9-bdc1033420a0@kernel.org>
+ <20250722-work-inode-fscrypt-v3-1-bdc1033420a0@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
@@ -61,26 +65,30 @@ List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250722-work-inode-fscrypt-v3-9-bdc1033420a0@kernel.org>
+In-Reply-To: <20250722-work-inode-fscrypt-v3-1-bdc1033420a0@kernel.org>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-On Tue, Jul 22, 2025 at 09:27:27PM +0200, Christian Brauner wrote:
->  static inline void fsverity_cleanup_inode(struct inode *inode)
->  {
-> -	if (inode->i_verity_info)
-> +	if (inode->i_verity_info || inode->i_sb->s_op->i_fsverity)
->  		__fsverity_cleanup_inode(inode);
+On Tue, Jul 22, 2025 at 09:27:19PM +0200, Christian Brauner wrote:
+> Store the offset of the fscrypt data pointer from struct inode in struct
+> super_operations. Both are embedded in the filesystem's private inode.
+> 
+> This will allow us to drop the fscrypt data pointer from struct inode
+> itself and move it into the filesystem's inode.
+> 
+> Signed-off-by: Christian Brauner <brauner@kernel.org>
+> ---
+>  include/linux/fs.h | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index 96c7925a6551..991089969e71 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -2332,6 +2332,7 @@ enum freeze_holder {
+>  };
+>  
+>  struct super_operations {
+> +	ptrdiff_t i_fscrypt;
 
-Similarly to fscrypt_put_encryption_info(): I think this should look
-like:
-
-    if (IS_VERITY(inode))
-            __fsverity_cleanup_inode(inode);
-
-i_verity_info != NULL implies IS_VERITY(), so that would work and avoid
-adding extra dereferences to non-verity files.
-
-The converse isn't necessarily true, but that's okay as long as
-__fsverity_cleanup_inode() handles i_verity_info == NULL.
-
-- Eric
+Umm...  Why not put that into super_block itself?
 
