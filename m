@@ -1,47 +1,47 @@
-Return-Path: <linux-fscrypt+bounces-767-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-768-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A74D1B1155B
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 25 Jul 2025 02:44:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30341B1156C
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 25 Jul 2025 02:46:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD7F6169F32
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 25 Jul 2025 00:44:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 222271CE0205
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 25 Jul 2025 00:46:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08A311465A5;
-	Fri, 25 Jul 2025 00:44:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DE04145355;
+	Fri, 25 Jul 2025 00:46:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="efp+kDyP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f1ex95+U"
 X-Original-To: linux-fscrypt@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D10EA2BAF4;
-	Fri, 25 Jul 2025 00:44:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60E7215B54A;
+	Fri, 25 Jul 2025 00:46:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753404259; cv=none; b=YSDMVpLES8q6YKQH6FuezhraM0X7VNg0Vz8tZoTKs/4hzeAmbz6JMY8Y2AI1ZLeo44J58wJr4fiLozoQSahTi5SAL4ZPkRZ7jYDOwUoTu3cIJvLGsh27I6VCKaZIQGjTFtYiC4kY4LzpbL/HJwmrvyUcOGcX4IpehuaAft1o12c=
+	t=1753404380; cv=none; b=V/aofFANjc8Gis+mNTDhqmI/HztNmSe6KvIoN3b7S7I+1lUY3EFI4PrDkoRglx9xlOoxGpi7uLUHswl1EeqZVETHsMvzwxM+UQQJrYho4XzQIXIMU7partnnY7FAwQoKejampVyJYjzDOID/p7FrnQRrAfEtIYvejdrGu0nBwho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753404259; c=relaxed/simple;
-	bh=mBk99YiLp1Br0ZDSfftrqLBouFW4UBlTRwDDrmIRG/Q=;
+	s=arc-20240116; t=1753404380; c=relaxed/simple;
+	bh=EoXK/+GRCSPa9B+s1+CqZKcm0++9gFRWdVcWk+vSczY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qVx/IrZAKPMiPdnZBRzHt0DyaiwjTwqftIWg/NrGKO/HEEd2ihduEmQQ03c1qxZFuLctnNyu/teFkYBNL9uj+PmM23PbW6jeCguEwDh0vv2zJn27z/QhvoX+Xs8bDuzkeBakty/+09FmR9nR7lMxRPOYB9TdhMPvUuoiBtpGS24=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=efp+kDyP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17677C4CEED;
-	Fri, 25 Jul 2025 00:44:19 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=iUAxcbZ4DgsCQRaqzzurcAAcIe9QAnW8093l/KXK9asKPOJV5Fzqvrp2BLngM3u8eI1XxOV8RPVy8fNaIgMQ9bolm789IpyEFfqiHVBvsaoQ5TMLx6fZrF7azAf9QP42CBUNLBBW5+GmpTaj0JRezBRAi995H9y0vY5WFENO8uw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f1ex95+U; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9805EC4CEED;
+	Fri, 25 Jul 2025 00:46:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753404259;
-	bh=mBk99YiLp1Br0ZDSfftrqLBouFW4UBlTRwDDrmIRG/Q=;
+	s=k20201202; t=1753404379;
+	bh=EoXK/+GRCSPa9B+s1+CqZKcm0++9gFRWdVcWk+vSczY=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=efp+kDyPCDTrbzqlBCApDdjaKGLT5QuopBCIsa9ouwpiTFNSxol5Eq3LDTagjJeY6
-	 t2EHZ9PMdV5NxqPae16INwxApKAHh6ql4nRb3j3VcZVYzXnQgE8nfAqmVTOtVYS5an
-	 d9KS448K3+TF7OhmciWraSJPa04egmwteBy6rLgz9y29fmAp6aSKgpamFxRJ2o53yx
-	 geXOiahVTJAfZeADJCdaJA/ymWQpnjnMGEjJHRuwcDi0g7zC1IgHkR7qbjC55nY6KS
-	 iqyx37CRhb3+uwWj0qKjf2a10nWHh5dVMUw593+eBK4H7Cd6RQ46QZbMbk3mAMuwxu
-	 XALabhJetboHA==
-Date: Thu, 24 Jul 2025 17:43:29 -0700
+	b=f1ex95+Uh+/wRjpfvDw9QA9P3sCYrh6qPOE+FZ0oobjZMa3GYkCT79Zz6pAJUf6ym
+	 kr/RRb1u5WYPSOEhGbXfCqUT4bYBAjUn5tgh1SOI1YAZXtFhJUa9f8+IZRa0vmgJvj
+	 ydJoIVHv0HiEccs8OSMxQbkzd+l6Add0TX3VwVtVklpoh9b7Sp+hf5NsRUvoBZh8K/
+	 g0H0fZ2+lDy7G4r0dJEWE24NbXar+F+4SMrD2wEedtX/TB/kPC9bkDKlgtK2JpX46S
+	 nVuLzFXy6c8iHHfVPl0YY1TySZtmsqT0/uc2Ljx7C+nxBVCjj55ZH1dneldbmfYIYZ
+	 chTGkloEb75Dg==
+Date: Thu, 24 Jul 2025 17:45:29 -0700
 From: Eric Biggers <ebiggers@kernel.org>
 To: Christian Brauner <brauner@kernel.org>
 Cc: Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.com>,
@@ -49,10 +49,10 @@ Cc: Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.com>,
 	Josef Bacik <josef@toxicpanda.com>,
 	"Theodore Y. Ts'o" <tytso@mit.edu>, linux-fsdevel@vger.kernel.org,
 	linux-fscrypt@vger.kernel.org, fsverity@lists.linux.dev
-Subject: Re: [PATCH v4 14/15] fs: drop i_verity_info from struct inode
-Message-ID: <20250725004329.GF25163@sol>
+Subject: Re: [PATCH v4 09/15] fs: add fsverity offset
+Message-ID: <20250725004529.GG25163@sol>
 References: <20250723-work-inode-fscrypt-v4-0-c8e11488a0e6@kernel.org>
- <20250723-work-inode-fscrypt-v4-14-c8e11488a0e6@kernel.org>
+ <20250723-work-inode-fscrypt-v4-9-c8e11488a0e6@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
@@ -61,23 +61,19 @@ List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250723-work-inode-fscrypt-v4-14-c8e11488a0e6@kernel.org>
+In-Reply-To: <20250723-work-inode-fscrypt-v4-9-c8e11488a0e6@kernel.org>
 
-On Wed, Jul 23, 2025 at 12:57:52PM +0200, Christian Brauner wrote:
->  static inline struct fsverity_info *fsverity_get_info(const struct inode *inode)
->  {
-> -	if (!inode->i_sb->s_vop)
-> +	/*
-> +	 * We're called from fsverity_active() which might be called on
-> +	 * inodes from filesystems that don't support fsverity at all.
+On Wed, Jul 23, 2025 at 12:57:47PM +0200, Christian Brauner wrote:
+> +	/**
+> +	 * The offset of struct fsverity_info from struct inode embedded in
+> +	 * the filesystem's inode.
 > +	 */
-> +	if (likely(!inode->i_sb->s_vop))
->  		return NULL;
+> +	ptrdiff_t inode_info_offs;
 
-!IS_VERITY().
+It's the offset to the pointer to the struct fsverity_info, not the
+offset to the struct fsverity_info itself.
 
-Also the proposed comment is misleading, since fsverity_get_digest() and
-bpf_get_fsverity_digest() similarly can call this on arbitrary inodes.
+Similarly for the fscrypt patch.
 
 - Eric
 
