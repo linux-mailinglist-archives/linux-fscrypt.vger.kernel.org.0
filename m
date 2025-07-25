@@ -1,90 +1,87 @@
-Return-Path: <linux-fscrypt+bounces-769-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-770-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6418EB11745
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 25 Jul 2025 06:02:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 326ECB119A2
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 25 Jul 2025 10:15:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 48A181C8686E
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 25 Jul 2025 04:02:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 056373B15D5
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 25 Jul 2025 08:15:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB7541519BC;
-	Fri, 25 Jul 2025 04:01:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B6E91E5213;
+	Fri, 25 Jul 2025 08:15:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fr9rHPTY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VdtSNx9k"
 X-Original-To: linux-fscrypt@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF5D04A08;
-	Fri, 25 Jul 2025 04:01:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A73518DF62;
+	Fri, 25 Jul 2025 08:15:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753416118; cv=none; b=JOYVkn2+G4LQsU/oweAKRVF97En4aHxkbZ4UDJ4F7XLtGDFgat1faJ7S+B7wP8JyJfZw5D0lsp8Lw1oaKv3Vs7zFs3i2kgkZIrOy89chlSIDpEir5VDdV8juwobz5ibfCI1ns3OdypdEAUXUz784Sx3qOY2lLPjxbE6aBfTJerI=
+	t=1753431326; cv=none; b=Vz0PiObLEM48LOz+Zaqy3ZoFtVv+S0IfFBZGZpGonJL0nW1XSJUQuta6ZtiMxWSmHhnPNKaH7BqBbtdMtrEJGTJQUe1jwHFkYqlMM7jTmRKi9smF3d4Okl66F6v9D0g3LAiBAdOj1gtWjK+ykEvAWKhROI1AimGe4q0jK4ePA0o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753416118; c=relaxed/simple;
-	bh=uYISutCeuX5jCbhhipb01l1Xr3JBDeeqD6bjQwW3+e8=;
+	s=arc-20240116; t=1753431326; c=relaxed/simple;
+	bh=+sT9dUqPEv8gyTOb1EsWdKkMIkRtW9uKzE3TK7yY4N4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=di+OwaN1d2yCN/Kwdu7nYOHe4HKqNtW95Yzv6uH0r/NfJwelxd8tUDItrbLTwc+P7GqVa3IYtY20MIGQgYQSBvvgm3Erfa7A7jAzo7rxnQx8ToTSYepqCYCS7EGtQwJ+NnxpZvXsLS8j0VKAtnrzgar26fULXYPT8g5i3YeISOY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fr9rHPTY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0145C4CEE7;
-	Fri, 25 Jul 2025 04:01:57 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=QytLncj6UTZP09OHBPaIh0ZE3Zdfvv6hMrrjmfr8d0/V9JygBslK4a06DcvxF0vVODVETuUSyQz2pozHjZ5BweL8OZoegEi4lGy0isgfxXpnNCHkEgp5KK6vsLtlXK45ikUG5M0L0H+J6idWGu2pFEpgs8yc3CGNXaU07kKwDO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VdtSNx9k; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91002C4CEE7;
+	Fri, 25 Jul 2025 08:15:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753416118;
-	bh=uYISutCeuX5jCbhhipb01l1Xr3JBDeeqD6bjQwW3+e8=;
+	s=k20201202; t=1753431325;
+	bh=+sT9dUqPEv8gyTOb1EsWdKkMIkRtW9uKzE3TK7yY4N4=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fr9rHPTYpbrw8K5Sk2DGeI/qrt2ACFeZVa0JnvIp0avuxOdlw4y5anOPK71ShxNJN
-	 8taUSdk+MDKXLTWv2yv9YPUhIeY2LAUKndn5gb+lzEu9LMLcAWORORRUXB4t2q1yur
-	 0gSRjFZF4LCjwIQmbHKS1ksLrMayengtVmLAmkAVlljMEPmLlP+bg/dWHBo8bnOPF7
-	 aokmoSo26jODPmXUNJQxAa3yClLyeAJA4MwRJeF95Lw2nJzXhs47uaJccoFoGSunMp
-	 MEERzr3tyK/q1aYsB5zsQHzj3qBzSbiceuFGGUYyLQX7520a0zZtCWcYz6zIuTdkU4
-	 WNinz0nRqQkWw==
-Date: Thu, 24 Jul 2025 21:01:08 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.com>,
-	Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-	Josef Bacik <josef@toxicpanda.com>,
-	"Theodore Y. Ts'o" <tytso@mit.edu>, linux-fsdevel@vger.kernel.org,
-	linux-fscrypt@vger.kernel.org, fsverity@lists.linux.dev
-Subject: Re: [PATCH v4 02/15] fs/crypto: use accessors
-Message-ID: <20250725040108.GA37178@sol>
+	b=VdtSNx9kAF+eaoLwvupTuwwLFMjAgwTKKMjI0h54lecJL0kKgMNL0tzKtT4/29you
+	 Yv5YdHX6lTkAs6hUtqp0DP5OqprIhAamAI0X15LWK9g7HFkoHP4AzW6UOTKZl2KnmE
+	 aPIDiLtGVBVy9BFbkWeIrer9uuBToW7rVY3RO7AH0mazGy1Y6hQ/zcf6WRm4NuXNV/
+	 JVJYb6Nu8ltd0CFhAYLWqV84LnEGgYr6pvFXFmfQS1CH52mjl10z9NBKKDwvyqeE6+
+	 EI+xaD3OUF1tA5oAKWQEJLKnfq4eI9bhPPBYwKPP6r4d+sFhnzc0yl5jx3xPOdytU3
+	 3DDxZbkAdEwsQ==
+Date: Fri, 25 Jul 2025 10:15:20 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.com>, 
+	Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>, Josef Bacik <josef@toxicpanda.com>, 
+	"Theodore Y. Ts'o" <tytso@mit.edu>, linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org, 
+	fsverity@lists.linux.dev
+Subject: Re: [PATCH v4 06/15] ceph: move fscrypt to filesystem inode
+Message-ID: <20250725-idiotensicher-student-62440e8170f3@brauner>
 References: <20250723-work-inode-fscrypt-v4-0-c8e11488a0e6@kernel.org>
- <20250723-work-inode-fscrypt-v4-2-c8e11488a0e6@kernel.org>
+ <20250723-work-inode-fscrypt-v4-6-c8e11488a0e6@kernel.org>
+ <20250725003404.GC25163@sol>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20250723-work-inode-fscrypt-v4-2-c8e11488a0e6@kernel.org>
+In-Reply-To: <20250725003404.GC25163@sol>
 
-On Wed, Jul 23, 2025 at 12:57:40PM +0200, Christian Brauner wrote:
-> They can be removed once all filesystems have been converted to make
-> room for fscrypt info in their own inodes.
+On Thu, Jul 24, 2025 at 05:34:04PM -0700, Eric Biggers wrote:
+> On Wed, Jul 23, 2025 at 12:57:44PM +0200, Christian Brauner wrote:
+> > +#ifdef CONFIG_FS_ENCRYPTION
+> > +	.inode_info_offs	= offsetof(struct ceph_inode_info, i_crypt_info) -
+> > +				  offsetof(struct ceph_inode_info, netfs),
+> > +#endif
+> 
+> This should use the offset to the VFS inode:
+> 
+>     offsetof(struct ceph_inode_info, netfs.inode)
+> 
+> > +/*
+> > + * struct inode must be the first member so we can easily calculate offsets for
+> > + * e.g., fscrypt or fsverity when embedded in filesystem specific inodes.
+> > + */
+> > +static_assert(__same_type(((struct netfs_inode *)NULL)->inode, struct inode));
+> > +static_assert(offsetof(struct netfs_inode, inode) == 0);
+> 
+> Then no need for this.
 
-Also note that the accessors still exist at the end of the series.  I'm
-not sure what the above sentence is trying to say.
-
-> @@ -396,10 +396,10 @@ bool fscrypt_mergeable_bio(struct bio *bio, const struct inode *inode,
->  	 * uses the same pointer.  I.e., there's currently no need to support
->  	 * merging requests where the keys are the same but the pointers differ.
->  	 */
-> -	if (bc->bc_key != inode->i_crypt_info->ci_enc_key.blk_key)
-> +	if (bc->bc_key != fscrypt_get_inode_info_raw(inode)->ci_enc_key.blk_key)
->  		return false;
->  
-> -	fscrypt_generate_dun(inode->i_crypt_info, next_lblk, next_dun);
-> +	fscrypt_generate_dun(fscrypt_get_inode_info_raw(inode), next_lblk, next_dun);
->  	return bio_crypt_dun_is_contiguous(bc, bio->bi_iter.bi_size, next_dun);
->  }
-
-This function could use a 'ci' local variable now.  It's not clear that
-the second fscrypt_get_inode_info_raw() will get optimized out.
-
-- Eric
+Ok.
 
