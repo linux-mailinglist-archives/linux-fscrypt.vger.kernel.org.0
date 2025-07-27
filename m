@@ -1,87 +1,118 @@
-Return-Path: <linux-fscrypt+bounces-770-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-771-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 326ECB119A2
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 25 Jul 2025 10:15:29 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5DCCB13287
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 28 Jul 2025 01:50:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 056373B15D5
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 25 Jul 2025 08:15:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B9B487A9E4A
+	for <lists+linux-fscrypt@lfdr.de>; Sun, 27 Jul 2025 23:49:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B6E91E5213;
-	Fri, 25 Jul 2025 08:15:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A914F2522B6;
+	Sun, 27 Jul 2025 23:50:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VdtSNx9k"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HNAcJH/O"
 X-Original-To: linux-fscrypt@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A73518DF62;
-	Fri, 25 Jul 2025 08:15:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C2BB1EE03B;
+	Sun, 27 Jul 2025 23:50:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753431326; cv=none; b=Vz0PiObLEM48LOz+Zaqy3ZoFtVv+S0IfFBZGZpGonJL0nW1XSJUQuta6ZtiMxWSmHhnPNKaH7BqBbtdMtrEJGTJQUe1jwHFkYqlMM7jTmRKi9smF3d4Okl66F6v9D0g3LAiBAdOj1gtWjK+ykEvAWKhROI1AimGe4q0jK4ePA0o=
+	t=1753660228; cv=none; b=E2TxPIl9jcH+0aU0KbfYQkIEygeNVDygFLu+RcHa4FexA2kZSpabt7GX0XkDNb0cT4IyKEQk3pjHHaYhVpAqKcaauVy867GxygMBhuYg/tN8t73Rp6KDW2ohFO6T8mVoZJmU1fLHF8EQLpPB67Dwji72v8Nig66vkc1DH94VPn8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753431326; c=relaxed/simple;
-	bh=+sT9dUqPEv8gyTOb1EsWdKkMIkRtW9uKzE3TK7yY4N4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QytLncj6UTZP09OHBPaIh0ZE3Zdfvv6hMrrjmfr8d0/V9JygBslK4a06DcvxF0vVODVETuUSyQz2pozHjZ5BweL8OZoegEi4lGy0isgfxXpnNCHkEgp5KK6vsLtlXK45ikUG5M0L0H+J6idWGu2pFEpgs8yc3CGNXaU07kKwDO4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VdtSNx9k; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91002C4CEE7;
-	Fri, 25 Jul 2025 08:15:23 +0000 (UTC)
+	s=arc-20240116; t=1753660228; c=relaxed/simple;
+	bh=Vj3HpeuQZVEq61Caf2pqR+ehJBv3qbSAJdwmfv5nlww=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=dw8T4n4D5j1b56056FcRZz3pQ94p1gDk7ZdhtvGAT29E3YwRuU7Ip8BlXc1g1wWfofV84bAlXlkpEEyNmSqigRZx3ZQul+83zCoeBYkR6fQS3C4MGsQt7oWTLVjT6kSSLEQXmpTNahUkAEkCHobslNLNly0ADD5irp3i3sTNdBw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HNAcJH/O; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC83CC4CEEB;
+	Sun, 27 Jul 2025 23:50:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753431325;
-	bh=+sT9dUqPEv8gyTOb1EsWdKkMIkRtW9uKzE3TK7yY4N4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VdtSNx9kAF+eaoLwvupTuwwLFMjAgwTKKMjI0h54lecJL0kKgMNL0tzKtT4/29you
-	 Yv5YdHX6lTkAs6hUtqp0DP5OqprIhAamAI0X15LWK9g7HFkoHP4AzW6UOTKZl2KnmE
-	 aPIDiLtGVBVy9BFbkWeIrer9uuBToW7rVY3RO7AH0mazGy1Y6hQ/zcf6WRm4NuXNV/
-	 JVJYb6Nu8ltd0CFhAYLWqV84LnEGgYr6pvFXFmfQS1CH52mjl10z9NBKKDwvyqeE6+
-	 EI+xaD3OUF1tA5oAKWQEJLKnfq4eI9bhPPBYwKPP6r4d+sFhnzc0yl5jx3xPOdytU3
-	 3DDxZbkAdEwsQ==
-Date: Fri, 25 Jul 2025 10:15:20 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.com>, 
-	Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>, Josef Bacik <josef@toxicpanda.com>, 
-	"Theodore Y. Ts'o" <tytso@mit.edu>, linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org, 
-	fsverity@lists.linux.dev
-Subject: Re: [PATCH v4 06/15] ceph: move fscrypt to filesystem inode
-Message-ID: <20250725-idiotensicher-student-62440e8170f3@brauner>
-References: <20250723-work-inode-fscrypt-v4-0-c8e11488a0e6@kernel.org>
- <20250723-work-inode-fscrypt-v4-6-c8e11488a0e6@kernel.org>
- <20250725003404.GC25163@sol>
+	s=k20201202; t=1753660228;
+	bh=Vj3HpeuQZVEq61Caf2pqR+ehJBv3qbSAJdwmfv5nlww=;
+	h=Date:From:To:Cc:Subject:From;
+	b=HNAcJH/Oz+YTprMaPhQZ9kmxE8dw2M/9PFyuNxm1b8IW7CKRw/hNQSo/SP6YpoN1g
+	 kCtyQCffGtll8Z48EJJNTXwzAXrCujnsAqNzI26SP4Ja1/a+1fWKS0w4aiohkGUfnr
+	 0CeKAoeN3gKA/k1maU7RCxBA3Rav7AgmizEeuj6sOdMeCG8MWJJPdI0Otw/XeN/doe
+	 p6CRFLHED20+Dbmg7vqfWZOTNsXZUi7nA9Jpo4bDjtqWmHRdKfJFmANJXZGdKN8jfV
+	 sGvpxgdelu0crsBFfCG2p++/EFWxNPBwi+stbw9LXr2IqS0//42u/HQMVrQdshpZLj
+	 2IXrN2wb8cZBg==
+Date: Sun, 27 Jul 2025 16:49:36 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+	Jaegeuk Kim <jaegeuk@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Yuwen Chen <ywen.chen@foxmail.com>
+Subject: [GIT PULL] fscrypt updates for 6.17
+Message-ID: <20250727234936.GE1261@sol>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250725003404.GC25163@sol>
 
-On Thu, Jul 24, 2025 at 05:34:04PM -0700, Eric Biggers wrote:
-> On Wed, Jul 23, 2025 at 12:57:44PM +0200, Christian Brauner wrote:
-> > +#ifdef CONFIG_FS_ENCRYPTION
-> > +	.inode_info_offs	= offsetof(struct ceph_inode_info, i_crypt_info) -
-> > +				  offsetof(struct ceph_inode_info, netfs),
-> > +#endif
-> 
-> This should use the offset to the VFS inode:
-> 
->     offsetof(struct ceph_inode_info, netfs.inode)
-> 
-> > +/*
-> > + * struct inode must be the first member so we can easily calculate offsets for
-> > + * e.g., fscrypt or fsverity when embedded in filesystem specific inodes.
-> > + */
-> > +static_assert(__same_type(((struct netfs_inode *)NULL)->inode, struct inode));
-> > +static_assert(offsetof(struct netfs_inode, inode) == 0);
-> 
-> Then no need for this.
+The following changes since commit e04c78d86a9699d136910cfc0bdcf01087e3267e:
 
-Ok.
+  Linux 6.16-rc2 (2025-06-15 13:49:41 -0700)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/fs/fscrypt/linux.git tags/fscrypt-for-linus
+
+for you to fetch changes up to fa65058063cbaba6e519b5291a7e2e9e0fa24ae3:
+
+  ceph: Remove gfp_t argument from ceph_fscrypt_encrypt_*() (2025-07-10 12:33:17 -0700)
+
+----------------------------------------------------------------
+
+Simplify how fscrypt uses the crypto API, resulting in some
+significant performance improvements:
+
+ - Drop the incomplete and problematic support for asynchronous
+   algorithms. These drivers are bug-prone, and it turns out they are
+   actually much slower than the CPU-based code as well.
+
+ - Allocate crypto requests on the stack instead of the heap. This
+   improves encryption and decryption performance, especially for
+   filenames. It also eliminates a point of failure during I/O.
+
+----------------------------------------------------------------
+Eric Biggers (9):
+      fscrypt: Explicitly include <linux/export.h>
+      fscrypt: Drop obsolete recommendation to enable optimized SHA-512
+      fscrypt: Don't use problematic non-inline crypto engines
+      fscrypt: Don't use asynchronous CryptoAPI algorithms
+      fscrypt: Drop FORBID_WEAK_KEYS flag for AES-ECB
+      fscrypt: Switch to sync_skcipher and on-stack requests
+      fscrypt: Remove gfp_t argument from fscrypt_crypt_data_unit()
+      fscrypt: Remove gfp_t argument from fscrypt_encrypt_block_inplace()
+      ceph: Remove gfp_t argument from ceph_fscrypt_encrypt_*()
+
+ Documentation/filesystems/fscrypt.rst | 45 ++++++++---------------
+ fs/ceph/crypto.c                      | 13 +++----
+ fs/ceph/crypto.h                      | 10 ++---
+ fs/ceph/file.c                        |  3 +-
+ fs/ceph/inode.c                       |  3 +-
+ fs/crypto/bio.c                       |  9 +++--
+ fs/crypto/crypto.c                    | 52 ++++++++++----------------
+ fs/crypto/fname.c                     | 69 +++++++++++++----------------------
+ fs/crypto/fscrypt_private.h           | 23 ++++++++++--
+ fs/crypto/hkdf.c                      |  4 +-
+ fs/crypto/hooks.c                     |  2 +
+ fs/crypto/inline_crypt.c              |  1 +
+ fs/crypto/keyring.c                   |  5 ++-
+ fs/crypto/keysetup.c                  | 23 +++++++-----
+ fs/crypto/keysetup_v1.c               | 55 ++++++++++++----------------
+ fs/crypto/policy.c                    |  4 +-
+ fs/ubifs/crypto.c                     |  2 +-
+ include/linux/fscrypt.h               |  5 +--
+ 18 files changed, 146 insertions(+), 182 deletions(-)
 
