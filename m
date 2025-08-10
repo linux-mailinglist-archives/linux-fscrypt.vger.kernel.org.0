@@ -1,62 +1,56 @@
-Return-Path: <linux-fscrypt+bounces-788-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-789-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A83FBB1F94A
-	for <lists+linux-fscrypt@lfdr.de>; Sun, 10 Aug 2025 10:03:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 316BEB1F95C
+	for <lists+linux-fscrypt@lfdr.de>; Sun, 10 Aug 2025 10:47:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3BCA3B35B1
-	for <lists+linux-fscrypt@lfdr.de>; Sun, 10 Aug 2025 08:02:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 40A59176A67
+	for <lists+linux-fscrypt@lfdr.de>; Sun, 10 Aug 2025 08:47:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B16762701CE;
-	Sun, 10 Aug 2025 08:00:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05695239E82;
+	Sun, 10 Aug 2025 08:47:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sMaXqJKa"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FtooPbxv"
 X-Original-To: linux-fscrypt@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DB4926E6FF;
-	Sun, 10 Aug 2025 08:00:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B440C2033A;
+	Sun, 10 Aug 2025 08:47:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754812813; cv=none; b=QS6RbrbzF59bZpJR00KrpcA7Ks6IsFGGYuUtRnucMPDDaHGb98piTdAatuz/KIpllCXnCgV2s65IWtXXzEsVExPKuvg4d+tIOZg5sHXFXNXEn9+FWOFslO0FVPriPjsqCHlaj1vdOMiYYPrH6DTiCn7Jry/lOsPmPoOcbUiLPT0=
+	t=1754815657; cv=none; b=K606PxHadPl6okRmmYSEL63xICywx4CJ4BcigF2P/seJIBgyrS0pqJcPjPJ8NsQZTuWVLCd/J41AOtgEoEU9qP7dFRQf5m1Kd/bKG0pH9AgJRl2d4u4F3WHUQeXXsho1sDG3Sol0R21T3ufu6yUZOJm/9UkV37SGAbCWMWrwZ38=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754812813; c=relaxed/simple;
-	bh=rH4xOjWHyO4rXuGnXUPR48o6Mlex3OOttISDvsv5E9s=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bdWLoldjYHHI/mH8u6KJMh6qo5c05Gy2pSGfRSqYJuA0bEZDrxTA4yc0EiBwzvspnB329Epv80/nQeYRIa/i/prD+1BSiu1rnuo49xonHFZNVZpcvnrIxH2WMYX/1wDEtoMQDOhppESlgzJBnj41qe7sNonAlZMtvV9HsSWHCc4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sMaXqJKa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 199D3C4CEEB;
-	Sun, 10 Aug 2025 08:00:13 +0000 (UTC)
+	s=arc-20240116; t=1754815657; c=relaxed/simple;
+	bh=q8SgtBm3Um6/IA3ICdzyzAhRe18cnxg4v20POkcefXw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Tp8ec+R7UoUkXhbU3mmPTr51avxDjzxNs781ji7BdDIIK51WNdlVTefpjVUkvKRKuOkRgFmLWN1CJZV5nOihfzV/mBK1lgyHN8gkUezKoXy0BijnuNf169XShseCV6DcqR30+b3PcZxBaM0bkKu7jSxetkmLOapCUQ6M/dvwhpU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FtooPbxv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3CF8C4CEEB;
+	Sun, 10 Aug 2025 08:47:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1754812813;
-	bh=rH4xOjWHyO4rXuGnXUPR48o6Mlex3OOttISDvsv5E9s=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=sMaXqJKa2KxH6f4tMBBaWdPiIEWUPBUacPolQNKXvYj7y1z5EdTS9Ztn04re75Tzb
-	 Von+ZDv71Est4yhSEseq9WQNpCJ5tYDDeTnayh3M7Ljc6Z5LkP+X1xTHvCmVmnK62o
-	 3fFoQXIgkxTTpk30YcZ1TJeOyR6HE6cw0xQlu6QUNcpP4gKaVMPy6BWuJYymPZm+si
-	 9rGzeRe7mySUbOWFc0+2EcQHLZTC4EgyqFre8OARwwRm7N8e3UuA4+gMwWTizV3tt5
-	 i+cgenU4mq/isXW8C68emNfvbILzzQPczeVWKyKRxfEEbcTnIOkWQnm7zeTHl03ugW
-	 6uTqLHCGI1q/g==
-From: Eric Biggers <ebiggers@kernel.org>
-To: linux-fscrypt@vger.kernel.org,
-	fsverity@lists.linux.dev
-Cc: linux-fsdevel@vger.kernel.org,
-	linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-mtd@lists.infradead.org,
-	linux-btrfs@vger.kernel.org,
-	ceph-devel@vger.kernel.org,
-	Christian Brauner <brauner@kernel.org>,
-	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH v5 13/13] fsverity: check IS_VERITY() in fsverity_cleanup_inode()
-Date: Sun, 10 Aug 2025 00:57:06 -0700
-Message-ID: <20250810075706.172910-14-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.50.1
-In-Reply-To: <20250810075706.172910-1-ebiggers@kernel.org>
+	s=k20201202; t=1754815657;
+	bh=q8SgtBm3Um6/IA3ICdzyzAhRe18cnxg4v20POkcefXw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=FtooPbxvpMTQCvH7Y/f3jq8mtZ+j/O3aDgP+3ZDwN0u32EsCmn8yc0AKE1k/H2Z1k
+	 PQcymiASqiWiA16/vCx1gQQcg7YHewbgB1Wc/5K7oo75w46ZkF91d1ycyvskavJO3D
+	 tTpZsbR+PitArv7r2tRUUUeejD0YwLa6Fn1dABbPofZOU+eDQdZQoCUATiN+hpG58A
+	 0xvnOYtqG67M2OJnB5cZipmABNVmRvYs5TIUnVYKQR+fkIAQjUtb7DtnWFi4aymBzu
+	 Iuy8JCz+4B0EdnQsu2lU/uW4tHrpSpqnCISu7mnnhxzEGd2p7NGr1cq7nEuvnDpShT
+	 eax2bwRzxDaDQ==
+Date: Sun, 10 Aug 2025 10:47:32 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: linux-fscrypt@vger.kernel.org, fsverity@lists.linux.dev, 
+	linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org, linux-btrfs@vger.kernel.org, 
+	ceph-devel@vger.kernel.org
+Subject: Re: [PATCH v5 00/13] Move fscrypt and fsverity info out of struct
+ inode
+Message-ID: <20250810-tortur-gerammt-8d9ffd00da19@brauner>
 References: <20250810075706.172910-1-ebiggers@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
@@ -64,47 +58,51 @@ List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250810075706.172910-1-ebiggers@kernel.org>
 
-Since getting the address of the fsverity_info has gotten a bit more
-expensive, make fsverity_cleanup_inode() check for IS_VERITY() instead.
-This avoids adding more overhead to non-verity files.
+On Sun, Aug 10, 2025 at 12:56:53AM -0700, Eric Biggers wrote:
+> This is a cleaned-up implementation of moving the i_crypt_info and
+> i_verity_info pointers out of 'struct inode' and into the fs-specific
+> part of the inode, as proposed previously by Christian at
+> https://lore.kernel.org/r/20250723-work-inode-fscrypt-v4-0-c8e11488a0e6@kernel.org/
+> 
+> The high-level concept is still the same: fs/crypto/ and fs/verity/
+> locate the pointer by adding an offset to the address of struct inode.
+> The offset is retrieved from fscrypt_operations or fsverity_operations.
+> 
+> I've cleaned up a lot of the details, including:
+> - Grouped changes into patches differently
+> - Rewrote commit messages and comments to be clearer
+> - Adjusted code formatting to be consistent with existing code
+> - Removed unneeded #ifdefs
+> - Improved choice and location of VFS_WARN_ON_ONCE() statements
+> - Added missing kerneldoc for ubifs_inode::i_crypt_info
+> - Moved field initialization to init_once functions when they exist
+> - Improved ceph offset calculation and removed unneeded static_asserts
+> - fsverity_get_info() now checks IS_VERITY() instead of v_ops
+> - fscrypt_put_encryption_info() no longer checks IS_ENCRYPTED(), since I
+>   no longer think it's actually correct there.
+> - verity_data_blocks() now keeps doing a raw dereference
+> - Dropped fscrypt_set_inode_info() 
+> - Renamed some functions
+> - Do offset calculation using int, so we don't rely on unsigned overflow
+> - And more.
+> 
+> For v4 and earlier, see
+> https://lore.kernel.org/r/20250723-work-inode-fscrypt-v4-0-c8e11488a0e6@kernel.org/
+> 
+> I'd like to take this series through the fscrypt tree for 6.18.
+> (fsverity normally has a separate tree, but by choosing just one tree
+> for this, we'll avoid conflicts in some places.)
 
-This assumes that verity info is never set when !IS_VERITY(), which is
-currently true, but add a VFS_WARN_ON_ONCE() that asserts that.  (This
-of course defeats the optimization, but only when CONFIG_VFS_DEBUG=y.)
+Woh woh. First, I had a cleaned up version ready for v6.18 so if you
+plan on taking over someone's series and resend then maybe ask the
+author first whether that's ok or not. I haven't seen you do that. You
+just caused duplicated work for no reason.
 
-Signed-off-by: Eric Biggers <ebiggers@kernel.org>
----
- include/linux/fsverity.h | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/fsverity.h b/include/linux/fsverity.h
-index 844f7b8b56bbc..5bc7280425a71 100644
---- a/include/linux/fsverity.h
-+++ b/include/linux/fsverity.h
-@@ -188,12 +188,19 @@ void __fsverity_cleanup_inode(struct inode *inode);
-  *
-  * Filesystems must call this on inode eviction to free the inode's verity info.
-  */
- static inline void fsverity_cleanup_inode(struct inode *inode)
- {
--	if (*fsverity_info_addr(inode))
-+	/*
-+	 * Only IS_VERITY() inodes can have verity info, so start by checking
-+	 * for IS_VERITY() (which is faster than retrieving the pointer to the
-+	 * verity info).  This minimizes overhead for non-verity inodes.
-+	 */
-+	if (IS_VERITY(inode))
- 		__fsverity_cleanup_inode(inode);
-+	else
-+		VFS_WARN_ON_ONCE(*fsverity_info_addr(inode) != NULL);
- }
- 
- /* read_metadata.c */
- 
- int fsverity_ioctl_read_metadata(struct file *filp, const void __user *uarg);
--- 
-2.50.1
-
+And second general infrastructure changes that touch multiple fses and
+generic fs infrastructure I very much want to go through VFS trees.
+We'll simply use a shared tree.
 
