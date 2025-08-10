@@ -1,59 +1,61 @@
-Return-Path: <linux-fscrypt+bounces-790-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-791-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63B15B1F96C
-	for <lists+linux-fscrypt@lfdr.de>; Sun, 10 Aug 2025 11:04:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6A41B1FA93
+	for <lists+linux-fscrypt@lfdr.de>; Sun, 10 Aug 2025 16:50:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 877F6178405
-	for <lists+linux-fscrypt@lfdr.de>; Sun, 10 Aug 2025 09:04:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 887D83B9352
+	for <lists+linux-fscrypt@lfdr.de>; Sun, 10 Aug 2025 14:50:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CB6F21CC63;
-	Sun, 10 Aug 2025 09:04:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB346260582;
+	Sun, 10 Aug 2025 14:49:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LjfGKeZQ"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="VdASxwIZ"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0CAF3D81;
-	Sun, 10 Aug 2025 09:04:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A2DB29CEB;
+	Sun, 10 Aug 2025 14:49:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754816643; cv=none; b=AZEqqq+OleNWKbpQkIxIJmcZraocZqsHFYZqLvRQqVXElyphSnLhB1ltnuXgCI5Xb7Ef8K/EWplTHrBvQVIfdL36uti0/0SEMxVf65cy8G91PJ8JuPTsqALa1xyzAsh1aB/lRg2mXuMy5Q44eRiBeaCFNhYYBSz0hFZiIHj5aPg=
+	t=1754837395; cv=none; b=Ln3achVNnnMxK941psmPrd6HKRCUzkQWdQ6M7abF9f2Ufa4s+1QlHQOea/M6l50KiyNaSEcQNCvyiywuvzYnHMlyhdfB/shQlpuKIHbQuMQtMqnBbDe5IGno6p2vSvf95s567UJeUKfZwEKpyS/+wXDdWpa/VYlrat8jRuLSDj4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754816643; c=relaxed/simple;
-	bh=1uk+L/4UCvC2YL4rDydg69JfuP7irpTtoBtvSgNeL/E=;
+	s=arc-20240116; t=1754837395; c=relaxed/simple;
+	bh=81MmHItPWK5AHBLvNoOHNFtMqB3AK2dNlK7nI81UAfw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CfhI5PqwsyTG9+7zlQuda3zRwg8g7KUQO//oAOKxKF7uWwVPU+EWOfTd2GRX5kVffkDa147RfSIVIouxCtUwy8nZk/wWekKUKVP7uZUrHDvoLmc8tttHY53hmpRQyDXnYKtzumNU2KP1uXojH+GSAgX3FoamRHZGS7jO/Bm0mrs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LjfGKeZQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1526CC4CEEB;
-	Sun, 10 Aug 2025 09:04:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1754816643;
-	bh=1uk+L/4UCvC2YL4rDydg69JfuP7irpTtoBtvSgNeL/E=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LjfGKeZQqiIXfnvbaJEgwYP+/u4ykE3RMP5XuJzst3yu07DMinG6FVd0er4RWR7oT
-	 8rY+yL96FW8wFvnuHh6n/P2s+zyfPAo9USy6Gr5e8LHi9ieo1muby/ThPMT0jC2MJ6
-	 +BlYRh3l88+NlLoHLFQJG3gzW5nF6vc4t6gkOhKIHNw3TiipDPKog5V9JjwNkUWtz3
-	 zCiZEvSodHKopxJzcGudkBciWnHKKucIFIE0/37Uv9R1AJd8/jKkBRWXDhzx62YRFE
-	 ckhJ7XvPfWXPJA+9rnHx/WIF2A1CRYUoHGhVluTekBsgPvo1ZHEvNC53HIiH5g5ol/
-	 j4fq4OzXJw1Ng==
-Date: Sun, 10 Aug 2025 02:03:02 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: Christian Brauner <brauner@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=MjDei9vMmJ+knGblhx4+AocN2gHyTd39GF0qEhisS9kyR2GizgsMgzFKYMvJzZusKrNAllhAMT8w1bN9rMa+Rg+mVjXXx0VPmeFrl+Rlr9Auh0RUUtmaV0/H8Uj944unW2LbomA5+GaH0+Tdrz8XBAf1YJxOB57BPse8wqhAhG0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=VdASxwIZ; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=rwHgnvFkI8ol1FQ+5zHPEHRy/dxGqbdVD4J/8Z3UBxw=; b=VdASxwIZcUfPXD0ej7kzZEmUB8
+	MHVwuMklV0Y1mYhBir4v43o30PGEb+fMO5v7uxKj7DHmNf4HIMzzamFT39Ujw32EispbuToedYhTP
+	Oyuam4G5cQi6rv3riZOxqEd2/ZUsRf3nv/P7xe6AbU71E4S3yXklCJt/maNyXE8EnaHlfytMLyCg8
+	AbqvvpqR8VL6z0jRWU5u8yftfWqnvdzKQ5ptqKq5piZ+de9ZcuEfhKAQ6phIwIevXcmXH3ERjElYl
+	RWeRQ3MOS0pnt/Ac+/EQM+qGKZG7FS0gUBrj7Al117ACleeoJG8PxlQfvkz/3t4jxpWlyq2BqjIxq
+	C64/uLbA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1ul7Mv-00000005iNZ-2w7q;
+	Sun, 10 Aug 2025 14:49:53 +0000
+Date: Sun, 10 Aug 2025 07:49:53 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Eric Biggers <ebiggers@kernel.org>
 Cc: linux-fscrypt@vger.kernel.org, fsverity@lists.linux.dev,
 	linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
 	linux-f2fs-devel@lists.sourceforge.net,
 	linux-mtd@lists.infradead.org, linux-btrfs@vger.kernel.org,
-	ceph-devel@vger.kernel.org
+	ceph-devel@vger.kernel.org, Christian Brauner <brauner@kernel.org>
 Subject: Re: [PATCH v5 00/13] Move fscrypt and fsverity info out of struct
  inode
-Message-ID: <20250810090302.GA1274@sol>
+Message-ID: <aJixkUfWPo5t8Ron@infradead.org>
 References: <20250810075706.172910-1-ebiggers@kernel.org>
- <20250810-tortur-gerammt-8d9ffd00da19@brauner>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
@@ -62,63 +64,21 @@ List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250810-tortur-gerammt-8d9ffd00da19@brauner>
+In-Reply-To: <20250810075706.172910-1-ebiggers@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Sun, Aug 10, 2025 at 10:47:32AM +0200, Christian Brauner wrote:
-> On Sun, Aug 10, 2025 at 12:56:53AM -0700, Eric Biggers wrote:
-> > This is a cleaned-up implementation of moving the i_crypt_info and
-> > i_verity_info pointers out of 'struct inode' and into the fs-specific
-> > part of the inode, as proposed previously by Christian at
-> > https://lore.kernel.org/r/20250723-work-inode-fscrypt-v4-0-c8e11488a0e6@kernel.org/
-> > 
-> > The high-level concept is still the same: fs/crypto/ and fs/verity/
-> > locate the pointer by adding an offset to the address of struct inode.
-> > The offset is retrieved from fscrypt_operations or fsverity_operations.
-> > 
-> > I've cleaned up a lot of the details, including:
-> > - Grouped changes into patches differently
-> > - Rewrote commit messages and comments to be clearer
-> > - Adjusted code formatting to be consistent with existing code
-> > - Removed unneeded #ifdefs
-> > - Improved choice and location of VFS_WARN_ON_ONCE() statements
-> > - Added missing kerneldoc for ubifs_inode::i_crypt_info
-> > - Moved field initialization to init_once functions when they exist
-> > - Improved ceph offset calculation and removed unneeded static_asserts
-> > - fsverity_get_info() now checks IS_VERITY() instead of v_ops
-> > - fscrypt_put_encryption_info() no longer checks IS_ENCRYPTED(), since I
-> >   no longer think it's actually correct there.
-> > - verity_data_blocks() now keeps doing a raw dereference
-> > - Dropped fscrypt_set_inode_info() 
-> > - Renamed some functions
-> > - Do offset calculation using int, so we don't rely on unsigned overflow
-> > - And more.
-> > 
-> > For v4 and earlier, see
-> > https://lore.kernel.org/r/20250723-work-inode-fscrypt-v4-0-c8e11488a0e6@kernel.org/
-> > 
-> > I'd like to take this series through the fscrypt tree for 6.18.
-> > (fsverity normally has a separate tree, but by choosing just one tree
-> > for this, we'll avoid conflicts in some places.)
-> 
-> Woh woh. First, I had a cleaned up version ready for v6.18 so if you
-> plan on taking over someone's series and resend then maybe ask the
-> author first whether that's ok or not. I haven't seen you do that. You
-> just caused duplicated work for no reason.
+On Sun, Aug 10, 2025 at 12:56:53AM -0700, Eric Biggers wrote:
+> This is a cleaned-up implementation of moving the i_crypt_info and
+> i_verity_info pointers out of 'struct inode' and into the fs-specific
+> part of the inode, as proposed previously by Christian at
+> https://lore.kernel.org/r/20250723-work-inode-fscrypt-v4-0-c8e11488a0e6@kernel.org/
 
-Ah, sorry about that.  When I started looking at it again yesterday
-there turned out to be way too many cleanups and fixes I wanted to make
-(beyond the comments I gave earlier), and I hadn't seen activity from
-you on it in a while.  So I figured it would be easier to just send a
-series myself.  But I should have asked you first, sorry.
+I would really much prefer to move fscrypt to use a hash lookup instead
+of bloating all inodes for a each file system supporting it, even if
+very few files on very few file systems are using it.  With the fsverity
+xfs series posted again this is becoming personal :)
 
-> And second general infrastructure changes that touch multiple fses and
-> generic fs infrastructure I very much want to go through VFS trees.
-> We'll simply use a shared tree.
+You mentioned you were looking into it but didn't like the rhashtable
+API.  My offer to help with that still stands.
 
-So you'd like to discontinue the fscrypt and fsverity trees?  That's
-what they are for: general infrastructure shared by multiple
-filesystems.  Or is this comment just for this series in particular,
-presumably because it touches 'struct inode'?
-
-- Eric
 
