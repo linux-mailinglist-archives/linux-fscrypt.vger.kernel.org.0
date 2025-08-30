@@ -1,153 +1,289 @@
-Return-Path: <linux-fscrypt+bounces-802-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-803-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F635B281A3
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 15 Aug 2025 16:29:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27E93B3CB3E
+	for <lists+linux-fscrypt@lfdr.de>; Sat, 30 Aug 2025 15:29:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DA8B1C82F98
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 15 Aug 2025 14:28:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BDFAC1BA52D5
+	for <lists+linux-fscrypt@lfdr.de>; Sat, 30 Aug 2025 13:29:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABD9C226D1B;
-	Fri, 15 Aug 2025 14:28:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15D9A27B34A;
+	Sat, 30 Aug 2025 13:28:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vi/jyHyC"
+	dkim=pass (2048-bit key) header.d=gms-tku-edu-tw.20230601.gappssmtp.com header.i=@gms-tku-edu-tw.20230601.gappssmtp.com header.b="HvbLUUaD"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7425022ACE3;
-	Fri, 15 Aug 2025 14:28:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BA0427B330
+	for <linux-fscrypt@vger.kernel.org>; Sat, 30 Aug 2025 13:28:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755268102; cv=none; b=Z/rntE2sW3xxNNvGS11EyHHwJjvqneZJpoLqDfPEXM5q99PO3PG8Jnb8MuagpIgHoPVWj8tuqwwqG3n+iDvAqyvITSCY2jjUQVpaqZIjhaJHIg7n+AF2v6KNIKnp978YfJg7IQg7MlF4x6Vl2nYrBS0lnvMDKMklXLnABdN7RVE=
+	t=1756560520; cv=none; b=MFLNldWgg3QLAlEdicgTwyPBIhfW7PXQdWkWMZ5l/Qiq+ebqxb4AgwTFimKrkLyjBowIA+C4arsH62yDOjYU42xDt1FZ+EmEetBAP1Jhr28sTbc31O2su/E6FjYVxoaOWUERsNO/kPfqDs5gXEr8u8CfQKqqy2EiFum+dX1H52M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755268102; c=relaxed/simple;
-	bh=NjlA2V0nQx0tBL4rAiZ29YI48biAV1hmLhasXfWKjKM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gEFTh7OvubPuOaia+v9NweX9aTPIi5hp9v8P/vsREXGlUqNIidtjfwBH5zkJ8r3344JQVfEANyn2KxH1iZAHS9INzPO8KzQieXl7Q9X3iMI1a0BpMpvHVA9qyjXHLaOdhFnNmRLs3pRULRQ0Ddrkq4XJkA7z1GnkN3pr6k0djjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vi/jyHyC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0BE4C4CEF5;
-	Fri, 15 Aug 2025 14:28:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755268102;
-	bh=NjlA2V0nQx0tBL4rAiZ29YI48biAV1hmLhasXfWKjKM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Vi/jyHyCpW3IS1hb6zQ4jJ+oAYD0DXsY2Im5ys51K44DIEZQHnGkTVraWsoFcqbwC
-	 JxJq03+C9R3fjpoMc9nQd4QG10bfgmJDeOjpatQAYOyzqylhQ1n0AYRglhszfcGetS
-	 FjhIcW7orUVId79eVQDk4m6yVnMF8nfROWLKKC2DlG1gQDlsTg5ndmXNr61rMo4qLc
-	 FwgVzCRxDCjKmjVaJfryczmqUHzyfxIQC23QMXOHkNvThADLMLAyeNAgSC/7uGhDd7
-	 iOBJ7p+fW43/8ExrYdQawHBPv3mNoLE+f/MSAzjfGGQ+rUABw1kKle6THgz2+iucuP
-	 LOrp6gISP0oAQ==
-Date: Fri, 15 Aug 2025 16:28:17 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: linux-fscrypt@vger.kernel.org, fsverity@lists.linux.dev, 
-	linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org, linux-btrfs@vger.kernel.org, 
-	ceph-devel@vger.kernel.org
-Subject: Re: [PATCH v5 00/13] Move fscrypt and fsverity info out of struct
- inode
-Message-ID: <20250815-pension-geleugnet-0b0502f0555c@brauner>
-References: <20250810075706.172910-1-ebiggers@kernel.org>
- <20250810-tortur-gerammt-8d9ffd00da19@brauner>
- <20250810090302.GA1274@sol>
- <20250811-distribuieren-nilpferd-bef047fa7992@brauner>
- <20250811-unbedacht-vollmond-1a805b76212b@brauner>
- <20250811163907.GA1268@sol>
+	s=arc-20240116; t=1756560520; c=relaxed/simple;
+	bh=DA7DnF0XN9lY+stgan8XI4Zz9ca12JKXCOrU6GYdA6s=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Tf3dz5EQ41PreY02a+/ZEIP30oSV54QTc8+CCktEKqFS6+akkYrbqjQSYdd9Qc/vLpoyFKmdjEo+KZ9ZEMThkCy0Avwd83lHhrOV6/1wql8EauLihgpP2Ugrz+Jz+qRlj/avY5kFD34gfbEAZ6LLLA2PT/CdVwo3h66MjAXaFKk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gms.tku.edu.tw; spf=pass smtp.mailfrom=gms.tku.edu.tw; dkim=pass (2048-bit key) header.d=gms-tku-edu-tw.20230601.gappssmtp.com header.i=@gms-tku-edu-tw.20230601.gappssmtp.com header.b=HvbLUUaD; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gms.tku.edu.tw
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gms.tku.edu.tw
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-2489acda3bbso23230845ad.1
+        for <linux-fscrypt@vger.kernel.org>; Sat, 30 Aug 2025 06:28:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gms-tku-edu-tw.20230601.gappssmtp.com; s=20230601; t=1756560517; x=1757165317; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cH2v1QcRr8JcEsaWWcb0QAb5PdIid9UdMR0UYOpPn/g=;
+        b=HvbLUUaD4KlI8STB5655JCW+TTBgrOPDidgSHLWutaMnaVThZ+pZ16JBY2vcPbQsuA
+         UCTYIy/Ic6rocIF9rM5B9wargXZLOZB+4sjGawClCBKklXtaKGerOnUHkAA4n9EDbduc
+         3IWVK1dBWcFDxMZOXb8LN83ZYfwHf0s/End0PNCFY6eiCJ2DaCaer0jGUVjS1y8FYcj3
+         oRbCFOg61tkmpwWf5/kN+jvWgasbfEKdvHgXZ3JxMQvaKVICncHD9zW29xjH2M1I1g6c
+         dg3OCmwuLSIpDKsqkvVjboyso5a++Pxfli+NDjiJl5/gT1YITGQpv6L+SRLizk4+bg3u
+         Aowg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756560517; x=1757165317;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cH2v1QcRr8JcEsaWWcb0QAb5PdIid9UdMR0UYOpPn/g=;
+        b=XgvGlz5jnQvkp1Ds+UDqni32zbJxYN+nCZa25mn0yQPGwQP8wX2qAluPLit+xtOO2L
+         nAuFqsbPTT0dHLejfe69y3Sso5mAf/FlW6B7eac+c1gaFAJ8Y9RURGZ8i2WO0H/dtYmi
+         Kbhn3X2RdytKZtPDFKRS1ejraxw4Rd5uDQEwAXs+xz8LOOXA2DroScaAF6EQa1O9Iy5D
+         YMOPFS0DB0FnoVipUDAeTtCC0ZpSyrAketM7ZyS0oYg6gKvXMh8AlnPf4UkSdCPRd16g
+         0lvygt0f5D8IjsV5B7kmU7TFbGXU8G9IaRAAUkauceZF8Bo/5uOPxULoH/+teDh7AEee
+         njGg==
+X-Gm-Message-State: AOJu0YxU3rHe0zszr5oTbQjJb0fcOjQrf/YtKqMrgOGZ0zDE722Yl/UY
+	4qEk/74PupBWHRHra8nU1A5GG/3tzlWblSZoi6/8HMAR2pQCWJDsMJ4JdUNSchL3RG0=
+X-Gm-Gg: ASbGncsxFvoKjoqIhtwr3LROOE68EKgCpYl+sKZ98m5KKCb4YTOul9bUDXCBt7MXyuv
+	/r1iJRELXFEWN8x8fggXs/KrtyZf7Y6U4D8ErUSQrgxgIS7s7ukBgdpNPT/MgaHNIcKGQVCkEOT
+	UUmRl0TtdxWm3YAwrp+Qq95ETn5/Oiwj5fuI8DHa4hNQ2z32wjjPRJmjlFtg4BwIrujamA3XfWq
+	DMT47MlZ5R+H+jrnsiuS+NZlxPyQqcSgC4YcrP17F10F1kxsTVDEIFUjpSRHu86C5c4ccjsLwky
+	EX3V7v9PreU2MJ6CYV5VS8gNS3+4q+ETFhxhCwor7gWrpaj79ktMz8brC0eIvC0smYNLQkIJI2M
+	hhEUNzBZeoI/sDJwrFzzGEB846i4H+2vj6QbOB8UtbKPE4iI=
+X-Google-Smtp-Source: AGHT+IGBAlCgkcm3nrwMC3nhI3g6hU3d8goMhXPzQv7o9StgfPRy27tBqmBWSCPuHEJ4cC763SbNpw==
+X-Received: by 2002:a17:903:1d2:b0:248:e3d0:46ec with SMTP id d9443c01a7336-24944ab7f52mr26274385ad.37.1756560517138;
+        Sat, 30 Aug 2025 06:28:37 -0700 (PDT)
+Received: from wu-Pro-E500-G6-WS720T.. ([2001:288:7001:2703:7a16:5a8f:5bc5:6642])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2490373eb17sm52512195ad.54.2025.08.30.06.28.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Aug 2025 06:28:36 -0700 (PDT)
+From: Guan-Chun Wu <409411716@gms.tku.edu.tw>
+To: ebiggers@kernel.org,
+	tytso@mit.edu,
+	jaegeuk@kernel.org
+Cc: linux-fscrypt@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Guan-Chun Wu <409411716@gms.tku.edu.tw>
+Subject: [PATCH] fscrypt: optimize fscrypt_base64url_encode() with block processing
+Date: Sat, 30 Aug 2025 21:28:32 +0800
+Message-Id: <20250830132832.7911-1-409411716@gms.tku.edu.tw>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20250811163907.GA1268@sol>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Aug 11, 2025 at 09:39:07AM -0700, Eric Biggers wrote:
-> On Mon, Aug 11, 2025 at 03:34:35PM +0200, Christian Brauner wrote:
-> > On Mon, Aug 11, 2025 at 03:17:01PM +0200, Christian Brauner wrote:
-> > > On Sun, Aug 10, 2025 at 02:03:02AM -0700, Eric Biggers wrote:
-> > > > On Sun, Aug 10, 2025 at 10:47:32AM +0200, Christian Brauner wrote:
-> > > > > On Sun, Aug 10, 2025 at 12:56:53AM -0700, Eric Biggers wrote:
-> > > > > > This is a cleaned-up implementation of moving the i_crypt_info and
-> > > > > > i_verity_info pointers out of 'struct inode' and into the fs-specific
-> > > > > > part of the inode, as proposed previously by Christian at
-> > > > > > https://lore.kernel.org/r/20250723-work-inode-fscrypt-v4-0-c8e11488a0e6@kernel.org/
-> > > > > > 
-> > > > > > The high-level concept is still the same: fs/crypto/ and fs/verity/
-> > > > > > locate the pointer by adding an offset to the address of struct inode.
-> > > > > > The offset is retrieved from fscrypt_operations or fsverity_operations.
-> > > > > > 
-> > > > > > I've cleaned up a lot of the details, including:
-> > > > > > - Grouped changes into patches differently
-> > > > > > - Rewrote commit messages and comments to be clearer
-> > > > > > - Adjusted code formatting to be consistent with existing code
-> > > > > > - Removed unneeded #ifdefs
-> > > > > > - Improved choice and location of VFS_WARN_ON_ONCE() statements
-> > > > > > - Added missing kerneldoc for ubifs_inode::i_crypt_info
-> > > > > > - Moved field initialization to init_once functions when they exist
-> > > > > > - Improved ceph offset calculation and removed unneeded static_asserts
-> > > > > > - fsverity_get_info() now checks IS_VERITY() instead of v_ops
-> > > > > > - fscrypt_put_encryption_info() no longer checks IS_ENCRYPTED(), since I
-> > > > > >   no longer think it's actually correct there.
-> > > > > > - verity_data_blocks() now keeps doing a raw dereference
-> > > > > > - Dropped fscrypt_set_inode_info() 
-> > > > > > - Renamed some functions
-> > > > > > - Do offset calculation using int, so we don't rely on unsigned overflow
-> > > > > > - And more.
-> > > > > > 
-> > > > > > For v4 and earlier, see
-> > > > > > https://lore.kernel.org/r/20250723-work-inode-fscrypt-v4-0-c8e11488a0e6@kernel.org/
-> > > > > > 
-> > > > > > I'd like to take this series through the fscrypt tree for 6.18.
-> > > > > > (fsverity normally has a separate tree, but by choosing just one tree
-> > > > > > for this, we'll avoid conflicts in some places.)
-> > > > > 
-> > > > > Woh woh. First, I had a cleaned up version ready for v6.18 so if you
-> > > > > plan on taking over someone's series and resend then maybe ask the
-> > > > > author first whether that's ok or not. I haven't seen you do that. You
-> > > > > just caused duplicated work for no reason.
-> > > > 
-> > > > Ah, sorry about that.  When I started looking at it again yesterday
-> > > > there turned out to be way too many cleanups and fixes I wanted to make
-> > > > (beyond the comments I gave earlier), and I hadn't seen activity from
-> > > > you on it in a while.  So I figured it would be easier to just send a
-> > > > series myself.  But I should have asked you first, sorry.
-> > > 
-> > > So I started working on this pretty much right away. And I had planned
-> > > on sending it out rather soon but then thought to better wait for -rc1
-> > > to be released because I saw you had a bunch of crypto changes in for
-> > > -rc1 that would've caused merge conflicts. It's no big deal overall but
-> > > I just don't like that I wasted massaging all that stuff. So next time a
-> > > heads-up would be nice. Thank you!
-> > 
-> > I just pulled the series and now I see that you also changed the
-> > authorship of every single patch in the series from me to you and put my
-> > Co-developed-by in there.
-> > 
-> > I mean I acknowledge that there's changes between the branches and
-> > there's some function renaming but it's not to the point where
-> > authorship should be changed. And if you think that's necessary than it
-> > would be something you would want to talk to me about first.
-> > 
-> > I don't care about the stats but it was always hugely frustrating to me
-> > when I started kernel development when senior kernel developers waltzed
-> > in and thought they'd just take things over so I try very hard to not do
-> > that unless this is agreed upon first.
-> 
-> If you want to keep the authorship that's fine with me.  Make sure
-> you've checked the diff: the diff between v4 and v5 is larger than the
-> diff between the base and either version.  And as I mentioned, I rewrote
-> the commit messages and divided some of the changes into commits
-> differently as well.  If the situation was flipped, I wouldn't want to
-> be kept as the author.  But I realize there are different opinions about
-> this sort of thing, and I'm totally fine with whatever you prefer.
+Previously, fscrypt_base64url_encode() processed input one byte at a
+time, using a bitstream, accumulating bits and emitting characters when
+6 bits were available. This was correct but added extra computation.
 
-It's not that I oppose it per se it's just that it would be nice to have
-gotten a heads-up about both the rewrite and the authorship change.
-(Sorry, still on vacation and so answers are delayed.)
+This patch processes input in 3-byte blocks, mapping directly to 4 output
+characters. Any remaining 1 or 2 bytes are handled according to Base64 URL
+rules. This reduces computation and improves performance.
+
+Performance test (5 runs) for fscrypt_base64url_encode():
+
+64B input:
+-------------------------------------------------------
+| Old method | 131 | 108 | 114 | 122 | 123 | avg ~120 ns |
+-------------------------------------------------------
+| New method |  84 |  81 |  84 |  82 |  84 | avg ~83 ns  |
+-------------------------------------------------------
+
+1KB input:
+--------------------------------------------------------
+| Old method | 1152 | 1121 | 1142 | 1147 | 1148 | avg ~1142 ns |
+--------------------------------------------------------
+| New method |  767 |  752 |  765 |  771 |  776 | avg ~766 ns  |
+--------------------------------------------------------
+
+Signed-off-by: Guan-Chun Wu <409411716@gms.tku.edu.tw>
+---
+Tested on Linux 6.8.0-64-generic x86_64
+with Intel Core i7-10700 @ 2.90GHz
+
+Test is executed in the form of kernel module.
+
+Test script:
+
+static int encode_v1(const u8 *src, int srclen, char *dst)
+{
+	u32 ac = 0;
+	int bits = 0;
+	int i;
+	char *cp = dst;
+
+	for (i = 0; i < srclen; i++) {
+		ac = (ac << 8) | src[i];
+		bits += 8;
+		do {
+			bits -= 6;
+			*cp++ = base64url_table[(ac >> bits) & 0x3f];
+		} while (bits >= 6);
+	}
+	if (bits)
+		*cp++ = base64url_table[(ac << (6 - bits)) & 0x3f];
+	return cp - dst;
+}
+
+static int encode_v2(const u8 *src, int srclen, char *dst)
+{
+	u32 ac = 0;
+	int i = 0;
+	char *cp = dst;
+
+	while (i + 2 < srclen) {
+		ac = ((u32)src[i] << 16) | ((u32)src[i + 1] << 8) | (u32)src[i + 2];
+		*cp++ = base64url_table[(ac >> 18) & 0x3f];
+		*cp++ = base64url_table[(ac >> 12) & 0x3f];
+		*cp++ = base64url_table[(ac >> 6) & 0x3f];
+		*cp++ = base64url_table[ac & 0x3f];
+		i += 3;
+	}
+
+	switch (srclen - i) {
+	case 2:
+		ac = ((u32)src[i] << 16) | ((u32)src[i + 1] << 8);
+		*cp++ = base64url_table[(ac >> 18) & 0x3f];
+		*cp++ = base64url_table[(ac >> 12) & 0x3f];
+		*cp++ = base64url_table[(ac >> 6) & 0x3f];
+		break;
+	case 1:
+		ac = ((u32)src[i] << 16);
+		*cp++ = base64url_table[(ac >> 18) & 0x3f];
+		*cp++ = base64url_table[(ac >> 12) & 0x3f];
+		break;
+	}
+	return cp - dst;
+}
+
+static void run_test(const char *label, const u8 *data, int len)
+{
+    char *dst1, *dst2;
+    int n1, n2;
+    u64 start, end;
+
+    dst1 = kmalloc(len * 2, GFP_KERNEL);
+    dst2 = kmalloc(len * 2, GFP_KERNEL);
+
+    if (!dst1 || !dst2) {
+        pr_err("%s: Failed to allocate dst buffers\n", label);
+        goto out;
+    }
+
+    pr_info("[%s] input size = %d bytes\n", label, len);
+
+    start = ktime_get_ns();
+    n1 = encode_v1(data, len, dst1);
+    end = ktime_get_ns();
+    pr_info("[%s] encode_v1 time: %lld ns\n", label, end - start);
+
+    start = ktime_get_ns();
+    n2 = encode_v2(data, len, dst2);
+    end = ktime_get_ns();
+    pr_info("[%s] encode_v2 time: %lld ns\n", label, end - start);
+
+    if (n1 != n2 || memcmp(dst1, dst2, n1) != 0)
+        pr_err("[%s] Mismatch detected between encode_v1 and encode_v2!\n", label);
+    else
+        pr_info("[%s] Outputs are identical.\n", label);
+
+out:
+    kfree(dst1);
+    kfree(dst2);
+}
+
+static int __init base64_perf_init(void)
+{
+    u8 *data1k;
+
+    pr_info("Module init - running multi-size tests\n");
+
+    {
+        static u8 test64[64];
+        get_random_bytes(test64, sizeof(test64));
+        run_test("64B", test64, sizeof(test64));
+    }
+
+    data1k = kmalloc(1024, GFP_KERNEL);
+    if (data1k) {
+        get_random_bytes(data1k, 1024);
+        run_test("1KB", data1k, 1024);
+        kfree(data1k);
+    } else {
+        pr_err("Failed to allocate 1KB test buffer\n");
+    }
+
+    return 0;
+}
+---
+ fs/crypto/fname.c | 33 ++++++++++++++++++++++-----------
+ 1 file changed, 22 insertions(+), 11 deletions(-)
+
+diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
+index 010f9c0a4c2f..adaa16905498 100644
+--- a/fs/crypto/fname.c
++++ b/fs/crypto/fname.c
+@@ -204,20 +204,31 @@ static const char base64url_table[65] =
+ static int fscrypt_base64url_encode(const u8 *src, int srclen, char *dst)
+ {
+ 	u32 ac = 0;
+-	int bits = 0;
+-	int i;
++	int i = 0;
+ 	char *cp = dst;
+ 
+-	for (i = 0; i < srclen; i++) {
+-		ac = (ac << 8) | src[i];
+-		bits += 8;
+-		do {
+-			bits -= 6;
+-			*cp++ = base64url_table[(ac >> bits) & 0x3f];
+-		} while (bits >= 6);
++	while (i + 2 < srclen) {
++		ac = ((u32)src[i] << 16) | ((u32)src[i + 1] << 8) | (u32)src[i + 2];
++		*cp++ = base64url_table[(ac >> 18) & 0x3f];
++		*cp++ = base64url_table[(ac >> 12) & 0x3f];
++		*cp++ = base64url_table[(ac >> 6) & 0x3f];
++		*cp++ = base64url_table[ac & 0x3f];
++		i += 3;
++	}
++
++	switch (srclen - i) {
++	case 2:
++		ac = ((u32)src[i] << 16) | ((u32)src[i + 1] << 8);
++		*cp++ = base64url_table[(ac >> 18) & 0x3f];
++		*cp++ = base64url_table[(ac >> 12) & 0x3f];
++		*cp++ = base64url_table[(ac >> 6) & 0x3f];
++		break;
++	case 1:
++		ac = ((u32)src[i] << 16);
++		*cp++ = base64url_table[(ac >> 18) & 0x3f];
++		*cp++ = base64url_table[(ac >> 12) & 0x3f];
++		break;
+ 	}
+-	if (bits)
+-		*cp++ = base64url_table[(ac << (6 - bits)) & 0x3f];
+ 	return cp - dst;
+ }
+ 
+-- 
+2.34.1
+
 
