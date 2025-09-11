@@ -1,98 +1,102 @@
-Return-Path: <linux-fscrypt+bounces-809-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-810-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5592B529EE
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 11 Sep 2025 09:29:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C4D1B52A02
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 11 Sep 2025 09:32:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70C725812BD
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 11 Sep 2025 07:29:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 77369189C5D1
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 11 Sep 2025 07:32:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDF05269B0D;
-	Thu, 11 Sep 2025 07:29:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 746D7329F11;
+	Thu, 11 Sep 2025 07:32:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gms-tku-edu-tw.20230601.gappssmtp.com header.i=@gms-tku-edu-tw.20230601.gappssmtp.com header.b="zgp44XFw"
+	dkim=pass (2048-bit key) header.d=gms-tku-edu-tw.20230601.gappssmtp.com header.i=@gms-tku-edu-tw.20230601.gappssmtp.com header.b="k50nhQrr"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5211622D4F1
-	for <linux-fscrypt@vger.kernel.org>; Thu, 11 Sep 2025 07:29:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DE3C26CE39
+	for <linux-fscrypt@vger.kernel.org>; Thu, 11 Sep 2025 07:32:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757575780; cv=none; b=Ws2E8p0OzfbrPoQh0AkToIsN/1aw27TB2uJb4LVAYx6Yjb5dIMpq65BKe/M/XJkv1opyI1isgoDcsAtuN4X5XV0TXbC507bwC1BZaNDIjSLPk9RAuoue65cSGUjx7g5C32/yEs5O9S7938fwhvZTgLDC+Wl4pW5HIHAJA+gBr4g=
+	t=1757575934; cv=none; b=cjkvJl/IPJKP9O7Ve18mVGTrrjQsOqfpPH7YdHcrh08AtWEqrkwYaNNEmx7JwlpYSurf+I1ShToK2U0yub4o+WnodU2eLtS6fsGZQhosvv9Zbeq7Zf2S5QNP7wfWcCz1AxNEehY0ZlRGKP+WG9pVRDrJF/yNfr1FUSGHcQXUvlw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757575780; c=relaxed/simple;
-	bh=dzyPDAyBY3iE453hKGZWh2GhozhS+rLJS+JK8T73SRs=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=eAmkK17HroHIUnBX0aKGgdS5WK5MtBgkQsX7QbFDnycCXLDnb2JlfCOuYFkp95xugxzSCNVLQ/whm1fvK6Px0tOi1nhmbNgTtLN4is+YYNvJTfwogpDc4nskvJhruhQo7C+P5orn+S5G13/pp4wq8jCy0lwsy/i0fyPtEgxA5aw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gms.tku.edu.tw; spf=pass smtp.mailfrom=gms.tku.edu.tw; dkim=pass (2048-bit key) header.d=gms-tku-edu-tw.20230601.gappssmtp.com header.i=@gms-tku-edu-tw.20230601.gappssmtp.com header.b=zgp44XFw; arc=none smtp.client-ip=209.85.214.174
+	s=arc-20240116; t=1757575934; c=relaxed/simple;
+	bh=LvP6xvP6ZpqgZqS6HIHSDKtto3Kcjz+TrfwBMvXJT9k=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=u77BighUGFzd8ZREMzUwP0tKAFj/0jLF2IRLYIvCgph9pk1GN+wSSLk59e+wqYC3llInSyjR1O5xN0SVYkFm1LOnWrU73GlmG7zg6Xln/YAAFKRbCeR1hqVR1p6COigLRkWRa66J7vwgufum+3JegyaNgbtTTohw93/eGQkXN3s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gms.tku.edu.tw; spf=pass smtp.mailfrom=gms.tku.edu.tw; dkim=pass (2048-bit key) header.d=gms-tku-edu-tw.20230601.gappssmtp.com header.i=@gms-tku-edu-tw.20230601.gappssmtp.com header.b=k50nhQrr; arc=none smtp.client-ip=209.85.215.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gms.tku.edu.tw
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gms.tku.edu.tw
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-24af8cd99ddso5630245ad.0
-        for <linux-fscrypt@vger.kernel.org>; Thu, 11 Sep 2025 00:29:38 -0700 (PDT)
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-b482fd89b0eso383194a12.2
+        for <linux-fscrypt@vger.kernel.org>; Thu, 11 Sep 2025 00:32:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gms-tku-edu-tw.20230601.gappssmtp.com; s=20230601; t=1757575777; x=1758180577; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=D81Vt79I/BTOBBePW6+0X1oh6zDyKaYVMRC1TVaQyRM=;
-        b=zgp44XFwPbkb7o2cKpnE2r7Xs7lyjr3cY0QI3HrjgdAMbh33t/+5pXXQkW2WYVI5k4
-         gh9OK4ITqPQEKt272Qe5ZGfLR1PhrTkWsnMwPRx9vexHj3RpxsXU6/oWTg3QH12gPJd6
-         dq9lK3cBKwbcf2ypExkbHjSOxcRvzRuTcFPWLJZ21iUtqgYS22oPWVB9vl8UXiyVQInD
-         MlcHyJKYUXz7hr9V4wKVU3sRkvF6h8HgWlfPLLWFJb1OCPkYruVQNudDBIzLwkwNBAi6
-         9Oh57zk/RWXKrzNKhXLii6F4JOjfsMqdG9ETPmPx71gVAwGkHkmKGHAQHgzh2XUo+25j
-         ZJqQ==
+        d=gms-tku-edu-tw.20230601.gappssmtp.com; s=20230601; t=1757575932; x=1758180732; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GZBzkNSMlmIkXR7v+DqjmX4bPRcIBLEhcOlgv/ZqaSw=;
+        b=k50nhQrrVm3DVAFhHz1sT0VyRdwLo7eagqLRFFGU4M4mvA6a9p+1kvYuozO0W8Z/+t
+         zTOVKSZwz9o9oLNiG0oVez/Bx2Kl2h/bzZzDmdcKjuTZ48ioBbv8PDfTmfgn5tdc6Y/F
+         4ntLthC4L28Ret5KeFpGiXSckQc0buHrK/9ipCppmkxxaG0xpVKpAfWXUPYOg4SjMY3I
+         ZoofkrXmaQbFMtGHquAVFJ2t2VrKf4YoqC8lk95+99dtcHYUQcvdToctMDvl/YsON/Iq
+         +93Lu0MvHa0a+ozQ8l4HW0/TROz3KLV+kQAcSgiYBX+dY31vsppu/HE+gOIMl7zjzm5J
+         tHyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757575777; x=1758180577;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=D81Vt79I/BTOBBePW6+0X1oh6zDyKaYVMRC1TVaQyRM=;
-        b=vDnBw5G7+SPJ1d6P7hjiq2gMlCb5G4bH75lglfTYfd/5xRUBqT5Yf456dXUecn45EH
-         ZkSm2I6Evqn+/Y7hOEsqJspip3refEDFGo+xfvGn1bsEDF2zSgLmePFmtPafxKncRq+f
-         NtpN38IQT85GVU0mKXOzEdH+LO2WN0VuRTCA+Y31lvdlRY0sww13wevA/d0PISLeGubW
-         Of4kc1wkZ/bBEhy193R4rgDnc3egg93WWLG1c55/agg+TZ1vy3FO6t9WIaul6mNAqoER
-         4D+T70A2U7kzA4cutA2IxJEFc9tp1ZXon04Xd5O1S9cglvEKcl1xDttmmS/IC2j4FtB5
-         EhVA==
-X-Forwarded-Encrypted: i=1; AJvYcCVYjyXRg/cv9xY7VjwlHcesCHqBw1sUtdu3VnONhLgpc17IAPPoIG9LvBcu0ITDDqeqkIB6oyMc78JWP2mt@vger.kernel.org
-X-Gm-Message-State: AOJu0YwmV6Y1DJbA2lqfKhFX3JdzZ+p6xDlPx5eLx7eJp2LwUN8hsDI7
-	yAl6QzRnDIzYN8ZFbxW6pCpyIkozmpaCLSfehrEOwm0TRMs5sploP3KpiFdOCgfZlTg=
-X-Gm-Gg: ASbGncvJ7atYnyUIfIOHoAtni6ZipS8S0gOiWJwhEV4XQ++b1I6RIUz7XIkBBcEdBrT
-	b5h8/2oHBOhykbGoVhgbDnxyTchA6F3zy9ImSfHzsDrvc1gIly2OXIyQ+FTD2GYmCghaMRyadU0
-	l0EkUh2ygF0+Sc7Q9fnU/DJVc/gXGzKgiI7HtlCorlQEZf2V8kYuWhH17qRX5JdotUlcWchXORD
-	H0Y86OCVD6Tr4itpmaAhcAsyzCYABAfEb+LENkD1+qa4rrClsTD+nfdATMZe1uIG7hfZ9VLqb40
-	Wd+Fkx2+9TKyp7u/PRI1UoiOzvei6RbB2oaMxc4VUYTA5pZxGycRDJi01V21iqOVXPfvH0ZteFN
-	W2J6h0CrZUW9xcK8og5MmQkvY1ju19Zg29tABa5vy1Z/APwSOrxeQMkPaCg==
-X-Google-Smtp-Source: AGHT+IHO7xlf6/5dPDqWynFAANB+M0UuBkmme6pcsf85zd3+cmkflA/c+A0enwc+u10nZW1Fv/oP5w==
-X-Received: by 2002:a17:903:1111:b0:251:3d1c:81f4 with SMTP id d9443c01a7336-25173bbbab1mr288649825ad.54.1757575777526;
-        Thu, 11 Sep 2025 00:29:37 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1757575932; x=1758180732;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GZBzkNSMlmIkXR7v+DqjmX4bPRcIBLEhcOlgv/ZqaSw=;
+        b=j3AknaCCdkhSxY1KiaQQfZDhGYBRTKwAUAWN6ivAjOq/dX7BhHSrYXoQOICkghNsjm
+         0MxG+CCjqRKYIn89fK5uOl0wEEbN/l7IT/q2ACSJTjCrSsMRH28fX7N/C2fLvhTe4JLI
+         BZrFXqGYcN5eSFayZDItNytGIctrE42+d3QCIaneKbWeL7dWzFmLsJwYJFLmMdvFFXix
+         VP7Y8lnGvuKtzyNEL7CJhjZAvpbFnSc+BIWiQ2U+LoG5VGjUpFz0+iMIF7Z/xGObXViT
+         H81aZvBWKF2R0jVETl7oRnVgb4JjBRbmF6eqQolhParSnEIgjhQNPvhLZv1Ey8oQQgo8
+         POhA==
+X-Forwarded-Encrypted: i=1; AJvYcCX9A1izxXhZSFqldXvD5cJLUj0bWG5AzZBlvOH0sZThqRH1MTUkYdoP0lZK9IM9n4TvsOiMdtUY8+emlU1p@vger.kernel.org
+X-Gm-Message-State: AOJu0YzTkreEDWp/0XqoS26kq6Z1vLbiFd0lKi6ga7AvpEP/jEDwchw5
+	qkVfEJTZL4OEVREKeFGlatU+snib1w+Hp/Iu4cMg+hw1OxkrUJ54JnfrQ8oTs62sF3o=
+X-Gm-Gg: ASbGnctS0r0HCCa95IiAu2rOt/S9q/MRAPC/yGG1c2SleANxh1h/KIB+EQsBo5CWXsQ
+	QP759Xv2PQ1fQ4M45O8e062kmD1kpWVCKB+aVRgSFfELypM7TgYWbOeXpeck/RAQfStFbd6SaMk
+	XJB8Qme8FybpSa5su6hKWUblhAKtZ9Y4oudNYRbtuNfjGxgA//qE9GZMaZE7H2r8abqJWex38ik
+	VKvUTpb+qXSuIDGKQnt+aNCz4p5xqvS8xEvI7+QDGhD91/ovIIlCPeeb35aOZynRSYt2f4gcMlk
+	Uont/igkUp8jRfWNt/Ob05Dg8x59XJSMwPhJkFnidDSjOv3pwDCZwmf9pSC26hDxRGHw4RDrhIN
+	McO+YvMrcHfv8NMih6mnLxJYx7OvZw/82mq3MzdZCkKkVB7k=
+X-Google-Smtp-Source: AGHT+IHb3fEzi2I0Xw68tnhgTa5p89puCkcqtSm1frcG1ldvJKNL158VkcHDDriI2alZgWwrHA5Yrw==
+X-Received: by 2002:a17:903:990:b0:242:9be2:f67a with SMTP id d9443c01a7336-2516d52cef2mr261971415ad.11.1757575931815;
+        Thu, 11 Sep 2025 00:32:11 -0700 (PDT)
 Received: from wu-Pro-E500-G6-WS720T.. ([2001:288:7001:2703:7811:c085:c184:85be])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-25c37293ef1sm9838395ad.41.2025.09.11.00.29.33
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-25c3ab4345csm9667835ad.96.2025.09.11.00.32.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Sep 2025 00:29:36 -0700 (PDT)
+        Thu, 11 Sep 2025 00:32:10 -0700 (PDT)
 From: Guan-Chun Wu <409411716@gms.tku.edu.tw>
-To: kbusch@kernel.org,
+To: 409411716@gms.tku.edu.tw
+Cc: akpm@linux-foundation.org,
 	axboe@kernel.dk,
-	hch@lst.de,
-	sagi@grimberg.me,
-	xiubli@redhat.com,
-	idryomov@gmail.com,
+	ceph-devel@vger.kernel.org,
 	ebiggers@kernel.org,
-	tytso@mit.edu,
-	jaegeuk@kernel.org,
-	akpm@linux-foundation.org
-Cc: visitorckw@gmail.com,
+	hch@lst.de,
 	home7438072@gmail.com,
-	409411716@gms.tku.edu.tw,
+	idryomov@gmail.com,
+	jaegeuk@kernel.org,
+	kbusch@kernel.org,
+	linux-fscrypt@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-nvme@lists.infradead.org,
-	ceph-devel@vger.kernel.org,
-	linux-fscrypt@vger.kernel.org
-Subject: [PATCH v2 0/5] lib/base64: add generic encoder/decoder, migrate users
-Date: Thu, 11 Sep 2025 15:29:25 +0800
-Message-Id: <20250911072925.547163-1-409411716@gms.tku.edu.tw>
+	sagi@grimberg.me,
+	tytso@mit.edu,
+	visitorckw@gmail.com,
+	xiubli@redhat.com
+Subject: [PATCH v2 1/5] lib/base64: Replace strchr() for better performance
+Date: Thu, 11 Sep 2025 15:32:04 +0800
+Message-Id: <20250911073204.574742-1-409411716@gms.tku.edu.tw>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20250911072925.547163-1-409411716@gms.tku.edu.tw>
+References: <20250911072925.547163-1-409411716@gms.tku.edu.tw>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
@@ -101,79 +105,67 @@ List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This series introduces a generic, customizable Base64 encoder/decoder to
-the kernel library, eliminating duplicated implementations and delivering
-significant performance improvements.
+From: Kuan-Wei Chiu <visitorckw@gmail.com>
 
-The new helpers support a caller-supplied 64-character table and optional
-'=' padding, covering existing variants such as base64url (fscrypt) and
-Ceph's custom alphabet. As part of this series, both fscrypt and Ceph are
-migrated to the generic helpers, removing their local routines while
-preserving their specific formats.
+The base64 decoder previously relied on strchr() to locate each
+character in the base64 table. In the worst case, this requires
+scanning all 64 entries, and even with bitwise tricks or word-sized
+comparisons, still needs up to 8 checks.
 
-On the encoder side, the implementation operates on 3-byte input blocks
-mapped directly to 4 output symbols, avoiding bit-by-bit streaming. This
-reduces shifts, masks, and loop overhead, achieving up to ~2.7x speedup
-over previous implementations while remaining fully RFC 4648-compatible.
+Introduce a small helper function that maps input characters directly
+to their position in the base64 table. This reduces the maximum number
+of comparisons to 5, improving decoding efficiency while keeping the
+logic straightforward.
 
-On the decoder side, optimizations replace strchr()-based lookups with a
-direct mapping table. Together with stricter RFC 4648 validation, this
-yields a ~12-15x improvement in decode throughput.
+Benchmarks on x86_64 (Intel Core i7-10700 @ 2.90GHz, averaged
+over 1000 runs, tested with KUnit):
 
-Overall, the series improves maintainability, correctness, and
-performance of Base64 handling across the kernel.
+Decode:
+ - 64B input: avg ~1530ns -> ~126ns (~12x faster)
+ - 1KB input: avg ~27726ns -> ~2003ns (~14x faster)
 
-Note:
-  - The included KUnit patch provides correctness and performance
-    comparison tests to help reviewers validate the improvements. All
-    tests pass locally on x86_64 (KTAP: pass:3 fail:0 skip:0). Benchmark
-    numbers are informational only and do not gate the tests.
-  - Updates nvme-auth call sites to the new API.
-
-Thanks,
-Guan-Chun Wu
-
+Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+Co-developed-by: Guan-Chun Wu <409411716@gms.tku.edu.tw>
+Signed-off-by: Guan-Chun Wu <409411716@gms.tku.edu.tw>
 ---
+ lib/base64.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-v1 -> v2:
-  - Add a KUnit test suite for lib/base64:
-      * correctness tests (multiple alphabets, with/without padding)
-      * simple microbenchmark for informational performance comparison
-  - Rework encoder/decoder:
-      * encoder: generalize to a caller-provided 64-character table and
-        optional '=' padding
-      * decoder: optimize and extend to generic tables
-  - fscrypt: migrate from local base64url helpers to generic lib/base64
-  - ceph: migrate from local base64 helpers to generic lib/base64
-
----
-
-Guan-Chun Wu (4):
-  lib/base64: rework encoder/decoder with customizable support and
-    update nvme-auth
-  lib: add KUnit tests for base64 encoding/decoding
-  fscrypt: replace local base64url helpers with generic lib/base64
-    helpers
-  ceph: replace local base64 encode/decode with generic lib/base64
-    helpers
-
-Kuan-Wei Chiu (1):
-  lib/base64: Replace strchr() for better performance
-
- drivers/nvme/common/auth.c |   7 +-
- fs/ceph/crypto.c           |  53 +-------
- fs/ceph/crypto.h           |   6 +-
- fs/ceph/dir.c              |   5 +-
- fs/ceph/inode.c            |   2 +-
- fs/crypto/fname.c          |  86 +------------
- include/linux/base64.h     |   4 +-
- lib/Kconfig.debug          |  19 ++-
- lib/base64.c               | 239 ++++++++++++++++++++++++++++++-------
- lib/tests/Makefile         |   1 +
- lib/tests/base64_kunit.c   | 230 +++++++++++++++++++++++++++++++++++
- 11 files changed, 466 insertions(+), 186 deletions(-)
- create mode 100644 lib/tests/base64_kunit.c
-
+diff --git a/lib/base64.c b/lib/base64.c
+index b736a7a43..9416bded2 100644
+--- a/lib/base64.c
++++ b/lib/base64.c
+@@ -18,6 +18,21 @@
+ static const char base64_table[65] =
+ 	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+ 
++static inline const char *find_chr(const char *base64_table, char ch)
++{
++	if ('A' <= ch && ch <= 'Z')
++		return base64_table + ch - 'A';
++	if ('a' <= ch && ch <= 'z')
++		return base64_table + 26 + ch - 'a';
++	if ('0' <= ch && ch <= '9')
++		return base64_table + 26 * 2 + ch - '0';
++	if (ch == base64_table[26 * 2 + 10])
++		return base64_table + 26 * 2 + 10;
++	if (ch == base64_table[26 * 2 + 10 + 1])
++		return base64_table + 26 * 2 + 10 + 1;
++	return NULL;
++}
++
+ /**
+  * base64_encode() - base64-encode some binary data
+  * @src: the binary data to encode
+@@ -78,7 +93,7 @@ int base64_decode(const char *src, int srclen, u8 *dst)
+ 	u8 *bp = dst;
+ 
+ 	for (i = 0; i < srclen; i++) {
+-		const char *p = strchr(base64_table, src[i]);
++		const char *p = find_chr(base64_table, src[i]);
+ 
+ 		if (src[i] == '=') {
+ 			ac = (ac << 6);
 -- 
 2.34.1
 
