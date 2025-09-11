@@ -1,76 +1,76 @@
-Return-Path: <linux-fscrypt+bounces-813-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-814-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9715AB52A0C
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 11 Sep 2025 09:33:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64BFCB52A14
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 11 Sep 2025 09:33:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52465A03656
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 11 Sep 2025 07:33:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 579091C27387
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 11 Sep 2025 07:33:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F090C26CE39;
-	Thu, 11 Sep 2025 07:33:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7FE026CE39;
+	Thu, 11 Sep 2025 07:33:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gms-tku-edu-tw.20230601.gappssmtp.com header.i=@gms-tku-edu-tw.20230601.gappssmtp.com header.b="gDSXQxMs"
+	dkim=pass (2048-bit key) header.d=gms-tku-edu-tw.20230601.gappssmtp.com header.i=@gms-tku-edu-tw.20230601.gappssmtp.com header.b="JQzt7uBc"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B1551F9A89
-	for <linux-fscrypt@vger.kernel.org>; Thu, 11 Sep 2025 07:33:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD4392741C9
+	for <linux-fscrypt@vger.kernel.org>; Thu, 11 Sep 2025 07:33:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757575984; cv=none; b=MR6t6kuf+t78Epm+Xz5hOX7woUPqxK5Q9qKh2wQta3kqp28cikW/cZKJsQ5dDD3YjznDzgnQ+YivycXonA7GZsvjU6KgMahcSEmm/uoRYRNbODUFyM4TM7fJl+mPogeGDR9xX/jBNyVHsOU+0O0vrFlgt82p7GegENrJ7Pflt4Q=
+	t=1757575998; cv=none; b=Oqm46fhhcWOr9wSNiuntFJGbUKwIiVU0ARINxlDDAK1dS1g1aciWw3b6zYfxrO2sf/4piaMo6efirIPCpCOY+BjzGVvoOpnnDqQSsRtGWA1y3SjhCNbBUvWtXeCpun2SabFHfzCKSjUsA7z3WK/n3EJPXTMRAmyBDGAa/Wbcr4I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757575984; c=relaxed/simple;
-	bh=O71eOxXN8qtxCpJO9bMs63EIF1c0j2xDoLcNf4kljL0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=t6o3NntOYZcPg/F/BakxZiQX88f6NCck5qLfD05CmYqHtyjV9nGWyWd4i0PxZ1wLu42TQIkncl7XWC9m1WhFyugojGX3a1UmjO3aHISrUQx3bwwcKSyDqE+qh9V04HHtvSw31q9ze+KWeqBiX4p1kGoTDDHGPKBrUVIaUcy62W8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gms.tku.edu.tw; spf=pass smtp.mailfrom=gms.tku.edu.tw; dkim=pass (2048-bit key) header.d=gms-tku-edu-tw.20230601.gappssmtp.com header.i=@gms-tku-edu-tw.20230601.gappssmtp.com header.b=gDSXQxMs; arc=none smtp.client-ip=209.85.214.180
+	s=arc-20240116; t=1757575998; c=relaxed/simple;
+	bh=hyrovsqb25GvOk5ch0SE10QIDXuqIsRkz/P2XEfDCm4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=I7n5571QSSxak2GF8BRtccsNVoRXP2B67tgrLfinspVdfS/skIl5FcpqXeLVHb4WFLcRvnTW1cY0I4SknaufdJ1QX4VNyCuFITMJxVsLDIc75/RmKwQl6ZVASZlUydCt9dHfHdmxjm8y9eaqL9QRAqI7u/aiOjDJj3SVZYaBpXs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gms.tku.edu.tw; spf=pass smtp.mailfrom=gms.tku.edu.tw; dkim=pass (2048-bit key) header.d=gms-tku-edu-tw.20230601.gappssmtp.com header.i=@gms-tku-edu-tw.20230601.gappssmtp.com header.b=JQzt7uBc; arc=none smtp.client-ip=209.85.215.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gms.tku.edu.tw
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gms.tku.edu.tw
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-24eb713b2dfso3371415ad.0
-        for <linux-fscrypt@vger.kernel.org>; Thu, 11 Sep 2025 00:33:02 -0700 (PDT)
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-b4dc35711d9so347068a12.0
+        for <linux-fscrypt@vger.kernel.org>; Thu, 11 Sep 2025 00:33:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gms-tku-edu-tw.20230601.gappssmtp.com; s=20230601; t=1757575982; x=1758180782; darn=vger.kernel.org;
+        d=gms-tku-edu-tw.20230601.gappssmtp.com; s=20230601; t=1757575996; x=1758180796; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9sqCK5RjxgMvTS/KMSGZswVuHs/rB1hx6QH50USYYeg=;
-        b=gDSXQxMsH9WpLyEM3F3kt4ql5XFmQB8s70SlrWReKCwQTji0Dk8VpxSbclbZBLb8bv
-         Wo+TCZDkzToDbfrscFQYZz4t8M+sSAVD+6Cr1yyFUHWG4deufIZ2CLeJ5ha0V0ANpSgp
-         n0wEVc4MP5BqCmnFSjCyyGPdhlTO6HVUG2uW2tEf+THq4GpeKi+BG+N2tbthARLJ9AqW
-         nn82isQlnlbNYEj9+eYG7252PgJ5jzlbSy7icT55Gyfcd8QwJN7ctkq4iKA0mwHlpSr1
-         6ki7FpLnPzdYTTMpSGXPMZB5eGxYgglwl4znOwvt2UCN10jW6ztjFINejq8/SEkpy/1i
-         ipaA==
+        bh=/o5UYWtgC17zidQRxgu3di44p2yuLDtqoBTP3KdD9qk=;
+        b=JQzt7uBcEXxXdoS/XFxeIOEaG3PSpEuJjZeIDwzghW9z38aIErSUM/uLqBlDo9yEtU
+         ldhFwwDJMZe638KHDDFRor/JtOGEAlEj6QGhoD/t/vg/h0nMbsXySU5lWSyFVUfPk8Sp
+         igBFlM8PL/zIAaId3FyetrGfuVILNN8LrXj5WE/Auo4lAPTnqwBwSlk8eU8d+1WJrahA
+         tiIVCufpGgl0+MZcSUK2G2KnHhuoRh7QoqUsYvxB8J0Cno9CkJce9TANu22B9lnp9ses
+         1ecm5aPpRHyku09J88SUaBS9Li+KdEXgGenb8adGef0XkUO3+3CBeXCxHheY+E51E2d5
+         qrhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757575982; x=1758180782;
+        d=1e100.net; s=20230601; t=1757575996; x=1758180796;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=9sqCK5RjxgMvTS/KMSGZswVuHs/rB1hx6QH50USYYeg=;
-        b=wveXOS4mCIpMeI6CzDYLpbMbheASsyEtjthQke5lAX97hlV0Hp8VvIcmoXQd+SpqZ7
-         qQKNH7ez7TrPhSXB+INGSQHmGJ/pNQ8ABmxX2LavADQQ6NKg6KCKYnhgn2oH+Yt9Xt9+
-         O9qsj+eylxXwjLYgWOskBKEzFcK0PS3A/VypQ39zCvwrOUuUtvcdBTkAPf9xLVRkRGcE
-         O8U3VPuRhOuPmHp3YIjZt6rAqTaYZIzxUWiBPfcevyMpzdNm4j1aBZkIinqMFY61nXqB
-         KuXzDMJUcj/hFDP9pDdDGBu84o0Nd8bvD52ghgLcG4e8a7zstj6/DtWKzXVBzVmZbr+m
-         yVTg==
-X-Forwarded-Encrypted: i=1; AJvYcCUTkOyY9K3fknNlsVk/WpMYGrevaqs9WZt6UaIl2ZjpwPwM0Wfx64N+sEYLv1wSYsEdhtCj7fx/wzvc+pS/@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx8sVNZNrCajqfXJO0S/YgNfxv3yKEA29zCbOx0qZAOKphxtD8c
-	ePGmPWX7QrRVrGA/TwIzm0i+o7OVbQ9NtY+YnXgypF1VjbKTxp9kgXASexUcCvaBcQw=
-X-Gm-Gg: ASbGnctkaMVVXB95ETBe21HUAZ7wA6jBhGJLiktYs+ewcMLdXRe1/mbsCvj9felkanx
-	kvNntAP+J8wVrUWJwz6NqHsoh5fSaUovjM99oGSOBTKwU6hvwGrI97wNsy3H4Ar0dJ6YPpS5OXp
-	6nn6SQtaCHsSPNeNYHaWI9AQBo4y1E6xpIArjrrlvKsrSeH9emZEdR6tmq7wxGL1SQtfCMnWNI6
-	bZgTzLuWbOUl+sCM7PkfJXk8lZLWglm//hIoawblEU5JQpyS6SzB0b7swhBYeONczMwxlPucCrX
-	1i91nd42jReYyl+gCoilly8QrVPf3GgSwiEtojhCRXte+g0HsbDB48N/yyjcjdS2U0ec15OBUCl
-	slRc24bf3kIWeCKBcQXad7sx2W16NNiyPEM0cGfYNU0Qu3zFgUAZU/fb+kQ==
-X-Google-Smtp-Source: AGHT+IFD9aePnHBtB13DZnlZ8Ibfo6GnzucKKeZU8KCH9/Ow9xL5SQ7qcnFeRVs1LbSv8OFB76dPGQ==
-X-Received: by 2002:a17:902:d511:b0:250:643e:c947 with SMTP id d9443c01a7336-251715f34e4mr234231735ad.28.1757575982336;
-        Thu, 11 Sep 2025 00:33:02 -0700 (PDT)
+        bh=/o5UYWtgC17zidQRxgu3di44p2yuLDtqoBTP3KdD9qk=;
+        b=KhXQLpf42K+iP9Zo1kWMPC1G2B6qgn41GI9O9DiRJzXgK4+eZNIhkyMdyyymSEkaCQ
+         0PNPTKdFjK9snf9WS21uoUSQ3A1O0H7vLJyybR1KWY6Y6DHvCsYeWZd4jZ/EIhLbY2cH
+         4VZFxLXRKGRC4kQJmls+RhQeUo8GkmpnGsOupfDYlhBdeI5Z/6I93CEc42IT5iqAADGs
+         XQniL2aTZwpL8mzMjtZhbsAmnAxeRqNlbiW3z0OtAHQE6Ve8zu8X//3q6UQo0rC0pVCW
+         Lr32Idweauk3lYYYOSdHgqy6ToZA5nWS6l05VV26jNGX0FMXjkIYZTyuekWzxz+p7+14
+         XKJA==
+X-Forwarded-Encrypted: i=1; AJvYcCWIU6TaCLNf9+6T9rUmRRehUptOQ5WPJsg0w89/Y3yKggc+8je3CfqVM6M8rxBnD0SEPNNI09maos8PmjRD@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx37FH5QyD5RbATh9eEVn5FdPJEcrqRPVG2MmaxUG2WkexY/rQ6
+	0Fehs+QGJCX2fE+wjEbxllsP1EXQVjyEXJSdEIsNxX+BE5kgaSeRPHbwiVKlaFKvk+A=
+X-Gm-Gg: ASbGncvTEzjYoa/tpN4/li2icyGa+9IWsyPsi+tzcofVFbqr0cFVUsiPZiINpkkODEV
+	Fr41idRPWmB7llKJElG2p6M7SuI3XLnVV/pmZ0il3lszhY9gCLa5K+dbFfg9nAz5cBvLj61hZzc
+	W0fcyLU1xCC3R+iNv5RGS4s2WNNiZwC7lBZbK5TlPGSSf5JfUtMa17AcFvTb/0CHght/wOnxwDi
+	1j9Wvi1ekDIDW7PUUMvg7JCzmoPoQMSnJqrwrq592rMIqtiwRGR/KUw7kLOvQ95IYGN1hlPFgvS
+	UJgcklvpLDSsXk73NYCp3UC70vGBWdllZ3A8KA+O2f1gWkIQJXt/DwBsycHXPdNoI+VSDtJ2LiI
+	vldZ0um4+hvcaaZr7IfxDDVWuPCRV3NIz9D1OvEwPbFhrAXg=
+X-Google-Smtp-Source: AGHT+IHkR02o3c7GJuOebqudxkkJpwwRFSiX+Y7xE72uJ4cvYA8ji6HSjHcG3eaIOtrt3exSDxeWQw==
+X-Received: by 2002:a17:90a:ec85:b0:32b:4c71:f423 with SMTP id 98e67ed59e1d1-32d43f81c16mr21372566a91.32.1757575996006;
+        Thu, 11 Sep 2025 00:33:16 -0700 (PDT)
 Received: from wu-Pro-E500-G6-WS720T.. ([2001:288:7001:2703:7811:c085:c184:85be])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-25c36cc6c2csm9959415ad.11.2025.09.11.00.32.58
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-77607b393f0sm1061340b3a.88.2025.09.11.00.33.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Sep 2025 00:33:01 -0700 (PDT)
+        Thu, 11 Sep 2025 00:33:15 -0700 (PDT)
 From: Guan-Chun Wu <409411716@gms.tku.edu.tw>
 To: kbusch@kernel.org,
 	axboe@kernel.dk,
@@ -89,9 +89,9 @@ Cc: visitorckw@gmail.com,
 	linux-nvme@lists.infradead.org,
 	ceph-devel@vger.kernel.org,
 	linux-fscrypt@vger.kernel.org
-Subject: [PATCH v2 4/5] fscrypt: replace local base64url helpers with generic lib/base64 helpers
-Date: Thu, 11 Sep 2025 15:32:54 +0800
-Message-Id: <20250911073254.581898-1-409411716@gms.tku.edu.tw>
+Subject: [PATCH v2 5/5] ceph: replace local base64 encode/decode with generic lib/base64 helpers
+Date: Thu, 11 Sep 2025 15:33:09 +0800
+Message-Id: <20250911073309.584044-1-409411716@gms.tku.edu.tw>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
@@ -101,71 +101,45 @@ List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Replace the existing local base64url encoding and decoding functions in
-fscrypt with the generic base64_encode_custom and base64_decode_custom
+Remove the local ceph_base64_encode and ceph_base64_decode functions and
+replace their usage with the generic base64_encode and base64_decode
 helpers from the kernel's lib/base64 library.
 
-This removes custom implementations in fscrypt, reduces code duplication,
-and leverages the well-maintained, standard base64 code within the kernel.
+This eliminates redundant implementations in Ceph, reduces code
+duplication, and leverages the optimized and well-maintained
+standard base64 code within the kernel.
 
-The new helpers preserve RFC 4648-compliant URL-safe Base64 encoding
-without padding behavior, ensuring no functional changes.
+The change keeps the existing encoding table and disables padding,
+ensuring no functional or format changes. At the same time, Ceph also
+benefits from the optimized encoder/decoder: encoding performance
+improves by ~2.7x and decoding by ~12-15x compared to the previous
+local implementation.
 
-At the same time, they also deliver significant performance gains: with the
-optimized encoder and decoder, encoding runs about 2.7x faster and decoding
-achieves 12-15x improvements over the previous implementation.
-
-This improves maintainability and aligns fscrypt with other kernel
-components using the generic base64 helpers.
+Overall, this improves maintainability, consistency with other kernel
+components, and runtime performance.
 
 Signed-off-by: Guan-Chun Wu <409411716@gms.tku.edu.tw>
 Reviewed-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 ---
- fs/crypto/fname.c | 86 ++++-------------------------------------------
- 1 file changed, 6 insertions(+), 80 deletions(-)
+ fs/ceph/crypto.c | 53 +++++-------------------------------------------
+ fs/ceph/crypto.h |  6 ++----
+ fs/ceph/dir.c    |  5 +++--
+ fs/ceph/inode.c  |  2 +-
+ 4 files changed, 11 insertions(+), 55 deletions(-)
 
-diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
-index f9f6713e1..38be85cd5 100644
---- a/fs/crypto/fname.c
-+++ b/fs/crypto/fname.c
-@@ -17,6 +17,7 @@
- #include <linux/export.h>
- #include <linux/namei.h>
- #include <linux/scatterlist.h>
-+#include <linux/base64.h>
+diff --git a/fs/ceph/crypto.c b/fs/ceph/crypto.c
+index cab722619..a3cb4ad99 100644
+--- a/fs/ceph/crypto.c
++++ b/fs/ceph/crypto.c
+@@ -21,53 +21,9 @@
+  * used the base64 encoding defined for IMAP mailbox names (RFC 3501) instead,
+  * which replaces '-' and '_' by '+' and ','.
+  */
+-static const char base64_table[65] =
++const char ceph_base64_table[65] =
+ 	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+,";
  
- #include "fscrypt_private.h"
- 
-@@ -72,7 +73,7 @@ struct fscrypt_nokey_name {
- 
- /* Encoded size of max-size no-key name */
- #define FSCRYPT_NOKEY_NAME_MAX_ENCODED \
--		FSCRYPT_BASE64URL_CHARS(FSCRYPT_NOKEY_NAME_MAX)
-+		BASE64_CHARS(FSCRYPT_NOKEY_NAME_MAX)
- 
- static inline bool fscrypt_is_dot_dotdot(const struct qstr *str)
- {
-@@ -166,81 +167,6 @@ static int fname_decrypt(const struct inode *inode,
- static const char base64url_table[65] =
- 	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
- 
--#define FSCRYPT_BASE64URL_CHARS(nbytes)	DIV_ROUND_UP((nbytes) * 4, 3)
--
--/**
-- * fscrypt_base64url_encode() - base64url-encode some binary data
-- * @src: the binary data to encode
-- * @srclen: the length of @src in bytes
-- * @dst: (output) the base64url-encoded string.  Not NUL-terminated.
-- *
-- * Encodes data using base64url encoding, i.e. the "Base 64 Encoding with URL
-- * and Filename Safe Alphabet" specified by RFC 4648.  '='-padding isn't used,
-- * as it's unneeded and not required by the RFC.  base64url is used instead of
-- * base64 to avoid the '/' character, which isn't allowed in filenames.
-- *
-- * Return: the length of the resulting base64url-encoded string in bytes.
-- *	   This will be equal to FSCRYPT_BASE64URL_CHARS(srclen).
-- */
--static int fscrypt_base64url_encode(const u8 *src, int srclen, char *dst)
+-int ceph_base64_encode(const u8 *src, int srclen, char *dst)
 -{
 -	u32 ac = 0;
 -	int bits = 0;
@@ -177,30 +151,15 @@ index f9f6713e1..38be85cd5 100644
 -		bits += 8;
 -		do {
 -			bits -= 6;
--			*cp++ = base64url_table[(ac >> bits) & 0x3f];
+-			*cp++ = base64_table[(ac >> bits) & 0x3f];
 -		} while (bits >= 6);
 -	}
 -	if (bits)
--		*cp++ = base64url_table[(ac << (6 - bits)) & 0x3f];
+-		*cp++ = base64_table[(ac << (6 - bits)) & 0x3f];
 -	return cp - dst;
 -}
 -
--/**
-- * fscrypt_base64url_decode() - base64url-decode a string
-- * @src: the string to decode.  Doesn't need to be NUL-terminated.
-- * @srclen: the length of @src in bytes
-- * @dst: (output) the decoded binary data
-- *
-- * Decodes a string using base64url encoding, i.e. the "Base 64 Encoding with
-- * URL and Filename Safe Alphabet" specified by RFC 4648.  '='-padding isn't
-- * accepted, nor are non-encoding characters such as whitespace.
-- *
-- * This implementation hasn't been optimized for performance.
-- *
-- * Return: the length of the resulting decoded binary data in bytes,
-- *	   or -1 if the string isn't a valid base64url string.
-- */
--static int fscrypt_base64url_decode(const char *src, int srclen, u8 *dst)
+-int ceph_base64_decode(const char *src, int srclen, u8 *dst)
 -{
 -	u32 ac = 0;
 -	int bits = 0;
@@ -208,11 +167,11 @@ index f9f6713e1..38be85cd5 100644
 -	u8 *bp = dst;
 -
 -	for (i = 0; i < srclen; i++) {
--		const char *p = strchr(base64url_table, src[i]);
+-		const char *p = strchr(base64_table, src[i]);
 -
 -		if (p == NULL || src[i] == 0)
 -			return -1;
--		ac = (ac << 6) | (p - base64url_table);
+-		ac = (ac << 6) | (p - base64_table);
 -		bits += 6;
 -		if (bits >= 8) {
 -			bits -= 8;
@@ -224,31 +183,95 @@ index f9f6713e1..38be85cd5 100644
 -	return bp - dst;
 -}
 -
- bool __fscrypt_fname_encrypted_size(const union fscrypt_policy *policy,
- 				    u32 orig_len, u32 max_len,
- 				    u32 *encrypted_len_ret)
-@@ -387,8 +313,8 @@ int fscrypt_fname_disk_to_usr(const struct inode *inode,
- 		       nokey_name.sha256);
- 		size = FSCRYPT_NOKEY_NAME_MAX;
+ static int ceph_crypt_get_context(struct inode *inode, void *ctx, size_t len)
+ {
+ 	struct ceph_inode_info *ci = ceph_inode(inode);
+@@ -316,7 +272,7 @@ int ceph_encode_encrypted_dname(struct inode *parent, char *buf, int elen)
  	}
--	oname->len = fscrypt_base64url_encode((const u8 *)&nokey_name, size,
--					      oname->name);
-+	oname->len = base64_encode((const u8 *)&nokey_name, size,
-+				   oname->name, false, base64url_table);
- 	return 0;
- }
- EXPORT_SYMBOL(fscrypt_fname_disk_to_usr);
-@@ -467,8 +393,8 @@ int fscrypt_setup_filename(struct inode *dir, const struct qstr *iname,
- 	if (fname->crypto_buf.name == NULL)
+ 
+ 	/* base64 encode the encrypted name */
+-	elen = ceph_base64_encode(cryptbuf, len, p);
++	elen = base64_encode(cryptbuf, len, p, false, ceph_base64_table);
+ 	doutc(cl, "base64-encoded ciphertext name = %.*s\n", elen, p);
+ 
+ 	/* To understand the 240 limit, see CEPH_NOHASH_NAME_MAX comments */
+@@ -410,7 +366,8 @@ int ceph_fname_to_usr(const struct ceph_fname *fname, struct fscrypt_str *tname,
+ 			tname = &_tname;
+ 		}
+ 
+-		declen = ceph_base64_decode(name, name_len, tname->name);
++		declen = base64_decode(name, name_len,
++				       tname->name, false, ceph_base64_table);
+ 		if (declen <= 0) {
+ 			ret = -EIO;
+ 			goto out;
+@@ -424,7 +381,7 @@ int ceph_fname_to_usr(const struct ceph_fname *fname, struct fscrypt_str *tname,
+ 
+ 	ret = fscrypt_fname_disk_to_usr(dir, 0, 0, &iname, oname);
+ 	if (!ret && (dir != fname->dir)) {
+-		char tmp_buf[CEPH_BASE64_CHARS(NAME_MAX)];
++		char tmp_buf[BASE64_CHARS(NAME_MAX)];
+ 
+ 		name_len = snprintf(tmp_buf, sizeof(tmp_buf), "_%.*s_%ld",
+ 				    oname->len, oname->name, dir->i_ino);
+diff --git a/fs/ceph/crypto.h b/fs/ceph/crypto.h
+index 23612b2e9..c94da3818 100644
+--- a/fs/ceph/crypto.h
++++ b/fs/ceph/crypto.h
+@@ -8,6 +8,7 @@
+ 
+ #include <crypto/sha2.h>
+ #include <linux/fscrypt.h>
++#include <linux/base64.h>
+ 
+ #define CEPH_FSCRYPT_BLOCK_SHIFT   12
+ #define CEPH_FSCRYPT_BLOCK_SIZE    (_AC(1, UL) << CEPH_FSCRYPT_BLOCK_SHIFT)
+@@ -89,10 +90,7 @@ static inline u32 ceph_fscrypt_auth_len(struct ceph_fscrypt_auth *fa)
+  */
+ #define CEPH_NOHASH_NAME_MAX (180 - SHA256_DIGEST_SIZE)
+ 
+-#define CEPH_BASE64_CHARS(nbytes) DIV_ROUND_UP((nbytes) * 4, 3)
+-
+-int ceph_base64_encode(const u8 *src, int srclen, char *dst);
+-int ceph_base64_decode(const char *src, int srclen, u8 *dst);
++extern const char ceph_base64_table[65];
+ 
+ void ceph_fscrypt_set_ops(struct super_block *sb);
+ 
+diff --git a/fs/ceph/dir.c b/fs/ceph/dir.c
+index 8478e7e75..830715988 100644
+--- a/fs/ceph/dir.c
++++ b/fs/ceph/dir.c
+@@ -998,13 +998,14 @@ static int prep_encrypted_symlink_target(struct ceph_mds_request *req,
+ 	if (err)
+ 		goto out;
+ 
+-	req->r_path2 = kmalloc(CEPH_BASE64_CHARS(osd_link.len) + 1, GFP_KERNEL);
++	req->r_path2 = kmalloc(BASE64_CHARS(osd_link.len) + 1, GFP_KERNEL);
+ 	if (!req->r_path2) {
+ 		err = -ENOMEM;
+ 		goto out;
+ 	}
+ 
+-	len = ceph_base64_encode(osd_link.name, osd_link.len, req->r_path2);
++	len = base64_encode(osd_link.name, osd_link.len,
++			    req->r_path2, false, ceph_base64_table);
+ 	req->r_path2[len] = '\0';
+ out:
+ 	fscrypt_fname_free_buffer(&osd_link);
+diff --git a/fs/ceph/inode.c b/fs/ceph/inode.c
+index fc543075b..94b729ccc 100644
+--- a/fs/ceph/inode.c
++++ b/fs/ceph/inode.c
+@@ -911,7 +911,7 @@ static int decode_encrypted_symlink(struct ceph_mds_client *mdsc,
+ 	if (!sym)
  		return -ENOMEM;
  
--	ret = fscrypt_base64url_decode(iname->name, iname->len,
--				       fname->crypto_buf.name);
-+	ret = base64_decode(iname->name, iname->len,
-+			    fname->crypto_buf.name, false, base64url_table);
- 	if (ret < (int)offsetof(struct fscrypt_nokey_name, bytes[1]) ||
- 	    (ret > offsetof(struct fscrypt_nokey_name, sha256) &&
- 	     ret != FSCRYPT_NOKEY_NAME_MAX)) {
+-	declen = ceph_base64_decode(encsym, enclen, sym);
++	declen = base64_decode(encsym, enclen, sym, false, ceph_base64_table);
+ 	if (declen < 0) {
+ 		pr_err_client(cl,
+ 			"can't decode symlink (%d). Content: %.*s\n",
 -- 
 2.34.1
 
