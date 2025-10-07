@@ -1,411 +1,294 @@
-Return-Path: <linux-fscrypt+bounces-861-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-862-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A75D3BBF657
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 06 Oct 2025 22:52:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBE99BC0A09
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 07 Oct 2025 10:28:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76308189A328
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  6 Oct 2025 20:52:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3D8A3B6B71
+	for <lists+linux-fscrypt@lfdr.de>; Tue,  7 Oct 2025 08:28:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62F7C257836;
-	Mon,  6 Oct 2025 20:52:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BD6D2D239B;
+	Tue,  7 Oct 2025 08:28:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XRsExcMr"
+	dkim=pass (2048-bit key) header.d=gms-tku-edu-tw.20230601.gappssmtp.com header.i=@gms-tku-edu-tw.20230601.gappssmtp.com header.b="pu8FsnGx"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 347362566F7
-	for <linux-fscrypt@vger.kernel.org>; Mon,  6 Oct 2025 20:52:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB2F42D3A60
+	for <linux-fscrypt@vger.kernel.org>; Tue,  7 Oct 2025 08:28:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759783938; cv=none; b=G8B9uPt+kslKEjf9A8xkOcXXsBT5mtc43hWEV7jJcOCXuo2OrUF4Qxj+sfo3/kePwKabIhc5FraWE57EONxWdWZyNPOFNcPxxgWTUuEHuLT+32Kd3RV6HmI8RQVVPMfP7IE/0Cbzuo2z33LCKaAezimqJdLYzBQM2zyc+wk48HQ=
+	t=1759825721; cv=none; b=uAvto8CqN2Vvf3oDy3sMSthJSZdKcaBYbAWn/GoYcPBSM8uMwvQ2p5Pmrvn0AKCNaFyRQdhRiJq5SqN1R71eQxmUqRzzFiwNGV36WfMjCkCDYc9CTwgEG7nHovfk3OPto526lMOGC93fHD+HuzTnVWl5T8U7cMTdBrOYzSzRr6M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759783938; c=relaxed/simple;
-	bh=SgZdgLfYa2RybFEsMrSySIU2QHr0Ijto9bld1Lp134Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MkB/kpnniEVN+4Xh6YbBry815sosOxFiiCpLahTKvL17MvD1QVA7iZZlPjTEEsN3vdeOoQlwNMUm570d37Yqwz0HYcno8Bh6C1xyTl6StwC0/GBFQHbII53ZbLH1jsjCv4Iy76SwJJuRBlggO1x80jKObGeQd1sfcNDxfpZMfZA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XRsExcMr; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-46e2e6a708fso35990895e9.0
-        for <linux-fscrypt@vger.kernel.org>; Mon, 06 Oct 2025 13:52:15 -0700 (PDT)
+	s=arc-20240116; t=1759825721; c=relaxed/simple;
+	bh=v58jWvQoyfMSBE5jxEjsDbq9G1fKmz755oMlmPtk7LI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kXgNcsD3wVnnm7dwNxX9BpNX9ekt1O2x98maJ5HW1fwgot46YTnzvK7+YBngDXNi+sAfDwlrTObWbLK9eFory2/x4xho56EMARwx205z3zU/GKbtaMJ7MDb9e6t5SaDw8Mfnyc/M5d1ezTnK1jY9s18CXoz8XazRazsBVjvmDMo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gms.tku.edu.tw; spf=pass smtp.mailfrom=gms.tku.edu.tw; dkim=pass (2048-bit key) header.d=gms-tku-edu-tw.20230601.gappssmtp.com header.i=@gms-tku-edu-tw.20230601.gappssmtp.com header.b=pu8FsnGx; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gms.tku.edu.tw
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gms.tku.edu.tw
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-27d3540a43fso62231075ad.3
+        for <linux-fscrypt@vger.kernel.org>; Tue, 07 Oct 2025 01:28:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759783934; x=1760388734; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sZhEGqG5f02SA+cxa1EF4uynlEuBc23Gw/Zg/k7vIsQ=;
-        b=XRsExcMrubVkblxbtUw/rBmjTkRf6ORc3zWQLdycIMKz3PYSavyBRXFKzEqpQNTrc2
-         Uqy21nJqBtj3Z76JFbZSAQKmUT0i4Q2n+XtzciIgOm9YAB3nqrnFx5+WQW6RmCb3KoSS
-         d7/afsWg3LCqwYNrGsiEKDcV/jOwdHMmi07ePokVC+RVSUdO7A/7ALTSp6THQLd0Iba/
-         Cb3WLtIw8amznnpMu18GpgDFv8aGoRmVCU3Pry+R3CM/RuyUR38ErYIMdFul/kfVurGX
-         PBna8TyDHD3adPmDG6glLy2I4YcsVYA9YbNCNR9+kNKTsSl/4MXhfDbqGJZU5lPnQ2gA
-         kHmQ==
+        d=gms-tku-edu-tw.20230601.gappssmtp.com; s=20230601; t=1759825717; x=1760430517; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=YpZbJ1QMIGXsJO95EeDbekSvm5I9yv7BUeFhQgDIPcg=;
+        b=pu8FsnGxpXLCQdPkpKSuW3EDB+yZyDkTSpuwjjx5eh5lX+zVsaEqGGOb5fuUrzYqau
+         YZfWst3hs+MbeGMi8QYqFnVbYKlhjcuZawDV1O3TGkYhSgK/2PjpI+54mJQdqpxhF42D
+         H3jM3kww/eDAbG+SyxltpKVP8hL5XO24ywItZACi3TUmedJOF0EoaTfOhUSof0/nXOC3
+         bZ6Dorpk+b1gYVaL8TYL/tV7wQWNLNZ+h6NPLSfNw/4kUibyIwGH8OBxr/Hw3UN1/o4u
+         vIycS/WB9kblyuv0fA//Ey86HoSTiY4zweEWjes2v0394/MF4Ri7Sey9tM4YRKPUrCLe
+         yFLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759783934; x=1760388734;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sZhEGqG5f02SA+cxa1EF4uynlEuBc23Gw/Zg/k7vIsQ=;
-        b=THzhpsPAu+1FigfkVRDpBpE51wxf6KFWzwMouxsHfYu97TJ7rDHvedwIokcJZ4ni0u
-         Col/71mUex0UYiCnbjDy5b7xlpe4B7vnI2rlu/TWDe+0o4McQHT5kdfOjTGID5eJi2hu
-         mmRKHED/0N5q7axpTqel/4LvvkYgmIyuzlQkfi9/xyvaO24gKsQnz/BNX2WHr/Ax6ewa
-         E0dM78Ul+BqRrJ/XyMgCVPKk3IGupcz6csgn2wf8NW5uUM7LsIe1NHWm9+FfuPXYskYL
-         Yzg2hO4T4xTmLcpcE76Gftsdi3JqUruJdpAyG04ds9ZObj7qRV+TvjJm27kM398/Jz8u
-         E3VA==
-X-Forwarded-Encrypted: i=1; AJvYcCXZhGiYKNV/9UvStyJpnQWBYR5fl19ZUf4C8Hhl9VMD8ckant72m46o2/Pn4dk0FGX13TrBQyPcfHN3MUbE@vger.kernel.org
-X-Gm-Message-State: AOJu0YwLrOPj4lealsFj0ZxoE7+5uFeH92pm/CVb78oyGnzBGfWSzwi+
-	3JC6fu+BdDxvtfotOvkW0sFQcrOzSizVi6+lPvWNiRVk6VeZSCPaeF+C
-X-Gm-Gg: ASbGncvoWx4KViduR6yxfNXCZxiO9tqZ0lg5mdLckJHbxKdHRlP75QfcF+awrXWh1H4
-	vF4/Ljptj1RgRGwkrUlWECKIgsG86ZRhstT/E3hTzMM3j4nMwckQtkm1HrtmNLYTc4G+GK3UcZo
-	TNqk6PfwHq3TNFMOTeEdhHHkP3YtYSSqe4MO/Bm9CesU0KJDCgw8Dndbq+bgncAyieYN7XBQi51
-	+F9JC/lN1TC+KFxuefdd70AJGKsDr21i/2GmchrYx5PjQsKJ/h63yYnuhi/OAOBigPdxxJdO65P
-	2xmk7GeYgCuEASBqaFDCAkoDBRvjoRoBCk71XuQ9LxaUAfv3RqzMIpxu7C22lxcIZ+pOv814d5c
-	UYhoz/THUT0px+PxAR+bTUuGyx1pBJYzQ8Mj7eFHiV+sTX6w76mGsFKKrqb0Yf6OLPzNGtss1ZQ
-	2cQl2hgkjK7T6Lu/Or4k7rhiM=
-X-Google-Smtp-Source: AGHT+IFRLlb8uWC1dqxKo8J55feiaCNAhabM0Ub7mobnG4dCUMmuEgByLy76YakZhK1VJ6qhsA7FmQ==
-X-Received: by 2002:a05:600c:8b6e:b0:46e:3d50:362a with SMTP id 5b1f17b1804b1-46e710ffff6mr85930215e9.4.1759783934211;
-        Mon, 06 Oct 2025 13:52:14 -0700 (PDT)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-46e723624b3sm171254835e9.17.2025.10.06.13.52.13
+        d=1e100.net; s=20230601; t=1759825717; x=1760430517;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YpZbJ1QMIGXsJO95EeDbekSvm5I9yv7BUeFhQgDIPcg=;
+        b=pPuSvmyBEIhZUVXB53np9isNYTQ1fZFHR72fnFhlqDN7eVzlsa3So818WKQMbj+989
+         ejHsxBU/WhH3IVqaOWwbVRVZ7IBOJETpLi2Jv6SxNdCQcRcUGdsknkrPm+Ncd37UItSK
+         zh8UuyfQNFsayI8uDdwl+ig0ht80YTztTdnfJEMZkmj1BJJ7f/9WDfBJo3P7puX2wNHa
+         lLx/ptlO+jSJSGsrFZkpt6c/jTyO4aYB3YKNEm0WgScaWFfydg9QNL7eLZJBrGNsKTOx
+         gkKcHYs2MSX30o8OZ8SAvsT7QnMjxCpUwUZ+Dfq+n4/t7b6mkt/k2CRVDe+wMJrKN7nL
+         fsaA==
+X-Forwarded-Encrypted: i=1; AJvYcCUwK6uFWZDaMXHUB7NW+dBkHE1lK/lBh8h+VedJDsY2/GCbhUPzWnCBNP3zApcAWFF1JupnatacQJbt8Xsp@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw71CzD/6c6LXSx2ojHM5cbvCOGswU1lGjLb5SVqNW+ciw7Euzl
+	5UHWtwoQl+fCXaDsoWLKlzfn4sLFe8/wI5H6hQGtBBSsNpfy0BsYi7aR0HFxqAqih0dtUQRqZkS
+	rsa/O
+X-Gm-Gg: ASbGncvUHxuhPbn1sgfH+l/HrIqlSXofKUH63i08ntAw4miAzYxZCm9GkPbVmG+zg5P
+	kRrqMVwFCDQqQ3ct9aaaMMVzK5HIr/WFdcmOxvQklhtLRDbgFzD8mSMHN4QmI2uBPrAsyB7S2qV
+	wJRUZOW6G7AGMU2T1etvYnD7Tj7yJLqGPot76yxHHiMy4AzyNluINqFtm+HI4tIoe2eFBZLREbo
+	RS/u2217uHT+fbSwtxq48NoByFQmdBcLxHHqGlGrEcVQN98CaVu3rCn7eJF4mGHhd8LqEgQrkj7
+	7t8hsvp8agIq9o2NlWIHX1xx3HFWaO1a+CBIOzbDooSuKejznwFL8g7PJwOkghilEnd7Vttn7pJ
+	JV4U3qbOnN1IjoLDXJMPqVRXl4354PYS1b/CGFUaMFvAgjWRUJm8w5mlzOJu4TlHOmQg6
+X-Google-Smtp-Source: AGHT+IEUcHDwSc5n5do+7fhgZx/8hDw0+PJKH3ejonSOLpIgKdjmmy9QWd5reRU+rDGGGOObBSG71w==
+X-Received: by 2002:a17:902:e785:b0:24c:cc32:788b with SMTP id d9443c01a7336-28e9a5462aemr193596415ad.3.1759825717003;
+        Tue, 07 Oct 2025 01:28:37 -0700 (PDT)
+Received: from wu-Pro-E500-G6-WS720T ([2001:288:7001:2703:5196:9a8f:bb54:f0db])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-28e8d1b8796sm156615475ad.77.2025.10.07.01.28.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Oct 2025 13:52:13 -0700 (PDT)
-Date: Mon, 6 Oct 2025 21:52:12 +0100
-From: David Laight <david.laight.linux@gmail.com>
-To: Guan-Chun Wu <409411716@gms.tku.edu.tw>
+        Tue, 07 Oct 2025 01:28:36 -0700 (PDT)
+Date: Tue, 7 Oct 2025 16:28:32 +0800
+From: Guan-Chun Wu <409411716@gms.tku.edu.tw>
+To: David Laight <david.laight.linux@gmail.com>
 Cc: Caleb Sander Mateos <csander@purestorage.com>,
- akpm@linux-foundation.org, axboe@kernel.dk, ceph-devel@vger.kernel.org,
- ebiggers@kernel.org, hch@lst.de, home7438072@gmail.com, idryomov@gmail.com,
- jaegeuk@kernel.org, kbusch@kernel.org, linux-fscrypt@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
- sagi@grimberg.me, tytso@mit.edu, visitorckw@gmail.com, xiubli@redhat.com
-Subject: Re: [PATCH v3 3/6] lib/base64: rework encode/decode for speed and
- stricter validation
-Message-ID: <20251006215212.2920d571@pumpkin>
-In-Reply-To: <aNz21InCM4Pa93TL@wu-Pro-E500-G6-WS720T>
+	akpm@linux-foundation.org, axboe@kernel.dk,
+	ceph-devel@vger.kernel.org, ebiggers@kernel.org, hch@lst.de,
+	home7438072@gmail.com, idryomov@gmail.com, jaegeuk@kernel.org,
+	kbusch@kernel.org, linux-fscrypt@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+	sagi@grimberg.me, tytso@mit.edu, visitorckw@gmail.com,
+	xiubli@redhat.com
+Subject: Re: [PATCH v3 2/6] lib/base64: Optimize base64_decode() with reverse
+ lookup tables
+Message-ID: <aOTPMGQbUBfgdX4u@wu-Pro-E500-G6-WS720T>
 References: <20250926065235.13623-1-409411716@gms.tku.edu.tw>
-	<20250926065617.14361-1-409411716@gms.tku.edu.tw>
-	<CADUfDZpu=rK4WwSmhNgxHQd2zeNvn8a7TmKCYuTL5T7dZ0x_4A@mail.gmail.com>
-	<aNz21InCM4Pa93TL@wu-Pro-E500-G6-WS720T>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+ <20250926065556.14250-1-409411716@gms.tku.edu.tw>
+ <CADUfDZruZWyrsjRCs_Y5gjsbfU7dz_ALGG61pQ8qCM7K2_DjmA@mail.gmail.com>
+ <aNz/+xLDnc2mKsKo@wu-Pro-E500-G6-WS720T>
+ <CADUfDZq4c3dRgWpevv3+29frvd6L8G9RRdoVFpFnyRsF3Eve1Q@mail.gmail.com>
+ <20251005181803.0ba6aee4@pumpkin>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20251005181803.0ba6aee4@pumpkin>
 
-On Wed, 1 Oct 2025 17:39:32 +0800
-Guan-Chun Wu <409411716@gms.tku.edu.tw> wrote:
+On Sun, Oct 05, 2025 at 06:18:03PM +0100, David Laight wrote:
+> On Wed, 1 Oct 2025 09:20:27 -0700
+> Caleb Sander Mateos <csander@purestorage.com> wrote:
+> 
+> > On Wed, Oct 1, 2025 at 3:18 AM Guan-Chun Wu <409411716@gms.tku.edu.tw> wrote:
+> > >
+> > > On Fri, Sep 26, 2025 at 04:33:12PM -0700, Caleb Sander Mateos wrote:  
+> > > > On Thu, Sep 25, 2025 at 11:59 PM Guan-Chun Wu <409411716@gms.tku.edu.tw> wrote:  
+> > > > >
+> > > > > From: Kuan-Wei Chiu <visitorckw@gmail.com>
+> > > > >
+> > > > > Replace the use of strchr() in base64_decode() with precomputed reverse
+> > > > > lookup tables for each variant. This avoids repeated string scans and
+> > > > > improves performance. Use -1 in the tables to mark invalid characters.
+> > > > >
+> > > > > Decode:
+> > > > >   64B   ~1530ns  ->  ~75ns    (~20.4x)
+> > > > >   1KB  ~27726ns  -> ~1165ns   (~23.8x)
+> > > > >
+> > > > > Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+> > > > > Co-developed-by: Guan-Chun Wu <409411716@gms.tku.edu.tw>
+> > > > > Signed-off-by: Guan-Chun Wu <409411716@gms.tku.edu.tw>
+> > > > > ---
+> > > > >  lib/base64.c | 66 ++++++++++++++++++++++++++++++++++++++++++++++++----
+> > > > >  1 file changed, 61 insertions(+), 5 deletions(-)
+> > > > >
+> > > > > diff --git a/lib/base64.c b/lib/base64.c
+> > > > > index 1af557785..b20fdf168 100644
+> > > > > --- a/lib/base64.c
+> > > > > +++ b/lib/base64.c
+> > > > > @@ -21,6 +21,63 @@ static const char base64_tables[][65] = {
+> > > > >         [BASE64_IMAP] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+,",
+> > > > >  };
+> > > > >
+> > > > > +static const s8 base64_rev_tables[][256] = {
+> > > > > +       [BASE64_STD] = {
+> > > > > +        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+> > > > > +        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+> > > > > +        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  62,  -1,  -1,  -1,  63,
+> > > > > +        52,  53,  54,  55,  56,  57,  58,  59,  60,  61,  -1,  -1,  -1,  -1,  -1,  -1,
+> > > > > +        -1,   0,   1,   2,   3,   4,   5,   6,   7,   8,   9,  10,  11,  12,  13,  14,
+> > > > > +        15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,  -1,  -1,  -1,  -1,  -1,
+> > > > > +        -1,  26,  27,  28,  29,  30,  31,  32,  33,  34,  35,  36,  37,  38,  39,  40,
+> > > > > +        41,  42,  43,  44,  45,  46,  47,  48,  49,  50,  51,  -1,  -1,  -1,  -1,  -1,
+> > > > > +        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+> > > > > +        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+> > > > > +        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+> > > > > +        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+> > > > > +        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+> > > > > +        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+> > > > > +        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+> > > > > +        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+> > > > > +       },
+> > > > > +       [BASE64_URLSAFE] = {
+> > > > > +        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+> > > > > +        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+> > > > > +        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  62,  -1,  -1,
+> > > > > +        52,  53,  54,  55,  56,  57,  58,  59,  60,  61,  -1,  -1,  -1,  -1,  -1,  -1,
+> > > > > +        -1,   0,   1,   2,   3,   4,   5,   6,   7,   8,   9,  10,  11,  12,  13,  14,
+> > > > > +        15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,  -1,  -1,  -1,  -1,  63,
+> > > > > +        -1,  26,  27,  28,  29,  30,  31,  32,  33,  34,  35,  36,  37,  38,  39,  40,
+> > > > > +        41,  42,  43,  44,  45,  46,  47,  48,  49,  50,  51,  -1,  -1,  -1,  -1,  -1,
+> > > > > +        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+> > > > > +        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+> > > > > +        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+> > > > > +        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+> > > > > +        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+> > > > > +        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+> > > > > +        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+> > > > > +        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+> > > > > +       },
+> > > > > +       [BASE64_IMAP] = {
+> > > > > +        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+> > > > > +        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+> > > > > +        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  62,  63,  -1,  -1,  -1,
+> > > > > +        52,  53,  54,  55,  56,  57,  58,  59,  60,  61,  -1,  -1,  -1,  -1,  -1,  -1,
+> > > > > +        -1,   0,   1,   2,   3,   4,   5,   6,   7,   8,   9,  10,  11,  12,  13,  14,
+> > > > > +        15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,  -1,  -1,  -1,  -1,  -1,
+> > > > > +        -1,  26,  27,  28,  29,  30,  31,  32,  33,  34,  35,  36,  37,  38,  39,  40,
+> > > > > +        41,  42,  43,  44,  45,  46,  47,  48,  49,  50,  51,  -1,  -1,  -1,  -1,  -1,
+> > > > > +        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+> > > > > +        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+> > > > > +        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+> > > > > +        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+> > > > > +        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+> > > > > +        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+> > > > > +        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+> > > > > +        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+> > > > > +       },  
+> > > >
+> > > > Do we actually need 3 separate lookup tables? It looks like all 3
+> > > > variants agree on the value of any characters they have in common. So
+> > > > we could combine them into a single lookup table that would work for a
+> > > > valid base64 string of any variant. The only downside I can see is
+> > > > that base64 strings which are invalid in some variants might no longer
+> > > > be rejected by base64_decode().
+> > > >  
+> > >
+> > > In addition to the approach David mentioned, maybe we can use a common
+> > > lookup table for A–Z, a–z, and 0–9, and then handle the variant-specific
+> > > symbols with a switch.
+> 
+> It is certainly possible to generate the initialiser from a #define to
+> avoid all the replicated source.
+> 
+> > >
+> > > For example:
+> > >
+> > > static const s8 base64_rev_common[256] = {
+> > >     [0 ... 255] = -1,
+> > >     ['A'] = 0, ['B'] = 1, /* ... */, ['Z'] = 25,
+> 
+> If you assume ASCII (I doubt Linux runs on any EBCDIC systems) you
+> can assume the characters are sequential and miss ['B'] = etc to
+> reduce the the line lengths.
+> (Even EBCDIC has A-I J-R S-Z and 0-9 as adjacent values)
+> 
+> > >     ['a'] = 26, /* ... */, ['z'] = 51,
+> > >     ['0'] = 52, /* ... */, ['9'] = 61,
+> > > };
+> > >
+> > > static inline int base64_rev_lookup(u8 c, enum base64_variant variant) {
+> > >     s8 v = base64_rev_common[c];
+> > >     if (v != -1)
+> > >         return v;
+> > >
+> > >     switch (variant) {
+> > >     case BASE64_STD:
+> > >         if (c == '+') return 62;
+> > >         if (c == '/') return 63;
+> > >         break;
+> > >     case BASE64_IMAP:
+> > >         if (c == '+') return 62;
+> > >         if (c == ',') return 63;
+> > >         break;
+> > >     case BASE64_URLSAFE:
+> > >         if (c == '-') return 62;
+> > >         if (c == '_') return 63;
+> > >         break;
+> > >     }
+> > >     return -1;
+> > > }
+> > >
+> > > What do you think?  
+> > 
+> > That adds several branches in the hot loop, at least 2 of which are
+> > unpredictable for valid base64 input of a given variant (v != -1 as
+> > well as the first c check in the applicable switch case).
+> 
+> I'd certainly pass in the character values for 62 and 63 so they are
+> determined well outside the inner loop.
+> Possibly even going as far as #define BASE64_STD ('+' << 8 | '/').
+> 
+> > That seems like it would hurt performance, no?
+> > I think having 3 separate tables
+> > would be preferable to making the hot loop more branchy.
+> 
+> Depends how common you think 62 and 63 are...
+> I guess 63 comes from 0xff bytes - so might be quite common.
+> 
+> One thing I think you've missed is that the decode converts 4 characters
+> into 24 bits - which then need carefully writing into the output buffer.
+> There is no need to check whether each character is valid.
+> After:
+> 	val_24 = t[b[0]] | t[b[1]] << 6 | t[b[2]] << 12 | t[b[3]] << 18;
+> val_24 will be negative iff one of b[0..3] is invalid.
+> So you only need to check every 4 input characters, not for every one.
+> That does require separate tables.
+> (Or have a decoder that always maps "+-" to 62 and "/,_" to 63.)
+> 
+> 	David
+>
 
-> On Tue, Sep 30, 2025 at 05:11:12PM -0700, Caleb Sander Mateos wrote:
-> > On Fri, Sep 26, 2025 at 12:01=E2=80=AFAM Guan-Chun Wu <409411716@gms.tk=
-u.edu.tw> wrote: =20
-> > >
-> > > The old base64 implementation relied on a bit-accumulator loop, which=
- was
-> > > slow for larger inputs and too permissive in validation. It would acc=
-ept
-> > > extra '=3D', missing '=3D', or even '=3D' appearing in the middle of =
-the input,
-> > > allowing malformed strings to pass. This patch reworks the internals =
-to
-> > > improve performance and enforce stricter validation.
-> > >
-> > > Changes:
-> > >  - Encoder:
-> > >    * Process input in 3-byte blocks, mapping 24 bits into four 6-bit
-> > >      symbols, avoiding bit-by-bit shifting and reducing loop iteratio=
-ns.
-> > >    * Handle the final 1-2 leftover bytes explicitly and emit '=3D' on=
-ly when
-> > >      requested.
-> > >  - Decoder:
-> > >    * Based on the reverse lookup tables from the previous patch, deco=
-de
-> > >      input in 4-character groups.
-> > >    * Each group is looked up directly, converted into numeric values,=
- and
-> > >      combined into 3 output bytes.
-> > >    * Explicitly handle padded and unpadded forms:
-> > >       - With padding: input length must be a multiple of 4, and '=3D'=
- is
-> > >         allowed only in the last two positions. Reject stray or early=
- '=3D'.
-> > >       - Without padding: validate tail lengths (2 or 3 chars) and req=
-uire
-> > >         unused low bits to be zero.
-> > >    * Removed the bit-accumulator style loop to reduce loop iterations.
-> > >
-> > > Performance (x86_64, Intel Core i7-10700 @ 2.90GHz, avg over 1000 run=
-s,
-> > > KUnit):
-> > >
-> > > Encode:
-> > >   64B   ~90ns   -> ~32ns   (~2.8x)
-> > >   1KB  ~1332ns  -> ~510ns  (~2.6x)
-> > >
-> > > Decode:
-> > >   64B  ~1530ns  -> ~64ns   (~23.9x)
-> > >   1KB ~27726ns  -> ~982ns  (~28.3x)
-> > >
-> > > Co-developed-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-> > > Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-> > > Co-developed-by: Yu-Sheng Huang <home7438072@gmail.com>
-> > > Signed-off-by: Yu-Sheng Huang <home7438072@gmail.com>
-> > > Signed-off-by: Guan-Chun Wu <409411716@gms.tku.edu.tw>
-> > > ---
-> > >  lib/base64.c | 150 +++++++++++++++++++++++++++++++++++++------------=
---
-> > >  1 file changed, 110 insertions(+), 40 deletions(-)
-> > >
-> > > diff --git a/lib/base64.c b/lib/base64.c
-> > > index b20fdf168..fd1db4611 100644
-> > > --- a/lib/base64.c
-> > > +++ b/lib/base64.c
-> > > @@ -93,26 +93,43 @@ static const s8 base64_rev_tables[][256] =3D {
-> > >  int base64_encode(const u8 *src, int srclen, char *dst, bool padding=
-, enum base64_variant variant)
-> > >  {
-> > >         u32 ac =3D 0;
-> > > -       int bits =3D 0;
-> > > -       int i;
-> > >         char *cp =3D dst;
-> > >         const char *base64_table =3D base64_tables[variant];
-> > >
-> > > -       for (i =3D 0; i < srclen; i++) {
-> > > -               ac =3D (ac << 8) | src[i];
-> > > -               bits +=3D 8;
-> > > -               do {
-> > > -                       bits -=3D 6;
-> > > -                       *cp++ =3D base64_table[(ac >> bits) & 0x3f];
-> > > -               } while (bits >=3D 6);
-> > > -       }
-> > > -       if (bits) {
-> > > -               *cp++ =3D base64_table[(ac << (6 - bits)) & 0x3f];
-> > > -               bits -=3D 6;
-> > > +       while (srclen >=3D 3) {
-> > > +               ac =3D ((u32)src[0] << 16) |
-> > > +                        ((u32)src[1] << 8) |
-> > > +                        (u32)src[2];
-> > > +
-> > > +               *cp++ =3D base64_table[ac >> 18];
-> > > +               *cp++ =3D base64_table[(ac >> 12) & 0x3f];
-> > > +               *cp++ =3D base64_table[(ac >> 6) & 0x3f];
-> > > +               *cp++ =3D base64_table[ac & 0x3f];
-> > > +
-> > > +               src +=3D 3;
-> > > +               srclen -=3D 3;
-> > >         }
-> > > -       while (bits < 0) {
-> > > -               *cp++ =3D '=3D';
-> > > -               bits +=3D 2;
-> > > +
-> > > +       switch (srclen) {
-> > > +       case 2:
-> > > +               ac =3D ((u32)src[0] << 16) |
-> > > +                    ((u32)src[1] << 8);
-> > > +
-> > > +               *cp++ =3D base64_table[ac >> 18];
-> > > +               *cp++ =3D base64_table[(ac >> 12) & 0x3f];
-> > > +               *cp++ =3D base64_table[(ac >> 6) & 0x3f];
-> > > +               if (padding)
-> > > +                       *cp++ =3D '=3D';
-> > > +               break;
-> > > +       case 1:
-> > > +               ac =3D ((u32)src[0] << 16);
-> > > +               *cp++ =3D base64_table[ac >> 18];
-> > > +               *cp++ =3D base64_table[(ac >> 12) & 0x3f];
-> > > +               if (padding) {
-> > > +                       *cp++ =3D '=3D';
-> > > +                       *cp++ =3D '=3D';
-> > > +               }
-> > > +               break;
-> > >         }
-> > >         return cp - dst;
-> > >  }
-> > > @@ -128,39 +145,92 @@ EXPORT_SYMBOL_GPL(base64_encode);
-> > >   *
-> > >   * Decodes a string using the selected Base64 variant.
-> > >   *
-> > > - * This implementation hasn't been optimized for performance.
-> > > - *
-> > >   * Return: the length of the resulting decoded binary data in bytes,
-> > >   *        or -1 if the string isn't a valid Base64 string.
-> > >   */
-> > >  int base64_decode(const char *src, int srclen, u8 *dst, bool padding=
-, enum base64_variant variant)
-> > >  {
-> > > -       u32 ac =3D 0;
-> > > -       int bits =3D 0;
-> > > -       int i;
-> > >         u8 *bp =3D dst;
-> > > -       s8 ch;
-> > > -
-> > > -       for (i =3D 0; i < srclen; i++) {
-> > > -               if (src[i] =3D=3D '=3D') {
-> > > -                       ac =3D (ac << 6);
-> > > -                       bits +=3D 6;
-> > > -                       if (bits >=3D 8)
-> > > -                               bits -=3D 8;
-> > > -                       continue;
-> > > -               }
-> > > -               ch =3D base64_rev_tables[variant][(u8)src[i]];
-> > > -               if (ch =3D=3D -1)
-> > > +       s8 input1, input2, input3, input4;
-> > > +       u32 val;
-> > > +
-> > > +       if (srclen =3D=3D 0)
-> > > +               return 0; =20
-> >=20
-> > Doesn't look like this special case is necessary; all the if and while
-> > conditions below are false if srclen =3D=3D 0, so the function will just
-> > end up returning 0 in that case anyways. It would be nice to avoid
-> > this branch, especially as it seems like an uncommon case.
-> > =20
->=20
-> You're right. I'll remove it. Thanks.
->=20
-> > > +
-> > > +       /* Validate the input length for padding */
-> > > +       if (unlikely(padding && (srclen & 0x03) !=3D 0))
-> > > +               return -1;
-> > > +
-> > > +       while (srclen >=3D 4) {
-> > > +               /* Decode the next 4 characters */
-> > > +               input1 =3D base64_rev_tables[variant][(u8)src[0]];
-> > > +               input2 =3D base64_rev_tables[variant][(u8)src[1]];
-> > > +               input3 =3D base64_rev_tables[variant][(u8)src[2]];
-> > > +               input4 =3D base64_rev_tables[variant][(u8)src[3]];
-> > > +
-> > > +               /* Return error if any Base64 character is invalid */
-> > > +               if (unlikely(input1 < 0 || input2 < 0 || (!padding &&=
- (input3 < 0 || input4 < 0))))
-> > > +                       return -1;
-> > > +
-> > > +               /* Handle padding */
-> > > +               if (unlikely(padding && ((input3 < 0 && input4 >=3D 0=
-) ||
-> > > +                                        (input3 < 0 && src[2] !=3D '=
-=3D') ||
-> > > +                                        (input4 < 0 && src[3] !=3D '=
-=3D') ||
-> > > +                                        (srclen > 4 && (input3 < 0 |=
-| input4 < 0))))) =20
-> >=20
-> > Would be preferable to check and strip the padding (i.e. decrease
-> > srclen) before this main loop. That way we could avoid several
-> > branches in this hot loop that are only necessary to handle the
-> > padding chars.
-> >  =20
->=20
-> You're right. As long as we check and strip the padding first, the
-> behavior with or without padding can be the same, and it could also
-> reduce some unnecessary branches. I'll make the change.
+Thanks for the feedback.
+For the next revision, we’ll use a single lookup table that maps both +
+and - to 62, and /, _, and , to 63.
+Does this approach sound good to everyone?
 
-As I said earlier.
-Calculate 'val' first using signed arithmetic.
-If it is non-negative there are three bytes to write.
-If negative then check for src[2] and src[3] being '=3D' (etc) before error=
-ing out.
+Best regards,
+Guan-Chun
 
-That way there is only one check in the normal path.
-
-	David
-
->=20
-> Best regards,
-> Guan-Chun
->=20
-> > > +                       return -1;
-> > > +               val =3D ((u32)input1 << 18) |
-> > > +                     ((u32)input2 << 12) |
-> > > +                     ((u32)((input3 < 0) ? 0 : input3) << 6) |
-> > > +                     (u32)((input4 < 0) ? 0 : input4);
-> > > +
-> > > +               *bp++ =3D (u8)(val >> 16);
-> > > +
-> > > +               if (input3 >=3D 0)
-> > > +                       *bp++ =3D (u8)(val >> 8);
-> > > +               if (input4 >=3D 0)
-> > > +                       *bp++ =3D (u8)val;
-> > > +
-> > > +               src +=3D 4;
-> > > +               srclen -=3D 4;
-> > > +       }
-> > > +
-> > > +       /* Handle leftover characters when padding is not used */
-> > > +       if (!padding && srclen > 0) {
-> > > +               switch (srclen) {
-> > > +               case 2:
-> > > +                       input1 =3D base64_rev_tables[variant][(u8)src=
-[0]];
-> > > +                       input2 =3D base64_rev_tables[variant][(u8)src=
-[1]];
-> > > +                       if (unlikely(input1 < 0 || input2 < 0))
-> > > +                               return -1;
-> > > +
-> > > +                       val =3D ((u32)input1 << 6) | (u32)input2; /* =
-12 bits */
-> > > +                       if (unlikely(val & 0x0F))
-> > > +                               return -1; /* low 4 bits must be zero=
- */
-> > > +
-> > > +                       *bp++ =3D (u8)(val >> 4);
-> > > +                       break;
-> > > +               case 3:
-> > > +                       input1 =3D base64_rev_tables[variant][(u8)src=
-[0]];
-> > > +                       input2 =3D base64_rev_tables[variant][(u8)src=
-[1]];
-> > > +                       input3 =3D base64_rev_tables[variant][(u8)src=
-[2]];
-> > > +                       if (unlikely(input1 < 0 || input2 < 0 || inpu=
-t3 < 0))
-> > > +                               return -1;
-> > > +
-> > > +                       val =3D ((u32)input1 << 12) |
-> > > +                             ((u32)input2 << 6) |
-> > > +                             (u32)input3; /* 18 bits */
-> > > +
-> > > +                       if (unlikely(val & 0x03))
-> > > +                               return -1; /* low 2 bits must be zero=
- */
-> > > +
-> > > +                       *bp++ =3D (u8)(val >> 10);
-> > > +                       *bp++ =3D (u8)((val >> 2) & 0xFF); =20
-> >=20
-> > "& 0xFF" is redundant with the cast to u8.
-> >=20
+> > 
 > > Best,
 > > Caleb
-> >  =20
-> > > +                       break;
-> > > +               default:
-> > >                         return -1;
-> > > -               ac =3D (ac << 6) | ch;
-> > > -               bits +=3D 6;
-> > > -               if (bits >=3D 8) {
-> > > -                       bits -=3D 8;
-> > > -                       *bp++ =3D (u8)(ac >> bits);
-> > >                 }
-> > >         }
-> > > -       if (ac & ((1 << bits) - 1))
-> > > -               return -1;
-> > > +
-> > >         return bp - dst;
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(base64_decode);
-> > > --
-> > > 2.34.1
-> > >
-> > > =20
->=20
-
+> > 
+> 
 
