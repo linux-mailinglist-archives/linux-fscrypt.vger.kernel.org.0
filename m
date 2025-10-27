@@ -1,79 +1,80 @@
-Return-Path: <linux-fscrypt+bounces-874-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-875-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2ADFBE2A93
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 16 Oct 2025 12:10:45 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33A50C0DF88
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 27 Oct 2025 14:20:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 37240350012
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 16 Oct 2025 10:10:45 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id DFB1D4F5835
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 27 Oct 2025 13:12:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE16B31AF33;
-	Thu, 16 Oct 2025 10:07:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BEB225C821;
+	Mon, 27 Oct 2025 13:12:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gms-tku-edu-tw.20230601.gappssmtp.com header.i=@gms-tku-edu-tw.20230601.gappssmtp.com header.b="2azKSV/L"
+	dkim=pass (2048-bit key) header.d=gms-tku-edu-tw.20230601.gappssmtp.com header.i=@gms-tku-edu-tw.20230601.gappssmtp.com header.b="C9itIBJB"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA5DE31D754
-	for <linux-fscrypt@vger.kernel.org>; Thu, 16 Oct 2025 10:07:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7523C259C94
+	for <linux-fscrypt@vger.kernel.org>; Mon, 27 Oct 2025 13:12:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760609230; cv=none; b=GNamIr4e4i/Ys9EGi0k9uyogl/y4XiTG7ewp3OiDNf4Lr7mcaQtWwwF4PftPYSVw656/7icTse9diupkZws1EU2IyQCqUfnhQHf3QJWOXzmeukPtuIyxSHTW+KGxn68SP3BLHvy2852w1bV1typB+/Wxmrp1vfntelHl2J+zP+4=
+	t=1761570729; cv=none; b=R4EkXpRuTw+bxKFFlnY4NsBkE/cYOdHqiouTzZlrj965QQ+YvCF2NqnfaF8YihBYjwzITVa3lxEMAFCM73MAtFgPGEth/gIcFR8nWVbZvFqdJHGathc51hj6o2pj13iafOxze7tqTuCdYxCJbSQHL2PdGlyk+DPfLNEmcF1mGss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760609230; c=relaxed/simple;
-	bh=wo/Ya1/qS4gmb5ns1qZf/PbPtAozVGLxnCxAaNcd6IY=;
+	s=arc-20240116; t=1761570729; c=relaxed/simple;
+	bh=RxODQK9iX8R1B/vCOJ29vmwlQgvahBpmQhh4qJyamzE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=o2JqbQsnBW8kxpE2XHvsUcoNINCC3+coK3rqiDl94poVSxM2hAdVhyArhIlkJ+t36Lo1X8dN5BAXuWzYT9MOxXiZFkYmyP5/Pe191GrjnAnwlDfhXjPqTYnf2NcK2GLwU5jX+9215bkR6d9tfQi3qn4fpVJBsZHSwRAjKnrT8cM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gms.tku.edu.tw; spf=pass smtp.mailfrom=gms.tku.edu.tw; dkim=pass (2048-bit key) header.d=gms-tku-edu-tw.20230601.gappssmtp.com header.i=@gms-tku-edu-tw.20230601.gappssmtp.com header.b=2azKSV/L; arc=none smtp.client-ip=209.85.214.174
+	 Content-Type:Content-Disposition:In-Reply-To; b=UddmITEHAnQryjRu4HZy4zcsh23HjaZz6pZu08LBg2C9zdsHwSZsBCLkH3wtsIFB+XYO3x6rrR9z41AJj81CJ+7HG/VrVW0w+DcSLMxOzXwj91ARpNU94xAX9vDuPBzt+OeGQFqIu5nuSbYCz1xF/vQ6tvnO3CnLWgxBBkdSSvc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gms.tku.edu.tw; spf=pass smtp.mailfrom=gms.tku.edu.tw; dkim=pass (2048-bit key) header.d=gms-tku-edu-tw.20230601.gappssmtp.com header.i=@gms-tku-edu-tw.20230601.gappssmtp.com header.b=C9itIBJB; arc=none smtp.client-ip=209.85.215.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gms.tku.edu.tw
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gms.tku.edu.tw
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-27eed7bdfeeso6897275ad.0
-        for <linux-fscrypt@vger.kernel.org>; Thu, 16 Oct 2025 03:07:06 -0700 (PDT)
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-b49c1c130c9so3093152a12.0
+        for <linux-fscrypt@vger.kernel.org>; Mon, 27 Oct 2025 06:12:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gms-tku-edu-tw.20230601.gappssmtp.com; s=20230601; t=1760609226; x=1761214026; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rJ4V0WDk+Fmgl27pDuIUO845Eexs2tBhWb+HgzxSkGw=;
-        b=2azKSV/LJlYLD9kHtl3N3D1Oej3nQerp/NmrZYimh5syH1FHulEheQKuayi9ueD06m
-         4Dk/pj0GBAQOis22XCJzMtD0xL3vqHO/esdi/Wku9//Df2bOve3e7umEJRlfqdR/arVf
-         7ThqDB11nGkSaZGMBmITwSJq/Dqj+8Tl14eLpXSLRHtZd7xhaxCmHIOPFZ0lzS8wQKCG
-         uTMpkTwquu7YstepC1DHdk6RpQBnbTHhh5xk1zYEFfkS07L4OVx04B16FnwcC+A/6t6D
-         7KOSymXghX5yasz0tuxEXsAc0f8yZzFlwIgvR9+V8bi93qSz6KIwpxJBn+lQOfEV5vt+
-         R4dg==
+        d=gms-tku-edu-tw.20230601.gappssmtp.com; s=20230601; t=1761570725; x=1762175525; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=YHYAm5clDKGEgl2cOgr+YFXcUNktmsVcXuwqgoHg62Q=;
+        b=C9itIBJB6+O1ZA8fNqt6pbGdmy1UXawioxrf7oIfw8dSb6zUQxogHbBoB5LswlGvBg
+         DO61O6wKUSnkh1+VSXYPAuAr1hMdYo6tO4n7dq8YJeSf0fisQJwzwLGrNDtEN/7fv1Ft
+         fcjNIkUaR+SAAnyyiNMvlozIJnKE5QTUBQJz8wyp6kDakr6/s3Db+WtSVCVq6qd8CdB+
+         efnd9DFnTMUIR3812T1UATkOzYbRpbI1O5nHecvpnG4wjVjD/qx1K/GA46Pq+IrvLGoX
+         tfdMqPJTIzF6u9nM2eK4vzP5hag10MhquGxbwjW5Q2bOZu/kscVPaOkM84knCVOrJVoW
+         1z5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760609226; x=1761214026;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rJ4V0WDk+Fmgl27pDuIUO845Eexs2tBhWb+HgzxSkGw=;
-        b=AOxiYLJaauDDJnCcplqwnuOgIByK+INwjtdp4Yo/tiDt/MDZ34YDvRsB0YkrcYQdIf
-         TY7OULjDSBjZ3UP3FGaFQsDXncv9H3Z/1mHAOmyolZZEFM6V9lNbumO+L5wq/NRsAFCR
-         pbtPro97JHmjj9wO1han+s+8vHi+H+/oO1QATcZyZON7rLND2+xy0NC1gVRQTfHGv7pb
-         cS33jbdDwyDlntzHkFzoo/xOj8QJFS1hYp5wCV8FW79ybEhxV1PfvQVg6/Zuzvmhk/XL
-         LdNhRDsG4qUMNHm/uT+83U4tqId2FuWrUo59hLTv2WOghTFkhiHDdFRZQgW5Ym4oGE8v
-         mfXw==
-X-Forwarded-Encrypted: i=1; AJvYcCUAXglwD6r1QX0vMdUBXpJLpIhck8WwG2VY+VztOH3Fpti6r+bcnbKJC6WpWouZeNFp3PcRI0NsrNRADuUr@vger.kernel.org
-X-Gm-Message-State: AOJu0YwwKZIqLI4Cyh8lW+MTT9a9VDmQ3qdVe3/TWYfs8cPyOG/cHznD
-	olIwRpHdCrF/e5Df4KIFcRkp9G4YYC+aPfWJz27IIUaCOAGS19YqPRj9bPWM+3WtOaQ=
-X-Gm-Gg: ASbGncs+XZPytleaMR4dKa9yh4Oz+NJz8PbcMHUQxAsiJRoPk0Ge6z5a5BCwRGM8pAe
-	+lt5Bk6B4YHgyCdQiRm4KsD/NEr/NMwJHOBx/ZE7sK4Bu4hcFERTNpfWJoPJpz5WxNw5DMwurfy
-	aaHPrHtlP5LYbYkb7IPCFTTWHEC0U5q81MtotztbhcyWsnlTi9Vz056CR9h721UJsvfmgcwxyiO
-	lKLzgsLRupJ5Zk8LksDYorhN76RsGCGN+23TbN0q31USsZn9qj1k82IV3eDeO8bJgwKr6csSRYo
-	HLQuvuE3x5/mU/32tC/ihQOsVFZZZ4aBu5o3OtlYqSjBzvydcjTbP0Ftchty6pHGN6U+ePvMN5M
-	PfdOEf0umDDR396SSRrGI0gj9ejUz6smeBwkeQi2iRQo6Pwk5eeiuZRbIOT1zz4xMK5xNEEo2m4
-	BN5kEPQ1MyNQCMKp/kGdvO
-X-Google-Smtp-Source: AGHT+IGke+4JqtDfjsb4VQIaIJ/VTkox7Sn1ZBEWyV9e2LxX0qBRZQ/9OBuguQWM1BsPb4D7ktTbDQ==
-X-Received: by 2002:a17:903:41c6:b0:24c:db7c:bc34 with SMTP id d9443c01a7336-29091b02a61mr44434505ad.13.1760609225745;
-        Thu, 16 Oct 2025 03:07:05 -0700 (PDT)
-Received: from wu-Pro-E500-G6-WS720T ([2001:288:7001:2703:9edb:1072:a6d:3ebf])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29099a7c255sm24626915ad.70.2025.10.16.03.07.02
+        d=1e100.net; s=20230601; t=1761570725; x=1762175525;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YHYAm5clDKGEgl2cOgr+YFXcUNktmsVcXuwqgoHg62Q=;
+        b=d8kfgpDSDbgCf5IhlFyP2XBjNi13mXh3lybEqgwZduzZ7CObKigUK19DKJ8J3tyLhI
+         Ace7Yb7lNhpA3NAMrOyQZfWo+PvCiThpBnWZR7KwgKOoZ2shardrkWhjrgrh44mbjPp4
+         WB/5NlRXbrzNDNpyH+ZkrTFLSSpQnYLmngksKhZgBzYLwLnEabsK8kwDUv9MVvPTrQUE
+         5GnKQiz/FvyLbKKFWVnMbHz+qlS+okzZ+Iayo98aqRCJNdFhJS9O/7P+SrK3Rg9JOP7Q
+         viLEmYoH5aOkmMYt4kgeUeNclwf87nTzduWJT3/Vv2aRYiGk1l43ILcrHwyoL4bCkwOZ
+         +LFQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU5Ao5Vce4iU5QXn3jCeWTu7dcC0gsRZib/MQvrsk4Uu4eEFAS35UBUmBphlGe/bZccKvP1ha681LBiOzTg@vger.kernel.org
+X-Gm-Message-State: AOJu0YzQ4Pxh+g4cVLD+OcdZ1O0GXwHl/0cVvYMzzwcynnBjvtd9fCy5
+	v6qNPrIFjTn/4aEZu1NpYXyCcz68eHhPmAiztZxwpVjwdRsyWa9nwrIKGeEtqx1GGHE=
+X-Gm-Gg: ASbGnct09G8tY/1M0y5jOkR+zoI77y+InTLML6alGbY+fkrYG3mwKhSfd7hZNCpltjb
+	foTEukhVOIR00uNYr0dfWEUjpscikYrTgkobFSAIpdtt0ZteMJsfjSBzZrKXG3CniUz0z+Nc1Tv
+	m5BE1Df6YfUWMBw/EvZzAAOIgkA5hxRVAV8p5MTCMsKVqU+OpqcmfeXBZxFqwxJyQ1/wbHdXGe8
+	6eN/DJge2C1Cmrudv4s4NJcCwslIS32ToZlXspYa/0r5alQVl31zal0uu7O7QqycudFNa2ExzMO
+	FpSzj8NDpZpCJ0cG3Teb5A9kFDKUNOAWGlG+6jsWnSV3jZVDv4habLSLrKX9fdRqpACBlP4ZxYk
+	EApHLJORmiF46p15ASqj6V43UYzB21Rh+zbFooSDjsR5AyWWfrqzDnLlyVu36eAhd1J/uf9rRXQ
+	mfn5DbWHTOor9bk1ZNL+U2
+X-Google-Smtp-Source: AGHT+IFRgrc7hf2+6CuHsBHMzYgRmSG6lQVmw3vlPAYNWTFNGjLEiLeTnXfLTsx0w4DvUGGNsCkacQ==
+X-Received: by 2002:a17:902:c410:b0:26d:d860:3db1 with SMTP id d9443c01a7336-2946dec239cmr180220365ad.24.1761570725236;
+        Mon, 27 Oct 2025 06:12:05 -0700 (PDT)
+Received: from wu-Pro-E500-G6-WS720T ([2001:288:7001:2703:745:9b32:70e1:48f4])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29498cf3b64sm84103415ad.3.2025.10.27.06.12.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Oct 2025 03:07:05 -0700 (PDT)
-Date: Thu, 16 Oct 2025 18:07:00 +0800
+        Mon, 27 Oct 2025 06:12:04 -0700 (PDT)
+Date: Mon, 27 Oct 2025 21:12:00 +0800
 From: Guan-Chun Wu <409411716@gms.tku.edu.tw>
 To: David Laight <david.laight.linux@gmail.com>
 Cc: Caleb Sander Mateos <csander@purestorage.com>,
@@ -86,7 +87,7 @@ Cc: Caleb Sander Mateos <csander@purestorage.com>,
 	xiubli@redhat.com
 Subject: Re: [PATCH v3 2/6] lib/base64: Optimize base64_decode() with reverse
  lookup tables
-Message-ID: <aPDDxEGon1Q82pIJ@wu-Pro-E500-G6-WS720T>
+Message-ID: <aP9voK9lE/MlanGl@wu-Pro-E500-G6-WS720T>
 References: <aNz/+xLDnc2mKsKo@wu-Pro-E500-G6-WS720T>
  <CADUfDZq4c3dRgWpevv3+29frvd6L8G9RRdoVFpFnyRsF3Eve1Q@mail.gmail.com>
  <20251005181803.0ba6aee4@pumpkin>
@@ -103,14 +104,15 @@ List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 In-Reply-To: <20251014091420.173dfc9c@pumpkin>
 
 On Tue, Oct 14, 2025 at 09:14:20AM +0100, David Laight wrote:
 > On Mon, 13 Oct 2025 17:49:55 +0800
 > Guan-Chun Wu <409411716@gms.tku.edu.tw> wrote:
-> 
+>
 > > On Fri, Oct 10, 2025 at 10:51:38AM +0100, David Laight wrote:
 > > > On Thu, 9 Oct 2025 20:25:17 +0800
 > > > Guan-Chun Wu <409411716@gms.tku.edu.tw> wrote:
@@ -269,10 +271,87 @@ On Tue, Oct 14, 2025 at 09:14:20AM +0100, David Laight wrote:
 > 			padding = 0;
 > 			srclen = src[2] == '=' ? 2 : 3;
 > 			break;
-> 
+>
 > The compiler will then optimise away the first checks after the
 > loop because it knows they can't happen.
-> 
+
+Hi David,
+
+I noticed your suggested approach:
+val_24 = t[b[0]] | t[b[1]] << 6 | t[b[2]] << 12 | t[b[3]] << 18;
+Per the C11 draft, this can lead to undefined behavior.
+"If E1 has a signed type and nonnegative value, and E1 × 2^E2 is
+representable in the result type, then that is the resulting value;
+otherwise, the behavior is undefined."
+Therefore, left-shifting a negative signed value is undefined behavior.
+
+Perhaps we could change the code as shown below. What do you think?
+
+int base64_decode(const char *src, int srclen, u8 *dst, bool padding, enum base64_variant variant)
+{
+	u8 *bp = dst;
+	s8 input[4];
+	u32 val;
+	const u8 *s = (const u8 *)src;
+	const s8 *base64_rev_table = base64_rev_maps[variant];
+
+	while (srclen >= 4) {
+		input[0] = base64_rev_table[s[0]];
+		input[1] = base64_rev_table[s[1]];
+		input[2] = base64_rev_table[s[2]];
+		input[3] = base64_rev_table[s[3]];
+
+		if (unlikely((input[0] | input[1] | input[2] | input[3]) < 0)) {
+			if (!padding || srclen != 4 || s[3] != '=')
+				return -1;
+			padding = 0;
+			srclen = s[2] == '=' ? 2 : 3;
+			break;
+		}
+
+		val = (u32)input[0] << 18 | (u32)input[1] << 12 |
+			(u32)input[2] << 6 | (u32)input[3];
+
+		*bp++ = val >> 16;
+		*bp++ = val >> 8;
+		*bp++ = val;
+
+		s += 4;
+		srclen -= 4;
+	}
+
+	if (likely(!srclen))
+		return bp - dst;
+	if (padding || srclen == 1)
+		return -1;
+
+	input[0] = base64_rev_table[s[0]];
+	input[1] = base64_rev_table[s[1]];
+
+	if (unlikely(input[0] < 0 || input[1] < 0))
+		return -1;
+
+	val = (u32)input[0] << 18 | (u32)input[1] << 12;
+
+	if (srclen == 2) {
+		if (unlikely(input[1] & 0x0f))
+			return -1;
+		*bp++ = val >> 16;
+	} else {
+		input[2] = base64_rev_table[s[2]];
+		if (unlikely(input[2] < 0 || (input[2] & 0x03)))
+			return -1;
+		val |= (u32)input[2] << 6;
+		*bp++ = val >> 16;
+		*bp++ = val >> 8;
+	}
+
+	return bp - dst;
+}
+
+Best regards,
+Guan-Chun
+
 > > > 
 > > >   
 > > > > 
@@ -310,17 +389,7 @@ On Tue, Oct 14, 2025 at 09:14:20AM +0100, David Laight wrote:
 > every line has to contain a multiple of 4 characters - or whether the
 > lines can be arbitrarily split after being encoded (I know that won't
 > normally happen - but you never know). 
->
-
-I believe the splitting should be aligned to multiples of 4,
-since Base64 encoding operates on 4-character blocks that represent 3 bytes
-of data.
-If it's split arbitrarily, the decoded result may differ from the original
-data or even become invalid.
-
-Best regards,
-Guan-Chun
-
+> 
 > > 
 > > Best regards,
 > > Guan-Chun
