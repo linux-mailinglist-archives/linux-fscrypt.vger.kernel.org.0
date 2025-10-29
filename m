@@ -1,164 +1,172 @@
-Return-Path: <linux-fscrypt+bounces-877-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-878-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 533CDC1337B
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 28 Oct 2025 07:58:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A662C19A40
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 29 Oct 2025 11:18:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 500C11A6520B
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 28 Oct 2025 06:59:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 85CAA46046B
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 29 Oct 2025 10:18:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C425B27144A;
-	Tue, 28 Oct 2025 06:58:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A59792F60A3;
+	Wed, 29 Oct 2025 10:18:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gms-tku-edu-tw.20230601.gappssmtp.com header.i=@gms-tku-edu-tw.20230601.gappssmtp.com header.b="jWJDhr5q"
+	dkim=pass (2048-bit key) header.d=gms-tku-edu-tw.20230601.gappssmtp.com header.i=@gms-tku-edu-tw.20230601.gappssmtp.com header.b="2NchK2zG"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89A4A2571B0
-	for <linux-fscrypt@vger.kernel.org>; Tue, 28 Oct 2025 06:58:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79F152F5A1B
+	for <linux-fscrypt@vger.kernel.org>; Wed, 29 Oct 2025 10:18:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761634728; cv=none; b=UlbSCot1+1LhEO95prSTk1RgsCuPbgZiOAAlOv5FClZ6Nvq5O+I3zAyiyR3viB9MveJUaJxjjbDvXNLqH1AXypMOq9e1dulOeX6/HKbaqXFkcz8SBfIAPzzbTSnvHAJGqj/rwyU75VmGGDGWZA99FvRmrNHYIIClXwBmA3yGuAo=
+	t=1761733095; cv=none; b=KoVHpjaa0kSqgPJnv18yuiXJuh3XzQVYgzgJh6ib1XTQ8Cz1DljbAZVO4mLETG5oxSDFgcaIPUd+Z9cg0xPcqicbnjFDB/mpaf+1oVBbr4VbzCJdUFt8xR5mai9r50blwoEkOZlkzCWVMZRZq+mqM3fvcGNWLsGfW6dQOjmsGqQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761634728; c=relaxed/simple;
-	bh=IcpcehS5Fl0yImjYpIaQdsh2MtDqwKJCpu0+KpAln1c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h+OjZiW7JRfQFqn5nmv57a7nLh27w+81+BWiLzu2YktF6+236FMaVL/nJy1yoUDGXFKeTPBv1Z2XwbItAlfPeCJSggzHW62xogScg0ZnXD4pRSIIqRaCnmDvUa43zf845qIiqD4P4ccBWbks0mAG0JTfBFD9fOswmGZnD27eyl8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gms.tku.edu.tw; spf=pass smtp.mailfrom=gms.tku.edu.tw; dkim=pass (2048-bit key) header.d=gms-tku-edu-tw.20230601.gappssmtp.com header.i=@gms-tku-edu-tw.20230601.gappssmtp.com header.b=jWJDhr5q; arc=none smtp.client-ip=209.85.215.169
+	s=arc-20240116; t=1761733095; c=relaxed/simple;
+	bh=QssEUbUYx0izMJIUmHudPbCRzHZCBlewAEJ42z/4KAQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=FmddBqqAM4NOAWcloB/59cS40ynwJ1f4Im9BTJcvS85GQcbL63X2J3fcqEcRSXAdGSxKRFkojq1dXNccSGUW/g8Ya8uQlCC4KyllAtkA7EzqT9IkPD+p9w5FaG7cC+1+5MEYtjICnJcZUaLQtmyW7YRO1zsXkG98a6vzg2TbxsI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gms.tku.edu.tw; spf=pass smtp.mailfrom=gms.tku.edu.tw; dkim=pass (2048-bit key) header.d=gms-tku-edu-tw.20230601.gappssmtp.com header.i=@gms-tku-edu-tw.20230601.gappssmtp.com header.b=2NchK2zG; arc=none smtp.client-ip=209.85.210.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gms.tku.edu.tw
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gms.tku.edu.tw
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-b4755f37c3eso4650057a12.3
-        for <linux-fscrypt@vger.kernel.org>; Mon, 27 Oct 2025 23:58:46 -0700 (PDT)
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-7a59ec9bef4so225387b3a.2
+        for <linux-fscrypt@vger.kernel.org>; Wed, 29 Oct 2025 03:18:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gms-tku-edu-tw.20230601.gappssmtp.com; s=20230601; t=1761634725; x=1762239525; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=fQ7p6xtC28C9VulZxo2oktqaX1uTl7IBrRCBfSYBTAg=;
-        b=jWJDhr5q0gPLs8HF7sgH5yMPPez5imPdJ3wQh/rtFZqynn2bwF+jn1byZtbWUdPAG5
-         78uOzYB3eFWxTDq/k7JqZHROoAXTuUymUGMbjGF2g81DBXTjIi+JW/NBOBWzmNC4fMXA
-         HhbfuMhZhBeWeHgApSthiGUuVRnQ40uk/Wuv4OF3g0ze2xVY3/+DyBO/HtaitwrEZUm5
-         Thx8o6ekIMc66EIWfwUjq7R+a6jC3fkYjDWq/civHTzoGCt7Iu+D7G6Gzx4YICIBUBgp
-         AxDfQpJe7eT8w1SN+dRdpzPvdZEgcw1mMsChvLNV0JsYBfqwePtMfAVWnAlUftgbbmZF
-         GD6Q==
+        d=gms-tku-edu-tw.20230601.gappssmtp.com; s=20230601; t=1761733092; x=1762337892; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=MnA5k8KsoV1ze5vVhBRV2+hvyms9kuv5Kp74LGBGZE0=;
+        b=2NchK2zGlv+EVw2pnSu9QGxyAddEydVMwf0/imllChQpH6WJ8kbriJ0PdusBLyJcu+
+         kCsLs8YDFXk66kA2woWkk6cJPSWhvBcbycD1+Ph5BcBAWPq5KOMa8yzJ8nv/+RTf9LN0
+         5gUb3H3ubb9nBRfJ9g7z19oaLQp+uVncPVQvRLC+/pNBgEkSnBzqdI9dw4Nk9LbiJsGW
+         GObBqFm4KFo4vUsCyRirEfuNz54AO1Mpn6t5CAwH3mVases6NsjN0hmWX55uZDTbyH6q
+         7v1uIYidN8IAHRqNrR8mHkPeSbA4M5BydPE+29xEE0hV0X4I9bGzeeCw4kjyBtIoWCbW
+         LTdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761634725; x=1762239525;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fQ7p6xtC28C9VulZxo2oktqaX1uTl7IBrRCBfSYBTAg=;
-        b=rjJaCIt0KxwzsjmgZ1SD7DOIDQSXeNFaFbcIOMSvf+k6Js/l9vbEKD1F378LSnuAR2
-         p9+bnnObNnL5INd+hc1967OVpuTlEF+ILV6wlHqvNBE8D+8xJ3eUgFyxeAxJD3U/wq3V
-         0B60P7igpxRvecY1uPVI8vmILVpDrbz9kT1B353q/rQikVB9M8b3p7JX1Y9jqjtIlhWv
-         h3RZ/wihOsLRg1/tZ5XTo7JWsXT0kn4MKllCXuONYOoySdlWpGYgRM5+ORptFdLomACc
-         lr7Ak3IfD1Qny5HEcYsdfft161T0MHiPP4IcFpNWISN0u1L2LUcKGsW+4dNqVKlrtq+u
-         neNA==
-X-Forwarded-Encrypted: i=1; AJvYcCWuS6Z4RgX31pgX+Oqa9OlhxaesEHAONmTiUCyG8vgDRLn3irCVQ+Ok1rwj1HVQfQuJv8euOhcXcn6XZdTZ@vger.kernel.org
-X-Gm-Message-State: AOJu0YwtVbJ3Cci2aJsClGZo0go5eH0NCzR/uVUIGwtrzOk0EFZq0jKY
-	+DkuZ7uMlRGz0UvF3yrf3KdzwtsBzT4aBC1qociVE42fQkTWSMtNzZ7cpq+tblPukfc=
-X-Gm-Gg: ASbGncsAWrmwHvcoMKbhEfY+7O/a3wJwPEDVygRuj1hJhYO+VtVes1I9ETQFvQFu8WH
-	Wb7Fb/TCWoU6pUPQ2uq65VAp66NMsiYzGWjD7yQ5RuuWHm4fWOT+QNzqBD8Xl0Qjy/fIHG6fHef
-	QZ/k1bQtnYio+WLPEcWGdu+wGyTY7dfc2Yjas6XcKrvECxFU/fvaOd53ln114eWHHRwUzVQnN4R
-	jzlc1o1hdhCPlS/VxiAcpJEzlhLgcMtRA+1jwmAn3frNkO5UI/4U1Yynr57EU1u08Y2AlRYCCof
-	kyE+2JZftBvc/XdOdo4bNh7BPAxUTuuIBvxMYFfgODiICjUMY7BEJWd32/eMBXqqoPReTOVJ+y5
-	CezVvQZY2dXHbGnB47do8LD5LssDtMKDKmIQgWoihs7O4nAB26xqHKWYNDfAJOi22oEdhULYWWd
-	aNxVvACiLCtLaqF79IdXFi2w==
-X-Google-Smtp-Source: AGHT+IEQUls0hQ7f0z+eHUlXVig3EP8vmtgVoNPcCaAzKcFm3wz2AgyR/G6DDFlaIKDkK5sA6SsRRQ==
-X-Received: by 2002:a17:902:ea0c:b0:269:91b2:e9d6 with SMTP id d9443c01a7336-294cb5196eamr33134075ad.46.1761634725462;
-        Mon, 27 Oct 2025 23:58:45 -0700 (PDT)
-Received: from wu-Pro-E500-G6-WS720T ([2001:288:7001:2703:d6d5:e94f:6bb8:7d7f])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29498d42558sm104262595ad.69.2025.10.27.23.58.42
+        d=1e100.net; s=20230601; t=1761733092; x=1762337892;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MnA5k8KsoV1ze5vVhBRV2+hvyms9kuv5Kp74LGBGZE0=;
+        b=jvC8MliH9U+KHe0r8+FifwlnfyJFa2OzdxyoKXnK+1TBw2ARHEZ13P/GyChjwGWwNn
+         eOSQ3eFi/0F/kp7aFXRd84jIfURuJHcRL9z6nOyjWEC3GwHyVj2nPH+sNyL+RUo7IaM0
+         Hw5yLoSGui1gbImAMbyqMAii2sOiNWTVWlr2C6VXVvZNM0R9DPvl32dDmx9mi9oq6bg2
+         zX7sVZkhGg52Hhohc4pdvSPhRoBNPCh4s25MbVLSuWNCYwk011Y8l6q4kjC4IbnqPraQ
+         Vjx0yeBh2TDaLvHZEtQdtbgRcqvE+vWmb+o1+j3v+QVMBb1f2OJ45p37Tcr50SXoFhGl
+         5oxA==
+X-Forwarded-Encrypted: i=1; AJvYcCW9VDwLdDevxOaRUAEnWL950xe4+QhYeH9CQRqIojDOtr+OEVUTiRa9mRlY6FU4bF3stfWBcmH5SJtUJrug@vger.kernel.org
+X-Gm-Message-State: AOJu0YyrzByxZtcVCLNq5XlMUB/ZphynMrC1Pm4dgJLy9g1R0c3vH7W4
+	orN3kaSN42tFsIeMh2A/GICTBxfvE4a3WhYaNJyzdvHI8cW4N+JYmaEMZXw3jl0kOAs=
+X-Gm-Gg: ASbGncsA3iC4Mlhx3jjSjgg3H1xf4I/mbmf8T1UI0WPuTXVpYysbMdQ+CFVtV1780mm
+	3Fjs0UJNySvQ7pZoladsbeswBtjTRmks0k9V8sjNsRez6K6ncHtO7D1uOW95cFuxCv+a7M9hX8g
+	0QhWwaCmtKRem+jjAJRlVY3kNqIbsZWD5lWW1v4Gnw8yqaM4s7fJIf9D9xeyDBaXpp4EfwvYOK0
+	uSKMNAGO6vsV1WpEYO6TvybFf9q49K0VrywHDDCqFYfR6qwaADmZ1B1h32Oww3SjrgesBlI4trD
+	zAkqqvLYNtnlQEvEnPBvv7bIs6rOUOGW+e+JD7i+UluLQGSrQC9PyAdA3W0V0ixk6MmEtZMeTkJ
+	n/OhsHE+AQBYlgMWV5K3RRbZWIpHqsOf0+0kL/8lom2gdesiTNX2tummZ0Sb8mb5KlDti4FmDRV
+	bPTTHPXH3ZhJu8aGHndEL88XCP
+X-Google-Smtp-Source: AGHT+IG12NVk5cbJTGyTVKHLaQKC7YUnZ6JUn/xWRMCP6ZX7N2wYfe554nd/X6z1OGt87h+b+ioXUA==
+X-Received: by 2002:a05:6a00:1785:b0:771:ead8:dcdb with SMTP id d2e1a72fcca58-7a4e2dfdfebmr2813190b3a.8.1761733092228;
+        Wed, 29 Oct 2025 03:18:12 -0700 (PDT)
+Received: from wu-Pro-E500-G6-WS720T.. ([2001:288:7001:2703:3fc9:8c3c:5030:1b20])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7a42aa5d9a6sm11080454b3a.62.2025.10.29.03.18.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Oct 2025 23:58:45 -0700 (PDT)
-Date: Tue, 28 Oct 2025 14:58:40 +0800
+        Wed, 29 Oct 2025 03:18:11 -0700 (PDT)
 From: Guan-Chun Wu <409411716@gms.tku.edu.tw>
-To: David Laight <david.laight.linux@gmail.com>
-Cc: Caleb Sander Mateos <csander@purestorage.com>,
-	akpm@linux-foundation.org, axboe@kernel.dk,
-	ceph-devel@vger.kernel.org, ebiggers@kernel.org, hch@lst.de,
-	home7438072@gmail.com, idryomov@gmail.com, jaegeuk@kernel.org,
-	kbusch@kernel.org, linux-fscrypt@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-	sagi@grimberg.me, tytso@mit.edu, visitorckw@gmail.com,
-	xiubli@redhat.com
-Subject: Re: [PATCH v3 2/6] lib/base64: Optimize base64_decode() with reverse
- lookup tables
-Message-ID: <aQBpoI+93UZg1SqN@wu-Pro-E500-G6-WS720T>
-References: <20251005181803.0ba6aee4@pumpkin>
- <aOTPMGQbUBfgdX4u@wu-Pro-E500-G6-WS720T>
- <CADUfDZp6TA_S72+JDJRmObJgmovPgit=-Zf+-oC+r0wUsyg9Jg@mail.gmail.com>
- <20251007192327.57f00588@pumpkin>
- <aOeprat4/97oSWE0@wu-Pro-E500-G6-WS720T>
- <20251010105138.0356ad75@pumpkin>
- <aOzLQ2KSqGn1eYrm@wu-Pro-E500-G6-WS720T>
- <20251014091420.173dfc9c@pumpkin>
- <aP9voK9lE/MlanGl@wu-Pro-E500-G6-WS720T>
- <20251027141802.61dbfbb2@pumpkin>
+To: akpm@linux-foundation.org,
+	ebiggers@kernel.org,
+	tytso@mit.edu,
+	jaegeuk@kernel.org,
+	xiubli@redhat.com,
+	idryomov@gmail.com,
+	kbusch@kernel.org,
+	axboe@kernel.dk,
+	hch@lst.de,
+	sagi@grimberg.me
+Cc: visitorckw@gmail.com,
+	409411716@gms.tku.edu.tw,
+	home7438072@gmail.com,
+	linux-nvme@lists.infradead.org,
+	linux-fscrypt@vger.kernel.org,
+	ceph-devel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/6] lib/base64: add generic encoder/decoder, migrate users
+Date: Wed, 29 Oct 2025 18:17:25 +0800
+Message-Id: <20251029101725.541758-1-409411716@gms.tku.edu.tw>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20251027141802.61dbfbb2@pumpkin>
 
-On Mon, Oct 27, 2025 at 02:18:02PM +0000, David Laight wrote:
-> On Mon, 27 Oct 2025 21:12:00 +0800
-> Guan-Chun Wu <409411716@gms.tku.edu.tw> wrote:
-> 
-> ...
-> > Hi David,
-> > 
-> > I noticed your suggested approach:
-> > val_24 = t[b[0]] | t[b[1]] << 6 | t[b[2]] << 12 | t[b[3]] << 18;
-> > Per the C11 draft, this can lead to undefined behavior.
-> > "If E1 has a signed type and nonnegative value, and E1 × 2^E2 is
-> > representable in the result type, then that is the resulting value;
-> > otherwise, the behavior is undefined."
-> > Therefore, left-shifting a negative signed value is undefined behavior.
-> 
-> Don't worry about that, there are all sorts of places in the kernel
-> where shifts of negative values are technically undefined.
-> 
-> They are undefined because you get different values for 1's compliment
-> and 'sign overpunch' signed integers.
-> Even for 2's compliment C doesn't require a 'sign bit replicating'
-> right shift.
-> (And I suspect both gcc and clang only support 2's compliment.)
-> 
-> I don't think even clang is stupid enough to silently not emit any
-> instructions for shifts of negative values.
-> It is another place where it should be 'implementation defined' rather
-> than 'undefined' behaviour.
->
+This series introduces a generic Base64 encoder/decoder to the kernel
+library, eliminating duplicated implementations and delivering significant
+performance improvements.
 
-Hi David,
+The Base64 API has been extended to support multiple variants (Standard,
+URL-safe, and IMAP) as defined in RFC 4648 and RFC 3501. The API now takes
+a variant parameter and an option to control padding. As part of this
+series, users are migrated to the new interface while preserving their
+specific formats: fscrypt now uses BASE64_URLSAFE, Ceph uses BASE64_IMAP,
+and NVMe is updated to BASE64_STD.
 
-Thanks for your explanation. I'll proceed with the modification according
-to your original suggestion.
+On the encoder side, the implementation processes input in 3-byte blocks,
+mapping 24 bits directly to 4 output symbols. This avoids bit-by-bit
+streaming and reduces loop overhead, achieving about a 2.7x speedup compared
+to previous implementations.
 
-Best regards,
-Guan-Chun
+On the decoder side, replace strchr() lookups with per-variant reverse tables
+and process input in 4-character groups. Each group is mapped to numeric values
+and combined into 3 bytes. Padded and unpadded forms are validated explicitly,
+rejecting invalid '=' usage and enforcing tail rules. This improves throughput
+by ~43-52x.
 
-> > Perhaps we could change the code as shown below. What do you think?
-> 
-> If you are really worried, change the '<< n' to '* (1 << n)' which
-> obfuscates the code.
-> The compiler will convert it straight back to a simple shift.
-> 
-> I bet that if you look hard enough even 'a | b' is undefined if
-> either is negative.
-> 
-> 	David
-> 
-> 
-> 
-> 	David
+Thanks,
+Guan-Chun Wu
+
+Link: https://lore.kernel.org/lkml/20250926065235.13623-1-409411716@gms.tku.edu.tw/
+
+---
+
+v3 -> v4:
+  - lib/base64: Implemented padding support in the first commit to address the
+    previously mentioned issue.
+  - lib/base64: Replace the manually written reverse lookup table initialization
+    with the BASE64_REV_INIT() macro for cleaner and more maintainable code while
+    keeping the same behavior.
+  - lib/base64: Simplify branching and tail handling while preserving behavior,
+    reducing overhead and improving performance.
+
+---
+
+Guan-Chun Wu (4):
+  lib/base64: rework encode/decode for speed and stricter validation
+  lib: add KUnit tests for base64 encoding/decoding
+  fscrypt: replace local base64url helpers with lib/base64
+  ceph: replace local base64 helpers with lib/base64
+
+Kuan-Wei Chiu (2):
+  lib/base64: Add support for multiple variants
+  lib/base64: Optimize base64_decode() with reverse lookup tables
+
+ drivers/nvme/common/auth.c |   4 +-
+ fs/ceph/crypto.c           |  60 +-------
+ fs/ceph/crypto.h           |   6 +-
+ fs/ceph/dir.c              |   5 +-
+ fs/ceph/inode.c            |   2 +-
+ fs/crypto/fname.c          |  89 +----------
+ include/linux/base64.h     |  10 +-
+ lib/Kconfig.debug          |  19 ++-
+ lib/base64.c               | 161 +++++++++++++-------
+ lib/tests/Makefile         |   1 +
+ lib/tests/base64_kunit.c   | 294 +++++++++++++++++++++++++++++++++++++
+ 11 files changed, 445 insertions(+), 206 deletions(-)
+ create mode 100644 lib/tests/base64_kunit.c
+
+-- 
+2.34.1
+
 
