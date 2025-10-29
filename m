@@ -1,103 +1,86 @@
-Return-Path: <linux-fscrypt+bounces-884-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-885-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id B28B7C19B06
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 29 Oct 2025 11:25:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D763C1B0BC
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 29 Oct 2025 15:01:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 95435505B3D
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 29 Oct 2025 10:23:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0CA12627A07
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 29 Oct 2025 13:11:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0D2A2E6CB3;
-	Wed, 29 Oct 2025 10:22:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 768982E1EE7;
+	Wed, 29 Oct 2025 13:06:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gms-tku-edu-tw.20230601.gappssmtp.com header.i=@gms-tku-edu-tw.20230601.gappssmtp.com header.b="lzy/yyrT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VFYPr0VJ"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8CFB26F2BF
-	for <linux-fscrypt@vger.kernel.org>; Wed, 29 Oct 2025 10:22:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBAC42E1C5C
+	for <linux-fscrypt@vger.kernel.org>; Wed, 29 Oct 2025 13:06:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761733332; cv=none; b=htskWQ1KyQIdlrj/a22NnCcM8hpd591F0zmIVO0BtMkciZO51m7mtm2Ib010mMCe6T7OrFzjxXx3vTcHPw0U5iw4XJVthhUrGsRtl+84fAP884I8b9uBmDonIU5y/okf4g2EhFe4FQfB0xbul4fZKmrYx0Gf673OxSkrus0YIxc=
+	t=1761743193; cv=none; b=hpClwA2JnnGnhvCgDqqwg/ffGhSVF25TXrDRw64jvGOR/YWoF7bD6UKz98gIAlk8lceW7wQAEVSQwWwlctPQSYoHpIhG8jKMw4pKZxiO2IuRtLBAHUgUQE0iWx1UoSq0Gd2IRU+ieYDN4jI2BrJUDNZfGvHUU30i0G0MmQl552c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761733332; c=relaxed/simple;
-	bh=Srjjbp+31jlTlDMVW5Yg8ROeMQuCxMFPaHceKuOPFLQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=saMhyCYlkZqBFok4ou9Fq+KaAN1uSZ1OuNwo/sIM5H2DBogDQS/3/XwNNpbmb45jwyK6qAR3at3w7ehxG8+dSltdJwoakZPgqkt9Nz2e8Vcd3HBiUh0QfwtYEcXKfPK9kgNqwxcleedgrt9DBhRFTuaxWZN8ZN7nnjvRd3dJrEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gms.tku.edu.tw; spf=pass smtp.mailfrom=gms.tku.edu.tw; dkim=pass (2048-bit key) header.d=gms-tku-edu-tw.20230601.gappssmtp.com header.i=@gms-tku-edu-tw.20230601.gappssmtp.com header.b=lzy/yyrT; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gms.tku.edu.tw
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gms.tku.edu.tw
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-76e2ea933b7so813273b3a.1
-        for <linux-fscrypt@vger.kernel.org>; Wed, 29 Oct 2025 03:22:10 -0700 (PDT)
+	s=arc-20240116; t=1761743193; c=relaxed/simple;
+	bh=6BClPQUdxG10zjBdmHGDPaxdKyrNyxZpCgTbYkLgMYY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Uzr4N1uMy3Au80pesilpSHR5XfF3th8Om6pasAzgF6ZaiTQ1e0KEK37jqnNUgOB32FjelHcakfCBUtJerOowLho+JeAJLXx4VbF4qm2/k+6SiLNW9wyC5MdVeY9230sTF+ihGzijOSKRKYcVxJ8DbW/PDzRqYb583C/SXDD8b2Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VFYPr0VJ; arc=none smtp.client-ip=209.85.215.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-b553412a19bso4757928a12.1
+        for <linux-fscrypt@vger.kernel.org>; Wed, 29 Oct 2025 06:06:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gms-tku-edu-tw.20230601.gappssmtp.com; s=20230601; t=1761733330; x=1762338130; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ExH2mWp+TtRat+/Z2Sn0K+6uHuJUKGnny14cPSnH5Oc=;
-        b=lzy/yyrT9FLe1zQ8UtMVsNJvhDIQavjpAyiBS8iIuPG76xJ8lSqXTCyJhJxPsI2T3P
-         2cJwRkHy9pVWkepe951CZ+8J9uAWvoZyWVxaWI/Y/zJo5vFp8k91RHm6WfwNwRIUyQ6D
-         amPIfIrNi6d8GP2VAN2gi3w5HHRKw6J08n2BlJPEg+yHcPl6cUekazMlfwr/pTggwRjQ
-         RmPjyjnFzPBm7CAVib6LFFWNe2TU5hTQ3AJdtXb7ODTP4n1F0ZRoNvY6VhOpIaLHbcnB
-         BLOWT+xpxEPw5VwcDINM4EjJEfxVjixW7ZlqDKmmZSYM6Lo76Ol3mAMlmLAkIppd1EC6
-         Te6w==
+        d=gmail.com; s=20230601; t=1761743191; x=1762347991; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=VOT5jsIFIEY+PSkou/HWnBjc+7PMFp9eDj2ahUEYiEQ=;
+        b=VFYPr0VJ2bDhXJdleb89zL9Bm8sPEMJACBhb+U5nFn2Mm7vg7Rh4Igwh+wnZOXn9tR
+         vGUVM2kXV2z5lfE6hL0n0Cc7Uhn878yC/HRcBqNns3bR+VgOdfdz2RDRQOcNoohteXcY
+         IbP9eNfkAMqmrFeyZfgba+xaFjEorPQ/SUjenTSIQZum87YYL5rc2xhKTgUb1h4XqEOd
+         hioymwxA+lbGQnlUqWbhvejk67i6s2xjiEu+0cU5OZrtNIW5luvsHmTD31A2tM04AmB9
+         FI4swqchW01FUwDapiC8sRtEdMvSFI35gDlTteTETuRnSZmIK+edIKF7p68IR7Fkr8m3
+         B7Rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761733330; x=1762338130;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ExH2mWp+TtRat+/Z2Sn0K+6uHuJUKGnny14cPSnH5Oc=;
-        b=n3sUC48eeZm+DaS9dAFHP7YDbkf+LJsO+d3omxbbFzQKwdSSTVCNn//yZj7BZdF9B0
-         TBdrWnmu+oKHklmq32zH2V774E8OhDG4hpdTZo8115rH3JQ9rDckjuEyMZr5jMlPA6wl
-         DhaCOMk9pyg5fzyXjZwi5MIKm24NqbhCjQI1Vvl9q77ilxcE+ztWx0QS6jE/unshdSA6
-         2oBS3yNy96ygznpyOLK0gBnwYAM0DSbxLWDVVmzvdLpbIult7pO9nz/KvC4LUe+FpYEu
-         yn8lYjlv2JTbmqo9k3Rdh2Y1tb9j8C9iXeWpxWSRL5AW6GLgb1DzgQLTqOoHkb69Uc4+
-         ftZA==
-X-Forwarded-Encrypted: i=1; AJvYcCWOkhw9hx8xY1/9ize/r/ztiNI90GdI6CxjPlG6wtwhpKO9yFnwN+lLfcZnkmPHteMQCBPJYQbX5tqHQ7Zq@vger.kernel.org
-X-Gm-Message-State: AOJu0YzrAVkby6OZB0COHxso6b4OYVygxqdjyE+bfoIk+DoyJOr4iB7M
-	U8QAbm+jQLB7i+TGdzwtt2BSacMv/UFy/UsojxIOrq/SnjIvSAHZ5wxKwOqe8Xv/7BU=
-X-Gm-Gg: ASbGncv7BD7F0RFr4SfumlUZsKSz32C0fg5s4di/Y8SFMc9zthcKZBFqBevq7XQ3ZNj
-	KpbYKI3IlmZin2p5puTwqFmvRifF5xzpcxEjjsLyveS6OlpIiqdWDRAWf0Nuyd41NFOZZauEfAV
-	f7YkBq4eNZ5XkFbR6zs1IXYXiJmsfr0WdkXTLC6SvauY4NYUThFTRxZDyMhV4xLvpn3i2nYCk9X
-	iIBqerwvf8BsWfcrDXLj9gP5YIGlK4ANsakz5wh1m72n89ZzSmAn9Vado0sG7NZLGgdXEdEmy3q
-	NtRwbAbZfZ0X5zdZDvo78kIJNOpMjjE3n7QXU56en0gKHudaEjtxws4zPgRVxu3yZRwD1zGC7V3
-	H6PZG0tRrYE4UdAzUpC0wnhGNECXjMAWR/DADr6GB4QF/3CiKlCrMgVn5R3W166JKvx6VpQS/fT
-	lfidG7XiZ/RQ5loMiXSGOim767
-X-Google-Smtp-Source: AGHT+IEqYKX6PUZCvPQ43ID+NkdezuDDTSQSofgCTqlK+FDd2PcLeAZunAzA4UgtHlctwdsk1r5vIA==
-X-Received: by 2002:a05:6a00:130f:b0:77f:43e6:ce65 with SMTP id d2e1a72fcca58-7a442cc2c03mr6912507b3a.0.1761733330060;
-        Wed, 29 Oct 2025 03:22:10 -0700 (PDT)
-Received: from wu-Pro-E500-G6-WS720T.. ([2001:288:7001:2703:3fc9:8c3c:5030:1b20])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7a41409f714sm14560993b3a.72.2025.10.29.03.22.07
+        d=1e100.net; s=20230601; t=1761743191; x=1762347991;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VOT5jsIFIEY+PSkou/HWnBjc+7PMFp9eDj2ahUEYiEQ=;
+        b=AOcAmEwyO8c0gdJIVU6bzNIOAWUTDAVeNVyNE7ZVY0eTCFQ3RnAylIJ6az+KnVDoJU
+         ytBeGUQF/3oXqBTsW+YU0G4PARMDkTBOmhbPTEwDT4fGoUsoaHHHPhCxQ7ffM4L52pa3
+         zdSMSUBxTxZgv61PQ3a3afs7wF5p6SR3wUwf8rjZc0ZWnANCBlEXHFGk0KEm0Yyovqoi
+         /eV82w48NHlh39jiXVI3VYTsXSueTbqjCFut9F2MuRXUMUmzPbxR1Fu5ca9TXmjcayXH
+         8T6uNW+Q1ve2M//Kx4h99l6xGLfeHh36Tmpev7OAEjtRmALxDxVkii/YmnpsD08BrtpQ
+         UBKQ==
+X-Gm-Message-State: AOJu0Yz5L4OAG0ilTwNkMY2evn6CRS/nxMK1iuxQ/O2UZjG45x3V1TWL
+	0R/V9VBatzuQ+hCorb7gMGP9bK3HANuR4FjCxsNitRe+Lfnc1ZYcgNrb
+X-Gm-Gg: ASbGnctb+Z9qABM1sgykQjlV42NkwpPQSPLR2oXFnmsiXvJ9Apx4L9pwdp8Bsxaa1oG
+	yCJOXdwioQ2grQW0l5ff/lhG1frKjKobhlcJy/yyaMVyjbMbTx2Rx+HS4XTw7Pwmp59JYZlEiM8
+	bFDJ9UPpx1QtcS+3TShN24LAiXyDHcv+I+bsSOY7HvrBR3hQBrCKhhR9mNC2Q0u7hiuCEKWM2lJ
+	+R9yXh2vrMTqk1QbmcP6m7oSjdk6GxucZye+/ytcHejt1pLdjVjDXz+VmzXu2pbyLY4Tdr+mevJ
+	LToGVYX6TRd0EB3yw6HGhtcFpqmNVVxRgKLZ98u+eTEb4PZzAmGcyp5PjolH1JjJAAHIfGH4acD
+	cm+0Y0duZmeqlymcNC2tnHRYlSffIAI6BJBI6qP+LjPJ5Z3eTWDRkcQNEZg/VrzvlZx+6l5vl8D
+	tN1bu9K/sgJH7bIPru4I/QPa1zyfsC4xp3ucTiFhHcl0d05DISIaYBNZLtdw==
+X-Google-Smtp-Source: AGHT+IHtXvIOr24JMtL62BUiiD4tB9aS3Ud1LD8uSpg2cJFqIH7SD9Gdz6gc5ZcdhLkIOIjLkEAQNw==
+X-Received: by 2002:a17:902:d2ce:b0:25c:ae94:f49e with SMTP id d9443c01a7336-294deec4d7dmr36639125ad.37.1761743190733;
+        Wed, 29 Oct 2025 06:06:30 -0700 (PDT)
+Received: from xiaomi-ThinkCentre-M760t.mioffice.cn ([43.224.245.241])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-294e3ae4ba2sm20776815ad.40.2025.10.29.06.06.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Oct 2025 03:22:09 -0700 (PDT)
-From: Guan-Chun Wu <409411716@gms.tku.edu.tw>
-To: 409411716@gms.tku.edu.tw
-Cc: akpm@linux-foundation.org,
-	axboe@kernel.dk,
-	ceph-devel@vger.kernel.org,
-	ebiggers@kernel.org,
-	hch@lst.de,
-	home7438072@gmail.com,
-	idryomov@gmail.com,
-	jaegeuk@kernel.org,
-	kbusch@kernel.org,
-	linux-fscrypt@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-nvme@lists.infradead.org,
-	sagi@grimberg.me,
-	tytso@mit.edu,
-	visitorckw@gmail.com,
-	xiubli@redhat.com
-Subject: [PATCH v4 6/6] ceph: replace local base64 helpers with lib/base64
-Date: Wed, 29 Oct 2025 18:22:02 +0800
-Message-Id: <20251029102202.544118-1-409411716@gms.tku.edu.tw>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20251029101725.541758-1-409411716@gms.tku.edu.tw>
-References: <20251029101725.541758-1-409411716@gms.tku.edu.tw>
+        Wed, 29 Oct 2025 06:06:30 -0700 (PDT)
+From: Yongpeng Yang <yangyongpeng.storage@gmail.com>
+To: Eric Biggers <ebiggers@kernel.org>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	Theodore Ts'o <tytso@mit.edu>
+Cc: linux-fscrypt@vger.kernel.org,
+	Yongpeng Yang <yangyongpeng@xiaomi.com>
+Subject: [PATCH] fscrypt: fix left shift underflow when inode->i_blkbits > PAGE_SHIFT
+Date: Wed, 29 Oct 2025 21:06:08 +0800
+Message-ID: <20251029130608.331477-1-yangyongpeng.storage@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
@@ -106,179 +89,78 @@ List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Remove the ceph_base64_encode() and ceph_base64_decode() functions and
-replace their usage with the generic base64_encode() and base64_decode()
-helpers from lib/base64.
+From: Yongpeng Yang <yangyongpeng@xiaomi.com>
 
-This eliminates the custom implementation in Ceph, reduces code
-duplication, and relies on the shared Base64 code in lib.
-The helpers preserve RFC 3501-compliant Base64 encoding without padding,
-so there are no functional changes.
+When simulating an nvme device on qemu with both logical_block_size and
+physical_block_size set to 8 KiB, a error trace appears during partition
+table reading at boot time. The issue is caused by inode->i_blkbits being
+larger than PAGE_SHIFT, which leads to a left shift of -1 and triggering a
+UBSAN warning.
 
-This change also improves performance: encoding is about 2.7x faster and
-decoding achieves 43-52x speedups compared to the previous local
-implementation.
+[    2.697306] ------------[ cut here ]------------
+[    2.697309] UBSAN: shift-out-of-bounds in fs/crypto/inline_crypt.c:336:37
+[    2.697311] shift exponent -1 is negative
+[    2.697315] CPU: 3 UID: 0 PID: 274 Comm: (udev-worker) Not tainted 6.18.0-rc2+ #34 PREEMPT(voluntary)
+[    2.697317] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.3-0-ga6ed6b701f0a-prebuilt.qemu.org 04/01/2014
+[    2.697320] Call Trace:
+[    2.697324]  <TASK>
+[    2.697325]  dump_stack_lvl+0x76/0xa0
+[    2.697340]  dump_stack+0x10/0x20
+[    2.697342]  __ubsan_handle_shift_out_of_bounds+0x1e3/0x390
+[    2.697351]  bh_get_inode_and_lblk_num.cold+0x12/0x94
+[    2.697359]  fscrypt_set_bio_crypt_ctx_bh+0x44/0x90
+[    2.697365]  submit_bh_wbc+0xb6/0x190
+[    2.697370]  block_read_full_folio+0x194/0x270
+[    2.697371]  ? __pfx_blkdev_get_block+0x10/0x10
+[    2.697375]  ? __pfx_blkdev_read_folio+0x10/0x10
+[    2.697377]  blkdev_read_folio+0x18/0x30
+[    2.697379]  filemap_read_folio+0x40/0xe0
+[    2.697382]  filemap_get_pages+0x5ef/0x7a0
+[    2.697385]  ? mmap_region+0x63/0xd0
+[    2.697389]  filemap_read+0x11d/0x520
+[    2.697392]  blkdev_read_iter+0x7c/0x180
+[    2.697393]  vfs_read+0x261/0x390
+[    2.697397]  ksys_read+0x71/0xf0
+[    2.697398]  __x64_sys_read+0x19/0x30
+[    2.697399]  x64_sys_call+0x1e88/0x26a0
+[    2.697405]  do_syscall_64+0x80/0x670
+[    2.697410]  ? __x64_sys_newfstat+0x15/0x20
+[    2.697414]  ? x64_sys_call+0x204a/0x26a0
+[    2.697415]  ? do_syscall_64+0xb8/0x670
+[    2.697417]  ? irqentry_exit_to_user_mode+0x2e/0x2a0
+[    2.697420]  ? irqentry_exit+0x43/0x50
+[    2.697421]  ? exc_page_fault+0x90/0x1b0
+[    2.697422]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+[    2.697425] RIP: 0033:0x75054cba4a06
+[    2.697426] Code: 5d e8 41 8b 93 08 03 00 00 59 5e 48 83 f8 fc 75 19 83 e2 39 83 fa 08 75 11 e8 26 ff ff ff 66 0f 1f 44 00 00 48 8b 45 10 0f 05 <48> 8b 5d f8 c9 c3 0f 1f 40 00 f3 0f 1e fa 55 48 89 e5 48 83 ec 08
+[    2.697427] RSP: 002b:00007fff973723a0 EFLAGS: 00000202 ORIG_RAX: 0000000000000000
+[    2.697430] RAX: ffffffffffffffda RBX: 00005ea9a2c02760 RCX: 000075054cba4a06
+[    2.697432] RDX: 0000000000002000 RSI: 000075054c190000 RDI: 000000000000001b
+[    2.697433] RBP: 00007fff973723c0 R08: 0000000000000000 R09: 0000000000000000
+[    2.697434] R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000000
+[    2.697434] R13: 00005ea9a2c027c0 R14: 00005ea9a2be5608 R15: 00005ea9a2be55f0
+[    2.697436]  </TASK>
+[    2.697436] ---[ end trace ]---
 
-Reviewed-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-Signed-off-by: Guan-Chun Wu <409411716@gms.tku.edu.tw>
+Signed-off-by: Yongpeng Yang <yangyongpeng@xiaomi.com>
 ---
- fs/ceph/crypto.c | 60 ++++--------------------------------------------
- fs/ceph/crypto.h |  6 +----
- fs/ceph/dir.c    |  5 ++--
- fs/ceph/inode.c  |  2 +-
- 4 files changed, 9 insertions(+), 64 deletions(-)
+ fs/crypto/inline_crypt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ceph/crypto.c b/fs/ceph/crypto.c
-index cab722619..9bb0f320b 100644
---- a/fs/ceph/crypto.c
-+++ b/fs/ceph/crypto.c
-@@ -15,59 +15,6 @@
- #include "mds_client.h"
- #include "crypto.h"
+diff --git a/fs/crypto/inline_crypt.c b/fs/crypto/inline_crypt.c
+index 5dee7c498bc8..6beb5f490612 100644
+--- a/fs/crypto/inline_crypt.c
++++ b/fs/crypto/inline_crypt.c
+@@ -333,7 +333,7 @@ static bool bh_get_inode_and_lblk_num(const struct buffer_head *bh,
+ 	inode = mapping->host;
  
--/*
-- * The base64url encoding used by fscrypt includes the '_' character, which may
-- * cause problems in snapshot names (which can not start with '_').  Thus, we
-- * used the base64 encoding defined for IMAP mailbox names (RFC 3501) instead,
-- * which replaces '-' and '_' by '+' and ','.
-- */
--static const char base64_table[65] =
--	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+,";
--
--int ceph_base64_encode(const u8 *src, int srclen, char *dst)
--{
--	u32 ac = 0;
--	int bits = 0;
--	int i;
--	char *cp = dst;
--
--	for (i = 0; i < srclen; i++) {
--		ac = (ac << 8) | src[i];
--		bits += 8;
--		do {
--			bits -= 6;
--			*cp++ = base64_table[(ac >> bits) & 0x3f];
--		} while (bits >= 6);
--	}
--	if (bits)
--		*cp++ = base64_table[(ac << (6 - bits)) & 0x3f];
--	return cp - dst;
--}
--
--int ceph_base64_decode(const char *src, int srclen, u8 *dst)
--{
--	u32 ac = 0;
--	int bits = 0;
--	int i;
--	u8 *bp = dst;
--
--	for (i = 0; i < srclen; i++) {
--		const char *p = strchr(base64_table, src[i]);
--
--		if (p == NULL || src[i] == 0)
--			return -1;
--		ac = (ac << 6) | (p - base64_table);
--		bits += 6;
--		if (bits >= 8) {
--			bits -= 8;
--			*bp++ = (u8)(ac >> bits);
--		}
--	}
--	if (ac & ((1 << bits) - 1))
--		return -1;
--	return bp - dst;
--}
--
- static int ceph_crypt_get_context(struct inode *inode, void *ctx, size_t len)
- {
- 	struct ceph_inode_info *ci = ceph_inode(inode);
-@@ -316,7 +263,7 @@ int ceph_encode_encrypted_dname(struct inode *parent, char *buf, int elen)
- 	}
- 
- 	/* base64 encode the encrypted name */
--	elen = ceph_base64_encode(cryptbuf, len, p);
-+	elen = base64_encode(cryptbuf, len, p, false, BASE64_IMAP);
- 	doutc(cl, "base64-encoded ciphertext name = %.*s\n", elen, p);
- 
- 	/* To understand the 240 limit, see CEPH_NOHASH_NAME_MAX comments */
-@@ -410,7 +357,8 @@ int ceph_fname_to_usr(const struct ceph_fname *fname, struct fscrypt_str *tname,
- 			tname = &_tname;
- 		}
- 
--		declen = ceph_base64_decode(name, name_len, tname->name);
-+		declen = base64_decode(name, name_len,
-+				       tname->name, false, BASE64_IMAP);
- 		if (declen <= 0) {
- 			ret = -EIO;
- 			goto out;
-@@ -424,7 +372,7 @@ int ceph_fname_to_usr(const struct ceph_fname *fname, struct fscrypt_str *tname,
- 
- 	ret = fscrypt_fname_disk_to_usr(dir, 0, 0, &iname, oname);
- 	if (!ret && (dir != fname->dir)) {
--		char tmp_buf[CEPH_BASE64_CHARS(NAME_MAX)];
-+		char tmp_buf[BASE64_CHARS(NAME_MAX)];
- 
- 		name_len = snprintf(tmp_buf, sizeof(tmp_buf), "_%.*s_%ld",
- 				    oname->len, oname->name, dir->i_ino);
-diff --git a/fs/ceph/crypto.h b/fs/ceph/crypto.h
-index 23612b2e9..b748e2060 100644
---- a/fs/ceph/crypto.h
-+++ b/fs/ceph/crypto.h
-@@ -8,6 +8,7 @@
- 
- #include <crypto/sha2.h>
- #include <linux/fscrypt.h>
-+#include <linux/base64.h>
- 
- #define CEPH_FSCRYPT_BLOCK_SHIFT   12
- #define CEPH_FSCRYPT_BLOCK_SIZE    (_AC(1, UL) << CEPH_FSCRYPT_BLOCK_SHIFT)
-@@ -89,11 +90,6 @@ static inline u32 ceph_fscrypt_auth_len(struct ceph_fscrypt_auth *fa)
-  */
- #define CEPH_NOHASH_NAME_MAX (180 - SHA256_DIGEST_SIZE)
- 
--#define CEPH_BASE64_CHARS(nbytes) DIV_ROUND_UP((nbytes) * 4, 3)
--
--int ceph_base64_encode(const u8 *src, int srclen, char *dst);
--int ceph_base64_decode(const char *src, int srclen, u8 *dst);
--
- void ceph_fscrypt_set_ops(struct super_block *sb);
- 
- void ceph_fscrypt_free_dummy_policy(struct ceph_fs_client *fsc);
-diff --git a/fs/ceph/dir.c b/fs/ceph/dir.c
-index 8478e7e75..25045d817 100644
---- a/fs/ceph/dir.c
-+++ b/fs/ceph/dir.c
-@@ -998,13 +998,14 @@ static int prep_encrypted_symlink_target(struct ceph_mds_request *req,
- 	if (err)
- 		goto out;
- 
--	req->r_path2 = kmalloc(CEPH_BASE64_CHARS(osd_link.len) + 1, GFP_KERNEL);
-+	req->r_path2 = kmalloc(BASE64_CHARS(osd_link.len) + 1, GFP_KERNEL);
- 	if (!req->r_path2) {
- 		err = -ENOMEM;
- 		goto out;
- 	}
- 
--	len = ceph_base64_encode(osd_link.name, osd_link.len, req->r_path2);
-+	len = base64_encode(osd_link.name, osd_link.len,
-+			    req->r_path2, false, BASE64_IMAP);
- 	req->r_path2[len] = '\0';
- out:
- 	fscrypt_fname_free_buffer(&osd_link);
-diff --git a/fs/ceph/inode.c b/fs/ceph/inode.c
-index fc543075b..d06fb76fc 100644
---- a/fs/ceph/inode.c
-+++ b/fs/ceph/inode.c
-@@ -911,7 +911,7 @@ static int decode_encrypted_symlink(struct ceph_mds_client *mdsc,
- 	if (!sym)
- 		return -ENOMEM;
- 
--	declen = ceph_base64_decode(encsym, enclen, sym);
-+	declen = base64_decode(encsym, enclen, sym, false, BASE64_IMAP);
- 	if (declen < 0) {
- 		pr_err_client(cl,
- 			"can't decode symlink (%d). Content: %.*s\n",
+ 	*inode_ret = inode;
+-	*lblk_num_ret = ((u64)folio->index << (PAGE_SHIFT - inode->i_blkbits)) +
++	*lblk_num_ret = (((u64)folio->index << PAGE_SHIFT) >> inode->i_blkbits) +
+ 			(bh_offset(bh) >> inode->i_blkbits);
+ 	return true;
+ }
 -- 
-2.34.1
+2.43.0
 
 
