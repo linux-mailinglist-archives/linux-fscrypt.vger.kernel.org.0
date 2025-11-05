@@ -1,232 +1,186 @@
-Return-Path: <linux-fscrypt+bounces-924-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-925-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE61CC35FFD
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 05 Nov 2025 15:14:53 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10509C36187
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 05 Nov 2025 15:38:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 35F5934302B
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  5 Nov 2025 14:14:45 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 3BDD04F2FD3
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  5 Nov 2025 14:38:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA224313267;
-	Wed,  5 Nov 2025 14:14:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99B4132E698;
+	Wed,  5 Nov 2025 14:38:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2iEefTsX";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="eWMGy+vC";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="QQDOD4fe";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="lGbBjwjX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TCICHe/S"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10CD132937C
-	for <linux-fscrypt@vger.kernel.org>; Wed,  5 Nov 2025 14:14:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C21FC32D7D7
+	for <linux-fscrypt@vger.kernel.org>; Wed,  5 Nov 2025 14:38:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762352081; cv=none; b=ky1DnZufvc1mlnd/9byNy2Ryvc6TkOHoY/MFSraHsTpeS6Dw1uf4kXkQwUIWScGUHMrFQuGdbxXDE8vG7j4oNmhh8Dm/Ng0wuhCaWdZPiGWtIjJ2KRz83GWkqsLzYM7VyRdaGbMCJCwtskjIjZnVwS3jel2UTw34RIUn2/pKACQ=
+	t=1762353506; cv=none; b=B/oow/QNIIEwhPPv1ePjrmLktGyAX28i4bXxqj3/JRhIXIib0YOOOx9okF8jUdtlMvwEVxv1gr15hCiMqtPiav4lmKjx+fG1guGvpUlO3fRF6As2LwX7IfbA0poxAQUsawMniT0fblSEpQnQGPEh+ZyFN6FLru/d6J387hPd7mY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762352081; c=relaxed/simple;
-	bh=xRJDiu+K4umzUSGY8jYIg/7JMx+nASJHrK8g3bOtk3Y=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=ckcrCp2GTN6fxMmigid44FRyB3tSY9aZ5NR0BRLjtCy6lBwgUSD9IopcWDNxrcA4lrIIjfaSdh6UzYD2ZJd6ck/yB5jYjrEJ1w3qlGmM4bzrJzkzrnl35ApwtXrxW3xWql+JGuQLBPl0C50qZ8H9MZDy1dHLIRJOBRAyBFadXMA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=2iEefTsX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=eWMGy+vC; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=QQDOD4fe; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=lGbBjwjX; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 4862F21168;
-	Wed,  5 Nov 2025 14:14:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1762352078; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=LtaMTHwoSJ7gdcMsqu34UHmxryFF8g8ckxvwQO3B5rI=;
-	b=2iEefTsX1euMaa+FNxmPl3nh8idQbUXy155AilvmFKxhdcoKyM8RVpItV1+cLjVDxWU/rl
-	WqleS1kf36xOENWqiGBHqbAcD7Vu0KdpI5HHHweoVuO7zy/zKFTtki3Ud94bQYtsK6tv4E
-	aK30ma/I0FwXWB0URQAi1fFINqqe/mY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1762352078;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=LtaMTHwoSJ7gdcMsqu34UHmxryFF8g8ckxvwQO3B5rI=;
-	b=eWMGy+vCWJugb+xfZG9LFToPeHdco31qNkoCouiIXae4gwP5xUJA+4oQ7XTlmuvvsDgRaB
-	gLMiuDHm3Ek42MAg==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=QQDOD4fe;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=lGbBjwjX
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1762352077; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=LtaMTHwoSJ7gdcMsqu34UHmxryFF8g8ckxvwQO3B5rI=;
-	b=QQDOD4feMN1N7I5KKQ7uf7egbepTkcg0MudYHAJCcd8aBoJGVUhHtRmG/Fdpq7ov3NDVjX
-	KSHGcg0iYWFa91NbtGTMJXL7q8ZGiF18Ldm56bHraveLUhGaYY9FvccaSOq+BmQUjhKX/p
-	5EYWEZ97gIxb25oJC7G22Gn+HY71RIo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1762352077;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=LtaMTHwoSJ7gdcMsqu34UHmxryFF8g8ckxvwQO3B5rI=;
-	b=lGbBjwjX4eLt0ZDDfuREv71QYeCKsPcfsXFAwPYFBa/koic5cINLJMFOz9q129ZzSuInNK
-	XXNdoCfsH8g9Z1DQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1DAA413699;
-	Wed,  5 Nov 2025 14:14:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id F+nUBc1bC2kQPgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Wed, 05 Nov 2025 14:14:37 +0000
-Message-ID: <1b76a8c3-fefd-4bb8-b86a-f715e014bd6d@suse.cz>
-Date: Wed, 5 Nov 2025 15:14:36 +0100
+	s=arc-20240116; t=1762353506; c=relaxed/simple;
+	bh=YwmIrc9rncm8jYwO6rWq5RbLiYWZvoFNa6HUs4etLrc=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=hlI39dd3prXUKGEoae26fzA+kFx7WXdX9w79Gk2JJLrUK8Kv+X1TUlSyTURaNy1wB2lZcmhtW42OcuUcyDyaolLznAFQ0Ch2sU757G5b6iTA1jD1YpKCHgPl4IGgFVWVsTxNIz3XOcbRQwKNwfRODziahbiVlqCh3NWHU9SMWrA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TCICHe/S; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-471b80b994bso85180705e9.3
+        for <linux-fscrypt@vger.kernel.org>; Wed, 05 Nov 2025 06:38:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1762353503; x=1762958303; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/LkaRIn/NSiNJWnW7QBCmH2dkiWqmxXew9zG5Ks3bGA=;
+        b=TCICHe/SRUFQeH3T2Y4BBy7jUFSkwnQkzEPadBCAFcYJEGohyxhmYwSzcZwycAuV16
+         uce1XOg8+Id93v50iLyPF/yvG8fALVI6sPdik0ub2MtnZZPoEfFDct/XthB+u1qL8Adq
+         hdE0l+7eT28mXolkFWCZ2jsJyS0TVSch5fB4Q4ozVbIS/bAJTRfaKkjd/UzLdtFBt5me
+         IPxvxFND5gkimaZcD0q2/EJwIak7r6YBLRXdG+BkKhFh98ZbbFA1wEaOxV98UuBCvFFs
+         IeiuissUmUdt8wT5B2hLO1rRkjBgcum0OFQ2eY2pYAXI3Q5GDou4oIwRMJUdyNuttAm+
+         D+bQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762353503; x=1762958303;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/LkaRIn/NSiNJWnW7QBCmH2dkiWqmxXew9zG5Ks3bGA=;
+        b=eTJVc4sNDz3UNbWnN7J7lxapRVCuA3nxDtQuDe66c1bSdUsbMvrOQq8YjVvL4XgbpS
+         juIltspJ9H93i3cQkmuRl5UJbujF9oonPNm34h4s2Hh+XQNHv6t70ioAh+8kksru9aLS
+         1tp1CcKYiFgHWJ4d7cWQy7okE4svSJe4O84fEYEHsvfif2Qy3Fcpmemq74vtXveqNiWD
+         0MBUOQH2I+DhvMnNtbesOYcFwIVJSl5u1+0A2EVSzTcWv4w6ddyMYA+kYugACp6wpi1z
+         8+3QYB3+p/zE4+/w7y4ooxlLaU+0hqZFheSMhgAF141SEBjuPhZS09JZz/8EbQSjfHt9
+         ZnQQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVPpe47UzxQeKTqoi/6zEa7zliy27uhBqNX9ye022yAA1BpXwLnsB1O58jQsRi/7KLHRLcvgnXmJ9IJeZDL@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy19jcE3EpzEbNFp+TS7CP/rYIPH2M0YmRFncT8FcDiq2Iteqc4
+	i3pcv+1Sv765XJ8orHz0/LzbzXMboRg2U63sHaOANgCN1gT5jileqUbb
+X-Gm-Gg: ASbGncuMOROsqlX+1r+L42jN3WUeQ4kxg7FpsNY8JTQoJkpCuS8PCjdoFz9BwzJy293
+	N3f5yaEuKNX6mA+8JO2ZY65gUwu59hl13Hlhzlcfk7CnnmdcO9Z04dwbyGVe3u7WoYgsTk1hgs1
+	TG+w4YyzQiA1SKu3nx6wwAY17g0I9KWMMO3pZy+xLmU3rYonodlcg/PNcRbGVTWYvnF7xL5H5+M
+	OWLfAzmPQGAl/ShF4zL+lp8k3g3DiN2NExvOSvnJOQIhv8nX07sqNdCPn8tynSX6V5Jy5xlepxS
+	hZIzPznG/UsfxhWsZbDx7xNI0Lo6dmfNEPk6NiXsi1SzOZNmxf/vGUhV+no1qc1QZ2E9Ni5bgTQ
+	3bSoMpqW07JiBQ+KuZQmW7bGzdSiFWEUJcqy+xn178fGDj4crMVdybcLNebqox7CgJr0MjiiW8/
+	kRVKEGuG/aVQAKNYSVpBZiETNAHwSDYBTP8biwAdmQtICzic4Mk66R
+X-Google-Smtp-Source: AGHT+IEHIwFXlJwm0yt3wS2IwhGgmlEW/3ZYotu2V04LIxWOLcO6w3z/6QAwxlyH+LxvfC1sir4Grw==
+X-Received: by 2002:a05:600c:348f:b0:46e:2801:84aa with SMTP id 5b1f17b1804b1-4775cd3bec8mr38687765e9.0.1762353502780;
+        Wed, 05 Nov 2025 06:38:22 -0800 (PST)
+Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4775cde39f9sm54314335e9.14.2025.11.05.06.38.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Nov 2025 06:38:22 -0800 (PST)
+Date: Wed, 5 Nov 2025 14:38:20 +0000
+From: David Laight <david.laight.linux@gmail.com>
+To: Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc: Kuan-Wei Chiu <visitorckw@gmail.com>, Guan-Chun Wu
+ <409411716@gms.tku.edu.tw>, Andrew Morton <akpm@linux-foundation.org>,
+ ebiggers@kernel.org, tytso@mit.edu, jaegeuk@kernel.org, xiubli@redhat.com,
+ idryomov@gmail.com, kbusch@kernel.org, axboe@kernel.dk, hch@lst.de,
+ sagi@grimberg.me, home7438072@gmail.com, linux-nvme@lists.infradead.org,
+ linux-fscrypt@vger.kernel.org, ceph-devel@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 0/6] lib/base64: add generic encoder/decoder, migrate
+ users
+Message-ID: <20251105143820.11558ca8@pumpkin>
+In-Reply-To: <aQtbmWLqtFXvT8Bc@smile.fi.intel.com>
+References: <20251029101725.541758-1-409411716@gms.tku.edu.tw>
+	<20251031210947.1d2b028da88ef526aebd890d@linux-foundation.org>
+	<aQiC4zrtXobieAUm@black.igk.intel.com>
+	<aQiM7OWWM0dXTT0J@google.com>
+	<20251104090326.2040fa75@pumpkin>
+	<aQnMCVYFNpdsd-mm@smile.fi.intel.com>
+	<20251105094827.10e67b2d@pumpkin>
+	<aQtbmWLqtFXvT8Bc@smile.fi.intel.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/9] mempool: update kerneldoc comments
-Content-Language: en-US
-From: Vlastimil Babka <vbabka@suse.cz>
-To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
- Eric Biggers <ebiggers@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
- Roman Gushchin <roman.gushchin@linux.dev>, Harry Yoo <harry.yoo@oracle.com>,
- linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-fscrypt@vger.kernel.org, linux-mm@kvack.org
-References: <20251031093517.1603379-1-hch@lst.de>
- <20251031093517.1603379-2-hch@lst.de>
- <c6dbd7f1-0368-4ab2-83ab-e51b2b3e92b7@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- m6M14QORSWTLRg==
-In-Reply-To: <c6dbd7f1-0368-4ab2-83ab-e51b2b3e92b7@suse.cz>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: 4862F21168
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	MIME_TRACE(0.00)[0:+];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	MID_RHS_MATCH_FROM(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.cz:mid,suse.cz:email,lst.de:email];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Spam-Score: -4.51
 
-On 11/5/25 15:02, Vlastimil Babka wrote:
-> On 10/31/25 10:34, Christoph Hellwig wrote:
->> Use proper formatting, use full sentences and reduce some verbosity in
->> function parameter descriptions.
->> 
->> Signed-off-by: Christoph Hellwig <hch@lst.de>
->> ---
->>  mm/mempool.c | 36 +++++++++++++++++-------------------
->>  1 file changed, 17 insertions(+), 19 deletions(-)
->> 
->> diff --git a/mm/mempool.c b/mm/mempool.c
->> index 1c38e873e546..d7c55a98c2be 100644
->> --- a/mm/mempool.c
->> +++ b/mm/mempool.c
->> @@ -372,18 +372,15 @@ int mempool_resize(mempool_t *pool, int new_min_nr)
->>  EXPORT_SYMBOL(mempool_resize);
->>  
->>  /**
->> - * mempool_alloc - allocate an element from a specific memory pool
->> - * @pool:      pointer to the memory pool which was allocated via
->> - *             mempool_create().
->> - * @gfp_mask:  the usual allocation bitmask.
->> + * mempool_alloc - allocate an element from a memory pool
->> + * @pool:	pointer to the memory pool
->> + * @gfp_mask:	GFP_* flags.
->>   *
->> - * this function only sleeps if the alloc_fn() function sleeps or
->> - * returns NULL. Note that due to preallocation, this function
->> - * *never* fails when called from process contexts. (it might
->> - * fail if called from an IRQ context.)
+On Wed, 5 Nov 2025 16:13:45 +0200
+Andy Shevchenko <andriy.shevchenko@intel.com> wrote:
+
+> On Wed, Nov 05, 2025 at 09:48:27AM +0000, David Laight wrote:
+> > On Tue, 4 Nov 2025 11:48:57 +0200
+> > Andy Shevchenko <andriy.shevchenko@intel.com> wrote:  
+> > > On Tue, Nov 04, 2025 at 09:03:26AM +0000, David Laight wrote:  
+> > > > On Mon, 3 Nov 2025 19:07:24 +0800
+> > > > Kuan-Wei Chiu <visitorckw@gmail.com> wrote:    
+> > > > > On Mon, Nov 03, 2025 at 11:24:35AM +0100, Andy Shevchenko wrote:    
 > 
-> Why remove this part? Isn't it the most important behavior of mempools?
+...
+> > How about this one?  
 > 
->> - * Note: using __GFP_ZERO is not supported.
->> + * Note: This function only sleeps if the alloc_fn callback sleeps or returns
->> + * %NULL.  Using __GFP_ZERO is not supported.
->>   
->> - * Return: pointer to the allocated element or %NULL on error.
->> + * Return: pointer to the allocated element or %NULL on error. This function
->> + * never returns %NULL when @gfp_mask allows sleeping.
+> Better than previous one(s) but quite cryptic to understand. Will need a
+> comment explaining the logic behind, if we go this way.
 
-Oh I see, it's here.
+My first version (of this version) had all three character ranges in the define:
+so:
+#define INIT_1(v, ch_62, ch_63) \
+	[ v ] = (v) >= '0' && (v) <= '9' ? (v) - '0' \
+		: (v) >= 'A' && (v) <= 'Z' ? (v) - 'A' + 10 \
+		: (v) >= 'a' && (v) <= 'z' ? (v) - 'a' + 36 \
+		: (v) == ch_62 ? 62 : (v) == ch_63 ? 63 : -1
+Perhaps less cryptic - even if the .i line will be rather longer.
+It could be replicated for all 256 bytes, but I think the range
+initialisers are reasonable for the non-printable ranges.
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+I did wonder if the encode and decode lookup tables count be interleaved
+and both initialisers generated from the same #define.
+But I can't think of a way of generating 'x' and "X" from a #define parameter.
+(I don't think "X"[0] is constant enough...)
+
+	David
+
+> 
+> > #define INIT_1(v, ch_lo, ch_hi, off, ch_62, ch_63) \
+> > 	[ v ] = ((v) >= ch_lo && (v) <= ch_hi) ? (v) - ch_lo + off \
+> > 		: (v) == ch_62 ? 62 : (v) == ch_63 ? 63 : -1
+> > #define INIT_2(v, ...) INIT_1(v, __VA_ARGS__), INIT_1((v) + 1, __VA_ARGS__)
+> > #define INIT_4(v, ...) INIT_2(v, __VA_ARGS__), INIT_2((v) + 2, __VA_ARGS__)
+> > #define INIT_8(v, ...) INIT_4(v, __VA_ARGS__), INIT_4((v) + 4, __VA_ARGS__)
+> > #define INIT_16(v, ...) INIT_8(v, __VA_ARGS__), INIT_8((v) + 8, __VA_ARGS__)
+> > #define INIT_32(v, ...) INIT_16(v, __VA_ARGS__), INIT_16((v) + 16, __VA_ARGS__)
+> > 
+> > #define BASE64_REV_INIT(ch_62, ch_63) { \
+> > 	[ 0 ... 0x1f ] = -1, \
+> > 	INIT_32(0x20, '0', '9', 0, ch_62, ch_63), \
+> > 	INIT_32(0x40, 'A', 'Z', 10, ch_62, ch_63), \
+> > 	INIT_32(0x60, 'a', 'z', 26, ch_62, ch_63), \
+> > 	[ 0x80 ... 0xff ] = -1 }
+> > 
+> > which gets the pre-processor to do all the work.
+> > ch_62 and ch_63 can be any printable characters.
+> > 
+> > Note that the #define names are all in a .c file - so don't need any
+> > kind of namespace protection.  
+> 
+> > They can also all be #undef after the initialiser.  
+> 
+> Yes, that's too.
+> 
+> > > Moreover this table is basically a dup of the strings in the first array.
+> > > Which already makes an unnecessary duplication.  
+> > 
+> > That is what the self tests are for.
+> >   
+> > > That's why I prefer to
+> > > see a script (one source of data) to generate the header or something like
+> > > this to have the tables and strings robust against typos.  
+> > 
+> > We have to differ on that one.
+> > Especially in cases (like this) where generating that data is reasonably trivial.
+> >   
+> > > The above is simply an unreadable mess.  
+> 
 
 
