@@ -1,95 +1,96 @@
-Return-Path: <linux-fscrypt+bounces-921-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-922-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D031C35F5B
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 05 Nov 2025 15:06:17 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 054DDC35F52
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 05 Nov 2025 15:05:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 726F33AB7CB
-	for <lists+linux-fscrypt@lfdr.de>; Wed,  5 Nov 2025 14:02:24 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C1EE94E05FD
+	for <lists+linux-fscrypt@lfdr.de>; Wed,  5 Nov 2025 14:05:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E11983271F7;
-	Wed,  5 Nov 2025 14:02:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 801C8328B6C;
+	Wed,  5 Nov 2025 14:05:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="jSawCLWu";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="6jWZV+5B";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dHtNGHeO";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="3KknuFGt"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="mwaBfK9q";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="5x4wrmEQ";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gG9BppFp";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="TxG2x/Ch"
 X-Original-To: linux-fscrypt@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 011BB1DA62E
-	for <linux-fscrypt@vger.kernel.org>; Wed,  5 Nov 2025 14:02:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EB86325707
+	for <linux-fscrypt@vger.kernel.org>; Wed,  5 Nov 2025 14:04:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762351340; cv=none; b=nOf4TOeawUEKyXpdtK3416s+yhKldz34UV1IWMeLEGwod3t3cUCdsUhUj/d+rlWu75HL3jPfNmtTQM/IjEtOavMxEWssqQf7wM9jpML1qnMC2BgfupNmVP3qtSdShupU78R1NpzpzQm01Ob4Qn2T/J8TFPvP4jKbAu7hF+yIxrY=
+	t=1762351501; cv=none; b=qu3N3rbhk4ftzHsVb/JU+q4LZn2K5Ef3NmTAuS7UOT3+Bacj/06dCRdfDRvgbbQZX5/SYXi81a7j5SAtIzl/7Y0DN0ZufKfhZIH0XJrO1NEKmApykGRW5tOsJz46dBlqKSYxaPuLp6Zh8oB0tqzfktL/yLK1v/xoCljkn0drOiY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762351340; c=relaxed/simple;
-	bh=NR8IUfva00uuUDaiiIo5wUIFki04fKX1tek0lZr6q28=;
+	s=arc-20240116; t=1762351501; c=relaxed/simple;
+	bh=doNgCutAXkfnawIqd/vMIlud2SyDFR4DcUhZF7WF7ec=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ECXDhXMDcasYNU0n0Nqa3F8EukEZ01a68Xv52yPGPRVdjk6DBzq2olA/X2cDQ22HLQnfkWQxB/umbuqNIpWsgCnoQEkH3FfDLaOzcGRe2S3F6pl6pQIPbEP+7pI8EX2gpCqnyF++7N+P000Ruc3C1zW2bo0xrabkGC+pz2LMrL0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=jSawCLWu; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=6jWZV+5B; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dHtNGHeO; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=3KknuFGt; arc=none smtp.client-ip=195.135.223.130
+	 In-Reply-To:Content-Type; b=alrwVrCx0aZVM+uRih/TDCuUfNVFIuopQNCczZraL59pK1l7AF5M4GoJPgZ1oqXGNR1abKxeFbmhhmBE4JgwS18cVb6L00fWOR04PeQHCSPWkLL34tsho3lVMJmUmyqiWm7+7vLOcd9dD8wpuKAzhtmL3AeTRn/mNeNBBcAYhBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=mwaBfK9q; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=5x4wrmEQ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gG9BppFp; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=TxG2x/Ch; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id CB915211FD;
-	Wed,  5 Nov 2025 14:02:14 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id E7785211A9;
+	Wed,  5 Nov 2025 14:04:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1762351337; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1762351498; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=V1KLyRXc/r/40zsKXUPDVsW9kzTy2ShCAC+tY+mZk9o=;
-	b=jSawCLWukAtYGiC3VKjmVqHswkPKcwIAgFG5YsQkG+BbAMuEtohHO40xIYJHn1fN4WNLUB
-	4tq3dcOqnHWRyQjyDDSIvG6fBjzGMIzBZmOIHMQ+7UFJgHBQnH5gW7NzKqtCdqQ+cHCxiw
-	LATMdc+uPS5gPCf2hwzrCxkdr4aeKo8=
+	bh=ObIHwLo4q/sN8twtSW+vc2ZozvwJfT2HzNmnwS+Wygg=;
+	b=mwaBfK9q4KJUD4+xDLEv/Avzvg11MlFEEDvU/3mW6Tp92xKfgpWimolm0IlBswwtG/ibal
+	8XSav+g5ch/Uy9mjilQ+1zwAZhfZufpVZMSk1kEEbDAl6q1RQIVEUWBEtCNsj0YTXwpdlA
+	iYAK3Oal6h1P2aFlmV3fou6lYefjKV0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1762351337;
+	s=susede2_ed25519; t=1762351498;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=V1KLyRXc/r/40zsKXUPDVsW9kzTy2ShCAC+tY+mZk9o=;
-	b=6jWZV+5BJl8MPQ6zUWYalHhKRcv07toNF43tiZGgMUYDt4w00QBZKFmjtMuiM6PPgtMSYz
-	aEGHqMAHR8hpgzDA==
+	bh=ObIHwLo4q/sN8twtSW+vc2ZozvwJfT2HzNmnwS+Wygg=;
+	b=5x4wrmEQe1zTSCOrQOzR6jiwukiPGwefynkPcdbCCEMPiYLU+Pdm6eCEkttOSIIDrSqfzY
+	LtbR2SI/wBLimMDQ==
 Authentication-Results: smtp-out1.suse.de;
-	none
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=gG9BppFp;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="TxG2x/Ch"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1762351334; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1762351495; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=V1KLyRXc/r/40zsKXUPDVsW9kzTy2ShCAC+tY+mZk9o=;
-	b=dHtNGHeOH5/tXCmFzGwMiIIhv24VuGj6+LgmeXgTPLfeiIzRLjjVFfqR2APyakaErnLw3b
-	8J5uzIhSl87YnwAkmpAePVlKr6TRBZShDirsPJSIUkn4wccOPW6sTEZelngR5hxhh/TFHv
-	B6E2CX9i7apWcAmHInISFqn2q+DFsZY=
+	bh=ObIHwLo4q/sN8twtSW+vc2ZozvwJfT2HzNmnwS+Wygg=;
+	b=gG9BppFprhCEcEdSuJpBptD+oBRebryZPhCIRSYT/F+MwIKDaq3HfzW+zyw0Una0MMG9jw
+	GjlaOkkPXUfbVGtZ6dKmHVcHDxA+xFSrAm2cWUkyUblk11WS1x6Zxq9KyobZbEBmOGez4W
+	C91kToyS+GuF3wLB+t00W5TCdzCFIdQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1762351334;
+	s=susede2_ed25519; t=1762351495;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=V1KLyRXc/r/40zsKXUPDVsW9kzTy2ShCAC+tY+mZk9o=;
-	b=3KknuFGttO9XYqDU+6WW0WCRLhWdfB0W0Zmx5+uJfk9AtrZz/FPpoa/QBJeQJUNdJlC2dw
-	XZKGwLr45UiEHfBQ==
+	bh=ObIHwLo4q/sN8twtSW+vc2ZozvwJfT2HzNmnwS+Wygg=;
+	b=TxG2x/ChMut6poH3bRkP28pjwq5XZS11dyO7ot9qLxrwIdJUVy6pDHL6gY1A8wPEuMR96g
+	INEIcuKzLImnIRCg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B1CD813699;
-	Wed,  5 Nov 2025 14:02:14 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CA8F813699;
+	Wed,  5 Nov 2025 14:04:55 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id zyUGK+ZYC2nDMQAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Wed, 05 Nov 2025 14:02:14 +0000
-Message-ID: <c6dbd7f1-0368-4ab2-83ab-e51b2b3e92b7@suse.cz>
-Date: Wed, 5 Nov 2025 15:02:14 +0100
+	id 5FWhL4dZC2mkNAAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Wed, 05 Nov 2025 14:04:55 +0000
+Message-ID: <59626bf3-033b-4b2f-99ea-7056ab1e4d74@suse.cz>
+Date: Wed, 5 Nov 2025 15:04:55 +0100
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
@@ -97,7 +98,7 @@ List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/9] mempool: update kerneldoc comments
+Subject: Re: [PATCH 2/9] mempool: add error injection support
 Content-Language: en-US
 To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
  Eric Biggers <ebiggers@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
@@ -106,7 +107,7 @@ Cc: Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
  linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
  linux-fscrypt@vger.kernel.org, linux-mm@kvack.org
 References: <20251031093517.1603379-1-hch@lst.de>
- <20251031093517.1603379-2-hch@lst.de>
+ <20251031093517.1603379-3-hch@lst.de>
 From: Vlastimil Babka <vbabka@suse.cz>
 Autocrypt: addr=vbabka@suse.cz; keydata=
  xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
@@ -147,108 +148,106 @@ Autocrypt: addr=vbabka@suse.cz; keydata=
  rywqgzTUhHFKKF6/9L/lYtrNcHU8Z6Y4Ju/MLUiNYkmtrGIMnkjKCiRqlRrZE/v5YFHbayRD
  dJKXobXTtCBYpLJM4ZYRpGZXne/FAtWNe4KbNJJqxMvrTOrnIatPj8NhBVI0RSJRsbilh6TE
  m6M14QORSWTLRg==
-In-Reply-To: <20251031093517.1603379-2-hch@lst.de>
+In-Reply-To: <20251031093517.1603379-3-hch@lst.de>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-4.30 / 50.00];
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: E7785211A9
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.51 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
 	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_TLS_ALL(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	ARC_NA(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[12];
+	MIME_TRACE(0.00)[0:+];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
 	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[lst.de:email,suse.cz:dkim,suse.cz:mid,suse.cz:email];
 	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[lst.de:email,suse.cz:mid,imap1.dmz-prg2.suse.org:helo]
-X-Spam-Flag: NO
-X-Spam-Score: -4.30
-X-Spam-Level: 
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Spam-Score: -4.51
 
 On 10/31/25 10:34, Christoph Hellwig wrote:
-> Use proper formatting, use full sentences and reduce some verbosity in
-> function parameter descriptions.
+> Add a call to should_fail_ex that forces mempool to actually allocate
+> from the pool to stress the mempool implementation when enabled through
+> debugfs.  By default should_fail{,_ex} prints a very verbose stack trace
+> that clutters the kernel log, slows down execution and triggers the
+> kernel bug detection in xfstests.  Pass FAULT_NOWARN and print a
+> single-line message notating the caller instead so that full tests
+> can be run with fault injection.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
+
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+
 > ---
->  mm/mempool.c | 36 +++++++++++++++++-------------------
->  1 file changed, 17 insertions(+), 19 deletions(-)
+>  mm/mempool.c | 24 +++++++++++++++++++-----
+>  1 file changed, 19 insertions(+), 5 deletions(-)
 > 
 > diff --git a/mm/mempool.c b/mm/mempool.c
-> index 1c38e873e546..d7c55a98c2be 100644
+> index d7c55a98c2be..15581179c8b9 100644
 > --- a/mm/mempool.c
 > +++ b/mm/mempool.c
-> @@ -372,18 +372,15 @@ int mempool_resize(mempool_t *pool, int new_min_nr)
->  EXPORT_SYMBOL(mempool_resize);
->  
->  /**
-> - * mempool_alloc - allocate an element from a specific memory pool
-> - * @pool:      pointer to the memory pool which was allocated via
-> - *             mempool_create().
-> - * @gfp_mask:  the usual allocation bitmask.
-> + * mempool_alloc - allocate an element from a memory pool
-> + * @pool:	pointer to the memory pool
-> + * @gfp_mask:	GFP_* flags.
->   *
-> - * this function only sleeps if the alloc_fn() function sleeps or
-> - * returns NULL. Note that due to preallocation, this function
-> - * *never* fails when called from process contexts. (it might
-> - * fail if called from an IRQ context.)
-
-Why remove this part? Isn't it the most important behavior of mempools?
-
-> - * Note: using __GFP_ZERO is not supported.
-> + * Note: This function only sleeps if the alloc_fn callback sleeps or returns
-> + * %NULL.  Using __GFP_ZERO is not supported.
->   *
-> - * Return: pointer to the allocated element or %NULL on error.
-> + * Return: pointer to the allocated element or %NULL on error. This function
-> + * never returns %NULL when @gfp_mask allows sleeping.
+> @@ -9,7 +9,7 @@
+>   *  started by Ingo Molnar, Copyright (C) 2001
+>   *  debugging by David Rientjes, Copyright (C) 2015
 >   */
->  void *mempool_alloc_noprof(mempool_t *pool, gfp_t gfp_mask)
->  {
-> @@ -456,11 +453,10 @@ EXPORT_SYMBOL(mempool_alloc_noprof);
+> -
+> +#include <linux/fault-inject.h>
+>  #include <linux/mm.h>
+>  #include <linux/slab.h>
+>  #include <linux/highmem.h>
+> @@ -20,6 +20,15 @@
+>  #include <linux/writeback.h>
+>  #include "slab.h"
 >  
->  /**
->   * mempool_alloc_preallocated - allocate an element from preallocated elements
-> - *                              belonging to a specific memory pool
-> - * @pool:      pointer to the memory pool which was allocated via
-> - *             mempool_create().
-> + *                              belonging to a memory pool
-> + * @pool:	pointer to the memory pool
->   *
-> - * This function is similar to mempool_alloc, but it only attempts allocating
-> + * This function is similar to mempool_alloc(), but it only attempts allocating
->   * an element from the preallocated elements. It does not sleep and immediately
->   * returns if no preallocated elements are available.
->   *
-> @@ -492,12 +488,14 @@ void *mempool_alloc_preallocated(mempool_t *pool)
->  EXPORT_SYMBOL(mempool_alloc_preallocated);
+> +static DECLARE_FAULT_ATTR(fail_mempool_alloc);
+> +
+> +static int __init mempool_faul_inject_init(void)
+> +{
+> +	return PTR_ERR_OR_ZERO(fault_create_debugfs_attr("fail_mempool_alloc",
+> +			NULL, &fail_mempool_alloc));
+> +}
+> +late_initcall(mempool_faul_inject_init);
+> +
+>  #ifdef CONFIG_SLUB_DEBUG_ON
+>  static void poison_error(mempool_t *pool, void *element, size_t size,
+>  			 size_t byte)
+> @@ -399,10 +408,15 @@ void *mempool_alloc_noprof(mempool_t *pool, gfp_t gfp_mask)
+>  	gfp_temp = gfp_mask & ~(__GFP_DIRECT_RECLAIM|__GFP_IO);
 >  
->  /**
-> - * mempool_free - return an element to the pool.
-> - * @element:   pool element pointer.
-> - * @pool:      pointer to the memory pool which was allocated via
-> - *             mempool_create().
-> + * mempool_free - return an element to a mempool
-> + * @element:	pointer to element
-> + * @pool:	pointer to the memory pool
-> + *
-> + * Returns @elem to @pool if its needs replenishing, else free it using
-> + * the free_fn callback in @pool.
->   *
-> - * this function only sleeps if the free_fn() function sleeps.
-> + * This function only sleeps if the free_fn callback sleeps.
->   */
->  void mempool_free(void *element, mempool_t *pool)
->  {
+>  repeat_alloc:
+> -
+> -	element = pool->alloc(gfp_temp, pool->pool_data);
+> -	if (likely(element != NULL))
+> -		return element;
+> +	if (should_fail_ex(&fail_mempool_alloc, 1, FAULT_NOWARN)) {
+> +		pr_info("forcing mempool usage for pool %pS\n",
+> +				(void *)_RET_IP_);
+> +		element = NULL;
+> +	} else {
+> +		element = pool->alloc(gfp_temp, pool->pool_data);
+> +		if (likely(element != NULL))
+> +			return element;
+> +	}
+>  
+>  	spin_lock_irqsave(&pool->lock, flags);
+>  	if (likely(pool->curr_nr)) {
 
 
