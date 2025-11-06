@@ -1,86 +1,79 @@
-Return-Path: <linux-fscrypt+bounces-935-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-936-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9251FC3D583
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 06 Nov 2025 21:26:49 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E6F5C3D6D9
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 06 Nov 2025 21:54:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 961123B8D8F
-	for <lists+linux-fscrypt@lfdr.de>; Thu,  6 Nov 2025 20:26:47 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id A4696351735
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  6 Nov 2025 20:54:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7B962F83CF;
-	Thu,  6 Nov 2025 20:26:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17B8E2FC037;
+	Thu,  6 Nov 2025 20:54:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k4JL8aP7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sEymzIRD"
 X-Original-To: linux-fscrypt@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B56672F83B8;
-	Thu,  6 Nov 2025 20:26:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D52B52FBDE1;
+	Thu,  6 Nov 2025 20:54:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762460800; cv=none; b=rcdT6eqxs07kljd7yhDcfydFePSJDis/NVk0kQGKQOjqBx1NHaSiFmmCQ4DsIPo3cJE8dtEHOVzlb0GG9BlVgShrztFZ46071GeAPg49ZKYkmdSI09lyBlwWVFfrakaNSJTHmK8fGXzMd407NURkUKNaTrLwIFuST1yIwGFUNpQ=
+	t=1762462441; cv=none; b=KEEShLBRVyrxUoj/K4xumyZRfFjZSirGWmO5ZCbVC5ink9bRECWobVfHrhJjwOvTAUOu1qIT6Pn/a7JtQ1UHxRA+m02LQ0frQo55tUGjh4JIBZfYP378WGtSQYqlCr9vjpxktZV06D0/kC1eqD7L4w9iKjEMM6Z/LHwMSM+1RZ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762460800; c=relaxed/simple;
-	bh=G5+JFHN9pF0pfKeMBtPHehPbGANjfz2YxWFZBSN6yuU=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=VM/Ep4CubFVVSAIHNUQSIkbsK6pc+9uVrq6pGQGmeHiWYiKMCD6oyKK+GNW57ij9GgGoG4iZ5eFhEf382wCCWNidbGD2g7cHe0mkFaCXrret6G6f7b1xVMeeCD7RNnc3nZ+zykr9DctK8NhWLeQxPnmqLsA3kvkcXQa9/ojUh4s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k4JL8aP7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7037C4CEF7;
-	Thu,  6 Nov 2025 20:26:39 +0000 (UTC)
+	s=arc-20240116; t=1762462441; c=relaxed/simple;
+	bh=WtUA3O+LfxM38U7u+HmmPM04mLhuvwGiIeTMdD4EmmI=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=V6JoQqmoGVaD/Haphk0ue7BCYGWtbk0kQn4aAyv5CTslvikGCevnJXKuyHrIpUre+xJTO2xOqDwGrW90fkTFF3MJBnwF7gk7r1QhhXRY85pfz3ezuAHo7KabnCyG6h33ljFn7UxCE+wMRD3kZ16QAh1FX1RarQ+/fwXxARqWQrY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sEymzIRD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63B95C4CEFB;
+	Thu,  6 Nov 2025 20:54:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762460800;
-	bh=G5+JFHN9pF0pfKeMBtPHehPbGANjfz2YxWFZBSN6yuU=;
-	h=Date:From:To:Cc:Subject:From;
-	b=k4JL8aP7g3emW8K/WZvE0ZM2dTj76VdsE2erzADNRJ0g0nK2Zy0+FO0/90r/bz4pL
-	 RHZhSc8mt04soUjBv/tFZ+X33fFy7fydtwv3C0+Yo/D/2PAntrfoTeCNFHuNVasTep
-	 2kR94GaP2pqY2tWUIoOb98rY7DgipXqSprX2wFCiTfbsTL/b3kta8m7jmOicaDqyce
-	 WBT5ngTQ0TOG0AfpAw2SeBvyBv4a6/3MmCDAekz9hvP19vn4ZcZNeMzEosshsnRS/B
-	 q3WVXhHA5oyeL4f0k3kx9r1golXRvHmHMAU+eDvbNxITbugUA3LNDvCRY0tqH7QaCI
-	 NlJAK1yVbTiPg==
-Date: Thu, 6 Nov 2025 12:26:37 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Theodore Ts'o <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>,
-	Yongpeng Yang <yangyongpeng@xiaomi.com>,
-	Luis Chamberlain <mcgrof@kernel.org>
-Subject: [GIT PULL] fscrypt fix for v6.18-rc5
-Message-ID: <20251106202637.GA7015@quark>
+	s=k20201202; t=1762462440;
+	bh=WtUA3O+LfxM38U7u+HmmPM04mLhuvwGiIeTMdD4EmmI=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=sEymzIRDufl6iChdOXFcHJiH1RH/jTLjNWtjBRF/K+Z8c8ntxkMS9/Rr4woiypW6q
+	 JpaNgmcujCbuCI8XtPCIrhqyUP0XfHuCovifm8sju2CfhRf5mRfx0wMfnkGj9Zymju
+	 mTMqdBSUKwkNY6lcdTaD1J9F69NUKsa3JUVhLRJVELIu9lHJUUpAUaE+LrD7Up9PTC
+	 Emd9/5uWAnPQKesCi0J+dMxn3l2k+lcue1D6kY4YCluFHEiGF0QE/mutjQFsuARpIJ
+	 rkvUj3n4Bg5J5bhNlCFctlYQoc8V7LqkSL4sfsEW8KyLTzdph12U9GOYRfZFZCgn7D
+	 axxDKQhNEx6Xw==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 34B8839EF96A;
+	Thu,  6 Nov 2025 20:53:34 +0000 (UTC)
+Subject: Re: [GIT PULL] fscrypt fix for v6.18-rc5
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20251106202637.GA7015@quark>
+References: <20251106202637.GA7015@quark>
+X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20251106202637.GA7015@quark>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/fs/fscrypt/linux.git tags/fscrypt-for-linus
+X-PR-Tracked-Commit-Id: 1e39da974ce621ed874c6d3aaf65ad14848c9f0d
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: c668da99b923bc0527f19e361bb8496be087970f
+Message-Id: <176246241278.354628.13333141710763776880.pr-tracker-bot@kernel.org>
+Date: Thu, 06 Nov 2025 20:53:32 +0000
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>, Yongpeng Yang <yangyongpeng@xiaomi.com>, Luis Chamberlain <mcgrof@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-The following changes since commit 6146a0f1dfae5d37442a9ddcba012add260bceb0:
+The pull request you sent on Thu, 6 Nov 2025 12:26:37 -0800:
 
-  Linux 6.18-rc4 (2025-11-02 11:28:02 -0800)
+> https://git.kernel.org/pub/scm/fs/fscrypt/linux.git tags/fscrypt-for-linus
 
-are available in the Git repository at:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/c668da99b923bc0527f19e361bb8496be087970f
 
-  https://git.kernel.org/pub/scm/fs/fscrypt/linux.git tags/fscrypt-for-linus
+Thank you!
 
-for you to fetch changes up to 1e39da974ce621ed874c6d3aaf65ad14848c9f0d:
-
-  fscrypt: fix left shift underflow when inode->i_blkbits > PAGE_SHIFT (2025-11-04 16:37:38 -0800)
-
-----------------------------------------------------------------
-
-Fix an UBSAN warning that started occurring when the block layer started
-supporting logical_block_size > PAGE_SIZE.
-
-----------------------------------------------------------------
-Yongpeng Yang (1):
-      fscrypt: fix left shift underflow when inode->i_blkbits > PAGE_SHIFT
-
- fs/crypto/inline_crypt.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
