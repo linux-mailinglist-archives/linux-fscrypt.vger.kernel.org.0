@@ -1,197 +1,179 @@
-Return-Path: <linux-fscrypt+bounces-950-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-951-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B70FDC43DC5
-	for <lists+linux-fscrypt@lfdr.de>; Sun, 09 Nov 2025 13:36:26 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A170C5AC12
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 14 Nov 2025 01:22:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 56CEF188AA95
-	for <lists+linux-fscrypt@lfdr.de>; Sun,  9 Nov 2025 12:36:51 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id B430634C69B
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 14 Nov 2025 00:22:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7EB62EC0A7;
-	Sun,  9 Nov 2025 12:36:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD1E91FFC59;
+	Fri, 14 Nov 2025 00:22:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gms-tku-edu-tw.20230601.gappssmtp.com header.i=@gms-tku-edu-tw.20230601.gappssmtp.com header.b="CwmWzn64"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fdpqz+vm"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABDCA2EC553
-	for <linux-fscrypt@vger.kernel.org>; Sun,  9 Nov 2025 12:36:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D3761DE4EF;
+	Fri, 14 Nov 2025 00:22:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762691782; cv=none; b=FYAZwH70vcXywUPNZmKvkVVc46bH0zoKDLKB+WqMM9voiVwszUVtx5zg+7x7o4wmyI0B7rFKOexWFyeKj+PqV87LZ6XNCNo6dND4QSRrt+K8qyxqI0W2Y6FER/V1flBAPQdmRJ+N6Q9stuHoZ18Fgzyl1jTxjz8VcUXPB8Yit2c=
+	t=1763079738; cv=none; b=n1YF+ykwhJq1TQtkMAwfYHkyz9Eb/6emiNzYrcfip73cYroTPO8rT8+2OvDl5pwy2ixVW6z62SSMslVQIlmKmKI5tBOgqcESeJ//FZhq8W80QHX2PVZUVxQvHzqY9FF+GFK5URquf0zauN2sOXM3ox4HV/n6zC+LpI5yaBCr5gM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762691782; c=relaxed/simple;
-	bh=0U+Xecz6Fprk4dFBomPdZ52Cm4H0r6qZsfE5vgiz9io=;
+	s=arc-20240116; t=1763079738; c=relaxed/simple;
+	bh=0GfV0jqFwQWzRF/XGv+/zcvWfkWUsWtCyGdJidvbTgM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Tki8wheSfUFLrBWZXOwi77dJFayL2VQvQ0Nf5z1Rfmdz06P3hR/8N1v5c1/ZVmKWl1UPlmzPt2SQBNDuhbWY8Lj3mcFMPmy2CIyJEVoGh57vrGJdDIzv7DR7M7kN8qSWPOXNu1qZMBAEfhlcpW7zZbVBp/ZPrnIGdRFrliHLlx0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gms.tku.edu.tw; spf=pass smtp.mailfrom=gms.tku.edu.tw; dkim=pass (2048-bit key) header.d=gms-tku-edu-tw.20230601.gappssmtp.com header.i=@gms-tku-edu-tw.20230601.gappssmtp.com header.b=CwmWzn64; arc=none smtp.client-ip=209.85.216.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gms.tku.edu.tw
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gms.tku.edu.tw
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-3438d4ae152so293642a91.1
-        for <linux-fscrypt@vger.kernel.org>; Sun, 09 Nov 2025 04:36:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gms-tku-edu-tw.20230601.gappssmtp.com; s=20230601; t=1762691780; x=1763296580; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=KJmBqFwSZPTgeDdxxWga7QZHqD9dNuDtkCKsKlOxCRA=;
-        b=CwmWzn64xu6rrzwg0+7loMOilGb4rKuLRpuGdxCfxC4/Pq4PgNE7cjZ6xa6+Uq/MGk
-         nbAT1eW4OlMtfBgw+FwbwqVy8DQ3wi20ii/by1ARkvNKyxPO3jVatFV2lIXlEchyTAfn
-         6IQ4FG02B6BQaPdEgErQLX7DpMuMxGHoqnLUVYcca2LYFcRf/i+R+cJDzC6lwbZWvt6z
-         zupquU7kEH9xcGYn438HppIwOCZuo0/iXge0cNC9gNDgngBntB2ZaMlDcBpUuHmrvtxl
-         h+1nur/i0KSS6PoRjgw4euPENUAWbdXlxjgnXxzvJJwgmrSj5FsDIFC8GBEITLH+udRw
-         WBwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762691780; x=1763296580;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KJmBqFwSZPTgeDdxxWga7QZHqD9dNuDtkCKsKlOxCRA=;
-        b=WRMUHA1MW0eUKHWyWl1bxm9BffZZCR7XL7UQ/H87jW5KpQyYPA6q1CWVZedRdnz3eZ
-         uvV1Wdym/owQZ+jRlN5AFAxv5GSbabc06yxDzOB6c1vXl6MhqI+PGws+o3y/3gEEGhGX
-         rg0LruXAtkd2R456AQI/Q32gV5enRIkE1suJkA+NqYjBniFWPqe3GRQ39l2KWNASe/oZ
-         u4mAzJr3FuFQv7Gj7GOL7oVrPXVfod/vxgqdxjRvaFfimLpssopLVi4ajaAGmtb8438L
-         aNo+HeTubj0uiYoMOhbKyd8uyzZdGkdoEZqp7Kczvdt4RI36WAKsFgeeD48cFInHA0UF
-         WE2g==
-X-Forwarded-Encrypted: i=1; AJvYcCWU2A7KmFPjMejxr+mdSAREk76FbSfZqjdC0gf3mKh4hmi5/sUWhvIjDRTsjcXzkQpckhsIlHCKnLjoMEGf@vger.kernel.org
-X-Gm-Message-State: AOJu0YyEyzigHLp03DyyJuG7k81iUEYGd0zSza/m0Z/Ssmv/67quBgsL
-	6Y8rfyQPS5ZAEvgjA7tYOVMOpz8LwChh7y1ftkjO8MBrboqknhCLcLgjB0i9JaaoMikTShAVPSH
-	2Tono
-X-Gm-Gg: ASbGnct2fIISv2Vga7uzeMFT3R5aZfQPx3Pm8pVGb/3KDAEbuawB8YCVcNdOzfDz4Zi
-	f6oR2SDZ/9d2keHhKY5Nyqiv07ZWCHuRX9vKQuvBWKFrML1deahDzUdkRmbzAb+ADO5/5lKjl/A
-	Wkw3RSGKTHhvp8xqdRvVfNsWyTwVvH8onKW6DbUS9nVwMQctZ/PWXpFVqXq4JmEZg5we24zQj7b
-	n5kUGMngdf7b2CbBTzBzM7/fVDHI5jofEdxzZc5w40tQT6956j1ikY32U9Yo6DS3hXCOft/2rEv
-	2ncU2jRbbqcviS1kT3uoHp0o36QyQqeWVx7gP0xPS59rtdsjXeC2ulJGFscEBLgvtCGMh6F0tqn
-	ZSQWMORR5IMq38k00pzYYtnPeN6wTJeUQ5jAKdXOzRk7/OtQ23hzrwNQFVEdtB57mg5TUYfarqv
-	tbL6AH4x9nAmv1h5YFTxSFER0LXzjmay0=
-X-Google-Smtp-Source: AGHT+IFJcX4kraEUbC8VOW05T7p2FeSFYukhwLNqfkAsi9st8xXB4csrxqTW846Kb3/6J4WQhJ7aog==
-X-Received: by 2002:a17:90a:da8b:b0:33b:dec9:d9aa with SMTP id 98e67ed59e1d1-3436cbb171cmr5487179a91.25.1762691779910;
-        Sun, 09 Nov 2025 04:36:19 -0800 (PST)
-Received: from wu-Pro-E500-G6-WS720T ([2001:288:7001:2703:519d:1960:dc93:9d0])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3434c337b20sm7781832a91.13.2025.11.09.04.36.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 09 Nov 2025 04:36:18 -0800 (PST)
-Date: Sun, 9 Nov 2025 20:36:12 +0800
-From: Guan-Chun Wu <409411716@gms.tku.edu.tw>
-To: David Laight <david.laight.linux@gmail.com>
-Cc: Andy Shevchenko <andriy.shevchenko@intel.com>,
-	Kuan-Wei Chiu <visitorckw@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>, ebiggers@kernel.org,
-	tytso@mit.edu, jaegeuk@kernel.org, xiubli@redhat.com,
-	idryomov@gmail.com, kbusch@kernel.org, axboe@kernel.dk, hch@lst.de,
-	sagi@grimberg.me, home7438072@gmail.com,
-	linux-nvme@lists.infradead.org, linux-fscrypt@vger.kernel.org,
-	ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 0/6] lib/base64: add generic encoder/decoder, migrate
- users
-Message-ID: <aRCKvJnJxmaDYKvI@wu-Pro-E500-G6-WS720T>
-References: <20251029101725.541758-1-409411716@gms.tku.edu.tw>
- <20251031210947.1d2b028da88ef526aebd890d@linux-foundation.org>
- <aQiC4zrtXobieAUm@black.igk.intel.com>
- <aQiM7OWWM0dXTT0J@google.com>
- <20251104090326.2040fa75@pumpkin>
- <aQnMCVYFNpdsd-mm@smile.fi.intel.com>
- <20251105094827.10e67b2d@pumpkin>
- <aQtbmWLqtFXvT8Bc@smile.fi.intel.com>
- <20251105143820.11558ca8@pumpkin>
+	 Content-Type:Content-Disposition:In-Reply-To; b=MNGR2T2oouXWgouIx3QxmCWxMRmY2XBGSFlyHmJHf7T+zjvDLcPVO0WQzLB1/5R0R5sjfmW+09EBrodNRXmD7nVP+I9a3+XJ149xJlzM/redPyvaMPEyx57wm93hz5eG2Kb/HvWC2H4BnWubEIG/KF5hJcWpRH7DNO2M21ieRHA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Fdpqz+vm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF29BC4CEF8;
+	Fri, 14 Nov 2025 00:22:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763079734;
+	bh=0GfV0jqFwQWzRF/XGv+/zcvWfkWUsWtCyGdJidvbTgM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Fdpqz+vm7c42sbFTFZOC0iJiffZCDm0CNHUPMw2JPCQbGZNWweg9q00gVnvRjR9ve
+	 hnahG3aUd1TZZUohCvCHsjxX4tOBaqlc6iSkso8rmdk3JwDU3KZoShKyR6KFWj6qIM
+	 H4KTYacBo9upHTkvzMGyARULRDWWZKXaK3Qxl0zxAt/oz1kFd7Fp+GUN8hLe7a/+P8
+	 o9WbUwuRpmePsRMBGakAjGW6fTHJMmJeNu/iRHsFnUIWEMxZT2xSEsgiIDhsyKSRzV
+	 rrC/ofvQ9F631xkB8ik0K0j5Oi7/JC7bBbfXfbSy+iX0GHoT5a8ed0PL06sQRznIrj
+	 Q9e+qVxD0A6Xw==
+Date: Thu, 13 Nov 2025 16:22:10 -0800
+From: Eric Biggers <ebiggers@kernel.org>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Jens Axboe <axboe@kernel.dk>, Vlastimil Babka <vbabka@suse.cz>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Lameter <cl@gentwo.org>,
+	David Rientjes <rientjes@google.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Harry Yoo <harry.yoo@oracle.com>, linux-block@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: Re: [PATCH 6/9] blk-crypto: optimize bio splitting in
+ blk_crypto_fallback_encrypt_bio
+Message-ID: <20251114002210.GA30712@quark>
+References: <20251031093517.1603379-1-hch@lst.de>
+ <20251031093517.1603379-7-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20251105143820.11558ca8@pumpkin>
+In-Reply-To: <20251031093517.1603379-7-hch@lst.de>
 
-On Wed, Nov 05, 2025 at 02:38:20PM +0000, David Laight wrote:
-> On Wed, 5 Nov 2025 16:13:45 +0200
-> Andy Shevchenko <andriy.shevchenko@intel.com> wrote:
+On Fri, Oct 31, 2025 at 10:34:36AM +0100, Christoph Hellwig wrote:
+> The current code in blk_crypto_fallback_encrypt_bio is inefficient and
+> prone to deadlocks under memory pressure: It first walks to pass in
+> plaintext bio to see how much of it can fit into a single encrypted
+> bio using up to BIO_MAX_VEC PAGE_SIZE segments, and then allocates a
+> plaintext clone that fits the size, only to allocate another bio for
+> the ciphertext later.  While the plaintext clone uses a bioset to avoid
+> deadlocks when allocations could fail, the ciphertex one uses bio_kmalloc
+> which is a no-go in the file system I/O path.
 > 
-> > On Wed, Nov 05, 2025 at 09:48:27AM +0000, David Laight wrote:
-> > > On Tue, 4 Nov 2025 11:48:57 +0200
-> > > Andy Shevchenko <andriy.shevchenko@intel.com> wrote:  
-> > > > On Tue, Nov 04, 2025 at 09:03:26AM +0000, David Laight wrote:  
-> > > > > On Mon, 3 Nov 2025 19:07:24 +0800
-> > > > > Kuan-Wei Chiu <visitorckw@gmail.com> wrote:    
-> > > > > > On Mon, Nov 03, 2025 at 11:24:35AM +0100, Andy Shevchenko wrote:    
-> > 
-> ...
-> > > How about this one?  
-> > 
-> > Better than previous one(s) but quite cryptic to understand. Will need a
-> > comment explaining the logic behind, if we go this way.
+> Switch blk_crypto_fallback_encrypt_bio to walk the source plaintext bio
+> while consuming bi_iter without cloning it, and instead allocate a
+> ciphertext bio at the beginning and whenever we fille up the previous
+> one.  The existing bio_set for the plaintext clones is reused for the
+> ciphertext bios to remove the deadlock risk.
 > 
-> My first version (of this version) had all three character ranges in the define:
-> so:
-> #define INIT_1(v, ch_62, ch_63) \
-> 	[ v ] = (v) >= '0' && (v) <= '9' ? (v) - '0' \
-> 		: (v) >= 'A' && (v) <= 'Z' ? (v) - 'A' + 10 \
-> 		: (v) >= 'a' && (v) <= 'z' ? (v) - 'a' + 36 \
-> 		: (v) == ch_62 ? 62 : (v) == ch_63 ? 63 : -1
-> Perhaps less cryptic - even if the .i line will be rather longer.
-> It could be replicated for all 256 bytes, but I think the range
-> initialisers are reasonable for the non-printable ranges.
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  block/blk-crypto-fallback.c | 162 ++++++++++++++----------------------
+>  1 file changed, 63 insertions(+), 99 deletions(-)
 > 
-> I did wonder if the encode and decode lookup tables count be interleaved
-> and both initialisers generated from the same #define.
-> But I can't think of a way of generating 'x' and "X" from a #define parameter.
-> (I don't think "X"[0] is constant enough...)
-> 
-> 	David
->
+> diff --git a/block/blk-crypto-fallback.c b/block/blk-crypto-fallback.c
+> index 86b27f96051a..1f58010fb437 100644
+> --- a/block/blk-crypto-fallback.c
+> +++ b/block/blk-crypto-fallback.c
+> @@ -152,35 +152,26 @@ static void blk_crypto_fallback_encrypt_endio(struct bio *enc_bio)
+>  
+>  	src_bio->bi_status = enc_bio->bi_status;
 
-Thanks for your reply!
-We’ll adopt the approach you suggested in the next version.
+There can now be multiple enc_bios completing for the same src_bio, so
+this needs something like:
 
-Best regards,
-Guan-Chun
+	if (enc_bio->bi_status)
+		cmpxchg(&src_bio->bi_status, 0, enc_bio->bi_status);
 
-> > 
-> > > #define INIT_1(v, ch_lo, ch_hi, off, ch_62, ch_63) \
-> > > 	[ v ] = ((v) >= ch_lo && (v) <= ch_hi) ? (v) - ch_lo + off \
-> > > 		: (v) == ch_62 ? 62 : (v) == ch_63 ? 63 : -1
-> > > #define INIT_2(v, ...) INIT_1(v, __VA_ARGS__), INIT_1((v) + 1, __VA_ARGS__)
-> > > #define INIT_4(v, ...) INIT_2(v, __VA_ARGS__), INIT_2((v) + 2, __VA_ARGS__)
-> > > #define INIT_8(v, ...) INIT_4(v, __VA_ARGS__), INIT_4((v) + 4, __VA_ARGS__)
-> > > #define INIT_16(v, ...) INIT_8(v, __VA_ARGS__), INIT_8((v) + 8, __VA_ARGS__)
-> > > #define INIT_32(v, ...) INIT_16(v, __VA_ARGS__), INIT_16((v) + 16, __VA_ARGS__)
-> > > 
-> > > #define BASE64_REV_INIT(ch_62, ch_63) { \
-> > > 	[ 0 ... 0x1f ] = -1, \
-> > > 	INIT_32(0x20, '0', '9', 0, ch_62, ch_63), \
-> > > 	INIT_32(0x40, 'A', 'Z', 10, ch_62, ch_63), \
-> > > 	INIT_32(0x60, 'a', 'z', 26, ch_62, ch_63), \
-> > > 	[ 0x80 ... 0xff ] = -1 }
-> > > 
-> > > which gets the pre-processor to do all the work.
-> > > ch_62 and ch_63 can be any printable characters.
-> > > 
-> > > Note that the #define names are all in a .c file - so don't need any
-> > > kind of namespace protection.  
-> > 
-> > > They can also all be #undef after the initialiser.  
-> > 
-> > Yes, that's too.
-> > 
-> > > > Moreover this table is basically a dup of the strings in the first array.
-> > > > Which already makes an unnecessary duplication.  
-> > > 
-> > > That is what the self tests are for.
-> > >   
-> > > > That's why I prefer to
-> > > > see a script (one source of data) to generate the header or something like
-> > > > this to have the tables and strings robust against typos.  
-> > > 
-> > > We have to differ on that one.
-> > > Especially in cases (like this) where generating that data is reasonably trivial.
-> > >   
-> > > > The above is simply an unreadable mess.  
-> > 
-> 
+> -static struct bio *blk_crypto_fallback_clone_bio(struct bio *bio_src)
+> +static struct bio *blk_crypto_alloc_enc_bio(struct bio *bio_src,
+> +		unsigned int nr_segs)
+>  {
+> -	unsigned int nr_segs = bio_segments(bio_src);
+> -	struct bvec_iter iter;
+> -	struct bio_vec bv;
+>  	struct bio *bio;
+>  
+> -	bio = bio_kmalloc(nr_segs, GFP_NOIO);
+> -	if (!bio)
+> -		return NULL;
+> -	bio_init_inline(bio, bio_src->bi_bdev, nr_segs, bio_src->bi_opf);
+> +	bio = bio_alloc_bioset(bio_src->bi_bdev, nr_segs, bio_src->bi_opf,
+> +			GFP_NOIO, &crypto_bio_split);
+
+Rename crypto_bio_split => enc_bio_set?
+
+> @@ -257,34 +222,22 @@ static void blk_crypto_dun_to_iv(const u64 dun[BLK_CRYPTO_DUN_ARRAY_SIZE],
+>   */
+>  static bool blk_crypto_fallback_encrypt_bio(struct bio **bio_ptr)
+>  {
+
+I don't think this patch makes sense by itself, since it leaves the
+bio_ptr argument that is used to return a single enc_bio.  It does get
+updated later in the series, but it seems that additional change to how
+this function is called should go earlier in the series.
+
+> +	/* Encrypt each page in the origin bio */
+
+Maybe origin => source, so that consistent terminology is used.
+
+> +		if (++enc_idx == enc_bio->bi_max_vecs) {
+> +			/*
+> +			 * Each encrypted bio will call bio_endio in the
+> +			 * completion handler, so ensure the remaining count
+> +			 * matches the number of submitted bios.
+> +			 */
+> +			bio_inc_remaining(src_bio);
+> +			submit_bio(enc_bio);
+
+The above comment is a bit confusing and could be made clearer.  When we
+get here for the first time for example, we increment remaining from 1
+to 2.  It doesn't match the number of bios submitted so far, but rather
+is one more than it.  The extra one pairs with the submit_bio() outside
+the loop.  Maybe consider the following:
+
+			/*
+			 * For each additional encrypted bio submitted,
+			 * increment the source bio's remaining count.  Each
+			 * encrypted bio's completion handler calls bio_endio on
+			 * the source bio, so this keeps the source bio from
+			 * completing until the last encrypted bio does.
+			 */
+
+> +out_ioerror:
+> +	while (enc_idx > 0)
+> +		mempool_free(enc_bio->bi_io_vec[enc_idx--].bv_page,
+> +			     blk_crypto_bounce_page_pool);
+> +	bio_put(enc_bio);
+> +	src_bio->bi_status = BLK_STS_IOERR;
+
+This error path doesn't seem correct at all.  It would need to free the
+full set of pages in enc_bio, not just the ones initialized so far.  It
+would also need to use cmpxchg() to correctly set an error on the
+src_bio considering that blk_crypto_fallback_encrypt_endio() be trying
+to do it concurrently too, and then call bio_endio() on it.
+
+(It's annoying that encryption errors need to be handled at all.  When I
+eventually convert this to use lib/crypto/, the encryption functions are
+just going to return void.  But for now this is using the traditional
+API, which can fail, so technically errors need to be handled...)
+
+- Eric
 
