@@ -1,128 +1,108 @@
-Return-Path: <linux-fscrypt+bounces-984-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-985-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id A111AC68DE0
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 18 Nov 2025 11:38:58 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C163C6AFB1
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 18 Nov 2025 18:32:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 816DD4E1524
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 18 Nov 2025 10:38:57 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 7C47D3A2918
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 18 Nov 2025 17:26:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2314343D8A;
-	Tue, 18 Nov 2025 10:38:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CC393612E0;
+	Tue, 18 Nov 2025 17:24:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DIOSVJm5"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="XPVP0681"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8319733CE83;
-	Tue, 18 Nov 2025 10:38:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 222673612C8;
+	Tue, 18 Nov 2025 17:24:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763462333; cv=none; b=gAu284uwYTphNnf79pO0k+Vv0gFNx7s9mYEtZjy3zlDtFqkk7ClC1/6PPtNIR60kGen55ccujxgj4fRdQqGW2coNww7jO8izlbrRByiNjg9hAWL3a+jKv3raI6oK9rBD9pQvXAazwSwvtbBS5AMWXTNkapDoysUkhz3qei6g0TU=
+	t=1763486650; cv=none; b=b22EBEyD0GfVQ3GOdm0nNz+Uzl+TaMUOOIPb6MvhMR+P+uoQuCyo5tCEp7oBRDWbDm0Sw+coyvzLXOvKz0yLIkSPumGwchA1JP6KbbIjJ3cyWAcijEa6VRMoDpSPbsg3o4yWUY9QJLR5KoGJEkLSTq3ms0KFU2T4Ki6fkfTemMs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763462333; c=relaxed/simple;
-	bh=iyd3lOPVc6CcM+zX3Th+vnH061kObST/SiMYoPr5O5o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=obWLa8oGXedSZxygbXpqUD8yHVpJ8Y+tCffTm+icq41mIbdIps4Hiqo+4NOdJQ9xSzqXpj/1lcY3yUKpUVRAvTykc0IcLsLy9R9I2nPBe0EQ9iiufrBzafIDdDQfp+dMDvf7MQFbfgNAK0/E2Xslgh2Ga/EabMtcMQGZau/VDE4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DIOSVJm5; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1763462332; x=1794998332;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=iyd3lOPVc6CcM+zX3Th+vnH061kObST/SiMYoPr5O5o=;
-  b=DIOSVJm50szAu0ZAjoA3UXyWxUIyAy2ugYSNKZPCt8q9EYnmuhggTWSR
-   Nrn4SDN4C48HACFJKPww9u3SghW9yY7bB6fZ3vgMpTTHNBtuYuBBGb4II
-   rf9rYyT/9oXS1EkK2q+qML39zIdcUHccChm7IYnSfFZioiPpcFuoTxjTD
-   rn8z8DZekf1iVBjhKGDQNvEeCEQy+A+HMg3KB/jhN5vmVKePKCKe6ZERU
-   2A5JGd1eGRXW4JILFCamZkX3+B2TKvk4CeouVAxEXBS6XwXG1wBMii5CW
-   jIaeRnYWV9L+Gc2BxX3WcEwl0W3sbsSeYiMFtd/9TQVpCZwezfkoCeS7z
-   g==;
-X-CSE-ConnectionGUID: 8Xqg2OxjQxmCpYfjuR1R4g==
-X-CSE-MsgGUID: cGGdcHVBRQqNm5qvqvaOKQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11616"; a="69097123"
-X-IronPort-AV: E=Sophos;i="6.19,314,1754982000"; 
-   d="scan'208";a="69097123"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2025 02:38:51 -0800
-X-CSE-ConnectionGUID: 3+5y3f4oSPCBezs0UuP3sw==
-X-CSE-MsgGUID: T0VmNn06S/m1gpEJLK3+pA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.19,314,1754982000"; 
-   d="scan'208";a="214114335"
-Received: from black.igk.intel.com ([10.91.253.5])
-  by fmviesa002.fm.intel.com with ESMTP; 18 Nov 2025 02:38:47 -0800
-Received: by black.igk.intel.com (Postfix, from userid 1003)
-	id 3C33D96; Tue, 18 Nov 2025 11:38:46 +0100 (CET)
-Date: Tue, 18 Nov 2025 11:38:46 +0100
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Guan-Chun Wu <409411716@gms.tku.edu.tw>,
-	David Laight <david.laight.linux@gmail.com>, axboe@kernel.dk,
-	ceph-devel@vger.kernel.org, ebiggers@kernel.org, hch@lst.de,
-	home7438072@gmail.com, idryomov@gmail.com, jaegeuk@kernel.org,
-	kbusch@kernel.org, linux-fscrypt@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-	sagi@grimberg.me, tytso@mit.edu, visitorckw@gmail.com,
-	xiubli@redhat.com
+	s=arc-20240116; t=1763486650; c=relaxed/simple;
+	bh=M8Z67lOaONf/tmr+4o9HrN9eRSIJ2trYjVqjqfGfxlc=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=UMe/7Ro2CQemdebY5d/AmTqtTUgaEfHgOBt2d8BcXLhGWMmEaL55ap4HiMR1KeSdPM3yK7OFVCLOxr+4Mvx04lZy+ks4dtRIIlHU/gBKdrpTj4dlmLMUkix9AJHXNxbvz/vqQ03uk4V6ORxkuRv67N1S569EWcDJ58d3LigyyM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=XPVP0681; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C298CC4AF0E;
+	Tue, 18 Nov 2025 17:24:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1763486649;
+	bh=M8Z67lOaONf/tmr+4o9HrN9eRSIJ2trYjVqjqfGfxlc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=XPVP0681fm+BDVWzM0jz/sIjLLt1GdLomjG5YXAx+Zwhr1YqRHlqYk7G1Rwvp0xtt
+	 j9Vl+YXUPYOuniWU8p19EsOTMVRxDU+Fs4EJWw32rsuuU6QjR5rKEpJzHsw24NDSDX
+	 PNg4Tw29sMCMrztnEiDPNb3xpNN+zYplwhvCyPXk=
+Date: Tue, 18 Nov 2025 09:24:05 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc: Guan-Chun Wu <409411716@gms.tku.edu.tw>, David Laight
+ <david.laight.linux@gmail.com>, axboe@kernel.dk,
+ ceph-devel@vger.kernel.org, ebiggers@kernel.org, hch@lst.de,
+ home7438072@gmail.com, idryomov@gmail.com, jaegeuk@kernel.org,
+ kbusch@kernel.org, linux-fscrypt@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+ sagi@grimberg.me, tytso@mit.edu, visitorckw@gmail.com, xiubli@redhat.com
 Subject: Re: [PATCH v5 3/6] lib/base64: rework encode/decode for speed and
  stricter validation
-Message-ID: <aRxMtmatG7wbqJKL@black.igk.intel.com>
+Message-Id: <20251118092405.230a6acb4eea49ecc62c65bf@linux-foundation.org>
+In-Reply-To: <aRxMtmatG7wbqJKL@black.igk.intel.com>
 References: <20251114055829.87814-1-409411716@gms.tku.edu.tw>
- <20251114060132.89279-1-409411716@gms.tku.edu.tw>
- <20251114091830.5325eed3@pumpkin>
- <aRmnYTHmfPi1lyix@wu-Pro-E500-G6-WS720T>
- <20251117094652.b04c6cf841d6426f70f23d22@linux-foundation.org>
+	<20251114060132.89279-1-409411716@gms.tku.edu.tw>
+	<20251114091830.5325eed3@pumpkin>
+	<aRmnYTHmfPi1lyix@wu-Pro-E500-G6-WS720T>
+	<20251117094652.b04c6cf841d6426f70f23d22@linux-foundation.org>
+	<aRxMtmatG7wbqJKL@black.igk.intel.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20251117094652.b04c6cf841d6426f70f23d22@linux-foundation.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Nov 17, 2025 at 09:46:52AM -0800, Andrew Morton wrote:
-> On Sun, 16 Nov 2025 18:28:49 +0800 Guan-Chun Wu <409411716@gms.tku.edu.tw> wrote:
+On Tue, 18 Nov 2025 11:38:46 +0100 Andy Shevchenko <andriy.shevchenko@intel.com> wrote:
+
+> The file also needs to fix the kernel-doc
 > 
-> > > Reviewed-by: David Laight <david.laight.linux@gmail.com>
-> > > 
-> > > But see minor nit below.
-> > 
-> > Hi David,
-> > 
-> > Thanks for the review and for pointing this out.
-> > 
-> > Andrew, would it be possible for you to fold this small change 
-> > (removing the redundant casts) directly when updating the patch?
-> > If that’s not convenient, I can resend an updated version of the
-> > series instead. 
-> 
-> Sure, I added this:
+> $ scripts/kernel-doc -none -v -Wall lib/base64.c
+> Warning: lib/base64.c:24 This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>  * Initialize the base64 reverse mapping for a single character
+> Warning: lib/base64.c:36 This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>  * Recursive macros to generate multiple Base64 reverse mapping table entries.
+> Info: lib/base64.c:67 Scanning doc for function base64_encode
+> Info: lib/base64.c:119 Scanning doc for function base64_decode
 
-The file also needs to fix the kernel-doc
+Thanks.
 
-$ scripts/kernel-doc -none -v -Wall lib/base64.c
-Warning: lib/base64.c:24 This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
- * Initialize the base64 reverse mapping for a single character
-Warning: lib/base64.c:36 This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
- * Recursive macros to generate multiple Base64 reverse mapping table entries.
-Info: lib/base64.c:67 Scanning doc for function base64_encode
-Info: lib/base64.c:119 Scanning doc for function base64_decode
-
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+--- a/lib/base64.c~lib-base64-optimize-base64_decode-with-reverse-lookup-tables-fix
++++ a/lib/base64.c
+@@ -21,7 +21,7 @@ static const char base64_tables[][65] =
+ 	[BASE64_IMAP] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+,",
+ };
+ 
+-/**
++/*
+  * Initialize the base64 reverse mapping for a single character
+  * This macro maps a character to its corresponding base64 value,
+  * returning -1 if the character is invalid.
+@@ -33,7 +33,8 @@ static const char base64_tables[][65] =
+ 		: (v) >= 'a' && (v) <= 'z' ? (v) - 'a' + 26 \
+ 		: (v) >= '0' && (v) <= '9' ? (v) - '0' + 52 \
+ 		: (v) == (ch_62) ? 62 : (v) == (ch_63) ? 63 : -1
+-/**
++
++/*
+  * Recursive macros to generate multiple Base64 reverse mapping table entries.
+  * Each macro generates a sequence of entries in the lookup table:
+  * INIT_2 generates 2 entries, INIT_4 generates 4, INIT_8 generates 8, and so on up to INIT_32.
+_
 
 
