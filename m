@@ -1,61 +1,51 @@
-Return-Path: <linux-fscrypt+bounces-988-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-989-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 300A5C7D574
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 22 Nov 2025 19:29:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 975DFC80F2F
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 24 Nov 2025 15:16:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id A2FFC342138
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 22 Nov 2025 18:29:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53F653A1D63
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 24 Nov 2025 14:16:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 190852517AA;
-	Sat, 22 Nov 2025 18:29:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pHFRdYqO"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76F7E215077;
+	Mon, 24 Nov 2025 14:16:28 +0000 (UTC)
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE46A217F36;
-	Sat, 22 Nov 2025 18:29:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01B912AD0C;
+	Mon, 24 Nov 2025 14:16:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763836169; cv=none; b=cDGCQ2696T2tDbACZ8FImgHcLMnt6ylvmaewKaYV1PAgcKhkY4mS7jtUO4IR8w/SkcWbHrmdSshghN8NahBoWI85jkZt3jW9IG2wQp8ZKwDy8aogdUzr7FQ/q8+Cb2avyGeIrgXVy50cPCR4H9mB5fe2OucV+ZGfkTaLSnv/PTk=
+	t=1763993788; cv=none; b=OOZTZjr9Hvw9dNSR5X3EoBXMCxFp8kx1g/sXrCOpuCxSaj+pe7E5YCy+5X+vc+ehBJrML8W0IDryYMe5XQPbBbH7qGHgGEcmrIC98r3f+TaTz7Hha0bANKqMhtsOImGp572Uzm0ANY8wrGhLQ7n+fEHTcimNPj1PYFOF14qOZ3U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763836169; c=relaxed/simple;
-	bh=8xw7rhH6O9SdjYiT0aP0fzTrgTnB7q3imFTDnslqKkg=;
+	s=arc-20240116; t=1763993788; c=relaxed/simple;
+	bh=gpD35ESx9gRHNke9UOuyFBKfd/cSmCuhLxV7sxGCKvQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tMg/H6tEhEnn2WXHcxbh1aoAAvlfZxur9c/DFXLwlF00Mu1KJnYxo1jz2kZAxML4nff4OkQybHx96RhNS5jSkUpNlrdI+mprNjIl2Jrq/MrOVo9CSXGAaLwoWMrsg4r/0OAudseR0rhGIqGOpdErTcNwiK6FVEA9EJBA2c/9wTA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pHFRdYqO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E29B5C4CEF5;
-	Sat, 22 Nov 2025 18:29:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763836168;
-	bh=8xw7rhH6O9SdjYiT0aP0fzTrgTnB7q3imFTDnslqKkg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pHFRdYqOPaQX70zmfnjBGRk3tGDlaAS2Jsb7U1vVsHowf+qQ2S/cXKybSueG1RSBe
-	 khJ2DDVb4v1G/nHgmkDibOsm8EcRQMfHDiM/PONLXco8bieclt85EWjtezvmpUop49
-	 tAmJNsVrerfklQpFkfZ35arZjm3eOxTm/nUh5EbkluMhEfWAhTb4kNwt9V5vQxd7tk
-	 o3goh49Axy0FLzNQ6gBSYH0t28ml89l1Q47HdOD9xT22oIGVjV+NlEanAdLF0fAyaf
-	 TAoz3S5eLQ6OkJCdVBQ5cT4ooEYsBYzDS3JeDNnkWQO5NLI4KGv5WyRt+y/9l5iDbO
-	 bkyjmhWiOkqvA==
-Date: Sat, 22 Nov 2025 10:29:26 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: "Theodore Y. Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=F/amoY6gh7qEKTjrysVOHxuRDUwbVAYMb+vZZyJbQHN2lklT9BKQVp+fAjUJUaDMXkq2MInWi3s1KSLlhdAAClIwf8Lm+bM8npvj5MgudAXKjhtkpt/z4Yn0+UEbIuD2jW1/AWyvG6eIcxOY2AYK2dWPCFcMUfvojV37QcezxBI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 0436768B05; Mon, 24 Nov 2025 15:16:21 +0100 (CET)
+Date: Mon, 24 Nov 2025 15:16:21 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>, "Theodore Y. Ts'o" <tytso@mit.edu>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
 	Andreas Dilger <adilger.kernel@dilger.ca>,
 	Chao Yu <chao@kernel.org>, Christian Brauner <brauner@kernel.org>,
 	"Darrick J. Wong" <djwong@kernel.org>,
 	linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
 	linux-f2fs-devel@lists.sourceforge.net,
 	linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 10/11] fscrypt: pass a byte length to
- fscrypt_zeroout_range
-Message-ID: <20251122182926.GC1626@quark>
-References: <20251118062159.2358085-1-hch@lst.de>
- <20251118062159.2358085-11-hch@lst.de>
+Subject: Re: [PATCH 04/11] fscrypt: pass a byte offset to
+ fscrypt_mergeable_bio
+Message-ID: <20251124141621.GC14417@lst.de>
+References: <20251118062159.2358085-1-hch@lst.de> <20251118062159.2358085-5-hch@lst.de> <20251122181717.GA1626@quark>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
@@ -64,46 +54,28 @@ List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251118062159.2358085-11-hch@lst.de>
+In-Reply-To: <20251122181717.GA1626@quark>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-On Tue, Nov 18, 2025 at 07:21:53AM +0100, Christoph Hellwig wrote:
-> Range lengths are usually expressed as bytes in the VFS, switch
-> fscrypt_zeroout_range to this convention.
+On Sat, Nov 22, 2025 at 10:17:17AM -0800, Eric Biggers wrote:
+> On Tue, Nov 18, 2025 at 07:21:47AM +0100, Christoph Hellwig wrote:
+> > diff --git a/fs/crypto/inline_crypt.c b/fs/crypto/inline_crypt.c
+> > index 1773dd7ea7cf..aba830e0827d 100644
+> > --- a/fs/crypto/inline_crypt.c
+> > +++ b/fs/crypto/inline_crypt.c
+> > @@ -361,7 +361,7 @@ EXPORT_SYMBOL_GPL(fscrypt_set_bio_crypt_ctx_bh);
+> >   * fscrypt_mergeable_bio() - test whether data can be added to a bio
+> >   * @bio: the bio being built up
+> >   * @inode: the inode for the next part of the I/O
+> > - * @next_lblk: the next file logical block number in the I/O
+> > + * @pos: the next file logical offset (in bytes) in the I/O
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  fs/crypto/bio.c | 6 +++---
->  fs/ext4/inode.c | 3 ++-
->  fs/f2fs/file.c  | 2 +-
->  3 files changed, 6 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/crypto/bio.c b/fs/crypto/bio.c
-> index 235dd1c3d443..4e9893664c0f 100644
-> --- a/fs/crypto/bio.c
-> +++ b/fs/crypto/bio.c
-> @@ -115,7 +115,7 @@ static int fscrypt_zeroout_range_inline_crypt(const struct inode *inode,
->   * @inode: the file's inode
->   * @pos: the first file logical offset (in bytes) to zero out
->   * @pblk: the first filesystem physical block to zero out
-> - * @len: number of blocks to zero out
-> + * @len: bytes to zero out
-[...]
-> int fscrypt_zeroout_range(const struct inode *inode, loff_t pos,                 
->                           sector_t sector, unsigned int len)
+> In comments, maybe call it a "file position" instead of "file logical
+> offset" to match the variable name?
 
-The type of 'len' is still unsigned int, so this reduces the maximum
-length accepted by fscrypt_zeroout_range() from UINT32_MAX blocks to
-UINT32_MAX bytes.  Is that really okay?
+Doing a quick grep, "file offset" seems to be a bit more than twice
+as common as "file position" in the kernel.  Logical offset, even
+without file is barely used.  So I think "file offset' might be best
+here, but if you prefer "file position" I can switch to that as well.
 
-Both ext4 and f2fs call this from functions where they have the length
-as a u32 number of logical blocks.  And of course both filesystems
-support files longer than UINT32_MAX bytes.  So it's not clear to me.
-ext4 extents have a smaller size limit, so maybe at least ext4 is okay.
-But different extents can be contiguous and operated on together.  So
-we'd have to check the callers of the callers, etc.
-
-It would be safer to change the type to u64 and have the callers do
-(u64)len_in_blocks << blockbits.
-
-- Eric
 
