@@ -1,91 +1,109 @@
-Return-Path: <linux-fscrypt+bounces-995-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-996-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7BB0C8CBFD
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 27 Nov 2025 04:25:36 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 79A4234B0CE
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 27 Nov 2025 03:25:36 +0000 (UTC)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09973CAF813
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 09 Dec 2025 10:48:10 +0100 (CET)
+Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
+	by sea.lore.kernel.org (Postfix) with ESMTP id E3A9B30AC025
+	for <lists+linux-fscrypt@lfdr.de>; Tue,  9 Dec 2025 09:46:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08E7E2BF006;
-	Thu, 27 Nov 2025 03:25:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B069C2FC89C;
+	Tue,  9 Dec 2025 09:46:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ynk85J9t"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="PMVH3Wmr"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE965125A9;
-	Thu, 27 Nov 2025 03:25:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E30222FC874
+	for <linux-fscrypt@vger.kernel.org>; Tue,  9 Dec 2025 09:46:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764213932; cv=none; b=QBmNzh0ucxpUXJqeUpenBXVyA0T/OSzxTrnpZAvgPVZ/qKWQ9oqK9tFtGeVufAzSzKUFnq7fSnibhcMMH87r0s8/9EDuGbxtfVskH47Ovc1vTT3FhjxQYEpLdZQH6gSe6nNW+33GFO8UJeFFPRGM0GssoF/nw8h7Svh6GY0ofnk=
+	t=1765273588; cv=none; b=vAJ+zPAXy7QH7CDNTjg+GgKJFYHS/7pQNoUVJMPrswcya2z8CweidQUKJSniUUGmzgdlSlAwTxlVpWJxnHJaGs6tamt1G9ech6uDbmpVpMrK7hSXPmQ0AdcVPCRJcjB6NKFwuftrKHdmvhfh0wvYvVeAP86skVMzhsSynFNKBaI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764213932; c=relaxed/simple;
-	bh=L2d2NMOWG9lk1o/sFH9lobfJpwzbhYn824TIH9mqJfc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b0pPXfRx1VEwA0aNRvXkukDjHIiFD6jfq79slGM1stbxBBbIi+wisee7M7VRouVpxMknY95Mm+ihAZllChBzR0o1wR2Rgqeic5thl6mJ9VNvSrX5fSxqG0jOoV3kzGlMUoxnGfUYAJXVhEf0mBxaugYcH3V0ZS0zfnAWEaICql0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ynk85J9t; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D6F1C4CEF7;
-	Thu, 27 Nov 2025 03:25:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764213932;
-	bh=L2d2NMOWG9lk1o/sFH9lobfJpwzbhYn824TIH9mqJfc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ynk85J9ttTA+NO5GOYTFqBeDl2GXGqqMKo/Eou5+/mr0Px40jAm96YdKerCuS+5Zp
-	 qtrdV7eQuHfrAowcEKMPgwVzGjYxybekSYdggJW+w4L5m4x32GC5jYTnde1jO7Acc9
-	 OsaVHMP22+2wxvG++UX8oI2U5e32oMLudyfbNcTwVU0e+7+5q96eX8uyLoAyBkUlu6
-	 +fqiEun8AF9nAyonB+F/Z3fAReAMZNVvjoNRji7tM5t9msfZ/tCKzxp9ZLjIsdgHqF
-	 +1MCI7AQywRkj752MLHkKt1ARxtIMwuzXrVMVCvdyBs/0no3RTNTcWpBe94GVZMdgN
-	 JjYmdBgAWtanA==
-Date: Wed, 26 Nov 2025 19:23:43 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: Li Tian <litian@redhat.com>
-Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-fscrypt@vger.kernel.org,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S . Miller" <davem@davemloft.net>,
-	"Theodore Y . Ts'o" <tytso@mit.edu>,
-	Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: Re: [PATCH RFC] crypto/hkdf: Fix salt length short issue in FIPS mode
-Message-ID: <20251127032343.GA60146@sol>
-References: <20251126134222.22083-1-litian@redhat.com>
- <20251126174158.GA71370@quark>
- <CAHhBTWuOy1nC1rYqye8BzE+unoC+3M9Dsw+Mj54=3eeFwqyTXw@mail.gmail.com>
- <20251127011446.GA1548@sol>
- <CAHhBTWsTqP3LzJV+=_usvttJcMFoLYSY5Sqt2H-U-oki3Hu0Mw@mail.gmail.com>
- <20251127015141.GA29380@sol>
- <CAHhBTWs6rWq2huD8Ech79OVOxK3v3ijU3KFFOGLQ+pr7277Vew@mail.gmail.com>
+	s=arc-20240116; t=1765273588; c=relaxed/simple;
+	bh=3U08kyr/AID++fRRop6dnO7khqAtMKg0AXs6GgRqoeI=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:References:Cc:
+	 In-Reply-To:Content-Type; b=If3bbM0QJWWY+2Ehee0ym9vZdRprHfOiU3ocHbj1dFejA1LXhqH52Jg897MGRrRPiCqVXs0Zdysj75PnzK3rdppv8TU/cmtOx+mLKRxITcxmKKCWKuvpXlN5kX6KV0w0IdSDzeh7pKOhjf9rbVUD520alzwDXNan5FZVFETgcDU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=PMVH3Wmr; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-2980d9b7df5so61607335ad.3
+        for <linux-fscrypt@vger.kernel.org>; Tue, 09 Dec 2025 01:46:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1765273586; x=1765878386; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:cc:references:to:from:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zfxmzUUooqkWpOC9gnra+ZEKbDrqCeaM9bSxezRioDM=;
+        b=PMVH3Wmrw5EnONYLYmTo5A7nWucllInD/BaNBa2sx+NLw0HqlhDVmmX8YAPSgFhQsr
+         WBGknEiJbZwIw435zrEtv1Ek38QDcFnVpBeLF9u2ynFnCGYcaj7BVFxEBM6o37QkwOtD
+         Bb+lItTcpRcWg1+Y3uZj5y512njsQS/Q/CprvdgkBAP8fNkhl6yqws8YZ8tb9t0WDzVU
+         JK9gNT42kNZvtwIRGCqyEtK6F/jvrDb/CCkd2/tGX+iM9avstjmdj8NxjjtAaluUN6hh
+         pdR2okxmfU+Y+cJ13COQJe5YRPIeLIc64mt1eonzzXPIzznsGJsVdkKeCLy4hew0xHvn
+         1OAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765273586; x=1765878386;
+        h=content-transfer-encoding:in-reply-to:cc:references:to:from:subject
+         :user-agent:mime-version:date:message-id:x-gm-gg:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zfxmzUUooqkWpOC9gnra+ZEKbDrqCeaM9bSxezRioDM=;
+        b=CQk2OvxIW6aO9FxfrT8zOX9L153+/gY9pfsBauFIV9aOHK8O/nfJ8GJCGQ/fyoP6c/
+         g9rc58kq2oObGSa/ZjuqjzpPFcSs3onWyxDT++EgzMUFeJFqzv2Je/EpwpKH5ilv0swk
+         drQ4G7LFdF197yoV5sHx3PLIMzsqfCdSHn38T6Yf0AjCb1wrjZLGl7DhT/qOR+2WHaW8
+         F81iFyUKbnjlpQeeurdwiW3e31grcgCQ1L8ApEXkS/+tMSE5ptZdI67J4MwXQ9vKumAM
+         QJYHPbagn50a+xM0dgyLbTigjcIUhtCRCor/pySqH+ud0Hw8z8EVbRlLiii3erlE3oP6
+         7fmw==
+X-Gm-Message-State: AOJu0Yy9clgfOn7KXtrq4ATPRZjlQTPYWoFactSa3JtwQsGdheKUQLTr
+	Ppi3f0kfoI1mMMQ5h0j8LOSoJANWgV1hgvM0sEzBTwetU4E0O7HXnDzhDC8fLGAX0Xs=
+X-Gm-Gg: AY/fxX4gd9eUcGQhI22J95cxWWgaubSASgitSsLA1HBnWSYucefc5YSOjGOuAWGYKjp
+	SvVnieBOiFcsdhps99kWPLx915GZ0xT8yCbKQ+EvhufzQ/wehnTHkLSBcJUbb+njgnYgheh8WQ8
+	7aXUnp4Z6qwZ4o3xGweUmKQFKIIi7rDN5nCS88ztNs3Qy+mTt1FxEhFtoCuOgiHYOyOi+tdvq+q
+	Wku5aybINOTUZR6/PayVWh080WCBfiO0FtOxKb2QbBg50A4qECxHW5UWfhWph5y1z7SpkmuS5oJ
+	1Hvx1suVGhJ7mcpLltwIpuk2ai+d28vqR1hHJdtQIIkzkZ1YM8ktA5LX6+GEtZ8UEKSa+OZsztF
+	AMx2n0dNkXcwBJ0l0mBONYLYERCqkacIeeo6YrhxtvDAb0fUY2ySeIRXWWAw3+gHBUtyKOpux+F
+	k/Vl0RA9Dchq7+IBEiBu3t1FE2szPjnL43VX2E/n5tGVy63Z/kDr9ADTU=
+X-Google-Smtp-Source: AGHT+IFuwmk2xdGIgTR4QMuN31UghMotRLmnNnpfquXV4iJJBSRjfXf6m6sms80zyvq08rvdLu3hjw==
+X-Received: by 2002:a17:903:240d:b0:24b:25f:5f81 with SMTP id d9443c01a7336-29df59a8bfamr131500195ad.17.1765273586025;
+        Tue, 09 Dec 2025 01:46:26 -0800 (PST)
+Received: from [10.88.210.107] ([61.213.176.58])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29daeaac07csm147849245ad.86.2025.12.09.01.46.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Dec 2025 01:46:25 -0800 (PST)
+Message-ID: <dfb1479b-8aef-4f55-ba5b-4ae0595c4f99@bytedance.com>
+Date: Tue, 9 Dec 2025 17:46:22 +0800
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHhBTWs6rWq2huD8Ech79OVOxK3v3ijU3KFFOGLQ+pr7277Vew@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: ext4/004 hangs with -o inlinecrypt,test_dummy_encryption
+From: Julian Sun <sunjunchao@bytedance.com>
+To: Christoph Hellwig <hch@infradead.org>, linux-ext4@vger.kernel.org
+References: <aTZ3ahPop7q8O5cE@infradead.org>
+ <80f77860-2d5d-4ff9-9bb8-1e5bc46a4692@bytedance.com>
+Cc: linux-fscrypt@vger.kernel.org
+In-Reply-To: <80f77860-2d5d-4ff9-9bb8-1e5bc46a4692@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Nov 27, 2025 at 11:11:29AM +0800, Li Tian wrote:
-> The error message I saw is `basic hdkf test(hmac(sha256-ni)): hkdf_extract
-> failed with -22`.
-> And I was looking at hmac.c that has `if (fips_enabled && (keylen < 112 /
-> 8))...` So I got the impression `crypto_shash_setkey(hmac_tfm, salt,
-> saltlen)` in hkdf_extract reached this failure.
+On 12/9/25 4:40 PM, Julian Sun wrote:
+> 
+> I can reproduce this issue locally with both v6.18 and v6.0. The problem 
+> disappears after removing test_dummy_encryption, and it still reproduces 
+> when test_dummy_encryption is set alone in MOUNT_OPTIONS. Therefore, I 
+> believe the issue lies in test_dummy_encryption — it is an 
+> implementation of fscrypt.
+> 
+> CC: linux-fscrypt
+> 
+> Thanks,
 
-112 / 8 is 14, not 32.
+cc linux-fscrypt
 
-Also since v6.17, "hmac(sha256)" no longer uses crypto/hmac.c.  I forgot
-to put the keylen < 14 check in the new version in crypto/sha256.c.
-That means the test failure you're reporting was already fixed.
-
-If you'd prefer that it be broken again, we can add the key length check
-back in.  But this whole thing is just more evidence that it's incorrect
-anyway, and it needs to be up to the caller to do a check if it needs
-to.  In HKDF the secret is in the input keying material, not the salt.
-
-- Eric
+-- 
+Julian Sun <sunjunchao@bytedance.com>
 
