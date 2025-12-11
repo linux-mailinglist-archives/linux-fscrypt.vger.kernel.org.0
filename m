@@ -1,74 +1,73 @@
-Return-Path: <linux-fscrypt+bounces-1010-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-1011-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECBD0CB51B8
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 11 Dec 2025 09:30:15 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC270CB5B0B
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 11 Dec 2025 12:45:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id F286F3014DEF
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 11 Dec 2025 08:29:56 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5B765301790E
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 11 Dec 2025 11:45:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25807295DB8;
-	Thu, 11 Dec 2025 08:29:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 953F73081D0;
+	Thu, 11 Dec 2025 11:45:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EjGdG+yn"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XxySv9t1"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48EDD248F5A;
-	Thu, 11 Dec 2025 08:29:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A58403093D3;
+	Thu, 11 Dec 2025 11:45:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765441794; cv=none; b=iZPggORVypZBzfrBjj173QrHNcmzdyk3ULSj4TbpflA53xQA2V7IPa/Oy5M8YJi7/nckAO8qMuvl/YcUnvryCHmti9ys5b8wLMm3e3oEBtuB2R1gsQgcqVkHdaA6VHBKkveNHIhvF/e3uLc8UhfXWCLiHTWUrtaw6Xt+X3xv8nE=
+	t=1765453502; cv=none; b=nenyZsmibfyEpoTheFuusHq44pmdTN/NRvc5iLSLmWpUh5NpDijxaov+i5ywnMfPK4PRwmDNgTkCnKYdfcZtqwdIyH/uQ4O5Gdcfoc/RIoBxvHWu67DwN6Y0fqbsV8DpHuIXgAEImzn7u57EPzSMOXfgorfHnvamNplmZBZRkF4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765441794; c=relaxed/simple;
-	bh=oZk62VQRQiT5+0VX7ZHg9OxApmN3iEZ3qWothA1myos=;
+	s=arc-20240116; t=1765453502; c=relaxed/simple;
+	bh=cOn6UTu0/9RkFEkwE5FquPfHJ4Tb48KMcfQ2Hu2lL8Q=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lmIzzGhUWQbEUInMpP7KkC2Qj96st27AgLuMuRft5dqQPs/uOz4BCwXWIEv+7tbZNM9lTpvhYIYRWBguhBbDf64OLqpyb5nJ5Pv1/P5y8EBYGyJY+/pEVABO3Ntd92V2EP5aWlAEaKbGw5A/KJucubhMmMoPSsMcyQ5csOxm3t0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EjGdG+yn; arc=none smtp.client-ip=198.175.65.19
+	 Content-Type:Content-Disposition:In-Reply-To; b=Vph29gnnG5/NSQWDzGaNrQu1Pk6YilG9AnRzrviqL2i3IvsojkKKtSA/+LxnVVWbi6XGtKgmozteASMJEQXSadT7NX1dZNGAeUbDN5sNFMDD4NmHCBQ7KS2a8oCO2Adslk5wew5JtUQ0B3L32YBUh7YZwD/EwlF885QQr5TpY4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XxySv9t1; arc=none smtp.client-ip=198.175.65.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1765441792; x=1796977792;
+  t=1765453501; x=1796989501;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=oZk62VQRQiT5+0VX7ZHg9OxApmN3iEZ3qWothA1myos=;
-  b=EjGdG+ynAlmT4Vh79VsnsZtNiz3ztpVXZ3FScTj9xhx3PcXMjqElXM+j
-   H6ZTa2SLR/eoenE7a1Io4pPK2yo6HFFbeX3BJnyn/fsiMSSVoQtEaQ88l
-   yxKA/A0ySd/9CsRnMLT+G1o+92cq0HvdS2BIkYoxEwjyxWWua17QNXRSc
-   +UN5rMqk6hYTT4QmGQFR1fTgm6pHVkRuAsW/Vg5TwitbYv8BNYWa/WL3Q
-   Dy25InFLn8XCg8vImxVqFm5ZML5e3la8x4i7jGsQE/fvdl8ZOLRAXheBo
-   bfMivxw034VdnOZlBfxK2vjF4mVumKyososWXRNVsLKezIk2pazPiC4H6
-   A==;
-X-CSE-ConnectionGUID: NwArkhlWSDG4bzaTxSJdbw==
-X-CSE-MsgGUID: Xoz+yZJsQUeG32l3v1Vjqw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11638"; a="67305597"
+  bh=cOn6UTu0/9RkFEkwE5FquPfHJ4Tb48KMcfQ2Hu2lL8Q=;
+  b=XxySv9t1rfjcQJVB161ieFQjQ7+RkJxiRBvMsQh0pJpCIW09DFGcocII
+   5IwnNUR9fbzyxjcf7b95CyoKzTy9jeRNG61Xns0QFn9nCyS5Krn8BXPMX
+   f0YDSHonWW21oh/BpW6WUoZoFR618NOA3Nf219zGWCU99JZ7YTDVwHM7g
+   t5QqZWoFeHqjxSJwk9MgA/SiefssPiMA3iuIOP/rLrhhGWyHAqx0Ok1Bs
+   nA5/Vp56QHuwZlT99lFcgnQ107E2rFojTGcKOS9mPIw2mv1V7XuDZdb5d
+   JaBzmo2se/bT8IsUjBbS7+j69AWkmcute4B0TpZn/hdc7KNTb/6key/47
+   w==;
+X-CSE-ConnectionGUID: ZCo3svJgQk+VLAU+p8ztEA==
+X-CSE-MsgGUID: rjIjtmS9Q6OcTJ+lZFxY+g==
+X-IronPort-AV: E=McAfee;i="6800,10657,11638"; a="78897012"
 X-IronPort-AV: E=Sophos;i="6.20,265,1758610800"; 
-   d="scan'208";a="67305597"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2025 00:29:51 -0800
-X-CSE-ConnectionGUID: 3O2abcG3S4u1FyeKWKOjPQ==
-X-CSE-MsgGUID: 0bXA4y8vRLSLU557QTbnnQ==
+   d="scan'208";a="78897012"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2025 03:45:00 -0800
+X-CSE-ConnectionGUID: aStNkfRCQM6h6VQAqWFmrw==
+X-CSE-MsgGUID: b5ZAqOWVQiWudXtxqqnsBQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.20,265,1758610800"; 
-   d="scan'208";a="201220538"
+   d="scan'208";a="201202087"
 Received: from lkp-server01.sh.intel.com (HELO d335e3c6db51) ([10.239.97.150])
-  by orviesa004.jf.intel.com with ESMTP; 11 Dec 2025 00:29:49 -0800
+  by fmviesa005.fm.intel.com with ESMTP; 11 Dec 2025 03:44:58 -0800
 Received: from kbuild by d335e3c6db51 with local (Exim 4.98.2)
 	(envelope-from <lkp@intel.com>)
-	id 1vTc3W-000000004PN-2OZw;
-	Thu, 11 Dec 2025 08:29:46 +0000
-Date: Thu, 11 Dec 2025 16:28:56 +0800
+	id 1vTf6N-000000004an-2uZS;
+	Thu, 11 Dec 2025 11:44:55 +0000
+Date: Thu, 11 Dec 2025 19:43:58 +0800
 From: kernel test robot <lkp@intel.com>
 To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
 	Eric Biggers <ebiggers@kernel.org>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-fscrypt@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, linux-block@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org
 Subject: Re: [PATCH 8/9] blk-crypto: optimize data unit alignment checking
-Message-ID: <202512111625.7vv9PN6b-lkp@intel.com>
+Message-ID: <202512111915.7XNiZmvo-lkp@intel.com>
 References: <20251210152343.3666103-9-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
@@ -86,7 +85,7 @@ kernel test robot noticed the following build errors:
 
 [auto build test ERROR on axboe/for-next]
 [also build test ERROR on jaegeuk-f2fs/dev-test jaegeuk-f2fs/dev linus/master next-20251211]
-[cannot apply to tytso-ext4/dev v6.18]
+[cannot apply to tytso-ext4/dev brauner-vfs/vfs.all v6.18]
 [If your patch is applied to the wrong git tree, kindly drop us a note.
 And when submitting patch, we suggest to use '--base' as documented in
 https://git-scm.com/docs/git-format-patch#_base_tree_information]
@@ -95,21 +94,21 @@ url:    https://github.com/intel-lab-lkp/linux/commits/Christoph-Hellwig/fscrypt
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux.git for-next
 patch link:    https://lore.kernel.org/r/20251210152343.3666103-9-hch%40lst.de
 patch subject: [PATCH 8/9] blk-crypto: optimize data unit alignment checking
-config: x86_64-allnoconfig (https://download.01.org/0day-ci/archive/20251211/202512111625.7vv9PN6b-lkp@intel.com/config)
-compiler: clang version 20.1.8 (https://github.com/llvm/llvm-project 87f0227cb60147a26a1eeb4fb06e3b505e9c7261)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251211/202512111625.7vv9PN6b-lkp@intel.com/reproduce)
+config: nios2-allnoconfig (https://download.01.org/0day-ci/archive/20251211/202512111915.7XNiZmvo-lkp@intel.com/config)
+compiler: nios2-linux-gcc (GCC) 11.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251211/202512111915.7XNiZmvo-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202512111625.7vv9PN6b-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202512111915.7XNiZmvo-lkp@intel.com/
 
 All errors (new ones prefixed by >>):
 
->> block/blk-merge.c:332:35: error: no member named 'bi_crypt_context' in 'struct bio'
+   block/blk-merge.c: In function 'bio_split_io_at':
+>> block/blk-merge.c:332:47: error: 'struct bio' has no member named 'bi_crypt_context'
      332 |                 struct bio_crypt_ctx *bc = bio->bi_crypt_context;
-         |                                            ~~~  ^
-   1 error generated.
+         |                                               ^~
 
 
 vim +332 block/blk-merge.c
