@@ -1,423 +1,219 @@
-Return-Path: <linux-fscrypt+bounces-1009-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-1010-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4429BCB350A
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 10 Dec 2025 16:28:34 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECBD0CB51B8
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 11 Dec 2025 09:30:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 414EC3165FD2
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 10 Dec 2025 15:24:22 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id F286F3014DEF
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 11 Dec 2025 08:29:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0A442FFFB2;
-	Wed, 10 Dec 2025 15:24:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25807295DB8;
+	Thu, 11 Dec 2025 08:29:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="WQ8yF50P"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EjGdG+yn"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 047E026FA5B;
-	Wed, 10 Dec 2025 15:24:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48EDD248F5A;
+	Thu, 11 Dec 2025 08:29:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765380261; cv=none; b=fJMOumpaG6n9+qMhkmVjMY2ntHCLQHYF8x7xll/nEXM1ibIeI0fEem6N4DUA6eMbKmITwhCX9COC+MdF/EOAdbK9+CAFhP+RkYhoxGh1WwiPEW4VuFmeskrcw8vSnELXAMHkfdcW5GqiZoN70a0BhlfhWlSSRMIruJX4QyCPKEo=
+	t=1765441794; cv=none; b=iZPggORVypZBzfrBjj173QrHNcmzdyk3ULSj4TbpflA53xQA2V7IPa/Oy5M8YJi7/nckAO8qMuvl/YcUnvryCHmti9ys5b8wLMm3e3oEBtuB2R1gsQgcqVkHdaA6VHBKkveNHIhvF/e3uLc8UhfXWCLiHTWUrtaw6Xt+X3xv8nE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765380261; c=relaxed/simple;
-	bh=S/jBJL5lZpU5Pg3Ty5UvArbaTWmx/CsOvmfwFLmGkaA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=g7oqyXv6yKfOhA7bHu0LF/RlY9bkwwIUzwU+CNUrIKCSeQ1Pr93vbDelfNhslJROoLW1vtIHlM4UQ4jfxuLpC0Kol10mnAxIOhJklGV0P/OsAUUID/jgmdIWjEkq23Rt4xYapHK5nnUZZ7Npubra3zG5hPWgReE6dbwEKk6sFEo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=WQ8yF50P; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
-	:Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=FQUphoLl+CSl7BzULuCCRXcVoz0pb/MDauqP2iOaV7E=; b=WQ8yF50PVZtz+v2UxDw/R277Yt
-	NroPhVZ3zhpFWJssIqglQijPfTxJK4kG5gstJqVJJwpNZwFya+smrHN3Aepq59BMXDZyFrXntPz+P
-	XB2+kjH797NSdWeeDaY++KbhQNf3SeAqHEGhmxvbofel7OlSZOv8OnXiC0MsdmMrfNPrGu48c1bgV
-	uQrhrE4p4Bp7yAj4nJGq9Wqb2/AWPWGQ0mTYHiB8DX3LuSJG9UD2/g4vfumzN8JcK9mywLnojpdDR
-	4fxE/j93RuVbu/oRHGeC2TYt/5xMdECLQ6TY7azh1BxxThFj8awaYOtGSMvNSuxBkBzVOOcujFpTF
-	yrU4kmFw==;
-Received: from 2a02-8389-2341-5b80-d601-7564-c2e0-491c.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:d601:7564:c2e0:491c] helo=localhost)
-	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vTM39-0000000FZ3h-0KVT;
-	Wed, 10 Dec 2025 15:24:19 +0000
-From: Christoph Hellwig <hch@lst.de>
-To: Jens Axboe <axboe@kernel.dk>,
+	s=arc-20240116; t=1765441794; c=relaxed/simple;
+	bh=oZk62VQRQiT5+0VX7ZHg9OxApmN3iEZ3qWothA1myos=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lmIzzGhUWQbEUInMpP7KkC2Qj96st27AgLuMuRft5dqQPs/uOz4BCwXWIEv+7tbZNM9lTpvhYIYRWBguhBbDf64OLqpyb5nJ5Pv1/P5y8EBYGyJY+/pEVABO3Ntd92V2EP5aWlAEaKbGw5A/KJucubhMmMoPSsMcyQ5csOxm3t0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EjGdG+yn; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1765441792; x=1796977792;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=oZk62VQRQiT5+0VX7ZHg9OxApmN3iEZ3qWothA1myos=;
+  b=EjGdG+ynAlmT4Vh79VsnsZtNiz3ztpVXZ3FScTj9xhx3PcXMjqElXM+j
+   H6ZTa2SLR/eoenE7a1Io4pPK2yo6HFFbeX3BJnyn/fsiMSSVoQtEaQ88l
+   yxKA/A0ySd/9CsRnMLT+G1o+92cq0HvdS2BIkYoxEwjyxWWua17QNXRSc
+   +UN5rMqk6hYTT4QmGQFR1fTgm6pHVkRuAsW/Vg5TwitbYv8BNYWa/WL3Q
+   Dy25InFLn8XCg8vImxVqFm5ZML5e3la8x4i7jGsQE/fvdl8ZOLRAXheBo
+   bfMivxw034VdnOZlBfxK2vjF4mVumKyososWXRNVsLKezIk2pazPiC4H6
+   A==;
+X-CSE-ConnectionGUID: NwArkhlWSDG4bzaTxSJdbw==
+X-CSE-MsgGUID: Xoz+yZJsQUeG32l3v1Vjqw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11638"; a="67305597"
+X-IronPort-AV: E=Sophos;i="6.20,265,1758610800"; 
+   d="scan'208";a="67305597"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2025 00:29:51 -0800
+X-CSE-ConnectionGUID: 3O2abcG3S4u1FyeKWKOjPQ==
+X-CSE-MsgGUID: 0bXA4y8vRLSLU557QTbnnQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.20,265,1758610800"; 
+   d="scan'208";a="201220538"
+Received: from lkp-server01.sh.intel.com (HELO d335e3c6db51) ([10.239.97.150])
+  by orviesa004.jf.intel.com with ESMTP; 11 Dec 2025 00:29:49 -0800
+Received: from kbuild by d335e3c6db51 with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1vTc3W-000000004PN-2OZw;
+	Thu, 11 Dec 2025 08:29:46 +0000
+Date: Thu, 11 Dec 2025 16:28:56 +0800
+From: kernel test robot <lkp@intel.com>
+To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
 	Eric Biggers <ebiggers@kernel.org>
-Cc: linux-block@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
 	linux-fscrypt@vger.kernel.org
-Subject: [PATCH 9/9] blk-crypto: handle the fallback above the block layer
-Date: Wed, 10 Dec 2025 16:23:38 +0100
-Message-ID: <20251210152343.3666103-10-hch@lst.de>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20251210152343.3666103-1-hch@lst.de>
-References: <20251210152343.3666103-1-hch@lst.de>
+Subject: Re: [PATCH 8/9] blk-crypto: optimize data unit alignment checking
+Message-ID: <202512111625.7vv9PN6b-lkp@intel.com>
+References: <20251210152343.3666103-9-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251210152343.3666103-9-hch@lst.de>
 
-Add a blk_crypto_submit_bio helper that either submits the bio when
-it is not encrypted or inline encryption is provided, but otherwise
-handles the encryption before going down into the low-level driver.
-This reduces the risk from bio reordering and keeps memory allocation
-as high up in the stack as possible.
+Hi Christoph,
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- Documentation/block/inline-encryption.rst |  6 ++++++
- block/blk-core.c                          | 10 +++++++---
- block/blk-crypto-internal.h               | 19 +++++++++++--------
- block/blk-crypto.c                        | 23 ++++++-----------------
- fs/buffer.c                               |  3 ++-
- fs/crypto/bio.c                           |  2 +-
- fs/ext4/page-io.c                         |  3 ++-
- fs/ext4/readpage.c                        |  9 +++++----
- fs/f2fs/data.c                            |  4 ++--
- fs/f2fs/file.c                            |  3 ++-
- fs/iomap/direct-io.c                      |  3 ++-
- include/linux/blk-crypto.h                | 22 ++++++++++++++++++++++
- 12 files changed, 68 insertions(+), 39 deletions(-)
+kernel test robot noticed the following build errors:
 
-diff --git a/Documentation/block/inline-encryption.rst b/Documentation/block/inline-encryption.rst
-index 6380e6ab492b..7e0703a12dfb 100644
---- a/Documentation/block/inline-encryption.rst
-+++ b/Documentation/block/inline-encryption.rst
-@@ -206,6 +206,12 @@ it to a bio, given the blk_crypto_key and the data unit number that will be used
- for en/decryption.  Users don't need to worry about freeing the bio_crypt_ctx
- later, as that happens automatically when the bio is freed or reset.
- 
-+To submit a bio that uses inline encryption, users must call
-+``blk_crypto_submit_bio()`` instead of the usual ``submit_bio()``.  This will
-+submit the bio to the underlying driver if it supports inline crypto, or else
-+call the blk-crypto fallback routines before submitting normal bios to the
-+underlying drivers.
-+
- Finally, when done using inline encryption with a blk_crypto_key on a
- block_device, users must call ``blk_crypto_evict_key()``.  This ensures that
- the key is evicted from all keyslots it may be programmed into and unlinked from
-diff --git a/block/blk-core.c b/block/blk-core.c
-index f87e5f1a101f..a0bf5174e9e9 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -628,9 +628,6 @@ static void __submit_bio(struct bio *bio)
- 	/* If plug is not used, add new plug here to cache nsecs time. */
- 	struct blk_plug plug;
- 
--	if (unlikely(!blk_crypto_bio_prep(bio)))
--		return;
--
- 	blk_start_plug(&plug);
- 
- 	if (!bdev_test_flag(bio->bi_bdev, BD_HAS_SUBMIT_BIO)) {
-@@ -794,6 +791,13 @@ void submit_bio_noacct(struct bio *bio)
- 	if ((bio->bi_opf & REQ_NOWAIT) && !bdev_nowait(bdev))
- 		goto not_supported;
- 
-+	if (bio_has_crypt_ctx(bio)) {
-+		if (WARN_ON_ONCE(!bio_has_data(bio)))
-+			goto end_io;
-+		if (!blk_crypto_supported(bio))
-+			goto not_supported;
-+	}
-+
- 	if (should_fail_bio(bio))
- 		goto end_io;
- 	bio_check_ro(bio);
-diff --git a/block/blk-crypto-internal.h b/block/blk-crypto-internal.h
-index d65023120341..742694213529 100644
---- a/block/blk-crypto-internal.h
-+++ b/block/blk-crypto-internal.h
-@@ -86,6 +86,12 @@ bool __blk_crypto_cfg_supported(struct blk_crypto_profile *profile,
- int blk_crypto_ioctl(struct block_device *bdev, unsigned int cmd,
- 		     void __user *argp);
- 
-+static inline bool blk_crypto_supported(struct bio *bio)
-+{
-+	return blk_crypto_config_supported_natively(bio->bi_bdev,
-+			&bio->bi_crypt_context->bc_key->crypto_cfg);
-+}
-+
- #else /* CONFIG_BLK_INLINE_ENCRYPTION */
- 
- static inline int blk_crypto_sysfs_register(struct gendisk *disk)
-@@ -139,6 +145,11 @@ static inline int blk_crypto_ioctl(struct block_device *bdev, unsigned int cmd,
- 	return -ENOTTY;
- }
- 
-+static inline bool blk_crypto_supported(struct bio *bio)
-+{
-+	return false;
-+}
-+
- #endif /* CONFIG_BLK_INLINE_ENCRYPTION */
- 
- void __bio_crypt_advance(struct bio *bio, unsigned int bytes);
-@@ -165,14 +176,6 @@ static inline void bio_crypt_do_front_merge(struct request *rq,
- #endif
- }
- 
--bool __blk_crypto_bio_prep(struct bio *bio);
--static inline bool blk_crypto_bio_prep(struct bio *bio)
--{
--	if (bio_has_crypt_ctx(bio))
--		return __blk_crypto_bio_prep(bio);
--	return true;
--}
--
- blk_status_t __blk_crypto_rq_get_keyslot(struct request *rq);
- static inline blk_status_t blk_crypto_rq_get_keyslot(struct request *rq)
- {
-diff --git a/block/blk-crypto.c b/block/blk-crypto.c
-index 0b2535d8dbcc..856d3c5b1fa0 100644
---- a/block/blk-crypto.c
-+++ b/block/blk-crypto.c
-@@ -242,25 +242,13 @@ void __blk_crypto_free_request(struct request *rq)
- 	rq->crypt_ctx = NULL;
- }
- 
--/**
-- * __blk_crypto_bio_prep - Prepare bio for inline encryption
-- * @bio: bio to prepare
-- *
-- * If the bio crypt context provided for the bio is supported by the underlying
-- * device's inline encryption hardware, do nothing.
-- *
-- * Otherwise, try to perform en/decryption for this bio by falling back to the
-- * kernel crypto API.  For encryption this means submitting newly allocated
-- * bios for the encrypted payload while keeping back the source bio until they
-- * complete, while for reads the decryption happens in-place by a hooked in
-- * completion handler.
-- *
-- * Caller must ensure bio has bio_crypt_ctx.
-+/*
-+ * Process a bio with a crypto context.  Returns true if the caller should
-+ * submit the passed in bio, false if the bio is consumed.
-  *
-- * Return: true if @bio should be submitted to the driver by the caller, else
-- * false.  Sets bio->bi_status, calls bio_endio and returns false on error.
-+ * See the kerneldoc comment for blk_crypto_submit_bio for further details.
-  */
--bool __blk_crypto_bio_prep(struct bio *bio)
-+bool __blk_crypto_submit_bio(struct bio *bio)
- {
- 	const struct blk_crypto_key *bc_key = bio->bi_crypt_context->bc_key;
- 	struct block_device *bdev = bio->bi_bdev;
-@@ -288,6 +276,7 @@ bool __blk_crypto_bio_prep(struct bio *bio)
- 
- 	return true;
- }
-+EXPORT_SYMBOL_GPL(__blk_crypto_submit_bio);
- 
- int __blk_crypto_rq_bio_prep(struct request *rq, struct bio *bio,
- 			     gfp_t gfp_mask)
-diff --git a/fs/buffer.c b/fs/buffer.c
-index 838c0c571022..da18053f66e8 100644
---- a/fs/buffer.c
-+++ b/fs/buffer.c
-@@ -29,6 +29,7 @@
- #include <linux/slab.h>
- #include <linux/capability.h>
- #include <linux/blkdev.h>
-+#include <linux/blk-crypto.h>
- #include <linux/file.h>
- #include <linux/quotaops.h>
- #include <linux/highmem.h>
-@@ -2821,7 +2822,7 @@ static void submit_bh_wbc(blk_opf_t opf, struct buffer_head *bh,
- 		wbc_account_cgroup_owner(wbc, bh->b_folio, bh->b_size);
- 	}
- 
--	submit_bio(bio);
-+	blk_crypto_submit_bio(bio);
- }
- 
- void submit_bh(blk_opf_t opf, struct buffer_head *bh)
-diff --git a/fs/crypto/bio.c b/fs/crypto/bio.c
-index c2b3ca100f8d..6da683ea69dc 100644
---- a/fs/crypto/bio.c
-+++ b/fs/crypto/bio.c
-@@ -105,7 +105,7 @@ static int fscrypt_zeroout_range_inline_crypt(const struct inode *inode,
- 		}
- 
- 		atomic_inc(&done.pending);
--		submit_bio(bio);
-+		blk_crypto_submit_bio(bio);
- 	}
- 
- 	fscrypt_zeroout_range_done(&done);
-diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c
-index 39abfeec5f36..a8c95eee91b7 100644
---- a/fs/ext4/page-io.c
-+++ b/fs/ext4/page-io.c
-@@ -7,6 +7,7 @@
-  * Written by Theodore Ts'o, 2010.
-  */
- 
-+#include <linux/blk-crypto.h>
- #include <linux/fs.h>
- #include <linux/time.h>
- #include <linux/highuid.h>
-@@ -401,7 +402,7 @@ void ext4_io_submit(struct ext4_io_submit *io)
- 	if (bio) {
- 		if (io->io_wbc->sync_mode == WB_SYNC_ALL)
- 			io->io_bio->bi_opf |= REQ_SYNC;
--		submit_bio(io->io_bio);
-+		blk_crypto_submit_bio(io->io_bio);
- 	}
- 	io->io_bio = NULL;
- }
-diff --git a/fs/ext4/readpage.c b/fs/ext4/readpage.c
-index e7f2350c725b..49a6d36a8dba 100644
---- a/fs/ext4/readpage.c
-+++ b/fs/ext4/readpage.c
-@@ -36,6 +36,7 @@
- #include <linux/bio.h>
- #include <linux/fs.h>
- #include <linux/buffer_head.h>
-+#include <linux/blk-crypto.h>
- #include <linux/blkdev.h>
- #include <linux/highmem.h>
- #include <linux/prefetch.h>
-@@ -345,7 +346,7 @@ int ext4_mpage_readpages(struct inode *inode,
- 		if (bio && (last_block_in_bio != first_block - 1 ||
- 			    !fscrypt_mergeable_bio(bio, inode, next_block))) {
- 		submit_and_realloc:
--			submit_bio(bio);
-+			blk_crypto_submit_bio(bio);
- 			bio = NULL;
- 		}
- 		if (bio == NULL) {
-@@ -371,14 +372,14 @@ int ext4_mpage_readpages(struct inode *inode,
- 		if (((map.m_flags & EXT4_MAP_BOUNDARY) &&
- 		     (relative_block == map.m_len)) ||
- 		    (first_hole != blocks_per_folio)) {
--			submit_bio(bio);
-+			blk_crypto_submit_bio(bio);
- 			bio = NULL;
- 		} else
- 			last_block_in_bio = first_block + blocks_per_folio - 1;
- 		continue;
- 	confused:
- 		if (bio) {
--			submit_bio(bio);
-+			blk_crypto_submit_bio(bio);
- 			bio = NULL;
- 		}
- 		if (!folio_test_uptodate(folio))
-@@ -389,7 +390,7 @@ int ext4_mpage_readpages(struct inode *inode,
- 		; /* A label shall be followed by a statement until C23 */
- 	}
- 	if (bio)
--		submit_bio(bio);
-+		blk_crypto_submit_bio(bio);
- 	return 0;
- }
- 
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index c30e69392a62..c3dd8a5c8589 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -513,7 +513,7 @@ void f2fs_submit_read_bio(struct f2fs_sb_info *sbi, struct bio *bio,
- 	trace_f2fs_submit_read_bio(sbi->sb, type, bio);
- 
- 	iostat_update_submit_ctx(bio, type);
--	submit_bio(bio);
-+	blk_crypto_submit_bio(bio);
- }
- 
- static void f2fs_submit_write_bio(struct f2fs_sb_info *sbi, struct bio *bio,
-@@ -522,7 +522,7 @@ static void f2fs_submit_write_bio(struct f2fs_sb_info *sbi, struct bio *bio,
- 	WARN_ON_ONCE(is_read_io(bio_op(bio)));
- 	trace_f2fs_submit_write_bio(sbi->sb, type, bio);
- 	iostat_update_submit_ctx(bio, type);
--	submit_bio(bio);
-+	blk_crypto_submit_bio(bio);
- }
- 
- static void __submit_merged_bio(struct f2fs_bio_info *io)
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index d7047ca6b98d..914790f37915 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -5,6 +5,7 @@
-  * Copyright (c) 2012 Samsung Electronics Co., Ltd.
-  *             http://www.samsung.com/
-  */
-+#include <linux/blk-crypto.h>
- #include <linux/fs.h>
- #include <linux/f2fs_fs.h>
- #include <linux/stat.h>
-@@ -5046,7 +5047,7 @@ static void f2fs_dio_write_submit_io(const struct iomap_iter *iter,
- 	enum temp_type temp = f2fs_get_segment_temp(sbi, type);
- 
- 	bio->bi_write_hint = f2fs_io_type_to_rw_hint(sbi, DATA, temp);
--	submit_bio(bio);
-+	blk_crypto_submit_bio(bio);
- }
- 
- static const struct iomap_dio_ops f2fs_iomap_dio_write_ops = {
-diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-index 8e273408453a..4000c8596d9b 100644
---- a/fs/iomap/direct-io.c
-+++ b/fs/iomap/direct-io.c
-@@ -3,6 +3,7 @@
-  * Copyright (C) 2010 Red Hat, Inc.
-  * Copyright (c) 2016-2025 Christoph Hellwig.
-  */
-+#include <linux/blk-crypto.h>
- #include <linux/fscrypt.h>
- #include <linux/pagemap.h>
- #include <linux/iomap.h>
-@@ -74,7 +75,7 @@ static void iomap_dio_submit_bio(const struct iomap_iter *iter,
- 		dio->dops->submit_io(iter, bio, pos);
- 	} else {
- 		WARN_ON_ONCE(iter->iomap.flags & IOMAP_F_ANON_WRITE);
--		submit_bio(bio);
-+		blk_crypto_submit_bio(bio);
- 	}
- }
- 
-diff --git a/include/linux/blk-crypto.h b/include/linux/blk-crypto.h
-index 58b0c5254a67..887169f8feb0 100644
---- a/include/linux/blk-crypto.h
-+++ b/include/linux/blk-crypto.h
-@@ -171,6 +171,28 @@ static inline bool bio_has_crypt_ctx(struct bio *bio)
- 
- #endif /* CONFIG_BLK_INLINE_ENCRYPTION */
- 
-+bool __blk_crypto_submit_bio(struct bio *bio);
-+
-+/**
-+ * blk_crypto_submit_bio - Submit a bio using inline encryption
-+ * @bio: bio to submit
-+ *
-+ * If @bio has not crypto context, or the crypt context attached to @bio is
-+ * supported by the underlying device's inline encryption hardware, just submit
-+ * @bio.
-+ *
-+ * Otherwise, try to perform en/decryption for this bio by falling back to the
-+ * kernel crypto API. For encryption this means submitting newly allocated
-+ * bios for the encrypted payload while keeping back the source bio until they
-+ * complete, while for reads the decryption happens in-place by a hooked in
-+ * completion handler.
-+ */
-+static inline void blk_crypto_submit_bio(struct bio *bio)
-+{
-+	if (!bio_has_crypt_ctx(bio) || __blk_crypto_submit_bio(bio))
-+		submit_bio(bio);
-+}
-+
- int __bio_crypt_clone(struct bio *dst, struct bio *src, gfp_t gfp_mask);
- /**
-  * bio_crypt_clone - clone bio encryption context
+[auto build test ERROR on axboe/for-next]
+[also build test ERROR on jaegeuk-f2fs/dev-test jaegeuk-f2fs/dev linus/master next-20251211]
+[cannot apply to tytso-ext4/dev v6.18]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Christoph-Hellwig/fscrypt-keep-multiple-bios-in-flight-in-fscrypt_zeroout_range_inline_crypt/20251211-002354
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux.git for-next
+patch link:    https://lore.kernel.org/r/20251210152343.3666103-9-hch%40lst.de
+patch subject: [PATCH 8/9] blk-crypto: optimize data unit alignment checking
+config: x86_64-allnoconfig (https://download.01.org/0day-ci/archive/20251211/202512111625.7vv9PN6b-lkp@intel.com/config)
+compiler: clang version 20.1.8 (https://github.com/llvm/llvm-project 87f0227cb60147a26a1eeb4fb06e3b505e9c7261)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251211/202512111625.7vv9PN6b-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202512111625.7vv9PN6b-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> block/blk-merge.c:332:35: error: no member named 'bi_crypt_context' in 'struct bio'
+     332 |                 struct bio_crypt_ctx *bc = bio->bi_crypt_context;
+         |                                            ~~~  ^
+   1 error generated.
+
+
+vim +332 block/blk-merge.c
+
+   310	
+   311	/**
+   312	 * bio_split_io_at - check if and where to split a bio
+   313	 * @bio:  [in] bio to be split
+   314	 * @lim:  [in] queue limits to split based on
+   315	 * @segs: [out] number of segments in the bio with the first half of the sectors
+   316	 * @max_bytes: [in] maximum number of bytes per bio
+   317	 *
+   318	 * Find out if @bio needs to be split to fit the queue limits in @lim and a
+   319	 * maximum size of @max_bytes.  Returns a negative error number if @bio can't be
+   320	 * split, 0 if the bio doesn't have to be split, or a positive sector offset if
+   321	 * @bio needs to be split.
+   322	 */
+   323	int bio_split_io_at(struct bio *bio, const struct queue_limits *lim,
+   324			unsigned *segs, unsigned max_bytes)
+   325	{
+   326		struct bio_vec bv, bvprv, *bvprvp = NULL;
+   327		unsigned nsegs = 0, bytes = 0, gaps = 0;
+   328		struct bvec_iter iter;
+   329		unsigned len_align_mask = lim->dma_alignment;
+   330	
+   331		if (bio_has_crypt_ctx(bio)) {
+ > 332			struct bio_crypt_ctx *bc = bio->bi_crypt_context;
+   333	
+   334			len_align_mask |= (bc->bc_key->crypto_cfg.data_unit_size - 1);
+   335		}
+   336	
+   337		bio_for_each_bvec(bv, bio, iter) {
+   338			if (bv.bv_offset & len_align_mask)
+   339				return -EINVAL;
+   340	
+   341			/*
+   342			 * If the queue doesn't support SG gaps and adding this
+   343			 * offset would create a gap, disallow it.
+   344			 */
+   345			if (bvprvp) {
+   346				if (bvec_gap_to_prev(lim, bvprvp, bv.bv_offset))
+   347					goto split;
+   348				gaps |= bvec_seg_gap(bvprvp, &bv);
+   349			}
+   350	
+   351			if (nsegs < lim->max_segments &&
+   352			    bytes + bv.bv_len <= max_bytes &&
+   353			    bv.bv_offset + bv.bv_len <= lim->max_fast_segment_size) {
+   354				nsegs++;
+   355				bytes += bv.bv_len;
+   356			} else {
+   357				if (bvec_split_segs(lim, &bv, &nsegs, &bytes,
+   358						lim->max_segments, max_bytes))
+   359					goto split;
+   360			}
+   361	
+   362			bvprv = bv;
+   363			bvprvp = &bvprv;
+   364		}
+   365	
+   366		*segs = nsegs;
+   367		bio->bi_bvec_gap_bit = ffs(gaps);
+   368		return 0;
+   369	split:
+   370		if (bio->bi_opf & REQ_ATOMIC)
+   371			return -EINVAL;
+   372	
+   373		/*
+   374		 * We can't sanely support splitting for a REQ_NOWAIT bio. End it
+   375		 * with EAGAIN if splitting is required and return an error pointer.
+   376		 */
+   377		if (bio->bi_opf & REQ_NOWAIT)
+   378			return -EAGAIN;
+   379	
+   380		*segs = nsegs;
+   381	
+   382		/*
+   383		 * Individual bvecs might not be logical block aligned. Round down the
+   384		 * split size so that each bio is properly block size aligned, even if
+   385		 * we do not use the full hardware limits.
+   386		 *
+   387		 * It is possible to submit a bio that can't be split into a valid io:
+   388		 * there may either be too many discontiguous vectors for the max
+   389		 * segments limit, or contain virtual boundary gaps without having a
+   390		 * valid block sized split. A zero byte result means one of those
+   391		 * conditions occured.
+   392		 */
+   393		bytes = ALIGN_DOWN(bytes, bio_split_alignment(bio, lim));
+   394		if (!bytes)
+   395			return -EINVAL;
+   396	
+   397		/*
+   398		 * Bio splitting may cause subtle trouble such as hang when doing sync
+   399		 * iopoll in direct IO routine. Given performance gain of iopoll for
+   400		 * big IO can be trival, disable iopoll when split needed.
+   401		 */
+   402		bio_clear_polled(bio);
+   403		bio->bi_bvec_gap_bit = ffs(gaps);
+   404		return bytes >> SECTOR_SHIFT;
+   405	}
+   406	EXPORT_SYMBOL_GPL(bio_split_io_at);
+   407	
+
 -- 
-2.47.3
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
