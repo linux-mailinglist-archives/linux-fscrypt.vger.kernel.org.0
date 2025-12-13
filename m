@@ -1,64 +1,53 @@
-Return-Path: <linux-fscrypt+bounces-1015-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-1016-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95970CB7E90
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 12 Dec 2025 06:16:54 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 602CFCBA1DF
+	for <lists+linux-fscrypt@lfdr.de>; Sat, 13 Dec 2025 01:31:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 19B7A3039773
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 12 Dec 2025 05:16:18 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2AE8F30A9544
+	for <lists+linux-fscrypt@lfdr.de>; Sat, 13 Dec 2025 00:31:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B2B023EA93;
-	Fri, 12 Dec 2025 05:16:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEE991B4138;
+	Sat, 13 Dec 2025 00:31:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="fsqAifHt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ka8jYNwD"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D4B23B8D67;
-	Fri, 12 Dec 2025 05:16:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80BFE1A3166;
+	Sat, 13 Dec 2025 00:31:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765516577; cv=none; b=jQUoTOuRHbi1yh0kSUkkJBdCAqfPmaIAhD5c9iXN2QzrYJj739VVXyfoPqMZbnFFwqfUp9MuToWT10mev+kl0Ee2CMjGo7abqmXSsDeqYDQlc+KwQ5HzRliU8S/p+tmyAy2GZXaXndBOmaVnnghFhI0YvezrxeYieY4YjDpadxs=
+	t=1765585870; cv=none; b=mFHHU6m41VQjJytVH718FweSLyW/SM1k3GmwCRE9L3lkzxpdAY9UAuAaZ2zaktahUDMdBgQTMJxu6rLJlhao8hrKP88WkBV/1Z19tJ0Bge/sLQ/05jeqoH7YPTBo0RtdEX75NSjBcoNvK/ziUZxZO8wD4Hovq+YOAa3ahlF6ErY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765516577; c=relaxed/simple;
-	bh=Q6E1/e/8ZkTKJNYKc2gfQbgcOGWsdJSVktsVdR9oAA8=;
+	s=arc-20240116; t=1765585870; c=relaxed/simple;
+	bh=17ENiVl2xlE53A1TFdyck5BEFA8vxguuF0MPpBPJssM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lZ5Q/iz9n4gvkI+dDTz2HbJKlkCrlgFYiQ5/ll8r8BLa4FN2t5/P3XEHMh0XPpMk44jrEHXQPCbfX5wbHK6xSE9AsFnxV0MM6Ibzaf7i+Byj921Y1DTmODiAv5Rp81lSWAkQ2a2IopfQUwdM8GkDLCYRNgF8MXWEMX/Sfl2cw7g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=fsqAifHt; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=Q6E1/e/8ZkTKJNYKc2gfQbgcOGWsdJSVktsVdR9oAA8=; b=fsqAifHtakDw5cRi0bRYrbV2Yp
-	B1Wwvhp4H+xWSeO7rafWvgAbPZXNWR7IWeTQJ3TcI2kLYwdU6w5UnlsAssy9AFKCJ4XZX5zt0fhyS
-	Pq4xWsNIF2k4lyDg8Ok2hNXHAjnonc78F6rWC0qV4hysDIMsTO7rprRfyuvPVuguLnqLpA3oqzs7V
-	Ul2+jTklj3CoCQgEP05vuT/D028O/PIUSc/6NFwL9CtN+1bUDMroVp6jFjyl40CjcMoQ04DuZLvHY
-	gsR10RJVeLRYKhPcL2Z0LZjMveeKyk/QyD+3qxhN9SyTpjtwcJqJCckhVCzYGelcw7ZS8zTt2Q2Fj
-	3hYV1aGQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vTvVZ-000000006O2-2wOu;
-	Fri, 12 Dec 2025 05:16:01 +0000
-Date: Thu, 11 Dec 2025 21:16:01 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: Eric Biggers <ebiggers@kernel.org>,
-	syzbot <syzbot+7add5c56bc2a14145d20@syzkaller.appspotmail.com>,
-	davem@davemloft.net, herbert@gondor.apana.org.au,
-	jaegeuk@kernel.org, linux-crypto@vger.kernel.org,
-	linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-	tytso@mit.edu, Neal Gompa <neal@gompa.dev>
-Subject: Re: [syzbot] [ext4] [fscrypt] KMSAN: uninit-value in
- fscrypt_crypt_data_unit
-Message-ID: <aTulEbvkOf0Tsztf@infradead.org>
-References: <68ee633c.050a0220.1186a4.002a.GAE@google.com>
- <69380321.050a0220.1ff09b.0000.GAE@google.com>
- <20251210022202.GB4128@sol>
- <20251211185215.GM94594@frogsfrogsfrogs>
+	 Content-Type:Content-Disposition:In-Reply-To; b=aRiJauSCZvCFbAP1S/FvGGj9RP1HcHEdGkPQuWBuF1m8fV/9sFgoKz7HSELL0+GMN6JaeJ7oH+e9BPayZqS4AjwBkuzUHdbz7QQjTuqyL+J9I0nW8kcmxyX1zQdP72JqyXIOoXbLSu+/KCGxks2Pb/U4uY8St0mFzSIke9S8mgs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ka8jYNwD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1C02C4CEF1;
+	Sat, 13 Dec 2025 00:31:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1765585870;
+	bh=17ENiVl2xlE53A1TFdyck5BEFA8vxguuF0MPpBPJssM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ka8jYNwDDJzWG/LmApz3i6asZgNIjTw275ntgUthJByZ9eYO/iwjZgg4qz+dMkSDW
+	 KBkNjkFRXSAc09GqCwzs5OeWSOIaA1qOgSHQjr2EHeQD1wJifNR6tYtAySGUzmGGBe
+	 VZu0waIkEgGz/MFAMUfo1+DgNtOa/+Hb7ek7h+CEazKuBEyImXhkBR/1fed6CwLrRm
+	 WODueBs9wpMhTGSR+v/dP1XvW18Vnq/NiIL+Fhg83acrNfUujL/cQXekGVzfvW6arc
+	 cij8i4Fh6aFzjQSeZy7SNFwZFCU2ad1GWYQwS4D9/TqiEpolssiB19saxtyMySF9V6
+	 uQx4K854R08ug==
+Date: Fri, 12 Dec 2025 16:31:08 -0800
+From: Eric Biggers <ebiggers@kernel.org>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org
+Subject: Re: [PATCH 3/9] block: merge bio_split_rw_at into bio_split_io_at
+Message-ID: <20251213003108.GA2696@quark>
+References: <20251210152343.3666103-1-hch@lst.de>
+ <20251210152343.3666103-4-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
@@ -67,17 +56,35 @@ List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251211185215.GM94594@frogsfrogsfrogs>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20251210152343.3666103-4-hch@lst.de>
 
-On Thu, Dec 11, 2025 at 10:52:15AM -0800, Darrick J. Wong wrote:
-> Hey waitaminute, are you planning to withdraw fscrypt from ext4?
+On Wed, Dec 10, 2025 at 04:23:32PM +0100, Christoph Hellwig wrote:
+> bio_split_rw_at passes the queues dma_alignment into bio_split_io_at,
+> which that already checks unconditionally.  Remove the len_align_mask
+> argument from bio_split_io_at and switch all users of bio_split_rw_at
+> to directly call bio_split_io_at.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+[...]
+>  int bio_split_io_at(struct bio *bio, const struct queue_limits *lim,
+> -		unsigned *segs, unsigned max_bytes, unsigned len_align_mask)
+> +		unsigned *segs, unsigned max_bytes)
+>  {
+>  	struct bio_vec bv, bvprv, *bvprvp = NULL;
+>  	unsigned nsegs = 0, bytes = 0, gaps = 0;
+>  	struct bvec_iter iter;
+>  
+>  	bio_for_each_bvec(bv, bio, iter) {
+> -		if (bv.bv_offset & lim->dma_alignment ||
+> -		    bv.bv_len & len_align_mask)
+> +		if (bv.bv_offset & lim->dma_alignment)
+>  			return -EINVAL;
 
-No really, just forcing to use one of the two current implementations
-of the I/O path.
+So this commit actually removes the alignment check for bv_len and
+leaves just the one for bv_offset.  Does that make sense?  The commit
+message doesn't really explain the actual change.
 
-> (I might just not know enough about what blk-crypto is)
+Also, 'git grep bio_split_rw_at' still finds a result after this commit.
 
-block/blk-crypto*
-
+- Eric
 
