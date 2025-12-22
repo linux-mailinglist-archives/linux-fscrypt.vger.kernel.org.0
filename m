@@ -1,55 +1,44 @@
-Return-Path: <linux-fscrypt+bounces-1042-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-1043-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CD5DCD1BDA
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 19 Dec 2025 21:25:45 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AF20CD73E9
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 22 Dec 2025 23:12:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 6608D300977A
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 19 Dec 2025 20:25:44 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C9A0A3017F1A
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 22 Dec 2025 22:12:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D339322523;
-	Fri, 19 Dec 2025 20:25:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hvP5AfLE"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 646032C026A;
+	Mon, 22 Dec 2025 22:12:32 +0000 (UTC)
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7041C3BB44;
-	Fri, 19 Dec 2025 20:25:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDD2922B8AB;
+	Mon, 22 Dec 2025 22:12:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766175943; cv=none; b=oKPkbdcAI8kf+ZdIDMceMg0dLCDJaBuJ5RwwKq1jLMg0xTxRZqepIFdpUwU4ldKJB2BPBzUbWNLWbdSsJYm/rjx8zXd7Ky7o10CwpVS/67OBceU91Ap2VppVw96W/0v2F4YPRcLhZiSueJLj+6bfgHvsHoOCeFOHkZi7KZItaDA=
+	t=1766441552; cv=none; b=eeI07BNsw6sPQFfyRKLYBoCqjEzLyZkf16KXYba42vhsGAYyj0EDp69+QeLmHRvjNJcwD2Dq6kSzUR2BrRqYHKGkOxy08I8/yZtgke3jBpd2yRenCcTuyt6cp6H4bVJaRQvbI42ASioeMq77xTUtLeAKgIqauPzlbh7D2Jec2O8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766175943; c=relaxed/simple;
-	bh=SHB1c/Mt35w8ehZ2mu70GI9/3KMFJySg6IrHgEOWOcU=;
+	s=arc-20240116; t=1766441552; c=relaxed/simple;
+	bh=hjzXiyBP2HiKw77LvA/qR+FNKcEZhPW//HK8DG5cs0Q=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aTyL8NeV1jz5ct8TD8JHZh4YWKQlx0EWJfHgxcJUOdvkMX82An+lLi+mF9+UATstTy7juzZVzYjLbBq3hjZ/HlWPu2y9bDxJx5tZ3f8pWtwqanbyjdCSgpY54girqgpzKEnkWtKO8OAYhb5KMoBpaD4cvYiS7A1/GqAA2AwvV/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hvP5AfLE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E027EC4CEF1;
-	Fri, 19 Dec 2025 20:25:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766175943;
-	bh=SHB1c/Mt35w8ehZ2mu70GI9/3KMFJySg6IrHgEOWOcU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hvP5AfLEgSNwHAVtlr0ZfJE17v+bnHhKFSSLSmi8p9/ttWhm6JVOzcyr2CUuh5gKJ
-	 Dwh4nQxdHyDx8raqER44nqenFZvYTmTVNBq4TQsaut/nxAqULZ4tVNwwfoq/ad/tyL
-	 eSpPL4m5I7KmGPCRm9BRvxk+FoPItO5fqzBdS9sMm3ItGhklmWT43hhp4boYLRJss/
-	 ZPndaAce7oG5BP4bKeyC8WV0f9lsX6P/48R/VFru8XAzQcXyIqZVhwzDAkFpRBDdnr
-	 VLc3us0Dd3mwK+Z5m4VEMuQFIlH6KwVYWvUNXPRynoQ9nzNr9ymnICeSpC1bsDt0Bv
-	 lzQXZ8ubjkI4g==
-Date: Fri, 19 Dec 2025 12:25:33 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH 7/9] blk-crypto: use mempool_alloc_bulk for encrypted bio
- page allocation
-Message-ID: <20251219202533.GA397103@sol>
-References: <20251217060740.923397-1-hch@lst.de>
- <20251217060740.923397-8-hch@lst.de>
- <20251219200244.GE1602@sol>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Yhri5eMtjtY1QW1s5MZePUYVEBwyYmAg66d8nk7MDOydVrJkXCEmNCLFUzrfYrchr3eZ1/v6zC9pb7Dpq3jXZm/Pz9fLNO7Gkf9aRBCC1qMQa3URmhlbbKwucD9C07nKX20SJFXR3C/BHPEswPF57hmoxYQuFB6rAUAwM3i7jKg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 22A7168B05; Mon, 22 Dec 2025 23:12:19 +0100 (CET)
+Date: Mon, 22 Dec 2025 23:12:18 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+	linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-fscrypt@vger.kernel.org
+Subject: Re: [PATCH 5/9] blk-crypto: optimize bio splitting in
+ blk_crypto_fallback_encrypt_bio
+Message-ID: <20251222221218.GA17420@lst.de>
+References: <20251217060740.923397-1-hch@lst.de> <20251217060740.923397-6-hch@lst.de> <20251219200837.GF1602@sol>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
@@ -58,109 +47,26 @@ List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251219200244.GE1602@sol>
+In-Reply-To: <20251219200837.GF1602@sol>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-On Fri, Dec 19, 2025 at 12:02:44PM -0800, Eric Biggers wrote:
-> On Wed, Dec 17, 2025 at 07:06:50AM +0100, Christoph Hellwig wrote:
-> >  new_bio:
-> > -	enc_bio = blk_crypto_alloc_enc_bio(src_bio, nr_segs);
-> > +	enc_bio = blk_crypto_alloc_enc_bio(src_bio, nr_segs, &enc_pages);
-> >  	enc_idx = 0;
-> >  	for (;;) {
-> >  		struct bio_vec src_bv =
-> >  			bio_iter_iovec(src_bio, src_bio->bi_iter);
-> > -		struct page *enc_page;
-> > +		struct page *enc_page = enc_pages[enc_idx];
-> >  
-> > -		enc_page = mempool_alloc(blk_crypto_bounce_page_pool,
-> > -				GFP_NOIO);
-> >  		__bio_add_page(enc_bio, enc_page, src_bv.bv_len,
-> >  				src_bv.bv_offset);
-> >  
-> > @@ -246,10 +284,8 @@ static void __blk_crypto_fallback_encrypt_bio(struct bio *src_bio,
-> >  		/* Encrypt each data unit in this page */
-> >  		for (j = 0; j < src_bv.bv_len; j += data_unit_size) {
-> >  			blk_crypto_dun_to_iv(curr_dun, &iv);
-> > -			if (crypto_skcipher_encrypt(ciph_req)) {
-> > -				enc_idx++;
-> > -				goto out_free_bounce_pages;
-> > -			}
-> > +			if (crypto_skcipher_encrypt(ciph_req))
-> > +				goto out_free_enc_bio;
-> >  			bio_crypt_dun_increment(curr_dun, 1);
-> >  			src.offset += data_unit_size;
-> >  			dst.offset += data_unit_size;
-> > @@ -278,9 +314,9 @@ static void __blk_crypto_fallback_encrypt_bio(struct bio *src_bio,
-> >  	submit_bio(enc_bio);
-> >  	return;
-> >  
-> > -out_free_bounce_pages:
-> > -	while (enc_idx > 0)
-> > -		mempool_free(enc_bio->bi_io_vec[--enc_idx].bv_page,
-> > +out_free_enc_bio:
-> > +	for (enc_idx = 0; enc_idx < enc_bio->bi_max_vecs; enc_idx++)
-> > +		mempool_free(enc_bio->bi_io_vec[enc_idx].bv_page,
-> >  			     blk_crypto_bounce_page_pool);
-> >  	bio_put(enc_bio);
-> >  	cmpxchg(&src_bio->bi_status, 0, BLK_STS_IOERR);
+On Fri, Dec 19, 2025 at 12:08:37PM -0800, Eric Biggers wrote:
+> Actually I think using bi_max_vecs is broken.
 > 
-> The error handling at out_free_enc_bio is still broken, I'm afraid.
-> It's not taking into account that some of the pages may have been moved
-> into bvecs and some have not.
+> This code assumes that bi_max_vecs matches the nr_segs that was passed
+> to bio_alloc_bioset().
 > 
-> I think it needs something like the following:
+> That assumption is incorrect, though.  If nr_segs > 0 && nr_segs <
+> BIO_INLINE_VECS, bio_alloc_bioset() sets bi_max_vecs to BIO_INLINE_VECS.
+> BIO_INLINE_VECS is 4.
 > 
-> diff --git a/block/blk-crypto-fallback.c b/block/blk-crypto-fallback.c
-> index 23e097197450..d6760404b76c 100644
-> --- a/block/blk-crypto-fallback.c
-> +++ b/block/blk-crypto-fallback.c
-> @@ -272,7 +272,7 @@ static void __blk_crypto_fallback_encrypt_bio(struct bio *src_bio,
->  	for (;;) {
->  		struct bio_vec src_bv =
->  			bio_iter_iovec(src_bio, src_bio->bi_iter);
-> -		struct page *enc_page = enc_pages[enc_idx];
-> +		struct page *enc_page;
->  
->  		if (!IS_ALIGNED(src_bv.bv_len | src_bv.bv_offset,
->  				data_unit_size)) {
-> @@ -280,6 +280,7 @@ static void __blk_crypto_fallback_encrypt_bio(struct bio *src_bio,
->  			goto out_free_enc_bio;
->  		}
->  
-> +		enc_page = enc_pages[enc_idx++];
->  		__bio_add_page(enc_bio, enc_page, src_bv.bv_len,
->  				src_bv.bv_offset);
->  
-> @@ -305,7 +306,7 @@ static void __blk_crypto_fallback_encrypt_bio(struct bio *src_bio,
->  			break;
->  
->  		nr_segs--;
-> -		if (++enc_idx == enc_bio->bi_max_vecs) {
-> +		if (enc_idx == enc_bio->bi_max_vecs) {
->  			/*
->  			 * For each additional encrypted bio submitted,
->  			 * increment the source bio's remaining count.  Each
-> @@ -323,9 +324,11 @@ static void __blk_crypto_fallback_encrypt_bio(struct bio *src_bio,
->  	return;
->  
->  out_free_enc_bio:
-> -	for (enc_idx = 0; enc_idx < enc_bio->bi_max_vecs; enc_idx++)
-> +	for (j = 0; j < enc_idx; j++)
->  		mempool_free(enc_bio->bi_io_vec[j].bv_page,
->  			     blk_crypto_bounce_page_pool);
-> +	for (; j < enc_bio->bi_max_vecs; j++)
-> +		mempool_free(enc_pages[j], blk_crypto_bounce_page_pool);
->  	bio_put(enc_bio);
->  	bio_endio(src_bio);
->  }
+> I think blk_crypto_alloc_enc_bio() will need to return a nr_enc_pages
+> value.  That value will need to be used above as well as at
+> out_free_enc_bio, instead of bi_max_vecs.
 
-Also, this shows that the decrement of 'nr_segs' is a bit out-of-place
-(as was 'enc_idx').  nr_segs is used only when allocating a bio, so it
-could be decremented only when starting a new one:
+A bigger bi_max_vecs should not a problem as we still have a terminating
+condition based on the source bio iterator.  That being said I agree
+it is not very nice, and I've reworked the code to keep a variable
+counting the segments in the encrypted bio.
 
-        submit_bio(enc_bio);
-        nr_segs -= nr_enc_pages;                                 
-        goto new_bio;                                            
-
-- Eric
 
