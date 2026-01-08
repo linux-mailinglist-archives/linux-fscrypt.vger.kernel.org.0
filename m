@@ -1,44 +1,54 @@
-Return-Path: <linux-fscrypt+bounces-1056-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-1057-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Delivered-To: lists+linux-fscrypt@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0ECCCF716D
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 06 Jan 2026 08:42:15 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37C88D0074C
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 08 Jan 2026 01:23:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B456F3019265
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  6 Jan 2026 07:39:30 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 102AA3025A73
+	for <lists+linux-fscrypt@lfdr.de>; Thu,  8 Jan 2026 00:23:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 553FD30AD0A;
-	Tue,  6 Jan 2026 07:39:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85B2B13E02A;
+	Thu,  8 Jan 2026 00:23:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q3mmKFVV"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A4D5307AC6;
-	Tue,  6 Jan 2026 07:39:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 560A513D638;
+	Thu,  8 Jan 2026 00:23:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767685170; cv=none; b=kctL4pnSvdbexMlKttyv0JqY2hJJBbfGT5j2tCjmJdRrr3XrZVBJninrfUhdMGrB/+fxWp4OeZqNjKc96HzQwRvJ47GBV+IFgEBC7lJbRJQe+rxtqkXUUZOBPhBJE+0S2HNMBIKO1GvK3ZPsW08yY7tb1shNNf6Sqqlk19JcXTc=
+	t=1767831793; cv=none; b=orB1YpQPojFROWpdHYU915mm4LKirNpgb07BsmZ21SUp15wyLpan9TVKje7mkKiDBrOx1cOdEHLij0RTAkvSr75VL6C4OIg0XqnY1fYUl6UtoSNb286kZ9xVoRjHK1Ty3rQYhXxFCZxTm0MY3wIIKObpohLHkSImdSethjNnb3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767685170; c=relaxed/simple;
-	bh=N2S9ZgFWUmhPx6ZiQF3h6z4xcgg+0RJuSDOOHUoQX/E=;
+	s=arc-20240116; t=1767831793; c=relaxed/simple;
+	bh=g9IA4Aqk4f7eWargh/5arYrMSoqYV+tkbHbKIfwiL8c=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=m2ximxrbRrIHJeG3926hwidoT2FMhHI+E1YLcRwlIo5l1BwY568TPiT6kGV+zT99MKBAwrovxcKcBX+A62v0tC68/MJXtqn0fdkHnfqkBusWQ7mYP0Usp8ykVgQuM9aFI7tht8vSe0PhgTUWaaXbn1S8n3Rt+LaKLCeFcJgOcFc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id E01636732A; Tue,  6 Jan 2026 08:39:24 +0100 (CET)
-Date: Tue, 6 Jan 2026 08:39:24 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-	linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH 7/9] blk-crypto: use mempool_alloc_bulk for encrypted
- bio page allocation
-Message-ID: <20260106073924.GA18847@lst.de>
-References: <20251217060740.923397-1-hch@lst.de> <20251217060740.923397-8-hch@lst.de> <20251219200244.GE1602@sol> <20251222221840.GA17565@lst.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y/yYu3LGwJops5M2LANrQcrWRHqEBxV3AdjlT02WtUhVUz4wkvXj88xGgPe0I+AT1tOlYQXWKNrWMkhHFAB44YaxACg8ufS6WEa78yD01+sTI5tj8MQRB1bhWsMtRMNehf/Rk/WDoz0YM3A2JSg1NNqonRUGn6l/fDEqLf66snk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q3mmKFVV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CA54C4CEF1;
+	Thu,  8 Jan 2026 00:23:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1767831790;
+	bh=g9IA4Aqk4f7eWargh/5arYrMSoqYV+tkbHbKIfwiL8c=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=q3mmKFVVlh5maDmhjnwF2u4evdMR1O9gltWM7CgSejgw8LVjbhTm0kmJcc/iKuZ9u
+	 NKK6i/DN5yC2vJ7qpNv999h4ciJmKMKZz7d21miyyhjh30qfq068qhKrQ4HGY88BHj
+	 +o60/WiakWMZMKxiSrfG+nelRRwvisVy9gC4sb/NNBdTdbdIHiSo28kaoATbqCGm+F
+	 Se1H0uZ2pSMeJe37LX9ChOLEf3627VKI2kfG0rgGOR3Uvg45qPcF3WgxpOrCBmHK8V
+	 41k/qawCnf+x7FcWfTC+e5udNc9K9ujqIZfLuPf1lbJVPleJrYTqCcjkSEnQPZPDRK
+	 KTNld/p3aTDmA==
+Date: Wed, 7 Jan 2026 16:22:50 -0800
+From: Eric Biggers <ebiggers@kernel.org>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org
+Subject: Re: [PATCH 7/9] blk-crypto: use mempool_alloc_bulk for encrypted bio
+ page allocation
+Message-ID: <20260108002250.GA2614@sol>
+References: <20260106073651.1607371-1-hch@lst.de>
+ <20260106073651.1607371-8-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
@@ -47,24 +57,23 @@ List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251222221840.GA17565@lst.de>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20260106073651.1607371-8-hch@lst.de>
 
-On Mon, Dec 22, 2025 at 11:18:40PM +0100, Christoph Hellwig wrote:
-> That will now leak the pages that were successfully added to the bio.
-> 
-> I end up with a version that just adds the pages to the bio even
-> on failure.  I've pushed the branch here:
-> 
-> https://git.infradead.org/?p=users/hch/misc.git;a=shortlog;h=refs/heads/blk-crypto-fallback
-> 
-> but I plan to come up with error injection to actually test this
-> patch given the amount of trouble it caused.
+On Tue, Jan 06, 2026 at 08:36:30AM +0100, Christoph Hellwig wrote:
+> +out_free_enc_bio:
+> +	/*
+> +	 * Add the remaining pages to the bio so that the normal completion path
+> +	 * in blk_crypto_fallback_encrypt_endio frees them.  The exact data
+> +	 * layout does not matter for that, so don't bother iterating the source
+> +	 * bio.
+> +	 */
+> +	for (; enc_idx < nr_enc_pages; enc_idx++)
+> +		__bio_add_page(enc_bio, enc_pages[enc_idx++], PAGE_SIZE, 0);
+> +	bio_io_error(enc_bio);
 
-I've done a bit of manual testing on the new version only for now.
-Keith has been looking into proper testing of unaligned dio vectors for
-blktests and xfstests, and once that gets resent I plan to use that
-framework to test for error handling of unaligned I/O to formalize this
-testing.
+There's a double increment above.
 
+Otherwise this looks okay.
+
+- Eric
 
