@@ -1,76 +1,55 @@
-Return-Path: <linux-fscrypt+bounces-1093-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-1094-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id IB1FI+MyhmleLAQAu9opvQ
-	(envelope-from <linux-fscrypt+bounces-1093-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 06 Feb 2026 19:28:51 +0100
+	id MIejDlozhmneKQQAu9opvQ
+	(envelope-from <linux-fscrypt+bounces-1094-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 06 Feb 2026 19:30:50 +0100
 X-Original-To: lists+linux-fscrypt@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4F1B101D84
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 06 Feb 2026 19:28:50 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC45E101E4A
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 06 Feb 2026 19:30:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 03EDB302D6A9
-	for <lists+linux-fscrypt@lfdr.de>; Fri,  6 Feb 2026 18:25:24 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5F5CD30547F7
+	for <lists+linux-fscrypt@lfdr.de>; Fri,  6 Feb 2026 18:25:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 342F443D51F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A89F843DA3A;
 	Fri,  6 Feb 2026 18:24:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="EPlOWgnH";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="EPlOWgnH"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D51BF43D51B
-	for <linux-fscrypt@vger.kernel.org>; Fri,  6 Feb 2026 18:24:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6101643DA2B
+	for <linux-fscrypt@vger.kernel.org>; Fri,  6 Feb 2026 18:24:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770402272; cv=none; b=PzzZ+h9qkigWWmQLd9mRw/xwGMMw0iUrGE7oouiA6KcFZR5sEyfSE6qzvpdY04g0bKpOe/bsH4pL7aCAkGR2yY77QaFcBB7/6KBKs8G/zRiUZ0BM44Q3v/t5n906r7oyhtVK6BVa7O3a0BNnYFY9ejvHNXnflVUhov/qtjZbM9A=
+	t=1770402272; cv=none; b=G18GfmU3YcQJ2MgMGsCXG+VUNDr7hZA8zrOMKCDGyNMlClsGs/tISk2g9gUY37qLDv8e4HbnFwlz+/5ia4vlXybrknzt+meHfkmNcKCudkqTHmwpNhFEP9QGqvD88RAziI6rq1rFvGBl19of2gro+RvZkkGW40HcL4FeF78exks=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1770402272; c=relaxed/simple;
-	bh=S88iX+pQLBnDUUEDjcXBBPJboVrjuvn/D1vOa8/e714=;
+	bh=aBJFZhYabX99GGa2eECyKreqZIT3wiY6UB4onD+4v2Y=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DYw710PQub56Z2WlGaEHLXzHUfP0y3FMibmFipsZKdhDJa7O3iOLupMRn1oJtfV2VKAbYArW4lwuRt+Qo5kllDLJ9por+YlICFnJUpGOQbfEgttYOoAkD1nT1RV3GnOOvDR8jLcJCRgku12t3okLPA7cMxukjpP3mw2K/rEr42s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=EPlOWgnH; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=EPlOWgnH; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=d8e/dzMB/EdhcNNpLrReEEWEHLoHUQEUJZ9gtZtcfw3A/kXOmHGlXAGpoRpdnSe2l+wTXMSFyug2YakuC64ZJ2eBBy5E7ar2rXUboytn7nRkA8jNJWaajucAIcUpfSFJIxjAinJcN19qXE+QsEwosPSq3PAqGqR0TZtRGwFFTVg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id D55885BD24;
-	Fri,  6 Feb 2026 18:24:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1770402243; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PMDR3hJyN7VskU25nVZ2Nq4bl6y56eSfjjKv060wZho=;
-	b=EPlOWgnHFdABA6aPE9m/SivtblsNvbmggbgLx/5/uUeFc/PuXBfeAjZ2gOoK2RryhoSIj2
-	utt7KOCusHGWskuMJOOLu1qx5wr/t3ZNcjRhxjglDRrrdYtsVRapSxyGNd7HFW7001LlMV
-	WnVQwUabmYwUHAoLpSz4gBDT+AEBELY=
-Authentication-Results: smtp-out2.suse.de;
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4BD623E749;
+	Fri,  6 Feb 2026 18:24:04 +0000 (UTC)
+Authentication-Results: smtp-out1.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1770402243; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PMDR3hJyN7VskU25nVZ2Nq4bl6y56eSfjjKv060wZho=;
-	b=EPlOWgnHFdABA6aPE9m/SivtblsNvbmggbgLx/5/uUeFc/PuXBfeAjZ2gOoK2RryhoSIj2
-	utt7KOCusHGWskuMJOOLu1qx5wr/t3ZNcjRhxjglDRrrdYtsVRapSxyGNd7HFW7001LlMV
-	WnVQwUabmYwUHAoLpSz4gBDT+AEBELY=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A65FF3EA63;
-	Fri,  6 Feb 2026 18:24:03 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1C6993EA63;
+	Fri,  6 Feb 2026 18:24:04 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ECYfKMMxhmkTCQAAD6G6ig
-	(envelope-from <neelx@suse.com>); Fri, 06 Feb 2026 18:24:03 +0000
+	id AO9GBsQxhmkTCQAAD6G6ig
+	(envelope-from <neelx@suse.com>); Fri, 06 Feb 2026 18:24:04 +0000
 From: Daniel Vacek <neelx@suse.com>
 To: Chris Mason <clm@fb.com>,
 	Josef Bacik <josef@toxicpanda.com>,
@@ -84,10 +63,11 @@ Cc: linux-block@vger.kernel.org,
 	linux-fscrypt@vger.kernel.org,
 	linux-btrfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
+	Omar Sandoval <osandov@osandov.com>,
 	Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH v6 14/43] btrfs: handle nokey names
-Date: Fri,  6 Feb 2026 19:22:46 +0100
-Message-ID: <20260206182336.1397715-15-neelx@suse.com>
+Subject: [PATCH v6 15/43] btrfs: implement fscrypt ioctls
+Date: Fri,  6 Feb 2026 19:22:47 +0100
+Message-ID: <20260206182336.1397715-16-neelx@suse.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260206182336.1397715-1-neelx@suse.com>
 References: <20260206182336.1397715-1-neelx@suse.com>
@@ -98,198 +78,119 @@ List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Score: -6.80
-X-Spam-Level: 
+X-Rspamd-Pre-Result: action=no action;
+	module=replies;
+	Message is reply to one we originated
 X-Spam-Flag: NO
+X-Spam-Score: -4.00
+X-Rspamd-Pre-Result: action=no action;
+	module=replies;
+	Message is reply to one we originated
+X-Spam-Level: 
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [1.54 / 15.00];
+	DMARC_POLICY_QUARANTINE(1.50)[suse.com : SPF not aligned (relaxed), No valid DKIM,quarantine];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-1093-lists,linux-fscrypt=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	FROM_NEQ_ENVFROM(0.00)[neelx@suse.com,linux-fscrypt@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[14];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	TAGGED_RCPT(0.00)[linux-fscrypt];
-	NEURAL_HAM(-0.00)[-1.000];
-	DKIM_TRACE(0.00)[suse.com:+];
+	TAGGED_FROM(0.00)[bounces-1094-lists,linux-fscrypt=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-fscrypt];
+	FROM_NEQ_ENVFROM(0.00)[neelx@suse.com,linux-fscrypt@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[dorminy.me:email,suse.com:email,suse.com:dkim,suse.com:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,toxicpanda.com:email]
-X-Rspamd-Queue-Id: A4F1B101D84
+	PRECEDENCE_BULK(0.00)[];
+	NEURAL_HAM(-0.00)[-0.990];
+	RCVD_COUNT_FIVE(0.00)[6];
+	R_DKIM_NA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:mid,suse.com:email,dorminy.me:email,toxicpanda.com:email,osandov.com:email]
+X-Rspamd-Queue-Id: AC45E101E4A
 X-Rspamd-Action: no action
 
-From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+From: Omar Sandoval <osandov@osandov.com>
 
-For encrypted or unencrypted names, we calculate the offset for the dir
-item by hashing the name for the dir item. However, this doesn't work
-for a long nokey name, where we do not have the complete ciphertext.
-Instead, fscrypt stores the filesystem-provided hash in the nokey name,
-and we can extract it from the fscrypt_name structure in such a case.
+These ioctls allow encryption to actually be used.
 
-Additionally, for nokey names, if we find the nokey name on disk we can
-update the fscrypt_name with the disk name, so add that to searching for
-diritems.
+The set_encryption_policy ioctl is the thing which actually turns on
+encryption, and therefore sets the ENCRYPT flag in the superblock.
+This prevents the filesystem from being loaded on older kernels.
 
+fscrypt provides CONFIG_FS_ENCRYPTION-disabled versions of all these
+functions which just return -EOPNOTSUPP, so the ioctls don't need
+to be compiled out if CONFIG_FS_ENCRYPTION isn't enabled.
+
+We could instead gate this ioctl on the superblock having the flag set,
+if we wanted to require mkfs with the encrypt flag in order to have a
+filesystem with any encryption.
+
+Since this is a disk format change and is currently in development,
+gate the fscrypt ioctls for btrfs behind BTRFS_EXPERIMENTAL.
+
+Signed-off-by: Omar Sandoval <osandov@osandov.com>
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 Signed-off-by: Daniel Vacek <neelx@suse.com>
 ---
 
-v5: https://lore.kernel.org/linux-btrfs/a7e3aec8ec03814b4baa1d929ae8fb77f13c17d2.1706116485.git.josef@toxicpanda.com/
+v5: https://lore.kernel.org/linux-btrfs/6182b77868d0c9f9447641f869658ef017c1f467.1706116485.git.josef@toxicpanda.com/
  * No changes since.
+ * But squash in https://lore.kernel.org/linux-btrfs/5134ab713b080f78b90eae46671596f72bbb1815.1706116485.git.josef@toxicpanda.com/
+   ("btrfs: gate encryption behind BTRFS_DEBUG") and change it to
+   BTRFS_EXPERIMENTAL as suggested by Dave.
 ---
- fs/btrfs/dir-item.c | 35 +++++++++++++++++++++++++++++++++--
- fs/btrfs/fscrypt.c  | 27 +++++++++++++++++++++++++++
- fs/btrfs/fscrypt.h  | 11 +++++++++++
- 3 files changed, 71 insertions(+), 2 deletions(-)
+ fs/btrfs/ioctl.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-diff --git a/fs/btrfs/dir-item.c b/fs/btrfs/dir-item.c
-index 6e10dd4a4e9e..75c213bd826e 100644
---- a/fs/btrfs/dir-item.c
-+++ b/fs/btrfs/dir-item.c
-@@ -228,6 +228,27 @@ struct btrfs_dir_item *btrfs_lookup_dir_item(struct btrfs_trans_handle *trans,
- 	return di;
- }
- 
-+/*
-+ * If appropriate, populate the disk name for a fscrypt_name looked up without
-+ * a key.
-+ *
-+ * @path:	The path to the extent buffer in which the name was found.
-+ * @di:		The dir item corresponding.
-+ * @fname:	The fscrypt_name to perhaps populate.
-+ *
-+ * Returns: 0 if the name is already populated or the dir item doesn't exist
-+ * or the name was successfully populated, else an error code.
-+ */
-+static int ensure_disk_name_from_dir_item(struct btrfs_path *path,
-+					  struct btrfs_dir_item *di,
-+					  struct fscrypt_name *name)
-+{
-+	if (name->disk_name.name || !di)
-+		return 0;
-+
-+	return btrfs_fscrypt_get_disk_name(path->nodes[0], di, &name->disk_name);
-+}
-+
- /*
-  * Lookup for a directory item by fscrypt_name.
-  *
-@@ -254,8 +275,11 @@ struct btrfs_dir_item *btrfs_lookup_dir_item_fname(struct btrfs_trans_handle *tr
- 
- 	key.objectid = dir;
- 	key.type = BTRFS_DIR_ITEM_KEY;
--	key.offset = btrfs_name_hash(name->disk_name.name, name->disk_name.len);
--	/* XXX get the right hash for no-key names */
-+
-+	if (!name->disk_name.name)
-+		key.offset = name->hash | ((u64)name->minor_hash << 32);
-+	else
-+		key.offset = btrfs_name_hash(name->disk_name.name, name->disk_name.len);
- 
- 	ret = btrfs_search_slot(trans, root, &key, path, mod, -mod);
- 	if (ret == 0)
-@@ -263,6 +287,8 @@ struct btrfs_dir_item *btrfs_lookup_dir_item_fname(struct btrfs_trans_handle *tr
- 
- 	if (ret == -ENOENT || (di && IS_ERR(di) && PTR_ERR(di) == -ENOENT))
- 		return NULL;
-+	if (ret == 0)
-+		ret = ensure_disk_name_from_dir_item(path, di, name);
- 	if (ret < 0)
- 		di = ERR_PTR(ret);
- 
-@@ -373,7 +399,12 @@ btrfs_search_dir_index_item(struct btrfs_root *root, struct btrfs_path *path,
- 	btrfs_for_each_slot(root, &key, &key, path, ret) {
- 		if (key.objectid != dirid || key.type != BTRFS_DIR_INDEX_KEY)
- 			break;
-+
- 		di = btrfs_match_dir_item_fname(path, name);
-+		if (di)
-+			ret = ensure_disk_name_from_dir_item(path, di, name);
-+		if (ret)
-+			break;
- 		if (di)
- 			return di;
- 	}
-diff --git a/fs/btrfs/fscrypt.c b/fs/btrfs/fscrypt.c
-index 99b87776ce51..078b8c9a0334 100644
---- a/fs/btrfs/fscrypt.c
-+++ b/fs/btrfs/fscrypt.c
-@@ -15,6 +15,33 @@
- #include "transaction.h"
- #include "xattr.h"
- 
-+/*
-+ * From a given location in a leaf, read a name into a qstr (usually a
-+ * fscrypt_name's disk_name), allocating the required buffer. Used for
-+ * nokey names.
-+ */
-+int btrfs_fscrypt_get_disk_name(struct extent_buffer *leaf,
-+				struct btrfs_dir_item *dir_item,
-+				struct fscrypt_str *name)
-+{
-+	unsigned long de_name_len = btrfs_dir_name_len(leaf, dir_item);
-+	unsigned long de_name = (unsigned long)(dir_item + 1);
-+	/*
-+	 * For no-key names, we use this opportunity to find the disk
-+	 * name, so future searches don't need to deal with nokey names
-+	 * and we know what the encrypted size is.
-+	 */
-+	name->name = kmalloc(de_name_len, GFP_NOFS);
-+
-+	if (!name->name)
-+		return -ENOMEM;
-+
-+	read_extent_buffer(leaf, name->name, de_name, de_name_len);
-+
-+	name->len = de_name_len;
-+	return 0;
-+}
-+
- /*
-  * This function is extremely similar to fscrypt_match_name() but uses an
-  * extent_buffer.
-diff --git a/fs/btrfs/fscrypt.h b/fs/btrfs/fscrypt.h
-index 4e9c87290158..c5cdc27f943c 100644
---- a/fs/btrfs/fscrypt.h
-+++ b/fs/btrfs/fscrypt.h
-@@ -9,11 +9,22 @@
- #include "fs.h"
- 
- #ifdef CONFIG_FS_ENCRYPTION
-+int btrfs_fscrypt_get_disk_name(struct extent_buffer *leaf,
-+				struct btrfs_dir_item *di,
-+				struct fscrypt_str *qstr);
-+
- bool btrfs_fscrypt_match_name(struct fscrypt_name *fname,
- 			      struct extent_buffer *leaf,
- 			      unsigned long de_name, u32 de_name_len);
- 
- #else
-+static inline int btrfs_fscrypt_get_disk_name(struct extent_buffer *leaf,
-+					      struct btrfs_dir_item *di,
-+					      struct fscrypt_str *qstr)
-+{
-+	return 0;
-+}
-+
- static inline bool btrfs_fscrypt_match_name(struct fscrypt_name *fname,
- 					    struct extent_buffer *leaf,
- 					    unsigned long de_name,
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 9d0716498286..a8adf99ad0a8 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -5192,6 +5192,35 @@ long btrfs_ioctl(struct file *file, unsigned int
+ 		return btrfs_ioctl_get_fslabel(fs_info, argp);
+ 	case FS_IOC_SETFSLABEL:
+ 		return btrfs_ioctl_set_fslabel(file, argp);
++#ifdef CONFIG_BTRFS_EXPERIMENTAL
++	case FS_IOC_SET_ENCRYPTION_POLICY: {
++		if (!IS_ENABLED(CONFIG_FS_ENCRYPTION))
++			return -EOPNOTSUPP;
++		if (sb_rdonly(fs_info->sb))
++			return -EROFS;
++		/*
++		 *  If we crash before we commit, nothing encrypted could have
++		 * been written so it doesn't matter whether the encrypted
++		 * state persists.
++		 */
++		btrfs_set_fs_incompat(fs_info, ENCRYPT);
++		return fscrypt_ioctl_set_policy(file, (const void __user *)arg);
++	}
++	case FS_IOC_GET_ENCRYPTION_POLICY:
++		return fscrypt_ioctl_get_policy(file, (void __user *)arg);
++	case FS_IOC_GET_ENCRYPTION_POLICY_EX:
++		return fscrypt_ioctl_get_policy_ex(file, (void __user *)arg);
++	case FS_IOC_ADD_ENCRYPTION_KEY:
++		return fscrypt_ioctl_add_key(file, (void __user *)arg);
++	case FS_IOC_REMOVE_ENCRYPTION_KEY:
++		return fscrypt_ioctl_remove_key(file, (void __user *)arg);
++	case FS_IOC_REMOVE_ENCRYPTION_KEY_ALL_USERS:
++		return fscrypt_ioctl_remove_key_all_users(file, (void __user *)arg);
++	case FS_IOC_GET_ENCRYPTION_KEY_STATUS:
++		return fscrypt_ioctl_get_key_status(file, (void __user *)arg);
++	case FS_IOC_GET_ENCRYPTION_NONCE:
++		return fscrypt_ioctl_get_nonce(file, (void __user *)arg);
++#endif /* CONFIG_BTRFS_EXPERIMENTAL */
+ 	case FITRIM:
+ 		return btrfs_ioctl_fitrim(fs_info, argp);
+ 	case BTRFS_IOC_SNAP_CREATE:
 -- 
 2.51.0
 
