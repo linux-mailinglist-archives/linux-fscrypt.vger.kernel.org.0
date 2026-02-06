@@ -1,76 +1,55 @@
-Return-Path: <linux-fscrypt+bounces-1086-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-1088-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gNlSMAUyhmneKQQAu9opvQ
-	(envelope-from <linux-fscrypt+bounces-1086-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 06 Feb 2026 19:25:09 +0100
+	id +L2WFwwzhmneKQQAu9opvQ
+	(envelope-from <linux-fscrypt+bounces-1088-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 06 Feb 2026 19:29:32 +0100
 X-Original-To: lists+linux-fscrypt@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47E2B101C90
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 06 Feb 2026 19:25:09 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEC66101DC8
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 06 Feb 2026 19:29:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id CFA2E3048071
-	for <lists+linux-fscrypt@lfdr.de>; Fri,  6 Feb 2026 18:24:14 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4F36C30B5A40
+	for <lists+linux-fscrypt@lfdr.de>; Fri,  6 Feb 2026 18:24:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 047B842849E;
-	Fri,  6 Feb 2026 18:24:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Rz+XSR9A";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="SXFLBIAh"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE808429817;
+	Fri,  6 Feb 2026 18:24:18 +0000 (UTC)
 X-Original-To: linux-fscrypt@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3C78428478
-	for <linux-fscrypt@vger.kernel.org>; Fri,  6 Feb 2026 18:24:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9563A42982E
+	for <linux-fscrypt@vger.kernel.org>; Fri,  6 Feb 2026 18:24:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770402253; cv=none; b=Qdaqv+zHaBX1RA4JCRNDh/WpuhF+fOn3RWsZJDibKxLosWN5HIJTByXMxEsG3PSapGgs7cgFEn2YrPg4aJdAPDOJJ9z6rYaoiD5TOAbWLH/hlyZUJoJD+YPcPbEBgpgjONqqBVSvzyPr6My06OlNdFv/LoNTXNj3s10xqWodGpc=
+	t=1770402258; cv=none; b=cDm6GPW/5CxvAdzeW1j/bgz513WVKLLH2hxUqXyHlJCWPPfnTbfArzM+cFHyUaIqq9yZ8ruk5EVyps0d35NzvAiy207N7ooPkc6uClPxbLrcfvi2nlNHoM5I/tWK0PawDvEBZOr9Bai52IHW6zdJPS1Qa0ReWAfNYjrBKCx5FXs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770402253; c=relaxed/simple;
-	bh=EapV8U1miyXO0gY5JnhdhB+GrtVyUlRXkbekHb4fOa4=;
+	s=arc-20240116; t=1770402258; c=relaxed/simple;
+	bh=2+t/XBHJhNmnBBZvpZXK21VXE1q7IsC0yC80NgSLp2w=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pB3P9hkW91xT7OPU3rDQZO5KOjQhmDxOQgNdN+iEZ9XVvevF6mlpxUap8N3MyHhWA1C5sf5gtw2zA/uNvYKVIxPSQg2EgbMwukfXi5jXFVsjzC1pEhOumwYeNvapson6UWGeDw6yFY2t4+FCQDy0FrdJHJRCh3TXH+rK95um48k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Rz+XSR9A; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=SXFLBIAh; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=DAyg/hghhdXPYcsVolTRUZbNDz/JXxx1qO6pOV+ePq21sK3GgUovBVWMmNHOfM7oRiIkFGqB6ZpHQ8rs5a37O+KLVhCeAE7hWOx/6oq9FLphtT1/o0Cur5p4U04/SEer3OmrXRb9aU4ueUOJnODV78ynwcktpkSiL74ENHZhIN0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id DD2BA5BD25;
-	Fri,  6 Feb 2026 18:23:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1770402238; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aDxiEePKaHFlI5tO/p1XE2bOmMKz7ygZnuualgpXxeQ=;
-	b=Rz+XSR9A/QjymWWwWstf+F0zAhUm09SGimogvLcNSFX/iG8NnFanC906Wew1e68KMfd+Mr
-	xre3I8UKzAWhXufqXU4E+pY6azfp2uncYq1gNEjJFQRQzjYy9vatjIsk2oP78vfH5q7rcC
-	5Tymo5cIIZPncxDwaEjJ6QBLTWH2P1A=
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 599525BCE0;
+	Fri,  6 Feb 2026 18:23:58 +0000 (UTC)
 Authentication-Results: smtp-out2.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1770402237; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aDxiEePKaHFlI5tO/p1XE2bOmMKz7ygZnuualgpXxeQ=;
-	b=SXFLBIAhJ1jmnSvHBqXvDbAQjJYkHn7YmMuE/Xr4gAqElaT9hb0p+FWSdvyMCqANkIg8Vg
-	qD5pr2sMLyAG7QVfUTYEIGENGM2us4Lczxhxv7CX+1jhOnC6YmVSPhNdLLprBwRBGVBAj1
-	414N/rMCK6lUAdMteaZOKHNpBKRYCQ4=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AE23E3EA63;
-	Fri,  6 Feb 2026 18:23:57 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 27A833EA63;
+	Fri,  6 Feb 2026 18:23:58 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id kN3qKb0xhmkTCQAAD6G6ig
-	(envelope-from <neelx@suse.com>); Fri, 06 Feb 2026 18:23:57 +0000
+	id eNs0Cb4xhmkTCQAAD6G6ig
+	(envelope-from <neelx@suse.com>); Fri, 06 Feb 2026 18:23:58 +0000
 From: Daniel Vacek <neelx@suse.com>
 To: Chris Mason <clm@fb.com>,
 	Josef Bacik <josef@toxicpanda.com>,
@@ -78,17 +57,17 @@ To: Chris Mason <clm@fb.com>,
 	"Theodore Y. Ts'o" <tytso@mit.edu>,
 	Jaegeuk Kim <jaegeuk@kernel.org>,
 	Jens Axboe <axboe@kernel.dk>,
-	David Sterba <dsterba@suse.com>
+	David Sterba <dsterba@suse.com>,
+	Jonathan Corbet <corbet@lwn.net>
 Cc: linux-block@vger.kernel.org,
 	Daniel Vacek <neelx@suse.com>,
 	linux-fscrypt@vger.kernel.org,
 	linux-btrfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Omar Sandoval <osandov@osandov.com>,
-	Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH v6 07/43] fscrypt: expose fscrypt_nokey_name
-Date: Fri,  6 Feb 2026 19:22:39 +0100
-Message-ID: <20260206182336.1397715-8-neelx@suse.com>
+	linux-doc@vger.kernel.org
+Subject: [PATCH v6 08/43] fscrypt: add documentation about extent encryption
+Date: Fri,  6 Feb 2026 19:22:40 +0100
+Message-ID: <20260206182336.1397715-9-neelx@suse.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260206182336.1397715-1-neelx@suse.com>
 References: <20260206182336.1397715-1-neelx@suse.com>
@@ -99,157 +78,125 @@ List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Rspamd-Pre-Result: action=no action;
+	module=replies;
+	Message is reply to one we originated
 X-Spam-Flag: NO
-X-Spam-Score: -6.80
+X-Spam-Score: -4.00
+X-Rspamd-Pre-Result: action=no action;
+	module=replies;
+	Message is reply to one we originated
 X-Spam-Level: 
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [1.54 / 15.00];
+	DMARC_POLICY_QUARANTINE(1.50)[suse.com : SPF not aligned (relaxed), No valid DKIM,quarantine];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-1086-lists,linux-fscrypt=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[14];
-	FROM_NEQ_ENVFROM(0.00)[neelx@suse.com,linux-fscrypt@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	TAGGED_RCPT(0.00)[linux-fscrypt];
-	NEURAL_HAM(-0.00)[-1.000];
-	DKIM_TRACE(0.00)[suse.com:+];
+	TAGGED_FROM(0.00)[bounces-1088-lists,linux-fscrypt=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-fscrypt];
+	FROM_NEQ_ENVFROM(0.00)[neelx@suse.com,linux-fscrypt@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:dkim,suse.com:mid,toxicpanda.com:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 47E2B101C90
+	PRECEDENCE_BULK(0.00)[];
+	NEURAL_HAM(-0.00)[-0.990];
+	RCVD_COUNT_FIVE(0.00)[6];
+	R_DKIM_NA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,toxicpanda.com:email,suse.com:mid,suse.com:email]
+X-Rspamd-Queue-Id: EEC66101DC8
 X-Rspamd-Action: no action
 
-From: Omar Sandoval <osandov@osandov.com>
+From: Josef Bacik <josef@toxicpanda.com>
 
-btrfs stores its data structures, including filenames in directories, in
-its own buffer implementation, struct extent_buffer, composed of
-several non-contiguous pages. We could copy filenames into a
-temporary buffer and use fscrypt_match_name() against that buffer, such
-extensive memcpying would be expensive. Instead, exposing
-fscrypt_nokey_name as in this change allows btrfs to recapitulate
-fscrypt_match_name() using methods on struct extent_buffer instead of
-dealing with a raw byte array.
+Add a couple of sections to the fscrypt documentation about per-extent
+encryption.
 
-Signed-off-by: Omar Sandoval <osandov@osandov.com>
-Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 Signed-off-by: Daniel Vacek <neelx@suse.com>
 ---
 
-v5: https://lore.kernel.org/linux-btrfs/132b64edf1e6b705995fb1a6dc2f194527f6be75.1706116485.git.josef@toxicpanda.com/
+v5: https://lore.kernel.org/linux-btrfs/7b2cc4dd423c3930e51b1ef5dd209164ff11c05a.1706116485.git.josef@toxicpanda.com/
  * No changes since.
 ---
- fs/crypto/fname.c       | 36 ------------------------------------
- include/linux/fscrypt.h | 36 ++++++++++++++++++++++++++++++++++++
- 2 files changed, 36 insertions(+), 36 deletions(-)
+ Documentation/filesystems/fscrypt.rst | 41 +++++++++++++++++++++++++++
+ 1 file changed, 41 insertions(+)
 
-diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
-index a9a4432d12ba..1e5e503686dd 100644
---- a/fs/crypto/fname.c
-+++ b/fs/crypto/fname.c
-@@ -27,42 +27,6 @@
-  */
- #define FSCRYPT_FNAME_MIN_MSG_LEN 16
+diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
+index 70af896822e1..8afec55dd913 100644
+--- a/Documentation/filesystems/fscrypt.rst
++++ b/Documentation/filesystems/fscrypt.rst
+@@ -283,6 +283,21 @@ alternative master keys or to support rotating master keys.  Instead,
+ the master keys may be wrapped in userspace, e.g. as is done by the
+ `fscrypt <https://github.com/google/fscrypt>`_ tool.
  
--/*
-- * struct fscrypt_nokey_name - identifier for directory entry when key is absent
-- *
-- * When userspace lists an encrypted directory without access to the key, the
-- * filesystem must present a unique "no-key name" for each filename that allows
-- * it to find the directory entry again if requested.  Naively, that would just
-- * mean using the ciphertext filenames.  However, since the ciphertext filenames
-- * can contain illegal characters ('\0' and '/'), they must be encoded in some
-- * way.  We use base64url.  But that can cause names to exceed NAME_MAX (255
-- * bytes), so we also need to use a strong hash to abbreviate long names.
-- *
-- * The filesystem may also need another kind of hash, the "dirhash", to quickly
-- * find the directory entry.  Since filesystems normally compute the dirhash
-- * over the on-disk filename (i.e. the ciphertext), it's not computable from
-- * no-key names that abbreviate the ciphertext using the strong hash to fit in
-- * NAME_MAX.  It's also not computable if it's a keyed hash taken over the
-- * plaintext (but it may still be available in the on-disk directory entry);
-- * casefolded directories use this type of dirhash.  At least in these cases,
-- * each no-key name must include the name's dirhash too.
-- *
-- * To meet all these requirements, we base64url-encode the following
-- * variable-length structure.  It contains the dirhash, or 0's if the filesystem
-- * didn't provide one; up to 149 bytes of the ciphertext name; and for
-- * ciphertexts longer than 149 bytes, also the SHA-256 of the remaining bytes.
-- *
-- * This ensures that each no-key name contains everything needed to find the
-- * directory entry again, contains only legal characters, doesn't exceed
-- * NAME_MAX, is unambiguous unless there's a SHA-256 collision, and that we only
-- * take the performance hit of SHA-256 on very long filenames (which are rare).
-- */
--struct fscrypt_nokey_name {
--	u32 dirhash[2];
--	u8 bytes[149];
--	u8 sha256[SHA256_DIGEST_SIZE];
--}; /* 189 bytes => 252 bytes base64url-encoded, which is <= NAME_MAX (255) */
--
- /*
-  * Decoded size of max-size no-key name, i.e. a name that was abbreviated using
-  * the strong hash and thus includes the 'sha256' field.  This isn't simply
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index e3bb9e3756e1..5b4fc75c257c 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -56,6 +56,42 @@ struct fscrypt_name {
- #define fname_name(p)		((p)->disk_name.name)
- #define fname_len(p)		((p)->disk_name.len)
- 
-+/*
-+ * struct fscrypt_nokey_name - identifier for directory entry when key is absent
-+ *
-+ * When userspace lists an encrypted directory without access to the key, the
-+ * filesystem must present a unique "no-key name" for each filename that allows
-+ * it to find the directory entry again if requested.  Naively, that would just
-+ * mean using the ciphertext filenames.  However, since the ciphertext filenames
-+ * can contain illegal characters ('\0' and '/'), they must be encoded in some
-+ * way.  We use base64url.  But that can cause names to exceed NAME_MAX (255
-+ * bytes), so we also need to use a strong hash to abbreviate long names.
-+ *
-+ * The filesystem may also need another kind of hash, the "dirhash", to quickly
-+ * find the directory entry.  Since filesystems normally compute the dirhash
-+ * over the on-disk filename (i.e. the ciphertext), it's not computable from
-+ * no-key names that abbreviate the ciphertext using the strong hash to fit in
-+ * NAME_MAX.  It's also not computable if it's a keyed hash taken over the
-+ * plaintext (but it may still be available in the on-disk directory entry);
-+ * casefolded directories use this type of dirhash.  At least in these cases,
-+ * each no-key name must include the name's dirhash too.
-+ *
-+ * To meet all these requirements, we base64url-encode the following
-+ * variable-length structure.  It contains the dirhash, or 0's if the filesystem
-+ * didn't provide one; up to 149 bytes of the ciphertext name; and for
-+ * ciphertexts longer than 149 bytes, also the SHA-256 of the remaining bytes.
-+ *
-+ * This ensures that each no-key name contains everything needed to find the
-+ * directory entry again, contains only legal characters, doesn't exceed
-+ * NAME_MAX, is unambiguous unless there's a SHA-256 collision, and that we only
-+ * take the performance hit of SHA-256 on very long filenames (which are rare).
-+ */
-+struct fscrypt_nokey_name {
-+	u32 dirhash[2];
-+	u8 bytes[149];
-+	u8 sha256[32];
-+}; /* 189 bytes => 252 bytes base64url-encoded, which is <= NAME_MAX (255) */
++Per-extent encryption keys
++--------------------------
 +
- /* Maximum value for the third parameter of fscrypt_operations.set_context(). */
- #define FSCRYPT_SET_CONTEXT_MAX_SIZE	40
++For certain file systems, such as btrfs, it's desired to derive a
++per-extent encryption key.  This is to enable features such as snapshots
++and reflink, where you could have different inodes pointing at the same
++extent.  When a new extent is created fscrypt randomly generates a
++16-byte nonce and the file system stores it along side the extent.
++Then, it uses a KDF (as described in `Key derivation function`_) to
++derive the extent's key from the master key and nonce.
++
++Currently the inode's master key and encryption policy must match the
++extent, so you cannot share extents between inodes that were encrypted
++differently.
++
+ DIRECT_KEY policies
+ -------------------
+ 
+@@ -1488,6 +1503,27 @@ by the kernel and is used as KDF input or as a tweak to cause
+ different files to be encrypted differently; see `Per-file encryption
+ keys`_ and `DIRECT_KEY policies`_.
+ 
++Extent encryption context
++-------------------------
++
++The extent encryption context mirrors the important parts of the above
++`Encryption context`_, with a few ommisions.  The struct is defined as
++follows::
++
++        struct fscrypt_extent_context {
++                u8 version;
++                u8 encryption_mode;
++                u8 master_key_identifier[FSCRYPT_KEY_IDENTIFIER_SIZE];
++                u8 nonce[FSCRYPT_FILE_NONCE_SIZE];
++        };
++
++Currently all fields much match the containing inode's encryption
++context, with the exception of the nonce.
++
++Additionally extent encryption is only supported with
++FSCRYPT_EXTENT_CONTEXT_V2 using the standard policy, all other policies
++are disallowed.
++
+ Data path changes
+ -----------------
+ 
+@@ -1511,6 +1547,11 @@ buffer.  Some filesystems, such as UBIFS, already use temporary
+ buffers regardless of encryption.  Other filesystems, such as ext4 and
+ F2FS, have to allocate bounce pages specially for encryption.
+ 
++Inline encryption is not optional for extent encryption based file
++systems, the amount of objects required to be kept around is too much.
++Inline encryption handles the object lifetime details which results in a
++cleaner implementation.
++
+ Filename hashing and encoding
+ -----------------------------
  
 -- 
 2.51.0
