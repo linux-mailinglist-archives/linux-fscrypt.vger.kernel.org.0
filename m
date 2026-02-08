@@ -1,60 +1,60 @@
-Return-Path: <linux-fscrypt+bounces-1131-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-1132-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aOf+GtupiGlEtwQAu9opvQ
-	(envelope-from <linux-fscrypt+bounces-1131-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
-	for <lists+linux-fscrypt@lfdr.de>; Sun, 08 Feb 2026 16:20:59 +0100
+	id aGqAL+yqiGn4twQAu9opvQ
+	(envelope-from <linux-fscrypt+bounces-1132-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
+	for <lists+linux-fscrypt@lfdr.de>; Sun, 08 Feb 2026 16:25:32 +0100
 X-Original-To: lists+linux-fscrypt@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id C520B109225
-	for <lists+linux-fscrypt@lfdr.de>; Sun, 08 Feb 2026 16:20:58 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id D81AE109265
+	for <lists+linux-fscrypt@lfdr.de>; Sun, 08 Feb 2026 16:25:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id ED35F30115BD
-	for <lists+linux-fscrypt@lfdr.de>; Sun,  8 Feb 2026 15:20:12 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id C83093001FBF
+	for <lists+linux-fscrypt@lfdr.de>; Sun,  8 Feb 2026 15:25:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EE12361672;
-	Sun,  8 Feb 2026 15:20:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4736362141;
+	Sun,  8 Feb 2026 15:25:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="Jkkq2+Yu"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="VWBXH0h6"
 X-Original-To: linux-fscrypt@vger.kernel.org
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BCE53587C9;
-	Sun,  8 Feb 2026 15:20:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F2E536212C;
+	Sun,  8 Feb 2026 15:25:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.145.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770564012; cv=none; b=S9tsmeSW44pbxwHCzP0kujuJtKZu+CPjGRLIjmURR3AuidqdeFALkF/ABA8y5T52Xi39d7U+PV5oh6UHf7yVgHcXGuUZf9aDfLRMPMDSDrY1G2bwYMtFZuCn2KawvrC7Og6r0Ia8sCLovYmWqjyk0lJTeOzMfUtsEtsXMUJ90T8=
+	t=1770564326; cv=none; b=huGS7J8jMF9tvzVHsLAbYqDBUuxZbwYggpfpXYNESx2zil61wlcq60gC0bAjB0tHSiS4kWjzdBiL2RBmQwBMG57siJ+hS2x3WGnxweYGnWIS51PiVwzZkNbqaTK35w1DdYXq/Bui3BgPBbyqS8UUyNU/E761ZMmxe01GvG1ZF2c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770564012; c=relaxed/simple;
-	bh=QaPSbE832+68Rw5InmUxYlKwBpYzvFhuYM6VPQ182UA=;
+	s=arc-20240116; t=1770564326; c=relaxed/simple;
+	bh=DP9qB4kT2RPoO8+HIWvTaMbKCj3YXUROQlbV/JBCmUU=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=iwxZkzyO8R7nYorJH7+f1z4hbp1ag/FfiE2ngTLct8W+tLzf/zLxDf6e5tEc0l3IKYi45H1daHaYHX6sXXq7zTWcuxb3K/zZ7Qcddcs4jLOu3rNlZ/Ciedjz2sWNJRXNZ/QwfJ0s4as5y/7tQqgN/XDRM7gqz0fecXKWNg4jasA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=Jkkq2+Yu; arc=none smtp.client-ip=67.231.145.42
+	 MIME-Version:Content-Type; b=tdmWnFqq748jAGCKBcOgMFtUHLDXQ89uuWbrrxCP99lZw0w57oyD0sHGoL+Z2CWXpaELTkkpLG/aYB1BzMXd/ADYEkVDp/jtR6KPHTk9knNBGTr73y+wISIXak+oaEkBX3tYR4PxC4R7xs15SX9ohbKIy8XlI0cif/HdeVCkmQQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=VWBXH0h6; arc=none smtp.client-ip=67.231.145.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 618Ac3Ha3858212;
-	Sun, 8 Feb 2026 07:19:56 -0800
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 6187RFs31736750;
+	Sun, 8 Feb 2026 07:25:12 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
 	:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=s2048-2025-q2;
-	 bh=y3RojGoa24sIFTfx0iDhwH0ATOGw5/3emSljU2kSlQ4=; b=Jkkq2+YuVqa4
-	5Cxu6Oddxq7xzrL9lq08W23f6/LCCx3iJyihpQACyTWt92ifKYJyDA5vmMRzaI/1
-	jzRbc0RAZEcHj3wpIFJ5/9YUPRFP2+31i4CPu1uCwfD4wu5et3KNu+IxxnQJ0brl
-	vf0cVgEzEPNwOPsg9sYYfUguB8h+opHyXv9kHQtkEbpVraR0HcIDWblK5LzYPU+w
-	ZlVjSlTRS+oe4/4QK+12iCP/uY7FJTftApb3z6vKcOGs/3+KdNMpshRHRy2tTDGY
-	YxZ4obsC98WNiHkpzha6OqxfYafi6tlIBjDVK2XpMA+hRa7WlUAWm77qV48V1pOd
-	iR85bj+R1A==
-Received: from mail.thefacebook.com ([163.114.134.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 4c6rw116ht-1
+	 bh=jS5lNycBHXBlrQ4/xNQODTAx1r8ji8mvoa5+W/z2icY=; b=VWBXH0h65wQP
+	Sz7m2o+ZU4zHxO+H88N1vUyjLDcVVLdK2CL4iPEpcLQz2RCPjIFElQS6z60O9Y6h
+	qPhDWRa/CNeFym8Y+Hj7GCz7wY1T8Q31SjOAch+yYaaJnYuHNeUq3sdRgAo58/TK
+	U0rUaWWXt72dWs2yPe8swjVFw74ARx4YN8ZUo3bBsbFmtH9e4DfGVK+0m+MdJutm
+	3TdyOART+QuWUfBcQknhtXEBuxFBc6VaJwK7K9keOhrPaCHprshV4dQLjLUb9Gkj
+	IW4weSCM2qMISklPlJCxatPHycIJwziWTgFQJyVoGdqYetSsd2rn7EAuOvFyiqcE
+	7hL49kD20A==
+Received: from maileast.thefacebook.com ([163.114.135.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 4c67xuy0mv-4
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Sun, 08 Feb 2026 07:19:55 -0800 (PST)
-Received: from devbig003.atn7.facebook.com (2620:10d:c085:208::7cb7) by
- mail.thefacebook.com (2620:10d:c08b:78::2ac9) with Microsoft SMTP Server
+	Sun, 08 Feb 2026 07:25:11 -0800 (PST)
+Received: from devbig003.atn7.facebook.com (2620:10d:c0a8:fe::f072) by
+ mail.thefacebook.com (2620:10d:c0a9:6f::8fd4) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.2562.35; Sun, 8 Feb 2026 15:19:41 +0000
+ 15.2.2562.35; Sun, 8 Feb 2026 15:25:10 +0000
 From: Chris Mason <clm@meta.com>
 To: Daniel Vacek <neelx@suse.com>
 CC: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
@@ -66,12 +66,12 @@ CC: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
 	<dsterba@suse.com>,
         <linux-block@vger.kernel.org>, <linux-fscrypt@vger.kernel.org>,
         <linux-btrfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 20/43] btrfs: add fscrypt_info and encryption_type to ordered_extent
-Date: Sun, 8 Feb 2026 07:18:57 -0800
-Message-ID: <20260208151928.3245396-1-clm@meta.com>
+Subject: Re: [PATCH v6 16/43] btrfs: select encryption dependencies if FS_ENCRYPTION
+Date: Sun, 8 Feb 2026 07:22:37 -0800
+Message-ID: <20260208152448.3300594-1-clm@meta.com>
 X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20260206182336.1397715-21-neelx@suse.com>
-References: <20260206182336.1397715-1-neelx@suse.com> <20260206182336.1397715-21-neelx@suse.com>
+In-Reply-To: <20260206182336.1397715-17-neelx@suse.com>
+References: <20260206182336.1397715-1-neelx@suse.com> <20260206182336.1397715-17-neelx@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
@@ -80,21 +80,21 @@ List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: NzNrozYJFxlvnm03StbEA4BkQVlp-q8b
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMjA4MDEzMSBTYWx0ZWRfX3fdUxLdwCE/n
- WOMpWlDhylbLPZA1h4UTP6LnXgH0GsmMDJLMLeQM6207UUNud2MrD8X3tre9oScTuUAFm6bFkka
- nWiXepzLD5Px7CrPtrViAR/atbSm+ed+mFWRrYtsdAK88Dbe77nTLn1cvMJHaqrarReyc7oqSY8
- 6f8Rig//RORpC8WiCadb/pGMygrjwv2Kvypn4d1wVLHlKqwlK96koj1Jw5mSC6hy+ZGhDaEqS6l
- Os7Yk7uBqnnvGIQVboQVB2SFxhTirKGtcTrgNyXbZPMp4PulwRtIXwr71h6qwvmjgZRhL7kYM4u
- eAZ5t9ycQkO2u7yVxIQBMWp/aowh4vQ3kP5YOT0MUma4la34AhHwTamBCWwtLN6rFeEtdP5jPj9
- tpWiWYqH57f4hXTW8O5FY4Pjc1XUiKBJUxb7DLGds0LReaR7xbfyXoRZl11x4JTF999B9UZk5Xd
- R0DVvxy9MiXLLIAgykA==
-X-Authority-Analysis: v=2.4 cv=H67WAuYi c=1 sm=1 tr=0 ts=6988a99b cx=c_pps
- a=CB4LiSf2rd0gKozIdrpkBw==:117 a=CB4LiSf2rd0gKozIdrpkBw==:17
+X-Authority-Analysis: v=2.4 cv=B6i0EetM c=1 sm=1 tr=0 ts=6988aad7 cx=c_pps
+ a=MfjaFnPeirRr97d5FC5oHw==:117 a=MfjaFnPeirRr97d5FC5oHw==:17
  a=HzLeVaNsDn8A:10 a=VkNPw1HP01LnGYTKEx00:22 a=Mpw57Om8IfrbqaoTuvik:22
  a=GgsMoib0sEa3-_RKJdDe:22 a=NEAV23lmAAAA:8 a=iox4zFpeAAAA:8 a=maIFttP_AAAA:8
- a=UHOwrn5YzTAXftJBTekA:9 a=WzC6qhA0u3u7Ye7llzcV:22 a=qR24C9TJY6iBuJVj_x8Y:22
-X-Proofpoint-ORIG-GUID: NzNrozYJFxlvnm03StbEA4BkQVlp-q8b
+ a=-hVligO-2lKxrFAun1gA:9 a=WzC6qhA0u3u7Ye7llzcV:22 a=qR24C9TJY6iBuJVj_x8Y:22
+X-Proofpoint-ORIG-GUID: Q2kOkzinV_ne25OF3ftcKSnlrFUQP-Ik
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMjA4MDEzMyBTYWx0ZWRfX5Ls57kV0gLcv
+ +gIAxRtnQfA+TOjJkuu6YlIVYIU62ro8KL7iY3yxSmHEWRZccM2nm4qBLryNuh3X/IMN1HlCH5o
+ ms3DPI3WaNF19wXFKWv+oKerbNjH2XU8ctnPvwvE+oHImTML9d0TScG/ALJMpYTg5wwkK7X+hXM
+ OIe5RWBtOJspRP2uub/On+Jup/DWBfE8Mx+VL4WV+MGrKc/zvH9JAt8jKialb3XGuYbhV9yLsx3
+ t/nocWaibJyHksuUxopWBUPgSNRBEnC3+Mj1wFBEG+U6JVKjcAVGuBx+IQpontap1HwBVFniunN
+ 5SNCvr+fvrBJM6f8EuK0qh1YdncFQVC1Xqf6O0CczJJOaodH3S/KNcRsSiaX+tSgQvM/TKuWfXR
+ yeylvcpIDDNYmvvqf93/1i0g+Y64f6rXJGnpmLhroYw+E/9Qo/aXviVS0JAQj9C1jXMDyHZAEK/
+ Zo19RDZCf1dU/5nU/OQ==
+X-Proofpoint-GUID: Q2kOkzinV_ne25OF3ftcKSnlrFUQP-Ik
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.51,FMLib:17.12.100.49
  definitions=2026-02-08_04,2026-02-05_03,2025-10-01_01
@@ -105,7 +105,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[meta.com,reject];
 	R_DKIM_ALLOW(-0.20)[meta.com:s=s2048-2025-q2];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
@@ -113,9 +113,9 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	RCPT_COUNT_TWELVE(0.00)[12];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-1131-lists,linux-fscrypt=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-1132-lists,linux-fscrypt=lfdr.de];
 	DKIM_TRACE(0.00)[meta.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[clm@meta.com,linux-fscrypt@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
@@ -124,17 +124,17 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	NEURAL_HAM(-0.00)[-0.999];
 	RCVD_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[linux-fscrypt];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[meta.com:mid,meta.com:dkim,suse.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,toxicpanda.com:email]
-X-Rspamd-Queue-Id: C520B109225
+	DBL_BLOCKED_OPENRESOLVER(0.00)[meta.com:mid,meta.com:dkim,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,toxicpanda.com:email,suse.com:email]
+X-Rspamd-Queue-Id: D81AE109265
 X-Rspamd-Action: no action
 
 Daniel Vacek <neelx@suse.com> wrote:
 > From: Josef Bacik <josef@toxicpanda.com>
 > 
-> We're going to need these to update the file extent items once the
-> writes are complete.  Add them and add the pieces necessary to assign
-> them and free everything.
-> 
+> We need this to make sure the appropriate encryption algorithms are
+> turned on in our config if we have FS_ENCRYPTION enabled, and
+> additionally we only support inline encryption with the fallback block
+> crypto, so we need to make sure we pull in those dependencies.
 
 Hi everyone,
 
@@ -148,88 +148,60 @@ are already useful.  I've kept the headers to make it easier to double check
 that I'm actually replying to the right email, but please let me know if any
 parts of this are incorrect:
 
-commit 61cd57301840de69a3f6573374d41ad4b4bcf348
+commit 0ab45d92f6f53371d87e1a302f09b56218d02546
 Author: Josef Bacik <josef@toxicpanda.com>
 
-btrfs: add fscrypt_info and encryption_type to ordered_extent
+btrfs: select encryption dependencies if FS_ENCRYPTION
 
-This commit adds encryption-related fields (encryption_type and
-fscrypt_info) to struct btrfs_ordered_extent to support fscrypt
-integration in btrfs.
+This commit adds select statements for encryption-related dependencies when
+FS_ENCRYPTION is enabled, including encryption algorithms, inline crypto, and
+the block layer inline encryption fallback.
 
-> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-> index 5df02c707aee6..7a5701937184e 100644
-> --- a/fs/btrfs/ordered-data.c
-> +++ b/fs/btrfs/ordered-data.c
-> @@ -192,6 +192,7 @@ static struct btrfs_ordered_extent *alloc_ordered_extent(
->  	}
->  	entry->inode = inode;
->  	entry->compress_type = compress_type;
-> +	entry->encryption_type = BTRFS_ENCRYPTION_NONE;
->  	entry->truncated_len = (u64)-1;
->  	entry->qgroup_rsv = qgroup_rsv;
+> diff --git a/fs/btrfs/Kconfig b/fs/btrfs/Kconfig
+> index ede184b6eda16..216a5707b099c 100644
+> --- a/fs/btrfs/Kconfig
+> +++ b/fs/btrfs/Kconfig
+> @@ -16,6 +16,9 @@ config BTRFS_FS
+>  	select RAID6_PQ
+>  	select XOR_BLOCKS
+>  	select XXHASH
+> +	select FS_ENCRYPTION_ALGS if FS_ENCRYPTION
+> +	select FS_ENCRYPTION_INLINE_CRYPT if FS_ENCRYPTION
+> +	select BLK_INLINE_ENCRYPTION_FALLBACK if FS_ENCRYPTION
 
-This isn't a bug, but the fscrypt_info field isn't explicitly initialized
-to NULL here. While kmem_cache_zalloc() at line 175 does zero the memory,
-all the other important fields in this function are explicitly initialized
-(compress_type, encryption_type, truncated_len, qgroup_rsv, refs). Would
-adding an explicit 'entry->fscrypt_info = NULL;' improve consistency?
+Are the dependencies for FS_ENCRYPTION_INLINE_CRYPT and
+BLK_INLINE_ENCRYPTION_FALLBACK satisfied?
 
->  	entry->flags = flags;
-> @@ -630,6 +631,7 @@ void btrfs_put_ordered_extent(struct btrfs_ordered_extent *entry)
->  		btrfs_add_delayed_iput(entry->inode);
->  		list_for_each_entry_safe(sum, tmp, &entry->list, list)
->  			kvfree(sum);
-> +		fscrypt_put_extent_info(entry->fscrypt_info);
->  		kmem_cache_free(btrfs_ordered_extent_cache, entry);
->  	}
->  }
-> diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
-> index 1e6b0b182b295..ce19198e7f844 100644
-> --- a/fs/btrfs/ordered-data.h
-> +++ b/fs/btrfs/ordered-data.h
-> @@ -124,6 +124,9 @@ struct btrfs_ordered_extent {
->  	/* compression algorithm */
->  	int compress_type;
+Looking at fs/crypto/Kconfig:38, FS_ENCRYPTION_INLINE_CRYPT depends on
+'FS_ENCRYPTION && BLK_INLINE_ENCRYPTION'. Similarly, in block/Kconfig:204,
+BLK_INLINE_ENCRYPTION_FALLBACK depends on 'BLK_INLINE_ENCRYPTION'.
+
+When BTRFS_FS=y with FS_ENCRYPTION=y but BLK_INLINE_ENCRYPTION=n (which is
+valid), Kconfig will generate warnings:
+
+  WARNING: unmet direct dependencies detected for BLK_INLINE_ENCRYPTION_FALLBACK
+  WARNING: unmet direct dependencies detected for FS_ENCRYPTION_INLINE_CRYPT
+
+The build will fail when compiling fs/crypto/inline_crypt.c because
+BLK_INLINE_ENCRYPTION guards the required function definitions and struct
+members:
+
+  fs/crypto/inline_crypt.c:259:15: error: implicit declaration of function
+      'blk_crypto_derive_sw_secret'
+  fs/crypto/inline_crypt.c:317:9: error: implicit declaration of function
+      'bio_crypt_set_ctx'
+  fs/crypto/inline_crypt.c:418:45: error: 'struct bio' has no member named
+      'bi_crypt_context'
+
+Should BLK_INLINE_ENCRYPTION also be selected when FS_ENCRYPTION is enabled?
+
+  select BLK_INLINE_ENCRYPTION if FS_ENCRYPTION
+  select FS_ENCRYPTION_ALGS if FS_ENCRYPTION
+  select FS_ENCRYPTION_INLINE_CRYPT if FS_ENCRYPTION
+  select BLK_INLINE_ENCRYPTION_FALLBACK if FS_ENCRYPTION
+
+>  	depends on PAGE_SIZE_LESS_THAN_256KB
 >
-> +	/* encryption mode */
-> +	u8 encryption_type;
-> +
-
-This isn't a bug, but placing the u8 encryption_type field between two int
-fields creates 3 bytes of padding. This is minor, but in a filesystem with
-many ordered extents, it could add up. The current placement does have the
-advantage of grouping encryption-related fields together logically, though.
-
->  	/* Qgroup reserved space */
->  	int qgroup_rsv;
->
-> @@ -133,6 +136,9 @@ struct btrfs_ordered_extent {
->  	/* the inode we belong to */
->  	struct btrfs_inode *inode;
->
-> +	/* the fscrypt_info for this extent, if necessary */
-> +	struct fscrypt_extent_info *fscrypt_info;
-> +
->  	/* list of checksums for insertion when the extent io is done */
->  	struct list_head list;
-
-How does btrfs_split_ordered_extent() handle the new fscrypt_info field?
-Looking at that function in ordered-data.c, it calls alloc_ordered_extent()
-which initializes encryption_type to BTRFS_ENCRYPTION_NONE and fscrypt_info
-to NULL. If the original ordered extent has encryption_type set to
-BTRFS_ENCRYPTION_FSCRYPT with a non-NULL fscrypt_info pointer, the split
-creates an inconsistency where the two extents representing parts of the
-same encrypted data have different encryption metadata.
-
-The function already has an assertion preventing splits of compressed
-extents at line 1244:
-
-    ASSERT(!(flags & (1U << BTRFS_ORDERED_COMPRESSED)))
-
-Should there be similar protection for encrypted extents, or if splits must
-be supported, should the function call fscrypt_get_extent_info() to
-properly handle the reference count and copy the encryption_type to the new
-extent?
+>  	help
 
 
