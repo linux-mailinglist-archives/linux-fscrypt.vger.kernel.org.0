@@ -1,203 +1,333 @@
-Return-Path: <linux-fscrypt+bounces-1149-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-1150-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aBFvHFxZlWnQPAIAu9opvQ
-	(envelope-from <linux-fscrypt+bounces-1149-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 18 Feb 2026 07:17:00 +0100
+	id 8GoDMzu8lWntUQIAu9opvQ
+	(envelope-from <linux-fscrypt+bounces-1150-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 18 Feb 2026 14:18:51 +0100
 X-Original-To: lists+linux-fscrypt@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27B4415363B
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 18 Feb 2026 07:17:00 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D4361568DA
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 18 Feb 2026 14:18:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 5938F3067753
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 18 Feb 2026 06:16:25 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2472D301D078
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 18 Feb 2026 13:18:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0569301485;
-	Wed, 18 Feb 2026 06:16:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7B1B2BE7BE;
+	Wed, 18 Feb 2026 13:18:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ST4LAGda"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Onq8ALfd"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67ECB29BD8C;
-	Wed, 18 Feb 2026 06:16:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771395384; cv=none; b=W1+NGMtxRS/vVUHezqPcyYv4rImPNLFnWlefs+cbB3o9X3y1WkLhPjjO3b+OCYsqkmJuZy3BCMDG5QeiXZSBSb1DXXIuiuEMPlMhHv+cK66K5Pyr3N09oSjErm31dFNqdThby+FklBEbG/JWz/O5Jit1wz2WUgSn2dTkiU2BvSM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771395384; c=relaxed/simple;
-	bh=BqUJteWLQUbC5yASL8jviCB7vcELDlrPpnMPHAwveRM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XZXHZrdxmMx7jdeWfzN+2J9cpuTJnYACnFl38XiEwRpaNW6QRFSp7veDMf+S6xfQNZSXZtQds+7zdyDxrl5T8f1SzsmDMsnaydj0SZugFeA1GzhAGer4bQ8X1fDJQs3u38w/UWOLuQdSnnhq5cyycxVIKYWpKh/E3ZGkp27yW/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ST4LAGda; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
-	:Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=VcvKWVedtLFNeUePzxyg9ziacX2X2/mCVUWs+sJncbQ=; b=ST4LAGdabcaNmy0VRLTitYXFkw
-	mWwVBPp/gsZnpmmZpcS3jTLT0J0zb/LeFcDvjjb2vaPjTgm8hVa1eN15hdxJLqTrBkHw5q2jx+kX9
-	DcbGDFq5rlqmfFmzARyHN+VH5F4fGRdL6XeWWLKpcylokcrUSKP3qcpV2mlaBvrG7QnSy5WEgwnK9
-	dCY538bIGaf0x6wTTQ5a2nzG9Our6GukIF6hgN+xeSovhmIXee0IWOVxSQWRNz7CdWGrio77F9f4L
-	COMGec3wOCeL6+BXgjacgK0r5dd0Rg88sRJBbq0LtewcMBycNbsNsW/xTs9pAdd8tnoB+ly9AWNO2
-	ZIefMhQg==;
-Received: from [2001:4bb8:2dc:9863:1842:9381:9c0f:de32] (helo=localhost)
-	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vsarG-00000009Lim-3CYJ;
-	Wed, 18 Feb 2026 06:16:23 +0000
-From: Christoph Hellwig <hch@lst.de>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: "Theodore Y. Ts'o" <tytso@mit.edu>,
-	Jaegeuk Kim <jaegeuk@kernel.org>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Chao Yu <chao@kernel.org>,
-	Christian Brauner <brauner@kernel.org>,
-	"Darrick J. Wong" <djwong@kernel.org>,
-	linux-fscrypt@vger.kernel.org,
-	linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-fsdevel@vger.kernel.org
-Subject: [PATCH 9/9] fscrypt: pass a real sector_t to fscrypt_zeroout_range
-Date: Wed, 18 Feb 2026 07:14:47 +0100
-Message-ID: <20260218061531.3318130-10-hch@lst.de>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20260218061531.3318130-1-hch@lst.de>
-References: <20260218061531.3318130-1-hch@lst.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1361D29E114
+	for <linux-fscrypt@vger.kernel.org>; Wed, 18 Feb 2026 13:18:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.221.43
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1771420722; cv=pass; b=kBFVrNwa9k50vqdIvhzFA2bvJxkHxAuVivlVpNLmTIu2bQuHn1rMsudAqbw1hA14ocBW7AD6j0aoQcCJn+4Tc914fR745jWAE9l2+2oB7Y0Fp0oxspUL6nqTXqxtQMjdOqkCuGu1vsj/0GJOUgbu4+Qa8lexBku8hOwpjLm/6gE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1771420722; c=relaxed/simple;
+	bh=sLMGR09zI4y3gpjzSi6grOOg7wQjmI4f5Efbabe2ap4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qItm2AlfxkFyzrxTnkuNDVY+cu2uPZUqhZGzEyK5BqLm4gfWxhFpuESxkmnu1mg7VQvu/t1tZgmifUHWkUK8ID/7ZTB5L5CIpziWqSVKJbR/uy3xeJ5XFYLZZmPh4u0oXUxmgaWwMvRRJ1m7O2RGhDuebE7jxd3bSUUwhnoTiIs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Onq8ALfd; arc=pass smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-4327790c4e9so3936005f8f.2
+        for <linux-fscrypt@vger.kernel.org>; Wed, 18 Feb 2026 05:18:40 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1771420719; cv=none;
+        d=google.com; s=arc-20240605;
+        b=BfJ4WyZVDSIcbQsW6Q66UMjuByeFsH5TAjZVNn9as8mljMK6POGN9SkPyX++sMJOeJ
+         MVzf+DMDtExoUIoO+a/PBaxl2uvubCOplvqtEW0ifkyeaxc60M7KsF+8tzfUGkozZPVg
+         Mp5Z99qyyy1zwYktkur1Fph2C5aNmBsb3s5oA8yxAsBcE8702KZ8sZkJlGUmnGR0sKWd
+         fFpkem+ryHL+YGsl6HzieCknjBzkLX27YzjL81GUevmwTuzuGgJPro1MV4LokfxWbiM0
+         L8QtsxVYzNOSReYkcpQS84OQSdQKngPIhTgVwjdQ0A4VuKrwfXn6zAwsrIyglomlcDnT
+         O+/g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=RHxjjrT8dDKAZN0w50HLXW8C36xUtCBdYdPVz0Pgsc8=;
+        fh=XU3CkEy+uplCmaPgBY8oWUI44uWt+vbfk4bRLH4ZcuQ=;
+        b=aaqz8LdcHYgXSXVGXGxJovEvv4GtYRvvnjcnLk32GL57lvsJqf6mL8ACukS7igg22f
+         23/HjXv9TEuWXq7z5b89lzyy98DXhlWxIObzazxPxoj6pS6TW1BWrlO8i1+1O8nXn+eM
+         KiCDXzBX1Bfv6OfKyz69yBgjcEKyvERya0OSRO4rGNg4iqpaSVsTwUW7J+1J/C1YBUA0
+         y7+wSk1VNuYKo8F2MwDOmYmH1LifT9T/cKzmfkN4hRZfkqf9lY9KG7tJvU6rRHy3Meye
+         +r15fGoFALKkk+VuyUFLqoY6xz1GODtVz8gdv+Qh/85F1A8DyU1UFkywF2tE2j4/SCah
+         Sbkg==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1771420719; x=1772025519; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=RHxjjrT8dDKAZN0w50HLXW8C36xUtCBdYdPVz0Pgsc8=;
+        b=Onq8ALfdPQu6Dgw3a15nKbA09J6rzOwkPAfTk8y9o9yjRD3hqfqxCygRhg/J1sLKfM
+         Zda5bkTSUgAHkYZ2+B2mAFmjB6ppVM8wLv27EGpnDQwFb+GlpW6Uyte60rYXZ/8e0ln2
+         EuVFhhGluTzk3tW/Fdrs2OW/oWgIN1edYnlXhbo7Uc3Q4n0yo/YISsXUI/5xk6YcwfeD
+         SU5IVMR1MzlTKb2N/eeJyfLmw6Kdf79yYFdTbCz1tAEq+u/4S+SBqsdpH833JE1w5Quh
+         4PWRWOUoT773pY2oqnObD4ayXyAnXLMsF8T4bkTlnQnul9dCmLQgJ4Oi+qw83KsFdXXR
+         t0ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1771420719; x=1772025519;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RHxjjrT8dDKAZN0w50HLXW8C36xUtCBdYdPVz0Pgsc8=;
+        b=uoQr+N2vF8WYuc+sFHhZ2Qj2gPhQp38NabGdwFeiuKzH7X6orFYZWoQ9+E9/Fq1pzR
+         xHlQ88aup7aBUfgi/240HyJPCTnNkmJqMB/CUoUoqEqurYQaSpxvqavG8JENeTijMwWv
+         sNqMS0Osnns9j5D8+K5SH7M4qkLUNIriU+VYVZZzY8cuN9khtM5Yr8TzAux0ORUKQdpj
+         l8JnbfPpCDg/M6xcpQmP9SO8MMjgepn12jlXAjzimUeJvtJ6nRKOOR5qORip+iDZK5Eb
+         gEdzXOsxZ3TfXMmbxmo0vJJWbfWRuVRCheF9JBIx3zmATeEmPR+0Nsb3Qf6wUwKmCFkw
+         w4XQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXqKu4ockEUu3FKyLpMH+Gx4MQsJsxg7b/VsjWC5nbcUr/O0eDGe5izT1nOnwaWaM+jESpIeYO94Mgky4vI@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxp/VbJUAyZFpOpANL10ql274uR8HAPRyJuRDKVdMhGn4eAt4Fl
+	8ClnDpqYgUBzGZm0Bdr0BAZ5qTTRtsX7PWGNsAo4g3px7AI9JDySb0REzc+fQX2w19+jgaaJEf5
+	2D5SNouEo5qiHP9FyJPlWj2M8YDosaaLCLKZd7mbE+w==
+X-Gm-Gg: AZuq6aL6J6BSjU81cwPbWZbc1OTG0zpISjMvyV28iE8JSP91pbDQJZ/d0+UpvlJOJym
+	Z+nAhcNpNTh9+qbAaLGILuQXvkqULdb4sgwQcSGMrcaPVePe8z21lpGlQxOMpPsGCDyaifgDuOv
+	4Z0Z7MMQ6q18gAbcmff4C/3RAGz27SLz/F69vDVT8928oKfNvJU3JIKjKnKyMNWWBlwBQOGj5es
+	1Dl2ERLBv+833rOqIN4/KBEfxtcJez2DSUrYDG3jesHDPAT3UXJxEWpcKIGQTp2WQVnUBJUL8EI
+	88czh7xD3mAPrLgPGSXViYl7fza84Tlvqssb7aAUKJuFszJiXF064r/+m44aVPgkSlM2hLuhk1Z
+	PESpo
+X-Received: by 2002:a05:6000:26cd:b0:435:a815:dd8d with SMTP id
+ ffacd0b85a97d-43796b04f57mr32979736f8f.55.1771420719317; Wed, 18 Feb 2026
+ 05:18:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+References: <20260206182336.1397715-1-neelx@suse.com> <20260206182336.1397715-12-neelx@suse.com>
+ <20260208153808.3476221-1-clm@meta.com>
+In-Reply-To: <20260208153808.3476221-1-clm@meta.com>
+From: Daniel Vacek <neelx@suse.com>
+Date: Wed, 18 Feb 2026 14:18:28 +0100
+X-Gm-Features: AaiRm51fAAFTVBcqF-KI5-Lr8gaWIksaX5IH6JtEAzcWunIgDM49UiSlrdWV5YQ
+Message-ID: <CAPjX3FdXC5LX6UBmsCf6cdGquwsPrh3gp3OKj0NEerXkbFSd5w@mail.gmail.com>
+Subject: Re: [PATCH v6 11/43] btrfs: add inode encryption contexts
+To: Chris Mason <clm@meta.com>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, Eric Biggers <ebiggers@kernel.org>, 
+	"Theodore Y. Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>, Jens Axboe <axboe@kernel.dk>, 
+	David Sterba <dsterba@suse.com>, linux-block@vger.kernel.org, 
+	linux-fscrypt@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Omar Sandoval <osandov@osandov.com>, 
+	Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Content-Type: text/plain; charset="UTF-8"
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.06 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[infradead.org:s=bombadil.20210309];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
-	DMARC_POLICY_SOFTFAIL(0.10)[lst.de : SPF not aligned (relaxed), DKIM not aligned (relaxed),none];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-1149-lists,linux-fscrypt=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[infradead.org:+];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[hch@lst.de,linux-fscrypt@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[neelx@suse.com,linux-fscrypt@vger.kernel.org];
 	TAGGED_RCPT(0.00)[linux-fscrypt];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,infradead.org:dkim,lst.de:mid,lst.de:email]
-X-Rspamd-Queue-Id: 27B4415363B
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-1150-lists,linux-fscrypt=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Rspamd-Queue-Id: 2D4361568DA
 X-Rspamd-Action: no action
 
-While the pblk argument to fscrypt_zeroout_range is declared as a
-sector_t, it actually is interpreted as a logical block size unit, which
-is highly unusual.  Switch to passing the 512 byte units that sector_t is
-defined for.
+On Sun, 8 Feb 2026 at 16:38, Chris Mason <clm@meta.com> wrote:
+> Daniel Vacek <neelx@suse.com> wrote:
+> > From: Omar Sandoval <osandov@osandov.com>
+> >
+> > fscrypt stores a context item with encrypted inodes that contains the
+> > related encryption information.  fscrypt provides an arbitrary blob for
+> > the filesystem to store, and it does not clearly fit into an existing
+> > structure, so this goes in a new item type.
+>
+> Hi everyone,
+>
+> I'm running the btrfs for-next branch, along with the encryption patch set
+> through my AI review prompts:
+>
+> https://github.com/masoncl/review-prompts
+>
+> I'm working on some btrfs specific instructions, but hopefully these reviews
+> are already useful.  I've kept the headers to make it easier to double check
+> that I'm actually replying to the right email, but please let me know if any
+> parts of this are incorrect:
+>
+> commit 2d6114c2937b897d844735aa16d5369e3ec6d135
+> Author: Omar Sandoval <osandov@osandov.com>
+>
+> btrfs: add inode encryption contexts
+>
+> fscrypt stores a context item with encrypted inodes that contains the
+> related encryption information.  fscrypt provides an arbitrary blob for
+> the filesystem to store, and it does not clearly fit into an existing
+> structure, so this goes in a new item type.
+>
+> > diff --git a/fs/btrfs/fscrypt.c b/fs/btrfs/fscrypt.c
+> > index 6cfba7d94e726..e9b024d671a22 100644
+> > --- a/fs/btrfs/fscrypt.c
+> > +++ b/fs/btrfs/fscrypt.c
+>
+> [ ... ]
+>
+> > @@ -1,10 +1,126 @@
+> >  // SPDX-License-Identifier: GPL-2.0
+> >
+> > +#include <linux/iversion.h>
+> >  #include "ctree.h"
+> > +#include "accessors.h"
+> >  #include "btrfs_inode.h"
+> > +#include "disk-io.h"
+> > +#include "fs.h"
+> >  #include "fscrypt.h"
+> > +#include "ioctl.h"
+> > +#include "messages.h"
+> > +#include "transaction.h"
+> > +#include "xattr.h"
+> > +
+> > +static int btrfs_fscrypt_get_context(struct inode *inode, void *ctx, size_t len)
+> > +{
+> > +     struct btrfs_key key = {
+> > +             .objectid = btrfs_ino(BTRFS_I(inode)),
+> > +             .type = BTRFS_FSCRYPT_INODE_CTX_KEY,
+> > +             .offset = 0,
+> > +     };
+> > +     struct btrfs_path *path;
+> > +     struct extent_buffer *leaf;
+> > +     unsigned long ptr;
+> > +     int ret;
+> > +
+> > +
+> > +     path = btrfs_alloc_path();
+> > +     if (!path)
+> > +             return -ENOMEM;
+> > +
+> > +     ret = btrfs_search_slot(NULL, BTRFS_I(inode)->root, &key, path, 0, 0);
+> > +     if (ret) {
+> > +             len = -ENOENT;
+> > +             goto out;
+> > +     }
+> > +
+> > +     leaf = path->nodes[0];
+> > +     ptr = btrfs_item_ptr_offset(leaf, path->slots[0]);
+> > +     /* fscrypt provides max context length, but it could be less */
+> > +     len = min_t(size_t, len, btrfs_item_size(leaf, path->slots[0]));
+> > +     read_extent_buffer(leaf, ctx, ptr, len);
+> > +
+> > +out:
+> > +     btrfs_free_path(path);
+> > +     return len;
+> > +}
+> > +
+> > +static int btrfs_fscrypt_set_context(struct inode *inode, const void *ctx,
+> > +                                  size_t len, void *fs_data)
+> > +{
+> > +     struct btrfs_trans_handle *trans = fs_data;
+> > +     struct btrfs_key key = {
+> > +             .objectid = btrfs_ino(BTRFS_I(inode)),
+> > +             .type = BTRFS_FSCRYPT_INODE_CTX_KEY,
+> > +             .offset = 0,
+> > +     };
+> > +     struct btrfs_path *path = NULL;
+> > +     struct extent_buffer *leaf;
+> > +     unsigned long ptr;
+> > +     int ret;
+> > +
+> > +     if (!trans)
+> > +             trans = btrfs_start_transaction(BTRFS_I(inode)->root, 2);
+> > +     if (IS_ERR(trans))
+> > +             return PTR_ERR(trans);
+> > +
+> > +     path = btrfs_alloc_path();
+> > +     if (!path) {
+> > +             ret = -ENOMEM;
+> > +             goto out_err;
+> > +     }
+> > +
+> > +     ret = btrfs_search_slot(trans, BTRFS_I(inode)->root, &key, path, 0, 1);
+> > +     if (ret < 0)
+> > +             goto out_err;
+> > +
+> > +     if (ret > 0) {
+> > +             btrfs_release_path(path);
+> > +             ret = btrfs_insert_empty_item(trans, BTRFS_I(inode)->root, path, &key, len);
+> > +             if (ret)
+> > +                     goto out_err;
+> > +     }
+> > +
+> > +     leaf = path->nodes[0];
+> > +     ptr = btrfs_item_ptr_offset(leaf, path->slots[0]);
+> > +
+> > +     len = min_t(size_t, len, btrfs_item_size(leaf, path->slots[0]));
+> > +     write_extent_buffer(leaf, ctx, ptr, len);
+> > +     btrfs_mark_buffer_dirty(trans, leaf);
+> > +     btrfs_release_path(path);
+> > +
+> > +     if (fs_data)
+> > +             return ret;
+>
+> Does this code leak the path when fs_data is non-NULL?
+>
+> In btrfs_fscrypt_set_context(), a path is allocated via btrfs_alloc_path()
+> but when fs_data is provided (during inode creation with a transaction
+> handle), the function returns here without calling btrfs_free_path(path).
+>
+> The btrfs_release_path() call above only releases internal references to
+> extent buffers and locks but does not free the path structure itself.
+>
+> This leak occurs on every encrypted inode creation. The fix would be to add
+> btrfs_free_path(path) before the return.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/crypto/bio.c         | 6 ++----
- fs/ext4/inode.c         | 3 ++-
- fs/f2fs/file.c          | 2 +-
- include/linux/fscrypt.h | 4 ++--
- 4 files changed, 7 insertions(+), 8 deletions(-)
+That's correct. Good catch!
 
-diff --git a/fs/crypto/bio.c b/fs/crypto/bio.c
-index cea931620c04..45fe74aa8366 100644
---- a/fs/crypto/bio.c
-+++ b/fs/crypto/bio.c
-@@ -114,7 +114,7 @@ static int fscrypt_zeroout_range_inline_crypt(const struct inode *inode,
-  * fscrypt_zeroout_range() - zero out a range of blocks in an encrypted file
-  * @inode: the file's inode
-  * @pos: the first file logical offset (in bytes) to zero out
-- * @pblk: the first filesystem physical block to zero out
-+ * @sector: the first sector to zero out
-  * @len: bytes to zero out
-  *
-  * Zero out filesystem blocks in an encrypted regular file on-disk, i.e. write
-@@ -128,7 +128,7 @@ static int fscrypt_zeroout_range_inline_crypt(const struct inode *inode,
-  * Return: 0 on success; -errno on failure.
-  */
- int fscrypt_zeroout_range(const struct inode *inode, loff_t pos,
--			  sector_t pblk, unsigned int len)
-+			  sector_t sector, unsigned int len)
- {
- 	const struct fscrypt_inode_info *ci = fscrypt_get_inode_info_raw(inode);
- 	const unsigned int du_bits = ci->ci_data_unit_bits;
-@@ -137,8 +137,6 @@ int fscrypt_zeroout_range(const struct inode *inode, loff_t pos,
- 	const unsigned int du_per_page = 1U << du_per_page_bits;
- 	u64 du_index = pos >> du_bits;
- 	u64 du_remaining = len >> du_bits;
--	loff_t pos = (loff_t)lblk << inode->i_blkbits;
--	sector_t sector = pblk << (inode->i_blkbits - SECTOR_SHIFT);
- 	struct page *pages[16]; /* write up to 16 pages at a time */
- 	unsigned int nr_pages;
- 	unsigned int i;
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 675ef741cb30..d0028d6d3de1 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -406,7 +406,8 @@ int ext4_issue_zeroout(struct inode *inode, ext4_lblk_t lblk, ext4_fsblk_t pblk,
- 
- 	if (IS_ENCRYPTED(inode) && S_ISREG(inode->i_mode))
- 		return fscrypt_zeroout_range(inode,
--				(loff_t)lblk << inode->i_blkbits, pblk,
-+				(loff_t)lblk << inode->i_blkbits,
-+				pblk << (inode->i_blkbits - SECTOR_SHIFT),
- 				len << inode->i_blkbits);
- 
- 	ret = sb_issue_zeroout(inode->i_sb, pblk, len, GFP_NOFS);
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 5b7013f7f6a1..ad435dea656a 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -4163,7 +4163,7 @@ static int f2fs_secure_erase(struct block_device *bdev, struct inode *inode,
- 	if (!ret && (flags & F2FS_TRIM_FILE_ZEROOUT)) {
- 		if (IS_ENCRYPTED(inode))
- 			ret = fscrypt_zeroout_range(inode,
--					(loff_t)off << inode->i_blkbits, block,
-+					(loff_t)off << inode->i_blkbits, sector,
- 					len << inode->i_blkbits);
- 		else
- 			ret = blkdev_issue_zeroout(bdev, sector, nr_sects,
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index 065f909ebda2..11464bf0a241 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -451,7 +451,7 @@ u64 fscrypt_fname_siphash(const struct inode *dir, const struct qstr *name);
- /* bio.c */
- bool fscrypt_decrypt_bio(struct bio *bio);
- int fscrypt_zeroout_range(const struct inode *inode, loff_t pos,
--			  sector_t pblk, unsigned int len);
-+			  sector_t sector, unsigned int len);
- 
- /* hooks.c */
- int fscrypt_file_open(struct inode *inode, struct file *filp);
-@@ -756,7 +756,7 @@ static inline bool fscrypt_decrypt_bio(struct bio *bio)
- }
- 
- static inline int fscrypt_zeroout_range(const struct inode *inode, loff_t pos,
--					sector_t pblk, unsigned int len)
-+					sector_t sector, unsigned int len)
- {
- 	return -EOPNOTSUPP;
- }
--- 
-2.47.3
+--- a/fs/btrfs/fscrypt.c
++++ b/fs/btrfs/fscrypt.c
+@@ -155,7 +155,7 @@ static int btrfs_fscrypt_set_context(struct inode
+*inode, const void *ctx,
+     btrfs_release_path(path);
 
+     if (fs_data)
+-        return ret;
++        goto out_err;
+
+     BTRFS_I(inode)->flags |= BTRFS_INODE_ENCRYPT;
+     btrfs_sync_inode_flags_to_i_flags(BTRFS_I(inode));
+
+Thanks.
+
+--nX
+
+> > +
+> > +     BTRFS_I(inode)->flags |= BTRFS_INODE_ENCRYPT;
+> > +     btrfs_sync_inode_flags_to_i_flags(BTRFS_I(inode));
+> > +     inode_inc_iversion(inode);
+> > +     inode_set_ctime_current(inode);
+> > +     ret = btrfs_update_inode(trans, BTRFS_I(inode));
+> > +     if (ret)
+> > +             goto out_abort;
+> > +     btrfs_free_path(path);
+> > +     btrfs_end_transaction(trans);
+> > +     return 0;
+> > +out_abort:
+> > +     btrfs_abort_transaction(trans, ret);
+> > +out_err:
+> > +     if (!fs_data)
+> > +             btrfs_end_transaction(trans);
+> > +     btrfs_free_path(path);
+> > +     return ret;
+> > +}
+>
+> [ ... ]
+>
 
