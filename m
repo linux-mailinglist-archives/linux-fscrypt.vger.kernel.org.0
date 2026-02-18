@@ -1,118 +1,118 @@
-Return-Path: <linux-fscrypt+bounces-1152-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-1153-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2I7KCtfRlWlEVAIAu9opvQ
-	(envelope-from <linux-fscrypt+bounces-1152-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 18 Feb 2026 15:51:03 +0100
+	id AF7RIAPVlWnFVAIAu9opvQ
+	(envelope-from <linux-fscrypt+bounces-1153-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 18 Feb 2026 16:04:35 +0100
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D35B1572DF
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 18 Feb 2026 15:51:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E1D8015741B
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 18 Feb 2026 16:04:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 00D45301AF48
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 18 Feb 2026 14:50:58 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 378573022949
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 18 Feb 2026 15:02:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9DB333C1B7;
-	Wed, 18 Feb 2026 14:50:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC308341044;
+	Wed, 18 Feb 2026 15:02:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Btz8khYt"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="V+GnKqXK"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43F0E33374B
-	for <linux-fscrypt@vger.kernel.org>; Wed, 18 Feb 2026 14:50:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF776340A70
+	for <linux-fscrypt@vger.kernel.org>; Wed, 18 Feb 2026 15:02:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.128.53
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771426256; cv=pass; b=CQw/KAwS9bAp19umRIIwH3CV/1fl2dWSopHcV/tWywXuIH5HMqeuQKoe8AJTjONQsaRFpz9W5zsuLQCtLHHcQQXi5uiJzhi35N0j4hpnCnHrWBlyAPvTBaUiclwDcjkWPB4DYszmzBazU/Lp3G5R6VJSUZ/X+QsD+CAUnPYiKmo=
+	t=1771426966; cv=pass; b=UOsRYZCr/kijXdMytv/vbxSw7WVUJ5z09+d1l2iR8YFKFXuRU53cEryYGOMreBRgGKNgRdXPg5XNma1LmfGHH9SMO77B2R+CwSuWF7zXsOqIdP3qWLTHiIbXaOttbfNNehMAYqlgb4AKq9c8riGiEXnpi+UGrrN26FdIbNhqD4s=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771426256; c=relaxed/simple;
-	bh=ayix/lpTEKTXsxUj2iKsjlFXfV7GOzT2zS6Ou5e131g=;
+	s=arc-20240116; t=1771426966; c=relaxed/simple;
+	bh=udw/ZyTsHuwFOVBESJ/+qihOlfdgJM950rv/L+IknkE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZR7uZSXmSsEkXaKegZg5Y8TnxKKZU1PR0I6C6pW80eGNJcdH6EuquHLRc8ob86GbwMLS0fac4wK6M6Ds7c5IE52bj/cZ1aBP7xwuks9H+PAsCQCO/zUJkXhA85lADWrrAtoaapIi+OMYJrVA6qCwWZRwIAwVvophQDMqfSktMbg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Btz8khYt; arc=pass smtp.client-ip=209.85.221.48
+	 To:Cc:Content-Type; b=pEInZjUh4nlQj7bIw67NslD7nhUJSKOMbbo7Ba5yMwCixy+hjRSF9TPhmrQvpNegfFu4Haixl+I4eRiLgu/ClxPVr+fj+HLx4M5KhDEabyvZj6D5+wh1ZVJ4IjtC8kYHJe4BXPZmfaufJrk2RGCykkS0Dvld2Z4LJxAeS+xrLZg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=V+GnKqXK; arc=pass smtp.client-ip=209.85.128.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-436e87589e8so6438649f8f.3
-        for <linux-fscrypt@vger.kernel.org>; Wed, 18 Feb 2026 06:50:55 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1771426254; cv=none;
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-48370174e18so35079845e9.2
+        for <linux-fscrypt@vger.kernel.org>; Wed, 18 Feb 2026 07:02:42 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1771426961; cv=none;
         d=google.com; s=arc-20240605;
-        b=EWRiRl0VLBUQAVpGRqjyVaGGFLwti+MlZrp+m1W5nNJjlQiNdeEBOcaCulez/hidja
-         ZmmYkwgk07LFwM8Dbhd9hAvFPWC8x/8i9Nxuh1r+wWChxz6D5H4WlDM9jlSlj0b7lbGN
-         pZiwKd+ZURxnk9n6S9Slir7HT5C0xPj5NH05f18MrGPR8dX3a+lD9rlFE7LHoAt/HgfM
-         i5cE5Yes7XMNHodvOWEJf8R2aJjcI+liTQxtVk5Ba2NcwBaY5C44JZ+/7uuUVM8oztoV
-         EO2bbDMmwjITNL3VlFkezjY/hBfVYVheqdjAzUtLCYa5v2RGJuso/uxh+OfLibZG7AEs
-         cxEg==
+        b=LTq0EqMc7kxIsZgtw3pYhCIW5RR0/z/854X2qfPj4qVweL1gJ7GKCbBfG5F/C+YoC2
+         rmMz24x5EJhV14kmyEkg90CUpfWml2mgzshBq00rWUlHiE73B6zNDfkgEk1LnCUtA6N8
+         1DAwZ2fQ+ZbnYoi+U5bZRSMZSbcDIQp6fwuASUpg/r1HBsoEtqLBfV66dwYP1DO9FWkj
+         pFvuPFyjQhZrdO3GSIjwSHl68gp1QI/2Ec9ZMRueMA/oFNqxMib2B6EFcGmZ1VbtSb19
+         pWn0C/lfiSOLceFSxPX8+3cmXlmwgvuOIfmNaCGJCZYCFinrYXUfwpFuQ9DElxF0J+It
+         v16w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:dkim-signature;
-        bh=XgscmaEOFxBbw8YrW9Yjg3xpxOoa9kw0yRjQzXqorpc=;
-        fh=sq6B67ronyro2PD8RT71vf5g4kz1ocrVkKNvpDUpjvU=;
-        b=kvCKTl9KQoeVtd7seR0rnBqYw8nsSkYc7PwNmT3DHME/QsKy4GRbE0wJcIIbKCLsEB
-         ytceZYH10GLhXSrFz9b3tlRAAdrvB+eEXk4pHEC/ejvVtdDXwOtq3neOYFN3yBEHSytv
-         I+wigFdlmS1KicqFt2AmfRxbzrGZ99bYLQRrESPwKx4jKRYW+vA4QT3PRt60q+O5Soo9
-         rrBk2hkZuK+2MOPsJkETEMJB2kM4yDjf+SP1TZ28cEV2OOUOqF7ez8DOovSsGhUY+pdM
-         3/KZ93eYWIXPrUd2GYSyc7TiFYWHG0Ew3XyfaEk+CyttHy2DvSX1rULqoO38WKsn0Rax
-         YqHQ==;
+        bh=4f2knTNw8Y0yBkMXA6kc+4x2KQKgICuj4A91rn0T+Sg=;
+        fh=SNBuK5ZZF6JWphQVWggPDLJ7bjBPJOKfyQw9BtlOVg4=;
+        b=HccwKCNvn3fhQRlnfdKu1J8x+A6fc7Y9rXxP2TF5VqvSoGdDg/TgcrdsesAcNVxemT
+         sGAC3UgwCyp6MbRbVXwSm84/Btuvyv/QExdQHIVpk+cn2Cpq9c9HZpnWvUYNDaiGsLyC
+         FqQ8RQFKcDhJSuIC1YBjWLXgEXduEjZgeNBKdk5fNT9fkjrQTQ9kdA5rvpWJDBkiCnk7
+         w1iZaMZGgLEKC+IRz2nlTtYBiHSurcEXtVrO1w7wLF73J9dH2L4dDplNrD6/ZYpG9fs2
+         SD8khw0UbPxQRceqcfJwl3NXzlZdBhxb/vktCtXYDd8NkvAtm/rQMoNisxkaA700YB3g
+         rCWw==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1771426254; x=1772031054; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1771426961; x=1772031761; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=XgscmaEOFxBbw8YrW9Yjg3xpxOoa9kw0yRjQzXqorpc=;
-        b=Btz8khYtvNNsriVVeD6o6jXJ0W2Zjd7ItjK9kGtxHF5uZn0F5QYETeWA82Y7lAVbrW
-         yOQ6GtzDcDWe/G5oPOHJNjHzsZXf05USpHbBMIipOB3s7eKpXmDec1mzLJ2OH5T/s+0J
-         Z/Vc0AqWQ+cLF7wop8hhzL5WfTkLd6hQHLIKVREKCqJkxO844CVseJhe3vYj1Bh+eHJ2
-         iIjdx9MMC4kLwixNEVvqD4EsyN3YAynm84fmsxoPNV3KskrOS/rKWKvbrAtf1YYV/QT4
-         dX6q/hlUf6TSdswnyntXVAnnCgPVeDg5/om0obqPjDIOVQVYytb1jrq08em9DV1YqqdJ
-         yLvQ==
+        bh=4f2knTNw8Y0yBkMXA6kc+4x2KQKgICuj4A91rn0T+Sg=;
+        b=V+GnKqXK60xaSJp2fZlMcxdqrWZWlyuvIxe5b7z69Ycpo06PAVrcE3DCVe/4lZrO/h
+         a+LO52LcjnX8RPeBK38FQIbRW2t5p4QgITq+b/seBVc/nm8DgOLLqche7ucqkW+eNFTx
+         86b98NQeX+5wShMg78VxLBTt2Gb3pkePa66IxvmX9wLJtxCSESq+Z6XCorkI3JvF8p4h
+         JDybHtZvBeRBUu5TOfSx6DYsqOBLm76/FxdI0/8LkqE4wQJ6UVd2/wkTRxhETewCN9DT
+         rxOCv/fQG2yvP1X6FKrQGxkEixttaZJdnZ+xExYL17sx/PL1qn8HaPZwO669LT/7rci7
+         v2aQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771426254; x=1772031054;
+        d=1e100.net; s=20230601; t=1771426961; x=1772031761;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XgscmaEOFxBbw8YrW9Yjg3xpxOoa9kw0yRjQzXqorpc=;
-        b=A/SUu7KZkGY00H8CEXnSh6YhjkSCKyD2f/XJsnuZBxFYAGRUBfl7gPPFjlId+eL8x8
-         TS0gfQ51+vzlZFkn0dn81sJbGtu3XgzEdJSkkKqRVLYba3gJjyrIf/mpQ9801GvpDtm0
-         iZOLK13xBNv6zc3m49q92dn2ug0bRFcSSK2WAUaI6AS1Vn1PAST6OGYxIgZwaKUpeE+h
-         AC2Z25QS81B3j0hJz3kYxmjPgJbt9kYJI3KIS9j8icrotHsA7imOc+8a7+yT37bhfFmm
-         /n3HX7bwAito+9oGhEXetWmHksSGRwxxxksUYGJlcGgSCsu34v1P0yiDHz144owVMfov
-         rpCQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVL7HWsWLEbLMu4j6Pt3o3iqOZhsiIag6gwGO4J+yYgJV9Rmeuud8wbXopCg+9HIWJJagwVpsSvm4DqHwa0@vger.kernel.org
-X-Gm-Message-State: AOJu0YwL2tjGdfleCHeE78PG89XnwuV/8gJFJD8qnRdPzO6AFVQI1l2T
-	tTtNUy5gyWLbYmIhp5zMoS7mnatWdHr/3n1YDA7T+i0WzwVia4Ps6rfgmAILdPaS8DVfkqsgxcC
-	sweWqg6O23gkTGGrsK29kVw+19RjPhhdlQMppokq7Rg==
-X-Gm-Gg: AZuq6aL2Kj9AKQKtTxqRLHTpxeQEJGI5TIB0QVtMdb1O1/hhoYBQ7HK1RcGFfsm4Xpk
-	C6zudeSHIN5H+FO/CscSkJ+l8IGZ2vc+pP1qQiaHp++NflZ4sHdtb9EDl1bWPTMx+3OBiOK83jc
-	kLrtbqWbMup5BXTfHWbtufJ79oEJMfa8om8viiLnb2rVeDoDPGWki3QtpQzDUfnd4mkO7N+KVSl
-	i/11fnoigLSeDfmmuwTrX7nzIPQ4c9YvdNSwrrEWmT5IPv1jHvTISWi5AgOc4yEjj+mD1eUM/ii
-	xatabQD8ADy7eP3hYD219lus+WnoRsBgrrqoki8ATDVDZrGRKu2fgeLLCCfIZiczx8sh7ni5aYx
-	AgsnGnPCQXtgRsEQ=
-X-Received: by 2002:a05:6000:4284:b0:435:bcbe:d104 with SMTP id
- ffacd0b85a97d-43797913f31mr29698913f8f.34.1771426253517; Wed, 18 Feb 2026
- 06:50:53 -0800 (PST)
+        bh=4f2knTNw8Y0yBkMXA6kc+4x2KQKgICuj4A91rn0T+Sg=;
+        b=Ek3vfcGAx4Cfey/DYUIhWRjAgYGbj2irF91MlXLk1fJsDScsOMyd/Vuf4ni1uhopPC
+         A/L6+il2Ep7VUw5siMQqNmzS6k8OLgLODeZd8dEjUO89Kc6Uw3EEHz8IZAlCwmOEQxAC
+         ya5f77vKWN8zXBfbfQffPx0RvhwhAUDnPx4fB6nK7/5bUrq4AEko7QWGSQsE3255kuVk
+         JSwtnM99cxM7FV5LqhG/CPZK+9jymD4Td0KntqMrGhBIM4dptiiFXFZqV9Xho8aVvWi0
+         BGTda9XxXecaRN9WHyNNojGwAtgoIDaJEXv1fLd/83/P7Aq16xRroBtlQeT+y2x7wED9
+         BvVQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWTaasiSMSCG1JF5YdMcUKnuyWIXwfNy33SlXjzTT0iiTgrHWb2wsomQzH0GSx5T2xXcT/Th0X3+dzifxeB@vger.kernel.org
+X-Gm-Message-State: AOJu0YxDYZYI00pJpeQ64SvqATdznlPVGCyoCwcBeuBu0pVcu2sTit/H
+	CveVBXjnYVFVdq6qpQxUlfZTKP8MN4m9mRJGTEt6ZihRVGePXO4Lsg4VdaDo6JUbMKtLrU4iaSO
+	6q1wa9B7RZoRiqIxOqTgzlAkZkwDzKEUpOnd5bLKwHA==
+X-Gm-Gg: AZuq6aL69ZHeRKgX+TqKQu8oPB8xQAuZtLs+czyEA4wXxDR3JMacdBDK1grUJcOZJ+z
+	2p+7NiT54NI4gjKxBQVUaJFDZs+Xd8JzoTg1uigpdlEuJWWSwbxi6Y0DKtkO1qwOB1QvDn2lILv
+	3JJhS+RYRBQo4rcd9Qsncqpfjo6QqtCS//2V7XljvO3PU4K+RyO8Qz9vD4LP+AEA74TC8ixZ7Xl
+	ksc3qF+IQs4GUPEH6UAgio7PfbJHFuBk27kIKuAITBZWtMF13B0By/y2/A9HrfAyDhw+zavEuvz
+	aRQjMR3Z8oY5lvmSf0zw3SDNMEwG+iEJsWlXszfyCfqHB7DY4JIpVYP+r3GFd95+D1S2/pj8bh3
+	pEpkd
+X-Received: by 2002:a05:600c:1c25:b0:483:54cc:cd97 with SMTP id
+ 5b1f17b1804b1-48379bfc340mr230018315e9.36.1771426961169; Wed, 18 Feb 2026
+ 07:02:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260206182336.1397715-1-neelx@suse.com> <20260206182336.1397715-15-neelx@suse.com>
- <20260208152914.3379032-1-clm@meta.com>
-In-Reply-To: <20260208152914.3379032-1-clm@meta.com>
+References: <20260206182336.1397715-1-neelx@suse.com> <20260206182336.1397715-17-neelx@suse.com>
+ <20260208152448.3300594-1-clm@meta.com>
+In-Reply-To: <20260208152448.3300594-1-clm@meta.com>
 From: Daniel Vacek <neelx@suse.com>
-Date: Wed, 18 Feb 2026 15:50:42 +0100
-X-Gm-Features: AaiRm5279eD5QNXNIKOKA9PJgdBQDs7fON79j563pfmi1shHVB7og3gAxuO5tGo
-Message-ID: <CAPjX3FcyGRN4PZSJCjj37TtK3cYjkBK8qiguPRZFDyQ1igH4cQ@mail.gmail.com>
-Subject: Re: [PATCH v6 14/43] btrfs: handle nokey names
+Date: Wed, 18 Feb 2026 16:02:29 +0100
+X-Gm-Features: AaiRm50heuopm7EY7a7udAfEdRYxhS7H4B61tJOKCzqxGFffQrIvg06EGcnPVCY
+Message-ID: <CAPjX3FegzEdCxfBq4mqW2mP_GDDuyS4NOQqgDThWdAHhr2tCOg@mail.gmail.com>
+Subject: Re: [PATCH v6 16/43] btrfs: select encryption dependencies if FS_ENCRYPTION
 To: Chris Mason <clm@meta.com>
 Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, Eric Biggers <ebiggers@kernel.org>, 
 	"Theodore Y. Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>, Jens Axboe <axboe@kernel.dk>, 
 	David Sterba <dsterba@suse.com>, linux-block@vger.kernel.org, 
 	linux-fscrypt@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
@@ -127,34 +127,29 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	MIME_TRACE(0.00)[0:+];
 	MISSING_XM_UA(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCPT_COUNT_TWELVE(0.00)[13];
+	RCPT_COUNT_TWELVE(0.00)[12];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[neelx@suse.com,linux-fscrypt@vger.kernel.org];
 	TAGGED_RCPT(0.00)[linux-fscrypt];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[meta.com:email,mail.gmail.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:email,suse.com:dkim];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:dkim,toxicpanda.com:email,meta.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-1152-lists,linux-fscrypt=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-1153-lists,linux-fscrypt=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	DKIM_TRACE(0.00)[suse.com:+]
-X-Rspamd-Queue-Id: 7D35B1572DF
+X-Rspamd-Queue-Id: E1D8015741B
 X-Rspamd-Action: no action
 
-On Sun, 8 Feb 2026 at 16:30, Chris Mason <clm@meta.com> wrote:
+On Sun, 8 Feb 2026 at 16:25, Chris Mason <clm@meta.com> wrote:
 > Daniel Vacek <neelx@suse.com> wrote:
-> > From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+> > From: Josef Bacik <josef@toxicpanda.com>
 > >
-> > For encrypted or unencrypted names, we calculate the offset for the dir
-> > item by hashing the name for the dir item. However, this doesn't work
-> > for a long nokey name, where we do not have the complete ciphertext.
-> > Instead, fscrypt stores the filesystem-provided hash in the nokey name,
-> > and we can extract it from the fscrypt_name structure in such a case.
-> >
-> > Additionally, for nokey names, if we find the nokey name on disk we can
-> > update the fscrypt_name with the disk name, so add that to searching for
-> > diritems.
+> > We need this to make sure the appropriate encryption algorithms are
+> > turned on in our config if we have FS_ENCRYPTION enabled, and
+> > additionally we only support inline encryption with the fallback block
+> > crypto, so we need to make sure we pull in those dependencies.
 >
 > Hi everyone,
 >
@@ -168,103 +163,77 @@ On Sun, 8 Feb 2026 at 16:30, Chris Mason <clm@meta.com> wrote:
 > that I'm actually replying to the right email, but please let me know if any
 > parts of this are incorrect:
 >
-> commit fabad1c3ea82184fba8e78ce1da1b2fbe8c34fae
-> Author: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+> commit 0ab45d92f6f53371d87e1a302f09b56218d02546
+> Author: Josef Bacik <josef@toxicpanda.com>
 >
-> btrfs: handle nokey names
+> btrfs: select encryption dependencies if FS_ENCRYPTION
 >
-> This commit adds support for handling nokey names in btrfs, enabling
-> proper hash calculation and disk name extraction for long encrypted
-> filenames when the encryption key is unavailable.
+> This commit adds select statements for encryption-related dependencies when
+> FS_ENCRYPTION is enabled, including encryption algorithms, inline crypto, and
+> the block layer inline encryption fallback.
 >
-> > diff --git a/fs/btrfs/dir-item.c b/fs/btrfs/dir-item.c
-> > index 6e10dd4a4e9e1..75c213bd826e9 100644
-> > --- a/fs/btrfs/dir-item.c
-> > +++ b/fs/btrfs/dir-item.c
-> > @@ -228,6 +228,27 @@ struct btrfs_dir_item *btrfs_lookup_dir_item(struct btrfs_trans_handle *trans,
-> >       return di;
-> >  }
-> >
-> > +/*
-> > + * If appropriate, populate the disk name for a fscrypt_name looked up without
-> > + * a key.
-> > + *
-> > + * @path:    The path to the extent buffer in which the name was found.
-> > + * @di:              The dir item corresponding.
-> > + * @fname:   The fscrypt_name to perhaps populate.
-> > + *
-> > + * Returns: 0 if the name is already populated or the dir item doesn't exist
-> > + * or the name was successfully populated, else an error code.
-> > + */
-> > +static int ensure_disk_name_from_dir_item(struct btrfs_path *path,
-> > +                                       struct btrfs_dir_item *di,
-> > +                                       struct fscrypt_name *name)
-> > +{
-> > +     if (name->disk_name.name || !di)
-> > +             return 0;
-> > +
-> > +     return btrfs_fscrypt_get_disk_name(path->nodes[0], di, &name->disk_name);
-> > +}
-> > +
+> > diff --git a/fs/btrfs/Kconfig b/fs/btrfs/Kconfig
+> > index ede184b6eda16..216a5707b099c 100644
+> > --- a/fs/btrfs/Kconfig
+> > +++ b/fs/btrfs/Kconfig
+> > @@ -16,6 +16,9 @@ config BTRFS_FS
+> >       select RAID6_PQ
+> >       select XOR_BLOCKS
+> >       select XXHASH
+> > +     select FS_ENCRYPTION_ALGS if FS_ENCRYPTION
+> > +     select FS_ENCRYPTION_INLINE_CRYPT if FS_ENCRYPTION
+> > +     select BLK_INLINE_ENCRYPTION_FALLBACK if FS_ENCRYPTION
 >
-> [ ... ]
+> Are the dependencies for FS_ENCRYPTION_INLINE_CRYPT and
+> BLK_INLINE_ENCRYPTION_FALLBACK satisfied?
 >
-> > @@ -263,6 +287,8 @@ struct btrfs_dir_item *btrfs_lookup_dir_item_fname(struct btrfs_trans_handle *tr
-> >
-> >       if (ret == -ENOENT || (di && IS_ERR(di) && PTR_ERR(di) == -ENOENT))
-> >               return NULL;
-> > +     if (ret == 0)
-> > +             ret = ensure_disk_name_from_dir_item(path, di, name);
-> >       if (ret < 0)
-> >               di = ERR_PTR(ret);
-> >
+> Looking at fs/crypto/Kconfig:38, FS_ENCRYPTION_INLINE_CRYPT depends on
+> 'FS_ENCRYPTION && BLK_INLINE_ENCRYPTION'. Similarly, in block/Kconfig:204,
+> BLK_INLINE_ENCRYPTION_FALLBACK depends on 'BLK_INLINE_ENCRYPTION'.
 >
-> Does ensure_disk_name_from_dir_item() leak memory when it allocates a
-> disk name? Looking at the call chain:
+> When BTRFS_FS=y with FS_ENCRYPTION=y but BLK_INLINE_ENCRYPTION=n (which is
+> valid), Kconfig will generate warnings:
 >
-> btrfs_unlink_subvol() at inode.c:4583 calls btrfs_lookup_dir_item_fname(),
-> which calls ensure_disk_name_from_dir_item(), which calls
-> btrfs_fscrypt_get_disk_name() at fscrypt.c:34, allocating memory via
-> kmalloc() and storing it in name->disk_name.name.
+>   WARNING: unmet direct dependencies detected for BLK_INLINE_ENCRYPTION_FALLBACK
+>   WARNING: unmet direct dependencies detected for FS_ENCRYPTION_INLINE_CRYPT
 >
-> However, btrfs_unlink_subvol() cleans up with fscrypt_free_filename() at
-> include/linux/fscrypt.h:503, which only frees name->crypto_buf.name, not
-> name->disk_name.name.
+> The build will fail when compiling fs/crypto/inline_crypt.c because
+> BLK_INLINE_ENCRYPTION guards the required function definitions and struct
+> members:
 >
-> The same issue appears in btrfs_search_dir_index_item() at line 405, which
-> also calls ensure_disk_name_from_dir_item().
+>   fs/crypto/inline_crypt.c:259:15: error: implicit declaration of function
+>       'blk_crypto_derive_sw_secret'
+>   fs/crypto/inline_crypt.c:317:9: error: implicit declaration of function
+>       'bio_crypt_set_ctx'
+>   fs/crypto/inline_crypt.c:418:45: error: 'struct bio' has no member named
+>       'bi_crypt_context'
 >
-> For nokey encrypted filenames, wouldn't this leak memory on every
-> successful lookup?
+> Should BLK_INLINE_ENCRYPTION also be selected when FS_ENCRYPTION is enabled?
 
-Should `name->crypto_buf.name` equal to `name->disk_name.name` in this case?
-How about this:
+That's correct.
 
---- a/fs/btrfs/dir-item.c
-+++ b/fs/btrfs/dir-item.c
-@@ -243,10 +243,18 @@ static int ensure_disk_name_from_dir_item(struct
-btrfs_path *path,
-                       struct btrfs_dir_item *di,
-                       struct fscrypt_name *name)
- {
-+    int ret;
-+
-     if (name->disk_name.name || !di)
-         return 0;
+--- a/fs/btrfs/Kconfig
++++ b/fs/btrfs/Kconfig
+@@ -18,6 +18,7 @@ config BTRFS_FS
+     select XXHASH
+     select FS_ENCRYPTION_ALGS if FS_ENCRYPTION
+     select FS_ENCRYPTION_INLINE_CRYPT if FS_ENCRYPTION
++    select BLK_INLINE_ENCRYPTION if FS_ENCRYPTION
+     select BLK_INLINE_ENCRYPTION_FALLBACK if FS_ENCRYPTION
+     depends on PAGE_SIZE_LESS_THAN_256KB
 
--    return btrfs_fscrypt_get_disk_name(path->nodes[0], di, &name->disk_name);
-+    ret = btrfs_fscrypt_get_disk_name(path->nodes[0], di, &name->disk_name);
-+    if (ret)
-+        return ret;
-+
-+    name->crypto_buf.name = name->disk_name.name;
-+    name->crypto_buf.len  = name->disk_name.len;
-+    return 0;
- }
-
- /*
 
 Thanks.
 
 --nX
+
+>   select BLK_INLINE_ENCRYPTION if FS_ENCRYPTION
+>   select FS_ENCRYPTION_ALGS if FS_ENCRYPTION
+>   select FS_ENCRYPTION_INLINE_CRYPT if FS_ENCRYPTION
+>   select BLK_INLINE_ENCRYPTION_FALLBACK if FS_ENCRYPTION
+>
+> >       depends on PAGE_SIZE_LESS_THAN_256KB
+> >
+> >       help
+>
 
