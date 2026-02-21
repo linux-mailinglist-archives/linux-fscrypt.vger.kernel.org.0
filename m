@@ -1,137 +1,159 @@
-Return-Path: <linux-fscrypt+bounces-1162-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-1163-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wJRjKf8Nmmm5YAMAu9opvQ
-	(envelope-from <linux-fscrypt+bounces-1162-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 21 Feb 2026 20:56:47 +0100
+	id S3m7IgUSmmlpYQMAu9opvQ
+	(envelope-from <linux-fscrypt+bounces-1163-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
+	for <lists+linux-fscrypt@lfdr.de>; Sat, 21 Feb 2026 21:13:57 +0100
 X-Original-To: lists+linux-fscrypt@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E91816DC1F
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 21 Feb 2026 20:56:46 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4B8B16DC7C
+	for <lists+linux-fscrypt@lfdr.de>; Sat, 21 Feb 2026 21:13:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C801530382BB
-	for <lists+linux-fscrypt@lfdr.de>; Sat, 21 Feb 2026 19:56:08 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 8D8A63019FE5
+	for <lists+linux-fscrypt@lfdr.de>; Sat, 21 Feb 2026 20:13:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4440333EB09;
-	Sat, 21 Feb 2026 19:56:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40422366543;
+	Sat, 21 Feb 2026 20:13:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n9ki9g1i"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tpKpFZJf"
 X-Original-To: linux-fscrypt@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E88F311587;
-	Sat, 21 Feb 2026 19:56:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D59B10F1
+	for <linux-fscrypt@vger.kernel.org>; Sat, 21 Feb 2026 20:13:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771703768; cv=none; b=PeRAi5eOvxzknXeLk2MpkR42sBjDnU7USiVZfUKhtBEbDKfObs0sD98eb71ATPTd3vtjGE5ix+eE+1r0rNZ4ECbiQLVxamdMhPrss/amzy0jH33x4eenKP7chCZ8uhUqymWWCGXir1YUuRpAzi7owQPzHYnO5vZt7YHfhpOUQvU=
+	t=1771704833; cv=none; b=EDdT8qBgs8ipsaGMtYXQ7YW2hRqXkW+1LrnopFB0ZDpWHf5jnssTdF64XYBCgoaKfU459xg2sx+cP81a0rJrFu09MIg4qIVzSeREBpFFHENiBnYZeSlB+BR0kncP/hhkcCfGTytZVMVHwIriZ8c2FbLt1QH0aX5zjHPkMTK/dQ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771703768; c=relaxed/simple;
-	bh=R7/z9C7qpx7IpjmeTzkpHTTwUmtvP03YWgReVTnc/oc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Sgj9A+BD2PAAvY2eB+DzAyffx7OAt76YBOf4Clk7o+A8pfe78kPooRRuKSBwk+9STtcmoQsUhMnfcJOfQP8m9JKi3i9kpbWCXwXotXfbB+L8W1PWY3x/fDI39LUSeAnRMZEzSo9qzVGl99T+hRlF2WGLjbeyGoNSows0+gXEGnI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n9ki9g1i; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A524EC4CEF7;
-	Sat, 21 Feb 2026 19:56:07 +0000 (UTC)
+	s=arc-20240116; t=1771704833; c=relaxed/simple;
+	bh=XiSyrRdVNg5RaCKPxQSBaWFY6pxU+wD3GORpXVNtZPI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Am3qcnO3DzLvznDIy6mfmvC1Rm8NJxI7vr9mCozm+xoPr+pCHGNtg0HYzyFPjD5B5BGMMvlQcNxEwwc7lXQMLOqBHcsK+RVf3oVlcba9Lb2gop7xgitnYXvcEQgQ+FpR/qmKcOinofVbhROg79wu+QZJY0fgZlUG+cO48epnIO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tpKpFZJf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E64EC4CEF7;
+	Sat, 21 Feb 2026 20:13:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771703768;
-	bh=R7/z9C7qpx7IpjmeTzkpHTTwUmtvP03YWgReVTnc/oc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=n9ki9g1iZd2fKMZu/SNx0xP47FVGH4dM64Nvb9u3kkIZ4ZaECBGItZFJE0OD3vqFc
-	 kLT75lsM20kWZ1QfOXSHoMSp/UfxVBiloLPFWewMS7emZ5DcuBzNRJUNsju8gQ1zGL
-	 4MbTu8L2XlqDo6ELdq34K3bGkWdG1HwIQ+24/s8CBMwntTsSH54RMRmv3zK+96TN74
-	 Ida4hmcXT7iAlaI+EiwBIO/bvJn+Y5fKmtauovnGzK8QRF5ZSKDXVQTujPP1GDC1Aj
-	 Y2OkNX/EKRJsXSKfYs94nUhNOUErSp8BpzOSQ/Efde7cOrusfRkAf54gmH9kOo/Ekt
-	 58VcljSalnk4Q==
-Date: Sat, 21 Feb 2026 11:56:05 -0800
+	s=k20201202; t=1771704832;
+	bh=XiSyrRdVNg5RaCKPxQSBaWFY6pxU+wD3GORpXVNtZPI=;
+	h=From:To:Cc:Subject:Date:From;
+	b=tpKpFZJfY4gmoUoOOahFyx6ZeKQaK9Jpcx6A+86olHVTje9Iji+Dn/smneuw+IYzP
+	 ACgeOZViJoWuR4aceGqxDWeVajBuBVtTkDwXLVK/BIxPbmt3L089CyierAgueJJmUL
+	 jugtnhqFEQROcK3FpV0oxi478/9iwyy4Nm4Noxjclup2S4gzpMkaJUf0IivwKkQnEm
+	 32jiiI0kp87649SSfNfUQISW73ZYRbCqe49B04xkNIQ7MP1WE8jCOQNoKGplnjPBM1
+	 6NxW8PR8BtfDTKnMvmokGxAKUsPeq4ETUyIDOY9xF7iElzHCuiZ3u4IyD9NFzGTlyq
+	 +aUA9XyMi5TgA==
 From: Eric Biggers <ebiggers@kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: "Theodore Y. Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Chao Yu <chao@kernel.org>, Christian Brauner <brauner@kernel.org>,
-	"Darrick J. Wong" <djwong@kernel.org>,
-	linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 8/9] fscrypt: pass a byte length to fscrypt_zeroout_range
-Message-ID: <20260221195605.GF2536@quark>
-References: <20260218061531.3318130-1-hch@lst.de>
- <20260218061531.3318130-9-hch@lst.de>
+To: Jaegeuk Kim <jaegeuk@kernel.org>,
+	Chao Yu <chao@kernel.org>,
+	linux-f2fs-devel@lists.sourceforge.net
+Cc: linux-fscrypt@vger.kernel.org,
+	Christoph Hellwig <hch@infradead.org>,
+	Eric Biggers <ebiggers@kernel.org>,
+	Vlastimil Babka <vbabka@suse.cz>
+Subject: [PATCH] f2fs: remove unreachable code in f2fs_encrypt_one_page()
+Date: Sat, 21 Feb 2026 12:13:16 -0800
+Message-ID: <20260221201316.22025-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260218061531.3318130-9-hch@lst.de>
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
+	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-1162-lists,linux-fscrypt=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-1163-lists,linux-fscrypt=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
-	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-fscrypt@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	NEURAL_HAM(-0.00)[-1.000];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-fscrypt];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[lst.de:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 0E91816DC1F
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: B4B8B16DC7C
 X-Rspamd-Action: no action
 
-On Wed, Feb 18, 2026 at 07:14:46AM +0100, Christoph Hellwig wrote:
-> Range lengths are usually expressed as bytes in the VFS, switch
-> fscrypt_zeroout_range to this convention.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  fs/crypto/bio.c | 6 +++---
->  fs/ext4/inode.c | 3 ++-
->  fs/f2fs/file.c  | 2 +-
->  3 files changed, 6 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/crypto/bio.c b/fs/crypto/bio.c
-> index e41e605cf7e6..cea931620c04 100644
-> --- a/fs/crypto/bio.c
-> +++ b/fs/crypto/bio.c
-> @@ -115,7 +115,7 @@ static int fscrypt_zeroout_range_inline_crypt(const struct inode *inode,
->   * @inode: the file's inode
->   * @pos: the first file logical offset (in bytes) to zero out
->   * @pblk: the first filesystem physical block to zero out
-> - * @len: number of blocks to zero out
-> + * @len: bytes to zero out
->   *
->   * Zero out filesystem blocks in an encrypted regular file on-disk, i.e. write
->   * ciphertext blocks which decrypt to the all-zeroes block.  The blocks must be
-> @@ -136,7 +136,7 @@ int fscrypt_zeroout_range(const struct inode *inode, loff_t pos,
+Since commit 52e7e0d88933 ("fscrypt: Switch to sync_skcipher and
+on-stack requests") eliminated the dynamic allocation of crypto
+requests, the only remaining dynamic memory allocation done by
+fscrypt_encrypt_pagecache_blocks() is the bounce page allocation.
 
-This should be accompanied by a change in the type of 'len' to u64 or
-loff_t, and similarly in fscrypt_zeroout_range_inline_crypt().  It's
-unclear that the callers always pass lengths <= U32_MAX bytes,
-especially the one in f2fs.
+The bounce page is allocated from a mempool.  Mempool allocations with
+GFP_NOFS never fail.  Therefore, fscrypt_encrypt_pagecache_blocks() can
+no longer return -ENOMEM when passed GFP_NOFS.
 
-Also, the comment for fscrypt_zeroout_range() should be updated to
-mention that pos and len need to be multiples of the filesystem block
-size, given that it will no longer be implied by the units.
+Remove the now-unreachable code from f2fs_encrypt_one_page().
 
-- Eric
+Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+Link: https://lore.kernel.org/all/d9dc2ee1-283d-4467-ad36-a6a4aa557589@suse.cz/
+Signed-off-by: Eric Biggers <ebiggers@kernel.org>
+---
+ fs/f2fs/data.c | 14 ++------------
+ 1 file changed, 2 insertions(+), 12 deletions(-)
+
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index 338df7a2aea6..400f0400e13d 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -2785,33 +2785,23 @@ static void f2fs_readahead(struct readahead_control *rac)
+ int f2fs_encrypt_one_page(struct f2fs_io_info *fio)
+ {
+ 	struct inode *inode = fio_inode(fio);
+ 	struct folio *mfolio;
+ 	struct page *page;
+-	gfp_t gfp_flags = GFP_NOFS;
+ 
+ 	if (!f2fs_encrypted_file(inode))
+ 		return 0;
+ 
+ 	page = fio->compressed_page ? fio->compressed_page : fio->page;
+ 
+ 	if (fscrypt_inode_uses_inline_crypto(inode))
+ 		return 0;
+ 
+-retry_encrypt:
+ 	fio->encrypted_page = fscrypt_encrypt_pagecache_blocks(page_folio(page),
+-					PAGE_SIZE, 0, gfp_flags);
+-	if (IS_ERR(fio->encrypted_page)) {
+-		/* flush pending IOs and wait for a while in the ENOMEM case */
+-		if (PTR_ERR(fio->encrypted_page) == -ENOMEM) {
+-			f2fs_flush_merged_writes(fio->sbi);
+-			memalloc_retry_wait(GFP_NOFS);
+-			gfp_flags |= __GFP_NOFAIL;
+-			goto retry_encrypt;
+-		}
++					PAGE_SIZE, 0, GFP_NOFS);
++	if (IS_ERR(fio->encrypted_page))
+ 		return PTR_ERR(fio->encrypted_page);
+-	}
+ 
+ 	mfolio = filemap_lock_folio(META_MAPPING(fio->sbi), fio->old_blkaddr);
+ 	if (!IS_ERR(mfolio)) {
+ 		if (folio_test_uptodate(mfolio))
+ 			memcpy(folio_address(mfolio),
+
+base-commit: 8934827db5403eae57d4537114a9ff88b0a8460f
+-- 
+2.53.0
+
 
