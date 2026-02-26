@@ -1,52 +1,52 @@
-Return-Path: <linux-fscrypt+bounces-1222-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-1223-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6Cn/DIt3oGmtjwQAu9opvQ
-	(envelope-from <linux-fscrypt+bounces-1222-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 26 Feb 2026 17:40:43 +0100
+	id IL19MdV8oGlgkQQAu9opvQ
+	(envelope-from <linux-fscrypt+bounces-1223-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 26 Feb 2026 18:03:17 +0100
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B1AB1AAC74
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 26 Feb 2026 17:40:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 25F381AB9BC
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 26 Feb 2026 18:03:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id D7D7531D84E5
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 26 Feb 2026 16:27:51 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id E9BE8307DE42
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 26 Feb 2026 16:28:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F29E49253B;
-	Thu, 26 Feb 2026 16:04:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A106249551C;
+	Thu, 26 Feb 2026 16:04:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iyTB+PgO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ME/XYMrD"
 X-Original-To: linux-fscrypt@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2127943DA2B;
-	Thu, 26 Feb 2026 16:04:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F12642847C;
+	Thu, 26 Feb 2026 16:04:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772121867; cv=none; b=HwoC0RAM5AqO79MA8z4RbQY8oq7EInCjbWF6a12dV28+Dw1QqHObSIiWuC08s6Q42F7q5TKu3Q0YmT6y0N8qgZILF45j86gTQPnQ2/orj1YW0VnisCdCUHk8YgPlZ0I18PR19hu3XZqTCCv+OJeJmr0UXoBlN4WO1+sQBcQ/Vso=
+	t=1772121879; cv=none; b=ME03rM30e4o54vNoRVnJK9GfNBlz5UdTc+PoFyJ7XpDmWmDLE9iIuTz6bD4owOv9byhW68F2AOzCoR9GoOvT65xZL486XO3xome2ykBA/mRq2xvo4SYCx+/dbbeuQDRjUh1DluEwx20ofPBErSszV3/AyMCHhoe7Fpa+AvXY154=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772121867; c=relaxed/simple;
-	bh=3gdRZB/bYaBq74nWKzTYBoxrmHjdrwN42kbAbXUAO1A=;
+	s=arc-20240116; t=1772121879; c=relaxed/simple;
+	bh=/R13WlmCiqf+otA9FtjIvnhA88neDdZ1z3bo46wgKlk=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=qrFrnWk0Tzevsz38AQMMKqqN59Msq1A+ZtwFMC87c/fgLYqLQmnCqL7GCx0nlwssPwBvQ+0eBzx0fI586J+CfBtD8FONMv30XIMxp1CuXcZ4zLLmrkvU0iOXaxJrVgJchRatBp6hYVPKCzFmtB5xHzQ37H61cOjk5YMMOj+pGKI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iyTB+PgO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6882DC2BCAF;
-	Thu, 26 Feb 2026 16:04:14 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=Gfq104UiMQ99WcEDJyRiHi45PKQYBvnp9rSaYwLoLxg1j1yvpY06rxWC5/1avHx6ohytXFM1JQbH3C7TrhtaKB3k8NX2VZ29U/vkWJBAG8kJ1ZR0RKOBUeVtIFSH+CrhQO7wcbXuBe9Jy+/dFR9Pp+HUtvovvW8HdRoCZug/8WM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ME/XYMrD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D25D0C2BC9E;
+	Thu, 26 Feb 2026 16:04:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772121866;
-	bh=3gdRZB/bYaBq74nWKzTYBoxrmHjdrwN42kbAbXUAO1A=;
+	s=k20201202; t=1772121879;
+	bh=/R13WlmCiqf+otA9FtjIvnhA88neDdZ1z3bo46wgKlk=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=iyTB+PgO5AoaN163AMcsotNvfXJuGhxw2cTMRntNhnt93ETFlbFc3PJnpiI4fcftF
-	 QiMVFgL34YT6vMFgDtQ5pp5x3zuFr7xw0xcXxbRPnceBpAmIbSde2MA7Ix6CNLBDxl
-	 xfDZdS64xn0x9jcrNDACgBBE+i3GvTW9KLEj9uurSWnH73nLcrxN8bG6K5ps0BlP32
-	 hUml2ssxE5ImMag/sNw4Z4Jie9WtMK3TrTfo6An52tCSB6I9GtNO5Z/v0qm5YwD62X
-	 TS/Bdak2CFmyn+OOPuqLm9D7AEx9dV0w+c8kCdRe47Z2CmYrXj8sh2cVuUvN7Bp7xX
-	 BU59DAM8w9/Jw==
+	b=ME/XYMrD0mbvHzirdHMfJIsfdtmPFxCfe6GE465X1RJF3PBm2jj4PJNJPYeT1iDOG
+	 LbsRm0hPLRDwtyDoOgB+Voef7jG8Y2KK22baj2rjclEI6wj5ibMesgE2ai+NJ/UR7X
+	 6+QUTAooFfBgGcyast5Z94iyXho7rgdTdHdAwiZsKDxD+igqWK/cnx7ELcaU3fYIRy
+	 ng9wFCImfGsr/rZxhue+trQ/GIHKbB3bcg6whxFxw1Y2QglSKv4ojDEr74/nb1FFQ1
+	 tYyPsAGjzIDRWCtNI5FfKR1Aw/GoyUNOpP4KvVJnARaeqTNjVtrA4JR7sRW9jnU9kC
+	 8v15Pgqa22BtA==
 From: Jeff Layton <jlayton@kernel.org>
-Date: Thu, 26 Feb 2026 10:55:41 -0500
-Subject: [PATCH 39/61] minix: update format strings for u64 i_ino
+Date: Thu, 26 Feb 2026 10:55:42 -0500
+Subject: [PATCH 40/61] nsfs: update format strings for u64 i_ino
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
@@ -55,7 +55,7 @@ List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260226-iino-u64-v1-39-ccceff366db9@kernel.org>
+Message-Id: <20260226-iino-u64-v1-40-ccceff366db9@kernel.org>
 References: <20260226-iino-u64-v1-0-ccceff366db9@kernel.org>
 In-Reply-To: <20260226-iino-u64-v1-0-ccceff366db9@kernel.org>
 To: Alexander Viro <viro@zeniv.linux.org.uk>, 
@@ -150,20 +150,20 @@ Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-xfs@vger.kernel.org, linux-hams@vger.kernel.org, 
  linux-x25@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2322; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=3gdRZB/bYaBq74nWKzTYBoxrmHjdrwN42kbAbXUAO1A=;
- b=owEBbQKS/ZANAwAKAQAOaEEZVoIVAcsmYgBpoG0OE+//p6uwDvrj0gzItm2YGfi4UxMBXmZ0C
- pGiklI3Fg+JAjMEAAEKAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCaaBtDgAKCRAADmhBGVaC
- FUouD/sF3zA4f3V+06shKK08E+NRNBErpZlePyQWQ2KtTi3YsBwsRapqP1ljo0hPlbf8XOgRPSs
- KWWT43ftfSdav6Mz/lDNUTR2mwgsVazb/FkQWmKzAsc+m+AEVdgUxr7vz27HuQIOpJJwlWbukWk
- HRth2j8IvUo6uiuOBoSZ0oFjPlQWjLQVmvlcfUzpkL7J1Mn2eB7xqhizUoWCSU6+fo8p1gDsDCG
- pLDwiJY669EWlSIP0aMdDDy8ImoK3ngSmxikBLziQ9afCInCr5KeuNfwtDhBUbDAR8NvQEQazk4
- yAbSr5uuOVhe8S6Q8Sf8D9R1KPRHrbd9dVt8uMEsdFtRxI+wDD0n9MWOnZgO/gnqicYyjvizxqs
- SspzvjH+moxKJ0E0NmHt4nSTyNejtNtF+pbXBRcrFN+Jz0K9WQoPqJdcG63LGYRb7KAEmp/8ALM
- 50GCfPjpme+Qttn6Pr394fSBJbTVSTqAGIYiscVUGCZJjPQo/XUm7w/9IDIDxAGqKaYq8Qlsqqu
- 2YL8VDMlffOar9Mpq0vZub6t+CMlZRCiPGySod1JkezjvHtPl0lriqGHrl+NkvGotWcZ1bI5rlt
- d3UlVgZH5x5bgNfmNJzxgO2vj1etSDC5g62YDX6JkogU++t2RQ8NF31NUf1aLbftqdLoCm3RHz7
- V+TirKKj2qfXDeQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1097; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=/R13WlmCiqf+otA9FtjIvnhA88neDdZ1z3bo46wgKlk=;
+ b=owEBbQKS/ZANAwAKAQAOaEEZVoIVAcsmYgBpoG0O+wdqUvmhdzWRUaf/uRFQdKMMnnQ4hzPLX
+ 9J0lNA/txOJAjMEAAEKAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCaaBtDgAKCRAADmhBGVaC
+ FReqD/wINOu58ZOathcZxcR1CK7TMnX0vxSOJoULS3X1jMBCONSGbKTI4Mwm0CSAxlQ98Ny4Nnn
+ rtBtuGY3VRIjCSjO47+h7GQ1YV0V6Hc+rMhcOISbfMFy81P+loguWdTSkab9YblDvqIBIo8D6MI
+ aeO7eQcn3P3Amz+zf+MJyA4wHMa6kUeyvW9ZKGd0CGk4Nbpc2hWw8vyhzqBOW/Zowk/OAe9T9OD
+ fi+nNVJoTHG5Noq62obje8GhGhhYR/s5tI7dhXDVjhEpPGT/sFn5ElbkZwU7xptq2KT4yauQ7/Z
+ DicbI1P6DJ50SqUjzuGz935+4TaETa7GtJyOMH5p6f5NVnl9iAPRms08XEOh7yI92eChFW7TmWw
+ UWmDE4w7QRmZyyfOTgl2q06EuSTKCXIEbyGz5L/24Gim9RqCoV48oqVEnIg/sAFpPzo5xi5BIXf
+ V1O08+55HNciUF+beE4JnOTS0c0eA+gQG4KJKrK/vP28C/zZn1ASyS4G2vPv+b85tystcOOUs2y
+ g3wQEGVlU4mGAe1eRf3tPrndsga/Y72dzsCKqLqF9DyeTNT7ZSXa6UQ06Ih334PtgWGBjQP6S2p
+ ZL32WssPTyas96P4SaYWACeakyldlGnUtNJrwKQoqVchA+l5uktGdxteZLiNkIHXVwmcaZaU/Ql
+ kKqNMyGtdnhOPGg==
 X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
  fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
 X-Rspamd-Server: lfdr
@@ -176,7 +176,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-1222-lists,linux-fscrypt=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-1223-lists,linux-fscrypt=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FREEMAIL_TO(0.00)[zeniv.linux.org.uk,kernel.org,suse.cz,goodmis.org,efficios.com,intel.com,infradead.org,mit.edu,linux.dev,suse.de,redhat.com,manguebit.org,dilger.ca,suse.com,oracle.com,brown.name,talpey.com,samba.org,gmail.com,microsoft.com,dubeyko.com,ionkov.net,codewreck.org,crudebyte.com,auristor.com,themaw.net,cs.cmu.edu,fluxnic.net,tyhicks.com,physik.fu-berlin.de,vivo.com,artax.karlin.mff.cuni.cz,nod.at,paragon-software.com,fasheh.com,evilplan.org,linux.alibaba.com,omnibond.com,szeredi.hu,alarsen.net,huawei.com,wdc.com,canonical.com,paul-moore.com,namei.org,hallyn.com,linux.ibm.com,schaufler-ca.com,amd.com,ffwll.ch,linaro.org,google.com,davemloft.net,arm.com,linux.intel.com,dev.tdt.de];
@@ -190,71 +190,44 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[jlayton@kernel.org,linux-fscrypt@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-fscrypt];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 4B1AB1AAC74
+X-Rspamd-Queue-Id: 25F381AB9BC
 X-Rspamd-Action: no action
 
-Update format strings and local variable types in minix for the
+Update format strings and local variable types in nsfs for the
 i_ino type change from unsigned long to u64.
 
 Signed-off-by: Jeff Layton <jlayton@kernel.org>
 ---
- fs/minix/inode.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ fs/nsfs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/minix/inode.c b/fs/minix/inode.c
-index 99541c6a5bbf13f3be27474a316b31d8db9fbce0..838b072b6cf0b54c955320916ac996e72f994a14 100644
---- a/fs/minix/inode.c
-+++ b/fs/minix/inode.c
-@@ -36,7 +36,7 @@ void __minix_error_inode(struct inode *inode, const char *function,
- 	vaf.fmt = fmt;
- 	vaf.va = &args;
- 	printk(KERN_CRIT "minix-fs error (device %s): %s:%d: "
--	       "inode #%lu: comm %s: %pV\n",
-+	       "inode #%llu: comm %s: %pV\n",
- 	       inode->i_sb->s_id, function, line, inode->i_ino,
- 	       current->comm, &vaf);
- 	va_end(args);
-@@ -520,7 +520,7 @@ void minix_set_inode(struct inode *inode, dev_t rdev)
- 		   S_ISFIFO(inode->i_mode) || S_ISSOCK(inode->i_mode)) {
- 		init_special_inode(inode, inode->i_mode, rdev);
- 	} else {
--		printk(KERN_DEBUG "MINIX-fs: Invalid file type 0%04o for inode %lu.\n",
-+		printk(KERN_DEBUG "MINIX-fs: Invalid file type 0%04o for inode %llu.\n",
- 		       inode->i_mode, inode->i_ino);
- 		make_bad_inode(inode);
- 	}
-@@ -542,7 +542,7 @@ static struct inode *V1_minix_iget(struct inode *inode)
- 		return ERR_PTR(-EIO);
- 	}
- 	if (raw_inode->i_nlinks == 0) {
--		printk("MINIX-fs: deleted inode referenced: %lu\n",
-+		printk("MINIX-fs: deleted inode referenced: %llu\n",
- 		       inode->i_ino);
- 		brelse(bh);
- 		iget_failed(inode);
-@@ -580,7 +580,7 @@ static struct inode *V2_minix_iget(struct inode *inode)
- 		return ERR_PTR(-EIO);
- 	}
- 	if (raw_inode->i_nlinks == 0) {
--		printk("MINIX-fs: deleted inode referenced: %lu\n",
-+		printk("MINIX-fs: deleted inode referenced: %llu\n",
- 		       inode->i_ino);
- 		brelse(bh);
- 		iget_failed(inode);
-@@ -692,7 +692,7 @@ static int minix_write_inode(struct inode *inode, struct writeback_control *wbc)
- 	if (wbc->sync_mode == WB_SYNC_ALL && buffer_dirty(bh)) {
- 		sync_dirty_buffer(bh);
- 		if (buffer_req(bh) && !buffer_uptodate(bh)) {
--			printk("IO error syncing minix inode [%s:%08lx]\n",
-+			printk("IO error syncing minix inode [%s:%08llx]\n",
- 				inode->i_sb->s_id, inode->i_ino);
- 			err = -EIO;
- 		}
+diff --git a/fs/nsfs.c b/fs/nsfs.c
+index db91de2086456bb9fe0547be7dbbd2de87c97ca7..eac326b85314ac8080248347154d599c953969c7 100644
+--- a/fs/nsfs.c
++++ b/fs/nsfs.c
+@@ -46,7 +46,7 @@ static char *ns_dname(struct dentry *dentry, char *buffer, int buflen)
+ 	struct ns_common *ns = inode->i_private;
+ 	const struct proc_ns_operations *ns_ops = ns->ops;
+ 
+-	return dynamic_dname(buffer, buflen, "%s:[%lu]",
++	return dynamic_dname(buffer, buflen, "%s:[%llu]",
+ 		ns_ops->name, inode->i_ino);
+ }
+ 
+@@ -394,7 +394,7 @@ static int nsfs_show_path(struct seq_file *seq, struct dentry *dentry)
+ 	const struct ns_common *ns = inode->i_private;
+ 	const struct proc_ns_operations *ns_ops = ns->ops;
+ 
+-	seq_printf(seq, "%s:[%lu]", ns_ops->name, inode->i_ino);
++	seq_printf(seq, "%s:[%llu]", ns_ops->name, inode->i_ino);
+ 	return 0;
+ }
+ 
 
 -- 
 2.53.0
