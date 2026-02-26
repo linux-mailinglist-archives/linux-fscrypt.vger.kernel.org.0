@@ -1,164 +1,133 @@
-Return-Path: <linux-fscrypt+bounces-1167-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-1168-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cIRgKE9WnGkAEQQAu9opvQ
-	(envelope-from <linux-fscrypt+bounces-1167-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 23 Feb 2026 14:29:51 +0100
+	id sJvTHB9koGnajAQAu9opvQ
+	(envelope-from <linux-fscrypt+bounces-1168-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 26 Feb 2026 16:17:51 +0100
 X-Original-To: lists+linux-fscrypt@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1943E176E4B
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 23 Feb 2026 14:29:51 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78CBC1A86DE
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 26 Feb 2026 16:17:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 86CA63061BFE
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 23 Feb 2026 13:22:51 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 8FCFD30CD7FD
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 26 Feb 2026 14:50:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 120C8156661;
-	Mon, 23 Feb 2026 13:22:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D26943D904D;
+	Thu, 26 Feb 2026 14:50:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jeCma4x8"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="mVvuPZbu"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3987883F
-	for <linux-fscrypt@vger.kernel.org>; Mon, 23 Feb 2026 13:22:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D863539E6D9;
+	Thu, 26 Feb 2026 14:50:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771852971; cv=none; b=dOjvyaEYzcdKRzbny7aLt13KMlvyOUHAYGhiPnr61dKtWQGv5ETb6fOfCCaOS4uGi7zUcXNCACQhnds7fkvwd/u2vxDp5vtTlxuTPpb7G1U0R5GyyK0/hfwHECWo657cufIqB7KIm/73AafQtZfmUnZpMjodrprJFErhRsXJYmw=
+	t=1772117404; cv=none; b=sfUKTqUxwSvkVGsDlR5FhXPjpKy/O7kFUcvmTGSS9zKe1NCsCWQ3VRloWnAAwHV64gSjHbTgEuR/1Jd3227WQhAZQXqdrL8FGhCleT30vcAeeSt71L6avHWczjMNoEv511JNfiHw6aP9vJ2Y5ma2PryLQNsl4XRwFgiMcua/SPA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771852971; c=relaxed/simple;
-	bh=0s+1xYOmLxGL/YAJHo9cKB+lTpl0y7L08ahwhMvrkEQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tOAyz1SxpYZuR7REbtkyd/eX5fFtG2KXBt6pP/cUPnPNKyzsvWD1GmMZirgH3UaJlII0t1NdvIS0ywnFWrw68unD+49gU2ilaTDxaBE1fAlqx7ahDeqpaJMeF6Dadssfm+BdVPmLOIK5+zAUrtmHUpJaN+334j0H18sru4E2d4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jeCma4x8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3558AC116C6;
-	Mon, 23 Feb 2026 13:22:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771852970;
-	bh=0s+1xYOmLxGL/YAJHo9cKB+lTpl0y7L08ahwhMvrkEQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=jeCma4x8Y9qhEKAJkO3pP2yMUhuMGqI7YjXszcxTOjJf1nMuxj4aNKw9In7B+VBl4
-	 3EKYO1OdKtOskNPJKkqBKsWXedHwkQibA2TicHRB2WuRhycmH4EvakC/Z78U4mhdkP
-	 cDwyZhPqZjcMkRu05a2+HXN47jusCH5GNgvQorQ06FSE71saAbhEZSYjvzMdoQsksu
-	 AnG7CiMdGFK0ZFPdwJEt4/xIJGLBYkWkHlzfRykg8Ec8DteOaOd//shp6EyoAzFJ58
-	 B8xeg2vaLDa9vgKY14LVP6e3MWyPNZk1f6MKlSiluqjXvO8KsRn3vSEg+v++u89jjb
-	 mPd4JqPIUYXzg==
-Message-ID: <94f41e2a-53c1-4b7c-8f6c-4553ae729608@kernel.org>
-Date: Mon, 23 Feb 2026 14:22:45 +0100
+	s=arc-20240116; t=1772117404; c=relaxed/simple;
+	bh=HzIcMoFlgwjLmdasTCanlTOmetw6aNcq+a03Og4xM30=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SqZnK564+1C18MhzVnlHGrIRkKCNMZsBR0VIfcim+n7ZfoiPWeS0K9ekc5bSSnQN0GS7jt4JwQNoEcovXbKrNXhnyohGHq/VPb/9WeKvO7qCbgcwOb6sEavzdiOtnw2OXo2xaaEPKNBDCBEYdy4rS7CBE2AUUYm3l9vyb93xWe4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=mVvuPZbu; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=mlW1GrWYPpKtXEVPnQNWBHiFH5LdPT6NCG40um9+2Jk=; b=mVvuPZbubKAsBHIRa9ZgMZp7up
+	6jBDAhlLzfognU5MoSboXf6xY+4hguYbUiwKibxPVZNaYznsY84WjoTE5yf8uVxB6akss0xbP5C36
+	Ks+m6P1nleLZJXHAsDCZeGYMM3HYMk/1lek+KTxojvGRwVPwKsM27NHmQWolGybPywiXlR73dDj9i
+	GcDV9T3ghCAv9BPC57TYLcYsvH1dMBaQnHdXjxgqqRus1ibChr9WNzVeBGoJCT2Svceg/apgIJp2p
+	XwYc9djEQzWodISFIKsPptFLYEbAoFZVbTMApgTeYd+BwEgliKfM0g3NtLqc4S+ME81XCygCY8NkA
+	/AKwlRbA==;
+Received: from [4.28.11.157] (helo=localhost)
+	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vvcgd-00000006NaB-1e5p;
+	Thu, 26 Feb 2026 14:49:55 +0000
+From: Christoph Hellwig <hch@lst.de>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: "Theodore Y. Ts'o" <tytso@mit.edu>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	Chao Yu <chao@kernel.org>,
+	Christian Brauner <brauner@kernel.org>,
+	"Darrick J. Wong" <djwong@kernel.org>,
+	linux-fscrypt@vger.kernel.org,
+	linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-fsdevel@vger.kernel.org
+Subject: fscrypt API cleanups v2
+Date: Thu, 26 Feb 2026 06:49:20 -0800
+Message-ID: <20260226144954.142278-1-hch@lst.de>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] f2fs: remove unreachable code in f2fs_encrypt_one_page()
-To: Eric Biggers <ebiggers@kernel.org>, Jaegeuk Kim <jaegeuk@kernel.org>,
- Chao Yu <chao@kernel.org>, linux-f2fs-devel@lists.sourceforge.net
-Cc: linux-fscrypt@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
- Vlastimil Babka <vbabka@suse.cz>
-References: <20260221201316.22025-1-ebiggers@kernel.org>
-From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-Content-Language: en-US
-In-Reply-To: <20260221201316.22025-1-ebiggers@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.06 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[infradead.org:s=bombadil.20210309];
 	MAILLIST(-0.15)[generic];
+	DMARC_POLICY_SOFTFAIL(0.10)[lst.de : SPF not aligned (relaxed), DKIM not aligned (relaxed),none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-1167-lists,linux-fscrypt=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[vbabka@kernel.org,linux-fscrypt@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-1168-lists,linux-fscrypt=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[hch@lst.de,linux-fscrypt@vger.kernel.org];
+	RCPT_COUNT_SEVEN(0.00)[11];
+	NEURAL_HAM(-0.00)[-1.000];
+	DKIM_TRACE(0.00)[infradead.org:+];
 	TAGGED_RCPT(0.00)[linux-fscrypt];
-	RCPT_COUNT_SEVEN(0.00)[7];
+	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,suse.cz:email]
-X-Rspamd-Queue-Id: 1943E176E4B
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[lst.de:mid,infradead.org:dkim,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 78CBC1A86DE
 X-Rspamd-Action: no action
 
-On 2/21/26 21:13, Eric Biggers wrote:
-> Since commit 52e7e0d88933 ("fscrypt: Switch to sync_skcipher and
-> on-stack requests") eliminated the dynamic allocation of crypto
-> requests, the only remaining dynamic memory allocation done by
-> fscrypt_encrypt_pagecache_blocks() is the bounce page allocation.
-> 
-> The bounce page is allocated from a mempool.  Mempool allocations with
-> GFP_NOFS never fail.  Therefore, fscrypt_encrypt_pagecache_blocks() can
-> no longer return -ENOMEM when passed GFP_NOFS.
-> 
-> Remove the now-unreachable code from f2fs_encrypt_one_page().
-> 
-> Suggested-by: Vlastimil Babka <vbabka@suse.cz>
-> Link: https://lore.kernel.org/all/d9dc2ee1-283d-4467-ad36-a6a4aa557589@suse.cz/
-> Signed-off-by: Eric Biggers <ebiggers@kernel.org>
+Hi all,
 
-Acked-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
+this series cleans up various fscrypt APIs to pass logical offsets in
+and lengths in bytes, and on-disk sectors as 512-byte sector units,
+like most of the VFS and block code.
 
-Thanks!
+Changes since v1:
+ - remove all buffer_head helpers, and do that before the API cleanups
+   to simplify the series
+ - fix a bisection hazard
+ - spelling fixes in the commit logs
+ - use "file position" to describe the byte offset into an inode
+ - add another small ext4 cleanup at the end
 
-> ---
->  fs/f2fs/data.c | 14 ++------------
->  1 file changed, 2 insertions(+), 12 deletions(-)
-> 
-> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> index 338df7a2aea6..400f0400e13d 100644
-> --- a/fs/f2fs/data.c
-> +++ b/fs/f2fs/data.c
-> @@ -2785,33 +2785,23 @@ static void f2fs_readahead(struct readahead_control *rac)
->  int f2fs_encrypt_one_page(struct f2fs_io_info *fio)
->  {
->  	struct inode *inode = fio_inode(fio);
->  	struct folio *mfolio;
->  	struct page *page;
-> -	gfp_t gfp_flags = GFP_NOFS;
->  
->  	if (!f2fs_encrypted_file(inode))
->  		return 0;
->  
->  	page = fio->compressed_page ? fio->compressed_page : fio->page;
->  
->  	if (fscrypt_inode_uses_inline_crypto(inode))
->  		return 0;
->  
-> -retry_encrypt:
->  	fio->encrypted_page = fscrypt_encrypt_pagecache_blocks(page_folio(page),
-> -					PAGE_SIZE, 0, gfp_flags);
-> -	if (IS_ERR(fio->encrypted_page)) {
-> -		/* flush pending IOs and wait for a while in the ENOMEM case */
-> -		if (PTR_ERR(fio->encrypted_page) == -ENOMEM) {
-> -			f2fs_flush_merged_writes(fio->sbi);
-> -			memalloc_retry_wait(GFP_NOFS);
-> -			gfp_flags |= __GFP_NOFAIL;
-> -			goto retry_encrypt;
-> -		}
-> +					PAGE_SIZE, 0, GFP_NOFS);
-> +	if (IS_ERR(fio->encrypted_page))
->  		return PTR_ERR(fio->encrypted_page);
-> -	}
->  
->  	mfolio = filemap_lock_folio(META_MAPPING(fio->sbi), fio->old_blkaddr);
->  	if (!IS_ERR(mfolio)) {
->  		if (folio_test_uptodate(mfolio))
->  			memcpy(folio_address(mfolio),
-> 
-> base-commit: 8934827db5403eae57d4537114a9ff88b0a8460f
-
+Diffstat:
+ fs/buffer.c                 |   17 ++++++++
+ fs/crypto/bio.c             |   37 ++++++++----------
+ fs/crypto/fscrypt_private.h |    3 -
+ fs/crypto/inline_crypt.c    |   86 ++++----------------------------------------
+ fs/crypto/keysetup.c        |    2 -
+ fs/ext4/inode.c             |    5 ++
+ fs/ext4/page-io.c           |   28 ++++++++++----
+ fs/ext4/readpage.c          |   10 ++---
+ fs/f2fs/data.c              |    7 ++-
+ fs/f2fs/file.c              |    4 +-
+ fs/iomap/direct-io.c        |    6 +--
+ include/linux/fscrypt.h     |   37 ++++--------------
+ 12 files changed, 89 insertions(+), 153 deletions(-)
 
