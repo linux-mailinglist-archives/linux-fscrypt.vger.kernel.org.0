@@ -1,111 +1,111 @@
-Return-Path: <linux-fscrypt+bounces-1432-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-1433-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gASQNnNHpmkkNgAAu9opvQ
-	(envelope-from <linux-fscrypt+bounces-1432-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 03 Mar 2026 03:29:07 +0100
+	id ENjkHtpHpmlyNQAAu9opvQ
+	(envelope-from <linux-fscrypt+bounces-1433-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 03 Mar 2026 03:30:50 +0100
 X-Original-To: lists+linux-fscrypt@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 771FC1E8016
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 03 Mar 2026 03:29:07 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 320F01E8104
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 03 Mar 2026 03:30:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DF8673098895
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  3 Mar 2026 02:28:35 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id ABD8C302DF5F
+	for <lists+linux-fscrypt@lfdr.de>; Tue,  3 Mar 2026 02:30:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C9CC375F74;
-	Tue,  3 Mar 2026 02:28:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65332375F9A;
+	Tue,  3 Mar 2026 02:30:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="EsJG3vBa"
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="JfPMs15Z"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02056375AAF
-	for <linux-fscrypt@vger.kernel.org>; Tue,  3 Mar 2026 02:28:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D299375AD9
+	for <linux-fscrypt@vger.kernel.org>; Tue,  3 Mar 2026 02:30:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.215.173
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772504913; cv=pass; b=EOo5MH9MIvWRovknSdwTLRPCTusLCv9UAukSK0W0uX19Pi4M/2cbQKzGs0pGvK8paWt6IQw2EboyjFwxtirpVmEZ+wIleZPbDiW+jGkhp01z9thMGhcqdUn2yLwAcoHntZASfmfNy9cRULLCDwBE23WY4I+yGLVLjf9hqAwB8qI=
+	t=1772505028; cv=pass; b=Ysx7hW1gdIxLhrC1CkvoHyVDITUQRDXH7R1xHB8X2Ur1oVjNoaQxKLBTj+VwyfoDM35QgngfqJWJf7PS2SRdQD2Ay1pAFNX/Vo/Ikas1zpD9xhCgaVrc2qAMV8H8gJjtHkvigRXf/tbKOLgFEsYErKku8enWsd2UwTOcQLBSBaI=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772504913; c=relaxed/simple;
-	bh=CmpPLTDLjoziZGQueGxnmQI7O2xObKPRhPekUhrY70I=;
+	s=arc-20240116; t=1772505028; c=relaxed/simple;
+	bh=dpQSmzkUM5eywQT8MkIz9dqIAPHwbz822026FlJmJ4U=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=STE+ipd7K+CVqkt4i829f4vBKqskmsA5Qiddp5Vc6HMiJUDAX0K1CKaMrKT0FO458M5yHOg1YUBPYRGXBEeFo8KR4uWRriCuM2c7+NwqTi7lpODSjb8ZWvdsMh54B1uTAsG8cb0asek0tzEyNNcRNKqssz1OZTFgCG6ije0t2Y8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=EsJG3vBa; arc=pass smtp.client-ip=209.85.216.52
+	 To:Cc:Content-Type; b=QAlsa1SQfZbSvf2s4qzVxjXel8mP5EThZm+lE1OurGPCbjLepii67d4ikLWuQJyeJ7N1hXpnoEUNioo5XliDrh7JlDQV/Qw5jFkhSYBnLvTa5pyGEStnBpYAvrDp78g52hnbMcNlWKG2rjsELnzukcvnDO4duV1EojdYcsqay7U=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=JfPMs15Z; arc=pass smtp.client-ip=209.85.215.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-354a18c48b5so4570969a91.1
-        for <linux-fscrypt@vger.kernel.org>; Mon, 02 Mar 2026 18:28:29 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1772504909; cv=none;
+Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-c70378ddaafso3484814a12.3
+        for <linux-fscrypt@vger.kernel.org>; Mon, 02 Mar 2026 18:30:24 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1772505024; cv=none;
         d=google.com; s=arc-20240605;
-        b=bOFkfahUqnp1uM0X2gQgIEkbXn403mnT6CZgjrhALZNJ5gVIWr5WU4I8yJh4Pu3F00
-         VeZ+1kNvAhIo7waw9qAGwQxMaGK/bVkGFlEuxamhKBCUz8iQM1YsrICGt1e3fbsuW2Y2
-         7/SAd7NH8r5ldI8+CIrBzPAvCJqvf5az9wPPsKbV9BtLphqlOZYb5wPrTc4uITtYJEY2
-         KtzH2rFU4mwHA7CM3vkeFQ+ZZ/OxKtFD5IySbhpwZaFA4s7mkhvn3PTkKAkB8Y3o5JD+
-         6Ip0/4NrgCd7geAZyY1OLIRwExFuJvrngCbERjYdb8l2uo0M4OXkQxQQv3WB9Uobj9nh
-         U5CQ==
+        b=A8/eE6E7RvXbCwBEnrdyTiUxSt8L15021mMceBuRZrMUWelyVMACf9VyU0qPhRGCXL
+         Woj2FCBIeu56YtfZnsOLMkbzJDBgD+vhLPVEe+uAMR1EoH/ngYVX2JlHtlYNJnYGAQj9
+         uGzHgUd9h+9IGGtxoHCqqtVFY40eFyMRJDzxdaG5sZjH1w0f4O0cz5rq8vMMvjWajd16
+         oh/Igo3xqCcQ/nYahm+NMQI1r2YDbU0e5O/3Vo8mYyxGxwSnho0lSFgHILiXlISSBTBP
+         q6cdIKaJ+49IOvVHBxNt7vX7e7hfNVDFRKRk7t+/wEtl3yy0uuBsjxtSR7qFoPN8qYM9
+         3Ksg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:dkim-signature;
-        bh=C1bg6xiI4y6+7k2tjKhPvGRGK3TFDQKnfwBJ+EjIYKA=;
-        fh=DKrQ2cFzpkjivIV95qE+2rPRs61AcgYyAOjetfKs7s0=;
-        b=H6sMGXBxM+khFojY3w4ZiDk2L66FHl7lD28XycsbHz0pSDR1unP9JLg+ZCGu+odmYq
-         eZH7AqLLIUrWSbiZlRU7xAJmm2abCRJgBn0DGYP96VFHzBhivQo6QPxcwZc2d1Jfzkpq
-         2QWeFimUhPZnNKz/P3zZFbA9ecM2vITPQRmi7XXHRSflTs7CCFIq7lTiIyK89qL1Ka2V
-         45MfiBovnkii39xZ+Hm5UMkFNR8+SRVks8B3dSxfCx+/c76E8N11HE0/9GSfDvh2MmaX
-         pzsCJB2Qj6QQ10kkcSItu81tfH0Tv9KeRWKOBfx7EyYH1D5ZP+nfcXTeEhduC/FY/OjX
-         g9Ig==;
+        bh=VKlMqpEd7YBdXym1IpYpN4BFku3eaQLOirqfkrIT+SY=;
+        fh=wjGn5cHaWqjaH1GcqA/LGOlGIU19ukXgkJn2dkPPs7k=;
+        b=WTRFflTR3rqN+yIUfLv9OOgiYoJ7stA2x2RhvwJ2YqsY4wMdD/6Ij6RQbYzBepC/T1
+         968oZ5xwXPb/AZQ6YCO8zrXgM26l6MOOinxjpTrClsFT/uAAQOBOVMcQtuFJ2OamjA/j
+         DRF296IDox1icYO1uRs3htPxIamG539N7azKyYqTIGoRqPil9/iuViLmkmITY4LRZ+Ps
+         Y8LcdHQQCjZpd/U/MOqhZkVpZ3Jcn4qwrKfHjG9eJr06F6vj/30EaIegx4547kOWVUBQ
+         UJ9jY6bR662aduxqEgAE5gFIzkajBKkfcadlxoowXC/jutlA90VAiDEjkO9T3TzhEfXN
+         996g==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1772504909; x=1773109709; darn=vger.kernel.org;
+        d=paul-moore.com; s=google; t=1772505024; x=1773109824; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=C1bg6xiI4y6+7k2tjKhPvGRGK3TFDQKnfwBJ+EjIYKA=;
-        b=EsJG3vBaS1KZW5Izsw4OaIpH7hRkswp/BBxxAkmDxitc8w8FFOEbGPrwFIDKDTkfvb
-         el6P57HEQuZcFjAaRfBrYvppssqd1ruzRuX4K9GMbWsv/a+0UdV/wy91N0ItQt8JMY7a
-         +fTlI8uCMeBUtsXgkY9VG3mNkYMrQZASXK6Fb2eeSI0EWs+Ecp3RZWF2axg/KRySCujq
-         H9Rf6OiWSGLlOnujavHZFxxri5nzMcAFcuYI1rUxw9EWfymRbiJfLVMfJoPIduuGJW6o
-         TvrrzCiZ3L0CbmubL55JgO7BYzgGIbyf7FMN2fyQN+DOU1GKA/JOwazVjT7OHeGtXVR4
-         LdXA==
+        bh=VKlMqpEd7YBdXym1IpYpN4BFku3eaQLOirqfkrIT+SY=;
+        b=JfPMs15ZCu5uQlmdqQusmBhN/hCtjzE2ILqtdhvnIFAYHSV1FHjmSyA1arRjcsqd4i
+         Z4zhEf/tJOotLdNVozbOOjxhBlRwJk71hprzA2SYVvUIKNvz8c/GjcFp3BL7vDklngvO
+         zl4V4Vp916TZAWDuaMm3M9LB/UUzTTI4PNa8ZN0UQKnn5dtnNA/PDX+I+seNTfdQA7FQ
+         eAeF4P/7MyBqU3rFB/xabPpQJ0tZLgdAdrccAFYA5DSO631fAvLOUoY97xGiqrBBqUXo
+         Z1tmyiODc/zF//4CcHZRtYJNPYA1OChITkK1DJK96ljrZqSQHtTgNfr5zJ5nJo1M7dd7
+         ac4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772504909; x=1773109709;
+        d=1e100.net; s=20230601; t=1772505024; x=1773109824;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=C1bg6xiI4y6+7k2tjKhPvGRGK3TFDQKnfwBJ+EjIYKA=;
-        b=rO7g27YWCAglC0srBB/paMiDLxJ8GN+AkHHsNd/Uhh5f4G1C8IkEAtC1jHrGBLvvvO
-         7/xIYPdMoNyI3MEB0gfMjuGGgojPYh47Bc/Qo+wHHFtHGqsn2V4WjnIKzFxxdpu2Byhs
-         0B1eagOrmgWCYHt4ZAfrFpoxcHrsNW9IO+Jko5nThV/ISoXKWKHlr+MQ2guHvER2VFpx
-         CXm7X3HFqWQkmpWbA72InznNcIEY8eFjrpOmwr9kNZ9wECeGEz3aaLq48H+6Qe3VFss8
-         4iLDyy3k4FzMbErYrGCkMGpb2/MnO2EXz6ZbeAEGkv2YwarPPSbYZajYjxzSGGUg6H7l
-         V5Mg==
-X-Forwarded-Encrypted: i=1; AJvYcCVg8fMzWT6m2fVc47WdqQJlh6GVy3XtjGAwY/PP/2WwQnskNle2XZrig8jiXD1LQmYxseHs+QY2FV3t7h77@vger.kernel.org
-X-Gm-Message-State: AOJu0YxAfID5XXYgg5BHBvuy1GfEm2+H2/EdIJbMtqsSfHkqGjUA1Rbl
-	tXxUNhWRCHch9Eswhm62nQsLQja7jcCz77qyKsmKTdQyUhzdo2o0nwQ3/sXLGWKIH0WfwO5oHvm
-	RlwIeLH4AjCtZbxPbrT4o2+lmdBAvqhlqsZ+BSNbkYuSk8UlxEIbpZg==
-X-Gm-Gg: ATEYQzznyw+oNjGb3DDcapC7gWgmJoY0Kdhf8raypDQpkPI/iGCXCrFQTgDoaqx7j4X
-	kvRJ70iz7GWqvUCXXbNSCpPockWAzkxzGDKcJVKZd5o98gtKC5H6CAcOIkfWTdNrbDWLJpMfpi6
-	xPKBAG9UDb6QETiC56EL18PqGxW6TND37mB23HfQPS/2tzVw0eX6FvFo+2Q3arjemsOuIy6TPb7
-	xpMZDhz+LI9dIGoRl41q5Rco3h5nzjbL7DujOBPHrYdqbuH72koGaMKUleEeNBYqqJb8qeGzf9v
-	HhDMUYM=
-X-Received: by 2002:a17:90a:7f93:b0:356:1db4:8fe5 with SMTP id
- 98e67ed59e1d1-35965cc714fmr9453563a91.29.1772504909127; Mon, 02 Mar 2026
- 18:28:29 -0800 (PST)
+        bh=VKlMqpEd7YBdXym1IpYpN4BFku3eaQLOirqfkrIT+SY=;
+        b=eiacboHa/D5OJDtubOVHcxne6c9RGeXVA8LAexpU/BpNHYqAI1gFmLAFAHHZNNzyHK
+         wAKeChu4gIVp6APrcmPAXT4tvX/JOKWcSFnWlULzyX+nYuka9BfWQ1FMxZvTsZPivNWN
+         tN2Rkt9HcWuj3RDJmL7b+W/r224nR9/OtI1/+n4diSO+3NdBgMf/RzlKuR4F28gFJOtw
+         03oHfD1Fs+AR6ETZH2mgc6PyTZSVzdFUY4spgjQIPG1RN0oU96Y8q34m1Cv4Vz2MNNFV
+         xrTQt5XzhjM7Dd1xwFV0un76hDKS67jCVb2dSo8QoyDwQ1k0tfkJElvLBmUHswN2Ldzb
+         6GGQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUV45rXqje+gl9Y6/YTBu1hyfgZaCCDNA2ELRxtyEhEF9LZ/3LRB2H+pJUX9XWJE20k8hBRpph3RU0Ra7Ht@vger.kernel.org
+X-Gm-Message-State: AOJu0YzvCimRzSzrlhk9pvCN3lwcUsOChXs3RlHN53nbpoNvQdzDxC8R
+	bZDxA1PUC0gFrHDHJJc4TjRdHQhd9icKpOKjIVrYkQdUK98/a6HBVrVvaxKxy42+RPahinQ+reT
+	/wTmTdjjt8r4pAGWmvRUtRlknk4FKqzflyjlLd+bW
+X-Gm-Gg: ATEYQzwCAIAUxDoIoCSMa9Y82TKHvHu9N9kn194VKH7hNgIEwNwB+j/i65vfX1WRLpx
+	vqkasjzOBvHFBJ9h1bDrCFxW54xFQ3eMUzeyAO5T6k01pqzcq1rUHWKqJWU9S2jVCJ6F5l6ynww
+	eHUiWE8ZNtpdGsjWlZj8DqhXIP1GWu+qvjStolhpeycNLbIGBTu+gq6MTFqpFZIlQD2Ssng16RM
+	00cxEy+eIx68zSrbv+FUJ+Rwh79vsFSVS7p/w7BG2vQywVeOGa0avYVGaRdWjdWqWRoHohA67r4
+	iNv/6b9HL/lTUY55Dg==
+X-Received: by 2002:a17:903:244a:b0:2ae:56f8:747b with SMTP id
+ d9443c01a7336-2ae56f8786cmr37920855ad.57.1772505023451; Mon, 02 Mar 2026
+ 18:30:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260302-iino-u64-v2-0-e5388800dae0@kernel.org> <20260302-iino-u64-v2-49-e5388800dae0@kernel.org>
-In-Reply-To: <20260302-iino-u64-v2-49-e5388800dae0@kernel.org>
+References: <20260302-iino-u64-v2-0-e5388800dae0@kernel.org> <20260302-iino-u64-v2-105-e5388800dae0@kernel.org>
+In-Reply-To: <20260302-iino-u64-v2-105-e5388800dae0@kernel.org>
 From: Paul Moore <paul@paul-moore.com>
-Date: Mon, 2 Mar 2026 21:28:17 -0500
-X-Gm-Features: AaiRm53ToDAKLnqMzF7h_Rr5obeE3dnKPI4TQkaY52RSs5vb8oGyabc3Zmeif9I
-Message-ID: <CAHC9VhRLAhMYL1ax3+LCeLLhnK0XGnvs0kGPGgHaptTaDynroA@mail.gmail.com>
-Subject: Re: [PATCH v2 049/110] security: use PRIino format for i_ino
+Date: Mon, 2 Mar 2026 21:30:10 -0500
+X-Gm-Features: AaiRm53tOqTCLn9NgvLgqwCOFo4xSyksjolr8ucn59RQ44Ck0r7mzGeRmSI5U0c
+Message-ID: <CAHC9VhSHj7qc-tKxEN45bkfr+Dha59ihzOGiCO2WDYTYoB-LeA@mail.gmail.com>
+Subject: Re: [PATCH v2 105/110] security: replace PRIino with %llu/%llx format strings
 To: Jeff Layton <jlayton@kernel.org>
 Cc: Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
 	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
@@ -192,13 +192,13 @@ Cc: Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.
 	linux-sctp@vger.kernel.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Rspamd-Queue-Id: 771FC1E8016
+X-Rspamd-Queue-Id: 320F01E8104
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
 	DMARC_POLICY_ALLOW(-0.50)[paul-moore.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	R_DKIM_ALLOW(-0.20)[paul-moore.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -206,7 +206,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FREEMAIL_CC(0.00)[zeniv.linux.org.uk,kernel.org,suse.cz,goodmis.org,efficios.com,intel.com,infradead.org,mit.edu,linux.dev,suse.de,redhat.com,manguebit.org,dilger.ca,suse.com,oracle.com,brown.name,talpey.com,samba.org,gmail.com,microsoft.com,dubeyko.com,ionkov.net,codewreck.org,crudebyte.com,auristor.com,themaw.net,cs.cmu.edu,fluxnic.net,tyhicks.com,physik.fu-berlin.de,vivo.com,artax.karlin.mff.cuni.cz,nod.at,paragon-software.com,fasheh.com,evilplan.org,linux.alibaba.com,omnibond.com,szeredi.hu,alarsen.net,huawei.com,wdc.com,canonical.com,namei.org,hallyn.com,linux.ibm.com,schaufler-ca.com,amd.com,ffwll.ch,linaro.org,google.com,davemloft.net,arm.com,linux.intel.com,dev.tdt.de,yaina.de,holtmann.org,hartkopp.net,pengutronix.de,secunet.com,gondor.apana.org.au,fomichev.me,iogearbox.net,vger.kernel.org,lists.linux.dev,kvack.org,lists.sourceforge.net,lists.samba.org,lists.infradead.org,coda.cs.cmu.edu,lists.orangefs.org,lists.ubuntu.com,lists.freedesktop.org,lists.linaro.org];
-	TAGGED_FROM(0.00)[bounces-1432-lists,linux-fscrypt=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-1433-lists,linux-fscrypt=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
@@ -216,21 +216,18 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[paul@paul-moore.com,linux-fscrypt@vger.kernel.org];
 	DKIM_TRACE(0.00)[paul-moore.com:+];
-	NEURAL_HAM(-0.00)[-0.997];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	NEURAL_HAM(-0.00)[-0.998];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TAGGED_RCPT(0.00)[linux-fscrypt];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,paul-moore.com:dkim,paul-moore.com:email,paul-moore.com:url]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,mail.gmail.com:mid,paul-moore.com:dkim,paul-moore.com:email,paul-moore.com:url]
 X-Rspamd-Action: no action
 
-On Mon, Mar 2, 2026 at 3:36=E2=80=AFPM Jeff Layton <jlayton@kernel.org> wro=
+On Mon, Mar 2, 2026 at 3:50=E2=80=AFPM Jeff Layton <jlayton@kernel.org> wro=
 te:
 >
-> Convert security i_ino format strings to use the PRIino format
-> macro in preparation for the widening of i_ino via kino_t.
->
-> Also correct signed format specifiers to unsigned, since inode
-> numbers are unsigned values.
+> Now that i_ino is u64 and the PRIino format macro has been removed,
+> replace all uses in security with the concrete format strings.
 >
 > Signed-off-by: Jeff Layton <jlayton@kernel.org>
 > ---
@@ -242,8 +239,7 @@ te:
 >  security/smack/smack_lsm.c           | 12 ++++++------
 >  6 files changed, 20 insertions(+), 20 deletions(-)
 
-No comment on the PRIino specifier, but the LSM framework and SELinux
-changes seem complete.
+For the LSM framework and SELinux changes ...
 
 Acked-by: Paul Moore <paul@paul-moore.com> (LSM/SELinux)
 
