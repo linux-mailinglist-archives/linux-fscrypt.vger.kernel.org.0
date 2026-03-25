@@ -1,112 +1,112 @@
-Return-Path: <linux-fscrypt+bounces-1538-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-1539-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id AGmLGmnww2lZvAQAu9opvQ
-	(envelope-from <linux-fscrypt+bounces-1538-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 25 Mar 2026 15:25:45 +0100
+	id yNoRN1IBxGm0vQQAu9opvQ
+	(envelope-from <linux-fscrypt+bounces-1539-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 25 Mar 2026 16:37:54 +0100
 X-Original-To: lists+linux-fscrypt@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE3DC326B98
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 25 Mar 2026 15:25:44 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 848553282DD
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 25 Mar 2026 16:37:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id BCCF4313313C
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 25 Mar 2026 14:17:57 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 8C583300360A
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 25 Mar 2026 15:27:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96FB03DDDBB;
-	Wed, 25 Mar 2026 14:17:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 672183CEBA5;
+	Wed, 25 Mar 2026 15:27:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="He8b1eWY"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="AEXc+gia"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D599F3B27E0
-	for <linux-fscrypt@vger.kernel.org>; Wed, 25 Mar 2026 14:17:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FB453DBD5F
+	for <linux-fscrypt@vger.kernel.org>; Wed, 25 Mar 2026 15:27:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.221.45
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774448276; cv=pass; b=twAMFabbCjInX0HWHLjgzd6y4SZCd4WwWE1fCgs+Ywgzf/rdYIpCrTCp2r/YHaQgNepzF47iwIRvF1DEm8d5QQT9eqnvkBAtfvIWzf1tRcIlL+tXNzDEn9OTYUsLQ6/f05sryFO7j82z40vHmOfkKNXZfyqByJtsaZIkVqmYq8o=
+	t=1774452444; cv=pass; b=XqYbifm2QMZPqAdbwhGQn3yPLIkz8YGhdONdB2ie4nwVz4021yiESUWbP9DuNRlJYchx8/686DJExf39yHhK5exuhYFZAIxWXJkklodWWV20bpd9yqqlLjTpNCJy4betQXQcs0PLykQyydZa/z00RCA65hPA+64xnPtqeaINhe8=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774448276; c=relaxed/simple;
-	bh=JI+TEE49zQK3cKPmCz6svi6GFaT2s7u6w0MtCQyVKb4=;
+	s=arc-20240116; t=1774452444; c=relaxed/simple;
+	bh=gvTYV6danPBvrbbKycCsMx9z3+3xksJLdC9fppoaH9o=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EyOwyeTtns5XSCP8AgC0xyaF7pGCvfeKp+Et8yhRGhUtVNrBzWDSL8ba7Fio1fd0ydkiN0YGMh1fueV349tq4tB3CW4KwH8OmkuiqEnKGIywT76hKcsxGGAasv+6lLGWKUO02nNjU2Mh53UDubEZtnaIhoF0rOPRLEH6ilioIKc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=He8b1eWY; arc=pass smtp.client-ip=209.85.221.51
+	 To:Cc:Content-Type; b=ASIJkr93bahNB1Cn/X9knlol29G6FmwdKBnP2znkW4n3nFUg/DHkzOxNeafw9DPhwBkVCaTwxbsGmZOBlaW8qUeEw7wGEMes+yyGkVXI24lKHK9MJKHoJkxUp1l0GOa+sT/b/o4gvU09rQOI12EPjTsViAyzFSLKrwK0AcjIWrE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=AEXc+gia; arc=pass smtp.client-ip=209.85.221.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-43a03cb1df9so2709630f8f.1
-        for <linux-fscrypt@vger.kernel.org>; Wed, 25 Mar 2026 07:17:54 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1774448273; cv=none;
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-439fe4985efso4529305f8f.3
+        for <linux-fscrypt@vger.kernel.org>; Wed, 25 Mar 2026 08:27:22 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1774452441; cv=none;
         d=google.com; s=arc-20240605;
-        b=RHwyua1PUCB049GkN56X0L64tCQbLP33nut+YkXDFvn7k7ShhT5KGMusbRvzGJkGMe
-         L88oZezfv85wj+kSmGbfmSp851Qw0ksXbfX1Tv3c1Hjmuy8hI1KwA1qeQOcH3ef1frKs
-         lTtq7oJyC4qwP5Ogs3BcJF8iKTRwfbDPY9Ku72/O+xirwVJRjIZo+l83Qnsf0S98lDEp
-         XSdszDwyUhuRXcOcDqfRsqKp3HArOoTALycg/vFjZI7An1VemNquUe3+KW7mOhF5WeKA
-         SfzYG9ClgAqJOSBUdvm7DnkBON5FsveoEO391WlLwmDdVRFO9VO+AgDL8aIvouGbd93G
-         utAQ==
+        b=DgaTcLsJATTAD8LpwrhLGbBTt79ydERAhPI+NUr5n1F1q5EYKWXaxRmlTOQm3WYin4
+         s1GctwXccLzglcEYPVAwAkxX+9A3A3XMHwyaQFVrlMOVojGWu3N9GHpswvcgJu6mBQeI
+         v6wFoW27Na+jI06WwtAbtxuHnIMRS4n79goL9c6/TbjkhSNAvQOVPr0d18I+PjDpblGZ
+         8uYoWz77T+OYaXtFbqfpElZ9uk6yBYFsoq6bpVsPVHarK/A/jhuGktVSddnbYaxNWskB
+         Mj0J2wk/IGnmpnEnew3So5bO0qGUyGCiHMyMD3jso+6sQprpgjv4zmTtOLCF0YNldTpl
+         uEEg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:dkim-signature;
-        bh=5n8QXWW6p9E8l82xzEfoMSbTtP2cvmaz+gb8I7NDwzo=;
-        fh=xC4LGWAyTbCpPFNbXWo2dDCXC7BTYSfctD1Wky9qwTE=;
-        b=Yuyv8deZ9jqOB3uhXWZwmdzWljZliqKYpQcvqUzX2Xn3Ak/TpI+yCyeXTbzqaVZTMU
-         l0UxserdxEJO5fpDr5oDcic6nXFAEX8vxiy9VocxFw9URwdCLDOPPRHjsuDERRukE3mA
-         Jw4xU5sdympObTOj53O8TTtN7iadflTe2atfpgIUCXC25MmP09wtLo5E2guj52lS8hDg
-         jOyurQPhlqWRCATCZAQ08Fp5+rpZS6XZsJg+D4CLr4/pcQn9pE3HYsRbk3L6lFhel4nG
-         yO8+dZ8/VrybAUZp5LzOXF72VSz6HeCJs9HGx2nRHQd/9x3hI8LoGxML0aeXAcOVwhjB
-         3YSQ==;
+        bh=dWX1QioYHvYuj0Wi+UEogcC2o0+HVIkdhxi+oA65LkU=;
+        fh=mzlrdNgreaz3pG2ahMjy+kb3wE8OjCidBzCWCvpYjBc=;
+        b=Yma3okxYumdnNU/9UooQEZ30mC0HHjYNEtOXpYO61WK0sF87A204dZqOBNhPY5wLE1
+         iy/Evh84e1bLbPlO/GFn9vN6dOxNX2wf1RLIqPsJ20//8WVtR6Pi2n/OA4gYBxWlAKk0
+         R970sQqgkbusdf06GfE/rci26CgejS7tbkRpuTmFwdZ5JdrQedLay8aJ//jGE1fiGbxS
+         q4+yHgGigY7aBGjQD23S0iLsD+xU5gI3sx5CRrUQOOgU6rVM4oFuBk81lDzXFNxuzn9k
+         CK9kKWdNLY+xu92q0xmI2zwqmrWNp+HzbdbfhEmjg0IRLMqAhk4QVIrmKU1+7WdL0o83
+         CBYQ==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1774448273; x=1775053073; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1774452441; x=1775057241; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5n8QXWW6p9E8l82xzEfoMSbTtP2cvmaz+gb8I7NDwzo=;
-        b=He8b1eWY0jASt4uLuF6oCfL1o9EBtkcoL/seGoFNRov2X0T2vI57qN9LsdTbolUsjd
-         gGdJf7M7Cpzy7/8lRIQmGMlPM2n4D4RRRn4dG8mSEv5WcDNj4ZfrnXfpo7TPheCsTLrn
-         cSiDQVqBLIgxCq/4ndiP4aSrw98h3YOalF/b0D+DhCJEN+2J/w0VCt+5dT6x4xohB+We
-         zeoYEQSoVE4z691qKVDVObHLbxFHW/zIyXLK4VQGTLMTG2oqrSfBjJt/34V4HaUAoxOl
-         8SYfF9tJnyLr9uxo/Ifuhy5V7mCUdhCpy1Lod4EBRcutAx/cEtrAP29TMps1udKBPcR5
-         NilQ==
+        bh=dWX1QioYHvYuj0Wi+UEogcC2o0+HVIkdhxi+oA65LkU=;
+        b=AEXc+gia4X2WLrsXhq+ccPCtrdadkzFqLhLeTTsWZF8bpUj/GXTEskGg0mLZrNfkSQ
+         JTxIxfwUUtVmEkTp+p/XdRf4aBQHw4dLLa7VD9I+xhqdI8OMhDNA6wRxa+ihrFtfAyeU
+         tsW4DPcoTLmEdeMUtBlR6SaGNeaW0rFq2MG8tLlXqM2mwX17jVnCDc0bXFg/KuXzAstc
+         lDQGzmI36TJyyp1W0K3qOmq3HkVkfhOIlLfaN4I1aGCQ7IPpZ+bLP61gGiUgEPMVEpgB
+         41VZEns+2sSHjOjGbE+ZpQgSW5dSlgsqz/N3j1WAUMrxdtUqMh93KP/qMfB/7yZnyn/Y
+         cLGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1774448273; x=1775053073;
+        d=1e100.net; s=20251104; t=1774452441; x=1775057241;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5n8QXWW6p9E8l82xzEfoMSbTtP2cvmaz+gb8I7NDwzo=;
-        b=A4SjuRKKsj7y9wFu5fqOcxYwyWE4UHxplk0AJVqjTEQG3VWU7vBE7wk7zJwFQfeob4
-         OrFzkFVuMzc060JBomzWug1BKWYUTSlQOE8W6QSy84jeLi/BfQoSRjIyuHXOGW8S9nrA
-         D6OUsvBGhOK69RtpFJZ5AQ3BR0mQ9uwxTvWF9G4Pm/xEoT2ddxI3A5C+N8DmtYYToxtt
-         tUi+UjUE3VqF0TsypZieEeG5cWX05ZPBBOT43g7QZM7nSrviNhHkrsNGCv1OclZlpjFa
-         9g7vTL7Fx9oT8Y4RtFjB8x1K1XV3IyFFgPIWkpftZPIyM02+5zLzZOID4ldkRzk6sUVN
-         926g==
-X-Forwarded-Encrypted: i=1; AJvYcCUVyXytRTrL2N87XpCmUDUNDdRihx+t6yX/B+bYLWE5kf2gGrRY+5JNpHVYWkZYEwoBAaNP6H9/zAhCfpXU@vger.kernel.org
-X-Gm-Message-State: AOJu0YzCmHhymrYtgAflDXpmQQ7QHx3/JP5N64SIvvEoDEduTlO0iLtR
-	2sXT8Ip5z6oIEHRLv9hdzLoROPoc2RjkEYETGtrDIXzfHUxbuL9KcDl1uriJnInoVB9mKn9lZz4
-	QLFMS3OjeKY9uppwQ/PDjZZvSFyGUaGDddGmHBi7cqA==
-X-Gm-Gg: ATEYQzzfniX2RL94jim/QSsbpSWdKlT7qRPUeCEB75RrGuo9NLUQ4A8iTWb8g2yCW33
-	2FafIiXnWa2D2pYk3mPt1ezqTeSklTaubxwL+NTy9GhgLUW+EiT1d6gxrhRdzaTgDrxi+vZLlMo
-	Y+zYUFb5NUtanmwqF152XZEM4aT6wUhktrJQA2veQitiQWrjEk0zFX/4Q5mElUN+CnrYsG4zfDz
-	dz7/WNk5nl2t7NWESYvZ0vo35zbTp7qNYn7n3lv/Mm4WpH1/Tgcogg6GXxR92eB4+8gBIDUZdcz
-	8CVNvj24yWfpiqVGRSiiCwNzdygBHN8w6YgsAYe34E8YMPU/XMvYTQZSMyj0mdGVQc1SO55+aAA
-	xQGz6
-X-Received: by 2002:a05:6000:2084:b0:43b:3f2d:7d3c with SMTP id
- ffacd0b85a97d-43b88a21758mr5567679f8f.2.1774448273072; Wed, 25 Mar 2026
- 07:17:53 -0700 (PDT)
+        bh=dWX1QioYHvYuj0Wi+UEogcC2o0+HVIkdhxi+oA65LkU=;
+        b=T9Kqp6yr5T+KU66iL/1sZUFUqcFf5O+cyTsIwOvzY+xxgnuoyniKKHLUnzcvaqkUah
+         vLpiG8tE25LBjD/oGfqtefem2MFZxn/AWeSlWKLkZ8NKx7WZGN8P5zx7t8CMmrk0+Ej5
+         jmIBgfmAKax3wKTTHU85FVoqARfm8igjw8rzZn4ihfrOanJAKnfK+g0m3C1RFZZFdYnU
+         9rntMVDLBkyegeWLmU12VZZO/W2RVHq8gY1E8mgCNTzgmJGHY8dfr5YE7+sj2lbjk4Re
+         TfAvZbB4OWfy33XQadX4dwsFGo6EuoKchFUCDVwVCz79GkWjvfdQRvKGAR+QbRqfTFb5
+         2+gw==
+X-Forwarded-Encrypted: i=1; AJvYcCW4NLPGAOBdCKYF9A3YEWGmFyW+YT3zXAOJL5+egvJu37kj1SqKo76sDacQeHbu5N3ubxJhKaAjMp0NTPYx@vger.kernel.org
+X-Gm-Message-State: AOJu0YwfxwU8qLtM1Sc6/Z/pwh50gCr1le3MJevhOIcTYjsFzEnfrtEG
+	F2Y2IfMat8LosSzz74R0KtrqYqHSyCUMi0QWzJINy6BLxrt5KE6QpZgvEJr2hdz01T2cnfuotEP
+	fnaYOzCMtgadxU2QUPZVlflGq5R3oCRN3nJurRMip5A==
+X-Gm-Gg: ATEYQzwaF3oT4aMhVdq8Bg2+rjqGqQ94+Gt9/j1t1bPVSFLrJPy76809bttywqXd50I
+	AEdtpV8UpWTrYANkx4vn26VRLJrp0zpsaJKGDoUD0/hbcJelQL4kYjAaGEjOErWlpJowpH2y0Mp
+	aa/pBmJJChdBmqRvlXUekWm9fGwjmh+n8Vl1C5G8dLYnBS7XmNfga/Wsyv0U7KouQBbZiey/mE9
+	6dO8HNFBvh3g+3foevzzfE/9DS0rbEl8z/wza0KSMqMYdJpgHWX5m20l5NkRBreSlbbxc+ih7Dm
+	XltUbSvX9KmVIHcpVT6TXsSfalDBLuyg1mOTDQGSsXnWCnl9I5Ytlwgit8af+ZPD5dfJmgxvkpp
+	HJjqz
+X-Received: by 2002:a5d:5f92:0:b0:43b:47bc:c147 with SMTP id
+ ffacd0b85a97d-43b88a1d79emr5535228f8f.45.1774452440680; Wed, 25 Mar 2026
+ 08:27:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260206182336.1397715-1-neelx@suse.com> <20260206182336.1397715-34-neelx@suse.com>
- <20260208150854.3090411-1-clm@meta.com>
-In-Reply-To: <20260208150854.3090411-1-clm@meta.com>
+References: <20260206182336.1397715-1-neelx@suse.com> <20260206182336.1397715-36-neelx@suse.com>
+ <20260208150339.3021113-1-clm@meta.com>
+In-Reply-To: <20260208150339.3021113-1-clm@meta.com>
 From: Daniel Vacek <neelx@suse.com>
-Date: Wed, 25 Mar 2026 15:17:41 +0100
-X-Gm-Features: AQROBzCA2SzXEdLH4PwF7MzsDSpXTmv7zxyVpq6_W8dQnpHa9Q-YU8fXQyJUEFs
-Message-ID: <CAPjX3Fc28BffC9C2Fbd7S_+4Ch7xvX18k6MpehPy_fm+02cA8w@mail.gmail.com>
-Subject: Re: [PATCH v6 33/43] btrfs: implement read repair for encryption
+Date: Wed, 25 Mar 2026 16:27:09 +0100
+X-Gm-Features: AQROBzAFWXwvrixpcNfzyjbXsLbgIekQDOVglJXPaG63xqqZ-H6T96gnhiEXVX4
+Message-ID: <CAPjX3Ffn_Q1mPs3-6ZpdOTrp6i=2c8ZiJSyR9Mu_MTe_=OQjnA@mail.gmail.com>
+Subject: Re: [PATCH v6 35/43] btrfs: make btrfs_ref_to_path handle encrypted filenames
 To: Chris Mason <clm@meta.com>
 Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, Eric Biggers <ebiggers@kernel.org>, 
 	"Theodore Y. Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>, Jens Axboe <axboe@kernel.dk>, 
@@ -118,13 +118,13 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
 	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
 	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-1538-lists,linux-fscrypt=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-1539-lists,linux-fscrypt=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	RCPT_COUNT_TWELVE(0.00)[12];
 	MIME_TRACE(0.00)[0:+];
@@ -135,36 +135,21 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[neelx@suse.com,linux-fscrypt@vger.kernel.org];
 	DKIM_TRACE(0.00)[suse.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	TAGGED_RCPT(0.00)[linux-fscrypt];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[toxicpanda.com:email,meta.com:email,mail.gmail.com:mid,suse.com:dkim,suse.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: BE3DC326B98
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,mail.gmail.com:mid,suse.com:dkim,suse.com:email]
+X-Rspamd-Queue-Id: 848553282DD
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Sun, 8 Feb 2026 at 16:09, Chris Mason <clm@meta.com> wrote:
+On Sun, 8 Feb 2026 at 16:04, Chris Mason <clm@meta.com> wrote:
 > Daniel Vacek <neelx@suse.com> wrote:
 > > From: Josef Bacik <josef@toxicpanda.com>
 > >
-> > In order to do read repair we will allocate sectorsize bio's and read
-> > them one at a time, repairing any sectors that don't match their csum.
-> > In order to do this we re-submit the IO's after it's failed, and at this
-> > point we still need the fscrypt_extent_info for these new bio's.
+> > We use this helper for inode-resolve and path resolution in send, so
+> > update this helper to properly decrypt any encrypted names it finds.
 > >
-> > Add the fscrypt_extent_info to the read part of the union in the
-> > btrfs_bio, and then pass this through all the places where we do reads.
-> > Additionally add the orig_start, because we need to be able to put the
-> > correct extent offset for the encryption context.
-> >
-> > With these in place we can utilize the normal read repair path.  The
-> > only exception is that the actual repair of the bad copies has to be
-> > triggered from the ->process_bio callback, because this is the encrypted
-> > data.  If we waited until the end_io we would have the decrypted data
-> > and we don't want to write that to the disk.  This is the only change to
-> > the normal read repair path, we trigger the fixup of the broken sectors
-> > in ->process_bio, and then we skip that part if we successfully repair
-> > the sector in ->process_bio once we get to the endio.
 >
 > Hi everyone,
 >
@@ -178,121 +163,245 @@ On Sun, 8 Feb 2026 at 16:09, Chris Mason <clm@meta.com> wrote:
 > that I'm actually replying to the right email, but please let me know if any
 > parts of this are incorrect:
 >
-> commit 096c17a6a951ed0c1100e863c4ee3a95bab0ad51
+>
+> commit 473bbb12052f731a4e2ce3c48e7d7e9f2510528b
 > Author: Josef Bacik <josef@toxicpanda.com>
 >
-> btrfs: implement read repair for encryption
+> btrfs: make btrfs_ref_to_path handle encrypted filenames
 >
-> This commit implements read repair functionality for encrypted btrfs
-> files by adding fscrypt_extent_info tracking to the btrfs_bio structure
-> and handling repair operations before decryption occurs.
+> This commit updates btrfs_ref_to_path() to handle encrypted filenames by
+> introducing a new copy_resolved_iref_to_buf() helper that can decrypt
+> names when the filesystem has encryption enabled.
 >
-> > diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
-> > index c28f3f53bad28..e82de96b533cb 100644
-> > --- a/fs/btrfs/bio.c
-> > +++ b/fs/btrfs/bio.c
+> > diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+> > index 9bb406f7dd302..577c3ef87791a 100644
+> > --- a/fs/btrfs/backref.c
+> > +++ b/fs/btrfs/backref.c
 >
 > [ ... ]
 >
-> > @@ -293,6 +323,13 @@ static struct btrfs_failed_bio *repair_one_sector(struct btrfs_bio *failed_bbio,
-> >       repair_bbio = btrfs_bio(repair_bio);
-> >       btrfs_bio_init(repair_bbio, failed_bbio->inode, failed_bbio->file_offset + bio_offset,
-> >                      NULL, fbio);
-> > +     repair_bbio->fscrypt_info = fscrypt_get_extent_info(failed_bbio->fscrypt_info);
-> > +     repair_bbio->orig_start = failed_bbio->orig_start;
+> > @@ -2107,6 +2108,39 @@ int btrfs_find_one_extref(struct btrfs_root *root, u64 inode_objectid,
+> >       return ret;
+> >  }
+> >
+> > +static int copy_resolved_iref_to_buf(struct btrfs_root *fs_root,
+> > +                                  struct extent_buffer *eb, char *dest,
+> > +                                  u64 parent, unsigned long name_off,
+> > +                                  u32 name_len, s64 *bytes_left)
+> > +{
+> > +     struct btrfs_fs_info *fs_info = fs_root->fs_info;
+> > +     struct fscrypt_str fname = FSTR_INIT(NULL, 0);
+> > +     int ret;
 > > +
-> > +     btrfs_set_bio_crypt_ctx_from_extent(repair_bio, repair_bbio->inode,
-> > +                                         failed_bbio->fscrypt_info,
-> > +                                         repair_bbio->file_offset -
-> > +                                         failed_bbio->orig_start);
-> >
-> >       mirror = next_repair_mirror(fbio, failed_bbio->mirror_num);
-> >       btrfs_debug(fs_info, "submitting repair read to mirror %d", mirror);
->
-> [ ... ]
->
-> > @@ -214,17 +244,17 @@ static void btrfs_end_repair_bio(struct btrfs_bio *repair_bbio,
-> >                       goto done;
-> >               }
-> >
-> > +             btrfs_set_bio_crypt_ctx_from_extent(&repair_bbio->bio,
-> > +                                                 repair_bbio->inode,
-> > +                                                 repair_bbio->fscrypt_info,
-> > +                                                 repair_bbio->file_offset -
-> > +                                                 repair_bbio->orig_start);
+> > +     /* No encryption, just copy the name in. */
+> > +     if (!btrfs_fs_incompat(fs_info, ENCRYPT)) {
+> > +             *bytes_left -= name_len;
+> > +             if (*bytes_left >= 0)
+> > +                     read_extent_buffer(eb, dest + *bytes_left, name_off, name_len);
+> > +             return 0;
+> > +     }
 > > +
-> >               btrfs_submit_bbio(repair_bbio, mirror);
-> >               return;
-> >       }
+> > +     ret = fscrypt_fname_alloc_buffer(BTRFS_NAME_LEN, &fname);
+> > +     if (ret)
+> > +             return ret;
+> > +
+> > +     ret = btrfs_decrypt_name(fs_root, eb, name_off, name_len, parent, &fname);
+> > +     if (ret)
+> > +             goto out;
+> > +
+> > +     *bytes_left -= fname.len;
+> > +     if (*bytes_left >= 0)
+> > +             memcpy(dest + *bytes_left, fname.name, fname.len);
+> > +out:
+> > +     fscrypt_fname_free_buffer(&fname);
+> > +     return ret;
+> > +}
+> > +
+> >  /*
+> >   * this iterates to turn a name (from iref/extref) into a full filesystem path.
+> >   * Elements of the path are separated by '/' and the path is guaranteed to be
+> > @@ -2138,10 +2172,10 @@ char *btrfs_ref_to_path(struct btrfs_root *fs_root, struct btrfs_path *path,
+> >               dest[bytes_left] = '\0';
 > >
-> > -     do {
-> > -             mirror = prev_repair_mirror(fbio, mirror);
-> > -             btrfs_repair_io_failure(fs_info, btrfs_ino(inode),
-> > -                               repair_bbio->file_offset, fs_info->sectorsize,
-> > -                               logical, paddrs, step, mirror);
-> > -     } while (mirror != fbio->bbio->mirror_num);
-> > -
-> > +     handle_repair(repair_bbio, paddrs);
-> >  done:
-> >       btrfs_repair_done(fbio);
-> >       bio_put(&repair_bbio->bio);
+> >       while (1) {
+> > -             bytes_left -= name_len;
+> > -             if (bytes_left >= 0)
+> > -                     read_extent_buffer(eb, dest + bytes_left,
+> > -                                        name_off, name_len);
+> > +             ret = copy_resolved_iref_to_buf(fs_root, eb, dest, parent,
+> > +                                             name_off, name_len, &bytes_left);
+> > +             if (ret)
+> > +                     break;
+> >               if (eb != eb_in) {
+> >                       if (!path->skip_locking)
+> >                               btrfs_tree_read_unlock(eb);
 >
-> Does this leak the fscrypt_extent_info reference acquired at line 326?
-> In repair_one_sector(), repair_bbio->fscrypt_info is set via
-> fscrypt_get_extent_info(failed_bbio->fscrypt_info), but when
-> btrfs_end_repair_bio() completes at the done label, it calls
-> bio_put(&repair_bbio->bio) without calling
-> fscrypt_put_extent_info(repair_bbio->fscrypt_info) first.
-
-repair_one_sector() is called from btrfs_check_read_bio() which always
-has (bbio a.k.a. failed_bbio)->fscrypt_info NULL. So there is no
-object which could leak due to refcounting imbalance. Encrypted read
-bbio passes through btrfs_check_encrypted_read_bio() instead which
-does not yet implement repair.
-
-Moreover btrfs_end_repair_bio() is called before repair_one_sector().
-And when it is called btrfs_check_read_bio() returns and no
-repair_one_sector() is caled at all.
-The fscrypt_put_extent_info() is eventually called from
-btrfs_simple_end_io() => simple_end_io_work() => btrfs_bio_end_io().
-So this looks clean, unless I missed something.
-
-> > diff --git a/fs/btrfs/bio.h b/fs/btrfs/bio.h
-> > index 456d32db9e9e9..7a8ff4378cba0 100644
-> > --- a/fs/btrfs/bio.h
-> > +++ b/fs/btrfs/bio.h
+> Does this code leak the extent buffer when copy_resolved_iref_to_buf()
+> fails? Looking at the loop structure in btrfs_ref_to_path(), when
+> copy_resolved_iref_to_buf() returns an error and we break at line 2178,
+> the cleanup code that follows never executes:
 >
-> [ ... ]
+>     if (eb != eb_in) {
+>         if (!path->skip_locking)
+>             btrfs_tree_read_unlock(eb);
+>         free_extent_buffer(eb);
+>     }
 >
-> > diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-> > index 5a39f707c2933..afc461d7642e4 100644
-> > --- a/fs/btrfs/compression.c
-> > +++ b/fs/btrfs/compression.c
-> > @@ -562,6 +562,8 @@ void btrfs_submit_compressed_read(struct btrfs_bio *bbio)
-> >       cb->compress_type = btrfs_extent_map_compression(em);
-> >       cb->orig_bbio = bbio;
-> >       cb->bbio.csum_search_commit_root = bbio->csum_search_commit_root;
-> > +     cb->bbio.fscrypt_info = fscrypt_get_extent_info(em->fscrypt_info);
-> > +     cb->bbio.orig_start = 0;
-> >
-> >       btrfs_set_bio_crypt_ctx_from_extent(&cb->bbio.bio, inode, em->fscrypt_info, 0);
-> >       btrfs_free_extent_map(em);
->
-> Does this leak the fscrypt_extent_info reference in the compressed read
-> path? At line 565, fscrypt_get_extent_info() acquires a reference and
-> stores it in cb->bbio.fscrypt_info. Looking at end_bbio_compressed_read()
-> in compression.c, it calls btrfs_bio_end_io(cb->orig_bbio, status) which
-> releases the ORIGINAL bbio's fscrypt_info, but then calls bio_put(cb_bio)
-> without calling fscrypt_put_extent_info(cb->bbio.fscrypt_info). The error
-> path in cleanup_compressed_bio() also calls bio_put() without releasing
-> the cb->bbio.fscrypt_info reference.
+> This can happen in subsequent iterations where eb != eb_in (the extent
+> buffer was detached from path->nodes[0] and set to NULL in the previous
+> iteration). The cleanup at the end of the function (btrfs_release_path()
+> at line 2216) cannot free eb since it's no longer in the path.
 
-IIUC, the fscrypt_info is put in btrfs_bio_end_io() before calling
-end_bbio_compressed_read(). So again, this looks clean to me.
+Right, the break should be placed only after the cleanup.
+
+--- a/fs/btrfs/backref.c
++++ b/fs/btrfs/backref.c
+@@ -2174,13 +2174,14 @@ char *btrfs_ref_to_path(struct btrfs_root
+*fs_root, struct btrfs_path *path,
+     while (1) {
+         ret = copy_resolved_iref_to_buf(fs_root, eb, dest, parent,
+                         name_off, name_len, &bytes_left);
+-        if (ret)
+-            break;
+         if (eb != eb_in) {
+             if (!path->skip_locking)
+                 btrfs_tree_read_unlock(eb);
+             free_extent_buffer(eb);
+         }
++        if (ret)
++            break;
++
+         ret = btrfs_find_item(fs_root, path, parent, 0,
+                 BTRFS_INODE_REF_KEY, &found_key);
+         if (ret > 0)
+
+Thanks.
 
 --nX
 
+> This could be triggered when decryption fails in copy_resolved_iref_to_buf()
+> due to btrfs_iget() error, fscrypt_fname_alloc_buffer() ENOMEM, or
+> fscrypt_prepare_readdir() failure on an encrypted filesystem.
+>
+> Before this patch, the name copy operation (read_extent_buffer) could not
+> fail, so the cleanup always happened before any error check.
+>
+
+On Sun, 8 Feb 2026 at 16:04, Chris Mason <clm@meta.com> wrote:
+>
+> Daniel Vacek <neelx@suse.com> wrote:
+> > From: Josef Bacik <josef@toxicpanda.com>
+> >
+> > We use this helper for inode-resolve and path resolution in send, so
+> > update this helper to properly decrypt any encrypted names it finds.
+> >
+>
+> Hi everyone,
+>
+> I'm running the btrfs for-next branch, along with the encryption patch set
+> through my AI review prompts:
+>
+> https://github.com/masoncl/review-prompts
+>
+> I'm working on some btrfs specific instructions, but hopefully these reviews
+> are already useful.  I've kept the headers to make it easier to double check
+> that I'm actually replying to the right email, but please let me know if any
+> parts of this are incorrect:
+>
+>
+> commit 473bbb12052f731a4e2ce3c48e7d7e9f2510528b
+> Author: Josef Bacik <josef@toxicpanda.com>
+>
+> btrfs: make btrfs_ref_to_path handle encrypted filenames
+>
+> This commit updates btrfs_ref_to_path() to handle encrypted filenames by
+> introducing a new copy_resolved_iref_to_buf() helper that can decrypt
+> names when the filesystem has encryption enabled.
+>
+> > diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+> > index 9bb406f7dd302..577c3ef87791a 100644
+> > --- a/fs/btrfs/backref.c
+> > +++ b/fs/btrfs/backref.c
+>
 > [ ... ]
 >
+> > @@ -2107,6 +2108,39 @@ int btrfs_find_one_extref(struct btrfs_root *root, u64 inode_objectid,
+> >       return ret;
+> >  }
+> >
+> > +static int copy_resolved_iref_to_buf(struct btrfs_root *fs_root,
+> > +                                  struct extent_buffer *eb, char *dest,
+> > +                                  u64 parent, unsigned long name_off,
+> > +                                  u32 name_len, s64 *bytes_left)
+> > +{
+> > +     struct btrfs_fs_info *fs_info = fs_root->fs_info;
+> > +     struct fscrypt_str fname = FSTR_INIT(NULL, 0);
+> > +     int ret;
+> > +
+> > +     /* No encryption, just copy the name in. */
+> > +     if (!btrfs_fs_incompat(fs_info, ENCRYPT)) {
+> > +             *bytes_left -= name_len;
+> > +             if (*bytes_left >= 0)
+> > +                     read_extent_buffer(eb, dest + *bytes_left, name_off, name_len);
+> > +             return 0;
+> > +     }
+> > +
+> > +     ret = fscrypt_fname_alloc_buffer(BTRFS_NAME_LEN, &fname);
+> > +     if (ret)
+> > +             return ret;
+> > +
+> > +     ret = btrfs_decrypt_name(fs_root, eb, name_off, name_len, parent, &fname);
+> > +     if (ret)
+> > +             goto out;
+> > +
+> > +     *bytes_left -= fname.len;
+> > +     if (*bytes_left >= 0)
+> > +             memcpy(dest + *bytes_left, fname.name, fname.len);
+> > +out:
+> > +     fscrypt_fname_free_buffer(&fname);
+> > +     return ret;
+> > +}
+> > +
+> >  /*
+> >   * this iterates to turn a name (from iref/extref) into a full filesystem path.
+> >   * Elements of the path are separated by '/' and the path is guaranteed to be
+> > @@ -2138,10 +2172,10 @@ char *btrfs_ref_to_path(struct btrfs_root *fs_root, struct btrfs_path *path,
+> >               dest[bytes_left] = '\0';
+> >
+> >       while (1) {
+> > -             bytes_left -= name_len;
+> > -             if (bytes_left >= 0)
+> > -                     read_extent_buffer(eb, dest + bytes_left,
+> > -                                        name_off, name_len);
+> > +             ret = copy_resolved_iref_to_buf(fs_root, eb, dest, parent,
+> > +                                             name_off, name_len, &bytes_left);
+> > +             if (ret)
+> > +                     break;
+> >               if (eb != eb_in) {
+> >                       if (!path->skip_locking)
+> >                               btrfs_tree_read_unlock(eb);
+>
+> Does this code leak the extent buffer when copy_resolved_iref_to_buf()
+> fails? Looking at the loop structure in btrfs_ref_to_path(), when
+> copy_resolved_iref_to_buf() returns an error and we break at line 2178,
+> the cleanup code that follows never executes:
+>
+>     if (eb != eb_in) {
+>         if (!path->skip_locking)
+>             btrfs_tree_read_unlock(eb);
+>         free_extent_buffer(eb);
+>     }
+>
+> This can happen in subsequent iterations where eb != eb_in (the extent
+> buffer was detached from path->nodes[0] and set to NULL in the previous
+> iteration). The cleanup at the end of the function (btrfs_release_path()
+> at line 2216) cannot free eb since it's no longer in the path.
+>
+> This could be triggered when decryption fails in copy_resolved_iref_to_buf()
+> due to btrfs_iget() error, fscrypt_fname_alloc_buffer() ENOMEM, or
+> fscrypt_prepare_readdir() failure on an encrypted filesystem.
+>
+> Before this patch, the name copy operation (read_extent_buffer) could not
+> fail, so the cleanup always happened before any error check.
 >
 
