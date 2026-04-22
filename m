@@ -1,584 +1,497 @@
-Return-Path: <linux-fscrypt+bounces-1551-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-1552-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6C/TKJIu52mf5AEAu9opvQ
-	(envelope-from <linux-fscrypt+bounces-1551-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 21 Apr 2026 10:00:18 +0200
+	id eAeqF5eF6GkNLQIAu9opvQ
+	(envelope-from <linux-fscrypt+bounces-1552-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 22 Apr 2026 10:23:51 +0200
 X-Original-To: lists+linux-fscrypt@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07327437E98
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 21 Apr 2026 10:00:17 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id A500C44368C
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 22 Apr 2026 10:23:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 2CFCC300E634
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 21 Apr 2026 08:00:09 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6E5353011BCE
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 22 Apr 2026 08:17:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0D0337EFEE;
-	Tue, 21 Apr 2026 08:00:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ABEA3AA187;
+	Wed, 22 Apr 2026 08:17:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="mvDhpkN8"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="dla6Nbl2"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from SEYPR02CU001.outbound.protection.outlook.com (mail-koreacentralazon11013024.outbound.protection.outlook.com [40.107.44.24])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D4B5384246;
-	Tue, 21 Apr 2026 08:00:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.44.24
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1654C3603EC
+	for <linux-fscrypt@vger.kernel.org>; Wed, 22 Apr 2026 08:17:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.221.44
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776758408; cv=fail; b=A+Hc6JXo1trV7FK3FMfNtlZFLap38OvGjV9qUAJ251+RlqzJe5ajFRRlLKmYRgyzcXN0VatP9cfut9LyCEgvnDP9hIMuNGhFgunvDlZ0tQuYVAhAXdRZueU46w3E2mIVQOA2JGk4NdIcJYrGxJyo0zD4C7sYhPBXvBSlJvbkQ1M=
+	t=1776845875; cv=pass; b=fMWJlMQX2Iy6aYM/FF+NRKZD7nTyREsmRpTWQarzjWblJ1E5qhZV/C60mwnXdXblgnoGgPupSPF1axYTaTXaMRT2QbYvFMz6bFyjeXcCUEwye4MvILWOLV5oYWKEpzNw9kM17q4G2nyuivGb3wrDCOYxsnRbhlWzl16c57fjh8w=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776758408; c=relaxed/simple;
-	bh=APYArR3o4hgRL3D6hbinFTFhkrikY/zaKItJzN2GJzc=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=buFjgli4tbbpuXNUzkK7ez/DynOAqkmRRbK/TqqpiKoVkAO61LFlCMgLogeEhKFONJRprl2RKzOxq89z/W8S2cvuubY20Jz0fo/T5jLNc8iYCSHi7+gjus7s1v1a/tTfrYdbTH6YTPxv/KwP4y4wmhAtOGqkiJeF7M5Guus6DOs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=mvDhpkN8; arc=fail smtp.client-ip=40.107.44.24
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=JEiWVEVEIIjG9P0ydqe25AmSJozo0C8pWqDidOcWQaW8BN4geMnbtY2fWFFMQSQjosuUPi+lHBHwLqoLnLX66KZWKo6qK7JsMnwtpcOqHOiW68VnC4aVCptZltJPLlkjgr+8Nx6w8+d7c9d4qVHRUjT+UqTGjjAQ+Evp+xCQfxufcISkafwsWjdDbxVuH4YxgC936gv/qkk+nUejfPVcmRDML0kIIJMyQbP8OvTeGvTOvh1lCwdj7y16g7ZxhYBkw1HdM9gaxKCKT9gfpwxsFtarKVrxgwDNJRu2zUVc4AMkuesPogRWZWJ/v5oCLSzfBwiSaeADklEsCIbJcMAQHg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rqZ3eQANTPFam3hjlUUvc6WkErJuExrr4+UH1fpgt/Q=;
- b=IS6K2/gc8TQvebCno5Efwc+bROf4bTZUwkc5Aljpt8aoKONxxjXTTQlykToLcw4TLKPgzLfG+dAZ4ciOqKLAMcxPhRr8P6KTTruX1iGIONhcty+LJ5lcnzEB9Bz0LSvJuIfJ1yY+FnAyQm/qRxiLQ3P4Yku5+RLIZFeZ4MZrYGCk19t969vv2r6L+BOuU3bPhcBPfNCrmuXlbEqGcYPZ3jb/zW6MQj2jhfOri77a/DiUWPnHKMbdrT6/CLIOKGrco/9cxcNjibFayVhZ63vkAjvI3fonJIFdi3sJltZpEHdr1QlFBozbOKv+TwW53rBcFugQHfZbeA+BQz/+YW8/mw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rqZ3eQANTPFam3hjlUUvc6WkErJuExrr4+UH1fpgt/Q=;
- b=mvDhpkN8s6JJozNHEe2QoKcJOTZlLZA4eAU2dC1rTOc7x4So5cLVEWH9CwyUx+lzZxzr3cW+JCPOKFga289WGtxsM4PNi3aHBu/1W5vBoOXcIICpnFX8aKOQdzTZcPwLJ2sTad39qwlOKinJDyRrOHVNbFYqIHTFx4axZBHAgzztB+DB4xX5s8sGAmUoFZeD3m/kXAR96A7w64YaT9L/yKNQwUptVR76+xcoECAfkCIFAxOopOQnfEqykjjG3g1g7CLWub2OfMuwf55YlSE1+Oi9AQIeekQXKns+u4AoZUC0HH97GGc4AcxOGU5LpKbP7s0VTj3TE6aB2Y2vo8p6Qg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from SEZPR06MB5576.apcprd06.prod.outlook.com (2603:1096:101:c9::14)
- by SEYPR06MB6829.apcprd06.prod.outlook.com (2603:1096:101:1a7::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9818.33; Tue, 21 Apr
- 2026 07:59:59 +0000
-Received: from SEZPR06MB5576.apcprd06.prod.outlook.com
- ([fe80::24bc:5613:3ffa:cb96]) by SEZPR06MB5576.apcprd06.prod.outlook.com
- ([fe80::24bc:5613:3ffa:cb96%6]) with mapi id 15.20.9818.033; Tue, 21 Apr 2026
- 07:59:59 +0000
-From: LiaoYuanhong-vivo <liaoyuanhong@vivo.com>
-To: ebiggers@kernel.org
-Cc: tytso@mit.edu,
-	jaegeuk@kernel.org,
-	liaoyuanhong@vivo.com,
-	linux-fscrypt@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] fscrypt: add software key support for filesystem-managed data
-Date: Tue, 21 Apr 2026 15:57:17 +0800
-Message-Id: <20260421075717.170840-1-liaoyuanhong@vivo.com>
-X-Mailer: git-send-email 2.34.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: TP0P295CA0054.TWNP295.PROD.OUTLOOK.COM
- (2603:1096:910:3::18) To SEZPR06MB5576.apcprd06.prod.outlook.com
- (2603:1096:101:c9::14)
+	s=arc-20240116; t=1776845875; c=relaxed/simple;
+	bh=KaBz9kmz24MLjxuuycGABAaLrcm88HhScI6crUPgnTY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ipdd5oKsaBKVcMxsU4PjufgPOR2VxjIpAVXYrEE75aplx/j0YVpxr/Xl2rJhtGQectokOZhXl7xLbNd50pW2dcs/uOIpfrE9gyL2ni9ArEsfgfaFGLMSoWl47g/NQQm24NqlQasm/ftY2xbIpDC/lyI6L7yARREtwoWM4xz0Pb0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=dla6Nbl2; arc=pass smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-43d572f7437so3392660f8f.1
+        for <linux-fscrypt@vger.kernel.org>; Wed, 22 Apr 2026 01:17:52 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1776845871; cv=none;
+        d=google.com; s=arc-20240605;
+        b=l0fQFOCwhXwRTLm2NfYhx3XjGSVn7N6EdeGEnCJBn+qJLzSepQwXPXgbXz6Oz37xUh
+         FgBGFkCg0+zU6jpEKGLWSak+20opOjxXEI2wh/qgFExs9dCsjWx1g2EMX4w5LuJjslmr
+         odgNd7sFFg0njMjWiEnq7yURwOaUR25Lgr4KuKHARHgH8Yd8fsj0W9DpKu9Q0jBZDZCN
+         BjJKilEvSmeUKmbxkJw62aSVQMJoXkq0UIUhYYEdU/WAqNn0tCsXPoHZSulEhbb+qcUT
+         9f1Q/EaMo9qrku71Mjla7Ecl3Q5lbQ56Y/GoLSsyifmybxAplBV2BiR6YtzroWTNhWs9
+         EVVg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=Ed8qgQLZgWWqPjz4Cxq94KupWeY98Dp7kKiY+uA66so=;
+        fh=UJEvXiSTbIOKR9Mtr8SjHujq3NzBrDsouk+I/iISXuI=;
+        b=BT50jWLHFvMLzTy5jtTQFaovqpa47em1mAYTKaWGOUzPgkB9DmIXHllU7e6A4jxViq
+         y19BkHkybGIEQJnMduBQ+bXxFlA6M03LD0ppsL2mNqNz0rHACx0k5KHlXw5JuURjeKHg
+         17lVV4M6umVwS7N2vhMJdk0P80xddVdNZZCfVB3CKTaaMJn+I1rjBEFwubCkhFdHOhcn
+         rpUogdX0LYcWBhfSHrSWwbg9KaaSKFdRlm4H7SaKSvb9/+ZHYA456on9YZuGDanntU92
+         MU7I5n3sb7EQ7Inoo2Vn+b/rKwradciKbU1B1obOlOTsbRAniq2LMTydvKjyNry/PowE
+         xyAA==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1776845871; x=1777450671; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ed8qgQLZgWWqPjz4Cxq94KupWeY98Dp7kKiY+uA66so=;
+        b=dla6Nbl2Wn0rRM66GMlaM5HW8Bp/LTpnrbyzhiyJ193cB7rOv/DMyuyY2rx8x6rVOE
+         EsAjAFCTm94vYmOES1Ak2SfHRrx2N0ERHBKg5siy4EaLByq/IeF0AbeipmEAllHYiJ31
+         De5G3tY/t0lImy1Vdv7hmH7rNk6kixyckduYLNhWPYtnVbUqE96ePINcpKfmvMERb2SO
+         A3oIhdfIJiOQ6A7/CKMsmzcVnYaxfs20zuzTKg7y1OVDHP0c9nc0W0jP3qGhbrcuqJcx
+         xnpEt9lIDXat8p7mb/r5BBHoCz7xIe1OpY3hIraW6OhbVV4Vf8NIXk/Fbkmm969wx9kb
+         GhxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1776845871; x=1777450671;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ed8qgQLZgWWqPjz4Cxq94KupWeY98Dp7kKiY+uA66so=;
+        b=RsQx7h/WeabYc/I21qBglhwSbLTmvcQfkB9LDybhJ0SmRlmmR6zEpkan/4PKN6GYo1
+         3WocOGEcOYaZks94w6hW2RF1NE7tVYDYJ3uM5NjxQiJtkv2Vi9cZk0D1pmhGU8mAIDE1
+         CLZCIBEJjFdAxbBCkp2/GnkZwF2kMi6qY6gWxNKMJ0gh/qMvwIBZbXSHLISY3gasRUcK
+         OG5w8Pp51K9nDHGLLAahbm8TsKw6kIfURvMfvxWCe1J2k9+/6tPkmurVRgTtA/0Uwm+f
+         T2e+jZykh+NbyvJupNlEcF6zF5zzEpaY2NT4yliT+XB5gmwjzhzbw5Xu4g7uLlh+XeTB
+         roEg==
+X-Forwarded-Encrypted: i=1; AFNElJ/eTf87fIjKE2yeqdCyON97uUIdXr77IWIYeMaPlZksNW7c6wY286Kxi3mevvNYCkhO8bK3bC/Wzy3UH31L@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx7a2XaPZEPCIhzFzmLQGla/bg5Y3hmyE0bYt5/t9kiQRr0jjER
+	wX96RRnEVNr41UVjr9gndJZtKJOpJc+mE6pPL1HvuUeoRwAMPs5xEPVEme1D9VWBSLiJgTiuDII
+	YLGbwGPh2F4JMmKLXUOCF6aI+ZuALm6W8yd2onfA0cg==
+X-Gm-Gg: AeBDieuZfpVks2Dpl+Vr2A279vZIctHKmUnkoWDplMedrSgdFTZ4zCYyW8ZYR6JF6ak
+	+4H6aJzGHoXfLuA13Oz7M/J5HgxWJv/uPQ4l0s0Nh3aMRL8qefwwY0+I4c8purdwB8Ba8VHkkmy
+	6XdYYnGiSm6pqNoBJLZbkEqO2Zztvpb338AOox4qhFLfcSM/AQFP22SuiJFGMinLXIdI2nWe/hC
+	8PpLY2bmmFQUcPC57bN8VYLxJQOsosjiazarbSPkzHHvRzM8+v97D6NyTFeHbYSHBczXGA+xbRx
+	VMoIffNDElxcLSCZAEwIAEIADxR4PM5WdJD9Xcof7kbH7qgjefo0OCO7q1oH8u13BMThwPMox8I
+	z778oG3ZPAdQINnY=
+X-Received: by 2002:a05:6000:2909:b0:43d:7403:4b65 with SMTP id
+ ffacd0b85a97d-43fe3dbee20mr32442989f8f.6.1776845871298; Wed, 22 Apr 2026
+ 01:17:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SEZPR06MB5576:EE_|SEYPR06MB6829:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1b536c0f-c348-4d18-acb8-08de9f7bfbed
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|366016|52116014|1800799024|38350700014|56012099003|18002099003;
-X-Microsoft-Antispam-Message-Info:
-	23esdVWheb7XoeaBrKZZYPqGee0s9uZbeyg2+G4kLkzkv7+LrQ6bOQBEcJ+jpgVZbMCRE4VSzYcVqp3tWEKGaUmRO/vtDRt6S3W3A+9Enl6xuCQlMhRBdTG8oL7b01Z416ucqL26cXSlBoWW31PFVzE4kp7DQeLiLVNKJ3AQYBPt/g2LBmus5/juCF11qa+v+McPWdyoEL3fSubXuPS4j4g7XfsxkJggfVMjWKOrjBfjBI6ZmFJLCMg47KH11qRvzgUhZWTJN4Uh/zH/sXNstISmtWB9u5iDQkV32ugZz/TV1Oq7Qtgq1FnJpuXs3N4eLIjsO51T/Ci0Loy9iuYKwctcpVH4wmocZaL4KoyE2dp08i3F767bDTdfGfBVU6O4ztf7Gsb3W8HbkOu4g0CQoQoqDIXawQpqNOSD/ZOaxaSYc9kqQxATnfzFdkseg9NmZZ4Y7Z7kTHT5VzEjVtivBBBErH7alD5odLiAfU4eCGTKxzlaPfAf0lnH5ypBVqFyTBZFvuSFPqTlQNkpP0Rh8Gi6IpHhlyDHaDi8EQCzb4xUWW4hvyOuC9Yv2LDW1CCC0Yd32EwvJ5QwajMvoTjaEemaGFRMF2s4rP3BuMH3BsB3VayneK2KfjSxyAnsuaCjEdpfarogStJV82/Btim7+1Wk4oTKi6fETTtoDdUiDum3CcRgwZCessvWwgzAuo8CMa3c5iqOpT1/LYgD89/RG5Qc6DRdMNwLGLv5H30EvASfG6kCADAHyzxrmxwCWwcP98929VWJxux08/mb8GeDR6I5wsFXvXdIoSpTBv5rYpk=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEZPR06MB5576.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(52116014)(1800799024)(38350700014)(56012099003)(18002099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?UjI9ESffM74EqwcRteCHx/VX0R/RxLv1rx2/0HPKbcXWCFa1be1GqKJkp0Ln?=
- =?us-ascii?Q?rE99yWsqbdx9Ew8xz0lJwU0/GTqTnM8AwAhLHpDkKmJFkJ4y5x+7zvAs8L0w?=
- =?us-ascii?Q?aR+uzLBHvNTcjV3nNYGGtwigN6qS47r/h3FB/IQi6uOnn9Bex06qQUrNgWx1?=
- =?us-ascii?Q?ZkOjkapVao8r4frdJkWJ2yFw5W/fN6hYoFmKpNBVUhYO7NCqZbvreknkM3/C?=
- =?us-ascii?Q?p/mnrSfBpo6JE8KS7XHxZIMpQ6aU8iddR5YbcBVYpsQc+e7M0SXwSkDMasAP?=
- =?us-ascii?Q?meqF9Z0BO5Mc/2oDOkCSuHvEUB3DXfh96SkTU7eDetOpFSIAcGQfkI6vK0Bf?=
- =?us-ascii?Q?fqu9NyeJg0a6YBBq5o2r2ZHsb92zbJCo4Nh8Ob6dFqKzVAwAmUqYvKCtECo9?=
- =?us-ascii?Q?EKAuGn/dy63YPjPJTCbGZqP5dh8DMip+OTFzgLqNQk2+0HMiFnHCPABSFioy?=
- =?us-ascii?Q?OIyK5dAgF0PfiCLBEDUwqGf6ekhJv2zeKiaxSwVRlmuWZ1+OBwmTUrQUO22T?=
- =?us-ascii?Q?34kK+24C4cA2JhyEhLf1sQye/HXLUCJIjfH/kV4Q5mPkpOfs+ErFC0q75bKU?=
- =?us-ascii?Q?pM3D1XhnrwZ+nUXU2CojAJ9yNpZ4l7Aef2qePGpuoEU6Q9LCcIEbbesGj0jx?=
- =?us-ascii?Q?EFzng42l9vrq1Ay8tWXQJJ9R8mlYNyhIcO/xym8NyQ1ZR29+jTCd5mLvfJxx?=
- =?us-ascii?Q?e6IUVq2o1hgir2tUcaM1QJocKYsIsc0/nhl3W0bmc7KNe3cPuc9yiDL/dd4/?=
- =?us-ascii?Q?QB4m4FG96JUmcRieORDYxzfnGD2xSLIMv0V0/fiTCCWVE+OLQgjMAg8UaGA4?=
- =?us-ascii?Q?1GRInH5+VdcjUOD6s0IgPkFeB0pjLaicbyUxR4vW3VlO+T3Xrhw0xL887mTL?=
- =?us-ascii?Q?d+fz65ocGceKHjgY71nYdAZgZ8saGfaMv1tbjpiF5Ey2IDGvUFocXzFTzhR+?=
- =?us-ascii?Q?rfJN1eIALrvWSUEoLfO2hyOSL18qNRZJ6WBkHUm9uZ/rfPv2DaftLTyeXHll?=
- =?us-ascii?Q?fcAi/6Nb8vUv2bWc/4eYT1e2Fr8//W8AVIGZrjwYdFxR/NQ2K03qMID0aEEi?=
- =?us-ascii?Q?U3mW+2RfqFIKALIyI0lUNm1+lUWAILkl/IVB5ge8IVLeEHYfMcV3qKJdFkJL?=
- =?us-ascii?Q?0Swfm5V/TDFOleCZ2iJ5qLShn6o00MvYUfP19JsJsdEHexsiVpj7GPa0ZJx7?=
- =?us-ascii?Q?rYT6LNfFGrF2Ot8as+dOwKyp5WHvIg3dvpfXc4AlLVcyYNE8R9MgbnpEkcQZ?=
- =?us-ascii?Q?bUaM3Ur1juuPAd6wpXnO1TgNaFmQiv31EvCWpjL+s35jnh1UCT2bFlEbsn48?=
- =?us-ascii?Q?rX5C+0dEHjDXMdZ+9g/HtxSv0j9El1uMat/uKIzkiFbsIgHjZqaTHZndQP/6?=
- =?us-ascii?Q?wjEQcTzEOYM4LY9q+3Q0qkbZlLwKpxu/wadaFMY9stOandSn+GM1dX3Ct8W0?=
- =?us-ascii?Q?QThaN1AOmfXoLWyf72Sv7lW1Mx5xvLjeLCLc1KZYc3929cI1hpqcCOMrvzEI?=
- =?us-ascii?Q?A5XeChS4TknO+lAsh/WkhqSme0pFRyxk5poxPwp50Ql8VCeRWbKIYKA0FSPR?=
- =?us-ascii?Q?JOeTTFlh0S9GAugUBdBWPFWJIEn0U5ULSURwDCiRjDI5+qM8fExUQuhNoOER?=
- =?us-ascii?Q?M412PUozG1qBH+N04m/mNE6UK6mMZgeQKXIYPgosdP6WUwDCOX8qSd+fpw9M?=
- =?us-ascii?Q?YYAQxRYfmYjBJmZzJdmXCoI0BK184HGN1PK5lbESsamRaN36Qra3jQEw/4u/?=
- =?us-ascii?Q?1JuhhsPZzg=3D=3D?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1b536c0f-c348-4d18-acb8-08de9f7bfbed
-X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB5576.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Apr 2026 07:59:59.2096
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iWmjIiZiDhsVEDiSIpX2U5gOlkTzA9qrJuWkol2HHCb/W08xLA3RPFVBmFxWEM3XLpiEwDJT//0JNRo0BkI0RA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR06MB6829
-X-Spamd-Result: default: False [1.34 / 15.00];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[vivo.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[vivo.com:s=selector2];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+References: <20260206182336.1397715-1-neelx@suse.com> <20260206182336.1397715-2-neelx@suse.com>
+ <20260221221153.GA2123@quark>
+In-Reply-To: <20260221221153.GA2123@quark>
+From: Daniel Vacek <neelx@suse.com>
+Date: Wed, 22 Apr 2026 10:17:40 +0200
+X-Gm-Features: AQROBzDRf6dW9hhOiPElzRm0HdywL3iGKud30yy3mnFfjH0N645a-533K3fMPn0
+Message-ID: <CAPjX3FficsLf2QXFU70sR6PN7h8rj5opz_wntLm+Acd3YLvu+A@mail.gmail.com>
+Subject: Re: [PATCH v6 01/43] fscrypt: add per-extent encryption support
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, "Theodore Y. Ts'o" <tytso@mit.edu>, 
+	Jaegeuk Kim <jaegeuk@kernel.org>, Jens Axboe <axboe@kernel.dk>, David Sterba <dsterba@suse.com>, 
+	linux-block@vger.kernel.org, linux-fscrypt@vger.kernel.org, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-1551-lists,linux-fscrypt=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[vivo.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	RCPT_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[liaoyuanhong@vivo.com,linux-fscrypt@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-1552-lists,linux-fscrypt=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[suse.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	MISSING_XM_UA(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[neelx@suse.com,linux-fscrypt@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
 	NEURAL_HAM(-0.00)[-1.000];
-	TO_DN_NONE(0.00)[];
 	TAGGED_RCPT(0.00)[linux-fscrypt];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 07327437E98
+	RCPT_COUNT_SEVEN(0.00)[11];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid]
+X-Rspamd-Queue-Id: A500C44368C
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Some filesystems store small file contents in filesystem-managed regions
-rather than in regular data blocks submitted through bios. One example is
-F2FS inline_data, where the payload is stored inside the inode node block.
-Such regions still need to follow the inode's fscrypt contents encryption
-semantics, but they cannot rely on blk-crypto because they are not
-submitted as standalone file data bios.
+On Sat, 21 Feb 2026 at 23:11, Eric Biggers <ebiggers@kernel.org> wrote:
+> I lost all my original comments on this patch due to a computer crash,
+> so apologies if this sounds a bit rushed.  (I should know better than to
+> run the latest mainline kernel.  Would be nice if kernel developers
+> focused on quality over new features...)
 
-As a result, when blk-crypto is enabled, mechanisms such as inline_data are
-typically disabled outright. However, it is desirable to re-enable such
-space-saving features while still preserving the required encryption
-semantics.
+Oh, and I somehow missed this email in my mailbox :-/
+I'm sorry about the late reply.
 
-To support this, add fscrypt_crypt_fs_layer_page_inplace(), a helper that
-encrypts or decrypts a caller-provided page region in place using
-filesystem-layer software crypto and the inode's contents encryption
-policy.
+> > +/*
+> > + * fscrypt_extent_context - the encryption context of an extent
+> > + *
+> > + * This is the on-disk information stored for an extent.  The nonce is used as a
+> > + * KDF input in conjuction with the inode context to derive a per-extent key for
+> > + * encryption.
+> > + *
+> > + * With the current implementation, master_key_identifier and encryption mode
+> > + * must match the inode context.  These are here for future expansion where we
+> > + * may want the option of mixing different keys and encryption modes for the
+> > + * same file.
+> > + */
+>
+> Above comment should document that this is used only when the filesystem
+> uses per-extent encryption
 
-This support is limited to v2 encryption policies. v1 policies do not
-provide the key setup model used here, so this path returns -EOPNOTSUPP for
-v1. Hardware-wrapped keys are not supported either, since deriving a
-software skcipher key requires software-accessible key material, which
-conflicts with the hardware-wrapped key model.
+Good point. I'll amend that.
 
-When the inode's normal contents path uses blk-crypto, fscrypt may not have
-a software skcipher key prepared for the inode contents key. Add an
-optional filesystem-layer prepared key to fscrypt_inode_info. This key is
-derived using the same v2 contents-encryption KDF as the normal contents
-key, but is prepared as a software skcipher key and is used only by the new
-filesystem-layer helper.
+> > +/**
+> > + * fscrypt_set_bio_crypt_ctx_from_extent() - prepare a file contents bio for
+> > + *                                        inline crypto with extent
+> > + *                                        encryption
+> > + * @bio: a bio which will eventually be submitted to the file
+> > + * @ei: the extent's crypto info
+> > + * @first_lblk: the first file logical block number in the I/O
+>
+> first_lblk probably should be 'pos' to match Christoph's pending patches
+> (https://lore.kernel.org/linux-fscrypt/20260218061531.3318130-1-hch@lst.de).
+> Either way, it also needs to be correctly documented to be an offset
+> into the extent, not the file.
 
-Signed-off-by: LiaoYuanhong-vivo <liaoyuanhong@vivo.com>
----
- fs/crypto/crypto.c          |  89 ++++++++++++++++++++++
- fs/crypto/fscrypt_private.h |  20 +++++
- fs/crypto/keysetup.c        | 143 ++++++++++++++++++++++++++++++++----
- include/linux/fscrypt.h     |  38 ++++++++++
- 4 files changed, 277 insertions(+), 13 deletions(-)
+Noted, I'll clean it up for the next version.
 
-diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
-index 570a2231c945..63a5e0ad957c 100644
---- a/fs/crypto/crypto.c
-+++ b/fs/crypto/crypto.c
-@@ -144,6 +144,95 @@ int fscrypt_crypt_data_unit(const struct fscrypt_inode_info *ci,
- 	return err;
- }
- 
-+static const struct fscrypt_prepared_key *
-+fscrypt_fs_layer_key(const struct fscrypt_inode_info *ci)
-+{
-+#ifdef CONFIG_FS_ENCRYPTION_INLINE_CRYPT
-+	if (!fscrypt_fs_layer_key_prepared(ci))
-+		return NULL;
-+	return &ci->ci_fs_layer_key;
-+#else
-+	return NULL;
-+#endif
-+}
-+
-+static int fscrypt_crypt_fs_layer_page_prepare(const struct inode *inode,
-+				    const struct fscrypt_inode_info **ci_ret,
-+				    const struct fscrypt_prepared_key **prep_key_ret)
-+{
-+	struct fscrypt_inode_info *ci = fscrypt_get_inode_info(inode);
-+	const struct fscrypt_prepared_key *prep_key;
-+	int err;
-+
-+	if (!ci)
-+		return -ENOKEY;
-+
-+	err = fscrypt_prepare_fs_layer_key(ci);
-+	if (err)
-+		return err;
-+	prep_key = fscrypt_fs_layer_key(ci);
-+	if (!prep_key || !prep_key->tfm)
-+		return -ENOKEY;
-+
-+	*ci_ret = ci;
-+	*prep_key_ret = prep_key;
-+	return 0;
-+}
-+
-+static int
-+fscrypt_crypt_page_inplace_with_key(const struct fscrypt_inode_info *ci,
-+				    const struct fscrypt_prepared_key *prep_key,
-+				    struct page *page, unsigned int len,
-+				    unsigned int offs, u64 dun, bool encrypt)
-+{
-+	struct crypto_sync_skcipher *tfm = prep_key->tfm;
-+
-+	SYNC_SKCIPHER_REQUEST_ON_STACK(req, tfm);
-+	union fscrypt_iv iv;
-+	struct scatterlist sg;
-+	int err;
-+
-+	if (WARN_ON_ONCE(len <= 0))
-+		return -EINVAL;
-+	if (WARN_ON_ONCE(len % FSCRYPT_CONTENTS_ALIGNMENT != 0))
-+		return -EINVAL;
-+
-+	fscrypt_generate_iv(&iv, dun, ci);
-+
-+	skcipher_request_set_callback(req, CRYPTO_TFM_REQ_MAY_BACKLOG |
-+				       CRYPTO_TFM_REQ_MAY_SLEEP, NULL, NULL);
-+	sg_init_table(&sg, 1);
-+	sg_set_page(&sg, page, len, offs);
-+	skcipher_request_set_crypt(req, &sg, &sg, len, &iv);
-+	if (encrypt)
-+		err = crypto_skcipher_encrypt(req);
-+	else
-+		err = crypto_skcipher_decrypt(req);
-+	if (err)
-+		fscrypt_err(ci->ci_inode,
-+			    "%scryption failed for data unit %llu: %d",
-+			    (encrypt ? "En" : "De"), dun, err);
-+	return err;
-+}
-+
-+int fscrypt_crypt_fs_layer_page_inplace(const struct inode *inode,
-+					struct page *page, unsigned int len,
-+					unsigned int offs, u64 dun,
-+					bool encrypt)
-+{
-+	const struct fscrypt_inode_info *ci;
-+	const struct fscrypt_prepared_key *prep_key;
-+	int err;
-+
-+	err = fscrypt_crypt_fs_layer_page_prepare(inode, &ci, &prep_key);
-+	if (err)
-+		return err;
-+
-+	return fscrypt_crypt_page_inplace_with_key(ci, prep_key, page, len, offs,
-+					       dun, encrypt);
-+}
-+EXPORT_SYMBOL_GPL(fscrypt_crypt_fs_layer_page_inplace);
-+
- /**
-  * fscrypt_encrypt_pagecache_blocks() - Encrypt data from a pagecache folio
-  * @folio: the locked pagecache folio containing the data to encrypt
-diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-index 8d3c278a7591..760e781f3921 100644
---- a/fs/crypto/fscrypt_private.h
-+++ b/fs/crypto/fscrypt_private.h
-@@ -266,6 +266,13 @@ struct fscrypt_inode_info {
- 	 * the traditional filesystem-layer encryption.
- 	 */
- 	u8 ci_inlinecrypt : 1;
-+
-+	/*
-+	 * Optional filesystem-layer software key for data regions that cannot
-+	 * be handled by blk-crypto.
-+	 */
-+	struct fscrypt_prepared_key ci_fs_layer_key;
-+	u8 ci_owns_fs_layer_key : 1;
- #endif
- 
- 	/* True if ci_dirhash_key is initialized */
-@@ -323,6 +330,18 @@ struct fscrypt_inode_info {
- 	u8 ci_nonce[FSCRYPT_FILE_NONCE_SIZE];
- };
- 
-+#ifdef CONFIG_FS_ENCRYPTION_INLINE_CRYPT
-+static inline bool
-+fscrypt_fs_layer_key_prepared(const struct fscrypt_inode_info *ci)
-+{
-+	/*
-+	 * Pairs with the smp_store_release() in
-+	 * fscrypt_prepare_software_key().
-+	 */
-+	return smp_load_acquire(&ci->ci_fs_layer_key.tfm);
-+}
-+#endif
-+
- typedef enum {
- 	FS_DECRYPT = 0,
- 	FS_ENCRYPT,
-@@ -722,6 +741,7 @@ void fscrypt_destroy_prepared_key(struct super_block *sb,
- 
- int fscrypt_set_per_file_enc_key(struct fscrypt_inode_info *ci,
- 				 const u8 *raw_key);
-+int fscrypt_prepare_fs_layer_key(struct fscrypt_inode_info *ci);
- 
- void fscrypt_derive_dirhash_key(struct fscrypt_inode_info *ci,
- 				const struct fscrypt_master_key *mk);
-diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index ce327bfdada4..3a68175aa664 100644
---- a/fs/crypto/keysetup.c
-+++ b/fs/crypto/keysetup.c
-@@ -144,6 +144,130 @@ fscrypt_allocate_skcipher(struct fscrypt_mode *mode, const u8 *raw_key,
- 	return ERR_PTR(err);
- }
- 
-+static int fscrypt_prepare_software_key(struct fscrypt_prepared_key *prep_key,
-+					const u8 *raw_key,
-+					const struct fscrypt_inode_info *ci)
-+{
-+	struct crypto_sync_skcipher *tfm;
-+
-+	tfm = fscrypt_allocate_skcipher(ci->ci_mode, raw_key, ci->ci_inode);
-+	if (IS_ERR(tfm))
-+		return PTR_ERR(tfm);
-+	/*
-+	 * Pairs with fscrypt_is_key_prepared() and
-+	 * fscrypt_fs_layer_key_prepared().
-+	 */
-+	smp_store_release(&prep_key->tfm, tfm);
-+	return 0;
-+}
-+
-+#ifdef CONFIG_FS_ENCRYPTION_INLINE_CRYPT
-+static int
-+fscrypt_derive_v2_fs_layer_key(const struct fscrypt_inode_info *ci,
-+			       const struct fscrypt_master_key *mk,
-+			       u8 *raw_key)
-+{
-+	const struct super_block *sb = ci->ci_inode->i_sb;
-+	const u8 mode_num = ci->ci_mode - fscrypt_modes;
-+	u8 hkdf_info[sizeof(mode_num) + sizeof(sb->s_uuid)];
-+	u8 hkdf_context;
-+	unsigned int hkdf_infolen = 0;
-+	bool include_fs_uuid = false;
-+
-+	if (ci->ci_policy.v2.flags & FSCRYPT_POLICY_FLAG_DIRECT_KEY) {
-+		hkdf_context = HKDF_CONTEXT_DIRECT_KEY;
-+	} else if (ci->ci_policy.v2.flags & FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64) {
-+		hkdf_context = HKDF_CONTEXT_IV_INO_LBLK_64_KEY;
-+		include_fs_uuid = true;
-+	} else if (ci->ci_policy.v2.flags & FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32) {
-+		hkdf_context = HKDF_CONTEXT_IV_INO_LBLK_32_KEY;
-+		include_fs_uuid = true;
-+	} else {
-+		fscrypt_hkdf_expand(&mk->mk_secret.hkdf,
-+				    HKDF_CONTEXT_PER_FILE_ENC_KEY,
-+				    ci->ci_nonce, FSCRYPT_FILE_NONCE_SIZE,
-+				    raw_key, ci->ci_mode->keysize);
-+		return 0;
-+	}
-+
-+	/* Keep this per-mode KDF in sync with setup_per_mode_enc_key(). */
-+	BUILD_BUG_ON(sizeof(mode_num) != 1);
-+	BUILD_BUG_ON(sizeof(sb->s_uuid) != 16);
-+	BUILD_BUG_ON(sizeof(hkdf_info) != 17);
-+	hkdf_info[hkdf_infolen++] = mode_num;
-+	if (include_fs_uuid) {
-+		memcpy(&hkdf_info[hkdf_infolen], &sb->s_uuid,
-+		       sizeof(sb->s_uuid));
-+		hkdf_infolen += sizeof(sb->s_uuid);
-+	}
-+	fscrypt_hkdf_expand(&mk->mk_secret.hkdf, hkdf_context, hkdf_info,
-+			    hkdf_infolen, raw_key, ci->ci_mode->keysize);
-+	return 0;
-+}
-+
-+static int
-+fscrypt_derive_fs_layer_key(const struct fscrypt_inode_info *ci,
-+			    const struct fscrypt_master_key *mk,
-+			    u8 *raw_key)
-+{
-+	switch (ci->ci_policy.version) {
-+	case FSCRYPT_POLICY_V1:
-+		return -EOPNOTSUPP;
-+	case FSCRYPT_POLICY_V2:
-+		return fscrypt_derive_v2_fs_layer_key(ci, mk, raw_key);
-+	default:
-+		WARN_ON_ONCE(1);
-+		return -EINVAL;
-+	}
-+}
-+
-+int fscrypt_prepare_fs_layer_key(struct fscrypt_inode_info *ci)
-+{
-+	struct fscrypt_master_key *mk = ci->ci_master_key;
-+	u8 raw_key[FSCRYPT_MAX_RAW_KEY_SIZE];
-+	int err = 0;
-+
-+	if (!fscrypt_using_inline_encryption(ci))
-+		return -EOPNOTSUPP;
-+	if (fscrypt_fs_layer_key_prepared(ci))
-+		return 0;
-+	if (!mk)
-+		return -EOPNOTSUPP;
-+
-+	down_read(&mk->mk_sem);
-+	if (!mk->mk_present) {
-+		err = -ENOKEY;
-+		goto out_unlock_key;
-+	}
-+	if (mk->mk_secret.is_hw_wrapped) {
-+		err = -EOPNOTSUPP;
-+		goto out_unlock_key;
-+	}
-+
-+	mutex_lock(&fscrypt_mode_key_setup_mutex);
-+	/* Another thread may have prepared the fs-layer key while we waited. */
-+	if (fscrypt_fs_layer_key_prepared(ci))
-+		goto out_unlock_mutex;
-+	err = fscrypt_derive_fs_layer_key(ci, mk, raw_key);
-+	if (!err) {
-+		ci->ci_owns_fs_layer_key = true;
-+		err = fscrypt_prepare_software_key(&ci->ci_fs_layer_key,
-+						   raw_key, ci);
-+	}
-+	memzero_explicit(raw_key, ci->ci_mode->keysize);
-+out_unlock_mutex:
-+	mutex_unlock(&fscrypt_mode_key_setup_mutex);
-+out_unlock_key:
-+	up_read(&mk->mk_sem);
-+	return err;
-+}
-+#else
-+int fscrypt_prepare_fs_layer_key(struct fscrypt_inode_info *ci)
-+{
-+	return -EOPNOTSUPP;
-+}
-+#endif
-+
- /*
-  * Prepare the crypto transform object or blk-crypto key in @prep_key, given the
-  * raw key, encryption mode (@ci->ci_mode), flag indicating which encryption
-@@ -153,24 +277,12 @@ fscrypt_allocate_skcipher(struct fscrypt_mode *mode, const u8 *raw_key,
- int fscrypt_prepare_key(struct fscrypt_prepared_key *prep_key,
- 			const u8 *raw_key, const struct fscrypt_inode_info *ci)
- {
--	struct crypto_sync_skcipher *tfm;
--
- 	if (fscrypt_using_inline_encryption(ci))
- 		return fscrypt_prepare_inline_crypt_key(prep_key, raw_key,
- 							ci->ci_mode->keysize,
- 							false, ci);
- 
--	tfm = fscrypt_allocate_skcipher(ci->ci_mode, raw_key, ci->ci_inode);
--	if (IS_ERR(tfm))
--		return PTR_ERR(tfm);
--	/*
--	 * Pairs with the smp_load_acquire() in fscrypt_is_key_prepared().
--	 * I.e., here we publish ->tfm with a RELEASE barrier so that
--	 * concurrent tasks can ACQUIRE it.  Note that this concurrency is only
--	 * possible for per-mode keys, not for per-file keys.
--	 */
--	smp_store_release(&prep_key->tfm, tfm);
--	return 0;
-+	return fscrypt_prepare_software_key(prep_key, raw_key, ci);
- }
- 
- /* Destroy a crypto transform object and/or blk-crypto key. */
-@@ -558,6 +670,11 @@ static void put_crypt_info(struct fscrypt_inode_info *ci)
- 	else if (ci->ci_owns_key)
- 		fscrypt_destroy_prepared_key(ci->ci_inode->i_sb,
- 					     &ci->ci_enc_key);
-+#ifdef CONFIG_FS_ENCRYPTION_INLINE_CRYPT
-+	if (ci->ci_owns_fs_layer_key)
-+		fscrypt_destroy_prepared_key(ci->ci_inode->i_sb,
-+					     &ci->ci_fs_layer_key);
-+#endif
- 
- 	mk = ci->ci_master_key;
- 	if (mk) {
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index 54712ec61ffb..ede451614461 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -344,8 +344,38 @@ static inline void fscrypt_prepare_dentry(struct dentry *dentry,
- /* crypto.c */
- void fscrypt_enqueue_decrypt_work(struct work_struct *);
- 
-+/**
-+ * fscrypt_crypt_fs_layer_page_inplace() - encrypt or decrypt one page region
-+ *                                         in place
-+ * @inode: encrypted inode whose contents encryption policy is used
-+ * @page: page containing the region to encrypt or decrypt
-+ * @len: length of the region in bytes
-+ * @offs: byte offset of the region within @page
-+ * @dun: data unit number to use as the IV/index
-+ * @encrypt: true to encrypt, false to decrypt
-+ *
-+ * Encrypt or decrypt @len bytes in @page at @offs using @inode's contents
-+ * encryption semantics, but always using filesystem-layer software crypto.
-+ * If @inode's normal contents path uses blk-crypto, this may require fscrypt
-+ * to derive and prepare an additional filesystem-layer software key.
-+ *
-+ * This is intended for filesystem-managed data regions that are not submitted
-+ * through a bio and therefore cannot be encrypted or decrypted by blk-crypto.
-+ * The caller must ensure that @offs and @len stay within @page and satisfy the
-+ * block-size requirements of @inode's encryption mode.
-+ *
-+ * Return: 0 on success, -EINVAL for invalid arguments, -ENOKEY if the inode's
-+ * key is unavailable, -EOPNOTSUPP if filesystem-layer software crypto is
-+ * unsupported for this inode/key, or another negative error from the crypto
-+ * API.
-+ */
-+int fscrypt_crypt_fs_layer_page_inplace(const struct inode *inode,
-+					struct page *page, unsigned int len,
-+					unsigned int offs, u64 dun,
-+					bool encrypt);
- struct page *fscrypt_encrypt_pagecache_blocks(struct folio *folio,
- 		size_t len, size_t offs, gfp_t gfp_flags);
-+
- int fscrypt_encrypt_block_inplace(const struct inode *inode, struct page *page,
- 				  unsigned int len, unsigned int offs,
- 				  u64 lblk_num);
-@@ -541,6 +571,14 @@ static inline int fscrypt_decrypt_block_inplace(const struct inode *inode,
- 	return -EOPNOTSUPP;
- }
- 
-+static inline int
-+fscrypt_crypt_fs_layer_page_inplace(const struct inode *inode,
-+				    struct page *page, unsigned int len,
-+				    unsigned int offs, u64 dun, bool encrypt)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
- static inline bool fscrypt_is_bounce_page(struct page *page)
- {
- 	return false;
--- 
-2.34.1
+> > + * If the contents of the file should be encrypted (or decrypted) with inline
+> > + * encryption, then assign the appropriate encryption context to the bio.
+>
+> Above comment was copy-pasted and is misleading in its new context.
+> This function assigns the encryption context unconditionally.
 
+With the above cleanup I rather ended up fixing this in the code. For
+some reason, the condition was added later in the series in the
+btrfs-specific helper code which I removed and I put the condition
+right here.
+
+> > + * Normally the bio should be newly allocated (i.e. no pages added yet), as
+> > + * otherwise fscrypt_mergeable_bio() won't work as intended.
+>
+> Likewise, copy-pasted comment that is misleading in the new context.
+> It should refer to fscrypt_mergeable_extent_bio().
+
+Yeah, I also noticed. Agreed and fixed.
+
+> > +void fscrypt_set_bio_crypt_ctx_from_extent(struct bio *bio,
+> > +                                        const struct fscrypt_extent_info *ei,
+> > +                                        u64 first_lblk, gfp_t gfp_mask)
+> > +{
+> > +     u64 dun[BLK_CRYPTO_DUN_ARRAY_SIZE] = { first_lblk };
+>
+> Above needs to calculate the DUN correctly when the data unit size is
+> less than the file logical block size, or else the combination of
+> sub-block data units and per-extent encryption needs to be explicitly
+> not supported.  Probably just the latter for now (it can be enforced by
+> fscrypt_supported_v2_policy()).
+
+With the above cleanup I replaced `first_lblk` with `pos >>
+key->data_unit_size_bits`.
+Though this still doesn't look endian-safe to me.
+
+Note, per-extent encryption is only supported with the v2 policy.
+
+> > +/**
+> > + * fscrypt_mergeable_extent_bio() - test whether data can be added to a bio
+> > + * @bio: the bio being built up
+> > + * @ei: the fscrypt_extent_info for this extent
+> > + * @next_lblk: the next file logical block number in the I/O
+> > + *
+> > + * When building a bio which may contain data which should undergo inline
+> > + * encryption (or decryption) via fscrypt, filesystems should call this function
+> > + * to ensure that the resulting bio contains only contiguous data unit numbers.
+> > + * This will return false if the next part of the I/O cannot be merged with the
+> > + * bio because either the encryption key would be different or the encryption
+> > + * data unit numbers would be discontiguous.
+> > + *
+> > + * fscrypt_set_bio_crypt_ctx_from_extent() must have already been called on the
+> > + * bio.
+> > + *
+> > + * This function isn't required in cases where crypto-mergeability is ensured in
+> > + * another way, such as I/O targeting only a single file (and thus a single key)
+> > + * combined with fscrypt_limit_io_blocks() to ensure DUN contiguity.
+> > + *
+> > + * Return: true iff the I/O is mergeable
+> > + */
+> > +bool fscrypt_mergeable_extent_bio(struct bio *bio,
+> > +                               const struct fscrypt_extent_info *ei,
+> > +                               u64 next_lblk)
+> > +{
+> > +     const struct bio_crypt_ctx *bc = bio->bi_crypt_context;
+> > +     u64 next_dun[BLK_CRYPTO_DUN_ARRAY_SIZE] = { next_lblk };
+> > +
+> > +     if (!ei)
+> > +             return true;
+> > +     if (!bc)
+> > +             return true;
+> > +
+> > +     /*
+> > +      * Comparing the key pointers is good enough, as all I/O for each key
+> > +      * uses the same pointer.  I.e., there's currently no need to support
+> > +      * merging requests where the keys are the same but the pointers differ.
+> > +      */
+> > +     if (bc->bc_key != ei->prep_key.blk_key)
+> > +             return false;
+> > +
+> > +     return bio_crypt_dun_is_contiguous(bc, bio->bi_iter.bi_size, next_dun);
+> > +}
+> > +EXPORT_SYMBOL_GPL(fscrypt_mergeable_extent_bio);
+>
+> Similar to fscrypt_set_bio_crypt_ctx_from_extent().  The copy-pasted
+> comment needs to be updated to remove no-longer-relevant information
+> specific to per-file encryption and correctly reflect per-extent
+> encryption.  The DUN needs to be calculated correctly for sub-block data
+> units or else the combination of the two needs to be unsupported.
+
+The DUN is fixed as per above. Regarding the comment, it looks quite
+valid to me. What exactly would you like to change?
+
+> > +static struct fscrypt_extent_info *
+> > +setup_extent_info(struct inode *inode, const u8 nonce[FSCRYPT_FILE_NONCE_SIZE])
+> > +{
+> > +     struct fscrypt_extent_info *ei;
+> > +     struct fscrypt_inode_info *ci;
+> > +     struct fscrypt_master_key *mk;
+> > +     u8 derived_key[FSCRYPT_MAX_RAW_KEY_SIZE];
+> > +     int err;
+> > +
+> > +     ci = *fscrypt_inode_info_addr(inode);
+> > +     mk = ci->ci_master_key;
+> > +     if (WARN_ON_ONCE(!mk))
+> > +             return ERR_PTR(-ENOKEY);
+> > +
+> > +     ei = kmem_cache_zalloc(fscrypt_extent_info_cachep, GFP_KERNEL);
+> > +     if (!ei)
+> > +             return ERR_PTR(-ENOMEM);
+> > +
+> > +     refcount_set(&ei->refs, 1);
+> > +     memcpy(ei->nonce, nonce, FSCRYPT_FILE_NONCE_SIZE);
+> > +     ei->sb = inode->i_sb;
+> > +
+> > +     down_read(&mk->mk_sem);
+> > +     /*
+> > +      * We specifically don't check ->mk_present here because if the inode is
+> > +      * open and has a reference on the master key then it should be
+> > +      * available for us to use.
+> > +      */
+>
+> Above comment should be reworded to clarify that it is expected for
+> ->mk_present to be either true or false here.  As-is, it can be
+> interpreted as meaning that checking ->mk_present is unnecessary because
+> it is guaranteed to be true.
+
+OK, I'll state that explicitly.
+
+> The comment above struct fscrypt_master_key (which documents the
+> different states the master key can be in) also needs to be updated to
+> document that with filesystems that use per-extent encryption,
+> ->mk_secret isn't wiped when the key is in the incompletely-removed
+> state (and why that needs to be the case).
+
+Right. I'll amend this in the respective patch.
+
+> > +/**
+> > + * fscrypt_prepare_new_extent() - prepare to create a new extent for a file
+> > + * @inode: the possibly-encrypted inode
+> > + *
+> > + * If the inode is encrypted, setup the fscrypt_extent_info for a new extent.
+> > + * This will include the nonce and the derived key necessary for the extent to
+> > + * be encrypted.  This is only meant to be used with inline crypto and on inodes
+> > + * that need their contents encrypted.
+> > + *
+> > + * This doesn't persist the new extents encryption context, this is done later
+> > + * by calling fscrypt_set_extent_context().
+> > + *
+> > + * Return: The newly allocated fscrypt_extent_info on success, -EOPNOTSUPP if
+> > + *      we're not encrypted, or another -errno code
+> > + */
+> > +struct fscrypt_extent_info *fscrypt_prepare_new_extent(struct inode *inode)
+> > +{
+> > +     u8 nonce[FSCRYPT_FILE_NONCE_SIZE];
+> > +
+> > +     if (WARN_ON_ONCE(!*fscrypt_inode_info_addr(inode)))
+> > +             return ERR_PTR(-EOPNOTSUPP);
+> > +     if (WARN_ON_ONCE(!fscrypt_inode_uses_inline_crypto(inode)))
+> > +             return ERR_PTR(-EOPNOTSUPP);
+> > +
+> > +     get_random_bytes(nonce, FSCRYPT_FILE_NONCE_SIZE);
+> > +     return setup_extent_info(inode, nonce);
+> > +}
+> > +EXPORT_SYMBOL_GPL(fscrypt_prepare_new_extent);
+>
+> Similarly, there seems to have been a lot of incorrect copy+pasting in
+> the function comment.  This new function requires that the caller *must*
+> provide an encrypted inode, otherwise it WARNs.  It can't be
+> "possibly-encrypted".
+
+That is indeed true.
+
+> > +/**
+> > + * fscrypt_load_extent_info() - create an fscrypt_extent_info from the context
+> > + * @inode: the inode
+> > + * @ctx: the context buffer
+> > + * @ctx_size: the size of the context buffer
+> > + *
+> > + * Create the fscrypt_extent_info and derive the key based on the
+> > + * fscrypt_extent_context buffer that is provided.
+> > + *
+> > + * Return: The newly allocated fscrypt_extent_info on success, -EOPNOTSUPP if
+> > + *      we're not encrypted, or another -errno code
+> > + */
+> > +struct fscrypt_extent_info *fscrypt_load_extent_info(struct inode *inode,
+> > +                                                  u8 *ctx, size_t ctx_size)
+>
+> ctx should have type 'const u8 *'
+
+Agreed.
+
+> > +/**
+> > + * fscrypt_set_extent_context() - Set the fscrypt extent context of a new extent
+> > + * @inode: the inode this extent belongs to
+> > + * @ei: the fscrypt_extent_info for the given extent
+> > + * @buf: the buffer to copy the fscrypt extent context into
+> > + *
+> > + * This should be called after fscrypt_prepare_new_extent(), using the
+> > + * fscrypt_extent_info that was created at that point.
+> > + *
+> > + * buf must be at most FSCRYPT_SET_CONTEXT_MAX_SIZE.
+> > + *
+> > + * Return: the size of the fscrypt_extent_context, errno if the inode has the
+> > + *      wrong policy version.
+> > + */
+> > +ssize_t fscrypt_context_for_new_extent(struct inode *inode,
+> > +                                    struct fscrypt_extent_info *ei, u8 *buf)
+> > +{
+> > +     struct fscrypt_extent_context *ctx = (struct fscrypt_extent_context *)buf;
+> > +     const struct fscrypt_inode_info *ci = *fscrypt_inode_info_addr(inode);
+> > +
+> > +     BUILD_BUG_ON(sizeof(struct fscrypt_extent_context) >
+> > +                  FSCRYPT_SET_CONTEXT_MAX_SIZE);
+> > +
+> > +     if (WARN_ON_ONCE(ci->ci_policy.version != 2))
+> > +             return -EINVAL;
+> > +
+> > +     ctx->version = FSCRYPT_EXTENT_CONTEXT_V1;
+> > +     ctx->encryption_mode = ci->ci_policy.v2.contents_encryption_mode;
+> > +     memcpy(ctx->master_key_identifier,
+> > +            ci->ci_policy.v2.master_key_identifier,
+> > +            sizeof(ctx->master_key_identifier));
+> > +     memcpy(ctx->nonce, ei->nonce, FSCRYPT_FILE_NONCE_SIZE);
+> > +     return sizeof(struct fscrypt_extent_context);
+> > +}
+> > +EXPORT_SYMBOL_GPL(fscrypt_context_for_new_extent);
+>
+> The documentation "buf must be at most FSCRYPT_SET_CONTEXT_MAX_SIZE" is
+> incorrect.  It must actually be *at least* the size of
+> 'struct fscrypt_extent_context'.
+
+I see. While this looks like a typo, I understand it was meant to say
+that it should never need to be more than that.
+Perhaps something like this can be better worded:
+
+@@ -812,7 +812,7 @@ EXPORT_SYMBOL_GPL(fscrypt_set_context);
+  * This should be called after fscrypt_prepare_new_extent(), using the
+  * fscrypt_extent_info that was created at that point.
+  *
+- * buf must be at most FSCRYPT_SET_CONTEXT_MAX_SIZE.
++ * buf should be able to fit up to FSCRYPT_SET_CONTEXT_MAX_SIZE bytes.
+  *
+  * Return: the size of the fscrypt_extent_context, errno if the inode has the
+  *        wrong policy version.
+
+> Given that it's a fixed size, it probably would make sense to make the
+> ouptut parameter reflect that: 'u8 out[FSCRYPT_EXTENT_CONTEXT_SIZE]'.
+> Or even just use the struct itself.
+
+Yeah, this looks like more of a future-proof feature. While the size
+is fixed now, if we ever need to define a FSCRYPT_EXTENT_CONTEXT_V2
+with different on-disk format (and size) we can still keep this very
+same API.
+
+> > +     /*
+> > +      * If set then extent based encryption will be used for this file
+> > +      * system, and fs/crypto/ will enforce limits on the policies that are
+> > +      * allowed to be chosen.  Currently this means only plain v2 policies
+> > +      * are supported.
+> > +      */
+> > +     unsigned int has_per_extent_encryption : 1;
+>
+> Needs clarification about what is meant by "plain".  Some flags are
+> supported (specifically the filename padding ones), some flags are not.
+> All encryption modes still seem to be supported.
+
+Maybe this?:
+
+@@ -144,8 +144,8 @@ struct fscrypt_operations {
+     /*
+      * If set then extent based encryption will be used for this file
+      * system, and fs/crypto/ will enforce limits on the policies that are
+-     * allowed to be chosen.  Currently this means only plain v2 policies
+-     * are supported.
++     * allowed to be chosen.  Currently this means only v2 policies and a
++     * limited flags are supported.
+      */
+     unsigned int has_per_extent_encryption : 1;
+
+
+>
+> > +     if (count > 0 && inode->i_sb->s_cop->has_per_extent_encryption) {
+> > +             fscrypt_warn(inode,
+> > +                          "Encryption flags aren't supported on file systems that use extent encryption");
+> > +             return false;
+> > +     }
+>
+> Similarly, this error message needs clarification.  Some encryption
+> flags are supported, some aren't.
+
+Right. This should sound better:
+
+@@ -248,7 +248,7 @@ static bool fscrypt_supported_v2_policy(const
+struct fscrypt_policy_v2 *policy,
+     count += !!(policy->flags & FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32);
+     if (count > 0 && inode->i_sb->s_cop->has_per_extent_encryption) {
+         fscrypt_warn(inode,
+-                 "Encryption flags aren't supported on file systems
+that use extent encryption");
++                 "DIRECT_KEY and IV_INO_LBLK_* encryption flags
+aren't supported on file systems that use extent encryption");
+         return false;
+     }
+     if (count > 1) {
+
+Thanks for looking into it.
+
+--nX
+
+> - Eric
 
