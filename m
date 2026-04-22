@@ -1,64 +1,59 @@
-Return-Path: <linux-fscrypt+bounces-1553-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-1554-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ANDKHgdS6Wl2XgIAu9opvQ
-	(envelope-from <linux-fscrypt+bounces-1553-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 23 Apr 2026 00:56:07 +0200
+	id wCR8IcFZ6WndXwIAu9opvQ
+	(envelope-from <linux-fscrypt+bounces-1554-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 23 Apr 2026 01:29:05 +0200
 X-Original-To: lists+linux-fscrypt@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAA9244B5EE
-	for <lists+linux-fscrypt@lfdr.de>; Thu, 23 Apr 2026 00:56:06 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27D9144B899
+	for <lists+linux-fscrypt@lfdr.de>; Thu, 23 Apr 2026 01:29:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 69F6E3051BFF
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 22 Apr 2026 22:54:26 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 8CA14300AB2F
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 22 Apr 2026 23:29:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2754337BE78;
-	Wed, 22 Apr 2026 22:54:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8B423A3E69;
+	Wed, 22 Apr 2026 23:29:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nFESlm5X"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SekkEjDh"
 X-Original-To: linux-fscrypt@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 023CA32ED40;
-	Wed, 22 Apr 2026 22:54:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94FF63A3833;
+	Wed, 22 Apr 2026 23:29:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776898466; cv=none; b=etU5OFau05BGOXsm99LZWHPiJmflOsPYwmTK/hE+1UpAsOfgttkoxw9U9K+l5NwFI6zA2KIuzgtXFR2JRUCpP7UgZzyw7A8CLLTdMutomZ0hwOKSi1F5VXDECr3DkcMZsl41E1DQPXK+Z+3DKCBI7m5pJk/0DJZa6FOvTomv6Nc=
+	t=1776900543; cv=none; b=afOjxqh6h1cjc5spsiXXavfaKhnWhXyyCYztgUrjY0c7WWLfiHV6TZgFRo516mhy59vRKVWB4zinuWIFJyT0UbKk3jY+7cOodC7T2cMQ4BNIcC/l6B/b0TL6Hl7p8au2wer1szMic+zbuLujOCh9SBka0J3ziK6IZE3lciwcIPM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776898466; c=relaxed/simple;
-	bh=Xwdj3WPtuVugPCCdzzAsmUilrlXNct1Zv2lAeA2Zzxg=;
+	s=arc-20240116; t=1776900543; c=relaxed/simple;
+	bh=bvl92UEOxoPlURu3laZ0+Grpbq+E+dKoVy+MV3iNcMc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=f/9kx20EMI2/QzHszxVVgtq8pxwqd7hSr3qzG2RcJUdCSs4whyQF5qDUKhPdQK0wA1XZSEBxvjTFJvTTCt4Euc7mDWQfaIyiWICEcdReEfZRce2FYkOhMSM0rWPa2BLfPqgxC94hoVin4WFRcjxeRN/z0rrjbPoSHMXOQJnvCK4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nFESlm5X; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 853CEC19425;
-	Wed, 22 Apr 2026 22:54:25 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=lC6WRhVFQXDFCR/AhdEVCN5B+Fzr+mjiF3x5erVZMFR1bFCqoWOnJRdNwGjUTbvnThlVptCcNRRFjIn4mcp6IFtefZt080Jml8Vgz4L7E51L7j6PIR/oTdHiXg7W5KO8seoq3OkFxyXDihQUBIaeK1lja18/uQvly5bocg1/THo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SekkEjDh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC915C19425;
+	Wed, 22 Apr 2026 23:29:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776898465;
-	bh=Xwdj3WPtuVugPCCdzzAsmUilrlXNct1Zv2lAeA2Zzxg=;
+	s=k20201202; t=1776900543;
+	bh=bvl92UEOxoPlURu3laZ0+Grpbq+E+dKoVy+MV3iNcMc=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nFESlm5X3p9423YsQhMhvWhuNIU93mJ3vAInWDA9ykantZvTRsXwxfkwD/exp4d+X
-	 wpwR8pZIA6cmduvSklON9PDdhFUmOFDwhjpbXbRVdrE9GaW2xjkNZf9dNzzDUXw7Q1
-	 Wpe3ubCm97yLTMqe8waKErBGZ94e+Z/7KxdGoUny/LQ1va6PiZiYn2v5bHpDSYb8gj
-	 sn6u9EPhbUkjeQqc8eQQxxGAJ6Qe8OG5tZPPRSCpJFD8aRenVOXRdT0IN30Kg1uneI
-	 +Y1bxXhDJSfrRefYZxsanllXb14+ttOrJY6Mme41mXoLIRbgbjNPnb/ix10x8WOuz0
-	 znQU3BP4UL3fA==
-Date: Wed, 22 Apr 2026 15:53:10 -0700
+	b=SekkEjDhHV8mJkGXxThm7jzjXl5r+G21rFwehhvUlC8Rt0thUJXkQ9ZvnLJDA49bN
+	 AiEWsPZKrWpwJl6zfPjMan6ZQQZ0SAX+GPqfqhIpTcP35W8c1hY1j5dB6ZIVRdWyZA
+	 RNZviU5piCS25/nr/hQI6ts3ddvXVIovvSSX1VqyN4YbVGTBHe3cWBWDtY95rWDwN0
+	 xHHWA5ihxTGxv+YwxpMRqQ876Ka0u7IW76BymiTC5SP9o3smEjBbRycPC8NcfOLvHb
+	 0Z8M9tfGW58T0LF6vlXrNkCURDjmm/8i26jOGnEaqiBhh7H6sdLRr3wu5y+atVFtu1
+	 3x/J7bLZeZD7Q==
+Date: Wed, 22 Apr 2026 16:27:47 -0700
 From: Eric Biggers <ebiggers@kernel.org>
-To: Daniel Vacek <neelx@suse.com>
-Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-	"Theodore Y. Ts'o" <tytso@mit.edu>,
-	Jaegeuk Kim <jaegeuk@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-	David Sterba <dsterba@suse.com>, linux-block@vger.kernel.org,
-	linux-fscrypt@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 01/43] fscrypt: add per-extent encryption support
-Message-ID: <20260422225310.GB2226@sol>
-References: <20260206182336.1397715-1-neelx@suse.com>
- <20260206182336.1397715-2-neelx@suse.com>
- <20260221221153.GA2123@quark>
- <CAPjX3FficsLf2QXFU70sR6PN7h8rj5opz_wntLm+Acd3YLvu+A@mail.gmail.com>
+To: LiaoYuanhong-vivo <liaoyuanhong@vivo.com>
+Cc: tytso@mit.edu, jaegeuk@kernel.org, linux-fscrypt@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [PATCH] fscrypt: add software key support for filesystem-managed
+ data
+Message-ID: <20260422232747.GD2226@sol>
+References: <20260421075717.170840-1-liaoyuanhong@vivo.com>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
@@ -67,103 +62,98 @@ List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPjX3FficsLf2QXFU70sR6PN7h8rj5opz_wntLm+Acd3YLvu+A@mail.gmail.com>
+In-Reply-To: <20260421075717.170840-1-liaoyuanhong@vivo.com>
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-1553-lists,linux-fscrypt=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-1554-lists,linux-fscrypt=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	MISSING_XM_UA(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-fscrypt@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[11];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-fscrypt];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: CAA9244B5EE
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,vivo.com:email]
+X-Rspamd-Queue-Id: 27D9144B899
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, Apr 22, 2026 at 10:17:40AM +0200, Daniel Vacek wrote:
-> > > +/**
-> > > + * fscrypt_mergeable_extent_bio() - test whether data can be added to a bio
-> > > + * @bio: the bio being built up
-> > > + * @ei: the fscrypt_extent_info for this extent
-> > > + * @next_lblk: the next file logical block number in the I/O
-> > > + *
-> > > + * When building a bio which may contain data which should undergo inline
-> > > + * encryption (or decryption) via fscrypt, filesystems should call this function
-> > > + * to ensure that the resulting bio contains only contiguous data unit numbers.
-> > > + * This will return false if the next part of the I/O cannot be merged with the
-> > > + * bio because either the encryption key would be different or the encryption
-> > > + * data unit numbers would be discontiguous.
-> > > + *
-> > > + * fscrypt_set_bio_crypt_ctx_from_extent() must have already been called on the
-> > > + * bio.
-> > > + *
-> > > + * This function isn't required in cases where crypto-mergeability is ensured in
-> > > + * another way, such as I/O targeting only a single file (and thus a single key)
-> > > + * combined with fscrypt_limit_io_blocks() to ensure DUN contiguity.
-> > > + *
-> > > + * Return: true iff the I/O is mergeable
-> > > + */
-> > > +bool fscrypt_mergeable_extent_bio(struct bio *bio,
-> > > +                               const struct fscrypt_extent_info *ei,
-> > > +                               u64 next_lblk)
-> > > +{
-> > > +     const struct bio_crypt_ctx *bc = bio->bi_crypt_context;
-> > > +     u64 next_dun[BLK_CRYPTO_DUN_ARRAY_SIZE] = { next_lblk };
-> > > +
-> > > +     if (!ei)
-> > > +             return true;
-> > > +     if (!bc)
-> > > +             return true;
-> > > +
-> > > +     /*
-> > > +      * Comparing the key pointers is good enough, as all I/O for each key
-> > > +      * uses the same pointer.  I.e., there's currently no need to support
-> > > +      * merging requests where the keys are the same but the pointers differ.
-> > > +      */
-> > > +     if (bc->bc_key != ei->prep_key.blk_key)
-> > > +             return false;
-> > > +
-> > > +     return bio_crypt_dun_is_contiguous(bc, bio->bi_iter.bi_size, next_dun);
-> > > +}
-> > > +EXPORT_SYMBOL_GPL(fscrypt_mergeable_extent_bio);
-> >
-> > Similar to fscrypt_set_bio_crypt_ctx_from_extent().  The copy-pasted
-> > comment needs to be updated to remove no-longer-relevant information
-> > specific to per-file encryption and correctly reflect per-extent
-> > encryption.  The DUN needs to be calculated correctly for sub-block data
-> > units or else the combination of the two needs to be unsupported.
+On Tue, Apr 21, 2026 at 03:57:17PM +0800, LiaoYuanhong-vivo wrote:
+> Some filesystems store small file contents in filesystem-managed regions
+> rather than in regular data blocks submitted through bios. One example is
+> F2FS inline_data, where the payload is stored inside the inode node block.
+> Such regions still need to follow the inode's fscrypt contents encryption
+> semantics, but they cannot rely on blk-crypto because they are not
+> submitted as standalone file data bios.
 > 
-> The DUN is fixed as per above. Regarding the comment, it looks quite
-> valid to me. What exactly would you like to change?
+> As a result, when blk-crypto is enabled, mechanisms such as inline_data are
+> typically disabled outright. However, it is desirable to re-enable such
+> space-saving features while still preserving the required encryption
+> semantics.
+> 
+> To support this, add fscrypt_crypt_fs_layer_page_inplace(), a helper that
+> encrypts or decrypts a caller-provided page region in place using
+> filesystem-layer software crypto and the inode's contents encryption
+> policy.
+> 
+> This support is limited to v2 encryption policies. v1 policies do not
+> provide the key setup model used here, so this path returns -EOPNOTSUPP for
+> v1. Hardware-wrapped keys are not supported either, since deriving a
+> software skcipher key requires software-accessible key material, which
+> conflicts with the hardware-wrapped key model.
+> 
+> When the inode's normal contents path uses blk-crypto, fscrypt may not have
+> a software skcipher key prepared for the inode contents key. Add an
+> optional filesystem-layer prepared key to fscrypt_inode_info. This key is
+> derived using the same v2 contents-encryption KDF as the normal contents
+> key, but is prepared as a software skcipher key and is used only by the new
+> filesystem-layer helper.
+> 
+> Signed-off-by: LiaoYuanhong-vivo <liaoyuanhong@vivo.com>
 
-It's now been a while since I was looking at this, but looking at it
-again now, at least the following parts are incorrect:
+I don't have time for a super detailed review at the moment, but here
+are my initial thoughts:
 
-    "the next file logical block number in the I/O"
+- This needs to be sent along with the code that actually uses it in
+  ext4 and f2fs.  Please also Cc the mailing lists for those
+  filesystems.
 
-    "I/O targeting only a single file (and thus a single key)"
+- This is going to require an "incompat" filesystem feature flag.  After
+  all, once a filesystem contains files that use this scheme, older
+  kernels won't understand it.
 
-It's actually the block number in the *extent*.  And it's a single key
-only when the I/O targets a single *extent*.
+- UBIFS and CephFS already use fs/crypto/ but don't support blk-crypto
+  (inline encryption).  This new code feels duplicative of that.  It
+  should be possible to reuse the existing code instead.  That would
+  include, for example, reusing the existing en/decryption functions and
+  the existing struct ci_enc_key field.  This would keep the changes
+  limited mainly to how the key is being set up.
+
+- Supporting all the different IV generation methods doesn't make sense
+  when a per-file key is always used.
+
+- The fact that this is incompatible with hardware-wrapped keys greatly
+  limits the usefulness of this.  (Note that technically, it could be
+  supported in combination with them anyway.  But the security models
+  would be inconsistent, which I assume is what you have in mind.)
+
+Hope this is helpful,
 
 - Eric
 
