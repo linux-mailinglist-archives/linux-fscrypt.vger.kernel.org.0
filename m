@@ -1,55 +1,55 @@
-Return-Path: <linux-fscrypt+bounces-1589-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-1591-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8F1vEIg/BGoqFgIAu9opvQ
-	(envelope-from <linux-fscrypt+bounces-1589-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 13 May 2026 11:08:24 +0200
+	id OBxVAYQ/BGoqFgIAu9opvQ
+	(envelope-from <linux-fscrypt+bounces-1591-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 13 May 2026 11:08:20 +0200
 X-Original-To: lists+linux-fscrypt@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB1F253042C
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 13 May 2026 11:08:23 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99A57530423
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 13 May 2026 11:08:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id D61D5312F179
-	for <lists+linux-fscrypt@lfdr.de>; Wed, 13 May 2026 09:00:17 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E55A431A87A0
+	for <lists+linux-fscrypt@lfdr.de>; Wed, 13 May 2026 09:01:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1266C410D20;
-	Wed, 13 May 2026 08:56:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFDBA4218BB;
+	Wed, 13 May 2026 08:56:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="RrcjGrYe";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="RrcjGrYe"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="JDYDoMve";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="JDYDoMve"
 X-Original-To: linux-fscrypt@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCF313EAC77
-	for <linux-fscrypt@vger.kernel.org>; Wed, 13 May 2026 08:56:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 749A03EF0CE
+	for <linux-fscrypt@vger.kernel.org>; Wed, 13 May 2026 08:56:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778662571; cv=none; b=K6s9EjiTglAxvqkEHT6NyQqm/kthgKqpHV5pFBhvPEXLPmqyUg+W8f+qMTKArTv4vNRTk7U2HWvtdwkLTRNMTevqWfc6XZTNFG6eqT55DoyvYnmAQQjTiqFg09XIsG451BpYPdYafELj771IIqgg5DbIZIwhMGzfhGuBx4OSyP0=
+	t=1778662577; cv=none; b=po1Z/oa1/4wSDA93w4GSqwZOSIyOI4imp0uqT41ViqGBkbLn3Dqe36CpeT0CaE2pFaVKr4yfzNIvXRpAZb9NDvzHpGEugDmOYPmORdnJ9c66Tj450LBCr99rgLXIWG0IzLqNQ11bi7Z6xtiWhzzfJVfGRRftJLjm8fY4Pkx9IjA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778662571; c=relaxed/simple;
-	bh=Sqeud+c2uoKtkawkJCHD0i5nWa2kmjJMbrR4/6tdj8I=;
+	s=arc-20240116; t=1778662577; c=relaxed/simple;
+	bh=dPqekc2lLzoH3mrPbz6MiuSaMhRSu0eghQsQEEq1YjA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=n3FwKx3XZBAuyuSgUgjHEnEirvTdH3vAEN20NLFrxHNky8itFYa84MDpiFmpgECC5hEPLIwIeYv3FiGWOf3sfZiitpKgesjYXmPnixJKBOcpJP1nCtcfrWs5IxrhxkPlsDPhwebk+6xDPdzHZ0qaT0o8hfVBk6MPVaDNEYcHt+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=RrcjGrYe; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=RrcjGrYe; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version; b=FpF5sbAx7a4EdkrRLgPdZMcMWTBB2lbdtijNpAYw8qWAy1sG7+Qu1J12X8uTov8eceSCmR1Q4uMprevhI1VBO1kdAC0BtBlzvqAwwiess7gC27R/oil6jacivIdJMJBiTJ99c3vobxVblLHOlMSbqWHzlotF5vaPeGlt2fRwDbc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=JDYDoMve; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=JDYDoMve; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 00C785CEA7;
+	by smtp-out1.suse.de (Postfix) with ESMTPS id D83266AE54;
 	Wed, 13 May 2026 08:54:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
 	t=1778662483; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ohKr70eL2HfkHBiEfr/ycL6lrsS2CR1ba1VfGgnUJaY=;
-	b=RrcjGrYe8J/RUg3k307jpcZdU3MtbH6hdQ+xZELN0cijWH12YY339EHKKFroXvEBlL10D8
-	+0xGfXnq05x7fsjdPeIXtR5IEmPntFmxCu5uRa+6+4QasHRbHQE1NCsdJAOHRtMPIM9KxE
-	TV+kXJpFmhSyG1B+tTneKKxYuVadJwg=
+	bh=9Fbg/oBv8BWBHtiBP9xV6wDlqW7uPmbyoDUFcYAdt5U=;
+	b=JDYDoMve6CCcRJVM5PxMQNXcSrefN4hoXPAtwE8kx7fZOHgSbKOdChM8T7jv99BXjJie7t
+	p9N2mDHFSg9jQZF+ik7CZ1ABHrQ33Z+p2jC2Afybh/7da8MZNUbvhcfy3hHW3PDhmhE3rd
+	TcEXHq+Do66/Pa4D8MiyDN1XD+bZAvc=
 Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
@@ -57,20 +57,20 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ohKr70eL2HfkHBiEfr/ycL6lrsS2CR1ba1VfGgnUJaY=;
-	b=RrcjGrYe8J/RUg3k307jpcZdU3MtbH6hdQ+xZELN0cijWH12YY339EHKKFroXvEBlL10D8
-	+0xGfXnq05x7fsjdPeIXtR5IEmPntFmxCu5uRa+6+4QasHRbHQE1NCsdJAOHRtMPIM9KxE
-	TV+kXJpFmhSyG1B+tTneKKxYuVadJwg=
+	bh=9Fbg/oBv8BWBHtiBP9xV6wDlqW7uPmbyoDUFcYAdt5U=;
+	b=JDYDoMve6CCcRJVM5PxMQNXcSrefN4hoXPAtwE8kx7fZOHgSbKOdChM8T7jv99BXjJie7t
+	p9N2mDHFSg9jQZF+ik7CZ1ABHrQ33Z+p2jC2Afybh/7da8MZNUbvhcfy3hHW3PDhmhE3rd
+	TcEXHq+Do66/Pa4D8MiyDN1XD+bZAvc=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D3B24593A9;
-	Wed, 13 May 2026 08:54:42 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 864EE593A9;
+	Wed, 13 May 2026 08:54:43 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id mLIxM1I8BGpERwAAD6G6ig
-	(envelope-from <neelx@suse.com>); Wed, 13 May 2026 08:54:42 +0000
+	id WPZUIFM8BGpERwAAD6G6ig
+	(envelope-from <neelx@suse.com>); Wed, 13 May 2026 08:54:43 +0000
 From: Daniel Vacek <neelx@suse.com>
 To: Chris Mason <clm@fb.com>,
 	Josef Bacik <josef@toxicpanda.com>,
@@ -84,9 +84,9 @@ Cc: linux-block@vger.kernel.org,
 	linux-fscrypt@vger.kernel.org,
 	linux-btrfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v7 34/43] btrfs: add test_dummy_encryption support
-Date: Wed, 13 May 2026 10:53:08 +0200
-Message-ID: <20260513085340.3673127-35-neelx@suse.com>
+Subject: [PATCH v7 35/43] btrfs: make btrfs_ref_to_path handle encrypted filenames
+Date: Wed, 13 May 2026 10:53:09 +0200
+Message-ID: <20260513085340.3673127-36-neelx@suse.com>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260513085340.3673127-1-neelx@suse.com>
 References: <20260513085340.3673127-1-neelx@suse.com>
@@ -97,23 +97,23 @@ List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
 X-Spam-Flag: NO
 X-Spam-Score: -6.80
-X-Rspamd-Queue-Id: EB1F253042C
+X-Spam-Level: 
+X-Rspamd-Queue-Id: 99A57530423
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-1589-lists,linux-fscrypt=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-1591-lists,linux-fscrypt=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[6];
 	MIME_TRACE(0.00)[0:+];
@@ -126,236 +126,192 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	NEURAL_HAM(-0.00)[-1.000];
 	DKIM_TRACE(0.00)[suse.com:+];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,toxicpanda.com:email,suse.com:email,suse.com:mid,suse.com:dkim]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,toxicpanda.com:email,suse.com:email,suse.com:mid,suse.com:dkim]
 X-Rspamd-Action: no action
 
 From: Josef Bacik <josef@toxicpanda.com>
 
-In order to enable more thorough testing of fscrypt enable the
-test_dummy_encryption mount option.  This is used by fscrypt users to
-easily enable fscrypt on the file system for testing without needing to
-do the key setup and everything.
-
-The only deviation from other file systems we make is we only support
-the fsparam_flag version of this mount option, as it defaults to v2.  We
-don't want to have to bother with rejecting v1 related mount options.
+We use this helper for inode-resolve and path resolution in send, so
+update this helper to properly decrypt any encrypted names it finds.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 Signed-off-by: Daniel Vacek <neelx@suse.com>
 ---
 
-v5: https://lore.kernel.org/linux-btrfs/77449ee5a882db2945429946c74ea7e796122328.1706116485.git.josef@toxicpanda.com/
- * No changes since.  Just re-wrapping.  We now accept longer lines.
+v7 changes:
+ * Fix eb leak in failure case as suggested by Chris' AI review.
+v6 changes:
+ * Adapted to btrfs_iget() now returning binode instead of vfs inode
+   as before.
+ * Adapted to crypt info being moved from vfs inode to FS specific inode.
+v5: https://lore.kernel.org/linux-btrfs/365d4f820f70b7cf69b1b9cae9b949a15c3350b0.1706116485.git.josef@toxicpanda.com/
 ---
- fs/btrfs/disk-io.c |  1 +
- fs/btrfs/fs.h      |  3 +++
- fs/btrfs/fscrypt.c |  6 +++++
- fs/btrfs/super.c   | 58 ++++++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 68 insertions(+)
+ fs/btrfs/backref.c | 43 ++++++++++++++++++++++++++++++++++++++----
+ fs/btrfs/fscrypt.c | 47 ++++++++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/fscrypt.h | 10 ++++++++++
+ 3 files changed, 96 insertions(+), 4 deletions(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 8a11be02eeb9..1f0fe29dd549 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -1230,6 +1230,7 @@ void btrfs_free_fs_info(struct btrfs_fs_info *fs_info)
- 	btrfs_extent_buffer_leak_debug_check(fs_info);
- 	kfree(fs_info->super_copy);
- 	kfree(fs_info->super_for_commit);
-+	fscrypt_free_dummy_policy(&fs_info->dummy_enc_policy);
- 	kvfree(fs_info);
+diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+index 273924ca912c..33d5df99be8e 100644
+--- a/fs/btrfs/backref.c
++++ b/fs/btrfs/backref.c
+@@ -20,6 +20,7 @@
+ #include "extent-tree.h"
+ #include "relocation.h"
+ #include "tree-checker.h"
++#include "fscrypt.h"
+ 
+ /* Just arbitrary numbers so we can be sure one of these happened. */
+ #define BACKREF_FOUND_SHARED     6
+@@ -2104,6 +2105,39 @@ int btrfs_find_one_extref(struct btrfs_root *root, u64 inode_objectid,
+ 	return ret;
  }
  
-diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
-index dbdb73722c14..b21909d37b56 100644
---- a/fs/btrfs/fs.h
-+++ b/fs/btrfs/fs.h
-@@ -28,6 +28,7 @@
- #include <linux/rbtree.h>
- #include <linux/xxhash.h>
- #include <linux/fserror.h>
-+#include <linux/fscrypt.h>
- #include <uapi/linux/btrfs.h>
- #include <uapi/linux/btrfs_tree.h>
- #include "extent-io-tree.h"
-@@ -270,6 +271,7 @@ enum {
- 	BTRFS_MOUNT_IGNOREMETACSUMS		= (1ULL << 31),
- 	BTRFS_MOUNT_IGNORESUPERFLAGS		= (1ULL << 32),
- 	BTRFS_MOUNT_REF_TRACKER			= (1ULL << 33),
-+	BTRFS_MOUNT_TEST_DUMMY_ENCRYPTION	= (1ULL << 34),
- };
++static int copy_resolved_iref_to_buf(struct btrfs_root *fs_root,
++				     struct extent_buffer *eb, char *dest,
++				     u64 parent, unsigned long name_off,
++				     u32 name_len, s64 *bytes_left)
++{
++	struct btrfs_fs_info *fs_info = fs_root->fs_info;
++	struct fscrypt_str fname = FSTR_INIT(NULL, 0);
++	int ret;
++
++	/* No encryption, just copy the name in. */
++	if (!btrfs_fs_incompat(fs_info, ENCRYPT)) {
++		*bytes_left -= name_len;
++		if (*bytes_left >= 0)
++			read_extent_buffer(eb, dest + *bytes_left, name_off, name_len);
++		return 0;
++	}
++
++	ret = fscrypt_fname_alloc_buffer(BTRFS_NAME_LEN, &fname);
++	if (ret)
++		return ret;
++
++	ret = btrfs_decrypt_name(fs_root, eb, name_off, name_len, parent, &fname);
++	if (ret)
++		goto out;
++
++	*bytes_left -= fname.len;
++	if (*bytes_left >= 0)
++		memcpy(dest + *bytes_left, fname.name, fname.len);
++out:
++	fscrypt_fname_free_buffer(&fname);
++	return ret;
++}
++
+ /*
+  * this iterates to turn a name (from iref/extref) into a full filesystem path.
+  * Elements of the path are separated by '/' and the path is guaranteed to be
+@@ -2135,15 +2169,16 @@ char *btrfs_ref_to_path(struct btrfs_root *fs_root, struct btrfs_path *path,
+ 		dest[bytes_left] = '\0';
  
- /* These mount options require a full read-only fs, no new transaction is allowed. */
-@@ -958,6 +960,7 @@ struct btrfs_fs_info {
- 	spinlock_t eb_leak_lock;
- 	struct list_head allocated_ebs;
- #endif
-+	struct fscrypt_dummy_policy dummy_enc_policy;
- };
- 
- #define folio_to_inode(_folio)	(BTRFS_I(_Generic((_folio),			\
+ 	while (1) {
+-		bytes_left -= name_len;
+-		if (bytes_left >= 0)
+-			read_extent_buffer(eb, dest + bytes_left,
+-					   name_off, name_len);
++		ret = copy_resolved_iref_to_buf(fs_root, eb, dest, parent,
++						name_off, name_len, &bytes_left);
+ 		if (eb != eb_in) {
+ 			if (!path->skip_locking)
+ 				btrfs_tree_read_unlock(eb);
+ 			free_extent_buffer(eb);
+ 		}
++		if (ret)
++			break;
++
+ 		ret = btrfs_find_item(fs_root, path, parent, 0,
+ 				BTRFS_INODE_REF_KEY, &found_key);
+ 		if (ret > 0)
 diff --git a/fs/btrfs/fscrypt.c b/fs/btrfs/fscrypt.c
-index 924ee3df7f32..111ca92a3450 100644
+index 111ca92a3450..a972c8eadfef 100644
 --- a/fs/btrfs/fscrypt.c
 +++ b/fs/btrfs/fscrypt.c
-@@ -240,6 +240,11 @@ static blk_status_t btrfs_process_encrypted_bio(struct bio *orig_bio,
- 	return btrfs_csum_one_bio(bbio, enc_bio, false);
+@@ -352,6 +352,53 @@ int btrfs_fscrypt_bio_length(struct bio *bio, u64 map_length)
+ 	return map_length;
  }
  
-+static const union fscrypt_policy *btrfs_get_dummy_policy(struct super_block *sb)
++int btrfs_decrypt_name(struct btrfs_root *root, struct extent_buffer *eb,
++		       unsigned long name_off, u32 name_len,
++		       u64 parent_ino, struct fscrypt_str *name)
 +{
-+	return btrfs_sb(sb)->dummy_enc_policy.policy;
-+}
++	struct btrfs_inode *inode;
++	struct inode *dir;
++	struct fscrypt_str iname = FSTR_INIT(NULL, 0);
++	int ret;
 +
- int btrfs_fscrypt_load_extent_info(struct btrfs_inode *inode,
- 				   struct btrfs_path *path,
- 				   struct btrfs_key *key,
-@@ -356,4 +361,5 @@ const struct fscrypt_operations btrfs_fscrypt_ops = {
- 	.empty_dir = btrfs_fscrypt_empty_dir,
- 	.get_devices = btrfs_fscrypt_get_devices,
- 	.process_bio = btrfs_process_encrypted_bio,
-+	.get_dummy_policy = btrfs_get_dummy_policy,
- };
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 84df97363611..2c033c68f052 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -87,6 +87,7 @@ struct btrfs_fs_context {
- 	unsigned long compress_type:4;
- 	int compress_level;
- 	refcount_t refs;
-+	struct fscrypt_dummy_policy dummy_enc_policy;
- };
- 
- static void btrfs_emit_options(struct btrfs_fs_info *info,
-@@ -125,6 +126,7 @@ enum {
- 	Opt_treelog,
- 	Opt_user_subvol_rm_allowed,
- 	Opt_norecovery,
-+	Opt_test_dummy_encryption,
- 
- 	/* Rescue options */
- 	Opt_rescue,
-@@ -259,6 +261,8 @@ static const struct fs_parameter_spec btrfs_fs_parameters[] = {
- 	fsparam_enum("fragment", Opt_fragment, btrfs_parameter_fragment),
- 	fsparam_flag("ref_tracker", Opt_ref_tracker),
- 	fsparam_flag("ref_verify", Opt_ref_verify),
-+	fsparam_flag("test_dummy_encryption", Opt_test_dummy_encryption),
-+	fsparam_string("test_dummy_encryption", Opt_test_dummy_encryption),
- #endif
- 	{}
- };
-@@ -651,6 +655,23 @@ static int btrfs_parse_param(struct fs_context *fc, struct fs_parameter *param)
- 	case Opt_ref_tracker:
- 		btrfs_set_opt(ctx->mount_opt, REF_TRACKER);
- 		break;
-+	case Opt_test_dummy_encryption:
-+		int ret;
++	ASSERT(name_len <= BTRFS_NAME_LEN);
 +
-+		/*
-+		 * We only support v2, so reject any v1 policies.
-+		 */
-+		if (param->type == fs_value_is_string && *param->string &&
-+		    !strcmp(param->string, "v1")) {
-+			btrfs_info(NULL, "v1 encryption isn't supported");
-+			return -EINVAL;
-+		}
++	ret = fscrypt_fname_alloc_buffer(name_len, &iname);
++	if (ret)
++		return ret;
 +
-+		btrfs_set_opt(ctx->mount_opt, TEST_DUMMY_ENCRYPTION);
-+		ret = fscrypt_parse_test_dummy_encryption(param, &ctx->dummy_enc_policy);
-+		if (ret)
-+			return ret;
-+		break;
- #endif
- 	default:
- 		btrfs_err(NULL, "unrecognized mount option '%s'", param->key);
-@@ -986,6 +1007,9 @@ static int btrfs_fill_super(struct super_block *sb,
- 		return ret;
- 	}
- 
-+	if (fscrypt_is_dummy_policy_set(&fs_info->dummy_enc_policy))
-+		btrfs_set_fs_incompat(fs_info, ENCRYPT);
-+
- 	btrfs_emit_options(fs_info, NULL);
- 
- 	inode = btrfs_iget(BTRFS_FIRST_FREE_OBJECTID, fs_info->fs_root);
-@@ -1150,6 +1174,8 @@ static int btrfs_show_options(struct seq_file *seq, struct dentry *dentry)
- 		seq_puts(seq, ",ref_verify");
- 	if (btrfs_test_opt(info, REF_TRACKER))
- 		seq_puts(seq, ",ref_tracker");
-+	if (btrfs_test_opt(info, TEST_DUMMY_ENCRYPTION))
-+		fscrypt_show_test_dummy_encryption(seq, ',', dentry->d_sb);
- 	seq_printf(seq, ",subvolid=%llu", btrfs_root_id(BTRFS_I(d_inode(dentry))->root));
- 	subvol_name = btrfs_get_subvol_name_from_objectid(info,
- 			btrfs_root_id(BTRFS_I(d_inode(dentry))->root));
-@@ -1415,6 +1441,18 @@ static void btrfs_ctx_to_info(struct btrfs_fs_info *fs_info, struct btrfs_fs_con
- 	fs_info->mount_opt = ctx->mount_opt;
- 	fs_info->compress_type = ctx->compress_type;
- 	fs_info->compress_level = ctx->compress_level;
++	inode = btrfs_iget(parent_ino, root);
++	if (IS_ERR(inode)) {
++		ret = PTR_ERR(inode);
++		goto out;
++	}
++	dir = &inode->vfs_inode;
 +
 +	/*
-+	 * If there's nothing set, or if the fs_info already has one set, don't
-+	 * do anything.  If the fs_info is set we'll free the dummy one when we
-+	 * free the ctx.
++	 * Directory isn't encrypted, the name isn't encrypted, we can just copy
++	 * it into the buffer.
 +	 */
-+	if (!fscrypt_is_dummy_policy_set(&ctx->dummy_enc_policy) ||
-+	    fscrypt_is_dummy_policy_set(&fs_info->dummy_enc_policy))
-+		return;
++	if (!IS_ENCRYPTED(dir)) {
++		read_extent_buffer(eb, name->name, name_off, name_len);
++		name->len = name_len;
++		goto out_inode;
++	}
 +
-+	fs_info->dummy_enc_policy = ctx->dummy_enc_policy;
-+	memset(&ctx->dummy_enc_policy, 0, sizeof(ctx->dummy_enc_policy));
- }
- 
- static void btrfs_info_to_ctx(struct btrfs_fs_info *fs_info, struct btrfs_fs_context *ctx)
-@@ -1468,6 +1506,7 @@ static void btrfs_emit_options(struct btrfs_fs_info *info,
- 	btrfs_info_if_set(info, old, IGNOREDATACSUMS, "ignoring data csums");
- 	btrfs_info_if_set(info, old, IGNOREMETACSUMS, "ignoring meta csums");
- 	btrfs_info_if_set(info, old, IGNORESUPERFLAGS, "ignoring unknown super block flags");
-+	btrfs_info_if_set(info, old, TEST_DUMMY_ENCRYPTION, "test dummy encryption mode enabled");
- 
- 	btrfs_info_if_unset(info, old, NODATASUM, "setting datasum");
- 	btrfs_info_if_unset(info, old, NODATACOW, "setting datacow");
-@@ -1498,6 +1537,21 @@ static void btrfs_emit_options(struct btrfs_fs_info *info,
- 		btrfs_info(info, "max_inline set to %llu", info->max_inline);
- }
- 
-+static bool btrfs_check_test_dummy_encryption(struct fs_context *fc)
-+{
-+	struct btrfs_fs_context *ctx = fc->fs_private;
-+	struct btrfs_fs_info *fs_info = btrfs_sb(fc->root->d_sb);
++	read_extent_buffer(eb, iname.name, name_off, name_len);
 +
-+	if (!fscrypt_is_dummy_policy_set(&ctx->dummy_enc_policy))
-+		return true;
++	ret = fscrypt_prepare_readdir(dir);
++	if (ret)
++		goto out_inode;
 +
-+	if (fscrypt_dummy_policies_equal(&fs_info->dummy_enc_policy, &ctx->dummy_enc_policy))
-+		return true;
-+
-+	btrfs_warn(fs_info, "Can't set or change test_dummy_encryption on remount");
-+	return false;
++	ASSERT(inode->i_crypt_info);
++	ret = fscrypt_fname_disk_to_usr(dir, 0, 0, &iname, name);
++out_inode:
++	iput(dir);
++out:
++	fscrypt_fname_free_buffer(&iname);
++	return ret;
 +}
 +
- static int btrfs_reconfigure(struct fs_context *fc)
- {
- 	struct super_block *sb = fc->root->d_sb;
-@@ -1523,6 +1577,9 @@ static int btrfs_reconfigure(struct fs_context *fc)
- 	if (!btrfs_check_options(fs_info, &ctx->mount_opt, fc->sb_flags))
- 		return -EINVAL;
+ const struct fscrypt_operations btrfs_fscrypt_ops = {
+ 	.inode_info_offs = (int)offsetof(struct btrfs_inode, i_crypt_info) -
+ 			   (int)offsetof(struct btrfs_inode, vfs_inode),
+diff --git a/fs/btrfs/fscrypt.h b/fs/btrfs/fscrypt.h
+index f7ce2b2e6639..4a1daed90d06 100644
+--- a/fs/btrfs/fscrypt.h
++++ b/fs/btrfs/fscrypt.h
+@@ -25,6 +25,9 @@ ssize_t btrfs_fscrypt_context_for_new_extent(struct btrfs_inode *inode,
+ 					     struct fscrypt_extent_info *info,
+ 					     u8 *ctx);
+ int btrfs_fscrypt_bio_length(struct bio *bio, u64 map_length);
++int btrfs_decrypt_name(struct btrfs_root *root, struct extent_buffer *eb,
++		       unsigned long name_off, u32 name_len,
++		       u64 parent_ino, struct fscrypt_str *name);
  
-+	if (!mount_reconfigure && !btrfs_check_test_dummy_encryption(fc))
-+		return -EINVAL;
+ #else
+ static inline void btrfs_fscrypt_save_extent_info(struct btrfs_path *path,
+@@ -69,6 +72,13 @@ static inline u64 btrfs_fscrypt_bio_length(struct bio *bio, u64 map_length)
+ 	return map_length;
+ }
+ 
++static inline int btrfs_decrypt_name(struct btrfs_root *root, struct extent_buffer *eb,
++				     unsigned long name_off, u32 name_len,
++				     u64 parent_ino, struct fscrypt_str *name)
++{
++	return -EINVAL;
++}
 +
- 	ret = btrfs_check_features(fs_info, !(fc->sb_flags & SB_RDONLY));
- 	if (ret < 0)
- 		return ret;
-@@ -2139,6 +2196,7 @@ static void btrfs_free_fs_context(struct fs_context *fc)
- 		btrfs_free_fs_info(fs_info);
+ #endif /* CONFIG_FS_ENCRYPTION */
  
- 	if (ctx && refcount_dec_and_test(&ctx->refs)) {
-+		fscrypt_free_dummy_policy(&ctx->dummy_enc_policy);
- 		kfree(ctx->subvol_name);
- 		kfree(ctx);
- 	}
+ extern const struct fscrypt_operations btrfs_fscrypt_ops;
 -- 
 2.53.0
 
