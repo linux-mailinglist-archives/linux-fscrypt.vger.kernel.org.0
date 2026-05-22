@@ -1,314 +1,351 @@
-Return-Path: <linux-fscrypt+bounces-1605-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-1606-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8CfGA5P/D2qLSQYAu9opvQ
-	(envelope-from <linux-fscrypt+bounces-1605-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 22 May 2026 09:02:43 +0200
+	id AMLrC18gEGqjTwYAu9opvQ
+	(envelope-from <linux-fscrypt+bounces-1606-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 22 May 2026 11:22:39 +0200
 X-Original-To: lists+linux-fscrypt@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8A645AFC98
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 22 May 2026 09:02:42 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A60A5B1128
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 22 May 2026 11:22:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2C9CF3021E59
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 22 May 2026 07:01:02 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 1BB3E3016814
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 22 May 2026 09:19:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6573A384CED;
-	Fri, 22 May 2026 07:01:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E65F3AFB0B;
+	Fri, 22 May 2026 09:19:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="HLzHPZrA"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="D2NBrePQ"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 863AB368D4F
-	for <linux-fscrypt@vger.kernel.org>; Fri, 22 May 2026 07:00:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.128.48
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779433261; cv=pass; b=ogKv6N+DR1vqiyVPy5UuqL42u8AAjcJLN9cYAnYygYMXVNqUeI3qbRcMfa2c2z9btPWKFtsA4I/VzlKqK0aTNjqU/u71K0fv4ms6jeJEp2M1bkvbNNeNLkfrbwESUQlUEHIsrM1jwfzYtw1w+aJchB4XmhzLHzlRUqadS3r9W4M=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779433261; c=relaxed/simple;
-	bh=RPLULZwyGFBcnLzO3/6uBXaB8JE/6zjrHV/JLXWUDl0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NehmH6QCAgXtUU0Se0d/r1A9IQDZ1/n52kvlsciQwYzZStl9XTUVQMwwkTZZ4pEYSi+PcSxk4rJDhrEgAJToYFVS7uAiCweJLtdCzT4+yUsbOJPLrOmNlDObRs2YAg0RAOirMSXzWWMCPFX+Lq3OYIQdYFMiJaSvaCco3+dtauA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=HLzHPZrA; arc=pass smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-488b0e1b870so95966685e9.2
-        for <linux-fscrypt@vger.kernel.org>; Fri, 22 May 2026 00:00:59 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1779433258; cv=none;
-        d=google.com; s=arc-20240605;
-        b=bZUv7OMOzUm2v4XbbVK3GsCIESgOm51Ye/yvQ+FNn8/Cj/qWBzr2EGW0SGOcnIpxX+
-         TKOIYYbWjveD0/JXqMkEO6JCr6RM7080FN5U4R5vCafnLU7heHoE3kYfeAbLMcjM2zKj
-         OrNFJ2/pP4aMVW6Gyl6YWSI6HU1uUiV8Q8uhk7S5eyoBL4R6uPYr3XXFYnFNIFojDn1d
-         N2FNtxBtDTLuO+0AkAUHLSK8xCvI7tkZAibQwZTzKtQ05T7BBze00qSCg2uk5PrcGxgN
-         buIcnHhdg3c279gzFgEUfxKaxwTp91SOunWuwEHdawlPUuYPFFE+IM3zqOqRYUiHE6OU
-         4qiw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature;
-        bh=DgrJhf9pCLWRyhDeCL2ag+63OL5JMEGKJLqO1vcQ/ro=;
-        fh=2M/wtRfGu9ohEZpTBo/ieRM7BvwH+Fsry9PxdtWlQh4=;
-        b=WZ9DtJ6N45SBeb3Rp1lfJbMGOrZQBd+1KHdbF71aSegpjfACQUwGNUtGVjbQkyn3k+
-         qgKXlMw8v6EZvIqNNC+YS7OcKfMiYHdF9PnoahNjKfy+OBvabmuBg35JTG5w6zXkYlsl
-         9hEa5bRE5MqR9jilAEgpPb0cdzOORIvidQh5hITe3UVGr1nmR9xN1Oqt4iDJhmvgP9DR
-         UH67oohAjTng8zE3zNDPhK4CXp++a/tOPOsMmPkcXiQsveqhxqH9dpq19X57PrTOLCZm
-         wOlfi3Khk8kXuMc0YS7cmDTgk5SgZYy2CU6AEiDraoNYEZvVaFY8d2Vg6zC5JQBxAjUs
-         Cbqg==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1779433258; x=1780038058; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=DgrJhf9pCLWRyhDeCL2ag+63OL5JMEGKJLqO1vcQ/ro=;
-        b=HLzHPZrA6n4uD7WqH3WLxWPD+3X9IiQxUW7HukJBPo7Mvwsojo4BP6KnY7uSUKLIWi
-         opGFMqwn4+HijbCbKmiy4klL/LZdhnJVTVcybWHMz+fREl7R7fdrp7+wZ72QwznzPmx6
-         jMZQMvZADyTeH4OzWGXbDbb/d4BWzVjOsHJApUlZtKXEETqJ4WWFNjczpfjgKm/GyRUv
-         HN0xRFVD7oDKuUdiPVdHJjJ8pc7XT0lIGCs1bEThAlru00LEmt5w7X7A0jH9DZNVc0ga
-         yax1LGmHjLJyGD24nv3bH/tJqhIfAC6dA41VqwTSPTPFP3sW0NN5McELKrCbW2VoYPe8
-         v5jQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779433258; x=1780038058;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DgrJhf9pCLWRyhDeCL2ag+63OL5JMEGKJLqO1vcQ/ro=;
-        b=YERJcljubuAjEpZWoFJIkkw+34bgMcdeJxbSemKYAvti1f9luiie8Hp3tb6NcK9sWd
-         wuwhE8P1TmHbPubmRlYbwFMmbaNanws3p8TcvQWt1PihKj8W4hBA+Nr6ZNcu4PsTMwc6
-         UinsncwfNDcxsf253yVL33z+SeaNNbg8RqwKv2mCkjlyxAoIM3h0Vtrg7M47APxPix7T
-         GDJYeIbvNxF4MONeGQaRXW2T3aa0QKjdcV5Sqf9250zQW6yaV95a7YIaPST5yDJbMcxt
-         vlJ9Ne0/KEyUDaLXRlnA8ZmwKklr+gftlHWMzVTrX5q2fmsnRbFcN29Tp5DIvefgPjeO
-         J/ZQ==
-X-Forwarded-Encrypted: i=1; AFNElJ+dKfo8aTCPQGLzI83nK1X0ypAcMR6FMz7YQelR7i8TxsXPnJSGnHMP5cufkB5edc6ZzkiZPVUmzYdMcqxq@vger.kernel.org
-X-Gm-Message-State: AOJu0YyFLn3qCd2Nvu/ME0sq3fDLVMtF+K2Hob1uAAvuB5BPatlmza64
-	UHFZYYwRpjY1casjdOqoIzvREAk+mgP3UjcAKo2Eu9tFUrkwHm5rNiA8ZoIuk/+k6yPjIL1DNfW
-	tyATPFPFTh/Pi2kPXRlAEMS6/IfDl52J/jDNs8mibH5+Kvwen9clCkdE=
-X-Gm-Gg: Acq92OGqr1Mvh2dAw3rdiitRKnhlHqe2YTf7Lc7tNOcTlz0WWSVRHZmLmp4uwldaZ6P
-	yQjpNk4ljgoKgMKczZ6L4lEXkxuKlMDFv6uTO4O0qdFRFk0AexiowuQ400uilHyc9Eg9eISIYOm
-	I8ub0W3jaCTday5v1hRSTUCCuCxWfohNBdbFBKXht/SF4Eg3uINNUP9CA6pmOQXTeFEjcttB4yw
-	/kJw91tdhgHUAB62u647wJvHpKZMe18/LazdvJTeJmdDuZag+uYx9KUx3k1tR+pfSmyfoo6cS5L
-	xzVu//XWvM4Mw886CBi/v/Ik7aGhXzpKJoG7WBIa1+0nGlDffL63482nzdRQTOM8RGzX5akuq9A
-	3ujdTP4O2PuDjbfM=
-X-Received: by 2002:a05:600c:1c0b:b0:488:b187:3c with SMTP id
- 5b1f17b1804b1-490426aa7acmr30260965e9.14.1779433257800; Fri, 22 May 2026
- 00:00:57 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17D8E38423B;
+	Fri, 22 May 2026 09:19:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1779441583; cv=none; b=l66ouJRjoDb7bauP/LykjCpHIoIpc5p0PjwCIyg+gddzDW2Fl4yvv801F5kf5orbByOagHBkgyF08bjRGXOnhuVX1yNZci8guQWk4da4F1tDVdrKi6tMwhx7ZqO64YYFepCaMU5g/la74iLK9CK25L4iu9Q4q/C2q+TXtNJAfo8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1779441583; c=relaxed/simple;
+	bh=KHspHbjSJILbZEtc8+pBuJUp9cMlORp1Z37IAhD7LCU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uK79LZI/JS8EYOYtPNO5uVMM49nrLd3R/B1Xk8J4otpO6eUtBcLUgowEvtuGSnTFB51+4pJnRT4JwsrgS727YxYNdBIKGUggxSQ7CEu1GF5NMexI3lJpNtzVrzaPEx1dXS51lfHPaB4a7/LRdRxh37+XV5mOLHw0AJUxPPPikWo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=D2NBrePQ; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=2n1xSP/5cGJvn9+BBg47IJkWoOhGbcIWf3YqZLh9XX4=; b=D2NBrePQJxJ0kWJEc9y6l7vEo3
+	Yd51Vf+Mjr9Rajpk1+wfJ/hUC+lOB+8aukhC4SGLLckJgD3pcJyG2kAlC5AIe64efq68sFnEj/46S
+	J32AQCKvK+ytN9JBhPRretjeiB7AhzO+lgUBe7Z0Z16RSyEAjX6iDcVsXVYaezZodJKLHKCMhxzeX
+	QRVim2LzvIe4ZyO9rq5GT2CH6mNlu57Wmtsy6HXlCX9obmNj2o8TAVDCuPxYKlDJ6Eqox5RJU2aR3
+	Vsbm9A1+1JQ02zsz2SBdsvTf0e4MMPBSrvJCGG/fV/n9w6aeQbQM8KoXwGTrV4SR8zMRA0wXc/mav
+	b2V6geQQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.99.1 #2 (Red Hat Linux))
+	id 1wQM2V-0000000AJ9p-3oPS;
+	Fri, 22 May 2026 09:19:31 +0000
+Date: Fri, 22 May 2026 02:19:31 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Daniel Vacek <neelx@suse.com>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+	Eric Biggers <ebiggers@kernel.org>,
+	"Theodore Y. Ts'o" <tytso@mit.edu>,
+	Jaegeuk Kim <jaegeuk@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+	David Sterba <dsterba@suse.com>, linux-block@vger.kernel.org,
+	linux-fscrypt@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 32/43] btrfs: implement process_bio cb for fscrypt
+Message-ID: <ahAfo4DzvH_ob1hv@infradead.org>
+References: <20260513085340.3673127-1-neelx@suse.com>
+ <20260513085340.3673127-33-neelx@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260513085340.3673127-1-neelx@suse.com>
-In-Reply-To: <20260513085340.3673127-1-neelx@suse.com>
-From: Daniel Vacek <neelx@suse.com>
-Date: Fri, 22 May 2026 09:00:46 +0200
-X-Gm-Features: AVHnY4KaCg2TnL5N7-_bJO4bF9ZVXcF6atGf4TwugcWam8oNLxjSD5HXNcr7eME
-Message-ID: <CAPjX3FdHJpZUVk2dfA+Ov5K6vOSsOJMUaxCU4G8y1qg6baMXYw@mail.gmail.com>
-Subject: Re: [PATCH v7 00/43] btrfs: add fscrypt support
-To: Eric Biggers <ebiggers@kernel.org>, David Sterba <dsterba@suse.com>
-Cc: linux-block@vger.kernel.org, linux-fscrypt@vger.kernel.org, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, "Theodore Y. Ts'o" <tytso@mit.edu>, 
-	Jaegeuk Kim <jaegeuk@kernel.org>, Jens Axboe <axboe@kernel.dk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260513085340.3673127-33-neelx@suse.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[infradead.org:s=bombadil.20210309];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-1605-lists,linux-fscrypt=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-1606-lists,linux-fscrypt=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[suse.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	DKIM_TRACE(0.00)[infradead.org:+];
 	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[neelx@suse.com,linux-fscrypt@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[hch@infradead.org,linux-fscrypt@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-fscrypt];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,suse.com:email,suse.com:dkim]
-X-Rspamd-Queue-Id: A8A645AFC98
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,infradead.org:mid,infradead.org:dkim,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,toxicpanda.com:email]
+X-Rspamd-Queue-Id: 8A60A5B1128
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, 13 May 2026 at 10:54, Daniel Vacek <neelx@suse.com> wrote:
->
-> Hello,
->
-> These are the remaining parts from former series [1] from Omar, Sweet Tea
-> and Josef.  Some bits of it were split into the separate set [2] before.
->
-> Notably, at this stage encryption is not supported with RAID5/6 setup
-> and send is also disabled for now.
->
-> For straight git access you can find this series as the `fscrypt-v7` tag
-> e85358ef9fba here:
->
-> [0] https://github.com/dvacek/linux-btrfs/tree/fscrypt-v7
->
-> Changes since v6 [3]
->  * Rebased onto linux v7.1-rc3.
->  * Adapted to the v7.0 fscrypt API changes, mostly following commit
->    bb8e2019ad613 ("blk-crypto: handle the fallback above the block layer")
->  * Addressed all the review feedback, thanks to Eric Biggers, Chris Mason
->    (and his LLM review prompts) and Neal Gompa.
->  * Adapted to the v7.1 fscrypt API cleanups, using byte offsets as function
->    arguments instead of logical block numbers for newly introduced functions.
->    This should match https://lore.kernel.org/linux-fscrypt/20260218061531.3318130-1-hch@lst.de/
->    As a result btrfs_set_bio_crypt_ctx_from_extent() and btrfs_mergeable_encrypted_bio()
->    helpers were no longer needed and they got removed.
+On Wed, May 13, 2026 at 10:53:06AM +0200, Daniel Vacek wrote:
+> From: Josef Bacik <josef@toxicpanda.com>
+> 
+> We are going to be checksumming the encrypted data, so we have to
+> implement the ->process_bio fscrypt callback.  This will provide us with
+> the original bio and the encrypted bio to do work on.  For WRITE's this
+> will happen after the encrypted bio has been encrypted.  For READ's this
+> will happen after the read has completed and before the decryption step
+> is done.
+> 
+> For write's this is straightforward, we can just pass in the encrypted
+> bio to btrfs_csum_one_bio and then the csums will be added to the bbio
+> as normal.
+> 
+> For read's this is relatively straightforward, but requires some care.
+> We assume (because that's how it works currently) that the encrypted bio
+> match the original bio, this is important because we save the iter of
+> the bio before we submit.  If this changes in the future we'll need a
+> hook to give us the bi_iter of the decryption bio before it's submitted.
+> We check the csums before decryption.  If it doesn't match we simply
+> error out and we let the normal path handle the repair work.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> Signed-off-by: Daniel Vacek <neelx@suse.com>
+> ---
+> 
+> v7 changes:
+>  * Fixed array overflow stack corruption for bios > max blocksize (>64KiB)
+>    as reported by Chris' AI review.
+> v6 changes:
+>  * Adapt to btrfs_data_csum_ok() changes for bs > ps.  Mostly follow
+>    what was done in 052fd7a5cace ("btrfs: make read verification
+>    handle bs > ps cases without large folios").
+>  * Rename bbio::csum_done to csum_ok due to name collision.
+>    With upstream, member name csum_done was used for async csums.
+> v5: https://lore.kernel.org/linux-btrfs/ca32684b01ff8c252be515509137e0a4a0e5db7a.1706116485.git.josef@toxicpanda.com/
+> ---
+>  fs/btrfs/bio.c       | 44 +++++++++++++++++++++++++++++++++++++++++++-
+>  fs/btrfs/bio.h       |  3 +++
+>  fs/btrfs/file-item.c | 14 ++++++++++++--
+>  fs/btrfs/fscrypt.c   | 29 +++++++++++++++++++++++++++++
+>  4 files changed, 87 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+> index 3e2ee19aab50..729c5aff5c3d 100644
+> --- a/fs/btrfs/bio.c
+> +++ b/fs/btrfs/bio.c
+> @@ -301,6 +301,40 @@ static struct btrfs_failed_bio *repair_one_sector(struct btrfs_bio *failed_bbio,
+>  	return fbio;
+>  }
+>  
+> +blk_status_t btrfs_check_encrypted_read_bio(struct btrfs_bio *bbio, struct bio *enc_bio)
+> +{
+> +	struct btrfs_inode *inode = bbio->inode;
+> +	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+> +	struct bvec_iter iter = bbio->saved_iter;
+> +	struct btrfs_device *dev = bbio->bio.bi_private;
+> +	const u32 blocksize = fs_info->sectorsize;
+> +	const u32 step = min(blocksize, PAGE_SIZE);
+> +	const u32 nr_steps = iter.bi_size / step;
+> +	phys_addr_t paddrs[BTRFS_MAX_BLOCKSIZE / PAGE_SIZE];
+> +	phys_addr_t paddr;
+> +	unsigned int slot = 0;
+> +	u32 offset = 0;
+> +
+> +	/*
+> +	 * We have to use a copy of iter in case there's an error,
+> +	 * btrfs_check_read_bio will handle submitting the repair bios.
+> +	 */
+> +	btrfs_bio_for_each_block(paddr, enc_bio, &iter, step) {
+> +		ASSERT(slot < nr_steps);
+> +		paddrs[slot] = paddr;
+> +		slot++;
+> +		offset += step;
+> +		if (IS_ALIGNED(offset, blocksize)) {
+> +			if (!btrfs_data_csum_ok(bbio, dev, offset - blocksize, paddrs))
+> +				return BLK_STS_IOERR;
+> +			slot = 0;
+> +		}
+> +	}
+> +
+> +	bbio->csum_ok = true;
+> +	return BLK_STS_OK;
+> +}
+> +
+>  static void btrfs_check_read_bio(struct btrfs_bio *bbio, struct btrfs_device *dev)
+>  {
+>  	struct btrfs_inode *inode = bbio->inode;
+> @@ -330,6 +364,10 @@ static void btrfs_check_read_bio(struct btrfs_bio *bbio, struct btrfs_device *de
+>  	/* Clear the I/O error. A failed repair will reset it. */
+>  	bbio->bio.bi_status = BLK_STS_OK;
+>  
+> +	/* This was an encrypted bio and we've already done the csum check. */
+> +	if (status == BLK_STS_OK && bbio->csum_ok)
+> +		goto out;
+> +
+>  	btrfs_bio_for_each_block(paddr, &bbio->bio, iter, step) {
+>  		paddrs[(offset / step) % nr_steps] = paddr;
+>  		offset += step;
+> @@ -341,6 +379,7 @@ static void btrfs_check_read_bio(struct btrfs_bio *bbio, struct btrfs_device *de
+>  							 paddrs, fbio);
+>  		}
+>  	}
+> +out:
+>  	if (bbio->csum != bbio->csum_inline)
+>  		kvfree(bbio->csum);
+>  
+> @@ -859,10 +898,13 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
+>  		/*
+>  		 * Csum items for reloc roots have already been cloned at this
+>  		 * point, so they are handled as part of the no-checksum case.
+> +		 *
+> +		 * Encrypted inodes are csum'ed via the ->process_bio callback.
+>  		 */
+>  		if (!(inode->flags & BTRFS_INODE_NODATASUM) &&
+>  		    !test_bit(BTRFS_FS_STATE_NO_DATA_CSUMS, &fs_info->fs_state) &&
+> -		    !btrfs_is_data_reloc_root(inode->root) && !bbio->is_remap) {
+> +		    !btrfs_is_data_reloc_root(inode->root) && !bbio->is_remap &&
+> +		    !IS_ENCRYPTED(&inode->vfs_inode)) {
+>  			if (should_async_write(bbio) &&
+>  			    btrfs_wq_submit_bio(bbio, bioc, &smap, mirror_num))
+>  				goto done;
+> diff --git a/fs/btrfs/bio.h b/fs/btrfs/bio.h
+> index 43f7544029ac..456d32db9e9e 100644
+> --- a/fs/btrfs/bio.h
+> +++ b/fs/btrfs/bio.h
+> @@ -43,6 +43,7 @@ struct btrfs_bio {
+>  		struct {
+>  			u8 *csum;
+>  			u8 csum_inline[BTRFS_BIO_INLINE_CSUM_SIZE];
+> +			bool csum_ok;
+>  			struct bvec_iter saved_iter;
+>  		};
+>  
+> @@ -130,5 +131,7 @@ void btrfs_submit_repair_write(struct btrfs_bio *bbio, int mirror_num, bool dev_
+>  int btrfs_repair_io_failure(struct btrfs_fs_info *fs_info, u64 ino, u64 fileoff,
+>  			    u32 length, u64 logical, const phys_addr_t paddrs[],
+>  			    unsigned int step, int mirror_num);
+> +blk_status_t btrfs_check_encrypted_read_bio(struct btrfs_bio *bbio,
+> +					    struct bio *enc_bio);
+>  
+>  #endif
+> diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+> index 986914078708..72d9d3243460 100644
+> --- a/fs/btrfs/file-item.c
+> +++ b/fs/btrfs/file-item.c
+> @@ -338,6 +338,14 @@ static int search_csum_tree(struct btrfs_fs_info *fs_info,
+>  	return ret;
+>  }
+>  
+> +static inline bool inode_skip_csum(struct btrfs_inode *inode)
+> +{
+> +	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+> +
+> +	return (inode->flags & BTRFS_INODE_NODATASUM) ||
+> +		test_bit(BTRFS_FS_STATE_NO_DATA_CSUMS, &fs_info->fs_state);
+> +}
+> +
+>  /*
+>   * Lookup the checksum for the read bio in csum tree.
+>   *
+> @@ -357,8 +365,7 @@ int btrfs_lookup_bio_sums(struct btrfs_bio *bbio)
+>  	int ret = 0;
+>  	u32 bio_offset = 0;
+>  
+> -	if ((inode->flags & BTRFS_INODE_NODATASUM) ||
+> -	    test_bit(BTRFS_FS_STATE_NO_DATA_CSUMS, &fs_info->fs_state))
+> +	if (inode_skip_csum(inode))
+>  		return 0;
+>  
+>  	/*
+> @@ -817,6 +824,9 @@ int btrfs_csum_one_bio(struct btrfs_bio *bbio, struct bio *bio, bool async)
+>  	struct btrfs_ordered_sum *sums;
+>  	unsigned nofs_flag;
+>  
+> +	if (inode_skip_csum(inode))
+> +		return 0;
+> +
+>  	nofs_flag = memalloc_nofs_save();
+>  	sums = kvzalloc(btrfs_ordered_sum_size(fs_info, bio->bi_iter.bi_size),
+>  		       GFP_KERNEL);
+> diff --git a/fs/btrfs/fscrypt.c b/fs/btrfs/fscrypt.c
+> index 5d34a8b94da5..924ee3df7f32 100644
+> --- a/fs/btrfs/fscrypt.c
+> +++ b/fs/btrfs/fscrypt.c
+> @@ -16,6 +16,7 @@
+>  #include "transaction.h"
+>  #include "volumes.h"
+>  #include "xattr.h"
+> +#include "file-item.h"
+>  
+>  /*
+>   * From a given location in a leaf, read a name into a qstr (usually a
+> @@ -212,6 +213,33 @@ static struct block_device **btrfs_fscrypt_get_devices(struct super_block *sb,
+>  	return devs;
+>  }
+>  
+> +static blk_status_t btrfs_process_encrypted_bio(struct bio *orig_bio,
+> +						struct bio *enc_bio)
+> +{
+> +	struct btrfs_bio *bbio;
+> +
+> +	/*
+> +	 * If our bio is from the normal fs_bio_set then we know this is a
+> +	 * mirror split and we can skip it, we'll get the real bio on the last
+> +	 * mirror and we can process that one.
+> +	 */
+> +	if (orig_bio->bi_pool == &fs_bio_set)
+> +		return BLK_STS_OK;
+> +
+> +	bbio = btrfs_bio(orig_bio);
+> +
+> +	if (bio_op(orig_bio) == REQ_OP_READ) {
+> +		/*
+> +		 * We have ->saved_iter based on the orig_bio, so if the block
+> +		 * layer changes we need to notice this asap so we can update
+> +		 * our code to handle the new world order.
+> +		 */
+> +		ASSERT(orig_bio == enc_bio);
+> +		return btrfs_check_encrypted_read_bio(bbio, enc_bio);
+> +	}
+> +	return btrfs_csum_one_bio(bbio, enc_bio, false);
 
-Hi Eric,
+Honestly, all this shows that the architecture of the I/O path in this
+series is pretty broken.  It needs all this magic detection, and the
+passing of arguments that mixes the bbio for state and the lower
+encrypted bio without the btrfs context shows something doesn't work
+well.
 
-This is just a gentle ping.
-I was wondering if you had a chance to look at this version?
-I believe all your previous feedback has been addressed and this
-version is solid.
-Please, let me know your thoughts.
+So let's take a step back, if we think of the I/O pipeline, it should do
+things in this order for writes:
 
-Regards,
-Daniel
+ - encrypt data
+ - generate checksums
+ - do mirroring/striping/parity
 
-> There are a few changes since v5 [1]:
->  * Rebased to btrfs/for-next branch.  Couple things changed in the last
->    years.  A few patches were dropped as the code cleaned up or refactored.
->    More details in the patches themselves.
->  * As suggested by Qu and Dave, the on-disk format of storing the extent
->    encryption context was re-designed.  Now, a new tree item with dedicated
->    key is inserted instead of extending the file extent item.  As a result
->    a special care needs to be taken when removing the encrypted extents
->    to also remove the related encryption context item.
->  * Fixed bugs found during testing.
->
-> Have a nice day,
-> Daniel
->
-> [1] v5 https://lore.kernel.org/linux-btrfs/cover.1706116485.git.josef@toxicpanda.com/
-> [2]    https://lore.kernel.org/linux-btrfs/20251112193611.2536093-1-neelx@suse.com/
-> [3] v6 https://lore.kernel.org/linux-btrfs/20260206182336.1397715-1-neelx@suse.com/
->
-> Josef Bacik (33):
->   fscrypt: add per-extent encryption support
->   fscrypt: allow inline encryption for extent based encryption
->   fscrypt: add a __fscrypt_file_open helper
->   fscrypt: conditionally don't wipe mk secret until the last active user
->     is done
->   blk-crypto: add a process bio callback
->   fscrypt: add a process_bio hook to fscrypt_operations
->   fscrypt: add documentation about extent encryption
->   btrfs: add infrastructure for safe em freeing
->   btrfs: select encryption dependencies if FS_ENCRYPTION
->   btrfs: add fscrypt_info and encryption_type to ordered_extent
->   btrfs: plumb through setting the fscrypt_info for ordered extents
->   btrfs: populate the ordered_extent with the fscrypt context
->   btrfs: keep track of fscrypt info and orig_start for dio reads
->   btrfs: add extent encryption context tree item type
->   btrfs: pass through fscrypt_extent_info to the file extent helpers
->   btrfs: implement the fscrypt extent encryption hooks
->   btrfs: setup fscrypt_extent_info for new extents
->   btrfs: populate ordered_extent with the orig offset
->   btrfs: set the bio fscrypt context when applicable
->   btrfs: add a bio argument to btrfs_csum_one_bio
->   btrfs: limit encrypted writes to 256 segments
->   btrfs: implement process_bio cb for fscrypt
->   btrfs: implement read repair for encryption
->   btrfs: add test_dummy_encryption support
->   btrfs: make btrfs_ref_to_path handle encrypted filenames
->   btrfs: deal with encrypted symlinks in send
->   btrfs: decrypt file names for send
->   btrfs: load the inode context before sending writes
->   btrfs: set the appropriate free space settings in reconfigure
->   btrfs: support encryption with log replay
->   btrfs: disable auto defrag on encrypted files
->   btrfs: disable encryption on RAID5/6
->   btrfs: disable send if we have encryption enabled
->
-> Omar Sandoval (6):
->   fscrypt: expose fscrypt_nokey_name
->   btrfs: start using fscrypt hooks
->   btrfs: add inode encryption contexts
->   btrfs: add new FEATURE_INCOMPAT_ENCRYPT flag
->   btrfs: adapt readdir for encrypted and nokey names
->   btrfs: implement fscrypt ioctls
->
-> Sweet Tea Dorminy (4):
->   btrfs: handle nokey names
->   btrfs: add get_devices hook for fscrypt
->   btrfs: set file extent encryption excplicitly
->   btrfs: add fscrypt_info and encryption_type to extent_map
->
->  Documentation/filesystems/fscrypt.rst |  41 +++
->  block/blk-crypto-fallback.c           |  41 +++
->  block/blk-crypto-internal.h           |   8 +
->  block/blk-crypto-profile.c            |   2 +
->  block/blk-crypto.c                    |   6 +-
->  fs/btrfs/Kconfig                      |   4 +
->  fs/btrfs/Makefile                     |   1 +
->  fs/btrfs/accessors.h                  |   2 +
->  fs/btrfs/backref.c                    |  43 ++-
->  fs/btrfs/bio.c                        | 155 +++++++++-
->  fs/btrfs/bio.h                        |  14 +-
->  fs/btrfs/btrfs_inode.h                |   7 +-
->  fs/btrfs/compression.c                |   6 +
->  fs/btrfs/ctree.h                      |   3 +
->  fs/btrfs/defrag.c                     |  14 +
->  fs/btrfs/delayed-inode.c              |  25 +-
->  fs/btrfs/delayed-inode.h              |   5 +-
->  fs/btrfs/dir-item.c                   | 110 ++++++-
->  fs/btrfs/dir-item.h                   |  10 +-
->  fs/btrfs/direct-io.c                  |  28 +-
->  fs/btrfs/disk-io.c                    |   3 +-
->  fs/btrfs/extent_io.c                  | 115 ++++++-
->  fs/btrfs/extent_io.h                  |   3 +
->  fs/btrfs/extent_map.c                 | 102 ++++++-
->  fs/btrfs/extent_map.h                 |  26 ++
->  fs/btrfs/file-item.c                  |  28 +-
->  fs/btrfs/file-item.h                  |   2 +-
->  fs/btrfs/file.c                       |  79 +++++
->  fs/btrfs/fs.h                         |   6 +-
->  fs/btrfs/fscrypt.c                    | 413 ++++++++++++++++++++++++++
->  fs/btrfs/fscrypt.h                    |  86 ++++++
->  fs/btrfs/inode.c                      | 404 +++++++++++++++++++------
->  fs/btrfs/ioctl.c                      |  41 ++-
->  fs/btrfs/ordered-data.c               |  35 ++-
->  fs/btrfs/ordered-data.h               |  14 +
->  fs/btrfs/reflink.c                    |  43 ++-
->  fs/btrfs/root-tree.c                  |   9 +-
->  fs/btrfs/root-tree.h                  |   2 +-
->  fs/btrfs/send.c                       | 134 ++++++++-
->  fs/btrfs/super.c                      |  99 +++++-
->  fs/btrfs/super.h                      |   3 +-
->  fs/btrfs/sysfs.c                      |   6 +
->  fs/btrfs/tree-checker.c               |  64 +++-
->  fs/btrfs/tree-log.c                   |  34 ++-
->  fs/btrfs/volumes.c                    |   5 +
->  fs/crypto/crypto.c                    |  10 +-
->  fs/crypto/fname.c                     |  36 ---
->  fs/crypto/fscrypt_private.h           |  51 +++-
->  fs/crypto/hooks.c                     |  38 ++-
->  fs/crypto/inline_crypt.c              |  91 +++++-
->  fs/crypto/keyring.c                   |  18 +-
->  fs/crypto/keysetup.c                  | 164 ++++++++++
->  fs/crypto/policy.c                    |  47 +++
->  include/linux/blk-crypto.h            |  15 +-
->  include/linux/fscrypt.h               | 127 ++++++++
->  include/uapi/linux/btrfs.h            |   1 +
->  include/uapi/linux/btrfs_tree.h       |  26 +-
->  57 files changed, 2665 insertions(+), 240 deletions(-)
->  create mode 100644 fs/btrfs/fscrypt.c
->  create mode 100644 fs/btrfs/fscrypt.h
->
-> --
-> 2.53.0
->
+and reverse for reads.
+
+All this suggest that the btrfs_bio needs to exist for the encrypted
+data.  So I think you'll need to and refactor this, preferably with the
+really annoying two-level callbacks that this really hard to follow (or
+implement).  Your caller is in the file system, and it should be able to
+call fscrypt as helpers instead of going two layers down using direct
+calls and then two layers back up using indirect calls.  The recent
+refactoring that moves the fscrypt fallback above the block layer
+instead of calling it from the bottom should help a lot with that.
+
 
