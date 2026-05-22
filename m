@@ -1,171 +1,137 @@
-Return-Path: <linux-fscrypt+bounces-1608-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-1609-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uGK3KIJHEGrzVgYAu9opvQ
-	(envelope-from <linux-fscrypt+bounces-1608-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 22 May 2026 14:09:38 +0200
+	id QF9eNAtPEGq5VwYAu9opvQ
+	(envelope-from <linux-fscrypt+bounces-1609-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 22 May 2026 14:41:47 +0200
 X-Original-To: lists+linux-fscrypt@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E00C5B395E
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 22 May 2026 14:09:38 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D4A35B44A6
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 22 May 2026 14:41:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 1CA0630BB2EB
-	for <lists+linux-fscrypt@lfdr.de>; Fri, 22 May 2026 12:01:16 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 840063000881
+	for <lists+linux-fscrypt@lfdr.de>; Fri, 22 May 2026 12:18:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F524370AD6;
-	Fri, 22 May 2026 12:00:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C07E03793A5;
+	Fri, 22 May 2026 12:18:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Ykt8rEYk"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="tl+2esFa"
 X-Original-To: linux-fscrypt@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C32D36D9E6
-	for <linux-fscrypt@vger.kernel.org>; Fri, 22 May 2026 12:00:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.128.47
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779451245; cv=pass; b=oYurUVKHkVvpiGg+7ogAPeAvnoBMiq9zMNu/5BJyfxK39r4YFn6ori7Hz4LxnZKA9sN/K2YPS08CJ2HYxx8z8X+166Uv9nMyBgrD61zjB2Ow8kMWy2DBmyHa2sJhQeOuDN1terM+gY8Aup1pflY0A1B8c81nrZO6LGyMizNf5So=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779451245; c=relaxed/simple;
-	bh=xlJ7dUMljsBSIjHOpjWzMVXJP09oDEZOhL9iMhou8is=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Gl9WULGpCAxA/2IWavmElAwGHWVDW1USbWewM63qikwwdJdKmF0YeRsGc1eTg8KDjpru7WwbBDczl8oPHj17ZvnXUzql9P0nNMt6rIwno86vRQWflF/PtYzxTfnLF/ALLJNnw9EJO2qZ8qoicFmGeSN6BTnGWZY2UD22mEAuZKU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Ykt8rEYk; arc=pass smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-48ff4f8ef0dso77156245e9.3
-        for <linux-fscrypt@vger.kernel.org>; Fri, 22 May 2026 05:00:41 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1779451240; cv=none;
-        d=google.com; s=arc-20240605;
-        b=isvWuTcmjkoqOiQBjqB6c9bPVt4TIFN3xJ8rprCA4K55aTmRcigB91fWhIobv8TXOq
-         tNGcxbkd9Zx2u2uI3/bZXSUOrQcb6zMJm6sZ4s2yQ5XmDLijor4iBSQ/bnjEx3k4DTZx
-         ieDtA7iDbyf2V0ugw/qLmvFNnF1yU6iwbad6tn9UYYJX0uMbJv+ikLVEkLqvCtpbtreQ
-         Ug9NFUL+M9RsbzFBMxkgZRfPsvXQTADUaQPXHbYe0zhasWaxPvBjo8w2C9lhr+QiI351
-         VhNj5VMXi95GBdrUEGCKc6ZKfAqNcwPlucrP3xed4XlTqvLcImxMLg2y9kzeV1pRt2UR
-         Qumw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature;
-        bh=xlJ7dUMljsBSIjHOpjWzMVXJP09oDEZOhL9iMhou8is=;
-        fh=I/5smj8CVNsaNIaWvirKUVajLmQ3vCYAnhKhvtCNuJ4=;
-        b=JHsS126qEsXspLSajc6lPl4Ddr4APfqA2/iKw2GlGZeS1dEEMxiiV5BPOUMfn7kD9P
-         2gw5tbB71a3g3fhb27STIG2DlJsB56OP6qAL1TS+C8jVuTI2U/WbJHGiYhr1A+k/NVyU
-         JwGcnbLcbuBzQFjThj2PLOVd1W7xJkp7mHlqSyGUJR1zAmVAO4k2oLTtPLcL46BIVogv
-         Dr/xVsDYWDZeiO0PScGID6U+BFd8b4zREr2X/vW80cGQE3NH1OGOTz89m5RYZbD+Hbnf
-         z0dKjXqBiGX68cMSJRx5axuW0JG9efrCRfm0q8OVWShVlRPnUzb/8qmzNMaDbnogg0v/
-         XjtQ==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1779451240; x=1780056040; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=xlJ7dUMljsBSIjHOpjWzMVXJP09oDEZOhL9iMhou8is=;
-        b=Ykt8rEYkjenflb7/tF/677oVnGU7WtpMdZ6ISzY8xTpgUY0DBn1gluzaFRb00NlMLR
-         xLDc2uU/A2VibLCdHftPzNRSQZiWHxIYzJ4aQ1G5as7cVH2ESs677x4uEeP4ABQ+1Xin
-         d4fW3zhIPaQpSB6A/Smoclf2pUhu5oqV5TNR3Oba7JEoc4yS8bPQwCyHBHWSPaGRXf26
-         OeNrIecdYr6J1T+7NjCAAin82H3sBtzZsbxOWHbmxI5BlgCRp9i/ExfBOYR7FLCB7bxG
-         QB8PG8BVHWtlTgt3buXhNjQpq50tGP/dd2RNRtELocYHswOIPfFLghpCCuF2TLaKJz9b
-         bGKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779451240; x=1780056040;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xlJ7dUMljsBSIjHOpjWzMVXJP09oDEZOhL9iMhou8is=;
-        b=T6gSZqTv3NESOjJ22lrgWLS5jq1eOYOxhHjpii186WMdkmSbrZYl/DuuDZQ6/IJr3n
-         2L6b4V1QGhaU0H3dphjnvP+LLgdCqGwMoZ1e7JxUMVcI+KpVsKFVjOwcsvbQrDIiuhXI
-         Y8GAB/B82eBb/pys9096rE8PdKAY5B4G3MKX4YffFjp4qpgPPWgMPfucYYKPJm5JbhE/
-         fz9OFxdIQVCOXBR8njShe5Jc2l0yAAM5UZ/+cBBn7NcSlQMoDdx+S1HlQAfxXyYM21zX
-         66noELg0I8h/wZKlJ6cBkUFtvsz4G187bq8dfV1Nfs2EpF55HRdKmkQlmM7Z7pfJZY1N
-         FB3Q==
-X-Forwarded-Encrypted: i=1; AFNElJ/caQpvE9rwQgyeu83eRQ3YP9qWY3D4zAXUxytVbOIAqLsirzuHUE6Ngi3Z2exL0D7sgraU4TWLcEy08GLA@vger.kernel.org
-X-Gm-Message-State: AOJu0YxLM15eIgzfa/IVNjXDQ2nAlDQZUMGorZ3lpc9XLETl7X9KVa+u
-	ZTY2fHsPijFYyGShSvw17XUVKgy5iFWe/7iZ4qi9aqcuKuDeZNqtU2890mJXoLc+WiNTwvjokxp
-	+sZuwP9L9XZNFLnDRLAOuwygbTx1AKQ85xuNanTu8yw==
-X-Gm-Gg: Acq92OHRJJ3LNMWIIY5QGCGM+yMXmsaluUOdmAFI28aMBwY66D3xa4/q6hsYn5c4CAe
-	+Yqb4uoJBsqp582EFzyaIoOamBbtCgD8MpOzCDcRUZC8mC3oyt66tqNj6cLYPJ48E3uh0tdlFGG
-	Az2/R1acW08zwomUqSFQTXTtC9Gt06BdJQ8ttwCN+i1Ft7fE5dDJdgWuDO9GsW1LIASdh4zmA+C
-	8HWyUOBgHHQ/q5FpK6SjpNfqEnOStVur9FRUBfMxjYTEPvvD0+u36gqwveNd4HhAVTlGfIoDksl
-	BoBuSH06Sc/WPpHEpf7C+8F+5lFxZRmylpCSXNR0DtsFMc5lYkTUUe3BTf3T6hjj2HJzAY1VirB
-	cdJ43oTFfiIkDncE=
-X-Received: by 2002:a05:600c:3547:b0:48a:7b55:12a6 with SMTP id
- 5b1f17b1804b1-4904224b05emr46591285e9.0.1779451239711; Fri, 22 May 2026
- 05:00:39 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5068376A00;
+	Fri, 22 May 2026 12:18:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1779452285; cv=none; b=YqMij1JdNvh5i62zOat8Sc1RY/v9zAPlvHLgrgwj0in88STgH/T9eeBLUSL0fngbiMHN47leLTpvt2/ia9ScURZfRgfDzFrBFMvscs1PdCZX08MCdxhZU++49Ma6pNRbOIqo1tKkvxKfHq7BYE/UhksgWIVhcd6jHfKdXTRRxIY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1779452285; c=relaxed/simple;
+	bh=+bwVQxCtYAARuViyAu2lWTqAKz2VlyDWQ46QRjxS+YA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MCUV+rxVRFnwPZDdWT1RjjyhNaRdftfhsuBVLRb/xQ6HEH+T51BAEl3p7ADVZLoHKB1JA0o8pe5PCjm7ySZO7q/La5imWL19ahga3doPjsC814j7n8iB5aNNdXo8t6dHOfhhYgpq0ohnTuoObl/lrA6nxgQhef94FUw3k336mdw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=tl+2esFa; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=xcNjjov5dS8ZNSpJFINCrXwPB3eKvqxYhbVIIDTuLiA=; b=tl+2esFaipW1sJZ2uB/0GOaOZ1
+	vFu7CkHLdq/Nr+vvVPkb4umgmvD53pPdu4DYhG/xx7IGiPW56aSXCSN2t9Oym6VE+KGd+ft6UDALz
+	JEloYbHdTwHQWZMw91r7au7IUH9aBlH2/EWOe7hhyl+xD297uCrhiztVxHK5MpZ13owa8Om7cmSaw
+	BxYhCNYr/FPk09PocC8vMhh4JsUuWxNFaZJ7YxEIeAHSEyAdAgI63wlDqhOl7Ziiu1oSPVIU8Tx8C
+	WMXZdqn8GzgFkGlcJ2eYnJ2Zrxhph7hsHMtEjyvKrGlGXWOSEh8pN1unw6cSOyrv6Q/5hpX2kU8qI
+	z4a9+4ZA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.99.1 #2 (Red Hat Linux))
+	id 1wQOpB-0000000Al38-49AR;
+	Fri, 22 May 2026 12:17:57 +0000
+Date: Fri, 22 May 2026 05:17:57 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Daniel Vacek <neelx@suse.com>
+Cc: Christoph Hellwig <hch@infradead.org>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	Eric Biggers <ebiggers@kernel.org>,
+	"Theodore Y. Ts'o" <tytso@mit.edu>,
+	Jaegeuk Kim <jaegeuk@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+	David Sterba <dsterba@suse.com>, linux-block@vger.kernel.org,
+	linux-fscrypt@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Subject: Re: [PATCH v7 17/43] btrfs: add get_devices hook for fscrypt
+Message-ID: <ahBJdSKMly8rv04F@infradead.org>
+References: <20260513085340.3673127-1-neelx@suse.com>
+ <20260513085340.3673127-18-neelx@suse.com>
+ <ahAfvPa_yl6AKZoW@infradead.org>
+ <CAPjX3FeoGzNOBnmY5ie34irNaAOZiFqV_Ccf7dXFrZJeUXh8PA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
 List-Subscribe: <mailto:linux-fscrypt+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260513085340.3673127-1-neelx@suse.com> <20260513085340.3673127-18-neelx@suse.com>
- <ahAfvPa_yl6AKZoW@infradead.org>
-In-Reply-To: <ahAfvPa_yl6AKZoW@infradead.org>
-From: Daniel Vacek <neelx@suse.com>
-Date: Fri, 22 May 2026 14:00:28 +0200
-X-Gm-Features: AVHnY4L-B6zCGkAkTyjhybBzvlntESV7mYOAACpjsS69rRBft3tIVAlMyDpZ2_s
-Message-ID: <CAPjX3FeoGzNOBnmY5ie34irNaAOZiFqV_Ccf7dXFrZJeUXh8PA@mail.gmail.com>
-Subject: Re: [PATCH v7 17/43] btrfs: add get_devices hook for fscrypt
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, Eric Biggers <ebiggers@kernel.org>, 
-	"Theodore Y. Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>, Jens Axboe <axboe@kernel.dk>, 
-	David Sterba <dsterba@suse.com>, linux-block@vger.kernel.org, 
-	linux-fscrypt@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPjX3FeoGzNOBnmY5ie34irNaAOZiFqV_Ccf7dXFrZJeUXh8PA@mail.gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[infradead.org:s=bombadil.20210309];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-1608-lists,linux-fscrypt=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-1609-lists,linux-fscrypt=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	DKIM_TRACE(0.00)[infradead.org:+];
 	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[neelx@suse.com,linux-fscrypt@vger.kernel.org];
-	DKIM_TRACE(0.00)[suse.com:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TAGGED_RCPT(0.00)[linux-fscrypt];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,mail.gmail.com:mid,suse.com:dkim,infradead.org:email]
-X-Rspamd-Queue-Id: 4E00C5B395E
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[hch@infradead.org,linux-fscrypt@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[linux-fscrypt];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[infradead.org:mid,infradead.org:dkim,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 9D4A35B44A6
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Fri, 22 May 2026 at 11:19, Christoph Hellwig <hch@infradead.org> wrote:
-> On Wed, May 13, 2026 at 10:52:51AM +0200, Daniel Vacek wrote:
-> > From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-> >
-> > Since extent encryption requires inline encryption, even though we
-> > expect to use the inlinecrypt software fallback most of the time, we
-> > need to enumerate all the devices in use by btrfs.
->
-> How does this handled adding/removing devices at runtime?
+On Fri, May 22, 2026 at 02:00:28PM +0200, Daniel Vacek wrote:
+> > How does this handled adding/removing devices at runtime?
+> 
+> When called, this callback returns the list of bdevs opened by the
+> given superblock. If devices are added or removed, this function
+> returns a different list.
+> In other words it always returns a valid list.
+> 
+> This is called from `fscrypt_get_devices()`, which is called from
+> `fscrypt_select_encryption_impl()` or
+> `fscrypt_prepare_inline_crypt_key()` or
+> `fscrypt_destroy_inline_crypt_key()`. All these functions walk the
+> returned list and discard it immediately afterwards.
+> 
+> Note that with btrfs at this point we're only using the inline crypto fallback.
+> Is there any particular reason you asked this question?
 
-When called, this callback returns the list of bdevs opened by the
-given superblock. If devices are added or removed, this function
-returns a different list.
-In other words it always returns a valid list.
+Well, assume you have a single device fs, and then you add a device
+later, you will not get the blk_crypto_config_supported call for this
+device, and it will not be taken into account.
 
-This is called from `fscrypt_get_devices()`, which is called from
-`fscrypt_select_encryption_impl()` or
-`fscrypt_prepare_inline_crypt_key()` or
-`fscrypt_destroy_inline_crypt_key()`. All these functions walk the
-returned list and discard it immediately afterwards.
+Now can btrfs even support hardware inline encryption?  The way the bio
+processing is special cased I somehow doubt it.  But the concept of a
+static device list just doesn't work for btrfs, so I think the fscrypt
+side of this will need refactoring not to rely on it.  If we never
+support hardware inline encryption on such dynamic file systems that
+would be relative easy, if we need to support that case things might
+get a lot more complicated.
 
-Note that with btrfs at this point we're only using the inline crypto fallback.
-Is there any particular reason you asked this question?
-
---nX
 
