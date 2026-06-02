@@ -1,64 +1,64 @@
-Return-Path: <linux-fscrypt+bounces-1621-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-1622-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oOFfFMUZHmokhQkAu9opvQ
-	(envelope-from <linux-fscrypt+bounces-1621-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 02 Jun 2026 01:46:13 +0200
+	id eGPoGIxAHmraiAkAu9opvQ
+	(envelope-from <linux-fscrypt+bounces-1622-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 02 Jun 2026 04:31:40 +0200
 X-Original-To: lists+linux-fscrypt@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB2FE6266BC
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 02 Jun 2026 01:46:12 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2AE36273DB
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 02 Jun 2026 04:31:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A1EDB3020A65
-	for <lists+linux-fscrypt@lfdr.de>; Mon,  1 Jun 2026 23:44:58 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 10C1830048DD
+	for <lists+linux-fscrypt@lfdr.de>; Tue,  2 Jun 2026 02:27:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC907391E6D;
-	Mon,  1 Jun 2026 23:44:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96443360ECE;
+	Tue,  2 Jun 2026 02:27:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hYn5XAhI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TBp6yDOS"
 X-Original-To: linux-fscrypt@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E078238E8D9;
-	Mon,  1 Jun 2026 23:44:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F14614B08A;
+	Tue,  2 Jun 2026 02:27:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780357497; cv=none; b=kIQtQfRnZH5oG2MovWIY0EN4sWS8uxvItITEl0e8aZ6wreEEQQAUD5gghP8DaYdbG555rbMmyX/46ULT8rOe7u/Vnk1kGBAep/BJi/AvmagMfMqqoSK4gbOdNTYebMMv2rYXlupQSV9Td7A4CwF/i3UZviuzSOl6n/LPs0uGGEg=
+	t=1780367238; cv=none; b=V00FjfnuELWl/2VG1RpFAniLdqA92zwTaP6LDK8lN11a8b8xFv/GzwhCkHNIQMIyT/avYuAagC41GEhjvuoVpIvZQxU2bkdHlHQDXaXz0HMxtExh+hJBCrO35KWlOAe+/YpI9GdCyLknXp8lv7J7AiV3SxyQPS1V4ptqpdfxL3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780357497; c=relaxed/simple;
-	bh=cCb524vOddz8Hiye01fLD0AwPPojC5wz3lc/rB0xB4I=;
+	s=arc-20240116; t=1780367238; c=relaxed/simple;
+	bh=xh5UTebwoTaJowF/caom4XsBxJnvBYNsa8feunb0Nh0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UoUXonXpQg4IhuTql8CGFHzWYzPcccEWa4tjfHu5j8x9WcNOG8JT5nT1UelTNI2tu/N8jOFt6qTVxsGww59KbrJG6IANUEHsSZbM051a+60w1LiIowO+mpBitCH4yep8r0tb27zekWuVAXsbLTx+OvkA2aem7GxxYg98jfjXFlg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hYn5XAhI; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C2AC1F00893;
-	Mon,  1 Jun 2026 23:44:56 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=XpqwU8ro+cf1OvgzuhocoUgkCJv2o66LrAU72PEJV5UWr0Qu6dc7AE51fUC/u6bruv7XY9HTO9vO7W/nwRwsSjNT+7ij4UShWLTN9/DQLC7IH3XMDmaxh4TG5Z0WLg1+sd/8EU8ODfbpjAEry7OOi3rlknvDkMnLXs+TklIdbos=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TBp6yDOS; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12FBF1F00893;
+	Tue,  2 Jun 2026 02:27:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1780357496;
-	bh=fIDKssFBzilaWK1Rmz+aCBZVd9dtI7u6nXWjJMNn0bk=;
+	s=k20260515; t=1780367237;
+	bh=rZGdAyljt+9D6Yth8VqYWsVrybBQ37b7qGSayvIDdss=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=hYn5XAhIINtA/yDZ1dCkDJ5BRJUrr4gKl4genkV7zxDX07tEHECbc7PlSJIj/llay
-	 NF2MpN3ewKDvFkHytEVwIW6lSMXwYr09DUOgaJwxzIokk7Haix5/OO4BCEzYHWCNdS
-	 9NLBauGlQwN3VBDKw0CwfDuOk3PBEVqjx3WtBzef8viWU33NQTVDr0XOvw9cDju0eE
-	 zGdXuJQ0F9WLr1ieDmGum5KmnZVifo9aG9oqkOGL1Ra1inNf4jeiAXHjZLTVXd6y/L
-	 k2ZyP61vYpaxbuiPO6x//K2BvqT4iE6vkHJ0js5lPMUC2Eoyy6FguAju9eo1qXK5t8
-	 X3BoOCh6As5aQ==
-Date: Mon, 1 Jun 2026 16:44:54 -0700
+	b=TBp6yDOSpgGe4fBRS1WlG+K1YrLrNf/BhtCuM1ASQKUbZxGwjR18GF4sijAdpUVlU
+	 lOulDcd/GQzR8qmvpb4iM23/W9O7kHkgMmRIkgoHJZi50l5OaEsYjPZKaw4gNBomKO
+	 3JhyTEvVeQBaMqiSEtj9P896Eew3UiNTHymSAETEua8MoNeiEq13M9b1TITfv6ytGO
+	 dnR6B9E9N61yr9Z6XZpJjXdBp2sMy0bjTQIqZWyJjOfJ72uxEO8gOQ0MUCbscFc6Yj
+	 by130FmHjNgftvLWQsaSLO9GsBiUud3HR7WtE4ismnE0o7V8ErgKWjL3AEz5c+rKmZ
+	 cAQQdWdZjOqCw==
+Date: Mon, 1 Jun 2026 19:25:53 -0700
 From: Eric Biggers <ebiggers@kernel.org>
-To: Daniel Vacek <neelx@suse.com>
-Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+To: David Sterba <dsterba@suse.cz>
+Cc: Daniel Vacek <neelx@suse.com>, David Sterba <dsterba@suse.com>,
+	linux-block@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
 	"Theodore Y. Ts'o" <tytso@mit.edu>,
-	Jaegeuk Kim <jaegeuk@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-	David Sterba <dsterba@suse.com>, linux-block@vger.kernel.org,
-	linux-fscrypt@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Omar Sandoval <osandov@osandov.com>,
-	Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: Re: [PATCH v7 13/43] btrfs: adapt readdir for encrypted and nokey
- names
-Message-ID: <20260601234454.GF25574@quark>
+	Jaegeuk Kim <jaegeuk@kernel.org>, Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH v7 00/43] btrfs: add fscrypt support
+Message-ID: <20260602022553.GA2295@sol>
 References: <20260513085340.3673127-1-neelx@suse.com>
- <20260513085340.3673127-14-neelx@suse.com>
+ <CAPjX3FdHJpZUVk2dfA+Ov5K6vOSsOJMUaxCU4G8y1qg6baMXYw@mail.gmail.com>
+ <20260531002812.GA2302@sol>
+ <20260601185730.GE880787@twin.jikos.cz>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
@@ -67,47 +67,51 @@ List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260513085340.3673127-14-neelx@suse.com>
+In-Reply-To: <20260601185730.GE880787@twin.jikos.cz>
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-1621-lists,linux-fscrypt=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-1622-lists,linux-fscrypt=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_TWELVE(0.00)[12];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-fscrypt@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_RCPT(0.00)[linux-fscrypt];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: AB2FE6266BC
+	TAGGED_RCPT(0.00)[linux-fscrypt];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: E2AE36273DB
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, May 13, 2026 at 10:52:47AM +0200, Daniel Vacek wrote:
-> +	/*
-> +	 * TODO: This should maybe be using the crypto API, not the fallback,
-> +	 * but fscrypt uses the fallback and this is only used in emulation of
-> +	 * fscrypt's buffer sha256 method.
-> +	 */
+On Mon, Jun 01, 2026 at 08:57:30PM +0200, David Sterba wrote:
+> The testing is not straightforward as it needs 3 projects to
+> synchronize, kernel, fstests and btrfs-progs. Testing may need to use
+> custom git branches for all of them. For btrfs-progs the changes will ge
+> it in soon. For fstests it can be a chicken-egg problem, as they don't
+> accept tests for unmerged code. We've been using our fstests [1] with
+> additional fixups (not upstreamable, related to CI workarounds). Though
+> I'm not sure if Daniel has updated the branch with his most recent
+> version.
+> 
+> [1] https://github.com/btrfs/fstests branch staging
 
-You can delete this TODO.  The SHA-256 library functions just do the
-right thing now.
+Where are the btrfs-progs changes, then?  I'd like to try this out, but
+there's no way to do it without the btrfs-progs changes.
 
 - Eric
 
