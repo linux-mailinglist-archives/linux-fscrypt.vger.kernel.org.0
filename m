@@ -1,50 +1,50 @@
-Return-Path: <linux-fscrypt+bounces-1628-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-1629-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mIjrKotKHmq+iQkAu9opvQ
-	(envelope-from <linux-fscrypt+bounces-1628-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 02 Jun 2026 05:14:19 +0200
+	id oG8dN3xOHmrmiQkAu9opvQ
+	(envelope-from <linux-fscrypt+bounces-1629-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 02 Jun 2026 05:31:08 +0200
 X-Original-To: lists+linux-fscrypt@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53D0B627998
-	for <lists+linux-fscrypt@lfdr.de>; Tue, 02 Jun 2026 05:14:19 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4946F627C98
+	for <lists+linux-fscrypt@lfdr.de>; Tue, 02 Jun 2026 05:31:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id A7CCA300679A
-	for <lists+linux-fscrypt@lfdr.de>; Tue,  2 Jun 2026 03:14:18 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D841C3025731
+	for <lists+linux-fscrypt@lfdr.de>; Tue,  2 Jun 2026 03:27:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1F12337BBD;
-	Tue,  2 Jun 2026 03:14:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD905366DB9;
+	Tue,  2 Jun 2026 03:27:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VDON9IYZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SA2RrcxG"
 X-Original-To: linux-fscrypt@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E07D027F19F;
-	Tue,  2 Jun 2026 03:14:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74C5B2E06E4;
+	Tue,  2 Jun 2026 03:26:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780370056; cv=none; b=gbawptisuuha0rFQxEjf/IpO0bRSb5eh5WK9FG/zDlnsR3TxneyWb0vyswfz4IQVjkcj8fE3KTlhwy8iip/GRcfjPqWBwwENWP3NeeEG4MvGr1x2UMGr6x6tyVPbwhzk5ZUT8ZmFbofGAs7VoPL0fS6GVOhvsuh50lKHVWdn+po=
+	t=1780370820; cv=none; b=XUAipFpyHpR2Jbyza11KQv93zn5EbwDIW1CTLBX8TItitHf2XYz8QhLjbCoadhvJpqFs/cUWKJ9SOVBxJbBpuURz1Bu6nn3E6podcS0fgQgOTfNaQpLGRMw8XtD1NGGMByGcVKmNTdPVY7qHLa4yOAx2Vk3m4Jnii1juJZP+oDs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780370056; c=relaxed/simple;
-	bh=XcuyzpMeexEc4ntKhWKvLmZX5C6PsWn2FLGhM/EaxUg=;
+	s=arc-20240116; t=1780370820; c=relaxed/simple;
+	bh=sOiCbqd6sd7M6p22oDKsCvbwQDHi7E3cb9YQYxPSRVM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EirG8T/N/DOdAZSWcW37rjayWvYE41vYnCfcttn2AlEHHvdQ/D9HhLQ25luHlDYDIuvSnbylqU2dQtl/rMlzXwMMkyi+mSaSLwUZ+af/Bl4NaIq22PCnf6mcjZao+gSkQhmUYnx6mhnzTVJUYJXP5y9DKGwKTJx9/Ys5hZ3CixY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VDON9IYZ; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DB591F00893;
-	Tue,  2 Jun 2026 03:14:15 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=dM2zHQ9CGERX30SgbfQhsS2FBSJcdtPxdtTkIrwz1LfTpxRpblZ2bzV1fqk770R80ZIYU3OEc4xi8644zxdYmhBKwU5hAeRzdnYjd9lLU6sBLHdphswhiLsnl81L7ikJrcv3Qq9i9qzjlYnEPo5nvX7qG8ZyyrqQNz8hizha1dE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SA2RrcxG; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD10D1F00893;
+	Tue,  2 Jun 2026 03:26:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1780370055;
-	bh=0GmIBwr2K9ISMsr5/bEd8rwWJ/NyaURH6TbEH9AUztU=;
+	s=k20260515; t=1780370819;
+	bh=3+ETgr+OhMXlGmjB6rEaEkx+mf2NSa5ihBAMGaz8UPc=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=VDON9IYZe/F0MBtlfVuhPmMoXI9/A8xu/PvpOuYpULWPGXlVILuG5VFbFJQ6DoQ2T
-	 u8GJ3vgn+AfA0yGElhBa9T2fq9xPcKVCNTPfHbsq8Io3/8cCi5/M3RhIicHB+aNSrD
-	 Qr5v0OmRUPkCRqBRINxoAs9EBolPIBBbAbc3smJuUTIJbAuLc88aIAPjurEy9LcaDp
-	 wXPBjnisCsTTuB/NoXYFM1ZcCjejSoMQ70OFRsGfudo1p6Yv+3HKsubWj4AcKiYW+Q
-	 OHESUoB/Teo4vXjBnSiS5XuMwXaVq06me3kUGPsv5k3VP4GUYl7PoINVUCIftj7lsT
-	 EKeNOQe3KGrow==
-Date: Mon, 1 Jun 2026 20:12:51 -0700
+	b=SA2RrcxGxcRUINTVwqUpk1w6s9S4bosswnqURsTQKWY/mw3dwfxF00kA2F8fUHQ9q
+	 FJk7VS1FJXejBsmKPq70+VZeCZhWCaG1Mx/lKaGfIywZq4hW6Zgp4eML7E00ab5seN
+	 X8arQnsgvOA8sNxw2ASjaubrsG8wf63tndQhi2m8GjycSwBwNzz7rBeIx000UVHeWG
+	 14dzoZnzGrdQx9hvuMrdUSKOjxoK9xmnSz4W+uNwlq1HVRrtWvvQVtaixQ+J2clmui
+	 C5nCjB3gjpsnM0+mpQkeVHzi/aNN8Bh80R6mAi/CmkpdUkspbo6fxqVzl+522LR4OS
+	 iSGwsMnab97sQ==
+Date: Mon, 1 Jun 2026 20:25:34 -0700
 From: Eric Biggers <ebiggers@kernel.org>
 To: Daniel Vacek <neelx@suse.com>
 Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
@@ -54,10 +54,10 @@ Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
 	linux-fscrypt@vger.kernel.org, linux-btrfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org, Omar Sandoval <osandov@osandov.com>,
 	Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: Re: [PATCH v7 10/43] btrfs: start using fscrypt hooks
-Message-ID: <20260602031251.GG2295@sol>
+Subject: Re: [PATCH v7 11/43] btrfs: add inode encryption contexts
+Message-ID: <20260602032534.GH2295@sol>
 References: <20260513085340.3673127-1-neelx@suse.com>
- <20260513085340.3673127-11-neelx@suse.com>
+ <20260513085340.3673127-12-neelx@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
@@ -66,20 +66,20 @@ List-Unsubscribe: <mailto:linux-fscrypt+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260513085340.3673127-11-neelx@suse.com>
+In-Reply-To: <20260513085340.3673127-12-neelx@suse.com>
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-1628-lists,linux-fscrypt=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-1629-lists,linux-fscrypt=lfdr.de];
 	RCPT_COUNT_TWELVE(0.00)[13];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
@@ -90,102 +90,196 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-fscrypt@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-fscrypt];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: 53D0B627998
+	DBL_BLOCKED_OPENRESOLVER(0.00)[toxicpanda.com:email,dorminy.me:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,suse.com:email]
+X-Rspamd-Queue-Id: 4946F627C98
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, May 13, 2026 at 10:52:44AM +0200, Daniel Vacek wrote:
-> @@ -9041,20 +9063,28 @@ static int btrfs_symlink(struct mnt_idmap *idmap, struct inode *dir,
->  	};
->  	unsigned int trans_num_items;
->  	int ret;
-> -	int name_len;
->  	int datasize;
->  	unsigned long ptr;
->  	struct btrfs_file_extent_item *ei;
->  	struct extent_buffer *leaf;
-> +	struct fscrypt_str disk_link;
-> +	size_t max_len;
-> +	u32 name_len = strlen(symname);
-> +
-> +	/*
-> +	 * BTRFS_MAX_INLINE_DATA_SIZE() isn't actually telling the truth, we actually
-> +	 * limit inline data extents to min(BTRFS_MAX_INLINE_DATA_SIZE(), sectorsize),
-> +	 * so adjust max_len given this wonderful bit of inconsistency.
-> +	 */
-> +	max_len = min_t(size_t, BTRFS_MAX_INLINE_DATA_SIZE(fs_info), fs_info->sectorsize);
+On Wed, May 13, 2026 at 10:52:45AM +0200, Daniel Vacek wrote:
+> From: Omar Sandoval <osandov@osandov.com>
+> 
+> fscrypt stores a context item with encrypted inodes that contains the
+> related encryption information.  fscrypt provides an arbitrary blob for
+> the filesystem to store, and it does not clearly fit into an existing
+> structure, so this goes in a new item type.
+> 
+> Signed-off-by: Omar Sandoval <osandov@osandov.com>
+> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> Signed-off-by: Daniel Vacek <neelx@suse.com>
+> ---
+> 
+> v7 changes:
+>  * Fix a path leak as found by Chri's AI review.
+> v6 changes:
+>  * Shorten the inode context key macro name to BTRFS_FSCRYPT_INODE_CTX_KEY.
+> v5: https://lore.kernel.org/linux-btrfs/5a88efb484b0874a7430b83bc6e5f6b9aa5858d5.1706116485.git.josef@toxicpanda.com/
+> ---
+>  fs/btrfs/fscrypt.c              | 116 ++++++++++++++++++++++++++++++++
+>  fs/btrfs/fscrypt.h              |   2 +
+>  fs/btrfs/inode.c                |  19 ++++++
+>  fs/btrfs/ioctl.c                |   8 ++-
+>  include/uapi/linux/btrfs_tree.h |  10 +++
+>  5 files changed, 153 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/btrfs/fscrypt.c b/fs/btrfs/fscrypt.c
+> index 6cfba7d94e72..c503f817cbe7 100644
+> --- a/fs/btrfs/fscrypt.c
+> +++ b/fs/btrfs/fscrypt.c
+> @@ -1,10 +1,126 @@
+>  // SPDX-License-Identifier: GPL-2.0
 >  
-> -	name_len = strlen(symname);
->  	/*
-> -	 * Symlinks utilize uncompressed inline extent data, which should not
-> -	 * reach block size.
-> +	 * fscrypt sets disk_link.len to be len + 1, including a NUL terminator,
-> +	 * but we don't store that '\0' character.
->  	 */
-> -	if (name_len > BTRFS_MAX_INLINE_DATA_SIZE(fs_info) ||
-> -	    name_len >= fs_info->sectorsize)
-> -		return -ENAMETOOLONG;
-> +	ret = fscrypt_prepare_symlink(dir, symname, name_len, max_len + 1, &disk_link);
-> +	if (ret)
-> +		return ret;
-
-This is off by one from the other filesystems.  Yes, the way the other
-filesystems do encrypted symlinks is weird, but this still doesn't fix
-it, since the unnecessary 'struct fscrypt_symlink_data' is still stored.
-If it's not being fixed completely, it should just be done the same way.
-
-Did you do it this way because you're trying to squeeze out an extra
-byte, to allow 4094-byte symlink targets instead of 4093 as the other
-filesystems do?  Or did you do it this way because btrfs doesn't count a
-nul terminator when checking unencrypted symlinks against
-BTRFS_MAX_INLINE_DATA_SIZE(fs_info), and you needed to preserve that
-behavior?  But at the same time, btrfs *does* count the nul terminator
-when validating against 'fs_info->sectorsize', and this changes that
-behavior.  So it's not clear what was intended here.
-
-> +	if (IS_ENCRYPTED(inode)) {
-> +		ret = fscrypt_encrypt_symlink(inode, symname, name_len, &disk_link);
-> +		if (ret) {
-> +			btrfs_abort_transaction(trans, ret);
-> +			btrfs_free_path(path);
-> +			discard_new_inode(inode);
-> +			inode = NULL;
-> +			goto out;
-> +		}
-> +	}
-
-fscrypt_encrypt_symlink() already has an IS_ENCRYPTED(inode) check
-built-in.
-
-> +static const char *btrfs_get_link(struct dentry *dentry, struct inode *inode,
-> +				  struct delayed_call *done)
+> +#include <linux/iversion.h>
+>  #include "ctree.h"
+> +#include "accessors.h"
+>  #include "btrfs_inode.h"
+> +#include "disk-io.h"
+> +#include "fs.h"
+>  #include "fscrypt.h"
+> +#include "ioctl.h"
+> +#include "messages.h"
+> +#include "transaction.h"
+> +#include "xattr.h"
+> +
+> +static int btrfs_fscrypt_get_context(struct inode *inode, void *ctx, size_t len)
 > +{
-> +	struct page *cpage;
-> +	const char *paddr;
-> +	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+> +	struct btrfs_key key = {
+> +		.objectid = btrfs_ino(BTRFS_I(inode)),
+> +		.type = BTRFS_FSCRYPT_INODE_CTX_KEY,
+> +		.offset = 0,
+> +	};
+> +	struct btrfs_path *path;
+> +	struct extent_buffer *leaf;
+> +	unsigned long ptr;
+> +	int ret;
 > +
-> +	if (!IS_ENCRYPTED(inode))
-> +		return page_get_link(dentry, inode, done);
 > +
-> +	if (!dentry)
-> +		return ERR_PTR(-ECHILD);
+> +	path = btrfs_alloc_path();
+> +	if (!path)
+> +		return -ENOMEM;
 > +
-> +	cpage = read_mapping_page(inode->i_mapping, 0, NULL);
-> +	if (IS_ERR(cpage))
-> +		return ERR_CAST(cpage);
+> +	ret = btrfs_search_slot(NULL, BTRFS_I(inode)->root, &key, path, 0, 0);
+> +	if (ret) {
+> +		len = -ENOENT;
+> +		goto out;
+> +	}
 > +
-> +	paddr = fscrypt_get_symlink(inode, page_address(cpage),
-> +				    BTRFS_MAX_INLINE_DATA_SIZE(fs_info), done);
-> +	put_page(cpage);
+> +	leaf = path->nodes[0];
+> +	ptr = btrfs_item_ptr_offset(leaf, path->slots[0]);
+> +	/* fscrypt provides max context length, but it could be less */
+> +	len = min_t(size_t, len, btrfs_item_size(leaf, path->slots[0]));
+> +	read_extent_buffer(leaf, ctx, ptr, len);
+> +
+> +out:
+> +	btrfs_free_path(path);
+> +	return len;
+> +}
 
-This uses a different max_len from btrfs_symlink().
+This doesn't conform to the calling convention for
+fscrypt_operations::get_context, specifically in the cases where
+-ENODATA and -ERANGE are expected.
 
-Speaking of symlinks, btrfs is also missing a hookup to
-fscrypt_symlink_getattr().
+        /*
+         * Get the fscrypt context of the given inode.
+         *
+         * @inode: the inode whose context to get
+         * @ctx: the buffer into which to get the context
+         * @len: length of the @ctx buffer in bytes
+         *
+         * Return: On success, returns the length of the context in bytes; this
+         *         may be less than @len.  On failure, returns -ENODATA if the
+         *         inode doesn't have a context, -ERANGE if the context is
+         *         longer than @len, or another -errno code.
+         */
+        int (*get_context)(struct inode *inode, void *ctx, size_t len);
+
+It also seems to be assuming that any error from btrfs_search_slot()
+means "not found", which isn't correct.
+
+The size_t variable called 'len' is also being used to store negative
+errno values, which is weird.
+
+> +static int btrfs_fscrypt_set_context(struct inode *inode, const void *ctx,
+> +				     size_t len, void *fs_data)
+> +{
+> +	struct btrfs_trans_handle *trans = fs_data;
+> +	struct btrfs_key key = {
+> +		.objectid = btrfs_ino(BTRFS_I(inode)),
+> +		.type = BTRFS_FSCRYPT_INODE_CTX_KEY,
+> +		.offset = 0,
+> +	};
+> +	struct btrfs_path *path = NULL;
+> +	struct extent_buffer *leaf;
+> +	unsigned long ptr;
+> +	int ret;
+> +
+> +	if (!trans)
+> +		trans = btrfs_start_transaction(BTRFS_I(inode)->root, 2);
+> +	if (IS_ERR(trans))
+> +		return PTR_ERR(trans);
+> +
+> +	path = btrfs_alloc_path();
+> +	if (!path) {
+> +		ret = -ENOMEM;
+> +		goto out_err;
+> +	}
+> +
+> +	ret = btrfs_search_slot(trans, BTRFS_I(inode)->root, &key, path, 0, 1);
+> +	if (ret < 0)
+> +		goto out_err;
+> +
+> +	if (ret > 0) {
+> +		btrfs_release_path(path);
+> +		ret = btrfs_insert_empty_item(trans, BTRFS_I(inode)->root, path, &key, len);
+> +		if (ret)
+> +			goto out_err;
+> +	}
+> +
+> +	leaf = path->nodes[0];
+> +	ptr = btrfs_item_ptr_offset(leaf, path->slots[0]);
+> +
+> +	len = min_t(size_t, len, btrfs_item_size(leaf, path->slots[0]));
+> +	write_extent_buffer(leaf, ctx, ptr, len);
+> +	btrfs_mark_buffer_dirty(trans, leaf);
+> +	btrfs_release_path(path);
+> +
+> +	if (fs_data)
+> +		goto out_err;
+> +
+> +	BTRFS_I(inode)->flags |= BTRFS_INODE_ENCRYPT;
+> +	btrfs_sync_inode_flags_to_i_flags(BTRFS_I(inode));
+> +	inode_inc_iversion(inode);
+> +	inode_set_ctime_current(inode);
+> +	ret = btrfs_update_inode(trans, BTRFS_I(inode));
+> +	if (ret)
+> +		goto out_abort;
+> +	btrfs_free_path(path);
+> +	btrfs_end_transaction(trans);
+> +	return 0;
+> +out_abort:
+> +	btrfs_abort_transaction(trans, ret);
+> +out_err:
+> +	if (!fs_data)
+> +		btrfs_end_transaction(trans);
+> +	btrfs_free_path(path);
+> +	return ret;
+> +}
+
+The 'len = min_t(size_t, len, btrfs_item_size(leaf, path->slots[0]));'
+line seems scary, since it just truncates the data given.
+
+> @@ -199,7 +203,7 @@ static int check_fsflags(unsigned int old_flags, unsigned int flags)
+>  		      FS_NOATIME_FL | FS_NODUMP_FL | \
+>  		      FS_SYNC_FL | FS_DIRSYNC_FL | \
+>  		      FS_NOCOMP_FL | FS_COMPR_FL |
+> -		      FS_NOCOW_FL))
+> +		      FS_NOCOW_FL | FS_ENCRYPT_FL))
+>  		return -EOPNOTSUPP;
+
+Do you know why FS_VERITY_FL isn't in this mask?
 
 - Eric
 
