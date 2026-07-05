@@ -1,51 +1,51 @@
-Return-Path: <linux-fscrypt+bounces-1734-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-1735-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id fzS9M7C1Smp/GgEAu9opvQ
-	(envelope-from <linux-fscrypt+bounces-1734-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
-	for <lists+linux-fscrypt@lfdr.de>; Sun, 05 Jul 2026 21:51:12 +0200
+	id plngFju1SmpTGgEAu9opvQ
+	(envelope-from <linux-fscrypt+bounces-1735-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
+	for <lists+linux-fscrypt@lfdr.de>; Sun, 05 Jul 2026 21:49:15 +0200
 X-Original-To: lists+linux-fscrypt@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B8A570B315
-	for <lists+linux-fscrypt@lfdr.de>; Sun, 05 Jul 2026 21:51:12 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEDD270B2A3
+	for <lists+linux-fscrypt@lfdr.de>; Sun, 05 Jul 2026 21:49:14 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=DzDhKMnH;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=SW287yyj;
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	spf=pass (mail.lfdr.de: domain of "linux-fscrypt+bounces-1734-lists+linux-fscrypt=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-fscrypt+bounces-1734-lists+linux-fscrypt=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "linux-fscrypt+bounces-1735-lists+linux-fscrypt=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="linux-fscrypt+bounces-1735-lists+linux-fscrypt=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 3AC1F302A71C
-	for <lists+linux-fscrypt@lfdr.de>; Sun,  5 Jul 2026 19:48:36 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 4672D301426C
+	for <lists+linux-fscrypt@lfdr.de>; Sun,  5 Jul 2026 19:48:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E663E3A718C;
-	Sun,  5 Jul 2026 19:48:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C4503A6F1A;
+	Sun,  5 Jul 2026 19:48:14 +0000 (UTC)
 X-Original-To: linux-fscrypt@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58BBD3A1E67;
-	Sun,  5 Jul 2026 19:48:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A505F3A6B70;
+	Sun,  5 Jul 2026 19:48:12 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783280892; cv=none; b=nbpWZlLiq4sGu+Fzm03TKgxZ815hO9ojHCfZpnConDd6i+B7NM21SB5xEHBlVc7nAcVxuaPiG08fX1B2xTvyFfhsO42ew8msQM44zSBjVjyWNrGAGLVM1ArxqWzxEeSknRTZgsU1do+18bhXCue0rdoox3E8DctfWEwVKU2QzvA=
+	t=1783280893; cv=none; b=M2l54n/3fztdezDzHKbHL6qkXe2XrJSKXbDAhZiR/wmwbB8l+vAu8pUc9RZl/Pdbb3lsLM9kux75XHTCedK4HuVr1kq1zjrHsVutkL9GhTvep0y6YxRACNE1JvLz+kW8O8BvhtedB5DLEkZ9Mr8gsULl6YQqsu0VeDQW826l9Ew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783280892; c=relaxed/simple;
-	bh=TQyWDqp3EVj8kEvv77n569ZFzPWNcyiYoqxYiEnYNCk=;
+	s=arc-20240116; t=1783280893; c=relaxed/simple;
+	bh=ORNHwH2+A1QgJWZ5vqYcA+uoaLOgVvAGAYEn1kS0/OM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=V6eo8MeoUYNnOPEDZsedD0gKqaagH+clnR7kCbXo0FlPYkQSK6yMTJUh/s1wJ9bcQB5F2RLchdpJMHwfpNDkjILQxOo1W812j6qMoPBrz7AJqUwCIHmXp9wqCF/foO/XKLDQM2uQvoIGXFLaNkw5wzjJSOEVLagCnYDeSgajyWs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DzDhKMnH; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0E561F00AC4;
-	Sun,  5 Jul 2026 19:48:09 +0000 (UTC)
+	 MIME-Version; b=u47Zc3EMfKPrn+H8E1exiiaoCaNZbFlNQauCLo2qsyhjceoLAO4wB+3dh3196ocxe7ht2KREHSruNb0T4Fvx664e7tWkvEUyIlADT+r3ahowowRzqlpmZUUZaJ7/J6H7qCB7pCv74VJ6rWeyqNBmUheBkupm833AQT5Dfu0jvM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SW287yyj; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 699B41F00A3A;
+	Sun,  5 Jul 2026 19:48:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783280891;
-	bh=MSLFNrO7YzcOapce6bl5+n1FNFmwuV69TgvzhMU3SXY=;
+	s=k20260515; t=1783280892;
+	bh=htUAXJYIiw7QAOgR27oV+3eHKQdd5p6jbnsdVP1KIck=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=DzDhKMnHVrlEeEe/hSQ62dqb3eWUH9nDSlDFWXaNfiFMNQx3OQ/2quj12m7ZcfCeS
-	 6+2opiF82sm2PA12poEAND4J+8WrSE7RHJpeas2XVFTBYC/K+y3+X7zU3+V/aqw83z
-	 gymlYPYgYwWaWzRICkiz0DkIBVEEYjM8mPwJ3IljurdR0MA7p2QPfHzz5nRhPyL1hZ
-	 RQnTI7SpaRBln+jFdP4NEwki15aKyRk/+QSWp/vd+3PIviKjxsaLBn/c3sykVLLdZZ
-	 HIADx6tqMT4bF4aooZNypecF6gCSREeiQDniNRkx5B4n9d0pXwUw5pplIiIUV8iELK
-	 RhOpA9Jq0LBwA==
+	b=SW287yyjVhn0pZnV2uEnSBjWk1jrrf3oUlJHzLBwmsa6yDlZZ4wCxcn4WUobtL8kd
+	 b8zgfZEXjwsOG0hKzb4SNC1m5YG95araHg5WNV6r3PMpPpjoTkSKsCyrQ1sN6zGCFh
+	 AwraNsPLJ9D/Yffq0KgVwTdHRu54f+ov2gm++CRKnmSel4cPKAUqCQwsYBH6C/9h2L
+	 8l4ZBLWiVW25uhxJw698uAuf2s43hO9KOHaQIwWpMjfThbwHMTlkUDcU80iUWppQX2
+	 wsjjLb5uAXiW43K89+fzREZnTBXdEOJlVigHM4zH9ZxgM3ZAvJkSjjdBScIymLKSVJ
+	 8Kpx8EHYRWxQA==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-fscrypt@vger.kernel.org
 Cc: linux-fsdevel@vger.kernel.org,
@@ -63,9 +63,9 @@ Cc: linux-fsdevel@vger.kernel.org,
 	Jaegeuk Kim <jaegeuk@kernel.org>,
 	Chao Yu <chao@kernel.org>,
 	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH v2 16/17] fscrypt: Merge bio.c and inline_crypt.c into block.c
-Date: Sun,  5 Jul 2026 12:45:53 -0700
-Message-ID: <20260705194555.75030-17-ebiggers@kernel.org>
+Subject: [PATCH v2 17/17] fscrypt: Add safety checks to non-block-based en/decryption
+Date: Sun,  5 Jul 2026 12:45:54 -0700
+Message-ID: <20260705194555.75030-18-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260705194555.75030-1-ebiggers@kernel.org>
 References: <20260705194555.75030-1-ebiggers@kernel.org>
@@ -85,11 +85,11 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-1734-lists,linux-fscrypt=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-1735-lists,linux-fscrypt=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS(0.00)[m:linux-fscrypt@vger.kernel.org,m:linux-fsdevel@vger.kernel.org,m:linux-ext4@vger.kernel.org,m:linux-f2fs-devel@lists.sourceforge.net,m:linux-block@vger.kernel.org,m:hch@lst.de,m:tytso@mit.edu,m:adilger.kernel@dilger.ca,m:libaokun@linux.alibaba.com,m:jack@suse.cz,m:ojaswin@linux.ibm.com,m:ritesh.list@gmail.com,m:yi.zhang@huawei.com,m:jaegeuk@kernel.org,m:chao@kernel.org,m:ebiggers@kernel.org,m:riteshlist@gmail.com,s:lists@lfdr.de];
 	RCPT_COUNT_TWELVE(0.00)[16];
@@ -109,344 +109,146 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	TAGGED_RCPT(0.00)[linux-fscrypt];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,lst.de:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,lst.de:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 6B8A570B315
+X-Rspamd-Queue-Id: EEDD270B2A3
 
-Now that fscrypt always uses blk-crypto on block-based filesystems,
-there's no meaningful difference between bio.c and inline_crypt.c.
-Therefore merge the two files into one named block.c.
-
-Note: I didn't carry over bio.c's "Copyright (C) 2015, Motorola
-Mobility", as none of the code that applied to remained.
+fscrypt_encrypt_pagecache_blocks(), fscrypt_encrypt_block_inplace(),
+fscrypt_decrypt_block_inplace() would dereference a NULL
+fscrypt_inode_info pointer if they were to be called on a file that
+hasn't been opened yet or on a block-based filesystem.  Since they have
+the ability to report errors anyway, add WARN_ON_ONCE checks for this.
 
 Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Eric Biggers <ebiggers@kernel.org>
 ---
- fs/crypto/Makefile                    |   3 +-
- fs/crypto/bio.c                       | 100 --------------------------
- fs/crypto/{inline_crypt.c => block.c} |  96 +++++++++++++++++++++++--
- fs/crypto/fscrypt_private.h           |   2 +-
- include/linux/fscrypt.h               |  22 +++---
- 5 files changed, 101 insertions(+), 122 deletions(-)
- delete mode 100644 fs/crypto/bio.c
- rename fs/crypto/{inline_crypt.c => block.c} (79%)
+ fs/crypto/crypto.c | 61 +++++++++++++++++++++++++++++-----------------
+ 1 file changed, 39 insertions(+), 22 deletions(-)
 
-diff --git a/fs/crypto/Makefile b/fs/crypto/Makefile
-index 652c7180ec6d..b03e02f0f09d 100644
---- a/fs/crypto/Makefile
-+++ b/fs/crypto/Makefile
-@@ -10,5 +10,4 @@ fscrypto-y := crypto.o \
- 	      keysetup_v1.o \
- 	      policy.o
- 
--fscrypto-$(CONFIG_BLOCK) += bio.o
--fscrypto-$(CONFIG_FS_ENCRYPTION_INLINE_CRYPT) += inline_crypt.o
-+fscrypto-$(CONFIG_BLOCK) += block.o
-diff --git a/fs/crypto/bio.c b/fs/crypto/bio.c
-deleted file mode 100644
-index db095258cfca..000000000000
---- a/fs/crypto/bio.c
-+++ /dev/null
-@@ -1,100 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/*
-- * Utility functions for file contents encryption/decryption on
-- * block device-based filesystems.
-- *
-- * Copyright (C) 2015, Google, Inc.
-- * Copyright (C) 2015, Motorola Mobility
-- */
--
--#include <linux/bio.h>
--#include <linux/export.h>
--#include <linux/module.h>
--#include <linux/namei.h>
--#include <linux/pagemap.h>
--
--#include "fscrypt_private.h"
--
--struct fscrypt_zero_done {
--	atomic_t		pending;
--	blk_status_t		status;
--	struct completion	done;
--};
--
--static void fscrypt_zeroout_range_done(struct fscrypt_zero_done *done)
--{
--	if (atomic_dec_and_test(&done->pending))
--		complete(&done->done);
--}
--
--static void fscrypt_zeroout_range_end_io(struct bio *bio)
--{
--	struct fscrypt_zero_done *done = bio->bi_private;
--
--	if (bio->bi_status)
--		cmpxchg(&done->status, 0, bio->bi_status);
--	fscrypt_zeroout_range_done(done);
--	bio_put(bio);
--}
--
--/**
-- * fscrypt_zeroout_range() - zero out a range of blocks in an encrypted file
-- * @inode: the file's inode
-- * @pos: the first file position (in bytes) to zero out
-- * @sector: the first sector to zero out
-- * @len: bytes to zero out
-- *
-- * Zero out filesystem blocks in an encrypted regular file on-disk, i.e. write
-- * ciphertext blocks which decrypt to the all-zeroes block.  The blocks must be
-- * both logically and physically contiguous.  It's also assumed that the
-- * filesystem only uses a single block device, ->s_bdev.  @len must be a
-- * multiple of the file system logical block size.
-- *
-- * Note that since each block uses a different IV, this involves writing a
-- * different ciphertext to each block; we can't simply reuse the same one.
-- *
-- * Return: 0 on success; -errno on failure.
-- */
--int fscrypt_zeroout_range(const struct inode *inode, loff_t pos,
--			  sector_t sector, u64 len)
--{
--	struct fscrypt_zero_done done = {
--		.pending	= ATOMIC_INIT(1),
--		.done		= COMPLETION_INITIALIZER_ONSTACK(done.done),
--	};
--
--	if (len == 0)
--		return 0;
--
--	do {
--		struct bio *bio;
--		unsigned int n;
--
--		bio = bio_alloc(inode->i_sb->s_bdev, BIO_MAX_VECS, REQ_OP_WRITE,
--				GFP_NOFS);
--		bio->bi_iter.bi_sector = sector;
--		bio->bi_private = &done;
--		bio->bi_end_io = fscrypt_zeroout_range_end_io;
--		fscrypt_set_bio_crypt_ctx(bio, inode, pos, GFP_NOFS);
--
--		for (n = 0; n < BIO_MAX_VECS; n++) {
--			unsigned int bytes_this_page = min(len, PAGE_SIZE);
--
--			__bio_add_page(bio, ZERO_PAGE(0), bytes_this_page, 0);
--			len -= bytes_this_page;
--			pos += bytes_this_page;
--			sector += (bytes_this_page >> SECTOR_SHIFT);
--			if (!len || !fscrypt_mergeable_bio(bio, inode, pos))
--				break;
--		}
--
--		atomic_inc(&done.pending);
--		blk_crypto_submit_bio(bio);
--	} while (len);
--
--	fscrypt_zeroout_range_done(&done);
--
--	wait_for_completion(&done.done);
--	return blk_status_to_errno(done.status);
--}
--EXPORT_SYMBOL(fscrypt_zeroout_range);
-diff --git a/fs/crypto/inline_crypt.c b/fs/crypto/block.c
-similarity index 79%
-rename from fs/crypto/inline_crypt.c
-rename to fs/crypto/block.c
-index 14c8af322c2f..059b7ecc70ea 100644
---- a/fs/crypto/inline_crypt.c
-+++ b/fs/crypto/block.c
-@@ -1,20 +1,20 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-- * Inline encryption support for fscrypt
-+ * File contents en/decryption on block-based filesystems
-  *
-  * Copyright 2019 Google LLC
-  */
- 
- /*
-- * With "inline encryption", the block layer handles the decryption/encryption
-- * as part of the bio, instead of the filesystem doing the crypto itself via
-- * crypto API.  See Documentation/block/inline-encryption.rst.  fscrypt still
-- * provides the key and IV to use.
-+ * This file implements fscrypt's file contents en/decryption using blk-crypto
-+ * (Documentation/block/inline-encryption.rst).  fscrypt assigns a bio_crypt_ctx
-+ * with a key and IV to each bio, and the block layer does the en/decryption.
-+ *
-+ * This file's exported functions are called only by block-based filesystems.
-  */
- 
- #include <linux/blk-crypto.h>
- #include <linux/blkdev.h>
--#include <linux/buffer_head.h>
- #include <linux/export.h>
- #include <linux/sched/mm.h>
- #include <linux/slab.h>
-@@ -341,3 +341,87 @@ u64 fscrypt_limit_io_blocks(const struct inode *inode, u64 lblk, u64 nr_blocks)
- 	return min_t(u64, nr_blocks, (u64)U32_MAX + 1 - dun);
- }
- EXPORT_SYMBOL_GPL(fscrypt_limit_io_blocks);
-+
-+struct fscrypt_zero_done {
-+	atomic_t		pending;
-+	blk_status_t		status;
-+	struct completion	done;
-+};
-+
-+static void fscrypt_zeroout_range_done(struct fscrypt_zero_done *done)
-+{
-+	if (atomic_dec_and_test(&done->pending))
-+		complete(&done->done);
-+}
-+
-+static void fscrypt_zeroout_range_end_io(struct bio *bio)
-+{
-+	struct fscrypt_zero_done *done = bio->bi_private;
-+
-+	if (bio->bi_status)
-+		cmpxchg(&done->status, 0, bio->bi_status);
-+	fscrypt_zeroout_range_done(done);
-+	bio_put(bio);
-+}
-+
-+/**
-+ * fscrypt_zeroout_range() - zero out a range of blocks in an encrypted file
-+ * @inode: the file's inode
-+ * @pos: the first file position (in bytes) to zero out
-+ * @sector: the first sector to zero out
-+ * @len: bytes to zero out
-+ *
-+ * Zero out filesystem blocks in an encrypted regular file on-disk, i.e. write
-+ * ciphertext blocks which decrypt to the all-zeroes block.  The blocks must be
-+ * both logically and physically contiguous.  It's also assumed that the
-+ * filesystem only uses a single block device, ->s_bdev.  @len must be a
-+ * multiple of the file system logical block size.
-+ *
-+ * Note that since each block uses a different IV, this involves writing a
-+ * different ciphertext to each block; we can't simply reuse the same one.
-+ *
-+ * Return: 0 on success; -errno on failure.
-+ */
-+int fscrypt_zeroout_range(const struct inode *inode, loff_t pos,
-+			  sector_t sector, u64 len)
-+{
-+	struct fscrypt_zero_done done = {
-+		.pending	= ATOMIC_INIT(1),
-+		.done		= COMPLETION_INITIALIZER_ONSTACK(done.done),
-+	};
-+
-+	if (len == 0)
-+		return 0;
-+
-+	do {
-+		struct bio *bio;
-+		unsigned int n;
-+
-+		bio = bio_alloc(inode->i_sb->s_bdev, BIO_MAX_VECS, REQ_OP_WRITE,
-+				GFP_NOFS);
-+		bio->bi_iter.bi_sector = sector;
-+		bio->bi_private = &done;
-+		bio->bi_end_io = fscrypt_zeroout_range_end_io;
-+		fscrypt_set_bio_crypt_ctx(bio, inode, pos, GFP_NOFS);
-+
-+		for (n = 0; n < BIO_MAX_VECS; n++) {
-+			unsigned int bytes_this_page = min(len, PAGE_SIZE);
-+
-+			__bio_add_page(bio, ZERO_PAGE(0), bytes_this_page, 0);
-+			len -= bytes_this_page;
-+			pos += bytes_this_page;
-+			sector += (bytes_this_page >> SECTOR_SHIFT);
-+			if (!len || !fscrypt_mergeable_bio(bio, inode, pos))
-+				break;
-+		}
-+
-+		atomic_inc(&done.pending);
-+		blk_crypto_submit_bio(bio);
-+	} while (len);
-+
-+	fscrypt_zeroout_range_done(&done);
-+
-+	wait_for_completion(&done.done);
-+	return blk_status_to_errno(done.status);
-+}
-+EXPORT_SYMBOL(fscrypt_zeroout_range);
-diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-index da9040407d4a..74329e0953d1 100644
---- a/fs/crypto/fscrypt_private.h
-+++ b/fs/crypto/fscrypt_private.h
-@@ -395,7 +395,7 @@ void fscrypt_hkdf_expand(const struct hmac_sha512_key *hkdf, u8 context,
- 			 const u8 *info, unsigned int infolen,
- 			 u8 *okm, unsigned int okmlen);
- 
--/* inline_crypt.c */
-+/* block.c */
- #ifdef CONFIG_FS_ENCRYPTION_INLINE_CRYPT
- static inline bool
- fscrypt_using_inline_encryption(const struct fscrypt_inode_info *ci)
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index acf5b28eb9d7..52ff014aeae6 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -446,10 +446,6 @@ bool fscrypt_match_name(const struct fscrypt_name *fname,
- 			const u8 *de_name, u32 de_name_len);
- u64 fscrypt_fname_siphash(const struct inode *dir, const struct qstr *name);
- 
--/* bio.c */
--int fscrypt_zeroout_range(const struct inode *inode, loff_t pos,
--			  sector_t sector, u64 len);
--
- /* hooks.c */
- int fscrypt_file_open(struct inode *inode, struct file *filp);
- int __fscrypt_prepare_link(struct inode *inode, struct inode *dir,
-@@ -737,14 +733,6 @@ static inline int fscrypt_d_revalidate(struct inode *dir, const struct qstr *nam
- 	return 1;
- }
- 
--/* bio.c */
--
--static inline int fscrypt_zeroout_range(const struct inode *inode, loff_t pos,
--					sector_t sector, u64 len)
--{
--	return -EOPNOTSUPP;
--}
--
- /* hooks.c */
- 
- static inline int fscrypt_file_open(struct inode *inode, struct file *filp)
-@@ -844,7 +832,7 @@ static inline void fscrypt_set_ops(struct super_block *sb,
- 
- #endif	/* !CONFIG_FS_ENCRYPTION */
- 
--/* inline_crypt.c */
-+/* block.c */
- #ifdef CONFIG_FS_ENCRYPTION_INLINE_CRYPT
- 
- void fscrypt_set_bio_crypt_ctx(struct bio *bio, const struct inode *inode,
-@@ -854,6 +842,8 @@ bool fscrypt_mergeable_bio(struct bio *bio, const struct inode *inode,
- 			   loff_t pos);
- 
- u64 fscrypt_limit_io_blocks(const struct inode *inode, u64 lblk, u64 nr_blocks);
-+int fscrypt_zeroout_range(const struct inode *inode, loff_t pos,
-+			  sector_t sector, u64 len);
- 
- #else /* CONFIG_FS_ENCRYPTION_INLINE_CRYPT */
- 
-@@ -873,6 +863,12 @@ static inline u64 fscrypt_limit_io_blocks(const struct inode *inode, u64 lblk,
+diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
+index 27663f4d8705..c91eda62f9a4 100644
+--- a/fs/crypto/crypto.c
++++ b/fs/crypto/crypto.c
+@@ -105,12 +105,17 @@ static int fscrypt_crypt_data_unit(const struct fscrypt_inode_info *ci,
+ 				   struct page *dest_page, unsigned int len,
+ 				   unsigned int offs)
  {
- 	return nr_blocks;
- }
-+
-+static inline int fscrypt_zeroout_range(const struct inode *inode, loff_t pos,
-+					sector_t sector, u64 len)
-+{
-+	return -EOPNOTSUPP;
-+}
- #endif /* !CONFIG_FS_ENCRYPTION_INLINE_CRYPT */
+-	struct crypto_sync_skcipher *tfm = ci->ci_enc_key.tfm;
+-	SYNC_SKCIPHER_REQUEST_ON_STACK(req, tfm);
++	struct crypto_sync_skcipher *tfm;
+ 	union fscrypt_iv iv;
+ 	struct scatterlist dst, src;
+ 	int err;
  
- /**
++	if (WARN_ON_ONCE(ci == NULL)) /* File hasn't been opened yet? */
++		return -ENOKEY;
++	tfm = ci->ci_enc_key.tfm;
++	if (WARN_ON_ONCE(tfm == NULL)) /* Called on block-based filesystem? */
++		return -ENOKEY;
++
+ 	if (WARN_ON_ONCE(len <= 0))
+ 		return -EINVAL;
+ 	if (WARN_ON_ONCE(len % FSCRYPT_CONTENTS_ALIGNMENT != 0))
+@@ -118,18 +123,22 @@ static int fscrypt_crypt_data_unit(const struct fscrypt_inode_info *ci,
+ 
+ 	fscrypt_generate_iv(&iv, index, ci);
+ 
+-	skcipher_request_set_callback(
+-		req, CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
+-		NULL, NULL);
+-	sg_init_table(&dst, 1);
+-	sg_set_page(&dst, dest_page, len, offs);
+-	sg_init_table(&src, 1);
+-	sg_set_page(&src, src_page, len, offs);
+-	skcipher_request_set_crypt(req, &src, &dst, len, &iv);
+-	if (rw == FS_DECRYPT)
+-		err = crypto_skcipher_decrypt(req);
+-	else
+-		err = crypto_skcipher_encrypt(req);
++	{
++		SYNC_SKCIPHER_REQUEST_ON_STACK(req, tfm);
++		skcipher_request_set_callback(req,
++					      CRYPTO_TFM_REQ_MAY_BACKLOG |
++						      CRYPTO_TFM_REQ_MAY_SLEEP,
++					      NULL, NULL);
++		sg_init_table(&dst, 1);
++		sg_set_page(&dst, dest_page, len, offs);
++		sg_init_table(&src, 1);
++		sg_set_page(&src, src_page, len, offs);
++		skcipher_request_set_crypt(req, &src, &dst, len, &iv);
++		if (rw == FS_DECRYPT)
++			err = crypto_skcipher_decrypt(req);
++		else
++			err = crypto_skcipher_encrypt(req);
++	}
+ 	if (err)
+ 		fscrypt_err(ci->ci_inode,
+ 			    "%scryption failed for data unit %llu: %d",
+@@ -153,7 +162,7 @@ static int fscrypt_crypt_data_unit(const struct fscrypt_inode_info *ci,
+  * which the plaintext data was located in the source page.  Any other parts of
+  * the bounce page will be left uninitialized.
+  *
+- * This is for use by the filesystem's ->writepages() method.
++ * This is for use by the ->writepages() method of non-block-based filesystems.
+  *
+  * The bounce page allocation is mempool-backed, so it will always succeed when
+  * @gfp_flags includes __GFP_DIRECT_RECLAIM, e.g. when it's GFP_NOFS.  However,
+@@ -167,14 +176,20 @@ struct page *fscrypt_encrypt_pagecache_blocks(struct folio *folio,
+ {
+ 	const struct inode *inode = folio->mapping->host;
+ 	const struct fscrypt_inode_info *ci = fscrypt_get_inode_info_raw(inode);
+-	const unsigned int du_bits = ci->ci_data_unit_bits;
+-	const unsigned int du_size = 1U << du_bits;
++	unsigned int du_bits;
++	unsigned int du_size;
+ 	struct page *ciphertext_page;
+-	u64 index = ((u64)folio->index << (PAGE_SHIFT - du_bits)) +
+-		    (offs >> du_bits);
++	u64 index;
+ 	unsigned int i;
+ 	int err;
+ 
++	if (WARN_ON_ONCE(ci == NULL)) /* File hasn't been opened yet? */
++		return ERR_PTR(-ENOKEY);
++
++	du_bits = ci->ci_data_unit_bits;
++	du_size = 1U << du_bits;
++	index = (folio_pos(folio) + offs) >> du_bits;
++
+ 	VM_BUG_ON_FOLIO(folio_test_large(folio), folio);
+ 	if (WARN_ON_ONCE(!folio_test_locked(folio)))
+ 		return ERR_PTR(-EINVAL);
+@@ -215,7 +230,8 @@ EXPORT_SYMBOL(fscrypt_encrypt_pagecache_blocks);
+  * arbitrary page, not necessarily in the original pagecache page.  The @inode
+  * and @lblk_num must be specified, as they can't be determined from @page.
+  *
+- * This is not compatible with fscrypt_operations::supports_subblock_data_units.
++ * This function only supports non-block-based filesystems that don't support
++ * sub-block data units (as indicated by the fscrypt_operations fields).
+  *
+  * Return: 0 on success; -errno on failure
+  */
+@@ -245,7 +261,8 @@ EXPORT_SYMBOL(fscrypt_encrypt_block_inplace);
+  * arbitrary page, not necessarily in the original pagecache page.  The @inode
+  * and @lblk_num must be specified, as they can't be determined from @page.
+  *
+- * This is not compatible with fscrypt_operations::supports_subblock_data_units.
++ * This function only supports non-block-based filesystems that don't support
++ * sub-block data units (as indicated by the fscrypt_operations fields).
+  *
+  * Return: 0 on success; -errno on failure
+  */
+@@ -275,7 +292,7 @@ int fscrypt_initialize(struct super_block *sb)
+ 	mempool_t *pool;
+ 
+ 	/* pairs with smp_store_release() below */
+-	if (likely(smp_load_acquire(&fscrypt_bounce_page_pool)))
++	if (smp_load_acquire(&fscrypt_bounce_page_pool))
+ 		return 0;
+ 
+ 	/* No need to allocate a bounce page pool if this FS won't use it. */
 -- 
 2.54.0
 
