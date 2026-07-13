@@ -1,51 +1,51 @@
-Return-Path: <linux-fscrypt+bounces-1758-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-1759-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id Cyw4F+pPVGrbkQMAu9opvQ
-	(envelope-from <linux-fscrypt+bounces-1758-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 13 Jul 2026 04:39:38 +0200
+	id 5/9HKoRQVGo2kgMAu9opvQ
+	(envelope-from <linux-fscrypt+bounces-1759-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 13 Jul 2026 04:42:12 +0200
 X-Original-To: lists+linux-fscrypt@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCDF3746A97
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 13 Jul 2026 04:39:37 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 424EA746BA5
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 13 Jul 2026 04:42:12 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b="jrW/JYM3";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=XrK6UkLD;
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	spf=pass (mail.lfdr.de: domain of "linux-fscrypt+bounces-1758-lists+linux-fscrypt=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-fscrypt+bounces-1758-lists+linux-fscrypt=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "linux-fscrypt+bounces-1759-lists+linux-fscrypt=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-fscrypt+bounces-1759-lists+linux-fscrypt=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id D26853011A44
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 13 Jul 2026 02:39:34 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0E84E302261E
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 13 Jul 2026 02:39:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3004D357CED;
-	Mon, 13 Jul 2026 02:39:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0316357CED;
+	Mon, 13 Jul 2026 02:39:35 +0000 (UTC)
 X-Original-To: linux-fscrypt@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E18F935839E;
-	Mon, 13 Jul 2026 02:39:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 617D6312826;
+	Mon, 13 Jul 2026 02:39:34 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783910374; cv=none; b=OlOFgVUpzn3aaIhI0ckONu7eNsliVmsmfGY4OGQ4bSJuYq343kllcOYsHUYQpZwSXahUxUwDPEIfmMTfI5OArqZrHcabGexZhK9UZTWR2naUj4M2WyR37IK/RyhF3XlWVhE+jZVec9zsv5khyGT3tBc+kEx+JlRYe1mOZUEUGYM=
+	t=1783910375; cv=none; b=biRQq+irMnrPgWR/hrket9oSbnVN4YURHLQmgbNy9xtdWzh/DIfB7PxAC+CFiqZpdv4kP8hrXh/bs2WsXjNwYKWwxL9ZHIxcRWMSZfv9z+468aQwJ0p44jCh56LY41UbZS06PjDiLHnbCEBkSn6wzVlakGjc7ZvPZKRU4519+to=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783910374; c=relaxed/simple;
-	bh=84xiyY9aCfVQAoCwsVVef4h6mO+W3sOkq6IoWGvAuPw=;
+	s=arc-20240116; t=1783910375; c=relaxed/simple;
+	bh=1gH20sMj9WyiUTzdKs7Jw6onX/ZdAHYtk2dhZzNivsQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FCyFKwykNNAaLeQCfXRoP0iLiWbIxqbD2t7h9PyQyd9p072PmrDIpHIQSSvYTMM49gzgQWgqsR/Lkrgjd8ntBb/6Gux6Sh35z8heTP+TQCHC+PKOmXStDv2fi2qRXVFaPnFs1oPn69FKQY+m0IOTk7aV9+9VgMNZmR5YfeSoFHs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jrW/JYM3; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B2961F00A3A;
-	Mon, 13 Jul 2026 02:39:31 +0000 (UTC)
+	 MIME-Version; b=dvWRmDcsTo3bO5okjgR+wK8CcUCukdhCaJoFFRIW82mW1BMgH0jgNDwgGZMY4AsbeKCpi+1QMyJLkkB7i08aEO5Fv53SouxbHo2PNU/YBXtvA0IyGjf+bP8rHayZPtIM7LYqMlQ35d19eyZLuJ4YfA8WMZJ3AjD9AxK8gI4rl4s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XrK6UkLD; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4E8D1F00A3D;
+	Mon, 13 Jul 2026 02:39:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783910372;
-	bh=qHUq8H2gRat8UEbbTCOj349IaUIr6uNiumAUkOuvUW4=;
+	s=k20260515; t=1783910373;
+	bh=mCDh6At6XczSpYrISVO/VKcS3b+jIo/GUafinMXlPuI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=jrW/JYM3ACUG+nhVVkCsyXJIFV5lZoq4QSBhj7fBWsGJSoRCWJYLRmhzHkAJGqMVe
-	 8GZ5fICsJYPHOGTlUM5gr8uGyFKiOAe1vf3DYrG2UtDStan2eFVA870cmpg/X0PaKx
-	 ccev9HVIMioftE4tyM/MJODhjjuyBCOiwQ3s+pogXjAn4Rxx/F1gKG2TcU1xNyOO4A
-	 W5Y26dhNgqIR7Amh9UJgzoFB9y/DQA6EHwk4/o8cHbjtF9kdlffr9IB1mZ88xeOjb8
-	 OIbzkJzROp8E4DhAFrHBB14HnhBZ7pa/85bX5Za/6UkCddKiwmyAGBRdQv7OfIg0GV
-	 1DR9mnRxmQsxA==
+	b=XrK6UkLDZDLNmmnjna+IBH3/d71rOYjFG12jwFkpZqw+/+J2uwQRf+Znc1H4EZLzU
+	 FWyB7gEkju3bMe6D1CH/3RGP/e357bZltZJWW1dguAlJCZweybNPYYlwWqq2V3HIGX
+	 1fT5pzuiKJk1LWP16o+duzCdJyKaGH+iyC/UH7sM+yBtg1UjoTgYx64/S3PAGnyMHf
+	 KeD5J7h7rjFJBk2opZ2zlx6kRx47QWhNKKvFHJGsgKMb/ZoY3NMuYWqVdtwyEcAhh0
+	 TfGsGJEhn/ynH/7DFYjvBfvhMkJR8aEoVwrCGmOI4k37kffKkjYFHGWMnRv/F8UOQG
+	 CwTM6m4/v8KBQ==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-fscrypt@vger.kernel.org
 Cc: linux-fsdevel@vger.kernel.org,
@@ -63,9 +63,9 @@ Cc: linux-fsdevel@vger.kernel.org,
 	Jaegeuk Kim <jaegeuk@kernel.org>,
 	Chao Yu <chao@kernel.org>,
 	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH v3 01/17] blk-crypto: Simplify check for fallback support
-Date: Sun, 12 Jul 2026 22:36:52 -0400
-Message-ID: <20260713023708.9245-2-ebiggers@kernel.org>
+Subject: [PATCH v3 02/17] blk-crypto: Fold __blk_crypto_cfg_supported() into its caller
+Date: Sun, 12 Jul 2026 22:36:53 -0400
+Message-ID: <20260713023708.9245-3-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.55.0
 In-Reply-To: <20260713023708.9245-1-ebiggers@kernel.org>
 References: <20260713023708.9245-1-ebiggers@kernel.org>
@@ -85,11 +85,11 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-1758-lists,linux-fscrypt=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-1759-lists,linux-fscrypt=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS(0.00)[m:linux-fscrypt@vger.kernel.org,m:linux-fsdevel@vger.kernel.org,m:linux-ext4@vger.kernel.org,m:linux-f2fs-devel@lists.sourceforge.net,m:linux-block@vger.kernel.org,m:hch@lst.de,m:tytso@mit.edu,m:adilger.kernel@dilger.ca,m:libaokun@linux.alibaba.com,m:jack@suse.cz,m:ojaswin@linux.ibm.com,m:ritesh.list@gmail.com,m:yi.zhang@huawei.com,m:jaegeuk@kernel.org,m:chao@kernel.org,m:ebiggers@kernel.org,m:riteshlist@gmail.com,s:lists@lfdr.de];
 	RCPT_COUNT_TWELVE(0.00)[16];
@@ -109,37 +109,107 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	TAGGED_RCPT(0.00)[linux-fscrypt];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,lst.de:email,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: DCDF3746A97
+X-Rspamd-Queue-Id: 424EA746BA5
 
-Since blk-crypto-fallback supports all blk_crypto_keys except wrapped
-keys, just check for that condition directly instead of using
-__blk_crypto_cfg_supported().  With this done,
-__blk_crypto_cfg_supported() is now used only for the hardware support.
+__blk_crypto_cfg_supported() is called only by
+blk_crypto_config_supported_natively(), so fold it in.
 
 Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Eric Biggers <ebiggers@kernel.org>
 ---
- block/blk-crypto-fallback.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ block/blk-crypto-internal.h |  3 ---
+ block/blk-crypto-profile.c  | 22 ----------------------
+ block/blk-crypto.c          | 23 +++++++++++++++++++++--
+ 3 files changed, 21 insertions(+), 27 deletions(-)
 
-diff --git a/block/blk-crypto-fallback.c b/block/blk-crypto-fallback.c
-index 2a5c52ab74b4..2a8f40a65158 100644
---- a/block/blk-crypto-fallback.c
-+++ b/block/blk-crypto-fallback.c
-@@ -496,8 +496,7 @@ bool blk_crypto_fallback_bio_prep(struct bio *bio)
- 		return false;
- 	}
+diff --git a/block/blk-crypto-internal.h b/block/blk-crypto-internal.h
+index 742694213529..2c7a0446572a 100644
+--- a/block/blk-crypto-internal.h
++++ b/block/blk-crypto-internal.h
+@@ -80,9 +80,6 @@ void blk_crypto_put_keyslot(struct blk_crypto_keyslot *slot);
+ int __blk_crypto_evict_key(struct blk_crypto_profile *profile,
+ 			   const struct blk_crypto_key *key);
  
--	if (!__blk_crypto_cfg_supported(blk_crypto_fallback_profile,
--					&bc->bc_key->crypto_cfg)) {
-+	if (bc->bc_key->crypto_cfg.key_type != BLK_CRYPTO_KEY_TYPE_RAW) {
- 		bio_endio_status(bio, BLK_STS_NOTSUPP);
- 		return false;
+-bool __blk_crypto_cfg_supported(struct blk_crypto_profile *profile,
+-				const struct blk_crypto_config *cfg);
+-
+ int blk_crypto_ioctl(struct block_device *bdev, unsigned int cmd,
+ 		     void __user *argp);
+ 
+diff --git a/block/blk-crypto-profile.c b/block/blk-crypto-profile.c
+index cf447ba4a66e..53126c091b0b 100644
+--- a/block/blk-crypto-profile.c
++++ b/block/blk-crypto-profile.c
+@@ -335,28 +335,6 @@ void blk_crypto_put_keyslot(struct blk_crypto_keyslot *slot)
  	}
+ }
+ 
+-/**
+- * __blk_crypto_cfg_supported() - Check whether the given crypto profile
+- *				  supports the given crypto configuration.
+- * @profile: the crypto profile to check
+- * @cfg: the crypto configuration to check for
+- *
+- * Return: %true if @profile supports the given @cfg.
+- */
+-bool __blk_crypto_cfg_supported(struct blk_crypto_profile *profile,
+-				const struct blk_crypto_config *cfg)
+-{
+-	if (!profile)
+-		return false;
+-	if (!(profile->modes_supported[cfg->crypto_mode] & cfg->data_unit_size))
+-		return false;
+-	if (profile->max_dun_bytes_supported < cfg->dun_bytes)
+-		return false;
+-	if (!(profile->key_types_supported & cfg->key_type))
+-		return false;
+-	return true;
+-}
+-
+ /*
+  * This is an internal function that evicts a key from an inline encryption
+  * device that can be either a real device or the blk-crypto-fallback "device".
+diff --git a/block/blk-crypto.c b/block/blk-crypto.c
+index 15e25e41b166..de60f03b4d4b 100644
+--- a/block/blk-crypto.c
++++ b/block/blk-crypto.c
+@@ -351,11 +351,30 @@ int blk_crypto_init_key(struct blk_crypto_key *blk_key,
+ }
+ EXPORT_SYMBOL_GPL(blk_crypto_init_key);
+ 
++/**
++ * blk_crypto_config_supported_natively() - Check whether a block device
++ *					    supports hardware inline encryption
++ *					    with the given configuration.
++ * @bdev: the block device
++ * @cfg: the crypto configuration to check for
++ *
++ * Return: %true if @bdev supports hardware inline encryption with @cfg.
++ */
+ bool blk_crypto_config_supported_natively(struct block_device *bdev,
+ 					  const struct blk_crypto_config *cfg)
+ {
+-	return __blk_crypto_cfg_supported(bdev_get_queue(bdev)->crypto_profile,
+-					  cfg);
++	struct blk_crypto_profile *profile =
++		bdev_get_queue(bdev)->crypto_profile;
++
++	if (!profile)
++		return false;
++	if (!(profile->modes_supported[cfg->crypto_mode] & cfg->data_unit_size))
++		return false;
++	if (profile->max_dun_bytes_supported < cfg->dun_bytes)
++		return false;
++	if (!(profile->key_types_supported & cfg->key_type))
++		return false;
++	return true;
+ }
+ 
+ /*
 -- 
 2.55.0
 
