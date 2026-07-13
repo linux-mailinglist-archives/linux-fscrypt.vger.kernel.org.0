@@ -1,50 +1,51 @@
-Return-Path: <linux-fscrypt+bounces-1757-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
+Return-Path: <linux-fscrypt+bounces-1758-lists+linux-fscrypt=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-fscrypt@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id K9SFBedPVGrZkQMAu9opvQ
-	(envelope-from <linux-fscrypt+bounces-1757-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 13 Jul 2026 04:39:35 +0200
+	id Cyw4F+pPVGrbkQMAu9opvQ
+	(envelope-from <linux-fscrypt+bounces-1758-lists+linux-fscrypt=lfdr.de@vger.kernel.org>)
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 13 Jul 2026 04:39:38 +0200
 X-Original-To: lists+linux-fscrypt@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 692EB746A8C
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 13 Jul 2026 04:39:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DCDF3746A97
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 13 Jul 2026 04:39:37 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=OfToqvAw;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b="jrW/JYM3";
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	spf=pass (mail.lfdr.de: domain of "linux-fscrypt+bounces-1757-lists+linux-fscrypt=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-fscrypt+bounces-1757-lists+linux-fscrypt=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "linux-fscrypt+bounces-1758-lists+linux-fscrypt=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-fscrypt+bounces-1758-lists+linux-fscrypt=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 6779530080B7
-	for <lists+linux-fscrypt@lfdr.de>; Mon, 13 Jul 2026 02:39:33 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id D26853011A44
+	for <lists+linux-fscrypt@lfdr.de>; Mon, 13 Jul 2026 02:39:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D47D0357CED;
-	Mon, 13 Jul 2026 02:39:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3004D357CED;
+	Mon, 13 Jul 2026 02:39:34 +0000 (UTC)
 X-Original-To: linux-fscrypt@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 928D64317D;
-	Mon, 13 Jul 2026 02:39:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E18F935839E;
+	Mon, 13 Jul 2026 02:39:32 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783910372; cv=none; b=npjvDqEs2FOVn3v9WxKgySmrCqiHl3/gBRMLuQpZYjL7tDH/8wG7HGXe8rqIfva1kfgLngTHGlcOc+DBt7waGXxiN//uPowoWinEhPvUfl7nE87yqKVucfQJuMj0GwIaf5PwCDr7XPHnobY7RjPbdGMasiIQGCvn1gtavGQbEP0=
+	t=1783910374; cv=none; b=OlOFgVUpzn3aaIhI0ckONu7eNsliVmsmfGY4OGQ4bSJuYq343kllcOYsHUYQpZwSXahUxUwDPEIfmMTfI5OArqZrHcabGexZhK9UZTWR2naUj4M2WyR37IK/RyhF3XlWVhE+jZVec9zsv5khyGT3tBc+kEx+JlRYe1mOZUEUGYM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783910372; c=relaxed/simple;
-	bh=ERt0ccSiPlbeJ/A/7GfWCl/2hwReIl6adW8mCOgSq6A=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LzCIebYQvPPU4UzyMzYEX1YjMxZXo4hhxw2A5jHFgXTTjsjpW6B5+cPkoQAIJtY2HZR/pd4OdMn3iwXroajjCP1oqE1xtXlGEzT79Sd0p/A5Ry1mCRMcoUZcGdPjQX4dg40Q8ClsUpMuy6ipJgxeOCr2IUDNmfrrwmsoojU88d4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OfToqvAw; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E9F21F000E9;
-	Mon, 13 Jul 2026 02:39:30 +0000 (UTC)
+	s=arc-20240116; t=1783910374; c=relaxed/simple;
+	bh=84xiyY9aCfVQAoCwsVVef4h6mO+W3sOkq6IoWGvAuPw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=FCyFKwykNNAaLeQCfXRoP0iLiWbIxqbD2t7h9PyQyd9p072PmrDIpHIQSSvYTMM49gzgQWgqsR/Lkrgjd8ntBb/6Gux6Sh35z8heTP+TQCHC+PKOmXStDv2fi2qRXVFaPnFs1oPn69FKQY+m0IOTk7aV9+9VgMNZmR5YfeSoFHs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jrW/JYM3; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B2961F00A3A;
+	Mon, 13 Jul 2026 02:39:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783910371;
-	bh=Anvrc5QyuwQ48kzKoweg2kNJHM923i1rPiWcvi+taB4=;
-	h=From:To:Cc:Subject:Date;
-	b=OfToqvAwxJnFISd+Iw7yOl5WvJFvukBFM+f2oqQndEK7Wxo5/Iy/E/p7TtFHnafU4
-	 gtmwxliwVifw6idYU8l0qQuSycJGd4UWIqO9y/5eNi/Z9kG/JOfF0jyp8MWHi/z2Bf
-	 Xfr15V8xlZNHScHaGqrU8JfJtDoEVMOqVLol2kZRiM+66f7YdIKfC1CjH8bIgDPLYA
-	 VUGKCp95jKux0j7WEDnzXHa3yJSeJTEw4N6T1S0Da81oADP8oX4Il0uj1q8MGhW9kP
-	 bMTmrbX4r5PJ/OWdywUJTX3JNwyefNO55kR7oVlNECzQxrT4Glw8x7sHLuKRNVbQid
-	 sZjvad5Un2vQQ==
+	s=k20260515; t=1783910372;
+	bh=qHUq8H2gRat8UEbbTCOj349IaUIr6uNiumAUkOuvUW4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=jrW/JYM3ACUG+nhVVkCsyXJIFV5lZoq4QSBhj7fBWsGJSoRCWJYLRmhzHkAJGqMVe
+	 8GZ5fICsJYPHOGTlUM5gr8uGyFKiOAe1vf3DYrG2UtDStan2eFVA870cmpg/X0PaKx
+	 ccev9HVIMioftE4tyM/MJODhjjuyBCOiwQ3s+pogXjAn4Rxx/F1gKG2TcU1xNyOO4A
+	 W5Y26dhNgqIR7Amh9UJgzoFB9y/DQA6EHwk4/o8cHbjtF9kdlffr9IB1mZ88xeOjb8
+	 OIbzkJzROp8E4DhAFrHBB14HnhBZ7pa/85bX5Za/6UkCddKiwmyAGBRdQv7OfIg0GV
+	 1DR9mnRxmQsxA==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-fscrypt@vger.kernel.org
 Cc: linux-fsdevel@vger.kernel.org,
@@ -62,10 +63,12 @@ Cc: linux-fsdevel@vger.kernel.org,
 	Jaegeuk Kim <jaegeuk@kernel.org>,
 	Chao Yu <chao@kernel.org>,
 	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH v3 00/17] fscrypt: Standardize on blk-crypto
-Date: Sun, 12 Jul 2026 22:36:51 -0400
-Message-ID: <20260713023708.9245-1-ebiggers@kernel.org>
+Subject: [PATCH v3 01/17] blk-crypto: Simplify check for fallback support
+Date: Sun, 12 Jul 2026 22:36:52 -0400
+Message-ID: <20260713023708.9245-2-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20260713023708.9245-1-ebiggers@kernel.org>
+References: <20260713023708.9245-1-ebiggers@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-fscrypt@vger.kernel.org
 List-Id: <linux-fscrypt.vger.kernel.org>
@@ -86,7 +89,7 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-1757-lists,linux-fscrypt=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-1758-lists,linux-fscrypt=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS(0.00)[m:linux-fscrypt@vger.kernel.org,m:linux-fsdevel@vger.kernel.org,m:linux-ext4@vger.kernel.org,m:linux-f2fs-devel@lists.sourceforge.net,m:linux-block@vger.kernel.org,m:hch@lst.de,m:tytso@mit.edu,m:adilger.kernel@dilger.ca,m:libaokun@linux.alibaba.com,m:jack@suse.cz,m:ojaswin@linux.ibm.com,m:ritesh.list@gmail.com,m:yi.zhang@huawei.com,m:jaegeuk@kernel.org,m:chao@kernel.org,m:ebiggers@kernel.org,m:riteshlist@gmail.com,s:lists@lfdr.de];
 	RCPT_COUNT_TWELVE(0.00)[16];
@@ -108,132 +111,35 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 692EB746A8C
+X-Rspamd-Queue-Id: DCDF3746A97
 
-This series applies to commit 2d0afaac9137e9 of
-https://git.kernel.org/pub/scm/fs/fscrypt/linux.git/log/?h=for-next
-It can also be retrieved from:
+Since blk-crypto-fallback supports all blk_crypto_keys except wrapped
+keys, just check for that condition directly instead of using
+__blk_crypto_cfg_supported().  With this done,
+__blk_crypto_cfg_supported() is now used only for the hardware support.
 
-    git fetch https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git/ fscrypt-blk-crypto-v3
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Eric Biggers <ebiggers@kernel.org>
+---
+ block/blk-crypto-fallback.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Currently, ext4 and f2fs (i.e., the block-based filesystems with fscrypt
-support) have two file contents encryption implementations:
-
- - Filesystem-layer, where code in fs/crypto/ directly invokes
-   crypto_skcipher to en/decrypt data using the CPU.  This
-   implementation requires the management of bounce pages at the
-   filesystem level.  It doesn't support direct I/O or large folios.
-
- - blk-crypto (also known as inline encryption), where the filesystem
-   assigns bio_crypt_ctxs to bios, which are then processed either by
-   the CPU using blk-crypto-fallback.c or by inline encryption hardware.
-   This supports direct I/O and is compatible with large folios.
-
-Currently, the latter implementation is enabled only when the
-"inlinecrypt" mount option is given.
-
-The persistence of the fs-layer implementation is mainly for historical
-reasons, as it came first.  It's becoming increasingly hard to maintain,
-especially as the filesystems get refactored to use iomap, large folios,
-etc.  It's time to remove it and just rely on the similar code in
-blk-crypto-fallback.  This series does that.
-
-Some fs-layer encryption support remains in fs/crypto/ for non-block
-based filesystems (UBIFS and CephFS), as well as directories and
-symlinks.  So it's not entirely gone, but it's reduced.
-
-To be clear, this just changes an internal implementation detail.  ext4
-and f2fs continue to fully support encryption (fscrypt), regardless of
-the presence of inline encryption hardware on the system.
-
-Changed in v3:
-
-  - Fixed bug in mpage_prepare_extent_to_map().
-
-  - Updated a couple other places in fscrypt.rst.
-
-  - Cleaned up outdated comments in {ext4,f2fs}_getattr().
-
-  - Removed an orphaned function prototype.
-
-  - Fixed accidental removal of @key_type kerneldoc.
-
-Changed in v2:
-
-  - Replaced the allow_hw bool with a flags argument.
-
-  - Added patch "Documentation: fscrypt: Update docs for inlinecrypt"
-    which updates the documentation more completely by updating not just
-    fscrypt.rst (which was previously part of another patch), but also
-    the documentation for inlinecrypt in ext4.rst and f2fs.rst.  
-
-  - Removed extern from declarations of ext4_init_verity_caches() and
-    ext4_exit_verity_caches()
+diff --git a/block/blk-crypto-fallback.c b/block/blk-crypto-fallback.c
+index 2a5c52ab74b4..2a8f40a65158 100644
+--- a/block/blk-crypto-fallback.c
++++ b/block/blk-crypto-fallback.c
+@@ -496,8 +496,7 @@ bool blk_crypto_fallback_bio_prep(struct bio *bio)
+ 		return false;
+ 	}
  
-  - Remove unused 'inode' argument from ext4_set_verity_work()
-
-  - Added Reviewed-by tags
-
-Eric Biggers (17):
-  blk-crypto: Simplify check for fallback support
-  blk-crypto: Fold __blk_crypto_cfg_supported() into its caller
-  blk-crypto: Allow control over whether hardware is used
-  fscrypt: Fully disallow IV_INO_LBLK_32 with s_blocksize != PAGE_SIZE
-  fscrypt: Always use blk-crypto for contents on block-based filesystems
-  Documentation: fscrypt: Update docs for inlinecrypt
-  ext4: Remove fs-layer file contents en/decryption code
-  ext4: Make ext4_bio_write_folio() return void
-  ext4: Further de-generalize the bio postprocessing code
-  f2fs: Remove fs-layer file contents en/decryption code
-  fs/buffer: Remove fs-layer decryption code
-  fscrypt: Replace calls to fscrypt_inode_uses_inline_crypto()
-  fscrypt: Remove fscrypt_dio_supported()
-  fscrypt: Remove fs-layer zeroout code
-  fscrypt: Remove unused functions and workqueue
-  fscrypt: Merge bio.c and inline_crypt.c into block.c
-  fscrypt: Add safety checks to non-block-based en/decryption
-
- Documentation/admin-guide/ext4.rst          |   8 +-
- Documentation/filesystems/f2fs.rst          |  10 +-
- Documentation/filesystems/fscrypt.rst       |  58 ++--
- arch/loongarch/configs/loongson32_defconfig |   1 -
- arch/loongarch/configs/loongson64_defconfig |   1 -
- block/blk-crypto-fallback.c                 |   3 +-
- block/blk-crypto-internal.h                 |   3 -
- block/blk-crypto-profile.c                  |  22 --
- block/blk-crypto.c                          |  34 ++-
- drivers/md/dm-inlinecrypt.c                 |   3 +-
- fs/buffer.c                                 |  45 +---
- fs/crypto/Kconfig                           |   8 +-
- fs/crypto/Makefile                          |   3 +-
- fs/crypto/bio.c                             | 216 ---------------
- fs/crypto/{inline_crypt.c => block.c}       | 284 ++++++++++----------
- fs/crypto/crypto.c                          | 140 ++++------
- fs/crypto/fscrypt_private.h                 |  28 +-
- fs/crypto/keysetup.c                        |  31 +--
- fs/crypto/policy.c                          |  17 ++
- fs/ext4/crypto.c                            |   2 +-
- fs/ext4/ext4.h                              |   6 +-
- fs/ext4/inode.c                             |  71 +----
- fs/ext4/page-io.c                           |  74 +----
- fs/ext4/readpage.c                          | 139 +++-------
- fs/ext4/super.c                             |   6 +-
- fs/f2fs/compress.c                          |  31 +--
- fs/f2fs/data.c                              |  93 +------
- fs/f2fs/f2fs.h                              |   2 -
- fs/f2fs/file.c                              |   6 +-
- fs/f2fs/segment.c                           |   2 -
- fs/f2fs/super.c                             |   2 +-
- include/linux/blk-crypto.h                  |  13 +-
- include/linux/fscrypt.h                     |  96 ++-----
- 33 files changed, 387 insertions(+), 1071 deletions(-)
- delete mode 100644 fs/crypto/bio.c
- rename fs/crypto/{inline_crypt.c => block.c} (61%)
-
-
-base-commit: 2d0afaac9137e95e504bd3ad3512a9044745536b
+-	if (!__blk_crypto_cfg_supported(blk_crypto_fallback_profile,
+-					&bc->bc_key->crypto_cfg)) {
++	if (bc->bc_key->crypto_cfg.key_type != BLK_CRYPTO_KEY_TYPE_RAW) {
+ 		bio_endio_status(bio, BLK_STS_NOTSUPP);
+ 		return false;
+ 	}
 -- 
 2.55.0
 
